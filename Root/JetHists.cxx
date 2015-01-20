@@ -1,94 +1,88 @@
-#include "xAODJet/JetContainer.h"
-#include "xAODAnaHelpers/JetPlotsClass.h"
+#include <xAODAnaHelpers/JetHists.h>
 
-
-JetPlotsClass :: JetPlotsClass () {
-}
-
-JetPlotsClass :: JetPlotsClass (std::string name, int detailLevel) : 
-  ManageHists(name,detailLevel)
+JetHists :: JetHists (std::string name, std::string detailStr, std::string delimiter) :
+  HistogramManager(name, detailStr, delimiter)
 {
 }
 
-JetPlotsClass :: JetPlotsClass (std::string name, std::string detailStr) : 
-  ManageHists(name,detailStr)
-{
-}
+JetHists :: ~JetHists () {}
 
-EL::StatusCode JetPlotsClass::BookHistograms(EL::Worker* wk) {
+EL::StatusCode JetHists::initialize() {
 
   // These plots are always made
-  m_jetPt          = Book1D(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 600);
-  m_jetEta         = Book1D(m_name, "jetEta", "jet #eta",         80, -4, 4);
-  m_jetPhi         = Book1D(m_name, "jetPhi", "jet Phi",120, -TMath::Pi(), TMath::Pi() );
-  m_jetM           = Book1D(m_name, "jetMass", "jet Mass [GeV]",120, 0, 400);
-  m_jetE           = Book1D(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000);
-  m_jetRapidity    = Book1D(m_name, "jetRapidity", "jet Rapidity",120, -10, 10);
+  m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 600);
+  m_jetEta         = book(m_name, "jetEta", "jet #eta",         80, -4, 4);
+  m_jetPhi         = book(m_name, "jetPhi", "jet Phi",120, -TMath::Pi(), TMath::Pi() );
+  m_jetM           = book(m_name, "jetMass", "jet Mass [GeV]",120, 0, 400);
+  m_jetE           = book(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000);
+  m_jetRapidity    = book(m_name, "jetRapidity", "jet Rapidity",120, -10, 10);
 
   // details of the jet kinematics
   m_fillKinematic = false;
-  if( m_detailStr.Contains("kinematic" ) ) { 
+  if( m_detailStr.find("kinematic") != std::string::npos ) { 
     m_fillKinematic = true;
-    m_jetPx     = Book1D(m_name, "jetPx",     "jet Px [GeV]",     120, 0, 1000);
-    m_jetPy     = Book1D(m_name, "jetPy",     "jet Py [GeV]",     120, 0, 1000);
-    m_jetPz     = Book1D(m_name, "jetPz",     "jet Pz [GeV]",     120, 0, 4000);
+    m_jetPx     = book(m_name, "jetPx",     "jet Px [GeV]",     120, 0, 1000);
+    m_jetPy     = book(m_name, "jetPy",     "jet Py [GeV]",     120, 0, 1000);
+    m_jetPz     = book(m_name, "jetPz",     "jet Pz [GeV]",     120, 0, 4000);
   }
 
   // details for jet cleaning
   m_fillClean = false;
-  if( m_detailStr.Contains("clean" ) ) { 
+  if( m_detailStr.find("clean") != std::string::npos ) { 
     m_fillClean = true;
     // units?
-    m_jetTime     = Book1D(m_name, "JetTimming" ,   "Jet Timming",      120, -80, 80);
-    m_LArQuality  = Book1D(m_name, "LArQuality" ,   "LAr Quality",      120, -600, 600);
-    m_hecq        = Book1D(m_name, "HECQuality" ,   "HEC Quality",      120, -10, 10);
-    m_negE        = Book1D(m_name, "NegativeE" ,    "Negative Energy",  120, -10, 10);
-    m_avLArQF     = Book1D(m_name, "AverageLArQF" , "<LAr Quality Factor>" , 120, 0, 1000);
-    m_bchCorrCell = Book1D(m_name, "BchCorrCell" ,  "BCH Corr Cell" ,   120, 0, 600);
-    m_N90Const  = Book1D(m_name, "N90Constituents", "N90 Constituents" ,  120, 0, 40);
+    m_jetTime     = book(m_name, "JetTimming" ,   "Jet Timming",      120, -80, 80);
+    m_LArQuality  = book(m_name, "LArQuality" ,   "LAr Quality",      120, -600, 600);
+    m_hecq        = book(m_name, "HECQuality" ,   "HEC Quality",      120, -10, 10);
+    m_negE        = book(m_name, "NegativeE" ,    "Negative Energy",  120, -10, 10);
+    m_avLArQF     = book(m_name, "AverageLArQF" , "<LAr Quality Factor>" , 120, 0, 1000);
+    m_bchCorrCell = book(m_name, "BchCorrCell" ,  "BCH Corr Cell" ,   120, 0, 600);
+    m_N90Const  = book(m_name, "N90Constituents", "N90 Constituents" ,  120, 0, 40);
   }
 
   // details for jet energy information
   m_fillEnergy = false;
-  if( m_detailStr.Contains("energy" ) ) { 
+  if( m_detailStr.find("energy") != std::string::npos ) { 
     m_fillEnergy = true;
-    m_HECf      = Book1D(m_name, "HECFrac",         "HEC Fraction" ,    120, 0, 5);
-    m_EMf       = Book1D(m_name, "EMFrac",          "EM Fraction" ,     120, 0, 2);
-    m_actArea   = Book1D(m_name, "ActiveArea",      "Jet Active Area" , 120, 0, 1);
-    m_centroidR = Book1D(m_name, "CentroidR",       "CentroidR" ,       120, 0, 600); 
+    m_HECf      = book(m_name, "HECFrac",         "HEC Fraction" ,    120, 0, 5);
+    m_EMf       = book(m_name, "EMFrac",          "EM Fraction" ,     120, 0, 2);
+    m_actArea   = book(m_name, "ActiveArea",      "Jet Active Area" , 120, 0, 1);
+    m_centroidR = book(m_name, "CentroidR",       "CentroidR" ,       120, 0, 600); 
   }
 
-  m_chf         = Book1D(m_name, "chfPV" ,    "PV(chf)" ,     120, 0, 600);
+  m_chf         = book(m_name, "chfPV" ,    "PV(chf)" ,     120, 0, 600);
 
   // details for jet resolutions
   m_fillResolution = false;
-  if( m_detailStr.Contains("resolution" ) ) { 
+  if( m_detailStr.find("resolution") != std::string::npos ) { 
     m_fillResolution = true;
     // 1D
-    m_jetGhostTruthPt   = Book1D(m_name, "jetGhostTruthPt",  "jet ghost truth p_{T} [GeV]", 120, 0, 600);
+    m_jetGhostTruthPt   = book(m_name, "jetGhostTruthPt",  "jet ghost truth p_{T} [GeV]", 120, 0, 600);
     // 2D
-    m_jetPt_vs_resolution = Book2D(m_name, "jetPt_vs_resolution",  
-        "jet p_{T} [GeV]", "resolution", 120, 0, 600, 30, -5, 35 );
-    m_jetGhostTruthPt_vs_resolution = Book2D(m_name, "jetGhostTruthPt_vs_resolution",  
-        "jet ghost truth p_{T} [GeV]", "resolution", 120, 0, 600, 30, -5, 35 );
+    m_jetPt_vs_resolution = book(m_name, "jetPt_vs_resolution",  
+      "jet p_{T} [GeV]", 120, 0, 600,
+      "resolution", 30, -5, 35
+    );
+    m_jetGhostTruthPt_vs_resolution = book(m_name, "jetGhostTruthPt_vs_resolution",  
+      "jet ghost truth p_{T} [GeV]", 120, 0, 600, 
+      "resolution", 30, -5, 35
+    );
   }
 
-  // if worker is passed to the class add histograms to the output
-  if(wk) {
-    AddToOutput(wk);
-  }
   return EL::StatusCode::SUCCESS;
 }
 
-void JetPlotsClass::FillHistograms( const xAOD::JetContainer* jets, float eventWeight ) {
+EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight ) {
   xAOD::JetContainer::const_iterator jet_itr = jets->begin();
   xAOD::JetContainer::const_iterator jet_end = jets->end();
   for( ; jet_itr != jet_end; ++jet_itr ) {
-    this->FillHistograms( (*jet_itr), eventWeight );
+    this->execute( (*jet_itr), eventWeight );
   }
+
+  return EL::StatusCode::SUCCESS;
 }
 
-void JetPlotsClass::FillHistograms( const xAOD::Jet* jet, float eventWeight ) { 
+EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) { 
 
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
@@ -328,5 +322,7 @@ void JetPlotsClass::FillHistograms( const xAOD::Jet* jet, float eventWeight ) {
     m_jetPt_vs_resolution -> Fill( jet->pt()/1e3, resolution, eventWeight );
     m_jetGhostTruthPt_vs_resolution -> Fill( ghostTruthPt/1e3, resolution, eventWeight );
   }
+
+  return EL::StatusCode::SUCCESS;
 }
 
