@@ -34,7 +34,7 @@ PACKAGE_DEP = EventLoop xAODBase xAODRootAccess xAODEventInfo GoodRunsLists PATI
 PACKAGE_TRYDEP   = 
 
 # list pattern of scripts to link directly into binary path:
-PACKAGE_SCRIPTS  = 
+PACKAGE_SCRIPTS  =  scripts/*.py
 
 # whether to use pedantic compilation:
 PACKAGE_PEDANTIC = 1
