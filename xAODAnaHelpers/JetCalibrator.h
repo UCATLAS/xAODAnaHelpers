@@ -33,7 +33,7 @@ public:
   int m_numObject;        //!
 
   std::string m_name;
-  std::string m_configName;
+  std::string m_configFile;
   bool m_isMC;
   bool m_isFullSim; /* this should be read from event info- sample name or something...now forced to true */
 
@@ -51,10 +51,10 @@ private:
   TString m_outAuxContainerName;  
   
   TString m_jetAlgo;
-  TString m_configFileData;
-  TString m_configFileFullSim;
-  TString m_configFileAFII; 
-  TString m_configFile;
+  TString m_calibConfigData;
+  TString m_calibConfigFullSim;
+  TString m_calibConfigAFII; 
+  TString m_calibConfig;
   TString m_calibSequence;    
   // sort after calibration
   bool    m_sort;
@@ -71,7 +71,7 @@ public:
 
   // this is a standard constructor
   JetCalibrator ();
-  JetCalibrator (std::string name, std::string configName);
+  JetCalibrator (std::string name, std::string configFile);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

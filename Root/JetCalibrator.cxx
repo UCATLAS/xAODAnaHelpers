@@ -20,10 +20,10 @@ ClassImp(JetCalibrator)
 JetCalibrator :: JetCalibrator () {
 }
 
-JetCalibrator :: JetCalibrator (std::string name, std::string configName) : 
+JetCalibrator :: JetCalibrator (std::string name, std::string configFile) : 
   Algorithm(),
   m_name(name),
-  m_configName(configName),
+  m_configFile(configFile),
   m_jetCalibration(0),
   m_jetCleaning(0)
 {
@@ -40,12 +40,12 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configName) :
 
 EL::StatusCode  JetCalibrator :: configure ()
 {
-  Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configFile.c_str());
   
-  TEnv* config = new TEnv(m_configName.c_str());
+  TEnv* config = new TEnv(m_configFile.c_str());
   if( !config ) {
     Error("configure()", "Failed to read config file!");
-    Error("configure()", "config name : %s",m_configName.c_str());
+    Error("configure()", "config name : %s",m_configFile.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -59,9 +59,9 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
   // when running data "_Insitu" is appended to this string
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
-  m_configFileData	        = config->GetValue("ConfigFileData",          "JES_Full2012dataset_Preliminary_MC14.config");
-  m_configFileFullSim       = config->GetValue("ConfigFileFullSim",       "JES_Full2012dataset_May2014.config");
-  m_configFileAFII          = config->GetValue("ConfigFileAFII",          "JES_Full2012dataset_AFII_January2014.config");
+  m_calibConfigData	        = config->GetValue("ConfigFileData",          "JES_Full2012dataset_Preliminary_MC14.config");
+  m_calibConfigFullSim       = config->GetValue("ConfigFileFullSim",       "JES_Full2012dataset_May2014.config");
+  m_calibConfigAFII          = config->GetValue("ConfigFileAFII",          "JES_Full2012dataset_AFII_January2014.config");
 
   // CONFIG parameters for JetCleaningTool
   m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");
@@ -164,9 +164,9 @@ EL::StatusCode JetCalibrator :: initialize ()
   
   m_isFullSim = true; // temporary: FIX THIS!
   if( m_isMC ){
-    m_configFile = ( m_isFullSim ) ? m_configFileFullSim : m_configFileAFII;
+    m_calibConfig = ( m_isFullSim ) ? m_calibConfigFullSim : m_calibConfigAFII;
   } else {
-    m_configFile = m_configFileData;
+    m_calibConfig = m_calibConfigData;
   }
 
   if(m_debug){
@@ -177,7 +177,7 @@ EL::StatusCode JetCalibrator :: initialize ()
         << "\t m_debug: "		     << m_debug 		      <<  " of type " <<  typeid(m_debug).name() <<  "\n"    
         << "\t m_isMC: "		     << m_isMC  		      <<  " of type " <<  typeid(m_isMC).name() << "\n" 	 
         << "\t m_jetAlgo  : "		     << m_jetAlgo.Data()	      <<  " of type " <<  typeid(m_jetAlgo).name() <<  "\n"	
-        << "\t m_configFile	      : "    << m_configFile.Data()	      <<  " of type " <<  typeid(m_configFile).name() << "\n" 
+        << "\t m_calibConfig	      : "    << m_calibConfig.Data()	      <<  " of type " <<  typeid(m_calibConfig).name() << "\n" 
         << "\t m_calibSequence        : "    << m_calibSequence.Data()        <<  " of type " <<  typeid(m_calibSequence).name() << "\n"	  
         << "\t m_jetCalibCutLevel     : "    << m_jetCalibCutLevel	      <<  " of type " <<  typeid(m_jetCalibCutLevel).name() << "\n"   
   	<< std::endl;  
@@ -186,7 +186,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize jet calibration tool
   m_jetCalibration = new JetCalibrationTool("JetCorrectionTool", 
       m_jetAlgo.Data(),
-      m_configFile.Data(),
+      m_calibConfig.Data(),
       m_calibSequence.Data(),
       !m_isMC);
   m_jetCalibration->msg().setLevel( MSG::ERROR); // VERBOSE, INFO, DEBUG    
