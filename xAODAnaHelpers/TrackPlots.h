@@ -6,7 +6,8 @@
 #include "xAODRootAccess/Init.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
-#include <xAODAnaHelpers/TrackPlotsClass.h>
+
+class TrackHists;
 
 class TrackPlots : public EL::Algorithm
 {
@@ -23,11 +24,14 @@ public:
 
 private:
 
-  TrackPlotsClass* m_plots; //!
+#ifndef __CINT__
+  TrackHists* m_plots; //!
+#endif // not __CINT__
 
   // configuration variables
-  TString m_inContainerName;
-  int     m_detailLevel;
+  std::string m_inContainerName;
+  std::string m_detailStr;
+  std::string m_delimiter;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -39,7 +43,6 @@ public:
 
 
   // this is a standard constructor
-  TrackPlots ();
   TrackPlots (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm

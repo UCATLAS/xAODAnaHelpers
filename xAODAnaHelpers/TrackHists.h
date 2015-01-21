@@ -1,35 +1,29 @@
-#ifndef xAODAnaHelpers_TrackPlotsClass_H
-#define xAODAnaHelpers_TrackPlotsClass_H
+#ifndef xAODAnaHelpers_TrackHists_H
+#define xAODAnaHelpers_TrackHists_H
 
-#include "xAODAnaHelpers/ManageHists.h"
-//#include "xAODTracking/TrackParticle.h"
+#include "xAODAnaHelpers/HistogramManager.h"
+#include <xAODTracking/TrackParticleContainer.h>
 
-namespace xAOD {
-#ifndef XAODTRACKING_TRACKPARTICLECONTAINER_H
-  class TrackParticleContainer;
-#endif
-#ifndef XAODTRACKING_TRACKPARTICLE_H
-  class TrackParticle;
-#endif
-#ifndef XAODTRACKING_XAODPRIMITIVES_H
-  class SummaryType;
-#endif
-}
-
-//class SummaryType;
-
-class TrackPlotsClass : public ManageHists
+class TrackHists : public HistogramManager
 {
+  public:
+    TrackHists(std::string name, std::string detailStr, std::string delimiter);
+    ~TrackHists();
+
+    EL::StatusCode initialize();
+    EL::StatusCode execute( const xAOD::TrackParticleContainer* tracks,  float eventWeight );
+    EL::StatusCode execute( const xAOD::TrackParticle* track,            float eventWeight );
+    using HistogramManager::book; // make other overloaded versions of book() to show up in subclass
+    using HistogramManager::execute; // overload
+
+  protected: 
+    // bools to control which histograms are filled
+    bool m_levelTwo;         //!
+    bool m_levelThree;        //!
+    bool m_levelFour;    //!
+    bool m_levelTen;
 
   private:
-    
-    // bools to control which histograms are filled
-    bool m_fillKinematic;     //!
-    bool m_fillClean;         //!
-    bool m_fillEnergy;        //!
-    
-    bool m_fillResolution;    //!
-
     // Histograms
     TH1F* m_trk_Pt              ; //!
     TH1F* m_trk_Pt_l   		; //!
@@ -68,17 +62,6 @@ class TrackPlotsClass : public ManageHists
     TH1F* m_trk_d0_vl      	; //!
     TH1F* m_trk_pt_ss      	; //!
     TH1F* m_trk_phiManyBins     ; //!
-
-
-  public:
-
-    TrackPlotsClass();
-    TrackPlotsClass(std::string name, int detailLevel);
-    TrackPlotsClass(std::string name, std::string detailStr);
-
-    EL::StatusCode BookHistograms(EL::Worker* wk = 0);
-    void FillHistograms( const xAOD::TrackParticleContainer* trks,  float eventWeight );
-    void FillHistograms( const xAOD::TrackParticle* trk,            float eventWeight );
 
 };
 
