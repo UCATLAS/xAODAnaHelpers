@@ -29,6 +29,16 @@ EL::StatusCode TrackPlots :: setupJob (EL::Job& job)
   // let's initialize the algorithm to use the xAODRootAccess package
   xAOD::Init("TrackPlots").ignore(); // call before opening first file
 
+  if ( this->configure() == EL::StatusCode::FAILURE ) {
+    Error("initialize()", "Failed to properly configure. Exiting." );
+    return EL::StatusCode::FAILURE;
+  }
+
+  return EL::StatusCode::SUCCESS;
+}
+
+EL::StatusCode TrackPlots :: configure ()
+{
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("TrackPlots::setupJob()", "Failed to read config file!");
@@ -38,6 +48,9 @@ EL::StatusCode TrackPlots :: setupJob (EL::Job& job)
   m_inContainerName         = config->GetValue("InputContainer",  "");
   m_detailStr               = config->GetValue("DetailStr",       "");
   m_delimiter               = config->GetValue("Delimiter",      "/");
+
+  config->Print();
+  Info("configure()", "JetPlots Interface succesfully configured! \n");
 
   return EL::StatusCode::SUCCESS;
 }
