@@ -31,25 +31,40 @@ EL::StatusCode JetPlots :: setupJob (EL::Job& job)
   job.useXAOD();
   xAOD::Init("JetPlots").ignore();
 
-  TEnv* config = new TEnv(m_configName.c_str());
-  if( !config ) {
-    Error("JetPlots::setupJob()", "Failed to read config file!");
-    Error("JetPlots::setupJob()", "config name : %s",m_configName.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-  m_inContainerName         = config->GetValue("InputContainer",  "");
-  m_detailStr               = config->GetValue("DetailStr",       ""); 
-  m_delimiter               = config->GetValue("Delimiter",       ":");
-
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode JetPlots :: histInitialize ()
 {
+
+  // needed here and not in initalize since this is called first
+  if ( this->configure() == EL::StatusCode::FAILURE ) {
+    Error("histInitialize()", "%s Failed to properly configure. Exiting.", m_name.c_str() );
+    return EL::StatusCode::FAILURE;
+  }
+
   // declare class and add histograms to output
   m_plots = new JetHists(m_name, m_detailStr, m_delimiter);
   m_plots -> initialize( );
   m_plots -> record( wk() );
+
+  return EL::StatusCode::SUCCESS;
+}
+
+EL::StatusCode JetPlots :: configure ()
+{
+  TEnv* config = new TEnv(m_configName.c_str());
+  if( !config ) {
+    Error("JetPlots::configure()", "Failed to read config file!");
+    Error("JetPlots::configure()", "config name : %s",m_configName.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+  m_inContainerName         = config->GetValue("InputContainer",  "");
+  m_detailStr               = config->GetValue("DetailStr",       ""); 
+  m_delimiter               = config->GetValue("Delimiter",       "/");
+
+  config->Print();
+  Info("configure()", "JetPlots Interface succesfully configured! \n");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -78,7 +93,7 @@ EL::StatusCode JetPlots :: execute ()
     eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
   }
 
-  const xAOD::JetContainer* jets = 0;
+  xAOD::JetContainer* jets = 0;
   if ( !m_event->retrieve( jets, m_inContainerName ).isSuccess() ){
     if ( !m_store->retrieve( jets, m_inContainerName ).isSuccess() ){
       Error("JetPlots::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
