@@ -8,7 +8,7 @@ class JetHists : public HistogramManager
 {
   public:
 
-    JetHists(std::string name, std::string detailStr, std::string delimiter = "__" );
+    JetHists(std::string name, std::string detailStr, std::string delimiter = "/");
     ~JetHists();
 
     EL::StatusCode initialize();
