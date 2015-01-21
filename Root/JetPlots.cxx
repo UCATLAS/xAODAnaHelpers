@@ -15,6 +15,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetPlots)
 
+JetPlots :: JetPlots () {
+}
+
 JetPlots :: JetPlots (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
@@ -36,7 +39,7 @@ EL::StatusCode JetPlots :: setupJob (EL::Job& job)
   }
   m_inContainerName         = config->GetValue("InputContainer",  "");
   m_detailStr               = config->GetValue("DetailStr",       ""); 
-  m_delimiter               = config->GetValue("Delimiter",      "/");
+  m_delimiter               = config->GetValue("Delimiter",       ":");
 
   return EL::StatusCode::SUCCESS;
 }
