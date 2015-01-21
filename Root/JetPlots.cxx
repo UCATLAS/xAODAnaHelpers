@@ -15,10 +15,6 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetPlots)
 
-/*
-JetPlots :: JetPlots () {
-}
-*/
 JetPlots :: JetPlots (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
@@ -26,8 +22,6 @@ JetPlots :: JetPlots (std::string name, std::string configName) :
   m_plots(0)
 {
 }
-
-
 
 EL::StatusCode JetPlots :: setupJob (EL::Job& job)
 {
@@ -47,8 +41,6 @@ EL::StatusCode JetPlots :: setupJob (EL::Job& job)
   return EL::StatusCode::SUCCESS;
 }
 
-
-
 EL::StatusCode JetPlots :: histInitialize ()
 {
   // declare class and add histograms to output
@@ -58,8 +50,6 @@ EL::StatusCode JetPlots :: histInitialize ()
 
   return EL::StatusCode::SUCCESS;
 }
-
-
 
 EL::StatusCode JetPlots :: fileExecute () { return EL::StatusCode::SUCCESS; }
 EL::StatusCode JetPlots :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
@@ -71,8 +61,6 @@ EL::StatusCode JetPlots :: initialize ()
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
 }
-
-
 
 EL::StatusCode JetPlots :: execute ()
 {
