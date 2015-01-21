@@ -20,6 +20,7 @@ EL::StatusCode JetHists::initialize() {
   // details of the jet kinematics
   m_fillKinematic = false;
   if( m_detailStr.find("kinematic") != std::string::npos ) { 
+    std::cout << m_name << " adding kinematic plots" << std::endl;
     m_fillKinematic = true;
     m_jetPx     = book(m_name, "jetPx",     "jet Px [GeV]",     120, 0, 1000);
     m_jetPy     = book(m_name, "jetPy",     "jet Py [GeV]",     120, 0, 1000);
@@ -29,6 +30,7 @@ EL::StatusCode JetHists::initialize() {
   // details for jet cleaning
   m_fillClean = false;
   if( m_detailStr.find("clean") != std::string::npos ) { 
+    std::cout << m_name << " adding clean plots" << std::endl;
     m_fillClean = true;
     // units?
     m_jetTime     = book(m_name, "JetTimming" ,   "Jet Timming",      120, -80, 80);
@@ -43,6 +45,7 @@ EL::StatusCode JetHists::initialize() {
   // details for jet energy information
   m_fillEnergy = false;
   if( m_detailStr.find("energy") != std::string::npos ) { 
+    std::cout << m_name << " adding energy plots" << std::endl;
     m_fillEnergy = true;
     m_HECf      = book(m_name, "HECFrac",         "HEC Fraction" ,    120, 0, 5);
     m_EMf       = book(m_name, "EMFrac",          "EM Fraction" ,     120, 0, 2);
@@ -55,6 +58,7 @@ EL::StatusCode JetHists::initialize() {
   // details for jet resolutions
   m_fillResolution = false;
   if( m_detailStr.find("resolution") != std::string::npos ) { 
+    std::cout << m_name << " adding resolution plots" << std::endl;
     m_fillResolution = true;
     // 1D
     m_jetGhostTruthPt   = book(m_name, "jetGhostTruthPt",  "jet ghost truth p_{T} [GeV]", 120, 0, 600);

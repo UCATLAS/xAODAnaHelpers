@@ -34,6 +34,7 @@ EL::StatusCode TrackPlots :: setupJob (EL::Job& job)
 EL::StatusCode TrackPlots :: histInitialize ()
 {
 
+  Error("histInitialize()", "%s", m_name.c_str() );
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "%s Failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;

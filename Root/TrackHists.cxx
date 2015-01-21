@@ -26,6 +26,7 @@ EL::StatusCode TrackHists::initialize() {
   //
   m_levelTwo = false;
   if(m_detailStr.find("2") != std::string::npos ){
+    std::cout << m_name << " adding 2 " << std::endl;
     m_levelTwo = true;
     m_trk_d0_l         = book(m_name, "d0_l" ,            "d0[mm]",           100,  -10.0, 10.0 );
     m_trk_d0Err        = book(m_name, "d0Err",            "d0Err[mm]",        100,  0, 0.4 );
@@ -55,6 +56,7 @@ EL::StatusCode TrackHists::initialize() {
   //
   m_levelThree = false;
   if(m_detailStr.find("3") != std::string::npos ){
+    std::cout << m_name << " adding 3 " << std::endl;
     m_levelThree = true;
     m_trk_nSi        = book(m_name, "nSi",        "nSi",         30,   -0.5, 29.5 );
     m_trk_nSiAndDead = book(m_name, "nSiAndDead", "nSi(+Dead)",  30,   -0.5, 29.5 );
@@ -70,6 +72,7 @@ EL::StatusCode TrackHists::initialize() {
   //
   m_levelFour = false;
   if(m_detailStr.find("4") != std::string::npos ){
+    std::cout << m_name << " adding 4 " << std::endl;
     m_levelFour = true;
     //new TProfile(m_name, "chi2ndofvseta",  "chi2ndofvseta;    eta;       chi2",  20,  -0.1, 2.7, 0, 4, "s" );
     //new TProfile(m_name, "nhitsvseta",  "nhitsvseta;    eta;       nhits",  20,  -0.1, 2.7, 0, 15 , "s" );
@@ -92,6 +95,7 @@ EL::StatusCode TrackHists::initialize() {
   //
   m_levelTen = false;
   if(m_detailStr.find("10") != std::string::npos ){
+    std::cout << m_name << " adding 10 " << std::endl;
     m_levelTen = true;
     m_trk_eta_vl      = book(m_name, "eta_vl",        "eta",       100,  -6,    6     );
     m_trk_z0_vl       = book(m_name, "z0_vl",         "z0[mm]",    100,  -10000.0, 10000.0 );

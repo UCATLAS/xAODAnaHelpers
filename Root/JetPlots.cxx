@@ -37,6 +37,7 @@ EL::StatusCode JetPlots :: setupJob (EL::Job& job)
 EL::StatusCode JetPlots :: histInitialize ()
 {
 
+  Error("histInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "%s Failed to properly configure. Exiting.", m_name.c_str() );
