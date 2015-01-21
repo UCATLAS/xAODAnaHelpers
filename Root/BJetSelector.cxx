@@ -9,6 +9,7 @@
 // ROOT include(s):
 #include "TEnv.h"
 #include "TFile.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(BJetSelector)
@@ -37,6 +38,7 @@ EL::StatusCode  BJetSelector :: configure ()
 {
   Info("configure()", "Configuing BJetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("BJetSelector::setupJob()", "Failed to read config file!");
@@ -50,7 +52,7 @@ EL::StatusCode  BJetSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName  = config->GetValue("InputContainer",  "");
-  
+
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
   // additional functionality : create output container of selected objects
@@ -138,16 +140,16 @@ EL::StatusCode BJetSelector :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  
+
   Info("histInitialize()", "Calling histInitialize \n");
   if(m_useCutFlow) {
-    TFile *file = wk()->getOutputFile ("cutflow");  
+    TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -240,19 +242,19 @@ EL::StatusCode BJetSelector :: execute ()
   }
 
   // create output container (if requested) - deep copy
- 
+
   xAOD::JetContainer* selectedJets = 0;
-  if(m_createSelectedContainer) { 
-    selectedJets = new xAOD::JetContainer(SG::VIEW_ELEMENTS); 
+  if(m_createSelectedContainer) {
+    selectedJets = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
   }
 
   xAOD::JetContainer::iterator jet_itr = inJets->begin();
   xAOD::JetContainer::iterator jet_end = inJets->end();
   int nPass(0); int nObj(0);
   for( ; jet_itr != jet_end; ++jet_itr ){
-    
+
     // if only looking at a subset of jets make sure all are decorrated
-    if( m_nToProcess > 0 && nObj >= m_nToProcess ) { 
+    if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
         (*jet_itr)->auxdecor< int >( m_decor.Data() ) = -1;
       } else {
@@ -266,8 +268,8 @@ EL::StatusCode BJetSelector :: execute ()
 
     // only b-tag jets passing the kinematic selection
     if( m_btagCut >=0 && passSel > 0 ) {
-      const xAOD::BTagging *myBTag = (*jet_itr)->btagging(); 
-      if( myBTag->MV1_discriminant() > m_btagCut ) { 
+      const xAOD::BTagging *myBTag = (*jet_itr)->btagging();
+      if( myBTag->MV1_discriminant() > m_btagCut ) {
         // get efficiency scale factor for jet
       } else {
         // get inefficiency scale factor for jet
@@ -313,7 +315,7 @@ EL::StatusCode BJetSelector :: execute ()
     m_cutflowHist ->Fill( m_cutflow_bin, 1 );
     m_cutflowHistW->Fill( m_cutflow_bin, mcEvtWeight);
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

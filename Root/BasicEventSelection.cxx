@@ -19,6 +19,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
@@ -27,7 +28,7 @@ ClassImp(BasicEventSelection)
 BasicEventSelection :: BasicEventSelection (){
 }
 
-BasicEventSelection :: BasicEventSelection (std::string name, std::string configName) :  
+BasicEventSelection :: BasicEventSelection (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName)
@@ -44,9 +45,10 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
 }
 
 
-EL::StatusCode BasicEventSelection :: configure () 
+EL::StatusCode BasicEventSelection :: configure ()
 {
   // read in user configuration from text file
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv *env = new TEnv(m_configName.c_str());
   if( !env ) {
     Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );
@@ -229,7 +231,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // doesn't get called if no events are processed.  So any objects
   // you create here won't be available in the output if you have no
   // input events.
-  
+
   Info("initialize()", "Initializing BasicEventSelection... \n");
 
   // get TEvent and TStore
@@ -265,7 +267,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_eventCounter   = 0;
 
   Info("initialize()", "BasicEventSelection succesfully initilaized!");
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -307,7 +309,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     return EL::StatusCode::FAILURE;
   }
 
-    
+
 
   // if data check if event passes GRL and even cleaning
   if( ! eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
@@ -332,7 +334,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
     m_cutflowHist ->Fill( m_cutflow_lar, 1 );
     m_cutflowHistW->Fill( m_cutflow_lar, mcEvtWeight);
-      
+
     if( (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
@@ -362,7 +364,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   const xAOD::VertexContainer* vertices = 0;
-  if ( !m_event->retrieve( vertices, m_vertexContainerName.Data() ).isSuccess() ){ 
+  if ( !m_event->retrieve( vertices, m_vertexContainerName.Data() ).isSuccess() ){
     Error("execute()", "Failed to retrieve %s container. Exiting.", m_vertexContainerName.Data() );
     return EL::StatusCode::FAILURE;
   }

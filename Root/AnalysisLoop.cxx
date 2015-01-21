@@ -13,6 +13,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(AnalysisLoop)
@@ -34,6 +35,7 @@ EL::StatusCode AnalysisLoop :: configure ()
   Info("AnalysisLoop::configure()", "User configuration read from : %s", m_configFile.c_str());
 
   // read in user configuration from text file
+  m_configFile = gSystem->ExpandPathName( m_configFile.c_str() );
   TEnv *env = new TEnv(m_configFile.c_str());
   if( !env ) {
     Error("AnalysisLoop()", "Failed to initialize reading of config file. Exiting." );
@@ -316,8 +318,8 @@ EL::StatusCode AnalysisLoop :: execute ()
 
 
   ++m_eventCounter;
-  if( passSelection() == EL::StatusCode::SUCCESS ) { 
-    m_numPassEvents++; 
+  if( passSelection() == EL::StatusCode::SUCCESS ) {
+    m_numPassEvents++;
   } else {
     wk()->skipEvent();
     return EL::StatusCode::SUCCESS;

@@ -11,6 +11,7 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 #include "TEnv.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
@@ -54,6 +55,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
 
 EL::StatusCode JetHistsAlgo :: configure ()
 {
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("JetHistsAlgo::configure()", "Failed to read config file!");
@@ -61,7 +63,7 @@ EL::StatusCode JetHistsAlgo :: configure ()
     return EL::StatusCode::FAILURE;
   }
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  m_detailStr               = config->GetValue("DetailStr",       ""); 
+  m_detailStr               = config->GetValue("DetailStr",       "");
   m_delimiter               = config->GetValue("Delimiter",       "/");
 
   config->Print();

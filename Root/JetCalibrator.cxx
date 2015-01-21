@@ -12,6 +12,7 @@
 #include "JetSelectorTools/JetCleaningTool.h"
 
 #include "TEnv.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)
@@ -20,7 +21,7 @@ ClassImp(JetCalibrator)
 JetCalibrator :: JetCalibrator () {
 }
 
-JetCalibrator :: JetCalibrator (std::string name, std::string configFile) : 
+JetCalibrator :: JetCalibrator (std::string name, std::string configFile) :
   Algorithm(),
   m_name(name),
   m_configFile(configFile),
@@ -33,15 +34,16 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configFile) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  
+
   Info("JetCalibrator()", "Calling constructor \n");
-  
+
 }
 
 EL::StatusCode  JetCalibrator :: configure ()
 {
   Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configFile.c_str());
-  
+
+  m_configFile = gSystem->ExpandPathName( m_configFile.c_str() );
   TEnv* config = new TEnv(m_configFile.c_str());
   if( !config ) {
     Error("configure()", "Failed to read config file!");
@@ -54,7 +56,7 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_isMC          = config->GetValue("IsMC"  , false );
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  
+
   // CONFIG parameters for JetCalibrationTool
   m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
   // when running data "_Insitu" is appended to this string
@@ -65,7 +67,7 @@ EL::StatusCode  JetCalibrator :: configure ()
 
   // CONFIG parameters for JetCleaningTool
   m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");
-  
+
   // shallow copies are made with this output container name
   m_outContainerName        = config->GetValue("OutputContainer", "");
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
@@ -76,7 +78,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     return EL::StatusCode::FAILURE;
   }
   // add more and add to jet selector
-  
+
   config->Print();
   Info("configure()", "JetCalibrator Interface succesfully configured! \n");
 
@@ -92,8 +94,8 @@ EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
   // put here could instead also go into the submission script.  The
   // sole advantage of putting it here is that it gets automatically
   // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you. 
-  
+  // job, which may or may not be of value to you.
+
   Info("setupJob()", "Calling setupJob \n");
 
   job.useXAOD ();
@@ -146,10 +148,10 @@ EL::StatusCode JetCalibrator :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing JetCalibrator Interface... \n");
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  
+
   Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
@@ -161,7 +163,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numObject     = 0;
 
   if( ! m_isMC ) m_calibSequence += "_Insitu";
-  
+
   m_isFullSim = true; // temporary: FIX THIS!
   if( m_isMC ){
     m_calibConfig = ( m_isFullSim ) ? m_calibConfigFullSim : m_calibConfigAFII;
@@ -171,25 +173,25 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   if(m_debug){
   std::cout << " Parameters to JetCalibrationTool() : "  << "\n"
-        << "\t m_inContainerName : "	     << m_inContainerName.Data()      <<  " of type " <<  typeid(m_inContainerName).name() << "\n" 
-        << "\t m_outContainerName: "	     << m_outContainerName.Data()     <<  " of type " <<  typeid(m_outContainerName).name() << "\n" 
-        << "\t m_outAuxContainerName: "      << m_outAuxContainerName.Data()  <<  " of type " <<  typeid(m_outAuxContainerName).name() << "\n" 
-        << "\t m_debug: "		     << m_debug 		      <<  " of type " <<  typeid(m_debug).name() <<  "\n"    
-        << "\t m_isMC: "		     << m_isMC  		      <<  " of type " <<  typeid(m_isMC).name() << "\n" 	 
-        << "\t m_jetAlgo  : "		     << m_jetAlgo.Data()	      <<  " of type " <<  typeid(m_jetAlgo).name() <<  "\n"	
-        << "\t m_calibConfig	      : "    << m_calibConfig.Data()	      <<  " of type " <<  typeid(m_calibConfig).name() << "\n" 
-        << "\t m_calibSequence        : "    << m_calibSequence.Data()        <<  " of type " <<  typeid(m_calibSequence).name() << "\n"	  
-        << "\t m_jetCalibCutLevel     : "    << m_jetCalibCutLevel	      <<  " of type " <<  typeid(m_jetCalibCutLevel).name() << "\n"   
-  	<< std::endl;  
+        << "\t m_inContainerName : "	     << m_inContainerName.Data()      <<  " of type " <<  typeid(m_inContainerName).name() << "\n"
+        << "\t m_outContainerName: "	     << m_outContainerName.Data()     <<  " of type " <<  typeid(m_outContainerName).name() << "\n"
+        << "\t m_outAuxContainerName: "      << m_outAuxContainerName.Data()  <<  " of type " <<  typeid(m_outAuxContainerName).name() << "\n"
+        << "\t m_debug: "		     << m_debug 		      <<  " of type " <<  typeid(m_debug).name() <<  "\n"
+        << "\t m_isMC: "		     << m_isMC  		      <<  " of type " <<  typeid(m_isMC).name() << "\n"
+        << "\t m_jetAlgo  : "		     << m_jetAlgo.Data()	      <<  " of type " <<  typeid(m_jetAlgo).name() <<  "\n"
+        << "\t m_calibConfig	      : "    << m_calibConfig.Data()	      <<  " of type " <<  typeid(m_calibConfig).name() << "\n"
+        << "\t m_calibSequence        : "    << m_calibSequence.Data()        <<  " of type " <<  typeid(m_calibSequence).name() << "\n"
+        << "\t m_jetCalibCutLevel     : "    << m_jetCalibCutLevel	      <<  " of type " <<  typeid(m_jetCalibCutLevel).name() << "\n"
+  	<< std::endl;
   }
- 
+
   // initialize jet calibration tool
-  m_jetCalibration = new JetCalibrationTool("JetCorrectionTool", 
+  m_jetCalibration = new JetCalibrationTool("JetCorrectionTool",
       m_jetAlgo.Data(),
       m_calibConfig.Data(),
       m_calibSequence.Data(),
       !m_isMC);
-  m_jetCalibration->msg().setLevel( MSG::ERROR); // VERBOSE, INFO, DEBUG    
+  m_jetCalibration->msg().setLevel( MSG::ERROR); // VERBOSE, INFO, DEBUG
   if( ! m_jetCalibration->initializeTool("JetCorrectionTool").isSuccess() ) {
     Error("initialize()", "Failed to properly initialize the JetCalibration Tool. %s. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
@@ -218,7 +220,7 @@ EL::StatusCode JetCalibrator :: execute ()
   // code will go.
 
   if(m_debug) Info("execute()", "Applying Jet Calibration and Cleaning... \n");
-  
+
   m_numEvent++;
 
   // get the collection from TEvent or TStore
@@ -274,9 +276,9 @@ EL::StatusCode JetCalibrator :: postExecute ()
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
-  
+
   if(m_debug) Info("postExecute()", "Calling postExecute \n");
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -297,7 +299,7 @@ EL::StatusCode JetCalibrator :: finalize ()
   Info("finalize()", "Deleting tool instances... \n");
 
   if(m_jetCalibration){
-    delete m_jetCalibration; 
+    delete m_jetCalibration;
     m_jetCalibration = 0;
   }
   if(m_jetCleaning){

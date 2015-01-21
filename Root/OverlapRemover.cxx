@@ -19,6 +19,7 @@
 
 // ROOT includes
 #include "TEnv.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(OverlapRemover)
@@ -27,7 +28,7 @@ ClassImp(OverlapRemover)
 OverlapRemover :: OverlapRemover () {
 }
 
-OverlapRemover :: OverlapRemover (std::string name, std::string configName) : 
+OverlapRemover :: OverlapRemover (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
@@ -39,15 +40,16 @@ OverlapRemover :: OverlapRemover (std::string name, std::string configName) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  
+
   Info("OverlapRemover()", "Calling constructor \n");
-  
+
 }
 
 EL::StatusCode  OverlapRemover :: configure ()
 {
   Info("configure()", "Configuing OverlapRemover Interface. User configuration read from : %s \n", m_configName.c_str());
-  
+
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("configure()", "Failed to read config file!");
@@ -58,7 +60,7 @@ EL::StatusCode  OverlapRemover :: configure ()
   // read debug flag from .config file
   m_debug         = config->GetValue("Debug" , false );
   // input container(s) to be read from TEvent or TStore
-  
+
   /* Muons */
   m_inContainerName_Muons         	     = config->GetValue("InputContainerMuons",  "");
   /* Electrons */
@@ -82,7 +84,7 @@ EL::StatusCode  OverlapRemover :: configure ()
     Error("configure()", "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
     return EL::StatusCode::FAILURE;
   }
-  
+
   config->Print();
   Info("configure()", "OverlapRemover Interface succesfully configured! \n");
 
@@ -98,8 +100,8 @@ EL::StatusCode OverlapRemover :: setupJob (EL::Job& job)
   // put here could instead also go into the submission script.  The
   // sole advantage of putting it here is that it gets automatically
   // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you. 
-  
+  // job, which may or may not be of value to you.
+
   Info("setupJob()", "Calling setupJob \n");
 
   job.useXAOD ();
@@ -152,10 +154,10 @@ EL::StatusCode OverlapRemover :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing OverlapRemover Interface... \n");
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  
+
   Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
 
   if ( configure() == EL::StatusCode::FAILURE ) {
@@ -165,13 +167,13 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   m_numEvent      = 0;
   m_numObject     = 0;
- 
+
   // initialize overlap removal tool
   m_overlapRemovalTool = new OverlapRemovalTool("OverlapRemovalTool");
-  m_overlapRemovalTool->msg().setLevel( MSG::ERROR); // VERBOSE, INFO, DEBUG   
-  // set object decoration 
+  m_overlapRemovalTool->msg().setLevel( MSG::ERROR); // VERBOSE, INFO, DEBUG
+  // set object decoration
   m_overlapRemovalTool->setProperty("InputLabel",   "");         // second string is 'selected' (default : use flag you already chose!) if passing only selected objects to the OR tool, otherwise passes all objects
-  m_overlapRemovalTool->setProperty("OverlapLabel", "overlaps"); // decorates objects with 'overlaps' boolean if they overlap (based on harmonization task force predefined order) 
+  m_overlapRemovalTool->setProperty("OverlapLabel", "overlaps"); // decorates objects with 'overlaps' boolean if they overlap (based on harmonization task force predefined order)
   if( ! m_overlapRemovalTool->initialize().isSuccess() ) {
     Error("initialize()", "Failed to properly initialize the OverlapRemovalTool. %s. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
@@ -191,25 +193,25 @@ EL::StatusCode OverlapRemover :: execute ()
   // code will go.
 
   if(m_debug) Info("execute()", "Applying Overlap Removal... \n");
-  
+
   m_numEvent++;
 
   // get the collections from TEvent or TStore
-  
+
   /*const*/ xAOD::MuonContainer* inMuons = 0;
   if ( !m_event->retrieve( inMuons , m_inContainerName_Muons.Data() ).isSuccess() ){
     if ( !m_store->retrieve( inMuons , m_inContainerName_Muons.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName_Muons.Data() );
       return EL::StatusCode::FAILURE;
     }
-  }  
+  }
   /*const*/ xAOD::ElectronContainer* inElectrons = 0;
   if ( !m_event->retrieve( inElectrons , m_inContainerName_Electrons.Data() ).isSuccess() ){
     if ( !m_store->retrieve( inElectrons , m_inContainerName_Electrons.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName_Electrons.Data() );
       return EL::StatusCode::FAILURE;
     }
-  }  
+  }
   /*const*/ xAOD::JetContainer* inJets = 0;
   if ( !m_event->retrieve( inJets , m_inContainerName_Jets.Data() ).isSuccess() ){
     if ( !m_store->retrieve( inJets , m_inContainerName_Jets.Data() ).isSuccess() ){
@@ -236,14 +238,14 @@ EL::StatusCode OverlapRemover :: execute ()
         return EL::StatusCode::FAILURE;
       }
     }
-  }  
+  }
 
   // remove overlaps
   /*
   =======================================================
   https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/AnalysisCommon/AssociationUtils/trunk/doc/README.rst
   ========================================================
-  */  
+  */
   m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons);
 
   // debug : check that something has been done
@@ -261,7 +263,7 @@ EL::StatusCode OverlapRemover :: execute ()
     }
     std::cout << " " << std::endl;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -272,9 +274,9 @@ EL::StatusCode OverlapRemover :: postExecute ()
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
-  
+
   if(m_debug) Info("postExecute()", "Calling postExecute \n");
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -295,7 +297,7 @@ EL::StatusCode OverlapRemover :: finalize ()
   Info("finalize()", "Deleting tool instances... \n");
 
   if(m_overlapRemovalTool){
-    delete m_overlapRemovalTool; 
+    delete m_overlapRemovalTool;
     m_overlapRemovalTool = 0;
   }
 

@@ -9,6 +9,7 @@
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
 #include "TEnv.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
@@ -50,6 +51,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 
 EL::StatusCode TrackHistsAlgo :: configure ()
 {
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("TrackHistsAlgo::setupJob()", "Failed to read config file!");

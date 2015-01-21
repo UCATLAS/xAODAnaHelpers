@@ -14,6 +14,7 @@
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
 
 #include "TEnv.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonCalibrator)
@@ -22,7 +23,7 @@ ClassImp(MuonCalibrator)
 MuonCalibrator :: MuonCalibrator () {
 }
 
-MuonCalibrator :: MuonCalibrator (std::string name, std::string configName) : 
+MuonCalibrator :: MuonCalibrator (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
@@ -34,15 +35,16 @@ MuonCalibrator :: MuonCalibrator (std::string name, std::string configName) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  
+
   Info("MuonCalibrator()", "Calling constructor \n");
-  
+
 }
 
 EL::StatusCode  MuonCalibrator :: configure ()
 {
   Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
-  
+
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("configure()", "Failed to read config file!");
@@ -64,7 +66,7 @@ EL::StatusCode  MuonCalibrator :: configure ()
     return EL::StatusCode::FAILURE;
   }
   // add more and add to Muon selector
-  
+
   config->Print();
   Info("configure()", "MuonCalibrator Interface succesfully configured! \n");
 
@@ -80,8 +82,8 @@ EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)
   // put here could instead also go into the submission script.  The
   // sole advantage of putting it here is that it gets automatically
   // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you. 
-  
+  // job, which may or may not be of value to you.
+
   Info("setupJob()", "Calling setupJob \n");
 
   job.useXAOD ();
@@ -134,10 +136,10 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing MuonCalibrator Interface... \n");
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  
+
   Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
@@ -170,7 +172,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   // code will go.
 
   if(m_debug) Info("execute()", "Applying Muon Calibration and Cleaning... \n");
-  
+
   m_numEvent++;
 
   const xAOD::EventInfo* eventInfo = 0;
@@ -187,13 +189,13 @@ EL::StatusCode MuonCalibrator :: execute ()
       return EL::StatusCode::FAILURE;
     }
   }
-  
+
   if(m_debug){
     for( auto muon_itr = inMuons->begin(); muon_itr != inMuons->end(); ++muon_itr ){
-      Info("execute()", "  original muon pt = %.2f GeV", ((*muon_itr)->pt() * 1e-3));  
+      Info("execute()", "  original muon pt = %.2f GeV", ((*muon_itr)->pt() * 1e-3));
     }
   }
-  
+
   // create shallow copy
   std::pair< xAOD::MuonContainer*, xAOD::ShallowAuxContainer* > calibMuons = xAOD::shallowCopyContainer( *inMuons );
 
@@ -207,7 +209,7 @@ EL::StatusCode MuonCalibrator :: execute ()
         // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
         Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
       }
-      if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", ((*muonSC_itr)->pt() * 1e-3));  
+      if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", ((*muonSC_itr)->pt() * 1e-3));
     } // end check is MC
   } // end for loop over shallow copied muons
 
@@ -235,9 +237,9 @@ EL::StatusCode MuonCalibrator :: postExecute ()
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
-  
+
   if(m_debug) Info("postExecute()", "Calling postExecute \n");
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -256,12 +258,12 @@ EL::StatusCode MuonCalibrator :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "Deleting tool instances... \n");
-  
+
   if(m_muonCalibrationAndSmearingTool){
     delete m_muonCalibrationAndSmearingTool;
     m_muonCalibrationAndSmearingTool = 0;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

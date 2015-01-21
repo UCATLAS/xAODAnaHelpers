@@ -10,6 +10,7 @@
 #include "JetResolution/JERSmearingTool.h"
 
 #include "TEnv.h"
+#include "TSystem.h"
 
 
 // this is needed to distribute the algorithm to the workers
@@ -45,6 +46,7 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "JERShifter" ).ignore(); // call before opening first file
 
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("JERShifter::setupJob()", "Failed to read config file!");

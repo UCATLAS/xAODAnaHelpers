@@ -1,4 +1,4 @@
-#include <iostream> 
+#include <iostream>
 #include <typeinfo>
 
 #include <EventLoop/Job.h>
@@ -19,6 +19,7 @@
 // ROOT include(s):
 #include "TEnv.h"
 #include "TFile.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
@@ -51,6 +52,7 @@ EL::StatusCode  MuonSelector :: configure ()
 {
   Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("setupJob()", "Failed to read config file!");
@@ -64,7 +66,7 @@ EL::StatusCode  MuonSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName  = config->GetValue("InputContainer",  "");
-  
+
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
   // additional functionality : create output container of selected objects
@@ -82,30 +84,30 @@ EL::StatusCode  MuonSelector :: configure ()
 
   // configurable cuts
   m_muonQuality             = config->GetValue("MuonQuality", "Medium"); // muon quality as defined by xAOD::MuonQuality enum {Tight, Medium, Loose, VeryLoose}, corresponding to 0, 1, 2 and 3 (default is 1 - medium quality).
-  if( m_muonQuality != "Tight"  && 
-      m_muonQuality != "Medium" && 
-      m_muonQuality != "Loose"  && 
+  if( m_muonQuality != "Tight"  &&
+      m_muonQuality != "Medium" &&
+      m_muonQuality != "Loose"  &&
       m_muonQuality != "VeryLoose" ) {
     Error("configure()", "Unknown muon quality requested %s!",m_muonQuality.Data());
     return EL::StatusCode::FAILURE;
   }
   m_muonType             = config->GetValue("MuonType", ""); // muon type as defined by xAOD::Muon::MuonType enum (0: Combined, 1:MuonStandAlone ,2:SegmentTagged, 3:CaloTagged, 4:SiliconAssociatedForwardMuon  - default is empty string = no type).
-  if( m_muonType != ""               && 
-      m_muonType != "Combined"       && 
+  if( m_muonType != ""               &&
+      m_muonType != "Combined"       &&
       m_muonType != "MuonStandAlone" &&
-      m_muonType != "SegmentTagged"  && 
-      m_muonType != "CaloTagged"     &&      
+      m_muonType != "SegmentTagged"  &&
+      m_muonType != "CaloTagged"     &&
       m_muonType != "SiliconAssociatedForwardMuon" ) {
     Error("configure()", "Unknown muon type requested %s!",m_muonType.Data());
     return EL::StatusCode::FAILURE;
-  }  
+  }
   m_pass_max                = config->GetValue("PassMax", -1);
   m_pass_min                = config->GetValue("PassMin", -1);
   m_pT_max                  = config->GetValue("pTMax",  1e8);
   m_pT_min                  = config->GetValue("pTMin",  1e8);
   m_eta_max                 = config->GetValue("etaMax", 1e8);
-  m_d0sig_max     	    = config->GetValue("d0sigMax", 4.0);  
-  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1.5);		      
+  m_d0sig_max     	    = config->GetValue("d0sigMax", 4.0);
+  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1.5);
 
   if( m_inContainerName.Length() == 0 ) {
     Error("configure()", "InputContainer is empty!");
@@ -198,7 +200,7 @@ EL::StatusCode MuonSelector :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing MuonSelector Interface... \n");
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -219,27 +221,27 @@ EL::StatusCode MuonSelector :: initialize ()
 
   if(m_debug){
     std::cout << " Parameters to MuonSelector() : "  << "\n"
-	  << "\t m_inContainerName : "         << m_inContainerName.Data()   <<  " of type " <<  typeid(m_inContainerName).name() << "\n" 
-	  << "\t m_decorateSelectedObjects : " << m_decorateSelectedObjects  <<  " of type " <<  typeid(m_decorateSelectedObjects).name() << "\n" 
-	  << "\t m_createSelectedContainer : " << m_createSelectedContainer  <<  " of type " <<  typeid(m_createSelectedContainer).name() <<  "\n" 
-	  << "\t m_outContainerName: "         << m_outContainerName.Data()  <<  " of type " <<  typeid(m_outContainerName).name() << "\n" 
-	  << "\t m_debug: "		       << m_debug	             <<  " of type " <<  typeid(m_debug).name() <<  "\n"    
-	  << "\t m_nToProcess: "	       << m_nToProcess  	     <<  " of type " <<  typeid(m_nToProcess).name() << "\n"	   
-	  << "\t m_muonQuality  : "	       << m_muonQuality.Data() 	     <<  " of type " <<  typeid(m_muonQuality).name() <<  "\n"	  
-	  << "\t m_pass_max	: "	       << m_pass_max		     <<  " of type " <<  typeid(m_pass_max).name() << "\n" 
-	  << "\t m_pass_min	: "	       << m_pass_min		     <<  " of type " <<  typeid(m_pass_min).name() << "\n" 
-	  << "\t m_pT_max	: "	       << m_pT_max		     <<  " of type " <<  typeid(m_pT_max).name() << "\n"  	 
-	  << "\t m_pT_min	: "	       << m_pT_min		     <<  " of type " <<  typeid(m_pT_min).name() << "\n"   
-	  << "\t m_eta_max	: "	       << m_eta_max		     <<  " of type " <<  typeid(m_eta_max).name() << "\n"  
-          << std::endl;  
+	  << "\t m_inContainerName : "         << m_inContainerName.Data()   <<  " of type " <<  typeid(m_inContainerName).name() << "\n"
+	  << "\t m_decorateSelectedObjects : " << m_decorateSelectedObjects  <<  " of type " <<  typeid(m_decorateSelectedObjects).name() << "\n"
+	  << "\t m_createSelectedContainer : " << m_createSelectedContainer  <<  " of type " <<  typeid(m_createSelectedContainer).name() <<  "\n"
+	  << "\t m_outContainerName: "         << m_outContainerName.Data()  <<  " of type " <<  typeid(m_outContainerName).name() << "\n"
+	  << "\t m_debug: "		       << m_debug	             <<  " of type " <<  typeid(m_debug).name() <<  "\n"
+	  << "\t m_nToProcess: "	       << m_nToProcess  	     <<  " of type " <<  typeid(m_nToProcess).name() << "\n"
+	  << "\t m_muonQuality  : "	       << m_muonQuality.Data() 	     <<  " of type " <<  typeid(m_muonQuality).name() <<  "\n"
+	  << "\t m_pass_max	: "	       << m_pass_max		     <<  " of type " <<  typeid(m_pass_max).name() << "\n"
+	  << "\t m_pass_min	: "	       << m_pass_min		     <<  " of type " <<  typeid(m_pass_min).name() << "\n"
+	  << "\t m_pT_max	: "	       << m_pT_max		     <<  " of type " <<  typeid(m_pT_max).name() << "\n"
+	  << "\t m_pT_min	: "	       << m_pT_min		     <<  " of type " <<  typeid(m_pT_min).name() << "\n"
+	  << "\t m_eta_max	: "	       << m_eta_max		     <<  " of type " <<  typeid(m_eta_max).name() << "\n"
+          << std::endl;
   }
 
   // initialise  muon Selector Tool
   m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelection");
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
-  
+
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
-  
+
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
   m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max) ); // default 2.5
   m_muonSelectionTool->setProperty("MuQuality", static_cast<int>(muQualityParser.parseEnum(m_muonQuality))   ); // why is not ok to pass the enum??
@@ -250,7 +252,7 @@ EL::StatusCode MuonSelector :: initialize ()
   }
 
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -268,7 +270,7 @@ EL::StatusCode MuonSelector :: execute ()
   float mcEvtWeight(1); // FIXME - set to something from eventInfo
 
   m_numEvent++;
-  
+
   // get the collection from TEvent or TStore
   xAOD::MuonContainer* inMuons = 0;
   if ( !m_event->retrieve( inMuons , m_inContainerName.Data() ).isSuccess() ){
@@ -277,7 +279,7 @@ EL::StatusCode MuonSelector :: execute ()
       return EL::StatusCode::FAILURE;
     }
   }
-  
+
   // get primary vertex
   const xAOD::VertexContainer *vertices = 0;
   if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
@@ -292,8 +294,8 @@ EL::StatusCode MuonSelector :: execute ()
 
   // create output container (if requested) - deep copy
   xAOD::MuonContainer* selectedMuons = 0;
-  if(m_createSelectedContainer) { 
-    selectedMuons = new xAOD::MuonContainer(SG::VIEW_ELEMENTS); 
+  if(m_createSelectedContainer) {
+    selectedMuons = new xAOD::MuonContainer(SG::VIEW_ELEMENTS);
   }
 
   xAOD::MuonContainer::iterator muon_itr = inMuons->begin();
@@ -302,7 +304,7 @@ EL::StatusCode MuonSelector :: execute ()
   for( ; muon_itr != muon_end; ++muon_itr ){
 
     // if only looking at a subset of muons make sure all are decorrated
-    if( m_nToProcess > 0 && nObj >= m_nToProcess ) { 
+    if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
         (*muon_itr)->auxdecor< int >( "passSel" ) = -1;
       } else {
@@ -351,10 +353,10 @@ EL::StatusCode MuonSelector :: execute ()
     m_cutflowHist ->Fill( m_cutflow_bin, 1 );
     m_cutflowHistW->Fill( m_cutflow_bin, mcEvtWeight);
   }
-  
+
   // shall we delete new container passed to TStore?
   //delete selectedMuons;
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -387,10 +389,10 @@ EL::StatusCode MuonSelector :: finalize ()
   Info("finalize()", "Deleting tool instances... \n");
 
   if(m_muonSelectionTool){
-    delete m_muonSelectionTool; 
+    delete m_muonSelectionTool;
     m_muonSelectionTool = 0;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -426,25 +428,25 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   // pT max
   if( m_pT_max != 1e8 ) {
-    if(  muon->pt() > m_pT_max ) { 
+    if(  muon->pt() > m_pT_max ) {
       if (m_debug) std::cout << "Muon failed pT max cut." << std::endl;
-      return 0; 
+      return 0;
     }
   }
   // pT min
   if( m_pT_min != 1e8 ) {
     if( muon->pt() < m_pT_min ) {
       if (m_debug) std::cout << "Muon failed pT min cut." << std::endl;
-      return 0; 
+      return 0;
     }
   }
   // |eta| max
   if( m_eta_max != 1e8 ) {
-    if( fabs(muon->eta()) > m_eta_max ) { 
+    if( fabs(muon->eta()) > m_eta_max ) {
       if (m_debug) std::cout << "Muon failed |eta| max cut." << std::endl;
-      return 0; 
-    }  
-  }  
+      return 0;
+    }
+  }
   // d0sig cut
   if (!( d0_significance < m_d0sig_max ) ) {
       if (m_debug) std::cout << "Muon failed d0 significance cut." << std::endl;
@@ -456,7 +458,7 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
   }
 
-  // retireve muon quality 
+  // retireve muon quality
   xAOD::Muon::Quality my_quality = m_muonSelectionTool->getQuality( *muon );
   if(m_debug) std::cout << "Muon quality " << static_cast<int>(my_quality) << std::endl;
   /*
@@ -481,7 +483,7 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-  
+
   // isolation MAKE CONFIGURABLE
   float ptcone20 = -999., etcone20 = -999.;
   if ( muon->isolation(ptcone20, xAOD::Iso::ptcone20) &&  muon->isolation(etcone20, xAOD::Iso::etcone20) ){
@@ -492,13 +494,13 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-  
+
   // this will accept the muon based on the settings at initialization
-  if ( ! m_muonSelectionTool->accept( *muon ) ){ 
+  if ( ! m_muonSelectionTool->accept( *muon ) ){
     if (m_debug) std::cout << "Muon failed requirements of MuonSelectionTool." << std::endl;
-    return 0;  
-  } 
-  
+    return 0;
+  }
+
   return 1;
 }
 

@@ -14,6 +14,7 @@
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
 
 #include "TEnv.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronCalibrator)
@@ -22,7 +23,7 @@ ClassImp(ElectronCalibrator)
 ElectronCalibrator :: ElectronCalibrator () {
 }
 
-ElectronCalibrator :: ElectronCalibrator (std::string name, std::string configName) : 
+ElectronCalibrator :: ElectronCalibrator (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
@@ -34,15 +35,16 @@ ElectronCalibrator :: ElectronCalibrator (std::string name, std::string configNa
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  
+
   Info("ElectronCalibrator()", "Calling constructor \n");
-  
+
 }
 
 EL::StatusCode  ElectronCalibrator :: configure ()
 {
   Info("configure()", "Configuing ElectronCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
-  
+
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("configure()", "Failed to read config file!");
@@ -63,7 +65,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-  
+
   config->Print();
   Info("configure()", "ElectronCalibrator Interface succesfully configured! \n");
 
@@ -79,8 +81,8 @@ EL::StatusCode ElectronCalibrator :: setupJob (EL::Job& job)
   // put here could instead also go into the submission script.  The
   // sole advantage of putting it here is that it gets automatically
   // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you. 
-  
+  // job, which may or may not be of value to you.
+
   Info("setupJob()", "Calling setupJob \n");
 
   job.useXAOD ();
@@ -133,10 +135,10 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing ElectronCalibrator Interface... \n");
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  
+
   Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
@@ -150,8 +152,8 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // initialize the Egamma calibration and smearing tool
   m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool( "EgammaCalibrationAndSmearingTool" );
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-  m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", "es2012c"); 
-  m_EgammaCalibrationAndSmearingTool->setProperty("ResolutionType", "SigmaEff90");   
+  m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", "es2012c");
+  m_EgammaCalibrationAndSmearingTool->setProperty("ResolutionType", "SigmaEff90");
   if (! m_EgammaCalibrationAndSmearingTool->initialize().isSuccess() ){
     Error("initialize()", "Failed to properly initialize the EgammaCalibrationAndSmearingTool. Exiting." );
     return EL::StatusCode::FAILURE;
@@ -171,7 +173,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // code will go.
 
   if(m_debug) Info("execute()", "Applying Electron Calibration and Cleaning... \n");
-  
+
   m_numEvent++;
 
   const xAOD::EventInfo* eventInfo = 0;
@@ -188,20 +190,20 @@ EL::StatusCode ElectronCalibrator :: execute ()
       return EL::StatusCode::FAILURE;
     }
   }
-  
+
   if(m_debug){
     for( auto Electron_itr = inElectrons->begin(); Electron_itr != inElectrons->end(); ++Electron_itr ){
-      Info("execute()", "  original Electron pt = %.2f GeV", ((*Electron_itr)->pt() * 1e-3));  
+      Info("execute()", "  original Electron pt = %.2f GeV", ((*Electron_itr)->pt() * 1e-3));
     }
   }
-  
+
   // before applying calibration
-  m_EgammaCalibrationAndSmearingTool->setDefaultConfiguration(eventInfo); 
-  
+  m_EgammaCalibrationAndSmearingTool->setDefaultConfiguration(eventInfo);
+
   // create shallow copy
   std::pair< xAOD::ElectronContainer*, xAOD::ShallowAuxContainer* > calibElectrons = xAOD::shallowCopyContainer( *inElectrons );
 
-  // calibrate 
+  // calibrate
   xAOD::ElectronContainer::iterator electronSC_itr = (calibElectrons.first)->begin();
   xAOD::ElectronContainer::iterator electronSC_end = (calibElectrons.first)->end();
   for( ; electronSC_itr != electronSC_end; ++electronSC_itr ) {
@@ -211,7 +213,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
      //if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
      // apply correction
      m_EgammaCalibrationAndSmearingTool->applyCorrection(**electronSC_itr, eventInfo);
-     if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", ((*electronSC_itr)->pt() * 1e-3));  
+     if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", ((*electronSC_itr)->pt() * 1e-3));
      //} // end check is MC
   } // end for loop over shallow copied Electrons
 
@@ -242,9 +244,9 @@ EL::StatusCode ElectronCalibrator :: postExecute ()
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
-  
+
   if(m_debug) Info("postExecute()", "Calling postExecute \n");
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -263,12 +265,12 @@ EL::StatusCode ElectronCalibrator :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "Deleting tool instances... \n");
-  
+
   if(m_EgammaCalibrationAndSmearingTool){
     delete m_EgammaCalibrationAndSmearingTool;
     m_EgammaCalibrationAndSmearingTool = 0;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

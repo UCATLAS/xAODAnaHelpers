@@ -14,7 +14,7 @@ class JetHistsAlgo : public EL::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  
+
   std::string m_name;
   std::string m_configName;
 

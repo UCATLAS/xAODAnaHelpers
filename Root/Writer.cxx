@@ -4,12 +4,13 @@
 #include <xAODAnaHelpers/Writer.h>
 #include <xAODAnaHelpers/util.h>
 
-#include "TEnv.h"
-
 #include "EventLoop/OutputStream.h"
 #include "xAODCore/ShallowCopy.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"
+
+#include "TEnv.h"
+#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(Writer)
@@ -19,7 +20,7 @@ ClassImp(Writer)
 Writer :: Writer () {
 }
 
-Writer :: Writer (std::string name, std::string configName) : 
+Writer :: Writer (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName)
@@ -47,6 +48,7 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "Writer" ).ignore(); // call before opening first file
 
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("Writer::setupJob()", "Failed to read config file!");
@@ -63,7 +65,7 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   m_electronContainerNames  = SplitString( m_electronContainerNamesStr, ',' );
   m_muonContainerNames      = SplitString( m_muonContainerNamesStr,     ',' );
 
-  if ( m_outputLabel.Length() == 0 ) { 
+  if ( m_outputLabel.Length() == 0 ) {
     Error("Writer::setupJob()", "No OutputLabel specified!");
     return EL::StatusCode::FAILURE;
   }
@@ -155,7 +157,7 @@ EL::StatusCode Writer :: execute ()
     const xAOD::JetContainer* inJetsConst = 0;
     // look in event
     if ( m_event->retrieve( inJetsConst , contName.Data() ).isSuccess() ){
-      // without modifying the contents of it: 
+      // without modifying the contents of it:
       std::cout << " Write a collection " << contName << " " << inJetsConst->size() << std::endl;
       m_event->copy( contName.Data() );
       std::cout << " Wrote a collection " << contName << std::endl;
@@ -181,13 +183,13 @@ EL::StatusCode Writer :: execute ()
       // get pointer to associated aux container
       xAOD::JetAuxContainer* inJetsAux = 0;
       std::cout << " Wrote a aux store " << contName << std::endl;
-      TString auxName( contName + "Aux." ); 
+      TString auxName( contName + "Aux." );
       if ( m_store->retrieve( inJetsAux , auxName.Data() ).isSuccess() ){
         Error(m_name.c_str() ,"Could not get Aux data for %s", contName.Data());
         return EL::StatusCode::FAILURE;
       }
       std::cout << " Wrote a aux store " << contName << std::endl;
-          
+
       if( ! m_event->record( inJetsAux, auxName.Data() ) ) {
         Error(m_name.c_str() ,"Could not record aux store for %s", contName.Data());
         return EL::StatusCode::FAILURE;
@@ -198,7 +200,7 @@ EL::StatusCode Writer :: execute ()
       Error(m_name.c_str() ,"Could not find %s", contName.Data());
       return EL::StatusCode::FAILURE;
     }
-  } 
+  }
 
   // add similar loop for electron and muons
 
@@ -230,7 +232,7 @@ EL::StatusCode Writer :: finalize ()
   // submission node after all your histogram outputs have been
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
-  
+
   // finalize and close our output xAOD file ( and write MetaData tree )
   TFile * file = wk()->getOutputFile(m_outputLabel.Data());
   if( ! m_event->finishWritingTo( file ).isSuccess() ) {
