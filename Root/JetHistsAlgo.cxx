@@ -7,18 +7,18 @@
 #include "xAODEventInfo/EventInfo.h"
 
 #include <xAODAnaHelpers/JetHists.h>
-#include <xAODAnaHelpers/JetPlots.h>
+#include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 #include "TEnv.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(JetPlots)
+ClassImp(JetHistsAlgo)
 
-JetPlots :: JetPlots () {
+JetHistsAlgo :: JetHistsAlgo () {
 }
 
-JetPlots :: JetPlots (std::string name, std::string configName) :
+JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
@@ -26,15 +26,15 @@ JetPlots :: JetPlots (std::string name, std::string configName) :
 {
 }
 
-EL::StatusCode JetPlots :: setupJob (EL::Job& job)
+EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
-  xAOD::Init("JetPlots").ignore();
+  xAOD::Init("JetHistsAlgo").ignore();
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetPlots :: histInitialize ()
+EL::StatusCode JetHistsAlgo :: histInitialize ()
 {
 
   Error("histInitialize()", "%s", m_name.c_str() );
@@ -52,12 +52,12 @@ EL::StatusCode JetPlots :: histInitialize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetPlots :: configure ()
+EL::StatusCode JetHistsAlgo :: configure ()
 {
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
-    Error("JetPlots::configure()", "Failed to read config file!");
-    Error("JetPlots::configure()", "config name : %s",m_configName.c_str());
+    Error("JetHistsAlgo::configure()", "Failed to read config file!");
+    Error("JetHistsAlgo::configure()", "config name : %s",m_configName.c_str());
     return EL::StatusCode::FAILURE;
   }
   m_inContainerName         = config->GetValue("InputContainer",  "");
@@ -65,23 +65,23 @@ EL::StatusCode JetPlots :: configure ()
   m_delimiter               = config->GetValue("Delimiter",       "/");
 
   config->Print();
-  Info("configure()", "JetPlots Interface succesfully configured! \n");
+  Info("configure()", "JetHistsAlgo Interface succesfully configured! \n");
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetPlots :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode JetPlots :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+EL::StatusCode JetHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode JetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode JetPlots :: initialize ()
+EL::StatusCode JetHistsAlgo :: initialize ()
 {
-  Info("initialize()", "JetPlots");
+  Info("initialize()", "JetHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetPlots :: execute ()
+EL::StatusCode JetHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo = 0;
   if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
@@ -97,7 +97,7 @@ EL::StatusCode JetPlots :: execute ()
   xAOD::JetContainer* jets = 0;
   if ( !m_event->retrieve( jets, m_inContainerName ).isSuccess() ){
     if ( !m_store->retrieve( jets, m_inContainerName ).isSuccess() ){
-      Error("JetPlots::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
+      Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
   }
@@ -125,10 +125,10 @@ EL::StatusCode JetPlots :: execute ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetPlots :: postExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode JetPlots :: finalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode JetHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode JetHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode JetPlots :: histFinalize () {
+EL::StatusCode JetHistsAlgo :: histFinalize () {
   // clean up memory
   if(m_plots){
     delete m_plots;

@@ -1,5 +1,5 @@
-#ifndef xAODAnaHelpers_JetPlots_H
-#define xAODAnaHelpers_JetPlots_H
+#ifndef xAODAnaHelpers_JetHistsAlgo_H
+#define xAODAnaHelpers_JetHistsAlgo_H
 
 #include <EventLoop/Algorithm.h>
 // Infrastructure include(s):
@@ -9,7 +9,7 @@
 
 class JetHists;
 
-class JetPlots : public EL::Algorithm
+class JetHistsAlgo : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
@@ -43,8 +43,8 @@ public:
 
 
   // this is a standard constructor
-  JetPlots ();
-  JetPlots (std::string name, std::string configName);
+  JetHistsAlgo ();
+  JetHistsAlgo (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -61,7 +61,7 @@ public:
   virtual EL::StatusCode configure ();
 
   // this is needed to distribute the algorithm to the workers
-  ClassDef(JetPlots, 1);
+  ClassDef(JetHistsAlgo, 1);
 };
 
 #endif

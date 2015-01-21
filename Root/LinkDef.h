@@ -11,8 +11,8 @@
 #include <xAODAnaHelpers/MuonCalibrator.h>
 
 /* Plotting Tools */
-#include <xAODAnaHelpers/JetPlots.h>
-#include <xAODAnaHelpers/TrackPlots.h>
+#include <xAODAnaHelpers/JetHistsAlgo.h>
+#include <xAODAnaHelpers/TrackHistsAlgo.h>
 
 
 /* Other */
@@ -38,8 +38,8 @@
 #pragma link C++ class JetCalibrator+;
 #pragma link C++ class MuonCalibrator+;
 
-#pragma link C++ class JetPlots+;
-#pragma link C++ class TrackPlots+;
+#pragma link C++ class JetHistsAlgo+;
+#pragma link C++ class TrackHistsAlgo+;
 
 #pragma link C++ class AnalysisLoop+;
 #pragma link C++ class JERShifter+;

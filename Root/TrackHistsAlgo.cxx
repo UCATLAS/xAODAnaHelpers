@@ -6,14 +6,14 @@
 #include "xAODEventInfo/EventInfo.h"
 
 #include <xAODAnaHelpers/TrackHists.h>
-#include <xAODAnaHelpers/TrackPlots.h>
+#include <xAODAnaHelpers/TrackHistsAlgo.h>
 
 #include "TEnv.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TrackPlots)
+ClassImp(TrackHistsAlgo)
 
-TrackPlots :: TrackPlots (std::string name, std::string configName) :
+TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
@@ -21,17 +21,17 @@ TrackPlots :: TrackPlots (std::string name, std::string configName) :
 {
 }
 
-EL::StatusCode TrackPlots :: setupJob (EL::Job& job)
+EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
 
   // let's initialize the algorithm to use the xAODRootAccess package
-  xAOD::Init("TrackPlots").ignore(); // call before opening first file
+  xAOD::Init("TrackHistsAlgo").ignore(); // call before opening first file
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackPlots :: histInitialize ()
+EL::StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
   Error("histInitialize()", "%s", m_name.c_str() );
@@ -48,12 +48,12 @@ EL::StatusCode TrackPlots :: histInitialize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackPlots :: configure ()
+EL::StatusCode TrackHistsAlgo :: configure ()
 {
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
-    Error("TrackPlots::setupJob()", "Failed to read config file!");
-    Error("TrackPlots::setupJob()", "config name : %s",m_configName.c_str());
+    Error("TrackHistsAlgo::setupJob()", "Failed to read config file!");
+    Error("TrackHistsAlgo::setupJob()", "config name : %s",m_configName.c_str());
     return EL::StatusCode::FAILURE;
   }
   m_inContainerName         = config->GetValue("InputContainer",  "");
@@ -61,23 +61,23 @@ EL::StatusCode TrackPlots :: configure ()
   m_delimiter               = config->GetValue("Delimiter",      "/");
 
   config->Print();
-  Info("configure()", "JetPlots Interface succesfully configured! \n");
+  Info("configure()", "JetHistsAlgo Interface succesfully configured! \n");
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackPlots :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TrackPlots :: changeInput (bool firstFile) { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackHistsAlgo :: changeInput (bool firstFile) { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode TrackPlots :: initialize ()
+EL::StatusCode TrackHistsAlgo :: initialize ()
 {
-  Info("initialize()", "TrackPlots");
+  Info("initialize()", "TrackHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackPlots :: execute ()
+EL::StatusCode TrackHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo = 0;
   if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
@@ -93,7 +93,7 @@ EL::StatusCode TrackPlots :: execute ()
   const xAOD::TrackParticleContainer* tracks = 0;
   if ( !m_event->retrieve( tracks, m_inContainerName ).isSuccess() ){
     if ( !m_store->retrieve( tracks, m_inContainerName ).isSuccess() ){
-      Error("TrackPlots::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
+      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
   }
@@ -103,9 +103,9 @@ EL::StatusCode TrackPlots :: execute ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackPlots :: postExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TrackPlots :: finalize () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TrackPlots :: histFinalize ()
+EL::StatusCode TrackHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackHistsAlgo :: histFinalize ()
 {
   // clean up memory
   if(m_plots){

@@ -1,5 +1,5 @@
-#ifndef xAODAnaHelpers_TrackPlots_H
-#define xAODAnaHelpers_TrackPlots_H
+#ifndef xAODAnaHelpers_TrackHistsAlgo_H
+#define xAODAnaHelpers_TrackHistsAlgo_H
 
 #include <EventLoop/Algorithm.h>
 // Infrastructure include(s):
@@ -9,7 +9,7 @@
 
 class TrackHists;
 
-class TrackPlots : public EL::Algorithm
+class TrackHistsAlgo : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
@@ -43,7 +43,7 @@ public:
 
 
   // this is a standard constructor
-  TrackPlots (std::string name, std::string configName);
+  TrackHistsAlgo (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -60,7 +60,7 @@ public:
   virtual EL::StatusCode configure ();
 
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TrackPlots, 1);
+  ClassDef(TrackHistsAlgo, 1);
 };
 
 #endif
