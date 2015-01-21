@@ -148,7 +148,7 @@ EL::StatusCode JetSelector :: fileExecute ()
 
 
 
-EL::StatusCode JetSelector :: changeInput (bool firstFile)
+EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using

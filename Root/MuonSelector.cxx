@@ -173,7 +173,7 @@ EL::StatusCode MuonSelector :: fileExecute ()
 
 
 
-EL::StatusCode MuonSelector :: changeInput (bool firstFile)
+EL::StatusCode MuonSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using

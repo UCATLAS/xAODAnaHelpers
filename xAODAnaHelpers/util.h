@@ -27,5 +27,5 @@ std::vector<TString> SplitString(TString& orig, const char separator)
   //   }
 
   return splitV;
-}; // SplitString
+} // SplitString
 

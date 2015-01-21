@@ -67,7 +67,7 @@ EL::StatusCode TrackHistsAlgo :: configure ()
 }
 
 EL::StatusCode TrackHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TrackHistsAlgo :: changeInput (bool firstFile) { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TrackHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode TrackHistsAlgo :: initialize ()
 {
