@@ -7,7 +7,7 @@
 class TrackHists : public HistogramManager
 {
   public:
-    TrackHists(std::string name, std::string detailStr, std::string delimiter);
+    TrackHists(std::string name, std::string detailStr, std::string delimiter = "__" );
     ~TrackHists();
 
     EL::StatusCode initialize();
