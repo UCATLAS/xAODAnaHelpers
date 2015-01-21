@@ -7,7 +7,6 @@
 
 #include <xAODAnaHelpers/TrackHists.h>
 #include <xAODAnaHelpers/TrackPlots.h>
-#include <xAODAnaHelpers/HelperFunctions.h>
 
 #include "TEnv.h"
 
@@ -29,10 +28,21 @@ EL::StatusCode TrackPlots :: setupJob (EL::Job& job)
   // let's initialize the algorithm to use the xAODRootAccess package
   xAOD::Init("TrackPlots").ignore(); // call before opening first file
 
+  return EL::StatusCode::SUCCESS;
+}
+
+EL::StatusCode TrackPlots :: histInitialize ()
+{
+
   if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+    Error("histInitialize()", "%s Failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
   }
+
+  // declare class and add histograms to output
+  m_plots = new TrackHists(m_name, m_detailStr, m_delimiter);
+  m_plots -> initialize();
+  m_plots -> record( wk() );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -51,16 +61,6 @@ EL::StatusCode TrackPlots :: configure ()
 
   config->Print();
   Info("configure()", "JetPlots Interface succesfully configured! \n");
-
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode TrackPlots :: histInitialize ()
-{
-  // declare class and add histograms to output
-  m_plots = new TrackHists(m_name, m_detailStr, m_delimiter);
-  m_plots -> initialize();
-  m_plots -> record( wk() );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -97,25 +97,7 @@ EL::StatusCode TrackPlots :: execute ()
     }
   }
 
-  // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices = 0;
-  if ( !m_event->retrieve( vertices, "PrimaryVertices").isSuccess() ){
-    return EL::StatusCode::FAILURE;
-  }
-  //int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
-
-  /* two ways to fill */
-
-  // 1. pass the jet collection
   m_plots->execute( tracks, eventWeight );
-
-  /* 2. loop over the jets
-  xAOD::JetContainer::const_iterator jet_itr = jets->begin();
-  xAOD::JetContainer::const_iterator jet_end = jets->end();
-  for( ; jet_itr != jet_end; ++jet_itr ) {
-    m_plots->execute( *jet_itr, eventWeight );
-  }
-  */
 
   return EL::StatusCode::SUCCESS;
 }
