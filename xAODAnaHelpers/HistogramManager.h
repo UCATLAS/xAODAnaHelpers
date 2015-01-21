@@ -24,7 +24,7 @@ class HistogramManager {
 
   public:
     // initializer and destructor
-    HistogramManager(std::string name, std::string detailStr, std::string delimiter = "__");
+    HistogramManager(std::string name, std::string detailStr, std::string delimiter = "/" );
     virtual ~HistogramManager();
 
     // this is used by any class extending to pre-define a set of histograms
