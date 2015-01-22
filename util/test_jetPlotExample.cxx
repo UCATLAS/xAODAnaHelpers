@@ -20,10 +20,9 @@ int main( int argc, char* argv[] ) {
   // Construct the samples to run on:
   SH::SampleHandler sh;
 
-  // presume it is run on tier3
-  // /home/mileswu/t3data3/jet-validation/r20test_AOD.pool.root
-  const char* inputFilePath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
-  SH::DiskListLocal list (inputFilePath);
+  // get the data path for xAODAnaHelpers/data
+  std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
+  SH::DiskListLocal list (dataPath);
   SH::scanDir (sh, list, "r20test_AOD.pool.root", "xAODAnaHelpers"); // specifying one particular sample
    
 
@@ -39,7 +38,7 @@ int main( int argc, char* argv[] ) {
   job.sampleHandler( sh );
 
   // Add our analysis to the job:
-  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", "./jetHistsAlgo_all.config");
+  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", dataPath+"/xAODAnaHelpers/test_jetPlotExample.config");
 
   // Attach algorithms
   job.algsAdd( jk_AntiKt10LC );
