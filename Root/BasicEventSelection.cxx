@@ -245,6 +245,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
+  m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
   vecStringGRL.push_back(m_GRLxml);
   m_grl->setProperty( "GoodRunsListVec", vecStringGRL);
   m_grl->setProperty("PassThrough", false); // if true (default) will ignore result of GRL and will just pass all events
