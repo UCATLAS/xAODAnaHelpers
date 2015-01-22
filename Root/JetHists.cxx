@@ -1,7 +1,7 @@
 #include <xAODAnaHelpers/JetHists.h>
 
-JetHists :: JetHists (std::string name, std::string detailStr, std::string delimiter) :
-  HistogramManager(name, detailStr, delimiter)
+JetHists :: JetHists (std::string name, std::string detailStr) :
+  HistogramManager(name, detailStr)
 {
 }
 

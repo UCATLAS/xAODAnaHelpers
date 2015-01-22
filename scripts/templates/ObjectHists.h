@@ -7,7 +7,7 @@
 class ${name} : public HistogramManager
 {
   public:
-    ${name}(std::string name, std::string detailStr, std::string delimiter);
+    ${name}(std::string name, std::string detailStr);
     ~${name}();
 
     EL::StatusCode initialize();

@@ -2,8 +2,8 @@
 #include <math.h>
 using std::cout;  using std::endl;
 
-TrackHists :: TrackHists (std::string name, std::string detailStr, std::string delimiter) : 
-  HistogramManager(name, detailStr, delimiter)
+TrackHists :: TrackHists (std::string name, std::string detailStr) : 
+  HistogramManager(name, detailStr)
 {
 }
 

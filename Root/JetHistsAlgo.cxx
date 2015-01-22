@@ -38,7 +38,7 @@ EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode JetHistsAlgo :: histInitialize ()
 {
 
-  Error("histInitialize()", "%s", m_name.c_str() );
+  Info("histInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "%s Failed to properly configure. Exiting.", m_name.c_str() );
@@ -46,7 +46,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
   }
 
   // declare class and add histograms to output
-  m_plots = new JetHists(m_name, m_detailStr, m_delimiter);
+  m_plots = new JetHists(m_name, m_detailStr);
   m_plots -> initialize( );
   m_plots -> record( wk() );
 
@@ -64,7 +64,6 @@ EL::StatusCode JetHistsAlgo :: configure ()
   }
   m_inContainerName         = config->GetValue("InputContainer",  "");
   m_detailStr               = config->GetValue("DetailStr",       "");
-  m_delimiter               = config->GetValue("Delimiter",       "/");
 
   config->Print();
   Info("configure()", "JetHistsAlgo Interface succesfully configured! \n");
@@ -96,7 +95,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
     eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
   }
 
-  xAOD::JetContainer* jets = 0;
+  const xAOD::JetContainer* jets = 0;
   if ( !m_event->retrieve( jets, m_inContainerName ).isSuccess() ){
     if ( !m_store->retrieve( jets, m_inContainerName ).isSuccess() ){
       Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );

@@ -35,14 +35,14 @@ EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
-  Error("histInitialize()", "%s", m_name.c_str() );
+  Info("histInitialize()", "%s", m_name.c_str() );
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "%s Failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
   }
 
   // declare class and add histograms to output
-  m_plots = new TrackHists(m_name, m_detailStr, m_delimiter);
+  m_plots = new TrackHists(m_name, m_detailStr);
   m_plots -> initialize();
   m_plots -> record( wk() );
 
@@ -60,7 +60,6 @@ EL::StatusCode TrackHistsAlgo :: configure ()
   }
   m_inContainerName         = config->GetValue("InputContainer",  "");
   m_detailStr               = config->GetValue("DetailStr",       "");
-  m_delimiter               = config->GetValue("Delimiter",      "/");
 
   config->Print();
   Info("configure()", "JetHistsAlgo Interface succesfully configured! \n");

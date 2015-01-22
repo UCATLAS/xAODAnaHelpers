@@ -16,15 +16,13 @@ class HistogramManager {
     std::string m_name;
     // a detail level in the form of a string
     std::string m_detailStr;
-    // @delimiter is what to separate the m_name and name when concatenating
-    std::string m_delimiter; //!
     // a container holding all generated histograms
     //  - loop over this to record to EL output
     std::vector< TH1* > m_allHists; //!
 
   public:
     // initializer and destructor
-    HistogramManager(std::string name, std::string detailStr, std::string delimiter = "/" );
+    HistogramManager(std::string name, std::string detailStr);
     virtual ~HistogramManager();
 
     // this is used by any class extending to pre-define a set of histograms
@@ -81,9 +79,6 @@ class HistogramManager {
     void SetLabel(TH1* hist, std::string xlabel, std::string ylabel);
     // Set the xlabel, ylabel, and zlabel
     void SetLabel(TH1* hist, std::string xlabel, std::string ylabel, std::string zlabel);
-
-    // string concatenation helper
-    std::string concat(std::string left, std::string right);
 
 };
 

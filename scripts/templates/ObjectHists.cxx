@@ -1,7 +1,7 @@
 #include <${package}/${name}.h>
 
-${name} :: ${name} (std::string name, std::string detailStr, std::string delimiter) :
-  HistogramManager(name, detailStr, delimiter)
+${name} :: ${name} (std::string name, std::string detailStr) :
+  HistogramManager(name, detailStr)
 {
 }
 
