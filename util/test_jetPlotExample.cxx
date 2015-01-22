@@ -38,7 +38,7 @@ int main( int argc, char* argv[] ) {
   job.sampleHandler( sh );
 
   // Add our analysis to the job:
-  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", dataPath+"/xAODAnaHelpers/test_jetPlotExample.config");
+  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", "$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
 
   // Attach algorithms
   job.algsAdd( jk_AntiKt10LC );

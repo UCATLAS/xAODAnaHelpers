@@ -36,9 +36,13 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
+  // needed here and not in initalize since this is called first
+  Info("histInitialize()", "Attempting to configure using: %s", m_configName.c_str());
   if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("histInitialize()", "%s Failed to properly configure. Exiting.", m_name.c_str() );
+    Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
+  } else {
+    Info("histInitialize()", "Successfully configured! \n");
   }
 
   // declare class and add histograms to output
@@ -52,17 +56,29 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 EL::StatusCode TrackHistsAlgo :: configure ()
 {
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  TEnv* config = new TEnv(m_configName.c_str());
-  if( !config ) {
-    Error("TrackHistsAlgo::setupJob()", "Failed to read config file!");
-    Error("TrackHistsAlgo::setupJob()", "config name : %s",m_configName.c_str());
+  // check if file exists
+  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
+  FileStat_t fStats;
+  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
+  if(fSuccess != 0){
+    Error("configure()", "Could not find the configuration file");
     return EL::StatusCode::FAILURE;
   }
+  Info("configure()", "Found configuration file");
+
+  // the file exists, use TEnv to read it off
+  TEnv* config = new TEnv(m_configName.c_str());
   m_inContainerName         = config->GetValue("InputContainer",  "");
   m_detailStr               = config->GetValue("DetailStr",       "");
 
+  if( m_inContainerName.empty() || m_detailStr.empty() ){
+    Error("configure()", "One or more required configuration values are empty");
+    return EL::StatusCode::FAILURE;
+  }
+  Info("configure()", "Loaded in configuration values");
+
+  // everything seems preliminarily ok, let's print config and say we were successful
   config->Print();
-  Info("configure()", "JetHistsAlgo Interface succesfully configured! \n");
 
   return EL::StatusCode::SUCCESS;
 }
