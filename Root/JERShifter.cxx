@@ -47,12 +47,17 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   xAOD::Init( "JERShifter" ).ignore(); // call before opening first file
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  TEnv* config = new TEnv(m_configName.c_str());
-  if( !config ) {
-    Error("JERShifter::setupJob()", "Failed to read config file!");
-    Error("JERShifter::setupJob()", "config name : %s",m_configName.c_str());
+  // check if file exists
+  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
+  FileStat_t fStats;
+  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
+  if(fSuccess != 0){
+    Error("setupJob()", "Could not find the configuration file");
     return EL::StatusCode::FAILURE;
   }
+  Info("setupJob()", "Found configuration file");
+  
+  TEnv* config = new TEnv(m_configName.c_str());
 
   // input container to be read from TEvent or TStore
   m_inContainerName = config->GetValue("InputContainer",  "");

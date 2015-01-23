@@ -38,12 +38,17 @@ EL::StatusCode  JetSelector :: configure ()
   Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  TEnv* config = new TEnv(m_configName.c_str());
-  if( !config ) {
-    Error("JetSelector::setupJob()", "Failed to read config file!");
-    Error("JetSelector::setupJob()", "config name : %s",m_configName.c_str());
+  // check if file exists
+  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
+  FileStat_t fStats;
+  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
+  if(fSuccess != 0){
+    Error("configure()", "Could not find the configuration file");
     return EL::StatusCode::FAILURE;
   }
+  Info("configure()", "Found configuration file");
+  
+  TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
   m_debug         = config->GetValue("Debug" ,      false );

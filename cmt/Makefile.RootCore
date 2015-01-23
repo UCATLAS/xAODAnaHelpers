@@ -37,7 +37,7 @@ PACKAGE_TRYDEP   =
 PACKAGE_SCRIPTS  =  scripts/*.py
 
 # whether to use pedantic compilation:
-PACKAGE_PEDANTIC = 1
+PACKAGE_PEDANTIC = 0
 
 # whether to turn *off* optimization (set to dict to do it only for
 # dictionaries):

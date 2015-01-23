@@ -21,10 +21,10 @@ ClassImp(JetCalibrator)
 JetCalibrator :: JetCalibrator () {
 }
 
-JetCalibrator :: JetCalibrator (std::string name, std::string configFile) :
+JetCalibrator :: JetCalibrator (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
-  m_configFile(configFile),
+  m_configName(configName),
   m_jetCalibration(0),
   m_jetCleaning(0)
 {
@@ -41,15 +41,20 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configFile) :
 
 EL::StatusCode  JetCalibrator :: configure ()
 {
-  Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configFile.c_str());
+  Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
-  m_configFile = gSystem->ExpandPathName( m_configFile.c_str() );
-  TEnv* config = new TEnv(m_configFile.c_str());
-  if( !config ) {
-    Error("configure()", "Failed to read config file!");
-    Error("configure()", "config name : %s",m_configFile.c_str());
+  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+  // check if file exists
+  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
+  FileStat_t fStats;
+  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
+  if(fSuccess != 0){
+    Error("configure()", "Could not find the configuration file");
     return EL::StatusCode::FAILURE;
   }
+  Info("configure()", "Found configuration file");
+  
+  TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
   m_debug         = config->GetValue("Debug" , false );
@@ -61,9 +66,9 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
   // when running data "_Insitu" is appended to this string
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
-  m_calibConfigData	        = config->GetValue("ConfigFileData",          "JES_Full2012dataset_Preliminary_MC14.config");
-  m_calibConfigFullSim       = config->GetValue("ConfigFileFullSim",       "JES_Full2012dataset_May2014.config");
-  m_calibConfigAFII          = config->GetValue("ConfigFileAFII",          "JES_Full2012dataset_AFII_January2014.config");
+  m_calibConfigData	        = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
+  m_calibConfigFullSim       = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
+  m_calibConfigAFII          = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
 
   // CONFIG parameters for JetCleaningTool
   m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");

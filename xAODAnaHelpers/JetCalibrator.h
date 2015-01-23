@@ -33,7 +33,7 @@ public:
   int m_numObject;        //!
 
   std::string m_name;
-  std::string m_configFile;
+  std::string m_configName;
   bool m_isMC;
   bool m_isFullSim; /* this should be read from event info- sample name or something...now forced to true */
 
@@ -71,7 +71,7 @@ public:
 
   // this is a standard constructor
   JetCalibrator ();
-  JetCalibrator (std::string name, std::string configFile);
+  JetCalibrator (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
