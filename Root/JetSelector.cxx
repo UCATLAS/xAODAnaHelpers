@@ -276,7 +276,7 @@ EL::StatusCode JetSelector :: execute ()
 
       for( auto jet_itr : *(shallowCopy.first) ) {
         if( jet_itr->auxdecor< int >( "passSel" ) != 1 ) { continue; }
-        selectedJets.push_back( jet_itr);
+        selectedJets->push_back( jet_itr);
       }
 
       // store shallow copy in TStore
