@@ -36,6 +36,7 @@ public:
 
   std::string m_name;
   std::string m_configName;
+  int m_type;
 
   bool m_debug;                  //!
   
@@ -52,11 +53,14 @@ private:
 
   // configuration variables
   TString m_inContainerName;      // input container name
+  TString m_inContainerNameSC;    // input container name
+  TString m_inContainerNameSCAux; // input container name
   TString m_outContainerName;     // output container name
   bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
   bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess;               // look at n objects
   bool m_sort;                    // sort jets before selection
+  int m_countWarning;             // max number of warnings before turned off
   bool m_cleanJets;               // require cleanJet decoration to not be set and false
   int m_pass_min;                 // minimum number of objects passing cuts
   int m_pass_max;                 // maximum number of objects passing cuts
@@ -100,6 +104,9 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+  virtual EL::StatusCode executeNonConst (       xAOD::JetContainer* inJets, float mcEvtWeight );
+  virtual EL::StatusCode executeConst    ( const xAOD::JetContainer* inJets, float mcEvtWeight );
+  virtual EL::StatusCode Bookkeeping ( int nObj, int nPass, float mcEvtWeight );
 
   // added functions not from Algorithm
   // why does this need to be virtual?
