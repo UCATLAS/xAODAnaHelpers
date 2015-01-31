@@ -29,8 +29,8 @@ private:
 #endif // not __CINT__
 
   // configuration variables
-  std::string m_inContainerName;
-  std::string m_detailStr;
+  std::string m_inContainerName;  //!
+  std::string m_detailStr;        //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -42,6 +42,7 @@ public:
 
 
   // this is a standard constructor
+  TrackHistsAlgo ();
   TrackHistsAlgo (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm

@@ -14,6 +14,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
+TrackHistsAlgo :: TrackHistsAlgo () {
+}
+
 TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),

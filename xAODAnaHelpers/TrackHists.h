@@ -18,10 +18,11 @@ class TrackHists : public HistogramManager
 
   protected: 
     // bools to control which histograms are filled
-    bool m_levelTwo;         //!
-    bool m_levelThree;        //!
-    bool m_levelFour;    //!
-    bool m_levelTen;
+    bool m_fillIPDetails;        //!
+    bool m_fillHitCounts;        //!
+    bool m_fillChi2Details;      //!
+    bool m_fillTPErrors;         //!
+    bool m_fillDebugging;        //!
 
   private:
     // Histograms
@@ -29,7 +30,7 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_Pt_l   		; //!
     TH1F* m_trk_Eta    		; //!
     TH1F* m_trk_Phi    		; //!
-    TH1F* m_trk_dO     		; //!
+    TH1F* m_trk_d0     		; //!
     TH1F* m_trk_z0     		; //!
     TH1F* m_trk_chi2Prob	; //!
     TH1F* m_trk_charge		; //!
