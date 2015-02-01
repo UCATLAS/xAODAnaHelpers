@@ -19,6 +19,9 @@ namespace xAOD {
   #ifndef XAODTRACKING_TRACKPARTICLECONTAINER_H
   class TrackParticleContainer;
   #endif
+  #ifndef XAODTRACKING_VERTEX_H
+  class Vertex;
+  #endif
 }
 
 class TrackSelector : public EL::Algorithm
@@ -60,7 +63,16 @@ private:
   float m_pT_min;                 // require pT > pt_max
   float m_eta_max;                // require eta < eta_max
   float m_eta_min;                // require eta > eta_max
-  
+  float m_d0_max;                 // require |d0| < d0_max
+  float m_z0_max;                 // require |z0| < z0_max
+  float m_z0sinT_max;             // require |z0xsin(theat)| < z0sinT_max
+  int   m_nBL_min;                // require nBL > nBL_min
+  int   m_nSi_min;                // require nSi > nSi_min
+  float m_nPixHoles_max;          // require nPixHoles < nPixHoles_max
+  float m_chi2NdofCut_max;        // require chi2/ndof < chi2NdofCut_max
+  float m_chi2Prob_max;           // require TMath::Prob(chi2,ndof) < chi2ProbMax
+
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -90,7 +102,7 @@ public:
 
   // added functions not from Algorithm
   // why does this need to be virtual?
-  virtual int PassCuts( const xAOD::TrackParticle* jet );
+  virtual int PassCuts( const xAOD::TrackParticle* jet, const xAOD::Vertex *pvx );
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(TrackSelector, 1);

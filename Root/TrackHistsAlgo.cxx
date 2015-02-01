@@ -4,6 +4,7 @@
 #include "AthContainers/ConstDataVector.h"
 #include "xAODTracking/VertexContainer.h"
 #include "xAODEventInfo/EventInfo.h"
+#include "xAODAnaHelpers/HelperFunctions.h"
 
 #include <xAODAnaHelpers/TrackHists.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
@@ -125,7 +126,15 @@ EL::StatusCode TrackHistsAlgo :: execute ()
     tracks = cv_tracks->asDataVector();
   }
 
-  m_plots->execute( tracks, eventWeight );
+  // get primary vertex
+  const xAOD::VertexContainer *vertices = 0;
+  if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
+      Error("execute()", "Failed to retrieve PrimaryVertices. Exiting.");
+      return EL::StatusCode::FAILURE;
+  }
+  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
+
+  m_plots->execute( tracks, pvx, eventWeight );
 
   return EL::StatusCode::SUCCESS;
 }

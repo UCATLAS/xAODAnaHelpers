@@ -3,6 +3,7 @@
 
 #include "xAODAnaHelpers/HistogramManager.h"
 #include <xAODTracking/TrackParticleContainer.h>
+#include <xAODTracking/Vertex.h>
 
 class TrackHists : public HistogramManager
 {
@@ -11,8 +12,8 @@ class TrackHists : public HistogramManager
     ~TrackHists();
 
     EL::StatusCode initialize();
-    EL::StatusCode execute( const xAOD::TrackParticleContainer* tracks,  float eventWeight );
-    EL::StatusCode execute( const xAOD::TrackParticle* track,            float eventWeight );
+    EL::StatusCode execute( const xAOD::TrackParticleContainer* tracks,  const xAOD::Vertex *pvx, float eventWeight );
+    EL::StatusCode execute( const xAOD::TrackParticle* track,            const xAOD::Vertex *pvx, float eventWeight );
     using HistogramManager::book; // make other overloaded versions of book() to show up in subclass
     using HistogramManager::execute; // overload
 
@@ -60,6 +61,8 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_mc_barcode_s	; //!
     TH1F* m_trk_eta_vl     	; //!
     TH1F* m_trk_z0_vl      	; //!
+    TH1F* m_trk_z0_m      	; //!
+    TH1F* m_trk_z0_m_raw      	; //!
     TH1F* m_trk_d0_vl      	; //!
     TH1F* m_trk_pt_ss      	; //!
     TH1F* m_trk_phiManyBins     ; //!

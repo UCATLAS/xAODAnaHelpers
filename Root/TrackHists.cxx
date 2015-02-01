@@ -1,4 +1,5 @@
 #include "xAODAnaHelpers/TrackHists.h"
+
 #include <math.h>
 using std::cout;  using std::endl;
 
@@ -103,6 +104,8 @@ EL::StatusCode TrackHists::initialize() {
     m_fillDebugging = true;
     m_trk_eta_vl      = book(m_name, "eta_vl",        "eta",       100,  -6,    6     );
     m_trk_z0_vl       = book(m_name, "z0_vl",         "z0[mm]",    100,  -10000.0, 10000.0 );
+    m_trk_z0_m_raw    = book(m_name, "z0_m_raw",         "z0[mm]",   100,  -100.0,  100.0 );
+    m_trk_z0_m        = book(m_name, "z0_m",         "z0[mm]",   100,  -100.0,  100.0 );
     m_trk_d0_vl       = book(m_name, "d0_vl",         "d0[mm]",    100,  -10000.0, 10000.0 );
     m_trk_pt_ss       = book(m_name, "pt_ss",         "Pt[GeV",    100,  0,     2.0  );
     m_trk_phiManyBins = book(m_name, "phiManyBins" ,  "phi",      1000,  -3.2,  3.2   );
@@ -113,17 +116,17 @@ EL::StatusCode TrackHists::initialize() {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, float eventWeight ) {
+EL::StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const xAOD::Vertex *pvx, float eventWeight ) {
   xAOD::TrackParticleContainer::const_iterator trk_itr = trks->begin();
   xAOD::TrackParticleContainer::const_iterator trk_end = trks->end();
   for( ; trk_itr != trk_end; ++trk_itr ) {
-    this->execute( (*trk_itr), eventWeight );
+    this->execute( (*trk_itr), pvx, eventWeight );
   }
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, float eventWeight ) { 
+EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx, float eventWeight ) { 
 
   //basic
   float        trkPt       = trk->pt()/1e3;
@@ -131,7 +134,7 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, float eventW
   float        ndof        = trk->numberDoF();
   float        chi2Prob    = TMath::Prob(chi2,ndof);
   float        d0          = trk->d0();
-  float        z0          = trk->z0();
+  float        z0          = (trk->z0() + trk->vz() - pvx->z());
   float        sinT        = sin(trk->theta());
 
   m_trk_Pt       -> Fill( trkPt,            eventWeight );
@@ -206,6 +209,8 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, float eventW
   if(m_fillDebugging){
     m_trk_eta_vl      -> Fill( trk->eta(), eventWeight );
     m_trk_z0_vl       -> Fill( z0,         eventWeight );
+    m_trk_z0_m        -> Fill( z0,         eventWeight );
+    m_trk_z0_m_raw    -> Fill( trk->z0(),  eventWeight );
     m_trk_d0_vl       -> Fill( d0,         eventWeight );
     m_trk_pt_ss       -> Fill( trkPt,      eventWeight );
     m_trk_phiManyBins -> Fill( trk->phi(), eventWeight );

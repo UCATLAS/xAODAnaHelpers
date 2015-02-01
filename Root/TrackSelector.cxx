@@ -2,6 +2,7 @@
 #include <EventLoop/Worker.h>
 
 #include "AthContainers/ConstDataVector.h"
+#include "xAODTracking/VertexContainer.h"
 #include "xAODTracking/TrackParticleContainer.h"
 #include "xAODAnaHelpers/TrackSelector.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
@@ -73,12 +74,20 @@ EL::StatusCode  TrackSelector :: configure ()
   m_sort                    = config->GetValue("Sort",          false);
 
   // cuts
-  m_pass_max                = config->GetValue("PassMax", -1);
-  m_pass_min                = config->GetValue("PassMin", -1);
-  m_pT_max                  = config->GetValue("pTMax",       1e8);
-  m_pT_min                  = config->GetValue("pTMin",       1e8);
-  m_eta_max                 = config->GetValue("etaMax",      1e8);
-  m_eta_min                 = config->GetValue("etaMin",      1e8);
+  m_pass_max                = config->GetValue("PassMax",       -1);
+  m_pass_min                = config->GetValue("PassMin",       -1);
+  m_pT_max                  = config->GetValue("pTMax",        1e8);
+  m_pT_min                  = config->GetValue("pTMin",        1e8);
+  m_eta_max                 = config->GetValue("etaMax",       1e8);
+  m_eta_min                 = config->GetValue("etaMin",       1e8);
+  m_d0_max                  = config->GetValue("d0Max",        1e8);
+  m_z0_max                  = config->GetValue("z0Max",        1e8);
+  m_z0sinT_max              = config->GetValue("z0SinTMax",    1e8);
+  m_nBL_min                 = config->GetValue("nBLMin",       1e8);
+  m_nSi_min                 = config->GetValue("nSiMin",       1e8);
+  m_nPixHoles_max           = config->GetValue("nPixHolesMax", 1e8);
+  m_chi2NdofCut_max         = config->GetValue("chi2NdofMax",  1e8);
+  m_chi2Prob_max            = config->GetValue("chi2ProbMax",  1e8);
 
   if( m_inContainerName.Length() == 0 ) {
     Error("configure()", "InputContainer is empty!");
@@ -222,6 +231,14 @@ EL::StatusCode TrackSelector :: execute ()
   }
 
 
+  // get primary vertex
+  const xAOD::VertexContainer *vertices = 0;
+  if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
+      Error("execute()", "Failed to retrieve PrimaryVertices. Exiting.");
+      return EL::StatusCode::FAILURE;
+  }
+  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
+
 
   // create output container (if requested) - deep copy
 
@@ -246,7 +263,7 @@ EL::StatusCode TrackSelector :: execute ()
     }
 
     nObj++;
-    int passSel = this->PassCuts( (*trk_itr) );
+    int passSel = this->PassCuts( (*trk_itr), pvx );
     if(m_decorateSelectedObjects) {
       (*trk_itr)->auxdecor< int >( "passSel" ) = passSel;
     }
@@ -337,7 +354,7 @@ EL::StatusCode TrackSelector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk ) {
+int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx ) {
 
 
   // pT
@@ -354,6 +371,73 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk ) {
   }
   if( m_eta_min != 1e8 ) {
     if( trk->eta() < m_eta_min ) { return 0; }
+  }
+
+  //
+  //  D0 
+  //
+  if( m_d0_max != 1e8 ){
+    if( fabs(trk->d0()) > m_d0_max ) {return 0; }
+  }
+  
+  //
+  //  Z0 
+  //
+  float z0 = (trk->z0() + trk->vz() - pvx->z());
+  if( m_z0_max != 1e8 ){
+    if( fabs(z0) > m_z0_max ) {return 0; }
+  }
+
+  //
+  //  z0 sin(theta)
+  //
+  float sinT        = sin(trk->theta());
+  if( m_z0sinT_max != 1e8 ){
+    if( fabs(z0*sinT) > m_z0sinT_max ) {return 0; }
+  }
+
+  //
+  //  nBLayer
+  //
+  uint8_t nBL       = -1;  
+  if( m_nBL_min != 1e8 ){
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       std::cout << "ERROR: BLayer hits not filled" << std::endl;
+    if( nBL < m_nBL_min ) {return 0; }
+  }
+  
+  //
+  //  nSi_min
+  //
+  uint8_t nSCT      = -1;  
+  uint8_t nPix      = -1;  
+  if( m_nSi_min != 1e8 ){
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        std::cout << "ERROR: Pix hits not filled" << std::endl;
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          std::cout << "ERROR: SCT hits not filled" << std::endl;
+    if( (nSCT+nPix) < m_nSi_min ) {return 0;}
+  }
+
+  //
+  //  nPix Holes
+  //
+  uint8_t nPixHoles = -1;  
+  if( m_nPixHoles_max != 1e8 ){
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       std::cout << "ERROR: Pix holes not filled" << std::endl;
+    if( nPixHoles > m_nPixHoles_max ) {return 0;}
+  }
+
+  //
+  //  chi2
+  //
+  float        chi2        = trk->chiSquared();
+  float        ndof        = trk->numberDoF();
+  if( m_chi2NdofCut_max != 1e8){
+    float chi2NDoF     = (ndof > 0) ? chi2/ndof : -1;
+    if( chi2NDoF > m_chi2NdofCut_max ) {return 0;}
+  }
+
+  if( m_chi2Prob_max != 1e8 ){
+    float        chi2Prob    = TMath::Prob(chi2,ndof);
+    if( chi2Prob > m_chi2Prob_max) {return 0;}
   }
 
   return 1;
