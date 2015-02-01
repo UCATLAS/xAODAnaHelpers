@@ -3,6 +3,7 @@
 #include <xAODAnaHelpers/BJetSelector.h>
 #include <xAODAnaHelpers/ElectronSelector.h>
 #include <xAODAnaHelpers/JetSelector.h>
+#include <xAODAnaHelpers/TrackSelector.h>
 #include <xAODAnaHelpers/MuonSelector.h>
 
 /* Calibrations */
@@ -32,6 +33,7 @@
 #pragma link C++ class BJetSelector+;
 #pragma link C++ class ElectronSelector+;
 #pragma link C++ class JetSelector+;
+#pragma link C++ class TrackSelector+;
 #pragma link C++ class MuonSelector+;
 
 #pragma link C++ class ElectronCalibrator+;

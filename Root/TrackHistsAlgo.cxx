@@ -1,7 +1,7 @@
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
-
+#include "AthContainers/ConstDataVector.h"
 #include "xAODTracking/VertexContainer.h"
 #include "xAODEventInfo/EventInfo.h"
 
@@ -111,11 +111,18 @@ EL::StatusCode TrackHistsAlgo :: execute ()
   }
 
   const xAOD::TrackParticleContainer* tracks = 0;
-  if ( !m_event->retrieve( tracks, m_inContainerName ).isSuccess() ){
-    if ( !m_store->retrieve( tracks, m_inContainerName ).isSuccess() ){
-      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
+  if ( m_event->contains<const xAOD::TrackParticleContainer>(m_inContainerName)){
+    if( !m_event->retrieve( tracks, m_inContainerName ).isSuccess()) {
+      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container from TEvent. Exiting.", m_inContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
+  } else {
+    ConstDataVector<xAOD::TrackParticleContainer>* cv_tracks = 0;
+    if ( !m_store->retrieve( cv_tracks, m_inContainerName ).isSuccess() ){
+      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container from TStore. Exiting.", m_inContainerName.c_str() );
+      return EL::StatusCode::FAILURE;
+    }
+    tracks = cv_tracks->asDataVector();
   }
 
   m_plots->execute( tracks, eventWeight );
