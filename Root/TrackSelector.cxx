@@ -12,6 +12,8 @@
 #include "TEnv.h"
 #include "TFile.h"
 #include "TSystem.h"
+#include "TObjArray.h"
+#include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackSelector)
@@ -88,6 +90,21 @@ EL::StatusCode  TrackSelector :: configure ()
   m_nPixHoles_max           = config->GetValue("nPixHolesMax", 1e8);
   m_chi2NdofCut_max         = config->GetValue("chi2NdofMax",  1e8);
   m_chi2Prob_max            = config->GetValue("chi2ProbMax",  1e8);
+
+  m_passAuxDecorKeys         = config->GetValue("PassDecorKeys", "");
+  TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
+  for(int i = 0; i<passKeysStrings->GetEntries(); ++i) {
+    TObjString* passKeyObj = (TObjString*)passKeysStrings->At(i);
+    m_passKeys.push_back(passKeyObj->GetString());
+  }
+
+  m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+  TObjArray* failKeysStrings = m_failAuxDecorKeys.Tokenize(",");
+  for(int i = 0; i<failKeysStrings->GetEntries(); ++i) {
+    TObjString* failKeyObj = (TObjString*)failKeysStrings->At(i);
+    m_failKeys.push_back(failKeyObj->GetString());
+  }
+
 
   if( m_inContainerName.Length() == 0 ) {
     Error("configure()", "InputContainer is empty!");
@@ -439,6 +456,23 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
     float        chi2Prob    = TMath::Prob(chi2,ndof);
     if( chi2Prob > m_chi2Prob_max) {return 0;}
   }
+
+
+  //
+  //  Pass Keys
+  //
+  for(auto& passKey : m_passKeys){
+    if(!trk->auxdata<bool>(passKey.Data())) { return 0;}
+  }
+
+
+  //
+  //  Fail Keys
+  //
+  for(auto& failKey : m_failKeys){
+    if(trk->auxdata<bool>(failKey.Data())) {return 0;}
+  }
+
 
   return 1;
 }

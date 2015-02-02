@@ -42,6 +42,7 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_z0_l            ; //!
     TH1F* m_trk_z0Sig           ; //!
     TH1F* m_trk_z0sinT          ; //!
+    TH1F* m_trk_z0sinT_l        ; //!
     TH1F* m_trk_z0SigsinT       ; //!
     TH1F* m_trk_chi2Prob_l      ; //!
     TH1F* m_trk_chi2ndof   	; //!

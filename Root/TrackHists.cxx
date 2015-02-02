@@ -36,6 +36,7 @@ EL::StatusCode TrackHists::initialize() {
     m_trk_d0Sig        = book(m_name, "d0Sig",            "d0Sig",            240,  -20.0, 40.0 );
 
     m_trk_z0_l         = book(m_name, "z0_l" ,            "z0[mm]",                         100,  -600.0, 600.0 );
+    m_trk_z0sinT_l     = book(m_name, "z0sinT_l",         "z0xsin(#theta)[mm]",             100,  -20.0, 20.0 );
     m_trk_z0Err        = book(m_name, "z0Err",            "z0Err[mm]",                      100,  0, 1.0 );
     m_trk_z0Sig        = book(m_name, "z0Sig",            "z0Sig",                          100,  -25.0, 25.0 );
     m_trk_z0SigsinT    = book(m_name, "z0SigsinT",        "z0 significance x sin(#theta)",  100,  -25.0, 25.0 );
@@ -159,6 +160,7 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::
     float z0Sig = (z0Err > 0) ? z0/z0Err : -1 ;
 
     m_trk_z0_l         -> Fill(z0         , eventWeight );
+    m_trk_z0sinT_l     -> Fill(z0*sinT,     eventWeight );
     m_trk_z0Err        -> Fill(z0Err      , eventWeight );
     m_trk_z0Sig        -> Fill(z0Sig      , eventWeight );
     m_trk_z0SigsinT    -> Fill(z0Sig*sinT , eventWeight );

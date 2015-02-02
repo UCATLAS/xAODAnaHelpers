@@ -40,6 +40,13 @@ public:
   std::string m_name;
   std::string m_configName;
 
+  TString              m_passAuxDecorKeys;
+  TString              m_failAuxDecorKeys;
+  std::vector<TString> m_passKeys;
+  std::vector<TString> m_failKeys;
+
+
+
   bool m_debug;                  //!
   
   // cutflow
