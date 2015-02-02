@@ -1,18 +1,19 @@
-#ifndef xAODAnaHelpers_${name}_H
-#define xAODAnaHelpers_${name}_H
+#ifndef ${package}_${name}Hists_H
+#define ${package}_${name}Hists_H
 
 #include "xAODAnaHelpers/HistogramManager.h"
-#include <xAOD${obj}/${obj}Container.h>
+#include <xAODJet/JetContainer.h>
 
-class ${name} : public HistogramManager
+class ${name}Hists : public HistogramManager
 {
   public:
-    ${name}(std::string name, std::string detailStr);
-    ~${name}();
+    ${name}Hists(std::string name, std::string detailStr);
+    ~${name}Hists();
 
     EL::StatusCode initialize();
-    EL::StatusCode execute( const xAOD::${obj}Container* ${obj_lc}s, float eventWeight );
-    EL::StatusCode execute( const xAOD::${obj}* ${obj_lc}, float eventWeight );
+    EL::StatusCode execute( const xAOD::JetContainer* jets, float eventWeight );
+    EL::StatusCode execute( const xAOD::Jet* jet, float eventWeight );
+    using HistogramManager;
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 
@@ -22,11 +23,11 @@ class ${name} : public HistogramManager
 
   private:
     //basic
-    TH1F* m_${obj_lc}Pt;                  //!
+    TH1F* m_jetPt;                  //!
     // position
-    TH1F* m_${obj_lc}Eta;                 //!
-    TH1F* m_${obj_lc}Phi;                 //!
-    TH1F* m_${obj_lc}Rapidity;            //!
+    TH1F* m_jetEta;                 //!
+    TH1F* m_jetPhi;                 //!
+    TH1F* m_jetRapidity;            //!
 };
 
 #endif
