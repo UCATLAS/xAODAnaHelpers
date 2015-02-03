@@ -15,7 +15,8 @@
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(xAOD::TEvent * event, TTree* tree, TFile* file, int units /*= 1e3 */)
+/* TODO: event */
+HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units /*= 1e3 */)
 {
 
   m_units = units;
@@ -93,7 +94,8 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
  ********************/
 
 void HelpTreeBase::AddElectrons() { }
-void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) { }
+/* TODO: electrons */
+void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& /*electrons*/ ) { }
 
 /*********************
  *
@@ -138,7 +140,8 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
  ********************/
 
 void HelpTreeBase::AddFatJets() { }
-void HelpTreeBase::FillFatJets( const xAOD::JetContainer& fatJets ) { }
+/* TODO: fatJets */
+void HelpTreeBase::FillFatJets( const xAOD::JetContainer& /*fatJets*/ ) { }
 
 void HelpTreeBase::Clear() {
 
