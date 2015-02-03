@@ -73,4 +73,6 @@ if __name__ == "__main__":
 
   if missingFiles > 0:
     print "Warning! One or more files do not exist but you have defined them in the templates. Please fix this before doing anything else."
+    exit(1)
 
+  print "If you're seeing this, things should be ok."
