@@ -47,7 +47,7 @@ EL::StatusCode  JetSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
   Info("configure()", "Found configuration file");
-  
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -81,6 +81,8 @@ EL::StatusCode  JetSelector :: configure ()
   m_pT_min                  = config->GetValue("pTMin",       1e8);
   m_eta_max                 = config->GetValue("etaMax",      1e8);
   m_eta_min                 = config->GetValue("etaMin",      1e8);
+  m_detEta_max                 = config->GetValue("detEtaMax",      1e8);
+  m_detEta_min                 = config->GetValue("detEtaMin",      1e8);
   m_mass_max                = config->GetValue("massMax",     1e8);
   m_mass_min                = config->GetValue("massMin",     1e8);
   m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
@@ -366,6 +368,14 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   }
   if( m_eta_min != 1e8 ) {
     if( jet->eta() < m_eta_min ) { return 0; }
+  }
+
+  // detEta
+  if( m_detEta_max != 1e8 ) {
+    if( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() > m_detEta_max ) { return 0; }
+  }
+  if( m_detEta_min != 1e8 ) {
+    if( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() < m_detEta_min ) { return 0; }
   }
 
   // mass

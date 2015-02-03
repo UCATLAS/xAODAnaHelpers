@@ -13,10 +13,10 @@
 #include "TH1D.h"
 
 namespace xAOD {
-#ifndef XAODJET_JETCONTAINER_H 
+#ifndef XAODJET_JETCONTAINER_H
   class JetContainer;
 #endif
-#ifndef XAODJET_JET_H 
+#ifndef XAODJET_JET_H
   class Jet;
 #endif
 }
@@ -38,7 +38,7 @@ public:
   std::string m_configName;
 
   bool m_debug;                  //!
-  
+
   bool m_isEMjet;                //!
   bool m_isLCjet;                //!
 
@@ -47,7 +47,7 @@ public:
   TH1D* m_cutflowHist;          //!
   TH1D* m_cutflowHistW;         //!
   int   m_cutflow_bin;          //!
-  
+
 private:
 
   // configuration variables
@@ -64,13 +64,15 @@ private:
   float m_pT_min;                 // require pT > pt_max
   float m_eta_max;                // require eta < eta_max
   float m_eta_min;                // require eta > eta_max
+  float m_detEta_max;             // require detEta < detEta_max
+  float m_detEta_min;             // require detEta > detEta_max
   float m_mass_max;               // require mass < mass_max
   float m_mass_min;               // require mass > mass_max
   float m_rapidity_max;           // require rapidity < rapidity_max
   float m_rapidity_min;           // require rapidity > rapidity_min
-  
-  bool m_doJVF;                   // check JVF 
-  float m_pt_max_JVF;             
+
+  bool m_doJVF;                   // check JVF
+  float m_pt_max_JVF;
   float m_eta_max_JVF;
   float m_JVFCut;
 

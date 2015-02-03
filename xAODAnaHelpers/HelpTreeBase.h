@@ -8,22 +8,22 @@ namespace xAOD {
 #ifndef XAODEVENTINFO_EVENTINFO_H
     class EventInfo;
 #endif
-#ifndef XAODMUON_MUONCONTAINER_H 
+#ifndef XAODMUON_MUONCONTAINER_H
     class MuonContainer;
 #endif
-#ifndef XAODMUON_MUON_H 
+#ifndef XAODMUON_MUON_H
       class Muon;
 #endif
-#ifndef XAODEGAMMA_ELECTRONCONTAINER_H 
+#ifndef XAODEGAMMA_ELECTRONCONTAINER_H
   class ElectronContainer;
 #endif
-#ifndef XAODEGAMMA_ELECTRON_H 
+#ifndef XAODEGAMMA_ELECTRON_H
     class Electron;
 #endif
-#ifndef XAODJET_JETCONTAINER_H 
+#ifndef XAODJET_JETCONTAINER_H
     class JetContainer;
 #endif
-#ifndef XAODJET_JET_H 
+#ifndef XAODJET_JET_H
       class Jet;
 #endif
       class TFile;
@@ -46,7 +46,7 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent * event, TTree* tree, TFile* file);
+  HelpTreeBase(xAOD::TEvent * event, TTree* tree, TFile* file, int units=1e3 );
   virtual ~HelpTreeBase() {;}
 
   void AddEvent();
@@ -65,7 +65,7 @@ public:
   void Clear();
 
   bool writeTo( TFile *file );
-  
+
   // User defined functions
   virtual void AddUser()                                           = 0;
   virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   = 0;
@@ -79,6 +79,8 @@ protected:
 
   TTree* m_tree;
 
+  int m_units; //For MeV to GeV conversion in output
+
   // event
   int m_runNumber;
   int m_eventNumber;
@@ -91,7 +93,7 @@ protected:
   std::vector<float> m_jet_eta;
   std::vector<float> m_jet_phi;
   std::vector<float> m_jet_E;
-  
+
   // muons
   int m_nmuon;
   std::vector<float> m_muon_pt;
