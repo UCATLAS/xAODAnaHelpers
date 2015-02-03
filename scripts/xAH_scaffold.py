@@ -132,7 +132,7 @@ def check_linkdef(args, className):
 
   # ask user if we want to fix up their linkdef
   if not foundLinkDef:
-    print "We have determined that your LinkDef does not contain a pragma link for `{0}` yet."
+    print "We have determined that your LinkDef does not contain a pragma link for `{0}` yet.".format(className)
     if bool(query_yes_no("Do you want us to fix this?") == "yes"):
       # they want us to fix it up
       # remove original file
@@ -200,6 +200,7 @@ if __name__ == "__main__":
   parser.add_argument('pkg',  help='what package to scaffold into, e.g. xAODAnaHelpers',  choices=get_rc_packages())
   parser.add_argument('name',     help='the name of the file & class, e.g. Jet or Track. We automatically append appropriate names to the end to be consistent with xAODAnaHelpers naming scheme.')
   parser.add_argument('type',     help='what kind of file to scaffold, e.g. plots',           choices=templates.keys())
+  parser.add_argument('--force',  dest='overwrite', help='force overwrite of existing files, default=False', action='store_true')
 
   args = parser.parse_args()
   template_arguments = {'name': args.name, 'package': args.pkg}
@@ -248,13 +249,18 @@ if __name__ == "__main__":
         print "Missing source template file! Please inform someone: {0}".format(file_to_scaffold['source'])
         missingTemplateFile += 1
 
-  if fileExists > 0 or missingTemplateFile > 0:
+  # if args.overwrite is true, always skip fileExists flags
+  if (fileExists > 0)&(not(args.overwrite)) or missingTemplateFile > 0:
     sys.exit(1)
+
+  createOrOverwrite = "created"
+  if args.overwrite:
+    createOrOverwrite = "overwritten"
 
   # now, let's alert the user to what files we are going to be creating and ask
   # for confirmation
   numFilesCreated = 0
-  print "Files created will be in {0} at:".format(args.pkg)
+  print "Files {1} will be in {0} at:".format(args.pkg, createOrOverwrite)
   for file_to_scaffold in templates[args.type]:
     print "\tType: {0}".format(file_to_scaffold['append'])
 
@@ -267,7 +273,7 @@ if __name__ == "__main__":
       print "\t\tSource: {0}".format(file_to_scaffold['output_sourceFile_relpath'])
       numFilesCreated += 1
 
-  if query_yes_no("{0:d} files will be created. Is this correct?".format(numFilesCreated), "no") == "no":
+  if query_yes_no("{0:d} files will be {1}. Is this correct?".format(numFilesCreated, createOrOverwrite), "no") == "no":
     sys.exit(0)
 
   # a flag to update linkdef
