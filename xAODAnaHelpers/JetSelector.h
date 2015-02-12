@@ -102,9 +102,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  virtual EL::StatusCode executeNonConst (       xAOD::JetContainer* inJets, float mcEvtWeight );
-  virtual EL::StatusCode executeConst    ( const xAOD::JetContainer* inJets, float mcEvtWeight );
-  virtual EL::StatusCode Bookkeeping ( int nObj, int nPass, float mcEvtWeight );
+  virtual EL::StatusCode executeConst( const xAOD::JetContainer* inJets, float mcEvtWeight );
 
   // added functions not from Algorithm
   // why does this need to be virtual?
