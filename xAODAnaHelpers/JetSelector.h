@@ -32,6 +32,7 @@ public:
   int m_numEvent;         //!
   int m_numObject;        //!
   int m_numEventPass;     //!
+  int m_weightNumEventPass; //!
   int m_numObjectPass;    //!
 
   std::string m_name;
@@ -53,13 +54,10 @@ private:
 
   // configuration variables
   TString m_inContainerName;      // input container name
-  TString m_inContainerNameSC;    // input container name
-  TString m_inContainerNameSCAux; // input container name
   TString m_outContainerName;     // output container name
   bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
   bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess;               // look at n objects
-  bool m_sort;                    // sort jets before selection
   int m_countWarning;             // max number of warnings before turned off
   bool m_cleanJets;               // require cleanJet decoration to not be set and false
   int m_pass_min;                 // minimum number of objects passing cuts

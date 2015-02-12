@@ -48,7 +48,8 @@ private:
   // configuration variables
   TString m_inContainerName;
   TString m_outContainerName;
-  TString m_outAuxContainerName;  
+  TString m_outSCContainerName;
+  TString m_outSCAuxContainerName;  
   
   TString m_jetAlgo;
   TString m_calibConfigData;

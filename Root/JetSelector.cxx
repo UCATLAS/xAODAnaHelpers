@@ -3,6 +3,7 @@
 
 #include "xAODJet/JetContainer.h"
 #include "xAODCore/ShallowCopy.h"
+#include "AthContainers/ConstDataVector.h"
 #include "xAODAnaHelpers/JetSelector.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
@@ -58,8 +59,6 @@ EL::StatusCode  JetSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  m_inContainerNameSC       = m_inContainerName + "ShallowCopy";
-  m_inContainerNameSCAux    = m_inContainerNameSC + "Aux."; // the period is very important!
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -72,7 +71,6 @@ EL::StatusCode  JetSelector :: configure ()
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
   // sort before running selection
-  m_sort                    = config->GetValue("Sort",          false);
   m_countWarning            = config->GetValue("MaxNWarning",   100);
 
   m_isEMjet = ( static_cast<bool>(m_inContainerName.Contains("EMTopoJets",TString::kIgnoreCase)) ) ? true : false;
@@ -199,6 +197,7 @@ EL::StatusCode JetSelector :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
+  m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
   Info("initialize()", "JetSelector Interface succesfully initialized!" );
@@ -221,147 +220,64 @@ EL::StatusCode JetSelector :: execute ()
 
   m_numEvent++;
 
+  // this will be the collection processed - no matter what!!
+  const xAOD::JetContainer* inJets = 0;
 
+  // if type is not defined then we need to define it
+  //  1 = get from TStore
+  //  2 = get from TEvent
   if( m_type == 0 ) {
-    xAOD::JetContainer* inJets = 0;
-    const xAOD::JetContainer* inJetsConst = 0;
-    if      ( m_store->retrieve( inJets      , m_inContainerName.Data() ).isSuccess() ){ m_type=1; }
-    else if ( m_event->retrieve( inJetsConst , m_inContainerName.Data() ).isSuccess() ){ m_type=2; }
+    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName.Data())){
+      m_type = 1;  
+    }
+    else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName.Data())){
+      m_type = 2;
+    }
     else {
       Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
   }
 
-
   // Can retrieve collection from input file ( const )
-  //           or collection from tstore ( non-const )
+  //           or collection from tstore ( ConstDataVector which then gives a const collection )
   // decide which on first pass
   // 
   // FIXME replace with enum
-  if ( m_type == 1 ) {        // get non-const from tstore
+  if ( m_type == 1 ) {        // get ConstDataVector from TStore
 
-    xAOD::JetContainer* inJets = 0;
-    if ( !m_store->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
+    ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
+    if ( !m_store->retrieve( inJetsCDV, m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
+    inJets = inJetsCDV->asDataVector();
 
-    executeNonConst( inJets , mcEvtWeight );
-    
-  }  // non-const input collection ( from TStore )
-  else if ( m_type == 2 ) {
+  }  
+  else if ( m_type == 2 ) {   // get const container from TEvent
 
-    const xAOD::JetContainer* inJets = 0;
     if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
 
-    // run on const container such that original thing is decorrated 
-    EL::StatusCode status = executeConst( inJets, mcEvtWeight );
-    // if fail, well then, get out!
-    if ( status == EL::StatusCode::FAILURE ) { return EL::StatusCode::FAILURE; }
+  }
 
-    // if have an input of a const container and want a subset in TStore then
-    // one need to make a shallow copy and store that in TStore and make a 
-    // subset pointing back to that collection
-    //   - const containers cannot be stored in TStore!
-    if( m_createSelectedContainer ) {
-
-      // create shallow copy
-      std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > shallowCopy = xAOD::shallowCopyContainer( *inJets );
-      xAOD::JetContainer* selectedJets = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
-      selectedJets->reserve(inJets->size()); // should not matter if it is too big
-
-      for( auto jet_itr : *(shallowCopy.first) ) {
-        if( jet_itr->auxdecor< int >( "passSel" ) != 1 ) { continue; }
-        selectedJets->push_back( jet_itr);
-      }
-
-      // store shallow copy in TStore
-      if( !m_store->record( shallowCopy.first, m_inContainerNameSC.Data() ).isSuccess() ){
-        Error("execute()  ", "Failed to store container %s. Exiting.", m_inContainerNameSC.Data() );
-        return EL::StatusCode::FAILURE;
-      }
-      if( !m_store->record( shallowCopy.second, m_inContainerNameSCAux.Data() ).isSuccess() ){
-        Error("execute()  ", "Failed to store aux container %s. Exiting.", m_inContainerNameSCAux.Data() );
-        return EL::StatusCode::FAILURE;
-      }
-      // store subjet in container
-      if( !m_store->record( selectedJets, m_outContainerName.Data() ).isSuccess() ){
-        Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
-        return EL::StatusCode::FAILURE;
-      }
-
-      return status;
-
-    } else { // if not creating an subset then do not need to make a shallow copy
-
-      if(m_sort && !m_createSelectedContainer && m_countWarning) {
-        m_countWarning--;
-        Info("execute()::Warning", "Requested sort for const-container and not creating a subset container! No sorting done! %s", m_name.c_str());
-      }
-
-      return status;
-
-    }
-  
-  }  // const input collection ( from input File )
-
-
-  return EL::StatusCode::SUCCESS;
+  return executeConst( inJets, mcEvtWeight );
 
 }
 
 EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight ) 
 {
 
-  // cannot create output subset container here and save it in TStore - not allowed!
+  // create output container (if requested)
+  ConstDataVector<xAOD::JetContainer>* selectedJets = 0;
+  if(m_createSelectedContainer) {
+    selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+  }
 
   int nPass(0); int nObj(0);
   for( auto jet_itr : *inJets ) { // duplicated of basic loop
-
-    // if only looking at a subset of jets make sure all are decorrated
-    if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
-      if(m_decorateSelectedObjects) {
-        jet_itr->auxdecor< int >( "passSel" ) = -1;
-      } else {
-        break;
-      }
-      continue;
-    }
-
-    nObj++;
-    int passSel = this->PassCuts( jet_itr );
-    if(m_decorateSelectedObjects) {
-      jet_itr->auxdecor< int >( "passSel" ) = passSel;
-    }
-    if(passSel) {
-      nPass++;
-    }
-
-  }
-
-  return this->Bookkeeping( nObj, nPass, mcEvtWeight );
-
-}
-
-EL::StatusCode JetSelector :: executeNonConst ( xAOD::JetContainer* inJets, float mcEvtWeight ) 
-{
-
-  // create output container (if requested)
-  xAOD::JetContainer* selectedJets = 0;
-  if(m_createSelectedContainer) {
-    selectedJets = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
-  }
-
-  if(m_sort) {
-    std::sort( inJets->begin(), inJets->end(), HelperFunctions::sort_pt );
-  }
-
-  int nPass(0); int nObj(0);
-  for( auto jet_itr : *inJets ) {
 
     // if only looking at a subset of jets make sure all are decorrated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
@@ -385,23 +301,8 @@ EL::StatusCode JetSelector :: executeNonConst ( xAOD::JetContainer* inJets, floa
         selectedJets->push_back( jet_itr );
       }
     }
+
   }
-
-  // add output container to TStore
-  if( m_createSelectedContainer ) {
-    if( !m_store->record( selectedJets, m_outContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  return this->Bookkeeping( nObj, nPass, mcEvtWeight );
-
-}
-
-
-EL::StatusCode JetSelector :: Bookkeeping ( int nObj, int nPass, float mcEvtWeight )
-{
 
   m_numObject     += nObj;
   m_numObjectPass += nPass;
@@ -417,10 +318,7 @@ EL::StatusCode JetSelector :: Bookkeeping ( int nObj, int nPass, float mcEvtWeig
   }
 
   m_numEventPass++;
-  if(m_useCutFlow) {
-    m_cutflowHist ->Fill( m_cutflow_bin, 1 );
-    m_cutflowHistW->Fill( m_cutflow_bin, mcEvtWeight);
-  }
+  m_weightNumEventPass += mcEvtWeight;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -451,7 +349,12 @@ EL::StatusCode JetSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Filling cutflow... \n");
+
+  if(m_useCutFlow) {
+    m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
+    m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
+  }
 
   return EL::StatusCode::SUCCESS;
 }
