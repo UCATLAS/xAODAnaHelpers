@@ -6,6 +6,16 @@
 #include "SampleHandler/DiskListLocal.h"
 #include <TSystem.h>
 
+#include "xAODAnaHelpers/BasicEventSelection.h"
+#include "xAODAnaHelpers/JetCalibrator.h"
+#include "xAODAnaHelpers/JetSelector.h"
+#include "xAODAnaHelpers/BJetSelector.h"
+#include "xAODAnaHelpers/JetHistsAlgo.h"
+#include "xAODAnaHelpers/MuonCalibrator.h"
+#include "xAODAnaHelpers/MuonSelector.h"
+#include "xAODAnaHelpers/ElectronCalibrator.h"
+#include "xAODAnaHelpers/ElectronSelector.h"
+#include "xAODAnaHelpers/Writer.h"
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 
 int main( int argc, char* argv[] ) {
@@ -43,10 +53,33 @@ int main( int argc, char* argv[] ) {
   EL::Job job;
   job.sampleHandler( sh );
 
+  BasicEventSelection* baseEventSel = new BasicEventSelection("baseEventSel","$ROOTCOREBIN/data/xAODAnaHelpers/baseEvent.config");
+
   // Add our analysis to the job:
   JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", "$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
 
+
+
+  /// RECO JETS - calibrate, select, then plot
+
+  JetCalibrator* jetCalib = new JetCalibrator("jetCalib_AntiKt4TopoEM","$ROOTCOREBIN/data/xAODAnaHelpers/jetCalib_AntiKt4TopoEMCalib.config");
+
+  JetSelector* jetSelect_signal = new JetSelector("jetSelect_signal","$ROOTCOREBIN/data/xAODAnaHelpers/jetSelect_signal.config");
+
+  JetHistsAlgo* jetHistsAlgo_signal = new JetHistsAlgo("jetHistsAlgo_signal","$ROOTCOREBIN/data/xAODAnaHelpers/jetHistsAlgo_signal.config");
+
+  /// TRUTH JETS - select, then plot
+  JetSelector* jetSelect_truth = new JetSelector("jetSelect_truth","$ROOTCOREBIN/data/xAODAnaHelpers/jetSelect_truth.config");
+
+  JetHistsAlgo* jetHistsAlgo_truth = new JetHistsAlgo("jetHistsAlgo_truth","$ROOTCOREBIN/data/xAODAnaHelpers/jetHistsAlgo_truth.config");
+
   // Attach algorithms
+  job.algsAdd( baseEventSel ); 
+  job.algsAdd( jetCalib );
+  job.algsAdd( jetSelect_signal );
+  job.algsAdd( jetHistsAlgo_signal );
+  job.algsAdd( jetSelect_truth );
+  job.algsAdd( jetHistsAlgo_truth );
   job.algsAdd( jk_AntiKt10LC );
 
 
@@ -56,4 +89,5 @@ int main( int argc, char* argv[] ) {
 
   return 0;
 }
+
 

@@ -127,6 +127,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
     }
     else {
       Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
+      m_store->print();
       return EL::StatusCode::FAILURE;
     }
   }

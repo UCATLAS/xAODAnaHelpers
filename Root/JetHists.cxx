@@ -311,10 +311,12 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
  
 
 
+  /*
   std::vector<float> chfs = jet->getAttribute< std::vector<float> >(xAOD::JetAttribute::SumPtTrkPt1000);
   float chf(-1);
   //if( pvLocation >= 0 && pvLocation < (int)chfs.size() ) { chf = chfs.at( pvLocation ); }
   m_chf ->  Fill( chf , eventWeight );
+  */
 
 
   // testing 

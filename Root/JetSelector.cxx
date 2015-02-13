@@ -237,6 +237,7 @@ EL::StatusCode JetSelector :: execute ()
     }
     else {
       Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
+      m_store->print();
       return EL::StatusCode::FAILURE;
     }
   }
@@ -322,6 +323,14 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
   m_numEventPass++;
   m_weightNumEventPass += mcEvtWeight;
 
+  // add ConstDataVector to TStore
+  if(m_createSelectedContainer) {
+    if( !m_store->record( selectedJets, m_outContainerName.Data() ).isSuccess() ) {
+      Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
+      return EL::StatusCode::FAILURE;
+    }
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -351,12 +360,13 @@ EL::StatusCode JetSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Filling cutflow... \n");
-
+  Info("finalize()", "%s", m_name.c_str());
   if(m_useCutFlow) {
+    Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
+
 
   return EL::StatusCode::SUCCESS;
 }
@@ -375,6 +385,9 @@ EL::StatusCode JetSelector :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
+
+  Info("histFinalize()", "Calling histFinalize\n");
+
   return EL::StatusCode::SUCCESS;
 }
 
