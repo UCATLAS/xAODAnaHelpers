@@ -21,16 +21,10 @@ int main( int argc, char* argv[] ) {
   SH::SampleHandler sh;
 
   // get the data path for xAODAnaHelpers/data
-//  std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
-//  SH::DiskListLocal list (dataPath);
-//  SH::scanDir (sh, list, "r20test_AOD.pool.root", "xAODAnaHelpers"); // specifying one particular sample
-
-//  /tmp/gfacini/mc14_13TeV.147916.Pythia8_AU2CT10_jetjet_JZ6W.merge.AOD.e2743_s1982_s2008_r5787_r5853_tid01598030_00/AOD.01598030._000055.pool.root.1
-  std::string dataPath = gSystem->ExpandPathName("/tmp/gfacini/");
+  std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
   SH::DiskListLocal list (dataPath);
-  SH::scanDir (sh, list, "AOD.01598030._000055.pool.root.1"); // specifying one particular sample
+  SH::scanDir (sh, list, "r20test_AOD.pool.root", "xAODAnaHelpers"); // specifying one particular sample
 
-   
 
   // Set the name of the input TTree. It's always "CollectionTree"
   // for xAOD files.
