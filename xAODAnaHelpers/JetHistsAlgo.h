@@ -17,6 +17,7 @@ public:
 
   std::string m_name;
   std::string m_configName;
+  int m_type;
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
@@ -29,7 +30,7 @@ private:
 #endif //not __CINT__
 
   // configuration variables
-  std::string m_inContainerName;  //!
+  TString m_inContainerName;      //!
   std::string m_detailStr;        //!
 
   // variables that don't get filled at submission time should be

@@ -5,6 +5,7 @@
 
 #include "xAODJet/JetContainer.h"
 #include "xAODCore/ShallowCopy.h"
+#include "AthContainers/ConstDataVector.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
@@ -75,7 +76,8 @@ EL::StatusCode  JetCalibrator :: configure ()
 
   // shallow copies are made with this output container name
   m_outContainerName        = config->GetValue("OutputContainer", "");
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
   m_sort                    = config->GetValue("Sort",          false);
 
   if( m_inContainerName.Length() == 0 ) {
@@ -180,7 +182,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   std::cout << " Parameters to JetCalibrationTool() : "  << "\n"
         << "\t m_inContainerName : "	     << m_inContainerName.Data()      <<  " of type " <<  typeid(m_inContainerName).name() << "\n"
         << "\t m_outContainerName: "	     << m_outContainerName.Data()     <<  " of type " <<  typeid(m_outContainerName).name() << "\n"
-        << "\t m_outAuxContainerName: "      << m_outAuxContainerName.Data()  <<  " of type " <<  typeid(m_outAuxContainerName).name() << "\n"
+        << "\t m_outSCContainerName: "	     << m_outSCContainerName.Data()     <<  " of type " <<  typeid(m_outSCContainerName).name() << "\n"
+        << "\t m_outSCAuxContainerName: "      << m_outSCAuxContainerName.Data()  <<  " of type " <<  typeid(m_outSCAuxContainerName).name() << "\n"
         << "\t m_debug: "		     << m_debug 		      <<  " of type " <<  typeid(m_debug).name() <<  "\n"
         << "\t m_isMC: "		     << m_isMC  		      <<  " of type " <<  typeid(m_isMC).name() << "\n"
         << "\t m_jetAlgo  : "		     << m_jetAlgo.Data()	      <<  " of type " <<  typeid(m_jetAlgo).name() <<  "\n"
@@ -238,36 +241,48 @@ EL::StatusCode JetCalibrator :: execute ()
   }
 
   // create shallow copy
-  std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJets = xAOD::shallowCopyContainer( *inJets );
+  std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
+  ConstDataVector<xAOD::JetContainer>* calibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+  calibJetsCDV->reserve( calibJetsSC.first->size() );
 
   // calibrate and decorate with cleaning decision
-  xAOD::JetContainer::iterator jet_itr = (calibJets.first)->begin();
-  xAOD::JetContainer::iterator jet_end = (calibJets.first)->end();
-  for( ; jet_itr != jet_end; ++jet_itr ){
+  for( auto jet_itr : *(calibJetsSC.first) ) {
     m_numObject++;
 
-    if ( m_jetCalibration->applyCorrection( **jet_itr ) == CP::CorrectionCode::Error ) {
+    if ( m_jetCalibration->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
       Error("execute()", "JetCalibration tool reported a CP::CorrectionCode::Error");
       Error("execute()", "%s", m_name.c_str());
       return StatusCode::FAILURE;
     }
 
-    bool cleanJet = m_jetCleaning->accept( *(*jet_itr) );
-    (*jet_itr)->auxdata< int >( "cleanJet" ) = cleanJet;
+    // decorate with cleaning decision
+    bool cleanJet = m_jetCleaning->accept( *jet_itr );
+    jet_itr->auxdata< int >( "cleanJet" ) = cleanJet;
 
   }
 
   if(m_sort) {
-    std::sort( calibJets.first->begin(), calibJets.first->end(), HelperFunctions::sort_pt );
+    std::sort( calibJetsSC.first->begin(), calibJetsSC.first->end(), HelperFunctions::sort_pt );
+  }
+
+  // save pointers in ConstDataVector with same order
+  for( auto jet_itr : *(calibJetsSC.first) ) {
+    calibJetsCDV->push_back( jet_itr );
   }
 
   // add shallow copy to TStore
-  if( !m_store->record( calibJets.first, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
+  if( !m_store->record( calibJetsSC.first, m_outSCContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store shallow copy container %s. Exiting.", m_outSCContainerName.Data() );
     return EL::StatusCode::FAILURE;
   }
-  if( !m_store->record( calibJets.second, m_outAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outAuxContainerName.Data() );
+  if( !m_store->record( calibJetsSC.second, m_outSCAuxContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store shallow copy aux container %s. Exiting.", m_outSCAuxContainerName.Data() );
+    return EL::StatusCode::FAILURE;
+  }
+
+  // add ConstDataVector to TStore
+  if( !m_store->record( calibJetsCDV, m_outContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
     return EL::StatusCode::FAILURE;
   }
 

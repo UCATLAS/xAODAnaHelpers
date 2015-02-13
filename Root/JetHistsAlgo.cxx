@@ -5,6 +5,7 @@
 #include "xAODJet/JetContainer.h"
 #include "xAODTracking/VertexContainer.h"
 #include "xAODEventInfo/EventInfo.h"
+#include "AthContainers/ConstDataVector.h"
 
 #include <xAODAnaHelpers/JetHists.h>
 #include <xAODAnaHelpers/JetHistsAlgo.h>
@@ -23,6 +24,7 @@ JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
+  m_type(0),
   m_plots(0)
 {
 }
@@ -75,7 +77,7 @@ EL::StatusCode JetHistsAlgo :: configure ()
   m_detailStr               = config->GetValue("DetailStr",       "");
 
   // in case anything was missing or blank...
-  if( m_inContainerName.empty() || m_detailStr.empty() ){
+  if( m_inContainerName.IsNull() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
@@ -110,12 +112,47 @@ EL::StatusCode JetHistsAlgo :: execute ()
     eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
   }
 
-  const xAOD::JetContainer* jets = 0;
-  if ( !m_event->retrieve( jets, m_inContainerName ).isSuccess() ){
-    if ( !m_store->retrieve( jets, m_inContainerName ).isSuccess() ){
-      Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
+  // this will be the collection processed - no matter what!!
+  const xAOD::JetContainer* inJets = 0;
+
+  // if type is not defined then we need to define it
+  //  1 = get from TStore
+  //  2 = get from TEvent
+  if( m_type == 0 ) {
+    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName.Data())){
+      m_type = 1;  
+    }
+    else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName.Data())){
+      m_type = 2;
+    }
+    else {
+      Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
+  }
+
+  // Can retrieve collection from input file ( const )
+  //           or collection from tstore ( ConstDataVector which then gives a const collection )
+  // decide which on first pass
+  // 
+  // FIXME replace with enum
+  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+
+    ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
+    if ( !m_store->retrieve( inJetsCDV, m_inContainerName.Data() ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
+      return EL::StatusCode::FAILURE;
+    }
+    inJets = inJetsCDV->asDataVector();
+
+  }  
+  else if ( m_type == 2 ) {   // get const container from TEvent
+
+    if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
+      return EL::StatusCode::FAILURE;
+    }
+
   }
 
   // get the highest sum pT^2 primary vertex location in the PV vector
@@ -128,13 +165,11 @@ EL::StatusCode JetHistsAlgo :: execute ()
   /* two ways to fill */
 
   // 1. pass the jet collection
-  m_plots->execute( jets, eventWeight );
+  m_plots->execute( inJets, eventWeight );
 
   /* 2. loop over the jets
-  xAOD::JetContainer::const_iterator jet_itr = jets->begin();
-  xAOD::JetContainer::const_iterator jet_end = jets->end();
-  for( ; jet_itr != jet_end; ++jet_itr ) {
-    m_plots->execute( *jet_itr, eventWeight );
+  for( auto jet_itr : *inJets ) {
+    m_plots->execute( jet_itr, eventWeight );
   }
   */
 

@@ -34,10 +34,11 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  bool m_isMC;
-  bool m_isFullSim; /* this should be read from event info- sample name or something...now forced to true */
+  bool m_isMC;            //!
+  /* this should be read from event info- sample name or something...now forced to true */
+  bool m_isFullSim;       //!
 
-  bool m_debug;
+  bool m_debug;           //!
 
 private:
 
@@ -46,20 +47,21 @@ private:
   JetCleaningTool    * m_jetCleaning;    //!
 
   // configuration variables
-  TString m_inContainerName;
-  TString m_outContainerName;
-  TString m_outAuxContainerName;  
+  TString m_inContainerName;        //!
+  TString m_outContainerName;       //!
+  TString m_outSCContainerName;     //!
+  TString m_outSCAuxContainerName;  //!
   
-  TString m_jetAlgo;
-  TString m_calibConfigData;
-  TString m_calibConfigFullSim;
-  TString m_calibConfigAFII; 
-  TString m_calibConfig;
-  TString m_calibSequence;    
+  TString m_jetAlgo;                //!
+  TString m_calibConfigData;        //!
+  TString m_calibConfigFullSim;     //!
+  TString m_calibConfigAFII;        //! 
+  TString m_calibConfig;            //!
+  TString m_calibSequence;          //!
   // sort after calibration
-  bool    m_sort;
+  bool    m_sort;                   //!
 
-  std::string m_jetCalibCutLevel;
+  std::string m_jetCalibCutLevel;   //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
