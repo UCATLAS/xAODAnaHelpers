@@ -19,6 +19,14 @@ HistogramManager::HistogramManager(std::string name, std::string detailStr):
   m_name(name),
   m_detailStr(detailStr)
 {
+
+  // if last character of name is a alphanumeric add a / so that 
+  // in the output file, a TDirectory is created with the histograms inside
+  if( isalnum( m_name.back() ) && !ispunct( m_name.back() ) ) {
+    m_name += "/";
+    Info("HistogramManager()", "Adding slash to put hists in TDirectories: %s",m_name.c_str());
+  }
+
 }
 
 HistogramManager::~HistogramManager() {}

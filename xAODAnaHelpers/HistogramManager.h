@@ -1,6 +1,7 @@
 #ifndef xAODAnaHelpers_HistogramManager_H
 #define xAODAnaHelpers_HistogramManager_H
 
+#include <ctype.h>
 #include <TH1.h>
 #include <TH1F.h>
 #include <TH2F.h>
