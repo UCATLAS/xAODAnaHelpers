@@ -1,6 +1,7 @@
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
 
+#include "AthContainers/ConstDataVector.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODBTagging/BTagging.h"
 #include "xAODAnaHelpers/BJetSelector.h"
@@ -22,6 +23,7 @@ BJetSelector :: BJetSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
+  m_type(0),
   m_cutflowHist(0),
   m_cutflowHistW(0)
 {
@@ -69,7 +71,6 @@ EL::StatusCode  BJetSelector :: configure ()
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
   // sort before running selection
-  m_sort                    = config->GetValue("Sort",          false);
 
   m_isEMjet = ( static_cast<bool>(m_inContainerName.Contains("EMTopoJets",TString::kIgnoreCase)) ) ? true : false;
   m_isLCjet = ( static_cast<bool>(m_inContainerName.Contains("LCTopoJets",TString::kIgnoreCase)) ) ? true : false;
@@ -229,39 +230,82 @@ EL::StatusCode BJetSelector :: execute ()
 
   if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
-  float mcEvtWeight(1); // FIXME - set to something from eventInfo
+  float mcEvtWeight(1); // FIXME - set to something from eventInfo for cutflow
 
   m_numEvent++;
 
-  // get the collection from TEvent or TStore (NB: if retrieving original xAOD container, must be const!!)
-  xAOD::JetContainer* inJets = 0;
-  if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
-    if ( !m_store->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.Data() );
+  // this will be the collection processed - no matter what!!
+  const xAOD::JetContainer* inJets = 0;
+
+  // if type is not defined then we need to define it
+  //  1 = get from TStore
+  //  2 = get from TEvent
+  if( m_type == 0 ) {
+    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName.Data())){
+      m_type = 1;  
+    }
+    else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName.Data())){
+      m_type = 2;
+    }
+    else {
+      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
+      m_store->print();
       return EL::StatusCode::FAILURE;
     }
   }
 
-  if(m_sort) {
-    std::sort( inJets->begin(), inJets->end(), HelperFunctions::sort_pt );
+  // Can retrieve collection from input file ( const )
+  //           or collection from tstore ( ConstDataVector which then gives a const collection )
+  // decide which on first pass
+  // 
+  // FIXME replace with enum
+  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+
+    ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
+    if ( !m_store->retrieve( inJetsCDV, m_inContainerName.Data() ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
+      return EL::StatusCode::FAILURE;
+    }
+    inJets = inJetsCDV->asDataVector();
+
+  }  
+  else if ( m_type == 2 ) {   // get const container from TEvent
+
+    if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
+      return EL::StatusCode::FAILURE;
+    }
+
   }
+
+  return executeConst( inJets, mcEvtWeight );
+
+}
+
+
+EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight ) 
+{
+  // Here you do everything that needs to be done on every single
+  // events, e.g. read input variables, apply cuts, and fill
+  // histograms and trees.  This is where most of your actual analysis
+  // code will go.
+
+  if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
   // create output container (if requested) - deep copy
 
-  xAOD::JetContainer* selectedJets = 0;
+  ConstDataVector<xAOD::JetContainer>* selectedJets = 0;
   if(m_createSelectedContainer) {
-    selectedJets = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
+    selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
   }
 
-  xAOD::JetContainer::iterator jet_itr = inJets->begin();
-  xAOD::JetContainer::iterator jet_end = inJets->end();
   int nPass(0); int nObj(0);
-  for( ; jet_itr != jet_end; ++jet_itr ){
+  for( auto jet_itr : *inJets ){
 
     // if only looking at a subset of jets make sure all are decorrated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        (*jet_itr)->auxdecor< int >( m_decor.Data() ) = -1;
+        jet_itr->auxdecor< int >( m_decor.Data() ) = -1;
       } else {
         break;
       }
@@ -269,11 +313,11 @@ EL::StatusCode BJetSelector :: execute ()
     }
 
     nObj++;
-    int passSel = this->PassCuts( (*jet_itr) );
+    int passSel = this->PassCuts( jet_itr );
 
     // only b-tag jets passing the kinematic selection
     if( m_btagCut >=0 && passSel > 0 ) {
-      const xAOD::BTagging *myBTag = (*jet_itr)->btagging();
+      const xAOD::BTagging *myBTag = jet_itr->btagging();
       if( myBTag->MV1_discriminant() > m_btagCut ) {
         // get efficiency scale factor for jet
       } else {
@@ -283,13 +327,13 @@ EL::StatusCode BJetSelector :: execute ()
     }
 
     if(m_decorateSelectedObjects) {
-      (*jet_itr)->auxdecor< int >( m_decor.Data() ) = passSel;
+      jet_itr->auxdecor< int >( m_decor.Data() ) = passSel;
     }
 
     if(passSel) {
       nPass++;
       if(m_createSelectedContainer) {
-        selectedJets->push_back( *jet_itr );
+        selectedJets->push_back( jet_itr );
       }
     }
   }
