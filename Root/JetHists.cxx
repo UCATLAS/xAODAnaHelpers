@@ -73,6 +73,47 @@ EL::StatusCode JetHists::initialize() {
     );
   }
 
+  // details for jet energy information
+  m_fillTruthJets = false;
+  if( m_detailStr.find("truth") != std::string::npos ) { 
+    std::cout << m_name << " adding plots for truth jets" << std::endl;
+    m_fillTruthJets = true;
+
+    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          20,  -0.5,  19.5);
+    m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          50,  -0.5,  49.5);
+    m_truthPt        = book(m_name, "TruthPt",             "Truth Pt",              100,   0,   100.0);
+
+    m_truthDr_B            = book(m_name, "TruthLabelDeltaR_B",   "Truth Label dR(b)" ,          120, -0.1,   1.0);
+    m_truthDr_C      = book(m_name, "TruthLabelDeltaR_C",  "Truth Label dR(c)" ,    120, -0.1, 1.0);
+    m_truthDr_T      = book(m_name, "TruthLabelDeltaR_T",  "Truth Label dR(tau)" ,  120, -0.1, 1.0);
+
+  }
+
+  m_fillTruthJetsDetails = false;
+  if( m_detailStr.find("truth_details") != std::string::npos ) { 
+    std::cout << m_name << " adding detailed plots for truth jets" << std::endl;
+    m_fillTruthJetsDetails = true;
+
+    m_truthCount_BhadFinal = book(m_name, "TruthCount_BHadFinal", "Truth Count BHad (final)" ,    10, -0.5,   9.5);
+    m_truthCount_BhadInit  = book(m_name, "TruthCount_BHadInit",  "Truth Count BHad (initial)" ,  10, -0.5,   9.5);
+    m_truthCount_BQFinal   = book(m_name, "TruthCount_BQFinal",   "Truth Count BQuark (final)" ,  10, -0.5,   9.5);
+    m_truthPt_BhadFinal    = book(m_name, "TruthPt_BHadFinal",    "Truth Pt BHad (final)" ,      100,    0,   100);
+    m_truthPt_BhadInit     = book(m_name, "TruthPt_BHadInit",     "Truth Pt BHad (initial)" ,    100,    0,   100);
+    m_truthPt_BQFinal      = book(m_name, "TruthPt_BQFinal",      "Truth Pt BQuark (final)" ,    100,    0,   100);
+
+    m_truthCount_ChadFinal = book(m_name, "TruthCount_CHadFinal", "Truth Count CHad (final)" ,    10, -0.5,   9.5);
+    m_truthCount_ChadInit  = book(m_name, "TruthCount_CHadInit",  "Truth Count CHad (initial)" ,  10, -0.5,   9.5);
+    m_truthCount_CQFinal   = book(m_name, "TruthCount_CQFinal",   "Truth Count CQuark (final)" ,  10, -0.5,   9.5);
+    m_truthPt_ChadFinal    = book(m_name, "TruthPt_CHadFinal",    "Truth Pt CHad (final)" ,      100,    0,   100);
+    m_truthPt_ChadInit     = book(m_name, "TruthPt_CHadInit",     "Truth Pt CHad (initial)" ,    100,    0,   100);
+    m_truthPt_CQFinal      = book(m_name, "TruthPt_CQFinal",      "Truth Pt CQuark (final)" ,    100,    0,   100);
+
+    m_truthCount_TausFinal = book(m_name, "TruthCount_CHadFinal", "Truth Count Taus (final)" ,    10, -0.5,   9.5);
+    m_truthPt_TausFinal    = book(m_name, "TruthPt_CHadFinal",    "Truth Pt Taus (final)" ,      100,    0,   100);
+    
+  }
+
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -307,8 +348,130 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
  // 0028       JetLabel,
  // 0042       TruthMF,
  // 0043       TruthMFindex,
- 
- 
+
+  if(m_fillTruthJets){
+
+    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
+    if( TruthLabelID.isAvailable( *jet ) ) {
+      m_truthLabelID ->  Fill( TruthLabelID( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<int> TruthCount ("TruthCount");
+    if( TruthCount.isAvailable( *jet ) ) {
+      m_truthCount ->  Fill( TruthCount( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> TruthPt ("TruthPt");
+    if( TruthPt.isAvailable( *jet ) ) {
+      m_truthPt ->  Fill( TruthPt( *jet )/1000, eventWeight );
+    }
+
+
+    static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_B ("TruthLabelDeltaR_B");
+    if( TruthLabelDeltaR_B.isAvailable( *jet ) ) {
+      m_truthDr_B ->  Fill( TruthLabelDeltaR_B( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_C ("TruthLabelDeltaR_C");
+    if( TruthLabelDeltaR_C.isAvailable( *jet ) ) {
+      m_truthDr_C ->  Fill( TruthLabelDeltaR_C( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_T ("TruthLabelDeltaR_T");
+    if( TruthLabelDeltaR_T.isAvailable( *jet ) ) {
+      m_truthDr_T ->  Fill( TruthLabelDeltaR_T( *jet ), eventWeight );
+    }
+
+  }
+
+
+  if(m_fillTruthJetsDetails){
+
+    //
+    // B-Hadron Details
+    //
+    static SG::AuxElement::ConstAccessor<int> GhostBHadronsFinalCount ("GhostBHadronsFinalCount");
+    if( GhostBHadronsFinalCount.isAvailable( *jet ) ) {
+      m_truthCount_BhadFinal ->  Fill( GhostBHadronsFinalCount( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<int> GhostBHadronsInitialCount ("GhostBHadronsInitialCount");
+    if( GhostBHadronsInitialCount.isAvailable( *jet ) ) {
+      m_truthCount_BhadInit ->  Fill( GhostBHadronsInitialCount( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<int> GhostBQuarksFinalCount ("GhostBQuarksFinalCount");
+    if( GhostBQuarksFinalCount.isAvailable( *jet ) ) {
+      m_truthCount_BQFinal ->  Fill( GhostBQuarksFinalCount( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> GhostBHadronsFinalPt ("GhostBHadronsFinalPt");
+    if( GhostBHadronsFinalPt.isAvailable( *jet ) ) {
+      m_truthPt_BhadFinal ->  Fill( GhostBHadronsFinalPt( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> GhostBHadronsInitialPt ("GhostBHadronsInitialPt");
+    if( GhostBHadronsInitialPt.isAvailable( *jet ) ) {
+      m_truthPt_BhadInit ->  Fill( GhostBHadronsInitialPt( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> GhostBQuarksFinalPt ("GhostBQuarksFinalPt");
+    if( GhostBQuarksFinalPt.isAvailable( *jet ) ) {
+      m_truthPt_BQFinal ->  Fill( GhostBQuarksFinalPt( *jet ), eventWeight );
+    }
+
+
+    //
+    // C-Hadron Details
+    //
+    static SG::AuxElement::ConstAccessor<int> GhostCHadronsFinalCount ("GhostCHadronsFinalCount");
+    if( GhostCHadronsFinalCount.isAvailable( *jet ) ) {
+      m_truthCount_ChadFinal ->  Fill( GhostCHadronsFinalCount( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<int> GhostCHadronsInitialCount ("GhostCHadronsInitialCount");
+    if( GhostCHadronsInitialCount.isAvailable( *jet ) ) {
+      m_truthCount_ChadInit ->  Fill( GhostCHadronsInitialCount( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<int> GhostCQuarksFinalCount ("GhostCQuarksFinalCount");
+    if( GhostCQuarksFinalCount.isAvailable( *jet ) ) {
+      m_truthCount_CQFinal ->  Fill( GhostCQuarksFinalCount( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> GhostCHadronsFinalPt ("GhostCHadronsFinalPt");
+    if( GhostCHadronsFinalPt.isAvailable( *jet ) ) {
+      m_truthPt_ChadFinal ->  Fill( GhostCHadronsFinalPt( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> GhostCHadronsInitialPt ("GhostCHadronsInitialPt");
+    if( GhostCHadronsInitialPt.isAvailable( *jet ) ) {
+      m_truthPt_ChadInit ->  Fill( GhostCHadronsInitialPt( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> GhostCQuarksFinalPt ("GhostCQuarksFinalPt");
+    if( GhostCQuarksFinalPt.isAvailable( *jet ) ) {
+      m_truthPt_CQFinal ->  Fill( GhostCQuarksFinalPt( *jet ), eventWeight );
+    }
+
+
+    //
+    // Tau Details
+    //
+    static SG::AuxElement::ConstAccessor<int> GhostTausFinalCount ("GhostTausFinalCount");
+    if( GhostTausFinalCount.isAvailable( *jet ) ) {
+      m_truthCount_TausFinal ->  Fill( GhostTausFinalCount( *jet ), eventWeight );
+    }
+
+
+    static SG::AuxElement::ConstAccessor<float> GhostTausFinalPt ("GhostTausFinalPt");
+    if( GhostTausFinalPt.isAvailable( *jet ) ) {
+      m_truthPt_TausFinal ->  Fill( GhostTausFinalPt( *jet ), eventWeight );
+    }
+
+
+  }
+
 
 
   /*
