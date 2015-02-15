@@ -78,11 +78,13 @@ private:
   float m_mass_min;               // require mass > mass_max
   float m_rapidity_max;           // require rapidity < rapidity_max
   float m_rapidity_min;           // require rapidity > rapidity_min
+  int   m_truthLabel;             // require truth level on truth jets
 
   bool m_doJVF;                   // check JVF
   float m_pt_max_JVF;
   float m_eta_max_JVF;
   float m_JVFCut;
+
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

@@ -79,24 +79,26 @@ EL::StatusCode  JetSelector :: configure ()
   m_isLCjet = ( static_cast<bool>(m_inContainerName.Contains("LCTopoJets",TString::kIgnoreCase)) ) ? true : false;
 
   // cuts
-  m_cleanJets               = config->GetValue("CleanJets", true);
-  m_pass_max                = config->GetValue("PassMax", -1);
-  m_pass_min                = config->GetValue("PassMin", -1);
+  m_cleanJets               = config->GetValue("CleanJets",  true);
+  m_pass_max                = config->GetValue("PassMax",      -1);
+  m_pass_min                = config->GetValue("PassMin",      -1);
   m_pT_max                  = config->GetValue("pTMax",       1e8);
   m_pT_min                  = config->GetValue("pTMin",       1e8);
   m_eta_max                 = config->GetValue("etaMax",      1e8);
   m_eta_min                 = config->GetValue("etaMin",      1e8);
-  m_detEta_max                 = config->GetValue("detEtaMax",      1e8);
-  m_detEta_min                 = config->GetValue("detEtaMin",      1e8);
+  m_detEta_max              = config->GetValue("detEtaMax",   1e8);
+  m_detEta_min              = config->GetValue("detEtaMin",   1e8);
   m_mass_max                = config->GetValue("massMax",     1e8);
   m_mass_min                = config->GetValue("massMin",     1e8);
   m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
   m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
+  m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
 
   m_doJVF 		    = config->GetValue("DoJVF", false);
   m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",       1e8);
   m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",      1e8);
-  m_JVFCut 		    = config->GetValue("JVFCut", 0.5);
+  m_JVFCut 		    = config->GetValue("JVFCut",         0.5);
+
 
   m_passAuxDecorKeys         = config->GetValue("PassDecorKeys", "");
   TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
@@ -483,6 +485,14 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //
   for(auto& failKey : m_failKeys){
     if(jet->auxdata<bool>(failKey.Data())) {return 0;}
+  }
+
+  //
+  //  Truth Label
+  //
+  if( m_truthLabel != -1 ) {
+    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
+    if(TruthLabelID( *jet ) != m_truthLabel) {return 0;}
   }
 
   return 1;
