@@ -11,6 +11,8 @@
 #include "TEnv.h"
 #include "TFile.h"
 #include "TSystem.h"
+#include "TObjArray.h"
+#include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetSelector)
@@ -95,6 +97,22 @@ EL::StatusCode  JetSelector :: configure ()
   m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",       1e8);
   m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",      1e8);
   m_JVFCut 		    = config->GetValue("JVFCut", 0.5);
+
+  m_passAuxDecorKeys         = config->GetValue("PassDecorKeys", "");
+  TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
+  for(int i = 0; i<passKeysStrings->GetEntries(); ++i) {
+    TObjString* passKeyObj = (TObjString*)passKeysStrings->At(i);
+    m_passKeys.push_back(passKeyObj->GetString());
+  }
+
+  m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+  TObjArray* failKeysStrings = m_failAuxDecorKeys.Tokenize(",");
+  for(int i = 0; i<failKeysStrings->GetEntries(); ++i) {
+    TObjString* failKeyObj = (TObjString*)failKeysStrings->At(i);
+    m_failKeys.push_back(failKeyObj->GetString());
+  }
+
+
 
   if( m_inContainerName.Length() == 0 ) {
     Error("configure()", "InputContainer is empty!");
@@ -451,6 +469,20 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
        }
        if ( fabs(JVFMax) < m_JVFCut ) { return 0; }
     }
+  }
+
+  //
+  //  Pass Keys
+  //
+  for(auto& passKey : m_passKeys){
+    if(!jet->auxdata<bool>(passKey.Data())) { return 0;}
+  }
+
+  //
+  //  Fail Keys
+  //
+  for(auto& failKey : m_failKeys){
+    if(jet->auxdata<bool>(failKey.Data())) {return 0;}
   }
 
   return 1;

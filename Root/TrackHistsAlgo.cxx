@@ -18,10 +18,11 @@ ClassImp(TrackHistsAlgo)
 TrackHistsAlgo :: TrackHistsAlgo () {
 }
 
-TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName) :
+TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName, std::string containerName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
+  m_inContainerName(containerName),
   m_plots(0)
 {
 }
@@ -72,7 +73,14 @@ EL::StatusCode TrackHistsAlgo :: configure ()
 
   // the file exists, use TEnv to read it off
   TEnv* config = new TEnv(m_configName.c_str());
-  m_inContainerName         = config->GetValue("InputContainer",  "");
+
+  //
+  //  If Container Name is already set dont read it from the config
+  //   (Allows to pass as argument in setup script)
+  //
+  if(m_inContainerName.empty())
+     m_inContainerName         = config->GetValue("InputContainer",  "");
+
   m_detailStr               = config->GetValue("DetailStr",       "");
 
   if( m_inContainerName.empty() || m_detailStr.empty() ){

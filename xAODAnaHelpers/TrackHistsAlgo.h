@@ -17,10 +17,10 @@ public:
   
   std::string m_name;
   std::string m_configName;
+  std::string m_inContainerName;  
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
-
 
 private:
 
@@ -29,7 +29,6 @@ private:
 #endif // not __CINT__
 
   // configuration variables
-  std::string m_inContainerName;  //!
   std::string m_detailStr;        //!
 
   // variables that don't get filled at submission time should be
@@ -39,11 +38,9 @@ public:
   // Tree *myTree; //!
   // TH1 *myHist; //!
 
-
-
   // this is a standard constructor
   TrackHistsAlgo ();
-  TrackHistsAlgo (std::string name, std::string configName);
+  TrackHistsAlgo (std::string name, std::string configName, std::string containerName="");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

@@ -39,6 +39,12 @@ public:
   std::string m_configName;
   int m_type;
 
+  TString              m_passAuxDecorKeys;
+  TString              m_failAuxDecorKeys;
+  std::vector<TString> m_passKeys;
+  std::vector<TString> m_failKeys;
+
+
   bool m_debug;                  //!
 
   bool m_isEMjet;                //!
