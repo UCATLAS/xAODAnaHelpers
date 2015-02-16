@@ -15,6 +15,7 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)
 
@@ -65,6 +66,36 @@ EL::StatusCode  JetCalibrator :: configure ()
 
   // CONFIG parameters for JetCalibrationTool
   m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // when running data "_Insitu" is appended to this string
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
   m_calibConfigData	        = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
@@ -194,6 +225,12 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize jet calibration tool
+
+
+
+
+
+
   m_jetCalibration = new JetCalibrationTool("JetCorrectionTool",
       m_jetAlgo.Data(),
       m_calibConfig.Data(),

@@ -67,9 +67,6 @@ EL::StatusCode BasicEventSelection :: configure ()
   // number of tracks to require to count PVs
   m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
 
-
-
-
   env->Print();
   Info("configure()", "BasicEventSelection succesfully configured! \n");
 
@@ -376,6 +373,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
+
 
   return EL::StatusCode::SUCCESS;
 }

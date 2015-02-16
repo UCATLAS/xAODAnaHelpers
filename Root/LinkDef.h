@@ -10,6 +10,7 @@
 #include <xAODAnaHelpers/ElectronCalibrator.h>
 #include <xAODAnaHelpers/JetCalibrator.h>
 #include <xAODAnaHelpers/MuonCalibrator.h>
+#include <xAODAnaHelpers/GroomedFatJets.h>
 
 /* Plotting Tools */
 #include <xAODAnaHelpers/JetHistsAlgo.h>
@@ -39,6 +40,7 @@
 #pragma link C++ class ElectronCalibrator+;
 #pragma link C++ class JetCalibrator+;
 #pragma link C++ class MuonCalibrator+;
+#pragma link C++ class GroomedFatJets+;
 
 #pragma link C++ class JetHistsAlgo+;
 #pragma link C++ class TrackHistsAlgo+;
