@@ -30,7 +30,7 @@ private:
 #endif //not __CINT__
 
   // configuration variables
-  TString m_inContainerName;      //!
+  std::string m_inContainerName;      //!
   std::string m_detailStr;        //!
 
   // variables that don't get filled at submission time should be

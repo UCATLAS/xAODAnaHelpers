@@ -77,7 +77,7 @@ EL::StatusCode JetHistsAlgo :: configure ()
   m_detailStr               = config->GetValue("DetailStr",       "");
 
   // in case anything was missing or blank...
-  if( m_inContainerName.IsNull() || m_detailStr.empty() ){
+  if( m_inContainerName.empty() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
@@ -119,14 +119,14 @@ EL::StatusCode JetHistsAlgo :: execute ()
   //  1 = get from TStore
   //  2 = get from TEvent
   if( m_type == 0 ) {
-    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName.Data())){
+    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName)){
       m_type = 1;  
     }
-    else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName.Data())){
+    else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName)){
       m_type = 2;
     }
     else {
-      Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
+      Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.c_str() );
       m_store->print();
       return EL::StatusCode::FAILURE;
     }
@@ -140,8 +140,8 @@ EL::StatusCode JetHistsAlgo :: execute ()
   if ( m_type == 1 ) {        // get ConstDataVector from TStore
 
     ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
-    if ( !m_store->retrieve( inJetsCDV, m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
+    if ( !m_store->retrieve( inJetsCDV, m_inContainerName ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
     inJets = inJetsCDV->asDataVector();
@@ -149,8 +149,8 @@ EL::StatusCode JetHistsAlgo :: execute ()
   }  
   else if ( m_type == 2 ) {   // get const container from TEvent
 
-    if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
+    if ( !m_event->retrieve( inJets , m_inContainerName ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
 
