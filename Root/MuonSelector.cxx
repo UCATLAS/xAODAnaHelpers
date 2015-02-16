@@ -89,21 +89,27 @@ EL::StatusCode  MuonSelector :: configure ()
 
   // configurable cuts
   m_muonQuality             = config->GetValue("MuonQuality", "Medium"); // muon quality as defined by xAOD::MuonQuality enum {Tight, Medium, Loose, VeryLoose}, corresponding to 0, 1, 2 and 3 (default is 1 - medium quality).
-  if( m_muonQuality != "Tight"  &&
-      m_muonQuality != "Medium" &&
-      m_muonQuality != "Loose"  &&
-      m_muonQuality != "VeryLoose" ) {
-    Error("configure()", "Unknown muon quality requested %s!",m_muonQuality.Data());
+  /* initialize set to check for appropriate values, much faster in long run */
+  std::set<std::string> muonQualitySet;
+  muonQualitySet.insert("Tight");
+  muonQualitySet.insert("Medium");
+  muonQualitySet.insert("Loose");
+  muonQualitySet.insert("VeryLoose");
+  if( muonQualitySet.find(m_muonQuality) == muonQualitySet.end()){
+    Error("configure()", "Unknown muon quality requested %s!",m_muonQuality.c_str());
     return EL::StatusCode::FAILURE;
   }
   m_muonType             = config->GetValue("MuonType", ""); // muon type as defined by xAOD::Muon::MuonType enum (0: Combined, 1:MuonStandAlone ,2:SegmentTagged, 3:CaloTagged, 4:SiliconAssociatedForwardMuon  - default is empty string = no type).
-  if( m_muonType != ""               &&
-      m_muonType != "Combined"       &&
-      m_muonType != "MuonStandAlone" &&
-      m_muonType != "SegmentTagged"  &&
-      m_muonType != "CaloTagged"     &&
-      m_muonType != "SiliconAssociatedForwardMuon" ) {
-    Error("configure()", "Unknown muon type requested %s!",m_muonType.Data());
+  std::set<std::string> muonTypeSet;
+  muonTypeSet.insert("");
+  muonTypeSet.insert("Combined");
+  muonTypeSet.insert("MuonStandAlone");
+  muonTypeSet.insert("SegmentTagged");
+  muonTypeSet.insert("CaloTagged");
+  muonTypeSet.insert("SiliconAssociatedForwardMuon");
+
+  if( muonTypeSet.find(m_muonType) == muonTypeSet.end()){
+    Error("configure()", "Unknown muon type requested %s!",m_muonType.c_str());
     return EL::StatusCode::FAILURE;
   }
   m_pass_max                = config->GetValue("PassMax", -1);
@@ -114,7 +120,7 @@ EL::StatusCode  MuonSelector :: configure ()
   m_d0sig_max     	    = config->GetValue("d0sigMax", 4.0);
   m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1.5);
 
-  if( m_inContainerName.Length() == 0 ) {
+  if( m_inContainerName.empty() ){
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -226,13 +232,13 @@ EL::StatusCode MuonSelector :: initialize ()
 
   if(m_debug){
     std::cout << " Parameters to MuonSelector() : "  << "\n"
-	  << "\t m_inContainerName : "         << m_inContainerName.Data()   <<  " of type " <<  typeid(m_inContainerName).name() << "\n"
+	  << "\t m_inContainerName : "         << m_inContainerName.c_str()   <<  " of type " <<  typeid(m_inContainerName).name() << "\n"
 	  << "\t m_decorateSelectedObjects : " << m_decorateSelectedObjects  <<  " of type " <<  typeid(m_decorateSelectedObjects).name() << "\n"
 	  << "\t m_createSelectedContainer : " << m_createSelectedContainer  <<  " of type " <<  typeid(m_createSelectedContainer).name() <<  "\n"
-	  << "\t m_outContainerName: "         << m_outContainerName.Data()  <<  " of type " <<  typeid(m_outContainerName).name() << "\n"
+	  << "\t m_outContainerName: "         << m_outContainerName.c_str()  <<  " of type " <<  typeid(m_outContainerName).name() << "\n"
 	  << "\t m_debug: "		       << m_debug	             <<  " of type " <<  typeid(m_debug).name() <<  "\n"
 	  << "\t m_nToProcess: "	       << m_nToProcess  	     <<  " of type " <<  typeid(m_nToProcess).name() << "\n"
-	  << "\t m_muonQuality  : "	       << m_muonQuality.Data() 	     <<  " of type " <<  typeid(m_muonQuality).name() <<  "\n"
+	  << "\t m_muonQuality  : "	       << m_muonQuality.c_str() 	     <<  " of type " <<  typeid(m_muonQuality).name() <<  "\n"
 	  << "\t m_pass_max	: "	       << m_pass_max		     <<  " of type " <<  typeid(m_pass_max).name() << "\n"
 	  << "\t m_pass_min	: "	       << m_pass_min		     <<  " of type " <<  typeid(m_pass_min).name() << "\n"
 	  << "\t m_pT_max	: "	       << m_pT_max		     <<  " of type " <<  typeid(m_pT_max).name() << "\n"
@@ -278,9 +284,9 @@ EL::StatusCode MuonSelector :: execute ()
 
   // get the collection from TEvent or TStore
   xAOD::MuonContainer* inMuons = 0;
-  if ( !m_event->retrieve( inMuons , m_inContainerName.Data() ).isSuccess() ){
-    if ( !m_store->retrieve( inMuons , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.Data() );
+  if ( !m_event->retrieve( inMuons , m_inContainerName ).isSuccess() ){
+    if ( !m_store->retrieve( inMuons , m_inContainerName ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
   }
@@ -347,8 +353,8 @@ EL::StatusCode MuonSelector :: execute ()
 
   // add output container to TStore
   if( m_createSelectedContainer ) {
-    if( !m_store->record( selectedMuons, m_outContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
+    if( !m_store->record( selectedMuons, m_outContainerName ).isSuccess() ){
+      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
   }
@@ -482,9 +488,9 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // if specified, cut on muon quality
   HelperClasses::EnumParser<xAOD::Muon::MuonType> muTypeParser;
   //static_cast<int>(muTypeParser.parseEnum(m_muonType))
-  if( m_muonType.Length() != 0){
+  if( !m_muonType.empty() ){
     if( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
-      if (m_debug) std::cout << "Muon type: " << muon->muonType() <<" - required: " << m_muonType << " . Failed" << std::endl;
+      if (m_debug) std::cout << "Muon type: " << muon->muonType() <<" - required: " << m_muonType.c_str() << " . Failed" << std::endl;
       return 0;
     }
   }
