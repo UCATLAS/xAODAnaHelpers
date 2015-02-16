@@ -19,6 +19,7 @@ public:
 
   std::string m_name;
   std::string m_configName;
+  int m_type;
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
