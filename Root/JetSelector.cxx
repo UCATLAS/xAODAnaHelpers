@@ -424,8 +424,8 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // clean jets
   if( m_cleanJets ) {
-    if( jet->isAvailable< int >( "cleanJet" ) ) {
-      if( !jet->auxdata< int >( "cleanJet" ) ) { return 0; }
+    if( jet->isAvailable< char >( "cleanJet" ) ) {
+      if( !jet->auxdata< char >( "cleanJet" ) ) { return 0; }
     }
   }
 
