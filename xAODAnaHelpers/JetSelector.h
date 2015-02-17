@@ -34,16 +34,11 @@ public:
   int m_numEventPass;     //!
   int m_weightNumEventPass; //!
   int m_numObjectPass;    //!
+  int m_pvLocation;       //!
 
   std::string m_name;
   std::string m_configName;
   int m_type;
-
-  TString              m_passAuxDecorKeys;
-  TString              m_failAuxDecorKeys;
-  std::vector<TString> m_passKeys;
-  std::vector<TString> m_failKeys;
-
 
   bool m_debug;                  //!
 
@@ -59,31 +54,36 @@ public:
 private:
 
   // configuration variables
-  TString m_inContainerName;      // input container name
-  TString m_outContainerName;     // output container name
-  bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
-  bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
-  int m_nToProcess;               // look at n objects
-  int m_countWarning;             // max number of warnings before turned off
-  bool m_cleanJets;               // require cleanJet decoration to not be set and false
-  int m_pass_min;                 // minimum number of objects passing cuts
-  int m_pass_max;                 // maximum number of objects passing cuts
-  float m_pT_max;                 // require pT < pt_max
-  float m_pT_min;                 // require pT > pt_max
-  float m_eta_max;                // require eta < eta_max
-  float m_eta_min;                // require eta > eta_max
-  float m_detEta_max;             // require detEta < detEta_max
-  float m_detEta_min;             // require detEta > detEta_max
-  float m_mass_max;               // require mass < mass_max
-  float m_mass_min;               // require mass > mass_max
-  float m_rapidity_max;           // require rapidity < rapidity_max
-  float m_rapidity_min;           // require rapidity > rapidity_min
-  int   m_truthLabel;             // require truth level on truth jets
+  TString m_inContainerName;      //! input container name
+  TString m_outContainerName;     //! output container name
+  bool m_decorateSelectedObjects; //! decorate selected objects? defaul passSel
+  bool m_createSelectedContainer; //! fill using SG::VIEW_ELEMENTS to be light weight
+  int m_nToProcess;               //! look at n objects
+  bool m_cleanJets;               //! require cleanJet decoration to not be set and false
+  int m_pass_min;                 //! minimum number of objects passing cuts
+  int m_pass_max;                 //! maximum number of objects passing cuts
+  float m_pT_max;                 //! require pT < pt_max
+  float m_pT_min;                 //! require pT > pt_max
+  float m_eta_max;                //! require eta < eta_max
+  float m_eta_min;                //! require eta > eta_max
+  float m_detEta_max;             //! require detEta < detEta_max
+  float m_detEta_min;             //! require detEta > detEta_max
+  float m_mass_max;               //! require mass < mass_max
+  float m_mass_min;               //! require mass > mass_max
+  float m_rapidity_max;           //! require rapidity < rapidity_max
+  float m_rapidity_min;           //! require rapidity > rapidity_min
+  int   m_truthLabel;             //! require truth level on truth jets
 
-  bool m_doJVF;                   // check JVF
-  float m_pt_max_JVF;
-  float m_eta_max_JVF;
-  float m_JVFCut;
+  bool m_doJVF;                   //! check JVF
+  float m_pt_max_JVF;             //! max pT (JVF is a pileup cut)
+  float m_eta_max_JVF;            //! detector eta cut
+  float m_JVFCut;                 //! cut value
+
+  TString              m_passAuxDecorKeys;  //!
+  TString              m_failAuxDecorKeys;  //!
+  std::vector<TString> m_passKeys;  //!
+  std::vector<TString> m_failKeys;  //!
+
 
 
   // variables that don't get filled at submission time should be

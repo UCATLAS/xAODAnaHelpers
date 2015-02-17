@@ -72,8 +72,6 @@ EL::StatusCode  JetSelector :: configure ()
   m_outContainerName        = config->GetValue("OutputContainer", "");
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
-  // sort before running selection
-  m_countWarning            = config->GetValue("MaxNWarning",   100);
 
   m_isEMjet = ( static_cast<bool>(m_inContainerName.Contains("EMTopoJets",TString::kIgnoreCase)) ) ? true : false;
   m_isLCjet = ( static_cast<bool>(m_inContainerName.Contains("LCTopoJets",TString::kIgnoreCase)) ) ? true : false;
@@ -92,12 +90,12 @@ EL::StatusCode  JetSelector :: configure ()
   m_mass_min                = config->GetValue("massMin",     1e8);
   m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
   m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-  m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
+  m_truthLabel 		          = config->GetValue("TruthLabel",   -1);
 
-  m_doJVF 		    = config->GetValue("DoJVF", false);
-  m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",       1e8);
-  m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",      1e8);
-  m_JVFCut 		    = config->GetValue("JVFCut",         0.5);
+  m_doJVF 		              = config->GetValue("DoJVF",       false);
+  m_pt_max_JVF 		          = config->GetValue("pTMaxJVF",    50e3);
+  m_eta_max_JVF 	          = config->GetValue("etaMaxJVF",   2.4);
+  m_JVFCut 		              = config->GetValue("JVFCut",      0.5);
 
 
   m_passAuxDecorKeys         = config->GetValue("PassDecorKeys", "");
@@ -299,6 +297,17 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
     selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
   }
 
+  // if doing JVF get PV location
+  if( m_doJVF ) {
+    const xAOD::VertexContainer* vertices = 0;
+    if ( !m_event->retrieve( vertices, "PrimaryVertices" ).isSuccess() ){
+      Error("JetSelector:::execute()", "Failed to retrieve PrimaryVertices container. Exiting." );
+      return EL::StatusCode::FAILURE;
+    }
+    m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
+  }
+
+
   int nPass(0); int nObj(0);
   for( auto jet_itr : *inJets ) { // duplicated of basic loop
 
@@ -462,16 +471,15 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // JVF pileup cut
   if( m_doJVF ){
-    if( jet->pt() < m_pt_max_JVF &&  jet->eta() < m_eta_max_JVF ){
-       std::vector<float> jvf_vec = jet->getAttribute< std::vector<float> >(xAOD::JetAttribute::JVF);
-       // find maximum JVF
-       float JVFMax = -1.0;
-       for (auto jvf_itr = jvf_vec.begin(); jvf_itr != jvf_vec.end(); ++jvf_itr){
-         if( *jvf_itr > JVFMax ) JVFMax = *jvf_itr;
-       }
-       if ( fabs(JVFMax) < m_JVFCut ) { return 0; }
+    if( jet->pt() < m_pt_max_JVF ) {
+      xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
+      if( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVF ){
+        if( jet->getAttribute< std::vector<float> >( "JVF" ).at( m_pvLocation ) < m_JVFCut ) {
+          return 0;
+        }
+      }
     }
-  }
+  } // m_doJVF
 
   //
   //  Pass Keys
