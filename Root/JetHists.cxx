@@ -39,7 +39,7 @@ EL::StatusCode JetHists::initialize() {
     m_negE        = book(m_name, "NegativeE" ,    "Negative Energy",  120, -10, 10);
     m_avLArQF     = book(m_name, "AverageLArQF" , "<LAr Quality Factor>" , 120, 0, 1000);
     m_bchCorrCell = book(m_name, "BchCorrCell" ,  "BCH Corr Cell" ,   120, 0, 600);
-    m_N90Const  = book(m_name, "N90Constituents", "N90 Constituents" ,  120, 0, 40);
+    m_N90Const    = book(m_name, "N90Constituents", "N90 Constituents" ,  120, 0, 40);
   }
 
   // details for jet energy information
