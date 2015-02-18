@@ -485,14 +485,14 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //  Pass Keys
   //
   for(auto& passKey : m_passKeys){
-    if(!jet->auxdata<bool>(passKey.Data())) { return 0;}
+    if(!jet->auxdata< char >(passKey.Data())) { return 0;}
   }
 
   //
   //  Fail Keys
   //
   for(auto& failKey : m_failKeys){
-    if(jet->auxdata<bool>(failKey.Data())) {return 0;}
+    if(jet->auxdata< char >(failKey.Data())) {return 0;}
   }
 
   //
