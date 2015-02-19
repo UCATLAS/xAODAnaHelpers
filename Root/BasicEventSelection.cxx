@@ -288,6 +288,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
+
   //----------------------------
   // Event information
   //---------------------------
@@ -310,7 +311,8 @@ EL::StatusCode BasicEventSelection :: execute ()
      mcEvtWeight *= pileupWeight;
   }   
   // decorate with PU corrected mc event weight
-  eventInfo->auxdecor< float >( "mcEventWeight" ) = mcEvtWeight;
+  static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
+  mcEvtWeightDecor(eventInfo) = mcEvtWeight;
 
   // print every 100 events, so we know where we are:
   ++m_eventCounter;
