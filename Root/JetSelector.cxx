@@ -340,7 +340,7 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
     // if only looking at a subset of jets make sure all are decorated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        jet_itr->auxdecor< int >( "passSel" ) = -1;
+        jet_itr->auxdecor< char >( "passSel" ) = -1;
       } else {
         break;
       }
@@ -350,7 +350,7 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
     nObj++;
     int passSel = this->PassCuts( jet_itr );
     if(m_decorateSelectedObjects) {
-      jet_itr->auxdecor< int >( "passSel" ) = passSel;
+      jet_itr->auxdecor< char >( "passSel" ) = passSel;
     }
 
     if(passSel) {

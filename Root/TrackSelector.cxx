@@ -272,7 +272,7 @@ EL::StatusCode TrackSelector :: execute ()
     // if only looking at a subset of tracks make sure all are decorrated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        (*trk_itr)->auxdecor< int >( "passSel" ) = -1;
+        (*trk_itr)->auxdecor< char >( "passSel" ) = -1;
       } else {
         break;
       }
@@ -282,7 +282,7 @@ EL::StatusCode TrackSelector :: execute ()
     nObj++;
     int passSel = this->PassCuts( (*trk_itr), pvx );
     if(m_decorateSelectedObjects) {
-      (*trk_itr)->auxdecor< int >( "passSel" ) = passSel;
+      (*trk_itr)->auxdecor< char >( "passSel" ) = passSel;
     }
 
     if(passSel) {
