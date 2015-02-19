@@ -9,7 +9,7 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-// EDM include(s):  
+// EDM include(s):
 #ifndef __CINT__
   #include "xAODJet/Jet.h"
   #include "xAODJet/JetContainer.h"
@@ -17,6 +17,11 @@
 
 // ROOT include(s):
 #include "TH1D.h"
+
+// package include(s):
+#ifndef __CINT__
+  #include "xAODAnaHelpers/HelperClasses.h"
+#endif
 
 class JetSelector : public EL::Algorithm
 {
@@ -35,7 +40,9 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  int m_type;
+#ifndef __CINT__
+  HelperClasses::ContainerType m_type;
+#endif
 
   bool m_debug;                  //!
 
@@ -49,6 +56,7 @@ public:
   int   m_cutflow_bin;          //!
 
 private:
+
 
   // configuration variables
   TString m_inContainerName;      //! input container name
@@ -108,13 +116,13 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__   
+#ifndef __CINT__
   virtual EL::StatusCode executeConst( const xAOD::JetContainer* inJets, float mcEvtWeight );
 #endif // not __CINT__
 
   // added functions not from Algorithm
   // why does this need to be virtual?
-#ifndef __CINT__   
+#ifndef __CINT__
   virtual int PassCuts( const xAOD::Jet* jet );
 #endif // not __CINT__
   // this is needed to distribute the algorithm to the workers

@@ -7,6 +7,11 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// package include(s):
+#ifndef __CINT__
+  #include "xAODAnaHelpers/HelperClasses.h"
+#endif
+
 class JetHists;
 
 class JetHistsAlgo : public EL::Algorithm
@@ -17,7 +22,9 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  int m_type;
+#ifndef __CINT__
+  HelperClasses::ContainerType m_type;
+#endif
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!

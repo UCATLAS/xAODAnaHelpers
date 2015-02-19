@@ -9,7 +9,7 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-// EDM include(s):  
+// EDM include(s):
 #ifndef __CINT__
   #include "xAODEgamma/Electron.h"
   #include "xAODEgamma/ElectronContainer.h"
@@ -18,6 +18,11 @@
 
 // ROOT include(s):
 #include "TH1D.h"
+
+// package include(s):
+#ifndef __CINT__
+  #include "xAODAnaHelpers/HelperClasses.h"
+#endif
 
 
 namespace CP{
@@ -43,7 +48,10 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  int m_type;
+#ifndef __CINT__
+  HelperClasses::ContainerType m_type;
+#endif
+
 
   bool m_debug;                 //!
 
@@ -52,13 +60,13 @@ public:
   TH1D* m_cutflowHist;          //!
   TH1D* m_cutflowHistW;         //!
   int   m_cutflow_bin;          //!
-  
+
 private:
-  
+
   // tools
-#ifndef __CINT__  
-  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ; //!     
-  AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool; //!      
+#ifndef __CINT__
+  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ; //!
+  AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool; //!
   CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
 #endif
   // configuration variables
@@ -73,22 +81,22 @@ private:
   int        m_pass_max;                 // maximum number of objects passing cuts
   float      m_pT_max;                   // require pT < pt_max
   float      m_pT_min;                   // require pT < pt_max
-  float      m_eta_max;                  // require |eta| < eta_max 
+  float      m_eta_max;                  // require |eta| < eta_max
   bool	     m_vetoCrack;                // require |eta| outside crack region
   float      m_d0sig_max;                // require d0 significance (at BL) < m_d0sig_max
   float	     m_z0sintheta_max;	         // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
   TString    m_likelihoodPID;            // require likelihood-based PID
-  bool       m_useRelativeIso;         
-  TString    m_CaloBasedIsoType;	  
-  float      m_CaloBasedIsoCut;  
-  TString    m_TrackBasedIsoType;	  
-  float      m_TrackBasedIsoCut;  
- 
+  bool       m_useRelativeIso;
+  TString    m_CaloBasedIsoType;
+  float      m_CaloBasedIsoCut;
+  TString    m_TrackBasedIsoType;
+  float      m_TrackBasedIsoCut;
+
   TString              m_passAuxDecorKeys;  //!
   TString              m_failAuxDecorKeys;  //!
   std::vector<TString> m_passKeys;  //!
   std::vector<TString> m_failKeys;  //!
- 
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -112,16 +120,16 @@ public:
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
-  
+
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__  
+#ifndef __CINT__
   virtual EL::StatusCode executeConst( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight );
 #endif
 
   // added functions not from Algorithm
   // why does this need to be virtual?
-#ifndef __CINT__  
+#ifndef __CINT__
   virtual int PassCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex );
 #endif
   // this is needed to distribute the algorithm to the workers

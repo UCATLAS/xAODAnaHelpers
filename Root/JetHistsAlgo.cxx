@@ -14,6 +14,8 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
+using HelperClasses::ContainerType;
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
 
@@ -24,7 +26,7 @@ JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(0),
+  m_type(ContainerType::UNKNOWN),
   m_plots(0)
 {
 }
@@ -60,6 +62,8 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
 
 EL::StatusCode JetHistsAlgo :: configure ()
 {
+
+  m_type = ContainerType::UNKNOWN;
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   // check if file exists
   /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
@@ -118,12 +122,12 @@ EL::StatusCode JetHistsAlgo :: execute ()
   // if type is not defined then we need to define it
   //  1 = get from TStore
   //  2 = get from TEvent
-  if( m_type == 0 ) {
+  if( m_type == ContainerType::UNKNOWN ) {
     if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName)){
-      m_type = 1;  
+      m_type = ContainerType::CONSTDV;
     }
     else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName)){
-      m_type = 2;
+      m_type = ContainerType::CONSTCONT;
     }
     else {
       Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.c_str() );
@@ -135,9 +139,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
   // Can retrieve collection from input file ( const )
   //           or collection from tstore ( ConstDataVector which then gives a const collection )
   // decide which on first pass
-  // 
-  // FIXME replace with enum
-  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
 
     ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
     if ( !m_store->retrieve( inJetsCDV, m_inContainerName ).isSuccess() ){
@@ -146,8 +148,8 @@ EL::StatusCode JetHistsAlgo :: execute ()
     }
     inJets = inJetsCDV->asDataVector();
 
-  }  
-  else if ( m_type == 2 ) {   // get const container from TEvent
+  }
+  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
 
     if ( !m_event->retrieve( inJets , m_inContainerName ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.c_str() );

@@ -1,7 +1,7 @@
 /******************************************
  *
- * Interface to CP Electron selection tool(s).  
- * 
+ * Interface to CP Electron selection tool(s).
+ *
  * M. Milesi (marco.milesi@cern.ch)
  * Jan 28 15:36 AEST 2015
  *
@@ -16,7 +16,7 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-// EDM include(s): 
+// EDM include(s):
 #include "xAODCore/ShallowCopy.h"
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
@@ -42,6 +42,8 @@
 // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonSelectorTools
 // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronIsolationSelectionTool
 
+using HelperClasses::ContainerType;
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronSelector)
 
@@ -53,7 +55,7 @@ ElectronSelector :: ElectronSelector (std::string name, std::string configName) 
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(0),
+  m_type(ContainerType::UNKNOWN),
   m_cutflowHist(0),
   m_cutflowHistW(0),
   m_asgElectronIsEMSelector(0),
@@ -76,6 +78,8 @@ EL::StatusCode  ElectronSelector :: configure ()
 {
   Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
+  m_type = ContainerType::UNKNOWN;
+
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   // check if file exists
   /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
@@ -86,7 +90,7 @@ EL::StatusCode  ElectronSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
   Info("configure()", "Found configuration file");
-  
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -318,7 +322,7 @@ EL::StatusCode ElectronSelector :: execute ()
     Error("execute()", "Failed to retrieve event info collection. Exiting.");
     return EL::StatusCode::FAILURE;
   }
-  float mcEvtWeight(1.0); 
+  float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   } else {
@@ -334,12 +338,12 @@ EL::StatusCode ElectronSelector :: execute ()
   // if type is not defined then we need to define it
   //  1 = get from TStore
   //  2 = get from TEvent
-  if( m_type == 0 ) {
+  if( m_type == ContainerType::UNKNOWN ) {
     if ( m_store->contains< ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName.Data())){
-      m_type = 1;  
+      m_type = ContainerType::CONSTDV;
     }
     else if ( m_event->contains<const xAOD::ElectronContainer>(m_inContainerName.Data())){
-      m_type = 2;
+      m_type = ContainerType::CONSTCONT;
     }
     else {
       Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
@@ -351,17 +355,15 @@ EL::StatusCode ElectronSelector :: execute ()
   // Can retrieve collection from input file ( const )
   //           or collection from tstore ( ConstDataVector which then gives a const collection )
   // decide which on first pass
-  // 
-  // FIXME replace with enum
-  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
     ConstDataVector<xAOD::ElectronContainer>* inElectronsCDV = 0;
     if ( !m_store->retrieve( inElectronsCDV, m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
     inElectrons = inElectronsCDV->asDataVector();
-  }  
-  else if ( m_type == 2 ) {   // get const container from TEvent
+  }
+  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
     if ( !m_event->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
@@ -372,7 +374,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
 }
 
-EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight ) 
+EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight )
 {
 
   // create output container (if requested)
@@ -387,7 +389,7 @@ EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer*
      return EL::StatusCode::FAILURE;
   }
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
-  
+
   int nPass(0); int nObj(0);
   for( auto el_itr : *inElectrons ) { // duplicated of basic loop
 
@@ -517,7 +519,7 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   int oq           = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
   float z0sintheta = (static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( electron->trackParticle()->theta() );
 
-  
+
   // author cut
   if (!(author == 1 || author ==3)) {
       if (m_debug) std::cout << "Electron failed author cut." << std::endl;
@@ -560,7 +562,7 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
       if (m_debug) std::cout << "Electron failed z0*sin(theta) cut." << std::endl;
       return 0;
-  }  
+  }
   // likelihood PID
   if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ){
       if (m_debug) std::cout << "Electron failed likelihood PID cut." << std::endl;

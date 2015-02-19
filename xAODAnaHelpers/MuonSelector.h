@@ -9,7 +9,7 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-// EDM include(s):  
+// EDM include(s):
 #ifndef __CINT__
   #include "xAODMuon/Muon.h"
   #include "xAODMuon/MuonContainer.h"
@@ -18,6 +18,11 @@
 
 // ROOT include(s):
 #include "TH1D.h"
+
+// package include(s):
+#ifndef __CINT__
+  #include "xAODAnaHelpers/HelperClasses.h"
+#endif
 
 namespace CP{
   class MuonSelectionTool;
@@ -40,7 +45,9 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  int m_type;
+#ifndef __CINT__
+  HelperClasses::ContainerType m_type;
+#endif
 
   bool m_debug;                 //!
   // cutflow
@@ -48,11 +55,11 @@ public:
   TH1D* m_cutflowHist;          //!
   TH1D* m_cutflowHistW;         //!
   int   m_cutflow_bin;          //!
-  
+
 private:
-  
+
   // tools
-#ifndef __CINT__   
+#ifndef __CINT__
   CP::MuonSelectionTool *m_muonSelectionTool;//!
 #endif
   // configuration variables
@@ -70,14 +77,14 @@ private:
   float    m_pT_min;		      // require pT > pt_min
   std::string  m_muonQuality;	      // require quality
   std::string  m_muonType;	      // require type
-  float    m_eta_max;		      // require |eta| < eta_max 
+  float    m_eta_max;		      // require |eta| < eta_max
   float    m_d0sig_max; 	      // require d0 significance (at BL) < m_d0sig_max
   float	   m_z0sintheta_max;          // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
-  TString  m_CaloBasedIsoType;  	
-  float    m_CaloBasedIsoCut;  
-  TString  m_TrackBasedIsoType; 	
-  float    m_TrackBasedIsoCut;  
-  
+  TString  m_CaloBasedIsoType;
+  float    m_CaloBasedIsoCut;
+  TString  m_TrackBasedIsoType;
+  float    m_TrackBasedIsoCut;
+
   TString              m_passAuxDecorKeys;  //!
   TString              m_failAuxDecorKeys;  //!
   std::vector<TString> m_passKeys;  //!
@@ -106,15 +113,15 @@ public:
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
-  
+
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__  
+#ifndef __CINT__
   virtual EL::StatusCode executeConst( const xAOD::MuonContainer* inMuons, float mcEvtWeight );
 #endif
   // added functions not from Algorithm
   // why does this need to be virtual?
-#ifndef __CINT__  
+#ifndef __CINT__
   virtual int PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex );
 #endif
   // this is needed to distribute the algorithm to the workers

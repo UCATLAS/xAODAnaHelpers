@@ -1,7 +1,7 @@
 /******************************************
  *
- * Jet selector tool  
- * 
+ * Jet selector tool
+ *
  * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
  * Jan 28 15:59 AEST 2015
  *
@@ -16,7 +16,7 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-// EDM include(s): 
+// EDM include(s):
 #include "xAODJet/JetContainer.h"
 #include "xAODCore/ShallowCopy.h"
 #include "AthContainers/ConstDataVector.h"
@@ -36,6 +36,8 @@
 #include "TObjArray.h"
 #include "TObjString.h"
 
+using HelperClasses::ContainerType;
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetSelector)
 
@@ -47,7 +49,7 @@ JetSelector :: JetSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(0),
+  m_type(ContainerType::UNKNOWN),
   m_cutflowHist(0),
   m_cutflowHistW(0)
 {
@@ -63,6 +65,8 @@ JetSelector :: JetSelector (std::string name, std::string configName) :
 EL::StatusCode  JetSelector :: configure ()
 {
   Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
+
+  m_type = ContainerType::UNKNOWN;
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   // check if file exists
@@ -261,7 +265,7 @@ EL::StatusCode JetSelector :: execute ()
     Error("execute()", "Failed to retrieve event info collection. Exiting.");
     return EL::StatusCode::FAILURE;
   }
-  float mcEvtWeight(1.0); 
+  float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   } else {
@@ -277,12 +281,12 @@ EL::StatusCode JetSelector :: execute ()
   // if type is not defined then we need to define it
   //  1 = get from TStore
   //  2 = get from TEvent
-  if( m_type == 0 ) {
+  if( m_type == ContainerType::UNKNOWN ) {
     if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName.Data())){
-      m_type = 1;  
+      m_type = ContainerType::CONSTDV;
     }
     else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName.Data())){
-      m_type = 2;
+      m_type = ContainerType::CONSTCONT;
     }
     else {
       Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
@@ -293,18 +297,15 @@ EL::StatusCode JetSelector :: execute ()
 
   // Can retrieve collection from input file ( const )
   //           or collection from tstore ( ConstDataVector which then gives a const collection )
-  // decide which on first pass
-  // 
-  // FIXME replace with enum
-  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
     ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
     if ( !m_store->retrieve( inJetsCDV, m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
     inJets = inJetsCDV->asDataVector();
-  }  
-  else if ( m_type == 2 ) {   // get const container from TEvent
+  }
+  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
     if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
@@ -314,7 +315,7 @@ EL::StatusCode JetSelector :: execute ()
   return executeConst( inJets, mcEvtWeight );
 }
 
-EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight ) 
+EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight )
 {
 
   // create output container (if requested)

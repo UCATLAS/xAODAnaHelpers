@@ -67,7 +67,7 @@ int main( int argc, char* argv[] ) {
 
 
   // Attach algorithms
-  job.algsAdd( baseEventSel ); 
+  job.algsAdd( baseEventSel );
   job.algsAdd( jetCalib );
   job.algsAdd( muonCalib );
   job.algsAdd( electronCalib );

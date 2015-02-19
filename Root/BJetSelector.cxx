@@ -1,7 +1,7 @@
 /******************************************
  *
- * BJet selector.  
- * 
+ * BJet selector.
+ *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
  * Jan 28 16:07 AEST 2015
  *
@@ -17,7 +17,7 @@
 #include <EventLoop/Worker.h>
 
 // EDM include(s):
-#include "AthContainers/ConstDataVector.h" 
+#include "AthContainers/ConstDataVector.h"
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODBTagging/BTagging.h"
@@ -34,9 +34,10 @@
 #include "TFile.h"
 #include "TSystem.h"
 
+using HelperClasses::ContainerType;
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(BJetSelector)
-
 
 BJetSelector :: BJetSelector () {
 }
@@ -45,7 +46,7 @@ BJetSelector :: BJetSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(0),
+  m_type(ContainerType::UNKNOWN),
   m_cutflowHist(0),
   m_cutflowHistW(0)
 {
@@ -62,6 +63,8 @@ EL::StatusCode  BJetSelector :: configure ()
 {
   Info("configure()", "Configuing BJetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
+  m_type = ContainerType::UNKNOWN;
+
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   // check if file exists
   /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
@@ -72,7 +75,7 @@ EL::StatusCode  BJetSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
   Info("configure()", "Found configuration file");
-  
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -258,7 +261,7 @@ EL::StatusCode BJetSelector :: execute ()
     Error("execute()", "Failed to retrieve event info collection. Exiting.");
     return EL::StatusCode::FAILURE;
   }
-  float mcEvtWeight(1.0); 
+  float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   } else {
@@ -274,12 +277,12 @@ EL::StatusCode BJetSelector :: execute ()
   // if type is not defined then we need to define it
   //  1 = get from TStore
   //  2 = get from TEvent
-  if( m_type == 0 ) {
+  if( m_type == ContainerType::UNKNOWN ) {
     if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName.Data())){
-      m_type = 1;  
+      m_type = ContainerType::CONSTDV;
     }
     else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName.Data())){
-      m_type = 2;
+      m_type = ContainerType::CONSTCONT;
     }
     else {
       Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
@@ -290,10 +293,7 @@ EL::StatusCode BJetSelector :: execute ()
 
   // Can retrieve collection from input file ( const )
   //           or collection from tstore ( ConstDataVector which then gives a const collection )
-  // decide which on first pass
-  // 
-  // FIXME replace with enum
-  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
 
     ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
     if ( !m_store->retrieve( inJetsCDV, m_inContainerName.Data() ).isSuccess() ){
@@ -302,8 +302,8 @@ EL::StatusCode BJetSelector :: execute ()
     }
     inJets = inJetsCDV->asDataVector();
 
-  }  
-  else if ( m_type == 2 ) {   // get const container from TEvent
+  }
+  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
 
     if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
@@ -316,7 +316,7 @@ EL::StatusCode BJetSelector :: execute ()
 }
 
 
-EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight ) 
+EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight )
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -325,7 +325,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
 
   if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
-  // create output container (if requested) 
+  // create output container (if requested)
   ConstDataVector<xAOD::JetContainer>* selectedJets = 0;
   if(m_createSelectedContainer) {
     selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);

@@ -1,7 +1,7 @@
 /******************************************
  *
- * Interface to CP Muon selection tool(s).  
- * 
+ * Interface to CP Muon selection tool(s).
+ *
  * M. Milesi (marco.milesi@cern.ch)
  * Jan 28 15:48 AEST 2015
  *
@@ -16,7 +16,7 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-// EDM include(s): 
+// EDM include(s):
 #include "xAODCore/ShallowCopy.h"
 #include "AthContainers/ConstDataVector.h"
 #include "xAODEventInfo/EventInfo.h"
@@ -38,6 +38,8 @@
 #include "TObjArray.h"
 #include "TObjString.h"
 
+using HelperClasses::ContainerType;
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
 
@@ -49,7 +51,7 @@ MuonSelector :: MuonSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(0),
+  m_type(ContainerType::UNKNOWN),
   m_cutflowHist(0),
   m_cutflowHistW(0),
   m_muonSelectionTool(0)
@@ -70,6 +72,8 @@ EL::StatusCode  MuonSelector :: configure ()
 {
   Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
+  m_type = ContainerType::UNKNOWN;
+
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   // check if file exists
   /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
@@ -80,7 +84,7 @@ EL::StatusCode  MuonSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
   Info("configure()", "Found configuration file");
-  
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -319,7 +323,7 @@ EL::StatusCode MuonSelector :: execute ()
     Error("execute()", "Failed to retrieve event info collection. Exiting.");
     return EL::StatusCode::FAILURE;
   }
-  float mcEvtWeight(1.0); 
+  float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   } else {
@@ -335,12 +339,12 @@ EL::StatusCode MuonSelector :: execute ()
   // if type is not defined then we need to define it
   //  1 = get from TStore
   //  2 = get from TEvent
-  if( m_type == 0 ) {
+  if( m_type == ContainerType::UNKNOWN ) {
     if ( m_store->contains< ConstDataVector<xAOD::MuonContainer> >(m_inContainerName)){
-      m_type = 1;  
+      m_type = ContainerType::CONSTDV;
     }
     else if ( m_event->contains<const xAOD::MuonContainer>(m_inContainerName)){
-      m_type = 2;
+      m_type = ContainerType::CONSTCONT;
     }
     else {
       Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.c_str() );
@@ -352,9 +356,7 @@ EL::StatusCode MuonSelector :: execute ()
   // Can retrieve collection from input file ( const )
   //           or collection from tstore ( ConstDataVector which then gives a const collection )
   // decide which on first pass
-  // 
-  // FIXME replace with enum
-  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
 
     ConstDataVector<xAOD::MuonContainer>* inMuonsCDV = 0;
     if ( !m_store->retrieve( inMuonsCDV, m_inContainerName ).isSuccess() ){
@@ -363,8 +365,8 @@ EL::StatusCode MuonSelector :: execute ()
     }
     inMuons = inMuonsCDV->asDataVector();
 
-  }  
-  else if ( m_type == 2 ) {   // get const container from TEvent
+  }
+  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
 
     if ( !m_event->retrieve( inMuons , m_inContainerName ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.c_str() );
@@ -377,7 +379,7 @@ EL::StatusCode MuonSelector :: execute ()
 
 }
 
-EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons, float mcEvtWeight ) 
+EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons, float mcEvtWeight )
 {
 
   // create output container (if requested)
@@ -542,7 +544,7 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-  
+
   // do not cut on impact parameter if muon is Standalone
   if ( type != xAOD::Muon::MuonType::MuonStandAlone ){
     // d0sig cut
@@ -556,7 +558,7 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     	return 0;
     }
   }
-  
+
   // retireve muon quality
   xAOD::Muon::Quality my_quality = m_muonSelectionTool->getQuality( *muon );
   if(m_debug) std::cout << "Muon quality " << static_cast<int>(my_quality) << std::endl;
@@ -582,8 +584,8 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-  
-  // isolation 
+
+  // isolation
   HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
   float ptcone_dr = -999., etcone_dr = -999.;
   if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ){
