@@ -1,5 +1,3 @@
-#include "xAODTracking/VertexContainer.h"
-#include "xAODJet/Jet.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 // Get Number of Vertices with at least Ntracks
@@ -66,51 +64,35 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
   return partA->pt() > partB->pt();
 }
 
-
-
-/*
-  // function to apply cp tools and make shallow copies of generic xAOD Containers
-  //https://lost-contact.mit.edu/afs/cern.ch/atlas/software/builds/AthAnalysisBase/latest/Event/xAOD/xAODBase/doc/mainpage.h
-  
-  #include "xAODBase/IParticleContainer.h"
-  #include "AsgTools/AsgTool.h"
-  #include "xAODCore/ShallowCopy.h"  
-  
-  // before calling this function somewhere else, check that the tool you want to pass is an ASG tool!
-  
-  if( dynamic_cast<AsgTool*>(myTool) ){
-      calibrateAndSC( myxAODContainer, xAOD::myType ,myTool );
+template< typename T1, typename T2 >
+bool HelperFunctions::makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name ) 
+{
+  // iterate over input container
+  for ( auto in_itr = intCont->begin();  in_itr != intCont->end(); ++in_itr ) {
+    static SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
+    if(!myAccessor.isAvailable(*(*in_itr))){
+      std::stringstream ss; ss << (*in_itr)->type();
+      std::cout<< "HelperFunctions::makeSubsetCont() - flag " << flagSelect << " is missing for object of type " << (ss.str()).c_str() << " ! Will not make a subset of its container" << std::endl;
+      return false;
+    } 
+    
+    if (tool_name == HelperClasses::ToolName::OVERLAPREMOVER){ // this tool uses reverted logic
+      if ( !myAccessor(*(*in_itr)) ){ outCont->push_back( *in_itr ); }  
+    } else {
+      if ( myAccessor(*(*in_itr)) ){ outCont->push_back( *in_itr ); }
+    }
   }
-       
-  
-  
-  void HelperFunctions::calibrateAndSC( xAOD::IParticleContainer* my_xAODContainer, xAOD::Type type , AsgTool* my_AsgTool ){
-     
+  return true;
+}
+template bool HelperFunctions::makeSubsetCont< const xAOD::ElectronContainer, ConstDataVector<xAOD::ElectronContainer> >(const xAOD::ElectronContainer*& intCont, ConstDataVector<xAOD::ElectronContainer>*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
+template bool HelperFunctions::makeSubsetCont< const xAOD::MuonContainer, ConstDataVector<xAOD::MuonContainer> >(const xAOD::MuonContainer*& intCont, ConstDataVector<xAOD::MuonContainer>*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
+template bool HelperFunctions::makeSubsetCont< const xAOD::JetContainer, ConstDataVector<xAOD::JetContainer> >(const xAOD::JetContainer*& intCont, ConstDataVector<xAOD::JetContainer>*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
+template bool HelperFunctions::makeSubsetCont< const xAOD::PhotonContainer, ConstDataVector<xAOD::PhotonContainer> >(const xAOD::PhotonContainer*& intCont, ConstDataVector<xAOD::PhotonContainer>*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
+template bool HelperFunctions::makeSubsetCont< const xAOD::TauJetContainer, ConstDataVector<xAOD::TauJetContainer> >(const xAOD::TauJetContainer*& intCont, ConstDataVector<xAOD::TauJetContainer>*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
 
-     std::pair< xAOD::IParticleContainer*, xAOD::ShallowAuxContainer* > sc_xAODContainer = xAOD::shallowCopyContainer( *my_xAODContainer );
-     
-     auto sc_itr =  (sc_xAODContainer.first)->begin();
-     auto sc_end =  (sc_xAODContainer.first)->end();
-
-     if (m_sort) {
-       std::sort( sc_xAODContainer.first->begin(), sc_xAODContainer.first->end(), HelperFunctions::sort_pt );
-     }  
-     
-     // add shallow copy to TStore
-     if( !m_store->record( sc_xAODContainer.first, m_outContainerName.Data() ).isSuccess() ){
-    	Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
-    	return EL::StatusCode::FAILURE;
-     }
-     if( !m_store->record( sc_xAODContainer.second, m_outAuxContainerName.Data() ).isSuccess() ){
-    	Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outAuxContainerName.Data() );
-    	return EL::StatusCode::FAILURE;
-     }     
-     
-  }
-  
-
-
-*/
-
-
-
+template bool HelperFunctions::makeSubsetCont<xAOD::ElectronContainer , xAOD::ElectronContainer >( xAOD::ElectronContainer*& intCont ,xAOD::ElectronContainer*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
+template bool HelperFunctions::makeSubsetCont<xAOD::MuonContainer     , xAOD::MuonContainer     >( xAOD::MuonContainer*&     intCont ,xAOD::MuonContainer*&     outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
+template bool HelperFunctions::makeSubsetCont<xAOD::JetContainer      , xAOD::JetContainer      >( xAOD::JetContainer*&      intCont ,xAOD::JetContainer*&      outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
+template bool HelperFunctions::makeSubsetCont<xAOD::PhotonContainer   , xAOD::PhotonContainer   >( xAOD::PhotonContainer*&   intCont ,xAOD::PhotonContainer*&   outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name );
+template bool HelperFunctions::makeSubsetCont<xAOD::TauJetContainer   , xAOD::TauJetContainer   >( xAOD::TauJetContainer*&   intCont ,xAOD::TauJetContainer*&   outCont, const std::string& flagSelect, HelperClasses::ToolName
+ tool_name );

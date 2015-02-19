@@ -1,3 +1,13 @@
+/******************************************
+ *
+ * Basic event selection. Performs general simple cuts (GRL, Event Cleaning, Min nr. Tracks for PV candidate) 
+ * 
+ * G. Facini, M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 16:44 AEST 2015
+ *
+ ******************************************/
+
+// EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
 #include "EventLoop/OutputStream.h"
@@ -10,7 +20,7 @@
 // rootcore includes
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
 
-// our includes
+// package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/BasicEventSelection.h>
 
@@ -278,7 +288,29 @@ EL::StatusCode BasicEventSelection :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  float mcEvtWeight(1); // FIXME - set to something from eventinfo
+  //----------------------------
+  // Event information
+  //---------------------------
+  const xAOD::EventInfo* eventInfo = 0;
+  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
+    Error("execute()", "Failed to retrieve event info collection. Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+
+  bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
+  
+  float mcEvtWeight(1.0), pileupWeight(1.0); 
+  if( isMC ){
+     const std::vector< float > weights = eventInfo->mcEventWeights();
+     if( weights.size() > 0 ) mcEvtWeight = weights[0];
+      
+     //if( m_doPUreweighting ){ // FIXME
+     //  pileupWeight = eventInfo->auxdecor< double >( "PileupWeight" ); // this decoration added previously by PU reweighting tool									    
+     //}
+     mcEvtWeight *= pileupWeight;
+  }   
+  // decorate with PU corrected mc event weight
+  eventInfo->auxdecor< float >( "mcEventWeight" ) = mcEvtWeight;
 
   // print every 100 events, so we know where we are:
   ++m_eventCounter;
@@ -298,19 +330,9 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_store->clear();
   }
 
-  //----------------------------
-  // Event information
-  //---------------------------
-  const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
-
-
 
   // if data check if event passes GRL and even cleaning
-  if( ! eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
+  if( !isMC ) {
 
     // GRL
     if(!m_grl->passRunLB(*eventInfo)){

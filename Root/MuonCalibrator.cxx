@@ -7,8 +7,10 @@
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODMuon/MuonContainer.h"
 #include "xAODCore/ShallowCopy.h"
+#include "AthContainers/ConstDataVector.h"
 #include "xAODAnaHelpers/MuonCalibrator.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+
 
 #include "MuonMomentumCorrections/MuonCalibrationAndSmearingTool.h"
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
@@ -61,9 +63,13 @@ EL::StatusCode  MuonCalibrator :: configure ()
   m_debug         = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  // shallow copies are made with this output container name
+
   m_outContainerName        = config->GetValue("OutputContainer", "");
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  // shallow copies are made with this output container name
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+
   m_sort                    = config->GetValue("Sort",          false);
 
   if( m_inContainerName.Length() == 0 ) {
@@ -202,33 +208,43 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   // create shallow copy
-  std::pair< xAOD::MuonContainer*, xAOD::ShallowAuxContainer* > calibMuons = xAOD::shallowCopyContainer( *inMuons );
+  std::pair< xAOD::MuonContainer*, xAOD::ShallowAuxContainer* > calibMuonsSC = xAOD::shallowCopyContainer( *inMuons );
+  ConstDataVector<xAOD::MuonContainer>* calibMuonsCDV = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+  calibMuonsCDV->reserve( calibMuonsSC.first->size() );
 
   // calibrate only MC
   if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
-    xAOD::MuonContainer::iterator muonSC_itr = (calibMuons.first)->begin();
-    xAOD::MuonContainer::iterator muonSC_end = (calibMuons.first)->end();
-    for( ; muonSC_itr != muonSC_end; ++muonSC_itr ) {
-      if( m_muonCalibrationAndSmearingTool->applyCorrection(**muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
+    for( auto muonSC_itr : *(calibMuonsSC.first) ) {
+      if( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
         // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
         // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
         Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
       }
-      if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", ((*muonSC_itr)->pt() * 1e-3));
-    } // end check is MC
-  } // end for loop over shallow copied muons
+      if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", (muonSC_itr->pt() * 1e-3));
+    } 
+  } 
 
   if(m_sort) {
-    std::sort( calibMuons.first->begin(), calibMuons.first->end(), HelperFunctions::sort_pt );
+    std::sort( calibMuonsSC.first->begin(), calibMuonsSC.first->end(), HelperFunctions::sort_pt );
+  }
+
+  // save pointers in ConstDataVector with same order
+  for( auto mu_itr : *(calibMuonsSC.first) ) {
+    calibMuonsCDV->push_back( mu_itr );
   }
 
   // add shallow copy to TStore
-  if( !m_store->record( calibMuons.first, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
+  if( !m_store->record( calibMuonsSC.first, m_outSCContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store container %s. Exiting.", m_outSCContainerName.Data() );
     return EL::StatusCode::FAILURE;
   }
-  if( !m_store->record( calibMuons.second, m_outAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outAuxContainerName.Data() );
+  if( !m_store->record( calibMuonsSC.second, m_outSCAuxContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outSCAuxContainerName.Data() );
+    return EL::StatusCode::FAILURE;
+  }
+  // add ConstDataVector to TStore
+  if( !m_store->record( calibMuonsCDV, m_outContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
     return EL::StatusCode::FAILURE;
   }
 

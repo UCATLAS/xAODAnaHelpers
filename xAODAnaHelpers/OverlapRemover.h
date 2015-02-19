@@ -1,11 +1,5 @@
-/*
-=======================================================
-https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/AnalysisCommon/AssociationUtils/trunk/doc/README.rst
-========================================================
-*/
-
-#ifndef xAODAnaHelpers_OVERLAPREMOVER_H
-#define xAODAnaHelpers_OVERLAPREMOVER_H
+#ifndef XAODANAHELPERS_OVERLAPREMOVER_H
+#define XAODANAHELPERS_OVERLAPREMOVER_H
 
 #include <EventLoop/Algorithm.h>
 
@@ -14,40 +8,22 @@ https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/AnalysisCommon/Asso
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-/*
-namespace xAOD {
-#ifndef XAODMUON_MUONCONTAINER_H 
-  class MuonContainer;
+// EDM include(s):
+#ifndef __CINT__
+  #include "xAODBase/IParticleHelpers.h"
+  #include "xAODBase/IParticleContainer.h"
+  #include "xAODBase/IParticle.h"
+  #include "xAODEgamma/ElectronContainer.h"
+  #include "xAODMuon/MuonContainer.h"
+  #include "xAODJet/JetContainer.h"
+  #include "xAODEgamma/PhotonContainer.h"
+  #include "xAODTau/TauJetContainer.h"
 #endif
-#ifndef XAODMUON_MUON_H 
-  class Muon;
+
+// package include(s):
+#ifndef __CINT__
+  #include "xAODAnaHelpers/HelperClasses.h"
 #endif
-#ifndef XAODEGAMMA_ELECTRONCONTAINER_H 
-  class ElectronContainer;
-#endif
-#ifndef XAODEGAMMA_ELECTRON_H 
-  class Electron;
-#endif
-#ifndef XAODEGAMMA_PHOTONCONTAINER_H 
-  class PhotonContainer;
-#endif
-#ifndef XAODEGAMMA_PHOTON_H 
-  class Photon;
-#endif
-#ifndef XAODTAU_TAUJETCONTAINER_H 
-  class TauJetContainer;
-#endif
-#ifndef XAODTAU_TAU_H 
-  class Tau;
-#endif
-#ifndef XAODJET_JETCONTAINER_H 
-  class JetContainer;
-#endif
-#ifndef XAODJET_JET_H 
-  class Jet;
-#endif
-}
-*/
 
 class OverlapRemovalTool;
 
@@ -61,29 +37,52 @@ public:
   xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
+  int m_numEventPass;     //!
+  int m_weightNumEventPass; //!
+  int m_numObjectPass;    //!
 
   std::string m_name;
   std::string m_configName;
-
+#ifndef __CINT__
+  HelperClasses::ContainerType m_type_el, m_type_mu, m_type_jet, m_type_ph, m_type_tau;
+#endif
   bool m_debug;
 
 private:
 
+#ifndef __CINT__
   // tools
-  OverlapRemovalTool * m_overlapRemovalTool; //!
+  OverlapRemovalTool *m_overlapRemovalTool; //!
+#endif
 
   // configuration variables
+
+  bool     m_decorateSelectedObjects;  // decorate selected objects? default passSel
+  bool     m_createSelectedContainers; // fill using SG::VIEW_ELEMENTS to be light weight
   
-  /* Muons */
-  TString m_inContainerName_Muons;
+  bool     m_useSelected; // pass only object passing selection to O.R. tool
+  
   /* Electrons */
   TString m_inContainerName_Electrons;
-  /* Photons */
-  TString m_inContainerName_Photons;
-  /* Taus */
-  TString m_inContainerName_Taus;
+  TString  m_outContainerName_Electrons;        // output container name
+  TString  m_outAuxContainerName_Electrons;     // output auxiliary container name
+  /* Muons */
+  TString m_inContainerName_Muons;
+  TString  m_outContainerName_Muons;        // output container name
+  TString  m_outAuxContainerName_Muons;     // output auxiliary container name
   /* Jets */
   TString m_inContainerName_Jets;
+  TString  m_outContainerName_Jets;        // output container name
+  TString  m_outAuxContainerName_Jets;     // output auxiliary container name
+  /* Photons */
+  TString m_inContainerName_Photons;
+  TString  m_outContainerName_Photons;        // output container name
+  TString  m_outAuxContainerName_Photons;     // output auxiliary container name
+  /* Taus */
+  TString m_inContainerName_Taus;
+  TString  m_outContainerName_Taus;        // output container name
+  TString  m_outAuxContainerName_Taus;     // output auxiliary container name
+  
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -110,7 +109,18 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  
+#ifndef __CINT__
+  virtual EL::StatusCode executeConst(const xAOD::ElectronContainer* inElectrons, 
+				      const xAOD::MuonContainer* inMuons,
+				      const xAOD::JetContainer* inJets,
+			              const xAOD::TauJetContainer* inTaus,
+				      const xAOD::PhotonContainer* inPhotons);
+#endif
+#ifndef __CINT__  
+  virtual EL::StatusCode printOverlapInfo (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
+  virtual EL::StatusCode printOverlapInfo (const char* type, xAOD::IParticle* obj, const std::string& selectFlag, const std::string& overlapFlag);
+#endif
+   
   // this is needed to distribute the algorithm to the workers
   ClassDef(OverlapRemover, 1);
 };

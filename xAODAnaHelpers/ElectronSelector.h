@@ -1,6 +1,7 @@
 #ifndef xAODAnaHelpers_ElectronSelector_H
 #define xAODAnaHelpers_ElectronSelector_H
 
+// EL include(s):
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
@@ -8,23 +9,16 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// EDM include(s):  
+#ifndef __CINT__
+  #include "xAODEgamma/Electron.h"
+  #include "xAODEgamma/ElectronContainer.h"
+  #include "xAODTracking/Vertex.h"
+#endif
+
 // ROOT include(s):
 #include "TH1D.h"
 
-namespace xAOD {
-#ifndef XAODEGAMMA_ELECTRONCONTAINER_H 
-  class ElectronContainer;
-#endif
-#ifndef XAODEGAMMA_ELECTRON_H 
-  class Electron;
-#endif
-#ifndef XAODTRACKING_VERTEXCONTAINER_H 
-    class VertexContainer;
-#endif
-#ifndef XAODTRACKING_VERTEXCONTAINER_H 
-    class Vertex;
-#endif
-}
 
 namespace CP{
   class ElectronIsolationSelectionTool;
@@ -44,10 +38,12 @@ public:
   int m_numEvent;         //!
   int m_numObject;        //!
   int m_numEventPass;     //!
+  int m_weightNumEventPass; //!
   int m_numObjectPass;    //!
 
   std::string m_name;
   std::string m_configName;
+  int m_type;
 
   bool m_debug;                 //!
 
@@ -60,10 +56,11 @@ public:
 private:
   
   // tools
+#ifndef __CINT__  
   AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ; //!     
   AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool; //!      
   CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
-
+#endif
   // configuration variables
   TString    m_inContainerName;          // input container name
   TString    m_outContainerName;         // output container name
@@ -79,15 +76,19 @@ private:
   float      m_eta_max;                  // require |eta| < eta_max 
   bool	     m_vetoCrack;                // require |eta| outside crack region
   float      m_d0sig_max;                // require d0 significance (at BL) < m_d0sig_max
-  float	     m_z0_max;	                 // require z0 (at BL - corrected with vertex info) < m_z0_max
+  float	     m_z0sintheta_max;	         // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
   TString    m_likelihoodPID;            // require likelihood-based PID
   bool       m_useRelativeIso;         
   TString    m_CaloBasedIsoType;	  
   float      m_CaloBasedIsoCut;  
   TString    m_TrackBasedIsoType;	  
   float      m_TrackBasedIsoCut;  
-  
-
+ 
+  TString              m_passAuxDecorKeys;  //!
+  TString              m_failAuxDecorKeys;  //!
+  std::vector<TString> m_passKeys;  //!
+  std::vector<TString> m_failKeys;  //!
+ 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -114,12 +115,15 @@ public:
   
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-
+#ifndef __CINT__  
+  virtual EL::StatusCode executeConst( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight );
+#endif
 
   // added functions not from Algorithm
   // why does this need to be virtual?
+#ifndef __CINT__  
   virtual int PassCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex );
-
+#endif
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronSelector, 1);
 };

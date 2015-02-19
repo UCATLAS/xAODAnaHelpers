@@ -1,11 +1,33 @@
+/******************************************
+ *
+ * BJet selector.  
+ * 
+ * G. Facini, M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 16:07 AEST 2015
+ *
+ ******************************************/
+
+// c++ include(s):
+#include <iostream>
+#include <typeinfo>
+
+// EL include(s):
 #include <EventLoop/Job.h>
+#include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-#include "AthContainers/ConstDataVector.h"
+// EDM include(s):
+#include "AthContainers/ConstDataVector.h" 
+#include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODBTagging/BTagging.h"
+
+// package include(s):
 #include "xAODAnaHelpers/BJetSelector.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+
+// external tools include(s):
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -230,7 +252,19 @@ EL::StatusCode BJetSelector :: execute ()
 
   if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
-  float mcEvtWeight(1); // FIXME - set to something from eventInfo for cutflow
+  // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
+  const xAOD::EventInfo* eventInfo = 0;
+  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
+    Error("execute()", "Failed to retrieve event info collection. Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+  float mcEvtWeight(1.0); 
+  if (eventInfo->isAvailable< float >( "mcEventWeight" )){
+    mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
+  } else {
+    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
+    return EL::StatusCode::FAILURE;
+  }
 
   m_numEvent++;
 
@@ -279,7 +313,6 @@ EL::StatusCode BJetSelector :: execute ()
   }
 
   return executeConst( inJets, mcEvtWeight );
-
 }
 
 
@@ -292,8 +325,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
 
   if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
-  // create output container (if requested) - deep copy
-
+  // create output container (if requested) 
   ConstDataVector<xAOD::JetContainer>* selectedJets = 0;
   if(m_createSelectedContainer) {
     selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);

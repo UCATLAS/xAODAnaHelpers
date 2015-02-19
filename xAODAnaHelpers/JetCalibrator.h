@@ -1,22 +1,13 @@
 #ifndef xAODAnaHelpers_JetCalibrator_H
 #define xAODAnaHelpers_JetCalibrator_H
 
-#include <EventLoop/StatusCode.h>
+// EL include(s)
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
 #include "xAODRootAccess/Init.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
-
-namespace xAOD {
-#ifndef XAODJET_JETCONTAINER_H 
-  class JetContainer;
-#endif
-#ifndef XAODJET_JET_H 
-  class Jet;
-#endif
-}
 
 class JetCalibrationTool;
 class JetCleaningTool;
@@ -35,7 +26,6 @@ public:
   std::string m_name;
   std::string m_configName;
   bool m_isMC;            //!
-  /* this should be read from event info- sample name or something...now forced to true */
   bool m_isFullSim;       //!
 
   bool m_debug;           //!
@@ -43,8 +33,10 @@ public:
 private:
 
   // tools
+#ifndef __CINT__    
   JetCalibrationTool * m_jetCalibration; //!
   JetCleaningTool    * m_jetCleaning;    //!
+#endif // not __CINT__
 
   // configuration variables
   TString m_inContainerName;        //!

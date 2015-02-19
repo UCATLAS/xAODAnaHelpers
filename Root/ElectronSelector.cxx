@@ -1,19 +1,33 @@
+/******************************************
+ *
+ * Interface to CP Electron selection tool(s).  
+ * 
+ * M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 15:36 AEST 2015
+ *
+ ******************************************/
+
+// c++ include(s):
 #include <iostream>
 #include <typeinfo>
 
+// EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+// EDM include(s): 
 #include "xAODCore/ShallowCopy.h"
+#include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
-#include "xAODEgamma/Electron.h"
 #include "xAODTracking/VertexContainer.h"
-#include "xAODTracking/Vertex.h"
+
+// package include(s):
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+// external tools include(s):
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronIsolationSelection/ElectronIsolationSelectionTool.h"
@@ -22,6 +36,8 @@
 #include "TEnv.h"
 #include "TFile.h"
 #include "TSystem.h"
+#include "TObjArray.h"
+#include "TObjString.h"
 
 // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonSelectorTools
 // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronIsolationSelectionTool
@@ -37,6 +53,7 @@ ElectronSelector :: ElectronSelector (std::string name, std::string configName) 
   Algorithm(),
   m_name(name),
   m_configName(configName),
+  m_type(0),
   m_cutflowHist(0),
   m_cutflowHistW(0),
   m_asgElectronIsEMSelector(0),
@@ -87,6 +104,8 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
   // if requested, a new container is made using the SG::View_Element option
   m_outContainerName        = config->GetValue("OutputContainer", "");
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
   // sort before running selection
@@ -100,7 +119,7 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_eta_max                 = config->GetValue("etaMax", 1e8);
   m_vetoCrack               = config->GetValue("VetoCrack", true);
   m_d0sig_max     	    = config->GetValue("d0sigMax", 4.0);
-  m_z0_max     	            = config->GetValue("z0Max", 10.0);
+  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 10.0);
 
   m_likelihoodPID  = config->GetValue("LikelihoodPID", "Loose"); // electron PID as defined by LikeEnum enum {VeryLoose, Loose, Medium, Tight, VeryTight, LooseRelaxed} (default is 1 - loose).
   if( m_likelihoodPID != "VeryLoose" &&
@@ -119,6 +138,22 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
   m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
   m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
+
+  m_passAuxDecorKeys         = config->GetValue("PassDecorKeys", "");
+
+  TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
+  for(int i = 0; i<passKeysStrings->GetEntries(); ++i) {
+    TObjString* passKeyObj = (TObjString*)passKeysStrings->At(i);
+    m_passKeys.push_back(passKeyObj->GetString());
+  }
+
+  m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+  TObjArray* failKeysStrings = m_failAuxDecorKeys.Tokenize(",");
+  for(int i = 0; i<failKeysStrings->GetEntries(); ++i) {
+    TObjString* failKeyObj = (TObjString*)failKeysStrings->At(i);
+    m_failKeys.push_back(failKeyObj->GetString());
+  }
+
 
   if( m_inContainerName.Length() == 0 ) {
     Error("configure()", "InputContainer is empty!");
@@ -228,28 +263,8 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
+  m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
-
-  /*
-  std::cout << " Parameters to ElectronSelector() : "  << "\n"
-	  << "\t m_inContainerName : "         << m_inContainerName.Data()   <<  " of type " <<  typeid(m_inContainerName).name() << "\n"
-	  << "\t m_decorateSelectedObjects : " << m_decorateSelectedObjects  <<  " of type " <<  typeid(m_decorateSelectedObjects).name() << "\n"
-	  << "\t m_createSelectedContainer : " << m_createSelectedContainer  <<  " of type " <<  typeid(m_createSelectedContainer).name() <<  "\n"
-	  << "\t m_outContainerName: "         << m_outContainerName.Data()  <<  " of type " <<  typeid(m_outContainerName).name() << "\n"
-	  << "\t m_debug: "		       << m_debug	             <<  " of type " <<  typeid(m_debug).name() <<  "\n"
-	  << "\t m_nToProcess: "	       << m_nToProcess  	     <<  " of type " <<  typeid(m_nToProcess).name() << "\n"
-	  << "\t m_pass_max	: "	       << m_pass_max		     <<  " of type " <<  typeid(m_pass_max).name() << "\n"
-	  << "\t m_pass_min	: "	       << m_pass_min		     <<  " of type " <<  typeid(m_pass_min).name() << "\n"
-	  << "\t m_pT_max	: "	       << m_pT_max		     <<  " of type " <<  typeid(m_pT_max).name() << "\n"
-	  << "\t m_pT_min	: "	       << m_pT_min		     <<  " of type " <<  typeid(m_pT_min).name() << "\n"
-	  << "\t m_eta_max	: "	       << m_eta_max		     <<  " of type " <<  typeid(m_eta_max).name() << "\n"
-  	  << "\t m_useRelativeIso: "           << m_useRelativeIso           <<  " of type " <<  typeid(m_useRelativeIso).name() << "\n"
-  	  << "\t m_CaloBasedIsoType: "             << m_CaloBasedIsoType.Data()      <<  " of type " <<  typeid(m_CaloBasedIsoType).name() << "\n"
-  	  << "\t m_CaloBasedIsoCut : "    << m_CaloBasedIsoCut     <<  " of type " <<  typeid(m_CaloBasedIsoCut).name() << "\n"
-  	  << "\t m_TrackBasedIsoType: "            << m_TrackBasedIsoType.Data()     <<  " of type " <<  typeid(m_TrackBasedIsoType).name() << "\n"
-  	  << "\t m_TrackBasedIsoCut : "   << m_TrackBasedIsoCut    <<  " of type " <<  typeid(m_TrackBasedIsoCut).name() << "\n"
-          << std::endl;
-  */
 
   // initialise AsgElectronIsEMSelector
   m_asgElectronIsEMSelector = new AsgElectronIsEMSelector("AsgElectronIsEMSelector");
@@ -297,46 +312,89 @@ EL::StatusCode ElectronSelector :: execute ()
 
   if(m_debug) Info("execute()", "Applying Electron Selection... \n");
 
-  float mcEvtWeight(1); // FIXME - set to something from eventInfo
+  // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
+  const xAOD::EventInfo* eventInfo = 0;
+  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
+    Error("execute()", "Failed to retrieve event info collection. Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+  float mcEvtWeight(1.0); 
+  if (eventInfo->isAvailable< float >( "mcEventWeight" )){
+    mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
+  } else {
+    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
+    return EL::StatusCode::FAILURE;
+  }
 
   m_numEvent++;
 
-  // get the collection from TEvent or TStore
-  xAOD::ElectronContainer* inElectrons = 0;
-  if ( !m_event->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
-    if ( !m_store->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.Data() );
+  // this will be the collection processed - no matter what!!
+  const xAOD::ElectronContainer* inElectrons = 0;
+
+  // if type is not defined then we need to define it
+  //  1 = get from TStore
+  //  2 = get from TEvent
+  if( m_type == 0 ) {
+    if ( m_store->contains< ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName.Data())){
+      m_type = 1;  
+    }
+    else if ( m_event->contains<const xAOD::ElectronContainer>(m_inContainerName.Data())){
+      m_type = 2;
+    }
+    else {
+      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
+      m_store->print();
       return EL::StatusCode::FAILURE;
     }
   }
 
-  // get primary vertex
-  const xAOD::VertexContainer *vertices = 0;
-  if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
-      Error("execute()", "Failed to retrieve PrimaryVertices. Exiting.");
+  // Can retrieve collection from input file ( const )
+  //           or collection from tstore ( ConstDataVector which then gives a const collection )
+  // decide which on first pass
+  // 
+  // FIXME replace with enum
+  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+    ConstDataVector<xAOD::ElectronContainer>* inElectronsCDV = 0;
+    if ( !m_store->retrieve( inElectronsCDV, m_inContainerName.Data() ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
+    }
+    inElectrons = inElectronsCDV->asDataVector();
+  }  
+  else if ( m_type == 2 ) {   // get const container from TEvent
+    if ( !m_event->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
+      return EL::StatusCode::FAILURE;
+    }
+  }
+
+  return executeConst( inElectrons, mcEvtWeight );
+
+}
+
+EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight ) 
+{
+
+  // create output container (if requested)
+  ConstDataVector<xAOD::ElectronContainer>* selectedElectrons = 0;
+  if(m_createSelectedContainer) {
+    selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
+  }
+
+  const xAOD::VertexContainer* vertices = 0;
+  if ( !m_event->retrieve( vertices, "PrimaryVertices" ).isSuccess() ){
+     Error("ElectronSelector:::execute()", "Failed to retrieve PrimaryVertices container. Exiting." );
+     return EL::StatusCode::FAILURE;
   }
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
-
-  if(m_sort) {
-    std::sort( inElectrons->begin(), inElectrons->end(), HelperFunctions::sort_pt );
-  }
-
-  // create output container (if requested) - deep copy
-  xAOD::ElectronContainer* selectedElectrons = 0;
-  if(m_createSelectedContainer) {
-    selectedElectrons = new xAOD::ElectronContainer(SG::VIEW_ELEMENTS);
-  }
-
-  xAOD::ElectronContainer::iterator electron_itr = inElectrons->begin();
-  xAOD::ElectronContainer::iterator electron_end = inElectrons->end();
+  
   int nPass(0); int nObj(0);
-  for( ; electron_itr != electron_end; ++electron_itr ){
+  for( auto el_itr : *inElectrons ) { // duplicated of basic loop
 
-    // if only looking at a subset of electrons make sure all are decorrated
+    // if only looking at a subset of electrons make sure all are decorated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        (*electron_itr)->auxdecor< int >( "passSel" ) = -1;
+        el_itr->auxdecor< char >( "passSel" ) = -1;
       } else {
         break;
       }
@@ -344,14 +402,15 @@ EL::StatusCode ElectronSelector :: execute ()
     }
 
     nObj++;
-    int passSel = this->PassCuts( (*electron_itr), pvx );
+    bool passSel = this->PassCuts( el_itr, pvx );
     if(m_decorateSelectedObjects) {
-      (*electron_itr)->auxdecor< int >( "passSel" ) = passSel;
+      el_itr->auxdecor< char >( "passSel" ) = passSel;
     }
+
     if(passSel) {
       nPass++;
       if(m_createSelectedContainer) {
-        selectedElectrons->push_back( *electron_itr );
+        selectedElectrons->push_back( el_itr );
       }
     }
   }
@@ -369,26 +428,19 @@ EL::StatusCode ElectronSelector :: execute ()
     return EL::StatusCode::SUCCESS;
   }
 
-  // add output container to TStore
-  if( m_createSelectedContainer ) {
-    if( !m_store->record( selectedElectrons, m_outContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
+  m_numEventPass++;
+  m_weightNumEventPass += mcEvtWeight;
+
+  // add ConstDataVector to TStore
+  if(m_createSelectedContainer) {
+    if( !m_store->record( selectedElectrons, m_outContainerName.Data() ).isSuccess() ) {
+      Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
   }
 
-  m_numEventPass++;
-  if(m_useCutFlow) {
-    m_cutflowHist ->Fill( m_cutflow_bin, 1 );
-    m_cutflowHistW->Fill( m_cutflow_bin, mcEvtWeight);
-  }
-
-  // shall we delete containers added to to TStore ? https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT#Muon_calibration_and_smearing_to
-  //delete selectedElectrons;
-
   return EL::StatusCode::SUCCESS;
 }
-
 
 EL::StatusCode ElectronSelector :: postExecute ()
 {
@@ -449,18 +501,23 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize \n");
-
+  if(m_useCutFlow) {
+    Info("histFinalize()", "Filling cutflow");
+    m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
+    m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
+  }
   return EL::StatusCode::SUCCESS;
 }
 
 int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex ) {
 
-  int author = static_cast<int>( electron->author() );
-  float et   = static_cast<float>( (electron->caloCluster()->e()) ) / static_cast<float>( cosh(electron->trackParticle()->eta()) );
-  float eta  = static_cast<float>( electron->caloCluster()->eta() );
-  int oq     = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
-  float z0   = static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() );
+  int author       = static_cast<int>( electron->author() );
+  float et         = static_cast<float>( (electron->caloCluster()->e()) ) / static_cast<float>( cosh(electron->trackParticle()->eta()) );
+  float eta        = static_cast<float>( electron->caloCluster()->eta() );
+  int oq           = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
+  float z0sintheta = (static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( electron->trackParticle()->theta() );
 
+  
   // author cut
   if (!(author == 1 || author ==3)) {
       if (m_debug) std::cout << "Electron failed author cut." << std::endl;
@@ -499,11 +556,11 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  // z0 cut
-  if (!(fabs(z0) < m_z0_max)) {
-      if (m_debug) std::cout << "Electron failed z0 cut." << std::endl;
+  // z0*sin(theta) cut
+  if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
+      if (m_debug) std::cout << "Electron failed z0*sin(theta) cut." << std::endl;
       return 0;
-  }
+  }  
   // likelihood PID
   if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ){
       if (m_debug) std::cout << "Electron failed likelihood PID cut." << std::endl;

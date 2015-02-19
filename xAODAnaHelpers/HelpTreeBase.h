@@ -1,34 +1,3 @@
-// Dear emacs, this is -*-c++-*-
-#ifndef xAODAnaHelpers_HelpTreeBase_H
-#define xAODAnaHelpers_HelpTreeBase_H
-
-#include "xAODRootAccess/TEvent.h"
-
-namespace xAOD {
-#ifndef XAODEVENTINFO_EVENTINFO_H
-    class EventInfo;
-#endif
-#ifndef XAODMUON_MUONCONTAINER_H
-    class MuonContainer;
-#endif
-#ifndef XAODMUON_MUON_H
-      class Muon;
-#endif
-#ifndef XAODEGAMMA_ELECTRONCONTAINER_H
-  class ElectronContainer;
-#endif
-#ifndef XAODEGAMMA_ELECTRON_H
-    class Electron;
-#endif
-#ifndef XAODJET_JETCONTAINER_H
-    class JetContainer;
-#endif
-#ifndef XAODJET_JET_H
-      class Jet;
-#endif
-      class TFile;
-}
-
 /***************************************************
  * HelpTreeBase:
  *
@@ -41,12 +10,36 @@ namespace xAOD {
  *
  ***************************************************/
 
+// Dear emacs, this is -*-c++-*-
+#ifndef xAODAnaHelpers_HelpTreeBase_H
+#define xAODAnaHelpers_HelpTreeBase_H
+
+#ifndef __CINT__    
+  #include "xAODEventInfo/EventInfo.h"
+  #include "xAODEgamma/ElectronContainer.h"
+  #include "xAODEgamma/Electron.h"
+  #include "xAODEgamma/PhotonContainer.h"
+  #include "xAODEgamma/Photon.h"
+  #include "xAODMuon/MuonContainer.h"
+  #include "xAODMuon/Muon.h"
+  #include "xAODJet/JetContainer.h"
+  #include "xAODJet/Jet.h"
+  #include "xAODTau/TauJetContainer.h"
+  #include "xAODTau/TauJet.h"
+#endif // not __CINT__  
+
+#include "xAODRootAccess/TEvent.h"
+
+#include "TTree.h"
+#include "TFile.h"
 
 class HelpTreeBase {
 
 public:
 
+#ifndef __CINT__  
   HelpTreeBase(xAOD::TEvent * event, TTree* tree, TFile* file, int units=1e3 );
+#endif // not __CINT__ 
   virtual ~HelpTreeBase() {;}
 
   void AddEvent();
@@ -54,13 +47,13 @@ public:
   void AddElectrons();
   void AddJets();
   void AddFatJets();
-
+#ifndef __CINT__  
   void FillEvent( const xAOD::EventInfo* eventInfo );
   void FillMuons( const xAOD::MuonContainer& muons );
   void FillElectrons( const xAOD::ElectronContainer& electrons );
   void FillJets( const xAOD::JetContainer& jets );
   void FillFatJets( const xAOD::JetContainer& fatJets );
-
+#endif // not __CINT__ 
   void Fill();
   void Clear();
 
@@ -68,12 +61,14 @@ public:
 
   // User defined functions
   virtual void AddUser()                                           = 0;
+#ifndef __CINT__  
   virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   = 0;
   virtual void FillMuonsUser( const xAOD::Muon* muon )             = 0;
   virtual void FillElectronsUser( const xAOD::Electron* electron ) = 0;
   virtual void FillJetsUser( const xAOD::Jet* jet )                = 0;
   virtual void FillFatJetsUser( const xAOD::Jet* fatJet )          = 0;
   virtual void ClearUser()                                         = 0;
+#endif // not __CINT__ 
 
 protected:
 
@@ -86,6 +81,7 @@ protected:
   int m_eventNumber;
   int m_mcEventNumber;
   int m_mcChannelNumber;
+  float m_mcEventWeight;
 
   // jets
   int m_njet;
@@ -99,6 +95,12 @@ protected:
   std::vector<float> m_muon_pt;
   std::vector<float> m_muon_eta;
   std::vector<float> m_muon_phi;
+  
+  // electrons
+  int m_nel;
+  std::vector<float> m_el_pt;
+  std::vector<float> m_el_phi;
+  std::vector<float> m_el_eta;
 
 };
 

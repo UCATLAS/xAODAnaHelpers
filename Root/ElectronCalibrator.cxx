@@ -1,18 +1,39 @@
+/******************************************
+ *
+ * Interface to CP Electron calibration tool(s).  
+ * 
+ * M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 15:29 AEST 2015
+ *
+ ******************************************/
+
+// c++ include(s):
 #include <iostream>
 
+// EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+// EDM include(s):  
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODEgamma/Electron.h"
+#include "xAODBase/IParticleHelpers.h"
+#include "xAODBase/IParticleContainer.h"
+#include "xAODBase/IParticle.h"
+#include "AthContainers/ConstDataVector.h"
+#include "AthContainers/DataVector.h"
 #include "xAODCore/ShallowCopy.h"
+
+// package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/ElectronCalibrator.h"
 
+// external tools include(s):
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
 
+// ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
 
@@ -61,9 +82,12 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   m_debug         = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  // shallow copies are made with this output container name
   m_outContainerName        = config->GetValue("OutputContainer", "");
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  // shallow copies are made with this output container name
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+
   m_sort                    = config->GetValue("Sort",          false);
 
   if( m_inContainerName.Length() == 0 ) {
@@ -202,46 +226,48 @@ EL::StatusCode ElectronCalibrator :: execute ()
     }
   }
 
-  // before applying calibration
-  m_EgammaCalibrationAndSmearingTool->setDefaultConfiguration(eventInfo);
-
   // create shallow copy
-  std::pair< xAOD::ElectronContainer*, xAOD::ShallowAuxContainer* > calibElectrons = xAOD::shallowCopyContainer( *inElectrons );
+  std::pair< xAOD::ElectronContainer*, xAOD::ShallowAuxContainer* > calibElectronsSC = xAOD::shallowCopyContainer( *inElectrons );
+  ConstDataVector<xAOD::ElectronContainer>* calibElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
+  calibElectronsCDV->reserve( calibElectronsSC.first->size() );
 
   // calibrate
-  xAOD::ElectronContainer::iterator electronSC_itr = (calibElectrons.first)->begin();
-  xAOD::ElectronContainer::iterator electronSC_end = (calibElectrons.first)->end();
-  for( ; electronSC_itr != electronSC_end; ++electronSC_itr ) {
-     // set the smearing seed if needed
-     int i = std::distance((calibElectrons.first)->begin(), electronSC_itr);
-     m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber()+100*i);
-     //if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
+  for( auto elSC_itr : *(calibElectronsSC.first) ) {
+     // set smearing seeding if needed (already done by default - check TWiki: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonFourMomentumCorrection )
+     // int i = std::distance((calibElectronsSC.first)->begin(), &elSC_itr);
+     // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber()+100*i);
+     
      // apply correction
-     m_EgammaCalibrationAndSmearingTool->applyCorrection(**electronSC_itr, eventInfo);
-     if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", ((*electronSC_itr)->pt() * 1e-3));
-     //} // end check is MC
-  } // end for loop over shallow copied Electrons
+     m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr );
+     if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", (elSC_itr->pt() * 1e-3));
+  } 
 
   if(m_sort) {
-    std::sort( calibElectrons.first->begin(), calibElectrons.first->end(), HelperFunctions::sort_pt );
+    std::sort( calibElectronsSC.first->begin(), calibElectronsSC.first->end(), HelperFunctions::sort_pt );
+  }
+
+  // save pointers in ConstDataVector with same order
+  for( auto elSC_itr : *(calibElectronsSC.first) ) {
+    calibElectronsCDV->push_back( elSC_itr );
   }
 
   // add shallow copy to TStore
-  if( !m_store->record( calibElectrons.first, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
+  if( !m_store->record( calibElectronsSC.first, m_outSCContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store container %s. Exiting.", m_outSCContainerName.Data() );
     return EL::StatusCode::FAILURE;
   }
-  if( !m_store->record( calibElectrons.second, m_outAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outAuxContainerName.Data() );
+  if( !m_store->record( calibElectronsSC.second, m_outSCAuxContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outSCAuxContainerName.Data() );
     return EL::StatusCode::FAILURE;
   }
-
-  // shall we delete containers added to to TStore ? https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT#Electron_calibration_and_smearing_to
-  //delete calibElectrons.first; delete calibElectrons.second;
+  // add ConstDataVector to TStore
+  if( !m_store->record( calibElectronsCDV, m_outContainerName.Data() ).isSuccess() ){
+    Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
+    return EL::StatusCode::FAILURE;
+  }
 
   return EL::StatusCode::SUCCESS;
 }
-
 
 
 EL::StatusCode ElectronCalibrator :: postExecute ()
@@ -298,3 +324,4 @@ EL::StatusCode ElectronCalibrator :: histFinalize ()
 
   return EL::StatusCode::SUCCESS;
 }
+

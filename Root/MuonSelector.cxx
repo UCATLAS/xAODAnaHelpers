@@ -1,25 +1,42 @@
+/******************************************
+ *
+ * Interface to CP Muon selection tool(s).  
+ * 
+ * M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 15:48 AEST 2015
+ *
+ ******************************************/
+
+// c++ include(s):
 #include <iostream>
 #include <typeinfo>
 
+// EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+// EDM include(s): 
 #include "xAODCore/ShallowCopy.h"
+#include "AthContainers/ConstDataVector.h"
+#include "xAODEventInfo/EventInfo.h"
 #include "xAODMuon/MuonContainer.h"
-#include "xAODMuon/Muon.h"
 #include "xAODTracking/VertexContainer.h"
-#include "xAODTracking/Vertex.h"
+
+// package include(s):
 #include "xAODAnaHelpers/MuonSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+// external tools include(s):
 #include "MuonSelectorTools/MuonSelectionTool.h"
 
 // ROOT include(s):
 #include "TEnv.h"
 #include "TFile.h"
 #include "TSystem.h"
+#include "TObjArray.h"
+#include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
@@ -32,6 +49,7 @@ MuonSelector :: MuonSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
+  m_type(0),
   m_cutflowHist(0),
   m_cutflowHistW(0),
   m_muonSelectionTool(0)
@@ -119,6 +137,24 @@ EL::StatusCode  MuonSelector :: configure ()
   m_eta_max                 = config->GetValue("etaMax", 1e8);
   m_d0sig_max     	    = config->GetValue("d0sigMax", 4.0);
   m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1.5);
+
+  // isolation stuff
+  m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" ,	"etcone20");
+  m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
+  m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
+  m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
+
+  TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
+  for(int i = 0; i<passKeysStrings->GetEntries(); ++i) {
+    TObjString* passKeyObj = (TObjString*)passKeysStrings->At(i);
+    m_passKeys.push_back(passKeyObj->GetString());
+  }
+  m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+  TObjArray* failKeysStrings = m_failAuxDecorKeys.Tokenize(",");
+  for(int i = 0; i<failKeysStrings->GetEntries(); ++i) {
+    TObjString* failKeyObj = (TObjString*)failKeysStrings->At(i);
+    m_failKeys.push_back(failKeyObj->GetString());
+  }
 
   if( m_inContainerName.empty() ){
     Error("configure()", "InputContainer is empty!");
@@ -228,6 +264,7 @@ EL::StatusCode MuonSelector :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
+  m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
   if(m_debug){
@@ -267,8 +304,6 @@ EL::StatusCode MuonSelector :: initialize ()
   return EL::StatusCode::SUCCESS;
 }
 
-
-
 EL::StatusCode MuonSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
@@ -278,17 +313,77 @@ EL::StatusCode MuonSelector :: execute ()
 
   if(m_debug) Info("execute()", "Applying Muon Selection... \n");
 
-  float mcEvtWeight(1); // FIXME - set to something from eventInfo
+  // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
+  const xAOD::EventInfo* eventInfo = 0;
+  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
+    Error("execute()", "Failed to retrieve event info collection. Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+  float mcEvtWeight(1.0); 
+  if (eventInfo->isAvailable< float >( "mcEventWeight" )){
+    mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
+  } else {
+    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
+    return EL::StatusCode::FAILURE;
+  }
 
   m_numEvent++;
 
-  // get the collection from TEvent or TStore
-  xAOD::MuonContainer* inMuons = 0;
-  if ( !m_event->retrieve( inMuons , m_inContainerName ).isSuccess() ){
-    if ( !m_store->retrieve( inMuons , m_inContainerName ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
+  // this will be the collection processed - no matter what!!
+  const xAOD::MuonContainer* inMuons = 0;
+
+  // if type is not defined then we need to define it
+  //  1 = get from TStore
+  //  2 = get from TEvent
+  if( m_type == 0 ) {
+    if ( m_store->contains< ConstDataVector<xAOD::MuonContainer> >(m_inContainerName)){
+      m_type = 1;  
+    }
+    else if ( m_event->contains<const xAOD::MuonContainer>(m_inContainerName)){
+      m_type = 2;
+    }
+    else {
+      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName );
+      m_store->print();
       return EL::StatusCode::FAILURE;
     }
+  }
+
+  // Can retrieve collection from input file ( const )
+  //           or collection from tstore ( ConstDataVector which then gives a const collection )
+  // decide which on first pass
+  // 
+  // FIXME replace with enum
+  if ( m_type == 1 ) {        // get ConstDataVector from TStore
+
+    ConstDataVector<xAOD::MuonContainer>* inMuonsCDV = 0;
+    if ( !m_store->retrieve( inMuonsCDV, m_inContainerName ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName );
+      return EL::StatusCode::FAILURE;
+    }
+    inMuons = inMuonsCDV->asDataVector();
+
+  }  
+  else if ( m_type == 2 ) {   // get const container from TEvent
+
+    if ( !m_event->retrieve( inMuons , m_inContainerName ).isSuccess() ){
+      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName );
+      return EL::StatusCode::FAILURE;
+    }
+
+  }
+
+  return executeConst( inMuons, mcEvtWeight );
+
+}
+
+EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons, float mcEvtWeight ) 
+{
+
+  // create output container (if requested)
+  ConstDataVector<xAOD::MuonContainer>* selectedMuons = 0;
+  if(m_createSelectedContainer) {
+    selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
   }
 
   // get primary vertex
@@ -299,25 +394,14 @@ EL::StatusCode MuonSelector :: execute ()
   }
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
-  if(m_sort) {
-    std::sort( inMuons->begin(), inMuons->end(), HelperFunctions::sort_pt );
-  }
 
-  // create output container (if requested) - deep copy
-  xAOD::MuonContainer* selectedMuons = 0;
-  if(m_createSelectedContainer) {
-    selectedMuons = new xAOD::MuonContainer(SG::VIEW_ELEMENTS);
-  }
-
-  xAOD::MuonContainer::iterator muon_itr = inMuons->begin();
-  xAOD::MuonContainer::iterator muon_end = inMuons->end();
   int nPass(0); int nObj(0);
-  for( ; muon_itr != muon_end; ++muon_itr ){
+  for( auto mu_itr : *inMuons ) { // duplicated of basic loop
 
     // if only looking at a subset of muons make sure all are decorrated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        (*muon_itr)->auxdecor< int >( "passSel" ) = -1;
+        mu_itr->auxdecor< char >( "passSel" ) = -1;
       } else {
         break;
       }
@@ -325,18 +409,18 @@ EL::StatusCode MuonSelector :: execute ()
     }
 
     nObj++;
-    int passSel = this->PassCuts( (*muon_itr), pvx );
+    int passSel = this->PassCuts( mu_itr, pvx );
     if(m_decorateSelectedObjects) {
-      (*muon_itr)->auxdecor< int >( "passSel" ) = passSel;
+      mu_itr->auxdecor< char >( "passSel" ) = passSel;
     }
+
     if(passSel) {
       nPass++;
       if(m_createSelectedContainer) {
-        selectedMuons->push_back( *muon_itr );
+        selectedMuons->push_back( mu_itr );
       }
     }
   }
-
 
   m_numObject     += nObj;
   m_numObjectPass += nPass;
@@ -351,22 +435,16 @@ EL::StatusCode MuonSelector :: execute ()
     return EL::StatusCode::SUCCESS;
   }
 
-  // add output container to TStore
-  if( m_createSelectedContainer ) {
-    if( !m_store->record( selectedMuons, m_outContainerName ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.c_str() );
+  m_numEventPass++;
+  m_weightNumEventPass += mcEvtWeight;
+
+  // add ConstDataVector to TStore
+  if(m_createSelectedContainer) {
+    if( !m_store->record( selectedMuons, m_outContainerName ).isSuccess() ) {
+      Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName );
       return EL::StatusCode::FAILURE;
     }
   }
-
-  m_numEventPass++;
-  if(m_useCutFlow) {
-    m_cutflowHist ->Fill( m_cutflow_bin, 1 );
-    m_cutflowHistW->Fill( m_cutflow_bin, mcEvtWeight);
-  }
-
-  // shall we delete new container passed to TStore?
-  //delete selectedMuons;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -423,7 +501,11 @@ EL::StatusCode MuonSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize \n");
-
+  if(m_useCutFlow) {
+    Info("histFinalize()", "Filling cutflow");
+    m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
+    m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
+  }
   return EL::StatusCode::SUCCESS;
 }
 
@@ -433,6 +515,8 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
   // maybe need this
   const xAOD::TrackParticle* tp  = const_cast<xAOD::TrackParticle*>(muon->primaryTrackParticle());
+
+  int type = static_cast<int>(muon->muonType());
 
   float d0_significance = fabs(tp->d0()) / sqrt(tp->definingParametersCovMatrix()(0,0));
   float z0sintheta      = (static_cast<float>( tp->z0() ) + static_cast<float>( tp->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( tp->theta() );
@@ -458,17 +542,21 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-  // d0sig cut
-  if (!( d0_significance < m_d0sig_max ) ) {
-      if (m_debug) std::cout << "Muon failed d0 significance cut." << std::endl;
-      return 0;
+  
+  // do not cut on impact parameter if muon is Standalone
+  if ( type != xAOD::Muon::MuonType::MuonStandAlone ){
+    // d0sig cut
+    if (!( d0_significance < m_d0sig_max ) ) {
+    	if (m_debug) std::cout << "Muon failed d0 significance cut." << std::endl;
+    	return 0;
+    }
+    // z0*sin(theta) cut
+    if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
+    	if (m_debug) std::cout << "Muon failed z0*sin(theta) cut." << std::endl;
+    	return 0;
+    }
   }
-  // z0*sin(theta) cut
-  if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
-      if (m_debug) std::cout << "Muon failed z0*sin(theta) cut." << std::endl;
-      return 0;
-  }
-
+  
   // retireve muon quality
   xAOD::Muon::Quality my_quality = m_muonSelectionTool->getQuality( *muon );
   if(m_debug) std::cout << "Muon quality " << static_cast<int>(my_quality) << std::endl;
@@ -494,12 +582,13 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-
-  // isolation MAKE CONFIGURABLE
-  float ptcone20 = -999., etcone20 = -999.;
-  if ( muon->isolation(ptcone20, xAOD::Iso::ptcone20) &&  muon->isolation(etcone20, xAOD::Iso::etcone20) ){
-    bool isTrackIso = ( ptcone20 / (muon->pt()) > 0.0 && ptcone20 / (muon->pt()) < 0.1 ) ? true : false;
-    bool isCaloIso  = ( etcone20 / (muon->pt()) > 0.0 && etcone20 / (muon->pt()) < 0.1 ) ? true : false;
+  
+  // isolation 
+  HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+  float ptcone_dr = -999., etcone_dr = -999.;
+  if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ){
+    bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut) ? true : false;
+    bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ? true : false;
     if( !( isTrackIso && isCaloIso ) ){
       if (m_debug) std::cout << "Muon failed isolation cut " << std::endl;
       return 0;
@@ -514,5 +603,4 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   return 1;
 }
-
 

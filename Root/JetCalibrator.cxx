@@ -1,17 +1,40 @@
+/******************************************
+ *
+ * Interface to Jet calibration tool(s).  
+ * 
+ * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 15:54 AEST 2015
+ *
+ ******************************************/
+
+// c++ include(s):
 #include <iostream>
 
+// EL include(s):
 #include <EventLoop/Job.h>
+#include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+// EDM include(s):  
+#include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
-#include "xAODCore/ShallowCopy.h"
+#include "xAODJet/Jet.h"
+#include "xAODBase/IParticleHelpers.h"
+#include "xAODBase/IParticleContainer.h"
+#include "xAODBase/IParticle.h"
 #include "AthContainers/ConstDataVector.h"
-#include "xAODAnaHelpers/JetCalibrator.h"
-#include "xAODAnaHelpers/HelperFunctions.h"
+#include "AthContainers/DataVector.h"
+#include "xAODCore/ShallowCopy.h"
 
+// package include(s):
+#include "xAODAnaHelpers/HelperFunctions.h"
+#include "xAODAnaHelpers/JetCalibrator.h"
+
+// external tools include(s):
 #include "JetCalibTools/JetCalibrationTool.h"
 #include "JetSelectorTools/JetCleaningTool.h"
 
+// ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
 
@@ -62,43 +85,14 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_debug         = config->GetValue("Debug" , false );
   m_isMC          = config->GetValue("IsMC"  , false );
   // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
+  m_inContainerName          = config->GetValue("InputContainer",  "");
 
   // CONFIG parameters for JetCalibrationTool
-  m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  m_jetAlgo                  = config->GetValue("JetAlgorithm",    "");
 
   // when running data "_Insitu" is appended to this string
-  m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
-  m_calibConfigData	        = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
+  m_calibSequence            = config->GetValue("CalibSequence",           "EtaJES");
+  m_calibConfigData	     = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
   m_calibConfigFullSim       = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
   m_calibConfigAFII          = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
 
@@ -200,10 +194,17 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  if( ! m_isMC ) m_calibSequence += "_Insitu";
+  if( !m_isMC ) m_calibSequence += "_Insitu";
 
-  m_isFullSim = true; // temporary: FIX THIS!
   if( m_isMC ){
+    // Check simulation flavour for calibration config
+    const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
+    if (stringMeta.empty()){
+      Warning("initialize()", "Could not retrieve simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
+      m_isFullSim = true;
+    } else {
+      m_isFullSim = (stringMeta == "AFII") ? false : true;
+    }
     m_calibConfig = ( m_isFullSim ) ? m_calibConfigFullSim : m_calibConfigAFII;
   } else {
     m_calibConfig = m_calibConfigData;
@@ -225,12 +226,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize jet calibration tool
-
-
-
-
-
-
   m_jetCalibration = new JetCalibrationTool("JetCorrectionTool",
       m_jetAlgo.Data(),
       m_calibConfig.Data(),
@@ -276,6 +271,8 @@ EL::StatusCode JetCalibrator :: execute ()
       return EL::StatusCode::FAILURE;
     }
   }
+
+  if(m_debug) Info("execute()", "Retrieving  a container of type %s  \n", typeid( inJets ).name());
 
   // create shallow copy
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );

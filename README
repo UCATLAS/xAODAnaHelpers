@@ -1,0 +1,72 @@
+====================================================
+xAODttHAnalysisCode package
+
+Skeleton analysis package for ttH analyses.
+Can be shared between multiple channels. This is however aimed for the MultiLeptons final state. 
+
+Marco Milesi (marco.milesi@cern.ch), G.Facini (gabriel.facini@cern.ch) 
+
+Last update: 02 February 2015
+
+====================================================
+Useful References:
+
+   -) Main TWiki: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/XAODAnaHelpers
+   -) xAOD Tutorial: https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT
+   -) Harmonization Task Force: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AnalysisHarmonisation
+   -) CP Tools for DC14: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhysicsAnalysisWorkBookRel19#xAOD_analysis_code
+   -) ASG: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AnalysisSoftwareGroup
+
+====================================================
+
+USAGE
+
+====================================================
+0. place 'launchSetup.sh' file in the directory you wish to setup ASG release (i.e. /path/to/xAODAnaHelpers ../ ) 
+
+1. Execute setup script:
+   
+   source launchSetup.sh  (this will take care of setting up latest ASG release, apply patches, and compile) 
+
+2. Run interactively:
+
+   testMulti <output_folder> <path_to_dataset>
+
+   (N.B. the <path_to_dataset> must be the path to the folder that contains all the different subfolders with the ROOT files)
+
+   Check into the job steering macro 
+
+   	 MultiAlgoExample/util/testMulti.cxx 
+
+   to find other ways to parse input. We'll make this configurable through a .config file soon
+
+====================================================
+
+PACKAGE COMPONENTS DESCRIPTION
+
+====================================================
+
+An analysis is done is steps with a EL::Algorithm running for each setup. For example, one algo is used to calibrate the jet collection, another to apply some selection cuts, 
+and then a final algorithm contains your analysis code. A base class for a tree has also been created with some standard branches and a way for the user to add more as well.
+We are working to have the possibility to dump a mini-xAOD as output if needed.
+
+Each algorithm will retrieve a container from either TEvent or TStore and if an output container is specified, it is save to the TStore object such that the following 
+algorithms can access the container. A base class for the event selection has been created to take care of common things like GRL etc. Also a base class exists for a TTree to be written out.
+
+In the job steering macro:
+
+   MultiAlgoExample/util/testMulti.cxx 
+
+each algorithm is set up first, and then passed to the job via:
+
+job.algsAdd(  );
+
+Each algorithm can be configured by simply modifying the proper .config files inside:
+
+   xAODAnHelpers/data
+
+e.g., decide which xAOD containers to pass to the algorithm, adjust the ***Selector cuts, switch to debug mode etc.
+
+
+
+

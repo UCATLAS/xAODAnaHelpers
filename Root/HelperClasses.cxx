@@ -1,5 +1,4 @@
 #include "xAODAnaHelpers/HelperClasses.h"
-
 #include "xAODPrimitives/IsolationType.h"
 #include "xAODMuon/Muon.h"
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
@@ -20,7 +19,6 @@ namespace HelperClasses{
   }
 
   /* parser for electron likelihood PID enum */
-  ///*
   template <>
   EnumParser<LikeEnum::Menu>::EnumParser()
   {
@@ -31,7 +29,6 @@ namespace HelperClasses{
     TString VeryTight("VeryTight");         enumMap.insert(std::make_pair(VeryTight  , LikeEnum::VeryTight));    
     TString LooseRelaxed("LooseRelaxed");   enumMap.insert(std::make_pair(LooseRelaxed      , LikeEnum::LooseRelaxed));
   }
-  //*/
 
   /* parser for muon quality enum */
   template <>

@@ -7,6 +7,21 @@
 #include "TString.h"
 
 namespace HelperClasses {
+
+  enum class ContainerType{
+      UNKNOWN      = 0,
+      CONSTDV      = 1,
+      CONSTCONT    = 2,
+  };
+
+  enum class ToolName{
+      MUONSELECTOR,
+      ELECTRONSELECTOR,
+      JETSELECTOR,
+      BJETSELECTOR,
+      OVERLAPREMOVER,
+  };
+
   /* template enum parser */
   template <typename T>
   class EnumParser

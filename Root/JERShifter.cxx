@@ -1,16 +1,42 @@
+/******************************************
+ *
+ * Interface to CP JER Shifter tool(s).  
+ * 
+ * G. Facini, M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 15:51 AEST 2015
+ *
+ ******************************************/
+
+// c++ include(s):
+#include <iostream>
+
+// EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+// EDM include(s):  
+#include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
-#include "xAODAnaHelpers/JERShifter.h"
+#include "xAODJet/Jet.h"
+#include "xAODBase/IParticleHelpers.h"
+#include "xAODBase/IParticleContainer.h"
+#include "xAODBase/IParticle.h"
+#include "AthContainers/ConstDataVector.h"
+#include "AthContainers/DataVector.h"
 #include "xAODCore/ShallowCopy.h"
 
+// package include(s):
+#include "xAODAnaHelpers/JERShifter.h"
+
+// external tools include(s):
 #include "JetResolution/JERTool.h"
 #include "JetResolution/JERSmearingTool.h"
 
+// ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
+
 
 
 // this is needed to distribute the algorithm to the workers

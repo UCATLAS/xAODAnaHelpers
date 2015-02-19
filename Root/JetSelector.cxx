@@ -1,11 +1,33 @@
+/******************************************
+ *
+ * Jet selector tool  
+ * 
+ * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 15:59 AEST 2015
+ *
+ ******************************************/
+
+// c++ include(s):
+#include <iostream>
+#include <typeinfo>
+
+// EL include(s):
 #include <EventLoop/Job.h>
+#include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+// EDM include(s): 
 #include "xAODJet/JetContainer.h"
 #include "xAODCore/ShallowCopy.h"
 #include "AthContainers/ConstDataVector.h"
+
+// package include(s):
+#include "xAODEventInfo/EventInfo.h"
 #include "xAODAnaHelpers/JetSelector.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+
+// external tools include(s):
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -90,15 +112,14 @@ EL::StatusCode  JetSelector :: configure ()
   m_mass_min                = config->GetValue("massMin",     1e8);
   m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
   m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-  m_truthLabel 		          = config->GetValue("TruthLabel",   -1);
+  m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
 
-  m_doJVF 		              = config->GetValue("DoJVF",       false);
-  m_pt_max_JVF 		          = config->GetValue("pTMaxJVF",    50e3);
-  m_eta_max_JVF 	          = config->GetValue("etaMaxJVF",   2.4);
-  m_JVFCut 		              = config->GetValue("JVFCut",      0.5);
+  m_doJVF 		    = config->GetValue("DoJVF",       false);
+  m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",    50e3);
+  m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
+  m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
 
-
-  m_passAuxDecorKeys         = config->GetValue("PassDecorKeys", "");
+  m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
   TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
   for(int i = 0; i<passKeysStrings->GetEntries(); ++i) {
     TObjString* passKeyObj = (TObjString*)passKeysStrings->At(i);
@@ -111,8 +132,6 @@ EL::StatusCode  JetSelector :: configure ()
     TObjString* failKeyObj = (TObjString*)failKeysStrings->At(i);
     m_failKeys.push_back(failKeyObj->GetString());
   }
-
-
 
   if( m_inContainerName.Length() == 0 ) {
     Error("configure()", "InputContainer is empty!");
@@ -236,7 +255,19 @@ EL::StatusCode JetSelector :: execute ()
 
   if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
-  float mcEvtWeight(1); // FIXME - set to something from eventInfo for cutflow
+  // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
+  const xAOD::EventInfo* eventInfo = 0;
+  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
+    Error("execute()", "Failed to retrieve event info collection. Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+  float mcEvtWeight(1.0); 
+  if (eventInfo->isAvailable< float >( "mcEventWeight" )){
+    mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
+  } else {
+    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
+    return EL::StatusCode::FAILURE;
+  }
 
   m_numEvent++;
 
@@ -266,26 +297,21 @@ EL::StatusCode JetSelector :: execute ()
   // 
   // FIXME replace with enum
   if ( m_type == 1 ) {        // get ConstDataVector from TStore
-
     ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
     if ( !m_store->retrieve( inJetsCDV, m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
     inJets = inJetsCDV->asDataVector();
-
   }  
   else if ( m_type == 2 ) {   // get const container from TEvent
-
     if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
       return EL::StatusCode::FAILURE;
     }
-
   }
 
   return executeConst( inJets, mcEvtWeight );
-
 }
 
 EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight ) 
@@ -311,7 +337,7 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
   int nPass(0); int nObj(0);
   for( auto jet_itr : *inJets ) { // duplicated of basic loop
 
-    // if only looking at a subset of jets make sure all are decorrated
+    // if only looking at a subset of jets make sure all are decorated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
         jet_itr->auxdecor< int >( "passSel" ) = -1;
@@ -333,7 +359,6 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
         selectedJets->push_back( jet_itr );
       }
     }
-
   }
 
   m_numObject     += nObj;

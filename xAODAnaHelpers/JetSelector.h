@@ -1,7 +1,7 @@
 #ifndef xAODAnaHelpers_JetSelector_H
 #define xAODAnaHelpers_JetSelector_H
 
-#include <EventLoop/StatusCode.h>
+// EL include(s):
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
@@ -9,17 +9,14 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// EDM include(s):  
+#ifndef __CINT__
+  #include "xAODJet/Jet.h"
+  #include "xAODJet/JetContainer.h"
+#endif
+
 // ROOT include(s):
 #include "TH1D.h"
-
-namespace xAOD {
-#ifndef XAODJET_JETCONTAINER_H
-  class JetContainer;
-#endif
-#ifndef XAODJET_JET_H
-  class Jet;
-#endif
-}
 
 class JetSelector : public EL::Algorithm
 {
@@ -85,7 +82,6 @@ private:
   std::vector<TString> m_failKeys;  //!
 
 
-
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -112,12 +108,15 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+#ifndef __CINT__   
   virtual EL::StatusCode executeConst( const xAOD::JetContainer* inJets, float mcEvtWeight );
+#endif // not __CINT__
 
   // added functions not from Algorithm
   // why does this need to be virtual?
+#ifndef __CINT__   
   virtual int PassCuts( const xAOD::Jet* jet );
-
+#endif // not __CINT__
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetSelector, 1);
 };

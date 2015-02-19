@@ -1,7 +1,7 @@
 #ifndef xAODAnaHelpers_BJetSelector_H
 #define xAODAnaHelpers_BJetSelector_H
 
-#include <EventLoop/StatusCode.h>
+// EL include(s):
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
@@ -9,17 +9,14 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// EDM include(s):  
+#ifndef __CINT__
+  #include "xAODJet/Jet.h"
+  #include "xAODJet/JetContainer.h"
+#endif
+
 // ROOT include(s):
 #include "TH1D.h"
-
-namespace xAOD {
-#ifndef XAODJET_JETCONTAINER_H 
-  class JetContainer;
-#endif
-#ifndef XAODJET_JET_H 
-  class Jet;
-#endif
-}
 
 class BJetSelector : public EL::Algorithm
 {
@@ -104,8 +101,9 @@ public:
 
   // added functions not from Algorithm
   // why does this need to be virtual?
+#ifndef __CINT__   
   virtual int PassCuts( const xAOD::Jet* jet );
-
+#endif // not __CINT__
   // this is needed to distribute the algorithm to the workers
   ClassDef(BJetSelector, 1);
 };

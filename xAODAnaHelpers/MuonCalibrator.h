@@ -1,6 +1,7 @@
 #ifndef xAODAnaHelpers_MuonCalibrator_H
 #define xAODAnaHelpers_MuonCalibrator_H
 
+// EL include(s)
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
@@ -8,14 +9,6 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-namespace xAOD {
-#ifndef XAODMUON_MUONCONTAINER_H 
-  class MuonContainer;
-#endif
-#ifndef XAODMUON_MUON_H 
-  class Muon;
-#endif
-}
 
 namespace CP{
    class MuonCalibrationAndSmearingTool; 
@@ -47,6 +40,9 @@ private:
   TString m_inContainerName;
   TString m_outContainerName;
   TString m_outAuxContainerName;
+  TString m_outSCContainerName;
+  TString m_outSCAuxContainerName; 
+
   // sort after calibration
   bool    m_sort;
 

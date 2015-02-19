@@ -18,7 +18,6 @@
 
 
 /* Other */
-#include <xAODAnaHelpers/AnalysisLoop.h>
 #include <xAODAnaHelpers/JERShifter.h>
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/Writer.h>
@@ -45,7 +44,6 @@
 #pragma link C++ class JetHistsAlgo+;
 #pragma link C++ class TrackHistsAlgo+;
 
-#pragma link C++ class AnalysisLoop+;
 #pragma link C++ class JERShifter+;
 #pragma link C++ class OverlapRemover+;
 #pragma link C++ class Writer+;

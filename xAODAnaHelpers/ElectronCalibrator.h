@@ -1,6 +1,7 @@
 #ifndef xAODAnaHelpers_ElectronCalibrator_H
 #define xAODAnaHelpers_ElectronCalibrator_H
 
+// EL include(s):
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
@@ -8,14 +9,6 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-namespace xAOD {
-#ifndef XAODEGAMMA_ELECTRONCONTAINER_H 
-  class ElectronContainer;
-#endif
-#ifndef XAODEGAMMA_ELECTRON_H 
-  class Electron;
-#endif
-}
 
 namespace CP{
    class EgammaCalibrationAndSmearingTool; 
@@ -47,6 +40,9 @@ private:
   TString m_inContainerName;
   TString m_outContainerName;
   TString m_outAuxContainerName;
+  TString m_outSCContainerName;
+  TString m_outSCAuxContainerName;
+
   // sort after calibration
   bool    m_sort;
 
