@@ -202,8 +202,8 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   if(m_debug){
-    for( auto muon_itr = inMuons->begin(); muon_itr != inMuons->end(); ++muon_itr ){
-      Info("execute()", "  original muon pt = %.2f GeV", ((*muon_itr)->pt() * 1e-3));
+    for( auto muon: *inMuons ){
+      Info("execute()", "  original muon pt = %.2f GeV", (muon->pt() * 1e-3));
     }
   }
 
@@ -215,6 +215,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   // calibrate only MC
   if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
     for( auto muonSC_itr : *(calibMuonsSC.first) ) {
+      /* https://twiki.cern.ch/twiki/bin/viewauth/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT#Muons */
       if( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
         // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
         // If OutOfValidityRange is returned no modification is made and the original muon values are taken.

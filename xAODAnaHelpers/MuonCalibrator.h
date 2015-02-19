@@ -9,10 +9,11 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-
+#ifndef __CINT__
 namespace CP{
    class MuonCalibrationAndSmearingTool; 
 }
+#endif
 
 class MuonCalibrator : public EL::Algorithm
 {

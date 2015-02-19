@@ -18,6 +18,8 @@
 #include "xAODAnaHelpers/Writer.h"
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 
+#include "xAODAnaHelpers/OverlapRemover.h"
+
 int main( int argc, char* argv[] ) {
 
   // Take the submit directory from the input if provided:
@@ -46,35 +48,35 @@ int main( int argc, char* argv[] ) {
   EL::Job job;
   job.sampleHandler( sh );
 
-  BasicEventSelection* baseEventSel = new BasicEventSelection("baseEventSel","$ROOTCOREBIN/data/xAODAnaHelpers/baseEvent.config");
+  std::string localDataDir = "$ROOTCOREBIN/data/xAODAnaHelpers/";
 
-  // Add our analysis to the job:
-  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", "$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
+  BasicEventSelection* baseEventSel             = new BasicEventSelection(  "baseEventSel",             localDataDir+"baseEvent.config");
 
+  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
+  MuonCalibrator* muonCalib                     = new MuonCalibrator(       "muonCalib",                localDataDir+"muonCalib.config");
+  ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config");
 
+  JetSelector* jetSelect_signal                 = new JetSelector(          "jetSelect_signal",         localDataDir+"jetSelect_signal.config");
+  JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo(         "jetHistsAlgo_signal",      localDataDir+"jetHistsAlgo_signal.config");
 
-  /// RECO JETS - calibrate, select, then plot
+  JetSelector* jetSelect_truth                  = new JetSelector(          "jetSelect_truth",          localDataDir+"jetSelect_truth.config");
+  JetHistsAlgo* jetHistsAlgo_truth              = new JetHistsAlgo(         "jetHistsAlgo_truth",       localDataDir+"jetHistsAlgo_truth.config");
 
-  JetCalibrator* jetCalib = new JetCalibrator("jetCalib_AntiKt4TopoEM","$ROOTCOREBIN/data/xAODAnaHelpers/jetCalib_AntiKt4TopoEMCalib.config");
+  OverlapRemover* overlapRemoval                = new OverlapRemover(       "OverlapRemovalTool",       localDataDir+"overlapRemoval.config");
+  JetHistsAlgo* jk_AntiKt10LC                   = new JetHistsAlgo(         "AntiKt10/",                localDataDir+"test_jetPlotExample.config");
 
-  JetSelector* jetSelect_signal = new JetSelector("jetSelect_signal","$ROOTCOREBIN/data/xAODAnaHelpers/jetSelect_signal.config");
-
-  JetHistsAlgo* jetHistsAlgo_signal = new JetHistsAlgo("jetHistsAlgo_signal","$ROOTCOREBIN/data/xAODAnaHelpers/jetHistsAlgo_signal.config");
-
-  /// TRUTH JETS - select, then plot
-  JetSelector* jetSelect_truth = new JetSelector("jetSelect_truth","$ROOTCOREBIN/data/xAODAnaHelpers/jetSelect_truth.config");
-
-  JetHistsAlgo* jetHistsAlgo_truth = new JetHistsAlgo("jetHistsAlgo_truth","$ROOTCOREBIN/data/xAODAnaHelpers/jetHistsAlgo_truth.config");
 
   // Attach algorithms
   job.algsAdd( baseEventSel ); 
   job.algsAdd( jetCalib );
+  job.algsAdd( muonCalib );
+  job.algsAdd( electronCalib );
   job.algsAdd( jetSelect_signal );
   job.algsAdd( jetHistsAlgo_signal );
   job.algsAdd( jetSelect_truth );
   job.algsAdd( jetHistsAlgo_truth );
+  job.algsAdd( overlapRemoval );
   job.algsAdd( jk_AntiKt10LC );
-
 
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;

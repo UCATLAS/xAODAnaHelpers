@@ -22,7 +22,9 @@ namespace HelperClasses {
       OVERLAPREMOVER,
   };
 
-  /* template enum parser */
+  /* template enum parser
+  shamelessly copied from: http://stackoverflow.com/a/726681
+  */
   template <typename T>
   class EnumParser
   {
