@@ -1,7 +1,7 @@
 /******************************************
  *
- * Interface to CP Electron calibration tool(s).  
- * 
+ * Interface to CP Electron calibration tool(s).
+ *
  * M. Milesi (marco.milesi@cern.ch)
  * Jan 28 15:29 AEST 2015
  *
@@ -15,7 +15,7 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-// EDM include(s):  
+// EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODEgamma/Electron.h"
@@ -75,7 +75,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     return EL::StatusCode::FAILURE;
   }
   Info("configure()", "Found configuration file");
-  
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -236,11 +236,11 @@ EL::StatusCode ElectronCalibrator :: execute ()
      // set smearing seeding if needed (already done by default - check TWiki: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonFourMomentumCorrection )
      // int i = std::distance((calibElectronsSC.first)->begin(), &elSC_itr);
      // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber()+100*i);
-     
+
      // apply correction
-     m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr );
+     //!!Jeff m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr );
      if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", (elSC_itr->pt() * 1e-3));
-  } 
+  }
 
   if(m_sort) {
     std::sort( calibElectronsSC.first->begin(), calibElectronsSC.first->end(), HelperFunctions::sort_pt );
