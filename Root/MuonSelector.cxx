@@ -343,7 +343,7 @@ EL::StatusCode MuonSelector :: execute ()
       m_type = 2;
     }
     else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName );
+      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.c_str() );
       m_store->print();
       return EL::StatusCode::FAILURE;
     }
@@ -358,7 +358,7 @@ EL::StatusCode MuonSelector :: execute ()
 
     ConstDataVector<xAOD::MuonContainer>* inMuonsCDV = 0;
     if ( !m_store->retrieve( inMuonsCDV, m_inContainerName ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName );
+      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
     inMuons = inMuonsCDV->asDataVector();
@@ -367,7 +367,7 @@ EL::StatusCode MuonSelector :: execute ()
   else if ( m_type == 2 ) {   // get const container from TEvent
 
     if ( !m_event->retrieve( inMuons , m_inContainerName ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName );
+      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
 
@@ -441,7 +441,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
   // add ConstDataVector to TStore
   if(m_createSelectedContainer) {
     if( !m_store->record( selectedMuons, m_outContainerName ).isSuccess() ) {
-      Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName );
+      Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.c_str() );
       return EL::StatusCode::FAILURE;
     }
   }

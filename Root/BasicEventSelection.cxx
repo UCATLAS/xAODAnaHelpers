@@ -312,7 +312,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }   
   // decorate with PU corrected mc event weight
   static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
-  mcEvtWeightDecor(eventInfo) = mcEvtWeight;
+  mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
   // print every 100 events, so we know where we are:
   ++m_eventCounter;
