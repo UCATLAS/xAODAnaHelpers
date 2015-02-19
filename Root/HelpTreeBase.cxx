@@ -10,7 +10,12 @@
 #endif
 
 /* TODO: event */
-HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units /*= 1e3 */)
+HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units /*= 1e3 */):
+  m_evtDetailStr(""),
+  m_muDetailStr(""),
+  m_elDetailStr(""),
+  m_jetInfoSwitch(0),
+  m_fatJetDetailStr("")
 {
 
   m_units = units;
@@ -31,7 +36,7 @@ void HelpTreeBase::Fill() {
  *
  ********************/
 
-void HelpTreeBase::AddEvent() {
+void HelpTreeBase::AddEvent(std::string detailStr) {
   m_tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
   m_tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/I");
   m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
@@ -63,7 +68,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo ) {
  *
  ********************/
 
-void HelpTreeBase::AddMuons() {
+void HelpTreeBase::AddMuons(std::string detailStr) {
   m_tree->Branch("nmuon",    &m_nmuon,"nmuon/I");
   m_tree->Branch("muon_pt",  &m_muon_pt);
   m_tree->Branch("muon_phi", &m_muon_phi);
@@ -89,7 +94,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
  *
  ********************/
 
-void HelpTreeBase::AddElectrons() { 
+void HelpTreeBase::AddElectrons(std::string detailStr) { 
   m_tree->Branch("nel",    &m_nel,"nel/I");
   m_tree->Branch("el_pt",  &m_el_pt);
   m_tree->Branch("el_phi", &m_el_phi);
@@ -115,27 +120,82 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) {
  *
  ********************/
 
-void HelpTreeBase::AddJets()
+void HelpTreeBase::AddJets(std::string detailStr)
 {
 
+  m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
+
+  // always
   m_tree->Branch("njet",    &m_njet,"njet/I");
-  m_tree->Branch("jet_E",   &m_jet_E);
-  m_tree->Branch("jet_pt",  &m_jet_pt);
-  m_tree->Branch("jet_phi", &m_jet_phi);
-  m_tree->Branch("jet_eta", &m_jet_eta);
+
+  // TLorentzVector
+//  if( m_jetInfoSwitch->m_TLV ) {
+//    // add TLorentzVector instead of flat variables
+//  } else {
+    m_tree->Branch("jet_E",   &m_jet_E);
+    m_tree->Branch("jet_pt",  &m_jet_pt);
+    m_tree->Branch("jet_phi", &m_jet_phi);
+    m_tree->Branch("jet_eta", &m_jet_eta);
+//  }
+
+  if( m_jetInfoSwitch->m_clean ) { 
+    m_tree->Branch("jet_time",          &m_jet_time       );
+    m_tree->Branch("jet_LArQuality",    &m_jet_LArQuality );
+    m_tree->Branch("jet_hecq",          &m_jet_hecq       );
+    m_tree->Branch("jet_negE",          &m_jet_negE       );
+    m_tree->Branch("jet_avLArQF",       &m_jet_avLArQF    );
+    m_tree->Branch("jet_bchCorrCell",   &m_jet_bchCorrCell);
+    m_tree->Branch("jet_N90Const",      &m_jet_N90Const   );
+  }
 
 }
 
 void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
-  xAOD::JetContainer::const_iterator jet_itr = jets.begin();
-  xAOD::JetContainer::const_iterator jet_end = jets.end();
   m_njet = 0;
-  for( ; jet_itr != jet_end; ++jet_itr ) {
-    m_jet_pt.push_back ( (*jet_itr)->pt() / m_units );
-    m_jet_eta.push_back( (*jet_itr)->eta() );
-    m_jet_phi.push_back( (*jet_itr)->phi() );
-    m_jet_E .push_back ( (*jet_itr)->e()   );
-    this->FillJetsUser(*jet_itr);
+  for( auto jet_itr : jets ) {
+    m_jet_pt.push_back ( jet_itr->pt() / m_units );
+    m_jet_eta.push_back( jet_itr->eta() );
+    m_jet_phi.push_back( jet_itr->phi() );
+    m_jet_E .push_back ( jet_itr->e()   );
+
+    if(m_jetInfoSwitch->m_clean) {
+      static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
+      if( jetTime.isAvailable( *jet_itr ) ) {
+        m_jet_time.push_back( jetTime( *jet_itr ) );
+      } else { m_jet_time.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> LArQuality ("LArQuality");
+      if( LArQuality.isAvailable( *jet_itr ) ) {
+        m_jet_LArQuality.push_back( LArQuality( *jet_itr ) );
+      } else { m_jet_LArQuality.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> hecq ("HECQuality");
+      if( hecq.isAvailable( *jet_itr ) ) {
+        m_jet_hecq.push_back( hecq( *jet_itr ) );
+      } else { m_jet_hecq.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> negE ("NegativeE");
+      if( negE.isAvailable( *jet_itr ) ) {
+        m_jet_negE.push_back( negE( *jet_itr ) );
+      } else { m_jet_negE.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> avLArQF ("AverageLArQF");
+      if( avLArQF.isAvailable( *jet_itr ) ) {
+        m_jet_avLArQF.push_back( avLArQF( *jet_itr ) );
+      } else { m_jet_avLArQF.push_back( -999 ); }
+    
+      static SG::AuxElement::ConstAccessor<float> bchCorrCell ("BchCorrCell");
+      if( bchCorrCell.isAvailable( *jet_itr ) ) {
+        m_jet_bchCorrCell.push_back( bchCorrCell( *jet_itr ) );
+      } else { m_jet_bchCorrCell.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> N90Const ("N90Constituents");
+      if( N90Const.isAvailable( *jet_itr ) ) {
+        m_jet_N90Const.push_back( N90Const( *jet_itr ) );
+      } else { m_jet_N90Const.push_back( -999 ); }
+    }
+
+    this->FillJetsUser(jet_itr);
     m_njet++;
   }
 }
@@ -146,7 +206,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
  *
  ********************/
 
-void HelpTreeBase::AddFatJets() { }
+void HelpTreeBase::AddFatJets(std::string detailStr) { }
 /* TODO: fatJets */
 void HelpTreeBase::FillFatJets( const xAOD::JetContainer& /*fatJets*/ ) { }
 
@@ -157,6 +217,21 @@ void HelpTreeBase::Clear() {
   m_jet_eta.clear();
   m_jet_phi.clear();
   m_jet_E.clear();
+
+  m_jet_time.clear();
+  m_jet_LArQuality.clear();
+  m_jet_hecq.clear();
+  m_jet_negE.clear();
+  m_jet_avLArQF.clear();
+  m_jet_bchCorrCell.clear();
+  m_jet_N90Const.clear();
+
+
+
+
+
+
+
     
   m_nmuon = 0;  
   m_muon_pt.clear();

@@ -2,6 +2,7 @@
 #define xAODAnaHelpers_JetHists_H
 
 #include "xAODAnaHelpers/HistogramManager.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 #include <xAODJet/JetContainer.h>
 
 class JetHists : public HistogramManager
@@ -19,13 +20,8 @@ class JetHists : public HistogramManager
 
   protected:
     
-    // bools to control which histograms are filled
-    bool m_fillKinematic;     //!
-    bool m_fillClean;         //!
-    bool m_fillEnergy;        //!
-    bool m_fillResolution;    //!
-    bool m_fillTruthJets;     //!
-    bool m_fillTruthJetsDetails;     //!
+    // holds bools that control which histograms are filled
+    HelperClasses::JetInfoSwitch* m_infoSwitch;
 
   private:
     //basic

@@ -8,14 +8,14 @@
 
 namespace HelperClasses {
 
-  enum class ContainerType{
+  enum class ContainerType {
       UNKNOWN      = 0,
       CONSTDV      = 1,
       CONSTCONT    = 2,
   };
 
-  enum class ToolName{
-      MUONSELECTOR,
+  enum class ToolName {
+      MUONSELECTOR = 0,
       ELECTRONSELECTOR,
       JETSELECTOR,
       BJETSELECTOR,
@@ -46,6 +46,25 @@ namespace HelperClasses {
         return iValue->second;
      }
   };
+
+
+  struct InfoSwitch {
+    std::string m_configStr;
+    InfoSwitch(std::string configStr) : m_configStr(configStr) { };
+    bool parse(std::string flag);
+  };
+
+  struct JetInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    bool m_clean;
+    bool m_energy;
+    bool m_resolution;
+    bool m_truth;
+    bool m_truthDetails;
+    void initialize();
+    JetInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
 } // close namespace HelperClasses
 
 # endif

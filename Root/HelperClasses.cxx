@@ -51,4 +51,30 @@ namespace HelperClasses{
     TString SiliconAssociatedForwardMuon("SiliconAssociatedForwardMuon");  enumMap.insert(std::make_pair(SiliconAssociatedForwardMuon , xAOD::Muon::SiliconAssociatedForwardMuon));
   }
 
+
+  /**************************************
+   *
+   *  Strings are used to turn on and off
+   *  histograms and branches in the tree
+   *  The following structs hold the bools
+   *  used to control the content and also
+   *  have the string which is necessary to
+   *  turn a set on
+   *
+   **************************************/
+  bool InfoSwitch::parse(std::string flag)
+  {
+    return m_configStr.find(flag) != std::string::npos;
+  }
+
+  void JetInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+    m_clean         = parse("clean");
+    m_energy        = parse("energy");
+    m_resolution    = parse("resolution");
+    m_truth         = parse("truth");
+    m_truthDetails  = parse("truth_details");
+  }
+
+
 } // close namespace HelperClasses

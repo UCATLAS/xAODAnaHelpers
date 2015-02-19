@@ -28,6 +28,7 @@
   #include "xAODTau/TauJet.h"
 #endif // not __CINT__  
 
+#include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODRootAccess/TEvent.h"
 
 #include "TTree.h"
@@ -42,11 +43,19 @@ public:
 #endif // not __CINT__ 
   virtual ~HelpTreeBase() {;}
 
-  void AddEvent();
-  void AddMuons();
-  void AddElectrons();
-  void AddJets();
-  void AddFatJets();
+  void AddEvent    (std::string detailStr = "");
+  void AddMuons    (std::string detailStr = "");
+  void AddElectrons(std::string detailStr = "");
+  void AddJets     (std::string detailStr = "");
+  void AddFatJets  (std::string detailStr = "");
+
+  // holds bools that control which histograms are filled
+  std::string m_evtDetailStr;
+  std::string m_muDetailStr;
+  std::string m_elDetailStr;
+  HelperClasses::JetInfoSwitch* m_jetInfoSwitch;
+  std::string m_fatJetDetailStr;
+
 #ifndef __CINT__  
   void FillEvent( const xAOD::EventInfo* eventInfo );
   void FillMuons( const xAOD::MuonContainer& muons );
@@ -90,12 +99,20 @@ protected:
   std::vector<float> m_jet_phi;
   std::vector<float> m_jet_E;
 
+  std::vector<float> m_jet_time;
+  std::vector<float> m_jet_LArQuality;
+  std::vector<float> m_jet_hecq;
+  std::vector<float> m_jet_negE;
+  std::vector<float> m_jet_avLArQF;
+  std::vector<float> m_jet_bchCorrCell;
+  std::vector<float> m_jet_N90Const;
+
   // muons
   int m_nmuon;
   std::vector<float> m_muon_pt;
   std::vector<float> m_muon_eta;
   std::vector<float> m_muon_phi;
-  
+
   // electrons
   int m_nel;
   std::vector<float> m_el_pt;
