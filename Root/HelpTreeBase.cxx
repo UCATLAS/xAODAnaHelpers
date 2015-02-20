@@ -139,13 +139,62 @@ void HelpTreeBase::AddJets(std::string detailStr)
 //  }
 
   if( m_jetInfoSwitch->m_clean ) { 
-    m_tree->Branch("jet_time",          &m_jet_time       );
-    m_tree->Branch("jet_LArQuality",    &m_jet_LArQuality );
-    m_tree->Branch("jet_hecq",          &m_jet_hecq       );
-    m_tree->Branch("jet_negE",          &m_jet_negE       );
-    m_tree->Branch("jet_avLArQF",       &m_jet_avLArQF    );
-    m_tree->Branch("jet_bchCorrCell",   &m_jet_bchCorrCell);
-    m_tree->Branch("jet_N90Const",      &m_jet_N90Const   );
+    m_tree->Branch("jet_Timing",              &m_jet_time               );
+    m_tree->Branch("jet_LArQuality",          &m_jet_LArQuality         );
+    m_tree->Branch("jet_HECQuality",          &m_jet_hecq               );
+    m_tree->Branch("jet_NegativeE",           &m_jet_negE               );
+    m_tree->Branch("jet_AverageLArQF",        &m_jet_avLArQF            );
+    m_tree->Branch("jet_BchCorrCell",         &m_jet_bchCorrCell        );
+    m_tree->Branch("jet_N90Constituents",     &m_jet_N90Const           );
+    m_tree->Branch("jet_LArBadHVEnergyFrac",  &m_jet_LArBadHVEFrac      );
+    m_tree->Branch("jet_LArBadHVNCellFrac",   &m_jet_LArBadHVNCellFrac  );
+  }
+
+  if( m_jetInfoSwitch->m_energy ) {
+    m_tree->Branch("jet_HECFrac",               &m_jet_HECf           );
+    m_tree->Branch("jet_EMFrac",                &m_jet_EMf            );
+    m_tree->Branch("jet_CentroidR",             &m_jet_centroidR      );
+    m_tree->Branch("jet_FracSamplingMax",       &m_jet_fracSampMax    );
+    m_tree->Branch("jet_FracSamplingMaxIndex",  &m_jet_fracSampMaxIdx );
+    m_tree->Branch("jet_LowEtConstituentsFrac", &m_jet_lowEtFrac      );
+  }
+
+  if( m_jetInfoSwitch->m_layer ) { 
+    m_tree->Branch("jet_EnergyPerSampling",     &m_jet_ePerSamp   );
+  }
+
+  if( m_jetInfoSwitch->m_trackAll ) { 
+    m_tree->Branch("jet_NumTrkPt1000",      &m_jet_NTrkPt1000   );
+    m_tree->Branch("jet_SumPtTrkPt1000",    &m_jet_SumPtPt1000  );
+    m_tree->Branch("jet_TrackWidthPt1000",  &m_jet_TrkWPt1000   );
+    m_tree->Branch("jet_NumTrkPt500",       &m_jet_NTrkPt500    );
+    m_tree->Branch("jet_SumPtTrkPt500",     &m_jet_SumPtPt500   );
+    m_tree->Branch("jet_TrackWidthPt500",   &m_jet_TrkWPt500    );
+    m_tree->Branch("jet_JVF",               &m_jet_jvf          );
+    m_tree->Branch("jet_JVFLoose",          &m_jet_jvfloose     );
+    // JVT needs to be added
+
+    // NumTrkPt1000 vector<int> 
+    // SumPtTrkPt1000, TrackWidthPt1000 vector<float>
+    // NumTrkPt500  vector<int> Moments calculated from ghost-associated tracks. Track pT > 0.5 GeV.(1)
+    // SumPtTrkPt500, TrackWidthPt500 vector<float>
+    // Width  float $ \sum( \Delta R(jet,constit) P_T(constit) ) / \sum P_T(constit) $  Done
+    //
+    // JVF  JVF vector<float> Vector JVF: JVF with respect to all vertices (last index is to dummy vertex)  Done  JetVertexFractionTool jvf
+    // JVF  JVFLoose  vector<float> As preceding adding posterior InDet loose track selection.  Done  JetVertexFractionTool jvfloose
+    // HigestJVFLooseVtx  Vertex
+    // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
+  }
+
+  if( m_jetInfoSwitch->m_trackPV ) { 
+    m_tree->Branch("jet_NumTrkPt1000PV",      &m_jet_NTrkPt1000PV   );
+    m_tree->Branch("jet_SumPtTrkPt1000PV",    &m_jet_SumPtPt1000PV  );
+    m_tree->Branch("jet_TrackWidthPt1000PV",  &m_jet_TrkWPt1000PV   );
+    m_tree->Branch("jet_NumTrkPt500PV",       &m_jet_NTrkPt500PV    );
+    m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
+    m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
+    m_tree->Branch("jet_JVFPV",               &m_jet_jvfPV          );
+    m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
   }
 
 }
@@ -156,9 +205,10 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
     m_jet_pt.push_back ( jet_itr->pt() / m_units );
     m_jet_eta.push_back( jet_itr->eta() );
     m_jet_phi.push_back( jet_itr->phi() );
-    m_jet_E .push_back ( jet_itr->e()   );
+    m_jet_E .push_back ( jet_itr->e() / m_units );
 
     if(m_jetInfoSwitch->m_clean) {
+
       static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
       if( jetTime.isAvailable( *jet_itr ) ) {
         m_jet_time.push_back( jetTime( *jet_itr ) );
@@ -176,7 +226,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
 
       static SG::AuxElement::ConstAccessor<float> negE ("NegativeE");
       if( negE.isAvailable( *jet_itr ) ) {
-        m_jet_negE.push_back( negE( *jet_itr ) );
+        m_jet_negE.push_back( negE( *jet_itr ) / m_units );
       } else { m_jet_negE.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor<float> avLArQF ("AverageLArQF");
@@ -193,6 +243,74 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
       if( N90Const.isAvailable( *jet_itr ) ) {
         m_jet_N90Const.push_back( N90Const( *jet_itr ) );
       } else { m_jet_N90Const.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> LArBadHVEFrac ("LArBadHVEnergyFrac");
+      if( LArBadHVEFrac.isAvailable( *jet_itr ) ) {
+        m_jet_LArBadHVEFrac.push_back( LArBadHVEFrac( *jet_itr ) );
+      } else { m_jet_LArBadHVEFrac.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> LArBadHVNCellFrac ("LArBadHVNCellFrac");
+      if( LArBadHVNCellFrac.isAvailable( *jet_itr ) ) {
+        m_jet_LArBadHVNCellFrac.push_back( LArBadHVNCellFrac( *jet_itr ) );
+      } else { m_jet_LArBadHVNCellFrac.push_back( -999 ); }
+
+    } // clean
+
+    if( m_jetInfoSwitch->m_energy ) {
+
+      static SG::AuxElement::ConstAccessor<float> HECf ("HECFrac");
+      if( HECf.isAvailable( *jet_itr ) ) {
+        m_jet_HECf.push_back( HECf( *jet_itr ) );
+      } else { m_jet_HECf.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> EMf ("EMFrac");
+      if( EMf.isAvailable( *jet_itr ) ) {
+        m_jet_EMf.push_back( EMf( *jet_itr ) );
+      } else { m_jet_EMf.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> centroidR ("CentroidR");
+      if( centroidR.isAvailable( *jet_itr ) ) {
+        m_jet_centroidR.push_back( centroidR( *jet_itr ) );
+      } else { m_jet_centroidR.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> fracSampMax ("FracSamplingMax");
+      if( fracSampMax.isAvailable( *jet_itr ) ) {
+        m_jet_fracSampMax.push_back( fracSampMax( *jet_itr ) );
+      } else { m_jet_fracSampMax.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> fracSampMaxIdx ("FracSamplingMaxIndex");
+      if( fracSampMaxIdx.isAvailable( *jet_itr ) ) {
+        m_jet_fracSampMaxIdx.push_back( fracSampMaxIdx( *jet_itr ) );
+      } else { m_jet_fracSampMaxIdx.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> lowEtFrac ("LowEtConstituentsFrac");
+      if( lowEtFrac.isAvailable( *jet_itr ) ) {
+        m_jet_lowEtFrac.push_back( lowEtFrac( *jet_itr ) );
+      } else { m_jet_lowEtFrac.push_back( -999 ); }
+
+    } // energy
+
+    if( m_jetInfoSwitch->m_layer ) {
+      static SG::AuxElement::ConstAccessor< std::vector<float> > ePerSamp ("EnergyPerSampling");
+      if( ePerSamp.isAvailable( *jet_itr ) ) {
+        m_jet_ePerSamp.push_back( ePerSamp( *jet_itr ) );
+        m_jet_ePerSamp.back();
+        std::transform((m_jet_ePerSamp.back()).begin(), 
+            (m_jet_ePerSamp.back()).end(), 
+            (m_jet_ePerSamp.back()).begin(),
+            std::bind2nd(std::divides<float>(), m_units));
+      } else { 
+        // could push back a vector of 24...
+        // ... waste of space vs prevention of out of range down stream
+        std::vector<float> junk(1,-999);
+        m_jet_ePerSamp.push_back( junk ); 
+      }
+    }
+
+    if( m_jetInfoSwitch->m_trackAll ) {
+    }
+
+    if( m_jetInfoSwitch->m_trackPV ) {
     }
 
     this->FillJetsUser(jet_itr);
@@ -218,6 +336,7 @@ void HelpTreeBase::Clear() {
   m_jet_phi.clear();
   m_jet_E.clear();
 
+  // clean
   m_jet_time.clear();
   m_jet_LArQuality.clear();
   m_jet_hecq.clear();
@@ -225,14 +344,42 @@ void HelpTreeBase::Clear() {
   m_jet_avLArQF.clear();
   m_jet_bchCorrCell.clear();
   m_jet_N90Const.clear();
+  m_jet_LArBadHVEFrac.clear();
+  m_jet_LArBadHVNCellFrac.clear();
+
+  // energy
+  m_jet_HECf.clear();
+  m_jet_EMf.clear();
+  m_jet_centroidR.clear();
+  m_jet_fracSampMax.clear();
+  m_jet_fracSampMaxIdx.clear();
+  m_jet_lowEtFrac.clear();
+
+  // layer
+  m_jet_ePerSamp.clear();
+
+  // tracksAll
+  m_jet_NTrkPt1000.clear();
+  m_jet_SumPtPt1000.clear();
+  m_jet_TrkWPt1000.clear();
+  m_jet_NTrkPt500.clear();
+  m_jet_SumPtPt500.clear();
+  m_jet_TrkWPt500.clear();
+  m_jet_jvf.clear();
+  m_jet_jvfloose.clear();
+
+  // tracksPV
+  m_jet_NTrkPt1000PV.clear();
+  m_jet_SumPtPt1000PV.clear();
+  m_jet_TrkWPt1000PV.clear();
+  m_jet_NTrkPt500PV.clear();
+  m_jet_SumPtPt500PV.clear();
+  m_jet_TrkWPt500PV.clear();
+  m_jet_jvfPV.clear();
+  m_jet_jvfloosePV.clear();
 
 
 
-
-
-
-
-    
   m_nmuon = 0;  
   m_muon_pt.clear();
   m_muon_eta.clear();

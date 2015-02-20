@@ -99,6 +99,7 @@ protected:
   std::vector<float> m_jet_phi;
   std::vector<float> m_jet_E;
 
+  // clean
   std::vector<float> m_jet_time;
   std::vector<float> m_jet_LArQuality;
   std::vector<float> m_jet_hecq;
@@ -106,6 +107,39 @@ protected:
   std::vector<float> m_jet_avLArQF;
   std::vector<float> m_jet_bchCorrCell;
   std::vector<float> m_jet_N90Const;
+  std::vector<float> m_jet_LArBadHVEFrac;
+  std::vector<float> m_jet_LArBadHVNCellFrac;
+
+  // energy
+  std::vector<float> m_jet_HECf;
+  std::vector<float> m_jet_EMf;
+  std::vector<float> m_jet_centroidR;
+  std::vector<float> m_jet_fracSampMax;
+  std::vector<float> m_jet_fracSampMaxIdx;
+  std::vector<float> m_jet_lowEtFrac;
+
+  // layer
+  std::vector< std::vector<float> > m_jet_ePerSamp;
+
+  // tracksAll
+  std::vector< std::vector<int> >   m_jet_NTrkPt1000;
+  std::vector< std::vector<float> > m_jet_SumPtPt1000;
+  std::vector< std::vector<float> > m_jet_TrkWPt1000;
+  std::vector< std::vector<int> >   m_jet_NTrkPt500;
+  std::vector< std::vector<float> > m_jet_SumPtPt500;
+  std::vector< std::vector<float> > m_jet_TrkWPt500;
+  std::vector< std::vector<float> > m_jet_jvf;
+  std::vector< std::vector<float> > m_jet_jvfloose;
+
+  // tracksPV
+  std::vector<int>   m_jet_NTrkPt1000PV;
+  std::vector<float> m_jet_SumPtPt1000PV;
+  std::vector<float> m_jet_TrkWPt1000PV;
+  std::vector<int>   m_jet_NTrkPt500PV;
+  std::vector<float> m_jet_SumPtPt500PV;
+  std::vector<float> m_jet_TrkWPt500PV;
+  std::vector<float> m_jet_jvfPV;
+  std::vector<float> m_jet_jvfloosePV;
 
   // muons
   int m_nmuon;

@@ -74,6 +74,9 @@ namespace HelperClasses{
     m_resolution    = parse("resolution");
     m_truth         = parse("truth");
     m_truthDetails  = parse("truth_details");
+    m_layer         = parse("layer");
+    m_trackPV       = parse("trackPV");
+    m_trackAll      = parse("trackAll");
   }
 
 

@@ -318,7 +318,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   ++m_eventCounter;
   m_cutflowHist ->Fill( m_cutflow_all, 1 );
   m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
-  if ( (m_eventCounter % 100) == 0 ) {
+  if ( (m_eventCounter % 1000) == 0 ) {
     Info("execute()", "Event number = %i", m_eventCounter);
   }
 
