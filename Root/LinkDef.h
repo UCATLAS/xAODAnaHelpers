@@ -1,3 +1,5 @@
+#include <xAODAnaHelpers/ContainerRecording.h>
+
 /* Event and Jet Selectors */
 #include <xAODAnaHelpers/BasicEventSelection.h>
 #include <xAODAnaHelpers/BJetSelector.h>
@@ -47,4 +49,8 @@
 #pragma link C++ class JERShifter+;
 #pragma link C++ class OverlapRemover+;
 #pragma link C++ class Writer+;
+#endif
+
+#ifdef __CINT__
+#pragma link C++ class ContainerRecording+;
 #endif
