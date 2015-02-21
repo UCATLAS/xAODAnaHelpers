@@ -462,14 +462,14 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //  Pass Keys
   //
   for(auto& passKey : m_passKeys){
-    if(!trk->auxdata< char >(passKey.Data())) { return 0;}
+    if(!(trk->auxdata< char >(passKey.Data()) == '1')) { return 0;}
   }
 
   //
   //  Fail Keys
   //
   for(auto& failKey : m_failKeys){
-    if(trk->auxdata< char >(failKey.Data())) {return 0;}
+    if(!(trk->auxdata< char >(failKey.Data()) == '0')) {return 0;}
   }
 
 
