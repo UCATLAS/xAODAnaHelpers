@@ -448,6 +448,7 @@ EL::StatusCode JetSelector :: histFinalize ()
 
 int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
+  
   // clean jets
   if( m_cleanJets ) {
     if( jet->isAvailable< char >( "cleanJet" ) ) {
@@ -506,6 +507,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       }
     }
   } // m_doJVF
+
 
   //
   //  Pass Keys

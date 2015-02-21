@@ -17,7 +17,7 @@ EL::StatusCode TrackHists::initialize() {
   m_trk_Pt_l      = book(m_name, "pt_l",        "trk p_{T} [GeV]",  100, 0, 100);
   m_trk_Eta       = book(m_name, "eta",         "trk #eta",         80, -4, 4);
   m_trk_Phi       = book(m_name, "phi",         "trk Phi",120, -TMath::Pi(), TMath::Pi() );
-  m_trk_d0        = book(m_name, "d0",          "d0[mm]",   100,  -1.0, 1.0 );
+  m_trk_d0        = book(m_name, "d0",          "d0[mm]",   100,  -2.0, 2.0 );
   m_trk_z0        = book(m_name, "z0",          "z0[mm]",   100,  -5.0, 5.0 );
   m_trk_z0sinT    = book(m_name, "z0sinT",           "z0xsin(#theta)[mm]",             100,  -2.0, 2.0 );
 
@@ -37,7 +37,7 @@ EL::StatusCode TrackHists::initialize() {
 
     m_trk_z0_l         = book(m_name, "z0_l" ,            "z0[mm]",                         100,  -600.0, 600.0 );
     m_trk_z0sinT_l     = book(m_name, "z0sinT_l",         "z0xsin(#theta)[mm]",             100,  -20.0, 20.0 );
-    m_trk_z0Err        = book(m_name, "z0Err",            "z0Err[mm]",                      100,  0, 1.0 );
+    m_trk_z0Err        = book(m_name, "z0Err",            "z0Err[mm]",                      100,   0, 0.4 );
     m_trk_z0Sig        = book(m_name, "z0Sig",            "z0Sig",                          100,  -25.0, 25.0 );
     m_trk_z0SigsinT    = book(m_name, "z0SigsinT",        "z0 significance x sin(#theta)",  100,  -25.0, 25.0 );
 
@@ -92,7 +92,9 @@ EL::StatusCode TrackHists::initialize() {
   m_fillChi2Details = false;
   if(m_detailStr.find("Chi2Details") != std::string::npos ){
     m_fillChi2Details = true;
-    m_trk_chi2Prob_l   = book(m_name, "chi2Prob_l",       "chi2Prob",  100,   -0.01,     1.0);
+    m_trk_chi2Prob_l   = book(m_name, "chi2Prob_l",       "chi2Prob",  100,   -0.1,     1.1);
+    m_trk_chi2Prob_s   = book(m_name, "chi2Prob_s",       "chi2Prob",  100,   -0.01,    0.1);
+    m_trk_chi2Prob_ss  = book(m_name, "chi2Prob_ss",      "chi2Prob",  100,   -0.001,   0.01);
     m_trk_chi2ndof     = book(m_name, "chi2ndof",         "chi2ndof",  100,    0.0,     8.0 );
     m_trk_chi2ndof_l   = book(m_name, "chi2ndof_l",       "chi2ndof",  100,    0.0,     80.0 );
   }
@@ -156,7 +158,7 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::
     m_trk_d0Err        -> Fill(d0Err , eventWeight );
     m_trk_d0Sig        -> Fill(d0Sig , eventWeight );
 
-    float z0Err = sqrt((trk->definingParametersCovMatrixVec().at(1)));
+    float z0Err = sqrt((trk->definingParametersCovMatrixVec().at(2)));
     float z0Sig = (z0Err > 0) ? z0/z0Err : -1 ;
 
     m_trk_z0_l         -> Fill(z0         , eventWeight );
@@ -196,14 +198,16 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::
   }
 
   if(m_fillTPErrors){
-    m_trk_phiErr       -> Fill( sqrt((trk->definingParametersCovMatrixVec().at(2))) , eventWeight );
-    m_trk_thetaErr     -> Fill( sqrt((trk->definingParametersCovMatrixVec().at(3))) , eventWeight );
-    m_trk_qOpErr       -> Fill( sqrt((trk->definingParametersCovMatrixVec().at(4))) , eventWeight );
+    //m_trk_phiErr       -> Fill( sqrt((trk->definingParametersCovMatrixVec().at(6))) , eventWeight );
+    //m_trk_thetaErr     -> Fill( sqrt((trk->definingParametersCovMatrixVec().at(10))) , eventWeight );
+    //m_trk_qOpErr       -> Fill( sqrt((trk->definingParametersCovMatrixVec().at(15))) , eventWeight );
   }
 
   if(m_fillChi2Details){
     float chi2NDoF     = (ndof > 0) ? chi2/ndof : -1;
     m_trk_chi2Prob_l   -> Fill(chi2Prob   , eventWeight );
+    m_trk_chi2Prob_s   -> Fill(chi2Prob   , eventWeight );
+    m_trk_chi2Prob_ss  -> Fill(chi2Prob   , eventWeight );
     m_trk_chi2ndof     -> Fill(chi2NDoF   , eventWeight );
     m_trk_chi2ndof_l   -> Fill(chi2NDoF   , eventWeight );
   }
