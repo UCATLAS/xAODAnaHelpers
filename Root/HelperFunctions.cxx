@@ -17,11 +17,9 @@ int HelperFunctions::countPrimaryVertices(const xAOD::VertexContainer* vertexCon
   int NPV = 0;
 
   // Loop over vertices in the container
-  xAOD::VertexContainer::const_iterator vtx_itr = vertexContainer->begin();
-  xAOD::VertexContainer::const_iterator vtx_end = vertexContainer->end();
-  for( ; vtx_itr != vtx_end; ++vtx_itr )
+  for( auto vtx_itr : *vertexContainer )
   {
-    if((int)(*vtx_itr)->nTrackParticles() < Ntracks ) { continue; }
+    if((int)vtx_itr->nTrackParticles() < Ntracks ) { continue; }
     NPV++;
   }
 
@@ -31,12 +29,10 @@ int HelperFunctions::countPrimaryVertices(const xAOD::VertexContainer* vertexCon
 
 int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer)
 {
-  xAOD::VertexContainer::const_iterator vtx_itr = vertexContainer->begin();
-  xAOD::VertexContainer::const_iterator vtx_end = vertexContainer->end();
   int location(0);
-  for( ; vtx_itr != vtx_end; ++vtx_itr )
+  for( auto vtx_itr : *vertexContainer )
   {
-    if((*vtx_itr)->vertexType() == xAOD::VxType::VertexType::PriVtx) { 
+    if(vtx_itr->vertexType() == xAOD::VxType::VertexType::PriVtx) { 
       return location;
     }
     location++;
@@ -49,12 +45,10 @@ const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContaine
 {
   // vertex types are listed on L328 of
   // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODTracking/trunk/xAODTracking/TrackingPrimitives.h
-  xAOD::VertexContainer::const_iterator vtx_itr = vertexContainer->begin();
-  xAOD::VertexContainer::const_iterator vtx_end = vertexContainer->end();
-  for( ; vtx_itr != vtx_end; ++vtx_itr )
+  for( auto vtx_itr : *vertexContainer )
   {
-    if((*vtx_itr)->vertexType() != xAOD::VxType::VertexType::PriVtx) { continue; }
-    return (*vtx_itr);
+    if(vtx_itr->vertexType() != xAOD::VxType::VertexType::PriVtx) { continue; }
+    return vtx_itr;
   }
 
   return 0;
