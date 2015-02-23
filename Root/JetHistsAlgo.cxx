@@ -10,8 +10,8 @@
 #include <xAODAnaHelpers/JetHists.h>
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <xAODAnaHelpers/ReturnCheck.h>
-#include <xAODAnaHelpers/ReturnCheckConfig.h>
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
