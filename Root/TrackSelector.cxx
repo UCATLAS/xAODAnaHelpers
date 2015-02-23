@@ -7,6 +7,8 @@
 #include "xAODAnaHelpers/TrackSelector.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -43,16 +45,8 @@ EL::StatusCode  TrackSelector :: configure ()
   Info("configure()", "Configuing TrackSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
-  
+  RETURN_CHECK_CONFIG( "TrackSelector::configure()", m_configName );
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -250,10 +244,7 @@ EL::StatusCode TrackSelector :: execute ()
 
   // get primary vertex
   const xAOD::VertexContainer *vertices = 0;
-  if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
-      Error("execute()", "Failed to retrieve PrimaryVertices. Exiting.");
-      return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "TrackSelector::execute()", m_event->retrieve(vertices, "PrimaryVertices"), "");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
 
@@ -308,10 +299,7 @@ EL::StatusCode TrackSelector :: execute ()
 
   // add output container to TStore
   if( m_createSelectedContainer ) {
-    if( !m_store->record( selectedTracks, m_outContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
+    RETURN_CHECK( "TrackSelector::execute()", m_store->record( selectedTracks, m_outContainerName.Data() ), "Failed to store container.");
   }
 
   m_numEventPass++;
@@ -391,14 +379,14 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   }
 
   //
-  //  D0 
+  //  D0
   //
   if( m_d0_max != 1e8 ){
     if( fabs(trk->d0()) > m_d0_max ) {return 0; }
   }
-  
+
   //
-  //  Z0 
+  //  Z0
   //
   float z0 = (trk->z0() + trk->vz() - pvx->z());
   if( m_z0_max != 1e8 ){
@@ -416,17 +404,17 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   //  nBLayer
   //
-  uint8_t nBL       = -1;  
+  uint8_t nBL       = -1;
   if( m_nBL_min != 1e8 ){
     if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       std::cout << "ERROR: BLayer hits not filled" << std::endl;
     if( nBL < m_nBL_min ) {return 0; }
   }
-  
+
   //
   //  nSi_min
   //
-  uint8_t nSCT      = -1;  
-  uint8_t nPix      = -1;  
+  uint8_t nSCT      = -1;
+  uint8_t nPix      = -1;
   if( m_nSi_min != 1e8 ){
     if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        std::cout << "ERROR: Pix hits not filled" << std::endl;
     if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          std::cout << "ERROR: SCT hits not filled" << std::endl;
@@ -436,7 +424,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   //  nPix Holes
   //
-  uint8_t nPixHoles = -1;  
+  uint8_t nPixHoles = -1;
   if( m_nPixHoles_max != 1e8 ){
     if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       std::cout << "ERROR: Pix holes not filled" << std::endl;
     if( nPixHoles > m_nPixHoles_max ) {return 0;}

@@ -11,6 +11,8 @@
 #include "xAODAnaHelpers/MuonCalibrator.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "MuonMomentumCorrections/MuonCalibrationAndSmearingTool.h"
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
@@ -47,16 +49,8 @@ EL::StatusCode  MuonCalibrator :: configure ()
   Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
-  
+  RETURN_CHECK_CONFIG( "MuonCalibrator::configure()", m_configName);
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -164,10 +158,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // initialize the muon calibration and smearing tool
   m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool( "MuonCorrectionTool" );
   m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE
-  if (! m_muonCalibrationAndSmearingTool->initialize().isSuccess() ){
-    Error("initialize()", "Failed to properly initialize the MonCalibrationAndSmearingTool Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
 
   Info("initialize()", "MuonCalibrator Interface succesfully initialized!" );
 
@@ -187,10 +178,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   m_numEvent++;
 
   const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "MuonCalibrator::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
 
   // get the collection from TEvent or TStore
   const xAOD::MuonContainer* inMuons = 0;
@@ -222,8 +210,8 @@ EL::StatusCode MuonCalibrator :: execute ()
         Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
       }
       if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", (muonSC_itr->pt() * 1e-3));
-    } 
-  } 
+    }
+  }
 
   if(m_sort) {
     std::sort( calibMuonsSC.first->begin(), calibMuonsSC.first->end(), HelperFunctions::sort_pt );
@@ -235,19 +223,10 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   // add shallow copy to TStore
-  if( !m_store->record( calibMuonsSC.first, m_outSCContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store container %s. Exiting.", m_outSCContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
-  if( !m_store->record( calibMuonsSC.second, m_outSCAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outSCAuxContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first, m_outSCContainerName.Data() ), "Failed to store container");
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName.Data() ), "Failed to store aux container");
   // add ConstDataVector to TStore
-  if( !m_store->record( calibMuonsCDV, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, m_outContainerName.Data() ), "Failed to store const data container");
 
   return EL::StatusCode::SUCCESS;
 }

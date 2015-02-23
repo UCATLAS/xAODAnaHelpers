@@ -26,6 +26,8 @@
 #include "xAODAnaHelpers/JetSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // external tools include(s):
 
@@ -69,15 +71,7 @@ EL::StatusCode  JetSelector :: configure ()
   m_type = ContainerType::UNKNOWN;
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG("JetSelector::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
 
@@ -261,10 +255,8 @@ EL::StatusCode JetSelector :: execute ()
 
   // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
   const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("JetSelector::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
@@ -327,10 +319,7 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
   // if doing JVF get PV location
   if( m_doJVF ) {
     const xAOD::VertexContainer* vertices = 0;
-    if ( !m_event->retrieve( vertices, "PrimaryVertices" ).isSuccess() ){
-      Error("JetSelector:::execute()", "Failed to retrieve PrimaryVertices container. Exiting." );
-      return EL::StatusCode::FAILURE;
-    }
+    RETURN_CHECK("JetSelector::execute()", m_event->retrieve( vertices, "PrimaryVertices" ), "");
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
   }
 
@@ -380,10 +369,7 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
 
   // add ConstDataVector to TStore
   if(m_createSelectedContainer) {
-    if( !m_store->record( selectedJets, m_outContainerName.Data() ).isSuccess() ) {
-      Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
+    RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, m_outContainerName.Data() ), "Failed to store const data container.");
   }
 
   return EL::StatusCode::SUCCESS;
@@ -448,7 +434,7 @@ EL::StatusCode JetSelector :: histFinalize ()
 
 int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
-  
+
   // clean jets
   if( m_cleanJets ) {
     if( jet->isAvailable< char >( "cleanJet" ) ) {

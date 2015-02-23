@@ -1,7 +1,7 @@
 /******************************************
  *
- * Interface to OverlapRemoval tool (applying recommendations from Harmonisation TF).  
- * 
+ * Interface to OverlapRemoval tool (applying recommendations from Harmonisation TF).
+ *
  * M. Milesi (marco.milesi@cern.ch)
  * Jan 28 15:48 AEST 2015
  *
@@ -34,6 +34,9 @@
 #include "xAODAnaHelpers/OverlapRemover.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
+
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // external tools include(s):
 #include "AssociationUtils/OverlapRemovalTool.h"
@@ -80,16 +83,8 @@ EL::StatusCode  OverlapRemover :: configure ()
   Info("configure()", "Configuing OverlapRemover Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
-  
+  RETURN_CHECK_CONFIG( "OverlapRemover::configure()", m_configName);
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -135,13 +130,13 @@ EL::StatusCode  OverlapRemover :: configure ()
 
   m_outContainerName_Muons        = config->GetValue("OutputContainerMuons", "");
   m_outAuxContainerName_Muons     = m_outContainerName_Muons + "Aux."; // the period is very important!
-  
+
   m_outContainerName_Jets        = config->GetValue("OutputContainerJets", "");
   m_outAuxContainerName_Jets     = m_outContainerName_Jets + "Aux."; // the period is very important!
-  
+
   m_outContainerName_Photons        = config->GetValue("OutputContainerPhotons", "");
   m_outAuxContainerName_Photons     = m_outContainerName_Photons + "Aux."; // the period is very important!
-  
+
   m_outContainerName_Taus        = config->GetValue("OutputContainerTaus", "");
   m_outAuxContainerName_Taus     = m_outContainerName_Taus + "Aux."; // the period is very important!
 
@@ -231,15 +226,12 @@ EL::StatusCode OverlapRemover :: initialize ()
   // initialize overlap removal tool
   m_overlapRemovalTool = new OverlapRemovalTool("OverlapRemovalTool");
   m_overlapRemovalTool->msg().setLevel( MSG::DEBUG ); // VERBOSE, INFO, DEBUG
- 
+
   // set object decoration
   const std::string selected_label = (m_useSelected) ? "passSel" : "";  // set with decoration flag you use for selected objects if want to consider only selected objects in OR, otherwise it will perform OR on all objects
-  m_overlapRemovalTool->setProperty("InputLabel",  selected_label);  
+  m_overlapRemovalTool->setProperty("InputLabel",  selected_label);
   m_overlapRemovalTool->setProperty("OverlapLabel", "overlaps"); // tool will decorate objects with 'overlaps' boolean if they overlap (not possible to customise name atm!)
-  if( ! m_overlapRemovalTool->initialize().isSuccess() ) {
-    Error("initialize()", "Failed to properly initialize the OverlapRemovalTool. %s. Exiting.", m_name.c_str() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->initialize(), "Failed to properly initialize the OverlapRemovalTool.");
 
   Info("initialize()", "OverlapRemover Interface succesfully initialized!" );
 
@@ -277,7 +269,7 @@ EL::StatusCode OverlapRemover :: execute ()
   // Can retrieve collection from input file ( const )
   //           or collection from tstore ( ConstDataVector which then gives a const collection )
   // decide which on first pass
-  // 
+  //
   if ( m_type_mu == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
     ConstDataVector<xAOD::MuonContainer>* inMuonsCDV = 0;
     if ( !m_store->retrieve( inMuonsCDV, m_inContainerName_Muons.Data() ).isSuccess() ){
@@ -285,7 +277,7 @@ EL::StatusCode OverlapRemover :: execute ()
       return EL::StatusCode::FAILURE;
     }
     inMuons = inMuonsCDV->asDataVector();
-  }  
+  }
   else if ( m_type_mu == ContainerType::CONSTCONT ) {   // get const container from TEvent
     if ( !m_event->retrieve( inMuons , m_inContainerName_Muons.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Muons.Data() );
@@ -310,7 +302,7 @@ EL::StatusCode OverlapRemover :: execute ()
       return EL::StatusCode::FAILURE;
     }
     inElectrons = inElectronsCDV->asDataVector();
-  }  
+  }
   else if ( m_type_el == ContainerType::CONSTCONT ) {   // get const container from TEvent
     if ( !m_event->retrieve( inElectrons , m_inContainerName_Electrons.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Electrons.Data() );
@@ -335,7 +327,7 @@ EL::StatusCode OverlapRemover :: execute ()
       return EL::StatusCode::FAILURE;
     }
     inJets = inJetsCDV->asDataVector();
-  }  
+  }
   else if ( m_type_jet == ContainerType::CONSTCONT ) {   // get const container from TEvent
     if ( !m_event->retrieve( inJets , m_inContainerName_Jets.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Jets.Data() );
@@ -360,7 +352,7 @@ EL::StatusCode OverlapRemover :: execute ()
       return EL::StatusCode::FAILURE;
     }
     inPhotons = inPhotonsCDV->asDataVector();
-  }  
+  }
   else if ( m_type_ph == ContainerType::CONSTCONT ) {   // get const container from TEvent
     if ( !m_event->retrieve( inPhotons , m_inContainerName_Photons.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Photons.Data() );
@@ -385,7 +377,7 @@ EL::StatusCode OverlapRemover :: execute ()
       return EL::StatusCode::FAILURE;
     }
     inTaus = inTausCDV->asDataVector();
-  }  
+  }
   else if ( m_type_tau == ContainerType::CONSTCONT ) {   // get const container from TEvent
     if ( !m_event->retrieve( inTaus , m_inContainerName_Taus.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Taus.Data() );
@@ -399,24 +391,24 @@ EL::StatusCode OverlapRemover :: execute ()
   https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/AnalysisCommon/AssociationUtils/trunk/doc/README.rst
   ========================================================
   */
-    
+
   if(m_debug){
     m_store->print();
-    Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  
+    Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());
   }
-  
+
   m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons);
 
   return executeConst( inElectrons, inMuons, inJets, inTaus, inPhotons );
 }
 
 
-EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* inElectrons, 
+EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* inElectrons,
 						const xAOD::MuonContainer* inMuons,
 						const xAOD::JetContainer* inJets,
 						const xAOD::TauJetContainer* inTaus,
 						const xAOD::PhotonContainer* inPhotons
-					      ) 
+					      )
 {
 
   // remove overlaps
@@ -427,9 +419,9 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
   */
   /*
   if(m_debug){
-    Info("executeConst()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  
+    Info("executeConst()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());
   }
-  
+
   m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons);
   */
   // debug : check that something has been done
@@ -449,7 +441,7 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
   }
 
   ///*
-  // instantiate output container(s) 
+  // instantiate output container(s)
   ConstDataVector<xAOD::ElectronContainer> *selectedElectrons   = 0;
   ConstDataVector<xAOD::MuonContainer>     *selectedMuons	= 0;
   ConstDataVector<xAOD::JetContainer>      *selectedJets	= 0;
@@ -464,62 +456,47 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
     selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
     selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
   }
-  
+
   if( ! makeSubsetCont(inElectrons, selectedElectrons, "overlaps", ToolName::OVERLAPREMOVER) ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.Data() );
-        return EL::StatusCode::FAILURE;    
+        return EL::StatusCode::FAILURE;
   }
   if( ! makeSubsetCont(inMuons, selectedMuons, "overlaps", ToolName::OVERLAPREMOVER) ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.Data() );
-        return EL::StatusCode::FAILURE;    
+        return EL::StatusCode::FAILURE;
   }
   if( ! makeSubsetCont(inJets, selectedJets, "overlaps", ToolName::OVERLAPREMOVER) ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.Data() );
-        return EL::StatusCode::FAILURE;    
+        return EL::StatusCode::FAILURE;
   }
   if( m_inContainerName_Photons.Length() != 0 )
   {
     if( ! makeSubsetCont(inPhotons, selectedPhotons, "overlaps", ToolName::OVERLAPREMOVER) ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.Data() );
-        return EL::StatusCode::FAILURE;  
+        return EL::StatusCode::FAILURE;
       }
   }
-  if( m_inContainerName_Taus.Length() != 0 ) 
-  {  
+  if( m_inContainerName_Taus.Length() != 0 )
+  {
     if( ! makeSubsetCont(inTaus, selectedTaus, "overlaps", ToolName::OVERLAPREMOVER) ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.Data() );
-        return EL::StatusCode::FAILURE;  
+        return EL::StatusCode::FAILURE;
       }
   }
 
   // add ConstDataVector to TStore
   if(m_createSelectedContainers) {
-    if( !m_store->record( selectedElectrons, m_outContainerName_Electrons.Data() ).isSuccess() ) {
-      Error("executeConst()  ", "Failed to store const data container %s. Exiting.", m_outContainerName_Electrons.Data() );
-      return EL::StatusCode::FAILURE;
+    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons.Data() ), "Failed to store const data container");
+    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons, m_outContainerName_Muons.Data() ), "Failed to store const data container");
+    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets, m_outContainerName_Jets.Data() ), "Failed to store const data container");
+    if( m_inContainerName_Photons.Length() != 0){
+      RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons, m_outContainerName_Photons.Data() ), "Failed to store const data container");
     }
-    if( !m_store->record( selectedMuons, m_outContainerName_Muons.Data() ).isSuccess() ) {
-      Error("executeConst()  ", "Failed to store const data container %s. Exiting.", m_outContainerName_Muons.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    if( !m_store->record( selectedJets, m_outContainerName_Jets.Data() ).isSuccess() ) {
-      Error("executeConst()  ", "Failed to store const data container %s. Exiting.", m_outContainerName_Jets.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    if( m_inContainerName_Photons.Length() != 0){ 
-      if( !m_store->record( selectedPhotons, m_outContainerName_Photons.Data() ).isSuccess() ) {
-        Error("executeConst()  ", "Failed to store const data container %s. Exiting.", m_outContainerName_Photons.Data() );
-        return EL::StatusCode::FAILURE;
-      }
-    }
-    if( m_inContainerName_Taus.Length() != 0){ 
-      if( !m_store->record( selectedTaus, m_outContainerName_Taus.Data() ).isSuccess() ) {
-        Error("executeConst()  ", "Failed to store const data container %s. Exiting.", m_outContainerName_Taus.Data() );
-        return EL::StatusCode::FAILURE;
-      }
+    if( m_inContainerName_Taus.Length() != 0){
+      RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus.Data() ), "Failed to store const data container");
     }
   }
-   
+
   //*******************************************************
   /*
   // make a copy of input container(s) with selected objects
@@ -530,74 +507,74 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
   xAOD::TauJetContainer   *selectedTaus      = 0;
   if(m_createSelectedContainers) {
 
-    // instantiate output container(s) 
+    // instantiate output container(s)
     selectedElectrons = new xAOD::ElectronContainer(SG::VIEW_ELEMENTS);
     selectedMuons     = new xAOD::MuonContainer(SG::VIEW_ELEMENTS);
     selectedJets      = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
     selectedPhotons   = new xAOD::PhotonContainer(SG::VIEW_ELEMENTS);
     selectedTaus      = new xAOD::TauJetContainer(SG::VIEW_ELEMENTS);
-    
+
     if( ! makeSubsetCont(inElectrons, selectedElectrons, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.Data() );
-        return EL::StatusCode::FAILURE;    
+        return EL::StatusCode::FAILURE;
     }
     if( ! makeSubsetCont(inMuons, selectedMuons, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.Data() );
-        return EL::StatusCode::FAILURE;    
+        return EL::StatusCode::FAILURE;
     }
     if( ! makeSubsetCont(inJets, selectedJets, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.Data() );
-        return EL::StatusCode::FAILURE;    
+        return EL::StatusCode::FAILURE;
     }
     if( m_inContainerName_Photons.Length() != 0 )
     {
       if( ! makeSubsetCont(inPhotons, selectedPhotons, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.Data() );
-        return EL::StatusCode::FAILURE;  
+        return EL::StatusCode::FAILURE;
       }
     }
-    if( m_inContainerName_Taus.Length() != 0 ) 
-    {  
+    if( m_inContainerName_Taus.Length() != 0 )
+    {
       if( ! makeSubsetCont(inTaus, selectedTaus, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.Data() );
-        return EL::StatusCode::FAILURE;  
+        return EL::StatusCode::FAILURE;
       }
     }
 
-    if( !m_store->record( selectedElectrons, m_outContainerName_Electrons.Data() ).isSuccess() ){	 
+    if( !m_store->record( selectedElectrons, m_outContainerName_Electrons.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Electrons.Data() );
       return EL::StatusCode::FAILURE;
-    }	   
+    }
 
     if( !m_store->record( selectedMuons, m_outContainerName_Muons.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Muons.Data() );
       return EL::StatusCode::FAILURE;
-    }    
+    }
 
     if( !m_store->record( selectedJets, m_outContainerName_Jets.Data() ).isSuccess() ){
       Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Jets.Data() );
       return EL::StatusCode::FAILURE;
-    } 
-    
+    }
+
     if( m_inContainerName_Photons.Length() != 0 && m_outContainerName_Photons.Length() != 0  )
     {
       if( !m_store->record( selectedPhotons, m_outContainerName_Photons.Data() ).isSuccess() ){
         Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Photons.Data() );
         return EL::StatusCode::FAILURE;
-      }     
+      }
     }
-    
+
     if( m_inContainerName_Taus.Length() != 0 && m_outContainerName_Taus.Length() != 0  )
     {
       if( !m_store->record( selectedTaus, m_outContainerName_Taus.Data() ).isSuccess() ){
         Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Taus.Data() );
         return EL::StatusCode::FAILURE;
-      }     
+      }
     }
 
   }
   */
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -667,13 +644,13 @@ EL::StatusCode OverlapRemover :: printOverlapInfo (const char* type, const xAOD:
   static SG::AuxElement::ConstAccessor< ElementLink<xAOD::IParticleContainer> > objLinkAcc("overlapObject");
 
   for( auto obj_itr = objCont->begin(); obj_itr != objCont->end(); ++obj_itr ) {
-    
+
     // Safety check
     if(!overlapAcc.isAvailable(*(*obj_itr))){
       Error("printObj()", "Overlap decoration missing for object of type %s ", type );
       return EL::StatusCode::FAILURE;
     }
-    if(selectAcc.isAvailable(*(*obj_itr))){    
+    if(selectAcc.isAvailable(*(*obj_itr))){
       Info("printObj()", "  %s pt %6.2f eta %5.2f phi %5.2f selected %i overlaps %i \n", type, (*obj_itr)->pt()/1000., (*obj_itr)->eta(), (*obj_itr)->phi(), selectAcc(*(*obj_itr)), overlapAcc(*(*obj_itr)));
     } else {
       Info("printObj()", "  %s pt %6.2f eta %5.2f phi %5.2f overlaps %i \n", type, (*obj_itr)->pt()/1000., (*obj_itr)->eta(), (*obj_itr)->phi(), overlapAcc(*(*obj_itr)));
@@ -685,9 +662,9 @@ EL::StatusCode OverlapRemover :: printOverlapInfo (const char* type, const xAOD:
       Info("printObj()", "    Overlap: type %s pt %6.2f", (ss_or.str()).c_str(), overlapObj->pt()/1e3);
     }
   }
-  
+
   return EL::StatusCode::SUCCESS;
-  
+
 }
 
 
@@ -702,7 +679,7 @@ EL::StatusCode OverlapRemover :: printOverlapInfo (const char* type, xAOD::IPart
     Error("printObj()", "Overlap decoration missing for object of type %s ", type );
     return EL::StatusCode::FAILURE;
   }
-  if(selectAcc.isAvailable(*obj)){     
+  if(selectAcc.isAvailable(*obj)){
     Info("printObj()", "  %s pt %6.2f eta %5.2f phi %5.2f selected %i overlaps %i \n", type, obj->pt()/1000., obj->eta(), obj->phi(), selectAcc(*obj), overlapAcc(*obj));
   } else {
     Info("printObj()", "  %s pt %6.2f eta %5.2f phi %5.2f overlaps %i \n", type, obj->pt()/1000., obj->eta(), obj->phi(), overlapAcc(*obj));
@@ -713,7 +690,7 @@ EL::StatusCode OverlapRemover :: printOverlapInfo (const char* type, xAOD::IPart
     std::stringstream ss_or; ss_or << overlapObj->type();
     Info("printObj()", "    Overlap: type %s pt %6.2f", (ss_or.str()).c_str(), overlapObj->pt()/1e3);
   }
-  
+
   return EL::StatusCode::SUCCESS;
-  
+
 }

@@ -1,7 +1,7 @@
 /******************************************
  *
- * Interface to CP JER Shifter tool(s).  
- * 
+ * Interface to CP JER Shifter tool(s).
+ *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
  * Jan 28 15:51 AEST 2015
  *
@@ -15,7 +15,7 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-// EDM include(s):  
+// EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/Jet.h"
@@ -28,6 +28,9 @@
 
 // package include(s):
 #include "xAODAnaHelpers/JERShifter.h"
+
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // external tools include(s):
 #include "JetResolution/JERTool.h"
@@ -73,16 +76,8 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   xAOD::Init( "JERShifter" ).ignore(); // call before opening first file
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("setupJob()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("setupJob()", "Found configuration file");
-  
+  RETURN_CHECK_CONFIG( "JERShifter::setupJob()", m_configName);
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // input container to be read from TEvent or TStore
@@ -150,36 +145,18 @@ EL::StatusCode JERShifter :: initialize ()
 
   // Configure the JERTool
   //m_JERTool->msg().setLevel(MSG::DEBUG);
-  if( ! m_JERTool->setProperty("PlotFileName", "JetResolution/JERProviderPlots_2012.root").isSuccess() ) {
-    Error("JERShift::initialize()", "Failed to properly set the PlotFileName in JER Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-  if( ! m_JERTool->setProperty("CollectionName", m_jetAlgo.Data()).isSuccess() ) {
-    Error("JERShift::initialize()", "Failed to properly set the CollectionName in JER Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-  if( ! m_JERTool->setProperty("BeamEnergy", "8TeV").isSuccess() ) {
-    Error("JERShift::initialize()", "Failed to properly set the BeamEnergy in JER Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-  if( ! m_JERTool->setProperty("SimulationType", "FullSim").isSuccess() ) {
-    Error("JERShift::initialize()", "Failed to properly set the SimulationType in JER Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("PlotFileName", "JetResolution/JERProviderPlots_2012.root"), "");
+  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("CollectionName", m_jetAlgo.Data()), "");
+  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("BeamEnergy", "8TeV"), "");
+  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("SimulationType", "FullSim"), "");
 
   // Configure the JERSmearingTool
   //m_JERSmearing->msg().setLevel(MSG::DEBUG);
   m_JERSmearing->setJERTool(m_JERTool);
   m_JERSmearing->setNominalSmearing(true);
 
-  if( ! m_JERTool->initialize().isSuccess() ) {
-    Error("JERShift::initialize()", "Failed to properly initialize the JER Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-  if( ! m_JERSmearing->initialize().isSuccess() ) {
-    Error("JERShift::initialize()", "Failed to properly initialize the JERSmearing Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->initialize(), "Failed to properly initialize the JER Tool");
+  RETURN_CHECK( "JERShifter::initialize()", m_JERSmearing->initialize(), "Failed to properly initialize the JERSmearing Tool");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -219,14 +196,8 @@ EL::StatusCode JERShifter :: execute ()
   }
 
   // add shallow copy to TStore
-  if( !m_store->record( smearedJets.first, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
-  if( !m_store->record( smearedJets.second, m_outAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outAuxContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "JERShifter::execute()", m_store->record( smearedJets.first, m_outContainerName.Data() ), "Failed to store container");
+  RETURN_CHECK( "JERShifter::execute()", m_store->record( smearedJets.second, m_outAuxContainerName.Data() ), "Failed to store aux container");
 
   return EL::StatusCode::SUCCESS;
 }

@@ -9,6 +9,9 @@
 #include <xAODAnaHelpers/TrackHists.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+
 #include "TEnv.h"
 #include "TSystem.h"
 
@@ -61,15 +64,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 EL::StatusCode TrackHistsAlgo :: configure ()
 {
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG( "TrackHistsAlgo::configure()", m_configName);
 
   // the file exists, use TEnv to read it off
   TEnv* config = new TEnv(m_configName.c_str());
@@ -109,10 +104,7 @@ EL::StatusCode TrackHistsAlgo :: initialize ()
 EL::StatusCode TrackHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("AnalysisLoop::execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "TrackHistsAlgo::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -136,10 +128,7 @@ EL::StatusCode TrackHistsAlgo :: execute ()
 
   // get primary vertex
   const xAOD::VertexContainer *vertices = 0;
-  if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
-      Error("execute()", "Failed to retrieve PrimaryVertices. Exiting.");
-      return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "TrackHistsAlgo::execute()", m_event->retrieve(vertices, "PrimaryVertices"), "");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   m_plots->execute( tracks, pvx, eventWeight );

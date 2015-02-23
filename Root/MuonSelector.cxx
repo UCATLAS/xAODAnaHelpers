@@ -28,6 +28,9 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+
 // external tools include(s):
 #include "MuonSelectorTools/MuonSelectionTool.h"
 
@@ -75,15 +78,7 @@ EL::StatusCode  MuonSelector :: configure ()
   m_type = ContainerType::UNKNOWN;
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG( "MuonSelector::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
 
@@ -298,10 +293,7 @@ EL::StatusCode MuonSelector :: initialize ()
   m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max) ); // default 2.5
   m_muonSelectionTool->setProperty("MuQuality", static_cast<int>(muQualityParser.parseEnum(m_muonQuality))   ); // why is not ok to pass the enum??
 
-  if (! m_muonSelectionTool->initialize().isSuccess() ){
-    Error("initialize()", "Failed to properly initialize the Muon Selection Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
 
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );
 
@@ -319,10 +311,8 @@ EL::StatusCode MuonSelector :: execute ()
 
   // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
   const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("MuonSelector::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
@@ -390,10 +380,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
 
   // get primary vertex
   const xAOD::VertexContainer *vertices = 0;
-  if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
-      Error("execute()", "Failed to retrieve PrimaryVertices. Exiting.");
-      return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("MuonSelector::execute()", m_event->retrieve(vertices, "PrimaryVertices"), "");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
 
@@ -442,10 +429,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
 
   // add ConstDataVector to TStore
   if(m_createSelectedContainer) {
-    if( !m_store->record( selectedMuons, m_outContainerName ).isSuccess() ) {
-      Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
+    RETURN_CHECK("MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName ), "Failed to store const data container");
   }
 
   return EL::StatusCode::SUCCESS;

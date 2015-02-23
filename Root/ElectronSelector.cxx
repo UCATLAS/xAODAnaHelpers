@@ -27,6 +27,9 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+
 // external tools include(s):
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
@@ -81,15 +84,7 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_type = ContainerType::UNKNOWN;
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG( "ElectronSelector::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
 
@@ -272,10 +267,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   // initialise AsgElectronIsEMSelector
   m_asgElectronIsEMSelector = new AsgElectronIsEMSelector("AsgElectronIsEMSelector");
-  if (! m_asgElectronIsEMSelector->initialize().isSuccess() ){
-    Error("initialize()", "Failed to properly initialize AsgElectronIsEMSelector. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
 
   // initialise AsgElectronLikelihoodTool
   m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool("AsgElectronLikelihoodTool");
@@ -283,10 +275,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_asgElectronLikelihoodTool->setProperty("inputPDFFileName", "ElectronPhotonSelectorTools/v1/ElectronLikelihoodPdfs.root");
   HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
   m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_likelihoodPID) ) );
-  if (! m_asgElectronLikelihoodTool->initialize().isSuccess() ){
-    Error("initialize()", "Failed to properly initialize AsgElectronLikelihoodTool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->initialize(), "Failed to properly initialize AsgElectronLikelihoodTool." );
 
   // initialise ElectronIsolationSelectionTool
   m_electronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( "ElectronIsolationSelectionTool" );
@@ -295,10 +284,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
   m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<double>(m_CaloBasedIsoCut),  m_useRelativeIso );
   m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_TrackBasedIsoType),  static_cast<double>(m_TrackBasedIsoCut), m_useRelativeIso );
-  if (! m_electronIsolationSelectionTool->initialize().isSuccess() ){
-    Error("initialize()", "Failed to properly initialize ElectronIsolationSelectionTool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->initialize(), "Failed to properly initialize ElectronIsolationSelectionTool." );
 
   Info("initialize()", "ElectronSelector Interface succesfully initialized!" );
 
@@ -318,10 +304,8 @@ EL::StatusCode ElectronSelector :: execute ()
 
   // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
   const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "ElectronSelector::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
@@ -384,10 +368,7 @@ EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer*
   }
 
   const xAOD::VertexContainer* vertices = 0;
-  if ( !m_event->retrieve( vertices, "PrimaryVertices" ).isSuccess() ){
-     Error("ElectronSelector:::execute()", "Failed to retrieve PrimaryVertices container. Exiting." );
-     return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "ElectronSelector::execute()", m_event->retrieve( vertices, "PrimaryVertices" ), "");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
@@ -435,10 +416,7 @@ EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer*
 
   // add ConstDataVector to TStore
   if(m_createSelectedContainer) {
-    if( !m_store->record( selectedElectrons, m_outContainerName.Data() ).isSuccess() ) {
-      Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
+    RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName.Data() ), "Failed to store const data container");
   }
 
   return EL::StatusCode::SUCCESS;

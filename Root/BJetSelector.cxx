@@ -27,6 +27,9 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+
 // external tools include(s):
 
 // ROOT include(s):
@@ -66,15 +69,7 @@ EL::StatusCode  BJetSelector :: configure ()
   m_type = ContainerType::UNKNOWN;
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG( "BJetSelector::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
 
@@ -257,10 +252,8 @@ EL::StatusCode BJetSelector :: execute ()
 
   // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
   const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "BJetSelector::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
@@ -385,10 +378,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
 
   // add output container to TStore
   if( m_createSelectedContainer ) {
-    if( !m_store->record( selectedJets, m_outContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
+    RETURN_CHECK( "BJetSelector::execute()", m_store->record( selectedJets, m_outContainerName.Data() ), "Failed to store container.");
   }
 
   m_numEventPass++;

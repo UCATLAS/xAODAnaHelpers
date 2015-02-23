@@ -30,6 +30,9 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/ElectronCalibrator.h"
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+
 // external tools include(s):
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
 
@@ -66,15 +69,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   Info("configure()", "Configuing ElectronCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG( "ElectronCalibrator::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
 
@@ -183,10 +178,8 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", "es2012c");
   m_EgammaCalibrationAndSmearingTool->setProperty("ResolutionType", "SigmaEff90");
-  if (! m_EgammaCalibrationAndSmearingTool->initialize().isSuccess() ){
-    Error("initialize()", "Failed to properly initialize the EgammaCalibrationAndSmearingTool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+
+  RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
 
   Info("initialize()", "ElectronCalibrator Interface succesfully initialized!" );
 
@@ -206,10 +199,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   m_numEvent++;
 
   const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
 
   // get the collection from TEvent or TStore
   const xAOD::ElectronContainer* inElectrons = 0;
@@ -252,19 +242,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
   }
 
   // add shallow copy to TStore
-  if( !m_store->record( calibElectronsSC.first, m_outSCContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store container %s. Exiting.", m_outSCContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
-  if( !m_store->record( calibElectronsSC.second, m_outSCAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outSCAuxContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first, m_outSCContainerName.Data() ), "Failed to store container.");
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.second, m_outSCAuxContainerName.Data() ), "Failed to store aux container.");
   // add ConstDataVector to TStore
-  if( !m_store->record( calibElectronsCDV, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsCDV, m_outContainerName.Data() ), "Failed to store const data container.");
 
   return EL::StatusCode::SUCCESS;
 }

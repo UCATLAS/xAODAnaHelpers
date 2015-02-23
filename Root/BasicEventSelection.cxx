@@ -23,7 +23,9 @@
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/BasicEventSelection.h>
+
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -61,6 +63,8 @@ EL::StatusCode BasicEventSelection :: configure ()
 {
   // read in user configuration from text file
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+  RETURN_CHECK_CONFIG( "BasicEventSelection::configure()", m_configName);
+
   TEnv *env = new TEnv(m_configName.c_str());
   if( !env ) {
     Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );
