@@ -83,7 +83,6 @@ EL::StatusCode  JetCalibrator :: configure ()
 
   // read debug flag from .config file
   m_debug         = config->GetValue("Debug" , false );
-  m_isMC          = config->GetValue("IsMC"  , false );
   // input container to be read from TEvent or TStore
   m_inContainerName          = config->GetValue("InputContainer",  "");
 
@@ -183,6 +182,13 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
+
+  const xAOD::EventInfo* eventInfo = 0;
+  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
+    Error("JetCalibrator::execute()", "Failed to retrieve event info collection. Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
   Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
 

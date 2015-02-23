@@ -25,8 +25,8 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  bool m_isMC;            //!
-  bool m_isFullSim;       //!
+  bool m_isMC;
+  bool m_isFullSim;
 
   bool m_debug;           //!
 
