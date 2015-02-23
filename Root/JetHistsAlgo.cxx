@@ -14,8 +14,6 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-using HelperClasses::ContainerType;
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
 
@@ -25,7 +23,6 @@ JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(ContainerType::UNKNOWN),
   m_plots(nullptr)
 {
 }
@@ -52,7 +49,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
   }
 
   // declare class and add histograms to output
-  m_plots.reset(new JetHists(m_name, m_detailStr));
+  m_plots = new JetHists(m_name, m_detailStr);
   m_plots -> initialize( );
   m_plots -> record( wk() );
 
@@ -61,8 +58,6 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
 
 EL::StatusCode JetHistsAlgo :: configure ()
 {
-
-  m_type = ContainerType::UNKNOWN;
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   // check if file exists
   /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
@@ -105,7 +100,7 @@ EL::StatusCode JetHistsAlgo :: initialize ()
 
 EL::StatusCode JetHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = BaseAlgorithm::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -113,10 +108,10 @@ EL::StatusCode JetHistsAlgo :: execute ()
   }
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = BaseAlgorithm::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices = BaseAlgorithm::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
+  const xAOD::VertexContainer* vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
   /*int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);*/
 
   /* two ways to fill */
@@ -137,6 +132,10 @@ EL::StatusCode JetHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; 
 
 EL::StatusCode JetHistsAlgo :: finalize () {
   Info("finalize()", m_name.c_str());
+  if(m_plots){
+    delete m_plots;
+    m_plots = 0;
+  }
   return EL::StatusCode::SUCCESS;
 }
 

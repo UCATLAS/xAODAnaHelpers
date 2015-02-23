@@ -7,18 +7,14 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-#include <memory>
-
 // package include(s):
 #ifndef __CINT__
   #include "xAODAnaHelpers/HelperClasses.h"
-  #include "xAODAnaHelpers/BaseAlgorithm.h"
 #endif
 
 class JetHists;
-class BaseAlgorithm;
 
-class JetHistsAlgo : public EL::Algorithm, public BaseAlgorithm
+class JetHistsAlgo : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
@@ -26,9 +22,6 @@ public:
 
   std::string m_name;
   std::string m_configName;
-#ifndef __CINT__
-  HelperClasses::ContainerType m_type;
-#endif
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
@@ -36,9 +29,7 @@ public:
 
 private:
 
-#ifndef __CINT__
-  std::shared_ptr<JetHists> m_plots; //!
-#endif //not __CINT__
+  JetHists* m_plots; //!
 
   // configuration variables
   std::string m_inContainerName;      //!
