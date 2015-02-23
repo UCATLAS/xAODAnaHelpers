@@ -10,6 +10,8 @@
 #include <xAODAnaHelpers/JetHists.h>
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
+#include <xAODAnaHelpers/ReturnCheck.h>
+#include <xAODAnaHelpers/ReturnCheckConfig.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
@@ -59,15 +61,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
 EL::StatusCode JetHistsAlgo :: configure ()
 {
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG("JetHistsAlgo::configure()", m_configName);
 
   // the file exists, use TEnv to read it off
   TEnv* config = new TEnv(m_configName.c_str());

@@ -5,7 +5,7 @@
 // ROOT include(s):
 #include <TError.h>
 
-#include <xAODRootAccess/tools/Message.h>
+#include <xAODAnaHelpers/tools/Message.h>
 #include <EventLoop/StatusCode.h>
 
 /// Helper macro for checking return codes in a compact form in the code

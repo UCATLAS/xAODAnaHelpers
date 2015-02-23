@@ -30,6 +30,7 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // external tools include(s):
 #include "JetCalibTools/JetCalibrationTool.h"
@@ -70,31 +71,23 @@ EL::StatusCode  JetCalibrator :: configure ()
   Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG("JetCalibrator::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
-  m_debug         = config->GetValue("Debug" , false );
+  m_debug                   = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
-  m_inContainerName          = config->GetValue("InputContainer",  "");
+  m_inContainerName         = config->GetValue("InputContainer",  "");
 
   // CONFIG parameters for JetCalibrationTool
-  m_jetAlgo                  = config->GetValue("JetAlgorithm",    "");
+  m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
 
   // when running data "_Insitu" is appended to this string
-  m_calibSequence            = config->GetValue("CalibSequence",           "EtaJES");
-  m_calibConfigData	     = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
-  m_calibConfigFullSim       = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
-  m_calibConfigAFII          = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
+  m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
+  m_calibConfigData	        = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
+  m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
+  m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
 
   // CONFIG parameters for JetCleaningTool
   m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");
