@@ -105,11 +105,7 @@ EL::StatusCode JetHistsAlgo :: initialize ()
 
 EL::StatusCode JetHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("AnalysisLoop::execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  const xAOD::EventInfo* eventInfo = BaseAlgorithm::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -117,52 +113,10 @@ EL::StatusCode JetHistsAlgo :: execute ()
   }
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = 0;
-
-  // if type is not defined then we need to define it
-  //  1 = get from TStore
-  //  2 = get from TEvent
-  if( m_type == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName)){
-      m_type = ContainerType::CONSTDV;
-    }
-    else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName)){
-      m_type = ContainerType::CONSTCONT;
-    }
-    else {
-      Error("JetHistsAlgo::execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.c_str() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  // Can retrieve collection from input file ( const )
-  //           or collection from tstore ( ConstDataVector which then gives a const collection )
-  // decide which on first pass
-  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-
-    ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
-    if ( !m_store->retrieve( inJetsCDV, m_inContainerName ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-    inJets = inJetsCDV->asDataVector();
-
-  }
-  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
-
-    if ( !m_event->retrieve( inJets , m_inContainerName ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-
-  }
+  const xAOD::JetContainer* inJets = BaseAlgorithm::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices = 0;
-  if ( !m_event->retrieve( vertices, "PrimaryVertices").isSuccess() ){
-    return EL::StatusCode::FAILURE;
-  }
+  const xAOD::VertexContainer* vertices = BaseAlgorithm::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
   /*int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);*/
 
   /* two ways to fill */

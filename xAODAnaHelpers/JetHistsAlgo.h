@@ -12,11 +12,13 @@
 // package include(s):
 #ifndef __CINT__
   #include "xAODAnaHelpers/HelperClasses.h"
+  #include "xAODAnaHelpers/BaseAlgorithm.h"
 #endif
 
 class JetHists;
+class BaseAlgorithm;
 
-class JetHistsAlgo : public EL::Algorithm
+class JetHistsAlgo : public EL::Algorithm, public BaseAlgorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
