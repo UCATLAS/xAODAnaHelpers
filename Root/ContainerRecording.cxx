@@ -76,15 +76,17 @@ EL::StatusCode ContainerRecording :: execute ()
     if( !m_store->retrieve(out_aktJets_CDV_store, outputContainer).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store as ConstDataVector. Exiting.", outputContainer.c_str());
       cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Store as ConstDataVector.", outputContainer.c_str());
     }
-    Info("execute()", "Successfully retrieved %s from Store as ConstDataVector.", outputContainer.c_str());
 
     // ---- from TEvent
     if( !m_event->retrieve(out_aktJets_CDV_event, outputContainer).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Event as ConstDataVector. Exiting.", outputContainer.c_str());
       cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Event as ConstDataVector.", outputContainer.c_str());
     }
-    Info("execute()", "Successfully retrieved %s from Event as ConstDataVector.", outputContainer.c_str());
     std::cout << "\n";
 
     Info("execute()", "Attempting to retrieve %s as a const DataVector.", outputContainer.c_str());
@@ -96,15 +98,17 @@ EL::StatusCode ContainerRecording :: execute ()
     if( !m_event->retrieve(out_aktJets_event, outputContainer).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Event as const DataVector. Exiting.", outputContainer.c_str());
       cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Event as const DataVector.", outputContainer.c_str());
     }
-    Info("execute()", "Successfully retrieved %s from Event as const DataVector.", outputContainer.c_str());
 
     // ---- from TStore
     if( !m_store->retrieve(out_aktJets_store, outputContainer).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store as const DataVector. Exiting.", outputContainer.c_str());
       cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Store as const DataVector.", outputContainer.c_str());
     }
-    Info("execute()", "Successfully retrieved %s from Store as const DataVector.", outputContainer.c_str());
     std::cout << "\n";
 
     if(cannotRetrieve) return EL::StatusCode::FAILURE;

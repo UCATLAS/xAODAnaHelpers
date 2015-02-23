@@ -1,7 +1,7 @@
 /******************************************
  *
- * Basic event selection. Performs general simple cuts (GRL, Event Cleaning, Min nr. Tracks for PV candidate) 
- * 
+ * Basic event selection. Performs general simple cuts (GRL, Event Cleaning, Min nr. Tracks for PV candidate)
+ *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
  * Jan 28 16:44 AEST 2015
  *
@@ -23,6 +23,7 @@
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/BasicEventSelection.h>
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -50,6 +51,7 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
   // initialization code will go into histInitialize() and
   // initialize().
   Info("BasicEventSelection()", "Calling constructor \n");
+  //StatusCode::enableFailure();
   m_cutflowHist  = 0;
   m_cutflowHistW = 0;
 }
@@ -254,12 +256,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
   std::vector<std::string> vecStringGRL;
   m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
   vecStringGRL.push_back(m_GRLxml);
-  m_grl->setProperty( "GoodRunsListVec", vecStringGRL);
-  m_grl->setProperty("PassThrough", false); // if true (default) will ignore result of GRL and will just pass all events
-  if (!m_grl->initialize().isSuccess()) { // check this isSuccess
-    Error("initialize()", "Failed to properly initialize the GRL. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty( "GoodRunsListVec", vecStringGRL), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
 
   //--------------------------------------------
   //  Get Containers Depending on Analysis Needs
@@ -270,12 +269,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // as a check, let's see the number of events in our xAOD (long long int)
   Info("initialize()", "Number of events in file   = %lli", m_event->getEntries());
-
   // count number of events
   m_eventCounter   = 0;
 
   Info("initialize()", "BasicEventSelection succesfully initilaized!");
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -288,28 +285,24 @@ EL::StatusCode BasicEventSelection :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-
   //----------------------------
   // Event information
   //---------------------------
   const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("BasicEventSelection::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
 
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
-  
-  float mcEvtWeight(1.0), pileupWeight(1.0); 
+
+  float mcEvtWeight(1.0), pileupWeight(1.0);
   if( isMC ){
      const std::vector< float > weights = eventInfo->mcEventWeights();
      if( weights.size() > 0 ) mcEvtWeight = weights[0];
-      
+
      //if( m_doPUreweighting ){ // FIXME
-     //  pileupWeight = eventInfo->auxdecor< double >( "PileupWeight" ); // this decoration added previously by PU reweighting tool									    
+     //  pileupWeight = eventInfo->auxdecor< double >( "PileupWeight" ); // this decoration added previously by PU reweighting tool
      //}
      mcEvtWeight *= pileupWeight;
-  }   
+  }
   // decorate with PU corrected mc event weight
   static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
   mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
@@ -386,10 +379,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   const xAOD::VertexContainer* vertices = 0;
-  if ( !m_event->retrieve( vertices, m_vertexContainerName.Data() ).isSuccess() ){
-    Error("execute()", "Failed to retrieve %s container. Exiting.", m_vertexContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("BasicEventSelection::execute()", m_event->retrieve( vertices, m_vertexContainerName.Data()), "");
 
   if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
     wk()->skipEvent();
