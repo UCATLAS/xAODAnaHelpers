@@ -1,7 +1,7 @@
 /******************************************
  *
- * Interface to Jet calibration tool(s).  
- * 
+ * Interface to Jet calibration tool(s).
+ *
  * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
  * Jan 28 15:54 AEST 2015
  *
@@ -15,7 +15,7 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-// EDM include(s):  
+// EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/Jet.h"
@@ -29,6 +29,7 @@
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // external tools include(s):
 #include "JetCalibTools/JetCalibrationTool.h"
@@ -78,7 +79,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     return EL::StatusCode::FAILURE;
   }
   Info("configure()", "Found configuration file");
-  
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
@@ -238,19 +239,13 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_calibSequence.Data(),
       !m_isMC);
   m_jetCalibration->msg().setLevel( MSG::ERROR); // VERBOSE, INFO, DEBUG
-  if( ! m_jetCalibration->initializeTool("JetCorrectionTool").isSuccess() ) {
-    Error("initialize()", "Failed to properly initialize the JetCalibration Tool. %s. Exiting.", m_name.c_str() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCalibration->initializeTool("JetCorrectionTool"), "");
 
   // initialize and configure the jet cleaning tool
   //------------------------------------------------
   m_jetCleaning = new JetCleaningTool("JetCleaning");
-  m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel);
-  if( ! m_jetCleaning->initialize().isSuccess() ) {
-    Error("initialize()", "Failed to properly initialize the JetCleaning Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
+  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "");
 
   Info("initialize()", "JetCalibrator Interface succesfully initialized!" );
 
@@ -311,20 +306,11 @@ EL::StatusCode JetCalibrator :: execute ()
   }
 
   // add shallow copy to TStore
-  if( !m_store->record( calibJetsSC.first, m_outSCContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store shallow copy container %s. Exiting.", m_outSCContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
-  if( !m_store->record( calibJetsSC.second, m_outSCAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store shallow copy aux container %s. Exiting.", m_outSCAuxContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.first, m_outSCContainerName.Data()), "Failed to record shallow copy container.");
+  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.second, m_outSCAuxContainerName.Data()), "Failed to record shallow copy aux container.");
 
   // add ConstDataVector to TStore
-  if( !m_store->record( calibJetsCDV, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store const data container %s. Exiting.", m_outContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsCDV, m_outContainerName.Data() ), "Failed to record const data container.");
 
   return EL::StatusCode::SUCCESS;
 }
