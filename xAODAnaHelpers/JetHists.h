@@ -5,6 +5,8 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include <xAODJet/JetContainer.h>
 
+#include <memory>
+
 class JetHists : public HistogramManager
 {
   public:
@@ -19,9 +21,9 @@ class JetHists : public HistogramManager
     using HistogramManager::execute; // overload
 
   protected:
-    
+
     // holds bools that control which histograms are filled
-    HelperClasses::JetInfoSwitch* m_infoSwitch;
+    std::unique_ptr<HelperClasses::JetInfoSwitch> m_infoSwitch;
 
   private:
     //basic
@@ -64,7 +66,7 @@ class JetHists : public HistogramManager
     TH1F* m_truthDr_B;             //!
     TH1F* m_truthDr_C;             //!
     TH1F* m_truthDr_T;             //!
-    
+
     // Detailed truth jet plots
     TH1F* m_truthCount_BhadFinal;  //!
     TH1F* m_truthCount_BhadInit ;  //!

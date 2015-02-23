@@ -1,9 +1,9 @@
 #include <xAODAnaHelpers/JetHists.h>
 
 JetHists :: JetHists (std::string name, std::string detailStr) :
-  HistogramManager(name, detailStr)
+  HistogramManager(name, detailStr),
+  m_infoSwitch(new HelperClasses::JetInfoSwitch(m_detailStr))
 {
-  m_infoSwitch = 0;
 }
 
 JetHists :: ~JetHists () {}
@@ -18,19 +18,18 @@ EL::StatusCode JetHists::initialize() {
   m_jetE           = book(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000);
   m_jetRapidity    = book(m_name, "jetRapidity", "jet Rapidity",120, -10, 10);
 
-  m_infoSwitch = new HelperClasses::JetInfoSwitch( m_detailStr );
-
+  Info("JetHists::initialize()", m_name.c_str());
   // details of the jet kinematics
-  if( m_infoSwitch->m_kinematic ) { 
-    std::cout << m_name << " adding kinematic plots" << std::endl;
+  if( m_infoSwitch->m_kinematic ) {
+    Info("JetHists::initialize()", "adding kinematic plots");
     m_jetPx     = book(m_name, "jetPx",     "jet Px [GeV]",     120, 0, 1000);
     m_jetPy     = book(m_name, "jetPy",     "jet Py [GeV]",     120, 0, 1000);
     m_jetPz     = book(m_name, "jetPz",     "jet Pz [GeV]",     120, 0, 4000);
   }
 
   // details for jet cleaning
-  if( m_infoSwitch->m_clean ) { 
-    std::cout << m_name << " adding clean plots" << std::endl;
+  if( m_infoSwitch->m_clean ) {
+    Info("JetHists::initialize()", "adding clean plots");
     // units?
     m_jetTime     = book(m_name, "JetTimming" ,   "Jet Timming",      120, -80, 80);
     m_LArQuality  = book(m_name, "LArQuality" ,   "LAr Quality",      120, -600, 600);
@@ -42,35 +41,35 @@ EL::StatusCode JetHists::initialize() {
   }
 
   // details for jet energy information
-  if( m_infoSwitch->m_energy ) { 
-    std::cout << m_name << " adding energy plots" << std::endl;
+  if( m_infoSwitch->m_energy ) {
+    Info("JetHists::initialize()", "adding energy plots");
     m_HECf      = book(m_name, "HECFrac",         "HEC Fraction" ,    120, 0, 5);
     m_EMf       = book(m_name, "EMFrac",          "EM Fraction" ,     120, 0, 2);
     m_actArea   = book(m_name, "ActiveArea",      "Jet Active Area" , 120, 0, 1);
-    m_centroidR = book(m_name, "CentroidR",       "CentroidR" ,       120, 0, 600); 
+    m_centroidR = book(m_name, "CentroidR",       "CentroidR" ,       120, 0, 600);
   }
 
   m_chf         = book(m_name, "chfPV" ,    "PV(chf)" ,     120, 0, 600);
 
   // details for jet resolutions
-  if( m_infoSwitch->m_resolution ) { 
-    std::cout << m_name << " adding resolution plots" << std::endl;
+  if( m_infoSwitch->m_resolution ) {
+    Info("JetHists::initialize()", "adding resolution plots");
     // 1D
     m_jetGhostTruthPt   = book(m_name, "jetGhostTruthPt",  "jet ghost truth p_{T} [GeV]", 120, 0, 600);
     // 2D
-    m_jetPt_vs_resolution = book(m_name, "jetPt_vs_resolution",  
+    m_jetPt_vs_resolution = book(m_name, "jetPt_vs_resolution",
       "jet p_{T} [GeV]", 120, 0, 600,
       "resolution", 30, -5, 35
     );
-    m_jetGhostTruthPt_vs_resolution = book(m_name, "jetGhostTruthPt_vs_resolution",  
-      "jet ghost truth p_{T} [GeV]", 120, 0, 600, 
+    m_jetGhostTruthPt_vs_resolution = book(m_name, "jetGhostTruthPt_vs_resolution",
+      "jet ghost truth p_{T} [GeV]", 120, 0, 600,
       "resolution", 30, -5, 35
     );
   }
 
   // details for jet energy information
-  if( m_infoSwitch->m_truth ) { 
-    std::cout << m_name << " adding plots for truth jets" << std::endl;
+  if( m_infoSwitch->m_truth ) {
+    Info("JetHists::initialize()", "adding truth plots");
 
     m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          20,  -0.5,  19.5);
     m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          50,  -0.5,  49.5);
@@ -82,8 +81,8 @@ EL::StatusCode JetHists::initialize() {
 
   }
 
-  if( m_infoSwitch->m_truthDetails ) { 
-    std::cout << m_name << " adding detailed plots for truth jets" << std::endl;
+  if( m_infoSwitch->m_truthDetails ) {
+    Info("JetHists::initialize()", "adding detailed truth plots");
 
     m_truthCount_BhadFinal = book(m_name, "TruthCount_BHadFinal", "Truth Count BHad (final)" ,    10, -0.5,   9.5);
     m_truthCount_BhadInit  = book(m_name, "TruthCount_BHadInit",  "Truth Count BHad (initial)" ,  10, -0.5,   9.5);
@@ -101,7 +100,7 @@ EL::StatusCode JetHists::initialize() {
 
     m_truthCount_TausFinal = book(m_name, "TruthCount_CHadFinal", "Truth Count Taus (final)" ,    10, -0.5,   9.5);
     m_truthPt_TausFinal    = book(m_name, "TruthPt_CHadFinal",    "Truth Pt Taus (final)" ,      100,    0,   100);
-    
+
   }
 
 
@@ -118,7 +117,7 @@ EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWei
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) { 
+EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
 
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
@@ -135,7 +134,7 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     m_jetPz->  Fill( jet->pz()/1e3,  eventWeight );
   } // fillKinematic
 
-  // clean 
+  // clean
   if( m_infoSwitch->m_clean ) {
 
     static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
@@ -162,7 +161,7 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     if( avLArQF.isAvailable( *jet ) ) {
       m_avLArQF ->  Fill( avLArQF( *jet ), eventWeight );
     }
-    
+
     static SG::AuxElement::ConstAccessor<float> bchCorrCell ("BchCorrCell");
     if( bchCorrCell.isAvailable( *jet ) ) {
       m_bchCorrCell ->  Fill( bchCorrCell( *jet ), eventWeight );
@@ -223,7 +222,7 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     if( fracSampMax.isAvailable( *jet ) ) {
       m_fracSampMax ->  Fill( fracSampMax( *jet ), eventWeight );
     }
- 
+
     static SG::AuxElement::ConstAccessor<float> lowEtFrac ("LowEtConstituentsFrac");
     if( lowEtFrac.isAvailable( *jet ) ) {
       m_lowEtFrac ->  Fill( lowEtFrac( *jet ), eventWeight );
@@ -248,7 +247,7 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     if( voroniA.isAvailable( *jet ) ) {
       m_voroniA ->  Fill( voroniA( *jet ), eventWeight );
     }
- 
+
     static SG::AuxElement::ConstAccessor<int> voroniAE ("VoronoiAreaE");
     if( voroniAE.isAvailable( *jet ) ) {
       m_voroniAE ->  Fill( voroniAE( *jet ), eventWeight );
@@ -310,24 +309,24 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     }
  // 0050       YFlip12,
  // 0051       YFlip13,
- // 0074       Tau1, 
- // 0075       Tau2, 
+ // 0074       Tau1,
+ // 0075       Tau2,
  // 0076       Tau3,
- // 0077       Dip12, 
- // 0078       Dip13, 
- // 0079       Dip23, 
+ // 0077       Dip12,
+ // 0078       Dip13,
+ // 0079       Dip23,
  // 0080       DipExcl12,
  //
- // 0081       ThrustMin, 
- // 0082       ThrustMaj, 
+ // 0081       ThrustMin,
+ // 0082       ThrustMaj,
  //
- // 0083       FoxWolfram0, 
- // 0084       FoxWolfram1, 
- // 0085       FoxWolfram2, 
- // 0086       FoxWolfram3, 
- // 0087       FoxWolfram4, 
+ // 0083       FoxWolfram0,
+ // 0084       FoxWolfram1,
+ // 0085       FoxWolfram2,
+ // 0086       FoxWolfram3,
+ // 0087       FoxWolfram4,
  //
- // 0088       Sphericity, 
+ // 0088       Sphericity,
  // 0089       Aplanarity,
   }
 
@@ -473,7 +472,7 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
   */
 
 
-  // testing 
+  // testing
   if( m_infoSwitch->m_resolution ) {
     //float ghostTruthPt = jet->getAttribute( xAOD::JetAttribute::GhostTruthPt );
     float ghostTruthPt = jet->auxdata< float >( "GhostTruthPt" );

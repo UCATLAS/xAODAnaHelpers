@@ -7,6 +7,8 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+#include <memory>
+
 // package include(s):
 #ifndef __CINT__
   #include "xAODAnaHelpers/HelperClasses.h"
@@ -33,7 +35,7 @@ public:
 private:
 
 #ifndef __CINT__
-  JetHists* m_plots; //!
+  std::shared_ptr<JetHists> m_plots; //!
 #endif //not __CINT__
 
   // configuration variables

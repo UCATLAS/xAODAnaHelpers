@@ -2,10 +2,10 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-#include "xAODJet/JetContainer.h"
-#include "xAODTracking/VertexContainer.h"
-#include "xAODEventInfo/EventInfo.h"
-#include "AthContainers/ConstDataVector.h"
+#include <xAODJet/JetContainer.h>
+#include <xAODTracking/VertexContainer.h>
+#include <xAODEventInfo/EventInfo.h>
+#include <AthContainers/ConstDataVector.h>
 
 #include <xAODAnaHelpers/JetHists.h>
 #include <xAODAnaHelpers/JetHistsAlgo.h>
@@ -19,15 +19,14 @@ using HelperClasses::ContainerType;
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
 
-JetHistsAlgo :: JetHistsAlgo () {
-}
+JetHistsAlgo :: JetHistsAlgo () {}
 
 JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
   m_type(ContainerType::UNKNOWN),
-  m_plots(0)
+  m_plots(nullptr)
 {
 }
 
@@ -53,7 +52,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
   }
 
   // declare class and add histograms to output
-  m_plots = new JetHists(m_name, m_detailStr);
+  m_plots.reset(new JetHists(m_name, m_detailStr));
   m_plots -> initialize( );
   m_plots -> record( wk() );
 
@@ -89,6 +88,7 @@ EL::StatusCode JetHistsAlgo :: configure ()
 
   // everything seems preliminarily ok, let's print config and say we were successful
   config->Print();
+  delete config;
   return EL::StatusCode::SUCCESS;
 }
 
@@ -97,7 +97,7 @@ EL::StatusCode JetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::Sta
 
 EL::StatusCode JetHistsAlgo :: initialize ()
 {
-  Info("initialize()", "JetHistsAlgo");
+  Info("initialize()", m_name.c_str());
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
@@ -180,13 +180,10 @@ EL::StatusCode JetHistsAlgo :: execute ()
 }
 
 EL::StatusCode JetHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode JetHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode JetHistsAlgo :: histFinalize () {
-  // clean up memory
-  if(m_plots){
-    delete m_plots;
-    m_plots = 0;
-  }
+EL::StatusCode JetHistsAlgo :: finalize () {
+  Info("finalize()", m_name.c_str());
   return EL::StatusCode::SUCCESS;
 }
+
+EL::StatusCode JetHistsAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
