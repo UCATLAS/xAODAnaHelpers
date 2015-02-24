@@ -251,7 +251,7 @@ EL::StatusCode JetSelector :: execute ()
   if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -264,7 +264,7 @@ EL::StatusCode JetSelector :: execute ()
   m_numEvent++;
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   return executeConst( inJets, mcEvtWeight );
 }
@@ -280,7 +280,7 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
 
   // if doing JVF get PV location
   if( m_doJVF ) {
-    const xAOD::VertexContainer* vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+    const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
   }
 

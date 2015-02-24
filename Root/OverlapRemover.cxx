@@ -250,11 +250,11 @@ EL::StatusCode OverlapRemover :: execute ()
   const xAOD::JetContainer* inJets              = 0;
   const xAOD::PhotonContainer* inPhotons        = 0;
   const xAOD::TauJetContainer* inTaus           = 0;
-  inMuons	     = HelperClasses::getContainer<xAOD::MuonContainer>(     m_inContainerName_Muons,	     m_event, m_store);
-  inElectrons	     = HelperClasses::getContainer<xAOD::ElectronContainer>( m_inContainerName_Electrons,    m_event, m_store);
-  inJets	     = HelperClasses::getContainer<xAOD::JetContainer>(      m_inContainerName_Jets,	     m_event, m_store);
-  if( !m_inContainerName_Photons.empty() ) inPhotons	     = HelperClasses::getContainer<xAOD::PhotonContainer>(   m_inContainerName_Photons,	   m_event, m_store);
-  if( !m_inContainerName_Taus.empty() )    inTaus	     = HelperClasses::getContainer<xAOD::TauJetContainer>(   m_inContainerName_Taus,	   m_event, m_store);
+  inMuons	     = HelperFunctions::getContainer<xAOD::MuonContainer>(     m_inContainerName_Muons,	     m_event, m_store);
+  inElectrons	     = HelperFunctions::getContainer<xAOD::ElectronContainer>( m_inContainerName_Electrons,    m_event, m_store);
+  inJets	     = HelperFunctions::getContainer<xAOD::JetContainer>(      m_inContainerName_Jets,	     m_event, m_store);
+  if( !m_inContainerName_Photons.empty() ) inPhotons	     = HelperFunctions::getContainer<xAOD::PhotonContainer>(   m_inContainerName_Photons,	   m_event, m_store);
+  if( !m_inContainerName_Taus.empty() )    inTaus	     = HelperFunctions::getContainer<xAOD::TauJetContainer>(   m_inContainerName_Taus,	   m_event, m_store);
 
   // remove overlaps
   /*

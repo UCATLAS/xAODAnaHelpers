@@ -103,17 +103,17 @@ EL::StatusCode TrackHistsAlgo :: initialize ()
 
 EL::StatusCode TrackHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);;
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);;
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
     eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
   }
 
-  const xAOD::TrackParticleContainer* tracks = HelperClasses::getContainer<xAOD::TrackParticleContainer>(m_inContainerName, m_event, m_store);;
+  const xAOD::TrackParticleContainer* tracks = HelperFunctions::getContainer<xAOD::TrackParticleContainer>(m_inContainerName, m_event, m_store);;
 
   // get primary vertex
-  const xAOD::VertexContainer *vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  const xAOD::VertexContainer *vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   m_plots->execute( tracks, pvx, eventWeight );

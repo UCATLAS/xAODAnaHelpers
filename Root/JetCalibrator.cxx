@@ -177,7 +177,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
   Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
@@ -254,7 +254,7 @@ EL::StatusCode JetCalibrator :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   // create shallow copy
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );

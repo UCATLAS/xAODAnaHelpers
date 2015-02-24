@@ -29,6 +29,7 @@
 // package include(s):
 #include "xAODAnaHelpers/JERShifter.h"
 #include "xAODAnaHelpers/HelperClasses.h"
+#include "xAODAnaHelpers/HelperFunctions.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
@@ -172,7 +173,7 @@ EL::StatusCode JERShifter :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   // create shallow copy
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > smearedJets = xAOD::shallowCopyContainer( *inJets );

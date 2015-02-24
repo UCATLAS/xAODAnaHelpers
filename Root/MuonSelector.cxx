@@ -309,7 +309,7 @@ EL::StatusCode MuonSelector :: execute ()
   if(m_debug) Info("execute()", "Applying Muon Selection... \n");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>( "EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>( "EventInfo", m_event, m_store);
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -322,7 +322,7 @@ EL::StatusCode MuonSelector :: execute ()
   m_numEvent++;
 
   // this will be the collection processed - no matter what!!
-  const xAOD::MuonContainer* inMuons = HelperClasses::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::MuonContainer* inMuons = HelperFunctions::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
 
   return executeConst( inMuons, mcEvtWeight );
 
@@ -338,7 +338,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
   }
 
   // get primary vertex
-  const xAOD::VertexContainer *vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  const xAOD::VertexContainer *vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
 

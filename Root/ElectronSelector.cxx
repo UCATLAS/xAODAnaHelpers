@@ -299,7 +299,7 @@ EL::StatusCode ElectronSelector :: execute ()
   if(m_debug) Info("execute()", "Applying Electron Selection... \n");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -312,7 +312,7 @@ EL::StatusCode ElectronSelector :: execute ()
   m_numEvent++;
 
   // this will be the collection processed - no matter what!!
-  const xAOD::ElectronContainer* inElectrons = HelperClasses::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::ElectronContainer* inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
 
   return executeConst( inElectrons, mcEvtWeight );
 
@@ -327,7 +327,7 @@ EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer*
     selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
   }
 
-  const xAOD::VertexContainer* vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);

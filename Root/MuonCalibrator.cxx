@@ -179,10 +179,10 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   m_numEvent++;
 
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   // get the collection from TEvent or TStore
-  const xAOD::MuonContainer* inMuons = HelperClasses::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::MuonContainer* inMuons = HelperFunctions::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
 
   if(m_debug){
     for( auto muon: *inMuons ){

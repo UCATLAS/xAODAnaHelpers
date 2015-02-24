@@ -201,10 +201,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
   m_numEvent++;
 
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   // get the collection from TEvent or TStore
-  const xAOD::ElectronContainer* inElectrons = HelperClasses::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::ElectronContainer* inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
 
   if(m_debug){
     for( auto Electron_itr = inElectrons->begin(); Electron_itr != inElectrons->end(); ++Electron_itr ){

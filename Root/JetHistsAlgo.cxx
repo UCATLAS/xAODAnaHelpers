@@ -95,7 +95,7 @@ EL::StatusCode JetHistsAlgo :: initialize ()
 
 EL::StatusCode JetHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -103,10 +103,10 @@ EL::StatusCode JetHistsAlgo :: execute ()
   }
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
+  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
   /*int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);*/
 
   /* two ways to fill */

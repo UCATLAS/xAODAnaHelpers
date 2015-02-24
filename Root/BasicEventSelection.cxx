@@ -292,7 +292,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   //----------------------------
   // Event information
   //---------------------------
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
@@ -381,7 +381,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   }
 
-  const xAOD::VertexContainer* vertices = HelperClasses::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
+  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
 
   if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
     wk()->skipEvent();
