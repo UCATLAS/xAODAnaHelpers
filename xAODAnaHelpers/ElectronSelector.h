@@ -19,12 +19,6 @@
 // ROOT include(s):
 #include "TH1D.h"
 
-// package include(s):
-#ifndef __CINT__
-  #include "xAODAnaHelpers/HelperClasses.h"
-#endif
-
-
 namespace CP{
   class ElectronIsolationSelectionTool;
 }
@@ -48,10 +42,6 @@ public:
 
   std::string m_name;
   std::string m_configName;
-#ifndef __CINT__
-  HelperClasses::ContainerType m_type;
-#endif
-
 
   bool m_debug;                 //!
 

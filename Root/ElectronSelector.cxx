@@ -46,8 +46,6 @@
 // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonSelectorTools
 // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronIsolationSelectionTool
 
-using HelperClasses::ContainerType;
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronSelector)
 
@@ -59,7 +57,6 @@ ElectronSelector :: ElectronSelector (std::string name, std::string configName) 
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(ContainerType::UNKNOWN),
   m_cutflowHist(0),
   m_cutflowHistW(0),
   m_asgElectronIsEMSelector(0),
@@ -81,8 +78,6 @@ ElectronSelector::~ElectronSelector() {}
 EL::StatusCode  ElectronSelector :: configure ()
 {
   Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s \n", m_configName.c_str());
-
-  m_type = ContainerType::UNKNOWN;
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "ElectronSelector::configure()", m_configName);

@@ -6,7 +6,12 @@ JetHists :: JetHists (std::string name, std::string detailStr) :
 {
 }
 
-JetHists :: ~JetHists () {}
+JetHists :: ~JetHists () {
+  if(m_infoSwitch){
+    delete m_infoSwitch;
+    m_infoSwitch = nullptr;
+  }
+}
 
 EL::StatusCode JetHists::initialize() {
 

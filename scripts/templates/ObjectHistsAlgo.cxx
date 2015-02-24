@@ -28,7 +28,6 @@ ${name}HistsAlgo :: ${name}HistsAlgo (std::string name, std::string configName) 
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(0),
   m_plots(0)
 {
 }

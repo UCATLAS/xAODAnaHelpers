@@ -5,8 +5,6 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include <xAODJet/JetContainer.h>
 
-#include <memory>
-
 class JetHists : public HistogramManager
 {
   public:
@@ -23,7 +21,7 @@ class JetHists : public HistogramManager
   protected:
 
     // holds bools that control which histograms are filled
-    std::unique_ptr<HelperClasses::JetInfoSwitch> m_infoSwitch;
+    HelperClasses::JetInfoSwitch* m_infoSwitch;
 
   private:
     //basic
