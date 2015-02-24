@@ -28,6 +28,7 @@
 
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/ElectronCalibrator.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
@@ -39,6 +40,9 @@
 // ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
+
+using HelperFunctions::makeSubsetCont;
+using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronCalibrator)
@@ -221,7 +225,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
      // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber()+100*i);
 
      // apply correction
-     //!!Jeff m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr );
+     m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr );
      if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", (elSC_itr->pt() * 1e-3));
   }
 
@@ -230,9 +234,16 @@ EL::StatusCode ElectronCalibrator :: execute ()
   }
 
   // save pointers in ConstDataVector with same order
+  /*
   for( auto elSC_itr : *(calibElectronsSC.first) ) {
     calibElectronsCDV->push_back( elSC_itr );
   }
+  */
+  if( ! makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, "", ToolName::CALIBRATOR) ){
+    Error("execute()  ", "Failed to copy container %s. Exiting.", m_outSCContainerName.c_str() );
+    return EL::StatusCode::FAILURE;
+  }
+
 
   // add shallow copy to TStore
   RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first, m_outSCContainerName ), "Failed to store container.");

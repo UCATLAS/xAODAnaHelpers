@@ -29,6 +29,7 @@ namespace HelperClasses {
       JETSELECTOR,
       BJETSELECTOR,
       OVERLAPREMOVER,
+      CALIBRATOR,
   };
 
   /* template enum parser

@@ -20,6 +20,9 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
+using HelperFunctions::makeSubsetCont;
+using HelperClasses::ToolName;
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonCalibrator)
 
@@ -197,11 +200,11 @@ EL::StatusCode MuonCalibrator :: execute ()
   if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
     for( auto muonSC_itr : *(calibMuonsSC.first) ) {
       /* https://twiki.cern.ch/twiki/bin/viewauth/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT#Muons */
-      if( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
+    // Marco: WHAT'S GOING ON HERE? if( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
         // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
         // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
         Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
-      }
+    //  }
       if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", (muonSC_itr->pt() * 1e-3));
     }
   }
@@ -211,10 +214,16 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   // save pointers in ConstDataVector with same order
+  /*
   for( auto mu_itr : *(calibMuonsSC.first) ) {
     calibMuonsCDV->push_back( mu_itr );
   }
-
+  */
+  if( ! makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "", ToolName::CALIBRATOR) ){
+    Error("execute()  ", "Failed to copy container %s. Exiting.", m_outSCContainerName.c_str() );
+    return EL::StatusCode::FAILURE;
+  }
+  
   // add shallow copy to TStore
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first, m_outSCContainerName ), "Failed to store container");
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName ), "Failed to store aux container");
