@@ -32,13 +32,22 @@ int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* verte
   int location(0);
   for( auto vtx_itr : *vertexContainer )
   {
-    if(vtx_itr->vertexType() == xAOD::VxType::VertexType::PriVtx) { 
+    if(vtx_itr->vertexType() == xAOD::VxType::VertexType::PriVtx) {
       return location;
     }
     location++;
   }
   return -1;
 }
+
+  std::string replaceString(std::string subject, const std::string& search, const std::string& replace) {
+    size_t pos = 0;
+    while ((pos = subject.find(search, pos)) != std::string::npos) {
+      subject.replace(pos, search.length(), replace);
+      pos += replace.length();
+    }
+    return subject;
+  }
 
 
 const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContainer* vertexContainer)
