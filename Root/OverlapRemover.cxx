@@ -45,7 +45,6 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-using HelperFunctions::makeSubsetCont;
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -329,31 +328,16 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
     selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
   }
 
-  if( ! makeSubsetCont(inElectrons, selectedElectrons, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.c_str() );
-        return EL::StatusCode::FAILURE;
-  }
-  if( ! makeSubsetCont(inMuons, selectedMuons, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.c_str() );
-        return EL::StatusCode::FAILURE;
-  }
-  if( ! makeSubsetCont(inJets, selectedJets, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.c_str() );
-        return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, "overlaps", ToolName::OVERLAPREMOVER), "");
+  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, "overlaps", ToolName::OVERLAPREMOVER), "");
+  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, "overlaps", ToolName::OVERLAPREMOVER), "");
   if( !m_inContainerName_Photons.empty() )
   {
-    if( ! makeSubsetCont(inPhotons, selectedPhotons, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.c_str() );
-        return EL::StatusCode::FAILURE;
-      }
+    RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, "overlaps", ToolName::OVERLAPREMOVER), "");
   }
   if( !m_inContainerName_Taus.empty() )
   {
-    if( ! makeSubsetCont(inTaus, selectedTaus, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.c_str() );
-        return EL::StatusCode::FAILURE;
-      }
+    RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, "overlaps", ToolName::OVERLAPREMOVER), "");
   }
 
   // add ConstDataVector to TStore
@@ -386,28 +370,28 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
     selectedPhotons   = new xAOD::PhotonContainer(SG::VIEW_ELEMENTS);
     selectedTaus      = new xAOD::TauJetContainer(SG::VIEW_ELEMENTS);
 
-    if( ! makeSubsetCont(inElectrons, selectedElectrons, "overlaps") ){
+    if( ! HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.c_str() );
         return EL::StatusCode::FAILURE;
     }
-    if( ! makeSubsetCont(inMuons, selectedMuons, "overlaps") ){
+    if( ! HelperFunctions::makeSubsetCont(inMuons, selectedMuons, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.c_str() );
         return EL::StatusCode::FAILURE;
     }
-    if( ! makeSubsetCont(inJets, selectedJets, "overlaps") ){
+    if( ! HelperFunctions::makeSubsetCont(inJets, selectedJets, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.c_str() );
         return EL::StatusCode::FAILURE;
     }
     if( m_inContainerName_Photons.empty() )
     {
-      if( ! makeSubsetCont(inPhotons, selectedPhotons, "overlaps") ){
+      if( ! HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.c_str() );
         return EL::StatusCode::FAILURE;
       }
     }
     if( m_inContainerName_Taus.empty() )
     {
-      if( ! makeSubsetCont(inTaus, selectedTaus, "overlaps") ){
+      if( ! HelperFunctions::makeSubsetCont(inTaus, selectedTaus, "overlaps") ){
         Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.c_str() );
         return EL::StatusCode::FAILURE;
       }

@@ -41,7 +41,6 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-using HelperFunctions::makeSubsetCont;
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -239,11 +238,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
     calibElectronsCDV->push_back( elSC_itr );
   }
   */
-  if( ! makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, "", ToolName::CALIBRATOR) ){
-    Error("execute()  ", "Failed to copy container %s. Exiting.", m_outSCContainerName.c_str() );
-    return EL::StatusCode::FAILURE;
-  }
-
+  RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, "", ToolName::CALIBRATOR), "");
 
   // add shallow copy to TStore
   RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first, m_outSCContainerName ), "Failed to store container.");

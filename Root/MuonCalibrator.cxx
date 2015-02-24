@@ -20,7 +20,6 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-using HelperFunctions::makeSubsetCont;
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -219,11 +218,8 @@ EL::StatusCode MuonCalibrator :: execute ()
     calibMuonsCDV->push_back( mu_itr );
   }
   */
-  if( ! makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "", ToolName::CALIBRATOR) ){
-    Error("execute()  ", "Failed to copy container %s. Exiting.", m_outSCContainerName.c_str() );
-    return EL::StatusCode::FAILURE;
-  }
-  
+  RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "", ToolName::CALIBRATOR), "");
+
   // add shallow copy to TStore
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first, m_outSCContainerName ), "Failed to store container");
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName ), "Failed to store aux container");
