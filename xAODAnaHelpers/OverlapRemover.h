@@ -20,11 +20,6 @@
   #include "xAODTau/TauJetContainer.h"
 #endif
 
-// package include(s):
-#ifndef __CINT__
-  #include "xAODAnaHelpers/HelperClasses.h"
-#endif
-
 class OverlapRemovalTool;
 
 class OverlapRemover : public EL::Algorithm
@@ -43,9 +38,6 @@ public:
 
   std::string m_name;
   std::string m_configName;
-#ifndef __CINT__
-  HelperClasses::ContainerType m_type_el, m_type_mu, m_type_jet, m_type_ph, m_type_tau;
-#endif
   bool m_debug;
 
 private:
@@ -59,30 +51,30 @@ private:
 
   bool     m_decorateSelectedObjects;  // decorate selected objects? default passSel
   bool     m_createSelectedContainers; // fill using SG::VIEW_ELEMENTS to be light weight
-  
+
   bool     m_useSelected; // pass only object passing selection to O.R. tool
-  
+
   /* Electrons */
-  TString m_inContainerName_Electrons;
-  TString  m_outContainerName_Electrons;        // output container name
-  TString  m_outAuxContainerName_Electrons;     // output auxiliary container name
+  std::string m_inContainerName_Electrons;
+  std::string  m_outContainerName_Electrons;        // output container name
+  std::string  m_outAuxContainerName_Electrons;     // output auxiliary container name
   /* Muons */
-  TString m_inContainerName_Muons;
-  TString  m_outContainerName_Muons;        // output container name
-  TString  m_outAuxContainerName_Muons;     // output auxiliary container name
+  std::string m_inContainerName_Muons;
+  std::string  m_outContainerName_Muons;        // output container name
+  std::string  m_outAuxContainerName_Muons;     // output auxiliary container name
   /* Jets */
-  TString m_inContainerName_Jets;
-  TString  m_outContainerName_Jets;        // output container name
-  TString  m_outAuxContainerName_Jets;     // output auxiliary container name
+  std::string m_inContainerName_Jets;
+  std::string  m_outContainerName_Jets;        // output container name
+  std::string  m_outAuxContainerName_Jets;     // output auxiliary container name
   /* Photons */
-  TString m_inContainerName_Photons;
-  TString  m_outContainerName_Photons;        // output container name
-  TString  m_outAuxContainerName_Photons;     // output auxiliary container name
+  std::string m_inContainerName_Photons;
+  std::string  m_outContainerName_Photons;        // output container name
+  std::string  m_outAuxContainerName_Photons;     // output auxiliary container name
   /* Taus */
-  TString m_inContainerName_Taus;
-  TString  m_outContainerName_Taus;        // output container name
-  TString  m_outAuxContainerName_Taus;     // output auxiliary container name
-  
+  std::string m_inContainerName_Taus;
+  std::string  m_outContainerName_Taus;        // output container name
+  std::string  m_outAuxContainerName_Taus;     // output auxiliary container name
+
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -110,17 +102,17 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 #ifndef __CINT__
-  virtual EL::StatusCode executeConst(const xAOD::ElectronContainer* inElectrons, 
+  virtual EL::StatusCode executeConst(const xAOD::ElectronContainer* inElectrons,
 				      const xAOD::MuonContainer* inMuons,
 				      const xAOD::JetContainer* inJets,
 			              const xAOD::TauJetContainer* inTaus,
 				      const xAOD::PhotonContainer* inPhotons);
 #endif
-#ifndef __CINT__  
+#ifndef __CINT__
   virtual EL::StatusCode printOverlapInfo (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
   virtual EL::StatusCode printOverlapInfo (const char* type, xAOD::IParticle* obj, const std::string& selectFlag, const std::string& overlapFlag);
 #endif
-   
+
   // this is needed to distribute the algorithm to the workers
   ClassDef(OverlapRemover, 1);
 };

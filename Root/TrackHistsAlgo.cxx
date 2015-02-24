@@ -103,32 +103,17 @@ EL::StatusCode TrackHistsAlgo :: initialize ()
 
 EL::StatusCode TrackHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = 0;
-  RETURN_CHECK( "TrackHistsAlgo::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);;
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
     eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
   }
 
-  const xAOD::TrackParticleContainer* tracks = 0;
-  if ( m_event->contains<const xAOD::TrackParticleContainer>(m_inContainerName)){
-    if( !m_event->retrieve( tracks, m_inContainerName ).isSuccess()) {
-      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container from TEvent. Exiting.", m_inContainerName.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-  } else {
-    ConstDataVector<xAOD::TrackParticleContainer>* cv_tracks = 0;
-    if ( !m_store->retrieve( cv_tracks, m_inContainerName ).isSuccess() ){
-      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container from TStore. Exiting.", m_inContainerName.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-    tracks = cv_tracks->asDataVector();
-  }
+  const xAOD::TrackParticleContainer* tracks = HelperClasses::getContainer<xAOD::TrackParticleContainer>(m_inContainerName, m_event, m_store);;
 
   // get primary vertex
-  const xAOD::VertexContainer *vertices = 0;
-  RETURN_CHECK( "TrackHistsAlgo::execute()", m_event->retrieve(vertices, "PrimaryVertices"), "");
+  const xAOD::VertexContainer *vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   m_plots->execute( tracks, pvx, eventWeight );

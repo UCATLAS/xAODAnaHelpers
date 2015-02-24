@@ -46,7 +46,6 @@
 #include "TSystem.h"
 
 using HelperFunctions::makeSubsetCont;
-using HelperClasses::ContainerType;
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -60,11 +59,6 @@ OverlapRemover :: OverlapRemover (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type_el(ContainerType::UNKNOWN),
-  m_type_mu(ContainerType::UNKNOWN),
-  m_type_jet(ContainerType::UNKNOWN),
-  m_type_ph(ContainerType::UNKNOWN),
-  m_type_tau(ContainerType::UNKNOWN),
   m_overlapRemovalTool(0)
 {
   // Here you put any code for the base initialization of variables,
@@ -102,15 +96,15 @@ EL::StatusCode  OverlapRemover :: configure ()
   /* Jets */
   m_inContainerName_Jets                     = config->GetValue("InputContainerJets",  "");
 
-  if( m_inContainerName_Muons.Length() == 0 ) {
+  if( m_inContainerName_Muons.empty() ) {
     Error("configure()", "InputContainerMuons is empty! Must have it to perform Overlap Removal! Exiting.");
     return EL::StatusCode::FAILURE;
   }
-  if( m_inContainerName_Electrons.Length() == 0 ) {
+  if( m_inContainerName_Electrons.empty() ) {
     Error("configure()", "InputContainerElectrons is empty! Must have it to perform Overlap Removal! Exiting.");
     return EL::StatusCode::FAILURE;
   }
-  if( m_inContainerName_Jets.Length() == 0 ) {
+  if( m_inContainerName_Jets.empty() ) {
     Error("configure()", "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
     return EL::StatusCode::FAILURE;
   }
@@ -252,138 +246,11 @@ EL::StatusCode OverlapRemover :: execute ()
 
   // get the collections from TEvent or TStore
 
-  const xAOD::MuonContainer* inMuons = 0;
-  // if type is not defined then we need to define it
-  //  CONSTDV (1)   = get from TStore
-  //  CONSTCONT (2) = get from TEvent
-  if( m_type_mu == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::MuonContainer> >(m_inContainerName_Muons.Data())){ m_type_mu = ContainerType::CONSTDV;   }
-    else if ( m_event->contains<const xAOD::MuonContainer>(m_inContainerName_Muons.Data()))        { m_type_mu = ContainerType::CONSTCONT; }
-    else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName_Muons.Data() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-  //
-  // Can retrieve collection from input file ( const )
-  //           or collection from tstore ( ConstDataVector which then gives a const collection )
-  // decide which on first pass
-  //
-  if ( m_type_mu == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-    ConstDataVector<xAOD::MuonContainer>* inMuonsCDV = 0;
-    if ( !m_store->retrieve( inMuonsCDV, m_inContainerName_Muons.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName_Muons.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    inMuons = inMuonsCDV->asDataVector();
-  }
-  else if ( m_type_mu == ContainerType::CONSTCONT ) {   // get const container from TEvent
-    if ( !m_event->retrieve( inMuons , m_inContainerName_Muons.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Muons.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  const xAOD::ElectronContainer* inElectrons = 0;
-  if( m_type_el == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName_Electrons.Data())){  m_type_el = ContainerType::CONSTDV;    }
-    else if ( m_event->contains<const xAOD::ElectronContainer>(m_inContainerName_Electrons.Data()))        {  m_type_el = ContainerType::CONSTCONT;  }
-    else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName_Electrons.Data() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-  if ( m_type_el == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-    ConstDataVector<xAOD::ElectronContainer>* inElectronsCDV = 0;
-    if ( !m_store->retrieve( inElectronsCDV, m_inContainerName_Electrons.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName_Electrons.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    inElectrons = inElectronsCDV->asDataVector();
-  }
-  else if ( m_type_el == ContainerType::CONSTCONT ) {   // get const container from TEvent
-    if ( !m_event->retrieve( inElectrons , m_inContainerName_Electrons.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Electrons.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  const xAOD::JetContainer* inJets = 0;
-  if( m_type_jet == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName_Jets.Data())){ m_type_jet = ContainerType::CONSTDV;   }
-    else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName_Jets.Data()))        { m_type_jet = ContainerType::CONSTCONT; }
-    else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName_Jets.Data() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-  if ( m_type_jet == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-    ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
-    if ( !m_store->retrieve( inJetsCDV, m_inContainerName_Jets.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName_Jets.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    inJets = inJetsCDV->asDataVector();
-  }
-  else if ( m_type_jet == ContainerType::CONSTCONT ) {   // get const container from TEvent
-    if ( !m_event->retrieve( inJets , m_inContainerName_Jets.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Jets.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  const xAOD::PhotonContainer* inPhotons = 0;
-  if( m_type_ph == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons.Data())){ m_type_ph = ContainerType::CONSTDV; }
-    else if ( m_event->contains<const xAOD::PhotonContainer>(m_inContainerName_Photons.Data()))        { m_type_ph = ContainerType::CONSTCONT; }
-    else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName_Photons.Data() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-  if ( m_type_ph == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-    ConstDataVector<xAOD::PhotonContainer>* inPhotonsCDV = 0;
-    if ( !m_store->retrieve( inPhotonsCDV, m_inContainerName_Photons.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName_Photons.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    inPhotons = inPhotonsCDV->asDataVector();
-  }
-  else if ( m_type_ph == ContainerType::CONSTCONT ) {   // get const container from TEvent
-    if ( !m_event->retrieve( inPhotons , m_inContainerName_Photons.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Photons.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  const xAOD::TauJetContainer* inTaus = 0;
-  if( m_type_tau == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus.Data())){ m_type_tau = ContainerType::CONSTDV; }
-    else if ( m_event->contains<const xAOD::TauJetContainer>(m_inContainerName_Taus.Data()))        { m_type_tau = ContainerType::CONSTCONT; }
-    else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName_Taus.Data() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-  if ( m_type_tau == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-    ConstDataVector<xAOD::TauJetContainer>* inTausCDV = 0;
-    if ( !m_store->retrieve( inTausCDV, m_inContainerName_Taus.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName_Taus.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    inTaus = inTausCDV->asDataVector();
-  }
-  else if ( m_type_tau == ContainerType::CONSTCONT ) {   // get const container from TEvent
-    if ( !m_event->retrieve( inTaus , m_inContainerName_Taus.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName_Taus.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::MuonContainer* inMuons            = HelperClasses::getContainer<xAOD::MuonContainer>(     m_inContainerName_Muons,        m_event, m_store);
+  const xAOD::ElectronContainer* inElectrons    = HelperClasses::getContainer<xAOD::ElectronContainer>( m_inContainerName_Electrons,    m_event, m_store);
+  const xAOD::JetContainer* inJets              = HelperClasses::getContainer<xAOD::JetContainer>(      m_inContainerName_Jets,         m_event, m_store);
+  const xAOD::PhotonContainer* inPhotons        = HelperClasses::getContainer<xAOD::PhotonContainer>(   m_inContainerName_Photons,      m_event, m_store);
+  const xAOD::TauJetContainer* inTaus           = HelperClasses::getContainer<xAOD::TauJetContainer>(   m_inContainerName_Taus,         m_event, m_store);
 
   // remove overlaps
   /*
@@ -458,42 +325,42 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
   }
 
   if( ! makeSubsetCont(inElectrons, selectedElectrons, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.c_str() );
         return EL::StatusCode::FAILURE;
   }
   if( ! makeSubsetCont(inMuons, selectedMuons, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.c_str() );
         return EL::StatusCode::FAILURE;
   }
   if( ! makeSubsetCont(inJets, selectedJets, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.c_str() );
         return EL::StatusCode::FAILURE;
   }
-  if( m_inContainerName_Photons.Length() != 0 )
+  if( !m_inContainerName_Photons.empty() )
   {
     if( ! makeSubsetCont(inPhotons, selectedPhotons, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.c_str() );
         return EL::StatusCode::FAILURE;
       }
   }
-  if( m_inContainerName_Taus.Length() != 0 )
+  if( !m_inContainerName_Taus.empty() )
   {
     if( ! makeSubsetCont(inTaus, selectedTaus, "overlaps", ToolName::OVERLAPREMOVER) ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.c_str() );
         return EL::StatusCode::FAILURE;
       }
   }
 
   // add ConstDataVector to TStore
   if(m_createSelectedContainers) {
-    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons.Data() ), "Failed to store const data container");
-    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons, m_outContainerName_Muons.Data() ), "Failed to store const data container");
-    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets, m_outContainerName_Jets.Data() ), "Failed to store const data container");
-    if( m_inContainerName_Photons.Length() != 0){
-      RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons, m_outContainerName_Photons.Data() ), "Failed to store const data container");
+    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons ), "Failed to store const data container");
+    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons, m_outContainerName_Muons ), "Failed to store const data container");
+    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets, m_outContainerName_Jets ), "Failed to store const data container");
+    if( !m_inContainerName_Photons.empty() ){
+      RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons, m_outContainerName_Photons ), "Failed to store const data container");
     }
-    if( m_inContainerName_Taus.Length() != 0){
-      RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus.Data() ), "Failed to store const data container");
+    if( !m_inContainerName_Taus.empty() ){
+      RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus ), "Failed to store const data container");
     }
   }
 
@@ -515,59 +382,59 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
     selectedTaus      = new xAOD::TauJetContainer(SG::VIEW_ELEMENTS);
 
     if( ! makeSubsetCont(inElectrons, selectedElectrons, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.c_str() );
         return EL::StatusCode::FAILURE;
     }
     if( ! makeSubsetCont(inMuons, selectedMuons, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.c_str() );
         return EL::StatusCode::FAILURE;
     }
     if( ! makeSubsetCont(inJets, selectedJets, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.c_str() );
         return EL::StatusCode::FAILURE;
     }
-    if( m_inContainerName_Photons.Length() != 0 )
+    if( m_inContainerName_Photons.empty() )
     {
       if( ! makeSubsetCont(inPhotons, selectedPhotons, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.c_str() );
         return EL::StatusCode::FAILURE;
       }
     }
-    if( m_inContainerName_Taus.Length() != 0 )
+    if( m_inContainerName_Taus.empty() )
     {
       if( ! makeSubsetCont(inTaus, selectedTaus, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.Data() );
+        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.c_str() );
         return EL::StatusCode::FAILURE;
       }
     }
 
-    if( !m_store->record( selectedElectrons, m_outContainerName_Electrons.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Electrons.Data() );
+    if( !m_store->record( selectedElectrons, m_outContainerName_Electrons ).isSuccess() ){
+      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Electrons.c_str() );
       return EL::StatusCode::FAILURE;
     }
 
-    if( !m_store->record( selectedMuons, m_outContainerName_Muons.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Muons.Data() );
+    if( !m_store->record( selectedMuons, m_outContainerName_Muons ).isSuccess() ){
+      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Muons.c_str() );
       return EL::StatusCode::FAILURE;
     }
 
-    if( !m_store->record( selectedJets, m_outContainerName_Jets.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Jets.Data() );
+    if( !m_store->record( selectedJets, m_outContainerName_Jets ).isSuccess() ){
+      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Jets.c_str() );
       return EL::StatusCode::FAILURE;
     }
 
-    if( m_inContainerName_Photons.Length() != 0 && m_outContainerName_Photons.Length() != 0  )
+    if( !m_inContainerName_Photons.empty() && !m_outContainerName_Photons.empty()  )
     {
-      if( !m_store->record( selectedPhotons, m_outContainerName_Photons.Data() ).isSuccess() ){
-        Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Photons.Data() );
+      if( !m_store->record( selectedPhotons, m_outContainerName_Photons ).isSuccess() ){
+        Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Photons.c_str() );
         return EL::StatusCode::FAILURE;
       }
     }
 
-    if( m_inContainerName_Taus.Length() != 0 && m_outContainerName_Taus.Length() != 0  )
+    if( !m_inContainerName_Taus.empty() && !m_outContainerName_Taus.empty() )
     {
-      if( !m_store->record( selectedTaus, m_outContainerName_Taus.Data() ).isSuccess() ){
-        Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Taus.Data() );
+      if( !m_store->record( selectedTaus, m_outContainerName_Taus ).isSuccess() ){
+        Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Taus.c_str() );
         return EL::StatusCode::FAILURE;
       }
     }

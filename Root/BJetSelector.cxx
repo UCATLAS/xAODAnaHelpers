@@ -37,8 +37,6 @@
 #include "TFile.h"
 #include "TSystem.h"
 
-using HelperClasses::ContainerType;
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(BJetSelector)
 
@@ -49,7 +47,6 @@ BJetSelector :: BJetSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(ContainerType::UNKNOWN),
   m_cutflowHist(0),
   m_cutflowHistW(0)
 {
@@ -65,8 +62,6 @@ BJetSelector :: BJetSelector (std::string name, std::string configName) :
 EL::StatusCode  BJetSelector :: configure ()
 {
   Info("configure()", "Configuing BJetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
-
-  m_type = ContainerType::UNKNOWN;
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "BJetSelector::configure()", m_configName);
@@ -92,8 +87,8 @@ EL::StatusCode  BJetSelector :: configure ()
   m_nToProcess              = config->GetValue("NToProcess", -1);
   // sort before running selection
 
-  m_isEMjet = ( static_cast<bool>(m_inContainerName.Contains("EMTopoJets",TString::kIgnoreCase)) ) ? true : false;
-  m_isLCjet = ( static_cast<bool>(m_inContainerName.Contains("LCTopoJets",TString::kIgnoreCase)) ) ? true : false;
+  m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
+  m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
 
   // cuts
   m_cleanJets               = config->GetValue("CleanJets", true);
@@ -115,21 +110,21 @@ EL::StatusCode  BJetSelector :: configure ()
   m_btagCut = -1;
   m_decor   = "passSel";
   if( m_isEMjet ) {
-    if( m_veryloose ) { m_btagCut = 0.1340; m_decor.Append("VeryLoose");  }
-    if( m_loose     ) { m_btagCut = 0.3511; m_decor.Append("Loose");      }
-    if( m_medium    ) { m_btagCut = 0.7892; m_decor.Append("Medium");     }
-    if( m_tight     ) { m_btagCut = 0.9827; m_decor.Append("Tight");      }
+    if( m_veryloose ) { m_btagCut = 0.1340; m_decor += "VeryLoose";  }
+    if( m_loose     ) { m_btagCut = 0.3511; m_decor += "Loose";      }
+    if( m_medium    ) { m_btagCut = 0.7892; m_decor += "Medium";     }
+    if( m_tight     ) { m_btagCut = 0.9827; m_decor += "Tight";      }
   } else if ( m_isLCjet ) {
-    if( m_veryloose ) { m_btagCut = 0.1644; m_decor.Append("VeryLoose");  }
-    if( m_loose     ) { m_btagCut = 0.3900; m_decor.Append("Loose");      }
-    if( m_medium    ) { m_btagCut = 0.8119; m_decor.Append("Medium");     }
-    if( m_tight     ) { m_btagCut = 0.9867; m_decor.Append("Tight");      }
+    if( m_veryloose ) { m_btagCut = 0.1644; m_decor += "VeryLoose";  }
+    if( m_loose     ) { m_btagCut = 0.3900; m_decor += "Loose";      }
+    if( m_medium    ) { m_btagCut = 0.8119; m_decor += "Medium";     }
+    if( m_tight     ) { m_btagCut = 0.9867; m_decor += "Tight";      }
   }
   if(m_decorateSelectedObjects) {
-    Info(m_name.c_str()," Decorate Jets with %s", m_decor.Data());
+    Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
   }
 
-  if( m_inContainerName.Length() == 0 ) {
+  if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -250,9 +245,8 @@ EL::StatusCode BJetSelector :: execute ()
 
   if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
-  // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = 0;
-  RETURN_CHECK( "BJetSelector::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+  // mc event weight (PU contribution multiplied in BaseEventSelection)
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);;
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -265,45 +259,7 @@ EL::StatusCode BJetSelector :: execute ()
   m_numEvent++;
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = 0;
-
-  // if type is not defined then we need to define it
-  //  1 = get from TStore
-  //  2 = get from TEvent
-  if( m_type == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName.Data())){
-      m_type = ContainerType::CONSTDV;
-    }
-    else if ( m_event->contains<const xAOD::JetContainer>(m_inContainerName.Data())){
-      m_type = ContainerType::CONSTCONT;
-    }
-    else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  // Can retrieve collection from input file ( const )
-  //           or collection from tstore ( ConstDataVector which then gives a const collection )
-  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-
-    ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
-    if ( !m_store->retrieve( inJetsCDV, m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    inJets = inJetsCDV->asDataVector();
-
-  }
-  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
-
-    if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-
-  }
+  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   return executeConst( inJets, mcEvtWeight );
 }
@@ -330,7 +286,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
     // if only looking at a subset of jets make sure all are decorrated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        jet_itr->auxdecor< int >( m_decor.Data() ) = -1;
+        jet_itr->auxdecor< int >( m_decor ) = -1;
       } else {
         break;
       }
@@ -352,7 +308,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
     }
 
     if(m_decorateSelectedObjects) {
-      jet_itr->auxdecor< int >( m_decor.Data() ) = passSel;
+      jet_itr->auxdecor< int >( m_decor ) = passSel;
     }
 
     if(passSel) {
@@ -378,7 +334,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
 
   // add output container to TStore
   if( m_createSelectedContainer ) {
-    RETURN_CHECK( "BJetSelector::execute()", m_store->record( selectedJets, m_outContainerName.Data() ), "Failed to store container.");
+    RETURN_CHECK( "BJetSelector::execute()", m_store->record( selectedJets, m_outContainerName ), "Failed to store container.");
   }
 
   m_numEventPass++;

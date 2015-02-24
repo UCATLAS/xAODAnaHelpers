@@ -7,11 +7,6 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-// package include(s):
-#ifndef __CINT__
-  #include "xAODAnaHelpers/HelperClasses.h"
-#endif
-
 class JetHists;
 
 class JetHistsAlgo : public EL::Algorithm

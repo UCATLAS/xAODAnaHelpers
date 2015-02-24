@@ -41,8 +41,6 @@
 #include "TObjArray.h"
 #include "TObjString.h"
 
-using HelperClasses::ContainerType;
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
 
@@ -54,7 +52,6 @@ MuonSelector :: MuonSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_type(ContainerType::UNKNOWN),
   m_cutflowHist(0),
   m_cutflowHistW(0),
   m_muonSelectionTool(0)
@@ -74,8 +71,6 @@ MuonSelector::~MuonSelector() {}
 EL::StatusCode  MuonSelector :: configure ()
 {
   Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s \n", m_configName.c_str());
-
-  m_type = ContainerType::UNKNOWN;
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "MuonSelector::configure()", m_configName);
@@ -116,7 +111,7 @@ EL::StatusCode  MuonSelector :: configure ()
     Error("configure()", "Unknown muon quality requested %s!",m_muonQuality.c_str());
     return EL::StatusCode::FAILURE;
   }
-  m_muonType             = config->GetValue("MuonType", ""); // muon type as defined by xAOD::Muon::MuonType enum (0: Combined, 1:MuonStandAlone ,2:SegmentTagged, 3:CaloTagged, 4:SiliconAssociatedForwardMuon  - default is empty string = no type).
+  m_muonType                = config->GetValue("MuonType", ""); // muon type as defined by xAOD::Muon::MuonType enum (0: Combined, 1:MuonStandAlone ,2:SegmentTagged, 3:CaloTagged, 4:SiliconAssociatedForwardMuon  - default is empty string = no type).
   std::set<std::string> muonTypeSet;
   muonTypeSet.insert("");
   muonTypeSet.insert("Combined");
@@ -134,7 +129,7 @@ EL::StatusCode  MuonSelector :: configure ()
   m_pT_max                  = config->GetValue("pTMax",  1e8);
   m_pT_min                  = config->GetValue("pTMin",  1e8);
   m_eta_max                 = config->GetValue("etaMax", 1e8);
-  m_d0sig_max     	    = config->GetValue("d0sigMax", 4.0);
+  m_d0sig_max     	        = config->GetValue("d0sigMax", 4.0);
   m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1.5);
 
   // isolation stuff
@@ -143,16 +138,20 @@ EL::StatusCode  MuonSelector :: configure ()
   m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
   m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
 
-  TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
-  for(int i = 0; i<passKeysStrings->GetEntries(); ++i) {
-    TObjString* passKeyObj = (TObjString*)passKeysStrings->At(i);
-    m_passKeys.push_back(passKeyObj->GetString());
+
+  // parse and split by comma
+  std::string token;
+
+  m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
+  std::istringstream ss(m_passAuxDecorKeys);
+  while(std::getline(ss, token, ',')){
+    m_passKeys.push_back(token);
   }
+
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
-  TObjArray* failKeysStrings = m_failAuxDecorKeys.Tokenize(",");
-  for(int i = 0; i<failKeysStrings->GetEntries(); ++i) {
-    TObjString* failKeyObj = (TObjString*)failKeysStrings->At(i);
-    m_failKeys.push_back(failKeyObj->GetString());
+  ss.str(m_failAuxDecorKeys);
+  while(std::getline(ss, token, ',')){
+    m_failKeys.push_back(token);
   }
 
   if( m_inContainerName.empty() ){
@@ -309,9 +308,8 @@ EL::StatusCode MuonSelector :: execute ()
 
   if(m_debug) Info("execute()", "Applying Muon Selection... \n");
 
-  // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = 0;
-  RETURN_CHECK("MuonSelector::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+  // mc event weight (PU contribution multiplied in BaseEventSelection)
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>( "EventInfo", m_event, m_store);
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -324,46 +322,7 @@ EL::StatusCode MuonSelector :: execute ()
   m_numEvent++;
 
   // this will be the collection processed - no matter what!!
-  const xAOD::MuonContainer* inMuons = 0;
-
-  // if type is not defined then we need to define it
-  //  1 = get from TStore
-  //  2 = get from TEvent
-  if( m_type == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::MuonContainer> >(m_inContainerName)){
-      m_type = ContainerType::CONSTDV;
-    }
-    else if ( m_event->contains<const xAOD::MuonContainer>(m_inContainerName)){
-      m_type = ContainerType::CONSTCONT;
-    }
-    else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.c_str() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  // Can retrieve collection from input file ( const )
-  //           or collection from tstore ( ConstDataVector which then gives a const collection )
-  // decide which on first pass
-  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-
-    ConstDataVector<xAOD::MuonContainer>* inMuonsCDV = 0;
-    if ( !m_store->retrieve( inMuonsCDV, m_inContainerName ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-    inMuons = inMuonsCDV->asDataVector();
-
-  }
-  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
-
-    if ( !m_event->retrieve( inMuons , m_inContainerName ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-
-  }
+  const xAOD::MuonContainer* inMuons = HelperClasses::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
 
   return executeConst( inMuons, mcEvtWeight );
 
@@ -379,8 +338,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
   }
 
   // get primary vertex
-  const xAOD::VertexContainer *vertices = 0;
-  RETURN_CHECK("MuonSelector::execute()", m_event->retrieve(vertices, "PrimaryVertices"), "");
+  const xAOD::VertexContainer *vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
 
@@ -543,7 +501,7 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     }
   }
 
-  // retireve muon quality
+  // muon quality
   xAOD::Muon::Quality my_quality = m_muonSelectionTool->getQuality( *muon );
   if(m_debug) std::cout << "Muon quality " << static_cast<int>(my_quality) << std::endl;
   /*

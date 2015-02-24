@@ -40,26 +40,26 @@ public:
   std::string m_name;
   std::string m_configName;
 
-  TString              m_passAuxDecorKeys;
-  TString              m_failAuxDecorKeys;
-  std::vector<TString> m_passKeys;
-  std::vector<TString> m_failKeys;
+  std::string              m_passAuxDecorKeys;
+  std::string              m_failAuxDecorKeys;
+  std::vector<std::string> m_passKeys;
+  std::vector<std::string> m_failKeys;
 
 
 
   bool m_debug;                  //!
-  
+
   // cutflow
   bool m_useCutFlow;            //!
   TH1D* m_cutflowHist;          //!
   TH1D* m_cutflowHistW;         //!
   int   m_cutflow_bin;          //!
-  
+
 private:
 
   // configuration variables
-  TString m_inContainerName;      // input container name
-  TString m_outContainerName;     // output container name
+  std::string m_inContainerName;      // input container name
+  std::string m_outContainerName;     // output container name
   bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
   bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
   int  m_nToProcess;               // look at n objects

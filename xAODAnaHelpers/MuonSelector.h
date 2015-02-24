@@ -19,11 +19,6 @@
 // ROOT include(s):
 #include "TH1D.h"
 
-// package include(s):
-#ifndef __CINT__
-  #include "xAODAnaHelpers/HelperClasses.h"
-#endif
-
 namespace CP{
   class MuonSelectionTool;
 }
@@ -45,9 +40,6 @@ public:
 
   std::string m_name;
   std::string m_configName;
-#ifndef __CINT__
-  HelperClasses::ContainerType m_type;
-#endif
 
   bool m_debug;                 //!
   // cutflow
@@ -80,15 +72,15 @@ private:
   float    m_eta_max;		      // require |eta| < eta_max
   float    m_d0sig_max; 	      // require d0 significance (at BL) < m_d0sig_max
   float	   m_z0sintheta_max;          // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
-  TString  m_CaloBasedIsoType;
+  std::string  m_CaloBasedIsoType;
   float    m_CaloBasedIsoCut;
-  TString  m_TrackBasedIsoType;
+  std::string  m_TrackBasedIsoType;
   float    m_TrackBasedIsoCut;
 
-  TString              m_passAuxDecorKeys;  //!
-  TString              m_failAuxDecorKeys;  //!
-  std::vector<TString> m_passKeys;  //!
-  std::vector<TString> m_failKeys;  //!
+  std::string              m_passAuxDecorKeys;  //!
+  std::string              m_failAuxDecorKeys;  //!
+  std::vector<std::string> m_passKeys;  //!
+  std::vector<std::string> m_failKeys;  //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

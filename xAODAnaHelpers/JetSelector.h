@@ -18,11 +18,6 @@
 // ROOT include(s):
 #include "TH1D.h"
 
-// package include(s):
-#ifndef __CINT__
-  #include "xAODAnaHelpers/HelperClasses.h"
-#endif
-
 class JetSelector : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
@@ -40,9 +35,6 @@ public:
 
   std::string m_name;
   std::string m_configName;
-#ifndef __CINT__
-  HelperClasses::ContainerType m_type;
-#endif
 
   bool m_debug;                  //!
 
@@ -59,8 +51,8 @@ private:
 
 
   // configuration variables
-  TString m_inContainerName;      //! input container name
-  TString m_outContainerName;     //! output container name
+  std::string m_inContainerName;      //! input container name
+  std::string m_outContainerName;     //! output container name
   bool m_decorateSelectedObjects; //! decorate selected objects? defaul passSel
   bool m_createSelectedContainer; //! fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess;               //! look at n objects
@@ -84,10 +76,10 @@ private:
   float m_eta_max_JVF;            //! detector eta cut
   float m_JVFCut;                 //! cut value
 
-  TString              m_passAuxDecorKeys;  //!
-  TString              m_failAuxDecorKeys;  //!
-  std::vector<TString> m_passKeys;  //!
-  std::vector<TString> m_failKeys;  //!
+  std::string              m_passAuxDecorKeys;  //!
+  std::string              m_failAuxDecorKeys;  //!
+  std::vector<std::string> m_passKeys;  //!
+  std::vector<std::string> m_failKeys;  //!
 
 
   // variables that don't get filled at submission time should be

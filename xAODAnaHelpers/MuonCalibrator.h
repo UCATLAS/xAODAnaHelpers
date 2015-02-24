@@ -11,7 +11,7 @@
 
 #ifndef __CINT__
 namespace CP{
-   class MuonCalibrationAndSmearingTool; 
+   class MuonCalibrationAndSmearingTool;
 }
 #endif
 
@@ -33,16 +33,16 @@ public:
 private:
 
   // tools
-#ifndef __CINT__  
-  CP::MuonCalibrationAndSmearingTool *m_muonCalibrationAndSmearingTool; //! 
+#ifndef __CINT__
+  CP::MuonCalibrationAndSmearingTool *m_muonCalibrationAndSmearingTool; //!
 #endif // not __CINT__
 
   // configuration variables
-  TString m_inContainerName;
-  TString m_outContainerName;
-  TString m_outAuxContainerName;
-  TString m_outSCContainerName;
-  TString m_outSCAuxContainerName; 
+  std::string m_inContainerName;
+  std::string m_outContainerName;
+  std::string m_outAuxContainerName;
+  std::string m_outSCContainerName;
+  std::string m_outSCAuxContainerName;
 
   // sort after calibration
   bool    m_sort;
@@ -72,7 +72,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  
+
   // this is needed to distribute the algorithm to the workers
   ClassDef(MuonCalibrator, 1);
 };

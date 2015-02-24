@@ -74,7 +74,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
-  m_debug         = config->GetValue("Debug" , false );
+  m_debug                   = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
   m_outContainerName        = config->GetValue("OutputContainer", "");
@@ -85,7 +85,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
 
   m_sort                    = config->GetValue("Sort",          false);
 
-  if( m_inContainerName.Length() == 0 ) {
+  if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -198,17 +198,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
   m_numEvent++;
 
-  const xAOD::EventInfo* eventInfo = 0;
-  RETURN_CHECK( "ElectronCalibrator::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   // get the collection from TEvent or TStore
-  const xAOD::ElectronContainer* inElectrons = 0;
-  if ( !m_event->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
-    if ( !m_store->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::ElectronContainer* inElectrons = HelperClasses::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
 
   if(m_debug){
     for( auto Electron_itr = inElectrons->begin(); Electron_itr != inElectrons->end(); ++Electron_itr ){
@@ -242,10 +235,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
   }
 
   // add shallow copy to TStore
-  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first, m_outSCContainerName.Data() ), "Failed to store container.");
-  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.second, m_outSCAuxContainerName.Data() ), "Failed to store aux container.");
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first, m_outSCContainerName ), "Failed to store container.");
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.second, m_outSCAuxContainerName ), "Failed to store aux container.");
   // add ConstDataVector to TStore
-  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsCDV, m_outContainerName.Data() ), "Failed to store const data container.");
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsCDV, m_outContainerName ), "Failed to store const data container.");
 
   return EL::StatusCode::SUCCESS;
 }

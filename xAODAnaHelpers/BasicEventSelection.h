@@ -53,7 +53,7 @@ class BasicEventSelection : public EL::Algorithm
     // GRL
     std::string m_GRLxml;   //!
     // primary vertex
-    TString m_vertexContainerName; //!
+    std::string m_vertexContainerName; //!
     int m_PVNTrack;                //!
     // cutflow
     TH1D* m_cutflowHist;           //!

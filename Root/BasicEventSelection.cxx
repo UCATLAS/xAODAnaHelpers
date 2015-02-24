@@ -292,8 +292,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   //----------------------------
   // Event information
   //---------------------------
-  const xAOD::EventInfo* eventInfo = 0;
-  RETURN_CHECK("BasicEventSelection::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
@@ -382,8 +381,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   }
 
-  const xAOD::VertexContainer* vertices = 0;
-  RETURN_CHECK("BasicEventSelection::execute()", m_event->retrieve( vertices, m_vertexContainerName.Data()), "");
+  const xAOD::VertexContainer* vertices = HelperClasses::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
 
   if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
     wk()->skipEvent();
@@ -446,7 +444,7 @@ EL::StatusCode BasicEventSelection :: histFinalize ()
   // they processed input events.
 
 //  if(m_useCutFlow) {
-//    TFile * file = wk()->getOutputFile (m_cutFlowFileName.Data());
+//    TFile * file = wk()->getOutputFile (m_cutFlowFileName);
 //    std::cout << file->GetName() << std::endl;
 //    if(!m_myTree->writeTo( file )) {
 //      Error("finalize()", "Failed to write tree to ouput file!");

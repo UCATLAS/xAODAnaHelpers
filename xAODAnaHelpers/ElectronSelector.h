@@ -70,9 +70,9 @@ private:
   CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
 #endif
   // configuration variables
-  TString    m_inContainerName;          // input container name
-  TString    m_outContainerName;         // output container name
-  TString    m_outAuxContainerName;      // output auxiliary container name
+  std::string    m_inContainerName;          // input container name
+  std::string    m_outContainerName;         // output container name
+  std::string    m_outAuxContainerName;      // output auxiliary container name
   bool       m_decorateSelectedObjects;  // decorate selected objects? defaul passSel
   bool       m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
   int        m_nToProcess;               // look at n objects
@@ -85,17 +85,17 @@ private:
   bool	     m_vetoCrack;                // require |eta| outside crack region
   float      m_d0sig_max;                // require d0 significance (at BL) < m_d0sig_max
   float	     m_z0sintheta_max;	         // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
-  TString    m_likelihoodPID;            // require likelihood-based PID
+  std::string    m_likelihoodPID;            // require likelihood-based PID
   bool       m_useRelativeIso;
-  TString    m_CaloBasedIsoType;
+  std::string    m_CaloBasedIsoType;
   float      m_CaloBasedIsoCut;
-  TString    m_TrackBasedIsoType;
+  std::string    m_TrackBasedIsoType;
   float      m_TrackBasedIsoCut;
 
-  TString              m_passAuxDecorKeys;  //!
-  TString              m_failAuxDecorKeys;  //!
-  std::vector<TString> m_passKeys;  //!
-  std::vector<TString> m_failKeys;  //!
+  std::string              m_passAuxDecorKeys;  //!
+  std::string              m_failAuxDecorKeys;  //!
+  std::vector<std::string> m_passKeys;  //!
+  std::vector<std::string> m_failKeys;  //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

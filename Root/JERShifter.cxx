@@ -28,6 +28,7 @@
 
 // package include(s):
 #include "xAODAnaHelpers/JERShifter.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
@@ -146,7 +147,7 @@ EL::StatusCode JERShifter :: initialize ()
   // Configure the JERTool
   //m_JERTool->msg().setLevel(MSG::DEBUG);
   RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("PlotFileName", "JetResolution/JERProviderPlots_2012.root"), "");
-  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("CollectionName", m_jetAlgo.Data()), "");
+  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("CollectionName", m_jetAlgo), "");
   RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("BeamEnergy", "8TeV"), "");
   RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("SimulationType", "FullSim"), "");
 
@@ -171,13 +172,7 @@ EL::StatusCode JERShifter :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::JetContainer* inJets = 0;
-  if ( !m_event->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
-    if ( !m_store->retrieve( inJets , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   // create shallow copy
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > smearedJets = xAOD::shallowCopyContainer( *inJets );
@@ -196,8 +191,8 @@ EL::StatusCode JERShifter :: execute ()
   }
 
   // add shallow copy to TStore
-  RETURN_CHECK( "JERShifter::execute()", m_store->record( smearedJets.first, m_outContainerName.Data() ), "Failed to store container");
-  RETURN_CHECK( "JERShifter::execute()", m_store->record( smearedJets.second, m_outAuxContainerName.Data() ), "Failed to store aux container");
+  RETURN_CHECK( "JERShifter::execute()", m_store->record( smearedJets.first, m_outContainerName ), "Failed to store container");
+  RETURN_CHECK( "JERShifter::execute()", m_store->record( smearedJets.second, m_outAuxContainerName ), "Failed to store aux container");
 
   return EL::StatusCode::SUCCESS;
 }

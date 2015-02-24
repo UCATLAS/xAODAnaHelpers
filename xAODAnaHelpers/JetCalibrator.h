@@ -33,23 +33,23 @@ public:
 private:
 
   // tools
-#ifndef __CINT__    
+#ifndef __CINT__
   JetCalibrationTool * m_jetCalibration; //!
   JetCleaningTool    * m_jetCleaning;    //!
 #endif // not __CINT__
 
   // configuration variables
-  TString m_inContainerName;        //!
-  TString m_outContainerName;       //!
-  TString m_outSCContainerName;     //!
-  TString m_outSCAuxContainerName;  //!
-  
-  TString m_jetAlgo;                //!
-  TString m_calibConfigData;        //!
-  TString m_calibConfigFullSim;     //!
-  TString m_calibConfigAFII;        //! 
-  TString m_calibConfig;            //!
-  TString m_calibSequence;          //!
+  std::string m_inContainerName;        //!
+  std::string m_outContainerName;       //!
+  std::string m_outSCContainerName;     //!
+  std::string m_outSCAuxContainerName;  //!
+
+  std::string m_jetAlgo;                //!
+  std::string m_calibConfigData;        //!
+  std::string m_calibConfigFullSim;     //!
+  std::string m_calibConfigAFII;        //!
+  std::string m_calibConfig;            //!
+  std::string m_calibSequence;          //!
   // sort after calibration
   bool    m_sort;                   //!
 
@@ -80,7 +80,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  
+
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetCalibrator, 1);
 };

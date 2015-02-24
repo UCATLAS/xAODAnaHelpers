@@ -66,7 +66,7 @@ EL::StatusCode  MuonCalibrator :: configure ()
 
   m_sort                    = config->GetValue("Sort",          false);
 
-  if( m_inContainerName.Length() == 0 ) {
+  if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -177,17 +177,10 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   m_numEvent++;
 
-  const xAOD::EventInfo* eventInfo = 0;
-  RETURN_CHECK( "MuonCalibrator::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   // get the collection from TEvent or TStore
-  const xAOD::MuonContainer* inMuons = 0;
-  if ( !m_event->retrieve( inMuons , m_inContainerName.Data() ).isSuccess() ){
-    if ( !m_store->retrieve( inMuons , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::MuonContainer* inMuons = HelperClasses::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
 
   if(m_debug){
     for( auto muon: *inMuons ){
@@ -223,10 +216,10 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   // add shallow copy to TStore
-  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first, m_outSCContainerName.Data() ), "Failed to store container");
-  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName.Data() ), "Failed to store aux container");
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first, m_outSCContainerName ), "Failed to store container");
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName ), "Failed to store aux container");
   // add ConstDataVector to TStore
-  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, m_outContainerName.Data() ), "Failed to store const data container");
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, m_outContainerName ), "Failed to store const data container");
 
   return EL::StatusCode::SUCCESS;
 }

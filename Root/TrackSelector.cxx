@@ -17,6 +17,11 @@
 #include "TObjArray.h"
 #include "TObjString.h"
 
+// c++ include(s):
+#include <iostream>
+#include <typeinfo>
+#include <sstream>
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackSelector)
 
@@ -85,22 +90,23 @@ EL::StatusCode  TrackSelector :: configure ()
   m_chi2NdofCut_max         = config->GetValue("chi2NdofMax",  1e8);
   m_chi2Prob_max            = config->GetValue("chi2ProbMax",  1e8);
 
-  m_passAuxDecorKeys         = config->GetValue("PassDecorKeys", "");
-  TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
-  for(int i = 0; i<passKeysStrings->GetEntries(); ++i) {
-    TObjString* passKeyObj = (TObjString*)passKeysStrings->At(i);
-    m_passKeys.push_back(passKeyObj->GetString());
+  // parse and split by comma
+  std::string token;
+
+  m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
+  std::istringstream ss(m_passAuxDecorKeys);
+  while(std::getline(ss, token, ',')){
+    m_passKeys.push_back(token);
   }
 
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
-  TObjArray* failKeysStrings = m_failAuxDecorKeys.Tokenize(",");
-  for(int i = 0; i<failKeysStrings->GetEntries(); ++i) {
-    TObjString* failKeyObj = (TObjString*)failKeysStrings->At(i);
-    m_failKeys.push_back(failKeyObj->GetString());
+  ss.str(m_failAuxDecorKeys);
+  while(std::getline(ss, token, ',')){
+    m_failKeys.push_back(token);
   }
 
 
-  if( m_inContainerName.Length() == 0 ) {
+  if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -225,26 +231,11 @@ EL::StatusCode TrackSelector :: execute ()
 
   m_numEvent++;
 
-  // get the collection from TEvent or TStore (NB: if retrieving original xAOD container, must be const!!)
-  const xAOD::TrackParticleContainer* inTracks = 0;
-  if ( m_event->contains<const xAOD::TrackParticleContainer>(m_inContainerName.Data())){
-    if( !m_event->retrieve( inTracks, m_inContainerName.Data() ).isSuccess()) {
-      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container from TEvent. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  } else {
-    ConstDataVector<xAOD::TrackParticleContainer>* cv_tracks = 0;
-    if ( !m_store->retrieve( cv_tracks, m_inContainerName.Data() ).isSuccess() ){
-      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container from TStore. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    inTracks = cv_tracks->asDataVector();
-  }
-
+  // get the collection from TEvent or TStore
+  const xAOD::TrackParticleContainer* inTracks = HelperClasses::getContainer<xAOD::TrackParticleContainer>(m_inContainerName, m_event, m_store);
 
   // get primary vertex
-  const xAOD::VertexContainer *vertices = 0;
-  RETURN_CHECK( "TrackSelector::execute()", m_event->retrieve(vertices, "PrimaryVertices"), "");
+  const xAOD::VertexContainer *vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
 
@@ -299,7 +290,7 @@ EL::StatusCode TrackSelector :: execute ()
 
   // add output container to TStore
   if( m_createSelectedContainer ) {
-    RETURN_CHECK( "TrackSelector::execute()", m_store->record( selectedTracks, m_outContainerName.Data() ), "Failed to store container.");
+    RETURN_CHECK( "TrackSelector::execute()", m_store->record( selectedTracks, m_outContainerName ), "Failed to store container.");
   }
 
   m_numEventPass++;
@@ -450,14 +441,14 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //  Pass Keys
   //
   for(auto& passKey : m_passKeys){
-    if(!(trk->auxdata< char >(passKey.Data()) == '1')) { return 0;}
+    if(!(trk->auxdata< char >(passKey) == '1')) { return 0;}
   }
 
   //
   //  Fail Keys
   //
   for(auto& failKey : m_failKeys){
-    if(!(trk->auxdata< char >(failKey.Data()) == '0')) {return 0;}
+    if(!(trk->auxdata< char >(failKey) == '0')) {return 0;}
   }
 
 

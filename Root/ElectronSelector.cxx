@@ -10,6 +10,7 @@
 // c++ include(s):
 #include <iostream>
 #include <typeinfo>
+#include <sstream>
 
 // EL include(s):
 #include <EventLoop/Job.h>
@@ -127,7 +128,7 @@ EL::StatusCode  ElectronSelector :: configure ()
       m_likelihoodPID != "Tight"     &&
       m_likelihoodPID != "VeryTight" &&
       m_likelihoodPID != "LooseRelaxed" ) {
-    Error("configure()", "Unknown electron likelihood PID requested %s!",m_likelihoodPID.Data());
+    Error("configure()", "Unknown electron likelihood PID requested %s!",m_likelihoodPID.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -138,23 +139,23 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
   m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
 
-  m_passAuxDecorKeys         = config->GetValue("PassDecorKeys", "");
 
-  TObjArray* passKeysStrings = m_passAuxDecorKeys.Tokenize(",");
-  for(int i = 0; i<passKeysStrings->GetEntries(); ++i) {
-    TObjString* passKeyObj = (TObjString*)passKeysStrings->At(i);
-    m_passKeys.push_back(passKeyObj->GetString());
+  // parse and split by comma
+  std::string token;
+
+  m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
+  std::istringstream ss(m_passAuxDecorKeys);
+  while(std::getline(ss, token, ',')){
+    m_passKeys.push_back(token);
   }
 
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
-  TObjArray* failKeysStrings = m_failAuxDecorKeys.Tokenize(",");
-  for(int i = 0; i<failKeysStrings->GetEntries(); ++i) {
-    TObjString* failKeyObj = (TObjString*)failKeysStrings->At(i);
-    m_failKeys.push_back(failKeyObj->GetString());
+  ss.str(m_failAuxDecorKeys);
+  while(std::getline(ss, token, ',')){
+    m_failKeys.push_back(token);
   }
 
-
-  if( m_inContainerName.Length() == 0 ) {
+  if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -302,9 +303,8 @@ EL::StatusCode ElectronSelector :: execute ()
 
   if(m_debug) Info("execute()", "Applying Electron Selection... \n");
 
-  // retrieve mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = 0;
-  RETURN_CHECK( "ElectronSelector::execute()", m_event->retrieve(eventInfo, "EventInfo"), "");
+  // mc event weight (PU contribution multiplied in BaseEventSelection)
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -317,42 +317,7 @@ EL::StatusCode ElectronSelector :: execute ()
   m_numEvent++;
 
   // this will be the collection processed - no matter what!!
-  const xAOD::ElectronContainer* inElectrons = 0;
-
-  // if type is not defined then we need to define it
-  //  1 = get from TStore
-  //  2 = get from TEvent
-  if( m_type == ContainerType::UNKNOWN ) {
-    if ( m_store->contains< ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName.Data())){
-      m_type = ContainerType::CONSTDV;
-    }
-    else if ( m_event->contains<const xAOD::ElectronContainer>(m_inContainerName.Data())){
-      m_type = ContainerType::CONSTCONT;
-    }
-    else {
-      Error("execute()  ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.Data() );
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  // Can retrieve collection from input file ( const )
-  //           or collection from tstore ( ConstDataVector which then gives a const collection )
-  // decide which on first pass
-  if ( m_type == ContainerType::CONSTDV ) {        // get ConstDataVector from TStore
-    ConstDataVector<xAOD::ElectronContainer>* inElectronsCDV = 0;
-    if ( !m_store->retrieve( inElectronsCDV, m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-    inElectrons = inElectronsCDV->asDataVector();
-  }
-  else if ( m_type == ContainerType::CONSTCONT ) {   // get const container from TEvent
-    if ( !m_event->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::ElectronContainer* inElectrons = HelperClasses::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
 
   return executeConst( inElectrons, mcEvtWeight );
 
@@ -367,8 +332,7 @@ EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer*
     selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
   }
 
-  const xAOD::VertexContainer* vertices = 0;
-  RETURN_CHECK( "ElectronSelector::execute()", m_event->retrieve( vertices, "PrimaryVertices" ), "");
+  const xAOD::VertexContainer* vertices = HelperClasses::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
@@ -416,7 +380,7 @@ EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer*
 
   // add ConstDataVector to TStore
   if(m_createSelectedContainer) {
-    RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName.Data() ), "Failed to store const data container");
+    RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName ), "Failed to store const data container");
   }
 
   return EL::StatusCode::SUCCESS;

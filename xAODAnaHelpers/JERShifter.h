@@ -27,12 +27,12 @@ class JERShifter : public EL::Algorithm
   private:
 
     // configuration variables
-    TString m_inContainerName;      // input container name
-    TString m_outContainerName;     // output container name
-    TString m_outAuxContainerName;  
-    TString m_jetAlgo;
+    std::string m_inContainerName;      // input container name
+    std::string m_outContainerName;     // output container name
+    std::string m_outAuxContainerName;
+    std::string m_jetAlgo;
 
-#ifndef __CINT__  
+#ifndef __CINT__
     JERTool         * m_JERTool;     //!
     JERSmearingTool * m_JERSmearing; //!
 #endif // not __CINT__

@@ -18,11 +18,6 @@
 // ROOT include(s):
 #include "TH1D.h"
 
-// package include(s):
-#ifndef __CINT__
-  #include "xAODAnaHelpers/HelperClasses.h"
-#endif
-
 class BJetSelector : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
@@ -38,9 +33,6 @@ public:
 
   std::string m_name;
   std::string m_configName;
-#ifndef __CINT__
-  HelperClasses::ContainerType m_type;
-#endif
 
   bool m_debug;                  //!
 
@@ -56,8 +48,8 @@ public:
 private:
 
   // configuration variables
-  TString m_inContainerName; //!      // input container name
-  TString m_outContainerName; //!     // output container name
+  std::string m_inContainerName; //!      // input container name
+  std::string m_outContainerName; //!     // output container name
   bool m_decorateSelectedObjects; //! // decorate selected objects? defaul passSel
   bool m_createSelectedContainer; //! // fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess; //!               // look at n objects
@@ -76,7 +68,7 @@ private:
   bool m_medium; //!
   bool m_tight; //!
   float m_btagCut; //!
-  TString m_decor; //!
+  std::string m_decor; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

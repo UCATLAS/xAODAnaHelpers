@@ -10,6 +10,7 @@
 #include <${package}/${name}Hists.h>
 #include <${package}/${name}HistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
+#include <xAODAnaHelpers/HelperClasses.h>
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
@@ -96,11 +97,7 @@ EL::StatusCode ${name}HistsAlgo :: initialize ()
 
 EL::StatusCode ${name}HistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("AnalysisLoop::execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -108,43 +105,7 @@ EL::StatusCode ${name}HistsAlgo :: execute ()
   }
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = 0;
-
-  /* if type is not defined, then we need to define it
-      1 = get from TStore
-      2 = get from TEvent
-  */
-  if( m_type == 0 ) {
-    if ( m_store->contains< ConstDataVector<xAOD::JetContainer> >(m_inContainerName.c_str())){
-      m_type = 1;
-    } else if ( m_event->contains< const xAOD::JetContainer >(m_inContainerName.c_str())){
-      m_type=2;
-    } else {
-      Error("${name}HistsAlgo::execute() ", "Failed to retrieve %s container from File or Store. Exiting.", m_inContainerName.c_str());
-      m_store->print();
-      return EL::StatusCode::FAILURE;
-    }
-  }
-
-  /* Can retrieve collection from input file ( const )
-     or collection from tstore ( ConstDataVector which then gives a const collection )
-     decide which on first past
-#FIXME replace with enum
-  */
-
-  if ( m_type == 1 ) { // get ConstDataVector from TStore
-    ConstDataVector<xAOD::JetContainer>* inJetsCDV = 0;
-    if( !m_store->retrieve( inJetsCDV, m_inContainerName ).isSuccess() ){
-      Error("execute() ", "Failed to retrieve %s container from Store. Exiting.", m_inContainerName.c_str());
-      return EL::StatusCode::FAILURE;
-    }
-    inJets = inJetsCDV->asDataVector();
-  } else if (m_type == 2) { // get const container from TEvent
-    if( !m_event->retrieve( inJets, m_inContainerName ).isSuccess() ){
-      Error("execute() ", "Failed to retrieve %s container from File. Exiting.", m_inContainerName.c_str());
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);;
 
   /* two ways to fill */
 

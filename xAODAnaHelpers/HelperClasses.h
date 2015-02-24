@@ -95,6 +95,13 @@ namespace HelperClasses {
         RCU_THROW_MSG("Failure");
       }
     }
+    else if ( store->contains<const T>(name)){
+      Warning("getContainer()", "TEvent can't retrieve %s from TStore!", name.c_str());
+      if( !store->retrieve( cont, name ).isSuccess() ){
+        Error("getContainer()", "Failed to retrieve %s const DataVector from Store. Exiting.", name.c_str() );
+        RCU_THROW_MSG("Failure");
+      }
+    }
     else {
       Error("getContainer()  ", "Failed to retrieve %s container from File or Store. Exiting.", name.c_str() );
       store->print();
