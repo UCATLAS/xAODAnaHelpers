@@ -50,6 +50,7 @@ class BasicEventSelection : public EL::Algorithm
     // variables read in through configuration file
     bool m_cleanTStore;     //!
     int m_debug;            //!
+    bool m_truthLevelOnly;  //!
     // GRL
     std::string m_GRLxml;   //!
     // primary vertex
