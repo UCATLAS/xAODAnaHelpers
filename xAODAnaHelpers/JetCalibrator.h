@@ -11,6 +11,11 @@
 
 class JetCalibrationTool;
 class JetCleaningTool;
+class JetUncertaintiesTool;
+namespace CP {
+  class SystematicVariation;
+  class SystematicSet;
+}
 
 class JetCalibrator : public EL::Algorithm
 {
@@ -34,9 +39,11 @@ private:
 
   // tools
 #ifndef __CINT__
-  JetCalibrationTool * m_jetCalibration; //!
-  JetCleaningTool    * m_jetCleaning;    //!
+  JetCalibrationTool    * m_jetCalibration; //!
+  JetCleaningTool       * m_jetCleaning;    //!
+  JetUncertaintiesTool  * m_jetUncert;      //!
 #endif // not __CINT__
+  CP::SystematicVariation * m_syst;
 
   // configuration variables
   std::string m_inContainerName;        //!
@@ -50,6 +57,8 @@ private:
   std::string m_calibConfigAFII;        //!
   std::string m_calibConfig;            //!
   std::string m_calibSequence;          //!
+  std::string m_jetUncertAlgo;          //!
+  std::string m_uncertConfig;           //!
   // sort after calibration
   bool    m_sort;                   //!
 
@@ -65,7 +74,7 @@ public:
 
   // this is a standard constructor
   JetCalibrator ();
-  JetCalibrator (std::string name, std::string configName);
+  JetCalibrator (std::string name, std::string configName, CP::SystematicVariation* syst = 0);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
