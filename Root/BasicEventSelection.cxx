@@ -1,3 +1,13 @@
+/******************************************
+ *
+ * Basic event selection. Performs general simple cuts (GRL, Event Cleaning, Min nr. Tracks for PV candidate)
+ *
+ * G. Facini, M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 16:44 AEST 2015
+ *
+ ******************************************/
+
+// EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
 #include "EventLoop/OutputStream.h"
@@ -10,9 +20,12 @@
 // rootcore includes
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
 
-// our includes
+// package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/BasicEventSelection.h>
+
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -40,6 +53,7 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
   // initialization code will go into histInitialize() and
   // initialize().
   Info("BasicEventSelection()", "Calling constructor \n");
+  //StatusCode::enableFailure();
   m_cutflowHist  = 0;
   m_cutflowHistW = 0;
 }
@@ -49,6 +63,8 @@ EL::StatusCode BasicEventSelection :: configure ()
 {
   // read in user configuration from text file
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+  RETURN_CHECK_CONFIG( "BasicEventSelection::configure()", m_configName);
+
   TEnv *env = new TEnv(m_configName.c_str());
   if( !env ) {
     Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );
@@ -66,9 +82,6 @@ EL::StatusCode BasicEventSelection :: configure ()
   m_vertexContainerName = env->GetValue("VertexContainer", "PrimaryVertices");
   // number of tracks to require to count PVs
   m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
-
-
-
 
   env->Print();
   Info("configure()", "BasicEventSelection succesfully configured! \n");
@@ -247,12 +260,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
   std::vector<std::string> vecStringGRL;
   m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
   vecStringGRL.push_back(m_GRLxml);
-  m_grl->setProperty( "GoodRunsListVec", vecStringGRL);
-  m_grl->setProperty("PassThrough", false); // if true (default) will ignore result of GRL and will just pass all events
-  if (!m_grl->initialize().isSuccess()) { // check this isSuccess
-    Error("initialize()", "Failed to properly initialize the GRL. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty( "GoodRunsListVec", vecStringGRL), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
 
   //--------------------------------------------
   //  Get Containers Depending on Analysis Needs
@@ -263,12 +273,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // as a check, let's see the number of events in our xAOD (long long int)
   Info("initialize()", "Number of events in file   = %lli", m_event->getEntries());
-
   // count number of events
   m_eventCounter   = 0;
 
   Info("initialize()", "BasicEventSelection succesfully initilaized!");
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -281,13 +289,32 @@ EL::StatusCode BasicEventSelection :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  float mcEvtWeight(1); // FIXME - set to something from eventinfo
+  //----------------------------
+  // Event information
+  //---------------------------
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+
+  bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
+
+  float mcEvtWeight(1.0), pileupWeight(1.0);
+  if( isMC ){
+     const std::vector< float > weights = eventInfo->mcEventWeights();
+     if( weights.size() > 0 ) mcEvtWeight = weights[0];
+
+     //if( m_doPUreweighting ){ // FIXME
+     //  pileupWeight = eventInfo->auxdecor< double >( "PileupWeight" ); // this decoration added previously by PU reweighting tool
+     //}
+     mcEvtWeight *= pileupWeight;
+  }
+  // decorate with PU corrected mc event weight
+  static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
+  mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
   // print every 100 events, so we know where we are:
   ++m_eventCounter;
   m_cutflowHist ->Fill( m_cutflow_all, 1 );
   m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
-  if ( (m_eventCounter % 100) == 0 ) {
+  if ( (m_eventCounter % 1000) == 0 ) {
     Info("execute()", "Event number = %i", m_eventCounter);
   }
 
@@ -301,19 +328,9 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_store->clear();
   }
 
-  //----------------------------
-  // Event information
-  //---------------------------
-  const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
-
-
 
   // if data check if event passes GRL and even cleaning
-  if( ! eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
+  if( !isMC ) {
 
     // GRL
     if(!m_grl->passRunLB(*eventInfo)){
@@ -364,11 +381,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   }
 
-  const xAOD::VertexContainer* vertices = 0;
-  if ( !m_event->retrieve( vertices, m_vertexContainerName.Data() ).isSuccess() ){
-    Error("execute()", "Failed to retrieve %s container. Exiting.", m_vertexContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
 
   if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
     wk()->skipEvent();
@@ -376,6 +389,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
+
 
   return EL::StatusCode::SUCCESS;
 }
@@ -430,7 +444,7 @@ EL::StatusCode BasicEventSelection :: histFinalize ()
   // they processed input events.
 
 //  if(m_useCutFlow) {
-//    TFile * file = wk()->getOutputFile (m_cutFlowFileName.Data());
+//    TFile * file = wk()->getOutputFile (m_cutFlowFileName);
 //    std::cout << file->GetName() << std::endl;
 //    if(!m_myTree->writeTo( file )) {
 //      Error("finalize()", "Failed to write tree to ouput file!");

@@ -6,7 +6,7 @@
 #include "SampleHandler/DiskListLocal.h"
 #include <TSystem.h>
 
-#include <xAODAnaHelpers/JetHistsAlgo.h>
+#include <xAODAnaHelpers/ContainerRecording.h>
 
 int main( int argc, char* argv[] ) {
 
@@ -37,11 +37,11 @@ int main( int argc, char* argv[] ) {
   EL::Job job;
   job.sampleHandler( sh );
 
-  // Add our analysis to the job:
-  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", "$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
+  // This should run with no errors and no EL::StatusCode::FAILUREs returned
+  ContainerRecording* contRec = new ContainerRecording();
 
   // Attach algorithms
-  job.algsAdd( jk_AntiKt10LC );
+  job.algsAdd( contRec );
 
 
   // Run the job using the local/direct driver:

@@ -1,21 +1,13 @@
 #ifndef xAODAnaHelpers_JERShifter_H
 #define xAODAnaHelpers_JERShifter_H
 
+// EL include(s)
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
 #include "xAODRootAccess/Init.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
-
-namespace xAOD {
-#ifndef XAODJET_JETCONTAINER_H 
-  class JetContainer;
-#endif
-#ifndef XAODJET_JET_H 
-  class Jet;
-#endif
-}
 
 class JERTool;
 class JERSmearingTool;
@@ -35,13 +27,15 @@ class JERShifter : public EL::Algorithm
   private:
 
     // configuration variables
-    TString m_inContainerName;      // input container name
-    TString m_outContainerName;     // output container name
-    TString m_outAuxContainerName;  
-    TString m_jetAlgo;
+    std::string m_inContainerName;      // input container name
+    std::string m_outContainerName;     // output container name
+    std::string m_outAuxContainerName;
+    std::string m_jetAlgo;
 
+#ifndef __CINT__
     JERTool         * m_JERTool;     //!
     JERSmearingTool * m_JERSmearing; //!
+#endif // not __CINT__
 
   public:
 

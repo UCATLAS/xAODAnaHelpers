@@ -6,7 +6,7 @@
 #include "SampleHandler/DiskListLocal.h"
 #include <TSystem.h>
 
-#include <xAODAnaHelpers/JetHistsAlgo.h>
+#include <${package}/${name}HistsAlgo.h>
 
 int main( int argc, char* argv[] ) {
 
@@ -21,10 +21,12 @@ int main( int argc, char* argv[] ) {
   SH::SampleHandler sh;
 
   // get the data path for xAODAnaHelpers/data
-  std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
+  std::string dataPath = gSystem->ExpandPathName("$$ROOTCOREBIN/data");
   SH::DiskListLocal list (dataPath);
-  SH::scanDir (sh, list, "r20test_AOD.pool.root", "xAODAnaHelpers"); // specifying one particular sample
+  // SH::scanDir (sh, list, "r20test_AOD.pool.root", "xAODAnaHelpers"); // specifying one particular sample
+  SH::scanDir (sh, list, "r20test_AOD.pool.root"); // specifying one particular sample
 
+   
 
   // Set the name of the input TTree. It's always "CollectionTree"
   // for xAOD files.
@@ -38,7 +40,7 @@ int main( int argc, char* argv[] ) {
   job.sampleHandler( sh );
 
   // Add our analysis to the job:
-  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", "$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
+  ${name}HistsAlgo* jk_AntiKt10LC = new ${name}HistsAlgo("AntiKt10/", "$$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
 
   // Attach algorithms
   job.algsAdd( jk_AntiKt10LC );

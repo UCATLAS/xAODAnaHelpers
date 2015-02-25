@@ -1,36 +1,14 @@
-/******************************************
- *
- * Jet selector tool
- *
- * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
- * Jan 28 15:59 AEST 2015
- *
- ******************************************/
-
-// c++ include(s):
-#include <iostream>
-#include <typeinfo>
-#include <sstream>
-
-// EL include(s):
 #include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-// EDM include(s):
-#include "xAODJet/JetContainer.h"
-#include "xAODCore/ShallowCopy.h"
 #include "AthContainers/ConstDataVector.h"
-
-// package include(s):
-#include "xAODEventInfo/EventInfo.h"
-#include "xAODAnaHelpers/JetSelector.h"
-#include "xAODAnaHelpers/HelperClasses.h"
+#include "xAODTracking/VertexContainer.h"
+#include "xAODTracking/TrackParticleContainer.h"
+#include "xAODAnaHelpers/TrackSelector.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
-
-// external tools include(s):
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -39,14 +17,19 @@
 #include "TObjArray.h"
 #include "TObjString.h"
 
+// c++ include(s):
+#include <iostream>
+#include <typeinfo>
+#include <sstream>
+
 // this is needed to distribute the algorithm to the workers
-ClassImp(JetSelector)
+ClassImp(TrackSelector)
 
 
-JetSelector :: JetSelector () {
+TrackSelector :: TrackSelector () {
 }
 
-JetSelector :: JetSelector (std::string name, std::string configName) :
+TrackSelector :: TrackSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
@@ -59,15 +42,15 @@ JetSelector :: JetSelector (std::string name, std::string configName) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  Info("JetSelector()", "Calling constructor \n");
+  Info("TrackSelector()", "Calling constructor \n");
 }
 
-EL::StatusCode  JetSelector :: configure ()
+EL::StatusCode  TrackSelector :: configure ()
 {
-  Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing TrackSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG("JetSelector::configure()", m_configName);
+  RETURN_CHECK_CONFIG( "TrackSelector::configure()", m_configName );
 
   TEnv* config = new TEnv(m_configName.c_str());
 
@@ -76,7 +59,7 @@ EL::StatusCode  JetSelector :: configure ()
   m_useCutFlow    = config->GetValue("UseCutFlow",  true);
 
   // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
+  m_inContainerName  = config->GetValue("InputContainer",  "");
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -88,30 +71,24 @@ EL::StatusCode  JetSelector :: configure ()
   m_outContainerName        = config->GetValue("OutputContainer", "");
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
-
-  m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
-  m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
+  // sort before running selection
+  m_sort                    = config->GetValue("Sort",          false);
 
   // cuts
-  m_cleanJets               = config->GetValue("CleanJets",  true);
-  m_pass_max                = config->GetValue("PassMax",      -1);
-  m_pass_min                = config->GetValue("PassMin",      -1);
-  m_pT_max                  = config->GetValue("pTMax",       1e8);
-  m_pT_min                  = config->GetValue("pTMin",       1e8);
-  m_eta_max                 = config->GetValue("etaMax",      1e8);
-  m_eta_min                 = config->GetValue("etaMin",      1e8);
-  m_detEta_max              = config->GetValue("detEtaMax",   1e8);
-  m_detEta_min              = config->GetValue("detEtaMin",   1e8);
-  m_mass_max                = config->GetValue("massMax",     1e8);
-  m_mass_min                = config->GetValue("massMin",     1e8);
-  m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
-  m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-  m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
-
-  m_doJVF 		    = config->GetValue("DoJVF",       false);
-  m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",    50e3);
-  m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
-  m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
+  m_pass_max                = config->GetValue("PassMax",       -1);
+  m_pass_min                = config->GetValue("PassMin",       -1);
+  m_pT_max                  = config->GetValue("pTMax",        1e8);
+  m_pT_min                  = config->GetValue("pTMin",        1e8);
+  m_eta_max                 = config->GetValue("etaMax",       1e8);
+  m_eta_min                 = config->GetValue("etaMin",       1e8);
+  m_d0_max                  = config->GetValue("d0Max",        1e8);
+  m_z0_max                  = config->GetValue("z0Max",        1e8);
+  m_z0sinT_max              = config->GetValue("z0SinTMax",    1e8);
+  m_nBL_min                 = config->GetValue("nBLMin",       1e8);
+  m_nSi_min                 = config->GetValue("nSiMin",       1e8);
+  m_nPixHoles_max           = config->GetValue("nPixHolesMax", 1e8);
+  m_chi2NdofCut_max         = config->GetValue("chi2NdofMax",  1e8);
+  m_chi2Prob_max            = config->GetValue("chi2ProbMax",  1e8);
 
   // parse and split by comma
   std::string token;
@@ -128,18 +105,19 @@ EL::StatusCode  JetSelector :: configure ()
     m_failKeys.push_back(token);
   }
 
+
   if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
   config->Print();
-  Info("configure()", "JetSelector Interface succesfully configured! \n");
+  Info("configure()", "TrackSelector Interface succesfully configured! \n");
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetSelector :: setupJob (EL::Job& job)
+EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -152,14 +130,14 @@ EL::StatusCode JetSelector :: setupJob (EL::Job& job)
   Info("setupJob()", "Calling setupJob \n");
 
   job.useXAOD ();
-  xAOD::Init( "JetSelector" ).ignore(); // call before opening first file
+  xAOD::Init( "TrackSelector" ).ignore(); // call before opening first file
 
   return EL::StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: histInitialize ()
+EL::StatusCode TrackSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -180,7 +158,7 @@ EL::StatusCode JetSelector :: histInitialize ()
 
 
 
-EL::StatusCode JetSelector :: fileExecute ()
+EL::StatusCode TrackSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
@@ -192,7 +170,7 @@ EL::StatusCode JetSelector :: fileExecute ()
 
 
 
-EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
+EL::StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -205,7 +183,7 @@ EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
 
 
 
-EL::StatusCode JetSelector :: initialize ()
+EL::StatusCode TrackSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -231,67 +209,52 @@ EL::StatusCode JetSelector :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
-  m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  Info("initialize()", "JetSelector Interface succesfully initialized!" );
+  Info("initialize()", "TrackSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: execute ()
+EL::StatusCode TrackSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Jet Selection... \n");
+  if(m_debug) Info("execute()", "Applying Track Selection... \n");
 
-  // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
-
-  float mcEvtWeight(1.0);
-  if (eventInfo->isAvailable< float >( "mcEventWeight" )){
-    mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
-  } else {
-    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
-  }
+  float mcEvtWeight(1); // FIXME - set to something from eventInfo
 
   m_numEvent++;
 
-  // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  // get the collection from TEvent or TStore
+  const xAOD::TrackParticleContainer* inTracks = HelperFunctions::getContainer<xAOD::TrackParticleContainer>(m_inContainerName, m_event, m_store);
 
-  return executeConst( inJets, mcEvtWeight );
-}
+  // get primary vertex
+  const xAOD::VertexContainer *vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
+  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
-EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight )
-{
 
-  // create output container (if requested)
-  ConstDataVector<xAOD::JetContainer>* selectedJets = 0;
+  // create output container (if requested) - deep copy
+
+  ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks = 0;
   if(m_createSelectedContainer) {
-    selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+    selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
   }
 
-  // if doing JVF get PV location
-  if( m_doJVF ) {
-    const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
-    m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
-  }
-
-
+  xAOD::TrackParticleContainer::const_iterator trk_itr = inTracks->begin();
+  xAOD::TrackParticleContainer::const_iterator trk_end = inTracks->end();
   int nPass(0); int nObj(0);
-  for( auto jet_itr : *inJets ) { // duplicated of basic loop
+  for( ; trk_itr != trk_end; ++trk_itr ){
 
-    // if only looking at a subset of jets make sure all are decorated
+    // if only looking at a subset of tracks make sure all are decorrated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        jet_itr->auxdecor< char >( "passSel" ) = -1;
+        (*trk_itr)->auxdecor< char >( "passSel" ) = -1;
       } else {
         break;
       }
@@ -299,15 +262,15 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
     }
 
     nObj++;
-    int passSel = this->PassCuts( jet_itr );
+    int passSel = this->PassCuts( (*trk_itr), pvx );
     if(m_decorateSelectedObjects) {
-      jet_itr->auxdecor< char >( "passSel" ) = passSel;
+      (*trk_itr)->auxdecor< char >( "passSel" ) = passSel;
     }
 
     if(passSel) {
       nPass++;
       if(m_createSelectedContainer) {
-        selectedJets->push_back( jet_itr );
+        selectedTracks->push_back( *trk_itr );
       }
     }
   }
@@ -325,19 +288,22 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
     return EL::StatusCode::SUCCESS;
   }
 
-  m_numEventPass++;
-  m_weightNumEventPass += mcEvtWeight;
+  // add output container to TStore
+  if( m_createSelectedContainer ) {
+    RETURN_CHECK( "TrackSelector::execute()", m_store->record( selectedTracks, m_outContainerName ), "Failed to store container.");
+  }
 
-  // add ConstDataVector to TStore
-  if(m_createSelectedContainer) {
-    RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, m_outContainerName ), "Failed to store const data container.");
+  m_numEventPass++;
+  if(m_useCutFlow) {
+    m_cutflowHist ->Fill( m_cutflow_bin, 1 );
+    m_cutflowHistW->Fill( m_cutflow_bin, mcEvtWeight);
   }
 
   return EL::StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode JetSelector :: postExecute ()
+EL::StatusCode TrackSelector :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -350,7 +316,7 @@ EL::StatusCode JetSelector :: postExecute ()
 
 
 
-EL::StatusCode JetSelector :: finalize ()
+EL::StatusCode TrackSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -362,20 +328,14 @@ EL::StatusCode JetSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "%s", m_name.c_str());
-  if(m_useCutFlow) {
-    Info("histFinalize()", "Filling cutflow");
-    m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
-    m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
-  }
-
+  Info("finalize()", "Deleting tool instances... \n");
 
   return EL::StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: histFinalize ()
+EL::StatusCode TrackSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -387,96 +347,110 @@ EL::StatusCode JetSelector :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-
-  Info("histFinalize()", "Calling histFinalize\n");
-
   return EL::StatusCode::SUCCESS;
 }
 
-int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
+int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx ) {
 
-
-  // clean jets
-  if( m_cleanJets ) {
-    if( jet->isAvailable< char >( "cleanJet" ) ) {
-      if( !jet->auxdata< char >( "cleanJet" ) ) { return 0; }
-    }
-  }
 
   // pT
   if( m_pT_max != 1e8 ) {
-    if( jet->pt() > m_pT_max ) { return 0; }
+    if( trk->pt() > m_pT_max ) { return 0; }
   }
   if( m_pT_min != 1e8 ) {
-    if( jet->pt() < m_pT_min ) { return 0; }
+    if( trk->pt() < m_pT_min ) { return 0; }
   }
 
   // eta
   if( m_eta_max != 1e8 ) {
-    if( jet->eta() > m_eta_max ) { return 0; }
+    if( trk->eta() > m_eta_max ) { return 0; }
   }
   if( m_eta_min != 1e8 ) {
-    if( jet->eta() < m_eta_min ) { return 0; }
+    if( trk->eta() < m_eta_min ) { return 0; }
   }
 
-  // detEta
-  if( m_detEta_max != 1e8 ) {
-    if( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() > m_detEta_max ) { return 0; }
-  }
-  if( m_detEta_min != 1e8 ) {
-    if( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() < m_detEta_min ) { return 0; }
-  }
-
-  // mass
-  if( m_mass_max != 1e8 ) {
-    if( jet->m() > m_mass_max ) { return 0; }
-  }
-  if( m_mass_min != 1e8 ) {
-    if( jet->m() < m_mass_min ) { return 0; }
+  //
+  //  D0
+  //
+  if( m_d0_max != 1e8 ){
+    if( fabs(trk->d0()) > m_d0_max ) {return 0; }
   }
 
-  // rapidity
-  if( m_rapidity_max != 1e8 ) {
-    if( jet->rapidity() > m_rapidity_max ) { return 0; }
-  }
-  if( m_rapidity_min != 1e8 ) {
-    if( jet->rapidity() < m_rapidity_min ) { return 0; }
+  //
+  //  Z0
+  //
+  float z0 = (trk->z0() + trk->vz() - pvx->z());
+  if( m_z0_max != 1e8 ){
+    if( fabs(z0) > m_z0_max ) {return 0; }
   }
 
-  // JVF pileup cut
-  if( m_doJVF ){
-    if( jet->pt() < m_pt_max_JVF ) {
-      xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
-      if( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVF ){
-        if( jet->getAttribute< std::vector<float> >( "JVF" ).at( m_pvLocation ) < m_JVFCut ) {
-          return 0;
-        }
-      }
-    }
-  } // m_doJVF
+  //
+  //  z0 sin(theta)
+  //
+  float sinT        = sin(trk->theta());
+  if( m_z0sinT_max != 1e8 ){
+    if( fabs(z0*sinT) > m_z0sinT_max ) {return 0; }
+  }
+
+  //
+  //  nBLayer
+  //
+  uint8_t nBL       = -1;
+  if( m_nBL_min != 1e8 ){
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       std::cout << "ERROR: BLayer hits not filled" << std::endl;
+    if( nBL < m_nBL_min ) {return 0; }
+  }
+
+  //
+  //  nSi_min
+  //
+  uint8_t nSCT      = -1;
+  uint8_t nPix      = -1;
+  if( m_nSi_min != 1e8 ){
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        std::cout << "ERROR: Pix hits not filled" << std::endl;
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          std::cout << "ERROR: SCT hits not filled" << std::endl;
+    if( (nSCT+nPix) < m_nSi_min ) {return 0;}
+  }
+
+  //
+  //  nPix Holes
+  //
+  uint8_t nPixHoles = -1;
+  if( m_nPixHoles_max != 1e8 ){
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       std::cout << "ERROR: Pix holes not filled" << std::endl;
+    if( nPixHoles > m_nPixHoles_max ) {return 0;}
+  }
+
+  //
+  //  chi2
+  //
+  float        chi2        = trk->chiSquared();
+  float        ndof        = trk->numberDoF();
+  if( m_chi2NdofCut_max != 1e8){
+    float chi2NDoF     = (ndof > 0) ? chi2/ndof : -1;
+    if( chi2NDoF > m_chi2NdofCut_max ) {return 0;}
+  }
+
+  if( m_chi2Prob_max != 1e8 ){
+    float        chi2Prob    = TMath::Prob(chi2,ndof);
+    if( chi2Prob > m_chi2Prob_max) {return 0;}
+  }
 
 
   //
   //  Pass Keys
   //
   for(auto& passKey : m_passKeys){
-    if(!(jet->auxdata< char >(passKey) == '1')) { return 0;}
+    if(!(trk->auxdata< char >(passKey) == '1')) { return 0;}
   }
 
   //
   //  Fail Keys
   //
   for(auto& failKey : m_failKeys){
-    if(!(jet->auxdata< char >(failKey) == '0')) {return 0;}
+    if(!(trk->auxdata< char >(failKey) == '0')) {return 0;}
   }
 
-  //
-  //  Truth Label
-  //
-  if( m_truthLabel != -1 ) {
-    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
-    if(TruthLabelID( *jet ) != m_truthLabel) {return 0;}
-  }
 
   return 1;
 }

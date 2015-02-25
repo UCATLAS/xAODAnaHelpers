@@ -7,14 +7,20 @@
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODMuon/MuonContainer.h"
 #include "xAODCore/ShallowCopy.h"
+#include "AthContainers/ConstDataVector.h"
 #include "xAODAnaHelpers/MuonCalibrator.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "MuonMomentumCorrections/MuonCalibrationAndSmearingTool.h"
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
 
 #include "TEnv.h"
 #include "TSystem.h"
+
+using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonCalibrator)
@@ -45,28 +51,24 @@ EL::StatusCode  MuonCalibrator :: configure ()
   Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
-  
+  RETURN_CHECK_CONFIG( "MuonCalibrator::configure()", m_configName);
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
   m_debug         = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  // shallow copies are made with this output container name
+
   m_outContainerName        = config->GetValue("OutputContainer", "");
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  // shallow copies are made with this output container name
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+
   m_sort                    = config->GetValue("Sort",          false);
 
-  if( m_inContainerName.Length() == 0 ) {
+  if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -158,10 +160,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // initialize the muon calibration and smearing tool
   m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool( "MuonCorrectionTool" );
   m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE
-  if (! m_muonCalibrationAndSmearingTool->initialize().isSuccess() ){
-    Error("initialize()", "Failed to properly initialize the MonCalibrationAndSmearingTool Tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
 
   Info("initialize()", "MuonCalibrator Interface succesfully initialized!" );
 
@@ -180,57 +179,52 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   m_numEvent++;
 
-  const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   // get the collection from TEvent or TStore
-  const xAOD::MuonContainer* inMuons = 0;
-  if ( !m_event->retrieve( inMuons , m_inContainerName.Data() ).isSuccess() ){
-    if ( !m_store->retrieve( inMuons , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::MuonContainer* inMuons = HelperFunctions::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
 
   if(m_debug){
-    for( auto muon_itr = inMuons->begin(); muon_itr != inMuons->end(); ++muon_itr ){
-      Info("execute()", "  original muon pt = %.2f GeV", ((*muon_itr)->pt() * 1e-3));
+    for( auto muon: *inMuons ){
+      Info("execute()", "  original muon pt = %.2f GeV", (muon->pt() * 1e-3));
     }
   }
 
   // create shallow copy
-  std::pair< xAOD::MuonContainer*, xAOD::ShallowAuxContainer* > calibMuons = xAOD::shallowCopyContainer( *inMuons );
+  std::pair< xAOD::MuonContainer*, xAOD::ShallowAuxContainer* > calibMuonsSC = xAOD::shallowCopyContainer( *inMuons );
+  ConstDataVector<xAOD::MuonContainer>* calibMuonsCDV = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+  calibMuonsCDV->reserve( calibMuonsSC.first->size() );
 
   // calibrate only MC
   if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
-    xAOD::MuonContainer::iterator muonSC_itr = (calibMuons.first)->begin();
-    xAOD::MuonContainer::iterator muonSC_end = (calibMuons.first)->end();
-    for( ; muonSC_itr != muonSC_end; ++muonSC_itr ) {
-      if( m_muonCalibrationAndSmearingTool->applyCorrection(**muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
+    for( auto muonSC_itr : *(calibMuonsSC.first) ) {
+      /* https://twiki.cern.ch/twiki/bin/viewauth/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT#Muons */
+    // Marco: WHAT'S GOING ON HERE? if( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
         // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
         // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
         Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
-      }
-      if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", ((*muonSC_itr)->pt() * 1e-3));
-    } // end check is MC
-  } // end for loop over shallow copied muons
+    //  }
+      if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", (muonSC_itr->pt() * 1e-3));
+    }
+  }
 
   if(m_sort) {
-    std::sort( calibMuons.first->begin(), calibMuons.first->end(), HelperFunctions::sort_pt );
+    std::sort( calibMuonsSC.first->begin(), calibMuonsSC.first->end(), HelperFunctions::sort_pt );
   }
 
+  // save pointers in ConstDataVector with same order
+  /*
+  for( auto mu_itr : *(calibMuonsSC.first) ) {
+    calibMuonsCDV->push_back( mu_itr );
+  }
+  */
+  RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "", ToolName::CALIBRATOR), "");
+
   // add shallow copy to TStore
-  if( !m_store->record( calibMuons.first, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
-  if( !m_store->record( calibMuons.second, m_outAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outAuxContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first, m_outSCContainerName ), "Failed to store container");
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName ), "Failed to store aux container");
+  // add ConstDataVector to TStore
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, m_outContainerName ), "Failed to store const data container");
 
   return EL::StatusCode::SUCCESS;
 }

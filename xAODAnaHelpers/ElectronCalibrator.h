@@ -1,6 +1,7 @@
 #ifndef xAODAnaHelpers_ElectronCalibrator_H
 #define xAODAnaHelpers_ElectronCalibrator_H
 
+// EL include(s):
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
@@ -8,17 +9,9 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-namespace xAOD {
-#ifndef XAODEGAMMA_ELECTRONCONTAINER_H 
-  class ElectronContainer;
-#endif
-#ifndef XAODEGAMMA_ELECTRON_H 
-  class Electron;
-#endif
-}
 
 namespace CP{
-   class EgammaCalibrationAndSmearingTool; 
+   class EgammaCalibrationAndSmearingTool;
 }
 
 class ElectronCalibrator : public EL::Algorithm
@@ -39,14 +32,17 @@ public:
 private:
 
   // tools
-#ifndef __CINT__  
-  CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool; //! 
+#ifndef __CINT__
+  CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool; //!
 #endif // not __CINT__
 
   // configuration variables
-  TString m_inContainerName;
-  TString m_outContainerName;
-  TString m_outAuxContainerName;
+  std::string m_inContainerName;
+  std::string m_outContainerName;
+  std::string m_outAuxContainerName;
+  std::string m_outSCContainerName;
+  std::string m_outSCAuxContainerName;
+
   // sort after calibration
   bool    m_sort;
 
@@ -75,7 +71,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  
+
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronCalibrator, 1);
 };

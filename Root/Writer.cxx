@@ -9,6 +9,9 @@
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+
 #include "TEnv.h"
 #include "TSystem.h"
 
@@ -49,6 +52,8 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   xAOD::Init( "Writer" ).ignore(); // call before opening first file
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+  RETURN_CHECK_CONFIG( "Writer::setupJob()", m_configName );
+
   TEnv* config = new TEnv(m_configName.c_str());
   if( !config ) {
     Error("Writer::setupJob()", "Failed to read config file!");
@@ -125,10 +130,7 @@ EL::StatusCode Writer :: initialize ()
 
   // output xAOD
   TFile * file = wk()->getOutputFile (m_outputLabel.Data());
-  if(!m_event->writeTo(file).isSuccess()){
-    Error("initialize()", "Failed to write event to ouput file!");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "Writer::initialize()", m_event->writeTo(file), "Failed to write event to output file");
 
   //FIXME add this as well
 // Set which variables not to write out:
@@ -235,10 +237,7 @@ EL::StatusCode Writer :: finalize ()
 
   // finalize and close our output xAOD file ( and write MetaData tree )
   TFile * file = wk()->getOutputFile(m_outputLabel.Data());
-  if( ! m_event->finishWritingTo( file ).isSuccess() ) {
-    Error(m_name.c_str(),"Failed to finish writing event to output file!");
-    return EL::StatusCode::FAILURE;
-  }
+  RETURN_CHECK( "Writer::finalize()", m_event->finishWritingTo( file ), "Failed to finish writing event to output file");
 
   return EL::StatusCode::SUCCESS;
 }

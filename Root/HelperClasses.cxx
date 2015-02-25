@@ -1,5 +1,4 @@
 #include "xAODAnaHelpers/HelperClasses.h"
-
 #include "xAODPrimitives/IsolationType.h"
 #include "xAODMuon/Muon.h"
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
@@ -20,7 +19,6 @@ namespace HelperClasses{
   }
 
   /* parser for electron likelihood PID enum */
-  ///*
   template <>
   EnumParser<LikeEnum::Menu>::EnumParser()
   {
@@ -31,7 +29,6 @@ namespace HelperClasses{
     TString VeryTight("VeryTight");         enumMap.insert(std::make_pair(VeryTight  , LikeEnum::VeryTight));    
     TString LooseRelaxed("LooseRelaxed");   enumMap.insert(std::make_pair(LooseRelaxed      , LikeEnum::LooseRelaxed));
   }
-  //*/
 
   /* parser for muon quality enum */
   template <>
@@ -53,5 +50,34 @@ namespace HelperClasses{
     TString CaloTagged("CaloTagged");                                      enumMap.insert(std::make_pair(CaloTagged        	      , xAOD::Muon::CaloTagged));
     TString SiliconAssociatedForwardMuon("SiliconAssociatedForwardMuon");  enumMap.insert(std::make_pair(SiliconAssociatedForwardMuon , xAOD::Muon::SiliconAssociatedForwardMuon));
   }
+
+
+  /**************************************
+   *
+   *  Strings are used to turn on and off
+   *  histograms and branches in the tree
+   *  The following structs hold the bools
+   *  used to control the content and also
+   *  have the string which is necessary to
+   *  turn a set on
+   *
+   **************************************/
+  bool InfoSwitch::parse(std::string flag)
+  {
+    return m_configStr.find(flag) != std::string::npos;
+  }
+
+  void JetInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+    m_clean         = parse("clean");
+    m_energy        = parse("energy");
+    m_resolution    = parse("resolution");
+    m_truth         = parse("truth");
+    m_truthDetails  = parse("truth_details");
+    m_layer         = parse("layer");
+    m_trackPV       = parse("trackPV");
+    m_trackAll      = parse("trackAll");
+  }
+
 
 } // close namespace HelperClasses

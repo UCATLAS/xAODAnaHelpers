@@ -1,6 +1,7 @@
 #ifndef xAODAnaHelpers_BasicEventSelection_H
 #define xAODAnaHelpers_BasicEventSelection_H
 
+// EL include(s):
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Algorithm.h>
 
@@ -11,6 +12,7 @@
 
 // EDM include(s):
 // custom include(s):
+
 // ROOT include(s):
 #include "TH1D.h"
 
@@ -51,7 +53,7 @@ class BasicEventSelection : public EL::Algorithm
     // GRL
     std::string m_GRLxml;   //!
     // primary vertex
-    TString m_vertexContainerName; //!
+    std::string m_vertexContainerName; //!
     int m_PVNTrack;                //!
     // cutflow
     TH1D* m_cutflowHist;           //!

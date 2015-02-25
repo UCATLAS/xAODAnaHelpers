@@ -1,12 +1,16 @@
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
-
+#include "AthContainers/ConstDataVector.h"
 #include "xAODTracking/VertexContainer.h"
 #include "xAODEventInfo/EventInfo.h"
+#include "xAODAnaHelpers/HelperFunctions.h"
 
 #include <xAODAnaHelpers/TrackHists.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
+
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
@@ -14,10 +18,14 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
-TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName) :
+TrackHistsAlgo :: TrackHistsAlgo () {
+}
+
+TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName, std::string containerName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
+  m_inContainerName(containerName),
   m_plots(0)
 {
 }
@@ -56,19 +64,18 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 EL::StatusCode TrackHistsAlgo :: configure ()
 {
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
+  RETURN_CHECK_CONFIG( "TrackHistsAlgo::configure()", m_configName);
 
   // the file exists, use TEnv to read it off
   TEnv* config = new TEnv(m_configName.c_str());
-  m_inContainerName         = config->GetValue("InputContainer",  "");
+
+  //
+  //  If Container Name is already set dont read it from the config
+  //   (Allows to pass as argument in setup script)
+  //
+  if(m_inContainerName.empty())
+     m_inContainerName         = config->GetValue("InputContainer",  "");
+
   m_detailStr               = config->GetValue("DetailStr",       "");
 
   if( m_inContainerName.empty() || m_detailStr.empty() ){
@@ -96,26 +103,20 @@ EL::StatusCode TrackHistsAlgo :: initialize ()
 
 EL::StatusCode TrackHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("AnalysisLoop::execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);;
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
     eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
   }
 
-  const xAOD::TrackParticleContainer* tracks = 0;
-  if ( !m_event->retrieve( tracks, m_inContainerName ).isSuccess() ){
-    if ( !m_store->retrieve( tracks, m_inContainerName ).isSuccess() ){
-      Error("TrackHistsAlgo::execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::TrackParticleContainer* tracks = HelperFunctions::getContainer<xAOD::TrackParticleContainer>(m_inContainerName, m_event, m_store);;
 
-  m_plots->execute( tracks, eventWeight );
+  // get primary vertex
+  const xAOD::VertexContainer *vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
+
+  m_plots->execute( tracks, pvx, eventWeight );
 
   return EL::StatusCode::SUCCESS;
 }

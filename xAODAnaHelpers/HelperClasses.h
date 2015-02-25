@@ -6,8 +6,35 @@
 
 #include "TString.h"
 
+/* stuff below is for templating getContainer */
+#include <RootCoreUtils/ThrowMsg.h>
+#include <AthContainers/ConstDataVector.h>
+
+#include <xAODRootAccess/TEvent.h>
+#include <xAODRootAccess/TStore.h>
+
+#include <xAODEventInfo/EventInfo.h>
+
 namespace HelperClasses {
-  /* template enum parser */
+
+  enum class ContainerType {
+      UNKNOWN      = 0,
+      CONSTDV      = 1,
+      CONSTCONT    = 2,
+  };
+
+  enum class ToolName {
+      MUONSELECTOR = 0,
+      ELECTRONSELECTOR,
+      JETSELECTOR,
+      BJETSELECTOR,
+      OVERLAPREMOVER,
+      CALIBRATOR,
+  };
+
+  /* template enum parser
+  shamelessly copied from: http://stackoverflow.com/a/726681
+  */
   template <typename T>
   class EnumParser
   {
@@ -16,19 +43,45 @@ namespace HelperClasses {
      EnumParser();
 
      T parseEnum(const TString &value)
-     { 
+     {
 	/*
 	for (auto it = enumMap.begin(); it != enumMap.end(); ++it){
 	   std::cout << "element: " << (*it).first << std::endl;
-	} 
+	}
         */
         typename std::multimap <TString, T>::const_iterator iValue = enumMap.find(value);
         if (iValue == enumMap.end()){
             std::cerr << "Could not find input TString in enum!" << std::endl;
-	}   
+	}
         return iValue->second;
      }
   };
+
+
+  struct InfoSwitch {
+    std::string m_configStr;
+    InfoSwitch(std::string configStr) : m_configStr(configStr) { };
+    bool parse(std::string flag);
+  };
+
+  struct JetInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    bool m_clean;
+    bool m_energy;
+    bool m_resolution;
+    bool m_truth;
+    bool m_truthDetails;
+    bool m_layer;
+    bool m_trackPV;
+    bool m_trackAll;
+    void initialize();
+    JetInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
+
+
+
 } // close namespace HelperClasses
+
 
 # endif

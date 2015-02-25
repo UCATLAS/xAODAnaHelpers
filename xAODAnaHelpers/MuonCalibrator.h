@@ -1,6 +1,7 @@
 #ifndef xAODAnaHelpers_MuonCalibrator_H
 #define xAODAnaHelpers_MuonCalibrator_H
 
+// EL include(s)
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
@@ -8,18 +9,11 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-namespace xAOD {
-#ifndef XAODMUON_MUONCONTAINER_H 
-  class MuonContainer;
-#endif
-#ifndef XAODMUON_MUON_H 
-  class Muon;
-#endif
-}
-
+#ifndef __CINT__
 namespace CP{
-   class MuonCalibrationAndSmearingTool; 
+   class MuonCalibrationAndSmearingTool;
 }
+#endif
 
 class MuonCalibrator : public EL::Algorithm
 {
@@ -39,14 +33,17 @@ public:
 private:
 
   // tools
-#ifndef __CINT__  
-  CP::MuonCalibrationAndSmearingTool *m_muonCalibrationAndSmearingTool; //! 
+#ifndef __CINT__
+  CP::MuonCalibrationAndSmearingTool *m_muonCalibrationAndSmearingTool; //!
 #endif // not __CINT__
 
   // configuration variables
-  TString m_inContainerName;
-  TString m_outContainerName;
-  TString m_outAuxContainerName;
+  std::string m_inContainerName;
+  std::string m_outContainerName;
+  std::string m_outAuxContainerName;
+  std::string m_outSCContainerName;
+  std::string m_outSCAuxContainerName;
+
   // sort after calibration
   bool    m_sort;
 
@@ -75,7 +72,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  
+
   // this is needed to distribute the algorithm to the workers
   ClassDef(MuonCalibrator, 1);
 };

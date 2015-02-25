@@ -1,20 +1,47 @@
+/******************************************
+ *
+ * Interface to CP Electron calibration tool(s).
+ *
+ * M. Milesi (marco.milesi@cern.ch)
+ * Jan 28 15:29 AEST 2015
+ *
+ ******************************************/
+
+// c++ include(s):
 #include <iostream>
 
+// EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+// EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODEgamma/Electron.h"
+#include "xAODBase/IParticleHelpers.h"
+#include "xAODBase/IParticleContainer.h"
+#include "xAODBase/IParticle.h"
+#include "AthContainers/ConstDataVector.h"
+#include "AthContainers/DataVector.h"
 #include "xAODCore/ShallowCopy.h"
+
+// package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/ElectronCalibrator.h"
 
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+
+// external tools include(s):
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
 
+// ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
+
+using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronCalibrator)
@@ -45,28 +72,23 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   Info("configure()", "Configuing ElectronCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
-  
+  RETURN_CHECK_CONFIG( "ElectronCalibrator::configure()", m_configName);
+
   TEnv* config = new TEnv(m_configName.c_str());
 
   // read debug flag from .config file
-  m_debug         = config->GetValue("Debug" , false );
+  m_debug                   = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  // shallow copies are made with this output container name
   m_outContainerName        = config->GetValue("OutputContainer", "");
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  // shallow copies are made with this output container name
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+
   m_sort                    = config->GetValue("Sort",          false);
 
-  if( m_inContainerName.Length() == 0 ) {
+  if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -159,10 +181,8 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", "es2012c");
   m_EgammaCalibrationAndSmearingTool->setProperty("ResolutionType", "SigmaEff90");
-  if (! m_EgammaCalibrationAndSmearingTool->initialize().isSuccess() ){
-    Error("initialize()", "Failed to properly initialize the EgammaCalibrationAndSmearingTool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+
+  RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
 
   Info("initialize()", "ElectronCalibrator Interface succesfully initialized!" );
 
@@ -181,20 +201,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
   m_numEvent++;
 
-  const xAOD::EventInfo* eventInfo = 0;
-  if ( ! m_event->retrieve(eventInfo, "EventInfo").isSuccess() ) {
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   // get the collection from TEvent or TStore
-  const xAOD::ElectronContainer* inElectrons = 0;
-  if ( !m_event->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
-    if ( !m_store->retrieve( inElectrons , m_inContainerName.Data() ).isSuccess() ){
-      Error("execute()  ", "Failed to retrieve %s container. Exiting.", m_inContainerName.Data() );
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  const xAOD::ElectronContainer* inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
 
   if(m_debug){
     for( auto Electron_itr = inElectrons->begin(); Electron_itr != inElectrons->end(); ++Electron_itr ){
@@ -202,46 +212,42 @@ EL::StatusCode ElectronCalibrator :: execute ()
     }
   }
 
-  // before applying calibration
-  m_EgammaCalibrationAndSmearingTool->setDefaultConfiguration(eventInfo);
-
   // create shallow copy
-  std::pair< xAOD::ElectronContainer*, xAOD::ShallowAuxContainer* > calibElectrons = xAOD::shallowCopyContainer( *inElectrons );
+  std::pair< xAOD::ElectronContainer*, xAOD::ShallowAuxContainer* > calibElectronsSC = xAOD::shallowCopyContainer( *inElectrons );
+  ConstDataVector<xAOD::ElectronContainer>* calibElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
+  calibElectronsCDV->reserve( calibElectronsSC.first->size() );
 
   // calibrate
-  xAOD::ElectronContainer::iterator electronSC_itr = (calibElectrons.first)->begin();
-  xAOD::ElectronContainer::iterator electronSC_end = (calibElectrons.first)->end();
-  for( ; electronSC_itr != electronSC_end; ++electronSC_itr ) {
-     // set the smearing seed if needed
-     int i = std::distance((calibElectrons.first)->begin(), electronSC_itr);
-     m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber()+100*i);
-     //if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
+  for( auto elSC_itr : *(calibElectronsSC.first) ) {
+     // set smearing seeding if needed (already done by default - check TWiki: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonFourMomentumCorrection )
+     // int i = std::distance((calibElectronsSC.first)->begin(), &elSC_itr);
+     // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber()+100*i);
+
      // apply correction
-     m_EgammaCalibrationAndSmearingTool->applyCorrection(**electronSC_itr, eventInfo);
-     if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", ((*electronSC_itr)->pt() * 1e-3));
-     //} // end check is MC
-  } // end for loop over shallow copied Electrons
+     m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr );
+     if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", (elSC_itr->pt() * 1e-3));
+  }
 
   if(m_sort) {
-    std::sort( calibElectrons.first->begin(), calibElectrons.first->end(), HelperFunctions::sort_pt );
+    std::sort( calibElectronsSC.first->begin(), calibElectronsSC.first->end(), HelperFunctions::sort_pt );
   }
+
+  // save pointers in ConstDataVector with same order
+  /*
+  for( auto elSC_itr : *(calibElectronsSC.first) ) {
+    calibElectronsCDV->push_back( elSC_itr );
+  }
+  */
+  RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, "", ToolName::CALIBRATOR), "");
 
   // add shallow copy to TStore
-  if( !m_store->record( calibElectrons.first, m_outContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
-  if( !m_store->record( calibElectrons.second, m_outAuxContainerName.Data() ).isSuccess() ){
-    Error("execute()  ", "Failed to store aux container %s. Exiting.", m_outAuxContainerName.Data() );
-    return EL::StatusCode::FAILURE;
-  }
-
-  // shall we delete containers added to to TStore ? https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT#Electron_calibration_and_smearing_to
-  //delete calibElectrons.first; delete calibElectrons.second;
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first, m_outSCContainerName ), "Failed to store container.");
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.second, m_outSCAuxContainerName ), "Failed to store aux container.");
+  // add ConstDataVector to TStore
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsCDV, m_outContainerName ), "Failed to store const data container.");
 
   return EL::StatusCode::SUCCESS;
 }
-
 
 
 EL::StatusCode ElectronCalibrator :: postExecute ()
@@ -298,3 +304,4 @@ EL::StatusCode ElectronCalibrator :: histFinalize ()
 
   return EL::StatusCode::SUCCESS;
 }
+

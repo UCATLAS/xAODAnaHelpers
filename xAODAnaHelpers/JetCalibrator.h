@@ -1,22 +1,13 @@
 #ifndef xAODAnaHelpers_JetCalibrator_H
 #define xAODAnaHelpers_JetCalibrator_H
 
-#include <EventLoop/StatusCode.h>
+// EL include(s)
 #include <EventLoop/Algorithm.h>
 
 // Infrastructure include(s):
 #include "xAODRootAccess/Init.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
-
-namespace xAOD {
-#ifndef XAODJET_JETCONTAINER_H 
-  class JetContainer;
-#endif
-#ifndef XAODJET_JET_H 
-  class Jet;
-#endif
-}
 
 class JetCalibrationTool;
 class JetCleaningTool;
@@ -34,30 +25,31 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  bool m_isMC;            //!
-  /* this should be read from event info- sample name or something...now forced to true */
-  bool m_isFullSim;       //!
+  bool m_isMC;
+  bool m_isFullSim;
 
   bool m_debug;           //!
 
 private:
 
   // tools
+#ifndef __CINT__
   JetCalibrationTool * m_jetCalibration; //!
   JetCleaningTool    * m_jetCleaning;    //!
+#endif // not __CINT__
 
   // configuration variables
-  TString m_inContainerName;        //!
-  TString m_outContainerName;       //!
-  TString m_outSCContainerName;     //!
-  TString m_outSCAuxContainerName;  //!
-  
-  TString m_jetAlgo;                //!
-  TString m_calibConfigData;        //!
-  TString m_calibConfigFullSim;     //!
-  TString m_calibConfigAFII;        //! 
-  TString m_calibConfig;            //!
-  TString m_calibSequence;          //!
+  std::string m_inContainerName;        //!
+  std::string m_outContainerName;       //!
+  std::string m_outSCContainerName;     //!
+  std::string m_outSCAuxContainerName;  //!
+
+  std::string m_jetAlgo;                //!
+  std::string m_calibConfigData;        //!
+  std::string m_calibConfigFullSim;     //!
+  std::string m_calibConfigAFII;        //!
+  std::string m_calibConfig;            //!
+  std::string m_calibSequence;          //!
   // sort after calibration
   bool    m_sort;                   //!
 
@@ -88,7 +80,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  
+
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetCalibrator, 1);
 };

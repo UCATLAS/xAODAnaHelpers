@@ -17,7 +17,6 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  int m_type;
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
@@ -25,12 +24,10 @@ public:
 
 private:
 
-#ifndef __CINT__
   JetHists* m_plots; //!
-#endif //not __CINT__
 
   // configuration variables
-  TString m_inContainerName;      //!
+  std::string m_inContainerName;      //!
   std::string m_detailStr;        //!
 
   // variables that don't get filled at submission time should be

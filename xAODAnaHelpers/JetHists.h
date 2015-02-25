@@ -2,6 +2,7 @@
 #define xAODAnaHelpers_JetHists_H
 
 #include "xAODAnaHelpers/HistogramManager.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 #include <xAODJet/JetContainer.h>
 
 class JetHists : public HistogramManager
@@ -18,12 +19,9 @@ class JetHists : public HistogramManager
     using HistogramManager::execute; // overload
 
   protected:
-    
-    // bools to control which histograms are filled
-    bool m_fillKinematic;     //!
-    bool m_fillClean;         //!
-    bool m_fillEnergy;        //!
-    bool m_fillResolution;    //!
+
+    // holds bools that control which histograms are filled
+    HelperClasses::JetInfoSwitch* m_infoSwitch;
 
   private:
     //basic
@@ -58,6 +56,34 @@ class JetHists : public HistogramManager
     TH1F* m_jetGhostTruthPt;        //!
     TH2F* m_jetPt_vs_resolution;    //!
     TH2F* m_jetGhostTruthPt_vs_resolution; //!
+
+    // truth jets
+    TH1F* m_truthLabelID;          //!
+    TH1F* m_truthCount;            //!
+    TH1F* m_truthPt;               //!
+    TH1F* m_truthDr_B;             //!
+    TH1F* m_truthDr_C;             //!
+    TH1F* m_truthDr_T;             //!
+
+    // Detailed truth jet plots
+    TH1F* m_truthCount_BhadFinal;  //!
+    TH1F* m_truthCount_BhadInit ;  //!
+    TH1F* m_truthCount_BQFinal  ;  //!
+    TH1F* m_truthPt_BhadFinal;  //!
+    TH1F* m_truthPt_BhadInit ;  //!
+    TH1F* m_truthPt_BQFinal  ;  //!
+
+    TH1F* m_truthCount_ChadFinal;  //!
+    TH1F* m_truthCount_ChadInit ;  //!
+    TH1F* m_truthCount_CQFinal  ;  //!
+    TH1F* m_truthPt_ChadFinal;  //!
+    TH1F* m_truthPt_ChadInit ;  //!
+    TH1F* m_truthPt_CQFinal  ;  //!
+
+
+    TH1F* m_truthCount_TausFinal; //!
+    TH1F* m_truthPt_TausFinal   ; //!
+
 
 
 };

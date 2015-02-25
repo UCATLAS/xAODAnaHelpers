@@ -1,34 +1,34 @@
-#ifndef xAODAnaHelpers_TrackHistsAlgo_H
-#define xAODAnaHelpers_TrackHistsAlgo_H
+#ifndef ${package}_${name}HistsAlgo_H
+#define ${package}_${name}HistsAlgo_H
 
 #include <EventLoop/Algorithm.h>
+#include <EventLoop/StatusCode.h>
+
 // Infrastructure include(s):
 #include "xAODRootAccess/Init.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-class TrackHists;
+class ${name}Hists;
 
-class TrackHistsAlgo : public EL::Algorithm
+class ${name}HistsAlgo : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  
+
   std::string m_name;
   std::string m_configName;
-  std::string m_inContainerName;  
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
 
-private:
 
-#ifndef __CINT__
-  TrackHists* m_plots; //!
-#endif // not __CINT__
+private:
+  ${name}Hists* m_plots; //!
 
   // configuration variables
+  std::string m_inContainerName;  //!
   std::string m_detailStr;        //!
 
   // variables that don't get filled at submission time should be
@@ -38,9 +38,11 @@ public:
   // Tree *myTree; //!
   // TH1 *myHist; //!
 
+
+
   // this is a standard constructor
-  TrackHistsAlgo ();
-  TrackHistsAlgo (std::string name, std::string configName, std::string containerName="");
+  ${name}HistsAlgo ();
+  ${name}HistsAlgo (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -57,7 +59,7 @@ public:
   virtual EL::StatusCode configure ();
 
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TrackHistsAlgo, 1);
+  ClassDef(${name}HistsAlgo, 1);
 };
 
 #endif

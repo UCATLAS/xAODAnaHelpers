@@ -13,7 +13,7 @@ PACKAGE          = xAODAnaHelpers
 PACKAGE_PRELOAD  = 
 
 # additional compilation flags to pass (not propagated to dependent packages):
-PACKAGE_CXXFLAGS = 
+PACKAGE_CXXFLAGS = -Wno-unused-local-typedefs
 
 # additional compilation flags to pass (propagated to dependent packages):
 PACKAGE_OBJFLAGS = 

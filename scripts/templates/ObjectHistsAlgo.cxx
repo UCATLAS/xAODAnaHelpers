@@ -2,15 +2,16 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
-#include <xAODJet/JetContainer.h>
-#include <xAODTracking/VertexContainer.h>
-#include <xAODEventInfo/EventInfo.h>
-#include <AthContainers/ConstDataVector.h>
+#include "xAODJet/JetContainer.h"
+#include "xAODTracking/VertexContainer.h"
+#include "xAODEventInfo/EventInfo.h"
+#include "AthContainers/ConstDataVector.h"
 
-#include <xAODAnaHelpers/JetHists.h>
-#include <xAODAnaHelpers/JetHistsAlgo.h>
+#include <${package}/${name}Hists.h>
+#include <${package}/${name}HistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
+
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
@@ -18,27 +19,28 @@
 #include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(JetHistsAlgo)
+ClassImp(${name}HistsAlgo)
 
-JetHistsAlgo :: JetHistsAlgo () {}
+${name}HistsAlgo :: ${name}HistsAlgo () {
+}
 
-JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
+${name}HistsAlgo :: ${name}HistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_plots(nullptr)
+  m_plots(0)
 {
 }
 
-EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
+EL::StatusCode ${name}HistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
-  xAOD::Init("JetHistsAlgo").ignore();
+  xAOD::Init("${name}HistsAlgo").ignore();
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo :: histInitialize ()
+EL::StatusCode ${name}HistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
@@ -52,17 +54,17 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
   }
 
   // declare class and add histograms to output
-  m_plots = new JetHists(m_name, m_detailStr);
+  m_plots = new ${name}Hists(m_name, m_detailStr);
   m_plots -> initialize( );
   m_plots -> record( wk() );
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo :: configure ()
+EL::StatusCode ${name}HistsAlgo :: configure ()
 {
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG("JetHistsAlgo::configure()", m_configName);
+  RETURN_CHECK_CONFIG( "${name}HistsAlgo::configure()", m_configName);
 
   // the file exists, use TEnv to read it off
   TEnv* config = new TEnv(m_configName.c_str());
@@ -78,24 +80,23 @@ EL::StatusCode JetHistsAlgo :: configure ()
 
   // everything seems preliminarily ok, let's print config and say we were successful
   config->Print();
-  delete config;
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode JetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+EL::StatusCode ${name}HistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode ${name}HistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode JetHistsAlgo :: initialize ()
+EL::StatusCode ${name}HistsAlgo :: initialize ()
 {
-  Info("initialize()", m_name.c_str());
+  Info("initialize()", "${name}HistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo :: execute ()
+EL::StatusCode ${name}HistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -103,11 +104,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
   }
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
-
-  // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
-  /*int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);*/
+  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);;
 
   /* two ways to fill */
 
@@ -115,23 +112,24 @@ EL::StatusCode JetHistsAlgo :: execute ()
   m_plots->execute( inJets, eventWeight );
 
   /* 2. loop over the jets
-  for( auto jet_itr : *inJets ) {
-    m_plots->execute( jet_itr, eventWeight );
+  xAOD::${name}Container::const_iterator jet_itr = jets->begin();
+  xAOD::${name}Container::const_iterator jet_end = jets->end();
+  for( const auto jet: *inJets ) {
+    m_plots->execute( jet, eventWeight );
   }
   */
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode ${name}HistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode ${name}HistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
 
-EL::StatusCode JetHistsAlgo :: finalize () {
-  Info("finalize()", m_name.c_str());
+EL::StatusCode ${name}HistsAlgo :: histFinalize () {
+  // clean up memory
   if(m_plots){
     delete m_plots;
     m_plots = 0;
   }
   return EL::StatusCode::SUCCESS;
 }
-
-EL::StatusCode JetHistsAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
