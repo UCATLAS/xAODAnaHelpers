@@ -382,10 +382,10 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
   }
-
+  const xAOD::VertexContainer* vertices = 0;
   if(!m_truthLevelOnly) {
-    const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
-    
+    vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
+
     if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
