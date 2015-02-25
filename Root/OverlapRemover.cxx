@@ -218,7 +218,7 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   // initialize overlap removal tool
   m_overlapRemovalTool = new OverlapRemovalTool("OverlapRemovalTool");
-  m_overlapRemovalTool->msg().setLevel( MSG::DEBUG ); // VERBOSE, INFO, DEBUG
+  m_overlapRemovalTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
 
   // set object decoration
   const std::string selected_label = (m_useSelected) ? "passSel" : "";  // set with decoration flag you use for selected objects if want to consider only selected objects in OR, otherwise it will perform OR on all objects
