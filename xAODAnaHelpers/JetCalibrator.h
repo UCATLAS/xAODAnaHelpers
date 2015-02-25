@@ -9,13 +9,14 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// CP interface includes
+#include "PATInterfaces/SystematicRegistry.h"
+#include "PATInterfaces/SystematicSet.h"
+#include "PATInterfaces/SystematicVariation.h"
+
 class JetCalibrationTool;
 class JetCleaningTool;
 class JetUncertaintiesTool;
-namespace CP {
-  class SystematicVariation;
-  class SystematicSet;
-}
 
 class JetCalibrator : public EL::Algorithm
 {
@@ -33,6 +34,12 @@ public:
   bool m_isMC;
   bool m_isFullSim;
 
+  // systematics
+  std::string m_systName;
+  float m_systVal;
+  std::vector<CP::SystematicSet> m_sysList; //!
+  bool m_runSysts;                          //!
+
   bool m_debug;           //!
 
 private:
@@ -43,7 +50,6 @@ private:
   JetCleaningTool       * m_jetCleaning;    //!
   JetUncertaintiesTool  * m_jetUncert;      //!
 #endif // not __CINT__
-  CP::SystematicVariation * m_syst;
 
   // configuration variables
   std::string m_inContainerName;        //!
@@ -64,6 +70,7 @@ private:
 
   std::string m_jetCalibCutLevel;   //!
 
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -74,7 +81,7 @@ public:
 
   // this is a standard constructor
   JetCalibrator ();
-  JetCalibrator (std::string name, std::string configName, CP::SystematicVariation* syst = 0);
+  JetCalibrator (std::string name, std::string configName, std::string systName = "", float systVal = 0);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

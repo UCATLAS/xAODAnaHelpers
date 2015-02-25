@@ -26,10 +26,6 @@
 #include "AthContainers/DataVector.h"
 #include "xAODCore/ShallowCopy.h"
 
-// CP interface includes
-#include "PATInterfaces/SystematicRegistry.h"
-#include "PATInterfaces/SystematicVariation.h"
-
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
@@ -53,30 +49,18 @@ ClassImp(JetCalibrator)
 JetCalibrator :: JetCalibrator () {
 }
 
-JetCalibrator :: JetCalibrator (std::string name, std::string configName, CP::SystematicVariation* syst) :
+JetCalibrator :: JetCalibrator (std::string name, std::string configName, 
+    std::string systName, float systVal ) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
   m_jetCalibration(0),
   m_jetCleaning(0),
   m_jetUncert(0),
-  m_syst(syst)
+  m_systName(systName),
+  m_systVal(systVal),
+  m_runSysts(false)
 {
-//  if( syst ) { 
-//    // for continuous systematics just evaluate +/-1 sigma
-//    if (*syst == CP::SystematicVariation (syst->basename(), CP::SystematicVariation::CONTINUOUS)) {
-//      m_sysList.push_back(CP::SystematicSet());
-//      m_sysList.back().insert(CP::SystematicVariation (syst->basename(), syst->parameter()));
-//    } else {
-//      m_sysList.push_back(CP::SystematicSet());
-//      m_sysList.back().insert(*syst);
-//    }
-////    *m_syst = m_sysList[0];
-////    std::cout << "CHECK " << m_syst << std::endl;
-////    std::cout << "CHECK " << m_syst->basename() << std::endl;
-//  }
-  std::cout << "CHECK " << m_syst << std::endl;
-  std::cout << "CHECK " << m_syst->basename() << std::endl;
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
   // the most basic initialization here, since this method will be
@@ -204,8 +188,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing JetCalibrator Interface... \n");
-  std::cout << "CHECK " << m_syst << std::endl;
-  std::cout << "CHECK " << m_syst->basename() << std::endl;
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -277,8 +259,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
-  if ( !m_uncertConfig.empty() && m_syst != 0) {
-    std::cout << "JETUNCERT " << m_uncertConfig << std::endl << "JETUNCERT " << m_syst << std::endl;
+  if ( !m_uncertConfig.empty() && ! m_systName.empty()) {
     m_jetUncert = new JetUncertaintiesTool("JESProvider");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("JetDefinition",m_jetUncertAlgo), "");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("MCType","MC12"), "");
@@ -287,15 +268,27 @@ EL::StatusCode JetCalibrator :: initialize ()
     CP::SystematicSet recSysts = m_jetUncert->recommendedSystematics();
     Info("initialize()"," The following systematics are recommended:");
     for( auto syst : recSysts ) {
-      Info("initialize()","  %s", (syst.name()).c_str());
       Info("initialize()","  %s", (syst.basename()).c_str());
-      std::cout << m_syst << std::endl;
-      if( m_syst->basename() == syst.basename() ) {
-        Info("initialize()","Found match! Applying systematic %s", m_syst->name().c_str());
-        Info("initialize()","Found match! Applying systematic %s", m_syst->basename().c_str());
-      }
-    }
-  }
+      if( m_systName == syst.basename() ) {
+        Info("initialize()","Found match! Applying systematic %s", syst.basename().c_str());
+        // continuous systematics - can choose at what sigma to evaluate
+        if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
+          m_sysList.push_back(CP::SystematicSet());
+          if ( m_systVal == 0 ) { 
+            Info("initialize()","Setting continuous systematic to 0 is nominal! Please check!");
+            return EL::StatusCode::FAILURE;
+          }
+          m_sysList.back().insert(CP::SystematicVariation (syst.basename(), m_systVal));
+        } 
+        // not a continuous system
+        else {
+          m_sysList.push_back(CP::SystematicSet());
+          m_sysList.back().insert(syst);
+        }
+      } // found match!
+    } // loop over recommended systematics
+    if( !m_sysList.empty() ) { m_runSysts = true; }
+  } // running systematics
 
   return EL::StatusCode::SUCCESS;
 }
@@ -395,10 +388,6 @@ EL::StatusCode JetCalibrator :: finalize ()
   if( m_jetUncert ) {
     delete m_jetUncert;
     m_jetUncert = 0;
-  }
-  if( m_syst ) {
-    delete m_syst;
-    m_syst = 0;
   }
 
   return EL::StatusCode::SUCCESS;

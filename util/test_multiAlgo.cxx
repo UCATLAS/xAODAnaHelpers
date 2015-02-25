@@ -59,8 +59,7 @@ int main( int argc, char* argv[] ) {
 //  JET_GroupedNP_3__continuous
 //  JET_RelativeNonClosure_MC12__continuous
 
-  CP::SystematicVariation* syst = new CP::SystematicVariation("JET_GroupedNP_1", -1);
-  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config", syst);
+  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config", "JET_GroupedNP_1", -1);
   MuonCalibrator* muonCalib                     = new MuonCalibrator(       "muonCalib",                localDataDir+"muonCalib.config");
   ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config");
 
