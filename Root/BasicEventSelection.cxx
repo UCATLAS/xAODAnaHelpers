@@ -74,15 +74,17 @@ EL::StatusCode BasicEventSelection :: configure ()
   // basics
   m_debug         = env->GetValue("Debug"     ,     0         );
   m_cleanTStore   = env->GetValue("CleanTStore",    true      );
+  m_truthLevelOnly = env->GetValue("TruthLevelOnly",    false      );
 
   // GRL
   m_GRLxml        = env->GetValue("GRL"       ,     "/afs/cern.ch/user/a/atlasdqm/grlgen/All_Good/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );    //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
 
-  // primary vertex
-  m_vertexContainerName = env->GetValue("VertexContainer", "PrimaryVertices");
-  // number of tracks to require to count PVs
-  m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
-
+  if(!m_truthLevelOnly) {
+    // primary vertex
+    m_vertexContainerName = env->GetValue("VertexContainer", "PrimaryVertices");
+    // number of tracks to require to count PVs
+    m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
+  }
   env->Print();
   Info("configure()", "BasicEventSelection succesfully configured! \n");
 
@@ -381,11 +383,13 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   }
 
-  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
-
-  if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+  if(!m_truthLevelOnly) {
+    const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
+    
+    if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
+      wk()->skipEvent();
+      return EL::StatusCode::SUCCESS;
+    }
   }
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
