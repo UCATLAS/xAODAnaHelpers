@@ -52,14 +52,14 @@ JetCalibrator :: JetCalibrator () {
 JetCalibrator :: JetCalibrator (std::string name, std::string configName, 
     std::string systName, float systVal ) :
   Algorithm(),
-  m_name(name),
-  m_configName(configName),
-  m_jetCalibration(0),
-  m_jetCleaning(0),
-  m_jetUncert(0),
-  m_systName(systName),
-  m_systVal(systVal),
-  m_runSysts(false)
+  m_name(name),               // algo name
+  m_configName(configName),   // path + name of config file
+  m_systName(systName),       // if running systs - the name of the systematic
+  m_systVal(systVal),         // if running systs - the value ( +/- 1 )
+  m_runSysts(false),          // gets set later is syst applies to this tool
+  m_jetCalibration(0),        // JetCalibrationTool
+  m_jetCleaning(0),           // JetCleaningTool
+  m_jetUncert(0)              // JetUncertaintiesTool
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -259,12 +259,13 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
-  if ( !m_uncertConfig.empty() && ! m_systName.empty()) {
+  if ( !m_uncertConfig.empty() && !m_systName.empty()) {
     m_jetUncert = new JetUncertaintiesTool("JESProvider");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("JetDefinition",m_jetUncertAlgo), "");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("MCType","MC12"), "");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("ConfigFile", m_uncertConfig), "");
     RETURN_CHECK("initialize()", m_jetUncert->initialize(), "");
+    m_jetUncert->msg().setLevel( MSG::ERROR ); // VERBOSE, INFO, DEBUG
     CP::SystematicSet recSysts = m_jetUncert->recommendedSystematics();
     Info("initialize()"," The following systematics are recommended:");
     for( auto syst : recSysts ) {
@@ -273,22 +274,34 @@ EL::StatusCode JetCalibrator :: initialize ()
         Info("initialize()","Found match! Applying systematic %s", syst.basename().c_str());
         // continuous systematics - can choose at what sigma to evaluate
         if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
-          m_sysList.push_back(CP::SystematicSet());
+          m_systList.push_back(CP::SystematicSet());
           if ( m_systVal == 0 ) { 
-            Info("initialize()","Setting continuous systematic to 0 is nominal! Please check!");
+            Error("initialize()","Setting continuous systematic to 0 is nominal! Please check!");
             return EL::StatusCode::FAILURE;
           }
-          m_sysList.back().insert(CP::SystematicVariation (syst.basename(), m_systVal));
+          m_systList.back().insert(CP::SystematicVariation (syst.basename(), m_systVal));
         } 
         // not a continuous system
         else {
-          m_sysList.push_back(CP::SystematicSet());
-          m_sysList.back().insert(syst);
+          m_systList.push_back(CP::SystematicSet());
+          m_systList.back().insert(syst);
         }
       } // found match!
     } // loop over recommended systematics
-    if( !m_sysList.empty() ) { m_runSysts = true; }
+
+    // For now - we are applying one systematic at a time 
+    // If we want to loop over systematics this needs to be moved to 
+    // execute and loop over the systs there
+    if( !m_systList.empty() ) { 
+      m_runSysts = true; 
+      // setup uncertainity tool for systematic evaluation
+      if (m_jetUncert->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok) {
+        Error("initialize()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
+        return EL::StatusCode::FAILURE;
+      }
+    }
   } // running systematics
+  else { m_runSysts = false; m_jetUncert = 0; } // m_jetUncert not streamed so have to do this
 
   return EL::StatusCode::SUCCESS;
 }
@@ -321,6 +334,13 @@ EL::StatusCode JetCalibrator :: execute ()
       Error("execute()", "JetCalibration tool reported a CP::CorrectionCode::Error");
       Error("execute()", "%s", m_name.c_str());
       return StatusCode::FAILURE;
+    }
+
+    if ( m_runSysts ) {
+      if( m_jetUncert->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
+        Error("execute()", "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
+        Error("execute()", "%s", m_name.c_str());
+      }
     }
 
     // decorate with cleaning decision

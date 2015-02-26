@@ -37,8 +37,8 @@ public:
   // systematics
   std::string m_systName;
   float m_systVal;
-  std::vector<CP::SystematicSet> m_sysList; //!
-  bool m_runSysts;                          //!
+  bool m_runSysts;
+  std::vector<CP::SystematicSet> m_systList; //!
 
   bool m_debug;           //!
 
