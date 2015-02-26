@@ -204,6 +204,13 @@ namespace HelperFunctions {
     return StatusCode::SUCCESS;
   }
 
+  /* update with better logic
+      -- call HelperFunctions::retrieve() instead
+      -- if user wants `const DataVector<T>` and `ConstDataVector<T>` exists but `const DataVector<T>` does not, auto-convert for them
+      -- if user wants `const DataVector<T>` and `DataVector<T>` exists, but `const DataVector<T>` does not, const-cast is trivial
+      -- if user wants `DataVector<T>` and `ConstDataVector<T>` or `const DataVector<T>` exist, raise a warning
+      -- **** handle the special case of EventInfo which does not have a CDV<T> equivalent
+  */
   template <typename T>
   const T* getContainer(std::string name, xAOD::TEvent* event, xAOD::TStore* store) {
     const T* cont = 0;
