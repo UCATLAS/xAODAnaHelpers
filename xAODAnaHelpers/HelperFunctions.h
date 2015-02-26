@@ -1,6 +1,12 @@
 #ifndef xAODAnaHelpers_HELPERFUNCTIONS_H
 #define xAODAnaHelpers_HELPERFUNCTIONS_H
 
+// for typing in template
+#include <typeinfo>
+#include <cxxabi.h>
+// Gaudi/Athena include(s):
+#include "AthContainers/normalizedTypeinfoName.h"
+
 // local includes
 #include "AsgTools/StatusCode.h"
 
@@ -29,6 +35,7 @@
 #ifndef __CINT__
   #include "xAODAnaHelpers/HelperClasses.h"
 #endif
+
 
 namespace HelperFunctions {
 
@@ -121,6 +128,81 @@ namespace HelperFunctions {
      return StatusCode::SUCCESS;
 
     }
+
+  /*    type_name<T>()      The awesome type demangler!
+          - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.
+
+          @ useXAOD [true]  If set to false, will use the standard demangling
+                            tool. Otherwise, use built-in StoreGate tool
+
+        Example Usage:
+        template <typename T>
+        void echoType(){
+          Info("retrieve()", "This is type %s", HelperFunctions::type_name<T>().c_str());
+        }
+  */
+  template <typename T>
+  std::string type_name(bool useXAOD=true) {
+    if(useXAOD) return SG::normalizedTypeinfoName( typeid(T) );
+
+    int status;
+    std::string tname = typeid(T).name();
+    char *demangled_name = abi::__cxa_demangle(tname.c_str(), NULL, NULL, &status);
+    if(status == 0) {
+        tname = demangled_name;
+        std::free(demangled_name);
+    }
+    return tname;
+  }
+
+  /*  retrieve()    retrieve an arbitrary object from TStore / TEvent
+        - tries to make your life simple by providing a one-stop container retrieval shop for all types
+        @ cont  : pass in a pointer to the object to store the retrieved container in
+        @ name  : the name of the object to look up
+        @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
+        @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
+        @ debug : turn on more verbose output, helpful for debugging
+
+      Example Usage:
+      const xAOD::JetContainer* jets(0);
+      // look for "AntiKt10LCTopoJets" in both TEvent and TStore
+      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, m_store) ,"");
+      // look for "AntiKt10LCTopoJets" in only TStore
+      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) ,"");
+      // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
+      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, true) ,"");
+  */
+  template <typename T>
+  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug=false){
+    /* Checking Order:
+        - check if store contains 'xAOD::JetContainer' named 'name'
+        --- attempt to retrieve from store
+        --- return if failure
+        - check if event contains 'xAOD::JetContainer' named 'name'
+        --- attempt to retrieve from event
+        --- return if failure
+        - return FAILURE
+        return SUCCESS (should never reach this last line)
+    */
+
+    if(debug) Info("HelperFunctions::retrieve()", "\tAttempting to retrieve %s of type %s", name.c_str(), type_name<T>().c_str());
+    if((store == NULL) && (debug))                      Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TEvent");
+    if((event == NULL) && (debug))                      Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TStore");
+    if((event != NULL) && (store != NULL) && (debug))   Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TStore, xAOD::TEvent");
+    if((store != NULL) && (store->contains<T>(name))){
+      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tFound inside xAOD::TStore");
+      if(!store->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
+      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tRetrieved from xAOD::TStore");
+    } else if((event != NULL) && (event->contains<T>(name))){
+      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tFound inside xAOD::TEvent");
+      if(!event->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
+      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tRetrieved from xAOD::TEvent");
+    } else {
+      if(debug) Info("HelperFunctions::retrieve()", "\t\tNot found at all");
+      return StatusCode::FAILURE;
+    }
+    return StatusCode::SUCCESS;
+  }
 
   template <typename T>
   const T* getContainer(std::string name, xAOD::TEvent* event, xAOD::TStore* store) {
