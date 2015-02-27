@@ -28,7 +28,7 @@ PACKAGE_BINFLAGS =
 PACKAGE_LIBFLAGS =
 
 # the list of packages we depend on:
-PACKAGE_DEP = EventLoop xAODBase xAODRootAccess xAODEventInfo GoodRunsLists PATInterfaces PathResolver xAODJet xAODMuon xAODEgamma xAODTracking MuonMomentumCorrections MuonSelectorTools JetCalibTools JetSelectorTools AthContainers ElectronPhotonFourMomentumCorrection ElectronPhotonSelectorTools ElectronIsolationSelection METUtilities METInterface AsgTools xAODMissingET JetResolution AssociationUtils Asg_FastJet JetEDM
+PACKAGE_DEP = EventLoop xAODBase xAODRootAccess xAODEventInfo GoodRunsLists PileupReweighting PATInterfaces PathResolver xAODJet xAODMuon xAODEgamma xAODTracking MuonMomentumCorrections MuonSelectorTools JetCalibTools JetSelectorTools AthContainers ElectronPhotonFourMomentumCorrection ElectronEfficiencyCorrection ElectronPhotonSelectorTools ElectronIsolationSelection METUtilities METInterface AsgTools xAODMissingET JetResolution AssociationUtils Asg_FastJet JetEDM
 
 # Asg_FastJet JetEDM : HelperFunctions::jetReclustering, HelperFunctions::jetTrimming
 

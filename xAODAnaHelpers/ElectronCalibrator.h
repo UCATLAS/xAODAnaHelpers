@@ -9,10 +9,22 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// EDM include(s):
+#ifndef __CINT__
+  #include "xAODEgamma/ElectronContainer.h"
+#endif
+
+// CP interface includes
+#include "PATInterfaces/SystematicRegistry.h"
+#include "PATInterfaces/SystematicSet.h"
+#include "PATInterfaces/SystematicsUtil.h"
+#include "PATInterfaces/SystematicVariation.h"
 
 namespace CP{
    class EgammaCalibrationAndSmearingTool;
 }
+class AsgElectronEfficiencyCorrectionTool;
+
 
 class ElectronCalibrator : public EL::Algorithm
 {
@@ -27,6 +39,18 @@ public:
 
   std::string m_name;
   std::string m_configName;
+  
+  std::string m_corrFileName1;
+  //std::string m_corrFileName1;
+
+  // systematics
+  bool m_doSyst;
+  bool m_runSingleSyst;
+  std::string m_systName;
+  float m_systSigma;
+  bool m_runSysts;
+  std::vector<CP::SystematicSet> m_systList; //!
+
   bool m_debug;
 
 private:
@@ -34,6 +58,7 @@ private:
   // tools
 #ifndef __CINT__
   CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElectronEfficiencyCorrectionTool; //!
 #endif // not __CINT__
 
   // configuration variables
@@ -71,6 +96,9 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+#ifndef __CINT__
+  virtual EL::StatusCode calibrate (xAOD::ElectronContainer* electrons);
+#endif // not __CINT__
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronCalibrator, 1);

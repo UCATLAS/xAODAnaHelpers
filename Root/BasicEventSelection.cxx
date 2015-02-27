@@ -19,6 +19,7 @@
 
 // rootcore includes
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
+#include "PileupReweighting/PileupReweightingTool.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
@@ -44,7 +45,9 @@ BasicEventSelection :: BasicEventSelection (){
 BasicEventSelection :: BasicEventSelection (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
-  m_configName(configName)
+  m_configName(configName),
+  m_grl(0),
+  m_pileuptool(0)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -78,6 +81,9 @@ EL::StatusCode BasicEventSelection :: configure ()
 
   // GRL
   m_GRLxml        = env->GetValue("GRL"       ,     "/afs/cern.ch/user/a/atlasdqm/grlgen/All_Good/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );    //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+
+  // Pileup Reweighting
+  m_doPUreweighting = env->GetValue("DoPileupReweighting", false);
 
   if(!m_truthLevelOnly) {
     // primary vertex
@@ -266,6 +272,16 @@ EL::StatusCode BasicEventSelection :: initialize ()
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
 
+  if(m_doPUreweighting){
+    m_pileuptool = new CP::PileupReweightingTool("Pileup");
+    std::vector<std::string> confFiles;
+    std::vector<std::string> lcalcFiles;
+    //confFiles.push_back("blah"); // pass from config file
+    //lcalcFiles.push_back("blah"); // pass from config file
+    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
+    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
+  }
   //--------------------------------------------
   //  Get Containers Depending on Analysis Needs
   //--------------------------------------------
@@ -303,9 +319,11 @@ EL::StatusCode BasicEventSelection :: execute ()
      const std::vector< float > weights = eventInfo->mcEventWeights();
      if( weights.size() > 0 ) mcEvtWeight = weights[0];
 
-     //if( m_doPUreweighting ){ // FIXME
-     //  pileupWeight = eventInfo->auxdecor< double >( "PileupWeight" ); // this decoration added previously by PU reweighting tool
-     //}
+     if( m_doPUreweighting ){ 
+       m_pileuptool->apply(eventInfo);
+       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
+       pileupWeight = pileupWeightAcc(*eventInfo) ;
+     }
      mcEvtWeight *= pileupWeight;
   }
   // decorate with PU corrected mc event weight
@@ -429,6 +447,8 @@ EL::StatusCode BasicEventSelection :: finalize ()
   Info("finalize()", "Number of events          = %i", m_eventCounter);
 
   if(m_grl) { delete m_grl; m_grl = 0; }
+  if(m_doPUreweighting && m_pileuptool) { delete m_pileuptool; m_pileuptool = 0; }
+  
   return EL::StatusCode::SUCCESS;
 }
 
