@@ -277,6 +277,10 @@ EL::StatusCode JetCalibrator :: execute ()
 
   }
 
+  if(!xAOD::setOriginalObjectLink(*inJets, *(calibJetsSC.first))) {
+    Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
+  }
+
   if(m_sort) {
     std::sort( calibJetsSC.first->begin(), calibJetsSC.first->end(), HelperFunctions::sort_pt );
   }

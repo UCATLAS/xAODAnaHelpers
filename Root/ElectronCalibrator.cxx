@@ -228,6 +228,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
      if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", (elSC_itr->pt() * 1e-3));
   }
 
+  if(!xAOD::setOriginalObjectLink(*inElectrons, *(calibElectronsSC.first))) {
+    Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
+  }
+
   if(m_sort) {
     std::sort( calibElectronsSC.first->begin(), calibElectronsSC.first->end(), HelperFunctions::sort_pt );
   }

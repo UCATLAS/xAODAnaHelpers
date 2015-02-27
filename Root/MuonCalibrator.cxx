@@ -11,6 +11,10 @@
 #include "xAODAnaHelpers/MuonCalibrator.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+#include "xAODBase/IParticleContainer.h"
+#include "xAODBase/IParticle.h"
+#include "xAODBase/IParticleHelpers.h"
+
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
@@ -206,6 +210,10 @@ EL::StatusCode MuonCalibrator :: execute ()
     //  }
       if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", (muonSC_itr->pt() * 1e-3));
     }
+  }
+
+  if(!xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first))) {
+    Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
   }
 
   if(m_sort) {
