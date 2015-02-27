@@ -7,6 +7,9 @@
  *
  ******************************************/
 
+//#include "PATInterfaces/CorrectionCode.h"
+//#include "AsgTools/StatusCode.h"
+
 // EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
@@ -56,6 +59,7 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
   // initialization code will go into histInitialize() and
   // initialize().
   Info("BasicEventSelection()", "Calling constructor \n");
+  //CP::CorrectionCode::enableFailure();
   //StatusCode::enableFailure();
   m_cutflowHist  = 0;
   m_cutflowHistW = 0;
@@ -319,7 +323,7 @@ EL::StatusCode BasicEventSelection :: execute ()
      const std::vector< float > weights = eventInfo->mcEventWeights();
      if( weights.size() > 0 ) mcEvtWeight = weights[0];
 
-     if( m_doPUreweighting ){ 
+     if( m_doPUreweighting ){
        m_pileuptool->apply(eventInfo);
        static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
        pileupWeight = pileupWeightAcc(*eventInfo) ;
@@ -448,7 +452,7 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   if(m_grl) { delete m_grl; m_grl = 0; }
   if(m_doPUreweighting && m_pileuptool) { delete m_pileuptool; m_pileuptool = 0; }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

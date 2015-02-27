@@ -222,8 +222,8 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   // set object decoration
   const std::string selected_label = (m_useSelected) ? "passSel" : "";  // set with decoration flag you use for selected objects if want to consider only selected objects in OR, otherwise it will perform OR on all objects
-  m_overlapRemovalTool->setProperty("InputLabel",  selected_label);
-  m_overlapRemovalTool->setProperty("OverlapLabel", "overlaps"); // tool will decorate objects with 'overlaps' boolean if they overlap (not possible to customise name atm!)
+  RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->setProperty("InputLabel",  selected_label), "");
+  RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->setProperty("OverlapLabel", "overlaps"), ""); // tool will decorate objects with 'overlaps' boolean if they overlap (not possible to customise name atm!)
   RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->initialize(), "Failed to properly initialize the OverlapRemovalTool.");
 
   Info("initialize()", "OverlapRemover Interface succesfully initialized!" );
@@ -268,7 +268,7 @@ EL::StatusCode OverlapRemover :: execute ()
     Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());
   }
 
-  m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons);
+  RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
   return executeConst( inElectrons, inMuons, inJets, inTaus, inPhotons );
 }

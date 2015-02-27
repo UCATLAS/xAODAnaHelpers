@@ -88,7 +88,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   // shallow copies are made with this output container name
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-  
+
   // Systematics stuff
   m_doSyst                  = config->GetValue("DoSyst" , false );
   m_runSingleSyst           = config->GetValue("RunSingleSyst" , true );
@@ -97,7 +97,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   // file(s) containing corrections
   m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
   //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
-  
+
   m_sort                    = config->GetValue("Sort",          false);
 
   if( m_inContainerName.empty() ) {
@@ -197,8 +197,8 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   // initialize the ElectronEfficiencyCorrectionTool
   m_asgElectronEfficiencyCorrectionTool = new AsgElectronEfficiencyCorrectionTool("ElectronEfficiencyCorrectionTool");
-  m_asgElectronEfficiencyCorrectionTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO  
-  std::vector<std::string> inputFiles{ m_corrFileName1 } ; // pass all the files with the corrections  
+  m_asgElectronEfficiencyCorrectionTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  std::vector<std::string> inputFiles{ m_corrFileName1 } ; // pass all the files with the corrections
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_asgElectronEfficiencyCorrectionTool->setProperty("CorrectionFileNameList",inputFiles),"Failed to set property CorrectionFileNameList");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_asgElectronEfficiencyCorrectionTool->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
   //RETURN_CHECK( "ElectronCalibrator::initialize()", m_asgElectronEfficiencyCorrectionTool->setProperty("ResultPrefix", <your prefix>),"Failed to set property ResultPrefix");
@@ -207,7 +207,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
 
   if(m_doSyst){
-  
+
     // Get a list of systematics
     CP::SystematicSet recSysts = m_asgElectronEfficiencyCorrectionTool->recommendedSystematics();
     // Convert into a simple list
@@ -215,7 +215,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
     // if we are applying one systematic at a time...
     if(m_runSingleSyst){
-      Info("initialize()", "Checking if single systematic %s is available", m_systName.c_str());      
+      Info("initialize()", "Checking if single systematic %s is available", m_systName.c_str());
       // check if there's a match with the syst passed in constructor
       bool found_match(false);
       unsigned int idx(0), syst_idx(-1);
@@ -224,7 +224,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     	if( syst_it.name() == m_systName ){
   	  Info("initialize()","  is available!");
   	  syst_idx = idx;
-  	  found_match = true;  
+  	  found_match = true;
     	}
 	idx++;
       }
@@ -234,15 +234,15 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     	  Error("initialize()", "Cannot configure AsgElectronEfficiencyCorrectionTool for systematic %s", m_systName.c_str());
     	  return EL::StatusCode::FAILURE;
     	}
-    	Info("initialize()", "Successfully applied systematic: %s", (( m_asgElectronEfficiencyCorrectionTool->appliedSystematics() ).name()).c_str());      
+    	Info("initialize()", "Successfully applied systematic: %s", (( m_asgElectronEfficiencyCorrectionTool->appliedSystematics() ).name()).c_str());
       }
     } else {
-      Info("initialize()", "Running on all available systematics:");  
-      for ( const auto& syst_it : m_systList ){ Info("initialize()","  %s", (syst_it.name()).c_str()); } 
+      Info("initialize()", "Running on all available systematics:");
+      for ( const auto& syst_it : m_systList ){ Info("initialize()","  %s", (syst_it.name()).c_str()); }
     }
-     
+
   } // end check m_doSyst
-  
+
   Info("initialize()", "ElectronCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -279,8 +279,8 @@ EL::StatusCode ElectronCalibrator :: execute ()
       if (m_asgElectronEfficiencyCorrectionTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
         Error("initialize()", "Failed to configure AsgElectronEfficiencyCorrectionTool for systematic %s", syst_it.name().c_str());
         return EL::StatusCode::FAILURE;
-      }      
-      if (m_debug) Info("execute()", "Successfully applied systematic: %s", m_asgElectronEfficiencyCorrectionTool->appliedSystematics().name().c_str());    
+      }
+      if (m_debug) Info("execute()", "Successfully applied systematic: %s", m_asgElectronEfficiencyCorrectionTool->appliedSystematics().name().c_str());
       // and now calibrate!
       this->calibrate( calibElectronsSC.first );
     }
@@ -341,11 +341,11 @@ EL::StatusCode ElectronCalibrator :: finalize ()
 
   if(m_EgammaCalibrationAndSmearingTool){
     delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = 0;
-  }  
+  }
   if(m_asgElectronEfficiencyCorrectionTool){
     delete m_asgElectronEfficiencyCorrectionTool; m_asgElectronEfficiencyCorrectionTool = 0;
-  }  
-  
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -375,35 +375,38 @@ EL::StatusCode ElectronCalibrator :: calibrate (xAOD::ElectronContainer* electro
   unsigned int idx(0);
   double SF(0);
   for( auto el_itr : *electrons ) {
-     // set smearing seeding if needed (already done by default - check TWiki: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonFourMomentumCorrection )
-     //int idx = std::distance( calibElectronsSC.first.begin(), &el_itr );
-     // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber()+100*idx);
+    // set smearing seeding if needed (already done by default - check TWiki: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonFourMomentumCorrection )
+    //int idx = std::distance( calibElectronsSC.first.begin(), &el_itr );
+    // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber()+100*idx);
 
-     if(m_debug) Info( "execute", "Checking electron %i, raw pt = %.2f GeV, eta = %.2f ", idx, (el_itr->pt() * 1e-3), el_itr->caloCluster()->eta());
-    
-     // apply calibration
-     m_EgammaCalibrationAndSmearingTool->applyCorrection( *el_itr );
-     if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", (el_itr->pt() * 1e-3));
-     
-     // apply SF
-     if(el_itr->pt() < 7e3 || fabs( el_itr->caloCluster()->eta() ) > 2.47) {
-       if(m_debug) Info( "execute", "Apply SF: Skipping electron %i, is outside acceptance", idx);
-       continue; //skip electrons outside of recommendations
-     }
-     if(m_asgElectronEfficiencyCorrectionTool->getEfficiencyScaleFactor( *el_itr, SF ) != CP::CorrectionCode::Ok){
-       Error( "execute()", "Problem in getEfficiencyScaleFactor");
-       return EL::StatusCode::FAILURE;
-     }
-    
-     if(m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactor( *el_itr ) != CP::CorrectionCode::Ok){
-       Error( "execute()", "Problem in applyEfficiencyScaleFactor");
-       return EL::StatusCode::FAILURE;
-     }
-    
-     if(m_debug) Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f", SF, el_itr->auxdata< float >("SF"));	 
-     
-     ++idx;
-     
+    if(m_debug) Info( "execute", "Checking electron %i, raw pt = %.2f GeV, eta = %.2f ", idx, (el_itr->pt() * 1e-3), el_itr->caloCluster()->eta());
+
+    // apply calibration
+    if(m_EgammaCalibrationAndSmearingTool->applyCorrection( *el_itr ) != CP::CorrectionCode::Ok){
+      Error("execute()", "Problem in m_EgammaCalibrationAndSmearingTool->applyCorrection()");
+      return EL::StatusCode::FAILURE;
+    }
+    if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", (el_itr->pt() * 1e-3));
+
+    // apply SF
+    if(el_itr->pt() < 7e3 || fabs( el_itr->caloCluster()->eta() ) > 2.47) {
+      if(m_debug) Info( "execute", "Apply SF: Skipping electron %i, is outside acceptance", idx);
+      continue; //skip electrons outside of recommendations
+    }
+    if(m_asgElectronEfficiencyCorrectionTool->getEfficiencyScaleFactor( *el_itr, SF ) != CP::CorrectionCode::Ok){
+      Error( "execute()", "Problem in getEfficiencyScaleFactor");
+      return EL::StatusCode::FAILURE;
+    }
+
+    if(m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactor( *el_itr ) != CP::CorrectionCode::Ok){
+      Error( "execute()", "Problem in applyEfficiencyScaleFactor");
+      return EL::StatusCode::FAILURE;
+    }
+
+    if(m_debug) Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f", SF, el_itr->auxdata< float >("SF"));
+
+    ++idx;
+
   }
-  return EL::StatusCode::SUCCESS; 
+  return EL::StatusCode::SUCCESS;
 }
