@@ -9,11 +9,6 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-// EDM include(s):
-#ifndef __CINT__
-  #include "xAODEgamma/ElectronContainer.h"
-#endif
-
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicSet.h"
@@ -44,8 +39,7 @@ public:
   //std::string m_corrFileName1;
 
   // systematics
-  bool m_doSyst;
-  bool m_runSingleSyst;
+  bool m_runAllSyst;
   std::string m_systName;
   float m_systSigma;
   bool m_runSysts;
@@ -96,9 +90,6 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__
-  virtual EL::StatusCode calibrate (xAOD::ElectronContainer* electrons);
-#endif // not __CINT__
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronCalibrator, 1);
