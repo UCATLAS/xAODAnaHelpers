@@ -74,6 +74,7 @@ namespace HelperClasses {
     bool m_layer;
     bool m_trackPV;
     bool m_trackAll;
+    bool m_MJB;
     void initialize();
     JetInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };

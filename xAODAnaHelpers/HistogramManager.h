@@ -64,6 +64,15 @@ class HistogramManager {
                std::string zlabel, int zbins, double zlow, double zhigh,
                bool sumw2 = true);
 
+    TH1F* bookVar(std::string name, std::string title,
+               std::string xlabel, int xbins, const Double_t* xbinArr,
+               bool sumw2 = true);
+
+    TH2F* bookVar(std::string name, std::string title,
+               std::string xlabel, int xbins, const Double_t* xbinsArr,
+               std::string xyabel, int ybins, double ylow, double yhigh,
+               bool sumw2 = true);
+
     // Record all histograms from m_allHists to the worker
     void record(EL::Worker* wk);
 
