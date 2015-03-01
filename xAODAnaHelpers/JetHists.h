@@ -15,9 +15,6 @@ class JetHists : public HistogramManager
     EL::StatusCode initialize();
     EL::StatusCode execute( const xAOD::JetContainer* jets, float eventWeight );
     EL::StatusCode execute( const xAOD::Jet* jet, float eventWeight );
-    EL::StatusCode execute( const xAOD::JetContainer& jets, const xAOD::EventInfo* eventInfo );
-    //EL::StatusCode execute( const xAOD::JetContainer* jets, const xAOD::EventInfo* eventInfo );
-
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 
@@ -86,29 +83,6 @@ class JetHists : public HistogramManager
 
     TH1F* m_truthCount_TausFinal; //!
     TH1F* m_truthPt_TausFinal   ; //!
-
-
-    // MJB plots
-    TH2F* m_jet0Pt_jet1Pt;          //!
-    TH2F* m_jet0Pt_avgBeta;         //!
-    TH2F* m_jet0Pt_alpha;           //!
-    TH2F* m_ptAsym_njet;            //!
-    TH2F* m_jet0Pt_invPtBalCorr1;   //!
-    TH2F* m_jet0Pt_invPtBalCorr2;   //!
-
-    TH1F* m_ptBalCorr1;    //!
-    TH1F* m_ptBalCorr2;    //!
-    TH1F* m_jet0Pt;        //!
-    TH1F* m_jet1Pt;        //!
-    TH1F* m_jet2Pt;        //!
-    TH1F* m_jet3Pt;        //!
-    TH1F* m_jet4Pt;        //!
-    TH1F* m_jet5Pt;        //!
-    TH1F* m_jet6Pt;        //!
-    TH1F* m_jet7Pt;        //!
-    TH1F* m_jet8Pt;        //!
-    TH1F* m_jet9Pt;        //!
-    TH1F* m_correction;    //!
 
 
 

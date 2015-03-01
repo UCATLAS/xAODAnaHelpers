@@ -1,7 +1,7 @@
 /******************************************
  *
- * Base class used to book a set of histograms.
- * Many sets can be created and compared for
+ * Base class used to book a set of histograms.  
+ * Many sets can be created and compared for 
  * efficiecny studies or population studies.
  *
  * G. Facini
@@ -20,7 +20,7 @@ HistogramManager::HistogramManager(std::string name, std::string detailStr):
   m_detailStr(detailStr)
 {
 
-  // if last character of name is a alphanumeric add a / so that
+  // if last character of name is a alphanumeric add a / so that 
   // in the output file, a TDirectory is created with the histograms inside
   if( isalnum( m_name.back() ) && !ispunct( m_name.back() ) ) {
     m_name += "/";
@@ -55,7 +55,7 @@ TH2F* HistogramManager::book(std::string name, std::string title,
   return tmp;
 }
 
-TH3F* HistogramManager::book(std::string name, std::string title,
+TH3F* HistogramManager::book(std::string name, std::string title, 
                              std::string xlabel, int xbins, double xlow, double xhigh,
                              std::string ylabel, int ybins, double ylow, double yhigh,
                              std::string zlabel, int zbins, double zlow, double zhigh,
@@ -67,30 +67,6 @@ TH3F* HistogramManager::book(std::string name, std::string title,
   this->record(tmp);
   return tmp;
 }
-
-TH1F* HistogramManager::bookVar(std::string name, std::string title,
-                             std::string xlabel, int xbins, const Double_t* xbinArr,
-                             bool sumw2)
-{
-  TH1F* tmp = new TH1F( (name + title).c_str(), title.c_str(), xbins, xbinArr);
-  SetLabel(tmp, xlabel);
-  if(sumw2) this->Sumw2(tmp);
-  this->record(tmp);
-  return tmp;
-}
-
-TH2F* HistogramManager::bookVar(std::string name, std::string title,
-                             std::string xlabel, int xbins, const Double_t* xbinArr,
-                             std::string ylabel, int ybins, double ylow, double yhigh,
-                             bool sumw2)
-{
-  TH2F* tmp = new TH2F( (name + title).c_str(), title.c_str(), xbins, xbinArr, ybins, ylow, yhigh);
-  SetLabel(tmp, xlabel, ylabel);
-  if(sumw2) this->Sumw2(tmp);
-  this->record(tmp);
-  return tmp;
-}
-
 
 /* Helper functions */
 void HistogramManager::Sumw2(TH1* hist) {

@@ -108,50 +108,6 @@ EL::StatusCode JetHists::initialize() {
 
   }
 
-  //details for Multijet Balance
-  if( m_infoSwitch->m_MJB ) {
-    Info("JetHists::initialize()", "adding multijet balance plots");
-
-    Double_t ptBins[14] = {200.,300.,400.,500.,600.,700.,800.,900.,1100.,1300.,1600.,1900.,2400.,3000.};
-    int numPtBins = 13;
-
-    m_ptBalCorr1 = book(m_name, "ptBalCorr1", "ptBalCorr1", 40, 0., 4.);
-    m_ptBalCorr2 = book(m_name, "ptBalCorr2", "ptBalCorr2", 40, 0., 4.);
-    m_jet0Pt = book(m_name, "jet0Pt", "leading jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet1Pt = book(m_name, "jet1Pt", "subleading jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet2Pt = book(m_name, "jet2Pt", "third jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet3Pt = book(m_name, "jet3Pt", "fourth jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet4Pt = book(m_name, "jet4Pt", "fifth jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet5Pt = book(m_name, "jet5Pt", "sixth jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet6Pt = book(m_name, "jet6Pt", "seventh jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet7Pt = book(m_name, "jet7Pt", "eighth jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet8Pt = book(m_name, "jet8Pt", "ninth jet p_{T} [GeV]", 100, 0, 4000.);
-    m_jet9Pt = book(m_name, "jet9Pt", "tenth jet p_{T} [GeV]", 100, 0, 4000.);
-
-    m_jet0Pt_jet1Pt = book(m_name, "jet0Pt_jet1Pt",
-            "leading jet p_{T} [GeV]", 100, 0., 4000.,
-            "subleading jet p_{T} [GeV]", 100, 0., 4000.);
-    m_jet0Pt_avgBeta = book(m_name, "jet0Pt_avgBeta",
-            "leading jet p_{T} [GeV]", 100, 0., 4000.,
-            "Average Beta", 62, 0., 6.14);
-    m_jet0Pt_alpha = book(m_name, "jet0Pt_alpha",
-            "leading jet p_{T} [GeV]", 100, 0., 4000.,
-            "Alpha", 30, 0., 0.3);
-    m_ptAsym_njet = book(m_name, "ptAsym_njet",
-            "p_{T} Asymmetry", 30, 0., 0.8,
-            "Number of Jets", 12, 0., 12.);
-    m_jet0Pt_invPtBalCorr1 = bookVar(m_name, "jet0Pt_invPtBalCorr1",
-            "lead jet p_{T} [GeV]", numPtBins, ptBins,
-            "inverse ptBalCorr1", 40, 0., 4.);
-    m_jet0Pt_invPtBalCorr2 = bookVar(m_name, "jet0Pt_invPtBalCorr2",
-            "lead jet p_{T} [GeV]", numPtBins, ptBins,
-            "inverse ptBalCorr2", 40, 0., 4.);
-
-    m_correction = bookVar(m_name, "correctionMJB", "correctionMJB", numPtBins, ptBins);
-
-
-  } //MJB
-
 
   return EL::StatusCode::SUCCESS;
 }
@@ -531,56 +487,6 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     m_jetGhostTruthPt_vs_resolution -> Fill( ghostTruthPt/1e3, resolution, eventWeight );
   }
 
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode JetHists::execute( const xAOD::JetContainer& jets, const xAOD::EventInfo* eventInfo ) {
-//EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, const xAOD::EventInfo* eventInfo ) {
-
-  float eventWeight = eventInfo->auxdecor< float >( "weight" );
-  xAOD::JetContainer::const_iterator jet_itr = jets.begin();
-  xAOD::JetContainer::const_iterator jet_end = jets.end();
-  for( ; jet_itr != jet_end; ++jet_itr ) {
-    this->execute( (*jet_itr), eventWeight );
-  }
-
-  if( m_infoSwitch->m_MJB ){
-    static SG::AuxElement::ConstAccessor<float> avgBeta ("avgBeta");
-    static SG::AuxElement::ConstAccessor<float> alpha ("alpha");
-    static SG::AuxElement::ConstAccessor<int> njet ("njet");
-    static SG::AuxElement::ConstAccessor<float> ptAsym ("ptAsym");
-    static SG::AuxElement::ConstAccessor<float> ptBalCorr1 ("ptBalCorr1");
-    static SG::AuxElement::ConstAccessor<float> ptBalCorr2 ("ptBalCorr2");
-
-    m_jet0Pt_jet1Pt->Fill(jets.at(0)->pt()/1e3, jets.at(1)->pt()/1e3, eventWeight);
-    m_jet0Pt_avgBeta->Fill(jets.at(0)->pt()/1e3, avgBeta( *eventInfo ), eventWeight);
-    m_jet0Pt_alpha->Fill(jets.at(0)->pt()/1e3, alpha( *eventInfo ), eventWeight);
-    m_ptAsym_njet->Fill(ptAsym( *eventInfo ), njet( *eventInfo ), eventWeight);
-    m_jet0Pt_invPtBalCorr1->Fill(jets.at(0)->pt()/1e3, 1./ptBalCorr1( *eventInfo ), eventWeight);
-    m_jet0Pt_invPtBalCorr2->Fill(jets.at(0)->pt()/1e3, 1./ptBalCorr2( *eventInfo ), eventWeight);
-
-    m_ptBalCorr1->Fill(  ptBalCorr1( *eventInfo ), eventWeight );
-    m_ptBalCorr2->Fill(  ptBalCorr2( *eventInfo ), eventWeight );
-    m_jet0Pt->Fill( jets.at(0)->pt()/1e3 , eventWeight);
-    m_jet1Pt->Fill( jets.at(1)->pt()/1e3 , eventWeight);
-    if(jets.size() > 2)
-      m_jet2Pt->Fill( jets.at(2)->pt()/1e3 , eventWeight);
-    if(jets.size() > 3)
-      m_jet3Pt->Fill( jets.at(3)->pt()/1e3 , eventWeight);
-    if(jets.size() > 4)
-      m_jet4Pt->Fill( jets.at(4)->pt()/1e3 , eventWeight);
-    if(jets.size() > 5)
-      m_jet5Pt->Fill( jets.at(5)->pt()/1e3 , eventWeight);
-    if(jets.size() > 6)
-      m_jet6Pt->Fill( jets.at(6)->pt()/1e3 , eventWeight);
-    if(jets.size() > 7)
-      m_jet7Pt->Fill( jets.at(7)->pt()/1e3 , eventWeight);
-    if(jets.size() > 8)
-      m_jet8Pt->Fill( jets.at(8)->pt()/1e3 , eventWeight);
-    if(jets.size() > 9)
-      m_jet9Pt->Fill( jets.at(9)->pt()/1e3 , eventWeight);
-
-  }
   return EL::StatusCode::SUCCESS;
 }
 
