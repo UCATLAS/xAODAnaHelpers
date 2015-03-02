@@ -259,7 +259,9 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
-  if ( !m_uncertConfig.empty() && !m_systName.empty()) {
+  if ( !m_uncertConfig.empty() && !m_systName.empty() && m_systName != "Nominal" ) {
+    m_uncertConfig = gSystem->ExpandPathName( m_uncertConfig.c_str() );
+    std::cout << "Initialize JES UNCERT with " << m_uncertConfig << std::endl;
     m_jetUncert = new JetUncertaintiesTool("JESProvider");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("JetDefinition",m_jetUncertAlgo), "");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("MCType","MC12"), "");
