@@ -35,6 +35,7 @@
 // external tools include(s):
 #include "JetCalibTools/JetCalibrationTool.h"
 #include "JetSelectorTools/JetCleaningTool.h"
+#include "JetUncertainties/JetUncertaintiesTool.h"
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -48,12 +49,17 @@ ClassImp(JetCalibrator)
 JetCalibrator :: JetCalibrator () {
 }
 
-JetCalibrator :: JetCalibrator (std::string name, std::string configName) :
+JetCalibrator :: JetCalibrator (std::string name, std::string configName, 
+    std::string systName, float systVal ) :
   Algorithm(),
-  m_name(name),
-  m_configName(configName),
-  m_jetCalibration(0),
-  m_jetCleaning(0)
+  m_name(name),               // algo name
+  m_configName(configName),   // path + name of config file
+  m_systName(systName),       // if running systs - the name of the systematic
+  m_systVal(systVal),         // if running systs - the value ( +/- 1 )
+  m_runSysts(false),          // gets set later is syst applies to this tool
+  m_jetCalibration(0),        // JetCalibrationTool
+  m_jetCleaning(0),           // JetCleaningTool
+  m_jetUncert(0)              // JetUncertaintiesTool
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -71,7 +77,7 @@ EL::StatusCode  JetCalibrator :: configure ()
   Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG("JetCalibrator::configure()", m_configName);
+  RETURN_CHECK_CONFIG("configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
 
@@ -92,6 +98,15 @@ EL::StatusCode  JetCalibrator :: configure ()
   // CONFIG parameters for JetCleaningTool
   m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");
 
+  // CONFIG parameters for JetUncertaintiesTool
+  m_uncertConfig            = config->GetValue("JetUncertConfig", "");
+  // calibrator uses TopoEM or TopoLC while the uncertainity tool uses EMTopo and LCTopo
+  // calibrator should switch at some point
+  // "fix" the name here so the user never knows the difference 
+  m_jetUncertAlgo = m_jetAlgo;
+  m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoEM"), std::string("EMTopo"));
+  m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoLC"), std::string("LCTopo"));
+  
   // shallow copies are made with this output container name
   m_outContainerName        = config->GetValue("OutputContainer", "");
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
@@ -193,14 +208,15 @@ EL::StatusCode JetCalibrator :: initialize ()
   if( !m_isMC ) m_calibSequence += "_Insitu";
 
   if( m_isMC ){
-    // Check simulation flavour for calibration config
-    const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
-    if (stringMeta.empty()){
-      Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
-      m_isFullSim = true;
-    } else {
-      m_isFullSim = (stringMeta == "AFII") ? false : true;
-    }
+    m_isFullSim = true;
+//    // Check simulation flavour for calibration config
+//    const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
+//    if (stringMeta.empty()){
+//      Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
+//      m_isFullSim = true;
+//    } else {
+//      m_isFullSim = (stringMeta == "AFII") ? false : true;
+//    }
     m_calibConfig = ( m_isFullSim ) ? m_calibConfigFullSim : m_calibConfigAFII;
   } else {
     m_calibConfig = m_calibConfigData;
@@ -218,6 +234,8 @@ EL::StatusCode JetCalibrator :: initialize ()
         << "\t m_calibConfig	      : "   << m_calibConfig	        <<  " of type " <<  typeid(m_calibConfig).name() << "\n"
         << "\t m_calibSequence        : "   << m_calibSequence          <<  " of type " <<  typeid(m_calibSequence).name() << "\n"
         << "\t m_jetCalibCutLevel     : "   << m_jetCalibCutLevel	    <<  " of type " <<  typeid(m_jetCalibCutLevel).name() << "\n"
+        << "\t m_jetUncertAlgo  : "		        << m_jetUncertAlgo	            <<  " of type " <<  typeid(m_jetUncertAlgo).name() <<  "\n"
+        << "\t m_uncertConfig	      : "   << m_uncertConfig	        <<  " of type " <<  typeid(m_uncertConfig).name() << "\n"
   	<< std::endl;
   }
 
@@ -228,15 +246,64 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_calibSequence,
       !m_isMC);
   m_jetCalibration->msg().setLevel( MSG::ERROR); // VERBOSE, INFO, DEBUG
-  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCalibration->initializeTool("JetCorrectionTool"), "");
+  RETURN_CHECK( "initialize()", m_jetCalibration->initializeTool("JetCorrectionTool"), "");
 
   // initialize and configure the jet cleaning tool
   //------------------------------------------------
   m_jetCleaning = new JetCleaningTool("JetCleaning");
-  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
-  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "");
+  RETURN_CHECK( "initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
+  RETURN_CHECK( "initialize()", m_jetCleaning->initialize(), "");
 
   Info("initialize()", "JetCalibrator Interface succesfully initialized!" );
+
+  // initialize and configure the jet uncertainity tool
+  // only initialize if a config file has been given
+  //------------------------------------------------
+  if ( !m_uncertConfig.empty() && !m_systName.empty() && m_systName != "Nominal" ) {
+    m_uncertConfig = gSystem->ExpandPathName( m_uncertConfig.c_str() );
+    std::cout << "Initialize JES UNCERT with " << m_uncertConfig << std::endl;
+    m_jetUncert = new JetUncertaintiesTool("JESProvider");
+    RETURN_CHECK("initialize()", m_jetUncert->setProperty("JetDefinition",m_jetUncertAlgo), "");
+    RETURN_CHECK("initialize()", m_jetUncert->setProperty("MCType","MC12"), "");
+    RETURN_CHECK("initialize()", m_jetUncert->setProperty("ConfigFile", m_uncertConfig), "");
+    RETURN_CHECK("initialize()", m_jetUncert->initialize(), "");
+    m_jetUncert->msg().setLevel( MSG::ERROR ); // VERBOSE, INFO, DEBUG
+    CP::SystematicSet recSysts = m_jetUncert->recommendedSystematics();
+    Info("initialize()"," The following systematics are recommended:");
+    for( auto syst : recSysts ) {
+      Info("initialize()","  %s", (syst.basename()).c_str());
+      if( m_systName == syst.basename() ) {
+        Info("initialize()","Found match! Applying systematic %s", syst.basename().c_str());
+        // continuous systematics - can choose at what sigma to evaluate
+        if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
+          m_systList.push_back(CP::SystematicSet());
+          if ( m_systVal == 0 ) { 
+            Error("initialize()","Setting continuous systematic to 0 is nominal! Please check!");
+            return EL::StatusCode::FAILURE;
+          }
+          m_systList.back().insert(CP::SystematicVariation (syst.basename(), m_systVal));
+        } 
+        // not a continuous system
+        else {
+          m_systList.push_back(CP::SystematicSet());
+          m_systList.back().insert(syst);
+        }
+      } // found match!
+    } // loop over recommended systematics
+
+    // For now - we are applying one systematic at a time 
+    // If we want to loop over systematics this needs to be moved to 
+    // execute and loop over the systs there
+    if( !m_systList.empty() ) { 
+      m_runSysts = true; 
+      // setup uncertainity tool for systematic evaluation
+      if (m_jetUncert->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok) {
+        Error("initialize()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
+        return EL::StatusCode::FAILURE;
+      }
+    }
+  } // running systematics
+  else { m_runSysts = false; m_jetUncert = 0; } // m_jetUncert not streamed so have to do this
 
   return EL::StatusCode::SUCCESS;
 }
@@ -256,7 +323,7 @@ EL::StatusCode JetCalibrator :: execute ()
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
-  // create shallow copy
+  // create shallow copytrue;
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
   ConstDataVector<xAOD::JetContainer>* calibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
   calibJetsCDV->reserve( calibJetsSC.first->size() );
@@ -269,6 +336,13 @@ EL::StatusCode JetCalibrator :: execute ()
       Error("execute()", "JetCalibration tool reported a CP::CorrectionCode::Error");
       Error("execute()", "%s", m_name.c_str());
       return StatusCode::FAILURE;
+    }
+
+    if ( m_runSysts ) {
+      if( m_jetUncert->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
+        Error("execute()", "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
+        Error("execute()", "%s", m_name.c_str());
+      }
     }
 
     // decorate with cleaning decision
@@ -291,11 +365,11 @@ EL::StatusCode JetCalibrator :: execute ()
   }
 
   // add shallow copy to TStore
-  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.first, m_outSCContainerName), "Failed to record shallow copy container.");
-  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.second, m_outSCAuxContainerName), "Failed to record shallow copy aux container.");
+  RETURN_CHECK( "execute()", m_store->record( calibJetsSC.first, m_outSCContainerName), "Failed to record shallow copy container.");
+  RETURN_CHECK( "execute()", m_store->record( calibJetsSC.second, m_outSCAuxContainerName), "Failed to record shallow copy aux container.");
 
   // add ConstDataVector to TStore
-  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsCDV, m_outContainerName), "Failed to record const data container.");
+  RETURN_CHECK( "execute()", m_store->record( calibJetsCDV, m_outContainerName), "Failed to record const data container.");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -336,6 +410,10 @@ EL::StatusCode JetCalibrator :: finalize ()
   if(m_jetCleaning){
     delete m_jetCleaning;
     m_jetCleaning= 0;
+  }
+  if( m_jetUncert ) {
+    delete m_jetUncert;
+    m_jetUncert = 0;
   }
 
   return EL::StatusCode::SUCCESS;

@@ -17,8 +17,10 @@
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "xAODAnaHelpers/Writer.h"
 #include <xAODAnaHelpers/JetHistsAlgo.h>
-
 #include "xAODAnaHelpers/OverlapRemover.h"
+
+#include "PATInterfaces/SystematicVariation.h"
+
 
 int main( int argc, char* argv[] ) {
 
@@ -53,6 +55,12 @@ int main( int argc, char* argv[] ) {
   std::string localDataDir = "$ROOTCOREBIN/data/xAODAnaHelpers/";
 
   BasicEventSelection* baseEventSel             = new BasicEventSelection(  "baseEventSel",             localDataDir+"baseEvent.config");
+
+//  JET_GroupedNP_1__continuous
+//  JET_GroupedNP_2__continuous
+//  JET_GroupedNP_3__continuous
+//  JET_RelativeNonClosure_MC12__continuous
+//  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config", "JET_GroupedNP_1", -1);
 
   JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
   MuonCalibrator* muonCalib                     = new MuonCalibrator(       "muonCalib",                localDataDir+"muonCalib.config");

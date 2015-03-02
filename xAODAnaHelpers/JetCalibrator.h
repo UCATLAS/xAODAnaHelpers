@@ -9,8 +9,14 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// CP interface includes
+#include "PATInterfaces/SystematicRegistry.h"
+#include "PATInterfaces/SystematicSet.h"
+#include "PATInterfaces/SystematicVariation.h"
+
 class JetCalibrationTool;
 class JetCleaningTool;
+class JetUncertaintiesTool;
 
 class JetCalibrator : public EL::Algorithm
 {
@@ -28,14 +34,21 @@ public:
   bool m_isMC;
   bool m_isFullSim;
 
+  // systematics
+  std::string m_systName;
+  float m_systVal;
+  bool m_runSysts;
+  std::vector<CP::SystematicSet> m_systList; //!
+
   bool m_debug;           //!
 
 private:
 
   // tools
 #ifndef __CINT__
-  JetCalibrationTool * m_jetCalibration; //!
-  JetCleaningTool    * m_jetCleaning;    //!
+  JetCalibrationTool    * m_jetCalibration; //!
+  JetCleaningTool       * m_jetCleaning;    //!
+  JetUncertaintiesTool  * m_jetUncert;      //!
 #endif // not __CINT__
 
   // configuration variables
@@ -50,10 +63,13 @@ private:
   std::string m_calibConfigAFII;        //!
   std::string m_calibConfig;            //!
   std::string m_calibSequence;          //!
+  std::string m_jetUncertAlgo;          //!
+  std::string m_uncertConfig;           //!
   // sort after calibration
   bool    m_sort;                   //!
 
   std::string m_jetCalibCutLevel;   //!
+
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -65,7 +81,7 @@ public:
 
   // this is a standard constructor
   JetCalibrator ();
-  JetCalibrator (std::string name, std::string configName);
+  JetCalibrator (std::string name, std::string configName, std::string systName = "", float systVal = 0);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
