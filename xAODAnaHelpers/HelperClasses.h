@@ -24,12 +24,13 @@ namespace HelperClasses {
   };
 
   enum class ToolName {
-      MUONSELECTOR = 0,
+      MUONSELECTOR,
       ELECTRONSELECTOR,
       JETSELECTOR,
       BJETSELECTOR,
       OVERLAPREMOVER,
       CALIBRATOR,
+      CORRECTOR,
   };
 
   /* template enum parser

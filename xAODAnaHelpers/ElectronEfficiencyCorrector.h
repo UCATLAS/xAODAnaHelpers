@@ -1,5 +1,5 @@
-#ifndef xAODAnaHelpers_ElectronCalibrator_H
-#define xAODAnaHelpers_ElectronCalibrator_H
+#ifndef xAODAnaHelpers_ElectronEfficiencyCorrector_H
+#define xAODAnaHelpers_ElectronEfficiencyCorrector_H
 
 // EL include(s):
 #include <EventLoop/Algorithm.h>
@@ -14,13 +14,10 @@
 #include "PATInterfaces/SystematicSet.h"
 #include "PATInterfaces/SystematicsUtil.h"
 #include "PATInterfaces/SystematicVariation.h"
-#include "PATInterfaces/SystematicCode.h"
 
-namespace CP{
-   class EgammaCalibrationAndSmearingTool;
-}
+class AsgElectronEfficiencyCorrectionTool;
 
-class ElectronCalibrator : public EL::Algorithm
+class ElectronEfficiencyCorrector : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
@@ -33,6 +30,9 @@ public:
 
   std::string m_name;
   std::string m_configName;
+  
+  std::string m_corrFileName1;
+  //std::string m_corrFileName1;
 
   // systematics
   bool m_runAllSyst;
@@ -47,18 +47,13 @@ private:
 
   // tools
 #ifndef __CINT__
-  CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElectronEfficiencyCorrectionTool; //!
 #endif // not __CINT__
 
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
   std::string m_outAuxContainerName;
-  std::string m_outSCContainerName;
-  std::string m_outSCAuxContainerName;
-
-  // sort after calibration
-  bool    m_sort;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -69,8 +64,8 @@ public:
 
 
   // this is a standard constructor
-  ElectronCalibrator ();
-  ElectronCalibrator (std::string name, std::string configName);
+  ElectronEfficiencyCorrector ();
+  ElectronEfficiencyCorrector (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -87,7 +82,7 @@ public:
   virtual EL::StatusCode configure ();
 
   // this is needed to distribute the algorithm to the workers
-  ClassDef(ElectronCalibrator, 1);
+  ClassDef(ElectronEfficiencyCorrector, 1);
 };
 
 #endif
