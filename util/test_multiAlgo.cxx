@@ -69,6 +69,9 @@ int main( int argc, char* argv[] ) {
 
   ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector(       "electronEfficiencyCorrector",                localDataDir+"electronEffCorr.config");
 
+  MuonSelector* muonSelect_signal               = new MuonSelector(         "muonSelect_signal",        localDataDir+"muonSelect_signal.config");
+  ElectronSelector* electronSelect_signal       = new ElectronSelector(     "electronSelect_signal",    localDataDir+"electronSelect_signal.config");
+
   JetSelector* jetSelect_signal                 = new JetSelector(          "jetSelect_signal",         localDataDir+"jetSelect_signal.config");
   JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo(         "jetHistsAlgo_signal",      localDataDir+"jetHistsAlgo_signal.config");
 
@@ -85,6 +88,8 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( muonCalib );
   job.algsAdd( electronCalib );
   job.algsAdd( electronEffCorr );
+  job.algsAdd( muonSelect_signal );  
+  job.algsAdd( electronSelect_signal );
   job.algsAdd( jetSelect_signal );
   job.algsAdd( jetHistsAlgo_signal );
   job.algsAdd( jetSelect_truth );

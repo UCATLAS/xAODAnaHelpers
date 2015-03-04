@@ -72,6 +72,7 @@ private:
   float    m_eta_max;		      // require |eta| < eta_max
   float    m_d0sig_max; 	      // require d0 significance (at BL) < m_d0sig_max
   float	   m_z0sintheta_max;          // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
+  bool     m_doIsolation;
   std::string  m_CaloBasedIsoType;
   float    m_CaloBasedIsoCut;
   std::string  m_TrackBasedIsoType;

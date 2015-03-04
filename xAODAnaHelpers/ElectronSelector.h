@@ -75,7 +75,9 @@ private:
   bool	     m_vetoCrack;                // require |eta| outside crack region
   float      m_d0sig_max;                // require d0 significance (at BL) < m_d0sig_max
   float	     m_z0sintheta_max;	         // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
-  std::string    m_likelihoodPID;            // require likelihood-based PID
+  bool       m_doPIDcut;                
+  std::string    m_likelihoodPID;        // require likelihood-based PID
+  bool       m_doIsolation;
   bool       m_useRelativeIso;
   std::string    m_CaloBasedIsoType;
   float      m_CaloBasedIsoCut;

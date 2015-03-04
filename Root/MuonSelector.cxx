@@ -129,10 +129,11 @@ EL::StatusCode  MuonSelector :: configure ()
   m_pT_max                  = config->GetValue("pTMax",  1e8);
   m_pT_min                  = config->GetValue("pTMin",  1e8);
   m_eta_max                 = config->GetValue("etaMax", 1e8);
-  m_d0sig_max     	        = config->GetValue("d0sigMax", 4.0);
-  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1.5);
+  m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
+  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
 
   // isolation stuff
+  m_doIsolation             = config->GetValue("DoIsolationCut" , false); 
   m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" ,	"etcone20");
   m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
   m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
@@ -528,14 +529,16 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
 
   // isolation
-  HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-  float ptcone_dr = -999., etcone_dr = -999.;
-  if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ){
-    bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut) ? true : false;
-    bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ? true : false;
-    if( !( isTrackIso && isCaloIso ) ){
-      if (m_debug) std::cout << "Muon failed isolation cut " << std::endl;
-      return 0;
+  if( m_doIsolation ){
+    HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+    float ptcone_dr = -999., etcone_dr = -999.;
+    if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ){
+      bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut) ? true : false;
+      bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ? true : false;
+      if( !( isTrackIso && isCaloIso ) ){
+        if (m_debug) std::cout << "Muon failed isolation cut " << std::endl;
+        return 0;
+      }
     }
   }
 

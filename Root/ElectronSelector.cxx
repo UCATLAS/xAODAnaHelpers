@@ -110,10 +110,11 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_pT_min                  = config->GetValue("pTMin",  1e8);
   m_eta_max                 = config->GetValue("etaMax", 1e8);
   m_vetoCrack               = config->GetValue("VetoCrack", true);
-  m_d0sig_max     	    = config->GetValue("d0sigMax", 4.0);
-  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 10.0);
-
-  m_likelihoodPID  = config->GetValue("LikelihoodPID", "Loose"); // electron PID as defined by LikeEnum enum {VeryLoose, Loose, Medium, Tight, VeryTight, LooseRelaxed} (default is 1 - loose).
+  m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
+  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
+  
+  m_doPIDcut                = config->GetValue("DoPIDCut", false); 
+  m_likelihoodPID           = config->GetValue("LikelihoodPID", "Loose"); // electron PID as defined by LikeEnum enum {VeryLoose, Loose, Medium, Tight, VeryTight, LooseRelaxed} (default is 1 - loose).
   if( m_likelihoodPID != "VeryLoose" &&
       m_likelihoodPID != "Loose"     &&
       m_likelihoodPID != "Medium"    &&
@@ -125,6 +126,7 @@ EL::StatusCode  ElectronSelector :: configure ()
   }
 
   // isolation stuff
+  m_doIsolation             = config->GetValue("DoIsolationCut"   , false     );
   m_useRelativeIso          = config->GetValue("UseRelativeIso"   , true      );
   m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" ,	"etcone20");
   m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
@@ -498,16 +500,19 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
   }
   // likelihood PID
-  if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ){
-      if (m_debug) std::cout << "Electron failed likelihood PID cut." << std::endl;
-      return 0;
+  if( m_doPIDcut ){   
+    if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ){
+        if (m_debug) std::cout << "Electron failed likelihood PID cut." << std::endl;
+        return 0;
+    }
   }
   // isolation
-  if ( ! m_electronIsolationSelectionTool->accept( *electron ) ){
-    if (m_debug) std::cout << "Electron failed isolation cut." << std::endl;
-    return 0;
+  if ( m_doIsolation ){
+    if ( ! m_electronIsolationSelectionTool->accept( *electron ) ){
+      if (m_debug) std::cout << "Electron failed isolation cut." << std::endl;
+      return 0;
+    }
   }
-
   return 1;
 }
 
