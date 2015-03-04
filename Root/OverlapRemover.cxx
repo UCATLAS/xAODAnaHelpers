@@ -218,12 +218,12 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   // initialize overlap removal tool
   m_overlapRemovalTool = new OverlapRemovalTool("OverlapRemovalTool");
-  m_overlapRemovalTool->msg().setLevel( MSG::DEBUG ); // VERBOSE, INFO, DEBUG
+  m_overlapRemovalTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
 
   // set object decoration
   const std::string selected_label = (m_useSelected) ? "passSel" : "";  // set with decoration flag you use for selected objects if want to consider only selected objects in OR, otherwise it will perform OR on all objects
-  m_overlapRemovalTool->setProperty("InputLabel",  selected_label);
-  m_overlapRemovalTool->setProperty("OverlapLabel", "overlaps"); // tool will decorate objects with 'overlaps' boolean if they overlap (not possible to customise name atm!)
+  RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->setProperty("InputLabel",  selected_label), "");
+  RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->setProperty("OverlapLabel", "overlaps"), ""); // tool will decorate objects with 'overlaps' boolean if they overlap (not possible to customise name atm!)
   RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->initialize(), "Failed to properly initialize the OverlapRemovalTool.");
 
   Info("initialize()", "OverlapRemover Interface succesfully initialized!" );
@@ -256,6 +256,14 @@ EL::StatusCode OverlapRemover :: execute ()
   if( !m_inContainerName_Photons.empty() ) inPhotons	     = HelperFunctions::getContainer<xAOD::PhotonContainer>(   m_inContainerName_Photons,	   m_event, m_store);
   if( !m_inContainerName_Taus.empty() )    inTaus	     = HelperFunctions::getContainer<xAOD::TauJetContainer>(   m_inContainerName_Taus,	   m_event, m_store);
 
+  if(m_debug){
+    unsigned int idx(0);
+    for( auto el : *(inElectrons) ) {
+      Info( "execute", "Input electron %i, efficiency SF = %f ", idx, el->auxdata< float >("SF") );
+      ++idx;
+    }
+  }
+  
   // remove overlaps
   /*
   =======================================================
@@ -268,7 +276,7 @@ EL::StatusCode OverlapRemover :: execute ()
     Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());
   }
 
-  m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons);
+  RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
   return executeConst( inElectrons, inMuons, inJets, inTaus, inPhotons );
 }
@@ -353,83 +361,7 @@ EL::StatusCode OverlapRemover :: executeConst ( const xAOD::ElectronContainer* i
     }
   }
 
-  //*******************************************************
-  /*
-  // make a copy of input container(s) with selected objects
-  xAOD::ElectronContainer *selectedElectrons = 0;
-  xAOD::MuonContainer	  *selectedMuons     = 0;
-  xAOD::JetContainer	  *selectedJets      = 0;
-  xAOD::PhotonContainer   *selectedPhotons   = 0;
-  xAOD::TauJetContainer   *selectedTaus      = 0;
-  if(m_createSelectedContainers) {
-
-    // instantiate output container(s)
-    selectedElectrons = new xAOD::ElectronContainer(SG::VIEW_ELEMENTS);
-    selectedMuons     = new xAOD::MuonContainer(SG::VIEW_ELEMENTS);
-    selectedJets      = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
-    selectedPhotons   = new xAOD::PhotonContainer(SG::VIEW_ELEMENTS);
-    selectedTaus      = new xAOD::TauJetContainer(SG::VIEW_ELEMENTS);
-
-    if( ! HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Electrons.c_str() );
-        return EL::StatusCode::FAILURE;
-    }
-    if( ! HelperFunctions::makeSubsetCont(inMuons, selectedMuons, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Muons.c_str() );
-        return EL::StatusCode::FAILURE;
-    }
-    if( ! HelperFunctions::makeSubsetCont(inJets, selectedJets, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Jets.c_str() );
-        return EL::StatusCode::FAILURE;
-    }
-    if( m_inContainerName_Photons.empty() )
-    {
-      if( ! HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Photons.c_str() );
-        return EL::StatusCode::FAILURE;
-      }
-    }
-    if( m_inContainerName_Taus.empty() )
-    {
-      if( ! HelperFunctions::makeSubsetCont(inTaus, selectedTaus, "overlaps") ){
-        Error("execute()  ", "Failed to make subset container of %s. Exiting.", m_inContainerName_Taus.c_str() );
-        return EL::StatusCode::FAILURE;
-      }
-    }
-
-    if( !m_store->record( selectedElectrons, m_outContainerName_Electrons ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Electrons.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-
-    if( !m_store->record( selectedMuons, m_outContainerName_Muons ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Muons.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-
-    if( !m_store->record( selectedJets, m_outContainerName_Jets ).isSuccess() ){
-      Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Jets.c_str() );
-      return EL::StatusCode::FAILURE;
-    }
-
-    if( !m_inContainerName_Photons.empty() && !m_outContainerName_Photons.empty()  )
-    {
-      if( !m_store->record( selectedPhotons, m_outContainerName_Photons ).isSuccess() ){
-        Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Photons.c_str() );
-        return EL::StatusCode::FAILURE;
-      }
-    }
-
-    if( !m_inContainerName_Taus.empty() && !m_outContainerName_Taus.empty() )
-    {
-      if( !m_store->record( selectedTaus, m_outContainerName_Taus ).isSuccess() ){
-        Error("execute()  ", "Failed to store container %s. Exiting.", m_outContainerName_Taus.c_str() );
-        return EL::StatusCode::FAILURE;
-      }
-    }
-
-  }
-  */
+  if(m_debug) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 }

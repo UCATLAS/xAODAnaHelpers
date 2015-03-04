@@ -286,7 +286,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
     // if only looking at a subset of jets make sure all are decorrated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        jet_itr->auxdecor< int >( m_decor ) = -1;
+        jet_itr->auxdecor< char >( m_decor ) = -1;
       } else {
         break;
       }
@@ -308,7 +308,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
     }
 
     if(m_decorateSelectedObjects) {
-      jet_itr->auxdecor< int >( m_decor ) = passSel;
+      jet_itr->auxdecor< char >( m_decor ) = passSel;
     }
 
     if(passSel) {

@@ -11,6 +11,10 @@
 #include "xAODAnaHelpers/MuonCalibrator.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+#include "xAODBase/IParticleContainer.h"
+#include "xAODBase/IParticle.h"
+#include "xAODBase/IParticleHelpers.h"
+
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
@@ -199,13 +203,17 @@ EL::StatusCode MuonCalibrator :: execute ()
   if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
     for( auto muonSC_itr : *(calibMuonsSC.first) ) {
       /* https://twiki.cern.ch/twiki/bin/viewauth/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT#Muons */
-    // Marco: WHAT'S GOING ON HERE? if( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
+      if( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
         // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
         // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
         Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
-    //  }
+      }
       if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", (muonSC_itr->pt() * 1e-3));
     }
+  }
+
+  if(!xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first))) {
+    Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
   }
 
   if(m_sort) {

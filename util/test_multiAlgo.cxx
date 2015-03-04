@@ -14,6 +14,7 @@
 #include "xAODAnaHelpers/MuonCalibrator.h"
 #include "xAODAnaHelpers/MuonSelector.h"
 #include "xAODAnaHelpers/ElectronCalibrator.h"
+#include "xAODAnaHelpers/ElectronEfficiencyCorrector.h"
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "xAODAnaHelpers/Writer.h"
 #include <xAODAnaHelpers/JetHistsAlgo.h>
@@ -34,10 +35,12 @@ int main( int argc, char* argv[] ) {
   // Construct the samples to run on:
   SH::SampleHandler sh;
 
+  std::string filename = "mc14_13TeV.110351.PowhegPythia_P2012_ttbar_allhad.merge.AOD.e3232_s1982_s2008_r5787_r5853_skim.root";
+  // std::string filename = "r20test_AOD.pool.root";
   // get the data path for xAODAnaHelpers/data
   std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
   SH::DiskListLocal list (dataPath);
-  SH::scanDir (sh, list, "r20test_AOD.pool.root", "xAODAnaHelpers"); // specifying one particular sample
+  SH::scanDir (sh, list, filename, "xAODAnaHelpers"); // specifying one particular sample
 
   // Set the name of the input TTree. It's always "CollectionTree"
   // for xAOD files.
@@ -58,10 +61,13 @@ int main( int argc, char* argv[] ) {
 //  JET_GroupedNP_2__continuous
 //  JET_GroupedNP_3__continuous
 //  JET_RelativeNonClosure_MC12__continuous
+//  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config", "JET_GroupedNP_1", -1);
 
-  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config", "JET_GroupedNP_1", -1);
+  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
   MuonCalibrator* muonCalib                     = new MuonCalibrator(       "muonCalib",                localDataDir+"muonCalib.config");
   ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config");
+
+  ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector(       "electronEfficiencyCorrector",                localDataDir+"electronEffCorr.config");
 
   JetSelector* jetSelect_signal                 = new JetSelector(          "jetSelect_signal",         localDataDir+"jetSelect_signal.config");
   JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo(         "jetHistsAlgo_signal",      localDataDir+"jetHistsAlgo_signal.config");
@@ -78,6 +84,7 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( jetCalib );
   job.algsAdd( muonCalib );
   job.algsAdd( electronCalib );
+  job.algsAdd( electronEffCorr );
   job.algsAdd( jetSelect_signal );
   job.algsAdd( jetHistsAlgo_signal );
   job.algsAdd( jetSelect_truth );

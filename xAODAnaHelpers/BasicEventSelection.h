@@ -18,7 +18,9 @@
 
 // Forward declarations
 class GoodRunsListSelectionTool;
-
+namespace CP{
+  class PileupReweightingTool;
+}
 
 class BasicEventSelection : public EL::Algorithm
 {
@@ -35,6 +37,7 @@ class BasicEventSelection : public EL::Algorithm
 
 #ifndef __CINT__
     GoodRunsListSelectionTool*   m_grl;       //!
+    CP::PileupReweightingTool*   m_pileuptool; //!
 #endif // not __CINT__
 
     int m_eventCounter;     //!
@@ -50,8 +53,12 @@ class BasicEventSelection : public EL::Algorithm
     // variables read in through configuration file
     bool m_cleanTStore;     //!
     int m_debug;            //!
+    bool m_truthLevelOnly;  //!
     // GRL
     std::string m_GRLxml;   //!
+    //PU Reweighting
+    bool m_doPUreweighting; //!
+    
     // primary vertex
     std::string m_vertexContainerName; //!
     int m_PVNTrack;                //!

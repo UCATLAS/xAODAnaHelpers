@@ -7,6 +7,9 @@
  *
  ******************************************/
 
+//#include "PATInterfaces/CorrectionCode.h"
+//#include "AsgTools/StatusCode.h"
+
 // EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
@@ -19,6 +22,7 @@
 
 // rootcore includes
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
+#include "PileupReweighting/PileupReweightingTool.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
@@ -44,7 +48,9 @@ BasicEventSelection :: BasicEventSelection (){
 BasicEventSelection :: BasicEventSelection (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
-  m_configName(configName)
+  m_configName(configName),
+  m_grl(0),
+  m_pileuptool(0)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -53,6 +59,7 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
   // initialization code will go into histInitialize() and
   // initialize().
   Info("BasicEventSelection()", "Calling constructor \n");
+  //CP::CorrectionCode::enableFailure();
   //StatusCode::enableFailure();
   m_cutflowHist  = 0;
   m_cutflowHistW = 0;
@@ -74,15 +81,20 @@ EL::StatusCode BasicEventSelection :: configure ()
   // basics
   m_debug         = env->GetValue("Debug"     ,     0         );
   m_cleanTStore   = env->GetValue("CleanTStore",    true      );
+  m_truthLevelOnly = env->GetValue("TruthLevelOnly",    false      );
 
   // GRL
   m_GRLxml        = env->GetValue("GRL"       ,     "/afs/cern.ch/user/a/atlasdqm/grlgen/All_Good/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );    //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
 
-  // primary vertex
-  m_vertexContainerName = env->GetValue("VertexContainer", "PrimaryVertices");
-  // number of tracks to require to count PVs
-  m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
+  // Pileup Reweighting
+  m_doPUreweighting = env->GetValue("DoPileupReweighting", false);
 
+  if(!m_truthLevelOnly) {
+    // primary vertex
+    m_vertexContainerName = env->GetValue("VertexContainer", "PrimaryVertices");
+    // number of tracks to require to count PVs
+    m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
+  }
   env->Print();
   Info("configure()", "BasicEventSelection succesfully configured! \n");
 
@@ -264,6 +276,16 @@ EL::StatusCode BasicEventSelection :: initialize ()
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
 
+  if(m_doPUreweighting){
+    m_pileuptool = new CP::PileupReweightingTool("Pileup");
+    std::vector<std::string> confFiles;
+    std::vector<std::string> lcalcFiles;
+    //confFiles.push_back("blah"); // pass from config file
+    //lcalcFiles.push_back("blah"); // pass from config file
+    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
+    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
+  }
   //--------------------------------------------
   //  Get Containers Depending on Analysis Needs
   //--------------------------------------------
@@ -301,9 +323,11 @@ EL::StatusCode BasicEventSelection :: execute ()
      const std::vector< float > weights = eventInfo->mcEventWeights();
      if( weights.size() > 0 ) mcEvtWeight = weights[0];
 
-     //if( m_doPUreweighting ){ // FIXME
-     //  pileupWeight = eventInfo->auxdecor< double >( "PileupWeight" ); // this decoration added previously by PU reweighting tool
-     //}
+     if( m_doPUreweighting ){
+       m_pileuptool->apply(eventInfo);
+       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
+       pileupWeight = pileupWeightAcc(*eventInfo) ;
+     }
      mcEvtWeight *= pileupWeight;
   }
   // decorate with PU corrected mc event weight
@@ -380,12 +404,14 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
   }
+  const xAOD::VertexContainer* vertices = 0;
+  if(!m_truthLevelOnly) {
+    vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
 
-  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
-
-  if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
+      wk()->skipEvent();
+      return EL::StatusCode::SUCCESS;
+    }
   }
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
@@ -425,6 +451,8 @@ EL::StatusCode BasicEventSelection :: finalize ()
   Info("finalize()", "Number of events          = %i", m_eventCounter);
 
   if(m_grl) { delete m_grl; m_grl = 0; }
+  if(m_doPUreweighting && m_pileuptool) { delete m_pileuptool; m_pileuptool = 0; }
+
   return EL::StatusCode::SUCCESS;
 }
 

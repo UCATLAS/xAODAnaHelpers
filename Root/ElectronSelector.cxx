@@ -3,7 +3,7 @@
  * Interface to CP Electron selection tool(s).
  *
  * M. Milesi (marco.milesi@cern.ch)
- * Jan 28 15:36 AEST 2015
+ * 
  *
  ******************************************/
 
@@ -42,9 +42,6 @@
 #include "TSystem.h"
 #include "TObjArray.h"
 #include "TObjString.h"
-
-// https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonSelectorTools
-// https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronIsolationSelectionTool
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronSelector)

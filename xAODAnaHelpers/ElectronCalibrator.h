@@ -9,6 +9,12 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// CP interface includes
+#include "PATInterfaces/SystematicRegistry.h"
+#include "PATInterfaces/SystematicSet.h"
+#include "PATInterfaces/SystematicsUtil.h"
+#include "PATInterfaces/SystematicVariation.h"
+#include "PATInterfaces/SystematicCode.h"
 
 namespace CP{
    class EgammaCalibrationAndSmearingTool;
@@ -27,6 +33,14 @@ public:
 
   std::string m_name;
   std::string m_configName;
+
+  // systematics
+  bool m_runAllSyst;
+  std::string m_systName;
+  float m_systSigma;
+  bool m_runSysts;
+  std::vector<CP::SystematicSet> m_systList; //!
+
   bool m_debug;
 
 private:
