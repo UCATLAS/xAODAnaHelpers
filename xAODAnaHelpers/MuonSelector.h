@@ -70,6 +70,7 @@ private:
   std::string  m_muonQuality;	      // require quality
   std::string  m_muonType;	      // require type
   float    m_eta_max;		      // require |eta| < eta_max
+  float    m_d0_max;                  // require d0 < m_d0_max
   float    m_d0sig_max; 	      // require d0 significance (at BL) < m_d0sig_max
   float	   m_z0sintheta_max;          // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
   bool     m_doIsolation;

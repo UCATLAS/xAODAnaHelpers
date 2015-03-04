@@ -129,6 +129,7 @@ EL::StatusCode  MuonSelector :: configure ()
   m_pT_max                  = config->GetValue("pTMax",  1e8);
   m_pT_min                  = config->GetValue("pTMin",  1e8);
   m_eta_max                 = config->GetValue("etaMax", 1e8);
+  m_d0_max                  = config->GetValue("d0Max", 1e8);
   m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
   m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
 
@@ -490,6 +491,11 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   // do not cut on impact parameter if muon is Standalone
   if ( type != xAOD::Muon::MuonType::MuonStandAlone ){
+    // d0 cut
+    if (!( tp->d0() < m_d0_max ) ) {
+    	if (m_debug) std::cout << "Muon failed d0 cut." << std::endl;
+    	return 0;
+    }
     // d0sig cut
     if (!( d0_significance < m_d0sig_max ) ) {
     	if (m_debug) std::cout << "Muon failed d0 significance cut." << std::endl;
@@ -500,6 +506,16 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     	if (m_debug) std::cout << "Muon failed z0*sin(theta) cut." << std::endl;
     	return 0;
     }
+  }
+  
+  // if muon is Combined, check charge is the same in ID and MS
+  if ( type != xAOD::Muon::MuonType::Combined ){
+    float ID_charge = ( const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::InnerDetectorTrackParticle) ) )->charge();
+    float MS_charge = ( const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::MuonSpectrometerTrackParticle) ) )->charge();
+      if ( (ID_charge*MS_charge) < 0 ) {
+    	if (m_debug) std::cout << "Muon track has different charge measured in ID and MS. Failed selection" << std::endl;
+    	return 0;
+    }    
   }
 
   // muon quality
