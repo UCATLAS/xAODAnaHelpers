@@ -323,8 +323,10 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   float mcEvtWeight(1.0), pileupWeight(1.0);
   if( isMC ){
-     const std::vector< float > weights = eventInfo->mcEventWeights();
+     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
      if( weights.size() > 0 ) mcEvtWeight = weights[0];
+
+     //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
      if( m_doPUreweighting ){
        m_pileuptool->apply(eventInfo);

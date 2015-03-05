@@ -506,16 +506,22 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     }
   }
   
-  // if muon is Combined, check charge is the same in ID and MS
+  // if muon is Combined, check charge is the same in ID and MS - Used in RunI ttH analysis
+  /*
   if ( type != xAOD::Muon::MuonType::Combined ){
-    float ID_charge = ( const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::InnerDetectorTrackParticle) ) )->charge();
-    float MS_charge = ( const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::MuonSpectrometerTrackParticle) ) )->charge();
-      if ( (ID_charge*MS_charge) < 0 ) {
+  
+    const xAOD::TrackParticle* IDTrack = const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::InnerDetectorTrackParticle) );
+    const xAOD::TrackParticle* MSTrack = const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::MuonSpectrometerTrackParticle) );
+    
+    if( IDTrack && MSTrack ){
+      if ( IDTrack->charge() * MSTrack->charge() < 0 ) {
     	if (m_debug) std::cout << "Muon track has different charge measured in ID and MS. Failed selection" << std::endl;
     	return 0;
-    }    
+      } 
+    }     
   }
-
+  */
+  
   // muon quality
   xAOD::Muon::Quality my_quality = m_muonSelectionTool->getQuality( *muon );
   if(m_debug) std::cout << "Muon quality " << static_cast<int>(my_quality) << std::endl;
