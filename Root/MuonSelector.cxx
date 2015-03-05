@@ -96,8 +96,6 @@ EL::StatusCode  MuonSelector :: configure ()
 
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
-  // sort before running selection
-  m_sort                    = config->GetValue("Sort",          false);
 
   // configurable cuts
   m_muonQuality             = config->GetValue("MuonQuality", "Medium"); // muon quality as defined by xAOD::MuonQuality enum {Tight, Medium, Loose, VeryLoose}, corresponding to 0, 1, 2 and 3 (default is 1 - medium quality).

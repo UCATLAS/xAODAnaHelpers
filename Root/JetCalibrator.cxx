@@ -356,7 +356,7 @@ EL::StatusCode JetCalibrator :: execute ()
   }
 
   if(m_sort) {
-    std::sort( calibJetsSC.first->begin(), calibJetsSC.first->end(), HelperFunctions::sort_pt );
+    std::sort( calibJetsCDV.first->begin(), calibJetsCDV.first->end(), HelperFunctions::sort_pt );
   }
 
   // save pointers in ConstDataVector with same order

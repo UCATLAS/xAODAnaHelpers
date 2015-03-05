@@ -384,7 +384,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
     }    
   
     if(m_sort) {
-      std::sort( calibElectronsSC.first->begin(), calibElectronsSC.first->end(), HelperFunctions::sort_pt );
+      std::sort( calibElectronsCDV.first->begin(), calibElectronsCDV.first->end(), HelperFunctions::sort_pt );
     }    
     
     // append syst name to container name

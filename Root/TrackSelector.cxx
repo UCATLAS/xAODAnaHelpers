@@ -71,8 +71,6 @@ EL::StatusCode  TrackSelector :: configure ()
   m_outContainerName        = config->GetValue("OutputContainer", "");
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
-  // sort before running selection
-  m_sort                    = config->GetValue("Sort",          false);
 
   // cuts
   m_pass_max                = config->GetValue("PassMax",       -1);

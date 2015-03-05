@@ -85,7 +85,6 @@ EL::StatusCode  BJetSelector :: configure ()
   m_outContainerName        = config->GetValue("OutputContainer", "");
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
-  // sort before running selection
 
   m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
   m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;

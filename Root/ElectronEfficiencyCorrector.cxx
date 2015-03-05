@@ -24,7 +24,6 @@
 #include "xAODBase/IParticle.h"
 #include "AthContainers/ConstDataVector.h"
 #include "AthContainers/DataVector.h"
-#include "xAODCore/ShallowCopy.h"
 
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"

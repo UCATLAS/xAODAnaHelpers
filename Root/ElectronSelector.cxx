@@ -18,7 +18,6 @@
 #include <EventLoop/Worker.h>
 
 // EDM include(s):
-#include "xAODCore/ShallowCopy.h"
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODTracking/VertexContainer.h"
@@ -100,8 +99,6 @@ EL::StatusCode  ElectronSelector :: configure ()
 
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
-  // sort before running selection
-  m_sort                    = config->GetValue("Sort",          false);
 
   // configurable cuts
   m_pass_max                = config->GetValue("PassMax", -1);

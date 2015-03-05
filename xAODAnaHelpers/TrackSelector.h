@@ -63,7 +63,6 @@ private:
   bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
   bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
   int  m_nToProcess;               // look at n objects
-  bool m_sort;                    // sort jets before selection
   int m_pass_min;                 // minimum number of objects passing cuts
   int m_pass_max;                 // maximum number of objects passing cuts
   float m_pT_max;                 // require pT < pt_max
