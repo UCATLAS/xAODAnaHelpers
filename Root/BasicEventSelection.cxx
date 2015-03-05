@@ -317,6 +317,9 @@ EL::StatusCode BasicEventSelection :: execute ()
   const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
+  if(m_debug){
+    Info("execute()", "Is MC? %i", static_cast<int>(isMC) );
+  }
 
   float mcEvtWeight(1.0), pileupWeight(1.0);
   if( isMC ){

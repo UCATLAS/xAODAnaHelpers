@@ -302,7 +302,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   }    
   
   if(m_sort) {
-    std::sort( calibElectronsSC.first->begin(), calibElectronsSC.first->end(), HelperFunctions::sort_pt );
+    std::sort( calibElectronsCDV->begin(), calibElectronsCDV->end(), HelperFunctions::sort_pt );
   }    
  
   // save pointers in ConstDataVector with same order

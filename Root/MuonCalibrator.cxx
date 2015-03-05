@@ -221,11 +221,6 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   // save pointers in ConstDataVector with same order
-  /*
-  for( auto mu_itr : *(calibMuonsSC.first) ) {
-    calibMuonsCDV->push_back( mu_itr );
-  }
-  */
   RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "", ToolName::CALIBRATOR), "");
 
   // add shallow copy to TStore
