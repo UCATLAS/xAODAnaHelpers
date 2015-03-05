@@ -54,6 +54,48 @@ EL::StatusCode JetHists::initialize() {
     m_centroidR = book(m_name, "CentroidR",       "CentroidR" ,       120, 0, 600);
   }
 
+  // details for jet energy in each layer
+  // plotted as fraction instead of absolute to make the plotting easier
+  if( m_infoSwitch->m_layer ) {
+//      LAr barrel
+    m_layer_PreSamplerB = book(m_name, "layer_PreSamplerB", "PreSamplerB Fraction", 120, -0.1, 1.1);
+    m_layer_EMB1        = book(m_name, "layer_EMB1", "EMB1 Fraction", 120, -0.1, 1.1);
+    m_layer_EMB2        = book(m_name, "layer_EMB2", "EMB2 Fraction", 120, -0.1, 1.1);
+    m_layer_EMB3        = book(m_name, "layer_EMB3", "EMB3 Fraction", 120, -0.1, 1.1);
+//      LAr EM endcap
+//      PreSamplerE 4
+//      EME1  5
+//      EME2  6
+//      EME3  7
+//      Hadronic endcap
+//      HEC0  8
+//      HEC1  9
+//      HEC2  10
+//      HEC3  11
+//      Tile barrel
+//      TileBar0  12
+//      TileBar1  13
+//      TileBar2  14
+//      Tile gap (ITC & scint)
+//      TileGap1  15
+//      TileGap2  16
+//      TileGap3  17
+//      Tile extended barrel
+//      TileExt0  18
+//      TileExt1  19
+//      TileExt2  20
+//      Forward EM endcap
+//      FCAL0 21
+//      FCAL1 22
+//      FCAL2 23
+//      Mini FCAL
+//      MINIFCAL0 24
+//      MINIFCAL1 25
+//      MINIFCAL2 26
+//      MINIFCAL3 27
+
+  }
+
   m_chf         = book(m_name, "chfPV" ,    "PV(chf)" ,     120, 0, 600);
 
   // details for jet resolutions
@@ -239,8 +281,23 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
 
   }
 
-  /*
+  if( m_infoSwitch->m_layer ) {
+    static SG::AuxElement::ConstAccessor< std::vector<float> > ePerSamp ("EnergyPerSampling");
+    if( ePerSamp.isAvailable( *jet ) ) {
+      std::vector<float> ePerSampVals = ePerSamp( *jet );
+      float jetE = jet->e();
+//      LAr barrel
+      m_layer_PreSamplerB -> Fill( ePerSampVals.at(0) / jetE );
+      m_layer_EMB1        -> Fill( ePerSampVals.at(1) / jetE );
+      m_layer_EMB2        -> Fill( ePerSampVals.at(2) / jetE );
+      m_layer_EMB3        -> Fill( ePerSampVals.at(3) / jetE );
+//      LAr EM endcap
+    }
+  }
+
+
   // area
+  /*
   if ( m_fillArea ) {
 
     static SG::AuxElement::ConstAccessor<int> actArea ("ActiveArea");

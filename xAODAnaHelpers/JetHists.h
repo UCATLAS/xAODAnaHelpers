@@ -36,12 +36,6 @@ class JetHists : public HistogramManager
     TH1F* m_jetPx;                  //!
     TH1F* m_jetPy;                  //!
     TH1F* m_jetPz;                  //!
-    TH1F* m_jetN90Cell;             //!
-    TH1F* m_N90Const;               //!
-    TH1F* m_HECf;                   //!
-    TH1F* m_EMf;                    //!
-    TH1F* m_actArea;                //!
-    TH1F* m_centroidR;              //!
 
     // clean
     TH1F* m_jetTime;                //!
@@ -50,6 +44,23 @@ class JetHists : public HistogramManager
     TH1F* m_negE;                   //!
     TH1F* m_avLArQF;                //!
     TH1F* m_bchCorrCell;            //!
+    TH1F* m_N90Const;               //!
+
+    // energy
+    TH1F* m_HECf;                   //!
+    TH1F* m_EMf;                    //!
+    TH1F* m_centroidR;              //!
+
+    // layer
+    TH1F* m_layer_PreSamplerB;
+    TH1F* m_layer_EMB1;
+    TH1F* m_layer_EMB2;
+    TH1F* m_layer_EMB3;
+
+    // area
+    TH1F* m_actArea;                //!
+
+
     TH1F* m_chf;                    //!
 
     // resolution
