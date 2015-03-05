@@ -217,7 +217,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   if(m_sort) {
-    std::sort( calibMuonsCDV.first->begin(), calibMuonsCDV.first->end(), HelperFunctions::sort_pt );
+    std::sort( calibMuonsCDV->begin(), calibMuonsCDV->end(), HelperFunctions::sort_pt );
   }
 
   // save pointers in ConstDataVector with same order
