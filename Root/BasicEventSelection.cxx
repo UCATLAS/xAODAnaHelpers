@@ -320,7 +320,21 @@ EL::StatusCode BasicEventSelection :: execute ()
   if(m_debug){
     Info("execute()", "Is MC? %i", static_cast<int>(isMC) );
   }
+  
+  // this check only for data
+  if( !isMC ) {
+    // if data event in Egamma stream is also in Muons stream, skip it
 
+    // Get the streams that the event was put in
+    const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
+    
+    for ( auto& it : streams ) { 
+      const std::string stream_name = it.name();
+      Info("execute()", "event has fired stream: %s", stream_name.c_str() ); 
+    }
+  }
+  
+  
   float mcEvtWeight(1.0), pileupWeight(1.0);
   if( isMC ){
      const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
@@ -396,6 +410,10 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
+    
+    // if event in Egamma stream was already in Muons stream, skip it
+    
+    
 
   } else { // is MC - fill cutflows just for consistency
 

@@ -20,6 +20,7 @@
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
+#include "xAODEgamma/EgammaDefs.h"
 #include "xAODTracking/VertexContainer.h"
 
 // package include(s):
@@ -112,6 +113,7 @@ EL::StatusCode  ElectronSelector :: configure ()
   
   m_doPIDcut                = config->GetValue("DoPIDCut", false); 
   m_likelihoodPID           = config->GetValue("LikelihoodPID", "Loose"); // electron PID as defined by LikeEnum enum {VeryLoose, Loose, Medium, Tight, VeryTight, LooseRelaxed} (default is 1 - loose).
+  m_confOperatingPoint      = config->GetValue("OperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
   if( m_likelihoodPID != "VeryLoose" &&
       m_likelihoodPID != "Loose"     &&
       m_likelihoodPID != "Medium"    &&
@@ -264,9 +266,11 @@ EL::StatusCode ElectronSelector :: initialize ()
   // initialise AsgElectronLikelihoodTool
   m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool("AsgElectronLikelihoodTool");
   m_asgElectronLikelihoodTool->setProperty("primaryVertexContainer", "PrimaryVertices");
-  m_asgElectronLikelihoodTool->setProperty("inputPDFFileName", "ElectronPhotonSelectorTools/v1/ElectronLikelihoodPdfs.root");
-  HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
-  m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_likelihoodPID) ) );
+  // m_asgElectronLikelihoodTool->setProperty("inputPDFFileName", "ElectronPhotonSelectorTools/v1/ElectronLikelihoodPdfs.root");
+  // HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
+  // m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_likelihoodPID) ) );
+  std::string confDir = "ElectronPhotonSelectorTools/offline/dc14b_20150121/";
+  m_asgElectronLikelihoodTool->setProperty( "ConfigFile", confDir + m_confOperatingPoint );
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->initialize(), "Failed to properly initialize AsgElectronLikelihoodTool." );
 
   // initialise ElectronIsolationSelectionTool
@@ -446,16 +450,20 @@ EL::StatusCode ElectronSelector :: histFinalize ()
 
 int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex ) {
 
-  int author       = static_cast<int>( electron->author() );
-  float et         = static_cast<float>( (electron->caloCluster()->e()) ) / static_cast<float>( cosh(electron->trackParticle()->eta()) );
-  float eta        = static_cast<float>( electron->caloCluster()->eta() );
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/EGammaIdentificationRun2
+
+  // float et         = static_cast<float>( (electron->caloCluster()->e()) ) / static_cast<float>( cosh(electron->trackParticle()->eta()) );
+  // float eta        = static_cast<float>( electron->caloCluster()->eta() );
+  
+  float et    = electron->pt();
+  float eta   = electron->eta();
+  
   int oq           = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
   float z0sintheta = (static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( electron->trackParticle()->theta() );
 
-
   // author cut
-  if (!(author == 1 || author ==3)) {
-      if (m_debug) std::cout << "Electron failed author cut." << std::endl;
+  if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
+      if (m_debug) std::cout << "Electron failed author kinematic cut." << std::endl;
       return 0;
   }
   // Object Quality cut

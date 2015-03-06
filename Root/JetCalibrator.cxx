@@ -91,7 +91,7 @@ EL::StatusCode  JetCalibrator :: configure ()
 
   // when running data "_Insitu" is appended to this string
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
-  m_calibConfigData	        = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
+  m_calibConfigData	    = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
   m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
   m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
 
@@ -207,19 +207,26 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   if( !m_isMC ) m_calibSequence += "_Insitu";
 
+  // this now holds for both MC and data
+  m_calibConfig = m_calibConfigFullSim;
+
   if( m_isMC ){
+    // treat as fullsim by default
     m_isFullSim = true;
-//    // Check simulation flavour for calibration config
-//    const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
+    // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
+    //
+    // N.B. : If using SampleHandler, you can define sample metadata in job steering macro! 
+    //        They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
+    // 
+//     const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
 //    if (stringMeta.empty()){
 //      Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
-//      m_isFullSim = true;
 //    } else {
 //      m_isFullSim = (stringMeta == "AFII") ? false : true;
 //    }
-    m_calibConfig = ( m_isFullSim ) ? m_calibConfigFullSim : m_calibConfigAFII;
-  } else {
-    m_calibConfig = m_calibConfigData;
+    if( !m_isFullSim ){
+      m_calibConfig = m_calibConfigAFII;
+    }
   }
 
   if(m_debug){
@@ -228,13 +235,13 @@ EL::StatusCode JetCalibrator :: initialize ()
         << "\t m_outContainerName: "	    << m_outContainerName       <<  " of type " <<  typeid(m_outContainerName).name() << "\n"
         << "\t m_outSCContainerName: "	    << m_outSCContainerName     <<  " of type " <<  typeid(m_outSCContainerName).name() << "\n"
         << "\t m_outSCAuxContainerName: "   << m_outSCAuxContainerName  <<  " of type " <<  typeid(m_outSCAuxContainerName).name() << "\n"
-        << "\t m_debug: "		            << m_debug 		            <<  " of type " <<  typeid(m_debug).name() <<  "\n"
-        << "\t m_isMC: "		            << m_isMC  		            <<  " of type " <<  typeid(m_isMC).name() << "\n"
-        << "\t m_jetAlgo  : "		        << m_jetAlgo	            <<  " of type " <<  typeid(m_jetAlgo).name() <<  "\n"
+        << "\t m_debug: "		    << m_debug 		        <<  " of type " <<  typeid(m_debug).name() <<  "\n"
+        << "\t m_isMC: "		    << m_isMC  		        <<  " of type " <<  typeid(m_isMC).name() << "\n"
+        << "\t m_jetAlgo  : "		    << m_jetAlgo	        <<  " of type " <<  typeid(m_jetAlgo).name() <<  "\n"
         << "\t m_calibConfig	      : "   << m_calibConfig	        <<  " of type " <<  typeid(m_calibConfig).name() << "\n"
         << "\t m_calibSequence        : "   << m_calibSequence          <<  " of type " <<  typeid(m_calibSequence).name() << "\n"
-        << "\t m_jetCalibCutLevel     : "   << m_jetCalibCutLevel	    <<  " of type " <<  typeid(m_jetCalibCutLevel).name() << "\n"
-        << "\t m_jetUncertAlgo  : "		        << m_jetUncertAlgo	            <<  " of type " <<  typeid(m_jetUncertAlgo).name() <<  "\n"
+        << "\t m_jetCalibCutLevel     : "   << m_jetCalibCutLevel	<<  " of type " <<  typeid(m_jetCalibCutLevel).name() << "\n"
+        << "\t m_jetUncertAlgo  : "	    << m_jetUncertAlgo	        <<  " of type " <<  typeid(m_jetUncertAlgo).name() <<  "\n"
         << "\t m_uncertConfig	      : "   << m_uncertConfig	        <<  " of type " <<  typeid(m_uncertConfig).name() << "\n"
   	<< std::endl;
   }

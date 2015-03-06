@@ -73,6 +73,8 @@ int main( int argc, char* argv[] ) {
   ElectronSelector* electronSelect_signal       = new ElectronSelector(     "electronSelect_signal",    localDataDir+"electronSelect_signal.config");
 
   JetSelector* jetSelect_signal                 = new JetSelector(          "jetSelect_signal",         localDataDir+"jetSelect_signal.config");
+  BJetSelector* bjetSelect_signal               = new BJetSelector(         "bjetSelect_signal",        localDataDir+"bjetSelect_signal.config");
+
   JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo(         "jetHistsAlgo_signal",      localDataDir+"jetHistsAlgo_signal.config");
 
   JetSelector* jetSelect_truth                  = new JetSelector(          "jetSelect_truth",          localDataDir+"jetSelect_truth.config");
@@ -91,6 +93,7 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( muonSelect_signal );  
   job.algsAdd( electronSelect_signal );
   job.algsAdd( jetSelect_signal );
+  job.algsAdd( bjetSelect_signal ); 
   job.algsAdd( jetHistsAlgo_signal );
   job.algsAdd( jetSelect_truth );
   job.algsAdd( jetHistsAlgo_truth );
