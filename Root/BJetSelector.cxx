@@ -280,6 +280,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
   }
 
   static SG::AuxElement::Decorator< float > MV1WeightDecor("MV1Weight");
+  static SG::AuxElement::Decorator< float > SV1plusIP3DWeightDecor("SV1plusIP3DWeight");
 
   int nPass(0); int nObj(0);
   for( auto jet_itr : *inJets ){
@@ -311,6 +312,8 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
       }
       // store MV1 weight for all jets passing selection
       MV1WeightDecor(*jet_itr) = myBTag->MV1_discriminant();
+      // store SV1+IP3D  weight for all jets passing selection
+      SV1plusIP3DWeightDecor(*jet_itr) = myBTag->SV1plusIP3D_discriminant();
     }
 
     if(m_decorateSelectedObjects) {
