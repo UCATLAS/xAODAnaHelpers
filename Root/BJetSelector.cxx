@@ -298,9 +298,13 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
     nObj++;
     int passSel = this->PassCuts( jet_itr );
 
+    const xAOD::BTagging *myBTag = jet_itr->btagging();
+    
+    // store SV1+IP3D  weight for all jets
+    SV1plusIP3DWeightDecor(*jet_itr) = myBTag->SV1plusIP3D_discriminant();
+
     // only b-tag jets passing the kinematic selection
     if( m_btagCut >=0 && passSel > 0 ) {
-      const xAOD::BTagging *myBTag = jet_itr->btagging();
       
       if(m_debug){ Info("execute()", "jet MV1 discriminant = %2f.", myBTag->MV1_discriminant()); }
       
@@ -310,10 +314,8 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
         // get inefficiency scale factor for jet
         passSel = 0;
       }
-      // store MV1 weight for all jets passing selection
+      // store MV1 weight for all jets passing selection and passing b-tag requirement
       MV1WeightDecor(*jet_itr) = myBTag->MV1_discriminant();
-      // store SV1+IP3D  weight for all jets passing selection
-      SV1plusIP3DWeightDecor(*jet_itr) = myBTag->SV1plusIP3D_discriminant();
     }
 
     if(m_decorateSelectedObjects) {
