@@ -32,6 +32,9 @@ class HistogramManager {
     virtual EL::StatusCode initialize(){ return EL::StatusCode::SUCCESS; };
     virtual EL::StatusCode execute(){ return EL::StatusCode::SUCCESS; };
     virtual EL::StatusCode finalize(){ return EL::StatusCode::SUCCESS; };
+    virtual EL::StatusCode initializeUser(){ return EL::StatusCode::SUCCESS; };
+    virtual EL::StatusCode executeUser(){ return EL::StatusCode::SUCCESS; };
+    virtual EL::StatusCode finalizeUser(){ return EL::StatusCode::SUCCESS; };
 
     // @book - record a histogram and call various functions
     //      ** This is an overloaded function. It will build the right histogram
@@ -50,26 +53,47 @@ class HistogramManager {
     //  @book.zhigh - upper bound on zbins
     //  @book.sumw2 - enable sumw2() for this histogram, default=True
     TH1F* book(std::string name, std::string title,
-               std::string xlabel, int xbins, double xlow, double xhigh,
-               bool sumw2 = true);
+               std::string xlabel, int xbins, double xlow, double xhigh);
 
     TH2F* book(std::string name, std::string title,
                std::string xlabel, int xbins, double xlow, double xhigh,
-               std::string xyabel, int ybins, double ylow, double yhigh,
-               bool sumw2 = true);
+               std::string xyabel, int ybins, double ylow, double yhigh);
 
     TH3F* book(std::string name, std::string title,
                std::string xlabel, int xbins, double xlow, double xhigh,
                std::string ylabel, int ybins, double ylow, double yhigh,
-               std::string zlabel, int zbins, double zlow, double zhigh,
-               bool sumw2 = true);
+               std::string zlabel, int zbins, double zlow, double zhigh);
+
+
+    //// Variable Binned Histograms ////
+    TH1F* book(std::string name, std::string title,
+               std::string xlabel, int xbins, const Double_t* xbinsArr);
+
+    TH2F* book(std::string name, std::string title,
+               std::string xlabel, int xbins, const Double_t* xbinsArr,
+               std::string ylabel, int ybins, double ylow, double yhigh);
+
+    TH2F* book(std::string name, std::string title,
+               std::string xyabel, int xbins, double xlow, double xhigh,
+               std::string ylabel, int ybins, const Double_t* ybinsArr);
+
+    TH2F* book(std::string name, std::string title,
+               std::string xyabel, int xbins, const Double_t* xbinsArr,
+               std::string ylabel, int ybins, const Double_t* ybinsArr);
+
+    TH3F* book(std::string name, std::string title,
+               std::string xlabel, int xbins, const Double_t* xbinsArr,
+               std::string ylabel, int ybins, const Double_t* ybinsArr,
+               std::string zlabel, int zbins, const Double_t* zbinsArr);
+
+
 
     // Record all histograms from m_allHists to the worker
     void record(EL::Worker* wk);
 
   private:
     // Turn on Sumw2 for the histogram
-    void Sumw2(TH1* hist);
+    void Sumw2(TH1* hist, bool flag=true);
 
     // Push the new histogram to m_allHists
     void record(TH1* hist);

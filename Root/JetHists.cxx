@@ -150,6 +150,7 @@ EL::StatusCode JetHists::initialize() {
 
   }
 
+  this->initializeUser();
 
   return EL::StatusCode::SUCCESS;
 }
@@ -544,6 +545,13 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     m_jetGhostTruthPt_vs_resolution -> Fill( ghostTruthPt/1e3, resolution, eventWeight );
   }
 
+  this->executeUser( jet, eventWeight );
+
   return EL::StatusCode::SUCCESS;
 }
 
+EL::StatusCode JetHists::executeUser( const xAOD::Jet* jet, float eventWeight ) {
+  (void) jet; //to hide unused warnings
+  (void) eventWeight; //to hide unused warnings
+  return EL::StatusCode::SUCCESS;
+}
