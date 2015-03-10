@@ -33,7 +33,7 @@ public:
 
   std::string m_name;
   std::string m_configName;
-
+  
   // systematics
   bool m_runAllSyst;
   std::string m_systName;

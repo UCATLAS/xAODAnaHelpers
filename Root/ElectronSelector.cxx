@@ -280,14 +280,16 @@ EL::StatusCode ElectronSelector :: initialize ()
   std::string confDir = "ElectronPhotonSelectorTools/offline/" +  m_confDirPID + "/";
 
   // initialise AsgElectronIsEMSelector (cut-based PID)
-  m_asgElectronIsEMSelector = new AsgElectronIsEMSelector("AsgElectronIsEMSelector");
+  std::string asgeisem_tool_name = std::string("AsgElectronIsEMSelector_") + m_name;
+  m_asgElectronIsEMSelector = new AsgElectronIsEMSelector( asgeisem_tool_name.c_str() );
   HelperClasses::EnumParser<egammaPID::egammaIDQuality> cutBasedPIDParser;
   m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ); // set the config file that contains the cuts on the shower shapes 
   m_asgElectronIsEMSelector->setProperty("isEMMask", static_cast<unsigned int> (cutBasedPIDParser.parseEnum(m_CutBasedPID)) );     // decide which kind of selection you want to use
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
 
   // initialise AsgElectronLikelihoodTool (likelihood-based PID)
-  m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool("AsgElectronLikelihoodTool");
+  std::string asgel_tool_name = std::string("AsgElectronLikelihoodTool_") + m_name;
+  m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool( asgel_tool_name.c_str() );
   m_asgElectronLikelihoodTool->setProperty("primaryVertexContainer", "PrimaryVertices");
   // m_asgElectronLikelihoodTool->setProperty("inputPDFFileName", "ElectronPhotonSelectorTools/v1/ElectronLikelihoodPdfs.root");
   HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
@@ -296,7 +298,8 @@ EL::StatusCode ElectronSelector :: initialize ()
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->initialize(), "Failed to properly initialize AsgElectronLikelihoodTool." );
 
   // initialise ElectronIsolationSelectionTool
-  m_electronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( "ElectronIsolationSelectionTool" );
+  std::string eis_tool_name = std::string("ElectronIsolationSelectionTool_") + m_name;  
+  m_electronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( eis_tool_name.c_str() );
   m_electronIsolationSelectionTool->msg().setLevel( MSG::VERBOSE); // ERROR, VERBOSE, DEBUG, INFO
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ElectronIsolationSelectionTool
   HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;

@@ -75,7 +75,7 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
   RETURN_CHECK_CONFIG( "ElectronEfficiencyCorrector::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
-
+  
   // read debug flag from .config file
   m_debug                   = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
@@ -180,8 +180,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  // initialize the ElectronEfficiencyCorrectionTool
-  m_asgElectronEfficiencyCorrectionTool = new AsgElectronEfficiencyCorrectionTool("ElectronEfficiencyCorrectionTool");
+  // initialize the ElectronEfficiencyCorrectionTool  
+  std::string eec_tool_name = std::string("ElectronEfficiencyCorrectionTool_") + m_name;
+  m_asgElectronEfficiencyCorrectionTool = new AsgElectronEfficiencyCorrectionTool( eec_tool_name.c_str() );
   m_asgElectronEfficiencyCorrectionTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   std::vector<std::string> inputFiles{ m_corrFileName1 } ; // initialise vector w/ all the files containing corrections
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElectronEfficiencyCorrectionTool->setProperty("CorrectionFileNameList",inputFiles),"Failed to set property CorrectionFileNameList");

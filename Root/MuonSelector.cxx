@@ -283,7 +283,8 @@ EL::StatusCode MuonSelector :: initialize ()
   }
 
   // initialise  muon Selector Tool
-  m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelection");
+  std::string ms_tool_name = std::string("MuonSelection_") + m_name;
+  m_muonSelectionTool = new CP::MuonSelectionTool( ms_tool_name.c_str() );
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;

@@ -75,7 +75,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   RETURN_CHECK_CONFIG( "ElectronCalibrator::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
-
+  
   // read debug flag from .config file
   m_debug                   = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
@@ -182,7 +182,8 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_numObject     = 0;
 
   // initialize the CP EgammaCalibrationAndSmearing tool
-  m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool( "EgammaCalibrationAndSmearingTool" );
+  std::string egcas_tool_name = std::string("EgammaCalibrationAndSmearingTool_") + m_name;
+  m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool( egcas_tool_name.c_str() );
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", "es2012c"),"Failed to set property ESModel");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ResolutionType", "SigmaEff90"),"Failed to set property ResolutionType");

@@ -162,7 +162,8 @@ EL::StatusCode MuonCalibrator :: initialize ()
   m_numObject     = 0;
 
   // initialize the muon calibration and smearing tool
-  m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool( "MuonCorrectionTool" );
+  std::string mcas_tool_name = std::string("MuonCorrectionTool_") + m_name;
+  m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool( mcas_tool_name.c_str() );
   m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE
   RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
 

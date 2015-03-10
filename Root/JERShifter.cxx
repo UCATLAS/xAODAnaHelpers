@@ -142,8 +142,10 @@ EL::StatusCode JERShifter :: initialize ()
   m_numEvent      = 0;
 
   // Instantiate the tools
-  m_JERTool     = new JERTool("JERTool");
-  m_JERSmearing = new JERSmearingTool("JERSmearingTool");
+  std::string jer_tool_name  = std::string("JERTool_") + m_name;  
+  std::string jers_tool_name = std::string("JERSmearingTool_") + m_name;   
+  m_JERTool     = new JERTool( jer_tool_name.c_str() );
+  m_JERSmearing = new JERSmearingTool( jers_tool_name.c_str() );
 
   // Configure the JERTool
   //m_JERTool->msg().setLevel(MSG::DEBUG);

@@ -247,7 +247,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize jet calibration tool
-  m_jetCalibration = new JetCalibrationTool("JetCorrectionTool",
+  std::string jcal_tool_name = std::string("JetCorrectionTool_") + m_name;
+  m_jetCalibration = new JetCalibrationTool(jcal_tool_name.c_str(),
       m_jetAlgo,
       m_calibConfig,
       m_calibSequence,
@@ -256,8 +257,9 @@ EL::StatusCode JetCalibrator :: initialize ()
   RETURN_CHECK( "initialize()", m_jetCalibration->initializeTool("JetCorrectionTool"), "");
 
   // initialize and configure the jet cleaning tool
-  //------------------------------------------------
-  m_jetCleaning = new JetCleaningTool("JetCleaning");
+  //------------------------------------------------  
+  std::string jc_tool_name = std::string("JetCleaning_") + m_name;
+  m_jetCleaning = new JetCleaningTool( jc_tool_name.c_str() );
   RETURN_CHECK( "initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
   RETURN_CHECK( "initialize()", m_jetCleaning->initialize(), "");
 
@@ -269,7 +271,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   if ( !m_uncertConfig.empty() && !m_systName.empty() && m_systName != "Nominal" ) {
     m_uncertConfig = gSystem->ExpandPathName( m_uncertConfig.c_str() );
     std::cout << "Initialize JES UNCERT with " << m_uncertConfig << std::endl;
-    m_jetUncert = new JetUncertaintiesTool("JESProvider");
+    std::string ju_tool_name = std::string("JESProvider_") + m_name;
+    m_jetUncert = new JetUncertaintiesTool( ju_tool_name.c_str() );
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("JetDefinition",m_jetUncertAlgo), "");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("MCType","MC12"), "");
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("ConfigFile", m_uncertConfig), "");

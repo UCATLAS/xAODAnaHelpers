@@ -1,6 +1,8 @@
-1;2c 2015-03-10 Marco Milesi <Marco.Milesi@cern.ch>
+2015-03-10 Marco Milesi <Marco.Milesi@cern.ch>
 	            * added possibility to use cut-based PID in ElectronSelector.cxx
 	            * changed electronSelect*.config file accordingly
 	            * now configuration files for ElectronSelector tools are passed directly via config
+		    * append module name to CP Tool name in constructor(to avoid asg::ToolStore::put warning when using multiple instances of same
+		      xAODAnahelpers module)     
 	            * tested in Base,2.1.27 
 	            
