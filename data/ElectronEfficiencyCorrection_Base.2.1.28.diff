@@ -1,0 +1,39 @@
+Index: Root/AsgElectronEfficiencyCorrectionTool.cxx
+===================================================================
+--- Root/AsgElectronEfficiencyCorrectionTool.cxx	(revision 652855)
++++ Root/AsgElectronEfficiencyCorrectionTool.cxx	(working copy)
+@@ -251,7 +251,7 @@
+   return  CP::CorrectionCode::Ok;
+ }
+ 
+-CP::CorrectionCode AsgElectronEfficiencyCorrectionTool::applyEfficiencyScaleFactor(xAOD::Electron& inputObject) const {
++CP::CorrectionCode AsgElectronEfficiencyCorrectionTool::applyEfficiencyScaleFactor(const xAOD::Electron& inputObject) const {
+   static SG::AuxElement::Decorator<float> dec (m_resultPrefix+m_resultName+"SF");
+   Root::TResult m_result = calculate(&inputObject);
+   if( &appliedSystematics()==0 ) {
+Index: ElectronEfficiencyCorrection/IAsgElectronEfficiencyCorrectionTool.h
+===================================================================
+--- ElectronEfficiencyCorrection/IAsgElectronEfficiencyCorrectionTool.h	(revision 652855)
++++ ElectronEfficiencyCorrection/IAsgElectronEfficiencyCorrectionTool.h	(working copy)
+@@ -19,7 +19,7 @@
+ 
+ 
+   virtual CP::CorrectionCode getEfficiencyScaleFactor(const xAOD::Electron& inputObject, double& efficiencyScaleFactor) const = 0;
+-  virtual CP::CorrectionCode applyEfficiencyScaleFactor(xAOD::Electron& inputObject) const = 0;
++  virtual CP::CorrectionCode applyEfficiencyScaleFactor(const xAOD::Electron& inputObject) const = 0;
+ 
+   virtual ~IAsgElectronEfficiencyCorrectionTool() {}
+ 
+Index: ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h
+===================================================================
+--- ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h	(revision 652855)
++++ ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h	(working copy)
+@@ -63,7 +63,7 @@
+ 
+   CP::CorrectionCode getEfficiencyScaleFactor(const xAOD::Electron& inputObject, double& efficiencyScaleFactor) const;
+ 
+-  CP::CorrectionCode applyEfficiencyScaleFactor(xAOD::Electron& inputObject) const;
++  CP::CorrectionCode applyEfficiencyScaleFactor(const xAOD::Electron& inputObject) const;
+ 
+ 
+ 

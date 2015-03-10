@@ -413,10 +413,10 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // eta
   if( m_eta_max != 1e8 ) {
-    if( jet->eta() > m_eta_max ) { return 0; }
+    if( fabs(jet->eta()) > m_eta_max ) { return 0; }
   }
   if( m_eta_min != 1e8 ) {
-    if( jet->eta() < m_eta_min ) { return 0; }
+    if( fabs(jet->eta()) < m_eta_min ) { return 0; }
   }
 
   // detEta

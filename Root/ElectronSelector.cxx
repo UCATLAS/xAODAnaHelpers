@@ -111,16 +111,34 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
   m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
   
-  m_doPIDcut                = config->GetValue("DoPIDCut", false); 
-  m_likelihoodPID           = config->GetValue("LikelihoodPID", "Loose"); // electron PID as defined by LikeEnum enum {VeryLoose, Loose, Medium, Tight, VeryTight, LooseRelaxed} (default is 1 - loose).
-  m_confOperatingPoint      = config->GetValue("OperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
-  if( m_likelihoodPID != "VeryLoose" &&
-      m_likelihoodPID != "Loose"     &&
-      m_likelihoodPID != "Medium"    &&
-      m_likelihoodPID != "Tight"     &&
-      m_likelihoodPID != "VeryTight" &&
-      m_likelihoodPID != "LooseRelaxed" ) {
-    Error("configure()", "Unknown electron likelihood PID requested %s!",m_likelihoodPID.c_str());
+  m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
+  // likelihood-based PID
+  m_doLHPIDcut         = config->GetValue("DoLHPIDCut", false); 
+  m_LHPID              = config->GetValue("LHPID", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
+  m_LHOperatingPoint   = config->GetValue("LHOperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
+  if( m_LHPID != "VeryLoose" &&
+      m_LHPID != "Loose"     &&
+      m_LHPID != "Medium"    &&
+      m_LHPID != "Tight"     &&
+      m_LHPID != "VeryTight" &&
+      m_LHPID != "LooseRelaxed" ) {
+    Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHPID.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+  // cut-based PID
+  m_doCutBasedPIDcut         = config->GetValue("DoCutBasedPIDCut", false); 
+  m_CutBasedPID              = config->GetValue("CutBasedPID", "ElectronIDLoosePP"); // electron PID as defined by egammaPID enum (default is 2 - ElectronIDLoosePP).
+  m_CutBasedOperatingPoint   = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
+  if( m_CutBasedPID != "ElectronIDLoosePP"   &&
+      m_CutBasedPID != "ElectronIDLoose1"    &&
+      m_CutBasedPID != "ElectronIDMediumPP"  &&
+      m_CutBasedPID != "ElectronIDMedium1"   &&
+      m_CutBasedPID != "ElectronIDTightPP"   &&
+      m_CutBasedPID != "ElectronIDTight1"    &&
+      m_CutBasedPID != "ElectronIDLooseHLT"  &&
+      m_CutBasedPID != "ElectronIDMediumHLT" &&
+      m_CutBasedPID != "ElectronIDTightHLT" ) {
+    Error("configure()", "Unknown electron cut-based PID requested %s!",m_CutBasedPID.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -131,7 +149,6 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
   m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
   m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
-
 
   // parse and split by comma
   std::string token;
@@ -259,18 +276,23 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  // initialise AsgElectronIsEMSelector
+  // tell the selector tools where to find configuration files
+  std::string confDir = "ElectronPhotonSelectorTools/offline/" +  m_confDirPID + "/";
+
+  // initialise AsgElectronIsEMSelector (cut-based PID)
   m_asgElectronIsEMSelector = new AsgElectronIsEMSelector("AsgElectronIsEMSelector");
+  HelperClasses::EnumParser<egammaPID::egammaIDQuality> cutBasedPIDParser;
+  m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ); // set the config file that contains the cuts on the shower shapes 
+  m_asgElectronIsEMSelector->setProperty("isEMMask", static_cast<unsigned int> (cutBasedPIDParser.parseEnum(m_CutBasedPID)) );     // decide which kind of selection you want to use
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
 
-  // initialise AsgElectronLikelihoodTool
+  // initialise AsgElectronLikelihoodTool (likelihood-based PID)
   m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool("AsgElectronLikelihoodTool");
   m_asgElectronLikelihoodTool->setProperty("primaryVertexContainer", "PrimaryVertices");
   // m_asgElectronLikelihoodTool->setProperty("inputPDFFileName", "ElectronPhotonSelectorTools/v1/ElectronLikelihoodPdfs.root");
-  // HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
-  // m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_likelihoodPID) ) );
-  std::string confDir = "ElectronPhotonSelectorTools/offline/dc14b_20150121/";
-  m_asgElectronLikelihoodTool->setProperty( "ConfigFile", confDir + m_confOperatingPoint );
+  HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
+  m_asgElectronLikelihoodTool->setProperty("ConfigFile", confDir + m_LHOperatingPoint );
+  m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_LHPID) ) );
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->initialize(), "Failed to properly initialize AsgElectronLikelihoodTool." );
 
   // initialise ElectronIsolationSelectionTool
@@ -463,58 +485,65 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   // author cut
   if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
-      if (m_debug) std::cout << "Electron failed author kinematic cut." << std::endl;
+      if (m_debug) Error("execute()", "Electron failed author kinematic cut." );
       return 0;
   }
   // Object Quality cut
   if (!(oq == 0)) {
-      if (m_debug) std::cout << "Electron failed Object Quality cut." << std::endl;
+      if (m_debug) Error("execute()", "Electron failed Object Quality cut." );
       return 0;
   }
   // pT max
   if( m_pT_max != 1e8 ) {
     if( et > m_pT_max ) {
-      if (m_debug) std::cout << "Electron failed pT max cut." << std::endl;
+      if (m_debug) Error("execute()", "Electron failed pT max cut." );
       return 0;
     }
   }
   // pT min
   if( m_pT_min != 1e8 ) {
     if( et < m_pT_min ) {
-      if (m_debug) std::cout << "Electron failed pT min cut." << std::endl;
+      if (m_debug) Error("execute()", "Electron failed pT min cut." );
       return 0;
     }
   }
   // |eta| max
   if( m_eta_max != 1e8 ) {
     if( fabs(eta) > m_eta_max ) {
-      if (m_debug) std::cout << "Electron failed |eta| max cut." << std::endl;
+      if (m_debug) Error("execute()", "Electron failed |eta| max cut." );
       return 0;
     }
   }
   // |eta| crack veto
   if( m_vetoCrack ) {
     if( fabs(eta) > 1.37 && fabs(eta) < 1.52 ) {
-      if (m_debug) std::cout << "Electron failed |eta| crack veto cut." << std::endl;
+      if (m_debug) Error("execute()", "Electron failed |eta| crack veto cut." );
       return 0;
     }
   }
   // z0*sin(theta) cut
   if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
-      if (m_debug) std::cout << "Electron failed z0*sin(theta) cut." << std::endl;
+      if (m_debug) Error("execute()", "Electron failed z0*sin(theta) cut." );
       return 0;
   }
   // likelihood PID
-  if( m_doPIDcut ){   
+  if( m_doLHPIDcut ){   
     if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ){
-        if (m_debug) std::cout << "Electron failed likelihood PID cut." << std::endl;
+        if (m_debug) Error("execute()", "Electron failed likelihood PID cut." );
+        return 0;
+    }
+  }
+  // cut-based PID
+  if( m_doCutBasedPIDcut ){   
+    if ( ! m_asgElectronIsEMSelector->accept( *electron ) ){
+        if (m_debug) Error("execute()", "Electron failed cut-based PID cut." );
         return 0;
     }
   }
   // isolation
   if ( m_doIsolation ){
     if ( ! m_electronIsolationSelectionTool->accept( *electron ) ){
-      if (m_debug) std::cout << "Electron failed isolation cut." << std::endl;
+      if (m_debug) Error("execute()", "Electron failed isolation cut." );
       return 0;
     }
   }

@@ -10,7 +10,7 @@
 #endif
 
 /* TODO: event */
-HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units /*= 1e3 */):
+HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units):
   m_evtDetailStr(""),
   m_muDetailStr(""),
   m_elDetailStr(""),
@@ -106,7 +106,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) {
   xAOD::ElectronContainer::const_iterator el_end = electrons.end();
   m_nel = 0;
   for( ; el_itr != el_end; ++el_itr ) {
-    m_el_pt.push_back ( (*el_itr)->pt()  ); 
+    m_el_pt.push_back ( (*el_itr)->pt() / m_units ); 
     m_el_eta.push_back( (*el_itr)->eta() );
     m_el_phi.push_back( (*el_itr)->phi() );
     this->FillElectronsUser(*el_itr);

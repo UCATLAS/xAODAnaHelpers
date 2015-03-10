@@ -34,25 +34,25 @@ namespace HelperClasses {
   };
 
   /* template enum parser
-  shamelessly copied from: http://stackoverflow.com/a/726681
+  copied from: http://stackoverflow.com/a/726681
   */
   template <typename T>
   class EnumParser
   {
-     std::multimap <TString, T> enumMap;
+     std::multimap <std::string, T> enumMap;
    public:
      EnumParser();
 
-     T parseEnum(const TString &value)
+     T parseEnum(const std::string &value)
      {
 	/*
 	for (auto it = enumMap.begin(); it != enumMap.end(); ++it){
 	   std::cout << "element: " << (*it).first << std::endl;
 	}
         */
-        typename std::multimap <TString, T>::const_iterator iValue = enumMap.find(value);
+        typename std::multimap <std::string, T>::const_iterator iValue = enumMap.find(value);
         if (iValue == enumMap.end()){
-            std::cerr << "Could not find input TString in enum!" << std::endl;
+            std::cerr << "Could not find input string in enum!" << std::endl;
 	}
         return iValue->second;
      }

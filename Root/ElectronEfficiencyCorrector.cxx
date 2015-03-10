@@ -269,7 +269,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	return EL::StatusCode::FAILURE;
       }
       // apply SF as decoration for this electron
-      if(m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactorConst( *el_itr ) != CP::CorrectionCode::Ok){
+      if(m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactor( *el_itr ) != CP::CorrectionCode::Ok){
     	Error( "execute()", "Problem in applyEfficiencyScaleFactor");
     	return EL::StatusCode::FAILURE;
       }
