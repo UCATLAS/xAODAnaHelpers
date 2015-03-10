@@ -40,6 +40,14 @@ class JetHists : public HistogramManager
     TH1F* m_jetPy;                  //!
     TH1F* m_jetPz;                  //!
 
+    //NLeadingJets
+    std::vector< TH1F* > m_NjetsPt;       //!
+    std::vector< TH1F* > m_NjetsEta;      //!
+    std::vector< TH1F* > m_NjetsPhi;      //!
+    std::vector< TH1F* > m_NjetsM;        //!
+    std::vector< TH1F* > m_NjetsE;        //!
+    std::vector< TH1F* > m_NjetsRapidity; //!
+
     // clean
     TH1F* m_jetTime;                //!
     TH1F* m_LArQuality;             //!

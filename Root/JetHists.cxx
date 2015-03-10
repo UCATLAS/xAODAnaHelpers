@@ -1,4 +1,6 @@
 #include <xAODAnaHelpers/JetHists.h>
+#include <sstream>
+
 
 JetHists :: JetHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr),
@@ -16,11 +18,11 @@ JetHists :: ~JetHists () {
 EL::StatusCode JetHists::initialize() {
 
   // These plots are always made
-  m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 600);
+  m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 3000.);
   m_jetEta         = book(m_name, "jetEta", "jet #eta",         80, -4, 4);
   m_jetPhi         = book(m_name, "jetPhi", "jet Phi",120, -TMath::Pi(), TMath::Pi() );
   m_jetM           = book(m_name, "jetMass", "jet Mass [GeV]",120, 0, 400);
-  m_jetE           = book(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000);
+  m_jetE           = book(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000.);
   m_jetRapidity    = book(m_name, "jetRapidity", "jet Rapidity",120, -10, 10);
 
   Info("JetHists::initialize()", m_name.c_str());
@@ -31,6 +33,22 @@ EL::StatusCode JetHists::initialize() {
     m_jetPy     = book(m_name, "jetPy",     "jet Py [GeV]",     120, 0, 1000);
     m_jetPz     = book(m_name, "jetPz",     "jet Pz [GeV]",     120, 0, 4000);
   }
+
+  // N leading jets
+  if( m_infoSwitch->m_numLeadingJets > 0 ){
+    std::stringstream jetNum;
+    for(int iJet=0; iJet < m_infoSwitch->m_numLeadingJets; ++iJet){
+      jetNum << iJet;
+      m_NjetsPt.push_back(       book(m_name, ("jetPt_jet"+jetNum.str()),       "jet p_{T} [GeV]", 120, 0, 3000.) );
+      m_NjetsEta.push_back(      book(m_name, ("jetEta_jet"+jetNum.str()),      "jet #eta",         80, -4, 4) );
+      m_NjetsPhi.push_back(      book(m_name, ("jetPhi_jet"+jetNum.str()),      "jet Phi",120, -TMath::Pi(), TMath::Pi() ) );
+      m_NjetsM.push_back(        book(m_name, ("jetMass_jet"+jetNum.str()),     "jet Mass [GeV]",120, 0, 400) );
+      m_NjetsE.push_back(        book(m_name, ("jetEnergy_jet"+jetNum.str()),   "jet Energy [GeV]",120, 0, 4000.) );
+      m_NjetsRapidity.push_back( book(m_name, ("jetRapidity_jet"+jetNum.str()), "jet Rapidity",120, -10, 10) );
+      jetNum.str("");
+    }//for iJet
+  }
+
 
   // details for jet cleaning
   if( m_infoSwitch->m_clean ) {
@@ -161,6 +179,22 @@ EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWei
   for( ; jet_itr != jet_end; ++jet_itr ) {
     this->execute( (*jet_itr), eventWeight );
   }
+//  for( auto thisJet : jets ){
+//    this->execute( thisJet, eventWeight );
+//  }
+
+    if( m_infoSwitch->m_numLeadingJets > 0){
+
+      int numJets = std::min( m_infoSwitch->m_numLeadingJets, (int)jets->size() );
+      for(int iJet=0; iJet < numJets; ++iJet){
+        m_NjetsPt.at(iJet)->        Fill( jets->at(iJet)->pt()/1e3,   eventWeight);
+        m_NjetsEta.at(iJet)->       Fill( jets->at(iJet)->eta(),      eventWeight);
+        m_NjetsPhi.at(iJet)->       Fill( jets->at(iJet)->phi(),      eventWeight);
+        m_NjetsM.at(iJet)->         Fill( jets->at(iJet)->m()/1e3,    eventWeight);
+        m_NjetsE.at(iJet)->         Fill( jets->at(iJet)->e()/1e3,    eventWeight);
+        m_NjetsRapidity.at(iJet)->  Fill( jets->at(iJet)->rapidity(), eventWeight);
+      }
+    }
 
   return EL::StatusCode::SUCCESS;
 }
