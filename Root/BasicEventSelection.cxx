@@ -328,9 +328,11 @@ EL::StatusCode BasicEventSelection :: execute ()
     // Get the streams that the event was put in
     const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
     
-    for ( auto& it : streams ) { 
-      const std::string stream_name = it.name();
-      Info("execute()", "event has fired stream: %s", stream_name.c_str() ); 
+    if(m_debug){
+      for ( auto& it : streams ) { 
+	const std::string stream_name = it.name();
+	Info("execute()", "event has fired stream: %s", stream_name.c_str() ); 
+      }
     }
   }
   
