@@ -253,17 +253,15 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_calibConfig,
       m_calibSequence,
       !m_isMC);
-  m_jetCalibration->msg().setLevel( MSG::ERROR); // VERBOSE, INFO, DEBUG
-  RETURN_CHECK( "initialize()", m_jetCalibration->initializeTool("JetCorrectionTool"), "");
+  m_jetCalibration->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
+  RETURN_CHECK( "initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface succesfully initialized!");
 
   // initialize and configure the jet cleaning tool
   //------------------------------------------------  
   std::string jc_tool_name = std::string("JetCleaning_") + m_name;
   m_jetCleaning = new JetCleaningTool( jc_tool_name.c_str() );
   RETURN_CHECK( "initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
-  RETURN_CHECK( "initialize()", m_jetCleaning->initialize(), "");
-
-  Info("initialize()", "JetCalibrator Interface succesfully initialized!" );
+  RETURN_CHECK( "initialize()", m_jetCleaning->initialize(), "JetCleaning Interface succesfully initialized!");
 
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
