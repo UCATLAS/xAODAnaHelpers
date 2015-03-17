@@ -38,6 +38,7 @@ public:
   std::string m_systName;
   float m_systVal;
   bool m_runSysts;
+  bool m_runAllSysts;
   std::vector<CP::SystematicSet> m_systList; //!
 
   bool m_debug;           //!
