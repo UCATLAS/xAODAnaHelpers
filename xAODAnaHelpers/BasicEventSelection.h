@@ -51,7 +51,6 @@ class BasicEventSelection : public EL::Algorithm
     TH1D* m_histEventCount;  //!
 
     // variables read in through configuration file
-    bool m_cleanTStore;     //!
     int m_debug;            //!
     bool m_truthLevelOnly;  //!
     // GRL

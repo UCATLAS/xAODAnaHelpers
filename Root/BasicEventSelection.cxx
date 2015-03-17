@@ -80,7 +80,6 @@ EL::StatusCode BasicEventSelection :: configure ()
 
   // basics
   m_debug         = env->GetValue("Debug"     ,     0         );
-  m_cleanTStore   = env->GetValue("CleanTStore",    true      );
   m_truthLevelOnly = env->GetValue("TruthLevelOnly",    false      );
 
   // GRL
@@ -363,14 +362,10 @@ EL::StatusCode BasicEventSelection :: execute ()
     Info("execute()", "Event number = %i", m_eventCounter);
   }
 
-  if( m_cleanTStore ) {
-    if(m_debug > 0 && m_eventCounter % 50 == 0){
-      Info(m_name.c_str(), "Num Events Processed = %i", m_eventCounter);
-      Info(m_name.c_str(), "Clearing the store. Content:");
-      m_store->print();
-      Info(m_name.c_str(), "End Content");
-    }
-    m_store->clear();
+  if( m_debug && (m_eventCounter % 500) == 0 ) {
+    Info(m_name.c_str(), "Store Content:");
+    m_store->print();
+    Info(m_name.c_str(), "End Content");
   }
 
 
@@ -412,10 +407,6 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
-    
-    // if event in Egamma stream was already in Muons stream, skip it
-    
-    
 
   } else { // is MC - fill cutflows just for consistency
 
