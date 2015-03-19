@@ -83,7 +83,7 @@ EL::StatusCode BasicEventSelection :: configure ()
   m_truthLevelOnly = env->GetValue("TruthLevelOnly",    false      );
 
   // GRL
-  m_GRLxml        = env->GetValue("GRL"       ,     "/afs/cern.ch/user/a/atlasdqm/grlgen/All_Good/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );    //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+  m_GRLxml        = env->GetValue("GRL"       ,     "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );    //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
 
   // Pileup Reweighting
   m_doPUreweighting = env->GetValue("DoPileupReweighting", false);
