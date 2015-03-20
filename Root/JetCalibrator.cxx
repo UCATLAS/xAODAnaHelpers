@@ -370,6 +370,12 @@ EL::StatusCode JetCalibrator :: execute ()
     outContainerName      += syst_it.name();
     vecOutContainerNames->push_back( syst_it.name() );
 
+    if( m_runSysts && !(syst_it.name()).empty() ) {
+      if (m_jetUncert->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+        Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
+        return EL::StatusCode::FAILURE;
+      }
+    }
 
     // create shallow copy;
     std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );

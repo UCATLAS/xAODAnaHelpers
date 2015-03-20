@@ -301,6 +301,7 @@ EL::StatusCode JetSelector :: execute ()
     for( auto systName : *systNames ) {
 
       inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName+systName, m_event, m_store);
+
       passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName );
       if( count ) { count = false; } // only count for 1 collection
       // save the string if passing the selection
