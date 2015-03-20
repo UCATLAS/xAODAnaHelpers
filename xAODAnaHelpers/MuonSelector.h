@@ -62,7 +62,6 @@ private:
   bool     m_decorateSelectedObjects; // decorate selected objects? default passSel
   bool     m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
   int      m_nToProcess;              // look at n objects
-  bool     m_sort;                    // sort jets before selection
   int      m_pass_min;  	      // minimum number of objects passing cuts
   int      m_pass_max;  	      // maximum number of objects passing cuts
   float    m_pT_max;		      // require pT < pt_max
@@ -70,8 +69,10 @@ private:
   std::string  m_muonQuality;	      // require quality
   std::string  m_muonType;	      // require type
   float    m_eta_max;		      // require |eta| < eta_max
+  float    m_d0_max;                  // require d0 < m_d0_max
   float    m_d0sig_max; 	      // require d0 significance (at BL) < m_d0sig_max
   float	   m_z0sintheta_max;          // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
+  bool     m_doIsolation;
   std::string  m_CaloBasedIsoType;
   float    m_CaloBasedIsoCut;
   std::string  m_TrackBasedIsoType;

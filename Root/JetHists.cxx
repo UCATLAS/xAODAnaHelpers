@@ -1,4 +1,6 @@
 #include <xAODAnaHelpers/JetHists.h>
+#include <sstream>
+
 
 JetHists :: JetHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr),
@@ -16,11 +18,11 @@ JetHists :: ~JetHists () {
 EL::StatusCode JetHists::initialize() {
 
   // These plots are always made
-  m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 600);
+  m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 3000.);
   m_jetEta         = book(m_name, "jetEta", "jet #eta",         80, -4, 4);
   m_jetPhi         = book(m_name, "jetPhi", "jet Phi",120, -TMath::Pi(), TMath::Pi() );
   m_jetM           = book(m_name, "jetMass", "jet Mass [GeV]",120, 0, 400);
-  m_jetE           = book(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000);
+  m_jetE           = book(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000.);
   m_jetRapidity    = book(m_name, "jetRapidity", "jet Rapidity",120, -10, 10);
 
   Info("JetHists::initialize()", m_name.c_str());
@@ -31,6 +33,22 @@ EL::StatusCode JetHists::initialize() {
     m_jetPy     = book(m_name, "jetPy",     "jet Py [GeV]",     120, 0, 1000);
     m_jetPz     = book(m_name, "jetPz",     "jet Pz [GeV]",     120, 0, 4000);
   }
+
+  // N leading jets
+  if( m_infoSwitch->m_numLeadingJets > 0 ){
+    std::stringstream jetNum;
+    for(int iJet=0; iJet < m_infoSwitch->m_numLeadingJets; ++iJet){
+      jetNum << iJet;
+      m_NjetsPt.push_back(       book(m_name, ("jetPt_jet"+jetNum.str()),       "jet p_{T} [GeV]", 120, 0, 3000.) );
+      m_NjetsEta.push_back(      book(m_name, ("jetEta_jet"+jetNum.str()),      "jet #eta",         80, -4, 4) );
+      m_NjetsPhi.push_back(      book(m_name, ("jetPhi_jet"+jetNum.str()),      "jet Phi",120, -TMath::Pi(), TMath::Pi() ) );
+      m_NjetsM.push_back(        book(m_name, ("jetMass_jet"+jetNum.str()),     "jet Mass [GeV]",120, 0, 400) );
+      m_NjetsE.push_back(        book(m_name, ("jetEnergy_jet"+jetNum.str()),   "jet Energy [GeV]",120, 0, 4000.) );
+      m_NjetsRapidity.push_back( book(m_name, ("jetRapidity_jet"+jetNum.str()), "jet Rapidity",120, -10, 10) );
+      jetNum.str("");
+    }//for iJet
+  }
+
 
   // details for jet cleaning
   if( m_infoSwitch->m_clean ) {
@@ -52,6 +70,48 @@ EL::StatusCode JetHists::initialize() {
     m_EMf       = book(m_name, "EMFrac",          "EM Fraction" ,     120, 0, 2);
     m_actArea   = book(m_name, "ActiveArea",      "Jet Active Area" , 120, 0, 1);
     m_centroidR = book(m_name, "CentroidR",       "CentroidR" ,       120, 0, 600);
+  }
+
+  // details for jet energy in each layer
+  // plotted as fraction instead of absolute to make the plotting easier
+  if( m_infoSwitch->m_layer ) {
+//      LAr barrel
+    m_layer_PreSamplerB = book(m_name, "layer_PreSamplerB", "PreSamplerB Fraction", 120, -0.1, 1.1);
+    m_layer_EMB1        = book(m_name, "layer_EMB1", "EMB1 Fraction", 120, -0.1, 1.1);
+    m_layer_EMB2        = book(m_name, "layer_EMB2", "EMB2 Fraction", 120, -0.1, 1.1);
+    m_layer_EMB3        = book(m_name, "layer_EMB3", "EMB3 Fraction", 120, -0.1, 1.1);
+//      LAr EM endcap
+//      PreSamplerE 4
+//      EME1  5
+//      EME2  6
+//      EME3  7
+//      Hadronic endcap
+//      HEC0  8
+//      HEC1  9
+//      HEC2  10
+//      HEC3  11
+//      Tile barrel
+//      TileBar0  12
+//      TileBar1  13
+//      TileBar2  14
+//      Tile gap (ITC & scint)
+//      TileGap1  15
+//      TileGap2  16
+//      TileGap3  17
+//      Tile extended barrel
+//      TileExt0  18
+//      TileExt1  19
+//      TileExt2  20
+//      Forward EM endcap
+//      FCAL0 21
+//      FCAL1 22
+//      FCAL2 23
+//      Mini FCAL
+//      MINIFCAL0 24
+//      MINIFCAL1 25
+//      MINIFCAL2 26
+//      MINIFCAL3 27
+
   }
 
   m_chf         = book(m_name, "chfPV" ,    "PV(chf)" ,     120, 0, 600);
@@ -108,6 +168,7 @@ EL::StatusCode JetHists::initialize() {
 
   }
 
+  this->initializeUser();
 
   return EL::StatusCode::SUCCESS;
 }
@@ -118,6 +179,22 @@ EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWei
   for( ; jet_itr != jet_end; ++jet_itr ) {
     this->execute( (*jet_itr), eventWeight );
   }
+//  for( auto thisJet : jets ){
+//    this->execute( thisJet, eventWeight );
+//  }
+
+    if( m_infoSwitch->m_numLeadingJets > 0){
+
+      int numJets = std::min( m_infoSwitch->m_numLeadingJets, (int)jets->size() );
+      for(int iJet=0; iJet < numJets; ++iJet){
+        m_NjetsPt.at(iJet)->        Fill( jets->at(iJet)->pt()/1e3,   eventWeight);
+        m_NjetsEta.at(iJet)->       Fill( jets->at(iJet)->eta(),      eventWeight);
+        m_NjetsPhi.at(iJet)->       Fill( jets->at(iJet)->phi(),      eventWeight);
+        m_NjetsM.at(iJet)->         Fill( jets->at(iJet)->m()/1e3,    eventWeight);
+        m_NjetsE.at(iJet)->         Fill( jets->at(iJet)->e()/1e3,    eventWeight);
+        m_NjetsRapidity.at(iJet)->  Fill( jets->at(iJet)->rapidity(), eventWeight);
+      }
+    }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -239,8 +316,23 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
 
   }
 
-  /*
+  if( m_infoSwitch->m_layer ) {
+    static SG::AuxElement::ConstAccessor< std::vector<float> > ePerSamp ("EnergyPerSampling");
+    if( ePerSamp.isAvailable( *jet ) ) {
+      std::vector<float> ePerSampVals = ePerSamp( *jet );
+      float jetE = jet->e();
+//      LAr barrel
+      m_layer_PreSamplerB -> Fill( ePerSampVals.at(0) / jetE );
+      m_layer_EMB1        -> Fill( ePerSampVals.at(1) / jetE );
+      m_layer_EMB2        -> Fill( ePerSampVals.at(2) / jetE );
+      m_layer_EMB3        -> Fill( ePerSampVals.at(3) / jetE );
+//      LAr EM endcap
+    }
+  }
+
+
   // area
+  /*
   if ( m_fillArea ) {
 
     static SG::AuxElement::ConstAccessor<int> actArea ("ActiveArea");
@@ -487,6 +579,13 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     m_jetGhostTruthPt_vs_resolution -> Fill( ghostTruthPt/1e3, resolution, eventWeight );
   }
 
+  this->executeUser( jet, eventWeight );
+
   return EL::StatusCode::SUCCESS;
 }
 
+EL::StatusCode JetHists::executeUser( const xAOD::Jet* jet, float eventWeight ) {
+  (void) jet; //to hide unused warnings
+  (void) eventWeight; //to hide unused warnings
+  return EL::StatusCode::SUCCESS;
+}

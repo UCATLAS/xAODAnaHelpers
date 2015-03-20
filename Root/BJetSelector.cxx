@@ -85,7 +85,6 @@ EL::StatusCode  BJetSelector :: configure ()
   m_outContainerName        = config->GetValue("OutputContainer", "");
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
-  // sort before running selection
 
   m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
   m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
@@ -280,6 +279,9 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
     selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
   }
 
+  static SG::AuxElement::Decorator< float > MV1WeightDecor("MV1Weight");
+  static SG::AuxElement::Decorator< float > SV1plusIP3DWeightDecor("SV1plusIP3DWeight");
+
   int nPass(0); int nObj(0);
   for( auto jet_itr : *inJets ){
 
@@ -296,15 +298,24 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
     nObj++;
     int passSel = this->PassCuts( jet_itr );
 
+    const xAOD::BTagging *myBTag = jet_itr->btagging();
+    
+    // store SV1+IP3D  weight for all jets
+    SV1plusIP3DWeightDecor(*jet_itr) = myBTag->SV1plusIP3D_discriminant();
+
     // only b-tag jets passing the kinematic selection
     if( m_btagCut >=0 && passSel > 0 ) {
-      const xAOD::BTagging *myBTag = jet_itr->btagging();
+      
+      if(m_debug){ Info("execute()", "jet MV1 discriminant = %2f.", myBTag->MV1_discriminant()); }
+      
       if( myBTag->MV1_discriminant() > m_btagCut ) {
         // get efficiency scale factor for jet
       } else {
         // get inefficiency scale factor for jet
         passSel = 0;
       }
+      // store MV1 weight for all jets passing selection and passing b-tag requirement
+      MV1WeightDecor(*jet_itr) = myBTag->MV1_discriminant();
     }
 
     if(m_decorateSelectedObjects) {

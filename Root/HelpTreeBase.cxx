@@ -10,7 +10,7 @@
 #endif
 
 /* TODO: event */
-HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units /*= 1e3 */):
+HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units):
   m_evtDetailStr(""),
   m_muDetailStr(""),
   m_elDetailStr(""),
@@ -69,7 +69,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo ) {
  ********************/
 
 void HelpTreeBase::AddMuons(std::string detailStr) {
-  m_tree->Branch("nmuon",    &m_nmuon,"nmuon/I");
+  m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");  
   m_tree->Branch("muon_pt",  &m_muon_pt);
   m_tree->Branch("muon_phi", &m_muon_phi);
   m_tree->Branch("muon_eta", &m_muon_eta);
@@ -106,7 +106,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) {
   xAOD::ElectronContainer::const_iterator el_end = electrons.end();
   m_nel = 0;
   for( ; el_itr != el_end; ++el_itr ) {
-    m_el_pt.push_back ( (*el_itr)->pt()  ); 
+    m_el_pt.push_back ( (*el_itr)->pt() / m_units ); 
     m_el_eta.push_back( (*el_itr)->eta() );
     m_el_phi.push_back( (*el_itr)->phi() );
     this->FillElectronsUser(*el_itr);
@@ -151,26 +151,26 @@ void HelpTreeBase::AddJets(std::string detailStr)
   }
 
   if( m_jetInfoSwitch->m_energy ) {
-    m_tree->Branch("jet_HECFrac",               &m_jet_HECf           );
-    m_tree->Branch("jet_EMFrac",                &m_jet_EMf            );
-    m_tree->Branch("jet_CentroidR",             &m_jet_centroidR      );
+    m_tree->Branch("jet_HECFrac", 	      &m_jet_HECf	    );
+    m_tree->Branch("jet_EMFrac",  	      &m_jet_EMf	    );
+    m_tree->Branch("jet_CentroidR",	      &m_jet_centroidR      );
     m_tree->Branch("jet_FracSamplingMax",       &m_jet_fracSampMax    );
     m_tree->Branch("jet_FracSamplingMaxIndex",  &m_jet_fracSampMaxIdx );
     m_tree->Branch("jet_LowEtConstituentsFrac", &m_jet_lowEtFrac      );
-  }
+  }		       
 
   if( m_jetInfoSwitch->m_layer ) { 
     m_tree->Branch("jet_EnergyPerSampling",     &m_jet_ePerSamp   );
   }
 
   if( m_jetInfoSwitch->m_trackAll ) { 
-    m_tree->Branch("jet_NumTrkPt1000",      &m_jet_NTrkPt1000   );
+    m_tree->Branch("jet_NumTrkPt1000",	  &m_jet_NTrkPt1000   );
     m_tree->Branch("jet_SumPtTrkPt1000",    &m_jet_SumPtPt1000  );
     m_tree->Branch("jet_TrackWidthPt1000",  &m_jet_TrkWPt1000   );
-    m_tree->Branch("jet_NumTrkPt500",       &m_jet_NTrkPt500    );
-    m_tree->Branch("jet_SumPtTrkPt500",     &m_jet_SumPtPt500   );
+    m_tree->Branch("jet_NumTrkPt500",	  &m_jet_NTrkPt500    );
+    m_tree->Branch("jet_SumPtTrkPt500",	  &m_jet_SumPtPt500   );
     m_tree->Branch("jet_TrackWidthPt500",   &m_jet_TrkWPt500    );
-    m_tree->Branch("jet_JVF",               &m_jet_jvf          );
+    m_tree->Branch("jet_JVF",		  &m_jet_jvf	      );
     m_tree->Branch("jet_JVFLoose",          &m_jet_jvfloose     );
     // JVT needs to be added
 
@@ -190,10 +190,10 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_NumTrkPt1000PV",      &m_jet_NTrkPt1000PV   );
     m_tree->Branch("jet_SumPtTrkPt1000PV",    &m_jet_SumPtPt1000PV  );
     m_tree->Branch("jet_TrackWidthPt1000PV",  &m_jet_TrkWPt1000PV   );
-    m_tree->Branch("jet_NumTrkPt500PV",       &m_jet_NTrkPt500PV    );
+    m_tree->Branch("jet_NumTrkPt500PV",	    &m_jet_NTrkPt500PV    );
     m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
     m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
-    m_tree->Branch("jet_JVFPV",               &m_jet_jvfPV          );
+    m_tree->Branch("jet_JVFPV",		    &m_jet_jvfPV	  );
     m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
   }
 

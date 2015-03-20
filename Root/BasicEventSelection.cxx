@@ -80,7 +80,6 @@ EL::StatusCode BasicEventSelection :: configure ()
 
   // basics
   m_debug         = env->GetValue("Debug"     ,     0         );
-  m_cleanTStore   = env->GetValue("CleanTStore",    true      );
   m_truthLevelOnly = env->GetValue("TruthLevelOnly",    false      );
 
   // GRL
@@ -317,11 +316,32 @@ EL::StatusCode BasicEventSelection :: execute ()
   const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
+  if(m_debug){
+    Info("execute()", "Is MC? %i", static_cast<int>(isMC) );
+  }
+  
+  // this check only for data
+  if( !isMC ) {
+    // if data event in Egamma stream is also in Muons stream, skip it
 
+    // Get the streams that the event was put in
+    const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
+    
+    if(m_debug){
+      for ( auto& it : streams ) { 
+	const std::string stream_name = it.name();
+	Info("execute()", "event has fired stream: %s", stream_name.c_str() ); 
+      }
+    }
+  }
+  
+  
   float mcEvtWeight(1.0), pileupWeight(1.0);
   if( isMC ){
-     const std::vector< float > weights = eventInfo->mcEventWeights();
+     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
      if( weights.size() > 0 ) mcEvtWeight = weights[0];
+
+     //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
      if( m_doPUreweighting ){
        m_pileuptool->apply(eventInfo);
@@ -342,14 +362,10 @@ EL::StatusCode BasicEventSelection :: execute ()
     Info("execute()", "Event number = %i", m_eventCounter);
   }
 
-  if( m_cleanTStore ) {
-    if(m_debug > 0 && m_eventCounter % 50 == 0){
-      Info(m_name.c_str(), "Num Events Processed = %i", m_eventCounter);
-      Info(m_name.c_str(), "Clearing the store. Content:");
-      m_store->print();
-      Info(m_name.c_str(), "End Content");
-    }
-    m_store->clear();
+  if( m_debug && (m_eventCounter % 500) == 0 ) {
+    Info(m_name.c_str(), "Store Content:");
+    m_store->print();
+    Info(m_name.c_str(), "End Content");
   }
 
 

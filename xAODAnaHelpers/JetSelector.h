@@ -53,6 +53,7 @@ private:
   // configuration variables
   std::string m_inContainerName;      //! input container name
   std::string m_outContainerName;     //! output container name
+  std::string m_inputAlgo;            //! input type - from xAOD or from xAODAnaHelper Algo output
   bool m_decorateSelectedObjects; //! decorate selected objects? defaul passSel
   bool m_createSelectedContainer; //! fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess;               //! look at n objects
@@ -109,7 +110,7 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 #ifndef __CINT__
-  virtual EL::StatusCode executeConst( const xAOD::JetContainer* inJets, float mcEvtWeight );
+  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName );
 #endif // not __CINT__
 
   // added functions not from Algorithm

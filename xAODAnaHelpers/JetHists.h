@@ -9,12 +9,15 @@ class JetHists : public HistogramManager
 {
   public:
 
+    using HistogramManager::executeUser; //to hide warnings that this is not used
+
     JetHists(std::string name, std::string detailStr);
-    ~JetHists();
+    virtual ~JetHists() ;
 
     EL::StatusCode initialize();
     EL::StatusCode execute( const xAOD::JetContainer* jets, float eventWeight );
     EL::StatusCode execute( const xAOD::Jet* jet, float eventWeight );
+    EL::StatusCode executeUser( const xAOD::Jet* jet, float eventWeight );
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 
@@ -36,12 +39,14 @@ class JetHists : public HistogramManager
     TH1F* m_jetPx;                  //!
     TH1F* m_jetPy;                  //!
     TH1F* m_jetPz;                  //!
-    TH1F* m_jetN90Cell;             //!
-    TH1F* m_N90Const;               //!
-    TH1F* m_HECf;                   //!
-    TH1F* m_EMf;                    //!
-    TH1F* m_actArea;                //!
-    TH1F* m_centroidR;              //!
+
+    //NLeadingJets
+    std::vector< TH1F* > m_NjetsPt;       //!
+    std::vector< TH1F* > m_NjetsEta;      //!
+    std::vector< TH1F* > m_NjetsPhi;      //!
+    std::vector< TH1F* > m_NjetsM;        //!
+    std::vector< TH1F* > m_NjetsE;        //!
+    std::vector< TH1F* > m_NjetsRapidity; //!
 
     // clean
     TH1F* m_jetTime;                //!
@@ -50,6 +55,23 @@ class JetHists : public HistogramManager
     TH1F* m_negE;                   //!
     TH1F* m_avLArQF;                //!
     TH1F* m_bchCorrCell;            //!
+    TH1F* m_N90Const;               //!
+
+    // energy
+    TH1F* m_HECf;                   //!
+    TH1F* m_EMf;                    //!
+    TH1F* m_centroidR;              //!
+
+    // layer
+    TH1F* m_layer_PreSamplerB;
+    TH1F* m_layer_EMB1;
+    TH1F* m_layer_EMB2;
+    TH1F* m_layer_EMB3;
+
+    // area
+    TH1F* m_actArea;                //!
+
+
     TH1F* m_chf;                    //!
 
     // resolution

@@ -60,13 +60,12 @@ private:
   CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
 #endif
   // configuration variables
-  std::string    m_inContainerName;          // input container name
-  std::string    m_outContainerName;         // output container name
-  std::string    m_outAuxContainerName;      // output auxiliary container name
+  std::string    m_inContainerName;      // input container name
+  std::string    m_outContainerName;     // output container name
+  std::string    m_outAuxContainerName;  // output auxiliary container name
   bool       m_decorateSelectedObjects;  // decorate selected objects? defaul passSel
   bool       m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
   int        m_nToProcess;               // look at n objects
-  bool       m_sort;                     // sort jets before selection
   int        m_pass_min;                 // minimum number of objects passing cuts
   int        m_pass_max;                 // maximum number of objects passing cuts
   float      m_pT_max;                   // require pT < pt_max
@@ -75,12 +74,24 @@ private:
   bool	     m_vetoCrack;                // require |eta| outside crack region
   float      m_d0sig_max;                // require d0 significance (at BL) < m_d0sig_max
   float	     m_z0sintheta_max;	         // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
-  std::string    m_likelihoodPID;            // require likelihood-based PID
-  bool       m_useRelativeIso;
-  std::string    m_CaloBasedIsoType;
-  float      m_CaloBasedIsoCut;
-  std::string    m_TrackBasedIsoType;
-  float      m_TrackBasedIsoCut;
+  
+  std::string  m_confDirPID; 
+  // likelihood-based PID
+  bool         m_doLHPIDcut;                
+  std::string  m_LHPID;        
+  std::string  m_LHOperatingPoint;
+  // cut-based PID
+  bool         m_doCutBasedPIDcut;                
+  std::string  m_CutBasedPID;  
+  std::string  m_CutBasedOperatingPoint;
+  
+  // isolation
+  bool         m_doIsolation;
+  bool         m_useRelativeIso;
+  std::string  m_CaloBasedIsoType;
+  float        m_CaloBasedIsoCut;
+  std::string  m_TrackBasedIsoType;
+  float        m_TrackBasedIsoCut;
 
   std::string              m_passAuxDecorKeys;  //!
   std::string              m_failAuxDecorKeys;  //!

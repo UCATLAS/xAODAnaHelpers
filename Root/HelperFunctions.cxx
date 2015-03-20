@@ -201,3 +201,13 @@ const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContaine
 bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
   return partA->pt() > partB->pt();
 }
+
+//std::vector< std::string > getListofSystematics( 
+//    CP::SystematicSet recSysts, 
+//    std::string systName, 
+//    float systVal ) {
+//
+//  std::vector< std::string > systList;
+//
+//  return systList;
+//}

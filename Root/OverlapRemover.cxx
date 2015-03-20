@@ -217,7 +217,8 @@ EL::StatusCode OverlapRemover :: initialize ()
   m_numObject     = 0;
 
   // initialize overlap removal tool
-  m_overlapRemovalTool = new OverlapRemovalTool("OverlapRemovalTool");
+  std::string or_tool_name = std::string("OverlapRemovalTool_") + m_name;  
+  m_overlapRemovalTool = new OverlapRemovalTool( or_tool_name.c_str() );
   m_overlapRemovalTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
 
   // set object decoration
