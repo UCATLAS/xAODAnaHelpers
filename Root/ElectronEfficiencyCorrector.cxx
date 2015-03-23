@@ -270,10 +270,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	return EL::StatusCode::FAILURE;
       }
       // apply SF as decoration for this electron
-//      if(m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactor( *el_itr ) != CP::CorrectionCode::Ok){
-//    	Error( "execute()", "Problem in applyEfficiencyScaleFactor");
-//    	return EL::StatusCode::FAILURE;
-//      }
+      if(m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactor( *el_itr ) != CP::CorrectionCode::Ok){
+    	Error( "execute()", "Problem in applyEfficiencyScaleFactor");
+    	return EL::StatusCode::FAILURE;
+      }
 
       if(m_debug) Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f", SF, el_itr->auxdata< float >("SF"));
 
