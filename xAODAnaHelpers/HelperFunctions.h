@@ -36,6 +36,9 @@
   #include "xAODAnaHelpers/HelperClasses.h"
 #endif
 
+// CP interface includes
+#include "PATInterfaces/SystematicSet.h"
+#include "PATInterfaces/SystematicVariation.h"
 
 namespace HelperFunctions {
 
@@ -99,6 +102,9 @@ namespace HelperFunctions {
 
   // miscellaneous
   bool sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB);
+
+  std::vector< CP::SystematicSet > getListofSystematics( CP::SystematicSet recSysts, 
+      std::string systName, float systVal );
 
 #ifndef __CINT__
 

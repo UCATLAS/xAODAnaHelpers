@@ -57,7 +57,6 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configName,
   m_systName(systName),       // if running systs - the name of the systematic
   m_systVal(systVal),         // if running systs - the value ( +/- 1 )
   m_runSysts(false),          // gets set later is syst applies to this tool
-  m_runAllSysts(false),       // run all systs in 1 go
   m_jetCalibration(0),        // JetCalibrationTool
   m_jetCleaning(0),           // JetCleaningTool
   m_jetUncert(0)              // JetUncertaintiesTool
@@ -250,11 +249,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
-  if ( !m_uncertConfig.empty() && !m_systName.empty() && m_systName != "Nominal" ) {
-    if ( m_systName == "All" || m_systName == "ALL" ) {
-      m_runAllSysts = true;
-      Info("initialize()","Initialize JES UNCERT for ALL systematics!");
-    }
+  if ( !m_uncertConfig.empty() && !m_systName.empty() ) {
     m_uncertConfig = gSystem->ExpandPathName( m_uncertConfig.c_str() );
     Info("initialize()","Initialize JES UNCERT with %s", m_uncertConfig.c_str());
     std::string ju_tool_name = std::string("JESProvider_") + m_name;
@@ -265,43 +260,9 @@ EL::StatusCode JetCalibrator :: initialize ()
     RETURN_CHECK("initialize()", m_jetUncert->initialize(), "");
     m_jetUncert->msg().setLevel( MSG::ERROR ); // VERBOSE, INFO, DEBUG
     CP::SystematicSet recSysts = m_jetUncert->recommendedSystematics();
-    Info("initialize()"," The following systematics are recommended:");
-    for( auto syst : recSysts ) {
-      Info("initialize()","  %s", (syst.basename()).c_str());
-      if( m_systName == syst.basename() ) {
-        Info("initialize()","Found match! Adding systematic %s", syst.basename().c_str());
-        // continuous systematics - can choose at what sigma to evaluate
-        if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
-          m_systList.push_back(CP::SystematicSet());
-          if ( m_systVal == 0 ) { 
-            Error("initialize()","Setting continuous systematic to 0 is nominal! Please check!");
-            return EL::StatusCode::FAILURE;
-          }
-          m_systList.back().insert(CP::SystematicVariation (syst.basename(), m_systVal));
-        } 
-        // not a continuous system
-        else {
-          m_systList.push_back(CP::SystematicSet());
-          m_systList.back().insert(syst);
-        }
-      } // found match!
-      else if( m_runAllSysts ) {
-        Info("initialize()","Adding systematic %s", syst.basename().c_str());
-        // continuous systematics - can choose at what sigma to evaluate
-        // add +1 and -1 for when running all
-        if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
-          m_systList.push_back(CP::SystematicSet());
-          m_systList.back().insert(CP::SystematicVariation (syst.basename(),  1.0));
-          m_systList.push_back(CP::SystematicSet());
-          m_systList.back().insert(CP::SystematicVariation (syst.basename(), -1.0));
-        } 
-        // not a continuous system
-        else {
-          m_systList.push_back(CP::SystematicSet());
-          m_systList.back().insert(syst);
-        }
-      } // running all
-    } // loop over recommended systematics
+
+    Info("initialize()"," Initializing Jet Systematics :");
+    m_systList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );
 
     // Setup the tool for the 1st systematic on the list
     // If running all, the tool will be setup for each syst on each event
@@ -317,15 +278,15 @@ EL::StatusCode JetCalibrator :: initialize ()
   else { 
     Info("initialize()", "No uncertainities considered");
     // m_jetUncert not streamed so have to do this
-    m_runSysts = false; m_jetUncert = 0; m_runAllSysts = false; 
+    m_runSysts = false; m_jetUncert = 0;
   }
 
   // if not running systematics, need the nominal
   // if running systematics, and running them all, need the nominal
   // add it to the front!
-  if( m_systList.empty() || (!m_systList.empty() && m_runAllSysts) ) { 
+  if( m_systList.empty() || (!m_systList.empty() && m_systName == "All") ) { 
     m_systList.insert( m_systList.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation("Nominal");
+    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
     m_systList.begin()->insert(nullVar);
   }
 
@@ -352,20 +313,33 @@ EL::StatusCode JetCalibrator :: execute ()
   const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
+  std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
   for(const auto& syst_it : m_systList){
 
     std::string outSCContainerName(m_outSCContainerName);
     std::string outSCAuxContainerName(m_outSCAuxContainerName);
     std::string outContainerName(m_outContainerName);
 
-    // if do not find "Nominal" in name then this is a systematic
-    // only change the name of the output collection if looping over systematics
-    if( syst_it.name().find("Nominal") == std::string::npos && m_runAllSysts ) {
-      outSCContainerName    += syst_it.name();
-      outSCAuxContainerName += syst_it.name();
-      outContainerName      += syst_it.name();
-    }
+//    // if do not find "Nominal" in name then this is a systematic
+//    // only change the name of the output collection if looping over systematics
+//    if( syst_it.name().find("Nominal") == std::string::npos && m_runAllSysts ) {
+//      outSCContainerName    += syst_it.name();
+//      outSCAuxContainerName += syst_it.name();
+//      outContainerName      += syst_it.name();
+//    }
+    
+    // always append the name of the variation, including nominal which is an empty string
+    outSCContainerName    += syst_it.name();
+    outSCAuxContainerName += syst_it.name();
+    outContainerName      += syst_it.name();
+    vecOutContainerNames->push_back( syst_it.name() );
 
+    if( m_runSysts && !(syst_it.name()).empty() ) {
+      if (m_jetUncert->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+        Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
+        return EL::StatusCode::FAILURE;
+      }
+    }
 
     // create shallow copy;
     std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
@@ -416,10 +390,12 @@ EL::StatusCode JetCalibrator :: execute ()
     RETURN_CHECK( "execute()", m_store->record( calibJetsCDV, outContainerName), "Failed to record const data container.");
   }
 
+  // add ConstDataVector to TStore
+  RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
   
-  //std::cout << "Calibrator over" << std::endl;
-  //m_store->print();
-  //std::cout << std::endl;
+//  std::cout << "Calibrator over" << std::endl;
+//  m_store->print();
+//  std::cout << std::endl;
 
   return EL::StatusCode::SUCCESS;
 }

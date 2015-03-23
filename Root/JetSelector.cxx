@@ -21,6 +21,9 @@
 #include "xAODJet/JetContainer.h"
 #include "xAODCore/ShallowCopy.h"
 #include "AthContainers/ConstDataVector.h"
+#include "PATInterfaces/SystematicVariation.h"
+#include "PATInterfaces/SystematicRegistry.h"
+#include "PATInterfaces/SystematicCode.h"
 
 // package include(s):
 #include "xAODEventInfo/EventInfo.h"
@@ -77,6 +80,8 @@ EL::StatusCode  JetSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
+  // name of algo input container comes from - only if 
+  m_inputAlgo               = config->GetValue("InputAlgo",       "");
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -106,12 +111,12 @@ EL::StatusCode  JetSelector :: configure ()
   m_mass_min                = config->GetValue("massMin",     1e8);
   m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
   m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-  m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
+  m_truthLabel 		          = config->GetValue("TruthLabel",   -1);
 
-  m_doJVF 		    = config->GetValue("DoJVF",       false);
-  m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",    50e3);
-  m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
-  m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
+  m_doJVF 		              = config->GetValue("DoJVF",       false);
+  m_pt_max_JVF 		          = config->GetValue("pTMaxJVF",    50e3);
+  m_eta_max_JVF 	          = config->GetValue("etaMaxJVF",   2.4);
+  m_JVFCut 		              = config->GetValue("JVFCut",      0.5);
 
   // parse and split by comma
   std::string token;
@@ -226,8 +231,6 @@ EL::StatusCode JetSelector :: initialize ()
 
   Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
 
-  //std::cout << m_name << " Number of events = " << m_event->getEntries() << std::endl;
-
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
@@ -263,13 +266,71 @@ EL::StatusCode JetSelector :: execute ()
 
   m_numEvent++;
 
-  // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  // did any collection pass the cuts?
+  bool pass(false);
+  bool count(true); // count for the 1st collection in the container - could be better as
+  // shoudl only count for the nominal
+  const xAOD::JetContainer* inJets = 0;
 
-  return executeConst( inJets, mcEvtWeight );
+  // if input comes from xAOD, or just running one collection, 
+  // then get the one collection and be done with it
+  if( m_inputAlgo.empty() ) {
+
+    // this will be the collection processed - no matter what!!
+    inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+
+    pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName);
+
+  }
+  else { // get the list of systematics to run over
+
+    // get vector of string giving the names
+    std::vector<std::string>* systNames;
+    if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
+      if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
+        Info("execute()", "Cannot find vector from %s", m_inputAlgo.c_str());
+        return StatusCode::FAILURE;
+      }
+    }
+
+    // loop over systematics
+    std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+    bool passOne(false);
+    for( auto systName : *systNames ) {
+
+      inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName+systName, m_event, m_store);
+
+      passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName );
+      if( count ) { count = false; } // only count for 1 collection
+      // save the string if passing the selection
+      if( passOne ) { 
+        vecOutContainerNames->push_back( systName ); 
+      }
+      // the final decision - if at least one passes keep going!
+      pass = pass || passOne;
+    }
+
+    // save list of systs that shoudl be considered down stream
+    RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
+
+  }
+
+//  std::cout << "Selector over" << std::endl;
+//  m_store->print();
+//  std::cout << std::endl;
+
+  if(!pass) {
+    wk()->skipEvent();
+  }
+  return EL::StatusCode::SUCCESS;
+  
 }
 
-EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, float mcEvtWeight )
+bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets, 
+    float mcEvtWeight, 
+    bool count,
+    std::string outContainerName 
+    )
 {
 
   // create output container (if requested)
@@ -312,28 +373,30 @@ EL::StatusCode JetSelector :: executeConst ( const xAOD::JetContainer* inJets, f
     }
   }
 
-  m_numObject     += nObj;
-  m_numObjectPass += nPass;
+  if( count ) {
+    m_numObject     += nObj;
+    m_numObjectPass += nPass;
+  }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   if( m_pass_min > 0 && nPass < m_pass_min ) {
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    return false;
   }
   if( m_pass_max > 0 && nPass > m_pass_max ) {
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    return false;
   }
 
-  m_numEventPass++;
-  m_weightNumEventPass += mcEvtWeight;
+  if( count ) {
+    m_numEventPass++;
+    m_weightNumEventPass += mcEvtWeight;
+  }
 
   // add ConstDataVector to TStore
   if(m_createSelectedContainer) {
-    RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, m_outContainerName ), "Failed to store const data container.");
+    RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, outContainerName ), "Failed to store const data container.");
   }
 
-  return EL::StatusCode::SUCCESS;
+  return true;
 }
 
 

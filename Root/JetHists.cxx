@@ -173,33 +173,28 @@ EL::StatusCode JetHists::initialize() {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight ) {
-  xAOD::JetContainer::const_iterator jet_itr = jets->begin();
-  xAOD::JetContainer::const_iterator jet_end = jets->end();
-  for( ; jet_itr != jet_end; ++jet_itr ) {
-    this->execute( (*jet_itr), eventWeight );
+EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc ) {
+  for( auto jet_itr : *jets ) {
+    this->execute( jet_itr, eventWeight, pvLoc );
   }
-//  for( auto thisJet : jets ){
-//    this->execute( thisJet, eventWeight );
-//  }
 
-    if( m_infoSwitch->m_numLeadingJets > 0){
+  if( m_infoSwitch->m_numLeadingJets > 0){
 
-      int numJets = std::min( m_infoSwitch->m_numLeadingJets, (int)jets->size() );
-      for(int iJet=0; iJet < numJets; ++iJet){
-        m_NjetsPt.at(iJet)->        Fill( jets->at(iJet)->pt()/1e3,   eventWeight);
-        m_NjetsEta.at(iJet)->       Fill( jets->at(iJet)->eta(),      eventWeight);
-        m_NjetsPhi.at(iJet)->       Fill( jets->at(iJet)->phi(),      eventWeight);
-        m_NjetsM.at(iJet)->         Fill( jets->at(iJet)->m()/1e3,    eventWeight);
-        m_NjetsE.at(iJet)->         Fill( jets->at(iJet)->e()/1e3,    eventWeight);
-        m_NjetsRapidity.at(iJet)->  Fill( jets->at(iJet)->rapidity(), eventWeight);
-      }
+    int numJets = std::min( m_infoSwitch->m_numLeadingJets, (int)jets->size() );
+    for(int iJet=0; iJet < numJets; ++iJet){
+      m_NjetsPt.at(iJet)->        Fill( jets->at(iJet)->pt()/1e3,   eventWeight);
+      m_NjetsEta.at(iJet)->       Fill( jets->at(iJet)->eta(),      eventWeight);
+      m_NjetsPhi.at(iJet)->       Fill( jets->at(iJet)->phi(),      eventWeight);
+      m_NjetsM.at(iJet)->         Fill( jets->at(iJet)->m()/1e3,    eventWeight);
+      m_NjetsE.at(iJet)->         Fill( jets->at(iJet)->e()/1e3,    eventWeight);
+      m_NjetsRapidity.at(iJet)->  Fill( jets->at(iJet)->rapidity(), eventWeight);
     }
+  }
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
+EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc ) {
 
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
@@ -564,8 +559,9 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
   /*
   std::vector<float> chfs = jet->getAttribute< std::vector<float> >(xAOD::JetAttribute::SumPtTrkPt1000);
   float chf(-1);
-  //if( pvLocation >= 0 && pvLocation < (int)chfs.size() ) { chf = chfs.at( pvLocation ); }
-  m_chf ->  Fill( chf , eventWeight );
+  if( pvLoc >= 0 && pvLoc < (int)chfs.size() ) { 
+    m_chf ->  Fill( chfs.at( pvLoc ) , eventWeight );
+  }
   */
 
 

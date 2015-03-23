@@ -25,8 +25,7 @@ JetHistsAlgo :: JetHistsAlgo () {}
 JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
-  m_configName(configName),
-  m_plots(nullptr)
+  m_configName(configName)
 {
 }
 
@@ -51,12 +50,21 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
     Info("histInitialize()", "Succesfully configured! \n");
   }
 
-  // declare class and add histograms to output
-  m_plots = new JetHists(m_name, m_detailStr);
-  m_plots -> initialize( );
-  m_plots -> record( wk() );
+  // only running 1 collection
+  if(m_inputAlgo.empty()) { AddHists( "" ); }
 
   return EL::StatusCode::SUCCESS;
+}
+
+void JetHistsAlgo::AddHists( std::string name ) {
+
+  std::string fullname(m_name);
+  fullname += name; // add systematic
+  JetHists* jetHists = new JetHists( fullname, m_detailStr ); // add systematic
+  jetHists->initialize();
+  jetHists->record( wk() );
+  m_plots[name] = jetHists;
+
 }
 
 EL::StatusCode JetHistsAlgo :: configure ()
@@ -66,8 +74,12 @@ EL::StatusCode JetHistsAlgo :: configure ()
 
   // the file exists, use TEnv to read it off
   TEnv* config = new TEnv(m_configName.c_str());
+  // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
+  // which plots will be turned on
   m_detailStr               = config->GetValue("DetailStr",       "");
+  // name of algo input container comes from - only if 
+  m_inputAlgo               = config->GetValue("InputAlgo",       "");
 
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
@@ -102,23 +114,49 @@ EL::StatusCode JetHistsAlgo :: execute ()
     eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
   }
 
-  // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
-
   // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
-  /*int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);*/
+  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
 
-  /* two ways to fill */
+  // this will hold the collection processed 
+  const xAOD::JetContainer* inJets = 0;
 
-  // 1. pass the jet collection
-  m_plots->execute( inJets, eventWeight );
+  // if input comes from xAOD, or just running one collection, 
+  // then get the one collection and be done with it
+  if( m_inputAlgo.empty() ) {
+    inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
-  /* 2. loop over the jets
-  for( auto jet_itr : *inJets ) {
-    m_plots->execute( jet_itr, eventWeight );
+    /* two ways to fill */
+
+    // 1. pass the jet collection
+    m_plots[""]->execute( inJets, eventWeight, pvLocation );
+
+    /* 2. loop over the jets
+       for( auto jet_itr : *inJets ) {
+       m_plots[""]->execute( jet_itr, eventWeight, pvLocation );
+       }
+    */
+
   }
-  */
+  else { // get the list of systematics to run over
+
+    // get vector of string giving the names
+    std::vector<std::string>* systNames;
+    if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
+      if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
+        Info("execute()", "Cannot find vector from %s", m_inputAlgo.c_str());
+        return StatusCode::FAILURE;
+      }
+    }
+
+    // loop over systematics
+    for( auto systName : *systNames ) {
+      inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName+systName, m_event, m_store);
+      if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
+      m_plots[systName]->execute( inJets, eventWeight, pvLocation );
+    }
+
+  }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -127,9 +165,11 @@ EL::StatusCode JetHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; 
 
 EL::StatusCode JetHistsAlgo :: finalize () {
   Info("finalize()", m_name.c_str());
-  if(m_plots){
-    delete m_plots;
-    m_plots = 0;
+  if(!m_plots.empty()){
+    for( auto plots : m_plots ) {
+      delete plots.second;
+      plots.second = 0;
+    }
   }
   return EL::StatusCode::SUCCESS;
 }
