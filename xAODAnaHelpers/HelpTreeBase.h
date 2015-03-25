@@ -65,18 +65,19 @@ public:
 #endif // not __CINT__ 
   void Fill();
   void Clear();
+  void ClearJets();
 
   bool writeTo( TFile *file );
 
   // User defined functions
-  virtual void AddUser()                                           = 0;
+  virtual void AddUser()                                           { return; };
 #ifndef __CINT__  
-  virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   = 0;
-  virtual void FillMuonsUser( const xAOD::Muon* muon )             = 0;
-  virtual void FillElectronsUser( const xAOD::Electron* electron ) = 0;
-  virtual void FillJetsUser( const xAOD::Jet* jet )                = 0;
-  virtual void FillFatJetsUser( const xAOD::Jet* fatJet )          = 0;
-  virtual void ClearUser()                                         = 0;
+  virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   { return; };
+  virtual void FillMuonsUser( const xAOD::Muon* muon )             { return; };
+  virtual void FillElectronsUser( const xAOD::Electron* electron ) { return; };
+  virtual void FillJetsUser( const xAOD::Jet* jet )                { return; };
+  virtual void FillFatJetsUser( const xAOD::Jet* fatJet )          { return; };
+  virtual void ClearUser()                                         { return; };
 #endif // not __CINT__ 
 
 protected:
@@ -107,8 +108,8 @@ protected:
   std::vector<float> m_jet_avLArQF;
   std::vector<float> m_jet_bchCorrCell;
   std::vector<float> m_jet_N90Const;
-  std::vector<float> m_jet_LArBadHVEFrac;
-  std::vector<float> m_jet_LArBadHVNCellFrac;
+  std::vector<float> m_jet_LArBadHVE;
+  std::vector<float> m_jet_LArBadHVRatio;
 
   // energy
   std::vector<float> m_jet_HECf;
@@ -140,6 +141,9 @@ protected:
   std::vector<float> m_jet_TrkWPt500PV;
   std::vector<float> m_jet_jvfPV;
   std::vector<float> m_jet_jvfloosePV;
+
+  std::vector<float> m_jet_mv1;
+  std::vector<float> m_jet_sv1ip3d;
 
   // muons
   int m_nmuon;

@@ -1,6 +1,8 @@
 // c++ include(s):
 #include <iostream>
 
+#include "xAODBTagging/BTagging.h"
+
 // package include(s):
 #include "xAODAnaHelpers/HelpTreeBase.h"
 
@@ -49,11 +51,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo ) {
   if(eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION)) {
     m_mcEventNumber         = eventInfo->mcEventNumber();
     m_mcChannelNumber       = eventInfo->mcChannelNumber();
-    if( eventInfo->isAvailable< float >( "mcEventWeight" ) ){
-      m_mcEventWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
-    } else {
-      std::cout << "HelpTreeBase::FillEvent() - WARNING! Couldn't retrieve mcEventWeight! " << std::endl;
-    }
+    m_mcEventWeight         = eventInfo->mcEventWeight();
   } else {
     m_mcEventNumber         = -1;
     m_mcChannelNumber       = -1;
@@ -146,8 +144,8 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_AverageLArQF",        &m_jet_avLArQF            );
     m_tree->Branch("jet_BchCorrCell",         &m_jet_bchCorrCell        );
     m_tree->Branch("jet_N90Constituents",     &m_jet_N90Const           );
-    m_tree->Branch("jet_LArBadHVEnergyFrac",  &m_jet_LArBadHVEFrac      );
-    m_tree->Branch("jet_LArBadHVNCellFrac",   &m_jet_LArBadHVNCellFrac  );
+    m_tree->Branch("jet_LArBadHVEnergy",      &m_jet_LArBadHVE          );
+    m_tree->Branch("jet_LArBadHVRatio",       &m_jet_LArBadHVRatio  	  );
   }
 
   if( m_jetInfoSwitch->m_energy ) {
@@ -197,10 +195,15 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
   }
 
+  if( m_jetInfoSwitch->m_flavTag ) { 
+    m_tree->Branch("jet_MV1Weight",     &m_jet_mv1);
+    m_tree->Branch("jet_SV1IP3DWeight", &m_jet_sv1ip3d);
+  }
+
 }
 
 void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
-  m_njet = 0;
+  this->ClearJets();
   for( auto jet_itr : jets ) {
     m_jet_pt.push_back ( jet_itr->pt() / m_units );
     m_jet_eta.push_back( jet_itr->eta() );
@@ -244,15 +247,15 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
         m_jet_N90Const.push_back( N90Const( *jet_itr ) );
       } else { m_jet_N90Const.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<float> LArBadHVEFrac ("LArBadHVEnergyFrac");
-      if( LArBadHVEFrac.isAvailable( *jet_itr ) ) {
-        m_jet_LArBadHVEFrac.push_back( LArBadHVEFrac( *jet_itr ) );
-      } else { m_jet_LArBadHVEFrac.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor<float> LArBadHVE ("LArBadHVEnergy");
+      if( LArBadHVE.isAvailable( *jet_itr ) ) {
+        m_jet_LArBadHVE.push_back( LArBadHVE( *jet_itr ) );
+      } else { m_jet_LArBadHVE.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<float> LArBadHVNCellFrac ("LArBadHVNCellFrac");
-      if( LArBadHVNCellFrac.isAvailable( *jet_itr ) ) {
-        m_jet_LArBadHVNCellFrac.push_back( LArBadHVNCellFrac( *jet_itr ) );
-      } else { m_jet_LArBadHVNCellFrac.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor<float> LArBadHVRatio ("LArBadHVRatio");
+      if( LArBadHVRatio.isAvailable( *jet_itr ) ) {
+        m_jet_LArBadHVRatio.push_back( LArBadHVRatio( *jet_itr ) );
+      } else { m_jet_LArBadHVRatio.push_back( -999 ); }
 
     } // clean
 
@@ -278,7 +281,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
         m_jet_fracSampMax.push_back( fracSampMax( *jet_itr ) );
       } else { m_jet_fracSampMax.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<float> fracSampMaxIdx ("FracSamplingMaxIndex");
+      static SG::AuxElement::ConstAccessor<int> fracSampMaxIdx ("FracSamplingMaxIndex");
       if( fracSampMaxIdx.isAvailable( *jet_itr ) ) {
         m_jet_fracSampMaxIdx.push_back( fracSampMaxIdx( *jet_itr ) );
       } else { m_jet_fracSampMaxIdx.push_back( -999 ); }
@@ -313,6 +316,14 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
     if( m_jetInfoSwitch->m_trackPV ) {
     }
 
+    static SG::AuxElement::Decorator< float > MV1WeightDecor("MV1Weight");
+    static SG::AuxElement::Decorator< float > SV1plusIP3DWeightDecor("SV1plusIP3DWeight");
+
+    if( m_jetInfoSwitch->m_flavTag) {
+      m_jet_mv1.push_back( MV1WeightDecor( *jet_itr ) );
+      m_jet_sv1ip3d.push_back( SV1plusIP3DWeightDecor( *jet_itr ) );
+    }
+
     this->FillJetsUser(jet_itr);
     m_njet++;
   }
@@ -330,6 +341,25 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer& /*fatJets*/ ) { }
 
 void HelpTreeBase::Clear() {
 
+
+  this->ClearJets();
+
+
+  m_nmuon = 0;  
+  m_muon_pt.clear();
+  m_muon_eta.clear();
+  m_muon_phi.clear();    
+    
+  m_nel = 0;  
+  m_el_pt.clear();
+  m_el_eta.clear();
+  m_el_phi.clear();
+    
+  this->ClearUser();
+}
+
+void HelpTreeBase::ClearJets() {
+
   m_njet = 0;
   m_jet_pt.clear();
   m_jet_eta.clear();
@@ -344,8 +374,8 @@ void HelpTreeBase::Clear() {
   m_jet_avLArQF.clear();
   m_jet_bchCorrCell.clear();
   m_jet_N90Const.clear();
-  m_jet_LArBadHVEFrac.clear();
-  m_jet_LArBadHVNCellFrac.clear();
+  m_jet_LArBadHVE.clear();
+  m_jet_LArBadHVRatio.clear();
 
   // energy
   m_jet_HECf.clear();
@@ -377,20 +407,10 @@ void HelpTreeBase::Clear() {
   m_jet_TrkWPt500PV.clear();
   m_jet_jvfPV.clear();
   m_jet_jvfloosePV.clear();
+  
+  m_jet_mv1.clear();
+  m_jet_sv1ip3d.clear();
 
-
-
-  m_nmuon = 0;  
-  m_muon_pt.clear();
-  m_muon_eta.clear();
-  m_muon_phi.clear();    
-    
-  m_nel = 0;  
-  m_el_pt.clear();
-  m_el_eta.clear();
-  m_el_phi.clear();
-    
-  this->ClearUser();
 }
 
 bool HelpTreeBase::writeTo( TFile* file ) {

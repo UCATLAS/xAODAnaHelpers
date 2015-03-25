@@ -21,6 +21,9 @@
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
+/* Tree */
+#include <xAODAnaHelpers/TreeAlgo.h>
+
 
 /* Other */
 #include <xAODAnaHelpers/JERShifter.h>
@@ -50,6 +53,8 @@
 
 #pragma link C++ class JetHistsAlgo+;
 #pragma link C++ class TrackHistsAlgo+;
+
+#pragma link C++ class TreeAlgo+;
 
 #pragma link C++ class JERShifter+;
 #pragma link C++ class OverlapRemover+;
