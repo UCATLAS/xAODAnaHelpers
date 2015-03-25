@@ -60,7 +60,7 @@ public:
   void FillEvent( const xAOD::EventInfo* eventInfo );
   void FillMuons( const xAOD::MuonContainer& muons );
   void FillElectrons( const xAOD::ElectronContainer& electrons );
-  void FillJets( const xAOD::JetContainer& jets );
+  void FillJets( const xAOD::JetContainer& jets, int pvLocation = -1 );
   void FillFatJets( const xAOD::JetContainer& fatJets );
 #endif // not __CINT__ 
   void Fill();

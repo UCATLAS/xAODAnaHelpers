@@ -149,9 +149,9 @@ void HelpTreeBase::AddJets(std::string detailStr)
   }
 
   if( m_jetInfoSwitch->m_energy ) {
-    m_tree->Branch("jet_HECFrac", 	      &m_jet_HECf	    );
-    m_tree->Branch("jet_EMFrac",  	      &m_jet_EMf	    );
-    m_tree->Branch("jet_CentroidR",	      &m_jet_centroidR      );
+    m_tree->Branch("jet_HECFrac", 	            &m_jet_HECf	    );
+    m_tree->Branch("jet_EMFrac",  	            &m_jet_EMf	    );
+    m_tree->Branch("jet_CentroidR",	            &m_jet_centroidR      );
     m_tree->Branch("jet_FracSamplingMax",       &m_jet_fracSampMax    );
     m_tree->Branch("jet_FracSamplingMaxIndex",  &m_jet_fracSampMaxIdx );
     m_tree->Branch("jet_LowEtConstituentsFrac", &m_jet_lowEtFrac      );
@@ -162,13 +162,13 @@ void HelpTreeBase::AddJets(std::string detailStr)
   }
 
   if( m_jetInfoSwitch->m_trackAll ) { 
-    m_tree->Branch("jet_NumTrkPt1000",	  &m_jet_NTrkPt1000   );
+    m_tree->Branch("jet_NumTrkPt1000",	    &m_jet_NTrkPt1000   );
     m_tree->Branch("jet_SumPtTrkPt1000",    &m_jet_SumPtPt1000  );
     m_tree->Branch("jet_TrackWidthPt1000",  &m_jet_TrkWPt1000   );
-    m_tree->Branch("jet_NumTrkPt500",	  &m_jet_NTrkPt500    );
-    m_tree->Branch("jet_SumPtTrkPt500",	  &m_jet_SumPtPt500   );
+    m_tree->Branch("jet_NumTrkPt500",	      &m_jet_NTrkPt500    );
+    m_tree->Branch("jet_SumPtTrkPt500",	    &m_jet_SumPtPt500   );
     m_tree->Branch("jet_TrackWidthPt500",   &m_jet_TrkWPt500    );
-    m_tree->Branch("jet_JVF",		  &m_jet_jvf	      );
+    m_tree->Branch("jet_JVF",		            &m_jet_jvf	        );
     m_tree->Branch("jet_JVFLoose",          &m_jet_jvfloose     );
     // JVT needs to be added
 
@@ -188,10 +188,10 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_NumTrkPt1000PV",      &m_jet_NTrkPt1000PV   );
     m_tree->Branch("jet_SumPtTrkPt1000PV",    &m_jet_SumPtPt1000PV  );
     m_tree->Branch("jet_TrackWidthPt1000PV",  &m_jet_TrkWPt1000PV   );
-    m_tree->Branch("jet_NumTrkPt500PV",	    &m_jet_NTrkPt500PV    );
+    m_tree->Branch("jet_NumTrkPt500PV",	      &m_jet_NTrkPt500PV    );
     m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
     m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
-    m_tree->Branch("jet_JVFPV",		    &m_jet_jvfPV	  );
+    m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	  );
     m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
   }
 
@@ -202,7 +202,7 @@ void HelpTreeBase::AddJets(std::string detailStr)
 
 }
 
-void HelpTreeBase::FillJets( const xAOD::JetContainer& jets ) {
+void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
   this->ClearJets();
   for( auto jet_itr : jets ) {
     m_jet_pt.push_back ( jet_itr->pt() / m_units );

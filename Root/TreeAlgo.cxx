@@ -126,8 +126,9 @@ EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusC
 
 EL::StatusCode TreeAlgo :: execute ()
 {
-  //std::cout << "I like Pandas" << std::endl;
+  // Get EventInfo the PrimaryVertices
   const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>( "PrimaryVertices", m_event, m_store);
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -149,7 +150,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
   if(!m_jetContainerName.empty()) {
     const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_jetContainerName, m_event, m_store);
-    m_helpTree->FillJets( *inJets );
+    m_helpTree->FillJets( *inJets, HelperFunctions::countPrimaryVertices(vertices, 2) );
   }
   
   if(!m_fatJetContainerName.empty()) {
