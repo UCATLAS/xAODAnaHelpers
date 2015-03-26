@@ -10,3 +10,7 @@
 2015-03-11 Marco Milesi <Marco.Milesi@cern.ch>
         * Releasing tag 00-00-02 (for ASG Base,2.1.27)
       
+2015-03-26 Marco Milesi <Marco.Milesi@cern.ch>
+        * Added function isFilePrimaryxAOD() to know if a sample is a primary xAOD (if not, its a DxAOD!) in HelperFunctions
+	* Added MuonEfficiencyCorrector module. Efficiency SF systematics are added as decorations
+	* Revamped MetaData reading in BasicEventSelection.cxx . This is not going to be definitive though...

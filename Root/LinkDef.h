@@ -15,7 +15,9 @@
 /*#include <xAODAnaHelpers/GroomedFatJets.h>*/
 
 /* Scale Factors */
-#include<xAODAnaHelpers/ElectronEfficiencyCorrector.h>
+#include <xAODAnaHelpers/ElectronEfficiencyCorrector.h>
+#include <xAODAnaHelpers/MuonEfficiencyCorrector.h> 
+
 
 /* Plotting Tools */
 #include <xAODAnaHelpers/JetHistsAlgo.h>
@@ -50,6 +52,7 @@
 /*#pragma link C++ class GroomedFatJets+;*/
 
 #pragma link C++ class ElectronEfficiencyCorrector+;
+#pragma link C++ class MuonEfficiencyCorrector+;
 
 #pragma link C++ class JetHistsAlgo+;
 #pragma link C++ class TrackHistsAlgo+;

@@ -190,16 +190,16 @@ void HelpTreeBase::AddJets(std::string detailStr)
   m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 
   // always
-  m_tree->Branch("njet",    &m_njet,"njet/I");
+  m_tree->Branch("evtsel_jets_num",    &m_njet,"evtsel_jets_num/I");
 
   // TLorentzVector
 //  if( m_jetInfoSwitch->m_TLV ) {
 //    // add TLorentzVector instead of flat variables
 //  } else {
-    m_tree->Branch("jet_E",   &m_jet_E);
-    m_tree->Branch("jet_pt",  &m_jet_pt);
-    m_tree->Branch("jet_phi", &m_jet_phi);
-    m_tree->Branch("jet_eta", &m_jet_eta);
+    m_tree->Branch("jet_AntiKt4LCTopo_E",   &m_jet_E);
+    m_tree->Branch("jet_AntiKt4LCTopo_pt",  &m_jet_pt);
+    m_tree->Branch("jet_AntiKt4LCTopo_phi", &m_jet_phi);
+    m_tree->Branch("jet_AntiKt4LCTopo_eta", &m_jet_eta);
 //  }
 
   if( m_jetInfoSwitch->m_clean ) { 
@@ -224,7 +224,7 @@ void HelpTreeBase::AddJets(std::string detailStr)
   }		       
 
   if( m_jetInfoSwitch->m_layer ) { 
-    m_tree->Branch("jet_EnergyPerSampling",     &m_jet_ePerSamp   );
+    m_tree->Branch("jet_AntiKt4LCTopo_EnergyPerSampling",     &m_jet_ePerSamp   );
   }
 
   if( m_jetInfoSwitch->m_trackAll ) { 
@@ -236,6 +236,7 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_TrackWidthPt500",   &m_jet_TrkWPt500    );
     m_tree->Branch("jet_JVF",		            &m_jet_jvf	        );
     m_tree->Branch("jet_JVFLoose",          &m_jet_jvfloose     );
+
     // JVT needs to be added
 
     // NumTrkPt1000 vector<int> 

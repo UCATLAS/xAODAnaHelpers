@@ -256,9 +256,6 @@ EL::StatusCode MuonSelector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-
-  std::cout << m_name << " Number of events = " << m_event->getEntries() << std::endl;
-
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;

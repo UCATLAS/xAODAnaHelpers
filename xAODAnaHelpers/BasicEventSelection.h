@@ -41,14 +41,6 @@ class BasicEventSelection : public EL::Algorithm
 #endif // not __CINT__
 
     int m_eventCounter;     //!
-    int m_cutflow_all;      //!
-    int m_cutflow_grl;      //!
-    int m_cutflow_lar;      //!
-    int m_cutflow_tile;     //!
-    int m_cutflow_core;     //!
-    int m_cutflow_npv;      //!
-
-    TH1D* m_histEventCount;  //!
 
     // variables read in through configuration file
     int m_debug;            //!
@@ -61,10 +53,23 @@ class BasicEventSelection : public EL::Algorithm
     // primary vertex
     std::string m_vertexContainerName; //!
     int m_PVNTrack;                //!
+    
+    // read from MetaData
+    TH1D* m_histEventCount;  //!    
+    int m_MD_initialNevents; //!
+    int m_MD_finalNevents;   //!
+    float m_MD_initialSumW;    //!
+    float m_MD_finalSumW;	     //!
+    
     // cutflow
-    TH1D* m_cutflowHist;           //!
-    TH1D* m_cutflowHistW;          //!
-
+    TH1D* m_cutflowHist;    //!
+    TH1D* m_cutflowHistW;   //!
+    int m_cutflow_all;      //!
+    int m_cutflow_grl;      //!
+    int m_cutflow_lar;      //!
+    int m_cutflow_tile;     //!
+    int m_cutflow_core;     //!
+    int m_cutflow_npv;      //!
 
     // variables that don't get filled at submission time should be
     // protected from being send from the submission node to the worker

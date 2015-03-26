@@ -41,6 +41,12 @@
 #include "PATInterfaces/SystematicSet.h"
 #include "PATInterfaces/SystematicVariation.h"
 
+#include "TTree.h"
+#include "TBranch.h"
+#include "TFile.h"
+#include "TObjArray.h"
+
+
 namespace HelperFunctions {
 
   // primary vertex
@@ -50,6 +56,21 @@ namespace HelperFunctions {
   int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer);
   std::string replaceString(std::string subjet, const std::string& search, const std::string& replace);
 
+
+  /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
+  |                                                                            |
+  |   Author  : Marco Milesi                                                   |
+  |   Email   : marco.milesi@cern.ch                                           |
+  |   Logic copied from: 
+  	PhysicsAnalysis/TopPhys/xAOD/TopAnalysis/trunk/Root/Tools.cxx          |  
+   
+  Function to check if file is Full xAOD 
+
+  \*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+  
+  StatusCode isAvailableMetaData(TTree* metaData);
+  bool isFilePrimaryxAOD(TFile* inputFile);
+  
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |
   |   Author  : Giordon Stark                                                  |

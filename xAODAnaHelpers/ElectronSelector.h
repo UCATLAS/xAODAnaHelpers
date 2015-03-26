@@ -75,6 +75,9 @@ private:
   float      m_d0sig_max;                // require d0 significance (at BL) < m_d0sig_max
   float	     m_z0sintheta_max;	         // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
   
+  bool       m_doAuthorCut;
+  bool       m_doOQCut;
+  
   std::string  m_confDirPID; 
   // likelihood-based PID
   bool         m_doLHPIDcut;                
@@ -82,7 +85,8 @@ private:
   std::string  m_LHOperatingPoint;
   // cut-based PID
   bool         m_doCutBasedPIDcut;                
-  std::string  m_CutBasedPID;  
+  std::string  m_CutBasedPIDMask;  
+  std::string  m_PIDName;
   std::string  m_CutBasedOperatingPoint;
   
   // isolation

@@ -111,6 +111,9 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
   m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
   
+  m_doAuthorCut             = config->GetValue("DoAuthorCut", true);
+  m_doOQCut                 = config->GetValue("DoOQCut", true);
+  
   m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
   // likelihood-based PID
   m_doLHPIDcut         = config->GetValue("DoLHPIDCut", false); 
@@ -127,18 +130,19 @@ EL::StatusCode  ElectronSelector :: configure ()
   }
   // cut-based PID
   m_doCutBasedPIDcut         = config->GetValue("DoCutBasedPIDCut", false); 
-  m_CutBasedPID              = config->GetValue("CutBasedPID", "ElectronIDLoosePP"); // electron PID as defined by egammaPID enum (default is 2 - ElectronIDLoosePP).
+  m_CutBasedPIDMask          = config->GetValue("CutBasedPIDMask", "ElectronLoosePP"); // electron PID bitmask.
+  m_PIDName                  = config->GetValue("PIDName", "isEMLoose");               // electron PID bit-def as defined by egammaPID::PID enum (default is isEMLoose ).
   m_CutBasedOperatingPoint   = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
-  if( m_CutBasedPID != "ElectronIDLoosePP"   &&
-      m_CutBasedPID != "ElectronIDLoose1"    &&
-      m_CutBasedPID != "ElectronIDMediumPP"  &&
-      m_CutBasedPID != "ElectronIDMedium1"   &&
-      m_CutBasedPID != "ElectronIDTightPP"   &&
-      m_CutBasedPID != "ElectronIDTight1"    &&
-      m_CutBasedPID != "ElectronIDLooseHLT"  &&
-      m_CutBasedPID != "ElectronIDMediumHLT" &&
-      m_CutBasedPID != "ElectronIDTightHLT" ) {
-    Error("configure()", "Unknown electron cut-based PID requested %s!",m_CutBasedPID.c_str());
+  if( m_CutBasedPIDMask != "ElectronLoosePP"   &&
+      m_CutBasedPIDMask != "ElectronLoose1"    &&
+      m_CutBasedPIDMask != "ElectronMediumPP"  &&
+      m_CutBasedPIDMask != "ElectronMedium1"   &&
+      m_CutBasedPIDMask != "ElectronTightPP"   &&
+      m_CutBasedPIDMask != "ElectronTight1"    &&
+      m_CutBasedPIDMask != "ElectronLooseHLT"  &&
+      m_CutBasedPIDMask != "ElectronMediumHLT" &&
+      m_CutBasedPIDMask != "ElectronTightHLT" ) {
+    Error("configure()", "Unknown electron cut-based PID bitmask requested %s!",m_CutBasedPIDMask.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -282,14 +286,42 @@ EL::StatusCode ElectronSelector :: initialize ()
   // initialise AsgElectronIsEMSelector (cut-based PID)
   std::string asgeisem_tool_name = std::string("AsgElectronIsEMSelector_") + m_name;
   m_asgElectronIsEMSelector = new AsgElectronIsEMSelector( asgeisem_tool_name.c_str() );
-  HelperClasses::EnumParser<egammaPID::egammaIDQuality> cutBasedPIDParser;
+  m_asgElectronIsEMSelector->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO  
   m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ); // set the config file that contains the cuts on the shower shapes 
-  m_asgElectronIsEMSelector->setProperty("isEMMask", static_cast<unsigned int> (cutBasedPIDParser.parseEnum(m_CutBasedPID)) );     // decide which kind of selection you want to use
+  // Apparently this won't be needed at all ...
+  // HelperClasses::EnumParser<egammaPID::PID> cutBasedPIDParser; 
+  // m_asgElectronIsEMSelector->setProperty("PIDName", static_cast<int>(cutBasedPIDParser.parseEnum(m_PIDName)) );
+  // only for DC14 w/ 2012 configuration
+  unsigned int EMMask = 999;
+  if(m_CutBasedPIDMask == "ElectronLoosePP") {
+    EMMask = egammaPID::ElectronLoosePP;
+  } else if(m_CutBasedPIDMask == "ElectronMediumPP") {
+    EMMask = egammaPID::ElectronMediumPP;
+  } else if(m_CutBasedPIDMask == "ElectronTightPP") {
+    EMMask = egammaPID::ElectronTightPP;
+  } else if(m_CutBasedPIDMask == "ElectronLoose1") {
+    EMMask = egammaPID::ElectronLoose1;
+  } else if(m_CutBasedPIDMask == "ElectronMedium1") {
+    EMMask = egammaPID::ElectronMedium1;
+  } else if(m_CutBasedPIDMask == "ElectronTight1") {
+    EMMask = egammaPID::ElectronTight1;
+  } else if(m_CutBasedPIDMask == "LooseHLT") {
+    EMMask = egammaPID::ElectronLooseHLT;
+  } else if(m_CutBasedPIDMask == "ElectronMediumHLT") {
+    EMMask = egammaPID::ElectronMediumHLT;
+  } else if(m_CutBasedPIDMask == "ElectronTightHLT") {
+    EMMask = egammaPID::ElectronTightHLT;
+  } else {
+    Error("configure()", "Unknown electron cut-based PID bitmask requested %s!",m_CutBasedPIDMask.c_str());
+    return EL::StatusCode::FAILURE;
+  }   
+  m_asgElectronIsEMSelector->setProperty("isEMMask", EMMask );   
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
 
   // initialise AsgElectronLikelihoodTool (likelihood-based PID)
   std::string asgel_tool_name = std::string("AsgElectronLikelihoodTool_") + m_name;
   m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool( asgel_tool_name.c_str() );
+  m_asgElectronLikelihoodTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
   m_asgElectronLikelihoodTool->setProperty("primaryVertexContainer", "PrimaryVertices");
   // m_asgElectronLikelihoodTool->setProperty("inputPDFFileName", "ElectronPhotonSelectorTools/v1/ElectronLikelihoodPdfs.root");
   HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
@@ -300,7 +332,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   // initialise ElectronIsolationSelectionTool
   std::string eis_tool_name = std::string("ElectronIsolationSelectionTool_") + m_name;  
   m_electronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( eis_tool_name.c_str() );
-  m_electronIsolationSelectionTool->msg().setLevel( MSG::VERBOSE); // ERROR, VERBOSE, DEBUG, INFO
+  m_electronIsolationSelectionTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ElectronIsolationSelectionTool
   HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
   m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<double>(m_CaloBasedIsoCut),  m_useRelativeIso );
@@ -384,6 +416,8 @@ EL::StatusCode ElectronSelector :: executeConst ( const xAOD::ElectronContainer*
 
   m_numObject     += nObj;
   m_numObjectPass += nPass;
+
+  if(m_debug) Info("execute()", "Initial electrons:%i - Selected electrons: %i", nObj , nPass );
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   if( m_pass_min > 0 && nPass < m_pass_min ) {
@@ -487,14 +521,18 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   float z0sintheta = (static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( electron->trackParticle()->theta() );
 
   // author cut
-  if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
+  if(m_doAuthorCut){
+    if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
       if (m_debug) Error("execute()", "Electron failed author kinematic cut." );
       return 0;
+    }
   }
   // Object Quality cut
-  if (!(oq == 0)) {
+  if(m_doOQCut){
+    if (!(oq == 0)) {
       if (m_debug) Error("execute()", "Electron failed Object Quality cut." );
       return 0;
+    }
   }
   // pT max
   if( m_pT_max != 1e8 ) {

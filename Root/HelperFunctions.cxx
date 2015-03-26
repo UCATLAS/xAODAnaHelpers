@@ -59,6 +59,33 @@ std::string HelperFunctions::replaceString(std::string subject, const std::strin
 }
 
 
+StatusCode HelperFunctions::isAvailableMetaData(TTree* metaData){
+    if ( !metaData ) {
+	Info("HelperFunctions::isAvailableMetaData()", "MetaData tree missing from input file.\n Aborting ");
+	return StatusCode::FAILURE;
+    }
+    return StatusCode::SUCCESS;
+}
+
+bool HelperFunctions::isFilePrimaryxAOD(TFile* inputFile) {
+    TTree* metaData = dynamic_cast<TTree*> (inputFile->Get("MetaData"));
+    
+    /* check that MetaData tree exists */ 
+    isAvailableMetaData(metaData);
+    
+    metaData->LoadTree(0);
+    TObjArray* ar = metaData->GetListOfBranches();
+    for (int i = 0; i < ar->GetEntries(); ++i) {
+	TBranch* b = (TBranch*) ar->At(i);
+	std::string name = std::string(b->GetName());
+	if (name == "StreamAOD")
+	    return true;
+    }
+
+    return false;
+}
+
+
 std::vector<TLorentzVector> HelperFunctions::jetReclustering(
   const xAOD::JetContainer* jets,
   double radius,

@@ -77,7 +77,7 @@ EL::StatusCode  JetCalibrator :: configure ()
   Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG("configure()", m_configName);
+  RETURN_CHECK_CONFIG("JetCalibrator::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
 
@@ -215,15 +215,16 @@ EL::StatusCode JetCalibrator :: initialize ()
     m_isFullSim = true;
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
     //
-    // N.B. : If using SampleHandler, you can define sample metadata in job steering macro! 
-    //        They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
+    // N.B. (Marco) : With SampleHandler, you can define sample metadata in job steering macro! 
+    //                They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
+    //                I reasonably suppose everyone will use SH...
     // 
-//     const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
-//    if (stringMeta.empty()){
-//      Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
-//    } else {
-//      m_isFullSim = (stringMeta == "AFII") ? false : true;
-//    }
+     const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
+    if (stringMeta.empty()){
+      Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
+    } else {
+      m_isFullSim = (stringMeta == "AFII") ? false : true;
+    }
     if( !m_isFullSim ){
       m_calibConfig = m_calibConfigAFII;
     }

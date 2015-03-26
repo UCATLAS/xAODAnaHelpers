@@ -78,7 +78,7 @@ EL::StatusCode JetHistsAlgo :: configure ()
   m_inContainerName         = config->GetValue("InputContainer",  "");
   // which plots will be turned on
   m_detailStr               = config->GetValue("DetailStr",       "");
-  // name of algo input container comes from - only if 
+  // name of algo input container comes from - only if
   m_inputAlgo               = config->GetValue("InputAlgo",       "");
 
   // in case anything was missing or blank...
@@ -118,10 +118,10 @@ EL::StatusCode JetHistsAlgo :: execute ()
   const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
   int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
 
-  // this will hold the collection processed 
+  // this will hold the collection processed
   const xAOD::JetContainer* inJets = 0;
 
-  // if input comes from xAOD, or just running one collection, 
+  // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if( m_inputAlgo.empty() ) {
     inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);

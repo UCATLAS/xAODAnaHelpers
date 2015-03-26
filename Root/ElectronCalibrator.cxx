@@ -227,99 +227,6 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   return EL::StatusCode::SUCCESS;
 }
 
-/*
-EL::StatusCode ElectronCalibrator :: execute ()
-{
-  // Here you do everything that needs to be done on every single
-  // events, e.g. read input variables, apply cuts, and fill
-  // histograms and trees.  This is where most of your actual analysis
-  // code will go.
-
-  if(m_debug) Info("execute()", "Applying Electron Calibration ... \n");
-
-  m_numEvent++;
-  
-  // get the collection from TEvent or TStore
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
-  const xAOD::ElectronContainer* inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
-  
-  // create shallow copy for calibration
-  std::pair< xAOD::ElectronContainer*, xAOD::ShallowAuxContainer* > calibElectronsSC = xAOD::shallowCopyContainer( *inElectrons );
-  // create ConstDataVector to be eventually stored in TStore
-  ConstDataVector<xAOD::ElectronContainer>* calibElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-  calibElectronsCDV->reserve( calibElectronsSC.first->size() );
-  
-  // now calibrate!
-  unsigned int idx(0);
-  for( auto elSC_itr : *(calibElectronsSC.first) ) {
-  
-    // set smearing seeding if needed 
-    m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
-
-    if(m_debug){ 
-      Info( "execute", "Checking electron %i, raw pt = %.2f GeV, eta = %.2f ", idx, (elSC_itr->pt() * 1e-3), elSC_itr->caloCluster()->eta());
-    }
-    
-    // apply calibration
-    if(m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok){
-      Error("execute()", "Problem in m_EgammaCalibrationAndSmearingTool->applyCorrection()");
-      return EL::StatusCode::FAILURE;
-    }
-    if(m_debug) Info("execute()", "  corrected Electron pt = %.2f GeV", (elSC_itr->pt() * 1e-3));
-  
-  
-    // loop over available systematics
-    for(const auto& syst_it : m_systList){
-
-      // discard photon systematics
-      if( (syst_it.name()).find("PH_", 0) != std::string::npos ) { continue; }	
-  
-      // if not running all systematics, skip if not matching desired syst     
-      if(!m_runAllSyst){
-        if( syst_it.name() != m_systName ) { continue; }
-      }    
-      
-      // apply syst
-      if (m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
-        Error("initialize()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
-        return EL::StatusCode::FAILURE;
-      }    
-      
-      // re-apply calibration w/ syst
-      if(m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok){
-        Error("execute()", "Problem in m_EgammaCalibrationAndSmearingTool->applyCorrection()");
-        return EL::StatusCode::FAILURE;
-      }
-      if (m_debug) Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3));
-  
-    } // close loop on systematics
-   
-    ++idx;
-  } // close calibration loop
-  
-  
-  if(!xAOD::setOriginalObjectLink(*inElectrons, *(calibElectronsSC.first))) {
-    Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
-  }    
-  
-  if(m_sort) {
-    std::sort( calibElectronsCDV->begin(), calibElectronsCDV->end(), HelperFunctions::sort_pt );
-  }    
- 
-  // save pointers in ConstDataVector with same order
-  RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, "", ToolName::CALIBRATOR), "");
-
-  // add SC container to TStore
-  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first,  m_outSCContainerName ), "Failed to store container.");
-  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.second, m_outSCAuxContainerName ), "Failed to store aux container.");
-  // add ConstDataVector to TStore
-  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsCDV, m_outContainerName ), "Failed to store const data container.");
-  
-  if(m_debug) { m_store->print(); }  
-
-  return EL::StatusCode::SUCCESS;
-}
-*/
 
 EL::StatusCode ElectronCalibrator :: execute ()
 {
@@ -363,18 +270,24 @@ EL::StatusCode ElectronCalibrator :: execute ()
     unsigned int idx(0);
     for( auto elSC_itr : *(calibElectronsSC.first) ) {
  
-      // set smearing seeding if needed 
-      m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
+      // set smearing seeding if needed - no need for this after Base,2.1.26 
+      // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
 
-      if(m_debug){ 
-        Info( "execute", "Checking electron %i, raw pt = %.2f GeV, eta = %.2f ", idx, (elSC_itr->pt() * 1e-3), elSC_itr->caloCluster()->eta());
+      if( m_debug ){ 
+        Info( "execute", "Checking electron %i, raw pt = %.2f GeV ", idx, (elSC_itr->pt() * 1e-3) );
+        if(elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
+	  Warning( "execute", "electron %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (elSC_itr->pt() * 1e-3) );
+	}
       }
       
       // apply calibration (w/ syst)
-      if(m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok){
-        Error("execute()", "Problem in m_EgammaCalibrationAndSmearingTool->applyCorrection()");
-        return EL::StatusCode::FAILURE;
+      if( elSC_itr->caloCluster() && elSC_itr->trackParticle() ){  // NB: derivations might remove CC and tracks for low pt electrons
+        if(m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok){
+          Error("execute()", "Problem in m_EgammaCalibrationAndSmearingTool->applyCorrection()");
+          return EL::StatusCode::FAILURE;
+        }
       }
+      
       if (m_debug) Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3));
   
       ++idx;
