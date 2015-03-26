@@ -85,6 +85,20 @@ namespace HelperClasses{
     return m_configStr.find(flag) != std::string::npos;
   }
 
+  void EventInfoSwitch::initialize(){
+    m_pileup        = parse("pileup");
+    m_shapeEM       = parse("shapeEM");
+    m_shapeLC       = parse("shapeLC");
+  }
+
+  void MuonInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+  }
+
+  void ElectronInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+  }
+
   void JetInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
     m_clean         = parse("clean");

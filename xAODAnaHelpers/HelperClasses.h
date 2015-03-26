@@ -65,6 +65,26 @@ namespace HelperClasses {
     bool parse(std::string flag);
   };
 
+  struct EventInfoSwitch : InfoSwitch {
+    bool m_pileup;
+    bool m_shapeEM;
+    bool m_shapeLC;
+    void initialize();
+    EventInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
+  struct MuonInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    MuonInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
+  struct ElectronInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    ElectronInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
   struct JetInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_clean;
