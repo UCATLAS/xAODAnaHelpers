@@ -145,7 +145,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
   if(!m_jetContainerName.empty()) {
     const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_jetContainerName, m_event, m_store);
-    m_helpTree->FillJets( *inJets, HelperFunctions::countPrimaryVertices(vertices, 2) );
+    m_helpTree->FillJets( *inJets, HelperFunctions::getPrimaryVertexLocation(vertices) );
   }
   
   if(!m_fatJetContainerName.empty()) {
