@@ -4,7 +4,9 @@
 #include "xAODBTagging/BTagging.h"
 
 // package include(s):
-#include "xAODAnaHelpers/HelpTreeBase.h"
+#include <xAODAnaHelpers/HelperFunctions.h>
+#include <xAODAnaHelpers/HelpTreeBase.h>
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // needed? should it be here?
 #ifdef __MAKECINT__
@@ -13,11 +15,11 @@
 
 /* TODO: event */
 HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units):
-  m_evtDetailStr(""),
-  m_muDetailStr(""),
-  m_elDetailStr(""),
+  m_eventInfoSwitch(0),
+  m_muInfoSwitch(0),
+  m_elInfoSwitch(0),
   m_jetInfoSwitch(0),
-  m_fatJetDetailStr("")
+  m_fatJetInfoSwitch(0)
 {
 
   m_units = units;
@@ -39,13 +41,33 @@ void HelpTreeBase::Fill() {
  ********************/
 
 void HelpTreeBase::AddEvent(std::string detailStr) {
+
+  m_eventInfoSwitch = new HelperClasses::EventInfoSwitch( detailStr );
+
+  // always
   m_tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
   m_tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/I");
   m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
   m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
   m_tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
+
+  if( m_eventInfoSwitch->m_pileup ) {
+    m_tree->Branch("NPV",                &m_npv,            "NPV/I");
+    m_tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
+    m_tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
+  } 
+
+  if( m_eventInfoSwitch->m_shapeEM ) {
+    m_tree->Branch("rhoEM",                &m_rhoEM,            "rhoEM/F");
+  }
+
+  if( m_eventInfoSwitch->m_shapeLC ) {
+    m_tree->Branch("rhoEM",                &m_rhoLC,            "rhoLC/F");
+  }
+
 }
-void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo ) {
+
+void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event ) {
   m_runNumber             = eventInfo->runNumber();
   m_eventNumber           = eventInfo->eventNumber();
   if(eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION)) {
@@ -57,7 +79,42 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo ) {
     m_mcChannelNumber       = -1;
     m_mcEventWeight	    = 1.;
   }
+
+  if(m_eventInfoSwitch->m_pileup) {
+    if( event ) {
+      const xAOD::VertexContainer* vertices = 0;
+      HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 );
+      m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
+    } else { 
+      m_npv = -1;
+    }
+
+    m_actualMu = eventInfo->actualInteractionsPerCrossing();
+    m_averageMu = eventInfo->averageInteractionsPerCrossing();
+
+  }
+
+  if( m_eventInfoSwitch->m_shapeLC && event ) {
+    const xAOD::EventShape* evtShape = 0;
+    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", event, 0 );
+    if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoLC ) ) {
+      Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
+      m_rhoLC = -999;
+    }
+  }
+
+  if( m_eventInfoSwitch->m_shapeEM && event ) {
+    const xAOD::EventShape* evtShape = 0;
+    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", event, 0 );
+
+    if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
+      Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
+      m_rhoEM = -999;
+    }
+  }
+
   FillEventUser(eventInfo);
+
 }
 
 /*********************
@@ -67,12 +124,16 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo ) {
  ********************/
 
 void HelpTreeBase::AddMuons(std::string detailStr) {
+
+  m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
+
   m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");  
   m_tree->Branch("muon_pt",  &m_muon_pt);
   m_tree->Branch("muon_phi", &m_muon_phi);
   m_tree->Branch("muon_eta", &m_muon_eta);
 
 }
+
 void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
   xAOD::MuonContainer::const_iterator muon_itr = muons.begin();
   xAOD::MuonContainer::const_iterator muon_end = muons.end();
@@ -93,6 +154,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
  ********************/
 
 void HelpTreeBase::AddElectrons(std::string detailStr) { 
+
+  m_elInfoSwitch = new HelperClasses::ElectronInfoSwitch( detailStr );
+
   m_tree->Branch("nel",    &m_nel,"nel/I");
   m_tree->Branch("el_pt",  &m_el_pt);
   m_tree->Branch("el_phi", &m_el_phi);
@@ -335,7 +399,9 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
  *
  ********************/
 
-void HelpTreeBase::AddFatJets(std::string detailStr) { }
+void HelpTreeBase::AddFatJets(std::string detailStr) { 
+  m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
+}
 /* TODO: fatJets */
 void HelpTreeBase::FillFatJets( const xAOD::JetContainer& /*fatJets*/ ) { }
 

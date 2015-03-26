@@ -49,15 +49,15 @@ public:
   void AddJets     (std::string detailStr = "");
   void AddFatJets  (std::string detailStr = "");
 
-  // holds bools that control which histograms are filled
-  std::string m_evtDetailStr;
-  std::string m_muDetailStr;
-  std::string m_elDetailStr;
-  HelperClasses::JetInfoSwitch* m_jetInfoSwitch;
-  std::string m_fatJetDetailStr;
+  // control which branches are filled
+  HelperClasses::EventInfoSwitch*     m_eventInfoSwitch;
+  HelperClasses::MuonInfoSwitch*      m_muInfoSwitch;
+  HelperClasses::ElectronInfoSwitch*  m_elInfoSwitch;
+  HelperClasses::JetInfoSwitch*       m_jetInfoSwitch;
+  HelperClasses::JetInfoSwitch*       m_fatJetInfoSwitch;
 
 #ifndef __CINT__  
-  void FillEvent( const xAOD::EventInfo* eventInfo );
+  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
   void FillMuons( const xAOD::MuonContainer& muons );
   void FillElectrons( const xAOD::ElectronContainer& electrons );
   void FillJets( const xAOD::JetContainer& jets, int pvLocation = -1 );
@@ -92,6 +92,14 @@ protected:
   int m_mcEventNumber;
   int m_mcChannelNumber;
   float m_mcEventWeight;
+  // event pileup
+  int m_npv;
+  float m_actualMu;
+  float m_averageMu;
+  // event shapeEM
+  double m_rhoEM;
+  double m_rhoLC;
+
 
   // jets
   int m_njet;
