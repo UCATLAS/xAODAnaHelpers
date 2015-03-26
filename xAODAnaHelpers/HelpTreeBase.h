@@ -96,6 +96,7 @@ protected:
   int m_npv;
   float m_actualMu;
   float m_averageMu;
+  int m_lumiBlock;
   // event shapeEM
   double m_rhoEM;
   double m_rhoLC;

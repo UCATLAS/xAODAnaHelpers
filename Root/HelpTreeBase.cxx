@@ -55,6 +55,7 @@ void HelpTreeBase::AddEvent(std::string detailStr) {
     m_tree->Branch("NPV",                &m_npv,            "NPV/I");
     m_tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
     m_tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
+    m_tree->Branch("lumiBlock", &m_lumiBlock, "lumiBlock/I");
   } 
 
   if( m_eventInfoSwitch->m_shapeEM ) {
@@ -64,6 +65,7 @@ void HelpTreeBase::AddEvent(std::string detailStr) {
   if( m_eventInfoSwitch->m_shapeLC ) {
     m_tree->Branch("rhoEM",                &m_rhoLC,            "rhoLC/F");
   }
+
 
 }
 
@@ -89,8 +91,9 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
       m_npv = -1;
     }
 
-    m_actualMu = eventInfo->actualInteractionsPerCrossing();
+    m_actualMu  = eventInfo->actualInteractionsPerCrossing();
     m_averageMu = eventInfo->averageInteractionsPerCrossing();
+    m_lumiBlock = eventInfo->lumiBlock();
 
   }
 
@@ -106,7 +109,6 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
   if( m_eventInfoSwitch->m_shapeEM && event ) {
     const xAOD::EventShape* evtShape = 0;
     HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", event, 0 );
-
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEM = -999;
