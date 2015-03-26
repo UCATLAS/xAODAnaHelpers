@@ -130,12 +130,7 @@ EL::StatusCode TreeAlgo :: execute ()
   const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
   const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>( "PrimaryVertices", m_event, m_store);
 
-  float eventWeight(1);
-  if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
-    eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
-  }
   m_helpTree->FillEvent( eventInfo );
-
 
   // for the containers the were supplied, fill the appropiate vectors
   if(!m_muContainerName.empty()) {	
