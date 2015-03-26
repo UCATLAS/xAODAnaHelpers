@@ -15,6 +15,7 @@
 
 #ifndef __CINT__
   #include "xAODTracking/VertexContainer.h"
+  #include "xAODEventShape/EventShape.h"
   #include "xAODEgamma/ElectronContainer.h"
   #include "xAODEgamma/Electron.h"
   #include "xAODEgamma/PhotonContainer.h"
