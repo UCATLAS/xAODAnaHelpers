@@ -149,22 +149,22 @@ EL::StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_truthDetails ) {
     Info("JetHists::initialize()", "adding detailed truth plots");
 
-    m_truthCount_BhadFinal = book(m_name, "TruthCount_BHadFinal", "Truth Count BHad (final)" ,    10, -0.5,   9.5);
-    m_truthCount_BhadInit  = book(m_name, "TruthCount_BHadInit",  "Truth Count BHad (initial)" ,  10, -0.5,   9.5);
-    m_truthCount_BQFinal   = book(m_name, "TruthCount_BQFinal",   "Truth Count BQuark (final)" ,  10, -0.5,   9.5);
-    m_truthPt_BhadFinal    = book(m_name, "TruthPt_BHadFinal",    "Truth Pt BHad (final)" ,      100,    0,   100);
-    m_truthPt_BhadInit     = book(m_name, "TruthPt_BHadInit",     "Truth Pt BHad (initial)" ,    100,    0,   100);
-    m_truthPt_BQFinal      = book(m_name, "TruthPt_BQFinal",      "Truth Pt BQuark (final)" ,    100,    0,   100);
+    m_truthCount_BhadFinal = book(m_name, "GhostBHadronsFinalCount",    "Truth Count BHad (final)" ,    10, -0.5,   9.5);
+    m_truthCount_BhadInit  = book(m_name, "GhostBHadronsInitialCount",  "Truth Count BHad (initial)" ,  10, -0.5,   9.5);
+    m_truthCount_BQFinal   = book(m_name, "GhostBQuarksFinalCount",     "Truth Count BQuark (final)" ,  10, -0.5,   9.5);
+    m_truthPt_BhadFinal    = book(m_name, "GhostBHadronsFinalPt",       "Truth p_{T} BHad (final)" ,      100,    0,   100);
+    m_truthPt_BhadInit     = book(m_name, "GhostBHadronsInitialPt",     "Truth p_{T} BHad (initial)" ,    100,    0,   100);
+    m_truthPt_BQFinal      = book(m_name, "GhostBQuarksFinalPt",        "Truth p_{T} BQuark (final)" ,    100,    0,   100);
 
-    m_truthCount_ChadFinal = book(m_name, "TruthCount_CHadFinal", "Truth Count CHad (final)" ,    10, -0.5,   9.5);
-    m_truthCount_ChadInit  = book(m_name, "TruthCount_CHadInit",  "Truth Count CHad (initial)" ,  10, -0.5,   9.5);
-    m_truthCount_CQFinal   = book(m_name, "TruthCount_CQFinal",   "Truth Count CQuark (final)" ,  10, -0.5,   9.5);
-    m_truthPt_ChadFinal    = book(m_name, "TruthPt_CHadFinal",    "Truth Pt CHad (final)" ,      100,    0,   100);
-    m_truthPt_ChadInit     = book(m_name, "TruthPt_CHadInit",     "Truth Pt CHad (initial)" ,    100,    0,   100);
-    m_truthPt_CQFinal      = book(m_name, "TruthPt_CQFinal",      "Truth Pt CQuark (final)" ,    100,    0,   100);
+    m_truthCount_ChadFinal = book(m_name, "GhostCHadronsFinalCount",   "Truth Count CHad (final)" ,    10, -0.5,   9.5);
+    m_truthCount_ChadInit  = book(m_name, "GhostCHadronsInitialCount", "Truth Count CHad (initial)" ,  10, -0.5,   9.5);
+    m_truthCount_CQFinal   = book(m_name, "GhostCQuarksFinalCount",    "Truth Count CQuark (final)" ,  10, -0.5,   9.5);
+    m_truthPt_ChadFinal    = book(m_name, "GhostCHadronsFinalPt",      "Truth p_{T} CHad (final)" ,      100,    0,   100);
+    m_truthPt_ChadInit     = book(m_name, "GhostCHadronsInitialPt",    "Truth p_{T} CHad (initial)" ,    100,    0,   100);
+    m_truthPt_CQFinal      = book(m_name, "GhostCQuarksFinalPt",       "Truth p_{T} CQuark (final)" ,    100,    0,   100);
 
-    m_truthCount_TausFinal = book(m_name, "TruthCount_CHadFinal", "Truth Count Taus (final)" ,    10, -0.5,   9.5);
-    m_truthPt_TausFinal    = book(m_name, "TruthPt_CHadFinal",    "Truth Pt Taus (final)" ,      100,    0,   100);
+    m_truthCount_TausFinal = book(m_name, "GhostTausFinalCount", "Truth Count Taus (final)" ,    10, -0.5,   9.5);
+    m_truthPt_TausFinal    = book(m_name, "GhostTausFinalPt",    "Truth p_{T} Taus (final)" ,      100,    0,   100);
 
   }
 
@@ -447,7 +447,6 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int p
     if( TruthPt.isAvailable( *jet ) ) {
       m_truthPt ->  Fill( TruthPt( *jet )/1000, eventWeight );
     }
-
 
     static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_B ("TruthLabelDeltaR_B");
     if( TruthLabelDeltaR_B.isAvailable( *jet ) ) {
