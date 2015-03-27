@@ -235,18 +235,7 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_SumPtTrkPt500",	    &m_jet_SumPtPt500   );
     m_tree->Branch("jet_TrackWidthPt500",   &m_jet_TrkWPt500    );
     m_tree->Branch("jet_JVF",		            &m_jet_jvf	        );
-    m_tree->Branch("jet_JVFLoose",          &m_jet_jvfloose     );
-
-    // JVT needs to be added
-
-    // NumTrkPt1000 vector<int> 
-    // SumPtTrkPt1000, TrackWidthPt1000 vector<float>
-    // NumTrkPt500  vector<int> Moments calculated from ghost-associated tracks. Track pT > 0.5 GeV.(1)
-    // SumPtTrkPt500, TrackWidthPt500 vector<float>
-    // Width  float $ \sum( \Delta R(jet,constit) P_T(constit) ) / \sum P_T(constit) $  Done
-    //
-    // JVF  JVF vector<float> Vector JVF: JVF with respect to all vertices (last index is to dummy vertex)  Done  JetVertexFractionTool jvf
-    // JVF  JVFLoose  vector<float> As preceding adding posterior InDet loose track selection.  Done  JetVertexFractionTool jvfloose
+    //m_tree->Branch("jet_JVFLoose",          &m_jet_jvfloose     );
     // HigestJVFLooseVtx  Vertex
     // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
   }
@@ -258,13 +247,47 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_NumTrkPt500PV",	      &m_jet_NTrkPt500PV    );
     m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
     m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
-    m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	  );
-    m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
+    m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	        );
+    //m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
+    // HigestJVFLooseVtx  Vertex
+    // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
   }
 
   if( m_jetInfoSwitch->m_flavTag ) { 
     m_tree->Branch("jet_MV1Weight",     &m_jet_mv1);
     m_tree->Branch("jet_SV1IP3DWeight", &m_jet_sv1ip3d);
+  }
+
+  if( m_jetInfoSwitch->m_truth ) {
+    m_tree->Branch("jet_TruthLabelID",       &m_jet_truthLabelID   );
+    m_tree->Branch("jet_TruthCount",         &m_jet_truthCount     );
+//    m_tree->Branch("jet_TruthPt",            &m_jet_truthPt        );
+    m_tree->Branch("jet_TruthLabelDeltaR_B", &m_jet_truthDr_B      );
+    m_tree->Branch("jet_TruthLabelDeltaR_C", &m_jet_truthDr_C      );
+    m_tree->Branch("jet_TruthLabelDeltaR_T", &m_jet_truthDr_T      );
+    m_tree->Branch("jet_truth_E",   &m_jet_truth_E);
+    m_tree->Branch("jet_truth_pt",  &m_jet_truth_pt);
+    m_tree->Branch("jet_truth_phi", &m_jet_truth_phi);
+    m_tree->Branch("jet_truth_eta", &m_jet_truth_eta);
+  }
+
+  if( m_jetInfoSwitch->m_truthDetails ) {
+    m_tree->Branch("jet_GhostBHadronsFinalCount",   &m_jet_truthCount_BhadFinal );
+    m_tree->Branch("jet_GhostBHadronsInitialCount", &m_jet_truthCount_BhadInit  );
+    m_tree->Branch("jet_GhostBQuarksFinalCount",    &m_jet_truthCount_BQFinal   );
+    m_tree->Branch("jet_GhostBHadronsFinalPt",      &m_jet_truthPt_BhadFinal    );
+    m_tree->Branch("jet_GhostBHadronsInitialPt",    &m_jet_truthPt_BhadInit     );
+    m_tree->Branch("jet_GhostBQuarksFinalPt",       &m_jet_truthPt_BQFinal      );
+
+    m_tree->Branch("jet_GhostCHadronsFinalCount",   &m_jet_truthCount_ChadFinal );
+    m_tree->Branch("jet_GhostCHadronsInitialCount", &m_jet_truthCount_ChadInit  );
+    m_tree->Branch("jet_GhostCQuarksFinalCount",    &m_jet_truthCount_CQFinal   );
+    m_tree->Branch("jet_GhostCHadronsFinalPt",      &m_jet_truthPt_ChadFinal    );
+    m_tree->Branch("jet_GhostCHadronsInitialPt",    &m_jet_truthPt_ChadInit     );
+    m_tree->Branch("jet_GhostCQuarksFinalPt",       &m_jet_truthPt_CQFinal      );
+
+    m_tree->Branch("jet_GhostTausFinalCount",       &m_jet_truthCount_TausFinal );
+    m_tree->Branch("jet_GhostTausFinalPt",          &m_jet_truthPt_TausFinal    );
   }
 
 }
@@ -275,7 +298,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
     m_jet_pt.push_back ( jet_itr->pt() / m_units );
     m_jet_eta.push_back( jet_itr->eta() );
     m_jet_phi.push_back( jet_itr->phi() );
-    m_jet_E .push_back ( jet_itr->e() / m_units );
+    m_jet_E.push_back  ( jet_itr->e() / m_units );
 
     if(m_jetInfoSwitch->m_clean) {
 
@@ -377,23 +400,234 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
       }
     }
 
-    if( m_jetInfoSwitch->m_trackAll ) {
-    }
+    if( m_jetInfoSwitch->m_trackAll || m_jetInfoSwitch->m_trackPV ) {
+      static SG::AuxElement::ConstAccessor< std::vector<int> >   nTrk1000("NumTrkPt1000");
+      static SG::AuxElement::ConstAccessor< std::vector<float> > sumPt1000("SumPtTrkPt1000");
+      static SG::AuxElement::ConstAccessor< std::vector<float> > trkWidth1000("TrackWidthPt1000");
+      static SG::AuxElement::ConstAccessor< std::vector<int> >   nTrk500 ("NumTrkPt500");
+      static SG::AuxElement::ConstAccessor< std::vector<float> > sumPt500 ("SumPtTrkPt500");
+      static SG::AuxElement::ConstAccessor< std::vector<float> > trkWidth500 ("TrackWidthPt500");
+      static SG::AuxElement::ConstAccessor< std::vector<float> > jvf("JVF");
 
-    if( m_jetInfoSwitch->m_trackPV ) {
-    }
+      if( m_jetInfoSwitch->m_trackAll ) {
 
-    static SG::AuxElement::Decorator< float > MV1WeightDecor("MV1Weight");
-    static SG::AuxElement::Decorator< float > SV1plusIP3DWeightDecor("SV1plusIP3DWeight");
+        std::vector<int> junkInt(1,-999);
+        std::vector<float> junkFlt(1,-999);
+
+        if( nTrk1000.isAvailable( *jet_itr ) ) {
+          m_jet_NTrkPt1000.push_back( nTrk1000( *jet_itr ) );
+        } else { m_jet_NTrkPt1000.push_back( junkInt ); }
+
+        if( sumPt1000.isAvailable( *jet_itr ) ) {
+          m_jet_SumPtPt1000.push_back( sumPt1000( *jet_itr ) );
+        } else { m_jet_SumPtPt1000.push_back( junkFlt ); }
+
+        if( trkWidth1000.isAvailable( *jet_itr ) ) {
+          m_jet_TrkWPt1000.push_back( trkWidth1000( *jet_itr ) );
+        } else { m_jet_TrkWPt1000.push_back( junkFlt ); }
+
+        if( nTrk500.isAvailable( *jet_itr ) ) {
+          m_jet_NTrkPt500.push_back( nTrk500( *jet_itr ) );
+        } else { m_jet_NTrkPt500.push_back( junkInt ); }
+
+        if( sumPt500.isAvailable( *jet_itr ) ) {
+          m_jet_SumPtPt500.push_back( sumPt500( *jet_itr ) );
+        } else { m_jet_SumPtPt500.push_back( junkFlt ); }
+
+        if( trkWidth500.isAvailable( *jet_itr ) ) {
+          m_jet_TrkWPt500.push_back( trkWidth500( *jet_itr ) );
+        } else { m_jet_TrkWPt500.push_back( junkFlt ); }
+
+        if( jvf.isAvailable( *jet_itr ) ) {
+          m_jet_jvf.push_back( jvf( *jet_itr ) );
+        } else { m_jet_jvf.push_back( junkFlt ); }
+
+      }
+
+      if( m_jetInfoSwitch->m_trackPV && pvLocation >= 0 ) {
+
+        if( nTrk1000.isAvailable( *jet_itr ) ) {
+          m_jet_NTrkPt1000PV.push_back( nTrk1000( *jet_itr )[pvLocation] );
+        } else { m_jet_NTrkPt1000PV.push_back( -999 ); }
+
+        if( sumPt1000.isAvailable( *jet_itr ) ) {
+          m_jet_SumPtPt1000PV.push_back( sumPt1000( *jet_itr )[pvLocation] );
+        } else { m_jet_SumPtPt1000PV.push_back( -999 ); }
+
+        if( trkWidth1000.isAvailable( *jet_itr ) ) {
+          m_jet_TrkWPt1000PV.push_back( trkWidth1000( *jet_itr )[pvLocation] );
+        } else { m_jet_TrkWPt1000PV.push_back( -999 ); }
+
+        if( nTrk500.isAvailable( *jet_itr ) ) {
+          m_jet_NTrkPt500PV.push_back( nTrk500( *jet_itr )[pvLocation] );
+        } else { m_jet_NTrkPt500PV.push_back( -999 ); }
+
+        if( sumPt500.isAvailable( *jet_itr ) ) {
+          m_jet_SumPtPt500PV.push_back( sumPt500( *jet_itr )[pvLocation] );
+        } else { m_jet_SumPtPt500PV.push_back( -999 ); }
+
+        if( trkWidth500.isAvailable( *jet_itr ) ) {
+          m_jet_TrkWPt500PV.push_back( trkWidth500( *jet_itr )[pvLocation] );
+        } else { m_jet_TrkWPt500PV.push_back( -999 ); }
+
+        if( jvf.isAvailable( *jet_itr ) ) {
+          m_jet_jvfPV.push_back( jvf( *jet_itr )[pvLocation] );
+        } else { m_jet_jvfPV.push_back( -999 ); }
+
+      }
+
+    }
 
     if( m_jetInfoSwitch->m_flavTag) {
-      m_jet_mv1.push_back( MV1WeightDecor( *jet_itr ) );
-      m_jet_sv1ip3d.push_back( SV1plusIP3DWeightDecor( *jet_itr ) );
+      static SG::AuxElement::ConstAccessor< float > MV1WeightAcc("MV1Weight");
+      if( MV1WeightAcc.isAvailable( *jet_itr ) ) {
+        m_jet_mv1.push_back( MV1WeightAcc( *jet_itr ) );
+      } else { m_jet_mv1.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor< float > SV1plusIP3DWeightAcc("SV1plusIP3DWeight");
+      if( SV1plusIP3DWeightAcc.isAvailable( *jet_itr ) ) {
+        m_jet_sv1ip3d.push_back( SV1plusIP3DWeightAcc( *jet_itr ) );
+      } else { m_jet_sv1ip3d.push_back( -999 ); }
+    }
+
+    if( m_jetInfoSwitch->m_truth ) {
+
+      static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
+      if( TruthLabelID.isAvailable( *jet_itr) ) {
+        m_jet_truthLabelID.push_back( TruthLabelID( *jet_itr) );
+      } else { m_jet_truthLabelID.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<int> TruthCount ("TruthCount");
+      if( TruthCount.isAvailable( *jet_itr) ) {
+        m_jet_truthCount.push_back( TruthCount( *jet_itr) );
+      } else { m_jet_truthCount.push_back( -999 ); }
+
+//    seems to be empty
+//      static SG::AuxElement::ConstAccessor<float> TruthPt ("TruthPt");
+//      if( TruthPt.isAvailable( *jet_itr) ) {
+//        m_jet_truthPt.push_back( TruthPt( *jet_itr)/1000 );
+//      } else { m_jet_truthPt.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_B ("TruthLabelDeltaR_B");
+      if( TruthLabelDeltaR_B.isAvailable( *jet_itr) ) {
+        m_jet_truthDr_B.push_back( TruthLabelDeltaR_B( *jet_itr) );
+      } else { m_jet_truthDr_B.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_C ("TruthLabelDeltaR_C");
+      if( TruthLabelDeltaR_C.isAvailable( *jet_itr) ) {
+        m_jet_truthDr_C.push_back( TruthLabelDeltaR_C( *jet_itr) );
+      } else { m_jet_truthDr_C.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_T ("TruthLabelDeltaR_T");
+      if( TruthLabelDeltaR_T.isAvailable( *jet_itr) ) {
+        m_jet_truthDr_T.push_back( TruthLabelDeltaR_T( *jet_itr) );
+      } else { m_jet_truthDr_T.push_back( -999 ) ; }
+
+      const xAOD::Jet* truthJet = HelperFunctions::getLink<xAOD::Jet>( jet_itr, "GhostTruthAssociationLink" );
+      if(truthJet) { 
+        m_jet_truth_pt.push_back ( truthJet->pt() / m_units );
+        m_jet_truth_eta.push_back( truthJet->eta() );
+        m_jet_truth_phi.push_back( truthJet->phi() );
+        m_jet_truth_E.push_back  ( truthJet->e() / m_units );
+      } else {
+        m_jet_truth_pt.push_back ( -999 );
+        m_jet_truth_eta.push_back( -999 );
+        m_jet_truth_phi.push_back( -999 );
+        m_jet_truth_E.push_back  ( -999 );
+      }
+
+    }
+
+
+    if( m_jetInfoSwitch->m_truthDetails ) {
+
+      //
+      // B-Hadron Details
+      //
+      static SG::AuxElement::ConstAccessor<int> GhostBHadronsFinalCount ("GhostBHadronsFinalCount");
+      if( GhostBHadronsFinalCount.isAvailable( *jet_itr) ) {
+        m_jet_truthCount_BhadFinal.push_back( GhostBHadronsFinalCount( *jet_itr) );
+      } else { m_jet_truthCount_BhadFinal.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<int> GhostBHadronsInitialCount ("GhostBHadronsInitialCount");
+      if( GhostBHadronsInitialCount.isAvailable( *jet_itr) ) {
+        m_jet_truthCount_BhadInit.push_back( GhostBHadronsInitialCount( *jet_itr) );
+      } else { m_jet_truthCount_BhadInit.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<int> GhostBQuarksFinalCount ("GhostBQuarksFinalCount");
+      if( GhostBQuarksFinalCount.isAvailable( *jet_itr) ) {
+        m_jet_truthCount_BQFinal.push_back( GhostBQuarksFinalCount( *jet_itr) );
+      } else { m_jet_truthCount_BQFinal.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> GhostBHadronsFinalPt ("GhostBHadronsFinalPt");
+      if( GhostBHadronsFinalPt.isAvailable( *jet_itr) ) {
+        m_jet_truthPt_BhadFinal.push_back( GhostBHadronsFinalPt( *jet_itr) );
+      } else { m_jet_truthPt_BhadFinal.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> GhostBHadronsInitialPt ("GhostBHadronsInitialPt");
+      if( GhostBHadronsInitialPt.isAvailable( *jet_itr) ) {
+        m_jet_truthPt_BhadInit.push_back( GhostBHadronsInitialPt( *jet_itr) );
+      } else { m_jet_truthPt_BhadInit.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> GhostBQuarksFinalPt ("GhostBQuarksFinalPt");
+      if( GhostBQuarksFinalPt.isAvailable( *jet_itr) ) {
+        m_jet_truthPt_BQFinal.push_back( GhostBQuarksFinalPt( *jet_itr) );
+      } else { m_jet_truthPt_BQFinal.push_back( -999 ); }
+
+
+      //
+      // C-Hadron Details
+      //
+      static SG::AuxElement::ConstAccessor<int> GhostCHadronsFinalCount ("GhostCHadronsFinalCount");
+      if( GhostCHadronsFinalCount.isAvailable( *jet_itr) ) {
+        m_jet_truthCount_ChadFinal.push_back( GhostCHadronsFinalCount( *jet_itr) );
+      } else { m_jet_truthCount_ChadFinal.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<int> GhostCHadronsInitialCount ("GhostCHadronsInitialCount");
+      if( GhostCHadronsInitialCount.isAvailable( *jet_itr) ) {
+        m_jet_truthCount_ChadInit.push_back( GhostCHadronsInitialCount( *jet_itr) );
+      } else { m_jet_truthCount_ChadInit.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<int> GhostCQuarksFinalCount ("GhostCQuarksFinalCount");
+      if( GhostCQuarksFinalCount.isAvailable( *jet_itr) ) {
+        m_jet_truthCount_CQFinal.push_back( GhostCQuarksFinalCount( *jet_itr) );
+      } else { m_jet_truthCount_CQFinal.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> GhostCHadronsFinalPt ("GhostCHadronsFinalPt");
+      if( GhostCHadronsFinalPt.isAvailable( *jet_itr) ) {
+        m_jet_truthPt_ChadFinal.push_back( GhostCHadronsFinalPt( *jet_itr) );
+      } else { m_jet_truthPt_ChadFinal.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> GhostCHadronsInitialPt ("GhostCHadronsInitialPt");
+      if( GhostCHadronsInitialPt.isAvailable( *jet_itr) ) {
+        m_jet_truthPt_ChadInit.push_back( GhostCHadronsInitialPt( *jet_itr) );
+      } else { m_jet_truthPt_ChadInit.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> GhostCQuarksFinalPt ("GhostCQuarksFinalPt");
+      if( GhostCQuarksFinalPt.isAvailable( *jet_itr) ) {
+        m_jet_truthPt_CQFinal.push_back( GhostCQuarksFinalPt( *jet_itr) );
+      } else { m_jet_truthPt_CQFinal.push_back( -999 ); }
+
+
+      //
+      // Tau Details
+      //
+      static SG::AuxElement::ConstAccessor<int> GhostTausFinalCount ("GhostTausFinalCount");
+      if( GhostTausFinalCount.isAvailable( *jet_itr) ) {
+        m_jet_truthCount_TausFinal.push_back( GhostTausFinalCount( *jet_itr) );
+      } else { m_jet_truthCount_TausFinal.push_back( -999 ); }
+
+
+      static SG::AuxElement::ConstAccessor<float> GhostTausFinalPt ("GhostTausFinalPt");
+      if( GhostTausFinalPt.isAvailable( *jet_itr) ) {
+        m_jet_truthPt_TausFinal.push_back( GhostTausFinalPt( *jet_itr) );
+      } else { m_jet_truthPt_TausFinal.push_back( -999 ); }
+
     }
 
     this->FillJetsUser(jet_itr);
     m_njet++;
-  }
+  } // loop over jets
 }
 
 /*********************
@@ -436,49 +670,94 @@ void HelpTreeBase::ClearJets() {
   m_jet_E.clear();
 
   // clean
-  m_jet_time.clear();
-  m_jet_LArQuality.clear();
-  m_jet_hecq.clear();
-  m_jet_negE.clear();
-  m_jet_avLArQF.clear();
-  m_jet_bchCorrCell.clear();
-  m_jet_N90Const.clear();
-  m_jet_LArBadHVE.clear();
-  m_jet_LArBadHVRatio.clear();
+  if( m_jetInfoSwitch->m_clean ) { 
+    m_jet_time.clear();
+    m_jet_LArQuality.clear();
+    m_jet_hecq.clear();
+    m_jet_negE.clear();
+    m_jet_avLArQF.clear();
+    m_jet_bchCorrCell.clear();
+    m_jet_N90Const.clear();
+    m_jet_LArBadHVE.clear();
+    m_jet_LArBadHVRatio.clear();
+  }
 
   // energy
-  m_jet_HECf.clear();
-  m_jet_EMf.clear();
-  m_jet_centroidR.clear();
-  m_jet_fracSampMax.clear();
-  m_jet_fracSampMaxIdx.clear();
-  m_jet_lowEtFrac.clear();
+  if( m_jetInfoSwitch->m_energy ) {
+    m_jet_HECf.clear();
+    m_jet_EMf.clear();
+    m_jet_centroidR.clear();
+    m_jet_fracSampMax.clear();
+    m_jet_fracSampMaxIdx.clear();
+    m_jet_lowEtFrac.clear();
+  }
 
   // layer
-  m_jet_ePerSamp.clear();
+  if( m_jetInfoSwitch->m_layer ) {
+    m_jet_ePerSamp.clear();
+  }
 
-  // tracksAll
-  m_jet_NTrkPt1000.clear();
-  m_jet_SumPtPt1000.clear();
-  m_jet_TrkWPt1000.clear();
-  m_jet_NTrkPt500.clear();
-  m_jet_SumPtPt500.clear();
-  m_jet_TrkWPt500.clear();
-  m_jet_jvf.clear();
-  m_jet_jvfloose.clear();
+  // trackAll
+  if( m_jetInfoSwitch->m_trackAll ) {
+    m_jet_NTrkPt1000.clear();
+    m_jet_SumPtPt1000.clear();
+    m_jet_TrkWPt1000.clear();
+    m_jet_NTrkPt500.clear();
+    m_jet_SumPtPt500.clear();
+    m_jet_TrkWPt500.clear();
+    m_jet_jvf.clear();
+    //m_jet_jvfloose.clear();
+  }
 
-  // tracksPV
-  m_jet_NTrkPt1000PV.clear();
-  m_jet_SumPtPt1000PV.clear();
-  m_jet_TrkWPt1000PV.clear();
-  m_jet_NTrkPt500PV.clear();
-  m_jet_SumPtPt500PV.clear();
-  m_jet_TrkWPt500PV.clear();
-  m_jet_jvfPV.clear();
-  m_jet_jvfloosePV.clear();
-  
-  m_jet_mv1.clear();
-  m_jet_sv1ip3d.clear();
+  // trackPV
+  if( m_jetInfoSwitch->m_trackPV ) {
+    m_jet_NTrkPt1000PV.clear();
+    m_jet_SumPtPt1000PV.clear();
+    m_jet_TrkWPt1000PV.clear();
+    m_jet_NTrkPt500PV.clear();
+    m_jet_SumPtPt500PV.clear();
+    m_jet_TrkWPt500PV.clear();
+    m_jet_jvfPV.clear();
+    //m_jet_jvfloosePV.clear();
+  }
+
+  // flavor tag
+  if( m_jetInfoSwitch->m_flavTag ) {
+    m_jet_mv1.clear();
+    m_jet_sv1ip3d.clear();
+  }
+
+  // truth
+  if( m_jetInfoSwitch->m_truth ) {
+    m_jet_truthLabelID.clear();
+    m_jet_truthCount.clear();
+    m_jet_truthPt.clear();
+    m_jet_truthDr_B.clear();
+    m_jet_truthDr_C.clear();
+    m_jet_truthDr_T.clear();
+    m_jet_truth_pt.clear();
+    m_jet_truth_eta.clear();
+    m_jet_truth_phi.clear();
+    m_jet_truth_E.clear();
+  }
+
+  // truth_detail
+  if( m_jetInfoSwitch->m_truthDetails ) {
+    m_jet_truthCount_BhadFinal.clear();
+    m_jet_truthCount_BhadInit.clear();
+    m_jet_truthCount_BQFinal.clear();
+    m_jet_truthPt_BhadFinal.clear();
+    m_jet_truthPt_BhadInit.clear();
+    m_jet_truthPt_BQFinal.clear();
+    m_jet_truthCount_ChadFinal.clear();
+    m_jet_truthCount_ChadInit.clear();
+    m_jet_truthCount_CQFinal.clear();
+    m_jet_truthPt_ChadFinal.clear();
+    m_jet_truthPt_ChadInit.clear();
+    m_jet_truthPt_CQFinal.clear();
+    m_jet_truthCount_TausFinal.clear();
+    m_jet_truthPt_TausFinal.clear();
+  }
 
 }
 

@@ -149,10 +149,39 @@ protected:
   std::vector<float> m_jet_SumPtPt500PV;
   std::vector<float> m_jet_TrkWPt500PV;
   std::vector<float> m_jet_jvfPV;
-  std::vector<float> m_jet_jvfloosePV;
+  //std::vector<float> m_jet_jvfloosePV;
 
+  // flavor tag
   std::vector<float> m_jet_mv1;
   std::vector<float> m_jet_sv1ip3d;
+
+  // truth
+  std::vector<int>   m_jet_truthLabelID;
+  std::vector<int>   m_jet_truthCount;
+  std::vector<float> m_jet_truthPt;
+  std::vector<float> m_jet_truthDr_B;
+  std::vector<float> m_jet_truthDr_C;
+  std::vector<float> m_jet_truthDr_T;
+  std::vector<float> m_jet_truth_pt;
+  std::vector<float> m_jet_truth_eta;
+  std::vector<float> m_jet_truth_phi;
+  std::vector<float> m_jet_truth_E;
+
+  // truth detail
+  std::vector<int>   m_jet_truthCount_BhadFinal;
+  std::vector<int>   m_jet_truthCount_BhadInit;
+  std::vector<int>   m_jet_truthCount_BQFinal;
+  std::vector<float> m_jet_truthPt_BhadFinal;
+  std::vector<float> m_jet_truthPt_BhadInit;
+  std::vector<float> m_jet_truthPt_BQFinal;
+  std::vector<int>   m_jet_truthCount_ChadFinal;
+  std::vector<int>   m_jet_truthCount_ChadInit;
+  std::vector<int>   m_jet_truthCount_CQFinal;
+  std::vector<float> m_jet_truthPt_ChadFinal;
+  std::vector<float> m_jet_truthPt_ChadInit;
+  std::vector<float> m_jet_truthPt_CQFinal;
+  std::vector<int>   m_jet_truthCount_TausFinal;
+  std::vector<float> m_jet_truthPt_TausFinal;
 
   // muons
   int m_nmuon;
