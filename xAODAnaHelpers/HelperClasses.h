@@ -60,9 +60,9 @@ namespace HelperClasses {
 
 
   struct InfoSwitch {
-    std::string m_configStr;
-    InfoSwitch(std::string configStr) : m_configStr(configStr) { };
-    bool parse(std::string flag);
+    const std::string m_configStr;
+    InfoSwitch(const std::string configStr) : m_configStr(configStr) { };
+    bool parse(const std::string flag);
   };
 
   struct EventInfoSwitch : InfoSwitch {
@@ -70,19 +70,19 @@ namespace HelperClasses {
     bool m_shapeEM;
     bool m_shapeLC;
     void initialize();
-    EventInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
   struct MuonInfoSwitch : InfoSwitch {
     bool m_kinematic;
     void initialize();
-    MuonInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    MuonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
   struct ElectronInfoSwitch : InfoSwitch {
     bool m_kinematic;
     void initialize();
-    ElectronInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
   struct JetInfoSwitch : InfoSwitch {
@@ -98,7 +98,7 @@ namespace HelperClasses {
     bool m_flavTag;
     int  m_numLeadingJets;
     void initialize();
-    JetInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
 

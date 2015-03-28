@@ -15,7 +15,7 @@ class TreeAlgo : public EL::Algorithm
   // that way they can be set directly from CINT and python.
 public:
 
-  std::string m_name;                  
+  const std::string m_name;                  
   std::string m_configName;            
 
   xAOD::TEvent *m_event;               //!
@@ -26,14 +26,13 @@ private:
 
   HelpTreeBase* m_helpTree;            //!
 
-  // configuration variables
-  std::string m_inContainerName;       //!
+protected:
 
   // holds bools that control which branches are filled
-  std::string m_evtDetailStr;          //!
-  std::string m_muDetailStr;           //!
-  std::string m_elDetailStr;           //!
-  std::string m_jetDetailStr;          //!
+  std::string m_evtDetailStr;	       //!
+  std::string m_muDetailStr;	       //!
+  std::string m_elDetailStr;	       //!
+  std::string m_jetDetailStr;	       //!
   std::string m_fatJetDetailStr;       //!
 
   std::string m_evtContainerName;      //!
@@ -43,6 +42,7 @@ private:
   std::string m_fatJetContainerName;   //!
 
 public:
+
   // this is a standard constructor
   TreeAlgo ();                                           //!
   TreeAlgo (std::string name, std::string configName);   //!

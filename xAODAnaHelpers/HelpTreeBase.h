@@ -39,15 +39,15 @@ class HelpTreeBase {
 public:
 
 #ifndef __CINT__  
-  HelpTreeBase(xAOD::TEvent * event, TTree* tree, TFile* file, int units=1e3 );
+  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3 );
 #endif // not __CINT__ 
   virtual ~HelpTreeBase() {;}
 
-  void AddEvent    (std::string detailStr = "");
-  void AddMuons    (std::string detailStr = "");
-  void AddElectrons(std::string detailStr = "");
-  void AddJets     (std::string detailStr = "");
-  void AddFatJets  (std::string detailStr = "");
+  void AddEvent    (const std::string detailStr = "");
+  void AddMuons    (const std::string detailStr = "");
+  void AddElectrons(const std::string detailStr = "");
+  void AddJets     (const std::string detailStr = "");
+  void AddFatJets  (const std::string detailStr = "");
 
   // control which branches are filled
   HelperClasses::EventInfoSwitch*     m_eventInfoSwitch;
@@ -64,20 +64,30 @@ public:
   void FillFatJets( const xAOD::JetContainer& fatJets );
 #endif // not __CINT__ 
   void Fill();
-  void Clear();
+  void ClearEvent();
+  void ClearMuons();
+  void ClearElectrons();
   void ClearJets();
 
   bool writeTo( TFile *file );
 
   // User defined functions
-  virtual void AddUser()                                           { return; };
+  virtual void AddEventUser(const std::string detailStr = "")      { return; };
+  virtual void AddMuonsUser(const std::string detailStr = "")      { return; };  
+  virtual void AddElectronsUser(const std::string detailStr = "")  { return; };  
+  virtual void AddJetsUser(const std::string detailStr = "")       { return; };   
+  
+  virtual void ClearEventUser()                                    { return; };
+  virtual void ClearMuonsUser() 				   { return; };
+  virtual void ClearElectronsUser() 				   { return; };
+  virtual void ClearJetsUser() 					   { return; };
+ 
 #ifndef __CINT__  
   virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   { return; };
   virtual void FillMuonsUser( const xAOD::Muon* muon )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron* electron ) { return; };
   virtual void FillJetsUser( const xAOD::Jet* jet )                { return; };
   virtual void FillFatJetsUser( const xAOD::Jet* fatJet )          { return; };
-  virtual void ClearUser()                                         { return; };
 #endif // not __CINT__ 
 
 protected:

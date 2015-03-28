@@ -1,6 +1,8 @@
 // c++ include(s):
 #include <iostream>
 
+#include "AsgTools/StatusCode.h"
+
 #include "xAODBTagging/BTagging.h"
 
 // package include(s):
@@ -14,7 +16,7 @@
 #endif
 
 /* TODO: event */
-HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, int units):
+HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units):
   m_eventInfoSwitch(0),
   m_muInfoSwitch(0),
   m_elInfoSwitch(0),
@@ -25,13 +27,13 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent * /*event*/, TTree* tree, TFile* file, i
   m_units = units;
   m_tree = tree;
   m_tree->SetDirectory( file );
-  std::cout << "HelpTreeBase::HelpTreeBase setup " << std::endl;
+  Info("HelpTreeBase()", "HelpTreeBase setup");
 
 }
 
 void HelpTreeBase::Fill() {
   m_tree->Fill();
-  this->Clear();
+  //this->Clear();
 }
 
 /*********************
@@ -40,7 +42,10 @@ void HelpTreeBase::Fill() {
  *
  ********************/
 
-void HelpTreeBase::AddEvent(std::string detailStr) {
+void HelpTreeBase::AddEvent( const std::string detailStr) {
+
+  this->ClearEvent();
+  this->ClearEventUser();
 
   m_eventInfoSwitch = new HelperClasses::EventInfoSwitch( detailStr );
 
@@ -63,10 +68,10 @@ void HelpTreeBase::AddEvent(std::string detailStr) {
   }
 
   if( m_eventInfoSwitch->m_shapeLC ) {
-    m_tree->Branch("rhoEM",                &m_rhoLC,            "rhoLC/F");
+    m_tree->Branch("rhoLC",                &m_rhoLC,            "rhoLC/F");
   }
 
-
+  this->AddEventUser();
 }
 
 void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event ) {
@@ -115,7 +120,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     }
   }
 
-  FillEventUser(eventInfo);
+  this->FillEventUser(eventInfo);
 
 }
 
@@ -125,26 +130,33 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
  *
  ********************/
 
-void HelpTreeBase::AddMuons(std::string detailStr) {
+void HelpTreeBase::AddMuons(const std::string detailStr) {
 
   m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
-
-  m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");  
-  m_tree->Branch("muon_pt",  &m_muon_pt);
-  m_tree->Branch("muon_phi", &m_muon_phi);
-  m_tree->Branch("muon_eta", &m_muon_eta);
-
+  
+  if( m_muInfoSwitch->m_kinematic ){
+    m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");  
+    m_tree->Branch("muon_pt",  &m_muon_pt);
+    m_tree->Branch("muon_phi", &m_muon_phi);
+    m_tree->Branch("muon_eta", &m_muon_eta);
+  }
+  
+  this->AddMuonsUser();
 }
 
-void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
-  xAOD::MuonContainer::const_iterator muon_itr = muons.begin();
-  xAOD::MuonContainer::const_iterator muon_end = muons.end();
+void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {  
+
+  this->ClearMuons();
+  this->ClearMuonsUser();
+
   m_nmuon = 0;
-  for( ; muon_itr != muon_end; ++muon_itr ) {
-    m_muon_pt.push_back ( (*muon_itr)->pt() / m_units  );
-    m_muon_eta.push_back( (*muon_itr)->eta() );
-    m_muon_phi.push_back( (*muon_itr)->phi() );
-    this->FillMuonsUser(*muon_itr);
+  for( auto muon_itr : muons ) {
+    if( m_muInfoSwitch->m_kinematic ){
+      m_muon_pt.push_back ( (muon_itr)->pt() / m_units  );
+      m_muon_eta.push_back( (muon_itr)->eta() );
+      m_muon_phi.push_back( (muon_itr)->phi() );
+    }
+    this->FillMuonsUser(muon_itr);
     m_nmuon++;
   }
 }
@@ -155,25 +167,34 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
  *
  ********************/
 
-void HelpTreeBase::AddElectrons(std::string detailStr) { 
+void HelpTreeBase::AddElectrons(const std::string detailStr) { 
 
   m_elInfoSwitch = new HelperClasses::ElectronInfoSwitch( detailStr );
 
-  m_tree->Branch("nel",    &m_nel,"nel/I");
-  m_tree->Branch("el_pt",  &m_el_pt);
-  m_tree->Branch("el_phi", &m_el_phi);
-  m_tree->Branch("el_eta", &m_el_eta);
-
+  m_tree->Branch("nel",    &m_nel,"nel/I");  
+  
+  if( m_elInfoSwitch->m_kinematic ){
+    m_tree->Branch("el_pt",  &m_el_pt);
+    m_tree->Branch("el_phi", &m_el_phi);
+    m_tree->Branch("el_eta", &m_el_eta);
+  }
+  
+  this->AddElectronsUser();
 }
+
 void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) { 
-  xAOD::ElectronContainer::const_iterator el_itr = electrons.begin();
-  xAOD::ElectronContainer::const_iterator el_end = electrons.end();
+  
+  this->ClearElectrons();
+  this->ClearElectronsUser();
+  
   m_nel = 0;
-  for( ; el_itr != el_end; ++el_itr ) {
-    m_el_pt.push_back ( (*el_itr)->pt() / m_units ); 
-    m_el_eta.push_back( (*el_itr)->eta() );
-    m_el_phi.push_back( (*el_itr)->phi() );
-    this->FillElectronsUser(*el_itr);
+  for( auto el_itr : electrons ) {
+    if( m_elInfoSwitch->m_kinematic ){
+      m_el_pt.push_back ( (el_itr)->pt() / m_units ); 
+      m_el_eta.push_back( (el_itr)->eta() );
+      m_el_phi.push_back( (el_itr)->phi() );
+    }
+    this->FillElectronsUser(el_itr);
     m_nel++;
   }
 }
@@ -184,23 +205,20 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) {
  *
  ********************/
 
-void HelpTreeBase::AddJets(std::string detailStr)
+void HelpTreeBase::AddJets(const std::string detailStr)
 {
 
   m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 
   // always
-  m_tree->Branch("evtsel_jets_num",    &m_njet,"evtsel_jets_num/I");
+  m_tree->Branch("njets",    &m_njet,"njets/I");
 
-  // TLorentzVector
-//  if( m_jetInfoSwitch->m_TLV ) {
-//    // add TLorentzVector instead of flat variables
-//  } else {
-    m_tree->Branch("jet_AntiKt4LCTopo_E",   &m_jet_E);
-    m_tree->Branch("jet_AntiKt4LCTopo_pt",  &m_jet_pt);
-    m_tree->Branch("jet_AntiKt4LCTopo_phi", &m_jet_phi);
-    m_tree->Branch("jet_AntiKt4LCTopo_eta", &m_jet_eta);
-//  }
+  if( m_jetInfoSwitch->m_kinematic ){
+    m_tree->Branch("jet_E",   &m_jet_E);
+    m_tree->Branch("jet_pt",  &m_jet_pt);
+    m_tree->Branch("jet_phi", &m_jet_phi);
+    m_tree->Branch("jet_eta", &m_jet_eta);
+  }
 
   if( m_jetInfoSwitch->m_clean ) { 
     m_tree->Branch("jet_Timing",              &m_jet_time               );
@@ -224,7 +242,7 @@ void HelpTreeBase::AddJets(std::string detailStr)
   }		       
 
   if( m_jetInfoSwitch->m_layer ) { 
-    m_tree->Branch("jet_AntiKt4LCTopo_EnergyPerSampling",     &m_jet_ePerSamp   );
+    m_tree->Branch("jet_EnergyPerSampling",     &m_jet_ePerSamp   );
   }
 
   if( m_jetInfoSwitch->m_trackAll ) { 
@@ -247,7 +265,7 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_NumTrkPt500PV",	      &m_jet_NTrkPt500PV    );
     m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
     m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
-    m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	        );
+    m_tree->Branch("jet_JVFPV",		      &m_jet_jvfPV	    );
     //m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
     // HigestJVFLooseVtx  Vertex
     // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
@@ -290,16 +308,23 @@ void HelpTreeBase::AddJets(std::string detailStr)
     m_tree->Branch("jet_GhostTausFinalPt",          &m_jet_truthPt_TausFinal    );
   }
 
+  this->AddJetsUser();
 }
 
 void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
+  
   this->ClearJets();
-  for( auto jet_itr : jets ) {
-    m_jet_pt.push_back ( jet_itr->pt() / m_units );
-    m_jet_eta.push_back( jet_itr->eta() );
-    m_jet_phi.push_back( jet_itr->phi() );
-    m_jet_E.push_back  ( jet_itr->e() / m_units );
-
+  this->ClearJetsUser();
+  
+  for( auto jet_itr : jets ) {  
+  
+    if( m_jetInfoSwitch->m_kinematic ){
+      m_jet_pt.push_back ( jet_itr->pt() / m_units );
+      m_jet_eta.push_back( jet_itr->eta() );
+      m_jet_phi.push_back( jet_itr->phi() );
+      m_jet_E.push_back  ( jet_itr->e() / m_units );
+    }
+    
     if(m_jetInfoSwitch->m_clean) {
 
       static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
@@ -642,24 +667,22 @@ void HelpTreeBase::AddFatJets(std::string detailStr) {
 /* TODO: fatJets */
 void HelpTreeBase::FillFatJets( const xAOD::JetContainer& /*fatJets*/ ) { }
 
-void HelpTreeBase::Clear() {
+void HelpTreeBase::ClearEvent() {}
 
-
-  this->ClearJets();
-
-
+void HelpTreeBase::ClearMuons() {
   m_nmuon = 0;  
   m_muon_pt.clear();
   m_muon_eta.clear();
-  m_muon_phi.clear();    
-    
+  m_muon_phi.clear(); 
+}
+
+void HelpTreeBase::ClearElectrons() {
   m_nel = 0;  
   m_el_pt.clear();
   m_el_eta.clear();
   m_el_phi.clear();
-    
-  this->ClearUser();
 }
+
 
 void HelpTreeBase::ClearJets() {
 

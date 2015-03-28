@@ -24,12 +24,13 @@ ClassImp(TreeAlgo)
 
 TreeAlgo :: TreeAlgo () {}
 
-TreeAlgo :: TreeAlgo (std::string name, std::string configName) :
+TreeAlgo :: TreeAlgo (const std::string name,const std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
   m_helpTree(nullptr)
 {
+  this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
 }
 
 EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
@@ -37,7 +38,7 @@ EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
   job.useXAOD();
   xAOD::Init("TreeAlgo").ignore();
 
-  EL::OutputStream outForTree("treeAlgo");
+  EL::OutputStream outForTree("tree");
   job.outputAdd (outForTree);
 
   return EL::StatusCode::SUCCESS;
@@ -68,17 +69,17 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
   TTree * outTree = new TTree(m_name.c_str(),m_name.c_str());
   if( !outTree ) {
-    Error("treeInitialize()","Failed to get output tree!");
+    Error("treeInitialize()","Failed to instantiate output tree!");
     return EL::StatusCode::FAILURE;
   }
 
-// get the file we created already
-  TFile* treeFile = wk()->getOutputFile ("treeAlgo");
-  m_helpTree = new HelpTreeBase(m_event, outTree, treeFile );
-// tell the tree to go into the file
+  // get the file we created already
+  TFile* treeFile = wk()->getOutputFile ("tree");
+  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile );
+  // tell the tree to go into the file
   outTree->SetDirectory( treeFile );
-// if want to add to same file as ouput histograms
-//  wk()->addOutput( outTree );
+  // if want to add to same file as ouput histograms
+  // wk()->addOutput( outTree );
 
 // get the input from user which determines which branches are created!
   this->configure(); 
@@ -153,9 +154,10 @@ EL::StatusCode TreeAlgo :: execute ()
     m_helpTree->FillFatJets( *inFatJets );
   }
     
-    // fill the tree
-    m_helpTree->Fill();
-    return EL::StatusCode::SUCCESS;
+  // fill the tree
+  m_helpTree->Fill();
+  
+  return EL::StatusCode::SUCCESS;
 
 }
 

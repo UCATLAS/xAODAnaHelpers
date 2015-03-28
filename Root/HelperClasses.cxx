@@ -87,7 +87,7 @@ namespace HelperClasses{
    *  turn a set on
    *
    **************************************/
-  bool InfoSwitch::parse(std::string flag)
+  bool InfoSwitch::parse(const std::string flag)
   {
     return m_configStr.find(flag) != std::string::npos;
   }

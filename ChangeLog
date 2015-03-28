@@ -14,3 +14,6 @@
         * Added function isFilePrimaryxAOD() to know if a sample is a primary xAOD (if not, its a DxAOD!) in HelperFunctions
 	* Added MuonEfficiencyCorrector module. Efficiency SF systematics are added as decorations
 	* Revamped MetaData reading in BasicEventSelection.cxx . This is not going to be definitive though...
+
+2015-03-28 Marco Milesi <Marco.Milesi@cern.ch>
+        * Small changes to TreeAlgo to make other algorithms inherit from it
