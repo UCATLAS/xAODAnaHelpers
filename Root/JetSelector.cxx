@@ -229,7 +229,7 @@ EL::StatusCode JetSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
+  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;

@@ -35,9 +35,8 @@ public:
   std::string m_configName;
   
   // systematics
-  bool m_runAllSyst;
   std::string m_systName;
-  float m_systSigma;
+  float m_systVal;
   bool m_runSysts;
   std::vector<CP::SystematicSet> m_systList; //!
 
@@ -46,9 +45,7 @@ public:
 private:
 
   // tools
-#ifndef __CINT__
   CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool; //!
-#endif // not __CINT__
 
   // configuration variables
   std::string m_inContainerName;
@@ -56,7 +53,10 @@ private:
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;
-
+  
+  std::string m_inputAlgo;
+  std::string m_outputAlgo;
+  
   // sort after calibration
   bool    m_sort;
 
@@ -70,7 +70,7 @@ public:
 
   // this is a standard constructor
   ElectronCalibrator ();
-  ElectronCalibrator (std::string name, std::string configName);
+  ElectronCalibrator (std::string name, std::string configName, std::string systName = "", float systVal = 0);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

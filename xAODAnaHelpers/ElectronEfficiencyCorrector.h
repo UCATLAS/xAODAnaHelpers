@@ -35,9 +35,8 @@ public:
   //std::string m_corrFileName1;
 
   // systematics
-  bool m_runAllSyst;
   std::string m_systName;
-  float m_systSigma;
+  float m_systVal;
   bool m_runSysts;
   std::vector<CP::SystematicSet> m_systList; //!
 
@@ -54,7 +53,9 @@ private:
   std::string m_inContainerName;
   std::string m_outContainerName;
   std::string m_outAuxContainerName;
-
+  std::string m_inputAlgo;               // input type - from xAOD or from xAODAnaHelpers Algo output
+  std::string m_outputAlgo;
+  
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -65,7 +66,7 @@ public:
 
   // this is a standard constructor
   ElectronEfficiencyCorrector ();
-  ElectronEfficiencyCorrector (std::string name, std::string configName);
+  ElectronEfficiencyCorrector (std::string name, std::string configName, std::string systName = "", float systVal = 0);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

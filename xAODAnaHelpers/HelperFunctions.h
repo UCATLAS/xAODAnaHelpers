@@ -125,7 +125,7 @@ namespace HelperFunctions {
   // miscellaneous
   bool sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB);
 
-  std::vector< CP::SystematicSet > getListofSystematics( CP::SystematicSet recSysts, 
+  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet recSysts, 
       std::string systName, float systVal );
 
 #ifndef __CINT__

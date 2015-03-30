@@ -337,7 +337,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // get configuration from steerfile
 
   // as a check, let's see the number of events in our xAOD (long long int)
-  Info("initialize()", "Number of events in file   = %lli", m_event->getEntries());
+  Info("initialize()", "Number of events in file = %lli", m_event->getEntries());
   // count number of events
   m_eventCounter   = 0;
 

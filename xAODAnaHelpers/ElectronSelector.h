@@ -62,7 +62,9 @@ private:
   // configuration variables
   std::string    m_inContainerName;      // input container name
   std::string    m_outContainerName;     // output container name
-  std::string    m_outAuxContainerName;  // output auxiliary container name
+  std::string    m_outAuxContainerName;  // output auxiliary container name  
+  std::string    m_inputAlgo;               // input type - from xAOD or from xAODAnaHelpers Algo output
+  std::string    m_outputAlgo;
   bool       m_decorateSelectedObjects;  // decorate selected objects? defaul passSel
   bool       m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
   int        m_nToProcess;               // look at n objects
@@ -129,7 +131,8 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 #ifndef __CINT__
-  virtual EL::StatusCode executeConst( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight );
+  bool executeSelection( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass, 
+                         const std::string outContainerName );
 #endif
 
   // added functions not from Algorithm

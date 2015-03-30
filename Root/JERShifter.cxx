@@ -137,7 +137,7 @@ EL::StatusCode JERShifter :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  std::cout << m_name << " Number of events = " << m_event->getEntries() << std::endl;
+  Info("initialize()"," Number of events in file: %lld ", m_event->getEntries() );
 
   m_numEvent      = 0;
 

@@ -195,7 +195,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
-  Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
+  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("initialize()", "Failed to properly configure. Exiting." );
@@ -260,7 +260,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     RETURN_CHECK("initialize()", m_jetUncert->setProperty("ConfigFile", m_uncertConfig), "");
     RETURN_CHECK("initialize()", m_jetUncert->initialize(), "");
     m_jetUncert->msg().setLevel( MSG::ERROR ); // VERBOSE, INFO, DEBUG
-    CP::SystematicSet recSysts = m_jetUncert->recommendedSystematics();
+    const CP::SystematicSet recSysts = m_jetUncert->recommendedSystematics();
 
     Info("initialize()"," Initializing Jet Systematics :");
     m_systList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );

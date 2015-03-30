@@ -17,3 +17,8 @@
 
 2015-03-28 Marco Milesi <Marco.Milesi@cern.ch>
         * Small changes to TreeAlgo to make other algorithms inherit from it
+
+2015-03-30 Marco Milesi <Marco.Milesi@cern.ch>
+        * Developed all (?) the systematics machinery for Electrons
+        * Tested in ASG Base,2.1.29
+	

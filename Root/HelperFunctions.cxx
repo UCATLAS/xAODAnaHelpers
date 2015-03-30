@@ -231,20 +231,20 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
 
 // Get the subset of systematics to consider
 // can also retun full set if systName = "All"
-std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics( CP::SystematicSet recSysts, 
+std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet recSysts, 
     std::string systName, 
     float systVal ) {
   std::vector< CP::SystematicSet > systList;
   // loop over recommended systematics
-  for( auto syst : recSysts ) {
-    Info("getListofSystematics()","  %s", (syst.basename()).c_str());
+  for( const auto syst : recSysts ) {
+    Info("HelperFunctions::getListofSystematics()","  %s", (syst.basename()).c_str());
     if( systName == syst.basename() ) {
-      Info("getListofSystematics()","Found match! Adding systematic %s", syst.basename().c_str());
+      Info("HelperFunctions::getListofSystematics()","Found match! Adding systematic %s", syst.basename().c_str());
       // continuous systematics - can choose at what sigma to evaluate
       if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
         systList.push_back(CP::SystematicSet());
         if ( systVal == 0 ) { 
-          Error("getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
+          Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
           RCU_THROW_MSG("Failure");
         }
         systList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
@@ -256,7 +256,7 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics( CP::Syst
       }
     } // found match!
     else if ( systName == "All" ) {
-      Info("initialize()","Adding systematic %s", syst.basename().c_str());
+      Info("HelperFunctions::initialize()","Adding systematic %s", syst.basename().c_str());
       // continuous systematics - can choose at what sigma to evaluate
       // add +1 and -1 for when running all
       if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {

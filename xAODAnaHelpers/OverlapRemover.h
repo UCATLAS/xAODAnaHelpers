@@ -55,9 +55,11 @@ private:
   bool     m_useSelected; // pass only object passing selection to O.R. tool
 
   /* Electrons */
-  std::string m_inContainerName_Electrons;
+  std::string  m_inContainerName_Electrons;
   std::string  m_outContainerName_Electrons;        // output container name
   std::string  m_outAuxContainerName_Electrons;     // output auxiliary container name
+  std::string  m_inputAlgoElectrons;                 // input type - from xAOD or from xAODAnaHelpers Algo output
+  std::string  m_outputAlgoElectrons;
   /* Muons */
   std::string m_inContainerName_Muons;
   std::string  m_outContainerName_Muons;        // output container name
@@ -101,13 +103,6 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__
-  virtual EL::StatusCode executeConst(const xAOD::ElectronContainer* inElectrons,
-				      const xAOD::MuonContainer* inMuons,
-				      const xAOD::JetContainer* inJets,
-			              const xAOD::TauJetContainer* inTaus,
-				      const xAOD::PhotonContainer* inPhotons);
-#endif
 #ifndef __CINT__
   virtual EL::StatusCode printOverlapInfo (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
   virtual EL::StatusCode printOverlapInfo (const char* type, xAOD::IParticle* obj, const std::string& selectFlag, const std::string& overlapFlag);
