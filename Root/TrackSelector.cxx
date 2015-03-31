@@ -112,6 +112,8 @@ EL::StatusCode  TrackSelector :: configure ()
   config->Print();
   Info("configure()", "TrackSelector Interface succesfully configured! \n");
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 

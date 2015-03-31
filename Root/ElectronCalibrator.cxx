@@ -104,6 +104,8 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   config->Print();
   Info("configure()", "ElectronCalibrator Interface succesfully configured! \n");
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 

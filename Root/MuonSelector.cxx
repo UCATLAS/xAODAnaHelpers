@@ -162,6 +162,8 @@ EL::StatusCode  MuonSelector :: configure ()
   config->Print();
   Info("configure()", "MuonSelector Interface succesfully configured! \n");
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 

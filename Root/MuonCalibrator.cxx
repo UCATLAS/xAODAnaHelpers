@@ -81,6 +81,8 @@ EL::StatusCode  MuonCalibrator :: configure ()
   config->Print();
   Info("configure()", "MuonCalibrator Interface succesfully configured! \n");
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 

@@ -131,6 +131,8 @@ EL::StatusCode  BJetSelector :: configure ()
   config->Print();
   Info("configure()", "BJetSelector Interface succesfully configured! \n");
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 

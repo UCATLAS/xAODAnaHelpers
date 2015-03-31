@@ -179,6 +179,8 @@ EL::StatusCode  ElectronSelector :: configure ()
   config->Print();
   Info("configure()", "ElectronSelector Interface succesfully configured! \n");
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 

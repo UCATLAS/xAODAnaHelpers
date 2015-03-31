@@ -141,6 +141,8 @@ EL::StatusCode  JetSelector :: configure ()
   config->Print();
   Info("configure()", "JetSelector Interface succesfully configured! \n");
 
+  delete config;
+  
   return EL::StatusCode::SUCCESS;
 }
 

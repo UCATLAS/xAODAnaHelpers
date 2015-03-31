@@ -107,6 +107,8 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
   config->Print();
   Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! \n");
 
+  delete config;
+  
   return EL::StatusCode::SUCCESS;
 }
 

@@ -122,6 +122,8 @@ EL::StatusCode  JetCalibrator :: configure ()
   config->Print();
   Info("configure()", "JetCalibrator Interface succesfully configured! \n");
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 

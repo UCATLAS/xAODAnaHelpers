@@ -102,6 +102,8 @@ EL::StatusCode BasicEventSelection :: configure ()
   env->Print();
   Info("configure()", "BasicEventSelection succesfully configured! \n");
 
+  delete env;
+  
   return EL::StatusCode::SUCCESS;
 }
 

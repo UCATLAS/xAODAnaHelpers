@@ -58,8 +58,8 @@ private:
   std::string  m_inContainerName_Electrons;
   std::string  m_outContainerName_Electrons;        // output container name
   std::string  m_outAuxContainerName_Electrons;     // output auxiliary container name
-  std::string  m_inputAlgoElectrons;                 // input type - from xAOD or from xAODAnaHelpers Algo output
-  std::string  m_outputAlgoElectrons;
+  std::string  m_inputAlgoElectrons;                // name of vector<string> of syst retrieved from TStore
+  std::string  m_outputAlgoElectrons;               // name of vector<string> of syst pushed in TStore
   /* Muons */
   std::string m_inContainerName_Muons;
   std::string  m_outContainerName_Muons;        // output container name

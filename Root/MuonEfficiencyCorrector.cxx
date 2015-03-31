@@ -100,6 +100,8 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
   config->Print();
   Info("configure()", "MuonEfficiencyCorrector Interface succesfully configured! \n");
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 
