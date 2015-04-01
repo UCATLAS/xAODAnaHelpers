@@ -9,6 +9,9 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+// EDM include(s):
+#include "xAODEgamma/ElectronContainer.h"
+
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicSet.h"
@@ -45,9 +48,7 @@ public:
 private:
 
   // tools
-#ifndef __CINT__
   AsgElectronEfficiencyCorrectionTool  *m_asgElectronEfficiencyCorrectionTool; //!
-#endif // not __CINT__
 
   // configuration variables
   std::string m_inContainerName;
@@ -81,6 +82,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+  virtual EL::StatusCode executeSF (  const xAOD::ElectronContainer* correctedElectrons  );
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronEfficiencyCorrector, 1);
