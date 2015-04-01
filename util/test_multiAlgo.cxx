@@ -66,10 +66,10 @@ int main( int argc, char* argv[] ) {
 
   JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
   MuonCalibrator* muonCalib                     = new MuonCalibrator(       "muonCalib",                localDataDir+"muonCalib.config");
-  ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config" /*, "All" */);
+  ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config" /*, "All"*/ );
   
   MuonEfficiencyCorrector*      muonEffCorr     = new MuonEfficiencyCorrector(       "muonEfficiencyCorrector",                localDataDir+"muonEffCorr.config");
-  ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector(   "electronEfficiencyCorrector",            localDataDir+"electronEffCorr.config" /*, "All" */);
+  ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector(   "electronEfficiencyCorrector",            localDataDir+"electronEffCorr.config"/*, "All"*/);
 
   MuonSelector* muonSelect_signal               = new MuonSelector(         "muonSelect_signal",        localDataDir+"muonSelect_signal.config");
   ElectronSelector* electronSelect_signal       = new ElectronSelector(     "electronSelect_signal",    localDataDir+"electronSelect_signal.config");
@@ -91,17 +91,17 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( jetCalib );
   job.algsAdd( muonCalib );
   job.algsAdd( muonEffCorr );
-  //job.algsAdd( electronCalib );
-  //job.algsAdd( electronEffCorr );
+  job.algsAdd( electronCalib );
+  job.algsAdd( electronEffCorr );
   job.algsAdd( muonSelect_signal );  
   job.algsAdd( electronSelect_signal );
-  job.algsAdd( jetSelect_signal );
-  job.algsAdd( bjetSelect_signal ); 
-  job.algsAdd( jetHistsAlgo_signal );
-  job.algsAdd( jetSelect_truth );
-  job.algsAdd( jetHistsAlgo_truth );
-  job.algsAdd( overlapRemoval );
-  job.algsAdd( jk_AntiKt10LC );
+  //job.algsAdd( jetSelect_signal );
+  //job.algsAdd( bjetSelect_signal ); 
+  //job.algsAdd( jetHistsAlgo_signal );
+  //job.algsAdd( jetSelect_truth );
+  //job.algsAdd( jetHistsAlgo_truth );
+  //job.algsAdd( overlapRemoval );
+  //job.algsAdd( jk_AntiKt10LC );
 
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;

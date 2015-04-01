@@ -372,22 +372,37 @@ EL::StatusCode ElectronSelector :: execute ()
 
   m_numEvent++;
 
+  std::cout << "ciao 0" << std::endl;
+
   // get vector of string giving the syst names of the upstream algo (rememeber: 1st element is a blank string: nominal case!)
   std::vector< std::string >* systNames = 0;
   if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
+
+  std::cout << "ciao 01" << std::endl;
+
     if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
       Info("execute()", "Cannot find vector from %s algo", m_inputAlgo.c_str());
       return StatusCode::FAILURE;
     }
+  } else {
+    Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgo.c_str());
+    return StatusCode::FAILURE;
   }
+
+  std::cout << "ciao 1" << std::endl;
 
   // prepare a vector of the names of CDV containers 
   // must be a pointer to be recorded in TStore
   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
   
+  std::cout << "ciao 2" << std::endl;
+
   if(m_debug){
      Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) );
   }  
+
+  std::cout << "ciao 3" << std::endl;
+
   
   bool eventPass(false), eventPassThisSyst(false);
   bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal

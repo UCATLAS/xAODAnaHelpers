@@ -266,6 +266,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 	  }
     	} else {
     	  Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgo.c_str());
+	  return StatusCode::FAILURE;
     	}
     	
     	// prepare a vector of the names of CDV containers 
@@ -308,7 +309,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	} // close loop on systematic sets available from upstream algo
       
         // save list of systs that should be considered down stream
-        RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
+        RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
   }
 
   // look what do we have in TStore  
