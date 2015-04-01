@@ -76,6 +76,7 @@ EL::StatusCode  JetCalibrator :: configure ()
 {
   Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
 
+  // expand the path to the config to find it in the ROOTCORE directory
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG("JetCalibrator::configure()", m_configName);
 
@@ -89,7 +90,7 @@ EL::StatusCode  JetCalibrator :: configure ()
   // CONFIG parameters for JetCalibrationTool
   m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
 
-  // when running data "_Insitu" is appended to this string
+  // when running data "_Insitu" is appended to this string 
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
   m_calibConfigData	        = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
   m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
@@ -113,11 +114,11 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
   m_sort                    = config->GetValue("Sort",          false);
 
+  // If there is no InputContainer we must stop
   if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-  // add more and add to jet selector
 
   config->Print();
   Info("configure()", "JetCalibrator Interface succesfully configured! \n");
@@ -207,6 +208,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
+  // when running data "_Insitu" is appended to the calibration string!
   if( !m_isMC ) m_calibSequence += "_Insitu";
 
   // this now holds for both MC and data
@@ -323,14 +325,6 @@ EL::StatusCode JetCalibrator :: execute ()
     std::string outSCAuxContainerName(m_outSCAuxContainerName);
     std::string outContainerName(m_outContainerName);
 
-//    // if do not find "Nominal" in name then this is a systematic
-//    // only change the name of the output collection if looping over systematics
-//    if( syst_it.name().find("Nominal") == std::string::npos && m_runAllSysts ) {
-//      outSCContainerName    += syst_it.name();
-//      outSCAuxContainerName += syst_it.name();
-//      outContainerName      += syst_it.name();
-//    }
-    
     // always append the name of the variation, including nominal which is an empty string
     outSCContainerName    += syst_it.name();
     outSCAuxContainerName += syst_it.name();
@@ -381,6 +375,7 @@ EL::StatusCode JetCalibrator :: execute ()
       calibJetsCDV->push_back( jet_itr );
     }
 
+    // can only sort the CDV - a bit no-no to sort the shallow copies
     if(m_sort) {
       std::sort( calibJetsCDV->begin(), calibJetsCDV->end(), HelperFunctions::sort_pt );
     }
@@ -393,7 +388,7 @@ EL::StatusCode JetCalibrator :: execute ()
     RETURN_CHECK( "execute()", m_store->record( calibJetsCDV, outContainerName), "Failed to record const data container.");
   }
 
-  // add ConstDataVector to TStore
+  // add vector of systematic names to TStore
   RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
   
 //  std::cout << "Calibrator over" << std::endl;
