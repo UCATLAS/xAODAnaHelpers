@@ -314,6 +314,7 @@ EL::StatusCode JetSelector :: execute ()
 
     // save list of systs that shoudl be considered down stream
     RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
+    delete vecOutContainerNames;
 
   }
 
