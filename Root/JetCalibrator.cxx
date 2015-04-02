@@ -390,7 +390,6 @@ EL::StatusCode JetCalibrator :: execute ()
 
   // add vector of systematic names to TStore
   RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
-  delete vecOutContainerNames;
   
 //  std::cout << "Calibrator over" << std::endl;
 //  m_store->print();
