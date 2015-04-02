@@ -43,6 +43,10 @@ public:
 private:
 
 #ifndef __CINT__
+
+  bool m_usePhotons;
+  bool m_useTaus;
+
   // tools
   OverlapRemovalTool *m_overlapRemovalTool; //!
 #endif
@@ -64,10 +68,14 @@ private:
   std::string m_inContainerName_Muons;
   std::string  m_outContainerName_Muons;        // output container name
   std::string  m_outAuxContainerName_Muons;     // output auxiliary container name
+  std::string  m_inputAlgoMuons;                // name of vector<string> of syst retrieved from TStore
+  std::string  m_outputAlgoMuons;               // name of vector<string> of syst pushed in TStore
   /* Jets */
   std::string m_inContainerName_Jets;
   std::string  m_outContainerName_Jets;        // output container name
   std::string  m_outAuxContainerName_Jets;     // output auxiliary container name
+  std::string  m_inputAlgoJets;                // name of vector<string> of syst retrieved from TStore
+  std::string  m_outputAlgoJets;               // name of vector<string> of syst pushed in TStore
   /* Photons */
   std::string m_inContainerName_Photons;
   std::string  m_outContainerName_Photons;        // output container name
@@ -76,7 +84,6 @@ private:
   std::string m_inContainerName_Taus;
   std::string  m_outContainerName_Taus;        // output container name
   std::string  m_outAuxContainerName_Taus;     // output auxiliary container name
-
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

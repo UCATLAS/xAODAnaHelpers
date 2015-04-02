@@ -58,6 +58,7 @@ private:
   std::string m_outSCAuxContainerName;  //!
 
   std::string m_jetAlgo;                //!
+  std::string m_outputAlgo;             //!
   std::string m_calibConfigData;        //!
   std::string m_calibConfigFullSim;     //!
   std::string m_calibConfigAFII;        //!

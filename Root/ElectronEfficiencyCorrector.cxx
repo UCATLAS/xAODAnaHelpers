@@ -88,7 +88,7 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   // name of algo input container comes from - only if running on systematics
-  m_inputAlgo               = config->GetValue("InputAlgo",  "ElectronCollection_Calib_Algo"); // default: container of calibrated electrons
+  m_inputAlgo               = config->GetValue("InputAlgo",  ""); 
   m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_CalibCorr_Algo"); 
   									       
   // Systematics stuff

@@ -87,9 +87,11 @@ EL::StatusCode  ElectronSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName  = config->GetValue("InputContainer",  "");
+  
   // name of algo input container comes from - only if running on systematics
-  m_inputAlgo               = config->GetValue("InputAlgo",   "ElectronCollection_CalibCorr_Algo");
-  m_outputAlgo              = config->GetValue("OutputAlgo",  "ElectronCollection_Sel_Algo");     
+  m_inputAlgo               = config->GetValue("InputAlgo",   "");
+  m_outputAlgo              = config->GetValue("OutputAlgo",  "ElectronCollection_Sel_Algo");
+     
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
   // additional functionality : create output container of selected objects
@@ -348,8 +350,6 @@ EL::StatusCode ElectronSelector :: initialize ()
   return EL::StatusCode::SUCCESS;
 }
 
-
-
 EL::StatusCode ElectronSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
@@ -372,76 +372,74 @@ EL::StatusCode ElectronSelector :: execute ()
 
   m_numEvent++;
 
-  std::cout << "ciao 0" << std::endl;
-
-  // get vector of string giving the syst names of the upstream algo (rememeber: 1st element is a blank string: nominal case!)
-  std::vector< std::string >* systNames = 0;
-  if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
-
-  std::cout << "ciao 01" << std::endl;
-
-    if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
-      Info("execute()", "Cannot find vector from %s algo", m_inputAlgo.c_str());
-      return StatusCode::FAILURE;
-    }
-  } else {
-    Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgo.c_str());
-    return StatusCode::FAILURE;
-  }
-
-  std::cout << "ciao 1" << std::endl;
-
-  // prepare a vector of the names of CDV containers 
-  // must be a pointer to be recorded in TStore
-  std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-  
-  std::cout << "ciao 2" << std::endl;
-
-  if(m_debug){
-     Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) );
-  }  
-
-  std::cout << "ciao 3" << std::endl;
-
-  
-  bool eventPass(false), eventPassThisSyst(false);
+  // did any collection pass the cuts?
+  bool eventPass(false);
   bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal
   const xAOD::ElectronContainer* inElectrons = 0;
   
-  // loop over systematic sets  
-  for( auto systName : *systNames ) {
-    
-    if(m_debug){
-      Info("execute()", " syst name: %s \n input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() );
+  // if input comes from xAOD, or just running one collection, 
+  // then get the one collection and be done with it
+  if( m_inputAlgo.empty() ) {
+
+    // this will be the collection processed - no matter what!!
+    inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
+    eventPass = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName);
+
+  } else { // get the list of systematics to run over
+ 
+    // get vector of string giving the syst names of the upstream algo (rememeber: 1st element is a blank string: nominal case!)
+    std::vector< std::string >* systNames = 0;
+    if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
+
+      if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
+	Info("execute()", "Cannot find vector from %s algo", m_inputAlgo.c_str());
+	return StatusCode::FAILURE;
+      }
+    } else {
+      Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgo.c_str());
+      return StatusCode::FAILURE;
     }
-    
-    inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName + systName, m_event, m_store);
-    // a CDV for each systematic (w/ name m_outContainerName+syst_name) 
-    //   will be stored in TStore, unless event does not pass selection
-    eventPassThisSyst = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName + systName);
-    
-    if( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
-    
-    if( eventPassThisSyst ) { 
-      // save the string of syst set under question if event is passing the selection
-      vecOutContainerNames->push_back( systName );
-    } 
-    
-    // if for at least one syst set the event passes selection, this will remain true!
-    eventPass = (eventPass || eventPassThisSyst);
-    
+
+    // prepare a vector of the names of CDV containers 
+    // must be a pointer to be recorded in TStore
+    std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     if(m_debug){
-      Info("execute()", " syst name: %s \n output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() );
-    }    
+      Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) );
+    }  
+
+    // loop over systematic sets
+    bool eventPassThisSyst(false);  
+    for( auto systName : *systNames ) {
     
-  }
+      if(m_debug){
+	Info("execute()", " syst name: %s \n input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() );
+      }
+    
+      inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName + systName, m_event, m_store);
+      // a CDV for each systematic (w/ name m_outContainerName+syst_name) 
+      //   will be stored in TStore, unless event does not pass selection
+      eventPassThisSyst = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName + systName);
+      
+      if( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
+    
+      if( eventPassThisSyst ) { 
+	// save the string of syst set under question if event is passing the selection
+	vecOutContainerNames->push_back( systName );
+      } 
+    
+      // if for at least one syst set the event passes selection, this will remain true!
+      eventPass = (eventPass || eventPassThisSyst);
+    
+      if(m_debug){ Info("execute()", " syst name: %s \n output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }    
+      
+    } // close loop over syst sets
 
-  if(m_debug){
-     Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) );
-  }
+    if(m_debug){  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
 
-  // save list of systs that should be considered down stream
-  RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+    // save list of systs that should be considered down stream
+    RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+
+  } 
 
   // look what do we have in TStore
   if(m_debug) { m_store->print(); }  
@@ -452,7 +450,7 @@ EL::StatusCode ElectronSelector :: execute ()
   }
   
   return EL::StatusCode::SUCCESS;  
-  
+
 }
 
 bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, 

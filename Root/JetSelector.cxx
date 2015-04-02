@@ -80,8 +80,10 @@ EL::StatusCode  JetSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  // name of algo input container comes from - only if 
-  m_inputAlgo               = config->GetValue("InputAlgo",       "");
+  
+  // name of algo input container comes from - only if running on syst
+  m_inputAlgo               = config->GetValue("InputAlgo",   "");
+  m_outputAlgo              = config->GetValue("OutputAlgo",  "AntiKt4EMTopoJets_Signal_Algo");
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -111,12 +113,12 @@ EL::StatusCode  JetSelector :: configure ()
   m_mass_min                = config->GetValue("massMin",     1e8);
   m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
   m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-  m_truthLabel 		          = config->GetValue("TruthLabel",   -1);
+  m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
 
-  m_doJVF 		              = config->GetValue("DoJVF",       false);
-  m_pt_max_JVF 		          = config->GetValue("pTMaxJVF",    50e3);
-  m_eta_max_JVF 	          = config->GetValue("etaMaxJVF",   2.4);
-  m_JVFCut 		              = config->GetValue("JVFCut",      0.5);
+  m_doJVF 		    = config->GetValue("DoJVF",       false);
+  m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",    50e3);
+  m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
+  m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
 
   // parse and split by comma
   std::string token;
@@ -293,6 +295,9 @@ EL::StatusCode JetSelector :: execute ()
         Info("execute()", "Cannot find vector from %s", m_inputAlgo.c_str());
         return StatusCode::FAILURE;
       }
+    } else {
+      Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgo.c_str());
+      return StatusCode::FAILURE;
     }
 
     // loop over systematics
@@ -313,14 +318,13 @@ EL::StatusCode JetSelector :: execute ()
     }
 
     // save list of systs that shoudl be considered down stream
-    RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
+    RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
     //delete vecOutContainerNames;
 
   }
 
-//  std::cout << "Selector over" << std::endl;
-//  m_store->print();
-//  std::cout << std::endl;
+  // look what do we have in TStore
+  if(m_debug) { m_store->print(); } 
 
   if(!pass) {
     wk()->skipEvent();

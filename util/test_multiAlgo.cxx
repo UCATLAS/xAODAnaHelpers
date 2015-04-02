@@ -95,13 +95,13 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( electronEffCorr );
   job.algsAdd( muonSelect_signal );  
   job.algsAdd( electronSelect_signal );
-  //job.algsAdd( jetSelect_signal );
-  //job.algsAdd( bjetSelect_signal ); 
-  //job.algsAdd( jetHistsAlgo_signal );
-  //job.algsAdd( jetSelect_truth );
-  //job.algsAdd( jetHistsAlgo_truth );
-  //job.algsAdd( overlapRemoval );
-  //job.algsAdd( jk_AntiKt10LC );
+  job.algsAdd( jetSelect_signal );
+  job.algsAdd( bjetSelect_signal ); 
+  job.algsAdd( jetHistsAlgo_signal );
+  job.algsAdd( jetSelect_truth );
+  job.algsAdd( jetHistsAlgo_truth );
+  job.algsAdd( overlapRemoval );
+  job.algsAdd( jk_AntiKt10LC );
 
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;

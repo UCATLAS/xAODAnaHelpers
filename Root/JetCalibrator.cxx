@@ -88,7 +88,8 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_inContainerName         = config->GetValue("InputContainer",  "");
 
   // CONFIG parameters for JetCalibrationTool
-  m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
+  m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");  
+  m_outputAlgo              = config->GetValue("OutputAlgo",      "AntiKt4EMTopoJets_Calib_Algo");
 
   // when running data "_Insitu" is appended to this string 
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
@@ -389,11 +390,10 @@ EL::StatusCode JetCalibrator :: execute ()
   }
 
   // add vector of systematic names to TStore
-  RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
+  RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
   
-//  std::cout << "Calibrator over" << std::endl;
-//  m_store->print();
-//  std::cout << std::endl;
+  // look what do we have in TStore
+  if(m_debug) { m_store->print(); }  
 
   return EL::StatusCode::SUCCESS;
 }
