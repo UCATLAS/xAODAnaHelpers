@@ -285,8 +285,8 @@ EL::StatusCode MuonSelector :: initialize ()
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
 
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
-  m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max) ); // default 2.5
-  m_muonSelectionTool->setProperty("MuQuality", static_cast<int>(muQualityParser.parseEnum(m_muonQuality))   ); // why is not ok to pass the enum??
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property"); // default 2.5
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", static_cast<int>(muQualityParser.parseEnum(m_muonQuality))), "Failed to set MuQuality property" ); // why is not ok to pass the enum??
 
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
 

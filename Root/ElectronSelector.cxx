@@ -286,7 +286,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   std::string asgeisem_tool_name = std::string("AsgElectronIsEMSelector_") + m_name;
   m_asgElectronIsEMSelector = new AsgElectronIsEMSelector( asgeisem_tool_name.c_str() );
   m_asgElectronIsEMSelector->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
-  m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ); // set the config file that contains the cuts on the shower shapes
+  RETURN_CHECK("ElectronSelector::initialize()", m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ), "Failed to set ConfigFile property"); // set the config file that contains the cuts on the shower shapes
   // Apparently this won't be needed at all ...
   // HelperClasses::EnumParser<egammaPID::PID> cutBasedPIDParser;
   // m_asgElectronIsEMSelector->setProperty("PIDName", static_cast<int>(cutBasedPIDParser.parseEnum(m_PIDName)) );
@@ -311,21 +311,21 @@ EL::StatusCode ElectronSelector :: initialize ()
   } else if(m_CutBasedPIDMask == "ElectronTightHLT") {
     EMMask = egammaPID::ElectronTightHLT;
   } else {
-    Error("configure()", "Unknown electron cut-based PID bitmask requested %s!",m_CutBasedPIDMask.c_str());
+    Error("initialize()", "Unknown electron cut-based PID bitmask requested %s!",m_CutBasedPIDMask.c_str());
     return EL::StatusCode::FAILURE;
   }
-  m_asgElectronIsEMSelector->setProperty("isEMMask", EMMask );
+  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->setProperty("isEMMask", EMMask ), "Failed to set isEMMask property");
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
 
   // initialise AsgElectronLikelihoodTool (likelihood-based PID)
   std::string asgel_tool_name = std::string("AsgElectronLikelihoodTool_") + m_name;
   m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool( asgel_tool_name.c_str() );
   m_asgElectronLikelihoodTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
-  m_asgElectronLikelihoodTool->setProperty("primaryVertexContainer", "PrimaryVertices");
+  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("primaryVertexContainer", "PrimaryVertices"), "Failed to set primaryVertexContainer property");
   // m_asgElectronLikelihoodTool->setProperty("inputPDFFileName", "ElectronPhotonSelectorTools/v1/ElectronLikelihoodPdfs.root");
   HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
-  m_asgElectronLikelihoodTool->setProperty("ConfigFile", confDir + m_LHOperatingPoint );
-  m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_LHPID) ) );
+  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("ConfigFile", confDir + m_LHOperatingPoint ), "Failed to set ConfigFile property");
+  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_LHPID) ) ), "Failed to set OperatingPoint property");
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->initialize(), "Failed to properly initialize AsgElectronLikelihoodTool." );
 
   // initialise ElectronIsolationSelectionTool
@@ -334,8 +334,8 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_electronIsolationSelectionTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ElectronIsolationSelectionTool
   HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-  m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<double>(m_CaloBasedIsoCut),  m_useRelativeIso );
-  m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_TrackBasedIsoType),  static_cast<double>(m_TrackBasedIsoCut), m_useRelativeIso );
+  RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<double>(m_CaloBasedIsoCut),  m_useRelativeIso ), "Failed to configure Calo-Based Isolation Cut");
+  RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_TrackBasedIsoType),  static_cast<double>(m_TrackBasedIsoCut), m_useRelativeIso ), "Failed to configure Track-Based Isolation Cut");
   RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->initialize(), "Failed to properly initialize ElectronIsolationSelectionTool." );
 
   Info("initialize()", "ElectronSelector Interface succesfully initialized!" );
