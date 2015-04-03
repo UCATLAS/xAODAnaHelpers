@@ -7,7 +7,6 @@
 #include <xAODEventInfo/EventInfo.h>
 #include <AthContainers/ConstDataVector.h>
 
-#include <xAODAnaHelpers/JetHists.h>
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
@@ -47,7 +46,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
   } else {
-    Info("histInitialize()", "Succesfully configured! \n");
+    Info("histInitialize()", "Succesfully configured! ");
   }
 
   // only running 1 collection

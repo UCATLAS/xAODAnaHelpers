@@ -8,7 +8,6 @@
 #include <xAODEventInfo/EventInfo.h>
 #include <AthContainers/ConstDataVector.h>
 
-#include <xAODAnaHelpers/HelpTreeBase.h>
 #include <xAODAnaHelpers/TreeAlgo.h>
 
 #include <xAODAnaHelpers/HelperFunctions.h>
@@ -59,12 +58,12 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   Info("treeInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
   Info("treeInitialize()", "Attempting to configure using: %s", m_configName.c_str());
-  
+
   //if ( this->configure() == EL::StatusCode::FAILURE ) {
   //Error("treeInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
   //return EL::StatusCode::FAILURE;
   //} else {
-  //Info("treeInitialize()", "Succesfully configured! \n");
+  //Info("treeInitialize()", "Succesfully configured! ");
   //}
 
   TTree * outTree = new TTree(m_name.c_str(),m_name.c_str());
@@ -82,7 +81,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   // wk()->addOutput( outTree );
 
 // get the input from user which determines which branches are created!
-  this->configure(); 
+  this->configure();
 
   return EL::StatusCode::SUCCESS;
 }
@@ -134,12 +133,12 @@ EL::StatusCode TreeAlgo :: execute ()
   m_helpTree->FillEvent( eventInfo );
 
   // for the containers the were supplied, fill the appropiate vectors
-  if(!m_muContainerName.empty()) {	
+  if(!m_muContainerName.empty()) {
     const xAOD::MuonContainer* inMuon = HelperFunctions::getContainer<xAOD::MuonContainer>(m_muContainerName, m_event, m_store);
     m_helpTree->FillMuons( *inMuon );
   }
 
-  if(!m_elContainerName.empty()) { 	
+  if(!m_elContainerName.empty()) {
     const xAOD::ElectronContainer* inElec = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_elContainerName, m_event, m_store);
     m_helpTree->FillElectrons( *inElec );
   }
@@ -148,15 +147,15 @@ EL::StatusCode TreeAlgo :: execute ()
     const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_jetContainerName, m_event, m_store);
     m_helpTree->FillJets( *inJets, HelperFunctions::getPrimaryVertexLocation(vertices) );
   }
-  
+
   if(!m_fatJetContainerName.empty()) {
     const xAOD::JetContainer* inFatJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_fatJetContainerName, m_event, m_store);
     m_helpTree->FillFatJets( *inFatJets );
   }
-    
+
   // fill the tree
   m_helpTree->Fill();
-  
+
   return EL::StatusCode::SUCCESS;
 
 }
@@ -167,7 +166,7 @@ EL::StatusCode TreeAlgo :: finalize () {
   if(m_helpTree){
     delete  m_helpTree;
     m_helpTree = 0;
-  }  
+  }
   return EL::StatusCode::SUCCESS;
 }
 

@@ -34,10 +34,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-// external tools include(s):
-#include "JetResolution/JERTool.h"
-#include "JetResolution/JERSmearingTool.h"
-
 // ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
@@ -142,8 +138,8 @@ EL::StatusCode JERShifter :: initialize ()
   m_numEvent      = 0;
 
   // Instantiate the tools
-  std::string jer_tool_name  = std::string("JERTool_") + m_name;  
-  std::string jers_tool_name = std::string("JERSmearingTool_") + m_name;   
+  std::string jer_tool_name  = std::string("JERTool_") + m_name;
+  std::string jers_tool_name = std::string("JERSmearingTool_") + m_name;
   m_JERTool     = new JERTool( jer_tool_name.c_str() );
   m_JERSmearing = new JERSmearingTool( jers_tool_name.c_str() );
 

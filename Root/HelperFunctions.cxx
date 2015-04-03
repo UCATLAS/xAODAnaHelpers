@@ -61,7 +61,7 @@ std::string HelperFunctions::replaceString(std::string subject, const std::strin
 
 StatusCode HelperFunctions::isAvailableMetaData(TTree* metaData){
     if ( !metaData ) {
-	Info("HelperFunctions::isAvailableMetaData()", "MetaData tree missing from input file.\n Aborting ");
+	Info("HelperFunctions::isAvailableMetaData()", "MetaData tree missing from input file. Aborting ");
 	return StatusCode::FAILURE;
     }
     return StatusCode::SUCCESS;

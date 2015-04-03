@@ -3,7 +3,7 @@
  * Interface to CP Electron selection tool(s).
  *
  * M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -30,11 +30,6 @@
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
-
-// external tools include(s):
-#include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
-#include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
-#include "ElectronIsolationSelection/ElectronIsolationSelectionTool.h"
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -67,14 +62,14 @@ ElectronSelector :: ElectronSelector (std::string name, std::string configName) 
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("ElectronSelector()", "Calling constructor \n");
+  Info("ElectronSelector()", "Calling constructor");
 }
 
 ElectronSelector::~ElectronSelector() {}
 
 EL::StatusCode  ElectronSelector :: configure ()
 {
-  Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "ElectronSelector::configure()", m_configName);
@@ -87,11 +82,11 @@ EL::StatusCode  ElectronSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName  = config->GetValue("InputContainer",  "");
-  
+
   // name of algo input container comes from - only if running on systematics
   m_inputAlgo               = config->GetValue("InputAlgo",   "");
   m_outputAlgo              = config->GetValue("OutputAlgo",  "ElectronCollection_Sel_Algo");
-     
+
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
   // additional functionality : create output container of selected objects
@@ -114,13 +109,13 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_vetoCrack               = config->GetValue("VetoCrack", true);
   m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
   m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
-  
+
   m_doAuthorCut             = config->GetValue("DoAuthorCut", true);
   m_doOQCut                 = config->GetValue("DoOQCut", true);
-  
+
   m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
   // likelihood-based PID
-  m_doLHPIDcut         = config->GetValue("DoLHPIDCut", false); 
+  m_doLHPIDcut         = config->GetValue("DoLHPIDCut", false);
   m_LHPID              = config->GetValue("LHPID", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
   m_LHOperatingPoint   = config->GetValue("LHOperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
   if( m_LHPID != "VeryLoose" &&
@@ -133,7 +128,7 @@ EL::StatusCode  ElectronSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
   // cut-based PID
-  m_doCutBasedPIDcut         = config->GetValue("DoCutBasedPIDCut", false); 
+  m_doCutBasedPIDcut         = config->GetValue("DoCutBasedPIDCut", false);
   m_CutBasedPIDMask          = config->GetValue("CutBasedPIDMask", "ElectronLoosePP"); // electron PID bitmask.
   m_PIDName                  = config->GetValue("PIDName", "isEMLoose");               // electron PID bit-def as defined by egammaPID::PID enum (default is isEMLoose ).
   m_CutBasedOperatingPoint   = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
@@ -179,7 +174,7 @@ EL::StatusCode  ElectronSelector :: configure ()
   }
 
   config->Print();
-  Info("configure()", "ElectronSelector Interface succesfully configured! \n");
+  Info("configure()", "ElectronSelector Interface succesfully configured! ");
 
   delete config;
 
@@ -197,7 +192,7 @@ EL::StatusCode ElectronSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "ElectronSelector" ).ignore(); // call before opening first file
@@ -214,7 +209,7 @@ EL::StatusCode ElectronSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize \n");
+  Info("histInitialize()", "Calling histInitialize");
   if(m_useCutFlow) {
     TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
@@ -234,7 +229,7 @@ EL::StatusCode ElectronSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute \n");
+  Info("fileExecute()", "Calling fileExecute");
 
 
   return EL::StatusCode::SUCCESS;
@@ -248,7 +243,7 @@ EL::StatusCode ElectronSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput \n");
+  Info("changeInput()", "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -266,7 +261,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing ElectronSelector Interface... \n");
+  Info("initialize()", "Initializing ElectronSelector Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -277,8 +272,6 @@ EL::StatusCode ElectronSelector :: initialize ()
     Error("initialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
   }
-
-  //std::cout << m_name << " Number of events = " << m_event->getEntries() << std::endl;
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -292,10 +285,10 @@ EL::StatusCode ElectronSelector :: initialize ()
   // initialise AsgElectronIsEMSelector (cut-based PID)
   std::string asgeisem_tool_name = std::string("AsgElectronIsEMSelector_") + m_name;
   m_asgElectronIsEMSelector = new AsgElectronIsEMSelector( asgeisem_tool_name.c_str() );
-  m_asgElectronIsEMSelector->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO  
-  m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ); // set the config file that contains the cuts on the shower shapes 
+  m_asgElectronIsEMSelector->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
+  m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ); // set the config file that contains the cuts on the shower shapes
   // Apparently this won't be needed at all ...
-  // HelperClasses::EnumParser<egammaPID::PID> cutBasedPIDParser; 
+  // HelperClasses::EnumParser<egammaPID::PID> cutBasedPIDParser;
   // m_asgElectronIsEMSelector->setProperty("PIDName", static_cast<int>(cutBasedPIDParser.parseEnum(m_PIDName)) );
   // only for DC14 w/ 2012 configuration
   unsigned int EMMask = 999;
@@ -320,8 +313,8 @@ EL::StatusCode ElectronSelector :: initialize ()
   } else {
     Error("configure()", "Unknown electron cut-based PID bitmask requested %s!",m_CutBasedPIDMask.c_str());
     return EL::StatusCode::FAILURE;
-  }   
-  m_asgElectronIsEMSelector->setProperty("isEMMask", EMMask );   
+  }
+  m_asgElectronIsEMSelector->setProperty("isEMMask", EMMask );
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
 
   // initialise AsgElectronLikelihoodTool (likelihood-based PID)
@@ -336,7 +329,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->initialize(), "Failed to properly initialize AsgElectronLikelihoodTool." );
 
   // initialise ElectronIsolationSelectionTool
-  std::string eis_tool_name = std::string("ElectronIsolationSelectionTool_") + m_name;  
+  std::string eis_tool_name = std::string("ElectronIsolationSelectionTool_") + m_name;
   m_electronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( eis_tool_name.c_str() );
   m_electronIsolationSelectionTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ElectronIsolationSelectionTool
@@ -357,7 +350,7 @@ EL::StatusCode ElectronSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Electron Selection... \n");
+  if(m_debug) Info("execute()", "Applying Electron Selection... ");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
   const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
@@ -376,8 +369,8 @@ EL::StatusCode ElectronSelector :: execute ()
   bool eventPass(false);
   bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal
   const xAOD::ElectronContainer* inElectrons = 0;
-  
-  // if input comes from xAOD, or just running one collection, 
+
+  // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if( m_inputAlgo.empty() ) {
 
@@ -386,7 +379,7 @@ EL::StatusCode ElectronSelector :: execute ()
     eventPass = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName);
 
   } else { // get the list of systematics to run over
- 
+
     // get vector of string giving the syst names of the upstream algo (rememeber: 1st element is a blank string: nominal case!)
     std::vector< std::string >* systNames = 0;
     if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
@@ -400,38 +393,38 @@ EL::StatusCode ElectronSelector :: execute ()
       return StatusCode::FAILURE;
     }
 
-    // prepare a vector of the names of CDV containers 
+    // prepare a vector of the names of CDV containers
     // must be a pointer to be recorded in TStore
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     if(m_debug){
       Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) );
-    }  
+    }
 
     // loop over systematic sets
-    bool eventPassThisSyst(false);  
+    bool eventPassThisSyst(false);
     for( auto systName : *systNames ) {
-    
+
       if(m_debug){
-	Info("execute()", " syst name: %s \n input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() );
+	Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() );
       }
-    
+
       inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName + systName, m_event, m_store);
-      // a CDV for each systematic (w/ name m_outContainerName+syst_name) 
+      // a CDV for each systematic (w/ name m_outContainerName+syst_name)
       //   will be stored in TStore, unless event does not pass selection
       eventPassThisSyst = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName + systName);
-      
+
       if( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
-    
-      if( eventPassThisSyst ) { 
+
+      if( eventPassThisSyst ) {
 	// save the string of syst set under question if event is passing the selection
 	vecOutContainerNames->push_back( systName );
-      } 
-    
+      }
+
       // if for at least one syst set the event passes selection, this will remain true!
       eventPass = (eventPass || eventPassThisSyst);
-    
-      if(m_debug){ Info("execute()", " syst name: %s \n output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }    
-      
+
+      if(m_debug){ Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
+
     } // close loop over syst sets
 
     if(m_debug){  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
@@ -439,21 +432,21 @@ EL::StatusCode ElectronSelector :: execute ()
     // save list of systs that should be considered down stream
     RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
-  } 
+  }
 
   // look what do we have in TStore
-  if(m_debug) { m_store->print(); }  
-  
+  if(m_debug) { m_store->print(); }
+
   if(!eventPass) {
     wk()->skipEvent();
     return EL::StatusCode::SUCCESS;
   }
-  
-  return EL::StatusCode::SUCCESS;  
+
+  return EL::StatusCode::SUCCESS;
 
 }
 
-bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, 
+bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight,
                                             bool countPass, const std::string outContainerName )
 {
 
@@ -492,13 +485,13 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
       }
     }
   }
-  
+
   // for cutflow: make sure to count passed objects only once (i.e., this flag will be true only for nominal)
   if(countPass){
     m_numObject     += nObj;
     m_numObjectPass += nPass;
   }
-  
+
   if(m_debug) Info("execute()", "Initial electrons:%i - Selected electrons: %i", nObj , nPass );
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
@@ -508,13 +501,13 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   if( m_pass_max > 0 && nPass > m_pass_max ) {
     return false;
   }
-  
-  // for cutflow: make sure to count passed events only once (i.e., this flag will be true only for nominal)  
+
+  // for cutflow: make sure to count passed events only once (i.e., this flag will be true only for nominal)
   if(countPass){
     m_numEventPass++;
     m_weightNumEventPass += mcEvtWeight;
   }
-  
+
   // add ConstDataVector to TStore
   if(m_createSelectedContainer) {
     RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, outContainerName ), "Failed to store const data container");
@@ -529,7 +522,7 @@ EL::StatusCode ElectronSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -548,7 +541,7 @@ EL::StatusCode ElectronSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Deleting tool instances...");
 
   if(m_asgElectronIsEMSelector){
     delete m_asgElectronIsEMSelector;
@@ -581,7 +574,7 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize \n");
+  Info("histFinalize()", "Calling histFinalize");
   if(m_useCutFlow) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
@@ -596,10 +589,10 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   // float et         = static_cast<float>( (electron->caloCluster()->e()) ) / static_cast<float>( cosh(electron->trackParticle()->eta()) );
   // float eta        = static_cast<float>( electron->caloCluster()->eta() );
-  
+
   float et    = electron->pt();
   float eta   = electron->eta();
-  
+
   int oq           = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
   float z0sintheta = (static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( electron->trackParticle()->theta() );
 
@@ -651,14 +644,14 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
   }
   // likelihood PID
-  if( m_doLHPIDcut ){   
+  if( m_doLHPIDcut ){
     if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ){
         if (m_debug) Error("execute()", "Electron failed likelihood PID cut." );
         return 0;
     }
   }
   // cut-based PID
-  if( m_doCutBasedPIDcut ){   
+  if( m_doCutBasedPIDcut ){
     if ( ! m_asgElectronIsEMSelector->accept( *electron ) ){
         if (m_debug) Error("execute()", "Electron failed cut-based PID cut." );
         return 0;

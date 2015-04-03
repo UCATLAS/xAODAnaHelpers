@@ -3,7 +3,7 @@
  * Interface to CP Muon Efficiency Correction Tool.
  *
  * M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -33,9 +33,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-// external tools include(s):
-#include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
-
 // ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
@@ -62,20 +59,20 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string name, std::strin
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("MuonEfficiencyCorrector()", "Calling constructor \n");
+  Info("MuonEfficiencyCorrector()", "Calling constructor");
 
 }
 
 
 EL::StatusCode  MuonEfficiencyCorrector :: configure ()
 {
-  Info("configure()", "Configuing MuonEfficiencyCorrector Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing MuonEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "MuonEfficiencyCorrector::configure()", m_configName);
 
   TEnv* config = new TEnv(m_configName.c_str());
-  
+
   // read debug flag from .config file
   m_debug                   = config->GetValue("Debug" , false );
   // input container to be read from TEvent or TStore
@@ -98,7 +95,7 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
   }
 
   config->Print();
-  Info("configure()", "MuonEfficiencyCorrector Interface succesfully configured! \n");
+  Info("configure()", "MuonEfficiencyCorrector Interface succesfully configured! ");
 
   delete config;
 
@@ -116,7 +113,7 @@ EL::StatusCode MuonEfficiencyCorrector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MuonEfficiencyCorrector" ).ignore(); // call before opening first file
@@ -167,7 +164,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing MuonEfficiencyCorrector Interface... \n");
+  Info("initialize()", "Initializing MuonEfficiencyCorrector Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -182,11 +179,11 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  // initialize the MuonEfficiencyCorrectionTool  
+  // initialize the MuonEfficiencyCorrectionTool
   std::string mefsf_tool_name = std::string("MuonEfficiencyCorrectionTool_") + m_name;
   m_MuonEffSFTool = new CP::MuonEfficiencyScaleFactors( mefsf_tool_name.c_str() );
   m_MuonEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
-  
+
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("WorkingPoint","CBandST"),"Failed to set property");  // set the Working Point you are using
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("DataPeriod","2012"),"Failed to set property");
   // test audit trail
@@ -209,7 +206,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   for ( const auto& syst_it : m_systList ){
       Info("initialize()"," available recommended systematic: %s", (syst_it.name()).c_str());
   }
-  
+
   if( m_systName.empty() && !m_runAllSyst ){
       Info("initialize()"," Running w/ nominal configuration!");
   }
@@ -227,13 +224,13 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Muon Efficiency Correction... \n");
+  if(m_debug) Info("execute()", "Applying Muon Efficiency Correction... ");
 
   m_numEvent++;
-  
+
   // get the collection from TEvent or TStore
   const xAOD::MuonContainer* correctedMuons = HelperFunctions::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
-  // create ConstDataVector to be eventually stored in TStore  
+  // create ConstDataVector to be eventually stored in TStore
   ConstDataVector<xAOD::MuonContainer>* correctedMuonsCDV = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
   correctedMuonsCDV->reserve( correctedMuons->size() );
 
@@ -247,27 +244,27 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
   // loop over available systematics
   for(const auto& syst_it : m_systList){
-    
+
     // prepends syst name to decoration
     std::string SFdecor = std::string("SF");
     if( !syst_it.name().empty() ){
        std::string prepend = syst_it.name() + "_";
        SFdecor.insert( 0, prepend );
-    }   
+    }
     RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_MuonEffSFTool->setProperty( "ScaleFactorDecorationName", SFdecor.c_str() ), "Failed to set property ScaleFactorDecorationName" );
 
     if(m_debug) Info("execute()", "SF decoration name is: %s", SFdecor.c_str());
-    
-    // if not running systematics (i.e., syst name is "") or running on one syst only, skip directly all other syst     
+
+    // if not running systematics (i.e., syst name is "") or running on one syst only, skip directly all other syst
     if(!m_runAllSyst){
       if( syst_it.name() != m_systName ) { continue; }
     }
-    
+
     // apply syst
     if (m_MuonEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
       Error("initialize()", "Failed to configure MuonEfficiencyCorrections for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
-    }        
+    }
     if(m_debug) Info("execute()", "Successfully applied systematic: %s", syst_it.name().c_str());
 
     // prepare a vector to hold SF replicas
@@ -276,16 +273,16 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
     std::vector<float> replicas(50);
 
     // and now apply data-driven efficiency and efficiency SF!
-    float eff(0.0), SF(0.0);   	   
+    float eff(0.0), SF(0.0);
     for( auto mu_itr : *(correctedMuons)) {
-	
+
 	// directly obtain reco efficiency
         if( m_MuonEffSFTool->getRecoEfficiency( *mu_itr, eff ) != CP::CorrectionCode::Ok){
     	  Error( "execute()", "Problem in getRecoEfficiency");
-    	  return EL::StatusCode::FAILURE;         
+    	  return EL::StatusCode::FAILURE;
 	}
         if(m_debug) Info( "execute", "\t reco efficiency = %g", eff );
-          
+
         // directly obtain efficiency SF
         if( m_MuonEffSFTool->getEfficiencyScaleFactor( *mu_itr, SF ) != CP::CorrectionCode::Ok){
     	  Error( "execute()", "Problem in getEfficiencyScaleFactor");
@@ -298,7 +295,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
     	  Error( "execute()", "Problem in applyRecoEfficiency");
     	  return EL::StatusCode::FAILURE;
         }
-	
+
         // apply SF as decoration for this muon
         if( m_MuonEffSFTool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok){
     	  Error( "execute()", "Problem in applyEfficiencyScaleFactor");
@@ -308,29 +305,29 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
         // uncomment to try out replica genration (commented as it produces a lot of text)
         //  if( m_MuonEffSFTool->getEfficiencyScaleFactorReplicas( *mu_itr, replicas ) != CP::CorrectionCode::Ok ){
     	//       Error( "execute()", "Problem in getEfficiencyScaleFactorReplicas");
-    	//       return EL::StatusCode::FAILURE;	
+    	//       return EL::StatusCode::FAILURE;
 	//  }
         //
         //  for (size_t t =0; t < replicas.size();t++){
         //    Info( "execute()", "\t scaleFactor Replica %d = %.8f",static_cast<int>(t), replicas[t] );
         //  }
-	
-        if(m_debug){ 
+
+        if(m_debug){
 	  Info( "execute", "===>>> Resulting reco efficiency (from get function) %f, (from apply function) %f", eff, mu_itr->auxdataConst< float >("Efficiency"));
           Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f",              SF,  mu_itr->auxdataConst< float >(SFdecor.c_str()));
 	}
-        
+
 	// if we run in audit trail mode, we get some info
         // Info( "execute", "\t Muon Audit info: MuonEfficiencyCorrections = %d, MuonEfficiencyCorrectionsVersion = %s, AppliedCorrections = %s",
         //											    mu_itr->auxdataConst< bool >( "MuonEfficiencyCorrections" ),
         //											    mu_itr->auxdataConst< std::string >( "MuonEfficiencyCorrectionsVersion" ).c_str(),
         //											    mu_itr->auxdataConst< std::string >( "AppliedCorrections" ).c_str());
-    
+
     } // close muon loop
 
   } // close loop on systematics
-  
-  
+
+
   if(m_debug){
     unsigned int idx(0);
     for( auto mu_itr : *(correctedMuons) ) {
@@ -338,11 +335,11 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
       ++idx;
     }
   }
-  
-  
+
+
   // save pointers in ConstDataVector
   RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(correctedMuons, correctedMuonsCDV, "", ToolName::CORRECTOR), "");
-  
+
   // add container to TStore
   RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( correctedMuonsCDV,  m_outContainerName ), "Failed to store container.");
 
@@ -358,7 +355,7 @@ EL::StatusCode MuonEfficiencyCorrector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -377,7 +374,7 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Deleting tool instances...");
 
   if(m_MuonEffSFTool){
     delete m_MuonEffSFTool; m_MuonEffSFTool = 0;
@@ -401,7 +398,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize \n");
+  Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
 }

@@ -2,10 +2,8 @@
 #include <EventLoop/Worker.h>
 
 #include "AthContainers/ConstDataVector.h"
-#include "xAODTracking/VertexContainer.h"
-#include "xAODTracking/TrackParticleContainer.h"
-#include "xAODAnaHelpers/TrackSelector.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+#include "xAODAnaHelpers/TrackSelector.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
@@ -42,12 +40,12 @@ TrackSelector :: TrackSelector (std::string name, std::string configName) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  Info("TrackSelector()", "Calling constructor \n");
+  Info("TrackSelector()", "Calling constructor");
 }
 
 EL::StatusCode  TrackSelector :: configure ()
 {
-  Info("configure()", "Configuing TrackSelector Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing TrackSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "TrackSelector::configure()", m_configName );
@@ -110,7 +108,7 @@ EL::StatusCode  TrackSelector :: configure ()
   }
 
   config->Print();
-  Info("configure()", "TrackSelector Interface succesfully configured! \n");
+  Info("configure()", "TrackSelector Interface succesfully configured! ");
 
   delete config;
 
@@ -127,7 +125,7 @@ EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TrackSelector" ).ignore(); // call before opening first file
@@ -144,7 +142,7 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize \n");
+  Info("histInitialize()", "Calling histInitialize");
   if(m_useCutFlow) {
     TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
@@ -163,7 +161,7 @@ EL::StatusCode TrackSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute \n");
+  Info("fileExecute()", "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -176,7 +174,7 @@ EL::StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput \n");
+  Info("changeInput()", "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -204,8 +202,6 @@ EL::StatusCode TrackSelector :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  //std::cout << m_name << " Number of events = " << m_event->getEntries() << std::endl;
-
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
@@ -225,7 +221,7 @@ EL::StatusCode TrackSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Track Selection... \n");
+  if(m_debug) Info("execute()", "Applying Track Selection... ");
 
   float mcEvtWeight(1); // FIXME - set to something from eventInfo
 
@@ -309,7 +305,7 @@ EL::StatusCode TrackSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -328,7 +324,7 @@ EL::StatusCode TrackSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Deleting tool instances...");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -397,7 +393,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   uint8_t nBL       = -1;
   if( m_nBL_min != 1e8 ){
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       std::cout << "ERROR: BLayer hits not filled" << std::endl;
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("PassCuts()", "BLayer hits not filled");
     if( nBL < m_nBL_min ) {return 0; }
   }
 
@@ -407,8 +403,8 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   uint8_t nSCT      = -1;
   uint8_t nPix      = -1;
   if( m_nSi_min != 1e8 ){
-    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        std::cout << "ERROR: Pix hits not filled" << std::endl;
-    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          std::cout << "ERROR: SCT hits not filled" << std::endl;
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        Error("PassCuts()", "Pix hits not filled");
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          Error("PassCuts()", "SCT hits not filled");
     if( (nSCT+nPix) < m_nSi_min ) {return 0;}
   }
 
@@ -417,7 +413,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   uint8_t nPixHoles = -1;
   if( m_nPixHoles_max != 1e8 ){
-    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       std::cout << "ERROR: Pix holes not filled" << std::endl;
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       Error("PassCuts()", "Pix holes not filled");
     if( nPixHoles > m_nPixHoles_max ) {return 0;}
   }
 

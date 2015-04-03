@@ -18,7 +18,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-#include "MuonMomentumCorrections/MuonCalibrationAndSmearingTool.h"
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
 
 #include "TEnv.h"
@@ -46,13 +45,13 @@ MuonCalibrator :: MuonCalibrator (std::string name, std::string configName) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("MuonCalibrator()", "Calling constructor \n");
+  Info("MuonCalibrator()", "Calling constructor");
 
 }
 
 EL::StatusCode  MuonCalibrator :: configure ()
 {
-  Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "MuonCalibrator::configure()", m_configName);
@@ -79,7 +78,7 @@ EL::StatusCode  MuonCalibrator :: configure ()
   // add more and add to Muon selector
 
   config->Print();
-  Info("configure()", "MuonCalibrator Interface succesfully configured! \n");
+  Info("configure()", "MuonCalibrator Interface succesfully configured! ");
 
   delete config;
 
@@ -97,7 +96,7 @@ EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MuonCalibrator" ).ignore(); // call before opening first file
@@ -148,7 +147,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing MuonCalibrator Interface... \n");
+  Info("initialize()", "Initializing MuonCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -182,7 +181,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Muon Calibration and Cleaning... \n");
+  if(m_debug) Info("execute()", "Applying Muon Calibration and Cleaning... ");
 
   m_numEvent++;
 
@@ -243,7 +242,7 @@ EL::StatusCode MuonCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -262,7 +261,7 @@ EL::StatusCode MuonCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Deleting tool instances...");
 
   if(m_muonCalibrationAndSmearingTool){
     delete m_muonCalibrationAndSmearingTool;
@@ -287,7 +286,7 @@ EL::StatusCode MuonCalibrator :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize \n");
+  Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
 }

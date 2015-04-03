@@ -32,11 +32,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-// external tools include(s):
-#include "JetCalibTools/JetCalibrationTool.h"
-#include "JetSelectorTools/JetCleaningTool.h"
-#include "JetUncertainties/JetUncertaintiesTool.h"
-
 // ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
@@ -49,7 +44,7 @@ ClassImp(JetCalibrator)
 JetCalibrator :: JetCalibrator () {
 }
 
-JetCalibrator :: JetCalibrator (std::string name, std::string configName, 
+JetCalibrator :: JetCalibrator (std::string name, std::string configName,
     std::string systName, float systVal ) :
   Algorithm(),
   m_name(name),               // algo name
@@ -68,13 +63,13 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configName,
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("JetCalibrator()", "Calling constructor \n");
+  Info("JetCalibrator()", "Calling constructor");
 
 }
 
 EL::StatusCode  JetCalibrator :: configure ()
 {
-  Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
   // expand the path to the config to find it in the ROOTCORE directory
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -88,10 +83,10 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_inContainerName         = config->GetValue("InputContainer",  "");
 
   // CONFIG parameters for JetCalibrationTool
-  m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");  
+  m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
   m_outputAlgo              = config->GetValue("OutputAlgo",      "AntiKt4EMTopoJets_Calib_Algo");
 
-  // when running data "_Insitu" is appended to this string 
+  // when running data "_Insitu" is appended to this string
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
   m_calibConfigData	        = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
   m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
@@ -104,11 +99,11 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_uncertConfig            = config->GetValue("JetUncertConfig", "");
   // calibrator uses TopoEM or TopoLC while the uncertainity tool uses EMTopo and LCTopo
   // calibrator should switch at some point
-  // "fix" the name here so the user never knows the difference 
+  // "fix" the name here so the user never knows the difference
   m_jetUncertAlgo = m_jetAlgo;
   m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoEM"), std::string("EMTopo"));
   m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoLC"), std::string("LCTopo"));
-  
+
   // shallow copies are made with this output container name
   m_outContainerName        = config->GetValue("OutputContainer", "");
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
@@ -122,7 +117,7 @@ EL::StatusCode  JetCalibrator :: configure ()
   }
 
   config->Print();
-  Info("configure()", "JetCalibrator Interface succesfully configured! \n");
+  Info("configure()", "JetCalibrator Interface succesfully configured! ");
 
   delete config;
 
@@ -140,7 +135,7 @@ EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "JetCalibrator" ).ignore(); // call before opening first file
@@ -191,7 +186,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing JetCalibrator Interface... \n");
+  Info("initialize()", "Initializing JetCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -220,10 +215,10 @@ EL::StatusCode JetCalibrator :: initialize ()
     m_isFullSim = true;
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
     //
-    // N.B. (Marco) : With SampleHandler, you can define sample metadata in job steering macro! 
+    // N.B. (Marco) : With SampleHandler, you can define sample metadata in job steering macro!
     //                They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
     //                I reasonably suppose everyone will use SH...
-    // 
+    //
      const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
     if (stringMeta.empty()){
       Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
@@ -246,7 +241,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   RETURN_CHECK( "initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface succesfully initialized!");
 
   // initialize and configure the jet cleaning tool
-  //------------------------------------------------  
+  //------------------------------------------------
   std::string jc_tool_name = std::string("JetCleaning_") + m_name;
   m_jetCleaning = new JetCleaningTool( jc_tool_name.c_str() );
   RETURN_CHECK( "initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
@@ -272,8 +267,8 @@ EL::StatusCode JetCalibrator :: initialize ()
 
     // Setup the tool for the 1st systematic on the list
     // If running all, the tool will be setup for each syst on each event
-    if( !m_systList.empty() ) { 
-      m_runSysts = true; 
+    if( !m_systList.empty() ) {
+      m_runSysts = true;
       // setup uncertainity tool for systematic evaluation
       if (m_jetUncert->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok) {
         Error("initialize()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
@@ -281,7 +276,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       }
     }
   } // running systematics
-  else { 
+  else {
     Info("initialize()", "No uncertainities considered");
     // m_jetUncert not streamed so have to do this
     m_runSysts = false; m_jetUncert = 0;
@@ -290,7 +285,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // if not running systematics, need the nominal
   // if running systematics, and running them all, need the nominal
   // add it to the front!
-  if( m_systList.empty() || (!m_systList.empty() && m_systName == "All") ) { 
+  if( m_systList.empty() || (!m_systList.empty() && m_systName == "All") ) {
     m_systList.insert( m_systList.begin(), CP::SystematicSet() );
     const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
     m_systList.begin()->insert(nullVar);
@@ -311,7 +306,7 @@ EL::StatusCode JetCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Jet Calibration and Cleaning... \n");
+  if(m_debug) Info("execute()", "Applying Jet Calibration and Cleaning... ");
 
   m_numEvent++;
 
@@ -391,9 +386,9 @@ EL::StatusCode JetCalibrator :: execute ()
 
   // add vector of systematic names to TStore
   RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
-  
+
   // look what do we have in TStore
-  if(m_debug) { m_store->print(); }  
+  if(m_debug) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -406,7 +401,7 @@ EL::StatusCode JetCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -425,7 +420,7 @@ EL::StatusCode JetCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Deleting tool instances...");
 
   if(m_jetCalibration){
     delete m_jetCalibration;
@@ -458,7 +453,7 @@ EL::StatusCode JetCalibrator :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize \n");
+  Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
 }

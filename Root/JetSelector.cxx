@@ -62,12 +62,12 @@ JetSelector :: JetSelector (std::string name, std::string configName) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  Info("JetSelector()", "Calling constructor \n");
+  Info("JetSelector()", "Calling constructor");
 }
 
 EL::StatusCode  JetSelector :: configure ()
 {
-  Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG("JetSelector::configure()", m_configName);
@@ -80,7 +80,7 @@ EL::StatusCode  JetSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  
+
   // name of algo input container comes from - only if running on syst
   m_inputAlgo               = config->GetValue("InputAlgo",   "");
   m_outputAlgo              = config->GetValue("OutputAlgo",  "AntiKt4EMTopoJets_Signal_Algo");
@@ -141,10 +141,10 @@ EL::StatusCode  JetSelector :: configure ()
   }
 
   config->Print();
-  Info("configure()", "JetSelector Interface succesfully configured! \n");
+  Info("configure()", "JetSelector Interface succesfully configured! ");
 
   delete config;
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -158,7 +158,7 @@ EL::StatusCode JetSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "JetSelector" ).ignore(); // call before opening first file
@@ -175,7 +175,7 @@ EL::StatusCode JetSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize \n");
+  Info("histInitialize()", "Calling histInitialize");
   if(m_useCutFlow) {
     TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
@@ -194,7 +194,7 @@ EL::StatusCode JetSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute \n");
+  Info("fileExecute()", "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -207,7 +207,7 @@ EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput \n");
+  Info("changeInput()", "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -255,7 +255,7 @@ EL::StatusCode JetSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Jet Selection... \n");
+  if(m_debug) Info("execute()", "Applying Jet Selection... ");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
   const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
@@ -276,7 +276,7 @@ EL::StatusCode JetSelector :: execute ()
   // shoudl only count for the nominal
   const xAOD::JetContainer* inJets = 0;
 
-  // if input comes from xAOD, or just running one collection, 
+  // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if( m_inputAlgo.empty() ) {
 
@@ -310,8 +310,8 @@ EL::StatusCode JetSelector :: execute ()
       passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName );
       if( count ) { count = false; } // only count for 1 collection
       // save the string if passing the selection
-      if( passOne ) { 
-        vecOutContainerNames->push_back( systName ); 
+      if( passOne ) {
+        vecOutContainerNames->push_back( systName );
       }
       // the final decision - if at least one passes keep going!
       pass = pass || passOne;
@@ -324,19 +324,19 @@ EL::StatusCode JetSelector :: execute ()
   }
 
   // look what do we have in TStore
-  if(m_debug) { m_store->print(); } 
+  if(m_debug) { m_store->print(); }
 
   if(!pass) {
     wk()->skipEvent();
   }
   return EL::StatusCode::SUCCESS;
-  
+
 }
 
-bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets, 
-    float mcEvtWeight, 
+bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
+    float mcEvtWeight,
     bool count,
-    std::string outContainerName 
+    std::string outContainerName
     )
 {
 
@@ -413,7 +413,7 @@ EL::StatusCode JetSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -458,7 +458,7 @@ EL::StatusCode JetSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize\n");
+  Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
 }

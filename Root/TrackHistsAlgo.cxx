@@ -6,7 +6,6 @@
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
-#include <xAODAnaHelpers/TrackHists.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
@@ -50,7 +49,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
   } else {
-    Info("histInitialize()", "Successfully configured! \n");
+    Info("histInitialize()", "Successfully configured! ");
   }
 
   // declare class and add histograms to output

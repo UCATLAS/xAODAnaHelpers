@@ -33,9 +33,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-// external tools include(s):
-#include "ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h"
-
 // ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
@@ -49,14 +46,14 @@ ClassImp(ElectronEfficiencyCorrector)
 ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () {
 }
 
-ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string name, std::string configName, 
+ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string name, std::string configName,
 	std::string systName, float systVal) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
   m_systName(systName),       // if running systs - the name of the systematic
   m_systVal(systVal),         // if running systs - the value ( +/- 1 )
-  m_runSysts(false),          // gets set later is syst applies to this tool  
+  m_runSysts(false),          // gets set later is syst applies to this tool
   m_asgElectronEfficiencyCorrectionTool(0)
 {
   // Here you put any code for the base initialization of variables,
@@ -66,14 +63,14 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string name, st
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("ElectronEfficiencyCorrector()", "Calling constructor \n");
+  Info("ElectronEfficiencyCorrector()", "Calling constructor");
 
 }
 
 
 EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
 {
-  Info("configure()", "Configuing ElectronEfficiencyCorrector Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing ElectronEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "ElectronEfficiencyCorrector::configure()", m_configName);
@@ -88,9 +85,9 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   // name of algo input container comes from - only if running on systematics
-  m_inputAlgo               = config->GetValue("InputAlgo",  ""); 
-  m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_CalibCorr_Algo"); 
-  									       
+  m_inputAlgo               = config->GetValue("InputAlgo",  "");
+  m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_CalibCorr_Algo");
+
   // Systematics stuff
   m_systName		    = config->GetValue("SystName" , "" );      // default: no syst
   m_systVal 		    = config->GetValue("SystVal" , 0. );
@@ -105,10 +102,10 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
   }
 
   config->Print();
-  Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! \n");
+  Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! ");
 
   delete config;
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -123,7 +120,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "ElectronEfficiencyCorrector" ).ignore(); // call before opening first file
@@ -174,7 +171,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing ElectronEfficiencyCorrector Interface... \n");
+  Info("initialize()", "Initializing ElectronEfficiencyCorrector Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -205,7 +202,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   m_systList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );
   // Convert into a simple list
   m_systList = CP::make_systematics_vector(recSysts);
-    
+
   if( !m_systList.empty() ) { m_runSysts = true; }
 
   if(m_debug){
@@ -215,7 +212,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   }
   for ( const auto& syst_it : m_systList ){
     Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
-  }  
+  }
 
   Info("initialize()", "ElectronEfficiencyCorrector Interface succesfully initialized!" );
 
@@ -230,36 +227,36 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Electron Efficiency Correction... \n");
+  if(m_debug) Info("execute()", "Applying Electron Efficiency Correction... ");
 
   m_numEvent++;
- 
+
   // initialise containers
   const xAOD::ElectronContainer* correctedElectrons = 0;
-  ConstDataVector<xAOD::ElectronContainer>* correctedElectronsCDV = 0; 
-  
-  // if m_inputAlgo = "" --> input comes from xAOD, or just running one collection, 
+  ConstDataVector<xAOD::ElectronContainer>* correctedElectronsCDV = 0;
+
+  // if m_inputAlgo = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  if ( m_inputAlgo.empty() ) { 
+  if ( m_inputAlgo.empty() ) {
 
     	correctedElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
     	correctedElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
     	correctedElectronsCDV->reserve( correctedElectrons->size() );
-	
+
 	// decorate electrons w/ SF
 	this->executeSF( correctedElectrons );
-    	
+
 	// save pointers in ConstDataVector
     	RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(correctedElectrons, correctedElectronsCDV, "", ToolName::CORRECTOR), "");
     	// add container to TStore
     	RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( correctedElectronsCDV, m_outContainerName), "Failed to store container.");
 
   } else {
-  // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo 
-  
+  // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo
+
 	// get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
         std::vector<std::string>* systNames = 0;
-    	if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) { 
+    	if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
     	  if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
     	    Error("execute()", "Cannot find vector from %s algo. Aborting", m_inputAlgo.c_str());
     	    return StatusCode::FAILURE;
@@ -268,8 +265,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	  Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgo.c_str());
 	  return StatusCode::FAILURE;
     	}
-    	
-    	// prepare a vector of the names of CDV containers 
+
+    	// prepare a vector of the names of CDV containers
     	// must be a pointer to be recorded in TStore
     	// for now just copy the one you just retrieved in it!
     	std::vector<std::string>* vecOutContainerNames = new std::vector< std::string >(*systNames);
@@ -282,9 +279,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	  }
     	}
 
-    	// loop over systematic sets available 
+    	// loop over systematic sets available
     	for( auto systName : *systNames ) {
-    	
+
     	   correctedElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName+systName, m_event, m_store);
     	   // create ConstDataVector to be eventually stored in TStore
     	   correctedElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
@@ -297,7 +294,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	       ++idx;
     	     }
     	   }
-           
+
 	   // decorate electrons w/ SF- there will be a decoration w/ different name for each syst!
 	   this->executeSF( correctedElectrons );
 
@@ -305,16 +302,16 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	   RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(correctedElectrons, correctedElectronsCDV, "", ToolName::CORRECTOR), "");
     	   // add container to TStore
     	   RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( correctedElectronsCDV, m_outContainerName+systName), "Failed to store container.");
-    	
+
     	} // close loop on systematic sets available from upstream algo
-      
+
         // save list of systs that should be considered down stream
         RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
   }
 
-  // look what do we have in TStore  
-  if(m_debug) { m_store->print(); }  
-  
+  // look what do we have in TStore
+  if(m_debug) { m_store->print(); }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -325,7 +322,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -344,7 +341,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Deleting tool instances...");
 
   if(m_asgElectronEfficiencyCorrectionTool){
     delete m_asgElectronEfficiencyCorrectionTool; m_asgElectronEfficiencyCorrectionTool = 0;
@@ -368,15 +365,15 @@ EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize \n");
+  Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronContainer* correctedElectrons  )
-{ 
+{
 
-  // loop over available systematics for this tool - remember syst == EMPTY_STRING --> baseline  
+  // loop over available systematics for this tool - remember syst == EMPTY_STRING --> baseline
   for(const auto& syst_it : m_systList){
 
     // appends syst name to decoration
@@ -388,7 +385,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     //if(!(syst_it.name() == "All")){
     //  if( syst_it.name() != m_systName ) { continue; }
     //}
- 
+
     // apply syst
     if (m_asgElectronEfficiencyCorrectionTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
       Error("initialize()", "Failed to configure AsgElectronEfficiencyCorrectionTool for systematic %s", syst_it.name().c_str());
@@ -403,21 +400,21 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 
        if(m_debug) Info( "execute", "Checking electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) );
        ++idx;
- 
+
        // NB: derivations might remove CC and tracks for low pt electrons
-       if( !(el_itr->caloCluster() && el_itr->trackParticle()) ){			       
+       if( !(el_itr->caloCluster() && el_itr->trackParticle()) ){
          if(m_debug) Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx);
          continue;
        }
 
-       // skip electron if outside acceptance for SF calculation	 
+       // skip electron if outside acceptance for SF calculation
        if( el_itr->pt() < 7e3 ) {
          if(m_debug) Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance", idx);
          continue;
        }
        if( fabs( el_itr->caloCluster()->eta() ) > 2.47) {
          if(m_debug) Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx);
-         continue; 
+         continue;
        }
 
        if(m_asgElectronEfficiencyCorrectionTool->getEfficiencyScaleFactor( *el_itr, SF ) != CP::CorrectionCode::Ok){

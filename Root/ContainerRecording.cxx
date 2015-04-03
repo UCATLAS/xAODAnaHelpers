@@ -45,7 +45,7 @@ EL::StatusCode ContainerRecording :: execute ()
     std::string outputContainer_CDV     = inputContainer+"_CDV";
     std::string outputContainer_shallow = inputContainer+"_Shallow";
 
-    std::cout << "-------------------------------------------------------------------------------" << std::endl;
+    Info("execute()", "-------------------------------------------------------------------------------");
 
     Info("execute()", "Retrieving the input jet container %s.", inputContainer.c_str());
     // First: retrieve AntiKt10LCTopoJets from TEvent
@@ -78,7 +78,7 @@ EL::StatusCode ContainerRecording :: execute ()
     // ....... and the shallow copy in TStore
     RETURN_CHECK("ContainerRecording::execute()", m_store->record( in_aktJets_shallow.first, outputContainer_shallow ), "");
     RETURN_CHECK("ContainerRecording::execute()", m_store->record( in_aktJets_shallow.second, outputContainer_shallow+"Aux." ), "");
-    std::cout << std::endl << "000000000000000000000000000000000000000000000000000" << std::endl;
+    Info("execute()", "000000000000000000000000000000000000000000000000000");
 
     // Fourth: retrieve the object stored in multiple ways
     Info("execute()", "Attempting to retrieve %s as a ConstDataVector.", outputContainer_CDV.c_str());
@@ -124,7 +124,7 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Store/Event as ConstDataVector.", outputContainer_CDV.c_str());
     }
-    std::cout << std::endl << "111111111111111111111111111111111111111111111111111" << std::endl;
+    Info("execute()", "111111111111111111111111111111111111111111111111111");
 
     Info("execute()", "Attempting to retrieve %s as a const DataVector.", outputContainer_CDV.c_str());
     // -- retrieve as a const DataVector
@@ -168,7 +168,7 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Store/Event as const DataVector.", outputContainer_CDV.c_str());
     }
-    std::cout << std::endl << "222222222222222222222222222222222222222222222222222" << std::endl;
+    Info("execute()", "222222222222222222222222222222222222222222222222222");
 
     Info("execute()", "Attempting to retrieve %s as a DataVector.", outputContainer_shallow.c_str());
     // -- retrieve as a DataVector
@@ -212,7 +212,7 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Store/Event as DataVector.", outputContainer_shallow.c_str());
     }
-    std::cout << std::endl << "333333333333333333333333333333333333333333333333333" << std::endl;
+    Info("execute()", "333333333333333333333333333333333333333333333333333");
 
     Info("execute()", "Attempting to retrieve %s as a const DataVector.", outputContainer_shallow.c_str());
     // -- retrieve as a const DataVector
@@ -256,7 +256,7 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Store/Event as const DataVector.", outputContainer_shallow.c_str());
     }
-    std::cout << std::endl << "444444444444444444444444444444444444444444444444444" << std::endl;
+    Info("execute()", "444444444444444444444444444444444444444444444444444");
 
     if(cannotRetrieve) return EL::StatusCode::FAILURE;
 
