@@ -41,3 +41,4 @@
 	m_store->retrieve() -- use HelperFunctions::retrieve()
 	* removed memory leaks everywhere except for HelpTreeBase and
 	TreeAlgo
+	* deprecate HelperFunctions::getContainer()

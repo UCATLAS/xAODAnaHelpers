@@ -241,6 +241,7 @@ namespace HelperFunctions {
   */
   template <typename T>
   const T* getContainer(std::string name, xAOD::TEvent* event, xAOD::TStore* store) {
+    Warning("HelperFunctions::getContainer()", "THIS IS BEING DEPRECATED. PLEASE USE HelperFunctions::retrieve() INSTEAD!!!!");
     const T* cont = 0;
     if ( store->contains< ConstDataVector<T> >(name)){
       ConstDataVector<T>* contCDV = 0;
