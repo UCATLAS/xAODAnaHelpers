@@ -9,11 +9,7 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-#ifndef __CINT__
-namespace CP{
-   class MuonCalibrationAndSmearingTool;
-}
-#endif
+#include "MuonMomentumCorrections/MuonCalibrationAndSmearingTool.h"
 
 class MuonCalibrator : public EL::Algorithm
 {
@@ -33,9 +29,7 @@ public:
 private:
 
   // tools
-#ifndef __CINT__
   CP::MuonCalibrationAndSmearingTool *m_muonCalibrationAndSmearingTool; //!
-#endif // not __CINT__
 
   // configuration variables
   std::string m_inContainerName;

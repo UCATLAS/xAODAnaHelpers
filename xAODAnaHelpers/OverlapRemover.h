@@ -9,18 +9,16 @@
 #include "xAODRootAccess/TStore.h"
 
 // EDM include(s):
-#ifndef __CINT__
-  #include "xAODBase/IParticleHelpers.h"
-  #include "xAODBase/IParticleContainer.h"
-  #include "xAODBase/IParticle.h"
-  #include "xAODEgamma/ElectronContainer.h"
-  #include "xAODMuon/MuonContainer.h"
-  #include "xAODJet/JetContainer.h"
-  #include "xAODEgamma/PhotonContainer.h"
-  #include "xAODTau/TauJetContainer.h"
-#endif
+#include "xAODBase/IParticleHelpers.h"
+#include "xAODBase/IParticleContainer.h"
+#include "xAODEgamma/ElectronContainer.h"
+#include "xAODMuon/MuonContainer.h"
+#include "xAODJet/JetContainer.h"
+#include "xAODEgamma/PhotonContainer.h"
+#include "xAODTau/TauJetContainer.h"
 
-class OverlapRemovalTool;
+// external tools include(s):
+#include "AssociationUtils/OverlapRemovalTool.h"
 
 class OverlapRemover : public EL::Algorithm
 {
@@ -42,14 +40,11 @@ public:
 
 private:
 
-#ifndef __CINT__
-
   bool m_usePhotons;
   bool m_useTaus;
 
   // tools
   OverlapRemovalTool *m_overlapRemovalTool; //!
-#endif
 
   // configuration variables
 
@@ -110,10 +105,8 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__
   virtual EL::StatusCode printOverlapInfo (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
   virtual EL::StatusCode printOverlapInfo (const char* type, xAOD::IParticle* obj, const std::string& selectFlag, const std::string& overlapFlag);
-#endif
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(OverlapRemover, 1);

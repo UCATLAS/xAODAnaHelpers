@@ -16,9 +16,8 @@
 #include "PATInterfaces/SystematicVariation.h"
 #include "PATInterfaces/ISystematicsTool.h"
 
-namespace CP{
-  class MuonEfficiencyScaleFactors;
-}
+// external tools include(s):
+#include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
 
 class MuonEfficiencyCorrector : public EL::Algorithm
 {
@@ -33,7 +32,7 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  
+
   std::string m_corrFileName1;
   //std::string m_corrFileName1;
 

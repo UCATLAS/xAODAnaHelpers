@@ -7,7 +7,7 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-class JetHists;
+#include <xAODAnaHelpers/JetHists.h>
 
 class JetHistsAlgo : public EL::Algorithm
 {

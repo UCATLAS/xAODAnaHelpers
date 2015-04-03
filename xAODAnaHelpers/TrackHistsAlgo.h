@@ -7,26 +7,24 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-class TrackHists;
+#include <xAODAnaHelpers/TrackHists.h>
 
 class TrackHistsAlgo : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  
+
   std::string m_name;
   std::string m_configName;
-  std::string m_inContainerName;  
+  std::string m_inContainerName;
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
 
 private:
 
-#ifndef __CINT__
   TrackHists* m_plots; //!
-#endif // not __CINT__
 
   // configuration variables
   std::string m_detailStr;        //!

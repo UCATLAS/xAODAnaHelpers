@@ -12,35 +12,17 @@
 
 // jet reclustering and trimming
 #include <fastjet/JetDefinition.hh>
+#include "xAODJet/JetContainer.h"
 
-#ifndef __CINT__
-  #include "xAODTracking/VertexContainer.h"
-  #include "xAODEventShape/EventShape.h"
-  #include "xAODEgamma/ElectronContainer.h"
-  #include "xAODEgamma/Electron.h"
-  #include "xAODEgamma/PhotonContainer.h"
-  #include "xAODEgamma/Photon.h"
-  #include "xAODMuon/MuonContainer.h"
-  #include "xAODMuon/Muon.h"
-  #include "xAODJet/JetContainer.h"
-  #include "xAODJet/Jet.h"
-  #include "xAODTau/TauJetContainer.h"
-  #include "xAODTau/TauJet.h"
-  #include "xAODBase/IParticleHelpers.h"
-  #include "xAODBase/IParticleContainer.h"
-  #include "xAODBase/IParticle.h"
-
-  #include "AthContainers/ConstDataVector.h"
-#endif
-
-#ifndef __CINT__
-  #include "xAODAnaHelpers/HelperClasses.h"
-#endif
+#include "xAODTracking/VertexContainer.h"
+#include "AthContainers/ConstDataVector.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 
 // CP interface includes
 #include "PATInterfaces/SystematicSet.h"
 #include "PATInterfaces/SystematicVariation.h"
 
+// root includes
 #include "TTree.h"
 #include "TBranch.h"
 #include "TFile.h"
@@ -61,16 +43,16 @@ namespace HelperFunctions {
   |                                                                            |
   |   Author  : Marco Milesi                                                   |
   |   Email   : marco.milesi@cern.ch                                           |
-  |   Logic copied from: 
-  	PhysicsAnalysis/TopPhys/xAOD/TopAnalysis/trunk/Root/Tools.cxx          |  
-   
-  Function to check if file is Full xAOD 
+  |   Logic copied from:
+  	PhysicsAnalysis/TopPhys/xAOD/TopAnalysis/trunk/Root/Tools.cxx          |
+
+  Function to check if file is Full xAOD
 
   \*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-  
+
   StatusCode isAvailableMetaData(TTree* metaData);
   bool isFilePrimaryxAOD(TFile* inputFile);
-  
+
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |
   |   Author  : Giordon Stark                                                  |
@@ -125,17 +107,15 @@ namespace HelperFunctions {
   // miscellaneous
   bool sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB);
 
-  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet recSysts, 
+  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet recSysts,
       std::string systName, float systVal );
 
-#ifndef __CINT__
-
-  /* ****************** 
+  /* ******************
   / *
   / * Marco Milesi (marco.milesi@cern.ch)
   / *
-  / * Template function to copy a subset of generic input container into generic output container 
-  / *   
+  / * Template function to copy a subset of generic input container into generic output container
+  / *
   / *   Arguments:
   / *
   / *    -) intCont: input container
@@ -143,12 +123,12 @@ namespace HelperFunctions {
   / *    -) flagSelect: a string representing a 'selection' decoration for the objects in input container (e.g. "passSel", "overlaps" ... )
   / *         default: ""
   / *    -) tool_name: enum that specifies the tool which is calling this function (defined in HelperClasses.h)
-  / *  
-  / *  
-  / *  
-  / ***************** */ 
+  / *
+  / *
+  / *
+  / ***************** */
   template< typename T1, typename T2 >
-    StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name ){ 
+    StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name ){
 
      for ( auto in_itr : *(intCont) ) {
 
@@ -157,9 +137,9 @@ namespace HelperFunctions {
          outCont->push_back( in_itr );
 	 continue;
        }
-      
+
        static SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
-       
+
        if(!myAccessor.isAvailable(*(in_itr))){
          std::stringstream ss; ss << in_itr->type();
 	 Error("HelperFunctions::makeSubsetCont()", "flag %s is missing for object of type %s ! Will not make a subset of its container", flagSelect.c_str(), (ss.str()).c_str() );
@@ -174,9 +154,9 @@ namespace HelperFunctions {
      }
 
      return StatusCode::SUCCESS;
-    
+
    }
-   
+
   /*    type_name<T>()      The awesome type demangler!
           - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.
 
@@ -306,7 +286,6 @@ namespace HelperFunctions {
 
     return eventInfo;
   }
-# endif
 
   // stolen from here
   // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODEgamma/trunk/xAODEgamma/EgammaTruthxAODHelpers.h#L20
@@ -317,12 +296,12 @@ namespace HelperFunctions {
       if (!particle) return 0;
       typedef ElementLink< DataVector<T> > Link_t;
 
-      if (!particle->isAvailable< Link_t >(name) ) { 
-        return 0; 
-      } 
+      if (!particle->isAvailable< Link_t >(name) ) {
+        return 0;
+      }
       const Link_t link = particle->auxdata<Link_t>(name);
-      if (!link.isValid()) { 
-        return 0; 
+      if (!link.isValid()) {
+        return 0;
       }
       return *link;
     }

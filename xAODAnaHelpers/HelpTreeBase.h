@@ -14,23 +14,19 @@
 #ifndef xAODAnaHelpers_HelpTreeBase_H
 #define xAODAnaHelpers_HelpTreeBase_H
 
-#ifndef __CINT__    
-  #include "xAODEventInfo/EventInfo.h"
-  #include "xAODEgamma/ElectronContainer.h"
-  #include "xAODEgamma/Electron.h"
-  #include "xAODEgamma/PhotonContainer.h"
-  #include "xAODEgamma/Photon.h"
-  #include "xAODMuon/MuonContainer.h"
-  #include "xAODMuon/Muon.h"
-  #include "xAODJet/JetContainer.h"
-  #include "xAODJet/Jet.h"
-  #include "xAODTau/TauJetContainer.h"
-  #include "xAODTau/TauJet.h"
-#endif // not __CINT__  
+#include "xAODEventShape/EventShape.h"
+
+#include "xAODEventInfo/EventInfo.h"
+#include "xAODEgamma/ElectronContainer.h"
+#include "xAODEgamma/PhotonContainer.h"
+#include "xAODMuon/MuonContainer.h"
+#include "xAODJet/JetContainer.h"
+#include "xAODTau/TauJetContainer.h"
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODRootAccess/TEvent.h"
 
+// root includes
 #include "TTree.h"
 #include "TFile.h"
 
@@ -38,9 +34,7 @@ class HelpTreeBase {
 
 public:
 
-#ifndef __CINT__  
   HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3 );
-#endif // not __CINT__ 
   virtual ~HelpTreeBase() {;}
 
   void AddEvent    (const std::string detailStr = "");
@@ -56,13 +50,11 @@ public:
   HelperClasses::JetInfoSwitch*       m_jetInfoSwitch;
   HelperClasses::JetInfoSwitch*       m_fatJetInfoSwitch;
 
-#ifndef __CINT__  
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
   void FillMuons( const xAOD::MuonContainer& muons );
   void FillElectrons( const xAOD::ElectronContainer& electrons );
   void FillJets( const xAOD::JetContainer& jets, int pvLocation = -1 );
   void FillFatJets( const xAOD::JetContainer& fatJets );
-#endif // not __CINT__ 
   void Fill();
   void ClearEvent();
   void ClearMuons();
@@ -73,22 +65,20 @@ public:
 
   // User defined functions
   virtual void AddEventUser(const std::string detailStr = "")      { return; };
-  virtual void AddMuonsUser(const std::string detailStr = "")      { return; };  
-  virtual void AddElectronsUser(const std::string detailStr = "")  { return; };  
-  virtual void AddJetsUser(const std::string detailStr = "")       { return; };   
-  
+  virtual void AddMuonsUser(const std::string detailStr = "")      { return; };
+  virtual void AddElectronsUser(const std::string detailStr = "")  { return; };
+  virtual void AddJetsUser(const std::string detailStr = "")       { return; };
+
   virtual void ClearEventUser()                                    { return; };
   virtual void ClearMuonsUser() 				   { return; };
   virtual void ClearElectronsUser() 				   { return; };
   virtual void ClearJetsUser() 					   { return; };
- 
-#ifndef __CINT__  
+
   virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   { return; };
   virtual void FillMuonsUser( const xAOD::Muon* muon )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron* electron ) { return; };
   virtual void FillJetsUser( const xAOD::Jet* jet )                { return; };
   virtual void FillFatJetsUser( const xAOD::Jet* fatJet )          { return; };
-#endif // not __CINT__ 
 
 protected:
 

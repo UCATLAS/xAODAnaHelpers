@@ -16,9 +16,8 @@
 #include "PATInterfaces/SystematicVariation.h"
 #include "PATInterfaces/SystematicCode.h"
 
-namespace CP{
-   class EgammaCalibrationAndSmearingTool;
-}
+// external tools include(s):
+#include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
 
 class ElectronCalibrator : public EL::Algorithm
 {
@@ -33,7 +32,7 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  
+
   // systematics
   std::string m_systName;
   float m_systVal;
@@ -53,10 +52,10 @@ private:
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;
-  
+
   std::string m_inputAlgo;
   std::string m_outputAlgo;
-  
+
   // sort after calibration
   bool    m_sort;
 

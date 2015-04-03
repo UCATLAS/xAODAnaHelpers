@@ -7,7 +7,8 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 #include "TTree.h"
-class HelpTreeBase;
+
+#include <xAODAnaHelpers/HelpTreeBase.h>
 
 class TreeAlgo : public EL::Algorithm
 {
@@ -15,8 +16,8 @@ class TreeAlgo : public EL::Algorithm
   // that way they can be set directly from CINT and python.
 public:
 
-  const std::string m_name;                  
-  std::string m_configName;            
+  const std::string m_name;
+  std::string m_configName;
 
   xAOD::TEvent *m_event;               //!
   xAOD::TStore *m_store;               //!

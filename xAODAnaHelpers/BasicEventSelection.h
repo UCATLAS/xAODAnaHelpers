@@ -16,11 +16,9 @@
 // ROOT include(s):
 #include "TH1D.h"
 
-// Forward declarations
-class GoodRunsListSelectionTool;
-namespace CP{
-  class PileupReweightingTool;
-}
+// rootcore includes
+#include "GoodRunsLists/GoodRunsListSelectionTool.h"
+#include "PileupReweighting/PileupReweightingTool.h"
 
 class BasicEventSelection : public EL::Algorithm
 {
@@ -35,10 +33,8 @@ class BasicEventSelection : public EL::Algorithm
     xAOD::TEvent*                m_event;     //!
     xAOD::TStore*                m_store;     //!
 
-#ifndef __CINT__
     GoodRunsListSelectionTool*   m_grl;       //!
     CP::PileupReweightingTool*   m_pileuptool; //!
-#endif // not __CINT__
 
     int m_eventCounter;     //!
 
@@ -49,18 +45,18 @@ class BasicEventSelection : public EL::Algorithm
     std::string m_GRLxml;   //!
     //PU Reweighting
     bool m_doPUreweighting; //!
-    
+
     // primary vertex
     std::string m_vertexContainerName; //!
     int m_PVNTrack;                //!
-    
+
     // read from MetaData
-    TH1D* m_histEventCount;  //!    
+    TH1D* m_histEventCount;  //!
     int m_MD_initialNevents; //!
     int m_MD_finalNevents;   //!
     float m_MD_initialSumW;    //!
     float m_MD_finalSumW;	     //!
-    
+
     // cutflow
     TH1D* m_cutflowHist;    //!
     TH1D* m_cutflowHistW;   //!

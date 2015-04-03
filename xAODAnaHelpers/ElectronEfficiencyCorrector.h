@@ -18,7 +18,8 @@
 #include "PATInterfaces/SystematicsUtil.h"
 #include "PATInterfaces/SystematicVariation.h"
 
-class AsgElectronEfficiencyCorrectionTool;
+// external tools include(s):
+#include "ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h"
 
 class ElectronEfficiencyCorrector : public EL::Algorithm
 {
@@ -33,7 +34,7 @@ public:
 
   std::string m_name;
   std::string m_configName;
-  
+
   std::string m_corrFileName1;
   //std::string m_corrFileName1;
 
@@ -56,7 +57,7 @@ private:
   std::string m_outAuxContainerName;
   std::string m_inputAlgo;               // input type - from xAOD or from xAODAnaHelpers Algo output
   std::string m_outputAlgo;
-  
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
