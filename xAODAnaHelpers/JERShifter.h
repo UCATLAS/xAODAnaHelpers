@@ -32,6 +32,7 @@ class JERShifter : public EL::Algorithm
     std::string m_outContainerName;     // output container name
     std::string m_outAuxContainerName;
     std::string m_jetAlgo;
+    bool m_debug; //!
 
     JERTool         * m_JERTool;     //!
     JERSmearingTool * m_JERSmearing; //!

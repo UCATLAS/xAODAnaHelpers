@@ -96,7 +96,8 @@ EL::StatusCode ${name}HistsAlgo :: initialize ()
 
 EL::StatusCode ${name}HistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = HelperClasses::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("${name}HistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -104,7 +105,8 @@ EL::StatusCode ${name}HistsAlgo :: execute ()
   }
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets = HelperClasses::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);;
+  const xAOD::JetContainer* inJets(nullptr);
+  RETURN_CHECK("${name}HistsAlgo::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
 
   /* two ways to fill */
 

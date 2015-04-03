@@ -28,6 +28,7 @@ private:
 
   // configuration variables
   std::string m_detailStr;        //!
+  bool m_debug; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

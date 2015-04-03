@@ -42,6 +42,8 @@ protected:
   std::string m_jetContainerName;      //!
   std::string m_fatJetContainerName;   //!
 
+  bool m_debug; //!
+
 public:
 
   // this is a standard constructor
