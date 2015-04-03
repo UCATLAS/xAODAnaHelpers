@@ -144,13 +144,8 @@ EL::StatusCode JetHistsAlgo :: execute ()
   else { // get the list of systematics to run over
 
     // get vector of string giving the names
-    std::vector<std::string>* systNames;
-    if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
-      if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
-        Info("execute()", "Cannot find vector from %s", m_inputAlgo.c_str());
-        return StatusCode::FAILURE;
-      }
-    }
+    std::vector<std::string>* systNames(nullptr);
+    RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_debug) ,"");
 
     // loop over systematics
     for( auto systName : *systNames ) {

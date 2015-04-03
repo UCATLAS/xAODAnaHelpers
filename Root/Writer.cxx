@@ -11,6 +11,7 @@
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+#include <xAODAnaHelpers/HelperFunctions.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
@@ -69,6 +70,7 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   m_jetContainerNames       = SplitString( m_jetContainerNamesStr,      ',' );
   m_electronContainerNames  = SplitString( m_electronContainerNamesStr, ',' );
   m_muonContainerNames      = SplitString( m_muonContainerNamesStr,     ',' );
+  m_debug                   = config->GetValue("Debug",                 false);
 
   if ( m_outputLabel.Length() == 0 ) {
     Error("Writer::setupJob()", "No OutputLabel specified!");
@@ -156,9 +158,9 @@ EL::StatusCode Writer :: execute ()
   // if not found in m_event, look in m_store - user created - write aux store as well
   for( auto contName : m_jetContainerNames ) {
 
-    const xAOD::JetContainer* inJetsConst = 0;
+    const xAOD::JetContainer* inJetsConst(nullptr);
     // look in event
-    if ( m_event->retrieve( inJetsConst , contName.Data() ).isSuccess() ){
+    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, m_debug).isSuccess() ) {
       // without modifying the contents of it:
       Info("execute()", " Write a collection %s %lu", contName.Data(), inJetsConst->size() );
       m_event->copy( contName.Data() );
@@ -167,9 +169,8 @@ EL::StatusCode Writer :: execute ()
     }
 
     // look in store
-    xAOD::JetContainer* inJets = 0;
-    if ( m_store->retrieve( inJets , contName.Data() ).isSuccess() ){
-
+    xAOD::JetContainer* inJets(nullptr);
+    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, m_debug).isSuccess() ){
 //      // FIXME add something like this
 //      jets_shallowCopy.second->setShallowIO( false ); // true = shallow copy, false = deep copy
 //      // if true should have something like this line somewhere:
@@ -186,7 +187,7 @@ EL::StatusCode Writer :: execute ()
       xAOD::JetAuxContainer* inJetsAux = 0;
       Info("execute()", " Wrote a aux store %s", contName.Data());
       TString auxName( contName + "Aux." );
-      if ( m_store->retrieve( inJetsAux , auxName.Data() ).isSuccess() ){
+      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, m_debug).isSuccess() ){
         Error("execute()" ,"%s: Could not get Aux data for %s", m_name.c_str(), contName.Data());
         return EL::StatusCode::FAILURE;
       }

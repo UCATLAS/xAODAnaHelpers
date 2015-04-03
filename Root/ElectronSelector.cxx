@@ -382,17 +382,8 @@ EL::StatusCode ElectronSelector :: execute ()
   } else { // get the list of systematics to run over
 
     // get vector of string giving the syst names of the upstream algo (rememeber: 1st element is a blank string: nominal case!)
-    std::vector< std::string >* systNames = 0;
-    if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
-
-      if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
-	Info("execute()", "Cannot find vector from %s algo", m_inputAlgo.c_str());
-	return StatusCode::FAILURE;
-      }
-    } else {
-      Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgo.c_str());
-      return StatusCode::FAILURE;
-    }
+    std::vector< std::string >* systNames(nullptr);
+    RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_debug) ,"");
 
     // prepare a vector of the names of CDV containers
     // must be a pointer to be recorded in TStore

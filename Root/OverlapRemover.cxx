@@ -351,16 +351,8 @@ EL::StatusCode OverlapRemover :: execute ()
     // get the systematic sets:
 
     // get vector of string giving the syst names (rememeber: 1st element is a blank string: nominal case!)
-    std::vector<std::string>* systNames_el;
-    if ( m_store->contains< std::vector<std::string> >( m_inputAlgoElectrons ) ) {
-      if(!m_store->retrieve( systNames_el, m_inputAlgoElectrons ).isSuccess()) {
-	Info("execute()", "Cannot find vector from %s algo", m_inputAlgoElectrons.c_str());
-	return StatusCode::FAILURE;
-      }
-    } else {
-      Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgoElectrons.c_str());
-      return StatusCode::FAILURE;
-    }
+    std::vector<std::string>* systNames_el(nullptr);
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(systNames_el, m_inputAlgoElectrons, 0, m_store, m_debug) ,"");
 
     // prepare a vector of the names of CDV containers
     // must be a pointer to be recorded in TStore
@@ -450,16 +442,8 @@ EL::StatusCode OverlapRemover :: execute ()
     // get the systematic sets:
 
     // get vector of string giving the syst names (rememeber: 1st element is a blank string: nominal case!)
-    std::vector<std::string>* systNames_mu;
-    if ( m_store->contains< std::vector<std::string> >( m_inputAlgoMuons ) ) {
-      if(!m_store->retrieve( systNames_mu, m_inputAlgoMuons ).isSuccess()) {
-	Info("execute()", "Cannot find vector from %s algo", m_inputAlgoMuons.c_str());
-	return StatusCode::FAILURE;
-      }
-    } else {
-      Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgoMuons.c_str());
-      return StatusCode::FAILURE;
-    }
+    std::vector<std::string>* systNames_mu(nullptr);
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(systNames_mu, m_inputAlgoMuons, 0, m_store, m_debug) ,"");
 
     // prepare a vector of the names of CDV containers
     // must be a pointer to be recorded in TStore
@@ -554,15 +538,7 @@ EL::StatusCode OverlapRemover :: execute ()
 
     // get vector of string giving the syst names (rememeber: 1st element is a blank string: nominal case!)
     std::vector<std::string>* systNames_jet;
-    if ( m_store->contains< std::vector<std::string> >( m_inputAlgoJets ) ) {
-      if(!m_store->retrieve( systNames_jet, m_inputAlgoJets ).isSuccess()) {
-	Info("execute()", "Cannot find vector from %s algo", m_inputAlgoJets.c_str());
-	return StatusCode::FAILURE;
-      }
-    } else {
-      Error("execute()", "TStore does not contain %s algo. Aborting", m_inputAlgoJets.c_str());
-      return StatusCode::FAILURE;
-    }
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(systNames_jet, m_inputAlgoJets, 0, m_store, m_debug) ,"");
 
     // prepare a vector of the names of CDV containers
     // must be a pointer to be recorded in TStore
