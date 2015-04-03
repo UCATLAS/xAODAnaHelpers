@@ -165,8 +165,7 @@ EL::StatusCode JetHistsAlgo :: finalize () {
   Info("finalize()", m_name.c_str());
   if(!m_plots.empty()){
     for( auto plots : m_plots ) {
-      delete plots.second;
-      plots.second = 0;
+      if(plots.second) delete plots.second;
     }
   }
   return EL::StatusCode::SUCCESS;

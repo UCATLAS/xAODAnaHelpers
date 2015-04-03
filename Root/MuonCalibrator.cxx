@@ -265,10 +265,7 @@ EL::StatusCode MuonCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_muonCalibrationAndSmearingTool){
-    delete m_muonCalibrationAndSmearingTool;
-    m_muonCalibrationAndSmearingTool = 0;
-  }
+  if(m_muonCalibrationAndSmearingTool) delete m_muonCalibrationAndSmearingTool;
 
   return EL::StatusCode::SUCCESS;
 }

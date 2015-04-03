@@ -378,9 +378,7 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_MuonEffSFTool){
-    delete m_MuonEffSFTool; m_MuonEffSFTool = 0;
-  }
+  if(m_MuonEffSFTool) delete m_MuonEffSFTool;
 
   return EL::StatusCode::SUCCESS;
 }

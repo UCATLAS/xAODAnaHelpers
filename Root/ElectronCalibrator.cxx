@@ -383,9 +383,7 @@ EL::StatusCode ElectronCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_EgammaCalibrationAndSmearingTool){
-    delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = 0;
-  }
+  if(m_EgammaCalibrationAndSmearingTool) delete m_EgammaCalibrationAndSmearingTool;
 
   return EL::StatusCode::SUCCESS;
 }

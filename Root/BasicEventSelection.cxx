@@ -510,8 +510,8 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   Info("finalize()", "Number of events          = %i", m_eventCounter);
 
-  if(m_grl) { delete m_grl; m_grl = 0; }
-  if(m_doPUreweighting && m_pileuptool) { delete m_pileuptool; m_pileuptool = 0; }
+  if(m_grl) delete m_grl;
+  if(m_pileuptool) delete m_pileuptool;
 
   return EL::StatusCode::SUCCESS;
 }

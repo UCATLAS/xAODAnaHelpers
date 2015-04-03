@@ -9,10 +9,7 @@ JetHists :: JetHists (std::string name, std::string detailStr) :
 }
 
 JetHists :: ~JetHists () {
-  if(m_infoSwitch){
-    delete m_infoSwitch;
-    m_infoSwitch = nullptr;
-  }
+  if(m_infoSwitch) delete m_infoSwitch;
 }
 
 EL::StatusCode JetHists::initialize() {
@@ -558,7 +555,7 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int p
   /*
   std::vector<float> chfs = jet->getAttribute< std::vector<float> >(xAOD::JetAttribute::SumPtTrkPt1000);
   float chf(-1);
-  if( pvLoc >= 0 && pvLoc < (int)chfs.size() ) { 
+  if( pvLoc >= 0 && pvLoc < (int)chfs.size() ) {
     m_chf ->  Fill( chfs.at( pvLoc ) , eventWeight );
   }
   */

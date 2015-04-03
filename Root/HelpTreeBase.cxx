@@ -61,7 +61,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr) {
     m_tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
     m_tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
     m_tree->Branch("lumiBlock", &m_lumiBlock, "lumiBlock/I");
-  } 
+  }
 
   if( m_eventInfoSwitch->m_shapeEM ) {
     m_tree->Branch("rhoEM",                &m_rhoEM,            "rhoEM/F");
@@ -92,7 +92,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
       const xAOD::VertexContainer* vertices = 0;
       HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 );
       m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
-    } else { 
+    } else {
       m_npv = -1;
     }
 
@@ -121,7 +121,6 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
   }
 
   this->FillEventUser(eventInfo);
-
 }
 
 /*********************
@@ -133,18 +132,18 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
 void HelpTreeBase::AddMuons(const std::string detailStr) {
 
   m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
-  
+
   if( m_muInfoSwitch->m_kinematic ){
-    m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");  
+    m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");
     m_tree->Branch("muon_pt",  &m_muon_pt);
     m_tree->Branch("muon_phi", &m_muon_phi);
     m_tree->Branch("muon_eta", &m_muon_eta);
   }
-  
+
   this->AddMuonsUser();
 }
 
-void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {  
+void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
 
   this->ClearMuons();
   this->ClearMuonsUser();
@@ -167,30 +166,30 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
  *
  ********************/
 
-void HelpTreeBase::AddElectrons(const std::string detailStr) { 
+void HelpTreeBase::AddElectrons(const std::string detailStr) {
 
   m_elInfoSwitch = new HelperClasses::ElectronInfoSwitch( detailStr );
 
-  m_tree->Branch("nel",    &m_nel,"nel/I");  
-  
+  m_tree->Branch("nel",    &m_nel,"nel/I");
+
   if( m_elInfoSwitch->m_kinematic ){
     m_tree->Branch("el_pt",  &m_el_pt);
     m_tree->Branch("el_phi", &m_el_phi);
     m_tree->Branch("el_eta", &m_el_eta);
   }
-  
+
   this->AddElectronsUser();
 }
 
-void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) { 
-  
+void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) {
+
   this->ClearElectrons();
   this->ClearElectronsUser();
-  
+
   m_nel = 0;
   for( auto el_itr : electrons ) {
     if( m_elInfoSwitch->m_kinematic ){
-      m_el_pt.push_back ( (el_itr)->pt() / m_units ); 
+      m_el_pt.push_back ( (el_itr)->pt() / m_units );
       m_el_eta.push_back( (el_itr)->eta() );
       m_el_phi.push_back( (el_itr)->phi() );
     }
@@ -220,7 +219,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_eta", &m_jet_eta);
   }
 
-  if( m_jetInfoSwitch->m_clean ) { 
+  if( m_jetInfoSwitch->m_clean ) {
     m_tree->Branch("jet_Timing",              &m_jet_time               );
     m_tree->Branch("jet_LArQuality",          &m_jet_LArQuality         );
     m_tree->Branch("jet_HECQuality",          &m_jet_hecq               );
@@ -239,13 +238,13 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_FracSamplingMax",       &m_jet_fracSampMax    );
     m_tree->Branch("jet_FracSamplingMaxIndex",  &m_jet_fracSampMaxIdx );
     m_tree->Branch("jet_LowEtConstituentsFrac", &m_jet_lowEtFrac      );
-  }		       
+  }
 
-  if( m_jetInfoSwitch->m_layer ) { 
+  if( m_jetInfoSwitch->m_layer ) {
     m_tree->Branch("jet_EnergyPerSampling",     &m_jet_ePerSamp   );
   }
 
-  if( m_jetInfoSwitch->m_trackAll ) { 
+  if( m_jetInfoSwitch->m_trackAll ) {
     m_tree->Branch("jet_NumTrkPt1000",	    &m_jet_NTrkPt1000   );
     m_tree->Branch("jet_SumPtTrkPt1000",    &m_jet_SumPtPt1000  );
     m_tree->Branch("jet_TrackWidthPt1000",  &m_jet_TrkWPt1000   );
@@ -258,7 +257,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
   }
 
-  if( m_jetInfoSwitch->m_trackPV ) { 
+  if( m_jetInfoSwitch->m_trackPV ) {
     m_tree->Branch("jet_NumTrkPt1000PV",      &m_jet_NTrkPt1000PV   );
     m_tree->Branch("jet_SumPtTrkPt1000PV",    &m_jet_SumPtPt1000PV  );
     m_tree->Branch("jet_TrackWidthPt1000PV",  &m_jet_TrkWPt1000PV   );
@@ -271,7 +270,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
   }
 
-  if( m_jetInfoSwitch->m_flavTag ) { 
+  if( m_jetInfoSwitch->m_flavTag ) {
     m_tree->Branch("jet_MV1Weight",     &m_jet_mv1);
     m_tree->Branch("jet_SV1IP3DWeight", &m_jet_sv1ip3d);
   }
@@ -312,19 +311,19 @@ void HelpTreeBase::AddJets(const std::string detailStr)
 }
 
 void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
-  
+
   this->ClearJets();
   this->ClearJetsUser();
-  
-  for( auto jet_itr : jets ) {  
-  
+
+  for( auto jet_itr : jets ) {
+
     if( m_jetInfoSwitch->m_kinematic ){
       m_jet_pt.push_back ( jet_itr->pt() / m_units );
       m_jet_eta.push_back( jet_itr->eta() );
       m_jet_phi.push_back( jet_itr->phi() );
       m_jet_E.push_back  ( jet_itr->e() / m_units );
     }
-    
+
     if(m_jetInfoSwitch->m_clean) {
 
       static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
@@ -351,7 +350,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
       if( avLArQF.isAvailable( *jet_itr ) ) {
         m_jet_avLArQF.push_back( avLArQF( *jet_itr ) );
       } else { m_jet_avLArQF.push_back( -999 ); }
-    
+
       static SG::AuxElement::ConstAccessor<float> bchCorrCell ("BchCorrCell");
       if( bchCorrCell.isAvailable( *jet_itr ) ) {
         m_jet_bchCorrCell.push_back( bchCorrCell( *jet_itr ) );
@@ -413,15 +412,15 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
       if( ePerSamp.isAvailable( *jet_itr ) ) {
         m_jet_ePerSamp.push_back( ePerSamp( *jet_itr ) );
         m_jet_ePerSamp.back();
-        std::transform((m_jet_ePerSamp.back()).begin(), 
-            (m_jet_ePerSamp.back()).end(), 
+        std::transform((m_jet_ePerSamp.back()).begin(),
+            (m_jet_ePerSamp.back()).end(),
             (m_jet_ePerSamp.back()).begin(),
             std::bind2nd(std::divides<float>(), m_units));
-      } else { 
+      } else {
         // could push back a vector of 24...
         // ... waste of space vs prevention of out of range down stream
         std::vector<float> junk(1,-999);
-        m_jet_ePerSamp.push_back( junk ); 
+        m_jet_ePerSamp.push_back( junk );
       }
     }
 
@@ -549,7 +548,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
       } else { m_jet_truthDr_T.push_back( -999 ) ; }
 
       const xAOD::Jet* truthJet = HelperFunctions::getLink<xAOD::Jet>( jet_itr, "GhostTruthAssociationLink" );
-      if(truthJet) { 
+      if(truthJet) {
         m_jet_truth_pt.push_back ( truthJet->pt() / m_units );
         m_jet_truth_eta.push_back( truthJet->eta() );
         m_jet_truth_phi.push_back( truthJet->phi() );
@@ -661,7 +660,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
  *
  ********************/
 
-void HelpTreeBase::AddFatJets(std::string detailStr) { 
+void HelpTreeBase::AddFatJets(std::string detailStr) {
   m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 }
 /* TODO: fatJets */
@@ -670,14 +669,14 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer& /*fatJets*/ ) { }
 void HelpTreeBase::ClearEvent() {}
 
 void HelpTreeBase::ClearMuons() {
-  m_nmuon = 0;  
+  m_nmuon = 0;
   m_muon_pt.clear();
   m_muon_eta.clear();
-  m_muon_phi.clear(); 
+  m_muon_phi.clear();
 }
 
 void HelpTreeBase::ClearElectrons() {
-  m_nel = 0;  
+  m_nel = 0;
   m_el_pt.clear();
   m_el_eta.clear();
   m_el_phi.clear();
@@ -693,7 +692,7 @@ void HelpTreeBase::ClearJets() {
   m_jet_E.clear();
 
   // clean
-  if( m_jetInfoSwitch->m_clean ) { 
+  if( m_jetInfoSwitch->m_clean ) {
     m_jet_time.clear();
     m_jet_LArQuality.clear();
     m_jet_hecq.clear();

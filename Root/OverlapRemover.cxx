@@ -651,10 +651,7 @@ EL::StatusCode OverlapRemover :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_overlapRemovalTool){
-    delete m_overlapRemovalTool;
-    m_overlapRemovalTool = 0;
-  }
+  if(m_overlapRemovalTool) delete m_overlapRemovalTool;
 
   return EL::StatusCode::SUCCESS;
 }

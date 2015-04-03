@@ -88,6 +88,8 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   m_jetAlgo             = config->GetValue("JetAlgorithm",    "");
   m_debug                   = config->GetValue("Debug" ,           false );
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -211,15 +213,9 @@ EL::StatusCode JERShifter :: postExecute ()
 
 EL::StatusCode JERShifter :: finalize ()
 {
-  // This method is the mirror image of initialize(), meaning it gets
-  // called after the last event has been processed on the worker node
-  // and allows you to finish up any objects you created in
-  // initialize() before they are written to disk.  This is actually
-  // fairly rare, since this happens separately for each worker node.
-  // Most of the time you want to do your post-processing on the
-  // submission node after all your histogram outputs have been
-  // merged.  This is different from histFinalize() in that it only
-  // gets called on worker nodes that processed input events.
+  if(m_JERTool) delete m_JERTool;
+  if(m_JERSmearing) delete m_JERSmearing;
+
   return EL::StatusCode::SUCCESS;
 }
 

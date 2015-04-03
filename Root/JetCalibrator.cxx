@@ -424,18 +424,9 @@ EL::StatusCode JetCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_jetCalibration){
-    delete m_jetCalibration;
-    m_jetCalibration = 0;
-  }
-  if(m_jetCleaning){
-    delete m_jetCleaning;
-    m_jetCleaning= 0;
-  }
-  if( m_jetUncert ) {
-    delete m_jetUncert;
-    m_jetUncert = 0;
-  }
+  if(m_jetCalibration) delete m_jetCalibration;
+  if(m_jetCleaning) delete m_jetCleaning;
+  if( m_jetUncert ) delete m_jetUncert;
 
   return EL::StatusCode::SUCCESS;
 }

@@ -86,6 +86,8 @@ EL::StatusCode TrackHistsAlgo :: configure ()
   // everything seems preliminarily ok, let's print config and say we were successful
   config->Print();
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -129,9 +131,6 @@ EL::StatusCode TrackHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
 EL::StatusCode TrackHistsAlgo :: histFinalize ()
 {
   // clean up memory
-  if(m_plots){
-    delete m_plots;
-    m_plots = 0;
-  }
+  if(m_plots) delete m_plots;
   return EL::StatusCode::SUCCESS;
 }

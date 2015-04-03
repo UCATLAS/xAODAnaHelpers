@@ -536,18 +536,9 @@ EL::StatusCode ElectronSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_asgElectronIsEMSelector){
-    delete m_asgElectronIsEMSelector;
-    m_asgElectronIsEMSelector = 0;
-  }
-  if(m_asgElectronLikelihoodTool){
-    delete m_asgElectronLikelihoodTool;
-    m_asgElectronLikelihoodTool = 0;
-  }
-  if(m_electronIsolationSelectionTool){
-    delete m_electronIsolationSelectionTool;
-    m_electronIsolationSelectionTool = 0;
-  }
+  if(m_asgElectronIsEMSelector) delete m_asgElectronIsEMSelector;
+  if(m_asgElectronLikelihoodTool) delete m_asgElectronLikelihoodTool;
+  if(m_electronIsolationSelectionTool) delete m_electronIsolationSelectionTool;
 
   return EL::StatusCode::SUCCESS;
 }

@@ -81,6 +81,8 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   EL::OutputStream out(m_outputLabel.Data());
   job.outputAdd (out);
 
+  delete config;
+
   return EL::StatusCode::SUCCESS;
 }
 

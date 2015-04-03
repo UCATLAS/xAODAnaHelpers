@@ -335,9 +335,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_asgElectronEfficiencyCorrectionTool){
-    delete m_asgElectronEfficiencyCorrectionTool; m_asgElectronEfficiencyCorrectionTool = 0;
-  }
+  if(m_asgElectronEfficiencyCorrectionTool) delete m_asgElectronEfficiencyCorrectionTool;
 
   return EL::StatusCode::SUCCESS;
 }

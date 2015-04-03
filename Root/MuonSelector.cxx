@@ -332,9 +332,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
 
   // create output container (if requested)
   ConstDataVector<xAOD::MuonContainer>* selectedMuons = 0;
-  if(m_createSelectedContainer) {
-    selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-  }
+  if(m_createSelectedContainer) selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
@@ -422,10 +420,7 @@ EL::StatusCode MuonSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_muonSelectionTool){
-    delete m_muonSelectionTool;
-    m_muonSelectionTool = 0;
-  }
+  if(m_muonSelectionTool) delete m_muonSelectionTool;
 
   return EL::StatusCode::SUCCESS;
 }
