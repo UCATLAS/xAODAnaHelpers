@@ -239,7 +239,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // then get the one collection and be done with it
   if ( m_inputAlgo.empty() ) {
 
-    	correctedElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
+        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
     	correctedElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
     	correctedElectronsCDV->reserve( correctedElectrons->size() );
 
@@ -282,7 +282,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	// loop over systematic sets available
     	for( auto systName : *systNames ) {
 
-    	   correctedElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName+systName, m_event, m_store);
+           RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedElectrons, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
     	   // create ConstDataVector to be eventually stored in TStore
     	   correctedElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
     	   correctedElectronsCDV->reserve( correctedElectrons->size() );
@@ -299,14 +299,14 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 	   this->executeSF( correctedElectrons );
 
     	   // save pointers in ConstDataVector
-    	   RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(correctedElectrons, correctedElectronsCDV, "", ToolName::CORRECTOR), "");
+    	   RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", HelperFunctions::makeSubsetCont(correctedElectrons, correctedElectronsCDV, "", ToolName::CORRECTOR), "");
     	   // add container to TStore
     	   RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( correctedElectronsCDV, m_outContainerName+systName), "Failed to store container.");
 
     	} // close loop on systematic sets available from upstream algo
 
         // save list of systs that should be considered down stream
-        RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+        RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
   }
 
   // look what do we have in TStore

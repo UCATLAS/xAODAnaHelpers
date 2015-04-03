@@ -353,7 +353,8 @@ EL::StatusCode ElectronSelector :: execute ()
   if(m_debug) Info("execute()", "Applying Electron Selection... ");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -375,7 +376,7 @@ EL::StatusCode ElectronSelector :: execute ()
   if( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
+    RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
     eventPass = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName);
 
   } else { // get the list of systematics to run over
@@ -408,7 +409,7 @@ EL::StatusCode ElectronSelector :: execute ()
 	Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() );
       }
 
-      inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName + systName, m_event, m_store);
+      RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName + systName, m_event, m_store, m_debug) ,"");
       // a CDV for each systematic (w/ name m_outContainerName+syst_name)
       //   will be stored in TStore, unless event does not pass selection
       eventPassThisSyst = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName + systName);
@@ -430,7 +431,7 @@ EL::StatusCode ElectronSelector :: execute ()
     if(m_debug){  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
 
     // save list of systs that should be considered down stream
-    RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+    RETURN_CHECK( "ElectronSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   }
 
@@ -456,7 +457,8 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
     selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
   }
 
-  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  const xAOD::VertexContainer* vertices(nullptr);
+  RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);

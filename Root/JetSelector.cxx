@@ -258,7 +258,8 @@ EL::StatusCode JetSelector :: execute ()
   if(m_debug) Info("execute()", "Applying Jet Selection... ");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -281,7 +282,7 @@ EL::StatusCode JetSelector :: execute ()
   if( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
 
     pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName);
 
@@ -305,7 +306,7 @@ EL::StatusCode JetSelector :: execute ()
     bool passOne(false);
     for( auto systName : *systNames ) {
 
-      inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName+systName, m_event, m_store);
+      RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
 
       passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName );
       if( count ) { count = false; } // only count for 1 collection
@@ -318,7 +319,7 @@ EL::StatusCode JetSelector :: execute ()
     }
 
     // save list of systs that shoudl be considered down stream
-    RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+    RETURN_CHECK( "JetSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
     //delete vecOutContainerNames;
 
   }
@@ -348,7 +349,8 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
   // if doing JVF get PV location
   if( m_doJVF ) {
-    const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+    const xAOD::VertexContainer* vertices(nullptr);
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
   }
 

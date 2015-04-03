@@ -86,6 +86,7 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   m_outAuxContainerName = m_outContainerName + "Aux."; // the period is very important!
 
   m_jetAlgo             = config->GetValue("JetAlgorithm",    "");
+  m_debug                   = config->GetValue("Debug" ,           false );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -171,7 +172,8 @@ EL::StatusCode JERShifter :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::JetContainer* inJets(nullptr);
+  RETURN_CHECK("JERShifter::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
 
   // create shallow copy
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > smearedJets = xAOD::shallowCopyContainer( *inJets );

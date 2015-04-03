@@ -228,10 +228,12 @@ EL::StatusCode TrackSelector :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::TrackParticleContainer* inTracks = HelperFunctions::getContainer<xAOD::TrackParticleContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::TrackParticleContainer* inTracks(nullptr);
+  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(inTracks, m_inContainerName, m_event, m_store, m_debug) ,"");
 
   // get primary vertex
-  const xAOD::VertexContainer *vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);;
+  const xAOD::VertexContainer *vertices(nullptr);
+  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
 

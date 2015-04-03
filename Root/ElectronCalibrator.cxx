@@ -256,8 +256,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
-  const xAOD::ElectronContainer* inElectrons = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+  const xAOD::ElectronContainer* inElectrons(nullptr);
+  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers
@@ -346,7 +348,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
-  RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
   if(m_debug) { m_store->print(); }

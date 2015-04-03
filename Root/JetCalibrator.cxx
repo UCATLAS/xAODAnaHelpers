@@ -191,7 +191,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
@@ -238,14 +239,14 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_calibSequence,
       !m_isMC);
   m_jetCalibration->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
-  RETURN_CHECK( "initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface succesfully initialized!");
+  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface succesfully initialized!");
 
   // initialize and configure the jet cleaning tool
   //------------------------------------------------
   std::string jc_tool_name = std::string("JetCleaning_") + m_name;
   m_jetCleaning = new JetCleaningTool( jc_tool_name.c_str() );
-  RETURN_CHECK( "initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
-  RETURN_CHECK( "initialize()", m_jetCleaning->initialize(), "JetCleaning Interface succesfully initialized!");
+  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
+  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "JetCleaning Interface succesfully initialized!");
 
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
@@ -255,10 +256,10 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()","Initialize JES UNCERT with %s", m_uncertConfig.c_str());
     std::string ju_tool_name = std::string("JESProvider_") + m_name;
     m_jetUncert = new JetUncertaintiesTool( ju_tool_name.c_str() );
-    RETURN_CHECK("initialize()", m_jetUncert->setProperty("JetDefinition",m_jetUncertAlgo), "");
-    RETURN_CHECK("initialize()", m_jetUncert->setProperty("MCType","MC12"), "");
-    RETURN_CHECK("initialize()", m_jetUncert->setProperty("ConfigFile", m_uncertConfig), "");
-    RETURN_CHECK("initialize()", m_jetUncert->initialize(), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->setProperty("JetDefinition",m_jetUncertAlgo), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->setProperty("MCType","MC12"), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->setProperty("ConfigFile", m_uncertConfig), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->initialize(), "");
     m_jetUncert->msg().setLevel( MSG::ERROR ); // VERBOSE, INFO, DEBUG
     const CP::SystematicSet recSysts = m_jetUncert->recommendedSystematics();
 
@@ -311,7 +312,8 @@ EL::StatusCode JetCalibrator :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::JetContainer* inJets(nullptr);
+  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
@@ -377,15 +379,15 @@ EL::StatusCode JetCalibrator :: execute ()
     }
 
     // add shallow copy to TStore
-    RETURN_CHECK( "execute()", m_store->record( calibJetsSC.first, outSCContainerName), "Failed to record shallow copy container.");
-    RETURN_CHECK( "execute()", m_store->record( calibJetsSC.second, outSCAuxContainerName), "Failed to record shallow copy aux container.");
+    RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.first, outSCContainerName), "Failed to record shallow copy container.");
+    RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.second, outSCAuxContainerName), "Failed to record shallow copy aux container.");
 
     // add ConstDataVector to TStore
-    RETURN_CHECK( "execute()", m_store->record( calibJetsCDV, outContainerName), "Failed to record const data container.");
+    RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsCDV, outContainerName), "Failed to record const data container.");
   }
 
   // add vector of systematic names to TStore
-  RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
   if(m_debug) { m_store->print(); }

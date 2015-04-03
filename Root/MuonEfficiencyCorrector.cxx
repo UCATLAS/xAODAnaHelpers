@@ -229,7 +229,9 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::MuonContainer* correctedMuons = HelperFunctions::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::MuonContainer* correctedMuons(nullptr);
+  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedMuons, m_inContainerName, m_event, m_store, m_debug) ,"");
+
   // create ConstDataVector to be eventually stored in TStore
   ConstDataVector<xAOD::MuonContainer>* correctedMuonsCDV = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
   correctedMuonsCDV->reserve( correctedMuons->size() );

@@ -355,7 +355,8 @@ EL::StatusCode BasicEventSelection :: execute ()
   //----------------------------
   // Event information
   //---------------------------
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   ++m_eventCounter;
 
@@ -463,9 +464,9 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
   }
-  const xAOD::VertexContainer* vertices = 0;
+  const xAOD::VertexContainer* vertices(nullptr);
   if(!m_truthLevelOnly) {
-    vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
+    RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_debug) ,"");
 
     if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
       wk()->skipEvent();

@@ -80,6 +80,8 @@ EL::StatusCode JetHistsAlgo :: configure ()
   // name of algo input container comes from - only if
   m_inputAlgo               = config->GetValue("InputAlgo",       "");
 
+  m_debug                   = config->GetValue("Debug" ,           false );
+
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
@@ -106,7 +108,8 @@ EL::StatusCode JetHistsAlgo :: initialize ()
 
 EL::StatusCode JetHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -114,7 +117,8 @@ EL::StatusCode JetHistsAlgo :: execute ()
   }
 
   // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  const xAOD::VertexContainer* vertices(nullptr);
+  RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
   int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
 
   // this will hold the collection processed
@@ -123,7 +127,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if( m_inputAlgo.empty() ) {
-    inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+    RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
 
     /* two ways to fill */
 
@@ -150,7 +154,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
 
     // loop over systematics
     for( auto systName : *systNames ) {
-      inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName+systName, m_event, m_store);
+      RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
       if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
       m_plots[systName]->execute( inJets, eventWeight, pvLocation );
     }

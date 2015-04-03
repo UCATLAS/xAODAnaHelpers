@@ -98,6 +98,7 @@ EL::StatusCode TreeAlgo :: configure ()
   m_elDetailStr             = config->GetValue("ElectronDetailStr",    "");
   m_jetDetailStr            = config->GetValue("JetDetailStr",         "");
   m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      "");
+  m_debug                   = config->GetValue("Debug" ,           false );
 
   m_muContainerName         = config->GetValue("MuonContainerName",       "");
   m_elContainerName         = config->GetValue("ElectronContainerName",   "");
@@ -127,29 +128,35 @@ EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusC
 EL::StatusCode TreeAlgo :: execute ()
 {
   // Get EventInfo the PrimaryVertices
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
-  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>( "PrimaryVertices", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+  const xAOD::VertexContainer* vertices(nullptr);
+  RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
 
   m_helpTree->FillEvent( eventInfo );
 
   // for the containers the were supplied, fill the appropiate vectors
   if(!m_muContainerName.empty()) {
-    const xAOD::MuonContainer* inMuon = HelperFunctions::getContainer<xAOD::MuonContainer>(m_muContainerName, m_event, m_store);
+    const xAOD::MuonContainer* inMuon(nullptr);
+    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inMuon, m_muContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillMuons( *inMuon );
   }
 
   if(!m_elContainerName.empty()) {
-    const xAOD::ElectronContainer* inElec = HelperFunctions::getContainer<xAOD::ElectronContainer>(m_elContainerName, m_event, m_store);
+    const xAOD::ElectronContainer* inElec(nullptr);
+    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inElec, m_elContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillElectrons( *inElec );
   }
 
   if(!m_jetContainerName.empty()) {
-    const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_jetContainerName, m_event, m_store);
+    const xAOD::JetContainer* inJets(nullptr);
+    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillJets( *inJets, HelperFunctions::getPrimaryVertexLocation(vertices) );
   }
 
   if(!m_fatJetContainerName.empty()) {
-    const xAOD::JetContainer* inFatJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_fatJetContainerName, m_event, m_store);
+    const xAOD::JetContainer* inFatJets(nullptr);
+    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillFatJets( *inFatJets );
   }
 

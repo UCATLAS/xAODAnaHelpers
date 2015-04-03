@@ -283,11 +283,12 @@ EL::StatusCode OverlapRemover :: execute ()
 
   if( m_inputAlgoElectrons.empty() && m_inputAlgoMuons.empty() && m_inputAlgoJets.empty() ) {
 
-    inElectrons      = HelperFunctions::getContainer<xAOD::ElectronContainer>( m_inContainerName_Electrons,               m_event, m_store);
-    inMuons	     = HelperFunctions::getContainer<xAOD::MuonContainer>    ( m_inContainerName_Muons,	                  m_event, m_store);
-    inJets	     = HelperFunctions::getContainer<xAOD::JetContainer>     ( m_inContainerName_Jets,	                  m_event, m_store);
-    if( m_usePhotons ){  inPhotons  = HelperFunctions::getContainer<xAOD::PhotonContainer>  ( m_inContainerName_Photons,  m_event, m_store); }
-    if( m_useTaus )   {  inTaus	  = HelperFunctions::getContainer<xAOD::TauJetContainer>  ( m_inContainerName_Taus,	  m_event, m_store); }
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_debug) ,"");
+
+    if( m_usePhotons ) RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_debug) ,"");
+    if( m_useTaus )    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
     if(m_debug){ Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  }
 
@@ -372,15 +373,15 @@ EL::StatusCode OverlapRemover :: execute ()
     }
 
     // these input containers won't change in the electron syst loop ...
-    inMuons	     = HelperFunctions::getContainer<xAOD::MuonContainer>    ( m_inContainerName_Muons,	                  m_event, m_store); // use ONLY the nominal!
-    inJets	     = HelperFunctions::getContainer<xAOD::JetContainer>     ( m_inContainerName_Jets,	                  m_event, m_store); // use ONLY the nominal!
-    if( m_usePhotons ){  inPhotons  = HelperFunctions::getContainer<xAOD::PhotonContainer>  ( m_inContainerName_Photons,  m_event, m_store); } // use ONLY the nominal!
-    if( m_useTaus )   {  inTaus	  = HelperFunctions::getContainer<xAOD::TauJetContainer>  ( m_inContainerName_Taus,	  m_event, m_store); } // use ONLY the nominal!
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_debug) ,"");
+    if( m_usePhotons )  RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_debug) ,"");
+    if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
     for( auto systName_el : *systNames_el ) {
 
       // ... instead, the electron input container will be different for each syst
-      inElectrons    = HelperFunctions::getContainer<xAOD::ElectronContainer>( m_inContainerName_Electrons + systName_el, m_event, m_store); // thsi will be the nominal (1st) AND the syst varied
+      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons + systName_el, m_event, m_store, m_debug) ,"");
 
       if(m_debug){ Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  }
 
@@ -471,23 +472,22 @@ EL::StatusCode OverlapRemover :: execute ()
     }
 
     // these input containers won't change in the muon syst loop ...
-    inElectrons      = HelperFunctions::getContainer<xAOD::ElectronContainer>( m_inContainerName_Electrons,               m_event, m_store); // use ONLY the nominal!
-    inJets	     = HelperFunctions::getContainer<xAOD::JetContainer>     ( m_inContainerName_Jets,	                  m_event, m_store); // use ONLY the nominal!
-    if( m_usePhotons ){  inPhotons  = HelperFunctions::getContainer<xAOD::PhotonContainer>  ( m_inContainerName_Photons,  m_event, m_store); } // use ONLY the nominal!
-    if( m_useTaus )   {  inTaus	  = HelperFunctions::getContainer<xAOD::TauJetContainer>  ( m_inContainerName_Taus,	  m_event, m_store); } // use ONLY the nominal!
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_debug) ,"");
+    if( m_usePhotons )  RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_debug) ,"");
+    if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
     for( auto systName_mu : *systNames_mu ) {
 
       // ... instead, the muon input container will be different for each syst
-      inMuons	     = HelperFunctions::getContainer<xAOD::MuonContainer>    ( m_inContainerName_Muons + systName_mu,	  m_event, m_store); // this will be the nominal (1st) AND the syst varied
-
+      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons + systName_mu, m_event, m_store, m_debug) ,"");
       if(m_debug){ Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  }
 
       // prepends syst name to decoration
       std::string ORdecor = std::string("overlaps");
       if( !systName_mu.empty() ){
-	std::string prepend = systName_mu + "_";
-	ORdecor.insert( 0, prepend );
+        std::string prepend = systName_mu + "_";
+        ORdecor.insert( 0, prepend );
       }
       RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->setProperty( "OverlapLabel", ORdecor.c_str() ), "Failed to set property OverlapLabel" );
 
@@ -575,23 +575,22 @@ EL::StatusCode OverlapRemover :: execute ()
     }
 
     // these input containers won't change in the jet syst loop ...
-    inElectrons      = HelperFunctions::getContainer<xAOD::ElectronContainer>( m_inContainerName_Electrons,                 m_event, m_store); // use ONLY the nominal!
-    inMuons	     = HelperFunctions::getContainer<xAOD::MuonContainer>    ( m_inContainerName_Muons,	                    m_event, m_store); // use ONLY the nominal!
-    if( m_usePhotons ){ inPhotons    = HelperFunctions::getContainer<xAOD::PhotonContainer>  ( m_inContainerName_Photons, m_event, m_store); } // use ONLY the nominal!
-    if( m_useTaus ){    inTaus       = HelperFunctions::getContainer<xAOD::TauJetContainer>  ( m_inContainerName_Taus,    m_event, m_store); } // use ONLY the nominal!
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_debug) ,"");
+    if( m_usePhotons )  RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_debug) ,"");
+    if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
     for( auto systName_jet : *systNames_jet ) {
 
       // ... instead, the jet input container will be different for each syst
-      inJets	     = HelperFunctions::getContainer<xAOD::JetContainer>     ( m_inContainerName_Jets + systName_jet,	  m_event, m_store); // thsi will be the nominal (1st) AND the syst varied
-
+      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets + systName_jet, m_event, m_store, m_debug) ,"");
       if(m_debug){ Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  }
 
       // prepends syst name to decoration
       std::string ORdecor = std::string("overlaps");
       if( !systName_jet.empty() ){
-	std::string prepend = systName_jet + "_";
-	ORdecor.insert( 0, prepend );
+        std::string prepend = systName_jet + "_";
+        ORdecor.insert( 0, prepend );
       }
       RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->setProperty( "OverlapLabel", ORdecor.c_str() ), "Failed to set property OverlapLabel" );
 
@@ -631,7 +630,7 @@ EL::StatusCode OverlapRemover :: execute ()
     } // close loop on systematic sets available from upstream algo (Jets)
 
     // add vector<string container_names_syst> to TStore
-    RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames_jet, m_outputAlgoJets ), "Failed to record vector of output container names.");
+    RETURN_CHECK( "OverlapRemover::execute()", m_store->record( vecOutContainerNames_jet, m_outputAlgoJets ), "Failed to record vector of output container names.");
 
   }  // end of if( !m_inputAlgoJets.empty() )
 
