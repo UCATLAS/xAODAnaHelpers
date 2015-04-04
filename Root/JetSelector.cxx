@@ -540,8 +540,20 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //  Truth Label
   //
   if( m_truthLabel != -1 ) {
-    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
-    if(TruthLabelID( *jet ) != m_truthLabel) {return 0;}
+ 
+    int this_TruthLabel = 0;
+    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");    
+    if(TruthLabelID.isAvailable( *jet)){
+      this_TruthLabel = TruthLabelID( *jet );    
+    }else{
+      static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
+      this_TruthLabel = PartonTruthLabelID( *jet );    
+    }
+
+    if((m_truthLabel == 5) && this_TruthLabel != 5) {return 0;}
+    if((m_truthLabel == 4) && this_TruthLabel != 4) {return 0;}
+    if((m_truthLabel == 0) && !(this_TruthLabel == 21 || this_TruthLabel<4)) {return 0;}
+ 
   }
 
   return 1;

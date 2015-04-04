@@ -133,7 +133,7 @@ EL::StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_truth ) {
     Info("JetHists::initialize()", "adding truth plots");
 
-    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          20,  -0.5,  19.5);
+    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          30,  -0.5,  29.5);
     m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          50,  -0.5,  49.5);
     m_truthPt        = book(m_name, "TruthPt",             "Truth Pt",              100,   0,   100.0);
 
@@ -433,6 +433,11 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int p
     static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
     if( TruthLabelID.isAvailable( *jet ) ) {
       m_truthLabelID ->  Fill( TruthLabelID( *jet ), eventWeight );
+    }else{
+      static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
+      if( PartonTruthLabelID.isAvailable( *jet ) ) {
+	m_truthLabelID ->  Fill( PartonTruthLabelID( *jet ), eventWeight );
+      }
     }
 
     static SG::AuxElement::ConstAccessor<int> TruthCount ("TruthCount");
