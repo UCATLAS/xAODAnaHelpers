@@ -130,8 +130,10 @@ EL::StatusCode  JetSelector :: configure ()
   }
 
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+  ss.clear();
   ss.str(m_failAuxDecorKeys);
   while(std::getline(ss, token, ',')){
+    std::cout << token << std::endl;
     m_failKeys.push_back(token);
   }
 

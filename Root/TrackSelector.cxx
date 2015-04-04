@@ -96,6 +96,7 @@ EL::StatusCode  TrackSelector :: configure ()
   }
 
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+  ss.clear();
   ss.str(m_failAuxDecorKeys);
   while(std::getline(ss, token, ',')){
     m_failKeys.push_back(token);
