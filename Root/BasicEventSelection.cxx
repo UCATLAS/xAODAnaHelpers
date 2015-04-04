@@ -47,8 +47,8 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_grl(0),
-  m_pileuptool(0)
+  m_grl(nullptr),
+  m_pileuptool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -317,16 +317,15 @@ EL::StatusCode BasicEventSelection :: initialize ()
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
 
-  if(m_doPUreweighting){
-    m_pileuptool = new CP::PileupReweightingTool("Pileup");
-    std::vector<std::string> confFiles;
-    std::vector<std::string> lcalcFiles;
-    //confFiles.push_back("blah"); // pass from config file
-    //lcalcFiles.push_back("blah"); // pass from config file
-    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
-    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
-  }
+  m_pileuptool = new CP::PileupReweightingTool("Pileup");
+  std::vector<std::string> confFiles;
+  std::vector<std::string> lcalcFiles;
+  //confFiles.push_back("blah"); // pass from config file
+  //lcalcFiles.push_back("blah"); // pass from config file
+  //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
+  //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
+  
   //--------------------------------------------
   //  Get Containers Depending on Analysis Needs
   //--------------------------------------------
@@ -508,10 +507,10 @@ EL::StatusCode BasicEventSelection :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Number of events          = %i", m_eventCounter);
+  Info("finalize()", "Number of processed events      = %i", m_eventCounter);
 
   if(m_grl) delete m_grl;
-  if(m_doPUreweighting && m_pileuptool) delete m_pileuptool;
+  if(m_pileuptool) delete m_pileuptool;
 
   return EL::StatusCode::SUCCESS;
 }
