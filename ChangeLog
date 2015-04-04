@@ -42,3 +42,7 @@
 	* removed memory leaks everywhere except for HelpTreeBase and
 	TreeAlgo
 	* deprecate HelperFunctions::getContainer()
+
+2015-04-04 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
+	* fixed a bug in the getline() code where you need to call ss.clear() to
+	force the buffer to point to beginning of the stream again
