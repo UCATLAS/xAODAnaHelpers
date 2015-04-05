@@ -165,6 +165,19 @@ EL::StatusCode JetHists::initialize() {
 
   }
 
+  if( m_infoSwitch->m_flavTag ) {
+    Info("JetHists::initialize()", "adding btagging plots");    
+    
+    m_MV1             = book(m_name, "MV1",    "MV1" ,      100,    -0.1,   1.1);
+    m_SV1_plus_IP3D   = book(m_name, "SV1_plus_IP3D",    "SV1_plus_IP3D" ,      100,    -0.1,   1.1);
+    m_SV0             = book(m_name, "SV0",    "SV0" ,      100,    -20,  200);
+    m_SV1             = book(m_name, "SV1",    "SV1" ,      100,    -5,   15);
+    m_IP2D            = book(m_name, "IP2D",   "IP2D" ,     100,    -10,   40);
+    m_IP3D            = book(m_name, "IP3D",   "IP3D" ,     100,    -20,   40);
+    m_JetFitter       = book(m_name, "JetFitter",   "JetFitter" ,     100,    -10,   10);
+    m_JetFitterCombNN = book(m_name, "JetFitterCombNN",   "JetFitterCombNN" ,     100,    -10,   10);
+  }
+
   this->initializeUser();
 
   return EL::StatusCode::SUCCESS;
@@ -554,6 +567,24 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int p
 
 
   }
+
+  //
+  // BTagging
+  //
+  if( m_infoSwitch->m_flavTag ) {
+    
+    const xAOD::BTagging *btag_info = jet->btagging();
+    m_MV1 ->  Fill( btag_info->MV1_discriminant() , eventWeight );    
+    m_SV1_plus_IP3D ->  Fill( btag_info->MV1_discriminant() , eventWeight );    
+    m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );    
+    m_SV1 ->  Fill( btag_info->SV1_loglikelihoodratio() , eventWeight );    
+    m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );    
+    m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );    
+    m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );    
+    m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );    
+    
+  }
+
 
 
 

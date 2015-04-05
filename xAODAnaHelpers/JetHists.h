@@ -106,6 +106,16 @@ class JetHists : public HistogramManager
     TH1F* m_truthCount_TausFinal; //!
     TH1F* m_truthPt_TausFinal   ; //!
 
+    // Flavor Tag
+    TH1F* m_MV1   ; //!
+    TH1F* m_SV1_plus_IP3D   ; //!
+    TH1F* m_SV0             ; //!
+    TH1F* m_SV1             ; //!
+    TH1F* m_IP2D            ; //!
+    TH1F* m_IP3D            ; //!
+    TH1F* m_JetFitter       ; //!
+    TH1F* m_JetFitterCombNN ; //!
+
 
 
 };

@@ -1,4 +1,5 @@
 2015-03-04 John Alison <John.Alison@cern.ch>
+	* JetHists.cxx: Adding Basic FlavorTag Histograms
 	* JetHists.cxx: Add option for new TruthLabel Var
 	* JetSelector.cxx: Change cut TruthIDs to use PIDs instead of zero for light-flavor
 
