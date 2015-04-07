@@ -31,8 +31,8 @@ TrackSelector :: TrackSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_cutflowHist(0),
-  m_cutflowHistW(0)
+  m_cutflowHist(nullptr),
+  m_cutflowHistW(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put

@@ -49,9 +49,9 @@ MuonSelector :: MuonSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_cutflowHist(0),
-  m_cutflowHistW(0),
-  m_muonSelectionTool(0)
+  m_cutflowHist(nullptr),
+  m_cutflowHistW(nullptr),
+  m_muonSelectionTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -421,8 +421,9 @@ EL::StatusCode MuonSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_muonSelectionTool) delete m_muonSelectionTool;
-
+  if(m_muonSelectionTool){ 
+    delete m_muonSelectionTool; m_muonSelectionTool = nullptr;
+  }
   return EL::StatusCode::SUCCESS;
 }
 

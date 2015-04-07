@@ -36,7 +36,7 @@ MuonCalibrator :: MuonCalibrator (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_muonCalibrationAndSmearingTool(0)
+  m_muonCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -265,8 +265,10 @@ EL::StatusCode MuonCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_muonCalibrationAndSmearingTool) delete m_muonCalibrationAndSmearingTool;
-
+  if(m_muonCalibrationAndSmearingTool){ 
+    delete m_muonCalibrationAndSmearingTool; m_muonCalibrationAndSmearingTool = nullptr;
+  }
+  
   return EL::StatusCode::SUCCESS;
 }
 

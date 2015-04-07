@@ -54,7 +54,7 @@ ElectronCalibrator :: ElectronCalibrator (std::string name, std::string configNa
   m_systName(systName),       // if running systs - the name of the systematic
   m_systVal(systVal),         // if running systs - the value ( +/- 1 )
   m_runSysts(false),          // gets set later is syst applies to this tool
-  m_EgammaCalibrationAndSmearingTool(0)
+  m_EgammaCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -383,8 +383,10 @@ EL::StatusCode ElectronCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_EgammaCalibrationAndSmearingTool) delete m_EgammaCalibrationAndSmearingTool;
-
+  if(m_EgammaCalibrationAndSmearingTool) {
+    delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr;
+  }
+  
   return EL::StatusCode::SUCCESS;
 }
 

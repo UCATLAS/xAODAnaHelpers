@@ -50,7 +50,7 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string name, std::strin
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_MuonEffSFTool(0)
+  m_MuonEffSFTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -378,8 +378,10 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_MuonEffSFTool) delete m_MuonEffSFTool;
-
+  if(m_MuonEffSFTool){ 
+    delete m_MuonEffSFTool; m_MuonEffSFTool = nullptr;
+  }
+  
   return EL::StatusCode::SUCCESS;
 }
 

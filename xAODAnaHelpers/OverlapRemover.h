@@ -80,6 +80,15 @@ private:
   std::string  m_outContainerName_Taus;        // output container name
   std::string  m_outAuxContainerName_Taus;     // output auxiliary container name
 
+  enum SystType {
+    NOMINAL = 0,
+    ELSYST  = 1,
+    MUSYST  = 2,
+    JETSYST = 3,
+    PHSYST  = 4,
+    TAUSYST = 5,
+  };
+  
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -107,7 +116,13 @@ public:
   virtual EL::StatusCode configure ();
   virtual EL::StatusCode printOverlapInfo (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
   virtual EL::StatusCode printOverlapInfo (const char* type, xAOD::IParticle* obj, const std::string& selectFlag, const std::string& overlapFlag);
-
+  
+  virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets, 
+				    const xAOD::PhotonContainer* inPhotons,	const xAOD::TauJetContainer* inTaus,
+				    ConstDataVector<xAOD::ElectronContainer> *selectedElectrons, ConstDataVector<xAOD::MuonContainer> *selectedMuons, ConstDataVector<xAOD::JetContainer> *selectedJets,
+				    ConstDataVector<xAOD::PhotonContainer>   *selectedPhotons, ConstDataVector<xAOD::TauJetContainer>   *selectedTaus,
+				    SystType syst_type = NOMINAL, std::vector<std::string>* sysVec = nullptr);
+					     
   // this is needed to distribute the algorithm to the workers
   ClassDef(OverlapRemover, 1);
 };

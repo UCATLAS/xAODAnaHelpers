@@ -53,8 +53,8 @@ JetSelector :: JetSelector (std::string name, std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_cutflowHist(0),
-  m_cutflowHistW(0)
+  m_cutflowHist(nullptr),
+  m_cutflowHistW(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -277,7 +277,7 @@ EL::StatusCode JetSelector :: execute ()
   bool pass(false);
   bool count(true); // count for the 1st collection in the container - could be better as
   // shoudl only count for the nominal
-  const xAOD::JetContainer* inJets = 0;
+  const xAOD::JetContainer* inJets(nullptr);
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
@@ -336,7 +336,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 {
 
   // create output container (if requested)
-  ConstDataVector<xAOD::JetContainer>* selectedJets = 0;
+  ConstDataVector<xAOD::JetContainer>* selectedJets(nullptr);
   if(m_createSelectedContainer) {
     selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
   }

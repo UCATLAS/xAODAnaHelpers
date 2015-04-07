@@ -54,7 +54,7 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string name, st
   m_systName(systName),       // if running systs - the name of the systematic
   m_systVal(systVal),         // if running systs - the value ( +/- 1 )
   m_runSysts(false),          // gets set later is syst applies to this tool
-  m_asgElectronEfficiencyCorrectionTool(0)
+  m_asgElectronEfficiencyCorrectionTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -232,8 +232,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   m_numEvent++;
 
   // initialise containers
-  const xAOD::ElectronContainer* correctedElectrons = 0;
-  ConstDataVector<xAOD::ElectronContainer>* correctedElectronsCDV = 0;
+  const xAOD::ElectronContainer* correctedElectrons = nullptr;
+  ConstDataVector<xAOD::ElectronContainer>* correctedElectronsCDV = nullptr;
 
   // if m_inputAlgo = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
@@ -335,8 +335,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_asgElectronEfficiencyCorrectionTool) delete m_asgElectronEfficiencyCorrectionTool;
-
+  if(m_asgElectronEfficiencyCorrectionTool){ 
+    delete m_asgElectronEfficiencyCorrectionTool; m_asgElectronEfficiencyCorrectionTool = nullptr;
+  }
+  
   return EL::StatusCode::SUCCESS;
 }
 

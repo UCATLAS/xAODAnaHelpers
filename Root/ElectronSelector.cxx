@@ -49,11 +49,11 @@ ElectronSelector :: ElectronSelector (std::string name, std::string configName) 
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_cutflowHist(0),
-  m_cutflowHistW(0),
-  m_asgElectronIsEMSelector(0),
-  m_asgElectronLikelihoodTool(0),
-  m_electronIsolationSelectionTool(0)
+  m_cutflowHist(nullptr),
+  m_cutflowHistW(nullptr),
+  m_asgElectronIsEMSelector(nullptr),
+  m_asgElectronLikelihoodTool(nullptr),
+  m_electronIsolationSelectionTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put

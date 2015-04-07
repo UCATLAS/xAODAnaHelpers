@@ -52,9 +52,9 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configName,
   m_systName(systName),       // if running systs - the name of the systematic
   m_systVal(systVal),         // if running systs - the value ( +/- 1 )
   m_runSysts(false),          // gets set later is syst applies to this tool
-  m_jetCalibration(0),        // JetCalibrationTool
-  m_jetCleaning(0),           // JetCleaningTool
-  m_jetUncert(0)              // JetUncertaintiesTool
+  m_jetCalibration(nullptr),        // JetCalibrationTool
+  m_jetCleaning(nullptr),           // JetCleaningTool
+  m_jetUncert(nullptr)              // JetUncertaintiesTool
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -193,7 +193,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
-  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
+  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
@@ -424,10 +424,16 @@ EL::StatusCode JetCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_jetCalibration) delete m_jetCalibration;
-  if(m_jetCleaning) delete m_jetCleaning;
-  if( m_jetUncert ) delete m_jetUncert;
-
+  if(m_jetCalibration){ 
+    delete m_jetCalibration; m_jetCalibration = nullptr;
+  }
+  if(m_jetCleaning){
+    delete m_jetCleaning; m_jetCleaning = nullptr;
+  }
+  if( m_jetUncert ){ 
+    delete m_jetUncert; m_jetUncert = nullptr;
+  }
+  
   return EL::StatusCode::SUCCESS;
 }
 
