@@ -22,10 +22,6 @@ std::vector<TString> SplitString(TString& orig, const char separator)
     splitOpt = splitOpt.Strip(TString::kLeading,separator);
   }
 
-  //   for(unsigned int i = 0; i < splitV.size(); i++){
-  //     std::cout << splitV.at(i) << std::endl;
-  //   }
-
   return splitV;
 } // SplitString
 

@@ -20,16 +20,14 @@
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODTracking/VertexContainer.h"
 
-// rootcore includes
-#include "GoodRunsLists/GoodRunsListSelectionTool.h"
-#include "PileupReweighting/PileupReweightingTool.h"
-
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/BasicEventSelection.h>
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+
+#include "PATInterfaces/CorrectionCode.h"
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -49,8 +47,8 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_grl(0),
-  m_pileuptool(0)
+  m_grl(nullptr),
+  m_pileuptool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -58,11 +56,14 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  Info("BasicEventSelection()", "Calling constructor \n");
+  Info("BasicEventSelection()", "Calling constructor");
+
   //CP::CorrectionCode::enableFailure();
   //StatusCode::enableFailure();
+
   m_cutflowHist  = 0;
   m_cutflowHistW = 0;
+  m_histEventCount = 0;
 }
 
 
@@ -79,11 +80,11 @@ EL::StatusCode BasicEventSelection :: configure ()
   }
 
   // basics
-  m_debug         = env->GetValue("Debug"     ,     0         );
-  m_truthLevelOnly = env->GetValue("TruthLevelOnly",    false      );
+  m_debug          = env->GetValue("Debug"     ,     false);
+  m_truthLevelOnly = env->GetValue("TruthLevelOnly", false);
 
   // GRL
-  m_GRLxml        = env->GetValue("GRL"       ,     "/afs/cern.ch/user/a/atlasdqm/grlgen/All_Good/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );    //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+  m_GRLxml        = env->GetValue("GRL","$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
 
   // Pileup Reweighting
   m_doPUreweighting = env->GetValue("DoPileupReweighting", false);
@@ -95,7 +96,9 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
   }
   env->Print();
-  Info("configure()", "BasicEventSelection succesfully configured! \n");
+  Info("configure()", "BasicEventSelection succesfully configured! ");
+
+  delete env;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -110,7 +113,7 @@ EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
   //
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD();
   // let's initialize the algorithm to use the xAODRootAccess package
@@ -118,6 +121,8 @@ EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
 
   EL::OutputStream outForCFlow("cutflow");
   job.outputAdd ( outForCFlow );
+  EL::OutputStream outForMetadata("metadata");
+  job.outputAdd ( outForMetadata );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -131,15 +136,13 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize \n");
+  // TODO why is histInitialize() called after fileExecute() ??
 
-  //TODO this starts as true, and must be changed
-//!!  if (m_histEventCount) {
-//!!    // TODO why is histInitialize() called after fileExecute() ??
-//!!    Warning("fileExecute()", "Histograms already initialized! Skipping histInitialize()...");
-//!!    return EL::StatusCode::SUCCESS;
-//!!  }
+  Info("histInitialize()", "Calling histInitialize");
 
+  // write the metadata hist to this file so algos downstream can pick up the pointer
+  TFile *fileMD = wk()->getOutputFile ("metadata");
+  fileMD->cd();
   // event counts from meta data
   m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
   m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
@@ -148,11 +151,24 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights initial");
   m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeights selected in");
   m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeights selected out");
-  wk() -> addOutput(m_histEventCount);
+
+  // write meta data to histogram
+  // This is done here b/c histInitialize() is called after fileExecute()...
+  // ... why ??
+  Info("fileExecute()", "Meta data from this file:");
+  Info("fileExecute()", "Initial  events	 = %i", m_MD_initialNevents);
+  Info("fileExecute()", "Selected events	 = %i", m_MD_finalNevents);
+  Info("fileExecute()", "Initial  sum of weights = %f", m_MD_initialSumW);
+  Info("fileExecute()", "Selected sum of weights = %f", m_MD_finalSumW);
+  m_histEventCount -> Fill(1, m_MD_initialNevents); // nEvents initial
+  m_histEventCount -> Fill(2, m_MD_finalNevents);   // nEvents selected in
+  m_histEventCount -> Fill(4, m_MD_initialSumW);    // sumOfWeights initial
+  m_histEventCount -> Fill(5, m_MD_finalSumW);      // sumOfWeights selected in
+
 
   // write the cutflows to this file so algos downstream can pick up the pointer
-  TFile *file = wk()->getOutputFile ("cutflow");
-  file->cd();
+  TFile *fileCF = wk()->getOutputFile ("cutflow");
+  fileCF->cd();
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
   m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
   m_cutflowHist->SetBit(TH1::kCanRebin);
@@ -186,11 +202,11 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  Info("fileExecute()", "Calling fileExecute \n");
+  Info("fileExecute()", "Calling fileExecute");
 
   if (!m_histEventCount) {
     // TODO why is histInitialize() called after fileExecute() ??
-    Warning("fileExecute()", "Histograms not initialized! Calling histInitialize()...");
+    Warning("fileExecute()", "Histograms for event counting not initialized! Calling histInitialize()...");
     histInitialize();
   }
 
@@ -198,41 +214,67 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   // Meta data
   //---------------------------
 
+  // Marco
+  // Metadata on intial N (weighted) events are used to correctly normalise MC if running on a MC DAOD which had some skimming applied at the derivation stage
+  // NB: this is a just a hack, and will be replaced by something more official hopefully soon
+
   // get the MetaData tree once a new file is opened, with
   TTree *MetaData = dynamic_cast<TTree*>(wk()->inputFile()->Get("MetaData"));
   if (!MetaData) {
-    // TODO: report Error and return FAILURE?
-    Warning("fileExecute()", "MetaData not found!");
-    return EL::StatusCode::SUCCESS;
+    Error("fileExecute()", "MetaData not found!");
+    return EL::StatusCode::FAILURE;
   }
-  MetaData->LoadTree(0);
+
+  TBranch *b = MetaData->GetBranch("EventBookkeepers");
+  if(!b){
+    Error("fileExecute()", "EventBookkeepers is not a branch of MetaData");
+    //return EL::StatusCode::FAILURE;
+  }
 
   // extract the information from the EventBookkeepers branch
-  TTreeFormula tfNevents("tf", "EventBookkeepers.m_nAcceptedEvents", MetaData);
-  TTreeFormula tfSumW("tf", "EventBookkeepers.m_nWeightedAcceptedEvents", MetaData);
+  TTreeFormula tfNevents("tfNevents", "EventBookkeepers.m_nAcceptedEvents", MetaData);
+  TTreeFormula tfSumW("tfSumW", "EventBookkeepers.m_nWeightedAcceptedEvents", MetaData);
+
+  MetaData->LoadTree(0);
+
   tfNevents.UpdateFormulaLeaves();
   tfSumW.UpdateFormulaLeaves();
-  if (tfNevents.GetNdata() < 2 || tfSumW.GetNdata() < 2) {
-    // TODO: report Error and return FAILURE?
+
+  tfNevents.GetNdata();
+  tfSumW.GetNdata();
+
+  if ( !tfNevents.GetNdim() ) {
+    Warning("fileExecute()", "Could not read events from MetaData!");
+    //return EL::StatusCode::FAILURE;
+  }
+  if ( !tfSumW.GetNdim() ) {
     Warning("fileExecute()", "Could not read sum of weights from MetaData!");
-    return EL::StatusCode::SUCCESS;
+    //return EL::StatusCode::FAILURE;
   }
 
-  // read meta data
-  Info("fileExecute()", "Meta data from this file:");
-  Info("fileExecute()", "Initial  events         = %f", tfNevents.EvalInstance(1));
-  Info("fileExecute()", "Selected events         = %f", tfNevents.EvalInstance(0));
-  Info("fileExecute()", "Initial  sum of weights = %f", tfSumW.EvalInstance(1));
-  Info("fileExecute()", "Selected sum of weights = %f", tfSumW.EvalInstance(0));
-//  m_histEventCount -> Fill(1, tfNevents.EvalInstance(1)); // nEvents initial
-//  m_histEventCount -> Fill(2, tfNevents.EvalInstance(0)); // nEvents selected in
-//  m_histEventCount -> Fill(4, tfSumW.EvalInstance(1)); // sumOfWeights initial
-//  m_histEventCount -> Fill(5, tfSumW.EvalInstance(0)); // sumOfWeights selected in
+  // Marco:
+  // NB: xAODs and DxAODs store Nevents initial/final in different entries.
+  //    This is going to change soon though ...
+  // Update: no one really knows what all the entries truly stand for. Therefore, do not trust this too much at this stage!
 
+  if( HelperFunctions::isFilePrimaryxAOD( wk()->inputFile() ) ){
+     // primary xAODs
+    Info("fileExecute()", "Processing a primary xAOD file.");
+    m_MD_initialNevents = tfNevents.EvalInstance(0);
+    m_MD_finalNevents   = tfNevents.EvalInstance(1);
+    m_MD_initialSumW = tfSumW.EvalInstance(0);
+    m_MD_finalSumW   = tfSumW.EvalInstance(1);
+  } else {
+     // derived xAODs
+    Info("fileExecute()", "Processing a derived xAOD file.");
+    m_MD_initialNevents = tfNevents.EvalInstance(3);
+    m_MD_finalNevents   = tfNevents.EvalInstance(4);
+    m_MD_initialSumW = tfSumW.EvalInstance(3);
+    m_MD_finalSumW   = tfSumW.EvalInstance(4);
+  }
 
   return EL::StatusCode::SUCCESS;
 }
-
 
 
 EL::StatusCode BasicEventSelection :: changeInput (bool /*firstFile*/)
@@ -256,7 +298,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing BasicEventSelection... \n");
+  Info("initialize()", "Initializing BasicEventSelection... ");
 
   // get TEvent and TStore
   m_event = wk()->xaodEvent();
@@ -275,16 +317,15 @@ EL::StatusCode BasicEventSelection :: initialize ()
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
 
-  if(m_doPUreweighting){
-    m_pileuptool = new CP::PileupReweightingTool("Pileup");
-    std::vector<std::string> confFiles;
-    std::vector<std::string> lcalcFiles;
-    //confFiles.push_back("blah"); // pass from config file
-    //lcalcFiles.push_back("blah"); // pass from config file
-    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
-    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
-  }
+  m_pileuptool = new CP::PileupReweightingTool("Pileup");
+  std::vector<std::string> confFiles;
+  std::vector<std::string> lcalcFiles;
+  //confFiles.push_back("blah"); // pass from config file
+  //lcalcFiles.push_back("blah"); // pass from config file
+  //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
+  //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
+  
   //--------------------------------------------
   //  Get Containers Depending on Analysis Needs
   //--------------------------------------------
@@ -293,7 +334,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // get configuration from steerfile
 
   // as a check, let's see the number of events in our xAOD (long long int)
-  Info("initialize()", "Number of events in file   = %lli", m_event->getEntries());
+  Info("initialize()", "Number of events in file = %lli", m_event->getEntries());
   // count number of events
   m_eventCounter   = 0;
 
@@ -313,29 +354,16 @@ EL::StatusCode BasicEventSelection :: execute ()
   //----------------------------
   // Event information
   //---------------------------
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+
+  ++m_eventCounter;
 
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
   if(m_debug){
     Info("execute()", "Is MC? %i", static_cast<int>(isMC) );
   }
-  
-  // this check only for data
-  if( !isMC ) {
-    // if data event in Egamma stream is also in Muons stream, skip it
 
-    // Get the streams that the event was put in
-    const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
-    
-    if(m_debug){
-      for ( auto& it : streams ) { 
-	const std::string stream_name = it.name();
-	Info("execute()", "event has fired stream: %s", stream_name.c_str() ); 
-      }
-    }
-  }
-  
-  
   float mcEvtWeight(1.0), pileupWeight(1.0);
   if( isMC ){
      const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
@@ -350,12 +378,12 @@ EL::StatusCode BasicEventSelection :: execute ()
      }
      mcEvtWeight *= pileupWeight;
   }
-  // decorate with PU corrected mc event weight
+  // decorate with pileup corrected mc event weight
   static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
   mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
-  // print every 100 events, so we know where we are:
-  ++m_eventCounter;
+
+  // print every 1000 events, so we know where we are:
   m_cutflowHist ->Fill( m_cutflow_all, 1 );
   m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
   if ( (m_eventCounter % 1000) == 0 ) {
@@ -368,9 +396,20 @@ EL::StatusCode BasicEventSelection :: execute ()
     Info(m_name.c_str(), "End Content");
   }
 
-
   // if data check if event passes GRL and even cleaning
   if( !isMC ) {
+
+    // if data event in Egamma stream is also in Muons stream, skip it - TO DO
+
+    // Get the streams that the event was put in
+    const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
+
+    if(m_debug){
+      for ( auto& it : streams ) {
+	const std::string stream_name = it.name();
+	Info("execute()", "event has fired stream: %s", stream_name.c_str() );
+      }
+    }
 
     // GRL
     if(!m_grl->passRunLB(*eventInfo)){
@@ -408,6 +447,10 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
+    // if event in Egamma stream was already in Muons stream, skip it
+
+
+
   } else { // is MC - fill cutflows just for consistency
 
     m_cutflowHist ->Fill( m_cutflow_grl, 1 );
@@ -420,9 +463,9 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
   }
-  const xAOD::VertexContainer* vertices = 0;
+  const xAOD::VertexContainer* vertices(nullptr);
   if(!m_truthLevelOnly) {
-    vertices = HelperFunctions::getContainer<xAOD::VertexContainer>(m_vertexContainerName, m_event, m_store);;
+    RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_debug) ,"");
 
     if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
       wk()->skipEvent();
@@ -464,10 +507,10 @@ EL::StatusCode BasicEventSelection :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Number of events          = %i", m_eventCounter);
+  Info("finalize()", "Number of processed events      = %i", m_eventCounter);
 
-  if(m_grl) { delete m_grl; m_grl = 0; }
-  if(m_doPUreweighting && m_pileuptool) { delete m_pileuptool; m_pileuptool = 0; }
+  if(m_grl) delete m_grl;
+  if(m_pileuptool) delete m_pileuptool;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -489,7 +532,6 @@ EL::StatusCode BasicEventSelection :: histFinalize ()
 
 //  if(m_useCutFlow) {
 //    TFile * file = wk()->getOutputFile (m_cutFlowFileName);
-//    std::cout << file->GetName() << std::endl;
 //    if(!m_myTree->writeTo( file )) {
 //      Error("finalize()", "Failed to write tree to ouput file!");
 //      return EL::StatusCode::FAILURE;

@@ -11,6 +11,7 @@
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
+#include <xAODAnaHelpers/HelperFunctions.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
@@ -69,6 +70,7 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   m_jetContainerNames       = SplitString( m_jetContainerNamesStr,      ',' );
   m_electronContainerNames  = SplitString( m_electronContainerNamesStr, ',' );
   m_muonContainerNames      = SplitString( m_muonContainerNamesStr,     ',' );
+  m_debug                   = config->GetValue("Debug",                 false);
 
   if ( m_outputLabel.Length() == 0 ) {
     Error("Writer::setupJob()", "No OutputLabel specified!");
@@ -78,6 +80,8 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   // tell EventLoop about our output xAOD:
   EL::OutputStream out(m_outputLabel.Data());
   job.outputAdd (out);
+
+  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -156,50 +160,49 @@ EL::StatusCode Writer :: execute ()
   // if not found in m_event, look in m_store - user created - write aux store as well
   for( auto contName : m_jetContainerNames ) {
 
-    const xAOD::JetContainer* inJetsConst = 0;
+    const xAOD::JetContainer* inJetsConst(nullptr);
     // look in event
-    if ( m_event->retrieve( inJetsConst , contName.Data() ).isSuccess() ){
+    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, m_debug).isSuccess() ) {
       // without modifying the contents of it:
-      std::cout << " Write a collection " << contName << " " << inJetsConst->size() << std::endl;
+      Info("execute()", " Write a collection %s %lu", contName.Data(), inJetsConst->size() );
       m_event->copy( contName.Data() );
-      std::cout << " Wrote a collection " << contName << std::endl;
+      Info("execute()", " Wrote a collection %s", contName.Data());
       continue;
     }
 
     // look in store
-    xAOD::JetContainer* inJets = 0;
-    if ( m_store->retrieve( inJets , contName.Data() ).isSuccess() ){
-
+    xAOD::JetContainer* inJets(nullptr);
+    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, m_debug).isSuccess() ){
 //      // FIXME add something like this
 //      jets_shallowCopy.second->setShallowIO( false ); // true = shallow copy, false = deep copy
 //      // if true should have something like this line somewhere:
 
       // Record the objects into the output xAOD:
-      std::cout << " Write a collection " << contName << " " << inJets->size() << std::endl;
+      Info("execute()", " Write a collection %s %lu", contName.Data(), inJets->size() );
       if( ! m_event->record( inJets, contName.Data() ) ) {
-        Error(m_name.c_str() ,"Could not record %s", contName.Data());
+        Error("execute()" ,"%s: Could not record %s", m_name.c_str(), contName.Data());
         return EL::StatusCode::FAILURE;
       }
-      std::cout << " Wrote a collection " << contName << std::endl;
+      Info("execute()", " Wrote a collection %s", contName.Data());
 
       // get pointer to associated aux container
       xAOD::JetAuxContainer* inJetsAux = 0;
-      std::cout << " Wrote a aux store " << contName << std::endl;
+      Info("execute()", " Wrote a aux store %s", contName.Data());
       TString auxName( contName + "Aux." );
-      if ( m_store->retrieve( inJetsAux , auxName.Data() ).isSuccess() ){
-        Error(m_name.c_str() ,"Could not get Aux data for %s", contName.Data());
+      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, m_debug).isSuccess() ){
+        Error("execute()" ,"%s: Could not get Aux data for %s", m_name.c_str(), contName.Data());
         return EL::StatusCode::FAILURE;
       }
-      std::cout << " Wrote a aux store " << contName << std::endl;
+      Info("execute()", " Wrote a aux store %s", contName.Data());
 
       if( ! m_event->record( inJetsAux, auxName.Data() ) ) {
-        Error(m_name.c_str() ,"Could not record aux store for %s", contName.Data());
+        Error("execute()", "%s: Could not record aux store for %s", m_name.c_str(), contName.Data());
         return EL::StatusCode::FAILURE;
       }
     }
     // could not find the container - problems
     else {
-      Error(m_name.c_str() ,"Could not find %s", contName.Data());
+      Error("execute()" ,"%s: Could not find %s", m_name.c_str(), contName.Data());
       return EL::StatusCode::FAILURE;
     }
   }

@@ -7,7 +7,7 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-class JetHists;
+#include <xAODAnaHelpers/JetHists.h>
 
 class JetHistsAlgo : public EL::Algorithm
 {
@@ -24,11 +24,13 @@ public:
 
 private:
 
-  JetHists* m_plots; //!
+  std::map< std::string, JetHists* > m_plots; //!
 
   // configuration variables
   std::string m_inContainerName;      //!
-  std::string m_detailStr;        //!
+  std::string m_detailStr;            //!
+  std::string m_inputAlgo;            //!
+  bool m_debug; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -56,6 +58,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+  void AddHists( std::string name );
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetHistsAlgo, 1);

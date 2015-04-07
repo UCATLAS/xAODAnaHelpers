@@ -45,7 +45,7 @@ EL::StatusCode ContainerRecording :: execute ()
     std::string outputContainer_CDV     = inputContainer+"_CDV";
     std::string outputContainer_shallow = inputContainer+"_Shallow";
 
-    std::cout << "-------------------------------------------------------------------------------" << std::endl;
+    Info("execute()", "-------------------------------------------------------------------------------");
 
     Info("execute()", "Retrieving the input jet container %s.", inputContainer.c_str());
     // First: retrieve AntiKt10LCTopoJets from TEvent
@@ -78,7 +78,7 @@ EL::StatusCode ContainerRecording :: execute ()
     // ....... and the shallow copy in TStore
     RETURN_CHECK("ContainerRecording::execute()", m_store->record( in_aktJets_shallow.first, outputContainer_shallow ), "");
     RETURN_CHECK("ContainerRecording::execute()", m_store->record( in_aktJets_shallow.second, outputContainer_shallow+"Aux." ), "");
-    std::cout << std::endl << "000000000000000000000000000000000000000000000000000" << std::endl;
+    Info("execute()", "000000000000000000000000000000000000000000000000000");
 
     // Fourth: retrieve the object stored in multiple ways
     Info("execute()", "Attempting to retrieve %s as a ConstDataVector.", outputContainer_CDV.c_str());
@@ -87,6 +87,8 @@ EL::StatusCode ContainerRecording :: execute ()
     ConstDataVector<xAOD::JetContainer>* out_aktJets_CDV_event(0);
     ConstDataVector<xAOD::JetContainer>* out_aktJets_CDV_store(0);
     ConstDataVector<xAOD::JetContainer>* out_aktJets_CDV_both(0);
+    ConstDataVector<xAOD::IParticleContainer>* out_iPart_CDV_event(0);
+    ConstDataVector<xAOD::IParticleContainer>* out_iPart_CDV_store(0);
     // ---- from TStore
     if( !HelperFunctions::retrieve(out_aktJets_CDV_store, outputContainer_CDV, 0, m_store, true).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store as ConstDataVector.", outputContainer_CDV.c_str());
@@ -101,6 +103,20 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Event as ConstDataVector.", outputContainer_CDV.c_str());
     }
+    // ---- from TStore -- inheriting
+    if( !HelperFunctions::retrieve(out_iPart_CDV_store, outputContainer_CDV, 0, m_store, true).isSuccess() ){
+      Error("execute()", "Failed to retrieve %s from Store as ConstDataVector of IParticles.", outputContainer_CDV.c_str());
+      cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Store as ConstDataVector.", outputContainer_CDV.c_str());
+    }
+    // ---- from TEvent -- inheriting
+    if( !HelperFunctions::retrieve(out_iPart_CDV_event, outputContainer_CDV, m_event, 0, true).isSuccess() ){
+      Error("execute()", "Failed to retrieve %s from Event as ConstDataVector of IParticles.", outputContainer_CDV.c_str());
+      cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Event as ConstDataVector.", outputContainer_CDV.c_str());
+    }
     // ---- from TStore, then TEvent (TStore should have priority)
     if( !HelperFunctions::retrieve(out_aktJets_CDV_both, outputContainer_CDV, m_event, m_store, true).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store/Event as ConstDataVector.", outputContainer_CDV.c_str());
@@ -108,13 +124,15 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Store/Event as ConstDataVector.", outputContainer_CDV.c_str());
     }
-    std::cout << std::endl << "111111111111111111111111111111111111111111111111111" << std::endl;
+    Info("execute()", "111111111111111111111111111111111111111111111111111");
 
     Info("execute()", "Attempting to retrieve %s as a const DataVector.", outputContainer_CDV.c_str());
     // -- retrieve as a const DataVector
     const xAOD::JetContainer* out_aktJets_event(0);
     const xAOD::JetContainer* out_aktJets_store(0);
     const xAOD::JetContainer* out_aktJets_both(0);
+    const xAOD::IParticleContainer* out_iPart_store(0);
+    const xAOD::IParticleContainer* out_iPart_event(0);
     // ---- from TStore
     if( !HelperFunctions::retrieve(out_aktJets_store, outputContainer_CDV, 0, m_store, true).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store as const DataVector.", outputContainer_CDV.c_str());
@@ -129,6 +147,20 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Event as const DataVector.", outputContainer_CDV.c_str());
     }
+    // ---- from TStore -- inheriting
+    if( !HelperFunctions::retrieve(out_iPart_store, outputContainer_CDV, 0, m_store, true).isSuccess() ){
+      Error("execute()", "Failed to retrieve %s from Store as const DataVector of IParticles.", outputContainer_CDV.c_str());
+      cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Store as const DataVector of IParticles.", outputContainer_CDV.c_str());
+    }
+    // ---- from TEvent -- inheriting
+    if( !HelperFunctions::retrieve(out_iPart_event, outputContainer_CDV, m_event, 0, true).isSuccess() ){
+      Error("execute()", "Failed to retrieve %s from Event as const DataVector of IParticles.", outputContainer_CDV.c_str());
+      cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Event as const DataVector of IParticles.", outputContainer_CDV.c_str());
+    }
     // ---- from TStore, then TEvent (TStore should have priority)
     if( !HelperFunctions::retrieve(out_aktJets_both, outputContainer_CDV, m_event, m_store, true).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store/Event as const DataVector.", outputContainer_CDV.c_str());
@@ -136,13 +168,15 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Store/Event as const DataVector.", outputContainer_CDV.c_str());
     }
-    std::cout << std::endl << "222222222222222222222222222222222222222222222222222" << std::endl;
+    Info("execute()", "222222222222222222222222222222222222222222222222222");
 
     Info("execute()", "Attempting to retrieve %s as a DataVector.", outputContainer_shallow.c_str());
     // -- retrieve as a DataVector
     xAOD::JetContainer* out_aktJets_shallow_event(0);
     xAOD::JetContainer* out_aktJets_shallow_store(0);
     xAOD::JetContainer* out_aktJets_shallow_both(0);
+    xAOD::IParticleContainer* out_iPart_shallow_store(0);
+    xAOD::IParticleContainer* out_iPart_shallow_event(0);
     // ---- from TStore
     if( !HelperFunctions::retrieve(out_aktJets_shallow_store, outputContainer_shallow, 0, m_store, true).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store as DataVector.", outputContainer_shallow.c_str());
@@ -157,6 +191,20 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Event as DataVector.", outputContainer_shallow.c_str());
     }
+    // ---- from TStore -- inheriting
+    if( !HelperFunctions::retrieve(out_iPart_shallow_store, outputContainer_shallow.c_str(), 0, m_store, true).isSuccess() ){
+      Error("execute()", "Failed to retrieve %s from Store as DataVector of IParticles.", outputContainer_shallow.c_str());
+      cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Store as DataVector of IParticles.", outputContainer_shallow.c_str());
+    }
+    // ---- from TEvent -- inheriting
+    if( !HelperFunctions::retrieve(out_iPart_shallow_event, outputContainer_shallow, m_event, 0, true).isSuccess() ){
+      Error("execute()", "Failed to retrieve %s from Event as DataVector of IParticles.", outputContainer_shallow.c_str());
+      cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Event as DataVector of IParticles.", outputContainer_shallow.c_str());
+    }
     // ---- from TStore, then TEvent (TStore should have priority)
     if( !HelperFunctions::retrieve(out_aktJets_shallow_both, outputContainer_shallow, m_event, m_store, true).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store/Event as DataVector.", outputContainer_shallow.c_str());
@@ -164,13 +212,15 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Store/Event as DataVector.", outputContainer_shallow.c_str());
     }
-    std::cout << std::endl << "333333333333333333333333333333333333333333333333333" << std::endl;
+    Info("execute()", "333333333333333333333333333333333333333333333333333");
 
-    Info("execute()", "Attempting to retrieve %s as a csont DataVector.", outputContainer_shallow.c_str());
+    Info("execute()", "Attempting to retrieve %s as a const DataVector.", outputContainer_shallow.c_str());
     // -- retrieve as a const DataVector
     const xAOD::JetContainer* out_aktJets_const_shallow_event(0);
     const xAOD::JetContainer* out_aktJets_const_shallow_store(0);
     const xAOD::JetContainer* out_aktJets_const_shallow_both(0);
+    const xAOD::IParticleContainer* out_iPart_const_shallow_store(0);
+    const xAOD::IParticleContainer* out_iPart_const_shallow_event(0);
     // ---- from TStore
     if( !HelperFunctions::retrieve(out_aktJets_const_shallow_store, outputContainer_shallow, 0, m_store, true).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store as const DataVector.", outputContainer_shallow.c_str());
@@ -185,6 +235,20 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Event as const DataVector.", outputContainer_shallow.c_str());
     }
+    // ---- from TStore -- inheriting
+    if( !HelperFunctions::retrieve(out_iPart_const_shallow_store, outputContainer_shallow, 0, m_store, true).isSuccess() ){
+      Error("execute()", "Failed to retrieve %s from Store as const DataVector of IParticles.", outputContainer_shallow.c_str());
+      cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Store as const DataVector of IParticles.", outputContainer_shallow.c_str());
+    }
+    // ---- from TEvent -- inheriting
+    if( !HelperFunctions::retrieve(out_iPart_const_shallow_event, outputContainer_shallow, m_event, 0, true).isSuccess() ){
+      Error("execute()", "Failed to retrieve %s from Event as const DataVector of IParticles.", outputContainer_shallow.c_str());
+      cannotRetrieve |= 1;
+    } else {
+      Info("execute()", "Successfully retrieved %s from Event as const DataVector of IParticles.", outputContainer_shallow.c_str());
+    }
     // ---- from TStore, then TEvent (TStore should have priority)
     if( !HelperFunctions::retrieve(out_aktJets_const_shallow_both, outputContainer_shallow, m_event, m_store, true).isSuccess() ){
       Error("execute()", "Failed to retrieve %s from Store/Event as const DataVector.", outputContainer_shallow.c_str());
@@ -192,7 +256,7 @@ EL::StatusCode ContainerRecording :: execute ()
     } else {
       Info("execute()", "Successfully retrieved %s from Store/Event as const DataVector.", outputContainer_shallow.c_str());
     }
-    std::cout << std::endl << "444444444444444444444444444444444444444444444444444" << std::endl;
+    Info("execute()", "444444444444444444444444444444444444444444444444444");
 
     if(cannotRetrieve) return EL::StatusCode::FAILURE;
 

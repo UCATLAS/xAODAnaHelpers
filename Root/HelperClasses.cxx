@@ -32,7 +32,7 @@ namespace HelperClasses{
   }
 
   /* parser for electron cut-based PID enum */
-  ///*
+  /* Apparently this won't be useful for non-Athena users...  */
   template <>
   EnumParser<egammaPID::egammaIDQuality>::EnumParser()
   {
@@ -46,7 +46,14 @@ namespace HelperClasses{
     std::string ElectronIDTight1("ElectronIDTight1");         enumMap.insert(std::make_pair(ElectronIDTight1   , egammaPID::ElectronIDTight1));
     std::string ElectronIDTightHLT("ElectronIDTightHLT");     enumMap.insert(std::make_pair(ElectronIDTightHLT , egammaPID::ElectronIDTightHLT));
   }
-  //*/
+  template <>
+  EnumParser<egammaPID::PID>::EnumParser()
+  {
+    std::string IsEMLoose("IsEMLoose");     enumMap.insert(std::make_pair( IsEMLoose , egammaPID::IsEMLoose));
+    std::string IsEMMedium("IsEMMedium");   enumMap.insert(std::make_pair( IsEMMedium, egammaPID::IsEMMedium));
+    std::string IsEMTight("IsEMTight");     enumMap.insert(std::make_pair( IsEMTight , egammaPID::IsEMTight));
+  }
+
 
   /* parser for muon quality enum */
   template <>
@@ -80,9 +87,23 @@ namespace HelperClasses{
    *  turn a set on
    *
    **************************************/
-  bool InfoSwitch::parse(std::string flag)
+  bool InfoSwitch::parse(const std::string flag)
   {
     return m_configStr.find(flag) != std::string::npos;
+  }
+
+  void EventInfoSwitch::initialize(){
+    m_pileup        = parse("pileup");
+    m_shapeEM       = parse("shapeEM");
+    m_shapeLC       = parse("shapeLC");
+  }
+
+  void MuonInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+  }
+
+  void ElectronInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
   }
 
   void JetInfoSwitch::initialize(){
@@ -95,6 +116,7 @@ namespace HelperClasses{
     m_layer         = parse("layer");
     m_trackPV       = parse("trackPV");
     m_trackAll      = parse("trackAll");
+    m_flavTag       = parse("flavorTag");
     if( parse("LeadingJets") ){
       m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );
       if (m_numLeadingJets == 0){ //Perhaps infoSwitches are combined and Njets < 10

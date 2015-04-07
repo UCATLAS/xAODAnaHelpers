@@ -31,9 +31,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-// external tools include(s):
-#include "MuonSelectorTools/MuonSelectionTool.h"
-
 // ROOT include(s):
 #include "TEnv.h"
 #include "TFile.h"
@@ -63,14 +60,14 @@ MuonSelector :: MuonSelector (std::string name, std::string configName) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("MuonSelector()", "Calling constructor \n");
+  Info("MuonSelector()", "Calling constructor");
 }
 
 MuonSelector::~MuonSelector() {}
 
 EL::StatusCode  MuonSelector :: configure ()
 {
-  Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "MuonSelector::configure()", m_configName);
@@ -96,8 +93,6 @@ EL::StatusCode  MuonSelector :: configure ()
 
   // if only want to look at a subset of object
   m_nToProcess              = config->GetValue("NToProcess", -1);
-  // sort before running selection
-  m_sort                    = config->GetValue("Sort",          false);
 
   // configurable cuts
   m_muonQuality             = config->GetValue("MuonQuality", "Medium"); // muon quality as defined by xAOD::MuonQuality enum {Tight, Medium, Loose, VeryLoose}, corresponding to 0, 1, 2 and 3 (default is 1 - medium quality).
@@ -129,10 +124,12 @@ EL::StatusCode  MuonSelector :: configure ()
   m_pT_max                  = config->GetValue("pTMax",  1e8);
   m_pT_min                  = config->GetValue("pTMin",  1e8);
   m_eta_max                 = config->GetValue("etaMax", 1e8);
-  m_d0sig_max     	        = config->GetValue("d0sigMax", 4.0);
-  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1.5);
+  m_d0_max                  = config->GetValue("d0Max", 1e8);
+  m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
+  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
 
   // isolation stuff
+  m_doIsolation             = config->GetValue("DoIsolationCut" , false);
   m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" ,	"etcone20");
   m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
   m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
@@ -149,6 +146,7 @@ EL::StatusCode  MuonSelector :: configure ()
   }
 
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+  ss.clear();
   ss.str(m_failAuxDecorKeys);
   while(std::getline(ss, token, ',')){
     m_failKeys.push_back(token);
@@ -160,7 +158,9 @@ EL::StatusCode  MuonSelector :: configure ()
   }
 
   config->Print();
-  Info("configure()", "MuonSelector Interface succesfully configured! \n");
+  Info("configure()", "MuonSelector Interface succesfully configured! ");
+
+  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -176,7 +176,7 @@ EL::StatusCode MuonSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MuonSelector" ).ignore(); // call before opening first file
@@ -193,7 +193,7 @@ EL::StatusCode MuonSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize \n");
+  Info("histInitialize()", "Calling histInitialize");
   if(m_useCutFlow) {
     TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
@@ -212,7 +212,7 @@ EL::StatusCode MuonSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute \n");
+  Info("fileExecute()", "Calling fileExecute");
 
 
   return EL::StatusCode::SUCCESS;
@@ -226,7 +226,7 @@ EL::StatusCode MuonSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput \n");
+  Info("changeInput()", "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -244,20 +244,17 @@ EL::StatusCode MuonSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing MuonSelector Interface... \n");
+  Info("initialize()", "Initializing MuonSelector Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
+  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   if ( configure() == EL::StatusCode::FAILURE ) {
     Error("initialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
   }
-
-
-  std::cout << m_name << " Number of events = " << m_event->getEntries() << std::endl;
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -266,31 +263,31 @@ EL::StatusCode MuonSelector :: initialize ()
   m_numObjectPass = 0;
 
   if(m_debug){
-    std::cout << " Parameters to MuonSelector() : "  << "\n"
-	  << "\t m_inContainerName : "         << m_inContainerName.c_str()   <<  " of type " <<  typeid(m_inContainerName).name() << "\n"
-	  << "\t m_decorateSelectedObjects : " << m_decorateSelectedObjects  <<  " of type " <<  typeid(m_decorateSelectedObjects).name() << "\n"
-	  << "\t m_createSelectedContainer : " << m_createSelectedContainer  <<  " of type " <<  typeid(m_createSelectedContainer).name() <<  "\n"
-	  << "\t m_outContainerName: "         << m_outContainerName.c_str()  <<  " of type " <<  typeid(m_outContainerName).name() << "\n"
-	  << "\t m_debug: "		       << m_debug	             <<  " of type " <<  typeid(m_debug).name() <<  "\n"
-	  << "\t m_nToProcess: "	       << m_nToProcess  	     <<  " of type " <<  typeid(m_nToProcess).name() << "\n"
-	  << "\t m_muonQuality  : "	       << m_muonQuality.c_str() 	     <<  " of type " <<  typeid(m_muonQuality).name() <<  "\n"
-	  << "\t m_pass_max	: "	       << m_pass_max		     <<  " of type " <<  typeid(m_pass_max).name() << "\n"
-	  << "\t m_pass_min	: "	       << m_pass_min		     <<  " of type " <<  typeid(m_pass_min).name() << "\n"
-	  << "\t m_pT_max	: "	       << m_pT_max		     <<  " of type " <<  typeid(m_pT_max).name() << "\n"
-	  << "\t m_pT_min	: "	       << m_pT_min		     <<  " of type " <<  typeid(m_pT_min).name() << "\n"
-	  << "\t m_eta_max	: "	       << m_eta_max		     <<  " of type " <<  typeid(m_eta_max).name() << "\n"
-          << std::endl;
+    Info("initialize()", " Parameters to MuonSelector() : ");
+	Info("initialize()", "\t m_inContainerName : %s of type %s",         m_inContainerName.c_str(),                         typeid(m_inContainerName).name() );
+	Info("initialize()", "\t m_decorateSelectedObjects : %s of type %s", std::to_string(m_decorateSelectedObjects).c_str(), typeid(m_decorateSelectedObjects).name() );
+	Info("initialize()", "\t m_createSelectedContainer : %s of type %s", std::to_string(m_createSelectedContainer).c_str(), typeid(m_createSelectedContainer).name() );
+	Info("initialize()", "\t m_outContainerName: %s of type %s",         m_outContainerName.c_str(),                        typeid(m_outContainerName).name() );
+	Info("initialize()", "\t m_debug: %s of type %s",                    std::to_string(m_debug).c_str(),                   typeid(m_debug).name() );
+	Info("initialize()", "\t m_nToProcess: %s of type %s",               std::to_string(m_nToProcess).c_str(),              typeid(m_nToProcess).name() );
+	Info("initialize()", "\t m_muonQuality  : %s of type %s",            m_muonQuality.c_str(),                             typeid(m_muonQuality).name() );
+	Info("initialize()", "\t m_pass_max	: %s of type %s",                std::to_string(m_pass_max).c_str(),                typeid(m_pass_max).name() );
+	Info("initialize()", "\t m_pass_min	: %s of type %s",                std::to_string(m_pass_min).c_str(),                typeid(m_pass_min).name() );
+	Info("initialize()", "\t m_pT_max	: %s of type %s",                std::to_string(m_pT_max).c_str(),                  typeid(m_pT_max).name() );
+	Info("initialize()", "\t m_pT_min	: %s of type %s",                std::to_string(m_pT_min).c_str(),                  typeid(m_pT_min).name() );
+	Info("initialize()", "\t m_eta_max	: %s of type %s",                std::to_string(m_eta_max).c_str(),                 typeid(m_eta_max).name() );
   }
 
   // initialise  muon Selector Tool
-  m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelection");
+  std::string ms_tool_name = std::string("MuonSelection_") + m_name;
+  m_muonSelectionTool = new CP::MuonSelectionTool( ms_tool_name.c_str() );
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
 
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
-  m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max) ); // default 2.5
-  m_muonSelectionTool->setProperty("MuQuality", static_cast<int>(muQualityParser.parseEnum(m_muonQuality))   ); // why is not ok to pass the enum??
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property"); // default 2.5
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", static_cast<int>(muQualityParser.parseEnum(m_muonQuality))), "Failed to set MuQuality property" ); // why is not ok to pass the enum??
 
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
 
@@ -306,10 +303,11 @@ EL::StatusCode MuonSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Muon Selection... \n");
+  if(m_debug) Info("execute()", "Applying Muon Selection... ");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>( "EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -322,7 +320,9 @@ EL::StatusCode MuonSelector :: execute ()
   m_numEvent++;
 
   // this will be the collection processed - no matter what!!
-  const xAOD::MuonContainer* inMuons = HelperFunctions::getContainer<xAOD::MuonContainer>(m_inContainerName, m_event, m_store);
+  const xAOD::MuonContainer* inMuons(nullptr);
+  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_debug) ,"");
+
 
   return executeConst( inMuons, mcEvtWeight );
 
@@ -333,12 +333,12 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
 
   // create output container (if requested)
   ConstDataVector<xAOD::MuonContainer>* selectedMuons = 0;
-  if(m_createSelectedContainer) {
-    selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-  }
+  if(m_createSelectedContainer) selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
 
   // get primary vertex
-  const xAOD::VertexContainer *vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  const xAOD::VertexContainer *vertices(nullptr);
+  RETURN_CHECK("MuonSelector::executeConst()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
+
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
 
@@ -400,7 +400,7 @@ EL::StatusCode MuonSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -419,12 +419,9 @@ EL::StatusCode MuonSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Deleting tool instances...");
 
-  if(m_muonSelectionTool){
-    delete m_muonSelectionTool;
-    m_muonSelectionTool = 0;
-  }
+  if(m_muonSelectionTool) delete m_muonSelectionTool;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -444,7 +441,7 @@ EL::StatusCode MuonSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize \n");
+  Info("histFinalize()", "Calling histFinalize");
   if(m_useCutFlow) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
@@ -468,42 +465,63 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // pT max
   if( m_pT_max != 1e8 ) {
     if(  muon->pt() > m_pT_max ) {
-      if (m_debug) std::cout << "Muon failed pT max cut." << std::endl;
+      if (m_debug) Info("PassCuts()", "Muon failed pT max cut.");
       return 0;
     }
   }
   // pT min
   if( m_pT_min != 1e8 ) {
     if( muon->pt() < m_pT_min ) {
-      if (m_debug) std::cout << "Muon failed pT min cut." << std::endl;
+      if (m_debug) Info("PassCuts()", "Muon failed pT min cut.");
       return 0;
     }
   }
   // |eta| max
   if( m_eta_max != 1e8 ) {
     if( fabs(muon->eta()) > m_eta_max ) {
-      if (m_debug) std::cout << "Muon failed |eta| max cut." << std::endl;
+      if (m_debug) Info("PassCuts()", "Muon failed |eta| max cut.");
       return 0;
     }
   }
 
   // do not cut on impact parameter if muon is Standalone
   if ( type != xAOD::Muon::MuonType::MuonStandAlone ){
+    // d0 cut
+    if (!( tp->d0() < m_d0_max ) ) {
+    	if (m_debug) Info("PassCuts()", "Muon failed d0 cut.");
+    	return 0;
+    }
     // d0sig cut
     if (!( d0_significance < m_d0sig_max ) ) {
-    	if (m_debug) std::cout << "Muon failed d0 significance cut." << std::endl;
+    	if (m_debug) Info("PassCuts()", "Muon failed d0 significance cut.");
     	return 0;
     }
     // z0*sin(theta) cut
     if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
-    	if (m_debug) std::cout << "Muon failed z0*sin(theta) cut." << std::endl;
+    	if (m_debug) Info("PassCuts()", "Muon failed z0*sin(theta) cut.");
     	return 0;
     }
   }
 
+  // if muon is Combined, check charge is the same in ID and MS - Used in RunI ttH analysis
+  /*
+  if ( type != xAOD::Muon::MuonType::Combined ){
+
+    const xAOD::TrackParticle* IDTrack = const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::InnerDetectorTrackParticle) );
+    const xAOD::TrackParticle* MSTrack = const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::MuonSpectrometerTrackParticle) );
+
+    if( IDTrack && MSTrack ){
+      if ( IDTrack->charge() * MSTrack->charge() < 0 ) {
+    	if (m_debug) Info("PassCuts()", "Muon track has different charge measured in ID and MS. Failed selection");
+    	return 0;
+      }
+    }
+  }
+  */
+
   // muon quality
   xAOD::Muon::Quality my_quality = m_muonSelectionTool->getQuality( *muon );
-  if(m_debug) std::cout << "Muon quality " << static_cast<int>(my_quality) << std::endl;
+  if(m_debug) Info("PassCuts()", "Muon quality %d", static_cast<int>(my_quality));
   /*
   if(my_quality <= xAOD::Muon::VeryLoose)
     verylooseMuons++;
@@ -522,26 +540,28 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   //static_cast<int>(muTypeParser.parseEnum(m_muonType))
   if( !m_muonType.empty() ){
     if( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
-      if (m_debug) std::cout << "Muon type: " << muon->muonType() <<" - required: " << m_muonType.c_str() << " . Failed" << std::endl;
+      if (m_debug) Info("PassCuts()", "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str());
       return 0;
     }
   }
 
   // isolation
-  HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-  float ptcone_dr = -999., etcone_dr = -999.;
-  if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ){
-    bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut) ? true : false;
-    bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ? true : false;
-    if( !( isTrackIso && isCaloIso ) ){
-      if (m_debug) std::cout << "Muon failed isolation cut " << std::endl;
-      return 0;
+  if( m_doIsolation ){
+    HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+    float ptcone_dr = -999., etcone_dr = -999.;
+    if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ){
+      bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut) ? true : false;
+      bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ? true : false;
+      if( !( isTrackIso && isCaloIso ) ){
+        if (m_debug)  Info("PassCuts()", "Muon failed isolation cut ");
+        return 0;
+      }
     }
   }
 
   // this will accept the muon based on the settings at initialization
   if ( ! m_muonSelectionTool->accept( *muon ) ){
-    if (m_debug) std::cout << "Muon failed requirements of MuonSelectionTool." << std::endl;
+    if (m_debug) Info("PassCuts()", "Muon failed requirements of MuonSelectionTool.");
     return 0;
   }
 

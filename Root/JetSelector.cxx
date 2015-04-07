@@ -62,12 +62,12 @@ JetSelector :: JetSelector (std::string name, std::string configName) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  Info("JetSelector()", "Calling constructor \n");
+  Info("JetSelector()", "Calling constructor");
 }
 
 EL::StatusCode  JetSelector :: configure ()
 {
-  Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
+  Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG("JetSelector::configure()", m_configName);
@@ -80,8 +80,10 @@ EL::StatusCode  JetSelector :: configure ()
 
   // input container to be read from TEvent or TStore
   m_inContainerName         = config->GetValue("InputContainer",  "");
-  // name of algo input container comes from - only if 
-  m_inputAlgo               = config->GetValue("InputAlgo",       "");
+
+  // name of algo input container comes from - only if running on syst
+  m_inputAlgo               = config->GetValue("InputAlgo",   "");
+  m_outputAlgo              = config->GetValue("OutputAlgo",  "AntiKt4EMTopoJets_Signal_Algo");
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -111,12 +113,12 @@ EL::StatusCode  JetSelector :: configure ()
   m_mass_min                = config->GetValue("massMin",     1e8);
   m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
   m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-  m_truthLabel 		          = config->GetValue("TruthLabel",   -1);
+  m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
 
-  m_doJVF 		              = config->GetValue("DoJVF",       false);
-  m_pt_max_JVF 		          = config->GetValue("pTMaxJVF",    50e3);
-  m_eta_max_JVF 	          = config->GetValue("etaMaxJVF",   2.4);
-  m_JVFCut 		              = config->GetValue("JVFCut",      0.5);
+  m_doJVF 		    = config->GetValue("DoJVF",       false);
+  m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",    50e3);
+  m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
+  m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
 
   // parse and split by comma
   std::string token;
@@ -128,8 +130,10 @@ EL::StatusCode  JetSelector :: configure ()
   }
 
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+  ss.clear();
   ss.str(m_failAuxDecorKeys);
   while(std::getline(ss, token, ',')){
+    std::cout << token << std::endl;
     m_failKeys.push_back(token);
   }
 
@@ -139,7 +143,9 @@ EL::StatusCode  JetSelector :: configure ()
   }
 
   config->Print();
-  Info("configure()", "JetSelector Interface succesfully configured! \n");
+  Info("configure()", "JetSelector Interface succesfully configured! ");
+
+  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -154,7 +160,7 @@ EL::StatusCode JetSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "JetSelector" ).ignore(); // call before opening first file
@@ -171,7 +177,7 @@ EL::StatusCode JetSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize \n");
+  Info("histInitialize()", "Calling histInitialize");
   if(m_useCutFlow) {
     TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
@@ -190,7 +196,7 @@ EL::StatusCode JetSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute \n");
+  Info("fileExecute()", "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -203,7 +209,7 @@ EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput \n");
+  Info("changeInput()", "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -229,9 +235,7 @@ EL::StatusCode JetSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events: %lld ", m_event->getEntries() );
-
-  //std::cout << m_name << " Number of events = " << m_event->getEntries() << std::endl;
+  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -253,10 +257,11 @@ EL::StatusCode JetSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Jet Selection... \n");
+  if(m_debug) Info("execute()", "Applying Jet Selection... ");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -274,12 +279,12 @@ EL::StatusCode JetSelector :: execute ()
   // shoudl only count for the nominal
   const xAOD::JetContainer* inJets = 0;
 
-  // if input comes from xAOD, or just running one collection, 
+  // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
 
     pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName);
 
@@ -287,49 +292,46 @@ EL::StatusCode JetSelector :: execute ()
   else { // get the list of systematics to run over
 
     // get vector of string giving the names
-    std::vector<std::string>* systNames;
-    if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
-      if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
-        Info("execute()", "Cannot find vector from %s", m_inputAlgo.c_str());
-        return StatusCode::FAILURE;
-      }
-    }
+    std::vector<std::string>* systNames(nullptr);
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_debug) ,"");
 
     // loop over systematics
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     bool passOne(false);
     for( auto systName : *systNames ) {
 
-      inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName+systName, m_event, m_store);
+      RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
 
       passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName );
       if( count ) { count = false; } // only count for 1 collection
       // save the string if passing the selection
-      if( passOne ) { vecOutContainerNames->push_back( systName ); }
+      if( passOne ) {
+        vecOutContainerNames->push_back( systName );
+      }
       // the final decision - if at least one passes keep going!
       pass = pass || passOne;
     }
 
     // save list of systs that shoudl be considered down stream
-    RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames, m_name), "Failed to record vector of output container names.");
+    RETURN_CHECK( "JetSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+    //delete vecOutContainerNames;
 
   }
 
-//  std::cout << "Selector over" << std::endl;
-//  m_store->print();
-//  std::cout << std::endl;
+  // look what do we have in TStore
+  if(m_debug) { m_store->print(); }
 
   if(!pass) {
     wk()->skipEvent();
   }
   return EL::StatusCode::SUCCESS;
-  
+
 }
 
-bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets, 
-    float mcEvtWeight, 
+bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
+    float mcEvtWeight,
     bool count,
-    std::string outContainerName 
+    std::string outContainerName
     )
 {
 
@@ -341,7 +343,8 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
   // if doing JVF get PV location
   if( m_doJVF ) {
-    const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+    const xAOD::VertexContainer* vertices(nullptr);
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
   }
 
@@ -396,7 +399,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, outContainerName ), "Failed to store const data container.");
   }
 
-  return EL::StatusCode::SUCCESS;
+  return true;
 }
 
 
@@ -406,7 +409,7 @@ EL::StatusCode JetSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -451,7 +454,7 @@ EL::StatusCode JetSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize\n");
+  Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -537,8 +540,20 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //  Truth Label
   //
   if( m_truthLabel != -1 ) {
-    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
-    if(TruthLabelID( *jet ) != m_truthLabel) {return 0;}
+ 
+    int this_TruthLabel = 0;
+    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");    
+    if(TruthLabelID.isAvailable( *jet)){
+      this_TruthLabel = TruthLabelID( *jet );    
+    }else{
+      static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
+      this_TruthLabel = PartonTruthLabelID( *jet );    
+    }
+
+    if((m_truthLabel == 5) && this_TruthLabel != 5) {return 0;}
+    if((m_truthLabel == 4) && this_TruthLabel != 4) {return 0;}
+    if((m_truthLabel == 0) && !(this_TruthLabel == 21 || this_TruthLabel<4)) {return 0;}
+ 
   }
 
   return 1;

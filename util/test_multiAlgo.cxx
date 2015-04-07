@@ -12,6 +12,7 @@
 #include "xAODAnaHelpers/BJetSelector.h"
 #include "xAODAnaHelpers/JetHistsAlgo.h"
 #include "xAODAnaHelpers/MuonCalibrator.h"
+#include "xAODAnaHelpers/MuonEfficiencyCorrector.h"
 #include "xAODAnaHelpers/MuonSelector.h"
 #include "xAODAnaHelpers/ElectronCalibrator.h"
 #include "xAODAnaHelpers/ElectronEfficiencyCorrector.h"
@@ -65,11 +66,17 @@ int main( int argc, char* argv[] ) {
 
   JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
   MuonCalibrator* muonCalib                     = new MuonCalibrator(       "muonCalib",                localDataDir+"muonCalib.config");
-  ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config");
+  ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config" /*, "All"*/ );
+  
+  MuonEfficiencyCorrector*      muonEffCorr     = new MuonEfficiencyCorrector(       "muonEfficiencyCorrector",                localDataDir+"muonEffCorr.config");
+  ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector(   "electronEfficiencyCorrector",            localDataDir+"electronEffCorr.config"/*, "All"*/);
 
-  ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector(       "electronEfficiencyCorrector",                localDataDir+"electronEffCorr.config");
+  MuonSelector* muonSelect_signal               = new MuonSelector(         "muonSelect_signal",        localDataDir+"muonSelect_signal.config");
+  ElectronSelector* electronSelect_signal       = new ElectronSelector(     "electronSelect_signal",    localDataDir+"electronSelect_signal.config");
 
   JetSelector* jetSelect_signal                 = new JetSelector(          "jetSelect_signal",         localDataDir+"jetSelect_signal.config");
+  BJetSelector* bjetSelect_signal               = new BJetSelector(         "bjetSelect_signal",        localDataDir+"bjetSelect_signal.config");
+
   JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo(         "jetHistsAlgo_signal",      localDataDir+"jetHistsAlgo_signal.config");
 
   JetSelector* jetSelect_truth                  = new JetSelector(          "jetSelect_truth",          localDataDir+"jetSelect_truth.config");
@@ -83,9 +90,13 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( baseEventSel );
   job.algsAdd( jetCalib );
   job.algsAdd( muonCalib );
+  job.algsAdd( muonEffCorr );
   job.algsAdd( electronCalib );
   job.algsAdd( electronEffCorr );
+  job.algsAdd( muonSelect_signal );  
+  job.algsAdd( electronSelect_signal );
   job.algsAdd( jetSelect_signal );
+  job.algsAdd( bjetSelect_signal ); 
   job.algsAdd( jetHistsAlgo_signal );
   job.algsAdd( jetSelect_truth );
   job.algsAdd( jetHistsAlgo_truth );

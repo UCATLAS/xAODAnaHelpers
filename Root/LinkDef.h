@@ -15,11 +15,16 @@
 /*#include <xAODAnaHelpers/GroomedFatJets.h>*/
 
 /* Scale Factors */
-#include<xAODAnaHelpers/ElectronEfficiencyCorrector.h>
+#include <xAODAnaHelpers/ElectronEfficiencyCorrector.h>
+#include <xAODAnaHelpers/MuonEfficiencyCorrector.h> 
+
 
 /* Plotting Tools */
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
+
+/* Tree */
+#include <xAODAnaHelpers/TreeAlgo.h>
 
 
 /* Other */
@@ -47,9 +52,12 @@
 /*#pragma link C++ class GroomedFatJets+;*/
 
 #pragma link C++ class ElectronEfficiencyCorrector+;
+#pragma link C++ class MuonEfficiencyCorrector+;
 
 #pragma link C++ class JetHistsAlgo+;
 #pragma link C++ class TrackHistsAlgo+;
+
+#pragma link C++ class TreeAlgo+;
 
 #pragma link C++ class JERShifter+;
 #pragma link C++ class OverlapRemover+;

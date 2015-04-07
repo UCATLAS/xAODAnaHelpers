@@ -1,4 +1,5 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // jet reclustering
 #include <fastjet/PseudoJet.hh>
@@ -56,6 +57,33 @@ std::string HelperFunctions::replaceString(std::string subject, const std::strin
     pos += replace.length();
   }
   return subject;
+}
+
+
+StatusCode HelperFunctions::isAvailableMetaData(TTree* metaData){
+    if ( !metaData ) {
+      Info("HelperFunctions::isAvailableMetaData()", "MetaData tree missing from input file. Aborting ");
+      return StatusCode::FAILURE;
+    }
+    return StatusCode::SUCCESS;
+}
+
+bool HelperFunctions::isFilePrimaryxAOD(TFile* inputFile) {
+    TTree* metaData = dynamic_cast<TTree*> (inputFile->Get("MetaData"));
+
+    /* check that MetaData tree exists */
+    RETURN_CHECK("HelperFunctions::isFilePrimaryxAOD", isAvailableMetaData(metaData), "" );
+
+    metaData->LoadTree(0);
+    TObjArray* ar = metaData->GetListOfBranches();
+    for (int i = 0; i < ar->GetEntries(); ++i) {
+	TBranch* b = (TBranch*) ar->At(i);
+	std::string name = std::string(b->GetName());
+	if (name == "StreamAOD")
+	    return true;
+    }
+
+    return false;
 }
 
 
@@ -202,12 +230,52 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
   return partA->pt() > partB->pt();
 }
 
-//std::vector< std::string > getListofSystematics( 
-//    CP::SystematicSet recSysts, 
-//    std::string systName, 
-//    float systVal ) {
-//
-//  std::vector< std::string > systList;
-//
-//  return systList;
-//}
+// Get the subset of systematics to consider
+// can also retun full set if systName = "All"
+std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet recSysts,
+    std::string systName,
+    float systVal ) {
+  std::vector< CP::SystematicSet > systList;
+  // loop over recommended systematics
+  for( const auto syst : recSysts ) {
+    Info("HelperFunctions::getListofSystematics()","  %s", (syst.basename()).c_str());
+    if( systName == syst.basename() ) {
+      Info("HelperFunctions::getListofSystematics()","Found match! Adding systematic %s", syst.basename().c_str());
+      // continuous systematics - can choose at what sigma to evaluate
+      if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
+        systList.push_back(CP::SystematicSet());
+        if ( systVal == 0 ) {
+          Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
+          RCU_THROW_MSG("Failure");
+        }
+        systList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
+      }
+      // not a continuous system
+      else {
+        systList.push_back(CP::SystematicSet());
+        systList.back().insert(syst);
+      }
+    } // found match!
+    else if ( systName == "All" ) {
+      Info("HelperFunctions::initialize()","Adding systematic %s", syst.basename().c_str());
+      // continuous systematics - can choose at what sigma to evaluate
+      // add +1 and -1 for when running all
+      if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
+        if ( systVal == 0 ) {
+          Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
+          RCU_THROW_MSG("Failure");
+        }
+        systList.push_back(CP::SystematicSet());
+        systList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
+        systList.push_back(CP::SystematicSet());
+        systList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
+      }
+      // not a continuous systematic
+      else {
+        systList.push_back(CP::SystematicSet());
+        systList.back().insert(syst);
+      }
+    } // running all
+  } // loop over recommended systematics
+  return systList;
+}

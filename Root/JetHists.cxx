@@ -9,10 +9,7 @@ JetHists :: JetHists (std::string name, std::string detailStr) :
 }
 
 JetHists :: ~JetHists () {
-  if(m_infoSwitch){
-    delete m_infoSwitch;
-    m_infoSwitch = nullptr;
-  }
+  if(m_infoSwitch) delete m_infoSwitch;
 }
 
 EL::StatusCode JetHists::initialize() {
@@ -136,7 +133,7 @@ EL::StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_truth ) {
     Info("JetHists::initialize()", "adding truth plots");
 
-    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          20,  -0.5,  19.5);
+    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          30,  -0.5,  29.5);
     m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          50,  -0.5,  49.5);
     m_truthPt        = book(m_name, "TruthPt",             "Truth Pt",              100,   0,   100.0);
 
@@ -149,23 +146,36 @@ EL::StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_truthDetails ) {
     Info("JetHists::initialize()", "adding detailed truth plots");
 
-    m_truthCount_BhadFinal = book(m_name, "TruthCount_BHadFinal", "Truth Count BHad (final)" ,    10, -0.5,   9.5);
-    m_truthCount_BhadInit  = book(m_name, "TruthCount_BHadInit",  "Truth Count BHad (initial)" ,  10, -0.5,   9.5);
-    m_truthCount_BQFinal   = book(m_name, "TruthCount_BQFinal",   "Truth Count BQuark (final)" ,  10, -0.5,   9.5);
-    m_truthPt_BhadFinal    = book(m_name, "TruthPt_BHadFinal",    "Truth Pt BHad (final)" ,      100,    0,   100);
-    m_truthPt_BhadInit     = book(m_name, "TruthPt_BHadInit",     "Truth Pt BHad (initial)" ,    100,    0,   100);
-    m_truthPt_BQFinal      = book(m_name, "TruthPt_BQFinal",      "Truth Pt BQuark (final)" ,    100,    0,   100);
+    m_truthCount_BhadFinal = book(m_name, "GhostBHadronsFinalCount",    "Truth Count BHad (final)" ,    10, -0.5,   9.5);
+    m_truthCount_BhadInit  = book(m_name, "GhostBHadronsInitialCount",  "Truth Count BHad (initial)" ,  10, -0.5,   9.5);
+    m_truthCount_BQFinal   = book(m_name, "GhostBQuarksFinalCount",     "Truth Count BQuark (final)" ,  10, -0.5,   9.5);
+    m_truthPt_BhadFinal    = book(m_name, "GhostBHadronsFinalPt",       "Truth p_{T} BHad (final)" ,      100,    0,   100);
+    m_truthPt_BhadInit     = book(m_name, "GhostBHadronsInitialPt",     "Truth p_{T} BHad (initial)" ,    100,    0,   100);
+    m_truthPt_BQFinal      = book(m_name, "GhostBQuarksFinalPt",        "Truth p_{T} BQuark (final)" ,    100,    0,   100);
 
-    m_truthCount_ChadFinal = book(m_name, "TruthCount_CHadFinal", "Truth Count CHad (final)" ,    10, -0.5,   9.5);
-    m_truthCount_ChadInit  = book(m_name, "TruthCount_CHadInit",  "Truth Count CHad (initial)" ,  10, -0.5,   9.5);
-    m_truthCount_CQFinal   = book(m_name, "TruthCount_CQFinal",   "Truth Count CQuark (final)" ,  10, -0.5,   9.5);
-    m_truthPt_ChadFinal    = book(m_name, "TruthPt_CHadFinal",    "Truth Pt CHad (final)" ,      100,    0,   100);
-    m_truthPt_ChadInit     = book(m_name, "TruthPt_CHadInit",     "Truth Pt CHad (initial)" ,    100,    0,   100);
-    m_truthPt_CQFinal      = book(m_name, "TruthPt_CQFinal",      "Truth Pt CQuark (final)" ,    100,    0,   100);
+    m_truthCount_ChadFinal = book(m_name, "GhostCHadronsFinalCount",   "Truth Count CHad (final)" ,    10, -0.5,   9.5);
+    m_truthCount_ChadInit  = book(m_name, "GhostCHadronsInitialCount", "Truth Count CHad (initial)" ,  10, -0.5,   9.5);
+    m_truthCount_CQFinal   = book(m_name, "GhostCQuarksFinalCount",    "Truth Count CQuark (final)" ,  10, -0.5,   9.5);
+    m_truthPt_ChadFinal    = book(m_name, "GhostCHadronsFinalPt",      "Truth p_{T} CHad (final)" ,      100,    0,   100);
+    m_truthPt_ChadInit     = book(m_name, "GhostCHadronsInitialPt",    "Truth p_{T} CHad (initial)" ,    100,    0,   100);
+    m_truthPt_CQFinal      = book(m_name, "GhostCQuarksFinalPt",       "Truth p_{T} CQuark (final)" ,    100,    0,   100);
 
-    m_truthCount_TausFinal = book(m_name, "TruthCount_CHadFinal", "Truth Count Taus (final)" ,    10, -0.5,   9.5);
-    m_truthPt_TausFinal    = book(m_name, "TruthPt_CHadFinal",    "Truth Pt Taus (final)" ,      100,    0,   100);
+    m_truthCount_TausFinal = book(m_name, "GhostTausFinalCount", "Truth Count Taus (final)" ,    10, -0.5,   9.5);
+    m_truthPt_TausFinal    = book(m_name, "GhostTausFinalPt",    "Truth p_{T} Taus (final)" ,      100,    0,   100);
 
+  }
+
+  if( m_infoSwitch->m_flavTag ) {
+    Info("JetHists::initialize()", "adding btagging plots");    
+    
+    m_MV1             = book(m_name, "MV1",    "MV1" ,      100,    -0.1,   1.1);
+    m_SV1_plus_IP3D   = book(m_name, "SV1_plus_IP3D",    "SV1_plus_IP3D" ,      100,    -0.1,   1.1);
+    m_SV0             = book(m_name, "SV0",    "SV0" ,      100,    -20,  200);
+    m_SV1             = book(m_name, "SV1",    "SV1" ,      100,    -5,   15);
+    m_IP2D            = book(m_name, "IP2D",   "IP2D" ,     100,    -10,   40);
+    m_IP3D            = book(m_name, "IP3D",   "IP3D" ,     100,    -20,   40);
+    m_JetFitter       = book(m_name, "JetFitter",   "JetFitter" ,     100,    -10,   10);
+    m_JetFitterCombNN = book(m_name, "JetFitterCombNN",   "JetFitterCombNN" ,     100,    -10,   10);
   }
 
   this->initializeUser();
@@ -173,33 +183,28 @@ EL::StatusCode JetHists::initialize() {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight ) {
-  xAOD::JetContainer::const_iterator jet_itr = jets->begin();
-  xAOD::JetContainer::const_iterator jet_end = jets->end();
-  for( ; jet_itr != jet_end; ++jet_itr ) {
-    this->execute( (*jet_itr), eventWeight );
+EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc ) {
+  for( auto jet_itr : *jets ) {
+    this->execute( jet_itr, eventWeight, pvLoc );
   }
-//  for( auto thisJet : jets ){
-//    this->execute( thisJet, eventWeight );
-//  }
 
-    if( m_infoSwitch->m_numLeadingJets > 0){
+  if( m_infoSwitch->m_numLeadingJets > 0){
 
-      int numJets = std::min( m_infoSwitch->m_numLeadingJets, (int)jets->size() );
-      for(int iJet=0; iJet < numJets; ++iJet){
-        m_NjetsPt.at(iJet)->        Fill( jets->at(iJet)->pt()/1e3,   eventWeight);
-        m_NjetsEta.at(iJet)->       Fill( jets->at(iJet)->eta(),      eventWeight);
-        m_NjetsPhi.at(iJet)->       Fill( jets->at(iJet)->phi(),      eventWeight);
-        m_NjetsM.at(iJet)->         Fill( jets->at(iJet)->m()/1e3,    eventWeight);
-        m_NjetsE.at(iJet)->         Fill( jets->at(iJet)->e()/1e3,    eventWeight);
-        m_NjetsRapidity.at(iJet)->  Fill( jets->at(iJet)->rapidity(), eventWeight);
-      }
+    int numJets = std::min( m_infoSwitch->m_numLeadingJets, (int)jets->size() );
+    for(int iJet=0; iJet < numJets; ++iJet){
+      m_NjetsPt.at(iJet)->        Fill( jets->at(iJet)->pt()/1e3,   eventWeight);
+      m_NjetsEta.at(iJet)->       Fill( jets->at(iJet)->eta(),      eventWeight);
+      m_NjetsPhi.at(iJet)->       Fill( jets->at(iJet)->phi(),      eventWeight);
+      m_NjetsM.at(iJet)->         Fill( jets->at(iJet)->m()/1e3,    eventWeight);
+      m_NjetsE.at(iJet)->         Fill( jets->at(iJet)->e()/1e3,    eventWeight);
+      m_NjetsRapidity.at(iJet)->  Fill( jets->at(iJet)->rapidity(), eventWeight);
     }
+  }
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
+EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc ) {
 
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
@@ -441,6 +446,11 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
     if( TruthLabelID.isAvailable( *jet ) ) {
       m_truthLabelID ->  Fill( TruthLabelID( *jet ), eventWeight );
+    }else{
+      static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
+      if( PartonTruthLabelID.isAvailable( *jet ) ) {
+	m_truthLabelID ->  Fill( PartonTruthLabelID( *jet ), eventWeight );
+      }
     }
 
     static SG::AuxElement::ConstAccessor<int> TruthCount ("TruthCount");
@@ -452,7 +462,6 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     if( TruthPt.isAvailable( *jet ) ) {
       m_truthPt ->  Fill( TruthPt( *jet )/1000, eventWeight );
     }
-
 
     static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_B ("TruthLabelDeltaR_B");
     if( TruthLabelDeltaR_B.isAvailable( *jet ) ) {
@@ -559,13 +568,32 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
 
   }
 
+  //
+  // BTagging
+  //
+  if( m_infoSwitch->m_flavTag ) {
+    
+    const xAOD::BTagging *btag_info = jet->btagging();
+    m_MV1 ->  Fill( btag_info->MV1_discriminant() , eventWeight );    
+    m_SV1_plus_IP3D ->  Fill( btag_info->MV1_discriminant() , eventWeight );    
+    m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );    
+    m_SV1 ->  Fill( btag_info->SV1_loglikelihoodratio() , eventWeight );    
+    m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );    
+    m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );    
+    m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );    
+    m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );    
+    
+  }
+
+
 
 
   /*
   std::vector<float> chfs = jet->getAttribute< std::vector<float> >(xAOD::JetAttribute::SumPtTrkPt1000);
   float chf(-1);
-  //if( pvLocation >= 0 && pvLocation < (int)chfs.size() ) { chf = chfs.at( pvLocation ); }
-  m_chf ->  Fill( chf , eventWeight );
+  if( pvLoc >= 0 && pvLoc < (int)chfs.size() ) {
+    m_chf ->  Fill( chfs.at( pvLoc ) , eventWeight );
+  }
   */
 
 

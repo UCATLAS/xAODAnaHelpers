@@ -10,21 +10,16 @@
 #include "xAODRootAccess/TStore.h"
 
 // EDM include(s):
-#ifndef __CINT__
-  #include "xAODEgamma/Electron.h"
-  #include "xAODEgamma/ElectronContainer.h"
-  #include "xAODTracking/Vertex.h"
-#endif
+#include "xAODEgamma/ElectronContainer.h"
+#include "xAODTracking/Vertex.h"
 
 // ROOT include(s):
 #include "TH1D.h"
 
-namespace CP{
-  class ElectronIsolationSelectionTool;
-}
-
-class AsgElectronIsEMSelector;
-class AsgElectronLikelihoodTool;
+// external tools include(s):
+#include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
+#include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
+#include "ElectronIsolationSelection/ElectronIsolationSelectionTool.h"
 
 class ElectronSelector : public EL::Algorithm
 {
@@ -54,15 +49,15 @@ public:
 private:
 
   // tools
-#ifndef __CINT__
   AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ; //!
   AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool; //!
   CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
-#endif
   // configuration variables
   std::string    m_inContainerName;      // input container name
   std::string    m_outContainerName;     // output container name
   std::string    m_outAuxContainerName;  // output auxiliary container name
+  std::string    m_inputAlgo;               // input type - from xAOD or from xAODAnaHelpers Algo output
+  std::string    m_outputAlgo;
   bool       m_decorateSelectedObjects;  // decorate selected objects? defaul passSel
   bool       m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
   int        m_nToProcess;               // look at n objects
@@ -74,17 +69,21 @@ private:
   bool	     m_vetoCrack;                // require |eta| outside crack region
   float      m_d0sig_max;                // require d0 significance (at BL) < m_d0sig_max
   float	     m_z0sintheta_max;	         // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
-  
-  std::string  m_confDirPID; 
+
+  bool       m_doAuthorCut;
+  bool       m_doOQCut;
+
+  std::string  m_confDirPID;
   // likelihood-based PID
-  bool         m_doLHPIDcut;                
-  std::string  m_LHPID;        
+  bool         m_doLHPIDcut;
+  std::string  m_LHPID;
   std::string  m_LHOperatingPoint;
   // cut-based PID
-  bool         m_doCutBasedPIDcut;                
-  std::string  m_CutBasedPID;  
+  bool         m_doCutBasedPIDcut;
+  std::string  m_CutBasedPIDMask;
+  std::string  m_PIDName;
   std::string  m_CutBasedOperatingPoint;
-  
+
   // isolation
   bool         m_doIsolation;
   bool         m_useRelativeIso;
@@ -124,15 +123,12 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__
-  virtual EL::StatusCode executeConst( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight );
-#endif
+  bool executeSelection( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
+                         const std::string outContainerName );
 
   // added functions not from Algorithm
   // why does this need to be virtual?
-#ifndef __CINT__
   virtual int PassCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex );
-#endif
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronSelector, 1);
 };

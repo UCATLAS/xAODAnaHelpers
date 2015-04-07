@@ -45,11 +45,6 @@ namespace HelperClasses {
 
      T parseEnum(const std::string &value)
      {
-	/*
-	for (auto it = enumMap.begin(); it != enumMap.end(); ++it){
-	   std::cout << "element: " << (*it).first << std::endl;
-	}
-        */
         typename std::multimap <std::string, T>::const_iterator iValue = enumMap.find(value);
         if (iValue == enumMap.end()){
             std::cerr << "Could not find input string in enum!" << std::endl;
@@ -60,9 +55,29 @@ namespace HelperClasses {
 
 
   struct InfoSwitch {
-    std::string m_configStr;
-    InfoSwitch(std::string configStr) : m_configStr(configStr) { };
-    bool parse(std::string flag);
+    const std::string m_configStr;
+    InfoSwitch(const std::string configStr) : m_configStr(configStr) { };
+    bool parse(const std::string flag);
+  };
+
+  struct EventInfoSwitch : InfoSwitch {
+    bool m_pileup;
+    bool m_shapeEM;
+    bool m_shapeLC;
+    void initialize();
+    EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
+  struct MuonInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    MuonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
+  struct ElectronInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
   struct JetInfoSwitch : InfoSwitch {
@@ -75,9 +90,10 @@ namespace HelperClasses {
     bool m_layer;
     bool m_trackPV;
     bool m_trackAll;
+    bool m_flavTag;
     int  m_numLeadingJets;
     void initialize();
-    JetInfoSwitch(std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
 

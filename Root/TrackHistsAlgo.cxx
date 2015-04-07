@@ -6,7 +6,6 @@
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
-#include <xAODAnaHelpers/TrackHists.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
@@ -50,7 +49,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
   } else {
-    Info("histInitialize()", "Successfully configured! \n");
+    Info("histInitialize()", "Successfully configured! ");
   }
 
   // declare class and add histograms to output
@@ -74,9 +73,9 @@ EL::StatusCode TrackHistsAlgo :: configure ()
   //   (Allows to pass as argument in setup script)
   //
   if(m_inContainerName.empty())
-     m_inContainerName         = config->GetValue("InputContainer",  "");
-
-  m_detailStr               = config->GetValue("DetailStr",       "");
+      m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_detailStr               = config->GetValue("DetailStr",       "");
+    m_debug                   = config->GetValue("Debug" ,           false );
 
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
@@ -86,6 +85,8 @@ EL::StatusCode TrackHistsAlgo :: configure ()
 
   // everything seems preliminarily ok, let's print config and say we were successful
   config->Print();
+
+  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -103,17 +104,21 @@ EL::StatusCode TrackHistsAlgo :: initialize ()
 
 EL::StatusCode TrackHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);;
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
     eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
   }
 
-  const xAOD::TrackParticleContainer* tracks = HelperFunctions::getContainer<xAOD::TrackParticleContainer>(m_inContainerName, m_event, m_store);;
+  const xAOD::TrackParticleContainer* tracks(nullptr);
+  RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(tracks, m_inContainerName, m_event, m_store, m_debug) ,"");
 
   // get primary vertex
-  const xAOD::VertexContainer *vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
+  const xAOD::VertexContainer *vertices(nullptr);
+  RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   m_plots->execute( tracks, pvx, eventWeight );
@@ -126,9 +131,6 @@ EL::StatusCode TrackHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
 EL::StatusCode TrackHistsAlgo :: histFinalize ()
 {
   // clean up memory
-  if(m_plots){
-    delete m_plots;
-    m_plots = 0;
-  }
+  if(m_plots) delete m_plots;
   return EL::StatusCode::SUCCESS;
 }

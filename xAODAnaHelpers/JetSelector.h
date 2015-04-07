@@ -10,10 +10,8 @@
 #include "xAODRootAccess/TStore.h"
 
 // EDM include(s):
-#ifndef __CINT__
-  #include "xAODJet/Jet.h"
-  #include "xAODJet/JetContainer.h"
-#endif
+#include "xAODJet/Jet.h"
+#include "xAODJet/JetContainer.h"
 
 // ROOT include(s):
 #include "TH1D.h"
@@ -51,9 +49,10 @@ private:
 
 
   // configuration variables
-  std::string m_inContainerName;      //! input container name
-  std::string m_outContainerName;     //! output container name
-  std::string m_inputAlgo;            //! input type - from xAOD or from xAODAnaHelper Algo output
+  std::string m_inContainerName;   //! input container name
+  std::string m_outContainerName;  //! output container name
+  std::string m_inputAlgo;         //! input type - from xAOD or from xAODAnaHelper Algo output
+  std::string m_outputAlgo;        //! output type - this is how the vector<string> w/ syst names will be saved in TStore
   bool m_decorateSelectedObjects; //! decorate selected objects? defaul passSel
   bool m_createSelectedContainer; //! fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess;               //! look at n objects
@@ -109,15 +108,11 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__
   virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName );
-#endif // not __CINT__
 
   // added functions not from Algorithm
   // why does this need to be virtual?
-#ifndef __CINT__
   virtual int PassCuts( const xAOD::Jet* jet );
-#endif // not __CINT__
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetSelector, 1);
 };

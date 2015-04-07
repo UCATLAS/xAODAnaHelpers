@@ -7,6 +7,7 @@
 #include <TSystem.h>
 
 #include <xAODAnaHelpers/JetHistsAlgo.h>
+#include <xAODAnaHelpers/TreeAlgo.h>
 
 int main( int argc, char* argv[] ) {
 
@@ -40,8 +41,12 @@ int main( int argc, char* argv[] ) {
   // Add our analysis to the job:
   JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", "$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
 
+  // Add example tree
+  TreeAlgo* tree_AntiKt10LC = new TreeAlgo("fullTree", "$ROOTCOREBIN/data/xAODAnaHelpers/test_treeExample.config");
+
   // Attach algorithms
   job.algsAdd( jk_AntiKt10LC );
+  job.algsAdd( tree_AntiKt10LC );
 
 
   // Run the job using the local/direct driver:

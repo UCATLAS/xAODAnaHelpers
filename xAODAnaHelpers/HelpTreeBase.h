@@ -14,23 +14,19 @@
 #ifndef xAODAnaHelpers_HelpTreeBase_H
 #define xAODAnaHelpers_HelpTreeBase_H
 
-#ifndef __CINT__    
-  #include "xAODEventInfo/EventInfo.h"
-  #include "xAODEgamma/ElectronContainer.h"
-  #include "xAODEgamma/Electron.h"
-  #include "xAODEgamma/PhotonContainer.h"
-  #include "xAODEgamma/Photon.h"
-  #include "xAODMuon/MuonContainer.h"
-  #include "xAODMuon/Muon.h"
-  #include "xAODJet/JetContainer.h"
-  #include "xAODJet/Jet.h"
-  #include "xAODTau/TauJetContainer.h"
-  #include "xAODTau/TauJet.h"
-#endif // not __CINT__  
+#include "xAODEventShape/EventShape.h"
+
+#include "xAODEventInfo/EventInfo.h"
+#include "xAODEgamma/ElectronContainer.h"
+#include "xAODEgamma/PhotonContainer.h"
+#include "xAODMuon/MuonContainer.h"
+#include "xAODJet/JetContainer.h"
+#include "xAODTau/TauJetContainer.h"
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODRootAccess/TEvent.h"
 
+// root includes
 #include "TTree.h"
 #include "TFile.h"
 
@@ -38,46 +34,51 @@ class HelpTreeBase {
 
 public:
 
-#ifndef __CINT__  
-  HelpTreeBase(xAOD::TEvent * event, TTree* tree, TFile* file, int units=1e3 );
-#endif // not __CINT__ 
+  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3 );
   virtual ~HelpTreeBase() {;}
 
-  void AddEvent    (std::string detailStr = "");
-  void AddMuons    (std::string detailStr = "");
-  void AddElectrons(std::string detailStr = "");
-  void AddJets     (std::string detailStr = "");
-  void AddFatJets  (std::string detailStr = "");
+  void AddEvent    (const std::string detailStr = "");
+  void AddMuons    (const std::string detailStr = "");
+  void AddElectrons(const std::string detailStr = "");
+  void AddJets     (const std::string detailStr = "");
+  void AddFatJets  (const std::string detailStr = "");
 
-  // holds bools that control which histograms are filled
-  std::string m_evtDetailStr;
-  std::string m_muDetailStr;
-  std::string m_elDetailStr;
-  HelperClasses::JetInfoSwitch* m_jetInfoSwitch;
-  std::string m_fatJetDetailStr;
+  // control which branches are filled
+  HelperClasses::EventInfoSwitch*     m_eventInfoSwitch;
+  HelperClasses::MuonInfoSwitch*      m_muInfoSwitch;
+  HelperClasses::ElectronInfoSwitch*  m_elInfoSwitch;
+  HelperClasses::JetInfoSwitch*       m_jetInfoSwitch;
+  HelperClasses::JetInfoSwitch*       m_fatJetInfoSwitch;
 
-#ifndef __CINT__  
-  void FillEvent( const xAOD::EventInfo* eventInfo );
+  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
   void FillMuons( const xAOD::MuonContainer& muons );
   void FillElectrons( const xAOD::ElectronContainer& electrons );
-  void FillJets( const xAOD::JetContainer& jets );
+  void FillJets( const xAOD::JetContainer& jets, int pvLocation = -1 );
   void FillFatJets( const xAOD::JetContainer& fatJets );
-#endif // not __CINT__ 
   void Fill();
-  void Clear();
+  void ClearEvent();
+  void ClearMuons();
+  void ClearElectrons();
+  void ClearJets();
 
   bool writeTo( TFile *file );
 
   // User defined functions
-  virtual void AddUser()                                           = 0;
-#ifndef __CINT__  
-  virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   = 0;
-  virtual void FillMuonsUser( const xAOD::Muon* muon )             = 0;
-  virtual void FillElectronsUser( const xAOD::Electron* electron ) = 0;
-  virtual void FillJetsUser( const xAOD::Jet* jet )                = 0;
-  virtual void FillFatJetsUser( const xAOD::Jet* fatJet )          = 0;
-  virtual void ClearUser()                                         = 0;
-#endif // not __CINT__ 
+  virtual void AddEventUser(const std::string detailStr = "")      { return; };
+  virtual void AddMuonsUser(const std::string detailStr = "")      { return; };
+  virtual void AddElectronsUser(const std::string detailStr = "")  { return; };
+  virtual void AddJetsUser(const std::string detailStr = "")       { return; };
+
+  virtual void ClearEventUser()                                    { return; };
+  virtual void ClearMuonsUser() 				   { return; };
+  virtual void ClearElectronsUser() 				   { return; };
+  virtual void ClearJetsUser() 					   { return; };
+
+  virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   { return; };
+  virtual void FillMuonsUser( const xAOD::Muon* muon )             { return; };
+  virtual void FillElectronsUser( const xAOD::Electron* electron ) { return; };
+  virtual void FillJetsUser( const xAOD::Jet* jet )                { return; };
+  virtual void FillFatJetsUser( const xAOD::Jet* fatJet )          { return; };
 
 protected:
 
@@ -91,6 +92,15 @@ protected:
   int m_mcEventNumber;
   int m_mcChannelNumber;
   float m_mcEventWeight;
+  // event pileup
+  int m_npv;
+  float m_actualMu;
+  float m_averageMu;
+  int m_lumiBlock;
+  // event shapeEM
+  double m_rhoEM;
+  double m_rhoLC;
+
 
   // jets
   int m_njet;
@@ -107,8 +117,8 @@ protected:
   std::vector<float> m_jet_avLArQF;
   std::vector<float> m_jet_bchCorrCell;
   std::vector<float> m_jet_N90Const;
-  std::vector<float> m_jet_LArBadHVEFrac;
-  std::vector<float> m_jet_LArBadHVNCellFrac;
+  std::vector<float> m_jet_LArBadHVE;
+  std::vector<float> m_jet_LArBadHVRatio;
 
   // energy
   std::vector<float> m_jet_HECf;
@@ -139,7 +149,39 @@ protected:
   std::vector<float> m_jet_SumPtPt500PV;
   std::vector<float> m_jet_TrkWPt500PV;
   std::vector<float> m_jet_jvfPV;
-  std::vector<float> m_jet_jvfloosePV;
+  //std::vector<float> m_jet_jvfloosePV;
+
+  // flavor tag
+  std::vector<float> m_jet_mv1;
+  std::vector<float> m_jet_sv1ip3d;
+
+  // truth
+  std::vector<int>   m_jet_truthLabelID;
+  std::vector<int>   m_jet_truthCount;
+  std::vector<float> m_jet_truthPt;
+  std::vector<float> m_jet_truthDr_B;
+  std::vector<float> m_jet_truthDr_C;
+  std::vector<float> m_jet_truthDr_T;
+  std::vector<float> m_jet_truth_pt;
+  std::vector<float> m_jet_truth_eta;
+  std::vector<float> m_jet_truth_phi;
+  std::vector<float> m_jet_truth_E;
+
+  // truth detail
+  std::vector<int>   m_jet_truthCount_BhadFinal;
+  std::vector<int>   m_jet_truthCount_BhadInit;
+  std::vector<int>   m_jet_truthCount_BQFinal;
+  std::vector<float> m_jet_truthPt_BhadFinal;
+  std::vector<float> m_jet_truthPt_BhadInit;
+  std::vector<float> m_jet_truthPt_BQFinal;
+  std::vector<int>   m_jet_truthCount_ChadFinal;
+  std::vector<int>   m_jet_truthCount_ChadInit;
+  std::vector<int>   m_jet_truthCount_CQFinal;
+  std::vector<float> m_jet_truthPt_ChadFinal;
+  std::vector<float> m_jet_truthPt_ChadInit;
+  std::vector<float> m_jet_truthPt_CQFinal;
+  std::vector<int>   m_jet_truthCount_TausFinal;
+  std::vector<float> m_jet_truthPt_TausFinal;
 
   // muons
   int m_nmuon;

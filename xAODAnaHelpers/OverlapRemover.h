@@ -9,18 +9,16 @@
 #include "xAODRootAccess/TStore.h"
 
 // EDM include(s):
-#ifndef __CINT__
-  #include "xAODBase/IParticleHelpers.h"
-  #include "xAODBase/IParticleContainer.h"
-  #include "xAODBase/IParticle.h"
-  #include "xAODEgamma/ElectronContainer.h"
-  #include "xAODMuon/MuonContainer.h"
-  #include "xAODJet/JetContainer.h"
-  #include "xAODEgamma/PhotonContainer.h"
-  #include "xAODTau/TauJetContainer.h"
-#endif
+#include "xAODBase/IParticleHelpers.h"
+#include "xAODBase/IParticleContainer.h"
+#include "xAODEgamma/ElectronContainer.h"
+#include "xAODMuon/MuonContainer.h"
+#include "xAODJet/JetContainer.h"
+#include "xAODEgamma/PhotonContainer.h"
+#include "xAODTau/TauJetContainer.h"
 
-class OverlapRemovalTool;
+// external tools include(s):
+#include "AssociationUtils/OverlapRemovalTool.h"
 
 class OverlapRemover : public EL::Algorithm
 {
@@ -42,10 +40,11 @@ public:
 
 private:
 
-#ifndef __CINT__
+  bool m_usePhotons;
+  bool m_useTaus;
+
   // tools
   OverlapRemovalTool *m_overlapRemovalTool; //!
-#endif
 
   // configuration variables
 
@@ -55,17 +54,23 @@ private:
   bool     m_useSelected; // pass only object passing selection to O.R. tool
 
   /* Electrons */
-  std::string m_inContainerName_Electrons;
+  std::string  m_inContainerName_Electrons;
   std::string  m_outContainerName_Electrons;        // output container name
   std::string  m_outAuxContainerName_Electrons;     // output auxiliary container name
+  std::string  m_inputAlgoElectrons;                // name of vector<string> of syst retrieved from TStore
+  std::string  m_outputAlgoElectrons;               // name of vector<string> of syst pushed in TStore
   /* Muons */
   std::string m_inContainerName_Muons;
   std::string  m_outContainerName_Muons;        // output container name
   std::string  m_outAuxContainerName_Muons;     // output auxiliary container name
+  std::string  m_inputAlgoMuons;                // name of vector<string> of syst retrieved from TStore
+  std::string  m_outputAlgoMuons;               // name of vector<string> of syst pushed in TStore
   /* Jets */
   std::string m_inContainerName_Jets;
   std::string  m_outContainerName_Jets;        // output container name
   std::string  m_outAuxContainerName_Jets;     // output auxiliary container name
+  std::string  m_inputAlgoJets;                // name of vector<string> of syst retrieved from TStore
+  std::string  m_outputAlgoJets;               // name of vector<string> of syst pushed in TStore
   /* Photons */
   std::string m_inContainerName_Photons;
   std::string  m_outContainerName_Photons;        // output container name
@@ -74,7 +79,6 @@ private:
   std::string m_inContainerName_Taus;
   std::string  m_outContainerName_Taus;        // output container name
   std::string  m_outAuxContainerName_Taus;     // output auxiliary container name
-
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -101,17 +105,8 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-#ifndef __CINT__
-  virtual EL::StatusCode executeConst(const xAOD::ElectronContainer* inElectrons,
-				      const xAOD::MuonContainer* inMuons,
-				      const xAOD::JetContainer* inJets,
-			              const xAOD::TauJetContainer* inTaus,
-				      const xAOD::PhotonContainer* inPhotons);
-#endif
-#ifndef __CINT__
   virtual EL::StatusCode printOverlapInfo (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
   virtual EL::StatusCode printOverlapInfo (const char* type, xAOD::IParticle* obj, const std::string& selectFlag, const std::string& overlapFlag);
-#endif
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(OverlapRemover, 1);

@@ -9,8 +9,9 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-class JERTool;
-class JERSmearingTool;
+// external tools include(s):
+#include "JetResolution/JERTool.h"
+#include "JetResolution/JERSmearingTool.h"
 
 class JERShifter : public EL::Algorithm
 {
@@ -31,11 +32,10 @@ class JERShifter : public EL::Algorithm
     std::string m_outContainerName;     // output container name
     std::string m_outAuxContainerName;
     std::string m_jetAlgo;
+    bool m_debug; //!
 
-#ifndef __CINT__
     JERTool         * m_JERTool;     //!
     JERSmearingTool * m_JERSmearing; //!
-#endif // not __CINT__
 
   public:
 
