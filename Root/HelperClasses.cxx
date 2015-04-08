@@ -96,6 +96,7 @@ namespace HelperClasses{
     m_pileup        = parse("pileup");
     m_shapeEM       = parse("shapeEM");
     m_shapeLC       = parse("shapeLC");
+    m_truth         = parse("truth");
   }
 
   void MuonInfoSwitch::initialize(){
