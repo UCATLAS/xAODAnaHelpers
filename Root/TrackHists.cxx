@@ -1,8 +1,9 @@
 #include "xAODAnaHelpers/TrackHists.h"
 
 #include <math.h>
+using std::cout;  using std::endl;
 
-TrackHists :: TrackHists (std::string name, std::string detailStr) :
+TrackHists :: TrackHists (std::string name, std::string detailStr) : 
   HistogramManager(name, detailStr)
 {
 }
@@ -29,8 +30,8 @@ EL::StatusCode TrackHists::initialize() {
   m_fillIPDetails = false;
   if(m_detailStr.find("IPDetails") != std::string::npos ){
     m_fillIPDetails = true;
-
-    m_trk_d0Err        = book(m_name, "d0Err",            "d0Err[mm]",        100,  0, 0.4 );
+    
+    m_trk_d0Err        = book(m_name, "d0Err",            "d0Err[mm]",        100,  0, 0.4 );  
     m_trk_d0_l         = book(m_name, "d0_l" ,            "d0[mm]",           100,  -10.0, 10.0 );
     m_trk_d0Sig        = book(m_name, "d0Sig",            "d0Sig",            240,  -20.0, 40.0 );
 
@@ -74,7 +75,7 @@ EL::StatusCode TrackHists::initialize() {
     //  new TProfile(m_name, "d0ErrvsIpt",      "d0ErrvsIpt;    Ipt;       d0Err",  20,  -6e-4, 6e4, 0, 0.4, "s" );
     //  new TProfile(m_name, "d0Errvsphi",      "d0Errvsphi;    phi;       d0Err",  1000,  -3.2, 3.2, 0, 0.4);
     //
-
+    
     //  new TH2F(m_name, "z0d0"    ,    "z0d0;     z0[mm];  d0[mm];",  50,  -300.0, 300.0, 50, -4.0, 4.0  );
     //  new TH2F(m_name, "z0sinTd0",    "z0sinTd0;     z0xsin0[mm](signed);  d0[mm](signed);",  50,-2.0, 2.0, 50, -2.0, 2.0  );
 
@@ -128,7 +129,7 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, co
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx, float eventWeight ) {
+EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx, float eventWeight ) { 
 
   //basic
   float        trkPt       = trk->pt()/1e3;
@@ -167,27 +168,27 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::
     m_trk_z0SigsinT    -> Fill(z0Sig*sinT , eventWeight );
 
   }
-
+  
   if(m_fillHitCounts){
 
-    uint8_t nBL       = -1;
-    uint8_t nPix      = -1;
-    uint8_t nPixDead  = -1;
-    uint8_t nPixHoles = -1;
-    uint8_t nSCT      = -1;
-    uint8_t nSCTDead  = -1;
+    uint8_t nBL       = -1;  
+    uint8_t nPix      = -1;  
+    uint8_t nPixDead  = -1;  
+    uint8_t nPixHoles = -1;  
+    uint8_t nSCT      = -1;  
+    uint8_t nSCTDead  = -1;  
 
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("execute()", "BLayer hits not filled");
-    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        Error("execute()", "Pix hits not filled");
-    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) Error("execute()", "Pix Dead not filled");
-    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       Error("execute()", "Pix holes not filled");
-    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          Error("execute()", "SCT hits not filled");
-    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   Error("execute()", "SCT Dead not filled");
-
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       cout << "ERROR: BLayer hits not filled" << endl;
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        cout << "ERROR: Pix hits not filled" << endl;
+    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) cout << "ERROR: Pix Dead not filled" << endl;
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       cout << "ERROR: Pix holes not filled" << endl;
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          cout << "ERROR: SCT hits not filled" << endl;
+    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   cout << "ERROR: SCT Dead not filled" << endl;
+      
     uint8_t nSi     = nPix     + nSCT;
     uint8_t nSiDead = nPixDead + nSCTDead;
     m_trk_nBL        -> Fill( nBL         , eventWeight );
-    m_trk_nSi        -> Fill( nSi         , eventWeight );
+    m_trk_nSi        -> Fill( nSi         , eventWeight ); 
     m_trk_nSiAndDead -> Fill( nSi+nSiDead , eventWeight );
     m_trk_nSiDead    -> Fill( nSiDead     , eventWeight );
     m_trk_nSCT       -> Fill( nSCT        , eventWeight );

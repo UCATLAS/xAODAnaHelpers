@@ -9,7 +9,10 @@ JetHists :: JetHists (std::string name, std::string detailStr) :
 }
 
 JetHists :: ~JetHists () {
-  if(m_infoSwitch) delete m_infoSwitch;
+  if(m_infoSwitch){
+    delete m_infoSwitch;
+    m_infoSwitch = nullptr;
+  }
 }
 
 EL::StatusCode JetHists::initialize() {
@@ -133,7 +136,7 @@ EL::StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_truth ) {
     Info("JetHists::initialize()", "adding truth plots");
 
-    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          30,  -0.5,  29.5);
+    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          20,  -0.5,  19.5);
     m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          50,  -0.5,  49.5);
     m_truthPt        = book(m_name, "TruthPt",             "Truth Pt",              100,   0,   100.0);
 
@@ -163,19 +166,6 @@ EL::StatusCode JetHists::initialize() {
     m_truthCount_TausFinal = book(m_name, "GhostTausFinalCount", "Truth Count Taus (final)" ,    10, -0.5,   9.5);
     m_truthPt_TausFinal    = book(m_name, "GhostTausFinalPt",    "Truth p_{T} Taus (final)" ,      100,    0,   100);
 
-  }
-
-  if( m_infoSwitch->m_flavTag ) {
-    Info("JetHists::initialize()", "adding btagging plots");    
-    
-    m_MV1             = book(m_name, "MV1",    "MV1" ,      100,    -0.1,   1.1);
-    m_SV1_plus_IP3D   = book(m_name, "SV1_plus_IP3D",    "SV1_plus_IP3D" ,      100,    -0.1,   1.1);
-    m_SV0             = book(m_name, "SV0",    "SV0" ,      100,    -20,  200);
-    m_SV1             = book(m_name, "SV1",    "SV1" ,      100,    -5,   15);
-    m_IP2D            = book(m_name, "IP2D",   "IP2D" ,     100,    -10,   40);
-    m_IP3D            = book(m_name, "IP3D",   "IP3D" ,     100,    -20,   40);
-    m_JetFitter       = book(m_name, "JetFitter",   "JetFitter" ,     100,    -10,   10);
-    m_JetFitterCombNN = book(m_name, "JetFitterCombNN",   "JetFitterCombNN" ,     100,    -10,   10);
   }
 
   this->initializeUser();
@@ -446,11 +436,6 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int p
     static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
     if( TruthLabelID.isAvailable( *jet ) ) {
       m_truthLabelID ->  Fill( TruthLabelID( *jet ), eventWeight );
-    }else{
-      static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
-      if( PartonTruthLabelID.isAvailable( *jet ) ) {
-	m_truthLabelID ->  Fill( PartonTruthLabelID( *jet ), eventWeight );
-      }
     }
 
     static SG::AuxElement::ConstAccessor<int> TruthCount ("TruthCount");
@@ -568,30 +553,12 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int p
 
   }
 
-  //
-  // BTagging
-  //
-  if( m_infoSwitch->m_flavTag ) {
-    
-    const xAOD::BTagging *btag_info = jet->btagging();
-    m_MV1 ->  Fill( btag_info->MV1_discriminant() , eventWeight );    
-    m_SV1_plus_IP3D ->  Fill( btag_info->MV1_discriminant() , eventWeight );    
-    m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );    
-    m_SV1 ->  Fill( btag_info->SV1_loglikelihoodratio() , eventWeight );    
-    m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );    
-    m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );    
-    m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );    
-    m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );    
-    
-  }
-
-
 
 
   /*
   std::vector<float> chfs = jet->getAttribute< std::vector<float> >(xAOD::JetAttribute::SumPtTrkPt1000);
   float chf(-1);
-  if( pvLoc >= 0 && pvLoc < (int)chfs.size() ) {
+  if( pvLoc >= 0 && pvLoc < (int)chfs.size() ) { 
     m_chf ->  Fill( chfs.at( pvLoc ) , eventWeight );
   }
   */

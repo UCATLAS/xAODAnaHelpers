@@ -34,6 +34,10 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
+// external tools include(s):
+#include "JetResolution/JERTool.h"
+#include "JetResolution/JERSmearingTool.h"
+
 // ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
@@ -86,9 +90,6 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   m_outAuxContainerName = m_outContainerName + "Aux."; // the period is very important!
 
   m_jetAlgo             = config->GetValue("JetAlgorithm",    "");
-  m_debug                   = config->GetValue("Debug" ,           false );
-
-  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -141,8 +142,8 @@ EL::StatusCode JERShifter :: initialize ()
   m_numEvent      = 0;
 
   // Instantiate the tools
-  std::string jer_tool_name  = std::string("JERTool_") + m_name;
-  std::string jers_tool_name = std::string("JERSmearingTool_") + m_name;
+  std::string jer_tool_name  = std::string("JERTool_") + m_name;  
+  std::string jers_tool_name = std::string("JERSmearingTool_") + m_name;   
   m_JERTool     = new JERTool( jer_tool_name.c_str() );
   m_JERSmearing = new JERSmearingTool( jers_tool_name.c_str() );
 
@@ -174,8 +175,7 @@ EL::StatusCode JERShifter :: execute ()
   m_numEvent++;
 
   // get the collection from TEvent or TStore
-  const xAOD::JetContainer* inJets(nullptr);
-  RETURN_CHECK("JERShifter::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
+  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   // create shallow copy
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > smearedJets = xAOD::shallowCopyContainer( *inJets );
@@ -213,9 +213,15 @@ EL::StatusCode JERShifter :: postExecute ()
 
 EL::StatusCode JERShifter :: finalize ()
 {
-  if(m_JERTool) delete m_JERTool;
-  if(m_JERSmearing) delete m_JERSmearing;
-
+  // This method is the mirror image of initialize(), meaning it gets
+  // called after the last event has been processed on the worker node
+  // and allows you to finish up any objects you created in
+  // initialize() before they are written to disk.  This is actually
+  // fairly rare, since this happens separately for each worker node.
+  // Most of the time you want to do your post-processing on the
+  // submission node after all your histogram outputs have been
+  // merged.  This is different from histFinalize() in that it only
+  // gets called on worker nodes that processed input events.
   return EL::StatusCode::SUCCESS;
 }
 

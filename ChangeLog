@@ -1,53 +1,24 @@
-2015-03-04 John Alison <John.Alison@cern.ch>
-	* JetHists.cxx: Adding Basic FlavorTag Histograms
-	* JetHists.cxx: Add option for new TruthLabel Var
-	* JetSelector.cxx: Change cut TruthIDs to use PIDs instead of zero for light-flavor
-
 2015-03-10 Jeff Dandoy	<Jeff.Dandoy@cern.ch>
 	* NLeadingJets switch and User functions added to JetHists
 	* Variable Binned Histograms in HistogramManager
 
 2015-03-10 Marco Milesi <Marco.Milesi@cern.ch>
-	* Added possibility to use cut-based PID in ElectronSelector (Changed electronSelect*.config file accordingly)
+        * Added possibility to use cut-based PID in ElectronSelector (Changed electronSelect*.config file accordingly)
 	* Configuration files for ElectronSelector tools are passed directly via config
 	* Append module name to CP Tool name in constructor (to avoid asg::ToolStore::put warning when using multiple instances of same xAODAnaHelpers module)
 
 2015-03-11 Marco Milesi <Marco.Milesi@cern.ch>
-	* Releasing tag 00-00-02 (for ASG Base,2.1.27)
-
+        * Releasing tag 00-00-02 (for ASG Base,2.1.27)
+      
 2015-03-26 Marco Milesi <Marco.Milesi@cern.ch>
-	* Added function isFilePrimaryxAOD() to know if a sample is a primary xAOD (if not, its a DxAOD!) in HelperFunctions
+        * Added function isFilePrimaryxAOD() to know if a sample is a primary xAOD (if not, its a DxAOD!) in HelperFunctions
 	* Added MuonEfficiencyCorrector module. Efficiency SF systematics are added as decorations
 	* Revamped MetaData reading in BasicEventSelection.cxx . This is not going to be definitive though...
 
 2015-03-28 Marco Milesi <Marco.Milesi@cern.ch>
-	* Small changes to TreeAlgo to make other algorithms inherit from it
+        * Small changes to TreeAlgo to make other algorithms inherit from it
 
 2015-03-30 Marco Milesi <Marco.Milesi@cern.ch>
-	* Developed all (?) the systematics machinery for Electrons
-	* Tested in ASG Base,2.1.29
-
-2015-04-01 Marco Milesi <Marco.Milesi@cern.ch>
-	* Changed Systematics logic in OverlapRemoval
-	* Fixed bugs in Systematics logic in ElectronEfficiencyCorrector and ElectronSelector
-
-2015-04-03 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
-	* Major overhaul to push towards ROOT6
-	* Removed #ifndef __CINT__ ... #endif
-	* Fixed up all foward-declarations and moved a lot of header files around
-	* Cleaned up the linking and removed extraneous header files, especially
-	around template codes
-	* Algorithms do not call std::cout anymore, and instead use Info(),
-	Warning(), and Error()
-	* Added m_debug to a lot of algorithms to be consistent across the board
-	* switch HelperFunctions::getContainer to HelperFunctions::retrieve
-	everywhere
-	* remove any if/else statements using m_event->retrieve() or
-	m_store->retrieve() -- use HelperFunctions::retrieve()
-	* removed memory leaks everywhere except for HelpTreeBase and
-	TreeAlgo
-	* deprecate HelperFunctions::getContainer()
-
-2015-04-04 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
-	* fixed a bug in the getline() code where you need to call ss.clear() to
-	force the buffer to point to beginning of the stream again
+        * Developed all (?) the systematics machinery for Electrons
+        * Tested in ASG Base,2.1.29
+	

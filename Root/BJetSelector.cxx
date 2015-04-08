@@ -56,12 +56,12 @@ BJetSelector :: BJetSelector (std::string name, std::string configName) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  Info("BJetSelector()", "Calling constructor");
+  Info("BJetSelector()", "Calling constructor \n");
 }
 
 EL::StatusCode  BJetSelector :: configure ()
 {
-  Info("configure()", "Configuing BJetSelector Interface. User configuration read from : %s ", m_configName.c_str());
+  Info("configure()", "Configuing BJetSelector Interface. User configuration read from : %s \n", m_configName.c_str());
 
   m_configName = gSystem->ExpandPathName( m_configName.c_str() );
   RETURN_CHECK_CONFIG( "BJetSelector::configure()", m_configName);
@@ -129,7 +129,7 @@ EL::StatusCode  BJetSelector :: configure ()
   }
 
   config->Print();
-  Info("configure()", "BJetSelector Interface succesfully configured! ");
+  Info("configure()", "BJetSelector Interface succesfully configured! \n");
 
   delete config;
 
@@ -146,7 +146,7 @@ EL::StatusCode BJetSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  Info("setupJob()", "Calling setupJob \n");
 
   job.useXAOD ();
   xAOD::Init( "BJetSelector" ).ignore(); // call before opening first file
@@ -163,7 +163,7 @@ EL::StatusCode BJetSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize");
+  Info("histInitialize()", "Calling histInitialize \n");
   if(m_useCutFlow) {
     TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
@@ -182,7 +182,7 @@ EL::StatusCode BJetSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute");
+  Info("fileExecute()", "Calling fileExecute \n");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -195,7 +195,7 @@ EL::StatusCode BJetSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput");
+  Info("changeInput()", "Calling changeInput \n");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -223,6 +223,8 @@ EL::StatusCode BJetSelector :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
+  //std::cout << m_name << " Number of events = " << m_event->getEntries() << std::endl;
+
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
@@ -242,11 +244,10 @@ EL::StatusCode BJetSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Jet Selection... ");
+  if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
   // mc event weight (PU contribution multiplied in BaseEventSelection)
-  const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BJetSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);;
 
   float mcEvtWeight(1.0);
   if (eventInfo->isAvailable< float >( "mcEventWeight" )){
@@ -259,8 +260,7 @@ EL::StatusCode BJetSelector :: execute ()
   m_numEvent++;
 
   // this will be the collection processed - no matter what!!
-  const xAOD::JetContainer* inJets(nullptr);
-  RETURN_CHECK("BJetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
+  const xAOD::JetContainer* inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
   return executeConst( inJets, mcEvtWeight );
 }
@@ -273,7 +273,7 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Jet Selection... ");
+  if(m_debug) Info("execute()", "Applying Jet Selection... \n");
 
   // create output container (if requested)
   ConstDataVector<xAOD::JetContainer>* selectedJets = 0;
@@ -301,15 +301,15 @@ EL::StatusCode BJetSelector :: executeConst ( const xAOD::JetContainer* inJets, 
     int passSel = this->PassCuts( jet_itr );
 
     const xAOD::BTagging *myBTag = jet_itr->btagging();
-
+    
     // store SV1+IP3D  weight for all jets
     SV1plusIP3DWeightDecor(*jet_itr) = myBTag->SV1plusIP3D_discriminant();
 
     // only b-tag jets passing the kinematic selection
     if( m_btagCut >=0 && passSel > 0 ) {
-
+      
       if(m_debug){ Info("execute()", "jet MV1 discriminant = %2f.", myBTag->MV1_discriminant()); }
-
+      
       if( myBTag->MV1_discriminant() > m_btagCut ) {
         // get efficiency scale factor for jet
       } else {
@@ -366,7 +366,7 @@ EL::StatusCode BJetSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
+  if(m_debug) Info("postExecute()", "Calling postExecute \n");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -385,7 +385,7 @@ EL::StatusCode BJetSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances...");
+  Info("finalize()", "Deleting tool instances... \n");
 
   return EL::StatusCode::SUCCESS;
 }

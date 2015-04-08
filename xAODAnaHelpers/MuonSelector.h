@@ -10,14 +10,19 @@
 #include "xAODRootAccess/TStore.h"
 
 // EDM include(s):
-#include "xAODMuon/MuonContainer.h"
-#include "xAODTracking/Vertex.h"
+#ifndef __CINT__
+  #include "xAODMuon/Muon.h"
+  #include "xAODMuon/MuonContainer.h"
+  #include "xAODTracking/Vertex.h"
+#endif
 
 // ROOT include(s):
 #include "TH1D.h"
 
-// external tools include(s):
-#include "MuonSelectorTools/MuonSelectionTool.h"
+namespace CP{
+  class MuonSelectionTool;
+}
+
 
 class MuonSelector : public EL::Algorithm
 {
@@ -46,7 +51,9 @@ public:
 private:
 
   // tools
+#ifndef __CINT__
   CP::MuonSelectionTool *m_muonSelectionTool;//!
+#endif
   // configuration variables
 
   std::string  m_inContainerName;     // input container name
@@ -102,10 +109,14 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+#ifndef __CINT__
   virtual EL::StatusCode executeConst( const xAOD::MuonContainer* inMuons, float mcEvtWeight );
+#endif
   // added functions not from Algorithm
   // why does this need to be virtual?
+#ifndef __CINT__
   virtual int PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex );
+#endif
   // this is needed to distribute the algorithm to the workers
   ClassDef(MuonSelector, 1);
 };

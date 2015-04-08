@@ -12,8 +12,17 @@
 // ROOT include(s):
 #include "TH1D.h"
 
-#include "xAODTracking/VertexContainer.h"
-#include "xAODTracking/TrackParticleContainer.h"
+namespace xAOD {
+  #ifndef XAODTRACKING_TRACKPARTICLE_H
+  class TrackParticle;
+  #endif
+  #ifndef XAODTRACKING_TRACKPARTICLECONTAINER_H
+  class TrackParticleContainer;
+  #endif
+  #ifndef XAODTRACKING_VERTEX_H
+  class Vertex;
+  #endif
+}
 
 class TrackSelector : public EL::Algorithm
 {

@@ -9,17 +9,13 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-// EDM include(s):
-#include "xAODEgamma/ElectronContainer.h"
-
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicSet.h"
 #include "PATInterfaces/SystematicsUtil.h"
 #include "PATInterfaces/SystematicVariation.h"
 
-// external tools include(s):
-#include "ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h"
+class AsgElectronEfficiencyCorrectionTool;
 
 class ElectronEfficiencyCorrector : public EL::Algorithm
 {
@@ -34,7 +30,7 @@ public:
 
   std::string m_name;
   std::string m_configName;
-
+  
   std::string m_corrFileName1;
   //std::string m_corrFileName1;
 
@@ -49,7 +45,9 @@ public:
 private:
 
   // tools
+#ifndef __CINT__
   AsgElectronEfficiencyCorrectionTool  *m_asgElectronEfficiencyCorrectionTool; //!
+#endif // not __CINT__
 
   // configuration variables
   std::string m_inContainerName;
@@ -57,7 +55,7 @@ private:
   std::string m_outAuxContainerName;
   std::string m_inputAlgo;               // input type - from xAOD or from xAODAnaHelpers Algo output
   std::string m_outputAlgo;
-
+  
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -83,7 +81,6 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  virtual EL::StatusCode executeSF (  const xAOD::ElectronContainer* correctedElectrons  );
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronEfficiencyCorrector, 1);

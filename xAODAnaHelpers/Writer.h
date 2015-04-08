@@ -23,8 +23,6 @@ public:
   std::string m_configName;
   bool m_isMC;
 
-  bool m_debug; //!
-
 private:
 
   TString m_outputLabel;
@@ -44,6 +42,8 @@ private:
 public:
   // Tree *myTree; //!
   // TH1 *myHist; //!
+
+
 
   // this is a standard constructor
   Writer ();

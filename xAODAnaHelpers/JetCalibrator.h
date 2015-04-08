@@ -14,10 +14,9 @@
 #include "PATInterfaces/SystematicSet.h"
 #include "PATInterfaces/SystematicVariation.h"
 
-// external tools include(s):
-#include "JetCalibTools/JetCalibrationTool.h"
-#include "JetSelectorTools/JetCleaningTool.h"
-#include "JetUncertainties/JetUncertaintiesTool.h"
+class JetCalibrationTool;
+class JetCleaningTool;
+class JetUncertaintiesTool;
 
 class JetCalibrator : public EL::Algorithm
 {
@@ -46,9 +45,11 @@ public:
 private:
 
   // tools
+#ifndef __CINT__
   JetCalibrationTool    * m_jetCalibration; //!
   JetCleaningTool       * m_jetCleaning;    //!
   JetUncertaintiesTool  * m_jetUncert;      //!
+#endif // not __CINT__
 
   // configuration variables
   std::string m_inContainerName;        //!
@@ -57,7 +58,6 @@ private:
   std::string m_outSCAuxContainerName;  //!
 
   std::string m_jetAlgo;                //!
-  std::string m_outputAlgo;             //!
   std::string m_calibConfigData;        //!
   std::string m_calibConfigFullSim;     //!
   std::string m_calibConfigAFII;        //!

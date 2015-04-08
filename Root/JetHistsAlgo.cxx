@@ -7,6 +7,7 @@
 #include <xAODEventInfo/EventInfo.h>
 #include <AthContainers/ConstDataVector.h>
 
+#include <xAODAnaHelpers/JetHists.h>
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
@@ -46,7 +47,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
   } else {
-    Info("histInitialize()", "Succesfully configured! ");
+    Info("histInitialize()", "Succesfully configured! \n");
   }
 
   // only running 1 collection
@@ -80,8 +81,6 @@ EL::StatusCode JetHistsAlgo :: configure ()
   // name of algo input container comes from - only if
   m_inputAlgo               = config->GetValue("InputAlgo",       "");
 
-  m_debug                   = config->GetValue("Debug" ,           false );
-
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
@@ -108,8 +107,7 @@ EL::StatusCode JetHistsAlgo :: initialize ()
 
 EL::StatusCode JetHistsAlgo :: execute ()
 {
-  const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+  const xAOD::EventInfo* eventInfo = HelperFunctions::getContainer<xAOD::EventInfo>("EventInfo", m_event, m_store);
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
@@ -117,8 +115,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
   }
 
   // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices(nullptr);
-  RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
+  const xAOD::VertexContainer* vertices = HelperFunctions::getContainer<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store);
   int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
 
   // this will hold the collection processed
@@ -127,7 +124,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if( m_inputAlgo.empty() ) {
-    RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
+    inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName, m_event, m_store);
 
     /* two ways to fill */
 
@@ -144,12 +141,17 @@ EL::StatusCode JetHistsAlgo :: execute ()
   else { // get the list of systematics to run over
 
     // get vector of string giving the names
-    std::vector<std::string>* systNames(nullptr);
-    RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_debug) ,"");
+    std::vector<std::string>* systNames;
+    if ( m_store->contains< std::vector<std::string> >( m_inputAlgo ) ) {
+      if(!m_store->retrieve( systNames, m_inputAlgo ).isSuccess()) {
+        Info("execute()", "Cannot find vector from %s", m_inputAlgo.c_str());
+        return StatusCode::FAILURE;
+      }
+    }
 
     // loop over systematics
     for( auto systName : *systNames ) {
-      RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
+      inJets = HelperFunctions::getContainer<xAOD::JetContainer>(m_inContainerName+systName, m_event, m_store);
       if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
       m_plots[systName]->execute( inJets, eventWeight, pvLocation );
     }
@@ -165,7 +167,8 @@ EL::StatusCode JetHistsAlgo :: finalize () {
   Info("finalize()", m_name.c_str());
   if(!m_plots.empty()){
     for( auto plots : m_plots ) {
-      if(plots.second) delete plots.second;
+      delete plots.second;
+      plots.second = 0;
     }
   }
   return EL::StatusCode::SUCCESS;

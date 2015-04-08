@@ -45,6 +45,11 @@ namespace HelperClasses {
 
      T parseEnum(const std::string &value)
      {
+	/*
+	for (auto it = enumMap.begin(); it != enumMap.end(); ++it){
+	   std::cout << "element: " << (*it).first << std::endl;
+	}
+        */
         typename std::multimap <std::string, T>::const_iterator iValue = enumMap.find(value);
         if (iValue == enumMap.end()){
             std::cerr << "Could not find input string in enum!" << std::endl;

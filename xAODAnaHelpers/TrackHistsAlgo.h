@@ -7,28 +7,29 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-#include <xAODAnaHelpers/TrackHists.h>
+class TrackHists;
 
 class TrackHistsAlgo : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
+  
   std::string m_name;
   std::string m_configName;
-  std::string m_inContainerName;
+  std::string m_inContainerName;  
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
 
 private:
 
+#ifndef __CINT__
   TrackHists* m_plots; //!
+#endif // not __CINT__
 
   // configuration variables
   std::string m_detailStr;        //!
-  bool m_debug; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
