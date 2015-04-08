@@ -260,10 +260,14 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
       // continuous systematics - can choose at what sigma to evaluate
       // add +1 and -1 for when running all
       if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
+        if ( systVal == 0 ) { 
+          Error("HelperFunctions::getListofSystematics()","Setting ALL continuous systematic to 0 is nominal! Please check!");
+          RCU_THROW_MSG("Failure");
+        }
         systList.push_back(CP::SystematicSet());
-        systList.back().insert(CP::SystematicVariation (syst.basename(),  1.0));
+        systList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
         systList.push_back(CP::SystematicSet());
-        systList.back().insert(CP::SystematicVariation (syst.basename(), -1.0));
+        systList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
       } 
       // not a continuous systematic
       else {
