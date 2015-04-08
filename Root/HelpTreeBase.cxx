@@ -565,25 +565,19 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
     }
 
     if( m_jetInfoSwitch->m_flavTag) {
-      const xAOD::BTagging * myBtag = jet_itr->btagging();
-      m_jet_sv0.push_back( myBtag -> SV0_significance3D() );
-      m_jet_sv1.push_back( myBtag -> SV1_loglikelihoodratio() );
-      m_jet_ip3d.push_back( myBtag -> IP3D_loglikelihoodratio() );
-      m_jet_sv1ip3d.push_back( myBtag -> SV1plusIP3D_discriminant() );
-      m_jet_mv1.push_back(     myBtag -> MV1_discriminant() );
-
+      const xAOD::BTagging * myBTag = jet_itr->btagging();
+      m_jet_sv0.push_back( myBTag -> SV0_significance3D() );
+      m_jet_sv1.push_back( myBTag -> SV1_loglikelihoodratio() );
+      m_jet_ip3d.push_back( myBTag -> IP3D_loglikelihoodratio() );
+      m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
+      m_jet_mv1.push_back(     myBTag -> MV1_discriminant() );
 
       //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
-
-      static SG::AuxElement::ConstAccessor< double > MV2c00WeightAcc("MV2c00_discriminant");
-      if( MV2c00WeightAcc.isAvailable( *jet_itr ) ) {
-        m_jet_mv2c00.push_back( MV2c00WeightAcc( *jet_itr ) );
-      } else { m_jet_mv2c00.push_back( -999 ); }
-
-      static SG::AuxElement::ConstAccessor< double > MV2c20WeightAcc("MV2c20_discriminant");
-      if( MV2c20WeightAcc.isAvailable( *jet_itr ) ) {
-        m_jet_mv2c20.push_back( MV2c20WeightAcc( *jet_itr ) );
-      } else { m_jet_mv2c20.push_back( -999 ); }
+      double val(-999);
+      myBTag->variable<double>("MV2c00", "discriminant", val);
+      m_jet_mv2c00.push_back( val );
+      myBTag->variable<double>("MV2c20", "discriminant", val);
+      m_jet_mv2c20.push_back( val );
 
     }
 
