@@ -250,7 +250,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // events, e.g. read input variables, apply cuts, and fill
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
-
+  
   if(m_debug) Info("execute()", "Applying Electron Calibration ... ");
 
   m_numEvent++;

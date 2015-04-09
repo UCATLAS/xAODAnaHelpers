@@ -36,14 +36,26 @@ int main( int argc, char* argv[] ) {
 
   // Construct the samples to run on:
   SH::SampleHandler sh;
+  
+  // default
+  std::string filename;
+  std::string dataPath; 
 
-  std::string filename = "mc14_13TeV.110351.PowhegPythia_P2012_ttbar_allhad.merge.AOD.e3232_s1982_s2008_r5787_r5853_skim.root";
-  // std::string filename = "r20test_AOD.pool.root";
-  // get the data path for xAODAnaHelpers/data
-  std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
-  SH::DiskListLocal list (dataPath);
-  SH::scanDir (sh, list, filename, "xAODAnaHelpers"); // specifying one particular sample
-
+  if ( argc > 3 ) {
+    dataPath = argv[ 2 ];
+    filename = argv[ 3 ];
+    SH::DiskListLocal list (dataPath);  // path to foldaer conatining your datasets subfolders
+    SH::scanDir (sh, list, filename); // specifying one particular sample
+    
+  } else {
+    // default
+    std::string filename = "mc14_13TeV.110351.PowhegPythia_P2012_ttbar_allhad.merge.AOD.e3232_s1982_s2008_r5787_r5853_skim.root";
+    // std::string filename = "r20test_AOD.pool.root";
+    // get the data path for xAODAnaHelpers/data
+    std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
+    SH::DiskListLocal list (dataPath);
+    SH::scanDir (sh, list, filename, "xAODAnaHelpers"); // specifying one particular sample
+  }
   // Set the name of the input TTree. It's always "CollectionTree"
   // for xAOD files.
   sh.setMetaString( "nc_tree", "CollectionTree" );
@@ -90,21 +102,21 @@ int main( int argc, char* argv[] ) {
   TStoreCleaner* cleaner = new TStoreCleaner("cleaner");
 
   // Attach algorithms
-  job.algsAdd( baseEventSel );
-  job.algsAdd( jetCalib );
+//  job.algsAdd( baseEventSel );
+//  job.algsAdd( jetCalib );
   job.algsAdd( muonCalib );
-  job.algsAdd( muonEffCorr );
-  job.algsAdd( electronCalib );
-  job.algsAdd( electronEffCorr );
-  job.algsAdd( muonSelect_signal );  
-  job.algsAdd( electronSelect_signal );
-  job.algsAdd( jetSelect_signal );
-  job.algsAdd( bjetSelect_signal ); 
-  job.algsAdd( jetHistsAlgo_signal );
-  job.algsAdd( jetSelect_truth );
-  job.algsAdd( jetHistsAlgo_truth );
-  job.algsAdd( overlapRemoval );
-  job.algsAdd( jk_AntiKt10LC );
+//  job.algsAdd( muonEffCorr );
+//  job.algsAdd( electronCalib );
+//  job.algsAdd( electronEffCorr );
+//  job.algsAdd( muonSelect_signal );  
+//  job.algsAdd( electronSelect_signal );
+//  job.algsAdd( jetSelect_signal );
+//  job.algsAdd( bjetSelect_signal ); 
+//  job.algsAdd( jetHistsAlgo_signal );
+//  job.algsAdd( jetSelect_truth );
+//  job.algsAdd( jetHistsAlgo_truth );
+//  job.algsAdd( overlapRemoval );
+//  job.algsAdd( jk_AntiKt10LC );
   job.algsAdd( cleaner );
 
   // Run the job using the local/direct driver:
