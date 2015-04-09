@@ -194,6 +194,8 @@ protected:
   std::vector<float> m_jet_truth_phi;
   std::vector<float> m_jet_truth_E;
   std::vector<int> m_jet_truth_pdgId;
+  std::vector<float> m_jet_truth_partonPt;
+  std::vector<float> m_jet_truth_partonDR;
 
   // truth detail
   std::vector<int>   m_jet_truthCount_BhadFinal;

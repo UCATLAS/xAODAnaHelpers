@@ -349,6 +349,8 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_truth_phi", &m_jet_truth_phi);
     m_tree->Branch("jet_truth_eta", &m_jet_truth_eta);
     m_tree->Branch("jet_truth_pdgId", &m_jet_truth_pdgId);
+    m_tree->Branch("jet_truth_partonPt", &m_jet_truth_partonPt);
+    m_tree->Branch("jet_truth_partonDR", &m_jet_truth_partonDR);
   }
 
   if( m_jetInfoSwitch->m_truthDetails ) {
@@ -567,11 +569,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
 
     if( m_jetInfoSwitch->m_flavTag) {
       const xAOD::BTagging * myBTag = jet_itr->btagging();
-      m_jet_sv0.push_back( myBTag -> SV0_significance3D() );
-      m_jet_sv1.push_back( myBTag -> SV1_loglikelihoodratio() );
-      m_jet_ip3d.push_back( myBTag -> IP3D_loglikelihoodratio() );
+      m_jet_sv0.push_back(     myBTag -> SV0_significance3D()       );
+      m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
+      m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
       m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
-      m_jet_mv1.push_back(     myBTag -> MV1_discriminant() );
+      m_jet_mv1.push_back(     myBTag -> MV1_discriminant()         );
 
       //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
       double val(-999);
@@ -633,13 +635,15 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
       std::vector<const xAOD::TruthParticle*> truthPartons = jet_itr->getAssociatedObjects<xAOD::TruthParticle>("GhostPartons");
       if( truthPartons.size() == 0){
         m_jet_truth_pdgId.push_back(-999);
-      }else{
+      } else {
         int iParent = 0;
         for(int i=1; i < truthPartons.size(); ++i){
           if( (truthPartons.at(i)->pt() > 0.001) && (truthPartons.at(i)->e() > truthPartons.at(iParent)->e()) )
             iParent = i;
         }
-        m_jet_truth_pdgId.push_back(truthPartons.at(iParent)->pdgId() );
+        m_jet_truth_pdgId.push_back(truthPartons.at(iParent)->pdgId());
+        m_jet_truth_partonPt.push_back(truthPartons.at(iParent)->pt() / m_units);
+        m_jet_truth_partonDR.push_back(truthPartons.at(iParent)->p4().DeltaR( jet_itr->p4() ));
       }
     }
 
@@ -862,6 +866,8 @@ void HelpTreeBase::ClearJets() {
     m_jet_truth_phi.clear();
     m_jet_truth_E.clear();
     m_jet_truth_pdgId.clear();
+    m_jet_truth_partonPt.clear();
+    m_jet_truth_partonDR.clear();
   }
 
   // truth_detail
