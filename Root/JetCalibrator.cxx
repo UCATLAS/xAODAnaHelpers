@@ -88,7 +88,6 @@ EL::StatusCode  JetCalibrator :: configure ()
 
   // when running data "_Insitu" is appended to this string
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
-  m_calibConfigData	        = config->GetValue("configNameData",          "JES_Full2012dataset_Preliminary_MC14.config");
   m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
   m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
 
@@ -280,7 +279,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   else {
     Info("initialize()", "No uncertainities considered");
     // m_jetUncert not streamed so have to do this
-    m_runSysts = false; m_jetUncert = 0;
+    m_runSysts = false; m_jetUncert = nullptr;
   }
 
   // if not running systematics, need the nominal

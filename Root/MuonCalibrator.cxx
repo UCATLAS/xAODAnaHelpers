@@ -232,7 +232,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName ), "Failed to store aux container");
   // add ConstDataVector to TStore
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, m_outContainerName ), "Failed to store const data container");
-
+  
   return EL::StatusCode::SUCCESS;
 }
 
