@@ -396,7 +396,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   uint8_t nBL       = -1;
   if( m_nBL_min != 1e8 ){
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("PassCuts()", "BLayer hits not filled");
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))      Error("PassCuts()", "BLayer hits not filled");
     if( nBL < m_nBL_min ) {return 0; }
   }
 

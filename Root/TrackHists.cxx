@@ -177,12 +177,12 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::
     uint8_t nSCT      = -1;
     uint8_t nSCTDead  = -1;
 
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("execute()", "BLayer hits not filled");
-    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        Error("execute()", "Pix hits not filled");
-    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) Error("execute()", "Pix Dead not filled");
-    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       Error("execute()", "Pix holes not filled");
-    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          Error("execute()", "SCT hits not filled");
-    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   Error("execute()", "SCT Dead not filled");
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("TrackHists::execute()", "BLayer hits not filled");
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        Error("TrackHists::execute()", "Pix hits not filled");
+    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) Error("TrackHists::execute()", "Pix Dead not filled");
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       Error("TrackHists::execute()", "Pix holes not filled");
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          Error("TrackHists::execute()", "SCT hits not filled");
+    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   Error("TrackHists::execute()", "SCT Dead not filled");
 
     uint8_t nSi     = nPix     + nSCT;
     uint8_t nSiDead = nPixDead + nSCTDead;
