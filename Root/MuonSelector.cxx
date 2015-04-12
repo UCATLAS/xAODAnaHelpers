@@ -332,8 +332,8 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
 {
 
   // create output container (if requested)
-  ConstDataVector<xAOD::MuonContainer>* selectedMuons = 0;
-  if(m_createSelectedContainer) selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+  ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
+  if(m_createSelectedContainer){ selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS); }
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
@@ -374,10 +374,16 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   if( m_pass_min > 0 && nPass < m_pass_min ) {
-    wk()->skipEvent();
+    
+    if(m_createSelectedContainer) { delete selectedMuons; selectedMuons = nullptr; }
+
+    wk()->skipEvent();    
     return EL::StatusCode::SUCCESS;
   }
   if( m_pass_max > 0 && nPass > m_pass_max ) {
+    
+    if(m_createSelectedContainer) { delete selectedMuons; selectedMuons = nullptr; }
+    
     wk()->skipEvent();
     return EL::StatusCode::SUCCESS;
   }
@@ -401,7 +407,7 @@ EL::StatusCode MuonSelector :: postExecute ()
   // code.  It is mainly used in implementing the NTupleSvc.
 
   if(m_debug) Info("postExecute()", "Calling postExecute");
-
+  
   return EL::StatusCode::SUCCESS;
 }
 

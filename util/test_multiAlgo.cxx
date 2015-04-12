@@ -20,7 +20,6 @@
 #include "xAODAnaHelpers/Writer.h"
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include "xAODAnaHelpers/OverlapRemover.h"
-#include "xAODAnaHelpers/TStoreCleaner.h"
 
 #include "PATInterfaces/SystematicVariation.h"
 
@@ -38,15 +37,25 @@ int main( int argc, char* argv[] ) {
   SH::SampleHandler sh;
   
   // default
+  std::string datasetname;
   std::string filename;
   std::string dataPath; 
 
+  // usage:
+  // test_multiAlgo  [optional] outdir dataPath/ datasetname filename
   if ( argc > 3 ) {
     dataPath = argv[ 2 ];
-    filename = argv[ 3 ];
-    SH::DiskListLocal list (dataPath);  // path to foldaer conatining your datasets subfolders
-    SH::scanDir (sh, list, filename); // specifying one particular sample
-    
+    datasetname = argv[3];
+   
+    SH::DiskListLocal list (dataPath);  // path to folder containing your datasets subfolders
+    if( argc > 4 ){
+      filename = argv[ 4 ];
+      SH::scanDir (sh, list, filename); // running on a specific file
+    } else {
+      SH::scanDir (sh, list, "*.root*", datasetname ); // running on all files in a specific dataset
+    }
+
+
   } else {
     // default
     std::string filename = "mc14_13TeV.110351.PowhegPythia_P2012_ttbar_allhad.merge.AOD.e3232_s1982_s2008_r5787_r5853_skim.root";
@@ -98,26 +107,22 @@ int main( int argc, char* argv[] ) {
   OverlapRemover* overlapRemoval                = new OverlapRemover(       "OverlapRemovalTool",       localDataDir+"overlapRemoval.config");
   JetHistsAlgo* jk_AntiKt10LC                   = new JetHistsAlgo(         "AntiKt10/",                localDataDir+"test_jetPlotExample.config");
     
-  // TStore cleaner
-  TStoreCleaner* cleaner = new TStoreCleaner("cleaner");
-
   // Attach algorithms
-//  job.algsAdd( baseEventSel );
-//  job.algsAdd( jetCalib );
+  job.algsAdd( baseEventSel );
+  job.algsAdd( jetCalib );
   job.algsAdd( muonCalib );
-//  job.algsAdd( muonEffCorr );
-//  job.algsAdd( electronCalib );
-//  job.algsAdd( electronEffCorr );
-//  job.algsAdd( muonSelect_signal );  
-//  job.algsAdd( electronSelect_signal );
-//  job.algsAdd( jetSelect_signal );
-//  job.algsAdd( bjetSelect_signal ); 
-//  job.algsAdd( jetHistsAlgo_signal );
-//  job.algsAdd( jetSelect_truth );
-//  job.algsAdd( jetHistsAlgo_truth );
-//  job.algsAdd( overlapRemoval );
-//  job.algsAdd( jk_AntiKt10LC );
-  job.algsAdd( cleaner );
+  job.algsAdd( muonEffCorr );
+  job.algsAdd( electronCalib );
+  job.algsAdd( electronEffCorr );
+  job.algsAdd( muonSelect_signal );  
+  job.algsAdd( electronSelect_signal );
+  job.algsAdd( jetSelect_signal );
+  job.algsAdd( bjetSelect_signal ); 
+  job.algsAdd( jetHistsAlgo_signal );
+  job.algsAdd( jetSelect_truth );
+  job.algsAdd( jetHistsAlgo_truth );
+  job.algsAdd( overlapRemoval );
+  job.algsAdd( jk_AntiKt10LC );
 
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;

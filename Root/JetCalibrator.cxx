@@ -404,6 +404,8 @@ EL::StatusCode JetCalibrator :: postExecute ()
 
   if(m_debug) Info("postExecute()", "Calling postExecute");
 
+  //m_store->clear();
+
   return EL::StatusCode::SUCCESS;
 }
 

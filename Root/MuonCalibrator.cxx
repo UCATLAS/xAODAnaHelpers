@@ -200,6 +200,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   // create shallow copy
   std::pair< xAOD::MuonContainer*, xAOD::ShallowAuxContainer* > calibMuonsSC = xAOD::shallowCopyContainer( *inMuons );
+  // create ConstDataVector
   ConstDataVector<xAOD::MuonContainer>* calibMuonsCDV = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
   calibMuonsCDV->reserve( calibMuonsSC.first->size() );
 
@@ -217,7 +218,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   if(!xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first))) {
-    Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
+    Error("MuonCalibrator::execute()", "Failed to set original object links -- MET rebuilding cannot proceed.");
   }
 
   if(m_sort) {
@@ -228,7 +229,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "", ToolName::CALIBRATOR), "");
 
   // add shallow copy to TStore
-  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first, m_outSCContainerName ), "Failed to store container");
+  RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first,  m_outSCContainerName ), "Failed to store container");
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName ), "Failed to store aux container");
   // add ConstDataVector to TStore
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, m_outContainerName ), "Failed to store const data container");

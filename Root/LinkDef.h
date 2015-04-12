@@ -31,7 +31,6 @@
 #include <xAODAnaHelpers/JERShifter.h>
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/Writer.h>
-#include <xAODAnaHelpers/TStoreCleaner.h>
 
 #ifdef __CINT__
 
@@ -63,7 +62,6 @@
 #pragma link C++ class JERShifter+;
 #pragma link C++ class OverlapRemover+;
 #pragma link C++ class Writer+;
-#pragma link C++ class TStoreCleaner+;
 #endif
 
 #ifdef __CINT__
