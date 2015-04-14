@@ -93,7 +93,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
 
   m_sort                    = config->GetValue("Sort",          false);
 
-  if( m_inContainerName.empty() ) {
+  if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -101,7 +101,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   config->Print();
   Info("configure()", "ElectronCalibrator Interface succesfully configured! ");
 
-  delete config;
+  delete config; config = nullptr;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -201,7 +201,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   Info("initialize()"," Initializing Electron Calibrator Systematics :");
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal );
 
-  if( !m_systList.empty() ) { m_runSysts = true; }
+  if ( !m_systList.empty() ) { m_runSysts = true; }
 
 //  for( const auto& it : recSyst )
 //  {
@@ -223,18 +223,19 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // if not running systematics, need the nominal
   // if running systematics, and running them all, need the nominal
   // add it to the front!
-  if( m_systList.empty() || (!m_systList.empty() && m_systName == "All") ) {
+  if ( m_systList.empty() || ( !m_systList.empty() && m_systName == "All" ) ) {
     m_systList.insert( m_systList.begin(), CP::SystematicSet() );
     const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
     m_systList.back().insert(nullVar);
   }
 
-  if(m_debug){
-    for ( const auto& syst_it : m_systList ){
+  if ( m_debug ) {
+    for ( const auto& syst_it : m_systList ) {
       Info("initialize()"," available systematic: %s", (syst_it.name()).c_str());
     }
   }
-  for ( const auto& syst_it : m_systList ){
+  
+  for ( const auto& syst_it : m_systList ) {
     Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
   }
 
@@ -251,7 +252,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
   
-  if(m_debug) Info("execute()", "Applying Electron Calibration ... ");
+  if ( m_debug ) { Info("execute()", "Applying Electron Calibration ... "); }
 
   m_numEvent++;
 
@@ -266,10 +267,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // must be a pointer to be recorded in TStore
   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
 
-  for(const auto& syst_it : m_systList){
+  for ( const auto& syst_it : m_systList ) {
 
     // discard photon systematics
-    if( (syst_it.name()).find("PH_", 0) != std::string::npos ) { continue; }
+    if ( (syst_it.name()).find("PH_", 0) != std::string::npos ) { continue; }
 
     // if not running all systematics, skip if not matching desired syst (or the nominal case)
     //if( !(syst_it.name() == "All") ){
@@ -287,8 +288,8 @@ EL::StatusCode ElectronCalibrator :: execute ()
     vecOutContainerNames->push_back( syst_it.name() );
 
     // apply syst
-    if( m_runSysts && !(syst_it.name()).empty() ) {
-      if (m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+    if ( m_runSysts && !(syst_it.name()).empty() ) {
+      if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
         Error("initialize()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
         return EL::StatusCode::FAILURE;
       }
@@ -300,39 +301,38 @@ EL::StatusCode ElectronCalibrator :: execute ()
     ConstDataVector<xAOD::ElectronContainer>* calibElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
     calibElectronsCDV->reserve( calibElectronsSC.first->size() );
 
-
     // now calibrate!
     unsigned int idx(0);
-    for( auto elSC_itr : *(calibElectronsSC.first) ) {
+    for ( auto elSC_itr : *(calibElectronsSC.first) ) {
 
       // set smearing seeding if needed - no need for this after Base,2.1.26
       // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
 
-      if( m_debug ){
+      if ( m_debug ) {
         Info( "execute", "Checking electron %i, raw pt = %.2f GeV ", idx, (elSC_itr->pt() * 1e-3) );
-        if(elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
+        if ( elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
 	  Warning( "execute", "electron %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (elSC_itr->pt() * 1e-3) );
 	}
       }
 
       // apply calibration (w/ syst)
-      if( elSC_itr->caloCluster() && elSC_itr->trackParticle() ){  // NB: derivations might remove CC and tracks for low pt electrons
-        if(m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok){
+      if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
+        if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
           Error("execute()", "Problem in m_EgammaCalibrationAndSmearingTool->applyCorrection()");
           return EL::StatusCode::FAILURE;
         }
       }
 
-      if (m_debug) Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3));
+      if ( m_debug ) { Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3)); }
 
       ++idx;
     } // close calibration loop
 
-    if(!xAOD::setOriginalObjectLink(*inElectrons, *(calibElectronsSC.first))) {
+    if ( !xAOD::setOriginalObjectLink(*inElectrons, *(calibElectronsSC.first)) ) {
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
-    if(m_sort) {
+    if ( m_sort ) {
       std::sort( calibElectronsCDV->begin(), calibElectronsCDV->end(), HelperFunctions::sort_pt );
     }
 
@@ -351,7 +351,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
-  if(m_debug) { m_store->print(); }
+  if ( m_debug ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -362,7 +362,7 @@ EL::StatusCode ElectronCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
+  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -383,9 +383,7 @@ EL::StatusCode ElectronCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_EgammaCalibrationAndSmearingTool) {
-    delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr;
-  }
+  if ( m_EgammaCalibrationAndSmearingTool ) { delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr; }
   
   return EL::StatusCode::SUCCESS;
 }

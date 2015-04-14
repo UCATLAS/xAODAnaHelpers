@@ -359,6 +359,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
       // decorate with cleaning decision
       bool cleanJet = m_jetCleaning->accept( *jet_itr );
+      
       jet_itr->auxdata< char >( "cleanJet" ) = cleanJet;
 
     }

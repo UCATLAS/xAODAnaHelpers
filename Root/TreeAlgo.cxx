@@ -105,7 +105,7 @@ EL::StatusCode TreeAlgo :: configure ()
   m_jetContainerName        = config->GetValue("JetContainerName",        "");
   m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
 
-  m_helpTree->AddEvent    (m_evtDetailStr);
+  m_helpTree->AddEvent( m_evtDetailStr );
 
   if( !m_muContainerName.empty() )     {   m_helpTree->AddMuons    (m_muDetailStr);      }
   if( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons(m_elDetailStr);      }
@@ -116,13 +116,14 @@ EL::StatusCode TreeAlgo :: configure ()
 
   // everything seems preliminarily ok, let's print config and say we were successful
   config->Print();
-  delete config;
+  
+  delete config; config = nullptr;
+  
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode TreeAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
 EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
-
 
 
 EL::StatusCode TreeAlgo :: execute ()
@@ -133,7 +134,7 @@ EL::StatusCode TreeAlgo :: execute ()
   const xAOD::VertexContainer* vertices(nullptr);
   RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
 
-  m_helpTree->FillEvent( eventInfo );
+  m_helpTree->FillEvent( eventInfo, m_event );
 
   // for the containers the were supplied, fill the appropiate vectors
   if(!m_muContainerName.empty()) {
@@ -170,10 +171,11 @@ EL::StatusCode TreeAlgo :: execute ()
 EL::StatusCode TreeAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode TreeAlgo :: finalize () {
-  if(m_helpTree){
-    delete  m_helpTree;
-    m_helpTree = 0;
-  }
+  
+  Info("finalize()", "Deleting tree instances...");
+  
+  if ( m_helpTree ) { delete  m_helpTree;  m_helpTree = nullptr; }
+  
   return EL::StatusCode::SUCCESS;
 }
 
