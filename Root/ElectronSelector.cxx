@@ -107,6 +107,7 @@ EL::StatusCode  ElectronSelector :: configure ()
   m_pT_min                  = config->GetValue("pTMin",  1e8);
   m_eta_max                 = config->GetValue("etaMax", 1e8);
   m_vetoCrack               = config->GetValue("VetoCrack", true);
+  m_d0_max                  = config->GetValue("d0Max", 1e8);
   m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
   m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
 
@@ -595,7 +596,13 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   float eta   = electron->eta();
 
   int oq           = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
-  float z0sintheta = (static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( electron->trackParticle()->theta() );
+
+  //compute sigma(d0)
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
+  const xAOD::TrackParticle* tp  = const_cast<xAOD::TrackParticle*>(electron->trackParticle());
+  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
+
+  float z0sintheta = ( static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() ) ) * sin( electron->trackParticle()->theta() );
 
   // author cut
   if ( m_doAuthorCut ) {
@@ -639,8 +646,18 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
+  // d0 cut
+  if ( !( tp->d0() < m_d0_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 cut."); }
+      return 0;
+  }
+  // d0sig cut
+  if ( !( d0_significance < m_d0sig_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 significance cut."); }
+      return 0;
+  }
   // z0*sin(theta) cut
-  if ( !(fabs(z0sintheta) < m_z0sintheta_max) ) {
+  if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
       if ( m_debug ) { Info("execute()", "Electron failed z0*sin(theta) cut." ); }
       return 0;
   }

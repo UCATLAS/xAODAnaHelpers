@@ -452,8 +452,8 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   int type = static_cast<int>(muon->muonType());
 
-  float d0_significance = fabs(tp->d0()) / sqrt(tp->definingParametersCovMatrix()(0,0));
-  float z0sintheta      = (static_cast<float>( tp->z0() ) + static_cast<float>( tp->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( tp->theta() );
+  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
+  float z0sintheta      = ( static_cast<float>( tp->z0() ) + static_cast<float>( tp->vz() ) - static_cast<float>( primaryVertex->z() ) ) * sin( tp->theta() );
 
   // pT max
   if ( m_pT_max != 1e8 ) {
@@ -480,17 +480,17 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // do not cut on impact parameter if muon is Standalone
   if ( type != xAOD::Muon::MuonType::MuonStandAlone ) {
     // d0 cut
-    if (!( tp->d0() < m_d0_max ) ) {
+    if ( !( tp->d0() < m_d0_max ) ) {
     	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 cut."); }
     	return 0;
     }
     // d0sig cut
-    if (!( d0_significance < m_d0sig_max ) ) {
+    if ( !( d0_significance < m_d0sig_max ) ) {
     	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 significance cut."); }
     	return 0;
     }
     // z0*sin(theta) cut
-    if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
+    if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
     	if ( m_debug ) { Info("PassCuts()", "Muon failed z0*sin(theta) cut."); }
     	return 0;
     }
