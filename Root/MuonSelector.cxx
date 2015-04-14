@@ -141,14 +141,14 @@ EL::StatusCode  MuonSelector :: configure ()
 
   m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
   std::istringstream ss(m_passAuxDecorKeys);
-  while(std::getline(ss, token, ',')){
+  while ( std::getline(ss, token, ',') ) {
     m_passKeys.push_back(token);
   }
 
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
   ss.clear();
   ss.str(m_failAuxDecorKeys);
-  while(std::getline(ss, token, ',')){
+  while ( std::getline(ss, token, ',') ) {
     m_failKeys.push_back(token);
   }
 
@@ -160,7 +160,7 @@ EL::StatusCode  MuonSelector :: configure ()
   config->Print();
   Info("configure()", "MuonSelector Interface succesfully configured! ");
 
-  delete config;
+  delete config; config = nullptr;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -194,7 +194,8 @@ EL::StatusCode MuonSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-  if(m_useCutFlow) {
+  
+  if ( m_useCutFlow ) {
     TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
@@ -213,7 +214,6 @@ EL::StatusCode MuonSelector :: fileExecute ()
   // single file, e.g. collect a list of all lumi-blocks processed
 
   Info("fileExecute()", "Calling fileExecute");
-
 
   return EL::StatusCode::SUCCESS;
 }
@@ -262,22 +262,6 @@ EL::StatusCode MuonSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  if(m_debug){
-    Info("initialize()", " Parameters to MuonSelector() : ");
-	Info("initialize()", "\t m_inContainerName : %s of type %s",         m_inContainerName.c_str(),                         typeid(m_inContainerName).name() );
-	Info("initialize()", "\t m_decorateSelectedObjects : %s of type %s", std::to_string(m_decorateSelectedObjects).c_str(), typeid(m_decorateSelectedObjects).name() );
-	Info("initialize()", "\t m_createSelectedContainer : %s of type %s", std::to_string(m_createSelectedContainer).c_str(), typeid(m_createSelectedContainer).name() );
-	Info("initialize()", "\t m_outContainerName: %s of type %s",         m_outContainerName.c_str(),                        typeid(m_outContainerName).name() );
-	Info("initialize()", "\t m_debug: %s of type %s",                    std::to_string(m_debug).c_str(),                   typeid(m_debug).name() );
-	Info("initialize()", "\t m_nToProcess: %s of type %s",               std::to_string(m_nToProcess).c_str(),              typeid(m_nToProcess).name() );
-	Info("initialize()", "\t m_muonQuality  : %s of type %s",            m_muonQuality.c_str(),                             typeid(m_muonQuality).name() );
-	Info("initialize()", "\t m_pass_max	: %s of type %s",                std::to_string(m_pass_max).c_str(),                typeid(m_pass_max).name() );
-	Info("initialize()", "\t m_pass_min	: %s of type %s",                std::to_string(m_pass_min).c_str(),                typeid(m_pass_min).name() );
-	Info("initialize()", "\t m_pT_max	: %s of type %s",                std::to_string(m_pT_max).c_str(),                  typeid(m_pT_max).name() );
-	Info("initialize()", "\t m_pT_min	: %s of type %s",                std::to_string(m_pT_min).c_str(),                  typeid(m_pT_min).name() );
-	Info("initialize()", "\t m_eta_max	: %s of type %s",                std::to_string(m_eta_max).c_str(),                 typeid(m_eta_max).name() );
-  }
-
   // initialise  muon Selector Tool
   std::string ms_tool_name = std::string("MuonSelection_") + m_name;
   m_muonSelectionTool = new CP::MuonSelectionTool( ms_tool_name.c_str() );
@@ -303,14 +287,14 @@ EL::StatusCode MuonSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Muon Selection... ");
+  if ( m_debug ) { Info("execute()", "Applying Muon Selection... "); }
 
-  // mc event weight (PU contribution multiplied in BaseEventSelection)
+  // retrieve MC event weight 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   float mcEvtWeight(1.0);
-  if (eventInfo->isAvailable< float >( "mcEventWeight" )){
+  if ( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   } else {
     Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
@@ -323,7 +307,6 @@ EL::StatusCode MuonSelector :: execute ()
   const xAOD::MuonContainer* inMuons(nullptr);
   RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_debug) ,"");
 
-
   return executeConst( inMuons, mcEvtWeight );
 
 }
@@ -333,7 +316,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
 
   // create output container (if requested)
   ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
-  if(m_createSelectedContainer){ selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS); }
+  if ( m_createSelectedContainer ) { selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS); }
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
@@ -346,8 +329,8 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
   for( auto mu_itr : *inMuons ) { // duplicated of basic loop
 
     // if only looking at a subset of muons make sure all are decorrated
-    if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
-      if(m_decorateSelectedObjects) {
+    if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
+      if ( m_decorateSelectedObjects ) {
         mu_itr->auxdecor< char >( "passSel" ) = -1;
       } else {
         break;
@@ -357,13 +340,13 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
 
     nObj++;
     int passSel = this->PassCuts( mu_itr, pvx );
-    if(m_decorateSelectedObjects) {
+    if ( m_decorateSelectedObjects ) {
       mu_itr->auxdecor< char >( "passSel" ) = passSel;
     }
 
-    if(passSel) {
+    if ( passSel ) {
       nPass++;
-      if(m_createSelectedContainer) {
+      if ( m_createSelectedContainer ) {
         selectedMuons->push_back( mu_itr );
       }
     }
@@ -373,16 +356,18 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
   m_numObjectPass += nPass;
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
-  if( m_pass_min > 0 && nPass < m_pass_min ) {
+  if ( m_pass_min > 0 && nPass < m_pass_min ) {
     
-    if(m_createSelectedContainer) { delete selectedMuons; selectedMuons = nullptr; }
+    // make sure CDV gets deleted if not stored in TStore 
+    if ( m_createSelectedContainer ) { delete selectedMuons; selectedMuons = nullptr; }
 
     wk()->skipEvent();    
     return EL::StatusCode::SUCCESS;
   }
-  if( m_pass_max > 0 && nPass > m_pass_max ) {
+  if ( m_pass_max > 0 && nPass > m_pass_max ) {
     
-    if(m_createSelectedContainer) { delete selectedMuons; selectedMuons = nullptr; }
+    // make sure CDV gets deleted if not stored in TStore
+    if ( m_createSelectedContainer ) { delete selectedMuons; selectedMuons = nullptr; }
     
     wk()->skipEvent();
     return EL::StatusCode::SUCCESS;
@@ -392,7 +377,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
   m_weightNumEventPass += mcEvtWeight;
 
   // add ConstDataVector to TStore
-  if(m_createSelectedContainer) {
+  if ( m_createSelectedContainer ) {
     RETURN_CHECK("MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName ), "Failed to store const data container");
   }
 
@@ -406,7 +391,7 @@ EL::StatusCode MuonSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
+  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
   
   return EL::StatusCode::SUCCESS;
 }
@@ -427,9 +412,8 @@ EL::StatusCode MuonSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_muonSelectionTool){ 
-    delete m_muonSelectionTool; m_muonSelectionTool = nullptr;
-  }
+  if ( m_muonSelectionTool ) { delete m_muonSelectionTool; m_muonSelectionTool = nullptr; }
+  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -449,11 +433,13 @@ EL::StatusCode MuonSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-  if(m_useCutFlow) {
+  
+  if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
+  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -470,56 +456,56 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   float z0sintheta      = (static_cast<float>( tp->z0() ) + static_cast<float>( tp->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( tp->theta() );
 
   // pT max
-  if( m_pT_max != 1e8 ) {
-    if(  muon->pt() > m_pT_max ) {
-      if (m_debug) Info("PassCuts()", "Muon failed pT max cut.");
+  if ( m_pT_max != 1e8 ) {
+    if (  muon->pt() > m_pT_max ) {
+      if ( m_debug ) { Info("PassCuts()", "Muon failed pT max cut."); }
       return 0;
     }
   }
   // pT min
-  if( m_pT_min != 1e8 ) {
-    if( muon->pt() < m_pT_min ) {
-      if (m_debug) Info("PassCuts()", "Muon failed pT min cut.");
+  if ( m_pT_min != 1e8 ) {
+    if ( muon->pt() < m_pT_min ) {
+      if ( m_debug ) { Info("PassCuts()", "Muon failed pT min cut."); }
       return 0;
     }
   }
   // |eta| max
-  if( m_eta_max != 1e8 ) {
-    if( fabs(muon->eta()) > m_eta_max ) {
-      if (m_debug) Info("PassCuts()", "Muon failed |eta| max cut.");
+  if ( m_eta_max != 1e8 ) {
+    if ( fabs(muon->eta()) > m_eta_max ) {
+      if ( m_debug ) { Info("PassCuts()", "Muon failed |eta| max cut."); }
       return 0;
     }
   }
 
   // do not cut on impact parameter if muon is Standalone
-  if ( type != xAOD::Muon::MuonType::MuonStandAlone ){
+  if ( type != xAOD::Muon::MuonType::MuonStandAlone ) {
     // d0 cut
     if (!( tp->d0() < m_d0_max ) ) {
-    	if (m_debug) Info("PassCuts()", "Muon failed d0 cut.");
+    	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 cut."); }
     	return 0;
     }
     // d0sig cut
     if (!( d0_significance < m_d0sig_max ) ) {
-    	if (m_debug) Info("PassCuts()", "Muon failed d0 significance cut.");
+    	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 significance cut."); }
     	return 0;
     }
     // z0*sin(theta) cut
     if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
-    	if (m_debug) Info("PassCuts()", "Muon failed z0*sin(theta) cut.");
+    	if ( m_debug ) { Info("PassCuts()", "Muon failed z0*sin(theta) cut."); }
     	return 0;
     }
   }
 
-  // if muon is Combined, check charge is the same in ID and MS - Used in RunI ttH analysis
+  // if muon is Combined, check charge is the same in ID and MS - Used in some RunI analyses
   /*
-  if ( type != xAOD::Muon::MuonType::Combined ){
+  if ( type != xAOD::Muon::MuonType::Combined ) {
 
     const xAOD::TrackParticle* IDTrack = const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::InnerDetectorTrackParticle) );
     const xAOD::TrackParticle* MSTrack = const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::MuonSpectrometerTrackParticle) );
 
-    if( IDTrack && MSTrack ){
+    if ( IDTrack && MSTrack ) {
       if ( IDTrack->charge() * MSTrack->charge() < 0 ) {
-    	if (m_debug) Info("PassCuts()", "Muon track has different charge measured in ID and MS. Failed selection");
+    	if ( m_debug ) { Info("PassCuts()", "Muon track has different charge measured in ID and MS. Failed selection"); }
     	return 0;
       }
     }
@@ -528,47 +514,47 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   // muon quality
   xAOD::Muon::Quality my_quality = m_muonSelectionTool->getQuality( *muon );
-  if(m_debug) Info("PassCuts()", "Muon quality %d", static_cast<int>(my_quality));
+  if ( m_debug ) { Info("PassCuts()", "Muon quality %d", static_cast<int>(my_quality)); }
   /*
-  if(my_quality <= xAOD::Muon::VeryLoose)
+  if ( my_quality <= xAOD::Muon::VeryLoose )
     verylooseMuons++;
-  if(my_quality <= xAOD::Muon::Loose)
+  if ( my_quality <= xAOD::Muon::Loose )
     looseMuons++;
-  if(my_quality <= xAOD::Muon::Medium)
+  if ( my_quality <= xAOD::Muon::Medium )
     mediumMuons++;
-  if(my_quality <= xAOD::Muon::Tight)
+  if ( my_quality <= xAOD::Muon::Tight )
     tightMuons++;
-  if(my_quality <= xAOD::Muon::VeryLoose && !(my_quality <= xAOD::Muon::Loose))
+  if ( my_quality <= xAOD::Muon::VeryLoose && !(my_quality <= xAOD::Muon::Loose) )
     badMuons++;
   */
 
   // if specified, cut on muon quality
   HelperClasses::EnumParser<xAOD::Muon::MuonType> muTypeParser;
   //static_cast<int>(muTypeParser.parseEnum(m_muonType))
-  if( !m_muonType.empty() ){
-    if( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
-      if (m_debug) Info("PassCuts()", "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str());
+  if ( !m_muonType.empty() ) {
+    if ( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
+      if ( m_debug ) { Info("PassCuts()", "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str()); }
       return 0;
     }
   }
 
   // isolation
-  if( m_doIsolation ){
+  if ( m_doIsolation ) {
     HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
     float ptcone_dr = -999., etcone_dr = -999.;
-    if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ){
-      bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut) ? true : false;
-      bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ? true : false;
-      if( !( isTrackIso && isCaloIso ) ){
-        if (m_debug)  Info("PassCuts()", "Muon failed isolation cut ");
+    if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ) {
+      bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut);
+      bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ;
+      if ( !( isTrackIso && isCaloIso ) ) {
+        if ( m_debug ) { Info("PassCuts()", "Muon failed isolation cut "); }
         return 0;
       }
     }
   }
 
   // this will accept the muon based on the settings at initialization
-  if ( ! m_muonSelectionTool->accept( *muon ) ){
-    if (m_debug) Info("PassCuts()", "Muon failed requirements of MuonSelectionTool.");
+  if ( ! m_muonSelectionTool->accept( *muon ) ) {
+    if ( m_debug ) { Info("PassCuts()", "Muon failed requirements of MuonSelectionTool."); }
     return 0;
   }
 

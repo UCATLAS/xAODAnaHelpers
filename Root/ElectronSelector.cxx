@@ -158,14 +158,14 @@ EL::StatusCode  ElectronSelector :: configure ()
 
   m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
   std::istringstream ss(m_passAuxDecorKeys);
-  while(std::getline(ss, token, ',')){
+  while ( std::getline(ss, token, ',') ) {
     m_passKeys.push_back(token);
   }
 
   m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
   ss.clear();
   ss.str(m_failAuxDecorKeys);
-  while(std::getline(ss, token, ',')){
+  while ( std::getline(ss, token, ',') ) {
     m_failKeys.push_back(token);
   }
 
@@ -177,7 +177,7 @@ EL::StatusCode  ElectronSelector :: configure ()
   config->Print();
   Info("configure()", "ElectronSelector Interface succesfully configured! ");
 
-  delete config;
+  delete config; config = nullptr;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -211,14 +211,14 @@ EL::StatusCode ElectronSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-  if(m_useCutFlow) {
-    TFile *file = wk()->getOutputFile ("cutflow");
+  
+  if ( m_useCutFlow ) {
+    TFile *file     = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
   }
-
 
   return EL::StatusCode::SUCCESS;
 }
@@ -231,7 +231,6 @@ EL::StatusCode ElectronSelector :: fileExecute ()
   // single file, e.g. collect a list of all lumi-blocks processed
 
   Info("fileExecute()", "Calling fileExecute");
-
 
   return EL::StatusCode::SUCCESS;
 }
@@ -293,23 +292,23 @@ EL::StatusCode ElectronSelector :: initialize ()
   // m_asgElectronIsEMSelector->setProperty("PIDName", static_cast<int>(cutBasedPIDParser.parseEnum(m_PIDName)) );
   // only for DC14 w/ 2012 configuration
   unsigned int EMMask = 999;
-  if(m_CutBasedPIDMask == "ElectronLoosePP") {
+  if ( m_CutBasedPIDMask == "ElectronLoosePP" ) {
     EMMask = egammaPID::ElectronLoosePP;
-  } else if(m_CutBasedPIDMask == "ElectronMediumPP") {
+  } else if ( m_CutBasedPIDMask == "ElectronMediumPP" ) {
     EMMask = egammaPID::ElectronMediumPP;
-  } else if(m_CutBasedPIDMask == "ElectronTightPP") {
+  } else if ( m_CutBasedPIDMask == "ElectronTightPP" ) {
     EMMask = egammaPID::ElectronTightPP;
-  } else if(m_CutBasedPIDMask == "ElectronLoose1") {
+  } else if ( m_CutBasedPIDMask == "ElectronLoose1" ) {
     EMMask = egammaPID::ElectronLoose1;
-  } else if(m_CutBasedPIDMask == "ElectronMedium1") {
+  } else if ( m_CutBasedPIDMask == "ElectronMedium1" ) {
     EMMask = egammaPID::ElectronMedium1;
-  } else if(m_CutBasedPIDMask == "ElectronTight1") {
+  } else if ( m_CutBasedPIDMask == "ElectronTight1" ) {
     EMMask = egammaPID::ElectronTight1;
-  } else if(m_CutBasedPIDMask == "LooseHLT") {
+  } else if ( m_CutBasedPIDMask == "LooseHLT" ) {
     EMMask = egammaPID::ElectronLooseHLT;
-  } else if(m_CutBasedPIDMask == "ElectronMediumHLT") {
+  } else if ( m_CutBasedPIDMask == "ElectronMediumHLT" ) {
     EMMask = egammaPID::ElectronMediumHLT;
-  } else if(m_CutBasedPIDMask == "ElectronTightHLT") {
+  } else if ( m_CutBasedPIDMask == "ElectronTightHLT" ) {
     EMMask = egammaPID::ElectronTightHLT;
   } else {
     Error("initialize()", "Unknown electron cut-based PID bitmask requested %s!",m_CutBasedPIDMask.c_str());
@@ -351,17 +350,17 @@ EL::StatusCode ElectronSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Electron Selection... ");
+  if ( m_debug ) { Info("execute()", "Applying Electron Selection... "); }
 
-  // mc event weight (PU contribution multiplied in BaseEventSelection)
+  // retrieve MC event weight 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   float mcEvtWeight(1.0);
-  if (eventInfo->isAvailable< float >( "mcEventWeight" )){
+  if ( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
     mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   } else {
-    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
+    Error("execute()", "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
 
@@ -370,7 +369,7 @@ EL::StatusCode ElectronSelector :: execute ()
   // did any collection pass the cuts?
   bool eventPass(false);
   bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal
-  const xAOD::ElectronContainer* inElectrons = 0;
+  const xAOD::ElectronContainer* inElectrons(nullptr);
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
@@ -378,59 +377,85 @@ EL::StatusCode ElectronSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
-    eventPass = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName);
+    
+    // create output container (if requested)
+    ConstDataVector<xAOD::ElectronContainer>* selectedElectrons(nullptr);
+    if ( m_createSelectedContainer ) { selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS); }
+    
+    // find the selected electrons, and return if event passes object selection
+    eventPass = executeSelection( inElectrons, mcEvtWeight, countPass, selectedElectrons );
+    
+    if ( m_createSelectedContainer) {
+      if ( eventPass ) {
+        // add ConstDataVector to TStore
+        RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName ), "Failed to store const data container");
+      } else {
+        // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
+        delete selectedElectrons; selectedElectrons = nullptr; 
+      }
+    }
 
   } else { // get the list of systematics to run over
 
-    // get vector of string giving the syst names of the upstream algo (rememeber: 1st element is a blank string: nominal case!)
+    // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     std::vector< std::string >* systNames(nullptr);
     RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_debug) ,"");
 
-    // prepare a vector of the names of CDV containers
+    // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-    if(m_debug){
-      Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) );
-    }
+    if ( m_debug ) { Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) ); }
 
     // loop over systematic sets
     bool eventPassThisSyst(false);
-    for( auto systName : *systNames ) {
+    for ( auto systName : *systNames ) {
 
-      if(m_debug){
-	Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() );
-      }
+      if ( m_debug ) { Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() ); }
 
       RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName + systName, m_event, m_store, m_debug) ,"");
-      // a CDV for each systematic (w/ name m_outContainerName+syst_name)
-      //   will be stored in TStore, unless event does not pass selection
-      eventPassThisSyst = executeSelection( inElectrons, mcEvtWeight, countPass, m_outContainerName + systName);
 
-      if( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
+      // create output container (if requested) - one for each systematic
+      ConstDataVector<xAOD::ElectronContainer>* selectedElectrons(nullptr);
+      if ( m_createSelectedContainer ) { selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS); }
 
-      if( eventPassThisSyst ) {
+      // find the selected electrons, and return if event passes object selection
+      eventPassThisSyst = executeSelection( inElectrons, mcEvtWeight, countPass, selectedElectrons );
+
+      if ( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
+
+      if ( eventPassThisSyst ) {
 	// save the string of syst set under question if event is passing the selection
 	vecOutContainerNames->push_back( systName );
       }
 
       // if for at least one syst set the event passes selection, this will remain true!
-      eventPass = (eventPass || eventPassThisSyst);
+      eventPass = ( eventPass || eventPassThisSyst );
 
-      if(m_debug){ Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
+      if ( m_debug ) { Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
+
+      if ( m_createSelectedContainer ) {
+        if ( eventPassThisSyst ) {
+          // add ConstDataVector to TStore
+          RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName+systName ), "Failed to store const data container");
+        } else {
+          // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
+          delete selectedElectrons; selectedElectrons = nullptr; 
+        }
+      }
 
     } // close loop over syst sets
 
-    if(m_debug){  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
+    if ( m_debug ) {  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
 
-    // save list of systs that should be considered down stream
+    // record in TStore the list of systematics names that should be considered down stream
     RETURN_CHECK( "ElectronSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   }
 
   // look what do we have in TStore
-  if(m_debug) { m_store->print(); }
+  if ( m_debug ) { m_store->print(); }
 
-  if(!eventPass) {
+  if( !eventPass ) {
     wk()->skipEvent();
     return EL::StatusCode::SUCCESS;
   }
@@ -439,26 +464,20 @@ EL::StatusCode ElectronSelector :: execute ()
 
 }
 
-bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight,
-                                            bool countPass, const std::string outContainerName )
+bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass, 
+					    ConstDataVector<xAOD::ElectronContainer>* selectedElectrons )
 {
-
-  // create output container (if requested)
-  ConstDataVector<xAOD::ElectronContainer>* selectedElectrons = 0;
-  if(m_createSelectedContainer) {
-    selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-  }
 
   const xAOD::VertexContainer* vertices(nullptr);
   RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
-  for( auto el_itr : *inElectrons ) { // duplicated of basic loop
+  for ( auto el_itr : *inElectrons ) { // duplicated of basic loop
 
     // if only looking at a subset of electrons make sure all are decorated
-    if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
-      if(m_decorateSelectedObjects) {
+    if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
+      if ( m_decorateSelectedObjects ) {
         el_itr->auxdecor< char >( "passSel" ) = -1;
       } else {
         break;
@@ -468,43 +487,38 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
     nObj++;
     bool passSel = this->PassCuts( el_itr, pvx );
-    if(m_decorateSelectedObjects) {
+    if ( m_decorateSelectedObjects ) {
       el_itr->auxdecor< char >( "passSel" ) = passSel;
     }
 
-    if(passSel) {
+    if ( passSel ) {
       nPass++;
-      if(m_createSelectedContainer) {
+      if ( m_createSelectedContainer ) {
         selectedElectrons->push_back( el_itr );
       }
     }
   }
 
   // for cutflow: make sure to count passed objects only once (i.e., this flag will be true only for nominal)
-  if(countPass){
+  if ( countPass ) {
     m_numObject     += nObj;
     m_numObjectPass += nPass;
   }
 
-  if(m_debug) Info("execute()", "Initial electrons:%i - Selected electrons: %i", nObj , nPass );
+  if ( m_debug ) { Info("execute()", "Initial electrons:%i - Selected electrons: %i", nObj , nPass ); }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
-  if( m_pass_min > 0 && nPass < m_pass_min ) {
+  if ( m_pass_min > 0 && nPass < m_pass_min ) {
     return false;
   }
-  if( m_pass_max > 0 && nPass > m_pass_max ) {
+  if ( m_pass_max > 0 && nPass > m_pass_max ) {
     return false;
   }
 
   // for cutflow: make sure to count passed events only once (i.e., this flag will be true only for nominal)
-  if(countPass){
+  if ( countPass ){
     m_numEventPass++;
     m_weightNumEventPass += mcEvtWeight;
-  }
-
-  // add ConstDataVector to TStore
-  if(m_createSelectedContainer) {
-    RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, outContainerName ), "Failed to store const data container");
   }
 
   return true;
@@ -516,7 +530,7 @@ EL::StatusCode ElectronSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
+  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -537,9 +551,9 @@ EL::StatusCode ElectronSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_asgElectronIsEMSelector) delete m_asgElectronIsEMSelector;
-  if(m_asgElectronLikelihoodTool) delete m_asgElectronLikelihoodTool;
-  if(m_electronIsolationSelectionTool) delete m_electronIsolationSelectionTool;
+  if ( m_asgElectronIsEMSelector )        { delete m_asgElectronIsEMSelector; m_asgElectronIsEMSelector = nullptr; }
+  if ( m_asgElectronLikelihoodTool )      { delete m_asgElectronLikelihoodTool; m_asgElectronLikelihoodTool = nullptr; }
+  if ( m_electronIsolationSelectionTool ) { delete m_electronIsolationSelectionTool; m_electronIsolationSelectionTool = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -560,11 +574,13 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-  if(m_useCutFlow) {
+  
+  if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
+ 
   return EL::StatusCode::SUCCESS;
 }
 
@@ -582,70 +598,70 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   float z0sintheta = (static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() )) * sin( electron->trackParticle()->theta() );
 
   // author cut
-  if(m_doAuthorCut){
+  if ( m_doAuthorCut ) {
     if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
-      if (m_debug) Error("execute()", "Electron failed author kinematic cut." );
+      if ( m_debug ) { Info("execute()", "Electron failed author kinematic cut." ); }
       return 0;
     }
   }
   // Object Quality cut
-  if(m_doOQCut){
-    if (!(oq == 0)) {
-      if (m_debug) Error("execute()", "Electron failed Object Quality cut." );
+  if ( m_doOQCut ) {
+    if ( !(oq == 0) ) {
+      if ( m_debug ) { Info("execute()", "Electron failed Object Quality cut." ); }
       return 0;
     }
   }
   // pT max
-  if( m_pT_max != 1e8 ) {
-    if( et > m_pT_max ) {
-      if (m_debug) Error("execute()", "Electron failed pT max cut." );
+  if ( m_pT_max != 1e8 ) {
+    if ( et > m_pT_max ) {
+      if ( m_debug ) { Info("execute()", "Electron failed pT max cut." ); }
       return 0;
     }
   }
   // pT min
-  if( m_pT_min != 1e8 ) {
-    if( et < m_pT_min ) {
-      if (m_debug) Error("execute()", "Electron failed pT min cut." );
+  if ( m_pT_min != 1e8 ) {
+    if ( et < m_pT_min ) {
+      if ( m_debug ) { Info("execute()", "Electron failed pT min cut." ); }
       return 0;
     }
   }
   // |eta| max
-  if( m_eta_max != 1e8 ) {
-    if( fabs(eta) > m_eta_max ) {
-      if (m_debug) Error("execute()", "Electron failed |eta| max cut." );
+  if ( m_eta_max != 1e8 ) {
+    if ( fabs(eta) > m_eta_max ) {
+      if ( m_debug ) { Info("execute()", "Electron failed |eta| max cut." ); }
       return 0;
     }
   }
   // |eta| crack veto
-  if( m_vetoCrack ) {
-    if( fabs(eta) > 1.37 && fabs(eta) < 1.52 ) {
-      if (m_debug) Error("execute()", "Electron failed |eta| crack veto cut." );
+  if ( m_vetoCrack ) {
+    if ( fabs(eta) > 1.37 && fabs(eta) < 1.52 ) {
+      if ( m_debug ) { Info("execute()", "Electron failed |eta| crack veto cut." ); }
       return 0;
     }
   }
   // z0*sin(theta) cut
-  if (!(fabs(z0sintheta) < m_z0sintheta_max)) {
-      if (m_debug) Error("execute()", "Electron failed z0*sin(theta) cut." );
+  if ( !(fabs(z0sintheta) < m_z0sintheta_max) ) {
+      if ( m_debug ) { Info("execute()", "Electron failed z0*sin(theta) cut." ); }
       return 0;
   }
   // likelihood PID
-  if( m_doLHPIDcut ){
-    if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ){
-        if (m_debug) Error("execute()", "Electron failed likelihood PID cut." );
+  if ( m_doLHPIDcut ) {
+    if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ) {
+        if ( m_debug ) { Info("execute()", "Electron failed likelihood PID cut." ); }
         return 0;
     }
   }
   // cut-based PID
-  if( m_doCutBasedPIDcut ){
-    if ( ! m_asgElectronIsEMSelector->accept( *electron ) ){
-        if (m_debug) Error("execute()", "Electron failed cut-based PID cut." );
+  if ( m_doCutBasedPIDcut ) {
+    if ( ! m_asgElectronIsEMSelector->accept( *electron ) ) {
+        if ( m_debug ) { Info("execute()", "Electron failed cut-based PID cut." ); }
         return 0;
     }
   }
   // isolation
-  if ( m_doIsolation ){
-    if ( ! m_electronIsolationSelectionTool->accept( *electron ) ){
-      if (m_debug) Error("execute()", "Electron failed isolation cut." );
+  if ( m_doIsolation ) {
+    if ( ! m_electronIsolationSelectionTool->accept( *electron ) ) {
+      if ( m_debug ) { Info("execute()", "Electron failed isolation cut." ); }
       return 0;
     }
   }

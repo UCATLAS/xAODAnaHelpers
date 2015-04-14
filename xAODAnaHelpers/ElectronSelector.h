@@ -124,7 +124,7 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
   bool executeSelection( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
-                         const std::string outContainerName );
+                         ConstDataVector<xAOD::ElectronContainer>* selectedElectrons );
 
   // added functions not from Algorithm
   // why does this need to be virtual?
