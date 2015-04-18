@@ -1,24 +1,27 @@
 #!/usr/bin/python
-# 
+#
 # *******************************************************************************
-# script to checkout specific ASG packages for a given release, 
+# script to checkout specific ASG packages for a given release,
 # and apply svn patches if needed
 #
-# Authors: 
+# Authors:
 #  M.Milesi(mrco.milesi@cern.ch), G.Stark(g.stark@cern.ch)
 #
 # Usage (from the directory where ASG release has been set up):
 #  python () (./xAODAnaHelpers/scripts/)checkoutASGtags.py RELEASE_NUMBER [X.Y.Z]
 # *******************************************************************************
- 
-import subprocess, argparse
+
+import subprocess
+import argparse
+import os
+
+rc_env = os.environ.copy()
 
 parser = argparse.ArgumentParser(description='Checkout packages and apply patches!', usage='%(prog)s version')
-parser.add_argument('version', metavar='ASGversion',
-                    help='the ASG release you have set up')
+parser.add_argument('version', help='the ASG release you have set up')
 args = parser.parse_args()
 
-print "using ASG version %s" %(args.version)
+print "using ASG version {0}".format(args.version)
 
 dict_pkg = {'2.1.29': ["ElectronEfficiencyCorrection"],
             '2.1.30': ["atlasoff/Reconstruction/egamma/egammaMVACalib/tags/egammaMVACalib-01-00-43",
@@ -29,21 +32,21 @@ dict_pkg = {'2.1.29': ["ElectronEfficiencyCorrection"],
                        "ElectronEfficiencyCorrection"]
             }
 
-for key in dict_pkg.keys():
-  if ( key != args.version ) :
-    continue
-  for item in dict_pkg[key]:
-    print "checking out package: %s" %(item)
-    subprocess.call(['rc','checkout_pkg', '%s' %(item) ], shell=True ) 
- 
+try:
+  packages_to_checkout = dict_pkg[args.version]
+except KeyError:
+  print "That version isn't supported! If this is a problem, tell someone important."
+  import sys
+  sys.exit(0)
+
+for pkg in packages_to_checkout:
+  print "checking out package: {0}".format(pkg)
+  subprocess.Popen(['cd $ROOTCOREBIN/.. && pwd && rc checkout_pkg {0}'.format(pkg) ], env=rc_env, shell=True).wait()
+
 packages_to_patch = ["ElectronEfficiencyCorrection"]
 
-if len(packages_to_patch)>0 :
-  print "applying svn patches"
-
+print "applying svn patches"
 for pkg in packages_to_patch:
-  print "  patching %s " % (pkg)
-  subprocess.call(['cd', './%s' %(pkg) ], shell=True )
-  subprocess.call(['patch', '-p0', '-i', '../xAODAnaHelpers/data/%s_Base.%s.diff' % (pkg, args.version)], shell=True )
-  subprocess.call(['cd', '../'], shell=True)
-
+  if pkg in packages_to_checkout:
+    print "  patching {0}".format(pkg)
+    subprocess.Popen(['cd $ROOTCOREBIN/../{0} && pwd && patch -p0 -i $ROOTCOREBIN/data/xAODAnaHelpers/{0}_Base.{1}.diff && cd - && pwd'.format(pkg, args.version)], env=rc_env, shell=True ).wait()
