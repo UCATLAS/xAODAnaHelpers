@@ -510,8 +510,8 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       // make a copy of input container(s) with selected objects
       if(m_createSelectedContainers) {
         selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-        selectedMuons	= new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-        selectedJets	= new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+        selectedMuons	    = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+        selectedJets	    = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
         if( m_usePhotons )  selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
         if( m_useTaus )     selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
       }
@@ -555,7 +555,8 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
       for( auto systName : *sysVec) {
-        if(systName.empty()) continue;
+        
+	if(systName.empty()) continue;
 
         // ... instead, the electron input container will be different for each syst
         RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons + systName, m_event, m_store, m_debug) ,"");
@@ -587,8 +588,8 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         // make a copy of input container(s) with selected objects
         if(m_createSelectedContainers) {
           selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-          selectedMuons	= new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-          selectedJets	= new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+          selectedMuons	      = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+          selectedJets	      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
           if( m_usePhotons )  selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
           if( m_useTaus )     selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
         }
@@ -634,8 +635,10 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
       for( auto systName : *sysVec) {
-        if(systName.empty()) continue;
-        // ... instead, the muon input container will be different for each syst
+        
+	if(systName.empty()) continue;
+        
+	// ... instead, the muon input container will be different for each syst
         RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons + systName, m_event, m_store, m_debug) ,"");
         if(m_debug){ Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  }
 
@@ -665,13 +668,13 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         // make a copy of input container(s) with selected objects
         if(m_createSelectedContainers) {
           selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-          selectedMuons	= new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-          selectedJets	= new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+          selectedMuons	      = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+          selectedJets	      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
           if( m_usePhotons )  selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
           if( m_useTaus )     selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
         }
 
-        // resize containers basd on OR decision
+        // resize containers based on OR decision
         RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
         RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
         RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
@@ -714,8 +717,10 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
       for( auto systName : *sysVec ) {
-        if(systName.empty()) continue;
-         // ... instead, the jet input container will be different for each syst
+         
+	 if(systName.empty()) continue;
+         
+	 // ... instead, the jet input container will be different for each syst
          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets + systName, m_event, m_store, m_debug) ,"");
          if(m_debug){ Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  }
 
@@ -745,8 +750,8 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         // make a copy of input container(s) with selected objects
         if(m_createSelectedContainers) {
           selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-          selectedMuons	= new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-          selectedJets	= new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+          selectedMuons	      = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+          selectedJets	      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
           if( m_usePhotons )  selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
           if( m_useTaus )     selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
         }
