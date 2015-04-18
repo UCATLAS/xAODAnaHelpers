@@ -1,3 +1,8 @@
+2015-04-18 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
+	* First change towards trivial constructors for all of our algorithms
+	* Added a runner script that will take a generic json file with an
+	appropriate structure and spin up an analysis for us
+
 2015-04-16 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
 	* fixed bugs in OverlapRemover
 		* data duplication in the selectedObject() CDVs
