@@ -84,7 +84,10 @@ EL::StatusCode  JetCalibrator :: configure ()
 
   // CONFIG parameters for JetCalibrationTool
   m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
-  m_outputAlgo              = config->GetValue("OutputAlgo",      "AntiKt4EMTopoJets_Calib_Algo");
+  m_outputAlgo              = config->GetValue("OutputAlgo",      "");
+  if( m_outputAlgo.empty() ) {
+    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
+  }
 
   // when running data "_Insitu" is appended to this string
   m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");

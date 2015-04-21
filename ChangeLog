@@ -72,3 +72,7 @@
 2015-04-21 Gabriel Facini <Gabriel.Facini@cern.ch>
   * Added event truth information to HelpTreeBase with assoicated switch
 
+2015-04-21 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * build default name of output algo for JetCalibrator and JetSelector
+	* JetSelector - put collections in TStroe before decision so TStore deletes if fail cuts
+	* HelpTreeBase - bug fix from previous commit

@@ -560,12 +560,12 @@ void HelpTreeBase::AddJets(const std::string detailStr)
   this->AddJetsUser();
 }
 
-void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
+void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
   this->ClearJets();
   this->ClearJetsUser();
 
-  for( auto jet_itr : jets ) {
+  for( auto jet_itr : *jets ) {
 
     if( m_jetInfoSwitch->m_kinematic ){
       m_jet_pt.push_back ( jet_itr->pt() / m_units );

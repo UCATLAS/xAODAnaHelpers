@@ -83,7 +83,10 @@ EL::StatusCode  JetSelector :: configure ()
 
   // name of algo input container comes from - only if running on syst
   m_inputAlgo               = config->GetValue("InputAlgo",   "");
-  m_outputAlgo              = config->GetValue("OutputAlgo",  "AntiKt4EMTopoJets_Signal_Algo");
+  m_outputAlgo              = config->GetValue("OutputAlgo",  "");
+  if( m_outputAlgo.empty() ) {
+    m_outputAlgo = m_inputAlgo + "_JetSelect";
+  }
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -381,6 +384,11 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_numObjectPass += nPass;
   }
 
+  // add ConstDataVector to TStore
+  if(m_createSelectedContainer) {
+    RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, outContainerName ), "Failed to store const data container.");
+  }
+
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   if( m_pass_min > 0 && nPass < m_pass_min ) {
     return false;
@@ -392,11 +400,6 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   if( count ) {
     m_numEventPass++;
     m_weightNumEventPass += mcEvtWeight;
-  }
-
-  // add ConstDataVector to TStore
-  if(m_createSelectedContainer) {
-    RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, outContainerName ), "Failed to store const data container.");
   }
 
   return true;
