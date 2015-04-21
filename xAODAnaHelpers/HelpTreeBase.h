@@ -63,11 +63,10 @@ public:
 
   bool writeTo( TFile *file );
 
-  // User defined functions
-  virtual void AddEventUser(const std::string detailStrUser = "")      { return; };
-  virtual void AddMuonsUser(const std::string detailStrUser = "")      { return; };
-  virtual void AddElectronsUser(const std::string detailStrUser = "")  { return; };
-  virtual void AddJetsUser(const std::string detailStrUser = "")       { return; };
+  virtual void AddEventUser(const std::string detailStr = "")      { return; };
+  virtual void AddMuonsUser(const std::string detailStr = "")      { return; };
+  virtual void AddElectronsUser(const std::string detailStr = "")  { return; };
+  virtual void AddJetsUser(const std::string detailStr = "")       { return; };
 
   virtual void ClearEventUser()                                    { return; };
   virtual void ClearMuonsUser() 				   { return; };
@@ -100,7 +99,19 @@ protected:
   // event shapeEM
   double m_rhoEM;
   double m_rhoLC;
-
+  // truth
+  int m_pdgid1;
+  int m_pdgid2;
+  int m_pdfid1;
+  int m_pdfid2;
+  float m_x1;
+  float m_x2;
+  //float m_scale;
+  //float m_q;
+  //float m_pdf1;
+  //float m_pdf2;
+  float m_xf1;
+  float m_xf2;
 
   // jets
   int m_njet;
@@ -152,8 +163,13 @@ protected:
   //std::vector<float> m_jet_jvfloosePV;
 
   // flavor tag
-  std::vector<float> m_jet_mv1;
+  std::vector<float> m_jet_sv0;
+  std::vector<float> m_jet_sv1;
+  std::vector<float> m_jet_ip3d;
   std::vector<float> m_jet_sv1ip3d;
+  std::vector<float> m_jet_mv1;
+  std::vector<float> m_jet_mv2c00;
+  std::vector<float> m_jet_mv2c20;
 
   // truth
   std::vector<int>   m_jet_truthLabelID;
@@ -166,6 +182,9 @@ protected:
   std::vector<float> m_jet_truth_eta;
   std::vector<float> m_jet_truth_phi;
   std::vector<float> m_jet_truth_E;
+  std::vector<int> m_jet_truth_pdgId;
+  std::vector<float> m_jet_truth_partonPt;
+  std::vector<float> m_jet_truth_partonDR;
 
   // truth detail
   std::vector<int>   m_jet_truthCount_BhadFinal;

@@ -5,6 +5,7 @@
 #include "xAODBTagging/BTagging.h"
 #include "xAODTracking/TrackParticle.h"
 #include "xAODTracking/TrackSummaryAccessors_v1.h"
+#include "xAODTruth/TruthEventContainer.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
@@ -46,8 +47,7 @@ void HelpTreeBase::Fill() {
 
 void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
-  this->ClearEvent();
-  this->ClearEventUser();
+  Info("AddEvent()", "Adding event variables: %s", detailStr.c_str());
 
   m_eventInfoSwitch = new HelperClasses::EventInfoSwitch( detailStr );
 
@@ -73,11 +73,29 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("rhoLC",                &m_rhoLC,            "rhoLC/F");
   }
 
+  if( m_eventInfoSwitch->m_truth ) {
+    m_tree->Branch("pdgid1",            &m_pdgid1,        "pdgid1/I" );
+    m_tree->Branch("pdgid2",            &m_pdgid2,        "pdgid2/I" );
+    m_tree->Branch("pdfid1",            &m_pdfid1,        "pdfid1/I" );
+    m_tree->Branch("pdfid2",            &m_pdfid2,        "pdfid2/I" );
+    m_tree->Branch("x1",                &m_x1,            "x1/F"  );
+    m_tree->Branch("x2",                &m_x2,            "x2/F"  );
+    //m_tree->Branch("scale",             &m_scale,         "scale/F");
+    //m_tree->Branch("q",                 &m_q,             "q/F");
+    //m_tree->Branch("pdf1",              &m_pdf1,          "pdf1/F");
+    //m_tree->Branch("pdf2",              &m_pdf2,          "pdf2/F");
+    m_tree->Branch("xf1",               &m_xf1,           "xf1/F");
+    m_tree->Branch("xf2",               &m_xf2,           "xf2/F");
+  }
+
   this->AddEventUser();
 }
 
 void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event ) {
-  
+
+  this->ClearEvent();
+  this->ClearEventUser();
+
   m_runNumber             = eventInfo->runNumber();
   m_eventNumber           = eventInfo->eventNumber();
   if ( eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION) ) {
@@ -124,6 +142,41 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     }
   }
 
+  if( m_eventInfoSwitch->m_truth && event ) {
+    //MC Truth
+    const xAOD::TruthEventContainer* truthE = 0;
+    HelperFunctions::retrieve( truthE, "TruthEvents", event, 0 );
+    if( truthE ) {
+      // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODTruth/trunk/xAODTruth/versions/TruthEvent_v1.h
+      // 70          PDGID1 = 0, ///< [int]
+      // 71          PDGID2 = 1, ///< [int]
+      // 72          PDFID1 = 2, ///< [int]
+      // 73          PDFID2 = 3, ///< [int]
+      // 74          X1 = 4,     ///< [float]
+      // 75          X2 = 5,     ///< [float]
+      // 76          SCALE = 6,  ///< Not implemented!!!
+      // 77          Q = 6,      ///< [float]
+      // 78          PDF1 = 7,   ///< Not implemented!!!
+      // 79          PDF2 = 8,   ///< Not implemented!!!
+      // 80          XF1 = 7,    ///< [float]
+      // 81          XF2 = 8     ///< [float]
+      xAOD::TruthEventContainer::const_iterator truthE_itr = truthE->begin();
+      ( *truthE_itr )->pdfInfoParameter(m_pdgid1,   xAOD::TruthEvent::PDGID1);
+      ( *truthE_itr )->pdfInfoParameter(m_pdgid2,   xAOD::TruthEvent::PDGID2);
+      ( *truthE_itr )->pdfInfoParameter(m_pdfid1,   xAOD::TruthEvent::PDFID1);
+      ( *truthE_itr )->pdfInfoParameter(m_pdfid2,   xAOD::TruthEvent::PDFID2);
+      ( *truthE_itr )->pdfInfoParameter(m_x1,       xAOD::TruthEvent::X1);
+      ( *truthE_itr )->pdfInfoParameter(m_x2,       xAOD::TruthEvent::X2);
+      //( *truthE_itr )->pdfInfoParameter(m_scale,    xAOD::TruthEvent::SCALE);
+      //( *truthE_itr )->pdfInfoParameter(m_q,        xAOD::TruthEvent::Q);
+      //( *truthE_itr )->pdfInfoParameter(m_pdf1,     xAOD::TruthEvent::PDF1);
+      //( *truthE_itr )->pdfInfoParameter(m_pdf2,     xAOD::TruthEvent::PDF2);
+      ( *truthE_itr )->pdfInfoParameter(m_xf1,      xAOD::TruthEvent::XF1);
+      ( *truthE_itr )->pdfInfoParameter(m_xf2,      xAOD::TruthEvent::XF2);
+    }
+
+  }
+
   this->FillEventUser(eventInfo);
 }
 
@@ -140,7 +193,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
   // always
   m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");
 
-  if ( m_muInfoSwitch->m_kinematic ) {
+  if( m_muInfoSwitch->m_kinematic ){
     m_tree->Branch("muon_pt",  &m_muon_pt);
     m_tree->Branch("muon_phi", &m_muon_phi);
     m_tree->Branch("muon_eta", &m_muon_eta);
@@ -394,6 +447,8 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 void HelpTreeBase::AddJets(const std::string detailStr)
 {
 
+  Info("AddJets()", "Adding jet variables: %s", detailStr.c_str());
+
   m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 
   // always
@@ -406,7 +461,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_eta", &m_jet_eta);
   }
 
-  if ( m_jetInfoSwitch->m_clean ) {
+  if( m_jetInfoSwitch->m_clean ) {
     m_tree->Branch("jet_Timing",              &m_jet_time               );
     m_tree->Branch("jet_LArQuality",          &m_jet_LArQuality         );
     m_tree->Branch("jet_HECQuality",          &m_jet_hecq               );
@@ -457,9 +512,14 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
   }
 
-  if ( m_jetInfoSwitch->m_flavTag ) {
-    m_tree->Branch("jet_MV1Weight",     &m_jet_mv1);
-    m_tree->Branch("jet_SV1IP3DWeight", &m_jet_sv1ip3d);
+  if( m_jetInfoSwitch->m_flavTag ) {
+    m_tree->Branch("jet_SV0",           &m_jet_sv0);
+    m_tree->Branch("jet_SV1",           &m_jet_sv1);
+    m_tree->Branch("jet_IP3D",          &m_jet_ip3d);
+    m_tree->Branch("jet_SV1IP3D",       &m_jet_sv1ip3d);
+    m_tree->Branch("jet_MV1",           &m_jet_mv1);
+    m_tree->Branch("jet_MV2c00",        &m_jet_mv2c00);
+    m_tree->Branch("jet_MV2c20",        &m_jet_mv2c20);
   }
 
   if ( m_jetInfoSwitch->m_truth ) {
@@ -473,6 +533,9 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_truth_pt",  &m_jet_truth_pt);
     m_tree->Branch("jet_truth_phi", &m_jet_truth_phi);
     m_tree->Branch("jet_truth_eta", &m_jet_truth_eta);
+    m_tree->Branch("jet_truth_pdgId", &m_jet_truth_pdgId);
+    m_tree->Branch("jet_truth_partonPt", &m_jet_truth_partonPt);
+    m_tree->Branch("jet_truth_partonDR", &m_jet_truth_partonDR);
   }
 
   if ( m_jetInfoSwitch->m_truthDetails ) {
@@ -497,14 +560,14 @@ void HelpTreeBase::AddJets(const std::string detailStr)
   this->AddJetsUser();
 }
 
-void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
+void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
 
   this->ClearJets();
   this->ClearJetsUser();
 
-  for ( auto jet_itr : *(jets) ) {
+  for( auto jet_itr : jets ) {
 
-    if ( m_jetInfoSwitch->m_kinematic ) {
+    if( m_jetInfoSwitch->m_kinematic ){
       m_jet_pt.push_back ( jet_itr->pt() / m_units );
       m_jet_eta.push_back( jet_itr->eta() );
       m_jet_phi.push_back( jet_itr->phi() );
@@ -690,15 +753,20 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if ( m_jetInfoSwitch->m_flavTag) {
-      static SG::AuxElement::ConstAccessor< float > MV1WeightAcc("MV1Weight");
-      if ( MV1WeightAcc.isAvailable( *jet_itr ) ) {
-        m_jet_mv1.push_back( MV1WeightAcc( *jet_itr ) );
-      } else { m_jet_mv1.push_back( -999 ); }
+      const xAOD::BTagging * myBTag = jet_itr->btagging();
+      m_jet_sv0.push_back(     myBTag -> SV0_significance3D()       );
+      m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
+      m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
+      m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
+      m_jet_mv1.push_back(     myBTag -> MV1_discriminant()         );
 
-      static SG::AuxElement::ConstAccessor< float > SV1plusIP3DWeightAcc("SV1plusIP3DWeight");
-      if ( SV1plusIP3DWeightAcc.isAvailable( *jet_itr ) ) {
-        m_jet_sv1ip3d.push_back( SV1plusIP3DWeightAcc( *jet_itr ) );
-      } else { m_jet_sv1ip3d.push_back( -999 ); }
+      //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
+      double val(-999);
+      myBTag->variable<double>("MV2c00", "discriminant", val);
+      m_jet_mv2c00.push_back( val );
+      myBTag->variable<double>("MV2c20", "discriminant", val);
+      m_jet_mv2c20.push_back( val );
+
     }
 
     if ( m_jetInfoSwitch->m_truth ) {
@@ -735,7 +803,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       } else { m_jet_truthDr_T.push_back( -999 ) ; }
 
       const xAOD::Jet* truthJet = HelperFunctions::getLink<xAOD::Jet>( jet_itr, "GhostTruthAssociationLink" );
-      if (truthJet) {
+      if(truthJet) {
         m_jet_truth_pt.push_back ( truthJet->pt() / m_units );
         m_jet_truth_eta.push_back( truthJet->eta() );
         m_jet_truth_phi.push_back( truthJet->phi() );
@@ -747,8 +815,22 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         m_jet_truth_E.push_back  ( -999 );
       }
 
+      // light quark(1,2,3) , gluon (21 or 9), charm(4) and b(5)
+      // GhostPartons should select for these pdgIds only
+      std::vector<const xAOD::TruthParticle*> truthPartons = jet_itr->getAssociatedObjects<xAOD::TruthParticle>("GhostPartons");
+      if( truthPartons.size() == 0){
+        m_jet_truth_pdgId.push_back(-999);
+      } else {
+        int iParent = 0;
+        for(int i=1; i < truthPartons.size(); ++i){
+          if( (truthPartons.at(i)->pt() > 0.001) && (truthPartons.at(i)->e() > truthPartons.at(iParent)->e()) )
+            iParent = i;
+        }
+        m_jet_truth_pdgId.push_back(truthPartons.at(iParent)->pdgId());
+        m_jet_truth_partonPt.push_back(truthPartons.at(iParent)->pt() / m_units);
+        m_jet_truth_partonDR.push_back(truthPartons.at(iParent)->p4().DeltaR( jet_itr->p4() ));
+      }
     }
-
 
     if ( m_jetInfoSwitch->m_truthDetails ) {
 
@@ -853,7 +935,22 @@ void HelpTreeBase::AddFatJets(std::string detailStr) {
 /* TODO: fatJets */
 void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) { }
 
-void HelpTreeBase::ClearEvent() {}
+void HelpTreeBase::ClearEvent() {
+  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = -999;
+  m_mcEventWeight = 1.;
+  // pileup
+  m_npv = m_lumiBlock = -999;
+  m_actualMu = m_averageMu = -999;
+  // shapeEM
+  m_rhoEM = -999;
+  // shapeLC
+  m_rhoLC = -999;
+  // truth
+  m_pdgid1 = m_pdgid2 = m_pdfid1 = m_pdfid2 = -999;
+  m_x1 = m_x2 = -999;
+  m_xf1 = m_xf2 = -999;
+  //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
+}
 
 void HelpTreeBase::ClearMuons() {
   
@@ -889,6 +986,7 @@ void HelpTreeBase::ClearMuons() {
     //m_muon_trknInnermostPixLayHits.clear();
     //m_muon_trkPixdEdX.clear();  
   }
+
 }
 
 void HelpTreeBase::ClearElectrons() {
@@ -925,6 +1023,7 @@ void HelpTreeBase::ClearElectrons() {
     //m_el_trknInnermostPixLayHits.clear();
     //m_el_trkPixdEdX.clear();  
   }
+
 }
 
 
@@ -937,7 +1036,7 @@ void HelpTreeBase::ClearJets() {
   m_jet_E.clear();
 
   // clean
-  if ( m_jetInfoSwitch->m_clean ) {
+  if( m_jetInfoSwitch->m_clean ) {
     m_jet_time.clear();
     m_jet_LArQuality.clear();
     m_jet_hecq.clear();
@@ -990,8 +1089,13 @@ void HelpTreeBase::ClearJets() {
 
   // flavor tag
   if ( m_jetInfoSwitch->m_flavTag ) {
-    m_jet_mv1.clear();
+    m_jet_sv0.clear();
+    m_jet_sv1.clear();
+    m_jet_ip3d.clear();
     m_jet_sv1ip3d.clear();
+    m_jet_mv1.clear();
+    m_jet_mv2c00.clear();
+    m_jet_mv2c20.clear();
   }
 
   // truth
@@ -1006,6 +1110,9 @@ void HelpTreeBase::ClearJets() {
     m_jet_truth_eta.clear();
     m_jet_truth_phi.clear();
     m_jet_truth_E.clear();
+    m_jet_truth_pdgId.clear();
+    m_jet_truth_partonPt.clear();
+    m_jet_truth_partonDR.clear();
   }
 
   // truth_detail

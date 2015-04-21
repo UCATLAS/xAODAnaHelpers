@@ -68,3 +68,7 @@
 	* Added possibility to use cut-based PID in ElectronSelector (Changed electronSelect*.config file accordingly)
 	* Configuration files for ElectronSelector tools are passed directly via config
 	* Append module name to CP Tool name in constructor (to avoid asg::ToolStore::put warning when using multiple instances of same xAODAnaHelpers module)
+
+2015-04-21 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * Added event truth information to HelpTreeBase with assoicated switch
+
