@@ -128,37 +128,39 @@ EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusC
 
 EL::StatusCode TreeAlgo :: execute ()
 {
-  // Get EventInfo the PrimaryVertices
+  // Get EventInfo and the PrimaryVertices
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
   const xAOD::VertexContainer* vertices(nullptr);
   RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
+  // get the primaryVertex
+  const xAOD::Vertex* primaryVertex = HelperFunctions::getPrimaryVertex( vertices );
 
   m_helpTree->FillEvent( eventInfo, m_event );
 
-  // for the containers the were supplied, fill the appropiate vectors
+  // for the containers the were supplied, fill the appropriate vectors
   if(!m_muContainerName.empty()) {
     const xAOD::MuonContainer* inMuon(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inMuon, m_muContainerName, m_event, m_store, m_debug) ,"");
-    m_helpTree->FillMuons( *inMuon );
+    m_helpTree->FillMuons( inMuon, primaryVertex );
   }
 
   if(!m_elContainerName.empty()) {
     const xAOD::ElectronContainer* inElec(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inElec, m_elContainerName, m_event, m_store, m_debug) ,"");
-    m_helpTree->FillElectrons( *inElec );
+    m_helpTree->FillElectrons( inElec, primaryVertex );
   }
 
   if(!m_jetContainerName.empty()) {
     const xAOD::JetContainer* inJets(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainerName, m_event, m_store, m_debug) ,"");
-    m_helpTree->FillJets( *inJets, HelperFunctions::getPrimaryVertexLocation(vertices) );
+    m_helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices) );
   }
 
   if(!m_fatJetContainerName.empty()) {
     const xAOD::JetContainer* inFatJets(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName, m_event, m_store, m_debug) ,"");
-    m_helpTree->FillFatJets( *inFatJets );
+    m_helpTree->FillFatJets( inFatJets );
   }
 
   // fill the tree

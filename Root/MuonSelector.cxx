@@ -445,15 +445,14 @@ EL::StatusCode MuonSelector :: histFinalize ()
 
 int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
 
-  //compute sigma(d0)
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
-  // maybe need this
-  const xAOD::TrackParticle* tp  = const_cast<xAOD::TrackParticle*>(muon->primaryTrackParticle());
 
-  int type = static_cast<int>(muon->muonType());
+  const xAOD::TrackParticle* tp  = muon->primaryTrackParticle();
 
   float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
-  float z0sintheta      = ( static_cast<float>( tp->z0() ) + static_cast<float>( tp->vz() ) - static_cast<float>( primaryVertex->z() ) ) * sin( tp->theta() );
+  float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
+
+  int type = static_cast<int>(muon->muonType());
 
   // pT max
   if ( m_pT_max != 1e8 ) {
@@ -476,7 +475,6 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-
   // do not cut on impact parameter if muon is Standalone
   if ( type != xAOD::Muon::MuonType::MuonStandAlone ) {
     // d0 cut

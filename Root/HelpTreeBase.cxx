@@ -3,6 +3,8 @@
 
 // EDM include(s):
 #include "xAODBTagging/BTagging.h"
+#include "xAODTracking/TrackParticle.h"
+#include "xAODTracking/TrackSummaryAccessors_v1.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
@@ -17,7 +19,6 @@
 #pragma link C++ class vector<float>+;
 #endif
 
-/* TODO: event */
 HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units):
   m_eventInfoSwitch(0),
   m_muInfoSwitch(0),
@@ -35,7 +36,6 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
 
 void HelpTreeBase::Fill() {
   m_tree->Fill();
-  //this->Clear();
 }
 
 /*********************
@@ -44,7 +44,7 @@ void HelpTreeBase::Fill() {
  *
  ********************/
 
-void HelpTreeBase::AddEvent( const std::string detailStr) {
+void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
   this->ClearEvent();
   this->ClearEventUser();
@@ -137,29 +137,121 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
 
   m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
 
+  // always
+  m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");
+
   if ( m_muInfoSwitch->m_kinematic ) {
-    m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");
     m_tree->Branch("muon_pt",  &m_muon_pt);
     m_tree->Branch("muon_phi", &m_muon_phi);
     m_tree->Branch("muon_eta", &m_muon_eta);
+    m_tree->Branch("muon_m",   &m_muon_m);
+  }
+
+  if ( m_muInfoSwitch->m_trackparams ) {
+    m_tree->Branch("muon_trkd0",          &m_muon_trkd0);
+    m_tree->Branch("muon_trkd0sig",       &m_muon_trkd0sig);
+    m_tree->Branch("muon_trkz0",          &m_muon_trkz0);
+    m_tree->Branch("muon_trkz0sintheta",  &m_muon_trkz0sintheta);
+    m_tree->Branch("muon_trkphi0",        &m_muon_trkphi0);
+    m_tree->Branch("muon_trktheta",       &m_muon_trktheta);
+    m_tree->Branch("muon_trkcharge",      &m_muon_trkcharge);
+    m_tree->Branch("muon_trkqOverP",      &m_muon_trkqOverP);
+  }
+
+  if ( m_muInfoSwitch->m_trackhitcont ) {
+    m_tree->Branch("muon_trknSiHits",    &m_muon_trknSiHits);
+    m_tree->Branch("muon_trknPixHits",   &m_muon_trknPixHits);
+    m_tree->Branch("muon_trknPixHoles",  &m_muon_trknPixHoles);
+    m_tree->Branch("muon_trknSCTHits",   &m_muon_trknSCTHits);
+    m_tree->Branch("muon_trknSCTHoles",  &m_muon_trknSCTHoles);
+    m_tree->Branch("muon_trknTRTHits",   &m_muon_trknTRTHits);
+    m_tree->Branch("muon_trknTRTHoles",  &m_muon_trknTRTHoles);
+    m_tree->Branch("muon_trknBLayerHits",&m_muon_trknBLayerHits);
+    //m_tree->Branch("muon_trknInnermostPixLayHits",  &m_muon_trknInnermostPixLayHits);
+    //m_tree->Branch("muon_trkPixdEdX",  &m_muon_trkPixdEdX);
   }
 
   this->AddMuonsUser();
 }
 
-void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
+void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex ) {
 
   this->ClearMuons();
   this->ClearMuonsUser();
 
   m_nmuon = 0;
-  for ( auto muon_itr : muons ) {
+  for ( auto muon_itr : *(muons) ) {
+    
     if ( m_muInfoSwitch->m_kinematic ) {
-      m_muon_pt.push_back ( (muon_itr)->pt() / m_units  );
-      m_muon_eta.push_back( (muon_itr)->eta() );
-      m_muon_phi.push_back( (muon_itr)->phi() );
+      m_muon_pt.push_back ( muon_itr->pt() / m_units  );
+      m_muon_eta.push_back( muon_itr->eta() );
+      m_muon_phi.push_back( muon_itr->phi() );
+      m_muon_m.push_back  ( muon_itr->m() / m_units  );
     }
+    
+    const xAOD::TrackParticle* trk = muon_itr->primaryTrackParticle(); 
+    
+    if ( m_muInfoSwitch->m_trackparams ) {
+      if ( trk ) {  
+        //
+	// NB.: 
+	// All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
+	// The refernce  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
+	// Remember that the beamspot size ( of O(10 micrometers) in the transverse plane) is << average vertex transverse position resolution ( O(60-80 micrometers) )
+	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz() 
+	//
+        m_muon_trkd0.push_back( trk->d0() );  
+	float d0_significance = fabs( trk->d0() )  / sqrt(trk->definingParametersCovMatrix()(0,0) );
+        m_muon_trkd0sig.push_back( d0_significance ); 
+	float z0 =  fabs( trk->z0()  - ( primaryVertex->z() - trk->vz() ) ); // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
+								             // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
+	float theta = trk->theta();
+        m_muon_trkz0.push_back( z0 );	      
+        m_muon_trkz0sintheta.push_back( fabs( z0 * sin(theta) ) ); 
+        m_muon_trkphi0.push_back( trk->phi0() );       
+        m_muon_trktheta.push_back( theta );	 
+        m_muon_trkcharge.push_back( trk->charge() );	 
+        m_muon_trkqOverP.push_back( trk->qOverP() );	 
+      } else {
+        m_muon_trkd0.push_back( -999.0 );	
+        m_muon_trkd0sig.push_back( -1.0 );	
+        m_muon_trkz0.push_back( -999.0 );	  
+        m_muon_trkz0sintheta.push_back( -999.0 ); 
+        m_muon_trkphi0.push_back( -999.0 );	  
+        m_muon_trktheta.push_back( -999.0 );	  
+        m_muon_trkcharge.push_back( -999.0 );     
+        m_muon_trkqOverP.push_back( -999.0 );           
+      }
+    }
+
+    if ( m_muInfoSwitch->m_trackhitcont ) {
+      uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
+      float pixdEdX(-1.0); 
+      if ( trk ) {
+	trk->summaryValue( nPixHits,     xAOD::numberOfPixelHits );
+	trk->summaryValue( nPixHoles,    xAOD::numberOfPixelHoles );
+      	trk->summaryValue( nSCTHits,     xAOD::numberOfSCTHits );
+      	trk->summaryValue( nSCTHoles,    xAOD::numberOfSCTHoles );
+      	trk->summaryValue( nTRTHits,     xAOD::numberOfTRTHits );
+      	trk->summaryValue( nTRTHoles,    xAOD::numberOfTRTHoles );	
+	trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
+        //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits ); 
+        //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);	      
+      } 
+      m_muon_trknSiHits.push_back( nPixHits + nSCTHits );
+      m_muon_trknPixHits.push_back( nPixHits );
+      m_muon_trknPixHoles.push_back( nPixHoles );
+      m_muon_trknSCTHits.push_back( nSCTHits );
+      m_muon_trknSCTHoles.push_back( nSCTHoles );
+      m_muon_trknTRTHits.push_back( nTRTHits );
+      m_muon_trknTRTHoles.push_back( nTRTHoles );
+      m_muon_trknBLayerHits.push_back( nBLayerHits );
+      //m_muon_trknInnermostPixLayHits.push_back( nInnermostPixLayHits ); 
+      //m_muon_trkPixdEdX.push_back( pixdEdX );	      
+    }
+    
     this->FillMuonsUser(muon_itr);
+    
     m_nmuon++;
   }
 }
@@ -173,31 +265,122 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer& muons ) {
 void HelpTreeBase::AddElectrons(const std::string detailStr) {
 
   m_elInfoSwitch = new HelperClasses::ElectronInfoSwitch( detailStr );
-
+  
+  // always
   m_tree->Branch("nel",    &m_nel,"nel/I");
 
   if ( m_elInfoSwitch->m_kinematic ) {
     m_tree->Branch("el_pt",  &m_el_pt);
     m_tree->Branch("el_phi", &m_el_phi);
     m_tree->Branch("el_eta", &m_el_eta);
+    m_tree->Branch("el_m",   &m_el_m);
+  }
+
+  if ( m_elInfoSwitch->m_trackparams ) {
+    m_tree->Branch("el_trkd0",      &m_el_trkd0);
+    m_tree->Branch("el_trkd0sig",   &m_el_trkd0sig);
+    m_tree->Branch("el_trkz0",      &m_el_trkz0);
+    m_tree->Branch("el_trkz0sintheta",  &m_el_trkz0sintheta);
+    m_tree->Branch("el_trkphi0",    &m_el_trkphi0);
+    m_tree->Branch("el_trktheta",   &m_el_trktheta);
+    m_tree->Branch("el_trkcharge",  &m_el_trkcharge);
+    m_tree->Branch("el_trkqOverP",  &m_el_trkqOverP);
+  }
+
+  if ( m_elInfoSwitch->m_trackhitcont ) {
+    m_tree->Branch("el_trknSiHits",    &m_el_trknSiHits);
+    m_tree->Branch("el_trknPixHits",   &m_el_trknPixHits);
+    m_tree->Branch("el_trknPixHoles",  &m_el_trknPixHoles);
+    m_tree->Branch("el_trknSCTHits",   &m_el_trknSCTHits);
+    m_tree->Branch("el_trknSCTHoles",  &m_el_trknSCTHoles);
+    m_tree->Branch("el_trknTRTHits",   &m_el_trknTRTHits);
+    m_tree->Branch("el_trknTRTHoles",  &m_el_trknTRTHoles);
+    m_tree->Branch("el_trknBLayerHits",&m_el_trknBLayerHits);
+    //m_tree->Branch("el_trknInnermostPixLayHits",  &m_el_trknInnermostPixLayHits);
+    //m_tree->Branch("el_trkPixdEdX",    &m_el_trkPixdEdX);
   }
 
   this->AddElectronsUser();
 }
 
-void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer& electrons ) {
+void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex ) {
 
   this->ClearElectrons();
   this->ClearElectronsUser();
 
   m_nel = 0;
-  for ( auto el_itr : electrons ) {
+  for ( auto el_itr : *(electrons) ) {
+    
+    const xAOD::TrackParticle* trk = el_itr->trackParticle(); 
+
     if ( m_elInfoSwitch->m_kinematic ) {
       m_el_pt.push_back ( (el_itr)->pt() / m_units );
       m_el_eta.push_back( (el_itr)->eta() );
       m_el_phi.push_back( (el_itr)->phi() );
+      m_el_m.push_back  ( (el_itr)->m() / m_units );
     }
+
+    if ( m_elInfoSwitch->m_trackparams ) {
+      if ( trk ) {  
+        //
+	// NB.: 
+	// All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
+	// The refernce  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
+	// Remember that the beamspot size ( of O(10 micrometers) in the transverse plane) is << average vertex transverse position resolution ( O(60-80 micrometers) )
+	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz() 
+	//
+        m_el_trkd0.push_back( trk->d0() );  
+	float d0_significance = fabs( trk->d0() )  / sqrt(trk->definingParametersCovMatrix()(0,0) );
+        m_el_trkd0sig.push_back( d0_significance ); 
+	float z0 =  fabs( trk->z0()  - ( primaryVertex->z() - trk->vz() ) ); // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
+								             // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
+	float theta = trk->theta();
+        m_el_trkz0.push_back( z0 );         
+        m_el_trkz0sintheta.push_back( fabs( z0 * sin(theta) ) ); 
+        m_el_trkphi0.push_back( trk->phi0() );       
+        m_el_trktheta.push_back( theta );      
+        m_el_trkcharge.push_back( trk->charge() );     
+        m_el_trkqOverP.push_back( trk->qOverP() );     
+      } else {
+        m_el_trkd0.push_back( -999.0 );       
+        m_el_trkd0sig.push_back( -1.0 );      
+        m_el_trkz0.push_back( -999.0 ); 	
+        m_el_trkz0sintheta.push_back( -999.0 ); 
+        m_el_trkphi0.push_back( -999.0 );	
+        m_el_trktheta.push_back( -999.0 );	
+        m_el_trkcharge.push_back( -999.0 );	
+        m_el_trkqOverP.push_back( -999.0 );	      
+      }
+    }
+    
+    if ( m_elInfoSwitch->m_trackhitcont ) {
+      uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
+      float pixdEdX(-1.0); 
+      if ( trk ) {
+	trk->summaryValue( nPixHits,  xAOD::numberOfPixelHits );
+	trk->summaryValue( nPixHoles, xAOD::numberOfPixelHoles );
+      	trk->summaryValue( nSCTHits,  xAOD::numberOfSCTHits );
+      	trk->summaryValue( nSCTHoles, xAOD::numberOfSCTHoles );
+      	trk->summaryValue( nTRTHits,  xAOD::numberOfTRTHits );
+      	trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );	
+      	trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
+        //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits ); 
+        //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);	      
+      } 
+      m_el_trknSiHits.push_back( nPixHits + nSCTHits );
+      m_el_trknPixHits.push_back( nPixHits );
+      m_el_trknPixHoles.push_back( nPixHoles );
+      m_el_trknSCTHits.push_back( nSCTHits );
+      m_el_trknSCTHoles.push_back( nSCTHoles );
+      m_el_trknTRTHits.push_back( nTRTHits );
+      m_el_trknTRTHoles.push_back( nTRTHoles );
+      m_el_trknBLayerHits.push_back( nBLayerHits );
+      //m_el_trknInnermostPixLayHits.push_back( nInnermostPixLayHits ); 
+      //m_el_trkPixdEdX.push_back( pixdEdX );	      
+    }
+    
     this->FillElectronsUser(el_itr);
+    
     m_nel++;
   }
 }
@@ -314,12 +497,12 @@ void HelpTreeBase::AddJets(const std::string detailStr)
   this->AddJetsUser();
 }
 
-void HelpTreeBase::FillJets( const xAOD::JetContainer& jets, int pvLocation ) {
+void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
   this->ClearJets();
   this->ClearJetsUser();
 
-  for ( auto jet_itr : jets ) {
+  for ( auto jet_itr : *(jets) ) {
 
     if ( m_jetInfoSwitch->m_kinematic ) {
       m_jet_pt.push_back ( jet_itr->pt() / m_units );
@@ -668,22 +851,80 @@ void HelpTreeBase::AddFatJets(std::string detailStr) {
   m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 }
 /* TODO: fatJets */
-void HelpTreeBase::FillFatJets( const xAOD::JetContainer& /*fatJets*/ ) { }
+void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) { }
 
 void HelpTreeBase::ClearEvent() {}
 
 void HelpTreeBase::ClearMuons() {
+  
   m_nmuon = 0;
-  m_muon_pt.clear();
-  m_muon_eta.clear();
-  m_muon_phi.clear();
+  
+  if ( m_muInfoSwitch->m_kinematic ){
+    m_muon_pt.clear();
+    m_muon_eta.clear();
+    m_muon_phi.clear();
+    m_muon_m.clear();
+  }
+
+  if ( m_muInfoSwitch->m_trackparams ) {
+    m_muon_trkd0.clear();
+    m_muon_trkd0sig.clear();
+    m_muon_trkz0.clear();
+    m_muon_trkz0sintheta.clear();
+    m_muon_trkphi0.clear();
+    m_muon_trktheta.clear();
+    m_muon_trkcharge.clear();
+    m_muon_trkqOverP.clear();    
+  }
+
+  if ( m_muInfoSwitch->m_trackhitcont ) {
+    m_muon_trknSiHits.clear();
+    m_muon_trknPixHits.clear();
+    m_muon_trknPixHoles.clear();
+    m_muon_trknSCTHits.clear();
+    m_muon_trknSCTHoles.clear();
+    m_muon_trknTRTHits.clear();
+    m_muon_trknTRTHoles.clear();
+    m_muon_trknBLayerHits.clear();
+    //m_muon_trknInnermostPixLayHits.clear();
+    //m_muon_trkPixdEdX.clear();  
+  }
 }
 
 void HelpTreeBase::ClearElectrons() {
+  
   m_nel = 0;
-  m_el_pt.clear();
-  m_el_eta.clear();
-  m_el_phi.clear();
+
+  if ( m_elInfoSwitch->m_kinematic ){
+    m_el_pt.clear();
+    m_el_eta.clear();
+    m_el_phi.clear();
+    m_el_m.clear();
+  }
+
+  if ( m_elInfoSwitch->m_trackparams ) {
+    m_el_trkd0.clear();
+    m_el_trkd0sig.clear();
+    m_el_trkz0.clear();
+    m_el_trkz0sintheta.clear();
+    m_el_trkphi0.clear();
+    m_el_trktheta.clear();
+    m_el_trkcharge.clear();
+    m_el_trkqOverP.clear();    
+  }
+
+  if ( m_elInfoSwitch->m_trackhitcont ) {
+    m_el_trknSiHits.clear();
+    m_el_trknPixHits.clear();
+    m_el_trknPixHoles.clear();
+    m_el_trknSCTHits.clear();
+    m_el_trknSCTHoles.clear();
+    m_el_trknTRTHits.clear();
+    m_el_trknTRTHoles.clear();
+    m_el_trknBLayerHits.clear();
+    //m_el_trknInnermostPixLayHits.clear();
+    //m_el_trkPixdEdX.clear();  
+  }
 }
 
 

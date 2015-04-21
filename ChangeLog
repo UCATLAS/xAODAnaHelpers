@@ -1,3 +1,6 @@
+2015-04-21 Marco Milesi <Marco.Milesi@cern.ch>
+	* Added info switchers for muons and electrons in HelpTreeBase (basic hit content and track parameters)
+	
 2015-04-18 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
 	* First change towards trivial constructors for all of our algorithms
 	* Added a runner script that will take a generic json file with an

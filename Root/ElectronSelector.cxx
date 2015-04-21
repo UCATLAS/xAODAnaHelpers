@@ -589,20 +589,17 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/EGammaIdentificationRun2
 
-  // float et         = static_cast<float>( (electron->caloCluster()->e()) ) / static_cast<float>( cosh(electron->trackParticle()->eta()) );
-  // float eta        = static_cast<float>( electron->caloCluster()->eta() );
-
   float et    = electron->pt();
   float eta   = electron->eta();
 
-  int oq           = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
+  int oq      = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
 
-  //compute sigma(d0)
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
-  const xAOD::TrackParticle* tp  = const_cast<xAOD::TrackParticle*>(electron->trackParticle());
-  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
 
-  float z0sintheta = ( static_cast<float>( electron->trackParticle()->z0() ) + static_cast<float>( electron->trackParticle()->vz() ) - static_cast<float>( primaryVertex->z() ) ) * sin( electron->trackParticle()->theta() );
+  const xAOD::TrackParticle* tp  = electron->trackParticle();
+  
+  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
+  float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
 
   // author cut
   if ( m_doAuthorCut ) {

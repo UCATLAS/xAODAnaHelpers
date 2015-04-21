@@ -20,6 +20,7 @@
 #include "xAODAnaHelpers/Writer.h"
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include "xAODAnaHelpers/OverlapRemover.h"
+#include "xAODAnaHelpers/TreeAlgo.h"
 
 #include "PATInterfaces/SystematicVariation.h"
 
@@ -107,6 +108,8 @@ int main( int argc, char* argv[] ) {
   OverlapRemover* overlapRemoval                = new OverlapRemover(       "OverlapRemovalTool",       localDataDir+"overlapRemoval.config");
   JetHistsAlgo* jk_AntiKt10LC                   = new JetHistsAlgo(         "AntiKt10/",                localDataDir+"test_jetPlotExample.config");
     
+  TreeAlgo* out_tree                            = new TreeAlgo(             "physics",                  localDataDir+"tree.config");
+    
   // Attach algorithms
   job.algsAdd( baseEventSel );
   job.algsAdd( jetCalib );
@@ -123,6 +126,7 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( jetHistsAlgo_truth );
   job.algsAdd( overlapRemoval );
   job.algsAdd( jk_AntiKt10LC );
+  job.algsAdd( out_tree );  
 
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;

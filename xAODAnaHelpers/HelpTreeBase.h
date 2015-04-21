@@ -51,10 +51,10 @@ public:
   HelperClasses::JetInfoSwitch*       m_fatJetInfoSwitch;
 
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
-  void FillMuons( const xAOD::MuonContainer& muons );
-  void FillElectrons( const xAOD::ElectronContainer& electrons );
-  void FillJets( const xAOD::JetContainer& jets, int pvLocation = -1 );
-  void FillFatJets( const xAOD::JetContainer& fatJets );
+  void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
+  void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
+  void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1 );
+  void FillFatJets( const xAOD::JetContainer* fatJets );
   void Fill();
   void ClearEvent();
   void ClearMuons();
@@ -64,10 +64,10 @@ public:
   bool writeTo( TFile *file );
 
   // User defined functions
-  virtual void AddEventUser(const std::string detailStr = "")      { return; };
-  virtual void AddMuonsUser(const std::string detailStr = "")      { return; };
-  virtual void AddElectronsUser(const std::string detailStr = "")  { return; };
-  virtual void AddJetsUser(const std::string detailStr = "")       { return; };
+  virtual void AddEventUser(const std::string detailStrUser = "")      { return; };
+  virtual void AddMuonsUser(const std::string detailStrUser = "")      { return; };
+  virtual void AddElectronsUser(const std::string detailStrUser = "")  { return; };
+  virtual void AddJetsUser(const std::string detailStrUser = "")       { return; };
 
   virtual void ClearEventUser()                                    { return; };
   virtual void ClearMuonsUser() 				   { return; };
@@ -185,15 +185,65 @@ protected:
 
   // muons
   int m_nmuon;
+  
+  // kinematics
   std::vector<float> m_muon_pt;
   std::vector<float> m_muon_eta;
   std::vector<float> m_muon_phi;
+  std::vector<float> m_muon_m;
+  
+  // track parameters
+  std::vector<float> m_muon_trkd0;
+  std::vector<float> m_muon_trkd0sig;
+  std::vector<float> m_muon_trkz0;
+  std::vector<float> m_muon_trkz0sintheta;
+  std::vector<float> m_muon_trkphi0;
+  std::vector<float> m_muon_trktheta;
+  std::vector<float> m_muon_trkcharge;
+  std::vector<float> m_muon_trkqOverP;
+  
+  // track hit content
+  std::vector<int> m_muon_trknSiHits;
+  std::vector<int> m_muon_trknPixHits;
+  std::vector<int> m_muon_trknPixHoles;
+  std::vector<int> m_muon_trknSCTHits;
+  std::vector<int> m_muon_trknSCTHoles;
+  std::vector<int> m_muon_trknTRTHits;
+  std::vector<int> m_muon_trknTRTHoles;
+  std::vector<int> m_muon_trknBLayerHits; 
+  //std::vector<int> m_muon_trknInnermostPixLayHits; // not available ?
+  //std::vector<float> m_muon_trkPixdEdX; // not available ?
 
   // electrons
   int m_nel;
+  
+  // kinematics
   std::vector<float> m_el_pt;
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
+  std::vector<float> m_el_m;
+ 
+  // track parameters
+  std::vector<float> m_el_trkd0;
+  std::vector<float> m_el_trkd0sig;
+  std::vector<float> m_el_trkz0;
+  std::vector<float> m_el_trkz0sintheta;
+  std::vector<float> m_el_trkphi0;
+  std::vector<float> m_el_trktheta;
+  std::vector<float> m_el_trkcharge;
+  std::vector<float> m_el_trkqOverP;
+  
+  // track hit content
+  std::vector<int> m_el_trknSiHits;
+  std::vector<int> m_el_trknPixHits;
+  std::vector<int> m_el_trknPixHoles;
+  std::vector<int> m_el_trknSCTHits;
+  std::vector<int> m_el_trknSCTHoles;
+  std::vector<int> m_el_trknTRTHits;
+  std::vector<int> m_el_trknTRTHoles;
+  std::vector<int> m_el_trknBLayerHits; 
+  //std::vector<int> m_el_trknInnermostPixLayHits; // not available ?
+  //std::vector<float> m_el_trkPixdEdX; // not available ?
 
 };
 

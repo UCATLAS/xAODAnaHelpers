@@ -70,12 +70,16 @@ namespace HelperClasses {
 
   struct MuonInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_trackparams;
+    bool m_trackhitcont;
     void initialize();
     MuonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
   struct ElectronInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_trackparams;
+    bool m_trackhitcont;
     void initialize();
     ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
