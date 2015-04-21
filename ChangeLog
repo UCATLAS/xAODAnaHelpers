@@ -76,3 +76,8 @@
   * build default name of output algo for JetCalibrator and JetSelector
 	* JetSelector - put collections in TStroe before decision so TStore deletes if fail cuts
 	* HelpTreeBase - bug fix from previous commit
+
+2015-04-22 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * JetSelector - kill event if any of the N leading jets are not clean
+
+

@@ -57,6 +57,7 @@ private:
   bool m_createSelectedContainer; //! fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess;               //! look at n objects
   bool m_cleanJets;               //! require cleanJet decoration to not be set and false
+  int m_cleanEvtLeadJets;         //! kill event if any of the N leading jets are not clean
   int m_pass_min;                 //! minimum number of objects passing cuts
   int m_pass_max;                 //! maximum number of objects passing cuts
   float m_pT_max;                 //! require pT < pt_max

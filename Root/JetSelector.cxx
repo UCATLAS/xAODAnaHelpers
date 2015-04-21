@@ -104,6 +104,7 @@ EL::StatusCode  JetSelector :: configure ()
 
   // cuts
   m_cleanJets               = config->GetValue("CleanJets",  true);
+  m_cleanEvtLeadJets        = config->GetValue("CleanEventWithLeadJets", 0); // indepedent of previous switch
   m_pass_max                = config->GetValue("PassMax",      -1);
   m_pass_min                = config->GetValue("PassMin",      -1);
   m_pT_max                  = config->GetValue("pTMax",       1e8);
@@ -353,6 +354,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
 
   int nPass(0); int nObj(0);
+  bool passEventClean(true);
   for( auto jet_itr : *inJets ) { // duplicated of basic loop
 
     // if only looking at a subset of jets make sure all are decorated
@@ -369,6 +371,13 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     int passSel = this->PassCuts( jet_itr );
     if(m_decorateSelectedObjects) {
       jet_itr->auxdecor< char >( "passSel" ) = passSel;
+    }
+
+    // event level cut if any of the N leading jets are not clean
+    if(m_cleanEvtLeadJets > 0 && nObj <= m_cleanEvtLeadJets) {
+      if( jet_itr->isAvailable< char >( "cleanJet" ) ) {
+        if( !jet_itr->auxdata< char >( "cleanJet" ) ) { passEventClean = false; }
+      }
     }
 
     if(passSel) {
@@ -390,6 +399,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
+  if( !passEventClean ) { return false; }
   if( m_pass_min > 0 && nPass < m_pass_min ) {
     return false;
   }
