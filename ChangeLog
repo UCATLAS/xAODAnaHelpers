@@ -1,4 +1,9 @@
 2015-04-22 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
+	* Add test_jetPlotExample.json as an example of how to run using the
+	python script utility `xAH_run.py input.root --config
+	xAODAnaHelpers/data/test_jetPlotExample.json -f -v`
+
+2015-04-22 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
 	* Delete initializeUser() and executeUser() from HistogramManager and
 	JetHists, you should just create a new class that inherits from
 	HistogramManager if you want to add more plots... It's not that hard.

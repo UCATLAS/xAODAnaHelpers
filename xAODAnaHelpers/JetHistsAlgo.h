@@ -19,10 +19,10 @@ public:
   std::string m_configName;
 
   // configuration variables
-  std::string m_inContainerName;      //!
-  std::string m_detailStr;            //!
-  std::string m_inputAlgo;            //!
-  bool m_debug; //!
+  std::string m_inContainerName;
+  std::string m_detailStr;
+  std::string m_inputAlgo;
+  bool m_debug;
 
 private:
   xAOD::TEvent *m_event;  //!

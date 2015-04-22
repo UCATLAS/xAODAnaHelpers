@@ -184,17 +184,22 @@ if __name__ == "__main__":
     for algorithm_configuration in algorithm_configurations:
       alg_name = algorithm_configuration['class']
       xAH_logger.info("creating algorithm %s", alg_name)
-      alg = getattr(ROOT, alg_name, None)
+      alg = getattr(ROOT, alg_name, None)()
       if not alg:
         raise ValueError("Algorithm %s does not exist" % alg_name)
       for config_name, config_val in algorithm_configuration['configs'].iteritems():
         xAH_logger.info("\tsetting %s.%s = %s", alg_name, config_name, config_val)
         alg_attr = getattr(alg, config_name, None)
-        if not alg_attr:
+        if alg_attr is None:
           raise ValueError("Algorithm %s does not have attribute %s" % (alg_name, config_name))
-        setattr(alg, config_name, config_val)
 
-      xAH_logger.info("\tadding algorithm %s to job", alg_name)
+        #handle unicode from json
+        if isinstance(config_val, unicode):
+          setattr(alg, config_name, config_val.encode('utf-8'))
+        else:
+          setattr(alg, config_name, config_val)
+
+      xAH_logger.info("adding algorithm %s to job", alg_name)
       job.algsAdd(alg)
 
 
