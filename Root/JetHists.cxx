@@ -1,6 +1,7 @@
 #include <xAODAnaHelpers/JetHists.h>
 #include <sstream>
 
+#include "xAODAnaHelpers/tools/ReturnCheck.h"
 
 JetHists :: JetHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr),
@@ -12,7 +13,7 @@ JetHists :: ~JetHists () {
   if(m_infoSwitch) delete m_infoSwitch;
 }
 
-EL::StatusCode JetHists::initialize() {
+StatusCode JetHists::initialize() {
 
   // These plots are always made
   m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 3000.);
@@ -178,12 +179,12 @@ EL::StatusCode JetHists::initialize() {
     m_JetFitterCombNN = book(m_name, "JetFitterCombNN",   "JetFitterCombNN" ,     100,    -10,   10);
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc ) {
+StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc ) {
   for( auto jet_itr : *jets ) {
-    this->execute( jet_itr, eventWeight, pvLoc );
+    RETURN_CHECK("JetHists::execute()", this->execute( jet_itr, eventWeight, pvLoc ), "");
   }
 
   if( m_infoSwitch->m_numLeadingJets > 0){
@@ -199,10 +200,10 @@ EL::StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWei
     }
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc ) {
+StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc ) {
 
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
@@ -605,5 +606,5 @@ EL::StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int p
     m_jetGhostTruthPt_vs_resolution -> Fill( ghostTruthPt/1e3, resolution, eventWeight );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

@@ -58,7 +58,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  void AddHists( std::string name );
+  EL::StatusCode AddHists( std::string name );
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetHistsAlgo, 1);

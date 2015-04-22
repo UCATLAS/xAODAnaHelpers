@@ -11,13 +11,13 @@ class TrackHists : public HistogramManager
     TrackHists(std::string name, std::string detailStr );
     ~TrackHists();
 
-    EL::StatusCode initialize();
-    EL::StatusCode execute( const xAOD::TrackParticleContainer* tracks,  const xAOD::Vertex *pvx, float eventWeight );
-    EL::StatusCode execute( const xAOD::TrackParticle* track,            const xAOD::Vertex *pvx, float eventWeight );
+    StatusCode initialize();
+    StatusCode execute( const xAOD::TrackParticleContainer* tracks,  const xAOD::Vertex *pvx, float eventWeight );
+    StatusCode execute( const xAOD::TrackParticle* track,            const xAOD::Vertex *pvx, float eventWeight );
     using HistogramManager::book; // make other overloaded versions of book() to show up in subclass
     using HistogramManager::execute; // overload
 
-  protected: 
+  protected:
     // bools to control which histograms are filled
     bool m_fillIPDetails;        //!
     bool m_fillHitCounts;        //!

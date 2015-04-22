@@ -2,6 +2,9 @@
 	* Delete initializeUser() and executeUser() from HistogramManager and
 	JetHists, you should just create a new class that inherits from
 	HistogramManager if you want to add more plots... It's not that hard.
+	* HistogramManager functions use StatusCode, not EL::StatusCode -- you
+	should now wrap calls to initialize(), execute(), and finalize() with a
+	RETURN_CHECK macro or something similar
 
 2015-04-22 John Alison <John.Alison@cern.ch>
 	* Bugfixes: comment out TreeAlgo* out_tree in test_multiAlgo

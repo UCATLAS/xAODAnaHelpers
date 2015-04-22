@@ -325,7 +325,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
   //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
   RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
-  
+
   //--------------------------------------------
   //  Get Containers Depending on Analysis Needs
   //--------------------------------------------

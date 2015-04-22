@@ -55,15 +55,16 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
   return EL::StatusCode::SUCCESS;
 }
 
-void JetHistsAlgo::AddHists( std::string name ) {
+EL::StatusCode JetHistsAlgo::AddHists( std::string name ) {
 
   std::string fullname(m_name);
   fullname += name; // add systematic
   JetHists* jetHists = new JetHists( fullname, m_detailStr ); // add systematic
-  jetHists->initialize();
+  RETURN_CHECK("JetHistsAlgo::AddHists", jetHists->initialize(), "");
   jetHists->record( wk() );
   m_plots[name] = jetHists;
 
+  return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode JetHistsAlgo :: configure ()
@@ -132,7 +133,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
     /* two ways to fill */
 
     // 1. pass the jet collection
-    m_plots[""]->execute( inJets, eventWeight, pvLocation );
+    RETURN_CHECK("JetHistsAlgo::execute()", m_plots[""]->execute( inJets, eventWeight, pvLocation ), "");
 
     /* 2. loop over the jets
        for( auto jet_itr : *inJets ) {
@@ -151,7 +152,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
     for( auto systName : *systNames ) {
       RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
       if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
-      m_plots[systName]->execute( inJets, eventWeight, pvLocation );
+      RETURN_CHECK("JetHistsAlgo::execute()", m_plots[systName]->execute( inJets, eventWeight, pvLocation ), "");
     }
 
   }

@@ -12,9 +12,9 @@ class JetHists : public HistogramManager
     JetHists(std::string name, std::string detailStr);
     virtual ~JetHists() ;
 
-    EL::StatusCode initialize();
-    EL::StatusCode execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc = -1);
-    EL::StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );
+    StatusCode initialize();
+    StatusCode execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc = -1);
+    StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 

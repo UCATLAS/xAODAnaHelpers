@@ -7,8 +7,10 @@
 #include <TH2F.h>
 #include <TH3F.h>
 #include <EventLoop/Worker.h>
-#include <EventLoop/StatusCode.h>
 #include <xAODRootAccess/TEvent.h>
+
+// for StatusCode::isSuccess
+#include "AsgTools/StatusCode.h"
 
 class HistogramManager {
 
@@ -29,9 +31,9 @@ class HistogramManager {
     // this is used by any class extending to pre-define a set of histograms
     //      to book by default
     //  the following should be defined in other classes
-    virtual EL::StatusCode initialize(){ return EL::StatusCode::SUCCESS; };
-    virtual EL::StatusCode execute(){ return EL::StatusCode::SUCCESS; };
-    virtual EL::StatusCode finalize(){ return EL::StatusCode::SUCCESS; };
+    virtual StatusCode initialize(){ return StatusCode::SUCCESS; };
+    virtual StatusCode execute(){ return StatusCode::SUCCESS; };
+    virtual StatusCode finalize(){ return StatusCode::SUCCESS; };
 
     // @book - record a histogram and call various functions
     //      ** This is an overloaded function. It will build the right histogram

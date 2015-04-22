@@ -3,6 +3,8 @@
 
 #include <math.h>
 
+#include "xAODAnaHelpers/tools/ReturnCheck.h"
+
 VtxHists :: VtxHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
 {
@@ -10,7 +12,7 @@ VtxHists :: VtxHists (std::string name, std::string detailStr) :
 
 VtxHists :: ~VtxHists () {}
 
-EL::StatusCode VtxHists::initialize() {
+StatusCode VtxHists::initialize() {
 
   // These plots are always made
   h_type        = book(m_name, "type",          "vtx type",  10,   -0.5,     9.5);
@@ -81,7 +83,7 @@ EL::StatusCode VtxHists::initialize() {
       h_IsoTrk_max_Pt.push_back(       book(m_name, "IsoTrkPt_"+ss.str(),        "IsoTrkPt("+ss.str()+")",    100,   -0.5,    9.5)  );
       h_IsoTrk_max_Pt_l.push_back(     book(m_name, "IsoTrkPt_"+ss.str()+"_l",   "IsoTrkPt("+ss.str()+")",    100,   -0.5,   99.5)  );
     }
-    
+
   }
 
 
@@ -113,27 +115,27 @@ EL::StatusCode VtxHists::initialize() {
 
 
   // if worker is passed to the class add histograms to the output
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, float eventWeight ) {
+StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, float eventWeight ) {
   for(auto vtx_itr :  *vtxs ) {
-    this->execute( vtx_itr, eventWeight );
+    RETURN_CHECK("VtxHists::execute()", this->execute( vtx_itr, eventWeight ), "");
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, const xAOD::TrackParticleContainer* trks, float eventWeight ) {
+StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, const xAOD::TrackParticleContainer* trks, float eventWeight ) {
   for(auto vtx_itr :  *vtxs ) {
-    this->execute( vtx_itr, trks, eventWeight );
+    RETURN_CHECK("VtxHists::execute()", this->execute( vtx_itr, trks, eventWeight ), "");
   }
 
-  return EL::StatusCode::SUCCESS;  
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode VtxHists::execute( const xAOD::Vertex* vtx, const xAOD::TrackParticleContainer* trks, float eventWeight ) {
-  this->execute( vtx, eventWeight);
+StatusCode VtxHists::execute( const xAOD::Vertex* vtx, const xAOD::TrackParticleContainer* trks, float eventWeight ) {
+  RETURN_CHECK("VtxHists::execute()", this->execute( vtx, eventWeight), "");
 
   if(m_fillIsoTrkDetails){
 
@@ -187,7 +189,7 @@ EL::StatusCode VtxHists::execute( const xAOD::Vertex* vtx, const xAOD::TrackPart
 
     }
 
-      
+
     // Sort track pts
     //std::sort(numbers.begin(), numbers.end(), std::greater<int>());
     std::sort(pt_iso_vec.begin(), pt_iso_vec.end(), std::greater<float>());
@@ -196,7 +198,7 @@ EL::StatusCode VtxHists::execute( const xAOD::Vertex* vtx, const xAOD::TrackPart
     for(uint iLeadTrks = 0; iLeadTrks < m_nLeadIsoTrackPts; ++iLeadTrks){
       float this_pt = (pt_iso_vec.size() > iLeadTrks) ? pt_iso_vec.at(iLeadTrks) : 0;
       h_IsoTrk_max_Pt.at(iLeadTrks)      -> Fill( this_pt,       eventWeight );
-      h_IsoTrk_max_Pt_l.at(iLeadTrks)    -> Fill( this_pt,       eventWeight );    
+      h_IsoTrk_max_Pt_l.at(iLeadTrks)    -> Fill( this_pt,       eventWeight );
     }
 
     h_nIsoTrks1GeV       -> Fill( nIsoTracks1GeV,        eventWeight );
@@ -220,10 +222,10 @@ EL::StatusCode VtxHists::execute( const xAOD::Vertex* vtx, const xAOD::TrackPart
 
   }
 
-  return EL::StatusCode::SUCCESS;  
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode VtxHists::execute( const xAOD::Vertex* vtx, float eventWeight ) {
+StatusCode VtxHists::execute( const xAOD::Vertex* vtx, float eventWeight ) {
 
   //basic
   h_type       -> Fill( vtx->vertexType(),            eventWeight );
@@ -274,7 +276,7 @@ EL::StatusCode VtxHists::execute( const xAOD::Vertex* vtx, float eventWeight ) {
     }
 
     if(m_fillTrkPtDetails){
-      
+
       // Sort track pts
       //std::sort(numbers.begin(), numbers.end(), std::greater<int>());
       std::sort(pt_vec.begin(), pt_vec.end(), std::greater<float>());
@@ -283,7 +285,7 @@ EL::StatusCode VtxHists::execute( const xAOD::Vertex* vtx, float eventWeight ) {
       for(uint iLeadTrks = 0; iLeadTrks < m_nLeadTrackPts; ++iLeadTrks){
 	float this_pt = (pt_vec.size() > iLeadTrks) ? pt_vec.at(iLeadTrks) : 0;
 	h_trk_max_Pt.at(iLeadTrks)      -> Fill( this_pt,       eventWeight );
-	h_trk_max_Pt_l.at(iLeadTrks)    -> Fill( this_pt,       eventWeight );    
+	h_trk_max_Pt_l.at(iLeadTrks)    -> Fill( this_pt,       eventWeight );
       }
 
       h_nTrks1GeV       -> Fill( nTracks1GeV,        eventWeight );
@@ -308,7 +310,7 @@ EL::StatusCode VtxHists::execute( const xAOD::Vertex* vtx, float eventWeight ) {
 
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 

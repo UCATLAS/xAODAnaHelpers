@@ -25,7 +25,7 @@ TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName, std:
   m_name(name),
   m_configName(configName),
   m_inContainerName(containerName),
-  m_plots(0)
+  m_plots(nullptr)
 {
 }
 
@@ -54,7 +54,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 
   // declare class and add histograms to output
   m_plots = new TrackHists(m_name, m_detailStr);
-  m_plots -> initialize();
+  RETURN_CHECK("TrackHistsAlgo::histInitialize()", m_plots -> initialize(), "");
   m_plots -> record( wk() );
 
   return EL::StatusCode::SUCCESS;
@@ -121,7 +121,7 @@ EL::StatusCode TrackHistsAlgo :: execute ()
   RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
-  m_plots->execute( tracks, pvx, eventWeight );
+  RETURN_CHECK("TrackHistsAlgo::execute()", m_plots->execute( tracks, pvx, eventWeight ), "");
 
   return EL::StatusCode::SUCCESS;
 }

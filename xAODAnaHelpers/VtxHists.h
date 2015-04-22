@@ -13,19 +13,19 @@ class VtxHists : public HistogramManager
     VtxHists(std::string name, std::string detailStr );
     ~VtxHists();
 
-    EL::StatusCode initialize();
-    EL::StatusCode execute( const xAOD::VertexContainer* vtxs,  float eventWeight );
-    EL::StatusCode execute( const xAOD::Vertex *vtx, float eventWeight );
+    StatusCode initialize();
+    StatusCode execute( const xAOD::VertexContainer* vtxs,  float eventWeight );
+    StatusCode execute( const xAOD::Vertex *vtx, float eventWeight );
 
     // Use tracks passed in to calculate isolated track quantities
-    EL::StatusCode execute( const xAOD::VertexContainer* vtxs,  const xAOD::TrackParticleContainer* trks, float eventWeight );
-    EL::StatusCode execute( const xAOD::Vertex *vtx,            const xAOD::TrackParticleContainer* trks, float eventWeight );
+    StatusCode execute( const xAOD::VertexContainer* vtxs,  const xAOD::TrackParticleContainer* trks, float eventWeight );
+    StatusCode execute( const xAOD::Vertex *vtx,            const xAOD::TrackParticleContainer* trks, float eventWeight );
 
 
     using HistogramManager::book; // make other overloaded versions of book() to show up in subclass
     using HistogramManager::execute; // overload
 
-  protected: 
+  protected:
     // bools to control which histograms are filled
     bool m_fillTrkDetails;        //!
     bool m_fillIsoTrkDetails;        //!

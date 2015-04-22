@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include "xAODAnaHelpers/tools/ReturnCheck.h"
+
 TrackHists :: TrackHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
 {
@@ -9,7 +11,7 @@ TrackHists :: TrackHists (std::string name, std::string detailStr) :
 
 TrackHists :: ~TrackHists () {}
 
-EL::StatusCode TrackHists::initialize() {
+StatusCode TrackHists::initialize() {
 
   // These plots are always made
   m_trk_Pt        = book(m_name, "pt",          "trk p_{T} [GeV]",  100, 0, 10);
@@ -115,20 +117,20 @@ EL::StatusCode TrackHists::initialize() {
   }
 
   // if worker is passed to the class add histograms to the output
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const xAOD::Vertex *pvx, float eventWeight ) {
+StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const xAOD::Vertex *pvx, float eventWeight ) {
   xAOD::TrackParticleContainer::const_iterator trk_itr = trks->begin();
   xAOD::TrackParticleContainer::const_iterator trk_end = trks->end();
   for( ; trk_itr != trk_end; ++trk_itr ) {
-    this->execute( (*trk_itr), pvx, eventWeight );
+    RETURN_CHECK("TrackHists::execute()", this->execute( (*trk_itr), pvx, eventWeight ), "");
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx, float eventWeight ) {
+StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx, float eventWeight ) {
 
   //basic
   float        trkPt       = trk->pt()/1e3;
@@ -221,7 +223,7 @@ EL::StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::
     m_trk_phiManyBins -> Fill( trk->phi(), eventWeight );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
