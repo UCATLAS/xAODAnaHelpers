@@ -1,4 +1,8 @@
 2015-04-22 John Alison <John.Alison@cern.ch>
+	* Bugfixes: comment out TreeAlgo* out_tree in test_multiAlgo
+	*           castString -> getSTring in JetCalibrator.cxx
+	
+2015-04-22 John Alison <John.Alison@cern.ch>
 	* Merge BJetSelector into JetSelector
 	* Add BJetEfficiencyCorrector
 	* update test_multiAlgo to use new BJetEfficiencyCorrector

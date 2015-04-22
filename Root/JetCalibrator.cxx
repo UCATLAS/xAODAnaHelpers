@@ -222,7 +222,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     //                They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
     //                I reasonably suppose everyone will use SH...
     //
-     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
+    const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
     if (stringMeta.empty()){
       Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
     } else {
