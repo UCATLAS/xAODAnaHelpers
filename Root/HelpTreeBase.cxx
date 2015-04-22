@@ -256,11 +256,11 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
         m_muon_trkd0.push_back( trk->d0() );  
 	float d0_significance = fabs( trk->d0() )  / sqrt(trk->definingParametersCovMatrix()(0,0) );
         m_muon_trkd0sig.push_back( d0_significance ); 
-	float z0 =  fabs( trk->z0()  - ( primaryVertex->z() - trk->vz() ) ); // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
-								             // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
+	float z0 =   trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
+								       // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
 	float theta = trk->theta();
         m_muon_trkz0.push_back( z0 );	      
-        m_muon_trkz0sintheta.push_back( fabs( z0 * sin(theta) ) ); 
+        m_muon_trkz0sintheta.push_back(  z0 * sin(theta) ); 
         m_muon_trkphi0.push_back( trk->phi0() );       
         m_muon_trktheta.push_back( theta );	 
         m_muon_trkcharge.push_back( trk->charge() );	 
@@ -385,11 +385,11 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
         m_el_trkd0.push_back( trk->d0() );  
 	float d0_significance = fabs( trk->d0() )  / sqrt(trk->definingParametersCovMatrix()(0,0) );
         m_el_trkd0sig.push_back( d0_significance ); 
-	float z0 =  fabs( trk->z0()  - ( primaryVertex->z() - trk->vz() ) ); // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
-								             // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
+	float z0 =  trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
+								      // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
 	float theta = trk->theta();
         m_el_trkz0.push_back( z0 );         
-        m_el_trkz0sintheta.push_back( fabs( z0 * sin(theta) ) ); 
+        m_el_trkz0sintheta.push_back( z0 * sin(theta) ); 
         m_el_trkphi0.push_back( trk->phi0() );       
         m_el_trktheta.push_back( theta );      
         m_el_trkcharge.push_back( trk->charge() );     
