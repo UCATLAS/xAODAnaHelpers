@@ -80,4 +80,6 @@
 2015-04-22 Gabriel Facini <Gabriel.Facini@cern.ch>
   * JetSelector - kill event if any of the N leading jets are not clean
 
+2015-04-22 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * HelpTreeBase - stop compilation warnings ( some remain for lepton track parameters )
 

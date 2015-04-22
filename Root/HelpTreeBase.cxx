@@ -281,13 +281,13 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
       float pixdEdX(-1.0); 
       if ( trk ) {
-	trk->summaryValue( nPixHits,     xAOD::numberOfPixelHits );
-	trk->summaryValue( nPixHoles,    xAOD::numberOfPixelHoles );
+        trk->summaryValue( nPixHits,     xAOD::numberOfPixelHits );
+        trk->summaryValue( nPixHoles,    xAOD::numberOfPixelHoles );
       	trk->summaryValue( nSCTHits,     xAOD::numberOfSCTHits );
       	trk->summaryValue( nSCTHoles,    xAOD::numberOfSCTHoles );
       	trk->summaryValue( nTRTHits,     xAOD::numberOfTRTHits );
       	trk->summaryValue( nTRTHoles,    xAOD::numberOfTRTHoles );	
-	trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
+        trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
         //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits ); 
         //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);	      
       } 
@@ -410,13 +410,13 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
       float pixdEdX(-1.0); 
       if ( trk ) {
-	trk->summaryValue( nPixHits,  xAOD::numberOfPixelHits );
-	trk->summaryValue( nPixHoles, xAOD::numberOfPixelHoles );
-      	trk->summaryValue( nSCTHits,  xAOD::numberOfSCTHits );
-      	trk->summaryValue( nSCTHoles, xAOD::numberOfSCTHoles );
-      	trk->summaryValue( nTRTHits,  xAOD::numberOfTRTHits );
-      	trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );	
-      	trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
+        trk->summaryValue( nPixHits,  xAOD::numberOfPixelHits );
+        trk->summaryValue( nPixHoles, xAOD::numberOfPixelHoles );
+        trk->summaryValue( nSCTHits,  xAOD::numberOfSCTHits );
+        trk->summaryValue( nSCTHoles, xAOD::numberOfSCTHoles );
+        trk->summaryValue( nTRTHits,  xAOD::numberOfTRTHits );
+        trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );	
+        trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
         //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits ); 
         //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);	      
       } 
@@ -431,9 +431,9 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       //m_el_trknInnermostPixLayHits.push_back( nInnermostPixLayHits ); 
       //m_el_trkPixdEdX.push_back( pixdEdX );	      
     }
-    
+
     this->FillElectronsUser(el_itr);
-    
+
     m_nel++;
   }
 }
@@ -822,7 +822,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         m_jet_truth_pdgId.push_back(-999);
       } else {
         int iParent = 0;
-        for(int i=1; i < truthPartons.size(); ++i){
+        for(unsigned int i=1; i < truthPartons.size(); ++i){
           if( (truthPartons.at(i)->pt() > 0.001) && (truthPartons.at(i)->e() > truthPartons.at(iParent)->e()) )
             iParent = i;
         }
@@ -933,7 +933,7 @@ void HelpTreeBase::AddFatJets(std::string detailStr) {
   m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 }
 /* TODO: fatJets */
-void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) { }
+void HelpTreeBase::FillFatJets( const xAOD::JetContainer* /*fatJets*/ ) { }
 
 void HelpTreeBase::ClearEvent() {
   m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = -999;

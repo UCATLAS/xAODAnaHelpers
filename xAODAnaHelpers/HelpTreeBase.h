@@ -63,21 +63,33 @@ public:
 
   bool writeTo( TFile *file );
 
-  virtual void AddEventUser(const std::string detailStr = "")      { return; };
-  virtual void AddMuonsUser(const std::string detailStr = "")      { return; };
-  virtual void AddElectronsUser(const std::string detailStr = "")  { return; };
-  virtual void AddJetsUser(const std::string detailStr = "")       { return; };
+  virtual void AddEventUser(const std::string detailStr = "")      { 
+    Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
+    return; 
+  };
+  virtual void AddMuonsUser(const std::string detailStr = "")      {
+    Info("AddMuonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
+    return; 
+  };
+  virtual void AddElectronsUser(const std::string detailStr = "")  {
+    Info("AddElectronsUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
+    return; 
+  };
+  virtual void AddJetsUser(const std::string detailStr = "")       {
+    Info("AddJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
+    return; 
+  };
 
-  virtual void ClearEventUser()                                    { return; };
-  virtual void ClearMuonsUser() 				   { return; };
-  virtual void ClearElectronsUser() 				   { return; };
-  virtual void ClearJetsUser() 					   { return; };
+  virtual void ClearEventUser()     { return; };
+  virtual void ClearMuonsUser() 	  { return; };
+  virtual void ClearElectronsUser() { return; };
+  virtual void ClearJetsUser() 		  { return; };
 
-  virtual void FillEventUser( const xAOD::EventInfo* eventInfo )   { return; };
-  virtual void FillMuonsUser( const xAOD::Muon* muon )             { return; };
-  virtual void FillElectronsUser( const xAOD::Electron* electron ) { return; };
-  virtual void FillJetsUser( const xAOD::Jet* jet )                { return; };
-  virtual void FillFatJetsUser( const xAOD::Jet* fatJet )          { return; };
+  virtual void FillEventUser( const xAOD::EventInfo* /*eventInfo*/ )   { return; };
+  virtual void FillMuonsUser( const xAOD::Muon* /*muon*/ )             { return; };
+  virtual void FillElectronsUser( const xAOD::Electron* /*electron*/ ) { return; };
+  virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                { return; };
+  virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )          { return; };
 
 protected:
 
