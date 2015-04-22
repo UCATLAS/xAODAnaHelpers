@@ -53,6 +53,7 @@ private:
   std::string m_outContainerName;  //! output container name
   std::string m_inputAlgo;         //! input type - from xAOD or from xAODAnaHelper Algo output
   std::string m_outputAlgo;        //! output type - this is how the vector<string> w/ syst names will be saved in TStore
+  std::string m_decor;            //! The decoration key written to passing objects
   bool m_decorateSelectedObjects; //! decorate selected objects? defaul passSel
   bool m_createSelectedContainer; //! fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess;               //! look at n objects
@@ -76,6 +77,11 @@ private:
   float m_pt_max_JVF;             //! max pT (JVF is a pileup cut)
   float m_eta_max_JVF;            //! detector eta cut
   float m_JVFCut;                 //! cut value
+  float m_btagCut;                //! btagging cuts, configured by the bools below
+  bool  m_btag_veryloose;         //!
+  bool  m_btag_loose;             //!
+  bool  m_btag_medium;            //!
+  bool  m_btag_tight;             //!
 
   std::string              m_passAuxDecorKeys;  //!
   std::string              m_failAuxDecorKeys;  //!

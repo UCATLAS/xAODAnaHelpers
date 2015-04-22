@@ -319,13 +319,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
           Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f",              SF,  mu_itr->auxdataConst< float >(SFdecor.c_str()));
 	}
 
-	// if we run in audit trail mode, we get some info
-        // Info( "execute", "\t Muon Audit info: MuonEfficiencyCorrections = %d, MuonEfficiencyCorrectionsVersion = %s, AppliedCorrections = %s",
-        //											    mu_itr->auxdataConst< bool >( "MuonEfficiencyCorrections" ),
-        //											    mu_itr->auxdataConst< std::string >( "MuonEfficiencyCorrectionsVersion" ).c_str(),
-        //											    mu_itr->auxdataConst< std::string >( "AppliedCorrections" ).c_str());
-
-    } // close muon loop
+    } // close jet loop
 
   } // close loop on systematics
 

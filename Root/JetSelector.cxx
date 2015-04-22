@@ -124,6 +124,12 @@ EL::StatusCode  JetSelector :: configure ()
   m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
   m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
 
+  // Btag quality
+  m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
+  m_btag_loose              = config->GetValue("BTagLoose",       false);
+  m_btag_medium             = config->GetValue("BTagMedium",      false);
+  m_btag_tight              = config->GetValue("BTagTight",       false);
+  
   // parse and split by comma
   std::string token;
 
@@ -148,6 +154,28 @@ EL::StatusCode  JetSelector :: configure ()
 
   config->Print();
   Info("configure()", "JetSelector Interface succesfully configured! ");
+
+  //
+  // Set the Btagging cut
+  //
+  m_btagCut = -1;
+  m_decor   = "passSel";
+  if( m_isEMjet ) {
+    if( m_btag_veryloose ) { m_btagCut = 0.1644; m_decor += "BTagVeryLoose";  }
+    if( m_btag_loose     ) { m_btagCut = 0.3900; m_decor += "BTagLoose";      }
+    if( m_btag_medium    ) { m_btagCut = 0.8119; m_decor += "BTagMedium";     }
+    if( m_btag_tight     ) { m_btagCut = 0.9867; m_decor += "BTagTight";      }
+
+  } else if ( m_isLCjet ) {				
+    if( m_btag_veryloose ) { m_btagCut = 0.1340; m_decor += "BTagVeryLoose";  }
+    if( m_btag_loose     ) { m_btagCut = 0.3511; m_decor += "BTagLoose";      }
+    if( m_btag_medium    ) { m_btagCut = 0.7892; m_decor += "BTagMedium";     }
+    if( m_btag_tight     ) { m_btagCut = 0.9827; m_decor += "BTagTight";      }
+
+  }
+  if(m_decorateSelectedObjects) {
+    Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
+  }
 
   delete config;
 
@@ -360,7 +388,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // if only looking at a subset of jets make sure all are decorated
     if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if(m_decorateSelectedObjects) {
-        jet_itr->auxdecor< char >( "passSel" ) = -1;
+        jet_itr->auxdecor< char >( m_decor ) = -1;
       } else {
         break;
       }
@@ -370,7 +398,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     nObj++;
     int passSel = this->PassCuts( jet_itr );
     if(m_decorateSelectedObjects) {
-      jet_itr->auxdecor< char >( "passSel" ) = passSel;
+      jet_itr->auxdecor< char >( m_decor ) = passSel;
     }
 
     // event level cut if any of the N leading jets are not clean
@@ -533,6 +561,15 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       }
     }
   } // m_doJVF
+
+  //
+  //  BTagging
+  //
+  if( m_btagCut >=0) {
+    if( jet->btagging() ){
+      if(jet->btagging()->MV1_discriminant() < m_btagCut) { return 0; }
+    }
+  }
 
 
   //

@@ -2,7 +2,6 @@
 
 /* Event and Jet Selectors */
 #include <xAODAnaHelpers/BasicEventSelection.h>
-#include <xAODAnaHelpers/BJetSelector.h>
 #include <xAODAnaHelpers/ElectronSelector.h>
 #include <xAODAnaHelpers/JetSelector.h>
 #include <xAODAnaHelpers/TrackSelector.h>
@@ -17,6 +16,7 @@
 /* Scale Factors */
 #include <xAODAnaHelpers/ElectronEfficiencyCorrector.h>
 #include <xAODAnaHelpers/MuonEfficiencyCorrector.h> 
+#include <xAODAnaHelpers/BJetEfficiencyCorrector.h> 
 
 
 /* Plotting Tools */
@@ -40,7 +40,6 @@
 #pragma link C++ nestedclass;
 
 #pragma link C++ class BasicEventSelection+;
-#pragma link C++ class BJetSelector+;
 #pragma link C++ class ElectronSelector+;
 #pragma link C++ class JetSelector+;
 #pragma link C++ class TrackSelector+;
@@ -53,6 +52,7 @@
 
 #pragma link C++ class ElectronEfficiencyCorrector+;
 #pragma link C++ class MuonEfficiencyCorrector+;
+#pragma link C++ class BJetEfficiencyCorrector+;
 
 #pragma link C++ class JetHistsAlgo+;
 #pragma link C++ class TrackHistsAlgo+;

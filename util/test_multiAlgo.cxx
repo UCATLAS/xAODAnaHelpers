@@ -9,7 +9,7 @@
 #include "xAODAnaHelpers/BasicEventSelection.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include "xAODAnaHelpers/JetSelector.h"
-#include "xAODAnaHelpers/BJetSelector.h"
+#include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 #include "xAODAnaHelpers/JetHistsAlgo.h"
 #include "xAODAnaHelpers/MuonCalibrator.h"
 #include "xAODAnaHelpers/MuonEfficiencyCorrector.h"
@@ -76,6 +76,7 @@ int main( int argc, char* argv[] ) {
   // Create an EventLoop job:
   EL::Job job;
   job.sampleHandler( sh );
+  job.options()->setDouble(EL::Job::optRemoveSubmitDir, 1);
 
   std::string localDataDir = "$ROOTCOREBIN/data/xAODAnaHelpers/";
 
@@ -98,9 +99,11 @@ int main( int argc, char* argv[] ) {
   ElectronSelector* electronSelect_signal       = new ElectronSelector(     "electronSelect_signal",    localDataDir+"electronSelect_signal.config");
 
   JetSelector* jetSelect_signal                 = new JetSelector(          "jetSelect_signal",         localDataDir+"jetSelect_signal.config");
-  BJetSelector* bjetSelect_signal               = new BJetSelector(         "bjetSelect_signal",        localDataDir+"bjetSelect_signal.config");
+  JetSelector* bjetSelect_signal                = new JetSelector(          "bjetSelect_signal",        localDataDir+"bjetSelect_signal.config");
+  BJetEfficiencyCorrector* bjetEffCorr_btag     = new BJetEfficiencyCorrector("bjetEffCor_btag",        localDataDir+"bjetEffCorr.config");
 
   JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo(         "jetHistsAlgo_signal",      localDataDir+"jetHistsAlgo_signal.config");
+  JetHistsAlgo* jetHistsAlgo_btag               = new JetHistsAlgo(         "jetHistsAlgo_btag",        localDataDir+"jetHistsAlgo_btagged.config");
 
   JetSelector* jetSelect_truth                  = new JetSelector(          "jetSelect_truth",          localDataDir+"jetSelect_truth.config");
   JetHistsAlgo* jetHistsAlgo_truth              = new JetHistsAlgo(         "jetHistsAlgo_truth",       localDataDir+"jetHistsAlgo_truth.config");
@@ -121,7 +124,9 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( electronSelect_signal );
   job.algsAdd( jetSelect_signal );
   job.algsAdd( bjetSelect_signal ); 
+  job.algsAdd( bjetEffCorr_btag ); 
   job.algsAdd( jetHistsAlgo_signal );
+  job.algsAdd( jetHistsAlgo_btag );
   job.algsAdd( jetSelect_truth );
   job.algsAdd( jetHistsAlgo_truth );
   job.algsAdd( overlapRemoval );
