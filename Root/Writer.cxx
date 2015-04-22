@@ -52,25 +52,31 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "Writer" ).ignore(); // call before opening first file
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "Writer::setupJob()", m_configName );
+  if(!m_configName.empty()){
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "Writer::setupJob()", m_configName );
 
-  TEnv* config = new TEnv(m_configName.c_str());
-  if( !config ) {
-    Error("Writer::setupJob()", "Failed to read config file!");
-    Error("Writer::setupJob()", "config name : %s",m_configName.c_str());
-    return EL::StatusCode::FAILURE;
+    TEnv* config = new TEnv(m_configName.c_str());
+    if( !config ) {
+      Error("Writer::setupJob()", "Failed to read config file!");
+      Error("Writer::setupJob()", "config name : %s",m_configName.c_str());
+      return EL::StatusCode::FAILURE;
+    }
+
+    m_outputLabel               = config->GetValue("OutputLabel"            , "");
+
+    m_jetContainerNamesStr      = config->GetValue("JetContainerNames"      , "");
+    m_electronContainerNamesStr = config->GetValue("ElectronContainerNames" , "");
+    m_muonContainerNamesStr     = config->GetValue("MuonContainerNames"     , "");
+    m_debug                   = config->GetValue("Debug",                 false);
+
+    delete config;
   }
 
-  m_outputLabel               = config->GetValue("OutputLabel"            , "");
 
-  m_jetContainerNamesStr      = config->GetValue("JetContainerNames"      , "");
-  m_electronContainerNamesStr = config->GetValue("ElectronContainerNames" , "");
-  m_muonContainerNamesStr     = config->GetValue("MuonContainerNames"     , "");
   m_jetContainerNames       = SplitString( m_jetContainerNamesStr,      ',' );
   m_electronContainerNames  = SplitString( m_electronContainerNamesStr, ',' );
   m_muonContainerNames      = SplitString( m_muonContainerNamesStr,     ',' );
-  m_debug                   = config->GetValue("Debug",                 false);
 
   if ( m_outputLabel.Length() == 0 ) {
     Error("Writer::setupJob()", "No OutputLabel specified!");
@@ -80,8 +86,6 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   // tell EventLoop about our output xAOD:
   EL::OutputStream out(m_outputLabel.Data());
   job.outputAdd (out);
-
-  delete config;
 
   return EL::StatusCode::SUCCESS;
 }

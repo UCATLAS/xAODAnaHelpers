@@ -66,38 +66,40 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string name, std::strin
 
 EL::StatusCode  MuonEfficiencyCorrector :: configure ()
 {
-  Info("configure()", "Configuing MuonEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
+  if(!m_configName.empty()){
+    Info("configure()", "Configuing MuonEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "MuonEfficiencyCorrector::configure()", m_configName);
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "MuonEfficiencyCorrector::configure()", m_configName);
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // read debug flag from .config file
-  m_debug                   = config->GetValue("Debug" , false );
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
-  m_outContainerName        = config->GetValue("OutputContainer", "");
+    // read debug flag from .config file
+    m_debug                   = config->GetValue("Debug" , false );
+    // input container to be read from TEvent or TStore
+    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_outContainerName        = config->GetValue("OutputContainer", "");
+
+    // Systematics stuff
+    m_runAllSyst              = config->GetValue("RunAllSyst" , false ); // default: false
+    m_systName		    = config->GetValue("SystName" , "" );      // default: no syst
+    m_systSigma 		    = config->GetValue("SystSigma" , 0. );
+    // file(s) containing corrections
+    m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
+    //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
+
+    config->Print();
+    Info("configure()", "MuonEfficiencyCorrector Interface succesfully configured! ");
+
+    delete config;
+  }
+
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-
-  // Systematics stuff
-  m_runAllSyst              = config->GetValue("RunAllSyst" , false ); // default: false
-  m_systName		    = config->GetValue("SystName" , "" );      // default: no syst
-  m_systSigma 		    = config->GetValue("SystSigma" , 0. );
-  // file(s) containing corrections
-  m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
-  //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
-
 
   if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-
-  config->Print();
-  Info("configure()", "MuonEfficiencyCorrector Interface succesfully configured! ");
-
-  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -372,10 +374,10 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_MuonEffSFTool){ 
+  if(m_MuonEffSFTool){
     delete m_MuonEffSFTool; m_MuonEffSFTool = nullptr;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

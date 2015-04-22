@@ -7,6 +7,9 @@
 	RETURN_CHECK macro or something similar
 	* Made all configurables of the algorithms public and cleaned up some of
 	the private variables
+	* Made it optional to pass in a configuration file, so one can start
+	configuring from the class variables instead
+	* Fixed a bug in checkoutASGtags.py
 
 2015-04-22 John Alison <John.Alison@cern.ch>
 	* Bugfixes: comment out TreeAlgo* out_tree in test_multiAlgo

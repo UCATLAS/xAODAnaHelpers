@@ -51,36 +51,40 @@ MuonCalibrator :: MuonCalibrator (std::string name, std::string configName) :
 
 EL::StatusCode  MuonCalibrator :: configure ()
 {
-  Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
+  if(!m_configName.empty()){
+    Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "MuonCalibrator::configure()", m_configName);
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "MuonCalibrator::configure()", m_configName);
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // read debug flag from .config file
-  m_debug         = config->GetValue("Debug" , false );
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
+    // read debug flag from .config file
+    m_debug         = config->GetValue("Debug" , false );
+    // input container to be read from TEvent or TStore
+    m_inContainerName         = config->GetValue("InputContainer",  "");
 
-  m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_sort                    = config->GetValue("Sort",          false);
+
+    // add more and add to Muon selector
+
+    config->Print();
+    Info("configure()", "MuonCalibrator Interface succesfully configured! ");
+
+    delete config;
+  }
+
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
   // shallow copies are made with this output container name
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
-  m_sort                    = config->GetValue("Sort",          false);
-
   if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-  // add more and add to Muon selector
 
-  config->Print();
-  Info("configure()", "MuonCalibrator Interface succesfully configured! ");
-
-  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -233,7 +237,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, m_outSCAuxContainerName ), "Failed to store aux container");
   // add ConstDataVector to TStore
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, m_outContainerName ), "Failed to store const data container");
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -266,10 +270,10 @@ EL::StatusCode MuonCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_muonCalibrationAndSmearingTool){ 
+  if(m_muonCalibrationAndSmearingTool){
     delete m_muonCalibrationAndSmearingTool; m_muonCalibrationAndSmearingTool = nullptr;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

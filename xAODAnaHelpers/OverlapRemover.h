@@ -38,29 +38,24 @@ public:
   /* Electrons */
   std::string  m_inContainerName_Electrons;
   std::string  m_outContainerName_Electrons;        // output container name
-  std::string  m_outAuxContainerName_Electrons;     // output auxiliary container name
   std::string  m_inputAlgoElectrons;                // name of vector<string> of syst retrieved from TStore
   std::string  m_outputAlgoElectrons;               // name of vector<string> of syst pushed in TStore
   /* Muons */
   std::string m_inContainerName_Muons;
   std::string  m_outContainerName_Muons;        // output container name
-  std::string  m_outAuxContainerName_Muons;     // output auxiliary container name
   std::string  m_inputAlgoMuons;                // name of vector<string> of syst retrieved from TStore
   std::string  m_outputAlgoMuons;               // name of vector<string> of syst pushed in TStore
   /* Jets */
   std::string m_inContainerName_Jets;
   std::string  m_outContainerName_Jets;        // output container name
-  std::string  m_outAuxContainerName_Jets;     // output auxiliary container name
   std::string  m_inputAlgoJets;                // name of vector<string> of syst retrieved from TStore
   std::string  m_outputAlgoJets;               // name of vector<string> of syst pushed in TStore
   /* Photons */
   std::string m_inContainerName_Photons;
   std::string  m_outContainerName_Photons;        // output container name
-  std::string  m_outAuxContainerName_Photons;     // output auxiliary container name
   /* Taus */
   std::string m_inContainerName_Taus;
   std::string  m_outContainerName_Taus;        // output container name
-  std::string  m_outAuxContainerName_Taus;     // output auxiliary container name
 
 
 private:
@@ -74,6 +69,18 @@ private:
 
   bool m_usePhotons;
   bool m_useTaus;
+
+  /* Electrons */
+  std::string  m_outAuxContainerName_Electrons;     // output auxiliary container name
+  /* Muons */
+  std::string  m_outAuxContainerName_Muons;     // output auxiliary container name
+  /* Jets */
+  std::string  m_outAuxContainerName_Jets;     // output auxiliary container name
+  /* Photons */
+  std::string  m_outAuxContainerName_Photons;     // output auxiliary container name
+  /* Taus */
+  std::string  m_outAuxContainerName_Taus;     // output auxiliary container name
+
 
   // tools
   OverlapRemovalTool *m_overlapRemovalTool; //!

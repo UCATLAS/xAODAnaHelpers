@@ -70,41 +70,45 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string name, st
 
 EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
 {
-  Info("configure()", "Configuing ElectronEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "ElectronEfficiencyCorrector::configure()", m_configName);
+  if(!m_configName.empty()){
+    Info("configure()", "Configuing ElectronEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "ElectronEfficiencyCorrector::configure()", m_configName);
 
-  // read debug flag from .config file
-  m_debug                   = config->GetValue("Debug" , false );
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
-  m_outContainerName        = config->GetValue("OutputContainer", "");
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // name of algo input container comes from - only if running on systematics
-  m_inputAlgo               = config->GetValue("InputAlgo",  "");
-  m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_CalibCorr_Algo");
+    // read debug flag from .config file
+    m_debug                   = config->GetValue("Debug" , false );
+    // input container to be read from TEvent or TStore
+    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_outContainerName        = config->GetValue("OutputContainer", "");
 
-  // Systematics stuff
-  m_systName		    = config->GetValue("SystName" , "" );      // default: no syst
-  m_systVal 		    = config->GetValue("SystVal" , 0. );
-  // file(s) containing corrections
-  m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
-  //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
+    // name of algo input container comes from - only if running on systematics
+    m_inputAlgo               = config->GetValue("InputAlgo",  "");
+    m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_CalibCorr_Algo");
 
+    // Systematics stuff
+    m_systName		    = config->GetValue("SystName" , "" );      // default: no syst
+    m_systVal 		    = config->GetValue("SystVal" , 0. );
+    // file(s) containing corrections
+    m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
+    //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
+
+
+    config->Print();
+    Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! ");
+
+    delete config;
+  }
 
   if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
-  config->Print();
-  Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! ");
-
-  delete config;
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   return EL::StatusCode::SUCCESS;
 }
@@ -335,10 +339,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_asgElectronEfficiencyCorrectionTool){ 
+  if(m_asgElectronEfficiencyCorrectionTool){
     delete m_asgElectronEfficiencyCorrectionTool; m_asgElectronEfficiencyCorrectionTool = nullptr;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

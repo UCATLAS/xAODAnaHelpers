@@ -69,30 +69,34 @@ EL::StatusCode JetHistsAlgo::AddHists( std::string name ) {
 
 EL::StatusCode JetHistsAlgo :: configure ()
 {
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG("JetHistsAlgo::configure()", m_configName);
+  if(!m_configName.empty()){
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG("JetHistsAlgo::configure()", m_configName);
 
-  // the file exists, use TEnv to read it off
-  TEnv* config = new TEnv(m_configName.c_str());
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
-  // which plots will be turned on
-  m_detailStr               = config->GetValue("DetailStr",       "");
-  // name of algo input container comes from - only if
-  m_inputAlgo               = config->GetValue("InputAlgo",       "");
+    // the file exists, use TEnv to read it off
+    TEnv* config = new TEnv(m_configName.c_str());
+    // input container to be read from TEvent or TStore
+    m_inContainerName         = config->GetValue("InputContainer",  "");
+    // which plots will be turned on
+    m_detailStr               = config->GetValue("DetailStr",       "");
+    // name of algo input container comes from - only if
+    m_inputAlgo               = config->GetValue("InputAlgo",       "");
 
-  m_debug                   = config->GetValue("Debug" ,           false );
+    m_debug                   = config->GetValue("Debug" ,           false );
+
+    Info("configure()", "Loaded in configuration values");
+
+    // everything seems preliminarily ok, let's print config and say we were successful
+    config->Print();
+    delete config;
+  }
 
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
-  Info("configure()", "Loaded in configuration values");
 
-  // everything seems preliminarily ok, let's print config and say we were successful
-  config->Print();
-  delete config;
   return EL::StatusCode::SUCCESS;
 }
 

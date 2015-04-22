@@ -23,10 +23,6 @@ public:
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
-  std::string m_outAuxContainerName;
-  std::string m_outSCContainerName;
-  std::string m_outSCAuxContainerName;
-
   // sort after calibration
   bool    m_sort;
 
@@ -36,6 +32,10 @@ private:
   xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
+
+  std::string m_outAuxContainerName;
+  std::string m_outSCContainerName;
+  std::string m_outSCAuxContainerName;
 
   // tools
   CP::MuonCalibrationAndSmearingTool *m_muonCalibrationAndSmearingTool; //!

@@ -70,38 +70,43 @@ ElectronCalibrator :: ElectronCalibrator (std::string name, std::string configNa
 
 EL::StatusCode  ElectronCalibrator :: configure ()
 {
-  Info("configure()", "Configuing ElectronCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
+  if(!m_configName.empty()){
+    Info("configure()", "Configuing ElectronCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "ElectronCalibrator::configure()", m_configName);
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "ElectronCalibrator::configure()", m_configName);
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // read debug flag from .config file
-  m_debug                   = config->GetValue("Debug" , false );
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
-  m_outContainerName        = config->GetValue("OutputContainer", "");
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-  // shallow copies are made with this output container name
-  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+    // read debug flag from .config file
+    m_debug                   = config->GetValue("Debug" , false );
+    // input container to be read from TEvent or TStore
+    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_outContainerName        = config->GetValue("OutputContainer", "");
 
-  // name of algo input container comes from - only if running on systematics
-  m_inputAlgo               = config->GetValue("InputAlgo",  "");
-  m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_Calib_Algo");
+    // name of algo input container comes from - only if running on systematics
+    m_inputAlgo               = config->GetValue("InputAlgo",  "");
+    m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_Calib_Algo");
 
-  m_sort                    = config->GetValue("Sort",          false);
+    m_sort                    = config->GetValue("Sort",          false);
+
+    config->Print();
+    Info("configure()", "ElectronCalibrator Interface succesfully configured! ");
+
+    delete config; config = nullptr;
+  }
 
   if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
-  config->Print();
-  Info("configure()", "ElectronCalibrator Interface succesfully configured! ");
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  // shallow copies are made with this output container name
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
-  delete config; config = nullptr;
+
 
   return EL::StatusCode::SUCCESS;
 }
@@ -234,7 +239,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
       Info("initialize()"," available systematic: %s", (syst_it.name()).c_str());
     }
   }
-  
+
   for ( const auto& syst_it : m_systList ) {
     Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
   }
@@ -251,7 +256,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // events, e.g. read input variables, apply cuts, and fill
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
-  
+
   if ( m_debug ) { Info("execute()", "Applying Electron Calibration ... "); }
 
   m_numEvent++;
@@ -384,7 +389,7 @@ EL::StatusCode ElectronCalibrator :: finalize ()
   Info("finalize()", "Deleting tool instances...");
 
   if ( m_EgammaCalibrationAndSmearingTool ) { delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr; }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

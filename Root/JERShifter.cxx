@@ -73,22 +73,25 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "JERShifter" ).ignore(); // call before opening first file
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "JERShifter::setupJob()", m_configName);
+  if(!m_configName.empty()){
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "JERShifter::setupJob()", m_configName);
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // input container to be read from TEvent or TStore
-  m_inContainerName = config->GetValue("InputContainer",  "");
+    // input container to be read from TEvent or TStore
+    m_inContainerName = config->GetValue("InputContainer",  "");
 
-  // output container to be put into TStore
-  m_outContainerName  	= config->GetValue("OutputContainer", "");
+    // output container to be put into TStore
+    m_outContainerName  	= config->GetValue("OutputContainer", "");
+
+    m_jetAlgo             = config->GetValue("JetAlgorithm",    "");
+    m_debug                   = config->GetValue("Debug" ,           false );
+
+    delete config;
+  }
+
   m_outAuxContainerName = m_outContainerName + "Aux."; // the period is very important!
-
-  m_jetAlgo             = config->GetValue("JetAlgorithm",    "");
-  m_debug                   = config->GetValue("Debug" ,           false );
-
-  delete config;
 
   return EL::StatusCode::SUCCESS;
 }

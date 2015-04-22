@@ -88,22 +88,31 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
 EL::StatusCode TreeAlgo :: configure ()
 {
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG("TreeAlgo::configure()", m_configName);
+  if(!m_configName.empty()){
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG("TreeAlgo::configure()", m_configName);
 
-  // the file exists, use TEnv to read it off
-  TEnv* config = new TEnv(m_configName.c_str());
-  m_evtDetailStr            = config->GetValue("EventDetailStr",       "");
-  m_muDetailStr             = config->GetValue("MuonDetailStr",        "");
-  m_elDetailStr             = config->GetValue("ElectronDetailStr",    "");
-  m_jetDetailStr            = config->GetValue("JetDetailStr",         "");
-  m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      "");
-  m_debug                   = config->GetValue("Debug" ,           false );
+    // the file exists, use TEnv to read it off
+    TEnv* config = new TEnv(m_configName.c_str());
+    m_evtDetailStr            = config->GetValue("EventDetailStr",       "");
+    m_muDetailStr             = config->GetValue("MuonDetailStr",        "");
+    m_elDetailStr             = config->GetValue("ElectronDetailStr",    "");
+    m_jetDetailStr            = config->GetValue("JetDetailStr",         "");
+    m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      "");
+    m_debug                   = config->GetValue("Debug" ,           false );
 
-  m_muContainerName         = config->GetValue("MuonContainerName",       "");
-  m_elContainerName         = config->GetValue("ElectronContainerName",   "");
-  m_jetContainerName        = config->GetValue("JetContainerName",        "");
-  m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
+    m_muContainerName         = config->GetValue("MuonContainerName",       "");
+    m_elContainerName         = config->GetValue("ElectronContainerName",   "");
+    m_jetContainerName        = config->GetValue("JetContainerName",        "");
+    m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
+
+    Info("configure()", "Loaded in configuration values");
+
+    // everything seems preliminarily ok, let's print config and say we were successful
+    config->Print();
+
+    delete config; config = nullptr;
+  }
 
   m_helpTree->AddEvent( m_evtDetailStr );
 
@@ -112,13 +121,6 @@ EL::StatusCode TreeAlgo :: configure ()
   if( !m_jetContainerName.empty() )    {   m_helpTree->AddJets     (m_jetDetailStr);     }
   if( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets  (m_fatJetDetailStr);  }
 
-  Info("configure()", "Loaded in configuration values");
-
-  // everything seems preliminarily ok, let's print config and say we were successful
-  config->Print();
-  
-  delete config; config = nullptr;
-  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -173,11 +175,11 @@ EL::StatusCode TreeAlgo :: execute ()
 EL::StatusCode TreeAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode TreeAlgo :: finalize () {
-  
+
   Info("finalize()", "Deleting tree instances...");
-  
+
   if ( m_helpTree ) { delete  m_helpTree;  m_helpTree = nullptr; }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

@@ -111,7 +111,10 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
   if ( m_eventInfoSwitch->m_pileup ) {
     if ( event ) {
       const xAOD::VertexContainer* vertices(nullptr);
-      HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 );
+      if(!HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 ).isSuccess()){
+        Error("HelpTreeBase::FillEvent()", "Could not retrieve primary vertex container.");
+        return;
+      }
       m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
       //Info("FillEvent()","Number of primary vertices w/ at least 2 tracks: %i", m_npv);
     } else {
@@ -234,63 +237,63 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
   m_nmuon = 0;
   for ( auto muon_itr : *(muons) ) {
-    
+
     if ( m_muInfoSwitch->m_kinematic ) {
       m_muon_pt.push_back ( muon_itr->pt() / m_units  );
       m_muon_eta.push_back( muon_itr->eta() );
       m_muon_phi.push_back( muon_itr->phi() );
       m_muon_m.push_back  ( muon_itr->m() / m_units  );
     }
-    
-    const xAOD::TrackParticle* trk = muon_itr->primaryTrackParticle(); 
-    
+
+    const xAOD::TrackParticle* trk = muon_itr->primaryTrackParticle();
+
     if ( m_muInfoSwitch->m_trackparams ) {
-      if ( trk ) {  
+      if ( trk ) {
         //
-	// NB.: 
+	// NB.:
 	// All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
 	// The refernce  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
 	// Remember that the beamspot size ( of O(10 micrometers) in the transverse plane) is << average vertex transverse position resolution ( O(60-80 micrometers) )
-	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz() 
+	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
 	//
-        m_muon_trkd0.push_back( trk->d0() );  
+        m_muon_trkd0.push_back( trk->d0() );
 	float d0_significance = fabs( trk->d0() )  / sqrt(trk->definingParametersCovMatrix()(0,0) );
-        m_muon_trkd0sig.push_back( d0_significance ); 
+        m_muon_trkd0sig.push_back( d0_significance );
 	float z0 =   trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
 								       // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
 	float theta = trk->theta();
-        m_muon_trkz0.push_back( z0 );	      
-        m_muon_trkz0sintheta.push_back(  z0 * sin(theta) ); 
-        m_muon_trkphi0.push_back( trk->phi0() );       
-        m_muon_trktheta.push_back( theta );	 
-        m_muon_trkcharge.push_back( trk->charge() );	 
-        m_muon_trkqOverP.push_back( trk->qOverP() );	 
+        m_muon_trkz0.push_back( z0 );
+        m_muon_trkz0sintheta.push_back(  z0 * sin(theta) );
+        m_muon_trkphi0.push_back( trk->phi0() );
+        m_muon_trktheta.push_back( theta );
+        m_muon_trkcharge.push_back( trk->charge() );
+        m_muon_trkqOverP.push_back( trk->qOverP() );
       } else {
-        m_muon_trkd0.push_back( -999.0 );	
-        m_muon_trkd0sig.push_back( -1.0 );	
-        m_muon_trkz0.push_back( -999.0 );	  
-        m_muon_trkz0sintheta.push_back( -999.0 ); 
-        m_muon_trkphi0.push_back( -999.0 );	  
-        m_muon_trktheta.push_back( -999.0 );	  
-        m_muon_trkcharge.push_back( -999.0 );     
-        m_muon_trkqOverP.push_back( -999.0 );           
+        m_muon_trkd0.push_back( -999.0 );
+        m_muon_trkd0sig.push_back( -1.0 );
+        m_muon_trkz0.push_back( -999.0 );
+        m_muon_trkz0sintheta.push_back( -999.0 );
+        m_muon_trkphi0.push_back( -999.0 );
+        m_muon_trktheta.push_back( -999.0 );
+        m_muon_trkcharge.push_back( -999.0 );
+        m_muon_trkqOverP.push_back( -999.0 );
       }
     }
 
     if ( m_muInfoSwitch->m_trackhitcont ) {
       uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
-      float pixdEdX(-1.0); 
+      float pixdEdX(-1.0);
       if ( trk ) {
         trk->summaryValue( nPixHits,     xAOD::numberOfPixelHits );
         trk->summaryValue( nPixHoles,    xAOD::numberOfPixelHoles );
       	trk->summaryValue( nSCTHits,     xAOD::numberOfSCTHits );
       	trk->summaryValue( nSCTHoles,    xAOD::numberOfSCTHoles );
       	trk->summaryValue( nTRTHits,     xAOD::numberOfTRTHits );
-      	trk->summaryValue( nTRTHoles,    xAOD::numberOfTRTHoles );	
+      	trk->summaryValue( nTRTHoles,    xAOD::numberOfTRTHoles );
         trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
-        //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits ); 
-        //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);	      
-      } 
+        //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
+        //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
+      }
       m_muon_trknSiHits.push_back( nPixHits + nSCTHits );
       m_muon_trknPixHits.push_back( nPixHits );
       m_muon_trknPixHoles.push_back( nPixHoles );
@@ -299,12 +302,12 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       m_muon_trknTRTHits.push_back( nTRTHits );
       m_muon_trknTRTHoles.push_back( nTRTHoles );
       m_muon_trknBLayerHits.push_back( nBLayerHits );
-      //m_muon_trknInnermostPixLayHits.push_back( nInnermostPixLayHits ); 
-      //m_muon_trkPixdEdX.push_back( pixdEdX );	      
+      //m_muon_trknInnermostPixLayHits.push_back( nInnermostPixLayHits );
+      //m_muon_trkPixdEdX.push_back( pixdEdX );
     }
-    
+
     this->FillMuonsUser(muon_itr);
-    
+
     m_nmuon++;
   }
 }
@@ -318,7 +321,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 void HelpTreeBase::AddElectrons(const std::string detailStr) {
 
   m_elInfoSwitch = new HelperClasses::ElectronInfoSwitch( detailStr );
-  
+
   // always
   m_tree->Branch("nel",    &m_nel,"nel/I");
 
@@ -363,8 +366,8 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 
   m_nel = 0;
   for ( auto el_itr : *(electrons) ) {
-    
-    const xAOD::TrackParticle* trk = el_itr->trackParticle(); 
+
+    const xAOD::TrackParticle* trk = el_itr->trackParticle();
 
     if ( m_elInfoSwitch->m_kinematic ) {
       m_el_pt.push_back ( (el_itr)->pt() / m_units );
@@ -374,52 +377,52 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
     }
 
     if ( m_elInfoSwitch->m_trackparams ) {
-      if ( trk ) {  
+      if ( trk ) {
         //
-	// NB.: 
+	// NB.:
 	// All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
 	// The refernce  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
 	// Remember that the beamspot size ( of O(10 micrometers) in the transverse plane) is << average vertex transverse position resolution ( O(60-80 micrometers) )
-	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz() 
+	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
 	//
-        m_el_trkd0.push_back( trk->d0() );  
+        m_el_trkd0.push_back( trk->d0() );
 	float d0_significance = fabs( trk->d0() )  / sqrt(trk->definingParametersCovMatrix()(0,0) );
-        m_el_trkd0sig.push_back( d0_significance ); 
+        m_el_trkd0sig.push_back( d0_significance );
 	float z0 =  trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
 								      // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
 	float theta = trk->theta();
-        m_el_trkz0.push_back( z0 );         
-        m_el_trkz0sintheta.push_back( z0 * sin(theta) ); 
-        m_el_trkphi0.push_back( trk->phi0() );       
-        m_el_trktheta.push_back( theta );      
-        m_el_trkcharge.push_back( trk->charge() );     
-        m_el_trkqOverP.push_back( trk->qOverP() );     
+        m_el_trkz0.push_back( z0 );
+        m_el_trkz0sintheta.push_back( z0 * sin(theta) );
+        m_el_trkphi0.push_back( trk->phi0() );
+        m_el_trktheta.push_back( theta );
+        m_el_trkcharge.push_back( trk->charge() );
+        m_el_trkqOverP.push_back( trk->qOverP() );
       } else {
-        m_el_trkd0.push_back( -999.0 );       
-        m_el_trkd0sig.push_back( -1.0 );      
-        m_el_trkz0.push_back( -999.0 ); 	
-        m_el_trkz0sintheta.push_back( -999.0 ); 
-        m_el_trkphi0.push_back( -999.0 );	
-        m_el_trktheta.push_back( -999.0 );	
-        m_el_trkcharge.push_back( -999.0 );	
-        m_el_trkqOverP.push_back( -999.0 );	      
+        m_el_trkd0.push_back( -999.0 );
+        m_el_trkd0sig.push_back( -1.0 );
+        m_el_trkz0.push_back( -999.0 );
+        m_el_trkz0sintheta.push_back( -999.0 );
+        m_el_trkphi0.push_back( -999.0 );
+        m_el_trktheta.push_back( -999.0 );
+        m_el_trkcharge.push_back( -999.0 );
+        m_el_trkqOverP.push_back( -999.0 );
       }
     }
-    
+
     if ( m_elInfoSwitch->m_trackhitcont ) {
       uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
-      float pixdEdX(-1.0); 
+      float pixdEdX(-1.0);
       if ( trk ) {
         trk->summaryValue( nPixHits,  xAOD::numberOfPixelHits );
         trk->summaryValue( nPixHoles, xAOD::numberOfPixelHoles );
         trk->summaryValue( nSCTHits,  xAOD::numberOfSCTHits );
         trk->summaryValue( nSCTHoles, xAOD::numberOfSCTHoles );
         trk->summaryValue( nTRTHits,  xAOD::numberOfTRTHits );
-        trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );	
+        trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );
         trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
-        //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits ); 
-        //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);	      
-      } 
+        //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
+        //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
+      }
       m_el_trknSiHits.push_back( nPixHits + nSCTHits );
       m_el_trknPixHits.push_back( nPixHits );
       m_el_trknPixHoles.push_back( nPixHoles );
@@ -428,8 +431,8 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       m_el_trknTRTHits.push_back( nTRTHits );
       m_el_trknTRTHoles.push_back( nTRTHoles );
       m_el_trknBLayerHits.push_back( nBLayerHits );
-      //m_el_trknInnermostPixLayHits.push_back( nInnermostPixLayHits ); 
-      //m_el_trkPixdEdX.push_back( pixdEdX );	      
+      //m_el_trknInnermostPixLayHits.push_back( nInnermostPixLayHits );
+      //m_el_trkPixdEdX.push_back( pixdEdX );
     }
 
     this->FillElectronsUser(el_itr);
@@ -953,9 +956,9 @@ void HelpTreeBase::ClearEvent() {
 }
 
 void HelpTreeBase::ClearMuons() {
-  
+
   m_nmuon = 0;
-  
+
   if ( m_muInfoSwitch->m_kinematic ){
     m_muon_pt.clear();
     m_muon_eta.clear();
@@ -971,7 +974,7 @@ void HelpTreeBase::ClearMuons() {
     m_muon_trkphi0.clear();
     m_muon_trktheta.clear();
     m_muon_trkcharge.clear();
-    m_muon_trkqOverP.clear();    
+    m_muon_trkqOverP.clear();
   }
 
   if ( m_muInfoSwitch->m_trackhitcont ) {
@@ -984,13 +987,13 @@ void HelpTreeBase::ClearMuons() {
     m_muon_trknTRTHoles.clear();
     m_muon_trknBLayerHits.clear();
     //m_muon_trknInnermostPixLayHits.clear();
-    //m_muon_trkPixdEdX.clear();  
+    //m_muon_trkPixdEdX.clear();
   }
 
 }
 
 void HelpTreeBase::ClearElectrons() {
-  
+
   m_nel = 0;
 
   if ( m_elInfoSwitch->m_kinematic ){
@@ -1008,7 +1011,7 @@ void HelpTreeBase::ClearElectrons() {
     m_el_trkphi0.clear();
     m_el_trktheta.clear();
     m_el_trkcharge.clear();
-    m_el_trkqOverP.clear();    
+    m_el_trkqOverP.clear();
   }
 
   if ( m_elInfoSwitch->m_trackhitcont ) {
@@ -1021,7 +1024,7 @@ void HelpTreeBase::ClearElectrons() {
     m_el_trknTRTHoles.clear();
     m_el_trknBLayerHits.clear();
     //m_el_trknInnermostPixLayHits.clear();
-    //m_el_trkPixdEdX.clear();  
+    //m_el_trkPixdEdX.clear();
   }
 
 }

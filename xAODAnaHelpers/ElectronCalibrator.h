@@ -32,9 +32,6 @@ public:
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
-  std::string m_outAuxContainerName;
-  std::string m_outSCContainerName;
-  std::string m_outSCAuxContainerName;
 
   std::string m_inputAlgo;
   std::string m_outputAlgo;
@@ -42,16 +39,21 @@ public:
   // sort after calibration
   bool    m_sort;
 
+  // systematics
+  std::string m_systName;
+  float m_systVal;
+  bool m_runSysts;
+
 private:
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  // systematics
-  std::string m_systName;
-  float m_systVal;
-  bool m_runSysts;
+  std::string m_outAuxContainerName;
+  std::string m_outSCContainerName;
+  std::string m_outSCAuxContainerName;
+
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools

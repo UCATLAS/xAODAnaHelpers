@@ -67,79 +67,88 @@ JetSelector :: JetSelector (std::string name, std::string configName) :
 
 EL::StatusCode  JetSelector :: configure ()
 {
-  Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", m_configName.c_str());
+  if(!m_configName.empty()){
+    Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG("JetSelector::configure()", m_configName);
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG("JetSelector::configure()", m_configName);
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // read debug flag from .config file
-  m_debug         = config->GetValue("Debug" ,      false );
-  m_useCutFlow    = config->GetValue("UseCutFlow",  true);
+    // read debug flag from .config file
+    m_debug         = config->GetValue("Debug" ,      false );
+    m_useCutFlow    = config->GetValue("UseCutFlow",  true);
 
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
+    // input container to be read from TEvent or TStore
+    m_inContainerName         = config->GetValue("InputContainer",  "");
 
-  // name of algo input container comes from - only if running on syst
-  m_inputAlgo               = config->GetValue("InputAlgo",   "");
-  m_outputAlgo              = config->GetValue("OutputAlgo",  "");
+    // name of algo input container comes from - only if running on syst
+    m_inputAlgo               = config->GetValue("InputAlgo",   "");
+    m_outputAlgo              = config->GetValue("OutputAlgo",  "");
+
+    // decorate selected objects that pass the cuts
+    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
+    // additional functionality : create output container of selected objects
+    //                            using the SG::VIEW_ELEMENTS option
+    //                            decorating and output container should not be mutually exclusive
+    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
+    // if requested, a new container is made using the SG::VIEW_ELEMENTS option
+    m_outContainerName        = config->GetValue("OutputContainer", "");
+    // if only want to look at a subset of object
+    m_nToProcess              = config->GetValue("NToProcess", -1);
+
+    // cuts
+    m_cleanJets               = config->GetValue("CleanJets",  true);
+    m_cleanEvtLeadJets        = config->GetValue("CleanEventWithLeadJets", 0); // indepedent of previous switch
+    m_pass_max                = config->GetValue("PassMax",      -1);
+    m_pass_min                = config->GetValue("PassMin",      -1);
+    m_pT_max                  = config->GetValue("pTMax",       1e8);
+    m_pT_min                  = config->GetValue("pTMin",       1e8);
+    m_eta_max                 = config->GetValue("etaMax",      1e8);
+    m_eta_min                 = config->GetValue("etaMin",      1e8);
+    m_detEta_max              = config->GetValue("detEtaMax",   1e8);
+    m_detEta_min              = config->GetValue("detEtaMin",   1e8);
+    m_mass_max                = config->GetValue("massMax",     1e8);
+    m_mass_min                = config->GetValue("massMin",     1e8);
+    m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
+    m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
+    m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
+
+    m_doJVF 		    = config->GetValue("DoJVF",       false);
+    m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",    50e3);
+    m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
+    m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
+
+    // Btag quality
+    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
+    m_btag_loose              = config->GetValue("BTagLoose",       false);
+    m_btag_medium             = config->GetValue("BTagMedium",      false);
+    m_btag_tight              = config->GetValue("BTagTight",       false);
+
+    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
+    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+
+    config->Print();
+    Info("configure()", "JetSelector Interface succesfully configured! ");
+
+    delete config;
+  }
+
   if( m_outputAlgo.empty() ) {
     m_outputAlgo = m_inputAlgo + "_JetSelect";
   }
 
-  // decorate selected objects that pass the cuts
-  m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
-  // additional functionality : create output container of selected objects
-  //                            using the SG::VIEW_ELEMENTS option
-  //                            decorating and output container should not be mutually exclusive
-  m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
-  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-  m_outContainerName        = config->GetValue("OutputContainer", "");
-  // if only want to look at a subset of object
-  m_nToProcess              = config->GetValue("NToProcess", -1);
-
   m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
   m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
 
-  // cuts
-  m_cleanJets               = config->GetValue("CleanJets",  true);
-  m_cleanEvtLeadJets        = config->GetValue("CleanEventWithLeadJets", 0); // indepedent of previous switch
-  m_pass_max                = config->GetValue("PassMax",      -1);
-  m_pass_min                = config->GetValue("PassMin",      -1);
-  m_pT_max                  = config->GetValue("pTMax",       1e8);
-  m_pT_min                  = config->GetValue("pTMin",       1e8);
-  m_eta_max                 = config->GetValue("etaMax",      1e8);
-  m_eta_min                 = config->GetValue("etaMin",      1e8);
-  m_detEta_max              = config->GetValue("detEtaMax",   1e8);
-  m_detEta_min              = config->GetValue("detEtaMin",   1e8);
-  m_mass_max                = config->GetValue("massMax",     1e8);
-  m_mass_min                = config->GetValue("massMin",     1e8);
-  m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
-  m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-  m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
-
-  m_doJVF 		    = config->GetValue("DoJVF",       false);
-  m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",    50e3);
-  m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
-  m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
-
-  // Btag quality
-  m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
-  m_btag_loose              = config->GetValue("BTagLoose",       false);
-  m_btag_medium             = config->GetValue("BTagMedium",      false);
-  m_btag_tight              = config->GetValue("BTagTight",       false);
-  
   // parse and split by comma
   std::string token;
 
-  m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
   std::istringstream ss(m_passAuxDecorKeys);
   while(std::getline(ss, token, ',')){
     m_passKeys.push_back(token);
   }
 
-  m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
   ss.clear();
   ss.str(m_failAuxDecorKeys);
   while(std::getline(ss, token, ',')){
@@ -152,8 +161,7 @@ EL::StatusCode  JetSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
-  config->Print();
-  Info("configure()", "JetSelector Interface succesfully configured! ");
+
 
   //
   // Set the Btagging cut
@@ -166,7 +174,7 @@ EL::StatusCode  JetSelector :: configure ()
     if( m_btag_medium    ) { m_btagCut = 0.8119; m_decor += "BTagMedium";     }
     if( m_btag_tight     ) { m_btagCut = 0.9867; m_decor += "BTagTight";      }
 
-  } else if ( m_isLCjet ) {				
+  } else if ( m_isLCjet ) {
     if( m_btag_veryloose ) { m_btagCut = 0.1340; m_decor += "BTagVeryLoose";  }
     if( m_btag_loose     ) { m_btagCut = 0.3511; m_decor += "BTagLoose";      }
     if( m_btag_medium    ) { m_btagCut = 0.7892; m_decor += "BTagMedium";     }
@@ -176,8 +184,6 @@ EL::StatusCode  JetSelector :: configure ()
   if(m_decorateSelectedObjects) {
     Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
   }
-
-  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -590,20 +596,20 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //  Truth Label
   //
   if( m_truthLabel != -1 ) {
- 
+
     int this_TruthLabel = 0;
-    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");    
+    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
     if(TruthLabelID.isAvailable( *jet)){
-      this_TruthLabel = TruthLabelID( *jet );    
+      this_TruthLabel = TruthLabelID( *jet );
     }else{
       static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
-      this_TruthLabel = PartonTruthLabelID( *jet );    
+      this_TruthLabel = PartonTruthLabelID( *jet );
     }
 
     if((m_truthLabel == 5) && this_TruthLabel != 5) {return 0;}
     if((m_truthLabel == 4) && this_TruthLabel != 4) {return 0;}
     if((m_truthLabel == 0) && !(this_TruthLabel == 21 || this_TruthLabel<4)) {return 0;}
- 
+
   }
 
   return 1;

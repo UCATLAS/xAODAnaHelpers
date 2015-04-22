@@ -34,7 +34,6 @@ public:
 
   std::string  m_inContainerName;     // input container name
   std::string  m_outContainerName;    // output container name
-  std::string  m_outAuxContainerName; // output auxiliary container name
   bool     m_decorateSelectedObjects; // decorate selected objects? default passSel
   bool     m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
   int      m_nToProcess;              // look at n objects
@@ -65,10 +64,7 @@ private:
   int m_numEventPass;     //!
   int m_weightNumEventPass; //!
   int m_numObjectPass;    //!
-
-  // tools
-  CP::MuonSelectionTool *m_muonSelectionTool;//!
-  // configuration variables
+  std::string  m_outAuxContainerName; // output auxiliary container name
 
   // cutflow
   TH1D* m_cutflowHist;          //!
@@ -77,6 +73,9 @@ private:
 
   std::vector<std::string> m_passKeys;  //!
   std::vector<std::string> m_failKeys;  //!
+
+  // tools
+  CP::MuonSelectionTool *m_muonSelectionTool;//!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

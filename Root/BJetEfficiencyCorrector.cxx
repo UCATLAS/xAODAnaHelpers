@@ -56,38 +56,45 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string name, std::strin
 
 EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 {
-  Info("configure()", "Configuing BJetEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
+  if(!m_configName.empty()){
+    Info("configure()", "Configuing BJetEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "BJetEfficiencyCorrector::configure()", m_configName);
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "BJetEfficiencyCorrector::configure()", m_configName);
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // read debug flag from .config file
-  m_debug                   = config->GetValue("Debug" , false );
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
-  m_outContainerName        = config->GetValue("OutputContainer", "");
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+    // read debug flag from .config file
+    m_debug                   = config->GetValue("Debug" , false );
+    // input container to be read from TEvent or TStore
+    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
-  // Systematics stuff
-  m_runAllSyst              = config->GetValue("RunAllSyst" ,      false ); // default: false
-  m_systName		    = config->GetValue("SystName" ,       "" );      // default: no syst
-  m_outputSystName          = config->GetValue("OutputSystName",  "BJetEfficiency_Algo");
+    // Systematics stuff
+    m_runAllSyst              = config->GetValue("RunAllSyst" ,      false ); // default: false
+    m_systName		          = config->GetValue("SystName" ,       "" );      // default: no syst
+    m_outputSystName          = config->GetValue("OutputSystName",  "BJetEfficiency_Algo");
 
-  // file(s) containing corrections
-  m_corrFileName           = config->GetValue("CorrectionFileName", "2014-Winter-8TeV-MC12-CDI.root" );
-  m_jetAuthor              = config->GetValue("JetAuthor",          "AntiKt4TopoEMJVF0_5" );
-  m_taggerName             = config->GetValue("TaggerName",         "MV1" );
-  m_useDevelopmentFile     = config->GetValue("UseDevelopmentFile", true );
-  m_coneFlavourLabel       = config->GetValue("ConeFlavourLabel",   true );
-  // Btag quality
-  m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
-  m_btag_loose              = config->GetValue("BTagLoose",       false);
-  m_btag_medium             = config->GetValue("BTagMedium",      false);
-  m_btag_tight              = config->GetValue("BTagTight",       false);
+    // file(s) containing corrections
+    m_corrFileName           = config->GetValue("CorrectionFileName", "2014-Winter-8TeV-MC12-CDI.root" );
+    m_jetAuthor              = config->GetValue("JetAuthor",          "AntiKt4TopoEMJVF0_5" );
+    m_taggerName             = config->GetValue("TaggerName",         "MV1" );
+    m_useDevelopmentFile     = config->GetValue("UseDevelopmentFile", true );
+    m_coneFlavourLabel       = config->GetValue("ConeFlavourLabel",   true );
+    // Btag quality
+    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
+    m_btag_loose              = config->GetValue("BTagLoose",       false);
+    m_btag_medium             = config->GetValue("BTagMedium",      false);
+    m_btag_tight              = config->GetValue("BTagTight",       false);
 
-  m_decor = "BTag_SF";
+    m_decor                   = config->GetValue("DecorationName", "BTag_SF");
+
+    config->Print();
+    Info("configure()", "BJetEfficiencyCorrector Interface succesfully configured! ");
+
+    delete config;
+  }
 
   m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
   m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
@@ -99,7 +106,7 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     if( m_btag_tight     ) { m_operatingPt = "0_9867"; m_decor += "_BTagTight";      }
 
 
-  } else if ( m_isLCjet ) {    
+  } else if ( m_isLCjet ) {
     if( m_btag_veryloose ) { m_operatingPt = "0_1340"; m_decor += "_BTagVeryLoose";  }
     if( m_btag_loose     ) { m_operatingPt = "0_3511"; m_decor += "_BTagLoose";      }
     if( m_btag_medium    ) { m_operatingPt = "0_7892"; m_decor += "_BTagMedium";     }
@@ -110,11 +117,6 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-
-  config->Print();
-  Info("configure()", "BJetEfficiencyCorrector Interface succesfully configured! ");
-
-  delete config;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -198,14 +200,14 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_BJetEffSFTool = new BTaggingEfficiencyTool( "BTagTest" );
   m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName),"Failed to set property"); 
+  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName),"Failed to set property");
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property");
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property");
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ScaleFactorFileName", m_corrFileName),"Failed to set property"); 
+  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ScaleFactorFileName", m_corrFileName),"Failed to set property");
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("UseDevelopmentFile",  m_useDevelopmentFile), "Failed to set property");
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel), "Failed to set property");
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->initialize(), "Failed to properly initialize the BJetEfficiencyCorrectionTool");
-  
+
   std::cout << "-----------------------------------------------------" << std::endl;
   const std::map<CP::SystematicVariation, std::vector<std::string> > allowed_variations = m_BJetEffSFTool->listSystematics();
   std::cout << "Allowed systematics variations for tool " << m_BJetEffSFTool->name() << ":" << std::endl;
@@ -273,15 +275,15 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   //
   std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
   for(const auto& syst_it : m_systList){
-    
+
     //
-    // if not running systematics, only compulte weight for specified systematic (m_systName)  
+    // if not running systematics, only compulte weight for specified systematic (m_systName)
     //    default is nominal (i.e., "")
     //
     if(!m_runAllSyst){
-      if( syst_it.name() != m_systName ) { 
+      if( syst_it.name() != m_systName ) {
 	if(m_debug) Info("execute()","Not running systematics only apply nominal SF");
-	continue; 
+	continue;
       }
     }
 
@@ -310,7 +312,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // and now apply data-driven efficiency and efficiency SF!
     //
     for( auto jet_itr : *(correctedJets)) {
-      
+
       //
       //  If btagging vector doesnt exist create it
       //
@@ -400,10 +402,10 @@ EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_BJetEffSFTool){ 
+  if(m_BJetEffSFTool){
     delete m_BJetEffSFTool; m_BJetEffSFTool = nullptr;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

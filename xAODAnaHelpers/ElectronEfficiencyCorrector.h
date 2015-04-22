@@ -34,7 +34,6 @@ public:
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
-  std::string m_outAuxContainerName;
   std::string m_inputAlgo;               // input type - from xAOD or from xAODAnaHelpers Algo output
   std::string m_outputAlgo;
 
@@ -48,6 +47,7 @@ private:
   xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
+  std::string m_outAuxContainerName;
 
   bool m_runSysts;
   std::vector<CP::SystematicSet> m_systList; //!

@@ -32,8 +32,6 @@ public:
   // configuration variables
   std::string m_inContainerName;        //!
   std::string m_outContainerName;       //!
-  std::string m_outSCContainerName;     //!
-  std::string m_outSCAuxContainerName;  //!
 
   std::string m_jetAlgo;                //!
   std::string m_outputAlgo;             //!
@@ -43,7 +41,6 @@ public:
   std::string m_calibConfig;            //!
   std::string m_calibSequence;          //!
   std::string m_jetCalibCutLevel;   //!
-  std::string m_jetUncertAlgo;          //!
   std::string m_uncertConfig;           //!
   // sort after calibration
   bool    m_sort;                   //!
@@ -52,7 +49,6 @@ public:
   std::string m_systName;
   float m_systVal;
   bool m_runSysts;
-  std::vector<CP::SystematicSet> m_systList; //!
 
 private:
   xAOD::TEvent *m_event;  //!
@@ -62,6 +58,13 @@ private:
 
   bool m_isMC;
   bool m_isFullSim;
+
+  std::string m_jetUncertAlgo;          //!
+
+  std::string m_outSCContainerName;     //!
+  std::string m_outSCAuxContainerName;  //!
+
+  std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
   JetCalibrationTool    * m_jetCalibration; //!

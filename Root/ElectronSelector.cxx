@@ -69,56 +69,86 @@ ElectronSelector::~ElectronSelector() {}
 
 EL::StatusCode  ElectronSelector :: configure ()
 {
-  Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", m_configName.c_str());
+  if(!m_configName.empty()){
+    Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "ElectronSelector::configure()", m_configName);
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "ElectronSelector::configure()", m_configName);
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // read debug flag from .config file
-  m_debug         = config->GetValue("Debug" ,      false );
-  m_useCutFlow    = config->GetValue("UseCutFlow",  true);
+    // read debug flag from .config file
+    m_debug         = config->GetValue("Debug" ,      false );
+    m_useCutFlow    = config->GetValue("UseCutFlow",  true);
 
-  // input container to be read from TEvent or TStore
-  m_inContainerName  = config->GetValue("InputContainer",  "");
+    // input container to be read from TEvent or TStore
+    m_inContainerName  = config->GetValue("InputContainer",  "");
 
-  // name of algo input container comes from - only if running on systematics
-  m_inputAlgo               = config->GetValue("InputAlgo",   "");
-  m_outputAlgo              = config->GetValue("OutputAlgo",  "ElectronCollection_Sel_Algo");
+    // name of algo input container comes from - only if running on systematics
+    m_inputAlgo               = config->GetValue("InputAlgo",   "");
+    m_outputAlgo              = config->GetValue("OutputAlgo",  "ElectronCollection_Sel_Algo");
 
-  // decorate selected objects that pass the cuts
-  m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
-  // additional functionality : create output container of selected objects
-  //                            using the SG::View_Element option
-  //                            decorrating and output container should not be mutually exclusive
-  m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
-  // if requested, a new container is made using the SG::View_Element option
-  m_outContainerName        = config->GetValue("OutputContainer", "");
+    // decorate selected objects that pass the cuts
+    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
+    // additional functionality : create output container of selected objects
+    //                            using the SG::View_Element option
+    //                            decorrating and output container should not be mutually exclusive
+    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
+    // if requested, a new container is made using the SG::View_Element option
+    m_outContainerName        = config->GetValue("OutputContainer", "");
+
+    // if only want to look at a subset of object
+    m_nToProcess              = config->GetValue("NToProcess", -1);
+
+    // configurable cuts
+    m_pass_max                = config->GetValue("PassMax", -1);
+    m_pass_min                = config->GetValue("PassMin", -1);
+    m_pT_max                  = config->GetValue("pTMax",  1e8);
+    m_pT_min                  = config->GetValue("pTMin",  1e8);
+    m_eta_max                 = config->GetValue("etaMax", 1e8);
+    m_vetoCrack               = config->GetValue("VetoCrack", true);
+    m_d0_max                  = config->GetValue("d0Max", 1e8);
+    m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
+    m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
+
+    m_doAuthorCut             = config->GetValue("DoAuthorCut", true);
+    m_doOQCut                 = config->GetValue("DoOQCut", true);
+
+    m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
+    // likelihood-based PID
+    m_doLHPIDcut         = config->GetValue("DoLHPIDCut", false);
+    m_LHPID              = config->GetValue("LHPID", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
+    m_LHOperatingPoint   = config->GetValue("LHOperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
+
+    // cut-based PID
+    m_doCutBasedPIDcut         = config->GetValue("DoCutBasedPIDCut", false);
+    m_CutBasedPIDMask          = config->GetValue("CutBasedPIDMask", "ElectronLoosePP"); // electron PID bitmask.
+    m_PIDName                  = config->GetValue("PIDName", "isEMLoose");               // electron PID bit-def as defined by egammaPID::PID enum (default is isEMLoose ).
+    m_CutBasedOperatingPoint   = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
+
+    // isolation stuff
+    m_doIsolation             = config->GetValue("DoIsolationCut"   , false     );
+    m_useRelativeIso          = config->GetValue("UseRelativeIso"   , true      );
+    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" ,	"etcone20");
+    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
+    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
+    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
+
+    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
+    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+
+    config->Print();
+    Info("configure()", "ElectronSelector Interface succesfully configured! ");
+
+    delete config; config = nullptr;
+  }
+
+  if( m_inContainerName.empty() ) {
+    Error("configure()", "InputContainer is empty!");
+    return EL::StatusCode::FAILURE;
+  }
+
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-
-  // if only want to look at a subset of object
-  m_nToProcess              = config->GetValue("NToProcess", -1);
-
-  // configurable cuts
-  m_pass_max                = config->GetValue("PassMax", -1);
-  m_pass_min                = config->GetValue("PassMin", -1);
-  m_pT_max                  = config->GetValue("pTMax",  1e8);
-  m_pT_min                  = config->GetValue("pTMin",  1e8);
-  m_eta_max                 = config->GetValue("etaMax", 1e8);
-  m_vetoCrack               = config->GetValue("VetoCrack", true);
-  m_d0_max                  = config->GetValue("d0Max", 1e8);
-  m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
-  m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
-
-  m_doAuthorCut             = config->GetValue("DoAuthorCut", true);
-  m_doOQCut                 = config->GetValue("DoOQCut", true);
-
-  m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
-  // likelihood-based PID
-  m_doLHPIDcut         = config->GetValue("DoLHPIDCut", false);
-  m_LHPID              = config->GetValue("LHPID", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
-  m_LHOperatingPoint   = config->GetValue("LHOperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
   if( m_LHPID != "VeryLoose" &&
       m_LHPID != "Loose"     &&
       m_LHPID != "Medium"    &&
@@ -128,11 +158,7 @@ EL::StatusCode  ElectronSelector :: configure ()
     Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHPID.c_str());
     return EL::StatusCode::FAILURE;
   }
-  // cut-based PID
-  m_doCutBasedPIDcut         = config->GetValue("DoCutBasedPIDCut", false);
-  m_CutBasedPIDMask          = config->GetValue("CutBasedPIDMask", "ElectronLoosePP"); // electron PID bitmask.
-  m_PIDName                  = config->GetValue("PIDName", "isEMLoose");               // electron PID bit-def as defined by egammaPID::PID enum (default is isEMLoose ).
-  m_CutBasedOperatingPoint   = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
+
   if( m_CutBasedPIDMask != "ElectronLoosePP"   &&
       m_CutBasedPIDMask != "ElectronLoose1"    &&
       m_CutBasedPIDMask != "ElectronMediumPP"  &&
@@ -146,39 +172,19 @@ EL::StatusCode  ElectronSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
-  // isolation stuff
-  m_doIsolation             = config->GetValue("DoIsolationCut"   , false     );
-  m_useRelativeIso          = config->GetValue("UseRelativeIso"   , true      );
-  m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" ,	"etcone20");
-  m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
-  m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
-  m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
-
   // parse and split by comma
   std::string token;
 
-  m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
   std::istringstream ss(m_passAuxDecorKeys);
   while ( std::getline(ss, token, ',') ) {
     m_passKeys.push_back(token);
   }
 
-  m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
   ss.clear();
   ss.str(m_failAuxDecorKeys);
   while ( std::getline(ss, token, ',') ) {
     m_failKeys.push_back(token);
   }
-
-  if( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  config->Print();
-  Info("configure()", "ElectronSelector Interface succesfully configured! ");
-
-  delete config; config = nullptr;
 
   return EL::StatusCode::SUCCESS;
 }

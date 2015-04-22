@@ -62,31 +62,34 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 
 EL::StatusCode TrackHistsAlgo :: configure ()
 {
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "TrackHistsAlgo::configure()", m_configName);
+  if(!m_configName.empty()){
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "TrackHistsAlgo::configure()", m_configName);
 
-  // the file exists, use TEnv to read it off
-  TEnv* config = new TEnv(m_configName.c_str());
+    // the file exists, use TEnv to read it off
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  //
-  //  If Container Name is already set dont read it from the config
-  //   (Allows to pass as argument in setup script)
-  //
-  if(m_inContainerName.empty())
-      m_inContainerName         = config->GetValue("InputContainer",  "");
+    //
+    //  If Container Name is already set dont read it from the config
+    //   (Allows to pass as argument in setup script)
+    //
+    m_inContainerName         = config->GetValue("InputContainer",  "");
     m_detailStr               = config->GetValue("DetailStr",       "");
     m_debug                   = config->GetValue("Debug" ,           false );
+
+    Info("configure()", "Loaded in configuration values");
+
+    // everything seems preliminarily ok, let's print config and say we were successful
+    config->Print();
+
+    delete config;
+  }
 
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
-  Info("configure()", "Loaded in configuration values");
 
-  // everything seems preliminarily ok, let's print config and say we were successful
-  config->Print();
-
-  delete config;
 
   return EL::StatusCode::SUCCESS;
 }

@@ -69,48 +69,47 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configName,
 
 EL::StatusCode  JetCalibrator :: configure ()
 {
-  Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
+  if(!m_configName.empty()){
+    Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
-  // expand the path to the config to find it in the ROOTCORE directory
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG("JetCalibrator::configure()", m_configName);
+    // expand the path to the config to find it in the ROOTCORE directory
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG("JetCalibrator::configure()", m_configName);
 
-  TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(m_configName.c_str());
 
-  // read debug flag from .config file
-  m_debug                   = config->GetValue("Debug" , false );
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = config->GetValue("InputContainer",  "");
+    // read debug flag from .config file
+    m_debug                   = config->GetValue("Debug" , false );
+    // input container to be read from TEvent or TStore
+    m_inContainerName         = config->GetValue("InputContainer",  "");
 
-  // CONFIG parameters for JetCalibrationTool
-  m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
-  m_outputAlgo              = config->GetValue("OutputAlgo",      "");
-  if( m_outputAlgo.empty() ) {
-    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
+    // CONFIG parameters for JetCalibrationTool
+    m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
+    m_outputAlgo              = config->GetValue("OutputAlgo",      "");
+
+    // when running data "_Insitu" is appended to this string
+    m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
+    m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
+    m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
+
+    // CONFIG parameters for JetCleaningTool
+    m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");
+
+    // CONFIG parameters for JetUncertaintiesTool
+    m_uncertConfig            = config->GetValue("JetUncertConfig", "");
+    // calibrator uses TopoEM or TopoLC while the uncertainity tool uses EMTopo and LCTopo
+    // calibrator should switch at some point
+    // "fix" the name here so the user never knows the difference
+
+    // shallow copies are made with this output container name
+    m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_sort                    = config->GetValue("Sort",          false);
+
+    config->Print();
+    Info("configure()", "JetCalibrator Interface succesfully configured! ");
+
+    delete config;
   }
-
-  // when running data "_Insitu" is appended to this string
-  m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
-  m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
-  m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
-
-  // CONFIG parameters for JetCleaningTool
-  m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");
-
-  // CONFIG parameters for JetUncertaintiesTool
-  m_uncertConfig            = config->GetValue("JetUncertConfig", "");
-  // calibrator uses TopoEM or TopoLC while the uncertainity tool uses EMTopo and LCTopo
-  // calibrator should switch at some point
-  // "fix" the name here so the user never knows the difference
-  m_jetUncertAlgo = m_jetAlgo;
-  m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoEM"), std::string("EMTopo"));
-  m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoLC"), std::string("LCTopo"));
-
-  // shallow copies are made with this output container name
-  m_outContainerName        = config->GetValue("OutputContainer", "");
-  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-  m_sort                    = config->GetValue("Sort",          false);
 
   // If there is no InputContainer we must stop
   if( m_inContainerName.empty() ) {
@@ -118,10 +117,16 @@ EL::StatusCode  JetCalibrator :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
-  config->Print();
-  Info("configure()", "JetCalibrator Interface succesfully configured! ");
+  if( m_outputAlgo.empty() ) {
+    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
+  }
 
-  delete config;
+  m_jetUncertAlgo = m_jetAlgo;
+  m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoEM"), std::string("EMTopo"));
+  m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoLC"), std::string("LCTopo"));
+
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
   return EL::StatusCode::SUCCESS;
 }
@@ -362,7 +367,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
       // decorate with cleaning decision
       bool cleanJet = m_jetCleaning->accept( *jet_itr );
-      
+
       jet_itr->auxdata< char >( "cleanJet" ) = cleanJet;
 
     }
@@ -429,16 +434,16 @@ EL::StatusCode JetCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_jetCalibration){ 
+  if(m_jetCalibration){
     delete m_jetCalibration; m_jetCalibration = nullptr;
   }
   if(m_jetCleaning){
     delete m_jetCleaning; m_jetCleaning = nullptr;
   }
-  if( m_jetUncert ){ 
+  if( m_jetUncert ){
     delete m_jetUncert; m_jetUncert = nullptr;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

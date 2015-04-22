@@ -108,7 +108,7 @@ namespace HelperClasses{
   void ElectronInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
     m_trackparams   = parse("trackparams");
-    m_trackhitcont  = parse("trackhitcont");    
+    m_trackhitcont  = parse("trackhitcont");
   }
 
   void JetInfoSwitch::initialize(){

@@ -69,36 +69,38 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
 
 EL::StatusCode BasicEventSelection :: configure ()
 {
-  // read in user configuration from text file
-  m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-  RETURN_CHECK_CONFIG( "BasicEventSelection::configure()", m_configName);
+  if(!m_configName.empty()){
+    // read in user configuration from text file
+    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
+    RETURN_CHECK_CONFIG( "BasicEventSelection::configure()", m_configName);
 
-  TEnv *env = new TEnv(m_configName.c_str());
-  if( !env ) {
-    Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );
-    return EL::StatusCode::FAILURE;
+    TEnv *env = new TEnv(m_configName.c_str());
+    if( !env ) {
+      Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );
+      return EL::StatusCode::FAILURE;
+    }
+
+    // basics
+    m_debug          = env->GetValue("Debug"     ,     false);
+    m_truthLevelOnly = env->GetValue("TruthLevelOnly", false);
+
+    // GRL
+    m_GRLxml        = env->GetValue("GRL","$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+
+    // Pileup Reweighting
+    m_doPUreweighting = env->GetValue("DoPileupReweighting", false);
+
+    if(!m_truthLevelOnly) {
+      // primary vertex
+      m_vertexContainerName = env->GetValue("VertexContainer", "PrimaryVertices");
+      // number of tracks to require to count PVs
+      m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
+    }
+    env->Print();
+    Info("configure()", "BasicEventSelection succesfully configured! ");
+
+    delete env;
   }
-
-  // basics
-  m_debug          = env->GetValue("Debug"     ,     false);
-  m_truthLevelOnly = env->GetValue("TruthLevelOnly", false);
-
-  // GRL
-  m_GRLxml        = env->GetValue("GRL","$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
-
-  // Pileup Reweighting
-  m_doPUreweighting = env->GetValue("DoPileupReweighting", false);
-
-  if(!m_truthLevelOnly) {
-    // primary vertex
-    m_vertexContainerName = env->GetValue("VertexContainer", "PrimaryVertices");
-    // number of tracks to require to count PVs
-    m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
-  }
-  env->Print();
-  Info("configure()", "BasicEventSelection succesfully configured! ");
-
-  delete env;
 
   return EL::StatusCode::SUCCESS;
 }
