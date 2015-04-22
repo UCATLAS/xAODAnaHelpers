@@ -31,39 +31,40 @@ public:
   std::string m_name;
   std::string m_configName;
 
-  std::string m_corrFileName;
-  std::string m_jetAuthor;
-  std::string m_taggerName;
-  std::string m_operatingPt;
-  bool        m_useDevelopmentFile;
-  bool        m_coneFlavourLabel;
+  bool m_debug;                  //!
+  std::string m_inContainerName;     //!
+  std::string m_outContainerName;    //!
+  std::string m_outAuxContainerName; //!
 
   // systematics
   bool m_runAllSyst;                 //!
   std::string m_systName;            //!
   std::string m_outputSystName;      //!
-  bool m_runSysts;                    //!
-  std::vector<CP::SystematicSet> m_systList; //!
 
-  bool m_debug;                  //!
-  bool m_isEMjet;                //!
-  bool m_isLCjet;                //!
+  std::string m_corrFileName;
+  std::string m_jetAuthor;
+  std::string m_taggerName;
+  bool        m_useDevelopmentFile;
+  bool        m_coneFlavourLabel;
+  bool  m_btag_veryloose;            //!
+  bool  m_btag_loose;                //!
+  bool  m_btag_medium;               //!
+  bool  m_btag_tight;                //!
+
+  std::string m_decor;            //! The decoration key written to passing objects
 
 private:
 
   // tools
   BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
 
-  // configuration variables
-  std::string m_inContainerName;     //!
-  std::string m_outContainerName;    //!
-  std::string m_outAuxContainerName; //!
-  std::string m_decor;            //! The decoration key written to passing objects
-  bool  m_btag_veryloose;            //!
-  bool  m_btag_loose;                //!
-  bool  m_btag_medium;               //!
-  bool  m_btag_tight;                //!
+  bool m_isEMjet;                //!
+  bool m_isLCjet;                //!
 
+  // configuration variables
+  std::string m_operatingPt;
+
+  std::vector<CP::SystematicSet> m_systList; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -93,7 +94,7 @@ public:
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(BJetEfficiencyCorrector, 1);
-  
+
 };
 
 #endif

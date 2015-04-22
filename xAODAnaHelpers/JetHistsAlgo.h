@@ -18,19 +18,17 @@ public:
   std::string m_name;
   std::string m_configName;
 
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-
-
-private:
-
-  std::map< std::string, JetHists* > m_plots; //!
-
   // configuration variables
   std::string m_inContainerName;      //!
   std::string m_detailStr;            //!
   std::string m_inputAlgo;            //!
   bool m_debug; //!
+
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+
+  std::map< std::string, JetHists* > m_plots; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

@@ -26,31 +26,13 @@ class OverlapRemover : public EL::Algorithm
   // that way they can be set directly from CINT and python.
 public:
 
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-  int m_numEvent;         //!
-  int m_numObject;        //!
-  int m_numEventPass;     //!
-  int m_weightNumEventPass; //!
-  int m_numObjectPass;    //!
-
   std::string m_name;
   std::string m_configName;
   bool m_debug;
 
-private:
-
-  bool m_usePhotons;
-  bool m_useTaus;
-
-  // tools
-  OverlapRemovalTool *m_overlapRemovalTool; //!
-
   // configuration variables
-
   bool     m_decorateSelectedObjects;  // decorate selected objects? default passSel
   bool     m_createSelectedContainers; // fill using SG::VIEW_ELEMENTS to be light weight
-
   bool     m_useSelected; // pass only object passing selection to O.R. tool
 
   /* Electrons */
@@ -79,6 +61,22 @@ private:
   std::string m_inContainerName_Taus;
   std::string  m_outContainerName_Taus;        // output container name
   std::string  m_outAuxContainerName_Taus;     // output auxiliary container name
+
+
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+  int m_numEvent;         //!
+  int m_numObject;        //!
+  int m_numEventPass;     //!
+  int m_weightNumEventPass; //!
+  int m_numObjectPass;    //!
+
+  bool m_usePhotons;
+  bool m_useTaus;
+
+  // tools
+  OverlapRemovalTool *m_overlapRemovalTool; //!
 
   enum SystType {
     NOMINAL = 0,

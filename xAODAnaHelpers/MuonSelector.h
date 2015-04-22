@@ -25,29 +25,12 @@ class MuonSelector : public EL::Algorithm
   // that way they can be set directly from CINT and python.
 public:
 
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-  int m_numEvent;         //!
-  int m_numObject;        //!
-  int m_numEventPass;     //!
-  int m_weightNumEventPass; //!
-  int m_numObjectPass;    //!
-
   std::string m_name;
   std::string m_configName;
 
   bool m_debug;                 //!
   // cutflow
   bool m_useCutFlow;            //!
-  TH1D* m_cutflowHist;          //!
-  TH1D* m_cutflowHistW;         //!
-  int   m_cutflow_bin;          //!
-
-private:
-
-  // tools
-  CP::MuonSelectionTool *m_muonSelectionTool;//!
-  // configuration variables
 
   std::string  m_inContainerName;     // input container name
   std::string  m_outContainerName;    // output container name
@@ -73,6 +56,25 @@ private:
 
   std::string              m_passAuxDecorKeys;  //!
   std::string              m_failAuxDecorKeys;  //!
+
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+  int m_numEvent;         //!
+  int m_numObject;        //!
+  int m_numEventPass;     //!
+  int m_weightNumEventPass; //!
+  int m_numObjectPass;    //!
+
+  // tools
+  CP::MuonSelectionTool *m_muonSelectionTool;//!
+  // configuration variables
+
+  // cutflow
+  TH1D* m_cutflowHist;          //!
+  TH1D* m_cutflowHistW;         //!
+  int   m_cutflow_bin;          //!
+
   std::vector<std::string> m_passKeys;  //!
   std::vector<std::string> m_failKeys;  //!
 

@@ -30,14 +30,6 @@ class BasicEventSelection : public EL::Algorithm
     std::string m_name;
     std::string m_configName;
 
-    xAOD::TEvent*                m_event;     //!
-    xAOD::TStore*                m_store;     //!
-
-    GoodRunsListSelectionTool*   m_grl;       //!
-    CP::PileupReweightingTool*   m_pileuptool; //!
-
-    int m_eventCounter;     //!
-
     // variables read in through configuration file
     int m_debug;            //!
     bool m_truthLevelOnly;  //!
@@ -49,6 +41,15 @@ class BasicEventSelection : public EL::Algorithm
     // primary vertex
     std::string m_vertexContainerName; //!
     int m_PVNTrack;                //!
+
+  private:
+    xAOD::TEvent*                m_event;     //!
+    xAOD::TStore*                m_store;     //!
+
+    GoodRunsListSelectionTool*   m_grl;       //!
+    CP::PileupReweightingTool*   m_pileuptool; //!
+
+    int m_eventCounter;     //!
 
     // read from MetaData
     TH1D* m_histEventCount;  //!

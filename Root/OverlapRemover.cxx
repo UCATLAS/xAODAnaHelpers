@@ -555,7 +555,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
       for( auto systName : *sysVec) {
-        
+
 	if(systName.empty()) continue;
 
         // ... instead, the electron input container will be different for each syst
@@ -635,9 +635,9 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
       for( auto systName : *sysVec) {
-        
+
 	if(systName.empty()) continue;
-        
+
 	// ... instead, the muon input container will be different for each syst
         RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons + systName, m_event, m_store, m_debug) ,"");
         if(m_debug){ Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  }
@@ -717,9 +717,9 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_debug) ,"");
 
       for( auto systName : *sysVec ) {
-         
+
 	 if(systName.empty()) continue;
-         
+
 	 // ... instead, the jet input container will be different for each syst
          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets + systName, m_event, m_store, m_debug) ,"");
          if(m_debug){ Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size());  }

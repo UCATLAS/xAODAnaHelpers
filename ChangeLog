@@ -5,6 +5,8 @@
 	* HistogramManager functions use StatusCode, not EL::StatusCode -- you
 	should now wrap calls to initialize(), execute(), and finalize() with a
 	RETURN_CHECK macro or something similar
+	* Made all configurables of the algorithms public and cleaned up some of
+	the private variables
 
 2015-04-22 John Alison <John.Alison@cern.ch>
 	* Bugfixes: comment out TreeAlgo* out_tree in test_multiAlgo

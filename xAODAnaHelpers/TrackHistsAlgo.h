@@ -19,16 +19,15 @@ public:
   std::string m_configName;
   std::string m_inContainerName;
 
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-
-private:
-
-  TrackHists* m_plots; //!
-
   // configuration variables
   std::string m_detailStr;        //!
   bool m_debug; //!
+
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+
+  TrackHists* m_plots; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

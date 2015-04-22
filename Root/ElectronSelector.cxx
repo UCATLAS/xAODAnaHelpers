@@ -212,7 +212,7 @@ EL::StatusCode ElectronSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-  
+
   if ( m_useCutFlow ) {
     TFile *file     = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
@@ -353,7 +353,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
   if ( m_debug ) { Info("execute()", "Applying Electron Selection... "); }
 
-  // retrieve MC event weight 
+  // retrieve MC event weight
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
@@ -378,21 +378,21 @@ EL::StatusCode ElectronSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
-    
+
     // create output container (if requested)
     ConstDataVector<xAOD::ElectronContainer>* selectedElectrons(nullptr);
     if ( m_createSelectedContainer ) { selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS); }
-    
+
     // find the selected electrons, and return if event passes object selection
     eventPass = executeSelection( inElectrons, mcEvtWeight, countPass, selectedElectrons );
-    
+
     if ( m_createSelectedContainer) {
       if ( eventPass ) {
         // add ConstDataVector to TStore
         RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName ), "Failed to store const data container");
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
-        delete selectedElectrons; selectedElectrons = nullptr; 
+        delete selectedElectrons; selectedElectrons = nullptr;
       }
     }
 
@@ -440,7 +440,7 @@ EL::StatusCode ElectronSelector :: execute ()
           RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName+systName ), "Failed to store const data container");
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
-          delete selectedElectrons; selectedElectrons = nullptr; 
+          delete selectedElectrons; selectedElectrons = nullptr;
         }
       }
 
@@ -465,7 +465,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
 }
 
-bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass, 
+bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
 					    ConstDataVector<xAOD::ElectronContainer>* selectedElectrons )
 {
 
@@ -575,13 +575,13 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-  
+
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
- 
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -597,7 +597,7 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
 
   const xAOD::TrackParticle* tp  = electron->trackParticle();
-  
+
   float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
   float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
 

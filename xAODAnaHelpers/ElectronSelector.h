@@ -26,32 +26,12 @@ class ElectronSelector : public EL::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-  int m_numEvent;         //!
-  int m_numObject;        //!
-  int m_numEventPass;     //!
-  int m_weightNumEventPass; //!
-  int m_numObjectPass;    //!
-
   std::string m_name;
   std::string m_configName;
 
   bool m_debug;                 //!
-
-  // cutflow
   bool m_useCutFlow;            //!
-  TH1D* m_cutflowHist;          //!
-  TH1D* m_cutflowHistW;         //!
-  int   m_cutflow_bin;          //!
 
-private:
-
-  // tools
-  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ; //!
-  AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool; //!
-  CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
   // configuration variables
   std::string    m_inContainerName;      // input container name
   std::string    m_outContainerName;     // output container name
@@ -79,6 +59,7 @@ private:
   bool         m_doLHPIDcut;
   std::string  m_LHPID;
   std::string  m_LHOperatingPoint;
+
   // cut-based PID
   bool         m_doCutBasedPIDcut;
   std::string  m_CutBasedPIDMask;
@@ -95,6 +76,26 @@ private:
 
   std::string              m_passAuxDecorKeys;  //!
   std::string              m_failAuxDecorKeys;  //!
+
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+  int m_numEvent;         //!
+  int m_numObject;        //!
+  int m_numEventPass;     //!
+  int m_weightNumEventPass; //!
+  int m_numObjectPass;    //!
+
+  // cutflow
+  TH1D* m_cutflowHist;          //!
+  TH1D* m_cutflowHistW;         //!
+  int   m_cutflow_bin;          //!
+
+  // tools
+  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ; //!
+  AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool; //!
+  CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
+
   std::vector<std::string> m_passKeys;  //!
   std::vector<std::string> m_failKeys;  //!
 

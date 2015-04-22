@@ -17,15 +17,8 @@ class JERShifter : public EL::Algorithm
 {
 
   public:
-
-    xAOD::TEvent *m_event;  //!
-    xAOD::TStore *m_store;  //!
-    int m_numEvent;         //!
-
     std::string m_name;
     std::string m_configName;
-
-  private:
 
     // configuration variables
     std::string m_inContainerName;      // input container name
@@ -33,6 +26,11 @@ class JERShifter : public EL::Algorithm
     std::string m_outAuxContainerName;
     std::string m_jetAlgo;
     bool m_debug; //!
+
+  private:
+    xAOD::TEvent *m_event;  //!
+    xAOD::TStore *m_store;  //!
+    int m_numEvent;         //!
 
     JERTool         * m_JERTool;     //!
     JERSmearingTool * m_JERSmearing; //!

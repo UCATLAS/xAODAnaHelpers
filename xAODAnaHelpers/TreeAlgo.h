@@ -19,16 +19,6 @@ public:
   const std::string m_name;
   std::string m_configName;
 
-  xAOD::TEvent *m_event;               //!
-  xAOD::TStore *m_store;               //!
-
-
-private:
-
-  HelpTreeBase* m_helpTree;            //!
-
-protected:
-
   // holds bools that control which branches are filled
   std::string m_evtDetailStr;	       //!
   std::string m_muDetailStr;	       //!
@@ -43,6 +33,12 @@ protected:
   std::string m_fatJetContainerName;   //!
 
   bool m_debug; //!
+
+private:
+  xAOD::TEvent *m_event;               //!
+  xAOD::TStore *m_store;               //!
+
+  HelpTreeBase* m_helpTree;            //!
 
 public:
 

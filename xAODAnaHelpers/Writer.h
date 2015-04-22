@@ -14,28 +14,26 @@ class Writer : public EL::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  // float cutValue;
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-  int m_numEvent;         //!
-
   std::string m_name;
   std::string m_configName;
-  bool m_isMC;
 
   bool m_debug; //!
-
-private:
 
   TString m_outputLabel;
 
   TString m_jetContainerNamesStr;
-  std::vector<TString> m_jetContainerNames;
-
   TString m_electronContainerNamesStr;
-  std::vector<TString> m_electronContainerNames;
-
   TString m_muonContainerNamesStr;
+
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+  int m_numEvent;         //!
+
+  bool m_isMC;
+
+  std::vector<TString> m_jetContainerNames;
+  std::vector<TString> m_electronContainerNames;
   std::vector<TString> m_muonContainerNames;
 
   // variables that don't get filled at submission time should be

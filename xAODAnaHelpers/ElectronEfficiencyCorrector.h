@@ -26,30 +26,10 @@ class ElectronEfficiencyCorrector : public EL::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-  int m_numEvent;         //!
-  int m_numObject;        //!
-
   std::string m_name;
   std::string m_configName;
 
-  std::string m_corrFileName1;
-  //std::string m_corrFileName1;
-
-  // systematics
-  std::string m_systName;
-  float m_systVal;
-  bool m_runSysts;
-  std::vector<CP::SystematicSet> m_systList; //!
-
   bool m_debug;
-
-private:
-
-  // tools
-  AsgElectronEfficiencyCorrectionTool  *m_asgElectronEfficiencyCorrectionTool; //!
 
   // configuration variables
   std::string m_inContainerName;
@@ -57,6 +37,23 @@ private:
   std::string m_outAuxContainerName;
   std::string m_inputAlgo;               // input type - from xAOD or from xAODAnaHelpers Algo output
   std::string m_outputAlgo;
+
+  // systematics
+  std::string m_systName;
+  float m_systVal;
+  std::string m_corrFileName1;
+
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+  int m_numEvent;         //!
+  int m_numObject;        //!
+
+  bool m_runSysts;
+  std::vector<CP::SystematicSet> m_systList; //!
+
+  // tools
+  AsgElectronEfficiencyCorrectionTool  *m_asgElectronEfficiencyCorrectionTool; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

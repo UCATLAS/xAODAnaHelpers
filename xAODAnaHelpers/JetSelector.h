@@ -21,32 +21,11 @@ class JetSelector : public EL::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-  int m_numEvent;         //!
-  int m_numObject;        //!
-  int m_numEventPass;     //!
-  int m_weightNumEventPass; //!
-  int m_numObjectPass;    //!
-  int m_pvLocation;       //!
-
   std::string m_name;
   std::string m_configName;
 
   bool m_debug;                  //!
-
-  bool m_isEMjet;                //!
-  bool m_isLCjet;                //!
-
-  // cutflow
   bool m_useCutFlow;            //!
-  TH1D* m_cutflowHist;          //!
-  TH1D* m_cutflowHistW;         //!
-  int   m_cutflow_bin;          //!
-
-private:
-
 
   // configuration variables
   std::string m_inContainerName;   //! input container name
@@ -85,6 +64,25 @@ private:
 
   std::string              m_passAuxDecorKeys;  //!
   std::string              m_failAuxDecorKeys;  //!
+
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+  int m_numEvent;         //!
+  int m_numObject;        //!
+  int m_numEventPass;     //!
+  int m_weightNumEventPass; //!
+  int m_numObjectPass;    //!
+  int m_pvLocation;       //!
+
+  bool m_isEMjet;                //!
+  bool m_isLCjet;                //!
+
+  // cutflow
+  TH1D* m_cutflowHist;          //!
+  TH1D* m_cutflowHistW;         //!
+  int   m_cutflow_bin;          //!
+
   std::vector<std::string> m_passKeys;  //!
   std::vector<std::string> m_failKeys;  //!
 

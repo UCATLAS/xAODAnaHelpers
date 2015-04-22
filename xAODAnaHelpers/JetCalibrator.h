@@ -24,31 +24,10 @@ class JetCalibrator : public EL::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-  int m_numEvent;         //!
-  int m_numObject;        //!
-
   std::string m_name;
   std::string m_configName;
-  bool m_isMC;
-  bool m_isFullSim;
-
-  // systematics
-  std::string m_systName;
-  float m_systVal;
-  bool m_runSysts;
-  std::vector<CP::SystematicSet> m_systList; //!
 
   bool m_debug;           //!
-
-private:
-
-  // tools
-  JetCalibrationTool    * m_jetCalibration; //!
-  JetCleaningTool       * m_jetCleaning;    //!
-  JetUncertaintiesTool  * m_jetUncert;      //!
 
   // configuration variables
   std::string m_inContainerName;        //!
@@ -63,13 +42,31 @@ private:
   std::string m_calibConfigAFII;        //!
   std::string m_calibConfig;            //!
   std::string m_calibSequence;          //!
+  std::string m_jetCalibCutLevel;   //!
   std::string m_jetUncertAlgo;          //!
   std::string m_uncertConfig;           //!
   // sort after calibration
   bool    m_sort;                   //!
 
-  std::string m_jetCalibCutLevel;   //!
+  // systematics
+  std::string m_systName;
+  float m_systVal;
+  bool m_runSysts;
+  std::vector<CP::SystematicSet> m_systList; //!
 
+private:
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+  int m_numEvent;         //!
+  int m_numObject;        //!
+
+  bool m_isMC;
+  bool m_isFullSim;
+
+  // tools
+  JetCalibrationTool    * m_jetCalibration; //!
+  JetCleaningTool       * m_jetCleaning;    //!
+  JetUncertaintiesTool  * m_jetUncert;      //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
