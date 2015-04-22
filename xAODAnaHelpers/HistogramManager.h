@@ -32,9 +32,6 @@ class HistogramManager {
     virtual EL::StatusCode initialize(){ return EL::StatusCode::SUCCESS; };
     virtual EL::StatusCode execute(){ return EL::StatusCode::SUCCESS; };
     virtual EL::StatusCode finalize(){ return EL::StatusCode::SUCCESS; };
-    virtual EL::StatusCode initializeUser(){ return EL::StatusCode::SUCCESS; };
-    virtual EL::StatusCode executeUser(){ return EL::StatusCode::SUCCESS; };
-    virtual EL::StatusCode finalizeUser(){ return EL::StatusCode::SUCCESS; };
 
     // @book - record a histogram and call various functions
     //      ** This is an overloaded function. It will build the right histogram

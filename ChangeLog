@@ -1,7 +1,12 @@
+2015-04-22 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
+	* Delete initializeUser() and executeUser() from HistogramManager and
+	JetHists, you should just create a new class that inherits from
+	HistogramManager if you want to add more plots... It's not that hard.
+
 2015-04-22 John Alison <John.Alison@cern.ch>
 	* Bugfixes: comment out TreeAlgo* out_tree in test_multiAlgo
 	*           castString -> getSTring in JetCalibrator.cxx
-	
+
 2015-04-22 John Alison <John.Alison@cern.ch>
 	* Merge BJetSelector into JetSelector
 	* Add BJetEfficiencyCorrector
