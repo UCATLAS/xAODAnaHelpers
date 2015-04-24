@@ -1,3 +1,6 @@
+2015-04-23 John Alison <John.Alison@cern.ch>
+	* Update BJetEfficiencyCorrector to decorate the input container, not creat new output
+
 2015-04-22 Giordon Stark <Giordon.Holtsberg.Stark@cern.ch>
 	* Add test_jetPlotExample.json as an example of how to run using the
 	python script utility `xAH_run.py input.root --config

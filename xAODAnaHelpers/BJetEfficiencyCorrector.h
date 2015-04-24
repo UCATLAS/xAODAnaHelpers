@@ -33,8 +33,6 @@ public:
 
   bool m_debug;                  //!
   std::string m_inContainerName;     //!
-  std::string m_outContainerName;    //!
-  std::string m_outAuxContainerName; //!
 
   // systematics
   bool m_runAllSyst;                 //!
@@ -70,9 +68,6 @@ private:
   // protected from being send from the submission node to the worker
   // node (done by the //!)
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
-
 
   // this is a standard constructor
   BJetEfficiencyCorrector ();

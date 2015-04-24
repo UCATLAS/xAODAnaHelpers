@@ -132,7 +132,7 @@ EL::StatusCode JetHistsAlgo :: execute ()
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if( m_inputAlgo.empty() ) {
-    RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,("Failed to get "+m_inContainerName).c_str());
 
     /* two ways to fill */
 

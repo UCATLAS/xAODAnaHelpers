@@ -64,25 +64,26 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 
     TEnv* config = new TEnv(m_configName.c_str());
 
-    // read debug flag from .config file
+    //
+    // read flags set from .config file
+    //
     m_debug                   = config->GetValue("Debug" , false );
-    // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
-    m_outContainerName        = config->GetValue("OutputContainer", "");
-    m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-
-    // Systematics stuff
-    m_runAllSyst              = config->GetValue("RunAllSyst" ,      false ); // default: false
-    m_systName		          = config->GetValue("SystName" ,       "" );      // default: no syst
+    m_systName                = config->GetValue("SystName" ,       "" );      // default: no syst
     m_outputSystName          = config->GetValue("OutputSystName",  "BJetEfficiency_Algo");
 
-    // file(s) containing corrections
+    //
+    // configuration of the bjet eff tool
+    //
     m_corrFileName           = config->GetValue("CorrectionFileName", "2014-Winter-8TeV-MC12-CDI.root" );
     m_jetAuthor              = config->GetValue("JetAuthor",          "AntiKt4TopoEMJVF0_5" );
     m_taggerName             = config->GetValue("TaggerName",         "MV1" );
     m_useDevelopmentFile     = config->GetValue("UseDevelopmentFile", true );
     m_coneFlavourLabel       = config->GetValue("ConeFlavourLabel",   true );
+
+    //
     // Btag quality
+    //
     m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
     m_btag_loose              = config->GetValue("BTagLoose",       false);
     m_btag_medium             = config->GetValue("BTagMedium",      false);
@@ -113,6 +114,8 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     if( m_btag_tight     ) { m_operatingPt = "0_9827"; m_decor += "_BTagTight";      }
   }
 
+  m_runAllSyst = (m_systName.find("All") != std::string::npos);
+
   if( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
@@ -124,14 +127,6 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 
 EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 {
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
   Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
@@ -144,10 +139,6 @@ EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 
 EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
-  // Here you do everything that needs to be done at the very
-  // beginning on each worker node, e.g. create histograms and output
-  // trees.  This method gets called before any input files are
-  // connected.
   return EL::StatusCode::SUCCESS;
 }
 
@@ -155,8 +146,6 @@ EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
 
 EL::StatusCode BJetEfficiencyCorrector :: fileExecute ()
 {
-  // Here you do everything that needs to be done exactly once for every
-  // single file, e.g. collect a list of all lumi-blocks processed
   return EL::StatusCode::SUCCESS;
 }
 
@@ -164,25 +153,11 @@ EL::StatusCode BJetEfficiencyCorrector :: fileExecute ()
 
 EL::StatusCode BJetEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 {
-  // Here you do everything you need to do when we change input files,
-  // e.g. resetting branch addresses on trees.  If you are using
-  // D3PDReader or a similar service this method is not needed.
   return EL::StatusCode::SUCCESS;
 }
 
-
-
 EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 {
-  // Here you do everything that you need to do after the first input
-  // file has been connected and before the first event is processed,
-  // e.g. create additional histograms based on which variables are
-  // available in the input files.  You can also create all of your
-  // histograms and trees in here, but be aware that this method
-  // doesn't get called if no events are processed.  So any objects
-  // you create here won't be available in the output if you have no
-  // input events.
-
   Info("initialize()", "Initializing BJetEfficiencyCorrector Interface... ");
 
   m_event = wk()->xaodEvent();
@@ -195,11 +170,16 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  //
   // initialize the BJetEfficiencyCorrectionTool
+  //
   std::string sf_tool_name = std::string("BJetEfficiencyCorrectionTool_") + m_name;
   m_BJetEffSFTool = new BTaggingEfficiencyTool( "BTagTest" );
   m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
+  //
+  //  Configure the BJetEfficiencyCorrectionTool
+  //
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName),"Failed to set property");
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property");
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property");
@@ -208,6 +188,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel), "Failed to set property");
   RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->initialize(), "Failed to properly initialize the BJetEfficiencyCorrectionTool");
 
+  //
+  // Print out
+  //
   std::cout << "-----------------------------------------------------" << std::endl;
   const std::map<CP::SystematicVariation, std::vector<std::string> > allowed_variations = m_BJetEffSFTool->listSystematics();
   std::cout << "Allowed systematics variations for tool " << m_BJetEffSFTool->name() << ":" << std::endl;
@@ -218,7 +201,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
   std::cout << "-----------------------------------------------------" << std::endl;
 
-
+  
   // Get a list of affecting systematics
   CP::SystematicSet affectSysts = m_BJetEffSFTool->affectingSystematics();
   // Convert into a simple list
@@ -235,8 +218,12 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
       Info("initialize()"," available recommended systematic: %s", (syst_it.name()).c_str());
   }
 
-  if( m_systName.empty() && !m_runAllSyst ){
+  if( m_systName.empty() ){
     Info("initialize()"," Running w/ nominal configuration!");
+  }
+
+  if( m_runAllSyst ){
+    Info("initialize()"," Running w/ All systematics");
   }
 
   Info("initialize()", "BJetEfficiencyCorrector Interface succesfully initialized!" );
@@ -247,28 +234,11 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
-  // Here you do everything that needs to be done on every single
-  // events, e.g. read input variables, apply cuts, and fill
-  // histograms and trees.  This is where most of your actual analysis
-  // code will go.
-
   if(m_debug) Info("execute()", "Applying BJet Efficiency Correction... ");
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* correctedJets(nullptr);
   RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedJets, m_inContainerName, m_event, m_store, m_debug) ,"");
-
-  // create ConstDataVector to be eventually stored in TStore
-  ConstDataVector<xAOD::JetContainer>* correctedJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-  correctedJetsCDV->reserve( correctedJets->size() );
-
-  if(m_debug){
-    unsigned int idx(0);
-    for( auto jet_itr : *(correctedJets) ) {
-      Info( "execute", "Input Jet %i, pt = %.2f GeV ", idx, (jet_itr->pt() * 1e-3) );
-      ++idx;
-    }
-  }
 
   //
   // loop over available systematics
@@ -357,16 +327,6 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   } // close loop on systematics
 
   //
-  // save pointers in ConstDataVector
-  //
-  RETURN_CHECK( "BJetEfficiencyCorrections::execute()", HelperFunctions::makeSubsetCont(correctedJets, correctedJetsCDV, "", ToolName::CORRECTOR), "");
-
-  //
-  // add container to TStore
-  //
-  RETURN_CHECK( "BJetEfficiencyCorrector::execute()", m_store->record( correctedJetsCDV,  m_outContainerName ), "Failed to store container.");
-
-  //
   // add list of sys names to TStore
   //
   RETURN_CHECK( "BJetEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystName), "Failed to record vector of systematic names.");
@@ -377,12 +337,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
 EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
 {
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
   if(m_debug) Info("postExecute()", "Calling postExecute");
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -390,22 +345,10 @@ EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
 
 EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 {
-  // This method is the mirror image of initialize(), meaning it gets
-  // called after the last event has been processed on the worker node
-  // and allows you to finish up any objects you created in
-  // initialize() before they are written to disk.  This is actually
-  // fairly rare, since this happens separately for each worker node.
-  // Most of the time you want to do your post-processing on the
-  // submission node after all your histogram outputs have been
-  // merged.  This is different from histFinalize() in that it only
-  // gets called on worker nodes that processed input events.
-
   Info("finalize()", "Deleting tool instances...");
-
   if(m_BJetEffSFTool){
     delete m_BJetEffSFTool; m_BJetEffSFTool = nullptr;
   }
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -413,19 +356,7 @@ EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 
 EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 {
-  // This method is the mirror image of histInitialize(), meaning it
-  // gets called after the last event has been processed on the worker
-  // node and allows you to finish up any objects you created in
-  // histInitialize() before they are written to disk.  This is
-  // actually fairly rare, since this happens separately for each
-  // worker node.  Most of the time you want to do your
-  // post-processing on the submission node after all your histogram
-  // outputs have been merged.  This is different from finalize() in
-  // that it gets called on all worker nodes regardless of whether
-  // they processed input events.
-
   Info("histFinalize()", "Calling histFinalize");
-
   return EL::StatusCode::SUCCESS;
 }
 

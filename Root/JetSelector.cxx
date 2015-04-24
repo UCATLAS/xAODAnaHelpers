@@ -406,7 +406,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     if(m_decorateSelectedObjects) {
       jet_itr->auxdecor< char >( m_decor ) = passSel;
     }
-
+    
     // event level cut if any of the N leading jets are not clean
     if(m_cleanEvtLeadJets > 0 && nObj <= m_cleanEvtLeadJets) {
       if( jet_itr->isAvailable< char >( "cleanJet" ) ) {
