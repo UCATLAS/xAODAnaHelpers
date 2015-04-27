@@ -150,6 +150,7 @@ protected:
   std::vector<float> m_jet_fracSampMax;
   std::vector<float> m_jet_fracSampMaxIdx;
   std::vector<float> m_jet_lowEtFrac;
+  std::vector<float> m_jet_muonSegCount;
 
   // layer
   std::vector< std::vector<float> > m_jet_ePerSamp;

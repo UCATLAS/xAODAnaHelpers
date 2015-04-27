@@ -113,3 +113,5 @@
 2015-04-22 Gabriel Facini <Gabriel.Facini@cern.ch>
   * HelpTreeBase - stop compilation warnings ( some remain for lepton track parameters )
 
+2015-04-27 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * HelpTreeBase - add muon segments to jet energy switch

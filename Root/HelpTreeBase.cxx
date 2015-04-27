@@ -483,6 +483,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_FracSamplingMax",       &m_jet_fracSampMax    );
     m_tree->Branch("jet_FracSamplingMaxIndex",  &m_jet_fracSampMaxIdx );
     m_tree->Branch("jet_LowEtConstituentsFrac", &m_jet_lowEtFrac      );
+    m_tree->Branch("jet_GhostMuonSegmentCount", &m_jet_muonSegCount   );
   }
 
   if ( m_jetInfoSwitch->m_layer ) {
@@ -657,6 +658,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       if ( lowEtFrac.isAvailable( *jet_itr ) ) {
         m_jet_lowEtFrac.push_back( lowEtFrac( *jet_itr ) );
       } else { m_jet_lowEtFrac.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<int> muonSegCount ("GhostMuonSegmentCount");
+      if ( muonSegCount.isAvailable( *jet_itr ) ) {
+        m_jet_muonSegCount.push_back( muonSegCount( *jet_itr ) );
+      } else { m_jet_muonSegCount.push_back( -999 ); }
 
     } // energy
 
@@ -1059,6 +1065,7 @@ void HelpTreeBase::ClearJets() {
     m_jet_fracSampMax.clear();
     m_jet_fracSampMaxIdx.clear();
     m_jet_lowEtFrac.clear();
+    m_jet_muonSegCount.clear();
   }
 
   // layer
