@@ -307,7 +307,50 @@ namespace HelperFunctions {
       return *link;
     }
 
+  //
+  // For Sorting
+  //
+  struct pt_sort
+  {
 
+    inline bool operator() (const TLorentzVector& lhs, const TLorentzVector& rhs)
+    {
+      return (lhs.Pt() > rhs.Pt());
+    }
+
+    inline bool operator() (const TLorentzVector* lhs, const TLorentzVector* rhs)
+    {
+      return (lhs->Pt() > rhs->Pt());
+    }
+
+    inline bool operator() (const xAOD::IParticle& lhs, const xAOD::IParticle& rhs)
+    {
+      return (lhs.pt() > rhs.pt());
+    }
+
+    inline bool operator() (const xAOD::IParticle* lhs, const xAOD::IParticle* rhs)
+    {
+      return (lhs->pt() > rhs->pt());
+    }
+  };
+  
+
+  template<typename T>
+    T sort_container_pt(T* inCont){
+    T sortedCont(SG::VIEW_ELEMENTS);
+    for(auto el : *inCont) sortedCont.push_back( el );
+    std::sort(sortedCont.begin(), sortedCont.end(), pt_sort());
+    return sortedCont;
+  }
+
+  template<typename T>
+    const T sort_container_pt(const T* inCont){
+    ConstDataVector<T> sortedCont(SG::VIEW_ELEMENTS);
+
+    for(auto el : *inCont) sortedCont.push_back( el );
+    std::sort(sortedCont.begin(), sortedCont.end(), pt_sort());
+    return *sortedCont.asDataVector();
+  }
 
 } // close namespace HelperFunctions
 

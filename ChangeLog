@@ -1,3 +1,6 @@
+2015-04-29 John Alison <John.Alison@cern.ch>
+	* Adding templated sorting pt functions (c.o. G. Stark)
+
 2015-04-23 John Alison <John.Alison@cern.ch>
 	* Update BJetEfficiencyCorrector to decorate the input container, not creat new output
 
