@@ -112,14 +112,14 @@ protected:
   double m_rhoEM;
   double m_rhoLC;
   // truth
-  int m_pdgid1;
-  int m_pdgid2;
-  int m_pdfid1;
-  int m_pdfid2;
+  int m_pdgId1;
+  int m_pdgId2;
+  int m_pdfId1;
+  int m_pdfId2;
   float m_x1;
   float m_x2;
   //float m_scale;
-  //float m_q;
+  float m_q;
   //float m_pdf1;
   //float m_pdf2;
   float m_xf1;

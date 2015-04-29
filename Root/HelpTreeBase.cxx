@@ -74,10 +74,10 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   }
 
   if( m_eventInfoSwitch->m_truth ) {
-    m_tree->Branch("pdgid1",            &m_pdgid1,        "pdgid1/I" );
-    m_tree->Branch("pdgid2",            &m_pdgid2,        "pdgid2/I" );
-    m_tree->Branch("pdfid1",            &m_pdfid1,        "pdfid1/I" );
-    m_tree->Branch("pdfid2",            &m_pdfid2,        "pdfid2/I" );
+    m_tree->Branch("pdgId1",            &m_pdgId1,        "pdgId1/I" );
+    m_tree->Branch("pdgId2",            &m_pdgId2,        "pdgId2/I" );
+    m_tree->Branch("pdfId1",            &m_pdfId1,        "pdfId1/I" );
+    m_tree->Branch("pdfId2",            &m_pdfId2,        "pdfId2/I" );
     m_tree->Branch("x1",                &m_x1,            "x1/F"  );
     m_tree->Branch("x2",                &m_x2,            "x2/F"  );
     //m_tree->Branch("scale",             &m_scale,         "scale/F");
@@ -150,32 +150,34 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     const xAOD::TruthEventContainer* truthE = 0;
     HelperFunctions::retrieve( truthE, "TruthEvents", event, 0 );
     if( truthE ) {
-      // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODTruth/trunk/xAODTruth/versions/TruthEvent_v1.h
-      // 70          PDGID1 = 0, ///< [int]
-      // 71          PDGID2 = 1, ///< [int]
-      // 72          PDFID1 = 2, ///< [int]
-      // 73          PDFID2 = 3, ///< [int]
-      // 74          X1 = 4,     ///< [float]
-      // 75          X2 = 5,     ///< [float]
-      // 76          SCALE = 6,  ///< Not implemented!!!
-      // 77          Q = 6,      ///< [float]
-      // 78          PDF1 = 7,   ///< Not implemented!!!
-      // 79          PDF2 = 8,   ///< Not implemented!!!
-      // 80          XF1 = 7,    ///< [float]
-      // 81          XF2 = 8     ///< [float]
-      xAOD::TruthEventContainer::const_iterator truthE_itr = truthE->begin();
-      ( *truthE_itr )->pdfInfoParameter(m_pdgid1,   xAOD::TruthEvent::PDGID1);
-      ( *truthE_itr )->pdfInfoParameter(m_pdgid2,   xAOD::TruthEvent::PDGID2);
-      ( *truthE_itr )->pdfInfoParameter(m_pdfid1,   xAOD::TruthEvent::PDFID1);
-      ( *truthE_itr )->pdfInfoParameter(m_pdfid2,   xAOD::TruthEvent::PDFID2);
-      ( *truthE_itr )->pdfInfoParameter(m_x1,       xAOD::TruthEvent::X1);
-      ( *truthE_itr )->pdfInfoParameter(m_x2,       xAOD::TruthEvent::X2);
-      //( *truthE_itr )->pdfInfoParameter(m_scale,    xAOD::TruthEvent::SCALE);
-      //( *truthE_itr )->pdfInfoParameter(m_q,        xAOD::TruthEvent::Q);
-      //( *truthE_itr )->pdfInfoParameter(m_pdf1,     xAOD::TruthEvent::PDF1);
-      //( *truthE_itr )->pdfInfoParameter(m_pdf2,     xAOD::TruthEvent::PDF2);
-      ( *truthE_itr )->pdfInfoParameter(m_xf1,      xAOD::TruthEvent::XF1);
-      ( *truthE_itr )->pdfInfoParameter(m_xf2,      xAOD::TruthEvent::XF2);
+      const xAOD::TruthEvent* truthEvent = truthE->at(0);
+      truthEvent->pdfInfoParameter(m_pdgId1,   xAOD::TruthEvent::PDGID1);
+      truthEvent->pdfInfoParameter(m_pdgId2,   xAOD::TruthEvent::PDGID2);
+      truthEvent->pdfInfoParameter(m_pdfId1,   xAOD::TruthEvent::PDFID1);
+      truthEvent->pdfInfoParameter(m_pdfId2,   xAOD::TruthEvent::PDFID2);
+      truthEvent->pdfInfoParameter(m_x1,       xAOD::TruthEvent::X1);
+      truthEvent->pdfInfoParameter(m_x2,       xAOD::TruthEvent::X2);
+      //truthEvent->pdfInfoParameter(m_scale,    xAOD::TruthEvent::SCALE);
+      //truthEvent->pdfInfoParameter(m_q,        xAOD::TruthEvent::Q);
+      //truthEvent->pdfInfoParameter(m_pdf1,     xAOD::TruthEvent::PDF1);
+      //truthEvent->pdfInfoParameter(m_pdf2,     xAOD::TruthEvent::PDF2);
+      truthEvent->pdfInfoParameter(m_xf1,      xAOD::TruthEvent::XF1);
+      truthEvent->pdfInfoParameter(m_xf2,      xAOD::TruthEvent::XF2);
+
+//      // crashes because of q?`
+//        const xAOD::TruthEvent::PdfInfo info = truthEvent->pdfInfo();
+//        if( info.valid() ) {
+//          m_pdgId1 = info.pdgId1;
+//          m_pdgId2 = info.pdgId2;
+//          m_pdfId1 = info.pdfId1;
+//          m_pdfId2 = info.pdfId2;
+//          m_x1     = info.x1;
+//          m_x2     = info.x2;
+//          //m_q      = info.Q;
+//          m_xf1    = info.xf1;
+//          m_xf2    = info.xf2;
+//        }
+
     }
 
   }
@@ -955,9 +957,10 @@ void HelpTreeBase::ClearEvent() {
   // shapeLC
   m_rhoLC = -999;
   // truth
-  m_pdgid1 = m_pdgid2 = m_pdfid1 = m_pdfid2 = -999;
+  m_pdgId1 = m_pdgId2 = m_pdfId1 = m_pdfId2 = -999;
   m_x1 = m_x2 = -999;
   m_xf1 = m_xf2 = -999;
+
   //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
 }
 
