@@ -115,3 +115,6 @@
 
 2015-04-27 Gabriel Facini <Gabriel.Facini@cern.ch>
   * HelpTreeBase - add muon segments to jet energy switch
+
+2015-04-29 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * HelpTreeBase - clean up truth information - q is not in MC
