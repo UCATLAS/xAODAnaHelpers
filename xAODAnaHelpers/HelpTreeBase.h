@@ -185,12 +185,14 @@ protected:
   std::vector<float> m_jet_mv2c20;
 
   // truth
-  std::vector<int>   m_jet_truthLabelID;
+  std::vector<int>   m_jet_truthConeLabelID;
   std::vector<int>   m_jet_truthCount;
   std::vector<float> m_jet_truthPt;
   std::vector<float> m_jet_truthDr_B;
   std::vector<float> m_jet_truthDr_C;
   std::vector<float> m_jet_truthDr_T;
+  std::vector<int>   m_jet_partonTruthID;
+  std::vector<float> m_jet_ghostTruthAssFrac;
   std::vector<float> m_jet_truth_pt;
   std::vector<float> m_jet_truth_eta;
   std::vector<float> m_jet_truth_phi;

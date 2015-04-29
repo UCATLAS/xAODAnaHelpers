@@ -118,3 +118,8 @@
 
 2015-04-29 Gabriel Facini <Gabriel.Facini@cern.ch>
   * HelpTreeBase - clean up truth information - q is not in MC
+
+2015-04-29 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * HelpTreeBase - move non-standard partron truth code to detailed truth (as
+	as pT and dR which are nice ), added jet moments for ghost assoicated parton
+	label and fraction of pT in truth jet (standard moments). Fix ConeLabel
