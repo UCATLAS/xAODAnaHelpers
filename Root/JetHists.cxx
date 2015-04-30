@@ -3,6 +3,7 @@
 
 #include "xAODAnaHelpers/tools/ReturnCheck.h"
 
+
 JetHists :: JetHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr),
   m_infoSwitch(new HelperClasses::JetInfoSwitch(m_detailStr))
@@ -73,12 +74,37 @@ StatusCode JetHists::initialize() {
   // details for jet energy in each layer
   // plotted as fraction instead of absolute to make the plotting easier
   if( m_infoSwitch->m_layer ) {
-//      LAr barrel
-    m_layer_PreSamplerB = book(m_name, "layer_PreSamplerB", "PreSamplerB Fraction", 120, -0.1, 1.1);
-    m_layer_EMB1        = book(m_name, "layer_EMB1", "EMB1 Fraction", 120, -0.1, 1.1);
-    m_layer_EMB2        = book(m_name, "layer_EMB2", "EMB2 Fraction", 120, -0.1, 1.1);
-    m_layer_EMB3        = book(m_name, "layer_EMB3", "EMB3 Fraction", 120, -0.1, 1.1);
-//      LAr EM endcap
+    m_PreSamplerB  = book(m_name, "PreSamplerB",   "Pre sample barrel", 120, -0.1, 1.1);
+    m_EMB1 = book(m_name, "EMB1", "EM Barrel  1", 120, -0.1, 1.1);
+    m_EMB2 = book(m_name, "EMB2", "EM Barrel  2", 120, -0.1, 1.1);
+    m_EMB3 = book(m_name, "EMB3", "EM Barrel  3", 120, -0.1, 1.1);
+    m_PreSamplerE  = book(m_name, "PreSamplerE",   "Pre sample end cap", 120, -0.1, 1.1);
+    m_EME1 = book(m_name, "EME1", "EM Endcap  1", 120, -0.1, 1.1);
+    m_EME2 = book(m_name, "EME2", "EM Endcap  2", 120, -0.1, 1.1);
+    m_EME3 = book(m_name, "EME3", "EM Endcap  3", 120, -0.1, 1.1);
+    m_HEC0 = book(m_name, "HEC0", "Hadronic Endcap  0", 120, -0.1, 1.1);
+    m_HEC1 = book(m_name, "HEC1", "Hadronic Endcap  1", 120, -0.1, 1.1);
+    m_HEC2 = book(m_name, "HEC2", "Hadronic Endcap  2", 120, -0.1, 1.1);
+    m_HEC3 = book(m_name, "HEC3", "Hadronic Endcap  3", 120, -0.1, 1.1);
+    m_TileBar0 = book(m_name, "TileBar0", "Tile Barrel  0", 120, -0.1, 1.1);
+    m_TileBar1 = book(m_name, "TileBar1", "Tile Barrel  1", 120, -0.1, 1.1);
+    m_TileBar2 = book(m_name, "TileBar2", "Tile Barrel  2", 120, -0.1, 1.1);
+    m_TileGap1 = book(m_name, "TileGap1", "Tile Gap  1", 120, -0.1, 1.1);
+    m_TileGap2 = book(m_name, "TileGap2", "Tile Gap  2", 120, -0.1, 1.1);
+    m_TileGap3 = book(m_name, "TileGap3", "Tile Gap  3", 120, -0.1, 1.1);
+    m_TileExt0 = book(m_name, "TileExt0", "Tile extended barrel  0", 120, -0.1, 1.1);
+    m_TileExt1 = book(m_name, "TileExt1", "Tile extended barrel  1", 120, -0.1, 1.1);
+    m_TileExt2 = book(m_name, "TileExt2", "Tile extended barrel  2", 120, -0.1, 1.1);
+    m_FCAL0 = book(m_name, "FCAL0", "Foward EM endcap  0", 120, -0.1, 1.1);
+    m_FCAL1 = book(m_name, "FCAL1", "Foward EM endcap  1", 120, -0.1, 1.1);
+    m_FCAL2 = book(m_name, "FCAL2", "Foward EM endcap  2", 120, -0.1, 1.1);
+
+//      LAr calo barrel
+//      PreSamplerB 0
+//      EMB1 1
+//      EMB2 2
+//      EMB3 3
+//      LAr calo endcap
 //      PreSamplerE 4
 //      EME1  5
 //      EME2  6
@@ -320,19 +346,38 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc
 
   }
 
-  if( m_infoSwitch->m_layer ) {
+  if( m_infoSwitch->m_layer ){
     static SG::AuxElement::ConstAccessor< std::vector<float> > ePerSamp ("EnergyPerSampling");
     if( ePerSamp.isAvailable( *jet ) ) {
       std::vector<float> ePerSampVals = ePerSamp( *jet );
       float jetE = jet->e();
-//      LAr barrel
-      m_layer_PreSamplerB -> Fill( ePerSampVals.at(0) / jetE );
-      m_layer_EMB1        -> Fill( ePerSampVals.at(1) / jetE );
-      m_layer_EMB2        -> Fill( ePerSampVals.at(2) / jetE );
-      m_layer_EMB3        -> Fill( ePerSampVals.at(3) / jetE );
-//      LAr EM endcap
+      m_PreSamplerB -> Fill( ePerSampVals.at(0) / jetE );
+      m_EMB1        -> Fill( ePerSampVals.at(1) / jetE );
+      m_EMB2        -> Fill( ePerSampVals.at(2) / jetE );
+      m_EMB3        -> Fill( ePerSampVals.at(3) / jetE );
+      m_PreSamplerE -> Fill( ePerSampVals.at(4) / jetE );
+      m_EME1        -> Fill( ePerSampVals.at(5) / jetE );
+      m_EME2        -> Fill( ePerSampVals.at(6) / jetE );
+      m_EME3        -> Fill( ePerSampVals.at(7) / jetE );
+      m_HEC0        -> Fill( ePerSampVals.at(8) / jetE );
+      m_HEC1        -> Fill( ePerSampVals.at(9) / jetE );
+      m_HEC2        -> Fill( ePerSampVals.at(10) / jetE );
+      m_HEC3        -> Fill( ePerSampVals.at(11) / jetE );
+      m_TileBar0    -> Fill( ePerSampVals.at(12) / jetE );
+      m_TileBar1    -> Fill( ePerSampVals.at(13) / jetE );
+      m_TileBar2    -> Fill( ePerSampVals.at(14) / jetE );
+      m_TileGap1    -> Fill( ePerSampVals.at(15) / jetE );
+      m_TileGap2    -> Fill( ePerSampVals.at(16) / jetE );
+      m_TileGap3    -> Fill( ePerSampVals.at(17) / jetE );
+      m_TileExt0    -> Fill( ePerSampVals.at(18) / jetE );
+      m_TileExt1    -> Fill( ePerSampVals.at(19) / jetE );
+      m_TileExt2    -> Fill( ePerSampVals.at(20) / jetE );
+      m_FCAL0       -> Fill( ePerSampVals.at(21) / jetE );
+      m_FCAL1       -> Fill( ePerSampVals.at(22) / jetE );
+      m_FCAL2       -> Fill( ePerSampVals.at(23) / jetE );
     }
   }
+
 
 
   // area
