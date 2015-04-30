@@ -3,7 +3,7 @@
  * Basic event selection. Performs general simple cuts (GRL, Event Cleaning, Min nr. Tracks for PV candidate)
  *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
- * Jan 28 16:44 AEST 2015
+ * 
  *
  ******************************************/
 
@@ -69,37 +69,40 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
 
 EL::StatusCode BasicEventSelection :: configure ()
 {
-  if(!m_configName.empty()){
+  
+  if ( !m_configName.empty() ) {
     // read in user configuration from text file
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
     RETURN_CHECK_CONFIG( "BasicEventSelection::configure()", m_configName);
 
-    TEnv *env = new TEnv(m_configName.c_str());
-    if( !env ) {
+    TEnv *config = new TEnv(m_configName.c_str());
+    if ( !config ) {
       Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );
       return EL::StatusCode::FAILURE;
     }
 
     // basics
-    m_debug          = env->GetValue("Debug"     ,     false);
-    m_truthLevelOnly = env->GetValue("TruthLevelOnly", false);
+    m_debug             = config->GetValue("Debug"     ,     false);
+    m_truthLevelOnly    = config->GetValue("TruthLevelOnly", false);
 
     // GRL
-    m_GRLxml        = env->GetValue("GRL","$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+    m_GRLxml            = config->GetValue("GRL","$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
 
     // Pileup Reweighting
-    m_doPUreweighting = env->GetValue("DoPileupReweighting", false);
+    m_doPUreweighting   = config->GetValue("DoPileupReweighting", false);
 
-    if(!m_truthLevelOnly) {
+    if ( !m_truthLevelOnly ) {
       // primary vertex
-      m_vertexContainerName = env->GetValue("VertexContainer", "PrimaryVertices");
+      m_vertexContainerName = config->GetValue("VertexContainer", "PrimaryVertices");
       // number of tracks to require to count PVs
-      m_PVNTrack            = env->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
+      m_PVNTrack            = config->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
     }
-    env->Print();
+    
+    config->Print();
+    
     Info("configure()", "BasicEventSelection succesfully configured! ");
 
-    delete env;
+    delete config; config = nullptr;
   }
 
   return EL::StatusCode::SUCCESS;

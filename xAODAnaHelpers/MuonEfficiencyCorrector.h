@@ -23,25 +23,29 @@ class MuonEfficiencyCorrector : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
+
 public:
 
-  std::string m_name;
-  std::string m_configName;
+  std::string   m_name;
+  std::string   m_configName;
 
-  std::string m_corrFileName1;
-  //std::string m_corrFileName1;
-
-  // systematics
-  bool m_runAllSyst;
-  std::string m_systName;
-  float m_systSigma;
-
-  bool m_debug;
   // configuration variables
-  std::string m_inContainerName;
-  std::string m_outContainerName;
+ 
+  bool          m_debug;
+  
+  std::string   m_inContainerName;
+  std::string   m_outContainerName;
+
+  std::string   m_WorkingPoint;
+  std::string   m_DataPeriod;
+  
+  // systematics
+  bool          m_runAllSyst;
+  std::string   m_systName;
+  float         m_systSigma;
 
 private:
+
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
@@ -57,9 +61,11 @@ private:
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
+
 public:
+
   // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // TH1 *myHist;  //!
 
 
   // this is a standard constructor

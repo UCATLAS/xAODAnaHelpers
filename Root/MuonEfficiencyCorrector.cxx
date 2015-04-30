@@ -43,8 +43,7 @@ using HelperClasses::ToolName;
 ClassImp(MuonEfficiencyCorrector)
 
 
-MuonEfficiencyCorrector :: MuonEfficiencyCorrector () {
-}
+MuonEfficiencyCorrector :: MuonEfficiencyCorrector () { }
 
 MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string name, std::string configName ) :
   Algorithm(),
@@ -66,7 +65,9 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string name, std::strin
 
 EL::StatusCode  MuonEfficiencyCorrector :: configure ()
 {
-  if(!m_configName.empty()){
+  
+  if ( !m_configName.empty() ) {
+    
     Info("configure()", "Configuing MuonEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -80,23 +81,23 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
     m_inContainerName         = config->GetValue("InputContainer",  "");
     m_outContainerName        = config->GetValue("OutputContainer", "");
 
+    m_WorkingPoint            = config->GetValue("WorkingPoint", "CBandST" );
+    m_DataPeriod              = config->GetValue("DataPeriod",   "2012" );
+
     // Systematics stuff
     m_runAllSyst              = config->GetValue("RunAllSyst" , false ); // default: false
-    m_systName		    = config->GetValue("SystName" , "" );      // default: no syst
-    m_systSigma 		    = config->GetValue("SystSigma" , 0. );
-    // file(s) containing corrections
-    m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
-    //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
-
+    m_systName		      = config->GetValue("SystName" , "" );      // default: no syst
+    m_systSigma 	      = config->GetValue("SystSigma" , 0. );
+    
     config->Print();
     Info("configure()", "MuonEfficiencyCorrector Interface succesfully configured! ");
 
-    delete config;
+    delete config; config = nullptr;
   }
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
-  if( m_inContainerName.empty() ) {
+  if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -186,8 +187,8 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_MuonEffSFTool = new CP::MuonEfficiencyScaleFactors( mefsf_tool_name.c_str() );
   m_MuonEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("WorkingPoint","CBandST"),"Failed to set property");  // set the Working Point you are using
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("DataPeriod","2012"),"Failed to set property");
+  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("WorkingPoint", m_WorkingPoint ),"Failed to set property");  
+  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("DataPeriod", m_DataPeriod ),"Failed to set property");
   // test audit trail
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("doAudit",false),"Failed to set property"); // audit trail functionality.
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->initialize(), "Failed to properly initialize the MuonEfficiencyCorrectionTool");
@@ -197,7 +198,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   CP::SystematicSet affectSysts = m_MuonEffSFTool->affectingSystematics();
   // Convert into a simple list
   std::vector<CP::SystematicSet> affectSystList = CP::make_systematics_vector(affectSysts);
-  for ( const auto& syst_it : affectSystList ){
+  for ( const auto& syst_it : affectSystList ) {
       Info("initialize()"," tool can be affected by systematic: %s", (syst_it.name()).c_str());
   }
 
@@ -205,11 +206,11 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   CP::SystematicSet recSysts = m_MuonEffSFTool->recommendedSystematics();
   // Convert into a simple list
   m_systList = CP::make_systematics_vector(recSysts);
-  for ( const auto& syst_it : m_systList ){
+  for ( const auto& syst_it : m_systList ) {
       Info("initialize()"," available recommended systematic: %s", (syst_it.name()).c_str());
   }
 
-  if( m_systName.empty() && !m_runAllSyst ){
+  if ( m_systName.empty() && !m_runAllSyst ) {
       Info("initialize()"," Running w/ nominal configuration!");
   }
 
@@ -226,7 +227,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Muon Efficiency Correction... ");
+  if ( m_debug ) { Info("execute()", "Applying Muon Efficiency Correction... "); }
 
   m_numEvent++;
 
@@ -238,38 +239,39 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   ConstDataVector<xAOD::MuonContainer>* correctedMuonsCDV = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
   correctedMuonsCDV->reserve( correctedMuons->size() );
 
-  if(m_debug){
+  if ( m_debug ) {
     unsigned int idx(0);
-    for( auto mu_itr : *(correctedMuons) ) {
+    for ( auto mu_itr : *(correctedMuons) ) {
       Info( "execute", "Input Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
       ++idx;
     }
   }
 
   // loop over available systematics
-  for(const auto& syst_it : m_systList){
+  for ( const auto& syst_it : m_systList ) {
 
     // prepends syst name to decoration
     std::string SFdecor = std::string("SF");
-    if( !syst_it.name().empty() ){
+    if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
        SFdecor.insert( 0, prepend );
     }
     RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_MuonEffSFTool->setProperty( "ScaleFactorDecorationName", SFdecor.c_str() ), "Failed to set property ScaleFactorDecorationName" );
 
-    if(m_debug) Info("execute()", "SF decoration name is: %s", SFdecor.c_str());
+    if ( m_debug ) { Info("execute()", "SF decoration name is: %s", SFdecor.c_str()); }
 
     // if not running systematics (i.e., syst name is "") or running on one syst only, skip directly all other syst
-    if(!m_runAllSyst){
-      if( syst_it.name() != m_systName ) { continue; }
+    if ( !m_runAllSyst ) {
+      if ( syst_it.name() != m_systName ) { continue; }
     }
 
     // apply syst
-    if (m_MuonEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+    if ( m_MuonEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       Error("initialize()", "Failed to configure MuonEfficiencyCorrections for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
     }
-    if(m_debug) Info("execute()", "Successfully applied systematic: %s", syst_it.name().c_str());
+    
+    if ( m_debug ) { Info("execute()", "Successfully applied systematic: %s", syst_it.name().c_str()); }
 
     // prepare a vector to hold SF replicas
     // the size will tell the tool how many you want
@@ -278,30 +280,30 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
     // and now apply data-driven efficiency and efficiency SF!
     float eff(0.0), SF(0.0);
-    for( auto mu_itr : *(correctedMuons)) {
+    for ( auto mu_itr : *(correctedMuons) ) {
 
 	// directly obtain reco efficiency
-        if( m_MuonEffSFTool->getRecoEfficiency( *mu_itr, eff ) != CP::CorrectionCode::Ok){
+        if ( m_MuonEffSFTool->getRecoEfficiency( *mu_itr, eff ) != CP::CorrectionCode::Ok ) {
     	  Error( "execute()", "Problem in getRecoEfficiency");
     	  return EL::StatusCode::FAILURE;
 	}
-        if(m_debug) Info( "execute", "\t reco efficiency = %g", eff );
+        if ( m_debug ) { Info( "execute", "\t reco efficiency = %g", eff ); }
 
         // directly obtain efficiency SF
-        if( m_MuonEffSFTool->getEfficiencyScaleFactor( *mu_itr, SF ) != CP::CorrectionCode::Ok){
+        if ( m_MuonEffSFTool->getEfficiencyScaleFactor( *mu_itr, SF ) != CP::CorrectionCode::Ok ) {
     	  Error( "execute()", "Problem in getEfficiencyScaleFactor");
     	  return EL::StatusCode::FAILURE;
         }
-	if(m_debug) Info( "execute()", "\t efficiency SF = %g", SF );
+	if ( m_debug ) { Info( "execute()", "\t efficiency SF = %g", SF ); }
 
         // apply reco efficiency as decoration for this muon
-        if( m_MuonEffSFTool->applyRecoEfficiency( *mu_itr ) != CP::CorrectionCode::Ok){
+        if ( m_MuonEffSFTool->applyRecoEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
     	  Error( "execute()", "Problem in applyRecoEfficiency");
     	  return EL::StatusCode::FAILURE;
         }
 
         // apply SF as decoration for this muon
-        if( m_MuonEffSFTool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok){
+        if ( m_MuonEffSFTool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
     	  Error( "execute()", "Problem in applyEfficiencyScaleFactor");
     	  return EL::StatusCode::FAILURE;
         }
@@ -316,19 +318,19 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
         //    Info( "execute()", "\t scaleFactor Replica %d = %.8f",static_cast<int>(t), replicas[t] );
         //  }
 
-        if(m_debug){
+        if ( m_debug ) {
 	  Info( "execute", "===>>> Resulting reco efficiency (from get function) %f, (from apply function) %f", eff, mu_itr->auxdataConst< float >("Efficiency"));
           Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f",              SF,  mu_itr->auxdataConst< float >(SFdecor.c_str()));
 	}
 
-    } // close jet loop
+    } // close muon loop
 
   } // close loop on systematics
 
 
-  if(m_debug){
+  if ( m_debug ) {
     unsigned int idx(0);
-    for( auto mu_itr : *(correctedMuons) ) {
+    for ( auto mu_itr : *(correctedMuons) ) {
       Info( "execute", "Input Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
       ++idx;
     }
@@ -341,7 +343,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   // add container to TStore
   RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( correctedMuonsCDV,  m_outContainerName ), "Failed to store container.");
 
-  if(m_debug) { m_store->print(); }
+  if ( m_debug ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -353,7 +355,7 @@ EL::StatusCode MuonEfficiencyCorrector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
+  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -374,7 +376,7 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_MuonEffSFTool){
+  if ( m_MuonEffSFTool ) {
     delete m_MuonEffSFTool; m_MuonEffSFTool = nullptr;
   }
 

@@ -25,7 +25,9 @@ class ElectronSelector : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
+
 public:
+
   std::string m_name;
   std::string m_configName;
 
@@ -33,67 +35,67 @@ public:
   bool m_useCutFlow;            //!
 
   // configuration variables
-  std::string    m_inContainerName;      // input container name
-  std::string    m_outContainerName;     // output container name
-  std::string    m_outAuxContainerName;  // output auxiliary container name
-  std::string    m_inputAlgo;               // input type - from xAOD or from xAODAnaHelpers Algo output
+  std::string    m_inContainerName;          // input container name
+  std::string    m_outContainerName;         // output container name
+  std::string    m_outAuxContainerName;      // output auxiliary container name
+  std::string    m_inputAlgo;                // input type - from xAOD or from xAODAnaHelpers Algo output
   std::string    m_outputAlgo;
-  bool       m_decorateSelectedObjects;  // decorate selected objects? defaul passSel
-  bool       m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
-  int        m_nToProcess;               // look at n objects
-  int        m_pass_min;                 // minimum number of objects passing cuts
-  int        m_pass_max;                 // maximum number of objects passing cuts
-  float      m_pT_max;                   // require pT < pt_max
-  float      m_pT_min;                   // require pT < pt_max
-  float      m_eta_max;                  // require |eta| < eta_max
-  bool	     m_vetoCrack;                // require |eta| outside crack region
-  float      m_d0_max;                   // require d0 < m_d0_max
-  float      m_d0sig_max;                // require d0 significance (at BL) < m_d0sig_max
-  float	     m_z0sintheta_max;	         // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
+  bool       	 m_decorateSelectedObjects;  // decorate selected objects? defaul passSel
+  bool       	 m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
+  int        	 m_nToProcess;  	     // look at n objects
+  int        	 m_pass_min;		     // minimum number of objects passing cuts
+  int        	 m_pass_max;		     // maximum number of objects passing cuts
+  float      	 m_pT_max;		     // require pT < pt_max
+  float      	 m_pT_min;		     // require pT < pt_max
+  float      	 m_eta_max;		     // require |eta| < eta_max
+  bool	     	 m_vetoCrack;		     // require |eta| outside crack region
+  float      	 m_d0_max;		     // require d0 < m_d0_max
+  float      	 m_d0sig_max;		     // require d0 significance (at BL) < m_d0sig_max
+  float	     	 m_z0sintheta_max;	     // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
 
-  bool       m_doAuthorCut;
-  bool       m_doOQCut;
+  bool           m_doAuthorCut;
+  bool           m_doOQCut;
 
-  std::string  m_confDirPID;
+  std::string    m_confDirPID;
+  
   // likelihood-based PID
-  bool         m_doLHPIDcut;
-  std::string  m_LHPID;
-  std::string  m_LHOperatingPoint;
+  bool           m_doLHPIDcut;
+  std::string    m_LHPID;
+  std::string    m_LHOperatingPoint;
 
   // cut-based PID
-  bool         m_doCutBasedPIDcut;
-  std::string  m_CutBasedPIDMask;
-  std::string  m_PIDName;
-  std::string  m_CutBasedOperatingPoint;
+  bool           m_doCutBasedPIDcut;
+  std::string    m_CutBasedOperatingPoint;
 
   // isolation
-  bool         m_doIsolation;
-  bool         m_useRelativeIso;
-  std::string  m_CaloBasedIsoType;
-  float        m_CaloBasedIsoCut;
-  std::string  m_TrackBasedIsoType;
-  float        m_TrackBasedIsoCut;
+  bool           m_doIsolation;
+  bool           m_useRelativeIso;
+  std::string    m_CaloBasedIsoType;
+  float          m_CaloBasedIsoCut;
+  std::string    m_TrackBasedIsoType;
+  float          m_TrackBasedIsoCut;
 
-  std::string              m_passAuxDecorKeys;  //!
-  std::string              m_failAuxDecorKeys;  //!
+  std::string    m_passAuxDecorKeys;  //!
+  std::string    m_failAuxDecorKeys;  //!
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-  int m_numEvent;         //!
-  int m_numObject;        //!
-  int m_numEventPass;     //!
+
+  xAOD::TEvent *m_event;    //!
+  xAOD::TStore *m_store;    //!
+  int m_numEvent;           //!
+  int m_numObject;          //!
+  int m_numEventPass;       //!
   int m_weightNumEventPass; //!
-  int m_numObjectPass;    //!
+  int m_numObjectPass;      //!
 
   // cutflow
-  TH1D* m_cutflowHist;          //!
-  TH1D* m_cutflowHistW;         //!
-  int   m_cutflow_bin;          //!
+  TH1D* m_cutflowHist;      //!
+  TH1D* m_cutflowHistW;     //!
+  int   m_cutflow_bin;      //!
 
   // tools
-  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ; //!
-  AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool; //!
+  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ;       //!
+  AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool;      //!
   CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
 
   std::vector<std::string> m_passKeys;  //!
@@ -102,7 +104,9 @@ private:
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
+
 public:
+  
   // Tree *myTree; //!
   // TH1 *myHist; //!
 

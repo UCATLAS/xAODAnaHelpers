@@ -69,7 +69,7 @@ ElectronSelector::~ElectronSelector() {}
 
 EL::StatusCode  ElectronSelector :: configure ()
 {
-  if(!m_configName.empty()){
+  if ( !m_configName.empty() ) { 
     Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -78,11 +78,11 @@ EL::StatusCode  ElectronSelector :: configure ()
     TEnv* config = new TEnv(m_configName.c_str());
 
     // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" ,      false );
-    m_useCutFlow    = config->GetValue("UseCutFlow",  true);
+    m_debug                   = config->GetValue("Debug" ,      false);
+    m_useCutFlow              = config->GetValue("UseCutFlow",  true);
 
     // input container to be read from TEvent or TStore
-    m_inContainerName  = config->GetValue("InputContainer",  "");
+    m_inContainerName         = config->GetValue("InputContainer",  "");
 
     // name of algo input container comes from - only if running on systematics
     m_inputAlgo               = config->GetValue("InputAlgo",   "");
@@ -108,31 +108,29 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_eta_max                 = config->GetValue("etaMax", 1e8);
     m_vetoCrack               = config->GetValue("VetoCrack", true);
     m_d0_max                  = config->GetValue("d0Max", 1e8);
-    m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
-    m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
+    m_d0sig_max     	      = config->GetValue("d0sigMax", 1e8);
+    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", 1e8);
 
     m_doAuthorCut             = config->GetValue("DoAuthorCut", true);
     m_doOQCut                 = config->GetValue("DoOQCut", true);
 
     m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
     // likelihood-based PID
-    m_doLHPIDcut         = config->GetValue("DoLHPIDCut", false);
-    m_LHPID              = config->GetValue("LHPID", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
-    m_LHOperatingPoint   = config->GetValue("LHOperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
+    m_doLHPIDcut              = config->GetValue("DoLHPIDCut", false);
+    m_LHPID                   = config->GetValue("LHPID", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
+    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
 
     // cut-based PID
-    m_doCutBasedPIDcut         = config->GetValue("DoCutBasedPIDCut", false);
-    m_CutBasedPIDMask          = config->GetValue("CutBasedPIDMask", "ElectronLoosePP"); // electron PID bitmask.
-    m_PIDName                  = config->GetValue("PIDName", "isEMLoose");               // electron PID bit-def as defined by egammaPID::PID enum (default is isEMLoose ).
-    m_CutBasedOperatingPoint   = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
+    m_doCutBasedPIDcut        = config->GetValue("DoCutBasedPIDCut", false);
+    m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
 
     // isolation stuff
-    m_doIsolation             = config->GetValue("DoIsolationCut"   , false     );
-    m_useRelativeIso          = config->GetValue("UseRelativeIso"   , true      );
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" ,	"etcone20");
-    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
-    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
+    m_doIsolation             = config->GetValue("DoIsolationCut"   , false);
+    m_useRelativeIso          = config->GetValue("UseRelativeIso"   , true );
+    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" , "etcone20");
+    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05 );
+    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType", "ptcone20");
+    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05 );
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
@@ -143,32 +141,20 @@ EL::StatusCode  ElectronSelector :: configure ()
     delete config; config = nullptr;
   }
 
-  if( m_inContainerName.empty() ) {
+  if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-  if( m_LHPID != "VeryLoose" &&
-      m_LHPID != "Loose"     &&
-      m_LHPID != "Medium"    &&
-      m_LHPID != "Tight"     &&
-      m_LHPID != "VeryTight" &&
-      m_LHPID != "LooseRelaxed" ) {
+  
+  if ( m_LHPID != "VeryLoose" &&
+       m_LHPID != "Loose"     &&
+       m_LHPID != "Medium"    &&
+       m_LHPID != "Tight"     &&
+       m_LHPID != "VeryTight" &&
+       m_LHPID != "LooseRelaxed" ) {
     Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHPID.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-
-  if( m_CutBasedPIDMask != "ElectronLoosePP"   &&
-      m_CutBasedPIDMask != "ElectronLoose1"    &&
-      m_CutBasedPIDMask != "ElectronMediumPP"  &&
-      m_CutBasedPIDMask != "ElectronMedium1"   &&
-      m_CutBasedPIDMask != "ElectronTightPP"   &&
-      m_CutBasedPIDMask != "ElectronTight1"    &&
-      m_CutBasedPIDMask != "ElectronLooseHLT"  &&
-      m_CutBasedPIDMask != "ElectronMediumHLT" &&
-      m_CutBasedPIDMask != "ElectronTightHLT" ) {
-    Error("configure()", "Unknown electron cut-based PID bitmask requested %s!",m_CutBasedPIDMask.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -287,59 +273,51 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_numObjectPass = 0;
 
   // tell the selector tools where to find configuration files
+  
   std::string confDir = "ElectronPhotonSelectorTools/offline/" +  m_confDirPID + "/";
 
   // initialise AsgElectronIsEMSelector (cut-based PID)
+  
   std::string asgeisem_tool_name = std::string("AsgElectronIsEMSelector_") + m_name;
   m_asgElectronIsEMSelector = new AsgElectronIsEMSelector( asgeisem_tool_name.c_str() );
   m_asgElectronIsEMSelector->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
   RETURN_CHECK("ElectronSelector::initialize()", m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ), "Failed to set ConfigFile property"); // set the config file that contains the cuts on the shower shapes
-  // Apparently this won't be needed at all ...
-  // HelperClasses::EnumParser<egammaPID::PID> cutBasedPIDParser;
-  // m_asgElectronIsEMSelector->setProperty("PIDName", static_cast<int>(cutBasedPIDParser.parseEnum(m_PIDName)) );
-  // only for DC14 w/ 2012 configuration
-  unsigned int EMMask = 999;
-  if ( m_CutBasedPIDMask == "ElectronLoosePP" ) {
-    EMMask = egammaPID::ElectronLoosePP;
-  } else if ( m_CutBasedPIDMask == "ElectronMediumPP" ) {
-    EMMask = egammaPID::ElectronMediumPP;
-  } else if ( m_CutBasedPIDMask == "ElectronTightPP" ) {
-    EMMask = egammaPID::ElectronTightPP;
-  } else if ( m_CutBasedPIDMask == "ElectronLoose1" ) {
-    EMMask = egammaPID::ElectronLoose1;
-  } else if ( m_CutBasedPIDMask == "ElectronMedium1" ) {
-    EMMask = egammaPID::ElectronMedium1;
-  } else if ( m_CutBasedPIDMask == "ElectronTight1" ) {
-    EMMask = egammaPID::ElectronTight1;
-  } else if ( m_CutBasedPIDMask == "LooseHLT" ) {
-    EMMask = egammaPID::ElectronLooseHLT;
-  } else if ( m_CutBasedPIDMask == "ElectronMediumHLT" ) {
-    EMMask = egammaPID::ElectronMediumHLT;
-  } else if ( m_CutBasedPIDMask == "ElectronTightHLT" ) {
-    EMMask = egammaPID::ElectronTightHLT;
-  } else {
-    Error("initialize()", "Unknown electron cut-based PID bitmask requested %s!",m_CutBasedPIDMask.c_str());
-    return EL::StatusCode::FAILURE;
+  // set the bitmask only for samples with 2012 config
+  if ( m_CutBasedOperatingPoint.find("2012") != std::string::npos ) {
+
+    unsigned int EMMask = 999;
+      
+    if ( m_CutBasedOperatingPoint.find("IsEMLoose") != std::string::npos ) {
+      EMMask = egammaPID::ElectronLoosePP;
+    } else if ( m_CutBasedOperatingPoint.find("IsEMMedium") != std::string::npos ) {
+      EMMask = egammaPID::ElectronMediumPP;
+    } else if ( m_CutBasedOperatingPoint.find("IsEMTight") != std::string::npos ) {
+      EMMask = egammaPID::ElectronTightPP;
+    } else {
+      Error("initialize()", "Unavailable electron cut-based PID bitmask for this operating point!");
+      return EL::StatusCode::FAILURE;
+    }
+
+    RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->setProperty("isEMMask", EMMask ), "Failed to set isEMMask property");
   }
-  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->setProperty("isEMMask", EMMask ), "Failed to set isEMMask property");
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
 
   // initialise AsgElectronLikelihoodTool (likelihood-based PID)
+  
   std::string asgel_tool_name = std::string("AsgElectronLikelihoodTool_") + m_name;
   m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool( asgel_tool_name.c_str() );
   m_asgElectronLikelihoodTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("primaryVertexContainer", "PrimaryVertices"), "Failed to set primaryVertexContainer property");
-  // m_asgElectronLikelihoodTool->setProperty("inputPDFFileName", "ElectronPhotonSelectorTools/v1/ElectronLikelihoodPdfs.root");
   HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("ConfigFile", confDir + m_LHOperatingPoint ), "Failed to set ConfigFile property");
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_LHPID) ) ), "Failed to set OperatingPoint property");
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->initialize(), "Failed to properly initialize AsgElectronLikelihoodTool." );
 
   // initialise ElectronIsolationSelectionTool
+  
   std::string eis_tool_name = std::string("ElectronIsolationSelectionTool_") + m_name;
   m_electronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( eis_tool_name.c_str() );
-  m_electronIsolationSelectionTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ElectronIsolationSelectionTool
+  m_electronIsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
   HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
   RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<double>(m_CaloBasedIsoCut),  m_useRelativeIso ), "Failed to configure Calo-Based Isolation Cut");
   RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_TrackBasedIsoType),  static_cast<double>(m_TrackBasedIsoCut), m_useRelativeIso ), "Failed to configure Track-Based Isolation Cut");
@@ -359,17 +337,18 @@ EL::StatusCode ElectronSelector :: execute ()
 
   if ( m_debug ) { Info("execute()", "Applying Electron Selection... "); }
 
-  // retrieve MC event weight
+  // retrieve event 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
+  // MC event weight 
   float mcEvtWeight(1.0);
-  if ( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
-    mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
-  } else {
-    Error("execute()", "mcEventWeight is not available as decoration! Aborting" );
+  static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
+  if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
+    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
+  mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
   m_numEvent++;
 
@@ -380,7 +359,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  if( m_inputAlgo.empty() ) {
+  if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
     RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
@@ -480,12 +459,14 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
+  static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
+  
   for ( auto el_itr : *inElectrons ) { // duplicated of basic loop
 
     // if only looking at a subset of electrons make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
-        el_itr->auxdecor< char >( "passSel" ) = -1;
+        passSelDecor( *el_itr ) = -1;
       } else {
         break;
       }
@@ -495,7 +476,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
     nObj++;
     bool passSel = this->PassCuts( el_itr, pvx );
     if ( m_decorateSelectedObjects ) {
-      el_itr->auxdecor< char >( "passSel" ) = passSel;
+      passSelDecor( *el_itr ) = passSel;
     }
 
     if ( passSel ) {

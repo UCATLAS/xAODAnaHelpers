@@ -60,19 +60,19 @@ EL::StatusCode  MuonCalibrator :: configure ()
     TEnv* config = new TEnv(m_configName.c_str());
 
     // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" , false );
+    m_debug                   = config->GetValue("Debug", false);
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
 
     m_outContainerName        = config->GetValue("OutputContainer", "");
-    m_sort                    = config->GetValue("Sort",          false);
+    m_sort                    = config->GetValue("Sort",  false);
 
     // add more and add to Muon selector
 
     config->Print();
     Info("configure()", "MuonCalibrator Interface succesfully configured! ");
 
-    delete config;
+    delete config; config = nullptr;
   }
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
@@ -80,7 +80,7 @@ EL::StatusCode  MuonCalibrator :: configure ()
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
-  if( m_inContainerName.empty() ) {
+  if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -185,7 +185,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Muon Calibration and Cleaning... ");
+  if ( m_debug ) { Info("execute()", "Applying Muon Calibration... "); }
 
   m_numEvent++;
 
@@ -196,8 +196,8 @@ EL::StatusCode MuonCalibrator :: execute ()
   const xAOD::MuonContainer* inMuons(nullptr);
   RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_debug) ,"");
 
-  if(m_debug){
-    for( auto muon: *inMuons ){
+  if ( m_debug ) {
+    for ( auto muon: *inMuons ) {
       Info("execute()", "  original muon pt = %.2f GeV", (muon->pt() * 1e-3));
     }
   }
@@ -209,23 +209,22 @@ EL::StatusCode MuonCalibrator :: execute ()
   calibMuonsCDV->reserve( calibMuonsSC.first->size() );
 
   // calibrate only MC
-  if( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
-    for( auto muonSC_itr : *(calibMuonsSC.first) ) {
-      /* https://twiki.cern.ch/twiki/bin/viewauth/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT#Muons */
-      if( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ){ // apply correction and check return code
+  if ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
+    for ( auto muonSC_itr : *(calibMuonsSC.first) ) {
+      if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ) { 
         // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
         // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
         Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
       }
-      if(m_debug) Info("execute()", "  corrected muon pt = %.2f GeV", (muonSC_itr->pt() * 1e-3));
+      if ( m_debug ) { Info("execute()", "  corrected muon pt = %.2f GeV", (muonSC_itr->pt() * 1e-3)); }
     }
   }
 
-  if(!xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first))) {
+  if ( !xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first)) ) {
     Error("MuonCalibrator::execute()", "Failed to set original object links -- MET rebuilding cannot proceed.");
   }
 
-  if(m_sort) {
+  if ( m_sort ) {
     std::sort( calibMuonsCDV->begin(), calibMuonsCDV->end(), HelperFunctions::sort_pt );
   }
 
@@ -249,7 +248,7 @@ EL::StatusCode MuonCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
+  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -270,7 +269,7 @@ EL::StatusCode MuonCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_muonCalibrationAndSmearingTool){
+  if ( m_muonCalibrationAndSmearingTool ) {
     delete m_muonCalibrationAndSmearingTool; m_muonCalibrationAndSmearingTool = nullptr;
   }
 

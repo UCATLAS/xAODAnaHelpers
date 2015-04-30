@@ -3,7 +3,7 @@
  * Interface to Jet calibration tool(s).
  *
  * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
- * Jan 28 15:54 AEST 2015
+ * 
  *
  ******************************************/
 
@@ -52,9 +52,9 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configName,
   m_systName(systName),       // if running systs - the name of the systematic
   m_systVal(systVal),         // if running systs - the value ( +/- 1 )
   m_runSysts(false),          // gets set later is syst applies to this tool
-  m_jetCalibration(nullptr),        // JetCalibrationTool
-  m_jetCleaning(nullptr),           // JetCleaningTool
-  m_jetUncert(nullptr)              // JetUncertaintiesTool
+  m_jetCalibration(nullptr),  // JetCalibrationTool
+  m_jetCleaning(nullptr),     // JetCleaningTool
+  m_jetUncert(nullptr)        // JetUncertaintiesTool
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -108,16 +108,16 @@ EL::StatusCode  JetCalibrator :: configure ()
     config->Print();
     Info("configure()", "JetCalibrator Interface succesfully configured! ");
 
-    delete config;
+    delete config; config = nullptr;
   }
 
   // If there is no InputContainer we must stop
-  if( m_inContainerName.empty() ) {
+  if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
-  if( m_outputAlgo.empty() ) {
+  if ( m_outputAlgo.empty() ) {
     m_outputAlgo = m_jetAlgo + "_Calib_Algo";
   }
 
@@ -213,12 +213,12 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numObject     = 0;
 
   // when running data "_Insitu" is appended to the calibration string!
-  if( !m_isMC ) m_calibSequence += "_Insitu";
+  if ( !m_isMC ) m_calibSequence += "_Insitu";
 
   // this now holds for both MC and data
   m_calibConfig = m_calibConfigFullSim;
 
-  if( m_isMC ){
+  if ( m_isMC ) {
     // treat as fullsim by default
     m_isFullSim = true;
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
@@ -228,12 +228,12 @@ EL::StatusCode JetCalibrator :: initialize ()
     //                I reasonably suppose everyone will use SH...
     //
     const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
-    if (stringMeta.empty()){
+    if ( stringMeta.empty() ) {
       Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
     } else {
       m_isFullSim = (stringMeta == "AFII") ? false : true;
     }
-    if( !m_isFullSim ){
+    if ( !m_isFullSim ) {
       m_calibConfig = m_calibConfigAFII;
     }
   }
@@ -275,10 +275,10 @@ EL::StatusCode JetCalibrator :: initialize ()
 
     // Setup the tool for the 1st systematic on the list
     // If running all, the tool will be setup for each syst on each event
-    if( !m_systList.empty() ) {
+    if ( !m_systList.empty() ) {
       m_runSysts = true;
       // setup uncertainity tool for systematic evaluation
-      if (m_jetUncert->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok) {
+      if ( m_jetUncert->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
         Error("initialize()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
         return EL::StatusCode::FAILURE;
       }
@@ -293,7 +293,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // if not running systematics, need the nominal
   // if running systematics, and running them all, need the nominal
   // add it to the front!
-  if( m_systList.empty() || (!m_systList.empty() && m_systName == "All") ) {
+  if ( m_systList.empty() || (!m_systList.empty() && m_systName == "All") ) {
     m_systList.insert( m_systList.begin(), CP::SystematicSet() );
     const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
     m_systList.begin()->insert(nullVar);
@@ -314,7 +314,7 @@ EL::StatusCode JetCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Jet Calibration and Cleaning... ");
+  if ( m_debug ) { Info("execute()", "Applying Jet Calibration and Cleaning... "); }
 
   m_numEvent++;
 
@@ -324,7 +324,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-  for(const auto& syst_it : m_systList){
+  for ( const auto& syst_it : m_systList ) {
 
     std::string outSCContainerName(m_outSCContainerName);
     std::string outSCAuxContainerName(m_outSCAuxContainerName);
@@ -336,8 +336,8 @@ EL::StatusCode JetCalibrator :: execute ()
     outContainerName      += syst_it.name();
     vecOutContainerNames->push_back( syst_it.name() );
 
-    if( m_runSysts && !(syst_it.name()).empty() ) {
-      if (m_jetUncert->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+    if ( m_runSysts && !(syst_it.name()).empty() ) {
+      if ( m_jetUncert->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
         Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
         return EL::StatusCode::FAILURE;
       }
@@ -349,7 +349,7 @@ EL::StatusCode JetCalibrator :: execute ()
     calibJetsCDV->reserve( calibJetsSC.first->size() );
 
     // calibrate and decorate with cleaning decision
-    for( auto jet_itr : *(calibJetsSC.first) ) {
+    for ( auto jet_itr : *(calibJetsSC.first) ) {
       m_numObject++;
 
       if ( m_jetCalibration->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
@@ -359,30 +359,29 @@ EL::StatusCode JetCalibrator :: execute ()
       }
 
       if ( m_runSysts ) {
-        if( m_jetUncert->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
+        if ( m_jetUncert->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
           Error("execute()", "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
           Error("execute()", "%s", m_name.c_str());
         }
       }
 
       // decorate with cleaning decision
-      bool cleanJet = m_jetCleaning->accept( *jet_itr );
-
-      jet_itr->auxdata< char >( "cleanJet" ) = cleanJet;
+      static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
+      isCleanDecor( *jet_itr ) = m_jetCleaning->accept( *jet_itr );
 
     }
 
-    if(!xAOD::setOriginalObjectLink(*inJets, *(calibJetsSC.first))) {
+    if ( !xAOD::setOriginalObjectLink(*inJets, *(calibJetsSC.first)) ) {
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
     // save pointers in ConstDataVector with same order
-    for( auto jet_itr : *(calibJetsSC.first) ) {
+    for ( auto jet_itr : *(calibJetsSC.first) ) {
       calibJetsCDV->push_back( jet_itr );
     }
 
     // can only sort the CDV - a bit no-no to sort the shallow copies
-    if(m_sort) {
+    if ( m_sort ) {
       std::sort( calibJetsCDV->begin(), calibJetsCDV->end(), HelperFunctions::sort_pt );
     }
 
@@ -398,7 +397,7 @@ EL::StatusCode JetCalibrator :: execute ()
   RETURN_CHECK( "JetCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
-  if(m_debug) { m_store->print(); }
+  if ( m_debug ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -411,9 +410,7 @@ EL::StatusCode JetCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
-
-  //m_store->clear();
+  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -434,13 +431,13 @@ EL::StatusCode JetCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_jetCalibration){
+  if ( m_jetCalibration ) {
     delete m_jetCalibration; m_jetCalibration = nullptr;
   }
-  if(m_jetCleaning){
+  if ( m_jetCleaning ) {
     delete m_jetCleaning; m_jetCleaning = nullptr;
   }
-  if( m_jetUncert ){
+  if ( m_jetUncert ) {
     delete m_jetUncert; m_jetUncert = nullptr;
   }
 

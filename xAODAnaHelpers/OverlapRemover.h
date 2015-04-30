@@ -120,7 +120,6 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
   virtual EL::StatusCode printOverlapInfo (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
-  virtual EL::StatusCode printOverlapInfo (const char* type, xAOD::IParticle* obj, const std::string& selectFlag, const std::string& overlapFlag);
 
   virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
 				    const xAOD::PhotonContainer* inPhotons,	const xAOD::TauJetContainer* inTaus,

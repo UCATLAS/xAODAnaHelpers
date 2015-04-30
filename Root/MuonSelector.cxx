@@ -3,7 +3,7 @@
  * Interface to CP Muon selection tool(s).
  *
  * M. Milesi (marco.milesi@cern.ch)
- * Jan 28 15:48 AEST 2015
+ * 
  *
  ******************************************/
 
@@ -42,8 +42,7 @@
 ClassImp(MuonSelector)
 
 
-MuonSelector :: MuonSelector () {
-}
+MuonSelector :: MuonSelector () { }
 
 MuonSelector :: MuonSelector (std::string name, std::string configName) :
   Algorithm(),
@@ -67,7 +66,9 @@ MuonSelector::~MuonSelector() {}
 
 EL::StatusCode  MuonSelector :: configure ()
 {
-  if(!m_configName.empty()){
+  
+  if ( !m_configName.empty() ) {
+    
     Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -76,11 +77,11 @@ EL::StatusCode  MuonSelector :: configure ()
     TEnv* config = new TEnv(m_configName.c_str());
 
     // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" ,      false );
-    m_useCutFlow    = config->GetValue("UseCutFlow",  true);
+    m_debug                   = config->GetValue("Debug" ,     false );
+    m_useCutFlow              = config->GetValue("UseCutFlow", true  );
 
     // input container to be read from TEvent or TStore
-    m_inContainerName  = config->GetValue("InputContainer",  "");
+    m_inContainerName         = config->GetValue("InputContainer",  "");
 
     // decorate selected objects that pass the cuts
     m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -104,18 +105,19 @@ EL::StatusCode  MuonSelector :: configure ()
     m_pT_min                  = config->GetValue("pTMin",  1e8);
     m_eta_max                 = config->GetValue("etaMax", 1e8);
     m_d0_max                  = config->GetValue("d0Max", 1e8);
-    m_d0sig_max     	    = config->GetValue("d0sigMax", 1e8);
-    m_z0sintheta_max     	    = config->GetValue("z0sinthetaMax", 1e8);
+    m_d0sig_max     	      = config->GetValue("d0sigMax", 1e8);
+    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", 1e8);
 
     // isolation stuff
-    m_doIsolation             = config->GetValue("DoIsolationCut" , false);
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" ,	"etcone20");
-    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05      );
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType",	"ptcone20");
-    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05      );
+    m_doIsolation             = config->GetValue("DoIsolationCut" ,   false);
+    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType",  "etcone20");
+    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut",   0.05      );
+    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType", "ptcone20");
+    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut",  0.05      );
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+    
     config->Print();
     Info("configure()", "MuonSelector Interface succesfully configured! ");
 
@@ -129,7 +131,7 @@ EL::StatusCode  MuonSelector :: configure ()
   muonQualitySet.insert("Medium");
   muonQualitySet.insert("Loose");
   muonQualitySet.insert("VeryLoose");
-  if( muonQualitySet.find(m_muonQuality) == muonQualitySet.end()){
+  if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
     Error("configure()", "Unknown muon quality requested %s!",m_muonQuality.c_str());
     return EL::StatusCode::FAILURE;
   }
@@ -142,7 +144,7 @@ EL::StatusCode  MuonSelector :: configure ()
   muonTypeSet.insert("CaloTagged");
   muonTypeSet.insert("SiliconAssociatedForwardMuon");
 
-  if( muonTypeSet.find(m_muonType) == muonTypeSet.end()){
+  if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
     Error("configure()", "Unknown muon type requested %s!",m_muonType.c_str());
     return EL::StatusCode::FAILURE;
   }
@@ -155,7 +157,6 @@ EL::StatusCode  MuonSelector :: configure ()
     m_passKeys.push_back(token);
   }
 
-
   ss.clear();
   ss.str(m_failAuxDecorKeys);
   while ( std::getline(ss, token, ',') ) {
@@ -166,8 +167,6 @@ EL::StatusCode  MuonSelector :: configure ()
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-
-
 
   return EL::StatusCode::SUCCESS;
 }
@@ -296,17 +295,18 @@ EL::StatusCode MuonSelector :: execute ()
 
   if ( m_debug ) { Info("execute()", "Applying Muon Selection... "); }
 
-  // retrieve MC event weight
+  // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
+  // MC event weight 
   float mcEvtWeight(1.0);
-  if ( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
-    mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
-  } else {
+  static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
+  if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
+  mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
   m_numEvent++;
 
@@ -328,17 +328,17 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
   RETURN_CHECK("MuonSelector::executeConst()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
-
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
-
   int nPass(0); int nObj(0);
+  static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
+
   for( auto mu_itr : *inMuons ) { // duplicated of basic loop
 
     // if only looking at a subset of muons make sure all are decorrated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
-        mu_itr->auxdecor< char >( "passSel" ) = -1;
+        passSelDecor( *mu_itr ) = -1;
       } else {
         break;
       }
@@ -348,7 +348,7 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
     nObj++;
     int passSel = this->PassCuts( mu_itr, pvx );
     if ( m_decorateSelectedObjects ) {
-      mu_itr->auxdecor< char >( "passSel" ) = passSel;
+      passSelDecor( *mu_itr ) = passSel;
     }
 
     if ( passSel ) {

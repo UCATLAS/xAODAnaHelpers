@@ -25,7 +25,7 @@ public:
   std::string m_configName;
 
   bool m_debug;                  //!
-  bool m_useCutFlow;            //!
+  bool m_useCutFlow;             //!
 
   // configuration variables
   std::string m_inContainerName;   //! input container name

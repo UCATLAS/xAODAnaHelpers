@@ -29,8 +29,11 @@ dict_pkg = {'2.1.29': ["ElectronEfficiencyCorrection"],
                        "ElectronEfficiencyCorrection"],
             '2.1.31': ["atlasoff/Reconstruction/egamma/egammaMVACalib/tags/egammaMVACalib-01-00-43",
                        "atlasoff/Control/xAODRootAccess/tags/xAODRootAccess-00-01-04",
+                       "atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
+                       "ElectronEfficiencyCorrection"],
+            '2.1.32': ["atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
                        "ElectronEfficiencyCorrection"]
-            }
+           }
 
 try:
   packages_to_checkout = dict_pkg[args.version]

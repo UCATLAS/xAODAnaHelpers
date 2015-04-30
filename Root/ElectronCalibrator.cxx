@@ -4,6 +4,7 @@
  *
  * M. Milesi (marco.milesi@cern.ch)
  *
+ *
  ******************************************/
 
 // c++ include(s):
@@ -70,7 +71,8 @@ ElectronCalibrator :: ElectronCalibrator (std::string name, std::string configNa
 
 EL::StatusCode  ElectronCalibrator :: configure ()
 {
-  if(!m_configName.empty()){
+  
+  if ( !m_configName.empty() ) {
     Info("configure()", "Configuing ElectronCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -79,7 +81,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     TEnv* config = new TEnv(m_configName.c_str());
 
     // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug" , false );
+    m_debug                   = config->GetValue("Debug", false);
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
     m_outContainerName        = config->GetValue("OutputContainer", "");
@@ -88,7 +90,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     m_inputAlgo               = config->GetValue("InputAlgo",  "");
     m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_Calib_Algo");
 
-    m_sort                    = config->GetValue("Sort",          false);
+    m_sort                    = config->GetValue("Sort",  false);
 
     config->Print();
     Info("configure()", "ElectronCalibrator Interface succesfully configured! ");
@@ -105,8 +107,6 @@ EL::StatusCode  ElectronCalibrator :: configure ()
   // shallow copies are made with this output container name
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-
-
 
   return EL::StatusCode::SUCCESS;
 }
@@ -197,23 +197,12 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
 
   // get a list of systematics
-//  const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
-//  const CP::SystematicSet& recSyst = systReg.recommendedSystematics();
-
-  // get a list of systematics
   const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
   const CP::SystematicSet& recSyst = (systReg.recommendedSystematics());
   Info("initialize()"," Initializing Electron Calibrator Systematics :");
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal );
 
   if ( !m_systList.empty() ) { m_runSysts = true; }
-
-//  for( const auto& it : recSyst )
-//  {
-//    m_systList.push_back(CP::SystematicSet());
-//    m_systList.back().insert(it);
-//  }
-
 
   // ****************************************************************** //
   // *

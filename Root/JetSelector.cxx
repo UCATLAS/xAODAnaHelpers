@@ -3,7 +3,7 @@
  * Jet selector tool
  *
  * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
- * Jan 28 15:59 AEST 2015
+ * 
  *
  ******************************************/
 
@@ -112,12 +112,12 @@ EL::StatusCode  JetSelector :: configure ()
     m_mass_min                = config->GetValue("massMin",     1e8);
     m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
     m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-    m_truthLabel 		    = config->GetValue("TruthLabel",   -1);
+    m_truthLabel 	      = config->GetValue("TruthLabel",   -1);
 
-    m_doJVF 		    = config->GetValue("DoJVF",       false);
-    m_pt_max_JVF 		    = config->GetValue("pTMaxJVF",    50e3);
-    m_eta_max_JVF 	    = config->GetValue("etaMaxJVF",   2.4);
-    m_JVFCut 		    = config->GetValue("JVFCut",      0.5);
+    m_doJVF 		      = config->GetValue("DoJVF",       false);
+    m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    50e3);
+    m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   2.4);
+    m_JVFCut 		      = config->GetValue("JVFCut",      0.5);
 
     // Btag quality
     m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
@@ -131,10 +131,10 @@ EL::StatusCode  JetSelector :: configure ()
     config->Print();
     Info("configure()", "JetSelector Interface succesfully configured! ");
 
-    delete config;
+    delete config; config = nullptr;
   }
 
-  if( m_outputAlgo.empty() ) {
+  if ( m_outputAlgo.empty() ) {
     m_outputAlgo = m_inputAlgo + "_JetSelect";
   }
 
@@ -145,22 +145,21 @@ EL::StatusCode  JetSelector :: configure ()
   std::string token;
 
   std::istringstream ss(m_passAuxDecorKeys);
-  while(std::getline(ss, token, ',')){
+  while ( std::getline(ss, token, ',') ) {
     m_passKeys.push_back(token);
   }
 
   ss.clear();
   ss.str(m_failAuxDecorKeys);
-  while(std::getline(ss, token, ',')){
+  while ( std::getline(ss, token, ',') ) {
     std::cout << token << std::endl;
     m_failKeys.push_back(token);
   }
 
-  if( m_inContainerName.empty() ) {
+  if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-
 
 
   //
@@ -168,20 +167,20 @@ EL::StatusCode  JetSelector :: configure ()
   //
   m_btagCut = -1;
   m_decor   = "passSel";
-  if( m_isEMjet ) {
-    if( m_btag_veryloose ) { m_btagCut = 0.1644; m_decor += "BTagVeryLoose";  }
-    if( m_btag_loose     ) { m_btagCut = 0.3900; m_decor += "BTagLoose";      }
-    if( m_btag_medium    ) { m_btagCut = 0.8119; m_decor += "BTagMedium";     }
-    if( m_btag_tight     ) { m_btagCut = 0.9867; m_decor += "BTagTight";      }
+  if ( m_isEMjet ) {
+    if ( m_btag_veryloose ) { m_btagCut = 0.1644; m_decor += "BTagVeryLoose";  }
+    if ( m_btag_loose     ) { m_btagCut = 0.3900; m_decor += "BTagLoose";      }
+    if ( m_btag_medium    ) { m_btagCut = 0.8119; m_decor += "BTagMedium";     }
+    if ( m_btag_tight     ) { m_btagCut = 0.9867; m_decor += "BTagTight";      }
 
   } else if ( m_isLCjet ) {
-    if( m_btag_veryloose ) { m_btagCut = 0.1340; m_decor += "BTagVeryLoose";  }
-    if( m_btag_loose     ) { m_btagCut = 0.3511; m_decor += "BTagLoose";      }
-    if( m_btag_medium    ) { m_btagCut = 0.7892; m_decor += "BTagMedium";     }
-    if( m_btag_tight     ) { m_btagCut = 0.9827; m_decor += "BTagTight";      }
+    if ( m_btag_veryloose ) { m_btagCut = 0.1340; m_decor += "BTagVeryLoose";  }
+    if ( m_btag_loose     ) { m_btagCut = 0.3511; m_decor += "BTagLoose";      }
+    if ( m_btag_medium    ) { m_btagCut = 0.7892; m_decor += "BTagMedium";     }
+    if ( m_btag_tight     ) { m_btagCut = 0.9827; m_decor += "BTagTight";      }
 
   }
-  if(m_decorateSelectedObjects) {
+  if ( m_decorateSelectedObjects ) {
     Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
   }
 
@@ -216,7 +215,7 @@ EL::StatusCode JetSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-  if(m_useCutFlow) {
+  if ( m_useCutFlow ) {
     TFile *file = wk()->getOutputFile ("cutflow");
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
@@ -295,19 +294,20 @@ EL::StatusCode JetSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Jet Selection... ");
+  if ( m_debug ) { Info("execute()", "Applying Jet Selection... "); }
 
-  // mc event weight (PU contribution multiplied in BaseEventSelection)
+  // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
+  // MC event weight 
   float mcEvtWeight(1.0);
-  if (eventInfo->isAvailable< float >( "mcEventWeight" )){
-    mcEvtWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
-  } else {
+  static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
+  if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
+  mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
   m_numEvent++;
 
@@ -319,7 +319,7 @@ EL::StatusCode JetSelector :: execute ()
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  if( m_inputAlgo.empty() ) {
+  if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
     RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
@@ -336,14 +336,14 @@ EL::StatusCode JetSelector :: execute ()
     // loop over systematics
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     bool passOne(false);
-    for( auto systName : *systNames ) {
+    for ( auto systName : *systNames ) {
 
       RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
 
       passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName );
-      if( count ) { count = false; } // only count for 1 collection
+      if ( count ) { count = false; } // only count for 1 collection
       // save the string if passing the selection
-      if( passOne ) {
+      if ( passOne ) {
         vecOutContainerNames->push_back( systName );
       }
       // the final decision - if at least one passes keep going!
@@ -357,11 +357,12 @@ EL::StatusCode JetSelector :: execute ()
   }
 
   // look what do we have in TStore
-  if(m_debug) { m_store->print(); }
+  if ( m_debug ) { m_store->print(); }
 
-  if(!pass) {
+  if ( !pass ) {
     wk()->skipEvent();
   }
+  
   return EL::StatusCode::SUCCESS;
 
 }
@@ -375,12 +376,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
   // create output container (if requested)
   ConstDataVector<xAOD::JetContainer>* selectedJets(nullptr);
-  if(m_createSelectedContainer) {
+  if ( m_createSelectedContainer ) {
     selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
   }
 
   // if doing JVF get PV location
-  if( m_doJVF ) {
+  if ( m_doJVF ) {
     const xAOD::VertexContainer* vertices(nullptr);
     RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
@@ -388,13 +389,17 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
 
   int nPass(0); int nObj(0);
-  bool passEventClean(true);
-  for( auto jet_itr : *inJets ) { // duplicated of basic loop
+  bool passEventClean(true);  
+  
+  static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
+  static SG::AuxElement::Decorator< char > passSelDecor( m_decor );
+
+  for ( auto jet_itr : *inJets ) { // duplicated of basic loop
 
     // if only looking at a subset of jets make sure all are decorated
-    if( m_nToProcess > 0 && nObj >= m_nToProcess ) {
-      if(m_decorateSelectedObjects) {
-        jet_itr->auxdecor< char >( m_decor ) = -1;
+    if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
+      if ( m_decorateSelectedObjects ) {
+        passSelDecor( *jet_itr ) = -1;
       } else {
         break;
       }
@@ -403,45 +408,45 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     nObj++;
     int passSel = this->PassCuts( jet_itr );
-    if(m_decorateSelectedObjects) {
-      jet_itr->auxdecor< char >( m_decor ) = passSel;
+    if ( m_decorateSelectedObjects ) {
+      passSelDecor( *jet_itr ) = passSel;
     }
     
     // event level cut if any of the N leading jets are not clean
-    if(m_cleanEvtLeadJets > 0 && nObj <= m_cleanEvtLeadJets) {
-      if( jet_itr->isAvailable< char >( "cleanJet" ) ) {
-        if( !jet_itr->auxdata< char >( "cleanJet" ) ) { passEventClean = false; }
+    if ( m_cleanEvtLeadJets > 0 && nObj <= m_cleanEvtLeadJets ) {
+      if ( isCleanAcc.isAvailable( *jet_itr ) ) {
+        if( !isCleanAcc( *jet_itr ) ) { passEventClean = false; }
       }
     }
 
-    if(passSel) {
+    if ( passSel ) {
       nPass++;
-      if(m_createSelectedContainer) {
+      if ( m_createSelectedContainer ) {
         selectedJets->push_back( jet_itr );
       }
     }
   }
 
-  if( count ) {
+  if ( count ) {
     m_numObject     += nObj;
     m_numObjectPass += nPass;
   }
 
   // add ConstDataVector to TStore
-  if(m_createSelectedContainer) {
+  if ( m_createSelectedContainer ) {
     RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, outContainerName ), "Failed to store const data container.");
   }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
-  if( !passEventClean ) { return false; }
-  if( m_pass_min > 0 && nPass < m_pass_min ) {
+  if ( !passEventClean ) { return false; }
+  if ( m_pass_min > 0 && nPass < m_pass_min ) {
     return false;
   }
-  if( m_pass_max > 0 && nPass > m_pass_max ) {
+  if ( m_pass_max > 0 && nPass > m_pass_max ) {
     return false;
   }
 
-  if( count ) {
+  if ( count ) {
     m_numEventPass++;
     m_weightNumEventPass += mcEvtWeight;
   }
@@ -456,7 +461,7 @@ EL::StatusCode JetSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
+  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -476,12 +481,11 @@ EL::StatusCode JetSelector :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "%s", m_name.c_str());
-  if(m_useCutFlow) {
+  if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
-
 
   return EL::StatusCode::SUCCESS;
 }
@@ -508,60 +512,60 @@ EL::StatusCode JetSelector :: histFinalize ()
 
 int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
-
   // clean jets
-  if( m_cleanJets ) {
-    if( jet->isAvailable< char >( "cleanJet" ) ) {
-      if( !jet->auxdata< char >( "cleanJet" ) ) { return 0; }
+  static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
+  if ( m_cleanJets ) {
+    if ( isCleanAcc.isAvailable( *jet ) ) {
+      if ( !isCleanAcc( *jet ) ) { return 0; }
     }
   }
 
   // pT
-  if( m_pT_max != 1e8 ) {
-    if( jet->pt() > m_pT_max ) { return 0; }
+  if ( m_pT_max != 1e8 ) {
+    if ( jet->pt() > m_pT_max ) { return 0; }
   }
-  if( m_pT_min != 1e8 ) {
-    if( jet->pt() < m_pT_min ) { return 0; }
+  if ( m_pT_min != 1e8 ) {
+    if ( jet->pt() < m_pT_min ) { return 0; }
   }
 
   // eta
-  if( m_eta_max != 1e8 ) {
-    if( fabs(jet->eta()) > m_eta_max ) { return 0; }
+  if ( m_eta_max != 1e8 ) {
+    if ( fabs(jet->eta()) > m_eta_max ) { return 0; }
   }
-  if( m_eta_min != 1e8 ) {
-    if( fabs(jet->eta()) < m_eta_min ) { return 0; }
+  if ( m_eta_min != 1e8 ) {
+    if ( fabs(jet->eta()) < m_eta_min ) { return 0; }
   }
 
   // detEta
-  if( m_detEta_max != 1e8 ) {
-    if( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() > m_detEta_max ) { return 0; }
+  if ( m_detEta_max != 1e8 ) {
+    if ( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() > m_detEta_max ) { return 0; }
   }
-  if( m_detEta_min != 1e8 ) {
+  if ( m_detEta_min != 1e8 ) {
     if( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() < m_detEta_min ) { return 0; }
   }
 
   // mass
-  if( m_mass_max != 1e8 ) {
-    if( jet->m() > m_mass_max ) { return 0; }
+  if ( m_mass_max != 1e8 ) {
+    if ( jet->m() > m_mass_max ) { return 0; }
   }
-  if( m_mass_min != 1e8 ) {
-    if( jet->m() < m_mass_min ) { return 0; }
+  if ( m_mass_min != 1e8 ) {
+    if ( jet->m() < m_mass_min ) { return 0; }
   }
 
   // rapidity
-  if( m_rapidity_max != 1e8 ) {
-    if( jet->rapidity() > m_rapidity_max ) { return 0; }
+  if ( m_rapidity_max != 1e8 ) {
+    if ( jet->rapidity() > m_rapidity_max ) { return 0; }
   }
-  if( m_rapidity_min != 1e8 ) {
-    if( jet->rapidity() < m_rapidity_min ) { return 0; }
+  if ( m_rapidity_min != 1e8 ) {
+    if ( jet->rapidity() < m_rapidity_min ) { return 0; }
   }
 
   // JVF pileup cut
-  if( m_doJVF ){
-    if( jet->pt() < m_pt_max_JVF ) {
+  if ( m_doJVF ){
+    if ( jet->pt() < m_pt_max_JVF ) {
       xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
-      if( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVF ){
-        if( jet->getAttribute< std::vector<float> >( "JVF" ).at( m_pvLocation ) < m_JVFCut ) {
+      if ( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVF ){
+        if ( jet->getAttribute< std::vector<float> >( "JVF" ).at( m_pvLocation ) < m_JVFCut ) {
           return 0;
         }
       }
@@ -571,44 +575,45 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //
   //  BTagging
   //
-  if( m_btagCut >=0) {
-    if( jet->btagging() ){
-      if(jet->btagging()->MV1_discriminant() < m_btagCut) { return 0; }
+  
+  const xAOD::BTagging *myBTag = jet->btagging();
+  if ( myBTag ) {
+    if ( m_btagCut >=0 ) {
+      if ( myBTag->MV1_discriminant() < m_btagCut ) { return 0; }
     }
   }
-
 
   //
   //  Pass Keys
   //
-  for(auto& passKey : m_passKeys){
-    if(!(jet->auxdata< char >(passKey) == '1')) { return 0;}
+  for ( auto& passKey : m_passKeys ) {
+    if ( !(jet->auxdata< char >(passKey) == '1') ) { return 0;}
   }
 
   //
   //  Fail Keys
   //
-  for(auto& failKey : m_failKeys){
-    if(!(jet->auxdata< char >(failKey) == '0')) {return 0;}
+  for ( auto& failKey : m_failKeys ){
+    if ( !(jet->auxdata< char >(failKey) == '0') ) { return 0;}
   }
 
   //
   //  Truth Label
   //
-  if( m_truthLabel != -1 ) {
+  if ( m_truthLabel != -1 ) {
 
     int this_TruthLabel = 0;
     static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
-    if(TruthLabelID.isAvailable( *jet)){
+    if ( TruthLabelID.isAvailable( *jet) ) {
       this_TruthLabel = TruthLabelID( *jet );
-    }else{
+    } else {
       static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
       this_TruthLabel = PartonTruthLabelID( *jet );
     }
 
-    if((m_truthLabel == 5) && this_TruthLabel != 5) {return 0;}
-    if((m_truthLabel == 4) && this_TruthLabel != 4) {return 0;}
-    if((m_truthLabel == 0) && !(this_TruthLabel == 21 || this_TruthLabel<4)) {return 0;}
+    if ( (m_truthLabel == 5) && this_TruthLabel != 5 ) { return 0;}
+    if ( (m_truthLabel == 4) && this_TruthLabel != 4 ) { return 0;}
+    if ( (m_truthLabel == 0) && !(this_TruthLabel == 21 || this_TruthLabel<4) ) { return 0;}
 
   }
 

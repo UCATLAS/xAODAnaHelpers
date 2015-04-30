@@ -80,7 +80,7 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     TEnv* config = new TEnv(m_configName.c_str());
 
     // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug" , false );
+    m_debug                   = config->GetValue("Debug", false);
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
     m_outContainerName        = config->GetValue("OutputContainer", "");
@@ -100,10 +100,10 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     config->Print();
     Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! ");
 
-    delete config;
+    delete config;config = nullptr;
   }
 
-  if( m_inContainerName.empty() ) {
+  if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -207,14 +207,14 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // Convert into a simple list
   m_systList = CP::make_systematics_vector(recSysts);
 
-  if( !m_systList.empty() ) { m_runSysts = true; }
+  if ( !m_systList.empty() ) { m_runSysts = true; }
 
-  if(m_debug){
-    for ( const auto& syst_it : m_systList ){
+  if ( m_debug ) {
+    for ( const auto& syst_it : m_systList ) {
       Info("initialize()"," available systematic: %s", (syst_it.name()).c_str());
     }
   }
-  for ( const auto& syst_it : m_systList ){
+  for ( const auto& syst_it : m_systList ) {
     Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
   }
 
@@ -231,7 +231,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Applying Electron Efficiency Correction... ");
+  if ( m_debug ) { Info("execute()", "Applying Electron Efficiency Correction... "); }
 
   m_numEvent++;
 
@@ -268,24 +268,24 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	std::vector<std::string>* vecOutContainerNames = new std::vector< std::string >(*systNames);
 
     	// just to check everything is fine
-    	if(m_debug){
+    	if ( m_debug ) {
     	  Info("execute()","output vector already contains systematics:" );
-    	  for (auto it : *vecOutContainerNames){
+    	  for (auto it : *vecOutContainerNames) {
     	    Info("execute()" ,"\t %s ", it.c_str());
     	  }
     	}
 
     	// loop over systematic sets available
-    	for( auto systName : *systNames ) {
+    	for ( auto systName : *systNames ) {
 
            RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedElectrons, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
     	   // create ConstDataVector to be eventually stored in TStore
     	   correctedElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
     	   correctedElectronsCDV->reserve( correctedElectrons->size() );
 
-    	   if(m_debug){
+    	   if ( m_debug ){
     	     unsigned int idx(0);
-    	     for( auto el : *(correctedElectrons) ) {
+    	     for ( auto el : *(correctedElectrons) ) {
     	       Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
     	       ++idx;
     	     }
@@ -306,7 +306,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   }
 
   // look what do we have in TStore
-  if(m_debug) { m_store->print(); }
+  if ( m_debug ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -339,7 +339,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if(m_asgElectronEfficiencyCorrectionTool){
+  if ( m_asgElectronEfficiencyCorrectionTool ) {
     delete m_asgElectronEfficiencyCorrectionTool; m_asgElectronEfficiencyCorrectionTool = nullptr;
   }
 
@@ -370,10 +370,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 {
 
   // loop over available systematics for this tool - remember syst == EMPTY_STRING --> baseline
-  for(const auto& syst_it : m_systList){
+  for ( const auto& syst_it : m_systList ) {
 
     // appends syst name to decoration
-    if( !syst_it.name().empty() ){
+    if ( !syst_it.name().empty() ) {
       RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_asgElectronEfficiencyCorrectionTool->setProperty("ResultPrefix",syst_it.name()), "Failed to set property ResultPrefix" );
     }
 
@@ -383,47 +383,47 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     //}
 
     // apply syst
-    if (m_asgElectronEfficiencyCorrectionTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+    if ( m_asgElectronEfficiencyCorrectionTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       Error("initialize()", "Failed to configure AsgElectronEfficiencyCorrectionTool for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
     }
-    if (m_debug) Info("execute()", "Successfully applied systematic: %s", m_asgElectronEfficiencyCorrectionTool->appliedSystematics().name().c_str());
+    if ( m_debug ) { Info("execute()", "Successfully applied systematic: %s", m_asgElectronEfficiencyCorrectionTool->appliedSystematics().name().c_str()); }
 
     // and now apply efficiency SF!
     unsigned int idx(0);
     double SF(0);
-    for( auto el_itr : *(correctedElectrons) ) {
+    for ( auto el_itr : *(correctedElectrons) ) {
 
-       if(m_debug) Info( "execute", "Checking electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) );
+       if ( m_debug ) { Info( "execute", "Checking electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) ); }
        ++idx;
 
        // NB: derivations might remove CC and tracks for low pt electrons
-       if( !(el_itr->caloCluster() && el_itr->trackParticle()) ){
-         if(m_debug) Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx);
+       if ( !(el_itr->caloCluster() && el_itr->trackParticle()) ) {
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
          continue;
        }
 
        // skip electron if outside acceptance for SF calculation
-       if( el_itr->pt() < 7e3 ) {
-         if(m_debug) Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance", idx);
+       if ( el_itr->pt() < 7e3 ) {
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance", idx); }
          continue;
        }
-       if( fabs( el_itr->caloCluster()->eta() ) > 2.47) {
-         if(m_debug) Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx);
+       if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx); }
          continue;
        }
 
-       if(m_asgElectronEfficiencyCorrectionTool->getEfficiencyScaleFactor( *el_itr, SF ) != CP::CorrectionCode::Ok){
+       if ( m_asgElectronEfficiencyCorrectionTool->getEfficiencyScaleFactor( *el_itr, SF ) != CP::CorrectionCode::Ok ) {
          Error( "execute()", "Problem in getEfficiencyScaleFactor");
          return EL::StatusCode::FAILURE;
        }
        // apply SF as decoration for this electron
-       if(m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactor( *el_itr ) != CP::CorrectionCode::Ok){
+       if ( m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactor( *el_itr ) != CP::CorrectionCode::Ok ) {
          Error( "execute()", "Problem in applyEfficiencyScaleFactor");
          return EL::StatusCode::FAILURE;
        }
 
-       if(m_debug) Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f", SF, el_itr->auxdata< float >("SF"));
+       if ( m_debug ) { Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f", SF, el_itr->auxdata< float >("SF")); }
 
     } // close electron loop
 

@@ -3,7 +3,7 @@
  * Interface to CP JER Shifter tool(s).
  *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
- * Jan 28 15:51 AEST 2015
+ * 
  *
  ******************************************/
 
