@@ -59,17 +59,75 @@ class JetHists : public HistogramManager
     TH1F* m_EMf;                    //!
     TH1F* m_centroidR;              //!
 
-    // layer
-    TH1F* m_layer_PreSamplerB;
-    TH1F* m_layer_EMB1;
-    TH1F* m_layer_EMB2;
-    TH1F* m_layer_EMB3;
+    //layer
+    TH1F* m_PreSamplerB;
+    TH1F* m_EMB1;
+    TH1F* m_EMB2;
+    TH1F* m_EMB3;
+    TH1F* m_PreSamplerE;            //!
+    TH1F* m_EME1;                   //!
+    TH1F* m_EME2;                   //!
+    TH1F* m_EME3;                   //!
+    TH1F* m_HEC0;                   //!
+    TH1F* m_HEC1;                   //!
+    TH1F* m_HEC2;                   //!
+    TH1F* m_HEC3;                   //!
+    TH1F* m_TileBar0;               //!
+    TH1F* m_TileBar1;               //!
+    TH1F* m_TileBar2;               //!
+    TH1F* m_TileGap1;               //!
+    TH1F* m_TileGap2;               //!
+    TH1F* m_TileGap3;               //!
+    TH1F* m_TileExt0;               //!
+    TH1F* m_TileExt1;               //!
+    TH1F* m_TileExt2;               //!
+    TH1F* m_FCAL0;                  //!
+    TH1F* m_FCAL1;                  //!
+    TH1F* m_FCAL2;                  //!
 
     // area
     TH1F* m_actArea;                //!
 
 
     TH1F* m_chf;                    //!
+
+    //energy
+    TH1F* m_HECf;                   //!
+    TH1F* m_EMf;                    //!
+    TH1F* m_centroidR;              //!
+    TH1F* m_fracSampMax;            //!
+    TH1F* m_fracSampMaxIdx;         //!
+    TH1F* m_lowEtFrac;              //!
+
+    //layer
+    TH1F* m_PreSamplerB;            //!
+    TH1F* m_EMB1;                   //!
+    TH1F* m_EMB2;                   //!
+    TH1F* m_EMB3;                   //!
+    TH1F* m_PreSamplerE;            //!
+    TH1F* m_EME1;                   //!
+    TH1F* m_EME2;                   //!
+    TH1F* m_EME3;                   //!
+    TH1F* m_HEC0;                   //!
+    TH1F* m_HEC1;                   //!
+    TH1F* m_HEC2;                   //!
+    TH1F* m_HEC3;                   //!
+    TH1F* m_TileBar0;               //!
+    TH1F* m_TileBar1;               //!
+    TH1F* m_TileBar2;               //!
+    TH1F* m_TileGap1;               //!
+    TH1F* m_TileGap2;               //!
+    TH1F* m_TileGap3;               //!
+    TH1F* m_TileExt0;               //!
+    TH1F* m_TileExt1;               //!
+    TH1F* m_TileExt2;               //!
+    TH1F* m_FCAL0;                  //!
+    TH1F* m_FCAL1;                  //!
+    TH1F* m_FCAL2;                  //!
+    TH1F* m_MINIFCAL0;              //!
+    TH1F* m_MINIFCAL1;              //!
+    TH1F* m_MINIFCAL2;              //!
+    TH1F* m_MINIFCAL3;              //!
 
     // resolution
     TH1F* m_jetGhostTruthPt;        //!
