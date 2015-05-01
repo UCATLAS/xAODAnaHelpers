@@ -69,7 +69,9 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configName,
 
 EL::StatusCode  JetCalibrator :: configure ()
 {
-  if(!m_configName.empty()){
+  
+  if ( !m_configName.empty() ) {
+    
     Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
     // expand the path to the config to find it in the ROOTCORE directory
@@ -122,8 +124,8 @@ EL::StatusCode  JetCalibrator :: configure ()
   }
 
   m_jetUncertAlgo = m_jetAlgo;
-  m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoEM"), std::string("EMTopo"));
-  m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoLC"), std::string("LCTopo"));
+  //m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoEM"), std::string("EMTopo"));
+  //m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoLC"), std::string("LCTopo"));
 
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
@@ -227,7 +229,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     //                They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
     //                I reasonably suppose everyone will use SH...
     //
-    const std::string stringMeta = wk()->metaData()->getString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
+    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
     if ( stringMeta.empty() ) {
       Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
     } else {

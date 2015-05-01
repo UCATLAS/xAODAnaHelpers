@@ -54,11 +54,6 @@ class JetHists : public HistogramManager
     TH1F* m_bchCorrCell;            //!
     TH1F* m_N90Const;               //!
 
-    // energy
-    TH1F* m_HECf;                   //!
-    TH1F* m_EMf;                    //!
-    TH1F* m_centroidR;              //!
-
     //layer
     TH1F* m_PreSamplerB;
     TH1F* m_EMB1;
