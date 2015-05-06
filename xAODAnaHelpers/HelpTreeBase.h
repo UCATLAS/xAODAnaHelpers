@@ -5,8 +5,8 @@
  * Some branches are included by default while others
  * need to be added by the user
  *
- * Gabriel Facini ( gabriel.facini@cern.ch )
- * Fri Nov 14 15:36:19 CET 2014
+ * Gabriel Facini ( gabriel.facini@cern.ch ), Marco Milesi (marco.milesi@cern.ch)
+ * 
  *
  ***************************************************/
 
@@ -34,14 +34,20 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3 );
+  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false );
   virtual ~HelpTreeBase() {;}
+
+ // virtual void setDebugMode(  bool debug ){
+ //   m_debug = debug;
+ // } 
 
   void AddEvent    (const std::string detailStr = "");
   void AddMuons    (const std::string detailStr = "");
   void AddElectrons(const std::string detailStr = "");
   void AddJets     (const std::string detailStr = "");
   void AddFatJets  (const std::string detailStr = "");
+  void AddTaus     (const std::string detailStr = "");
+  
 
   // control which branches are filled
   HelperClasses::EventInfoSwitch*     m_eventInfoSwitch;
@@ -49,17 +55,22 @@ public:
   HelperClasses::ElectronInfoSwitch*  m_elInfoSwitch;
   HelperClasses::JetInfoSwitch*       m_jetInfoSwitch;
   HelperClasses::JetInfoSwitch*       m_fatJetInfoSwitch;
+  HelperClasses::TauInfoSwitch*       m_tauInfoSwitch;
+  
 
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1 );
   void FillFatJets( const xAOD::JetContainer* fatJets );
+  void FillTaus( const xAOD::TauJetContainer* taus );
+  
   void Fill();
   void ClearEvent();
   void ClearMuons();
   void ClearElectrons();
   void ClearJets();
+  void ClearTaus();
 
   bool writeTo( TFile *file );
 
@@ -79,23 +90,33 @@ public:
     Info("AddJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
     return; 
   };
-
+  virtual void AddTausUser(const std::string detailStr = "")       {
+    Info("AddTausUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
+    return; 
+  };
+  
   virtual void ClearEventUser()     { return; };
-  virtual void ClearMuonsUser() 	  { return; };
+  virtual void ClearMuonsUser()     { return; };
   virtual void ClearElectronsUser() { return; };
-  virtual void ClearJetsUser() 		  { return; };
+  virtual void ClearJetsUser() 	    { return; };
+  virtual void ClearTausUser() 	    { return; };
+  
 
   virtual void FillEventUser( const xAOD::EventInfo* /*eventInfo*/ )   { return; };
   virtual void FillMuonsUser( const xAOD::Muon* /*muon*/ )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron* /*electron*/ ) { return; };
   virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                { return; };
   virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )          { return; };
+  virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )             { return; };
+  
 
 protected:
 
   TTree* m_tree;
 
   int m_units; //For MeV to GeV conversion in output
+  
+  bool m_debug;
 
   // event
   int m_runNumber;
@@ -278,6 +299,17 @@ protected:
   std::vector<int> m_el_trknBLayerHits; 
   //std::vector<int> m_el_trknInnermostPixLayHits; // not available ?
   //std::vector<float> m_el_trkPixdEdX; // not available ?
+
+  // taus
+  int m_ntau;
+  
+  // kinematics
+  std::vector<float> m_tau_pt;
+  std::vector<float> m_tau_eta;
+  std::vector<float> m_tau_phi;
+  std::vector<float> m_tau_m;
+  std::vector<int>   m_tau_ntrk;
+  std::vector<float> m_tau_charge;
 
 };
 

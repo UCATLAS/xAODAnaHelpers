@@ -25,14 +25,16 @@ public:
   std::string m_elDetailStr;	       //!
   std::string m_jetDetailStr;	       //!
   std::string m_fatJetDetailStr;       //!
+  std::string m_tauDetailStr;          //!
 
   std::string m_evtContainerName;      //!
   std::string m_muContainerName;       //!
   std::string m_elContainerName;       //!
   std::string m_jetContainerName;      //!
   std::string m_fatJetContainerName;   //!
+  std::string m_tauContainerName;      //!
 
-  bool m_debug; //!
+  bool m_debug;                        //!
 
 private:
   xAOD::TEvent *m_event;               //!

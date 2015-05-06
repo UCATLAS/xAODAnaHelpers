@@ -72,16 +72,26 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  // get the input from user which determines which branches are created!
+  this->configure();
+
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
-  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile );
+  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, m_debug );
   // tell the tree to go into the file
   outTree->SetDirectory( treeFile );
-  // if want to add to same file as ouput histograms
+  // uncomment if want to add to same file as ouput histograms
   // wk()->addOutput( outTree );
 
-// get the input from user which determines which branches are created!
-  this->configure();
+  m_helpTree->AddEvent( m_evtDetailStr );
+
+  if( !m_muContainerName.empty() )     {   m_helpTree->AddMuons    (m_muDetailStr);      }
+  if( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons(m_elDetailStr);      }
+  if( !m_jetContainerName.empty() )    {   m_helpTree->AddJets     (m_jetDetailStr);     }
+  if( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets  (m_fatJetDetailStr);  }
+  if( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus     (m_tauDetailStr);     }
+
+  Info("treeInitialize()", "Successfully initialized output tree");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -99,12 +109,15 @@ EL::StatusCode TreeAlgo :: configure ()
     m_elDetailStr             = config->GetValue("ElectronDetailStr",    "");
     m_jetDetailStr            = config->GetValue("JetDetailStr",         "");
     m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      "");
+    m_tauDetailStr            = config->GetValue("TauDetailStr",         "");
+    
     m_debug                   = config->GetValue("Debug" ,           false );
 
     m_muContainerName         = config->GetValue("MuonContainerName",       "");
     m_elContainerName         = config->GetValue("ElectronContainerName",   "");
     m_jetContainerName        = config->GetValue("JetContainerName",        "");
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
+    m_tauContainerName        = config->GetValue("TauContainerName",        "");
 
     Info("configure()", "Loaded in configuration values");
 
@@ -113,13 +126,6 @@ EL::StatusCode TreeAlgo :: configure ()
 
     delete config; config = nullptr;
   }
-
-  m_helpTree->AddEvent( m_evtDetailStr );
-
-  if( !m_muContainerName.empty() )     {   m_helpTree->AddMuons    (m_muDetailStr);      }
-  if( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons(m_elDetailStr);      }
-  if( !m_jetContainerName.empty() )    {   m_helpTree->AddJets     (m_jetDetailStr);     }
-  if( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets  (m_fatJetDetailStr);  }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -164,6 +170,13 @@ EL::StatusCode TreeAlgo :: execute ()
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillFatJets( inFatJets );
   }
+  if ( !m_tauContainerName.empty() ) {	
+    const xAOD::TauJetContainer* inTaus(nullptr); 
+    RETURN_CHECK("HTopMultilepTreeAlgo::execute()", HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, m_debug) , "");
+    m_helpTree->FillTaus( inTaus );
+  }  
+  
+  
 
   // fill the tree
   m_helpTree->Fill();

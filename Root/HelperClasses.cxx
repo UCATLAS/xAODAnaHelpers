@@ -131,6 +131,11 @@ namespace HelperClasses{
       m_numLeadingJets = 0;
     }
   }
-
+  
+  void TauInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+    m_trackparams   = parse("trackparams");
+    m_trackhitcont  = parse("trackhitcont");
+  }
 
 } // close namespace HelperClasses

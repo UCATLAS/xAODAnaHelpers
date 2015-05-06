@@ -1,3 +1,11 @@
+2015-05-06 Marco Milesi <Marco.Milesi@cern.ch>
+	* Add basic branches for taus in HelpTreeBase
+        * Make the debug flag in Tree algo ( configurable via TreeAlgo config file )
+	  visible also to HelpTreeBase, passing it via constructor.
+	  To make this effective, TreeAlgo::configure() gets called before instantiating 
+	  the HelpTreeBase object ( the HelpTreeBase::Add*() methods now get called 
+	  in TreeAlgo::treeInitialize() )
+	
 2015-04-29 John Alison <John.Alison@cern.ch>
 	* Adding templated sorting pt functions (c.o. G. Stark)
 
