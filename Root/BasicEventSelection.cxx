@@ -350,15 +350,17 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
-  ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
+  if( m_triggerSelection.size() > 0){
+    m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
+    ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
 
-  m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
+    m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
+  }
 
 
   //--------------------------------------------
