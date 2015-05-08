@@ -150,6 +150,11 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   // TODO why is histInitialize() called after fileExecute() ??
 
+  if ( this->configure() == EL::StatusCode::FAILURE ) {
+    Error("initialize()", "Failed to properly configure. Exiting." );
+    return EL::StatusCode::FAILURE;
+  }
+
   Info("histInitialize()", "Calling histInitialize");
 
   // write the metadata hist to this file so algos downstream can pick up the pointer
@@ -207,6 +212,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   m_cutflowHistW->GetXaxis()->FindBin("NPV");
   if( m_triggerSelection.size() > 0)
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
+
 
   Info("histInitialize()", "Histograms initialized!");
   return EL::StatusCode::SUCCESS;
@@ -320,10 +326,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+//  if ( this->configure() == EL::StatusCode::FAILURE ) {
+//    Error("initialize()", "Failed to properly configure. Exiting." );
+//    return EL::StatusCode::FAILURE;
+//  }
 
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
@@ -507,7 +513,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Trigger //
   if (m_triggerSelection.size() > 0){
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
-    //std::cout << m_triggerSelection << " " << triggerChainGroup->isPassed() << " " << triggerChainGroup->getPrescale() << std::endl;
+//    std::cout << m_triggerSelection << " " << triggerChainGroup->isPassed() << " " << triggerChainGroup->getPrescale() << std::endl;
     if( !triggerChainGroup->isPassed() ){
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
