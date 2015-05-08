@@ -20,6 +20,14 @@
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
 #include "PileupReweighting/PileupReweightingTool.h"
 
+namespace TrigConf {
+  class xAODConfigTool;
+}
+
+namespace Trig {
+  class TrigDecisionTool;
+}
+
 class BasicEventSelection : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
@@ -37,6 +45,7 @@ class BasicEventSelection : public EL::Algorithm
     std::string m_GRLxml;   //!
     //PU Reweighting
     bool m_doPUreweighting; //!
+    std::string m_triggerSelection; //!
 
     // primary vertex
     std::string m_vertexContainerName; //!
@@ -48,6 +57,9 @@ class BasicEventSelection : public EL::Algorithm
 
     GoodRunsListSelectionTool*   m_grl;       //!
     CP::PileupReweightingTool*   m_pileuptool; //!
+
+    TrigConf::xAODConfigTool*    m_trigConfTool;  //!
+    Trig::TrigDecisionTool*      m_trigDecTool;   //!
 
     int m_eventCounter;     //!
 
@@ -67,6 +79,7 @@ class BasicEventSelection : public EL::Algorithm
     int m_cutflow_tile;     //!
     int m_cutflow_core;     //!
     int m_cutflow_npv;      //!
+    int m_cutflow_trigger;      //!
 
     // variables that don't get filled at submission time should be
     // protected from being send from the submission node to the worker

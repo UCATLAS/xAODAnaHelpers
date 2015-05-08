@@ -36,18 +36,18 @@ int main( int argc, char* argv[] ) {
 
   // Construct the samples to run on:
   SH::SampleHandler sh;
-  
+
   // default
   std::string datasetname;
   std::string filename;
-  std::string dataPath; 
+  std::string dataPath;
 
   // usage:
   // test_multiAlgo  [optional] outdir dataPath/ datasetname filename
   if ( argc > 3 ) {
     dataPath = argv[ 2 ];
     datasetname = argv[3];
-   
+
     SH::DiskListLocal list (dataPath);  // path to folder containing your datasets subfolders
     if( argc > 4 ){
       filename = argv[ 4 ];
@@ -78,6 +78,9 @@ int main( int argc, char* argv[] ) {
   job.sampleHandler( sh );
   job.options()->setDouble(EL::Job::optRemoveSubmitDir, 1);
 
+  // For Trigger
+  job.options()->setString( EL::Job::optXaodAccessMode, EL::Job::optXaodAccessMode_branch );
+
   std::string localDataDir = "$ROOTCOREBIN/data/xAODAnaHelpers/";
 
   BasicEventSelection* baseEventSel             = new BasicEventSelection(  "baseEventSel",             localDataDir+"baseEvent.config");
@@ -91,7 +94,7 @@ int main( int argc, char* argv[] ) {
   JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
   MuonCalibrator* muonCalib                     = new MuonCalibrator(       "muonCalib",                localDataDir+"muonCalib.config");
   ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config" /*, "All"*/ );
-  
+
   MuonEfficiencyCorrector*      muonEffCorr     = new MuonEfficiencyCorrector(       "muonEfficiencyCorrector",                localDataDir+"muonEffCorr.config");
   ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector(   "electronEfficiencyCorrector",            localDataDir+"electronEffCorr.config"/*, "All"*/);
 
@@ -110,7 +113,7 @@ int main( int argc, char* argv[] ) {
 
   OverlapRemover* overlapRemoval                = new OverlapRemover(       "OverlapRemovalTool",       localDataDir+"overlapRemoval.config");
   JetHistsAlgo* jk_AntiKt10LC                   = new JetHistsAlgo(         "AntiKt10/",                localDataDir+"test_jetPlotExample.config");
-    
+
   TreeAlgo* out_tree                            = new TreeAlgo(             "physics",                  localDataDir+"tree.config");
 
   // Attach algorithms
@@ -120,18 +123,18 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( muonEffCorr );
   job.algsAdd( electronCalib );
   job.algsAdd( electronEffCorr );
-  job.algsAdd( muonSelect_signal );  
+  job.algsAdd( muonSelect_signal );
   job.algsAdd( electronSelect_signal );
   job.algsAdd( jetSelect_signal );
-  job.algsAdd( bjetSelect_signal ); 
-  job.algsAdd( bjetEffCorr_btag ); 
+  job.algsAdd( bjetSelect_signal );
+  job.algsAdd( bjetEffCorr_btag );
   job.algsAdd( jetHistsAlgo_signal );
   job.algsAdd( jetHistsAlgo_btag );
   job.algsAdd( jetSelect_truth );
   job.algsAdd( jetHistsAlgo_truth );
   job.algsAdd( overlapRemoval );
   job.algsAdd( jk_AntiKt10LC );
-  job.algsAdd( out_tree );  
+  job.algsAdd( out_tree );
 
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;

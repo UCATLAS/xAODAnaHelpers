@@ -3,7 +3,7 @@
  * Basic event selection. Performs general simple cuts (GRL, Event Cleaning, Min nr. Tracks for PV candidate)
  *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -19,6 +19,8 @@
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODTracking/VertexContainer.h"
+#include "TrigConfxAOD/xAODConfigTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
@@ -69,7 +71,7 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
 
 EL::StatusCode BasicEventSelection :: configure ()
 {
-  
+
   if ( !m_configName.empty() ) {
     // read in user configuration from text file
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -97,9 +99,14 @@ EL::StatusCode BasicEventSelection :: configure ()
       // number of tracks to require to count PVs
       m_PVNTrack            = config->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
     }
-    
+
+    // Trigger
+    m_triggerSelection           = config->GetValue("Trigger", "");
+    if( m_triggerSelection.size() > 0)
+      Info("configure()", "Using Trigger %s", m_triggerSelection.c_str() );
+
     config->Print();
-    
+
     Info("configure()", "BasicEventSelection succesfully configured! ");
 
     delete config; config = nullptr;
@@ -188,6 +195,8 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
   m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
   m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
+  if( m_triggerSelection.size() > 0)
+    m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
 
   // do it again for the weighted cutflow hist
   m_cutflowHistW->GetXaxis()->FindBin("all");
@@ -196,6 +205,8 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   m_cutflowHistW->GetXaxis()->FindBin("tile");
   m_cutflowHistW->GetXaxis()->FindBin("core");
   m_cutflowHistW->GetXaxis()->FindBin("NPV");
+  if( m_triggerSelection.size() > 0)
+    m_cutflowHistW->GetXaxis()->FindBin("Trigger");
 
   Info("histInitialize()", "Histograms initialized!");
   return EL::StatusCode::SUCCESS;
@@ -330,6 +341,19 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
   //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
   RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
+
+
+  // Trigger //
+  m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
+  ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
+
+  m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
+
 
   //--------------------------------------------
   //  Get Containers Depending on Analysis Needs
@@ -479,6 +503,20 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
+
+  // Trigger //
+  if (m_triggerSelection.size() > 0){
+    auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
+    //std::cout << m_triggerSelection << " " << triggerChainGroup->isPassed() << " " << triggerChainGroup->getPrescale() << std::endl;
+    if( !triggerChainGroup->isPassed() ){
+      wk()->skipEvent();
+      return EL::StatusCode::SUCCESS;
+    }
+    static SG::AuxElement::Decorator< float > weight_prescale("weight_prescale");
+    weight_prescale(*eventInfo) = triggerChainGroup->getPrescale();
+    m_cutflowHist ->Fill( m_cutflow_trigger, 1 );
+    m_cutflowHistW->Fill( m_cutflow_trigger, mcEvtWeight);
+  }
 
 
   return EL::StatusCode::SUCCESS;
