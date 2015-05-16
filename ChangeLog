@@ -137,3 +137,8 @@
   * HelpTreeBase - move non-standard partron truth code to detailed truth (as
 	as pT and dR which are nice ), added jet moments for ghost assoicated parton
 	label and fraction of pT in truth jet (standard moments). Fix ConeLabel
+
+2015-05-15 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * JetCalibrator - add DC14 switch for DC14 needed tweaks, bug in syst
+	variations killed-bug caused incorrect nominal
+
