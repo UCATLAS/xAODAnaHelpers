@@ -481,8 +481,10 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_AverageLArQF",        &m_jet_avLArQF            );
     m_tree->Branch("jet_BchCorrCell",         &m_jet_bchCorrCell        );
     m_tree->Branch("jet_N90Constituents",     &m_jet_N90Const           );
-    m_tree->Branch("jet_LArBadHVEnergy",      &m_jet_LArBadHVE          );
-    m_tree->Branch("jet_LArBadHVRatio",       &m_jet_LArBadHVRatio  	  );
+    m_tree->Branch("jet_LArBadHVEFracnergyFrac", &m_jet_LArBadHVEFrac   );
+    m_tree->Branch("jet_LArBadHVNCell",       &m_jet_LArBadHVNCell  	  );
+    m_tree->Branch("jet_OotFracClusters5",    &m_jet_OotFracClus5  	    );
+    m_tree->Branch("jet_OotFracClusters10",   &m_jet_OotFracClus10  	  );
   }
 
   if ( m_jetInfoSwitch->m_energy ) {
@@ -627,15 +629,25 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         m_jet_N90Const.push_back( N90Const( *jet_itr ) );
       } else { m_jet_N90Const.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<float> LArBadHVE ("LArBadHVEnergy");
-      if ( LArBadHVE.isAvailable( *jet_itr ) ) {
-        m_jet_LArBadHVE.push_back( LArBadHVE( *jet_itr ) );
-      } else { m_jet_LArBadHVE.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor<float> LArBadHVEFrac ("LArBadHVEnergyFrac");
+      if ( LArBadHVEFrac.isAvailable( *jet_itr ) ) {
+        m_jet_LArBadHVEFrac.push_back( LArBadHVEFrac( *jet_itr ) );
+      } else { m_jet_LArBadHVEFrac.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<float> LArBadHVRatio ("LArBadHVRatio");
-      if ( LArBadHVRatio.isAvailable( *jet_itr ) ) {
-        m_jet_LArBadHVRatio.push_back( LArBadHVRatio( *jet_itr ) );
-      } else { m_jet_LArBadHVRatio.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor<int> LArBadHVNCell ("LArBadHVNCell");
+      if ( LArBadHVNCell.isAvailable( *jet_itr ) ) {
+        m_jet_LArBadHVNCell.push_back( LArBadHVNCell( *jet_itr ) );
+      } else { m_jet_LArBadHVNCell.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> OotFracClus5 ("OotFracClusters5");
+      if ( OotFracClus5.isAvailable( *jet_itr ) ) {
+        m_jet_OotFracClus5.push_back( OotFracClus5( *jet_itr ) );
+      } else { m_jet_OotFracClus5.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> OotFracClus10 ("OotFracClusters10");
+      if ( OotFracClus10.isAvailable( *jet_itr ) ) {
+        m_jet_OotFracClus10.push_back( OotFracClus10( *jet_itr ) );
+      } else { m_jet_OotFracClus10.push_back( -999 ); }
 
     } // clean
 
@@ -771,6 +783,17 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
       }
 
+    }
+
+    if ( m_jetInfoSwitch->m_allTrack ) {
+//      static SG::AuxElement::ConstAccessor< std::vector<float> > ghostTrack ("GhostTrack");
+//      if ( ghostTrack.isAvailable( *jet_itr ) ) {
+//        m_jet_ghostTrack.push_back( ghostTrack( *jet_itr ) );
+//      } else {
+//        // just 1 track...
+//        std::vector<float> junk(1,-999);
+//        m_jet_ePerSamp.push_back( junk );
+//      }
     }
 
     if ( m_jetInfoSwitch->m_flavTag) {
@@ -1135,8 +1158,10 @@ void HelpTreeBase::ClearJets() {
     m_jet_avLArQF.clear();
     m_jet_bchCorrCell.clear();
     m_jet_N90Const.clear();
-    m_jet_LArBadHVE.clear();
-    m_jet_LArBadHVRatio.clear();
+    m_jet_LArBadHVEFrac.clear();
+    m_jet_LArBadHVNCell.clear();
+    m_jet_OotFracClus5.clear();
+    m_jet_OotFracClus10.clear();
   }
 
   // energy

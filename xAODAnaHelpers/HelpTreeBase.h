@@ -161,8 +161,10 @@ protected:
   std::vector<float> m_jet_avLArQF;
   std::vector<float> m_jet_bchCorrCell;
   std::vector<float> m_jet_N90Const;
-  std::vector<float> m_jet_LArBadHVE;
-  std::vector<float> m_jet_LArBadHVRatio;
+  std::vector<float> m_jet_LArBadHVEFrac;
+  std::vector<int> m_jet_LArBadHVNCell;
+  std::vector<float> m_jet_OotFracClus5;
+  std::vector<float> m_jet_OotFracClus10;
 
   // energy
   std::vector<float> m_jet_HECf;
@@ -195,6 +197,11 @@ protected:
   std::vector<float> m_jet_TrkWPt500PV;
   std::vector<float> m_jet_jvfPV;
   //std::vector<float> m_jet_jvfloosePV;
+
+  // allTrack
+//  std::vector<int> m_jet_ghostTrackCount;
+//  std::vector<float> m_jet_ghostTrackPt;
+//  std::vector< std::vector<float> > m_jet_ghostTrack;
 
   // flavor tag
   std::vector<float> m_jet_sv0;

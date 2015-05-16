@@ -121,6 +121,7 @@ namespace HelperClasses{
     m_layer         = parse("layer");
     m_trackPV       = parse("trackPV");
     m_trackAll      = parse("trackAll");
+    m_allTrack      = parse("allTrack");
     m_flavTag       = parse("flavorTag");
     if( parse("LeadingJets") ){
       m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );

@@ -142,3 +142,6 @@
   * JetCalibrator - add DC14 switch for DC14 needed tweaks, bug in syst
 	variations killed-bug caused incorrect nominal
 
+2015-05-15 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * HelpTreeBase - jet variables
+
