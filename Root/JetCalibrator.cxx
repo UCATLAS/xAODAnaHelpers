@@ -85,6 +85,10 @@ EL::StatusCode  JetCalibrator :: configure ()
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
 
+    // DC14 switch for little things that need to happen to run 
+    // for those samples with the corresponding packages
+    m_DC14                    = config->GetValue("DC14", false);
+
     // CONFIG parameters for JetCalibrationTool
     m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
     m_outputAlgo              = config->GetValue("OutputAlgo",      "");
@@ -124,8 +128,10 @@ EL::StatusCode  JetCalibrator :: configure ()
   }
 
   m_jetUncertAlgo = m_jetAlgo;
-  //m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoEM"), std::string("EMTopo"));
-  //m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoLC"), std::string("LCTopo"));
+  if(m_DC14) {
+    m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoEM"), std::string("EMTopo"));
+    m_jetUncertAlgo = HelperFunctions::replaceString(m_jetUncertAlgo, std::string("TopoLC"), std::string("LCTopo"));
+  }
 
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
@@ -338,7 +344,8 @@ EL::StatusCode JetCalibrator :: execute ()
     outContainerName      += syst_it.name();
     vecOutContainerNames->push_back( syst_it.name() );
 
-    if ( m_runSysts && !(syst_it.name()).empty() ) {
+    if ( m_runSysts ) {
+      if( m_debug ) { std::cout << "Configure for systematic variation : " << syst_it.name() << std::endl; }
       if ( m_jetUncert->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
         Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
         return EL::StatusCode::FAILURE;

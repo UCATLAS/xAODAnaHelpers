@@ -28,6 +28,7 @@ public:
   std::string m_configName;
 
   bool m_debug;           //!
+  bool m_DC14;            //!
 
   // configuration variables
   std::string m_inContainerName;        //!
