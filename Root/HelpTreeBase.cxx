@@ -521,10 +521,19 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_NumTrkPt500PV",	      &m_jet_NTrkPt500PV    );
     m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
     m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
-    m_tree->Branch("jet_JVFPV",		      &m_jet_jvfPV	    );
+    m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	        );
     //m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
     // HigestJVFLooseVtx  Vertex
     // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
+  }
+
+  if ( m_jetInfoSwitch->m_allTrack ) {
+    m_tree->Branch("jet_GhostTrackCount",  &m_jet_GhostTrackCount );
+    m_tree->Branch("jet_GhostTrackPt",     &m_jet_GhostTrackPt    );
+    m_tree->Branch("jet_GhostTrack_pt",    &m_jet_GhostTrack_pt   );
+    m_tree->Branch("jet_GhostTrack_eta",   &m_jet_GhostTrack_eta  );
+    m_tree->Branch("jet_GhostTrack_phi",   &m_jet_GhostTrack_phi  );
+    m_tree->Branch("jet_GhostTrack_e",     &m_jet_GhostTrack_e    );
   }
 
   if( m_jetInfoSwitch->m_flavTag ) {
@@ -727,7 +736,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
         if ( sumPt1000.isAvailable( *jet_itr ) ) {
           m_jet_SumPtPt1000.push_back( sumPt1000( *jet_itr ) );
-        } else { m_jet_SumPtPt1000.push_back( junkFlt ); }
+        } else { m_jet_SumPtPt1000.push_back( junkFlt / m_units); }
 
         if ( trkWidth1000.isAvailable( *jet_itr ) ) {
           m_jet_TrkWPt1000.push_back( trkWidth1000( *jet_itr ) );
@@ -739,7 +748,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
         if ( sumPt500.isAvailable( *jet_itr ) ) {
           m_jet_SumPtPt500.push_back( sumPt500( *jet_itr ) );
-        } else { m_jet_SumPtPt500.push_back( junkFlt ); }
+        } else { m_jet_SumPtPt500.push_back( junkFlt / m_units ); }
 
         if ( trkWidth500.isAvailable( *jet_itr ) ) {
           m_jet_TrkWPt500.push_back( trkWidth500( *jet_itr ) );
@@ -786,15 +795,37 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if ( m_jetInfoSwitch->m_allTrack ) {
-//      static SG::AuxElement::ConstAccessor< std::vector<float> > ghostTrack ("GhostTrack");
-//      if ( ghostTrack.isAvailable( *jet_itr ) ) {
-//        m_jet_ghostTrack.push_back( ghostTrack( *jet_itr ) );
-//      } else {
-//        // just 1 track...
-//        std::vector<float> junk(1,-999);
-//        m_jet_ePerSamp.push_back( junk );
-//      }
-    }
+      static SG::AuxElement::ConstAccessor< int > ghostTrackCount("GhostTrackCount");
+      if ( ghostTrackCount.isAvailable( *jet_itr ) ) {
+        m_jet_GhostTrackCount.push_back( ghostTrackCount( *jet_itr ) );
+      } else { m_jet_GhostTrackCount.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor< float > ghostTrackPt ("GhostTrackPt");
+      if ( ghostTrackPt.isAvailable( *jet_itr ) ) {
+        m_jet_GhostTrackPt.push_back( ghostTrackPt( *jet_itr ) / m_units );
+      } else { m_jet_GhostTrackPt.push_back( -999 ); }
+      std::vector<float> pt;
+      std::vector<float> eta;
+      std::vector<float> phi;
+      std::vector<float> e;
+      static SG::AuxElement::ConstAccessor< std::vector<ElementLink<DataVector<xAOD::IParticle> > > >ghostTrack ("GhostTrack");
+      if ( ghostTrack.isAvailable( *jet_itr ) ) {
+        std::vector<ElementLink<DataVector<xAOD::IParticle> > > trackLinks = ghostTrack( *jet_itr );
+        //std::vector<float> pt(trackLinks.size(),-999);
+        for ( auto link_itr : trackLinks ) {
+          if( !link_itr.isValid() ) { continue; }
+          const xAOD::IParticle* trk = *link_itr;
+          //std::cout << "\t" << trk->pt() << std::endl;
+          pt. push_back( trk->pt() / m_units );
+          eta.push_back( trk->eta() );
+          phi.push_back( trk->phi() );
+          e.  push_back( trk->e()  / m_units );
+        }
+      } // if ghostTrack available
+      m_jet_GhostTrack_pt. push_back( pt  );
+      m_jet_GhostTrack_eta.push_back( eta );
+      m_jet_GhostTrack_phi.push_back( phi );
+      m_jet_GhostTrack_e.  push_back( e   );
+    } // allTrack switch
 
     if ( m_jetInfoSwitch->m_flavTag) {
       const xAOD::BTagging * myBTag = jet_itr->btagging();
@@ -1202,6 +1233,15 @@ void HelpTreeBase::ClearJets() {
     m_jet_TrkWPt500PV.clear();
     m_jet_jvfPV.clear();
     //m_jet_jvfloosePV.clear();
+  }
+
+  if ( m_jetInfoSwitch->m_allTrack ) {
+    m_jet_GhostTrackCount.clear();
+    m_jet_GhostTrackPt.clear();
+    m_jet_GhostTrack_pt.clear();
+    m_jet_GhostTrack_eta.clear();
+    m_jet_GhostTrack_phi.clear();
+    m_jet_GhostTrack_e.clear();
   }
 
   // flavor tag

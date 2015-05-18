@@ -199,9 +199,12 @@ protected:
   //std::vector<float> m_jet_jvfloosePV;
 
   // allTrack
-//  std::vector<int> m_jet_ghostTrackCount;
-//  std::vector<float> m_jet_ghostTrackPt;
-//  std::vector< std::vector<float> > m_jet_ghostTrack;
+  std::vector<int> m_jet_GhostTrackCount;
+  std::vector<float> m_jet_GhostTrackPt;
+  std::vector< std::vector<float> > m_jet_GhostTrack_pt;
+  std::vector< std::vector<float> > m_jet_GhostTrack_eta;
+  std::vector< std::vector<float> > m_jet_GhostTrack_phi;
+  std::vector< std::vector<float> > m_jet_GhostTrack_e;
 
   // flavor tag
   std::vector<float> m_jet_sv0;

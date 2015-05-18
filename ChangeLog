@@ -145,3 +145,7 @@
 2015-05-15 Gabriel Facini <Gabriel.Facini@cern.ch>
   * HelpTreeBase - jet variables
 
+2016-05-19 Gabriel Facini <Gabriel.Facini@cern.ch>
+  * HelpTreeBase - jet variables
+	* TreeAlgo - default units for tree is GeV
+

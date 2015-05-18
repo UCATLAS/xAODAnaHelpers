@@ -77,7 +77,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
-  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, m_debug );
+  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, 1e3, m_debug );
   // tell the tree to go into the file
   outTree->SetDirectory( treeFile );
   // uncomment if want to add to same file as ouput histograms
