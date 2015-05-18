@@ -149,3 +149,6 @@
   * HelpTreeBase - jet variables
 	* TreeAlgo - default units for tree is GeV
 
+2016-05-19 Gabriel Facini <Gabriel.Facini@cern.ch>
+	* obvious bug fix
+

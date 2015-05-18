@@ -736,7 +736,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
         if ( sumPt1000.isAvailable( *jet_itr ) ) {
           m_jet_SumPtPt1000.push_back( sumPt1000( *jet_itr ) );
-        } else { m_jet_SumPtPt1000.push_back( junkFlt / m_units); }
+          std::transform((m_jet_SumPtPt1000.back()).begin(),
+              (m_jet_SumPtPt1000.back()).end(),
+              (m_jet_SumPtPt1000.back()).begin(),
+              std::bind2nd(std::divides<float>(), m_units));
+        } else { m_jet_SumPtPt1000.push_back( junkFlt ); }
 
         if ( trkWidth1000.isAvailable( *jet_itr ) ) {
           m_jet_TrkWPt1000.push_back( trkWidth1000( *jet_itr ) );
@@ -748,7 +752,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
         if ( sumPt500.isAvailable( *jet_itr ) ) {
           m_jet_SumPtPt500.push_back( sumPt500( *jet_itr ) );
-        } else { m_jet_SumPtPt500.push_back( junkFlt / m_units ); }
+          std::transform((m_jet_SumPtPt500.back()).begin(),
+              (m_jet_SumPtPt500.back()).end(),
+              (m_jet_SumPtPt500.back()).begin(),
+              std::bind2nd(std::divides<float>(), m_units));
+        } else { m_jet_SumPtPt500.push_back( junkFlt ); }
 
         if ( trkWidth500.isAvailable( *jet_itr ) ) {
           m_jet_TrkWPt500.push_back( trkWidth500( *jet_itr ) );
@@ -767,7 +775,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         } else { m_jet_NTrkPt1000PV.push_back( -999 ); }
 
         if ( sumPt1000.isAvailable( *jet_itr ) ) {
-          m_jet_SumPtPt1000PV.push_back( sumPt1000( *jet_itr )[pvLocation] );
+          m_jet_SumPtPt1000PV.push_back( sumPt1000( *jet_itr )[pvLocation] / m_units );
         } else { m_jet_SumPtPt1000PV.push_back( -999 ); }
 
         if ( trkWidth1000.isAvailable( *jet_itr ) ) {
@@ -779,7 +787,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         } else { m_jet_NTrkPt500PV.push_back( -999 ); }
 
         if ( sumPt500.isAvailable( *jet_itr ) ) {
-          m_jet_SumPtPt500PV.push_back( sumPt500( *jet_itr )[pvLocation] );
+          m_jet_SumPtPt500PV.push_back( sumPt500( *jet_itr )[pvLocation] / m_units );
         } else { m_jet_SumPtPt500PV.push_back( -999 ); }
 
         if ( trkWidth500.isAvailable( *jet_itr ) ) {
