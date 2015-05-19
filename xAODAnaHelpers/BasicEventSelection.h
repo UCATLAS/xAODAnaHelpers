@@ -42,6 +42,7 @@ class BasicEventSelection : public EL::Algorithm
     int m_debug;            //!
     bool m_truthLevelOnly;  //!
     // GRL
+    bool m_applyGRL;        //!
     std::string m_GRLxml;   //!
     //PU Reweighting
     bool m_doPUreweighting; //!

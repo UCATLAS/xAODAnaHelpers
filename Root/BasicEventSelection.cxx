@@ -88,6 +88,7 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_truthLevelOnly    = config->GetValue("TruthLevelOnly", false);
 
     // GRL
+    m_applyGRL          = config->GetValue("ApplyGRL",        true);
     m_GRLxml            = config->GetValue("GRL","$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
 
     // Pileup Reweighting
@@ -449,12 +450,14 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
 
     // GRL
-    if(!m_grl->passRunLB(*eventInfo)){
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS; // go to next event
+    if(m_applyGRL) {
+      if(!m_grl->passRunLB(*eventInfo)){
+        wk()->skipEvent();
+        return EL::StatusCode::SUCCESS; // go to next event
+      }
+      m_cutflowHist ->Fill( m_cutflow_grl, 1 );
+      m_cutflowHistW->Fill( m_cutflow_grl, mcEvtWeight);
     }
-    m_cutflowHist ->Fill( m_cutflow_grl, 1 );
-    m_cutflowHistW->Fill( m_cutflow_grl, mcEvtWeight);
 
     //------------------------------------------------------------
     // Apply event cleaning to remove events due to
