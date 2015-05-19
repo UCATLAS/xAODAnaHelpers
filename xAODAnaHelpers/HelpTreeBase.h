@@ -165,6 +165,10 @@ protected:
   std::vector<int> m_jet_LArBadHVNCell;
   std::vector<float> m_jet_OotFracClus5;
   std::vector<float> m_jet_OotFracClus10;
+  std::vector<float> m_jet_LeadingClusterPt;
+  std::vector<float> m_jet_LeadingClusterSecondLambda;
+  std::vector<float> m_jet_LeadingClusterCenterLambda;
+  std::vector<float> m_jet_LeadingClusterSecondR;
 
   // energy
   std::vector<float> m_jet_HECf;
@@ -174,6 +178,7 @@ protected:
   std::vector<float> m_jet_fracSampMaxIdx;
   std::vector<float> m_jet_lowEtFrac;
   std::vector<float> m_jet_muonSegCount;
+  std::vector<float> m_jet_width;
 
   // layer
   std::vector< std::vector<float> > m_jet_ePerSamp;

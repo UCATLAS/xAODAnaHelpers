@@ -152,3 +152,7 @@
 2016-05-19 Gabriel Facini <Gabriel.Facini@cern.ch>
 	* obvious bug fix
 
+2016-05-19 Gabriel Facini <Gabriel.Facini@cern.ch> Javier Bilbao <Javier.Bilbao@cern.ch>
+	* HelpTreeBase - more jet cleaning variables
+
+

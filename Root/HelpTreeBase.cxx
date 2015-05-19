@@ -485,6 +485,10 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_LArBadHVNCell",       &m_jet_LArBadHVNCell  	  );
     m_tree->Branch("jet_OotFracClusters5",    &m_jet_OotFracClus5  	    );
     m_tree->Branch("jet_OotFracClusters10",   &m_jet_OotFracClus10  	  );
+    m_tree->Branch("jet_LeadingClusterPt",              &m_jet_LeadingClusterPt  	            );
+    m_tree->Branch("jet_LeadingClusterSecondLambda",    &m_jet_LeadingClusterSecondLambda  	  );
+    m_tree->Branch("jet_LeadingClusterCenterLambda",    &m_jet_LeadingClusterCenterLambda  	  );
+    m_tree->Branch("jet_LeadingClusterSecondR",         &m_jet_LeadingClusterSecondR  	      );
   }
 
   if ( m_jetInfoSwitch->m_energy ) {
@@ -495,6 +499,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_FracSamplingMaxIndex",  &m_jet_fracSampMaxIdx );
     m_tree->Branch("jet_LowEtConstituentsFrac", &m_jet_lowEtFrac      );
     m_tree->Branch("jet_GhostMuonSegmentCount", &m_jet_muonSegCount   );
+    m_tree->Branch("jet_Width",                 &m_jet_width          );
   }
 
   if ( m_jetInfoSwitch->m_layer ) {
@@ -658,6 +663,26 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         m_jet_OotFracClus10.push_back( OotFracClus10( *jet_itr ) );
       } else { m_jet_OotFracClus10.push_back( -999 ); }
 
+      static SG::AuxElement::ConstAccessor<float> leadClusPt ("LeadingClusterPt");
+      if ( leadClusPt.isAvailable( *jet_itr ) ) {
+        m_jet_LeadingClusterPt.push_back( leadClusPt( *jet_itr ) );
+      } else { m_jet_LeadingClusterPt.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> leadClusSecondLambda ("LeadingClusterSecondLambda");
+      if ( leadClusSecondLambda.isAvailable( *jet_itr ) ) {
+        m_jet_LeadingClusterSecondLambda.push_back( leadClusSecondLambda( *jet_itr ) );
+      } else { m_jet_LeadingClusterSecondLambda.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> leadClusCenterLambda ("LeadingClusterCenterLambda");
+      if ( leadClusCenterLambda.isAvailable( *jet_itr ) ) {
+        m_jet_LeadingClusterCenterLambda.push_back( leadClusCenterLambda( *jet_itr ) );
+      } else { m_jet_LeadingClusterCenterLambda.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> leadClusSecondR ("LeadingClusterSecondR");
+      if ( leadClusSecondR.isAvailable( *jet_itr ) ) {
+        m_jet_LeadingClusterSecondR.push_back( leadClusSecondR( *jet_itr ) );
+      } else { m_jet_LeadingClusterSecondR.push_back( -999 ); }
+
     } // clean
 
     if ( m_jetInfoSwitch->m_energy ) {
@@ -696,6 +721,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       if ( muonSegCount.isAvailable( *jet_itr ) ) {
         m_jet_muonSegCount.push_back( muonSegCount( *jet_itr ) );
       } else { m_jet_muonSegCount.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> width ("Width");
+      if ( width.isAvailable( *jet_itr ) ) {
+        m_jet_width.push_back( width( *jet_itr ) );
+      } else { m_jet_width.push_back( -999 ); }
 
     } // energy
 
@@ -1201,6 +1231,10 @@ void HelpTreeBase::ClearJets() {
     m_jet_LArBadHVNCell.clear();
     m_jet_OotFracClus5.clear();
     m_jet_OotFracClus10.clear();
+    m_jet_LeadingClusterPt.clear();
+    m_jet_LeadingClusterSecondLambda.clear();
+    m_jet_LeadingClusterCenterLambda.clear();
+    m_jet_LeadingClusterSecondR.clear();
   }
 
   // energy
@@ -1212,6 +1246,7 @@ void HelpTreeBase::ClearJets() {
     m_jet_fracSampMaxIdx.clear();
     m_jet_lowEtFrac.clear();
     m_jet_muonSegCount.clear();
+    m_jet_width.clear();
   }
 
   // layer
