@@ -515,6 +515,13 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Trigger //
   if (m_triggerSelection.size() > 0){
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
+    if(m_eventCounter == 1){ //first event
+      std::vector<std::string> triggersUsed = triggerChainGroup->getListOfTriggers();
+      std::cout << "Triggers used are: " << std::endl;
+      for (int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger){
+        std::cout << "    " << triggersUsed.at(iTrigger) << std::endl;
+      }
+    }
 //    std::cout << m_triggerSelection << " " << triggerChainGroup->isPassed() << " " << triggerChainGroup->getPrescale() << std::endl;
     if( !triggerChainGroup->isPassed() ){
       wk()->skipEvent();
