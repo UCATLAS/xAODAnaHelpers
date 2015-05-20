@@ -34,7 +34,7 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false );
+  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false );
   virtual ~HelpTreeBase() {;}
 
  // virtual void setDebugMode(  bool debug ){
@@ -117,6 +117,7 @@ protected:
   int m_units; //For MeV to GeV conversion in output
   
   bool m_debug;
+  bool m_DC14;
 
   // event
   int m_runNumber;
@@ -281,8 +282,8 @@ protected:
   std::vector<int> m_muon_trknTRTHits;
   std::vector<int> m_muon_trknTRTHoles;
   std::vector<int> m_muon_trknBLayerHits; 
-  //std::vector<int> m_muon_trknInnermostPixLayHits; // not available ?
-  //std::vector<float> m_muon_trkPixdEdX; // not available ?
+  std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
+  std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
 
   // electrons
   int m_nel;
@@ -312,8 +313,8 @@ protected:
   std::vector<int> m_el_trknTRTHits;
   std::vector<int> m_el_trknTRTHoles;
   std::vector<int> m_el_trknBLayerHits; 
-  //std::vector<int> m_el_trknInnermostPixLayHits; // not available ?
-  //std::vector<float> m_el_trkPixdEdX; // not available ?
+  std::vector<int> m_el_trknInnermostPixLayHits; // not available in DC14
+  std::vector<float> m_el_trkPixdEdX;            // not available in DC14
 
   // taus
   int m_ntau;

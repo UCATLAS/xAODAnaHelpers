@@ -20,7 +20,7 @@
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug):
+HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14):
   m_eventInfoSwitch(0),
   m_muInfoSwitch(0),
   m_elInfoSwitch(0),
@@ -31,6 +31,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
 
   m_units = units;
   m_debug = debug;
+  m_DC14  = DC14;
   m_tree = tree;
   m_tree->SetDirectory( file );
   Info("HelpTreeBase()", "HelpTreeBase setup");
@@ -227,8 +228,10 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     m_tree->Branch("muon_trknTRTHits",   &m_muon_trknTRTHits);
     m_tree->Branch("muon_trknTRTHoles",  &m_muon_trknTRTHoles);
     m_tree->Branch("muon_trknBLayerHits",&m_muon_trknBLayerHits);
-    //m_tree->Branch("muon_trknInnermostPixLayHits",  &m_muon_trknInnermostPixLayHits);
-    //m_tree->Branch("muon_trkPixdEdX",  &m_muon_trkPixdEdX);
+    if ( !m_DC14 ) {
+      m_tree->Branch("muon_trknInnermostPixLayHits",  &m_muon_trknInnermostPixLayHits);
+      m_tree->Branch("muon_trkPixdEdX",    &m_muon_trkPixdEdX);
+    }
   }
 
   this->AddMuonsUser();
@@ -297,8 +300,10 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       	trk->summaryValue( nTRTHits,     xAOD::numberOfTRTHits );
       	trk->summaryValue( nTRTHoles,    xAOD::numberOfTRTHoles );
         trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
-        //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
-        //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
+        if ( !m_DC14 ) {
+	  trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
+          trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
+        }
       }
       m_muon_trknSiHits.push_back( nPixHits + nSCTHits );
       m_muon_trknPixHits.push_back( nPixHits );
@@ -308,8 +313,10 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       m_muon_trknTRTHits.push_back( nTRTHits );
       m_muon_trknTRTHoles.push_back( nTRTHoles );
       m_muon_trknBLayerHits.push_back( nBLayerHits );
-      //m_muon_trknInnermostPixLayHits.push_back( nInnermostPixLayHits );
-      //m_muon_trkPixdEdX.push_back( pixdEdX );
+      if ( !m_DC14 ) {
+        m_muon_trknInnermostPixLayHits.push_back( nInnermostPixLayHits );
+        m_muon_trkPixdEdX.push_back( pixdEdX );
+      }
     }
 
     this->FillMuonsUser(muon_itr);
@@ -358,8 +365,10 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_trknTRTHits",   &m_el_trknTRTHits);
     m_tree->Branch("el_trknTRTHoles",  &m_el_trknTRTHoles);
     m_tree->Branch("el_trknBLayerHits",&m_el_trknBLayerHits);
-    //m_tree->Branch("el_trknInnermostPixLayHits",  &m_el_trknInnermostPixLayHits);
-    //m_tree->Branch("el_trkPixdEdX",    &m_el_trkPixdEdX);
+    if ( !m_DC14 ) {
+      m_tree->Branch("el_trknInnermostPixLayHits",  &m_el_trknInnermostPixLayHits);
+      m_tree->Branch("el_trkPixdEdX",    &m_el_trkPixdEdX);
+    }
   }
 
   this->AddElectronsUser();
@@ -429,8 +438,10 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
         trk->summaryValue( nTRTHits,  xAOD::numberOfTRTHits );
         trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );
         trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
-        //trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
-        //trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
+	if ( !m_DC14 ) {
+          trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
+          trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
+        }
       }
       m_el_trknSiHits.push_back( nPixHits + nSCTHits );
       m_el_trknPixHits.push_back( nPixHits );
@@ -440,8 +451,10 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       m_el_trknTRTHits.push_back( nTRTHits );
       m_el_trknTRTHoles.push_back( nTRTHoles );
       m_el_trknBLayerHits.push_back( nBLayerHits );
-      //m_el_trknInnermostPixLayHits.push_back( nInnermostPixLayHits );
-      //m_el_trkPixdEdX.push_back( pixdEdX );
+      if ( !m_DC14 ) {
+        m_el_trknInnermostPixLayHits.push_back( nInnermostPixLayHits );
+        m_el_trkPixdEdX.push_back( pixdEdX );
+      }
     }
 
     this->FillElectronsUser(el_itr);
@@ -542,9 +555,11 @@ void HelpTreeBase::AddJets(const std::string detailStr)
   }
 
   if( m_jetInfoSwitch->m_flavTag ) {
-    m_tree->Branch("jet_SV0",           &m_jet_sv0);
-    m_tree->Branch("jet_SV1",           &m_jet_sv1);
-    m_tree->Branch("jet_IP3D",          &m_jet_ip3d);
+    if ( !m_DC14 ) {
+      m_tree->Branch("jet_SV0",           &m_jet_sv0);
+      m_tree->Branch("jet_SV1",           &m_jet_sv1);
+      m_tree->Branch("jet_IP3D",          &m_jet_ip3d);
+    }
     m_tree->Branch("jet_SV1IP3D",       &m_jet_sv1ip3d);
     m_tree->Branch("jet_MV1",           &m_jet_mv1);
     m_tree->Branch("jet_MV2c00",        &m_jet_mv2c00);
@@ -867,9 +882,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
     if ( m_jetInfoSwitch->m_flavTag) {
       const xAOD::BTagging * myBTag = jet_itr->btagging();
-      m_jet_sv0.push_back(     myBTag -> SV0_significance3D()       );
-      m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
-      m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
+      if ( !m_DC14 ) {
+        m_jet_sv0.push_back(     myBTag -> SV0_significance3D()       );
+        m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
+        m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
+      }
       m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
       m_jet_mv1.push_back(     myBTag -> MV1_discriminant()         );
 

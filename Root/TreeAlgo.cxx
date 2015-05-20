@@ -77,7 +77,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
-  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, 1e3, m_debug );
+  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, 1e3, m_debug, m_DC14 );
   // tell the tree to go into the file
   outTree->SetDirectory( treeFile );
   // uncomment if want to add to same file as ouput histograms
@@ -118,6 +118,10 @@ EL::StatusCode TreeAlgo :: configure ()
     m_jetContainerName        = config->GetValue("JetContainerName",        "");
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
     m_tauContainerName        = config->GetValue("TauContainerName",        "");
+    
+    // DC14 switch for little things that need to happen to run
+    // for those samples with the corresponding packages
+    m_DC14                    = config->GetValue("DC14", false);
 
     Info("configure()", "Loaded in configuration values");
 

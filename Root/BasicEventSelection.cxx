@@ -204,9 +204,10 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
   m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
   m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
-  if( m_triggerSelection.size() > 0)
+  if ( m_triggerSelection.size() > 0 ) {
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
-
+  }
+  
   // do it again for the weighted cutflow hist
   m_cutflowHistW->GetXaxis()->FindBin("all");
   if(m_applyGRL)
@@ -215,9 +216,9 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   m_cutflowHistW->GetXaxis()->FindBin("tile");
   m_cutflowHistW->GetXaxis()->FindBin("core");
   m_cutflowHistW->GetXaxis()->FindBin("NPV");
-  if( m_triggerSelection.size() > 0)
+  if ( m_triggerSelection.size() > 0 ) {
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
-
+  }
 
   Info("histInitialize()", "Histograms initialized!");
   return EL::StatusCode::SUCCESS;
@@ -231,7 +232,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   // single file, e.g. collect a list of all lumi-blocks processed
   Info("fileExecute()", "Calling fileExecute");
 
-  if (!m_histEventCount) {
+  if ( !m_histEventCount ) {
     // TODO why is histInitialize() called after fileExecute() ??
     Warning("fileExecute()", "Histograms for event counting not initialized! Calling histInitialize()...");
     histInitialize();
@@ -247,13 +248,13 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
   // get the MetaData tree once a new file is opened, with
   TTree *MetaData = dynamic_cast<TTree*>(wk()->inputFile()->Get("MetaData"));
-  if (!MetaData) {
+  if ( !MetaData ) {
     Error("fileExecute()", "MetaData not found!");
     return EL::StatusCode::FAILURE;
   }
 
   TBranch *b = MetaData->GetBranch("EventBookkeepers");
-  if(!b){
+  if ( !b ) {
     Error("fileExecute()", "EventBookkeepers is not a branch of MetaData");
     //return EL::StatusCode::FAILURE;
   }
@@ -350,7 +351,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  if( m_triggerSelection.size() > 0){
+  if ( m_triggerSelection.size() > 0 ) {
+    
     m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
     ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
@@ -399,29 +401,29 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   //--------------------------
   //Print trigger's used for first event only
-  if ( m_eventCounter == 1 && m_triggerSelection.size() > 0){
+  if ( m_eventCounter == 1 && m_triggerSelection.size() > 0) {
     auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
     std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
     printf("*** Triggers used are:\n");
-    for (unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger){
+    for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
       printf("    %s\n", triggersUsed.at(iTrigger).c_str());
     }
     printf("\n");
   }
 
-  bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
-  if(m_debug){
+  bool isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
+  if ( m_debug ) {
     Info("execute()", "Is MC? %i", static_cast<int>(isMC) );
   }
 
   float mcEvtWeight(1.0), pileupWeight(1.0);
-  if( isMC ){
+  if ( isMC ) {
      const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
-     if( weights.size() > 0 ) mcEvtWeight = weights[0];
+     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
 
      //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
-     if( m_doPUreweighting ){
+     if ( m_doPUreweighting ) {
        m_pileuptool->apply(eventInfo);
        static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
        pileupWeight = pileupWeightAcc(*eventInfo) ;
@@ -440,21 +442,21 @@ EL::StatusCode BasicEventSelection :: execute ()
     Info("execute()", "Event number = %i", m_eventCounter);
   }
 
-  if( m_debug && (m_eventCounter % 500) == 0 ) {
+  if ( m_debug && (m_eventCounter % 500) == 0 ) {
     Info(m_name.c_str(), "Store Content:");
     m_store->print();
     Info(m_name.c_str(), "End Content");
   }
 
   // if data check if event passes GRL and even cleaning
-  if( !isMC ) {
+  if ( !isMC ) {
 
     // if data event in Egamma stream is also in Muons stream, skip it - TO DO
 
     // Get the streams that the event was put in
     const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
 
-    if(m_debug){
+    if ( m_debug ) {
       for ( auto& it : streams ) {
 	const std::string stream_name = it.name();
 	Info("execute()", "event has fired stream: %s", stream_name.c_str() );
@@ -462,8 +464,8 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
 
     // GRL
-    if(m_applyGRL) {
-      if(!m_grl->passRunLB(*eventInfo)){
+    if ( m_applyGRL ) {
+      if ( !m_grl->passRunLB( *eventInfo ) ) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS; // go to next event
       }
@@ -477,14 +479,14 @@ EL::StatusCode BasicEventSelection :: execute ()
     // Apply to data.
     //------------------------------------------------------------
     // reject event if:
-    if( (eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) ) {
+    if ( (eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_lar, 1 );
     m_cutflowHistW->Fill( m_cutflow_lar, mcEvtWeight);
 
-    if( (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) ) {
+    if ( (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
@@ -518,10 +520,10 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   }
   const xAOD::VertexContainer* vertices(nullptr);
-  if(!m_truthLevelOnly) {
+  if ( !m_truthLevelOnly ) {
     RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_debug) ,"");
 
-    if( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
+    if ( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
@@ -530,10 +532,10 @@ EL::StatusCode BasicEventSelection :: execute ()
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
 
   // Trigger //
-  if (m_triggerSelection.size() > 0){
+  if ( m_triggerSelection.size() > 0 ) {
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
     //std::cout << m_triggerSelection << " " << triggerChainGroup->isPassed() << " " << triggerChainGroup->getPrescale() << std::endl;
-    if( !triggerChainGroup->isPassed() ){
+    if ( !triggerChainGroup->isPassed() ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
@@ -577,7 +579,6 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   Info("finalize()", "Number of processed events      = %i", m_eventCounter);
 
-  //This isn't valid!  if m_trigDecTool and m_trigConfTool don't exist, they will crash.
   if(m_grl) delete m_grl;
   if(m_pileuptool) delete m_pileuptool;
   if( m_triggerSelection.size() > 0){
