@@ -50,7 +50,9 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
   m_name(name),
   m_configName(configName),
   m_grl(nullptr),
-  m_pileuptool(nullptr)
+  m_pileuptool(nullptr),
+  m_trigConfTool(nullptr),
+  m_trigDecTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -327,11 +329,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-//  if ( this->configure() == EL::StatusCode::FAILURE ) {
-//    Error("initialize()", "Failed to properly configure. Exiting." );
-//    return EL::StatusCode::FAILURE;
-//  }
-
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
   m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
@@ -576,8 +573,13 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   Info("finalize()", "Number of processed events      = %i", m_eventCounter);
 
+  //This isn't valid!  if m_trigDecTool and m_trigConfTool don't exist, they will crash.
   if(m_grl) delete m_grl;
   if(m_pileuptool) delete m_pileuptool;
+  if( m_triggerSelection.size() > 0){
+    if(m_trigDecTool) delete m_trigDecTool;
+    if(m_trigConfTool) delete m_trigConfTool;
+  }
 
   return EL::StatusCode::SUCCESS;
 }

@@ -95,8 +95,9 @@ EL::StatusCode  JetCalibrator :: configure ()
 
     // when running data "_Insitu" is appended to this string
     m_calibSequence           = config->GetValue("CalibSequence",           "JetArea_Residual_EtaJES");
-    m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
-    m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
+    m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Prerecommendation2015_Feb2015.config");
+    m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Prerecommendation2015_AFII_Apr2015.config");
+    m_calibConfigData         = config->GetValue("configNameData",          "JES_Full2012dataset_May2014.config");
 
     // CONFIG parameters for JetCleaningTool
     m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");
@@ -228,10 +229,10 @@ EL::StatusCode JetCalibrator :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  // this now holds for both MC and data
-  m_calibConfig = m_calibConfigFullSim;
-
-  if ( m_isMC ) {
+  if ( !m_isMC ) {
+    m_calibConfig = m_calibConfigData;
+  }else{
+    m_calibConfig = m_calibConfigFullSim;
     // treat as fullsim by default
     m_isFullSim = true;
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
