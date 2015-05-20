@@ -32,7 +32,8 @@ dict_pkg = {'2.1.29': ["ElectronEfficiencyCorrection"],
                        "atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
                        "ElectronEfficiencyCorrection"],
             '2.1.32': ["atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
-                       "ElectronEfficiencyCorrection"]
+                       "ElectronEfficiencyCorrection"],
+            '2.3.12': ["atlasoff/PhysicsAnalysis/ElectronPhotonID/ElectronEfficiencyCorrection/tags/ElectronEfficiencyCorrection-00-01-20"]
            }
 
 try:
@@ -48,10 +49,12 @@ for pkg in packages_to_checkout:
 
 packages_to_patch = ["ElectronEfficiencyCorrection"]
 
-print "applying svn patches"
+print "applying svn patches..."
 for pkg in packages_to_patch:
   if pkg in packages_to_checkout:
     print "  patching {0}".format(pkg)
     subprocess.Popen(['cd $ROOTCOREBIN/../{0} && pwd && patch -p0 -i $ROOTCOREBIN/../xAODAnaHelpers/data/{0}_Base.{1}.diff && cd - && pwd'.format(pkg, args.version)], env=rc_env, shell=True ).wait()
+  else:
+    print "  no patches to be applied!"
 
 

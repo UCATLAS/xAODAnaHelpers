@@ -118,23 +118,23 @@ int main( int argc, char* argv[] ) {
 
   // Attach algorithms
   job.algsAdd( baseEventSel );
-  job.algsAdd( jetCalib );
-  job.algsAdd( muonCalib );
-  job.algsAdd( muonEffCorr );
-  job.algsAdd( electronCalib );
-  job.algsAdd( electronEffCorr );
-  job.algsAdd( muonSelect_signal );
-  job.algsAdd( electronSelect_signal );
-  job.algsAdd( jetSelect_signal );
-  job.algsAdd( bjetSelect_signal );
-  job.algsAdd( bjetEffCorr_btag );
-  job.algsAdd( jetHistsAlgo_signal );
-  job.algsAdd( jetHistsAlgo_btag );
-  job.algsAdd( jetSelect_truth );
-  job.algsAdd( jetHistsAlgo_truth );
-  job.algsAdd( overlapRemoval );
-  job.algsAdd( jk_AntiKt10LC );
-  job.algsAdd( out_tree );
+  //job.algsAdd( jetCalib );
+  //job.algsAdd( muonCalib );
+  //job.algsAdd( muonEffCorr );
+  //job.algsAdd( electronCalib );
+  //job.algsAdd( electronEffCorr );
+  //job.algsAdd( muonSelect_signal );
+  //job.algsAdd( electronSelect_signal );
+  //job.algsAdd( jetSelect_signal );
+  //job.algsAdd( bjetSelect_signal );
+  //job.algsAdd( bjetEffCorr_btag );
+  //job.algsAdd( jetHistsAlgo_signal );
+  //job.algsAdd( jetHistsAlgo_btag );
+  //job.algsAdd( jetSelect_truth );
+  //job.algsAdd( jetHistsAlgo_truth );
+  //job.algsAdd( overlapRemoval );
+  //job.algsAdd( jk_AntiKt10LC );
+  //job.algsAdd( out_tree );
 
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;
