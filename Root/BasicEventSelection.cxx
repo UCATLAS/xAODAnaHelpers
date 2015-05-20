@@ -198,7 +198,8 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   // label the bins for the cutflow
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
-  m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
+  if(m_applyGRL)
+    m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
   m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
   m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
   m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
@@ -208,7 +209,8 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   // do it again for the weighted cutflow hist
   m_cutflowHistW->GetXaxis()->FindBin("all");
-  m_cutflowHistW->GetXaxis()->FindBin("GRL");
+  if(m_applyGRL)
+    m_cutflowHistW->GetXaxis()->FindBin("GRL");
   m_cutflowHistW->GetXaxis()->FindBin("LAr");
   m_cutflowHistW->GetXaxis()->FindBin("tile");
   m_cutflowHistW->GetXaxis()->FindBin("core");
@@ -503,8 +505,10 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   } else { // is MC - fill cutflows just for consistency
 
-    m_cutflowHist ->Fill( m_cutflow_grl, 1 );
-    m_cutflowHistW->Fill( m_cutflow_grl, mcEvtWeight);
+    if(m_applyGRL) {
+      m_cutflowHist ->Fill( m_cutflow_grl, 1 );
+      m_cutflowHistW->Fill( m_cutflow_grl, mcEvtWeight);
+    }
     m_cutflowHist ->Fill( m_cutflow_lar, 1 );
     m_cutflowHistW->Fill( m_cutflow_lar, mcEvtWeight);
     m_cutflowHist ->Fill( m_cutflow_tile, 1 );
