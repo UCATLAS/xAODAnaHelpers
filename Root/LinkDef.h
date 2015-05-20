@@ -1,5 +1,8 @@
 #include <xAODAnaHelpers/ContainerRecording.h>
 
+/* Algorithm Wrapper */
+#include <xAODAnaHelpers/Algorithm.h>
+
 /* Event and Jet Selectors */
 #include <xAODAnaHelpers/BasicEventSelection.h>
 #include <xAODAnaHelpers/ElectronSelector.h>
@@ -15,9 +18,8 @@
 
 /* Scale Factors */
 #include <xAODAnaHelpers/ElectronEfficiencyCorrector.h>
-#include <xAODAnaHelpers/MuonEfficiencyCorrector.h> 
-#include <xAODAnaHelpers/BJetEfficiencyCorrector.h> 
-
+#include <xAODAnaHelpers/MuonEfficiencyCorrector.h>
+#include <xAODAnaHelpers/BJetEfficiencyCorrector.h>
 
 /* Plotting Tools */
 #include <xAODAnaHelpers/JetHistsAlgo.h>
@@ -38,6 +40,8 @@
 #pragma link off all classes;
 #pragma link off all functions;
 #pragma link C++ nestedclass;
+
+#pragma link C++ class xAH::Algorithm+;
 
 #pragma link C++ class BasicEventSelection+;
 #pragma link C++ class ElectronSelector+;

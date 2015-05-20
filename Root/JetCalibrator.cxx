@@ -41,16 +41,7 @@
 ClassImp(JetCalibrator)
 
 
-JetCalibrator :: JetCalibrator () {
-}
-
-JetCalibrator :: JetCalibrator (std::string name, std::string configName,
-    std::string systName, float systVal ) :
-  Algorithm(),
-  m_name(name),               // algo name
-  m_configName(configName),   // path + name of config file
-  m_systName(systName),       // if running systs - the name of the systematic
-  m_systVal(systVal),         // if running systs - the value ( +/- 1 )
+JetCalibrator :: JetCalibrator () :
   m_runSysts(false),          // gets set later is syst applies to this tool
   m_jetCalibration(nullptr),  // JetCalibrationTool
   m_jetCleaning(nullptr),     // JetCleaningTool

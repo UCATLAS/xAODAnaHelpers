@@ -17,14 +17,7 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
-TrackHistsAlgo :: TrackHistsAlgo () {
-}
-
-TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName, std::string containerName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
-  m_inContainerName(containerName),
+TrackHistsAlgo :: TrackHistsAlgo () :
   m_plots(nullptr)
 {
 }

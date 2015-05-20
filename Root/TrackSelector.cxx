@@ -24,13 +24,7 @@
 ClassImp(TrackSelector)
 
 
-TrackSelector :: TrackSelector () {
-}
-
-TrackSelector :: TrackSelector (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+TrackSelector :: TrackSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr)
 {

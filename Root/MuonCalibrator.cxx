@@ -28,14 +28,7 @@ using HelperClasses::ToolName;
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonCalibrator)
 
-
-MuonCalibrator :: MuonCalibrator () {
-}
-
-MuonCalibrator :: MuonCalibrator (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+MuonCalibrator :: MuonCalibrator () :
   m_muonCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -211,7 +204,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   // calibrate only MC
   if ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) {
     for ( auto muonSC_itr : *(calibMuonsSC.first) ) {
-      if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ) { 
+      if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muonSC_itr) == CP::CorrectionCode::Error ) {
         // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
         // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
         Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");

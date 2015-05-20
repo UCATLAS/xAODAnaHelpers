@@ -44,13 +44,7 @@ using HelperClasses::ToolName;
 ClassImp(ElectronCalibrator)
 
 
-ElectronCalibrator :: ElectronCalibrator () {
-}
-
-ElectronCalibrator :: ElectronCalibrator (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+ElectronCalibrator :: ElectronCalibrator () :
   m_EgammaCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -67,9 +61,9 @@ ElectronCalibrator :: ElectronCalibrator (std::string name, std::string configNa
 
 EL::StatusCode  ElectronCalibrator :: configure ()
 {
-  
+
   if ( !m_configName.empty() ) {
-    
+
     Info("configure()", "Configuing ElectronCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -84,17 +78,17 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     m_outContainerName        = config->GetValue("OutputContainer", "");
 
    // Systematics stuff
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  ""); 
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", "ElectronCalibrator_Syst");  
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  "");
+    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", "ElectronCalibrator_Syst");
     m_runSysts                = false; // gets set later is syst applies to this tool
-    m_systName		      = config->GetValue("SystName" , "" ); 	
-    m_systVal 		      = config->GetValue("SystVal" , 0. );  
+    m_systName		      = config->GetValue("SystName" , "" );
+    m_systVal 		      = config->GetValue("SystVal" , 0. );
     m_runAllSyst              = (m_systName.find("All") != std::string::npos);
- 
+
     m_sort                    = config->GetValue("Sort",  false);
 
     config->Print();
-    
+
     Info("configure()", "ElectronCalibrator Interface succesfully configured! ");
 
     delete config; config = nullptr;
@@ -219,7 +213,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // if not running systematics, need the nominal
   // if running systematics, and running them all, need the nominal
   // add it to the front!
-  
+
   if ( m_systList.empty() || ( !m_systList.empty() && m_systName == "All" ) ) {
     m_systList.insert( m_systList.begin(), CP::SystematicSet() );
     const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal

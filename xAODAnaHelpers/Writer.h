@@ -1,24 +1,14 @@
 #ifndef xAODAnaHelpers_Writer_H
 #define xAODAnaHelpers_Writer_H
 
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
 
-#include <EventLoop/Algorithm.h>
-
-
-class Writer : public EL::Algorithm
+class Writer : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_name;
-  std::string m_configName;
-
-  bool m_debug; //!
-
   TString m_outputLabel;
 
   TString m_jetContainerNamesStr;
@@ -26,8 +16,6 @@ public:
   TString m_muonContainerNamesStr;
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
 
   bool m_isMC;
@@ -45,7 +33,6 @@ public:
 
   // this is a standard constructor
   Writer ();
-  Writer (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

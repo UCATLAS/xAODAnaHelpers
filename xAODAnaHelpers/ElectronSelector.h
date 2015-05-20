@@ -1,14 +1,6 @@
 #ifndef xAODAnaHelpers_ElectronSelector_H
 #define xAODAnaHelpers_ElectronSelector_H
 
-// EL include(s):
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 // EDM include(s):
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODTracking/Vertex.h"
@@ -24,17 +16,15 @@
 #include "ElectronIsolationSelection/IsolationSelectionTool.h"
 #include "ElectronIsolationSelection/ElectronIsolationSelectionTool.h"
 
-class ElectronSelector : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class ElectronSelector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 
 public:
-
-  std::string m_name;
-  std::string m_configName;
-
-  bool m_debug;                 //!
   bool m_useCutFlow;            //!
 
   // configuration variables
@@ -60,7 +50,7 @@ public:
   bool           m_doOQCut;
 
   std::string    m_confDirPID;
-  
+
   // likelihood-based PID
   bool           m_doLHPIDcut;
   std::string    m_LHConfigYear;
@@ -85,9 +75,6 @@ public:
   std::string    m_failAuxDecorKeys;  //!
 
 private:
-
-  xAOD::TEvent *m_event;    //!
-  xAOD::TStore *m_store;    //!
   int m_numEvent;           //!
   int m_numObject;          //!
   int m_numEventPass;       //!
@@ -116,13 +103,12 @@ private:
   // node (done by the //!)
 
 public:
-  
+
   // Tree *myTree; //!
   // TH1 *myHist; //!
 
   // this is a standard constructor
   ElectronSelector ();
-  ElectronSelector (std::string name, std::string configName);
 
   ~ElectronSelector();
 

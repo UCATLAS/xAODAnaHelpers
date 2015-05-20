@@ -1,32 +1,22 @@
 #ifndef xAODAnaHelpers_TrackHistsAlgo_H
 #define xAODAnaHelpers_TrackHistsAlgo_H
 
-#include <EventLoop/Algorithm.h>
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 #include <xAODAnaHelpers/TrackHists.h>
 
-class TrackHistsAlgo : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class TrackHistsAlgo : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  std::string m_name;
-  std::string m_configName;
   std::string m_inContainerName;
 
   // configuration variables
   std::string m_detailStr;        //!
-  bool m_debug; //!
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-
   TrackHists* m_plots; //!
 
   // variables that don't get filled at submission time should be
@@ -38,7 +28,6 @@ public:
 
   // this is a standard constructor
   TrackHistsAlgo ();
-  TrackHistsAlgo (std::string name, std::string configName, std::string containerName="");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

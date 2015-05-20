@@ -1,14 +1,6 @@
 #ifndef xAODAnaHelpers_MuonEfficiencyCorrector_H
 #define xAODAnaHelpers_MuonEfficiencyCorrector_H
 
-// EL include(s):
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicSet.h"
@@ -19,30 +11,24 @@
 // external tools include(s):
 #include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
 
-class MuonEfficiencyCorrector : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class MuonEfficiencyCorrector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 
 public:
-
-  std::string   m_name;
-  std::string   m_configName;
-
   // configuration variables
- 
-  bool          m_debug;
-  
   std::string   m_inContainerName;
   std::string   m_outContainerName;
 
   std::string   m_WorkingPoint;
   std::string   m_DataPeriod;
-  
+
   // systematics
   bool          m_runAllSyst;
-  std::string   m_systName;
-  float         m_systSigma;
 
 private:
 
@@ -70,7 +56,6 @@ public:
 
   // this is a standard constructor
   MuonEfficiencyCorrector ();
-  MuonEfficiencyCorrector (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

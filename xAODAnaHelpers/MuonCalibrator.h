@@ -1,25 +1,16 @@
 #ifndef xAODAnaHelpers_MuonCalibrator_H
 #define xAODAnaHelpers_MuonCalibrator_H
 
-// EL include(s)
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 #include "MuonMomentumCorrections/MuonCalibrationAndSmearingTool.h"
 
-class MuonCalibrator : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class MuonCalibrator : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_name;
-  std::string m_configName;
-  bool m_debug;
-
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
@@ -28,8 +19,6 @@ public:
 
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
 
@@ -50,7 +39,6 @@ public:
 
   // this is a standard constructor
   MuonCalibrator ();
-  MuonCalibrator (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

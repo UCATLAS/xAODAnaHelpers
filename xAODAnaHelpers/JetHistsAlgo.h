@@ -1,33 +1,22 @@
 #ifndef xAODAnaHelpers_JetHistsAlgo_H
 #define xAODAnaHelpers_JetHistsAlgo_H
 
-#include <EventLoop/Algorithm.h>
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 #include <xAODAnaHelpers/JetHists.h>
 
-class JetHistsAlgo : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class JetHistsAlgo : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  std::string m_name;
-  std::string m_configName;
-
   // configuration variables
   std::string m_inContainerName;
   std::string m_detailStr;
   std::string m_inputAlgo;
-  bool m_debug;
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-
   std::map< std::string, JetHists* > m_plots; //!
 
   // variables that don't get filled at submission time should be
@@ -41,7 +30,6 @@ public:
 
   // this is a standard constructor
   JetHistsAlgo ();
-  JetHistsAlgo (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

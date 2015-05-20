@@ -21,13 +21,6 @@ ClassImp(JetHistsAlgo)
 
 JetHistsAlgo :: JetHistsAlgo () {}
 
-JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName)
-{
-}
-
 EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();

@@ -1,24 +1,15 @@
 #ifndef xAODAnaHelpers_BasicEventSelection_H
 #define xAODAnaHelpers_BasicEventSelection_H
 
-// EL include(s):
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
-// EDM include(s):
-// custom include(s):
-
 // ROOT include(s):
 #include "TH1D.h"
 
 // rootcore includes
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
 #include "PileupReweighting/PileupReweightingTool.h"
+
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
 
 namespace TrigConf {
   class xAODConfigTool;
@@ -28,18 +19,12 @@ namespace Trig {
   class TrigDecisionTool;
 }
 
-class BasicEventSelection : public EL::Algorithm
+class BasicEventSelection : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
   public:
-    // float cutValue;
-
-    std::string m_name;
-    std::string m_configName;
-
     // variables read in through configuration file
-    int m_debug;            //!
     bool m_truthLevelOnly;  //!
     // GRL
     bool m_applyGRL;        //!
@@ -53,9 +38,6 @@ class BasicEventSelection : public EL::Algorithm
     int m_PVNTrack;                //!
 
   private:
-    xAOD::TEvent*                m_event;     //!
-    xAOD::TStore*                m_store;     //!
-
     GoodRunsListSelectionTool*   m_grl;       //!
     CP::PileupReweightingTool*   m_pileuptool; //!
 
@@ -92,7 +74,6 @@ class BasicEventSelection : public EL::Algorithm
 
     // this is a standard constructor
     BasicEventSelection ();
-    BasicEventSelection (std::string name, std::string configName);
 
     // these are the functions inherited from Algorithm
     virtual EL::StatusCode setupJob (EL::Job& job);

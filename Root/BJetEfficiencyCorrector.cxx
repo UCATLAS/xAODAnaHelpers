@@ -33,13 +33,7 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector () {
-}
-
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string name, std::string configName ) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
   m_BJetEffSFTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -201,7 +195,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
   std::cout << "-----------------------------------------------------" << std::endl;
 
-  
+
   // Get a list of affecting systematics
   CP::SystematicSet affectSysts = m_BJetEffSFTool->affectingSystematics();
   // Convert into a simple list

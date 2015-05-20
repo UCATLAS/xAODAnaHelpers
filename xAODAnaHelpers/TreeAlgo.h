@@ -1,27 +1,21 @@
 #ifndef xAODAnaHelpers_TreeAlgo_H
 #define xAODAnaHelpers_TreeAlgo_H
 
-#include <EventLoop/Algorithm.h>
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
 #include "TTree.h"
 
 #include <xAODAnaHelpers/HelpTreeBase.h>
 
-class TreeAlgo : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class TreeAlgo : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  const std::string m_name;
-  std::string m_configName;
-
   // choose whether the tree gets saved in the same directory as output histograms
   bool m_outHistDir;                   //!
- 
+
   // holds bools that control which branches are filled
   std::string m_evtDetailStr;	       //!
   std::string m_muDetailStr;	       //!
@@ -37,20 +31,15 @@ public:
   std::string m_fatJetContainerName;   //!
   std::string m_tauContainerName;      //!
 
-  bool m_debug;                        //!
   bool m_DC14;                         //!
 
 private:
-  xAOD::TEvent *m_event;               //!
-  xAOD::TStore *m_store;               //!
-
   HelpTreeBase* m_helpTree;            //!
 
 public:
 
   // this is a standard constructor
-  TreeAlgo ();                                              //!
-  TreeAlgo (std::string name, std::string configName);      //!
+  TreeAlgo ();                                           //!
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);           //!

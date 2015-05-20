@@ -41,18 +41,14 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
 
-
-BasicEventSelection :: BasicEventSelection (){
-}
-
-BasicEventSelection :: BasicEventSelection (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+BasicEventSelection :: BasicEventSelection () :
   m_grl(nullptr),
   m_pileuptool(nullptr),
   m_trigConfTool(nullptr),
-  m_trigDecTool(nullptr)
+  m_trigDecTool(nullptr),
+  m_histEventCount(nullptr),
+  m_cutflowHist(nullptr),
+  m_cutflowHistW(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -64,10 +60,6 @@ BasicEventSelection :: BasicEventSelection (std::string name, std::string config
 
   //CP::CorrectionCode::enableFailure();
   //StatusCode::enableFailure();
-
-  m_cutflowHist  = 0;
-  m_cutflowHistW = 0;
-  m_histEventCount = 0;
 }
 
 

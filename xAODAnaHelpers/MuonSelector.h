@@ -1,14 +1,6 @@
 #ifndef xAODAnaHelpers_MuonSelector_H
 #define xAODAnaHelpers_MuonSelector_H
 
-// EL include(s):
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 // EDM include(s):
 #include "xAODMuon/MuonContainer.h"
 #include "xAODTracking/Vertex.h"
@@ -19,16 +11,14 @@
 // external tools include(s):
 #include "MuonSelectorTools/MuonSelectionTool.h"
 
-class MuonSelector : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class MuonSelector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  std::string m_name;
-  std::string m_configName;
-
-  bool m_debug;                 //!
   // cutflow
   bool m_useCutFlow;            //!
 
@@ -57,8 +47,6 @@ public:
   std::string              m_failAuxDecorKeys;  //!
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
   int m_numEventPass;     //!
@@ -86,7 +74,6 @@ public:
 
   // this is a standard constructor
   MuonSelector ();
-  MuonSelector (std::string name, std::string configName);
 
   ~MuonSelector();
 

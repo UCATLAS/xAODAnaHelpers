@@ -3,7 +3,7 @@
  * Interface to CP JER Shifter tool(s).
  *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -38,19 +38,11 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(JERShifter)
 
 
-JERShifter :: JERShifter () {
-}
-
-JERShifter :: JERShifter (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName)
+JERShifter :: JERShifter ()
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
