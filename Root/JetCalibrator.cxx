@@ -3,7 +3,7 @@
  * Interface to Jet calibration tool(s).
  *
  * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -69,9 +69,9 @@ JetCalibrator :: JetCalibrator (std::string name, std::string configName,
 
 EL::StatusCode  JetCalibrator :: configure ()
 {
-  
+
   if ( !m_configName.empty() ) {
-    
+
     Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
 
     // expand the path to the config to find it in the ROOTCORE directory
@@ -85,7 +85,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
 
-    // DC14 switch for little things that need to happen to run 
+    // DC14 switch for little things that need to happen to run
     // for those samples with the corresponding packages
     m_DC14                    = config->GetValue("DC14", false);
 
@@ -94,7 +94,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_outputAlgo              = config->GetValue("OutputAlgo",      "");
 
     // when running data "_Insitu" is appended to this string
-    m_calibSequence           = config->GetValue("CalibSequence",           "EtaJES");
+    m_calibSequence           = config->GetValue("CalibSequence",           "JetArea_Residual_EtaJES");
     m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Full2012dataset_May2014.config");
     m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Full2012dataset_AFII_January2014.config");
 
@@ -221,7 +221,12 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numObject     = 0;
 
   // when running data "_Insitu" is appended to the calibration string!
-  if ( !m_isMC ) m_calibSequence += "_Insitu";
+  if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos) m_calibSequence += "_Insitu";
+
+  if( m_isMC && m_calibSequence.find("Insitu") != std::string::npos){
+    Error("initialize()", "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
 
   // this now holds for both MC and data
   m_calibConfig = m_calibConfigFullSim;

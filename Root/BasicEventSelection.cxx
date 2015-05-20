@@ -361,6 +361,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
+
   }
 
 
@@ -396,6 +397,18 @@ EL::StatusCode BasicEventSelection :: execute ()
   RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
   ++m_eventCounter;
+
+  //--------------------------
+  //Print trigger's used for first event only
+  if ( m_eventCounter == 1 && m_triggerSelection.size() > 0){
+    auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
+    std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
+    printf("*** Triggers used are:\n");
+    for (unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger){
+      printf("    %s\n", triggersUsed.at(iTrigger).c_str());
+    }
+    printf("\n");
+  }
 
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
   if(m_debug){
@@ -518,14 +531,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Trigger //
   if (m_triggerSelection.size() > 0){
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
-    if(m_eventCounter == 1){ //first event
-      std::vector<std::string> triggersUsed = triggerChainGroup->getListOfTriggers();
-      std::cout << "Triggers used are: " << std::endl;
-      for (int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger){
-        std::cout << "    " << triggersUsed.at(iTrigger) << std::endl;
-      }
-    }
-//    std::cout << m_triggerSelection << " " << triggerChainGroup->isPassed() << " " << triggerChainGroup->getPrescale() << std::endl;
+    //std::cout << m_triggerSelection << " " << triggerChainGroup->isPassed() << " " << triggerChainGroup->getPrescale() << std::endl;
     if( !triggerChainGroup->isPassed() ){
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
