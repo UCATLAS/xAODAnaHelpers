@@ -205,6 +205,8 @@ StatusCode JetHists::initialize() {
     m_JetFitterCombNN = book(m_name, "JetFitterCombNN",   "JetFitterCombNN" ,     100,    -10,   10);
   }
 
+  this->initializeUser();
+
   return StatusCode::SUCCESS;
 }
 
@@ -651,5 +653,14 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc
     m_jetGhostTruthPt_vs_resolution -> Fill( ghostTruthPt/1e3, resolution, eventWeight );
   }
 
+  this->executeUser( jet, eventWeight );
+
   return StatusCode::SUCCESS;
 }
+
+StatusCode JetHists::executeUser( const xAOD::Jet* jet, float eventWeight ) {
+  (void) jet; //to hide unused warnings
+  (void) eventWeight; //to hide unused warnings
+  return StatusCode::SUCCESS;
+}
+

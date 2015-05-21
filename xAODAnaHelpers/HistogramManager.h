@@ -31,9 +31,12 @@ class HistogramManager {
     // this is used by any class extending to pre-define a set of histograms
     //      to book by default
     //  the following should be defined in other classes
-    virtual StatusCode initialize(){ return StatusCode::SUCCESS; };
-    virtual StatusCode execute(){ return StatusCode::SUCCESS; };
-    virtual StatusCode finalize(){ return StatusCode::SUCCESS; };
+    virtual StatusCode initialize(){      return StatusCode::SUCCESS; };
+    virtual StatusCode execute(){         return StatusCode::SUCCESS; };
+    virtual StatusCode finalize(){        return StatusCode::SUCCESS; };
+    virtual StatusCode initializeUser(){  return StatusCode::SUCCESS; };
+    virtual StatusCode executeUser(){     return StatusCode::SUCCESS; };
+    virtual StatusCode finalizeUser(){    return StatusCode::SUCCESS; };
 
     // @book - record a histogram and call various functions
     //      ** This is an overloaded function. It will build the right histogram
