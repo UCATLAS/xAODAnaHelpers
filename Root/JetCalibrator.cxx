@@ -30,7 +30,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -64,10 +63,6 @@ EL::StatusCode  JetCalibrator :: configure ()
   if ( !m_configName.empty() ) {
 
     Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
-
-    // expand the path to the config to find it in the ROOTCORE directory
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG("JetCalibrator::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 

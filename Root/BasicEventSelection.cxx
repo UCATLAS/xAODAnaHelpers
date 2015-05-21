@@ -27,7 +27,6 @@
 #include <xAODAnaHelpers/BasicEventSelection.h>
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "PATInterfaces/CorrectionCode.h"
 
@@ -68,9 +67,6 @@ EL::StatusCode BasicEventSelection :: configure ()
 
   if ( !m_configName.empty() ) {
     // read in user configuration from text file
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "BasicEventSelection::configure()", m_configName);
-
     TEnv *config = new TEnv(m_configName.c_str());
     if ( !config ) {
       Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );

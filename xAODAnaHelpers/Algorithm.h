@@ -28,8 +28,6 @@ namespace xAH {
 
         // each algorithm should have a unique name for init, to differentiate them
         std::string m_name;
-        // name of a config file to load in, optional
-        std::string m_configName;
 
         // enable verbose debugging or not
         bool m_debug;
@@ -40,6 +38,9 @@ namespace xAH {
         float m_systVal;
 
       protected:
+        // name of a config file to load in, optional
+        std::string m_configName;
+
         xAOD::TEvent* m_event; //!
         xAOD::TStore* m_store; //!
 

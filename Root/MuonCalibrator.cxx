@@ -16,7 +16,6 @@
 #include "xAODBase/IParticleHelpers.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
 
@@ -46,9 +45,6 @@ EL::StatusCode  MuonCalibrator :: configure ()
 {
   if(!m_configName.empty()){
     Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
-
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "MuonCalibrator::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 

@@ -36,7 +36,6 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -70,9 +69,6 @@ EL::StatusCode  OverlapRemover :: configure ()
   if ( !m_configName.empty() ) {
 
     Info("configure()", "Configuing OverlapRemover Interface. User configuration read from : %s ", m_configName.c_str());
-
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "OverlapRemover::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 

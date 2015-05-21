@@ -32,7 +32,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -66,9 +65,6 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   xAOD::Init( "JERShifter" ).ignore(); // call before opening first file
 
   if(!m_configName.empty()){
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "JERShifter::setupJob()", m_configName);
-
     TEnv* config = new TEnv(m_configName.c_str());
 
     // input container to be read from TEvent or TStore

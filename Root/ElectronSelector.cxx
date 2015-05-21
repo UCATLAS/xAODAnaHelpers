@@ -30,7 +30,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -67,9 +66,6 @@ EL::StatusCode  ElectronSelector :: configure ()
 {
   if ( !m_configName.empty() ) {
     Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", m_configName.c_str());
-
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "ElectronSelector::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 

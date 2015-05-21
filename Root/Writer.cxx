@@ -10,7 +10,6 @@
 #include "xAODJet/JetAuxContainer.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 #include "TEnv.h"
@@ -37,9 +36,6 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   xAOD::Init( "Writer" ).ignore(); // call before opening first file
 
   if(!m_configName.empty()){
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "Writer::setupJob()", m_configName );
-
     TEnv* config = new TEnv(m_configName.c_str());
     if( !config ) {
       Error("Writer::setupJob()", "Failed to read config file!");

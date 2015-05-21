@@ -31,7 +31,6 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // external tools include(s):
 
@@ -63,9 +62,6 @@ EL::StatusCode  JetSelector :: configure ()
 {
   if(!m_configName.empty()){
     Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", m_configName.c_str());
-
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG("JetSelector::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 

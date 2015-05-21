@@ -21,7 +21,6 @@
 #include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -52,9 +51,6 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 {
   if(!m_configName.empty()){
     Info("configure()", "Configuing BJetEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
-
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "BJetEfficiencyCorrector::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 

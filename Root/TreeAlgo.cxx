@@ -13,7 +13,6 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
@@ -93,10 +92,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
 EL::StatusCode TreeAlgo :: configure ()
 {
-  if ( !m_configName.empty() ) {
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG("TreeAlgo::configure()", m_configName);
-
+  if(!m_configName.empty()){
     // the file exists, use TEnv to read it off
     TEnv* config = new TEnv(m_configName.c_str());
     m_evtDetailStr            = config->GetValue("EventDetailStr",       "");
