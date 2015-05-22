@@ -107,6 +107,8 @@ namespace HelperClasses{
 
   void ElectronInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_isolation     = parse("isolation");
+    m_PID           = parse("PID");
     m_trackparams   = parse("trackparams");
     m_trackhitcont  = parse("trackhitcont");
   }

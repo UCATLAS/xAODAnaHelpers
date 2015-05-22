@@ -33,16 +33,19 @@ public:
   std::string m_inContainerName;
   std::string m_outContainerName;
 
-  std::string m_inputAlgo;
-  std::string m_outputAlgo;
-
   // sort after calibration
   bool    m_sort;
 
+  
   // systematics
-  std::string m_systName;
-  float m_systVal;
+  std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
+  			             // upstream algo (e.g., the SC containers with calibration systematics)		   
+  std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
+  				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
+  std::string m_systName;            
+  float m_systVal;                   
   bool m_runSysts;
+  bool m_runAllSyst;                 
 
 private:
   xAOD::TEvent *m_event;  //!
@@ -69,7 +72,7 @@ public:
 
   // this is a standard constructor
   ElectronCalibrator ();
-  ElectronCalibrator (std::string name, std::string configName, std::string systName = "", float systVal = 0);
+  ElectronCalibrator (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

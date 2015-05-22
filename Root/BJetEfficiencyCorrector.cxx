@@ -258,7 +258,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     }
 
     //
-    // Creat the name of the weight
+    // Create the name of the weight
     //   template:  SYSNAME_BTag_SF
     //
     std::string sfName = m_decor;

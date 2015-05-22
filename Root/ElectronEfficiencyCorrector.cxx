@@ -1,11 +1,11 @@
-/******************************************
+/*****************************************************
  *
  * Interface to CP Electron Efficiency Correction Tool.
  *
  * M. Milesi (marco.milesi@cern.ch)
  *
  *
- ******************************************/
+ *****************************************************/
 
 // c++ include(s):
 #include <iostream>
@@ -46,14 +46,10 @@ ClassImp(ElectronEfficiencyCorrector)
 ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () {
 }
 
-ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string name, std::string configName,
-	std::string systName, float systVal) :
+ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector ( std::string name, std::string configName ) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_systName(systName),       // if running systs - the name of the systematic
-  m_systVal(systVal),         // if running systs - the value ( +/- 1 )
-  m_runSysts(false),          // gets set later is syst applies to this tool
   m_asgElectronEfficiencyCorrectionTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -71,7 +67,8 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string name, st
 EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
 {
 
-  if(!m_configName.empty()){
+  if ( !m_configName.empty() ) {
+    
     Info("configure()", "Configuing ElectronEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -81,34 +78,31 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
 
     // read debug flag from .config file
     m_debug                   = config->GetValue("Debug", false);
+    
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
-    m_outContainerName        = config->GetValue("OutputContainer", "");
-
-    // name of algo input container comes from - only if running on systematics
-    m_inputAlgo               = config->GetValue("InputAlgo",  "");
-    m_outputAlgo              = config->GetValue("OutputAlgo", "ElectronCollection_CalibCorr_Algo");
 
     // Systematics stuff
-    m_systName		    = config->GetValue("SystName" , "" );      // default: no syst
-    m_systVal 		    = config->GetValue("SystVal" , 0. );
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  ""); 
+    m_systName		      = config->GetValue("SystName" , "" );                                       
+    m_outputSystNames         = config->GetValue("OutputSystNames",  "ElectronEfficiencyCorrector_Syst"); 
+    m_systVal 		      = config->GetValue("SystVal" , 0. );                                        
+    m_runAllSyst              = (m_systName.find("All") != std::string::npos);
     // file(s) containing corrections
     m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
     //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
 
-
     config->Print();
+    
     Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! ");
 
-    delete config;config = nullptr;
+    delete config; config = nullptr;
   }
 
   if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   return EL::StatusCode::SUCCESS;
 }
@@ -207,8 +201,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // Convert into a simple list
   m_systList = CP::make_systematics_vector(recSysts);
 
-  if ( !m_systList.empty() ) { m_runSysts = true; }
-
   if ( m_debug ) {
     for ( const auto& syst_it : m_systList ) {
       Info("initialize()"," available systematic: %s", (syst_it.name()).c_str());
@@ -236,74 +228,52 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   m_numEvent++;
 
   // initialise containers
-  const xAOD::ElectronContainer* correctedElectrons = nullptr;
-  ConstDataVector<xAOD::ElectronContainer>* correctedElectronsCDV = nullptr;
+  const xAOD::ElectronContainer* inputElectrons = nullptr;
 
-  // if m_inputAlgo = "" --> input comes from xAOD, or just running one collection,
+  // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  if ( m_inputAlgo.empty() ) {
+  
+  // Declare a counter, initialised to 0 
+  // For the systematically varied input containers, we won't store again the vector with efficiency systs in TStore ( it will be always the same!)
+  unsigned int countInputCont(0);
+  
+  if ( m_inputAlgoSystNames.empty() ) {
 
-        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
-    	correctedElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-    	correctedElectronsCDV->reserve( correctedElectrons->size() );
+        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
 
 	// decorate electrons w/ SF
-	this->executeSF( correctedElectrons );
-
-	// save pointers in ConstDataVector
-    	RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(correctedElectrons, correctedElectronsCDV, "", ToolName::CORRECTOR), "");
-    	// add container to TStore
-    	RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( correctedElectronsCDV, m_outContainerName), "Failed to store container.");
+	this->executeSF( inputElectrons, countInputCont );
 
   } else {
-  // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo
+  // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo. This is the case of calibrators: one different SC 
+  // for each calibration syst applied
 
 	// get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
         std::vector<std::string>* systNames(nullptr);
-        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_debug) ,"");
-
-    	// prepare a vector of the names of CDV containers
-    	// must be a pointer to be recorded in TStore
-    	// for now just copy the one you just retrieved in it!
-    	std::vector<std::string>* vecOutContainerNames = new std::vector< std::string >(*systNames);
-
-    	// just to check everything is fine
-    	if ( m_debug ) {
-    	  Info("execute()","output vector already contains systematics:" );
-    	  for (auto it : *vecOutContainerNames) {
-    	    Info("execute()" ,"\t %s ", it.c_str());
-    	  }
-    	}
+        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_debug) ,"");
 
     	// loop over systematic sets available
     	for ( auto systName : *systNames ) {
 
-           RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedElectrons, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
-    	   // create ConstDataVector to be eventually stored in TStore
-    	   correctedElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-    	   correctedElectronsCDV->reserve( correctedElectrons->size() );
+           RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
 
     	   if ( m_debug ){
     	     unsigned int idx(0);
-    	     for ( auto el : *(correctedElectrons) ) {
+    	     for ( auto el : *(inputElectrons) ) {
     	       Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
     	       ++idx;
     	     }
     	   }
 
 	   // decorate electrons w/ SF- there will be a decoration w/ different name for each syst!
-	   this->executeSF( correctedElectrons );
+	   this->executeSF( inputElectrons, countInputCont );
 
-    	   // save pointers in ConstDataVector
-    	   RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", HelperFunctions::makeSubsetCont(correctedElectrons, correctedElectronsCDV, "", ToolName::CORRECTOR), "");
-    	   // add container to TStore
-    	   RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( correctedElectronsCDV, m_outContainerName+systName), "Failed to store container.");
-
+	   // increment counter
+	   ++countInputCont;
+	   
     	} // close loop on systematic sets available from upstream algo
 
-        // save list of systs that should be considered down stream
-        RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
-  }
+   }
 
   // look what do we have in TStore
   if ( m_debug ) { m_store->print(); }
@@ -366,21 +336,30 @@ EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronContainer* correctedElectrons  )
+EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst  )
 {
 
-  // loop over available systematics for this tool - remember syst == EMPTY_STRING --> baseline
+  //
+  // Every electron gets decorated with a vector<double> of SFs, one for each syst.
+  // We create this vector<string> with the SF syst names, so that we know which component corresponds to.
+  // This vector is eventually stored in TStore
+  //
+  std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
+
+  // loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   for ( const auto& syst_it : m_systList ) {
 
-    // appends syst name to decoration
+    //
+    // Create the name of the SF weight to be recorded
+    //   template:  SYSNAME_ElEff_SF
+    //
+    std::string sfName = "ElEff_SF";
     if ( !syst_it.name().empty() ) {
-      RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_asgElectronEfficiencyCorrectionTool->setProperty("ResultPrefix",syst_it.name()), "Failed to set property ResultPrefix" );
+       std::string prepend = syst_it.name() + "_";
+       sfName.insert( 0, prepend );
     }
-
-    // if not running systematics (i.e., syst name is "") or running on one syst only, skip directly all other syst
-    //if(!(syst_it.name() == "All")){
-    //  if( syst_it.name() != m_systName ) { continue; }
-    //}
+    if(m_debug) Info("execute()", "SF decoration name is: %s", sfName.c_str());
+    sysVariationNames->push_back(sfName);
 
     // apply syst
     if ( m_asgElectronEfficiencyCorrectionTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
@@ -391,8 +370,15 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 
     // and now apply efficiency SF!
     unsigned int idx(0);
-    double SF(0);
-    for ( auto el_itr : *(correctedElectrons) ) {
+    for ( auto el_itr : *(inputElectrons) ) {
+
+       //
+       //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
+       //
+       SG::AuxElement::Decorator< std::vector<double> > sfVec( m_outputSystNames );
+       if ( !sfVec.isAvailable( *el_itr ) ) {
+	 sfVec( *el_itr ) = std::vector<double>();
+       }
 
        if ( m_debug ) { Info( "execute", "Checking electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) ); }
        ++idx;
@@ -412,22 +398,36 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx); }
          continue;
        }
-
+     
+       //
+       // obtain efficiency SF
+       //
+       double SF(0.0);
        if ( m_asgElectronEfficiencyCorrectionTool->getEfficiencyScaleFactor( *el_itr, SF ) != CP::CorrectionCode::Ok ) {
          Error( "execute()", "Problem in getEfficiencyScaleFactor");
          return EL::StatusCode::FAILURE;
-       }
-       // apply SF as decoration for this electron
-       if ( m_asgElectronEfficiencyCorrectionTool->applyEfficiencyScaleFactor( *el_itr ) != CP::CorrectionCode::Ok ) {
-         Error( "execute()", "Problem in applyEfficiencyScaleFactor");
-         return EL::StatusCode::FAILURE;
-       }
-
-       if ( m_debug ) { Info( "execute", "===>>> Resulting SF (from get function) %f, (from apply function) %f", SF, el_itr->auxdata< float >("SF")); }
+       }   
+       //
+       // Add it to decoration vector
+       //
+       sfVec( *el_itr ).push_back(SF);
+       
+       if ( m_debug ) { Info( "execute", "===>>> Resulting SF: %f for systematic: %s ", SF, syst_it.name().c_str()); }
 
     } // close electron loop
 
   }  // close loop on systematics
+ 
+  //
+  // add list of efficiency systematics names to TStore
+  //
+  // NB: we need to make sure that this is not pushed more than once in TStore!
+  // This will be the case when this executeSF() function gets called for every syst varied input container,
+  // e.g. the different SC containers w/ calibration systematics upstream.  
+  //
+  // Use the counter defined in execute() to check this is done only once
+  //
+  if ( countSyst == 0 ) { RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystNames), "Failed to record vector of systematic names" ); }
 
   return EL::StatusCode::SUCCESS;
 }

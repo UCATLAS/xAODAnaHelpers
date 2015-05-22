@@ -34,12 +34,8 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false );
+  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false );
   virtual ~HelpTreeBase() {;}
-
- // virtual void setDebugMode(  bool debug ){
- //   m_debug = debug;
- // } 
 
   void AddEvent    (const std::string detailStr = "");
   void AddMuons    (const std::string detailStr = "");
@@ -117,6 +113,7 @@ protected:
   int m_units; //For MeV to GeV conversion in output
   
   bool m_debug;
+  bool m_DC14;
 
   // event
   int m_runNumber;
@@ -281,8 +278,8 @@ protected:
   std::vector<int> m_muon_trknTRTHits;
   std::vector<int> m_muon_trknTRTHoles;
   std::vector<int> m_muon_trknBLayerHits; 
-  //std::vector<int> m_muon_trknInnermostPixLayHits; // not available ?
-  //std::vector<float> m_muon_trkPixdEdX; // not available ?
+  std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
+  std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
 
   // electrons
   int m_nel;
@@ -292,6 +289,12 @@ protected:
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
+  std::vector<int>   m_el_isIsolated;
+  std::vector<int>   m_el_LHVeryLoose;
+  std::vector<int>   m_el_LHLoose;
+  std::vector<int>   m_el_LHMedium;
+  std::vector<int>   m_el_LHTight;
+  std::vector<int>   m_el_LHVeryTight;
  
   // track parameters
   std::vector<float> m_el_trkd0;
@@ -312,8 +315,8 @@ protected:
   std::vector<int> m_el_trknTRTHits;
   std::vector<int> m_el_trknTRTHoles;
   std::vector<int> m_el_trknBLayerHits; 
-  //std::vector<int> m_el_trknInnermostPixLayHits; // not available ?
-  //std::vector<float> m_el_trkPixdEdX; // not available ?
+  std::vector<int> m_el_trknInnermostPixLayHits; // not available in DC14
+  std::vector<float> m_el_trkPixdEdX;            // not available in DC14
 
   // taus
   int m_ntau;

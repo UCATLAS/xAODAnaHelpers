@@ -19,6 +19,9 @@ public:
   const std::string m_name;
   std::string m_configName;
 
+  // choose whether the tree gets saved in the same directory as output histograms
+  bool m_outHistDir;                   //!
+ 
   // holds bools that control which branches are filled
   std::string m_evtDetailStr;	       //!
   std::string m_muDetailStr;	       //!
@@ -35,6 +38,7 @@ public:
   std::string m_tauContainerName;      //!
 
   bool m_debug;                        //!
+  bool m_DC14;                         //!
 
 private:
   xAOD::TEvent *m_event;               //!
@@ -45,8 +49,8 @@ private:
 public:
 
   // this is a standard constructor
-  TreeAlgo ();                                           //!
-  TreeAlgo (std::string name, std::string configName);   //!
+  TreeAlgo ();                                              //!
+  TreeAlgo (std::string name, std::string configName);      //!
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);           //!

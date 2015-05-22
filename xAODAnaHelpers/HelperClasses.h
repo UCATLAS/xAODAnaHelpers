@@ -79,6 +79,8 @@ namespace HelperClasses {
 
   struct ElectronInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_isolation;
+    bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
     void initialize();
