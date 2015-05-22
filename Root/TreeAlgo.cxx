@@ -59,37 +59,37 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   // needed here and not in initalize since this is called first
   Info("treeInitialize()", "Attempting to configure using: %s", m_configName.c_str());
 
-  //if ( this->configure() == EL::StatusCode::FAILURE ) {
-  //Error("treeInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
-  //return EL::StatusCode::FAILURE;
-  //} else {
-  //Info("treeInitialize()", "Succesfully configured! ");
-  //}
-
   TTree * outTree = new TTree(m_name.c_str(),m_name.c_str());
-  if( !outTree ) {
+  if ( !outTree ) {
     Error("treeInitialize()","Failed to instantiate output tree!");
     return EL::StatusCode::FAILURE;
   }
 
   // get the input from user which determines which branches are created!
-  this->configure();
+  if ( this->configure() != EL::StatusCode::SUCCESS ) {
+    Error("treeInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
+    return EL::StatusCode::FAILURE;
+  } else {
+    Info("treeInitialize()", "Succesfully configured! ");
+  }
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
   m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, 1e3, m_debug, m_DC14 );
   // tell the tree to go into the file
   outTree->SetDirectory( treeFile );
-  // uncomment if want to add to same file as ouput histograms
-  // wk()->addOutput( outTree );
+  // choose if want to add tree to same directory as ouput histograms
+  if ( m_outHistDir ) {
+    wk()->addOutput( outTree );
+  }
 
   m_helpTree->AddEvent( m_evtDetailStr );
 
-  if( !m_muContainerName.empty() )     {   m_helpTree->AddMuons    (m_muDetailStr);      }
-  if( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons(m_elDetailStr);      }
-  if( !m_jetContainerName.empty() )    {   m_helpTree->AddJets     (m_jetDetailStr);     }
-  if( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets  (m_fatJetDetailStr);  }
-  if( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus     (m_tauDetailStr);     }
+  if ( !m_muContainerName.empty() )     {   m_helpTree->AddMuons    (m_muDetailStr);      }
+  if ( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons(m_elDetailStr);      }
+  if ( !m_jetContainerName.empty() )    {   m_helpTree->AddJets     (m_jetDetailStr);     }
+  if ( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets  (m_fatJetDetailStr);  }
+  if ( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus     (m_tauDetailStr);     }
 
   Info("treeInitialize()", "Successfully initialized output tree");
 
@@ -98,7 +98,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
 EL::StatusCode TreeAlgo :: configure ()
 {
-  if(!m_configName.empty()){
+  if ( !m_configName.empty() ) {
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
     RETURN_CHECK_CONFIG("TreeAlgo::configure()", m_configName);
 
@@ -112,6 +112,8 @@ EL::StatusCode TreeAlgo :: configure ()
     m_tauDetailStr            = config->GetValue("TauDetailStr",         "");
     
     m_debug                   = config->GetValue("Debug" ,           false );
+
+    m_outHistDir              = config->GetValue("SameHistsOutDir",  false );
 
     m_muContainerName         = config->GetValue("MuonContainerName",       "");
     m_elContainerName         = config->GetValue("ElectronContainerName",   "");
@@ -151,25 +153,25 @@ EL::StatusCode TreeAlgo :: execute ()
   m_helpTree->FillEvent( eventInfo, m_event );
 
   // for the containers the were supplied, fill the appropriate vectors
-  if(!m_muContainerName.empty()) {
+  if ( !m_muContainerName.empty() ) {
     const xAOD::MuonContainer* inMuon(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inMuon, m_muContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillMuons( inMuon, primaryVertex );
   }
 
-  if(!m_elContainerName.empty()) {
+  if ( !m_elContainerName.empty() ) {
     const xAOD::ElectronContainer* inElec(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inElec, m_elContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillElectrons( inElec, primaryVertex );
   }
 
-  if(!m_jetContainerName.empty()) {
+  if ( !m_jetContainerName.empty() ) {
     const xAOD::JetContainer* inJets(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices) );
   }
 
-  if(!m_fatJetContainerName.empty()) {
+  if ( !m_fatJetContainerName.empty() ) {
     const xAOD::JetContainer* inFatJets(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillFatJets( inFatJets );
@@ -180,8 +182,6 @@ EL::StatusCode TreeAlgo :: execute ()
     m_helpTree->FillTaus( inTaus );
   }  
   
-  
-
   // fill the tree
   m_helpTree->Fill();
 

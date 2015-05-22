@@ -34,7 +34,6 @@ public:
 
   // configuration variables
   std::string m_inContainerName;
-  std::string m_outContainerName;
 
   // systematics
   std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the

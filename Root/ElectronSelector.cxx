@@ -1,11 +1,11 @@
-/******************************************
+/********************************************
  *
  * Interface to CP Electron selection tool(s).
  *
  * M. Milesi (marco.milesi@cern.ch)
  *
  *
- ******************************************/
+ *******************************************/
 
 // c++ include(s):
 #include <iostream>
@@ -25,6 +25,7 @@
 
 // package include(s):
 #include "xAODAnaHelpers/ElectronSelector.h"
+#include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
@@ -52,8 +53,9 @@ ElectronSelector :: ElectronSelector (std::string name, std::string configName) 
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr),
   m_asgElectronIsEMSelector(nullptr),
-  m_asgElectronLikelihoodTool(nullptr),
-  m_electronIsolationSelectionTool(nullptr)
+  m_IsolationSelectionTool(nullptr),
+  m_ElectronIsolationSelectionTool(nullptr),
+  m_el_LH_PIDManager(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -70,6 +72,7 @@ ElectronSelector::~ElectronSelector() {}
 EL::StatusCode  ElectronSelector :: configure ()
 {
   if ( !m_configName.empty() ) { 
+    
     Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -84,9 +87,10 @@ EL::StatusCode  ElectronSelector :: configure ()
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
 
-    // name of algo input container comes from - only if running on systematics
-    m_inputAlgo               = config->GetValue("InputAlgo",   "");
-    m_outputAlgo              = config->GetValue("OutputAlgo",  "ElectronCollection_Sel_Algo");
+    // Systematics stuff
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  ""); 
+    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", "ElectronSelector_Syst");  
+  				     								   
 
     // decorate selected objects that pass the cuts
     m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -117,25 +121,29 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
     // likelihood-based PID
     m_doLHPIDcut              = config->GetValue("DoLHPIDCut", false);
-    m_LHPID                   = config->GetValue("LHPID", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
-    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", "ElectronLikelihoodLooseOfflineConfig2015.conf");
+    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
+    m_LHConfigYear            = config->GetValue("LHConfigYear", "2015");
 
     // cut-based PID
     m_doCutBasedPIDcut        = config->GetValue("DoCutBasedPIDCut", false);
     m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
 
     // isolation stuff
-    m_doIsolation             = config->GetValue("DoIsolationCut"   , false);
+    m_doIsolation             = config->GetValue("DoIsolationCut"   ,  false);
+    m_IsoWP		      = config->GetValue("IsolationWP"      ,  "Tight"); 
+    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny",  "0.1*x+90");  // only if isolation WP is "UserDefined"
+    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency", "98");        // only if isolation WP is "UserDefined"
     m_useRelativeIso          = config->GetValue("UseRelativeIso"   , true );
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" , "etcone20");
+    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" , "topoetcone20");
     m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05 );
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType", "ptcone20");
+    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType", "ptvarcone20");
     m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05 );
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
 
     config->Print();
+    
     Info("configure()", "ElectronSelector Interface succesfully configured! ");
 
     delete config; config = nullptr;
@@ -148,13 +156,12 @@ EL::StatusCode  ElectronSelector :: configure ()
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
   
-  if ( m_LHPID != "VeryLoose" &&
-       m_LHPID != "Loose"     &&
-       m_LHPID != "Medium"    &&
-       m_LHPID != "Tight"     &&
-       m_LHPID != "VeryTight" &&
-       m_LHPID != "LooseRelaxed" ) {
-    Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHPID.c_str());
+  if ( m_LHOperatingPoint != "VeryLoose" &&
+       m_LHOperatingPoint != "Loose"     &&
+       m_LHOperatingPoint != "Medium"    &&
+       m_LHOperatingPoint != "Tight"     &&
+       m_LHOperatingPoint != "VeryTight"  ) {
+    Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -302,27 +309,45 @@ EL::StatusCode ElectronSelector :: initialize ()
   }
   RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
 
-  // initialise AsgElectronLikelihoodTool (likelihood-based PID)
-  
-  std::string asgel_tool_name = std::string("AsgElectronLikelihoodTool_") + m_name;
-  m_asgElectronLikelihoodTool = new AsgElectronLikelihoodTool( asgel_tool_name.c_str() );
-  m_asgElectronLikelihoodTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
-  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("primaryVertexContainer", "PrimaryVertices"), "Failed to set primaryVertexContainer property");
-  HelperClasses::EnumParser<LikeEnum::Menu> likelihoodPIDParser;
-  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("ConfigFile", confDir + m_LHOperatingPoint ), "Failed to set ConfigFile property");
-  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->setProperty("OperatingPoint", static_cast<unsigned int>( likelihoodPIDParser.parseEnum(m_LHPID) ) ), "Failed to set OperatingPoint property");
-  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronLikelihoodTool->initialize(), "Failed to properly initialize AsgElectronLikelihoodTool." );
+  // initialise PID tool(s) using classes defined in ParticlePIDManager.h
 
-  // initialise ElectronIsolationSelectionTool
-  
-  std::string eis_tool_name = std::string("ElectronIsolationSelectionTool_") + m_name;
-  m_electronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( eis_tool_name.c_str() );
-  m_electronIsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
-  HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-  RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<double>(m_CaloBasedIsoCut),  m_useRelativeIso ), "Failed to configure Calo-Based Isolation Cut");
-  RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_TrackBasedIsoType),  static_cast<double>(m_TrackBasedIsoCut), m_useRelativeIso ), "Failed to configure Track-Based Isolation Cut");
-  RETURN_CHECK( "ElectronSelector::initialize()", m_electronIsolationSelectionTool->initialize(), "Failed to properly initialize ElectronIsolationSelectionTool." );
+  m_el_LH_PIDManager = new LikelihoodPIDManager( m_LHOperatingPoint );
+  RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupLHTools( confDir, m_LHConfigYear ), "Failed to properly setup LikelihoodPIDManager." );
 
+  // initialise IsolationSelectionTool ( and ElectronIsolationTool, for DC14 )
+  
+  std::string iso_tool_name = ( m_IsoWP != "CutBasedDC14" ) ? std::string("IsolationSelectionTool_") : std::string("ElectronIsolationSelectionTool_");
+  iso_tool_name += m_name;
+  
+  m_ElectronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( iso_tool_name.c_str() );
+  m_IsolationSelectionTool         = new CP::IsolationSelectionTool( iso_tool_name.c_str() );
+  
+  if ( m_IsoWP == "CutBasedDC14" ) {
+  
+    m_ElectronIsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
+    HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+    RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<float>(m_CaloBasedIsoCut),  m_useRelativeIso ), "Failed to configure Calo-Based Isolation Cut");
+    RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_TrackBasedIsoType),  static_cast<float>(m_TrackBasedIsoCut), m_useRelativeIso ), "Failed to configure Track-Based Isolation Cut");
+    
+    RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->initialize(), "Failed to properly initialize ElectronIsolationSelectionTool." );
+  
+  } else {
+     
+    m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
+  
+    if ( m_IsoWP == "UserDefined" ) {
+      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronCaloIsoFunction",  m_CaloIsoEff.c_str() ), "Failed to configure ElectronCaloIsoFunction" );  
+      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronTrackIsoFunction", m_TrackIsoEff.c_str() ), "Failed to configure ElectronTrackIsoFunction" ); 
+      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronCaloIsoType",	m_CaloBasedIsoType.c_str() ), "Failed to configure ElectronCaloIsoType" ); 
+      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronTrackIsoType",	m_TrackBasedIsoType.c_str() ), "Failed to configure ElectronTrackIsoType" );
+    } else {	 
+      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty( "WorkingPoint", m_IsoWP.c_str() ), "Failed to configure WorkingPoint" );
+    }
+    
+    RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
+  
+  }
+  
   Info("initialize()", "ElectronSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -359,7 +384,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  if ( m_inputAlgo.empty() ) {
+  if ( m_inputAlgoSystNames.empty() ) {
 
     // this will be the collection processed - no matter what!!
     RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
@@ -385,7 +410,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_debug) ,"");
+    RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_debug) ,"");
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -434,7 +459,7 @@ EL::StatusCode ElectronSelector :: execute ()
     if ( m_debug ) {  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
 
     // record in TStore the list of systematics names that should be considered down stream
-    RETURN_CHECK( "ElectronSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+    RETURN_CHECK( "ElectronSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   }
 
@@ -540,9 +565,10 @@ EL::StatusCode ElectronSelector :: finalize ()
   Info("finalize()", "Deleting tool instances...");
 
   if ( m_asgElectronIsEMSelector )        { delete m_asgElectronIsEMSelector; m_asgElectronIsEMSelector = nullptr; }
-  if ( m_asgElectronLikelihoodTool )      { delete m_asgElectronLikelihoodTool; m_asgElectronLikelihoodTool = nullptr; }
-  if ( m_electronIsolationSelectionTool ) { delete m_electronIsolationSelectionTool; m_electronIsolationSelectionTool = nullptr; }
-
+  if ( m_el_LH_PIDManager )               { delete m_el_LH_PIDManager; m_el_LH_PIDManager = nullptr; }
+  if ( m_IsolationSelectionTool )         { delete m_IsolationSelectionTool; m_IsolationSelectionTool = nullptr; }
+  if ( m_ElectronIsolationSelectionTool ) { delete m_ElectronIsolationSelectionTool; m_ElectronIsolationSelectionTool = nullptr; }
+  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -645,27 +671,45 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
       if ( m_debug ) { Info("execute()", "Electron failed z0*sin(theta) cut." ); }
       return 0;
   }
+  
   // likelihood PID
-  if ( m_doLHPIDcut ) {
-    if ( ! m_asgElectronLikelihoodTool->accept( *electron ) ) {
-        if ( m_debug ) { Info("execute()", "Electron failed likelihood PID cut." ); }
-        return 0;
-    }
+  
+  typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
+  
+  LHToolsMap myLHTools = m_el_LH_PIDManager->getValidLHTools();
+  
+  // look up for the tool corresponding to the selected WP, and check if electron passes ID or not
+  if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
+      if ( m_debug ) { Info("execute()", "Electron failed likelihood PID cut." ); }
+      return 0;
   }
+
+  // now make a decorator for every WP tighter (or equal) than the selected one 
+  for ( auto it : (myLHTools) ) {
+    std::string decorWP =  "LH" + it.first;
+     static SG::AuxElement::Decorator< char > LHDecor( decorWP );
+     LHDecor( *electron ) = ( it.second->accept( *electron ) ) ? 1 : 0;
+  }
+
   // cut-based PID
+  
   if ( m_doCutBasedPIDcut ) {
     if ( ! m_asgElectronIsEMSelector->accept( *electron ) ) {
         if ( m_debug ) { Info("execute()", "Electron failed cut-based PID cut." ); }
         return 0;
     }
   }
+  
   // isolation
-  if ( m_doIsolation ) {
-    if ( ! m_electronIsolationSelectionTool->accept( *electron ) ) {
+  static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");  
+  bool passIso = ( m_IsolationSelectionTool->accept( *electron ) );
+  isIsoDecor( *electron ) = ( passIso ) ? 1 : 0;
+ 
+  if ( m_doIsolation && !passIso ) {
       if ( m_debug ) { Info("execute()", "Electron failed isolation cut." ); }
       return 0;
-    }
   }
+
   return 1;
 }
 

@@ -37,10 +37,6 @@ public:
   HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false );
   virtual ~HelpTreeBase() {;}
 
- // virtual void setDebugMode(  bool debug ){
- //   m_debug = debug;
- // } 
-
   void AddEvent    (const std::string detailStr = "");
   void AddMuons    (const std::string detailStr = "");
   void AddElectrons(const std::string detailStr = "");
@@ -293,6 +289,12 @@ protected:
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
+  std::vector<int>   m_el_isIsolated;
+  std::vector<int>   m_el_LHVeryLoose;
+  std::vector<int>   m_el_LHLoose;
+  std::vector<int>   m_el_LHMedium;
+  std::vector<int>   m_el_LHTight;
+  std::vector<int>   m_el_LHVeryTight;
  
   // track parameters
   std::vector<float> m_el_trkd0;

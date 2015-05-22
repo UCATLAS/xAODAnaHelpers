@@ -68,6 +68,7 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
 {
 
   if ( !m_configName.empty() ) {
+    
     Info("configure()", "Configuing ElectronEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
     m_configName = gSystem->ExpandPathName( m_configName.c_str() );
@@ -77,16 +78,15 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
 
     // read debug flag from .config file
     m_debug                   = config->GetValue("Debug", false);
+    
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
-    m_outContainerName        = config->GetValue("OutputContainer", "");
 
     // Systematics stuff
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  "");  // this is the name of the vector of names of the systematically varied containers produced by the
-  			             				              // upstream algo (e.g., the SC containers with calibration systematics)		   
-    m_systName		      = config->GetValue("SystName" , "" );                                        // if running systs - the name of the systematic (default: no syst)    
-    m_outputSystNames         = config->GetValue("OutputSystNames",  "ElectronEfficiencyCorrector_Syst"); // the name of vector<float> with the string names for systematically varied SFs (first component: nominal SF) 
-    m_systVal 		      = config->GetValue("SystVal" , 0. );                                         // if running systs - the value ( +/- 1 )
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  ""); 
+    m_systName		      = config->GetValue("SystName" , "" );                                       
+    m_outputSystNames         = config->GetValue("OutputSystNames",  "ElectronEfficiencyCorrector_Syst"); 
+    m_systVal 		      = config->GetValue("SystVal" , 0. );                                        
     m_runAllSyst              = (m_systName.find("All") != std::string::npos);
     // file(s) containing corrections
     m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
@@ -103,8 +103,6 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   return EL::StatusCode::SUCCESS;
 }

@@ -196,6 +196,8 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
 
 void HelpTreeBase::AddMuons(const std::string detailStr) {
 
+  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
+
   m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
 
   // always
@@ -332,7 +334,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
  ********************/
 
 void HelpTreeBase::AddElectrons(const std::string detailStr) {
-
+  
+  Info("AddElectrons()", "Adding electron variables: %s", detailStr.c_str());
+  
   m_elInfoSwitch = new HelperClasses::ElectronInfoSwitch( detailStr );
 
   // always
@@ -343,6 +347,18 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_phi", &m_el_phi);
     m_tree->Branch("el_eta", &m_el_eta);
     m_tree->Branch("el_m",   &m_el_m);
+  }
+
+  if ( m_elInfoSwitch->m_isolation ) {
+    m_tree->Branch("",  &m_el_isIsolated);
+  }
+  
+  if ( m_elInfoSwitch->m_PID ) {
+    m_tree->Branch("",  &m_el_LHVeryLoose);
+    m_tree->Branch("",  &m_el_LHLoose);
+    m_tree->Branch("",  &m_el_LHMedium);
+    m_tree->Branch("",  &m_el_LHTight);
+    m_tree->Branch("",  &m_el_LHVeryTight);
   }
 
   if ( m_elInfoSwitch->m_trackparams ) {
@@ -392,6 +408,27 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       m_el_eta.push_back( (el_itr)->eta() );
       m_el_phi.push_back( (el_itr)->phi() );
       m_el_m.push_back  ( (el_itr)->m() / m_units );
+    }
+  
+    if ( m_elInfoSwitch->m_isolation ) {
+      static SG::AuxElement::Accessor<char> isIsoAcc ("isIsolated");
+      if ( isIsoAcc.isAvailable( *el_itr ) ) { m_el_isIsolated.push_back( isIsoAcc( *el_itr ) ); } else { m_el_isIsolated.push_back( -1 ); }
+    }
+    
+    if ( m_elInfoSwitch->m_PID ) {
+      
+      static SG::AuxElement::Accessor<char> isLHVeryLooseAcc ("isLHVeryLoose");
+      static SG::AuxElement::Accessor<char> isLHLooseAcc ("isLHLoose");
+      static SG::AuxElement::Accessor<char> isLHMediumAcc ("isLHMedium");
+      static SG::AuxElement::Accessor<char> isLHTightAcc ("isLHTight");
+      static SG::AuxElement::Accessor<char> isLHVeryTightAcc ("isLHVeryTight");
+      
+      if ( isLHVeryLooseAcc.isAvailable( *el_itr ) ) { m_el_LHVeryLoose.push_back( isLHVeryLooseAcc( *el_itr ) ); } else { m_el_LHVeryLoose.push_back( -1 ); }
+      if ( isLHLooseAcc.isAvailable( *el_itr ) )     { m_el_LHLoose.push_back( isLHLooseAcc( *el_itr ) );         } else { m_el_LHLoose.push_back( -1 ); }
+      if ( isLHMediumAcc.isAvailable( *el_itr ) )    { m_el_LHMedium.push_back( isLHMediumAcc( *el_itr ) );       } else { m_el_LHMedium.push_back( -1 ); }
+      if ( isLHTightAcc.isAvailable( *el_itr ) )     { m_el_LHTight.push_back( isLHTightAcc( *el_itr ) );         } else { m_el_LHTight.push_back( -1 ); }
+      if ( isLHVeryTightAcc.isAvailable( *el_itr ) ) { m_el_LHVeryTight.push_back( isLHVeryTightAcc( *el_itr ) ); } else { m_el_LHVeryTight.push_back( -1 ); }
+    
     }
 
     if ( m_elInfoSwitch->m_trackparams ) {
@@ -1183,8 +1220,10 @@ void HelpTreeBase::ClearMuons() {
     m_muon_trknTRTHits.clear();
     m_muon_trknTRTHoles.clear();
     m_muon_trknBLayerHits.clear();
-    //m_muon_trknInnermostPixLayHits.clear();
-    //m_muon_trkPixdEdX.clear();
+    if ( !m_DC14 ) {
+      m_muon_trknInnermostPixLayHits.clear();
+      m_muon_trkPixdEdX.clear();
+    }
   }
 
 }
@@ -1198,6 +1237,18 @@ void HelpTreeBase::ClearElectrons() {
     m_el_eta.clear();
     m_el_phi.clear();
     m_el_m.clear();
+  }
+
+  if ( m_elInfoSwitch->m_isolation ) {
+    m_el_isIsolated.clear();
+  }
+  
+  if ( m_elInfoSwitch->m_PID ) {
+    m_el_LHVeryLoose.clear();
+    m_el_LHLoose.clear();
+    m_el_LHMedium.clear();
+    m_el_LHTight.clear();
+    m_el_LHVeryTight.clear();
   }
 
   if ( m_elInfoSwitch->m_trackparams ) {
@@ -1220,8 +1271,10 @@ void HelpTreeBase::ClearElectrons() {
     m_el_trknTRTHits.clear();
     m_el_trknTRTHoles.clear();
     m_el_trknBLayerHits.clear();
-    //m_el_trknInnermostPixLayHits.clear();
-    //m_el_trkPixdEdX.clear();
+    if ( !m_DC14 ) {    
+      m_el_trknInnermostPixLayHits.clear();
+      m_el_trkPixdEdX.clear();    
+    }
   }
 
 }

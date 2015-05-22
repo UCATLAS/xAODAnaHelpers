@@ -13,12 +13,15 @@
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODTracking/Vertex.h"
 
+// package include(s):
+#include "xAODAnaHelpers/ParticlePIDManager.h"
+
 // ROOT include(s):
 #include "TH1D.h"
 
 // external tools include(s):
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
-#include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
+#include "ElectronIsolationSelection/IsolationSelectionTool.h"
 #include "ElectronIsolationSelection/ElectronIsolationSelectionTool.h"
 
 class ElectronSelector : public EL::Algorithm
@@ -38,8 +41,8 @@ public:
   std::string    m_inContainerName;          // input container name
   std::string    m_outContainerName;         // output container name
   std::string    m_outAuxContainerName;      // output auxiliary container name
-  std::string    m_inputAlgo;                // input type - from xAOD or from xAODAnaHelpers Algo output
-  std::string    m_outputAlgo;
+  std::string    m_inputAlgoSystNames;
+  std::string    m_outputAlgoSystNames;
   bool       	 m_decorateSelectedObjects;  // decorate selected objects? defaul passSel
   bool       	 m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
   int        	 m_nToProcess;  	     // look at n objects
@@ -60,7 +63,7 @@ public:
   
   // likelihood-based PID
   bool           m_doLHPIDcut;
-  std::string    m_LHPID;
+  std::string    m_LHConfigYear;
   std::string    m_LHOperatingPoint;
 
   // cut-based PID
@@ -69,6 +72,9 @@ public:
 
   // isolation
   bool           m_doIsolation;
+  std::string    m_IsoWP;
+  std::string    m_CaloIsoEff;
+  std::string    m_TrackIsoEff;
   bool           m_useRelativeIso;
   std::string    m_CaloBasedIsoType;
   float          m_CaloBasedIsoCut;
@@ -94,9 +100,13 @@ private:
   int   m_cutflow_bin;      //!
 
   // tools
-  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ;       //!
-  AsgElectronLikelihoodTool          *m_asgElectronLikelihoodTool;      //!
-  CP::ElectronIsolationSelectionTool *m_electronIsolationSelectionTool; //!
+  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ;             //!
+  CP::IsolationSelectionTool         *m_IsolationSelectionTool;               //! /* MC15 tool for isolation*/
+  CP::ElectronIsolationSelectionTool *m_ElectronIsolationSelectionTool;       //! /* DC14 tool for isolation*/
+
+  
+  // PID manager(s)
+  LikelihoodPIDManager               *m_el_LH_PIDManager; //!
 
   std::vector<std::string> m_passKeys;  //!
   std::vector<std::string> m_failKeys;  //!

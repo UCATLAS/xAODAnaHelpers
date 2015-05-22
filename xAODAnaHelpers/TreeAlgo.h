@@ -19,6 +19,9 @@ public:
   const std::string m_name;
   std::string m_configName;
 
+  // choose whether the tree gets saved in the same directory as output histograms
+  bool m_outHistDir;                   //!
+ 
   // holds bools that control which branches are filled
   std::string m_evtDetailStr;	       //!
   std::string m_muDetailStr;	       //!
