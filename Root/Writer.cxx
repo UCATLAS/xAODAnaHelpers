@@ -10,7 +10,6 @@
 #include "xAODJet/JetAuxContainer.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 #include "TEnv.h"
@@ -21,23 +20,7 @@ ClassImp(Writer)
 
 
 
-Writer :: Writer () {
-}
-
-Writer :: Writer (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName)
-{
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-}
-
-
+Writer :: Writer () {}
 
 EL::StatusCode Writer :: setupJob (EL::Job& job)
 {
@@ -53,9 +36,6 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   xAOD::Init( "Writer" ).ignore(); // call before opening first file
 
   if(!m_configName.empty()){
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "Writer::setupJob()", m_configName );
-
     TEnv* config = new TEnv(m_configName.c_str());
     if( !config ) {
       Error("Writer::setupJob()", "Failed to read config file!");

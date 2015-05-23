@@ -11,7 +11,6 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelpTreeBase.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "AsgTools/StatusCode.h"
 
@@ -248,7 +247,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
   for ( auto muon_itr : *(muons) ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillMuons()", "Filling muon w/ pT = %2f", muon_itr->pt() / m_units ); }
-    
+
     if ( m_muInfoSwitch->m_kinematic ) {
       m_muon_pt.push_back ( muon_itr->pt() / m_units  );
       m_muon_eta.push_back( muon_itr->eta() );
@@ -396,7 +395,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
   this->ClearElectronsUser();
 
   m_nel = 0;
-  
+
   for ( auto el_itr : *(electrons) ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillElectrons()", "Filling electron w/ pT = %2f", el_itr->pt() / m_units ); }
@@ -1083,7 +1082,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       // light quark(1,2,3) , gluon (21 or 9), charm(4) and b(5)
       // GhostPartons should select for these pdgIds only
       static SG::AuxElement::ConstAccessor< std::vector<const xAOD::TruthParticle*> > ghostPartons("GhostPartons");
-      if( ghostPartons.isAvailable( *jet_itr )) { 
+      if( ghostPartons.isAvailable( *jet_itr )) {
         std::vector<const xAOD::TruthParticle*> truthPartons = ghostPartons( *jet_itr );
         if( truthPartons.size() == 0){
           m_jet_truth_pdgId.push_back(-999);
@@ -1102,9 +1101,9 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     this->FillJetsUser(jet_itr);
-    
+
     m_njet++;
-    
+
   } // loop over jets
 }
 
@@ -1180,7 +1179,7 @@ void HelpTreeBase::FillTaus( const xAOD::TauJetContainer* taus ) {
       m_tau_phi.push_back( tau_itr->phi() );
       m_tau_m.push_back  ( tau_itr->m() / m_units  );
       m_tau_charge.push_back( tau_itr->charge() );
-      m_tau_ntrk.push_back( tau_itr->nTracks() );      
+      m_tau_ntrk.push_back( tau_itr->nTracks() );
     }
 
     this->FillTausUser(tau_itr);
@@ -1417,9 +1416,9 @@ void HelpTreeBase::ClearTaus() {
     m_tau_phi.clear();
     m_tau_m.clear();
     m_tau_charge.clear();
-    m_tau_ntrk.clear();    
+    m_tau_ntrk.clear();
   }
-  
+
 }
 
 

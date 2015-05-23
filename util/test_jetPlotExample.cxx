@@ -39,10 +39,12 @@ int main( int argc, char* argv[] ) {
   job.sampleHandler( sh );
 
   // Add our analysis to the job:
-  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo("AntiKt10/", "$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
+  JetHistsAlgo* jk_AntiKt10LC = new JetHistsAlgo();
+  jk_AntiKt10LC->setName("AntiKt10/")->setConfig("$ROOTCOREBIN/data/xAODAnaHelpers/test_jetPlotExample.config");
 
   // Add example tree
-  TreeAlgo* tree_AntiKt10LC = new TreeAlgo("fullTree", "$ROOTCOREBIN/data/xAODAnaHelpers/test_treeExample.config");
+  TreeAlgo* tree_AntiKt10LC = new TreeAlgo();
+  tree_AntiKt10LC->setName("fullTree")->setConfig("$ROOTCOREBIN/data/xAODAnaHelpers/test_treeExample.config");
 
   // Attach algorithms
   job.algsAdd( jk_AntiKt10LC );

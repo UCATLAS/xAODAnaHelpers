@@ -3,7 +3,7 @@
  * Interface to OverlapRemoval tool (applying recommendations from Harmonisation TF).
  *
  * M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -36,7 +36,6 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -48,13 +47,7 @@ using HelperClasses::ToolName;
 ClassImp(OverlapRemover)
 
 
-OverlapRemover :: OverlapRemover () {
-}
-
-OverlapRemover :: OverlapRemover (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+OverlapRemover :: OverlapRemover () :
   m_usePhotons(false),
   m_useTaus(false),
   m_overlapRemovalTool(nullptr)
@@ -72,13 +65,10 @@ OverlapRemover :: OverlapRemover (std::string name, std::string configName) :
 
 EL::StatusCode  OverlapRemover :: configure ()
 {
-  
-  if ( !m_configName.empty() ) {
-    
-    Info("configure()", "Configuing OverlapRemover Interface. User configuration read from : %s ", m_configName.c_str());
 
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "OverlapRemover::configure()", m_configName);
+  if ( !m_configName.empty() ) {
+
+    Info("configure()", "Configuing OverlapRemover Interface. User configuration read from : %s ", m_configName.c_str());
 
     TEnv* config = new TEnv(m_configName.c_str());
 

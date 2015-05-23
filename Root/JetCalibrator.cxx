@@ -30,7 +30,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -41,16 +40,7 @@
 ClassImp(JetCalibrator)
 
 
-JetCalibrator :: JetCalibrator () {
-}
-
-JetCalibrator :: JetCalibrator (std::string name, std::string configName,
-    std::string systName, float systVal ) :
-  Algorithm(),
-  m_name(name),               // algo name
-  m_configName(configName),   // path + name of config file
-  m_systName(systName),       // if running systs - the name of the systematic
-  m_systVal(systVal),         // if running systs - the value ( +/- 1 )
+JetCalibrator :: JetCalibrator () :
   m_runSysts(false),          // gets set later is syst applies to this tool
   m_jetCalibration(nullptr),  // JetCalibrationTool
   m_jetCleaning(nullptr),     // JetCleaningTool
@@ -73,10 +63,6 @@ EL::StatusCode  JetCalibrator :: configure ()
   if ( !m_configName.empty() ) {
 
     Info("configure()", "Configuing JetCalibrator Interface. User configuration read from : %s ", m_configName.c_str());
-
-    // expand the path to the config to find it in the ROOTCORE directory
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG("JetCalibrator::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 

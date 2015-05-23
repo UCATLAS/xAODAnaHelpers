@@ -1,14 +1,6 @@
 #ifndef xAODAnaHelpers_ElectronCalibrator_H
 #define xAODAnaHelpers_ElectronCalibrator_H
 
-// EL include(s):
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicSet.h"
@@ -19,16 +11,14 @@
 // external tools include(s):
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
 
-class ElectronCalibrator : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class ElectronCalibrator : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_name;
-  std::string m_configName;
-
-  bool m_debug;
-
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
@@ -36,20 +26,16 @@ public:
   // sort after calibration
   bool    m_sort;
 
-  
+
   // systematics
   std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
-  			             // upstream algo (e.g., the SC containers with calibration systematics)		   
+  			             // upstream algo (e.g., the SC containers with calibration systematics)
   std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
   				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
-  std::string m_systName;            
-  float m_systVal;                   
   bool m_runSysts;
-  bool m_runAllSyst;                 
+  bool m_runAllSyst;
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
 
@@ -72,7 +58,6 @@ public:
 
   // this is a standard constructor
   ElectronCalibrator ();
-  ElectronCalibrator (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

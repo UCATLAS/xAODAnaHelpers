@@ -13,7 +13,6 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
@@ -21,12 +20,7 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TreeAlgo)
 
-TreeAlgo :: TreeAlgo () {}
-
-TreeAlgo :: TreeAlgo (const std::string name,const std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+TreeAlgo :: TreeAlgo () :
   m_helpTree(nullptr)
 {
   this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
@@ -98,10 +92,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
 EL::StatusCode TreeAlgo :: configure ()
 {
-  if ( !m_configName.empty() ) {
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG("TreeAlgo::configure()", m_configName);
-
+  if(!m_configName.empty()){
     // the file exists, use TEnv to read it off
     TEnv* config = new TEnv(m_configName.c_str());
     m_evtDetailStr            = config->GetValue("EventDetailStr",       "");
@@ -110,7 +101,7 @@ EL::StatusCode TreeAlgo :: configure ()
     m_jetDetailStr            = config->GetValue("JetDetailStr",         "");
     m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      "");
     m_tauDetailStr            = config->GetValue("TauDetailStr",         "");
-    
+
     m_debug                   = config->GetValue("Debug" ,           false );
 
     m_outHistDir              = config->GetValue("SameHistsOutDir",  false );
@@ -120,7 +111,7 @@ EL::StatusCode TreeAlgo :: configure ()
     m_jetContainerName        = config->GetValue("JetContainerName",        "");
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
     m_tauContainerName        = config->GetValue("TauContainerName",        "");
-    
+
     // DC14 switch for little things that need to happen to run
     // for those samples with the corresponding packages
     m_DC14                    = config->GetValue("DC14", false);
@@ -176,12 +167,12 @@ EL::StatusCode TreeAlgo :: execute ()
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillFatJets( inFatJets );
   }
-  if ( !m_tauContainerName.empty() ) {	
-    const xAOD::TauJetContainer* inTaus(nullptr); 
+  if ( !m_tauContainerName.empty() ) {
+    const xAOD::TauJetContainer* inTaus(nullptr);
     RETURN_CHECK("HTopMultilepTreeAlgo::execute()", HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, m_debug) , "");
     m_helpTree->FillTaus( inTaus );
-  }  
-  
+  }
+
   // fill the tree
   m_helpTree->Fill();
 

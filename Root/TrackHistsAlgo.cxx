@@ -9,7 +9,6 @@
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
@@ -17,14 +16,7 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
-TrackHistsAlgo :: TrackHistsAlgo () {
-}
-
-TrackHistsAlgo :: TrackHistsAlgo (std::string name, std::string configName, std::string containerName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
-  m_inContainerName(containerName),
+TrackHistsAlgo :: TrackHistsAlgo () :
   m_plots(nullptr)
 {
 }
@@ -63,9 +55,6 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 EL::StatusCode TrackHistsAlgo :: configure ()
 {
   if(!m_configName.empty()){
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "TrackHistsAlgo::configure()", m_configName);
-
     // the file exists, use TEnv to read it off
     TEnv* config = new TEnv(m_configName.c_str());
 

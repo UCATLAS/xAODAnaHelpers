@@ -31,7 +31,6 @@
 #include "xAODAnaHelpers/MuonEfficiencyCorrector.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -43,12 +42,7 @@ using HelperClasses::ToolName;
 ClassImp(MuonEfficiencyCorrector)
 
 
-MuonEfficiencyCorrector :: MuonEfficiencyCorrector () { }
-
-MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string name, std::string configName ) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
   m_MuonEffSFTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -65,13 +59,10 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string name, std::strin
 
 EL::StatusCode  MuonEfficiencyCorrector :: configure ()
 {
-  
-  if ( !m_configName.empty() ) {
-    
-    Info("configure()", "Configuing MuonEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "MuonEfficiencyCorrector::configure()", m_configName);
+  if ( !m_configName.empty() ) {
+
+    Info("configure()", "Configuing MuonEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
 
     TEnv* config = new TEnv(m_configName.c_str());
 
@@ -87,8 +78,8 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
     // Systematics stuff
     m_runAllSyst              = config->GetValue("RunAllSyst" , false ); // default: false
     m_systName		      = config->GetValue("SystName" , "" );      // default: no syst
-    m_systSigma 	      = config->GetValue("SystSigma" , 0. );
-    
+    m_systVal 	      = config->GetValue("SystSigma" , 0. );
+
     config->Print();
     Info("configure()", "MuonEfficiencyCorrector Interface succesfully configured! ");
 
@@ -187,7 +178,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_MuonEffSFTool = new CP::MuonEfficiencyScaleFactors( mefsf_tool_name.c_str() );
   m_MuonEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("WorkingPoint", m_WorkingPoint ),"Failed to set property");  
+  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("WorkingPoint", m_WorkingPoint ),"Failed to set property");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("DataPeriod", m_DataPeriod ),"Failed to set property");
   // test audit trail
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("doAudit",false),"Failed to set property"); // audit trail functionality.
@@ -270,7 +261,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
       Error("initialize()", "Failed to configure MuonEfficiencyCorrections for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
     }
-    
+
     if ( m_debug ) { Info("execute()", "Successfully applied systematic: %s", syst_it.name().c_str()); }
 
     // prepare a vector to hold SF replicas

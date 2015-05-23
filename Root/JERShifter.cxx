@@ -3,7 +3,7 @@
  * Interface to CP JER Shifter tool(s).
  *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -32,25 +32,16 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
 #include "TSystem.h"
 
-
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(JERShifter)
 
 
-JERShifter :: JERShifter () {
-}
-
-JERShifter :: JERShifter (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName)
+JERShifter :: JERShifter ()
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -74,9 +65,6 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   xAOD::Init( "JERShifter" ).ignore(); // call before opening first file
 
   if(!m_configName.empty()){
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "JERShifter::setupJob()", m_configName);
-
     TEnv* config = new TEnv(m_configName.c_str());
 
     // input container to be read from TEvent or TStore

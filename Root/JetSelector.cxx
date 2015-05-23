@@ -3,7 +3,7 @@
  * Jet selector tool
  *
  * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -31,7 +31,6 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // external tools include(s):
 
@@ -46,13 +45,7 @@
 ClassImp(JetSelector)
 
 
-JetSelector :: JetSelector () {
-}
-
-JetSelector :: JetSelector (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+JetSelector :: JetSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr)
 {
@@ -69,9 +62,6 @@ EL::StatusCode  JetSelector :: configure ()
 {
   if(!m_configName.empty()){
     Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", m_configName.c_str());
-
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG("JetSelector::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 
@@ -300,7 +290,7 @@ EL::StatusCode JetSelector :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
-  // MC event weight 
+  // MC event weight
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
@@ -362,7 +352,7 @@ EL::StatusCode JetSelector :: execute ()
   if ( !pass ) {
     wk()->skipEvent();
   }
-  
+
   return EL::StatusCode::SUCCESS;
 
 }
@@ -389,8 +379,8 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
 
   int nPass(0); int nObj(0);
-  bool passEventClean(true);  
-  
+  bool passEventClean(true);
+
   static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
   static SG::AuxElement::Decorator< char > passSelDecor( m_decor );
 
@@ -411,7 +401,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     if ( m_decorateSelectedObjects ) {
       passSelDecor( *jet_itr ) = passSel;
     }
-    
+
     // event level cut if any of the N leading jets are not clean
     if ( m_cleanEvtLeadJets > 0 && nObj <= m_cleanEvtLeadJets ) {
       if ( isCleanAcc.isAvailable( *jet_itr ) ) {
@@ -575,7 +565,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //
   //  BTagging
   //
-  
+
   const xAOD::BTagging *myBTag = jet->btagging();
   if ( myBTag ) {
     if ( m_btagCut >=0 ) {

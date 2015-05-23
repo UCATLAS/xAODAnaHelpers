@@ -21,7 +21,6 @@
 #include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -33,13 +32,7 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector () {
-}
-
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string name, std::string configName ) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
   m_BJetEffSFTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -58,9 +51,6 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 {
   if(!m_configName.empty()){
     Info("configure()", "Configuing BJetEfficiencyCorrector Interface. User configuration read from : %s ", m_configName.c_str());
-
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "BJetEfficiencyCorrector::configure()", m_configName);
 
     TEnv* config = new TEnv(m_configName.c_str());
 
@@ -201,7 +191,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
   std::cout << "-----------------------------------------------------" << std::endl;
 
-  
+
   // Get a list of affecting systematics
   CP::SystematicSet affectSysts = m_BJetEffSFTool->affectingSystematics();
   // Convert into a simple list

@@ -1,14 +1,6 @@
 #ifndef xAODAnaHelpers_BJetEfficiencyCorrector_H
 #define xAODAnaHelpers_BJetEfficiencyCorrector_H
 
-// EL include(s):
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicSet.h"
@@ -19,19 +11,14 @@
 // external tools include(s):
 #include "xAODBTaggingEfficiency/BTaggingEfficiencyTool.h"
 
-class BJetEfficiencyCorrector : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class BJetEfficiencyCorrector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-
-  std::string m_name;
-  std::string m_configName;
-
-  bool m_debug;                  //!
   std::string m_inContainerName;     //!
 
   // systematics
@@ -71,7 +58,6 @@ public:
 
   // this is a standard constructor
   BJetEfficiencyCorrector ();
-  BJetEfficiencyCorrector (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

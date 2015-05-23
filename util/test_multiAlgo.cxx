@@ -18,7 +18,6 @@
 #include "xAODAnaHelpers/ElectronEfficiencyCorrector.h"
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "xAODAnaHelpers/Writer.h"
-#include <xAODAnaHelpers/JetHistsAlgo.h>
 #include "xAODAnaHelpers/OverlapRemover.h"
 #include "xAODAnaHelpers/TreeAlgo.h"
 
@@ -83,7 +82,8 @@ int main( int argc, char* argv[] ) {
 
   std::string localDataDir = "$ROOTCOREBIN/data/xAODAnaHelpers/";
 
-  BasicEventSelection* baseEventSel             = new BasicEventSelection(  "baseEventSel",             localDataDir+"baseEvent.config");
+  BasicEventSelection* baseEventSel             = new BasicEventSelection();
+  baseEventSel->setName("baseEventSel")->setConfig(localDataDir+"baseEvent.config");
 
 //  JET_GroupedNP_1__continuous
 //  JET_GroupedNP_2__continuous
@@ -91,30 +91,56 @@ int main( int argc, char* argv[] ) {
 //  JET_RelativeNonClosure_MC12__continuous
 //  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config", "JET_GroupedNP_1", -1);
 
-  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
-  MuonCalibrator* muonCalib                     = new MuonCalibrator(       "muonCalib",                localDataDir+"muonCalib.config");
-  ElectronCalibrator* electronCalib             = new ElectronCalibrator(   "electronCalib",            localDataDir+"electronCalib.config" );
+  JetCalibrator* jetCalib                       = new JetCalibrator();
+  jetCalib->setName("jetCalib_AntiKt4TopoEM")->setConfig(localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
 
-  MuonEfficiencyCorrector*      muonEffCorr     = new MuonEfficiencyCorrector(       "muonEfficiencyCorrector",      localDataDir+"muonEffCorr.config");
-  ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector(   "electronEfficiencyCorrector",  localDataDir+"electronEffCorr.config");
+  MuonCalibrator* muonCalib                     = new MuonCalibrator();
+  muonCalib->setName("muonCalib")->setConfig(localDataDir+"muonCalib.config");
 
-  MuonSelector* muonSelect_signal               = new MuonSelector(         "muonSelect_signal",        localDataDir+"muonSelect_signal.config");
-  ElectronSelector* electronSelect_signal       = new ElectronSelector(     "electronSelect_signal",    localDataDir+"electronSelect_signal.config");
+  ElectronCalibrator* electronCalib             = new ElectronCalibrator();
+  electronCalib->setName("electronCalib")->setConfig(localDataDir+"electronCalib.config");/*->setSysts("All");*/
 
-  JetSelector* jetSelect_signal                 = new JetSelector(          "jetSelect_signal",         localDataDir+"jetSelect_signal.config");
-  JetSelector* bjetSelect_signal                = new JetSelector(          "bjetSelect_signal",        localDataDir+"bjetSelect_signal.config");
-  BJetEfficiencyCorrector* bjetEffCorr_btag     = new BJetEfficiencyCorrector("bjetEffCor_btag",        localDataDir+"bjetEffCorr.config");
+  MuonEfficiencyCorrector*      muonEffCorr     = new MuonEfficiencyCorrector();
+  muonEffCorr->setName("muonEfficiencyCorrector")->setConfig(localDataDir+"muonEffCorr.config");
 
-  JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo(         "jetHistsAlgo_signal",      localDataDir+"jetHistsAlgo_signal.config");
-  JetHistsAlgo* jetHistsAlgo_btag               = new JetHistsAlgo(         "jetHistsAlgo_btag",        localDataDir+"jetHistsAlgo_btagged.config");
+  ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector();
+  electronEffCorr->setName("electronEfficiencyCorrector")->setConfig(localDataDir+"electronEffCorr.config");/*->setSysts("All");*/
 
-  JetSelector* jetSelect_truth                  = new JetSelector(          "jetSelect_truth",          localDataDir+"jetSelect_truth.config");
-  JetHistsAlgo* jetHistsAlgo_truth              = new JetHistsAlgo(         "jetHistsAlgo_truth",       localDataDir+"jetHistsAlgo_truth.config");
+  MuonSelector* muonSelect_signal               = new MuonSelector();
+  muonSelect_signal->setName("muonSelect_signal")->setConfig(localDataDir+"muonSelect_signal.config");
 
-  OverlapRemover* overlapRemoval                = new OverlapRemover(       "OverlapRemovalTool",       localDataDir+"overlapRemoval.config");
-  JetHistsAlgo* jk_AntiKt10LC                   = new JetHistsAlgo(         "AntiKt10/",                localDataDir+"test_jetPlotExample.config");
+  ElectronSelector* electronSelect_signal       = new ElectronSelector();
+  electronSelect_signal->setName("electronSelect_signal")->setConfig(localDataDir+"electronSelect_signal.config");
 
-  TreeAlgo* out_tree                            = new TreeAlgo(             "physics",                  localDataDir+"tree.config");
+  JetSelector* jetSelect_signal                 = new JetSelector();
+  jetSelect_signal->setName("jetSelect_signal")->setConfig(localDataDir+"jetSelect_signal.config");
+
+  JetSelector* bjetSelect_signal                = new JetSelector();
+  bjetSelect_signal->setName("bjetSelect_signal")->setConfig(localDataDir+"bjetSelect_signal.config");
+
+  BJetEfficiencyCorrector* bjetEffCorr_btag     = new BJetEfficiencyCorrector();
+  bjetEffCorr_btag->setName("bjetEffCor_btag")->setConfig(localDataDir+"bjetEffCorr.config");
+
+  JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo();
+  jetHistsAlgo_signal->setName("jetHistsAlgo_signal")->setConfig(localDataDir+"jetHistsAlgo_signal.config");
+
+  JetHistsAlgo* jetHistsAlgo_btag               = new JetHistsAlgo();
+  jetHistsAlgo_btag->setName("jetHistsAlgo_btag")->setConfig(localDataDir+"jetHistsAlgo_btagged.config");
+
+  JetSelector* jetSelect_truth                  = new JetSelector();
+  jetSelect_truth->setName("jetSelect_truth")->setConfig(localDataDir+"jetSelect_truth.config");
+
+  JetHistsAlgo* jetHistsAlgo_truth              = new JetHistsAlgo();
+  jetHistsAlgo_truth->setName("jetHistsAlgo_truth")->setConfig(localDataDir+"jetHistsAlgo_truth.config");
+
+  OverlapRemover* overlapRemoval                = new OverlapRemover();
+  overlapRemoval->setName("OverlapRemovalTool")->setConfig(localDataDir+"overlapRemoval.config");
+
+  JetHistsAlgo* jk_AntiKt10LC                   = new JetHistsAlgo();
+  jk_AntiKt10LC->setName("AntiKt10/")->setConfig(localDataDir+"test_jetPlotExample.config");
+
+  TreeAlgo* out_tree                            = new TreeAlgo();
+  out_tree->setName("physics")->setConfig(localDataDir+"tree.config");
 
   // Attach algorithms
   job.algsAdd( baseEventSel );

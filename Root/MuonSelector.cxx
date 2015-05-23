@@ -3,7 +3,7 @@
  * Interface to CP Muon selection tool(s).
  *
  * M. Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ******************************************/
 
@@ -29,7 +29,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -42,12 +41,7 @@
 ClassImp(MuonSelector)
 
 
-MuonSelector :: MuonSelector () { }
-
-MuonSelector :: MuonSelector (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName),
+MuonSelector :: MuonSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr),
   m_muonSelectionTool(nullptr)
@@ -66,13 +60,10 @@ MuonSelector::~MuonSelector() {}
 
 EL::StatusCode  MuonSelector :: configure ()
 {
-  
-  if ( !m_configName.empty() ) {
-    
-    Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG( "MuonSelector::configure()", m_configName);
+  if ( !m_configName.empty() ) {
+
+    Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
     TEnv* config = new TEnv(m_configName.c_str());
 
@@ -117,7 +108,7 @@ EL::StatusCode  MuonSelector :: configure ()
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
-    
+
     config->Print();
     Info("configure()", "MuonSelector Interface succesfully configured! ");
 
@@ -299,7 +290,7 @@ EL::StatusCode MuonSelector :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
 
-  // MC event weight 
+  // MC event weight
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {

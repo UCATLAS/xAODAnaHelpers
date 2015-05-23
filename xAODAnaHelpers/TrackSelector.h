@@ -1,44 +1,29 @@
 #ifndef xAODAnaHelpers_TrackSelector_H
 #define xAODAnaHelpers_TrackSelector_H
 
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 // ROOT include(s):
 #include "TH1D.h"
 
 #include "xAODTracking/VertexContainer.h"
 #include "xAODTracking/TrackParticleContainer.h"
 
-class TrackSelector : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class TrackSelector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
   int m_numEventPass;     //!
   int m_numObjectPass;    //!
 
-  std::string m_name;
-  std::string m_configName;
-
   std::string              m_passAuxDecorKeys;
   std::string              m_failAuxDecorKeys;
   std::vector<std::string> m_passKeys;
   std::vector<std::string> m_failKeys;
-
-
-
-  bool m_debug;                  //!
 
   // cutflow
   bool m_useCutFlow;            //!
@@ -81,7 +66,6 @@ public:
 
   // this is a standard constructor
   TrackSelector ();
-  TrackSelector (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

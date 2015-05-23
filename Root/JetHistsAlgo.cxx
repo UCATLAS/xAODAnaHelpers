@@ -11,7 +11,6 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 #include "TEnv.h"
 #include "TSystem.h"
@@ -20,13 +19,6 @@
 ClassImp(JetHistsAlgo)
 
 JetHistsAlgo :: JetHistsAlgo () {}
-
-JetHistsAlgo :: JetHistsAlgo (std::string name, std::string configName) :
-  Algorithm(),
-  m_name(name),
-  m_configName(configName)
-{
-}
 
 EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
 {
@@ -70,9 +62,6 @@ EL::StatusCode JetHistsAlgo::AddHists( std::string name ) {
 EL::StatusCode JetHistsAlgo :: configure ()
 {
   if(!m_configName.empty()){
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
-    RETURN_CHECK_CONFIG("JetHistsAlgo::configure()", m_configName);
-
     // the file exists, use TEnv to read it off
     TEnv* config = new TEnv(m_configName.c_str());
     // input container to be read from TEvent or TStore

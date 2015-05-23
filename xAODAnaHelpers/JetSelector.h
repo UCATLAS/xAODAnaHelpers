@@ -1,14 +1,6 @@
 #ifndef xAODAnaHelpers_JetSelector_H
 #define xAODAnaHelpers_JetSelector_H
 
-// EL include(s):
-#include <EventLoop/Algorithm.h>
-
-// Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
-
 // EDM include(s):
 #include "xAODJet/Jet.h"
 #include "xAODJet/JetContainer.h"
@@ -16,15 +8,14 @@
 // ROOT include(s):
 #include "TH1D.h"
 
-class JetSelector : public EL::Algorithm
+// algorithm wrapper
+#include "xAODAnaHelpers/Algorithm.h"
+
+class JetSelector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_name;
-  std::string m_configName;
-
-  bool m_debug;                  //!
   bool m_useCutFlow;             //!
 
   // configuration variables
@@ -66,8 +57,6 @@ public:
   std::string              m_failAuxDecorKeys;  //!
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
   int m_numEvent;         //!
   int m_numObject;        //!
   int m_numEventPass;     //!
@@ -98,7 +87,6 @@ public:
 
   // this is a standard constructor
   JetSelector ();
-  JetSelector (std::string name, std::string configName);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
