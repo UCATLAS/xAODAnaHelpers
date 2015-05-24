@@ -349,15 +349,18 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   }
 
   if ( m_elInfoSwitch->m_isolation ) {
-    m_tree->Branch("",  &m_el_isIsolated);
+    m_tree->Branch("el_isIsolated",  &m_el_isIsolated);
   }
   
   if ( m_elInfoSwitch->m_PID ) {
-    m_tree->Branch("",  &m_el_LHVeryLoose);
-    m_tree->Branch("",  &m_el_LHLoose);
-    m_tree->Branch("",  &m_el_LHMedium);
-    m_tree->Branch("",  &m_el_LHTight);
-    m_tree->Branch("",  &m_el_LHVeryTight);
+    m_tree->Branch("el_LHVeryLoose",  &m_el_LHVeryLoose);
+    m_tree->Branch("el_LHLoose",      &m_el_LHLoose);
+    m_tree->Branch("el_LHMedium",     &m_el_LHMedium);
+    m_tree->Branch("el_LHTight",      &m_el_LHTight);
+    m_tree->Branch("el_LHVeryTight",  &m_el_LHVeryTight);
+    m_tree->Branch("el_IsEMLoose",    &m_el_IsEMLoose);
+    m_tree->Branch("el_IsEMMedium",   &m_el_IsEMMedium);
+    m_tree->Branch("el_IsEMTight",    &m_el_IsEMTight);
   }
 
   if ( m_elInfoSwitch->m_trackparams ) {
@@ -416,18 +419,25 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
     
     if ( m_elInfoSwitch->m_PID ) {
       
-      static SG::AuxElement::Accessor<char> isLHVeryLooseAcc ("isLHVeryLoose");
-      static SG::AuxElement::Accessor<char> isLHLooseAcc ("isLHLoose");
-      static SG::AuxElement::Accessor<char> isLHMediumAcc ("isLHMedium");
-      static SG::AuxElement::Accessor<char> isLHTightAcc ("isLHTight");
-      static SG::AuxElement::Accessor<char> isLHVeryTightAcc ("isLHVeryTight");
+      static SG::AuxElement::Accessor<char> LHVeryLooseAcc ("LHVeryLoose");
+      static SG::AuxElement::Accessor<char> LHLooseAcc ("LHLoose");
+      static SG::AuxElement::Accessor<char> LHMediumAcc ("LHMedium");
+      static SG::AuxElement::Accessor<char> LHTightAcc ("LHTight");
+      static SG::AuxElement::Accessor<char> LHVeryTightAcc ("LHVeryTight");
+
+      static SG::AuxElement::Accessor<char> EMLooseAcc ("Loose");
+      static SG::AuxElement::Accessor<char> EMMediumAcc ("Medium");
+      static SG::AuxElement::Accessor<char> EMTightAcc ("Tight");
+
+      if ( LHVeryLooseAcc.isAvailable( *el_itr ) ) { m_el_LHVeryLoose.push_back( LHVeryLooseAcc( *el_itr ) ); } else { m_el_LHVeryLoose.push_back( -1 ); }
+      if ( LHLooseAcc.isAvailable( *el_itr ) )     { m_el_LHLoose.push_back( LHLooseAcc( *el_itr ) );         } else { m_el_LHLoose.push_back( -1 ); }
+      if ( LHMediumAcc.isAvailable( *el_itr ) )    { m_el_LHMedium.push_back( LHMediumAcc( *el_itr ) );       } else { m_el_LHMedium.push_back( -1 ); }
+      if ( LHTightAcc.isAvailable( *el_itr ) )     { m_el_LHTight.push_back( LHTightAcc( *el_itr ) );         } else { m_el_LHTight.push_back( -1 ); }
+      if ( LHVeryTightAcc.isAvailable( *el_itr ) ) { m_el_LHVeryTight.push_back( LHVeryTightAcc( *el_itr ) ); } else { m_el_LHVeryTight.push_back( -1 ); }
       
-      if ( isLHVeryLooseAcc.isAvailable( *el_itr ) ) { m_el_LHVeryLoose.push_back( isLHVeryLooseAcc( *el_itr ) ); } else { m_el_LHVeryLoose.push_back( -1 ); }
-      if ( isLHLooseAcc.isAvailable( *el_itr ) )     { m_el_LHLoose.push_back( isLHLooseAcc( *el_itr ) );         } else { m_el_LHLoose.push_back( -1 ); }
-      if ( isLHMediumAcc.isAvailable( *el_itr ) )    { m_el_LHMedium.push_back( isLHMediumAcc( *el_itr ) );       } else { m_el_LHMedium.push_back( -1 ); }
-      if ( isLHTightAcc.isAvailable( *el_itr ) )     { m_el_LHTight.push_back( isLHTightAcc( *el_itr ) );         } else { m_el_LHTight.push_back( -1 ); }
-      if ( isLHVeryTightAcc.isAvailable( *el_itr ) ) { m_el_LHVeryTight.push_back( isLHVeryTightAcc( *el_itr ) ); } else { m_el_LHVeryTight.push_back( -1 ); }
-    
+      if ( EMLooseAcc.isAvailable( *el_itr ) )         { m_el_IsEMLoose.push_back( EMLooseAcc( *el_itr ) );   } else { m_el_IsEMLoose.push_back( -1 ); }
+      if ( EMMediumAcc.isAvailable( *el_itr ) )        { m_el_IsEMMedium.push_back( EMMediumAcc( *el_itr ) ); } else { m_el_IsEMMedium.push_back( -1 ); }
+      if ( EMTightAcc.isAvailable( *el_itr ) )         { m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );   } else { m_el_IsEMTight.push_back( -1 ); }
     }
 
     if ( m_elInfoSwitch->m_trackparams ) {
@@ -1248,6 +1258,9 @@ void HelpTreeBase::ClearElectrons() {
     m_el_LHMedium.clear();
     m_el_LHTight.clear();
     m_el_LHVeryTight.clear();
+    m_el_IsEMLoose.clear();
+    m_el_IsEMMedium.clear();
+    m_el_IsEMTight.clear();
   }
 
   if ( m_elInfoSwitch->m_trackparams ) {
