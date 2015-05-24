@@ -289,12 +289,19 @@ protected:
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
+  
+  // isolation
   std::vector<int>   m_el_isIsolated;
+  
+  // PID
   std::vector<int>   m_el_LHVeryLoose;
   std::vector<int>   m_el_LHLoose;
   std::vector<int>   m_el_LHMedium;
   std::vector<int>   m_el_LHTight;
   std::vector<int>   m_el_LHVeryTight;
+  std::vector<int>   m_el_IsEMLoose;
+  std::vector<int>   m_el_IsEMMedium;
+  std::vector<int>   m_el_IsEMTight;
  
   // track parameters
   std::vector<float> m_el_trkd0;

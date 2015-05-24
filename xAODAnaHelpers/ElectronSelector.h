@@ -12,7 +12,6 @@
 #include "TH1D.h"
 
 // external tools include(s):
-#include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 #include "ElectronIsolationSelection/IsolationSelectionTool.h"
 #include "ElectronIsolationSelection/ElectronIsolationSelectionTool.h"
 
@@ -58,6 +57,7 @@ public:
 
   // cut-based PID
   bool           m_doCutBasedPIDcut;
+  std::string    m_CutBasedConfigYear;
   std::string    m_CutBasedOperatingPoint;
 
   // isolation
@@ -87,13 +87,12 @@ private:
   int   m_cutflow_bin;      //!
 
   // tools
-  AsgElectronIsEMSelector            *m_asgElectronIsEMSelector ;             //!
   CP::IsolationSelectionTool         *m_IsolationSelectionTool;               //! /* MC15 tool for isolation*/
   CP::ElectronIsolationSelectionTool *m_ElectronIsolationSelectionTool;       //! /* DC14 tool for isolation*/
 
-  
   // PID manager(s)
-  LikelihoodPIDManager               *m_el_LH_PIDManager; //!
+  ElectronLHPIDManager               *m_el_LH_PIDManager;       //!
+  ElectronCutBasedPIDManager         *m_el_CutBased_PIDManager; //!
 
   std::vector<std::string> m_passKeys;  //!
   std::vector<std::string> m_failKeys;  //!

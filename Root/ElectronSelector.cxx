@@ -26,6 +26,8 @@
 // package include(s):
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
+#include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
+
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
@@ -45,10 +47,10 @@ ClassImp(ElectronSelector)
 ElectronSelector :: ElectronSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr),
-  m_asgElectronIsEMSelector(nullptr),
   m_IsolationSelectionTool(nullptr),
   m_ElectronIsolationSelectionTool(nullptr),
-  m_el_LH_PIDManager(nullptr)
+  m_el_LH_PIDManager(nullptr),
+  m_el_CutBased_PIDManager(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -65,6 +67,7 @@ ElectronSelector::~ElectronSelector() {}
 EL::StatusCode  ElectronSelector :: configure ()
 {
   if ( !m_configName.empty() ) {
+    
     Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
     TEnv* config = new TEnv(m_configName.c_str());
@@ -110,23 +113,24 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
     // likelihood-based PID
     m_doLHPIDcut              = config->GetValue("DoLHPIDCut", false);
-    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", "Loose"); // electron PID as defined by LikeEnum enum (default is 1 - loose).
+    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", "Loose"); 
     m_LHConfigYear            = config->GetValue("LHConfigYear", "2015");
 
     // cut-based PID
     m_doCutBasedPIDcut        = config->GetValue("DoCutBasedPIDCut", false);
-    m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", "ElectronIsEMLooseSelectorCutDefs2012.conf");
+    m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", "IsEMLoose");
+    m_CutBasedConfigYear      = config->GetValue("CutBasedConfigYear", "2012");
 
     // isolation stuff
-    m_doIsolation             = config->GetValue("DoIsolationCut"   ,  false);
-    m_IsoWP		      = config->GetValue("IsolationWP"      ,  "Tight");
-    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny",  "0.1*x+90");  // only if isolation WP is "UserDefined"
-    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency", "98");        // only if isolation WP is "UserDefined"
-    m_useRelativeIso          = config->GetValue("UseRelativeIso"   , true );
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType" , "topoetcone20");
-    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"  , 0.05 );
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType", "ptvarcone20");
-    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut" , 0.05 );
+    m_doIsolation             = config->GetValue("DoIsolationCut"    ,  false);
+    m_IsoWP		      = config->GetValue("IsolationWP"       ,  "Tight");
+    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  "0.1*x+90");  // only if isolation WP is "UserDefined"
+    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  "98");        // only if isolation WP is "UserDefined"
+    m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  true );
+    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  "topoetcone20");
+    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  0.05 );
+    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  "ptvarcone20");
+    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  0.05 );
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
@@ -150,6 +154,12 @@ EL::StatusCode  ElectronSelector :: configure ()
        m_LHOperatingPoint != "Tight"     &&
        m_LHOperatingPoint != "VeryTight"  ) {
     Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+  if ( m_CutBasedOperatingPoint != "IsEMLoose"  &&
+       m_CutBasedOperatingPoint != "IsEMMedium" &&
+       m_CutBasedOperatingPoint != "IsEMTight"  ) {
+    Error("configure()", "Unknown electron cut-based PID requested %s!",m_CutBasedOperatingPoint.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -271,40 +281,24 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   std::string confDir = "ElectronPhotonSelectorTools/offline/" +  m_confDirPID + "/";
 
-  // initialise AsgElectronIsEMSelector (cut-based PID)
-
-  std::string asgeisem_tool_name = std::string("AsgElectronIsEMSelector_") + m_name;
-  m_asgElectronIsEMSelector = new AsgElectronIsEMSelector( asgeisem_tool_name.c_str() );
-  m_asgElectronIsEMSelector->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
-  RETURN_CHECK("ElectronSelector::initialize()", m_asgElectronIsEMSelector->setProperty("ConfigFile", confDir + m_CutBasedOperatingPoint ), "Failed to set ConfigFile property"); // set the config file that contains the cuts on the shower shapes
-  // set the bitmask only for samples with 2012 config
-  if ( m_CutBasedOperatingPoint.find("2012") != std::string::npos ) {
-
-    unsigned int EMMask = 999;
-
-    if ( m_CutBasedOperatingPoint.find("IsEMLoose") != std::string::npos ) {
-      EMMask = egammaPID::ElectronLoosePP;
-    } else if ( m_CutBasedOperatingPoint.find("IsEMMedium") != std::string::npos ) {
-      EMMask = egammaPID::ElectronMediumPP;
-    } else if ( m_CutBasedOperatingPoint.find("IsEMTight") != std::string::npos ) {
-      EMMask = egammaPID::ElectronTightPP;
-    } else {
-      Error("initialize()", "Unavailable electron cut-based PID bitmask for this operating point!");
-      return EL::StatusCode::FAILURE;
-    }
-
-    RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->setProperty("isEMMask", EMMask ), "Failed to set isEMMask property");
-  }
-  RETURN_CHECK( "ElectronSelector::initialize()", m_asgElectronIsEMSelector->initialize(), "Failed to properly initialize AsgElectronIsEMSelector." );
-
   // initialise PID tool(s) using classes defined in ParticlePIDManager.h
 
-  m_el_LH_PIDManager = new LikelihoodPIDManager( m_LHOperatingPoint );
-  RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupLHTools( confDir, m_LHConfigYear ), "Failed to properly setup LikelihoodPIDManager." );
+  // if not using cut-based PID, make sure all the decorations will be set ... by choosing the loosest WP!
+  std::string cutbasedWP = ( m_doCutBasedPIDcut ) ? m_CutBasedOperatingPoint : "IsEMLoose";
+  m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP );
+  if ( m_debug ) { Info("initialize()", "Selected cut-based WP: %s", (m_el_CutBased_PIDManager->getSelectedWP()).c_str() ); }
+  RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupTools( confDir, m_CutBasedConfigYear ), "Failed to properly setup ElectronCutBasedPIDManager." );
+
+  // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
+  std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "VeryLoose";
+  m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP );
+  if ( m_debug ) { Info("initialize()", "Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() ); }
+  RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupTools( confDir, m_LHConfigYear ), "Failed to properly setup ElectronLHPIDManager." );
 
   // initialise IsolationSelectionTool ( and ElectronIsolationTool, for DC14 )
 
-  std::string iso_tool_name = ( m_IsoWP != "CutBasedDC14" ) ? std::string("IsolationSelectionTool_") : std::string("ElectronIsolationSelectionTool_");
+  std::string iso_tool_name = "ElectronIsolationSelectionTool_";  
+  if ( m_IsoWP != "CutBasedDC14" ) { iso_tool_name.erase(0,8); } 
   iso_tool_name += m_name;
 
   m_ElectronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( iso_tool_name.c_str() );
@@ -552,7 +546,7 @@ EL::StatusCode ElectronSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_asgElectronIsEMSelector )        { delete m_asgElectronIsEMSelector; m_asgElectronIsEMSelector = nullptr; }
+  if ( m_el_CutBased_PIDManager )         { delete m_el_CutBased_PIDManager; m_el_CutBased_PIDManager = nullptr; }
   if ( m_el_LH_PIDManager )               { delete m_el_LH_PIDManager; m_el_LH_PIDManager = nullptr; }
   if ( m_IsolationSelectionTool )         { delete m_IsolationSelectionTool; m_IsolationSelectionTool = nullptr; }
   if ( m_ElectronIsolationSelectionTool ) { delete m_ElectronIsolationSelectionTool; m_ElectronIsolationSelectionTool = nullptr; }
@@ -605,43 +599,45 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   // author cut
   if ( m_doAuthorCut ) {
     if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
-      if ( m_debug ) { Info("execute()", "Electron failed author kinematic cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed author kinematic cut." ); }
       return 0;
     }
   }
   // Object Quality cut
   if ( m_doOQCut ) {
     if ( !(oq == 0) ) {
-      if ( m_debug ) { Info("execute()", "Electron failed Object Quality cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed Object Quality cut." ); }
       return 0;
     }
   }
   // pT max
   if ( m_pT_max != 1e8 ) {
     if ( et > m_pT_max ) {
-      if ( m_debug ) { Info("execute()", "Electron failed pT max cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed pT max cut." ); }
       return 0;
     }
   }
   // pT min
   if ( m_pT_min != 1e8 ) {
     if ( et < m_pT_min ) {
-      if ( m_debug ) { Info("execute()", "Electron failed pT min cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed pT min cut." ); }
       return 0;
     }
   }
   // |eta| max
   if ( m_eta_max != 1e8 ) {
     if ( fabs(eta) > m_eta_max ) {
-      if ( m_debug ) { Info("execute()", "Electron failed |eta| max cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed |eta| max cut." ); }
       return 0;
     }
   }
   // |eta| crack veto
   if ( m_vetoCrack ) {
-    if ( fabs(eta) > 1.37 && fabs(eta) < 1.52 ) {
-      if ( m_debug ) { Info("execute()", "Electron failed |eta| crack veto cut." ); }
-      return 0;
+    if ( electron->caloCluster() ){
+      if ( fabs( electron->caloCluster()->eta() ) > 1.37 && fabs( electron->caloCluster()->eta() ) < 1.52 ) {
+        if ( m_debug ) { Info("PassCuts()", "Electron failed |eta| crack veto cut." ); }
+        return 0;
+      }
     }
   }
   // d0 cut
@@ -656,36 +652,60 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   }
   // z0*sin(theta) cut
   if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
-      if ( m_debug ) { Info("execute()", "Electron failed z0*sin(theta) cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed z0*sin(theta) cut." ); }
       return 0;
   }
 
+  //
   // likelihood PID
+  //
 
+  // set default values for *this* electron decorations
+  m_el_LH_PIDManager->setDecorations( electron );
+
+  // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
+  
   typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
-
-  LHToolsMap myLHTools = m_el_LH_PIDManager->getValidLHTools();
-
-  // look up for the tool corresponding to the selected WP, and check if electron passes ID or not
+  LHToolsMap myLHTools = m_el_LH_PIDManager->getValidTools();
+  
   if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
-      if ( m_debug ) { Info("execute()", "Electron failed likelihood PID cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut." ); }
+      return 0;
+  }
+  
+  for ( auto it : (myLHTools) ) {
+    
+    const std::string decorWP = it.second->getOperatingPointName( );
+    
+    if ( m_debug ) { Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() ); }
+    
+    electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
+  }
+
+  //
+  // cut-based PID
+  //
+  
+  // set default values for *this* electron decorations
+  m_el_CutBased_PIDManager->setDecorations( electron );
+  
+  // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
+  
+  typedef std::multimap< std::string, AsgElectronIsEMSelector* > CutBasedToolsMap;
+  CutBasedToolsMap myCutBasedTools = m_el_CutBased_PIDManager->getValidTools();
+
+  if ( m_doCutBasedPIDcut && !( ( myCutBasedTools.find( m_CutBasedOperatingPoint )->second )->accept( *electron ) ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut." ); }
       return 0;
   }
 
-  // now make a decorator for every WP tighter (or equal) than the selected one
-  for ( auto it : (myLHTools) ) {
-    std::string decorWP =  "LH" + it.first;
-     static SG::AuxElement::Decorator< char > LHDecor( decorWP );
-     LHDecor( *electron ) = ( it.second->accept( *electron ) ) ? 1 : 0;
-  }
-
-  // cut-based PID
-
-  if ( m_doCutBasedPIDcut ) {
-    if ( ! m_asgElectronIsEMSelector->accept( *electron ) ) {
-        if ( m_debug ) { Info("execute()", "Electron failed cut-based PID cut." ); }
-        return 0;
-    }
+  for ( auto it : (myCutBasedTools) ) {
+    
+    const std::string decorWP = it.second->getOperatingPointName( );
+    
+    if ( m_debug ) { Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() ); }
+    
+    electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
   }
 
   // isolation
@@ -694,7 +714,7 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   isIsoDecor( *electron ) = ( passIso ) ? 1 : 0;
 
   if ( m_doIsolation && !passIso ) {
-      if ( m_debug ) { Info("execute()", "Electron failed isolation cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed isolation cut." ); }
       return 0;
   }
 

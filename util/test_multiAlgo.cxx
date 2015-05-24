@@ -80,6 +80,9 @@ int main( int argc, char* argv[] ) {
   // For Trigger
   job.options()->setString( EL::Job::optXaodAccessMode, EL::Job::optXaodAccessMode_branch );
 
+  // Select max number of events
+  //job.options()->setDouble (EL::Job::optMaxEvents, 1000);
+
   std::string localDataDir = "$ROOTCOREBIN/data/xAODAnaHelpers/";
 
   BasicEventSelection* baseEventSel             = new BasicEventSelection();
