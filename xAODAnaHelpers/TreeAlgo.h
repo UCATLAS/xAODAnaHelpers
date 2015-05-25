@@ -10,6 +10,14 @@
 
 #include <xAODAnaHelpers/HelpTreeBase.h>
 
+namespace TrigConf {
+  class xAODConfigTool;
+}
+
+namespace Trig {
+  class TrigDecisionTool;
+}
+
 class TreeAlgo : public EL::Algorithm
 {
   // put your configuration variables here as public variables.
@@ -21,6 +29,8 @@ public:
 
   // holds bools that control which branches are filled
   std::string m_evtDetailStr;	       //!
+  std::string m_trigDetailStr;	       //!
+  std::string m_jetTrigDetailStr;	   //!
   std::string m_muDetailStr;	       //!
   std::string m_elDetailStr;	       //!
   std::string m_jetDetailStr;	       //!
@@ -35,12 +45,18 @@ public:
   std::string m_tauContainerName;      //!
 
   bool m_debug;                        //!
+  std::string m_triggerSelection;      //!
+
+  bool m_DC14;                         //!
 
 private:
   xAOD::TEvent *m_event;               //!
   xAOD::TStore *m_store;               //!
 
   HelpTreeBase* m_helpTree;            //!
+
+  TrigConf::xAODConfigTool*  m_trigConfTool;  //!
+  Trig::TrigDecisionTool*    m_trigDecTool;   //!
 
 public:
 

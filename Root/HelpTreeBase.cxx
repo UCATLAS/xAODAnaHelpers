@@ -7,6 +7,9 @@
 #include "xAODTracking/TrackSummaryAccessors_v1.h"
 #include "xAODTruth/TruthEventContainer.h"
 
+#include "TrigConfxAOD/xAODConfigTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
+
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelpTreeBase.h>
@@ -186,6 +189,118 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
 
   this->FillEventUser(eventInfo);
 }
+
+/*********************
+ *
+ *   TRIGGER
+ *
+ ********************/
+void HelpTreeBase::AddTrigger( const std::string detailStr ) {
+
+  Info("AddTrigger()", "Adding trigger variables: %s", detailStr.c_str());
+
+  m_trigInfoSwitch = new HelperClasses::TriggerInfoSwitch( detailStr );
+
+  // Add these basic branches
+  if ( m_trigInfoSwitch->m_basic ) {
+    m_tree->Branch("passAny",         &m_passAny,      "passAny/I"     );
+    m_tree->Branch("passL1",          &m_passL1,       "passL1/I"      );
+    m_tree->Branch("passHLT",         &m_passHLT,      "passHLT/I"     );
+  }
+  
+  // Detailed trigger infoformation related to the menu (might be useful)
+  // This is useful for using this database: https://atlas-trigconf.cern.ch/
+  if ( m_trigInfoSwitch->m_menuKeys ) {
+    m_tree->Branch("MasterKey",       &m_masterKey,    "MasterKey/I" );
+    m_tree->Branch("L1PSKey",         &m_L1PSKey,      "L1PSKey/I"   );
+    m_tree->Branch("HLTPSKey",        &m_HLTPSKey,     "HLTPSKey/I"  );
+  }
+  
+  // Trigger Decision for each and every trigger in a vector
+  if ( m_trigInfoSwitch->m_allTriggers ) {
+    m_tree->Branch("allTriggers",      &m_allTriggers    );   // vector of strings for trigger names
+    m_tree->Branch("allTriggerDec",    &m_allTriggerDec  );   // vector of integer for trigger decisions
+  }
+  
+  this->AddTriggerUser();
+}
+
+// Fill the information in the trigger branches
+void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool, std::string trigs ) {
+
+  if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Filling trigger info"); }
+
+  // Clear previous events
+  this->ClearTrigger();
+  this->ClearTriggerUser();
+
+  // Grab the global pass information from the TrigDecisionTool
+  if ( m_trigInfoSwitch->m_basic ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_basic"); }
+  
+    m_passAny = trigDecTool->isPassed(".*");
+    m_passL1  = trigDecTool->isPassed("L1_.*");
+    m_passHLT = trigDecTool->isPassed("HLT_.*");
+  }
+    
+  // If detailed menu information about the configuration keys, turn this on.
+  // This is useful for using this database: https://atlas-trigconf.cern.ch/
+  if ( m_trigInfoSwitch->m_menuKeys ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_menuKeys"); }
+
+    m_masterKey = trigConfTool->masterKey();
+    m_L1PSKey   = trigConfTool->lvl1PrescaleKey();
+    m_HLTPSKey  = trigConfTool->hltPrescaleKey();
+  }
+  
+  // If super detailed information about each and every trigger is desired, use this
+  // to build a vector of strings (trigger names) and decisions (integers or booleans)
+  if ( m_trigInfoSwitch->m_allTriggers ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_allTriggers"); }
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Only saving information about triggers: %s" , trigs.c_str()); }
+
+    auto chainGroup = trigDecTool->getChainGroup(trigs);
+    for (auto &trigName : chainGroup->getListOfTriggers()) {
+      auto trigChain = trigDecTool->getChainGroup( trigName );
+      
+      m_allTriggers.push_back   ( trigName );
+      m_allTriggerDec.push_back ( trigChain->isPassed() );
+    }
+  }
+  
+}
+
+// Clear Trigger
+void HelpTreeBase::ClearTrigger() {
+  
+  m_passAny = -1;
+  m_passL1  = -1;
+  m_passHLT = -1;
+  
+  m_masterKey = 0;
+  m_L1PSKey   = 0;
+  m_HLTPSKey  = 0;
+  
+  m_allTriggers.clear();
+  m_allTriggerDec.clear();
+  
+}
+
+/*********************
+ *
+ *   JET TRIGGER
+ *
+ ********************/
+
+/* TODO: jet trigger */
+void HelpTreeBase::AddJetTrigger( const std::string detailStr ) { }
+void HelpTreeBase::FillJetTrigger( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ ) { }
+void HelpTreeBase::ClearJetTrigger(  ) { }
+
 
 /*********************
  *

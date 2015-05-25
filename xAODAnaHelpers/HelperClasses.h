@@ -69,6 +69,21 @@ namespace HelperClasses {
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  struct TriggerInfoSwitch : InfoSwitch {
+    bool m_basic;
+    bool m_menuKeys;
+    bool m_allTriggers;
+    void initialize();
+    TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+  
+  struct JetTriggerInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    bool m_clean;
+    void initialize();
+    JetTriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
   struct MuonInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_trackparams;

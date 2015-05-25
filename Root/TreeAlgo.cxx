@@ -15,6 +15,10 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
+// For the trigger configuration and decisions
+#include "TrigConfxAOD/xAODConfigTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
+
 #include "TEnv.h"
 #include "TSystem.h"
 
@@ -28,6 +32,9 @@ TreeAlgo :: TreeAlgo (const std::string name,const std::string configName) :
   m_name(name),
   m_configName(configName),
   m_helpTree(nullptr)
+  m_helpTree(nullptr),
+  m_trigConfTool(nullptr),
+  m_trigDecTool(nullptr)
 {
   this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
 }
@@ -83,13 +90,40 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   // uncomment if want to add to same file as ouput histograms
   // wk()->addOutput( outTree );
 
+  // choose if want to add tree to same directory as ouput histograms
+  if ( m_outHistDir ) {
+    wk()->addOutput( outTree );
+  }
+
+  // Trigger //
+  Info("initialize()", "About to try to configure xAODConfigTool and TrigDecisionTool" );
+  if ( !m_trigDetailStr.empty() || !m_jetTrigDetailStr.empty() ) {
+
+    Info("initialize()", "Configuring xAODConfigTool and TrigDecisionTool" );
+
+    m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
+    RETURN_CHECK("TreeAlgo::initialize()", m_trigConfTool->initialize(), "");
+    ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
+
+    m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
+    RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
+    RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+    RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
+    RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->initialize(), "");
+
+  }
+
+
   m_helpTree->AddEvent( m_evtDetailStr );
 
-  if( !m_muContainerName.empty() )     {   m_helpTree->AddMuons    (m_muDetailStr);      }
-  if( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons(m_elDetailStr);      }
-  if( !m_jetContainerName.empty() )    {   m_helpTree->AddJets     (m_jetDetailStr);     }
-  if( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets  (m_fatJetDetailStr);  }
-  if( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus     (m_tauDetailStr);     }
+  if ( !m_trigDetailStr.empty() )       {   m_helpTree->AddTrigger    (m_trigDetailStr);    }
+  if ( !m_jetTrigDetailStr.empty() )    {   m_helpTree->AddJetTrigger (m_jetTrigDetailStr); }
+
+  if ( !m_muContainerName.empty() )     {   m_helpTree->AddMuons      (m_muDetailStr);      }
+  if ( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons  (m_elDetailStr);      }
+  if ( !m_jetContainerName.empty() )    {   m_helpTree->AddJets       (m_jetDetailStr);     }
+  if ( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets    (m_fatJetDetailStr);  }
+  if ( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus       (m_tauDetailStr);     }
 
   Info("treeInitialize()", "Successfully initialized output tree");
 
@@ -105,12 +139,14 @@ EL::StatusCode TreeAlgo :: configure ()
     // the file exists, use TEnv to read it off
     TEnv* config = new TEnv(m_configName.c_str());
     m_evtDetailStr            = config->GetValue("EventDetailStr",       "");
+    m_trigDetailStr           = config->GetValue("TrigDetailStr",        "");
+    m_jetTrigDetailStr        = config->GetValue("JetTrigDetailStr",     "");
     m_muDetailStr             = config->GetValue("MuonDetailStr",        "");
     m_elDetailStr             = config->GetValue("ElectronDetailStr",    "");
     m_jetDetailStr            = config->GetValue("JetDetailStr",         "");
     m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      "");
     m_tauDetailStr            = config->GetValue("TauDetailStr",         "");
-    
+
     m_debug                   = config->GetValue("Debug" ,           false );
 
     m_muContainerName         = config->GetValue("MuonContainerName",       "");
@@ -118,6 +154,8 @@ EL::StatusCode TreeAlgo :: configure ()
     m_jetContainerName        = config->GetValue("JetContainerName",        "");
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
     m_tauContainerName        = config->GetValue("TauContainerName",        "");
+
+    m_triggerSelection        = config->GetValue("TriggerSelection",        ".*");
 
     Info("configure()", "Loaded in configuration values");
 
@@ -146,6 +184,17 @@ EL::StatusCode TreeAlgo :: execute ()
 
   m_helpTree->FillEvent( eventInfo, m_event );
 
+  // Fill trigger information
+  if ( !m_trigDetailStr.empty() )    {
+    m_helpTree->FillTrigger( m_trigConfTool, m_trigDecTool, m_triggerSelection );
+  }
+
+  // Fill jet trigger information
+  if ( !m_jetTrigDetailStr.empty() ) {
+    m_helpTree->FillJetTrigger( m_trigConfTool, m_trigDecTool );
+  }
+
+
   // for the containers the were supplied, fill the appropriate vectors
   if(!m_muContainerName.empty()) {
     const xAOD::MuonContainer* inMuon(nullptr);
@@ -170,13 +219,13 @@ EL::StatusCode TreeAlgo :: execute ()
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName, m_event, m_store, m_debug) ,"");
     m_helpTree->FillFatJets( inFatJets );
   }
-  if ( !m_tauContainerName.empty() ) {	
-    const xAOD::TauJetContainer* inTaus(nullptr); 
+  if ( !m_tauContainerName.empty() ) {
+    const xAOD::TauJetContainer* inTaus(nullptr);
     RETURN_CHECK("HTopMultilepTreeAlgo::execute()", HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, m_debug) , "");
     m_helpTree->FillTaus( inTaus );
-  }  
-  
-  
+  }
+
+
 
   // fill the tree
   m_helpTree->Fill();
@@ -191,7 +240,9 @@ EL::StatusCode TreeAlgo :: finalize () {
 
   Info("finalize()", "Deleting tree instances...");
 
-  if ( m_helpTree ) { delete  m_helpTree;  m_helpTree = nullptr; }
+  if ( m_helpTree      ) { delete m_helpTree;     m_helpTree     = nullptr; }
+  if ( m_trigDecTool   ) { delete m_trigDecTool;  m_trigDecTool  = nullptr; }
+  if ( m_trigConfTool  ) { delete m_trigConfTool; m_trigConfTool = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }
