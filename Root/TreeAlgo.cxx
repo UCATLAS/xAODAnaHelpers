@@ -31,7 +31,6 @@ TreeAlgo :: TreeAlgo (const std::string name,const std::string configName) :
   Algorithm(),
   m_name(name),
   m_configName(configName),
-  m_helpTree(nullptr)
   m_helpTree(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr)
@@ -89,11 +88,6 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   outTree->SetDirectory( treeFile );
   // uncomment if want to add to same file as ouput histograms
   // wk()->addOutput( outTree );
-
-  // choose if want to add tree to same directory as ouput histograms
-  if ( m_outHistDir ) {
-    wk()->addOutput( outTree );
-  }
 
   // Trigger //
   Info("initialize()", "About to try to configure xAODConfigTool and TrigDecisionTool" );
