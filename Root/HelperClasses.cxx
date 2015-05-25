@@ -98,6 +98,17 @@ namespace HelperClasses{
     m_shapeLC       = parse("shapeLC");
     m_truth         = parse("truth");
   }
+  
+  void TriggerInfoSwitch::initialize(){
+    m_basic         = parse("basic");
+    m_menuKeys      = parse("menuKeys");
+    m_allTriggers   = parse("allTriggers");
+  }
+  
+  void JetTriggerInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+    m_clean         = parse("clean");
+  }
 
   void MuonInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");

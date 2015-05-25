@@ -30,6 +30,14 @@
 #include "TTree.h"
 #include "TFile.h"
 
+namespace TrigConf {
+  class xAODConfigTool;
+}
+
+namespace Trig {
+  class TrigDecisionTool;
+}
+
 class HelpTreeBase {
 
 public:
@@ -37,32 +45,40 @@ public:
   HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false );
   virtual ~HelpTreeBase() {;}
 
-  void AddEvent    (const std::string detailStr = "");
-  void AddMuons    (const std::string detailStr = "");
-  void AddElectrons(const std::string detailStr = "");
-  void AddJets     (const std::string detailStr = "");
-  void AddFatJets  (const std::string detailStr = "");
-  void AddTaus     (const std::string detailStr = "");
+  void AddEvent       (const std::string detailStr = "");
+  void AddTrigger     (const std::string detailStr = "");
+  void AddJetTrigger  (const std::string detailStr = "");
+  void AddMuons       (const std::string detailStr = "");
+  void AddElectrons   (const std::string detailStr = "");
+  void AddJets        (const std::string detailStr = "");
+  void AddFatJets     (const std::string detailStr = "");
+  void AddTaus        (const std::string detailStr = "");
   
 
   // control which branches are filled
-  HelperClasses::EventInfoSwitch*     m_eventInfoSwitch;
-  HelperClasses::MuonInfoSwitch*      m_muInfoSwitch;
-  HelperClasses::ElectronInfoSwitch*  m_elInfoSwitch;
-  HelperClasses::JetInfoSwitch*       m_jetInfoSwitch;
-  HelperClasses::JetInfoSwitch*       m_fatJetInfoSwitch;
-  HelperClasses::TauInfoSwitch*       m_tauInfoSwitch;
+  HelperClasses::EventInfoSwitch*      m_eventInfoSwitch;
+  HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
+  HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
+  HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
+  HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
+  HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
+  HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
+  HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
   
 
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
+  void FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool, std::string trigs = ".*" );
+  void FillJetTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool );
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1 );
   void FillFatJets( const xAOD::JetContainer* fatJets );
   void FillTaus( const xAOD::TauJetContainer* taus );
-  
+
   void Fill();
   void ClearEvent();
+  void ClearTrigger();
+  void ClearJetTrigger();
   void ClearMuons();
   void ClearElectrons();
   void ClearJets();
@@ -72,6 +88,14 @@ public:
 
   virtual void AddEventUser(const std::string detailStr = "")      { 
     Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
+    return; 
+  };
+  virtual void AddTriggerUser(const std::string detailStr = "")      { 
+    Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
+    return; 
+  };
+  virtual void AddJetTriggerUser(const std::string detailStr = "")      { 
+    Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
     return; 
   };
   virtual void AddMuonsUser(const std::string detailStr = "")      {
@@ -92,18 +116,22 @@ public:
   };
   
   virtual void ClearEventUser()     { return; };
+  virtual void ClearTriggerUser()   { return; };
   virtual void ClearMuonsUser()     { return; };
   virtual void ClearElectronsUser() { return; };
   virtual void ClearJetsUser() 	    { return; };
   virtual void ClearTausUser() 	    { return; };
   
 
-  virtual void FillEventUser( const xAOD::EventInfo* /*eventInfo*/ )   { return; };
-  virtual void FillMuonsUser( const xAOD::Muon* /*muon*/ )             { return; };
-  virtual void FillElectronsUser( const xAOD::Electron* /*electron*/ ) { return; };
-  virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                { return; };
-  virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )          { return; };
-  virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )             { return; };
+  virtual void FillEventUser( const xAOD::EventInfo* /*eventInfo*/ )        { return; };
+  virtual void FillMuonsUser( const xAOD::Muon* /*muon*/ )                  { return; };
+  virtual void FillElectronsUser( const xAOD::Electron* /*electron*/ )      { return; };
+  virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                     { return; };
+  virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )               { return; };
+  virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )                  { return; };
+  
+  virtual void FillTriggerUser( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ )      { return; };
+  virtual void FillJetTriggerUser( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ )   { return; };
   
 
 protected:
@@ -142,6 +170,18 @@ protected:
   //float m_pdf2;
   float m_xf1;
   float m_xf2;
+  
+  // trigger
+  int m_passAny;
+  int m_passL1;
+  int m_passHLT;
+  unsigned int m_masterKey;
+  unsigned int m_L1PSKey;
+  unsigned int m_HLTPSKey;
+  std::vector<std::string> m_allTriggers;
+  std::vector<int> m_allTriggerDec;
+  
+  // jet trigger
 
   // jets
   int m_njet;
