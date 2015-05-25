@@ -151,10 +151,10 @@ int main( int argc, char* argv[] ) {
   //job.algsAdd( jetCalib );
   //job.algsAdd( muonCalib );
   //job.algsAdd( muonEffCorr );
-  job.algsAdd( electronCalib );
-  job.algsAdd( electronEffCorr );
+  //job.algsAdd( electronCalib );
+  //job.algsAdd( electronEffCorr );
   //job.algsAdd( muonSelect_signal );
-  job.algsAdd( electronSelect_signal );
+  //job.algsAdd( electronSelect_signal );
   //job.algsAdd( jetSelect_signal );
   //job.algsAdd( bjetSelect_signal );
   //job.algsAdd( bjetEffCorr_btag );
