@@ -58,7 +58,8 @@ int main( int argc, char* argv[] ) {
 
   } else {
     // default
-    std::string filename = "mc14_13TeV.110351.PowhegPythia_P2012_ttbar_allhad.merge.AOD.e3232_s1982_s2008_r5787_r5853_skim.root";
+    //std::string filename = "mc14_13TeV.110351.PowhegPythia_P2012_ttbar_allhad.merge.AOD.e3232_s1982_s2008_r5787_r5853_skim.root";
+    std::string filename = "mc15_13TeV.410000.PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad.merge.AOD.e3698_s2608_s2183_r6630_r6264.root";
     // std::string filename = "r20test_AOD.pool.root";
     // get the data path for xAODAnaHelpers/data
     std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
