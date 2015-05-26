@@ -6,6 +6,7 @@
 #include "xAODTracking/TrackParticle.h"
 #include "xAODTracking/TrackSummaryAccessors_v1.h"
 #include "xAODTruth/TruthEventContainer.h"
+#include "xAODJet/JetConstituentVector.h"
 
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
@@ -707,6 +708,14 @@ void HelpTreeBase::AddJets(const std::string detailStr)
   }
 
   if ( m_jetInfoSwitch->m_allTrack ) {
+    // if want to apply the selection of the PV then need to setup track selection tool
+    // this applies the JVF/JVT selection cuts
+    // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
+//    if( m_jetInfoSwitch->m_trackPVSel ) {
+//      InDet::InDetTrackSelectionTool m_trkSelTool( "JetTrackSelection" );
+//      m_trkSelTool.setCutLevel( InDet::CutLevel::Loose );
+//      ASG_CHECK_SA( "HelpTreeBase::JetTrackSelection", m_trkSelTool.initialize() );
+//    }
     m_tree->Branch("jet_GhostTrackCount",  &m_jet_GhostTrackCount );
     m_tree->Branch("jet_GhostTrackPt",     &m_jet_GhostTrackPt    );
     m_tree->Branch("jet_GhostTrack_pt",    &m_jet_GhostTrack_pt   );
@@ -717,26 +726,27 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_GhostTrack_d0",    &m_jet_GhostTrack_d0   );
     m_tree->Branch("jet_GhostTrack_z0",    &m_jet_GhostTrack_z0   );
     if ( m_jetInfoSwitch->m_allTrackDetail ) {
-      m_tree->Branch("m_jet_GhostTrack_nPixelHits", &m_jet_GhostTrack_nPixHits);
-      m_tree->Branch("m_jet_GhostTrack_nSCTHits",   &m_jet_GhostTrack_nSCTHits);
-      m_tree->Branch("m_jet_GhostTrack_nTRTHits",   &m_jet_GhostTrack_nTRTHits);
-      m_tree->Branch("m_jet_GhostTrack_nPixelSharedHits", &m_jet_GhostTrack_nPixSharedHits);
-      m_tree->Branch("m_jet_GhostTrack_nPixelSplitHits",  &m_jet_GhostTrack_nPixSplitHits);
-      m_tree->Branch("m_jet_GhostTrack_nInnermostPixelLayerHits",       &m_jet_GhostTrack_nIMLPixHits);
-      m_tree->Branch("m_jet_GhostTrack_nInnermostPixelLayerSharedHits", &m_jet_GhostTrack_nIMLPixSharedHits);
-      m_tree->Branch("m_jet_GhostTrack_nInnermostPixelLayerSplitHits",  &m_jet_GhostTrack_nIMLPixSplitHits);
-      m_tree->Branch("m_jet_GhostTrack_nNextToInnermostPixelLayerHits", &m_jet_GhostTrack_nNIMLPixHits);
-      m_tree->Branch("m_jet_GhostTrack_nNextToInnermostPixelLayerSharedHits", &m_jet_GhostTrack_nNIMLPixSharedHits);
-      m_tree->Branch("m_jet_GhostTrack_nNextToInnermostPixelLayerSplitHits",  &m_jet_GhostTrack_nNIMLPixSplitHits);
+      m_tree->Branch("jet_GhostTrack_nPixelHits", &m_jet_GhostTrack_nPixHits);
+      m_tree->Branch("jet_GhostTrack_nSCTHits",   &m_jet_GhostTrack_nSCTHits);
+      m_tree->Branch("jet_GhostTrack_nTRTHits",   &m_jet_GhostTrack_nTRTHits);
+      m_tree->Branch("jet_GhostTrack_nPixelSharedHits", &m_jet_GhostTrack_nPixSharedHits);
+      m_tree->Branch("jet_GhostTrack_nPixelSplitHits",  &m_jet_GhostTrack_nPixSplitHits);
+      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerHits",       &m_jet_GhostTrack_nIMLPixHits);
+      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerSharedHits", &m_jet_GhostTrack_nIMLPixSharedHits);
+      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerSplitHits",  &m_jet_GhostTrack_nIMLPixSplitHits);
+      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerHits", &m_jet_GhostTrack_nNIMLPixHits);
+      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerSharedHits", &m_jet_GhostTrack_nNIMLPixSharedHits);
+      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerSplitHits",  &m_jet_GhostTrack_nNIMLPixSplitHits);
     }
   }
 
   if ( m_jetInfoSwitch->m_constituent ) {
-    m_tree->Branch("m_jet_constituentWeights", &m_jet_constitWeights);
-    m_tree->Branch("m_jet_constituent_pt" ,    &m_jet_constit_pt    );
-    m_tree->Branch("m_jet_constituent_eta",    &m_jet_constit_eta   );
-    m_tree->Branch("m_jet_constituent_phi",    &m_jet_constit_phi   );
-    m_tree->Branch("m_jet_constituent_e"  ,    &m_jet_constit_e     );
+    m_tree->Branch("jet_numConstituents" ,   &m_jet_numConstituents);
+    m_tree->Branch("jet_constituentWeights", &m_jet_constitWeights);
+    m_tree->Branch("jet_constituent_pt" ,    &m_jet_constit_pt    );
+    m_tree->Branch("jet_constituent_eta",    &m_jet_constit_eta   );
+    m_tree->Branch("jet_constituent_phi",    &m_jet_constit_phi   );
+    m_tree->Branch("jet_constituent_e"  ,    &m_jet_constit_e     );
   }
 
   if( m_jetInfoSwitch->m_flavTag ) {
@@ -1128,17 +1138,28 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     } // allTrack switch
 
     if( m_jetInfoSwitch->m_constituent ) {
-      //m_jet_constitWeights.push_back( jet_itr->constituentWeights() );
+      m_jet_constitWeights.push_back( jet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
       std::vector<float> pt;
       std::vector<float> eta;
       std::vector<float> phi;
       std::vector<float> e;
-      for(auto constit: jet_itr->getConstituents()) { 
-        pt. push_back( constit->pt()  );
-        eta.push_back( constit->eta() );
-        phi.push_back( constit->phi() );
-        e.  push_back( constit->e()   );
+      xAOD::JetConstituentVector consVec = jet_itr->getConstituents();
+      if( consVec.isValid() ) {
+        // don't use auto since iterator can also set the scale ... 
+        // not sure what that does with auto - probably default but just incase
+        // use the example provided in 
+        // http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODJet/xAODJet/JetConstituentVector.h
+        xAOD::JetConstituentVector::iterator constit = consVec.begin();
+        xAOD::JetConstituentVector::iterator constitE = consVec.end();
+        for( ; constit != constitE; constit++){
+          pt. push_back( constit->pt() / m_units );
+          eta.push_back( constit->eta() );
+          phi.push_back( constit->phi() );
+          e.  push_back( constit->e() / m_units  );
+        }
       }
+      xAOD::JetConstituentVector vec = jet_itr->getConstituents();
+      m_jet_numConstituents.push_back( jet_itr->numConstituents() );
       m_jet_constit_pt. push_back( pt  );
       m_jet_constit_eta.push_back( eta );
       m_jet_constit_phi.push_back( phi );
@@ -1605,6 +1626,7 @@ void HelpTreeBase::ClearJets() {
   }
 
   if( m_jetInfoSwitch->m_constituent ) {
+    m_jet_numConstituents.clear();
     m_jet_constitWeights.clear();
     m_jet_constit_pt.clear();
     m_jet_constit_eta.clear();

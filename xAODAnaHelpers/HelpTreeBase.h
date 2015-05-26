@@ -190,6 +190,9 @@ protected:
   std::vector<float> m_jet_phi;
   std::vector<float> m_jet_E;
 
+  // rapidity
+  std::vector<float> m_jet_rapidity;
+
   // clean
   std::vector<float> m_jet_time;
   std::vector<float> m_jet_LArQuality;
@@ -265,6 +268,7 @@ protected:
   std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixSplitHits;
 
   // constituent
+  std::vector< int > m_jet_numConstituents;
   std::vector< std::vector<float> > m_jet_constitWeights;
   std::vector< std::vector<float> > m_jet_constit_pt;
   std::vector< std::vector<float> > m_jet_constit_eta;
