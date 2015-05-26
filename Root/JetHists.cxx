@@ -8,6 +8,7 @@ JetHists :: JetHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr),
   m_infoSwitch(new HelperClasses::JetInfoSwitch(m_detailStr))
 {
+  m_debug = false;
 }
 
 JetHists :: ~JetHists () {
@@ -24,10 +25,10 @@ StatusCode JetHists::initialize() {
   m_jetE           = book(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000.);
   m_jetRapidity    = book(m_name, "jetRapidity", "jet Rapidity",120, -10, 10);
 
-  Info("JetHists::initialize()", m_name.c_str());
+  if(m_debug) Info("JetHists::initialize()", m_name.c_str());
   // details of the jet kinematics
   if( m_infoSwitch->m_kinematic ) {
-    Info("JetHists::initialize()", "adding kinematic plots");
+    if(m_debug) Info("JetHists::initialize()", "adding kinematic plots");
     m_jetPx     = book(m_name, "jetPx",     "jet Px [GeV]",     120, 0, 1000);
     m_jetPy     = book(m_name, "jetPy",     "jet Py [GeV]",     120, 0, 1000);
     m_jetPz     = book(m_name, "jetPz",     "jet Pz [GeV]",     120, 0, 4000);
@@ -51,7 +52,7 @@ StatusCode JetHists::initialize() {
 
   // details for jet cleaning
   if( m_infoSwitch->m_clean ) {
-    Info("JetHists::initialize()", "adding clean plots");
+    if(m_debug) Info("JetHists::initialize()", "adding clean plots");
     // units?
     m_jetTime     = book(m_name, "JetTimming" ,   "Jet Timming",      120, -80, 80);
     m_LArQuality  = book(m_name, "LArQuality" ,   "LAr Quality",      120, -600, 600);
@@ -64,7 +65,7 @@ StatusCode JetHists::initialize() {
 
   // details for jet energy information
   if( m_infoSwitch->m_energy ) {
-    Info("JetHists::initialize()", "adding energy plots");
+    if(m_debug) Info("JetHists::initialize()", "adding energy plots");
     m_HECf      = book(m_name, "HECFrac",         "HEC Fraction" ,    120, 0, 5);
     m_EMf       = book(m_name, "EMFrac",          "EM Fraction" ,     120, 0, 2);
     m_actArea   = book(m_name, "ActiveArea",      "Jet Active Area" , 120, 0, 1);
@@ -142,7 +143,7 @@ StatusCode JetHists::initialize() {
 
   // details for jet resolutions
   if( m_infoSwitch->m_resolution ) {
-    Info("JetHists::initialize()", "adding resolution plots");
+    if(m_debug) Info("JetHists::initialize()", "adding resolution plots");
     // 1D
     m_jetGhostTruthPt   = book(m_name, "jetGhostTruthPt",  "jet ghost truth p_{T} [GeV]", 120, 0, 600);
     // 2D
@@ -158,7 +159,7 @@ StatusCode JetHists::initialize() {
 
   // details for jet energy information
   if( m_infoSwitch->m_truth ) {
-    Info("JetHists::initialize()", "adding truth plots");
+    if(m_debug) Info("JetHists::initialize()", "adding truth plots");
 
     m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          30,  -0.5,  29.5);
     m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          50,  -0.5,  49.5);
@@ -171,7 +172,7 @@ StatusCode JetHists::initialize() {
   }
 
   if( m_infoSwitch->m_truthDetails ) {
-    Info("JetHists::initialize()", "adding detailed truth plots");
+    if(m_debug) Info("JetHists::initialize()", "adding detailed truth plots");
 
     m_truthCount_BhadFinal = book(m_name, "GhostBHadronsFinalCount",    "Truth Count BHad (final)" ,    10, -0.5,   9.5);
     m_truthCount_BhadInit  = book(m_name, "GhostBHadronsInitialCount",  "Truth Count BHad (initial)" ,  10, -0.5,   9.5);
@@ -193,7 +194,7 @@ StatusCode JetHists::initialize() {
   }
 
   if( m_infoSwitch->m_flavTag ) {
-    Info("JetHists::initialize()", "adding btagging plots");
+    if(m_debug) Info("JetHists::initialize()", "adding btagging plots");
 
     m_MV1             = book(m_name, "MV1",    "MV1" ,      100,    -0.1,   1.1);
     m_SV1_plus_IP3D   = book(m_name, "SV1_plus_IP3D",    "SV1_plus_IP3D" ,      100,    -0.1,   1.1);
@@ -205,7 +206,6 @@ StatusCode JetHists::initialize() {
     m_JetFitterCombNN = book(m_name, "JetFitterCombNN",   "JetFitterCombNN" ,     100,    -10,   10);
   }
 
-  this->initializeUser();
 
   return StatusCode::SUCCESS;
 }
@@ -653,14 +653,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc
     m_jetGhostTruthPt_vs_resolution -> Fill( ghostTruthPt/1e3, resolution, eventWeight );
   }
 
-  this->executeUser( jet, eventWeight );
 
-  return StatusCode::SUCCESS;
-}
-
-StatusCode JetHists::executeUser( const xAOD::Jet* jet, float eventWeight ) {
-  (void) jet; //to hide unused warnings
-  (void) eventWeight; //to hide unused warnings
   return StatusCode::SUCCESS;
 }
 

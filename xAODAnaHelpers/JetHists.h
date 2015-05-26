@@ -9,15 +9,14 @@ class JetHists : public HistogramManager
 {
   public:
 
-    using HistogramManager::executeUser; //to hide warnings that this is not used
 
     JetHists(std::string name, std::string detailStr);
     virtual ~JetHists() ;
 
+    bool m_debug;
     StatusCode initialize();
     StatusCode execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc = -1);
     StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );
-    StatusCode executeUser( const xAOD::Jet* jet, float eventWeight);
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 
