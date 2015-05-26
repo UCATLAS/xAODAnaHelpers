@@ -287,9 +287,11 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
     auto chainGroup = trigDecTool->getChainGroup(trigs);
     for (auto &trigName : chainGroup->getListOfTriggers()) {
       auto trigChain = trigDecTool->getChainGroup( trigName );
-
-      m_allTriggers.push_back   ( trigName );
-      m_allTriggerDec.push_back ( trigChain->isPassed() );
+      // Only save the trigger if it passed.
+      if (trigChain->isPassed()) {
+        m_allTriggers.push_back   ( trigName );
+        m_allTriggerDec.push_back ( trigChain->isPassed() );
+      }
     }
   }
 
