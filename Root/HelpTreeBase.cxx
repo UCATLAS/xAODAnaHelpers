@@ -900,22 +900,22 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       static SG::AuxElement::ConstAccessor<char> clean_VeryLooseBad ("clean_VeryLooseBad");
       if ( clean_VeryLooseBad.isAvailable( *jet_itr ) ) {
         m_jet_clean_VeryLooseBad.push_back( clean_VeryLooseBad( *jet_itr ) );
-      } else { m_jet_clean_VeryLooseBad.push_back( -1 ); }
+      } else { m_jet_clean_VeryLooseBad.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor<char> clean_LooseBad ("clean_LooseBad");
       if ( clean_LooseBad.isAvailable( *jet_itr ) ) {
         m_jet_clean_LooseBad.push_back( clean_LooseBad( *jet_itr ) );
-      } else { m_jet_clean_LooseBad.push_back( -1 ); }
+      } else { m_jet_clean_LooseBad.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor<char> clean_MediumBad ("clean_MediumBad");
       if ( clean_MediumBad.isAvailable( *jet_itr ) ) {
         m_jet_clean_MediumBad.push_back( clean_MediumBad( *jet_itr ) );
-      } else { m_jet_clean_MediumBad.push_back( -1 ); }
+      } else { m_jet_clean_MediumBad.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor<char> clean_TightBad ("clean_TightBad");
       if ( clean_TightBad.isAvailable( *jet_itr ) ) {
         m_jet_clean_TightBad.push_back( clean_TightBad( *jet_itr ) );
-      } else { m_jet_clean_TightBad.push_back( -1 ); }
+      } else { m_jet_clean_TightBad.push_back( -999 ); }
 
     } // clean
 
@@ -1182,7 +1182,6 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
           e.  push_back( constit->e() / m_units  );
         }
       }
-      xAOD::JetConstituentVector vec = jet_itr->getConstituents();
       m_jet_numConstituents.push_back( jet_itr->numConstituents() );
       m_jet_constit_pt. push_back( pt  );
       m_jet_constit_eta.push_back( eta );

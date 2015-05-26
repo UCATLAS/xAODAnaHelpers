@@ -209,10 +209,10 @@ protected:
   std::vector<float> m_jet_LeadingClusterSecondLambda;
   std::vector<float> m_jet_LeadingClusterCenterLambda;
   std::vector<float> m_jet_LeadingClusterSecondR;
-  std::vector<char> m_jet_clean_VeryLooseBad;
-  std::vector<char> m_jet_clean_LooseBad;
-  std::vector<char> m_jet_clean_MediumBad;
-  std::vector<char> m_jet_clean_TightBad;
+  std::vector<int> m_jet_clean_VeryLooseBad;
+  std::vector<int> m_jet_clean_LooseBad;
+  std::vector<int> m_jet_clean_MediumBad;
+  std::vector<int> m_jet_clean_TightBad;
 
   // energy
   std::vector<float> m_jet_HECf;
