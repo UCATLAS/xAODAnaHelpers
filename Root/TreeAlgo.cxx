@@ -57,7 +57,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 {
   Info("treeInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
-  Info("treeInitialize()", "Attempting to configure using: %s", m_configName.c_str());
+  Info("treeInitialize()", "Attempting to configure using: %s", getConfig().c_str());
 
   TTree * outTree = new TTree(m_name.c_str(),m_name.c_str());
   if ( !outTree ) {
@@ -82,7 +82,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   if ( m_outHistDir ) {
     wk()->addOutput( outTree );
   }
-  
+
   // Trigger //
   Info("initialize()", "About to try to configure xAODConfigTool and TrigDecisionTool" );
   if ( !m_trigDetailStr.empty() || !m_jetTrigDetailStr.empty() ) {
@@ -100,7 +100,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->initialize(), "");
 
   }
-  
+
 
   m_helpTree->AddEvent( m_evtDetailStr );
 
@@ -120,10 +120,10 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
 EL::StatusCode TreeAlgo :: configure ()
 {
-  if (!m_configName.empty()) {
-    
+  if (!getConfig().empty()) {
+
     // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(getConfig(true).c_str());
     m_evtDetailStr            = config->GetValue("EventDetailStr",       "");
     m_trigDetailStr           = config->GetValue("TrigDetailStr",        "");
     m_jetTrigDetailStr        = config->GetValue("JetTrigDetailStr",     "");
@@ -142,7 +142,7 @@ EL::StatusCode TreeAlgo :: configure ()
     m_jetContainerName        = config->GetValue("JetContainerName",        "");
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
     m_tauContainerName        = config->GetValue("TauContainerName",        "");
-    
+
     m_triggerSelection        = config->GetValue("TriggerSelection",        ".*");
 
     // DC14 switch for little things that need to happen to run
@@ -175,16 +175,16 @@ EL::StatusCode TreeAlgo :: execute ()
   const xAOD::Vertex* primaryVertex = HelperFunctions::getPrimaryVertex( vertices );
 
   m_helpTree->FillEvent( eventInfo, m_event );
-  
+
   // Fill trigger information
-  if ( !m_trigDetailStr.empty() )    {  
+  if ( !m_trigDetailStr.empty() )    {
     m_helpTree->FillTrigger( m_trigConfTool, m_trigDecTool, m_triggerSelection );
   }
-  
+
   // Fill jet trigger information
   if ( !m_jetTrigDetailStr.empty() ) {
     m_helpTree->FillJetTrigger( m_trigConfTool, m_trigDecTool );
-  } 
+  }
 
 
   // for the containers the were supplied, fill the appropriate vectors

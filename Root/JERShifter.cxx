@@ -64,8 +64,8 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "JERShifter" ).ignore(); // call before opening first file
 
-  if(!m_configName.empty()){
-    TEnv* config = new TEnv(m_configName.c_str());
+  if(!getConfig().empty()){
+    TEnv* config = new TEnv(getConfig(true).c_str());
 
     // input container to be read from TEvent or TStore
     m_inContainerName = config->GetValue("InputContainer",  "");

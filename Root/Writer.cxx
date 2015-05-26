@@ -35,11 +35,11 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "Writer" ).ignore(); // call before opening first file
 
-  if(!m_configName.empty()){
-    TEnv* config = new TEnv(m_configName.c_str());
+  if(!getConfig().empty()){
+    TEnv* config = new TEnv(getConfig(true).c_str());
     if( !config ) {
       Error("Writer::setupJob()", "Failed to read config file!");
-      Error("Writer::setupJob()", "config name : %s",m_configName.c_str());
+      Error("Writer::setupJob()", "config name : %s",getConfig().c_str());
       return EL::StatusCode::FAILURE;
     }
 

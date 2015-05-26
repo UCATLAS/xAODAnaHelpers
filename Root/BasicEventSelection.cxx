@@ -65,9 +65,9 @@ BasicEventSelection :: BasicEventSelection () :
 EL::StatusCode BasicEventSelection :: configure ()
 {
 
-  if ( !m_configName.empty() ) {
+  if ( !getConfig().empty() ) {
     // read in user configuration from text file
-    TEnv *config = new TEnv(m_configName.c_str());
+    TEnv *config = new TEnv(getConfig(true).c_str());
     if ( !config ) {
       Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );
       return EL::StatusCode::FAILURE;
@@ -195,7 +195,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   if ( m_triggerSelection.size() > 0 ) {
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
   }
-  
+
   // do it again for the weighted cutflow hist
   m_cutflowHistW->GetXaxis()->FindBin("all");
   if(m_applyGRL)
@@ -340,7 +340,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // Trigger //
   if ( m_triggerSelection.size() > 0 ) {
-    
+
     m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
     ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );

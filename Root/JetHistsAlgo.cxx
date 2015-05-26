@@ -33,7 +33,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
 
   Info("histInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", m_configName.c_str());
+  Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
@@ -61,9 +61,9 @@ EL::StatusCode JetHistsAlgo::AddHists( std::string name ) {
 
 EL::StatusCode JetHistsAlgo :: configure ()
 {
-  if(!m_configName.empty()){
+  if(!getConfig().empty()){
     // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(getConfig(true).c_str());
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
     // which plots will be turned on

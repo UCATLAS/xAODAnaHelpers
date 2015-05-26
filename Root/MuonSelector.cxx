@@ -61,11 +61,11 @@ MuonSelector::~MuonSelector() {}
 EL::StatusCode  MuonSelector :: configure ()
 {
 
-  if ( !m_configName.empty() ) {
+  if ( !getConfig().empty() ) {
 
     Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s ", m_configName.c_str());
 
-    TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
     m_debug                   = config->GetValue("Debug" ,     false );

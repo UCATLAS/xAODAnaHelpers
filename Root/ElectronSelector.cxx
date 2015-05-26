@@ -66,11 +66,11 @@ ElectronSelector::~ElectronSelector() {}
 
 EL::StatusCode  ElectronSelector :: configure ()
 {
-  if ( !m_configName.empty() ) {
-    
-    Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", m_configName.c_str());
+  if ( !getConfig().empty() ) {
 
-    TEnv* config = new TEnv(m_configName.c_str());
+    Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", getConfig().c_str());
+
+    TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
     m_debug                   = config->GetValue("Debug" ,      false);
@@ -113,7 +113,7 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
     // likelihood-based PID
     m_doLHPIDcut              = config->GetValue("DoLHPIDCut", false);
-    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", "Loose"); 
+    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", "Loose");
     m_LHConfigYear            = config->GetValue("LHConfigYear", "2015");
 
     // cut-based PID
@@ -297,8 +297,8 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   // initialise IsolationSelectionTool ( and ElectronIsolationTool, for DC14 )
 
-  std::string iso_tool_name = "ElectronIsolationSelectionTool_";  
-  if ( m_IsoWP != "CutBasedDC14" ) { iso_tool_name.erase(0,8); } 
+  std::string iso_tool_name = "ElectronIsolationSelectionTool_";
+  if ( m_IsoWP != "CutBasedDC14" ) { iso_tool_name.erase(0,8); }
   iso_tool_name += m_name;
 
   m_ElectronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( iso_tool_name.c_str() );
@@ -664,33 +664,33 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   m_el_LH_PIDManager->setDecorations( electron );
 
   // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
-  
+
   typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
   LHToolsMap myLHTools = m_el_LH_PIDManager->getValidTools();
-  
+
   if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut." ); }
       return 0;
   }
-  
+
   for ( auto it : (myLHTools) ) {
-    
+
     const std::string decorWP = it.second->getOperatingPointName( );
-    
+
     if ( m_debug ) { Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() ); }
-    
+
     electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
   }
 
   //
   // cut-based PID
   //
-  
+
   // set default values for *this* electron decorations
   m_el_CutBased_PIDManager->setDecorations( electron );
-  
+
   // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
-  
+
   typedef std::multimap< std::string, AsgElectronIsEMSelector* > CutBasedToolsMap;
   CutBasedToolsMap myCutBasedTools = m_el_CutBased_PIDManager->getValidTools();
 
@@ -700,11 +700,11 @@ int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Ve
   }
 
   for ( auto it : (myCutBasedTools) ) {
-    
+
     const std::string decorWP = it.second->getOperatingPointName( );
-    
+
     if ( m_debug ) { Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() ); }
-    
+
     electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
   }
 
