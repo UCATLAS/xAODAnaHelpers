@@ -29,11 +29,10 @@ xAH::Algorithm* xAH::Algorithm::setName(std::string name){
 xAH::Algorithm* xAH::Algorithm::setConfig(std::string configName){
   m_configName = configName;
   if ( !m_configName.empty() ) {
-    m_configName = gSystem->ExpandPathName( m_configName.c_str() );
     /* check if file exists
      https://root.cern.ch/root/roottalk/roottalk02/5332.html */
     FileStat_t fStats;
-    int fSuccess = gSystem->GetPathInfo(m_configName.c_str(), fStats);
+    int fSuccess = gSystem->GetPathInfo(xAH::Algorithm::getConfig(true).c_str(), fStats);
     if(fSuccess != 0){
       // could not find
       delete this;
@@ -41,6 +40,11 @@ xAH::Algorithm* xAH::Algorithm::setConfig(std::string configName){
     }
   }
   return this;
+}
+
+std::string xAH::Algorithm::getConfig(bool expand){
+  if(expand) return gSystem->ExpandPathName( m_configName.c_str() );
+  return m_configName;
 }
 
 xAH::Algorithm* xAH::Algorithm::setDebug(bool debug){

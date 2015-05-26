@@ -20,6 +20,7 @@ namespace xAH {
 
         Algorithm* setName(std::string name);
         Algorithm* setConfig(std::string configName);
+        std::string getConfig(bool expand=false);
 
         Algorithm* setDebug(bool debug);
 

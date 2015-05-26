@@ -36,7 +36,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 
   Info("histInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", m_configName.c_str());
+  Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
@@ -54,9 +54,9 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 
 EL::StatusCode TrackHistsAlgo :: configure ()
 {
-  if(!m_configName.empty()){
+  if(!getConfig().empty()){
     // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(getConfig(true).c_str());
 
     //
     //  If Container Name is already set dont read it from the config

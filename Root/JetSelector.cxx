@@ -60,10 +60,10 @@ JetSelector :: JetSelector () :
 
 EL::StatusCode  JetSelector :: configure ()
 {
-  if(!m_configName.empty()){
-    Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", m_configName.c_str());
+  if(!getConfig().empty()){
+    Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", getConfig().c_str());
 
-    TEnv* config = new TEnv(m_configName.c_str());
+    TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
     m_debug         = config->GetValue("Debug" ,      false );
