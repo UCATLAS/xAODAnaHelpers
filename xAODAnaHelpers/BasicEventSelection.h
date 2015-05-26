@@ -44,6 +44,8 @@ class BasicEventSelection : public xAH::Algorithm
     TrigConf::xAODConfigTool*    m_trigConfTool;  //!
     Trig::TrigDecisionTool*      m_trigDecTool;   //!
 
+    bool m_isMC;      //!
+
     int m_eventCounter;     //!
 
     // read from MetaData

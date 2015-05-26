@@ -32,17 +32,6 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
-  // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
-    return EL::StatusCode::FAILURE;
-  } else {
-    Info("histInitialize()", "Succesfully configured! ");
-  }
-
-  // only running 1 collection
-  if(m_inputAlgo.empty()) { AddHists( "" ); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -95,6 +84,18 @@ EL::StatusCode JetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::Sta
 EL::StatusCode JetHistsAlgo :: initialize ()
 {
   Info("initialize()", m_name.c_str());
+
+  // needed here and not in initalize since this is called first
+  Info("histInitialize()", "Attempting to configure using: %s", m_configName.c_str());
+  if ( this->configure() == EL::StatusCode::FAILURE ) {
+    Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
+    return EL::StatusCode::FAILURE;
+  } else {
+    Info("histInitialize()", "Succesfully configured! ");
+  }
+
+  // only running 1 collection
+  if(m_inputAlgo.empty()) { AddHists( "" ); }
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;

@@ -141,74 +141,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   // TODO why is histInitialize() called after fileExecute() ??
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-
   Info("histInitialize()", "Calling histInitialize");
-
-  // write the metadata hist to this file so algos downstream can pick up the pointer
-  TFile *fileMD = wk()->getOutputFile ("metadata");
-  fileMD->cd();
-  // event counts from meta data
-  m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
-  m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected in");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(3, "nEvents selected out");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights initial");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeights selected in");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeights selected out");
-
-  // write meta data to histogram
-  // This is done here b/c histInitialize() is called after fileExecute()...
-  // ... why ??
-  Info("fileExecute()", "Meta data from this file:");
-  Info("fileExecute()", "Initial  events	 = %i", m_MD_initialNevents);
-  Info("fileExecute()", "Selected events	 = %i", m_MD_finalNevents);
-  Info("fileExecute()", "Initial  sum of weights = %f", m_MD_initialSumW);
-  Info("fileExecute()", "Selected sum of weights = %f", m_MD_finalSumW);
-  m_histEventCount -> Fill(1, m_MD_initialNevents); // nEvents initial
-  m_histEventCount -> Fill(2, m_MD_finalNevents);   // nEvents selected in
-  m_histEventCount -> Fill(4, m_MD_initialSumW);    // sumOfWeights initial
-  m_histEventCount -> Fill(5, m_MD_finalSumW);      // sumOfWeights selected in
-
-
-  // write the cutflows to this file so algos downstream can pick up the pointer
-  TFile *fileCF = wk()->getOutputFile ("cutflow");
-  fileCF->cd();
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
-  m_cutflowHist->SetBit(TH1::kCanRebin);
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
-  m_cutflowHistW->SetBit(TH1::kCanRebin);
-
-  // label the bins for the cutflow
-  m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
-  if(m_applyGRL)
-    m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
-  m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
-  m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
-  m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
-  m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
-  if ( m_triggerSelection.size() > 0 ) {
-    m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
-  }
-
-  // do it again for the weighted cutflow hist
-  m_cutflowHistW->GetXaxis()->FindBin("all");
-  if(m_applyGRL)
-    m_cutflowHistW->GetXaxis()->FindBin("GRL");
-  m_cutflowHistW->GetXaxis()->FindBin("LAr");
-  m_cutflowHistW->GetXaxis()->FindBin("tile");
-  m_cutflowHistW->GetXaxis()->FindBin("core");
-  m_cutflowHistW->GetXaxis()->FindBin("NPV");
-  if ( m_triggerSelection.size() > 0 ) {
-    m_cutflowHistW->GetXaxis()->FindBin("Trigger");
-  }
-
-  Info("histInitialize()", "Histograms initialized!");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -316,9 +249,83 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   Info("initialize()", "Initializing BasicEventSelection... ");
 
+  if ( this->configure() == EL::StatusCode::FAILURE ) {
+    Error("initialize()", "Failed to properly configure. Exiting." );
+    return EL::StatusCode::FAILURE;
+  }
+
   // get TEvent and TStore
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+
+  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
+  if ( m_debug ) {
+    Info("execute()", "Is MC? %i", static_cast<int>(m_isMC) );
+  }
+
+  Info("initialize()", "Setting up histograms");
+
+  // write the metadata hist to this file so algos downstream can pick up the pointer
+  TFile *fileMD = wk()->getOutputFile ("metadata");
+  fileMD->cd();
+  // event counts from meta data
+  m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
+  m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected in");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(3, "nEvents selected out");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights initial");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeights selected in");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeights selected out");
+
+  // write meta data to histogram
+  // This is done here b/c histInitialize() is called after fileExecute()...
+  // ... why ??
+  Info("fileExecute()", "Meta data from this file:");
+  Info("fileExecute()", "Initial  events	 = %i", m_MD_initialNevents);
+  Info("fileExecute()", "Selected events	 = %i", m_MD_finalNevents);
+  Info("fileExecute()", "Initial  sum of weights = %f", m_MD_initialSumW);
+  Info("fileExecute()", "Selected sum of weights = %f", m_MD_finalSumW);
+  m_histEventCount -> Fill(1, m_MD_initialNevents); // nEvents initial
+  m_histEventCount -> Fill(2, m_MD_finalNevents);   // nEvents selected in
+  m_histEventCount -> Fill(4, m_MD_initialSumW);    // sumOfWeights initial
+  m_histEventCount -> Fill(5, m_MD_finalSumW);      // sumOfWeights selected in
+
+
+  // write the cutflows to this file so algos downstream can pick up the pointer
+  TFile *fileCF = wk()->getOutputFile ("cutflow");
+  fileCF->cd();
+  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
+  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
+  m_cutflowHist->SetBit(TH1::kCanRebin);
+  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
+  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
+  m_cutflowHistW->SetBit(TH1::kCanRebin);
+
+  // label the bins for the cutflow
+  m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
+  m_cutflowHistW->GetXaxis()->FindBin("all");
+  if(!m_isMC && m_applyGRL){
+    m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
+    m_cutflowHistW->GetXaxis()->FindBin("GRL");
+  }
+  if(!m_isMC){
+    m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
+    m_cutflowHistW->GetXaxis()->FindBin("LAr");
+    m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
+    m_cutflowHistW->GetXaxis()->FindBin("tile");
+    m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
+    m_cutflowHistW->GetXaxis()->FindBin("core");
+  }
+  m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
+  m_cutflowHistW->GetXaxis()->FindBin("NPV");
+  if ( m_triggerSelection.size() > 0 ) {
+    m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
+    m_cutflowHistW->GetXaxis()->FindBin("Trigger");
+  }
+
+  Info("initialize()", "Setting Up Tools");
 
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
@@ -399,13 +406,9 @@ EL::StatusCode BasicEventSelection :: execute ()
     printf("\n");
   }
 
-  bool isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  if ( m_debug ) {
-    Info("execute()", "Is MC? %i", static_cast<int>(isMC) );
-  }
 
   float mcEvtWeight(1.0), pileupWeight(1.0);
-  if ( isMC ) {
+  if ( m_isMC ) {
      const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
      if ( weights.size() > 0 ) mcEvtWeight = weights[0];
 
@@ -437,7 +440,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   // if data check if event passes GRL and even cleaning
-  if ( !isMC ) {
+  if ( !m_isMC ) {
 
     // if data event in Egamma stream is also in Muons stream, skip it - TO DO
 
@@ -491,22 +494,8 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     // if event in Egamma stream was already in Muons stream, skip it
 
+  } //if !m_isMC
 
-
-  } else { // is MC - fill cutflows just for consistency
-
-    if(m_applyGRL) {
-      m_cutflowHist ->Fill( m_cutflow_grl, 1 );
-      m_cutflowHistW->Fill( m_cutflow_grl, mcEvtWeight);
-    }
-    m_cutflowHist ->Fill( m_cutflow_lar, 1 );
-    m_cutflowHistW->Fill( m_cutflow_lar, mcEvtWeight);
-    m_cutflowHist ->Fill( m_cutflow_tile, 1 );
-    m_cutflowHistW->Fill( m_cutflow_tile, mcEvtWeight);
-    m_cutflowHist ->Fill( m_cutflow_core, 1 );
-    m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
-
-  }
   const xAOD::VertexContainer* vertices(nullptr);
   if ( !m_truthLevelOnly ) {
     RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_debug) ,"");
@@ -591,14 +580,6 @@ EL::StatusCode BasicEventSelection :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-
-//  if(m_useCutFlow) {
-//    TFile * file = wk()->getOutputFile (m_cutFlowFileName);
-//    if(!m_myTree->writeTo( file )) {
-//      Error("finalize()", "Failed to write tree to ouput file!");
-//      return EL::StatusCode::FAILURE;
-//    }
-//  }
 
   return EL::StatusCode::SUCCESS;
 }

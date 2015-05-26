@@ -138,13 +138,6 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-  if(m_useCutFlow) {
-    TFile *file = wk()->getOutputFile ("cutflow");
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
-    m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
-    m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
-  }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -186,6 +179,14 @@ EL::StatusCode TrackSelector :: initialize ()
   // doesn't get called if no events are processed.  So any objects
   // you create here won't be available in the output if you have no
   // input events.
+
+  if(m_useCutFlow) {
+    TFile *file = wk()->getOutputFile ("cutflow");
+    m_cutflowHist  = (TH1D*)file->Get("cutflow");
+    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
+    m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
+  }
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("initialize()", "Failed to properly configure. Exiting." );
