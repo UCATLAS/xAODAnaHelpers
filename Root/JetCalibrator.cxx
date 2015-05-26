@@ -86,7 +86,8 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_calibConfigData         = config->GetValue("configNameData",          "JES_Full2012dataset_May2014.config");
 
     // CONFIG parameters for JetCleaningTool
-    m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel", "MediumBad");
+    m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel",        "MediumBad");
+    m_saveAllCleanDecisions   = config->GetValue("SaveAllCleanDecisions",  false);
 
     // CONFIG parameters for JetUncertaintiesTool
     m_uncertConfig            = config->GetValue("JetUncertConfig", "");
@@ -255,6 +256,17 @@ EL::StatusCode JetCalibrator :: initialize ()
   RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
   RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "JetCleaning Interface succesfully initialized!");
 
+  if( m_saveAllCleanDecisions ){
+    //std::string m_decisionNames[] = {"VeryLooseBad", "LooseBad", "MediumBad", "TightBad"};
+    m_decisionNames.push_back( "VeryLooseBad" );  m_decisionNames.push_back( "LooseBad" );
+    m_decisionNames.push_back( "MediumBad" );     m_decisionNames.push_back( "TightBad" );
+    for(unsigned int i=0; i < m_decisionNames.size() ; ++i){
+      m_allJetCleaningTools.push_back( new JetCleaningTool((jc_tool_name+"_"+m_decisionNames.at(i)).c_str()) );
+      RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at(i)->setProperty( "CutLevel", m_decisionNames.at(i)), "");
+      RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at(i)->initialize(), ("JetCleaning Interface "+m_decisionNames.at(i)+" succesfully initialized!").c_str());
+    }
+  }
+
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
@@ -369,6 +381,12 @@ EL::StatusCode JetCalibrator :: execute ()
       // decorate with cleaning decision
       static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
       isCleanDecor( *jet_itr ) = m_jetCleaning->accept( *jet_itr );
+
+      if( m_saveAllCleanDecisions ){
+        for(unsigned int i=0; i < m_allJetCleaningTools.size() ; ++i){
+          jet_itr->auxdata< char >(("clean_"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept( *jet_itr );
+        }
+      }
 
     }
 

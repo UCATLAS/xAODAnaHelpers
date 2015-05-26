@@ -6,7 +6,7 @@
  * need to be added by the user
  *
  * Gabriel Facini ( gabriel.facini@cern.ch ), Marco Milesi (marco.milesi@cern.ch)
- * 
+ *
  *
  ***************************************************/
 
@@ -53,7 +53,7 @@ public:
   void AddJets        (const std::string detailStr = "");
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
-  
+
 
   // control which branches are filled
   HelperClasses::EventInfoSwitch*      m_eventInfoSwitch;
@@ -64,7 +64,7 @@ public:
   HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
-  
+
 
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
   void FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool, std::string trigs = ".*" );
@@ -86,42 +86,42 @@ public:
 
   bool writeTo( TFile *file );
 
-  virtual void AddEventUser(const std::string detailStr = "")      { 
-    Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
-    return; 
+  virtual void AddEventUser(const std::string detailStr = "")      {
+    if(m_debug) Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
   };
-  virtual void AddTriggerUser(const std::string detailStr = "")      { 
-    Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
-    return; 
+  virtual void AddTriggerUser(const std::string detailStr = "")      {
+    if(m_debug) Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
   };
-  virtual void AddJetTriggerUser(const std::string detailStr = "")      { 
-    Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
-    return; 
+  virtual void AddJetTriggerUser(const std::string detailStr = "")      {
+    if(m_debug) Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
   };
   virtual void AddMuonsUser(const std::string detailStr = "")      {
-    Info("AddMuonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
-    return; 
+    if(m_debug) Info("AddMuonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
   };
   virtual void AddElectronsUser(const std::string detailStr = "")  {
-    Info("AddElectronsUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
-    return; 
+    if(m_debug) Info("AddElectronsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
   };
   virtual void AddJetsUser(const std::string detailStr = "")       {
-    Info("AddJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
-    return; 
+    if(m_debug) Info("AddJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
   };
   virtual void AddTausUser(const std::string detailStr = "")       {
-    Info("AddTausUser","Empty function called from HelpTreeBase %s",detailStr.c_str()); 
-    return; 
+    if(m_debug) Info("AddTausUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
   };
-  
+
   virtual void ClearEventUser()     { return; };
   virtual void ClearTriggerUser()   { return; };
   virtual void ClearMuonsUser()     { return; };
   virtual void ClearElectronsUser() { return; };
   virtual void ClearJetsUser() 	    { return; };
   virtual void ClearTausUser() 	    { return; };
-  
+
 
   virtual void FillEventUser( const xAOD::EventInfo* /*eventInfo*/ )        { return; };
   virtual void FillMuonsUser( const xAOD::Muon* /*muon*/ )                  { return; };
@@ -129,17 +129,17 @@ public:
   virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                     { return; };
   virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )               { return; };
   virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )                  { return; };
-  
+
   virtual void FillTriggerUser( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ )      { return; };
   virtual void FillJetTriggerUser( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ )   { return; };
-  
+
 
 protected:
 
   TTree* m_tree;
 
   int m_units; //For MeV to GeV conversion in output
-  
+
   bool m_debug;
   bool m_DC14;
 
@@ -170,7 +170,7 @@ protected:
   //float m_pdf2;
   float m_xf1;
   float m_xf2;
-  
+
   // trigger
   int m_passAny;
   int m_passL1;
@@ -180,7 +180,7 @@ protected:
   unsigned int m_HLTPSKey;
   std::vector<std::string> m_allTriggers;
   std::vector<int> m_allTriggerDec;
-  
+
   // jet trigger
 
   // jets
@@ -209,6 +209,10 @@ protected:
   std::vector<float> m_jet_LeadingClusterSecondLambda;
   std::vector<float> m_jet_LeadingClusterCenterLambda;
   std::vector<float> m_jet_LeadingClusterSecondR;
+  std::vector<char> m_jet_clean_VeryLooseBad;
+  std::vector<char> m_jet_clean_LooseBad;
+  std::vector<char> m_jet_clean_MediumBad;
+  std::vector<char> m_jet_clean_TightBad;
 
   // energy
   std::vector<float> m_jet_HECf;
@@ -319,13 +323,13 @@ protected:
 
   // muons
   int m_nmuon;
-  
+
   // kinematics
   std::vector<float> m_muon_pt;
   std::vector<float> m_muon_eta;
   std::vector<float> m_muon_phi;
   std::vector<float> m_muon_m;
-  
+
   // track parameters
   std::vector<float> m_muon_trkd0;
   std::vector<float> m_muon_trkd0sig;
@@ -335,7 +339,7 @@ protected:
   std::vector<float> m_muon_trktheta;
   std::vector<float> m_muon_trkcharge;
   std::vector<float> m_muon_trkqOverP;
-  
+
   // track hit content
   std::vector<int> m_muon_trknSiHits;
   std::vector<int> m_muon_trknPixHits;
@@ -344,22 +348,22 @@ protected:
   std::vector<int> m_muon_trknSCTHoles;
   std::vector<int> m_muon_trknTRTHits;
   std::vector<int> m_muon_trknTRTHoles;
-  std::vector<int> m_muon_trknBLayerHits; 
+  std::vector<int> m_muon_trknBLayerHits;
   std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
   std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
 
   // electrons
   int m_nel;
-  
+
   // kinematics
   std::vector<float> m_el_pt;
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
-  
+
   // isolation
   std::vector<int>   m_el_isIsolated;
-  
+
   // PID
   std::vector<int>   m_el_LHVeryLoose;
   std::vector<int>   m_el_LHLoose;
@@ -369,7 +373,7 @@ protected:
   std::vector<int>   m_el_IsEMLoose;
   std::vector<int>   m_el_IsEMMedium;
   std::vector<int>   m_el_IsEMTight;
- 
+
   // track parameters
   std::vector<float> m_el_trkd0;
   std::vector<float> m_el_trkd0sig;
@@ -379,7 +383,7 @@ protected:
   std::vector<float> m_el_trktheta;
   std::vector<float> m_el_trkcharge;
   std::vector<float> m_el_trkqOverP;
-  
+
   // track hit content
   std::vector<int> m_el_trknSiHits;
   std::vector<int> m_el_trknPixHits;
@@ -388,13 +392,13 @@ protected:
   std::vector<int> m_el_trknSCTHoles;
   std::vector<int> m_el_trknTRTHits;
   std::vector<int> m_el_trknTRTHoles;
-  std::vector<int> m_el_trknBLayerHits; 
+  std::vector<int> m_el_trknBLayerHits;
   std::vector<int> m_el_trknInnermostPixLayHits; // not available in DC14
   std::vector<float> m_el_trkPixdEdX;            // not available in DC14
 
   // taus
   int m_ntau;
-  
+
   // kinematics
   std::vector<float> m_tau_pt;
   std::vector<float> m_tau_eta;

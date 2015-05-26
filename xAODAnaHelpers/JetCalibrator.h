@@ -32,7 +32,8 @@ public:
   std::string m_calibConfigAFII;        //!
   std::string m_calibConfig;            //!
   std::string m_calibSequence;          //!
-  std::string m_jetCalibCutLevel;   //!
+  std::string m_jetCalibCutLevel;       //!
+  bool m_saveAllCleanDecisions;         //!
   std::string m_uncertConfig;           //!
   // sort after calibration
   bool    m_sort;                   //!
@@ -55,9 +56,12 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  JetCalibrationTool    * m_jetCalibration; //!
-  JetCleaningTool       * m_jetCleaning;    //!
-  JetUncertaintiesTool  * m_jetUncert;      //!
+  JetCalibrationTool       * m_jetCalibration; //!
+  JetCleaningTool          * m_jetCleaning;    //!
+  std::vector<std::string>  m_decisionNames;    //!
+  std::vector< JetCleaningTool* > m_allJetCleaningTools;   //!
+
+  JetUncertaintiesTool     * m_jetUncert;      //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

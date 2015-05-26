@@ -192,14 +192,6 @@ EL::StatusCode MuonSelector :: histInitialize ()
 
   Info("histInitialize()", "Calling histInitialize");
 
-  if ( m_useCutFlow ) {
-    TFile *file = wk()->getOutputFile ("cutflow");
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
-    m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
-    m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
-  }
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -242,6 +234,14 @@ EL::StatusCode MuonSelector :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing MuonSelector Interface... ");
+
+  if ( m_useCutFlow ) {
+    TFile *file = wk()->getOutputFile ("cutflow");
+    m_cutflowHist  = (TH1D*)file->Get("cutflow");
+    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
+    m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
+  }
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -412,6 +412,12 @@ EL::StatusCode MuonSelector :: finalize ()
 
   if ( m_muonSelectionTool ) { delete m_muonSelectionTool; m_muonSelectionTool = nullptr; }
 
+  if ( m_useCutFlow ) {
+    Info("histFinalize()", "Filling cutflow");
+    m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
+    m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -431,12 +437,6 @@ EL::StatusCode MuonSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-
-  if ( m_useCutFlow ) {
-    Info("histFinalize()", "Filling cutflow");
-    m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
-    m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
-  }
 
   return EL::StatusCode::SUCCESS;
 }

@@ -210,13 +210,6 @@ EL::StatusCode ElectronSelector :: histInitialize ()
 
   Info("histInitialize()", "Calling histInitialize");
 
-  if ( m_useCutFlow ) {
-    TFile *file     = wk()->getOutputFile ("cutflow");
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
-    m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
-    m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
-  }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -260,6 +253,14 @@ EL::StatusCode ElectronSelector :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing ElectronSelector Interface... ");
+
+  if ( m_useCutFlow ) {
+    TFile *file     = wk()->getOutputFile ("cutflow");
+    m_cutflowHist  = (TH1D*)file->Get("cutflow");
+    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
+    m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
+  }
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -551,6 +552,12 @@ EL::StatusCode ElectronSelector :: finalize ()
   if ( m_IsolationSelectionTool )         { delete m_IsolationSelectionTool; m_IsolationSelectionTool = nullptr; }
   if ( m_ElectronIsolationSelectionTool ) { delete m_ElectronIsolationSelectionTool; m_ElectronIsolationSelectionTool = nullptr; }
 
+  if ( m_useCutFlow ) {
+    Info("finalize()", "Filling cutflow");
+    m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
+    m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -571,11 +578,6 @@ EL::StatusCode ElectronSelector :: histFinalize ()
 
   Info("histFinalize()", "Calling histFinalize");
 
-  if ( m_useCutFlow ) {
-    Info("histFinalize()", "Filling cutflow");
-    m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
-    m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
-  }
 
   return EL::StatusCode::SUCCESS;
 }

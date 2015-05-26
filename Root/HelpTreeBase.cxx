@@ -37,7 +37,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_DC14  = DC14;
   m_tree = tree;
   m_tree->SetDirectory( file );
-  Info("HelpTreeBase()", "HelpTreeBase setup");
+  if(m_debug) Info("HelpTreeBase()", "HelpTreeBase setup");
 
 }
 
@@ -53,7 +53,7 @@ void HelpTreeBase::Fill() {
 
 void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
-  Info("AddEvent()", "Adding event variables: %s", detailStr.c_str());
+  if(m_debug)  Info("AddEvent()", "Adding event variables: %s", detailStr.c_str());
 
   m_eventInfoSwitch = new HelperClasses::EventInfoSwitch( detailStr );
 
@@ -198,7 +198,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
  ********************/
 void HelpTreeBase::AddTrigger( const std::string detailStr ) {
 
-  Info("AddTrigger()", "Adding trigger variables: %s", detailStr.c_str());
+  if(m_debug) Info("AddTrigger()", "Adding trigger variables: %s", detailStr.c_str());
 
   m_trigInfoSwitch = new HelperClasses::TriggerInfoSwitch( detailStr );
 
@@ -208,7 +208,7 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
     m_tree->Branch("passL1",          &m_passL1,       "passL1/I"      );
     m_tree->Branch("passHLT",         &m_passHLT,      "passHLT/I"     );
   }
-  
+
   // Detailed trigger infoformation related to the menu (might be useful)
   // This is useful for using this database: https://atlas-trigconf.cern.ch/
   if ( m_trigInfoSwitch->m_menuKeys ) {
@@ -216,13 +216,13 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
     m_tree->Branch("L1PSKey",         &m_L1PSKey,      "L1PSKey/I"   );
     m_tree->Branch("HLTPSKey",        &m_HLTPSKey,     "HLTPSKey/I"  );
   }
-  
+
   // Trigger Decision for each and every trigger in a vector
   if ( m_trigInfoSwitch->m_allTriggers ) {
     m_tree->Branch("allTriggers",      &m_allTriggers    );   // vector of strings for trigger names
     m_tree->Branch("allTriggerDec",    &m_allTriggerDec  );   // vector of integer for trigger decisions
   }
-  
+
   this->AddTriggerUser();
 }
 
@@ -239,12 +239,12 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
   if ( m_trigInfoSwitch->m_basic ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_basic"); }
-  
+
     m_passAny = trigDecTool->isPassed(".*");
     m_passL1  = trigDecTool->isPassed("L1_.*");
     m_passHLT = trigDecTool->isPassed("HLT_.*");
   }
-    
+
   // If detailed menu information about the configuration keys, turn this on.
   // This is useful for using this database: https://atlas-trigconf.cern.ch/
   if ( m_trigInfoSwitch->m_menuKeys ) {
@@ -255,7 +255,7 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
     m_L1PSKey   = trigConfTool->lvl1PrescaleKey();
     m_HLTPSKey  = trigConfTool->hltPrescaleKey();
   }
-  
+
   // If super detailed information about each and every trigger is desired, use this
   // to build a vector of strings (trigger names) and decisions (integers or booleans)
   if ( m_trigInfoSwitch->m_allTriggers ) {
@@ -267,28 +267,28 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
     auto chainGroup = trigDecTool->getChainGroup(trigs);
     for (auto &trigName : chainGroup->getListOfTriggers()) {
       auto trigChain = trigDecTool->getChainGroup( trigName );
-      
+
       m_allTriggers.push_back   ( trigName );
       m_allTriggerDec.push_back ( trigChain->isPassed() );
     }
   }
-  
+
 }
 
 // Clear Trigger
 void HelpTreeBase::ClearTrigger() {
-  
+
   m_passAny = -1;
   m_passL1  = -1;
   m_passHLT = -1;
-  
+
   m_masterKey = 0;
   m_L1PSKey   = 0;
   m_HLTPSKey  = 0;
-  
+
   m_allTriggers.clear();
   m_allTriggerDec.clear();
-  
+
 }
 
 /*********************
@@ -311,7 +311,7 @@ void HelpTreeBase::ClearJetTrigger(  ) { }
 
 void HelpTreeBase::AddMuons(const std::string detailStr) {
 
-  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
+  if(m_debug)  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
   m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
 
@@ -449,9 +449,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
  ********************/
 
 void HelpTreeBase::AddElectrons(const std::string detailStr) {
-  
-  Info("AddElectrons()", "Adding electron variables: %s", detailStr.c_str());
-  
+
+  if(m_debug)  Info("AddElectrons()", "Adding electron variables: %s", detailStr.c_str());
+
   m_elInfoSwitch = new HelperClasses::ElectronInfoSwitch( detailStr );
 
   // always
@@ -467,7 +467,7 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   if ( m_elInfoSwitch->m_isolation ) {
     m_tree->Branch("el_isIsolated",  &m_el_isIsolated);
   }
-  
+
   if ( m_elInfoSwitch->m_PID ) {
     m_tree->Branch("el_LHVeryLoose",  &m_el_LHVeryLoose);
     m_tree->Branch("el_LHLoose",      &m_el_LHLoose);
@@ -527,14 +527,14 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       m_el_phi.push_back( (el_itr)->phi() );
       m_el_m.push_back  ( (el_itr)->m() / m_units );
     }
-  
+
     if ( m_elInfoSwitch->m_isolation ) {
       static SG::AuxElement::Accessor<char> isIsoAcc ("isIsolated");
       if ( isIsoAcc.isAvailable( *el_itr ) ) { m_el_isIsolated.push_back( isIsoAcc( *el_itr ) ); } else { m_el_isIsolated.push_back( -1 ); }
     }
-    
+
     if ( m_elInfoSwitch->m_PID ) {
-      
+
       static SG::AuxElement::Accessor<char> LHVeryLooseAcc ("LHVeryLoose");
       static SG::AuxElement::Accessor<char> LHLooseAcc ("LHLoose");
       static SG::AuxElement::Accessor<char> LHMediumAcc ("LHMedium");
@@ -550,7 +550,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       if ( LHMediumAcc.isAvailable( *el_itr ) )    { m_el_LHMedium.push_back( LHMediumAcc( *el_itr ) );       } else { m_el_LHMedium.push_back( -1 ); }
       if ( LHTightAcc.isAvailable( *el_itr ) )     { m_el_LHTight.push_back( LHTightAcc( *el_itr ) );         } else { m_el_LHTight.push_back( -1 ); }
       if ( LHVeryTightAcc.isAvailable( *el_itr ) ) { m_el_LHVeryTight.push_back( LHVeryTightAcc( *el_itr ) ); } else { m_el_LHVeryTight.push_back( -1 ); }
-      
+
       if ( EMLooseAcc.isAvailable( *el_itr ) )         { m_el_IsEMLoose.push_back( EMLooseAcc( *el_itr ) );   } else { m_el_IsEMLoose.push_back( -1 ); }
       if ( EMMediumAcc.isAvailable( *el_itr ) )        { m_el_IsEMMedium.push_back( EMMediumAcc( *el_itr ) ); } else { m_el_IsEMMedium.push_back( -1 ); }
       if ( EMTightAcc.isAvailable( *el_itr ) )         { m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );   } else { m_el_IsEMTight.push_back( -1 ); }
@@ -634,7 +634,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 void HelpTreeBase::AddJets(const std::string detailStr)
 {
 
-  Info("AddJets()", "Adding jet variables: %s", detailStr.c_str());
+  if(m_debug) Info("AddJets()", "Adding jet variables: %s", detailStr.c_str());
 
   m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 
@@ -664,6 +664,10 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_LeadingClusterSecondLambda",    &m_jet_LeadingClusterSecondLambda  	  );
     m_tree->Branch("jet_LeadingClusterCenterLambda",    &m_jet_LeadingClusterCenterLambda  	  );
     m_tree->Branch("jet_LeadingClusterSecondR",         &m_jet_LeadingClusterSecondR  	      );
+    m_tree->Branch("jet_clean_VeryLooseBad",            &m_jet_clean_VeryLooseBad             );
+    m_tree->Branch("jet_clean_LooseBad",                &m_jet_clean_LooseBad                 );
+    m_tree->Branch("jet_clean_MediumBad",               &m_jet_clean_MediumBad                );
+    m_tree->Branch("jet_clean_TightBad",                &m_jet_clean_TightBad                 );
   }
 
   if ( m_jetInfoSwitch->m_energy ) {
@@ -892,6 +896,26 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       if ( leadClusSecondR.isAvailable( *jet_itr ) ) {
         m_jet_LeadingClusterSecondR.push_back( leadClusSecondR( *jet_itr ) );
       } else { m_jet_LeadingClusterSecondR.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<char> clean_VeryLooseBad ("clean_VeryLooseBad");
+      if ( clean_VeryLooseBad.isAvailable( *jet_itr ) ) {
+        m_jet_clean_VeryLooseBad.push_back( clean_VeryLooseBad( *jet_itr ) );
+      } else { m_jet_clean_VeryLooseBad.push_back( -1 ); }
+
+      static SG::AuxElement::ConstAccessor<char> clean_LooseBad ("clean_LooseBad");
+      if ( clean_LooseBad.isAvailable( *jet_itr ) ) {
+        m_jet_clean_LooseBad.push_back( clean_LooseBad( *jet_itr ) );
+      } else { m_jet_clean_LooseBad.push_back( -1 ); }
+
+      static SG::AuxElement::ConstAccessor<char> clean_MediumBad ("clean_MediumBad");
+      if ( clean_MediumBad.isAvailable( *jet_itr ) ) {
+        m_jet_clean_MediumBad.push_back( clean_MediumBad( *jet_itr ) );
+      } else { m_jet_clean_MediumBad.push_back( -1 ); }
+
+      static SG::AuxElement::ConstAccessor<char> clean_TightBad ("clean_TightBad");
+      if ( clean_TightBad.isAvailable( *jet_itr ) ) {
+        m_jet_clean_TightBad.push_back( clean_TightBad( *jet_itr ) );
+      } else { m_jet_clean_TightBad.push_back( -1 ); }
 
     } // clean
 
@@ -1491,7 +1515,7 @@ void HelpTreeBase::ClearElectrons() {
   if ( m_elInfoSwitch->m_isolation ) {
     m_el_isIsolated.clear();
   }
-  
+
   if ( m_elInfoSwitch->m_PID ) {
     m_el_LHVeryLoose.clear();
     m_el_LHLoose.clear();
@@ -1523,9 +1547,9 @@ void HelpTreeBase::ClearElectrons() {
     m_el_trknTRTHits.clear();
     m_el_trknTRTHoles.clear();
     m_el_trknBLayerHits.clear();
-    if ( !m_DC14 ) {    
+    if ( !m_DC14 ) {
       m_el_trknInnermostPixLayHits.clear();
-      m_el_trkPixdEdX.clear();    
+      m_el_trkPixdEdX.clear();
     }
   }
 
@@ -1557,6 +1581,10 @@ void HelpTreeBase::ClearJets() {
     m_jet_LeadingClusterSecondLambda.clear();
     m_jet_LeadingClusterCenterLambda.clear();
     m_jet_LeadingClusterSecondR.clear();
+    m_jet_clean_VeryLooseBad.clear();
+    m_jet_clean_LooseBad.clear();
+    m_jet_clean_MediumBad.clear();
+    m_jet_clean_TightBad.clear();
   }
 
   // energy
