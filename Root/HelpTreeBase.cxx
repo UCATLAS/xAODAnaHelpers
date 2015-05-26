@@ -24,12 +24,14 @@
 #endif
 
 HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14):
-  m_eventInfoSwitch(0),
-  m_muInfoSwitch(0),
-  m_elInfoSwitch(0),
-  m_jetInfoSwitch(0),
-  m_fatJetInfoSwitch(0),
-  m_tauInfoSwitch(0)
+  m_event(nullptr),
+  m_eventInfoSwitch(nullptr),
+  m_muInfoSwitch(nullptr),
+  m_elInfoSwitch(nullptr),
+  m_jetInfoSwitch(nullptr),
+  m_fatJetInfoSwitch(nullptr),
+  m_tauInfoSwitch(nullptr),
+  m_trkSelTool(nullptr)
 {
 
   m_units = units;
@@ -37,7 +39,8 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_DC14  = DC14;
   m_tree = tree;
   m_tree->SetDirectory( file );
-  if(m_debug) Info("HelpTreeBase()", "HelpTreeBase setup");
+  m_event = event;
+  Info("HelpTreeBase()", "HelpTreeBase setup");
 
 }
 
@@ -117,12 +120,8 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
   if ( m_eventInfoSwitch->m_pileup ) {
     if ( event ) {
       const xAOD::VertexContainer* vertices(nullptr);
-      if(!HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 ).isSuccess()){
-        Error("HelpTreeBase::FillEvent()", "Could not retrieve primary vertex container.");
-        return;
-      }
+      HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 );
       m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
-      //Info("FillEvent()","Number of primary vertices w/ at least 2 tracks: %i", m_npv);
     } else {
       m_npv = -1;
     }
@@ -712,18 +711,20 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	        );
     m_tree->Branch("jet_Jvt",		              &m_jet_Jvt	          );
     m_tree->Branch("jet_JvtJvfcorr",		      &m_jet_JvtJvfcorr     );
-    m_tree->Branch("jet_Jvt",		              &m_jet_JvtRpt         );
+    m_tree->Branch("jet_JvtRpt",              &m_jet_JvtRpt         );
   }
 
   if ( m_jetInfoSwitch->m_allTrack ) {
     // if want to apply the selection of the PV then need to setup track selection tool
     // this applies the JVF/JVT selection cuts
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
-//    if( m_jetInfoSwitch->m_trackPVSel ) {
-//      InDet::InDetTrackSelectionTool m_trkSelTool( "JetTrackSelection" );
-//      m_trkSelTool.setCutLevel( InDet::CutLevel::Loose );
-//      ASG_CHECK_SA( "HelpTreeBase::JetTrackSelection", m_trkSelTool.initialize() );
-//    }
+    if( m_jetInfoSwitch->m_allTrackPVSel ) {
+      m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection" );
+      m_trkSelTool->setCutLevel( InDet::CutLevel::Loose );
+      m_trkSelTool->initialize();
+      // to do this need to have AddJets return a status code
+      //RETURN_CHECK( "HelpTreeBase::JetTrackSelection", m_trkSelTool->initialize(), "");
+    }
     m_tree->Branch("jet_GhostTrackCount",  &m_jet_GhostTrackCount );
     m_tree->Branch("jet_GhostTrackPt",     &m_jet_GhostTrackPt    );
     m_tree->Branch("jet_GhostTrack_pt",    &m_jet_GhostTrack_pt   );
@@ -815,6 +816,15 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
   this->ClearJets();
   this->ClearJetsUser();
 
+  const xAOD::VertexContainer* vertices(nullptr);
+  const xAOD::Vertex *pv = 0;
+  //int pvLocation(-1);
+  if( m_jetInfoSwitch->m_trackPV || m_jetInfoSwitch->m_allTrack ) {
+    HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
+    pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
+    pv = vertices->at( pvLocation );
+  }
+
   for( auto jet_itr : *jets ) {
 
     if( m_jetInfoSwitch->m_kinematic ){
@@ -825,7 +835,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if( m_jetInfoSwitch->m_rapidity ){
-      m_jet_eta.push_back( jet_itr->rapidity() );
+      m_jet_rapidity.push_back( jet_itr->rapidity() );
     }
 
     if (m_jetInfoSwitch->m_clean) {
@@ -1126,15 +1136,25 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         //std::vector<float> pt(trackLinks.size(),-999);
         for ( auto link_itr : trackLinks ) {
           if( !link_itr.isValid() ) { continue; }
-          const xAOD::TrackParticle* track = 
-            dynamic_cast<const xAOD::TrackParticle*>( *link_itr );
+          const xAOD::TrackParticle* track = dynamic_cast<const xAOD::TrackParticle*>( *link_itr );
+          // if asking for tracks passing PV selection ( i.e. JVF JVT tracks )
+          if( m_jetInfoSwitch->m_allTrackPVSel ) {
+            // PV selection from
+            // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
+            if( track->pt() < 500 )                { continue; } // pT cut
+            if( !m_trkSelTool->accept(*track,pv) ) { continue; } // ID quality cut
+            if( track->vertex() != pv ) {                        // if not in PV vertex fit
+              if( track->vertex() != 0 )           { continue; } // make sure in no vertex fits
+              if( fabs((track->z0()+track->vz()-pv->z())*sin(track->theta())) > 3.0 ) { continue; } // make sure close to PV in z
+            }
+          }
           pt. push_back( track->pt() / m_units );
           qOverP.push_back( track->qOverP() * m_units );
           eta.push_back( track->eta() );
           phi.push_back( track->phi() );
           e.  push_back( track->e()  / m_units );
           d0. push_back( track->d0() );
-          z0. push_back( track->z0() );
+          z0. push_back( track->z0() + track->vz() - pv->z() ); // store z0 wrt PV...most useful
           if( m_jetInfoSwitch->m_allTrackDetail ) {
             uint8_t getInt(0);
             // n pix, sct, trt

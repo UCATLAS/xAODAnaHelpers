@@ -136,7 +136,11 @@ namespace HelperClasses{
     m_trackPV       = parse("trackPV");
     m_trackAll      = parse("trackAll");
     m_allTrack      = parse("allTrack");
+    m_allTrackPVSel = parse("allTrackPVSel");
     m_allTrackDetail= parse("allTrackDetail");
+    if( m_allTrackDetail ) { 
+      m_allTrackPVSel = m_allTrackPVSel || parse("allTrackDetailPVSel") ;
+    }
     m_constituent   = parse("constituent");
     m_flavTag       = parse("flavorTag");
     if( parse("LeadingJets") ){

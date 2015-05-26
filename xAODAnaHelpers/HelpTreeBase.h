@@ -26,6 +26,8 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODRootAccess/TEvent.h"
 
+#include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
+
 // root includes
 #include "TTree.h"
 #include "TFile.h"
@@ -53,7 +55,8 @@ public:
   void AddJets        (const std::string detailStr = "");
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
-
+ 
+  xAOD::TEvent* m_event;
 
   // control which branches are filled
   HelperClasses::EventInfoSwitch*      m_eventInfoSwitch;
@@ -64,7 +67,8 @@ public:
   HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
-
+  
+  InDet::InDetTrackSelectionTool * m_trkSelTool;
 
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
   void FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool, std::string trigs = ".*" );
