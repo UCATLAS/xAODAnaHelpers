@@ -7,6 +7,7 @@
 #include "xAODTracking/TrackSummaryAccessors_v1.h"
 #include "xAODTruth/TruthEventContainer.h"
 #include "xAODJet/JetConstituentVector.h"
+#include "xAODCaloEvent/CaloClusterContainer.h"
 
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
@@ -97,6 +98,13 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("xf2",               &m_xf2,           "xf2/F");
   }
 
+  if ( m_eventInfoSwitch->m_caloClus ) {
+    m_tree->Branch("caloCluster_pt",  &m_caloCluster_pt);
+    m_tree->Branch("caloCluster_phi", &m_caloCluster_phi);
+    m_tree->Branch("caloCluster_eta", &m_caloCluster_eta);
+    m_tree->Branch("caloCluster_e",   &m_caloCluster_e);
+  }
+
   this->AddEventUser();
 }
 
@@ -147,6 +155,19 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEM = -999;
+    }
+  }
+
+  if( m_eventInfoSwitch->m_caloClus && event ) {
+    const xAOD::CaloClusterContainer* caloClusters = 0;
+    HelperFunctions::retrieve( caloClusters, "CaloCalTopoClusters", event, 0);
+    // save the clusters at the EM scale
+    for( auto clus : * caloClusters ) {
+      if ( clus->pt ( xAOD::CaloCluster::State::UNCALIBRATED ) < 2000 ) { continue; } // 2 GeV cut
+      m_caloCluster_pt. push_back( clus->pt ( xAOD::CaloCluster::State::UNCALIBRATED ) / m_units );
+      m_caloCluster_eta.push_back( clus->eta( xAOD::CaloCluster::State::UNCALIBRATED ) );
+      m_caloCluster_phi.push_back( clus->phi( xAOD::CaloCluster::State::UNCALIBRATED ) );
+      m_caloCluster_e.  push_back( clus->e  ( xAOD::CaloCluster::State::UNCALIBRATED ) / m_units );
     }
   }
 
@@ -1455,6 +1476,14 @@ void HelpTreeBase::ClearEvent() {
   m_xf1 = m_xf2 = -999;
 
   //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
+  
+  // CaloCluster
+  if( m_eventInfoSwitch->m_caloClus){
+    m_caloCluster_pt.clear();
+    m_caloCluster_eta.clear();
+    m_caloCluster_phi.clear();
+    m_caloCluster_e.clear();
+  }
 }
 
 

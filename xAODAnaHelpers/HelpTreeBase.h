@@ -175,6 +175,12 @@ protected:
   float m_xf1;
   float m_xf2;
 
+  // CaloCluster
+  std::vector<float> m_caloCluster_pt;
+  std::vector<float> m_caloCluster_eta;
+  std::vector<float> m_caloCluster_phi;
+  std::vector<float> m_caloCluster_e;
+  
   // trigger
   int m_passAny;
   int m_passL1;

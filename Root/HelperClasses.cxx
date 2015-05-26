@@ -97,6 +97,7 @@ namespace HelperClasses{
     m_shapeEM       = parse("shapeEM");
     m_shapeLC       = parse("shapeLC");
     m_truth         = parse("truth");
+    m_caloClus      = parse("caloClusters");
   }
   
   void TriggerInfoSwitch::initialize(){

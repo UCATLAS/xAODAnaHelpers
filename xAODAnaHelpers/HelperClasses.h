@@ -65,6 +65,7 @@ namespace HelperClasses {
     bool m_shapeEM;
     bool m_shapeLC;
     bool m_truth;
+    bool m_caloClus;
     void initialize();
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
