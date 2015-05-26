@@ -73,7 +73,7 @@ namespace HelperClasses {
   struct TriggerInfoSwitch : InfoSwitch {
     bool m_basic;
     bool m_menuKeys;
-    bool m_allTriggers;
+    bool m_passTriggers;
     void initialize();
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };

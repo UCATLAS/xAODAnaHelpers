@@ -48,7 +48,7 @@ public:
   virtual ~HelpTreeBase() {;}
 
   void AddEvent       (const std::string detailStr = "");
-  void AddTrigger     (const std::string detailStr = "");
+  void AddTrigger     (const std::string detailStr = "", const std::string triggerSel = "");
   void AddJetTrigger  (const std::string detailStr = "");
   void AddMuons       (const std::string detailStr = "");
   void AddElectrons   (const std::string detailStr = "");
@@ -70,8 +70,12 @@ public:
   
   InDet::InDetTrackSelectionTool * m_trkSelTool;
 
+  std::string                  m_triggerSelection;
+  TrigConf::xAODConfigTool*    m_trigConfTool;
+  Trig::TrigDecisionTool*      m_trigDecTool;
+
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
-  void FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool, std::string trigs = ".*" );
+  void FillTrigger();
   void FillJetTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool );
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
@@ -133,11 +137,10 @@ public:
   virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                     { return; };
   virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )               { return; };
   virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )                  { return; };
-
-  virtual void FillTriggerUser( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ )      { return; };
-  virtual void FillJetTriggerUser( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ )   { return; };
-
-
+  
+  virtual void FillTriggerUser()                                            { return; };
+  virtual void FillJetTriggerUser()                                         { return; };
+  
 protected:
 
   TTree* m_tree;
@@ -188,9 +191,9 @@ protected:
   unsigned int m_masterKey;
   unsigned int m_L1PSKey;
   unsigned int m_HLTPSKey;
-  std::vector<std::string> m_allTriggers;
-  std::vector<int> m_allTriggerDec;
 
+  std::vector<std::string> m_passTriggers;
+  
   // jet trigger
 
   // jets

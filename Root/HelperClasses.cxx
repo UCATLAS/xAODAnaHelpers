@@ -103,7 +103,7 @@ namespace HelperClasses{
   void TriggerInfoSwitch::initialize(){
     m_basic         = parse("basic");
     m_menuKeys      = parse("menuKeys");
-    m_allTriggers   = parse("allTriggers");
+    m_passTriggers  = parse("passTriggers");
   }
   
   void JetTriggerInfoSwitch::initialize(){

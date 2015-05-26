@@ -27,12 +27,16 @@
 HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14):
   m_event(nullptr),
   m_eventInfoSwitch(nullptr),
+  m_trigInfoSwitch(nullptr),
   m_muInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
   m_jetInfoSwitch(nullptr),
   m_fatJetInfoSwitch(nullptr),
   m_tauInfoSwitch(nullptr),
-  m_trkSelTool(nullptr)
+  m_trkSelTool(nullptr),
+  m_triggerSelection(""),
+  m_trigConfTool(nullptr),
+  m_trigDecTool(nullptr)
 {
 
   m_units = units;
@@ -216,11 +220,29 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
  *   TRIGGER
  *
  ********************/
-void HelpTreeBase::AddTrigger( const std::string detailStr ) {
+void HelpTreeBase::AddTrigger( const std::string detailStr, const std::string triggerSel ) {
 
   if(m_debug) Info("AddTrigger()", "Adding trigger variables: %s", detailStr.c_str());
 
+  m_triggerSelection = triggerSel;
   m_trigInfoSwitch = new HelperClasses::TriggerInfoSwitch( detailStr );
+
+  if ( !(m_trigInfoSwitch->m_basic || m_trigInfoSwitch->m_menuKeys || m_trigInfoSwitch->m_passTriggers) ) { return; }
+
+  m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigToolForTree" );
+  //RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigConfTool->initialize(), "");
+  m_trigConfTool->initialize();
+  ToolHandle< TrigConf::ITrigConfigTool > configHandleForTree( m_trigConfTool );
+
+  m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionToolForTree" );
+//  RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigDecTool->setProperty( "ConfigTool", configHandleForTree ), "");
+//  RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+//  RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
+//  RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigDecTool->initialize(), "");
+  m_trigDecTool->setProperty( "ConfigTool", configHandleForTree );
+  m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" );
+  m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR);
+  m_trigDecTool->initialize();
 
   // Add these basic branches
   if ( m_trigInfoSwitch->m_basic ) {
@@ -238,16 +260,15 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   }
 
   // Trigger Decision for each and every trigger in a vector
-  if ( m_trigInfoSwitch->m_allTriggers ) {
-    m_tree->Branch("allTriggers",      &m_allTriggers    );   // vector of strings for trigger names
-    m_tree->Branch("allTriggerDec",    &m_allTriggerDec  );   // vector of integer for trigger decisions
+  if ( m_trigInfoSwitch->m_passTriggers ) {
+    m_tree->Branch("passedTriggers",      &m_passTriggers    );   // vector of strings for trigger names
   }
-
-  this->AddTriggerUser();
+  
+  //this->AddTriggerUser();
 }
 
 // Fill the information in the trigger branches
-void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool, std::string trigs ) {
+void HelpTreeBase::FillTrigger() {
 
   if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Filling trigger info"); }
 
@@ -259,10 +280,10 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
   if ( m_trigInfoSwitch->m_basic ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_basic"); }
-
-    m_passAny = trigDecTool->isPassed(".*");
-    m_passL1  = trigDecTool->isPassed("L1_.*");
-    m_passHLT = trigDecTool->isPassed("HLT_.*");
+  
+    m_passAny = m_trigDecTool->isPassed(".*");
+    m_passL1  = m_trigDecTool->isPassed("L1_.*");
+    m_passHLT = m_trigDecTool->isPassed("HLT_.*");
   }
 
   // If detailed menu information about the configuration keys, turn this on.
@@ -271,26 +292,24 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_menuKeys"); }
 
-    m_masterKey = trigConfTool->masterKey();
-    m_L1PSKey   = trigConfTool->lvl1PrescaleKey();
-    m_HLTPSKey  = trigConfTool->hltPrescaleKey();
+    m_masterKey = m_trigConfTool->masterKey();
+    m_L1PSKey   = m_trigConfTool->lvl1PrescaleKey();
+    m_HLTPSKey  = m_trigConfTool->hltPrescaleKey();
   }
 
   // If super detailed information about each and every trigger is desired, use this
   // to build a vector of strings (trigger names) and decisions (integers or booleans)
-  if ( m_trigInfoSwitch->m_allTriggers ) {
+  if ( m_trigInfoSwitch->m_passTriggers ) {
 
-    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_allTriggers"); }
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_passTriggers"); }
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Only saving information about triggers: %s" , m_triggerSelection.c_str()); }
 
-    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Only saving information about triggers: %s" , trigs.c_str()); }
-
-    auto chainGroup = trigDecTool->getChainGroup(trigs);
+    auto chainGroup = m_trigDecTool->getChainGroup( m_triggerSelection );
     for (auto &trigName : chainGroup->getListOfTriggers()) {
-      auto trigChain = trigDecTool->getChainGroup( trigName );
+      auto trigChain = m_trigDecTool->getChainGroup( trigName );
       // Only save the trigger if it passed.
       if (trigChain->isPassed()) {
-        m_allTriggers.push_back   ( trigName );
-        m_allTriggerDec.push_back ( trigChain->isPassed() );
+        m_passTriggers.push_back   ( trigName );
       }
     }
   }
@@ -299,18 +318,17 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
 
 // Clear Trigger
 void HelpTreeBase::ClearTrigger() {
-
-  m_passAny = -1;
-  m_passL1  = -1;
-  m_passHLT = -1;
-
+  
+  m_passAny = -999;
+  m_passL1  = -999;
+  m_passHLT = -999;
+  
   m_masterKey = 0;
   m_L1PSKey   = 0;
   m_HLTPSKey  = 0;
-
-  m_allTriggers.clear();
-  m_allTriggerDec.clear();
-
+  
+  m_passTriggers.clear();
+  
 }
 
 /*********************
