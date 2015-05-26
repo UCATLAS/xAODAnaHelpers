@@ -245,7 +245,11 @@ protected:
   std::vector<float> m_jet_SumPtPt500PV;
   std::vector<float> m_jet_TrkWPt500PV;
   std::vector<float> m_jet_jvfPV;
-  //std::vector<float> m_jet_jvfloosePV;
+
+  // tracksAll or tracksPV
+  std::vector<float> m_jet_Jvt;
+  std::vector<float> m_jet_JvtJvfcorr;
+  std::vector<float> m_jet_JvtRpt;
 
   // allTrack
   std::vector<int> m_jet_GhostTrackCount;

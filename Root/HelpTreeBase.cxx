@@ -648,6 +648,10 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_eta", &m_jet_eta);
   }
 
+  if ( m_jetInfoSwitch->m_rapidity ) {
+    m_tree->Branch("jet_rapidity", &m_jet_rapidity);
+  }
+
   if( m_jetInfoSwitch->m_clean ) {
     m_tree->Branch("jet_Timing",              &m_jet_time               );
     m_tree->Branch("jet_LArQuality",          &m_jet_LArQuality         );
@@ -706,9 +710,9 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
     m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
     m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	        );
-    //m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
-    // HigestJVFLooseVtx  Vertex
-    // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
+    m_tree->Branch("jet_Jvt",		              &m_jet_Jvt	          );
+    m_tree->Branch("jet_JvtJvfcorr",		      &m_jet_JvtJvfcorr     );
+    m_tree->Branch("jet_Jvt",		              &m_jet_JvtRpt         );
   }
 
   if ( m_jetInfoSwitch->m_allTrack ) {
@@ -818,6 +822,10 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       m_jet_eta.push_back( jet_itr->eta() );
       m_jet_phi.push_back( jet_itr->phi() );
       m_jet_E.push_back  ( jet_itr->e() / m_units );
+    }
+
+    if( m_jetInfoSwitch->m_rapidity ){
+      m_jet_eta.push_back( jet_itr->rapidity() );
     }
 
     if (m_jetInfoSwitch->m_clean) {
@@ -981,6 +989,10 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if ( m_jetInfoSwitch->m_trackAll || m_jetInfoSwitch->m_trackPV ) {
+
+
+      // several moments calculated from all verticies
+      // one accessor for each and just use appropiately in the following
       static SG::AuxElement::ConstAccessor< std::vector<int> >   nTrk1000("NumTrkPt1000");
       static SG::AuxElement::ConstAccessor< std::vector<float> > sumPt1000("SumPtTrkPt1000");
       static SG::AuxElement::ConstAccessor< std::vector<float> > trkWidth1000("TrackWidthPt1000");
@@ -1030,7 +1042,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
           m_jet_jvf.push_back( jvf( *jet_itr ) );
         } else { m_jet_jvf.push_back( junkFlt ); }
 
-      }
+      } // trackAll
 
       if ( m_jetInfoSwitch->m_trackPV && pvLocation >= 0 ) {
 
@@ -1062,7 +1074,22 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
           m_jet_jvfPV.push_back( jvf( *jet_itr )[pvLocation] );
         } else { m_jet_jvfPV.push_back( -999 ); }
 
-      }
+      } // trackPV
+
+      static SG::AuxElement::ConstAccessor< float > jvt ("Jvt");
+      if ( jvt.isAvailable( *jet_itr ) ) {
+        m_jet_Jvt.push_back( jvt( *jet_itr ) );
+      } else { m_jet_Jvt.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor< float > jvtJvfcorr ("JvtJvfcorr");
+      if ( jvtJvfcorr.isAvailable( *jet_itr ) ) {
+        m_jet_JvtJvfcorr.push_back( jvtJvfcorr( *jet_itr ) );
+      } else { m_jet_JvtJvfcorr.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor< float > jvtRpt ("JvtRpt");
+      if ( jvtRpt.isAvailable( *jet_itr ) ) {
+        m_jet_JvtRpt.push_back( jvtRpt( *jet_itr ) );
+      } else { m_jet_JvtRpt.push_back( -999 ); }
 
     }
 
@@ -1558,10 +1585,17 @@ void HelpTreeBase::ClearElectrons() {
 void HelpTreeBase::ClearJets() {
 
   m_njet = 0;
-  m_jet_pt.clear();
-  m_jet_eta.clear();
-  m_jet_phi.clear();
-  m_jet_E.clear();
+  if( m_jetInfoSwitch->m_kinematic ){
+    m_jet_pt.clear();
+    m_jet_eta.clear();
+    m_jet_phi.clear();
+    m_jet_E.clear();
+  }
+
+  // rapidity
+  if( m_jetInfoSwitch->m_rapidity ) {
+    m_jet_rapidity.clear();
+  }
 
   // clean
   if( m_jetInfoSwitch->m_clean ) {
@@ -1624,8 +1658,14 @@ void HelpTreeBase::ClearJets() {
     m_jet_SumPtPt500PV.clear();
     m_jet_TrkWPt500PV.clear();
     m_jet_jvfPV.clear();
-    //m_jet_jvfloosePV.clear();
   }
+
+  if ( m_jetInfoSwitch->m_trackAll || m_jetInfoSwitch->m_trackPV ) {
+    m_jet_Jvt.clear();
+    m_jet_JvtJvfcorr.clear();
+    m_jet_JvtRpt.clear();
+  }
+
 
   if ( m_jetInfoSwitch->m_allTrack ) {
     m_jet_GhostTrackCount.clear();
