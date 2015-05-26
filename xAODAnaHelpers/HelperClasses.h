@@ -113,6 +113,8 @@ namespace HelperClasses {
     bool m_trackPV;
     bool m_trackAll;
     bool m_allTrack;
+    bool m_allTrackDetail;
+    bool m_constituent;
     bool m_flavTag;
     int  m_numLeadingJets;
     void initialize();

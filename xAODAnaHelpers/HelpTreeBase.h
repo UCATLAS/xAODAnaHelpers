@@ -190,6 +190,9 @@ protected:
   std::vector<float> m_jet_phi;
   std::vector<float> m_jet_E;
 
+  // rapidity
+  std::vector<float> m_jet_rapidity;
+
   // clean
   std::vector<float> m_jet_time;
   std::vector<float> m_jet_LArQuality;
@@ -244,9 +247,33 @@ protected:
   std::vector<int> m_jet_GhostTrackCount;
   std::vector<float> m_jet_GhostTrackPt;
   std::vector< std::vector<float> > m_jet_GhostTrack_pt;
+  std::vector< std::vector<float> > m_jet_GhostTrack_qOverP;
   std::vector< std::vector<float> > m_jet_GhostTrack_eta;
   std::vector< std::vector<float> > m_jet_GhostTrack_phi;
   std::vector< std::vector<float> > m_jet_GhostTrack_e;
+  std::vector< std::vector<float> > m_jet_GhostTrack_d0;
+  std::vector< std::vector<float> > m_jet_GhostTrack_z0;
+
+  // allTrackDetail
+  std::vector< std::vector<int> > m_jet_GhostTrack_nPixHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nSCTHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nTRTHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nPixSharedHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nPixSplitHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixSharedHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixSplitHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixSharedHits;
+  std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixSplitHits;
+
+  // constituent
+  std::vector< int > m_jet_numConstituents;
+  std::vector< std::vector<float> > m_jet_constitWeights;
+  std::vector< std::vector<float> > m_jet_constit_pt;
+  std::vector< std::vector<float> > m_jet_constit_eta;
+  std::vector< std::vector<float> > m_jet_constit_phi;
+  std::vector< std::vector<float> > m_jet_constit_e;
 
   // flavor tag
   std::vector<float> m_jet_sv0;
