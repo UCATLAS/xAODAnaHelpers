@@ -14,6 +14,7 @@ xAH::Algorithm::Algorithm() :
   m_debug(false),
   m_systName(""),
   m_systVal(0),
+  m_eventInfoContainerName("EventInfo"),
   m_configName(""),
   m_event(nullptr),
   m_store(nullptr)

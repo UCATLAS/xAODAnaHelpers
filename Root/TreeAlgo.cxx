@@ -168,7 +168,7 @@ EL::StatusCode TreeAlgo :: execute ()
 {
   // Get EventInfo and the PrimaryVertices
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
   const xAOD::VertexContainer* vertices(nullptr);
   RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
   // get the primaryVertex
@@ -177,7 +177,7 @@ EL::StatusCode TreeAlgo :: execute ()
   m_helpTree->FillEvent( eventInfo, m_event );
 
   // Fill trigger information
-  if ( !m_trigDetailStr.empty() )    {  
+  if ( !m_trigDetailStr.empty() )    {
     // TO BE FIXED
     //m_helpTree->FillTrigger( m_trigConfTool, m_trigDecTool, m_triggerSelection );
   }

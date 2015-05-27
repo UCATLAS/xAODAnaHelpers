@@ -245,7 +245,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
   // get the collection from TEvent or TStore
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
   const xAOD::ElectronContainer* inElectrons(nullptr);
   RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
 
