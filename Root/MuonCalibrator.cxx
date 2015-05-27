@@ -179,7 +179,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   m_numEvent++;
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
 
   // get the collection from TEvent or TStore
   const xAOD::MuonContainer* inMuons(nullptr);

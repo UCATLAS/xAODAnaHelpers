@@ -104,7 +104,7 @@ EL::StatusCode JetHistsAlgo :: initialize ()
 EL::StatusCode JetHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
 
   float eventWeight(1);
   if( eventInfo->isAvailable< float >( "eventWeight" ) ) {

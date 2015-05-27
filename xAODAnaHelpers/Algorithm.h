@@ -38,6 +38,9 @@ namespace xAH {
         // if running systs - the value ( +/- 1 )
         float m_systVal;
 
+        // custom EventInfo container name
+        std::string m_eventInfoContainerName;
+
       protected:
         // name of a config file to load in, optional
         std::string m_configName;
