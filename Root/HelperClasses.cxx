@@ -97,12 +97,13 @@ namespace HelperClasses{
     m_shapeEM       = parse("shapeEM");
     m_shapeLC       = parse("shapeLC");
     m_truth         = parse("truth");
+    m_caloClus      = parse("caloClusters");
   }
   
   void TriggerInfoSwitch::initialize(){
     m_basic         = parse("basic");
     m_menuKeys      = parse("menuKeys");
-    m_allTriggers   = parse("allTriggers");
+    m_passTriggers  = parse("passTriggers");
   }
   
   void JetTriggerInfoSwitch::initialize(){
@@ -126,6 +127,7 @@ namespace HelperClasses{
 
   void JetInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_rapidity      = parse("rapidity");
     m_clean         = parse("clean");
     m_energy        = parse("energy");
     m_resolution    = parse("resolution");
@@ -135,7 +137,11 @@ namespace HelperClasses{
     m_trackPV       = parse("trackPV");
     m_trackAll      = parse("trackAll");
     m_allTrack      = parse("allTrack");
+    m_allTrackPVSel = parse("allTrackPVSel");
     m_allTrackDetail= parse("allTrackDetail");
+    if( m_allTrackDetail ) { 
+      m_allTrackPVSel = m_allTrackPVSel || parse("allTrackDetailPVSel") ;
+    }
     m_constituent   = parse("constituent");
     m_flavTag       = parse("flavorTag");
     if( parse("LeadingJets") ){

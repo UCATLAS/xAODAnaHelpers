@@ -7,6 +7,7 @@
 #include "xAODTracking/TrackSummaryAccessors_v1.h"
 #include "xAODTruth/TruthEventContainer.h"
 #include "xAODJet/JetConstituentVector.h"
+#include "xAODCaloEvent/CaloClusterContainer.h"
 
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
@@ -24,12 +25,18 @@
 #endif
 
 HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14):
-  m_eventInfoSwitch(0),
-  m_muInfoSwitch(0),
-  m_elInfoSwitch(0),
-  m_jetInfoSwitch(0),
-  m_fatJetInfoSwitch(0),
-  m_tauInfoSwitch(0)
+  m_event(nullptr),
+  m_eventInfoSwitch(nullptr),
+  m_trigInfoSwitch(nullptr),
+  m_muInfoSwitch(nullptr),
+  m_elInfoSwitch(nullptr),
+  m_jetInfoSwitch(nullptr),
+  m_fatJetInfoSwitch(nullptr),
+  m_tauInfoSwitch(nullptr),
+  m_trkSelTool(nullptr),
+  m_triggerSelection(""),
+  m_trigConfTool(nullptr),
+  m_trigDecTool(nullptr)
 {
 
   m_units = units;
@@ -37,7 +44,8 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_DC14  = DC14;
   m_tree = tree;
   m_tree->SetDirectory( file );
-  if(m_debug) Info("HelpTreeBase()", "HelpTreeBase setup");
+  m_event = event;
+  Info("HelpTreeBase()", "HelpTreeBase setup");
 
 }
 
@@ -94,6 +102,13 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("xf2",               &m_xf2,           "xf2/F");
   }
 
+  if ( m_eventInfoSwitch->m_caloClus ) {
+    m_tree->Branch("caloCluster_pt",  &m_caloCluster_pt);
+    m_tree->Branch("caloCluster_phi", &m_caloCluster_phi);
+    m_tree->Branch("caloCluster_eta", &m_caloCluster_eta);
+    m_tree->Branch("caloCluster_e",   &m_caloCluster_e);
+  }
+
   this->AddEventUser();
 }
 
@@ -117,12 +132,8 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
   if ( m_eventInfoSwitch->m_pileup ) {
     if ( event ) {
       const xAOD::VertexContainer* vertices(nullptr);
-      if(!HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 ).isSuccess()){
-        Error("HelpTreeBase::FillEvent()", "Could not retrieve primary vertex container.");
-        return;
-      }
+      HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 );
       m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
-      //Info("FillEvent()","Number of primary vertices w/ at least 2 tracks: %i", m_npv);
     } else {
       m_npv = -1;
     }
@@ -148,6 +159,19 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEM = -999;
+    }
+  }
+
+  if( m_eventInfoSwitch->m_caloClus && event ) {
+    const xAOD::CaloClusterContainer* caloClusters = 0;
+    HelperFunctions::retrieve( caloClusters, "CaloCalTopoClusters", event, 0);
+    // save the clusters at the EM scale
+    for( auto clus : * caloClusters ) {
+      if ( clus->pt ( xAOD::CaloCluster::State::UNCALIBRATED ) < 2000 ) { continue; } // 2 GeV cut
+      m_caloCluster_pt. push_back( clus->pt ( xAOD::CaloCluster::State::UNCALIBRATED ) / m_units );
+      m_caloCluster_eta.push_back( clus->eta( xAOD::CaloCluster::State::UNCALIBRATED ) );
+      m_caloCluster_phi.push_back( clus->phi( xAOD::CaloCluster::State::UNCALIBRATED ) );
+      m_caloCluster_e.  push_back( clus->e  ( xAOD::CaloCluster::State::UNCALIBRATED ) / m_units );
     }
   }
 
@@ -196,11 +220,29 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
  *   TRIGGER
  *
  ********************/
-void HelpTreeBase::AddTrigger( const std::string detailStr ) {
+void HelpTreeBase::AddTrigger( const std::string detailStr, const std::string triggerSel ) {
 
   if(m_debug) Info("AddTrigger()", "Adding trigger variables: %s", detailStr.c_str());
 
+  m_triggerSelection = triggerSel;
   m_trigInfoSwitch = new HelperClasses::TriggerInfoSwitch( detailStr );
+
+  if ( !(m_trigInfoSwitch->m_basic || m_trigInfoSwitch->m_menuKeys || m_trigInfoSwitch->m_passTriggers) ) { return; }
+
+  m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigToolForTree" );
+  //RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigConfTool->initialize(), "");
+  m_trigConfTool->initialize();
+  ToolHandle< TrigConf::ITrigConfigTool > configHandleForTree( m_trigConfTool );
+
+  m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionToolForTree" );
+//  RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigDecTool->setProperty( "ConfigTool", configHandleForTree ), "");
+//  RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+//  RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
+//  RETURN_CHECK("HelpTreeBase::AddTrigger()", m_trigDecTool->initialize(), "");
+  m_trigDecTool->setProperty( "ConfigTool", configHandleForTree );
+  m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" );
+  m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR);
+  m_trigDecTool->initialize();
 
   // Add these basic branches
   if ( m_trigInfoSwitch->m_basic ) {
@@ -218,16 +260,15 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   }
 
   // Trigger Decision for each and every trigger in a vector
-  if ( m_trigInfoSwitch->m_allTriggers ) {
-    m_tree->Branch("allTriggers",      &m_allTriggers    );   // vector of strings for trigger names
-    m_tree->Branch("allTriggerDec",    &m_allTriggerDec  );   // vector of integer for trigger decisions
+  if ( m_trigInfoSwitch->m_passTriggers ) {
+    m_tree->Branch("passedTriggers",      &m_passTriggers    );   // vector of strings for trigger names
   }
-
-  this->AddTriggerUser();
+  
+  //this->AddTriggerUser();
 }
 
 // Fill the information in the trigger branches
-void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool, std::string trigs ) {
+void HelpTreeBase::FillTrigger() {
 
   if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Filling trigger info"); }
 
@@ -239,10 +280,10 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
   if ( m_trigInfoSwitch->m_basic ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_basic"); }
-
-    m_passAny = trigDecTool->isPassed(".*");
-    m_passL1  = trigDecTool->isPassed("L1_.*");
-    m_passHLT = trigDecTool->isPassed("HLT_.*");
+  
+    m_passAny = m_trigDecTool->isPassed(".*");
+    m_passL1  = m_trigDecTool->isPassed("L1_.*");
+    m_passHLT = m_trigDecTool->isPassed("HLT_.*");
   }
 
   // If detailed menu information about the configuration keys, turn this on.
@@ -251,25 +292,25 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_menuKeys"); }
 
-    m_masterKey = trigConfTool->masterKey();
-    m_L1PSKey   = trigConfTool->lvl1PrescaleKey();
-    m_HLTPSKey  = trigConfTool->hltPrescaleKey();
+    m_masterKey = m_trigConfTool->masterKey();
+    m_L1PSKey   = m_trigConfTool->lvl1PrescaleKey();
+    m_HLTPSKey  = m_trigConfTool->hltPrescaleKey();
   }
 
   // If super detailed information about each and every trigger is desired, use this
   // to build a vector of strings (trigger names) and decisions (integers or booleans)
-  if ( m_trigInfoSwitch->m_allTriggers ) {
+  if ( m_trigInfoSwitch->m_passTriggers ) {
 
-    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_allTriggers"); }
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_passTriggers"); }
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Only saving information about triggers: %s" , m_triggerSelection.c_str()); }
 
-    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Only saving information about triggers: %s" , trigs.c_str()); }
-
-    auto chainGroup = trigDecTool->getChainGroup(trigs);
+    auto chainGroup = m_trigDecTool->getChainGroup( m_triggerSelection );
     for (auto &trigName : chainGroup->getListOfTriggers()) {
-      auto trigChain = trigDecTool->getChainGroup( trigName );
-
-      m_allTriggers.push_back   ( trigName );
-      m_allTriggerDec.push_back ( trigChain->isPassed() );
+      auto trigChain = m_trigDecTool->getChainGroup( trigName );
+      // Only save the trigger if it passed.
+      if (trigChain->isPassed()) {
+        m_passTriggers.push_back   ( trigName );
+      }
     }
   }
 
@@ -277,18 +318,17 @@ void HelpTreeBase::FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::Tr
 
 // Clear Trigger
 void HelpTreeBase::ClearTrigger() {
-
-  m_passAny = -1;
-  m_passL1  = -1;
-  m_passHLT = -1;
-
+  
+  m_passAny = -999;
+  m_passL1  = -999;
+  m_passHLT = -999;
+  
   m_masterKey = 0;
   m_L1PSKey   = 0;
   m_HLTPSKey  = 0;
-
-  m_allTriggers.clear();
-  m_allTriggerDec.clear();
-
+  
+  m_passTriggers.clear();
+  
 }
 
 /*********************
@@ -648,6 +688,10 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_eta", &m_jet_eta);
   }
 
+  if ( m_jetInfoSwitch->m_rapidity ) {
+    m_tree->Branch("jet_rapidity", &m_jet_rapidity);
+  }
+
   if( m_jetInfoSwitch->m_clean ) {
     m_tree->Branch("jet_Timing",              &m_jet_time               );
     m_tree->Branch("jet_LArQuality",          &m_jet_LArQuality         );
@@ -706,20 +750,22 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
     m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
     m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	        );
-    //m_tree->Branch("jet_JVFLoosePV",          &m_jet_jvfloosePV     );
-    // HigestJVFLooseVtx  Vertex
-    // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
+    m_tree->Branch("jet_Jvt",		              &m_jet_Jvt	          );
+    m_tree->Branch("jet_JvtJvfcorr",		      &m_jet_JvtJvfcorr     );
+    m_tree->Branch("jet_JvtRpt",              &m_jet_JvtRpt         );
   }
 
   if ( m_jetInfoSwitch->m_allTrack ) {
     // if want to apply the selection of the PV then need to setup track selection tool
     // this applies the JVF/JVT selection cuts
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
-//    if( m_jetInfoSwitch->m_trackPVSel ) {
-//      InDet::InDetTrackSelectionTool m_trkSelTool( "JetTrackSelection" );
-//      m_trkSelTool.setCutLevel( InDet::CutLevel::Loose );
-//      ASG_CHECK_SA( "HelpTreeBase::JetTrackSelection", m_trkSelTool.initialize() );
-//    }
+    if( m_jetInfoSwitch->m_allTrackPVSel ) {
+      m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection" );
+      m_trkSelTool->setCutLevel( InDet::CutLevel::Loose );
+      m_trkSelTool->initialize();
+      // to do this need to have AddJets return a status code
+      //RETURN_CHECK( "HelpTreeBase::JetTrackSelection", m_trkSelTool->initialize(), "");
+    }
     m_tree->Branch("jet_GhostTrackCount",  &m_jet_GhostTrackCount );
     m_tree->Branch("jet_GhostTrackPt",     &m_jet_GhostTrackPt    );
     m_tree->Branch("jet_GhostTrack_pt",    &m_jet_GhostTrack_pt   );
@@ -811,6 +857,15 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
   this->ClearJets();
   this->ClearJetsUser();
 
+  const xAOD::VertexContainer* vertices(nullptr);
+  const xAOD::Vertex *pv = 0;
+  //int pvLocation(-1);
+  if( m_jetInfoSwitch->m_trackPV || m_jetInfoSwitch->m_allTrack ) {
+    HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
+    pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
+    pv = vertices->at( pvLocation );
+  }
+
   for( auto jet_itr : *jets ) {
 
     if( m_jetInfoSwitch->m_kinematic ){
@@ -818,6 +873,10 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       m_jet_eta.push_back( jet_itr->eta() );
       m_jet_phi.push_back( jet_itr->phi() );
       m_jet_E.push_back  ( jet_itr->e() / m_units );
+    }
+
+    if( m_jetInfoSwitch->m_rapidity ){
+      m_jet_rapidity.push_back( jet_itr->rapidity() );
     }
 
     if (m_jetInfoSwitch->m_clean) {
@@ -981,6 +1040,10 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if ( m_jetInfoSwitch->m_trackAll || m_jetInfoSwitch->m_trackPV ) {
+
+
+      // several moments calculated from all verticies
+      // one accessor for each and just use appropiately in the following
       static SG::AuxElement::ConstAccessor< std::vector<int> >   nTrk1000("NumTrkPt1000");
       static SG::AuxElement::ConstAccessor< std::vector<float> > sumPt1000("SumPtTrkPt1000");
       static SG::AuxElement::ConstAccessor< std::vector<float> > trkWidth1000("TrackWidthPt1000");
@@ -1030,7 +1093,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
           m_jet_jvf.push_back( jvf( *jet_itr ) );
         } else { m_jet_jvf.push_back( junkFlt ); }
 
-      }
+      } // trackAll
 
       if ( m_jetInfoSwitch->m_trackPV && pvLocation >= 0 ) {
 
@@ -1062,7 +1125,22 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
           m_jet_jvfPV.push_back( jvf( *jet_itr )[pvLocation] );
         } else { m_jet_jvfPV.push_back( -999 ); }
 
-      }
+      } // trackPV
+
+      static SG::AuxElement::ConstAccessor< float > jvt ("Jvt");
+      if ( jvt.isAvailable( *jet_itr ) ) {
+        m_jet_Jvt.push_back( jvt( *jet_itr ) );
+      } else { m_jet_Jvt.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor< float > jvtJvfcorr ("JvtJvfcorr");
+      if ( jvtJvfcorr.isAvailable( *jet_itr ) ) {
+        m_jet_JvtJvfcorr.push_back( jvtJvfcorr( *jet_itr ) );
+      } else { m_jet_JvtJvfcorr.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor< float > jvtRpt ("JvtRpt");
+      if ( jvtRpt.isAvailable( *jet_itr ) ) {
+        m_jet_JvtRpt.push_back( jvtRpt( *jet_itr ) );
+      } else { m_jet_JvtRpt.push_back( -999 ); }
 
     }
 
@@ -1099,15 +1177,25 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         //std::vector<float> pt(trackLinks.size(),-999);
         for ( auto link_itr : trackLinks ) {
           if( !link_itr.isValid() ) { continue; }
-          const xAOD::TrackParticle* track = 
-            dynamic_cast<const xAOD::TrackParticle*>( *link_itr );
+          const xAOD::TrackParticle* track = dynamic_cast<const xAOD::TrackParticle*>( *link_itr );
+          // if asking for tracks passing PV selection ( i.e. JVF JVT tracks )
+          if( m_jetInfoSwitch->m_allTrackPVSel ) {
+            // PV selection from
+            // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
+            if( track->pt() < 500 )                { continue; } // pT cut
+            if( !m_trkSelTool->accept(*track,pv) ) { continue; } // ID quality cut
+            if( track->vertex() != pv ) {                        // if not in PV vertex fit
+              if( track->vertex() != 0 )           { continue; } // make sure in no vertex fits
+              if( fabs((track->z0()+track->vz()-pv->z())*sin(track->theta())) > 3.0 ) { continue; } // make sure close to PV in z
+            }
+          }
           pt. push_back( track->pt() / m_units );
           qOverP.push_back( track->qOverP() * m_units );
           eta.push_back( track->eta() );
           phi.push_back( track->phi() );
           e.  push_back( track->e()  / m_units );
           d0. push_back( track->d0() );
-          z0. push_back( track->z0() );
+          z0. push_back( track->z0() + track->vz() - pv->z() ); // store z0 wrt PV...most useful
           if( m_jetInfoSwitch->m_allTrackDetail ) {
             uint8_t getInt(0);
             // n pix, sct, trt
@@ -1408,6 +1496,14 @@ void HelpTreeBase::ClearEvent() {
   m_xf1 = m_xf2 = -999;
 
   //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
+  
+  // CaloCluster
+  if( m_eventInfoSwitch->m_caloClus){
+    m_caloCluster_pt.clear();
+    m_caloCluster_eta.clear();
+    m_caloCluster_phi.clear();
+    m_caloCluster_e.clear();
+  }
 }
 
 
@@ -1558,10 +1654,17 @@ void HelpTreeBase::ClearElectrons() {
 void HelpTreeBase::ClearJets() {
 
   m_njet = 0;
-  m_jet_pt.clear();
-  m_jet_eta.clear();
-  m_jet_phi.clear();
-  m_jet_E.clear();
+  if( m_jetInfoSwitch->m_kinematic ){
+    m_jet_pt.clear();
+    m_jet_eta.clear();
+    m_jet_phi.clear();
+    m_jet_E.clear();
+  }
+
+  // rapidity
+  if( m_jetInfoSwitch->m_rapidity ) {
+    m_jet_rapidity.clear();
+  }
 
   // clean
   if( m_jetInfoSwitch->m_clean ) {
@@ -1624,8 +1727,14 @@ void HelpTreeBase::ClearJets() {
     m_jet_SumPtPt500PV.clear();
     m_jet_TrkWPt500PV.clear();
     m_jet_jvfPV.clear();
-    //m_jet_jvfloosePV.clear();
   }
+
+  if ( m_jetInfoSwitch->m_trackAll || m_jetInfoSwitch->m_trackPV ) {
+    m_jet_Jvt.clear();
+    m_jet_JvtJvfcorr.clear();
+    m_jet_JvtRpt.clear();
+  }
+
 
   if ( m_jetInfoSwitch->m_allTrack ) {
     m_jet_GhostTrackCount.clear();

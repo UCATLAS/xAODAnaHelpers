@@ -26,6 +26,8 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODRootAccess/TEvent.h"
 
+#include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
+
 // root includes
 #include "TTree.h"
 #include "TFile.h"
@@ -46,14 +48,15 @@ public:
   virtual ~HelpTreeBase() {;}
 
   void AddEvent       (const std::string detailStr = "");
-  void AddTrigger     (const std::string detailStr = "");
+  void AddTrigger     (const std::string detailStr = "", const std::string triggerSel = "");
   void AddJetTrigger  (const std::string detailStr = "");
   void AddMuons       (const std::string detailStr = "");
   void AddElectrons   (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "");
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
-
+ 
+  xAOD::TEvent* m_event;
 
   // control which branches are filled
   HelperClasses::EventInfoSwitch*      m_eventInfoSwitch;
@@ -64,10 +67,15 @@ public:
   HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
+  
+  InDet::InDetTrackSelectionTool * m_trkSelTool;
 
+  std::string                  m_triggerSelection;
+  TrigConf::xAODConfigTool*    m_trigConfTool;
+  Trig::TrigDecisionTool*      m_trigDecTool;
 
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
-  void FillTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool, std::string trigs = ".*" );
+  void FillTrigger();
   void FillJetTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool );
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
@@ -129,11 +137,10 @@ public:
   virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                     { return; };
   virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )               { return; };
   virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )                  { return; };
-
-  virtual void FillTriggerUser( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ )      { return; };
-  virtual void FillJetTriggerUser( TrigConf::xAODConfigTool* /* trigConfTool */, Trig::TrigDecisionTool* /* trigDecTool */ )   { return; };
-
-
+  
+  virtual void FillTriggerUser()                                            { return; };
+  virtual void FillJetTriggerUser()                                         { return; };
+  
 protected:
 
   TTree* m_tree;
@@ -171,6 +178,12 @@ protected:
   float m_xf1;
   float m_xf2;
 
+  // CaloCluster
+  std::vector<float> m_caloCluster_pt;
+  std::vector<float> m_caloCluster_eta;
+  std::vector<float> m_caloCluster_phi;
+  std::vector<float> m_caloCluster_e;
+  
   // trigger
   int m_passAny;
   int m_passL1;
@@ -178,9 +191,9 @@ protected:
   unsigned int m_masterKey;
   unsigned int m_L1PSKey;
   unsigned int m_HLTPSKey;
-  std::vector<std::string> m_allTriggers;
-  std::vector<int> m_allTriggerDec;
 
+  std::vector<std::string> m_passTriggers;
+  
   // jet trigger
 
   // jets
@@ -245,7 +258,11 @@ protected:
   std::vector<float> m_jet_SumPtPt500PV;
   std::vector<float> m_jet_TrkWPt500PV;
   std::vector<float> m_jet_jvfPV;
-  //std::vector<float> m_jet_jvfloosePV;
+
+  // tracksAll or tracksPV
+  std::vector<float> m_jet_Jvt;
+  std::vector<float> m_jet_JvtJvfcorr;
+  std::vector<float> m_jet_JvtRpt;
 
   // allTrack
   std::vector<int> m_jet_GhostTrackCount;

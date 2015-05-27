@@ -177,8 +177,9 @@ EL::StatusCode TreeAlgo :: execute ()
   m_helpTree->FillEvent( eventInfo, m_event );
 
   // Fill trigger information
-  if ( !m_trigDetailStr.empty() )    {
-    m_helpTree->FillTrigger( m_trigConfTool, m_trigDecTool, m_triggerSelection );
+  if ( !m_trigDetailStr.empty() )    {  
+    // TO BE FIXED
+    //m_helpTree->FillTrigger( m_trigConfTool, m_trigDecTool, m_triggerSelection );
   }
 
   // Fill jet trigger information

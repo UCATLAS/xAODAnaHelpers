@@ -65,6 +65,7 @@ namespace HelperClasses {
     bool m_shapeEM;
     bool m_shapeLC;
     bool m_truth;
+    bool m_caloClus;
     void initialize();
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
@@ -72,7 +73,7 @@ namespace HelperClasses {
   struct TriggerInfoSwitch : InfoSwitch {
     bool m_basic;
     bool m_menuKeys;
-    bool m_allTriggers;
+    bool m_passTriggers;
     void initialize();
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
@@ -104,6 +105,7 @@ namespace HelperClasses {
 
   struct JetInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_rapidity;
     bool m_clean;
     bool m_energy;
     bool m_resolution;
@@ -114,6 +116,7 @@ namespace HelperClasses {
     bool m_trackAll;
     bool m_allTrack;
     bool m_allTrackDetail;
+    bool m_allTrackPVSel;
     bool m_constituent;
     bool m_flavTag;
     int  m_numLeadingJets;
