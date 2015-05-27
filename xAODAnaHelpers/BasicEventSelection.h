@@ -33,6 +33,8 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_doPUreweighting; //!
     std::string m_triggerSelection; //!
 
+    std::string m_derivationName;
+
     // primary vertex
     std::string m_vertexContainerName; //!
     int m_PVNTrack;                //!
@@ -49,11 +51,13 @@ class BasicEventSelection : public xAH::Algorithm
     int m_eventCounter;     //!
 
     // read from MetaData
-    TH1D* m_histEventCount;  //!
-    int m_MD_initialNevents; //!
-    int m_MD_finalNevents;   //!
-    float m_MD_initialSumW;    //!
-    float m_MD_finalSumW;	     //!
+    TH1D* m_histEventCount;          //!
+    uint64_t m_MD_initialNevents;    //!
+    uint64_t m_MD_finalNevents;      //!
+    double m_MD_initialSumW;         //!
+    double m_MD_finalSumW;	     //!
+    double m_MD_initialSumWSquared;  //!
+    double m_MD_finalSumWSquared;    //! 
 
     // cutflow
     TH1D* m_cutflowHist;    //!

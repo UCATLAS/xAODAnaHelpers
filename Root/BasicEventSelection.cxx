@@ -68,6 +68,7 @@ EL::StatusCode BasicEventSelection :: configure ()
 {
 
   if ( !getConfig().empty() ) {
+
     // read in user configuration from text file
     TEnv *config = new TEnv(getConfig(true).c_str());
     if ( !config ) {
@@ -78,6 +79,9 @@ EL::StatusCode BasicEventSelection :: configure ()
     // basics
     m_debug             = config->GetValue("Debug"     ,     false);
     m_truthLevelOnly    = config->GetValue("TruthLevelOnly", false);
+
+    // derivation name
+    m_derivationName    = config->GetValue("DerivationName", "" );
 
     // GRL
     m_applyGRL          = config->GetValue("ApplyGRL",        true);
@@ -141,9 +145,54 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  // TODO why is histInitialize() called after fileExecute() ??
 
   Info("histInitialize()", "Calling histInitialize");
+
+  // Make sure configuration variables have been configured 
+  if ( !getConfig().empty() && ( this->configure() == EL::StatusCode::FAILURE ) ) {
+    Error("histInitialize()", "Failed to properly configure. Exiting." );
+    return EL::StatusCode::FAILURE;
+  }
+
+  Info("histInitialize()", "Calling histInitialize");
+
+  // write the metadata hist to this file so algos downstream can pick up the pointer
+  TFile *fileMD = wk()->getOutputFile ("metadata");
+  fileMD->cd();
+  
+  // event counts from meta data
+  if ( !m_histEventCount ) {  
+    m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
+    m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected in");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(3, "nEvents selected out");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights initial");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeights selected in");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeights selected out");
+  }
+
+  //
+  // Write meta data to histogram
+  // Bear in mind that histInitialize() is called after fileExecute()... 
+  //
+  Info("histInitialize()", "Meta data from this file:");
+  Info("histInitialize()", "Initial  events	 = %lu",      m_MD_initialNevents);
+  Info("histInitialize()", "Selected events	 = %lu",      m_MD_finalNevents);
+  Info("histInitialize()", "Initial  sum of weights = %f",         m_MD_initialSumW);
+  Info("histInitialize()", "Selected sum of weights = %f",         m_MD_finalSumW);
+  Info("histInitialize()", "Initial  sum of weights squared = %f", m_MD_initialSumWSquared);
+  Info("histInitialize()", "Selected sum of weights squared = %f", m_MD_finalSumWSquared);
+
+  m_histEventCount -> Fill(1, m_MD_initialNevents);      // nEvents initial
+  m_histEventCount -> Fill(2, m_MD_finalNevents);        // nEvents selected in
+  m_histEventCount -> Fill(4, m_MD_initialSumW);         // sumOfWeights initial
+  m_histEventCount -> Fill(5, m_MD_finalSumW);           // sumOfWeights selected in
+  m_histEventCount -> Fill(4, m_MD_initialSumWSquared);  // sumOfWeightsSquared initial
+  m_histEventCount -> Fill(5, m_MD_finalSumWSquared);    // sumOfWeightsSquared selected in
+
+
+  Info("histInitialize()", "Histograms initialized!");
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -155,21 +204,25 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   // single file, e.g. collect a list of all lumi-blocks processed
   Info("fileExecute()", "Calling fileExecute");
 
-  if ( !m_histEventCount ) {
-    Warning("fileExecute()", "Histograms for event counting not initialized! Calling histInitialize()...");
-    histInitialize();
+  // Make sure the configuration has been loaded and applied
+  if ( this->configure() == EL::StatusCode::FAILURE ) {
+    Error("fileExecute()", "Failed to properly configure. Exiting." );
+    return EL::StatusCode::FAILURE;
   }
 
+  // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
+  m_event = wk()->xaodEvent();
+  m_store = wk()->xaodStore();
 
   //---------------------------
   // Meta data - CutBookkepers
   //---------------------------
   // 
   // Metadata for intial N (weighted) events are used to correctly normalise MC 
-  // if running on a MC DAOD which had some skimming applied at the derivation stage
+  // if running on a mc DAOD which had some skimming applied at the derivation stage
 
   // get the MetaData tree once a new file is opened, with
-  TTree *MetaData = dynamic_cast(wk()->inputFile()->Get("MetaData"));
+  TTree *MetaData = dynamic_cast<TTree*>(wk()->inputFile()->Get("MetaData"));
   if ( !MetaData ) {
     Error("fileExecute()", "MetaData not found! Exiting.");
     return EL::StatusCode::FAILURE;
@@ -182,15 +235,14 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   if ( m_isDerivation ) {
 
     // check for corruption
-    const xAOD::CutBookkeeperContainer* incompleteCBC = nullptr;
-    RETURN_CHECK("BasicEventSelection::fileExecute()", HelperFunctions::retrieve(incompleteCBC, "IncompleteCutBookkeepers", m_event, m_store, m_debug) ,"Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
-    if ( incompleteCBC->size() != 0 ) {
-      Error("fileExecute()","Found incomplete Bookkeepers! Check file for corruption. Aborting.");
+    const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);    
+    if(!m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess()){
+      Error("initializeEvent()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
       return EL::StatusCode::FAILURE;
-    }
-
+    }       
+   
     // Now, let's find the actual information
-    const xAOD::CutBookkeeperContainer* completeCBC = nullptr;
+    const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
     if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ){
       Error("fileExecute()","Failed to retrieve CutBookkeepers from MetaData! Exiting.");
       return EL::StatusCode::FAILURE;
@@ -202,110 +254,35 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       if ( !( cbk->name().empty() )  && ( minCycle > cbk->cycle() ) ){ minCycle = cbk->cycle(); }
     }
 
-    // Now, find the right one that contains all the needed info...
-    const xAOD::CutBookkeeper* allEventsCBK = nullptr;
+    // Now, let's actually find the right one that contains all the needed info...
+    const xAOD::CutBookkeeper* allEventsCBK(nullptr);
+    const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
+    std::string derivationName = m_derivationName + "Kernel"; 
+
+    if ( m_debug ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
+
     for ( auto cbk :  *completeCBC ) {
-      if ( ( minCycle == cbk->cycle() ) && ( cbk->name() == "AllExecutedEvents" ) ){
-  	allEventsCBK = cbk;
-  	break;
+      if ( minCycle == cbk->cycle() && cbk->name() == "AllExecutedEvents" ){
+	allEventsCBK = cbk;
+      }
+      if ( cbk->name() == derivationName){
+	DxAODEventsCBK = cbk;
       }
     }
 
-    uint64_t nEventsProcessed  = allEventsCBK->nAcceptedEvents();
-    double sumOfWeights        = allEventsCBK->sumOfEventWeights();
-    double sumOfWeightsSquared = allEventsCBK->sumOfEventWeightsSquared();
+    m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();
+    m_MD_initialSumW        = allEventsCBK->sumOfEventWeights();
+    m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
 
- }
+    m_MD_finalNevents       = DxAODEventsCBK->nAcceptedEvents();
+    m_MD_finalSumW          = DxAODEventsCBK->sumOfEventWeights();
+    m_MD_finalSumWSquared   = DxAODEventsCBK->sumOfEventWeightsSquared();
 
-
-
-
-  if( HelperFunctions::isFilePrimaryxAOD( wk()->inputFile() ) ){
-     // primary xAODs
-    Info("fileExecute()", "Processing a primary xAOD file.");
-    m_MD_initialNevents = tfNevents.EvalInstance(0);
-    m_MD_finalNevents   = tfNevents.EvalInstance(1);
-    m_MD_initialSumW = tfSumW.EvalInstance(0);
-    m_MD_finalSumW   = tfSumW.EvalInstance(1);
-  } else {
-     // derived xAODs
-    Info("fileExecute()", "Processing a derived xAOD file.");
-    m_MD_initialNevents = tfNevents.EvalInstance(3);
-    m_MD_finalNevents   = tfNevents.EvalInstance(4);
-    m_MD_initialSumW = tfSumW.EvalInstance(3);
-    m_MD_finalSumW   = tfSumW.EvalInstance(4);
   }
 
   return EL::StatusCode::SUCCESS;
 
-
-
-  //----------------------------
-  // Meta data
-  //---------------------------
-
-  // Marco
-  // Metadata on intial N (weighted) events are used to correctly normalise MC if running on a MC DAOD which had some skimming applied at the derivation stage
-  // NB: this is a just a hack, and will be replaced by something more official hopefully soon
-
-  // get the MetaData tree once a new file is opened, with
-  TTree *MetaData = dynamic_cast<TTree*>(wk()->inputFile()->Get("MetaData"));
-  if ( !MetaData ) {
-    Error("fileExecute()", "MetaData not found!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  TBranch *b = MetaData->GetBranch("EventBookkeepers");
-  if ( !b ) {
-    Error("fileExecute()", "EventBookkeepers is not a branch of MetaData");
-    //return EL::StatusCode::FAILURE;
-  }
-
-  // extract the information from the EventBookkeepers branch
-  TTreeFormula tfNevents("tfNevents", "EventBookkeepers.m_nAcceptedEvents", MetaData);
-  TTreeFormula tfSumW("tfSumW", "EventBookkeepers.m_nWeightedAcceptedEvents", MetaData);
-
-  MetaData->LoadTree(0);
-
-  tfNevents.UpdateFormulaLeaves();
-  tfSumW.UpdateFormulaLeaves();
-
-  tfNevents.GetNdata();
-  tfSumW.GetNdata();
-
-  if ( !tfNevents.GetNdim() ) {
-    Warning("fileExecute()", "Could not read events from MetaData!");
-    //return EL::StatusCode::FAILURE;
-  }
-  if ( !tfSumW.GetNdim() ) {
-    Warning("fileExecute()", "Could not read sum of weights from MetaData!");
-    //return EL::StatusCode::FAILURE;
-  }
-
-  // Marco:
-  // NB: xAODs and DxAODs store Nevents initial/final in different entries.
-  //    This is going to change soon though ...
-  // Update: no one really knows what all the entries truly stand for. Therefore, do not trust this too much at this stage!
-
-  if( HelperFunctions::isFilePrimaryxAOD( wk()->inputFile() ) ){
-     // primary xAODs
-    Info("fileExecute()", "Processing a primary xAOD file.");
-    m_MD_initialNevents = tfNevents.EvalInstance(0);
-    m_MD_finalNevents   = tfNevents.EvalInstance(1);
-    m_MD_initialSumW = tfSumW.EvalInstance(0);
-    m_MD_finalSumW   = tfSumW.EvalInstance(1);
-  } else {
-     // derived xAODs
-    Info("fileExecute()", "Processing a derived xAOD file.");
-    m_MD_initialNevents = tfNevents.EvalInstance(3);
-    m_MD_finalNevents   = tfNevents.EvalInstance(4);
-    m_MD_initialSumW = tfSumW.EvalInstance(3);
-    m_MD_finalSumW   = tfSumW.EvalInstance(4);
-  }
-
-  return EL::StatusCode::SUCCESS;
 }
-
 
 EL::StatusCode BasicEventSelection :: changeInput (bool /*firstFile*/)
 {
@@ -330,52 +307,18 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   Info("initialize()", "Initializing BasicEventSelection... ");
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-
-  // get TEvent and TStore
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
 
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  if ( m_debug ) {
-    Info("execute()", "Is MC? %i", static_cast<int>(m_isMC) );
-  }
+  if ( m_debug ) { Info("initialize()", "Is MC? %i", static_cast<int>(m_isMC) ); }
 
   Info("initialize()", "Setting up histograms");
-
-  // write the metadata hist to this file so algos downstream can pick up the pointer
-  TFile *fileMD = wk()->getOutputFile ("metadata");
-  fileMD->cd();
-  // event counts from meta data
-  m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
-  m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected in");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(3, "nEvents selected out");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights initial");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeights selected in");
-  m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeights selected out");
-
-  // write meta data to histogram
-  // This is done here b/c histInitialize() is called after fileExecute()...
-  Info("histInitialize()", "Meta data from this file:");
-  Info("histInitialize()", "Initial  events	 = %i",    m_MD_initialNevents);
-  Info("histInitialize()", "Selected events	 = %i",    m_MD_finalNevents);
-  Info("histInitialize()", "Initial  sum of weights = %f", m_MD_initialSumW);
-  Info("histInitialize()", "Selected sum of weights = %f", m_MD_finalSumW);
-  m_histEventCount -> Fill(1, m_MD_initialNevents); // nEvents initial
-  m_histEventCount -> Fill(2, m_MD_finalNevents);   // nEvents selected in
-  m_histEventCount -> Fill(4, m_MD_initialSumW);    // sumOfWeights initial
-  m_histEventCount -> Fill(5, m_MD_finalSumW);      // sumOfWeights selected in
-
 
   // write the cutflows to this file so algos downstream can pick up the pointer
   TFile *fileCF = wk()->getOutputFile ("cutflow");
   fileCF->cd();
+  
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
   m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
   m_cutflowHist->SetBit(TH1::kCanRebin);
@@ -386,11 +329,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // label the bins for the cutflow
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
-  if(!m_isMC && m_applyGRL){
-    m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
-    m_cutflowHistW->GetXaxis()->FindBin("GRL");
-  }
-  if(!m_isMC){
+
+  if ( !m_isMC ) {
+    if ( m_applyGRL ) {
+      m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
+      m_cutflowHistW->GetXaxis()->FindBin("GRL");
+    } 
     m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
     m_cutflowHistW->GetXaxis()->FindBin("LAr");
     m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
@@ -448,12 +392,13 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // First open configuration file which holds all the analysis customization
   // get configuration from steerfile
 
-  // as a check, let's see the number of events in our xAOD (long long int)
+  // as a check, let's see the number of events in our file (long long int)
   Info("initialize()", "Number of events in file = %lli", m_event->getEntries());
   // count number of events
   m_eventCounter   = 0;
 
   Info("initialize()", "BasicEventSelection succesfully initilaized!");
+
   return EL::StatusCode::SUCCESS;
 }
 
