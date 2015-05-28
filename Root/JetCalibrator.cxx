@@ -80,10 +80,11 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_outputAlgo              = config->GetValue("OutputAlgo",      "");
 
     // when running data "_Insitu" is appended to this string
-    m_calibSequence           = config->GetValue("CalibSequence",           "JetArea_Residual_EtaJES");
-    m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_Prerecommendation2015_Feb2015.config");
+    m_calibSequence           = config->GetValue("CalibSequence",           "JetArea_Residual_Origin_EtaJES_GSC");
+    m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_MC15Prerecommendation_April2015.config");
     m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Prerecommendation2015_AFII_Apr2015.config");
-    m_calibConfigData         = config->GetValue("configNameData",          "JES_Full2012dataset_May2014.config");
+    m_calibConfigData         = config->GetValue("configNameData",          "JES_MC15Prerecommendation_April2015.config");
+    //m_calibConfigData         = config->GetValue("configNameData",          "JES_Full2012dataset_May2014.config");
 
     // CONFIG parameters for JetCleaningTool
     m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel",        "MediumBad");
@@ -208,7 +209,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  // when running data "_Insitu" is appended to the calibration string!
+  //For DC14 only when running data "_Insitu" is appended to the calibration string!
   if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos) m_calibSequence += "_Insitu";
 
   if( m_isMC && m_calibSequence.find("Insitu") != std::string::npos){
