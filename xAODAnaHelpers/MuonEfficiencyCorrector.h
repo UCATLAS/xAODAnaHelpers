@@ -10,6 +10,7 @@
 
 // external tools include(s):
 #include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
+#include "MuonEfficiencyCorrections/MuonTriggerScaleFactors.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -22,13 +23,32 @@ class MuonEfficiencyCorrector : public xAH::Algorithm
 public:
   // configuration variables
   std::string   m_inContainerName;
-  std::string   m_outContainerName;
 
+  // Efficiency SF
   std::string   m_WorkingPoint;
   std::string   m_DataPeriod;
 
+  // Trigger SF                                                                                                                                             
+  int           m_year;
+  int           m_runNumber;
+  std::string   m_SingleMuTrig;
+  std::string   m_SinglePlusDiMuTrig;
+
   // systematics
+  std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
+  			             // upstream algo (e.g., the SC containers with calibration systematics)
   bool          m_runAllSyst;
+  std::string   m_outputSystNames;
+  bool          m_runSystsEff;
+  bool          m_runSystTrig;
+  std::string   m_systNameEff;
+  std::string   m_systNameTrig;
+  std::string   m_outputSystNamesEff;
+  std::string   m_outputSystNamesTrig;
+  float         m_systValEff;
+  float         m_systValTrig;
+  bool          m_runAllSystEff;
+  bool          m_runAllSystTrig;
 
 private:
 
@@ -37,12 +57,12 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  bool m_runSysts;
-  std::vector<CP::SystematicSet> m_systList; //!
-  std::string m_outAuxContainerName;
+  std::vector<CP::SystematicSet> m_systListEff;  //!
+  std::vector<CP::SystematicSet> m_systListTrig; //!
 
   // tools
-  CP::MuonEfficiencyScaleFactors  *m_MuonEffSFTool; //!
+  CP::MuonEfficiencyScaleFactors  *m_MuonEffSFTool;  //!
+  CP::MuonTriggerScaleFactors     *m_MuonTrigSFTool; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -70,6 +90,9 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+
+  virtual EL::StatusCode executeSF (  const xAOD::MuonContainer* inputMuons, const xAOD::EventInfo* eventInfo, unsigned int countSyst  );
+
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(MuonEfficiencyCorrector, 1);

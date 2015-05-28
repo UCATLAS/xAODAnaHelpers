@@ -347,6 +347,15 @@ protected:
   std::vector<float> m_muon_phi;
   std::vector<float> m_muon_m;
 
+  // isolation
+  std::vector<int>   m_muon_isIsolated;
+
+  // quality
+  std::vector<int>   m_muon_isVeryLoose;
+  std::vector<int>   m_muon_isLoose;
+  std::vector<int>   m_muon_isMedium;
+  std::vector<int>   m_muon_isTight;
+
   // track parameters
   std::vector<float> m_muon_trkd0;
   std::vector<float> m_muon_trkd0sig;

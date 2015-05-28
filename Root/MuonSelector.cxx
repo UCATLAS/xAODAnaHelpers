@@ -44,6 +44,7 @@ ClassImp(MuonSelector)
 MuonSelector :: MuonSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr),
+  m_IsolationSelectionTool(nullptr),
   m_muonSelectionTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -68,11 +69,16 @@ EL::StatusCode  MuonSelector :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug" ,     false );
-    m_useCutFlow              = config->GetValue("UseCutFlow", true  );
+    m_debug                   = config->GetValue("Debug" ,      false);
+    m_useCutFlow              = config->GetValue("UseCutFlow",  true);
 
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  "");
+
+    // Systematics stuff
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  "");
+    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", "MuonSelector_Syst");
+
 
     // decorate selected objects that pass the cuts
     m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
@@ -87,9 +93,10 @@ EL::StatusCode  MuonSelector :: configure ()
     m_nToProcess              = config->GetValue("NToProcess", -1);
 
     // configurable cuts
-    m_muonQuality             = config->GetValue("MuonQuality", "Medium"); // muon quality as defined by xAOD::MuonQuality enum {Tight, Medium, Loose, VeryLoose}, corresponding to 0, 1, 2 and 3 (default is 1 - medium quality).
-    /* initialize set to check for appropriate values, much faster in long run */
-    m_muonType                = config->GetValue("MuonType", ""); // muon type as defined by xAOD::Muon::MuonType enum (0: Combined, 1:MuonStandAlone ,2:SegmentTagged, 3:CaloTagged, 4:SiliconAssociatedForwardMuon  - default is empty string = no type).
+    std::string muonQuality   = config->GetValue("MuonQuality", "Medium"); 
+    HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
+    m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(muonQuality) );
+    m_muonType                = config->GetValue("MuonType", ""); 
     m_pass_max                = config->GetValue("PassMax", -1);
     m_pass_min                = config->GetValue("PassMin", -1);
     m_pT_max                  = config->GetValue("pTMax",  1e8);
@@ -100,16 +107,21 @@ EL::StatusCode  MuonSelector :: configure ()
     m_z0sintheta_max          = config->GetValue("z0sinthetaMax", 1e8);
 
     // isolation stuff
-    m_doIsolation             = config->GetValue("DoIsolationCut" ,   false);
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType",  "etcone20");
-    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut",   0.05      );
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType", "ptcone20");
-    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut",  0.05      );
+    m_doIsolation             = config->GetValue("DoIsolationCut"    ,  false);
+    m_IsoWP		      = config->GetValue("IsolationWP"       ,  "Tight");
+    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  "0.1*x+90");  // only if isolation WP is "UserDefined"
+    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  "98");        // only if isolation WP is "UserDefined"
+    m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  true );
+    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  "topoetcone20");
+    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  0.05 );
+    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  "ptvarcone30");
+    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  0.05 );
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
 
     config->Print();
+
     Info("configure()", "MuonSelector Interface succesfully configured! ");
 
     delete config; config = nullptr;
@@ -117,13 +129,13 @@ EL::StatusCode  MuonSelector :: configure ()
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
-  std::set<std::string> muonQualitySet;
-  muonQualitySet.insert("Tight");
-  muonQualitySet.insert("Medium");
-  muonQualitySet.insert("Loose");
-  muonQualitySet.insert("VeryLoose");
+  std::set<int> muonQualitySet;
+  muonQualitySet.insert(0);
+  muonQualitySet.insert(1);
+  muonQualitySet.insert(2);
+  muonQualitySet.insert(3);
   if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
-    Error("configure()", "Unknown muon quality requested %s!",m_muonQuality.c_str());
+    Error("configure()", "Unknown muon quality requested: %i!",m_muonQuality);
     return EL::StatusCode::FAILURE;
   }
 
@@ -134,9 +146,8 @@ EL::StatusCode  MuonSelector :: configure ()
   muonTypeSet.insert("SegmentTagged");
   muonTypeSet.insert("CaloTagged");
   muonTypeSet.insert("SiliconAssociatedForwardMuon");
-
   if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
-    Error("configure()", "Unknown muon type requested %s!",m_muonType.c_str());
+    Error("configure()", "Unknown muon type requested: %s!",m_muonType.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -259,18 +270,34 @@ EL::StatusCode MuonSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  // initialise  muon Selector Tool
+  // initialise Muon Selection Tool
   std::string ms_tool_name = std::string("MuonSelection_") + m_name;
   m_muonSelectionTool = new CP::MuonSelectionTool( ms_tool_name.c_str() );
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
-  HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
-
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property"); // default 2.5
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", static_cast<int>(muQualityParser.parseEnum(m_muonQuality))), "Failed to set MuQuality property" ); // why is not ok to pass the enum??
-
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" ); 
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
+
+  // isolation tool for muons not available in DC14
+  if ( m_IsoWP != "CutBasedDC14" ) {
+
+    std::string iso_tool_name  = "IsolationSelectionTool_";
+    m_IsolationSelectionTool   = new CP::IsolationSelectionTool( iso_tool_name.c_str() );
+    m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
+
+    if ( m_IsoWP == "UserDefined" ) {
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonCaloIsoFunction",  m_CaloIsoEff.c_str() ), "Failed to configure MuonCaloIsoFunction" );
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonTrackIsoFunction", m_TrackIsoEff.c_str() ), "Failed to configure MuonTrackIsoFunction" );
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonCaloIsoType",	m_CaloBasedIsoType.c_str() ), "Failed to configure MuonCaloIsoType" );
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonTrackIsoType",	m_TrackBasedIsoType.c_str() ), "Failed to configure MuonTrackIsoType" );
+    } else {
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty( "WorkingPoint", m_IsoWP.c_str() ), "Failed to configure WorkingPoint" );
+    }
+
+    RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
+
+  }
 
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );
 
@@ -301,35 +328,121 @@ EL::StatusCode MuonSelector :: execute ()
 
   m_numEvent++;
 
-  // this will be the collection processed - no matter what!!
+  // did any collection pass the cuts?
+  bool eventPass(false);
+  bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal
   const xAOD::MuonContainer* inMuons(nullptr);
-  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_debug) ,"");
 
-  return executeConst( inMuons, mcEvtWeight );
+  // if input comes from xAOD, or just running one collection,
+  // then get the one collection and be done with it
+  if ( m_inputAlgoSystNames.empty() ) {
+
+    // this will be the collection processed - no matter what!!
+    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_debug) ,"");
+
+    // create output container (if requested)
+    ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
+    if ( m_createSelectedContainer ) { selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS); }
+
+    // find the selected muons, and return if event passes object selection
+    eventPass = executeSelection( inMuons, mcEvtWeight, countPass, selectedMuons );
+
+    if ( m_createSelectedContainer ) {
+      if ( eventPass ) {
+        // add ConstDataVector to TStore
+        RETURN_CHECK( "MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName ), "Failed to store const data container");
+      } else {
+        // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
+        delete selectedMuons; selectedMuons = nullptr;
+      }
+    }
+
+  } else { // get the list of systematics to run over
+
+    // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
+    std::vector< std::string >* systNames(nullptr);
+    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_debug) ,"");
+
+    // prepare a vector of the names of CDV containers for usage by downstream algos
+    // must be a pointer to be recorded in TStore
+    std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+    if ( m_debug ) { Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) ); }
+
+    // loop over systematic sets
+    bool eventPassThisSyst(false);
+    for ( auto systName : *systNames ) {
+
+      if ( m_debug ) { Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() ); }
+
+      RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, m_debug) ,"");
+
+      // create output container (if requested) - one for each systematic
+      ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
+      if ( m_createSelectedContainer ) { selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS); }
+
+      // find the selected muons, and return if event passes object selection
+      eventPassThisSyst = executeSelection( inMuons, mcEvtWeight, countPass, selectedMuons );
+
+      if ( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
+
+      if ( eventPassThisSyst ) {
+	// save the string of syst set under question if event is passing the selection
+	vecOutContainerNames->push_back( systName );
+      }
+
+      // if for at least one syst set the event passes selection, this will remain true!
+      eventPass = ( eventPass || eventPassThisSyst );
+
+      if ( m_debug ) { Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
+
+      if ( m_createSelectedContainer ) {
+        if ( eventPassThisSyst ) {
+          // add ConstDataVector to TStore
+          RETURN_CHECK( "MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName+systName ), "Failed to store const data container");
+        } else {
+          // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
+          delete selectedMuons; selectedMuons = nullptr;
+        }
+      }
+
+    } // close loop over syst sets
+
+    if ( m_debug ) {  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
+
+    // record in TStore the list of systematics names that should be considered down stream
+    RETURN_CHECK( "MuonSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+
+  }
+
+  // look what do we have in TStore
+  if ( m_debug ) { m_store->print(); }
+
+  if( !eventPass ) {
+    wk()->skipEvent();
+    return EL::StatusCode::SUCCESS;
+  }
+
+  return EL::StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons, float mcEvtWeight )
+bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, float mcEvtWeight, bool countPass,
+					    ConstDataVector<xAOD::MuonContainer>* selectedMuons )
 {
 
-  // create output container (if requested)
-  ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
-  if ( m_createSelectedContainer ) { selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS); }
-
-  // get primary vertex
-  const xAOD::VertexContainer *vertices(nullptr);
-  RETURN_CHECK("MuonSelector::executeConst()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
+  const xAOD::VertexContainer* vertices(nullptr);
+  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
 
-  for( auto mu_itr : *inMuons ) { // duplicated of basic loop
+  for ( auto el_itr : *inMuons ) { // duplicated of basic loop
 
-    // if only looking at a subset of muons make sure all are decorrated
+    // if only looking at a subset of muons make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
-        passSelDecor( *mu_itr ) = -1;
+        passSelDecor( *el_itr ) = -1;
       } else {
         break;
       }
@@ -337,49 +450,42 @@ EL::StatusCode MuonSelector :: executeConst ( const xAOD::MuonContainer* inMuons
     }
 
     nObj++;
-    int passSel = this->PassCuts( mu_itr, pvx );
+    bool passSel = this->passCuts( el_itr, pvx );
     if ( m_decorateSelectedObjects ) {
-      passSelDecor( *mu_itr ) = passSel;
+      passSelDecor( *el_itr ) = passSel;
     }
 
     if ( passSel ) {
       nPass++;
       if ( m_createSelectedContainer ) {
-        selectedMuons->push_back( mu_itr );
+        selectedMuons->push_back( el_itr );
       }
     }
   }
 
-  m_numObject     += nObj;
-  m_numObjectPass += nPass;
+  // for cutflow: make sure to count passed objects only once (i.e., this flag will be true only for nominal)
+  if ( countPass ) {
+    m_numObject     += nObj;
+    m_numObjectPass += nPass;
+  }
+
+  if ( m_debug ) { Info("execute()", "Initial muons: %i - Selected muons: %i", nObj , nPass ); }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
-
-    // make sure CDV gets deleted if not stored in TStore
-    if ( m_createSelectedContainer ) { delete selectedMuons; selectedMuons = nullptr; }
-
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    return false;
   }
   if ( m_pass_max > 0 && nPass > m_pass_max ) {
-
-    // make sure CDV gets deleted if not stored in TStore
-    if ( m_createSelectedContainer ) { delete selectedMuons; selectedMuons = nullptr; }
-
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    return false;
   }
 
-  m_numEventPass++;
-  m_weightNumEventPass += mcEvtWeight;
-
-  // add ConstDataVector to TStore
-  if ( m_createSelectedContainer ) {
-    RETURN_CHECK("MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName ), "Failed to store const data container");
+  // for cutflow: make sure to count passed events only once (i.e., this flag will be true only for nominal)
+  if ( countPass ){
+    m_numEventPass++;
+    m_weightNumEventPass += mcEvtWeight;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return true;
 }
 
 
@@ -411,6 +517,7 @@ EL::StatusCode MuonSelector :: finalize ()
   Info("finalize()", "Deleting tool instances...");
 
   if ( m_muonSelectionTool ) { delete m_muonSelectionTool; m_muonSelectionTool = nullptr; }
+  if ( m_IsolationSelectionTool ) { delete m_IsolationSelectionTool; m_IsolationSelectionTool = nullptr; }
 
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
@@ -441,7 +548,7 @@ EL::StatusCode MuonSelector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
+int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
 
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
 
@@ -508,25 +615,29 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
   */
 
-  // muon quality
-  xAOD::Muon::Quality my_quality = m_muonSelectionTool->getQuality( *muon );
-  if ( m_debug ) { Info("PassCuts()", "Muon quality %d", static_cast<int>(my_quality)); }
+  // quality --> done already by MuonSelectionTool (see below)!
   /*
-  if ( my_quality <= xAOD::Muon::VeryLoose )
-    verylooseMuons++;
-  if ( my_quality <= xAOD::Muon::Loose )
-    looseMuons++;
-  if ( my_quality <= xAOD::Muon::Medium )
-    mediumMuons++;
-  if ( my_quality <= xAOD::Muon::Tight )
-    tightMuons++;
-  if ( my_quality <= xAOD::Muon::VeryLoose && !(my_quality <= xAOD::Muon::Loose) )
-    badMuons++;
+  if ( !m_muonQuality.empty() ) {
+
+    // get the quality enum for *this* muon
+    int quality = static_cast<int>( muon->quality() );
+
+    // get the selected quality level
+    HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
+    int selected_quality = static_cast<int>( muTypeParser.parseEnum(m_muonQuality) )
+   
+    // NB: please note the ordering of the enum items! 
+    // http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODMuon/xAODMuon/versions/Muon_v1.h
+    if ( quality > selected_quality ) {
+      if ( m_debug ) { Info("PassCuts()", "Muon quality: %i - min. required: %i . Failed", quality, selected_quality); }
+      return 0;
+    }
+
+  } 
   */
 
-  // if specified, cut on muon quality
+  // type
   HelperClasses::EnumParser<xAOD::Muon::MuonType> muTypeParser;
-  //static_cast<int>(muTypeParser.parseEnum(m_muonType))
   if ( !m_muonType.empty() ) {
     if ( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
       if ( m_debug ) { Info("PassCuts()", "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str()); }
@@ -535,24 +646,55 @@ int MuonSelector :: PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
 
   // isolation
-  if ( m_doIsolation ) {
+  static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
+  bool passIso(false); 
+  if (  m_IsoWP == "CutBasedDC14" ) {
+
     HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-    float ptcone_dr = -999., etcone_dr = -999.;
+    float ptcone_dr(-999.), etcone_dr(-999.);
+
     if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ) {
       bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut);
       bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ;
-      if ( !( isTrackIso && isCaloIso ) ) {
-        if ( m_debug ) { Info("PassCuts()", "Muon failed isolation cut "); }
-        return 0;
-      }
+
+      passIso = ( isTrackIso && isCaloIso );
+      isIsoDecor( *muon ) = ( passIso ) ? 1 : 0;
     }
+
+  } else {
+
+    passIso = ( m_IsolationSelectionTool->accept( *muon ) );
+    isIsoDecor( *muon ) = ( passIso ) ? 1 : 0;
+
   }
 
-  // this will accept the muon based on the settings at initialization
+  if ( m_doIsolation && !passIso ) {
+    if ( m_debug ) { Info("PassCuts()", "Muon failed isolation cut "); }
+    return 0;
+  }
+
+  // quality decorators
+  static SG::AuxElement::Decorator< char > isVeryLooseQDecor("isVeryLooseQ");
+  static SG::AuxElement::Decorator< char > isLooseQDecor("isLooseQ");
+  static SG::AuxElement::Decorator< char > isMediumQDecor("isMediumQ");
+  static SG::AuxElement::Decorator< char > isTightQDecor("isTightQ");
+  // initialise
+  isVeryLooseQDecor( *muon ) = -1;
+  isLooseQDecor( *muon )     = -1;
+  isMediumQDecor( *muon )    = -1;
+  isTightQDecor( *muon )     = -1;
+
+  // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
   if ( ! m_muonSelectionTool->accept( *muon ) ) {
     if ( m_debug ) { Info("PassCuts()", "Muon failed requirements of MuonSelectionTool."); }
     return 0;
   }
+
+  int this_quality     = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );     
+  isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
+  isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
+  isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
+  isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
 
   return 1;
 }

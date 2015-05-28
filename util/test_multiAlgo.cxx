@@ -82,7 +82,7 @@ int main( int argc, char* argv[] ) {
   job.options()->setString( EL::Job::optXaodAccessMode, EL::Job::optXaodAccessMode_branch );
 
   // Select max number of events
-  //job.options()->setDouble (EL::Job::optMaxEvents, 1000);
+  job.options()->setDouble (EL::Job::optMaxEvents, 1000);
 
   std::string localDataDir = "$ROOTCOREBIN/data/xAODAnaHelpers/";
 
@@ -150,11 +150,11 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( baseEventSel );
   //job.algsAdd( jetCalib );
   //job.algsAdd( muonCalib );
+  //job.algsAdd( muonSelect_signal );
   //job.algsAdd( muonEffCorr );
   //job.algsAdd( electronCalib );
-  //job.algsAdd( electronEffCorr );
-  //job.algsAdd( muonSelect_signal );
   //job.algsAdd( electronSelect_signal );
+  //job.algsAdd( electronEffCorr );
   //job.algsAdd( jetSelect_signal );
   //job.algsAdd( bjetSelect_signal );
   //job.algsAdd( bjetEffCorr_btag );
@@ -164,7 +164,7 @@ int main( int argc, char* argv[] ) {
   //job.algsAdd( jetHistsAlgo_truth );
   //job.algsAdd( overlapRemoval );
   //job.algsAdd( jk_AntiKt10LC );
-  job.algsAdd( out_tree );
+  //job.algsAdd( out_tree );
 
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;

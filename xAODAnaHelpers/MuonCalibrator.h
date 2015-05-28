@@ -11,12 +11,21 @@ class MuonCalibrator : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
+
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
+
   // sort after calibration
   bool    m_sort;
 
+  // systematics
+  std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
+  			             // upstream algo (e.g., the SC containers with calibration systematics)
+  std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
+  				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
+  bool m_runSysts;
+  bool m_runAllSyst;
 
 private:
   int m_numEvent;         //!
@@ -25,6 +34,8 @@ private:
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;
+
+  std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
   CP::MuonCalibrationAndSmearingTool *m_muonCalibrationAndSmearingTool; //!
@@ -35,7 +46,6 @@ private:
 public:
   // Tree *myTree; //!
   // TH1 *myHist; //!
-
 
   // this is a standard constructor
   MuonCalibrator ();

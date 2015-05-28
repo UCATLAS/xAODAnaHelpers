@@ -354,6 +354,17 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     m_tree->Branch("muon_m",   &m_muon_m);
   }
 
+  if ( m_muInfoSwitch->m_isolation ) {
+    m_tree->Branch("muon_isIsolated",  &m_muon_isIsolated);
+  }
+
+  if ( m_muInfoSwitch->m_quality ) {
+    m_tree->Branch("muon_isVeryLoose",  &m_muon_isVeryLoose);
+    m_tree->Branch("muon_isLoose",      &m_muon_isLoose);
+    m_tree->Branch("muon_isMedium",     &m_muon_isMedium);
+    m_tree->Branch("muon_isTight",      &m_muon_isTight);
+  }
+
   if ( m_muInfoSwitch->m_trackparams ) {
     m_tree->Branch("muon_trkd0",          &m_muon_trkd0);
     m_tree->Branch("muon_trkd0sig",       &m_muon_trkd0sig);
@@ -398,6 +409,23 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       m_muon_eta.push_back( muon_itr->eta() );
       m_muon_phi.push_back( muon_itr->phi() );
       m_muon_m.push_back  ( muon_itr->m() / m_units  );
+    }
+
+    if ( m_muInfoSwitch->m_isolation ) {
+      static SG::AuxElement::Accessor<char> isIsoAcc ("isIsolated");
+      if ( isIsoAcc.isAvailable( *muon_itr ) ) { m_muon_isIsolated.push_back( isIsoAcc( *muon_itr ) ); } else { m_muon_isIsolated.push_back( -1 ); }
+    }
+
+    if ( m_muInfoSwitch->m_quality ) {
+      static SG::AuxElement::Accessor<char> isVeryLooseQAcc ("isVeryLooseQ");
+      static SG::AuxElement::Accessor<char> isLooseQAcc ("isLooseQ");
+      static SG::AuxElement::Accessor<char> isMediumQAcc ("isMediumQ");
+      static SG::AuxElement::Accessor<char> isTightQAcc ("isTightQ");
+
+      if ( isVeryLooseQAcc.isAvailable( *muon_itr ) ) { m_muon_isVeryLoose.push_back( isVeryLooseQAcc( *muon_itr ) ); } else { m_muon_isVeryLoose.push_back( -1 ); }
+      if ( isLooseQAcc.isAvailable( *muon_itr ) ) { m_muon_isLoose.push_back( isLooseQAcc( *muon_itr ) ); } else { m_muon_isLoose.push_back( -1 ); }
+      if ( isMediumQAcc.isAvailable( *muon_itr ) ) { m_muon_isMedium.push_back( isMediumQAcc( *muon_itr ) ); } else { m_muon_isMedium.push_back( -1 ); }
+      if ( isTightQAcc.isAvailable( *muon_itr ) ) { m_muon_isTight.push_back( isTightQAcc( *muon_itr ) ); } else { m_muon_isTight.push_back( -1 ); }
     }
 
     const xAOD::TrackParticle* trk = muon_itr->primaryTrackParticle();
@@ -1550,11 +1578,22 @@ void HelpTreeBase::ClearMuons() {
 
   m_nmuon = 0;
 
-  if ( m_muInfoSwitch->m_kinematic ){
+  if ( m_muInfoSwitch->m_kinematic ) {
     m_muon_pt.clear();
     m_muon_eta.clear();
     m_muon_phi.clear();
     m_muon_m.clear();
+  }
+
+  if ( m_muInfoSwitch->m_isolation ) {
+    m_muon_isIsolated.clear();
+  }
+
+  if ( m_muInfoSwitch->m_quality ) {
+    m_muon_isVeryLoose.clear();
+    m_muon_isLoose.clear();
+    m_muon_isMedium.clear();
+    m_muon_isTight.clear();
   }
 
   if ( m_muInfoSwitch->m_trackparams ) {

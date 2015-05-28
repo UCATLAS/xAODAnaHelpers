@@ -9,6 +9,7 @@
 #include "TH1D.h"
 
 // external tools include(s):
+#include "ElectronIsolationSelection/IsolationSelectionTool.h"
 #include "MuonSelectorTools/MuonSelectionTool.h"
 
 // algorithm wrapper
@@ -20,31 +21,40 @@ class MuonSelector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 public:
   // cutflow
-  bool m_useCutFlow;            //!
+  bool m_useCutFlow;            
 
-  std::string  m_inContainerName;     // input container name
-  std::string  m_outContainerName;    // output container name
-  bool     m_decorateSelectedObjects; // decorate selected objects? default passSel
-  bool     m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
-  int      m_nToProcess;              // look at n objects
-  int      m_pass_min;  	      // minimum number of objects passing cuts
-  int      m_pass_max;  	      // maximum number of objects passing cuts
-  float    m_pT_max;		      // require pT < pt_max
-  float    m_pT_min;		      // require pT > pt_min
-  std::string  m_muonQuality;	      // require quality
-  std::string  m_muonType;	      // require type
-  float    m_eta_max;		      // require |eta| < eta_max
-  float    m_d0_max;                  // require d0 < m_d0_max
-  float    m_d0sig_max; 	      // require d0 significance (at BL) < m_d0sig_max
-  float	   m_z0sintheta_max;          // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
-  bool     m_doIsolation;
-  std::string  m_CaloBasedIsoType;
-  float    m_CaloBasedIsoCut;
-  std::string  m_TrackBasedIsoType;
-  float    m_TrackBasedIsoCut;
+  // configuration variables
+  std::string    m_inContainerName;          // input container name
+  std::string    m_outContainerName;         // output container name
+  std::string    m_outAuxContainerName;      // output auxiliary container name
+  std::string    m_inputAlgoSystNames;
+  std::string    m_outputAlgoSystNames;
+  bool       	 m_decorateSelectedObjects;  // decorate selected objects - default "passSel"
+  bool       	 m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
+  int            m_nToProcess;               // look at n objects
+  int            m_pass_min;  	             // minimum number of objects passing cuts
+  int            m_pass_max;  	             // maximum number of objects passing cuts
+  float          m_pT_max;		     // require pT < pt_max
+  float          m_pT_min;		     // require pT > pt_min
+  int            m_muonQuality;	             // require quality
+  std::string    m_muonType;	             // require type
+  float          m_eta_max;		     // require |eta| < eta_max
+  float          m_d0_max;                   // require d0 < m_d0_max
+  float          m_d0sig_max; 	             // require d0 significance (at BL) < m_d0sig_max
+  float	         m_z0sintheta_max;           // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
+  // isolation
+  bool           m_doIsolation;
+  std::string    m_IsoWP;
+  std::string    m_CaloIsoEff;
+  std::string    m_TrackIsoEff;
+  bool           m_useRelativeIso;
+  std::string    m_CaloBasedIsoType;
+  float          m_CaloBasedIsoCut;
+  std::string    m_TrackBasedIsoType;
+  float          m_TrackBasedIsoCut;
 
-  std::string              m_passAuxDecorKeys;  //!
-  std::string              m_failAuxDecorKeys;  //!
+  std::string    m_passAuxDecorKeys;  
+  std::string    m_failAuxDecorKeys;  
 
 private:
   int m_numEvent;         //!
@@ -52,7 +62,6 @@ private:
   int m_numEventPass;     //!
   int m_weightNumEventPass; //!
   int m_numObjectPass;    //!
-  std::string  m_outAuxContainerName; // output auxiliary container name
 
   // cutflow
   TH1D* m_cutflowHist;          //!
@@ -63,7 +72,8 @@ private:
   std::vector<std::string> m_failKeys;  //!
 
   // tools
-  CP::MuonSelectionTool *m_muonSelectionTool;//!
+  CP::IsolationSelectionTool         *m_IsolationSelectionTool;  //! /* MC15 tool for isolation*/
+  CP::MuonSelectionTool              *m_muonSelectionTool;       //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -90,10 +100,12 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  virtual EL::StatusCode executeConst( const xAOD::MuonContainer* inMuons, float mcEvtWeight );
+
   // added functions not from Algorithm
-  // why does this need to be virtual?
-  virtual int PassCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex );
+  bool executeSelection( const xAOD::MuonContainer* inMuons, float mcEvtWeight, bool countPass,
+                         ConstDataVector<xAOD::MuonContainer>* selectedMuons );
+  virtual int passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex );
+  
   // this is needed to distribute the algorithm to the workers
   ClassDef(MuonSelector, 1);
 };
