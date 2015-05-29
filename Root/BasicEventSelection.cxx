@@ -98,9 +98,19 @@ EL::StatusCode BasicEventSelection :: configure ()
     }
 
     // Trigger
-    m_triggerSelection           = config->GetValue("Trigger", "");
+    m_triggerSelection           = config->GetValue("Trigger",            ""    );
+    m_cutOnTrigger               = config->GetValue("CutOnTrigger",       true  );
+    m_storeTrigDecisions         = config->GetValue("StoreTrigDecision",  false );
+    m_storePassAny               = config->GetValue("StorePassAny",       false );
+    m_storePassL1                = config->GetValue("StorePassL1",        false );
+    m_storePassHLT               = config->GetValue("StorePassHLT",       false );
+    m_storeTrigKeys              = config->GetValue("StoreTrigKeys",      false );
+
     if( m_triggerSelection.size() > 0)
       Info("configure()", "Using Trigger %s", m_triggerSelection.c_str() );
+    if( !m_cutOnTrigger ) {
+      Info("configure()", "WILL NOT CUT ON TRIGGER AS YOU REQUESTED!");
+    }
 
     config->Print();
 
@@ -344,7 +354,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }
   m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
   m_cutflowHistW->GetXaxis()->FindBin("NPV");
-  if ( m_triggerSelection.size() > 0 ) {
+  if ( m_triggerSelection.size() > 0 && m_cutOnTrigger ) {
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
@@ -370,27 +380,16 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  if ( m_triggerSelection.size() > 0 ) {
+  m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
+  ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
 
-    m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
-    ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
+  m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
 
-    m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
-
-  }
-
-
-  //--------------------------------------------
-  //  Get Containers Depending on Analysis Needs
-  //--------------------------------------------
-
-  // First open configuration file which holds all the analysis customization
-  // get configuration from steerfile
 
   // as a check, let's see the number of events in our file (long long int)
   Info("initialize()", "Number of events in file = %lli", m_event->getEntries());
@@ -411,6 +410,8 @@ EL::StatusCode BasicEventSelection :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
+  if( m_debug ) { Info("execute()", "Basic Event Selection"); }
+
   //----------------------------
   // Event information
   //---------------------------
@@ -421,10 +422,10 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   //--------------------------
   //Print trigger's used for first event only
-  if ( m_eventCounter == 1 && m_triggerSelection.size() > 0) {
+  if ( m_eventCounter == 1 && m_triggerSelection.size() > 0 ) {
+    printf("*** Triggers used are:\n");
     auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
     std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
-    printf("*** Triggers used are:\n");
     for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
       printf("    %s\n", triggersUsed.at(iTrigger).c_str());
     }
@@ -536,17 +537,55 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Trigger //
   if ( m_triggerSelection.size() > 0 ) {
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
-    //std::cout << m_triggerSelection << " " << triggerChainGroup->isPassed() << " " << triggerChainGroup->getPrescale() << std::endl;
-    if ( !triggerChainGroup->isPassed() ) {
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
-    }
+    if ( m_cutOnTrigger ) {
+      if ( !triggerChainGroup->isPassed() ) {
+        wk()->skipEvent();
+        return EL::StatusCode::SUCCESS;
+      }
+      m_cutflowHist ->Fill( m_cutflow_trigger, 1 );
+      m_cutflowHistW->Fill( m_cutflow_trigger, mcEvtWeight);
+
+    } // m_cutOnTrigger
+
+    // save passed triggers in eventInfo
+    if( m_storeTrigDecisions ) {
+      std::vector<std::string> passTriggers;
+      for (auto &trigName : triggerChainGroup->getListOfTriggers()) {
+        auto trigChain = m_trigDecTool->getChainGroup( trigName );
+        if (trigChain->isPassed()) {
+          passTriggers.push_back( trigName );
+        }
+      }
+      static SG::AuxElement::Decorator< std::vector< std::string > > passTrigs("passTriggers");
+      passTrigs( *eventInfo ) = passTriggers;
+    } // storeTrigDecision
+
     static SG::AuxElement::Decorator< float > weight_prescale("weight_prescale");
     weight_prescale(*eventInfo) = triggerChainGroup->getPrescale();
-    m_cutflowHist ->Fill( m_cutflow_trigger, 1 );
-    m_cutflowHistW->Fill( m_cutflow_trigger, mcEvtWeight);
+  } // if giving a specific list of triggers to look at
+
+  if( m_storePassAny ) {
+    static SG::AuxElement::Decorator< int > passAny("passAny");
+    passAny(*eventInfo) = (int)m_trigDecTool->isPassed(".*");
+  }
+  if( m_storePassL1 ) {
+    static SG::AuxElement::Decorator< int > passL1("passL1");
+    passL1(*eventInfo) = (int)m_trigDecTool->isPassed("L1_.*");
+  }
+  if( m_storePassHLT ) {
+    static SG::AuxElement::Decorator< int > passHLT("passHLT");
+    passHLT(*eventInfo) = (int)m_trigDecTool->isPassed("HLT_.*");
   }
 
+
+  if( m_storeTrigKeys ) {
+    static SG::AuxElement::Decorator< int > masterKey("masterKey");
+    masterKey(*eventInfo) = m_trigConfTool->masterKey();
+    static SG::AuxElement::Decorator< int > L1PSKey("L1PSKey");
+    L1PSKey(*eventInfo) = m_trigConfTool->lvl1PrescaleKey();
+    static SG::AuxElement::Decorator< int > HLTPSKey("HLTPSKey");
+    HLTPSKey(*eventInfo) = m_trigConfTool->hltPrescaleKey();
+  }
 
   return EL::StatusCode::SUCCESS;
 }

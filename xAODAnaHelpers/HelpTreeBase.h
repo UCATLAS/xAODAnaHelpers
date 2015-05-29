@@ -48,7 +48,7 @@ public:
   virtual ~HelpTreeBase() {;}
 
   void AddEvent       (const std::string detailStr = "");
-  void AddTrigger     (const std::string detailStr = "", const std::string triggerSel = "");
+  void AddTrigger     (const std::string detailStr = "");
   void AddJetTrigger  (const std::string detailStr = "");
   void AddMuons       (const std::string detailStr = "");
   void AddElectrons   (const std::string detailStr = "");
@@ -75,8 +75,8 @@ public:
   Trig::TrigDecisionTool*      m_trigDecTool;
 
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
-  void FillTrigger();
-  void FillJetTrigger( TrigConf::xAODConfigTool* trigConfTool, Trig::TrigDecisionTool* trigDecTool );
+  void FillTrigger( const xAOD::EventInfo* eventInfo );
+  void FillJetTrigger();
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1 );
@@ -103,7 +103,7 @@ public:
     return;
   };
   virtual void AddJetTriggerUser(const std::string detailStr = "")      {
-    if(m_debug) Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    if(m_debug) Info("AddJetTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
   virtual void AddMuonsUser(const std::string detailStr = "")      {

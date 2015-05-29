@@ -118,8 +118,6 @@ EL::StatusCode TreeAlgo :: configure ()
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
     m_tauContainerName        = config->GetValue("TauContainerName",        "");
 
-    m_triggerSelection        = config->GetValue("TriggerSelection",        ".*");
-
     // DC14 switch for little things that need to happen to run
     // for those samples with the corresponding packages
     m_DC14                    = config->GetValue("DC14", false);
@@ -153,7 +151,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
   // Fill trigger information
   if ( !m_trigDetailStr.empty() )    {
-    m_helpTree->FillTrigger();
+    m_helpTree->FillTrigger( eventInfo );
   }
 
   // Fill jet trigger information
