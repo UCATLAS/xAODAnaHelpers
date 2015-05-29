@@ -284,6 +284,7 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     static SG::AuxElement::ConstAccessor< int > masterKey("masterKey");
     if( masterKey.isAvailable( *eventInfo ) ) { m_masterKey = masterKey( *eventInfo ); }
     else { m_masterKey = -999; }
+
     static SG::AuxElement::ConstAccessor< int > L1PSKey("L1PSKey");
     if( L1PSKey.isAvailable( *eventInfo ) ) { m_L1PSKey = L1PSKey( *eventInfo ); }
     else { m_L1PSKey = -999; }
