@@ -98,7 +98,7 @@ EL::StatusCode  JetCalibrator :: configure ()
 
     // shallow copies are made with this output container name
     m_outContainerName        = config->GetValue("OutputContainer", "");
-    m_sort                    = config->GetValue("Sort",          false);
+    m_sort                    = config->GetValue("Sort",          true);
 
     config->Print();
     Info("configure()", "JetCalibrator Interface succesfully configured! ");

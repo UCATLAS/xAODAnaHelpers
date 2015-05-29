@@ -81,7 +81,7 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     m_systVal 		      = config->GetValue("SystVal" , 0. );
     m_runAllSyst              = (m_systName.find("All") != std::string::npos);
 
-    m_sort                    = config->GetValue("Sort",  false);
+    m_sort                    = config->GetValue("Sort",  true);
 
     config->Print();
 
