@@ -54,7 +54,7 @@ EL::StatusCode  MuonCalibrator :: configure ()
     m_inContainerName         = config->GetValue("InputContainer",  "");
 
     m_outContainerName        = config->GetValue("OutputContainer", "");
-    m_sort                    = config->GetValue("Sort",  false);
+    m_sort                    = config->GetValue("Sort",  true);
 
     // add more and add to Muon selector
 
