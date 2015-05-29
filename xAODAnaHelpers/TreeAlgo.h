@@ -8,14 +8,6 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
-namespace TrigConf {
-  class xAODConfigTool;
-}
-
-namespace Trig {
-  class TrigDecisionTool;
-}
-
 class TreeAlgo : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
@@ -26,13 +18,13 @@ public:
 
   // holds bools that control which branches are filled
   std::string m_evtDetailStr;	       //!
-  std::string m_trigDetailStr;	       //!
+  std::string m_trigDetailStr;	     //!
   std::string m_jetTrigDetailStr;	   //!
   std::string m_muDetailStr;	       //!
   std::string m_elDetailStr;	       //!
   std::string m_jetDetailStr;	       //!
-  std::string m_fatJetDetailStr;       //!
-  std::string m_tauDetailStr;          //!
+  std::string m_fatJetDetailStr;     //!
+  std::string m_tauDetailStr;        //!
 
   std::string m_evtContainerName;      //!
   std::string m_muContainerName;       //!
@@ -41,16 +33,11 @@ public:
   std::string m_fatJetContainerName;   //!
   std::string m_tauContainerName;      //!
 
-  std::string m_triggerSelection;      //!
-
   bool m_DC14;                         //!
 
 private:
   HelpTreeBase* m_helpTree;            //!
   
-  TrigConf::xAODConfigTool*  m_trigConfTool;  //!
-  Trig::TrigDecisionTool*    m_trigDecTool;   //!
-
 public:
 
   // this is a standard constructor
