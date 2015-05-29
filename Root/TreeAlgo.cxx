@@ -14,10 +14,6 @@
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-// For the trigger configuration and decisions
-#include "TrigConfxAOD/xAODConfigTool.h"
-#include "TrigDecisionTool/TrigDecisionTool.h"
-
 #include "TEnv.h"
 #include "TSystem.h"
 
@@ -25,9 +21,7 @@
 ClassImp(TreeAlgo)
 
 TreeAlgo :: TreeAlgo () :
-  m_helpTree(nullptr),
-  m_trigConfTool(nullptr),
-  m_trigDecTool(nullptr)
+  m_helpTree(nullptr)
 {
   this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
 }
@@ -83,25 +77,6 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     wk()->addOutput( outTree );
   }
 
-  // Trigger //
-  Info("initialize()", "About to try to configure xAODConfigTool and TrigDecisionTool" );
-  if ( !m_trigDetailStr.empty() || !m_jetTrigDetailStr.empty() ) {
-
-    Info("initialize()", "Configuring xAODConfigTool and TrigDecisionTool" );
-
-    m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-    RETURN_CHECK("TreeAlgo::initialize()", m_trigConfTool->initialize(), "");
-    ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
-
-    m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
-    RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
-    RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
-    RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
-    RETURN_CHECK("TreeAlgo::initialize()", m_trigDecTool->initialize(), "");
-
-  }
-
-
   m_helpTree->AddEvent( m_evtDetailStr );
 
   if ( !m_trigDetailStr.empty() )       {   m_helpTree->AddTrigger    (m_trigDetailStr);    }
@@ -143,8 +118,6 @@ EL::StatusCode TreeAlgo :: configure ()
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
     m_tauContainerName        = config->GetValue("TauContainerName",        "");
 
-    m_triggerSelection        = config->GetValue("TriggerSelection",        ".*");
-
     // DC14 switch for little things that need to happen to run
     // for those samples with the corresponding packages
     m_DC14                    = config->GetValue("DC14", false);
@@ -178,15 +151,13 @@ EL::StatusCode TreeAlgo :: execute ()
 
   // Fill trigger information
   if ( !m_trigDetailStr.empty() )    {
-    // TO BE FIXED
-    //m_helpTree->FillTrigger( m_trigConfTool, m_trigDecTool, m_triggerSelection );
+    m_helpTree->FillTrigger( eventInfo );
   }
 
   // Fill jet trigger information
   if ( !m_jetTrigDetailStr.empty() ) {
-    m_helpTree->FillJetTrigger( m_trigConfTool, m_trigDecTool );
+    m_helpTree->FillJetTrigger();
   }
-
 
   // for the containers the were supplied, fill the appropriate vectors
   if ( !m_muContainerName.empty() ) {
@@ -232,8 +203,6 @@ EL::StatusCode TreeAlgo :: finalize () {
   Info("finalize()", "Deleting tree instances...");
 
   if ( m_helpTree      ) { delete m_helpTree;     m_helpTree     = nullptr; }
-  if ( m_trigDecTool   ) { delete m_trigDecTool;  m_trigDecTool  = nullptr; }
-  if ( m_trigConfTool  ) { delete m_trigConfTool; m_trigConfTool = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }

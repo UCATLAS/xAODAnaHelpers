@@ -32,6 +32,12 @@ class BasicEventSelection : public xAH::Algorithm
     //PU Reweighting
     bool m_doPUreweighting; //!
     std::string m_triggerSelection; //!
+    bool m_cutOnTrigger;       //!
+    bool m_storeTrigDecisions; //!
+    bool m_storePassAny;       //!
+    bool m_storePassL1;        //!
+    bool m_storePassHLT;       //!
+    bool m_storeTrigKeys;      //!
 
     std::string m_derivationName;
 
