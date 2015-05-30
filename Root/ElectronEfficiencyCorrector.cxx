@@ -217,8 +217,16 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   m_numEvent++;
 
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
+  if ( !isMC ) {
+    if ( m_debug ) { Info("execute()", "Event is Data! Do not apply Electron Efficiency Correction... "); }
+    return EL::StatusCode::SUCCESS;
+  }
+
   // initialise containers
-  const xAOD::ElectronContainer* inputElectrons = nullptr;
+  const xAOD::ElectronContainer* inputElectrons(nullptr);
 
   // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
@@ -231,7 +239,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
         RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
 
-	// decorate electrons w/ SF
+	// decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
 	this->executeSF( inputElectrons, countInputCont );
 
   } else {
@@ -255,7 +263,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	     }
     	   }
 
-	   // decorate electrons w/ SF- there will be a decoration w/ different name for each syst!
+	   // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
 	   this->executeSF( inputElectrons, countInputCont );
 
 	   // increment counter

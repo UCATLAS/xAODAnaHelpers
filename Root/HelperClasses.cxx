@@ -11,12 +11,13 @@ namespace HelperClasses{
   template <>
   EnumParser<xAOD::Iso::IsolationType>::EnumParser()
   {
-
     std::string etcone20("etcone20");         enumMap.insert(std::make_pair(etcone20,      xAOD::Iso::etcone20));
     std::string topoetcone20("topoetcone20"); enumMap.insert(std::make_pair(topoetcone20,  xAOD::Iso::topoetcone20));
     std::string topoetcone30("topoetcone30"); enumMap.insert(std::make_pair(topoetcone30,  xAOD::Iso::topoetcone30));
     std::string ptcone20("ptcone20");         enumMap.insert(std::make_pair(ptcone20,      xAOD::Iso::ptcone20));
     std::string ptcone30("ptcone30");         enumMap.insert(std::make_pair(ptcone30,      xAOD::Iso::ptcone30));
+    std::string ptvarcone20("ptvarcone20");   enumMap.insert(std::make_pair(ptvarcone20,   xAOD::Iso::ptvarcone20));
+    std::string ptvarcone30("ptvarcone30");   enumMap.insert(std::make_pair(ptvarcone30,   xAOD::Iso::ptvarcone30));
   }
 
   /* parser for electron likelihood PID enum */
@@ -53,7 +54,6 @@ namespace HelperClasses{
     std::string IsEMMedium("IsEMMedium");   enumMap.insert(std::make_pair( IsEMMedium, egammaPID::IsEMMedium));
     std::string IsEMTight("IsEMTight");     enumMap.insert(std::make_pair( IsEMTight , egammaPID::IsEMTight));
   }
-
 
   /* parser for muon quality enum */
   template <>
@@ -113,6 +113,8 @@ namespace HelperClasses{
 
   void MuonInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_isolation     = parse("isolation");
+    m_quality       = parse("quality");
     m_trackparams   = parse("trackparams");
     m_trackhitcont  = parse("trackhitcont");
   }

@@ -482,7 +482,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
     }
 
     nObj++;
-    bool passSel = this->PassCuts( el_itr, pvx );
+    bool passSel = this->passCuts( el_itr, pvx );
     if ( m_decorateSelectedObjects ) {
       passSelDecor( *el_itr ) = passSel;
     }
@@ -582,7 +582,7 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-int ElectronSelector :: PassCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex ) {
+int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex ) {
 
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/EGammaIdentificationRun2
 

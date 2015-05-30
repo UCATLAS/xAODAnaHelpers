@@ -33,7 +33,9 @@ dict_pkg = {'2.1.29': ["ElectronEfficiencyCorrection"],
                        "ElectronEfficiencyCorrection"],
             '2.1.32': ["atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
                        "ElectronEfficiencyCorrection"],
-            '2.3.12': ["atlasoff/PhysicsAnalysis/ElectronPhotonID/ElectronEfficiencyCorrection/tags/ElectronEfficiencyCorrection-00-01-20"]
+            '2.3.12': ["atlasoff/PhysicsAnalysis/ElectronPhotonID/ElectronEfficiencyCorrection/tags/ElectronEfficiencyCorrection-00-01-20",
+                       "atlasoff/PhysicsAnalysis/MuonID/MuonSelectorTools/tags/MuonSelectorTools-00-05-10",
+                       "atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-00-19"]
            }
 
 try:

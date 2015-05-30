@@ -24,7 +24,7 @@ class ElectronSelector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 
 public:
-  bool m_useCutFlow;            //!
+  bool m_useCutFlow;            
 
   // configuration variables
   std::string    m_inContainerName;          // input container name
@@ -32,7 +32,7 @@ public:
   std::string    m_outAuxContainerName;      // output auxiliary container name
   std::string    m_inputAlgoSystNames;
   std::string    m_outputAlgoSystNames;
-  bool       	 m_decorateSelectedObjects;  // decorate selected objects? defaul passSel
+  bool       	 m_decorateSelectedObjects;  // decorate selected objects - default "passSel"
   bool       	 m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
   int        	 m_nToProcess;  	     // look at n objects
   int        	 m_pass_min;		     // minimum number of objects passing cuts
@@ -44,22 +44,17 @@ public:
   float      	 m_d0_max;		     // require d0 < m_d0_max
   float      	 m_d0sig_max;		     // require d0 significance (at BL) < m_d0sig_max
   float	     	 m_z0sintheta_max;	     // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
-
   bool           m_doAuthorCut;
   bool           m_doOQCut;
-
   std::string    m_confDirPID;
-
   // likelihood-based PID
   bool           m_doLHPIDcut;
   std::string    m_LHConfigYear;
   std::string    m_LHOperatingPoint;
-
   // cut-based PID
   bool           m_doCutBasedPIDcut;
   std::string    m_CutBasedConfigYear;
   std::string    m_CutBasedOperatingPoint;
-
   // isolation
   bool           m_doIsolation;
   std::string    m_IsoWP;
@@ -71,8 +66,8 @@ public:
   std::string    m_TrackBasedIsoType;
   float          m_TrackBasedIsoCut;
 
-  std::string    m_passAuxDecorKeys;  //!
-  std::string    m_failAuxDecorKeys;  //!
+  std::string    m_passAuxDecorKeys;  
+  std::string    m_failAuxDecorKeys;  
 
 private:
   int m_numEvent;           //!
@@ -124,12 +119,12 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  bool executeSelection( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
-                         ConstDataVector<xAOD::ElectronContainer>* selectedElectrons );
 
   // added functions not from Algorithm
-  // why does this need to be virtual?
-  virtual int PassCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex );
+  bool executeSelection( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
+                         ConstDataVector<xAOD::ElectronContainer>* selectedElectrons );
+  virtual int passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex );
+  
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronSelector, 1);
 };

@@ -35,7 +35,6 @@ public:
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
-  std::string m_outAuxContainerName;
 
   std::vector<CP::SystematicSet> m_systList; //!
 

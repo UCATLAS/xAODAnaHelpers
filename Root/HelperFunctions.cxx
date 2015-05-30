@@ -231,7 +231,7 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
 }
 
 // Get the subset of systematics to consider
-// can also retun full set if systName = "All"
+// can also return full set if systName = "All"
 std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet recSysts,
     std::string systName,
     float systVal ) {
