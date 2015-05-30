@@ -1,5 +1,3 @@
-#include <xAODAnaHelpers/ContainerRecording.h>
-
 /* Algorithm Wrapper */
 #include <xAODAnaHelpers/Algorithm.h>
 
@@ -66,8 +64,4 @@
 #pragma link C++ class JERShifter+;
 #pragma link C++ class OverlapRemover+;
 #pragma link C++ class Writer+;
-#endif
-
-#ifdef __CINT__
-#pragma link C++ class ContainerRecording+;
 #endif

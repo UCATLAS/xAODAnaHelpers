@@ -6,52 +6,20 @@
 # https://twiki.cern.ch/twiki/bin/viewauth/Atlas/RootCore#Package_Makefile
 
 
-# the name of the package:
 PACKAGE          = xAODAnaHelpers
-
-# the libraries to link with this one:
 PACKAGE_PRELOAD  =
-
-# additional compilation flags to pass (not propagated to dependent packages):
 PACKAGE_CXXFLAGS = -Wno-unused-local-typedefs
-
-# additional compilation flags to pass (propagated to dependent packages):
 PACKAGE_OBJFLAGS =
-
-# additional linker flags to pass (for compiling the library):
 PACKAGE_LDFLAGS  =
-
-# additional linker flags to pass (for compiling binaries):
 PACKAGE_BINFLAGS =
-
-# additional linker flags to pass (propagated to client libraries):
 PACKAGE_LIBFLAGS =
-
-# the list of packages we depend on:
 PACKAGE_DEP = EventLoop xAODBase xAODRootAccess xAODEventInfo GoodRunsLists PileupReweighting PATInterfaces PathResolver xAODJet xAODMuon xAODEgamma xAODTracking xAODTruth MuonMomentumCorrections MuonEfficiencyCorrections MuonSelectorTools JetCalibTools JetSelectorTools AthContainers ElectronPhotonFourMomentumCorrection ElectronEfficiencyCorrection ElectronPhotonSelectorTools ElectronIsolationSelection METUtilities METInterface AsgTools xAODMissingET JetResolution AssociationUtils Asg_FastJet JetEDM JetUncertainties JetCPInterfaces xAODBTaggingEfficiency TrigConfxAOD TrigDecisionTool xAODCutFlow
 
-# Asg_FastJet JetEDM : HelperFunctions::jetReclustering, HelperFunctions::jetTrimming
-
-# the list of packages we use if present, but that we can work without :
 PACKAGE_TRYDEP   =
-
-# list pattern of scripts to link directly into binary path:
 PACKAGE_SCRIPTS  =  scripts/*.py
-
-# whether to use pedantic compilation:
 PACKAGE_PEDANTIC = 1
-
-# whether to turn *off* optimization (set to dict to do it only for
-# dictionaries):
 PACKAGE_NOOPT    = 0
-
-# whether to build no library (needs to be set if no source files are
-# present):
 PACKAGE_NOCC     = 0
-
-# whether we build a reflex dictionary:
 PACKAGE_REFLEX   = 0
-
-
 
 include $(ROOTCOREDIR)/Makefile-common
