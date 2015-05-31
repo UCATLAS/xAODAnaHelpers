@@ -55,6 +55,40 @@ JetCalibrator :: JetCalibrator () :
 
   Info("JetCalibrator()", "Calling constructor");
 
+
+  // read debug flag from .config file
+  m_debug                   = false;
+  // input container to be read from TEvent or TStore
+  m_inContainerName         = "";
+
+  // DC14 switch for little things that need to happen to run
+  // for those samples with the corresponding packages
+  m_DC14                    = false;
+
+  // CONFIG parameters for JetCalibrationTool
+  m_jetAlgo                 = "";
+  m_outputAlgo              = "";
+
+  // when running data "_Insitu" is appended to this string
+  m_calibSequence           = "JetArea_Residual_Origin_EtaJES_GSC";
+  m_calibConfigFullSim      = "JES_MC15Prerecommendation_April2015.config";
+  m_calibConfigAFII         = "JES_Prerecommendation2015_AFII_Apr2015.config";
+  m_calibConfigData         = "JES_MC15Prerecommendation_April2015.config";
+
+  // CONFIG parameters for JetCleaningTool
+  m_jetCalibCutLevel        = "MediumBad";
+  m_saveAllCleanDecisions   = false;
+
+  // CONFIG parameters for JetUncertaintiesTool
+  m_uncertConfig            = "";
+  // calibrator uses TopoEM or TopoLC while the uncertainity tool uses EMTopo and LCTopo
+  // calibrator should switch at some point
+  // "fix" the name here so the user never knows the difference
+
+  // shallow copies are made with this output container name
+  m_outContainerName        = "";
+  m_sort                    = true;
+
 }
 
 EL::StatusCode  JetCalibrator :: configure ()
@@ -67,38 +101,37 @@ EL::StatusCode  JetCalibrator :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug" , false );
+    m_debug                   = config->GetValue("Debug" , m_debug);
     // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
     // DC14 switch for little things that need to happen to run
     // for those samples with the corresponding packages
-    m_DC14                    = config->GetValue("DC14", false);
+    m_DC14                    = config->GetValue("DC14", m_DC14);
 
     // CONFIG parameters for JetCalibrationTool
-    m_jetAlgo                 = config->GetValue("JetAlgorithm",    "");
-    m_outputAlgo              = config->GetValue("OutputAlgo",      "");
+    m_jetAlgo                 = config->GetValue("JetAlgorithm", m_jetAlgo.c_str());
+    m_outputAlgo              = config->GetValue("OutputAlgo",   m_outputAlgo.c_str());
 
     // when running data "_Insitu" is appended to this string
-    m_calibSequence           = config->GetValue("CalibSequence",           "JetArea_Residual_Origin_EtaJES_GSC");
-    m_calibConfigFullSim      = config->GetValue("configNameFullSim",       "JES_MC15Prerecommendation_April2015.config");
-    m_calibConfigAFII         = config->GetValue("configNameAFII",          "JES_Prerecommendation2015_AFII_Apr2015.config");
-    m_calibConfigData         = config->GetValue("configNameData",          "JES_MC15Prerecommendation_April2015.config");
-    //m_calibConfigData         = config->GetValue("configNameData",          "JES_Full2012dataset_May2014.config");
+    m_calibSequence           = config->GetValue("CalibSequence",           m_calibSequence.c_str());
+    m_calibConfigFullSim      = config->GetValue("configNameFullSim",       m_calibConfigFullSim.c_str());
+    m_calibConfigAFII         = config->GetValue("configNameAFII",          m_calibConfigAFII.c_str());
+    m_calibConfigData         = config->GetValue("configNameData",          m_calibConfigData.c_str());
 
     // CONFIG parameters for JetCleaningTool
-    m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel",        "MediumBad");
-    m_saveAllCleanDecisions   = config->GetValue("SaveAllCleanDecisions",  false);
+    m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel",        m_jetCalibCutLevel.c_str());
+    m_saveAllCleanDecisions   = config->GetValue("SaveAllCleanDecisions",   m_saveAllCleanDecisions);
 
     // CONFIG parameters for JetUncertaintiesTool
-    m_uncertConfig            = config->GetValue("JetUncertConfig", "");
+    m_uncertConfig            = config->GetValue("JetUncertConfig", m_uncertConfig.c_str());
     // calibrator uses TopoEM or TopoLC while the uncertainity tool uses EMTopo and LCTopo
     // calibrator should switch at some point
     // "fix" the name here so the user never knows the difference
 
     // shallow copies are made with this output container name
-    m_outContainerName        = config->GetValue("OutputContainer", "");
-    m_sort                    = config->GetValue("Sort",          true);
+    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
+    m_sort                    = config->GetValue("Sort",            m_sort);
 
     config->Print();
     Info("configure()", "JetCalibrator Interface succesfully configured! ");
