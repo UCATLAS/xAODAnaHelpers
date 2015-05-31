@@ -15,23 +15,8 @@ class TrackSelector : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  int m_numEvent;         //!
-  int m_numObject;        //!
-  int m_numEventPass;     //!
-  int m_numObjectPass;    //!
 
-  std::string              m_passAuxDecorKeys;
-  std::string              m_failAuxDecorKeys;
-  std::vector<std::string> m_passKeys;
-  std::vector<std::string> m_failKeys;
-
-  // cutflow
   bool m_useCutFlow;            //!
-  TH1D* m_cutflowHist;          //!
-  TH1D* m_cutflowHistW;         //!
-  int   m_cutflow_bin;          //!
-
-private:
 
   // configuration variables
   std::string m_inContainerName;      // input container name
@@ -54,6 +39,23 @@ private:
   float m_chi2NdofCut_max;        // require chi2/ndof < chi2NdofCut_max
   float m_chi2Prob_max;           // require TMath::Prob(chi2,ndof) < chi2ProbMax
 
+  std::string              m_passAuxDecorKeys;
+  std::string              m_failAuxDecorKeys;
+
+private:
+
+  std::vector<std::string> m_passKeys;
+  std::vector<std::string> m_failKeys;
+
+  int m_numEvent;         //!
+  int m_numObject;        //!
+  int m_numEventPass;     //!
+  int m_numObjectPass;    //!
+
+  // cutflow
+  TH1D* m_cutflowHist;          //!
+  TH1D* m_cutflowHistW;         //!
+  int   m_cutflow_bin;          //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

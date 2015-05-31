@@ -55,6 +55,22 @@ ElectronCalibrator :: ElectronCalibrator () :
 
   Info("ElectronCalibrator()", "Calling constructor");
 
+  // read debug flag from .config file
+  m_debug                   = false;
+
+  // input container to be read from TEvent or TStore
+  m_inContainerName         = "";
+  m_outContainerName        = "";
+
+  // Systematics stuff
+  m_inputAlgoSystNames      = "";
+  m_outputAlgoSystNames     = "ElectronCalibrator_Syst";
+  m_runSysts                = false; // gets set later is syst applies to this tool
+  m_systName		      = "";
+  m_systVal 		      = 0.;
+
+  m_sort                    = true;
+
 }
 
 
@@ -68,20 +84,20 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug", false);
+    m_debug                   = config->GetValue("Debug", m_debug);
     // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  "");
-    m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
+    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
 
    // Systematics stuff
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  "");
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", "ElectronCalibrator_Syst");
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
+    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
     m_runSysts                = false; // gets set later is syst applies to this tool
-    m_systName		      = config->GetValue("SystName" , "" );
-    m_systVal 		      = config->GetValue("SystVal" , 0. );
+    m_systName		      = config->GetValue("SystName" , m_systName.c_str() );
+    m_systVal 		      = config->GetValue("SystVal" , m_systVal );
     m_runAllSyst              = (m_systName.find("All") != std::string::npos);
 
-    m_sort                    = config->GetValue("Sort",  true);
+    m_sort                    = config->GetValue("Sort", m_sort);
 
     config->Print();
 

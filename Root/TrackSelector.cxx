@@ -34,6 +34,45 @@ TrackSelector :: TrackSelector () :
   // initialization code will go into histInitialize() and
   // initialize().
   Info("TrackSelector()", "Calling constructor");
+
+  // read debug flag from .config file
+  m_debug         = false;
+  m_useCutFlow    = true;
+
+  // input container to be read from TEvent or TStore
+  m_inContainerName  = "";
+
+  // decorate selected objects that pass the cuts
+  m_decorateSelectedObjects = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::VIEW_ELEMENTS option
+  //                            decorating and output container should not be mutually exclusive
+  m_createSelectedContainer = false;
+  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
+  m_outContainerName        = "";
+  // if only want to look at a subset of object
+  m_nToProcess              = -1;
+
+  // cuts
+  m_pass_max                = -1;
+  m_pass_min                = -1;
+  m_pT_max                  = 1e8;
+  m_pT_min                  = 1e8;
+  m_eta_max                 = 1e8;
+  m_eta_min                 = 1e8;
+  m_d0_max                  = 1e8;
+  m_z0_max                  = 1e8;
+  m_z0sinT_max              = 1e8;
+  m_nBL_min                 = 1e8;
+  m_nSi_min                 = 1e8;
+  m_nPixHoles_max           = 1e8;
+  m_chi2NdofCut_max         = 1e8;
+  m_chi2Prob_max            = 1e8;
+
+  m_passAuxDecorKeys        = "";
+
+  m_failAuxDecorKeys        = "";
+
 }
 
 EL::StatusCode  TrackSelector :: configure ()
@@ -44,42 +83,42 @@ EL::StatusCode  TrackSelector :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" ,      false );
-    m_useCutFlow    = config->GetValue("UseCutFlow",  true);
+    m_debug         = config->GetValue("Debug" ,      m_debug);
+    m_useCutFlow    = config->GetValue("UseCutFlow",  m_useCutFlow);
 
     // input container to be read from TEvent or TStore
-    m_inContainerName  = config->GetValue("InputContainer",  "");
+    m_inContainerName  = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
     // decorate selected objects that pass the cuts
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
+    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
     // additional functionality : create output container of selected objects
     //                            using the SG::VIEW_ELEMENTS option
     //                            decorating and output container should not be mutually exclusive
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
+    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
     // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-    m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
     // if only want to look at a subset of object
-    m_nToProcess              = config->GetValue("NToProcess", -1);
+    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
 
     // cuts
-    m_pass_max                = config->GetValue("PassMax",       -1);
-    m_pass_min                = config->GetValue("PassMin",       -1);
-    m_pT_max                  = config->GetValue("pTMax",        1e8);
-    m_pT_min                  = config->GetValue("pTMin",        1e8);
-    m_eta_max                 = config->GetValue("etaMax",       1e8);
-    m_eta_min                 = config->GetValue("etaMin",       1e8);
-    m_d0_max                  = config->GetValue("d0Max",        1e8);
-    m_z0_max                  = config->GetValue("z0Max",        1e8);
-    m_z0sinT_max              = config->GetValue("z0SinTMax",    1e8);
-    m_nBL_min                 = config->GetValue("nBLMin",       1e8);
-    m_nSi_min                 = config->GetValue("nSiMin",       1e8);
-    m_nPixHoles_max           = config->GetValue("nPixHolesMax", 1e8);
-    m_chi2NdofCut_max         = config->GetValue("chi2NdofMax",  1e8);
-    m_chi2Prob_max            = config->GetValue("chi2ProbMax",  1e8);
+    m_pass_max                = config->GetValue("PassMax",      m_pass_max);
+    m_pass_min                = config->GetValue("PassMin",      m_pass_min);
+    m_pT_max                  = config->GetValue("pTMax",        m_pT_max);
+    m_pT_min                  = config->GetValue("pTMin",        m_pT_min);
+    m_eta_max                 = config->GetValue("etaMax",       m_eta_max);
+    m_eta_min                 = config->GetValue("etaMin",       m_eta_min);
+    m_d0_max                  = config->GetValue("d0Max",        m_d0_max);
+    m_z0_max                  = config->GetValue("z0Max",        m_z0_max);
+    m_z0sinT_max              = config->GetValue("z0SinTMax",    m_z0sinT_max);
+    m_nBL_min                 = config->GetValue("nBLMin",       m_nBL_min);
+    m_nSi_min                 = config->GetValue("nSiMin",       m_nSi_min);
+    m_nPixHoles_max           = config->GetValue("nPixHolesMax", m_nPixHoles_max);
+    m_chi2NdofCut_max         = config->GetValue("chi2NdofMax",  m_chi2NdofCut_max);
+    m_chi2Prob_max            = config->GetValue("chi2ProbMax",  m_chi2Prob_max);
 
-    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
+    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
 
-    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
 
     config->Print();
     Info("configure()", "TrackSelector Interface succesfully configured! ");

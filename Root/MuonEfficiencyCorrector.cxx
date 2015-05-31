@@ -54,6 +54,31 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
 
   Info("MuonEfficiencyCorrector()", "Calling constructor");
 
+  // Read debug flag from .config file
+  m_debug                      = false;
+
+  // Input container to be read from TEvent or TStore
+  m_inContainerName            = "";
+
+  // Efficiency SF
+  m_WorkingPoint               = "Loose";
+  m_DataPeriod                 = "2015";
+
+  // Trigger SF
+  m_year                       = 2015;
+  m_runNumber                  = 900000;
+  m_SingleMuTrig               = "HLT_mu20_iloose_L1MU15";
+  m_SinglePlusDiMuTrig         = "mu20_iloose_L1MU15_or_mu50_or_2mu14";
+
+  // Systematics stuff
+  m_inputAlgoSystNames         = "";
+  m_systNameEff		           = "";
+  m_systNameTrig		       = "";
+  m_outputSystNamesEff         = "MuonEfficiencyCorrector_EffSyst";
+  m_outputSystNamesTrig        = "MuonEfficiencyCorrector_TrigSyst";
+  m_systValEff 		           = 0.;
+  m_systValTrig 		       = 0.;
+
 }
 
 
@@ -67,32 +92,32 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // Read debug flag from .config file
-    m_debug                      = config->GetValue("Debug", false);
+    m_debug                      = config->GetValue("Debug", m_debug);
 
     // Input container to be read from TEvent or TStore
-    m_inContainerName            = config->GetValue("InputContainer",  "");
+    m_inContainerName            = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
     // Efficiency SF
-    m_WorkingPoint               = config->GetValue("WorkingPoint", "Loose" );
-    m_DataPeriod                 = config->GetValue("DataPeriod",   "2015" );
+    m_WorkingPoint               = config->GetValue("WorkingPoint", m_WorkingPoint.c_str());
+    m_DataPeriod                 = config->GetValue("DataPeriod",   m_DataPeriod.c_str());
 
     // Trigger SF
-    m_year                       = config->GetValue("year", 2015);
-    m_runNumber                  = config->GetValue("runNumber", 900000);
-    m_SingleMuTrig               = config->GetValue("SingleMuTrig", "HLT_mu20_iloose_L1MU15");
-    m_SinglePlusDiMuTrig         = config->GetValue("SinglePlusDiMuTrig", "mu20_iloose_L1MU15_or_mu50_or_2mu14");
-    
+    m_year                       = config->GetValue("year", m_year);
+    m_runNumber                  = config->GetValue("runNumber", m_runNumber);
+    m_SingleMuTrig               = config->GetValue("SingleMuTrig", m_SingleMuTrig.c_str());
+    m_SinglePlusDiMuTrig         = config->GetValue("SinglePlusDiMuTrig", m_SinglePlusDiMuTrig.c_str());
+
     // Systematics stuff
-    m_inputAlgoSystNames         = config->GetValue("InputAlgoSystNames",  "");
-    m_systNameEff		 = config->GetValue("SystNameEff" , "" );
-    m_systNameTrig		 = config->GetValue("SystNameTrig" , "" );
-    m_outputSystNamesEff         = config->GetValue("OutputSystNamesEff",  "MuonEfficiencyCorrector_EffSyst");
-    m_outputSystNamesTrig        = config->GetValue("OutputSystNamesTrig",  "MuonEfficiencyCorrector_TrigSyst");
-    m_systValEff 		 = config->GetValue("SystValEff" , 0. );
-    m_systValTrig 		 = config->GetValue("SystValTrig" , 0. );
+    m_inputAlgoSystNames         = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
+    m_systNameEff		 = config->GetValue("SystNameEff" , m_systNameEff.c_str());
+    m_systNameTrig		 = config->GetValue("SystNameTrig" , m_systNameTrig.c_str());
+    m_outputSystNamesEff         = config->GetValue("OutputSystNamesEff",  m_outputSystNamesEff.c_str());
+    m_outputSystNamesTrig        = config->GetValue("OutputSystNamesTrig", m_outputSystNamesTrig.c_str());
+    m_systValEff 		 = config->GetValue("SystValEff" , m_systValEff);
+    m_systValTrig 		 = config->GetValue("SystValTrig" , m_systValTrig);
     m_runAllSystEff              = (m_systNameEff.find("All") != std::string::npos);
     m_runAllSystTrig             = (m_systNameTrig.find("All") != std::string::npos);
-  
+
     config->Print();
 
     Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! ");
@@ -193,11 +218,11 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("WorkingPoint", m_WorkingPoint ),"Failed to set Working Point property of MuonEfficiencyScaleFactors");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("DataPeriod", m_DataPeriod ),"Failed to set DataPeriod property of MuonEfficiencyScaleFactors");
   // test audit trail
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("doAudit", false),"Failed to set doAudit property of MuonEfficiencyScaleFactors"); 
+  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->setProperty("doAudit", false),"Failed to set doAudit property of MuonEfficiencyScaleFactors");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonEffSFTool->initialize(), "Failed to properly initialize MuonEfficiencyScaleFactors");
 
   // Get a list of affecting systematics
-  if ( m_debug ) { 
+  if ( m_debug ) {
     CP::SystematicSet affectSystsEff = m_MuonEffSFTool->affectingSystematics();
     // Convert into a simple list
     std::vector<CP::SystematicSet> affectSystEffList = CP::make_systematics_vector(affectSystsEff);
@@ -230,7 +255,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_MuonTrigSFTool->initialize(), "Failed to properly initialize MuonTriggerScaleFactors");
 
   // Get a list of affecting systematics
-  if ( m_debug ) { 
+  if ( m_debug ) {
     CP::SystematicSet affectSystsTrig = m_MuonTrigSFTool->affectingSystematics();
     // Convert into a simple list
     std::vector<CP::SystematicSet> affectSystTrigList = CP::make_systematics_vector(affectSystsTrig);
@@ -531,10 +556,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   //
   // Use the counter defined in execute() to check this is done only once
   //
-  if ( countSyst == 0 ) { 
+  if ( countSyst == 0 ) {
 
-    RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( sysVariationNamesEff, m_outputSystNamesEff), "Failed to record vector of systematic names for efficiency SF" ); 
-    RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names for trigger SF" ); 
+    RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( sysVariationNamesEff, m_outputSystNamesEff), "Failed to record vector of systematic names for efficiency SF" );
+    RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names for trigger SF" );
 
   }
 

@@ -16,45 +16,45 @@ class JetSelector : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  bool m_useCutFlow;             //!
+  bool m_useCutFlow;
 
   // configuration variables
-  std::string m_inContainerName;   //! input container name
-  std::string m_outContainerName;  //! output container name
-  std::string m_inputAlgo;         //! input type - from xAOD or from xAODAnaHelper Algo output
-  std::string m_outputAlgo;        //! output type - this is how the vector<string> w/ syst names will be saved in TStore
-  std::string m_decor;            //! The decoration key written to passing objects
-  bool m_decorateSelectedObjects; //! decorate selected objects? defaul passSel
-  bool m_createSelectedContainer; //! fill using SG::VIEW_ELEMENTS to be light weight
-  int m_nToProcess;               //! look at n objects
-  bool m_cleanJets;               //! require cleanJet decoration to not be set and false
-  int m_cleanEvtLeadJets;         //! kill event if any of the N leading jets are not clean
-  int m_pass_min;                 //! minimum number of objects passing cuts
-  int m_pass_max;                 //! maximum number of objects passing cuts
-  float m_pT_max;                 //! require pT < pt_max
-  float m_pT_min;                 //! require pT > pt_max
-  float m_eta_max;                //! require eta < eta_max
-  float m_eta_min;                //! require eta > eta_max
-  float m_detEta_max;             //! require detEta < detEta_max
-  float m_detEta_min;             //! require detEta > detEta_max
-  float m_mass_max;               //! require mass < mass_max
-  float m_mass_min;               //! require mass > mass_max
-  float m_rapidity_max;           //! require rapidity < rapidity_max
-  float m_rapidity_min;           //! require rapidity > rapidity_min
-  int   m_truthLabel;             //! require truth level on truth jets
+  std::string m_inContainerName;   // input container name
+  std::string m_outContainerName;  // output container name
+  std::string m_inputAlgo;         // input type - from xAOD or from xAODAnaHelper Algo output
+  std::string m_outputAlgo;        // output type - this is how the vector<string> w/ syst names will be saved in TStore
+  std::string m_decor;            // The decoration key written to passing objects
+  bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
+  bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
+  int m_nToProcess;               // look at n objects
+  bool m_cleanJets;               // require cleanJet decoration to not be set and false
+  int m_cleanEvtLeadJets;         // kill event if any of the N leading jets are not clean
+  int m_pass_min;                 // minimum number of objects passing cuts
+  int m_pass_max;                 // maximum number of objects passing cuts
+  float m_pT_max;                 // require pT < pt_max
+  float m_pT_min;                 // require pT > pt_max
+  float m_eta_max;                // require eta < eta_max
+  float m_eta_min;                // require eta > eta_max
+  float m_detEta_max;             // require detEta < detEta_max
+  float m_detEta_min;             // require detEta > detEta_max
+  float m_mass_max;               // require mass < mass_max
+  float m_mass_min;               // require mass > mass_max
+  float m_rapidity_max;           // require rapidity < rapidity_max
+  float m_rapidity_min;           // require rapidity > rapidity_min
+  int   m_truthLabel;             // require truth level on truth jets
 
-  bool m_doJVF;                   //! check JVF
-  float m_pt_max_JVF;             //! max pT (JVF is a pileup cut)
-  float m_eta_max_JVF;            //! detector eta cut
-  float m_JVFCut;                 //! cut value
-  float m_btagCut;                //! btagging cuts, configured by the bools below
-  bool  m_btag_veryloose;         //!
-  bool  m_btag_loose;             //!
-  bool  m_btag_medium;            //!
-  bool  m_btag_tight;             //!
+  bool m_doJVF;                   // check JVF
+  float m_pt_max_JVF;             // max pT (JVF is a pileup cut)
+  float m_eta_max_JVF;            // detector eta cut
+  float m_JVFCut;                 // cut value
+  float m_btagCut;                // btagging cuts, configured by the bools below
+  bool  m_btag_veryloose;         //
+  bool  m_btag_loose;             //
+  bool  m_btag_medium;            //
+  bool  m_btag_tight;             //
 
-  std::string              m_passAuxDecorKeys;  //!
-  std::string              m_failAuxDecorKeys;  //!
+  std::string              m_passAuxDecorKeys;
+  std::string              m_failAuxDecorKeys;
 
 private:
   int m_numEvent;         //!

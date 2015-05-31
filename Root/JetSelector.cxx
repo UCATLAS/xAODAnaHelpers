@@ -56,6 +56,60 @@ JetSelector :: JetSelector () :
   // initialization code will go into histInitialize() and
   // initialize().
   Info("JetSelector()", "Calling constructor");
+
+  // read debug flag from .config file
+  m_debug         = false;
+  m_useCutFlow    = true;
+
+  // input container to be read from TEvent or TStore
+  m_inContainerName         = "";
+
+  // name of algo input container comes from - only if running on syst
+  m_inputAlgo               = "";
+  m_outputAlgo              = "";
+
+  // decorate selected objects that pass the cuts
+  m_decorateSelectedObjects = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::VIEW_ELEMENTS option
+  //                            decorating and output container should not be mutually exclusive
+  m_createSelectedContainer = false;
+  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
+  m_outContainerName        = "";
+  // if only want to look at a subset of object
+  m_nToProcess              = -1;
+
+  // cuts
+  m_cleanJets               = true;
+  m_cleanEvtLeadJets        = 0; // indepedent of previous switch
+  m_pass_max                = -1;
+  m_pass_min                = -1;
+  m_pT_max                  = 1e8;
+  m_pT_min                  = 1e8;
+  m_eta_max                 = 1e8;
+  m_eta_min                 = 1e8;
+  m_detEta_max              = 1e8;
+  m_detEta_min              = 1e8;
+  m_mass_max                = 1e8;
+  m_mass_min                = 1e8;
+  m_rapidity_max            = 1e8;
+  m_rapidity_min            = 1e8;
+  m_truthLabel 	      = -1;
+
+  m_doJVF 		      = false;
+  m_pt_max_JVF 	      = 50e3;
+  m_eta_max_JVF 	      = 2.4;
+  m_JVFCut 		      = 0.5;
+
+  // Btag quality
+  m_btag_veryloose          = false;
+  m_btag_loose              = false;
+  m_btag_medium             = false;
+  m_btag_tight              = false;
+
+  m_passAuxDecorKeys        = "";
+  m_failAuxDecorKeys        = "";
+
 }
 
 EL::StatusCode  JetSelector :: configure ()
@@ -66,57 +120,57 @@ EL::StatusCode  JetSelector :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" ,      false );
-    m_useCutFlow    = config->GetValue("UseCutFlow",  true);
+    m_debug         = config->GetValue("Debug" ,      m_debug);
+    m_useCutFlow    = config->GetValue("UseCutFlow",  m_useCutFlow);
 
     // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
     // name of algo input container comes from - only if running on syst
-    m_inputAlgo               = config->GetValue("InputAlgo",   "");
-    m_outputAlgo              = config->GetValue("OutputAlgo",  "");
+    m_inputAlgo               = config->GetValue("InputAlgo",   m_inputAlgo.c_str());
+    m_outputAlgo              = config->GetValue("OutputAlgo",  m_outputAlgo.c_str());
 
     // decorate selected objects that pass the cuts
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
+    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
     // additional functionality : create output container of selected objects
     //                            using the SG::VIEW_ELEMENTS option
     //                            decorating and output container should not be mutually exclusive
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
+    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
     // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-    m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
     // if only want to look at a subset of object
-    m_nToProcess              = config->GetValue("NToProcess", -1);
+    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
 
     // cuts
-    m_cleanJets               = config->GetValue("CleanJets",  true);
-    m_cleanEvtLeadJets        = config->GetValue("CleanEventWithLeadJets", 0); // indepedent of previous switch
-    m_pass_max                = config->GetValue("PassMax",      -1);
-    m_pass_min                = config->GetValue("PassMin",      -1);
-    m_pT_max                  = config->GetValue("pTMax",       1e8);
-    m_pT_min                  = config->GetValue("pTMin",       1e8);
-    m_eta_max                 = config->GetValue("etaMax",      1e8);
-    m_eta_min                 = config->GetValue("etaMin",      1e8);
-    m_detEta_max              = config->GetValue("detEtaMax",   1e8);
-    m_detEta_min              = config->GetValue("detEtaMin",   1e8);
-    m_mass_max                = config->GetValue("massMax",     1e8);
-    m_mass_min                = config->GetValue("massMin",     1e8);
-    m_rapidity_max            = config->GetValue("rapidityMax", 1e8);
-    m_rapidity_min            = config->GetValue("rapidityMin", 1e8);
-    m_truthLabel 	      = config->GetValue("TruthLabel",   -1);
+    m_cleanJets               = config->GetValue("CleanJets",  m_cleanJets);
+    m_cleanEvtLeadJets        = config->GetValue("CleanEventWithLeadJets", m_cleanEvtLeadJets); // indepedent of previous switch
+    m_pass_max                = config->GetValue("PassMax",      m_pass_max);
+    m_pass_min                = config->GetValue("PassMin",      m_pass_min);
+    m_pT_max                  = config->GetValue("pTMax",       m_pT_max);
+    m_pT_min                  = config->GetValue("pTMin",       m_pT_min);
+    m_eta_max                 = config->GetValue("etaMax",      m_eta_max);
+    m_eta_min                 = config->GetValue("etaMin",      m_eta_min);
+    m_detEta_max              = config->GetValue("detEtaMax",   m_detEta_max);
+    m_detEta_min              = config->GetValue("detEtaMin",   m_detEta_min);
+    m_mass_max                = config->GetValue("massMax",     m_mass_max);
+    m_mass_min                = config->GetValue("massMin",     m_mass_min);
+    m_rapidity_max            = config->GetValue("rapidityMax", m_rapidity_max);
+    m_rapidity_min            = config->GetValue("rapidityMin", m_rapidity_min);
+    m_truthLabel 	      = config->GetValue("TruthLabel",   m_truthLabel);
 
-    m_doJVF 		      = config->GetValue("DoJVF",       false);
-    m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    50e3);
-    m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   2.4);
-    m_JVFCut 		      = config->GetValue("JVFCut",      0.5);
+    m_doJVF 		      = config->GetValue("DoJVF",       m_doJVF);
+    m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
+    m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
+    m_JVFCut 		      = config->GetValue("JVFCut",      m_JVFCut);
 
     // Btag quality
-    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
-    m_btag_loose              = config->GetValue("BTagLoose",       false);
-    m_btag_medium             = config->GetValue("BTagMedium",      false);
-    m_btag_tight              = config->GetValue("BTagTight",       false);
+    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   m_btag_veryloose);
+    m_btag_loose              = config->GetValue("BTagLoose",       m_btag_loose);
+    m_btag_medium             = config->GetValue("BTagMedium",      m_btag_medium);
+    m_btag_tight              = config->GetValue("BTagTight",       m_btag_tight);
 
-    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
-    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
+    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
 
     config->Print();
     Info("configure()", "JetSelector Interface succesfully configured! ");

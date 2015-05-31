@@ -19,24 +19,24 @@ class JetCalibrator : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  bool m_DC14;            //!
+  bool m_DC14;
 
   // configuration variables
-  std::string m_inContainerName;        //!
-  std::string m_outContainerName;       //!
+  std::string m_inContainerName;
+  std::string m_outContainerName;
 
-  std::string m_jetAlgo;                //!
-  std::string m_outputAlgo;             //!
-  std::string m_calibConfigData;        //!
-  std::string m_calibConfigFullSim;     //!
-  std::string m_calibConfigAFII;        //!
-  std::string m_calibConfig;            //!
-  std::string m_calibSequence;          //!
-  std::string m_jetCalibCutLevel;       //!
-  bool m_saveAllCleanDecisions;         //!
-  std::string m_uncertConfig;           //!
+  std::string m_jetAlgo;
+  std::string m_outputAlgo;
+  std::string m_calibConfigData;
+  std::string m_calibConfigFullSim;
+  std::string m_calibConfigAFII;
+  std::string m_calibConfig;
+  std::string m_calibSequence;
+  std::string m_jetCalibCutLevel;
+  bool m_saveAllCleanDecisions;
+  std::string m_uncertConfig;
   // sort after calibration
-  bool    m_sort;                   //!
+  bool    m_sort;
 
   // systematics
   bool m_runSysts;
@@ -45,8 +45,8 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  bool m_isMC;
-  bool m_isFullSim;
+  bool m_isMC;            //!
+  bool m_isFullSim;       //!
 
   std::string m_jetUncertAlgo;          //!
 

@@ -19,6 +19,10 @@ ClassImp(TrackHistsAlgo)
 TrackHistsAlgo :: TrackHistsAlgo () :
   m_plots(nullptr)
 {
+  m_inContainerName         = "";
+  m_detailStr               = "";
+  m_debug                   = false;
+
 }
 
 EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
@@ -62,9 +66,9 @@ EL::StatusCode TrackHistsAlgo :: configure ()
     //  If Container Name is already set dont read it from the config
     //   (Allows to pass as argument in setup script)
     //
-    m_inContainerName         = config->GetValue("InputContainer",  "");
-    m_detailStr               = config->GetValue("DetailStr",       "");
-    m_debug                   = config->GetValue("Debug" ,           false );
+    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
+    m_detailStr               = config->GetValue("DetailStr",       m_detailStr.c_str());
+    m_debug                   = config->GetValue("Debug" ,          m_debug);
 
     Info("configure()", "Loaded in configuration values");
 

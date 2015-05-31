@@ -61,6 +61,46 @@ OverlapRemover :: OverlapRemover () :
 
   Info("OverlapRemover()", "Calling constructor");
 
+  // read debug flag from .config file
+  m_debug         = false;
+  // input container(s) to be read from TEvent or TStore
+
+  /* Muons */
+  m_inContainerName_Muons       = "";
+  m_inputAlgoMuons              = "";  // name of vector<string> of syst retrieved from TStore
+  m_outputAlgoMuons             = "MuonCollection_OR_Algo";    // name of vector<string> of syst pushed in TStore
+  /* Electrons */
+  m_inContainerName_Electrons   = "";
+  m_inputAlgoElectrons          = "";  // name of vector<string> of syst retrieved from TStore
+  m_outputAlgoElectrons         = "ElectronCollection_OR_Algo";    // name of vector<string> of syst pushed in TStore
+  /* Jets */
+  m_inContainerName_Jets        = "";
+  m_inputAlgoJets               = "";  // name of vector<string> of syst retrieved from TStore
+  m_outputAlgoJets              = "JetCollection_OR_Algo";    // name of vector<string> of syst pushed in TStore
+  /* Photons */
+  m_inContainerName_Photons     = "";
+  /* Taus */
+  m_inContainerName_Taus        = "";
+
+  // decorate selected objects that pass the cuts
+  m_decorateSelectedObjects     = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::View_Element option
+  //                            decorating and output container should not be mutually exclusive
+  m_createSelectedContainers    = false;
+
+  m_useSelected = false;
+
+  m_outContainerName_Electrons  = "";
+
+  m_outContainerName_Muons      = "";
+
+  m_outContainerName_Jets       = "";
+
+  m_outContainerName_Photons    = "";
+
+  m_outContainerName_Taus       = "";
+
 }
 
 EL::StatusCode  OverlapRemover :: configure ()
@@ -73,44 +113,44 @@ EL::StatusCode  OverlapRemover :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" , false );
+    m_debug         = config->GetValue("Debug" , m_debug);
     // input container(s) to be read from TEvent or TStore
 
     /* Muons */
-    m_inContainerName_Muons       = config->GetValue("InputContainerMuons",  "");
-    m_inputAlgoMuons              = config->GetValue("InputAlgoMuons",  "");  // name of vector<string> of syst retrieved from TStore
-    m_outputAlgoMuons             = config->GetValue("OutputAlgoMuons", "MuonCollection_OR_Algo");    // name of vector<string> of syst pushed in TStore
+    m_inContainerName_Muons       = config->GetValue("InputContainerMuons",  m_inContainerName_Muons.c_str());
+    m_inputAlgoMuons              = config->GetValue("InputAlgoMuons",  m_inputAlgoMuons.c_str());  // name of vector<string> of syst retrieved from TStore
+    m_outputAlgoMuons             = config->GetValue("OutputAlgoMuons", m_outputAlgoMuons.c_str());    // name of vector<string> of syst pushed in TStore
     /* Electrons */
-    m_inContainerName_Electrons   = config->GetValue("InputContainerElectrons",  "");
-    m_inputAlgoElectrons          = config->GetValue("InputAlgoElectrons",  "");  // name of vector<string> of syst retrieved from TStore
-    m_outputAlgoElectrons         = config->GetValue("OutputAlgoElectrons", "ElectronCollection_OR_Algo");    // name of vector<string> of syst pushed in TStore
+    m_inContainerName_Electrons   = config->GetValue("InputContainerElectrons",  m_inContainerName_Electrons.c_str());
+    m_inputAlgoElectrons          = config->GetValue("InputAlgoElectrons",  m_inputAlgoElectrons.c_str());  // name of vector<string> of syst retrieved from TStore
+    m_outputAlgoElectrons         = config->GetValue("OutputAlgoElectrons", m_outputAlgoElectrons.c_str());    // name of vector<string> of syst pushed in TStore
     /* Jets */
-    m_inContainerName_Jets        = config->GetValue("InputContainerJets",  "");
-    m_inputAlgoJets               = config->GetValue("InputAlgoJets",  "");  // name of vector<string> of syst retrieved from TStore
-    m_outputAlgoJets              = config->GetValue("OutputAlgoJets", "JetCollection_OR_Algo");    // name of vector<string> of syst pushed in TStore
+    m_inContainerName_Jets        = config->GetValue("InputContainerJets",  m_inContainerName_Jets.c_str());
+    m_inputAlgoJets               = config->GetValue("InputAlgoJets",  m_inputAlgoJets.c_str());  // name of vector<string> of syst retrieved from TStore
+    m_outputAlgoJets              = config->GetValue("OutputAlgoJets", m_outputAlgoJets.c_str());    // name of vector<string> of syst pushed in TStore
     /* Photons */
-    m_inContainerName_Photons     = config->GetValue("InputContainerPhotons",  "");
+    m_inContainerName_Photons     = config->GetValue("InputContainerPhotons",  m_inContainerName_Photons.c_str());
     /* Taus */
-    m_inContainerName_Taus        = config->GetValue("InputContainerTaus",  "");
+    m_inContainerName_Taus        = config->GetValue("InputContainerTaus",  m_inContainerName_Taus.c_str());
 
     // decorate selected objects that pass the cuts
-    m_decorateSelectedObjects     = config->GetValue("DecorateSelectedObjects", true);
+    m_decorateSelectedObjects     = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
     // additional functionality : create output container of selected objects
     //                            using the SG::View_Element option
     //                            decorating and output container should not be mutually exclusive
-    m_createSelectedContainers    = config->GetValue("CreateSelectedContainers", false);
+    m_createSelectedContainers    = config->GetValue("CreateSelectedContainers", m_createSelectedContainers);
 
-    m_useSelected = config->GetValue("UseSelected", false);
+    m_useSelected = config->GetValue("UseSelected", m_useSelected);
 
-    m_outContainerName_Electrons  = config->GetValue("OutputContainerElectrons", "");
+    m_outContainerName_Electrons  = config->GetValue("OutputContainerElectrons", m_outContainerName_Electrons.c_str());
 
-    m_outContainerName_Muons      = config->GetValue("OutputContainerMuons", "");
+    m_outContainerName_Muons      = config->GetValue("OutputContainerMuons", m_outContainerName_Muons.c_str());
 
-    m_outContainerName_Jets       = config->GetValue("OutputContainerJets", "");
+    m_outContainerName_Jets       = config->GetValue("OutputContainerJets", m_outContainerName_Jets.c_str());
 
-    m_outContainerName_Photons    = config->GetValue("OutputContainerPhotons", "");
+    m_outContainerName_Photons    = config->GetValue("OutputContainerPhotons", m_outContainerName_Photons.c_str());
 
-    m_outContainerName_Taus       = config->GetValue("OutputContainerTaus", "");
+    m_outContainerName_Taus       = config->GetValue("OutputContainerTaus", m_outContainerName_Taus.c_str());
 
     config->Print();
     Info("configure()", "OverlapRemover Interface succesfully configured! ");
