@@ -14,30 +14,30 @@ class TreeAlgo : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 public:
   // choose whether the tree gets saved in the same directory as output histograms
-  bool m_outHistDir;                   //!
+  bool m_outHistDir;
 
   // holds bools that control which branches are filled
-  std::string m_evtDetailStr;	       //!
-  std::string m_trigDetailStr;	     //!
-  std::string m_jetTrigDetailStr;	   //!
-  std::string m_muDetailStr;	       //!
-  std::string m_elDetailStr;	       //!
-  std::string m_jetDetailStr;	       //!
-  std::string m_fatJetDetailStr;     //!
-  std::string m_tauDetailStr;        //!
+  std::string m_evtDetailStr;
+  std::string m_trigDetailStr;
+  std::string m_jetTrigDetailStr;
+  std::string m_muDetailStr;
+  std::string m_elDetailStr;
+  std::string m_jetDetailStr;
+  std::string m_fatJetDetailStr;
+  std::string m_tauDetailStr;
 
-  std::string m_evtContainerName;      //!
-  std::string m_muContainerName;       //!
-  std::string m_elContainerName;       //!
-  std::string m_jetContainerName;      //!
-  std::string m_fatJetContainerName;   //!
-  std::string m_tauContainerName;      //!
+  std::string m_evtContainerName;
+  std::string m_muContainerName;
+  std::string m_elContainerName;
+  std::string m_jetContainerName;
+  std::string m_fatJetContainerName;
+  std::string m_tauContainerName;
 
-  bool m_DC14;                         //!
+  bool m_DC14;
 
 private:
   HelpTreeBase* m_helpTree;            //!
-  
+
 public:
 
   // this is a standard constructor

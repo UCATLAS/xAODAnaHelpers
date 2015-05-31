@@ -60,6 +60,70 @@ ElectronSelector :: ElectronSelector () :
   // initialize().
 
   Info("ElectronSelector()", "Calling constructor");
+
+  // read debug flag from .config file
+  m_debug                   = false;
+  m_useCutFlow              = true;
+
+  // input container to be read from TEvent or TStore
+  m_inContainerName         = "";
+
+  // Systematics stuff
+  m_inputAlgoSystNames      = "";
+  m_outputAlgoSystNames     = "ElectronSelector_Syst";
+
+
+  // decorate selected objects that pass the cuts
+  m_decorateSelectedObjects = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::View_Element option
+  //                            decorrating and output container should not be mutually exclusive
+  m_createSelectedContainer = false;
+  // if requested, a new container is made using the SG::View_Element option
+  m_outContainerName        = "";
+
+  // if only want to look at a subset of object
+  m_nToProcess              = -1;
+
+  // configurable cuts
+  m_pass_max                = -1;
+  m_pass_min                = -1;
+  m_pT_max                  = 1e8;
+  m_pT_min                  = 1e8;
+  m_eta_max                 = 1e8;
+  m_vetoCrack               = true;
+  m_d0_max                  = 1e8;
+  m_d0sig_max     	      = 1e8;
+  m_z0sintheta_max          = 1e8;
+
+  m_doAuthorCut             = true;
+  m_doOQCut                 = true;
+
+  m_confDirPID              = "mc15_20150224";
+  // likelihood-based PID
+  m_doLHPIDcut              = false;
+  m_LHOperatingPoint        = "Loose";
+  m_LHConfigYear            = "2015";
+
+  // cut-based PID
+  m_doCutBasedPIDcut        = false;
+  m_CutBasedOperatingPoint  = "IsEMLoose";
+  m_CutBasedConfigYear      = "2012";
+
+  // isolation stuff
+  m_doIsolation             = false;
+  m_IsoWP		            = "Tight";
+  m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
+  m_TrackIsoEff             = "98";        // only if isolation WP is "UserDefined"
+  m_useRelativeIso          = true;
+  m_CaloBasedIsoType        = "topoetcone20";
+  m_CaloBasedIsoCut         = 0.05;
+  m_TrackBasedIsoType       = "ptvarcone20";
+  m_TrackBasedIsoCut        = 0.05;
+
+  m_passAuxDecorKeys        = "";
+  m_failAuxDecorKeys        = "";
+
 }
 
 ElectronSelector::~ElectronSelector() {}
@@ -73,67 +137,67 @@ EL::StatusCode  ElectronSelector :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug" ,      false);
-    m_useCutFlow              = config->GetValue("UseCutFlow",  true);
+    m_debug                   = config->GetValue("Debug" ,      m_debug);
+    m_useCutFlow              = config->GetValue("UseCutFlow",  m_useCutFlow);
 
     // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
     // Systematics stuff
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  "");
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", "ElectronSelector_Syst");
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
+    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
 
 
     // decorate selected objects that pass the cuts
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
+    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
     // additional functionality : create output container of selected objects
     //                            using the SG::View_Element option
     //                            decorrating and output container should not be mutually exclusive
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
+    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
     // if requested, a new container is made using the SG::View_Element option
-    m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
 
     // if only want to look at a subset of object
-    m_nToProcess              = config->GetValue("NToProcess", -1);
+    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
 
     // configurable cuts
-    m_pass_max                = config->GetValue("PassMax", -1);
-    m_pass_min                = config->GetValue("PassMin", -1);
-    m_pT_max                  = config->GetValue("pTMax",  1e8);
-    m_pT_min                  = config->GetValue("pTMin",  1e8);
-    m_eta_max                 = config->GetValue("etaMax", 1e8);
-    m_vetoCrack               = config->GetValue("VetoCrack", true);
-    m_d0_max                  = config->GetValue("d0Max", 1e8);
-    m_d0sig_max     	      = config->GetValue("d0sigMax", 1e8);
-    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", 1e8);
+    m_pass_max                = config->GetValue("PassMax", m_pass_max);
+    m_pass_min                = config->GetValue("PassMin", m_pass_min);
+    m_pT_max                  = config->GetValue("pTMax",  m_pT_max);
+    m_pT_min                  = config->GetValue("pTMin",  m_pT_min);
+    m_eta_max                 = config->GetValue("etaMax", m_eta_max);
+    m_vetoCrack               = config->GetValue("VetoCrack", m_vetoCrack);
+    m_d0_max                  = config->GetValue("d0Max", m_d0_max);
+    m_d0sig_max     	      = config->GetValue("d0sigMax", m_d0sig_max);
+    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
 
-    m_doAuthorCut             = config->GetValue("DoAuthorCut", true);
-    m_doOQCut                 = config->GetValue("DoOQCut", true);
+    m_doAuthorCut             = config->GetValue("DoAuthorCut", m_doAuthorCut);
+    m_doOQCut                 = config->GetValue("DoOQCut", m_doOQCut);
 
-    m_confDirPID              = config->GetValue("ConfDirPID", "mc15_20150224");
+    m_confDirPID              = config->GetValue("ConfDirPID", m_confDirPID.c_str());
     // likelihood-based PID
-    m_doLHPIDcut              = config->GetValue("DoLHPIDCut", false);
-    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", "Loose");
-    m_LHConfigYear            = config->GetValue("LHConfigYear", "2015");
+    m_doLHPIDcut              = config->GetValue("DoLHPIDCut", m_doLHPIDcut);
+    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", m_LHOperatingPoint.c_str());
+    m_LHConfigYear            = config->GetValue("LHConfigYear", m_LHConfigYear.c_str());
 
     // cut-based PID
-    m_doCutBasedPIDcut        = config->GetValue("DoCutBasedPIDCut", false);
-    m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", "IsEMLoose");
-    m_CutBasedConfigYear      = config->GetValue("CutBasedConfigYear", "2012");
+    m_doCutBasedPIDcut        = config->GetValue("DoCutBasedPIDCut", m_doCutBasedPIDcut);
+    m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", m_CutBasedOperatingPoint.c_str());
+    m_CutBasedConfigYear      = config->GetValue("CutBasedConfigYear", m_CutBasedConfigYear.c_str());
 
     // isolation stuff
-    m_doIsolation             = config->GetValue("DoIsolationCut"    ,  false);
-    m_IsoWP		      = config->GetValue("IsolationWP"       ,  "Tight");
-    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  "0.1*x+90");  // only if isolation WP is "UserDefined"
-    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  "98");        // only if isolation WP is "UserDefined"
-    m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  true );
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  "topoetcone20");
-    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  0.05 );
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  "ptvarcone20");
-    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  0.05 );
+    m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
+    m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_IsoWP.c_str());
+    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  // only if isolation WP is "UserDefined"
+    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());        // only if isolation WP is "UserDefined"
+    m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  m_useRelativeIso);
+    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
+    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  m_CaloBasedIsoCut);
+    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
+    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  m_TrackBasedIsoCut);
 
-    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
-    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
+    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
 
     config->Print();
 

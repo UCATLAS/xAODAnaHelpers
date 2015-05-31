@@ -55,6 +55,56 @@ MuonSelector :: MuonSelector () :
   // initialize().
 
   Info("MuonSelector()", "Calling constructor");
+
+  // read debug flag from .config file
+  m_debug                   = false;
+  m_useCutFlow              = true;
+
+  // input container to be read from TEvent or TStore
+  m_inContainerName         = "";
+
+  // Systematics stuff
+  m_inputAlgoSystNames      = "";
+  m_outputAlgoSystNames     = "MuonSelector_Syst";
+
+
+  // decorate selected objects that pass the cuts
+  m_decorateSelectedObjects = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::View_Element option
+  //                            decorrating and output container should not be mutually exclusive
+  m_createSelectedContainer = false;
+  // if requested, a new container is made using the SG::View_Element option
+  m_outContainerName        = "";
+
+  // if only want to look at a subset of object
+  m_nToProcess              = -1;
+
+  // configurable cuts
+  m_muonType                = "";
+  m_pass_max                = -1;
+  m_pass_min                = -1;
+  m_pT_max                  = 1e8;
+  m_pT_min                  = 1e8;
+  m_eta_max                 = 1e8;
+  m_d0_max                  = 1e8;
+  m_d0sig_max     	        = 1e8;
+  m_z0sintheta_max          = 1e8;
+
+  // isolation stuff
+  m_doIsolation             = false;
+  m_IsoWP		            = "Tight";
+  m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
+  m_TrackIsoEff             = "98";        // only if isolation WP is "UserDefined"
+  m_useRelativeIso          = true;
+  m_CaloBasedIsoType        = "topoetcone20";
+  m_CaloBasedIsoCut         = 0.05;
+  m_TrackBasedIsoType       = "ptvarcone30";
+  m_TrackBasedIsoCut        = 0.05;
+
+  m_passAuxDecorKeys        = "";
+  m_failAuxDecorKeys        = "";
+
 }
 
 MuonSelector::~MuonSelector() {}
@@ -69,56 +119,56 @@ EL::StatusCode  MuonSelector :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug" ,      false);
-    m_useCutFlow              = config->GetValue("UseCutFlow",  true);
+    m_debug                   = config->GetValue("Debug" ,      m_debug);
+    m_useCutFlow              = config->GetValue("UseCutFlow",  m_useCutFlow);
 
     // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
     // Systematics stuff
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  "");
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", "MuonSelector_Syst");
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
+    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
 
 
     // decorate selected objects that pass the cuts
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", true);
+    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
     // additional functionality : create output container of selected objects
     //                            using the SG::View_Element option
     //                            decorrating and output container should not be mutually exclusive
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", false);
+    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
     // if requested, a new container is made using the SG::View_Element option
-    m_outContainerName        = config->GetValue("OutputContainer", "");
+    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
 
     // if only want to look at a subset of object
-    m_nToProcess              = config->GetValue("NToProcess", -1);
+    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
 
     // configurable cuts
-    std::string muonQuality   = config->GetValue("MuonQuality", "Medium"); 
+    std::string muonQuality   = config->GetValue("MuonQuality", "Medium");
     HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
     m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(muonQuality) );
-    m_muonType                = config->GetValue("MuonType", ""); 
-    m_pass_max                = config->GetValue("PassMax", -1);
-    m_pass_min                = config->GetValue("PassMin", -1);
-    m_pT_max                  = config->GetValue("pTMax",  1e8);
-    m_pT_min                  = config->GetValue("pTMin",  1e8);
-    m_eta_max                 = config->GetValue("etaMax", 1e8);
-    m_d0_max                  = config->GetValue("d0Max", 1e8);
-    m_d0sig_max     	      = config->GetValue("d0sigMax", 1e8);
-    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", 1e8);
+    m_muonType                = config->GetValue("MuonType", m_muonType.c_str());
+    m_pass_max                = config->GetValue("PassMax", m_pass_max);
+    m_pass_min                = config->GetValue("PassMin", m_pass_min);
+    m_pT_max                  = config->GetValue("pTMax",  m_pT_max);
+    m_pT_min                  = config->GetValue("pTMin",  m_pT_min);
+    m_eta_max                 = config->GetValue("etaMax", m_eta_max);
+    m_d0_max                  = config->GetValue("d0Max", m_d0_max);
+    m_d0sig_max     	      = config->GetValue("d0sigMax", m_d0sig_max);
+    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
 
     // isolation stuff
-    m_doIsolation             = config->GetValue("DoIsolationCut"    ,  false);
-    m_IsoWP		      = config->GetValue("IsolationWP"       ,  "Tight");
-    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  "0.1*x+90");  // only if isolation WP is "UserDefined"
-    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  "98");        // only if isolation WP is "UserDefined"
-    m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  true );
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  "topoetcone20");
-    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  0.05 );
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  "ptvarcone30");
-    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  0.05 );
+    m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
+    m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_CaloIsoEff.c_str());
+    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  // only if isolation WP is "UserDefined"
+    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());        // only if isolation WP is "UserDefined"
+    m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  m_useRelativeIso);
+    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
+    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  m_CaloBasedIsoCut);
+    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
+    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  m_TrackBasedIsoCut);
 
-    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", "");
-    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", "");
+    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
+    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
 
     config->Print();
 
@@ -276,7 +326,7 @@ EL::StatusCode MuonSelector :: initialize ()
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" ); 
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" );
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
 
   // isolation tool for muons not available in DC14
@@ -625,15 +675,15 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     // get the selected quality level
     HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
     int selected_quality = static_cast<int>( muTypeParser.parseEnum(m_muonQuality) )
-   
-    // NB: please note the ordering of the enum items! 
+
+    // NB: please note the ordering of the enum items!
     // http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODMuon/xAODMuon/versions/Muon_v1.h
     if ( quality > selected_quality ) {
       if ( m_debug ) { Info("PassCuts()", "Muon quality: %i - min. required: %i . Failed", quality, selected_quality); }
       return 0;
     }
 
-  } 
+  }
   */
 
   // type
@@ -647,7 +697,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   // isolation
   static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
-  bool passIso(false); 
+  bool passIso(false);
   if (  m_IsoWP == "CutBasedDC14" ) {
 
     HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
@@ -690,7 +740,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     return 0;
   }
 
-  int this_quality     = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );     
+  int this_quality     = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );
   isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
   isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
   isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;

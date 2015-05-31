@@ -20,7 +20,15 @@ ClassImp(Writer)
 
 
 
-Writer :: Writer () {}
+Writer :: Writer () {
+  m_outputLabel               = "";
+
+  m_jetContainerNamesStr      = "";
+  m_electronContainerNamesStr = "";
+  m_muonContainerNamesStr     = "";
+  m_debug                   = false;
+
+}
 
 EL::StatusCode Writer :: setupJob (EL::Job& job)
 {
@@ -43,12 +51,12 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
       return EL::StatusCode::FAILURE;
     }
 
-    m_outputLabel               = config->GetValue("OutputLabel"            , "");
+    m_outputLabel               = config->GetValue("OutputLabel"            , m_outputLabel);
 
-    m_jetContainerNamesStr      = config->GetValue("JetContainerNames"      , "");
-    m_electronContainerNamesStr = config->GetValue("ElectronContainerNames" , "");
-    m_muonContainerNamesStr     = config->GetValue("MuonContainerNames"     , "");
-    m_debug                   = config->GetValue("Debug",                 false);
+    m_jetContainerNamesStr      = config->GetValue("JetContainerNames"      , m_jetContainerNamesStr);
+    m_electronContainerNamesStr = config->GetValue("ElectronContainerNames" , m_electronContainerNamesStr);
+    m_muonContainerNamesStr     = config->GetValue("MuonContainerNames"     , m_muonContainerNamesStr);
+    m_debug                   = config->GetValue("Debug",                m_debug);
 
     delete config;
   }

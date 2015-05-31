@@ -18,7 +18,16 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
 
-JetHistsAlgo :: JetHistsAlgo () {}
+JetHistsAlgo :: JetHistsAlgo () {
+  m_inContainerName         = "";
+  // which plots will be turned on
+  m_detailStr               = "";
+  // name of algo input container comes from - only if
+  m_inputAlgo               = "";
+
+  m_debug                   = false;
+
+}
 
 EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
 {
@@ -54,13 +63,13 @@ EL::StatusCode JetHistsAlgo :: configure ()
     // the file exists, use TEnv to read it off
     TEnv* config = new TEnv(getConfig(true).c_str());
     // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  "");
+    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
     // which plots will be turned on
-    m_detailStr               = config->GetValue("DetailStr",       "");
+    m_detailStr               = config->GetValue("DetailStr",       m_detailStr.c_str());
     // name of algo input container comes from - only if
-    m_inputAlgo               = config->GetValue("InputAlgo",       "");
+    m_inputAlgo               = config->GetValue("InputAlgo",       m_inputAlgo.c_str());
 
-    m_debug                   = config->GetValue("Debug" ,           false );
+    m_debug                   = config->GetValue("Debug" ,           m_debug);
 
     Info("configure()", "Loaded in configuration values");
 

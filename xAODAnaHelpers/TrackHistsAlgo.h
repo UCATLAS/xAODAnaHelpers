@@ -14,7 +14,7 @@ public:
   std::string m_inContainerName;
 
   // configuration variables
-  std::string m_detailStr;        //!
+  std::string m_detailStr;
 
 private:
   TrackHists* m_plots; //!

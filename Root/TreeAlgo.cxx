@@ -24,6 +24,30 @@ TreeAlgo :: TreeAlgo () :
   m_helpTree(nullptr)
 {
   this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
+
+  m_evtDetailStr            = "";
+  m_trigDetailStr           = "";
+  m_jetTrigDetailStr        = "";
+  m_muDetailStr             = "";
+  m_elDetailStr             = "";
+  m_jetDetailStr            = "";
+  m_fatJetDetailStr         = "";
+  m_tauDetailStr            = "";
+
+  m_debug                   = false;
+
+  m_outHistDir              = false;
+
+  m_muContainerName         = "";
+  m_elContainerName         = "";
+  m_jetContainerName        = "";
+  m_fatJetContainerName     = "";
+  m_tauContainerName        = "";
+
+  // DC14 switch for little things that need to happen to run
+  // for those samples with the corresponding packages
+  m_DC14                    = false;
+
 }
 
 EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
@@ -99,28 +123,28 @@ EL::StatusCode TreeAlgo :: configure ()
 
     // the file exists, use TEnv to read it off
     TEnv* config = new TEnv(getConfig(true).c_str());
-    m_evtDetailStr            = config->GetValue("EventDetailStr",       "");
-    m_trigDetailStr           = config->GetValue("TrigDetailStr",        "");
-    m_jetTrigDetailStr        = config->GetValue("JetTrigDetailStr",     "");
-    m_muDetailStr             = config->GetValue("MuonDetailStr",        "");
-    m_elDetailStr             = config->GetValue("ElectronDetailStr",    "");
-    m_jetDetailStr            = config->GetValue("JetDetailStr",         "");
-    m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      "");
-    m_tauDetailStr            = config->GetValue("TauDetailStr",         "");
+    m_evtDetailStr            = config->GetValue("EventDetailStr",       m_evtDetailStr.c_str());
+    m_trigDetailStr           = config->GetValue("TrigDetailStr",        m_trigDetailStr.c_str());
+    m_jetTrigDetailStr        = config->GetValue("JetTrigDetailStr",     m_jetTrigDetailStr.c_str());
+    m_muDetailStr             = config->GetValue("MuonDetailStr",        m_muDetailStr.c_str());
+    m_elDetailStr             = config->GetValue("ElectronDetailStr",    m_elDetailStr.c_str());
+    m_jetDetailStr            = config->GetValue("JetDetailStr",         m_jetDetailStr.c_str());
+    m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      m_fatJetDetailStr.c_str());
+    m_tauDetailStr            = config->GetValue("TauDetailStr",         m_tauDetailStr.c_str());
 
-    m_debug                   = config->GetValue("Debug" ,           false );
+    m_debug                   = config->GetValue("Debug" ,           m_debug);
 
-    m_outHistDir              = config->GetValue("SameHistsOutDir",  false );
+    m_outHistDir              = config->GetValue("SameHistsOutDir",  m_outHistDir);
 
-    m_muContainerName         = config->GetValue("MuonContainerName",       "");
-    m_elContainerName         = config->GetValue("ElectronContainerName",   "");
-    m_jetContainerName        = config->GetValue("JetContainerName",        "");
-    m_fatJetContainerName     = config->GetValue("FatJetContainerName",     "");
-    m_tauContainerName        = config->GetValue("TauContainerName",        "");
+    m_muContainerName         = config->GetValue("MuonContainerName",       m_muContainerName.c_str());
+    m_elContainerName         = config->GetValue("ElectronContainerName",   m_elContainerName.c_str());
+    m_jetContainerName        = config->GetValue("JetContainerName",        m_jetContainerName.c_str());
+    m_fatJetContainerName     = config->GetValue("FatJetContainerName",     m_fatJetContainerName.c_str());
+    m_tauContainerName        = config->GetValue("TauContainerName",        m_tauContainerName.c_str());
 
     // DC14 switch for little things that need to happen to run
     // for those samples with the corresponding packages
-    m_DC14                    = config->GetValue("DC14", false);
+    m_DC14                    = config->GetValue("DC14", m_DC14);
 
     Info("configure()", "Loaded in configuration values");
 
