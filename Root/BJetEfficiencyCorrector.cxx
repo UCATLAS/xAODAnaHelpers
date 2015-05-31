@@ -44,6 +44,27 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
 
   Info("BJetEfficiencyCorrector()", "Calling constructor");
 
+  // read flags set from .config file
+  m_debug                   = false;
+  m_inContainerName         = "";
+  m_systName                = "";      // default: no syst
+  m_outputSystName          = "BJetEfficiency_Algo";
+
+  // configuration of the bjet eff tool
+  m_corrFileName           = "2014-Winter-8TeV-MC12-CDI.root";
+  m_jetAuthor              = "AntiKt4TopoEMJVF0_5";
+  m_taggerName             = "MV1";
+  m_useDevelopmentFile     = true;
+  m_coneFlavourLabel       = true;
+
+  // Btag quality
+  m_btag_veryloose          = false;
+  m_btag_loose              = false;
+  m_btag_medium             = false;
+  m_btag_tight              = false;
+
+  m_decor                   = "BTag_SF";
+
 }
 
 
@@ -57,29 +78,29 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     //
     // read flags set from .config file
     //
-    m_debug                   = config->GetValue("Debug" , false );
-    m_inContainerName         = config->GetValue("InputContainer",  "");
-    m_systName                = config->GetValue("SystName" ,       "" );      // default: no syst
-    m_outputSystName          = config->GetValue("OutputSystName",  "BJetEfficiency_Algo");
+    m_debug                   = config->GetValue("Debug" , m_debug );
+    m_inContainerName         = config->GetValue("InputContainer", m_inContainerName.c_str());
+    m_systName                = config->GetValue("SystName" ,       m_systName.c_str() );      // default: no syst
+    m_outputSystName          = config->GetValue("OutputSystName",  m_outputSystName.c_str() );
 
     //
     // configuration of the bjet eff tool
     //
-    m_corrFileName           = config->GetValue("CorrectionFileName", "2014-Winter-8TeV-MC12-CDI.root" );
-    m_jetAuthor              = config->GetValue("JetAuthor",          "AntiKt4TopoEMJVF0_5" );
-    m_taggerName             = config->GetValue("TaggerName",         "MV1" );
-    m_useDevelopmentFile     = config->GetValue("UseDevelopmentFile", true );
-    m_coneFlavourLabel       = config->GetValue("ConeFlavourLabel",   true );
+    m_corrFileName           = config->GetValue("CorrectionFileName", m_corrFileName.c_str() );
+    m_jetAuthor              = config->GetValue("JetAuthor",          m_jetAuthor.c_str() );
+    m_taggerName             = config->GetValue("TaggerName",         m_taggerName.c_str() );
+    m_useDevelopmentFile     = config->GetValue("UseDevelopmentFile", m_useDevelopmentFile);
+    m_coneFlavourLabel       = config->GetValue("ConeFlavourLabel",   m_coneFlavourLabel);
 
     //
     // Btag quality
     //
-    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   false);
-    m_btag_loose              = config->GetValue("BTagLoose",       false);
-    m_btag_medium             = config->GetValue("BTagMedium",      false);
-    m_btag_tight              = config->GetValue("BTagTight",       false);
+    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   m_btag_veryloose);
+    m_btag_loose              = config->GetValue("BTagLoose",       m_btag_loose);
+    m_btag_medium             = config->GetValue("BTagMedium",      m_btag_medium);
+    m_btag_tight              = config->GetValue("BTagTight",       m_btag_tight);
 
-    m_decor                   = config->GetValue("DecorationName", "BTag_SF");
+    m_decor                   = config->GetValue("DecorationName", m_decor.c_str());
 
     config->Print();
     Info("configure()", "BJetEfficiencyCorrector Interface succesfully configured! ");
