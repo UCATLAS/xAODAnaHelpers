@@ -1,6 +1,6 @@
 /********************************************************
  *
- * Basic event selection. Performs general simple cuts 
+ * Basic event selection. Performs general simple cuts
  * (GRL, Event Cleaning, Min nr. Tracks for PV candidate)
  *
  * G. Facini, M. Milesi (marco.milesi@cern.ch)
@@ -59,6 +59,34 @@ BasicEventSelection :: BasicEventSelection () :
   // initialize().
   Info("BasicEventSelection()", "Calling constructor");
 
+  // basics
+  m_debug = false;
+  m_truthLevelOnly = false;
+
+  // derivation name
+  m_derivationName = "";
+
+  // GRL
+  m_applyGRL = true;
+  m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml";  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+
+  // Pileup Reweighting
+  m_doPUreweighting = false;
+
+  // primary vertex
+  m_vertexContainerName = "PrimaryVertices";
+  // number of tracks to require to count PVs
+  m_PVNTrack = 2; // harmonized cut
+
+  // Trigger
+  m_triggerSelection = "";
+  m_cutOnTrigger = true ;
+  m_storeTrigDecisions = false;
+  m_storePassAny = false;
+  m_storePassL1 = false;
+  m_storePassHLT = false;
+  m_storeTrigKeys = false;
+
   //CP::CorrectionCode::enableFailure();
   //StatusCode::enableFailure();
 }
@@ -77,45 +105,42 @@ EL::StatusCode BasicEventSelection :: configure ()
     }
 
     // basics
-    m_debug             = config->GetValue("Debug"     ,     false);
-    m_truthLevelOnly    = config->GetValue("TruthLevelOnly", false);
+    m_debug             = config->GetValue("Debug"     ,     m_debug);
+    m_truthLevelOnly    = config->GetValue("TruthLevelOnly", m_truthLevelOnly);
 
     // derivation name
-    m_derivationName    = config->GetValue("DerivationName", "" );
+    m_derivationName    = config->GetValue("DerivationName", m_derivationName.c_str() );
 
     // GRL
-    m_applyGRL          = config->GetValue("ApplyGRL",        true);
-    m_GRLxml            = config->GetValue("GRL","$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml"  );  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+    m_applyGRL          = config->GetValue("ApplyGRL",        m_applyGRL);
+    m_GRLxml            = config->GetValue("GRL", m_GRLxml.c_str());
 
     // Pileup Reweighting
-    m_doPUreweighting   = config->GetValue("DoPileupReweighting", false);
+    m_doPUreweighting   = config->GetValue("DoPileupReweighting", m_doPUreweighting);
 
     if ( !m_truthLevelOnly ) {
       // primary vertex
-      m_vertexContainerName = config->GetValue("VertexContainer", "PrimaryVertices");
+      m_vertexContainerName = config->GetValue("VertexContainer", m_vertexContainerName.c_str());
       // number of tracks to require to count PVs
-      m_PVNTrack            = config->GetValue("NTrackForPrimaryVertex",  2); // harmonized cut
+      m_PVNTrack            = config->GetValue("NTrackForPrimaryVertex",  m_PVNTrack); // harmonized cut
     }
 
     // Trigger
-    m_triggerSelection           = config->GetValue("Trigger",            ""    );
-    m_cutOnTrigger               = config->GetValue("CutOnTrigger",       true  );
-    m_storeTrigDecisions         = config->GetValue("StoreTrigDecision",  false );
-    m_storePassAny               = config->GetValue("StorePassAny",       false );
-    m_storePassL1                = config->GetValue("StorePassL1",        false );
-    m_storePassHLT               = config->GetValue("StorePassHLT",       false );
-    m_storeTrigKeys              = config->GetValue("StoreTrigKeys",      false );
+    m_triggerSelection           = config->GetValue("Trigger",            m_triggerSelection.c_str());
+    m_cutOnTrigger               = config->GetValue("CutOnTrigger",       m_cutOnTrigger);
+    m_storeTrigDecisions         = config->GetValue("StoreTrigDecision",  m_storeTrigDecisions);
+    m_storePassAny               = config->GetValue("StorePassAny",       m_storePassAny);
+    m_storePassL1                = config->GetValue("StorePassL1",        m_storePassL1);
+    m_storePassHLT               = config->GetValue("StorePassHLT",       m_storePassHLT);
+    m_storeTrigKeys              = config->GetValue("StoreTrigKeys",      m_storeTrigKeys);
 
-    if( m_triggerSelection.size() > 0)
+    if( !m_triggerSelection.empty() )
       Info("configure()", "Using Trigger %s", m_triggerSelection.c_str() );
-    if( !m_cutOnTrigger ) {
+    if( !m_cutOnTrigger )
       Info("configure()", "WILL NOT CUT ON TRIGGER AS YOU REQUESTED!");
-    }
 
     config->Print();
-
     Info("configure()", "BasicEventSelection succesfully configured! ");
-
     delete config; config = nullptr;
   }
 
@@ -158,7 +183,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   Info("histInitialize()", "Calling histInitialize");
 
-  // Make sure configuration variables have been configured 
+  // Make sure configuration variables have been configured
   if ( !getConfig().empty() && ( this->configure() == EL::StatusCode::FAILURE ) ) {
     Error("histInitialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
@@ -169,9 +194,9 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // write the metadata hist to this file so algos downstream can pick up the pointer
   TFile *fileMD = wk()->getOutputFile ("metadata");
   fileMD->cd();
-  
+
   // event counts from meta data
-  if ( !m_histEventCount ) {  
+  if ( !m_histEventCount ) {
     m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
     m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
     m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected in");
@@ -183,7 +208,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   //
   // Write meta data to histogram
-  // Bear in mind that histInitialize() is called after fileExecute()... 
+  // Bear in mind that histInitialize() is called after fileExecute()...
   //
   Info("histInitialize()", "Meta data from this file:");
   Info("histInitialize()", "Initial  events	 = %lu",      m_MD_initialNevents);
@@ -227,8 +252,8 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //---------------------------
   // Meta data - CutBookkepers
   //---------------------------
-  // 
-  // Metadata for intial N (weighted) events are used to correctly normalise MC 
+  //
+  // Metadata for intial N (weighted) events are used to correctly normalise MC
   // if running on a mc DAOD which had some skimming applied at the derivation stage
 
   // get the MetaData tree once a new file is opened, with
@@ -245,12 +270,12 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   if ( m_isDerivation ) {
 
     // check for corruption
-    const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);    
+    const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
     if(!m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess()){
       Error("initializeEvent()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
       return EL::StatusCode::FAILURE;
-    }       
-   
+    }
+
     // Now, let's find the actual information
     const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
     if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ){
@@ -267,7 +292,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     // Now, let's actually find the right one that contains all the needed info...
     const xAOD::CutBookkeeper* allEventsCBK(nullptr);
     const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
-    std::string derivationName = m_derivationName + "Kernel"; 
+    std::string derivationName = m_derivationName + "Kernel";
 
     if ( m_debug ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
 
@@ -328,7 +353,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // write the cutflows to this file so algos downstream can pick up the pointer
   TFile *fileCF = wk()->getOutputFile ("cutflow");
   fileCF->cd();
-  
+
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
   m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
   m_cutflowHist->SetBit(TH1::kCanRebin);
@@ -344,7 +369,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     if ( m_applyGRL ) {
       m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
       m_cutflowHistW->GetXaxis()->FindBin("GRL");
-    } 
+    }
     m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
     m_cutflowHistW->GetXaxis()->FindBin("LAr");
     m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
