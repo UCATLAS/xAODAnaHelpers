@@ -25,25 +25,25 @@ class BasicEventSelection : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
   public:
     // variables read in through configuration file
-    bool m_truthLevelOnly;
+    bool m_truthLevelOnly;  //!
     // GRL
-    bool m_applyGRL;
-    std::string m_GRLxml;
+    bool m_applyGRL;        //!
+    std::string m_GRLxml;   //!
     //PU Reweighting
-    bool m_doPUreweighting;
-    std::string m_triggerSelection;
-    bool m_cutOnTrigger;
-    bool m_storeTrigDecisions;
-    bool m_storePassAny;
-    bool m_storePassL1;
-    bool m_storePassHLT;
-    bool m_storeTrigKeys;
+    bool m_doPUreweighting; //!
+    std::string m_triggerSelection; //!
+    bool m_cutOnTrigger;       //!
+    bool m_storeTrigDecisions; //!
+    bool m_storePassAny;       //!
+    bool m_storePassL1;        //!
+    bool m_storePassHLT;       //!
+    bool m_storeTrigKeys;      //!
 
     std::string m_derivationName;
 
     // primary vertex
-    std::string m_vertexContainerName;
-    int m_PVNTrack;
+    std::string m_vertexContainerName; //!
+    int m_PVNTrack;                //!
 
   private:
     GoodRunsListSelectionTool*   m_grl;       //!
@@ -63,7 +63,7 @@ class BasicEventSelection : public xAH::Algorithm
     double m_MD_initialSumW;         //!
     double m_MD_finalSumW;	     //!
     double m_MD_initialSumWSquared;  //!
-    double m_MD_finalSumWSquared;    //!
+    double m_MD_finalSumWSquared;    //! 
 
     // cutflow
     TH1D* m_cutflowHist;    //!

@@ -54,21 +54,6 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
 
   Info("ElectronEfficiencyCorrector()", "Calling constructor");
 
-  // read debug flag from .config file
-  m_debug                   = false;
-
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = "";
-
-  // Systematics stuff
-  m_inputAlgoSystNames      = "";
-  m_systName		      = "";
-  m_outputSystNames         = "ElectronEfficiencyCorrector_Syst";
-  m_systVal 		      = 0.
-
-  // file(s) containing corrections
-  m_corrFileName1           = "";
-
 }
 
 
@@ -82,19 +67,19 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug", m_debug);
+    m_debug                   = config->GetValue("Debug", false);
 
     // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
+    m_inContainerName         = config->GetValue("InputContainer",  "");
 
     // Systematics stuff
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_systName		      = config->GetValue("SystName" , m_systName.c_str());
-    m_outputSystNames         = config->GetValue("OutputSystNames",  m_outputSystNames.c_str());
-    m_systVal 		      = config->GetValue("SystVal" , m_systVal);
+    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  "");
+    m_systName		      = config->GetValue("SystName" , "" );
+    m_outputSystNames         = config->GetValue("OutputSystNames",  "ElectronEfficiencyCorrector_Syst");
+    m_systVal 		      = config->GetValue("SystVal" , 0. );
     m_runAllSyst              = (m_systName.find("All") != std::string::npos);
     // file(s) containing corrections
-    m_corrFileName1           = config->GetValue("CorrectionFileName1" , m_corrFileName1.c_str());
+    m_corrFileName1           = config->GetValue("CorrectionFileName1" , "" );
     //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
 
     config->Print();

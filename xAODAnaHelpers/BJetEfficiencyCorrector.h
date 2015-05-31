@@ -19,24 +19,24 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_inContainerName;
+  std::string m_inContainerName;     //!
 
   // systematics
-  bool m_runAllSyst;
-  std::string m_systName;
-  std::string m_outputSystName;
+  bool m_runAllSyst;                 //!
+  std::string m_systName;            //!
+  std::string m_outputSystName;      //!
 
   std::string m_corrFileName;
   std::string m_jetAuthor;
   std::string m_taggerName;
   bool        m_useDevelopmentFile;
   bool        m_coneFlavourLabel;
-  bool  m_btag_veryloose;
-  bool  m_btag_loose;
-  bool  m_btag_medium;
-  bool  m_btag_tight;
+  bool  m_btag_veryloose;            //!
+  bool  m_btag_loose;                //!
+  bool  m_btag_medium;               //!
+  bool  m_btag_tight;                //!
 
-  std::string m_decor;            // The decoration key written to passing objects
+  std::string m_decor;            //! The decoration key written to passing objects
 
 private:
 
