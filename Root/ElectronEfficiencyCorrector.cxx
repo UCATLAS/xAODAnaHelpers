@@ -64,7 +64,7 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
   m_inputAlgoSystNames      = "";
   m_systName		      = "";
   m_outputSystNames         = "ElectronEfficiencyCorrector_Syst";
-  m_systVal 		      = 0.
+  m_systVal 		      = 0.;
 
   // file(s) containing corrections
   m_corrFileName1           = "";
