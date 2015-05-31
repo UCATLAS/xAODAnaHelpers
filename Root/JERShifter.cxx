@@ -49,6 +49,16 @@ JERShifter :: JERShifter ()
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
+
+  // input container to be read from TEvent or TStore
+  m_inContainerName = "";
+
+  // output container to be put into TStore
+  m_outContainerName  	= "";
+
+  m_jetAlgo             = "";
+  m_debug                   = false;
+
 }
 
 
@@ -68,13 +78,13 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // input container to be read from TEvent or TStore
-    m_inContainerName = config->GetValue("InputContainer",  "");
+    m_inContainerName = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
     // output container to be put into TStore
-    m_outContainerName  	= config->GetValue("OutputContainer", "");
+    m_outContainerName  	= config->GetValue("OutputContainer", m_outContainerName.c_str());
 
-    m_jetAlgo             = config->GetValue("JetAlgorithm",    "");
-    m_debug                   = config->GetValue("Debug" ,           false );
+    m_jetAlgo             = config->GetValue("JetAlgorithm",    m_jetAlgo.c_str());
+    m_debug                   = config->GetValue("Debug" ,           m_debug);
 
     delete config;
   }
