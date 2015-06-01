@@ -371,11 +371,11 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if ( m_IsoWP == "CutBasedDC14" ) {
 
-    m_ElectronIsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
+    m_ElectronIsolationSelectionTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
     HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+       
     RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<float>(m_CaloBasedIsoCut),  m_useRelativeIso ), "Failed to configure Calo-Based Isolation Cut");
     RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_TrackBasedIsoType),  static_cast<float>(m_TrackBasedIsoCut), m_useRelativeIso ), "Failed to configure Track-Based Isolation Cut");
-
     RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->initialize(), "Failed to properly initialize ElectronIsolationSelectionTool." );
 
   } else {
