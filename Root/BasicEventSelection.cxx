@@ -199,11 +199,11 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   if ( !m_histEventCount ) {
     m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
     m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected in");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(3, "nEvents selected out");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights initial");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeights selected in");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeights selected out");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(3, "sumOfWeights initial");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights selected");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeightsSquared initial");
+    m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
   }
 
   //
@@ -211,20 +211,19 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // Bear in mind that histInitialize() is called after fileExecute()...
   //
   Info("histInitialize()", "Meta data from this file:");
-  Info("histInitialize()", "Initial  events	 = %lu",      m_MD_initialNevents);
-  Info("histInitialize()", "Selected events	 = %lu",      m_MD_finalNevents);
+  Info("histInitialize()", "Initial  events	 = %llu",          m_MD_initialNevents);
+  Info("histInitialize()", "Selected events	 = %llu",          m_MD_finalNevents);
   Info("histInitialize()", "Initial  sum of weights = %f",         m_MD_initialSumW);
   Info("histInitialize()", "Selected sum of weights = %f",         m_MD_finalSumW);
   Info("histInitialize()", "Initial  sum of weights squared = %f", m_MD_initialSumWSquared);
   Info("histInitialize()", "Selected sum of weights squared = %f", m_MD_finalSumWSquared);
 
-  m_histEventCount -> Fill(1, m_MD_initialNevents);      // nEvents initial
-  m_histEventCount -> Fill(2, m_MD_finalNevents);        // nEvents selected in
-  m_histEventCount -> Fill(4, m_MD_initialSumW);         // sumOfWeights initial
-  m_histEventCount -> Fill(5, m_MD_finalSumW);           // sumOfWeights selected in
-  m_histEventCount -> Fill(4, m_MD_initialSumWSquared);  // sumOfWeightsSquared initial
-  m_histEventCount -> Fill(5, m_MD_finalSumWSquared);    // sumOfWeightsSquared selected in
-
+  m_histEventCount -> Fill(1, m_MD_initialNevents);      
+  m_histEventCount -> Fill(2, m_MD_finalNevents);        
+  m_histEventCount -> Fill(3, m_MD_initialSumW);         
+  m_histEventCount -> Fill(4, m_MD_finalSumW);           
+  m_histEventCount -> Fill(5, m_MD_initialSumWSquared);  
+  m_histEventCount -> Fill(6, m_MD_finalSumWSquared);    
 
   Info("histInitialize()", "Histograms initialized!");
 
