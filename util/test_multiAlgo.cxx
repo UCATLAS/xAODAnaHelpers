@@ -156,8 +156,8 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( electronSelect_signal );
   job.algsAdd( electronEffCorr );
   job.algsAdd( jetSelect_signal );
-  //job.algsAdd( bjetSelect_signal );
-  //job.algsAdd( bjetEffCorr_btag );
+  job.algsAdd( bjetSelect_signal );
+  job.algsAdd( bjetEffCorr_btag );
   job.algsAdd( jetHistsAlgo_signal );
   job.algsAdd( jetHistsAlgo_btag );
   job.algsAdd( jetSelect_truth );
