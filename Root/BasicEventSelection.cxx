@@ -180,7 +180,6 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-
   Info("histInitialize()", "Calling histInitialize");
 
   // Make sure configuration variables have been configured
@@ -188,8 +187,6 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
     Error("histInitialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
   }
-
-  Info("histInitialize()", "Calling histInitialize");
 
   // write the metadata hist to this file so algos downstream can pick up the pointer
   TFile *fileMD = wk()->getOutputFile ("metadata");
@@ -206,25 +203,6 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
     m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
   }
 
-  //
-  // Write meta data to histogram
-  // Bear in mind that histInitialize() is called after fileExecute()...
-  //
-  Info("histInitialize()", "Meta data from this file:");
-  Info("histInitialize()", "Initial  events	 = %llu",          m_MD_initialNevents);
-  Info("histInitialize()", "Selected events	 = %llu",          m_MD_finalNevents);
-  Info("histInitialize()", "Initial  sum of weights = %f",         m_MD_initialSumW);
-  Info("histInitialize()", "Selected sum of weights = %f",         m_MD_finalSumW);
-  Info("histInitialize()", "Initial  sum of weights squared = %f", m_MD_initialSumWSquared);
-  Info("histInitialize()", "Selected sum of weights squared = %f", m_MD_finalSumWSquared);
-
-  m_histEventCount -> Fill(1, m_MD_initialNevents);      
-  m_histEventCount -> Fill(2, m_MD_finalNevents);        
-  m_histEventCount -> Fill(3, m_MD_initialSumW);         
-  m_histEventCount -> Fill(4, m_MD_finalSumW);           
-  m_histEventCount -> Fill(5, m_MD_initialSumWSquared);  
-  m_histEventCount -> Fill(6, m_MD_finalSumWSquared);    
-
   Info("histInitialize()", "Histograms initialized!");
 
   return EL::StatusCode::SUCCESS;
@@ -237,12 +215,6 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
   Info("fileExecute()", "Calling fileExecute");
-
-  // Make sure the configuration has been loaded and applied
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("fileExecute()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
 
   // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
   m_event = wk()->xaodEvent();
@@ -313,6 +285,24 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     m_MD_finalSumWSquared   = DxAODEventsCBK->sumOfEventWeightsSquared();
 
   }
+
+  //
+  // Write meta data to histogram
+  //
+  Info("histInitialize()", "Meta data from this file:");
+  Info("histInitialize()", "Initial  events	 = %u",            static_cast<unsigned int>(m_MD_initialNevents) );
+  Info("histInitialize()", "Selected events	 = %u",            static_cast<unsigned int>(m_MD_finalNevents) );
+  Info("histInitialize()", "Initial  sum of weights = %f",         m_MD_initialSumW);
+  Info("histInitialize()", "Selected sum of weights = %f",         m_MD_finalSumW);
+  Info("histInitialize()", "Initial  sum of weights squared = %f", m_MD_initialSumWSquared);
+  Info("histInitialize()", "Selected sum of weights squared = %f", m_MD_finalSumWSquared);
+
+  m_histEventCount -> Fill(1, m_MD_initialNevents);      
+  m_histEventCount -> Fill(2, m_MD_finalNevents);        
+  m_histEventCount -> Fill(3, m_MD_initialSumW);         
+  m_histEventCount -> Fill(4, m_MD_finalSumW);           
+  m_histEventCount -> Fill(5, m_MD_initialSumWSquared);  
+  m_histEventCount -> Fill(6, m_MD_finalSumWSquared);    
 
   return EL::StatusCode::SUCCESS;
 
