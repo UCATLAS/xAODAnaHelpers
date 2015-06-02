@@ -125,6 +125,9 @@ EL::StatusCode BasicEventSelection :: configure ()
       m_PVNTrack            = config->GetValue("NTrackForPrimaryVertex",  m_PVNTrack); // harmonized cut
     }
 
+    // temp flag for derivations with broken meta data
+    m_useMetaData           = config->GetValue("UseMetaData", true);
+
     // Trigger
     m_triggerSelection           = config->GetValue("Trigger",            m_triggerSelection.c_str());
     m_cutOnTrigger               = config->GetValue("CutOnTrigger",       m_cutOnTrigger);
@@ -238,7 +241,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //check if file is from a DxAOD
   bool m_isDerivation = !MetaData->GetBranch("StreamAOD");
 
-  if ( m_isDerivation ) {
+  if ( m_isDerivation && m_useMetaData ) {
 
     // check for corruption
     const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
