@@ -20,7 +20,9 @@ The 00-03-00 tag works well with this realease.
 After checking out the package please execute a helper script to get any additional packages needed.
 These packages are need to temporarily solve issues that are resolved in up coming releases.
 For the current release, please do:
+```
 python xAODAnaHelpers/scripts/checkoutASGtags.py 2.3.12
+```
 
 ## Migrating
 
