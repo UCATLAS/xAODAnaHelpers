@@ -31,6 +31,7 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_GRLxml;
     //PU Reweighting
     bool m_doPUreweighting;
+    bool m_useMetaData;
     std::string m_triggerSelection;
     bool m_cutOnTrigger;
     bool m_storeTrigDecisions;
