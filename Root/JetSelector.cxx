@@ -3,7 +3,7 @@
  * Jet selector tool
  *
  * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
- *
+ * J.Alison (john.alison@cern.ch)
  *
  ******************************************/
 
@@ -97,6 +97,7 @@ JetSelector :: JetSelector () :
   m_truthLabel 	      = -1;
 
   m_doJVF 		      = false;
+  m_doBTagCut 		      = false;
   m_pt_max_JVF 	      = 50e3;
   m_eta_max_JVF 	      = 2.4;
   m_JVFCut 		      = 0.5;
@@ -159,6 +160,7 @@ EL::StatusCode  JetSelector :: configure ()
     m_truthLabel 	      = config->GetValue("TruthLabel",   m_truthLabel);
 
     m_doJVF 		      = config->GetValue("DoJVF",       m_doJVF);
+    m_doBTagCut		      = config->GetValue("DoBTagCut",   m_doBTagCut);
     m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
     m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
     m_JVFCut 		      = config->GetValue("JVFCut",      m_JVFCut);
@@ -209,21 +211,35 @@ EL::StatusCode  JetSelector :: configure ()
   //
   // Set the Btagging cut
   //
-  m_btagCut = -1;
+  m_btagCut = -100; // < -99 turns off btagging
   m_decor   = "passSel";
-  if ( m_isEMjet ) {
-    if ( m_btag_veryloose ) { m_btagCut = 0.1644; m_decor += "BTagVeryLoose";  }
-    if ( m_btag_loose     ) { m_btagCut = 0.3900; m_decor += "BTagLoose";      }
-    if ( m_btag_medium    ) { m_btagCut = 0.8119; m_decor += "BTagMedium";     }
-    if ( m_btag_tight     ) { m_btagCut = 0.9867; m_decor += "BTagTight";      }
+  //
+  // MV2c20 cuts
+  //
+  // VeryLoose / 85% / -0.7682
+  // Loose     / 77% / -0.3867
+  // Medium    / 70% / 0.0314
+  // Tight     / 60% / 0.5102
+ 
+  //if ( m_isEMjet ) {
 
-  } else if ( m_isLCjet ) {
-    if ( m_btag_veryloose ) { m_btagCut = 0.1340; m_decor += "BTagVeryLoose";  }
-    if ( m_btag_loose     ) { m_btagCut = 0.3511; m_decor += "BTagLoose";      }
-    if ( m_btag_medium    ) { m_btagCut = 0.7892; m_decor += "BTagMedium";     }
-    if ( m_btag_tight     ) { m_btagCut = 0.9827; m_decor += "BTagTight";      }
+  m_btag_veryloose_cut = -0.7682;
+  m_btag_loose_cut     = -0.3867;
+  m_btag_medium_cut    =  0.0314;
+  m_btag_tight_cut     =  0.5102;
+  if ( m_btag_veryloose ) { m_btagCut = m_btag_veryloose_cut; m_decor += "BTagVeryLoose";  }
+  if ( m_btag_loose     ) { m_btagCut = m_btag_loose_cut;     m_decor += "BTagLoose";      }
+  if ( m_btag_medium    ) { m_btagCut = m_btag_medium_cut;    m_decor += "BTagMedium";     }
+  if ( m_btag_tight     ) { m_btagCut = m_btag_tight_cut;     m_decor += "BTagTight";      }
 
-  }
+  //} else if ( m_isLCjet ) {
+  //if ( m_btag_veryloose ) { m_btagCut = 0.1340; m_decor += "BTagVeryLoose";  }
+  //if ( m_btag_loose     ) { m_btagCut = 0.3511; m_decor += "BTagLoose";      }
+  //if ( m_btag_medium    ) { m_btagCut = 0.7892; m_decor += "BTagMedium";     }
+  //if ( m_btag_tight     ) { m_btagCut = 0.9827; m_decor += "BTagTight";      }
+  //}
+
+
   if ( m_decorateSelectedObjects ) {
     Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
   }
@@ -620,11 +636,34 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //
   //  BTagging
   //
+  if ( m_btagCut >= -99 ) {
 
-  const xAOD::BTagging *myBTag = jet->btagging();
-  if ( myBTag ) {
-    if ( m_btagCut >=0 ) {
-      if ( myBTag->MV1_discriminant() < m_btagCut ) { return 0; }
+    //
+    //  Decorate All Jets with default BTag decisions
+    //
+    jet->auxdecor<char>("BTagVeryLoose") = -1;
+    jet->auxdecor<char>("BTagLoose")     = -1;
+    jet->auxdecor<char>("BTagMedium")    = -1;
+    jet->auxdecor<char>("BTagTight")     = -1;
+
+    const xAOD::BTagging *myBTag = jet->btagging();
+    if ( myBTag ) {
+
+      //
+      // Cut on Btagging weight
+      //
+      if ( m_doBTagCut && (myBTag->MV1_discriminant() < m_btagCut) ) { 
+	return 0; 
+      }
+
+      //
+      // Decorate the Jets 
+      //
+      jet->auxdecor<char>("BTagVeryLoose") = static_cast<char>( myBTag->MV1_discriminant() > m_btag_veryloose_cut );
+      jet->auxdecor<char>("BTagLoose")     = static_cast<char>( myBTag->MV1_discriminant() > m_btag_loose_cut     );
+      jet->auxdecor<char>("BTagMedium")    = static_cast<char>( myBTag->MV1_discriminant() > m_btag_medium_cut    );
+      jet->auxdecor<char>("BTagTight")     = static_cast<char>( myBTag->MV1_discriminant() > m_btag_tight_cut     );
+
     }
   }
 

@@ -294,6 +294,10 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     //
     for( auto jet_itr : *(correctedJets)) {
 
+      if(m_debug){
+	Info( "execute", "New Jet eta = %f",  jet_itr->eta());
+      }
+
       //
       //  If btagging vector doesnt exist create it
       //

@@ -47,11 +47,17 @@ public:
   float m_pt_max_JVF;             // max pT (JVF is a pileup cut)
   float m_eta_max_JVF;            // detector eta cut
   float m_JVFCut;                 // cut value
+  float m_btag_veryloose_cut;     // BTagging Cut Values 
+  float m_btag_loose_cut;         // BTagging Cut Values 
+  float m_btag_medium_cut;        // BTagging Cut Values 
+  float m_btag_tight_cut;         // BTagging Cut Values 
   float m_btagCut;                // btagging cuts, configured by the bools below
-  bool  m_btag_veryloose;         //
-  bool  m_btag_loose;             //
-  bool  m_btag_medium;            //
-  bool  m_btag_tight;             //
+  bool  m_btag_veryloose;         // Do BTag Very Loose
+  bool  m_btag_loose;             // Do BTag Loose
+  bool  m_btag_medium;            // Do BTag Medium
+  bool  m_btag_tight;             // Do BTag Tight
+  bool  m_doBTagCut;              // Flag to apply btagging cut, if false just decorate decisions
+
 
   std::string              m_passAuxDecorKeys;
   std::string              m_failAuxDecorKeys;
