@@ -652,7 +652,9 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       //
       // Cut on Btagging weight
       //
-      if ( m_doBTagCut && (myBTag->MV1_discriminant() < m_btagCut) ) { 
+      double discriminant = -99;
+      myBTag->MVx_discriminant("MV2c20",discriminant);
+      if ( m_doBTagCut && (discriminant < m_btagCut) ) { 
 	return 0; 
       }
 
