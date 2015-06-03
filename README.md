@@ -18,14 +18,14 @@ The xAOD analysis framework, born out of ProofAna...or not.
 This version uses AB 2.3.12.
 The 00-03-00 tag works well with this realease.
 After checking out the package please execute a helper script to get any additional packages needed.
-These packages are need to temporarily solve issues that are resolved in up coming releases.
+These packages are needed to temporarily solve issues that will be resolved in up coming releases.
 For the current release, please do:
 ```
 python xAODAnaHelpers/scripts/checkoutASGtags.py 2.3.12
 ```
 **Caveat** 
 
-It has been noticed that some of the latest derived xAODs have missing metadata info due to some bug in DF. If you are incurring in a nasty crash at runtime, make sure you have switched off the configuration flag 
+It has been noticed that some of the latest derived xAODs have missing metadata info due to some bug in Derivation Framework. If you are incurring in a nasty crash at runtime, make sure you have switched off the configuration flag 
 
 ```
 UseMetadata False
@@ -35,7 +35,7 @@ and try again
 
 ## Migrating
 
-### From 00-00-04 to 00-00-05
+### From 00-00-04 to 00-03-00
 
 The constructors for the algorithms have all been changed to default constructors. We have also centralized a lot of code so that `EL::Algorithm` is replaced by `xAH::Algorithm` where possible. For updating constructors in your code, replace
 
