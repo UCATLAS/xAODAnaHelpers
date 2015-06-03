@@ -13,7 +13,7 @@
 
 The xAOD analysis framework, born out of ProofAna...or not.
 
-## Current Working Version
+## Current Working Version: **00-03-00**
 
 This version uses AB 2.3.12.
 The 00-03-00 tag works well with this realease.
@@ -23,6 +23,15 @@ For the current release, please do:
 ```
 python xAODAnaHelpers/scripts/checkoutASGtags.py 2.3.12
 ```
+**Caveat** 
+
+It has been noticed that some of the latest derived xAODs have missing metadata info due to some bug in DF. If you are incurring in a nasty crash at runtime, make sure you have switched off the configuration flag 
+
+```
+UseMetadata False
+```
+
+and try again
 
 ## Migrating
 
