@@ -809,6 +809,9 @@ void HelpTreeBase::AddJets(const std::string detailStr)
 
   if ( m_jetInfoSwitch->m_constituent ) {
     m_tree->Branch("jet_numConstituents" ,   &m_jet_numConstituents);
+  }
+
+  if ( m_jetInfoSwitch->m_constituentAll ) {
     m_tree->Branch("jet_constituentWeights", &m_jet_constitWeights);
     m_tree->Branch("jet_constituent_pt" ,    &m_jet_constit_pt    );
     m_tree->Branch("jet_constituent_eta",    &m_jet_constit_eta   );
@@ -1267,6 +1270,10 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     } // allTrack switch
 
     if( m_jetInfoSwitch->m_constituent ) {
+      m_jet_numConstituents.push_back( jet_itr->numConstituents() );
+    }
+
+    if( m_jetInfoSwitch->m_constituentAll ) {
       m_jet_constitWeights.push_back( jet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
       std::vector<float> pt;
       std::vector<float> eta;
@@ -1287,7 +1294,6 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
           e.  push_back( constit->e() / m_units  );
         }
       }
-      m_jet_numConstituents.push_back( jet_itr->numConstituents() );
       m_jet_constit_pt. push_back( pt  );
       m_jet_constit_eta.push_back( eta );
       m_jet_constit_phi.push_back( phi );
@@ -1791,6 +1797,9 @@ void HelpTreeBase::ClearJets() {
 
   if( m_jetInfoSwitch->m_constituent ) {
     m_jet_numConstituents.clear();
+  }
+
+  if( m_jetInfoSwitch->m_constituentAll ) {
     m_jet_constitWeights.clear();
     m_jet_constit_pt.clear();
     m_jet_constit_eta.clear();

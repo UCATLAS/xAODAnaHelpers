@@ -145,6 +145,7 @@ namespace HelperClasses{
       m_allTrackPVSel = m_allTrackPVSel || parse("allTrackDetailPVSel") ;
     }
     m_constituent   = parse("constituent");
+    m_constituentAll= parse("constituentAll");
     m_flavTag       = parse("flavorTag");
     if( parse("LeadingJets") ){
       m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );

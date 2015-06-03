@@ -120,6 +120,7 @@ namespace HelperClasses {
     bool m_allTrackDetail;
     bool m_allTrackPVSel;
     bool m_constituent;
+    bool m_constituentAll;
     bool m_flavTag;
     int  m_numLeadingJets;
     void initialize();
