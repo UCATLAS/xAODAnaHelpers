@@ -25,7 +25,7 @@ python xAODAnaHelpers/scripts/checkoutASGtags.py 2.3.12
 ```
 **Caveat** 
 
-It has been noticed that some of the latest derived xAODs have missing metadata info due to some bug in Derivation Framework. If you are incurring in a nasty crash at runtime, make sure you have switched off the configuration flag 
+It has been noticed that some of the latest derived xAODs have missing metadata info due to some bug in Derivation Framework. If you are incurring in a nasty crash at runtime, make sure you have set the name of the derivation property DerivationName property of BasicEventSelection.  If that does not work then switched off the configuration flag 
 
 ```
 UseMetadata False
