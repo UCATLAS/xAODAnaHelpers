@@ -108,22 +108,11 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     delete config;
   }
 
-  m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
-  m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
 
-  if( m_isEMjet ) {
-    if( m_btag_veryloose ) { m_operatingPt = "0_1644"; m_decor += "_BTagVeryLoose";  }
-    if( m_btag_loose     ) { m_operatingPt = "0_3900"; m_decor += "_BTagLoose";      }
-    if( m_btag_medium    ) { m_operatingPt = "0_8119"; m_decor += "_BTagMedium";     }
-    if( m_btag_tight     ) { m_operatingPt = "0_9867"; m_decor += "_BTagTight";      }
-
-
-  } else if ( m_isLCjet ) {
-    if( m_btag_veryloose ) { m_operatingPt = "0_1340"; m_decor += "_BTagVeryLoose";  }
-    if( m_btag_loose     ) { m_operatingPt = "0_3511"; m_decor += "_BTagLoose";      }
-    if( m_btag_medium    ) { m_operatingPt = "0_7892"; m_decor += "_BTagMedium";     }
-    if( m_btag_tight     ) { m_operatingPt = "0_9827"; m_decor += "_BTagTight";      }
-  }
+  if( m_btag_veryloose ) { m_operatingPt = "-0_7682"; m_decor += "_BTagVeryLoose";  }
+  if( m_btag_loose     ) { m_operatingPt = "-0_3867"; m_decor += "_BTagLoose";      }
+  if( m_btag_medium    ) { m_operatingPt =  "0_0314"; m_decor += "_BTagMedium";     }
+  if( m_btag_tight     ) { m_operatingPt =  "0_5102"; m_decor += "_BTagTight";      }
 
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 
@@ -293,6 +282,10 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // and now apply data-driven efficiency and efficiency SF!
     //
     for( auto jet_itr : *(correctedJets)) {
+
+      if(m_debug){
+	Info( "execute", "New Jet eta = %f",  jet_itr->eta());
+      }
 
       //
       //  If btagging vector doesnt exist create it

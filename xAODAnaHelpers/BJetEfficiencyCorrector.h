@@ -43,9 +43,6 @@ private:
   // tools
   BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
 
-  bool m_isEMjet;                //!
-  bool m_isLCjet;                //!
-
   // configuration variables
   std::string m_operatingPt;
 
