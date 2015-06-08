@@ -118,12 +118,10 @@ EL::StatusCode BasicEventSelection :: configure ()
     // Pileup Reweighting
     m_doPUreweighting   = config->GetValue("DoPileupReweighting", m_doPUreweighting);
 
-    if ( !m_truthLevelOnly ) {
-      // primary vertex
-      m_vertexContainerName = config->GetValue("VertexContainer", m_vertexContainerName.c_str());
-      // number of tracks to require to count PVs
-      m_PVNTrack            = config->GetValue("NTrackForPrimaryVertex",  m_PVNTrack); // harmonized cut
-    }
+    // primary vertex
+    m_vertexContainerName = config->GetValue("VertexContainer", m_vertexContainerName.c_str());
+    // number of tracks to require to count PVs
+    m_PVNTrack            = config->GetValue("NTrackForPrimaryVertex",  m_PVNTrack);
 
     // temp flag for derivations with broken meta data
     m_useMetaData           = config->GetValue("UseMetaData", true);
@@ -136,6 +134,13 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_storePassL1                = config->GetValue("StorePassL1",        m_storePassL1);
     m_storePassHLT               = config->GetValue("StorePassHLT",       m_storePassHLT);
     m_storeTrigKeys              = config->GetValue("StoreTrigKeys",      m_storeTrigKeys);
+
+    // if truth level make sure parameters are set properly
+    if( m_truthLevelOnly ) {
+      Info("configure()", "Truth only! Turn off trigger stuff");
+      m_triggerSelection = "";
+      m_cutOnTrigger = m_storeTrigDecisions = m_storePassAny = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
+    }
 
     if( !m_triggerSelection.empty() )
       Info("configure()", "Using Trigger %s", m_triggerSelection.c_str() );
@@ -371,7 +376,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }
   m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
   m_cutflowHistW->GetXaxis()->FindBin("NPV");
-  if ( m_triggerSelection.size() > 0 && m_cutOnTrigger ) {
+  if ( !m_triggerSelection.empty() > 0 && m_cutOnTrigger ) {
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
@@ -401,11 +406,13 @@ EL::StatusCode BasicEventSelection :: initialize ()
   RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
   ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
 
-  m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
+  if( !m_triggerSelection.empty() || m_cutOnTrigger || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+    m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
+  }
 
 
   // as a check, let's see the number of events in our file (long long int)
@@ -439,7 +446,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   //--------------------------
   //Print trigger's used for first event only
-  if ( m_eventCounter == 1 && m_triggerSelection.size() > 0 ) {
+  if ( m_eventCounter == 1 && !m_triggerSelection.empty() ) {
     printf("*** Triggers used are:\n");
     auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
     std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
@@ -552,7 +559,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
 
   // Trigger //
-  if ( m_triggerSelection.size() > 0 ) {
+  if ( !m_triggerSelection.empty() ) {
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
     if ( m_cutOnTrigger ) {
       if ( !triggerChainGroup->isPassed() ) {
@@ -639,10 +646,8 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   if(m_grl) delete m_grl;
   if(m_pileuptool) delete m_pileuptool;
-  if( m_triggerSelection.size() > 0){
-    if(m_trigDecTool) delete m_trigDecTool;
-    if(m_trigConfTool) delete m_trigConfTool;
-  }
+  if(m_trigDecTool) delete m_trigDecTool;
+  if(m_trigConfTool) delete m_trigConfTool;
 
   return EL::StatusCode::SUCCESS;
 }
