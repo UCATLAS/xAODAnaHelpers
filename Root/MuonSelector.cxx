@@ -600,12 +600,6 @@ EL::StatusCode MuonSelector :: histFinalize ()
 
 int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
 
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
-
-  const xAOD::TrackParticle* tp  = muon->primaryTrackParticle();
-
-  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
-  float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
 
   int type = static_cast<int>(muon->muonType());
 
@@ -632,6 +626,14 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
   // do not cut on impact parameter if muon is Standalone
   if ( type != xAOD::Muon::MuonType::MuonStandAlone ) {
+    
+    // Put tracking here, after pt cuts, to be safe with derivations.
+    // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
+    const xAOD::TrackParticle* tp  = muon->primaryTrackParticle();
+
+    float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
+    float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
+
     // d0 cut
     if ( !( tp->d0() < m_d0_max ) ) {
     	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 cut."); }

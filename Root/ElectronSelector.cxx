@@ -655,13 +655,6 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   int oq      = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
 
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
-
-  const xAOD::TrackParticle* tp  = electron->trackParticle();
-
-  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
-  float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
-
   // author cut
   if ( m_doAuthorCut ) {
     if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
@@ -706,6 +699,13 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       }
     }
   }
+
+  // Tracking AFTER acceptance, in case of derivation reduction.
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
+  const xAOD::TrackParticle* tp  = electron->trackParticle();
+  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
+  float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
+
   // d0 cut
   if ( !( tp->d0() < m_d0_max ) ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed d0 cut."); }
