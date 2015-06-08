@@ -244,7 +244,7 @@ EL::StatusCode METConstructor :: execute ()
   RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, m_debug), "Failed retrieving tau cont.");
   if (m_doTauCuts) {
     ConstDataVector<xAOD::TauJetContainer> metTaus(SG::VIEW_ELEMENTS);
-    // for (const auto& tau : *tauCont) if (CutsMETMaker::accept(tau)) metTaus.push_back(tau);
+    for (const auto& tau : *tauCont) if (CutsMETMaker::accept(tau)) metTaus.push_back(tau);
     RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, metTaus.asDataVector(), metMap), "Failed rebuilding tau component.");
   } else {
     RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, tauCont, metMap), "Failed rebuilding tau component.");
