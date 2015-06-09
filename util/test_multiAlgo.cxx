@@ -19,6 +19,7 @@
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "xAODAnaHelpers/Writer.h"
 #include "xAODAnaHelpers/OverlapRemover.h"
+#include "xAODAnaHelpers/METConstructor.h"
 #include "xAODAnaHelpers/TreeAlgo.h"
 
 #include "PATInterfaces/SystematicVariation.h"
@@ -140,6 +141,9 @@ int main( int argc, char* argv[] ) {
   OverlapRemover* overlapRemoval                = new OverlapRemover();
   overlapRemoval->setName("OverlapRemovalTool")->setConfig(localDataDir+"overlapRemoval.config");
 
+  METConstructor* met = new METConstructor();
+  met->setName("met")->setConfig(localDataDir+"MET_MC15.config");
+
   JetHistsAlgo* jk_AntiKt10LC                   = new JetHistsAlgo();
   jk_AntiKt10LC->setName("AntiKt10/")->setConfig(localDataDir+"test_jetPlotExample.config");
 
@@ -163,6 +167,7 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( jetSelect_truth );
   job.algsAdd( jetHistsAlgo_truth );
   job.algsAdd( overlapRemoval );
+  job.algsAdd( met );
   job.algsAdd( jk_AntiKt10LC );
   job.algsAdd( out_tree );
 

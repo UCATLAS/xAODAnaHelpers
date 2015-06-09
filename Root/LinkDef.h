@@ -14,6 +14,9 @@
 #include <xAODAnaHelpers/MuonCalibrator.h>
 /*#include <xAODAnaHelpers/GroomedFatJets.h>*/
 
+/* Missing Energy Reconstruction */
+#include <xAODAnaHelpers/METConstructor.h>
+
 /* Scale Factors */
 #include <xAODAnaHelpers/ElectronEfficiencyCorrector.h>
 #include <xAODAnaHelpers/MuonEfficiencyCorrector.h>
@@ -51,6 +54,8 @@
 #pragma link C++ class JetCalibrator+;
 #pragma link C++ class MuonCalibrator+;
 /*#pragma link C++ class GroomedFatJets+;*/
+
+#pragma link C++ class METConstructor+;
 
 #pragma link C++ class ElectronEfficiencyCorrector+;
 #pragma link C++ class MuonEfficiencyCorrector+;
