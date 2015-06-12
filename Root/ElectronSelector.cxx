@@ -703,6 +703,12 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   // Tracking AFTER acceptance, in case of derivation reduction.
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
   const xAOD::TrackParticle* tp  = electron->trackParticle();
+
+  if (!tp) {
+    if ( m_debug ) Info( "PassCuts()", "Electron has no TrackParticle.");
+    return 0;
+  }
+
   float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
   float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
 
