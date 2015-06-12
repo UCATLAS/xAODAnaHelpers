@@ -22,6 +22,7 @@
 #include "xAODMuon/MuonContainer.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODTau/TauJetContainer.h"
+#include "xAODMissingET/MissingETContainer.h"
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODRootAccess/TEvent.h"
@@ -55,6 +56,7 @@ public:
   void AddJets        (const std::string detailStr = "");
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
+  void AddMET         (const std::string detailStr = "");
  
   xAOD::TEvent* m_event;
 
@@ -67,6 +69,7 @@ public:
   HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
+  HelperClasses::METInfoSwitch*        m_metInfoSwitch;
   
   InDet::InDetTrackSelectionTool * m_trkSelTool;
 
@@ -82,6 +85,7 @@ public:
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1 );
   void FillFatJets( const xAOD::JetContainer* fatJets );
   void FillTaus( const xAOD::TauJetContainer* taus );
+  void FillMET( const xAOD::MissingETContainer* met );
 
   void Fill();
   void ClearEvent();
@@ -91,6 +95,7 @@ public:
   void ClearElectrons();
   void ClearJets();
   void ClearTaus();
+  void ClearMET();
 
   bool writeTo( TFile *file );
 
@@ -432,6 +437,14 @@ protected:
   std::vector<float> m_tau_m;
   std::vector<int>   m_tau_ntrk;
   std::vector<float> m_tau_charge;
+  
+  // met
+  float m_metFinal;     float m_metFinalPhi;
+  float m_metEle;       float m_metElePhi;
+  float m_metGamma;     float m_metGammaPhi;
+  float m_metTau;       float m_metTauPhi;
+  float m_metMuons;     float m_metMuonsPhi;
+  float m_metSoftCluss; float m_metSoftClussPhi;
 
 };
 
