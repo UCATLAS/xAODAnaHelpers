@@ -33,6 +33,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_jetInfoSwitch(nullptr),
   m_fatJetInfoSwitch(nullptr),
   m_tauInfoSwitch(nullptr),
+  m_metInfoSwitch(nullptr),
   m_trkSelTool(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr)
@@ -1885,101 +1886,58 @@ void HelpTreeBase::AddMET( const std::string detailStr ) {
   m_metInfoSwitch = new HelperClasses::METInfoSwitch( detailStr );
 
   // Add these basic branches
-  m_tree->Branch("metFinal",         &m_metFinal,      "metFinal/F"     );
-  m_tree->Branch("metFinalPhi",      &m_metFinalPhi,   "metFinalPhi/F"  );
+  m_tree->Branch("metFinal",         &m_metFinal,          "metFinal/F"   );
+  m_tree->Branch("metFinalPhi",      &m_metFinalPhi,       "metFinalPhi/F");
+
   if ( m_metInfoSwitch->m_refEle ) {
-    m_tree->Branch("metEle",         &m_metEle,      "metEle/F"     );
-    m_tree->Branch("metElePhi",      &m_metElePhi,   "metElePhi/F"  );
+    m_tree->Branch("metEle",         &m_metEle,            "metEle/F"     );
+    m_tree->Branch("metElePhi",      &m_metElePhi,         "metElePhi/F"  );
   }
   if ( m_metInfoSwitch->m_refGamma ) {
-    m_tree->Branch("metGamma",         &m_metGamma,      "metGamma/F"     );
-    m_tree->Branch("metGammaPhi",      &m_metGammaPhi,   "metGammaPhi/F"  );
+    m_tree->Branch("metGamma",       &m_metGamma,          "metGamma/F"   );
+    m_tree->Branch("metGammaPhi",    &m_metGammaPhi,       "metGammaPhi/F");
   }
   if ( m_metInfoSwitch->m_refTau ) {
-    m_tree->Branch("metTau",         &m_metTau,      "metTau/F"     );
-    m_tree->Branch("metTauPhi",      &m_metTauPhi,   "metTauPhi/F"  );
+    m_tree->Branch("metTau",         &m_metTau,            "metTau/F"     );
+    m_tree->Branch("metTauPhi",      &m_metTauPhi,         "metTauPhi/F"  );
   }
   if ( m_metInfoSwitch->m_muons ) {
-    m_tree->Branch("metMuons",         &m_metMuons,      "metMuons/F"     );
-    m_tree->Branch("metMuonsPhi",      &m_metMuonsPhi,   "metMuonsPhi/F"  );
+    m_tree->Branch("metMuons",       &m_metMuons,          "metMuons/F"   );
+    m_tree->Branch("metMuonsPhi",    &m_metMuonsPhi,       "metMuonsPhi/F");
   }
   if ( m_metInfoSwitch->m_softClus) {
-    m_tree->Branch("metSoftCluss",         &m_metSoftCluss,      "metSoftCluss/F"     );
-    m_tree->Branch("metSoftClussPhi",      &m_metSoftClussPhi,   "metSoftClussPhi/F"  );
+    m_tree->Branch("metSoftCluss",   &m_metSoftCluss,      "metSoftCluss/F"   );
+    m_tree->Branch("metSoftClussPhi",&m_metSoftClussPhi,   "metSoftClussPhi/F");
   }
 
   //this->AddMETUser();
 }
 
 // Fill the information in the trigger branches
-void HelpTreeBase::FillMET( const xAOD::MissingETContainer* eventInfo ) {
-
-  if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Filling trigger info"); }
+void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
 
   // Clear previous events
-  this->ClearTrigger();
-  this->ClearTriggerUser();
+  this->ClearMET();
+  //this->ClearMETUser();
 
-  // Grab the global pass information from the TrigDecisionTool
-  if ( m_trigInfoSwitch->m_basic ) {
+  if ( m_debug ) { Info("HelpTreeBase::FillMET()", "Filling MET info"); }
 
-    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_basic"); }
-  
-    static SG::AuxElement::ConstAccessor< int > passAny("passAny");
-    if( passAny.isAvailable( *eventInfo ) ) { m_passAny = passAny( *eventInfo ); }
-    else { m_passAny = -999; }
-    static SG::AuxElement::ConstAccessor< int > passL1("passL1");
-    if( passL1.isAvailable( *eventInfo ) ) { m_passL1 = passL1( *eventInfo ); }
-    else { m_passL1 = -999; }
-    static SG::AuxElement::ConstAccessor< int > passHLT("passHLT");
-    if( passHLT.isAvailable( *eventInfo ) ) { m_passHLT = passHLT( *eventInfo ); }
-    else { m_passHLT = -999; }
-
-  }
-
-  // If detailed menu information about the configuration keys, turn this on.
-  // This is useful for using this database: https://atlas-trigconf.cern.ch/
-  if ( m_trigInfoSwitch->m_menuKeys ) {
-
-    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_menuKeys"); }
-
-    static SG::AuxElement::ConstAccessor< int > masterKey("masterKey");
-    if( masterKey.isAvailable( *eventInfo ) ) { m_masterKey = masterKey( *eventInfo ); }
-    else { m_masterKey = -999; }
-    static SG::AuxElement::ConstAccessor< int > L1PSKey("L1PSKey");
-    if( L1PSKey.isAvailable( *eventInfo ) ) { m_L1PSKey = L1PSKey( *eventInfo ); }
-    else { m_L1PSKey = -999; }
-    static SG::AuxElement::ConstAccessor< int > HLTPSKey("HLTPSKey");
-    if( HLTPSKey.isAvailable( *eventInfo ) ) { m_HLTPSKey = HLTPSKey( *eventInfo ); }
-    else { m_HLTPSKey = -999; }
-
-  }
-
-  // If detailed information about each and every trigger is desired
-  // save a vector of strings holding passing decisions
-  if ( m_trigInfoSwitch->m_passTriggers ) {
-
-    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_passTriggers"); }
-    static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
-    if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
-
-  }
+  const xAOD::MissingET* final = *met->find("FinalClus");
+  m_metFinal    = final->met() / m_units;
+  m_metFinalPhi = final->phi();
 
 }
 
 // Clear Trigger
-void HelpTreeBase::ClearTrigger() {
+void HelpTreeBase::ClearMET() {
   
-  m_passAny = -999;
-  m_passL1  = -999;
-  m_passHLT = -999;
-  
-  m_masterKey = 0;
-  m_L1PSKey   = 0;
-  m_HLTPSKey  = 0;
-  
-  m_passTriggers.clear();
-  
+   m_metFinal     = m_metFinalPhi     = -999;
+   m_metEle       = m_metElePhi       = -999;
+   m_metGamma     = m_metGammaPhi     = -999;
+   m_metTau       = m_metTauPhi       = -999;
+   m_metMuons     = m_metMuonsPhi     = -999;
+   m_metSoftCluss = m_metSoftClussPhi = -999;
+
 }
 
 
