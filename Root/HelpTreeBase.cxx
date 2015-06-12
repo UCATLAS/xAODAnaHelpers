@@ -499,6 +499,56 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
   }
 }
 
+void HelpTreeBase::ClearMuons() {
+
+  m_nmuon = 0;
+
+  if ( m_muInfoSwitch->m_kinematic ) {
+    m_muon_pt.clear();
+    m_muon_eta.clear();
+    m_muon_phi.clear();
+    m_muon_m.clear();
+  }
+
+  if ( m_muInfoSwitch->m_isolation ) {
+    m_muon_isIsolated.clear();
+  }
+
+  if ( m_muInfoSwitch->m_quality ) {
+    m_muon_isVeryLoose.clear();
+    m_muon_isLoose.clear();
+    m_muon_isMedium.clear();
+    m_muon_isTight.clear();
+  }
+
+  if ( m_muInfoSwitch->m_trackparams ) {
+    m_muon_trkd0.clear();
+    m_muon_trkd0sig.clear();
+    m_muon_trkz0.clear();
+    m_muon_trkz0sintheta.clear();
+    m_muon_trkphi0.clear();
+    m_muon_trktheta.clear();
+    m_muon_trkcharge.clear();
+    m_muon_trkqOverP.clear();
+  }
+
+  if ( m_muInfoSwitch->m_trackhitcont ) {
+    m_muon_trknSiHits.clear();
+    m_muon_trknPixHits.clear();
+    m_muon_trknPixHoles.clear();
+    m_muon_trknSCTHits.clear();
+    m_muon_trknSCTHoles.clear();
+    m_muon_trknTRTHits.clear();
+    m_muon_trknTRTHoles.clear();
+    m_muon_trknBLayerHits.clear();
+    if ( !m_DC14 ) {
+      m_muon_trknInnermostPixLayHits.clear();
+      m_muon_trkPixdEdX.clear();
+    }
+  }
+
+}
+
 /*********************
  *
  *   ELECTRONS
@@ -680,6 +730,60 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 
     m_nel++;
   }
+}
+
+void HelpTreeBase::ClearElectrons() {
+
+  m_nel = 0;
+
+  if ( m_elInfoSwitch->m_kinematic ){
+    m_el_pt.clear();
+    m_el_eta.clear();
+    m_el_phi.clear();
+    m_el_m.clear();
+  }
+
+  if ( m_elInfoSwitch->m_isolation ) {
+    m_el_isIsolated.clear();
+  }
+
+  if ( m_elInfoSwitch->m_PID ) {
+    m_el_LHVeryLoose.clear();
+    m_el_LHLoose.clear();
+    m_el_LHMedium.clear();
+    m_el_LHTight.clear();
+    m_el_LHVeryTight.clear();
+    m_el_IsEMLoose.clear();
+    m_el_IsEMMedium.clear();
+    m_el_IsEMTight.clear();
+  }
+
+  if ( m_elInfoSwitch->m_trackparams ) {
+    m_el_trkd0.clear();
+    m_el_trkd0sig.clear();
+    m_el_trkz0.clear();
+    m_el_trkz0sintheta.clear();
+    m_el_trkphi0.clear();
+    m_el_trktheta.clear();
+    m_el_trkcharge.clear();
+    m_el_trkqOverP.clear();
+  }
+
+  if ( m_elInfoSwitch->m_trackhitcont ) {
+    m_el_trknSiHits.clear();
+    m_el_trknPixHits.clear();
+    m_el_trknPixHoles.clear();
+    m_el_trknSCTHits.clear();
+    m_el_trknSCTHoles.clear();
+    m_el_trknTRTHits.clear();
+    m_el_trknTRTHoles.clear();
+    m_el_trknBLayerHits.clear();
+    if ( !m_DC14 ) {
+      m_el_trknInnermostPixLayHits.clear();
+      m_el_trkPixdEdX.clear();
+    }
+  }
+
 }
 
 /*********************
@@ -1491,200 +1595,6 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
   } // loop over jets
 }
 
-/*********************
- *
- *   FAT JETS
- *
- ********************/
-
-void HelpTreeBase::AddFatJets(std::string detailStr) {
-  m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
-}
-/* TODO: fatJets */
-void HelpTreeBase::FillFatJets( const xAOD::JetContainer* /*fatJets*/ ) { }
-
-void HelpTreeBase::ClearEvent() {
-  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = -999;
-  m_mcEventWeight = 1.;
-  // pileup
-  m_npv = m_lumiBlock = -999;
-  m_actualMu = m_averageMu = -999;
-  // shapeEM
-  m_rhoEM = -999;
-  // shapeLC
-  m_rhoLC = -999;
-  // truth
-  m_pdgId1 = m_pdgId2 = m_pdfId1 = m_pdfId2 = -999;
-  m_x1 = m_x2 = -999;
-  m_xf1 = m_xf2 = -999;
-
-  //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
-  
-  // CaloCluster
-  if( m_eventInfoSwitch->m_caloClus){
-    m_caloCluster_pt.clear();
-    m_caloCluster_eta.clear();
-    m_caloCluster_phi.clear();
-    m_caloCluster_e.clear();
-  }
-}
-
-
-/*********************
- *
- *   TAUS
- *
- ********************/
-
-void HelpTreeBase::AddTaus(const std::string detailStr) {
-
-  m_tauInfoSwitch = new HelperClasses::TauInfoSwitch( detailStr );
-
-  // always
-  m_tree->Branch("ntau",   &m_ntau, "ntau/I");
-
-  if ( m_tauInfoSwitch->m_kinematic ) {
-    m_tree->Branch("tau_pt",     &m_tau_pt);
-    m_tree->Branch("tau_phi",    &m_tau_phi);
-    m_tree->Branch("tau_eta",    &m_tau_eta);
-    m_tree->Branch("tau_m",      &m_tau_m);
-    m_tree->Branch("tau_ntrk",   &m_tau_ntrk);
-    m_tree->Branch("tau_charge", &m_tau_charge);
-  }
-
-  this->AddTausUser();
-}
-
-void HelpTreeBase::FillTaus( const xAOD::TauJetContainer* taus ) {
-
-  this->ClearTaus();
-  this->ClearTausUser();
-
-  m_ntau = 0;
-  for ( auto tau_itr : *(taus) ) {
-
-    if ( m_debug ) { Info("HelpTreeBase::FillTaus()", "Filling tau w/ pT = %2f", tau_itr->pt() / m_units ); }
-
-    if ( m_tauInfoSwitch->m_kinematic ) {
-      m_tau_pt.push_back ( tau_itr->pt() / m_units  );
-      m_tau_eta.push_back( tau_itr->eta() );
-      m_tau_phi.push_back( tau_itr->phi() );
-      m_tau_m.push_back  ( tau_itr->m() / m_units  );
-      m_tau_charge.push_back( tau_itr->charge() );
-      m_tau_ntrk.push_back( tau_itr->nTracks() );
-    }
-
-    this->FillTausUser(tau_itr);
-
-    m_ntau++;
-  }
-}
-
-void HelpTreeBase::ClearMuons() {
-
-  m_nmuon = 0;
-
-  if ( m_muInfoSwitch->m_kinematic ) {
-    m_muon_pt.clear();
-    m_muon_eta.clear();
-    m_muon_phi.clear();
-    m_muon_m.clear();
-  }
-
-  if ( m_muInfoSwitch->m_isolation ) {
-    m_muon_isIsolated.clear();
-  }
-
-  if ( m_muInfoSwitch->m_quality ) {
-    m_muon_isVeryLoose.clear();
-    m_muon_isLoose.clear();
-    m_muon_isMedium.clear();
-    m_muon_isTight.clear();
-  }
-
-  if ( m_muInfoSwitch->m_trackparams ) {
-    m_muon_trkd0.clear();
-    m_muon_trkd0sig.clear();
-    m_muon_trkz0.clear();
-    m_muon_trkz0sintheta.clear();
-    m_muon_trkphi0.clear();
-    m_muon_trktheta.clear();
-    m_muon_trkcharge.clear();
-    m_muon_trkqOverP.clear();
-  }
-
-  if ( m_muInfoSwitch->m_trackhitcont ) {
-    m_muon_trknSiHits.clear();
-    m_muon_trknPixHits.clear();
-    m_muon_trknPixHoles.clear();
-    m_muon_trknSCTHits.clear();
-    m_muon_trknSCTHoles.clear();
-    m_muon_trknTRTHits.clear();
-    m_muon_trknTRTHoles.clear();
-    m_muon_trknBLayerHits.clear();
-    if ( !m_DC14 ) {
-      m_muon_trknInnermostPixLayHits.clear();
-      m_muon_trkPixdEdX.clear();
-    }
-  }
-
-}
-
-void HelpTreeBase::ClearElectrons() {
-
-  m_nel = 0;
-
-  if ( m_elInfoSwitch->m_kinematic ){
-    m_el_pt.clear();
-    m_el_eta.clear();
-    m_el_phi.clear();
-    m_el_m.clear();
-  }
-
-  if ( m_elInfoSwitch->m_isolation ) {
-    m_el_isIsolated.clear();
-  }
-
-  if ( m_elInfoSwitch->m_PID ) {
-    m_el_LHVeryLoose.clear();
-    m_el_LHLoose.clear();
-    m_el_LHMedium.clear();
-    m_el_LHTight.clear();
-    m_el_LHVeryTight.clear();
-    m_el_IsEMLoose.clear();
-    m_el_IsEMMedium.clear();
-    m_el_IsEMTight.clear();
-  }
-
-  if ( m_elInfoSwitch->m_trackparams ) {
-    m_el_trkd0.clear();
-    m_el_trkd0sig.clear();
-    m_el_trkz0.clear();
-    m_el_trkz0sintheta.clear();
-    m_el_trkphi0.clear();
-    m_el_trktheta.clear();
-    m_el_trkcharge.clear();
-    m_el_trkqOverP.clear();
-  }
-
-  if ( m_elInfoSwitch->m_trackhitcont ) {
-    m_el_trknSiHits.clear();
-    m_el_trknPixHits.clear();
-    m_el_trknPixHoles.clear();
-    m_el_trknSCTHits.clear();
-    m_el_trknSCTHoles.clear();
-    m_el_trknTRTHits.clear();
-    m_el_trknTRTHoles.clear();
-    m_el_trknBLayerHits.clear();
-    if ( !m_DC14 ) {
-      m_el_trknInnermostPixLayHits.clear();
-      m_el_trkPixdEdX.clear();
-    }
-  }
-
-}
-
-
 void HelpTreeBase::ClearJets() {
 
   m_njet = 0;
@@ -1857,6 +1767,95 @@ void HelpTreeBase::ClearJets() {
 
 }
 
+/*********************
+ *
+ *   FAT JETS
+ *
+ ********************/
+
+void HelpTreeBase::AddFatJets(std::string detailStr) {
+  m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
+}
+/* TODO: fatJets */
+void HelpTreeBase::FillFatJets( const xAOD::JetContainer* /*fatJets*/ ) { }
+
+void HelpTreeBase::ClearEvent() {
+  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = -999;
+  m_mcEventWeight = 1.;
+  // pileup
+  m_npv = m_lumiBlock = -999;
+  m_actualMu = m_averageMu = -999;
+  // shapeEM
+  m_rhoEM = -999;
+  // shapeLC
+  m_rhoLC = -999;
+  // truth
+  m_pdgId1 = m_pdgId2 = m_pdfId1 = m_pdfId2 = -999;
+  m_x1 = m_x2 = -999;
+  m_xf1 = m_xf2 = -999;
+
+  //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
+  
+  // CaloCluster
+  if( m_eventInfoSwitch->m_caloClus){
+    m_caloCluster_pt.clear();
+    m_caloCluster_eta.clear();
+    m_caloCluster_phi.clear();
+    m_caloCluster_e.clear();
+  }
+}
+
+
+/*********************
+ *
+ *   TAUS
+ *
+ ********************/
+
+void HelpTreeBase::AddTaus(const std::string detailStr) {
+
+  m_tauInfoSwitch = new HelperClasses::TauInfoSwitch( detailStr );
+
+  // always
+  m_tree->Branch("ntau",   &m_ntau, "ntau/I");
+
+  if ( m_tauInfoSwitch->m_kinematic ) {
+    m_tree->Branch("tau_pt",     &m_tau_pt);
+    m_tree->Branch("tau_phi",    &m_tau_phi);
+    m_tree->Branch("tau_eta",    &m_tau_eta);
+    m_tree->Branch("tau_m",      &m_tau_m);
+    m_tree->Branch("tau_ntrk",   &m_tau_ntrk);
+    m_tree->Branch("tau_charge", &m_tau_charge);
+  }
+
+  this->AddTausUser();
+}
+
+void HelpTreeBase::FillTaus( const xAOD::TauJetContainer* taus ) {
+
+  this->ClearTaus();
+  this->ClearTausUser();
+
+  m_ntau = 0;
+  for ( auto tau_itr : *(taus) ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTaus()", "Filling tau w/ pT = %2f", tau_itr->pt() / m_units ); }
+
+    if ( m_tauInfoSwitch->m_kinematic ) {
+      m_tau_pt.push_back ( tau_itr->pt() / m_units  );
+      m_tau_eta.push_back( tau_itr->eta() );
+      m_tau_phi.push_back( tau_itr->phi() );
+      m_tau_m.push_back  ( tau_itr->m() / m_units  );
+      m_tau_charge.push_back( tau_itr->charge() );
+      m_tau_ntrk.push_back( tau_itr->nTracks() );
+    }
+
+    this->FillTausUser(tau_itr);
+
+    m_ntau++;
+  }
+}
+
 void HelpTreeBase::ClearTaus() {
 
   m_ntau = 0;
@@ -1871,6 +1870,118 @@ void HelpTreeBase::ClearTaus() {
   }
 
 }
+
+
+
+/*********************
+ *
+ *     MET  
+ *
+ ********************/
+void HelpTreeBase::AddMET( const std::string detailStr ) {
+
+  if(m_debug) Info("AddMET()", "Adding MET variables: %s", detailStr.c_str());
+
+  m_metInfoSwitch = new HelperClasses::METInfoSwitch( detailStr );
+
+  // Add these basic branches
+  m_tree->Branch("metFinal",         &m_metFinal,      "metFinal/F"     );
+  m_tree->Branch("metFinalPhi",      &m_metFinalPhi,   "metFinalPhi/F"  );
+  if ( m_metInfoSwitch->m_refEle ) {
+    m_tree->Branch("metEle",         &m_metEle,      "metEle/F"     );
+    m_tree->Branch("metElePhi",      &m_metElePhi,   "metElePhi/F"  );
+  }
+  if ( m_metInfoSwitch->m_refGamma ) {
+    m_tree->Branch("metGamma",         &m_metGamma,      "metGamma/F"     );
+    m_tree->Branch("metGammaPhi",      &m_metGammaPhi,   "metGammaPhi/F"  );
+  }
+  if ( m_metInfoSwitch->m_refTau ) {
+    m_tree->Branch("metTau",         &m_metTau,      "metTau/F"     );
+    m_tree->Branch("metTauPhi",      &m_metTauPhi,   "metTauPhi/F"  );
+  }
+  if ( m_metInfoSwitch->m_muons ) {
+    m_tree->Branch("metMuons",         &m_metMuons,      "metMuons/F"     );
+    m_tree->Branch("metMuonsPhi",      &m_metMuonsPhi,   "metMuonsPhi/F"  );
+  }
+  if ( m_metInfoSwitch->m_softClus) {
+    m_tree->Branch("metSoftCluss",         &m_metSoftCluss,      "metSoftCluss/F"     );
+    m_tree->Branch("metSoftClussPhi",      &m_metSoftClussPhi,   "metSoftClussPhi/F"  );
+  }
+
+  //this->AddMETUser();
+}
+
+// Fill the information in the trigger branches
+void HelpTreeBase::FillMET( const xAOD::MissingETContainer* eventInfo ) {
+
+  if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Filling trigger info"); }
+
+  // Clear previous events
+  this->ClearTrigger();
+  this->ClearTriggerUser();
+
+  // Grab the global pass information from the TrigDecisionTool
+  if ( m_trigInfoSwitch->m_basic ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_basic"); }
+  
+    static SG::AuxElement::ConstAccessor< int > passAny("passAny");
+    if( passAny.isAvailable( *eventInfo ) ) { m_passAny = passAny( *eventInfo ); }
+    else { m_passAny = -999; }
+    static SG::AuxElement::ConstAccessor< int > passL1("passL1");
+    if( passL1.isAvailable( *eventInfo ) ) { m_passL1 = passL1( *eventInfo ); }
+    else { m_passL1 = -999; }
+    static SG::AuxElement::ConstAccessor< int > passHLT("passHLT");
+    if( passHLT.isAvailable( *eventInfo ) ) { m_passHLT = passHLT( *eventInfo ); }
+    else { m_passHLT = -999; }
+
+  }
+
+  // If detailed menu information about the configuration keys, turn this on.
+  // This is useful for using this database: https://atlas-trigconf.cern.ch/
+  if ( m_trigInfoSwitch->m_menuKeys ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_menuKeys"); }
+
+    static SG::AuxElement::ConstAccessor< int > masterKey("masterKey");
+    if( masterKey.isAvailable( *eventInfo ) ) { m_masterKey = masterKey( *eventInfo ); }
+    else { m_masterKey = -999; }
+    static SG::AuxElement::ConstAccessor< int > L1PSKey("L1PSKey");
+    if( L1PSKey.isAvailable( *eventInfo ) ) { m_L1PSKey = L1PSKey( *eventInfo ); }
+    else { m_L1PSKey = -999; }
+    static SG::AuxElement::ConstAccessor< int > HLTPSKey("HLTPSKey");
+    if( HLTPSKey.isAvailable( *eventInfo ) ) { m_HLTPSKey = HLTPSKey( *eventInfo ); }
+    else { m_HLTPSKey = -999; }
+
+  }
+
+  // If detailed information about each and every trigger is desired
+  // save a vector of strings holding passing decisions
+  if ( m_trigInfoSwitch->m_passTriggers ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_passTriggers"); }
+    static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
+    if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
+
+  }
+
+}
+
+// Clear Trigger
+void HelpTreeBase::ClearTrigger() {
+  
+  m_passAny = -999;
+  m_passL1  = -999;
+  m_passHLT = -999;
+  
+  m_masterKey = 0;
+  m_L1PSKey   = 0;
+  m_HLTPSKey  = 0;
+  
+  m_passTriggers.clear();
+  
+}
+
 
 
 bool HelpTreeBase::writeTo( TFile* file ) {

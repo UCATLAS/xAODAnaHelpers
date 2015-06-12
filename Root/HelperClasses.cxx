@@ -163,4 +163,13 @@ namespace HelperClasses{
     m_trackhitcont  = parse("trackhitcont");
   }
 
+  void METInfoSwitch::initialize(){
+    m_refEle    = parse("refEle")   || parse("all");
+    m_refGamma  = parse("refGamma") || parse("all");
+    m_refTau    = parse("refTau")   || parse("all");
+    m_muons     = parse("muons")    || parse("all");
+    m_refJet    = parse("refJet")   || parse("all");
+    m_softClus  = parse("softClus") || parse("all");
+  }
+
 } // close namespace HelperClasses

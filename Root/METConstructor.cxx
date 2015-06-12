@@ -290,10 +290,10 @@ EL::StatusCode METConstructor :: execute ()
     xAOD::MissingETContainer::const_iterator final(oldMet->find("FinalClus"));
     xAOD::MissingETContainer::const_iterator newfinal(newMet->find("FinalClus"));
     Info("execute()", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    Info("execute()", "RefEle:    old=%8.f  new=%8.f", (*oldMet->find("RefEle")   )->met(), (*newMet->find("RefEle")   )->met());
-    Info("execute()", "RefGamma:  old=%8.f  new=%8.f", (*oldMet->find("RefGamma") )->met(), (*newMet->find("RefGamma") )->met());
-    Info("execute()", "RefTau:    old=%8.f  new=%8.f", (*oldMet->find("RefTau")   )->met(), (*newMet->find("RefTau")   )->met());
-    Info("execute()", "Muons:     old=%8.f  new=%8.f", (*oldMet->find("Muons")    )->met(), (*newMet->find("Muons")    )->met());
+    if( m_inputElectrons.Length() > 0 ) Info("execute()", "RefEle:    old=%8.f  new=%8.f", (*oldMet->find("RefEle")   )->met(), (*newMet->find("RefEle")   )->met());
+    if( m_inputPhotons.Length() > 0 ) Info("execute()", "RefGamma:  old=%8.f  new=%8.f", (*oldMet->find("RefGamma") )->met(), (*newMet->find("RefGamma") )->met());
+    if( m_inputTaus.Length() > 0 ) Info("execute()", "RefTau:    old=%8.f  new=%8.f", (*oldMet->find("RefTau")   )->met(), (*newMet->find("RefTau")   )->met());
+    if( m_inputMuons.Length() > 0 ) Info("execute()", "Muons:     old=%8.f  new=%8.f", (*oldMet->find("Muons")    )->met(), (*newMet->find("Muons")    )->met());
     Info("execute()", "RefJet:    old=%8.f  new=%8.f", (*oldMet->find("RefJet")   )->met(), (*newMet->find("RefJet")   )->met());
     Info("execute()", "SoftClus:  old=%8.f  new=%8.f", (*oldMet->find("SoftClus") )->met(), (*newMet->find("SoftClus") )->met());
     Info("execute()", "FinalClus: old=%8.f  new=%8.f", (*oldMet->find("FinalClus"))->met(), (*newMet->find("FinalClus"))->met());
