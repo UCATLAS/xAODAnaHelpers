@@ -135,6 +135,16 @@ namespace HelperClasses {
     TauInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  struct METInfoSwitch : InfoSwitch {
+    bool m_refEle;
+    bool m_refGamma;
+    bool m_refTau;
+    bool m_muons;
+    bool m_refJet;
+    bool m_softClus;
+    void initialize();
+    METInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
 
 } // close namespace HelperClasses
 

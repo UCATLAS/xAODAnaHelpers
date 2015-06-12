@@ -78,11 +78,11 @@ EL::StatusCode  METConstructor :: configure ()
   m_coreName        = config->GetValue("CoreName",        "MET_Core_AntiKt4LCTopo");
   m_outputContainer = config->GetValue("OutputContainer", "NewRefFinal");
 
-  m_inputJets       = config->GetValue("InputJets",       "AntiKt4LCTopoJets");
-  m_inputElectrons  = config->GetValue("InputElectrons",  "Electrons_Calib");
-  m_inputPhotons    = config->GetValue("InputPhotons",    "Photons");
-  m_inputTaus       = config->GetValue("InputTaus",       "TauJets");
-  m_inputMuons      = config->GetValue("InputMuons",      "Muons");
+  m_inputJets       = config->GetValue("InputJets",       "");
+  m_inputElectrons  = config->GetValue("InputElectrons",  "");
+  m_inputPhotons    = config->GetValue("InputPhotons",    "");
+  m_inputTaus       = config->GetValue("InputTaus",       "");
+  m_inputMuons      = config->GetValue("InputMuons",      "");
 
   m_doElectronCuts  = config->GetValue("ApplyElectronCuts", false);
   m_doPhotonCuts    = config->GetValue("ApplyPhotonCuts",   false);
@@ -167,7 +167,7 @@ EL::StatusCode METConstructor :: initialize ()
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  m_store->print();
+  //m_store->print();
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("initialize()", "Failed to properly configure. Exiting." );
@@ -212,56 +212,64 @@ EL::StatusCode METConstructor :: execute ()
   ///////////////////////
   ////// ELECTRONS  /////
   ///////////////////////
-  const xAOD::ElectronContainer* eleCont(0);
-  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(eleCont, m_inputElectrons.Data(), m_event, m_store, m_debug), "Failed retrieving electron cont.");
-  if (m_doElectronCuts) { 
-    ConstDataVector<xAOD::ElectronContainer> metElectrons(SG::VIEW_ELEMENTS);
-    for (const auto& el : *eleCont) if (CutsMETMaker::accept(el)) metElectrons.push_back(el);
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefEle", xAOD::Type::Electron, newMet, metElectrons.asDataVector(), metMap), "Failed rebuilding electron component.");
-  } else {
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefEle", xAOD::Type::Electron, newMet, eleCont, metMap), "Failed rebuilding electron component.");
+  if( m_inputElectrons.Length() > 0 ) {
+    const xAOD::ElectronContainer* eleCont(0);
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(eleCont, m_inputElectrons.Data(), m_event, m_store, m_debug), "Failed retrieving electron cont.");
+    if (m_doElectronCuts) { 
+      ConstDataVector<xAOD::ElectronContainer> metElectrons(SG::VIEW_ELEMENTS);
+      for (const auto& el : *eleCont) if (CutsMETMaker::accept(el)) metElectrons.push_back(el);
+      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefEle", xAOD::Type::Electron, newMet, metElectrons.asDataVector(), metMap), "Failed rebuilding electron component.");
+    } else {
+      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefEle", xAOD::Type::Electron, newMet, eleCont, metMap), "Failed rebuilding electron component.");
+    }
   }
 
 
   //////////////////////
   //////  PHOTONS  /////
   //////////////////////
-  const xAOD::PhotonContainer* phoCont(0);
-  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data(), m_event, m_store, m_debug), "Failed retrieving photon cont.");
-  if (m_doPhotonCuts) {
-    ConstDataVector<xAOD::PhotonContainer> metPhotons(SG::VIEW_ELEMENTS);
-    for (const auto& ph : *phoCont) if (CutsMETMaker::accept(ph)) metPhotons.push_back(ph);
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, metPhotons.asDataVector(), metMap), "Failed rebuilding photon component.");
-  } else {
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, phoCont, metMap), "Failed rebuilding photon component.");
+  if( m_inputPhotons.Length() > 0 ) {
+    const xAOD::PhotonContainer* phoCont(0);
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data(), m_event, m_store, m_debug), "Failed retrieving photon cont.");
+    if (m_doPhotonCuts) {
+      ConstDataVector<xAOD::PhotonContainer> metPhotons(SG::VIEW_ELEMENTS);
+      for (const auto& ph : *phoCont) if (CutsMETMaker::accept(ph)) metPhotons.push_back(ph);
+      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, metPhotons.asDataVector(), metMap), "Failed rebuilding photon component.");
+    } else {
+      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, phoCont, metMap), "Failed rebuilding photon component.");
+    }
   }
 
 
   ///////////////////
   //////  TAUS  /////
   ///////////////////
-  const xAOD::TauJetContainer* tauCont(0);
-  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, m_debug), "Failed retrieving tau cont.");
-  if (m_doTauCuts) {
-    ConstDataVector<xAOD::TauJetContainer> metTaus(SG::VIEW_ELEMENTS);
-    for (const auto& tau : *tauCont) if (CutsMETMaker::accept(tau)) metTaus.push_back(tau);
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, metTaus.asDataVector(), metMap), "Failed rebuilding tau component.");
-  } else {
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, tauCont, metMap), "Failed rebuilding tau component.");
+  if( m_inputTaus.Length() > 0 ) {
+    const xAOD::TauJetContainer* tauCont(0);
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, m_debug), "Failed retrieving tau cont.");
+    if (m_doTauCuts) {
+      ConstDataVector<xAOD::TauJetContainer> metTaus(SG::VIEW_ELEMENTS);
+      for (const auto& tau : *tauCont) if (CutsMETMaker::accept(tau)) metTaus.push_back(tau);
+      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, metTaus.asDataVector(), metMap), "Failed rebuilding tau component.");
+    } else {
+      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, tauCont, metMap), "Failed rebuilding tau component.");
+    }
   }
 
 
   ////////////////////
   //////  MUONS  /////
   ////////////////////
-  const xAOD::MuonContainer* muonCont(0);
-  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(muonCont, m_inputMuons.Data(), m_event, m_store, m_debug), "Failed retrieving muon cont.");
-  if (m_doMuonCuts) {
-    ConstDataVector<xAOD::MuonContainer> metMuons(SG::VIEW_ELEMENTS);
-    for (const auto& mu : *muonCont) if (CutsMETMaker::accept(mu)) metMuons.push_back(mu);
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("Muons", xAOD::Type::Muon, newMet, metMuons.asDataVector(), metMap), "Failed rebuilding muon component.");
-  } else {
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("Muons", xAOD::Type::Muon, newMet, muonCont, metMap), "Failed rebuilding muon component.");
+  if( m_inputMuons.Length() > 0 ) {
+    const xAOD::MuonContainer* muonCont(0);
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(muonCont, m_inputMuons.Data(), m_event, m_store, m_debug), "Failed retrieving muon cont.");
+    if (m_doMuonCuts) {
+      ConstDataVector<xAOD::MuonContainer> metMuons(SG::VIEW_ELEMENTS);
+      for (const auto& mu : *muonCont) if (CutsMETMaker::accept(mu)) metMuons.push_back(mu);
+      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("Muons", xAOD::Type::Muon, newMet, metMuons.asDataVector(), metMap), "Failed rebuilding muon component.");
+    } else {
+      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("Muons", xAOD::Type::Muon, newMet, muonCont, metMap), "Failed rebuilding muon component.");
+    }
   }
 
 
@@ -282,10 +290,10 @@ EL::StatusCode METConstructor :: execute ()
     xAOD::MissingETContainer::const_iterator final(oldMet->find("FinalClus"));
     xAOD::MissingETContainer::const_iterator newfinal(newMet->find("FinalClus"));
     Info("execute()", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    Info("execute()", "RefEle:    old=%8.f  new=%8.f", (*oldMet->find("RefEle")   )->met(), (*newMet->find("RefEle")   )->met());
-    Info("execute()", "RefGamma:  old=%8.f  new=%8.f", (*oldMet->find("RefGamma") )->met(), (*newMet->find("RefGamma") )->met());
-    Info("execute()", "RefTau:    old=%8.f  new=%8.f", (*oldMet->find("RefTau")   )->met(), (*newMet->find("RefTau")   )->met());
-    Info("execute()", "Muons:     old=%8.f  new=%8.f", (*oldMet->find("Muons")    )->met(), (*newMet->find("Muons")    )->met());
+    if( m_inputElectrons.Length() > 0 ) Info("execute()", "RefEle:    old=%8.f  new=%8.f", (*oldMet->find("RefEle")   )->met(), (*newMet->find("RefEle")   )->met());
+    if( m_inputPhotons.Length() > 0 ) Info("execute()", "RefGamma:  old=%8.f  new=%8.f", (*oldMet->find("RefGamma") )->met(), (*newMet->find("RefGamma") )->met());
+    if( m_inputTaus.Length() > 0 ) Info("execute()", "RefTau:    old=%8.f  new=%8.f", (*oldMet->find("RefTau")   )->met(), (*newMet->find("RefTau")   )->met());
+    if( m_inputMuons.Length() > 0 ) Info("execute()", "Muons:     old=%8.f  new=%8.f", (*oldMet->find("Muons")    )->met(), (*newMet->find("Muons")    )->met());
     Info("execute()", "RefJet:    old=%8.f  new=%8.f", (*oldMet->find("RefJet")   )->met(), (*newMet->find("RefJet")   )->met());
     Info("execute()", "SoftClus:  old=%8.f  new=%8.f", (*oldMet->find("SoftClus") )->met(), (*newMet->find("SoftClus") )->met());
     Info("execute()", "FinalClus: old=%8.f  new=%8.f", (*oldMet->find("FinalClus"))->met(), (*newMet->find("FinalClus"))->met());
