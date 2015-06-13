@@ -138,7 +138,9 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
   float        ndof        = trk->numberDoF();
   float        chi2Prob    = TMath::Prob(chi2,ndof);
   float        d0          = trk->d0();
-  float        z0          = (trk->z0() + trk->vz() - pvx->z());
+  float        z0          = trk->z0() + trk->vz();
+  if(pvx)      z0          -= pvx->z();
+
   float        sinT        = sin(trk->theta());
 
   m_trk_Pt       -> Fill( trkPt,            eventWeight );
