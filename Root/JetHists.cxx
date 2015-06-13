@@ -18,7 +18,8 @@ JetHists :: ~JetHists () {
 StatusCode JetHists::initialize() {
 
   // These plots are always made
-  m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 3000.);
+  m_jetPt          = book(m_name, "jetPt",   "jet p_{T} [GeV]", 120, 0, 3000.);
+  m_jetPt_s        = book(m_name, "jetPt_s", "jet p_{T} [GeV]", 120, 0, 300.);
   m_jetEta         = book(m_name, "jetEta", "jet #eta",         80, -4, 4);
   m_jetPhi         = book(m_name, "jetPhi", "jet Phi",120, -TMath::Pi(), TMath::Pi() );
   m_jetM           = book(m_name, "jetMass", "jet Mass [GeV]",120, 0, 400);
@@ -234,7 +235,8 @@ StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight,
 StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc ) {
 
   //basic
-  m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
+  m_jetPt   ->      Fill( jet->pt()/1e3,    eventWeight );
+  m_jetPt_s ->      Fill( jet->pt()/1e3,    eventWeight );
   m_jetEta->        Fill( jet->eta(),       eventWeight );
   m_jetPhi->        Fill( jet->phi(),       eventWeight );
   m_jetM->          Fill( jet->m()/1e3,     eventWeight );
