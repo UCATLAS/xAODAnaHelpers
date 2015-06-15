@@ -402,11 +402,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  if( !m_triggerSelection.empty() || m_cutOnTrigger || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
-    m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
-    ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
+  m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
+  RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
+  ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
 
+  if( !m_triggerSelection.empty() || m_cutOnTrigger || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
     m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
