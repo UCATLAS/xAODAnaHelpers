@@ -24,6 +24,10 @@
 
 #include "PATInterfaces/SystematicVariation.h"
 
+// usage:
+// test_multiAlgo [optional] outdir dataPath/ datasetname filename
+// NB: make sure that 'outdir' is specified BEFORE 'dataPath/'
+
 
 int main( int argc, char* argv[] ) {
 
@@ -42,8 +46,6 @@ int main( int argc, char* argv[] ) {
   std::string filename;
   std::string dataPath;
 
-  // usage:
-  // test_multiAlgo  [optional] outdir dataPath/ datasetname filename
   if ( argc > 3 ) {
     dataPath = argv[ 2 ];
     datasetname = argv[3];
