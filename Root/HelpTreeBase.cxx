@@ -1408,9 +1408,13 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     if ( m_jetInfoSwitch->m_flavTag) {
       const xAOD::BTagging * myBTag = jet_itr->btagging();
       if ( !m_DC14 ) {
-        m_jet_sv0.push_back(     myBTag -> SV0_significance3D()       );
-        m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
+      
+        static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
+        if ( SV0_significance3DAcc.isAvailable(*myBTag) ) { m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }
+        
+	m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
         m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
+	
       }
       m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
       m_jet_mv1.push_back(     myBTag -> MV1_discriminant()         );

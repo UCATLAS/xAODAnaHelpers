@@ -94,13 +94,13 @@ JetSelector :: JetSelector () :
   m_mass_min                = 1e8;
   m_rapidity_max            = 1e8;
   m_rapidity_min            = 1e8;
-  m_truthLabel 	      = -1;
+  m_truthLabel 	            = -1;
 
-  m_doJVF 		      = false;
-  m_doBTagCut 		      = false;
-  m_pt_max_JVF 	      = 50e3;
-  m_eta_max_JVF 	      = 2.4;
-  m_JVFCut 		      = 0.5;
+  m_doJVF 		    = false;
+  m_doBTagCut 		    = false;
+  m_pt_max_JVF 	            = 50e3;
+  m_eta_max_JVF 	    = 2.4;
+  m_JVFCut 		    = 0.5;
 
   // Btag quality
   m_btag_veryloose          = false;
@@ -227,16 +227,16 @@ EL::StatusCode  JetSelector :: configure ()
   m_btag_loose_cut     = -0.3867;
   m_btag_medium_cut    =  0.0314;
   m_btag_tight_cut     =  0.5102;
-  if ( m_btag_veryloose ) { m_btagCut = m_btag_veryloose_cut; m_decor += "BTagVeryLoose";  }
-  if ( m_btag_loose     ) { m_btagCut = m_btag_loose_cut;     m_decor += "BTagLoose";      }
-  if ( m_btag_medium    ) { m_btagCut = m_btag_medium_cut;    m_decor += "BTagMedium";     }
-  if ( m_btag_tight     ) { m_btagCut = m_btag_tight_cut;     m_decor += "BTagTight";      }
+  if ( m_btag_veryloose ) { m_btagCut = m_btag_veryloose_cut; }
+  if ( m_btag_loose     ) { m_btagCut = m_btag_loose_cut;     }
+  if ( m_btag_medium    ) { m_btagCut = m_btag_medium_cut;    }
+  if ( m_btag_tight     ) { m_btagCut = m_btag_tight_cut;     }
 
   //} else if ( m_isLCjet ) {
-  //if ( m_btag_veryloose ) { m_btagCut = 0.1340; m_decor += "BTagVeryLoose";  }
-  //if ( m_btag_loose     ) { m_btagCut = 0.3511; m_decor += "BTagLoose";      }
-  //if ( m_btag_medium    ) { m_btagCut = 0.7892; m_decor += "BTagMedium";     }
-  //if ( m_btag_tight     ) { m_btagCut = 0.9827; m_decor += "BTagTight";      }
+  //if ( m_btag_veryloose ) { m_btagCut = 0.1340; }
+  //if ( m_btag_loose     ) { m_btagCut = 0.3511; }
+  //if ( m_btag_medium    ) { m_btagCut = 0.7892; }
+  //if ( m_btag_tight     ) { m_btagCut = 0.9827; }
   //}
 
 
