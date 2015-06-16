@@ -1,0 +1,39 @@
+# from https://github.com/rootpy/rootpy/blob/master/.travis.yml
+# travis-ci.org build & test configuration
+language: python
+python:
+  - "2.7"
+env:
+  - ROOT=6.03.02
+
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get -qq update
+install:
+  - sudo apt-get -qq install g++-4.8
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
+  # set based on the travis environment variables
+  - export ROOT_BUILD=ROOT-${ROOT}_Python-${TRAVIS_PYTHON_VERSION}
+  #- time wget --no-check-certificate https://copy.com/rtIyUdxgjt7h/ci/root_builds/${ROOT_BUILD}.tar.gz
+  - time wget --no-check-certificate http://downloads.sourceforge.net/project/travis-ci-root-builds/${ROOT_BUILD}.tar.gz
+  - time tar zxf ${ROOT_BUILD}.tar.gz
+  - mv ${ROOT_BUILD} root
+  - source root/bin/thisroot.sh
+
+  # get dependencies
+  - git clone https://github.com/UCATLAS/RootCore
+
+  # setup RootCore
+  - cd RootCore
+  - echo "pwd is now `pwd`"
+  - ./configure
+  - cd ..
+  - source RootCore/scripts/setup.sh
+  - ./RootCore/scripts/find_packages.sh
+  - ./RootCore/scripts/compile.sh
+
+script:
+  # Check if root and PyROOT work ok
+  - time root -l -b -q
+  - time python -c 'import ROOT; ROOT.TBrowser()'
