@@ -3,9 +3,9 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [xAODAnaHelpers (xAH)](#xaodanahelpers-xah)
-  - [Current Working Version](#current-working-version)
+  - [Current Working Version: **00-03-00**](#current-working-version-00-03-00)
   - [Migrating](#migrating)
-    - [From 00-00-04 to 00-00-05](#from-00-00-04-to-00-00-05)
+    - [From 00-00-04 to 00-03-00](#from-00-00-04-to-00-03-00)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
