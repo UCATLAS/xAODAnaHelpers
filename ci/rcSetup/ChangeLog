@@ -1,0 +1,229 @@
+2014-11-12 Shuwei Ye <yesw@bnl.gov>
+    * Added a new option "--listPackages" to print out the list of packages 
+      used in a given release.
+    * Some changes on ASG location configuration and pattern matching:
+      - tag "private" is no longer necessary if no other match "*.*.*" found.
+      - only "rcSetupSite" is used if it refers to a directory.
+      - "$HOME/.rcSetup.conf" if exists will apply on top of existing 
+        ASG configuration unless "private" is already there.
+    * Corrected some printout message.
+    * Tagged as rcSetup-00-04-09
+
+2014-11-07 Shuwei Ye <yesw@bnl.gov>
+    * Added a new option "-R/--printRootVer" to print ROOT version for 
+      a given release
+    * Added support for ROOTCORECONFIG="generic"
+    * Added support to take rcSetupSite as private ASG location
+    * Some changes to private ASG location configuration, 
+      making it on top of existing official ASG configuration
+    * Tagged as rcSetup-00-04-08
+
+2014-10-24 Shuwei Ye <yesw@bnl.gov>
+    * Replaced subprocess.check_output (not available in python-2.6) 
+      with multiprocessing.cpu_count to get number of cpus.
+    * Tagged as rcSetup-00-04-07
+
+2014-10-20 Shuwei Ye <yesw@bnl.gov>
+    * Copied SSHConfig from paramiko directly into "user_at_svnCERN.py"
+      to make it work where python module paramiko is not available.
+    * Tagged as rcSetup-00-04-06
+
+2014-10-20 Shuwei Ye <yesw@bnl.gov>
+    * Changed to use "." instead of "source" to source a script in subprocess 
+      to make /bin/sh -> /bin/rash work under OS Unbuntu.
+    * Changed SVNUSR in format of reps/atlas-$svnUser, where svnUser either 
+      taken from ~/.ssh/config or just env variable $USER.
+    * Tagged as rcSetup-00-04-05
+
+2014-10-09 Shuwei Ye <yesw@bnl.gov> 
+    * Fixed a bug in Neat printout for "rcSetup -r" which 
+      will eat the first release number of 2.*
+    * Added a special case for 2.1.* (ROOT-6) for new line
+    * Tagged as rcSetup-00-04-04
+
+2014-10-09 Shuwei Ye <yesw@bnl.gov> 
+    * Neat printout for "rcSetup -r": sort as humans expect, separate stable
+      release for different first digit, and split long lines to short line.
+    * Added an option "--downloadAll" to download all packages
+      On default, ignore packages "Asg_root" and "Cxx11".
+    * Commented out warning message for non-existent ASG location in 
+      configuration file.
+    * Updated to use more recent ASG release and CPAnalysisExample
+      in "--test".
+    * Tagged as rcSetup-00-04-03
+
+2014-10-08 Shuwei Ye <yesw@bnl.gov> 
+    * Some changes to rcDownload.py:
+      - Remove package directory if "svn co" fails.
+      - Added 3 retries (4 tries in total) for package download.
+      - Print out the list of packages failing downloading at the end
+    * Tagged as rcSetup-00-04-02
+
+2014-10-03 Shuwei Ye <yesw@bnl.gov>
+    * Some changes to rcDownload.py:
+      - Added an option "-D/--keepDeubSym" to control the stipping of 
+        debug symbols in built libraries
+      - Remove package "Asg_root" and "Asg_Cxx11" in download
+    * Tagged as rcSetup-00-04-01
+
+2014-10-01 Shuwei Ye <yesw@bnl.gov>
+    * Re-designed the way to parse the configuration:
+       - introduced new key "asgType" (more generic than old "nightly")
+       - check existence of each ASG location
+       - pick ASG location not on /afs/cern.ch if available
+    * Check all arguments and print warning if not recognized
+    * For "private" ASG release, "private" must be specified in arguments
+    * Tagged as rcSetup-00-04-00
+
+2014-09-24 Shuwei Ye <yesw@bnl.gov>
+    * Re-designed rcSetup configuraton to allow automatic lookup of 
+      ASG nightlies.
+    * Modified rcSetup.csh to show value of $myFilename_ToBe in printout.
+    * Tagged as rcSetup-00-03-00
+
+2014-08-28 Shuwei Ye <yesw@bnl.gov>
+    * Fixed a bug on multiple-queue in rcDownload.py
+    * Tagged as rcSetup-00-02-06
+
+2014-08-18 Shuwei Ye <yesw@bnl.gov>
+    * Fixed a bug in tcsh.
+    * Tagged as rcSetup-00-02-05
+
+2014-08-15 Shuwei Ye <yesw@bnl.gov>
+    * Improved to allow simply "source rcSetup.sh" to set up previous env
+    * Tagged as rcSetup-00-02-04
+
+2014-08-01 Shuwei Ye <yesw@bnl.gov>
+    * Sort out the output of available release
+    * Upgrade ASG release used in "--test" to "Base,2.0.6"
+      and upgrade CPAnalysisExamples to CPAnalysisExamples-00-00-17
+    * Introduce Queue in rcDownload.py to enable multi-thread
+    * Tagged as rcSetup-00-02-03
+
+2014-07-29 Shuwei Ye <yesw@bnl.gov>
+    * Modified tcsh_BridgeToBash.py to ignore defined functions in 
+      the output of BASH printenv, such as module() (via 
+      /usr/share/Modules/init/bash) has 2 lines
+    * Tagged as rcSetup-00-02-02
+
+2014-07-14 Shuwei Ye <yesw@bnl.gov>
+    * Add automatic picking of local RootCore if it exists and its version
+      is more recent than that in the ASG release.
+    * Dont require ROOTCORECONFIG to be predefined in rcDownload.py.
+    * Add another name "relType" to "nightly" type.
+    * Tagged as rcSetup-00-02-01
+
+2014-06-24 Shuwei Ye <yesw@bnl.gov>
+    * Sort asgConf in release print and finding.
+    * Unset rcSetupSite variable if not set prior to rcSetup command.
+    * Introduced a new function to build ASG release in private area,
+      then add a private configuration, and to use it in release setup.
+    * Not prompt for username@svn.cern.ch if this host is already configured 
+      in $HOME/.ssh/config.
+    * Tagged as rcSetup-00-02-00
+
+2014-06-16 Shuwei Ye <yesw@bnl.gov>
+    * Improved argument parsing to ignore empty argument (such as ,space between
+      arguments).
+    * Added option to unset currently existing ASG environment.
+    * Tagged as rcSetup-00-01-08
+
+2014-06-12 Shuwei Ye <yesw@bnl.gov>
+    * Added check on return value of sourcing RootCore setup, and
+      exit with proper return value in case of failure.
+    * Tagged as rcSetup-00-01-07
+
+2014-06-09 Shuwei Ye <yesw@bnl.gov>
+    * Changes to ensure right return value for both zsh/bash and tcsh.
+    * Added a check on shell type, and run "shopt" only under bash.
+    * Tagged as rcSetup-00-01-06
+
+2014-06-05 Shuwei Ye <yesw@bnl.gov>
+    * Added some env variable for some SVN reps such as SVNOFF, SVNGRP, etc.
+    * Added a new feature by just "source rcSetup.sh" to set up previous ASG env
+      under working directory (via sym-links)
+    * Removed "alias" in tcsh_BridgeToBash.py because there is no prefix "alias"
+      for bash command "alias" for python-2.6.5p2
+    * Introduced python-based readlink to support Mac OS X
+    * Tagged as rcSetup-00-01-05
+
+2014-05-05 Shuwei Ye <yesw@bnl.gov>
+    * Replaced ln option "-T" (--no-target-directory) with 
+      "-n" to be compatible with BSD ln on Mac OS X
+    * Tagged as rcSetup-00-01-04
+
+2014-05-05 Shuwei Ye <yesw@bnl.gov>
+    * Replaced readlink in tcsh with python readlink
+      to make it work under Mac OS X
+    * Tagged as rcSetup-00-01-03
+
+2014-04-17 Shuwei Ye <yesw@bnl.gov>
+    * Explained configuration overriding via "rcSetupSite" in help.
+    * ASG location is added for release printing.
+    * Enabled keeping temporary tcsh script if "--Debug".
+    * In tcsh bridge script, stdout is redirected for all commands,
+      and alias could also be bridged (need more work).
+    * Added new option to run "rc find_packages" after setup.
+    * Added an option to print available ROOTCORECONFIG.
+    * Fixed incorrect jobName in test scripts.
+    * Changed option "-v" to "--verbose" to prevent mistyping from "-V".
+    * Tagged as rcSetup-00-01-02
+
+2014-03-10 Shuwei Ye <yesw@bnl.gov>
+    * Added one additional argument "nightlyType" to distinguish 
+       multiple nightlies.
+    * Added test_rcSetup.* scripts to test rcSetup.
+    * Added a protection against empty "sourcedCmd" in rcSetup.csh
+    * Tagged as rcSetup-00-01-01
+
+2014-03-05 Shuwei Ye <yesw@bnl.gov>
+    * Major change on tcsh support, using a python bridge to bash to
+        set up the required env in tcsh.
+    * Added "unset alias_rc" in rcSetup.sh in case of "-d".
+    * Tagged as rcSetup-00-01-00
+
+2014-02-28 Shuwei Ye <yesw@bnl.gov>
+    * Added check on RootCore to determine if tcsh is properly supported.
+    * Added a new hidden option "--Debug" to keep the generated temporary 
+      script file.
+    * Tagged as rcSetup-00-00-07
+
+2014-02-25 Shuwei Ye <yesw@bnl.gov>
+    * Fixed a bug leftover from rcSetup_test2.csh.
+    * Added path existence check on /afs/cern.ch.
+    * Filtered out warning message in "svn ls" for "rcSetup -d -r".
+    * Tagged as rcSetup-00-00-06
+
+2014-02-24 Shuwei Ye <yesw@bnl.gov>
+    * Introduced rcDownload.py for downloading source code of a release.
+      In rcDownload.py, it checks SVNOFF for accessibility, download source 
+      code of a release, at the end print out a list of downloaded 
+      packages and a list of packages not downloaed because already exist.
+    * The detailed usage for rcDownload.py can be printed out 
+      with options "-d -h".
+    * Tagged as rcSetup-00-00-04
+
+2013-11-22 Shuwei Ye <yesw@bnl.gov>
+    * In bash/zsh, current command is saved not in history until the
+      command finished. So instead checking alias "rcsetup" or "rcSetup" 
+      to decide what command to be used in printHelp.
+    * In tcsh, besides alias and sourcing from another script, history command 
+      reuse such "!!" will also affect the variable $_. History is checked 
+      to get the real resued command.
+    * Added a new option "-V/--version" to print out this package version
+      based on this file "ChangeLog".
+    * Tagged as rcSetup-00-00-03
+
+2013-11-20 Shuwei Ye <yesw@bnl.gov>
+    * Dynamic project list in optParser.print_help()
+    * Determination of shell type moved into from shell script to python script
+    * Rrint_help() is changed to print out the exact shell cmd invoked (either
+      direct sourcing such as "source rcSetup.sh" or an alias such as rcSetup),
+      instead of "rcSetup.py" (defined by optparse)
+    * In tcsh, if rcSetup.csh is sourced from another script, 
+      env variable "rcSetup" will be used to get the path of rcSetup.csh
+    * Tagged as rcSetup-00-00-02
+      
+2013-11-18 Shuwei Ye <yesw@bnl.gov>
+    * First functional version checking env variable "rcSetupSite"
+    * Tagged as rcSetup-00-00-01

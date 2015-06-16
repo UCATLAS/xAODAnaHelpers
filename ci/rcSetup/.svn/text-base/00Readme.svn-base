@@ -1,0 +1,78 @@
+Location of ASG releases:
+========================
+ It is configured via dict variable "asgConf" which is defined 
+by file os.getenv("rcSetupSite") if defined or from local 
+file rcSetup_conf.py coming with this package.
+
+ If configured from local file, it will use ASG release:
+   - from CERN AFS if the path of rcSetup.py does NOT contain "/cvmfs/"
+       and "/afs/cern.ch/" exists
+   - from /cvmfs otherwise
+
+Usage:
+=====
+ source rcSetup.sh [options] project,[nightlyType,]release,[,configs]
+
+       where project/release/configs are delimited by "," or space:
+          SUSY | Top | Base   # project choice, such as "Base"
+          nightlyType        # type of nightly, such as "dev"
+          64 | 32            # 64-bit (x86_64, the default) or 32-bit (i686)
+          slc5 | slc6        # using slc5 or slc6
+          opt | dbg          # using opt (default) or dbg version of ASG releas
+          gcc43 | gcc46 | gcc47  # in format gcc* set gcc version
+
+The default configuration can be overriden by defining env var "rcSetupSite".
+
+
+Options:
+  -h, --help          show this help message and exit
+  -d                  Download source code of a release, try '-d -h' for usage
+  -V, --version       Print rcSetup version
+  -r, --releases      Print available releases
+  -c, --printConfigs  Print available config(s) for given project/release
+  -f, --findPackages  Automatic running 'rc find_packages' in this setup
+
+Examples to set up Base ASG release 1.0.0
+   source rcSetup.sh Base,1.0.0
+ or
+   source rcSetup.sh Base,1.0.0,x86_64-slc6-gcc47-opt
+ or
+   source rcSetup.sh Base,1.0.0,gcc47
+
+
+Note:
+====
+1. tcsh support
+
+  The special env variable $_, the cause of problem with local_setup.csh,
+does not work in case of alias, history reusing (such as !!), or sourced 
+from another script. It will make the same trouble for rcSetup.csh is 
+sourced from another script. A final solution would be to introduce 
+a variable "rcSetup" specfying the path of "rcSetup.csh".
+
+   Because RootCore does not properly support tcsh and Asg_root in old 
+ASG releases does not provide tcsh support, a tcsh bridge to bash via python 
+is introduced to resolve this problem even the underlying packages do not 
+have tcsh support.
+
+2. program name in printHelp
+
+  For tcsh, program name is exactly based on the command involved (alias or 
+sourcing). While for bash/zsh, alias "rcSetup" or "rcsetp" is checked to 
+replaced the program name if such alias is defined.
+
+3. version information
+
+   Version information is in file "ChangeLog", and where the version is 
+extracted from for option "-V/--version".
+
+4. download of release source code
+
+   rcDownload.py is introduced to download source code of a release. Its 
+usage can be printed by "rcSetup -d -h".
+
+5. Some special (hidden) options:
+
+   . --test    : to test rcSetup script itself
+   . --Debug   : to keep temporary script files for investigation
+   . --verbose : to print some verbose information
