@@ -122,6 +122,7 @@ namespace HelperClasses {
     bool m_constituent;
     bool m_constituentAll;
     bool m_flavTag;
+    bool m_area;
     int  m_numLeadingJets;
     void initialize();
     JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };

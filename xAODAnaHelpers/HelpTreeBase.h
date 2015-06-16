@@ -268,6 +268,7 @@ protected:
   std::vector<float> m_jet_Jvt;
   std::vector<float> m_jet_JvtJvfcorr;
   std::vector<float> m_jet_JvtRpt;
+  //std::vector<float> m_jet_ghostTrackAssFrac;
 
   // allTrack
   std::vector<int> m_jet_GhostTrackCount;
@@ -309,6 +310,15 @@ protected:
   std::vector<float> m_jet_mv1;
   std::vector<float> m_jet_mv2c00;
   std::vector<float> m_jet_mv2c20;
+
+  // area
+  std::vector<float> m_jet_ghostArea;
+  std::vector<float> m_jet_activeArea;
+  std::vector<float> m_jet_voronoiArea;
+  std::vector<float> m_jet_activeArea_pt;
+  std::vector<float> m_jet_activeArea_eta;
+  std::vector<float> m_jet_activeArea_phi;
+  std::vector<float> m_jet_activeArea_m;
 
   // truth
   std::vector<int>   m_jet_truthConeLabelID;
