@@ -80,11 +80,11 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   }
 
   if ( m_eventInfoSwitch->m_shapeEM ) {
-    m_tree->Branch("rhoEM",                &m_rhoEM,            "rhoEM/F");
+    m_tree->Branch("rhoEM",                &m_rhoEM,            "rhoEM/D");
   }
 
   if ( m_eventInfoSwitch->m_shapeLC ) {
-    m_tree->Branch("rhoLC",                &m_rhoLC,            "rhoLC/F");
+    m_tree->Branch("rhoLC",                &m_rhoLC,            "rhoLC/D");
   }
 
   if( m_eventInfoSwitch->m_truth ) {
@@ -875,6 +875,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_Jvt",		              &m_jet_Jvt	          );
     m_tree->Branch("jet_JvtJvfcorr",		      &m_jet_JvtJvfcorr     );
     m_tree->Branch("jet_JvtRpt",              &m_jet_JvtRpt         );
+    //m_tree->Branch("jet_GhostTrackAssociationFraction", &m_jet_ghostTrackAssFrac);
   }
 
   if ( m_jetInfoSwitch->m_allTrack ) {
@@ -934,6 +935,16 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_MV1",           &m_jet_mv1);
     m_tree->Branch("jet_MV2c00",        &m_jet_mv2c00);
     m_tree->Branch("jet_MV2c20",        &m_jet_mv2c20);
+  }
+
+  if( m_jetInfoSwitch->m_area ) {
+    m_tree->Branch("jet_GhostArea",     &m_jet_ghostArea);
+    m_tree->Branch("jet_ActiveArea",    &m_jet_activeArea);
+    m_tree->Branch("jet_VoronoiArea",   &m_jet_voronoiArea);
+    m_tree->Branch("jet_ActiveArea4vec_pt", &m_jet_activeArea_pt);
+    m_tree->Branch("jet_ActiveArea4vec_eta", &m_jet_activeArea_eta);
+    m_tree->Branch("jet_ActiveArea4vec_phi", &m_jet_activeArea_phi);
+    m_tree->Branch("jet_ActiveArea4vec_m",   &m_jet_activeArea_m);
   }
 
   if ( m_jetInfoSwitch->m_truth ) {
@@ -1267,6 +1278,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         m_jet_JvtRpt.push_back( jvtRpt( *jet_itr ) );
       } else { m_jet_JvtRpt.push_back( -999 ); }
 
+//      static SG::AuxElement::ConstAccessor<float> ghostTrackAssFrac("GhostTrackAssociationFraction");
+//      if ( ghostTrackAssFrac.isAvailable( *jet_itr) ) {
+//        m_jet_ghostTrackAssFrac.push_back( ghostTrackAssFrac( *jet_itr) );
+//      } else { m_jet_ghostTrackAssFrac.push_back( -999 ) ; }
+
     }
 
     if ( m_jetInfoSwitch->m_allTrack ) {
@@ -1421,6 +1437,45 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       m_jet_mv2c00.push_back( val );
       myBTag->variable<double>("MV2c20", "discriminant", val);
       m_jet_mv2c20.push_back( val );
+
+    }
+
+    if ( m_jetInfoSwitch->m_area ) {
+
+      static SG::AuxElement::ConstAccessor<float> ghostArea("JetGhostArea");
+      if ( ghostArea.isAvailable( *jet_itr) ) {
+        m_jet_ghostArea.push_back( ghostArea( *jet_itr) );
+      } else { m_jet_ghostArea.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> activeArea("ActiveArea");
+      if ( activeArea.isAvailable( *jet_itr) ) {
+        m_jet_activeArea.push_back( activeArea( *jet_itr) );
+      } else { m_jet_activeArea.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> voronoiArea("VoronoiArea");
+      if ( voronoiArea.isAvailable( *jet_itr) ) {
+        m_jet_voronoiArea.push_back( voronoiArea( *jet_itr) );
+      } else { m_jet_voronoiArea.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> activeArea_pt("ActiveArea4vec_pt");
+      if ( activeArea_pt.isAvailable( *jet_itr) ) {
+        m_jet_activeArea_pt.push_back( activeArea_pt( *jet_itr) );
+      } else { m_jet_activeArea_pt.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> activeArea_eta("ActiveArea4vec_eta");
+      if ( activeArea_eta.isAvailable( *jet_itr) ) {
+        m_jet_activeArea_eta.push_back( activeArea_eta( *jet_itr) );
+      } else { m_jet_activeArea_eta.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> activeArea_phi("ActiveArea4vec_phi");
+      if ( activeArea_phi.isAvailable( *jet_itr) ) {
+        m_jet_activeArea_phi.push_back( activeArea_phi( *jet_itr) );
+      } else { m_jet_activeArea_phi.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<float> activeArea_m("ActiveArea4vec_m");
+      if ( activeArea_m.isAvailable( *jet_itr) ) {
+        m_jet_activeArea_m.push_back( activeArea_m( *jet_itr) );
+      } else { m_jet_activeArea_m.push_back( -999 ); }
 
     }
 
@@ -1678,6 +1733,7 @@ void HelpTreeBase::ClearJets() {
     m_jet_Jvt.clear();
     m_jet_JvtJvfcorr.clear();
     m_jet_JvtRpt.clear();
+    //m_jet_ghostTrackAssFrac.clear();
   }
 
 
@@ -1727,6 +1783,16 @@ void HelpTreeBase::ClearJets() {
     m_jet_mv1.clear();
     m_jet_mv2c00.clear();
     m_jet_mv2c20.clear();
+  }
+
+  if ( m_jetInfoSwitch->m_area ) {
+    m_jet_ghostArea.clear();
+    m_jet_activeArea.clear();
+    m_jet_voronoiArea.clear();
+    m_jet_activeArea_pt.clear();
+    m_jet_activeArea_eta.clear();
+    m_jet_activeArea_phi.clear();
+    m_jet_activeArea_m.clear();
   }
 
   // truth
