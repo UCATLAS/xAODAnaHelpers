@@ -5,6 +5,7 @@ python:
   - "2.7"
 env:
   - ROOT=6.03.02
+  - ABV=2.3.14
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -13,25 +14,50 @@ install:
   - sudo apt-get -qq install g++-4.8
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
+  - sudo apt-get install libboost-all-dev
+
+  # let's grab our package
+  - mkdir -p ~/test
+  - cd ~/test
+  - git clone https://github.com/UCATLAS/xAODAnaHelpers
+
+  - mkdir -p ~/ATLAS/sw/ROOT
+  - cd ~/ATLAS/sw/ROOT/
   # set based on the travis environment variables
   - export ROOT_BUILD=ROOT-${ROOT}_Python-${TRAVIS_PYTHON_VERSION}
   #- time wget --no-check-certificate https://copy.com/rtIyUdxgjt7h/ci/root_builds/${ROOT_BUILD}.tar.gz
   - time wget --no-check-certificate http://downloads.sourceforge.net/project/travis-ci-root-builds/${ROOT_BUILD}.tar.gz
   - time tar zxf ${ROOT_BUILD}.tar.gz
   - mv ${ROOT_BUILD} root
+  # set up ROOT
   - source root/bin/thisroot.sh
 
-  # get dependencies
-  - git clone https://github.com/UCATLAS/RootCore
+  # Start doing RootCore stuff
+  - mkdir -p ~/ATLAS/sw/rcSetup
+  - mkdir -p ~/ATLAS/sw/releases
+  - ln -s ~/test/ci/rcSetup ~/ATLAS/sw/rcSetup/latest
+  - cd ~/ATLAS/sw/releases
+  - export rcSetupSite=~/ATLAS/sw/releases
+  - export PATHRESOLVER_ALLOWHTTPDOWNLOAD=1
+  #- source ~/ATLAS/sw/rcSetup/latest/rcSetup.sh -d Base,${ABV}
+  - source ~/ATLAS/sw/rcSetup/latest/rcSetup.sh Base,${ABV}
 
-  # setup RootCore
-  - cd RootCore
-  - echo "pwd is now `pwd`"
-  - ./configure
-  - cd ..
+  - git clone https://github.com/UCATLAS/AnalysisBase
+  - cd AnalysisBase/${ABV}
+  #- export BOOSTLIBDIR=/usr/lib
+  #- export BOOSTINCDIR=/usr/include
   - source RootCore/scripts/setup.sh
-  - ./RootCore/scripts/find_packages.sh
-  - ./RootCore/scripts/compile.sh
+  - rc find_packages
+  - mkdir log
+  - export ROOTCORELOG=$PWD/log
+  - rc compile --continue --log-files
+  - rc strip --remove-debug
+
+  # now we can set it all up
+  - cd ~/test
+  - source ~/ATLAS/sw/rcSetup/latest/rcSetup.sh Base,${ABV}
+  - rc find_packages
+  - rc compile
 
 script:
   # Check if root and PyROOT work ok
