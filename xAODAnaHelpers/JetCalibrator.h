@@ -37,6 +37,8 @@ public:
   std::string m_uncertConfig;
   // sort after calibration
   bool    m_sort;
+  //Apply jet cleaning to parent jet
+  bool    m_cleanParent;
 
   // systematics
   bool m_runSysts;
@@ -62,8 +64,6 @@ private:
   std::vector< JetCleaningTool* > m_allJetCleaningTools;   //!
 
   JetUncertaintiesTool     * m_jetUncert;      //!
-
-  bool jetDecision(const xAOD::Jet* jet, JetCleaningTool* j_cleaner); 
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

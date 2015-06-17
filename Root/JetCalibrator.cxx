@@ -89,6 +89,8 @@ JetCalibrator :: JetCalibrator () :
   m_outContainerName        = "";
   m_sort                    = true;
 
+  m_cleanParent = false;
+
 }
 
 EL::StatusCode  JetCalibrator :: configure ()
@@ -132,6 +134,8 @@ EL::StatusCode  JetCalibrator :: configure ()
     // shallow copies are made with this output container name
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
     m_sort                    = config->GetValue("Sort",            m_sort);
+
+    m_cleanParent             = config->GetValue("CleanParent", m_cleanParent);
 
     config->Print();
     Info("configure()", "JetCalibrator Interface succesfully configured! ");
@@ -415,14 +419,24 @@ EL::StatusCode JetCalibrator :: execute ()
 
       // decorate with cleaning decision
       static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
-      isCleanDecor( *jet_itr) = jetDecision(jet_itr, m_jetCleaning);
+      const xAOD::Jet* jetToClean = jet_itr;
+      
+      if(m_cleanParent){
+	const xAOD::Jet* parentJet = static_cast<const xAOD::Jet*>(*(jetToClean->getAttribute<ElementLink < xAOD::JetContainer > > ("Parent")));
+	if(!parentJet){
+	  Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
+	} else {
+	  jetToClean = parentJet;
+	}
+      }
+
+      isCleanDecor(*jet_itr) = m_jetCleaning->accept(*jetToClean);
 
       if( m_saveAllCleanDecisions ){
         for(unsigned int i=0; i < m_allJetCleaningTools.size() ; ++i){
-          jet_itr->auxdata< char >(("clean_"+m_decisionNames.at(i)).c_str()) = jetDecision(jet_itr, m_allJetCleaningTools.at(i));
+          jet_itr->auxdata< char >(("clean_"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept(*jetToClean);
         }
       }
-
     }
 
     if ( !xAOD::setOriginalObjectLink(*inJets, *(calibJetsSC.first)) ) {
@@ -516,21 +530,4 @@ EL::StatusCode JetCalibrator :: histFinalize ()
   Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
-}
-
-bool JetCalibrator :: jetDecision(const xAOD::Jet* jet, JetCleaningTool* j_cleaner){
-  bool decision = false;
-
-  try{
-    decision = j_cleaner->accept( *jet);
-  }catch(...){
-    if(jet->isAvailable<ElementLink< xAOD::JetContainer > >("Parent")){
-      const xAOD::Jet* parent = dynamic_cast<const xAOD::Jet*>(*(jet->auxdata<ElementLink< xAOD::JetContainer > >("Parent")));
-      decision = j_cleaner->accept( *parent);
-    }else{
-      Error("jetDecision()", "Could not make jet cleaning decision on the jet or it's parent!");
-    }
-  }
-
-  return decision;
 }
