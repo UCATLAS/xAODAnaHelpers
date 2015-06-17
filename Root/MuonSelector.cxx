@@ -1,4 +1,4 @@
-/******************************************
+/*******************************************
  *
  * Interface to CP Muon selection tool(s).
  *
@@ -27,8 +27,9 @@
 #include "xAODAnaHelpers/MuonSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include "TrigDecisionTool/TrigDecisionTool.h"
+#include "TrigMuonMatching/TrigMuonMatching.h"
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -88,12 +89,12 @@ MuonSelector :: MuonSelector () :
   m_pT_min                  = 1e8;
   m_eta_max                 = 1e8;
   m_d0_max                  = 1e8;
-  m_d0sig_max     	        = 1e8;
+  m_d0sig_max     	    = 1e8;
   m_z0sintheta_max          = 1e8;
 
   // isolation stuff
   m_doIsolation             = false;
-  m_IsoWP		            = "Tight";
+  m_IsoWP		    = "Tight";
   m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
   m_TrackIsoEff             = "98";        // only if isolation WP is "UserDefined"
   m_useRelativeIso          = true;
@@ -101,6 +102,13 @@ MuonSelector :: MuonSelector () :
   m_CaloBasedIsoCut         = 0.05;
   m_TrackBasedIsoType       = "ptvarcone30";
   m_TrackBasedIsoCut        = 0.05;
+
+  // trigger matching stuff
+  m_useSingleMuTrig         = false;	
+  m_singleMuTrigChain       = "";  
+  m_useDiMuTrig             = false;	
+  m_diMuTrigChain           = "";	
+  m_minDeltaR               = 0.1;  	
 
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
@@ -166,6 +174,13 @@ EL::StatusCode  MuonSelector :: configure ()
     m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  m_CaloBasedIsoCut);
     m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
     m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  m_TrackBasedIsoCut);
+
+    // trigger matching stuff
+    m_useSingleMuTrig	      = config->GetValue("UseSingleMuTrig"   , m_useSingleMuTrig );    
+    m_singleMuTrigChain       = config->GetValue("SingleMuTrigChain" , m_singleMuTrigChain.c_str() ); 
+    m_useDiMuTrig	      = config->GetValue("UseDiMuTrig"       , m_useDiMuTrig );     
+    m_diMuTrigChain	      = config->GetValue("DiMuTrigChain"     , m_diMuTrigChain.c_str() ); 
+    m_minDeltaR 	      = config->GetValue("MinDeltaR"         , m_minDeltaR );    
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
@@ -330,6 +345,7 @@ EL::StatusCode MuonSelector :: initialize ()
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
 
   // isolation tool for muons not available in DC14
+  //
   if ( m_IsoWP != "CutBasedDC14" ) {
 
     std::string iso_tool_name  = "IsolationSelectionTool_";
@@ -348,6 +364,23 @@ EL::StatusCode MuonSelector :: initialize ()
     RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
 
   }
+
+  // initialise TrigMuonMatching tool
+  //
+  // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
+  //
+  if( ! asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
+    Error("initialize()", "Couldn't find TrigDecisionTool in asg::ToolStore. Exiting." );
+    return EL::StatusCode::FAILURE;
+  
+  }
+  m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
+
+  // if everything went fine, let's initialise the tool!
+  //
+  m_trigMuonMatchTool = new Trig::TrigMuonMatching("TrigMuonMatchTool");
+  RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", m_trigDecTool ), "Failed to configure TrigDecisionTool" );
+  RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
 
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );
 
@@ -487,12 +520,12 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
 
-  for ( auto el_itr : *inMuons ) { // duplicated of basic loop
+  for ( auto mu_itr : *inMuons ) { // duplicated of basic loop
 
     // if only looking at a subset of muons make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
-        passSelDecor( *el_itr ) = -1;
+        passSelDecor( *mu_itr ) = -1;
       } else {
         break;
       }
@@ -500,15 +533,15 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     }
 
     nObj++;
-    bool passSel = this->passCuts( el_itr, pvx );
+    bool passSel = this->passCuts( mu_itr, pvx );
     if ( m_decorateSelectedObjects ) {
-      passSelDecor( *el_itr ) = passSel;
+      passSelDecor( *mu_itr ) = passSel;
     }
 
     if ( passSel ) {
       nPass++;
       if ( m_createSelectedContainer ) {
-        selectedMuons->push_back( el_itr );
+        selectedMuons->push_back( mu_itr );
       }
     }
   }
@@ -533,6 +566,41 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   if ( countPass ){
     m_numEventPass++;
     m_weightNumEventPass += mcEvtWeight;
+  }
+
+  
+  // perform trigger matching on the "good" (selected) muons
+  unsigned int nSelectedMuons = selectedMuons->size();
+  
+  static SG::AuxElement::Decorator< char > isTrigMatchedDecor("isTrigMatched");
+  
+  if ( nSelectedMuons > 0 && m_useSingleMuTrig ) {
+  
+     for ( const auto muon : *selectedMuons ) {
+       isTrigMatchedDecor( *muon ) = ( m_trigMuonMatchTool->match( muon, m_singleMuTrigChain, m_minDeltaR ) ) ? 1 : 0;
+     }
+  
+  }
+  if ( nSelectedMuons > 1 && m_useDiMuTrig ) {
+  
+    // take the first two muons in the selected container
+    //
+    //const xAOD::MuonContainer* selectedMuonsDV = selectedMuons->asDataVector();
+    
+    //const xAOD::Muon* mu1 = ( (selectedMuonsDV)->begin() );
+    //const xAOD::Muon* mu2 = std::next( (selectedMuonsDV)->begin(),1);
+    
+    const xAOD::Muon* mu1 = selectedMuons->at(0);
+    const xAOD::Muon* mu2 = selectedMuons->at(1);
+    
+    std::pair<Bool_t,Bool_t> result1, result2; 
+    m_trigMuonMatchTool->matchDimuon( mu1, mu2, m_diMuTrigChain, result1, result2, m_minDeltaR );
+    
+    if ( result1.first && result2.first ) {
+      isTrigMatchedDecor( *mu1 ) = ( result1.first ) ? 1 : 0;
+      isTrigMatchedDecor( *mu2 ) = ( result2.first ) ? 1 : 0;
+    }
+  
   }
 
   return true;
@@ -566,7 +634,7 @@ EL::StatusCode MuonSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_muonSelectionTool ) { delete m_muonSelectionTool; m_muonSelectionTool = nullptr; }
+  if ( m_muonSelectionTool )      { delete m_muonSelectionTool; m_muonSelectionTool = nullptr; }
   if ( m_IsolationSelectionTool ) { delete m_IsolationSelectionTool; m_IsolationSelectionTool = nullptr; }
 
   if ( m_useCutFlow ) {

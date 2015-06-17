@@ -19,17 +19,15 @@
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODTracking/VertexContainer.h"
-#include "TrigConfxAOD/xAODConfigTool.h"
-#include "TrigDecisionTool/TrigDecisionTool.h"
 #include "xAODCutFlow/CutBookkeeper.h"
 #include "xAODCutFlow/CutBookkeeperContainer.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/BasicEventSelection.h>
-
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-
+#include "TrigConfxAOD/xAODConfigTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
 #include "PATInterfaces/CorrectionCode.h"
 
 // ROOT include(s):
