@@ -28,6 +28,7 @@ class JetHists : public HistogramManager
   private:
     //basic
     TH1F* m_jetPt;                  //!
+    TH1F* m_jetPt_s;                //!
     TH1F* m_jetEta;                 //!
     TH1F* m_jetPhi;                 //!
     TH1F* m_jetM;                   //!

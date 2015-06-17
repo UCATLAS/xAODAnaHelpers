@@ -38,9 +38,9 @@ EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
-  Info("histInitialize()", "%s", m_name.c_str() );
+  if(m_debug) Info("histInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
+  if(m_debug) Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;

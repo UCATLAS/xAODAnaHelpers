@@ -23,6 +23,7 @@
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "xAODCutFlow/CutBookkeeper.h"
 #include "xAODCutFlow/CutBookkeeperContainer.h"
+#include "AsgTools/ToolHandle.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
@@ -412,6 +413,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
+
+    //
+    // Adding the Trigger Decision Tool to the ToolService
+    //
+    RETURN_CHECK("BasicEventSelection::initialize()", asg::ToolStore::put(m_trigDecTool,"xAHTrigDecisionTool"), "");
   }
 
 
