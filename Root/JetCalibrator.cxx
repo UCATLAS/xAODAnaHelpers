@@ -243,7 +243,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numObject     = 0;
 
   //For DC14 only when running data "_Insitu" is appended to the calibration string!
-  if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos) m_calibSequence += "_Insitu";
+  //Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
+  if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
 
   if( m_isMC && m_calibSequence.find("Insitu") != std::string::npos){
     Error("initialize()", "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
