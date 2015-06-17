@@ -81,6 +81,7 @@ JetCalibrator :: JetCalibrator () :
 
   // CONFIG parameters for JetUncertaintiesTool
   m_uncertConfig            = "";
+  m_uncertMCType             = "MC15";
   // calibrator uses TopoEM or TopoLC while the uncertainity tool uses EMTopo and LCTopo
   // calibrator should switch at some point
   // "fix" the name here so the user never knows the difference
@@ -88,6 +89,9 @@ JetCalibrator :: JetCalibrator () :
   // shallow copies are made with this output container name
   m_outContainerName        = "";
   m_sort                    = true;
+
+  //recalculate JVT using calibrated jets
+  m_redoJVT                 = false;
 
 }
 
@@ -125,6 +129,7 @@ EL::StatusCode  JetCalibrator :: configure ()
 
     // CONFIG parameters for JetUncertaintiesTool
     m_uncertConfig            = config->GetValue("JetUncertConfig", m_uncertConfig.c_str());
+    m_uncertMCType            = config->GetValue("JetUncertMCType", m_uncertMCType.c_str());
     // calibrator uses TopoEM or TopoLC while the uncertainity tool uses EMTopo and LCTopo
     // calibrator should switch at some point
     // "fix" the name here so the user never knows the difference
@@ -132,6 +137,8 @@ EL::StatusCode  JetCalibrator :: configure ()
     // shallow copies are made with this output container name
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
     m_sort                    = config->GetValue("Sort",            m_sort);
+
+    m_redoJVT                 = config->GetValue("RedoJVT",         m_redoJVT);
 
     config->Print();
     Info("configure()", "JetCalibrator Interface succesfully configured! ");
@@ -310,7 +317,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     std::string ju_tool_name = std::string("JESProvider_") + m_name;
     m_jetUncert = new JetUncertaintiesTool( ju_tool_name.c_str() );
     RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->setProperty("JetDefinition",m_jetUncertAlgo), "");
-    RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->setProperty("MCType","MC12"), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->setProperty("MCType",m_uncertMCType), "");
     RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->setProperty("ConfigFile", m_uncertConfig), "");
     RETURN_CHECK("JetCalibrator::initialize()", m_jetUncert->initialize(), "");
     m_jetUncert->msg().setLevel( MSG::ERROR ); // VERBOSE, INFO, DEBUG
@@ -334,6 +341,15 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()", "No uncertainities considered");
     // m_jetUncert not streamed so have to do this
     m_runSysts = false; m_jetUncert = nullptr;
+  }
+
+
+  // initialize and configure the JVT correction tool
+  if(m_redoJVT){
+    m_JVTTool = new JetVertexTaggerTool("jvtag");
+    m_JVTToolHandle = ToolHandle<IJetUpdateJvt>("jvtag");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->setProperty("JVTFileName","JetMomentTools/JVTlikelihood_20140805.root"), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->initialize(), "");
   }
 
   // if not running systematics, need the nominal
@@ -428,6 +444,13 @@ EL::StatusCode JetCalibrator :: execute ()
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
+    // Recalculate JVT using calibrated Jets
+    if(m_redoJVT){
+      for ( auto jet_itr : *(calibJetsSC.first) ) {
+        jet_itr->auxdata< float >("Jvt") = m_JVTToolHandle->updateJvt(*jet_itr);
+      }
+    }
+
     // save pointers in ConstDataVector with same order
     for ( auto jet_itr : *(calibJetsSC.first) ) {
       calibJetsCDV->push_back( jet_itr );
@@ -437,6 +460,7 @@ EL::StatusCode JetCalibrator :: execute ()
     if ( m_sort ) {
       std::sort( calibJetsCDV->begin(), calibJetsCDV->end(), HelperFunctions::sort_pt );
     }
+
 
     // add shallow copy to TStore
     RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.first, outSCContainerName), "Failed to record shallow copy container.");
