@@ -63,6 +63,8 @@ private:
 
   JetUncertaintiesTool     * m_jetUncert;      //!
 
+  bool jetDecision(const xAOD::Jet* jet, JetCleaningTool* j_cleaner); 
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -87,6 +89,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+  
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetCalibrator, 1);

@@ -414,11 +414,11 @@ EL::StatusCode JetCalibrator :: execute ()
 
       // decorate with cleaning decision
       static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
-      isCleanDecor( *jet_itr ) = m_jetCleaning->accept( *jet_itr );
+      isCleanDecor( *jet_itr) = jetDecision(jet_itr, m_jetCleaning);
 
       if( m_saveAllCleanDecisions ){
         for(unsigned int i=0; i < m_allJetCleaningTools.size() ; ++i){
-          jet_itr->auxdata< char >(("clean_"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept( *jet_itr );
+          jet_itr->auxdata< char >(("clean_"+m_decisionNames.at(i)).c_str()) = jetDecision(jet_itr, m_allJetCleaningTools.at(i));
         }
       }
 
@@ -515,4 +515,21 @@ EL::StatusCode JetCalibrator :: histFinalize ()
   Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
+}
+
+bool JetCalibrator :: jetDecision(const xAOD::Jet* jet, JetCleaningTool* j_cleaner){
+  bool decision = false;
+
+  try{
+    decision = j_cleaner->accept( *jet);
+  }catch(...){
+    if(jet->isAvailable<ElementLink< xAOD::JetContainer > >("Parent")){
+      const xAOD::Jet* parent = dynamic_cast<const xAOD::Jet*>(*(jet->auxdata<ElementLink< xAOD::JetContainer > >("Parent")));
+      decision = j_cleaner->accept( *parent);
+    }else{
+      Error("jetDecision()", "Could not make jet cleaning decision on the jet or it's parent!");
+    }
+  }
+
+  return decision;
 }
