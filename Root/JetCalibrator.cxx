@@ -347,7 +347,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the JVT correction tool
   if(m_redoJVT){
     m_JVTTool = new JetVertexTaggerTool("jvtag");
-    ToolHandle<IJetUpdateJvt> hjvtagup = ToolHandle<IJetUpdateJvt>("jvtag");
+    m_JVTToolHandle = ToolHandle<IJetUpdateJvt>("jvtag");
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->setProperty("JVTFileName","JetMomentTools/JVTlikelihood_20140805.root"), "");
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->initialize(), "");
   }
@@ -422,12 +422,10 @@ EL::StatusCode JetCalibrator :: execute ()
       }
 
       if ( m_runSysts ) {
-        std::cout << "first" << jet_itr->pt() << std::endl;
         if ( m_jetUncert->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
           Error("execute()", "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
           Error("execute()", "%s", m_name.c_str());
         }
-        std::cout << "second" << jet_itr->pt() << std::endl;
       }
 
       // decorate with cleaning decision
@@ -446,6 +444,13 @@ EL::StatusCode JetCalibrator :: execute ()
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
+    // Recalculate JVT using calibrated Jets
+    if(m_redoJVT){
+      for ( auto jet_itr : *(calibJetsSC.first) ) {
+        jet_itr->auxdata< float >("Jvt") = m_JVTToolHandle->updateJvt(*jet_itr);
+      }
+    }
+
     // save pointers in ConstDataVector with same order
     for ( auto jet_itr : *(calibJetsSC.first) ) {
       calibJetsCDV->push_back( jet_itr );
@@ -455,6 +460,7 @@ EL::StatusCode JetCalibrator :: execute ()
     if ( m_sort ) {
       std::sort( calibJetsCDV->begin(), calibJetsCDV->end(), HelperFunctions::sort_pt );
     }
+
 
     // add shallow copy to TStore
     RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.first, outSCContainerName), "Failed to record shallow copy container.");

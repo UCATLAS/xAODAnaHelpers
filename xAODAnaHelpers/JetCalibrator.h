@@ -10,6 +10,7 @@
 #include "JetCalibTools/JetCalibrationTool.h"
 #include "JetSelectorTools/JetCleaningTool.h"
 #include "JetUncertainties/JetUncertaintiesTool.h"
+#include "JetMomentTools/JetVertexTaggerTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -35,6 +36,8 @@ public:
   std::string m_jetCalibCutLevel;
   bool m_saveAllCleanDecisions;
   std::string m_uncertConfig;
+  std::string m_uncertMCType;
+  bool m_redoJVT;
   // sort after calibration
   bool    m_sort;
 
@@ -62,6 +65,8 @@ private:
   std::vector< JetCleaningTool* > m_allJetCleaningTools;   //!
 
   JetUncertaintiesTool     * m_jetUncert;      //!
+  JetVertexTaggerTool      * m_JVTTool;        //!
+  ToolHandle<IJetUpdateJvt>  m_JVTToolHandle;  //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
