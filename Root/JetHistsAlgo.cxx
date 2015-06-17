@@ -116,8 +116,8 @@ EL::StatusCode JetHistsAlgo :: execute ()
   RETURN_CHECK("JetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
 
   float eventWeight(1);
-  if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
-    eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
+  if( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
+    eventWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   }
 
   // get the highest sum pT^2 primary vertex location in the PV vector
