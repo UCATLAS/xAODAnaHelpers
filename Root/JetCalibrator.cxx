@@ -422,7 +422,7 @@ EL::StatusCode JetCalibrator :: execute ()
       const xAOD::Jet* jetToClean = jet_itr;
       
       if(m_cleanParent){
-	const xAOD::Jet* parentJet = static_cast<const xAOD::Jet*>(*(jetToClean->getAttribute<ElementLink < xAOD::JetContainer > > ("Parent")));
+	const xAOD::Jet* parentJet = *(jetToClean->getAttribute<ElementLink < xAOD::JetContainer > > ("Parent"));
 	if(!parentJet){
 	  Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
 	} else {
