@@ -69,6 +69,7 @@ BasicEventSelection :: BasicEventSelection () :
   // GRL
   m_applyGRL = true;
   m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml";  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+  m_GRLExcludeList = "";
 
   // Pileup Reweighting
   m_doPUreweighting = false;
@@ -114,6 +115,7 @@ EL::StatusCode BasicEventSelection :: configure ()
     // GRL
     m_applyGRL          = config->GetValue("ApplyGRL",        m_applyGRL);
     m_GRLxml            = config->GetValue("GRL", m_GRLxml.c_str());
+    m_GRLExcludeList    = config->GetValue("GRLExclude", m_GRLExcludeList.c_str());
 
     // Pileup Reweighting
     m_doPUreweighting   = config->GetValue("DoPileupReweighting", m_doPUreweighting);
@@ -305,12 +307,12 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   Info("histInitialize()", "Initial  sum of weights squared = %f", m_MD_initialSumWSquared);
   Info("histInitialize()", "Selected sum of weights squared = %f", m_MD_finalSumWSquared);
 
-  m_histEventCount -> Fill(1, m_MD_initialNevents);      
-  m_histEventCount -> Fill(2, m_MD_finalNevents);        
-  m_histEventCount -> Fill(3, m_MD_initialSumW);         
-  m_histEventCount -> Fill(4, m_MD_finalSumW);           
-  m_histEventCount -> Fill(5, m_MD_initialSumWSquared);  
-  m_histEventCount -> Fill(6, m_MD_finalSumWSquared);    
+  m_histEventCount -> Fill(1, m_MD_initialNevents);
+  m_histEventCount -> Fill(2, m_MD_finalNevents);
+  m_histEventCount -> Fill(3, m_MD_initialSumW);
+  m_histEventCount -> Fill(4, m_MD_finalSumW);
+  m_histEventCount -> Fill(5, m_MD_initialSumWSquared);
+  m_histEventCount -> Fill(6, m_MD_finalSumWSquared);
 
   return EL::StatusCode::SUCCESS;
 
@@ -345,6 +347,17 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
   if ( m_debug ) { Info("initialize()", "Is MC? %i", static_cast<int>(m_isMC) ); }
 
+
+  //Protection in case GRL does not apply to this run
+  if(m_applyGRL){
+    std::string runNumString = std::to_string(eventInfo->runNumber());
+    if (m_GRLExcludeList.find( runNumString ) != std::string::npos){
+      Info("initialize()", "RunNumber is in GRLExclusion list, setting applyGRL to false");
+      m_applyGRL = false;
+    }
+  }
+
+
   Info("initialize()", "Setting up histograms");
 
   // write the cutflows to this file so algos downstream can pick up the pointer
@@ -361,6 +374,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // label the bins for the cutflow
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
+
 
   if ( !m_isMC ) {
     if ( m_applyGRL ) {
