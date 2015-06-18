@@ -40,6 +40,8 @@ public:
   bool m_redoJVT;
   // sort after calibration
   bool    m_sort;
+  //Apply jet cleaning to parent jet
+  bool    m_cleanParent;
 
   // systematics
   bool m_runSysts;
@@ -92,6 +94,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+  
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetCalibrator, 1);

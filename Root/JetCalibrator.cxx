@@ -90,6 +90,8 @@ JetCalibrator :: JetCalibrator () :
   m_outContainerName        = "";
   m_sort                    = true;
 
+  m_cleanParent = false;
+
   //recalculate JVT using calibrated jets
   m_redoJVT                 = false;
 
@@ -137,6 +139,8 @@ EL::StatusCode  JetCalibrator :: configure ()
     // shallow copies are made with this output container name
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
     m_sort                    = config->GetValue("Sort",            m_sort);
+
+    m_cleanParent             = config->GetValue("CleanParent", m_cleanParent);
 
     m_redoJVT                 = config->GetValue("RedoJVT",         m_redoJVT);
 
@@ -250,7 +254,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numObject     = 0;
 
   //For DC14 only when running data "_Insitu" is appended to the calibration string!
-  if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos) m_calibSequence += "_Insitu";
+  //Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
+  if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
 
   if( m_isMC && m_calibSequence.find("Insitu") != std::string::npos){
     Error("initialize()", "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
@@ -430,14 +435,24 @@ EL::StatusCode JetCalibrator :: execute ()
 
       // decorate with cleaning decision
       static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
-      isCleanDecor( *jet_itr ) = m_jetCleaning->accept( *jet_itr );
+      const xAOD::Jet* jetToClean = jet_itr;
+      
+      if(m_cleanParent){
+	ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
+	if(!el_parent.isValid()){
+	  Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
+	} else {
+	  jetToClean = *el_parent;
+	}
+      }
+
+      isCleanDecor(*jet_itr) = m_jetCleaning->accept(*jetToClean);
 
       if( m_saveAllCleanDecisions ){
         for(unsigned int i=0; i < m_allJetCleaningTools.size() ; ++i){
-          jet_itr->auxdata< char >(("clean_"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept( *jet_itr );
+          jet_itr->auxdata< char >(("clean_"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept(*jetToClean);
         }
       }
-
     }
 
     if ( !xAOD::setOriginalObjectLink(*inJets, *(calibJetsSC.first)) ) {
