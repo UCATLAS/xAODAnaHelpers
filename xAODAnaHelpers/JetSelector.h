@@ -47,10 +47,15 @@ public:
   float m_pt_max_JVF;             // max pT (JVF is a pileup cut)
   float m_eta_max_JVF;            // detector eta cut
   float m_JVFCut;                 // cut value
-  float m_btag_veryloose_cut;     // BTagging Cut Values 
-  float m_btag_loose_cut;         // BTagging Cut Values 
-  float m_btag_medium_cut;        // BTagging Cut Values 
-  float m_btag_tight_cut;         // BTagging Cut Values 
+  bool m_doJVT;                   // check JVT
+  float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
+  float m_eta_max_JVT;            // detector eta cut
+  float m_JVTCut;                 // cut value
+
+  float m_btag_veryloose_cut;     // BTagging Cut Values
+  float m_btag_loose_cut;         // BTagging Cut Values
+  float m_btag_medium_cut;        // BTagging Cut Values
+  float m_btag_tight_cut;         // BTagging Cut Values
   float m_btagCut;                // btagging cuts, configured by the bools below
   bool  m_btag_veryloose;         // Do BTag Very Loose
   bool  m_btag_loose;             // Do BTag Loose

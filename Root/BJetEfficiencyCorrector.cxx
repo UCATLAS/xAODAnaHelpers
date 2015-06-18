@@ -299,9 +299,13 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       // obtain efficiency SF
       //
       float SF(0.0);
-      if( m_BJetEffSFTool->getScaleFactor( *jet_itr, SF ) != CP::CorrectionCode::Ok){
-	Error( "execute()", "Problem in getEfficiencyScaleFactor");
-	return EL::StatusCode::FAILURE;
+      if( fabs(jet_itr->eta()) < 2.5){
+	if( m_BJetEffSFTool->getScaleFactor( *jet_itr, SF ) != CP::CorrectionCode::Ok){
+	  Error( "execute()", "Problem in getEfficiencyScaleFactor");
+	  return EL::StatusCode::FAILURE;
+	}
+      }else{
+	SF = -1;
       }
       if(m_debug) Info( "execute()", "\t efficiency SF = %g", SF );
 
@@ -315,7 +319,8 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 	// directly obtain reco efficiency
 	//
 	float eff(0.0);
-	if( m_BJetEffSFTool->getEfficiency( *jet_itr, eff ) != CP::CorrectionCode::Ok){
+	if( (fabs(jet_itr->eta()) < 2.5) && 
+	    m_BJetEffSFTool->getEfficiency( *jet_itr, eff ) != CP::CorrectionCode::Ok){
 	  Error( "execute()", "Problem in getRecoEfficiency");
 	  return EL::StatusCode::FAILURE;
 	}

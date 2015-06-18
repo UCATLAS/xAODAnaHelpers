@@ -94,13 +94,17 @@ JetSelector :: JetSelector () :
   m_mass_min                = 1e8;
   m_rapidity_max            = 1e8;
   m_rapidity_min            = 1e8;
-  m_truthLabel 	      = -1;
+  m_truthLabel 	            = -1;
 
-  m_doJVF 		      = false;
-  m_doBTagCut 		      = false;
-  m_pt_max_JVF 	      = 50e3;
-  m_eta_max_JVF 	      = 2.4;
-  m_JVFCut 		      = 0.5;
+  m_doJVF 		    = false;
+  m_doBTagCut 		    = false;
+  m_pt_max_JVF 	            = 50e3;
+  m_eta_max_JVF 	    = 2.4;
+  m_JVFCut 		    = 0.5;
+  m_doJVT 		    = false;
+  m_pt_max_JVT 	            = 50e3;
+  m_eta_max_JVT 	    = 2.4;
+  m_JVTCut 		    = 0.64;
 
   // Btag quality
   m_btag_veryloose          = false;
@@ -159,11 +163,16 @@ EL::StatusCode  JetSelector :: configure ()
     m_rapidity_min            = config->GetValue("rapidityMin", m_rapidity_min);
     m_truthLabel 	      = config->GetValue("TruthLabel",   m_truthLabel);
 
-    m_doJVF 		      = config->GetValue("DoJVF",       m_doJVF);
-    m_doBTagCut		      = config->GetValue("DoBTagCut",   m_doBTagCut);
-    m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
-    m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
-    m_JVFCut 		      = config->GetValue("JVFCut",      m_JVFCut);
+    m_doJVF 		              = config->GetValue("DoJVF",       m_doJVF);
+    m_doBTagCut		            = config->GetValue("DoBTagCut",   m_doBTagCut);
+    m_pt_max_JVF 	            = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
+    m_eta_max_JVF 	          = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
+    m_JVFCut 		              = config->GetValue("JVFCut",      m_JVFCut);
+
+    m_doJVT 		              = config->GetValue("DoJVT",       m_doJVT);
+    m_pt_max_JVT 	            = config->GetValue("pTMaxJVT",    m_pt_max_JVT);
+    m_eta_max_JVT 	          = config->GetValue("etaMaxJVT",   m_eta_max_JVT);
+    m_JVTCut 		              = config->GetValue("JVTCut",      m_JVTCut);
 
     // Btag quality
     m_btag_veryloose          = config->GetValue("BTagVeryLoose",   m_btag_veryloose);
@@ -220,23 +229,23 @@ EL::StatusCode  JetSelector :: configure ()
   // Loose     / 77% / -0.3867
   // Medium    / 70% / 0.0314
   // Tight     / 60% / 0.5102
- 
+
   //if ( m_isEMjet ) {
 
   m_btag_veryloose_cut = -0.7682;
   m_btag_loose_cut     = -0.3867;
   m_btag_medium_cut    =  0.0314;
   m_btag_tight_cut     =  0.5102;
-  if ( m_btag_veryloose ) { m_btagCut = m_btag_veryloose_cut; m_decor += "BTagVeryLoose";  }
-  if ( m_btag_loose     ) { m_btagCut = m_btag_loose_cut;     m_decor += "BTagLoose";      }
-  if ( m_btag_medium    ) { m_btagCut = m_btag_medium_cut;    m_decor += "BTagMedium";     }
-  if ( m_btag_tight     ) { m_btagCut = m_btag_tight_cut;     m_decor += "BTagTight";      }
+  if ( m_btag_veryloose ) { m_btagCut = m_btag_veryloose_cut; }
+  if ( m_btag_loose     ) { m_btagCut = m_btag_loose_cut;     }
+  if ( m_btag_medium    ) { m_btagCut = m_btag_medium_cut;    }
+  if ( m_btag_tight     ) { m_btagCut = m_btag_tight_cut;     }
 
   //} else if ( m_isLCjet ) {
-  //if ( m_btag_veryloose ) { m_btagCut = 0.1340; m_decor += "BTagVeryLoose";  }
-  //if ( m_btag_loose     ) { m_btagCut = 0.3511; m_decor += "BTagLoose";      }
-  //if ( m_btag_medium    ) { m_btagCut = 0.7892; m_decor += "BTagMedium";     }
-  //if ( m_btag_tight     ) { m_btagCut = 0.9827; m_decor += "BTagTight";      }
+  //if ( m_btag_veryloose ) { m_btagCut = 0.1340; }
+  //if ( m_btag_loose     ) { m_btagCut = 0.3511; }
+  //if ( m_btag_medium    ) { m_btagCut = 0.7892; }
+  //if ( m_btag_tight     ) { m_btagCut = 0.9827; }
   //}
 
 
@@ -441,7 +450,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     selectedJets = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
   }
 
-  // if doing JVF get PV location
+  // if doing JVF or JVT get PV location
   if ( m_doJVF ) {
     const xAOD::VertexContainer* vertices(nullptr);
     RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
@@ -633,6 +642,18 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     }
   } // m_doJVF
 
+  // JVT pileup cut
+  if ( m_doJVT ){
+    if ( jet->pt() < m_pt_max_JVT ) {
+      xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
+      if ( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVT ){
+        if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
+          return 0;
+        }
+      }
+    }
+  } // m_doJVT
+
   //
   //  BTagging
   //
@@ -654,12 +675,12 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       //
       double discriminant = -99;
       myBTag->MVx_discriminant("MV2c20",discriminant);
-      if ( m_doBTagCut && (discriminant < m_btagCut) ) { 
-	return 0; 
+      if ( m_doBTagCut && (discriminant < m_btagCut) ) {
+	return 0;
       }
 
       //
-      // Decorate the Jets 
+      // Decorate the Jets
       //
       jet->auxdecor<char>("BTagVeryLoose") = static_cast<char>( myBTag->MV1_discriminant() > m_btag_veryloose_cut );
       jet->auxdecor<char>("BTagLoose")     = static_cast<char>( myBTag->MV1_discriminant() > m_btag_loose_cut     );

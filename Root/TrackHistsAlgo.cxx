@@ -105,8 +105,8 @@ EL::StatusCode TrackHistsAlgo :: execute ()
 
 
   float eventWeight(1);
-  if( eventInfo->isAvailable< float >( "eventWeight" ) ) {
-    eventWeight = eventInfo->auxdecor< float >( "eventWeight" );
+  if( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
+    eventWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   }
 
   const xAOD::TrackParticleContainer* tracks(nullptr);
