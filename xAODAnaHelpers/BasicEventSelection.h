@@ -29,6 +29,7 @@ class BasicEventSelection : public xAH::Algorithm
     // GRL
     bool m_applyGRL;
     std::string m_GRLxml;
+    std::string m_GRLExcludeList;
     //PU Reweighting
     bool m_doPUreweighting;
     bool m_useMetaData;

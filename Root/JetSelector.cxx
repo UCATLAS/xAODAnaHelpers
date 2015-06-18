@@ -644,6 +644,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // JVT pileup cut
   if ( m_doJVT ){
+    //std::cout << "pt/eta/JVT : " << jet->pt() << "/" << jet->eta() << "/" << jet->getAttribute< float >( "Jvt" ) << std::endl;
     if ( jet->pt() < m_pt_max_JVT ) {
       xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
       if ( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVT ){
