@@ -423,7 +423,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to initialise TrigDecisionTool!");
   }
 
 
@@ -459,7 +459,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   //--------------------------
   //Print trigger's used for first event only
   if ( m_eventCounter == 1 && !m_triggerSelection.empty() ) {
-    printf("*** Triggers used are:\n");
+    Info("execute()", "*** Triggers used (in OR) are:\n");
     auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
     std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
     for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
@@ -504,12 +504,12 @@ EL::StatusCode BasicEventSelection :: execute ()
   // if data check if event passes GRL and even cleaning
   if ( !m_isMC ) {
 
-    // if data event in Egamma stream is also in Muons stream, skip it - TO DO
-
-    // Get the streams that the event was put in
-    const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
 
     if ( m_debug ) {
+    
+      // Get the streams that the event was put in
+      const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
+    
       for ( auto& it : streams ) {
 	const std::string stream_name = it.name();
 	Info("execute()", "event has fired stream: %s", stream_name.c_str() );

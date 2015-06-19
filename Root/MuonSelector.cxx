@@ -28,6 +28,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "TrigMuonMatching/TrigMuonMatching.h"
 
@@ -46,7 +47,9 @@ MuonSelector :: MuonSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr),
   m_IsolationSelectionTool(nullptr),
-  m_muonSelectionTool(nullptr)
+  m_muonSelectionTool(nullptr),
+  m_trigDecTool(nullptr),
+  m_trigMuonMatchTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -336,8 +339,7 @@ EL::StatusCode MuonSelector :: initialize ()
   m_numObjectPass = 0;
 
   // initialise Muon Selection Tool
-  std::string ms_tool_name = std::string("MuonSelection_") + m_name;
-  m_muonSelectionTool = new CP::MuonSelectionTool( ms_tool_name.c_str() );
+  m_muonSelectionTool = new CP::MuonSelectionTool( "MuonSelectionTool" );
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
@@ -369,19 +371,21 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
   //
-  if( ! asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
-    Error("initialize()", "Couldn't find TrigDecisionTool in asg::ToolStore. Exiting." );
-    return EL::StatusCode::FAILURE;
+  if( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
+    
+    m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
+    ToolHandle<Trig::TrigDecisionTool> trigDecHandle( m_trigDecTool );
+
+    //  everything went fine, let's initialise the tool!
+    //
+    m_trigMuonMatchTool = new Trig::TrigMuonMatching("TrigMuonMatchTool");
+    RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
+    RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
   
-  }
-  m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
-
-  // if everything went fine, let's initialise the tool!
-  //
-  m_trigMuonMatchTool = new Trig::TrigMuonMatching("TrigMuonMatchTool");
-  RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", m_trigDecTool ), "Failed to configure TrigDecisionTool" );
-  RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-
+  } else {
+    Warning("initialize()", "Couldn't find TrigDecisionTool in asg::ToolStore. Probably you forgot to pass a trigger chain regexp in BasicEventSelection.cxx configuration! Will not do any trigger matching..." );
+  } 
+  
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -568,41 +572,43 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     m_weightNumEventPass += mcEvtWeight;
   }
 
-  
   // perform trigger matching on the "good" (selected) muons
-  unsigned int nSelectedMuons = selectedMuons->size();
+  //
+  if ( m_trigMuonMatchTool ) {
+    unsigned int nSelectedMuons = selectedMuons->size();
   
-  static SG::AuxElement::Decorator< char > isTrigMatchedDecor("isTrigMatched");
+    static SG::AuxElement::Decorator< char > isTrigMatchedDecor("isTrigMatched");
   
-  if ( nSelectedMuons > 0 && m_useSingleMuTrig ) {
-  
-     for ( const auto muon : *selectedMuons ) {
-       isTrigMatchedDecor( *muon ) = ( m_trigMuonMatchTool->match( muon, m_singleMuTrigChain, m_minDeltaR ) ) ? 1 : 0;
-     }
-  
-  }
-  if ( nSelectedMuons > 1 && m_useDiMuTrig ) {
-  
-    // take the first two muons in the selected container
-    //
-    //const xAOD::MuonContainer* selectedMuonsDV = selectedMuons->asDataVector();
+    if ( nSelectedMuons > 0 && m_useSingleMuTrig ) {
     
-    //const xAOD::Muon* mu1 = ( (selectedMuonsDV)->begin() );
-    //const xAOD::Muon* mu2 = std::next( (selectedMuonsDV)->begin(),1);
+       for ( const auto muon : *selectedMuons ) {
+    	 isTrigMatchedDecor( *muon ) = ( m_trigMuonMatchTool->match( muon, m_singleMuTrigChain, m_minDeltaR ) ) ? 1 : 0;
+       }
     
-    const xAOD::Muon* mu1 = selectedMuons->at(0);
-    const xAOD::Muon* mu2 = selectedMuons->at(1);
-    
-    std::pair<Bool_t,Bool_t> result1, result2; 
-    m_trigMuonMatchTool->matchDimuon( mu1, mu2, m_diMuTrigChain, result1, result2, m_minDeltaR );
-    
-    if ( result1.first && result2.first ) {
-      isTrigMatchedDecor( *mu1 ) = ( result1.first ) ? 1 : 0;
-      isTrigMatchedDecor( *mu2 ) = ( result2.first ) ? 1 : 0;
     }
-  
+    if ( nSelectedMuons > 1 && m_useDiMuTrig ) {
+    
+      // take the first two muons in the selected container
+      //
+      //const xAOD::MuonContainer* selectedMuonsDV = selectedMuons->asDataVector();
+      
+      //const xAOD::Muon* mu1 = ( (selectedMuonsDV)->begin() );
+      //const xAOD::Muon* mu2 = std::next( (selectedMuonsDV)->begin(),1);
+      
+      const xAOD::Muon* mu1 = selectedMuons->at(0);
+      const xAOD::Muon* mu2 = selectedMuons->at(1);
+      
+      std::pair<Bool_t,Bool_t> result1, result2; 
+      m_trigMuonMatchTool->matchDimuon( mu1, mu2, m_diMuTrigChain, result1, result2, m_minDeltaR );
+      
+      if ( result1.first && result2.first ) {
+    	isTrigMatchedDecor( *mu1 ) = ( result1.first ) ? 1 : 0;
+    	isTrigMatchedDecor( *mu2 ) = ( result2.first ) ? 1 : 0;
+      }
+    
+    }
   }
-
+  
   return true;
 }
 
@@ -636,6 +642,7 @@ EL::StatusCode MuonSelector :: finalize ()
 
   if ( m_muonSelectionTool )      { delete m_muonSelectionTool; m_muonSelectionTool = nullptr; }
   if ( m_IsolationSelectionTool ) { delete m_IsolationSelectionTool; m_IsolationSelectionTool = nullptr; }
+  if ( m_trigMuonMatchTool )      { delete m_trigMuonMatchTool; m_trigMuonMatchTool = nullptr; }
 
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");

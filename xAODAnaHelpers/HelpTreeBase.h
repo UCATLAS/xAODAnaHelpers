@@ -361,6 +361,9 @@ protected:
   std::vector<float> m_muon_eta;
   std::vector<float> m_muon_phi;
   std::vector<float> m_muon_m;
+  
+  // trigger
+  std::vector<int>   m_muon_isTrigMatched;
 
   // isolation
   std::vector<int>   m_muon_isIsolated;
@@ -410,7 +413,6 @@ protected:
   std::vector<int>   m_el_LHLoose;
   std::vector<int>   m_el_LHMedium;
   std::vector<int>   m_el_LHTight;
-  std::vector<int>   m_el_LHVeryTight;
   std::vector<int>   m_el_IsEMLoose;
   std::vector<int>   m_el_IsEMMedium;
   std::vector<int>   m_el_IsEMTight;

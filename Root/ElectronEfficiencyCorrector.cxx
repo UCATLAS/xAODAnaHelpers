@@ -43,7 +43,7 @@ ClassImp(ElectronEfficiencyCorrector)
 
 
 ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
-  m_asgElectronEfficiencyCorrectionTool(nullptr)
+  m_asgElEffCorrTool_elSF_PID(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -62,13 +62,14 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
 
   // Systematics stuff
   m_inputAlgoSystNames      = "";
-  m_systName		      = "";
+  m_systName		    = "";
   m_outputSystNames         = "ElectronEfficiencyCorrector_Syst";
-  m_systVal 		      = 0.;
+  m_systVal 		    = 0.;
 
   // file(s) containing corrections
-  m_corrFileName1           = "";
-
+  m_corrFileNamePID         = "";
+  m_corrFileNameReco        = "";  
+  m_corrFileNameTrig        = "";
 }
 
 
@@ -94,8 +95,9 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     m_systVal 		      = config->GetValue("SystVal" , m_systVal);
     m_runAllSyst              = (m_systName.find("All") != std::string::npos);
     // file(s) containing corrections
-    m_corrFileName1           = config->GetValue("CorrectionFileName1" , m_corrFileName1.c_str());
-    //m_corrFileName2         = config->GetValue("CorrectionFileName2" , "" );
+    m_corrFileNamePID         = config->GetValue("CorrectionFileNamePID" , m_corrFileNamePID.c_str());
+    m_corrFileNameReco        = config->GetValue("CorrectionFileNameReco" , m_corrFileNameReco.c_str());
+    m_corrFileNameTrig        = config->GetValue("CorrectionFileNameTrig" , m_corrFileNameTrig.c_str());
 
     config->Print();
 
@@ -190,17 +192,16 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   m_numObject     = 0;
 
   // initialize the ElectronEfficiencyCorrectionTool
-  std::string eec_tool_name = std::string("ElectronEfficiencyCorrectionTool_") + m_name;
-  m_asgElectronEfficiencyCorrectionTool = new AsgElectronEfficiencyCorrectionTool( eec_tool_name.c_str() );
-  m_asgElectronEfficiencyCorrectionTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-  std::vector<std::string> inputFiles{ m_corrFileName1 } ; // initialise vector w/ all the files containing corrections
-  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElectronEfficiencyCorrectionTool->setProperty("CorrectionFileNameList",inputFiles),"Failed to set property CorrectionFileNameList");
-  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElectronEfficiencyCorrectionTool->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
-  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElectronEfficiencyCorrectionTool->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool");
+  m_asgElEffCorrTool_elSF_PID = new AsgElectronEfficiencyCorrectionTool( "ElectronEfficiencyCorrectionTool_effSF_PID" );
+  m_asgElEffCorrTool_elSF_PID->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  std::vector<std::string> inputFiles{ m_corrFileNamePID } ; // initialise vector w/ all the files containing corrections
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("CorrectionFileNameList",inputFiles),"Failed to set property CorrectionFileNameList");
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool");
 
 
   // Get a list of systematics
-  const CP::SystematicSet recSysts = m_asgElectronEfficiencyCorrectionTool->recommendedSystematics();
+  const CP::SystematicSet recSysts = m_asgElEffCorrTool_elSF_PID->recommendedSystematics();
   Info("initialize()"," Initializing Electron Efficiency Corrector Systematics :");
   m_systList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );
   // Convert into a simple list
@@ -322,8 +323,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_asgElectronEfficiencyCorrectionTool ) {
-    delete m_asgElectronEfficiencyCorrectionTool; m_asgElectronEfficiencyCorrectionTool = nullptr;
+  if ( m_asgElEffCorrTool_elSF_PID ) {
+    delete m_asgElEffCorrTool_elSF_PID; m_asgElEffCorrTool_elSF_PID = nullptr;
   }
 
   return EL::StatusCode::SUCCESS;
@@ -375,11 +376,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     sysVariationNames->push_back(sfName);
 
     // apply syst
-    if ( m_asgElectronEfficiencyCorrectionTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_asgElEffCorrTool_elSF_PID->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       Error("initialize()", "Failed to configure AsgElectronEfficiencyCorrectionTool for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
     }
-    if ( m_debug ) { Info("execute()", "Successfully applied systematic: %s", m_asgElectronEfficiencyCorrectionTool->appliedSystematics().name().c_str()); }
+    if ( m_debug ) { Info("execute()", "Successfully applied systematic: %s", m_asgElEffCorrTool_elSF_PID->appliedSystematics().name().c_str()); }
 
     // and now apply efficiency SF!
     unsigned int idx(0);
@@ -403,8 +404,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        }
 
        // skip electron if outside acceptance for SF calculation
-       if ( el_itr->pt() < 7e3 ) {
-         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance", idx); }
+       if ( el_itr->pt() < 15e3 ) {
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently > 15 GeV )", idx); }
          continue;
        }
        if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
@@ -416,7 +417,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        // obtain efficiency SF
        //
        double SF(0.0);
-       if ( m_asgElectronEfficiencyCorrectionTool->getEfficiencyScaleFactor( *el_itr, SF ) != CP::CorrectionCode::Ok ) {
+       if ( m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, SF ) != CP::CorrectionCode::Ok ) {
          Error( "execute()", "Problem in getEfficiencyScaleFactor");
          return EL::StatusCode::FAILURE;
        }
