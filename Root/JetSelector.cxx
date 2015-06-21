@@ -642,12 +642,19 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   } // m_doJVF
 
   // JVT pileup cut
-  if ( m_doJVT ){
-    //std::cout << "pt/eta/JVT : " << jet->pt() << "/" << jet->eta() << "/" << jet->getAttribute< float >( "Jvt" ) << std::endl;
+  //
+  if ( m_doJVT ) {
+    
+    if ( m_debug ) {
+      if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { Info("passCuts()", " pt/eta = %2f/%2f ", jet->pt() , jet->eta() ); }
+    }
+      
     if ( jet->pt() < m_pt_max_JVT ) {
       xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
       if ( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVT ){
+        if ( m_debug ) { Info("passCuts()", " JVT = %2f ", jet->getAttribute< float >( "Jvt" ) ); }
         if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
+	  if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - cutting this jet!!", m_JVTCut ); }
           return 0;
         }
       }
