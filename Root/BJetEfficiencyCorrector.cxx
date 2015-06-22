@@ -299,17 +299,16 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       // obtain efficiency SF
       //
       float SF(0.0);
-      if( fabs(jet_itr->eta()) < 2.5){
-	if( m_BJetEffSFTool->getScaleFactor( *jet_itr, SF ) != CP::CorrectionCode::Ok){
-	  Info( "execute()", "Problem in getEfficiencyScaleFactor");
-	  //return EL::StatusCode::FAILURE;
-	}else{
+      if ( fabs(jet_itr->eta()) < 2.5 ) {
+	if ( m_BJetEffSFTool->getScaleFactor( *jet_itr, SF ) != CP::CorrectionCode::Ok ) {
+	  if ( m_debug ) { Warning( "execute()", "Problem in getEfficiencyScaleFactor"); }
 	  SF = -2;
+	  //return EL::StatusCode::FAILURE;
 	}
-      }else{
+      } else {
 	SF = -1;
       }
-      if(m_debug) Info( "execute()", "\t efficiency SF = %g", SF );
+      if ( m_debug ) { Info( "execute()", "\t efficiency SF = %g", SF ); }
 
       //
       // Add it to vector
