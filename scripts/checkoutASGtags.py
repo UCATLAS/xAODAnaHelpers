@@ -23,26 +23,7 @@ args = parser.parse_args()
 
 print "using ASG version {0}".format(args.version)
 
-dict_pkg = {'2.1.29': ["ElectronEfficiencyCorrection"],
-            '2.1.30': ["atlasoff/Reconstruction/egamma/egammaMVACalib/tags/egammaMVACalib-01-00-43",
-                       "atlasoff/Control/xAODRootAccess/tags/xAODRootAccess-00-01-04",
-                       "ElectronEfficiencyCorrection"],
-            '2.1.31': ["atlasoff/Reconstruction/egamma/egammaMVACalib/tags/egammaMVACalib-01-00-43",
-                       "atlasoff/Control/xAODRootAccess/tags/xAODRootAccess-00-01-04",
-                       "atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
-                       "ElectronEfficiencyCorrection"],
-            '2.1.32': ["atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
-                       "ElectronEfficiencyCorrection"],
-            '2.3.12': ["atlasoff/PhysicsAnalysis/ElectronPhotonID/ElectronEfficiencyCorrection/tags/ElectronEfficiencyCorrection-00-01-20",
-                       "atlasoff/PhysicsAnalysis/MuonID/MuonSelectorTools/tags/MuonSelectorTools-00-05-10",
-                       "atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-00-19",
-                       "atlasoff/PhysicsAnalysis/D3PDTools/EventLoop/tags/EventLoop-00-01-09",
-                       "atlasoff/Reconstruction/MET/METUtilities/tags/METUtilities-00-01-39"],
-            '2.3.13': ["atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-41",
-                       "atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-00-19",
-                       "atlasoff/PhysicsAnalysis/D3PDTools/EventLoop/tags/EventLoop-00-01-09",
-                       "atlasoff/Reconstruction/MET/METUtilities/tags/METUtilities-00-01-39"],
-            '2.3.14': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-25",
+dict_pkg = {'2.3.14': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-25",
                        "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20"],
             '2.3.15': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-25",
                        "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20"]
@@ -59,7 +40,7 @@ for pkg in packages_to_checkout:
   print "checking out package: {0}".format(pkg)
   subprocess.Popen(['cd $ROOTCOREBIN/.. && pwd && rc checkout_pkg {0}'.format(pkg) ], env=rc_env, shell=True).wait()
 
-packages_to_patch = ["ElectronEfficiencyCorrection"]
+packages_to_patch = []
 
 print "applying svn patches..."
 for pkg in packages_to_patch:

@@ -163,16 +163,16 @@ EL::StatusCode  JetSelector :: configure ()
     m_rapidity_min            = config->GetValue("rapidityMin", m_rapidity_min);
     m_truthLabel 	      = config->GetValue("TruthLabel",   m_truthLabel);
 
-    m_doJVF 		              = config->GetValue("DoJVF",       m_doJVF);
-    m_doBTagCut		            = config->GetValue("DoBTagCut",   m_doBTagCut);
-    m_pt_max_JVF 	            = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
-    m_eta_max_JVF 	          = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
-    m_JVFCut 		              = config->GetValue("JVFCut",      m_JVFCut);
+    m_doJVF 		      = config->GetValue("DoJVF",       m_doJVF);
+    m_doBTagCut		      = config->GetValue("DoBTagCut",   m_doBTagCut);
+    m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
+    m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
+    m_JVFCut 		      = config->GetValue("JVFCut",      m_JVFCut);
 
-    m_doJVT 		              = config->GetValue("DoJVT",       m_doJVT);
-    m_pt_max_JVT 	            = config->GetValue("pTMaxJVT",    m_pt_max_JVT);
-    m_eta_max_JVT 	          = config->GetValue("etaMaxJVT",   m_eta_max_JVT);
-    m_JVTCut 		              = config->GetValue("JVTCut",      m_JVTCut);
+    m_doJVT 		      = config->GetValue("DoJVT",       m_doJVT);
+    m_pt_max_JVT 	      = config->GetValue("pTMaxJVT",    m_pt_max_JVT);
+    m_eta_max_JVT 	      = config->GetValue("etaMaxJVT",   m_eta_max_JVT);
+    m_JVTCut 		      = config->GetValue("JVTCut",      m_JVTCut);
 
     // Btag quality
     m_btag_veryloose          = config->GetValue("BTagVeryLoose",   m_btag_veryloose);
@@ -247,7 +247,6 @@ EL::StatusCode  JetSelector :: configure ()
   //if ( m_btag_medium    ) { m_btagCut = 0.7892; }
   //if ( m_btag_tight     ) { m_btagCut = 0.9827; }
   //}
-
 
   if ( m_decorateSelectedObjects ) {
     Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
@@ -643,12 +642,19 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   } // m_doJVF
 
   // JVT pileup cut
-  if ( m_doJVT ){
-    //std::cout << "pt/eta/JVT : " << jet->pt() << "/" << jet->eta() << "/" << jet->getAttribute< float >( "Jvt" ) << std::endl;
+  //
+  if ( m_doJVT ) {
+    
+    if ( m_debug ) {
+      if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { Info("passCuts()", " pt/eta = %2f/%2f ", jet->pt() , jet->eta() ); }
+    }
+      
     if ( jet->pt() < m_pt_max_JVT ) {
       xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
       if ( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVT ){
+        if ( m_debug ) { Info("passCuts()", " JVT = %2f ", jet->getAttribute< float >( "Jvt" ) ); }
         if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
+	  if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - cutting this jet!!", m_JVTCut ); }
           return 0;
         }
       }
@@ -683,10 +689,10 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       //
       // Decorate the Jets
       //
-      jet->auxdecor<char>("BTagVeryLoose") = static_cast<char>( myBTag->MV1_discriminant() > m_btag_veryloose_cut );
-      jet->auxdecor<char>("BTagLoose")     = static_cast<char>( myBTag->MV1_discriminant() > m_btag_loose_cut     );
-      jet->auxdecor<char>("BTagMedium")    = static_cast<char>( myBTag->MV1_discriminant() > m_btag_medium_cut    );
-      jet->auxdecor<char>("BTagTight")     = static_cast<char>( myBTag->MV1_discriminant() > m_btag_tight_cut     );
+      jet->auxdecor<char>("BTagVeryLoose") = static_cast<char>( discriminant > m_btag_veryloose_cut );
+      jet->auxdecor<char>("BTagLoose")     = static_cast<char>( discriminant > m_btag_loose_cut     );
+      jet->auxdecor<char>("BTagMedium")    = static_cast<char>( discriminant > m_btag_medium_cut    );
+      jet->auxdecor<char>("BTagTight")     = static_cast<char>( discriminant > m_btag_tight_cut     );
 
     }
   }

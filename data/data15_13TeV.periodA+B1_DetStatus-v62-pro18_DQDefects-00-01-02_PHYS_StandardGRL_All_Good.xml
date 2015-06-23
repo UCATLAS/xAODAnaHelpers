@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!DOCTYPE LumiRangeCollection SYSTEM "http://atlas-runquery.cern.ch/LumiRangeCollection.dtd">
+<!-- This document was created by goodruns: http://pypi.python.org/pypi/goodruns/ on 2015-06-22 at 01:21:26 -->
+<LumiRangeCollection>
+  <NamedLumiRange>
+    <Name>PHYS_StandardGRL_All_Good</Name>
+    <Version>2.1</Version>
+    <LumiBlockCollection>
+      <Run>266904</Run>
+      <LBRange Start="423" End="531"/>
+      <LBRange Start="537" End="612"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>266919</Run>
+      <LBRange Start="107" End="364"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267167</Run>
+      <LBRange Start="197" End="197"/>
+      <LBRange Start="199" End="209"/>
+      <LBRange Start="211" End="231"/>
+      <LBRange Start="233" End="268"/>
+      <LBRange Start="270" End="276"/>
+      <LBRange Start="278" End="336"/>
+      <LBRange Start="338" End="350"/>
+      <LBRange Start="352" End="353"/>
+      <LBRange Start="355" End="403"/>
+      <LBRange Start="405" End="444"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267358</Run>
+      <LBRange Start="89" End="98"/>
+      <LBRange Start="100" End="106"/>
+      <LBRange Start="109" End="116"/>
+      <LBRange Start="118" End="127"/>
+      <LBRange Start="129" End="144"/>
+      <LBRange Start="146" End="151"/>
+      <LBRange Start="153" End="162"/>
+      <LBRange Start="164" End="174"/>
+      <LBRange Start="176" End="177"/>
+      <LBRange Start="179" End="181"/>
+      <LBRange Start="183" End="196"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267359</Run>
+      <LBRange Start="177" End="219"/>
+      <LBRange Start="221" End="238"/>
+      <LBRange Start="240" End="250"/>
+      <LBRange Start="254" End="257"/>
+      <LBRange Start="259" End="263"/>
+      <LBRange Start="266" End="266"/>
+      <LBRange Start="268" End="268"/>
+      <LBRange Start="270" End="271"/>
+      <LBRange Start="273" End="273"/>
+      <LBRange Start="275" End="278"/>
+      <LBRange Start="280" End="300"/>
+      <LBRange Start="302" End="304"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267360</Run>
+      <LBRange Start="294" End="295"/>
+      <LBRange Start="297" End="381"/>
+      <LBRange Start="421" End="443"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267367</Run>
+      <LBRange Start="328" End="399"/>
+      <LBRange Start="401" End="401"/>
+      <LBRange Start="406" End="426"/>
+      <LBRange Start="431" End="443"/>
+      <LBRange Start="446" End="500"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267385</Run>
+      <LBRange Start="238" End="377"/>
+      <LBRange Start="379" End="588"/>
+      <LBRange Start="591" End="908"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267599</Run>
+      <LBRange Start="287" End="1073"/>
+      <LBRange Start="1088" End="1110"/>
+      <LBRange Start="1112" End="1129"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267638</Run>
+      <LBRange Start="307" End="949"/>
+    </LumiBlockCollection>
+    <LumiBlockCollection>
+      <Run>267639</Run>
+      <LBRange Start="131" End="167"/>
+      <LBRange Start="177" End="184"/>
+      <LBRange Start="186" End="198"/>
+      <LBRange Start="200" End="209"/>
+      <LBRange Start="212" End="418"/>
+      <LBRange Start="420" End="658"/>
+    </LumiBlockCollection>
+  </NamedLumiRange>
+</LumiRangeCollection>

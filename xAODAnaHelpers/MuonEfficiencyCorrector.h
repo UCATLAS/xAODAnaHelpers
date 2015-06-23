@@ -11,6 +11,7 @@
 // external tools include(s):
 #include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
 #include "MuonEfficiencyCorrections/MuonTriggerScaleFactors.h"
+#include "MuonSelectorTools/MuonSelectionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -61,8 +62,9 @@ private:
   std::vector<CP::SystematicSet> m_systListTrig; //!
 
   // tools
-  CP::MuonEfficiencyScaleFactors  *m_MuonEffSFTool;  //!
-  CP::MuonTriggerScaleFactors     *m_MuonTrigSFTool; //!
+  CP::MuonSelectionTool           *m_muonSelectionTool; //!
+  CP::MuonEfficiencyScaleFactors  *m_muonEffSFTool;     //!
+  CP::MuonTriggerScaleFactors     *m_muonTrigSFTool;    //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

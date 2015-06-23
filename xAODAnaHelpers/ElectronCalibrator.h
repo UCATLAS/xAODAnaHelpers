@@ -34,6 +34,9 @@ public:
   				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
   bool m_runSysts;
   bool m_runAllSyst;
+  
+  std::string m_esModel;
+  std::string m_decorrelationModel;
 
 private:
   int m_numEvent;         //!

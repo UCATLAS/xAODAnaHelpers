@@ -29,8 +29,10 @@ public:
   			             // upstream algo (e.g., the SC containers with calibration systematics)
   bool m_runAllSyst;
   std::string m_outputSystNames;
-  std::string m_corrFileName1;
-  //std::string m_corrFileName2;
+  
+  std::string m_corrFileNamePID;
+  std::string m_corrFileNameReco;
+  std::string m_corrFileNameTrig;  
 
 private:
   int m_numEvent;         //!
@@ -39,7 +41,7 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  AsgElectronEfficiencyCorrectionTool  *m_asgElectronEfficiencyCorrectionTool; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

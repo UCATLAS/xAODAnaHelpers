@@ -15,6 +15,11 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
+namespace Trig {
+  class TrigDecisionTool;
+  class TrigMuonMatching;
+}
+
 class MuonSelector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
@@ -52,6 +57,12 @@ public:
   float          m_CaloBasedIsoCut;
   std::string    m_TrackBasedIsoType;
   float          m_TrackBasedIsoCut;
+  // trigger matching
+  bool           m_useSingleMuTrig;
+  std::string    m_singleMuTrigChain;
+  bool           m_useDiMuTrig;
+  std::string    m_diMuTrigChain;
+  float          m_minDeltaR;
 
   std::string    m_passAuxDecorKeys;  
   std::string    m_failAuxDecorKeys;  
@@ -74,6 +85,9 @@ private:
   // tools
   CP::IsolationSelectionTool         *m_IsolationSelectionTool;  //! /* MC15 tool for isolation*/
   CP::MuonSelectionTool              *m_muonSelectionTool;       //!
+
+  Trig::TrigDecisionTool*      m_trigDecTool;       //!
+  Trig::TrigMuonMatching*      m_trigMuonMatchTool; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

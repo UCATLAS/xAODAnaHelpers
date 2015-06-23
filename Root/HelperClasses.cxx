@@ -28,8 +28,6 @@ namespace HelperClasses{
     std::string Loose("Loose");                 enumMap.insert(std::make_pair(Loose      , LikeEnum::Loose));
     std::string Medium("Medium");               enumMap.insert(std::make_pair(Medium     , LikeEnum::Medium));
     std::string Tight("Tight");                 enumMap.insert(std::make_pair(Tight      , LikeEnum::Tight));
-    std::string VeryTight("VeryTight");         enumMap.insert(std::make_pair(VeryTight  , LikeEnum::VeryTight));
-    std::string LooseRelaxed("LooseRelaxed");   enumMap.insert(std::make_pair(LooseRelaxed      , LikeEnum::LooseRelaxed));
   }
 
   /* parser for electron cut-based PID enum */
@@ -113,6 +111,7 @@ namespace HelperClasses{
 
   void MuonInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_trigger       = parse("trigger");
     m_isolation     = parse("isolation");
     m_quality       = parse("quality");
     m_trackparams   = parse("trackparams");
@@ -129,6 +128,7 @@ namespace HelperClasses{
 
   void JetInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_substructure  = parse("substructure");
     m_rapidity      = parse("rapidity");
     m_clean         = parse("clean");
     m_energy        = parse("energy");

@@ -93,7 +93,7 @@ ElectronSelector :: ElectronSelector () :
   m_eta_max                 = 1e8;
   m_vetoCrack               = true;
   m_d0_max                  = 1e8;
-  m_d0sig_max     	      = 1e8;
+  m_d0sig_max     	    = 1e8;
   m_z0sintheta_max          = 1e8;
 
   m_doAuthorCut             = true;
@@ -215,8 +215,7 @@ EL::StatusCode  ElectronSelector :: configure ()
   if ( m_LHOperatingPoint != "VeryLoose" &&
        m_LHOperatingPoint != "Loose"     &&
        m_LHOperatingPoint != "Medium"    &&
-       m_LHOperatingPoint != "Tight"     &&
-       m_LHOperatingPoint != "VeryTight"  ) {
+       m_LHOperatingPoint != "Tight"     ) {
     Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
     return EL::StatusCode::FAILURE;
   }
@@ -343,31 +342,48 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_numObjectPass = 0;
 
   // tell the selector tools where to find configuration files
-
+  //
   std::string confDir = "ElectronPhotonSelectorTools/offline/" +  m_confDirPID + "/";
 
   // initialise PID tool(s) using classes defined in ParticlePIDManager.h
-
+  //
   // if not using cut-based PID, make sure all the decorations will be set ... by choosing the loosest WP!
+  //
   std::string cutbasedWP = ( m_doCutBasedPIDcut ) ? m_CutBasedOperatingPoint : "IsEMLoose";
-  m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP );
-  if ( m_debug ) { Info("initialize()", "Selected cut-based WP: %s", (m_el_CutBased_PIDManager->getSelectedWP()).c_str() ); }
+  m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP , m_debug );
+  
+  if  ( m_doCutBasedPIDcut ) {
+    if ( m_debug ) { 
+      Info("initialize()", "Cutting on Electron Cut-Based PID! \n ********************" ); 
+      Info("initialize()", "Selected cut-based WP: %s", (m_el_CutBased_PIDManager->getSelectedWP()).c_str() );
+    }
+  } else {
+    if ( m_debug ) { Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decison (pass/not pass)!" ); }
+  }
+  
   RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupTools( confDir, m_CutBasedConfigYear ), "Failed to properly setup ElectronCutBasedPIDManager." );
 
   // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
+  //
   std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "VeryLoose";
-  m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP );
+  m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, m_debug );
+  
+  if  ( m_doLHPIDcut ) {
+    if ( m_debug ) { 
+       Info("initialize()", "Cutting on Electron Likelihood PID! \n ********************" ); 
+       Info("initialize()", "\t Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() ); 
+    }
+  } else {
+    if ( m_debug ) { Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decison (pass/not pass)!" ); }
+  }
+  
   if ( m_debug ) { Info("initialize()", "Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() ); }
   RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupTools( confDir, m_LHConfigYear ), "Failed to properly setup ElectronLHPIDManager." );
 
   // initialise IsolationSelectionTool ( and ElectronIsolationTool, for DC14 )
-
-  std::string iso_tool_name = "ElectronIsolationSelectionTool_";
-  if ( m_IsoWP != "CutBasedDC14" ) { iso_tool_name.erase(0,8); }
-  iso_tool_name += m_name;
-
-  m_ElectronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( iso_tool_name.c_str() );
-  m_IsolationSelectionTool         = new CP::IsolationSelectionTool( iso_tool_name.c_str() );
+  //
+  m_ElectronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( "ElectronIsolationSelectionTool" );
+  m_IsolationSelectionTool         = new CP::IsolationSelectionTool( "IsolationSelectionTool" );
 
   if ( m_IsoWP == "CutBasedDC14" ) {
 
@@ -410,10 +426,12 @@ EL::StatusCode ElectronSelector :: execute ()
   if ( m_debug ) { Info("execute()", "Applying Electron Selection... "); }
 
   // retrieve event
+  //
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
 
   // MC event weight
+  //
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
@@ -425,15 +443,18 @@ EL::StatusCode ElectronSelector :: execute ()
   m_numEvent++;
 
   // did any collection pass the cuts?
+  //
   bool eventPass(false);
   bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal
   const xAOD::ElectronContainer* inElectrons(nullptr);
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
+  //
   if ( m_inputAlgoSystNames.empty() ) {
 
     // this will be the collection processed - no matter what!!
+    //
     RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
 
     // create output container (if requested)
@@ -441,11 +462,13 @@ EL::StatusCode ElectronSelector :: execute ()
     if ( m_createSelectedContainer ) { selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS); }
 
     // find the selected electrons, and return if event passes object selection
+    //
     eventPass = executeSelection( inElectrons, mcEvtWeight, countPass, selectedElectrons );
 
     if ( m_createSelectedContainer) {
       if ( eventPass ) {
         // add ConstDataVector to TStore
+	//
         RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName ), "Failed to store const data container");
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
@@ -456,15 +479,18 @@ EL::StatusCode ElectronSelector :: execute ()
   } else { // get the list of systematics to run over
 
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
+    //
     std::vector< std::string >* systNames(nullptr);
     RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_debug) ,"");
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
+    //
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     if ( m_debug ) { Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) ); }
 
     // loop over systematic sets
+    //
     bool eventPassThisSyst(false);
     for ( auto systName : *systNames ) {
 
@@ -473,20 +499,24 @@ EL::StatusCode ElectronSelector :: execute ()
       RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName + systName, m_event, m_store, m_debug) ,"");
 
       // create output container (if requested) - one for each systematic
+      //
       ConstDataVector<xAOD::ElectronContainer>* selectedElectrons(nullptr);
       if ( m_createSelectedContainer ) { selectedElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS); }
 
       // find the selected electrons, and return if event passes object selection
+      //
       eventPassThisSyst = executeSelection( inElectrons, mcEvtWeight, countPass, selectedElectrons );
 
       if ( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
 
       if ( eventPassThisSyst ) {
 	// save the string of syst set under question if event is passing the selection
+	//
 	vecOutContainerNames->push_back( systName );
       }
 
       // if for at least one syst set the event passes selection, this will remain true!
+      //
       eventPass = ( eventPass || eventPassThisSyst );
 
       if ( m_debug ) { Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
@@ -494,9 +524,11 @@ EL::StatusCode ElectronSelector :: execute ()
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
+	  //
           RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName+systName ), "Failed to store const data container");
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
+	  //
           delete selectedElectrons; selectedElectrons = nullptr;
         }
       }
@@ -506,11 +538,13 @@ EL::StatusCode ElectronSelector :: execute ()
     if ( m_debug ) {  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
 
     // record in TStore the list of systematics names that should be considered down stream
+    //
     RETURN_CHECK( "ElectronSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   }
 
   // look what do we have in TStore
+  //
   if ( m_debug ) { m_store->print(); }
 
   if( !eventPass ) {
@@ -536,6 +570,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   for ( auto el_itr : *inElectrons ) { // duplicated of basic loop
 
     // if only looking at a subset of electrons make sure all are decorated
+    //
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
         passSelDecor( *el_itr ) = -1;
@@ -560,6 +595,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   }
 
   // for cutflow: make sure to count passed objects only once (i.e., this flag will be true only for nominal)
+  //
   if ( countPass ) {
     m_numObject     += nObj;
     m_numObjectPass += nPass;
@@ -568,6 +604,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   if ( m_debug ) { Info("execute()", "Initial electrons:%i - Selected electrons: %i", nObj , nPass ); }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
+  //
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
     return false;
   }
@@ -576,6 +613,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   }
 
   // for cutflow: make sure to count passed events only once (i.e., this flag will be true only for nominal)
+  //
   if ( countPass ){
     m_numEventPass++;
     m_weightNumEventPass += mcEvtWeight;
@@ -647,8 +685,6 @@ EL::StatusCode ElectronSelector :: histFinalize ()
 }
 
 int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex ) {
-
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/EGammaIdentificationRun2
 
   float et    = electron->pt();
   float eta   = electron->eta();
@@ -733,25 +769,28 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
 
   // set default values for *this* electron decorations
+  //
   m_el_LH_PIDManager->setDecorations( electron );
 
   // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
-
+  //
   typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
   LHToolsMap myLHTools = m_el_LH_PIDManager->getValidTools();
 
   if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut." ); }
+      if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
       return 0;
   }
 
   for ( auto it : (myLHTools) ) {
-
-    const std::string decorWP = it.second->getOperatingPointName( );
-
-    if ( m_debug ) { Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() ); }
-
+    
+    const std::string decorWP =  "LH" + it.first;  
+    if ( m_debug ) {
+      Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
+      Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) ); 
+    }
     electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
+    
   }
 
   //
@@ -759,10 +798,11 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
 
   // set default values for *this* electron decorations
+  //
   m_el_CutBased_PIDManager->setDecorations( electron );
 
   // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
-
+  //
   typedef std::multimap< std::string, AsgElectronIsEMSelector* > CutBasedToolsMap;
   CutBasedToolsMap myCutBasedTools = m_el_CutBased_PIDManager->getValidTools();
 
@@ -775,12 +815,16 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
     const std::string decorWP = it.second->getOperatingPointName( );
 
-    if ( m_debug ) { Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() ); }
-
+    if ( m_debug ) { 
+      Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() ); 
+      Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) ); 
+    }
+    
     electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
   }
 
   // isolation
+  //
   static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
   bool passIso = ( m_IsolationSelectionTool->accept( *electron ) );
   isIsoDecor( *electron ) = ( passIso ) ? 1 : 0;
