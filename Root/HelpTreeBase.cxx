@@ -246,7 +246,7 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
     // vector of strings for trigger names which fired
     m_tree->Branch("passedTriggers",      &m_passTriggers    );
   }
-  
+
   //this->AddTriggerUser();
 }
 
@@ -263,7 +263,7 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
   if ( m_trigInfoSwitch->m_basic ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_basic"); }
-  
+
     static SG::AuxElement::ConstAccessor< int > passAny("passAny");
     if( passAny.isAvailable( *eventInfo ) ) { m_passAny = passAny( *eventInfo ); }
     else { m_passAny = -999; }
@@ -308,17 +308,17 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
 
 // Clear Trigger
 void HelpTreeBase::ClearTrigger() {
-  
+
   m_passAny = -999;
   m_passL1  = -999;
   m_passHLT = -999;
-  
+
   m_masterKey = 0;
   m_L1PSKey   = 0;
   m_HLTPSKey  = 0;
-  
+
   m_passTriggers.clear();
-  
+
 }
 
 /*********************
@@ -354,11 +354,11 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     m_tree->Branch("muon_eta", &m_muon_eta);
     m_tree->Branch("muon_m",   &m_muon_m);
   }
-  
+
   if ( m_muInfoSwitch->m_trigger ){
     m_tree->Branch("muon_isTrigMatched", &m_muon_isTrigMatched);
   }
-  
+
   if ( m_muInfoSwitch->m_isolation ) {
     m_tree->Branch("muon_isIsolated",    &m_muon_isIsolated);
   }
@@ -519,11 +519,11 @@ void HelpTreeBase::ClearMuons() {
     m_muon_phi.clear();
     m_muon_m.clear();
   }
-  
+
   if ( m_muInfoSwitch->m_trigger ) {
      m_muon_isTrigMatched.clear();
   }
-  
+
   if ( m_muInfoSwitch->m_isolation ) {
     m_muon_isIsolated.clear();
   }
@@ -839,10 +839,10 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_LeadingClusterSecondLambda",    &m_jet_LeadingClusterSecondLambda  	  );
     m_tree->Branch("jet_LeadingClusterCenterLambda",    &m_jet_LeadingClusterCenterLambda  	  );
     m_tree->Branch("jet_LeadingClusterSecondR",         &m_jet_LeadingClusterSecondR  	      );
-    m_tree->Branch("jet_clean_VeryLooseBad",            &m_jet_clean_VeryLooseBad             );
-    m_tree->Branch("jet_clean_LooseBad",                &m_jet_clean_LooseBad                 );
-    m_tree->Branch("jet_clean_MediumBad",               &m_jet_clean_MediumBad                );
-    m_tree->Branch("jet_clean_TightBad",                &m_jet_clean_TightBad                 );
+    m_tree->Branch("jet_clean_passLooseBad",            &m_jet_clean_passLooseBad             );
+    m_tree->Branch("jet_clean_passLooseBadUgly",        &m_jet_clean_passLooseBadUgly         );
+    m_tree->Branch("jet_clean_passTightBad",            &m_jet_clean_passTightBad             );
+    m_tree->Branch("jet_clean_passTightBadUgly",        &m_jet_clean_passTightBadUgly         );
   }
 
   if ( m_jetInfoSwitch->m_energy ) {
@@ -1101,25 +1101,25 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         m_jet_LeadingClusterSecondR.push_back( leadClusSecondR( *jet_itr ) );
       } else { m_jet_LeadingClusterSecondR.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<char> clean_VeryLooseBad ("clean_VeryLooseBad");
-      if ( clean_VeryLooseBad.isAvailable( *jet_itr ) ) {
-        m_jet_clean_VeryLooseBad.push_back( clean_VeryLooseBad( *jet_itr ) );
-      } else { m_jet_clean_VeryLooseBad.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor<char> clean_passLooseBad ("clean_passLooseBad");
+      if ( clean_passLooseBad.isAvailable( *jet_itr ) ) {
+        m_jet_clean_passLooseBad.push_back( clean_passLooseBad( *jet_itr ) );
+      } else { m_jet_clean_passLooseBad.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<char> clean_LooseBad ("clean_LooseBad");
-      if ( clean_LooseBad.isAvailable( *jet_itr ) ) {
-        m_jet_clean_LooseBad.push_back( clean_LooseBad( *jet_itr ) );
-      } else { m_jet_clean_LooseBad.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
+      if ( clean_passLooseBadUgly.isAvailable( *jet_itr ) ) {
+        m_jet_clean_passLooseBadUgly.push_back( clean_passLooseBadUgly( *jet_itr ) );
+      } else { m_jet_clean_passLooseBadUgly.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<char> clean_MediumBad ("clean_MediumBad");
-      if ( clean_MediumBad.isAvailable( *jet_itr ) ) {
-        m_jet_clean_MediumBad.push_back( clean_MediumBad( *jet_itr ) );
-      } else { m_jet_clean_MediumBad.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor<char> clean_passTightBad ("clean_passTightBad");
+      if ( clean_passTightBad.isAvailable( *jet_itr ) ) {
+        m_jet_clean_passTightBad.push_back( clean_passTightBad( *jet_itr ) );
+      } else { m_jet_clean_passTightBad.push_back( -999 ); }
 
-      static SG::AuxElement::ConstAccessor<char> clean_TightBad ("clean_TightBad");
-      if ( clean_TightBad.isAvailable( *jet_itr ) ) {
-        m_jet_clean_TightBad.push_back( clean_TightBad( *jet_itr ) );
-      } else { m_jet_clean_TightBad.push_back( -999 ); }
+      static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
+      if ( clean_passTightBadUgly.isAvailable( *jet_itr ) ) {
+        m_jet_clean_passTightBadUgly.push_back( clean_passTightBadUgly( *jet_itr ) );
+      } else { m_jet_clean_passTightBadUgly.push_back( -999 ); }
 
     } // clean
 
@@ -1411,9 +1411,9 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       std::vector<float> e;
       xAOD::JetConstituentVector consVec = jet_itr->getConstituents();
       if( consVec.isValid() ) {
-        // don't use auto since iterator can also set the scale ... 
+        // don't use auto since iterator can also set the scale ...
         // not sure what that does with auto - probably default but just incase
-        // use the example provided in 
+        // use the example provided in
         // http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODJet/xAODJet/JetConstituentVector.h
         xAOD::JetConstituentVector::iterator constit = consVec.begin();
         xAOD::JetConstituentVector::iterator constitE = consVec.end();
@@ -1433,13 +1433,13 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     if ( m_jetInfoSwitch->m_flavTag) {
       const xAOD::BTagging * myBTag = jet_itr->btagging();
       if ( !m_DC14 ) {
-      
+
         static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
         if ( SV0_significance3DAcc.isAvailable(*myBTag) ) { m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }
-        
+
 	m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
         m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
-	
+
       }
       m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
       m_jet_mv1.push_back(     myBTag -> MV1_discriminant()         );
@@ -1696,10 +1696,10 @@ void HelpTreeBase::ClearJets() {
     m_jet_LeadingClusterSecondLambda.clear();
     m_jet_LeadingClusterCenterLambda.clear();
     m_jet_LeadingClusterSecondR.clear();
-    m_jet_clean_VeryLooseBad.clear();
-    m_jet_clean_LooseBad.clear();
-    m_jet_clean_MediumBad.clear();
-    m_jet_clean_TightBad.clear();
+    m_jet_clean_passLooseBad.clear();
+    m_jet_clean_passLooseBadUgly.clear();
+    m_jet_clean_passTightBad.clear();
+    m_jet_clean_passTightBadUgly.clear();
   }
 
   // energy
@@ -1876,7 +1876,7 @@ void HelpTreeBase::AddFatJets(std::string detailStr) {
   this->AddFatJetsUser();
 }
 
-void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) { 
+void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
   this->ClearFatJets();
   this->ClearFatJetsUser();
 
@@ -1937,7 +1937,7 @@ void HelpTreeBase::ClearEvent() {
   m_xf1 = m_xf2 = -999;
 
   //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
-  
+
   // CaloCluster
   if( m_eventInfoSwitch->m_caloClus){
     m_caloCluster_pt.clear();
@@ -2017,7 +2017,7 @@ void HelpTreeBase::ClearTaus() {
 
 /*********************
  *
- *     MET  
+ *     MET
  *
  ********************/
 void HelpTreeBase::AddMET( const std::string detailStr ) {
@@ -2071,7 +2071,7 @@ void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
 
 // Clear Trigger
 void HelpTreeBase::ClearMET() {
-  
+
    m_metFinal     = m_metFinalPhi     = -999;
    m_metEle       = m_metElePhi       = -999;
    m_metGamma     = m_metGammaPhi     = -999;

@@ -57,7 +57,7 @@ public:
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
- 
+
   xAOD::TEvent* m_event;
 
   // control which branches are filled
@@ -70,7 +70,7 @@ public:
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
   HelperClasses::METInfoSwitch*        m_metInfoSwitch;
-  
+
   InDet::InDetTrackSelectionTool * m_trkSelTool;
 
   std::string                  m_triggerSelection;
@@ -148,10 +148,10 @@ public:
   virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                     { return; };
   virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )               { return; };
   virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )                  { return; };
-  
+
   virtual void FillTriggerUser()                                            { return; };
   virtual void FillJetTriggerUser()                                         { return; };
-  
+
 protected:
 
   TTree* m_tree;
@@ -194,7 +194,7 @@ protected:
   std::vector<float> m_caloCluster_eta;
   std::vector<float> m_caloCluster_phi;
   std::vector<float> m_caloCluster_e;
-  
+
   // trigger
   int m_passAny;
   int m_passL1;
@@ -204,7 +204,7 @@ protected:
   unsigned int m_HLTPSKey;
 
   std::vector<std::string> m_passTriggers;
-  
+
   // jet trigger
 
   // jets
@@ -233,10 +233,10 @@ protected:
   std::vector<float> m_jet_LeadingClusterSecondLambda;
   std::vector<float> m_jet_LeadingClusterCenterLambda;
   std::vector<float> m_jet_LeadingClusterSecondR;
-  std::vector<int> m_jet_clean_VeryLooseBad;
-  std::vector<int> m_jet_clean_LooseBad;
-  std::vector<int> m_jet_clean_MediumBad;
-  std::vector<int> m_jet_clean_TightBad;
+  std::vector<int> m_jet_clean_passLooseBad;
+  std::vector<int> m_jet_clean_passLooseBadUgly;
+  std::vector<int> m_jet_clean_passTightBad;
+  std::vector<int> m_jet_clean_passTightBadUgly;
 
   // energy
   std::vector<float> m_jet_HECf;
@@ -380,7 +380,7 @@ protected:
   std::vector<float> m_muon_eta;
   std::vector<float> m_muon_phi;
   std::vector<float> m_muon_m;
-  
+
   // trigger
   std::vector<int>   m_muon_isTrigMatched;
 
@@ -468,7 +468,7 @@ protected:
   std::vector<float> m_tau_m;
   std::vector<int>   m_tau_ntrk;
   std::vector<float> m_tau_charge;
-  
+
   // met
   float m_metFinal;     float m_metFinalPhi;
   float m_metEle;       float m_metElePhi;

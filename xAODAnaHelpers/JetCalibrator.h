@@ -35,6 +35,7 @@ public:
   std::string m_calibSequence;
   std::string m_jetCalibCutLevel;
   bool m_saveAllCleanDecisions;
+  bool m_jetCleanUgly;
   std::string m_uncertConfig;
   std::string m_uncertMCType;
   bool m_redoJVT;
@@ -94,7 +95,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  
+
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetCalibrator, 1);

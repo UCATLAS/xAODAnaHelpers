@@ -76,8 +76,9 @@ JetCalibrator :: JetCalibrator () :
   m_calibConfigData         = "JES_MC15Prerecommendation_April2015.config";
 
   // CONFIG parameters for JetCleaningTool
-  m_jetCalibCutLevel        = "MediumBad";
+  m_jetCalibCutLevel        = "LooseBad";
   m_saveAllCleanDecisions   = false;
+  m_jetCleanUgly            = false;
 
   // CONFIG parameters for JetUncertaintiesTool
   m_uncertConfig            = "";
@@ -127,6 +128,7 @@ EL::StatusCode  JetCalibrator :: configure ()
 
     // CONFIG parameters for JetCleaningTool
     m_jetCalibCutLevel        = config->GetValue("JetCalibCutLevel",        m_jetCalibCutLevel.c_str());
+    m_jetCleanUgly            = config->GetValue("JetCleanUgly",            m_jetCleanUgly );
     m_saveAllCleanDecisions   = config->GetValue("SaveAllCleanDecisions",   m_saveAllCleanDecisions);
 
     // CONFIG parameters for JetUncertaintiesTool
@@ -300,16 +302,27 @@ EL::StatusCode JetCalibrator :: initialize ()
   std::string jc_tool_name = std::string("JetCleaning_") + m_name;
   m_jetCleaning = new JetCleaningTool( jc_tool_name.c_str() );
   RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCalibCutLevel), "");
+  if (m_jetCleanUgly){
+    RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "DoUgly", true), "");
+  }
   RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "JetCleaning Interface succesfully initialized!");
 
   if( m_saveAllCleanDecisions ){
-    //std::string m_decisionNames[] = {"VeryLooseBad", "LooseBad", "MediumBad", "TightBad"};
-    m_decisionNames.push_back( "VeryLooseBad" );  m_decisionNames.push_back( "LooseBad" );
-    m_decisionNames.push_back( "MediumBad" );     m_decisionNames.push_back( "TightBad" );
+    //std::string m_decisionNames[] = {"LooseBad", TightBad"};
+    m_decisionNames.push_back( "LooseBad" );
+    m_decisionNames.push_back( "LooseBadUgly" );
+    m_decisionNames.push_back( "TightBad" );
+    m_decisionNames.push_back( "TightBadUgly" );
     for(unsigned int i=0; i < m_decisionNames.size() ; ++i){
-      m_allJetCleaningTools.push_back( new JetCleaningTool((jc_tool_name+"_"+m_decisionNames.at(i)).c_str()) );
-      RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at(i)->setProperty( "CutLevel", m_decisionNames.at(i)), "");
-      RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at(i)->initialize(), ("JetCleaning Interface "+m_decisionNames.at(i)+" succesfully initialized!").c_str());
+      m_allJetCleaningTools.push_back( new JetCleaningTool((jc_tool_name+"_pass"+m_decisionNames.at(i)).c_str()) );
+      if( m_decisionNames.at(i).find("Ugly") != std::string::npos ){
+        std::cout << "adding for " << m_decisionNames.at(i).substr(0,m_decisionNames.at(i).size()-4) << std::endl;
+        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "CutLevel", m_decisionNames.at(i).substr(0,m_decisionNames.at(i).size()-4) ), "");
+        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "DoUgly", true ), "");
+      }else{
+        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "CutLevel", m_decisionNames.at(i)), "");
+      }
+      RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->initialize(), ("JetCleaning Interface "+m_decisionNames.at(i)+" succesfully initialized!").c_str());
     }
   }
 
@@ -436,24 +449,24 @@ EL::StatusCode JetCalibrator :: execute ()
       // decorate with cleaning decision
       static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
       const xAOD::Jet* jetToClean = jet_itr;
-      
+
       if(m_cleanParent){
-	ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
-	if(!el_parent.isValid()){
-	  Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
-	} else {
-	  jetToClean = *el_parent;
-	}
+	      ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
+	      if(!el_parent.isValid()){
+	        Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
+	      } else {
+	        jetToClean = *el_parent;
+	      }
       }
 
       isCleanDecor(*jet_itr) = m_jetCleaning->accept(*jetToClean);
 
       if( m_saveAllCleanDecisions ){
         for(unsigned int i=0; i < m_allJetCleaningTools.size() ; ++i){
-          jet_itr->auxdata< char >(("clean_"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept(*jetToClean);
+          jet_itr->auxdata< char >(("clean_pass"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept(*jetToClean);
         }
       }
-    }
+    } //end cleaning decision
 
     if ( !xAOD::setOriginalObjectLink(*inJets, *(calibJetsSC.first)) ) {
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
