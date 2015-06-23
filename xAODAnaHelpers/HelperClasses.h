@@ -108,6 +108,7 @@ namespace HelperClasses {
 
   struct JetInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_substructure;
     bool m_rapidity;
     bool m_clean;
     bool m_energy;

@@ -1854,10 +1854,72 @@ void HelpTreeBase::ClearJets() {
  ********************/
 
 void HelpTreeBase::AddFatJets(std::string detailStr) {
+
+  if(m_debug) Info("AddFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
+
   m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
+
+  // always
+  m_tree->Branch("nfatjets",    &m_nfatjet,"nfatjets/I");
+
+  if ( m_fatJetInfoSwitch->m_kinematic ) {
+    m_tree->Branch("fatjet_E",   &m_fatjet_E);
+    m_tree->Branch("fatjet_m",   &m_fatjet_m);
+    m_tree->Branch("fatjet_pt",  &m_fatjet_pt);
+    m_tree->Branch("fatjet_phi", &m_fatjet_phi);
+    m_tree->Branch("fatjet_eta", &m_fatjet_eta);
+  }
+  if ( m_fatJetInfoSwitch->m_substructure ) {
+    m_tree->Branch("fatjet_tau32_wta",   &m_fatjet_tau32_wta);
+  }
+
+  this->AddFatJetsUser();
 }
-/* TODO: fatJets */
-void HelpTreeBase::FillFatJets( const xAOD::JetContainer* /*fatJets*/ ) { }
+
+void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) { 
+  this->ClearFatJets();
+  this->ClearFatJetsUser();
+
+  for( auto fatjet_itr : *fatJets ) {
+
+    if( m_fatJetInfoSwitch->m_kinematic ){
+      m_fatjet_pt.push_back ( fatjet_itr->pt() / m_units );
+      m_fatjet_m.push_back ( fatjet_itr->m() / m_units );
+      m_fatjet_eta.push_back( fatjet_itr->eta() );
+      m_fatjet_phi.push_back( fatjet_itr->phi() );
+      m_fatjet_E.push_back  ( fatjet_itr->e() / m_units );
+    }
+    if( m_fatJetInfoSwitch->m_substructure ){
+      static SG::AuxElement::ConstAccessor<float> tau2_wta ("Tau2_wta");
+      static SG::AuxElement::ConstAccessor<float> tau3_wta ("Tau3_wta");
+      if ( tau2_wta.isAvailable( *fatjet_itr ) and tau3_wta.isAvailable( *fatjet_itr ) ) {
+        m_fatjet_tau32_wta.push_back( tau3_wta( *fatjet_itr ) / tau2_wta( *fatjet_itr ) );
+      } else { m_fatjet_tau32_wta.push_back( -999 ); }
+
+    }
+    this->FillFatJetsUser(fatjet_itr);
+
+    m_nfatjet++;
+
+  } // loop over fat jets
+
+}
+
+void HelpTreeBase::ClearFatJets() {
+
+  m_nfatjet = 0;
+  if( m_fatJetInfoSwitch->m_kinematic ){
+    m_fatjet_pt.clear();
+    m_fatjet_eta.clear();
+    m_fatjet_phi.clear();
+    m_fatjet_E.clear();
+    m_fatjet_m.clear();
+  }
+  if( m_fatJetInfoSwitch->m_substructure ){
+    m_fatjet_tau32_wta.clear();
+  }
+
+}
 
 void HelpTreeBase::ClearEvent() {
   m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = -999;
