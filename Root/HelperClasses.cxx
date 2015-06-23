@@ -128,6 +128,7 @@ namespace HelperClasses{
 
   void JetInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_substructure  = parse("substructure");
     m_rapidity      = parse("rapidity");
     m_clean         = parse("clean");
     m_energy        = parse("energy");

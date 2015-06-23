@@ -361,10 +361,16 @@ protected:
 
   // fat jets
   int m_nfatjet;
+
+  // kinematics
   std::vector<float> m_fatjet_pt;
   std::vector<float> m_fatjet_eta;
   std::vector<float> m_fatjet_phi;
+  std::vector<float> m_fatjet_m;
   std::vector<float> m_fatjet_E;
+
+  // substructure
+  std::vector<float> m_fatjet_tau32_wta;
 
   // muons
   int m_nmuon;
