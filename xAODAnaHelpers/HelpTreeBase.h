@@ -94,6 +94,7 @@ public:
   void ClearMuons();
   void ClearElectrons();
   void ClearJets();
+  void ClearFatJets();
   void ClearTaus();
   void ClearMET();
 
@@ -123,6 +124,10 @@ public:
     if(m_debug) Info("AddJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+  virtual void AddFatJetsUser(const std::string detailStr = "")       {
+    if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
+  };
   virtual void AddTausUser(const std::string detailStr = "")       {
     if(m_debug) Info("AddTausUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
@@ -133,6 +138,7 @@ public:
   virtual void ClearMuonsUser()     { return; };
   virtual void ClearElectronsUser() { return; };
   virtual void ClearJetsUser() 	    { return; };
+  virtual void ClearFatJetsUser()   { return; };
   virtual void ClearTausUser() 	    { return; };
 
 
@@ -352,6 +358,13 @@ protected:
   std::vector<float> m_jet_truthPt_CQFinal;
   std::vector<int>   m_jet_truthCount_TausFinal;
   std::vector<float> m_jet_truthPt_TausFinal;
+
+  // fat jets
+  int m_nfatjet;
+  std::vector<float> m_fatjet_pt;
+  std::vector<float> m_fatjet_eta;
+  std::vector<float> m_fatjet_phi;
+  std::vector<float> m_fatjet_E;
 
   // muons
   int m_nmuon;
