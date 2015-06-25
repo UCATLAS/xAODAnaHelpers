@@ -63,6 +63,7 @@ JetSelector :: JetSelector () :
 
   // input container to be read from TEvent or TStore
   m_inContainerName         = "";
+  m_jetScaleType            = "";
 
   // name of algo input container comes from - only if running on syst
   m_inputAlgo               = "";
@@ -130,6 +131,15 @@ EL::StatusCode  JetSelector :: configure ()
 
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
+    m_jetScaleType            = config->GetValue("JetScaleType",  m_jetScaleType.c_str());
+    //If not set, find default from input container name
+    if (m_jetScaleType.size() == 0){
+      if( m_inContainerName.find("EMTopo") != std::string::npos){
+        m_jetScaleType = "JetEMScaleMomentum";
+      }else{
+        m_jetScaleType = "JetConstitScaleMomentum";
+      }
+    }
 
     // name of algo input container comes from - only if running on syst
     m_inputAlgo               = config->GetValue("InputAlgo",   m_inputAlgo.c_str());
@@ -607,10 +617,10 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // detEta
   if ( m_detEta_max != 1e8 ) {
-    if ( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() > m_detEta_max ) { return 0; }
+    if ( ( jet->getAttribute<xAOD::JetFourMom_t>(m_jetScaleType.c_str()) ).eta() > m_detEta_max ) { return 0; }
   }
   if ( m_detEta_min != 1e8 ) {
-    if( ( jet->getAttribute<xAOD::JetFourMom_t>("JetConstitScaleMomentum") ).eta() < m_detEta_min ) { return 0; }
+    if( ( jet->getAttribute<xAOD::JetFourMom_t>(m_jetScaleType.c_str()) ).eta() < m_detEta_min ) { return 0; }
   }
 
   // mass
@@ -632,8 +642,8 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   // JVF pileup cut
   if ( m_doJVF ){
     if ( jet->pt() < m_pt_max_JVF ) {
-      xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
-      if ( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVF ){
+      xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
+      if ( fabs(jetScaleP4.eta()) < m_eta_max_JVF ){
         if ( jet->getAttribute< std::vector<float> >( "JVF" ).at( m_pvLocation ) < m_JVFCut ) {
           return 0;
         }
@@ -650,8 +660,8 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     }
 
     if ( jet->pt() < m_pt_max_JVT ) {
-      xAOD::JetFourMom_t jetConstitScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( "JetConstitScaleMomentum" );
-      if ( fabs(jetConstitScaleP4.eta()) < m_eta_max_JVT ){
+      xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
+      if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
         if ( m_debug ) { Info("passCuts()", " JVT = %2f ", jet->getAttribute< float >( "Jvt" ) ); }
         if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
 	  if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - cutting this jet!!", m_JVTCut ); }
