@@ -70,7 +70,9 @@ BasicEventSelection :: BasicEventSelection () :
   m_GRLExcludeList = "";
 
   // Pileup Reweighting
-  m_doPUreweighting = false;
+  m_doPUreweighting   = false;
+  m_lumiCalcFileNames = "";
+  m_PRWFileNames      = "";
 
   // primary vertex
   m_vertexContainerName = "PrimaryVertices";
@@ -117,6 +119,10 @@ EL::StatusCode BasicEventSelection :: configure ()
 
     // Pileup Reweighting
     m_doPUreweighting   = config->GetValue("DoPileupReweighting", m_doPUreweighting);
+    m_lumiCalcFileNames = config->GetValue("LumiCalcFiles",       m_lumiCalcFileNames);
+    m_PRWFileNames      = config->GetValue("PRWFiles",            m_PRWFileNames);
+
+
 
     // primary vertex
     m_vertexContainerName = config->GetValue("VertexContainer", m_vertexContainerName.c_str());
@@ -403,14 +409,44 @@ EL::StatusCode BasicEventSelection :: initialize ()
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
   RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
 
-  m_pileuptool = new CP::PileupReweightingTool("Pileup");
-  std::vector<std::string> confFiles;
-  std::vector<std::string> lcalcFiles;
-  //confFiles.push_back("blah"); // pass from config file
-  //lcalcFiles.push_back("blah"); // pass from config file
-  //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", confFiles), "");
-  //RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lcalcFiles), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
+  // Pileup RW Tool //
+  if ( m_doPUreweighting ) {
+    m_pileuptool = new CP::PileupReweightingTool("Pileup");
+
+    std::vector<std::string> PRWFiles;
+    std::vector<std::string> lumiCalcFiles;
+
+    std::string tmp_lumiCalcFileNames = m_lumiCalcFileNames;
+    std::string tmp_PRWFileNames = m_PRWFileNames;
+
+    // Parse all comma seperated files
+    while( tmp_PRWFileNames.size() > 0){
+      int pos = tmp_PRWFileNames.find_first_of(',');
+      if( pos == std::string::npos){
+        pos = tmp_PRWFileNames.size();
+        PRWFiles.push_back(tmp_PRWFileNames.substr(0, pos));
+        tmp_PRWFileNames.erase(0, pos);
+      }else{
+        PRWFiles.push_back(tmp_PRWFileNames.substr(0, pos));
+        tmp_PRWFileNames.erase(0, pos+1);
+      }
+    }
+    while( tmp_lumiCalcFileNames.size() > 0){
+      int pos = tmp_lumiCalcFileNames.find_first_of(',');
+      if( pos == std::string::npos){
+        pos = tmp_lumiCalcFileNames.size();
+        lumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
+        tmp_lumiCalcFileNames.erase(0, pos);
+      }else{
+        lumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
+        tmp_lumiCalcFileNames.erase(0, pos+1);
+      }
+    }
+
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", PRWFiles), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lumiCalcFiles), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
+  }
 
 
   // Trigger //
@@ -471,17 +507,17 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   float mcEvtWeight(1.0), pileupWeight(1.0);
   if ( m_isMC ) {
-     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
-     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
+    const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
+    if ( weights.size() > 0 ) mcEvtWeight = weights[0];
 
-     //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
+    //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
-     if ( m_doPUreweighting ) {
-       m_pileuptool->apply(eventInfo);
-       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
-       pileupWeight = pileupWeightAcc(*eventInfo) ;
-     }
-     mcEvtWeight *= pileupWeight;
+    if ( m_doPUreweighting ) {
+      m_pileuptool->apply(eventInfo);
+      static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
+      pileupWeight = pileupWeightAcc(*eventInfo) ;
+    }
+    mcEvtWeight *= pileupWeight;
   }
   // decorate with pileup corrected mc event weight
   static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
@@ -506,13 +542,13 @@ EL::StatusCode BasicEventSelection :: execute ()
 
 
     if ( m_debug ) {
-    
+
       // Get the streams that the event was put in
       const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
-    
+
       for ( auto& it : streams ) {
-	const std::string stream_name = it.name();
-	Info("execute()", "event has fired stream: %s", stream_name.c_str() );
+	      const std::string stream_name = it.name();
+	      Info("execute()", "event has fired stream: %s", stream_name.c_str() );
       }
     }
 

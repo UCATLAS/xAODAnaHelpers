@@ -25,10 +25,12 @@ print "using ASG version {0}".format(args.version)
 
 dict_pkg = {'2.3.14': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-25",
                        "atlasoff/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/tags/JetSelectorTools-00-05-02",
-                       "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20"],
+                       "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20",
+                       "atlasoff/PhysicsAnalysis/AnalysisCommon/PileupReweighting/tags/PileupReweighting-00-03-03"],
             '2.3.15': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-25",
                        "atlasoff/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/tags/JetSelectorTools-00-05-02",
-                       "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20"]
+                       "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20",
+                       "atlasoff/PhysicsAnalysis/AnalysisCommon/PileupReweighting/tags/PileupReweighting-00-03-03"]
            }
 
 try:
