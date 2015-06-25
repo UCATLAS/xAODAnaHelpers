@@ -68,10 +68,10 @@ ElectronCalibrator :: ElectronCalibrator () :
   m_runSysts                = false; // gets set later is syst applies to this tool
   m_systName		    = "";
   m_systVal 		    = 0.;
-  
+
   m_esModel                 = "";
-  m_decorrelationModel      = ""; 
-  
+  m_decorrelationModel      = "";
+
   m_sort                    = true;
 
 }
@@ -270,9 +270,9 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   const xAOD::ElectronContainer* inElectrons(nullptr);
-  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers
@@ -309,7 +309,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
     // create shallow copy for calibration - one per syst
     //
     std::pair< xAOD::ElectronContainer*, xAOD::ShallowAuxContainer* > calibElectronsSC = xAOD::shallowCopyContainer( *inElectrons );
-    
+
     // create ConstDataVector to be eventually stored in TStore
     //
     ConstDataVector<xAOD::ElectronContainer>* calibElectronsCDV = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
@@ -367,7 +367,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
-  if ( m_debug ) { m_store->print(); }
+  if ( m_verbose ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 }

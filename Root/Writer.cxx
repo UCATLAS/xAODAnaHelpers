@@ -154,7 +154,7 @@ EL::StatusCode Writer :: execute ()
 
     const xAOD::JetContainer* inJetsConst(nullptr);
     // look in event
-    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, m_debug).isSuccess() ) {
+    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, m_verbose).isSuccess() ) {
       // without modifying the contents of it:
       Info("execute()", " Write a collection %s %lu", contName.Data(), inJetsConst->size() );
       m_event->copy( contName.Data() );
@@ -164,7 +164,7 @@ EL::StatusCode Writer :: execute ()
 
     // look in store
     xAOD::JetContainer* inJets(nullptr);
-    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, m_debug).isSuccess() ){
+    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, m_verbose).isSuccess() ){
 //      // FIXME add something like this
 //      jets_shallowCopy.second->setShallowIO( false ); // true = shallow copy, false = deep copy
 //      // if true should have something like this line somewhere:
@@ -181,7 +181,7 @@ EL::StatusCode Writer :: execute ()
       xAOD::JetAuxContainer* inJetsAux = 0;
       Info("execute()", " Wrote a aux store %s", contName.Data());
       TString auxName( contName + "Aux." );
-      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, m_debug).isSuccess() ){
+      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, m_verbose).isSuccess() ){
         Error("execute()" ,"%s: Could not get Aux data for %s", m_name.c_str(), contName.Data());
         return EL::StatusCode::FAILURE;
       }
