@@ -343,7 +343,8 @@ EL::StatusCode MuonSelector :: initialize ()
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" );
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");  
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" );
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
 
   // isolation tool for muons not available in DC14
@@ -398,7 +399,7 @@ EL::StatusCode MuonSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Muon Selection... "); }
+  if ( m_debug ) { Info("execute()", "Applying Muon Selection..." ); }
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -560,9 +561,11 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
+    if ( m_debug ) { Info("execute()", "Reject event: nSelectedMuons (%i) < nPassMin (%i)", nPass, m_pass_min  ); }
     return false;
   }
   if ( m_pass_max > 0 && nPass > m_pass_max ) {
+    if ( m_debug ) { Info("execute()", "Reject event: nSelectedMuons (%i) > nPassMax (%i)", nPass, m_pass_max  ); }
     return false;
   }
 
@@ -590,11 +593,6 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     
       // take the first two muons in the selected container
       //
-      //const xAOD::MuonContainer* selectedMuonsDV = selectedMuons->asDataVector();
-      
-      //const xAOD::Muon* mu1 = ( (selectedMuonsDV)->begin() );
-      //const xAOD::Muon* mu2 = std::next( (selectedMuonsDV)->begin(),1);
-      
       const xAOD::Muon* mu1 = selectedMuons->at(0);
       const xAOD::Muon* mu2 = selectedMuons->at(1);
       
@@ -811,13 +809,14 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   isMediumQDecor( *muon )    = -1;
   isTightQDecor( *muon )     = -1;
 
+  int this_quality = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );
+
   // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
   if ( ! m_muonSelectionTool->accept( *muon ) ) {
     if ( m_debug ) { Info("PassCuts()", "Muon failed requirements of MuonSelectionTool."); }
     return 0;
   }
 
-  int this_quality     = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );
   isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
   isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
   isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
