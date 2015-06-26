@@ -122,6 +122,17 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_lumiCalcFileNames = config->GetValue("LumiCalcFiles",       m_lumiCalcFileNames.c_str());
     m_PRWFileNames      = config->GetValue("PRWFiles",            m_PRWFileNames.c_str());
 
+    if( m_doPUreweighting ){
+      if( m_lumiCalcFileNames.size() == 0){
+        Error("BasicEventSelection()", "Pileup Reweighting is requested but no LumiCalc file is specified. Exiting" );
+        return EL::StatusCode::FAILURE;
+      }
+      if( m_PRWFileNames.size() == 0){
+        Error("BasicEventSelection()", "Pileup Reweighting is requested but no PRW file is specified. Exiting" );
+        return EL::StatusCode::FAILURE;
+      }
+    }
+
 
     // primary vertex
     m_vertexContainerName = config->GetValue("VertexContainer", m_vertexContainerName.c_str());
@@ -420,7 +431,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
     // Parse all comma seperated files
     while( tmp_PRWFileNames.size() > 0){
-      unsigned int pos = tmp_PRWFileNames.find_first_of(',');
+      int pos = tmp_PRWFileNames.find_first_of(',');
       if( pos == std::string::npos){
         pos = tmp_PRWFileNames.size();
         PRWFiles.push_back(tmp_PRWFileNames.substr(0, pos));
@@ -431,7 +442,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       }
     }
     while( tmp_lumiCalcFileNames.size() > 0){
-      unsigned int pos = tmp_lumiCalcFileNames.find_first_of(',');
+      int pos = tmp_lumiCalcFileNames.find_first_of(',');
       if( pos == std::string::npos){
         pos = tmp_lumiCalcFileNames.size();
         lumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
@@ -440,6 +451,15 @@ EL::StatusCode BasicEventSelection :: initialize ()
         lumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
         tmp_lumiCalcFileNames.erase(0, pos+1);
       }
+    }
+
+    std::cout << "PileupReweighting Tool is adding Pileup files:" << std::endl;
+    for( unsigned int i=0; i < PRWFiles.size(); ++i){
+      std::cout << "    " << PRWFiles.at(i) << std::endl;
+    }
+    std::cout << "PileupReweighting Tool is adding Lumi Calc files:" << std::endl;
+    for( unsigned int i=0; i < lumiCalcFiles.size(); ++i){
+      std::cout << "    " << lumiCalcFiles.at(i) << std::endl;
     }
 
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", PRWFiles), "");
