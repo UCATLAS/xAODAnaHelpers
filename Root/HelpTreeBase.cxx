@@ -71,6 +71,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
   m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
   m_tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
+  m_tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
 
   if ( m_eventInfoSwitch->m_pileup ) {
     m_tree->Branch("NPV",                &m_npv,            "NPV/I");
@@ -128,6 +129,11 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     m_mcChannelNumber       = -1;
     m_mcEventWeight	    = 1.;
   }
+  static SG::AuxElement::ConstAccessor< double > weight_pileup ("PileupWeight");
+  if ( weight_pileup.isAvailable( *eventInfo ) ) {
+    m_weight_pileup = weight_pileup( *eventInfo );
+  } else { m_weight_pileup = 1.; }
+
 
   if ( m_eventInfoSwitch->m_pileup ) {
     if ( event ) {
@@ -1924,6 +1930,7 @@ void HelpTreeBase::ClearFatJets() {
 void HelpTreeBase::ClearEvent() {
   m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = -999;
   m_mcEventWeight = 1.;
+  m_weight_pileup = 1.;
   // pileup
   m_npv = m_lumiBlock = -999;
   m_actualMu = m_averageMu = -999;

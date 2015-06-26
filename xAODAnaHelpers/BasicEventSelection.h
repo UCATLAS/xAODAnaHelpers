@@ -32,6 +32,8 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_GRLExcludeList;
     //PU Reweighting
     bool m_doPUreweighting;
+    std::string m_lumiCalcFileNames;
+    std::string m_PRWFileNames;
     bool m_useMetaData;
     std::string m_triggerSelection;
     bool m_cutOnTrigger;

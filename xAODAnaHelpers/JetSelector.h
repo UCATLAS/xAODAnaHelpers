@@ -23,6 +23,7 @@ public:
   std::string m_outContainerName;  // output container name
   std::string m_inputAlgo;         // input type - from xAOD or from xAODAnaHelper Algo output
   std::string m_outputAlgo;        // output type - this is how the vector<string> w/ syst names will be saved in TStore
+  std::string m_jetScaleType;    // Type of Scale Momementum
   std::string m_decor;            // The decoration key written to passing objects
   bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
   bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
