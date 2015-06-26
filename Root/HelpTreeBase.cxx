@@ -423,7 +423,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     }
 
     static SG::AuxElement::Accessor<char> isTrigMatchedAcc("isTrigMatched");
-    if ( m_muInfoSwitch->m_kinematic ) {
+    if ( m_muInfoSwitch->m_trigger ) {
       if ( isTrigMatchedAcc.isAvailable( *muon_itr ) ) { m_muon_isTrigMatched.push_back( isTrigMatchedAcc( *muon_itr ) ); } else { m_muon_isTrigMatched.push_back( -1 );}
     }
 
