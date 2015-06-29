@@ -41,12 +41,22 @@ namespace xAH {
         // custom EventInfo container name
         std::string m_eventInfoContainerName;
 
+        // override at algorithm level
+        // default: -1, use eventInfo object to determine if data or mc
+        // 0: this is data
+        // 1: this is mc
+        int m_isMC;
+
       protected:
         // name of a config file to load in, optional
         std::string m_configName;
 
         xAOD::TEvent* m_event; //!
         xAOD::TStore* m_store; //!
+
+        // will try to determine if data or if MC
+        // returns: -1=unknown (could not determine), 0=data, 1=mc
+        int isMC();
 
   };
 }
