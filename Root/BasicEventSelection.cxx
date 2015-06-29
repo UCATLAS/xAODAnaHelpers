@@ -528,6 +528,9 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( m_isMC ) {
     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
+    // decorate with pileup corrected mc event weight
+    static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
+    mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
     //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
@@ -536,11 +539,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
       pileupWeight = pileupWeightAcc(*eventInfo) ;
     }
-    mcEvtWeight *= pileupWeight;
   }
-  // decorate with pileup corrected mc event weight
-  static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
-  mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
 
   // print every 1000 events, so we know where we are:
