@@ -156,6 +156,8 @@ EL::StatusCode BasicEventSelection :: configure ()
       Info("configure()", "Truth only! Turn off trigger stuff");
       m_triggerSelection = "";
       m_cutOnTrigger = m_storeTrigDecisions = m_storePassAny = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
+      Info("configure()", "Truth only! Turn off GRL");
+      m_applyGRL = false;
     }
 
     if( !m_triggerSelection.empty() )
@@ -358,7 +360,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
+  if ( m_truthLevelOnly ) { m_isMC = true; }
+  else {
+    m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
+  }
   if ( m_debug ) { Info("initialize()", "Is MC? %i", static_cast<int>(m_isMC) ); }
 
 
@@ -469,11 +474,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
-  ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
-
   if( !m_triggerSelection.empty() || m_cutOnTrigger || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+    m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
+    ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
+
     m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
@@ -525,12 +530,9 @@ EL::StatusCode BasicEventSelection :: execute ()
 
 
   float mcEvtWeight(1.0), pileupWeight(1.0);
-  if ( m_isMC ) {
+  if ( m_isMC && !m_truthLevelOnly ) {
     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
-    // decorate with pileup corrected mc event weight
-    static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
-    mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
     //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
@@ -538,9 +540,13 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_pileuptool->apply(*eventInfo);
       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
       pileupWeight = pileupWeightAcc(*eventInfo) ;
+      mcEvtWeight *= pileupWeight;
     }
   }
 
+  // decorate with pileup corrected mc event weight
+  static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
+  mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
   // print every 1000 events, so we know where we are:
   m_cutflowHist ->Fill( m_cutflow_all, 1 );
