@@ -361,10 +361,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
-  if ( m_truthLevelOnly ) { m_isMC = true; }
-  else {
-    m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  }
+  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
   if ( m_debug ) { Info("initialize()", "Is MC? %i", static_cast<int>(m_isMC) ); }
 
 
