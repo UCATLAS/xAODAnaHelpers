@@ -445,8 +445,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   //
   for ( auto mu_itr : *(inputMuons) ) {
     if ( m_muonEffSFTool->applyRecoEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-      Error( "execute()", "Problem in getEfficiencyScaleFactor");
-      return EL::StatusCode::FAILURE;
+      Warning( "execute()", "Problem in getEfficiencyScaleFactor");
     }
   }
 
@@ -505,8 +504,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        //
        float effSF(0.0);
        if ( m_muonEffSFTool->getEfficiencyScaleFactor( *mu_itr, effSF ) != CP::CorrectionCode::Ok ) {
-         Error( "execute()", "Problem in getEfficiencyScaleFactor");
-         return EL::StatusCode::FAILURE;
+         Warning( "execute()", "Problem in getEfficiencyScaleFactor");
        }
        //
        // Add it to decoration vector
@@ -561,16 +559,14 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     if ( nMuons > 0 ) {
 
       if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF ) != CP::CorrectionCode::Ok ) {
-        Error( "execute()", "Problem in getTriggerScaleFactor");
-        return EL::StatusCode::FAILURE;
+        Warning( "execute()", "Problem in getTriggerScaleFactor");
       }
       if ( m_debug ) { Info( "execute()", "Nominal trigger scaleFactor (single trigger) = %g", triggerSF ); }
 
       if ( nMuons > 1 ) {
         if ( !m_SinglePlusDiMuTrig.empty() ) {
           if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF, m_SinglePlusDiMuTrig ) != CP::CorrectionCode::Ok ) {
-	    Error( "execute()", "Problem in getTriggerScaleFactor");
-	    return EL::StatusCode::FAILURE;
+	    Warning( "execute()", "Problem in getTriggerScaleFactor");
           }
           if ( m_debug ) { Info( "execute()", "Nominal trigger scaleFactor (single + di-muon trigger) = %g", triggerSF ); }
         }

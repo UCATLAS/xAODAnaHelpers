@@ -25,13 +25,15 @@ public:
   std::string m_jetDetailStr;
   std::string m_fatJetDetailStr;
   std::string m_tauDetailStr;
-
+  std::string m_METDetailStr;
+  
   std::string m_evtContainerName;
   std::string m_muContainerName;
   std::string m_elContainerName;
   std::string m_jetContainerName;
   std::string m_fatJetContainerName;
   std::string m_tauContainerName;
+  std::string m_METContainerName;  
 
   bool m_DC14;
 

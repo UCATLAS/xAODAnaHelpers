@@ -8,6 +8,7 @@
 #include "xAODTruth/TruthEventContainer.h"
 #include "xAODJet/JetConstituentVector.h"
 #include "xAODCaloEvent/CaloClusterContainer.h"
+#include "xAODPrimitives/IsolationType.h"
 
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
@@ -334,7 +335,10 @@ void HelpTreeBase::ClearTrigger() {
  ********************/
 
 /* TODO: jet trigger */
-void HelpTreeBase::AddJetTrigger( const std::string detailStr ) { }
+void HelpTreeBase::AddJetTrigger( const std::string detailStr ) 
+{ 
+  if ( m_debug )  Info("AddJetTrigger()", "Adding jet trigger variables: %s", detailStr.c_str());
+}
 void HelpTreeBase::FillJetTrigger(  ) { }
 void HelpTreeBase::ClearJetTrigger(  ) { }
 
@@ -347,7 +351,7 @@ void HelpTreeBase::ClearJetTrigger(  ) { }
 
 void HelpTreeBase::AddMuons(const std::string detailStr) {
 
-  if(m_debug)  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
+  if ( m_debug )  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
   m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
 
@@ -366,7 +370,16 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
   }
 
   if ( m_muInfoSwitch->m_isolation ) {
-    m_tree->Branch("muon_isIsolated",    &m_muon_isIsolated);
+    m_tree->Branch("muon_isIsolated",     &m_muon_isIsolated);
+    m_tree->Branch("muon_ptcone20",	  &m_muon_ptcone20);
+    m_tree->Branch("muon_ptcone30",	  &m_muon_ptcone30);
+    m_tree->Branch("muon_ptcone40",	  &m_muon_ptcone40);
+    m_tree->Branch("muon_ptvarcone20",	  &m_muon_ptvarcone20);
+    m_tree->Branch("muon_ptvarcone30",	  &m_muon_ptvarcone30);
+    m_tree->Branch("muon_ptvarcone40",	  &m_muon_ptvarcone40); 
+    m_tree->Branch("muon_topoetcone20",   &m_muon_topoetcone20);
+    m_tree->Branch("muon_topoetcone30",   &m_muon_topoetcone30);
+    m_tree->Branch("muon_topoetcone40",   &m_muon_topoetcone40);
   }
 
   if ( m_muInfoSwitch->m_quality ) {
@@ -423,13 +436,22 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     }
 
     static SG::AuxElement::Accessor<char> isTrigMatchedAcc("isTrigMatched");
-    if ( m_muInfoSwitch->m_kinematic ) {
+    if ( m_muInfoSwitch->m_trigger ) {
       if ( isTrigMatchedAcc.isAvailable( *muon_itr ) ) { m_muon_isTrigMatched.push_back( isTrigMatchedAcc( *muon_itr ) ); } else { m_muon_isTrigMatched.push_back( -1 );}
     }
 
     if ( m_muInfoSwitch->m_isolation ) {
       static SG::AuxElement::Accessor<char> isIsoAcc ("isIsolated");
       if ( isIsoAcc.isAvailable( *muon_itr ) ) { m_muon_isIsolated.push_back( isIsoAcc( *muon_itr ) ); } else { m_muon_isIsolated.push_back( -1 ); }
+      m_muon_ptcone20.push_back( muon_itr->isolation( xAOD::Iso::ptcone20 ) );
+      m_muon_ptcone30.push_back( muon_itr->isolation( xAOD::Iso::ptcone30 ) );
+      m_muon_ptcone40.push_back( muon_itr->isolation( xAOD::Iso::ptcone40 ) );
+      m_muon_ptvarcone20.push_back( muon_itr->isolation( xAOD::Iso::ptvarcone20 ) );
+      m_muon_ptvarcone30.push_back( muon_itr->isolation( xAOD::Iso::ptvarcone30 ) );
+      m_muon_ptvarcone40.push_back( muon_itr->isolation( xAOD::Iso::ptvarcone40 ) );
+      m_muon_topoetcone20.push_back( muon_itr->isolation( xAOD::Iso::topoetcone20 ) );
+      m_muon_topoetcone30.push_back( muon_itr->isolation( xAOD::Iso::topoetcone30 ) );
+      m_muon_topoetcone40.push_back( muon_itr->isolation( xAOD::Iso::topoetcone40 ) );
     }
 
     if ( m_muInfoSwitch->m_quality ) {
@@ -439,9 +461,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       static SG::AuxElement::Accessor<char> isTightQAcc ("isTightQ");
 
       if ( isVeryLooseQAcc.isAvailable( *muon_itr ) ) { m_muon_isVeryLoose.push_back( isVeryLooseQAcc( *muon_itr ) ); } else { m_muon_isVeryLoose.push_back( -1 ); }
-      if ( isLooseQAcc.isAvailable( *muon_itr ) ) { m_muon_isLoose.push_back( isLooseQAcc( *muon_itr ) ); } else { m_muon_isLoose.push_back( -1 ); }
-      if ( isMediumQAcc.isAvailable( *muon_itr ) ) { m_muon_isMedium.push_back( isMediumQAcc( *muon_itr ) ); } else { m_muon_isMedium.push_back( -1 ); }
-      if ( isTightQAcc.isAvailable( *muon_itr ) ) { m_muon_isTight.push_back( isTightQAcc( *muon_itr ) ); } else { m_muon_isTight.push_back( -1 ); }
+      if ( isLooseQAcc.isAvailable( *muon_itr ) )     { m_muon_isLoose.push_back( isLooseQAcc( *muon_itr ) ); }         else { m_muon_isLoose.push_back( -1 ); }
+      if ( isMediumQAcc.isAvailable( *muon_itr ) )    { m_muon_isMedium.push_back( isMediumQAcc( *muon_itr ) ); }       else { m_muon_isMedium.push_back( -1 ); }
+      if ( isTightQAcc.isAvailable( *muon_itr ) )     { m_muon_isTight.push_back( isTightQAcc( *muon_itr ) ); }         else { m_muon_isTight.push_back( -1 ); }
     }
 
     const xAOD::TrackParticle* trk = muon_itr->primaryTrackParticle();
@@ -532,6 +554,15 @@ void HelpTreeBase::ClearMuons() {
 
   if ( m_muInfoSwitch->m_isolation ) {
     m_muon_isIsolated.clear();
+    m_muon_ptcone20.clear();
+    m_muon_ptcone30.clear();
+    m_muon_ptcone40.clear();
+    m_muon_ptvarcone20.clear();
+    m_muon_ptvarcone30.clear();
+    m_muon_ptvarcone40.clear();
+    m_muon_topoetcone20.clear();
+    m_muon_topoetcone30.clear();
+    m_muon_topoetcone40.clear();
   }
 
   if ( m_muInfoSwitch->m_quality ) {
@@ -592,7 +623,17 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   }
 
   if ( m_elInfoSwitch->m_isolation ) {
-    m_tree->Branch("el_isIsolated",  &m_el_isIsolated);
+    m_tree->Branch("el_isIsolated",       &m_el_isIsolated);    
+    m_tree->Branch("el_etcone20",	  &m_el_etcone20);
+    m_tree->Branch("el_ptcone20",	  &m_el_ptcone20);
+    m_tree->Branch("el_ptcone30",	  &m_el_ptcone30);
+    m_tree->Branch("el_ptcone40",	  &m_el_ptcone40);
+    m_tree->Branch("el_ptvarcone20",	  &m_el_ptvarcone20);
+    m_tree->Branch("el_ptvarcone30",	  &m_el_ptvarcone30);
+    m_tree->Branch("el_ptvarcone40",	  &m_el_ptvarcone40); 
+    m_tree->Branch("el_topoetcone20",     &m_el_topoetcone20);
+    m_tree->Branch("el_topoetcone30",     &m_el_topoetcone30);
+    m_tree->Branch("el_topoetcone40",     &m_el_topoetcone40);
   }
 
   if ( m_elInfoSwitch->m_PID ) {
@@ -657,6 +698,16 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
     if ( m_elInfoSwitch->m_isolation ) {
       static SG::AuxElement::Accessor<char> isIsoAcc ("isIsolated");
       if ( isIsoAcc.isAvailable( *el_itr ) ) { m_el_isIsolated.push_back( isIsoAcc( *el_itr ) ); } else { m_el_isIsolated.push_back( -1 ); }
+      m_el_etcone20.push_back( el_itr->isolation( xAOD::Iso::etcone20 ) );
+      m_el_ptcone20.push_back( el_itr->isolation( xAOD::Iso::ptcone20 ) );
+      m_el_ptcone30.push_back( el_itr->isolation( xAOD::Iso::ptcone30 ) );
+      m_el_ptcone40.push_back( el_itr->isolation( xAOD::Iso::ptcone40 ) );
+      m_el_ptvarcone20.push_back( el_itr->isolation( xAOD::Iso::ptvarcone20 ) );
+      m_el_ptvarcone30.push_back( el_itr->isolation( xAOD::Iso::ptvarcone30 ) );
+      m_el_ptvarcone40.push_back( el_itr->isolation( xAOD::Iso::ptvarcone40 ) );
+      m_el_topoetcone20.push_back( el_itr->isolation( xAOD::Iso::topoetcone20 ) );
+      m_el_topoetcone30.push_back( el_itr->isolation( xAOD::Iso::topoetcone30 ) );
+      m_el_topoetcone40.push_back( el_itr->isolation( xAOD::Iso::topoetcone40 ) );
     }
 
     if ( m_elInfoSwitch->m_PID ) {
@@ -762,6 +813,16 @@ void HelpTreeBase::ClearElectrons() {
 
   if ( m_elInfoSwitch->m_isolation ) {
     m_el_isIsolated.clear();
+    m_el_etcone20.clear();
+    m_el_ptcone20.clear();
+    m_el_ptcone30.clear();
+    m_el_ptcone40.clear();
+    m_el_ptvarcone20.clear();
+    m_el_ptvarcone30.clear();
+    m_el_ptvarcone40.clear();
+    m_el_topoetcone20.clear();
+    m_el_topoetcone30.clear();
+    m_el_topoetcone40.clear();
   }
 
   if ( m_elInfoSwitch->m_PID ) {
@@ -2033,9 +2094,11 @@ void HelpTreeBase::AddMET( const std::string detailStr ) {
 
   m_metInfoSwitch = new HelperClasses::METInfoSwitch( detailStr );
 
-  // Add these basic branches
-  m_tree->Branch("metFinal",         &m_metFinal,          "metFinal/F"   );
-  m_tree->Branch("metFinalPhi",      &m_metFinalPhi,       "metFinalPhi/F");
+  m_tree->Branch("metFinal",	     &m_metFinal,	  "metFinal/F");
+  m_tree->Branch("metFinalPx",       &m_metFinalPx,	  "metFinalPx/F");
+  m_tree->Branch("metFinalPy",       &m_metFinalPy,	  "metFinalPy/F");
+  m_tree->Branch("metFinalSumEt",    &m_metFinalSumEt,    "metFinalSumEt/F");
+  m_tree->Branch("metFinalPhi",      &m_metFinalPhi,	  "metFinalPhi/F");  
 
   if ( m_metInfoSwitch->m_refEle ) {
     m_tree->Branch("metEle",         &m_metEle,            "metEle/F"     );
@@ -2058,34 +2121,52 @@ void HelpTreeBase::AddMET( const std::string detailStr ) {
     m_tree->Branch("metSoftClussPhi",&m_metSoftClussPhi,   "metSoftClussPhi/F");
   }
 
-  //this->AddMETUser();
+  this->AddMETUser();
 }
 
-// Fill the information in the trigger branches
 void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
 
   // Clear previous events
   this->ClearMET();
-  //this->ClearMETUser();
+  this->ClearMETUser();
 
   if ( m_debug ) { Info("HelpTreeBase::FillMET()", "Filling MET info"); }
 
-  const xAOD::MissingET* final = *met->find("FinalClus");
-  m_metFinal    = final->met() / m_units;
-  m_metFinalPhi = final->phi();
-
+  const xAOD::MissingET* final = *met->find("FinalClus"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
+  m_metFinal	  = final->met() / m_units;
+  m_metFinalPx    = final->mpx() / m_units;  
+  m_metFinalPy    = final->mpy() / m_units;	
+  m_metFinalSumEt = final->sumet() / m_units;	    
+  m_metFinalPhi   = final->phi();
+  
+  /* add stuff... */
+  
+  this->FillMETUser(met);
 }
 
-// Clear Trigger
 void HelpTreeBase::ClearMET() {
 
-   m_metFinal     = m_metFinalPhi     = -999;
-   m_metEle       = m_metElePhi       = -999;
-   m_metGamma     = m_metGammaPhi     = -999;
-   m_metTau       = m_metTauPhi       = -999;
-   m_metMuons     = m_metMuonsPhi     = -999;
-   m_metSoftCluss = m_metSoftClussPhi = -999;
+  m_metFinal	  = -999;
+  m_metFinalPx    = -999;
+  m_metFinalPy    = -999;
+  m_metFinalSumEt = -999;
+  m_metFinalPhi   = -999;
 
+  if ( m_metInfoSwitch->m_refEle ) {  
+    m_metEle       = m_metElePhi       = -999;
+  } 
+  if ( m_metInfoSwitch->m_refGamma ) {
+    m_metGamma     = m_metGammaPhi     = -999;
+  }
+  if ( m_metInfoSwitch->m_refTau ) {
+    m_metTau       = m_metTauPhi       = -999;
+  }
+  if ( m_metInfoSwitch->m_muons ) {
+    m_metMuons     = m_metMuonsPhi     = -999;
+  }
+  if ( m_metInfoSwitch->m_softClus) {
+    m_metSoftCluss = m_metSoftClussPhi = -999;
+  }
 }
 
 

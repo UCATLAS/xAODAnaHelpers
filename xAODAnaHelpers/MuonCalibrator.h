@@ -30,7 +30,9 @@ public:
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
-
+  
+  bool m_isMC;            //!
+  
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;

@@ -193,6 +193,11 @@ EL::StatusCode MuonCalibrator :: initialize ()
     Error("initialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
   }
+  
+  // see if is MC
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -304,12 +309,16 @@ EL::StatusCode MuonCalibrator :: execute ()
 
       if ( m_debug ) { Info("execute()", "  uncailbrated muon %i, pt = %.2f GeV", idx, (muSC_itr->pt() * 1e-3)); }
 
-      if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {
-        // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
-        // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
-        Error("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
-      }
+      // calibrate only MC
+      if ( m_isMC ) {
 
+        if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {
+          // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
+          // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
+          Warning("execute()", "MuonCalibrationAndSmearingTool returns Error CorrectionCode");
+        }
+      }
+      
       if ( m_debug ) { Info("execute()", "  corrected muon pt = %.2f GeV", (muSC_itr->pt() * 1e-3)); }
 
       ++idx;

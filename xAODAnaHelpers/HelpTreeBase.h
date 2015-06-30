@@ -132,7 +132,11 @@ public:
     if(m_debug) Info("AddTausUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
-
+  virtual void AddMETUser(const std::string detailStr = "")       {
+    if(m_debug) Info("AddMETUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
+  };
+  
   virtual void ClearEventUser()     { return; };
   virtual void ClearTriggerUser()   { return; };
   virtual void ClearMuonsUser()     { return; };
@@ -140,7 +144,7 @@ public:
   virtual void ClearJetsUser() 	    { return; };
   virtual void ClearFatJetsUser()   { return; };
   virtual void ClearTausUser() 	    { return; };
-
+  virtual void ClearMETUser()       { return; };
 
   virtual void FillEventUser( const xAOD::EventInfo* /*eventInfo*/ )        { return; };
   virtual void FillMuonsUser( const xAOD::Muon* /*muon*/ )                  { return; };
@@ -148,8 +152,8 @@ public:
   virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                     { return; };
   virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )               { return; };
   virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )                  { return; };
-
-  virtual void FillTriggerUser()                                            { return; };
+  virtual void FillMETUser( const xAOD::MissingETContainer* /*met*/ )       { return; };
+  virtual void FillTriggerUser( const xAOD::EventInfo* /*eventInfo*/ )      { return; };
   virtual void FillJetTriggerUser()                                         { return; };
 
 protected:
@@ -387,6 +391,15 @@ protected:
 
   // isolation
   std::vector<int>   m_muon_isIsolated;
+  std::vector<float> m_muon_ptcone20;
+  std::vector<float> m_muon_ptcone30;
+  std::vector<float> m_muon_ptcone40;
+  std::vector<float> m_muon_ptvarcone20;
+  std::vector<float> m_muon_ptvarcone30;
+  std::vector<float> m_muon_ptvarcone40;  
+  std::vector<float> m_muon_topoetcone20;
+  std::vector<float> m_muon_topoetcone30;
+  std::vector<float> m_muon_topoetcone40;  
 
   // quality
   std::vector<int>   m_muon_isVeryLoose;
@@ -427,7 +440,17 @@ protected:
 
   // isolation
   std::vector<int>   m_el_isIsolated;
-
+  std::vector<float> m_el_etcone20;
+  std::vector<float> m_el_ptcone20;
+  std::vector<float> m_el_ptcone30;
+  std::vector<float> m_el_ptcone40;
+  std::vector<float> m_el_ptvarcone20;
+  std::vector<float> m_el_ptvarcone30;
+  std::vector<float> m_el_ptvarcone40;  
+  std::vector<float> m_el_topoetcone20;
+  std::vector<float> m_el_topoetcone30;
+  std::vector<float> m_el_topoetcone40;  
+  
   // PID
   std::vector<int>   m_el_LHVeryLoose;
   std::vector<int>   m_el_LHLoose;
@@ -471,7 +494,12 @@ protected:
   std::vector<float> m_tau_charge;
 
   // met
-  float m_metFinal;     float m_metFinalPhi;
+  float m_metFinal;
+  float m_metFinalPx;
+  float m_metFinalPy;
+  float m_metFinalPhi; 
+  float m_metFinalSumEt;
+   
   float m_metEle;       float m_metElePhi;
   float m_metGamma;     float m_metGammaPhi;
   float m_metTau;       float m_metTauPhi;
