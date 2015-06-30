@@ -1,10 +1,9 @@
 env:
-  - ABV=2.3.14
+  - ABV=2.3.14 CERN_USER=gstark
 
 before_install:
   - ls
   - pwd
-  - echo $CERN_USER
 
 install:
   - export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
