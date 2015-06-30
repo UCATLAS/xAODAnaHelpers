@@ -4,7 +4,7 @@ env:
 before_install:
   - ls
   - pwd
-  - export CERN_USER="gstark"
+#  - export CERN_USER="gstark"
 
 install:
   - export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
