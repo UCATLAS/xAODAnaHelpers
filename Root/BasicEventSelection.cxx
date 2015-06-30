@@ -535,7 +535,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
     if ( m_doPUreweighting ) {
-      m_pileuptool->apply(eventInfo);
+      m_pileuptool->apply(*eventInfo);
       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
       pileupWeight = pileupWeightAcc(*eventInfo) ;
     }
