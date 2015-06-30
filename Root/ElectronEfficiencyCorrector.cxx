@@ -68,7 +68,7 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
 
   // file(s) containing corrections
   m_corrFileNamePID         = "";
-  m_corrFileNameReco        = "";  
+  m_corrFileNameReco        = "";
   m_corrFileNameTrig        = "";
 }
 
@@ -234,7 +234,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   m_numEvent++;
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
   if ( !isMC ) {
     if ( m_debug ) { Info("execute()", "Event is Data! Do not apply Electron Efficiency Correction... "); }
@@ -253,7 +253,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   if ( m_inputAlgoSystNames.empty() ) {
 
-        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_debug) ,"");
+        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
 	// decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
 	this->executeSF( inputElectrons, countInputCont );
@@ -264,12 +264,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
 	// get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
         std::vector<std::string>* systNames(nullptr);
-        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_debug) ,"");
+        RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
 
     	// loop over systematic sets available
     	for ( auto systName : *systNames ) {
 
-           RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
+           RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
 
     	   if ( m_debug ){
     	     unsigned int idx(0);
@@ -290,7 +290,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
    }
 
   // look what do we have in TStore
-  if ( m_debug ) { m_store->print(); }
+  if ( m_verbose ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 }

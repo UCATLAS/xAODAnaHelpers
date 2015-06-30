@@ -16,6 +16,7 @@ ClassImp(xAH::Algorithm)
 xAH::Algorithm::Algorithm() :
   m_name(""),
   m_debug(false),
+  m_verbose(false),
   m_systName(""),
   m_systVal(0),
   m_eventInfoContainerName("EventInfo"),
@@ -53,8 +54,9 @@ std::string xAH::Algorithm::getConfig(bool expand){
   return m_configName;
 }
 
-xAH::Algorithm* xAH::Algorithm::setDebug(bool debug){
-  m_debug = debug;
+xAH::Algorithm* xAH::Algorithm::setLevel(int level){
+  m_debug = level & 1;
+  m_verbose = (level >> 1)&1;
   return this;
 }
 

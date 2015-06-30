@@ -107,11 +107,11 @@ MuonSelector :: MuonSelector () :
   m_TrackBasedIsoCut        = 0.05;
 
   // trigger matching stuff
-  m_useSingleMuTrig         = false;	
-  m_singleMuTrigChain       = "";  
-  m_useDiMuTrig             = false;	
-  m_diMuTrigChain           = "";	
-  m_minDeltaR               = 0.1;  	
+  m_useSingleMuTrig         = false;
+  m_singleMuTrigChain       = "";
+  m_useDiMuTrig             = false;
+  m_diMuTrigChain           = "";
+  m_minDeltaR               = 0.1;
 
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
@@ -179,11 +179,11 @@ EL::StatusCode  MuonSelector :: configure ()
     m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  m_TrackBasedIsoCut);
 
     // trigger matching stuff
-    m_useSingleMuTrig	      = config->GetValue("UseSingleMuTrig"   , m_useSingleMuTrig );    
-    m_singleMuTrigChain       = config->GetValue("SingleMuTrigChain" , m_singleMuTrigChain.c_str() ); 
-    m_useDiMuTrig	      = config->GetValue("UseDiMuTrig"       , m_useDiMuTrig );     
-    m_diMuTrigChain	      = config->GetValue("DiMuTrigChain"     , m_diMuTrigChain.c_str() ); 
-    m_minDeltaR 	      = config->GetValue("MinDeltaR"         , m_minDeltaR );    
+    m_useSingleMuTrig	      = config->GetValue("UseSingleMuTrig"   , m_useSingleMuTrig );
+    m_singleMuTrigChain       = config->GetValue("SingleMuTrigChain" , m_singleMuTrigChain.c_str() );
+    m_useDiMuTrig	      = config->GetValue("UseDiMuTrig"       , m_useDiMuTrig );
+    m_diMuTrigChain	      = config->GetValue("DiMuTrigChain"     , m_diMuTrigChain.c_str() );
+    m_minDeltaR 	      = config->GetValue("MinDeltaR"         , m_minDeltaR );
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
@@ -343,7 +343,7 @@ EL::StatusCode MuonSelector :: initialize ()
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");  
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" );
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
 
@@ -373,7 +373,7 @@ EL::StatusCode MuonSelector :: initialize ()
   // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
   //
   if( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
-    
+
     m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
     ToolHandle<Trig::TrigDecisionTool> trigDecHandle( m_trigDecTool );
 
@@ -382,11 +382,11 @@ EL::StatusCode MuonSelector :: initialize ()
     m_trigMuonMatchTool = new Trig::TrigMuonMatching("TrigMuonMatchTool");
     RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
     RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-  
+
   } else {
     Warning("initialize()", "Couldn't find TrigDecisionTool in asg::ToolStore. Probably you forgot to pass a trigger chain regexp in BasicEventSelection.cxx configuration! Will not do any trigger matching..." );
-  } 
-  
+  }
+
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -403,7 +403,7 @@ EL::StatusCode MuonSelector :: execute ()
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -426,7 +426,7 @@ EL::StatusCode MuonSelector :: execute ()
   if ( m_inputAlgoSystNames.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
     // create output container (if requested)
     ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
@@ -449,7 +449,7 @@ EL::StatusCode MuonSelector :: execute ()
 
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_debug) ,"");
+    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -462,7 +462,7 @@ EL::StatusCode MuonSelector :: execute ()
 
       if ( m_debug ) { Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() ); }
 
-      RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, m_debug) ,"");
+      RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, m_verbose) ,"");
 
       // create output container (if requested) - one for each systematic
       ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
@@ -503,7 +503,7 @@ EL::StatusCode MuonSelector :: execute ()
   }
 
   // look what do we have in TStore
-  if ( m_debug ) { m_store->print(); }
+  if ( m_verbose ) { m_store->print(); }
 
   if( !eventPass ) {
     wk()->skipEvent();
@@ -519,7 +519,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 {
 
   const xAOD::VertexContainer* vertices(nullptr);
-  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
@@ -579,34 +579,36 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   //
   if ( m_trigMuonMatchTool ) {
     unsigned int nSelectedMuons = selectedMuons->size();
-  
+
     static SG::AuxElement::Decorator< char > isTrigMatchedDecor("isTrigMatched");
-  
+
     if ( nSelectedMuons > 0 && m_useSingleMuTrig ) {
-    
+
        for ( const auto muon : *selectedMuons ) {
     	 isTrigMatchedDecor( *muon ) = ( m_trigMuonMatchTool->match( muon, m_singleMuTrigChain, m_minDeltaR ) ) ? 1 : 0;
        }
-    
+
     }
     if ( nSelectedMuons > 1 && m_useDiMuTrig ) {
-    
+
       // take the first two muons in the selected container
       //
+      //const xAOD::MuonContainer* selectedMuonsDV = selectedMuons->asDataVector();
+
       const xAOD::Muon* mu1 = selectedMuons->at(0);
       const xAOD::Muon* mu2 = selectedMuons->at(1);
-      
-      std::pair<Bool_t,Bool_t> result1, result2; 
+
+      std::pair<Bool_t,Bool_t> result1, result2;
       m_trigMuonMatchTool->matchDimuon( mu1, mu2, m_diMuTrigChain, result1, result2, m_minDeltaR );
-      
+
       if ( result1.first && result2.first ) {
     	isTrigMatchedDecor( *mu1 ) = ( result1.first ) ? 1 : 0;
     	isTrigMatchedDecor( *mu2 ) = ( result2.first ) ? 1 : 0;
       }
-    
+
     }
   }
-  
+
   return true;
 }
 
@@ -699,7 +701,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
   // do not cut on impact parameter if muon is Standalone
   if ( type != xAOD::Muon::MuonType::MuonStandAlone ) {
-    
+
     // Put tracking here, after pt cuts, to be safe with derivations.
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
     const xAOD::TrackParticle* tp  = muon->primaryTrackParticle();

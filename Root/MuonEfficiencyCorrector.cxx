@@ -262,7 +262,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
   m_muonSelectionTool = asg::ToolStore::get<CP::MuonSelectionTool>("MuonSelectionTool");
-  
+
   // pass the selection tool to this tool
   //
   m_muonTrigSFTool->setSelectionTool( m_muonSelectionTool );
@@ -315,7 +315,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   m_numEvent++;
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
   if ( !isMC ) {
     if ( m_debug ) { Info("execute()", "Event is Data! Do not apply Muon Efficiency and Trigger Correction... "); }
@@ -336,7 +336,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
   if ( m_inputAlgoSystNames.empty() ) {
 
-    RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
     // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
     //
@@ -349,13 +349,13 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 	// get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
 	//
         std::vector<std::string>* systNames(nullptr);
-        RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_debug) ,"");
+        RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
 
     	// loop over systematic sets available
 	//
     	for ( auto systName : *systNames ) {
 
-           RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_debug) ,"");
+           RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
 
     	   if ( m_debug ){
     	     unsigned int idx(0);
@@ -379,7 +379,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
   // look what do we have in TStore
   //
-  if ( m_debug ) { m_store->print(); }
+  if ( m_verbose ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 

@@ -356,7 +356,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   Info("initialize()", "Initializing BasicEventSelection... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
   if ( m_debug ) { Info("initialize()", "Is MC? %i", static_cast<int>(m_isMC) ); }
@@ -507,7 +507,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Event information
   //---------------------------
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
   ++m_eventCounter;
 
@@ -549,7 +549,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     Info("execute()", "Event number = %i", m_eventCounter);
   }
 
-  if ( m_debug && (m_eventCounter % 500) == 0 ) {
+  if ( m_verbose && (m_eventCounter % 500) == 0 ) {
     Info(m_name.c_str(), "Store Content:");
     m_store->print();
     Info(m_name.c_str(), "End Content");
@@ -614,7 +614,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   const xAOD::VertexContainer* vertices(nullptr);
   if ( !m_truthLevelOnly ) {
-    RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_verbose) ,"");
 
     if ( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
       wk()->skipEvent();

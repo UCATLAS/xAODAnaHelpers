@@ -24,7 +24,7 @@
 #include "xAODMissingET/MissingETAuxContainer.h"
 #include "xAODMissingET/MissingETComposition.h"
 #include "xAODMissingET/MissingETAssociationMap.h"
-  
+
 // #include "xAODParticleEvent/Particle.h"
 // #include "xAODParticleEvent/ParticleContainer.h"
 // #include "xAODParticleEvent/ParticleAuxContainer.h"
@@ -37,10 +37,10 @@
 #include "TSystem.h"
 
 namespace xAOD {
-#ifndef XAODJET_JETCONTAINER_H 
+#ifndef XAODJET_JETCONTAINER_H
   class JetContainer;
 #endif
-#ifndef XAODJET_JET_H 
+#ifndef XAODJET_JET_H
   class Jet;
 #endif
 }
@@ -67,7 +67,7 @@ EL::StatusCode  METConstructor :: configure ()
     return EL::StatusCode::FAILURE;
   }
   Info("configure()", "Found configuration file");
-  
+
   TEnv* config = new TEnv(getConfig(true).c_str());
 
   // read debug flag from .config file
@@ -206,7 +206,7 @@ EL::StatusCode METConstructor :: execute ()
 
 
   const xAOD::MissingETAssociationMap* metMap = 0;
-  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(metMap,  m_mapName.Data(), m_event, m_store, m_debug), "Failed retrieving MET Map.");
+  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(metMap,  m_mapName.Data(), m_event, m_store, m_verbose), "Failed retrieving MET Map.");
   metMap->resetObjSelectionFlags();
 
   ///////////////////////
@@ -214,8 +214,8 @@ EL::StatusCode METConstructor :: execute ()
   ///////////////////////
   if( m_inputElectrons.Length() > 0 ) {
     const xAOD::ElectronContainer* eleCont(0);
-    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(eleCont, m_inputElectrons.Data(), m_event, m_store, m_debug), "Failed retrieving electron cont.");
-    if (m_doElectronCuts) { 
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(eleCont, m_inputElectrons.Data(), m_event, m_store, m_verbose), "Failed retrieving electron cont.");
+    if (m_doElectronCuts) {
       ConstDataVector<xAOD::ElectronContainer> metElectrons(SG::VIEW_ELEMENTS);
       for (const auto& el : *eleCont) if (CutsMETMaker::accept(el)) metElectrons.push_back(el);
       RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefEle", xAOD::Type::Electron, newMet, metElectrons.asDataVector(), metMap), "Failed rebuilding electron component.");
@@ -230,7 +230,7 @@ EL::StatusCode METConstructor :: execute ()
   //////////////////////
   if( m_inputPhotons.Length() > 0 ) {
     const xAOD::PhotonContainer* phoCont(0);
-    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data(), m_event, m_store, m_debug), "Failed retrieving photon cont.");
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data(), m_event, m_store, m_verbose), "Failed retrieving photon cont.");
     if (m_doPhotonCuts) {
       ConstDataVector<xAOD::PhotonContainer> metPhotons(SG::VIEW_ELEMENTS);
       for (const auto& ph : *phoCont) if (CutsMETMaker::accept(ph)) metPhotons.push_back(ph);
@@ -246,7 +246,7 @@ EL::StatusCode METConstructor :: execute ()
   ///////////////////
   if( m_inputTaus.Length() > 0 ) {
     const xAOD::TauJetContainer* tauCont(0);
-    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, m_debug), "Failed retrieving tau cont.");
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, m_verbose), "Failed retrieving tau cont.");
     if (m_doTauCuts) {
       ConstDataVector<xAOD::TauJetContainer> metTaus(SG::VIEW_ELEMENTS);
       for (const auto& tau : *tauCont) if (CutsMETMaker::accept(tau)) metTaus.push_back(tau);
@@ -262,7 +262,7 @@ EL::StatusCode METConstructor :: execute ()
   ////////////////////
   if( m_inputMuons.Length() > 0 ) {
     const xAOD::MuonContainer* muonCont(0);
-    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(muonCont, m_inputMuons.Data(), m_event, m_store, m_debug), "Failed retrieving muon cont.");
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(muonCont, m_inputMuons.Data(), m_event, m_store, m_verbose), "Failed retrieving muon cont.");
     if (m_doMuonCuts) {
       ConstDataVector<xAOD::MuonContainer> metMuons(SG::VIEW_ELEMENTS);
       for (const auto& mu : *muonCont) if (CutsMETMaker::accept(mu)) metMuons.push_back(mu);
@@ -275,8 +275,8 @@ EL::StatusCode METConstructor :: execute ()
 
   const xAOD::JetContainer* jetCont(0);
   const xAOD::MissingETContainer* coreMet(0);
-  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont, m_inputJets.Data(), m_event, m_store, m_debug), "Failed retrieving jet cont.");
-  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(coreMet, m_coreName.Data(), m_event, m_store, m_debug), "Failed retrieving MET Core.");
+  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont, m_inputJets.Data(), m_event, m_store, m_verbose), "Failed retrieving jet cont.");
+  RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(coreMet, m_coreName.Data(), m_event, m_store, m_verbose), "Failed retrieving MET Core.");
   RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, false), "Failed to build jet/MET.");
 
 
@@ -286,7 +286,7 @@ EL::StatusCode METConstructor :: execute ()
 
   if (m_debug) {
     const xAOD::MissingETContainer* oldMet(0);
-    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(oldMet, m_referenceMETContainer.Data(), m_event, m_store, m_debug) ,"");
+    RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(oldMet, m_referenceMETContainer.Data(), m_event, m_store, m_verbose) ,"");
     xAOD::MissingETContainer::const_iterator final(oldMet->find("FinalClus"));
     xAOD::MissingETContainer::const_iterator newfinal(newMet->find("FinalClus"));
     Info("execute()", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");

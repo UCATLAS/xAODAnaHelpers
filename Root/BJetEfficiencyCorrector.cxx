@@ -238,7 +238,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* correctedJets(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedJets, m_inContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
   //
   // loop over available systematics
@@ -320,7 +320,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 	// directly obtain reco efficiency
 	//
 	float eff(0.0);
-	if( (fabs(jet_itr->eta()) < 2.5) && 
+	if( (fabs(jet_itr->eta()) < 2.5) &&
 	    m_BJetEffSFTool->getEfficiency( *jet_itr, eff ) != CP::CorrectionCode::Ok){
 	  Error( "execute()", "Problem in getRecoEfficiency");
 	  //return EL::StatusCode::FAILURE;

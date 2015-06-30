@@ -109,7 +109,7 @@ namespace HelperFunctions {
 
   std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet recSysts,
       std::string systName, float systVal );
-      
+
   /* ******************
   / *
   / * Marco Milesi (marco.milesi@cern.ch)
@@ -333,7 +333,7 @@ namespace HelperFunctions {
       return (lhs->pt() > rhs->pt());
     }
   };
-  
+
 
   template<typename T>
     T sort_container_pt(T* inCont){

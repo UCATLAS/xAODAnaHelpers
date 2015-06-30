@@ -176,7 +176,7 @@ EL::StatusCode JERShifter :: execute ()
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* inJets(nullptr);
-  RETURN_CHECK("JERShifter::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("JERShifter::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
   // create shallow copy
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > smearedJets = xAOD::shallowCopyContainer( *inJets );
