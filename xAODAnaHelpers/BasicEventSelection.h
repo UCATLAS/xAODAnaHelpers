@@ -30,6 +30,8 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_applyGRL;
     std::string m_GRLxml;
     std::string m_GRLExcludeList;
+    // Clean Powheg huge weight
+    bool m_cleanPowheg;
     //PU Reweighting
     bool m_doPUreweighting;
     std::string m_lumiCalcFileNames;
