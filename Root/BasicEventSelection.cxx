@@ -538,11 +538,10 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_pileuptool->apply(*eventInfo);
       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
       pileupWeight = pileupWeightAcc(*eventInfo) ;
-      mcEvtWeight *= pileupWeight;
     }
   }
 
-  // decorate with pileup corrected mc event weight
+  // decorate with mc event weight
   static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
   mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
