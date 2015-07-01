@@ -112,6 +112,7 @@ namespace HelperClasses {
     bool m_rapidity;
     bool m_clean;
     bool m_energy;
+    bool m_scales;
     bool m_resolution;
     bool m_truth;
     bool m_truthDetails;
