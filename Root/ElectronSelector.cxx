@@ -47,6 +47,8 @@ ClassImp(ElectronSelector)
 ElectronSelector :: ElectronSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr),
+  m_el_cutflowHist_1(nullptr),
+  m_el_cutflowHist_2(nullptr),
   m_IsolationSelectionTool(nullptr),
   m_ElectronIsolationSelectionTool(nullptr),
   m_el_LH_PIDManager(nullptr),
@@ -64,6 +66,9 @@ ElectronSelector :: ElectronSelector () :
   // read debug flag from .config file
   m_debug                   = false;
   m_useCutFlow              = true;
+
+  // checks if the algorithm has been used already
+  m_isUsedBefore            = false;
 
   // input container to be read from TEvent or TStore
   m_inContainerName         = "";
@@ -317,12 +322,61 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   Info("initialize()", "Initializing ElectronSelector Interface... ");
 
+  // let's see if the algorithm has been already used before:
+  // if yes, will write object cutflow in adifferent histogram!
+  //
+  // This is the case when the selector algorithm is used for 
+  // preselecting objects, and then for the final selection
+  //
+  Info("initialize()", "\n Algorithm name: %s \n How many times this algo type has already been used? %i ", (this->m_name).c_str(), this->countUsed() );
+  
+  m_isUsedBefore = ( this->countUsed() > 0 );
+
   if ( m_useCutFlow ) {
+    
+    // retrieve the file in which the cutflow hists are stored
+    //
     TFile *file     = wk()->getOutputFile ("cutflow");
+    
+    // retrieve the event cutflows
+    //
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
+    
+    // retrieve the object cutflow
+    //
+    m_el_cutflowHist_1 = (TH1D*)file->Get("cutflow_electrons_1");
+    
+    m_el_cutflow_all             = m_el_cutflowHist_1->GetXaxis()->FindBin("all");
+    m_el_cutflow_author_cut      = m_el_cutflowHist_1->GetXaxis()->FindBin("author_cut");     
+    m_el_cutflow_OQ_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("OQ_cut");         
+    m_el_cutflow_ptmax_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");      
+    m_el_cutflow_ptmin_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
+    m_el_cutflow_eta_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
+    m_el_cutflow_PID_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("PID_cut");
+    m_el_cutflow_z0sintheta_cut  = m_el_cutflowHist_1->GetXaxis()->FindBin("z0sintheta_cut");
+    m_el_cutflow_d0_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
+    m_el_cutflow_d0sig_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("d0sig_cut");
+    m_el_cutflow_iso_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
+    
+    if ( m_isUsedBefore ) {
+       m_el_cutflowHist_2 = (TH1D*)file->Get("cutflow_electrons_2");
+    
+       m_el_cutflow_all 	    = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
+       m_el_cutflow_author_cut      = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");	 
+       m_el_cutflow_OQ_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");	 
+       m_el_cutflow_ptmax_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");	 
+       m_el_cutflow_ptmin_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
+       m_el_cutflow_eta_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
+       m_el_cutflow_PID_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("PID_cut");
+       m_el_cutflow_z0sintheta_cut  = m_el_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
+       m_el_cutflow_d0_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
+       m_el_cutflow_d0sig_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
+       m_el_cutflow_iso_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
+    }
+    
   }
 
   m_event = wk()->xaodEvent();
@@ -691,35 +745,69 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   int oq      = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
 
+  // fill cutflow bin 'all' before any cut
+  m_el_cutflowHist_1->Fill( m_el_cutflow_all, 1 );
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_all, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  // 
   // author cut
+  //
   if ( m_doAuthorCut ) {
     if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed author kinematic cut." ); }
       return 0;
     }
-  }
+  }  
+  m_el_cutflowHist_1->Fill( m_el_cutflow_author_cut, 1 );        
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_author_cut, 1 ); }
+  
+  // *********************************************************************************************************************************************************************
+  // 
   // Object Quality cut
+  //
   if ( m_doOQCut ) {
     if ( !(oq == 0) ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed Object Quality cut." ); }
       return 0;
     }
   }
-  // pT max
+  m_el_cutflowHist_1->Fill( m_el_cutflow_OQ_cut, 1 );        
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_OQ_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  // 
+  // pT max cut
+  //
   if ( m_pT_max != 1e8 ) {
     if ( et > m_pT_max ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed pT max cut." ); }
       return 0;
     }
   }
-  // pT min
+  m_el_cutflowHist_1->Fill( m_el_cutflow_ptmax_cut, 1 );        
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_ptmax_cut, 1 ); }
+  
+  // *********************************************************************************************************************************************************************
+  //   
+  // pT min cut
+  //
   if ( m_pT_min != 1e8 ) {
     if ( et < m_pT_min ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed pT min cut." ); }
       return 0;
     }
   }
-  // |eta| max
+  m_el_cutflowHist_1->Fill( m_el_cutflow_ptmin_cut, 1 );        
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_ptmin_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  // 
+  // eta cuts
+  //
+   
+  // |eta| max cut
+  //
   if ( m_eta_max != 1e8 ) {
     if ( fabs(eta) > m_eta_max ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed |eta| max cut." ); }
@@ -727,6 +815,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
     }
   }
   // |eta| crack veto
+  //
   if ( m_vetoCrack ) {
     if ( electron->caloCluster() ){
       if ( fabs( electron->caloCluster()->eta() ) > 1.37 && fabs( electron->caloCluster()->eta() ) < 1.52 ) {
@@ -735,34 +824,13 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       }
     }
   }
+  m_el_cutflowHist_1->Fill( m_el_cutflow_eta_cut, 1 );
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_eta_cut, 1 ); }
 
-  // Tracking AFTER acceptance, in case of derivation reduction.
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
-  const xAOD::TrackParticle* tp  = electron->trackParticle();
-
-  if (!tp) {
-    if ( m_debug ) Info( "PassCuts()", "Electron has no TrackParticle.");
-    return 0;
-  }
-
-  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
-  float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
-
-  // d0 cut
-  if ( !( tp->d0() < m_d0_max ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 cut."); }
-      return 0;
-  }
-  // d0sig cut
-  if ( !( d0_significance < m_d0sig_max ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 significance cut."); }
-      return 0;
-  }
-  // z0*sin(theta) cut
-  if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed z0*sin(theta) cut." ); }
-      return 0;
-  }
+  // *********************************************************************************************************************************************************************
+  // 
+  // electron PID cuts
+  //
 
   //
   // likelihood PID
@@ -822,8 +890,58 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
     electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
   }
+  
+  m_el_cutflowHist_1->Fill( m_el_cutflow_PID_cut, 1 );
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_PID_cut, 1 ); }
 
-  // isolation
+  // *********************************************************************************************************************************************************************
+  // 
+  // impact parameter cuts
+  //
+
+  // Tracking AFTER acceptance, in case of derivation reduction.
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
+  const xAOD::TrackParticle* tp  = electron->trackParticle();
+
+  if (!tp) {
+    if ( m_debug ) Info( "PassCuts()", "Electron has no TrackParticle.");
+    return 0;
+  }
+
+  float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
+  float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
+
+  // z0*sin(theta) cut
+  //
+  if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed z0*sin(theta) cut." ); }
+      return 0;
+  }
+  m_el_cutflowHist_1->Fill( m_el_cutflow_z0sintheta_cut, 1 );
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_z0sintheta_cut, 1 ); }
+  
+  // d0 cut
+  //
+  if ( !( tp->d0() < m_d0_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 cut."); }
+      return 0;
+  }  
+  m_el_cutflowHist_1->Fill( m_el_cutflow_d0_cut, 1 );
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0_cut, 1 ); }
+
+  // d0sig cut
+  //
+  if ( !( d0_significance < m_d0sig_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 significance cut."); }
+      return 0;
+  }
+  m_el_cutflowHist_1->Fill( m_el_cutflow_d0sig_cut, 1 );
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0sig_cut, 1 ); }
+
+
+  // *********************************************************************************************************************************************************************
+  // 
+  // isolation cut
   //
   static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
   bool passIso = ( m_IsolationSelectionTool->accept( *electron ) );
@@ -833,6 +951,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       if ( m_debug ) { Info("PassCuts()", "Electron failed isolation cut." ); }
       return 0;
   }
+  m_el_cutflowHist_1->Fill( m_el_cutflow_iso_cut, 1 );
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill(m_el_cutflow_iso_cut , 1 ); }
 
   return 1;
 }

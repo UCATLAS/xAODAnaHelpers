@@ -47,7 +47,11 @@ BasicEventSelection :: BasicEventSelection () :
   m_trigDecTool(nullptr),
   m_histEventCount(nullptr),
   m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr)
+  m_cutflowHistW(nullptr),
+  m_el_cutflowHist_1(nullptr),
+  m_el_cutflowHist_2(nullptr),
+  m_mu_cutflowHist_1(nullptr),
+  m_mu_cutflowHist_2(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -167,7 +171,9 @@ EL::StatusCode BasicEventSelection :: configure ()
     }
 
     config->Print();
+    
     Info("configure()", "BasicEventSelection succesfully configured! ");
+    
     delete config; config = nullptr;
   }
 
@@ -381,6 +387,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   TFile *fileCF = wk()->getOutputFile ("cutflow");
   fileCF->cd();
 
+  // initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
+  //
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
   m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
   m_cutflowHist->SetBit(TH1::kCanRebin);
@@ -388,7 +396,19 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
   m_cutflowHistW->SetBit(TH1::kCanRebin);
 
-  // label the bins for the cutflow
+  // initialise object cutflows, which will be picked by the object selector algos downstream and filled. 
+  //
+  m_el_cutflowHist_1  = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
+  m_el_cutflowHist_1->SetBit(TH1::kCanRebin);
+  m_el_cutflowHist_2  = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
+  m_el_cutflowHist_2->SetBit(TH1::kCanRebin);  
+  m_mu_cutflowHist_1  = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
+  m_mu_cutflowHist_1->SetBit(TH1::kCanRebin);  
+  m_mu_cutflowHist_2  = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
+  m_mu_cutflowHist_2->SetBit(TH1::kCanRebin);  
+  
+  // start labelling the bins for the event cutflow
+  //
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
 
