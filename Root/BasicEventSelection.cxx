@@ -122,18 +122,6 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_lumiCalcFileNames = config->GetValue("LumiCalcFiles",       m_lumiCalcFileNames.c_str());
     m_PRWFileNames      = config->GetValue("PRWFiles",            m_PRWFileNames.c_str());
 
-    if( m_doPUreweighting ){
-      if( m_lumiCalcFileNames.size() == 0){
-        Error("BasicEventSelection()", "Pileup Reweighting is requested but no LumiCalc file is specified. Exiting" );
-        return EL::StatusCode::FAILURE;
-      }
-      if( m_PRWFileNames.size() == 0){
-        Error("BasicEventSelection()", "Pileup Reweighting is requested but no PRW file is specified. Exiting" );
-        return EL::StatusCode::FAILURE;
-      }
-    }
-
-
     // primary vertex
     m_vertexContainerName = config->GetValue("VertexContainer", m_vertexContainerName.c_str());
     // number of tracks to require to count PVs
@@ -156,12 +144,27 @@ EL::StatusCode BasicEventSelection :: configure ()
       Info("configure()", "Truth only! Turn off trigger stuff");
       m_triggerSelection = "";
       m_cutOnTrigger = m_storeTrigDecisions = m_storePassAny = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
+      Info("configure()", "Truth only! Turn off GRL");
+      m_applyGRL = false;
+      Info("configure()", "Truth only! Turn off Pile-up Reweight");
+      m_doPUreweighting = false;
     }
 
     if( !m_triggerSelection.empty() )
       Info("configure()", "Using Trigger %s", m_triggerSelection.c_str() );
     if( !m_cutOnTrigger )
       Info("configure()", "WILL NOT CUT ON TRIGGER AS YOU REQUESTED!");
+
+    if( m_doPUreweighting ){
+      if( m_lumiCalcFileNames.size() == 0){
+        Error("BasicEventSelection()", "Pileup Reweighting is requested but no LumiCalc file is specified. Exiting" );
+        return EL::StatusCode::FAILURE;
+      }
+      if( m_PRWFileNames.size() == 0){
+        Error("BasicEventSelection()", "Pileup Reweighting is requested but no PRW file is specified. Exiting" );
+        return EL::StatusCode::FAILURE;
+      }
+    }
 
     config->Print();
     Info("configure()", "BasicEventSelection succesfully configured! ");
@@ -469,11 +472,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-  RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
-  ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
-
   if( !m_triggerSelection.empty() || m_cutOnTrigger || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+    m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
+    ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
+
     m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
@@ -528,9 +531,6 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( m_isMC ) {
     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
-    // decorate with pileup corrected mc event weight
-    static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
-    mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
     //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
@@ -538,9 +538,13 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_pileuptool->apply(*eventInfo);
       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
       pileupWeight = pileupWeightAcc(*eventInfo) ;
+      mcEvtWeight *= pileupWeight;
     }
   }
 
+  // decorate with pileup corrected mc event weight
+  static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
+  mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
   // print every 1000 events, so we know where we are:
   m_cutflowHist ->Fill( m_cutflow_all, 1 );
