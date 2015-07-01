@@ -132,6 +132,7 @@ namespace HelperClasses{
     m_rapidity      = parse("rapidity");
     m_clean         = parse("clean");
     m_energy        = parse("energy");
+    m_scales        = parse("scales");
     m_resolution    = parse("resolution");
     m_truth         = parse("truth");
     m_truthDetails  = parse("truth_details");

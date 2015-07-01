@@ -253,6 +253,14 @@ protected:
   std::vector<float> m_jet_muonSegCount;
   std::vector<float> m_jet_width;
 
+  // scales
+  std::vector<float> m_jet_emPt;
+  std::vector<float> m_jet_pileupPt;
+  std::vector<float> m_jet_originConstitPt;
+  std::vector<float> m_jet_etaJESPt;
+  std::vector<float> m_jet_gscPt;
+  std::vector<float> m_jet_insituPt;
+
   // layer
   std::vector< std::vector<float> > m_jet_ePerSamp;
 
