@@ -13,6 +13,25 @@
 #include <string>
 
 namespace xAH {
+
+  class AlgorithmRegistry {
+
+      public:
+        AlgorithmRegistry(){};
+	virtual ~AlgorithmRegistry() {};
+        ClassDef(AlgorithmRegistry, 1);      
+     
+        // this maps bookkeeps the names of the algorithms
+        // which are used, and how many times they have 
+        // been used before as well
+        std::map<std::string, int> m_registered_algos;
+
+        // returns how many times an algo has been 
+        // already used
+        int countRegistered(std::string className);
+
+  };
+  
   class Algorithm : public EL::Algorithm {
       public:
         Algorithm();
@@ -33,7 +52,7 @@ namespace xAH {
 
         // each algorithm should have a unique name for init, to differentiate them
         std::string m_name;
-
+       
         // enable verbosity, debugging or not
         bool m_debug,
              m_verbose;
@@ -51,6 +70,12 @@ namespace xAH {
         // 0: this is data
         // 1: this is mc
         int m_isMC;
+	
+	// register the name of the algorithms 
+	// in a record.
+	// This can be used as a 'database' for other algos 
+	// to check if a class of the same type already exists
+	Algorithm* registerClass(AlgorithmRegistry &reg, std::string className);
 
       protected:
         // name of a config file to load in, optional
@@ -62,7 +87,16 @@ namespace xAH {
         // will try to determine if data or if MC
         // returns: -1=unknown (could not determine), 0=data, 1=mc
         int isMC();
+	
+	// returns how many times an algo of *this* type 
+	// has already been used
+	int countUsed() { return m_count_used; };
+      
+      private:
+        // bookkeeps the number of times an algo of *this* type has been used
+	int m_count_used;	
 
   };
+ 
 }
 #endif

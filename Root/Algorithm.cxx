@@ -11,6 +11,25 @@
 #include "xAODEventInfo/EventInfo.h"
 
 // this is needed to distribute the algorithm to the workers
+ClassImp(xAH::AlgorithmRegistry)
+
+int xAH::AlgorithmRegistry::countRegistered(std::string className){
+
+  auto iter = m_registered_algos.find(className);
+  
+  if ( iter != m_registered_algos.end() ) {  
+    Info("countRegistered()","input class name: %s is already in the registry! Increase counter by 1 and return it", className.c_str() );
+    m_registered_algos.at(className)++;
+    return m_registered_algos.at(className);
+  }
+    
+  Info("countRegistered()","input class name: %s is not registered yet. Returning 0", className.c_str() );
+  
+  return 0;
+
+}
+
+// this is needed to distribute the algorithm to the workers
 ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm() :
@@ -23,7 +42,8 @@ xAH::Algorithm::Algorithm() :
   m_isMC(-1),
   m_configName(""),
   m_event(nullptr),
-  m_store(nullptr)
+  m_store(nullptr),
+  m_count_used(0)
 {}
 
 xAH::Algorithm* xAH::Algorithm::setName(std::string name){
@@ -90,3 +110,20 @@ int xAH::Algorithm::isMC(){
   // reached here, return 0 or 1 since we have all we need
   return (static_cast<uint32_t>(eventType(*ei)) & xAOD::EventInfo::IS_SIMULATION);
 }
+
+xAH::Algorithm* xAH::Algorithm::registerClass(xAH::AlgorithmRegistry &reg, std::string className){
+
+  Info("registerClass()","input class name: %s", className.c_str() );
+
+  // the function will return 0 if the algo 
+  // isn't in the registry yet
+  m_count_used = reg.countRegistered(className); 
+  
+  // if not found already, set in the map in the registry the name of the algo
+  // and assign a value of 0 to the counter
+  if ( m_count_used == 0 ) { reg.m_registered_algos[className] = m_count_used; }
+  
+  return this;
+
+}
+

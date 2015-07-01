@@ -78,7 +78,14 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_tile;     //!
     int m_cutflow_core;     //!
     int m_cutflow_npv;      //!
-    int m_cutflow_trigger;      //!
+    int m_cutflow_trigger;  //!
+    
+    // object cutflow
+    TH1D* m_el_cutflowHist_1;  //!
+    TH1D* m_el_cutflowHist_2;  //!
+    TH1D* m_mu_cutflowHist_1;  //!
+    TH1D* m_mu_cutflowHist_2;  //!
+    
 
     // variables that don't get filled at submission time should be
     // protected from being send from the submission node to the worker

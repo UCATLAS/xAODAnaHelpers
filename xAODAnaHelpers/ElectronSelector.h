@@ -80,6 +80,24 @@ private:
   TH1D* m_cutflowHist;      //!
   TH1D* m_cutflowHistW;     //!
   int   m_cutflow_bin;      //!
+  
+  bool  m_isUsedBefore;     //!
+  
+  // object cutflow
+  TH1D* m_el_cutflowHist_1;            //!
+  TH1D* m_el_cutflowHist_2;            //!
+  
+  int   m_el_cutflow_all;              //! 
+  int   m_el_cutflow_author_cut;       //!
+  int   m_el_cutflow_OQ_cut;           //!
+  int   m_el_cutflow_ptmax_cut;        //!
+  int   m_el_cutflow_ptmin_cut;        //!	     
+  int   m_el_cutflow_eta_cut;          //!       
+  int   m_el_cutflow_PID_cut;          //!       
+  int   m_el_cutflow_z0sintheta_cut;   //!
+  int   m_el_cutflow_d0_cut;           //!     
+  int   m_el_cutflow_d0sig_cut;        //!     
+  int   m_el_cutflow_iso_cut;          //!       
 
   // tools
   CP::IsolationSelectionTool         *m_IsolationSelectionTool;               //! /* MC15 tool for isolation*/
