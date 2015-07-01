@@ -73,6 +73,9 @@ BasicEventSelection :: BasicEventSelection () :
   m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml";  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
   m_GRLExcludeList = "";
 
+  // Clean Powheg huge weight
+  m_cleanPowheg = false;
+
   // Pileup Reweighting
   m_doPUreweighting   = false;
   m_lumiCalcFileNames = "";
@@ -380,6 +383,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
   }
 
+  m_cleanPowheg = false;
+  if( eventInfo->runNumber() == 426005 ) { // Powheg+Pythis J5
+    m_cleanPowheg = true;
+    Info("initialize()", "This is J5 Powheg - cleaning that nasty huge weight event");
+  }
+
 
   Info("initialize()", "Setting up histograms");
 
@@ -553,6 +562,16 @@ EL::StatusCode BasicEventSelection :: execute ()
     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
 
     //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
+     
+    // kill the powheg event with a huge weight
+    if( m_cleanPowheg ) {
+      if( eventInfo->eventNumber() == 1652845 ) {
+        std::cout << "Dropping huge weight event. Weight should be 352220000" << std::endl;
+        std::cout << "WEIGHT : " << mcEvtWeight << std::endl;
+        wk()->skipEvent();
+        return EL::StatusCode::SUCCESS; // go to next event
+      }
+    }
 
     if ( m_doPUreweighting ) {
       m_pileuptool->apply(*eventInfo);
@@ -564,6 +583,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // decorate with mc event weight
   static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
   mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
+
 
   // print every 1000 events, so we know where we are:
   m_cutflowHist ->Fill( m_cutflow_all, 1 );
