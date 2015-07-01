@@ -923,6 +923,15 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_Width",                 &m_jet_width          );
   }
 
+  if ( m_jetInfoSwitch->m_scales ) {
+    m_tree->Branch("jet_emScalePt",              &m_jet_emPt            );
+    m_tree->Branch("jet_pileupScalePt",          &m_jet_pileupPt        );
+    m_tree->Branch("jet_originConstitScalePt",   &m_jet_originConstitPt );
+    m_tree->Branch("jet_etaJESScalePt",          &m_jet_etaJESPt        );
+    m_tree->Branch("jet_gscScalePt",             &m_jet_gscPt           );
+    m_tree->Branch("jet_insituScalePt",          &m_jet_insituPt        );
+  }
+
   if ( m_jetInfoSwitch->m_layer ) {
     m_tree->Branch("jet_EnergyPerSampling",     &m_jet_ePerSamp   );
   }
@@ -935,9 +944,6 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_SumPtTrkPt500",	    &m_jet_SumPtPt500   );
     m_tree->Branch("jet_TrackWidthPt500",   &m_jet_TrkWPt500    );
     m_tree->Branch("jet_JVF",		            &m_jet_jvf	        );
-    //m_tree->Branch("jet_JVFLoose",          &m_jet_jvfloose     );
-    // HigestJVFLooseVtx  Vertex
-    // JVT  Jvt, JvtRpt, JvtJvfcorr float JVT, etc., see Twiki
   }
 
   if ( m_jetInfoSwitch->m_trackPV ) {
@@ -1233,6 +1239,21 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       } else { m_jet_width.push_back( -999 ); }
 
     } // energy
+
+    // each step of the calibration sequence
+    if ( m_jetInfoSwitch->m_scales ) {
+      m_jet_emPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEMScaleMomentum" ).Pt() / m_units );
+      m_jet_pileupPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum" ).Pt() / m_units );
+      m_jet_originConstitPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetOriginConstitScaleMomentum" ).Pt() / m_units );
+      m_jet_etaJESPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEtaJESScaleMomentum" ).Pt() / m_units );
+      m_jet_gscPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetGSCScaleMomentum" ).Pt() / m_units );
+      // only available in data
+      xAOD::JetFourMom_t insitu;
+      bool status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetInsituScaleMomentum", insitu );
+      if(status) {
+        m_jet_insituPt.push_back( insitu.Pt() / m_units );
+      } else { m_jet_insituPt.push_back( -999 ); }
+    }
 
     if ( m_jetInfoSwitch->m_layer ) {
       static SG::AuxElement::ConstAccessor< std::vector<float> > ePerSamp ("EnergyPerSampling");
@@ -1781,6 +1802,16 @@ void HelpTreeBase::ClearJets() {
     m_jet_width.clear();
   }
 
+  // each step of the calibration sequence
+  if ( m_jetInfoSwitch->m_scales ) {
+    m_jet_emPt.clear();
+    m_jet_pileupPt.clear();
+    m_jet_originConstitPt.clear();
+    m_jet_etaJESPt.clear();
+    m_jet_gscPt.clear();
+    m_jet_insituPt.clear();
+  }
+
   // layer
   if ( m_jetInfoSwitch->m_layer ) {
     m_jet_ePerSamp.clear();
@@ -2138,9 +2169,9 @@ void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
   m_metFinalPy    = final->mpy() / m_units;	
   m_metFinalSumEt = final->sumet() / m_units;	    
   m_metFinalPhi   = final->phi();
-  
+
   /* add stuff... */
-  
+
   this->FillMETUser(met);
 }
 
