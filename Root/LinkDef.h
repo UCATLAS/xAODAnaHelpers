@@ -42,6 +42,7 @@
 #pragma link off all functions;
 #pragma link C++ nestedclass;
 
+#pragma link C++ class xAH::AlgorithmRegistry+;
 #pragma link C++ class xAH::Algorithm+;
 
 #pragma link C++ class BasicEventSelection+;

@@ -46,6 +46,8 @@ ClassImp(MuonSelector)
 MuonSelector :: MuonSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr),
+  m_mu_cutflowHist_1(nullptr),
+  m_mu_cutflowHist_2(nullptr),
   m_IsolationSelectionTool(nullptr),
   m_muonSelectionTool(nullptr),
   m_trigDecTool(nullptr),
@@ -63,6 +65,9 @@ MuonSelector :: MuonSelector () :
   // read debug flag from .config file
   m_debug                   = false;
   m_useCutFlow              = true;
+
+  // checks if the algorithm has been used already
+  m_isUsedBefore            = false;
 
   // input container to be read from TEvent or TStore
   m_inContainerName         = "";
@@ -314,12 +319,57 @@ EL::StatusCode MuonSelector :: initialize ()
 
   Info("initialize()", "Initializing MuonSelector Interface... ");
 
+  // let's see if the algorithm has been already used before:
+  // if yes, will write object cutflow in adifferent histogram!
+  //
+  // This is the case when the selector algorithm is used for 
+  // preselecting objects, and then for the final selection
+  //
+  Info("initialize()", "\n Algorithm name: %s \n How many times this algo type has already been used? %i ", (this->m_name).c_str(), this->countUsed() );
+
+  m_isUsedBefore = ( this->countUsed() > 0 );
+
   if ( m_useCutFlow ) {
-    TFile *file = wk()->getOutputFile ("cutflow");
+    
+    // retrieve the file in which the cutflow hists are stored
+    //
+    TFile *file     = wk()->getOutputFile ("cutflow");
+    
+    // retrieve the event cutflows
+    //
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
+    
+    // retrieve the object cutflow
+    //
+    m_mu_cutflowHist_1  = (TH1D*)file->Get("cutflow_muons_1");
+
+    m_mu_cutflow_all                  = m_mu_cutflowHist_1->GetXaxis()->FindBin("all");
+    m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_1->GetXaxis()->FindBin("eta_and_quality_cut");     
+    m_mu_cutflow_ptmax_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");      
+    m_mu_cutflow_ptmin_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
+    m_mu_cutflow_type_cut             = m_mu_cutflowHist_1->GetXaxis()->FindBin("type_cut");
+    m_mu_cutflow_z0sintheta_cut       = m_mu_cutflowHist_1->GetXaxis()->FindBin("z0sintheta_cut");
+    m_mu_cutflow_d0_cut               = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
+    m_mu_cutflow_d0sig_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0sig_cut");
+    m_mu_cutflow_iso_cut              = m_mu_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
+
+    if ( m_isUsedBefore ) {
+       m_mu_cutflowHist_2 = (TH1D*)file->Get("cutflow_muons_2");
+
+       m_mu_cutflow_all 		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("all");
+       m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");     
+       m_mu_cutflow_ptmax_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");      
+       m_mu_cutflow_ptmin_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
+       m_mu_cutflow_type_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("type_cut");
+       m_mu_cutflow_z0sintheta_cut	 = m_mu_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
+       m_mu_cutflow_d0_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
+       m_mu_cutflow_d0sig_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
+       m_mu_cutflow_iso_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
+    }
+    
   }
 
   m_event = wk()->xaodEvent();
@@ -675,30 +725,89 @@ EL::StatusCode MuonSelector :: histFinalize ()
 
 int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
 
-
   int type = static_cast<int>(muon->muonType());
+ 
+  // fill cutflow bin 'all' before any cut
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_all, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_all, 1 ); }
 
-  // pT max
+  // *********************************************************************************************************************************************************************
+  // 
+  // MuonSelectorTool cut: quality & |eta| acceptance cut
+  //
+  
+  // quality decorators
+  static SG::AuxElement::Decorator< char > isVeryLooseQDecor("isVeryLooseQ");
+  static SG::AuxElement::Decorator< char > isLooseQDecor("isLooseQ");
+  static SG::AuxElement::Decorator< char > isMediumQDecor("isMediumQ");
+  static SG::AuxElement::Decorator< char > isTightQDecor("isTightQ");
+  // initialise
+  isVeryLooseQDecor( *muon ) = -1;
+  isLooseQDecor( *muon )     = -1;
+  isMediumQDecor( *muon )    = -1;
+  isTightQDecor( *muon )     = -1;
+
+  int this_quality = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );
+
+  // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
+  if ( ! m_muonSelectionTool->accept( *muon ) ) {
+    if ( m_debug ) { Info("PassCuts()", "Muon failed requirements of MuonSelectionTool."); }
+    return 0;
+  }
+
+  isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
+  isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
+  isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
+  isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
+
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 ); }
+	   
+  // *********************************************************************************************************************************************************************
+  // 
+  // pT max cut
+  //
   if ( m_pT_max != 1e8 ) {
     if (  muon->pt() > m_pT_max ) {
       if ( m_debug ) { Info("PassCuts()", "Muon failed pT max cut."); }
       return 0;
     }
   }
-  // pT min
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptmax_cut, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptmax_cut, 1 ); }
+  
+  // *********************************************************************************************************************************************************************
+  // 
+  // pT min cut
+  //  
   if ( m_pT_min != 1e8 ) {
     if ( muon->pt() < m_pT_min ) {
       if ( m_debug ) { Info("PassCuts()", "Muon failed pT min cut."); }
       return 0;
     }
   }
-  // |eta| max
-  if ( m_eta_max != 1e8 ) {
-    if ( fabs(muon->eta()) > m_eta_max ) {
-      if ( m_debug ) { Info("PassCuts()", "Muon failed |eta| max cut."); }
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptmin_cut, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptmin_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  // 
+  // muon type cut
+  //
+  HelperClasses::EnumParser<xAOD::Muon::MuonType> muTypeParser;
+  if ( !m_muonType.empty() ) {
+    if ( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
+      if ( m_debug ) { Info("PassCuts()", "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str()); }
       return 0;
     }
   }
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_type_cut, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_type_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  // 
+  // impact parameter cuts
+  //  
+  
   // do not cut on impact parameter if muon is Standalone
   if ( type != xAOD::Muon::MuonType::MuonStandAlone ) {
 
@@ -709,70 +818,39 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
     float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
 
-    // d0 cut
-    if ( !( tp->d0() < m_d0_max ) ) {
-    	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 cut."); }
-    	return 0;
-    }
-    // d0sig cut
-    if ( !( d0_significance < m_d0sig_max ) ) {
-    	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 significance cut."); }
-    	return 0;
-    }
     // z0*sin(theta) cut
+    //
     if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
     	if ( m_debug ) { Info("PassCuts()", "Muon failed z0*sin(theta) cut."); }
     	return 0;
     }
-  }
-
-  // if muon is Combined, check charge is the same in ID and MS - Used in some RunI analyses
-  /*
-  if ( type != xAOD::Muon::MuonType::Combined ) {
-
-    const xAOD::TrackParticle* IDTrack = const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::InnerDetectorTrackParticle) );
-    const xAOD::TrackParticle* MSTrack = const_cast<xAOD::TrackParticle*>( muon->trackParticle(xAOD::Muon::MuonSpectrometerTrackParticle) );
-
-    if ( IDTrack && MSTrack ) {
-      if ( IDTrack->charge() * MSTrack->charge() < 0 ) {
-    	if ( m_debug ) { Info("PassCuts()", "Muon track has different charge measured in ID and MS. Failed selection"); }
+    m_mu_cutflowHist_1->Fill( m_mu_cutflow_z0sintheta_cut, 1 );
+    if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_z0sintheta_cut, 1 ); }
+    
+    // d0 cut
+    //
+    if ( !( tp->d0() < m_d0_max ) ) {
+    	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 cut."); }
     	return 0;
-      }
     }
-  }
-  */
-
-  // quality --> done already by MuonSelectionTool (see below)!
-  /*
-  if ( !m_muonQuality.empty() ) {
-
-    // get the quality enum for *this* muon
-    int quality = static_cast<int>( muon->quality() );
-
-    // get the selected quality level
-    HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
-    int selected_quality = static_cast<int>( muTypeParser.parseEnum(m_muonQuality) )
-
-    // NB: please note the ordering of the enum items!
-    // http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODMuon/xAODMuon/versions/Muon_v1.h
-    if ( quality > selected_quality ) {
-      if ( m_debug ) { Info("PassCuts()", "Muon quality: %i - min. required: %i . Failed", quality, selected_quality); }
-      return 0;
+    m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0_cut, 1 );
+    if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0_cut, 1 ); }
+    
+    // d0sig cut
+    //
+    if ( !( d0_significance < m_d0sig_max ) ) {
+    	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 significance cut."); }
+    	return 0;
     }
+    m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0sig_cut, 1 );
+    if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0sig_cut, 1 ); }
 
   }
-  */
 
-  // type
-  HelperClasses::EnumParser<xAOD::Muon::MuonType> muTypeParser;
-  if ( !m_muonType.empty() ) {
-    if ( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
-      if ( m_debug ) { Info("PassCuts()", "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str()); }
-      return 0;
-    }
-  }
-
-  // isolation
+  // *********************************************************************************************************************************************************************
+  // 
+  // isolation cut
+  //
   static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
   bool passIso(false);
   if (  m_IsoWP == "CutBasedDC14" ) {
@@ -799,30 +877,9 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     if ( m_debug ) { Info("PassCuts()", "Muon failed isolation cut "); }
     return 0;
   }
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_iso_cut, 1 ); }
 
-  // quality decorators
-  static SG::AuxElement::Decorator< char > isVeryLooseQDecor("isVeryLooseQ");
-  static SG::AuxElement::Decorator< char > isLooseQDecor("isLooseQ");
-  static SG::AuxElement::Decorator< char > isMediumQDecor("isMediumQ");
-  static SG::AuxElement::Decorator< char > isTightQDecor("isTightQ");
-  // initialise
-  isVeryLooseQDecor( *muon ) = -1;
-  isLooseQDecor( *muon )     = -1;
-  isMediumQDecor( *muon )    = -1;
-  isTightQDecor( *muon )     = -1;
-
-  int this_quality = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );
-
-  // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
-  if ( ! m_muonSelectionTool->accept( *muon ) ) {
-    if ( m_debug ) { Info("PassCuts()", "Muon failed requirements of MuonSelectionTool."); }
-    return 0;
-  }
-
-  isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
-  isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
-  isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
-  isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
 
   return 1;
 }

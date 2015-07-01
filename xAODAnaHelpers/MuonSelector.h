@@ -79,6 +79,23 @@ private:
   TH1D* m_cutflowHistW;         //!
   int   m_cutflow_bin;          //!
 
+  bool  m_isUsedBefore;     //!
+  
+  // object cutflow
+  TH1D* m_mu_cutflowHist_1;                 //!
+  TH1D* m_mu_cutflowHist_2;                 //!
+    
+  int   m_mu_cutflow_all;		    //! 
+  int   m_mu_cutflow_eta_and_quaility_cut;  //!
+  int   m_mu_cutflow_ptmax_cut;  	    //!
+  int   m_mu_cutflow_ptmin_cut;  	    //!
+  int   m_mu_cutflow_type_cut;		    //! 	  
+  int   m_mu_cutflow_z0sintheta_cut;	    //!       
+  int   m_mu_cutflow_d0_cut;		    //!       
+  int   m_mu_cutflow_d0sig_cut;  	    //!
+  int   m_mu_cutflow_iso_cut;		    //!     
+  
+
   std::vector<std::string> m_passKeys;  //!
   std::vector<std::string> m_failKeys;  //!
 
