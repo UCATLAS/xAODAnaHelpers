@@ -12,7 +12,8 @@
 #include "TH1D.h"
 
 // external tools include(s):
-#include "IsolationSelection/IsolationSelectionTool.h"
+#include "ElectronIsolationSelection/IsolationSelectionTool.h"
+#include "ElectronIsolationSelection/ElectronIsolationSelectionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -59,8 +60,11 @@ public:
   std::string    m_IsoWP;
   std::string    m_CaloIsoEff;
   std::string    m_TrackIsoEff;
+  bool           m_useRelativeIso;
   std::string    m_CaloBasedIsoType;
+  float          m_CaloBasedIsoCut;
   std::string    m_TrackBasedIsoType;
+  float          m_TrackBasedIsoCut;
 
   std::string    m_passAuxDecorKeys;  
   std::string    m_failAuxDecorKeys;  
@@ -96,7 +100,8 @@ private:
   int   m_el_cutflow_iso_cut;          //!       
 
   // tools
-  CP::IsolationSelectionTool         *m_IsolationSelectionTool; //! /* Run2 tool for isolation*/
+  CP::IsolationSelectionTool         *m_IsolationSelectionTool;               //! /* MC15 tool for isolation*/
+  CP::ElectronIsolationSelectionTool *m_ElectronIsolationSelectionTool;       //! /* DC14 tool for isolation*/
 
   // PID manager(s)
   ElectronLHPIDManager               *m_el_LH_PIDManager;       //!
