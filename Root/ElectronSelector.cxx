@@ -50,7 +50,6 @@ ElectronSelector :: ElectronSelector () :
   m_el_cutflowHist_1(nullptr),
   m_el_cutflowHist_2(nullptr),
   m_IsolationSelectionTool(nullptr),
-  m_ElectronIsolationSelectionTool(nullptr),
   m_el_LH_PIDManager(nullptr),
   m_el_CutBased_PIDManager(nullptr)
 {
@@ -117,14 +116,11 @@ ElectronSelector :: ElectronSelector () :
 
   // isolation stuff
   m_doIsolation             = false;
-  m_IsoWP		            = "Tight";
+  m_IsoWP		    = "Tight";
   m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
   m_TrackIsoEff             = "98";        // only if isolation WP is "UserDefined"
-  m_useRelativeIso          = true;
   m_CaloBasedIsoType        = "topoetcone20";
-  m_CaloBasedIsoCut         = 0.05;
   m_TrackBasedIsoType       = "ptvarcone20";
-  m_TrackBasedIsoCut        = 0.05;
 
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
@@ -194,12 +190,9 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
     m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_IsoWP.c_str());
     m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  // only if isolation WP is "UserDefined"
-    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());        // only if isolation WP is "UserDefined"
-    m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  m_useRelativeIso);
+    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str()); // only if isolation WP is "UserDefined"
     m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
-    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  m_CaloBasedIsoCut);
     m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
-    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  m_TrackBasedIsoCut);
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
@@ -434,36 +427,27 @@ EL::StatusCode ElectronSelector :: initialize ()
   if ( m_debug ) { Info("initialize()", "Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() ); }
   RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupTools( confDir, m_LHConfigYear ), "Failed to properly setup ElectronLHPIDManager." );
 
-  // initialise IsolationSelectionTool ( and ElectronIsolationTool, for DC14 )
+  // initialise IsolationSelectionTool 
   //
-  m_ElectronIsolationSelectionTool = new CP::ElectronIsolationSelectionTool( "ElectronIsolationSelectionTool" );
   m_IsolationSelectionTool         = new CP::IsolationSelectionTool( "IsolationSelectionTool" );
+  m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
 
-  if ( m_IsoWP == "CutBasedDC14" ) {
+  if ( m_IsoWP == "UserDefined" ) {
 
-    m_ElectronIsolationSelectionTool->msg().setLevel( MSG::INFO); // ERROR, VERBOSE, DEBUG, INFO
     HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-
-    RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_CaloBasedIsoType),   static_cast<float>(m_CaloBasedIsoCut),  m_useRelativeIso ), "Failed to configure Calo-Based Isolation Cut");
-    RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->configureCutBasedIsolation( isoParser.parseEnum(m_TrackBasedIsoType),  static_cast<float>(m_TrackBasedIsoCut), m_useRelativeIso ), "Failed to configure Track-Based Isolation Cut");
-    RETURN_CHECK( "ElectronSelector::initialize()", m_ElectronIsolationSelectionTool->initialize(), "Failed to properly initialize ElectronIsolationSelectionTool." );
-
+  
+    std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
+    myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
+    myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
+  
+    RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP("myTestWP", xAOD::Type::Electron, myCuts), "Failed to configure user-defined WP" );
+  
   } else {
-
-    m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
-
-    if ( m_IsoWP == "UserDefined" ) {
-      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronCaloIsoFunction",  m_CaloIsoEff.c_str() ), "Failed to configure ElectronCaloIsoFunction" );
-      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronTrackIsoFunction", m_TrackIsoEff.c_str() ), "Failed to configure ElectronTrackIsoFunction" );
-      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronCaloIsoType",	m_CaloBasedIsoType.c_str() ), "Failed to configure ElectronCaloIsoType" );
-      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronTrackIsoType",	m_TrackBasedIsoType.c_str() ), "Failed to configure ElectronTrackIsoType" );
-    } else {
-      RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty( "WorkingPoint", m_IsoWP.c_str() ), "Failed to configure WorkingPoint" );
-    }
-
-    RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
-
+    RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty( "ElectronWP", m_IsoWP.c_str() ), "Failed to configure WorkingPoint" );
   }
+
+  RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
+
 
   Info("initialize()", "ElectronSelector Interface succesfully initialized!" );
 
@@ -706,7 +690,6 @@ EL::StatusCode ElectronSelector :: finalize ()
   if ( m_el_CutBased_PIDManager )         { delete m_el_CutBased_PIDManager; m_el_CutBased_PIDManager = nullptr; }
   if ( m_el_LH_PIDManager )               { delete m_el_LH_PIDManager; m_el_LH_PIDManager = nullptr; }
   if ( m_IsolationSelectionTool )         { delete m_IsolationSelectionTool; m_IsolationSelectionTool = nullptr; }
-  if ( m_ElectronIsolationSelectionTool ) { delete m_ElectronIsolationSelectionTool; m_ElectronIsolationSelectionTool = nullptr; }
 
   if ( m_useCutFlow ) {
     Info("finalize()", "Filling cutflow");
@@ -944,8 +927,12 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   // isolation cut
   //
   static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
-  bool passIso = ( m_IsolationSelectionTool->accept( *electron ) );
-  isIsoDecor( *electron ) = ( passIso ) ? 1 : 0;
+  
+  bool passIso(false); 
+  if ( electron->caloCluster() && electron->caloCluster()->eta() < 2.47 ) {
+    passIso = ( m_IsolationSelectionTool->accept( *electron ) );
+  }
+  isIsoDecor( *electron ) = ( passIso );
 
   if ( m_doIsolation && !passIso ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed isolation cut." ); }
