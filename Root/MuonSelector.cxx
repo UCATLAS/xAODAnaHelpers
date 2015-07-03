@@ -105,8 +105,11 @@ MuonSelector :: MuonSelector () :
   m_IsoWP		    = "Tight";
   m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
   m_TrackIsoEff             = "98";        // only if isolation WP is "UserDefined"
+  m_useRelativeIso          = true;
   m_CaloBasedIsoType        = "topoetcone20";
+  m_CaloBasedIsoCut         = 0.05;
   m_TrackBasedIsoType       = "ptvarcone30";
+  m_TrackBasedIsoCut        = 0.05;
 
   // trigger matching stuff
   m_useSingleMuTrig         = false;
@@ -174,8 +177,11 @@ EL::StatusCode  MuonSelector :: configure ()
     m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_CaloIsoEff.c_str());
     m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  // only if isolation WP is "UserDefined"
     m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());        // only if isolation WP is "UserDefined"
+    m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  m_useRelativeIso);
     m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
+    m_CaloBasedIsoCut         = config->GetValue("CaloBasedIsoCut"   ,  m_CaloBasedIsoCut);
     m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
+    m_TrackBasedIsoCut        = config->GetValue("TrackBasedIsoCut"  ,  m_TrackBasedIsoCut);
 
     // trigger matching stuff
     m_useSingleMuTrig	      = config->GetValue("UseSingleMuTrig"   , m_useSingleMuTrig );
@@ -391,27 +397,26 @@ EL::StatusCode MuonSelector :: initialize ()
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" );
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
 
-  // isolation tool
+  // isolation tool for muons not available in DC14
   //
-  m_IsolationSelectionTool   = new CP::IsolationSelectionTool("IsolationSelectionTool" );
-  m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
+  if ( m_IsoWP != "CutBasedDC14" ) {
 
-  if ( m_IsoWP == "UserDefined" ) {
-    
-    HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-    
-    std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
-    myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
-    myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
-   
-    RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP("myTestWP", xAOD::Type::Muon, myCuts), "Failed to configure user-defined WP" );
+    std::string iso_tool_name  = "IsolationSelectionTool_";
+    m_IsolationSelectionTool   = new CP::IsolationSelectionTool( iso_tool_name.c_str() );
+    m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
 
-  } else {
-    RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty( "MuonWP", m_IsoWP.c_str() ), "Failed to configure WorkingPoint" );
+    if ( m_IsoWP == "UserDefined" ) {
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonCaloIsoFunction",  m_CaloIsoEff.c_str() ), "Failed to configure MuonCaloIsoFunction" );
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonTrackIsoFunction", m_TrackIsoEff.c_str() ), "Failed to configure MuonTrackIsoFunction" );
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonCaloIsoType",	m_CaloBasedIsoType.c_str() ), "Failed to configure MuonCaloIsoType" );
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonTrackIsoType",	m_TrackBasedIsoType.c_str() ), "Failed to configure MuonTrackIsoType" );
+    } else {
+      RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty( "WorkingPoint", m_IsoWP.c_str() ), "Failed to configure WorkingPoint" );
+    }
+
+    RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
+
   }
-
-  RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
-
 
   // initialise TrigMuonMatching tool
   //
@@ -848,9 +853,25 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   //
   static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
   bool passIso(false);
+  if (  m_IsoWP == "CutBasedDC14" ) {
 
-  passIso = ( m_IsolationSelectionTool->accept( *muon ) );
-  isIsoDecor( *muon ) = ( passIso ) ? 1 : 0;
+    HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+    float ptcone_dr(-999.), etcone_dr(-999.);
+
+    if ( muon->isolation(ptcone_dr, isoParser.parseEnum(m_TrackBasedIsoType)) &&  muon->isolation(etcone_dr,isoParser.parseEnum(m_CaloBasedIsoType)) ) {
+      bool isTrackIso = ( ptcone_dr / (muon->pt()) > 0.0 && ptcone_dr / (muon->pt()) <  m_TrackBasedIsoCut);
+      bool isCaloIso  = ( etcone_dr / (muon->pt()) > 0.0 && etcone_dr / (muon->pt()) <  m_CaloBasedIsoCut) ;
+
+      passIso = ( isTrackIso && isCaloIso );
+      isIsoDecor( *muon ) = ( passIso ) ? 1 : 0;
+    }
+
+  } else {
+
+    passIso = ( m_IsolationSelectionTool->accept( *muon ) );
+    isIsoDecor( *muon ) = ( passIso ) ? 1 : 0;
+
+  }
 
   if ( m_doIsolation && !passIso ) {
     if ( m_debug ) { Info("PassCuts()", "Muon failed isolation cut "); }
