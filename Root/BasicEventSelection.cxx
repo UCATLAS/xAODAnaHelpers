@@ -67,9 +67,12 @@ BasicEventSelection :: BasicEventSelection () :
 
   // derivation name
   m_derivationName = "";
-
+  
+  // Metadata
+  m_useMetaData = true;
+  
   // GRL
-  m_applyGRL = true;
+  m_applyGRLCut = true;
   m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml";  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
   m_GRLExcludeList = "";
 
@@ -81,14 +84,18 @@ BasicEventSelection :: BasicEventSelection () :
   m_lumiCalcFileNames = "";
   m_PRWFileNames      = "";
 
-  // primary vertex
+  // Primary Vertex
   m_vertexContainerName = "PrimaryVertices";
+  m_applyPrimaryVertexCut = true;
   // number of tracks to require to count PVs
   m_PVNTrack = 2; // harmonized cut
 
+  // Event Cleaning
+  m_applyEventCleaningCut = true;
+
   // Trigger
   m_triggerSelection = "";
-  m_cutOnTrigger = true ;
+  m_applyTriggerCut = true ;
   m_storeTrigDecisions = false;
   m_storePassAny = false;
   m_storePassL1 = false;
@@ -118,9 +125,11 @@ EL::StatusCode BasicEventSelection :: configure ()
 
     // derivation name
     m_derivationName    = config->GetValue("DerivationName", m_derivationName.c_str() );
-
+    // temp flag for derivations with broken meta data
+    m_useMetaData       = config->GetValue("UseMetaData", m_useMetaData);
+    
     // GRL
-    m_applyGRL          = config->GetValue("ApplyGRL",        m_applyGRL);
+    m_applyGRLCut       = config->GetValue("ApplyGRLCut",        m_applyGRLCut);
     m_GRLxml            = config->GetValue("GRL", m_GRLxml.c_str());
     m_GRLExcludeList    = config->GetValue("GRLExclude", m_GRLExcludeList.c_str());
 
@@ -129,17 +138,18 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_lumiCalcFileNames = config->GetValue("LumiCalcFiles",       m_lumiCalcFileNames.c_str());
     m_PRWFileNames      = config->GetValue("PRWFiles",            m_PRWFileNames.c_str());
 
-    // primary vertex
-    m_vertexContainerName = config->GetValue("VertexContainer", m_vertexContainerName.c_str());
+    // Event Cleaning
+    m_applyEventCleaningCut      = config->GetValue("ApplyEventCleaningCut",    m_applyEventCleaningCut);
+    
+    // Primary Vertex
+    m_vertexContainerName        = config->GetValue("VertexContainer",       m_vertexContainerName.c_str());
+    m_applyPrimaryVertexCut      = config->GetValue("ApplyPrimaryVertexCut", m_applyPrimaryVertexCut);
     // number of tracks to require to count PVs
-    m_PVNTrack            = config->GetValue("NTrackForPrimaryVertex",  m_PVNTrack);
-
-    // temp flag for derivations with broken meta data
-    m_useMetaData           = config->GetValue("UseMetaData", true);
+    m_PVNTrack                   = config->GetValue("NTrackForPrimaryVertex",  m_PVNTrack);
 
     // Trigger
     m_triggerSelection           = config->GetValue("Trigger",            m_triggerSelection.c_str());
-    m_cutOnTrigger               = config->GetValue("CutOnTrigger",       m_cutOnTrigger);
+    m_applyTriggerCut            = config->GetValue("ApplyTriggerCut",    m_applyTriggerCut);
     m_storeTrigDecisions         = config->GetValue("StoreTrigDecision",  m_storeTrigDecisions);
     m_storePassAny               = config->GetValue("StorePassAny",       m_storePassAny);
     m_storePassL1                = config->GetValue("StorePassL1",        m_storePassL1);
@@ -150,16 +160,16 @@ EL::StatusCode BasicEventSelection :: configure ()
     if( m_truthLevelOnly ) {
       Info("configure()", "Truth only! Turn off trigger stuff");
       m_triggerSelection = "";
-      m_cutOnTrigger = m_storeTrigDecisions = m_storePassAny = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
+      m_applyTriggerCut = m_storeTrigDecisions = m_storePassAny = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
       Info("configure()", "Truth only! Turn off GRL");
-      m_applyGRL = false;
+      m_applyGRLCut = false;
       Info("configure()", "Truth only! Turn off Pile-up Reweight");
       m_doPUreweighting = false;
     }
 
     if( !m_triggerSelection.empty() )
       Info("configure()", "Using Trigger %s", m_triggerSelection.c_str() );
-    if( !m_cutOnTrigger )
+    if( !m_applyTriggerCut )
       Info("configure()", "WILL NOT CUT ON TRIGGER AS YOU REQUESTED!");
 
     if( m_doPUreweighting ){
@@ -375,11 +385,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   //Protection in case GRL does not apply to this run
-  if(m_applyGRL){
+  if(m_applyGRLCut){
     std::string runNumString = std::to_string(eventInfo->runNumber());
     if (m_GRLExcludeList.find( runNumString ) != std::string::npos){
       Info("initialize()", "RunNumber is in GRLExclusion list, setting applyGRL to false");
-      m_applyGRL = false;
+      m_applyGRLCut = false;
     }
   }
 
@@ -423,7 +433,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   if ( !m_isMC ) {
-    if ( m_applyGRL ) {
+    if ( m_applyGRLCut ) {
       m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
       m_cutflowHistW->GetXaxis()->FindBin("GRL");
     }
@@ -436,7 +446,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }
   m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
   m_cutflowHistW->GetXaxis()->FindBin("NPV");
-  if ( !m_triggerSelection.empty() > 0 && m_cutOnTrigger ) {
+  if ( !m_triggerSelection.empty() > 0 && m_applyTriggerCut ) {
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
@@ -501,7 +511,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  if( !m_triggerSelection.empty() || m_cutOnTrigger || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+  if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
     m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
     ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
@@ -614,7 +624,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
 
     // GRL
-    if ( m_applyGRL ) {
+    if ( m_applyGRLCut ) {
       if ( !m_grl->passRunLB( *eventInfo ) ) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS; // go to next event
@@ -628,15 +638,15 @@ EL::StatusCode BasicEventSelection :: execute ()
     // problematic regions of the detector, and incomplete events.
     // Apply to data.
     //------------------------------------------------------------
-    // reject event if:
-    if ( (eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) ) {
+
+    if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_lar, 1 );
     m_cutflowHistW->Fill( m_cutflow_lar, mcEvtWeight);
 
-    if ( (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) ) {
+    if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
@@ -644,19 +654,18 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_tile, mcEvtWeight);
 
 
-    if( (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
+    if( m_applyEventCleaningCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
-    // if event in Egamma stream was already in Muons stream, skip it
-
   } //if !m_isMC
 
+  // Primary Vertex
   const xAOD::VertexContainer* vertices(nullptr);
-  if ( !m_truthLevelOnly ) {
+  if ( !m_truthLevelOnly && m_applyPrimaryVertexCut ) {
     RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_verbose) ,"");
 
     if ( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
@@ -667,10 +676,10 @@ EL::StatusCode BasicEventSelection :: execute ()
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
 
-  // Trigger //
+  // Trigger
   if ( !m_triggerSelection.empty() ) {
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
-    if ( m_cutOnTrigger ) {
+    if ( m_applyTriggerCut ) {
       if ( !triggerChainGroup->isPassed() ) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS;
@@ -678,7 +687,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_cutflowHist ->Fill( m_cutflow_trigger, 1 );
       m_cutflowHistW->Fill( m_cutflow_trigger, mcEvtWeight);
 
-    } // m_cutOnTrigger
+    } // m_applyTriggerCut
 
     // save passed triggers in eventInfo
     if( m_storeTrigDecisions ) {
@@ -731,9 +740,6 @@ EL::StatusCode BasicEventSelection :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  // GF TOFIX
-  //m_histEventCount -> Fill(3); // nEvents selected out
-  //m_histEventCount -> Fill(6, m_eventInfoHandler->get_MCEventWeight()); // sumOfWeights selected out
   return EL::StatusCode::SUCCESS;
 }
 
