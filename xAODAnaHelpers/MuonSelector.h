@@ -9,7 +9,7 @@
 #include "TH1D.h"
 
 // external tools include(s):
-#include "ElectronIsolationSelection/IsolationSelectionTool.h"
+#include "IsolationSelection/IsolationSelectionTool.h"
 #include "MuonSelectorTools/MuonSelectionTool.h"
 
 // algorithm wrapper
@@ -47,16 +47,15 @@ public:
   float          m_d0_max;                   // require d0 < m_d0_max
   float          m_d0sig_max; 	             // require d0 significance (at BL) < m_d0sig_max
   float	         m_z0sintheta_max;           // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
+  
   // isolation
   bool           m_doIsolation;
   std::string    m_IsoWP;
   std::string    m_CaloIsoEff;
   std::string    m_TrackIsoEff;
-  bool           m_useRelativeIso;
   std::string    m_CaloBasedIsoType;
-  float          m_CaloBasedIsoCut;
   std::string    m_TrackBasedIsoType;
-  float          m_TrackBasedIsoCut;
+  
   // trigger matching
   bool           m_useSingleMuTrig;
   std::string    m_singleMuTrigChain;
@@ -100,7 +99,7 @@ private:
   std::vector<std::string> m_failKeys;  //!
 
   // tools
-  CP::IsolationSelectionTool         *m_IsolationSelectionTool;  //! /* MC15 tool for isolation*/
+  CP::IsolationSelectionTool         *m_IsolationSelectionTool;  //! /* Run2 tool for isolation*/
   CP::MuonSelectionTool              *m_muonSelectionTool;       //!
 
   Trig::TrigDecisionTool*      m_trigDecTool;       //!
