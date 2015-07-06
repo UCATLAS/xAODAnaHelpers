@@ -1,5 +1,5 @@
 env:
-  - ABV=2.3.14
+  - ABV=2.3.15
 
 before_install:
   - ls
@@ -10,6 +10,7 @@ install:
   - source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh --quiet
   - rcSetup Base,${ABV}
   - python xAODAnaHelpers/scripts/checkoutASGtags.py ${ABV}
+  - rc clean
   - rc find_packages
 
 script:
