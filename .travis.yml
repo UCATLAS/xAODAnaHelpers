@@ -10,6 +10,7 @@ install:
   - source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh --quiet
   - rcSetup Base,${ABV}
   - python xAODAnaHelpers/scripts/checkoutASGtags.py ${ABV}
+  - rc clean
   - rc find_packages
 
 script:
