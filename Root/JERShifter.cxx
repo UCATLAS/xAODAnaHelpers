@@ -2,7 +2,7 @@
  *
  * Interface to CP JER Shifter tool(s).
  *
- * G. Facini, M. Milesi (marco.milesi@cern.ch)
+ * G. Facini, M. Milesi (marco.milesi@cern.ch), J. Dandoy
  *
  *
  ******************************************/
@@ -57,7 +57,9 @@ JERShifter :: JERShifter ()
   m_outContainerName  	= "";
 
   m_jetAlgo             = "";
-  m_debug                   = false;
+  m_JERConfig           = "JetResolution/Prerec2015_xCalib_2012JER_ReducedTo9NP_Plots.root";
+  m_JERFullSys          = false;
+  m_JERApplyNominal     = true;
 
 }
 
@@ -83,8 +85,11 @@ EL::StatusCode JERShifter :: setupJob (EL::Job& job)
     // output container to be put into TStore
     m_outContainerName  	= config->GetValue("OutputContainer", m_outContainerName.c_str());
 
+    m_JERConfig           = config->GetValue("JERConfig",       m_JETConfig.c_str());
     m_jetAlgo             = config->GetValue("JetAlgorithm",    m_jetAlgo.c_str());
-    m_debug                   = config->GetValue("Debug" ,           m_debug);
+    m_JERFullSys                = config->GetValue("JERFullSys" ,           m_JERFullSys);
+    m_JERApplyNominal                = config->GetValue("JERApplyNominal" ,           m_JERApplyNominal);
+    m_debug               = config->GetValue("Debug" ,          m_debug);
 
     delete config;
   }
@@ -136,31 +141,52 @@ EL::StatusCode JERShifter :: initialize ()
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
+
+  //if(m_isMC){
+  //  m_isFullSim = true;
+  //  const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
+  //  if ( stringMeta.empty() ) {
+  //    Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
+  //  } else {
+  //    m_isFullSim = (stringMeta == "AFII") ? false : true;
+  //  }
+
+  //}
 
   Info("initialize()"," Number of events in file: %lld ", m_event->getEntries() );
 
   m_numEvent      = 0;
 
   // Instantiate the tools
-  std::string jer_tool_name  = std::string("JERTool_") + m_name;
-  std::string jers_tool_name = std::string("JERSmearingTool_") + m_name;
-  m_JERTool     = new JERTool( jer_tool_name.c_str() );
-  m_JERSmearing = new JERSmearingTool( jers_tool_name.c_str() );
+  std::string JERTool_name  = std::string("JERTool_") + m_name;
+  std::string JERSmearingTool_name = std::string("JERSmearingTool_") + m_name;
+  m_JERTool     = new JERTool( JERTool_name.c_str() );
+  m_JERSmearTool = new JERSmearingTool( JERSmearingTool_name.c_str() );
 
   // Configure the JERTool
   //m_JERTool->msg().setLevel(MSG::DEBUG);
-  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("PlotFileName", "JetResolution/JERProviderPlots_2012.root"), "");
+  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("PlotFileName", m_JERConfig.c_str()), "");
   RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("CollectionName", m_jetAlgo), "");
-  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("BeamEnergy", "8TeV"), "");
-  RETURN_CHECK( "JERShifter::initialize()", m_JERTool->setProperty("SimulationType", "FullSim"), "");
 
-  // Configure the JERSmearingTool
-  //m_JERSmearing->msg().setLevel(MSG::DEBUG);
-  m_JERSmearing->setJERTool(m_JERTool);
-  m_JERSmearing->setNominalSmearing(true);
+  //m_JERSmearTool->msg().setLevel(MSG::DEBUG);
+  ToolHandle<IJERTool> JERToolHandle(m_JERTool->name());
+  RETURN_CHECK( "JERShifter::initialize()", m_JERSmearTool->setProperty("JERTool", JERToolHandle), "");
+
+  RETURN_CHECK( "JERShifter::initialize()", m_JERSmearTool->setProperty("isMC", m_isMC), "");
+
+  RETURN_CHECK( "JERShifter::initialize()", m_JERSmearTool->setProperty("ApplyNominalSmearing", m_JERApplyNominal), "");
+
+  if( m_JERFullSys )
+    RETURN_CHECK( "JERShifter::initialize()", m_JERSmearTool->setProperty("SystematicMode", "Full"), "");
+  else
+    RETURN_CHECK( "JERShifter::initialize()", m_JERSmearTool->setProperty("SystematicMode", "Simple"), "");
+
 
   RETURN_CHECK( "JERShifter::initialize()", m_JERTool->initialize(), "Failed to properly initialize the JER Tool");
-  RETURN_CHECK( "JERShifter::initialize()", m_JERSmearing->initialize(), "Failed to properly initialize the JERSmearing Tool");
+  RETURN_CHECK( "JERShifter::initialize()", m_JERSmearTool->initialize(), "Failed to properly initialize the JERSmearTool Tool");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -186,9 +212,9 @@ EL::StatusCode JERShifter :: execute ()
   xAOD::JetContainer::iterator jet_end = (smearedJets.first)->end();
   for( ; jet_itr != jet_end; ++jet_itr ){
 
-    if ( m_JERSmearing->applyCorrection( **jet_itr ) == CP::CorrectionCode::Error ) {
-      Error("JERSmearingTool()", "JERSmearingTool tool reported a CP::CorrectionCode::Error");
-      Error("JERSmearingTool()", "%s", m_name.c_str());
+    if ( m_JERSmearTool->applyCorrection( **jet_itr ) == CP::CorrectionCode::Error ) {
+      Error("JERSmearToolTool()", "JERSmearToolTool tool reported a CP::CorrectionCode::Error");
+      Error("JERSmearToolTool()", "%s", m_name.c_str());
       return StatusCode::FAILURE;
     }
 
@@ -215,7 +241,7 @@ EL::StatusCode JERShifter :: postExecute ()
 EL::StatusCode JERShifter :: finalize ()
 {
   if(m_JERTool) delete m_JERTool;
-  if(m_JERSmearing) delete m_JERSmearing;
+  if(m_JERSmearTool) delete m_JERSmearTool;
 
   return EL::StatusCode::SUCCESS;
 }

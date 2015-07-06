@@ -17,12 +17,13 @@ class JERShifter : public xAH::Algorithm
     std::string m_outContainerName;     // output container name
     std::string m_outAuxContainerName;
     std::string m_jetAlgo;
+    std::string m_JETConfig;
 
   private:
     int m_numEvent;         //!
 
     JERTool         * m_JERTool;     //!
-    JERSmearingTool * m_JERSmearing; //!
+    JERSmearingTool * m_JERSmearTool; //!
 
   public:
     // this is a standard constructor
