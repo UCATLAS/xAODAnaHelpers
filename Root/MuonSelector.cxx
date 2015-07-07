@@ -22,6 +22,7 @@
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODMuon/MuonContainer.h"
 #include "xAODTracking/VertexContainer.h"
+#include "xAODTracking/TrackParticlexAODHelpers.h"
 
 // package include(s):
 #include "xAODAnaHelpers/MuonSelector.h"
@@ -806,45 +807,59 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // impact parameter cuts
   //  
   
-  // do not cut on impact parameter if muon is Standalone
-  if ( type != xAOD::Muon::MuonType::MuonStandAlone ) {
+  // Put tracking cuts here, after pt cuts, to be safe with derivations.
 
-    // Put tracking here, after pt cuts, to be safe with derivations.
-    // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14
-    const xAOD::TrackParticle* tp  = muon->primaryTrackParticle();
+  // The following returns a pointer (which should not usually be NULL, but might be if the muon has been stripped of information) to the
+  // primary TrackParticle corresponding to the MuonType of this muon.
+  // This is determined in the following order:
+  //  1. CombinedTrackParticle
+  //  2. InnerDetectorTrackParticle
+  //  3. (Extrapolated)MuonSpectrometerTrackParticle
+  //
+  const xAOD::TrackParticle* tp = muon->primaryTrackParticle();
 
-    float d0_significance = fabs( tp->d0() ) / sqrt(tp->definingParametersCovMatrix()(0,0) );
-    float z0sintheta      = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
+  if ( !tp ) {
+    if ( m_debug ) Info( "PassCuts()", "Muon has no TrackParticle. Won't be selected.");
+    return 0;
+  }    
 
-    // z0*sin(theta) cut
-    //
-    if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
-    	if ( m_debug ) { Info("PassCuts()", "Muon failed z0*sin(theta) cut."); }
-    	return 0;
-    }
-    m_mu_cutflowHist_1->Fill( m_mu_cutflow_z0sintheta_cut, 1 );
-    if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_z0sintheta_cut, 1 ); }
-    
-    // d0 cut
-    //
-    if ( !( tp->d0() < m_d0_max ) ) {
-    	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 cut."); }
-    	return 0;
-    }
-    m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0_cut, 1 );
-    if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0_cut, 1 ); }
-    
-    // d0sig cut
-    //
-    if ( !( d0_significance < m_d0sig_max ) ) {
-    	if ( m_debug ) { Info("PassCuts()", "Muon failed d0 significance cut."); }
-    	return 0;
-    }
-    m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0sig_cut, 1 );
-    if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0sig_cut, 1 ); }
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  
+  double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
+  float z0sintheta	 = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
 
+  // z0*sin(theta) cut
+  //
+  if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Muon failed z0*sin(theta) cut."); }
+      return 0;
   }
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_z0sintheta_cut, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_z0sintheta_cut, 1 ); }
+  
+  // d0 cut
+  //
+  if ( !( tp->d0() < m_d0_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Muon failed d0 cut."); }
+      return 0;
+  }
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0_cut, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0_cut, 1 ); }
+  
+  // d0sig cut
+  //
+  if ( !( d0_significance < m_d0sig_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Muon failed d0 significance cut."); }
+      return 0;
+  }
+  m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0sig_cut, 1 );
+  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0sig_cut, 1 ); }
 
+  // decorate muon w/ d0sig info
+  static SG::AuxElement::Decorator< float > d0SigDecor("d0sig");
+  d0SigDecor( *muon ) = static_cast<float>(d0_significance);
+  
   // *********************************************************************************************************************************************************************
   // 
   // isolation cut

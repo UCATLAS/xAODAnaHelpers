@@ -478,8 +478,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
 	//
         m_muon_trkd0.push_back( trk->d0() );
-	float d0_significance = fabs( trk->d0() )  / sqrt(trk->definingParametersCovMatrix()(0,0) );
-        m_muon_trkd0sig.push_back( d0_significance );
+        static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
+        float d0_significance =  ( d0SigAcc.isAvailable( *muon_itr ) ) ? fabs( d0SigAcc( *muon_itr ) ) : -9999.0;
+	m_muon_trkd0sig.push_back( d0_significance );
 	float z0 =   trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
 								       // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
 	float theta = trk->theta();
@@ -741,7 +742,8 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
 	//
         m_el_trkd0.push_back( trk->d0() );
-	float d0_significance = fabs( trk->d0() )  / sqrt(trk->definingParametersCovMatrix()(0,0) );
+        static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
+        float d0_significance =  ( d0SigAcc.isAvailable( *el_itr ) ) ? fabs( d0SigAcc( *el_itr ) ) : -9999.0;
         m_el_trkd0sig.push_back( d0_significance );
 	float z0 =  trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
 								      // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
