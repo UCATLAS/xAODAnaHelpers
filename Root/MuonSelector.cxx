@@ -622,12 +622,14 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
   // perform trigger matching on the "good" (selected) muons
   //
-  if ( m_trigMuonMatchTool ) {
+  //TEMP FIX UNTIL CAN DO THIS WITHOUT CREATING A NEW CONTAINER
+  if ( m_trigMuonMatchTool && selectedMuons ) {
     unsigned int nSelectedMuons = selectedMuons->size();
 
     static SG::AuxElement::Decorator< char > isTrigMatchedDecor("isTrigMatched");
 
     if ( nSelectedMuons > 0 && m_useSingleMuTrig ) {
+      if ( m_debug ) { Info("execute()", "Single Muon Trigger Matching "); }
 
        for ( const auto muon : *selectedMuons ) {
     	 isTrigMatchedDecor( *muon ) = ( m_trigMuonMatchTool->match( muon, m_singleMuTrigChain, m_minDeltaR ) ) ? 1 : 0;
@@ -635,6 +637,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
     }
     if ( nSelectedMuons > 1 && m_useDiMuTrig ) {
+      if ( m_debug ) { Info("execute()", "Single Muon Trigger Matching "); }
 
       // take the first two muons in the selected container
       //
