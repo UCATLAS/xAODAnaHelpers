@@ -97,7 +97,7 @@ MuonSelector :: MuonSelector () :
 
   // isolation stuff
   m_doIsolation             = false;
-  m_IsoWP		    = "Tight";
+  m_IsoWP		                = "Tight";
   m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
   m_TrackIsoEff             = "98";        // only if isolation WP is "UserDefined"
   m_useRelativeIso          = true;
@@ -169,7 +169,7 @@ EL::StatusCode  MuonSelector :: configure ()
 
     // isolation stuff
     m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
-    m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_CaloIsoEff.c_str());
+    m_IsoWP		                = config->GetValue("IsolationWP"       ,  m_CaloIsoEff.c_str());
     m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  // only if isolation WP is "UserDefined"
     m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());        // only if isolation WP is "UserDefined"
     m_useRelativeIso          = config->GetValue("UseRelativeIso"    ,  m_useRelativeIso);
@@ -577,12 +577,14 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
   // perform trigger matching on the "good" (selected) muons
   //
-  if ( m_trigMuonMatchTool ) {
+  if ( m_trigMuonMatchTool && selectedMuons ) {
+    if ( m_debug ) { Info("execute()", "Do Trigger Matching for Muons"); }
     unsigned int nSelectedMuons = selectedMuons->size();
   
     static SG::AuxElement::Decorator< char > isTrigMatchedDecor("isTrigMatched");
   
     if ( nSelectedMuons > 0 && m_useSingleMuTrig ) {
+      if ( m_debug ) { Info("execute()", "Single Muon Trigger Matching "); }
     
        for ( const auto muon : *selectedMuons ) {
     	 isTrigMatchedDecor( *muon ) = ( m_trigMuonMatchTool->match( muon, m_singleMuTrigChain, m_minDeltaR ) ) ? 1 : 0;
@@ -590,6 +592,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     
     }
     if ( nSelectedMuons > 1 && m_useDiMuTrig ) {
+      if ( m_debug ) { Info("execute()", "Single Muon Trigger Matching "); }
     
       // take the first two muons in the selected container
       //
