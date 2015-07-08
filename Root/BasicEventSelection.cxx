@@ -43,6 +43,7 @@ ClassImp(BasicEventSelection)
 BasicEventSelection :: BasicEventSelection () :
   m_grl(nullptr),
   m_pileuptool(nullptr),
+  m_PU_default_channel(0),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
   m_histEventCount(nullptr),
@@ -134,9 +135,10 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_GRLExcludeList    = config->GetValue("GRLExclude", m_GRLExcludeList.c_str());
 
     // Pileup Reweighting
-    m_doPUreweighting   = config->GetValue("DoPileupReweighting", m_doPUreweighting);
-    m_lumiCalcFileNames = config->GetValue("LumiCalcFiles",       m_lumiCalcFileNames.c_str());
-    m_PRWFileNames      = config->GetValue("PRWFiles",            m_PRWFileNames.c_str());
+    m_doPUreweighting    = config->GetValue("DoPileupReweighting", m_doPUreweighting);
+    m_lumiCalcFileNames  = config->GetValue("LumiCalcFiles",       m_lumiCalcFileNames.c_str());
+    m_PRWFileNames       = config->GetValue("PRWFiles",            m_PRWFileNames.c_str());
+    m_PU_default_channel = config->GetValue("PUDefaultChannel",    m_PU_default_channel);
 
     // Event Cleaning
     m_applyEventCleaningCut      = config->GetValue("ApplyEventCleaningCut",    m_applyEventCleaningCut);
@@ -506,6 +508,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", PRWFiles), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lumiCalcFiles), "");
+    if(m_PU_default_channel)
+      RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DefaultChannel", m_PU_default_channel), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "");
   }
 
