@@ -30,10 +30,9 @@ public:
   std::string   m_DataPeriod;
 
   // Trigger SF                                                                                                                                             
-  int           m_year;
   int           m_runNumber;
-  std::string   m_SingleMuTrig;
-  std::string   m_SinglePlusDiMuTrig;
+  std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
+  std::string   m_DiMuTrig;          // this can be either a dimuon trigger chain, or an OR of ( N single muon trigger chains, dimuon chain ) 
 
   // systematics
   std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the

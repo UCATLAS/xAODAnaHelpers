@@ -67,10 +67,9 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
   m_DataPeriod                 = "2015";
 
   // Trigger SF
-  m_year                       = 2015;
   m_runNumber                  = 900000;
   m_SingleMuTrig               = "HLT_mu26_imedium";
-  m_SinglePlusDiMuTrig         = "mu20_iloose_L1MU15_or_mu50_or_2mu14";
+  m_DiMuTrig                   = "HLT_2mu14";
 
   // Systematics stuff
   m_inputAlgoSystNames         = "";
@@ -104,10 +103,9 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
     m_DataPeriod                 = config->GetValue("DataPeriod",   m_DataPeriod.c_str());
 
     // Trigger SF
-    m_year                       = config->GetValue("year", m_year);
-    m_runNumber                  = config->GetValue("runNumber", m_runNumber);
+    m_runNumber                  = config->GetValue("RunNumber", m_runNumber);
     m_SingleMuTrig               = config->GetValue("SingleMuTrig", m_SingleMuTrig.c_str());
-    m_SinglePlusDiMuTrig         = config->GetValue("SinglePlusDiMuTrig", m_SinglePlusDiMuTrig.c_str());
+    m_DiMuTrig                   = config->GetValue("DiMuTrig", m_DiMuTrig.c_str());
 
     // Systematics stuff
     m_inputAlgoSystNames         = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
@@ -214,8 +212,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // initialize the Muon Efficiency Correction Tool
   //
-  std::string eff_tool_name = std::string("MuonEfficiencyScaleFactors_") + m_name;
-  m_muonEffSFTool = new CP::MuonEfficiencyScaleFactors( eff_tool_name.c_str() );
+  m_muonEffSFTool = new CP::MuonEfficiencyScaleFactors("MuonEfficiencyScaleFactors" );
   m_muonEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonEffSFTool->setProperty("WorkingPoint", m_WorkingPoint ),"Failed to set Working Point property of MuonEfficiencyScaleFactors");
@@ -250,25 +247,12 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // Initialise the Muon Trigger Scale Factor tool
   //
-  std::string trig_tool_name = std::string("MuonTriggerScaleFactors_") + m_name;
-  m_muonTrigSFTool = new CP::MuonTriggerScaleFactors( trig_tool_name.c_str() );
+  m_muonTrigSFTool = new CP::MuonTriggerScaleFactors( "MuonTriggerScaleFactors" );
   m_muonTrigSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
-  //
-  // NB: need to retrieve the CP::MuonSelectionTool from asg::ToolStore to configure the tool!
-  //
-  if( ! asg::ToolStore::contains<CP::MuonSelectionTool>( "MuonSelectionTool" ) ) {
-    Error("initialize()", "Couldn't find MuonSelectionTool in asg::ToolStore. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-  m_muonSelectionTool = asg::ToolStore::get<CP::MuonSelectionTool>("MuonSelectionTool");
-
-  // pass the selection tool to this tool
-  //
-  m_muonTrigSFTool->setSelectionTool( m_muonSelectionTool );
-
-  //RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("year", m_year ),"Failed to set year property of MuonTriggerScaleFactors");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("runNumber", m_runNumber ),"Failed to set runNumber property of MuonTriggerScaleFactors");
+  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("MuonQuality", m_WorkingPoint ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
+
   int sys(0); // 0 : Combined, 1 : SysOnly, 2 : StatOnly
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("SystematicOption", sys ),"Failed to set SystematicOption property of MuonTriggerScaleFactors");
 
@@ -558,14 +542,14 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     ///*
     if ( nMuons > 0 ) {
 
-      if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF ) != CP::CorrectionCode::Ok ) {
+      if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
         Warning( "execute()", "Problem in getTriggerScaleFactor");
       }
       if ( m_debug ) { Info( "execute()", "Nominal trigger scaleFactor (single trigger) = %g", triggerSF ); }
 
       if ( nMuons > 1 ) {
-        if ( !m_SinglePlusDiMuTrig.empty() ) {
-          if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF, m_SinglePlusDiMuTrig ) != CP::CorrectionCode::Ok ) {
+        if ( !m_DiMuTrig.empty() ) {
+          if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF, m_DiMuTrig ) != CP::CorrectionCode::Ok ) {
 	    Warning( "execute()", "Problem in getTriggerScaleFactor");
           }
           if ( m_debug ) { Info( "execute()", "Nominal trigger scaleFactor (single + di-muon trigger) = %g", triggerSF ); }
