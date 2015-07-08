@@ -3,6 +3,7 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [xAODAnaHelpers (xAH)](#xaodanahelpers-xah)
+  - [ASG Release for development: **2.3.18**](#asg-release-for-development-2-.-3-.-18)
   - [Current Working Version: **00-03-04**](#current-working-version-00-03-04)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -10,6 +11,10 @@
 # xAODAnaHelpers (xAH)
 
 The xAOD analysis framework, born out of ProofAna...or not.
+
+## ASG Release for development: **2.3.18**
+
+Please use this!
 
 ## Current Working Version: **00-03-04**
 
