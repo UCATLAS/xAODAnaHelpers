@@ -252,10 +252,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("runNumber", m_runNumber ),"Failed to set runNumber property of MuonTriggerScaleFactors");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("MuonQuality", m_WorkingPoint ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
-
-  int sys(0); // 0 : Combined, 1 : SysOnly, 2 : StatOnly
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("SystematicOption", sys ),"Failed to set SystematicOption property of MuonTriggerScaleFactors");
-
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->initialize(), "Failed to properly initialize MuonTriggerScaleFactors");
 
   // Get a list of affecting systematics
