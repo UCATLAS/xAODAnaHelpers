@@ -31,7 +31,8 @@ dict_pkg = {'2.3.14': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUnc
                        "atlasoff/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/tags/JetSelectorTools-00-05-02",
                        "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20",
                        "atlasoff/PhysicsAnalysis/AnalysisCommon/PileupReweighting/tags/PileupReweighting-00-03-03",
-                       "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-00-05"]
+                       "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-00-05",
+                       "atlasoff/Event/xAOD/xAODTracking/tags/xAODTracking-00-13-15"]
            }
 
 try:
