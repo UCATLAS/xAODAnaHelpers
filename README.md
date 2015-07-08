@@ -12,11 +12,11 @@
 
 The xAOD analysis framework, born out of ProofAna...or not.
 
-## ASG Release for development: **2.3.18**
+## Current Working Version: **00-03-08**
 
-Please use this!
+The 00-03-08 tag is for use with **Base,2.3.18**.
 
-## Current Working Version: **00-03-04**
+## Previous Working Version: **00-03-04**
 
 The 00-03-04 tag works well with **Base,2.3.14, Base,2.3.15**. After checking out the package please execute a helper script to get any additional packages needed.
 These packages are needed to temporarily solve issues that will be resolved in up coming releases.
