@@ -65,7 +65,8 @@ class BasicEventSelection : public xAH::Algorithm
   private:
     GoodRunsListSelectionTool*   m_grl;       //!
     CP::PileupReweightingTool*   m_pileuptool; //!
-
+    int m_PU_default_channel; //!
+    
     TrigConf::xAODConfigTool*    m_trigConfTool;  //!
     Trig::TrigDecisionTool*      m_trigDecTool;   //!
 
