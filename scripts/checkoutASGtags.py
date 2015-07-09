@@ -23,22 +23,19 @@ args = parser.parse_args()
 
 print "using ASG version {0}".format(args.version)
 
-dict_pkg = {'2.3.14': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-27",
-                       "atlasoff/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/tags/JetSelectorTools-00-05-02",
-                       "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20",
-                       "atlasoff/PhysicsAnalysis/AnalysisCommon/PileupReweighting/tags/PileupReweighting-00-03-03"],
-            '2.3.15': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-27",
+dict_pkg = {'2.3.15': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-27",
                        "atlasoff/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/tags/JetSelectorTools-00-05-02",
                        "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20",
                        "atlasoff/PhysicsAnalysis/AnalysisCommon/PileupReweighting/tags/PileupReweighting-00-03-03",
                        "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-00-05",
-                       "atlasoff/Event/xAOD/xAODTracking/tags/xAODTracking-00-13-15"]
+                       "atlasoff/Event/xAOD/xAODTracking/tags/xAODTracking-00-13-15"],
+            '2.3.18': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-28"]
            }
 
 try:
   packages_to_checkout = dict_pkg[args.version]
 except KeyError:
-  print "That version isn't supported! If this is a problem, tell someone important."
+  print "Warning: that version isn't supported! This may not be a problem if you're using a new ASG release."
   import sys
   sys.exit(0)
 
