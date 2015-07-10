@@ -332,12 +332,20 @@ EL::StatusCode JetCalibrator :: initialize ()
     const CP::SystematicSet recSysts = m_JESUncertTool->recommendedSystematics();
 
     Info("initialize()"," Initializing Jet Systematics :");
-    std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );
 
-    //for ( const auto& syst_it : JESSysList ){
-    for(int i=0; i < JESSysList.size(); ++i){
-      m_systList.push_back(  JESSysList.at(i) );
-      m_systType.push_back(1);
+    //If just one systVal, then push it to the vector
+    if( m_systValVector.size() == 0)
+      m_systValVector.push_back(m_systVal);
+
+    for(unsigned int iSyst=0; iSyst < m_systValVector.size(); ++iSyst){
+      m_systVal = m_systValVector.at(iSyst);
+      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );
+
+      //for ( const auto& syst_it : JESSysList ){
+      for(unsigned int i=0; i < JESSysList.size(); ++i){
+        m_systList.push_back(  JESSysList.at(i) );
+        m_systType.push_back(1);
+      }
     }
 
     // Setup the tool for the 1st systematic on the list
@@ -393,9 +401,8 @@ EL::StatusCode JetCalibrator :: initialize ()
     const CP::SystematicSet recSysts = m_JERSmearTool->recommendedSystematics();
     Info("initialize()", " Initializing JER Systematics :");
 
-    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );
-    //for ( const auto& syst_it : JERSysList ){
-    for(int i=0; i < JERSysList.size(); ++i){
+    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1 ); //Only 1 sys allowed
+    for(unsigned int i=0; i < JERSysList.size(); ++i){
       m_systList.push_back(  JERSysList.at(i) );
       m_systType.push_back(2);
     }
