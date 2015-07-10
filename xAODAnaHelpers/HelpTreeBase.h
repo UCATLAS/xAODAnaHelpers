@@ -1,4 +1,4 @@
-/***************************************************
+/********************************************************************************
  * HelpTreeBase:
  *
  * This class is meant to help the user write out a tree.
@@ -8,7 +8,7 @@
  * Gabriel Facini ( gabriel.facini@cern.ch ), Marco Milesi (marco.milesi@cern.ch)
  *
  *
- ***************************************************/
+ ********************************************************************************/
 
 // Dear emacs, this is -*-c++-*-
 #ifndef xAODAnaHelpers_HelpTreeBase_H
@@ -26,6 +26,7 @@
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODRootAccess/TEvent.h"
+#include "xAODRootAccess/TStore.h"
 
 #include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
 
@@ -45,7 +46,7 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false );
+  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, bool DC14 = false );
   virtual ~HelpTreeBase() {;}
 
   void AddEvent       (const std::string detailStr = "");
@@ -59,6 +60,7 @@ public:
   void AddMET         (const std::string detailStr = "");
 
   xAOD::TEvent* m_event;
+  xAOD::TStore* m_store; 
 
   // control which branches are filled
   HelperClasses::EventInfoSwitch*      m_eventInfoSwitch;
@@ -77,7 +79,7 @@ public:
   TrigConf::xAODConfigTool*    m_trigConfTool;
   Trig::TrigDecisionTool*      m_trigDecTool;
 
-  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = 0 );
+  void FillEvent( const xAOD::EventInfo* eventInfo );
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
@@ -146,15 +148,15 @@ public:
   virtual void ClearTausUser() 	    { return; };
   virtual void ClearMETUser()       { return; };
 
-  virtual void FillEventUser( const xAOD::EventInfo* /*eventInfo*/ )        { return; };
-  virtual void FillMuonsUser( const xAOD::Muon* /*muon*/ )                  { return; };
-  virtual void FillElectronsUser( const xAOD::Electron* /*electron*/ )      { return; };
-  virtual void FillJetsUser( const xAOD::Jet* /*jet*/ )                     { return; };
-  virtual void FillFatJetsUser( const xAOD::Jet* /*fatJet*/ )               { return; };
-  virtual void FillTausUser( const xAOD::TauJet* /*tau*/ )                  { return; };
-  virtual void FillMETUser( const xAOD::MissingETContainer* /*met*/ )       { return; };
-  virtual void FillTriggerUser( const xAOD::EventInfo* /*eventInfo*/ )      { return; };
-  virtual void FillJetTriggerUser()                                         { return; };
+  virtual void FillEventUser( const xAOD::EventInfo*  )        { return; };
+  virtual void FillMuonsUser( const xAOD::Muon*  )             { return; };
+  virtual void FillElectronsUser( const xAOD::Electron*  )     { return; };
+  virtual void FillJetsUser( const xAOD::Jet*  )               { return; };
+  virtual void FillFatJetsUser( const xAOD::Jet*  )            { return; };
+  virtual void FillTausUser( const xAOD::TauJet*  )            { return; };
+  virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
+  virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
+  virtual void FillJetTriggerUser()                            { return; };
 
 protected:
 
@@ -207,6 +209,9 @@ protected:
   unsigned int m_masterKey;
   unsigned int m_L1PSKey;
   unsigned int m_HLTPSKey;
+  std::vector<std::string>  m_elTrigForMatching;   /* each event can have a list of electron trigger chains to which each electron could be matched.
+  						   / This list is created when configuring ElectronSelector.cxx, where the electron trigger matching is actually performed
+						   */
 
   std::vector<std::string> m_passTriggers;
 
@@ -395,7 +400,7 @@ protected:
   std::vector<float> m_muon_m;
 
   // trigger
-  std::vector<int>   m_muon_isTrigMatched;
+  std::vector<int>  m_muon_isTrigMatched;
 
   // isolation
   std::vector<int>   m_muon_isIsolated;
@@ -445,7 +450,11 @@ protected:
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
-
+  
+  // trigger
+  std::vector<int> m_el_isTrigMatchedToChain;
+  std::vector<std::string> m_el_listTrigChains;
+  
   // isolation
   std::vector<int>   m_el_isIsolated;
   std::vector<float> m_el_etcone20;
