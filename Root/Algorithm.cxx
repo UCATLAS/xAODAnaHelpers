@@ -16,15 +16,15 @@ ClassImp(xAH::AlgorithmRegistry)
 int xAH::AlgorithmRegistry::countRegistered(std::string className){
 
   auto iter = m_registered_algos.find(className);
-  
-  if ( iter != m_registered_algos.end() ) {  
+
+  if ( iter != m_registered_algos.end() ) {
     Info("countRegistered()","input class name: %s is already in the registry! Increase counter by 1 and return it", className.c_str() );
     m_registered_algos.at(className)++;
     return m_registered_algos.at(className);
   }
-    
+
   Info("countRegistered()","input class name: %s is not registered yet. Returning 0", className.c_str() );
-  
+
   return 0;
 
 }
@@ -90,6 +90,12 @@ xAH::Algorithm* xAH::Algorithm::setSyst(std::string systName, float systVal){
   return this;
 }
 
+xAH::Algorithm* xAH::Algorithm::setSyst(std::string systName, std::vector<float> systValVector){
+  m_systName = systName;
+  m_systValVector = systValVector;
+  return this;
+}
+
 int xAH::Algorithm::isMC(){
   // first override if need to
   if(m_isMC == 0 || m_isMC == 1) return m_isMC;
@@ -115,14 +121,14 @@ xAH::Algorithm* xAH::Algorithm::registerClass(xAH::AlgorithmRegistry &reg, std::
 
   Info("registerClass()","input class name: %s", className.c_str() );
 
-  // the function will return 0 if the algo 
+  // the function will return 0 if the algo
   // isn't in the registry yet
-  m_count_used = reg.countRegistered(className); 
-  
+  m_count_used = reg.countRegistered(className);
+
   // if not found already, set in the map in the registry the name of the algo
   // and assign a value of 0 to the counter
   if ( m_count_used == 0 ) { reg.m_registered_algos[className] = m_count_used; }
-  
+
   return this;
 
 }
