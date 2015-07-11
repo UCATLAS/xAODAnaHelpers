@@ -25,30 +25,30 @@ class BasicEventSelection : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
   public:
     // variables read in through configuration file
-    
+
     bool m_truthLevelOnly;
-    
+
     // GRL
-    bool m_applyGRLCut;
+    bool m_applyGRL;
     std::string m_GRLxml;
     std::string m_GRLExcludeList;
-    
+
     // Clean Powheg huge weight
     bool m_cleanPowheg;
-    
+
     //PU Reweighting
     bool m_doPUreweighting;
     std::string m_lumiCalcFileNames;
     std::string m_PRWFileNames;
-    
+
     // Primary Vertex
     std::string m_vertexContainerName;
     bool m_applyPrimaryVertexCut;
     int m_PVNTrack;
-        
+
     // Event Cleaning
     bool m_applyEventCleaningCut;
-    
+
     // Trigger
     std::string m_triggerSelection;
     bool m_applyTriggerCut;
@@ -66,7 +66,7 @@ class BasicEventSelection : public xAH::Algorithm
     GoodRunsListSelectionTool*   m_grl;       //!
     CP::PileupReweightingTool*   m_pileuptool; //!
     int m_PU_default_channel; //!
-    
+
     TrigConf::xAODConfigTool*    m_trigConfTool;  //!
     Trig::TrigDecisionTool*      m_trigDecTool;   //!
 
@@ -93,13 +93,13 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_core;     //!
     int m_cutflow_npv;      //!
     int m_cutflow_trigger;  //!
-    
+
     // object cutflow
     TH1D* m_el_cutflowHist_1;  //!
     TH1D* m_el_cutflowHist_2;  //!
     TH1D* m_mu_cutflowHist_1;  //!
     TH1D* m_mu_cutflowHist_2;  //!
-    
+
 
     // variables that don't get filled at submission time should be
     // protected from being send from the submission node to the worker
