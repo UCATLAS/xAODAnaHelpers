@@ -73,7 +73,7 @@ BasicEventSelection :: BasicEventSelection () :
   m_useMetaData = true;
 
   // GRL
-  m_applyGRL = true;
+  m_applyGRLCut = true;
   m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml";  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
   m_GRLExcludeList = "";
 
@@ -130,7 +130,8 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_useMetaData       = config->GetValue("UseMetaData", m_useMetaData);
 
     // GRL
-    m_applyGRL       = config->GetValue("ApplyGRL",        m_applyGRL);
+    m_applyGRLCut       = config->GetValue("ApplyGRL",        m_applyGRLCut);
+    m_applyGRLCut       = config->GetValue("ApplyGRLCut",        m_applyGRLCut);
     m_GRLxml            = config->GetValue("GRL", m_GRLxml.c_str());
     m_GRLExcludeList    = config->GetValue("GRLExclude", m_GRLExcludeList.c_str());
 
@@ -164,7 +165,7 @@ EL::StatusCode BasicEventSelection :: configure ()
       m_triggerSelection = "";
       m_applyTriggerCut = m_storeTrigDecisions = m_storePassAny = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
       Info("configure()", "Truth only! Turn off GRL");
-      m_applyGRL = false;
+      m_applyGRLCut = false;
       Info("configure()", "Truth only! Turn off Pile-up Reweight");
       m_doPUreweighting = false;
     }
@@ -387,11 +388,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   //Protection in case GRL does not apply to this run
-  if(m_applyGRL){
+  if(m_applyGRLCut){
     std::string runNumString = std::to_string(eventInfo->runNumber());
     if (m_GRLExcludeList.find( runNumString ) != std::string::npos){
       Info("initialize()", "RunNumber is in GRLExclusion list, setting applyGRL to false");
-      m_applyGRL = false;
+      m_applyGRLCut = false;
     }
   }
 
@@ -435,7 +436,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   if ( !m_isMC ) {
-    if ( m_applyGRL ) {
+    if ( m_applyGRLCut ) {
       m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
       m_cutflowHistW->GetXaxis()->FindBin("GRL");
     }
@@ -628,7 +629,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
 
     // GRL
-    if ( m_applyGRL ) {
+    if ( m_applyGRLCut ) {
       if ( !m_grl->passRunLB( *eventInfo ) ) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS; // go to next event

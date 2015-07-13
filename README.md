@@ -58,3 +58,4 @@ The following list are packages / analyses searches that depend on xAH. We thank
 - [multijet](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExoticMultiJetRun2)
 - [hh->4b](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XtoYYtobbbbRun2)
 - [VBF + invisible](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/HiggsInvisibleRun2)
+- [g->tt susy multi-b-jet](https://github.com/kratsg/TheAccountant)
