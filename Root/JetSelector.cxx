@@ -47,7 +47,8 @@ ClassImp(JetSelector)
 
 JetSelector :: JetSelector () :
   m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr)
+  m_cutflowHistW(nullptr),
+  m_jet_cutflowHist_1(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -335,12 +336,32 @@ EL::StatusCode JetSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
   Info("initialize()", "Calling initialize");
+  
   if ( m_useCutFlow ) {
-    TFile *file = wk()->getOutputFile ("cutflow");
+
+   // retrieve the file in which the cutflow hists are stored
+    //
+    TFile *file     = wk()->getOutputFile ("cutflow");
+    
+    // retrieve the event cutflows
+    //
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
+    
+    // retrieve the object cutflow
+    //
+    m_jet_cutflowHist_1 = (TH1D*)file->Get("cutflow_jets_1");
+
+    m_jet_cutflow_all             = m_jet_cutflowHist_1->GetXaxis()->FindBin("all");
+    m_jet_cutflow_cleaning_cut    = m_jet_cutflowHist_1->GetXaxis()->FindBin("cleaning_cut");     
+    m_jet_cutflow_ptmax_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
+    m_jet_cutflow_ptmin_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");      
+    m_jet_cutflow_eta_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); 
+    m_jet_cutflow_jvt_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("JVT_cut");
+    m_jet_cutflow_btag_cut        = m_jet_cutflowHist_1->GetXaxis()->FindBin("BTag_cut");
+ 
   }
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
@@ -591,6 +612,9 @@ EL::StatusCode JetSelector :: histFinalize ()
 
 int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
+  // fill cutflow bin 'all' before any cut
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_all, 1 );
+
   // clean jets
   static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
   if ( m_cleanJets ) {
@@ -598,14 +622,18 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       if ( !isCleanAcc( *jet ) ) { return 0; }
     }
   }
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_cleaning_cut, 1 );        
 
   // pT
   if ( m_pT_max != 1e8 ) {
     if ( jet->pt() > m_pT_max ) { return 0; }
   }
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmax_cut, 1 );        
+  
   if ( m_pT_min != 1e8 ) {
     if ( jet->pt() < m_pT_min ) { return 0; }
   }
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmin_cut, 1 );        
 
   // eta
   if ( m_eta_max != 1e8 ) {
@@ -614,6 +642,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   if ( m_eta_min != 1e8 ) {
     if ( fabs(jet->eta()) < m_eta_min ) { return 0; }
   }
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_eta_cut, 1 );        
 
   // detEta
   if ( m_detEta_max != 1e8 ) {
@@ -670,6 +699,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       }
     }
   } // m_doJVT
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );        
 
   //
   //  BTagging
@@ -695,6 +725,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       if ( m_doBTagCut && (discriminant < m_btagCut) ) {
 	return 0;
       }
+      m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );        
 
       //
       // Decorate the Jets

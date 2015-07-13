@@ -58,6 +58,7 @@ JetCalibrator :: JetCalibrator () :
 
   // read debug flag from .config file
   m_debug                   = false;
+  
   m_sort                    = true;
   // input container to be read from TEvent or TStore
   m_inContainerName         = "";
@@ -245,7 +246,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   m_numEvent      = 0;
   m_numObject     = 0;
-
+  
   //Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
   if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
 
@@ -539,6 +540,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
     // decorate with cleaning decision
     for ( auto jet_itr : *(calibJetsSC.first) ) {
+
       static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
       const xAOD::Jet* jetToClean = jet_itr;
 
