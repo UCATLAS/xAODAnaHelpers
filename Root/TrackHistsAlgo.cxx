@@ -45,7 +45,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;
   } else {
-    Info("histInitialize()", "Successfully configured! ");
+    if(m_debug) Info("histInitialize()", "Successfully configured! ");
   }
 
   // declare class and add histograms to output
@@ -70,10 +70,10 @@ EL::StatusCode TrackHistsAlgo :: configure ()
     m_detailStr               = config->GetValue("DetailStr",       m_detailStr.c_str());
     m_debug                   = config->GetValue("Debug" ,          m_debug);
 
-    Info("configure()", "Loaded in configuration values");
+    if(m_debug) Info("configure()", "Loaded in configuration values");
 
     // everything seems preliminarily ok, let's print config and say we were successful
-    config->Print();
+    if(m_debug) config->Print();
 
     delete config;
   }
@@ -92,7 +92,7 @@ EL::StatusCode TrackHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::S
 
 EL::StatusCode TrackHistsAlgo :: initialize ()
 {
-  Info("initialize()", "TrackHistsAlgo");
+  if(m_debug) Info("initialize()", "TrackHistsAlgo %s",m_name.c_str());
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
@@ -100,6 +100,8 @@ EL::StatusCode TrackHistsAlgo :: initialize ()
 
 EL::StatusCode TrackHistsAlgo :: execute ()
 {
+  if(m_debug) Info("execute()","Filling Track Collection %s", m_inContainerName.c_str());
+
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
 

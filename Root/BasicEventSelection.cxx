@@ -95,7 +95,6 @@ BasicEventSelection :: BasicEventSelection () :
 
 EL::StatusCode BasicEventSelection :: configure ()
 {
-
   if ( !getConfig().empty() ) {
 
     // read in user configuration from text file
@@ -414,10 +413,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "");
 
-    //
-    // Adding the Trigger Decision Tool to the ToolService
-    //
-    RETURN_CHECK("BasicEventSelection::initialize()", asg::ToolStore::put(m_trigDecTool,"xAHTrigDecisionTool"), "");
   }
 
 

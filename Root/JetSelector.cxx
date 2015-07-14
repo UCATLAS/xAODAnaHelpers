@@ -48,6 +48,7 @@ ClassImp(JetSelector)
 JetSelector :: JetSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr)
+//m_trigDecTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -116,7 +117,7 @@ JetSelector :: JetSelector () :
 EL::StatusCode  JetSelector :: configure ()
 {
   if(!getConfig().empty()){
-    Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", getConfig().c_str());
+    if(m_debug) Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", getConfig().c_str());
 
     TEnv* config = new TEnv(getConfig(true).c_str());
 
@@ -175,7 +176,7 @@ EL::StatusCode  JetSelector :: configure ()
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
 
     config->Print();
-    Info("configure()", "JetSelector Interface succesfully configured! ");
+    if(m_debug) Info("configure()", "JetSelector Interface succesfully configured! ");
 
     delete config; config = nullptr;
   }
@@ -387,8 +388,11 @@ EL::StatusCode JetSelector :: execute ()
 
     pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName);
 
-  }
-  else { // get the list of systematics to run over
+    //}else if( !m_trigSelection.empty() ){
+    
+    
+
+  }else { // get the list of systematics to run over
 
     // get vector of string giving the names
     std::vector<std::string>* systNames(nullptr);
@@ -541,9 +545,9 @@ EL::StatusCode JetSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "%s", m_name.c_str());
+  if(m_debug) Info("finalize()", "%s", m_name.c_str());
   if ( m_useCutFlow ) {
-    Info("histFinalize()", "Filling cutflow");
+    if(m_debug) Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
