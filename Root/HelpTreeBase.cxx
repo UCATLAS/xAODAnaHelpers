@@ -1728,22 +1728,26 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
       // light quark(1,2,3) , gluon (21 or 9), charm(4) and b(5)
       // GhostPartons should select for these pdgIds only
-      static SG::AuxElement::ConstAccessor< std::vector<const xAOD::TruthParticle*> > ghostPartons("GhostPartons");
-      if( ghostPartons.isAvailable( *jet_itr )) {
-        std::vector<const xAOD::TruthParticle*> truthPartons = ghostPartons( *jet_itr );
-        if( truthPartons.size() == 0){
-          m_jet_truth_pdgId.push_back(-999);
-        } else {
-          int iParent = 0;
-          for(unsigned int i=1; i < truthPartons.size(); ++i){
-            if( (truthPartons.at(i)->pt() > 0.001) && (truthPartons.at(i)->e() > truthPartons.at(iParent)->e()) )
-              iParent = i;
-          }
-          m_jet_truth_pdgId.push_back(truthPartons.at(iParent)->pdgId());
-          m_jet_truth_partonPt.push_back(truthPartons.at(iParent)->pt() / m_units);
-          m_jet_truth_partonDR.push_back(truthPartons.at(iParent)->p4().DeltaR( jet_itr->p4() ));
+//    static SG::AuxElement::ConstAccessor< std::vector<const xAOD::TruthParticle*> > ghostPartons("GhostPartons");
+//    if( ghostPartons.isAvailable( *jet_itr )) {
+//    std::vector<const xAOD::TruthParticle*> truthPartons = ghostPartons( *jet_itr );
+      
+      std::vector<const xAOD::TruthParticle*> truthPartons = jet_itr->getAssociatedObjects<xAOD::TruthParticle>("GhostPartons");
+
+      if( truthPartons.size() == 0){
+        m_jet_truth_pdgId.push_back(-999);
+      } else {
+        int iParent = 0;
+        for(unsigned int i=1; i < truthPartons.size(); ++i){
+          if( (truthPartons.at(i)->pt() > 0.001) && (truthPartons.at(i)->e() > truthPartons.at(iParent)->e()) )
+            iParent = i;
         }
+        m_jet_truth_pdgId.push_back(truthPartons.at(iParent)->pdgId());
+        m_jet_truth_partonPt.push_back(truthPartons.at(iParent)->pt() / m_units);
+        m_jet_truth_partonDR.push_back(truthPartons.at(iParent)->p4().DeltaR( jet_itr->p4() ));
       }
+
+//    }
 
     }
 
