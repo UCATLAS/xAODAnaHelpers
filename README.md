@@ -59,3 +59,9 @@ The following list are packages / analyses searches that depend on xAH. We thank
 - [hh->4b](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XtoYYtobbbbRun2)
 - [VBF + invisible](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/HiggsInvisibleRun2)
 - [g->tt susy multi-b-jet](https://github.com/kratsg/TheAccountant)
+- Jet/MET
+- Jet Cleaning
+- [jet inputs to reconstruction](https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/JetInputsCONF2015)
+- Punch-through studies
+- [Multijet balance](https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/MultijetBalanceRunIIFramework)
+- [Standard Model inclusive jet cross section](https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/InclusiveJetCrossSection)
