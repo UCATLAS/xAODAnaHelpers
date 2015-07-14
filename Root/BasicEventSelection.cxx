@@ -52,7 +52,8 @@ BasicEventSelection :: BasicEventSelection () :
   m_el_cutflowHist_1(nullptr),
   m_el_cutflowHist_2(nullptr),
   m_mu_cutflowHist_1(nullptr),
-  m_mu_cutflowHist_2(nullptr)
+  m_mu_cutflowHist_2(nullptr),
+  m_jet_cutflowHist_1(nullptr)  
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -427,8 +428,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_mu_cutflowHist_1  = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
   m_mu_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_mu_cutflowHist_2  = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
-  m_mu_cutflowHist_2->SetBit(TH1::kCanRebin);
-
+  m_mu_cutflowHist_2->SetBit(TH1::kCanRebin); 
+  m_jet_cutflowHist_1  = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
+  m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);   
+  
   // start labelling the bins for the event cutflow
   //
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");

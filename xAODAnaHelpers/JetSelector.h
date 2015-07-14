@@ -87,6 +87,17 @@ private:
   std::vector<std::string> m_passKeys;  //!
   std::vector<std::string> m_failKeys;  //!
 
+  /* object-level cutflow */
+  
+  TH1D* m_jet_cutflowHist_1;  //!
+
+  int   m_jet_cutflow_all;           //! 
+  int   m_jet_cutflow_cleaning_cut;  //!
+  int   m_jet_cutflow_ptmax_cut;     //!
+  int   m_jet_cutflow_ptmin_cut;     //!
+  int   m_jet_cutflow_eta_cut;       //!
+  int   m_jet_cutflow_jvt_cut;       //!
+  int   m_jet_cutflow_btag_cut;      //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

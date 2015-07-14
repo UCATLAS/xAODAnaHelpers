@@ -84,6 +84,7 @@ private:
   JetCleaningTool          * m_jetCleaning;    //!
   std::vector<std::string>  m_decisionNames;    //!
   std::vector< JetCleaningTool* > m_allJetCleaningTools;   //!
+ 
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
