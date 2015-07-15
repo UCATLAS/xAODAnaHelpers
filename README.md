@@ -17,6 +17,8 @@ The xAOD analysis framework, born out of ProofAna...or not.
 
 ## Versioning
 
+If you need to bump up the version of the AnalysisBase being used, please make sure you update the [travis.yml](.travis.yml) file first.
+
 ### Current
 Please try to keep changes to a minimum until after EPS, July 23rd 2015.
 
