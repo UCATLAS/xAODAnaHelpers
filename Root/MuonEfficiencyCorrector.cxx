@@ -543,7 +543,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
       }
       if ( m_debug ) { Info( "execute()", "Nominal trigger scaleFactor (single trigger) = %g", triggerSF ); }
 
-      if ( nMuons > 1 ) {
+      if ( nMuons == 2 ) {
         if ( !m_DiMuTrig.empty() ) {
           if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF, m_DiMuTrig ) != CP::CorrectionCode::Ok ) {
 	    Warning( "execute()", "Problem in getTriggerScaleFactor");

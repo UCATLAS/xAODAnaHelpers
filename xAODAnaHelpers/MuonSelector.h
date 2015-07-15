@@ -57,10 +57,8 @@ public:
   std::string    m_TrackBasedIsoType;
   
   // trigger matching
-  bool           m_useSingleMuTrig;
-  std::string    m_singleMuTrigChain;
-  bool           m_useDiMuTrig;
-  std::string    m_diMuTrigChain;
+  std::string    m_singleMuTrigChains;
+  std::string    m_diMuTrigChains;
   float          m_minDeltaR;
 
   std::string    m_passAuxDecorKeys;  

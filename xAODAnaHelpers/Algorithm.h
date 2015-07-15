@@ -53,7 +53,10 @@ namespace xAH {
 
         // each algorithm should have a unique name for init, to differentiate them
         std::string m_name;
-
+	
+        // each algorithm have a 'class' name (e.g., 'ElectronSelector', 'JetCalibrator' ...) to identify the type
+	std::string m_classname;
+       
         // enable verbosity, debugging or not
         bool m_debug,
              m_verbose;

@@ -25,8 +25,7 @@
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14):
-  m_event(nullptr),
+HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug, bool DC14):
   m_eventInfoSwitch(nullptr),
   m_trigInfoSwitch(nullptr),
   m_muInfoSwitch(nullptr),
@@ -46,6 +45,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_tree = tree;
   m_tree->SetDirectory( file );
   m_event = event;
+  m_store = store;
   Info("HelpTreeBase()", "HelpTreeBase setup");
 
 }
@@ -114,7 +114,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   this->AddEventUser();
 }
 
-void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event ) {
+void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo ) {
 
   this->ClearEvent();
   this->ClearEventUser();
@@ -137,9 +137,9 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
 
 
   if ( m_eventInfoSwitch->m_pileup ) {
-    if ( event ) {
+    if ( m_event ) {
       const xAOD::VertexContainer* vertices(nullptr);
-      HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 );
+      HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
       m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
     } else {
       m_npv = -1;
@@ -151,27 +151,27 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
 
   }
 
-  if ( m_eventInfoSwitch->m_shapeLC && event ) {
+  if ( m_eventInfoSwitch->m_shapeLC && m_event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", event, 0 );
+    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", m_event, 0 );
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoLC ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoLC = -999;
     }
   }
 
-  if ( m_eventInfoSwitch->m_shapeEM && event ) {
+  if ( m_eventInfoSwitch->m_shapeEM && m_event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", event, 0 );
+    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", m_event, 0 );
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEM = -999;
     }
   }
 
-  if( m_eventInfoSwitch->m_caloClus && event ) {
+  if( m_eventInfoSwitch->m_caloClus && m_event ) {
     const xAOD::CaloClusterContainer* caloClusters = 0;
-    HelperFunctions::retrieve( caloClusters, "CaloCalTopoClusters", event, 0);
+    HelperFunctions::retrieve( caloClusters, "CaloCalTopoClusters", m_event, 0);
     // save the clusters at the EM scale
     for( auto clus : * caloClusters ) {
       if ( clus->pt ( xAOD::CaloCluster::State::UNCALIBRATED ) < 2000 ) { continue; } // 2 GeV cut
@@ -182,10 +182,10 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     }
   }
 
-  if( m_eventInfoSwitch->m_truth && event ) {
+  if( m_eventInfoSwitch->m_truth && m_event ) {
     //MC Truth
     const xAOD::TruthEventContainer* truthE = 0;
-    HelperFunctions::retrieve( truthE, "TruthEvents", event, 0 );
+    HelperFunctions::retrieve( truthE, "TruthEvents", m_event, 0 );
     if( truthE ) {
       const xAOD::TruthEvent* truthEvent = truthE->at(0);
       truthEvent->pdfInfoParameter(m_pdgId1,   xAOD::TruthEvent::PDGID1);
@@ -253,7 +253,7 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
     // vector of strings for trigger names which fired
     m_tree->Branch("passedTriggers",      &m_passTriggers    );
   }
-
+  
   //this->AddTriggerUser();
 }
 
@@ -310,7 +310,7 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
 
   }
-
+  
 }
 
 // Clear Trigger
@@ -623,6 +623,13 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_m",   &m_el_m);
   }
 
+  if ( m_elInfoSwitch->m_trigger ){
+    // a vector of trigger match decision for each electron trigger chain
+    m_tree->Branch( "el_isTrigMatchedToChain", &m_el_isTrigMatchedToChain );
+    // a vector of strings for each electron trigger chain - 1:1 correspondence w/ vector above
+    m_tree->Branch( "el_listTrigChains", &m_el_listTrigChains );
+  }
+
   if ( m_elInfoSwitch->m_isolation ) {
     m_tree->Branch("el_isIsolated",       &m_el_isIsolated);    
     m_tree->Branch("el_etcone20",	  &m_el_etcone20);
@@ -694,6 +701,26 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       m_el_eta.push_back( (el_itr)->eta() );
       m_el_phi.push_back( (el_itr)->phi() );
       m_el_m.push_back  ( (el_itr)->m() / m_units );
+    }
+
+    if ( m_elInfoSwitch->m_trigger ) {
+
+      // retrieve map<string,char> w/ chain,isMatched
+      //
+      static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapElAcc("isTrigMatchedMapEl");
+
+      if ( isTrigMatchedMapElAcc.isAvailable( *el_itr ) ) {
+	 // loop over map and fill branches
+	 //
+	 for ( auto const &it : (isTrigMatchedMapElAcc( *el_itr )) ) {
+  	   m_el_isTrigMatchedToChain.push_back( static_cast<int>(it.second) );
+	   m_el_listTrigChains.push_back( it.first );
+	 }
+       } else { 
+	 m_el_isTrigMatchedToChain.push_back( -1 );
+	 m_el_listTrigChains.push_back("NONE"); 
+       }  
+      
     }
 
     if ( m_elInfoSwitch->m_isolation ) {
@@ -813,6 +840,11 @@ void HelpTreeBase::ClearElectrons() {
     m_el_m.clear();
   }
 
+  if ( m_elInfoSwitch->m_trigger ) {   
+    m_el_isTrigMatchedToChain.clear();
+    m_el_listTrigChains.clear();
+  }
+  
   if ( m_elInfoSwitch->m_isolation ) {
     m_el_isIsolated.clear();
     m_el_etcone20.clear();

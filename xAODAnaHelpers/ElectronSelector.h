@@ -18,44 +18,63 @@
 #include "xAODAnaHelpers/Algorithm.h"
 
 
+namespace Trig {
+  class TrigDecisionTool;
+  class TrigEgammaMatchingTool;
+}
+
 class ElectronSelector : public xAH::Algorithm
 {
-  // put your configuration variables here as public variables.
-  // that way they can be set directly from CINT and python.
+  /*
+  put your configuration variables here as public variables.
+  that way they can be set directly from CINT and python.
 
+  variables that don't get filled at submission time should be
+  protected from being send from the submission node to the worker
+  node (done by the //!)
+  */  
+  
 public:
   bool m_useCutFlow;            
 
-  // configuration variables
-  std::string    m_inContainerName;          // input container name
-  std::string    m_outContainerName;         // output container name
-  std::string    m_outAuxContainerName;      // output auxiliary container name
+  /* configuration variables */
+  
+  std::string    m_inContainerName;          /* input container name */
+  std::string    m_outContainerName;         /* output container name */
+  std::string    m_outAuxContainerName;      /* output auxiliary container name */
   std::string    m_inputAlgoSystNames;
   std::string    m_outputAlgoSystNames;
-  bool       	 m_decorateSelectedObjects;  // decorate selected objects - default "passSel"
-  bool       	 m_createSelectedContainer;  // fill using SG::VIEW_ELEMENTS to be light weight
-  int        	 m_nToProcess;  	     // look at n objects
-  int        	 m_pass_min;		     // minimum number of objects passing cuts
-  int        	 m_pass_max;		     // maximum number of objects passing cuts
-  float      	 m_pT_max;		     // require pT < pt_max
-  float      	 m_pT_min;		     // require pT < pt_max
-  float      	 m_eta_max;		     // require |eta| < eta_max
-  bool	     	 m_vetoCrack;		     // require |eta| outside crack region
-  float      	 m_d0_max;		     // require d0 < m_d0_max
-  float      	 m_d0sig_max;		     // require d0 significance (at BL) < m_d0sig_max
-  float	     	 m_z0sintheta_max;	     // require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max
+  bool       	 m_decorateSelectedObjects;  /* decorate selected objects - default "passSel" */
+  bool       	 m_createSelectedContainer;  /* fill using SG::VIEW_ELEMENTS to be light weight */
+  int        	 m_nToProcess;  	     /* look at n objects */
+  int        	 m_pass_min;		     /* minimum number of objects passing cuts */
+  int        	 m_pass_max;		     /* maximum number of objects passing cuts */
+  float      	 m_pT_max;		     /* require pT < pt_max */
+  float      	 m_pT_min;		     /* require pT > pt_min */
+  float      	 m_eta_max;		     /* require |eta| < eta_max */
+  bool	     	 m_vetoCrack;		     /* require |eta| outside crack region */
+  float      	 m_d0_max;		     /* require d0 < m_d0_max */
+  float      	 m_d0sig_max;		     /* require d0 significance (at BL) < m_d0sig_max */
+  float	     	 m_z0sintheta_max;	     /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
   bool           m_doAuthorCut;
   bool           m_doOQCut;
+  
+  /* electron PID */
+  
   std::string    m_confDirPID;
-  // likelihood-based PID
+  
+  /* likelihood-based  */
   bool           m_doLHPIDcut;
   std::string    m_LHConfigYear;
   std::string    m_LHOperatingPoint;
-  // cut-based PID
+  
+  /* cut-based */
   bool           m_doCutBasedPIDcut;
   std::string    m_CutBasedConfigYear;
   std::string    m_CutBasedOperatingPoint;
-  // isolation
+  
+  /* isolation */
+  
   bool           m_doIsolation;
   std::string    m_IsoWP;
   std::string    m_CaloIsoEff;
@@ -63,24 +82,30 @@ public:
   std::string    m_CaloBasedIsoType;
   std::string    m_TrackBasedIsoType;
 
-  std::string    m_passAuxDecorKeys;  
-  std::string    m_failAuxDecorKeys;  
-
+  /* trigger matching */
+  
+  std::string    m_ElTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching. 
+  				      This is passed by the user as input in configuration
+				      If left empty (as it is by default), no trigger matching will be attempted at all */
+				   
 private:
+  
   int m_numEvent;           //!
   int m_numObject;          //!
   int m_numEventPass;       //!
   int m_weightNumEventPass; //!
   int m_numObjectPass;      //!
 
-  // cutflow
+  /* event-level cutflow */
+  
   TH1D* m_cutflowHist;      //!
   TH1D* m_cutflowHistW;     //!
   int   m_cutflow_bin;      //!
   
   bool  m_isUsedBefore;     //!
   
-  // object cutflow
+  /* object-level cutflow */
+  
   TH1D* m_el_cutflowHist_1;            //!
   TH1D* m_el_cutflowHist_2;            //!
   
@@ -96,31 +121,31 @@ private:
   int   m_el_cutflow_d0sig_cut;        //!     
   int   m_el_cutflow_iso_cut;          //!       
 
-  // tools
-  CP::IsolationSelectionTool         *m_IsolationSelectionTool; //! /* Run2 tool for isolation*/
+  /* tools */
 
-  // PID manager(s)
+  CP::IsolationSelectionTool         *m_IsolationSelectionTool; //! 
+
+  /* PID manager(s) */
   ElectronLHPIDManager               *m_el_LH_PIDManager;       //!
   ElectronCutBasedPIDManager         *m_el_CutBased_PIDManager; //!
 
-  std::vector<std::string> m_passKeys;  //!
-  std::vector<std::string> m_failKeys;  //!
+  Trig::TrigDecisionTool             *m_trigDecTool;      //!
+  Trig::TrigEgammaMatchingTool       *m_trigElMatchTool;  //!
 
-  // variables that don't get filled at submission time should be
-  // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  /* other private members */
+
+  std::vector<std::string>            m_ElTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_ElTrigChains */
 
 public:
 
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
-
-  // this is a standard constructor
+  /* this is a standard constructor */
+  
   ElectronSelector ();
 
   ~ElectronSelector();
 
-  // these are the functions inherited from Algorithm
+  /* these are the functions inherited from Algorithm */
+  
   virtual EL::StatusCode setupJob (EL::Job& job);
   virtual EL::StatusCode fileExecute ();
   virtual EL::StatusCode histInitialize ();
@@ -131,15 +156,18 @@ public:
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
 
-  // these are the functions not inherited from Algorithm
+  /* these are the functions not inherited from Algorithm */
+  
   virtual EL::StatusCode configure ();
 
-  // added functions not from Algorithm
+  /* added functions not from Algorithm */ 
+  
   bool executeSelection( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
                          ConstDataVector<xAOD::ElectronContainer>* selectedElectrons );
   virtual int passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex );
   
-  // this is needed to distribute the algorithm to the workers
+  /* this is needed to distribute the algorithm to the workers */
+  
   ClassDef(ElectronSelector, 1);
 };
 
