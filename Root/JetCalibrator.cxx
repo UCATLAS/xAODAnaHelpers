@@ -58,7 +58,7 @@ JetCalibrator :: JetCalibrator () :
 
   // read debug flag from .config file
   m_debug                   = false;
-  
+
   m_sort                    = true;
   // input container to be read from TEvent or TStore
   m_inContainerName         = "";
@@ -78,6 +78,7 @@ JetCalibrator :: JetCalibrator () :
   // CONFIG parameters for JetUncertaintiesTool
   m_JESUncertConfig         = "";
   m_JESUncertMCType         = "MC15";
+  m_setAFII                 = false;
 
   // CONFIG parameters for JERSmearingTool
   m_JERUncertConfig         = "";
@@ -125,6 +126,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     // CONFIG parameters for JetUncertaintiesTool
     m_JESUncertConfig         = config->GetValue("JESUncertConfig", m_JESUncertConfig.c_str());
     m_JESUncertMCType         = config->GetValue("JESUncertMCType", m_JESUncertMCType.c_str());
+    m_setAFII                 = config->GetValue("SetAFII",  m_setAFII);
 
     // CONFIG parameters for JERSmearingTool
     m_JERUncertConfig         = config->GetValue("JERUncertConfig", m_JERUncertConfig.c_str());
@@ -246,7 +248,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   m_numEvent      = 0;
   m_numObject     = 0;
-  
+
   //Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
   if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
 
@@ -268,7 +270,10 @@ EL::StatusCode JetCalibrator :: initialize ()
     //                I reasonably suppose everyone will use SH...
     //
     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
-    if ( stringMeta.empty() ) {
+    if ( m_setAFII ) {
+      Info("initialize()", "Setting simulation flavour to AFII");
+      m_isFullSim = false;
+    }else if ( stringMeta.empty() ) {
       Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
     } else {
       m_isFullSim = (stringMeta == "AFII") ? false : true;

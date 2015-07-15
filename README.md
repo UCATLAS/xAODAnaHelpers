@@ -18,6 +18,9 @@ The xAOD analysis framework, born out of ProofAna...or not.
 ## Versioning
 
 ### Current
+Please try to keep changes to a minimum until after EPS, July 23rd 2015.
+
+Current AB is **Base,2.3.19**
 
 The 00-03-08 tag is for use with **Base,2.3.18**.
 
