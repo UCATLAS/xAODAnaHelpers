@@ -377,11 +377,11 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  // *****************************
+  // ****************************
   //
   // Initialise Electron ID tools
   //
-  // *****************************
+  // ****************************
 
   // tell the selector tools where to find configuration files
   //
@@ -392,7 +392,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   // if not using cut-based PID, make sure all the decorations will be set ... by choosing the loosest WP!
   //
   std::string cutbasedWP = ( m_doCutBasedPIDcut ) ? m_CutBasedOperatingPoint : "IsEMLoose";
-  m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP , m_debug );
+  m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP, m_debug );
 
   if  ( m_doCutBasedPIDcut ) {
     if ( m_debug ) {
@@ -403,7 +403,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     if ( m_debug ) { Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decison (pass/not pass)!" ); }
   }
 
-  RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupTools( confDir, m_CutBasedConfigYear ), "Failed to properly setup ElectronCutBasedPIDManager." );
+  RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupTools( this->m_name, confDir, m_CutBasedConfigYear ), "Failed to properly setup ElectronCutBasedPIDManager." );
 
   // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
   //
@@ -420,13 +420,13 @@ EL::StatusCode ElectronSelector :: initialize ()
   }
 
   if ( m_debug ) { Info("initialize()", "Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() ); }
-  RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupTools( confDir, m_LHConfigYear ), "Failed to properly setup ElectronLHPIDManager." );
+  RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupTools( this->m_name, confDir, m_LHConfigYear ), "Failed to properly setup ElectronLHPIDManager." );
 
-  // *****************************
+  // *************************
   //
   // Initialise isolation tool
   //
-  // *****************************
+  // *************************
 
   if ( asg::ToolStore::contains<CP::IsolationSelectionTool>("IsolationSelectionTool_Electrons") ) {
     m_IsolationSelectionTool = asg::ToolStore::get<CP::IsolationSelectionTool>("IsolationSelectionTool_Electrons");
@@ -478,7 +478,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     
 
   } else {
-    Warning("initialize()", "\n ***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
+    Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
     Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
     Warning("initialize()", "\t AND/OR" );
     Warning("initialize()", "\t -) input HLT trigger chain list is empty \n" );
