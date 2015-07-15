@@ -4,7 +4,6 @@
  *
  * M. Milesi (marco.milesi@cern.ch)
  *
- *
  *******************************************/
 
 // c++ include(s):
@@ -28,6 +27,8 @@
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
+#include "TrigEgammaMatchingTool/TrigEgammaMatchingTool.h"
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
@@ -51,7 +52,9 @@ ElectronSelector :: ElectronSelector () :
   m_el_cutflowHist_2(nullptr),
   m_IsolationSelectionTool(nullptr),
   m_el_LH_PIDManager(nullptr),
-  m_el_CutBased_PIDManager(nullptr)
+  m_el_CutBased_PIDManager(nullptr),
+  m_trigDecTool(nullptr),
+  m_trigElMatchTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -80,10 +83,10 @@ ElectronSelector :: ElectronSelector () :
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = true;
   // additional functionality : create output container of selected objects
-  //                            using the SG::View_Element option
-  //                            decorrating and output container should not be mutually exclusive
+  //                            using the SG::VIEW_ELEMENT option
+  //                            decorating and output container should not be mutually exclusive
   m_createSelectedContainer = false;
-  // if requested, a new container is made using the SG::View_Element option
+  // if requested, a new container is made using the SG::VIEW_ELEMENT option
   m_outContainerName        = "";
 
   // if only want to look at a subset of object
@@ -99,7 +102,6 @@ ElectronSelector :: ElectronSelector () :
   m_d0_max                  = 1e8;
   m_d0sig_max     	    = 1e8;
   m_z0sintheta_max          = 1e8;
-
   m_doAuthorCut             = true;
   m_doOQCut                 = true;
 
@@ -114,7 +116,7 @@ ElectronSelector :: ElectronSelector () :
   m_CutBasedOperatingPoint  = "IsEMLoose";
   m_CutBasedConfigYear      = "2012";
 
-  // isolation stuff
+  // isolation
   m_doIsolation             = false;
   m_IsoWP		    = "Tight";
   m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
@@ -122,8 +124,8 @@ ElectronSelector :: ElectronSelector () :
   m_CaloBasedIsoType        = "topoetcone20";
   m_TrackBasedIsoType       = "ptvarcone20";
 
-  m_passAuxDecorKeys        = "";
-  m_failAuxDecorKeys        = "";
+  // trigger matching
+  m_ElTrigChains            = "";
 
 }
 
@@ -171,7 +173,6 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_d0_max                  = config->GetValue("d0Max", m_d0_max);
     m_d0sig_max     	      = config->GetValue("d0sigMax", m_d0sig_max);
     m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
-
     m_doAuthorCut             = config->GetValue("DoAuthorCut", m_doAuthorCut);
     m_doOQCut                 = config->GetValue("DoOQCut", m_doOQCut);
 
@@ -186,7 +187,7 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", m_CutBasedOperatingPoint.c_str());
     m_CutBasedConfigYear      = config->GetValue("CutBasedConfigYear", m_CutBasedConfigYear.c_str());
 
-    // isolation stuff
+    // isolation
     m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
     m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_IsoWP.c_str());
     m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  // only if isolation WP is "UserDefined"
@@ -194,8 +195,8 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
     m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
 
-    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
-    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
+    // trigger matching
+    m_ElTrigChains            = config->GetValue("ElTrigChains"      , m_ElTrigChains.c_str() );
 
     config->Print();
 
@@ -222,20 +223,6 @@ EL::StatusCode  ElectronSelector :: configure ()
        m_CutBasedOperatingPoint != "IsEMTight"  ) {
     Error("configure()", "Unknown electron cut-based PID requested %s!",m_CutBasedOperatingPoint.c_str());
     return EL::StatusCode::FAILURE;
-  }
-
-  // parse and split by comma
-  std::string token;
-
-  std::istringstream ss(m_passAuxDecorKeys);
-  while ( std::getline(ss, token, ',') ) {
-    m_passKeys.push_back(token);
-  }
-
-  ss.clear();
-  ss.str(m_failAuxDecorKeys);
-  while ( std::getline(ss, token, ',') ) {
-    m_failKeys.push_back(token);
   }
 
   return EL::StatusCode::SUCCESS;
@@ -316,14 +303,16 @@ EL::StatusCode ElectronSelector :: initialize ()
   Info("initialize()", "Initializing ElectronSelector Interface... ");
 
   // let's see if the algorithm has been already used before:
-  // if yes, will write object cutflow in adifferent histogram!
+  // if yes, will write object cutflow in a different histogram!
   //
   // This is the case when the selector algorithm is used for 
-  // preselecting objects, and then for the final selection
+  // preselecting objects, and then again for the final selection
   //
-  Info("initialize()", "\n Algorithm name: %s \n How many times this algo type has already been used? %i ", (this->m_name).c_str(), this->countUsed() );
-  
-  m_isUsedBefore = ( this->countUsed() > 0 );
+  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_classname).c_str() );
+  if ( this->countUsed() > 0 ) {
+    m_isUsedBefore = true;
+    Info("initialize()", "\t An algorithm of the same type has been already used %i times", this->countUsed() );
+  }
 
   if ( m_useCutFlow ) {
     
@@ -388,6 +377,12 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
+  // ****************************
+  //
+  // Initialise Electron ID tools
+  //
+  // ****************************
+
   // tell the selector tools where to find configuration files
   //
   std::string confDir = "ElectronPhotonSelectorTools/offline/" +  m_confDirPID + "/";
@@ -397,7 +392,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   // if not using cut-based PID, make sure all the decorations will be set ... by choosing the loosest WP!
   //
   std::string cutbasedWP = ( m_doCutBasedPIDcut ) ? m_CutBasedOperatingPoint : "IsEMLoose";
-  m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP , m_debug );
+  m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP, m_debug );
 
   if  ( m_doCutBasedPIDcut ) {
     if ( m_debug ) {
@@ -408,7 +403,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     if ( m_debug ) { Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decison (pass/not pass)!" ); }
   }
 
-  RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupTools( confDir, m_CutBasedConfigYear ), "Failed to properly setup ElectronCutBasedPIDManager." );
+  RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupTools( this->m_name, confDir, m_CutBasedConfigYear ), "Failed to properly setup ElectronCutBasedPIDManager." );
 
   // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
   //
@@ -425,11 +420,19 @@ EL::StatusCode ElectronSelector :: initialize ()
   }
 
   if ( m_debug ) { Info("initialize()", "Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() ); }
-  RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupTools( confDir, m_LHConfigYear ), "Failed to properly setup ElectronLHPIDManager." );
+  RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupTools( this->m_name, confDir, m_LHConfigYear ), "Failed to properly setup ElectronLHPIDManager." );
 
-  // initialise IsolationSelectionTool 
+  // *************************
   //
-  m_IsolationSelectionTool         = new CP::IsolationSelectionTool( "IsolationSelectionTool" );
+  // Initialise isolation tool
+  //
+  // *************************
+
+  if ( asg::ToolStore::contains<CP::IsolationSelectionTool>("IsolationSelectionTool_Electrons") ) {
+    m_IsolationSelectionTool = asg::ToolStore::get<CP::IsolationSelectionTool>("IsolationSelectionTool_Electrons");
+  } else {
+    m_IsolationSelectionTool = new CP::IsolationSelectionTool( "IsolationSelectionTool_Electrons" );
+  }
   m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
 
   if ( m_IsoWP == "UserDefined" ) {
@@ -448,7 +451,42 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
 
+  // ********************************
+  //
+  // Initialise trigger matching tool
+  //
+  // ********************************
 
+  //
+  // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
+  //     do not initialise if there are no input trigger chains
+  //
+  if( !m_ElTrigChains.empty() && asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
+
+    m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
+    ToolHandle<Trig::TrigDecisionTool> trigDecHandle( m_trigDecTool );
+
+    //  everything went fine, let's initialise the tool!
+    //
+    if ( asg::ToolStore::contains<Trig::TrigEgammaMatchingTool>("TrigEgammaMatchingTool") ) {
+      m_trigElMatchTool = asg::ToolStore::get<Trig::TrigEgammaMatchingTool>("TrigEgammaMatchingTool");
+    } else {
+      m_trigElMatchTool = new Trig::TrigEgammaMatchingTool("TrigEgammaMatchingTool");
+      RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
+      RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
+    } 
+    
+
+  } else {
+    Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
+    Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
+    Warning("initialize()", "\t AND/OR" );
+    Warning("initialize()", "\t -) input HLT trigger chain list is empty \n" );
+    Warning("initialize()", "\n*********************************************************** \n If you want to apply the matching now, please double check that!");
+  }
+
+  // **********************************************************************************************
+  
   Info("initialize()", "ElectronSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -479,6 +517,31 @@ EL::StatusCode ElectronSelector :: execute ()
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
   m_numEvent++;
+
+  // QUESTION: why this must be done in execute(), and does not work in initialize()?
+  //
+  if ( m_numEvent == 1 && m_trigDecTool ) {
+    
+    // store the trigger chains that will be considered for matching
+    //
+    if ( m_ElTrigChains.find("ALL") != std::string::npos ) {
+      std::vector<std::string> list = (m_trigDecTool->getChainGroup("HLT_e.*"))->getListOfTriggers();
+      for ( auto &trig : list ) { m_ElTrigChainsList.push_back(trig); }
+    } else {
+      // parse input electron trigger chain list, split by comma and fill vector
+      //
+      std::string trig;
+      std::istringstream ss(m_ElTrigChains);
+      
+      while ( std::getline(ss, trig, ',') ) {
+    	m_ElTrigChainsList.push_back(trig);
+      }
+    }	 
+
+    Info("initialize()", "Input electron trigger chains for matching:");
+    for ( auto const &chain : m_ElTrigChainsList ) { Info("initialize()", "\t %s", chain.c_str()); }
+  
+  }
 
   // did any collection pass the cuts?
   //
@@ -657,6 +720,47 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
     m_weightNumEventPass += mcEvtWeight;
   }
 
+  // Perform trigger matching on the "good" (selected) electrons
+  //
+  // NB: this part will be skipped if:
+  //
+  //  1. the user didn't pass any trigger chains to the algo (see initialize(): in that case, the tool is not even initialised!)
+  //  2. there are no selected electrons in the event
+  //
+  if ( m_trigElMatchTool && selectedElectrons ) {
+    
+    unsigned int nSelectedElectrons = selectedElectrons->size();
+
+    if ( nSelectedElectrons > 0 ) {
+      
+      if ( m_debug ) { Info("execute()", "Now doing electron trigger matching..."); }
+     
+      for ( auto const &chain : m_ElTrigChainsList ) {
+       
+         if ( m_debug ) { Info("execute()", "\t checking trigger chain %s", chain.c_str()); }
+       
+         for ( auto const electron : *selectedElectrons ) {
+    	   
+           //  For each electron, decorate w/ a map<string,char> with the 'isMatched' info associated
+	   //  to each trigger chain in the input list.
+           //  If decoration map doesn't exist, create it (will be done only for the 1st iteration)
+           //
+           SG::AuxElement::Decorator< std::map<std::string,char> > isTrigMatchedMapElDecor( "isTrigMatchedMapEl" );
+           if ( !isTrigMatchedMapElDecor.isAvailable( *electron ) ) {
+	     isTrigMatchedMapElDecor( *electron ) = std::map<std::string,char>();
+           }
+	     
+	   int matched = ( m_trigElMatchTool->matchHLT( electron, chain ) ) ? 1 : 0;  
+	   
+           if ( m_debug ) { Info("execute()", "\t\t is electron trigger matched? %i", matched); }
+	   	   
+	   ( isTrigMatchedMapElDecor( *electron ) )[chain] = static_cast<char>(matched);  
+         }
+      }
+
+    }
+  }
+
   return true;
 }
 
@@ -687,10 +791,11 @@ EL::StatusCode ElectronSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_el_CutBased_PIDManager )         { delete m_el_CutBased_PIDManager; m_el_CutBased_PIDManager = nullptr; }
-  if ( m_el_LH_PIDManager )               { delete m_el_LH_PIDManager; m_el_LH_PIDManager = nullptr; }
-  if ( m_IsolationSelectionTool )         { delete m_IsolationSelectionTool; m_IsolationSelectionTool = nullptr; }
-
+  if ( m_el_CutBased_PIDManager )         { m_el_CutBased_PIDManager = nullptr; delete m_el_CutBased_PIDManager;  }
+  if ( m_el_LH_PIDManager )               { m_el_LH_PIDManager = nullptr;       delete m_el_LH_PIDManager;  }
+  if ( m_IsolationSelectionTool )         { m_IsolationSelectionTool = nullptr; delete m_IsolationSelectionTool; }
+  if ( m_trigElMatchTool )                { m_trigElMatchTool = nullptr;        delete m_trigElMatchTool; }
+  
   if ( m_useCutFlow ) {
     Info("finalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );

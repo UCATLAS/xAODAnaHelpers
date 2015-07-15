@@ -28,7 +28,7 @@ class ElectronLHPIDManager
 {
    public: 
      ElectronLHPIDManager ();
-     ElectronLHPIDManager ( std::string WP , bool debug = false ) :
+     ElectronLHPIDManager ( std::string WP, bool debug = false ) :
         m_asgElectronLikelihoodTool_VeryLoose(nullptr),
 	m_asgElectronLikelihoodTool_Loose(nullptr),    
 	m_asgElectronLikelihoodTool_Medium(nullptr),   
@@ -50,14 +50,14 @@ class ElectronLHPIDManager
      
      ~ElectronLHPIDManager()
      {
-     	if ( m_asgElectronLikelihoodTool_VeryLoose ) { delete m_asgElectronLikelihoodTool_VeryLoose; m_asgElectronLikelihoodTool_VeryLoose = nullptr; }
-     	if ( m_asgElectronLikelihoodTool_Loose )     { delete m_asgElectronLikelihoodTool_Loose; m_asgElectronLikelihoodTool_Loose = nullptr; }
-     	if ( m_asgElectronLikelihoodTool_Medium )    { delete m_asgElectronLikelihoodTool_Medium; m_asgElectronLikelihoodTool_Medium = nullptr; }
-     	if ( m_asgElectronLikelihoodTool_Tight )     { delete m_asgElectronLikelihoodTool_Tight; m_asgElectronLikelihoodTool_Tight = nullptr; }
+     	if ( m_asgElectronLikelihoodTool_VeryLoose ) { m_asgElectronLikelihoodTool_VeryLoose = nullptr; delete m_asgElectronLikelihoodTool_VeryLoose; }
+     	if ( m_asgElectronLikelihoodTool_Loose )     { m_asgElectronLikelihoodTool_Loose = nullptr;	delete m_asgElectronLikelihoodTool_Loose;     }
+     	if ( m_asgElectronLikelihoodTool_Medium )    { m_asgElectronLikelihoodTool_Medium = nullptr;	delete m_asgElectronLikelihoodTool_Medium;    }
+     	if ( m_asgElectronLikelihoodTool_Tight )     { m_asgElectronLikelihoodTool_Tight = nullptr;	delete m_asgElectronLikelihoodTool_Tight;     }
      };
      
      
-     StatusCode setupTools( std::string confDir, std::string year ) {
+     StatusCode setupTools( std::string selector_name, std::string confDir, std::string year ) {
      
         HelperClasses::EnumParser<LikeEnum::Menu> selectedWP_parser;
         unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(m_selectedWP) );
@@ -73,8 +73,10 @@ class ElectronLHPIDManager
 	for ( auto it : (m_allWPs) ) {
 
 	    /* instantiate tools (do it for all) */
-            it.second =  new AsgElectronLikelihoodTool( (it.first).c_str() );
-            
+	    
+	    std::string tool_name = it.first + selector_name;
+	    it.second =  new AsgElectronLikelihoodTool( tool_name.c_str() );
+	    
             HelperClasses::EnumParser<LikeEnum::Menu>  itWP_parser;
             unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it.first) );
             
@@ -157,13 +159,13 @@ class ElectronCutBasedPIDManager
      
      ~ElectronCutBasedPIDManager()
      {
-     	if ( m_asgElectronIsEMSelector_Loose )     { delete m_asgElectronIsEMSelector_Loose; m_asgElectronIsEMSelector_Loose = nullptr; }
-     	if ( m_asgElectronIsEMSelector_Medium )    { delete m_asgElectronIsEMSelector_Medium; m_asgElectronIsEMSelector_Medium = nullptr; }
-     	if ( m_asgElectronIsEMSelector_Tight )     { delete m_asgElectronIsEMSelector_Tight; m_asgElectronIsEMSelector_Tight = nullptr; }
+     	if ( m_asgElectronIsEMSelector_Loose )     { m_asgElectronIsEMSelector_Loose = nullptr;  delete m_asgElectronIsEMSelector_Loose;  }
+     	if ( m_asgElectronIsEMSelector_Medium )    { m_asgElectronIsEMSelector_Medium = nullptr; delete m_asgElectronIsEMSelector_Medium; }
+     	if ( m_asgElectronIsEMSelector_Tight )     { m_asgElectronIsEMSelector_Tight = nullptr;  delete m_asgElectronIsEMSelector_Tight;  }
      };
      
      
-     StatusCode setupTools( std::string confDir, std::string year ) {
+     StatusCode setupTools( std::string selector_name, std::string confDir, std::string year ) {
      
         HelperClasses::EnumParser<egammaPID::PID> selectedWP_parser;
         unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(m_selectedWP) );
@@ -182,7 +184,8 @@ class ElectronCutBasedPIDManager
 	for ( auto it : (m_allWPs) ) {
 
 	    /* instantiate tools (do it for all) */
-            it.second =  new AsgElectronIsEMSelector( (it.first).c_str() );
+	    std::string tool_name = it.first + selector_name;
+	    it.second =  new AsgElectronIsEMSelector( tool_name.c_str() );
            
             HelperClasses::EnumParser<egammaPID::PID>  itWP_parser;
             unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it.first) );

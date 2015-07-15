@@ -99,9 +99,9 @@ namespace HelperClasses{
   }
   
   void TriggerInfoSwitch::initialize(){
-    m_basic         = parse("basic");
-    m_menuKeys      = parse("menuKeys");
-    m_passTriggers  = parse("passTriggers");
+    m_basic             = parse("basic");
+    m_menuKeys          = parse("menuKeys");
+    m_passTriggers      = parse("passTriggers");
   }
   
   void JetTriggerInfoSwitch::initialize(){
@@ -120,6 +120,7 @@ namespace HelperClasses{
 
   void ElectronInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_trigger       = parse("trigger");
     m_isolation     = parse("isolation");
     m_PID           = parse("PID");
     m_trackparams   = parse("trackparams");

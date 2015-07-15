@@ -34,6 +34,7 @@ ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm() :
   m_name(""),
+  m_classname(""),
   m_debug(false),
   m_verbose(false),
   m_systName(""),
@@ -121,7 +122,9 @@ xAH::Algorithm* xAH::Algorithm::registerClass(xAH::AlgorithmRegistry &reg, std::
 
   Info("registerClass()","input class name: %s", className.c_str() );
 
-  // the function will return 0 if the algo
+  m_classname = className;
+  
+  // the function will return 0 if the algo 
   // isn't in the registry yet
   m_count_used = reg.countRegistered(className);
 
