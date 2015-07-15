@@ -25,7 +25,7 @@
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug, bool DC14):
+HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14):
   m_eventInfoSwitch(nullptr),
   m_trigInfoSwitch(nullptr),
   m_muInfoSwitch(nullptr),
@@ -45,7 +45,7 @@ HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::
   m_tree = tree;
   m_tree->SetDirectory( file );
   m_event = event;
-  m_store = store;
+  //m_store = store;
   Info("HelpTreeBase()", "HelpTreeBase setup");
 
 }
@@ -114,7 +114,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   this->AddEventUser();
 }
 
-void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo ) {
+void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event ) {
 
   this->ClearEvent();
   this->ClearEventUser();

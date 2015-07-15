@@ -95,7 +95,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
-  m_helpTree = new HelpTreeBase( outTree, treeFile, m_event, m_store, 1e3, m_debug, m_DC14 );
+  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, 1e3, m_debug, m_DC14 );
 
   // tell the tree to go into the file
   outTree->SetDirectory( treeFile );
@@ -176,7 +176,7 @@ EL::StatusCode TreeAlgo :: execute ()
   // get the primaryVertex
   const xAOD::Vertex* primaryVertex = HelperFunctions::getPrimaryVertex( vertices );
 
-  m_helpTree->FillEvent( eventInfo );
+  m_helpTree->FillEvent( eventInfo, m_event );
 
   // Fill trigger information
   if ( !m_trigDetailStr.empty() )    {
