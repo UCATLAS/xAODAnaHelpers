@@ -170,7 +170,7 @@ EL::StatusCode  MuonSelector :: configure ()
 
     // isolation 
     m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
-    m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_CaloIsoEff.c_str());
+    m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_IsoWP.c_str());
     m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  
     m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());
     m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
@@ -380,9 +380,13 @@ EL::StatusCode MuonSelector :: initialize ()
   m_numEventPass  = 0;
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
-
-  // initialise Muon Selection Tool
+  
+  // ****************************
   //
+  // Initialise MuonSelectionTool
+  //
+  // ****************************
+  
   if ( asg::ToolStore::contains<CP::MuonSelectionTool>("MuonSelectionTool") ) {
     m_muonSelectionTool = asg::ToolStore::get<CP::MuonSelectionTool>("MuonSelectionTool");
   } else {
@@ -391,17 +395,22 @@ EL::StatusCode MuonSelector :: initialize ()
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
   // set eta and quality requirements in order to accept the muon - ID tracks required by default
+  //
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" );
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
-
-  // isolation tool
+ 
+  // *************************
   //
-  //if ( asg::ToolStore::contains<CP::IsolationSelectionTool>("IsolationSelectionTool_Muons") ) {
-  //  m_IsolationSelectionTool = asg::ToolStore::get<CP::IsolationSelectionTool>("IsolationSelectionTool_Muons");
-  //} else {
+  // Initialise isolation tool
+  //
+  // *************************
+
+  if ( asg::ToolStore::contains<CP::IsolationSelectionTool>("IsolationSelectionTool_Muons") ) {
+    m_IsolationSelectionTool = asg::ToolStore::get<CP::IsolationSelectionTool>("IsolationSelectionTool_Muons");
+  } else {
     m_IsolationSelectionTool = new CP::IsolationSelectionTool( "IsolationSelectionTool_Muons" );
-  //}
+  }
   m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
   
   if ( m_IsoWP == "UserDefined" ) {
@@ -420,9 +429,12 @@ EL::StatusCode MuonSelector :: initialize ()
 
   RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
 
-
-  // initialise TrigMuonMatching tool
+  // ********************************
   //
+  // Initialise trigger matching tool
+  //
+  // ********************************
+  
   // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
   //     do not initialise if there are no input trigger chains
   //
@@ -443,7 +455,11 @@ EL::StatusCode MuonSelector :: initialize ()
     RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
 
   } else {
-    Warning("initialize()", "Couldn't find TrigDecisionTool in asg::ToolStore. Probably you forgot to pass a trigger chain regexp in BasicEventSelection.cxx configuration! Will not do any trigger matching..." );
+    Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
+    Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
+    Warning("initialize()", "\t AND/OR" );
+    Warning("initialize()", "\t -) input HLT trigger chain list is empty \n" );
+    Warning("initialize()", "\n*********************************************************** \n If you want to apply the matching now, please double check that!");
   }
 
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );

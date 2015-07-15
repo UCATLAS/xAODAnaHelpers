@@ -28,7 +28,7 @@ class ElectronLHPIDManager
 {
    public: 
      ElectronLHPIDManager ();
-     ElectronLHPIDManager ( std::string WP , bool debug = false ) :
+     ElectronLHPIDManager ( std::string WP, bool debug = false ) :
         m_asgElectronLikelihoodTool_VeryLoose(nullptr),
 	m_asgElectronLikelihoodTool_Loose(nullptr),    
 	m_asgElectronLikelihoodTool_Medium(nullptr),   
@@ -57,7 +57,7 @@ class ElectronLHPIDManager
      };
      
      
-     StatusCode setupTools( std::string confDir, std::string year ) {
+     StatusCode setupTools( std::string selector_name, std::string confDir, std::string year ) {
      
         HelperClasses::EnumParser<LikeEnum::Menu> selectedWP_parser;
         unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(m_selectedWP) );
@@ -74,7 +74,8 @@ class ElectronLHPIDManager
 
 	    /* instantiate tools (do it for all) */
 	    
-	    it.second =  new AsgElectronLikelihoodTool( (it.first).c_str() );
+	    std::string tool_name = it.first + selector_name;
+	    it.second =  new AsgElectronLikelihoodTool( tool_name.c_str() );
 	    
             HelperClasses::EnumParser<LikeEnum::Menu>  itWP_parser;
             unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it.first) );
@@ -164,7 +165,7 @@ class ElectronCutBasedPIDManager
      };
      
      
-     StatusCode setupTools( std::string confDir, std::string year ) {
+     StatusCode setupTools( std::string selector_name, std::string confDir, std::string year ) {
      
         HelperClasses::EnumParser<egammaPID::PID> selectedWP_parser;
         unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(m_selectedWP) );
@@ -183,7 +184,8 @@ class ElectronCutBasedPIDManager
 	for ( auto it : (m_allWPs) ) {
 
 	    /* instantiate tools (do it for all) */
-	    it.second =  new AsgElectronIsEMSelector( (it.first).c_str() );
+	    std::string tool_name = it.first + selector_name;
+	    it.second =  new AsgElectronIsEMSelector( tool_name.c_str() );
            
             HelperClasses::EnumParser<egammaPID::PID>  itWP_parser;
             unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it.first) );
