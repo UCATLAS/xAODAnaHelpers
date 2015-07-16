@@ -184,9 +184,10 @@ if __name__ == "__main__":
     for algorithm_configuration in algorithm_configurations:
       alg_name = algorithm_configuration['class']
       xAH_logger.info("creating algorithm %s", alg_name)
-      alg = getattr(ROOT, alg_name, None)()
+      alg = reduce(lambda x,y: getattr(x, y, None), alg_name.split('.'), ROOT)
       if not alg:
         raise ValueError("Algorithm %s does not exist" % alg_name)
+      alg = alg()
       for config_name, config_val in algorithm_configuration['configs'].iteritems():
         xAH_logger.info("\tsetting %s.%s = %s", alg_name, config_name, config_val)
         alg_attr = getattr(alg, config_name, None)
