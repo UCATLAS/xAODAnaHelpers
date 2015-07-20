@@ -50,6 +50,32 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
 
 }
 
+HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug, bool DC14):
+  m_eventInfoSwitch(nullptr),
+  m_trigInfoSwitch(nullptr),
+  m_muInfoSwitch(nullptr),
+  m_elInfoSwitch(nullptr),
+  m_jetInfoSwitch(nullptr),
+  m_fatJetInfoSwitch(nullptr),
+  m_tauInfoSwitch(nullptr),
+  m_metInfoSwitch(nullptr),
+  m_trkSelTool(nullptr),
+  m_trigConfTool(nullptr),
+  m_trigDecTool(nullptr)
+{
+
+  m_units = units;
+  m_debug = debug;
+  m_DC14  = DC14;
+  m_tree = tree;
+  m_tree->SetDirectory( file );
+  m_event = event;
+  m_store = store;
+  Info("HelpTreeBase()", "HelpTreeBase setup");
+
+}
+
+
 void HelpTreeBase::Fill() {
   m_tree->Fill();
 }
