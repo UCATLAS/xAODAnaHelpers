@@ -47,6 +47,7 @@ class HelpTreeBase {
 public:
 
   HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false );
+  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, bool DC14 = false );
   virtual ~HelpTreeBase() {;}
 
   void AddEvent       (const std::string detailStr = "");
@@ -79,7 +80,8 @@ public:
   TrigConf::xAODConfigTool*    m_trigConfTool;
   Trig::TrigDecisionTool*      m_trigDecTool;
 
-  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event );
+  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr ); /* FIXME: NO NEED TO PASS TEVENT OBJECT!! */
+  
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
