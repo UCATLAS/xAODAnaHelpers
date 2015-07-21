@@ -204,7 +204,6 @@ protected:
   std::vector<float> m_caloCluster_e;
 
   // trigger
-  int m_passAny;
   int m_passL1;
   int m_passHLT;
   unsigned int m_masterKey;
