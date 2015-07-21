@@ -207,7 +207,6 @@ protected:
   std::vector<double> m_weight_muon_trig;
 
   // trigger
-  int m_passAny;
   int m_passL1;
   int m_passHLT;
   unsigned int m_masterKey;

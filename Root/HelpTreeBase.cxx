@@ -252,7 +252,6 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
 
   // Add these basic branches
   if ( m_trigInfoSwitch->m_basic ) {
-    m_tree->Branch("passAny",         &m_passAny,      "passAny/I"     );
     m_tree->Branch("passL1",          &m_passL1,       "passL1/I"      );
     m_tree->Branch("passHLT",         &m_passHLT,      "passHLT/I"     );
   }
@@ -289,14 +288,12 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_basic"); }
 
     static SG::AuxElement::ConstAccessor< int > passAny("passAny");
-    if( passAny.isAvailable( *eventInfo ) ) { m_passAny = passAny( *eventInfo ); }
-    else { m_passAny = -999; }
     static SG::AuxElement::ConstAccessor< int > passL1("passL1");
     if( passL1.isAvailable( *eventInfo ) ) { m_passL1 = passL1( *eventInfo ); }
-    else { m_passL1 = -999; }
+    else { m_passL1 = -1; }
     static SG::AuxElement::ConstAccessor< int > passHLT("passHLT");
     if( passHLT.isAvailable( *eventInfo ) ) { m_passHLT = passHLT( *eventInfo ); }
-    else { m_passHLT = -999; }
+    else { m_passHLT = -1; }
 
   }
 
@@ -333,7 +330,6 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
 // Clear Trigger
 void HelpTreeBase::ClearTrigger() {
 
-  m_passAny = -999;
   m_passL1  = -999;
   m_passHLT = -999;
 
