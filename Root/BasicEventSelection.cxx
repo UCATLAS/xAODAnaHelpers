@@ -162,7 +162,7 @@ EL::StatusCode BasicEventSelection :: configure ()
     if( m_truthLevelOnly ) {
       Info("configure()", "Truth only! Turn off trigger stuff");
       m_triggerSelection = "";
-      m_applyTriggerCut = m_storeTrigDecisions = m_storePassAny = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
+      m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
       Info("configure()", "Truth only! Turn off GRL");
       m_applyGRLCut = false;
       Info("configure()", "Truth only! Turn off Pile-up Reweight");
@@ -517,7 +517,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+  if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
     m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
     ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );

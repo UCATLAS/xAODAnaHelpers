@@ -316,7 +316,6 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
 // Clear Trigger
 void HelpTreeBase::ClearTrigger() {
 
-  m_passAny = -999;
   m_passL1  = -999;
   m_passHLT = -999;
 
