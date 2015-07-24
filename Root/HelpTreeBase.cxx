@@ -73,6 +73,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
   m_tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
   m_tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
+  m_tree->Branch("bcid",               &m_bcid,           "bcid/I");
 
   if ( m_eventInfoSwitch->m_pileup ) {
     m_tree->Branch("NPV",                &m_npv,            "NPV/I");
@@ -125,10 +126,12 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     m_mcEventNumber         = eventInfo->mcEventNumber();
     m_mcChannelNumber       = eventInfo->mcChannelNumber();
     m_mcEventWeight         = eventInfo->mcEventWeight();
+    m_bcid                  = -1;
   } else {
     m_mcEventNumber         = -1;
     m_mcChannelNumber       = -1;
-    m_mcEventWeight	    = 1.;
+    m_mcEventWeight	        = 1.;
+    m_bcid                  = eventInfo->bcid();
   }
   static SG::AuxElement::ConstAccessor< double > weight_pileup ("PileupWeight");
   if ( weight_pileup.isAvailable( *eventInfo ) ) {
@@ -2058,7 +2061,7 @@ void HelpTreeBase::ClearFatJets() {
 }
 
 void HelpTreeBase::ClearEvent() {
-  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = -999;
+  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = m_bcid = -999;
   m_mcEventWeight = 1.;
   m_weight_pileup = 1.;
   // pileup

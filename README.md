@@ -22,7 +22,7 @@ If you need to bump up the version of the AnalysisBase being used, please make s
 ### Current
 Please try to keep changes to a minimum until after EPS, July 23rd 2015.
 
-Current AB is **Base,2.3.19**
+Current AB is **Base,2.3.21**
 
 The 00-03-08 tag is for use with **Base,2.3.18**.
 
