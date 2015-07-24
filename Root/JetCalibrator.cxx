@@ -388,7 +388,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     //m_JERSmearTool->msg().setLevel(MSG::DEBUG);
     m_JERToolHandle = ToolHandle<IJERTool>(m_JERTool->name());
     RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("JERTool", m_JERToolHandle), "");
-
+    
     RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("isMC", m_isMC), "");
 
     //m_JERApplyNominal = true;

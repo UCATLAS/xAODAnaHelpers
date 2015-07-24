@@ -11,9 +11,8 @@
 #  python () (./xAODAnaHelpers/scripts/)checkoutASGtags.py RELEASE_NUMBER [X.Y.Z]
 # *******************************************************************************
 
-import subprocess
+import os, subprocess
 import argparse
-import os
 
 rc_env = os.environ.copy()
 
@@ -21,14 +20,12 @@ parser = argparse.ArgumentParser(description='Checkout packages and apply patche
 parser.add_argument('version', help='the ASG release you have set up')
 args = parser.parse_args()
 
-print "using ASG version {0}".format(args.version)
+print "Using ASG version {0}".format(args.version)
 
-dict_pkg = {'2.3.15': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-27",
-                       "atlasoff/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/tags/JetSelectorTools-00-05-02",
-                       "atlasoff/Reconstruction/Jet/JetMomentTools/tags/JetMomentTools-00-03-20",
-                       "atlasoff/PhysicsAnalysis/AnalysisCommon/PileupReweighting/tags/PileupReweighting-00-03-03",
-                       "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-00-05",
-                       "atlasoff/Event/xAOD/xAODTracking/tags/xAODTracking-00-13-15"],
+
+##check that you're in the right directory?
+
+dict_pkg = {
             '2.3.18': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-28",
                        "atlasoff/Reconstruction/Jet/JetResolution/tags/JetResolution-03-00-36",
                        "atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-46",
@@ -36,7 +33,8 @@ dict_pkg = {'2.3.15': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUnc
 		                   "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-00-10"],
             '2.3.19': ["atlasoff/Trigger/TrigAnalysis/TrigEgammaMatchingTool/tags/TrigEgammaMatchingTool-00-00-05",
 		                   "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-00-10",
-                       "atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-29"]
+                       "atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-29"],
+            '2.3.21': []
            }
 
 try:
@@ -46,13 +44,16 @@ except KeyError:
   import sys
   sys.exit(0)
 
-for pkg in packages_to_checkout:
-  print "checking out package: {0}".format(pkg)
-  subprocess.Popen(['cd $ROOTCOREBIN/.. && pwd && rc checkout_pkg {0}'.format(pkg) ], env=rc_env, shell=True).wait()
+if len(packages_to_checkout) == 0:
+  print "No packages needed for version ", args.version
+else:
+  for pkg in packages_to_checkout:
+    print "Checking out package: {0}".format(pkg)
+    subprocess.Popen(['cd $ROOTCOREBIN/.. && pwd && rc checkout_pkg {0}'.format(pkg) ], env=rc_env, shell=True).wait()
 
+###  Apply Local Patches ###
 packages_to_patch = []
-
-print "applying svn patches..."
+print "Applying svn patches..."
 for pkg in packages_to_patch:
   if pkg in packages_to_checkout:
     print "  patching {0}".format(pkg)
@@ -60,4 +61,12 @@ for pkg in packages_to_patch:
   else:
     print "  no patches to be applied!"
 
-
+#### Update Run II GRLs ####
+print "Updating GRL..."
+physicsGRL = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v63-pro18-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+atlasReadyGRL = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/Atlas_Ready/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml"
+try:
+  subprocess.call(["wget",physicsGRL,"-O", "xAODAnaHelpers/data/"+physicsGRL.split('/')[-1]])
+  subprocess.call(["wget",atlasReadyGRL,"-O","xAODAnaHelpers/data/"+atlasReadyGRL.split('/')[-1]])
+except OSError as e:
+  print "Error, wget is not available.  Will not download grl.  You can find the latest version at", physicsGRL

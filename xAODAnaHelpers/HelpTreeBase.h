@@ -174,6 +174,7 @@ protected:
   int m_mcChannelNumber;
   float m_mcEventWeight;
   float m_weight_pileup;
+  int m_bcid;
   // event pileup
   int m_npv;
   float m_actualMu;
