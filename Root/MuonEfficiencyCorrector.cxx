@@ -537,12 +537,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     double triggerSF(0.0);
     ///*
     if ( nMuons > 0 ) {
-
-      if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
-        Warning( "execute()", "Problem in getTriggerScaleFactor");
+      if ( !m_SingleMuTrig.empty() ) {
+	if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
+	  Warning( "execute()", "Problem in getTriggerScaleFactor");
+	}
+	if ( m_debug ) { Info( "execute()", "Nominal trigger scaleFactor (single trigger) = %g", triggerSF ); }
       }
-      if ( m_debug ) { Info( "execute()", "Nominal trigger scaleFactor (single trigger) = %g", triggerSF ); }
-
       if ( nMuons == 2 ) {
         if ( !m_DiMuTrig.empty() ) {
           if ( m_muonTrigSFTool->getTriggerScaleFactor( *inputMuons, triggerSF, m_DiMuTrig ) != CP::CorrectionCode::Ok ) {
