@@ -479,7 +479,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
     // Parse all comma seperated files
     while( tmp_PRWFileNames.size() > 0){
-      int pos = tmp_PRWFileNames.find_first_of(',');
+      unsigned int pos = tmp_PRWFileNames.find_first_of(',');
       if( pos == std::string::npos){
         pos = tmp_PRWFileNames.size();
         PRWFiles.push_back(tmp_PRWFileNames.substr(0, pos));
@@ -490,7 +490,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       }
     }
     while( tmp_lumiCalcFileNames.size() > 0){
-      int pos = tmp_lumiCalcFileNames.find_first_of(',');
+      unsigned int pos = tmp_lumiCalcFileNames.find_first_of(',');
       if( pos == std::string::npos){
         pos = tmp_lumiCalcFileNames.size();
         lumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
@@ -595,6 +595,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_pileuptool->apply(*eventInfo);
       static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
       pileupWeight = pileupWeightAcc(*eventInfo) ;
+      //mcEvtWeight *= pileupWeight; ... WHAT DO WE DO FOR EVENT WEIGHTS?
     }
   }
 
