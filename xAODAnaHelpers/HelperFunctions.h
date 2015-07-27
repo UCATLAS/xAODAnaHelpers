@@ -36,6 +36,7 @@ namespace HelperFunctions {
   int countPrimaryVertices(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
   const xAOD::Vertex* getPrimaryVertex(const xAOD::VertexContainer* vertexContainer);
   int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer);
+  bool applyPrimaryVertexSelection( const xAOD::JetContainer* jets, const xAOD::VertexContainer* vertices );
   std::string replaceString(std::string subjet, const std::string& search, const std::string& replace);
 
 
