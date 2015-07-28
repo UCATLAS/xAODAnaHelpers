@@ -109,25 +109,19 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
   }
 
 
-  // commmented out ones are for next iteration ( in July 2015 )
-  //https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt4EMTopoJets
-  //if( m_btag_veryloose ) { m_operatingPt = "-0_7887";  // 85%
-  if( m_btag_veryloose ) { m_operatingPt = "-0_7682";  // 85%
+  if( m_btag_veryloose ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 85 );  // 85%
     m_decor          += "_BTagVeryLoose";  
     m_outputSystName += "_BTagVeryLoose"; 
   }
-  //if( m_btag_loose     ) { m_operatingPt = "-0_4434";  // 77%
-  if( m_btag_loose     ) { m_operatingPt = "-0_3867";  // 77%
+  if( m_btag_loose     ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 77 );  // 77%
     m_decor          += "_BTagLoose";      
     m_outputSystName += "_BTagLoose";      
   }
-  //if( m_btag_medium    ) { m_operatingPt = "-0_0436";  // 70%
-  if( m_btag_medium    ) { m_operatingPt = "0_0314";  // 70%
+  if( m_btag_medium    ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 70 );  // 70%
     m_decor          += "_BTagMedium";     
     m_outputSystName += "_BTagMedium";     
   }
-  //if( m_btag_tight     ) { m_operatingPt =  "0_4496";   // 60%
-  if( m_btag_tight     ) { m_operatingPt =  "0_5102";   // 60%
+  if( m_btag_tight     ) { m_operatingPt =  HelperFunctions::GetBTagMV2c20_CutStr( 60 );   // 60%
     m_decor          += "_BTagTight";      
     m_outputSystName += "_BTagTight";      
   }

@@ -1056,15 +1056,19 @@ void HelpTreeBase::AddJets(const std::string detailStr)
   }
 
   if( m_jetInfoSwitch->m_sfFTagVeryLoose ) { 
+    m_tree->Branch("jet_MV2c20_is85",   &m_jet_mv2c20_is85);
     m_tree->Branch("jet_MV2c20_SF85",   &m_jet_mv2c20_sf85);
   }
   if( m_jetInfoSwitch->m_sfFTagLoose ) { 
+    m_tree->Branch("jet_MV2c20_is77",   &m_jet_mv2c20_is77);
     m_tree->Branch("jet_MV2c20_SF77",   &m_jet_mv2c20_sf77);
   }
   if( m_jetInfoSwitch->m_sfFTagMedium ) { 
+    m_tree->Branch("jet_MV2c20_is70",   &m_jet_mv2c20_is70);
     m_tree->Branch("jet_MV2c20_SF70",   &m_jet_mv2c20_sf70);
   }
   if( m_jetInfoSwitch->m_sfFTagLoose ) { 
+    m_tree->Branch("jet_MV2c20_is60",   &m_jet_mv2c20_is60);
     m_tree->Branch("jet_MV2c20_SF60",   &m_jet_mv2c20_sf60);
   }
 
@@ -1591,6 +1595,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if( m_jetInfoSwitch->m_sfFTagVeryLoose ) {
+      static SG::AuxElement::ConstAccessor< char > is85("BTagVeryLoose");
+      if( is85.isAvailable( *jet_itr ) ) {
+        m_jet_mv2c20_is85.push_back( static_cast<int>( is85( *jet_itr ) ) );
+      } else { m_jet_mv2c20_is85.push_back( -1 ); }
+      //
       static SG::AuxElement::ConstAccessor< std::vector<float> > sf85("BTag_SF_BTagVeryLoose");
       if ( sf85.isAvailable( *jet_itr ) ) { 
         m_jet_mv2c20_sf85.push_back( sf85( *jet_itr ) );
@@ -1601,6 +1610,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if( m_jetInfoSwitch->m_sfFTagLoose ) {
+      static SG::AuxElement::ConstAccessor< char > is77("BTagLoose");
+      if( is77.isAvailable( *jet_itr ) ) {
+        m_jet_mv2c20_is77.push_back( static_cast<int>( is77( *jet_itr ) ) );
+      } else { m_jet_mv2c20_is77.push_back( -1 ); }
+      //
       static SG::AuxElement::ConstAccessor< std::vector<float> > sf77("BTag_SF_BTagLoose");
       if ( sf77.isAvailable( *jet_itr ) ) { 
         m_jet_mv2c20_sf77.push_back( sf77( *jet_itr ) );
@@ -1611,6 +1625,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if( m_jetInfoSwitch->m_sfFTagMedium ) {
+      static SG::AuxElement::ConstAccessor< char > is70("BTagMedium");
+      if( is70.isAvailable( *jet_itr ) ) {
+        m_jet_mv2c20_is70.push_back( static_cast<int>( is70( *jet_itr ) ) );
+      } else { m_jet_mv2c20_is70.push_back( -1 ); }
+      //
       static SG::AuxElement::ConstAccessor< std::vector<float> > sf70("BTag_SF_BTagMedium");
       if ( sf70.isAvailable( *jet_itr ) ) { 
         m_jet_mv2c20_sf70.push_back( sf70( *jet_itr ) );
@@ -1621,6 +1640,11 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     }
 
     if( m_jetInfoSwitch->m_sfFTagTight ) {
+      static SG::AuxElement::ConstAccessor< char > is60("BTagTight");
+      if( is60.isAvailable( *jet_itr ) ) {
+        m_jet_mv2c20_is60.push_back( static_cast<int>( is60( *jet_itr ) ) );
+      } else { m_jet_mv2c20_is60.push_back( -1 ); }
+      //
       static SG::AuxElement::ConstAccessor< std::vector<float> > sf60("BTag_SF_BTagTight");
       if ( sf60.isAvailable( *jet_itr ) ) { 
         m_jet_mv2c20_sf60.push_back( sf60( *jet_itr ) );
@@ -1989,10 +2013,10 @@ void HelpTreeBase::ClearJets() {
     m_jet_mv2c20.clear();
   }
 
-  if( m_jetInfoSwitch->m_sfFTagVeryLoose) { m_jet_mv2c20_sf85.clear(); }
-  if( m_jetInfoSwitch->m_sfFTagLoose)     { m_jet_mv2c20_sf77.clear(); }
-  if( m_jetInfoSwitch->m_sfFTagMedium)    { m_jet_mv2c20_sf70.clear(); }
-  if( m_jetInfoSwitch->m_sfFTagTight)     { m_jet_mv2c20_sf60.clear(); }
+  if( m_jetInfoSwitch->m_sfFTagVeryLoose) { m_jet_mv2c20_is85.clear(); m_jet_mv2c20_sf85.clear(); }
+  if( m_jetInfoSwitch->m_sfFTagLoose)     { m_jet_mv2c20_is77.clear(); m_jet_mv2c20_sf77.clear(); }
+  if( m_jetInfoSwitch->m_sfFTagMedium)    { m_jet_mv2c20_is70.clear(); m_jet_mv2c20_sf70.clear(); }
+  if( m_jetInfoSwitch->m_sfFTagTight)     { m_jet_mv2c20_is60.clear(); m_jet_mv2c20_sf60.clear(); }
 
   if ( m_jetInfoSwitch->m_area ) {
     m_jet_ghostArea.clear();

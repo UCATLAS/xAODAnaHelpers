@@ -340,6 +340,10 @@ protected:
   std::vector< std::vector<float> > m_jet_mv2c20_sf77;
   std::vector< std::vector<float> > m_jet_mv2c20_sf70;
   std::vector< std::vector<float> > m_jet_mv2c20_sf60;
+  std::vector<int> m_jet_mv2c20_is85;
+  std::vector<int> m_jet_mv2c20_is77;
+  std::vector<int> m_jet_mv2c20_is70;
+  std::vector<int> m_jet_mv2c20_is60;
 
   // area
   std::vector<float> m_jet_ghostArea;
