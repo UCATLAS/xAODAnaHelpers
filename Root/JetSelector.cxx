@@ -646,10 +646,10 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // detEta
   if ( m_detEta_max != 1e8 ) {
-    if ( ( jet->getAttribute<xAOD::JetFourMom_t>(m_jetScaleType.c_str()) ).eta() > m_detEta_max ) { return 0; }
+    if ( fabs( ( jet->getAttribute<xAOD::JetFourMom_t>(m_jetScaleType.c_str()) ).eta() ) > m_detEta_max ) { return 0; }
   }
   if ( m_detEta_min != 1e8 ) {
-    if( ( jet->getAttribute<xAOD::JetFourMom_t>(m_jetScaleType.c_str()) ).eta() < m_detEta_min ) { return 0; }
+    if ( fabs( ( jet->getAttribute<xAOD::JetFourMom_t>(m_jetScaleType.c_str()) ).eta() ) < m_detEta_min ) { return 0; }
   }
 
   // mass
