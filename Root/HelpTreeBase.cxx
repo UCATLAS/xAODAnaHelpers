@@ -1002,8 +1002,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     // this applies the JVF/JVT selection cuts
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
     if( m_jetInfoSwitch->m_allTrackPVSel ) {
-      m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection" );
-      m_trkSelTool->setCutLevel( InDet::CutLevel::Loose );
+      m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection", "Loose" );
       m_trkSelTool->initialize();
       // to do this need to have AddJets return a status code
       //RETURN_CHECK( "HelpTreeBase::JetTrackSelection", m_trkSelTool->initialize(), "");
@@ -1054,6 +1053,19 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_MV1",           &m_jet_mv1);
     m_tree->Branch("jet_MV2c00",        &m_jet_mv2c00);
     m_tree->Branch("jet_MV2c20",        &m_jet_mv2c20);
+  }
+
+  if( m_jetInfoSwitch->m_sfFTagVeryLoose ) { 
+    m_tree->Branch("jet_MV2c20_SF85",   &m_jet_mv2c20_sf85);
+  }
+  if( m_jetInfoSwitch->m_sfFTagLoose ) { 
+    m_tree->Branch("jet_MV2c20_SF77",   &m_jet_mv2c20_sf77);
+  }
+  if( m_jetInfoSwitch->m_sfFTagMedium ) { 
+    m_tree->Branch("jet_MV2c20_SF70",   &m_jet_mv2c20_sf70);
+  }
+  if( m_jetInfoSwitch->m_sfFTagLoose ) { 
+    m_tree->Branch("jet_MV2c20_SF60",   &m_jet_mv2c20_sf60);
   }
 
   if( m_jetInfoSwitch->m_area ) {
@@ -1562,7 +1574,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
         if ( SV0_significance3DAcc.isAvailable(*myBTag) ) { m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }
 
-	m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
+        m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
         m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
 
       }
@@ -1576,6 +1588,46 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       myBTag->variable<double>("MV2c20", "discriminant", val);
       m_jet_mv2c20.push_back( val );
 
+    }
+
+    if( m_jetInfoSwitch->m_sfFTagVeryLoose ) {
+      static SG::AuxElement::ConstAccessor< std::vector<float> > sf85("BTag_SF_BTagVeryLoose");
+      if ( sf85.isAvailable( *jet_itr ) ) { 
+        m_jet_mv2c20_sf85.push_back( sf85( *jet_itr ) );
+      } else {
+        std::vector<float> junk(1,-999);
+        m_jet_mv2c20_sf85.push_back(junk); 
+      }
+    }
+
+    if( m_jetInfoSwitch->m_sfFTagLoose ) {
+      static SG::AuxElement::ConstAccessor< std::vector<float> > sf77("BTag_SF_BTagLoose");
+      if ( sf77.isAvailable( *jet_itr ) ) { 
+        m_jet_mv2c20_sf77.push_back( sf77( *jet_itr ) );
+      } else {
+        std::vector<float> junk(1,-999);
+        m_jet_mv2c20_sf77.push_back(junk); 
+      }
+    }
+
+    if( m_jetInfoSwitch->m_sfFTagMedium ) {
+      static SG::AuxElement::ConstAccessor< std::vector<float> > sf70("BTag_SF_BTagMedium");
+      if ( sf70.isAvailable( *jet_itr ) ) { 
+        m_jet_mv2c20_sf70.push_back( sf70( *jet_itr ) );
+      } else {
+        std::vector<float> junk(1,-999);
+        m_jet_mv2c20_sf70.push_back(junk); 
+      }
+    }
+
+    if( m_jetInfoSwitch->m_sfFTagTight ) {
+      static SG::AuxElement::ConstAccessor< std::vector<float> > sf60("BTag_SF_BTagTight");
+      if ( sf60.isAvailable( *jet_itr ) ) { 
+        m_jet_mv2c20_sf60.push_back( sf60( *jet_itr ) );
+      } else { 
+        std::vector<float> junk(1,-999);
+        m_jet_mv2c20_sf60.push_back(junk); 
+      }
     }
 
     if ( m_jetInfoSwitch->m_area ) {
@@ -1936,6 +1988,11 @@ void HelpTreeBase::ClearJets() {
     m_jet_mv2c00.clear();
     m_jet_mv2c20.clear();
   }
+
+  if( m_jetInfoSwitch->m_sfFTagVeryLoose) { m_jet_mv2c20_sf85.clear(); }
+  if( m_jetInfoSwitch->m_sfFTagLoose)     { m_jet_mv2c20_sf77.clear(); }
+  if( m_jetInfoSwitch->m_sfFTagMedium)    { m_jet_mv2c20_sf70.clear(); }
+  if( m_jetInfoSwitch->m_sfFTagTight)     { m_jet_mv2c20_sf60.clear(); }
 
   if ( m_jetInfoSwitch->m_area ) {
     m_jet_ghostArea.clear();
