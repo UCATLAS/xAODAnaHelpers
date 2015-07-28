@@ -87,7 +87,7 @@ namespace HelperClasses{
    **************************************/
   bool InfoSwitch::parse(const std::string flag)
   {
-    return m_configStr.find(flag) != std::string::npos;
+    return m_configStr.find(flag) != std::string::npos; // not equal to npos means it is found
   }
 
   void EventInfoSwitch::initialize(){

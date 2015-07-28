@@ -114,6 +114,12 @@ std::string HelperFunctions::GetBTagMV2c20_CutStr( int efficiency ) {
   float value = HelperFunctions::GetBTagMV2c20_Cut( efficiency );
   std::string valueStr = std::to_string(value);
   valueStr.replace(valueStr.find('.'),1,"_"); // replace period with underscore
+  // 7 characters long if start with a - and 6 otherwise
+  if( valueStr.find('-') != std::string::npos ) { 
+    valueStr.resize(7,'0'); // cut to 7 or pad with 0s
+  } else {
+    valueStr.resize(6,'0'); // cut to 6 or pad with 0s
+  }
   return valueStr;
 }
 
