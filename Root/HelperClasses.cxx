@@ -87,7 +87,7 @@ namespace HelperClasses{
    **************************************/
   bool InfoSwitch::parse(const std::string flag)
   {
-    return m_configStr.find(flag) != std::string::npos;
+    return m_configStr.find(flag) != std::string::npos; // not equal to npos means it is found
   }
 
   void EventInfoSwitch::initialize(){
@@ -149,6 +149,10 @@ namespace HelperClasses{
     m_constituent   = parse("constituent");
     m_constituentAll= parse("constituentAll");
     m_flavTag       = parse("flavorTag");
+    m_sfFTagVeryLoose = parse("sfFTagVL");
+    m_sfFTagLoose     = parse("sfFTagL");
+    m_sfFTagMedium    = parse("sfFTagM");
+    m_sfFTagTight     = parse("sfFTagT");
     m_area          = parse("area");
     if( parse("LeadingJets") ){
       m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );
@@ -159,7 +163,7 @@ namespace HelperClasses{
       m_numLeadingJets = 0;
     }
   }
-  
+
   void TauInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
     m_trackparams   = parse("trackparams");

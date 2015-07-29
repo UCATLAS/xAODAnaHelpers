@@ -233,32 +233,19 @@ EL::StatusCode  JetSelector :: configure ()
   //
   m_btagCut = -100; // < -99 turns off btagging
   m_decor   = "passSel";
-  //
+  
   // MV2c20 cuts
-  //
-  // VeryLoose / 85% / -0.7682
-  // Loose     / 77% / -0.3867
-  // Medium    / 70% / 0.0314
-  // Tight     / 60% / 0.5102
+  m_btag_veryloose_cut = HelperFunctions::GetBTagMV2c20_Cut( 85 );
+  m_btag_loose_cut     = HelperFunctions::GetBTagMV2c20_Cut( 77 );
+  m_btag_medium_cut    = HelperFunctions::GetBTagMV2c20_Cut( 70 );
+  m_btag_tight_cut     = HelperFunctions::GetBTagMV2c20_Cut( 60 );
 
-  //if ( m_isEMjet ) {
-
-  m_btag_veryloose_cut = -0.7682;
-  m_btag_loose_cut     = -0.3867;
-  m_btag_medium_cut    =  0.0314;
-  m_btag_tight_cut     =  0.5102;
   if ( m_btag_veryloose ) { m_btagCut = m_btag_veryloose_cut; }
   if ( m_btag_loose     ) { m_btagCut = m_btag_loose_cut;     }
   if ( m_btag_medium    ) { m_btagCut = m_btag_medium_cut;    }
   if ( m_btag_tight     ) { m_btagCut = m_btag_tight_cut;     }
 
-  //} else if ( m_isLCjet ) {
-  //if ( m_btag_veryloose ) { m_btagCut = 0.1340; }
-  //if ( m_btag_loose     ) { m_btagCut = 0.3511; }
-  //if ( m_btag_medium    ) { m_btagCut = 0.7892; }
-  //if ( m_btag_tight     ) { m_btagCut = 0.9827; }
-  //}
-
+  
   if ( m_decorateSelectedObjects ) {
     Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
   }
@@ -723,7 +710,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       double discriminant = -99;
       myBTag->MVx_discriminant("MV2c20",discriminant);
       if ( m_doBTagCut && (discriminant < m_btagCut) ) {
-	return 0;
+        return 0;
       }
       m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );        
 
