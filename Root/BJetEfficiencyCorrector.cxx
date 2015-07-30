@@ -175,6 +175,16 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
+
+  if (!m_isMC){
+    Warning("initialize()", "Attempting to run BTagging Jet Scale Factors on data.  Turning tool off." );
+    return EL::StatusCode::SUCCESS;
+  }
+
+
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
@@ -241,7 +251,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
       syst_it = m_systList.erase(syst_it);
     }
   }
-    
+
+
   if( m_systName.empty() ){
     Info("initialize()"," Running w/ nominal configuration!");
   }
@@ -258,11 +269,17 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
+
+  if (!m_isMC)
+    return EL::StatusCode::SUCCESS;
+
   if(m_debug) Info("execute()", "Applying BJet Efficiency Correction... ");
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* correctedJets(nullptr);
   RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
+
+
 
   //
   // loop over available systematics
@@ -319,11 +336,15 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       //
       float SF(0.0);
       if ( fabs(jet_itr->eta()) < 2.5 ) {
-        if ( m_BJetEffSFTool->getScaleFactor( *jet_itr, SF ) != CP::CorrectionCode::Ok ) {
-          Warning( "execute()", "Problem in getEfficiencyScaleFactor");
+
+        CP::CorrectionCode BJetEffCode = m_BJetEffSFTool->getScaleFactor( *jet_itr, SF );
+        if (BJetEffCode == CP::CorrectionCode::Error){
+          Warning( "execute()", "Error in getEfficiencyScaleFactor");
           SF = -2;
           //return EL::StatusCode::FAILURE;
         }
+        // if it is out of validity range (jet pt > 200 GeV), the tools just applies the SF at 200 GeV
+        //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
       } else {
         SF = -1;
       }
