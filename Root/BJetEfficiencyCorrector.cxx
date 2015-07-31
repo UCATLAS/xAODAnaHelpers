@@ -51,7 +51,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
   m_outputSystName          = "BJetEfficiency_Algo";
 
   // configuration of the bjet eff tool
-  m_corrFileName           = "2015-PreRecomm-13TeV-MC12-CDI.root ";
+  m_corrFileName           = "2015-PreRecomm-13TeV-MC12-CDI-May19-v1.root";
   m_jetAuthor              = "AntiKt4EMTopoJets";
   m_taggerName             = "MV2c20";
   m_useDevelopmentFile     = true;
@@ -343,7 +343,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
           SF = -2;
           //return EL::StatusCode::FAILURE;
         }
-        // if it is out of validity range (jet pt > 200 GeV), the tools just applies the SF at 200 GeV
+        // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
         //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
       } else {
         SF = -1;
