@@ -216,7 +216,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_muonEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonEffSFTool->setProperty("WorkingPoint", m_WorkingPoint ),"Failed to set Working Point property of MuonEfficiencyScaleFactors");
-  //RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonEffSFTool->setProperty("DataPeriod", m_DataPeriod ),"Failed to set DataPeriod property of MuonEfficiencyScaleFactors");
+  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonEffSFTool->setProperty("DataPeriod", m_DataPeriod ),"Failed to set DataPeriod property of MuonEfficiencyScaleFactors");
   // test audit trail
   //
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonEffSFTool->setProperty("doAudit", false),"Failed to set doAudit property of MuonEfficiencyScaleFactors");
@@ -250,7 +250,11 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_muonTrigSFTool = new CP::MuonTriggerScaleFactors( "MuonTriggerScaleFactors" );
   m_muonTrigSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("runNumber", m_runNumber ),"Failed to set runNumber property of MuonTriggerScaleFactors");
+  //RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("RunNumber", m_runNumber ),"Failed to set runNumber property of MuonTriggerScaleFactors");
+  if( m_muonTrigSFTool->setRunNumber( m_runNumber ) == CP::CorrectionCode::Error ) {
+    Warning("initialize()","Cannot set RunNumber for m_muonTrigSFTool");
+  }
+
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->setProperty("MuonQuality", m_WorkingPoint ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_muonTrigSFTool->initialize(), "Failed to properly initialize MuonTriggerScaleFactors");
 

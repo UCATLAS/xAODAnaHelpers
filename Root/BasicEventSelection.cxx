@@ -529,6 +529,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to initialise TrigDecisionTool!");
+    std::cout << "Configured m_trigDecTool : " << m_trigDecTool->name() << std::endl;
+    asg::ToolStore::put( m_trigDecTool );
   }
 
 

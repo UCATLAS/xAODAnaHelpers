@@ -96,6 +96,7 @@ namespace HelperClasses{
     m_shapeLC       = parse("shapeLC");
     m_truth         = parse("truth");
     m_caloClus      = parse("caloClusters");
+    m_muonSF        = parse("muonSF");
   }
   
   void TriggerInfoSwitch::initialize(){
@@ -116,6 +117,7 @@ namespace HelperClasses{
     m_quality       = parse("quality");
     m_trackparams   = parse("trackparams");
     m_trackhitcont  = parse("trackhitcont");
+    m_effSF         = parse("effSF");
   }
 
   void ElectronInfoSwitch::initialize(){

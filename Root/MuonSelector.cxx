@@ -438,6 +438,7 @@ EL::StatusCode MuonSelector :: initialize ()
   // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
   //     do not initialise if there are no input trigger chains
   //
+
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) && asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
 
     m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
@@ -453,9 +454,10 @@ EL::StatusCode MuonSelector :: initialize ()
     
     RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
     RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
+    std::cout << " Initialized : TrigDecisionTool " << m_trigMuonMatchTool->name() << std::endl;
 
   } else {
-    Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
+    Warning("initialize()", "\n***********************************************************\n Will not perform any muon trigger matching at this stage b/c : \n ");
     Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
     Warning("initialize()", "\t AND/OR" );
     Warning("initialize()", "\t -) input HLT trigger chain list is empty \n" );
@@ -854,7 +856,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }    
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   
   double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
   float z0sintheta	 = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
