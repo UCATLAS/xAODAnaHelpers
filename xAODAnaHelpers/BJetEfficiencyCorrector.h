@@ -40,6 +40,8 @@ public:
 
 private:
 
+  bool m_isMC;        //!
+
   // tools
   BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
 
