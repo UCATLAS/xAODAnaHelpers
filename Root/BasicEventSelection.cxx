@@ -97,9 +97,8 @@ BasicEventSelection :: BasicEventSelection () :
 
   // Trigger
   m_triggerSelection = "";
-  m_applyTriggerCut = true ;
+  m_applyTriggerCut = false;
   m_storeTrigDecisions = false;
-  m_storePassAny = false;
   m_storePassL1 = false;
   m_storePassHLT = false;
   m_storeTrigKeys = false;
@@ -155,7 +154,6 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_triggerSelection           = config->GetValue("Trigger",            m_triggerSelection.c_str());
     m_applyTriggerCut            = config->GetValue("ApplyTriggerCut",    m_applyTriggerCut);
     m_storeTrigDecisions         = config->GetValue("StoreTrigDecision",  m_storeTrigDecisions);
-    m_storePassAny               = config->GetValue("StorePassAny",       m_storePassAny);
     m_storePassL1                = config->GetValue("StorePassL1",        m_storePassL1);
     m_storePassHLT               = config->GetValue("StorePassHLT",       m_storePassHLT);
     m_storeTrigKeys              = config->GetValue("StoreTrigKeys",      m_storeTrigKeys);
@@ -164,7 +162,7 @@ EL::StatusCode BasicEventSelection :: configure ()
     if( m_truthLevelOnly ) {
       Info("configure()", "Truth only! Turn off trigger stuff");
       m_triggerSelection = "";
-      m_applyTriggerCut = m_storeTrigDecisions = m_storePassAny = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
+      m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
       Info("configure()", "Truth only! Turn off GRL");
       m_applyGRLCut = false;
       Info("configure()", "Truth only! Turn off Pile-up Reweight");
@@ -552,7 +550,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
 
   // Trigger //
-  if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassAny || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+  if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
     m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "");
     ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
@@ -719,10 +717,14 @@ EL::StatusCode BasicEventSelection :: execute ()
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
 
-  // Trigger
+  // Trigger 
+  //
   if ( !m_triggerSelection.empty() ) {
+  
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
+    
     if ( m_applyTriggerCut ) {
+    
       if ( !triggerChainGroup->isPassed() ) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS;
@@ -730,40 +732,40 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_cutflowHist ->Fill( m_cutflow_trigger, 1 );
       m_cutflowHistW->Fill( m_cutflow_trigger, mcEvtWeight);
 
-    } // m_applyTriggerCut
+    } 
 
     // save passed triggers in eventInfo
-    if( m_storeTrigDecisions ) {
+    //
+    if ( m_storeTrigDecisions ) {
+    
       std::vector<std::string> passTriggers;
-      for (auto &trigName : triggerChainGroup->getListOfTriggers()) {
+      
+      for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool->getChainGroup( trigName );
-        if (trigChain->isPassed()) {
+        if ( trigChain->isPassed() ) {
           passTriggers.push_back( trigName );
         }
       }
       static SG::AuxElement::Decorator< std::vector< std::string > > passTrigs("passTriggers");
       passTrigs( *eventInfo ) = passTriggers;
-    } // storeTrigDecision
+    
+    } 
 
     static SG::AuxElement::Decorator< float > weight_prescale("weight_prescale");
     weight_prescale(*eventInfo) = triggerChainGroup->getPrescale();
+
+    if ( m_storePassL1 ) {
+      static SG::AuxElement::Decorator< int > passL1("passL1");
+      passL1(*eventInfo)  = ( m_triggerSelection.find("L1_") != std::string::npos )  ? (int)m_trigDecTool->isPassed(m_triggerSelection.c_str()) : -1;
+    }
+    if ( m_storePassHLT ) {
+      static SG::AuxElement::Decorator< int > passHLT("passHLT");
+      passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool->isPassed(m_triggerSelection.c_str()) : -1;
+    }
+  
   } // if giving a specific list of triggers to look at
 
-  if( m_storePassAny ) {
-    static SG::AuxElement::Decorator< int > passAny("passAny");
-    passAny(*eventInfo) = (int)m_trigDecTool->isPassed(".*");
-  }
-  if( m_storePassL1 ) {
-    static SG::AuxElement::Decorator< int > passL1("passL1");
-    passL1(*eventInfo) = (int)m_trigDecTool->isPassed("L1_.*");
-  }
-  if( m_storePassHLT ) {
-    static SG::AuxElement::Decorator< int > passHLT("passHLT");
-    passHLT(*eventInfo) = (int)m_trigDecTool->isPassed("HLT_.*");
-  }
-
-
-  if( m_storeTrigKeys ) {
+  if ( m_storeTrigKeys ) {
     static SG::AuxElement::Decorator< int > masterKey("masterKey");
     masterKey(*eventInfo) = m_trigConfTool->masterKey();
     static SG::AuxElement::Decorator< int > L1PSKey("L1PSKey");
@@ -774,8 +776,6 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   return EL::StatusCode::SUCCESS;
 }
-
-
 
 EL::StatusCode BasicEventSelection :: postExecute ()
 {

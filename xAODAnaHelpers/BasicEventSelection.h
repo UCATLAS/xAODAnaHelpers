@@ -53,7 +53,6 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_triggerSelection;
     bool m_applyTriggerCut;
     bool m_storeTrigDecisions;
-    bool m_storePassAny;
     bool m_storePassL1;
     bool m_storePassHLT;
     bool m_storeTrigKeys;
