@@ -63,7 +63,7 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_useMetaData;
 
   private:
-    GoodRunsListSelectionTool*   m_grl;       //!
+    GoodRunsListSelectionTool*   m_grl;        //!
     CP::PileupReweightingTool*   m_pileuptool; //!
     int m_PU_default_channel; //!
     

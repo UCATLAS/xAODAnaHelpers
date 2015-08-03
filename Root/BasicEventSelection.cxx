@@ -3,8 +3,8 @@
  * Basic event selection. Performs general simple cuts
  * (GRL, Event Cleaning, Min nr. Tracks for PV candidate)
  *
- * G. Facini, M. Milesi (marco.milesi@cern.ch)
- *
+ * G. Facini (gabriel.facini@cern.ch)
+ * M. Milesi (marco.milesi@cern.ch)
  *
  *******************************************************/
 
@@ -264,9 +264,11 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
+  
   Info("fileExecute()", "Calling fileExecute");
 
   // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
+  //
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -275,12 +277,13 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //---------------------------
   //
   // Metadata for intial N (weighted) events are used to correctly normalise MC
-  // if running on a mc DAOD which had some skimming applied at the derivation stage
+  // if running on a MC DAOD which had some skimming applied at the derivation stage
 
   // get the MetaData tree once a new file is opened, with
-  TTree *MetaData = dynamic_cast<TTree*>(wk()->inputFile()->Get("MetaData"));
+  //
+  TTree* MetaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
   if ( !MetaData ) {
-    Error("fileExecute()", "MetaData not found! Exiting.");
+    Error("fileExecute()", "MetaData tree not found! Exiting.");
     return EL::StatusCode::FAILURE;
   }
   MetaData->LoadTree(0);
@@ -291,15 +294,35 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   if ( m_isDerivation && m_useMetaData ) {
 
     // check for corruption
+    //
+    // If there are some Incomplete CBK, throw a FAILURE,
+    // unless ALL of them have inputStream == "unknownStream"
+    //
     const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
-    if(!m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess()){
+    if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
       Error("initializeEvent()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
       return EL::StatusCode::FAILURE;
     }
+    bool allFromUnknownStream(true); 
+    if ( incompleteCBC->size() != 0 ) {
+
+      for ( auto cbk : *incompleteCBC ) {
+	if ( cbk->inputStream() != "unknownStream" ) { 
+	  allFromUnknownStream = false; 
+	  break;
+	}
+      }
+      if ( !allFromUnknownStream ) {
+	Error("initializeEvent()","Found incomplete Bookkeepers! Check file for corruption.");
+	return EL::StatusCode::FAILURE;
+      }
+
+    }
 
     // Now, let's find the actual information
+    //
     const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
-    if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ){
+    if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ) {
       Error("fileExecute()","Failed to retrieve CutBookkeepers from MetaData! Exiting.");
       return EL::StatusCode::FAILURE;
     }
@@ -318,10 +341,10 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     if ( m_debug ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
 
     for ( auto cbk :  *completeCBC ) {
-      if ( minCycle == cbk->cycle() && cbk->name() == "AllExecutedEvents" ){
+      if ( minCycle == cbk->cycle() && cbk->name() == "AllExecutedEvents" ) {
 	allEventsCBK = cbk;
       }
-      if ( cbk->name() == derivationName){
+      if ( cbk->name() == derivationName ) {
 	DxAODEventsCBK = cbk;
       }
     }
@@ -334,10 +357,20 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     m_MD_finalSumW          = DxAODEventsCBK->sumOfEventWeights();
     m_MD_finalSumWSquared   = DxAODEventsCBK->sumOfEventWeightsSquared();
 
+  } else {
+  
+    // if not using a DAOD (or explicitly vetoing check on metadata), 
+    // simply retrieve the tree entries and weight
+    //
+    TTree* CollectionTree = dynamic_cast<TTree*>( wk()->inputFile()->Get("CollectionTree") );
+
+    m_MD_finalNevents       = m_MD_initialNevents     = CollectionTree->GetEntries(); 
+    m_MD_finalSumW          = m_MD_initialSumW        = CollectionTree->GetWeight() * CollectionTree->GetEntries();
+    m_MD_finalSumWSquared   = m_MD_initialSumWSquared = ( CollectionTree->GetWeight() * CollectionTree->GetWeight() ) * CollectionTree->GetEntries();
+  
   }
 
-  //
-  // Write meta data to histogram
+  // Write metadata event bookkeepers to histogram
   //
   Info("histInitialize()", "Meta data from this file:");
   Info("histInitialize()", "Initial  events	 = %u",            static_cast<unsigned int>(m_MD_initialNevents) );
