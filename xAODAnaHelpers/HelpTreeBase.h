@@ -1,14 +1,14 @@
-/********************************************************************************
+/********************************************************
  * HelpTreeBase:
  *
  * This class is meant to help the user write out a tree.
  * Some branches are included by default while others
  * need to be added by the user
  *
- * Gabriel Facini ( gabriel.facini@cern.ch ), Marco Milesi (marco.milesi@cern.ch)
+ * Gabriel Facini (gabriel.facini@cern.ch) 
+ * Marco Milesi (marco.milesi@cern.ch)
  *
- *
- ********************************************************************************/
+ ********************************************************/
 
 // Dear emacs, this is -*-c++-*-
 #ifndef xAODAnaHelpers_HelpTreeBase_H
