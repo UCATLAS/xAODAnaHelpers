@@ -509,24 +509,25 @@ EL::StatusCode BasicEventSelection :: initialize ()
     std::string tmp_PRWFileNames = m_PRWFileNames;
 
     // Parse all comma seperated files
-    while( tmp_PRWFileNames.size() > 0){
-      unsigned int pos = tmp_PRWFileNames.find_first_of(',');
-      if( pos == std::string::npos){
+    //
+    while ( tmp_PRWFileNames.size() > 0) {
+      size_t pos = tmp_PRWFileNames.find_first_of(',');
+      if ( pos == std::string::npos ) {
         pos = tmp_PRWFileNames.size();
         PRWFiles.push_back(tmp_PRWFileNames.substr(0, pos));
         tmp_PRWFileNames.erase(0, pos);
-      }else{
+      } else {
         PRWFiles.push_back(tmp_PRWFileNames.substr(0, pos));
         tmp_PRWFileNames.erase(0, pos+1);
       }
     }
-    while( tmp_lumiCalcFileNames.size() > 0){
-      unsigned int pos = tmp_lumiCalcFileNames.find_first_of(',');
-      if( pos == std::string::npos){
+    while ( tmp_lumiCalcFileNames.size() > 0) {
+      size_t pos = tmp_lumiCalcFileNames.find_first_of(',');
+      if ( pos == std::string::npos ) {
         pos = tmp_lumiCalcFileNames.size();
         lumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
         tmp_lumiCalcFileNames.erase(0, pos);
-      }else{
+      } else {
         lumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
         tmp_lumiCalcFileNames.erase(0, pos+1);
       }
