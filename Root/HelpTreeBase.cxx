@@ -461,7 +461,11 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
     static SG::AuxElement::Accessor<char> isTrigMatchedAcc("isTrigMatched");
     if ( m_muInfoSwitch->m_trigger ) {
-      if ( isTrigMatchedAcc.isAvailable( *muon_itr ) ) { m_muon_isTrigMatched.push_back( isTrigMatchedAcc( *muon_itr ) ); } else { m_muon_isTrigMatched.push_back( -1 );}
+      if ( isTrigMatchedAcc.isAvailable( *muon_itr ) ) { 
+        m_muon_isTrigMatched.push_back( static_cast<int>( isTrigMatchedAcc( *muon_itr ) ) ); 
+      } else { 
+        m_muon_isTrigMatched.push_back( -1 );
+      }
     }
 
     if ( m_muInfoSwitch->m_isolation ) {
@@ -1329,17 +1333,32 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
     // each step of the calibration sequence
     if ( m_jetInfoSwitch->m_scales ) {
-      m_jet_emPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEMScaleMomentum" ).Pt() / m_units );
-      m_jet_pileupPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum" ).Pt() / m_units );
-      m_jet_originConstitPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetOriginConstitScaleMomentum" ).Pt() / m_units );
-      m_jet_etaJESPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEtaJESScaleMomentum" ).Pt() / m_units );
-      m_jet_gscPt.push_back( jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetGSCScaleMomentum" ).Pt() / m_units );
+      xAOD::JetFourMom_t fourVec;
+      bool status(false);
+      // EM Scale
+      status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEMScaleMomentum", fourVec );
+      if( status ) { m_jet_emPt.push_back( fourVec.Pt() / m_units ); }
+      else { m_jet_emPt.push_back( -999 ); }
+      // Pileup Scale
+      status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum", fourVec );
+      if( status ) { m_jet_pileupPt.push_back( fourVec.Pt() / m_units ); }
+      else { m_jet_pileupPt.push_back( -999 ); }
+      // OriginConstit Scale
+      status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetOriginConstitScaleMomentum", fourVec );
+      if( status ) { m_jet_originConstitPt.push_back( fourVec.Pt() / m_units ); }
+      else { m_jet_originConstitPt.push_back( -999 ); }
+      // EtaJES Scale
+      status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEtaJESScaleMomentum", fourVec );
+      if( status ) { m_jet_etaJESPt.push_back( fourVec.Pt() / m_units ); }
+      else { m_jet_etaJESPt.push_back( -999 ); }
+      // GSC Scale
+      status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetGSCScaleMomentum", fourVec );
+      if( status ) { m_jet_gscPt.push_back( fourVec.Pt() / m_units ); }
+      else { m_jet_gscPt.push_back( -999 ); }
       // only available in data
-      xAOD::JetFourMom_t insitu;
-      bool status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetInsituScaleMomentum", insitu );
-      if(status) {
-        m_jet_insituPt.push_back( insitu.Pt() / m_units );
-      } else { m_jet_insituPt.push_back( -999 ); }
+      status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetInsituScaleMomentum", fourVec );
+      if(status) { m_jet_insituPt.push_back( fourVec.Pt() / m_units ); }
+      else { m_jet_insituPt.push_back( -999 ); }
     }
 
     if ( m_jetInfoSwitch->m_layer ) {
