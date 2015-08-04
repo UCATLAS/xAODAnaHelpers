@@ -1091,6 +1091,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_MV1",           &m_jet_mv1);
     m_tree->Branch("jet_MV2c00",        &m_jet_mv2c00);
     m_tree->Branch("jet_MV2c20",        &m_jet_mv2c20);
+    m_tree->Branch("jet_HadronConeExclTruthLabelID", &m_jet_hadConeExclTruthLabel);
   }
 
   if( m_jetInfoSwitch->m_sfFTagVeryLoose ) { 
@@ -1168,7 +1169,6 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
   const xAOD::VertexContainer* vertices(nullptr);
   const xAOD::Vertex *pv = 0;
-  //int pvLocation(-1);
   if( m_jetInfoSwitch->m_trackPV || m_jetInfoSwitch->m_allTrack ) {
     HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
@@ -1645,6 +1645,13 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       myBTag->variable<double>("MV2c20", "discriminant", val);
       m_jet_mv2c20.push_back( val );
 
+      // flavor groups truth definition
+      static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
+      if( hadConeExclTruthLabel.isAvailable( *jet_itr ) ) {
+        m_jet_hadConeExclTruthLabel.push_back( hadConeExclTruthLabel(*jet_itr) );
+      } else {
+        m_jet_hadConeExclTruthLabel.push_back( -999 );
+      }
     }
 
     if( m_jetInfoSwitch->m_sfFTagVeryLoose ) {
@@ -2064,6 +2071,7 @@ void HelpTreeBase::ClearJets() {
     m_jet_mv1.clear();
     m_jet_mv2c00.clear();
     m_jet_mv2c20.clear();
+    m_jet_hadConeExclTruthLabel.clear();
   }
 
   if( m_jetInfoSwitch->m_sfFTagVeryLoose) { m_jet_mv2c20_is85.clear(); m_jet_mv2c20_sf85.clear(); }

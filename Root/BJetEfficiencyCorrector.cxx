@@ -3,6 +3,7 @@
  * Interface to CP BJet Efficiency Correction Tool.
  *
  * John Alison (john.alison@cern.ch)
+ * Gabriel Facini (gabriel.facini@cern.ch)
  *
  *
  ******************************************/
@@ -33,6 +34,7 @@ ClassImp(BJetEfficiencyCorrector)
 
 
 BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
+  m_BJetSelectTool(nullptr),
   m_BJetEffSFTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -57,13 +59,17 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
   m_useDevelopmentFile     = true;
   m_coneFlavourLabel       = true;
 
-  // Btag quality
-  m_btag_veryloose          = false;
-  m_btag_loose              = false;
-  m_btag_medium             = false;
-  m_btag_tight              = false;
+  // allowed operating points:
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
+  //For the fixed cut, valid options are: [ "FixedCutBEff_30", "FixedCutBEff_50", "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_80", "FixedCutBEff_85", "FixedCutBEff_90" ]
+  //For the variable cut, valid options are: [ "FlatBEff_30", "FlatBEff_40", "FlatBEff_50", "FlatBEff_60", "FlatBEff_70", "FlatBEff_77", "FlatBEff_85" ]
 
-  m_decor                   = "BTag_SF";
+
+  // Btag quality
+  m_operatingPt             = "";
+
+  m_decor                   = "BTag";
+  m_decorSF                 = ""; // gets set below after configure is called
 
 }
 
@@ -95,12 +101,10 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     //
     // Btag quality
     //
-    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   m_btag_veryloose);
-    m_btag_loose              = config->GetValue("BTagLoose",       m_btag_loose);
-    m_btag_medium             = config->GetValue("BTagMedium",      m_btag_medium);
-    m_btag_tight              = config->GetValue("BTagTight",       m_btag_tight);
+    m_operatingPt             = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
 
     m_decor                   = config->GetValue("DecorationName", m_decor.c_str());
+    m_decorSF                 = m_decor + "_SF";
 
     config->Print();
     Info("configure()", "BJetEfficiencyCorrector Interface succesfully configured! ");
@@ -108,23 +112,31 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     delete config;
   }
 
+  bool allOK(false);
+  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_60") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_70") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_77") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_85") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_40") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_60") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_70") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_77") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_85") { allOK = true; }
 
-  if( m_btag_veryloose ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 85 );  // 85%
-    m_decor          += "_BTagVeryLoose";  
-    m_outputSystName += "_BTagVeryLoose"; 
+  if( !allOK ) {
+    Error("configure()", "Requested operating point is not known to xAH...out of date? %s", m_operatingPt.c_str());
+    return EL::StatusCode::FAILURE;
   }
-  if( m_btag_loose     ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 77 );  // 77%
-    m_decor          += "_BTagLoose";      
-    m_outputSystName += "_BTagLoose";      
-  }
-  if( m_btag_medium    ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 70 );  // 70%
-    m_decor          += "_BTagMedium";     
-    m_outputSystName += "_BTagMedium";     
-  }
-  if( m_btag_tight     ) { m_operatingPt =  HelperFunctions::GetBTagMV2c20_CutStr( 60 );   // 60%
-    m_decor          += "_BTagTight";      
-    m_outputSystName += "_BTagTight";      
-  }
+
+  m_decor           += "_" + m_operatingPt;
+  m_decorSF         += "_" + m_operatingPt;
+  m_outputSystName  += "_" + m_operatingPt;
 
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 
@@ -193,11 +205,35 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
 
   //
+  // initialize the BJetSelectionTool
+  //
+  std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
+  m_BJetSelectTool= new BTaggingSelectionTool( sel_tool_name );
+  m_BJetSelectTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
+
+  //
+  //  Configure the BJetSelectionTool
+  //
+  // A few which are not configurable as of yet....
+  // is there a reason to have this configurable here??...I think no (GF to self)
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",2.5),"Failed to set property:MaxEta");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",20000),"Failed to set property:MinPt");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName","$ROOTCOREBIN/data/xAODBTaggingEfficiency/cutprofiles_22072015.root"),"Failed to set property:FlvTagCutDefinitionsFileName");
+  // configurable parameters
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",          m_taggerName),"Failed to set property: TaggerName");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property: JetAuthor");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
+
+
+
+  //
   // initialize the BJetEfficiencyCorrectionTool
   //
   std::string sf_tool_name = std::string("BJetEfficiencyCorrectionTool_") + m_name;
   m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
   m_BJetEffSFTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
+
 
   //
   //  Configure the BJetEfficiencyCorrectionTool
@@ -323,12 +359,22 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
         Info( "execute", "New Jet eta = %f",  jet_itr->eta());
       }
 
+
       //
       //  If btagging vector doesnt exist create it
       //
-      SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decor );
-      if(!sfVec.isAvailable(*jet_itr)){
+      SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decorSF );
+      if(!sfVec.isAvailable(*jet_itr)) {
         sfVec(*jet_itr) = std::vector<float>();
+      }
+
+      //
+      // Add decorator for decision
+      // 
+      SG::AuxElement::Decorator< int > isBTag( m_decor );
+      if( !isBTag.isAvailable( *jet_itr ) ) {
+        if( m_BJetSelectTool->accept( *jet_itr ) ) { isBTag( *jet_itr ) = 1; }
+        else { isBTag( *jet_itr ) = 0; }
       }
 
       //

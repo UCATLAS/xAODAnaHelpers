@@ -339,6 +339,7 @@ protected:
   std::vector<float> m_jet_mv1;
   std::vector<float> m_jet_mv2c00;
   std::vector<float> m_jet_mv2c20;
+  std::vector<int>   m_jet_hadConeExclTruthLabel;
 
   std::vector< std::vector<float> > m_jet_mv2c20_sf85;
   std::vector< std::vector<float> > m_jet_mv2c20_sf77;

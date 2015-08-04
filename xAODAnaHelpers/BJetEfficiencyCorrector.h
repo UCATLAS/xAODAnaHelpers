@@ -9,6 +9,7 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
+#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
 #include "xAODBTaggingEfficiency/BTaggingEfficiencyTool.h"
 
 // algorithm wrapper
@@ -31,18 +32,16 @@ public:
   std::string m_taggerName;
   bool        m_useDevelopmentFile;
   bool        m_coneFlavourLabel;
-  bool  m_btag_veryloose;
-  bool  m_btag_loose;
-  bool  m_btag_medium;
-  bool  m_btag_tight;
 
   std::string m_decor;            // The decoration key written to passing objects
+  std::string m_decorSF;          // The decoration key written to passing objects
 
 private:
 
   bool m_isMC;        //!
 
   // tools
+  BTaggingSelectionTool   *m_BJetSelectTool; //!
   BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
 
   // configuration variables
