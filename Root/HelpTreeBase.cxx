@@ -633,6 +633,9 @@ void HelpTreeBase::ClearMuons() {
     }
   }
 
+  if ( m_muInfoSwitch->m_effSF ) {
+    m_muon_effSF.clear();
+  }
 }
 
 /*********************
@@ -901,10 +904,6 @@ void HelpTreeBase::ClearElectrons() {
     m_el_IsEMLoose.clear();
     m_el_IsEMMedium.clear();
     m_el_IsEMTight.clear();
-  }
-
-  if ( m_muInfoSwitch->m_effSF ) {
-    m_muon_effSF.clear();
   }
 
   if ( m_elInfoSwitch->m_trackparams ) {
