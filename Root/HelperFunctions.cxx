@@ -99,13 +99,13 @@ bool HelperFunctions::applyPrimaryVertexSelection( const xAOD::JetContainer* jet
   return true;
 }
 
-// to be updated for July release
+// compatible with starting with: 2015-PreRecomm-13TeV-MC12-CDI_August3-v1.root
 //https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt4EMTopoJets
 float HelperFunctions::GetBTagMV2c20_Cut( int efficiency ) { 
-  if     ( efficiency == 85 ) { return -0.7682; }
-  else if( efficiency == 77 ) { return -0.3867; }
-  else if( efficiency == 70 ) { return  0.0314; } 
-  else if( efficiency == 60 ) { return  0.5102; }
+  if     ( efficiency == 85 ) { return -0.7887; }
+  else if( efficiency == 77 ) { return -0.4434; }
+  else if( efficiency == 70 ) { return -0.0436; } 
+  else if( efficiency == 60 ) { return  0.4496; }
   else { std::cout << "UNKNOWN BTAG EFFICIENCY POINT " << efficiency << std::endl; }
   return -1; // no cut
 }
