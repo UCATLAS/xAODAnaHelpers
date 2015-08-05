@@ -104,6 +104,23 @@ public:
 
   bool writeTo( TFile *file );
 
+  void Fill_Fix30( const xAOD::Jet* jet );
+  void Fill_Fix50( const xAOD::Jet* jet );
+  void Fill_Fix60( const xAOD::Jet* jet );
+  void Fill_Fix70( const xAOD::Jet* jet );
+  void Fill_Fix77( const xAOD::Jet* jet );
+  void Fill_Fix80( const xAOD::Jet* jet );
+  void Fill_Fix85( const xAOD::Jet* jet );
+  void Fill_Fix90( const xAOD::Jet* jet );
+
+  void Fill_Flt30( const xAOD::Jet* jet );
+  void Fill_Flt40( const xAOD::Jet* jet );
+  void Fill_Flt50( const xAOD::Jet* jet );
+  void Fill_Flt60( const xAOD::Jet* jet );
+  void Fill_Flt70( const xAOD::Jet* jet );
+  void Fill_Flt77( const xAOD::Jet* jet );
+  void Fill_Flt85( const xAOD::Jet* jet );
+
   virtual void AddEventUser(const std::string detailStr = "")      {
     if(m_debug) Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
@@ -341,14 +358,37 @@ protected:
   std::vector<float> m_jet_mv2c20;
   std::vector<int>   m_jet_hadConeExclTruthLabel;
 
-  std::vector< std::vector<float> > m_jet_mv2c20_sf85;
-  std::vector< std::vector<float> > m_jet_mv2c20_sf77;
-  std::vector< std::vector<float> > m_jet_mv2c20_sf70;
-  std::vector< std::vector<float> > m_jet_mv2c20_sf60;
-  std::vector<int> m_jet_mv2c20_is85;
-  std::vector<int> m_jet_mv2c20_is77;
-  std::vector<int> m_jet_mv2c20_is70;
-  std::vector<int> m_jet_mv2c20_is60;
+  std::vector<int> m_jet_mv2c20_isFix30;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFix30;
+  std::vector<int> m_jet_mv2c20_isFix50;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFix50;
+  std::vector<int> m_jet_mv2c20_isFix60;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFix60;
+  std::vector<int> m_jet_mv2c20_isFix70;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFix70;
+  std::vector<int> m_jet_mv2c20_isFix77;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFix77;
+  std::vector<int> m_jet_mv2c20_isFix80;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFix80;
+  std::vector<int> m_jet_mv2c20_isFix85;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFix85;
+  std::vector<int> m_jet_mv2c20_isFix90;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFix90;
+
+  std::vector<int> m_jet_mv2c20_isFlt30;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFlt30;
+  std::vector<int> m_jet_mv2c20_isFlt40;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFlt40;
+  std::vector<int> m_jet_mv2c20_isFlt50;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFlt50;
+  std::vector<int> m_jet_mv2c20_isFlt60;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFlt60;
+  std::vector<int> m_jet_mv2c20_isFlt70;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFlt70;
+  std::vector<int> m_jet_mv2c20_isFlt77;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFlt77;
+  std::vector<int> m_jet_mv2c20_isFlt85;
+  std::vector< std::vector<float> > m_jet_mv2c20_sfFlt85;
 
   // area
   std::vector<float> m_jet_ghostArea;

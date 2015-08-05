@@ -1094,22 +1094,85 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_HadronConeExclTruthLabelID", &m_jet_hadConeExclTruthLabel);
   }
 
-  if( m_jetInfoSwitch->m_sfFTagVeryLoose ) { 
-    m_tree->Branch("jet_MV2c20_is85",   &m_jet_mv2c20_is85);
-    m_tree->Branch("jet_MV2c20_SF85",   &m_jet_mv2c20_sf85);
-  }
-  if( m_jetInfoSwitch->m_sfFTagLoose ) { 
-    m_tree->Branch("jet_MV2c20_is77",   &m_jet_mv2c20_is77);
-    m_tree->Branch("jet_MV2c20_SF77",   &m_jet_mv2c20_sf77);
-  }
-  if( m_jetInfoSwitch->m_sfFTagMedium ) { 
-    m_tree->Branch("jet_MV2c20_is70",   &m_jet_mv2c20_is70);
-    m_tree->Branch("jet_MV2c20_SF70",   &m_jet_mv2c20_sf70);
-  }
-  if( m_jetInfoSwitch->m_sfFTagLoose ) { 
-    m_tree->Branch("jet_MV2c20_is60",   &m_jet_mv2c20_is60);
-    m_tree->Branch("jet_MV2c20_SF60",   &m_jet_mv2c20_sf60);
-  }
+  if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
+    for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
+      switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
+        case 30 : 
+          m_tree->Branch("jet_MV2c20_isFix30",   &m_jet_mv2c20_isFix30);
+          m_tree->Branch("jet_MV2c20_SFFix30",   &m_jet_mv2c20_sfFix30);
+          break;
+        case 50 : 
+          m_tree->Branch("jet_MV2c20_isFix50",   &m_jet_mv2c20_isFix50);
+          m_tree->Branch("jet_MV2c20_SFFix50",   &m_jet_mv2c20_sfFix50);
+          break;
+        case 60 : 
+          m_tree->Branch("jet_MV2c20_isFix60",   &m_jet_mv2c20_isFix60);
+          m_tree->Branch("jet_MV2c20_SFFix60",   &m_jet_mv2c20_sfFix60);
+          break;
+        case 70 : 
+          m_tree->Branch("jet_MV2c20_isFix70",   &m_jet_mv2c20_isFix70);
+          m_tree->Branch("jet_MV2c20_SFFix70",   &m_jet_mv2c20_sfFix70);
+          break;
+        case 77 : 
+          m_tree->Branch("jet_MV2c20_isFix77",   &m_jet_mv2c20_isFix77);
+          m_tree->Branch("jet_MV2c20_SFFix77",   &m_jet_mv2c20_sfFix77);
+          break;
+        case 80 : 
+          m_tree->Branch("jet_MV2c20_isFix80",   &m_jet_mv2c20_isFix80);
+          m_tree->Branch("jet_MV2c20_SFFix80",   &m_jet_mv2c20_sfFix80);
+          break;
+        case 85 : 
+          m_tree->Branch("jet_MV2c20_isFix85",   &m_jet_mv2c20_isFix85);
+          m_tree->Branch("jet_MV2c20_SFFix85",   &m_jet_mv2c20_sfFix85);
+          break;
+        case 90 : 
+          m_tree->Branch("jet_MV2c20_isFix90",   &m_jet_mv2c20_isFix90);
+          m_tree->Branch("jet_MV2c20_SFFix90",   &m_jet_mv2c20_sfFix90);
+          break;
+        default:
+          std::cout << "BTag Fixed operating point of " << m_jetInfoSwitch->m_sfFTagFix.at(i) 
+            << " is unknown to xAH" << std::endl;
+      }
+    }
+  } // sfFTagFix
+
+  if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) {
+    for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
+      switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
+        case 30 : 
+          m_tree->Branch("jet_MV2c20_isFlt30",   &m_jet_mv2c20_isFlt30);
+          m_tree->Branch("jet_MV2c20_SFFlt30",   &m_jet_mv2c20_sfFlt30);
+          break;
+        case 40 : 
+          m_tree->Branch("jet_MV2c20_isFlt40",   &m_jet_mv2c20_isFlt40);
+          m_tree->Branch("jet_MV2c20_SFFlt40",   &m_jet_mv2c20_sfFlt40);
+          break;
+        case 50 : 
+          m_tree->Branch("jet_MV2c20_isFlt50",   &m_jet_mv2c20_isFlt50);
+          m_tree->Branch("jet_MV2c20_SFFlt50",   &m_jet_mv2c20_sfFlt50);
+          break;
+        case 60 : 
+          m_tree->Branch("jet_MV2c20_isFlt60",   &m_jet_mv2c20_isFlt60);
+          m_tree->Branch("jet_MV2c20_SFFlt60",   &m_jet_mv2c20_sfFlt60);
+          break;
+        case 70 : 
+          m_tree->Branch("jet_MV2c20_isFlt70",   &m_jet_mv2c20_isFlt70);
+          m_tree->Branch("jet_MV2c20_SFFlt70",   &m_jet_mv2c20_sfFlt70);
+          break;
+        case 77 : 
+          m_tree->Branch("jet_MV2c20_isFlt77",   &m_jet_mv2c20_isFlt77);
+          m_tree->Branch("jet_MV2c20_SFFlt77",   &m_jet_mv2c20_sfFlt77);
+          break;
+        case 85 : 
+          m_tree->Branch("jet_MV2c20_isFlt85",   &m_jet_mv2c20_isFlt85);
+          m_tree->Branch("jet_MV2c20_SFFlt85",   &m_jet_mv2c20_sfFlt85);
+          break;
+        default:
+          std::cout << "BTag Flat operating point of " << m_jetInfoSwitch->m_sfFTagFlt.at(i) 
+            << " is unknown to xAH" << std::endl;
+      }
+    }
+  } // sfFTagFlt
 
   if( m_jetInfoSwitch->m_area ) {
     m_tree->Branch("jet_GhostArea",     &m_jet_ghostArea);
@@ -1654,65 +1717,49 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       }
     }
 
-    if( m_jetInfoSwitch->m_sfFTagVeryLoose ) {
-      static SG::AuxElement::ConstAccessor< char > is85("BTagVeryLoose");
-      if( is85.isAvailable( *jet_itr ) ) {
-        m_jet_mv2c20_is85.push_back( static_cast<int>( is85( *jet_itr ) ) );
-      } else { m_jet_mv2c20_is85.push_back( -1 ); }
-      //
-      static SG::AuxElement::ConstAccessor< std::vector<float> > sf85("BTag_SF_BTagVeryLoose");
-      if ( sf85.isAvailable( *jet_itr ) ) { 
-        m_jet_mv2c20_sf85.push_back( sf85( *jet_itr ) );
-      } else {
-        std::vector<float> junk(1,-999);
-        m_jet_mv2c20_sf85.push_back(junk); 
+    if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
+      for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
+        switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
+          case 30 : this->Fill_Fix30( jet_itr );
+            break;
+          case 50 : this->Fill_Fix50( jet_itr );
+            break;
+          case 60 : this->Fill_Fix60( jet_itr );
+            break;
+          case 70 : this->Fill_Fix70( jet_itr );
+            break;
+          case 77 : this->Fill_Fix77( jet_itr );
+            break;
+          case 80 : this->Fill_Fix80( jet_itr );
+            break;
+          case 85 : this->Fill_Fix85( jet_itr );
+            break;
+          case 90 : this->Fill_Fix90( jet_itr );
+            break;
+        }
       }
-    }
+    } // sfFTagFix
 
-    if( m_jetInfoSwitch->m_sfFTagLoose ) {
-      static SG::AuxElement::ConstAccessor< char > is77("BTagLoose");
-      if( is77.isAvailable( *jet_itr ) ) {
-        m_jet_mv2c20_is77.push_back( static_cast<int>( is77( *jet_itr ) ) );
-      } else { m_jet_mv2c20_is77.push_back( -1 ); }
-      //
-      static SG::AuxElement::ConstAccessor< std::vector<float> > sf77("BTag_SF_BTagLoose");
-      if ( sf77.isAvailable( *jet_itr ) ) { 
-        m_jet_mv2c20_sf77.push_back( sf77( *jet_itr ) );
-      } else {
-        std::vector<float> junk(1,-999);
-        m_jet_mv2c20_sf77.push_back(junk); 
+    if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) {
+      for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
+        switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
+          case 30 : this->Fill_Flt30( jet_itr );
+            break;
+          case 40 : this->Fill_Flt40( jet_itr );
+            break;
+          case 50 : this->Fill_Flt50( jet_itr );
+            break;
+          case 60 : this->Fill_Flt60( jet_itr );
+            break;
+          case 70 : this->Fill_Flt70( jet_itr );
+            break;
+          case 77 : this->Fill_Flt77( jet_itr );
+            break;
+          case 85 : this->Fill_Flt85( jet_itr );
+            break;
+        }
       }
-    }
-
-    if( m_jetInfoSwitch->m_sfFTagMedium ) {
-      static SG::AuxElement::ConstAccessor< char > is70("BTagMedium");
-      if( is70.isAvailable( *jet_itr ) ) {
-        m_jet_mv2c20_is70.push_back( static_cast<int>( is70( *jet_itr ) ) );
-      } else { m_jet_mv2c20_is70.push_back( -1 ); }
-      //
-      static SG::AuxElement::ConstAccessor< std::vector<float> > sf70("BTag_SF_BTagMedium");
-      if ( sf70.isAvailable( *jet_itr ) ) { 
-        m_jet_mv2c20_sf70.push_back( sf70( *jet_itr ) );
-      } else {
-        std::vector<float> junk(1,-999);
-        m_jet_mv2c20_sf70.push_back(junk); 
-      }
-    }
-
-    if( m_jetInfoSwitch->m_sfFTagTight ) {
-      static SG::AuxElement::ConstAccessor< char > is60("BTagTight");
-      if( is60.isAvailable( *jet_itr ) ) {
-        m_jet_mv2c20_is60.push_back( static_cast<int>( is60( *jet_itr ) ) );
-      } else { m_jet_mv2c20_is60.push_back( -1 ); }
-      //
-      static SG::AuxElement::ConstAccessor< std::vector<float> > sf60("BTag_SF_BTagTight");
-      if ( sf60.isAvailable( *jet_itr ) ) { 
-        m_jet_mv2c20_sf60.push_back( sf60( *jet_itr ) );
-      } else { 
-        std::vector<float> junk(1,-999);
-        m_jet_mv2c20_sf60.push_back(junk); 
-      }
-    }
+    } // sfFTagFlt
 
     if ( m_jetInfoSwitch->m_area ) {
 
@@ -2074,10 +2121,54 @@ void HelpTreeBase::ClearJets() {
     m_jet_hadConeExclTruthLabel.clear();
   }
 
-  if( m_jetInfoSwitch->m_sfFTagVeryLoose) { m_jet_mv2c20_is85.clear(); m_jet_mv2c20_sf85.clear(); }
-  if( m_jetInfoSwitch->m_sfFTagLoose)     { m_jet_mv2c20_is77.clear(); m_jet_mv2c20_sf77.clear(); }
-  if( m_jetInfoSwitch->m_sfFTagMedium)    { m_jet_mv2c20_is70.clear(); m_jet_mv2c20_sf70.clear(); }
-  if( m_jetInfoSwitch->m_sfFTagTight)     { m_jet_mv2c20_is60.clear(); m_jet_mv2c20_sf60.clear(); }
+  if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) { // just clear them all....
+    m_jet_mv2c20_isFix30.clear();
+    m_jet_mv2c20_sfFix30.clear();
+
+    m_jet_mv2c20_isFix50.clear();
+    m_jet_mv2c20_sfFix50.clear();
+
+    m_jet_mv2c20_isFix60.clear();
+    m_jet_mv2c20_sfFix60.clear();
+
+    m_jet_mv2c20_isFix70.clear();
+    m_jet_mv2c20_sfFix70.clear();
+
+    m_jet_mv2c20_isFix77.clear();
+    m_jet_mv2c20_sfFix77.clear();
+
+    m_jet_mv2c20_isFix80.clear();
+    m_jet_mv2c20_sfFix80.clear();
+
+    m_jet_mv2c20_isFix85.clear();
+    m_jet_mv2c20_sfFix85.clear();
+
+    m_jet_mv2c20_isFix90.clear();
+    m_jet_mv2c20_sfFix90.clear();
+  }
+
+  if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) { // just clear them all....
+    m_jet_mv2c20_isFlt30.clear();
+    m_jet_mv2c20_sfFlt30.clear();
+
+    m_jet_mv2c20_isFlt40.clear();
+    m_jet_mv2c20_sfFlt40.clear();
+
+    m_jet_mv2c20_isFlt50.clear();
+    m_jet_mv2c20_sfFlt50.clear();
+
+    m_jet_mv2c20_isFlt60.clear();
+    m_jet_mv2c20_sfFlt60.clear();
+
+    m_jet_mv2c20_isFlt70.clear();
+    m_jet_mv2c20_sfFlt70.clear();
+
+    m_jet_mv2c20_isFlt77.clear();
+    m_jet_mv2c20_sfFlt77.clear();
+
+    m_jet_mv2c20_isFlt85.clear();
+    m_jet_mv2c20_sfFlt85.clear();
+  }
 
   if ( m_jetInfoSwitch->m_area ) {
     m_jet_ghostArea.clear();
@@ -2395,5 +2486,226 @@ bool HelpTreeBase::writeTo( TFile* file ) {
   int status( m_tree->Write() );
   if ( status == 0 ) { return false; }
   return true;
+}
+
+
+
+
+//////////////////////////////////////////////////////////////
+///  hiding some of the explicit things for b-tagging here ///
+///        it's ugly                                       ///
+//////////////////////////////////////////////////////////////
+
+void HelpTreeBase::Fill_Fix30( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFix30("BTag_FixedCutBEff_30");
+  if( isFix30.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFix30.push_back( isFix30( *jet ) );
+  } else { m_jet_mv2c20_isFix30.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix30("BTag_SF_FixedCutBEff_30");
+  if ( sfFix30.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFix30.push_back( sfFix30( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFix30.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Fix50( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFix50("BTag_FixedCutBEff_50");
+  if( isFix50.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFix50.push_back( isFix50( *jet ) );
+  } else { m_jet_mv2c20_isFix50.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix50("BTag_SF_FixedCutBEff_50");
+  if ( sfFix50.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFix50.push_back( sfFix50( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFix50.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Fix60( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFix60("BTag_FixedCutBEff_60");
+  if( isFix60.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFix60.push_back( isFix60( *jet ) );
+  } else { m_jet_mv2c20_isFix60.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix60("BTag_SF_FixedCutBEff_60");
+  if ( sfFix60.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFix60.push_back( sfFix60( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFix60.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Fix70( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFix70("BTag_FixedCutBEff_70");
+  if( isFix70.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFix70.push_back( isFix70( *jet ) );
+  } else { m_jet_mv2c20_isFix70.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix70("BTag_SF_FixedCutBEff_70");
+  if ( sfFix70.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFix70.push_back( sfFix70( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFix70.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Fix77( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFix77("BTag_FixedCutBEff_77");
+  if( isFix77.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFix77.push_back( isFix77( *jet ) );
+  } else { m_jet_mv2c20_isFix77.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix77("BTag_SF_FixedCutBEff_77");
+  if ( sfFix77.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFix77.push_back( sfFix77( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFix77.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Fix80( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFix80("BTag_FixedCutBEff_80");
+  if( isFix80.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFix80.push_back( isFix80( *jet ) );
+  } else { m_jet_mv2c20_isFix80.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix80("BTag_SF_FixedCutBEff_80");
+  if ( sfFix80.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFix80.push_back( sfFix80( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFix80.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Fix85( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFix85("BTag_FixedCutBEff_85");
+  if( isFix85.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFix85.push_back( isFix85( *jet ) );
+  } else { m_jet_mv2c20_isFix85.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix85("BTag_SF_FixedCutBEff_85");
+  if ( sfFix85.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFix85.push_back( sfFix85( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFix85.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Fix90( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFix90("BTag_FixedCutBEff_90");
+  if( isFix90.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFix90.push_back( isFix90( *jet ) );
+  } else { m_jet_mv2c20_isFix90.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix90("BTag_SF_FixedCutBEff_90");
+  if ( sfFix90.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFix90.push_back( sfFix90( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFix90.push_back(junk); 
+  }
+}
+
+
+///// FLAT EFFICIENCY
+
+void HelpTreeBase::Fill_Flt30( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFlt30("BTag_FltedCutBEff_30");
+  if( isFlt30.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFlt30.push_back( isFlt30( *jet ) );
+  } else { m_jet_mv2c20_isFlt30.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30("BTag_SF_FltedCutBEff_30");
+  if ( sfFlt30.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFlt30.push_back( sfFlt30( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFlt30.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Flt40( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFlt40("BTag_FltedCutBEff_40");
+  if( isFlt40.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFlt40.push_back( isFlt40( *jet ) );
+  } else { m_jet_mv2c20_isFlt40.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40("BTag_SF_FltedCutBEff_40");
+  if ( sfFlt40.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFlt40.push_back( sfFlt40( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFlt40.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Flt50( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFlt50("BTag_FltedCutBEff_50");
+  if( isFlt50.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFlt50.push_back( isFlt50( *jet ) );
+  } else { m_jet_mv2c20_isFlt50.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50("BTag_SF_FltedCutBEff_50");
+  if ( sfFlt50.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFlt50.push_back( sfFlt50( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFlt50.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Flt60( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFlt60("BTag_FltedCutBEff_60");
+  if( isFlt60.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFlt60.push_back( isFlt60( *jet ) );
+  } else { m_jet_mv2c20_isFlt60.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60("BTag_SF_FltedCutBEff_60");
+  if ( sfFlt60.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFlt60.push_back( sfFlt60( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFlt60.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Flt70( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFlt70("BTag_FltedCutBEff_70");
+  if( isFlt70.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFlt70.push_back( isFlt70( *jet ) );
+  } else { m_jet_mv2c20_isFlt70.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70("BTag_SF_FltedCutBEff_70");
+  if ( sfFlt70.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFlt70.push_back( sfFlt70( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFlt70.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Flt77( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFlt77("BTag_FltedCutBEff_77");
+  if( isFlt77.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFlt77.push_back( isFlt77( *jet ) );
+  } else { m_jet_mv2c20_isFlt77.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77("BTag_SF_FltedCutBEff_77");
+  if ( sfFlt77.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFlt77.push_back( sfFlt77( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFlt77.push_back(junk); 
+  }
+}
+
+void HelpTreeBase::Fill_Flt85( const xAOD::Jet* jet ) {
+  static SG::AuxElement::ConstAccessor< int > isFlt85("BTag_FltedCutBEff_85");
+  if( isFlt85.isAvailable( *jet ) ) {
+    m_jet_mv2c20_isFlt85.push_back( isFlt85( *jet ) );
+  } else { m_jet_mv2c20_isFlt85.push_back( -1 ); }
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85("BTag_SF_FltedCutBEff_85");
+  if ( sfFlt85.isAvailable( *jet ) ) { 
+    m_jet_mv2c20_sfFlt85.push_back( sfFlt85( *jet ) );
+  } else {
+    std::vector<float> junk(1,-999);
+    m_jet_mv2c20_sfFlt85.push_back(junk); 
+  }
 }
 
