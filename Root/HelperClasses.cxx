@@ -182,10 +182,13 @@ namespace HelperClasses{
       input.erase(0,9);
       // two by two take the characters and push back an int into this vector
       std::vector<int> values;
-      while( input.size() > 0 ) {
+      int size( input.size()/2 );
+      int count(0);
+      while( count < size ) {
         std::string number = input.substr(0,2);
-        m_sfFTagFlt.push_back( atoi( number.c_str() ) );
+        m_sfFTagFix.push_back( atoi( number.c_str() ) );
         input.erase(0,2);
+        count++;
       }
     } // sfFTagFlt
     m_area          = parse("area");

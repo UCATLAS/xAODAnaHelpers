@@ -47,6 +47,7 @@ private:
   // configuration variables
   std::string m_operatingPt;
   std::string m_operatingPtCDI; // the one CDI will understand
+  bool m_getScaleFactors;
 
   std::vector<CP::SystematicSet> m_systList; //!
 
