@@ -650,7 +650,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
       // add vector<string container_names_syst> to TStore
       //
-      RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames_el, m_outputAlgoMuons ), "Failed to record vector of output container names.");
+      RETURN_CHECK( "execute()", m_store->record( vecOutContainerNames_el, m_outputAlgoElectrons ), "Failed to record vector of output container names.");
       break;
     }
     case (2) : // muon syst
