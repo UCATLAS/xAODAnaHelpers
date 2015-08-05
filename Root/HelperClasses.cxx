@@ -175,7 +175,7 @@ namespace HelperClasses{
     if( parse( "sfFTagFlt" ) ) { 
       std::string input(m_configStr);
       // erase everything before the interesting string
-      input.erase( 0, input.find("fTagSFFlt") );
+      input.erase( 0, input.find("sfFTagFlt") );
       // erase everything after the interesting string
       input.erase( input.find_first_of(" "), input.size() );
       // remove fTagSFFlt to just leave the numbers
