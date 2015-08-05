@@ -231,7 +231,8 @@ EL::StatusCode  JetSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
-  bool allOK(false);
+  bool allOK(true);
+  if (!m_operatingPt.empty() || m_doBTagCut ) { allOK = false; }
   if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
   if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
   if (m_operatingPt == "FixedCutBEff_60") { allOK = true; }

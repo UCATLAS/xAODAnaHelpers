@@ -56,12 +56,13 @@ public:
   float m_eta_max_JVT;            // detector eta cut
   float m_JVTCut;                 // cut value
 
+  // for BTaggingSelectionTool -- doubles are needed or will crash
   bool  m_doBTagCut;              // Flag to apply btagging cut, if false just decorate decisions
   std::string m_jetAuthor;
   std::string m_taggerName;
   std::string m_operatingPt;
-  float m_b_eta_max;
-  float m_b_pt_min;
+  double m_b_eta_max;
+  double m_b_pt_min;
 
 
   std::string              m_passAuxDecorKeys;
