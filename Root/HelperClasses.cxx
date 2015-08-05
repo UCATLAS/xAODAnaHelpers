@@ -186,7 +186,7 @@ namespace HelperClasses{
       int count(0);
       while( count < size ) {
         std::string number = input.substr(0,2);
-        m_sfFTagFix.push_back( atoi( number.c_str() ) );
+        m_sfFTagFlt.push_back( atoi( number.c_str() ) );
         input.erase(0,2);
         count++;
       }
