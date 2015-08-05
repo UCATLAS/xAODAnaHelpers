@@ -67,6 +67,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
 
   // Btag quality
   m_operatingPt             = "";
+  m_operatingPtCDI          = "";
 
   m_decor                   = "BTag";
   m_decorSF                 = ""; // gets set below after configure is called
@@ -113,14 +114,19 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
   }
 
   bool allOK(false);
-  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
+  // not calibrated yet
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTagCalib2015#Pre_Recommendation_August_2015
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt4EMTopoJets
+  if (m_operatingPt == "FixedCutBEff_30") { allOK = false; }
+  if (m_operatingPt == "FixedCutBEff_50") { allOK = false; }
+  if (m_operatingPt == "FixedCutBEff_80") { allOK = false; }
+  if (m_operatingPt == "FixedCutBEff_90") { allOK = false; }
+  //
   if (m_operatingPt == "FixedCutBEff_60") { allOK = true; }
   if (m_operatingPt == "FixedCutBEff_70") { allOK = true; }
   if (m_operatingPt == "FixedCutBEff_77") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
   if (m_operatingPt == "FixedCutBEff_85") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
+  //
   if (m_operatingPt == "FlatCutBEff_30") { allOK = true; }
   if (m_operatingPt == "FlatCutBEff_40") { allOK = true; }
   if (m_operatingPt == "FlatCutBEff_50") { allOK = true; }
@@ -138,6 +144,15 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
   m_decor           += "_" + m_operatingPt;
   m_decorSF         += "_" + m_operatingPt;
   m_outputSystName  += "_" + m_operatingPt;
+
+  // now take this name and convert it to the cut value for the CDI file
+  // if using the fixed efficiency points
+  m_operatingPtCDI = m_operatingPt;
+  if( m_operatingPtCDI.find("FixedCutBEff") != std::string::npos) {
+    m_operatingPtCDI.erase(0,13); // remove FixedCutBEff_
+    m_operatingPtCDI = HelperFunctions::GetBTagMV2c20_CutStr( atoi( m_operatingPtCDI.c_str() ) );
+  }
+
 
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 

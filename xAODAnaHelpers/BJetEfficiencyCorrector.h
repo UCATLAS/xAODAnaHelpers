@@ -46,6 +46,7 @@ private:
 
   // configuration variables
   std::string m_operatingPt;
+  std::string m_operatingPtCDI; // the one CDI will understand
 
   std::vector<CP::SystematicSet> m_systList; //!
 
