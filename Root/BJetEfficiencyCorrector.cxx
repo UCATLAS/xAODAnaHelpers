@@ -53,7 +53,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
   m_outputSystName          = "BJetEfficiency_Algo";
 
   // configuration of the bjet eff tool
-  m_corrFileName           = "2015-PreRecomm-13TeV-MC12-CDI-May19-v1.root";
+  m_corrFileName           = "$ROOTCOREBIN/data/xAODAnaHelpers/2015-PreRecomm-13TeV-MC12-CDI-May19-v1.root";
   m_jetAuthor              = "AntiKt4EMTopoJets";
   m_taggerName             = "MV2c20";
   m_useDevelopmentFile     = true;
@@ -218,7 +218,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // A few which are not configurable as of yet....
   // is there a reason to have this configurable here??...I think no (GF to self)
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",2.5),"Failed to set property:MaxEta");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",20000),"Failed to set property:MinPt");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",20000.),"Failed to set property:MinPt");
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName","$ROOTCOREBIN/data/xAODBTaggingEfficiency/cutprofiles_22072015.root"),"Failed to set property:FlvTagCutDefinitionsFileName");
   // configurable parameters
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",          m_taggerName),"Failed to set property: TaggerName");
