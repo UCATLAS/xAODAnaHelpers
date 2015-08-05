@@ -155,17 +155,20 @@ namespace HelperClasses{
     if( parse( "sfFTagFix" ) ) { 
       std::string input(m_configStr);
       // erase everything before the interesting string
-      input.erase( 0, input.find("fTagSFFix") );
+      input.erase( 0, input.find("sfFTagFix") );
       // erase everything after the interesting string
       input.erase( input.find_first_of(" "), input.size() );
       // remove fTagSFFix to just leave the numbers
       input.erase(0,9);
       // two by two take the characters and push back an int into this vector
       std::vector<int> values;
-      while( input.size() > 0 ) {
+      int size( input.size()/2 );
+      int count(0);
+      while( count < size ) {
         std::string number = input.substr(0,2);
         m_sfFTagFix.push_back( atoi( number.c_str() ) );
         input.erase(0,2);
+        count++;
       }
     } // sfFTagFix
     m_sfFTagFlt.clear();
