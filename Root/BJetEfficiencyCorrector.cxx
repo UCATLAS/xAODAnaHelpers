@@ -134,6 +134,7 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
+  // make unique name
   m_decor           += "_" + m_operatingPt;
   m_decorSF         += "_" + m_operatingPt;
   m_outputSystName  += "_" + m_operatingPt;
@@ -350,6 +351,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     }
     if(m_debug) Info("execute()", "Successfully applied systematic: %s.", syst_it.name().c_str());
 
+    bool tagged(false);
     //
     // and now apply data-driven efficiency and efficiency SF!
     //
@@ -373,8 +375,14 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       // 
       SG::AuxElement::Decorator< int > isBTag( m_decor );
       if( !isBTag.isAvailable( *jet_itr ) ) {
-        if( m_BJetSelectTool->accept( *jet_itr ) ) { isBTag( *jet_itr ) = 1; }
-        else { isBTag( *jet_itr ) = 0; }
+        if( m_BJetSelectTool->accept( *jet_itr ) ) { 
+          isBTag( *jet_itr ) = 1; 
+          tagged = true;
+        }
+        else { 
+          isBTag( *jet_itr ) = 0; 
+          tagged = false;
+        }
       }
 
       //
@@ -383,7 +391,14 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       float SF(0.0);
       if ( fabs(jet_itr->eta()) < 2.5 ) {
 
-        CP::CorrectionCode BJetEffCode = m_BJetEffSFTool->getScaleFactor( *jet_itr, SF );
+        CP::CorrectionCode BJetEffCode;
+        // if passes cut take the efficiency scale factor
+        // if failed cut take the inefficiency scale factor
+        if( tagged ) {
+          BJetEffCode = m_BJetEffSFTool->getScaleFactor( *jet_itr, SF );
+        } else {
+          BJetEffCode = m_BJetEffSFTool->getInefficiencyScaleFactor( *jet_itr, SF );
+        }
         if (BJetEffCode == CP::CorrectionCode::Error){
           Warning( "execute()", "Error in getEfficiencyScaleFactor");
           SF = -2;
@@ -394,7 +409,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       } else {
         SF = -1;
       }
-      if ( m_debug ) { Info( "execute()", "\t efficiency SF = %g", SF ); }
+      if ( m_debug ) { Info( "execute()", "\t SF = %g", SF ); }
 
       //
       // Add it to vector
