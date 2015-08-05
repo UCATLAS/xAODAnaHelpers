@@ -250,7 +250,7 @@ EL::StatusCode  JetSelector :: configure ()
   if (m_operatingPt == "FlatCutBEff_85") { allOK = true; }
 
   if( !allOK ) {
-    Error("configure()", "Requested operating point is not known to xAH...out of date? %s", m_operatingPt.c_str());
+    Error("configure()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
     return EL::StatusCode::FAILURE;
   }
 

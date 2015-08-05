@@ -2612,11 +2612,11 @@ void HelpTreeBase::Fill_Fix90( const xAOD::Jet* jet ) {
 ///// FLAT EFFICIENCY
 
 void HelpTreeBase::Fill_Flt30( const xAOD::Jet* jet ) {
-  static SG::AuxElement::ConstAccessor< int > isFlt30("BTag_FltedCutBEff_30");
+  static SG::AuxElement::ConstAccessor< int > isFlt30("BTag_FlatBEff_30");
   if( isFlt30.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt30.push_back( isFlt30( *jet ) );
   } else { m_jet_mv2c20_isFlt30.push_back( -1 ); }
-  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30("BTag_SF_FltedCutBEff_30");
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30("BTag_SF_FlatBEff_30");
   if ( sfFlt30.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt30.push_back( sfFlt30( *jet ) );
   } else {
@@ -2626,11 +2626,11 @@ void HelpTreeBase::Fill_Flt30( const xAOD::Jet* jet ) {
 }
 
 void HelpTreeBase::Fill_Flt40( const xAOD::Jet* jet ) {
-  static SG::AuxElement::ConstAccessor< int > isFlt40("BTag_FltedCutBEff_40");
+  static SG::AuxElement::ConstAccessor< int > isFlt40("BTag_FlatBEff_40");
   if( isFlt40.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt40.push_back( isFlt40( *jet ) );
   } else { m_jet_mv2c20_isFlt40.push_back( -1 ); }
-  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40("BTag_SF_FltedCutBEff_40");
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40("BTag_SF_FlatBEff_40");
   if ( sfFlt40.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt40.push_back( sfFlt40( *jet ) );
   } else {
@@ -2640,11 +2640,11 @@ void HelpTreeBase::Fill_Flt40( const xAOD::Jet* jet ) {
 }
 
 void HelpTreeBase::Fill_Flt50( const xAOD::Jet* jet ) {
-  static SG::AuxElement::ConstAccessor< int > isFlt50("BTag_FltedCutBEff_50");
+  static SG::AuxElement::ConstAccessor< int > isFlt50("BTag_FlatBEff_50");
   if( isFlt50.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt50.push_back( isFlt50( *jet ) );
   } else { m_jet_mv2c20_isFlt50.push_back( -1 ); }
-  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50("BTag_SF_FltedCutBEff_50");
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50("BTag_SF_FlatBEff_50");
   if ( sfFlt50.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt50.push_back( sfFlt50( *jet ) );
   } else {
@@ -2654,11 +2654,11 @@ void HelpTreeBase::Fill_Flt50( const xAOD::Jet* jet ) {
 }
 
 void HelpTreeBase::Fill_Flt60( const xAOD::Jet* jet ) {
-  static SG::AuxElement::ConstAccessor< int > isFlt60("BTag_FltedCutBEff_60");
+  static SG::AuxElement::ConstAccessor< int > isFlt60("BTag_FlatBEff_60");
   if( isFlt60.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt60.push_back( isFlt60( *jet ) );
   } else { m_jet_mv2c20_isFlt60.push_back( -1 ); }
-  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60("BTag_SF_FltedCutBEff_60");
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60("BTag_SF_FlatBEff_60");
   if ( sfFlt60.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt60.push_back( sfFlt60( *jet ) );
   } else {
@@ -2668,11 +2668,11 @@ void HelpTreeBase::Fill_Flt60( const xAOD::Jet* jet ) {
 }
 
 void HelpTreeBase::Fill_Flt70( const xAOD::Jet* jet ) {
-  static SG::AuxElement::ConstAccessor< int > isFlt70("BTag_FltedCutBEff_70");
+  static SG::AuxElement::ConstAccessor< int > isFlt70("BTag_FlatBEff_70");
   if( isFlt70.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt70.push_back( isFlt70( *jet ) );
   } else { m_jet_mv2c20_isFlt70.push_back( -1 ); }
-  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70("BTag_SF_FltedCutBEff_70");
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70("BTag_SF_FlatBEff_70");
   if ( sfFlt70.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt70.push_back( sfFlt70( *jet ) );
   } else {
@@ -2682,11 +2682,11 @@ void HelpTreeBase::Fill_Flt70( const xAOD::Jet* jet ) {
 }
 
 void HelpTreeBase::Fill_Flt77( const xAOD::Jet* jet ) {
-  static SG::AuxElement::ConstAccessor< int > isFlt77("BTag_FltedCutBEff_77");
+  static SG::AuxElement::ConstAccessor< int > isFlt77("BTag_FlatBEff_77");
   if( isFlt77.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt77.push_back( isFlt77( *jet ) );
   } else { m_jet_mv2c20_isFlt77.push_back( -1 ); }
-  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77("BTag_SF_FltedCutBEff_77");
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77("BTag_SF_FlatBEff_77");
   if ( sfFlt77.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt77.push_back( sfFlt77( *jet ) );
   } else {
@@ -2696,11 +2696,11 @@ void HelpTreeBase::Fill_Flt77( const xAOD::Jet* jet ) {
 }
 
 void HelpTreeBase::Fill_Flt85( const xAOD::Jet* jet ) {
-  static SG::AuxElement::ConstAccessor< int > isFlt85("BTag_FltedCutBEff_85");
+  static SG::AuxElement::ConstAccessor< int > isFlt85("BTag_FlatBEff_85");
   if( isFlt85.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt85.push_back( isFlt85( *jet ) );
   } else { m_jet_mv2c20_isFlt85.push_back( -1 ); }
-  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85("BTag_SF_FltedCutBEff_85");
+  static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85("BTag_SF_FlatBEff_85");
   if ( sfFlt85.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt85.push_back( sfFlt85( *jet ) );
   } else {

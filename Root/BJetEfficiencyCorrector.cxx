@@ -129,16 +129,16 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
   if (m_operatingPt == "FixedCutBEff_77") { allOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_85") { allOK = true; m_getScaleFactors =  true; }
   //
-  if (m_operatingPt == "FlatCutBEff_30") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_40") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_50") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_60") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_70") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_77") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_85") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_30") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_40") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_50") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_60") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_70") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_77") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_85") { allOK = true; }
 
   if( !allOK ) {
-    Error("configure()", "Requested operating point is not known to xAH...out of date? %s", m_operatingPt.c_str());
+    Error("configure()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
     return EL::StatusCode::FAILURE;
   }
 
@@ -146,6 +146,10 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
   m_decor           += "_" + m_operatingPt;
   m_decorSF         += "_" + m_operatingPt;
   m_outputSystName  += "_" + m_operatingPt;
+
+  Info("configure()", "Decision Decoration Name     : %s", m_decor.c_str());
+  Info("configure()", "Scale Factor Decoration Name : %s", m_decorSF.c_str());
+
 
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
@@ -237,12 +241,13 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // is there a reason to have this configurable here??...I think no (GF to self)
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",2.5),"Failed to set property:MaxEta");
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",20000.),"Failed to set property:MinPt");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName","$ROOTCOREBIN/data/xAODBTaggingEfficiency/cutprofiles_22072015.root"),"Failed to set property:FlvTagCutDefinitionsFileName");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()),"Failed to set property:FlvTagCutDefinitionsFileName");
   // configurable parameters
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",          m_taggerName),"Failed to set property: TaggerName");
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property: JetAuthor");
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
+  Info("initialize()", "BTaggingSelectionTool initialized : %s ", m_BJetSelectTool->name().c_str() );
 
 
 
@@ -265,6 +270,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("UseDevelopmentFile",  m_useDevelopmentFile), "Failed to set property");
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel), "Failed to set property");
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->initialize(), "Failed to properly initialize the BJetEfficiencyCorrectionTool");
+    Info("initialize()", "BTaggingEfficiencyTool initialized : %s ", m_BJetEffSFTool->name().c_str() );
   } else {
     Warning( "initialize()", "Input operating point is not calibrated - no SFs will be obtained");
   }
@@ -316,6 +322,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
       Info("initialize()"," Running w/ nominal configuration!");
     }
 
+  } else {
+    // need the nominal to get the decisions
+    CP::SystematicSet recSysts; // empty
+    m_systList = CP::make_systematics_vector(recSysts); // comes back with 1 entry for nominal
   }
 
   if( m_runAllSyst ){
