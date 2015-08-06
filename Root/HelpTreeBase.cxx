@@ -1000,6 +1000,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
 
   if ( m_jetInfoSwitch->m_scales ) {
     m_tree->Branch("jet_emScalePt",              &m_jet_emPt            );
+    m_tree->Branch("jet_constScalePt",           &m_jet_constPt         );
     m_tree->Branch("jet_pileupScalePt",          &m_jet_pileupPt        );
     m_tree->Branch("jet_originConstitScalePt",   &m_jet_originConstitPt );
     m_tree->Branch("jet_etaJESScalePt",          &m_jet_etaJESPt        );
@@ -1402,6 +1403,10 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEMScaleMomentum", fourVec );
       if( status ) { m_jet_emPt.push_back( fourVec.Pt() / m_units ); }
       else { m_jet_emPt.push_back( -999 ); }
+      // Constit Scale
+      status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetConstitScaleMomentum", fourVec );
+      if( status ) { m_jet_constPt.push_back( fourVec.Pt() / m_units ); }
+      else { m_jet_constPt.push_back( -999 ); }
       // Pileup Scale
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum", fourVec );
       if( status ) { m_jet_pileupPt.push_back( fourVec.Pt() / m_units ); }
@@ -2029,6 +2034,7 @@ void HelpTreeBase::ClearJets() {
   // each step of the calibration sequence
   if ( m_jetInfoSwitch->m_scales ) {
     m_jet_emPt.clear();
+    m_jet_constPt.clear();
     m_jet_pileupPt.clear();
     m_jet_originConstitPt.clear();
     m_jet_etaJESPt.clear();

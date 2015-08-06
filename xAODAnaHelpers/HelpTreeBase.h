@@ -282,6 +282,7 @@ protected:
 
   // scales
   std::vector<float> m_jet_emPt;
+  std::vector<float> m_jet_constPt;
   std::vector<float> m_jet_pileupPt;
   std::vector<float> m_jet_originConstitPt;
   std::vector<float> m_jet_etaJESPt;
