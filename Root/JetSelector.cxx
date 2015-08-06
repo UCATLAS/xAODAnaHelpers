@@ -48,7 +48,8 @@ ClassImp(JetSelector)
 JetSelector :: JetSelector () :
   m_cutflowHist(nullptr),
   m_cutflowHistW(nullptr),
-  m_jet_cutflowHist_1(nullptr)
+  m_jet_cutflowHist_1(nullptr),
+  m_BJetSelectTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -99,7 +100,6 @@ JetSelector :: JetSelector () :
   m_truthLabel 	            = -1;
 
   m_doJVF 		    = false;
-  m_doBTagCut 		    = false;
   m_pt_max_JVF 	            = 50e3;
   m_eta_max_JVF 	    = 2.4;
   m_JVFCut 		    = 0.5;
@@ -109,10 +109,15 @@ JetSelector :: JetSelector () :
   m_JVTCut 		    = 0.64;
 
   // Btag quality
-  m_btag_veryloose          = false;
-  m_btag_loose              = false;
-  m_btag_medium             = false;
-  m_btag_tight              = false;
+  m_doBTagCut 		          = false;
+  m_taggerName              = "MV2c20";
+  m_operatingPt             = "";
+  m_jetAuthor               = "AntiKt4EMTopoJets";
+  // for the b-tagging tool - these are the b-tagging groups minimums 
+  // users making tighter cuts can use the selector's parameters to keep
+  // things consistent
+  m_b_eta_max               = 2.5;
+  m_b_pt_min                = 20000;
 
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
@@ -175,21 +180,20 @@ EL::StatusCode  JetSelector :: configure ()
     m_truthLabel 	      = config->GetValue("TruthLabel",   m_truthLabel);
 
     m_doJVF 		      = config->GetValue("DoJVF",       m_doJVF);
-    m_doBTagCut		      = config->GetValue("DoBTagCut",   m_doBTagCut);
-    m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
-    m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
+    m_pt_max_JVF 	    = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
+    m_eta_max_JVF 	  = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
     m_JVFCut 		      = config->GetValue("JVFCut",      m_JVFCut);
 
     m_doJVT 		      = config->GetValue("DoJVT",       m_doJVT);
-    m_pt_max_JVT 	      = config->GetValue("pTMaxJVT",    m_pt_max_JVT);
-    m_eta_max_JVT 	      = config->GetValue("etaMaxJVT",   m_eta_max_JVT);
+    m_pt_max_JVT 	    = config->GetValue("pTMaxJVT",    m_pt_max_JVT);
+    m_eta_max_JVT 	  = config->GetValue("etaMaxJVT",   m_eta_max_JVT);
     m_JVTCut 		      = config->GetValue("JVTCut",      m_JVTCut);
 
     // Btag quality
-    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   m_btag_veryloose);
-    m_btag_loose              = config->GetValue("BTagLoose",       m_btag_loose);
-    m_btag_medium             = config->GetValue("BTagMedium",      m_btag_medium);
-    m_btag_tight              = config->GetValue("BTagTight",       m_btag_tight);
+    m_doBTagCut		    = config->GetValue("DoBTagCut",       m_doBTagCut);
+    m_jetAuthor       = config->GetValue("JetAuthor",       m_jetAuthor.c_str() );
+    m_taggerName      = config->GetValue("TaggerName",      m_taggerName.c_str() );
+    m_operatingPt     = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
@@ -227,24 +231,30 @@ EL::StatusCode  JetSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
+  bool allOK(true);
+  if (!m_operatingPt.empty() || m_doBTagCut ) { allOK = false; }
+  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_60") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_70") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_77") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_85") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_40") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_60") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_70") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_77") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_85") { allOK = true; }
 
-  //
-  // Set the Btagging cut
-  //
-  m_btagCut = -100; // < -99 turns off btagging
+  if( !allOK ) {
+    Error("configure()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+
   m_decor   = "passSel";
-  
-  // MV2c20 cuts
-  m_btag_veryloose_cut = HelperFunctions::GetBTagMV2c20_Cut( 85 );
-  m_btag_loose_cut     = HelperFunctions::GetBTagMV2c20_Cut( 77 );
-  m_btag_medium_cut    = HelperFunctions::GetBTagMV2c20_Cut( 70 );
-  m_btag_tight_cut     = HelperFunctions::GetBTagMV2c20_Cut( 60 );
-
-  if ( m_btag_veryloose ) { m_btagCut = m_btag_veryloose_cut; }
-  if ( m_btag_loose     ) { m_btagCut = m_btag_loose_cut;     }
-  if ( m_btag_medium    ) { m_btagCut = m_btag_medium_cut;    }
-  if ( m_btag_tight     ) { m_btagCut = m_btag_tight_cut;     }
-
   
   if ( m_decorateSelectedObjects ) {
     Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
@@ -355,6 +365,27 @@ EL::StatusCode JetSelector :: initialize ()
     Error("initialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
   }
+
+  //
+  // initialize the BJetSelectionTool
+  //
+  std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
+  m_BJetSelectTool= new BTaggingSelectionTool( sel_tool_name );
+  m_BJetSelectTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
+  //
+  //  Configure the BJetSelectionTool
+  //
+  // A few which are not configurable as of yet....
+  // is there a reason to have this configurable here??...I think no (GF to self)
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName","$ROOTCOREBIN/data/xAODBTaggingEfficiency/cutprofiles_22072015.root"),"Failed to set property:FlvTagCutDefinitionsFileName");
+  // configurable parameters
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",          m_taggerName),"Failed to set property: TaggerName");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property: JetAuthor");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
+
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -691,37 +722,11 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //
   //  BTagging
   //
-  if ( m_btagCut >= -99 ) {
-
-    //
-    //  Decorate All Jets with default BTag decisions
-    //
-    jet->auxdecor<char>("BTagVeryLoose") = -1;
-    jet->auxdecor<char>("BTagLoose")     = -1;
-    jet->auxdecor<char>("BTagMedium")    = -1;
-    jet->auxdecor<char>("BTagTight")     = -1;
-
-    const xAOD::BTagging *myBTag = jet->btagging();
-    if ( myBTag ) {
-
-      //
-      // Cut on Btagging weight
-      //
-      double discriminant = -99;
-      myBTag->MVx_discriminant("MV2c20",discriminant);
-      if ( m_doBTagCut && (discriminant < m_btagCut) ) {
-        return 0;
-      }
+  if ( m_doBTagCut ) {
+    if ( m_BJetSelectTool->accept( jet ) ) { 
       m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );        
-
-      //
-      // Decorate the Jets
-      //
-      jet->auxdecor<char>("BTagVeryLoose") = static_cast<char>( discriminant > m_btag_veryloose_cut );
-      jet->auxdecor<char>("BTagLoose")     = static_cast<char>( discriminant > m_btag_loose_cut     );
-      jet->auxdecor<char>("BTagMedium")    = static_cast<char>( discriminant > m_btag_medium_cut    );
-      jet->auxdecor<char>("BTagTight")     = static_cast<char>( discriminant > m_btag_tight_cut     );
-
+    } else {
+      return 0; 
     }
   }
 

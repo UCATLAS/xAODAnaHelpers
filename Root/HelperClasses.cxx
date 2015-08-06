@@ -151,10 +151,46 @@ namespace HelperClasses{
     m_constituent   = parse("constituent");
     m_constituentAll= parse("constituentAll");
     m_flavTag       = parse("flavorTag");
-    m_sfFTagVeryLoose = parse("sfFTagVL");
-    m_sfFTagLoose     = parse("sfFTagL");
-    m_sfFTagMedium    = parse("sfFTagM");
-    m_sfFTagTight     = parse("sfFTagT");
+    m_sfFTagFix.clear();
+    if( parse( "sfFTagFix" ) ) { 
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("sfFTagFix") );
+      // erase everything after the interesting string
+      input.erase( input.find_first_of(" "), input.size() );
+      // remove fTagSFFix to just leave the numbers
+      input.erase(0,9);
+      // two by two take the characters and push back an int into this vector
+      std::vector<int> values;
+      int size( input.size()/2 );
+      int count(0);
+      while( count < size ) {
+        std::string number = input.substr(0,2);
+        m_sfFTagFix.push_back( atoi( number.c_str() ) );
+        input.erase(0,2);
+        count++;
+      }
+    } // sfFTagFix
+    m_sfFTagFlt.clear();
+    if( parse( "sfFTagFlt" ) ) { 
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("sfFTagFlt") );
+      // erase everything after the interesting string
+      input.erase( input.find_first_of(" "), input.size() );
+      // remove fTagSFFlt to just leave the numbers
+      input.erase(0,9);
+      // two by two take the characters and push back an int into this vector
+      std::vector<int> values;
+      int size( input.size()/2 );
+      int count(0);
+      while( count < size ) {
+        std::string number = input.substr(0,2);
+        m_sfFTagFlt.push_back( atoi( number.c_str() ) );
+        input.erase(0,2);
+        count++;
+      }
+    } // sfFTagFlt
     m_area          = parse("area");
     if( parse("LeadingJets") ){
       m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );

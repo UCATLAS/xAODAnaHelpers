@@ -11,6 +11,9 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
+// external tools include(s):
+#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
+
 class JetSelector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
@@ -53,16 +56,13 @@ public:
   float m_eta_max_JVT;            // detector eta cut
   float m_JVTCut;                 // cut value
 
-  float m_btag_veryloose_cut;     // BTagging Cut Values
-  float m_btag_loose_cut;         // BTagging Cut Values
-  float m_btag_medium_cut;        // BTagging Cut Values
-  float m_btag_tight_cut;         // BTagging Cut Values
-  float m_btagCut;                // btagging cuts, configured by the bools below
-  bool  m_btag_veryloose;         // Do BTag Very Loose
-  bool  m_btag_loose;             // Do BTag Loose
-  bool  m_btag_medium;            // Do BTag Medium
-  bool  m_btag_tight;             // Do BTag Tight
+  // for BTaggingSelectionTool -- doubles are needed or will crash
   bool  m_doBTagCut;              // Flag to apply btagging cut, if false just decorate decisions
+  std::string m_jetAuthor;
+  std::string m_taggerName;
+  std::string m_operatingPt;
+  double m_b_eta_max;
+  double m_b_pt_min;
 
 
   std::string              m_passAuxDecorKeys;
@@ -98,6 +98,8 @@ private:
   int   m_jet_cutflow_eta_cut;       //!
   int   m_jet_cutflow_jvt_cut;       //!
   int   m_jet_cutflow_btag_cut;      //!
+
+  BTaggingSelectionTool   *m_BJetSelectTool; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
