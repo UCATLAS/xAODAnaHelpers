@@ -97,6 +97,7 @@ namespace HelperClasses{
     m_truth         = parse("truth");
     m_caloClus      = parse("caloClusters");
     m_muonSF        = parse("muonSF");
+    m_electronSF    = parse("electronSF");
   }
   
   void TriggerInfoSwitch::initialize(){
@@ -127,6 +128,7 @@ namespace HelperClasses{
     m_PID           = parse("PID");
     m_trackparams   = parse("trackparams");
     m_trackhitcont  = parse("trackhitcont");
+    m_effSF         = parse("effSF");
   }
 
   void JetInfoSwitch::initialize(){

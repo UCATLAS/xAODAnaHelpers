@@ -67,6 +67,7 @@ namespace HelperClasses {
     bool m_truth;
     bool m_caloClus;
     bool m_muonSF;
+    bool m_electronSF;
     void initialize();
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
@@ -105,6 +106,7 @@ namespace HelperClasses {
     bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
+    bool m_effSF;
     void initialize();
     ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
