@@ -123,6 +123,10 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("weight_muon_trig", &m_weight_muon_trig);
   }
 
+  if( m_eventInfoSwitch->m_electronSF ) {
+    m_tree->Branch("weight_electron_trig", &m_weight_electron_trig);
+  }
+
   this->AddEventUser();
 }
 
@@ -240,6 +244,16 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
       m_weight_muon_trig = muonTrigSFVec( *eventInfo );
     } else {
       m_weight_muon_trig.push_back(-999);
+    }
+  }
+
+  if( m_eventInfoSwitch->m_electronSF ) {
+    SG::AuxElement::ConstAccessor< std::vector<double> > electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst" );
+
+    if( electronTrigSFVec.isAvailable( *eventInfo ) ) {
+      m_weight_electron_trig = electronTrigSFVec( *eventInfo );
+    } else {
+      m_weight_electron_trig.push_back(-999);
     }
   }
 
@@ -695,6 +709,10 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_IsEMTight",    &m_el_IsEMTight);
   }
 
+  if ( m_elInfoSwitch->m_effSF ) {
+    m_tree->Branch("el_effSF",      &m_el_effSF);
+  }
+
   if ( m_elInfoSwitch->m_trackparams ) {
     m_tree->Branch("el_trkd0",      &m_el_trkd0);
     m_tree->Branch("el_trkd0sig",   &m_el_trkd0sig);
@@ -800,6 +818,16 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       if ( EMTightAcc.isAvailable( *el_itr ) )         { m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );   } else { m_el_IsEMTight.push_back( -1 ); }
     }
 
+    if ( m_elInfoSwitch->m_effSF ) {
+      static SG::AuxElement::Accessor< std::vector< double > > accEffSF("ElectronEfficiencyCorrector_EffSyst");
+      if( accEffSF.isAvailable( *electron_itr ) ) {
+        m_el_effSF.push_back( accEffSF( *electron_itr ) ); 
+      } else {
+        std::vector<double> junk(1,-999);
+        m_el_effSF.push_back( junk );
+      }
+    }
+
     if ( m_elInfoSwitch->m_trackparams ) {
       if ( trk ) {
         //
@@ -813,9 +841,9 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
         static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
         float d0_significance =  ( d0SigAcc.isAvailable( *el_itr ) ) ? fabs( d0SigAcc( *el_itr ) ) : -9999.0;
         m_el_trkd0sig.push_back( d0_significance );
-	float z0 =  trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
+	      float z0 =  trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
 								      // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
-	float theta = trk->theta();
+	      float theta = trk->theta();
         m_el_trkz0.push_back( z0 );
         m_el_trkz0sintheta.push_back( z0 * sin(theta) );
         m_el_trkphi0.push_back( trk->phi0() );
@@ -845,7 +873,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
         trk->summaryValue( nTRTHits,  xAOD::numberOfTRTHits );
         trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );
         trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
-	if ( !m_DC14 ) {
+	      if ( !m_DC14 ) {
           trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
           trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
         }
@@ -908,6 +936,10 @@ void HelpTreeBase::ClearElectrons() {
     m_el_IsEMLoose.clear();
     m_el_IsEMMedium.clear();
     m_el_IsEMTight.clear();
+  }
+
+  if( m_elInfoSwitch->m_effSF ) {
+    m_el_effSF.clear();
   }
 
   if ( m_elInfoSwitch->m_trackparams ) {
@@ -2329,6 +2361,9 @@ void HelpTreeBase::ClearEvent() {
     m_weight_muon_trig.clear();
   }
 
+  if( m_eventInfoSwitch->m_electronSF ) {
+    m_weight_electron_trig.clear();
+  }
 }
 
 

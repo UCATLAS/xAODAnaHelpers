@@ -222,8 +222,9 @@ protected:
   std::vector<float> m_caloCluster_phi;
   std::vector<float> m_caloCluster_e;
 
-  // muon scale trigger factors
+  // scale trigger factors
   std::vector<double> m_weight_muon_trig;
+  std::vector<double> m_weight_electron_trig;
 
   // trigger
   int m_passL1;
@@ -535,6 +536,9 @@ protected:
   std::vector<int>   m_el_IsEMLoose;
   std::vector<int>   m_el_IsEMMedium;
   std::vector<int>   m_el_IsEMTight;
+
+  // scale factors
+  std::vector< std::vector< double > > m_el_effSF;
 
   // track parameters
   std::vector<float> m_el_trkd0;
