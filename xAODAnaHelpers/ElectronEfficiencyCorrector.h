@@ -27,13 +27,17 @@ public:
   // systematics
   std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
   			             // upstream algo (e.g., the SC containers with calibration systematics)
-  bool m_runAllSystEff;
+  bool m_runAllSystPID;
+  bool m_runAllSystReco;
   bool m_runAllSystTrig;
-  std::string m_outputSystNamesEff;
+  std::string m_outputSystNamesPID;
+  std::string m_outputSystNamesReco;
   std::string m_outputSystNamesTrig;
-  std::string m_systNameEff;
+  std::string m_systNamePID;
+  std::string m_systNameReco;
   std::string m_systNameTrig;
-  float m_systValEff;
+  float m_systValPID;
+  float m_systValReco;
   float m_systValTrig;
 
   std::string m_corrFileNamePID;
@@ -44,7 +48,8 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  std::vector<CP::SystematicSet> m_systListEff; //!
+  std::vector<CP::SystematicSet> m_systListPID; //!
+  std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
 
   // tools
