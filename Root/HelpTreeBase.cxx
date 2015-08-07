@@ -48,6 +48,12 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_store = store;
   Info("HelpTreeBase()", "HelpTreeBase setup");
 
+  // turn things off it this is data...since TStore is not a needed input
+  // default isMC to true so more is added to the tree than less
+  const xAOD::EventInfo* eventInfo(nullptr);
+  HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, false);
+  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
+
 }
 
 HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug, bool DC14): 
@@ -76,11 +82,14 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   // always
   m_tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
   m_tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/I");
-  m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
-  m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
-  m_tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
-  m_tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
-  m_tree->Branch("bcid",               &m_bcid,           "bcid/I");
+  if( m_isMC ) {
+    m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
+    m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
+    m_tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
+    m_tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
+  } else {
+    m_tree->Branch("bcid",               &m_bcid,           "bcid/I");
+  }
 
   if ( m_eventInfoSwitch->m_pileup ) {
     m_tree->Branch("NPV",                &m_npv,            "NPV/I");
@@ -97,7 +106,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("rhoLC",                &m_rhoLC,            "rhoLC/D");
   }
 
-  if( m_eventInfoSwitch->m_truth ) {
+  if( m_eventInfoSwitch->m_truth && m_isMC ) {
     m_tree->Branch("pdgId1",            &m_pdgId1,        "pdgId1/I" );
     m_tree->Branch("pdgId2",            &m_pdgId2,        "pdgId2/I" );
     m_tree->Branch("pdfId1",            &m_pdfId1,        "pdfId1/I" );
@@ -119,7 +128,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("caloCluster_e",   &m_caloCluster_e);
   }
 
-  if( m_eventInfoSwitch->m_muonSF ) {
+  if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
     m_tree->Branch("weight_muon_trig", &m_weight_muon_trig);
   }
 
@@ -137,15 +146,11 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     m_mcEventNumber         = eventInfo->mcEventNumber();
     m_mcChannelNumber       = eventInfo->mcChannelNumber();
     m_mcEventWeight         = eventInfo->mcEventWeight();
-    m_bcid                  = -1;
   } else {
-    m_mcEventNumber         = -1;
-    m_mcChannelNumber       = -1;
-    m_mcEventWeight	        = 1.;
     m_bcid                  = eventInfo->bcid();
   }
   static SG::AuxElement::ConstAccessor< double > weight_pileup ("PileupWeight");
-  if ( weight_pileup.isAvailable( *eventInfo ) ) {
+  if ( m_isMC && weight_pileup.isAvailable( *eventInfo ) ) {
     m_weight_pileup = weight_pileup( *eventInfo );
   } else { m_weight_pileup = 1.; }
 
@@ -196,7 +201,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     }
   }
 
-  if( m_eventInfoSwitch->m_truth && m_event ) {
+  if( m_eventInfoSwitch->m_truth && m_event && m_isMC ) {
     //MC Truth
     const xAOD::TruthEventContainer* truthE = 0;
     HelperFunctions::retrieve( truthE, "TruthEvents", m_event, 0 );
@@ -233,7 +238,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
 
   }
 
-  if( m_eventInfoSwitch->m_muonSF ) {
+  if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
     SG::AuxElement::ConstAccessor< std::vector<double> > muonTrigSFVec( "MuonEfficiencyCorrector_TrigSyst" );
 
     if( muonTrigSFVec.isAvailable( *eventInfo ) ) {
@@ -409,7 +414,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     m_tree->Branch("muon_isTight",      &m_muon_isTight);
   }
 
-  if ( m_muInfoSwitch->m_effSF ) {
+  if ( m_muInfoSwitch->m_effSF && m_isMC ) {
     m_tree->Branch("muon_effSF",      &m_muon_effSF);
   }
 
@@ -494,7 +499,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       if ( isTightQAcc.isAvailable( *muon_itr ) )     { m_muon_isTight.push_back( isTightQAcc( *muon_itr ) ); }         else { m_muon_isTight.push_back( -1 ); }
     }
 
-    if ( m_muInfoSwitch->m_effSF ) {
+    if ( m_muInfoSwitch->m_effSF && m_isMC ) {
       static SG::AuxElement::Accessor< std::vector< double > > accEffSF("MuonEfficiencyCorrector_EffSyst");
       if( accEffSF.isAvailable( *muon_itr ) ) {
         m_muon_effSF.push_back( accEffSF( *muon_itr ) ); 
@@ -637,7 +642,7 @@ void HelpTreeBase::ClearMuons() {
     }
   }
 
-  if ( m_muInfoSwitch->m_effSF ) {
+  if ( m_muInfoSwitch->m_effSF && m_isMC ) {
     m_muon_effSF.clear();
   }
 }
@@ -1100,35 +1105,35 @@ void HelpTreeBase::AddJets(const std::string detailStr)
       switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
         case 30 : 
           m_tree->Branch("jet_MV2c20_isFix30",   &m_jet_mv2c20_isFix30);
-          m_tree->Branch("jet_MV2c20_SFFix30",   &m_jet_mv2c20_sfFix30);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix30",   &m_jet_mv2c20_sfFix30);
           break;
         case 50 : 
           m_tree->Branch("jet_MV2c20_isFix50",   &m_jet_mv2c20_isFix50);
-          m_tree->Branch("jet_MV2c20_SFFix50",   &m_jet_mv2c20_sfFix50);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix50",   &m_jet_mv2c20_sfFix50);
           break;
         case 60 : 
           m_tree->Branch("jet_MV2c20_isFix60",   &m_jet_mv2c20_isFix60);
-          m_tree->Branch("jet_MV2c20_SFFix60",   &m_jet_mv2c20_sfFix60);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix60",   &m_jet_mv2c20_sfFix60);
           break;
         case 70 : 
           m_tree->Branch("jet_MV2c20_isFix70",   &m_jet_mv2c20_isFix70);
-          m_tree->Branch("jet_MV2c20_SFFix70",   &m_jet_mv2c20_sfFix70);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix70",   &m_jet_mv2c20_sfFix70);
           break;
         case 77 : 
           m_tree->Branch("jet_MV2c20_isFix77",   &m_jet_mv2c20_isFix77);
-          m_tree->Branch("jet_MV2c20_SFFix77",   &m_jet_mv2c20_sfFix77);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix77",   &m_jet_mv2c20_sfFix77);
           break;
         case 80 : 
           m_tree->Branch("jet_MV2c20_isFix80",   &m_jet_mv2c20_isFix80);
-          m_tree->Branch("jet_MV2c20_SFFix80",   &m_jet_mv2c20_sfFix80);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix80",   &m_jet_mv2c20_sfFix80);
           break;
         case 85 : 
           m_tree->Branch("jet_MV2c20_isFix85",   &m_jet_mv2c20_isFix85);
-          m_tree->Branch("jet_MV2c20_SFFix85",   &m_jet_mv2c20_sfFix85);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix85",   &m_jet_mv2c20_sfFix85);
           break;
         case 90 : 
           m_tree->Branch("jet_MV2c20_isFix90",   &m_jet_mv2c20_isFix90);
-          m_tree->Branch("jet_MV2c20_SFFix90",   &m_jet_mv2c20_sfFix90);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix90",   &m_jet_mv2c20_sfFix90);
           break;
         default:
           std::cout << "BTag Fixed operating point of " << m_jetInfoSwitch->m_sfFTagFix.at(i) 
@@ -1142,31 +1147,31 @@ void HelpTreeBase::AddJets(const std::string detailStr)
       switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
         case 30 : 
           m_tree->Branch("jet_MV2c20_isFlt30",   &m_jet_mv2c20_isFlt30);
-          m_tree->Branch("jet_MV2c20_SFFlt30",   &m_jet_mv2c20_sfFlt30);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt30",   &m_jet_mv2c20_sfFlt30);
           break;
         case 40 : 
           m_tree->Branch("jet_MV2c20_isFlt40",   &m_jet_mv2c20_isFlt40);
-          m_tree->Branch("jet_MV2c20_SFFlt40",   &m_jet_mv2c20_sfFlt40);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt40",   &m_jet_mv2c20_sfFlt40);
           break;
         case 50 : 
           m_tree->Branch("jet_MV2c20_isFlt50",   &m_jet_mv2c20_isFlt50);
-          m_tree->Branch("jet_MV2c20_SFFlt50",   &m_jet_mv2c20_sfFlt50);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt50",   &m_jet_mv2c20_sfFlt50);
           break;
         case 60 : 
           m_tree->Branch("jet_MV2c20_isFlt60",   &m_jet_mv2c20_isFlt60);
-          m_tree->Branch("jet_MV2c20_SFFlt60",   &m_jet_mv2c20_sfFlt60);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt60",   &m_jet_mv2c20_sfFlt60);
           break;
         case 70 : 
           m_tree->Branch("jet_MV2c20_isFlt70",   &m_jet_mv2c20_isFlt70);
-          m_tree->Branch("jet_MV2c20_SFFlt70",   &m_jet_mv2c20_sfFlt70);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt70",   &m_jet_mv2c20_sfFlt70);
           break;
         case 77 : 
           m_tree->Branch("jet_MV2c20_isFlt77",   &m_jet_mv2c20_isFlt77);
-          m_tree->Branch("jet_MV2c20_SFFlt77",   &m_jet_mv2c20_sfFlt77);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt77",   &m_jet_mv2c20_sfFlt77);
           break;
         case 85 : 
           m_tree->Branch("jet_MV2c20_isFlt85",   &m_jet_mv2c20_isFlt85);
-          m_tree->Branch("jet_MV2c20_SFFlt85",   &m_jet_mv2c20_sfFlt85);
+          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt85",   &m_jet_mv2c20_sfFlt85);
           break;
         default:
           std::cout << "BTag Flat operating point of " << m_jetInfoSwitch->m_sfFTagFlt.at(i) 
@@ -1185,7 +1190,7 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     m_tree->Branch("jet_ActiveArea4vec_m",   &m_jet_activeArea_m);
   }
 
-  if ( m_jetInfoSwitch->m_truth ) {
+  if ( m_jetInfoSwitch->m_truth && m_isMC ) {
     m_tree->Branch("jet_ConeTruthLabelID",   &m_jet_truthConeLabelID );
     m_tree->Branch("jet_TruthCount",         &m_jet_truthCount     );
 //    m_tree->Branch("jet_TruthPt",            &m_jet_truthPt        );
@@ -1805,7 +1810,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 
     }
 
-    if ( m_jetInfoSwitch->m_truth ) {
+    if ( m_jetInfoSwitch->m_truth && m_isMC ) {
 
       static SG::AuxElement::ConstAccessor<int> ConeTruthLabelID ("ConeTruthLabelID");
       if ( ConeTruthLabelID.isAvailable( *jet_itr) ) {
@@ -2187,7 +2192,7 @@ void HelpTreeBase::ClearJets() {
   }
 
   // truth
-  if ( m_jetInfoSwitch->m_truth ) {
+  if ( m_jetInfoSwitch->m_truth && m_isMC ) {
     m_jet_truthConeLabelID.clear();
     m_jet_truthCount.clear();
     m_jet_truthPt.clear();
@@ -2325,7 +2330,7 @@ void HelpTreeBase::ClearEvent() {
     m_caloCluster_e.clear();
   }
 
-  if( m_eventInfoSwitch->m_muonSF ) {
+  if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
     m_weight_muon_trig.clear();
   }
 
@@ -2507,6 +2512,7 @@ void HelpTreeBase::Fill_Fix30( const xAOD::Jet* jet ) {
   if( isFix30.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFix30.push_back( isFix30( *jet ) );
   } else { m_jet_mv2c20_isFix30.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix30("BTag_SF_FixedCutBEff_30");
   if ( sfFix30.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFix30.push_back( sfFix30( *jet ) );
@@ -2521,6 +2527,7 @@ void HelpTreeBase::Fill_Fix50( const xAOD::Jet* jet ) {
   if( isFix50.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFix50.push_back( isFix50( *jet ) );
   } else { m_jet_mv2c20_isFix50.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix50("BTag_SF_FixedCutBEff_50");
   if ( sfFix50.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFix50.push_back( sfFix50( *jet ) );
@@ -2535,6 +2542,7 @@ void HelpTreeBase::Fill_Fix60( const xAOD::Jet* jet ) {
   if( isFix60.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFix60.push_back( isFix60( *jet ) );
   } else { m_jet_mv2c20_isFix60.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix60("BTag_SF_FixedCutBEff_60");
   if ( sfFix60.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFix60.push_back( sfFix60( *jet ) );
@@ -2549,6 +2557,7 @@ void HelpTreeBase::Fill_Fix70( const xAOD::Jet* jet ) {
   if( isFix70.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFix70.push_back( isFix70( *jet ) );
   } else { m_jet_mv2c20_isFix70.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix70("BTag_SF_FixedCutBEff_70");
   if ( sfFix70.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFix70.push_back( sfFix70( *jet ) );
@@ -2563,6 +2572,7 @@ void HelpTreeBase::Fill_Fix77( const xAOD::Jet* jet ) {
   if( isFix77.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFix77.push_back( isFix77( *jet ) );
   } else { m_jet_mv2c20_isFix77.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix77("BTag_SF_FixedCutBEff_77");
   if ( sfFix77.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFix77.push_back( sfFix77( *jet ) );
@@ -2577,6 +2587,7 @@ void HelpTreeBase::Fill_Fix80( const xAOD::Jet* jet ) {
   if( isFix80.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFix80.push_back( isFix80( *jet ) );
   } else { m_jet_mv2c20_isFix80.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix80("BTag_SF_FixedCutBEff_80");
   if ( sfFix80.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFix80.push_back( sfFix80( *jet ) );
@@ -2591,6 +2602,7 @@ void HelpTreeBase::Fill_Fix85( const xAOD::Jet* jet ) {
   if( isFix85.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFix85.push_back( isFix85( *jet ) );
   } else { m_jet_mv2c20_isFix85.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix85("BTag_SF_FixedCutBEff_85");
   if ( sfFix85.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFix85.push_back( sfFix85( *jet ) );
@@ -2605,6 +2617,7 @@ void HelpTreeBase::Fill_Fix90( const xAOD::Jet* jet ) {
   if( isFix90.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFix90.push_back( isFix90( *jet ) );
   } else { m_jet_mv2c20_isFix90.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix90("BTag_SF_FixedCutBEff_90");
   if ( sfFix90.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFix90.push_back( sfFix90( *jet ) );
@@ -2622,6 +2635,7 @@ void HelpTreeBase::Fill_Flt30( const xAOD::Jet* jet ) {
   if( isFlt30.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt30.push_back( isFlt30( *jet ) );
   } else { m_jet_mv2c20_isFlt30.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30("BTag_SF_FlatBEff_30");
   if ( sfFlt30.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt30.push_back( sfFlt30( *jet ) );
@@ -2636,6 +2650,7 @@ void HelpTreeBase::Fill_Flt40( const xAOD::Jet* jet ) {
   if( isFlt40.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt40.push_back( isFlt40( *jet ) );
   } else { m_jet_mv2c20_isFlt40.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40("BTag_SF_FlatBEff_40");
   if ( sfFlt40.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt40.push_back( sfFlt40( *jet ) );
@@ -2650,6 +2665,7 @@ void HelpTreeBase::Fill_Flt50( const xAOD::Jet* jet ) {
   if( isFlt50.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt50.push_back( isFlt50( *jet ) );
   } else { m_jet_mv2c20_isFlt50.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50("BTag_SF_FlatBEff_50");
   if ( sfFlt50.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt50.push_back( sfFlt50( *jet ) );
@@ -2664,6 +2680,7 @@ void HelpTreeBase::Fill_Flt60( const xAOD::Jet* jet ) {
   if( isFlt60.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt60.push_back( isFlt60( *jet ) );
   } else { m_jet_mv2c20_isFlt60.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60("BTag_SF_FlatBEff_60");
   if ( sfFlt60.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt60.push_back( sfFlt60( *jet ) );
@@ -2678,6 +2695,7 @@ void HelpTreeBase::Fill_Flt70( const xAOD::Jet* jet ) {
   if( isFlt70.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt70.push_back( isFlt70( *jet ) );
   } else { m_jet_mv2c20_isFlt70.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70("BTag_SF_FlatBEff_70");
   if ( sfFlt70.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt70.push_back( sfFlt70( *jet ) );
@@ -2692,6 +2710,7 @@ void HelpTreeBase::Fill_Flt77( const xAOD::Jet* jet ) {
   if( isFlt77.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt77.push_back( isFlt77( *jet ) );
   } else { m_jet_mv2c20_isFlt77.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77("BTag_SF_FlatBEff_77");
   if ( sfFlt77.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt77.push_back( sfFlt77( *jet ) );
@@ -2706,6 +2725,7 @@ void HelpTreeBase::Fill_Flt85( const xAOD::Jet* jet ) {
   if( isFlt85.isAvailable( *jet ) ) {
     m_jet_mv2c20_isFlt85.push_back( isFlt85( *jet ) );
   } else { m_jet_mv2c20_isFlt85.push_back( -1 ); }
+  if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85("BTag_SF_FlatBEff_85");
   if ( sfFlt85.isAvailable( *jet ) ) { 
     m_jet_mv2c20_sfFlt85.push_back( sfFlt85( *jet ) );
