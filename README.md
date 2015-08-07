@@ -11,7 +11,9 @@ The xAOD analysis framework, born out of ProofAna...or not.
   - [Previous](#previous)
 - [Common Issues](#common-issues)
   - [Missing Metadata Information](#missing-metadata-information)
-- [Who uses us?](#who-uses-us)
+- [Community](#community)
+  - [Tutorial](#tutorial)
+  - [Who uses us?](#who-uses-us)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -53,7 +55,13 @@ UseMetadata False
 
 and try again.
 
-## Who uses us?
+## Community
+
+### Tutorial
+
+[Brian Tuan](https://github.com/btuan) made a [tutorial](http://twiki.mwt2.org/bin/view/UCATLAS/AnaHelpersExample) for those starting with xAOD analysis for the first time.
+
+### Who uses us?
 
 The following list are packages / analyses searches that depend on xAH. We thank them for their hard work and hope they continue to use us!
 
