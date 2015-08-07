@@ -68,7 +68,7 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
   m_systNameReco            = "";
   m_systNameTrig            = "";
   m_outputSystNamesPID      = "ElectronEfficiencyCorrector_PIDSyst";
-  m_outputSystNamesReco      = "ElectronEfficiencyCorrector_RecoSyst";
+  m_outputSystNamesReco     = "ElectronEfficiencyCorrector_RecoSyst";
   m_outputSystNamesTrig     = "ElectronEfficiencyCorrector_TrigSyst";
   m_systValPID              = 0.;
   m_systValReco             = 0.;
