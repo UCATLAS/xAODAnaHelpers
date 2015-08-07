@@ -185,6 +185,7 @@ protected:
 
   bool m_debug;
   bool m_DC14;
+  bool m_isMC;
 
   // event
   int m_runNumber;

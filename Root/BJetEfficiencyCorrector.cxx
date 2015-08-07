@@ -214,17 +214,16 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
-  if (!m_isMC){
-    Warning("initialize()", "Attempting to run BTagging Jet Scale Factors on data.  Turning tool off." );
-    return EL::StatusCode::SUCCESS;
-  }
-
-
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("initialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
+  }
+
+  if (!m_isMC){
+    Warning("initialize()", "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
+    m_getScaleFactors = false;
   }
 
   //
@@ -341,10 +340,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
 
-  if (!m_isMC)
-    return EL::StatusCode::SUCCESS;
-
-  if(m_debug) Info("execute()", "Applying BJet Efficiency Correction... ");
+  if(m_debug) Info("execute()", "Applying BJet Cuts and Efficiency Correction (when applicable...) ");
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* correctedJets(nullptr);
