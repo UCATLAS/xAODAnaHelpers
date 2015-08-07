@@ -43,7 +43,9 @@ ClassImp(ElectronEfficiencyCorrector)
 
 
 ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
-  m_asgElEffCorrTool_elSF_PID(nullptr)
+  m_asgElEffCorrTool_elSF_PID(nullptr),
+  m_asgElEffCorrTool_elSF_Reco(nullptr),
+  m_asgElEffCorrTool_elSF_Trig(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -62,9 +64,12 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
 
   // Systematics stuff
   m_inputAlgoSystNames      = "";
-  m_systName		    = "";
-  m_outputSystNames         = "ElectronEfficiencyCorrector_Syst";
-  m_systVal 		    = 0.;
+  m_systNameEff	            = "";
+  m_systNameTrig            = "";
+  m_outputSystNamesEff      = "ElectronEfficiencyCorrector_EffSyst";
+  m_outputSystNamesTrig     = "ElectronEfficiencyCorrector_TrigSyst";
+  m_systValEff	            = 0.;
+  m_systValTrig             - 0.;
 
   // file(s) containing corrections
   m_corrFileNamePID         = "";
@@ -90,10 +95,14 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
 
     // Systematics stuff
     m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_systName		      = config->GetValue("SystName" , m_systName.c_str());
-    m_outputSystNames         = config->GetValue("OutputSystNames",  m_outputSystNames.c_str());
-    m_systVal 		      = config->GetValue("SystVal" , m_systVal);
-    m_runAllSyst              = (m_systName.find("All") != std::string::npos);
+    m_systNameEff             = config->GetValue("SystNameEff"  , m_systNameEff.c_str());
+    m_systNameTrig            = config->GetValue("SystNameTrig" , m_systNameTrig.c_str());
+    m_outputSystNamesEff      = config->GetValue("OutputSystNamesEff" ,  m_outputSystNamesEff.c_str());
+    m_outputSystNamesTrig     = config->GetValue("OutputSystNamesTrig",  m_outputSystNamesTrig.c_str());
+    m_systValEff              = config->GetValue("SystValEff"  , m_systValEff);
+    m_systValTrig             = config->GetValue("SystValTrig" , m_systValTrig);
+    m_runAllSystEff           = (m_systNameEff.find("All")  != std::string::npos);
+    m_runAllSystTrig          = (m_systNameTrig.find("All") != std::string::npos);
     // file(s) containing corrections
     m_corrFileNamePID         = config->GetValue("CorrectionFileNamePID" , m_corrFileNamePID.c_str());
     m_corrFileNameReco        = config->GetValue("CorrectionFileNameReco" , m_corrFileNameReco.c_str());

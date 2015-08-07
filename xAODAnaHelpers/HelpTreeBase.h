@@ -538,7 +538,8 @@ protected:
   std::vector<int>   m_el_IsEMTight;
 
   // scale factors
-  std::vector< std::vector< double > > m_el_effSF;
+  std::vector< std::vector< double > > m_el_pidSF;
+  std::vector< std::vector< double > > m_el_recoSF;
 
   // track parameters
   std::vector<float> m_el_trkd0;

@@ -710,7 +710,8 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   }
 
   if ( m_elInfoSwitch->m_effSF ) {
-    m_tree->Branch("el_effSF",      &m_el_effSF);
+    m_tree->Branch("el_pidSF"  ,     &m_el_pidSF  );
+    m_tree->Branch("el_recoSF" ,     &m_el_recoSF );
   }
 
   if ( m_elInfoSwitch->m_trackparams ) {
@@ -819,12 +820,20 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
     }
 
     if ( m_elInfoSwitch->m_effSF ) {
-      static SG::AuxElement::Accessor< std::vector< double > > accEffSF("ElectronEfficiencyCorrector_EffSyst");
-      if( accEffSF.isAvailable( *electron_itr ) ) {
-        m_el_effSF.push_back( accEffSF( *electron_itr ) ); 
+      static SG::AuxElement::Accessor< std::vector< double > > accPIDSF("ElectronEfficiencyCorrector_PIDSyst");
+      if( accPIDSF.isAvailable( *electron_itr ) ) {
+        m_el_pidSF.push_back( accPIDSF( *electron_itr ) ); 
       } else {
         std::vector<double> junk(1,-999);
-        m_el_effSF.push_back( junk );
+        m_el_pidSF.push_back( junk );
+      }      
+
+      static SG::AuxElement::Accessor< std::vector< double > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
+      if( accRecoSF.isAvailable( *electron_itr ) ) {
+        m_el_recoSF.push_back( accRecoSF( *electron_itr ) ); 
+      } else {
+        std::vector<double> junk(1,-999);
+        m_el_recoSF.push_back( junk );
       }
     }
 
@@ -939,7 +948,8 @@ void HelpTreeBase::ClearElectrons() {
   }
 
   if( m_elInfoSwitch->m_effSF ) {
-    m_el_effSF.clear();
+    m_el_pidSF.clear();
+    m_el_recoSF.clear();
   }
 
   if ( m_elInfoSwitch->m_trackparams ) {
