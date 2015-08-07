@@ -27,9 +27,19 @@ public:
   // systematics
   std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
   			             // upstream algo (e.g., the SC containers with calibration systematics)
-  bool m_runAllSyst;
-  std::string m_outputSystNames;
-  
+  bool m_runAllSystPID;
+  bool m_runAllSystReco;
+  bool m_runAllSystTrig;
+  std::string m_outputSystNamesPID;
+  std::string m_outputSystNamesReco;
+  std::string m_outputSystNamesTrig;
+  std::string m_systNamePID;
+  std::string m_systNameReco;
+  std::string m_systNameTrig;
+  float m_systValPID;
+  float m_systValReco;
+  float m_systValTrig;
+
   std::string m_corrFileNamePID;
   std::string m_corrFileNameReco;
   std::string m_corrFileNameTrig;  
@@ -38,10 +48,14 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  std::vector<CP::SystematicSet> m_systList; //!
+  std::vector<CP::SystematicSet> m_systListPID; //!
+  std::vector<CP::SystematicSet> m_systListReco; //!
+  std::vector<CP::SystematicSet> m_systListTrig; //!
 
   // tools
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
