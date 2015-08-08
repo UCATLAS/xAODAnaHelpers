@@ -40,6 +40,7 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_doPUreweighting;
     std::string m_lumiCalcFileNames;
     std::string m_PRWFileNames;
+    int m_PU_default_channel;
     
     // Primary Vertex
     std::string m_vertexContainerName;
@@ -64,7 +65,6 @@ class BasicEventSelection : public xAH::Algorithm
   private:
     GoodRunsListSelectionTool*   m_grl;        //!
     CP::PileupReweightingTool*   m_pileuptool; //!
-    int m_PU_default_channel; //!
     
     TrigConf::xAODConfigTool*    m_trigConfTool;  //!
     Trig::TrigDecisionTool*      m_trigDecTool;   //!
