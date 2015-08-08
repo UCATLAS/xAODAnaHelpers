@@ -74,6 +74,7 @@ JetCalibrator :: JetCalibrator () :
   m_calibConfigFullSim      = "JES_MC15Prerecommendation_April2015.config";
   m_calibConfigAFII         = "JES_Prerecommendation2015_AFII_Apr2015.config";
   m_calibConfigData         = "JES_MC15Prerecommendation_April2015.config";
+  m_calibConfig		    = "";
 
   // CONFIG parameters for JetUncertaintiesTool
   m_JESUncertConfig         = "";
