@@ -1,4 +1,4 @@
-/******************************************
+/**************************************************
  *
  * Interface to CP BJet Efficiency Correction Tool.
  *
@@ -6,7 +6,7 @@
  * Gabriel Facini (gabriel.facini@cern.ch)
  *
  *
- ******************************************/
+ **************************************************/
 
 // c++ include(s):
 #include <iostream>
@@ -64,9 +64,8 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
   //For the fixed cut, valid options are: [ "FixedCutBEff_30", "FixedCutBEff_50", "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_80", "FixedCutBEff_85", "FixedCutBEff_90" ]
   //For the variable cut, valid options are: [ "FlatBEff_30", "FlatBEff_40", "FlatBEff_50", "FlatBEff_60", "FlatBEff_70", "FlatBEff_77", "FlatBEff_85" ]
 
-
   // Btag quality
-  m_operatingPt             = "";
+  m_operatingPt             = "FixedCutBEff_70";
   m_operatingPtCDI          = "";
   m_getScaleFactors         = false; // will only get scale factors for calibrated working points
 
@@ -78,7 +77,8 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
 
 EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 {
-  if(!getConfig().empty()){
+  if ( !getConfig().empty() ) {
+  
     Info("configure()", "Configuing BJetEfficiencyCorrector Interface. User configuration read from : %s ", getConfig().c_str());
 
     TEnv* config = new TEnv(getConfig(true).c_str());
@@ -221,7 +221,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  if (!m_isMC){
+  if ( !m_isMC ) {
     Warning("initialize()", "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
     m_getScaleFactors = false;
   }
@@ -230,8 +230,12 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // initialize the BJetSelectionTool
   //
   std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
-  m_BJetSelectTool= new BTaggingSelectionTool( sel_tool_name );
-  m_BJetSelectTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
+  if ( asg::ToolStore::contains<BTaggingSelectionTool>( sel_tool_name ) ) {
+    m_BJetSelectTool = asg::ToolStore::get<BTaggingSelectionTool>( sel_tool_name );
+  } else {
+    m_BJetSelectTool = new BTaggingSelectionTool( sel_tool_name );
+  }
+  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
 
   //
   //  Configure the BJetSelectionTool
@@ -248,16 +252,17 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
   Info("initialize()", "BTaggingSelectionTool initialized : %s ", m_BJetSelectTool->name().c_str() );
 
-
-
   //
   // initialize the BJetEfficiencyCorrectionTool
   //
   std::string sf_tool_name = std::string("BJetEfficiencyCorrectionTool_") + m_name;
-  m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
-  m_BJetEffSFTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
-
-
+  if ( asg::ToolStore::contains<BTaggingEfficiencyTool>( sf_tool_name ) ) {
+    m_BJetEffSFTool = asg::ToolStore::get<BTaggingEfficiencyTool>( sf_tool_name );
+  } else {
+    m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
+  }
+  m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
+   
   //
   //  Configure the BJetEfficiencyCorrectionTool
   //
