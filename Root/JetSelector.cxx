@@ -373,11 +373,8 @@ EL::StatusCode JetSelector :: initialize ()
   //
   // initialize the BJetSelectionTool
   //
-  if ( asg::ToolStore::contains<BTaggingSelectionTool>("BJetSelectionTool") ) {
-    m_BJetSelectTool = asg::ToolStore::get<BTaggingSelectionTool>("BJetSelectionTool");
-  } else {
-    m_BJetSelectTool = new BTaggingSelectionTool("BJetSelectionTool");
-  }
+  std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
+  m_BJetSelectTool= new BTaggingSelectionTool( sel_tool_name );  
   m_BJetSelectTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
   
   // if applying cut on nr. bjets, configure it
