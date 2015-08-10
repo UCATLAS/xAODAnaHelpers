@@ -22,48 +22,56 @@ class MuonEfficiencyCorrector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 
 public:
+  
   // configuration variables
   std::string   m_inContainerName;
 
-  // Efficiency SF
-  std::string   m_WorkingPoint;
-  std::string   m_DataPeriod;
+  // Reco efficiency SF
+  std::string   m_WorkingPointReco;
 
-  // Trigger SF                                                                                                                                             
+  // Iso efficiency SF
+  std::string   m_WorkingPointIso;
+
+  // Trigger efficiency SF                                                                                                                                             
   int           m_runNumber;
   std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
   std::string   m_DiMuTrig;          // this can be either a dimuon trigger chain, or an OR of ( N single muon trigger chains, dimuon chain ) 
 
   // systematics
-  std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
-  			             // upstream algo (e.g., the SC containers with calibration systematics)
-  bool          m_runAllSyst;
-  std::string   m_outputSystNames;
-  bool          m_runSystsEff;
-  bool          m_runSystTrig;
-  std::string   m_systNameEff;
-  std::string   m_systNameTrig;
-  std::string   m_outputSystNamesEff;
-  std::string   m_outputSystNamesTrig;
-  float         m_systValEff;
+  std::string   m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
+  			               // upstream algo (e.g., the SC containers with calibration systematics)
+
+  float         m_systValReco;
+  float         m_systValIso;  
   float         m_systValTrig;
-  bool          m_runAllSystEff;
-  bool          m_runAllSystTrig;
+  std::string   m_systNameReco;
+  std::string   m_systNameIso;
+  std::string   m_systNameTrig;
+  bool          m_runAllSystReco;
+  bool          m_runAllSystIso;
+  bool          m_runAllSystTrig;   
+  std::string   m_outputSystNamesReco;
+  std::string   m_outputSystNamesIso;
+  std::string   m_outputSystNamesTrig;
 
 private:
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
+
+  bool m_isMC;        //!
+    
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  std::vector<CP::SystematicSet> m_systListEff;  //!
+  std::vector<CP::SystematicSet> m_systListReco; //!
+  std::vector<CP::SystematicSet> m_systListIso;  //!  
   std::vector<CP::SystematicSet> m_systListTrig; //!
 
   // tools
-  CP::MuonSelectionTool           *m_muonSelectionTool; //!
-  CP::MuonEfficiencyScaleFactors  *m_muonEffSFTool;     //!
-  CP::MuonTriggerScaleFactors     *m_muonTrigSFTool;    //!
+  CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_Reco;     //!
+  CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_Iso;      //!
+  CP::MuonTriggerScaleFactors     *m_asgMuonEffCorrTool_muSF_Trig ;    //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
