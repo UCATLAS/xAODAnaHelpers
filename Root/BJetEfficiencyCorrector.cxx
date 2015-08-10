@@ -230,8 +230,12 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // initialize the BJetSelectionTool
   //
   std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
-  m_BJetSelectTool= new BTaggingSelectionTool( sel_tool_name );  
-  m_BJetSelectTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR  
+  if ( asg::ToolStore::contains<BTaggingSelectionTool>( sel_tool_name ) ) {
+    m_BJetSelectTool = asg::ToolStore::get<BTaggingSelectionTool>( sel_tool_name );
+  } else {
+    m_BJetSelectTool = new BTaggingSelectionTool( sel_tool_name );
+  }
+  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
 
   //
   //  Configure the BJetSelectionTool
@@ -252,8 +256,12 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // initialize the BJetEfficiencyCorrectionTool
   //
   std::string sf_tool_name = std::string("BJetEfficiencyCorrectionTool_") + m_name;
-  m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
-  m_BJetEffSFTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
+  if ( asg::ToolStore::contains<BTaggingEfficiencyTool>( sf_tool_name ) ) {
+    m_BJetEffSFTool = asg::ToolStore::get<BTaggingEfficiencyTool>( sf_tool_name );
+  } else {
+    m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
+  }
+  m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
    
   //
   //  Configure the BJetEfficiencyCorrectionTool
