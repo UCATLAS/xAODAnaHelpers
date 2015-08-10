@@ -1,11 +1,12 @@
-/******************************************
+/************************************
  *
  * Jet selector tool
  *
- * G.Facini (gabriel.facini@cern.ch), M. Milesi (marco.milesi@cern.ch)
+ * G.Facini (gabriel.facini@cern.ch)
+ * M. Milesi (marco.milesi@cern.ch)
  * J.Alison (john.alison@cern.ch)
  *
- ******************************************/
+ ************************************/
 
 // c++ include(s):
 #include <iostream>
@@ -57,6 +58,7 @@ JetSelector :: JetSelector () :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
+  
   Info("JetSelector()", "Calling constructor");
 
   // read debug flag from .config file
@@ -109,9 +111,9 @@ JetSelector :: JetSelector () :
   m_JVTCut 		    = 0.64;
 
   // Btag quality
-  m_doBTagCut 		          = false;
+  m_doBTagCut 		    = false;
   m_taggerName              = "MV2c20";
-  m_operatingPt             = "";
+  m_operatingPt             = "FixedCutBEff_70";
   m_jetAuthor               = "AntiKt4EMTopoJets";
   // for the b-tagging tool - these are the b-tagging groups minimums 
   // users making tighter cuts can use the selector's parameters to keep
@@ -126,7 +128,7 @@ JetSelector :: JetSelector () :
 
 EL::StatusCode  JetSelector :: configure ()
 {
-  if(!getConfig().empty()){
+  if ( !getConfig().empty() ) {
     Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", getConfig().c_str());
 
     TEnv* config = new TEnv(getConfig(true).c_str());
@@ -180,20 +182,22 @@ EL::StatusCode  JetSelector :: configure ()
     m_truthLabel 	      = config->GetValue("TruthLabel",   m_truthLabel);
 
     m_doJVF 		      = config->GetValue("DoJVF",       m_doJVF);
-    m_pt_max_JVF 	    = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
-    m_eta_max_JVF 	  = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
+    m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
+    m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
     m_JVFCut 		      = config->GetValue("JVFCut",      m_JVFCut);
 
     m_doJVT 		      = config->GetValue("DoJVT",       m_doJVT);
-    m_pt_max_JVT 	    = config->GetValue("pTMaxJVT",    m_pt_max_JVT);
-    m_eta_max_JVT 	  = config->GetValue("etaMaxJVT",   m_eta_max_JVT);
+    m_pt_max_JVT 	      = config->GetValue("pTMaxJVT",    m_pt_max_JVT);
+    m_eta_max_JVT 	      = config->GetValue("etaMaxJVT",   m_eta_max_JVT);
     m_JVTCut 		      = config->GetValue("JVTCut",      m_JVTCut);
 
     // Btag quality
-    m_doBTagCut		    = config->GetValue("DoBTagCut",       m_doBTagCut);
-    m_jetAuthor       = config->GetValue("JetAuthor",       m_jetAuthor.c_str() );
-    m_taggerName      = config->GetValue("TaggerName",      m_taggerName.c_str() );
-    m_operatingPt     = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
+    m_doBTagCut		      = config->GetValue("DoBTagCut",       m_doBTagCut);
+    m_jetAuthor               = config->GetValue("JetAuthor",       m_jetAuthor.c_str() );
+    m_taggerName              = config->GetValue("TaggerName",      m_taggerName.c_str() );
+    m_operatingPt             = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
+    m_b_eta_max               = config->GetValue("B_etaMax",        m_b_eta_max);
+    m_b_pt_min                = config->GetValue("B_pTMin",         m_b_pt_min);
 
     m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
     m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
@@ -257,7 +261,7 @@ EL::StatusCode  JetSelector :: configure ()
   m_decor   = "passSel";
   
   if ( m_decorateSelectedObjects ) {
-    Info(m_name.c_str()," Decorate Jets with %s", m_decor.c_str());
+    Info("configure()"," Decorate Jets with %s", m_decor.c_str());
   }
 
   return EL::StatusCode::SUCCESS;
@@ -369,24 +373,32 @@ EL::StatusCode JetSelector :: initialize ()
   //
   // initialize the BJetSelectionTool
   //
-  std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
-  m_BJetSelectTool= new BTaggingSelectionTool( sel_tool_name );
+  if ( asg::ToolStore::contains<BTaggingSelectionTool>("BJetSelectionTool") ) {
+    m_BJetSelectTool = asg::ToolStore::get<BTaggingSelectionTool>("BJetSelectionTool");
+  } else {
+    m_BJetSelectTool = new BTaggingSelectionTool("BJetSelectionTool");
+  }
   m_BJetSelectTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
+  
+  // if applying cut on nr. bjets, configure it
   //
-  //  Configure the BJetSelectionTool
-  //
-  // A few which are not configurable as of yet....
-  // is there a reason to have this configurable here??...I think no (GF to self)
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName","$ROOTCOREBIN/data/xAODBTaggingEfficiency/cutprofiles_22072015.root"),"Failed to set property:FlvTagCutDefinitionsFileName");
-  // configurable parameters
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",          m_taggerName),"Failed to set property: TaggerName");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property: JetAuthor");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
+  if ( m_doBTagCut ) {
 
+    // A few which are not configurable as of yet....
+    // is there a reason to have this configurable here??...I think no (GF to self)
+    //
+    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
+    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
+    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName","$ROOTCOREBIN/data/xAODBTaggingEfficiency/cutprofiles_22072015.root"),"Failed to set property:FlvTagCutDefinitionsFileName");
+    // configurable parameters
+    //
+    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",	      m_taggerName),"Failed to set property: TaggerName");
+    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
+    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("JetAuthor",	      m_jetAuthor),"Failed to set property: JetAuthor");
+    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
 
+  }
+  
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -432,7 +444,7 @@ EL::StatusCode JetSelector :: execute ()
   // did any collection pass the cuts?
   bool pass(false);
   bool count(true); // count for the 1st collection in the container - could be better as
-  // shoudl only count for the nominal
+                    // shoudl only count for the nominal
   const xAOD::JetContainer* inJets(nullptr);
 
   // if input comes from xAOD, or just running one collection,
@@ -468,13 +480,13 @@ EL::StatusCode JetSelector :: execute ()
       pass = pass || passOne;
     }
 
-    // save list of systs that shoudl be considered down stream
+    // save list of systs that should be considered down stream
     RETURN_CHECK( "JetSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
     //delete vecOutContainerNames;
 
   }
 
-  // look what do we have in TStore
+  // look what we have in TStore
   if ( m_verbose ) { m_store->print(); }
 
   if ( !pass ) {
@@ -599,11 +611,14 @@ EL::StatusCode JetSelector :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "%s", m_name.c_str());
+  
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
+
+  if ( m_BJetSelectTool ) { m_BJetSelectTool = nullptr; delete m_BJetSelectTool; }
 
   return EL::StatusCode::SUCCESS;
 }
