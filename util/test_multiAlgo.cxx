@@ -125,7 +125,7 @@ int main( int argc, char* argv[] ) {
   electronEffCorr->setName("electronEfficiencyCorrector")->setConfig(localDataDir+"electronEffCorr.config")->registerClass(registry, "ElectronEfficiencyCorrector");/*->setSysts("All");*/
 
   MuonSelector* muonSelect_signal               = new MuonSelector();
-  muonSelect_signal->setName("muonSelect_signal")->setConfig(localDataDir+"muonSelect_signal.config")->registerClass(registry, "MuonSelector")->registerClass(registry, "MuonSelector");
+  muonSelect_signal->setName("muonSelect_signal")->setConfig(localDataDir+"muonSelect_signal.config")->registerClass(registry, "MuonSelector");
 
   ElectronSelector* electronSelect_signal       = new ElectronSelector();
   electronSelect_signal->setName("electronSelect_signal")->setConfig(localDataDir+"electronSelect_signal.config")->registerClass(registry, "ElectronSelector");
