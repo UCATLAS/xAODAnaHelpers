@@ -132,7 +132,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("weight_muon_trig", &m_weight_muon_trig);
   }
 
-  if( m_eventInfoSwitch->m_electronSF ) {
+  if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
     m_tree->Branch("weight_electron_trig", &m_weight_electron_trig);
   }
 
@@ -252,7 +252,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* ev
     }
   }
 
-  if( m_eventInfoSwitch->m_electronSF ) {
+  if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
     SG::AuxElement::ConstAccessor< std::vector<double> > electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst" );
 
     if( electronTrigSFVec.isAvailable( *eventInfo ) ) {
@@ -714,7 +714,7 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_IsEMTight",    &m_el_IsEMTight);
   }
 
-  if ( m_elInfoSwitch->m_effSF ) {
+  if ( m_elInfoSwitch->m_effSF && m_isMC ) {
     m_tree->Branch("el_pidSF"  ,     &m_el_pidSF  );
     m_tree->Branch("el_recoSF" ,     &m_el_recoSF );
   }
@@ -824,7 +824,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       if ( EMTightAcc.isAvailable( *el_itr ) )         { m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );   } else { m_el_IsEMTight.push_back( -1 ); }
     }
 
-    if ( m_elInfoSwitch->m_effSF ) {
+    if ( m_elInfoSwitch->m_effSF && m_isMC ) {
       static SG::AuxElement::Accessor< std::vector< double > > accPIDSF("ElectronEfficiencyCorrector_PIDSyst");
       if( accPIDSF.isAvailable( *el_itr ) ) {
         m_el_pidSF.push_back( accPIDSF( *el_itr ) ); 
@@ -952,7 +952,7 @@ void HelpTreeBase::ClearElectrons() {
     m_el_IsEMTight.clear();
   }
 
-  if( m_elInfoSwitch->m_effSF ) {
+  if( m_elInfoSwitch->m_effSF && m_isMC ) {
     m_el_pidSF.clear();
     m_el_recoSF.clear();
   }
@@ -2376,7 +2376,7 @@ void HelpTreeBase::ClearEvent() {
     m_weight_muon_trig.clear();
   }
 
-  if( m_eventInfoSwitch->m_electronSF ) {
+  if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
     m_weight_electron_trig.clear();
   }
 }
