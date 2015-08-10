@@ -159,7 +159,10 @@ namespace HelperClasses{
       // erase everything before the interesting string
       input.erase( 0, input.find("sfFTagFix") );
       // erase everything after the interesting string
-      input.erase( input.find_first_of(" "), input.size() );
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
       // remove fTagSFFix to just leave the numbers
       input.erase(0,9);
       // two by two take the characters and push back an int into this vector
