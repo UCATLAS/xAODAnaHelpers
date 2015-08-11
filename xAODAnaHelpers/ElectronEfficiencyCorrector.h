@@ -48,6 +48,8 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
+  bool m_isMC;        //!
+
   std::vector<CP::SystematicSet> m_systListPID; //!
   std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
@@ -83,7 +85,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  virtual EL::StatusCode executeSF (  const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst  );
+  virtual EL::StatusCode executeSF (  const xAOD::ElectronContainer* inputElectrons, const xAOD::EventInfo* eventInfo, unsigned int countSyst  );
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronEfficiencyCorrector, 1);

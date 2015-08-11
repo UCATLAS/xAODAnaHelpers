@@ -55,10 +55,10 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
 
   Info("MuonEfficiencyCorrector()", "Calling constructor");
 
-  // Read debug flag from .config file
   m_debug                      = false;
 
   // Input container to be read from TEvent or TStore
+  //
   m_inContainerName            = "";
 
   // Reco efficiency SF
@@ -142,7 +142,7 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
     delete config; config = nullptr;
   }
 
-  // set if you want to run on ALL systematics
+  // these flags get set if you want to run on ALL systematics
   //
   m_runAllSystReco	       = (m_systNameReco.find("All") != std::string::npos);
   m_runAllSystIso	       = (m_systNameIso.find("All")  != std::string::npos);
@@ -241,8 +241,12 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // 1.
   // initialize the CP::MuonEfficiencyScaleFactors Tool for reco efficiency SF
   //
-  m_asgMuonEffCorrTool_muSF_Reco = new CP::MuonEfficiencyScaleFactors("MuonEfficiencyScaleFactors_effSF_Reco" );
-  m_asgMuonEffCorrTool_muSF_Reco->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
+  
+  if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>("MuonEfficiencyScaleFactors_effSF_Reco") ) {
+    m_asgMuonEffCorrTool_muSF_Reco = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>("MuonEfficiencyScaleFactors_effSF_Reco");
+  } else {
+    m_asgMuonEffCorrTool_muSF_Reco = new CP::MuonEfficiencyScaleFactors("MuonEfficiencyScaleFactors_effSF_Reco");
+  }
 
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Reco->setProperty("WorkingPoint", m_WorkingPointReco ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for reco efficiency SF");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Reco->setProperty("doAudit", false),"Failed to set doAudit property of MuonEfficiencyScaleFactors");
@@ -292,8 +296,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // 2.
   // initialize the CP::MuonEfficiencyScaleFactors Tool for isolation efficiency SF
   //
-  m_asgMuonEffCorrTool_muSF_Iso = new CP::MuonEfficiencyScaleFactors("MuonEfficiencyScaleFactors_effSF_Iso" );
-  m_asgMuonEffCorrTool_muSF_Iso->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
+
+  if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>("MuonEfficiencyScaleFactors_effSF_Iso") ) {
+    m_asgMuonEffCorrTool_muSF_Iso = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>("MuonEfficiencyScaleFactors_effSF_Iso");
+  } else {
+    m_asgMuonEffCorrTool_muSF_Iso = new CP::MuonEfficiencyScaleFactors("MuonEfficiencyScaleFactors_effSF_Iso");
+  }  
+
   //
   // Add an "Iso" suffix to the WP
   //
@@ -345,8 +354,12 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // 3.
   // Initialise the CP::MuonTriggerScaleFactors tool
   //
-  m_asgMuonEffCorrTool_muSF_Trig = new CP::MuonTriggerScaleFactors( "MuonTriggerScaleFactors_effSF_Trig" );
-  m_asgMuonEffCorrTool_muSF_Trig->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
+
+  if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>("MuonTriggerScaleFactors_effSF_Trig") ) {
+    m_asgMuonEffCorrTool_muSF_Trig = asg::ToolStore::get<CP::MuonTriggerScaleFactors>("MuonTriggerScaleFactors_effSF_Trig");
+  } else {
+    m_asgMuonEffCorrTool_muSF_Trig = new CP::MuonTriggerScaleFactors("MuonTriggerScaleFactors_effSF_Trig");
+  }
 
   if( m_asgMuonEffCorrTool_muSF_Trig->setRunNumber( m_runNumber ) == CP::CorrectionCode::Error ) {
     Warning("initialize()","Cannot set RunNumber for MuonTriggerScaleFactors tool");
@@ -542,8 +555,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 {
 
   //
-  // In the following, every muon gets decorated with 3 vector<double>'s (for reco/iso/trigger efficiency SFs) containing the SFs, 
-  // one SF for each syst (first component of each vector  will be the nominal SF).
+  // In the following, every muon gets decorated with 2 vector<double>'s (for reco/iso efficiency SFs), 
+  // and the event w/ 1 vector<double> (for trigger efficiency SFs)
+  // Each vector contains the SFs, one SF for each syst (first component of each vector will be the nominal SF).
   //
   // Additionally, we create these vector<string> with the SF syst names, so that we know which component corresponds to.
   // ( there's a 1:1 correspondence with the vector<double> defined above )
@@ -563,9 +577,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   for ( const auto& syst_it : m_systListReco ) {
 
     // Create the name of the SF weight to be recorded
-    //   template:  SYSNAME_MuReco_SF
+    //   template:  SYSNAME_MuRecoEff_SF
     //
-    std::string sfName = "MuReco_SF";
+    std::string sfName = "MuRecoEff_SF";
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
        sfName.insert( 0, prepend );
@@ -586,17 +600,20 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     unsigned int idx(0);
     for ( auto mu_itr : *(inputMuons) ) {
 
-       if ( m_debug ) { Info( "executeSF()", "Applying reco efficiency SF: \n Checking muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) ); }
-       ++idx;
+       if ( m_debug ) { Info( "executeSF()", "Applying reco efficiency SF" ); }
 
        // a) 
        // decorate directly the muon with reco efficiency (useful at all?), and the corresponding SF
        //
        if ( m_asgMuonEffCorrTool_muSF_Reco->applyRecoEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in applyRecoEfficiency");
+	 ++idx;
+	 continue;
        }
        if ( m_asgMuonEffCorrTool_muSF_Reco->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
+	 ++idx;
+	 continue;
        }       
 
        // b)
@@ -612,24 +629,30 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        float recoEffSF(0.0);
        if ( m_asgMuonEffCorrTool_muSF_Reco->getEfficiencyScaleFactor( *mu_itr, recoEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+	 ++idx;
+	 continue;
        }
        //
        // Add it to decoration vector
        //
-       sfVecReco( *mu_itr ).push_back(recoEffSF);
+       sfVecReco( *mu_itr ).push_back( recoEffSF );
 
        if ( m_debug ) { 
-         Info( "executeSF", "===>>>");
-         Info( "executeSF", " ");	
-         Info( "executeSF", "Systematic: %s", syst_it.name().c_str() );
-         Info( "executeSF", " ");
-         Info( "executeSF", "Reco efficiency:");
-         Info( "executeSF", "\t %f (from applyRecoEfficiency())", mu_itr->auxdataConst< float >( "Efficiency" ) );
-         Info( "executeSF", "and its SF:");
-         Info( "executeSF", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
-         Info( "executeSF", "\t %f (from getEfficiencyScaleFactor())", recoEffSF );
-         Info( "executeSF", "--------------------------------------");
+         Info( "executeSF()", "===>>>");
+         Info( "executeSF()", " ");	 
+	 Info( "executeSF()", "Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
+	 Info( "executeSF()", " ");	
+         Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+         Info( "executeSF()", " ");
+         Info( "executeSF()", "Reco efficiency:");
+         Info( "executeSF()", "\t %f (from applyRecoEfficiency())", mu_itr->auxdataConst< float >( "Efficiency" ) );
+         Info( "executeSF()", "and its SF:");
+         Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
+         Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", recoEffSF );
+         Info( "executeSF()", "--------------------------------------");
        }
+       
+       ++idx;
 
     } // close muon loop
 
@@ -644,9 +667,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   for ( const auto& syst_it : m_systListIso ) {
 
     // Create the name of the SF weight to be Isorded
-    //   template:  SYSNAME_MuIso_SF
+    //   template:  SYSNAME_MuIsoEff_SF
     //
-    std::string sfName = "MuIso_SF";
+    std::string sfName = "MuIsoEff_SF";
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
        sfName.insert( 0, prepend );
@@ -667,17 +690,20 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     unsigned int idx(0);
     for ( auto mu_itr : *(inputMuons) ) {
        
-       if ( m_debug ) { Info( "executeSF()", "Applying iso efficiency SF: \n Checking muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) ); }
-       ++idx;
+       if ( m_debug ) { Info( "executeSF()", "Applying iso efficiency SF" ); }
 
        // a) 
        // decorate directly the muon with iso efficiency (useful at all?), and the corresponding SF
        //
        if ( m_asgMuonEffCorrTool_muSF_Iso->applyRecoEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in applyIsoEfficiency");
+	 ++idx;
+	 continue;
        }
        if ( m_asgMuonEffCorrTool_muSF_Iso->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
+	 ++idx;
+	 continue;       
        }       
 
        // b)
@@ -693,6 +719,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        float IsoEffSF(0.0);
        if ( m_asgMuonEffCorrTool_muSF_Iso->getEfficiencyScaleFactor( *mu_itr, IsoEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+	 ++idx;
+	 continue;	 
        }
        //
        // Add it to decoration vector
@@ -700,18 +728,22 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        sfVecIso( *mu_itr ).push_back(IsoEffSF);
 
        if ( m_debug ) { 
-         Info( "executeSF", "===>>>");
-         Info( "executeSF", " ");	
-         Info( "executeSF", "Systematic: %s", syst_it.name().c_str() );
-         Info( "executeSF", " ");
-         Info( "executeSF", "Iso efficiency:");
-         Info( "executeSF", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOEfficiency" ) );
-         Info( "executeSF", "and its SF:");
-         Info( "executeSF", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
-         Info( "executeSF", "\t %f (from getEfficiencyScaleFactor())", IsoEffSF );
-         Info( "executeSF", "--------------------------------------");
+         Info( "executeSF()", "===>>>");
+         Info( "executeSF()", " ");
+	 Info( "executeSF()", "Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
+	 Info( "executeSF()", " ");	
+         Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+         Info( "executeSF()", " ");
+         Info( "executeSF()", "Iso efficiency:");
+         Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOEfficiency" ) );
+         Info( "executeSF()", "and its SF:");
+         Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
+         Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", IsoEffSF );
+         Info( "executeSF()", "--------------------------------------");
        }
-    
+       
+       ++idx;    
+       
     } // close muon loop
   
   }  // close loop on isolation efficiency SF systematics
@@ -721,7 +753,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   //
   SG::AuxElement::Decorator< std::vector<double> > sfVecTrig( m_outputSystNamesTrig );
 
-  // loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
+  // Loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
   for ( const auto& syst_it : m_systListTrig ) {
@@ -745,7 +777,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     }
     if ( m_debug ) { Info("executeSF()", "Successfully applied systematic: %s", syst_it.name().c_str()); }
 
-    // and now apply trigger SF!
+    // and now apply trigger efficiency SF!
     //
     unsigned int nMuons = inputMuons->size();
     if ( m_debug ) { Info( "executeSF", "Applying trigger efficiency SF: \n Number of muons : %u", nMuons); }
@@ -759,13 +791,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 	  Warning( "executeSF()", "Problem in getTriggerScaleFactor");
 	}
         if ( m_debug ) { 
-          Info( "executeSF", "===>>>");
-          Info( "executeSF", " ");	 
-          Info( "executeSF", "Systematic: %s", syst_it.name().c_str() );
-          Info( "executeSF", " ");
-          Info( "executeSF", "Trigger efficiency SF:");
-          Info( "executeSF", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
-          Info( "executeSF", "--------------------------------------");
+          Info( "executeSF()", "===>>>");
+          Info( "executeSF()", " ");	   
+          Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+          Info( "executeSF()", " ");
+          Info( "executeSF()", "Trigger efficiency SF:");
+          Info( "executeSF()", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
+          Info( "executeSF()", "--------------------------------------");
         }
       }
       if ( nMuons == 2 ) {
@@ -774,21 +806,21 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 	    Warning( "executeSF()", "Problem in getTriggerScaleFactor");
           }
           if ( m_debug ) { 
-            Info( "executeSF", "===>>>");
-            Info( "executeSF", " ");	   
-            Info( "executeSF", "Systematic: %s", syst_it.name().c_str() );
-            Info( "executeSF", " ");
-            Info( "executeSF", "Trigger efficiency SF:");
-            Info( "executeSF", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
-            Info( "executeSF", "--------------------------------------");
+            Info( "executeSF()", "===>>>");
+            Info( "executeSF()", " ");       
+            Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+            Info( "executeSF()", " ");
+            Info( "executeSF()", "Trigger efficiency SF:");
+            Info( "executeSF()", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
+            Info( "executeSF()", "--------------------------------------");
           }
         }
       }
     }
     //
-    // Add it to decoration vector
+    // Add trigger SF to event decoration vector
     //
-    sfVecTrig( *eventInfo ).push_back(triggerEffSF);
+    sfVecTrig( *eventInfo ).push_back( triggerEffSF );
 
   }  // close loop on trigger efficiency SF systematics
 
