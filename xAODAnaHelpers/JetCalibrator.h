@@ -22,8 +22,6 @@ class JetCalibrator : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  bool m_DC14;
-
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;

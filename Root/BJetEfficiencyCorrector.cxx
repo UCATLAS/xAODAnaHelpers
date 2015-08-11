@@ -1,11 +1,12 @@
-/******************************************
+/**************************************************
  *
  * Interface to CP BJet Efficiency Correction Tool.
  *
  * John Alison (john.alison@cern.ch)
+ * Gabriel Facini (gabriel.facini@cern.ch)
  *
  *
- ******************************************/
+ **************************************************/
 
 // c++ include(s):
 #include <iostream>
@@ -33,6 +34,7 @@ ClassImp(BJetEfficiencyCorrector)
 
 
 BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
+  m_BJetSelectTool(nullptr),
   m_BJetEffSFTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -51,26 +53,32 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
   m_outputSystName          = "BJetEfficiency_Algo";
 
   // configuration of the bjet eff tool
-  m_corrFileName           = "2015-PreRecomm-13TeV-MC12-CDI-May19-v1.root";
+  m_corrFileName           = "$ROOTCOREBIN/data/xAODAnaHelpers/2015-PreRecomm-13TeV-MC12-CDI-May19-v1.root";
   m_jetAuthor              = "AntiKt4EMTopoJets";
   m_taggerName             = "MV2c20";
   m_useDevelopmentFile     = true;
   m_coneFlavourLabel       = true;
 
-  // Btag quality
-  m_btag_veryloose          = false;
-  m_btag_loose              = false;
-  m_btag_medium             = false;
-  m_btag_tight              = false;
+  // allowed operating points:
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
+  //For the fixed cut, valid options are: [ "FixedCutBEff_30", "FixedCutBEff_50", "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_80", "FixedCutBEff_85", "FixedCutBEff_90" ]
+  //For the variable cut, valid options are: [ "FlatBEff_30", "FlatBEff_40", "FlatBEff_50", "FlatBEff_60", "FlatBEff_70", "FlatBEff_77", "FlatBEff_85" ]
 
-  m_decor                   = "BTag_SF";
+  // Btag quality
+  m_operatingPt             = "FixedCutBEff_70";
+  m_operatingPtCDI          = "";
+  m_getScaleFactors         = false; // will only get scale factors for calibrated working points
+
+  m_decor                   = "BTag";
+  m_decorSF                 = ""; // gets set below after configure is called
 
 }
 
 
 EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 {
-  if(!getConfig().empty()){
+  if ( !getConfig().empty() ) {
+  
     Info("configure()", "Configuing BJetEfficiencyCorrector Interface. User configuration read from : %s ", getConfig().c_str());
 
     TEnv* config = new TEnv(getConfig(true).c_str());
@@ -95,12 +103,10 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     //
     // Btag quality
     //
-    m_btag_veryloose          = config->GetValue("BTagVeryLoose",   m_btag_veryloose);
-    m_btag_loose              = config->GetValue("BTagLoose",       m_btag_loose);
-    m_btag_medium             = config->GetValue("BTagMedium",      m_btag_medium);
-    m_btag_tight              = config->GetValue("BTagTight",       m_btag_tight);
+    m_operatingPt             = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
 
     m_decor                   = config->GetValue("DecorationName", m_decor.c_str());
+    m_decorSF                 = m_decor + "_SF";
 
     config->Print();
     Info("configure()", "BJetEfficiencyCorrector Interface succesfully configured! ");
@@ -108,23 +114,52 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     delete config;
   }
 
+  bool allOK(false);
+  m_getScaleFactors = false;
+  // not calibrated yet
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTagCalib2015#Pre_Recommendation_August_2015
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt4EMTopoJets
+  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
+  // these are the only calibrated working points
+  if (m_operatingPt == "FixedCutBEff_60") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_70") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_77") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_85") { allOK = true; m_getScaleFactors =  true; }
+  //
+  if (m_operatingPt == "FlatBEff_30") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_40") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_50") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_60") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_70") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_77") { allOK = true; }
+  if (m_operatingPt == "FlatBEff_85") { allOK = true; }
 
-  if( m_btag_veryloose ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 85 );  // 85%
-    m_decor          += "_BTagVeryLoose";  
-    m_outputSystName += "_BTagVeryLoose"; 
+  if( !allOK ) {
+    Error("configure()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
+    return EL::StatusCode::FAILURE;
   }
-  if( m_btag_loose     ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 77 );  // 77%
-    m_decor          += "_BTagLoose";      
-    m_outputSystName += "_BTagLoose";      
+
+  // make unique name
+  m_decor           += "_" + m_operatingPt;
+  m_decorSF         += "_" + m_operatingPt;
+  m_outputSystName  += "_" + m_operatingPt;
+
+  Info("configure()", "Decision Decoration Name     : %s", m_decor.c_str());
+  Info("configure()", "Scale Factor Decoration Name : %s", m_decorSF.c_str());
+
+
+  // now take this name and convert it to the cut value for the CDI file
+  // if using the fixed efficiency points
+  m_operatingPtCDI = m_operatingPt;
+  if( m_operatingPtCDI.find("FixedCutBEff") != std::string::npos) {
+    m_operatingPtCDI.erase(0,13); // remove FixedCutBEff_
+    std::cout << "Get OperatingPoint for CDI BTag Efficiency using eff = " << m_operatingPtCDI << std::endl;
+    m_operatingPtCDI = HelperFunctions::GetBTagMV2c20_CutStr( atoi( m_operatingPtCDI.c_str() ) );
   }
-  if( m_btag_medium    ) { m_operatingPt = HelperFunctions::GetBTagMV2c20_CutStr( 70 );  // 70%
-    m_decor          += "_BTagMedium";     
-    m_outputSystName += "_BTagMedium";     
-  }
-  if( m_btag_tight     ) { m_operatingPt =  HelperFunctions::GetBTagMV2c20_CutStr( 60 );   // 60%
-    m_decor          += "_BTagTight";      
-    m_outputSystName += "_BTagTight";      
-  }
+
 
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 
@@ -176,14 +211,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
-
-  if (!m_isMC){
-    Warning("initialize()", "Attempting to run BTagging Jet Scale Factors on data.  Turning tool off." );
-    return EL::StatusCode::SUCCESS;
-  }
-
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
@@ -192,28 +221,68 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  if ( !m_isMC ) {
+    Warning("initialize()", "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
+    m_getScaleFactors = false;
+  }
+
+  //
+  // initialize the BJetSelectionTool
+  //
+  std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
+  if ( asg::ToolStore::contains<BTaggingSelectionTool>( sel_tool_name ) ) {
+    m_BJetSelectTool = asg::ToolStore::get<BTaggingSelectionTool>( sel_tool_name );
+  } else {
+    m_BJetSelectTool = new BTaggingSelectionTool( sel_tool_name );
+  }
+  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
+
+  //
+  //  Configure the BJetSelectionTool
+  //
+  // A few which are not configurable as of yet....
+  // is there a reason to have this configurable here??...I think no (GF to self)
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",2.5),"Failed to set property:MaxEta");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",20000.),"Failed to set property:MinPt");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()),"Failed to set property:FlvTagCutDefinitionsFileName");
+  // configurable parameters
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",          m_taggerName),"Failed to set property: TaggerName");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property: JetAuthor");
+  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
+  Info("initialize()", "BTaggingSelectionTool initialized : %s ", m_BJetSelectTool->name().c_str() );
+
   //
   // initialize the BJetEfficiencyCorrectionTool
   //
   std::string sf_tool_name = std::string("BJetEfficiencyCorrectionTool_") + m_name;
-  m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
-  m_BJetEffSFTool->msg().setLevel( MSG::DEBUG ); // DEBUG, VERBOSE, INFO, ERROR
-
+  if ( asg::ToolStore::contains<BTaggingEfficiencyTool>( sf_tool_name ) ) {
+    m_BJetEffSFTool = asg::ToolStore::get<BTaggingEfficiencyTool>( sf_tool_name );
+  } else {
+    m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
+  }
+  m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
+   
   //
   //  Configure the BJetEfficiencyCorrectionTool
   //
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName),"Failed to set property");
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property");
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property");
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ScaleFactorFileName", m_corrFileName),"Failed to set property");
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("UseDevelopmentFile",  m_useDevelopmentFile), "Failed to set property");
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel), "Failed to set property");
-  RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->initialize(), "Failed to properly initialize the BJetEfficiencyCorrectionTool");
+  if( m_getScaleFactors ) {
+    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName),"Failed to set property");
+    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPtCDI),"Failed to set property");
+    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property");
+    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ScaleFactorFileName", m_corrFileName),"Failed to set property");
+    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("UseDevelopmentFile",  m_useDevelopmentFile), "Failed to set property");
+    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel), "Failed to set property");
+    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->initialize(), "Failed to properly initialize the BJetEfficiencyCorrectionTool");
+    Info("initialize()", "BTaggingEfficiencyTool initialized : %s ", m_BJetEffSFTool->name().c_str() );
+  } else {
+    Warning( "initialize()", "Input operating point is not calibrated - no SFs will be obtained");
+  }
 
   //
   // Print out
   //
-  if( !m_systName.empty() && m_debug ) {
+  if( !m_systName.empty() && m_debug && m_getScaleFactors ) {
     std::cout << "-----------------------------------------------------" << std::endl;
     const std::map<CP::SystematicVariation, std::vector<std::string> > allowed_variations = m_BJetEffSFTool->listSystematics();
     std::cout << "Allowed systematics variations for tool " << m_BJetEffSFTool->name() << ":" << std::endl;
@@ -227,34 +296,40 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
 
   // Get a list of affecting systematics
-  CP::SystematicSet affectSysts = m_BJetEffSFTool->affectingSystematics();
-  // Convert into a simple list
-  std::vector<CP::SystematicSet> affectSystList = CP::make_systematics_vector(affectSysts);
-  if( !m_systName.empty() && m_debug ) {
-    for ( const auto& syst_it : affectSystList ){
-      Info("initialize()"," tool can be affected by systematic: %s", (syst_it.name()).c_str());
+  if( m_getScaleFactors ) {
+    CP::SystematicSet affectSysts = m_BJetEffSFTool->affectingSystematics();
+    // Convert into a simple list
+    std::vector<CP::SystematicSet> affectSystList = CP::make_systematics_vector(affectSysts);
+    if( !m_systName.empty() && m_debug ) {
+      for ( const auto& syst_it : affectSystList ){
+        Info("initialize()"," tool can be affected by systematic: %s", (syst_it.name()).c_str());
+      }
     }
-  }
 
-  // Get a list of recommended systematics
-  CP::SystematicSet recSysts = m_BJetEffSFTool->recommendedSystematics();
-  // Convert into a simple list -- nominal is included already here!!
-  m_systList = CP::make_systematics_vector(recSysts);
-  if( !m_systName.empty() ) {
-    for ( const auto& syst_it : m_systList ){
-      Info("initialize()"," available recommended systematic: %s", (syst_it.name()).c_str());
+    // Get a list of recommended systematics
+    CP::SystematicSet recSysts = m_BJetEffSFTool->recommendedSystematics();
+    // Convert into a simple list -- nominal is included already here!!
+    m_systList = CP::make_systematics_vector(recSysts);
+    if( !m_systName.empty() ) {
+      for ( const auto& syst_it : m_systList ){
+        Info("initialize()"," available recommended systematic: %s", (syst_it.name()).c_str());
+      }
+    } else { // remove all but the nominal
+      std::vector<CP::SystematicSet>::iterator syst_it = m_systList.begin();
+      while( syst_it != m_systList.end() ) {
+        if( syst_it->name().empty() ) { syst_it++; }
+        syst_it = m_systList.erase(syst_it);
+      }
     }
-  } else { // remove all but the nominal
-    std::vector<CP::SystematicSet>::iterator syst_it = m_systList.begin();
-    while( syst_it != m_systList.end() ) {
-      if( syst_it->name().empty() ) { syst_it++; }
-      syst_it = m_systList.erase(syst_it);
+
+    if( m_systName.empty() ){
+      Info("initialize()"," Running w/ nominal configuration!");
     }
-  }
 
-
-  if( m_systName.empty() ){
-    Info("initialize()"," Running w/ nominal configuration!");
+  } else {
+    // need the nominal to get the decisions
+    CP::SystematicSet recSysts; // empty
+    m_systList = CP::make_systematics_vector(recSysts); // comes back with 1 entry for nominal
   }
 
   if( m_runAllSyst ){
@@ -270,10 +345,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
 
-  if (!m_isMC)
-    return EL::StatusCode::SUCCESS;
-
-  if(m_debug) Info("execute()", "Applying BJet Efficiency Correction... ");
+  if(m_debug) Info("execute()", "Applying BJet Cuts and Efficiency Correction (when applicable...) ");
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* correctedJets(nullptr);
@@ -308,12 +380,15 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     //
     // configure tool with syst variation
     //
-    if (m_BJetEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
-      Error("initialize()", "Failed to configure BJetEfficiencyCorrections for systematic %s.", syst_it.name().c_str());
-      return EL::StatusCode::FAILURE;
+    if (m_getScaleFactors ) {
+      if (m_BJetEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+        Error("initialize()", "Failed to configure BJetEfficiencyCorrections for systematic %s.", syst_it.name().c_str());
+        return EL::StatusCode::FAILURE;
+      }
+      if(m_debug) Info("execute()", "Successfully applied systematic: %s.", syst_it.name().c_str());
     }
-    if(m_debug) Info("execute()", "Successfully applied systematic: %s.", syst_it.name().c_str());
 
+    bool tagged(false);
     //
     // and now apply data-driven efficiency and efficiency SF!
     //
@@ -324,10 +399,28 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       }
 
       //
+      // Add decorator for decision
+      // 
+      SG::AuxElement::Decorator< int > isBTag( m_decor );
+      if( !isBTag.isAvailable( *jet_itr ) ) {
+        if( m_BJetSelectTool->accept( *jet_itr ) ) { 
+          isBTag( *jet_itr ) = 1; 
+          tagged = true;
+        }
+        else { 
+          isBTag( *jet_itr ) = 0; 
+          tagged = false;
+        }
+      }
+
+      // if only decorator with decision because OP is not calibrated, go to next jet
+      if(!m_getScaleFactors) { continue; }
+
+      //
       //  If btagging vector doesnt exist create it
       //
-      SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decor );
-      if(!sfVec.isAvailable(*jet_itr)){
+      SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decorSF );
+      if(!sfVec.isAvailable(*jet_itr)) {
         sfVec(*jet_itr) = std::vector<float>();
       }
 
@@ -337,7 +430,14 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       float SF(0.0);
       if ( fabs(jet_itr->eta()) < 2.5 ) {
 
-        CP::CorrectionCode BJetEffCode = m_BJetEffSFTool->getScaleFactor( *jet_itr, SF );
+        CP::CorrectionCode BJetEffCode;
+        // if passes cut take the efficiency scale factor
+        // if failed cut take the inefficiency scale factor
+        if( tagged ) {
+          BJetEffCode = m_BJetEffSFTool->getScaleFactor( *jet_itr, SF );
+        } else {
+          BJetEffCode = m_BJetEffSFTool->getInefficiencyScaleFactor( *jet_itr, SF );
+        }
         if (BJetEffCode == CP::CorrectionCode::Error){
           Warning( "execute()", "Error in getEfficiencyScaleFactor");
           SF = -2;
@@ -348,7 +448,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       } else {
         SF = -1;
       }
-      if ( m_debug ) { Info( "execute()", "\t efficiency SF = %g", SF ); }
+      if ( m_debug ) { Info( "execute()", "\t SF = %g", SF ); }
 
       //
       // Add it to vector

@@ -67,6 +67,7 @@ namespace HelperClasses {
     bool m_truth;
     bool m_caloClus;
     bool m_muonSF;
+    bool m_electronSF;
     void initialize();
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
@@ -105,6 +106,7 @@ namespace HelperClasses {
     bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
+    bool m_effSF;
     void initialize();
     ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
@@ -128,13 +130,11 @@ namespace HelperClasses {
     bool m_constituent;
     bool m_constituentAll;
     bool m_flavTag;
-    bool m_sfFTagVeryLoose;
-    bool m_sfFTagLoose;
-    bool m_sfFTagMedium;
-    bool m_sfFTagTight;
     bool m_area;
     int  m_numLeadingJets;
     void initialize();
+    std::vector<int> m_sfFTagFix;
+    std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 

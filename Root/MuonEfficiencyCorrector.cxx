@@ -73,12 +73,12 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
 
   // Systematics stuff
   m_inputAlgoSystNames         = "";
-  m_systNameEff		       = "";
-  m_systNameTrig	       = "";
+  m_systNameEff		             = "";
+  m_systNameTrig	             = "";
   m_outputSystNamesEff         = "MuonEfficiencyCorrector_EffSyst";
   m_outputSystNamesTrig        = "MuonEfficiencyCorrector_TrigSyst";
-  m_systValEff 		       = 0.;
-  m_systValTrig 	       = 0.;
+  m_systValEff 		             = 0.;
+  m_systValTrig 	             = 0.;
 
 }
 
@@ -109,12 +109,12 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
 
     // Systematics stuff
     m_inputAlgoSystNames         = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_systNameEff		 = config->GetValue("SystNameEff" , m_systNameEff.c_str());
-    m_systNameTrig		 = config->GetValue("SystNameTrig" , m_systNameTrig.c_str());
+    m_systNameEff		             = config->GetValue("SystNameEff" , m_systNameEff.c_str());
+    m_systNameTrig		           = config->GetValue("SystNameTrig" , m_systNameTrig.c_str());
     m_outputSystNamesEff         = config->GetValue("OutputSystNamesEff",  m_outputSystNamesEff.c_str());
     m_outputSystNamesTrig        = config->GetValue("OutputSystNamesTrig", m_outputSystNamesTrig.c_str());
-    m_systValEff 		 = config->GetValue("SystValEff" , m_systValEff);
-    m_systValTrig 		 = config->GetValue("SystValTrig" , m_systValTrig);
+    m_systValEff 		             = config->GetValue("SystValEff" , m_systValEff);
+    m_systValTrig 		           = config->GetValue("SystValTrig" , m_systValTrig);
     m_runAllSystEff              = (m_systNameEff.find("All") != std::string::npos);
     m_runAllSystTrig             = (m_systNameTrig.find("All") != std::string::npos);
 

@@ -16,12 +16,19 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
+// ROOT include(s):
+#include "TH1D.h"
+
 class OverlapRemover : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
+  
   // configuration variables
+  
+  bool m_useCutFlow;            
+
   bool     m_decorateSelectedObjects;  // decorate selected objects? default passSel
   bool     m_createSelectedContainers; // fill using SG::VIEW_ELEMENTS to be light weight
   bool     m_useSelected; // pass only object passing selection to O.R. tool
@@ -83,6 +90,17 @@ private:
     TAUSYST = 5,
   };
 
+  /* object-level cutflow */
+  
+  TH1D* m_el_cutflowHist_1;    //!
+  TH1D* m_mu_cutflowHist_1;    //!
+  TH1D* m_jet_cutflowHist_1;   //!
+
+  int m_el_cutflow_OR_cut;     //!
+  int m_mu_cutflow_OR_cut;     //!
+  int m_jet_cutflow_OR_cut;    //!
+  
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -107,7 +125,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  virtual EL::StatusCode printOverlapInfo (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
+  virtual EL::StatusCode fillObjectCutflow (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
 
   virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
 				    const xAOD::PhotonContainer* inPhotons,	const xAOD::TauJetContainer* inTaus,
