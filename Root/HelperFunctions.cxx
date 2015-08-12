@@ -383,9 +383,11 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
 
   // Add an empty CP::SystematicVariation at the top of output list to account for the nominal case 
   //
-  outSystList.insert( outSystList.begin(), CP::SystematicSet() );
-  const CP::SystematicVariation nullVar = CP::SystematicVariation(""); 
-  outSystList.back().insert(nullVar);
+  if ( systName.find("All") != std::string::npos ) {
+    outSystList.insert( outSystList.begin(), CP::SystematicSet() );
+    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); 
+    outSystList.back().insert(nullVar);
+  }
 
   return outSystList;
 
