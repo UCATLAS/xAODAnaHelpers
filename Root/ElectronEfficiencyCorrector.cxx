@@ -123,12 +123,6 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     delete config; config = nullptr;
   }
 
-  // these flags get set if you want to run on ALL systematics
-  //
-  m_runAllSystPID	    = (m_systNamePID.find("All")  != std::string::npos);
-  m_runAllSystReco	    = (m_systNameReco.find("All") != std::string::npos);
-  m_runAllSystTrig	    = (m_systNameTrig.find("All") != std::string::npos);
-
   if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
@@ -250,21 +244,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // Use HelperFunctions::getListofSystematics() for this!
   //
   const CP::SystematicSet recSystsPID = m_asgElEffCorrTool_elSF_PID->recommendedSystematics();
-  m_systListPID = HelperFunctions::getListofSystematics( recSystsPID, m_systNamePID, m_systValPID );
+  m_systListPID = HelperFunctions::getListofSystematics( recSystsPID, m_systNamePID, m_systValPID, m_debug );
   
-  // NB: we still need the nominal (i.e., empty string) when:
-  //     not running systematics at all
-  //     running systematics, and running them all
-  // --> add it to the front!
-  //
-  if ( m_systListPID.empty() || m_runAllSystPID ) {
-  
-    m_systListPID.insert( m_systListPID.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
-    m_systListPID.back().insert(nullVar);
-  
-  }  
-
   Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool PID efficiency systematic:");
   for ( const auto& syst_it : m_systListPID ) {
     if ( m_systNamePID.empty() ) {
@@ -306,20 +287,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // Use HelperFunctions::getListofSystematics() for this!
   //
   const CP::SystematicSet recSystsReco = m_asgElEffCorrTool_elSF_Reco->recommendedSystematics();
-  m_systListReco = HelperFunctions::getListofSystematics( recSystsReco, m_systNameReco, m_systValReco );
-  
-  // NB: we still need the nominal (i.e., empty string) when:
-  //     not running systematics at all
-  //     running systematics, and running them all
-  // --> add it to the front!
-  //
-  if ( m_systListReco.empty() || m_runAllSystReco ) {
-  
-    m_systListReco.insert( m_systListReco.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
-    m_systListReco.back().insert(nullVar);
-  
-  }  
+  m_systListReco = HelperFunctions::getListofSystematics( recSystsReco, m_systNameReco, m_systValReco, m_debug );
 
   Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool reco efficiency systematic:");
   for ( const auto& syst_it : m_systListReco ) {
@@ -362,21 +330,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // Use HelperFunctions::getListofSystematics() for this!
   //
   const CP::SystematicSet recSystsTrig = m_asgElEffCorrTool_elSF_Trig->recommendedSystematics();
-  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig );
+  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
   
-  // NB: we still need the nominal (i.e., empty string) when:
-  //     not running systematics at all
-  //     running systematics, and running them all
-  // --> add it to the front!
-  //
-  if ( m_systListTrig.empty() || m_runAllSystTrig ) {
-  
-    m_systListTrig.insert( m_systListTrig.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
-    m_systListTrig.back().insert(nullVar);
-  
-  }  
-
   Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool Trig efficiency systematic:");
   for ( const auto& syst_it : m_systListTrig ) {
     if ( m_systNameTrig.empty() ) {
@@ -401,14 +356,14 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
+  m_numEvent++;
+  
   if ( !m_isMC ) {
-    if ( m_debug ) { Info("execute()", "Event is Data! Do not apply any electron Reco/PID/Trigger efficiency corrections... "); }
+    if ( m_numEvent == 1 ) { Info("execute()", "Sample is Data! Do not apply any Electron Efficiency correction... "); }
     return EL::StatusCode::SUCCESS;
   }
 
   if ( m_debug ) { Info("execute()", "Applying Electron Efficiency Correction... "); }
-
-  m_numEvent++;
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");

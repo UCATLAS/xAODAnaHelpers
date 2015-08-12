@@ -306,50 +306,87 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
 
 // Get the subset of systematics to consider
 // can also return full set if systName = "All"
-std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet recSysts,
-    std::string systName,
-    float systVal ) {
-  std::vector< CP::SystematicSet > systList;
-  // loop over recommended systematics
-  for( const auto syst : recSysts ) {
-    Info("HelperFunctions::getListofSystematics()","  %s", (syst.basename()).c_str());
-    if( systName == syst.basename() ) {
-      Info("HelperFunctions::getListofSystematics()","Found match! Adding systematic %s", syst.basename().c_str());
+//
+std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug ) {
+  
+  std::vector< CP::SystematicSet > outSystList;
+   
+  // loop over input set
+  //
+  for ( const auto syst : inSysts ) {
+  
+    if ( debug ) { Info("HelperFunctions::getListofSystematics()","  %s", (syst.name()).c_str()); }
+    
+    // 1. 
+    // A match with input systName is found in the list:
+    // add that systematic only to the output list
+    //
+    if ( systName == syst.basename() ) {
+      
+      if ( debug ) { Info("HelperFunctions::getListofSystematics()","Found match! Adding systematic %s", syst.name().c_str()); }
+      
       // continuous systematics - can choose at what sigma to evaluate
-      if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
-        systList.push_back(CP::SystematicSet());
-        if ( systVal == 0 ) {
+      //
+      if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
+        
+	outSystList.push_back(CP::SystematicSet());
+        
+	if ( systVal == 0 ) {
           Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
           RCU_THROW_MSG("Failure");
         }
-        systList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
-      }
+	
+        outSystList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
+      
+      } else {
       // not a continuous system
-      else {
-        systList.push_back(CP::SystematicSet());
-        systList.back().insert(syst);
+      
+        outSystList.push_back(CP::SystematicSet());
+        outSystList.back().insert(syst);
+      
       }
-    } // found match!
-    else if ( systName == "All" ) {
-      Info("HelperFunctions::initialize()","Adding systematic %s", syst.basename().c_str());
+    } 
+    // 2.
+    // input systName contains "All":
+    // add all systematics to the output list
+    //
+    else if ( systName.find("All") != std::string::npos ) {
+      
+      if ( debug ) { Info("HelperFunctions::getListofSystematics()","Adding systematic %s", syst.name().c_str()); }
+      
       // continuous systematics - can choose at what sigma to evaluate
       // add +1 and -1 for when running all
-      if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
-        if ( systVal == 0 ) {
+      //
+      if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
+        
+	if ( systVal == 0 ) {
           Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
           RCU_THROW_MSG("Failure");
         }
-        systList.push_back(CP::SystematicSet());
-        systList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
-        systList.push_back(CP::SystematicSet());
-        systList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
-      }
+        
+	outSystList.push_back(CP::SystematicSet());
+        outSystList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
+        outSystList.push_back(CP::SystematicSet());
+        outSystList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
+      
+      } else {
       // not a continuous systematic
-      else {
-        systList.push_back(CP::SystematicSet());
-        systList.back().insert(syst);
+
+        outSystList.push_back(CP::SystematicSet());
+        outSystList.back().insert(syst);
+
       }
-    } // running all
+
+    } 
+    
   } // loop over recommended systematics
-  return systList;
+
+  // Add an empty CP::SystematicVariation at the top of output list to account for the nominal case 
+  //
+  outSystList.insert( outSystList.begin(), CP::SystematicSet() );
+  const CP::SystematicVariation nullVar = CP::SystematicVariation(""); 
+  outSystList.back().insert(nullVar);
+
+  return outSystList;
+
 }

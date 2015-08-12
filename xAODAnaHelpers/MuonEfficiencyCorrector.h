@@ -46,10 +46,7 @@ public:
   float         m_systValTrig;
   std::string   m_systNameReco;
   std::string   m_systNameIso;
-  std::string   m_systNameTrig;
-  bool          m_runAllSystReco;
-  bool          m_runAllSystIso;
-  bool          m_runAllSystTrig;   
+  std::string   m_systNameTrig;  
   std::string   m_outputSystNamesReco;
   std::string   m_outputSystNamesIso;
   std::string   m_outputSystNamesTrig;

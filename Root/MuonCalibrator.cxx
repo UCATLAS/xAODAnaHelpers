@@ -65,7 +65,6 @@ MuonCalibrator :: MuonCalibrator () :
   // Systematics stuff
   m_inputAlgoSystNames      = "";
   m_outputAlgoSystNames     = "MuonCalibrator_Syst";
-  m_runSysts                = false; // gets set later if syst applies to this tool
   m_systName		    = "";
   m_systVal 		    = 0.;
 
@@ -91,11 +90,8 @@ EL::StatusCode  MuonCalibrator :: configure ()
     // Systematics stuff
     m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
     m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
-    m_runSysts                = false; // gets set later is syst applies to this tool
     m_systName		      = config->GetValue("SystName" , m_systName.c_str());
     m_systVal 		      = config->GetValue("SystVal" , m_systVal);
-
-    m_sort                    = config->GetValue("Sort",  m_sort);
 
     config->Print();
 
@@ -103,10 +99,6 @@ EL::StatusCode  MuonCalibrator :: configure ()
 
     delete config; config = nullptr;
   }
-  
-  // this flag gets set if you want to run on ALL systematics
-  //
-  m_runAllSyst              = (m_systName.find("All") != std::string::npos);
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
   // shallow copies are made with this output container name
@@ -226,31 +218,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
-  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal );
-
-  if ( !m_systList.empty() ) { m_runSysts = true; }
-
-  // ***************************************************************
-  // *
-  // * NB: we need to manually add an "empty-string" syst variation 
-  // *    (i.e., case "baseline") at top of vector.
-  // *    Whilst looping on available systematics, the empty string 
-  // *    will be regarded as baseline case.
-  // *
-  // ***************************************************************
-
-  // NB: we still need the nominal (i.e., empty string) when:
-  //     not running systematics at all
-  //     running systematics, and running them all
-  // --> add it to the front!
-  //
-  if ( m_systList.empty() || m_runAllSyst ) {
-  
-    m_systList.insert( m_systList.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
-    m_systList.back().insert(nullVar);
-  
-  }
+  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
   Info("initialize()","Will be using MuonCalibrationAndSmearingTool systematic:");
   for ( const auto& syst_it : m_systList ) {
@@ -306,7 +274,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_runSysts ) {
+    if ( !syst_it.name().empty() ) {
       if ( m_muonCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
         Error("execute()", "Failed to configure MuonCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
         return EL::StatusCode::FAILURE;

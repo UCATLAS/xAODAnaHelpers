@@ -19,10 +19,13 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 
 // CP interface includes
+#include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicSet.h"
+#include "PATInterfaces/SystematicsUtil.h"
 #include "PATInterfaces/SystematicVariation.h"
+#include "PATInterfaces/ISystematicsTool.h"
 
-// root includes
+// ROOT includes
 #include "TTree.h"
 #include "TBranch.h"
 #include "TFile.h"
@@ -110,8 +113,7 @@ namespace HelperFunctions {
   // miscellaneous
   bool sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB);
 
-  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet recSysts,
-      std::string systName, float systVal );
+  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug = false );
 
   /* ******************
   / *

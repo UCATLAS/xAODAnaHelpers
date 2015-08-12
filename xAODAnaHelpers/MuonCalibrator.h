@@ -23,9 +23,9 @@ public:
   std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
   			             // upstream algo (e.g., the SC containers with calibration systematics)
   std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
-  				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
-  bool m_runSysts;
-  bool m_runAllSyst;
+  				     // algo (these will be the m_inputAlgoSystNames of the algo downstream)
+  float       m_systVal;
+  std::string m_systName;
 
 private:
   int m_numEvent;         //!

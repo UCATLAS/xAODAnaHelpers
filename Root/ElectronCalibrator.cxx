@@ -70,9 +70,9 @@ ElectronCalibrator :: ElectronCalibrator () :
   m_sort                    = true;
 
   // Systematics stuff
+  //
   m_inputAlgoSystNames      = "";
   m_outputAlgoSystNames     = "ElectronCalibrator_Syst";
-  m_runSysts                = false; // gets set later is syst applies to this tool
   m_systName		    = "";
   m_systVal 		    = 0.;
 
@@ -97,6 +97,8 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
 
+    m_sort                    = config->GetValue("Sort", m_sort);
+
    // Systematics stuff
     m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
     m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
@@ -106,18 +108,12 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     m_esModel		      = config->GetValue("ESModel" , m_esModel.c_str() );
     m_decorrelationModel      = config->GetValue("DecorrelationModel" , m_decorrelationModel.c_str() );
 
-    m_sort                    = config->GetValue("Sort", m_sort);
-
     config->Print();
 
     Info("configure()", "ElectronCalibrator Interface succesfully configured! ");
 
     delete config; config = nullptr;
   }
-
-  // this flag gets set if you want to run on ALL systematics
-  //
-  m_runAllSyst              = (m_systName.find("All") != std::string::npos);
 
   if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
@@ -232,31 +228,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
-  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal );
-
-  if ( !m_systList.empty() ) { m_runSysts = true; }
-
-  // ***************************************************************
-  // *
-  // * NB: we need to manually add an "empty-string" syst variation 
-  // *    (i.e., case "baseline") at top of vector.
-  // *    Whilst looping on available systematics, the empty string 
-  // *    will be regarded as baseline case.
-  // *
-  // ***************************************************************
-
-  // NB: we still need the nominal (i.e., empty string) when:
-  //     not running systematics at all
-  //     running systematics, and running them all
-  // --> add it to the front!
-  //
-  if ( m_systList.empty() || m_runAllSyst ) {
-    
-    m_systList.insert( m_systList.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
-    m_systList.back().insert(nullVar);
-  
-  }
+  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
   Info("initialize()","Will be using EgammaCalibrationAndSmearingTool systematic:");
   for ( const auto& syst_it : m_systList ) {
@@ -316,7 +288,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_runSysts ) {
+    if ( !syst_it.name().empty() ) {
       if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
         Error("initialize()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
         return EL::StatusCode::FAILURE;
