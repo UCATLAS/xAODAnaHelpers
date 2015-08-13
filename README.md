@@ -22,13 +22,11 @@ The xAOD analysis framework, born out of ProofAna...or not.
 If you need to bump up the version of the AnalysisBase being used, please make sure you update the [travis.yml](.travis.yml) file first.
 
 ### Current
-Please try to keep changes to a minimum until after EPS, July 23rd 2015.
+Current AB is **Base,2.3.23**
 
-Current AB is **Base,2.3.21**
-
-The 00-03-08 tag is for use with **Base,2.3.18**.
 
 ### Previous
+The 00-03-08 tag is for use with **Base,2.3.18**.
 
 The 00-03-04 tag works well with **Base,2.3.14, Base,2.3.15**. After checking out the package please execute a helper script to get any additional packages needed.
 These packages are needed to temporarily solve issues that will be resolved in up coming releases.
