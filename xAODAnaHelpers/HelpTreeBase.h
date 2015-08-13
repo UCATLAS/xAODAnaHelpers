@@ -461,7 +461,12 @@ protected:
   std::vector<int>  m_muon_isTrigMatched;
 
   // isolation
-  std::vector<int>   m_muon_isIsolated;
+  std::vector<int>   m_muon_isIsolated_LooseTrackOnly;
+  std::vector<int>   m_muon_isIsolated_Loose;
+  std::vector<int>   m_muon_isIsolated_Tight;
+  std::vector<int>   m_muon_isIsolated_Gradient;
+  std::vector<int>   m_muon_isIsolated_GradientLoose;
+  std::vector<int>   m_muon_isIsolated_UserDefined;
   std::vector<float> m_muon_ptcone20;
   std::vector<float> m_muon_ptcone30;
   std::vector<float> m_muon_ptcone40;
@@ -518,7 +523,12 @@ protected:
   std::vector<std::string> m_el_listTrigChains;
   
   // isolation
-  std::vector<int>   m_el_isIsolated;
+  std::vector<int>   m_el_isIsolated_LooseTrackOnly;
+  std::vector<int>   m_el_isIsolated_Loose;
+  std::vector<int>   m_el_isIsolated_Tight;
+  std::vector<int>   m_el_isIsolated_Gradient;
+  std::vector<int>   m_el_isIsolated_GradientLoose;
+  std::vector<int>   m_el_isIsolated_UserDefined;
   std::vector<float> m_el_etcone20;
   std::vector<float> m_el_ptcone20;
   std::vector<float> m_el_ptcone30;
