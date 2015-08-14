@@ -46,7 +46,9 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  bool m_isMC;        //!
+  bool m_isMC;            //!
+  
+  std::string m_PID_WP;   //!
 
   std::vector<CP::SystematicSet> m_systListPID; //!
   std::vector<CP::SystematicSet> m_systListReco; //!

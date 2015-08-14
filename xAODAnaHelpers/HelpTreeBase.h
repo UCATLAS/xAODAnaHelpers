@@ -485,7 +485,12 @@ protected:
 
   // scale factors
   std::vector< std::vector< double > > m_muon_RecoEff_SF;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_LooseTrackOnly;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_Loose;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_Tight;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_Gradient;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_GradientLoose;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_UserDefined;
 
   // track parameters
   std::vector<float> m_muon_trkd0;
@@ -551,7 +556,10 @@ protected:
 
   // scale factors
   std::vector< std::vector< double > > m_el_RecoEff_SF;
-  std::vector< std::vector< double > > m_el_PIDEff_SF;
+  std::vector< std::vector< double > > m_el_PIDEff_SF_LHVeryLoose;
+  std::vector< std::vector< double > > m_el_PIDEff_SF_LHLoose;
+  std::vector< std::vector< double > > m_el_PIDEff_SF_LHMedium;
+  std::vector< std::vector< double > > m_el_PIDEff_SF_LHTight;
 
   // track parameters
   std::vector<float> m_el_trkd0;

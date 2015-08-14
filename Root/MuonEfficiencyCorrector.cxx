@@ -284,11 +284,16 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   }  
 
   //
-  // Add an "Iso" suffix to the WP
+  // Add an "Iso" suffix to the WP (required for tool configuration)
   //
-  m_WorkingPointIso += "Iso";
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->setProperty("WorkingPoint", m_WorkingPointIso ), "Failed to set Working Point property of MuonEfficiencyScaleFactors for iso efficiency SF");
+  std::string tool_WP = m_WorkingPointIso + "Iso";
+  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->setProperty("WorkingPoint", tool_WP ), "Failed to set Working Point property of MuonEfficiencyScaleFactors for iso efficiency SF");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->initialize(), "Failed to properly initialize MuonEfficiencyScaleFactors for iso efficiency SF");
+
+  //
+  //  Add the chosen WP to the string labelling the vector<SF> decoration 
+  //   
+  m_outputSystNamesIso = m_outputSystNamesIso + "_" + m_WorkingPointIso;
 
   if ( m_debug ) {
   
@@ -617,12 +622,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
+  
   for ( const auto& syst_it : m_systListIso ) {
 
-    // Create the name of the SF weight to be Isorded
-    //   template:  SYSNAME_MuIsoEff_SF
+    // Create the name of the SF weight to be recorded
+    //   template:  SYSNAME_MuIsoEff_SF_WP
     //
-    std::string sfName = "MuIsoEff_SF";
+    std::string sfName = "MuIsoEff_SF_" + m_WorkingPointIso;
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
        sfName.insert( 0, prepend );
@@ -639,7 +645,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     if ( m_debug ) { Info("executeSF()", "Successfully applied systematic: %s", syst_it.name().c_str()); }
 
     // and now apply Iso efficiency SF!
-    //
+    //  
     unsigned int idx(0);
     for ( auto mu_itr : *(inputMuons) ) {
        
@@ -684,6 +690,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
 	 Info( "executeSF()", "Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
+	 Info( "executeSF()", " ");
+	 Info( "executeSF()", "Isolation SF decoration: %s", m_outputSystNamesIso.c_str() );
 	 Info( "executeSF()", " ");	
          Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
          Info( "executeSF()", " ");
