@@ -1,11 +1,10 @@
-/*******************************************
+/*****************************************
  *
  * Interface to CP Muon selection tool(s).
  *
  * M. Milesi (marco.milesi@cern.ch)
  *
- *
- ******************************************/
+ *****************************************/
 
 // c++ include(s):
 #include <iostream>
@@ -63,34 +62,38 @@ MuonSelector :: MuonSelector () :
 
   Info("MuonSelector()", "Calling constructor");
 
-  // read debug flag from .config file
   m_debug                   = false;
   m_useCutFlow              = true;
 
   // checks if the algorithm has been used already
+  //
   m_isUsedBefore            = false;
 
   // input container to be read from TEvent or TStore
+  //
   m_inContainerName         = "";
 
   // Systematics stuff
+  //
   m_inputAlgoSystNames      = "";
   m_outputAlgoSystNames     = "MuonSelector_Syst";
 
-
   // decorate selected objects that pass the cuts
+  //
   m_decorateSelectedObjects = true;
   // additional functionality : create output container of selected objects
-  //                            using the SG::View_Element option
+  //                            using the SG::VIEW_ELEMENTS option
   //                            decorrating and output container should not be mutually exclusive
   m_createSelectedContainer = false;
-  // if requested, a new container is made using the SG::View_Element option
+  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
   m_outContainerName        = "";
 
   // if only want to look at a subset of object
+  //
   m_nToProcess              = -1;
 
   // configurable cuts
+  //
   m_muonType                = "";
   m_pass_max                = -1;
   m_pass_min                = -1;
@@ -102,6 +105,7 @@ MuonSelector :: MuonSelector () :
   m_z0sintheta_max          = 1e8;
 
   // isolation stuff
+  //
   m_doIsolation             = false;
   m_IsoWP		    = "Tight";
   m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
@@ -110,6 +114,7 @@ MuonSelector :: MuonSelector () :
   m_TrackBasedIsoType       = "ptvarcone30";
 
   // trigger matching stuff
+  //
   m_singleMuTrigChains      = "";
   m_diMuTrigChains          = "";
   m_minDeltaR               = 0.1;
@@ -130,31 +135,20 @@ EL::StatusCode  MuonSelector :: configure ()
 
     TEnv* config = new TEnv(getConfig(true).c_str());
 
-    // read debug flag from .config file
     m_debug                   = config->GetValue("Debug" ,      m_debug);
     m_useCutFlow              = config->GetValue("UseCutFlow",  m_useCutFlow);
 
-    // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
-    // Systematics stuff
     m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
     m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
 
-
-    // decorate selected objects that pass the cuts
     m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
-    // additional functionality : create output container of selected objects
-    //                            using the SG::View_Element option
-    //                            decorrating and output container should not be mutually exclusive
     m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
-    // if requested, a new container is made using the SG::View_Element option
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
 
-    // if only want to look at a subset of object
     m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
 
-    // configurable cuts
     std::string muonQuality   = config->GetValue("MuonQuality", "Medium");
     HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
     m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(muonQuality) );
@@ -168,7 +162,6 @@ EL::StatusCode  MuonSelector :: configure ()
     m_d0sig_max     	      = config->GetValue("d0sigMax", m_d0sig_max);
     m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
 
-    // isolation 
     m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
     m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_IsoWP.c_str());
     m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  
@@ -176,7 +169,6 @@ EL::StatusCode  MuonSelector :: configure ()
     m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
     m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
 
-    // trigger matching 
     m_singleMuTrigChains      = config->GetValue("SingleMuTrigChain" , m_singleMuTrigChains.c_str() );
     m_diMuTrigChains	      = config->GetValue("DiMuTrigChain"     , m_diMuTrigChains.c_str() );
     m_minDeltaR 	      = config->GetValue("MinDeltaR"         , m_minDeltaR );
@@ -310,7 +302,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
   Info("initialize()", "Initializing MuonSelector Interface... ");
 
-  // let's see if the algorithm has been already used before:
+  // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
   //
   // This is the case when the selector algorithm is used for 
@@ -381,35 +373,35 @@ EL::StatusCode MuonSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
   
-  // ****************************
+  // ********************************
   //
-  // Initialise MuonSelectionTool
+  // Initialise CP::MuonSelectionTool
   //
-  // ****************************
+  // ********************************
   
   if ( asg::ToolStore::contains<CP::MuonSelectionTool>("MuonSelectionTool") ) {
     m_muonSelectionTool = asg::ToolStore::get<CP::MuonSelectionTool>("MuonSelectionTool");
   } else {
-    m_muonSelectionTool = new CP::MuonSelectionTool( "MuonSelectionTool" );
+    m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelectionTool");
   }
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
-  // set eta and quality requirements in order to accept the muon - ID tracks required by default
+  // Set eta and quality requirements in order to accept the muon - ID tracks required by default
   //
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" );
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
  
-  // *************************
+  // *************************************
   //
-  // Initialise isolation tool
+  // Initialise CP::IsolationSelectionTool
   //
-  // *************************
+  // *************************************
 
   if ( asg::ToolStore::contains<CP::IsolationSelectionTool>("IsolationSelectionTool_Muons") ) {
     m_IsolationSelectionTool = asg::ToolStore::get<CP::IsolationSelectionTool>("IsolationSelectionTool_Muons");
   } else {
-    m_IsolationSelectionTool = new CP::IsolationSelectionTool( "IsolationSelectionTool_Muons" );
+    m_IsolationSelectionTool = new CP::IsolationSelectionTool("IsolationSelectionTool_Muons");
   }
   m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
   
@@ -429,16 +421,15 @@ EL::StatusCode MuonSelector :: initialize ()
 
   RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
 
-  // ********************************
+  // **************************************
   //
-  // Initialise trigger matching tool
+  // Initialise Trig::TrigMuonMatching tool
   //
-  // ********************************
+  // **************************************
   
   // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
   //     do not initialise if there are no input trigger chains
   //
-
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) && asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
 
     m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
@@ -451,17 +442,15 @@ EL::StatusCode MuonSelector :: initialize ()
     } else {
       m_trigMuonMatchTool = new Trig::TrigMuonMatching("TrigMuonMatchingTool");
     }
-    
-    RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
+    RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
     RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-    std::cout << " Initialized : TrigDecisionTool " << m_trigMuonMatchTool->name() << std::endl;
 
   } else {
     Warning("initialize()", "\n***********************************************************\n Will not perform any muon trigger matching at this stage b/c : \n ");
     Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
     Warning("initialize()", "\t AND/OR" );
     Warning("initialize()", "\t -) input HLT trigger chain list is empty \n" );
-    Warning("initialize()", "\n*********************************************************** \n If you want to apply the matching now, please double check that!");
+    Warning("initialize()", "\n*********************************************************** \n If you didn't want to apply the matching now, it's all good!");
   }
 
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );
@@ -478,11 +467,11 @@ EL::StatusCode MuonSelector :: execute ()
 
   if ( m_debug ) { Info("execute()", "Applying Muon Selection..." ); }
 
-  // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
   // MC event weight
+  //
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
@@ -494,30 +483,37 @@ EL::StatusCode MuonSelector :: execute ()
   m_numEvent++;
 
   // did any collection pass the cuts?
+  //
   bool eventPass(false);
   bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal
   const xAOD::MuonContainer* inMuons(nullptr);
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
+  //
   if ( m_inputAlgoSystNames.empty() ) {
 
     // this will be the collection processed - no matter what!!
+    //
     RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
     // create output container (if requested)
+    //
     ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
     if ( m_createSelectedContainer ) { selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS); }
 
     // find the selected muons, and return if event passes object selection
+    //
     eventPass = executeSelection( inMuons, mcEvtWeight, countPass, selectedMuons );
 
     if ( m_createSelectedContainer ) {
       if ( eventPass ) {
         // add ConstDataVector to TStore
+	//
         RETURN_CHECK( "MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName ), "Failed to store const data container");
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
+	//
         delete selectedMuons; selectedMuons = nullptr;
       }
     }
@@ -525,15 +521,18 @@ EL::StatusCode MuonSelector :: execute ()
   } else { // get the list of systematics to run over
 
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
+    //
     std::vector< std::string >* systNames(nullptr);
     RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
+    //
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     if ( m_debug ) { Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) ); }
 
     // loop over systematic sets
+    //
     bool eventPassThisSyst(false);
     for ( auto systName : *systNames ) {
 
@@ -542,20 +541,24 @@ EL::StatusCode MuonSelector :: execute ()
       RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, m_verbose) ,"");
 
       // create output container (if requested) - one for each systematic
+      //
       ConstDataVector<xAOD::MuonContainer>* selectedMuons(nullptr);
       if ( m_createSelectedContainer ) { selectedMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS); }
 
       // find the selected muons, and return if event passes object selection
+      //
       eventPassThisSyst = executeSelection( inMuons, mcEvtWeight, countPass, selectedMuons );
 
       if ( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
 
       if ( eventPassThisSyst ) {
 	// save the string of syst set under question if event is passing the selection
+	//
 	vecOutContainerNames->push_back( systName );
       }
 
       // if for at least one syst set the event passes selection, this will remain true!
+      //
       eventPass = ( eventPass || eventPassThisSyst );
 
       if ( m_debug ) { Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
@@ -563,6 +566,7 @@ EL::StatusCode MuonSelector :: execute ()
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
+	  //
           RETURN_CHECK( "MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName+systName ), "Failed to store const data container");
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
@@ -575,11 +579,13 @@ EL::StatusCode MuonSelector :: execute ()
     if ( m_debug ) {  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
 
     // record in TStore the list of systematics names that should be considered down stream
+    //
     RETURN_CHECK( "MuonSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   }
 
-  // look what do we have in TStore
+  // look what we have in TStore
+  //
   if ( m_verbose ) { m_store->print(); }
 
   if( !eventPass ) {
@@ -596,7 +602,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 {
 
   const xAOD::VertexContainer* vertices(nullptr);
-  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
@@ -605,6 +611,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   for ( auto mu_itr : *inMuons ) { // duplicated of basic loop
 
     // if only looking at a subset of muons make sure all are decorated
+    //
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
         passSelDecor( *mu_itr ) = -1;
@@ -629,30 +636,33 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   }
 
   // for cutflow: make sure to count passed objects only once (i.e., this flag will be true only for nominal)
+  //
   if ( countPass ) {
     m_numObject     += nObj;
     m_numObjectPass += nPass;
   }
 
-  if ( m_debug ) { Info("execute()", "Initial muons: %i - Selected muons: %i", nObj , nPass ); }
+  if ( m_debug ) { Info("executeSelection()", "Initial muons: %i - Selected muons: %i", nObj , nPass ); }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
+  //
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
-    if ( m_debug ) { Info("execute()", "Reject event: nSelectedMuons (%i) < nPassMin (%i)", nPass, m_pass_min  ); }
+    if ( m_debug ) { Info("executeSelection()", "Reject event: nSelectedMuons (%i) < nPassMin (%i)", nPass, m_pass_min  ); }
     return false;
   }
   if ( m_pass_max > 0 && nPass > m_pass_max ) {
-    if ( m_debug ) { Info("execute()", "Reject event: nSelectedMuons (%i) > nPassMax (%i)", nPass, m_pass_max  ); }
+    if ( m_debug ) { Info("executeSelection()", "Reject event: nSelectedMuons (%i) > nPassMax (%i)", nPass, m_pass_max  ); }
     return false;
   }
 
   // for cutflow: make sure to count passed events only once (i.e., this flag will be true only for nominal)
+  //
   if ( countPass ){
     m_numEventPass++;
     m_weightNumEventPass += mcEvtWeight;
   }
 
-  // perform trigger matching on the "good" (selected) muons
+  // Perform trigger matching on the "good" (selected) muons
   //
   // NB: this part will be skipped if:
   //
@@ -666,7 +676,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     static SG::AuxElement::Decorator< char > isTrigMatchedDecor("isTrigMatched");
 
     if ( nSelectedMuons > 0 && !m_singleMuTrigChains.empty() ) {
-      if ( m_debug ) { Info("execute()", "Single Muon Trigger Matching "); }
+      if ( m_debug ) { Info("executeSelection()", "Single Muon Trigger Matching "); }
 
        for ( const auto muon : *selectedMuons ) {
     	 isTrigMatchedDecor( *muon ) = ( m_trigMuonMatchTool->match( muon, m_singleMuTrigChains, m_minDeltaR ) ) ? 1 : 0;
@@ -674,7 +684,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
     }
     if ( nSelectedMuons > 1 && !m_diMuTrigChains.empty() ) {
-      if ( m_debug ) { Info("execute()", "DiMuon Trigger Matching "); }
+      if ( m_debug ) { Info("executeSelection()", "DiMuon Trigger Matching "); }
 
       // take the first two muons in the selected container
       //
@@ -723,9 +733,9 @@ EL::StatusCode MuonSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_muonSelectionTool )      { m_muonSelectionTool = nullptr; delete m_muonSelectionTool;  }
+  if ( m_muonSelectionTool )      { m_muonSelectionTool = nullptr;      delete m_muonSelectionTool;      }
   if ( m_IsolationSelectionTool ) { m_IsolationSelectionTool = nullptr; delete m_IsolationSelectionTool; }
-  if ( m_trigMuonMatchTool )      {  m_trigMuonMatchTool = nullptr; delete m_trigMuonMatchTool; }
+  if ( m_trigMuonMatchTool )      {  m_trigMuonMatchTool = nullptr;     delete m_trigMuonMatchTool;      }
 
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");

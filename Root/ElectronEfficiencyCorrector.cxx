@@ -1,11 +1,10 @@
-/*****************************************************
+/******************************************************
  *
  * Interface to CP Electron Efficiency Correction Tool.
  *
  * M. Milesi (marco.milesi@cern.ch)
  *
- *
- *****************************************************/
+ ******************************************************/
 
 // c++ include(s):
 #include <iostream>
@@ -56,25 +55,27 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
 
   Info("ElectronEfficiencyCorrector()", "Calling constructor");
 
-  // read debug flag from .config file
   m_debug                   = false;
 
   // input container to be read from TEvent or TStore
+  //
   m_inContainerName         = "";
 
   // Systematics stuff
+  //
   m_inputAlgoSystNames      = "";
+  m_systValPID              = 0.0;
+  m_systValReco             = 0.0;
+  m_systValTrig             = 0.0;
   m_systNamePID             = "";
   m_systNameReco            = "";
   m_systNameTrig            = "";
   m_outputSystNamesPID      = "ElectronEfficiencyCorrector_PIDSyst";
   m_outputSystNamesReco     = "ElectronEfficiencyCorrector_RecoSyst";
   m_outputSystNamesTrig     = "ElectronEfficiencyCorrector_TrigSyst";
-  m_systValPID              = 0.;
-  m_systValReco             = 0.;
-  m_systValTrig             = 0.;
 
   // file(s) containing corrections
+  //
   m_corrFileNamePID         = "";
   m_corrFileNameReco        = "";
   m_corrFileNameTrig        = "";
@@ -91,12 +92,15 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     TEnv* config = new TEnv(getConfig(true).c_str());
 
     // read debug flag from .config file
+    //
     m_debug                   = config->GetValue("Debug", m_debug);
 
     // input container to be read from TEvent or TStore
+    //
     m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
 
     // Systematics stuff
+    //
     m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
     m_systNamePID             = config->GetValue("SystNamePID"  , m_systNamePID.c_str());
     m_systNameReco            = config->GetValue("SystNameReco" , m_systNameReco.c_str());
@@ -107,9 +111,6 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     m_systValPID              = config->GetValue("SystValPID"  , m_systValPID);
     m_systValReco             = config->GetValue("SystValReco" , m_systValReco);
     m_systValTrig             = config->GetValue("SystValTrig" , m_systValTrig);
-    m_runAllSystPID           = (m_systNamePID.find("All")  != std::string::npos);
-    m_runAllSystReco          = (m_systNameReco.find("All") != std::string::npos);
-    m_runAllSystTrig          = (m_systNameTrig.find("All") != std::string::npos);
     // file(s) containing corrections
     m_corrFileNamePID         = config->GetValue("CorrectionFileNamePID" , m_corrFileNamePID.c_str());
     m_corrFileNameReco        = config->GetValue("CorrectionFileNameReco" , m_corrFileNameReco.c_str());
@@ -204,80 +205,140 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
+
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  // initialize the ElectronEfficiencyCorrectionTool for PID Efficiency
-  m_asgElEffCorrTool_elSF_PID = new AsgElectronEfficiencyCorrectionTool( "ElectronEfficiencyCorrectionTool_effSF_PID" );
+  // 1.
+  // initialize the AsgElectronEfficiencyCorrectionTool for PID efficiency SF
+  //
+
+  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_PID") ) {
+    m_asgElEffCorrTool_elSF_PID = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_PID");
+  } else {
+    m_asgElEffCorrTool_elSF_PID = new AsgElectronEfficiencyCorrectionTool("ElectronEfficiencyCorrectionTool_effSF_PID");
+  }
   m_asgElEffCorrTool_elSF_PID->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  
   std::vector<std::string> inputFilesPID{ m_corrFileNamePID } ; // initialise vector w/ all the files containing corrections
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("CorrectionFileNameList",inputFilesPID),"Failed to set property CorrectionFileNameList");
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool PID");
 
-  // Get a list of systematics
-  const CP::SystematicSet recSystsPID = m_asgElEffCorrTool_elSF_PID->recommendedSystematics();
-  Info("initialize()"," Initializing Electron Efficiency Corrector Systematics :");
-  m_systListPID = HelperFunctions::getListofSystematics( recSystsPID, m_systNamePID, m_systValPID );
-  m_systListPID = CP::make_systematics_vector(recSystsPID);   // Convert into a simple list
-
   if ( m_debug ) {
-    for ( const auto& syst_it : m_systListPID ) {
-      Info("initialize()"," PID tool available systematic: %s", (syst_it.name()).c_str());
-    }
+  
+    // Get a list of affecting systematics
+   //  
+    CP::SystematicSet affectSystsPID = m_asgElEffCorrTool_elSF_PID->affectingSystematics();
+    //
+    // Convert into a simple list
+    //
+    for ( const auto& syst_it : affectSystsPID ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by PID efficiency systematic: %s", (syst_it.name()).c_str()); }
   }
+  //
+  // Make a list of systematics to be used, based on configuration input
+  // Use HelperFunctions::getListofSystematics() for this!
+  //
+  const CP::SystematicSet recSystsPID = m_asgElEffCorrTool_elSF_PID->recommendedSystematics();
+  m_systListPID = HelperFunctions::getListofSystematics( recSystsPID, m_systNamePID, m_systValPID, m_debug );
+  
+  Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool PID efficiency systematic:");
   for ( const auto& syst_it : m_systListPID ) {
-    Info("initialize()"," PID tool running with systematic : %s", (syst_it.name()).c_str());
+    if ( m_systNamePID.empty() ) {
+      Info("initialize()","\t Running w/ nominal configuration only!"); 
+      break;
+    }
+    Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
-  /// Initialize the ElectronEfficiencyCorrectionTool for Reco Efficiency
-  m_asgElEffCorrTool_elSF_Reco = new AsgElectronEfficiencyCorrectionTool( "ElectronEfficiencyCorrectionTool_effSF_Reco" );
+  // 2.
+  // initialize the AsgElectronEfficiencyCorrectionTool for Reco Efficiency SF
+  //
+
+  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_Reco") ) {
+    m_asgElEffCorrTool_elSF_Reco = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_Reco");
+  } else {
+    m_asgElEffCorrTool_elSF_Reco = new AsgElectronEfficiencyCorrectionTool("ElectronEfficiencyCorrectionTool_effSF_Reco");
+  }
   m_asgElEffCorrTool_elSF_Reco->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  
   std::vector<std::string> inputFilesReco{ m_corrFileNameReco } ; // initialise vector w/ all the files containing corrections
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("CorrectionFileNameList",inputFilesReco),"Failed to set property CorrectionFileNameList");
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Reco");
 
-  // Get a list of systematics
-  const CP::SystematicSet recSystsReco = m_asgElEffCorrTool_elSF_Reco->recommendedSystematics();
-  Info("initialize()"," Initializing Electron Efficiency Corrector Systematics :");
-  m_systListReco = HelperFunctions::getListofSystematics( recSystsReco, m_systNameReco, m_systValReco );
-  // Convert into a simple list
-  m_systListReco = CP::make_systematics_vector(recSystsReco);
-
   if ( m_debug ) {
-    for ( const auto& syst_it : m_systListReco ) {
-      Info("initialize()"," available systematic: %s", (syst_it.name()).c_str());
-    }
+  
+    // Get a list of affecting systematics
+   //  
+    CP::SystematicSet affectSystsReco = m_asgElEffCorrTool_elSF_Reco->affectingSystematics();
+    //
+    // Convert into a simple list
+    //
+    for ( const auto& syst_it : affectSystsReco ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by reco efficiency systematic: %s", (syst_it.name()).c_str()); }
   }
+  //
+  // Make a list of systematics to be used, based on configuration input
+  // Use HelperFunctions::getListofSystematics() for this!
+  //
+  const CP::SystematicSet recSystsReco = m_asgElEffCorrTool_elSF_Reco->recommendedSystematics();
+  m_systListReco = HelperFunctions::getListofSystematics( recSystsReco, m_systNameReco, m_systValReco, m_debug );
+
+  Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool reco efficiency systematic:");
   for ( const auto& syst_it : m_systListReco ) {
-    Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
+    if ( m_systNameReco.empty() ) {
+      Info("initialize()","\t Running w/ nominal configuration only!"); 
+      break;
+    }
+    Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
-  /// Initialize the ElectronEfficiencyCorrectionTool for Trigger Efficiency
-  m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool( "ElectronEfficiencyCorrectionTool_effSF_Trig" );
+  // 3.
+  // Initialise the AsgElectronEfficiencyCorrectionTool for Trigger Efficiency SF
+  //
+
+  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_Trig") ) {
+    m_asgElEffCorrTool_elSF_Trig = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_Trig");
+  } else {
+    m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool("ElectronEfficiencyCorrectionTool_effSF_Trig");
+  }
   m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  
   std::vector<std::string> inputFilesTrig{ m_corrFileNameTrig } ; // initialise vector w/ all the files containing corrections
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("CorrectionFileNameList",inputFilesTrig),"Failed to set property CorrectionFileNameList");
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Trig");
 
-
-  // Get a list of systematics
-  const CP::SystematicSet recSystsTrig = m_asgElEffCorrTool_elSF_Trig->recommendedSystematics();
-  Info("initialize()"," Initializing Electron Efficiency Corrector Systematics :");
-  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig );
-  // Convert into a simple list
-  m_systListTrig = CP::make_systematics_vector(recSystsTrig);
-
   if ( m_debug ) {
-    for ( const auto& syst_it : m_systListTrig ) {
-      Info("initialize()"," available systematic: %s", (syst_it.name()).c_str());
-    }
+  
+    // Get a list of affecting systematics
+   //  
+    CP::SystematicSet affectSystsTrig = m_asgElEffCorrTool_elSF_Trig->affectingSystematics();
+    //
+    // Convert into a simple list
+    //
+    for ( const auto& syst_it : affectSystsTrig ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by Trig efficiency systematic: %s", (syst_it.name()).c_str()); }
   }
+  //
+  // Make a list of systematics to be used, based on configuration input
+  // Use HelperFunctions::getListofSystematics() for this!
+  //
+  const CP::SystematicSet recSystsTrig = m_asgElEffCorrTool_elSF_Trig->recommendedSystematics();
+  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
+  
+  Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool Trig efficiency systematic:");
   for ( const auto& syst_it : m_systListTrig ) {
-    Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
+    if ( m_systNameTrig.empty() ) {
+      Info("initialize()","\t Running w/ nominal configuration only!"); 
+      break;
+    }
+    Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
+
+  // *********************************************************************************
 
   Info("initialize()", "ElectronEfficiencyCorrector Interface succesfully initialized!" );
 
@@ -292,19 +353,20 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Electron Efficiency Correction... "); }
-
   m_numEvent++;
-
-  const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
-  bool isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
-  if ( !isMC ) {
-    if ( m_debug ) { Info("execute()", "Event is Data! Do not apply Electron Efficiency Correction... "); }
+  
+  if ( !m_isMC ) {
+    if ( m_numEvent == 1 ) { Info("execute()", "Sample is Data! Do not apply any Electron Efficiency correction... "); }
     return EL::StatusCode::SUCCESS;
   }
 
+  if ( m_debug ) { Info("execute()", "Applying Electron Efficiency Correction... "); }
+
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+
   // initialise containers
+  //
   const xAOD::ElectronContainer* inputElectrons(nullptr);
 
   // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
@@ -312,22 +374,30 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   // Declare a counter, initialised to 0
   // For the systematically varied input containers, we won't store again the vector with efficiency systs in TStore ( it will be always the same!)
+  //
   unsigned int countInputCont(0);
 
   if ( m_inputAlgoSystNames.empty() ) {
+      
       RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+      
       // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
-      this->executeSF( inputElectrons, countInputCont );
+      //
+      this->executeSF( inputElectrons, eventInfo, countInputCont );
+  
   } else {
-      // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo.
-      // This is the case of calibrators: one different SC for each calibration syst applied
+  // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo.
+  // This is the case of calibrators: one different SC for each calibration syst applied
 
       // get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
+      //
       std::vector<std::string>* systNames(nullptr);
       RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
 
     	// loop over systematic sets available
+	//
     	for ( auto systName : *systNames ) {
+	
           RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
 
           if ( m_debug ){
@@ -339,15 +409,19 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
           }
 
           // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
-          this->executeSF( inputElectrons, countInputCont );
+	  //
+          this->executeSF( inputElectrons, eventInfo, countInputCont );
 
           // increment counter
+	  //
           ++countInputCont;
 
       } // close loop on systematic sets available from upstream algo
-  } // close else
+  
+  } 
 
-  // look what do we have in TStore
+  // look what we have in TStore
+  //
   if ( m_verbose ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
@@ -360,7 +434,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute");
+  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -381,17 +455,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_asgElEffCorrTool_elSF_PID ) {
-    delete m_asgElEffCorrTool_elSF_PID; m_asgElEffCorrTool_elSF_PID = nullptr;
-  }
-
-  if ( m_asgElEffCorrTool_elSF_Reco ) {
-    delete m_asgElEffCorrTool_elSF_Reco; m_asgElEffCorrTool_elSF_Reco = nullptr;
-  }
-
-  if ( m_asgElEffCorrTool_elSF_Trig ) {
-    delete m_asgElEffCorrTool_elSF_Trig; m_asgElEffCorrTool_elSF_Trig = nullptr;
-  }
+  if ( m_asgElEffCorrTool_elSF_PID )  { m_asgElEffCorrTool_elSF_PID = nullptr;   delete m_asgElEffCorrTool_elSF_PID;  }
+  if ( m_asgElEffCorrTool_elSF_Reco ) {  m_asgElEffCorrTool_elSF_Reco = nullptr; delete m_asgElEffCorrTool_elSF_Reco; }
+  if ( m_asgElEffCorrTool_elSF_Trig ) { m_asgElEffCorrTool_elSF_Trig = nullptr;  delete m_asgElEffCorrTool_elSF_Trig; }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -416,215 +482,276 @@ EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst  )
+EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronContainer* inputElectrons, const xAOD::EventInfo* eventInfo, unsigned int countSyst  )
 {
 
   //
-  // Every electron gets decorated with a vector<double> of SFs, one for each syst.
-  // We create this vector<string> with the SF syst names, so that we know which component corresponds to.
-  // This vector is eventually stored in TStore
+  // In the following, every electron gets decorated with 2 vector<double>'s (for reco/PID efficiency SFs), 
+  // and the event w/ 1 vector<double> (for trigger efficiency SFs)
+  // Each vector contains the SFs, one SF for each syst (first component of each vector will be the nominal SF).
   //
-  std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
+  // Additionally, we create these vector<string> with the SF syst names, so that we know which component corresponds to.
+  // ( there's a 1:1 correspondence with the vector<double> defined above )
+  //
+  // These vector<string> are eventually stored in TStore
+  //
+  std::vector< std::string >* sysVariationNamesPID  = new std::vector< std::string >;
+  std::vector< std::string >* sysVariationNamesReco = new std::vector< std::string >;
+  std::vector< std::string >* sysVariationNamesTrig = new std::vector< std::string >;
 
-  // loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
+  // 1.
+  // PID efficiency SFs - this is a per-ELECTRON weight
+  // 
+  // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
+  // Every systematic will correspond to a different SF!
+  //
   for ( const auto& syst_it : m_systListPID ) {
 
-    //
     // Create the name of the SF weight to be recorded
-    //   template:  SYSNAME_ElEff_SF
+    //   template:  SYSNAME_ElPIDEff_SF
     //
-    std::string sfNamePID  = "ElPIDEff_SF";
+    std::string sfName  = "ElPIDEff_SF";
   
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
-       sfNamePID.insert( 0, prepend );
+       sfName.insert( 0, prepend );
     }
-    if(m_debug) Info("execute()", "SF decoration names are: %s", sfNamePID.c_str());
-
-    sysVariationNames->push_back(sfNamePID);
+    if(m_debug) Info("executeSF()", "Electron PID efficiency SF decoration name is: %s", sfName.c_str());
+    sysVariationNamesPID->push_back(sfName);
   
-    // apply systs
+    // apply syst
+    //
     if ( m_asgElEffCorrTool_elSF_PID->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-      Error("initialize()", "Failed to configure AsgElectronEfficiencyCorrectionTool_PID for systematic %s", syst_it.name().c_str());
+      Error("executeSF()", "Failed to configure AsgElectronEfficiencyCorrectionTool_PID for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
     }
+    if ( m_debug ) { Info("executeSF()", "Successfully applied systematics: %s ", m_asgElEffCorrTool_elSF_PID->appliedSystematics().name().c_str() ); }
 
-    if ( m_debug ) { Info("execute()", "Successfully applied systematics: %s ", m_asgElEffCorrTool_elSF_PID->appliedSystematics().name().c_str() ); }
-
-    // and now apply efficiency SF!
+    // and now apply PID efficiency SF!
+    //
     unsigned int idx(0);
     for ( auto el_itr : *(inputElectrons) ) {
 
+       if ( m_debug ) { Info( "executeSF()", "Applying PID efficiency SF" ); }
+
+       // 
+       // obtain PID efficiency SF as a float (to be stored away separately)
        //
        //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
        //
        SG::AuxElement::Decorator< std::vector<double> > sfVecPID ( m_outputSystNamesPID  );
-       
-       if ( !sfVecPID.isAvailable( *el_itr )  ){
-          sfVecPID ( *el_itr ) = std::vector<double>();}
-
-       if ( m_debug ) { Info( "execute", "Checking electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) ); }
-       ++idx;
-
-       // NB: derivations might remove CC and tracks for low pt electrons
-       if ( !(el_itr->caloCluster() && el_itr->trackParticle()) ) {
-         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
-         continue;
+       if ( !sfVecPID.isAvailable( *el_itr )  ) {
+         sfVecPID ( *el_itr ) = std::vector<double>();
        }
 
+       // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
+       //
+       if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
+         ++idx;
+         continue;
+       }
+       //
        // skip electron if outside acceptance for SF calculation
+       //
        if ( el_itr->pt() < 15e3 ) {
-         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently > 15 GeV )", idx); }
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently SF available for pT > 15 GeV )", idx); }
+         ++idx;
          continue;
        }
        if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx); }
+         ++idx;
          continue;
        }
 
        //
-       // obtain efficiency SF's for PID, Reco, and Trig
+       // obtain efficiency SF's for PID
        //
        double pidSF(0.0); 
        if (  m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidSF  ) != CP::CorrectionCode::Ok ) {
-         Error( "execute()", "Problem in getEfficiencyScaleFactor");
-         return EL::StatusCode::FAILURE;
+         Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+         ++idx;
+         continue;
        }
        //
        // Add it to decoration vector
        //
-       sfVecPID(  *el_itr ).push_back( pidSF );
-  
-       if ( m_debug )
-          Info( "execute", "===>>> Resulting PID  SF: %f for systematic: %s ", pidSF , syst_it.name().c_str()); 
-        
+       sfVecPID( *el_itr ).push_back( pidSF );
 
+       if ( m_debug ) { 
+         Info( "executeSF()", "===>>>");
+         Info( "executeSF()", " ");	
+	 Info( "executeSF()", "Electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) );
+	 Info( "executeSF()", " ");
+         Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+         Info( "executeSF()", " ");
+         Info( "executeSF()", "PID efficiency SF:");
+         Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", pidSF );
+         Info( "executeSF()", "--------------------------------------");
+       }
+       
+       ++idx;
+         
     } // close electron loop
-  }  // close loop on systematics
+    
+  }  // close loop on PID efficiency systematics
 
+
+  // 2.
+  // Reco efficiency SFs - this is a per-ELECTRON weight
+  // 
+  // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
+  // Every systematic will correspond to a different SF!
+  //
   for ( const auto& syst_it : m_systListReco ) {
 
-    //
     // Create the name of the SF weight to be recorded
-    //   template:  SYSNAME_ElEff_SF
+    //   template:  SYSNAME_ElRecoEff_SF
     //
-    std::string sfNameReco = "ElRecoEff_SF";
+    std::string sfName  = "ElRecoEff_SF";
+  
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
-       sfNameReco.insert( 0, prepend );
+       sfName.insert( 0, prepend );
     }
-
-    if(m_debug) Info("execute()", "SF decoration names are: %s", sfNameReco.c_str());
-
-    sysVariationNames->push_back(sfNameReco);
-
-    // apply systs
+    if(m_debug) Info("executeSF()", "Electron Reco efficiency SF decoration name is: %s", sfName.c_str());
+    sysVariationNamesReco->push_back(sfName);
+  
+    // apply syst
+    //
     if ( m_asgElEffCorrTool_elSF_Reco->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-      Error("initialize()", "Failed to configure AsgElectronEfficiencyCorrectionTool_Reco for systematic %s", syst_it.name().c_str());
+      Error("executeSF()", "Failed to configure AsgElectronEfficiencyCorrectionTool_Reco for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
     }
+    if ( m_debug ) { Info("executeSF()", "Successfully applied systematics: %s ", m_asgElEffCorrTool_elSF_Reco->appliedSystematics().name().c_str() ); }
 
-    if ( m_debug ) { Info("execute()", "Successfully applied systematics: %s", m_asgElEffCorrTool_elSF_Reco->appliedSystematics().name().c_str() ); }
-
-    // and now apply efficiency SF!
+    // and now apply Reco efficiency SF!
+    //
     unsigned int idx(0);
     for ( auto el_itr : *(inputElectrons) ) {
 
+       if ( m_debug ) { Info( "executeSF()", "Applying Reco efficiency SF" ); }
+
+       // 
+       // obtain Reco efficiency SF as a float (to be stored away separately)
        //
        //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
        //
-       SG::AuxElement::Decorator< std::vector<double> > sfVecReco( m_outputSystNamesReco );
-
-       if ( !sfVecReco.isAvailable( *el_itr ) ){
-          sfVecReco( *el_itr ) = std::vector<double>();}
-
-       if ( m_debug ) { Info( "execute", "Checking electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) ); }
-       ++idx;
-
-       // NB: derivations might remove CC and tracks for low pt electrons
-       if ( !(el_itr->caloCluster() && el_itr->trackParticle()) ) {
-         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
-         continue;
+       SG::AuxElement::Decorator< std::vector<double> > sfVecReco ( m_outputSystNamesReco  );
+       if ( !sfVecReco.isAvailable( *el_itr )  ) {
+         sfVecReco ( *el_itr ) = std::vector<double>();
        }
 
+       // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
+       //
+       if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
+         ++idx;
+	 continue;
+       }
+       //
        // skip electron if outside acceptance for SF calculation
+       //
        if ( el_itr->pt() < 15e3 ) {
-         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently > 15 GeV )", idx); }
-         continue;
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently SF available for pT > 15 GeV )", idx); }
+         ++idx;
+	 continue;
        }
        if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx); }
+         ++idx;
+	 continue;
+       }
+
+       //
+       // obtain efficiency SF's for Reco
+       //
+       double recoSF(0.0); 
+       if (  m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoSF  ) != CP::CorrectionCode::Ok ) {
+         Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+         ++idx;
          continue;
        }
-
-       //
-       // obtain efficiency SF's for PID, Reco, and Trig
-       //
-       double recoSF(0.0);
- 
-       if ( m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoSF ) != CP::CorrectionCode::Ok ) {
-         Error( "execute()", "Problem in getEfficiencyScaleFactor");
-         return EL::StatusCode::FAILURE;
-       }
-
        //
        // Add it to decoration vector
        //
        sfVecReco( *el_itr ).push_back( recoSF );
 
-       if ( m_debug ) Info( "execute", "===>>> Resulting Reco SF: %f for systematic: %s ", recoSF, syst_it.name().c_str()); 
-
+       if ( m_debug ) { 
+         Info( "executeSF()", "===>>>");
+         Info( "executeSF()", " ");
+	 Info( "executeSF()", "Electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) );
+	 Info( "executeSF()", " ");	
+         Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+         Info( "executeSF()", " ");
+         Info( "executeSF()", "Reco efficiency SF:");
+         Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", recoSF );
+         Info( "executeSF()", "--------------------------------------");
+       }
+       
+       ++idx;  
+       
     } // close electron loop
+    
+  }  // close loop on Reco efficiency systematics
 
-  }  // close loop on systematics
 
+  // 3.
+  // Trig efficiency SFs - this is a per-EVENT weight
+  //       
+  SG::AuxElement::Decorator< std::vector<double> > sfVecTrig ( m_outputSystNamesTrig  );
+ 
+  // Loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
+  // Every systematic will correspond to a different SF!
+  //
   for ( const auto& syst_it : m_systListTrig ) {
 
+    // Create the name of the SF weight to be Trigrded
+    //   template:  SYSNAME_ElTrigEff_SF
     //
-    // Create the name of the SF weight to be recorded
-    //   template:  SYSNAME_ElEff_SF
-    //
-    std::string sfNameTrig = "ElTrigEff_SF";
+    std::string sfName  = "ElTrigEff_SF";
+  
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
-       sfNameTrig.insert( 0, prepend );
+       sfName.insert( 0, prepend );
     }
-    if(m_debug) Info("execute()", "SF decoration names are: %s", sfNameTrig.c_str());
-
-    sysVariationNames->push_back(sfNameTrig);
-
-    // apply systs
+    if(m_debug) Info("executeSF()", "Electron Trig efficiency SF decoration name is: %s", sfName.c_str());
+    sysVariationNamesTrig->push_back(sfName);
+  
+    // apply syst
+    //
     if ( m_asgElEffCorrTool_elSF_Trig->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-      Error("initialize()", "Failed to configure AsgElectronEfficiencyCorrectionTool_Trig for systematic %s", syst_it.name().c_str());
+      Error("executeSF()", "Failed to configure AsgElectronEfficiencyCorrectionTool_Trig for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
     }
+    if ( m_debug ) { Info("executeSF()", "Successfully applied systematics: %s ", m_asgElEffCorrTool_elSF_Trig->appliedSystematics().name().c_str() ); }
 
-    if ( m_debug ) Info("execute()", "Successfully applied systematics: %s", m_asgElEffCorrTool_elSF_Trig->appliedSystematics().name().c_str() ); 
-
-    // and now apply efficiency SF!
+    // and now apply trigger efficiency SF!
+    //
     unsigned int idx(0);
+    double trigSF(0.0);
     for ( auto el_itr : *(inputElectrons) ) {
 
+       // Retrieve the SF only from first electron (for any other selected electron, this info is just duplicated!)
+       // This is a per-EVENT weight!
+       // Do not increase counter until we find a "good" electron
        //
-       //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
+       if ( idx > 0 ) { break; }   
+
+       if ( m_debug ) { Info( "executeSF()", "Applying Trig efficiency SF" ); }
+
+       // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
        //
-       SG::AuxElement::Decorator< std::vector<double> > sfVecTrig( m_outputSystNamesTrig );
-
-       if ( !sfVecTrig.isAvailable( *el_itr ) ){
-          sfVecTrig( *el_itr ) = std::vector<double>();}
-
-       if ( m_debug ) { Info( "execute", "Checking electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) ); }
-       ++idx;
-
-       // NB: derivations might remove CC and tracks for low pt electrons
-       if ( !(el_itr->caloCluster() && el_itr->trackParticle()) ) {
+       if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
          continue;
        }
-
+       //
        // skip electron if outside acceptance for SF calculation
+       //
        if ( el_itr->pt() < 15e3 ) {
-         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently > 15 GeV )", idx); }
+         if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently SF available for pT > 15 GeV )", idx); }
          continue;
        }
        if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
@@ -633,23 +760,34 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        }
 
        //
-       // obtain efficiency SF's for PID, Reco, and Trig
+       // obtain efficiency SF's for Trig
        //
-       double trigSF(0.0);
-       if ( m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigSF ) != CP::CorrectionCode::Ok ) {
-         Error( "execute()", "Problem in getEfficiencyScaleFactor");
-         return EL::StatusCode::FAILURE;
+       if (  m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigSF  ) != CP::CorrectionCode::Ok ) {
+         Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+         continue;
        }
-       //
-       // Add it to decoration vector
-       //
-       sfVecTrig( *el_itr ).push_back( trigSF );
 
-       if ( m_debug ) Info( "execute", "===>>> Resulting Trig SF: %f for systematic: %s ", trigSF, syst_it.name().c_str()); 
-
+       if ( m_debug ) { 
+         Info( "executeSF()", "===>>>");
+         Info( "executeSF()", " ");	
+         Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+         Info( "executeSF()", " ");
+         Info( "executeSF()", "Trig efficiency SF:");
+         Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", trigSF );
+         Info( "executeSF()", "--------------------------------------");
+       }
+       
+       ++idx;
+  
     } // close electron loop
 
-  }  // close loop on systematics
+    //
+    // Add trigger SF to event decoration vector
+    //
+    sfVecTrig( *eventInfo ).push_back( trigSF );
+    
+  }  // close loop on Trig efficiency systematics
+
 
   //
   // add list of efficiency systematics names to TStore
@@ -661,9 +799,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Use the counter defined in execute() to check this is done only once
   //
   if ( countSyst == 0 ) { 
-    RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystNamesPID ), "Failed to record vector of systematic names PID"  ); 
-    RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystNamesReco), "Failed to record vector of systematic names Reco" );
-    RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystNamesTrig), "Failed to record vector of systematic names Trig" ); 
+    RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesPID, m_outputSystNamesPID ), "Failed to record vector of systematic names PID"  ); 
+    RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesReco, m_outputSystNamesReco), "Failed to record vector of systematic names Reco" );
+    RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names Trig" ); 
   }
 
   return EL::StatusCode::SUCCESS;

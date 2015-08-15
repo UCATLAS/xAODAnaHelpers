@@ -1,11 +1,16 @@
-/**********************************************
+/*******************************************************
  *
  * Interface to CP Electron calibration tool(s).
  *
+ * The tool applies:
+ *
+ * -) scale corrections for DATA
+ * -) smearing corrections for MC
+ * (data VS. MC check is done by the CP tool internally) 
+ *
  * M. Milesi (marco.milesi@cern.ch)
  *
- *
- *********************************************/
+ *******************************************************/
 
 // c++ include(s):
 #include <iostream>
@@ -55,24 +60,24 @@ ElectronCalibrator :: ElectronCalibrator () :
 
   Info("ElectronCalibrator()", "Calling constructor");
 
-  // read debug flag from .config file
   m_debug                   = false;
 
   // input container to be read from TEvent or TStore
+  //
   m_inContainerName         = "";
   m_outContainerName        = "";
 
+  m_sort                    = true;
+
   // Systematics stuff
+  //
   m_inputAlgoSystNames      = "";
   m_outputAlgoSystNames     = "ElectronCalibrator_Syst";
-  m_runSysts                = false; // gets set later is syst applies to this tool
   m_systName		    = "";
   m_systVal 		    = 0.;
 
   m_esModel                 = "";
   m_decorrelationModel      = "";
-
-  m_sort                    = true;
 
 }
 
@@ -92,18 +97,16 @@ EL::StatusCode  ElectronCalibrator :: configure ()
     m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
 
+    m_sort                    = config->GetValue("Sort", m_sort);
+
    // Systematics stuff
     m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
     m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
-    m_runSysts                = false; // gets set later is syst applies to this tool
     m_systName		      = config->GetValue("SystName" , m_systName.c_str() );
     m_systVal 		      = config->GetValue("SystVal" , m_systVal );
-    m_runAllSyst              = (m_systName.find("All") != std::string::npos);
 
     m_esModel		      = config->GetValue("ESModel" , m_esModel.c_str() );
     m_decorrelationModel      = config->GetValue("DecorrelationModel" , m_decorrelationModel.c_str() );
-
-    m_sort                    = config->GetValue("Sort", m_sort);
 
     config->Print();
 
@@ -202,54 +205,40 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  // initialize the CP EgammaCalibrationAndSmearing tool
-  //
-  std::string egcas_tool_name = std::string("EgammaCalibrationAndSmearingTool_") + m_name;
-  m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool( egcas_tool_name.c_str() );
+  // initialize the CP::EgammaCalibrationAndSmearingTool
+  //  
+  if ( asg::ToolStore::contains<CP::EgammaCalibrationAndSmearingTool>("EgammaCalibrationAndSmearingTool") ) {
+    m_EgammaCalibrationAndSmearingTool = asg::ToolStore::get<CP::EgammaCalibrationAndSmearingTool>("EgammaCalibrationAndSmearingTool");
+  } else {
+    m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool("EgammaCalibrationAndSmearingTool");
+  }  
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel),"Failed to set property ESModel");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel),"Failed to set property decorrelationModel");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
-
-  // get a list of systematics
+  
+  // ***********************************************************
+  
+  // Get a list of recommended systematics for this tool
   //
   const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
   const CP::SystematicSet& recSyst = (systReg.recommendedSystematics());
   Info("initialize()"," Initializing Electron Calibrator Systematics :");
-  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal );
+  //
+  // Make a list of systematics to be used, based on configuration input
+  // Use HelperFunctions::getListofSystematics() for this!
+  //
+  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
-  if ( !m_systList.empty() ) { m_runSysts = true; }
-
-  // ****************************************************************** //
-  // *
-  // *
-  // * Marco: we need to manually add an "empty-string" syst variation (i.e., case "baseline") at top of vector
-  // *        to apply same logic as in ElectronEfficiencyCorrector.
-  // *        Whilst looping on available systematics, the empty string will be regarded as baseline case
-  // *
-  // *
-  // ****************************************************************** //
-
-  // if not running systematics, need the nominal
-  // if running systematics, and running them all, need the nominal
-  // add it to the front!
-
-  if ( m_systList.empty() || ( !m_systList.empty() && m_systName == "All" ) ) {
-    m_systList.insert( m_systList.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
-    m_systList.back().insert(nullVar);
-  }
-
-  if ( m_debug ) {
-    for ( const auto& syst_it : m_systList ) {
-      Info("initialize()"," available systematic: %s", (syst_it.name()).c_str());
-    }
-  }
-
+  Info("initialize()","Will be using EgammaCalibrationAndSmearingTool systematic:");
   for ( const auto& syst_it : m_systList ) {
-    Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
+    if ( m_systName.empty() ) {
+      Info("initialize()","\t Running w/ nominal configuration only!"); 
+      break;
+    }
+    Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
-
+  
   Info("initialize()", "ElectronCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -299,7 +288,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_runSysts ) {
+    if ( !syst_it.name().empty() ) {
       if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
         Error("initialize()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
         return EL::StatusCode::FAILURE;
@@ -334,14 +323,14 @@ EL::StatusCode ElectronCalibrator :: execute ()
       //
       if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
         if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
-          Error("execute()", "Problem in m_EgammaCalibrationAndSmearingTool->applyCorrection()");
-          return EL::StatusCode::FAILURE;
+          Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
         }
       }
 
       if ( m_debug ) { Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3)); }
 
       ++idx;
+      
     } // close calibration loop
 
     if ( !xAOD::setOriginalObjectLink(*inElectrons, *(calibElectronsSC.first)) ) {
@@ -353,20 +342,25 @@ EL::StatusCode ElectronCalibrator :: execute ()
     }
 
     // save pointers in ConstDataVector with same order
+    //
     RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, "", ToolName::CALIBRATOR), "");
 
     // add SC container to TStore
+    //
     RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first,  outSCContainerName  ), "Failed to store container.");
     RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.second, outSCAuxContainerName ), "Failed to store aux container.");
     // add ConstDataVector to TStore
+    //
     RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsCDV, outContainerName), "Failed to store const data container.");
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
+  //
   RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
-  // look what do we have in TStore
+  // look what we have in TStore
+  //
   if ( m_verbose ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
@@ -399,7 +393,7 @@ EL::StatusCode ElectronCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_EgammaCalibrationAndSmearingTool ) { delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr; }
+  if ( m_EgammaCalibrationAndSmearingTool ) { m_EgammaCalibrationAndSmearingTool = nullptr; delete m_EgammaCalibrationAndSmearingTool; }
 
   return EL::StatusCode::SUCCESS;
 }

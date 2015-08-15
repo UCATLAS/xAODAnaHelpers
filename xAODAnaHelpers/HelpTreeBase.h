@@ -479,7 +479,8 @@ protected:
   std::vector<int>   m_muon_isTight;
 
   // scale factors
-  std::vector< std::vector< double > > m_muon_effSF;
+  std::vector< std::vector< double > > m_muon_RecoEff_SF;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF;
 
   // track parameters
   std::vector<float> m_muon_trkd0;
@@ -539,8 +540,8 @@ protected:
   std::vector<int>   m_el_IsEMTight;
 
   // scale factors
-  std::vector< std::vector< double > > m_el_pidSF;
-  std::vector< std::vector< double > > m_el_recoSF;
+  std::vector< std::vector< double > > m_el_RecoEff_SF;
+  std::vector< std::vector< double > > m_el_PIDEff_SF;
 
   // track parameters
   std::vector<float> m_el_trkd0;
