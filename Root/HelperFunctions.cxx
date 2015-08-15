@@ -307,8 +307,11 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
 // Get the subset of systematics to consider
 // can also return full set if systName = "All"
 //
+// CP::make_systematics_vector(recSysts); has some similar functionality but does not 
+// prune down to 1 systematic if only request that one.  It does however include the
+// nominal case as a null SystematicSet
 std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug ) {
-  
+
   std::vector< CP::SystematicSet > outSystList;
    
   // loop over input set

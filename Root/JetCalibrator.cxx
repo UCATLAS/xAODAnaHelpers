@@ -341,14 +341,14 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()"," Initializing Jet Systematics :");
 
     //If just one systVal, then push it to the vector
-    if( m_systValVector.size() == 0)
+    if( m_systValVector.size() == 0) {
       m_systValVector.push_back(m_systVal);
+    }
 
     for(unsigned int iSyst=0; iSyst < m_systValVector.size(); ++iSyst){
       m_systVal = m_systValVector.at(iSyst);
       std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );
 
-      //for ( const auto& syst_it : JESSysList ){
       for(unsigned int i=0; i < JESSysList.size(); ++i){
         m_systList.push_back(  JESSysList.at(i) );
         m_systType.push_back(1);

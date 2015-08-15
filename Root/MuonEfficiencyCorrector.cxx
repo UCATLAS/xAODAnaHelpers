@@ -254,7 +254,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     //
     // Convert into a simple list
     //
-    std::vector<CP::SystematicSet> affectSystRecoList = CP::make_systematics_vector(affectSystsReco);
     for ( const auto& syst_it : affectSystsReco ) { Info("initialize()","MuonEfficiencyScaleFactors tool can be affected by reco efficiency systematic: %s", (syst_it.name()).c_str()); }
   }
   //
@@ -299,7 +298,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     //
     // Convert into a simple list
     //
-    std::vector<CP::SystematicSet> affectSystIsoList = CP::make_systematics_vector(affectSystsIso);
     for ( const auto& syst_it : affectSystsIso ) { Info("initialize()","MuonEfficiencyScaleFactors tool can be affected by iso efficiency systematic: %s", (syst_it.name()).c_str()); }
   }
   //
@@ -343,7 +341,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     //
     // Convert into a simple list
     //
-    std::vector<CP::SystematicSet> affectSystTrigList = CP::make_systematics_vector(affectSystsTrig);
     for ( const auto& syst_it : affectSystsTrig ) { Info("initialize()","MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: %s", (syst_it.name()).c_str()); }
   }
   //
