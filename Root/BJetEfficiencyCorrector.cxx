@@ -402,17 +402,15 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       // Add decorator for decision
       // 
       SG::AuxElement::Decorator< int > isBTag( m_decor );
-      if( !isBTag.isAvailable( *jet_itr ) ) {
-        if( m_BJetSelectTool->accept( *jet_itr ) ) { 
-          isBTag( *jet_itr ) = 1; 
-          tagged = true;
-        }
-        else { 
-          isBTag( *jet_itr ) = 0; 
-          tagged = false;
-        }
+      if( m_BJetSelectTool->accept( *jet_itr ) ) { 
+        isBTag( *jet_itr ) = 1; 
+        tagged = true;
       }
-
+      else { 
+        isBTag( *jet_itr ) = 0; 
+        tagged = false;
+      }
+ 
       // if only decorator with decision because OP is not calibrated, go to next jet
       if(!m_getScaleFactors) { continue; }
 
