@@ -35,6 +35,7 @@ class ElectronSelector : public xAH::Algorithm
   */  
   
 public:
+  
   bool m_useCutFlow;            
 
   /* configuration variables */
@@ -75,12 +76,12 @@ public:
   
   /* isolation */
   
-  bool           m_doIsolation;
-  std::string    m_IsoWP;
-  std::string    m_CaloIsoEff;
-  std::string    m_TrackIsoEff;
-  std::string    m_CaloBasedIsoType;
-  std::string    m_TrackBasedIsoType;
+  std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
+  std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
+  std::string    m_CaloIsoEff;               /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  std::string    m_TrackIsoEff;              /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  std::string    m_CaloBasedIsoType;         /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  std::string    m_TrackBasedIsoType;        /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
 
   /* trigger matching */
   
@@ -121,16 +122,18 @@ private:
   int   m_el_cutflow_d0sig_cut;        //!     
   int   m_el_cutflow_iso_cut;          //!       
 
+  std::vector<std::string> m_IsoKeys;  //!
+
   /* tools */
 
-  CP::IsolationSelectionTool         *m_IsolationSelectionTool; //! 
+  CP::IsolationSelectionTool*      m_IsolationSelectionTool; //! 
 
   /* PID manager(s) */
-  ElectronLHPIDManager               *m_el_LH_PIDManager;       //!
-  ElectronCutBasedPIDManager         *m_el_CutBased_PIDManager; //!
+  ElectronLHPIDManager*            m_el_LH_PIDManager;       //!
+  ElectronCutBasedPIDManager*      m_el_CutBased_PIDManager; //!
 
-  Trig::TrigDecisionTool             *m_trigDecTool;      //!
-  Trig::TrigEgammaMatchingTool       *m_trigElMatchTool;  //!
+  Trig::TrigDecisionTool*          m_trigDecTool;            //!
+  Trig::TrigEgammaMatchingTool*    m_trigElMatchTool;        //!
 
   /* other private members */
 

@@ -228,6 +228,21 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
   RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool PID");
 
+  // 
+  // Parse the PID WP from m_corrFileNamePID (needs to be of the form "LH+WP")
+  //
+  std::size_t init_pos = m_corrFileNamePID.find("offline") + 8;  
+  std::size_t end_pos  = m_corrFileNamePID.find("LH");  
+  m_PID_WP = "LH" + m_corrFileNamePID.substr( init_pos, (end_pos - init_pos) );
+  if ( m_PID_WP.empty() ) {
+    Error("initialize()", "m_PID_WP should not be empty! Exiting." );
+    return EL::StatusCode::FAILURE;  
+  }
+  //
+  //  Add the chosen WP to the string labelling the vector<SF> decoration 
+  //   
+  m_outputSystNamesPID = m_outputSystNamesPID + "_" +m_PID_WP; 
+
   if ( m_debug ) {
   
     // Get a list of affecting systematics
@@ -584,6 +599,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
          Info( "executeSF()", " ");	
 	 Info( "executeSF()", "Electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) );
 	 Info( "executeSF()", " ");
+	 Info( "executeSF()", "PID SF decoration: %s", m_outputSystNamesPID.c_str() );
+	 Info( "executeSF()", " ");	 
          Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
          Info( "executeSF()", " ");
          Info( "executeSF()", "PID efficiency SF:");

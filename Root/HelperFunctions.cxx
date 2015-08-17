@@ -385,6 +385,7 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
   } // loop over recommended systematics
 
   // Add an empty CP::SystematicVariation at the top of output list to account for the nominal case 
+  // when running on all systematics or on nominal only
   //
   if ( systName.find("All") != std::string::npos || systName.empty() ) {
     outSystList.insert( outSystList.begin(), CP::SystematicSet() );

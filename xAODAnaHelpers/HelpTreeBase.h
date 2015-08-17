@@ -461,7 +461,13 @@ protected:
   std::vector<int>  m_muon_isTrigMatched;
 
   // isolation
-  std::vector<int>   m_muon_isIsolated;
+  std::vector<int>   m_muon_isIsolated_LooseTrackOnly;
+  std::vector<int>   m_muon_isIsolated_Loose;
+  std::vector<int>   m_muon_isIsolated_Tight;
+  std::vector<int>   m_muon_isIsolated_Gradient;
+  std::vector<int>   m_muon_isIsolated_GradientLoose;
+  std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
+  std::vector<int>   m_muon_isIsolated_UserDefinedCut;
   std::vector<float> m_muon_ptcone20;
   std::vector<float> m_muon_ptcone30;
   std::vector<float> m_muon_ptcone40;
@@ -480,7 +486,13 @@ protected:
 
   // scale factors
   std::vector< std::vector< double > > m_muon_RecoEff_SF;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_LooseTrackOnly;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_Loose;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_Tight;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_Gradient;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_GradientLoose;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_UserDefinedFixEfficiency;
+  std::vector< std::vector< double > > m_muon_IsoEff_SF_UserDefinedCut;
 
   // track parameters
   std::vector<float> m_muon_trkd0;
@@ -518,7 +530,13 @@ protected:
   std::vector<std::string> m_el_listTrigChains;
   
   // isolation
-  std::vector<int>   m_el_isIsolated;
+  std::vector<int>   m_el_isIsolated_LooseTrackOnly;
+  std::vector<int>   m_el_isIsolated_Loose;
+  std::vector<int>   m_el_isIsolated_Tight;
+  std::vector<int>   m_el_isIsolated_Gradient;
+  std::vector<int>   m_el_isIsolated_GradientLoose;
+  std::vector<int>   m_el_isIsolated_UserDefinedFixEfficiency;
+  std::vector<int>   m_el_isIsolated_UserDefinedCut;
   std::vector<float> m_el_etcone20;
   std::vector<float> m_el_ptcone20;
   std::vector<float> m_el_ptcone30;
@@ -541,7 +559,10 @@ protected:
 
   // scale factors
   std::vector< std::vector< double > > m_el_RecoEff_SF;
-  std::vector< std::vector< double > > m_el_PIDEff_SF;
+  std::vector< std::vector< double > > m_el_PIDEff_SF_LHVeryLoose;
+  std::vector< std::vector< double > > m_el_PIDEff_SF_LHLoose;
+  std::vector< std::vector< double > > m_el_PIDEff_SF_LHMedium;
+  std::vector< std::vector< double > > m_el_PIDEff_SF_LHTight;
 
   // track parameters
   std::vector<float> m_el_trkd0;

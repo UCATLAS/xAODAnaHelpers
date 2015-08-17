@@ -25,15 +25,14 @@
 
 // package include(s):
 #include "xAODAnaHelpers/ElectronSelector.h"
+#include "xAODAnaHelpers/HelperClasses.h"
+#include "xAODAnaHelpers/HelperFunctions.h"
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "TrigEgammaMatchingTool/TrigEgammaMatchingTool.h"
-
-#include "xAODAnaHelpers/HelperClasses.h"
-#include "xAODAnaHelpers/HelperFunctions.h"
-
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include "PATCore/TAccept.h"
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -123,10 +122,10 @@ ElectronSelector :: ElectronSelector () :
 
   // isolation stuff
   //
-  m_doIsolation             = false;
-  m_IsoWP		    = "Tight";
-  m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
-  m_TrackIsoEff             = "98";        // only if isolation WP is "UserDefined"
+  m_MinIsoWPCut             = "";
+  m_IsoWPList		    = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  m_CaloIsoEff              = "0.1*x+90";  
+  m_TrackIsoEff             = "98";        
   m_CaloBasedIsoType        = "topoetcone20";
   m_TrackBasedIsoType       = "ptvarcone20";
 
@@ -180,10 +179,10 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", m_CutBasedOperatingPoint.c_str());
     m_CutBasedConfigYear      = config->GetValue("CutBasedConfigYear", m_CutBasedConfigYear.c_str());
 
-    m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
-    m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_IsoWP.c_str());
-    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  // only if isolation WP is "UserDefined"
-    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str()); // only if isolation WP is "UserDefined"
+    m_MinIsoWPCut             = config->GetValue("MinIsoWPCut"       ,  m_MinIsoWPCut.c_str());
+    m_IsoWPList		      = config->GetValue("IsolationWPList"   ,  m_IsoWPList.c_str());
+    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  
+    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());
     m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
     m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
 
@@ -195,13 +194,9 @@ EL::StatusCode  ElectronSelector :: configure ()
 
     delete config; config = nullptr;
   }
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
+ 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+
   if ( m_LHOperatingPoint != "VeryLoose" &&
        m_LHOperatingPoint != "Loose"     &&
        m_LHOperatingPoint != "Medium"    &&
@@ -213,6 +208,23 @@ EL::StatusCode  ElectronSelector :: configure ()
        m_CutBasedOperatingPoint != "IsEMMedium" &&
        m_CutBasedOperatingPoint != "IsEMTight"  ) {
     Error("configure()", "Unknown electron cut-based PID requested %s!",m_CutBasedOperatingPoint.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+
+  // Parse input isolation WP list, split by comma, and put into a vector for later use
+  // Make sure it's not empty!
+  //
+  if ( m_IsoWPList.empty() ) {
+    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  } 
+  std::string token;
+  std::istringstream ss(m_IsoWPList);
+  while ( std::getline(ss, token, ',') ) {
+    m_IsoKeys.push_back(token);
+  }
+  
+  if ( m_inContainerName.empty() ) {
+    Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -426,21 +438,38 @@ EL::StatusCode ElectronSelector :: initialize ()
   }
   m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
 
-  if ( m_IsoWP == "UserDefined" ) {
-
-    HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-  
-    std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
-    myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
-    myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
-  
-    RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP("myTestWP", xAOD::Type::Electron, myCuts), "Failed to configure user-defined WP" );
-  
-  } else {
-    RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty( "ElectronWP", m_IsoWP.c_str() ), "Failed to configure WorkingPoint" );
-  }
-
+  // Do this only for the first WP in the list
+  //
+  if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
+  RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
   RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
+  //
+  // Add the remaining input WPs to the tool
+  // (start from 2nd element)
+  //
+  for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
+     
+     if ( m_debug ) { Info("initialize()", "Adding extra isolation WP %s to IsolationSelectionTool", (*WP_itr).c_str() ); }
+     
+     if ( (*WP_itr).find("UserDefined") != std::string::npos ) {
+      
+       HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+       
+       std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
+       myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
+       myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
+      
+       CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
+       if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
+      
+       RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Electron, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
+     
+     } else {
+     
+        RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addElectronWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+
+     }
+  }
 
   // ***************************************
   //
@@ -1034,20 +1063,31 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   // 
   // isolation cut
   //
-  static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
   
-  bool passIso(false); 
-  if ( electron->caloCluster() && electron->caloCluster()->eta() < 2.47 ) {
-    passIso = ( m_IsolationSelectionTool->accept( *electron ) );
-  }
-  isIsoDecor( *electron ) = ( passIso );
+  // Get the "list" of input WPs with the accept() decision from the tool
+  //
+  Root::TAccept accept_list = m_IsolationSelectionTool->accept( *electron );
+  
+  // Decorate w/ decision for all input WPs
+  //
+  std::string base_decor("isIsolated");  
+  for ( auto WP_itr : m_IsoKeys ) {
+    
+    std::string decorWP = base_decor + "_" + WP_itr;
+    
+    if ( m_debug ) { Info("PassCuts()", "Decorate electron with %s - accept() ? %i", decorWP.c_str(), accept_list.getCutResult( WP_itr.c_str()) ); }
+    electron->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
 
-  if ( m_doIsolation && !passIso ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed isolation cut." ); }
-      return 0;
   }
+  
+  // Apply the cut if needed
+  //
+  if ( !m_MinIsoWPCut.empty() && !accept_list.getCutResult( m_MinIsoWPCut.c_str() ) ) {
+    if ( m_debug ) { Info("PassCuts()", "Electron failed isolation cut %s ",  m_MinIsoWPCut.c_str() ); }
+    return 0;
+  }  
   m_el_cutflowHist_1->Fill( m_el_cutflow_iso_cut, 1 );
-  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill(m_el_cutflow_iso_cut , 1 ); }
+  if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_iso_cut, 1 ); }
 
   return 1;
 }

@@ -31,6 +31,7 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "TrigMuonMatching/TrigMuonMatching.h"
+#include "PATCore/TAccept.h"
 
 // ROOT include(s):
 #include "TEnv.h"
@@ -106,10 +107,10 @@ MuonSelector :: MuonSelector () :
 
   // isolation stuff
   //
-  m_doIsolation             = false;
-  m_IsoWP		    = "Tight";
-  m_CaloIsoEff              = "0.1*x+90";  // only if isolation WP is "UserDefined"
-  m_TrackIsoEff             = "98";        // only if isolation WP is "UserDefined"
+  m_MinIsoWPCut             = "";
+  m_IsoWPList		    = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  m_CaloIsoEff              = "0.1*x+90";  
+  m_TrackIsoEff             = "98";        
   m_CaloBasedIsoType        = "topoetcone20";
   m_TrackBasedIsoType       = "ptvarcone30";
 
@@ -118,9 +119,6 @@ MuonSelector :: MuonSelector () :
   m_singleMuTrigChains      = "";
   m_diMuTrigChains          = "";
   m_minDeltaR               = 0.1;
-
-  m_passAuxDecorKeys        = "";
-  m_failAuxDecorKeys        = "";
 
 }
 
@@ -162,8 +160,8 @@ EL::StatusCode  MuonSelector :: configure ()
     m_d0sig_max     	      = config->GetValue("d0sigMax", m_d0sig_max);
     m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
 
-    m_doIsolation             = config->GetValue("DoIsolationCut"    ,  m_doIsolation);
-    m_IsoWP		      = config->GetValue("IsolationWP"       ,  m_IsoWP.c_str());
+    m_MinIsoWPCut             = config->GetValue("MinIsoWPCut"       ,  m_MinIsoWPCut.c_str());
+    m_IsoWPList		      = config->GetValue("IsolationWPList"   ,  m_IsoWPList.c_str());
     m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  
     m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());
     m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
@@ -172,9 +170,6 @@ EL::StatusCode  MuonSelector :: configure ()
     m_singleMuTrigChains      = config->GetValue("SingleMuTrigChain" , m_singleMuTrigChains.c_str() );
     m_diMuTrigChains	      = config->GetValue("DiMuTrigChain"     , m_diMuTrigChains.c_str() );
     m_minDeltaR 	      = config->GetValue("MinDeltaR"         , m_minDeltaR );
-
-    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
-    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
 
     config->Print();
 
@@ -207,21 +202,19 @@ EL::StatusCode  MuonSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
-  // parse and split by comma
+  // Parse input isolation WP list, split by comma, and put into a vector for later use
+  // Make sure it's not empty!
+  //
+  if ( m_IsoWPList.empty() ) {
+    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  } 
   std::string token;
-
-  std::istringstream ss(m_passAuxDecorKeys);
+  std::istringstream ss(m_IsoWPList);
   while ( std::getline(ss, token, ',') ) {
-    m_passKeys.push_back(token);
+    m_IsoKeys.push_back(token);
   }
 
-  ss.clear();
-  ss.str(m_failAuxDecorKeys);
-  while ( std::getline(ss, token, ',') ) {
-    m_failKeys.push_back(token);
-  }
-
-  if( m_inContainerName.empty() ){
+  if ( m_inContainerName.empty() ){
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -405,21 +398,38 @@ EL::StatusCode MuonSelector :: initialize ()
   }
   m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
   
-  if ( m_IsoWP == "UserDefined" ) {
-    
-    HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-    
-    std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
-    myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
-    myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
-   
-    RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP("myTestWP", xAOD::Type::Muon, myCuts), "Failed to configure user-defined WP" );
-
-  } else {
-    RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty( "MuonWP", m_IsoWP.c_str() ), "Failed to configure WorkingPoint" );
-  }
-
+  // Do this only for the first WP in the list
+  //
+  if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
+  RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
   RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
+  //
+  // Add the remaining input WPs to the tool
+  // (start from 2nd element)
+  //
+  for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
+     
+     if ( m_debug ) { Info("initialize()", "Adding extra isolation WP %s to IsolationSelectionTool", (*WP_itr).c_str() ); }
+     
+     if ( (*WP_itr).find("UserDefined") != std::string::npos ) {
+      
+       HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+       
+       std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
+       myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
+       myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
+      
+       CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
+       if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
+      
+       RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
+     
+     } else {
+     
+        RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addMuonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+
+     }
+  }
 
   // **************************************
   //
@@ -906,19 +916,31 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // 
   // isolation cut
   //
-  static SG::AuxElement::Decorator< char > isIsoDecor("isIsolated");
-  bool passIso(false);
-
-  passIso = ( m_IsolationSelectionTool->accept( *muon ) );
-  isIsoDecor( *muon ) = ( passIso ) ? 1 : 0;
-
-  if ( m_doIsolation && !passIso ) {
-    if ( m_debug ) { Info("PassCuts()", "Muon failed isolation cut "); }
-    return 0;
+  
+  // Get the "list" of input WPs with the accept() decision from the tool
+  //
+  Root::TAccept accept_list = m_IsolationSelectionTool->accept( *muon );
+  
+  // Decorate w/ decision for all input WPs
+  //
+  std::string base_decor("isIsolated");  
+  for ( auto WP_itr : m_IsoKeys ) {
+    
+    std::string decorWP = base_decor + "_" + WP_itr;
+    
+    if ( m_debug ) { Info("PassCuts()", "Decorate muon with %s - accept() ? %i", decorWP.c_str(), accept_list.getCutResult( WP_itr.c_str()) ); }
+    muon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
+    
   }
+  
+  // Apply the cut if needed
+  //
+  if ( !m_MinIsoWPCut.empty() && !accept_list.getCutResult( m_MinIsoWPCut.c_str() ) ) {
+    if ( m_debug ) { Info("PassCuts()", "Muon failed isolation cut %s ",  m_MinIsoWPCut.c_str() ); }
+    return 0;
+  }  
   m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
   if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_iso_cut, 1 ); }
-
 
   return 1;
 }
