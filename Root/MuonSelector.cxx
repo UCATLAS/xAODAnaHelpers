@@ -404,16 +404,14 @@ EL::StatusCode MuonSelector :: initialize ()
   RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
   RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
   //
-  // Add the remaining input WP list to the tool
+  // Add the remaining input WPs to the tool
   // (start from 2nd element)
   //
   for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
      
      if ( m_debug ) { Info("initialize()", "Adding extra isolation WP %s to IsolationSelectionTool", (*WP_itr).c_str() ); }
      
-     RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->addMuonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
-  
-     if ( *WP_itr == "UserDefined" ) {
+     if ( (*WP_itr).find("UserDefined") != std::string::npos ) {
       
        HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
        
@@ -421,8 +419,15 @@ EL::StatusCode MuonSelector :: initialize ()
        myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
        myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
       
-       RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts), "Failed to add user-defined isolation WP" );
+       CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
+       if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
+      
+       RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
      
+     } else {
+     
+        RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addMuonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+
      }
   }
 
@@ -920,11 +925,12 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   //
   std::string base_decor("isIsolated");  
   for ( auto WP_itr : m_IsoKeys ) {
+    
     std::string decorWP = base_decor + "_" + WP_itr;
     
-   if ( m_debug ) { Info("PassCuts()", "Decorate muon with %s - accept() ? %i", decorWP.c_str(), accept_list.getCutResult( WP_itr.c_str()) ); }
-    
+    if ( m_debug ) { Info("PassCuts()", "Decorate muon with %s - accept() ? %i", decorWP.c_str(), accept_list.getCutResult( WP_itr.c_str()) ); }
     muon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
+    
   }
   
   // Apply the cut if needed
