@@ -361,35 +361,50 @@ protected:
   std::vector<float> m_jet_mv2c20;
   std::vector<int>   m_jet_hadConeExclTruthLabel;
 
+  int m_njet_mv2c20_Fix30;
   std::vector<int> m_jet_mv2c20_isFix30;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix30;
+  int m_njet_mv2c20_Fix50;
   std::vector<int> m_jet_mv2c20_isFix50;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix50;
+  int m_njet_mv2c20_Fix60;
   std::vector<int> m_jet_mv2c20_isFix60;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix60;
+  int m_njet_mv2c20_Fix70;  
   std::vector<int> m_jet_mv2c20_isFix70;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix70;
+  int m_njet_mv2c20_Fix77;   
   std::vector<int> m_jet_mv2c20_isFix77;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix77;
+  int m_njet_mv2c20_Fix80;   
   std::vector<int> m_jet_mv2c20_isFix80;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix80;
+  int m_njet_mv2c20_Fix85;   
   std::vector<int> m_jet_mv2c20_isFix85;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix85;
+  int m_njet_mv2c20_Fix90;   
   std::vector<int> m_jet_mv2c20_isFix90;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix90;
-
+  
+  int m_njet_mv2c20_Flt30;
   std::vector<int> m_jet_mv2c20_isFlt30;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt30;
+  int m_njet_mv2c20_Flt40;  
   std::vector<int> m_jet_mv2c20_isFlt40;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt40;
+  int m_njet_mv2c20_Flt50;  
   std::vector<int> m_jet_mv2c20_isFlt50;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt50;
+  int m_njet_mv2c20_Flt60;  
   std::vector<int> m_jet_mv2c20_isFlt60;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt60;
+  int m_njet_mv2c20_Flt70;  
   std::vector<int> m_jet_mv2c20_isFlt70;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt70;
+  int m_njet_mv2c20_Flt77;  
   std::vector<int> m_jet_mv2c20_isFlt77;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt77;
+  int m_njet_mv2c20_Flt85;  
   std::vector<int> m_jet_mv2c20_isFlt85;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt85;
 
