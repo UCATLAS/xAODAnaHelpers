@@ -433,16 +433,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->initialize(), "");
   }
 
-  // if not running systematics, need the nominal
-  // if running systematics, and running them all, need the nominal
-  // add it to the front!
-  if ( m_systList.empty() || (!m_systList.empty() && m_systName == "All") ) {
-    m_systList.insert( m_systList.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
-    m_systList.begin()->insert(nullVar);
-    m_systType.insert(m_systType.begin(), 0);
-  }
-
   for ( const auto& syst_it : m_systList ){
     Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
   }
