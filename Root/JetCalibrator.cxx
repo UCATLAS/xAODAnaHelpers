@@ -342,12 +342,13 @@ EL::StatusCode JetCalibrator :: initialize ()
 
     //If just one systVal, then push it to the vector
     if( m_systValVector.size() == 0) {
+      if ( m_debug ){ Info("initialize()", "Pushing the following systVal to m_systValVector: %f", m_systVal ); }
       m_systValVector.push_back(m_systVal);
     }
 
     for(unsigned int iSyst=0; iSyst < m_systValVector.size(); ++iSyst){
       m_systVal = m_systValVector.at(iSyst);
-      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal );
+      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal, m_debug );
 
       for(unsigned int i=0; i < JESSysList.size(); ++i){
         m_systList.push_back(  JESSysList.at(i) );
@@ -408,8 +409,13 @@ EL::StatusCode JetCalibrator :: initialize ()
     const CP::SystematicSet recSysts = m_JERSmearTool->recommendedSystematics();
     Info("initialize()", " Initializing JER Systematics :");
 
-    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1 ); //Only 1 sys allowed
+    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1, m_debug ); //Only 1 sys allowed
     for(unsigned int i=0; i < JERSysList.size(); ++i){
+      
+      // do not add another nominal syst to the list!!
+      //
+      if (JERSysList.at(i).empty() ) { continue; }
+      
       m_systList.push_back(  JERSysList.at(i) );
       m_systType.push_back(2);
     }
@@ -431,16 +437,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     m_JVTToolHandle = ToolHandle<IJetUpdateJvt>("jvtag");
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->setProperty("JVTFileName","JetMomentTools/JVTlikelihood_20140805.root"), "");
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->initialize(), "");
-  }
-
-  // if not running systematics, need the nominal
-  // if running systematics, and running them all, need the nominal
-  // add it to the front!
-  if ( m_systList.empty() || (!m_systList.empty() && m_systName == "All") ) {
-    m_systList.insert( m_systList.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); // blank = nominal
-    m_systList.begin()->insert(nullVar);
-    m_systType.insert(m_systType.begin(), 0);
   }
 
   for ( const auto& syst_it : m_systList ){
