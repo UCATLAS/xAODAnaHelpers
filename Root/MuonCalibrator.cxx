@@ -316,14 +316,16 @@ EL::StatusCode MuonCalibrator :: execute ()
     if ( !xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first)) ) {
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
-
-    if ( m_sort ) {
-      std::sort( calibMuonsCDV->begin(), calibMuonsCDV->end(), HelperFunctions::sort_pt );
-    }
+    
 
     // save pointers in ConstDataVector with same order
     //
     RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "", ToolName::CALIBRATOR), "");
+
+    // sort after coping to CDV
+    if ( m_sort ) {
+      std::sort( calibMuonsCDV->begin(), calibMuonsCDV->end(), HelperFunctions::sort_pt );
+    }
 
     // add SC container to TStore
     //
