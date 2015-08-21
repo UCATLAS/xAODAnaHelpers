@@ -337,13 +337,14 @@ EL::StatusCode ElectronCalibrator :: execute ()
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
-    if ( m_sort ) {
-      std::sort( calibElectronsCDV->begin(), calibElectronsCDV->end(), HelperFunctions::sort_pt );
-    }
-
     // save pointers in ConstDataVector with same order
     //
     RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, "", ToolName::CALIBRATOR), "");
+
+    // Sort after copying to CDV.
+    if ( m_sort ) {
+      std::sort( calibElectronsCDV->begin(), calibElectronsCDV->end(), HelperFunctions::sort_pt );
+    }
 
     // add SC container to TStore
     //
