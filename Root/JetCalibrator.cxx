@@ -94,6 +94,9 @@ JetCalibrator :: JetCalibrator () :
 
   //recalculate JVT using calibrated jets
   m_redoJVT                 = false;
+  
+  // Avoid the m_systName == "None" condition, which makes downstream algs malfunction
+  m_systName                = "All";
 
 }
 
@@ -141,6 +144,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_cleanParent             = config->GetValue("CleanParent",             m_cleanParent);
 
     m_redoJVT                 = config->GetValue("RedoJVT",         m_redoJVT);
+    // m_systName                = config->GetValue("SystName",        m_systName.c_str());
 
     config->Print();
 
@@ -323,9 +327,14 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
+  m_systName = "All";
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
+  std::cout << "Everything good up to here." << std::endl; 
+  if( m_JESUncertConfig.empty() ) std::cout << "JES Uncertainty empty." << std::endl;
+  if( m_systName.empty() ) std::cout << "Systematics names empty." << std::endl;
+  else std::cout << "Systematic name is: " << m_systName << std::endl;
   if ( !m_JESUncertConfig.empty() && !m_systName.empty()  && m_systName != "None" ) {
     m_JESUncertConfig = gSystem->ExpandPathName( m_JESUncertConfig.c_str() );
     Info("initialize()","Initialize JES UNCERT with %s", m_JESUncertConfig.c_str());
@@ -341,6 +350,8 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()"," Initializing Jet Systematics :");
 
     //If just one systVal, then push it to the vector
+    std::cout<<"Size of m_systValVector: "<<m_systValVector.size()<<std::endl;
+    m_systVal = 1;
     if( m_systValVector.size() == 0) {
       if ( m_debug ){ Info("initialize()", "Pushing the following systVal to m_systValVector: %f", m_systVal ); }
       m_systValVector.push_back(m_systVal);

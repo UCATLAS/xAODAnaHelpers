@@ -393,7 +393,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
   if ( m_debug )  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
   m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
-
+  std::cout << "Muon info switch detail string. "<< detailStr << std::endl;
   // always
   m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");
 
@@ -483,7 +483,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
   for ( auto muon_itr : *(muons) ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillMuons()", "Filling muon w/ pT = %2f", muon_itr->pt() / m_units ); }
-
+    if ( m_muInfoSwitch->m_kinematic ) std::cout << "kinematic or something" << std::endl;
     if ( m_muInfoSwitch->m_kinematic ) {
       m_muon_pt.push_back ( muon_itr->pt() / m_units  );
       m_muon_eta.push_back( muon_itr->eta() );
@@ -641,6 +641,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 void HelpTreeBase::ClearMuons() {
 
   m_nmuon = 0;
+
+  if ( m_muInfoSwitch ) std::cout << "Muon info switch defined." << std::endl;
+  else {std::cout << "Muon info switch ill-defined. Will exit" << std::endl; return;}
 
   if ( m_muInfoSwitch->m_kinematic ) {
     m_muon_pt.clear();
