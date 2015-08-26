@@ -336,7 +336,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   //
   const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
   const CP::SystematicSet& recSyst = (systReg.recommendedSystematics());
-  Info("initialize()"," Initializing Muon Calibrator Systematics :");
+  Info("initialize()"," Initializing Jet Calibrator Systematics :");
   //
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
