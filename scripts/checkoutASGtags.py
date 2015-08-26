@@ -69,10 +69,12 @@ for pkg in packages_to_patch:
 
 #### Update Run II GRLs ####
 print "Updating GRL..."
-physicsGRL = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v63-pro18-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+physicsGRL50ns = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v63-pro18-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+physicsGRL25ns = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v64-pro19_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
 atlasReadyGRL = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/Atlas_Ready/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml"
 try:
-  subprocess.call(["wget","-q",physicsGRL,"-O", "xAODAnaHelpers/data/"+physicsGRL.split('/')[-1]])
+  subprocess.call(["wget","-q",physicsGRL50ns,"-O", "xAODAnaHelpers/data/"+physicsGRL50ns.split('/')[-1]])
+  subprocess.call(["wget","-q",physicsGRL25ns,"-O", "xAODAnaHelpers/data/"+physicsGRL25ns.split('/')[-1]])
   subprocess.call(["wget","-q",atlasReadyGRL,"-O","xAODAnaHelpers/data/"+atlasReadyGRL.split('/')[-1]])
 except OSError as e:
   print "Error, wget is not available.  Will not download grl.  You can find the latest version at", physicsGRL
