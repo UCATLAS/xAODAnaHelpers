@@ -27,7 +27,7 @@ public:
   std::string m_outContainerName;
 
   std::string m_jetAlgo;
-  std::string m_outputAlgo;
+  std::string m_outputAlgoSystNames;
   std::string m_calibConfigData;
   std::string m_calibConfigFullSim;
   std::string m_calibConfigAFII;

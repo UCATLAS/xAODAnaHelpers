@@ -67,14 +67,14 @@ JetCalibrator :: JetCalibrator () :
 
   // CONFIG parameters for JetCalibrationTool
   m_jetAlgo                 = "";
-  m_outputAlgo              = "";
+  m_outputAlgoSystNames     = "";
 
   // when running data "_Insitu" is appended to this string
   m_calibSequence           = "JetArea_Residual_Origin_EtaJES_GSC";
   m_calibConfigFullSim      = "JES_MC15Prerecommendation_April2015.config";
   m_calibConfigAFII         = "JES_Prerecommendation2015_AFII_Apr2015.config";
   m_calibConfigData         = "JES_MC15Prerecommendation_April2015.config";
-  m_calibConfig		    = "";
+  m_calibConfig             = "";
 
   // CONFIG parameters for JetUncertaintiesTool
   m_JESUncertConfig         = "";
@@ -95,14 +95,13 @@ JetCalibrator :: JetCalibrator () :
   //recalculate JVT using calibrated jets
   m_redoJVT                 = false;
   
-  // Avoid the m_systName == "None" condition, which makes downstream algs malfunction
-  m_systName                = "All";
-
+  // Initialize systematics variables
+  m_systName                = "";
+  m_systVal                 = 0.;
 }
 
 EL::StatusCode  JetCalibrator :: configure ()
 {
-
   if ( !getConfig().empty() ) {
 
     Info("configure()", "Configuring JetCalibrator Interface. User configuration read from : %s ", getConfig().c_str());
@@ -117,9 +116,12 @@ EL::StatusCode  JetCalibrator :: configure ()
     // shallow copies are made with this output container name
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
 
-    // CONFIG parameters for JetCalibrationTool
-    m_jetAlgo                 = config->GetValue("JetAlgorithm",    m_jetAlgo.c_str());
-    m_outputAlgo              = config->GetValue("OutputAlgo",      m_outputAlgo.c_str());
+    // CONFIG parameters for JetCalibrationTool and systematic variations
+    m_jetAlgo                 = config->GetValue("JetAlgorithm",        m_jetAlgo.c_str());
+    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
+    // Provisional default, since "None" is assigned to this string if this default is not set here
+    m_systName                = config->GetValue("SystName",            ""); 
+    m_systVal                 = config->GetValue("SystVal",             m_systVal);
 
     // when running data "_Insitu" is appended to this string
     m_calibSequence           = config->GetValue("CalibSequence",           m_calibSequence.c_str());
@@ -144,8 +146,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_cleanParent             = config->GetValue("CleanParent",             m_cleanParent);
 
     m_redoJVT                 = config->GetValue("RedoJVT",         m_redoJVT);
-    // m_systName                = config->GetValue("SystName",        m_systName.c_str());
-
+    
     config->Print();
 
     delete config; config = nullptr;
@@ -157,8 +158,8 @@ EL::StatusCode  JetCalibrator :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
-  if ( m_outputAlgo.empty() ) {
-    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
+  if ( m_outputAlgoSystNames.empty() ) {
+    m_outputAlgoSystNames = m_jetAlgo + "_Calib_Algo";
   }
 
   m_JESUncertAlgo = m_jetAlgo;
@@ -187,7 +188,7 @@ EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
 
   job.useXAOD ();
   xAOD::Init( "JetCalibrator" ).ignore(); // call before opening first file
-
+  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -199,6 +200,7 @@ EL::StatusCode JetCalibrator :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
+  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -208,6 +210,7 @@ EL::StatusCode JetCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
+  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -236,7 +239,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   Info("initialize()", "Initializing JetCalibrator Interface... ");
   m_runSysts = false; //Ensure this starts false
-
+  
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -327,14 +330,27 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
-  m_systName = "All";
+  // ***********************************************************
+
+  // Get a list of recommended systematics for this tool
+  //
+  const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
+  const CP::SystematicSet& recSyst = (systReg.recommendedSystematics());
+  Info("initialize()"," Initializing Muon Calibrator Systematics :");
+  //
+  // Make a list of systematics to be used, based on configuration input
+  // Use HelperFunctions::getListofSystematics() for this!
+  //
+  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
+  for ( const auto& syst_it : m_systList ) {
+    m_systType.insert(m_systType.begin(), 0); // Push systType nominal for this case
+  }
+
+  Info("initialize()","Will be using JetCalibrationTool systematic:");
+
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
-  std::cout << "Everything good up to here." << std::endl; 
-  if( m_JESUncertConfig.empty() ) std::cout << "JES Uncertainty empty." << std::endl;
-  if( m_systName.empty() ) std::cout << "Systematics names empty." << std::endl;
-  else std::cout << "Systematic name is: " << m_systName << std::endl;
   if ( !m_JESUncertConfig.empty() && !m_systName.empty()  && m_systName != "None" ) {
     m_JESUncertConfig = gSystem->ExpandPathName( m_JESUncertConfig.c_str() );
     Info("initialize()","Initialize JES UNCERT with %s", m_JESUncertConfig.c_str());
@@ -350,8 +366,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()"," Initializing Jet Systematics :");
 
     //If just one systVal, then push it to the vector
-    std::cout<<"Size of m_systValVector: "<<m_systValVector.size()<<std::endl;
-    m_systVal = 1;
     if( m_systValVector.size() == 0) {
       if ( m_debug ){ Info("initialize()", "Pushing the following systVal to m_systValVector: %f", m_systVal ); }
       m_systValVector.push_back(m_systVal);
@@ -362,6 +376,9 @@ EL::StatusCode JetCalibrator :: initialize ()
       std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal, m_debug );
 
       for(unsigned int i=0; i < JESSysList.size(); ++i){
+        // do not add another nominal syst to the list!!
+        // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
+        if (JESSysList.at(i).empty() || JESSysList.at(i) == CP::SystematicSet() ) { Info("initialize()","JESSysList Empty at index %d.",i); continue; }
         m_systList.push_back(  JESSysList.at(i) );
         m_systType.push_back(1);
       }
@@ -421,17 +438,15 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()", " Initializing JER Systematics :");
 
     std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1, m_debug ); //Only 1 sys allowed
-    for(unsigned int i=0; i < JERSysList.size(); ++i){
-      
+    for(unsigned int i=0; i < JERSysList.size(); ++i){   
       // do not add another nominal syst to the list!!
-      //
-      if (JERSysList.at(i).empty() ) { continue; }
-      
+      // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
+      if (JERSysList.at(i).empty() || JERSysList.at(i) == CP::SystematicSet() ) { Info("initialize()","JERSysList Empty at index %d.",i); continue; }
       m_systList.push_back(  JERSysList.at(i) );
       m_systType.push_back(2);
     }
 
-    if (!m_systList.empty() ) {
+    if (!m_systList.empty()){
       m_runSysts = true;
     }
 
@@ -450,8 +465,12 @@ EL::StatusCode JetCalibrator :: initialize ()
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->initialize(), "");
   }
 
-  for ( const auto& syst_it : m_systList ){
-    Info("initialize()"," Running with systematic : %s", (syst_it.name()).c_str());
+  for ( const auto& syst_it : m_systList ) {
+    if ( m_systName.empty() ) {
+      Info("initialize()","\t Running w/ nominal configuration only!"); 
+      break;
+    }
+    Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
   return EL::StatusCode::SUCCESS;
@@ -475,6 +494,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+  
   //std::vector< int >
   for ( const auto& syst_it : m_systList ) {
     unsigned int sysIndex = (&syst_it - &m_systList[0]);
@@ -489,7 +509,6 @@ EL::StatusCode JetCalibrator :: execute ()
     outSCAuxContainerName += syst_it.name();
     outContainerName      += syst_it.name();
     vecOutContainerNames->push_back( syst_it.name() );
-
 
     // create shallow copy;
     std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
@@ -509,7 +528,6 @@ EL::StatusCode JetCalibrator :: execute ()
 
     //Apply Uncertainties
     if ( m_runSysts ) {
-
       if ( thisSysType == 1 ){
         // JES Uncertainty Systematic
         if( m_debug ) { std::cout << "Configure JES for systematic variation : " << syst_it.name() << std::endl; }
@@ -534,7 +552,7 @@ EL::StatusCode JetCalibrator :: execute ()
             Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
             return EL::StatusCode::FAILURE;
           }
-        }else{ //apply nominal, which is always first element of m_sysList
+        }else{ //apply nominal, which is always first element of m_systList
           if ( m_JERSmearTool->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
             Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
             return EL::StatusCode::FAILURE;
@@ -558,12 +576,12 @@ EL::StatusCode JetCalibrator :: execute ()
       const xAOD::Jet* jetToClean = jet_itr;
 
       if(m_cleanParent){
-	      ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
-	      if(!el_parent.isValid()){
-	        Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
-	      } else {
-	        jetToClean = *el_parent;
-	      }
+        ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
+        if(!el_parent.isValid()){
+          Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
+        } else {
+          jetToClean = *el_parent;
+        }
       }
 
       isCleanDecor(*jet_itr) = m_jetCleaning->accept(*jetToClean);
@@ -596,7 +614,6 @@ EL::StatusCode JetCalibrator :: execute ()
       std::sort( calibJetsCDV->begin(), calibJetsCDV->end(), HelperFunctions::sort_pt );
     }
 
-
     // add shallow copy to TStore
     RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.first, outSCContainerName), "Failed to record shallow copy container.");
     RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.second, outSCAuxContainerName), "Failed to record shallow copy aux container.");
@@ -604,11 +621,11 @@ EL::StatusCode JetCalibrator :: execute ()
     // add ConstDataVector to TStore
     RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsCDV, outContainerName), "Failed to record const data container.");
   }
-
   // add vector of systematic names to TStore
-  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
+
   if ( m_verbose ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
