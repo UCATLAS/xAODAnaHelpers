@@ -151,10 +151,10 @@ bool HelperFunctions::isFilePrimaryxAOD(TFile* inputFile) {
     metaData->LoadTree(0);
     TObjArray* ar = metaData->GetListOfBranches();
     for (int i = 0; i < ar->GetEntries(); ++i) {
-  TBranch* b = (TBranch*) ar->At(i);
-  std::string name = std::string(b->GetName());
-  if (name == "StreamAOD")
-      return true;
+      TBranch* b = (TBranch*) ar->At(i);
+      std::string name = std::string(b->GetName());
+      if (name == "StreamAOD")
+        return true;
     }
 
     return false;
