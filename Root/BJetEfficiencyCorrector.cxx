@@ -418,9 +418,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       //  If btagging vector doesnt exist create it
       //
       SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decorSF );
-      if(!sfVec.isAvailable(*jet_itr)) {
-        sfVec(*jet_itr) = std::vector<float>();
-      }
+      sfVec(*jet_itr) = std::vector<float>();
 
       //
       // obtain efficiency SF
