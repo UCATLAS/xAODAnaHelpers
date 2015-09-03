@@ -151,10 +151,10 @@ bool HelperFunctions::isFilePrimaryxAOD(TFile* inputFile) {
     metaData->LoadTree(0);
     TObjArray* ar = metaData->GetListOfBranches();
     for (int i = 0; i < ar->GetEntries(); ++i) {
-	TBranch* b = (TBranch*) ar->At(i);
-	std::string name = std::string(b->GetName());
-	if (name == "StreamAOD")
-	    return true;
+      TBranch* b = (TBranch*) ar->At(i);
+      std::string name = std::string(b->GetName());
+      if (name == "StreamAOD")
+        return true;
     }
 
     return false;
@@ -332,13 +332,13 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
       //
       if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
         
-	outSystList.push_back(CP::SystematicSet());
+        outSystList.push_back(CP::SystematicSet());
         
-	if ( systVal == 0 ) {
+        if ( systVal == 0 ) {
           Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
           RCU_THROW_MSG("Failure");
         }
-	
+  
         outSystList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
       
       } else {
@@ -362,15 +362,15 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
       //
       if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
         
-	if ( systVal == 0 ) {
-          Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
-          RCU_THROW_MSG("Failure");
-        }
+      if ( systVal == 0 ) {
+        Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
+        RCU_THROW_MSG("Failure");
+      }
         
-	outSystList.push_back(CP::SystematicSet());
-        outSystList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
-        outSystList.push_back(CP::SystematicSet());
-        outSystList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
+      outSystList.push_back(CP::SystematicSet());
+      outSystList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
+      outSystList.push_back(CP::SystematicSet());
+      outSystList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
       
       } else {
       // not a continuous systematic

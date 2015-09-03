@@ -393,7 +393,6 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
   if ( m_debug )  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
   m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
-
   // always
   m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");
 
@@ -483,7 +482,6 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
   for ( auto muon_itr : *(muons) ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillMuons()", "Filling muon w/ pT = %2f", muon_itr->pt() / m_units ); }
-
     if ( m_muInfoSwitch->m_kinematic ) {
       m_muon_pt.push_back ( muon_itr->pt() / m_units  );
       m_muon_eta.push_back( muon_itr->eta() );
