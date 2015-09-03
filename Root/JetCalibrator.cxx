@@ -162,8 +162,6 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_outputAlgoSystNames = m_jetAlgo + "_Calib_Algo";
   }
 
-  m_JESUncertAlgo = m_jetAlgo;
-
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
@@ -356,7 +354,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()","Initialize JES UNCERT with %s", m_JESUncertConfig.c_str());
     std::string ju_tool_name = std::string("JESProvider_") + m_name;
     m_JESUncertTool = new JetUncertaintiesTool( ju_tool_name.c_str() );
-    RETURN_CHECK("JetCalibrator::initialize()", m_JESUncertTool->setProperty("JetDefinition",m_JESUncertAlgo), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JESUncertTool->setProperty("JetDefinition",m_jetAlgo), "");
     RETURN_CHECK("JetCalibrator::initialize()", m_JESUncertTool->setProperty("MCType",m_JESUncertMCType), "");
     RETURN_CHECK("JetCalibrator::initialize()", m_JESUncertTool->setProperty("ConfigFile", m_JESUncertConfig), "");
     RETURN_CHECK("JetCalibrator::initialize()", m_JESUncertTool->initialize(), "");

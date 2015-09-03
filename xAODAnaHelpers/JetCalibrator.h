@@ -60,8 +60,6 @@ private:
   bool m_isMC;            //!
   bool m_isFullSim;       //!
 
-  std::string m_JESUncertAlgo;          //!
-
   std::string m_outSCContainerName;     //!
   std::string m_outSCAuxContainerName;  //!
 
