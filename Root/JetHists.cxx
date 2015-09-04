@@ -231,7 +231,7 @@ StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight,
   return StatusCode::SUCCESS;
 }
 
-StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc ) {
+StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvLoc*/ ) {
 
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
