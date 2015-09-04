@@ -39,7 +39,6 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)
 
-
 JetCalibrator :: JetCalibrator () :
   m_runSysts(false),          // gets set later is syst applies to this tool
   m_jetCalibration(nullptr),  // JetCalibrationTool
@@ -120,7 +119,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_jetAlgo                 = config->GetValue("JetAlgorithm",        m_jetAlgo.c_str());
     m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
     // Provisional default, since "None" is assigned to this string if this default is not set here
-    m_systName                = config->GetValue("SystName",            ""); 
+    m_systName                = config->GetValue("SystName",            m_systName.c_str()); 
     m_systVal                 = config->GetValue("SystVal",             m_systVal);
 
     // when running data "_Insitu" is appended to this string

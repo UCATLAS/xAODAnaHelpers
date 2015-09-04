@@ -118,7 +118,8 @@ def main():
   print '\n******************************************\ndownloading datasets'
   for idataset, dataset in enumerate(datasetList):
     print '\n ---------------------- downloading dataset ('+str(idataset)+'/'+numDownloads+'): %s'%dataset
-    os.system("rucio download "+dataset)
+    print "rucio download "+dataset+" --ndownloader 5"
+    os.system("rucio download "+dataset+" --ndownloader 5")
 
     #remove scope from dataset name (i.e. user.x:)
     datasetList[idataset] = dataset.split(':')[1]
@@ -208,7 +209,7 @@ def main():
   #------------------------------------------
   #at last, go back to original directory
   os.chdir(currentDir)
-  shutil.rmtree(outputPath+'/rawDownload/')
+  ##shutil.rmtree(outputPath+'/rawDownload/')
 
 
 if __name__ == "__main__":
