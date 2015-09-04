@@ -53,7 +53,7 @@ BasicEventSelection :: BasicEventSelection () :
   m_el_cutflowHist_2(nullptr),
   m_mu_cutflowHist_1(nullptr),
   m_mu_cutflowHist_2(nullptr),
-  m_jet_cutflowHist_1(nullptr)  
+  m_jet_cutflowHist_1(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -262,7 +262,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  
+
   Info("fileExecute()", "Calling fileExecute");
 
   // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
@@ -301,12 +301,12 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       Error("initializeEvent()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
       return EL::StatusCode::FAILURE;
     }
-    bool allFromUnknownStream(true); 
+    bool allFromUnknownStream(true);
     if ( incompleteCBC->size() != 0 ) {
 
       for ( auto cbk : *incompleteCBC ) {
-	if ( cbk->inputStream() != "unknownStream" ) { 
-	  allFromUnknownStream = false; 
+	if ( cbk->inputStream() != "unknownStream" ) {
+	  allFromUnknownStream = false;
 	  break;
 	}
       }
@@ -356,16 +356,16 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     m_MD_finalSumWSquared   = DxAODEventsCBK->sumOfEventWeightsSquared();
 
   } else {
-  
-    // if not using a DAOD (or explicitly vetoing check on metadata), 
+
+    // if not using a DAOD (or explicitly vetoing check on metadata),
     // simply retrieve the tree entries and weight
     //
     TTree* CollectionTree = dynamic_cast<TTree*>( wk()->inputFile()->Get("CollectionTree") );
 
-    m_MD_finalNevents       = m_MD_initialNevents     = CollectionTree->GetEntries(); 
+    m_MD_finalNevents       = m_MD_initialNevents     = CollectionTree->GetEntries();
     m_MD_finalSumW          = m_MD_initialSumW        = CollectionTree->GetWeight() * CollectionTree->GetEntries();
     m_MD_finalSumWSquared   = m_MD_initialSumWSquared = ( CollectionTree->GetWeight() * CollectionTree->GetWeight() ) * CollectionTree->GetEntries();
-  
+
   }
 
   // Write metadata event bookkeepers to histogram
@@ -459,10 +459,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_mu_cutflowHist_1  = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
   m_mu_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_mu_cutflowHist_2  = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
-  m_mu_cutflowHist_2->SetBit(TH1::kCanRebin); 
+  m_mu_cutflowHist_2->SetBit(TH1::kCanRebin);
   m_jet_cutflowHist_1  = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
-  m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);   
-  
+  m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);
+
   // start labelling the bins for the event cutflow
   //
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
@@ -607,7 +607,8 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
 
-  float mcEvtWeight(1.0), pileupWeight(1.0);
+  float mcEvtWeight(1.0);
+  //float pileupWeight(1.0);
   if ( m_isMC ) {
     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weights of all the MC events used in the simulation
     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
@@ -626,8 +627,8 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_doPUreweighting ) {
       m_pileuptool->apply(*eventInfo);
-      static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
-      pileupWeight = pileupWeightAcc(*eventInfo) ;
+      // static SG::AuxElement::ConstAccessor< double > pileupWeightAcc("PileupWeight");
+      // pileupWeight = pileupWeightAcc(*eventInfo) ;
       //mcEvtWeight *= pileupWeight; ... WHAT DO WE DO FOR EVENT WEIGHTS?
     }
   }
@@ -718,14 +719,14 @@ EL::StatusCode BasicEventSelection :: execute ()
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
   m_cutflowHistW->Fill( m_cutflow_npv, mcEvtWeight);
 
-  // Trigger 
+  // Trigger
   //
   if ( !m_triggerSelection.empty() ) {
-  
+
     auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
-    
+
     if ( m_applyTriggerCut ) {
-    
+
       if ( !triggerChainGroup->isPassed() ) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS;
@@ -733,14 +734,14 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_cutflowHist ->Fill( m_cutflow_trigger, 1 );
       m_cutflowHistW->Fill( m_cutflow_trigger, mcEvtWeight);
 
-    } 
+    }
 
     // save passed triggers in eventInfo
     //
     if ( m_storeTrigDecisions ) {
-    
+
       std::vector<std::string> passTriggers;
-      
+
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool->getChainGroup( trigName );
         if ( trigChain->isPassed() ) {
@@ -749,8 +750,8 @@ EL::StatusCode BasicEventSelection :: execute ()
       }
       static SG::AuxElement::Decorator< std::vector< std::string > > passTrigs("passTriggers");
       passTrigs( *eventInfo ) = passTriggers;
-    
-    } 
+
+    }
 
     static SG::AuxElement::Decorator< float > weight_prescale("weight_prescale");
     weight_prescale(*eventInfo) = triggerChainGroup->getPrescale();
@@ -763,7 +764,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       static SG::AuxElement::Decorator< int > passHLT("passHLT");
       passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool->isPassed(m_triggerSelection.c_str()) : -1;
     }
-  
+
   } // if giving a specific list of triggers to look at
 
   if ( m_storeTrigKeys ) {
