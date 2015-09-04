@@ -11,6 +11,7 @@
 # @endcode
 #
 
+from __future__ import print_function
 import logging
 
 root_logger = logging.getLogger()
@@ -19,6 +20,12 @@ xAH_logger = logging.getLogger("xAH")
 
 import argparse
 import os
+import subprocess
+import sys
+import datetime
+import time
+
+SCRIPT_START_TIME = datetime.datetime.now()
 
 # think about using argcomplete
 # https://argcomplete.readthedocs.org/en/latest/#activating-global-completion%20argcomplete
@@ -28,95 +35,155 @@ if __name__ == "__main__":
   class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
     pass
 
-  parser = argparse.ArgumentParser(description='Spin up an analysis instantly!',
-                                   usage='%(prog)s filename [filename] [options]',
+  class _HelpAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+      if not values:
+        parser.print_help()
+      else:
+        available_groups = [group.title for group in parser._action_groups]
+        if values in available_groups:
+          action_group = parser._action_groups[available_groups.index(values)]
+          formatter = parser._get_formatter()
+          formatter.start_section(action_group.title)
+          formatter.add_text(action_group.description)
+          formatter.add_arguments(action_group._group_actions)
+          formatter.end_section()
+          parser._print_message(formatter.format_help())
+        else:
+          print("That is not a valid subsection. Chose from {{{0:s}}}".format(','.join(available_groups)))
+      parser.exit()
+
+  __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
+  __short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
+
+  baseUsageStr = "%(prog)s --files ... file [file ...] --config path/to/file.json [options]"
+  parser = argparse.ArgumentParser(add_help=False, description='Spin up an analysis instantly!',
+                                   usage='{0} {{driver}} [driver options]'.format(baseUsageStr),
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
+  # there are really no positional arguments in the automatic group
+  parser_requiredNamed = parser.add_argument_group('required named arguments')
+
+  # add custom help
+  parser.add_argument('-h', '--help', metavar='subsection', nargs='?', action=_HelpAction, help='show this help message and exit. You can also pass in the name of a subsection.')
+
+  # http://stackoverflow.com/a/16981688
+  parser._positionals.title = "required"
+  parser._optionals.title = "optional"
+
   # positional argument, require the first argument to be the input filename
-  parser.add_argument('input_filename',
-                      metavar='',
-                      type=str,
-                      nargs='+',
-                      help='input file(s) to read')
+  parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='file', type=str, nargs='+', required=True, help='input file(s) to read')
+  parser_requiredNamed.add_argument('--config', metavar='', type=str, required=True, help='configuration for the algorithms')
+  parser.add_argument('--submitDir', dest='submit_dir', metavar='<directory>', type=str, required=False, help='Output directory to store the output.', default='submitDir')
+  parser.add_argument('--nevents', dest='num_events', metavar='<n>', type=int, help='Number of events to process for all datasets.', default=0)
+  parser.add_argument('--skip', dest='skip_events', metavar='<n>', type=int, help='Number of events to skip at start.', default=0)
+  parser.add_argument('-f', '--force', dest='force_overwrite', action='store_true', help='Overwrite previous directory if it exists.')
 
-  parser.add_argument('--config',
-                       metavar='',
-                       type=str,
-                       required=True,
-                       help='configuration for the algorithms')
+  parser.add_argument('--version', action='version', version='%(prog)s {version}'.format(version=__version__))
+  parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch}', choices=['class', 'branch'], default='class', help='Run using branch access mode or class access mode. See kratsg/TheAccountant/wiki/Access-Mode for more information')
 
-  parser.add_argument('--submitDir',
-                      dest='submit_dir',
-                      metavar='<directory>',
-                      type=str,
-                      required=False,
-                      help='Output directory to store the output.',
-                      default='submitDir')
-  parser.add_argument('--nevents',
-                      dest='num_events',
-                      metavar='<n>',
-                      type=int,
-                      help='Number of events to process for all datasets.',
-                      default=0)
-  parser.add_argument('--skip',
-                      dest='skip_events',
-                      metavar='<n>',
-                      type=int,
-                      help='Number of events to skip at start.',
-                      default=0)
-  parser.add_argument('-f', '--force',
-                      dest='force_overwrite',
-                      action='store_true',
-                      help='Overwrite previous directory if it exists.')
+  parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of files.')
+  parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
+  parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Default: no verbosity')
 
-  # http://stackoverflow.com/questions/12303547/set-the-default-to-false-if-another-mutually-exclusive-argument-is-true
-  group_driver = parser.add_mutually_exclusive_group()
-  group_driver.add_argument('--direct',
-                      dest='driver',
-                      metavar='',
-                      action='store_const',
-                      const='direct',
-                      help='Run your jobs locally.')
-  group_driver.add_argument('--prooflite',
-                      dest='driver',
-                      metavar='',
-                      action='store_const',
-                      const='prooflite',
-                      help='Run your jobs using ProofLite')
-  group_driver.add_argument('--grid',
-                      dest='driver',
-                      metavar='',
-                      action='store_const',
-                      const='grid',
-                      help='Run your jobs on the grid.')
-  group_driver.set_defaults(driver='direct')
+  driverUsageStr = '{0} {{0:s}} [{{0:s}} options]'.format(baseUsageStr)
+  # first is the driver
+  drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
+  direct = drivers_parser.add_parser('direct', help='Run your jobs locally.', usage=driverUsageStr.format('direct'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+  prooflite = drivers_parser.add_parser('prooflite', help='Run your jobs using ProofLite', usage=driverUsageStr.format('prooflite'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+  prun = drivers_parser.add_parser('prun', help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.', usage=driverUsageStr.format('prun'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+  condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=driverUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+  lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=driverUsageStr.format('lsf'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
-  parser.add_argument('--inputList',
-                      dest='input_from_file',
-                      action='store_true',
-                      help='If enabled, will read in a text file containing a list of files.')
-  parser.add_argument('--inputDQ2',
-                      dest='input_from_DQ2',
-                      action='store_true',
-                      help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
-  parser.add_argument('-v', '--verbose',
-                      dest='verbose',
-                      action='count',
-                      default=0,
-                      help='Enable verbose output of various levels. Default: no verbosity')
+  # standard options for other drivers
+  #.add_argument('--optCacheLearnEntries', type=str, required=False, default=None)
+  #.add_argument('--optCacheSize', type=str, required=False, default=None)
+  #.add_argument('--optD3PDCacheMinByte', type=str, required=False, default=None)
+  #.add_argument('--optD3PDCacheMinByteFraction', type=str, required=False, default=None)
+  #.add_argument('--optD3PDCacheMinEvent', type=str, required=False, default=None)
+  #.add_argument('--optD3PDCacheMinEventFraction', type=str, required=False, default=None)
+  #.add_argument('--optD3PDPerfStats', type=str, required=False, default=None)
+  #.add_argument('--optD3PDReadStats', type=str, required=False, default=None)
+  #.add_argument('--optDisableMetrics', type=str, required=False, default=None)
+  #.add_argument('--optEventsPerWorker', type=str, required=False, default=None)
+  #.add_argument('--optFilesPerWorker', type=str, required=False, default=None)
+  #.add_argument('--optMaxEvents', type=str, required=False, default=None)
+  #.add_argument('--optPerfTree', type=str, required=False, default=None)
+  #.add_argument('--optPrintPerFileStats', type=str, required=False, default=None)
+  #.add_argument('--optRemoveSubmitDir', type=str, required=False, default=None)
+  #.add_argument('--optResetShell', type=str, required=False, default=None)
+  #.add_argument('--optSkipEvents', type=str, required=False, default=None)
+  #.add_argument('--optSubmitFlags', type=str, required=False, default=None)
+  #.add_argument('--optXAODPerfStats', type=str, required=False, default=None)
+  #.add_argument('--optXAODReadStats', type=str, required=False, default=None)
+  #.add_argument('--optXaodAccessMode', type=str, required=False, default=None)
+  #.add_argument('--optXaodAccessMode_branch', type=str, required=False, default=None)
+  #.add_argument('--optXaodAccessMode_class', type=str, required=False, default=None)
+
+  # define arguments for prun driver
+  prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
+  prun.add_argument('--optGridDestSE',           metavar='', type=str, required=False, default="MWT2_UC_LOCALGROUPDISK")
+  prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
+  prun.add_argument('--optGridExpress',          metavar='', type=str, required=False, default=None)
+  prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridMaxNFilesPerJob',  metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridMaxFileSize',      metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridMergeOutput',      metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridNFiles',           metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridNFilesPerJob',     metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridNGBPerJob',        metavar='', type=int, required=False, default=2)
+  prun.add_argument('--optGridNJobs',            metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridNoSubmit',         metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
+  prun.add_argument('--optGridUseChirpServer',   metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optTmpDir',               metavar='', type=str, required=False, default=None)
+  prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
+  prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
+  prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=True, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
+
+  # define arguments for condor driver
+  condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true')
+
+  # define arguments for lsf driver
+  lsf.add_argument('--optLSFConf', metavar='', type=str, required=False, default='-q short')
 
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
 
   # set verbosity for python printing
-  if args.verbose < 5:
+  if args.verbose < 4:
     xAH_logger.setLevel(25 - args.verbose*5)
   else:
     xAH_logger.setLevel(logging.NOTSET + 1)
 
   try:
     import timing
-    import ROOT
+
+    # check environment variables for various options first before trying to do anything else
+    if args.driver == 'prun':
+      required_environment_variables = ['PATHENA_GRID_SETUP_SH', 'PANDA_CONFIG_ROOT', 'ATLAS_LOCAL_PANDACLIENT_PATH', 'PANDA_SYS', 'ATLAS_LOCAL_PANDACLI_VERSION']
+      for env_var in required_environment_variables:
+        if os.getenv(env_var) is None:
+          raise EnvironmentError('Panda client is not setup. Run localSetupPandaClient.')
+
+    # check submission directory
+    if args.force_overwrite:
+      xAH_logger.info("removing {0:s}".format(args.submit_dir))
+      import shutil
+      shutil.rmtree(args.submit_dir, True)
+    else:
+      # check if directory exists
+      if os.path.exists(args.submit_dir):
+        raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
+
+    # they will need it to get it working
+    use_scanDQ2 = (args.use_scanDQ2)|(args.driver in ['prun', 'condor','lsf'])
+    if use_scanDQ2:
+      if os.getenv('XRDSYS') is None:
+        raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
+
     import json
     import re
 
@@ -126,15 +193,15 @@ if __name__ == "__main__":
 
     # http://www.lifl.fr/~damien.riquet/parse-a-json-file-with-comments.html
     def parse_json(filename):
-        """ Parse a JSON file
-            First remove comments and then use the json module package
-            Comments look like :
-                // ...
-            or
-                /*
-                ...
-                */
-        """
+      """ Parse a JSON file
+          First remove comments and then use the json module package
+          Comments look like :
+              // ...
+          or
+              /*
+              ...
+              */
+      """
       with open(filename) as f:
         content = ''.join(f.readlines())
         ## Looking for comments
@@ -143,37 +210,69 @@ if __name__ == "__main__":
           # single line comment
           content = content[:match.start()] + content[match.end():]
           match = comment_re.search(content)
-        print content
+        print(content)
         # Return json file
         return json.loads(content)
 
+    # at this point, we should import ROOT and do stuff
+    import ROOT
     xAH_logger.info("loading packages")
     ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
-
-    if args.force_overwrite:
-      xAH_logger.info("removing {0:s}".format(args.submit_dir))
-      import shutil
-      shutil.rmtree(args.submit_dir, True)
+    # load the standard algorithm since pyroot delays quickly
+    ROOT.EL.Algorithm()
 
     #Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore();
+
+    # check that we have appropriate drivers
+    if args.driver == 'prun':
+      if getattr(ROOT.EL, 'PrunDriver') is None:
+          raise KeyError('Cannot load the Prun driver from EventLoop. Did you not compile it?')
+    elif args.driver == 'condor':
+      if getattr(ROOT.EL, 'CondorDriver') is None:
+        raise KeyError('Cannot load the Condor driver from EventLoop. Did you not compile it?')
+    elif args.driver == 'lsf':
+      if getattr(ROOT.EL, 'LSFDriver') is None:
+        raise KeyError('Cannot load the LSF driver from EventLoop. Did you not compile it?')
 
     # create a new sample handler to describe the data files we use
     xAH_logger.info("creating new sample handler")
     sh_all = ROOT.SH.SampleHandler()
 
+    # this portion is just to output for verbosity
+    if args.use_inputFileList:
+      xAH_logger.info("\t\tReading in file(s) containing list of files")
+      if use_scanDQ2:
+        xAH_logger.info("\t\tAdding samples using scanDQ2")
+      else:
+        xAH_logger.info("\t\tAdding using readFileList")
+    else:
+      if use_scanDQ2:
+        xAH_logger.info("\t\tAdding samples using scanDQ2")
+      else:
+        xAH_logger.info("\t\tAdding samples using scanDir")
+
     for fname in args.input_filename:
-      if args.input_from_file:
-        if args.input_from_DQ2:
+      if args.use_inputFileList:
+        if use_scanDQ2:
           with open(fname, 'r') as f:
             for line in f:
-                ROOT.SH.scanDQ2(sh_all, line)
+              if line.startswith('#'): continue
+              ROOT.SH.scanDQ2(sh_all, line.rstrip())
         else:
           ROOT.SH.readFileList(sh_all, "sample", fname)
       else:
-        if args.input_from_DQ2:
+        if use_scanDQ2:
           ROOT.SH.scanDQ2(sh_all, fname)
         else:
+          '''
+          if fname.startswith("root://"):
+            # magic!
+            server, path = [string[::-1] for string in fname[::-1].split("//",1)][::-1]
+            sh_list = ROOT.SH.DiskListXRD(server, '/{0:s}'.format(path), True)
+            ROOT.SH.ScanDir().scan(sh_all, sh_list)
+          else:
+          '''
           # need to parse and split it up
           fname_base = os.path.basename(fname)
           sample_dir = os.path.dirname(os.path.abspath(fname))
@@ -182,41 +281,74 @@ if __name__ == "__main__":
           ROOT.SH.scanDir(sh_all, sh_list, fname_base, os.path.basename(sample_dir))
 
     # print out the samples we found
-    xAH_logger.info("\t%d different datasets found", len(sh_all))
+    xAH_logger.info("\t%d different dataset(s) found", len(sh_all))
+    if not use_scanDQ2:
+      for dataset in sh_all:
+        xAH_logger.info("\t\t%d files in %s", dataset.numFiles(), dataset.name())
     sh_all.printContent()
 
-    # set the name of the tree in our files
+    if len(sh_all) == 0:
+      xAH_logger.info("No datasets found. Exiting.")
+      sys.exit(0)
+
+    # set the name of the tree in our files (should be configurable)
     sh_all.setMetaString("nc_tree", "CollectionTree")
+
+    # read susy meta data (should be configurable)
+    # xAH_logger.info("reading all metadata in $ROOTCOREBIN/data/xAODAnaHelpers")
+    # ROOT.SH.readSusyMetaDir(sh_all,"$ROOTCOREBIN/data/xAODAnaHelpers")
 
     # this is the basic description of our job
     xAH_logger.info("creating new job")
     job = ROOT.EL.Job()
     job.sampleHandler(sh_all)
 
+    if args.driver == 'lsf':
+      job.options().setBool(ROOT.EL.Job.optResetShell, False);
+
     if args.num_events > 0:
-      xAH_logger.info("processing only %d events", args.num_events)
+      xAH_logger.info("\tprocessing only %d events", args.num_events)
       job.options().setDouble(ROOT.EL.Job.optMaxEvents, args.num_events)
 
     if args.skip_events > 0:
-      xAH_logger.info("skipping first %d events", args.skip_events)
+      xAH_logger.info("\tskipping first %d events", args.skip_events)
       job.options().setDouble(ROOT.EL.Job.optSkipEvents, args.skip_events)
 
+    # should be configurable
     job.options().setDouble(ROOT.EL.Job.optCacheSize, 50*1024*1024)
     job.options().setDouble(ROOT.EL.Job.optCacheLearnEntries, 50)
+
+    # access mode branch
+    if args.access_mode == 'branch':
+      xAH_logger.info("\tusing branch access mode: ROOT.EL.Job.optXaodAccessMode_branch")
+      job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_branch )
+    else:
+      xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
+      job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
 
     # add our algorithm to the job
     algorithm_configurations = parse_json(args.config)
     xAH_logger.info("loaded the configurations")
 
+    # formatted string
+    algorithmConfiguration_string = []
+    printStr = "\tsetting {0: >20}.m_{1:<30} = {2}"
+
+    # this is where we go over and process all algorithms
     for algorithm_configuration in algorithm_configurations:
       alg_name = algorithm_configuration['class']
       xAH_logger.info("creating algorithm %s", alg_name)
+      algorithmConfiguration_string.append("{0} algorithm options".format(alg_name))
+
+      # handle namespaces
       alg = reduce(lambda x,y: getattr(x, y, None), alg_name.split('.'), ROOT)
       if not alg:
         raise ValueError("Algorithm %s does not exist" % alg_name)
       alg = alg()
+
       for config_name, config_val in algorithm_configuration['configs'].iteritems():
-        xAH_logger.info("\tsetting %s.%s = %s", alg_name, config_name, config_val)
+        xAH_logger.info("\t%s", printStr.format(alg_name, config_name, config_val))
+        algorithmConfiguration_string.append(printStr.format(alg_name, config_name, config_val))
         alg_attr = getattr(alg, config_name, None)
         if alg_attr is None:
           raise ValueError("Algorithm %s does not have attribute %s" % (alg_name, config_name))
@@ -228,32 +360,70 @@ if __name__ == "__main__":
           setattr(alg, config_name, config_val)
 
       xAH_logger.info("adding algorithm %s to job", alg_name)
+      algorithmConfiguration_string.append("\n")
       job.algsAdd(alg)
-
 
     # make the driver we want to use:
     # this one works by running the algorithm directly
     xAH_logger.info("creating driver")
+    xAH_logger.info("\trunning on {0:s}".format(args.driver))
     driver = None
     if (args.driver == "direct"):
-      xAH_logger.info("\trunning on direct")
       driver = ROOT.EL.DirectDriver()
-      xAH_logger.info("\tsubmit job")
-      driver.submit(job, args.submit_dir)
     elif (args.driver == "prooflite"):
-      xAH_logger.info("\trunning on prooflite")
       driver = ROOT.EL.ProofDriver()
-      xAH_logger.info("\tsubmit job")
-      driver.submit(job, args.submit_dir)
-    elif (args.driver == "grid"):
-      xAH_logger.info("\trunning on Grid")
+    elif (args.driver == "prun"):
       driver = ROOT.EL.PrunDriver()
-      driver.options().setString("nc_outputSampleName", "user.gstark.%%in:name[2]%%.%%in:name[3]%%")
-      #driver.options().setDouble("nc_disableAutoRetry", 1)
-      driver.options().setDouble("nc_nFilesPerJob", 1)
-      driver.options().setDouble(ROOT.EL.Job.optGridMergeOutput, 1);
-      xAH_logger.info("\tsubmit job")
+
+      for opt, t in map(lambda x: (x.dest, x.type), prun._actions):
+        if getattr(args, opt) is None: continue  # skip if not set
+        if opt in ['help', 'optGridOutputSampleName']: continue  # skip some options
+        if t in [float]:
+          setter = 'setDouble'
+        elif t in [int]:
+          setter = 'setInteger'
+        elif t in [bool]:
+          setter = 'setBool'
+        else:
+          setter = 'setString'
+
+        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
+
+
+      nc_outputSampleNameStr = args.optGridOutputSampleName
+      driver.options().setString("nc_outputSampleName", nc_outputSampleNameStr)
+      xAH_logger.info("\t - driver.options().setString(nc_outputSampleName, {0:s})".format(nc_outputSampleNameStr))
+
+    elif (args.driver == "condor"):
+      driver = ROOT.EL.CondorDriver()
+      driver.options().setBool(ROOT.EL.Job.optBatchSharedFileSystem, False)
+      driver.options().setString(ROOT.EL.Job.optCondorConf, args.optCondorConf)
+
+    elif (args.driver == "lsf"):
+      driver = ROOT.EL.LSFDriver()
+      driver.options().setString(ROOT.EL.Job.optSubmitFlags, args.optLSFConf)
+
+    user_confirm(args, 4+args.optimization_dump)
+
+    xAH_logger.info("\tsubmit job")
+    if args.driver in ["prun", "condor","lsf"]:
       driver.submitOnly(job, args.submit_dir)
+    else:
+      driver.submit(job, args.submit_dir)
+
+    SCRIPT_END_TIME = datetime.datetime.now()
+
+    with open(os.path.join(args.submit_dir, 'xAH_run.log'), 'w+') as f:
+      f.write(' '.join(['[{0}]'.format(__version__), os.path.basename(sys.argv[0])] + sys.argv[1:]))
+      f.write('\n')
+      f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__short_hash__))
+      f.write('Start: {0}\nStop:  {1}\nDelta: {2}\n\n'.format(SCRIPT_START_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME - SCRIPT_START_TIME))
+      f.write('job runner options\n')
+      for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'verbose', 'driver']:
+        f.write('\t{0: <51} = {1}\n'.format(opt, getattr(args, opt)))
+      for algConfig_str in algorithmConfiguration_string:
+        f.write('{0}\n'.format(algConfig_str))
 
   except Exception, e:
     # we crashed
