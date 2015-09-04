@@ -1,6 +1,6 @@
 from __future__ import print_function
 import atexit
-from time import clock
+from time import time
 import logging
 
 logger = logging.getLogger("timing")
@@ -15,22 +15,22 @@ def secondsToStr(t):
 line = "="*40
 def log(s, elapsed=None):
     print(line)
-    print("{0}-{1}".format(secondsToStr(clock()), s))
+    print("{0}-{1}".format(secondsToStr(time()), s))
     if elapsed:
         print("Elapsed time: {0}".format(elapsed))
     print(line)
     print("")
 
 def endlog():
-    end = clock()
+    end = time()
     elapsed = end-start
     print("")
     log("End Program", secondsToStr(elapsed))
 
 def now():
-    return secondsToStr(clock())
+    return secondsToStr(time())
 
-start = clock()
+start = time()
 atexit.register(endlog)
 log("Start Program")
 
