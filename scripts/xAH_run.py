@@ -118,6 +118,34 @@ if __name__ == "__main__":
     import timing
     import ROOT
     import json
+    import re
+
+    # Regular expression for comments
+    comment_re = re.compile('(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
+                            re.DOTALL | re.MULTILINE)
+
+    # http://www.lifl.fr/~damien.riquet/parse-a-json-file-with-comments.html
+    def parse_json(filename):
+        """ Parse a JSON file
+            First remove comments and then use the json module package
+            Comments look like :
+                // ...
+            or
+                /*
+                ...
+                */
+        """
+      with open(filename) as f:
+        content = ''.join(f.readlines())
+        ## Looking for comments
+        match = comment_re.search(content)
+        while match:
+          # single line comment
+          content = content[:match.start()] + content[match.end():]
+          match = comment_re.search(content)
+        print content
+        # Return json file
+        return json.loads(content)
 
     xAH_logger.info("loading packages")
     ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
@@ -177,8 +205,7 @@ if __name__ == "__main__":
     job.options().setDouble(ROOT.EL.Job.optCacheLearnEntries, 50)
 
     # add our algorithm to the job
-    with open(args.config, 'r') as configFile:
-      algorithm_configurations = json.load(configFile)
+    algorithm_configurations = parse_json(args.config)
     xAH_logger.info("loaded the configurations")
 
     for algorithm_configuration in algorithm_configurations:
