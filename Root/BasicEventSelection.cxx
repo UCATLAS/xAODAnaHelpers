@@ -41,9 +41,9 @@
 ClassImp(BasicEventSelection)
 
 BasicEventSelection :: BasicEventSelection () :
+  m_PU_default_channel(0),
   m_grl(nullptr),
   m_pileuptool(nullptr),
-  m_PU_default_channel(0),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
   m_histEventCount(nullptr),
