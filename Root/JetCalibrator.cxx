@@ -93,7 +93,7 @@ JetCalibrator :: JetCalibrator () :
 
   //recalculate JVT using calibrated jets
   m_redoJVT                 = false;
-  
+
   // Initialize systematics variables
   m_systName                = "";
   m_systVal                 = 0.;
@@ -119,7 +119,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_jetAlgo                 = config->GetValue("JetAlgorithm",        m_jetAlgo.c_str());
     m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
     // Provisional default, since "None" is assigned to this string if this default is not set here
-    m_systName                = config->GetValue("SystName",            m_systName.c_str()); 
+    m_systName                = config->GetValue("SystName",            m_systName.c_str());
     m_systVal                 = config->GetValue("SystVal",             m_systVal);
 
     // when running data "_Insitu" is appended to this string
@@ -145,7 +145,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_cleanParent             = config->GetValue("CleanParent",             m_cleanParent);
 
     m_redoJVT                 = config->GetValue("RedoJVT",         m_redoJVT);
-    
+
     config->Print();
 
     delete config; config = nullptr;
@@ -185,7 +185,7 @@ EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
 
   job.useXAOD ();
   xAOD::Init( "JetCalibrator" ).ignore(); // call before opening first file
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -197,7 +197,7 @@ EL::StatusCode JetCalibrator :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -207,7 +207,7 @@ EL::StatusCode JetCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -236,7 +236,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   Info("initialize()", "Initializing JetCalibrator Interface... ");
   m_runSysts = false; //Ensure this starts false
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -339,9 +339,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   // Use HelperFunctions::getListofSystematics() for this!
   //
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
-  for ( const auto& syst_it : m_systList ) {
+  for(unsigned int i=0; i<m_systList.size(); i++)
     m_systType.insert(m_systType.begin(), 0); // Push systType nominal for this case
-  }
 
   Info("initialize()","Will be using JetCalibrationTool systematic:");
 
@@ -415,7 +414,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     //m_JERSmearTool->msg().setLevel(MSG::DEBUG);
     m_JERToolHandle = ToolHandle<IJERTool>(m_JERTool->name());
     RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("JERTool", m_JERToolHandle), "");
-    
+
     RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("isMC", m_isMC), "");
 
     //m_JERApplyNominal = true;
@@ -435,7 +434,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()", " Initializing JER Systematics :");
 
     std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1, m_debug ); //Only 1 sys allowed
-    for(unsigned int i=0; i < JERSysList.size(); ++i){   
+    for(unsigned int i=0; i < JERSysList.size(); ++i){
       // do not add another nominal syst to the list!!
       // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
       if (JERSysList.at(i).empty() || JERSysList.at(i) == CP::SystematicSet() ) { Info("initialize()","JERSysList Empty at index %d.",i); continue; }
@@ -464,7 +463,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!"); 
+      Info("initialize()","\t Running w/ nominal configuration only!");
       break;
     }
     Info("initialize()","\t %s", (syst_it.name()).c_str());
@@ -491,7 +490,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-  
+
   //std::vector< int >
   for ( const auto& syst_it : m_systList ) {
     unsigned int sysIndex = (&syst_it - &m_systList[0]);
