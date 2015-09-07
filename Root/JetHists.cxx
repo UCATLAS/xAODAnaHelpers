@@ -622,12 +622,19 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
     const xAOD::BTagging *btag_info = jet->btagging();
     m_MV1 ->  Fill( btag_info->MV1_discriminant() , eventWeight );
     m_SV1_plus_IP3D ->  Fill( btag_info->MV1_discriminant() , eventWeight );
-    m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );
+    
+    static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
+    if ( SV0_significance3DAcc.isAvailable(*btag_info) ) {
+      m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );
+      m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );
+      m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
+      m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
+      m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
+    }
+    
+    //m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }
     m_SV1 ->  Fill( btag_info->SV1_loglikelihoodratio() , eventWeight );
-    m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );
-    m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
-    m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
-    m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
+
 
   }
 
