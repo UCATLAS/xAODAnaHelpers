@@ -130,6 +130,9 @@ class JetHists : public HistogramManager
 
     // Flavor Tag
     TH1F* m_MV1   ; //!
+    TH1F* m_MV2c00   ; //!
+    TH1F* m_MV2c10   ; //!
+    TH1F* m_MV2c20   ; //!
     TH1F* m_SV1_plus_IP3D   ; //!
     TH1F* m_SV0             ; //!
     TH1F* m_SV1             ; //!
