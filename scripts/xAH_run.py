@@ -404,8 +404,6 @@ if __name__ == "__main__":
       driver = ROOT.EL.LSFDriver()
       driver.options().setString(ROOT.EL.Job.optSubmitFlags, args.optLSFConf)
 
-    user_confirm(args, 4+args.optimization_dump)
-
     xAH_logger.info("\tsubmit job")
     if args.driver in ["prun", "condor","lsf"]:
       driver.submitOnly(job, args.submit_dir)
