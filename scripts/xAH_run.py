@@ -89,9 +89,21 @@ if __name__ == "__main__":
   driverUsageStr = '{0} {{0:s}} [{{0:s}} options]'.format(baseUsageStr)
   # first is the driver
   drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
-  direct = drivers_parser.add_parser('direct', help='Run your jobs locally.', usage=driverUsageStr.format('direct'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-  prooflite = drivers_parser.add_parser('prooflite', help='Run your jobs using ProofLite', usage=driverUsageStr.format('prooflite'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-  prun = drivers_parser.add_parser('prun', help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.', usage=driverUsageStr.format('prun'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+  direct = drivers_parser.add_parser('direct', 
+                                     help='Run your jobs locally.', 
+                                     usage=driverUsageStr.format('direct'), 
+                                     formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+
+  prooflite = drivers_parser.add_parser('prooflite', 
+                                        help='Run your jobs using ProofLite', 
+                                        usage=driverUsageStr.format('prooflite'), 
+                                        formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+
+  prun = drivers_parser.add_parser('prun', 
+                                   help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.', 
+                                   usage=driverUsageStr.format('prun'), 
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+
   condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=driverUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
   lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=driverUsageStr.format('lsf'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
@@ -141,7 +153,7 @@ if __name__ == "__main__":
   prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
   prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
   prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=True, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
+  prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
 
   # define arguments for condor driver
   condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true')
@@ -326,42 +338,63 @@ if __name__ == "__main__":
       xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
       job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
 
-    # add our algorithm to the job
-    algorithm_configurations = parse_json(args.config)
-    xAH_logger.info("loaded the configurations")
+      
+    load_json   = ".json" in args.config
 
-    # formatted string
-    algorithmConfiguration_string = []
-    printStr = "\tsetting {0: >20}.m_{1:<30} = {2}"
+    if load_json:
+      print("Loading json files")
 
-    # this is where we go over and process all algorithms
-    for algorithm_configuration in algorithm_configurations:
-      alg_name = algorithm_configuration['class']
-      xAH_logger.info("creating algorithm %s", alg_name)
-      algorithmConfiguration_string.append("{0} algorithm options".format(alg_name))
+      # add our algorithm to the job
+      algorithm_configurations = parse_json(args.config)
+      xAH_logger.info("loaded the configurations")
 
-      # handle namespaces
-      alg = reduce(lambda x,y: getattr(x, y, None), alg_name.split('.'), ROOT)
-      if not alg:
-        raise ValueError("Algorithm %s does not exist" % alg_name)
-      alg = alg()
+      # formatted string
+      algorithmConfiguration_string = []
+      printStr = "\tsetting {0: >20}.m_{1:<30} = {2}"
 
-      for config_name, config_val in algorithm_configuration['configs'].iteritems():
-        xAH_logger.info("\t%s", printStr.format(alg_name, config_name, config_val))
-        algorithmConfiguration_string.append(printStr.format(alg_name, config_name, config_val))
-        alg_attr = getattr(alg, config_name, None)
-        if alg_attr is None:
-          raise ValueError("Algorithm %s does not have attribute %s" % (alg_name, config_name))
+      # this is where we go over and process all algorithms
+      for algorithm_configuration in algorithm_configurations:
+        alg_name = algorithm_configuration['class']
+        xAH_logger.info("creating algorithm %s", alg_name)
+        algorithmConfiguration_string.append("{0} algorithm options".format(alg_name))
+  
+        # handle namespaces
+        alg = reduce(lambda x,y: getattr(x, y, None), alg_name.split('.'), ROOT)
+        if not alg:
+          raise ValueError("Algorithm %s does not exist" % alg_name)
+        alg = alg()
+  
+        for config_name, config_val in algorithm_configuration['configs'].iteritems():
+          xAH_logger.info("\t%s", printStr.format(alg_name, config_name, config_val))
+          algorithmConfiguration_string.append(printStr.format(alg_name, config_name, config_val))
+          alg_attr = getattr(alg, config_name, None)
+          if alg_attr is None:
+            raise ValueError("Algorithm %s does not have attribute %s" % (alg_name, config_name))
+  
+          #handle unicode from json
+          if isinstance(config_val, unicode):
+            setattr(alg, config_name, config_val.encode('utf-8'))
+          else:
+            setattr(alg, config_name, config_val)
+  
+        xAH_logger.info("adding algorithm %s to job", alg_name)
+        algorithmConfiguration_string.append("\n")
+        job.algsAdd(alg)
+    else:
 
-        #handle unicode from json
-        if isinstance(config_val, unicode):
-          setattr(alg, config_name, config_val.encode('utf-8'))
-        else:
-          setattr(alg, config_name, config_val)
 
-      xAH_logger.info("adding algorithm %s to job", alg_name)
-      algorithmConfiguration_string.append("\n")
-      job.algsAdd(alg)
+      import sys
+      configSplit = args.config.split("/")
+      configModuleName = configSplit[-1].replace(".py","")
+      configSplit.remove(configSplit[-1])
+      pathToConfig = "/".join(configSplit)
+      print("Loading python config:  "+configModuleName+" from "+pathToConfig)
+
+      sys.path.insert(0, pathToConfig)
+      configModule = __import__(configModuleName)
+      configModule.addAlgs(job)
+
+
 
     # make the driver we want to use:
     # this one works by running the algorithm directly
@@ -404,7 +437,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.LSFDriver()
       driver.options().setString(ROOT.EL.Job.optSubmitFlags, args.optLSFConf)
 
-    user_confirm(args, 4+args.optimization_dump)
+    #user_confirm(args, 4+args.optimization_dump)
 
     xAH_logger.info("\tsubmit job")
     if args.driver in ["prun", "condor","lsf"]:
@@ -422,8 +455,9 @@ if __name__ == "__main__":
       f.write('job runner options\n')
       for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'verbose', 'driver']:
         f.write('\t{0: <51} = {1}\n'.format(opt, getattr(args, opt)))
-      for algConfig_str in algorithmConfiguration_string:
-        f.write('{0}\n'.format(algConfig_str))
+      if load_json:
+        for algConfig_str in algorithmConfiguration_string:
+          f.write('{0}\n'.format(algConfig_str))
 
   except Exception, e:
     # we crashed
