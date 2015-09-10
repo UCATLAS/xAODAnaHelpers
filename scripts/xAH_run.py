@@ -141,7 +141,7 @@ if __name__ == "__main__":
   prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
   prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
   prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=True, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
+  prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
 
   # define arguments for condor driver
   condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true')
