@@ -81,6 +81,9 @@ if __name__ == "__main__":
 
   parser.add_argument('--version', action='version', version='%(prog)s {version}'.format(version=__version__))
   parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch}', choices=['class', 'branch'], default='class', help='Run using branch access mode or class access mode. See kratsg/TheAccountant/wiki/Access-Mode for more information')
+  parser.add_argument( '--isMC',    action="store_true", dest="is_MC",    default=False, help="Running MC")
+  parser.add_argument( '--isAFII',  action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
+
 
   parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of files.')
   parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
@@ -392,7 +395,7 @@ if __name__ == "__main__":
 
       sys.path.insert(0, pathToConfig)
       configModule = __import__(configModuleName)
-      configModule.addAlgs(job)
+      configModule.addAlgs(job, args)
 
 
 
