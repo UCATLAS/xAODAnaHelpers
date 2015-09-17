@@ -44,7 +44,8 @@ ClassImp(MuonEfficiencyCorrector)
 MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
   m_asgMuonEffCorrTool_muSF_Reco(nullptr),
   m_asgMuonEffCorrTool_muSF_Iso(nullptr),
-  m_asgMuonEffCorrTool_muSF_Trig(nullptr)
+  m_asgMuonEffCorrTool_muSF_Trig(nullptr),
+  m_pileuptool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -71,7 +72,9 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
 
   // Trigger efficiency SF
   //
-  m_runNumber                  = 900000;
+  m_runNumber                  = 900000; // do NOT change this default value!
+  m_WorkingPointRecoTrig       = "Loose";
+  m_WorkingPointIsoTrig        = "LooseTrackOnly";
   m_SingleMuTrig               = "HLT_mu20_iloose_L1MU15";
   m_DiMuTrig                   = "HLT_2mu14";
 
@@ -120,6 +123,8 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
     // Trigger efficiency SF
     //
     m_runNumber                  = config->GetValue("RunNumber", m_runNumber);
+    m_WorkingPointRecoTrig       = config->GetValue("WorkingPointRecoTrig", m_WorkingPointRecoTrig.c_str());
+    m_WorkingPointIsoTrig        = config->GetValue("WorkingPointIsoTrig", m_WorkingPointIsoTrig.c_str());
     m_SingleMuTrig               = config->GetValue("SingleMuTrig", m_SingleMuTrig.c_str());
     m_DiMuTrig                   = config->GetValue("DiMuTrig", m_DiMuTrig.c_str());
 
@@ -272,7 +277,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
-
   // 2.
   // initialize the CP::MuonEfficiencyScaleFactors Tool for isolation efficiency SF
   //
@@ -321,7 +325,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
-
   // 3.
   // Initialise the CP::MuonTriggerScaleFactors tool
   //
@@ -332,11 +335,31 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     m_asgMuonEffCorrTool_muSF_Trig = new CP::MuonTriggerScaleFactors("MuonTriggerScaleFactors_effSF_Trig");
   }
 
-  if( m_asgMuonEffCorrTool_muSF_Trig->setRunNumber( m_runNumber ) == CP::CorrectionCode::Error ) {
+  int runNumber(m_runNumber);
+  if ( asg::ToolStore::contains<CP::PileupReweightingTool>("Pileup") ) {
+    m_pileuptool = asg::ToolStore::get<CP::PileupReweightingTool>("Pileup");
+  }   
+  //
+  // If PileupReweightingTool exists, and a specific runNumber hasn't been set by the user yet,
+  // use the random runNumber weighted by integrated luminosity got from CP::PileupReweightingTool::getRandomRunNumber()
+  //
+  if ( m_runNumber == 900000 && m_pileuptool ) {
+    runNumber = m_pileuptool->getRandomRunNumber( *eventInfo );
+    Info("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from CP::PileupReweightingTool::getRandomRunNumber()", runNumber);
+  } else {
+    Warning("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from user's configuration - NOT RECOMMENDED");
+  } 
+
+  if( m_asgMuonEffCorrTool_muSF_Trig->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
     Warning("initialize()","Cannot set RunNumber for MuonTriggerScaleFactors tool");
   }
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Trig->setProperty("MuonQuality", m_WorkingPointReco ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Trig->initialize(), "Failed to properly initialize MuonTriggerScaleFactors");
+  //
+  // Add an "Iso" prefix to the WP (required for tool configuration)
+  //
+  std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;  
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Trig->setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Trig->setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Trig->initialize(), "Failed to properly initialize MuonTriggerScaleFactors");
 
   if ( m_debug ) {
   
@@ -486,6 +509,7 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
   if ( m_asgMuonEffCorrTool_muSF_Reco )  { m_asgMuonEffCorrTool_muSF_Reco = nullptr; delete m_asgMuonEffCorrTool_muSF_Reco; }
   if ( m_asgMuonEffCorrTool_muSF_Iso )   { m_asgMuonEffCorrTool_muSF_Iso = nullptr;  delete m_asgMuonEffCorrTool_muSF_Iso;  }
   if ( m_asgMuonEffCorrTool_muSF_Trig )  { m_asgMuonEffCorrTool_muSF_Trig = nullptr; delete m_asgMuonEffCorrTool_muSF_Trig; }
+  if ( m_pileuptool )                    { m_pileuptool = nullptr;                   delete m_pileuptool; }  
 
   return EL::StatusCode::SUCCESS;
 }
