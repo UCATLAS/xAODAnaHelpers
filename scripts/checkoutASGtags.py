@@ -41,6 +41,11 @@ dict_pkg = {
             '2.3.24': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06"],
             '2.3.25': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06"],
             '2.3.26': []
+            '2.3.28': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06",
+                       "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-01-00",
+                       "atlasoff/Trigger/TrigAnalysis/TrigEgammaMatchingTool/tags/TrigEgammaMatchingTool-00-00-11",
+                       "atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-01-16"
+                      ]
            }
 
 try:

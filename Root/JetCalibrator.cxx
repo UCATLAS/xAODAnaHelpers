@@ -272,11 +272,15 @@ EL::StatusCode JetCalibrator :: initialize ()
     m_isFullSim = true;
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
     //
-    // N.B. (Marco) : With SampleHandler, you can define sample metadata in job steering macro!
-    //                They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
-    //                I reasonably suppose everyone will use SH...
+    // N.B.: With SampleHandler, you can define sample metadata in job steering macro!
     //
-    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); // NB: needs to be defined as sample metadata in job steering macro. Should be either "AFII" or "FullSim"
+    //       They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
+    //       I reasonably suppose everyone will use SH...
+    //
+    //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*) 
+
+    //
+    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); 
     if ( m_setAFII ) {
       Info("initialize()", "Setting simulation flavour to AFII");
       m_isFullSim = false;
