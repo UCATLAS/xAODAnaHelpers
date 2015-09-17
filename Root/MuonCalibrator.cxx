@@ -59,6 +59,8 @@ MuonCalibrator :: MuonCalibrator () :
   //
   m_inContainerName         = "";
   m_outContainerName        = "";
+  
+  m_release                 = "PreRecs";
 
   m_sort                    = true;
 
@@ -84,6 +86,8 @@ EL::StatusCode  MuonCalibrator :: configure ()
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
+
+    m_release                 = config->GetValue("Release", m_release.c_str());
 
     m_sort                    = config->GetValue("Sort",  m_sort);
 
@@ -204,8 +208,8 @@ EL::StatusCode MuonCalibrator :: initialize ()
     m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool("MuonCalibrationAndSmearingTool");
   }  
   m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->setProperty("Release", m_release),"Failed to set property Release");
   RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
-
 
   // ***********************************************************
 
@@ -245,6 +249,11 @@ EL::StatusCode MuonCalibrator :: execute ()
   if ( m_debug ) { Info("execute()", "Applying Muon Calibration And Smearing ... "); }
 
   m_numEvent++;
+
+  if ( !m_isMC ) {
+    if ( m_numEvent == 1 ) { Info("execute()", "Sample is Data! Do not apply any Muon Calibration... "); }
+    return EL::StatusCode::SUCCESS;
+  }
 
   // get the collections from TEvent or TStore
   //
@@ -296,15 +305,8 @@ EL::StatusCode MuonCalibrator :: execute ()
 
       if ( m_debug ) { Info("execute()", "  uncailbrated muon %i, pt = %.2f GeV", idx, (muSC_itr->pt() * 1e-3)); }
 
-      // calibrate only MC
-      //
-      if ( m_isMC ) {
-
-        if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {
-          // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
-          // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
-          Warning("execute()", "MuonCalibrationAndSmearingTool returned Error CorrectionCode");
-        }
+      if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
+         Warning("execute()", "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
       }
       
       if ( m_debug ) { Info("execute()", "  corrected muon pt = %.2f GeV", (muSC_itr->pt() * 1e-3)); }

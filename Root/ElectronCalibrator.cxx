@@ -278,6 +278,11 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
   m_numEvent++;
 
+  if ( !m_isMC ) {
+    if ( m_numEvent == 1 ) { Info("execute()", "Sample is Data! Do not apply any Electron Calibration... "); }
+    return EL::StatusCode::SUCCESS;
+  }
+
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -340,15 +345,12 @@ EL::StatusCode ElectronCalibrator :: execute ()
 	  Warning( "execute", "electron %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (elSC_itr->pt() * 1e-3) );
 	}
       }
-      // calibrate only MC
+
+      // apply calibration (w/ syst)
       //
-      if ( m_isMC ) {
-        // apply calibration (w/ syst)
-        //
-        if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
-          if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
-            Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
-          }
+      if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
+        if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
+          Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
         }
       }
       
