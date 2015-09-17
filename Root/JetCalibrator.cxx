@@ -66,7 +66,7 @@ JetCalibrator :: JetCalibrator () :
 
   // CONFIG parameters for JetCalibrationTool
   m_jetAlgo                 = "";
-  m_outputAlgoSystNames     = "";
+  m_outputAlgo     = "";
 
   // when running data "_Insitu" is appended to this string
   m_calibSequence           = "JetArea_Residual_Origin_EtaJES_GSC";
@@ -117,7 +117,9 @@ EL::StatusCode  JetCalibrator :: configure ()
 
     // CONFIG parameters for JetCalibrationTool and systematic variations
     m_jetAlgo                 = config->GetValue("JetAlgorithm",        m_jetAlgo.c_str());
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
+    m_outputAlgo     = config->GetValue("OutputAlgoSystNames", m_outputAlgo.c_str());
+    m_outputAlgo     = config->GetValue("OutputAlgo", m_outputAlgo.c_str()); //legacy option
+
     // Provisional default, since "None" is assigned to this string if this default is not set here
     m_systName                = config->GetValue("SystName",            m_systName.c_str());
     m_systVal                 = config->GetValue("SystVal",             m_systVal);
@@ -157,8 +159,8 @@ EL::StatusCode  JetCalibrator :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
-  if ( m_outputAlgoSystNames.empty() ) {
-    m_outputAlgoSystNames = m_jetAlgo + "_Calib_Algo";
+  if ( m_outputAlgo.empty() ) {
+    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
   }
 
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
@@ -618,7 +620,7 @@ EL::StatusCode JetCalibrator :: execute ()
     RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsCDV, outContainerName), "Failed to record const data container.");
   }
   // add vector of systematic names to TStore
-  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
 
