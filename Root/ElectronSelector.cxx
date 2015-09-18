@@ -553,9 +553,9 @@ EL::StatusCode ElectronSelector :: execute ()
       }
     }	 
 
-    Info("initialize()", "Input electron trigger chains that will be considered for matching:");
-    for ( auto const &chain : m_ElTrigChainsList ) { Info("initialize()", "\t %s", chain.c_str()); }
-  
+    Info("execute()", "Input electron trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_ElTrigChainsList ) { Info("execute()", "\t %s", chain.c_str()); }
+    Info("execute()", "\n");
   }
 
   // did any collection pass the cuts?

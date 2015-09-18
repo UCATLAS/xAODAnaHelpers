@@ -347,9 +347,8 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     runNumber = m_pileuptool->getRandomRunNumber( *eventInfo );
     Info("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from CP::PileupReweightingTool::getRandomRunNumber()", runNumber);
   } else {
-    Warning("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from user's configuration - NOT RECOMMENDED");
+    Warning("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from user's configuration - NOT RECOMMENDED", runNumber );
   } 
-
   if( m_asgMuonEffCorrTool_muSF_Trig->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
     Warning("initialize()","Cannot set RunNumber for MuonTriggerScaleFactors tool");
   }
@@ -608,7 +607,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 	 sfVecReco( *mu_itr ) = std::vector<double>();
        }
 
-       float recoEffSF(0.0);
+       float recoEffSF(1.0);
        if ( m_asgMuonEffCorrTool_muSF_Reco->getEfficiencyScaleFactor( *mu_itr, recoEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
 	 ++idx;
@@ -699,7 +698,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 	 sfVecIso( *mu_itr ) = std::vector<double>();
        }
 
-       float IsoEffSF(0.0);
+       float IsoEffSF(1.0);
        if ( m_asgMuonEffCorrTool_muSF_Iso->getEfficiencyScaleFactor( *mu_itr, IsoEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
 	 ++idx;
@@ -769,11 +768,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
     // obtain trigger efficiency SF
     //
-    double triggerEffSF(0.0);
+    double triggerEffSF(1.0);
     if ( nMuons > 0 ) {
       if ( !m_SingleMuTrig.empty() ) {
 	if ( m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *inputMuons, triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
-	  Warning( "executeSF()", "Problem in getTriggerScaleFactor");
+	  Warning( "executeSF()", "Problem in getTriggerScaleFactor - single muon trigger(s)");
 	}
         if ( m_debug ) { 
           Info( "executeSF()", "===>>>");
@@ -785,10 +784,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
           Info( "executeSF()", "--------------------------------------");
         }
       }
+      /*
       if ( nMuons == 2 ) {
         if ( !m_DiMuTrig.empty() ) {
           if ( m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *inputMuons, triggerEffSF, m_DiMuTrig ) != CP::CorrectionCode::Ok ) {
-	    Warning( "executeSF()", "Problem in getTriggerScaleFactor");
+	    Warning( "executeSF()", "Problem in getTriggerScaleFactor - dimuon trigger(s)");
           }
           if ( m_debug ) { 
             Info( "executeSF()", "===>>>");
@@ -801,6 +801,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
           }
         }
       }
+      */
     }
     //
     // Add trigger SF to event decoration vector

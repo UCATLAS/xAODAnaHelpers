@@ -492,6 +492,13 @@ EL::StatusCode MuonSelector :: execute ()
 
   m_numEvent++;
 
+  if ( m_numEvent == 1 ) {
+    Info("execute()", "Input muon trigger chains that will be considered for matching:\n");
+    if ( !m_singleMuTrigChains.empty() ) { Info("execute()", "\t %s", m_singleMuTrigChains.c_str()); }
+    if ( !m_diMuTrigChains.empty() )     { Info("execute()", "\t %s", m_diMuTrigChains.c_str()); }
+    Info("execute()", "\n");
+  }
+  
   // did any collection pass the cuts?
   //
   bool eventPass(false);

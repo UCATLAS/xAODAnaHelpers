@@ -592,7 +592,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        // obtain efficiency SF's for PID
        //
-       double pidSF(0.0); 
+       double pidSF(1.0); 
        if (  m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidSF  ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
          ++idx;
@@ -693,7 +693,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        // obtain efficiency SF's for Reco
        //
-       double recoSF(0.0); 
+       double recoSF(1.0); 
        if (  m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoSF  ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
          ++idx;
@@ -756,7 +756,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     // and now apply trigger efficiency SF!
     //
     unsigned int idx(0);
-    double trigSF(0.0);
+    double trigSF(1.0);
     for ( auto el_itr : *(inputElectrons) ) {
 
        // Retrieve the SF only from first electron (for any other selected electron, this info is just duplicated!)

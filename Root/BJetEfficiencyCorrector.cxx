@@ -423,7 +423,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       //
       // obtain efficiency SF
       //
-      float SF(0.0);
+      float SF(1.0);
       if ( fabs(jet_itr->eta()) < 2.5 ) {
 
         CP::CorrectionCode BJetEffCode;
