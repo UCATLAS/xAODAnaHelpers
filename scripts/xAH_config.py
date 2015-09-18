@@ -12,8 +12,6 @@ def setMemberFunctions(obj, config):
             import sys
             sys.exit(-1)
 
-        
-
     return obj
 
 def config_BasicEventSelection(Job, **kw):
@@ -36,18 +34,8 @@ def config_JetHistsAlgo(Job,  **kw):
     setMemberFunctions(jetHists_alg, kw)
     Job.algsAdd(jetHists_alg)
 
-
-#
-# Following do not yet have all options implemented
-#
-
-def config_muonCalib(Job,name, **kw):
+def config_muonCalib(Job, **kw):
     muonCalib = ROOT.MuonCalibrator()
-    muonCalib.m_name                 = name
-    muonCalib.m_inContainerName      = kw.get('inContainerName'    , "")
-    muonCalib.m_outContainerName     = kw.get('outContainerName'   , "")
-    muonCalib.m_outputAlgoSystNames  = kw.get('outputAlgoSystNames', "")
+    setMemberFunctions(muonCalib, kw)
     Job.algsAdd(muonCalib)
-
-
 
