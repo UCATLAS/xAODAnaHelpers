@@ -86,7 +86,9 @@ if __name__ == "__main__":
 
 
   parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of files.')
+  parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
   parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
+  parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
   parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Default: no verbosity')
 
   driverUsageStr = '{0} {{0:s}} [{{0:s}} options]'.format(baseUsageStr)
@@ -199,6 +201,8 @@ if __name__ == "__main__":
       if os.getenv('XRDSYS') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
 
+    use_scanEOS = (args.use_scanEOS)
+
     import json
     import re
 
@@ -259,26 +263,35 @@ if __name__ == "__main__":
       xAH_logger.info("\t\tReading in file(s) containing list of files")
       if use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
+      elif use_scanEOS:
+        xAH_logger.info("\t\tAdding samples using scanEOS")
       else:
         xAH_logger.info("\t\tAdding using readFileList")
     else:
       if use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
+      elif use_scanEOS:
+        xAH_logger.info("\t\tAdding samples using scanEOS")
       else:
         xAH_logger.info("\t\tAdding samples using scanDir")
 
     for fname in args.input_filename:
       if args.use_inputFileList:
-        if use_scanDQ2:
+        if (use_scanDQ2 or use_scanEOS):
           with open(fname, 'r') as f:
             for line in f:
               if line.startswith('#'): continue
-              ROOT.SH.scanDQ2(sh_all, line.rstrip())
+              if use_scanDQ2:  ROOT.SH.scanDQ2(sh_all, line.rstrip())
+              base = os.path.basename(line)
+              if use_scanEOS:  ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.eosDataSet).scanEOS(sh_all,base)
         else:
           ROOT.SH.readFileList(sh_all, "sample", fname)
       else:
+
         if use_scanDQ2:
           ROOT.SH.scanDQ2(sh_all, fname)
+        elif use_scanEOS: 
+          ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
         else:
           '''
           if fname.startswith("root://"):
