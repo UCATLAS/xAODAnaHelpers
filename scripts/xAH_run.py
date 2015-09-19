@@ -416,7 +416,6 @@ if __name__ == "__main__":
       #
       from xAH_config import xAH_config
       for k,v in configLocals.iteritems():
-        print(k, v,xAH_config)
         if isinstance(v, xAH_config):
           map(job.algsAdd, v._algorithms)
 
