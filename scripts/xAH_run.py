@@ -25,6 +25,7 @@ import sys
 import datetime
 import time
 
+
 SCRIPT_START_TIME = datetime.datetime.now()
 
 # think about using argcomplete
@@ -154,6 +155,7 @@ if __name__ == "__main__":
   prun.add_argument('--optGridNoSubmit',         metavar='', type=int, required=False, default=None)
   prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
   prun.add_argument('--optGridUseChirpServer',   metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optSubmitFlags',          metavar='', type=str, required=False, default=None)
   prun.add_argument('--optTmpDir',               metavar='', type=str, required=False, default=None)
   prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
   prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
@@ -320,7 +322,9 @@ if __name__ == "__main__":
       sys.exit(0)
 
     # set the name of the tree in our files (should be configurable)
-    sh_all.setMetaString("nc_tree", "CollectionTree")
+    sh_all.setMetaString( "nc_tree", "CollectionTree")
+    #sh_all.setMetaString( "nc_excludeSite", "ANALY_RAL_SL6");
+    sh_all.setMetaString( "nc_grid_filter", "*");
 
     # read susy meta data (should be configurable)
     # xAH_logger.info("reading all metadata in $ROOTCOREBIN/data/xAODAnaHelpers")
@@ -399,16 +403,23 @@ if __name__ == "__main__":
     else:
 
 
-      import sys
-      configSplit = args.config.split("/")
-      configModuleName = configSplit[-1].replace(".py","")
-      configSplit.remove(configSplit[-1])
-      pathToConfig = "/".join(configSplit)
-      print("Loading python config:  "+configModuleName+" from "+pathToConfig)
+      #
+      #  Executing the python
+      #   (configGlobals and configLocals are used to pass vars 
+      #
+      configGlobals = {}
+      configLocals  = {'args' : args}
+      execfile(args.config, configGlobals, configLocals)
 
-      sys.path.insert(0, pathToConfig)
-      configModule = __import__(configModuleName)
-      configModule.addAlgs(job, args)
+      #
+      # Find the created xAH_config object and add its _algorithms to the Job
+      #
+      from xAH_config import xAH_config
+      for k,v in configLocals.iteritems():
+        print(k, v,xAH_config)
+        if isinstance(v, xAH_config):
+          map(job.algsAdd, v._algorithms)
+
 
 
 
