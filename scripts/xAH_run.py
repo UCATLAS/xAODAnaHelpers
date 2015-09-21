@@ -82,8 +82,9 @@ if __name__ == "__main__":
 
   parser.add_argument('--version', action='version', version='%(prog)s {version}'.format(version=__version__))
   parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch}', choices=['class', 'branch'], default='class', help='Run using branch access mode or class access mode. See kratsg/TheAccountant/wiki/Access-Mode for more information')
-  parser.add_argument( '--isMC',    action="store_true", dest="is_MC",    default=False, help="Running MC")
-  parser.add_argument( '--isAFII',  action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
+  parser.add_argument( '--treeName', dest="treeName",     default="CollectionTree", help="Tree Name to run on")
+  parser.add_argument( '--isMC',     action="store_true", dest="is_MC",    default=False, help="Running MC")
+  parser.add_argument( '--isAFII',   action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
 
 
   parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of files.')
@@ -326,7 +327,7 @@ if __name__ == "__main__":
       sys.exit(0)
 
     # set the name of the tree in our files (should be configurable)
-    sh_all.setMetaString( "nc_tree", "CollectionTree")
+    sh_all.setMetaString( "nc_tree", args.treeName)
     #sh_all.setMetaString( "nc_excludeSite", "ANALY_RAL_SL6");
     sh_all.setMetaString( "nc_grid_filter", "*");
 
