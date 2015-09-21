@@ -25,6 +25,7 @@ import sys
 import datetime
 import time
 
+
 SCRIPT_START_TIME = datetime.datetime.now()
 
 # think about using argcomplete
@@ -81,17 +82,34 @@ if __name__ == "__main__":
 
   parser.add_argument('--version', action='version', version='%(prog)s {version}'.format(version=__version__))
   parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch}', choices=['class', 'branch'], default='class', help='Run using branch access mode or class access mode. See kratsg/TheAccountant/wiki/Access-Mode for more information')
+  parser.add_argument( '--isMC',    action="store_true", dest="is_MC",    default=False, help="Running MC")
+  parser.add_argument( '--isAFII',  action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
+
 
   parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of files.')
+  parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
   parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
+  parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
   parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Default: no verbosity')
 
   driverUsageStr = '{0} {{0:s}} [{{0:s}} options]'.format(baseUsageStr)
   # first is the driver
   drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
-  direct = drivers_parser.add_parser('direct', help='Run your jobs locally.', usage=driverUsageStr.format('direct'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-  prooflite = drivers_parser.add_parser('prooflite', help='Run your jobs using ProofLite', usage=driverUsageStr.format('prooflite'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-  prun = drivers_parser.add_parser('prun', help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.', usage=driverUsageStr.format('prun'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+  direct = drivers_parser.add_parser('direct', 
+                                     help='Run your jobs locally.', 
+                                     usage=driverUsageStr.format('direct'), 
+                                     formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+
+  prooflite = drivers_parser.add_parser('prooflite', 
+                                        help='Run your jobs using ProofLite', 
+                                        usage=driverUsageStr.format('prooflite'), 
+                                        formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+
+  prun = drivers_parser.add_parser('prun', 
+                                   help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.', 
+                                   usage=driverUsageStr.format('prun'), 
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+
   condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=driverUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
   lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=driverUsageStr.format('lsf'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
@@ -137,6 +155,7 @@ if __name__ == "__main__":
   prun.add_argument('--optGridNoSubmit',         metavar='', type=int, required=False, default=None)
   prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
   prun.add_argument('--optGridUseChirpServer',   metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optSubmitFlags',          metavar='', type=str, required=False, default=None)
   prun.add_argument('--optTmpDir',               metavar='', type=str, required=False, default=None)
   prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
   prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
@@ -183,6 +202,8 @@ if __name__ == "__main__":
     if use_scanDQ2:
       if os.getenv('XRDSYS') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
+
+    use_scanEOS = (args.use_scanEOS)
 
     import json
     import re
@@ -244,26 +265,35 @@ if __name__ == "__main__":
       xAH_logger.info("\t\tReading in file(s) containing list of files")
       if use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
+      elif use_scanEOS:
+        xAH_logger.info("\t\tAdding samples using scanEOS")
       else:
         xAH_logger.info("\t\tAdding using readFileList")
     else:
       if use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
+      elif use_scanEOS:
+        xAH_logger.info("\t\tAdding samples using scanEOS")
       else:
         xAH_logger.info("\t\tAdding samples using scanDir")
 
     for fname in args.input_filename:
       if args.use_inputFileList:
-        if use_scanDQ2:
+        if (use_scanDQ2 or use_scanEOS):
           with open(fname, 'r') as f:
             for line in f:
               if line.startswith('#'): continue
-              ROOT.SH.scanDQ2(sh_all, line.rstrip())
+              if use_scanDQ2:  ROOT.SH.scanDQ2(sh_all, line.rstrip())
+              base = os.path.basename(line)
+              if use_scanEOS:  ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.eosDataSet).scanEOS(sh_all,base)
         else:
           ROOT.SH.readFileList(sh_all, "sample", fname)
       else:
+
         if use_scanDQ2:
           ROOT.SH.scanDQ2(sh_all, fname)
+        elif use_scanEOS: 
+          ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
         else:
           '''
           if fname.startswith("root://"):
@@ -292,7 +322,9 @@ if __name__ == "__main__":
       sys.exit(0)
 
     # set the name of the tree in our files (should be configurable)
-    sh_all.setMetaString("nc_tree", "CollectionTree")
+    sh_all.setMetaString( "nc_tree", "CollectionTree")
+    #sh_all.setMetaString( "nc_excludeSite", "ANALY_RAL_SL6");
+    sh_all.setMetaString( "nc_grid_filter", "*");
 
     # read susy meta data (should be configurable)
     # xAH_logger.info("reading all metadata in $ROOTCOREBIN/data/xAODAnaHelpers")
@@ -326,42 +358,74 @@ if __name__ == "__main__":
       xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
       job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
 
-    # add our algorithm to the job
-    algorithm_configurations = parse_json(args.config)
-    xAH_logger.info("loaded the configurations")
+      
+    load_json   = ".json" in args.config
+
 
     # formatted string
     algorithmConfiguration_string = []
     printStr = "\tsetting {0: >20}.m_{1:<30} = {2}"
 
-    # this is where we go over and process all algorithms
-    for algorithm_configuration in algorithm_configurations:
-      alg_name = algorithm_configuration['class']
-      xAH_logger.info("creating algorithm %s", alg_name)
-      algorithmConfiguration_string.append("{0} algorithm options".format(alg_name))
+    if load_json:
+      print("Loading json files")
 
-      # handle namespaces
-      alg = reduce(lambda x,y: getattr(x, y, None), alg_name.split('.'), ROOT)
-      if not alg:
-        raise ValueError("Algorithm %s does not exist" % alg_name)
-      alg = alg()
+      # add our algorithm to the job
+      algorithm_configurations = parse_json(args.config)
+      xAH_logger.info("loaded the configurations")
 
-      for config_name, config_val in algorithm_configuration['configs'].iteritems():
-        xAH_logger.info("\t%s", printStr.format(alg_name, config_name, config_val))
-        algorithmConfiguration_string.append(printStr.format(alg_name, config_name, config_val))
-        alg_attr = getattr(alg, config_name, None)
-        if alg_attr is None:
-          raise ValueError("Algorithm %s does not have attribute %s" % (alg_name, config_name))
+      # this is where we go over and process all algorithms
+      for algorithm_configuration in algorithm_configurations:
+        alg_name = algorithm_configuration['class']
+        xAH_logger.info("creating algorithm %s", alg_name)
+        algorithmConfiguration_string.append("{0} algorithm options".format(alg_name))
+  
+        # handle namespaces
+        alg = reduce(lambda x,y: getattr(x, y, None), alg_name.split('.'), ROOT)
+        if not alg:
+          raise ValueError("Algorithm %s does not exist" % alg_name)
+        alg = alg()
+  
+        for config_name, config_val in algorithm_configuration['configs'].iteritems():
+          xAH_logger.info("\t%s", printStr.format(alg_name, config_name, config_val))
+          algorithmConfiguration_string.append(printStr.format(alg_name, config_name, config_val))
+          alg_attr = getattr(alg, config_name, None)
+          if alg_attr is None:
+            raise ValueError("Algorithm %s does not have attribute %s" % (alg_name, config_name))
+  
+          #handle unicode from json
+          if isinstance(config_val, unicode):
+            setattr(alg, config_name, config_val.encode('utf-8'))
+          else:
+            setattr(alg, config_name, config_val)
+  
+        xAH_logger.info("adding algorithm %s to job", alg_name)
+        algorithmConfiguration_string.append("\n")
+        job.algsAdd(alg)
+    else:
 
-        #handle unicode from json
-        if isinstance(config_val, unicode):
-          setattr(alg, config_name, config_val.encode('utf-8'))
-        else:
-          setattr(alg, config_name, config_val)
 
-      xAH_logger.info("adding algorithm %s to job", alg_name)
-      algorithmConfiguration_string.append("\n")
-      job.algsAdd(alg)
+      #
+      #  Executing the python
+      #   (configGlobals and configLocals are used to pass vars 
+      #
+      configGlobals = {}
+      configLocals  = {'args' : args}
+      execfile(args.config, configGlobals, configLocals)
+
+      #
+      # Find the created xAH_config object and add its _algorithms to the Job
+      #
+      from xAH_config import xAH_config
+      for k,v in configLocals.iteritems():
+        if isinstance(v, xAH_config):
+          map(job.algsAdd, v._algorithms)
+
+          for configLog in v._log:
+            print(configLog)
+            xAH_logger.info("\t%s", printStr.format(*configLog))
+            algorithmConfiguration_string.append(printStr.format(*configLog))
+
+
 
     # make the driver we want to use:
     # this one works by running the algorithm directly
