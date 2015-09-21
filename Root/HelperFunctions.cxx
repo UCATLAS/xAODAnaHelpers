@@ -94,28 +94,28 @@ bool HelperFunctions::applyPrimaryVertexSelection( const xAOD::JetContainer* jet
     jet_itr->auxdecor< std::vector< ElementLink< xAOD::IParticleContainer > > > ("GhostTrackPV") = selectedTrackHolder;
 
   } // loop over jets
-    
+
 
   return true;
 }
 
 // compatible with starting with: 2015-PreRecomm-13TeV-MC12-CDI_August3-v1.root
 //https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt4EMTopoJets
-float HelperFunctions::GetBTagMV2c20_Cut( int efficiency ) { 
+float HelperFunctions::GetBTagMV2c20_Cut( int efficiency ) {
   if     ( efficiency == 85 ) { return -0.7887; }
   else if( efficiency == 77 ) { return -0.4434; }
-  else if( efficiency == 70 ) { return -0.0436; } 
+  else if( efficiency == 70 ) { return -0.0436; }
   else if( efficiency == 60 ) { return  0.4496; }
   else { std::cout << "WARNING!! UNKNOWN BTAG EFFICIENCY POINT " << efficiency << std::endl; }
   return -1; // no cut
 }
 
-std::string HelperFunctions::GetBTagMV2c20_CutStr( int efficiency ) { 
+std::string HelperFunctions::GetBTagMV2c20_CutStr( int efficiency ) {
   float value = HelperFunctions::GetBTagMV2c20_Cut( efficiency );
   std::string valueStr = std::to_string(value);
   valueStr.replace(valueStr.find('.'),1,"_"); // replace period with underscore
   // 7 characters long if start with a - and 6 otherwise
-  if( valueStr.find('-') != std::string::npos ) { 
+  if( valueStr.find('-') != std::string::npos ) {
     valueStr.resize(7,'0'); // cut to 7 or pad with 0s
   } else {
     valueStr.resize(6,'0'); // cut to 6 or pad with 0s
@@ -307,71 +307,71 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
 // Get the subset of systematics to consider
 // can also return full set if systName = "All"
 //
-// CP::make_systematics_vector(recSysts); has some similar functionality but does not 
+// CP::make_systematics_vector(recSysts); has some similar functionality but does not
 // prune down to 1 systematic if only request that one.  It does however include the
 // nominal case as a null SystematicSet
 std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug ) {
 
   std::vector< CP::SystematicSet > outSystList;
-   
+
   // loop over input set
   //
   for ( const auto syst : inSysts ) {
-  
+
     if ( debug ) { Info("HelperFunctions::getListofSystematics()","  %s", (syst.name()).c_str()); }
-    
-    // 1. 
+
+    // 1.
     // A match with input systName is found in the list:
     // add that systematic only to the output list
     //
     if ( systName == syst.basename() ) {
-      
+
       if ( debug ) { Info("HelperFunctions::getListofSystematics()","Found match! Adding systematic %s", syst.name().c_str()); }
-      
+
       // continuous systematics - can choose at what sigma to evaluate
       //
       if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
-        
+
         outSystList.push_back(CP::SystematicSet());
-        
+
         if ( systVal == 0 ) {
           Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
           RCU_THROW_MSG("Failure");
         }
-  
+
         outSystList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
-      
+
       } else {
       // not a continuous system
-      
+
         outSystList.push_back(CP::SystematicSet());
         outSystList.back().insert(syst);
-      
+
       }
-    } 
+    }
     // 2.
     // input systName contains "All":
     // add all systematics to the output list
     //
     else if ( systName.find("All") != std::string::npos ) {
-      
+
       if ( debug ) { Info("HelperFunctions::getListofSystematics()","Adding systematic %s", syst.name().c_str()); }
-      
+
       // continuous systematics - can choose at what sigma to evaluate
       // add +1 and -1 for when running all
       //
       if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
-        
+
       if ( systVal == 0 ) {
         Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
         RCU_THROW_MSG("Failure");
       }
-        
+
       outSystList.push_back(CP::SystematicSet());
       outSystList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
       outSystList.push_back(CP::SystematicSet());
       outSystList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
-      
+
       } else {
       // not a continuous systematic
 
@@ -380,16 +380,16 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
 
       }
 
-    } 
-    
+    }
+
   } // loop over recommended systematics
 
-  // Add an empty CP::SystematicVariation at the top of output list to account for the nominal case 
+  // Add an empty CP::SystematicVariation at the top of output list to account for the nominal case
   // when running on all systematics or on nominal only
   //
-  if ( systName.find("All") != std::string::npos || systName.empty() ) {
+  if ( systName.find("Nominal") != std::string::npos || systName.find("All") != std::string::npos || systName.empty() ) {
     outSystList.insert( outSystList.begin(), CP::SystematicSet() );
-    const CP::SystematicVariation nullVar = CP::SystematicVariation(""); 
+    const CP::SystematicVariation nullVar = CP::SystematicVariation("");
     outSystList.back().insert(nullVar);
   }
 
