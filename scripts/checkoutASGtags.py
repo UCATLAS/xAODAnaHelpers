@@ -39,7 +39,8 @@ dict_pkg = {
             '2.3.23': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06",
                        "atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-30"],
             '2.3.24': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06"],
-            '2.3.25': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06"]
+            '2.3.25': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06"],
+            '2.3.26': []
            }
 
 try:
