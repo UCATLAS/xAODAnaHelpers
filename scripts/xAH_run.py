@@ -96,19 +96,19 @@ if __name__ == "__main__":
   driverUsageStr = '{0} {{0:s}} [{{0:s}} options]'.format(baseUsageStr)
   # first is the driver
   drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
-  direct = drivers_parser.add_parser('direct', 
-                                     help='Run your jobs locally.', 
-                                     usage=driverUsageStr.format('direct'), 
+  direct = drivers_parser.add_parser('direct',
+                                     help='Run your jobs locally.',
+                                     usage=driverUsageStr.format('direct'),
                                      formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
-  prooflite = drivers_parser.add_parser('prooflite', 
-                                        help='Run your jobs using ProofLite', 
-                                        usage=driverUsageStr.format('prooflite'), 
+  prooflite = drivers_parser.add_parser('prooflite',
+                                        help='Run your jobs using ProofLite',
+                                        usage=driverUsageStr.format('prooflite'),
                                         formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
-  prun = drivers_parser.add_parser('prun', 
-                                   help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.', 
-                                   usage=driverUsageStr.format('prun'), 
+  prun = drivers_parser.add_parser('prun',
+                                   help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.',
+                                   usage=driverUsageStr.format('prun'),
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
   condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=driverUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
@@ -284,16 +284,20 @@ if __name__ == "__main__":
           with open(fname, 'r') as f:
             for line in f:
               if line.startswith('#'): continue
-              if use_scanDQ2:  ROOT.SH.scanDQ2(sh_all, line.rstrip())
-              base = os.path.basename(line)
-              if use_scanEOS:  ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.eosDataSet).scanEOS(sh_all,base)
+              if use_scanDQ2:
+                ROOT.SH.scanDQ2(sh_all, line.rstrip())
+              elif use_scanEOS:
+                base = os.path.basename(line)
+                ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.eosDataSet).scanEOS(sh_all,base)
+              else:
+                raise Exception("What just happened?")
         else:
           ROOT.SH.readFileList(sh_all, "sample", fname)
       else:
 
         if use_scanDQ2:
           ROOT.SH.scanDQ2(sh_all, fname)
-        elif use_scanEOS: 
+        elif use_scanEOS:
           ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
         else:
           '''
@@ -359,7 +363,7 @@ if __name__ == "__main__":
       xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
       job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
 
-      
+
     load_json   = ".json" in args.config
 
 
@@ -368,7 +372,7 @@ if __name__ == "__main__":
     printStr = "\tsetting {0: >20}.m_{1:<30} = {2}"
 
     if load_json:
-      print("Loading json files")
+      xAH_logger.info("Loading json files")
 
       # add our algorithm to the job
       algorithm_configurations = parse_json(args.config)
@@ -379,26 +383,26 @@ if __name__ == "__main__":
         alg_name = algorithm_configuration['class']
         xAH_logger.info("creating algorithm %s", alg_name)
         algorithmConfiguration_string.append("{0} algorithm options".format(alg_name))
-  
+
         # handle namespaces
         alg = reduce(lambda x,y: getattr(x, y, None), alg_name.split('.'), ROOT)
         if not alg:
           raise ValueError("Algorithm %s does not exist" % alg_name)
         alg = alg()
-  
+
         for config_name, config_val in algorithm_configuration['configs'].iteritems():
           xAH_logger.info("\t%s", printStr.format(alg_name, config_name, config_val))
           algorithmConfiguration_string.append(printStr.format(alg_name, config_name, config_val))
           alg_attr = getattr(alg, config_name, None)
           if alg_attr is None:
             raise ValueError("Algorithm %s does not have attribute %s" % (alg_name, config_name))
-  
+
           #handle unicode from json
           if isinstance(config_val, unicode):
             setattr(alg, config_name, config_val.encode('utf-8'))
           else:
             setattr(alg, config_name, config_val)
-  
+
         xAH_logger.info("adding algorithm %s to job", alg_name)
         algorithmConfiguration_string.append("\n")
         job.algsAdd(alg)
@@ -407,7 +411,7 @@ if __name__ == "__main__":
 
       #
       #  Executing the python
-      #   (configGlobals and configLocals are used to pass vars 
+      #   (configGlobals and configLocals are used to pass vars
       #
       configGlobals = {}
       configLocals  = {'args' : args}
@@ -422,9 +426,14 @@ if __name__ == "__main__":
           map(job.algsAdd, v._algorithms)
 
           for configLog in v._log:
-            print(configLog)
-            xAH_logger.info("\t%s", printStr.format(*configLog))
-            algorithmConfiguration_string.append(printStr.format(*configLog))
+            if len(configLog) == 1:  # this is when we have just the algorithm name
+              xAH_logger.info("creating algorithm %s", configLog[0])
+              algorithmConfiguration_string.append("{0} algorithm options".format(*configLog))
+            elif len(configLog) == 3:
+              xAH_logger.info("\t%s", printStr.format(*configLog))
+              algorithmConfiguration_string.append(printStr.format(*configLog))
+            else:
+              raise Exception("Something weird happened with the logging. Tell someone important")
 
 
 
