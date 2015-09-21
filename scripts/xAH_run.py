@@ -361,16 +361,17 @@ if __name__ == "__main__":
       
     load_json   = ".json" in args.config
 
+
+    # formatted string
+    algorithmConfiguration_string = []
+    printStr = "\tsetting {0: >20}.m_{1:<30} = {2}"
+
     if load_json:
       print("Loading json files")
 
       # add our algorithm to the job
       algorithm_configurations = parse_json(args.config)
       xAH_logger.info("loaded the configurations")
-
-      # formatted string
-      algorithmConfiguration_string = []
-      printStr = "\tsetting {0: >20}.m_{1:<30} = {2}"
 
       # this is where we go over and process all algorithms
       for algorithm_configuration in algorithm_configurations:
@@ -419,6 +420,10 @@ if __name__ == "__main__":
         if isinstance(v, xAH_config):
           map(job.algsAdd, v._algorithms)
 
+          for configLog in v._log:
+            print(configLog)
+            xAH_logger.info("\t%s", printStr.format(*configLog))
+            algorithmConfiguration_string.append(printStr.format(*configLog))
 
 
 
@@ -479,9 +484,8 @@ if __name__ == "__main__":
       f.write('job runner options\n')
       for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'verbose', 'driver']:
         f.write('\t{0: <51} = {1}\n'.format(opt, getattr(args, opt)))
-      if load_json:
-        for algConfig_str in algorithmConfiguration_string:
-          f.write('{0}\n'.format(algConfig_str))
+      for algConfig_str in algorithmConfiguration_string:
+        f.write('{0}\n'.format(algConfig_str))
 
   except Exception, e:
     # we crashed
