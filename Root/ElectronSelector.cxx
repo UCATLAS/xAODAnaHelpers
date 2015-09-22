@@ -1020,7 +1020,10 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   
   double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
-  float z0sintheta       = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
+
+  float z0sintheta = 1e8;
+  if (primaryVertex) z0sintheta = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
+
 
   // z0*sin(theta) cut
   //
