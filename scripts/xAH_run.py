@@ -284,7 +284,8 @@ if __name__ == "__main__":
           with open(fname, 'r') as f:
             for line in f:
               if line.startswith('#') : continue
-              if len(line) < 2        : continue
+              if not line.strip()     : continue
+              if len(line) < 2        
               if use_scanDQ2:
                 ROOT.SH.scanDQ2(sh_all, line.rstrip())
               elif use_scanEOS:
