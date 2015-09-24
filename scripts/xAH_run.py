@@ -199,7 +199,7 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working
-    use_scanDQ2 = (args.use_scanDQ2)|(args.driver in ['prun', 'condor','lsf'])
+    use_scanDQ2 = (args.use_scanDQ2)|(args.driver in ['prun', 'lsf'])
     if use_scanDQ2:
       if os.getenv('XRDSYS') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
