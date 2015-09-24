@@ -21,6 +21,7 @@
 #include "xAODEgamma/PhotonContainer.h"
 #include "xAODMuon/MuonContainer.h"
 #include "xAODJet/JetContainer.h"
+#include "xAODTruth/TruthParticleContainer.h"
 #include "xAODTau/TauJetContainer.h"
 #include "xAODMissingET/MissingETContainer.h"
 
@@ -56,6 +57,7 @@ public:
   void AddMuons       (const std::string detailStr = "");
   void AddElectrons   (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "");
+  void AddTruthParts  (const std::string truthName, const std::string detailStr = "");
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
@@ -70,6 +72,7 @@ public:
   HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
+  HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
   HelperClasses::METInfoSwitch*        m_metInfoSwitch;
@@ -87,6 +90,7 @@ public:
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1 );
+  void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillFatJets( const xAOD::JetContainer* fatJets );
   void FillTaus( const xAOD::TauJetContainer* taus );
   void FillMET( const xAOD::MissingETContainer* met );
@@ -98,6 +102,7 @@ public:
   void ClearMuons();
   void ClearElectrons();
   void ClearJets();
+  void ClearTruth(const std::string truthName);
   void ClearFatJets();
   void ClearTaus();
   void ClearMET();
@@ -145,6 +150,10 @@ public:
     if(m_debug) Info("AddJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+  virtual void AddTruthUser(const std::string truthName, const std::string detailStr = "")       {
+    if(m_debug) Info("AddTruthUser","Empty function called from HelpTreeBase %s %s",truthName.c_str(), detailStr.c_str());
+    return;
+  };
   virtual void AddFatJetsUser(const std::string detailStr = "")       {
     if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
@@ -162,6 +171,7 @@ public:
   virtual void ClearTriggerUser()   { return; };
   virtual void ClearMuonsUser()     { return; };
   virtual void ClearElectronsUser() { return; };
+  virtual void ClearTruthUser(const std::string& /*truthName*/) 	    { return; };
   virtual void ClearJetsUser() 	    { return; };
   virtual void ClearFatJetsUser()   { return; };
   virtual void ClearTausUser() 	    { return; };
@@ -171,6 +181,7 @@ public:
   virtual void FillMuonsUser( const xAOD::Muon*  )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron*  )     { return; };
   virtual void FillJetsUser( const xAOD::Jet*  )               { return; };
+  virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
   virtual void FillFatJetsUser( const xAOD::Jet*  )            { return; };
   virtual void FillTausUser( const xAOD::TauJet*  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
@@ -452,6 +463,20 @@ protected:
   std::vector<float> m_jet_truthPt_CQFinal;
   std::vector<int>   m_jet_truthCount_TausFinal;
   std::vector<float> m_jet_truthPt_TausFinal;
+
+  // Truth
+  struct truthInfo{
+
+    int  N;
+    std::vector<float> pt;
+    std::vector<float> eta;
+    std::vector<float> phi;
+    std::vector<float> E;
+
+    truthInfo(){ }
+
+  };
+  std::map<std::string, truthInfo*> m_truth;
 
   // fat jets
   int m_nfatjet;

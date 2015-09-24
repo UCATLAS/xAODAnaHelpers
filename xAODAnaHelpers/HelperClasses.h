@@ -138,6 +138,13 @@ namespace HelperClasses {
     JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  struct TruthInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
+
   struct TauInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_trackparams;
