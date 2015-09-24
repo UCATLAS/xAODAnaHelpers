@@ -194,6 +194,9 @@ protected:
   int m_mcChannelNumber;
   float m_mcEventWeight;
   float m_weight_pileup;
+  float m_correct_mu;
+  int   m_rand_run_nr;
+  int   m_rand_lumiblock_nr;
   int m_bcid;
   // event pileup
   int m_npv;
@@ -481,6 +484,9 @@ protected:
   std::vector<int>   m_muon_isIsolated_Tight;
   std::vector<int>   m_muon_isIsolated_Gradient;
   std::vector<int>   m_muon_isIsolated_GradientLoose;
+  std::vector<int>   m_muon_isIsolated_GradientT1;  
+  std::vector<int>   m_muon_isIsolated_GradientT2;  
+  std::vector<int>   m_muon_isIsolated_MU0p06;  
   std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
   std::vector<int>   m_muon_isIsolated_UserDefinedCut;
   std::vector<float> m_muon_ptcone20;
@@ -550,6 +556,9 @@ protected:
   std::vector<int>   m_el_isIsolated_Tight;
   std::vector<int>   m_el_isIsolated_Gradient;
   std::vector<int>   m_el_isIsolated_GradientLoose;
+  std::vector<int>   m_el_isIsolated_GradientT1;
+  std::vector<int>   m_el_isIsolated_GradientT2;
+  std::vector<int>   m_el_isIsolated_EL0p06;
   std::vector<int>   m_el_isIsolated_UserDefinedFixEfficiency;
   std::vector<int>   m_el_isIsolated_UserDefinedCut;
   std::vector<float> m_el_etcone20;

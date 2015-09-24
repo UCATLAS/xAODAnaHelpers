@@ -423,7 +423,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       //
       // obtain efficiency SF
       //
-      float SF(0.0);
+      float SF(1.0);
       if ( fabs(jet_itr->eta()) < 2.5 ) {
 
         CP::CorrectionCode BJetEffCode;
@@ -441,9 +441,8 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
         }
         // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
         //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
-      } else {
-        SF = -1;
-      }
+      } 
+      
       if ( m_debug ) { Info( "execute()", "\t SF = %g", SF ); }
 
       //

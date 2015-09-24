@@ -202,6 +202,12 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  // Check if is MC
+  //
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("ElectronCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
+
   m_numEvent      = 0;
   m_numObject     = 0;
 
@@ -215,6 +221,28 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel),"Failed to set property ESModel");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel),"Failed to set property decorrelationModel");
+  //
+  // For AFII samples
+  //
+  if ( m_isMC ) {
+    
+    // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
+    //
+    // N.B.: With SampleHandler, you can define sample metadata in job steering macro!
+    // 
+    //       They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
+    //       I reasonably suppose everyone will use SH...
+    //
+    //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*) 
+    //
+    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); 
+    
+    if ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) {
+      Info("initialize()", "Setting simulation flavour to AFII");
+      RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", true),"Failed to set property useAFII");
+      
+    } 
+  }
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
   
   // ***********************************************************
@@ -255,6 +283,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
   if ( m_debug ) { Info("execute()", "Applying Electron Calibration ... "); }
 
   m_numEvent++;
+
+  if ( !m_isMC ) {
+    if ( m_numEvent == 1 ) { Info("execute()", "Sample is Data! Do not apply any Electron Calibration... "); }
+  }
 
   // get the collection from TEvent or TStore
   //
@@ -307,31 +339,34 @@ EL::StatusCode ElectronCalibrator :: execute ()
     // now calibrate!
     //
     unsigned int idx(0);
-    for ( auto elSC_itr : *(calibElectronsSC.first) ) {
+    if ( m_isMC ) {
 
-      // set smearing seeding if needed - no need for this after Base,2.1.26
-      // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
-      //
-      if ( m_debug ) {
-        Info( "execute", "Checking electron %i, raw pt = %.2f GeV ", idx, (elSC_itr->pt() * 1e-3) );
-        if ( elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
-	  Warning( "execute", "electron %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (elSC_itr->pt() * 1e-3) );
+      for ( auto elSC_itr : *(calibElectronsSC.first) ) {
+
+	// set smearing seeding if needed - no need for this after Base,2.1.26
+	// m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
+	//
+	if ( m_debug ) {
+	  Info( "execute", "Checking electron %i, raw pt = %.2f GeV ", idx, (elSC_itr->pt() * 1e-3) );
+	  if ( elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
+	    Warning( "execute", "electron %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (elSC_itr->pt() * 1e-3) );
+	  }
 	}
-      }
 
-      // apply calibration (w/ syst)
-      //
-      if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
-        if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
-          Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
-        }
-      }
-
-      if ( m_debug ) { Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3)); }
-
-      ++idx;
+	// apply calibration (w/ syst)
+	//
+	if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
+	  if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
+	    Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
+	  }
+	}
       
-    } // close calibration loop
+	if ( m_debug ) { Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3)); }
+
+	++idx;
+      
+      } // close calibration loop
+    }
 
     if ( !xAOD::setOriginalObjectLink(*inElectrons, *(calibElectronsSC.first)) ) {
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");

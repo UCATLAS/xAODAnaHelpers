@@ -465,9 +465,7 @@ EL::StatusCode ElectronSelector :: initialize ()
        RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Electron, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
      
      } else {
-     
         RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addElectronWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
-
      }
   }
 
@@ -496,7 +494,6 @@ EL::StatusCode ElectronSelector :: initialize ()
       RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
     } 
     
-
   } else {
     Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
     Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
@@ -556,9 +553,9 @@ EL::StatusCode ElectronSelector :: execute ()
       }
     }	 
 
-    Info("initialize()", "Input electron trigger chains that will be considered for matching:");
-    for ( auto const &chain : m_ElTrigChainsList ) { Info("initialize()", "\t %s", chain.c_str()); }
-  
+    Info("execute()", "Input electron trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_ElTrigChainsList ) { Info("execute()", "\t %s", chain.c_str()); }
+    Info("execute()", "\n");
   }
 
   // did any collection pass the cuts?
@@ -761,7 +758,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
     	   
            //  For each electron, decorate w/ a map<string,char> with the 'isMatched' info associated
 	   //  to each trigger chain in the input list.
-           //  If decoration map doesn't exist, create it (will be done only for the 1st iteration)
+           //  If decoration map doesn't exist, create it (will be done only for the 1st iteration on the chain names)
            //
            SG::AuxElement::Decorator< std::map<std::string,char> > isTrigMatchedMapElDecor( "isTrigMatchedMapEl" );
            if ( !isTrigMatchedMapElDecor.isAvailable( *electron ) ) {
@@ -780,6 +777,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   }
 
   return true;
+  
 }
 
 EL::StatusCode ElectronSelector :: postExecute ()

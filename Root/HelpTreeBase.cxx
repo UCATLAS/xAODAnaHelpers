@@ -86,12 +86,12 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
     m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
     m_tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
-    m_tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
   } else {
     m_tree->Branch("bcid",               &m_bcid,           "bcid/I");
   }
 
   if ( m_eventInfoSwitch->m_pileup ) {
+    m_tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
     m_tree->Branch("NPV",                &m_npv,            "NPV/I");
     m_tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
     m_tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
@@ -146,20 +146,16 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
   m_runNumber             = eventInfo->runNumber();
   m_eventNumber           = eventInfo->eventNumber();
-  if ( eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION) ) {
+  if ( m_isMC ) {
     m_mcEventNumber         = eventInfo->mcEventNumber();
     m_mcChannelNumber       = eventInfo->mcChannelNumber();
     m_mcEventWeight         = eventInfo->mcEventWeight();
   } else {
     m_bcid                  = eventInfo->bcid();
   }
-  static SG::AuxElement::ConstAccessor< double > weight_pileup ("PileupWeight");
-  if ( m_isMC && weight_pileup.isAvailable( *eventInfo ) ) {
-    m_weight_pileup = weight_pileup( *eventInfo );
-  } else { m_weight_pileup = 1.; }
-
 
   if ( m_eventInfoSwitch->m_pileup ) {
+    
     if ( m_event ) {
       const xAOD::VertexContainer* vertices(nullptr);
       HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
@@ -171,6 +167,20 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
     m_actualMu  = eventInfo->actualInteractionsPerCrossing();
     m_averageMu = eventInfo->averageInteractionsPerCrossing();
     m_lumiBlock = eventInfo->lumiBlock();
+
+    if ( m_isMC ) {
+      
+      static SG::AuxElement::ConstAccessor< double > weight_pileup ("PileupWeight");
+      static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
+      static SG::AuxElement::ConstAccessor< unsigned int > rand_run_nr("RandomRunNumber");
+      static SG::AuxElement::ConstAccessor< unsigned int > rand_lumiblock_nr("RandomLumiBlockNumber"); 
+      
+      if ( weight_pileup.isAvailable( *eventInfo ) )	 { m_weight_pileup = weight_pileup( *eventInfo ); }	    else { m_weight_pileup = 1.0; }
+      if ( correct_mu.isAvailable( *eventInfo ) )	 { m_correct_mu = correct_mu( *eventInfo ); }		    else { m_correct_mu = -1.0; }
+      if ( rand_run_nr.isAvailable( *eventInfo ) )	 { m_rand_run_nr = rand_run_nr( *eventInfo ); } 	    else { m_rand_run_nr = 900000; }
+      if ( rand_lumiblock_nr.isAvailable( *eventInfo ) ) { m_rand_lumiblock_nr = rand_lumiblock_nr( *eventInfo ); } else { m_rand_lumiblock_nr = 0; }
+    
+    }
 
   }
 
@@ -413,6 +423,9 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     m_tree->Branch("muon_isIsolated_Tight",	     &m_muon_isIsolated_Tight);
     m_tree->Branch("muon_isIsolated_Gradient",	     &m_muon_isIsolated_Gradient);
     m_tree->Branch("muon_isIsolated_GradientLoose",  &m_muon_isIsolated_GradientLoose);
+    m_tree->Branch("muon_isIsolated_GradientT1",     &m_muon_isIsolated_GradientT1);   
+    m_tree->Branch("muon_isIsolated_GradientT2",     &m_muon_isIsolated_GradientT2);   
+    m_tree->Branch("muon_isIsolated_MU0p06",	     &m_muon_isIsolated_MU0p06);
     m_tree->Branch("muon_isIsolated_UserDefinedFixEfficiency",    &m_muon_isIsolated_UserDefinedFixEfficiency);
     m_tree->Branch("muon_isIsolated_UserDefinedCut",              &m_muon_isIsolated_UserDefinedCut);
     m_tree->Branch("muon_ptcone20",	  &m_muon_ptcone20);
@@ -505,6 +518,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       static SG::AuxElement::Accessor<char> isIsoTightAcc ("isIsolated_Tight");
       static SG::AuxElement::Accessor<char> isIsoGradientAcc ("isIsolated_Gradient");
       static SG::AuxElement::Accessor<char> isIsoGradientLooseAcc ("isIsolated_GradientLoose");
+      static SG::AuxElement::Accessor<char> isIsoGradientT1Acc ("isIsolated_GradientT1");
+      static SG::AuxElement::Accessor<char> isIsoGradientT2Acc ("isIsolated_GradientT2");
+      static SG::AuxElement::Accessor<char> isIsoMU0p06Acc ("isIsolated_MU0p06");
       static SG::AuxElement::Accessor<char> isIsoUserDefinedFixEfficiencyAcc ("isIsolated_UserDefinedFixEfficiency");
       static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
 
@@ -513,6 +529,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       if ( isIsoTightAcc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_Tight.push_back( isIsoTightAcc( *muon_itr ) ); } else { m_muon_isIsolated_Tight.push_back( -1 ); }
       if ( isIsoGradientAcc.isAvailable( *muon_itr ) )       { m_muon_isIsolated_Gradient.push_back( isIsoGradientAcc( *muon_itr ) ); } else { m_muon_isIsolated_Gradient.push_back( -1 ); }
       if ( isIsoGradientLooseAcc.isAvailable( *muon_itr ) )  { m_muon_isIsolated_GradientLoose.push_back( isIsoGradientLooseAcc( *muon_itr ) ); } else { m_muon_isIsolated_GradientLoose.push_back( -1 ); }
+      if ( isIsoGradientT1Acc.isAvailable( *muon_itr ) )     { m_muon_isIsolated_GradientT1.push_back( isIsoGradientT1Acc( *muon_itr ) ); } else { m_muon_isIsolated_GradientT1.push_back( -1 ); }
+      if ( isIsoGradientT2Acc.isAvailable( *muon_itr ) )     { m_muon_isIsolated_GradientT2.push_back( isIsoGradientT2Acc( *muon_itr ) ); } else { m_muon_isIsolated_GradientT2.push_back( -1 ); }
+      if ( isIsoMU0p06Acc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_MU0p06.push_back( isIsoMU0p06Acc( *muon_itr ) ); } else { m_muon_isIsolated_MU0p06.push_back( -1 ); }
       if ( isIsoUserDefinedFixEfficiencyAcc.isAvailable( *muon_itr ) ) { m_muon_isIsolated_UserDefinedFixEfficiency.push_back( isIsoUserDefinedFixEfficiencyAcc( *muon_itr ) ); } else { m_muon_isIsolated_UserDefinedFixEfficiency.push_back( -1 ); }
       if ( isIsoUserDefinedCutAcc.isAvailable( *muon_itr ) )           { m_muon_isIsolated_UserDefinedCut.push_back( isIsoUserDefinedCutAcc( *muon_itr ) ); } else { m_muon_isIsolated_UserDefinedCut.push_back( -1 ); }
 
@@ -656,6 +675,9 @@ void HelpTreeBase::ClearMuons() {
     m_muon_isIsolated_Loose.clear();
     m_muon_isIsolated_Tight.clear();
     m_muon_isIsolated_Gradient.clear();
+    m_muon_isIsolated_GradientT1.clear();
+    m_muon_isIsolated_GradientT2.clear();    
+    m_muon_isIsolated_MU0p06.clear();   
     m_muon_isIsolated_GradientLoose.clear();
     m_muon_isIsolated_UserDefinedFixEfficiency.clear();
     m_muon_isIsolated_UserDefinedCut.clear();
@@ -750,6 +772,9 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_isIsolated_Tight",	   &m_el_isIsolated_Tight);
     m_tree->Branch("el_isIsolated_Gradient",	   &m_el_isIsolated_Gradient);
     m_tree->Branch("el_isIsolated_GradientLoose",  &m_el_isIsolated_GradientLoose);
+    m_tree->Branch("el_isIsolated_GradientT1",     &m_el_isIsolated_GradientT1);   
+    m_tree->Branch("el_isIsolated_GradientT2",     &m_el_isIsolated_GradientT2);   
+    m_tree->Branch("el_isIsolated_EL0p06",	   &m_el_isIsolated_EL0p06);
     m_tree->Branch("el_isIsolated_UserDefinedFixEfficiency",    &m_el_isIsolated_UserDefinedFixEfficiency);
     m_tree->Branch("el_isIsolated_UserDefinedCut",              &m_el_isIsolated_UserDefinedCut);
     m_tree->Branch("el_etcone20",	  &m_el_etcone20);
@@ -858,6 +883,9 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       static SG::AuxElement::Accessor<char> isIsoTightAcc ("isIsolated_Tight");
       static SG::AuxElement::Accessor<char> isIsoGradientAcc ("isIsolated_Gradient");
       static SG::AuxElement::Accessor<char> isIsoGradientLooseAcc ("isIsolated_GradientLoose");
+      static SG::AuxElement::Accessor<char> isIsoGradientT1Acc ("isIsolated_GradientT1");
+      static SG::AuxElement::Accessor<char> isIsoGradientT2Acc ("isIsolated_GradientT2");
+      static SG::AuxElement::Accessor<char> isIsoEL0p06Acc ("isIsolated_EL0p06");
       static SG::AuxElement::Accessor<char> isIsoUserDefinedFixEfficiencyAcc ("isIsolated_UserDefinedFixEfficiency");
       static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
 
@@ -866,6 +894,9 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       if ( isIsoTightAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_Tight.push_back( isIsoTightAcc( *el_itr ) ); } else { m_el_isIsolated_Tight.push_back( -1 ); }
       if ( isIsoGradientAcc.isAvailable( *el_itr ) )       { m_el_isIsolated_Gradient.push_back( isIsoGradientAcc( *el_itr ) ); } else { m_el_isIsolated_Gradient.push_back( -1 ); }
       if ( isIsoGradientLooseAcc.isAvailable( *el_itr ) )  { m_el_isIsolated_GradientLoose.push_back( isIsoGradientLooseAcc( *el_itr ) ); } else { m_el_isIsolated_GradientLoose.push_back( -1 ); }
+      if ( isIsoGradientT1Acc.isAvailable( *el_itr ) )     { m_el_isIsolated_GradientT1.push_back( isIsoGradientT1Acc( *el_itr ) ); } else { m_el_isIsolated_GradientT1.push_back( -1 ); }
+      if ( isIsoGradientT2Acc.isAvailable( *el_itr ) )     { m_el_isIsolated_GradientT2.push_back( isIsoGradientT2Acc( *el_itr ) ); } else { m_el_isIsolated_GradientT2.push_back( -1 ); }
+      if ( isIsoEL0p06Acc.isAvailable( *el_itr ) )          { m_el_isIsolated_EL0p06.push_back( isIsoEL0p06Acc( *el_itr ) ); } else { m_el_isIsolated_EL0p06.push_back( -1 ); }
       if ( isIsoUserDefinedFixEfficiencyAcc.isAvailable( *el_itr ) ) { m_el_isIsolated_UserDefinedFixEfficiency.push_back( isIsoUserDefinedFixEfficiencyAcc( *el_itr ) ); } else { m_el_isIsolated_UserDefinedFixEfficiency.push_back( -1 ); }
       if ( isIsoUserDefinedCutAcc.isAvailable( *el_itr ) )           { m_el_isIsolated_UserDefinedCut.push_back( isIsoUserDefinedCutAcc( *el_itr ) ); } else { m_el_isIsolated_UserDefinedCut.push_back( -1 ); }
 
@@ -1013,6 +1044,9 @@ void HelpTreeBase::ClearElectrons() {
     m_el_isIsolated_Tight.clear();
     m_el_isIsolated_Gradient.clear();
     m_el_isIsolated_GradientLoose.clear();
+    m_el_isIsolated_GradientT1.clear();
+    m_el_isIsolated_GradientT2.clear();    
+    m_el_isIsolated_EL0p06.clear();       
     m_el_isIsolated_UserDefinedFixEfficiency.clear();
     m_el_isIsolated_UserDefinedCut.clear();
     m_el_etcone20.clear();
