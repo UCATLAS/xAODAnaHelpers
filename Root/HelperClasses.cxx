@@ -207,6 +207,11 @@ namespace HelperClasses{
     }
   }
 
+  void TruthInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+  }
+
+
   void TauInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
     m_trackparams   = parse("trackparams");

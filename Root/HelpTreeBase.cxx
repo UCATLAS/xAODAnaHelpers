@@ -31,6 +31,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_muInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
   m_jetInfoSwitch(nullptr),
+  m_truthInfoSwitch(nullptr),
   m_fatJetInfoSwitch(nullptr),
   m_tauInfoSwitch(nullptr),
   m_metInfoSwitch(nullptr),
@@ -2424,6 +2425,69 @@ void HelpTreeBase::ClearJets() {
   }
 
 }
+
+/*********************
+ *
+ *   TRUTH
+ *
+ ********************/
+
+void HelpTreeBase::AddTruthParts(const std::string truthName, const std::string detailStr)
+{
+
+  if(m_debug) Info("AddTruthParts()", "Adding truth particle %s with variables: %s", truthName.c_str(), detailStr.c_str());
+
+  m_truthInfoSwitch = new HelperClasses::TruthInfoSwitch( detailStr );
+  
+  m_truth[truthName] = new truthInfo();
+
+  // always
+  m_tree->Branch(("n"+truthName).c_str(),    &m_truth[truthName]->N, ("n"+truthName+"/I").c_str());
+
+  if ( m_truthInfoSwitch->m_kinematic ) {
+    m_tree->Branch((truthName+"_E"  ).c_str(), &m_truth[truthName]->E);
+    m_tree->Branch((truthName+"_pt" ).c_str(), &m_truth[truthName]->pt);
+    m_tree->Branch((truthName+"_phi").c_str(), &m_truth[truthName]->phi);
+    m_tree->Branch((truthName+"_eta").c_str(), &m_truth[truthName]->eta);
+  }
+
+  this->AddTruthUser(truthName);
+}
+
+void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truthParts ) {
+
+  this->ClearTruth(truthName);
+  this->ClearTruthUser(truthName);
+
+  for( auto truth_itr : *truthParts ) {
+
+    if( m_truthInfoSwitch->m_kinematic ){
+      m_truth[truthName]->pt .push_back  ( truth_itr->pt() / m_units );
+      m_truth[truthName]->eta.push_back  ( truth_itr->eta() );
+      m_truth[truthName]->phi.push_back  ( truth_itr->phi() );
+      m_truth[truthName]->E  .push_back  ( truth_itr->e() / m_units );
+    }
+
+    this->FillTruthUser(truthName, truth_itr);
+
+    m_truth[truthName]->N++;
+
+  } // loop over Truth
+
+}
+
+void HelpTreeBase::ClearTruth(const std::string truthName) {
+
+  m_truth[truthName]->N = 0;
+  if( m_truthInfoSwitch->m_kinematic ){
+    m_truth[truthName]->pt.clear();
+    m_truth[truthName]->eta.clear();
+    m_truth[truthName]->phi.clear();
+    m_truth[truthName]->E.clear();
+  }
+
+}
+
 
 /*********************
  *
