@@ -5,6 +5,7 @@
 #include <xAODAnaHelpers/BasicEventSelection.h>
 #include <xAODAnaHelpers/ElectronSelector.h>
 #include <xAODAnaHelpers/JetSelector.h>
+#include <xAODAnaHelpers/TruthSelector.h>
 #include <xAODAnaHelpers/TrackSelector.h>
 #include <xAODAnaHelpers/MuonSelector.h>
 
@@ -47,6 +48,7 @@
 #pragma link C++ class BasicEventSelection+;
 #pragma link C++ class ElectronSelector+;
 #pragma link C++ class JetSelector+;
+#pragma link C++ class TruthSelector+;
 #pragma link C++ class TrackSelector+;
 #pragma link C++ class MuonSelector+;
 
