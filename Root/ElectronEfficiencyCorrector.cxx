@@ -388,22 +388,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
-  /*
-  if( eventInfo->eventNumber() == 952 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 626 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 664 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 1639 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 4735 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 4675 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 5659 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 4405 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 2092 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 4413 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 80310 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 35962 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  if( eventInfo->eventNumber() == 159643 ) { Info("execute()", "eventNumber = %lld", eventInfo->eventNumber() ); }
-  */
-
   // initialise containers
   //
   const xAOD::ElectronContainer* inputElectrons(nullptr);
