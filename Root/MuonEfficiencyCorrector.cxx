@@ -285,8 +285,8 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   //
   std::string tool_WP = m_WorkingPointIso + "Iso";
     
-  std::string IsoSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Iso_" + m_WorkingPointIso;
-  m_asgMuonEffCorrTool_muSF_Iso = new CP::MuonEfficiencyScaleFactors(IsoSF_tool_name);
+  std::string isoEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Iso_" + m_WorkingPointIso;
+  m_asgMuonEffCorrTool_muSF_Iso = new CP::MuonEfficiencyScaleFactors(isoEffSF_tool_name);
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->setProperty("WorkingPoint", tool_WP ), "Failed to set Working Point property of MuonEfficiencyScaleFactors for iso efficiency SF");
   RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->initialize(), "Failed to properly initialize MuonEfficiencyScaleFactors for iso efficiency SF");
 
@@ -552,8 +552,18 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
+  
+  // Define also an *event* weight, which is the product of all the reco eff. SFs for each object in the event
+  //
+  std::string RECO_SF_NAME_GLOBAL = m_outputSystNamesReco + "_GLOBAL";
+  SG::AuxElement::Decorator< std::vector<double> > sfVecReco_GLOBAL ( RECO_SF_NAME_GLOBAL );
+  
   for ( const auto& syst_it : m_systListReco ) {
-
+    
+    // Initialise product of SFs for *this* systematic
+    //
+    double recoEffSF_GLOBAL(1.0); 
+    
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_MuRecoEff_SF
     //
@@ -609,7 +619,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        // Add it to decoration vector
        //
        sfVecReco( *mu_itr ).push_back( recoEffSF );
-
+       
+       recoEffSF_GLOBAL *= recoEffSF;
+       
        if ( m_debug ) { 
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");	 
@@ -628,6 +640,16 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        ++idx;
 
     } // close muon loop
+    
+    // For *this* systematic, store the global SF weight for the event
+    //
+    if ( m_debug ) {
+       Info( "executeSF()", "--------------------------------------");
+       Info( "executeSF()", "GLOBAL Reco efficiency SF for event:");
+       Info( "executeSF()", "\t %f ", recoEffSF_GLOBAL );
+       Info( "executeSF()", "--------------------------------------");
+    }
+    sfVecReco_GLOBAL( *eventInfo ).push_back( recoEffSF_GLOBAL );
 
   }  // close loop on reco efficiency SF systematics
 
@@ -638,8 +660,17 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Every systematic will correspond to a different SF!
   //
   
+  // Define also an *event* weight, which is the product of all the iso eff. SFs for each object in the event
+  //
+  std::string ISO_SF_NAME_GLOBAL = m_outputSystNamesIso + "_GLOBAL";
+  SG::AuxElement::Decorator< std::vector<double> > sfVecIso_GLOBAL ( ISO_SF_NAME_GLOBAL );
+  
   for ( const auto& syst_it : m_systListIso ) {
-
+   
+    // Initialise product of SFs for *this* systematic
+    //
+    double isoEffSF_GLOBAL(1.0);
+     
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_MuIsoEff_SF_WP
     //
@@ -695,7 +726,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        // Add it to decoration vector
        //
        sfVecIso( *mu_itr ).push_back(IsoEffSF);
-
+      
+       isoEffSF_GLOBAL *= IsoEffSF;
+      
        if ( m_debug ) { 
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
@@ -716,6 +749,16 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        ++idx;    
        
     } // close muon loop
+   
+    // For *this* systematic, store the global SF weight for the event
+    //
+    if ( m_debug ) {
+       Info( "executeSF()", "--------------------------------------");
+       Info( "executeSF()", "GLOBAL Iso efficiency SF for event:");
+       Info( "executeSF()", "\t %f ", isoEffSF_GLOBAL );
+       Info( "executeSF()", "--------------------------------------");
+    }
+    sfVecIso_GLOBAL( *eventInfo ).push_back( isoEffSF_GLOBAL );
   
   }  // close loop on isolation efficiency SF systematics
 

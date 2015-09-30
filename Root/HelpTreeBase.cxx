@@ -130,11 +130,24 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   }
 
   if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
-    m_tree->Branch("weight_muon_trig", &m_weight_muon_trig);
+    m_tree->Branch("weight_muon_trig", 				      &m_weight_muon_trig);
+    m_tree->Branch("weight_muon_RecoEff_SF",		   	      &m_weight_muon_RecoEff_SF);
+    m_tree->Branch("weight_muon_IsoEff_SF_LooseTrackOnly", 	      &m_weight_muon_IsoEff_SF_LooseTrackOnly);
+    m_tree->Branch("weight_muon_IsoEff_SF_Loose",	    	      &m_weight_muon_IsoEff_SF_Loose);
+    m_tree->Branch("weight_muon_IsoEff_SF_Tight",	    	      &m_weight_muon_IsoEff_SF_Tight);
+    m_tree->Branch("weight_muon_IsoEff_SF_Gradient",	    	      &m_weight_muon_IsoEff_SF_Gradient);
+    m_tree->Branch("weight_muon_IsoEff_SF_GradientLoose",  	      &m_weight_muon_IsoEff_SF_GradientLoose);
+    m_tree->Branch("weight_muon_IsoEff_SF_UserDefinedFixEfficiency",  &m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency);
+    m_tree->Branch("weight_muon_IsoEff_SF_UserDefinedCut",	      &m_weight_muon_IsoEff_SF_UserDefinedCut);  
   }
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
-    m_tree->Branch("weight_electron_trig", &m_weight_electron_trig);
+    m_tree->Branch("weight_electron_trig", 		    &m_weight_electron_trig);
+    m_tree->Branch("weight_electron_RecoEff_SF"  ,	    &m_weight_electron_RecoEff_SF  );
+    m_tree->Branch("weight_electron_PIDEff_SF_LHVeryLoose", &m_weight_electron_PIDEff_SF_LHVeryLoose);
+    m_tree->Branch("weight_electron_PIDEff_SF_LHLoose",	    &m_weight_electron_PIDEff_SF_LHLoose);
+    m_tree->Branch("weight_electron_PIDEff_SF_LHMedium",    &m_weight_electron_PIDEff_SF_LHMedium);
+    m_tree->Branch("weight_electron_PIDEff_SF_LHTight",	    &m_weight_electron_PIDEff_SF_LHTight);  
   }
 
   this->AddEventUser();
@@ -254,23 +267,45 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
   }
 
   if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
-    SG::AuxElement::ConstAccessor< std::vector<double> > muonTrigSFVec( "MuonEfficiencyCorrector_TrigSyst" );
+    
+    SG::AuxElement::ConstAccessor< std::vector<double> >   muonTrigSFVec( "MuonEfficiencyCorrector_TrigSyst" );
+    SG::AuxElement::ConstAccessor< std::vector< double > > accRecoSFGlobal("MuonEfficiencyCorrector_RecoSyst_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_Loose("MuonEfficiencyCorrector_IsoSyst_Loose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_Tight("MuonEfficiencyCorrector_IsoSyst_Tight_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_Gradient("MuonEfficiencyCorrector_IsoSyst_Gradient_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_GradientLoose("MuonEfficiencyCorrector_IsoSyst_GradientLoose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_UserDefinedFixEfficiency("MuonEfficiencyCorrector_IsoSyst_UserDefinedFixEfficiency_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_UserDefinedCut("MuonEfficiencyCorrector_IsoSyst_UserDefinedCut_GLOBAL");
+    
+    if( muonTrigSFVec.isAvailable( *eventInfo ) ) { m_weight_muon_trig = muonTrigSFVec( *eventInfo ); } else { m_weight_muon_trig.push_back(-999.0); }
+    if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_muon_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_muon_RecoEff_SF.push_back(-999.0); }
+    if( accIsoSFGlobal_LooseTrackOnly.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_LooseTrackOnly = accIsoSFGlobal_LooseTrackOnly( *eventInfo ); } else { m_weight_muon_IsoEff_SF_LooseTrackOnly.push_back(-999.0); }    
+    if( accIsoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Loose = accIsoSFGlobal_Loose( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Loose.push_back(-999.0); }    
+    if( accIsoSFGlobal_Tight.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Tight = accIsoSFGlobal_Tight( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Tight.push_back(-999.0); }    
+    if( accIsoSFGlobal_Gradient.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Gradient = accIsoSFGlobal_Gradient( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Gradient.push_back(-999.0); }    
+    if( accIsoSFGlobal_GradientLoose.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_GradientLoose = accIsoSFGlobal_GradientLoose( *eventInfo ); } else { m_weight_muon_IsoEff_SF_GradientLoose.push_back(-999.0); }    
+    if( accIsoSFGlobal_UserDefinedFixEfficiency.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency = accIsoSFGlobal_UserDefinedFixEfficiency( *eventInfo ); } else { m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency.push_back(-999.0); }    
+    if( accIsoSFGlobal_UserDefinedCut.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_UserDefinedCut = accIsoSFGlobal_UserDefinedCut( *eventInfo ); } else { m_weight_muon_IsoEff_SF_UserDefinedCut.push_back(-999.0); }
 
-    if( muonTrigSFVec.isAvailable( *eventInfo ) ) {
-      m_weight_muon_trig = muonTrigSFVec( *eventInfo );
-    } else {
-      m_weight_muon_trig.push_back(-999);
-    }
   }
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
-    SG::AuxElement::ConstAccessor< std::vector<double> > electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst" );
+    
+    SG::AuxElement::ConstAccessor< std::vector<double> >   electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst" );
+    SG::AuxElement::ConstAccessor< std::vector< double > > accRecoSFGlobal("ElectronEfficiencyCorrector_RecoSyst_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accPIDSFGlobal_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accPIDSFGlobal_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accPIDSFGlobal_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< double > > accPIDSFGlobal_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight_GLOBAL");
 
-    if( electronTrigSFVec.isAvailable( *eventInfo ) ) {
-      m_weight_electron_trig = electronTrigSFVec( *eventInfo );
-    } else {
-      m_weight_electron_trig.push_back(-999);
-    }
+    if( electronTrigSFVec.isAvailable( *eventInfo ) ) { m_weight_electron_trig = electronTrigSFVec( *eventInfo ); } else { m_weight_electron_trig.push_back(-999); }
+    if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_electron_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_electron_RecoEff_SF.push_back(-999.0); }
+    if( accPIDSFGlobal_LHVeryLoose.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHVeryLoose = accPIDSFGlobal_LHVeryLoose( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHVeryLoose.push_back(-999.0); }
+    if( accPIDSFGlobal_LHLoose.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHLoose = accPIDSFGlobal_LHLoose( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHLoose.push_back(-999.0); }
+    if( accPIDSFGlobal_LHMedium.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHMedium = accPIDSFGlobal_LHMedium( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHMedium.push_back(-999.0); }
+    if( accPIDSFGlobal_LHTight.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHTight= accPIDSFGlobal_LHTight( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHTight.push_back(-999.0); }
+
   }
 
   this->FillEventUser(eventInfo);
@@ -491,7 +526,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
   this->ClearMuons();
   this->ClearMuonsUser();
-
+  
   m_nmuon = 0;
   for ( auto muon_itr : *(muons) ) {
 
@@ -801,7 +836,7 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   }
 
   if ( m_elInfoSwitch->m_effSF && m_isMC ) {
-    m_tree->Branch("el_RecoEff_SF"  ,            &m_el_RecoEff_SF  );
+    m_tree->Branch("el_RecoEff_SF"  ,		 &m_el_RecoEff_SF  );
     m_tree->Branch("el_PIDEff_SF_LHVeryLoose",   &m_el_PIDEff_SF_LHVeryLoose);
     m_tree->Branch("el_PIDEff_SF_LHLoose",       &m_el_PIDEff_SF_LHLoose);
     m_tree->Branch("el_PIDEff_SF_LHMedium",      &m_el_PIDEff_SF_LHMedium);
@@ -1270,42 +1305,66 @@ void HelpTreeBase::AddJets(const std::string detailStr)
         case 30 :
 	  m_tree->Branch("njets_mv2c20_Fix30",   &m_njet_mv2c20_Fix30,"njets_mv2c20_Fix30/I");
           m_tree->Branch("jet_MV2c20_isFix30",   &m_jet_mv2c20_isFix30);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix30",   &m_jet_mv2c20_sfFix30);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFix30",   &m_jet_mv2c20_sfFix30);
+            m_tree->Branch("weight_jet_MV2c20_SFFix30",   &m_weight_jet_mv2c20_sfFix30);	  
+	  }
           break;
         case 50 :
 	  m_tree->Branch("njets_mv2c20_Fix50",   &m_njet_mv2c20_Fix50,"njets_mv2c20_Fix50/I");
           m_tree->Branch("jet_MV2c20_isFix50",   &m_jet_mv2c20_isFix50);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix50",   &m_jet_mv2c20_sfFix50);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFix50",   &m_jet_mv2c20_sfFix50);
+            m_tree->Branch("weight_jet_MV2c20_SFFix50",   &m_weight_jet_mv2c20_sfFix50);	  
+	  }
           break;
         case 60 :
 	  m_tree->Branch("njets_mv2c20_Fix60",   &m_njet_mv2c20_Fix60,"njets_mv2c20_Fix60/I");
           m_tree->Branch("jet_MV2c20_isFix60",   &m_jet_mv2c20_isFix60);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix60",   &m_jet_mv2c20_sfFix60);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFix60",   &m_jet_mv2c20_sfFix60);
+            m_tree->Branch("weight_jet_MV2c20_SFFix60",   &m_weight_jet_mv2c20_sfFix60);	  
+	  }
           break;
         case 70 :
 	  m_tree->Branch("njets_mv2c20_Fix70",   &m_njet_mv2c20_Fix70,"njets_mv2c20_Fix70/I");
           m_tree->Branch("jet_MV2c20_isFix70",   &m_jet_mv2c20_isFix70);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix70",   &m_jet_mv2c20_sfFix70);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFix70",   &m_jet_mv2c20_sfFix70);
+            m_tree->Branch("weight_jet_MV2c20_SFFix70",   &m_weight_jet_mv2c20_sfFix70);	  
+	  }
           break;
         case 77 :
 	  m_tree->Branch("njets_mv2c20_Fix77",   &m_njet_mv2c20_Fix77,"njets_mv2c20_Fix77/I");
           m_tree->Branch("jet_MV2c20_isFix77",   &m_jet_mv2c20_isFix77);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix77",   &m_jet_mv2c20_sfFix77);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFix77",   &m_jet_mv2c20_sfFix77);
+            m_tree->Branch("weight_jet_MV2c20_SFFix77",   &m_weight_jet_mv2c20_sfFix77);	  
+	  }
           break;
         case 80 :
 	  m_tree->Branch("njets_mv2c20_Fix80",   &m_njet_mv2c20_Fix80,"njets_mv2c20_Fix80/I");
           m_tree->Branch("jet_MV2c20_isFix80",   &m_jet_mv2c20_isFix80);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix80",   &m_jet_mv2c20_sfFix80);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFix80",   &m_jet_mv2c20_sfFix80);
+            m_tree->Branch("weight_jet_MV2c20_SFFix80",   &m_weight_jet_mv2c20_sfFix80);	  
+	  }
           break;
         case 85 :
 	  m_tree->Branch("njets_mv2c20_Fix85",   &m_njet_mv2c20_Fix85,"njets_mv2c20_Fix85/I");
           m_tree->Branch("jet_MV2c20_isFix85",   &m_jet_mv2c20_isFix85);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix85",   &m_jet_mv2c20_sfFix85);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFix85",   &m_jet_mv2c20_sfFix85);
+            m_tree->Branch("weight_jet_MV2c20_SFFix85",   &m_weight_jet_mv2c20_sfFix85);	  
+	  }
           break;
         case 90 :
 	  m_tree->Branch("njets_mv2c20_Fix90",   &m_njet_mv2c20_Fix90,"njets_mv2c20_Fix90/I");
           m_tree->Branch("jet_MV2c20_isFix90",   &m_jet_mv2c20_isFix90);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFix90",   &m_jet_mv2c20_sfFix90);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFix90",   &m_jet_mv2c20_sfFix90);
+            m_tree->Branch("weight_jet_MV2c20_SFFix90",   &m_weight_jet_mv2c20_sfFix90);	  
+	  }
           break;
         default:
           std::cout << "BTag Fixed operating point of " << m_jetInfoSwitch->m_sfFTagFix.at(i)
@@ -1320,37 +1379,58 @@ void HelpTreeBase::AddJets(const std::string detailStr)
         case 30 :
 	  m_tree->Branch("njets_mv2c20_Flt30",   &m_njet_mv2c20_Flt30,"njets_mv2c20_Flt30/I");
           m_tree->Branch("jet_MV2c20_isFlt30",   &m_jet_mv2c20_isFlt30);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt30",   &m_jet_mv2c20_sfFlt30);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFlt30",   &m_jet_mv2c20_sfFlt30);
+            m_tree->Branch("weight_jet_MV2c20_SFFlt30",   &m_weight_jet_mv2c20_sfFlt30);	  
+	  }
           break;
         case 40 :
 	  m_tree->Branch("njets_mv2c20_Flt40",   &m_njet_mv2c20_Flt40,"njets_mv2c20_Flt40/I");
           m_tree->Branch("jet_MV2c20_isFlt40",   &m_jet_mv2c20_isFlt40);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt40",   &m_jet_mv2c20_sfFlt40);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFlt40",   &m_jet_mv2c20_sfFlt40);
+            m_tree->Branch("weight_jet_MV2c20_SFFlt40",   &m_weight_jet_mv2c20_sfFlt40);	  
+	  }
           break;
         case 50 :
 	  m_tree->Branch("njets_mv2c20_Flt50",   &m_njet_mv2c20_Flt50,"njets_mv2c20_Flt50/I");
           m_tree->Branch("jet_MV2c20_isFlt50",   &m_jet_mv2c20_isFlt50);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt50",   &m_jet_mv2c20_sfFlt50);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFlt50",   &m_jet_mv2c20_sfFlt50);
+            m_tree->Branch("weight_jet_MV2c20_SFFlt50",   &m_weight_jet_mv2c20_sfFlt50);	  
+	  }
           break;
         case 60 :
 	  m_tree->Branch("njets_mv2c20_Flt60",   &m_njet_mv2c20_Flt60,"njets_mv2c20_Flt60/I");
           m_tree->Branch("jet_MV2c20_isFlt60",   &m_jet_mv2c20_isFlt60);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt60",   &m_jet_mv2c20_sfFlt60);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFlt60",   &m_jet_mv2c20_sfFlt60);
+            m_tree->Branch("weight_jet_MV2c20_SFFlt60",   &m_weight_jet_mv2c20_sfFlt60);	  
+	  }
           break;
         case 70 :
 	  m_tree->Branch("njets_mv2c20_Flt70",   &m_njet_mv2c20_Flt70,"njets_mv2c20_Flt70/I");
           m_tree->Branch("jet_MV2c20_isFlt70",   &m_jet_mv2c20_isFlt70);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt70",   &m_jet_mv2c20_sfFlt70);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFlt70",   &m_jet_mv2c20_sfFlt70);
+            m_tree->Branch("weight_jet_MV2c20_SFFlt70",   &m_weight_jet_mv2c20_sfFlt70);	  
+	  }
           break;
         case 77 :
 	  m_tree->Branch("njets_mv2c20_Flt77",   &m_njet_mv2c20_Flt77,"njets_mv2c20_Flt77/I");
           m_tree->Branch("jet_MV2c20_isFlt77",   &m_jet_mv2c20_isFlt77);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt77",   &m_jet_mv2c20_sfFlt77);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFlt77",   &m_jet_mv2c20_sfFlt77);
+            m_tree->Branch("weight_jet_MV2c20_SFFlt77",   &m_weight_jet_mv2c20_sfFlt77);	  
+	  }
           break;
         case 85 :
 	  m_tree->Branch("njets_mv2c20_Flt85",   &m_njet_mv2c20_Flt85,"njets_mv2c20_Flt85/I");
           m_tree->Branch("jet_MV2c20_isFlt85",   &m_jet_mv2c20_isFlt85);
-          if(m_isMC) m_tree->Branch("jet_MV2c20_SFFlt85",   &m_jet_mv2c20_sfFlt85);
+          if ( m_isMC ) { 
+	    m_tree->Branch("jet_MV2c20_SFFlt85",   &m_jet_mv2c20_sfFlt85);
+            m_tree->Branch("weight_jet_MV2c20_SFFlt85",   &m_weight_jet_mv2c20_sfFlt85);	  
+	  }
           break;
         default:
           std::cout << "BTag Flat operating point of " << m_jetInfoSwitch->m_sfFTagFlt.at(i)
@@ -1421,6 +1501,88 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
     pv = vertices->at( pvLocation );
+  }
+
+  // Global event BTag SF weight (--> the product of each object's weight)
+  //
+  if ( m_isMC ) {
+    const xAOD::EventInfo* eventInfo(nullptr);
+    HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, false);
+
+    if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
+      for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
+    	switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
+    	  case 30 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix30_GLOBAL("BTag_SF_FixedCutBEff_30_GLOBAL");
+            if ( sfFix30_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix30 = sfFix30_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix30.push_back(-999.0); }
+    	    break;
+    	  case 50 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix50_GLOBAL("BTag_SF_FixedCutBEff_50_GLOBAL");
+            if ( sfFix50_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix50 = sfFix50_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix50.push_back(-999.0); }
+    	    break;
+    	  case 60 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix60_GLOBAL("BTag_SF_FixedCutBEff_60_GLOBAL");
+            if ( sfFix60_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix60 = sfFix60_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix60.push_back(-999.0); }
+    	    break;
+    	  case 70 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix70_GLOBAL("BTag_SF_FixedCutBEff_70_GLOBAL");
+            if ( sfFix70_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix70 = sfFix70_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix70.push_back(-999.0); }
+    	    break;
+    	  case 77 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix77_GLOBAL("BTag_SF_FixedCutBEff_77_GLOBAL");
+            if ( sfFix77_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix77 = sfFix77_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix77.push_back(-999.0); }
+    	    break;
+    	  case 80 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix80_GLOBAL("BTag_SF_FixedCutBEff_80_GLOBAL");
+            if ( sfFix80_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix80 = sfFix80_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix80.push_back(-999.0); }
+    	    break;
+    	  case 85 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix85_GLOBAL("BTag_SF_FixedCutBEff_85_GLOBAL");
+            if ( sfFix85_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix85 = sfFix85_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix85.push_back(-999.0); }
+    	    break;
+    	  case 90 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix90_GLOBAL("BTag_SF_FixedCutBEff_90_GLOBAL");
+            if ( sfFix90_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix90 = sfFix90_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix90.push_back(-999.0); }
+    	    break;
+    	}
+      }
+    } // sfFTagFix
+
+    if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) {
+      for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
+    	switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
+    	  case 30 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30_GLOBAL("BTag_SF_FlatBEff_30_GLOBAL");
+            if ( sfFlt30_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt30 = sfFlt30_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt30.push_back(-999.0); }
+    	    break;
+    	  case 40 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40_GLOBAL("BTag_SF_FlatBEff_40_GLOBAL");
+            if ( sfFlt40_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt40 = sfFlt40_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt40.push_back(-999.0); }
+    	    break;
+    	  case 50 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50_GLOBAL("BTag_SF_FlatBEff_50_GLOBAL");
+            if ( sfFlt50_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt50 = sfFlt50_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt50.push_back(-999.0); }
+    	    break;
+    	  case 60 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60_GLOBAL("BTag_SF_FlatBEff_60_GLOBAL");
+            if ( sfFlt60_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt60 = sfFlt60_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt60.push_back(-999.0); }
+    	    break;
+    	  case 70 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70_GLOBAL("BTag_SF_FlatBEff_70_GLOBAL");
+            if ( sfFlt70_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt70 = sfFlt70_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt70.push_back(-999.0); }
+    	    break;
+    	  case 77 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77_GLOBAL("BTag_SF_FlatBEff_77_GLOBAL");
+            if ( sfFlt77_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt77 = sfFlt77_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt77.push_back(-999.0); }
+    	    break;
+    	  case 85 : 
+            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85_GLOBAL("BTag_SF_FlatBEff_85_GLOBAL");
+            if ( sfFlt85_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt85 = sfFlt85_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt85.push_back(-999.0); }
+    	    break;
+    	}
+      }
+    } // sfFTagFlt
+
   }
 
   for( auto jet_itr : *jets ) {
@@ -2315,34 +2477,42 @@ void HelpTreeBase::ClearJets() {
 
     m_njet_mv2c20_Fix30 = 0;
     m_jet_mv2c20_isFix30.clear();
+    m_weight_jet_mv2c20_sfFix30.clear();
     m_jet_mv2c20_sfFix30.clear();
 
     m_njet_mv2c20_Fix50 = 0;
     m_jet_mv2c20_isFix50.clear();
+    m_weight_jet_mv2c20_sfFix50.clear();
     m_jet_mv2c20_sfFix50.clear();
 
     m_njet_mv2c20_Fix60 = 0;
     m_jet_mv2c20_isFix60.clear();
+    m_weight_jet_mv2c20_sfFix60.clear();
     m_jet_mv2c20_sfFix60.clear();
 
     m_njet_mv2c20_Fix70 = 0;
     m_jet_mv2c20_isFix70.clear();
+    m_weight_jet_mv2c20_sfFix70.clear();
     m_jet_mv2c20_sfFix70.clear();
 
     m_njet_mv2c20_Fix77 = 0;
     m_jet_mv2c20_isFix77.clear();
+    m_weight_jet_mv2c20_sfFix77.clear();
     m_jet_mv2c20_sfFix77.clear();
 
     m_njet_mv2c20_Fix80 = 0;
     m_jet_mv2c20_isFix80.clear();
+    m_weight_jet_mv2c20_sfFix80.clear();
     m_jet_mv2c20_sfFix80.clear();
 
     m_njet_mv2c20_Fix85 = 0;
     m_jet_mv2c20_isFix85.clear();
+    m_weight_jet_mv2c20_sfFix85.clear();
     m_jet_mv2c20_sfFix85.clear();
 
     m_njet_mv2c20_Fix90 = 0;
     m_jet_mv2c20_isFix90.clear();
+    m_weight_jet_mv2c20_sfFix90.clear();
     m_jet_mv2c20_sfFix90.clear();
   }
 
@@ -2350,30 +2520,37 @@ void HelpTreeBase::ClearJets() {
 
     m_njet_mv2c20_Flt30 = 0;
     m_jet_mv2c20_isFlt30.clear();
+    m_weight_jet_mv2c20_sfFlt30.clear();
     m_jet_mv2c20_sfFlt30.clear();
 
     m_njet_mv2c20_Flt40 = 0;
     m_jet_mv2c20_isFlt40.clear();
+    m_weight_jet_mv2c20_sfFlt40.clear();
     m_jet_mv2c20_sfFlt40.clear();
 
     m_njet_mv2c20_Flt50 = 0;
     m_jet_mv2c20_isFlt50.clear();
+    m_weight_jet_mv2c20_sfFlt50.clear();
     m_jet_mv2c20_sfFlt50.clear();
 
     m_njet_mv2c20_Flt60 = 0;
     m_jet_mv2c20_isFlt60.clear();
+    m_weight_jet_mv2c20_sfFlt60.clear();
     m_jet_mv2c20_sfFlt60.clear();
 
     m_njet_mv2c20_Flt70 = 0;
     m_jet_mv2c20_isFlt70.clear();
+    m_weight_jet_mv2c20_sfFlt70.clear();
     m_jet_mv2c20_sfFlt70.clear();
 
     m_njet_mv2c20_Flt77 = 0;
     m_jet_mv2c20_isFlt77.clear();
+    m_weight_jet_mv2c20_sfFlt77.clear();
     m_jet_mv2c20_sfFlt77.clear();
 
     m_njet_mv2c20_Flt85 = 0;
     m_jet_mv2c20_isFlt85.clear();
+    m_weight_jet_mv2c20_sfFlt85.clear();
     m_jet_mv2c20_sfFlt85.clear();
   }
 
@@ -2591,11 +2768,25 @@ void HelpTreeBase::ClearEvent() {
 
   if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
     m_weight_muon_trig.clear();
+    m_weight_muon_RecoEff_SF.clear();
+    m_weight_muon_IsoEff_SF_LooseTrackOnly.clear();
+    m_weight_muon_IsoEff_SF_Loose.clear();
+    m_weight_muon_IsoEff_SF_Tight.clear();
+    m_weight_muon_IsoEff_SF_Gradient.clear();
+    m_weight_muon_IsoEff_SF_GradientLoose.clear();
+    m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency.clear();
+    m_weight_muon_IsoEff_SF_UserDefinedCut.clear();
   }
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
     m_weight_electron_trig.clear();
+    m_weight_electron_RecoEff_SF.clear();
+    m_weight_electron_PIDEff_SF_LHVeryLoose.clear();
+    m_weight_electron_PIDEff_SF_LHLoose.clear();
+    m_weight_electron_PIDEff_SF_LHMedium.clear();
+    m_weight_electron_PIDEff_SF_LHTight.clear();
   }
+
 }
 
 
@@ -2845,15 +3036,12 @@ void HelpTreeBase::ClearMET() {
 }
 
 
-
 bool HelpTreeBase::writeTo( TFile* file ) {
   file->cd(); // necessary?
   int status( m_tree->Write() );
   if ( status == 0 ) { return false; }
   return true;
 }
-
-
 
 
 //////////////////////////////////////////////////////////////
