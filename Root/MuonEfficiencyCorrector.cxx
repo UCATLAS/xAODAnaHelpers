@@ -585,13 +585,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        //
        if ( m_asgMuonEffCorrTool_muSF_Reco->applyRecoEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in applyRecoEfficiency");
-	 ++idx;
-	 continue;
        }
        if ( m_asgMuonEffCorrTool_muSF_Reco->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
-	 ++idx;
-	 continue;
        }       
 
        // b)
@@ -607,8 +603,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        float recoEffSF(1.0);
        if ( m_asgMuonEffCorrTool_muSF_Reco->getEfficiencyScaleFactor( *mu_itr, recoEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
-	 ++idx;
-	 continue;
+         recoEffSF = 1.0;
        }
        //
        // Add it to decoration vector
@@ -676,13 +671,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        //
        if ( m_asgMuonEffCorrTool_muSF_Iso->applyRecoEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in applyIsoEfficiency");
-	 ++idx;
-	 continue;
        }
        if ( m_asgMuonEffCorrTool_muSF_Iso->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
-	 ++idx;
-	 continue;       
        }       
 
        // b)
@@ -698,8 +689,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        float IsoEffSF(1.0);
        if ( m_asgMuonEffCorrTool_muSF_Iso->getEfficiencyScaleFactor( *mu_itr, IsoEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
-	 ++idx;
-	 continue;	 
+	 IsoEffSF = 1.0;
        }
        //
        // Add it to decoration vector
@@ -770,6 +760,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
       if ( !m_SingleMuTrig.empty() ) {
 	if ( m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *inputMuons, triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
 	  Warning( "executeSF()", "Problem in getTriggerScaleFactor - single muon trigger(s)");
+	  triggerEffSF = 1.0;
 	}
         if ( m_debug ) { 
           Info( "executeSF()", "===>>>");
@@ -786,6 +777,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
         if ( !m_DiMuTrig.empty() ) {
           if ( m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *inputMuons, triggerEffSF, m_DiMuTrig ) != CP::CorrectionCode::Ok ) {
 	    Warning( "executeSF()", "Problem in getTriggerScaleFactor - dimuon trigger(s)");
+	    triggerEffSF = 1.0;
           }
           if ( m_debug ) { 
             Info( "executeSF()", "===>>>");

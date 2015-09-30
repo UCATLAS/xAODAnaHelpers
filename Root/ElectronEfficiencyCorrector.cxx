@@ -385,7 +385,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   }
 
   if ( m_debug ) { Info("execute()", "Applying Electron Efficiency Correction... "); }
-
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
@@ -558,6 +557,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 
        if ( m_debug ) { Info( "executeSF()", "Applying PID efficiency SF" ); }
 
+       bool isBadElectron(false);
+
        // 
        // obtain PID efficiency SF as a float (to be stored away separately)
        //
@@ -572,31 +573,27 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
-         ++idx;
-         continue;
+         isBadElectron = true;
        }
        //
        // skip electron if outside acceptance for SF calculation
        //
        if ( el_itr->pt() < 15e3 ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently SF available for pT > 15 GeV )", idx); }
-         ++idx;
-         continue;
+         isBadElectron = true;
        }
        if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx); }
-         ++idx;
-         continue;
+         isBadElectron = true;
        }
 
        //
        // obtain efficiency SF's for PID
        //
        double pidSF(1.0); 
-       if (  m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidSF  ) != CP::CorrectionCode::Ok ) {
+       if ( !isBadElectron &&  m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidSF  ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
-         ++idx;
-         continue;
+	 pidSF = 1.0;
        }
        //
        // Add it to decoration vector
@@ -659,6 +656,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 
        if ( m_debug ) { Info( "executeSF()", "Applying Reco efficiency SF" ); }
 
+       bool isBadElectron(false);
+
        // 
        // obtain Reco efficiency SF as a float (to be stored away separately)
        //
@@ -673,31 +672,27 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
-         ++idx;
-	 continue;
+	 isBadElectron = true;
        }
        //
        // skip electron if outside acceptance for SF calculation
        //
        if ( el_itr->pt() < 15e3 ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently SF available for pT > 15 GeV )", idx); }
-         ++idx;
-	 continue;
+	 isBadElectron = true;
        }
        if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx); }
-         ++idx;
-	 continue;
+	 isBadElectron = true;
        }
 
        //
        // obtain efficiency SF's for Reco
        //
        double recoSF(1.0); 
-       if (  m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoSF  ) != CP::CorrectionCode::Ok ) {
+       if ( !isBadElectron && m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoSF  ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
-         ++idx;
-         continue;
+	 recoSF = 1.0;
        }
        //
        // Add it to decoration vector
@@ -767,30 +762,33 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 
        if ( m_debug ) { Info( "executeSF()", "Applying Trig efficiency SF" ); }
 
+       bool isBadElectron(false);
+
        // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
        //
        if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, it has no caloCluster or trackParticle info", idx); }
-         continue;
+	 isBadElectron = true;
        }
        //
        // skip electron if outside acceptance for SF calculation
        //
        if ( el_itr->pt() < 15e3 ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside pT acceptance ( currently SF available for pT > 15 GeV )", idx); }
-         continue;
+	 isBadElectron = true;
        }
        if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
          if ( m_debug ) { Info( "execute", "Apply SF: skipping electron %i, is outside |eta| acceptance", idx); }
-         continue;
+	 isBadElectron = true;
        }
 
        //
-       // obtain efficiency SF's for Trig
+       // obtain efficiency SF for Trig
        //
-       if (  m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigSF  ) != CP::CorrectionCode::Ok ) {
+       if ( !isBadElectron && m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigSF  ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
-         continue;
+	 isBadElectron = true;
+	 trigSF = 1.0;
        }
 
        if ( m_debug ) { 
@@ -803,7 +801,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
          Info( "executeSF()", "--------------------------------------");
        }
        
-       ++idx;
+       if ( !isBadElectron ) ++idx;
   
     } // close electron loop
 
