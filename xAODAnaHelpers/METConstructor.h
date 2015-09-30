@@ -25,14 +25,9 @@ public:
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
 
+  // configuration variables
   bool m_debug;
 
-private:
-
-  // tools
-  met::METMaker* m_metmaker; //!
-
-  // configuration variables
   TString m_referenceMETContainer;
   TString m_mapName;
   TString m_coreName;
@@ -47,6 +42,12 @@ private:
   bool    m_doPhotonCuts;
   bool    m_doTauCuts;
   bool    m_doMuonCuts;
+
+
+private:
+
+  // tools
+  met::METMaker* m_metmaker; //!
 
 
   // variables that don't get filled at submission time should be
