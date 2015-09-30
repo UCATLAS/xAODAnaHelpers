@@ -532,13 +532,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Define also an *event* weight, which is the product of all the PID eff. SFs for each object in the event
   //
   std::string PID_SF_NAME_GLOBAL = m_outputSystNamesPID + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<double> > sfVecPID_GLOBAL ( PID_SF_NAME_GLOBAL );
+  SG::AuxElement::Decorator< std::vector<float> > sfVecPID_GLOBAL ( PID_SF_NAME_GLOBAL );
 
   for ( const auto& syst_it : m_systListPID ) {
     
     // Initialise product of SFs for *this* systematic
     //
-    double pidEffSF_GLOBAL(1.0); 
+    float pidEffSF_GLOBAL(1.0); 
 
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElPIDEff_SF
@@ -574,9 +574,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
        //
-       SG::AuxElement::Decorator< std::vector<double> > sfVecPID ( m_outputSystNamesPID  );
+       SG::AuxElement::Decorator< std::vector<float> > sfVecPID ( m_outputSystNamesPID  );
        if ( !sfVecPID.isAvailable( *el_itr )  ) {
-         sfVecPID ( *el_itr ) = std::vector<double>();
+         sfVecPID ( *el_itr ) = std::vector<float>();
        }
 
        // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
@@ -600,8 +600,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        // obtain efficiency SF's for PID
        //
-       double pidEffSF(1.0); 
-       if ( !isBadElectron &&  m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidEffSF  ) != CP::CorrectionCode::Ok ) {
+       double pidEffSF(1.0); // tool wants a double
+       if ( !isBadElectron &&  m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
 	 pidEffSF = 1.0;
        }
@@ -653,13 +653,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Define also an *event* weight, which is the product of all the reco eff. SFs for each object in the event
   //
   std::string RECO_SF_NAME_GLOBAL = m_outputSystNamesReco + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<double> > sfVecReco_GLOBAL ( RECO_SF_NAME_GLOBAL );
+  SG::AuxElement::Decorator< std::vector<float> > sfVecReco_GLOBAL ( RECO_SF_NAME_GLOBAL );
 
   for ( const auto& syst_it : m_systListReco ) {
     
     // Initialise product of SFs for *this* systematic
     //
-    double recoEffSF_GLOBAL(1.0); 
+    float recoEffSF_GLOBAL(1.0); 
     
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElRecoEff_SF
@@ -695,9 +695,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
        //
-       SG::AuxElement::Decorator< std::vector<double> > sfVecReco ( m_outputSystNamesReco  );
+       SG::AuxElement::Decorator< std::vector<float> > sfVecReco ( m_outputSystNamesReco  );
        if ( !sfVecReco.isAvailable( *el_itr )  ) {
-         sfVecReco ( *el_itr ) = std::vector<double>();
+         sfVecReco ( *el_itr ) = std::vector<float>();
        }
 
        // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
@@ -721,8 +721,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        // obtain efficiency SF's for Reco
        //
-       double recoEffSF(1.0); 
-       if ( !isBadElectron && m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF  ) != CP::CorrectionCode::Ok ) {
+       double recoEffSF(1.0); // tool wants a double
+       if ( !isBadElectron && m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
 	 recoEffSF = 1.0;
        }
@@ -765,7 +765,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // 3.
   // Trig efficiency SFs - this is a per-EVENT weight
   //       
-  SG::AuxElement::Decorator< std::vector<double> > sfVecTrig ( m_outputSystNamesTrig  );
+  SG::AuxElement::Decorator< std::vector<float> > sfVecTrig ( m_outputSystNamesTrig  );
  
   // Loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
@@ -795,7 +795,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     // and now apply trigger efficiency SF!
     //
     unsigned int idx(0);
-    double trigSF(1.0);
+    double trigSF(1.0); // tool wants a double
     for ( auto el_itr : *(inputElectrons) ) {
 
        // Retrieve the SF only from first electron (for any other selected electron, this info is just duplicated!)
@@ -829,7 +829,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        // obtain efficiency SF for Trig
        //
-       if ( !isBadElectron && m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigSF  ) != CP::CorrectionCode::Ok ) {
+       if ( !isBadElectron && m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
 	 isBadElectron = true;
 	 trigSF = 1.0;

@@ -119,7 +119,6 @@ EL::StatusCode  MuonEfficiencyCorrector :: configure ()
     //
     m_WorkingPointIso            = config->GetValue("WorkingPointIso", m_WorkingPointIso.c_str());
 
-
     // Trigger efficiency SF
     //
     m_runNumber                  = config->GetValue("RunNumber", m_runNumber);
@@ -556,13 +555,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Define also an *event* weight, which is the product of all the reco eff. SFs for each object in the event
   //
   std::string RECO_SF_NAME_GLOBAL = m_outputSystNamesReco + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<double> > sfVecReco_GLOBAL ( RECO_SF_NAME_GLOBAL );
+  SG::AuxElement::Decorator< std::vector<float> > sfVecReco_GLOBAL ( RECO_SF_NAME_GLOBAL );
   
   for ( const auto& syst_it : m_systListReco ) {
     
     // Initialise product of SFs for *this* systematic
     //
-    double recoEffSF_GLOBAL(1.0); 
+    float recoEffSF_GLOBAL(1.0); 
     
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_MuRecoEff_SF
@@ -605,9 +604,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        //
        //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
        //
-       SG::AuxElement::Decorator< std::vector<double> > sfVecReco( m_outputSystNamesReco );
+       SG::AuxElement::Decorator< std::vector<float> > sfVecReco( m_outputSystNamesReco );
        if ( !sfVecReco.isAvailable( *mu_itr ) ) {
-	 sfVecReco( *mu_itr ) = std::vector<double>();
+	 sfVecReco( *mu_itr ) = std::vector<float>();
        }
 
        float recoEffSF(1.0);
@@ -663,13 +662,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Define also an *event* weight, which is the product of all the iso eff. SFs for each object in the event
   //
   std::string ISO_SF_NAME_GLOBAL = m_outputSystNamesIso + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<double> > sfVecIso_GLOBAL ( ISO_SF_NAME_GLOBAL );
+  SG::AuxElement::Decorator< std::vector<float> > sfVecIso_GLOBAL ( ISO_SF_NAME_GLOBAL );
   
   for ( const auto& syst_it : m_systListIso ) {
    
     // Initialise product of SFs for *this* systematic
     //
-    double isoEffSF_GLOBAL(1.0);
+    float isoEffSF_GLOBAL(1.0);
      
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_MuIsoEff_SF_WP
@@ -712,9 +711,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        //
        //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
        //
-       SG::AuxElement::Decorator< std::vector<double> > sfVecIso( m_outputSystNamesIso );
+       SG::AuxElement::Decorator< std::vector<float> > sfVecIso( m_outputSystNamesIso );
        if ( !sfVecIso.isAvailable( *mu_itr ) ) {
-	 sfVecIso( *mu_itr ) = std::vector<double>();
+	 sfVecIso( *mu_itr ) = std::vector<float>();
        }
 
        float IsoEffSF(1.0);
@@ -765,7 +764,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // 3.
   // Trigger efficiency SF - this is a per-EVENT weight
   //
-  SG::AuxElement::Decorator< std::vector<double> > sfVecTrig( m_outputSystNamesTrig );
+  SG::AuxElement::Decorator< std::vector<float> > sfVecTrig( m_outputSystNamesTrig );
 
   // Loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
@@ -798,7 +797,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
     // obtain trigger efficiency SF
     //
-    double triggerEffSF(1.0);
+    double triggerEffSF(1.0); // tool wants a double
     if ( nMuons > 0 ) {
       if ( !m_SingleMuTrig.empty() ) {
 	if ( m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *inputMuons, triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
