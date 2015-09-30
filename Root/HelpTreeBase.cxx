@@ -268,15 +268,15 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
   if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
     
-    SG::AuxElement::ConstAccessor< std::vector<double> >   muonTrigSFVec( "MuonEfficiencyCorrector_TrigSyst" );
-    SG::AuxElement::ConstAccessor< std::vector< double > > accRecoSFGlobal("MuonEfficiencyCorrector_RecoSyst_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_Loose("MuonEfficiencyCorrector_IsoSyst_Loose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_Tight("MuonEfficiencyCorrector_IsoSyst_Tight_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_Gradient("MuonEfficiencyCorrector_IsoSyst_Gradient_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_GradientLoose("MuonEfficiencyCorrector_IsoSyst_GradientLoose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_UserDefinedFixEfficiency("MuonEfficiencyCorrector_IsoSyst_UserDefinedFixEfficiency_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accIsoSFGlobal_UserDefinedCut("MuonEfficiencyCorrector_IsoSyst_UserDefinedCut_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector<float> >   muonTrigSFVec( "MuonEfficiencyCorrector_TrigSyst" );
+    SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal("MuonEfficiencyCorrector_RecoSyst_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Loose("MuonEfficiencyCorrector_IsoSyst_Loose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Tight("MuonEfficiencyCorrector_IsoSyst_Tight_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Gradient("MuonEfficiencyCorrector_IsoSyst_Gradient_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_GradientLoose("MuonEfficiencyCorrector_IsoSyst_GradientLoose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_UserDefinedFixEfficiency("MuonEfficiencyCorrector_IsoSyst_UserDefinedFixEfficiency_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_UserDefinedCut("MuonEfficiencyCorrector_IsoSyst_UserDefinedCut_GLOBAL");
     
     if( muonTrigSFVec.isAvailable( *eventInfo ) ) { m_weight_muon_trig = muonTrigSFVec( *eventInfo ); } else { m_weight_muon_trig.push_back(-999.0); }
     if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_muon_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_muon_RecoEff_SF.push_back(-999.0); }
@@ -292,12 +292,12 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
     
-    SG::AuxElement::ConstAccessor< std::vector<double> >   electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst" );
-    SG::AuxElement::ConstAccessor< std::vector< double > > accRecoSFGlobal("ElectronEfficiencyCorrector_RecoSyst_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accPIDSFGlobal_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accPIDSFGlobal_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accPIDSFGlobal_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< double > > accPIDSFGlobal_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector<float> >   electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst" );
+    SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal("ElectronEfficiencyCorrector_RecoSyst_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight_GLOBAL");
 
     if( electronTrigSFVec.isAvailable( *eventInfo ) ) { m_weight_electron_trig = electronTrigSFVec( *eventInfo ); } else { m_weight_electron_trig.push_back(-999); }
     if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_electron_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_electron_RecoEff_SF.push_back(-999.0); }
@@ -663,16 +663,16 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
     if ( m_muInfoSwitch->m_effSF && m_isMC ) {
 
-      static SG::AuxElement::Accessor< std::vector< double > > accRecoSF("MuonEfficiencyCorrector_RecoSyst");
-      static SG::AuxElement::Accessor< std::vector< double > > accIsoSF_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly");
-      static SG::AuxElement::Accessor< std::vector< double > > accIsoSF_Loose("MuonEfficiencyCorrector_IsoSyst_Loose");
-      static SG::AuxElement::Accessor< std::vector< double > > accIsoSF_Tight("MuonEfficiencyCorrector_IsoSyst_Tight");
-      static SG::AuxElement::Accessor< std::vector< double > > accIsoSF_Gradient("MuonEfficiencyCorrector_IsoSyst_Gradient");
-      static SG::AuxElement::Accessor< std::vector< double > > accIsoSF_GradientLoose("MuonEfficiencyCorrector_IsoSyst_GradientLoose");
-      static SG::AuxElement::Accessor< std::vector< double > > accIsoSF_UserDefinedFixEfficiency("MuonEfficiencyCorrector_IsoSyst_UserDefinedFixEfficiency");
-      static SG::AuxElement::Accessor< std::vector< double > > accIsoSF_UserDefinedCut("MuonEfficiencyCorrector_IsoSyst_UserDefinedCut");
+      static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("MuonEfficiencyCorrector_RecoSyst");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Loose("MuonEfficiencyCorrector_IsoSyst_Loose");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Tight("MuonEfficiencyCorrector_IsoSyst_Tight");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Gradient("MuonEfficiencyCorrector_IsoSyst_Gradient");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_GradientLoose("MuonEfficiencyCorrector_IsoSyst_GradientLoose");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_UserDefinedFixEfficiency("MuonEfficiencyCorrector_IsoSyst_UserDefinedFixEfficiency");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_UserDefinedCut("MuonEfficiencyCorrector_IsoSyst_UserDefinedCut");
 
-      std::vector<double> junk(1,-999);
+      std::vector<float> junk(1,-999);
 
       if( accRecoSF.isAvailable( *muon_itr ) )               { m_muon_RecoEff_SF.push_back( accRecoSF( *muon_itr ) ); } else { m_muon_RecoEff_SF.push_back( junk ); }
       if( accIsoSF_LooseTrackOnly.isAvailable( *muon_itr ) ) { m_muon_IsoEff_SF_LooseTrackOnly.push_back( accIsoSF_LooseTrackOnly( *muon_itr ) ); } else { m_muon_IsoEff_SF_LooseTrackOnly.push_back( junk ); }
@@ -1035,13 +1035,13 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 
     if ( m_elInfoSwitch->m_effSF && m_isMC ) {
 
-      static SG::AuxElement::Accessor< std::vector< double > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
-      static SG::AuxElement::Accessor< std::vector< double > > accPIDSF_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose");
-      static SG::AuxElement::Accessor< std::vector< double > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose");
-      static SG::AuxElement::Accessor< std::vector< double > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium");
-      static SG::AuxElement::Accessor< std::vector< double > > accPIDSF_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight");
+      static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
+      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose");
+      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose");
+      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium");
+      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight");
 
-      std::vector<double> junk(1,-999);
+      std::vector<float> junk(1,-999);
 
       if( accRecoSF.isAvailable( *el_itr ) ) { m_el_RecoEff_SF.push_back( accRecoSF( *el_itr ) ); } else { m_el_RecoEff_SF.push_back( junk ); }
 
