@@ -43,7 +43,10 @@ public:
 
   bool    m_doMuonEloss;
   bool    m_doIsolMuonEloss;
-  bool    m_doJVFCut;
+  bool    m_doJVTCut;
+  
+  bool    m_useCaloJetTerm;
+  bool    m_useTrackJetTerm;
 
 private:
 
