@@ -51,7 +51,31 @@ using std::cout; using std::cerr; using std::endl;
 ClassImp(METConstructor)
 
 
-METConstructor :: METConstructor () : m_metmaker(0) {}
+METConstructor :: METConstructor () : m_metmaker(0) {
+
+  m_debug           = false;
+  m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
+
+  m_mapName         = "METAssoc_AntiKt4LCTopo";
+  m_coreName        = "MET_Core_AntiKt4LCTopo";
+  m_outputContainer = "NewRefFinal";
+
+  m_inputJets       = ""; 
+  m_inputElectrons  = ""; 
+  m_inputPhotons    = ""; 
+  m_inputTaus       = ""; 
+  m_inputMuons      = ""; 
+
+  m_doElectronCuts  = false;
+  m_doPhotonCuts    = false;
+  m_doTauCuts       = false;
+  m_doMuonCuts      = false;
+
+  m_doMuonEloss     = false;
+  m_doIsolMuonEloss = false;
+  m_doJVFCut        = false;
+
+}
 
 EL::StatusCode  METConstructor :: configure ()
 {
@@ -71,23 +95,27 @@ EL::StatusCode  METConstructor :: configure ()
   TEnv* config = new TEnv(getConfig(true).c_str());
 
   // read debug flag from .config file
-  m_debug           = config->GetValue("Debug" , false );
-  m_referenceMETContainer = config->GetValue("Reference",       "MET_Reference_AntiKt4LCTopo");
+  m_debug           = config->GetValue("Debug" , m_debug);
+  m_referenceMETContainer = config->GetValue("Reference", m_referenceMETContainer);
 
-  m_mapName         = config->GetValue("MapName",         "METAssoc_AntiKt4LCTopo");
-  m_coreName        = config->GetValue("CoreName",        "MET_Core_AntiKt4LCTopo");
-  m_outputContainer = config->GetValue("OutputContainer", "NewRefFinal");
+  m_mapName         = config->GetValue("MapName",           m_mapName);
+  m_coreName        = config->GetValue("CoreName",          m_coreName);
+  m_outputContainer = config->GetValue("OutputContainer",   m_outputContainer);
 
-  m_inputJets       = config->GetValue("InputJets",       "");
-  m_inputElectrons  = config->GetValue("InputElectrons",  "");
-  m_inputPhotons    = config->GetValue("InputPhotons",    "");
-  m_inputTaus       = config->GetValue("InputTaus",       "");
-  m_inputMuons      = config->GetValue("InputMuons",      "");
+  m_inputJets       = config->GetValue("InputJets",         m_inputJets);
+  m_inputElectrons  = config->GetValue("InputElectrons",    m_inputElectrons);
+  m_inputPhotons    = config->GetValue("InputPhotons",      m_inputPhotons);
+  m_inputTaus       = config->GetValue("InputTaus",         m_inputTaus);
+  m_inputMuons      = config->GetValue("InputMuons",        m_inputMuons);
 
-  m_doElectronCuts  = config->GetValue("ApplyElectronCuts", false);
-  m_doPhotonCuts    = config->GetValue("ApplyPhotonCuts",   false);
-  m_doTauCuts       = config->GetValue("ApplyTauCuts",      false);
-  m_doMuonCuts      = config->GetValue("ApplyMuonCuts",     false);
+  m_doElectronCuts  = config->GetValue("ApplyElectronCuts", m_doElectronCuts);
+  m_doPhotonCuts    = config->GetValue("ApplyPhotonCuts",   m_doPhotonCuts);
+  m_doTauCuts       = config->GetValue("ApplyTauCuts",      m_doTauCuts);
+  m_doMuonCuts      = config->GetValue("ApplyMuonCuts",     m_doMuonCuts);
+
+  m_doMuonEloss     = config->GetValue("DoMuonEloss",       m_doMuonEloss);
+  m_doIsolMuonEloss = config->GetValue("DoIsolMuonEloss",   m_doIsolMuonEloss);
+  m_doJVFCut        = config->GetValue("DoJVFCut",          m_doJVFCut);
 
   if( m_mapName.Length() == 0 ) {
     Error("configure()", "MapName is empty!");
@@ -179,6 +207,9 @@ EL::StatusCode METConstructor :: initialize ()
     Error("initialize()", "Failed to properly initialize. Exiting." );
     return EL::StatusCode::FAILURE;
   }
+
+  RETURN_CHECK( "METConstructor::initialize()", m_metmaker->setProperty( "DoMuonEloss", m_doMuonEloss), "");
+  RETURN_CHECK( "METConstructor::initialize()", m_metmaker->setProperty( "DoIsolMuonEloss", m_doIsolMuonEloss), "");
 
   Info("initialize()", "METConstructor Interface %s succesfully initialized!", m_name.c_str());
 
@@ -277,7 +308,7 @@ EL::StatusCode METConstructor :: execute ()
   const xAOD::MissingETContainer* coreMet(0);
   RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont, m_inputJets.Data(), m_event, m_store, m_verbose), "Failed retrieving jet cont.");
   RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(coreMet, m_coreName.Data(), m_event, m_store, m_verbose), "Failed retrieving MET Core.");
-  RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, false), "Failed to build jet/MET.");
+  RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVFCut), "Failed to build jet/MET.");
 
 
   RETURN_CHECK("METConstructor::execute()", m_metmaker->buildMETSum("FinalClus", newMet, MissingETBase::Source::LCTopo), "Failed to build FinalClus MET.");
