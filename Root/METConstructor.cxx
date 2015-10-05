@@ -54,11 +54,11 @@ ClassImp(METConstructor)
 METConstructor :: METConstructor () : m_metmaker(0) {
 
   m_debug           = false;
+  
   m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
-
-  m_mapName         = "METAssoc_AntiKt4LCTopo";
-  m_coreName        = "MET_Core_AntiKt4LCTopo";
-  m_outputContainer = "NewRefFinal";
+  m_mapName               = "METAssoc_AntiKt4LCTopo";
+  m_coreName              = "MET_Core_AntiKt4LCTopo";
+  m_outputContainer       = "NewRefFinal";
 
   m_inputJets       = ""; 
   m_inputElectrons  = ""; 
@@ -73,13 +73,16 @@ METConstructor :: METConstructor () : m_metmaker(0) {
 
   m_doMuonEloss     = false;
   m_doIsolMuonEloss = false;
-  m_doJVFCut        = false;
+  m_doJVTCut        = false;
+
+  m_useCaloJetTerm  = true;
+  m_useTrackJetTerm = false;
 
 }
 
 EL::StatusCode  METConstructor :: configure ()
 {
-  Info("configure()", "Configuing METConstructor Interface. User configuration read from : %s \n", getConfig(true).c_str());
+  Info("configure()", "Configuing METConstructor Interface. User configuration read from : %s ", getConfig(true).c_str());
 
   getConfig(true) = gSystem->ExpandPathName( getConfig(true).c_str() );
   // check if file exists
@@ -115,15 +118,18 @@ EL::StatusCode  METConstructor :: configure ()
 
   m_doMuonEloss     = config->GetValue("DoMuonEloss",       m_doMuonEloss);
   m_doIsolMuonEloss = config->GetValue("DoIsolMuonEloss",   m_doIsolMuonEloss);
-  m_doJVFCut        = config->GetValue("DoJVFCut",          m_doJVFCut);
+  m_doJVTCut        = config->GetValue("DoJVTCut",          m_doJVTCut);
 
+  m_useCaloJetTerm  = config->GetValue("UseCaloJetTerm",    m_useCaloJetTerm);
+  m_useTrackJetTerm = config->GetValue("UseTrackJetTerm",   m_useTrackJetTerm);
+  
   if( m_mapName.Length() == 0 ) {
     Error("configure()", "MapName is empty!");
     return EL::StatusCode::FAILURE;
   }
 
   config->Print();
-  Info("configure()", "METConstructor Interface succesfully configured! \n");
+  Info("configure()", "METConstructor Interface succesfully configured!");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -139,11 +145,10 @@ EL::StatusCode METConstructor :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob \n");
+  Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "METConstructor" ).ignore(); // call before opening first file
-  Info("setupJob()", "METConstructor Ready\n");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -191,7 +196,7 @@ EL::StatusCode METConstructor :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing METConstructor Interface... \n");
+  Info("initialize()", "Initializing METConstructor Interface...");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -224,7 +229,7 @@ EL::StatusCode METConstructor :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if(m_debug) Info("execute()", "Performing MET reconstruction... \n");
+  if(m_debug) Info("execute()", "Performing MET reconstruction...");
 
 
   // Create a MissingETContainer with its aux store
@@ -303,32 +308,41 @@ EL::StatusCode METConstructor :: execute ()
     }
   }
 
-
   const xAOD::JetContainer* jetCont(0);
   const xAOD::MissingETContainer* coreMet(0);
   RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont, m_inputJets.Data(), m_event, m_store, m_verbose), "Failed retrieving jet cont.");
   RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(coreMet, m_coreName.Data(), m_event, m_store, m_verbose), "Failed retrieving MET Core.");
-  RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVFCut), "Failed to build jet/MET.");
-
+  
+  if ( m_useCaloJetTerm ) {
+    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut), "Failed to build cluster-based jet/MET.");
+  } else if ( m_useTrackJetTerm ) {
+    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut), "Failed to build track-based jet/MET.");
+  } else {
+    Error("execute()", "Both m_useCaloJetTerm and m_useTrackJetTerm appear to be set to 'false'. This should not happen. Please check your MET configuration file");
+    return EL::StatusCode::FAILURE;
+  }
 
   RETURN_CHECK("METConstructor::execute()", m_metmaker->buildMETSum("FinalClus", newMet, MissingETBase::Source::LCTopo), "Failed to build FinalClus MET.");
   RETURN_CHECK("METConstructor::execute()", m_metmaker->buildMETSum("FinalTrk",  newMet, MissingETBase::Source::Track),  "Failed to build FinalTrk MET.");
 
-
-  if (m_debug) {
+  if ( m_debug ) {
     const xAOD::MissingETContainer* oldMet(0);
     RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(oldMet, m_referenceMETContainer.Data(), m_event, m_store, m_verbose) ,"");
-    xAOD::MissingETContainer::const_iterator final(oldMet->find("FinalClus"));
-    xAOD::MissingETContainer::const_iterator newfinal(newMet->find("FinalClus"));
+    //xAOD::MissingETContainer::const_iterator final(oldMet->find("FinalClus"));
+    //xAOD::MissingETContainer::const_iterator newfinal(newMet->find("FinalClus"));
     Info("execute()", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    if( m_inputElectrons.Length() > 0 ) Info("execute()", "RefEle:    old=%8.f  new=%8.f", (*oldMet->find("RefEle")   )->met(), (*newMet->find("RefEle")   )->met());
-    if( m_inputPhotons.Length() > 0 ) Info("execute()", "RefGamma:  old=%8.f  new=%8.f", (*oldMet->find("RefGamma") )->met(), (*newMet->find("RefGamma") )->met());
-    if( m_inputTaus.Length() > 0 ) Info("execute()", "RefTau:    old=%8.f  new=%8.f", (*oldMet->find("RefTau")   )->met(), (*newMet->find("RefTau")   )->met());
-    if( m_inputMuons.Length() > 0 ) Info("execute()", "Muons:     old=%8.f  new=%8.f", (*oldMet->find("Muons")    )->met(), (*newMet->find("Muons")    )->met());
-    Info("execute()", "RefJet:    old=%8.f  new=%8.f", (*oldMet->find("RefJet")   )->met(), (*newMet->find("RefJet")   )->met());
-    Info("execute()", "SoftClus:  old=%8.f  new=%8.f", (*oldMet->find("SoftClus") )->met(), (*newMet->find("SoftClus") )->met());
-    Info("execute()", "FinalClus: old=%8.f  new=%8.f", (*oldMet->find("FinalClus"))->met(), (*newMet->find("FinalClus"))->met());
+    if( m_inputElectrons.Length() > 0 ) Info("execute()", "RefEle:     old=%8.f  new=%8.f", (*oldMet->find("RefEle"))->met(), (*newMet->find("RefEle"))->met());
+    if( m_inputPhotons.Length() > 0 )   Info("execute()", "RefPhoton:  old=%8.f  new=%8.f", (*oldMet->find("RefGamma"))->met(), (*newMet->find("RefGamma"))->met());
+    if( m_inputTaus.Length() > 0 )      Info("execute()", "RefTau:     old=%8.f  new=%8.f", (*oldMet->find("RefTau"))->met(), (*newMet->find("RefTau"))->met());
+    if( m_inputMuons.Length() > 0 )     Info("execute()", "RefMuon:    old=%8.f  new=%8.f", (*oldMet->find("Muons"))->met(), (*newMet->find("Muons"))->met());
+    Info("execute()", "RefJet:       old=%8.f  new=%8.f", (*oldMet->find("RefJet"))->met(), (*newMet->find("RefJet"))->met());
+    Info("execute()", "SoftClus:     old=%8.f  new=%8.f", (*oldMet->find("SoftClus"))->met(), (*newMet->find("SoftClus"))->met());
+    Info("execute()", "PVSoftTrk:    old=%8.f  new=%8.f", (*oldMet->find("PVSoftTrk"))->met(), (*newMet->find("PVSoftTrk"))->met());
+    Info("execute()", "  ");
+    Info("execute()", "FinalClus:    old=%8.f  new=%8.f", (*oldMet->find("FinalClus"))->met(), (*newMet->find("FinalClus"))->met());
     Info("execute()", "       >>>>> R=%.3f",          (*oldMet->find("FinalClus"))->met()/ (*newMet->find("FinalClus"))->met());
+    Info("execute()", "FinalTrk:     old=%8.f  new=%8.f", (*oldMet->find("FinalTrk"))->met(), (*newMet->find("FinalTrk"))->met());
+    Info("execute()", "       >>>>> R=%.3f",          (*oldMet->find("FinalTrk"))->met()/ (*newMet->find("FinalTrk"))->met());
   }
 
   return EL::StatusCode::SUCCESS;
@@ -343,7 +357,7 @@ EL::StatusCode METConstructor :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) Info("postExecute()", "Calling postExecute \n");
+  if(m_debug) Info("postExecute()", "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -362,7 +376,7 @@ EL::StatusCode METConstructor::finalize()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances... \n");
+  Info("finalize()", "Deleting tool instances...");
 
   if (m_metmaker) {
     delete m_metmaker;
@@ -387,7 +401,7 @@ EL::StatusCode METConstructor :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize \n");
+  Info("histFinalize()", "Calling histFinalize");
 
   return EL::StatusCode::SUCCESS;
 }

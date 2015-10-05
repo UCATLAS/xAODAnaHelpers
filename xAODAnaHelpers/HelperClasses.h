@@ -157,9 +157,11 @@ namespace HelperClasses {
     bool m_refEle;
     bool m_refGamma;
     bool m_refTau;
-    bool m_muons;
+    bool m_refMuons;
     bool m_refJet;
+    bool m_refJetTrk;
     bool m_softClus;
+    bool m_softTrk;
     void initialize();
     METInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };

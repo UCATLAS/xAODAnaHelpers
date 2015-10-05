@@ -222,9 +222,11 @@ namespace HelperClasses{
     m_refEle    = parse("refEle")   || parse("all");
     m_refGamma  = parse("refGamma") || parse("all");
     m_refTau    = parse("refTau")   || parse("all");
-    m_muons     = parse("muons")    || parse("all");
+    m_refMuons  = parse("refMuons") || parse("all");
     m_refJet    = parse("refJet")   || parse("all");
+    m_refJetTrk = parse("refJetTrk"); // take this one *only* if requested by user explicitly
     m_softClus  = parse("softClus") || parse("all");
+    m_softTrk   = parse("softTrk")  || parse("all");
   }
 
 } // close namespace HelperClasses
