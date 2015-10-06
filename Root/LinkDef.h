@@ -5,6 +5,7 @@
 #include <xAODAnaHelpers/BasicEventSelection.h>
 #include <xAODAnaHelpers/ElectronSelector.h>
 #include <xAODAnaHelpers/JetSelector.h>
+#include <xAODAnaHelpers/TruthSelector.h>
 #include <xAODAnaHelpers/TrackSelector.h>
 #include <xAODAnaHelpers/MuonSelector.h>
 
@@ -31,7 +32,6 @@
 
 
 /* Other */
-#include <xAODAnaHelpers/JERShifter.h>
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/Writer.h>
 
@@ -42,11 +42,13 @@
 #pragma link off all functions;
 #pragma link C++ nestedclass;
 
+#pragma link C++ class xAH::AlgorithmRegistry+;
 #pragma link C++ class xAH::Algorithm+;
 
 #pragma link C++ class BasicEventSelection+;
 #pragma link C++ class ElectronSelector+;
 #pragma link C++ class JetSelector+;
+#pragma link C++ class TruthSelector+;
 #pragma link C++ class TrackSelector+;
 #pragma link C++ class MuonSelector+;
 
@@ -66,7 +68,6 @@
 
 #pragma link C++ class TreeAlgo+;
 
-#pragma link C++ class JERShifter+;
 #pragma link C++ class OverlapRemover+;
 #pragma link C++ class Writer+;
 #endif

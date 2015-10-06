@@ -1,9 +1,9 @@
-#ifndef xAODAnaHelpers_JetSelector_H
-#define xAODAnaHelpers_JetSelector_H
+#ifndef xAODAnaHelpers_TruthSelector_H
+#define xAODAnaHelpers_TruthSelector_H
 
 // EDM include(s):
-#include "xAODJet/Jet.h"
-#include "xAODJet/JetContainer.h"
+#include "xAODTruth/TruthParticle.h"
+#include "xAODTruth/TruthParticleContainer.h"
 
 // ROOT include(s):
 #include "TH1D.h"
@@ -14,7 +14,7 @@
 // external tools include(s):
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
 
-class JetSelector : public xAH::Algorithm
+class TruthSelector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
@@ -24,49 +24,20 @@ public:
   // configuration variables
   std::string m_inContainerName;   // input container name
   std::string m_outContainerName;  // output container name
-  std::string m_inputAlgo;         // input type - from xAOD or from xAODAnaHelper Algo output
-  std::string m_outputAlgo;        // output type - this is how the vector<string> w/ syst names will be saved in TStore
-  std::string m_jetScaleType;    // Type of Scale Momementum
   std::string m_decor;            // The decoration key written to passing objects
   bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
   bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
   int m_nToProcess;               // look at n objects
-  bool m_cleanJets;               // require cleanJet decoration to not be set and false
-  int m_cleanEvtLeadJets;         // kill event if any of the N leading jets are not clean
   int m_pass_min;                 // minimum number of objects passing cuts
   int m_pass_max;                 // maximum number of objects passing cuts
   float m_pT_max;                 // require pT < pt_max
   float m_pT_min;                 // require pT > pt_max
   float m_eta_max;                // require eta < eta_max
   float m_eta_min;                // require eta > eta_max
-  float m_detEta_max;             // require detEta < detEta_max
-  float m_detEta_min;             // require detEta > detEta_max
   float m_mass_max;               // require mass < mass_max
   float m_mass_min;               // require mass > mass_max
   float m_rapidity_max;           // require rapidity < rapidity_max
   float m_rapidity_min;           // require rapidity > rapidity_min
-  int   m_truthLabel;             // require truth level on truth jets
-
-  bool m_doJVF;                   // check JVF
-  float m_pt_max_JVF;             // max pT (JVF is a pileup cut)
-  float m_eta_max_JVF;            // detector eta cut
-  float m_JVFCut;                 // cut value
-  bool m_doJVT;                   // check JVT
-  float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
-  float m_eta_max_JVT;            // detector eta cut
-  float m_JVTCut;                 // cut value
-
-  // for BTaggingSelectionTool -- doubles are needed or will crash
-  bool  m_doBTagCut;              // Flag to apply btagging cut, if false just decorate decisions
-  std::string m_jetAuthor;
-  std::string m_taggerName;
-  std::string m_operatingPt;
-  double m_b_eta_max;
-  double m_b_pt_min;
-
-
-  std::string              m_passAuxDecorKeys;
-  std::string              m_failAuxDecorKeys;
 
 private:
   int m_numEvent;         //!
@@ -74,32 +45,20 @@ private:
   int m_numEventPass;     //!
   int m_weightNumEventPass; //!
   int m_numObjectPass;    //!
-  int m_pvLocation;       //!
-
-  bool m_isEMjet;                //!
-  bool m_isLCjet;                //!
 
   // cutflow
   TH1D* m_cutflowHist;          //!
   TH1D* m_cutflowHistW;         //!
   int   m_cutflow_bin;          //!
 
-  std::vector<std::string> m_passKeys;  //!
-  std::vector<std::string> m_failKeys;  //!
-
   /* object-level cutflow */
   
-  TH1D* m_jet_cutflowHist_1;  //!
+  TH1D* m_truth_cutflowHist_1;  //!
 
-  int   m_jet_cutflow_all;           //! 
-  int   m_jet_cutflow_cleaning_cut;  //!
-  int   m_jet_cutflow_ptmax_cut;     //!
-  int   m_jet_cutflow_ptmin_cut;     //!
-  int   m_jet_cutflow_eta_cut;       //!
-  int   m_jet_cutflow_jvt_cut;       //!
-  int   m_jet_cutflow_btag_cut;      //!
-
-  BTaggingSelectionTool   *m_BJetSelectTool; //!
+  int   m_truth_cutflow_all;           //! 
+  int   m_truth_cutflow_ptmax_cut;     //!
+  int   m_truth_cutflow_ptmin_cut;     //!
+  int   m_truth_cutflow_eta_cut;       //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -108,10 +67,8 @@ public:
   // Tree *myTree; //!
   // TH1 *myHist; //!
 
-
-
   // this is a standard constructor
-  JetSelector ();
+  TruthSelector ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -126,13 +83,13 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName );
+  virtual bool executeSelection( const xAOD::TruthParticleContainer* inTruthParts, float mcEvtWeight, bool count, std::string outContainerName );
 
   // added functions not from Algorithm
   // why does this need to be virtual?
-  virtual int PassCuts( const xAOD::Jet* jet );
+  virtual int PassCuts( const xAOD::TruthParticle* truthPart );
   // this is needed to distribute the algorithm to the workers
-  ClassDef(JetSelector, 1);
+  ClassDef(TruthSelector, 1);
 };
 
 #endif

@@ -1,6 +1,8 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
+#include "xAODBase/IParticleContainer.h"
+
 // jet reclustering
 #include <fastjet/PseudoJet.hh>
 #include <fastjet/ClusterSequence.hh>
@@ -49,6 +51,78 @@ int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* verte
   return -1;
 }
 
+bool HelperFunctions::applyPrimaryVertexSelection( const xAOD::JetContainer* jets, const xAOD::VertexContainer* vertices )
+{
+
+  if(jets->empty()) { return true; }
+
+  int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
+  if ( pvLocation < 0 ) { return false; }
+  const xAOD::Vertex* vertex = vertices->at( pvLocation );
+
+  // check if the PV compatible Ghost Matched tracks are already here
+  static SG::AuxElement::ConstAccessor< std::vector<ElementLink< xAOD::IParticleContainer > > >ghostTrackPVAcc ("GhostTrackPV");
+  if( ghostTrackPVAcc.isAvailable( *(jets->at(0)) ) ) { return true; }
+
+  // get the originals and apply selection
+  static SG::AuxElement::ConstAccessor< std::vector<ElementLink< xAOD::IParticleContainer > > >ghostTrack ("GhostTrack");
+  for( auto jet_itr : *jets ) {
+
+    if ( !ghostTrack.isAvailable( *jet_itr ) ) { continue; }
+    std::vector<ElementLink<xAOD::IParticleContainer> > trackLinks = ghostTrack( *jet_itr );
+
+    // store the selected tracks
+    std::vector<ElementLink< xAOD::IParticleContainer > > selectedTrackHolder;
+
+    int originalIndex(-1);
+    for ( auto link_itr : trackLinks ) {
+      originalIndex++;
+
+      if( !link_itr.isValid() ) { continue; }
+      const xAOD::TrackParticle* track = dynamic_cast<const xAOD::TrackParticle*>( *link_itr );
+
+      if( track->pt() < 500 )                     { continue; } // pT cut
+      if( track->vertex() != vertex ) {                        // if not in PV vertex fit
+        if( track->vertex() != 0 )                { continue; } // make sure in no vertex fits
+        if( fabs((track->z0()+track->vz()-vertex->z())*sin(track->theta())) > 3.0 ) { continue; } // make sure close to PV in z
+      }
+
+      selectedTrackHolder.push_back( link_itr );
+
+    } // loop over tracks
+
+    jet_itr->auxdecor< std::vector< ElementLink< xAOD::IParticleContainer > > > ("GhostTrackPV") = selectedTrackHolder;
+
+  } // loop over jets
+
+
+  return true;
+}
+
+// compatible with starting with: 2015-PreRecomm-13TeV-MC12-CDI_August3-v1.root
+//https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt4EMTopoJets
+float HelperFunctions::GetBTagMV2c20_Cut( int efficiency ) {
+  if     ( efficiency == 85 ) { return -0.7887; }
+  else if( efficiency == 77 ) { return -0.4434; }
+  else if( efficiency == 70 ) { return -0.0436; }
+  else if( efficiency == 60 ) { return  0.4496; }
+  else { std::cout << "WARNING!! UNKNOWN BTAG EFFICIENCY POINT " << efficiency << std::endl; }
+  return -1; // no cut
+}
+
+std::string HelperFunctions::GetBTagMV2c20_CutStr( int efficiency ) {
+  float value = HelperFunctions::GetBTagMV2c20_Cut( efficiency );
+  std::string valueStr = std::to_string(value);
+  valueStr.replace(valueStr.find('.'),1,"_"); // replace period with underscore
+  // 7 characters long if start with a - and 6 otherwise
+  if( valueStr.find('-') != std::string::npos ) {
+    valueStr.resize(7,'0'); // cut to 7 or pad with 0s
+  } else {
+    valueStr.resize(6,'0'); // cut to 6 or pad with 0s
+  }
+  return valueStr;
+}
+
 std::string HelperFunctions::replaceString(std::string subject, const std::string& search, const std::string& replace)
 {
   size_t pos = 0;
@@ -77,10 +151,10 @@ bool HelperFunctions::isFilePrimaryxAOD(TFile* inputFile) {
     metaData->LoadTree(0);
     TObjArray* ar = metaData->GetListOfBranches();
     for (int i = 0; i < ar->GetEntries(); ++i) {
-	TBranch* b = (TBranch*) ar->At(i);
-	std::string name = std::string(b->GetName());
-	if (name == "StreamAOD")
-	    return true;
+      TBranch* b = (TBranch*) ar->At(i);
+      std::string name = std::string(b->GetName());
+      if (name == "StreamAOD")
+        return true;
     }
 
     return false;
@@ -232,50 +306,93 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
 
 // Get the subset of systematics to consider
 // can also return full set if systName = "All"
-std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet recSysts,
-    std::string systName,
-    float systVal ) {
-  std::vector< CP::SystematicSet > systList;
-  // loop over recommended systematics
-  for( const auto syst : recSysts ) {
-    Info("HelperFunctions::getListofSystematics()","  %s", (syst.basename()).c_str());
-    if( systName == syst.basename() ) {
-      Info("HelperFunctions::getListofSystematics()","Found match! Adding systematic %s", syst.basename().c_str());
+//
+// CP::make_systematics_vector(recSysts); has some similar functionality but does not
+// prune down to 1 systematic if only request that one.  It does however include the
+// nominal case as a null SystematicSet
+std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug ) {
+
+  std::vector< CP::SystematicSet > outSystList;
+
+  // loop over input set
+  //
+  for ( const auto syst : inSysts ) {
+
+    if ( debug ) { Info("HelperFunctions::getListofSystematics()","  %s", (syst.name()).c_str()); }
+
+    // 1.
+    // A match with input systName is found in the list:
+    // add that systematic only to the output list
+    //
+    if ( systName == syst.basename() ) {
+
+      if ( debug ) { Info("HelperFunctions::getListofSystematics()","Found match! Adding systematic %s", syst.name().c_str()); }
+
       // continuous systematics - can choose at what sigma to evaluate
-      if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
-        systList.push_back(CP::SystematicSet());
+      //
+      if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
+
+        outSystList.push_back(CP::SystematicSet());
+
         if ( systVal == 0 ) {
           Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
           RCU_THROW_MSG("Failure");
         }
-        systList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
-      }
+
+        outSystList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
+
+      } else {
       // not a continuous system
-      else {
-        systList.push_back(CP::SystematicSet());
-        systList.back().insert(syst);
+
+        outSystList.push_back(CP::SystematicSet());
+        outSystList.back().insert(syst);
+
       }
-    } // found match!
-    else if ( systName == "All" ) {
-      Info("HelperFunctions::initialize()","Adding systematic %s", syst.basename().c_str());
+    }
+    // 2.
+    // input systName contains "All":
+    // add all systematics to the output list
+    //
+    else if ( systName.find("All") != std::string::npos ) {
+
+      if ( debug ) { Info("HelperFunctions::getListofSystematics()","Adding systematic %s", syst.name().c_str()); }
+
       // continuous systematics - can choose at what sigma to evaluate
       // add +1 and -1 for when running all
-      if (syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS)) {
-        if ( systVal == 0 ) {
-          Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
-          RCU_THROW_MSG("Failure");
-        }
-        systList.push_back(CP::SystematicSet());
-        systList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
-        systList.push_back(CP::SystematicSet());
-        systList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
+      //
+      if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
+
+      if ( systVal == 0 ) {
+        Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
+        RCU_THROW_MSG("Failure");
       }
+
+      outSystList.push_back(CP::SystematicSet());
+      outSystList.back().insert(CP::SystematicVariation (syst.basename(),  fabs(systVal)));
+      outSystList.push_back(CP::SystematicSet());
+      outSystList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
+
+      } else {
       // not a continuous systematic
-      else {
-        systList.push_back(CP::SystematicSet());
-        systList.back().insert(syst);
+
+        outSystList.push_back(CP::SystematicSet());
+        outSystList.back().insert(syst);
+
       }
-    } // running all
+
+    }
+
   } // loop over recommended systematics
-  return systList;
+
+  // Add an empty CP::SystematicVariation at the top of output list to account for the nominal case
+  // when running on all systematics or on nominal only
+  //
+  if ( systName.find("Nominal") != std::string::npos || systName.find("All") != std::string::npos || systName.empty() ) {
+    outSystList.insert( outSystList.begin(), CP::SystematicSet() );
+    const CP::SystematicVariation nullVar = CP::SystematicVariation("");
+    outSystList.back().insert(nullVar);
+  }
+
+  return outSystList;
+
 }

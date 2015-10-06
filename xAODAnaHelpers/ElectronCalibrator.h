@@ -32,8 +32,11 @@ public:
   			             // upstream algo (e.g., the SC containers with calibration systematics)
   std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
   				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
-  bool m_runSysts;
-  bool m_runAllSyst;
+  float       m_systVal;
+  std::string m_systName;  
+  
+  std::string m_esModel;
+  std::string m_decorrelationModel;
 
 private:
   int m_numEvent;         //!

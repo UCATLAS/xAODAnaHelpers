@@ -11,9 +11,8 @@
 #  python () (./xAODAnaHelpers/scripts/)checkoutASGtags.py RELEASE_NUMBER [X.Y.Z]
 # *******************************************************************************
 
-import subprocess
+import os, subprocess
 import argparse
-import os
 
 rc_env = os.environ.copy()
 
@@ -21,43 +20,53 @@ parser = argparse.ArgumentParser(description='Checkout packages and apply patche
 parser.add_argument('version', help='the ASG release you have set up')
 args = parser.parse_args()
 
-print "using ASG version {0}".format(args.version)
+print "Using ASG version {0}".format(args.version)
 
-dict_pkg = {'2.1.29': ["ElectronEfficiencyCorrection"],
-            '2.1.30': ["atlasoff/Reconstruction/egamma/egammaMVACalib/tags/egammaMVACalib-01-00-43",
-                       "atlasoff/Control/xAODRootAccess/tags/xAODRootAccess-00-01-04",
-                       "ElectronEfficiencyCorrection"],
-            '2.1.31': ["atlasoff/Reconstruction/egamma/egammaMVACalib/tags/egammaMVACalib-01-00-43",
-                       "atlasoff/Control/xAODRootAccess/tags/xAODRootAccess-00-01-04",
-                       "atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
-                       "ElectronEfficiencyCorrection"],
-            '2.1.32': ["atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-37",
-                       "ElectronEfficiencyCorrection"],
-            '2.3.12': ["atlasoff/PhysicsAnalysis/ElectronPhotonID/ElectronEfficiencyCorrection/tags/ElectronEfficiencyCorrection-00-01-20",
-                       "atlasoff/PhysicsAnalysis/MuonID/MuonSelectorTools/tags/MuonSelectorTools-00-05-10",
-                       "atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-00-19",
-                       "atlasoff/PhysicsAnalysis/D3PDTools/EventLoop/tags/EventLoop-00-01-09",
-                       "atlasoff/Reconstruction/MET/METUtilities/tags/METUtilities-00-01-39"],
-            '2.3.13': ["atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-41",
-                       "atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-00-19",
-                       "atlasoff/PhysicsAnalysis/D3PDTools/EventLoop/tags/EventLoop-00-01-09",
-                       "atlasoff/Reconstruction/MET/METUtilities/tags/METUtilities-00-01-39"]
+
+##check that you're in the right directory?
+
+dict_pkg = {
+            '2.3.18': ["atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-28",
+                       "atlasoff/Reconstruction/Jet/JetResolution/tags/JetResolution-03-00-36",
+                       "atlasoff/Reconstruction/Jet/JetCalibTools/tags/JetCalibTools-00-04-46",
+                       "atlasoff/Trigger/TrigAnalysis/TrigEgammaMatchingTool/tags/TrigEgammaMatchingTool-00-00-05",
+                       "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-00-10"],
+            '2.3.19': ["atlasoff/Trigger/TrigAnalysis/TrigEgammaMatchingTool/tags/TrigEgammaMatchingTool-00-00-05",
+                       "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-00-10",
+                       "atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-29"],
+            '2.3.21': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency/tags/xAODBTaggingEfficiency-00-00-19",
+                       "atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06"],
+            '2.3.23': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06",
+                       "atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainties-00-09-30"],
+            '2.3.24': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06"],
+            '2.3.25': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06"],
+            '2.3.26': [],
+            '2.3.28': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/CDIFiles/tags/CDIFiles-00-00-06",
+                       "atlasoff/PhysicsAnalysis/AnalysisCommon/IsolationSelection/tags/IsolationSelection-00-01-00",
+                       "atlasoff/Trigger/TrigAnalysis/TrigEgammaMatchingTool/tags/TrigEgammaMatchingTool-00-00-11",
+                       "atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-01-16"
+                      ]
            }
 
 try:
   packages_to_checkout = dict_pkg[args.version]
 except KeyError:
-  print "That version isn't supported! If this is a problem, tell someone important."
+  print "Warning: that version isn't supported! This may not be a problem if you're using a new ASG release."
   import sys
   sys.exit(0)
 
-for pkg in packages_to_checkout:
-  print "checking out package: {0}".format(pkg)
-  subprocess.Popen(['cd $ROOTCOREBIN/.. && pwd && rc checkout_pkg {0}'.format(pkg) ], env=rc_env, shell=True).wait()
+if len(packages_to_checkout) == 0:
+  print "No packages needed for version ", args.version
+else:
+  for pkg in packages_to_checkout:
+    print "Checking out package: {0}".format(pkg)
+    subprocess.Popen(['cd $ROOTCOREBIN/.. && pwd && rc checkout_pkg {0}'.format(pkg) ], env=rc_env, shell=True).wait()
+    if "CDIFiles" in pkg:
+      subprocess.Popen(['cd $ROOTCOREBIN/../CDIFiles/13TeV/ && pwd && cp *.root $ROOTCOREBIN/../xAODAnaHelpers/data'.format(pkg) ], env=rc_env, shell=True).wait()
 
-packages_to_patch = ["ElectronEfficiencyCorrection"]
-
-print "applying svn patches..."
+###  Apply Local Patches ###
+packages_to_patch = []
+print "Applying svn patches..."
 for pkg in packages_to_patch:
   if pkg in packages_to_checkout:
     print "  patching {0}".format(pkg)
@@ -65,4 +74,16 @@ for pkg in packages_to_patch:
   else:
     print "  no patches to be applied!"
 
-
+#### Update Run II GRLs ####
+print "Updating GRL..."
+GRL_AllGood_PeriodC = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v63-pro18-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+GRL_AllGood_PeriodD = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v64-pro19_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+GRL_AllGood_PeriodE = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v65-pro19-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+GRL_AtlasReady = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/Atlas_Ready/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml"
+try:
+  subprocess.call(["wget","-q",GRL_AllGood_PeriodC,"-O", "xAODAnaHelpers/data/PeriodC_"+GRL_AllGood_PeriodC.split('/')[-1]])
+  subprocess.call(["wget","-q",GRL_AllGood_PeriodD,"-O", "xAODAnaHelpers/data/PeriodD_"+GRL_AllGood_PeriodD.split('/')[-1]])
+  subprocess.call(["wget","-q",GRL_AllGood_PeriodE,"-O", "xAODAnaHelpers/data/PeriodE_"+GRL_AllGood_PeriodE.split('/')[-1]])
+  subprocess.call(["wget","-q",GRL_AtlasReady,"-O","xAODAnaHelpers/data/"+GRL_AtlasReady.split('/')[-1]])
+except OSError as e:
+  print "Error, wget is not available.  Will not download grl.  You can find the latest ATLASREADY version at", GRL_AtlasReady

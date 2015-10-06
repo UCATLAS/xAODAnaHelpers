@@ -66,6 +66,8 @@ namespace HelperClasses {
     bool m_shapeLC;
     bool m_truth;
     bool m_caloClus;
+    bool m_muonSF;
+    bool m_electronSF;
     void initialize();
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
@@ -87,29 +89,35 @@ namespace HelperClasses {
 
   struct MuonInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_trigger;
     bool m_isolation;
     bool m_quality;
     bool m_trackparams;
     bool m_trackhitcont;
+    bool m_effSF;
     void initialize();
     MuonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
   struct ElectronInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_trigger;
     bool m_isolation;
     bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
+    bool m_effSF;
     void initialize();
     ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
   struct JetInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_substructure;
     bool m_rapidity;
     bool m_clean;
     bool m_energy;
+    bool m_scales;
     bool m_resolution;
     bool m_truth;
     bool m_truthDetails;
@@ -125,8 +133,17 @@ namespace HelperClasses {
     bool m_area;
     int  m_numLeadingJets;
     void initialize();
+    std::vector<int> m_sfFTagFix;
+    std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
+
+  struct TruthInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
 
   struct TauInfoSwitch : InfoSwitch {
     bool m_kinematic;
@@ -140,9 +157,11 @@ namespace HelperClasses {
     bool m_refEle;
     bool m_refGamma;
     bool m_refTau;
-    bool m_muons;
+    bool m_refMuons;
     bool m_refJet;
+    bool m_refJetTrk;
     bool m_softClus;
+    bool m_softTrk;
     void initialize();
     METInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };

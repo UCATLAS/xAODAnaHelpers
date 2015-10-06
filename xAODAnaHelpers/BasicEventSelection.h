@@ -25,31 +25,47 @@ class BasicEventSelection : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
   public:
     // variables read in through configuration file
+    
     bool m_truthLevelOnly;
+    
     // GRL
-    bool m_applyGRL;
+    bool m_applyGRLCut;
     std::string m_GRLxml;
+    std::string m_GRLExcludeList;
+    
+    // Clean Powheg huge weight
+    bool m_cleanPowheg;
+    
     //PU Reweighting
     bool m_doPUreweighting;
-    bool m_useMetaData;
+    std::string m_lumiCalcFileNames;
+    std::string m_PRWFileNames;
+    int m_PU_default_channel;
+    
+    // Primary Vertex
+    std::string m_vertexContainerName;
+    bool m_applyPrimaryVertexCut;
+    int m_PVNTrack;
+        
+    // Event Cleaning
+    bool m_applyEventCleaningCut;
+    
+    // Trigger
     std::string m_triggerSelection;
-    bool m_cutOnTrigger;
+    bool m_applyTriggerCut;
     bool m_storeTrigDecisions;
-    bool m_storePassAny;
     bool m_storePassL1;
     bool m_storePassHLT;
     bool m_storeTrigKeys;
 
+    // Metadata
     std::string m_derivationName;
-
-    // primary vertex
-    std::string m_vertexContainerName;
-    int m_PVNTrack;
+    bool m_useMetaData;
 
   private:
-    GoodRunsListSelectionTool*   m_grl;       //!
+    GoodRunsListSelectionTool*   m_grl;        //!
     CP::PileupReweightingTool*   m_pileuptool; //!
-
+    
     TrigConf::xAODConfigTool*    m_trigConfTool;  //!
     Trig::TrigDecisionTool*      m_trigDecTool;   //!
 
@@ -75,7 +91,14 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_tile;     //!
     int m_cutflow_core;     //!
     int m_cutflow_npv;      //!
-    int m_cutflow_trigger;      //!
+    int m_cutflow_trigger;  //!
+    
+    // object cutflow
+    TH1D* m_el_cutflowHist_1;  //!
+    TH1D* m_el_cutflowHist_2;  //!
+    TH1D* m_mu_cutflowHist_1;  //!
+    TH1D* m_mu_cutflowHist_2;  //!
+    TH1D* m_jet_cutflowHist_1; //!    
 
     // variables that don't get filled at submission time should be
     // protected from being send from the submission node to the worker

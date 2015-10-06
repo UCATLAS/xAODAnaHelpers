@@ -37,15 +37,35 @@ StatusCode JetHists::initialize() {
   // N leading jets
   if( m_infoSwitch->m_numLeadingJets > 0 ){
     std::stringstream jetNum;
+    std::stringstream jetTitle;
     for(int iJet=0; iJet < m_infoSwitch->m_numLeadingJets; ++iJet){
       jetNum << iJet;
-      m_NjetsPt.push_back(       book(m_name, ("jetPt_jet"+jetNum.str()),       "jet p_{T} [GeV]", 120, 0, 3000.) );
-      m_NjetsEta.push_back(      book(m_name, ("jetEta_jet"+jetNum.str()),      "jet #eta",         80, -4, 4) );
-      m_NjetsPhi.push_back(      book(m_name, ("jetPhi_jet"+jetNum.str()),      "jet Phi",120, -TMath::Pi(), TMath::Pi() ) );
-      m_NjetsM.push_back(        book(m_name, ("jetMass_jet"+jetNum.str()),     "jet Mass [GeV]",120, 0, 400) );
-      m_NjetsE.push_back(        book(m_name, ("jetEnergy_jet"+jetNum.str()),   "jet Energy [GeV]",120, 0, 4000.) );
-      m_NjetsRapidity.push_back( book(m_name, ("jetRapidity_jet"+jetNum.str()), "jet Rapidity",120, -10, 10) );
+
+      jetTitle << iJet+1;
+      switch(iJet)
+	{
+	case 0:
+	  jetTitle << "^{st}";
+	  break;
+	case 1:
+	  jetTitle << "^{nd}";
+	  break;
+	case 2:
+	  jetTitle << "^{rd}";
+	  break;
+	default:
+	  jetTitle << "^{th}";
+	  break;
+	}
+
+      m_NjetsPt.push_back(       book(m_name, ("jetPt_jet"+jetNum.str()),       jetTitle.str()+" jet p_{T} [GeV]" ,120,            0,       3000. ) );
+      m_NjetsEta.push_back(      book(m_name, ("jetEta_jet"+jetNum.str()),      jetTitle.str()+" jet #eta"        , 80,           -4,           4 ) );
+      m_NjetsPhi.push_back(      book(m_name, ("jetPhi_jet"+jetNum.str()),      jetTitle.str()+" jet Phi"         ,120, -TMath::Pi(), TMath::Pi() ) );
+      m_NjetsM.push_back(        book(m_name, ("jetMass_jet"+jetNum.str()),     jetTitle.str()+" jet Mass [GeV]"  ,120,            0,         400 ) );
+      m_NjetsE.push_back(        book(m_name, ("jetEnergy_jet"+jetNum.str()),   jetTitle.str()+" jet Energy [GeV]",120,            0,       4000. ) );
+      m_NjetsRapidity.push_back( book(m_name, ("jetRapidity_jet"+jetNum.str()), jetTitle.str()+" jet Rapidity"    ,120,          -10,          10 ) );
       jetNum.str("");
+      jetTitle.str("");
     }//for iJet
   }
 
@@ -196,7 +216,9 @@ StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_flavTag ) {
     if(m_debug) Info("JetHists::initialize()", "adding btagging plots");
 
-    m_MV1             = book(m_name, "MV1",    "MV1" ,      100,    -0.1,   1.1);
+    m_MV2c00          = book(m_name, "MV2c00", "MV2c00" ,   100,    -1.1,   1.1);
+    m_MV2c10          = book(m_name, "MV2c10", "MV2c10" ,   100,    -1.1,   1.1);
+    m_MV2c20          = book(m_name, "MV2c20", "MV2c20" ,   100,    -1.1,   1.1);
     m_SV1_plus_IP3D   = book(m_name, "SV1_plus_IP3D",    "SV1_plus_IP3D" ,      100,    -0.1,   1.1);
     m_SV0             = book(m_name, "SV0",    "SV0" ,      100,    -20,  200);
     m_SV1             = book(m_name, "SV1",    "SV1" ,      100,    -5,   15);
@@ -231,7 +253,7 @@ StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight,
   return StatusCode::SUCCESS;
 }
 
-StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc ) {
+StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvLoc*/ ) {
 
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
@@ -620,14 +642,30 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int pvLoc
   if( m_infoSwitch->m_flavTag ) {
 
     const xAOD::BTagging *btag_info = jet->btagging();
-    m_MV1 ->  Fill( btag_info->MV1_discriminant() , eventWeight );
-    m_SV1_plus_IP3D ->  Fill( btag_info->MV1_discriminant() , eventWeight );
-    m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );
+    
+    double MV2c00 = -99;
+    double MV2c10 = -99;
+    double MV2c20 = -99;
+    btag_info->MVx_discriminant("MV2c00", MV2c00);
+    btag_info->MVx_discriminant("MV2c10", MV2c10);
+    btag_info->MVx_discriminant("MV2c20", MV2c20);
+    m_MV2c00 ->  Fill( MV2c00, eventWeight );
+    m_MV2c10 ->  Fill( MV2c10, eventWeight );
+    m_MV2c20 ->  Fill( MV2c20, eventWeight );
+
+    static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
+    if ( SV0_significance3DAcc.isAvailable(*btag_info) ) {
+      m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );
+      m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );
+      m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
+      m_SV1_plus_IP3D ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
+      m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
+      m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
+    }
+    
+    //m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }
     m_SV1 ->  Fill( btag_info->SV1_loglikelihoodratio() , eventWeight );
-    m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );
-    m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
-    m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
-    m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
+
 
   }
 

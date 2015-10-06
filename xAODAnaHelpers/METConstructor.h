@@ -25,13 +25,6 @@ public:
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
 
-  bool m_debug;
-
-private:
-
-  // tools
-  met::METMaker* m_metmaker; //!
-
   // configuration variables
   TString m_referenceMETContainer;
   TString m_mapName;
@@ -48,6 +41,17 @@ private:
   bool    m_doTauCuts;
   bool    m_doMuonCuts;
 
+  bool    m_doMuonEloss;
+  bool    m_doIsolMuonEloss;
+  bool    m_doJVTCut;
+  
+  bool    m_useCaloJetTerm;
+  bool    m_useTrackJetTerm;
+
+private:
+
+  // tools
+  met::METMaker* m_metmaker; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

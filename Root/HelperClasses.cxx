@@ -28,8 +28,6 @@ namespace HelperClasses{
     std::string Loose("Loose");                 enumMap.insert(std::make_pair(Loose      , LikeEnum::Loose));
     std::string Medium("Medium");               enumMap.insert(std::make_pair(Medium     , LikeEnum::Medium));
     std::string Tight("Tight");                 enumMap.insert(std::make_pair(Tight      , LikeEnum::Tight));
-    std::string VeryTight("VeryTight");         enumMap.insert(std::make_pair(VeryTight  , LikeEnum::VeryTight));
-    std::string LooseRelaxed("LooseRelaxed");   enumMap.insert(std::make_pair(LooseRelaxed      , LikeEnum::LooseRelaxed));
   }
 
   /* parser for electron cut-based PID enum */
@@ -89,7 +87,7 @@ namespace HelperClasses{
    **************************************/
   bool InfoSwitch::parse(const std::string flag)
   {
-    return m_configStr.find(flag) != std::string::npos;
+    return m_configStr.find(flag) != std::string::npos; // not equal to npos means it is found
   }
 
   void EventInfoSwitch::initialize(){
@@ -98,12 +96,14 @@ namespace HelperClasses{
     m_shapeLC       = parse("shapeLC");
     m_truth         = parse("truth");
     m_caloClus      = parse("caloClusters");
+    m_muonSF        = parse("muonSF");
+    m_electronSF    = parse("electronSF");
   }
   
   void TriggerInfoSwitch::initialize(){
-    m_basic         = parse("basic");
-    m_menuKeys      = parse("menuKeys");
-    m_passTriggers  = parse("passTriggers");
+    m_basic             = parse("basic");
+    m_menuKeys          = parse("menuKeys");
+    m_passTriggers      = parse("passTriggers");
   }
   
   void JetTriggerInfoSwitch::initialize(){
@@ -113,25 +113,31 @@ namespace HelperClasses{
 
   void MuonInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_trigger       = parse("trigger");
     m_isolation     = parse("isolation");
     m_quality       = parse("quality");
     m_trackparams   = parse("trackparams");
     m_trackhitcont  = parse("trackhitcont");
+    m_effSF         = parse("effSF");
   }
 
   void ElectronInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_trigger       = parse("trigger");
     m_isolation     = parse("isolation");
     m_PID           = parse("PID");
     m_trackparams   = parse("trackparams");
     m_trackhitcont  = parse("trackhitcont");
+    m_effSF         = parse("effSF");
   }
 
   void JetInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
+    m_substructure  = parse("substructure");
     m_rapidity      = parse("rapidity");
     m_clean         = parse("clean");
     m_energy        = parse("energy");
+    m_scales        = parse("scales");
     m_resolution    = parse("resolution");
     m_truth         = parse("truth");
     m_truthDetails  = parse("truth_details");
@@ -147,6 +153,49 @@ namespace HelperClasses{
     m_constituent   = parse("constituent");
     m_constituentAll= parse("constituentAll");
     m_flavTag       = parse("flavorTag");
+    m_sfFTagFix.clear();
+    if( parse( "sfFTagFix" ) ) { 
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("sfFTagFix") );
+      // erase everything after the interesting string
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
+      // remove fTagSFFix to just leave the numbers
+      input.erase(0,9);
+      // two by two take the characters and push back an int into this vector
+      std::vector<int> values;
+      int size( input.size()/2 );
+      int count(0);
+      while( count < size ) {
+        std::string number = input.substr(0,2);
+        m_sfFTagFix.push_back( atoi( number.c_str() ) );
+        input.erase(0,2);
+        count++;
+      }
+    } // sfFTagFix
+    m_sfFTagFlt.clear();
+    if( parse( "sfFTagFlt" ) ) { 
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("sfFTagFlt") );
+      // erase everything after the interesting string
+      input.erase( input.find_first_of(" "), input.size() );
+      // remove fTagSFFlt to just leave the numbers
+      input.erase(0,9);
+      // two by two take the characters and push back an int into this vector
+      std::vector<int> values;
+      int size( input.size()/2 );
+      int count(0);
+      while( count < size ) {
+        std::string number = input.substr(0,2);
+        m_sfFTagFlt.push_back( atoi( number.c_str() ) );
+        input.erase(0,2);
+        count++;
+      }
+    } // sfFTagFlt
     m_area          = parse("area");
     if( parse("LeadingJets") ){
       m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );
@@ -157,7 +206,12 @@ namespace HelperClasses{
       m_numLeadingJets = 0;
     }
   }
-  
+
+  void TruthInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+  }
+
+
   void TauInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
     m_trackparams   = parse("trackparams");
@@ -168,9 +222,11 @@ namespace HelperClasses{
     m_refEle    = parse("refEle")   || parse("all");
     m_refGamma  = parse("refGamma") || parse("all");
     m_refTau    = parse("refTau")   || parse("all");
-    m_muons     = parse("muons")    || parse("all");
+    m_refMuons  = parse("refMuons") || parse("all");
     m_refJet    = parse("refJet")   || parse("all");
+    m_refJetTrk = parse("refJetTrk"); // take this one *only* if requested by user explicitly
     m_softClus  = parse("softClus") || parse("all");
+    m_softTrk   = parse("softTrk")  || parse("all");
   }
 
 } // close namespace HelperClasses

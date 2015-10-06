@@ -24,9 +24,14 @@
 
 #include "PATInterfaces/SystematicVariation.h"
 
+#include <sstream>
+
 // usage:
-// test_multiAlgo [optional] outdir dataPath/ datasetname filename
-// NB: make sure that 'outdir' is specified BEFORE 'dataPath/'
+// test_multiAlgo [optional] outdir maxevts dataPath/ datasetname filename 
+// NB: 
+//    -) 'outdir' , 'maxevts' and 'dataPath/' must be all specified
+//       --> use '-1' for maxevts if you want to run them all
+//     
 
 
 int main( int argc, char* argv[] ) {
@@ -46,13 +51,13 @@ int main( int argc, char* argv[] ) {
   std::string filename;
   std::string dataPath;
 
-  if ( argc > 3 ) {
-    dataPath = argv[ 2 ];
-    datasetname = argv[3];
+  if ( argc > 4 ) {
+    dataPath = argv[3];
+    datasetname = argv[4];
 
     SH::DiskListLocal list (dataPath);  // path to folder containing your datasets subfolders
-    if( argc > 4 ){
-      filename = argv[ 4 ];
+    if( argc > 5 ){
+      filename = argv[5];
       SH::scanDir (sh, list, filename); // running on a specific file
     } else {
       SH::scanDir (sh, list, "*.root*", datasetname ); // running on all files in a specific dataset
@@ -61,9 +66,7 @@ int main( int argc, char* argv[] ) {
 
   } else {
     // default
-    //std::string filename = "mc14_13TeV.110351.PowhegPythia_P2012_ttbar_allhad.merge.AOD.e3232_s1982_s2008_r5787_r5853_skim.root";
-    std::string filename = "mc15_13TeV.410000.PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad.merge.AOD.e3698_s2608_s2183_r6630_r6264.root";
-    // std::string filename = "r20test_AOD.pool.root";
+    std::string filename = "mc14_13TeV.110351.PowhegPythia_P2012_ttbar_allhad.merge.AOD.e3232_s1982_s2008_r5787_r5853_skim.root";
     // get the data path for xAODAnaHelpers/data
     std::string dataPath = gSystem->ExpandPathName("$ROOTCOREBIN/data");
     SH::DiskListLocal list (dataPath);
@@ -85,9 +88,17 @@ int main( int argc, char* argv[] ) {
   job.options()->setString( EL::Job::optXaodAccessMode, EL::Job::optXaodAccessMode_branch );
 
   // Select max number of events
-  job.options()->setDouble (EL::Job::optMaxEvents, 1000);
+  if ( argc > 2 ) {
+    double maxevts;
+    std::stringstream ss_maxevts; ss_maxevts << argv[2]; ss_maxevts >> maxevts;
+    if ( maxevts > 0 ) { job.options()->setDouble(EL::Job::optMaxEvents, maxevts); }
+  }
 
   std::string localDataDir = "$ROOTCOREBIN/data/xAODAnaHelpers/";
+
+  // this class will hold the class name of the algorithms used below, and the number
+  // of times an algo is used
+  xAH::AlgorithmRegistry registry;
 
   BasicEventSelection* baseEventSel             = new BasicEventSelection();
   baseEventSel->setName("baseEventSel")->setConfig(localDataDir+"baseEvent.config");
@@ -99,58 +110,58 @@ int main( int argc, char* argv[] ) {
 //  JetCalibrator* jetCalib                       = new JetCalibrator(        "jetCalib_AntiKt4TopoEM",   localDataDir+"jetCalib_AntiKt4TopoEMCalib.config", "JET_GroupedNP_1", -1);
 
   JetCalibrator* jetCalib                       = new JetCalibrator();
-  jetCalib->setName("jetCalib_AntiKt4TopoEM")->setConfig(localDataDir+"jetCalib_AntiKt4TopoEMCalib.config");
+  jetCalib->setName("jetCalib_AntiKt4TopoEM")->setConfig(localDataDir+"jetCalib_AntiKt4TopoEMCalib.config")->registerClass(registry, "JetCalibrator");
 
   MuonCalibrator* muonCalib                     = new MuonCalibrator();
-  muonCalib->setName("muonCalib")->setConfig(localDataDir+"muonCalib.config");
+  muonCalib->setName("muonCalib")->setConfig(localDataDir+"muonCalib.config")->registerClass(registry, "MuonCalibrator");
 
   ElectronCalibrator* electronCalib             = new ElectronCalibrator();
-  electronCalib->setName("electronCalib")->setConfig(localDataDir+"electronCalib.config");/*->setSysts("All");*/
+  electronCalib->setName("electronCalib")->setConfig(localDataDir+"electronCalib.config")->registerClass(registry, "ElectronCalibrator");/*->setSysts("All");*/
 
   MuonEfficiencyCorrector*      muonEffCorr     = new MuonEfficiencyCorrector();
-  muonEffCorr->setName("muonEfficiencyCorrector")->setConfig(localDataDir+"muonEffCorr.config");
+  muonEffCorr->setName("muonEfficiencyCorrector")->setConfig(localDataDir+"muonEffCorr.config")->registerClass(registry, "MuonEfficiencyCorrector");
 
   ElectronEfficiencyCorrector*  electronEffCorr = new ElectronEfficiencyCorrector();
-  electronEffCorr->setName("electronEfficiencyCorrector")->setConfig(localDataDir+"electronEffCorr.config");/*->setSysts("All");*/
+  electronEffCorr->setName("electronEfficiencyCorrector")->setConfig(localDataDir+"electronEffCorr.config")->registerClass(registry, "ElectronEfficiencyCorrector");/*->setSysts("All");*/
 
   MuonSelector* muonSelect_signal               = new MuonSelector();
-  muonSelect_signal->setName("muonSelect_signal")->setConfig(localDataDir+"muonSelect_signal.config");
+  muonSelect_signal->setName("muonSelect_signal")->setConfig(localDataDir+"muonSelect_signal.config")->registerClass(registry, "MuonSelector");
 
   ElectronSelector* electronSelect_signal       = new ElectronSelector();
-  electronSelect_signal->setName("electronSelect_signal")->setConfig(localDataDir+"electronSelect_signal.config");
+  electronSelect_signal->setName("electronSelect_signal")->setConfig(localDataDir+"electronSelect_signal.config")->registerClass(registry, "ElectronSelector");
 
   JetSelector* jetSelect_signal                 = new JetSelector();
-  jetSelect_signal->setName("jetSelect_signal")->setConfig(localDataDir+"jetSelect_signal.config");
+  jetSelect_signal->setName("jetSelect_signal")->setConfig(localDataDir+"jetSelect_signal.config")->registerClass(registry, "JetSelector");
 
   JetSelector* bjetSelect_signal                = new JetSelector();
-  bjetSelect_signal->setName("bjetSelect_signal")->setConfig(localDataDir+"bjetSelect_signal.config");
+  bjetSelect_signal->setName("bjetSelect_signal")->setConfig(localDataDir+"bjetSelect_signal.config")->registerClass(registry, "JetSelector");
 
   BJetEfficiencyCorrector* bjetEffCorr_btag     = new BJetEfficiencyCorrector();
-  bjetEffCorr_btag->setName("bjetEffCor_btag")->setConfig(localDataDir+"bjetEffCorr.config");
+  bjetEffCorr_btag->setName("bjetEffCor_btag")->setConfig(localDataDir+"bjetEffCorr.config")->registerClass(registry, "BJetEfficiencyCorrector");
 
   JetHistsAlgo* jetHistsAlgo_signal             = new JetHistsAlgo();
-  jetHistsAlgo_signal->setName("jetHistsAlgo_signal")->setConfig(localDataDir+"jetHistsAlgo_signal.config");
+  jetHistsAlgo_signal->setName("jetHistsAlgo_signal")->setConfig(localDataDir+"jetHistsAlgo_signal.config")->registerClass(registry, "JetHistsAlgo");
 
   JetHistsAlgo* jetHistsAlgo_btag               = new JetHistsAlgo();
-  jetHistsAlgo_btag->setName("jetHistsAlgo_btag")->setConfig(localDataDir+"jetHistsAlgo_btagged.config");
+  jetHistsAlgo_btag->setName("jetHistsAlgo_btag")->setConfig(localDataDir+"jetHistsAlgo_btagged.config")->registerClass(registry, "JetHistsAlgo");
 
   JetSelector* jetSelect_truth                  = new JetSelector();
-  jetSelect_truth->setName("jetSelect_truth")->setConfig(localDataDir+"jetSelect_truth.config");
+  jetSelect_truth->setName("jetSelect_truth")->setConfig(localDataDir+"jetSelect_truth.config")->registerClass(registry, "JetSelector");
 
   JetHistsAlgo* jetHistsAlgo_truth              = new JetHistsAlgo();
-  jetHistsAlgo_truth->setName("jetHistsAlgo_truth")->setConfig(localDataDir+"jetHistsAlgo_truth.config");
+  jetHistsAlgo_truth->setName("jetHistsAlgo_truth")->setConfig(localDataDir+"jetHistsAlgo_truth.config")->registerClass(registry, "JetHistsAlgo");
 
   OverlapRemover* overlapRemoval                = new OverlapRemover();
-  overlapRemoval->setName("OverlapRemovalTool")->setConfig(localDataDir+"overlapRemoval.config");
+  overlapRemoval->setName("OverlapRemovalTool")->setConfig(localDataDir+"overlapRemoval.config")->registerClass(registry, "OverlapRemover");
 
   METConstructor* met = new METConstructor();
-  met->setName("met")->setConfig(localDataDir+"MET_MC15.config");
+  met->setName("met")->setConfig(localDataDir+"MET_MC15.config")->registerClass(registry, "METConstructor");
 
   JetHistsAlgo* jk_AntiKt10LC                   = new JetHistsAlgo();
-  jk_AntiKt10LC->setName("AntiKt10/")->setConfig(localDataDir+"test_jetPlotExample.config");
+  jk_AntiKt10LC->setName("AntiKt10/")->setConfig(localDataDir+"test_jetPlotExample.config")->registerClass(registry, "JetHistsAlgo");
 
   TreeAlgo* out_tree                            = new TreeAlgo();
-  out_tree->setName("physics")->setConfig(localDataDir+"tree.config");
+  out_tree->setName("physics")->setConfig(localDataDir+"tree.config")->registerClass(registry, "TreeAlgo");
 
   // Attach algorithms
   job.algsAdd( baseEventSel );
