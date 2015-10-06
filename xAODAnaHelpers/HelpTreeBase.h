@@ -201,6 +201,7 @@ protected:
   // event
   int m_runNumber;
   int m_eventNumber;
+  int m_lumiBlock;
   int m_mcEventNumber;
   int m_mcChannelNumber;
   float m_mcEventWeight;
@@ -213,7 +214,6 @@ protected:
   int m_npv;
   float m_actualMu;
   float m_averageMu;
-  int m_lumiBlock;
   // event shapeEM
   double m_rhoEM;
   double m_rhoLC;

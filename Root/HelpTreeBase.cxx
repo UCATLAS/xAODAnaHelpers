@@ -83,6 +83,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   // always
   m_tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
   m_tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/I");
+  m_tree->Branch("lumiBlock",          &m_lumiBlock,      "lumiBlock/I");
   if( m_isMC ) {
     m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
     m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
@@ -96,7 +97,6 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("NPV",                &m_npv,            "NPV/I");
     m_tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
     m_tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
-    m_tree->Branch("lumiBlock", &m_lumiBlock, "lumiBlock/I");
   }
 
   if ( m_eventInfoSwitch->m_shapeEM ) {
@@ -147,6 +147,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
   m_runNumber             = eventInfo->runNumber();
   m_eventNumber           = eventInfo->eventNumber();
+  m_lumiBlock             = eventInfo->lumiBlock();
   if ( m_isMC ) {
     m_mcEventNumber         = eventInfo->mcEventNumber();
     m_mcChannelNumber       = eventInfo->mcChannelNumber();
@@ -167,7 +168,6 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
     m_actualMu  = eventInfo->actualInteractionsPerCrossing();
     m_averageMu = eventInfo->averageInteractionsPerCrossing();
-    m_lumiBlock = eventInfo->lumiBlock();
 
     if ( m_isMC ) {
       
@@ -2564,11 +2564,11 @@ void HelpTreeBase::ClearFatJets() {
 }
 
 void HelpTreeBase::ClearEvent() {
-  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = m_bcid = -999;
+  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = m_bcid = m_lumiBlock = -999;
   m_mcEventWeight = 1.;
   m_weight_pileup = 1.;
   // pileup
-  m_npv = m_lumiBlock = -999;
+  m_npv = -999;
   m_actualMu = m_averageMu = -999;
   // shapeEM
   m_rhoEM = -999;
