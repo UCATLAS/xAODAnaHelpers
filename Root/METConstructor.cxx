@@ -10,6 +10,7 @@
 // #include "METUtilities/METRebuilder.h"
 #include "METUtilities/METMaker.h"
 #include "METUtilities/CutsMETMaker.h"
+#include "TauAnalysisTools/TauSelectionTool.h"
 
 #include "xAODEgamma/PhotonContainer.h"
 #include "xAODEgamma/ElectronContainer.h"
@@ -83,6 +84,8 @@ METConstructor :: METConstructor () : m_metmaker(0) {
 EL::StatusCode  METConstructor :: configure ()
 {
   Info("configure()", "Configuing METConstructor Interface. User configuration read from : %s ", getConfig(true).c_str());
+
+  if (getConfig(true).empty()) return EL::StatusCode::SUCCESS;
 
   getConfig(true) = gSystem->ExpandPathName( getConfig(true).c_str() );
   // check if file exists
@@ -209,9 +212,16 @@ EL::StatusCode METConstructor :: initialize ()
 
   m_metmaker = new met::METMaker("METMaker");
   if(m_metmaker->initialize().isFailure()){
-    Error("initialize()", "Failed to properly initialize. Exiting." );
+    Error("initialize()", "Failed to properly initialize MET maker. Exiting." );
     return EL::StatusCode::FAILURE;
   }
+
+  m_tauSelTool = new TauAnalysisTools::TauSelectionTool( "TauSelectionTool" );
+  if (m_tauSelTool->initialize().isFailure()) {
+    Error("initialize()", "Failed to properly initialize tau selection tool. Exiting." );
+    return EL::StatusCode::FAILURE;
+  }
+
 
   RETURN_CHECK( "METConstructor::initialize()", m_metmaker->setProperty( "DoMuonEloss", m_doMuonEloss), "");
   RETURN_CHECK( "METConstructor::initialize()", m_metmaker->setProperty( "DoIsolMuonEloss", m_doIsolMuonEloss), "");
@@ -269,7 +279,22 @@ EL::StatusCode METConstructor :: execute ()
     RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data(), m_event, m_store, m_verbose), "Failed retrieving photon cont.");
     if (m_doPhotonCuts) {
       ConstDataVector<xAOD::PhotonContainer> metPhotons(SG::VIEW_ELEMENTS);
-      for (const auto& ph : *phoCont) if (CutsMETMaker::accept(ph)) metPhotons.push_back(ph);
+      for (const auto& ph : *phoCont) {
+
+        bool testPID = 0;
+        ph->passSelection(testPID, "Tight");
+        if( !testPID ) continue;
+
+        //ATH_MSG_VERBOSE("Photon author = " << ph->author() << " test " << (ph->author()&20));
+        if (!(ph->author() & 20)) continue;
+
+        if (ph->pt() < 25e3) continue;
+
+        float feta = fabs(ph->eta());
+        if (feta > 2.37 || (1.37 < feta && feta < 1.52)) continue;
+
+        metPhotons.push_back(ph);
+      }
       RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, metPhotons.asDataVector(), metMap), "Failed rebuilding photon component.");
     } else {
       RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, phoCont, metMap), "Failed rebuilding photon component.");
@@ -285,7 +310,14 @@ EL::StatusCode METConstructor :: execute ()
     RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, m_verbose), "Failed retrieving tau cont.");
     if (m_doTauCuts) {
       ConstDataVector<xAOD::TauJetContainer> metTaus(SG::VIEW_ELEMENTS);
-      for (const auto& tau : *tauCont) if (CutsMETMaker::accept(tau)) metTaus.push_back(tau);
+      for (const auto& tau : *tauCont) {
+
+        if (tau->pt() < 20e3) continue;
+        if (fabs(tau->eta()) > 2.37) continue;
+        if (!m_tauSelTool->accept(tau)) continue;
+
+        metTaus.push_back(tau);
+      }
       RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, metTaus.asDataVector(), metMap), "Failed rebuilding tau component.");
     } else {
       RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, tauCont, metMap), "Failed rebuilding tau component.");
