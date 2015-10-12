@@ -9,11 +9,11 @@
 #include "xAODRootAccess/TStore.h"
 
 
+
 using std::string; 
 
-namespace met{
-  class METMaker;
-}
+namespace met { class METMaker; }
+namespace TauAnalysisTools { class TauSelectionTool; }
 
 
 class METConstructor : public xAH::Algorithm
@@ -52,6 +52,7 @@ private:
 
   // tools
   met::METMaker* m_metmaker; //!
+  TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
