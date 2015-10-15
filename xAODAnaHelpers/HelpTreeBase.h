@@ -237,9 +237,24 @@ protected:
   std::vector<float> m_caloCluster_phi;
   std::vector<float> m_caloCluster_e;
 
-  // scale trigger factors
-  std::vector<double> m_weight_muon_trig;
-  std::vector<double> m_weight_electron_trig;
+  // trigger scale factors
+  std::vector<float> m_weight_muon_trig;
+  std::vector<float> m_weight_electron_trig;
+
+  // lepton SFs per event (product of each object SF)
+  std::vector<float> m_weight_muon_RecoEff_SF;
+  std::vector<float> m_weight_muon_IsoEff_SF_LooseTrackOnly;
+  std::vector<float> m_weight_muon_IsoEff_SF_Loose;
+  std::vector<float> m_weight_muon_IsoEff_SF_Tight;
+  std::vector<float> m_weight_muon_IsoEff_SF_Gradient;
+  std::vector<float> m_weight_muon_IsoEff_SF_GradientLoose;
+  std::vector<float> m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency;
+  std::vector<float> m_weight_muon_IsoEff_SF_UserDefinedCut;
+  std::vector<float> m_weight_electron_RecoEff_SF;
+  std::vector<float> m_weight_electron_PIDEff_SF_LHVeryLoose;
+  std::vector<float> m_weight_electron_PIDEff_SF_LHLoose;
+  std::vector<float> m_weight_electron_PIDEff_SF_LHMedium;
+  std::vector<float> m_weight_electron_PIDEff_SF_LHTight;
 
   // trigger
   int m_passL1;
@@ -377,49 +392,77 @@ protected:
 
   int m_njet_mv2c20_Fix30;
   std::vector<int> m_jet_mv2c20_isFix30;
+  std::vector<float>  m_weight_jet_mv2c20_sfFix30;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix30;
+  
   int m_njet_mv2c20_Fix50;
   std::vector<int> m_jet_mv2c20_isFix50;
+  std::vector<float>  m_weight_jet_mv2c20_sfFix50;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix50;
+  
   int m_njet_mv2c20_Fix60;
   std::vector<int> m_jet_mv2c20_isFix60;
+  std::vector<float>  m_weight_jet_mv2c20_sfFix60;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix60;
+  
   int m_njet_mv2c20_Fix70;  
   std::vector<int> m_jet_mv2c20_isFix70;
+  std::vector<float>  m_weight_jet_mv2c20_sfFix70;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix70;
+  
   int m_njet_mv2c20_Fix77;   
   std::vector<int> m_jet_mv2c20_isFix77;
+  std::vector<float>  m_weight_jet_mv2c20_sfFix77;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix77;
+  
   int m_njet_mv2c20_Fix80;   
   std::vector<int> m_jet_mv2c20_isFix80;
+  std::vector<float>  m_weight_jet_mv2c20_sfFix80;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix80;
+  
   int m_njet_mv2c20_Fix85;   
   std::vector<int> m_jet_mv2c20_isFix85;
+  std::vector<float>  m_weight_jet_mv2c20_sfFix85;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix85;
+  
   int m_njet_mv2c20_Fix90;   
   std::vector<int> m_jet_mv2c20_isFix90;
+  std::vector<float>  m_weight_jet_mv2c20_sfFix90;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFix90;
   
   int m_njet_mv2c20_Flt30;
   std::vector<int> m_jet_mv2c20_isFlt30;
+  std::vector<float>  m_weight_jet_mv2c20_sfFlt30;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt30;
+  
   int m_njet_mv2c20_Flt40;  
   std::vector<int> m_jet_mv2c20_isFlt40;
+  std::vector<float>  m_weight_jet_mv2c20_sfFlt40;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt40;
+  
   int m_njet_mv2c20_Flt50;  
   std::vector<int> m_jet_mv2c20_isFlt50;
+  std::vector<float>  m_weight_jet_mv2c20_sfFlt50;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt50;
+  
   int m_njet_mv2c20_Flt60;  
   std::vector<int> m_jet_mv2c20_isFlt60;
+  std::vector<float>  m_weight_jet_mv2c20_sfFlt60;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt60;
+  
   int m_njet_mv2c20_Flt70;  
   std::vector<int> m_jet_mv2c20_isFlt70;
+  std::vector<float>  m_weight_jet_mv2c20_sfFlt70;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt70;
+  
   int m_njet_mv2c20_Flt77;  
   std::vector<int> m_jet_mv2c20_isFlt77;
+  std::vector<float>  m_weight_jet_mv2c20_sfFlt77;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt77;
+  
   int m_njet_mv2c20_Flt85;  
   std::vector<int> m_jet_mv2c20_isFlt85;
+  std::vector<float>  m_weight_jet_mv2c20_sfFlt85;
   std::vector< std::vector<float> > m_jet_mv2c20_sfFlt85;
 
   // area
@@ -530,15 +573,16 @@ protected:
   std::vector<int>   m_muon_isMedium;
   std::vector<int>   m_muon_isTight;
 
-  // scale factors
-  std::vector< std::vector< double > > m_muon_RecoEff_SF;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF_LooseTrackOnly;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF_Loose;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF_Tight;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF_Gradient;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF_GradientLoose;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF_UserDefinedFixEfficiency;
-  std::vector< std::vector< double > > m_muon_IsoEff_SF_UserDefinedCut;
+  // scale factors w/ sys
+  // per object
+  std::vector< std::vector< float > > m_muon_RecoEff_SF;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_LooseTrackOnly;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_Loose;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_Tight;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_Gradient;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_GradientLoose;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_UserDefinedFixEfficiency;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_UserDefinedCut;
 
   // track parameters
   std::vector<float> m_muon_trkd0;
@@ -606,12 +650,13 @@ protected:
   std::vector<int>   m_el_IsEMMedium;
   std::vector<int>   m_el_IsEMTight;
 
-  // scale factors
-  std::vector< std::vector< double > > m_el_RecoEff_SF;
-  std::vector< std::vector< double > > m_el_PIDEff_SF_LHVeryLoose;
-  std::vector< std::vector< double > > m_el_PIDEff_SF_LHLoose;
-  std::vector< std::vector< double > > m_el_PIDEff_SF_LHMedium;
-  std::vector< std::vector< double > > m_el_PIDEff_SF_LHTight;
+  // scale factors w/ sys
+  // per object
+  std::vector< std::vector< float > > m_el_RecoEff_SF;
+  std::vector< std::vector< float > > m_el_PIDEff_SF_LHVeryLoose;
+  std::vector< std::vector< float > > m_el_PIDEff_SF_LHLoose;
+  std::vector< std::vector< float > > m_el_PIDEff_SF_LHMedium;
+  std::vector< std::vector< float > > m_el_PIDEff_SF_LHTight;
 
   // track parameters
   std::vector<float> m_el_trkd0;

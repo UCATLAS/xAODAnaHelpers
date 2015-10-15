@@ -211,7 +211,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("BJetEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
@@ -351,21 +351,34 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   const xAOD::JetContainer* correctedJets(nullptr);
   RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
-
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+    
+  if ( m_debug ) Info("execute()", "\n\n eventNumber: %lld\n", eventInfo->eventNumber() );
 
   //
   // loop over available systematics
+  //  
+  
+  // Define also an *event* weight, which is the product of all the BTag eff. SFs for each object in the event
   //
+  std::string SF_NAME_GLOBAL = m_decorSF + "_GLOBAL";
+  SG::AuxElement::Decorator< std::vector<float> > sfVec_GLOBAL ( SF_NAME_GLOBAL );
+
   std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
   for(const auto& syst_it : m_systList){
-
+    
+    // Initialise product of SFs for *this* systematic
+    //
+    float SF_GLOBAL(1.0); 
+    
     //
     // if not running systematics, only compulte weight for specified systematic (m_systName)
     //    default is nominal (i.e., "")
     //
-    if(!m_runAllSyst){
+    if ( !m_runAllSyst ) {
       if( syst_it.name() != m_systName ) {
-        if(m_debug) Info("execute()","Not running systematics only apply nominal SF");
+        if ( m_debug ) Info("execute()","Not running systematics only apply nominal SF");
         continue;
       }
     }
@@ -374,7 +387,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // Create the name of the weight
     //   template:  SYSNAME
     //
-    if(m_debug) Info("execute()", "SF decoration name is: %s", syst_it.name().c_str());
+    if ( m_debug ) Info("execute()", "systematic variation name is: %s", syst_it.name().c_str());
     sysVariationNames->push_back(syst_it.name());
 
     //
@@ -391,12 +404,9 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     bool tagged(false);
     //
     // and now apply data-driven efficiency and efficiency SF!
-    //
+    //    
+    unsigned int idx(0);
     for( auto jet_itr : *(correctedJets)) {
-
-      if(m_debug){
-        Info( "execute", "New Jet eta = %f",  jet_itr->eta());
-      }
 
       //
       // Add decorator for decision
@@ -443,13 +453,14 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
         //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
       } 
       
-      if ( m_debug ) { Info( "execute()", "\t SF = %g", SF ); }
-
       //
       // Add it to vector
       //
       sfVec(*jet_itr).push_back(SF);
 
+      SF_GLOBAL *= SF;
+
+      /*
       if(m_debug){
         //
         // directly obtain reco efficiency
@@ -462,12 +473,35 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
         }
         Info( "execute()", "\t reco efficiency = %g", eff );
       }
-
-      if(m_debug){
-        Info( "execute", "===>>> Resulting SF (%s) (from tool) %f, (from object) %f",  m_decor.c_str(), SF, sfVec(*jet_itr).back());
-      }
-
+      */
+      
+      if ( m_debug ) { 
+         Info( "execute()", "===>>>");
+         Info( "execute()", " ");     
+	 Info( "execute()", "Jet %i, pt = %.2f GeV , eta = %.2f", idx, (jet_itr->pt() * 1e-3), jet_itr->eta() );
+	 Info( "execute()", " ");
+	 Info( "execute()", "BTag SF decoration: %s", m_decorSF.c_str() );
+	 Info( "execute()", " ");      
+         Info( "execute()", "Systematic: %s", syst_it.name().c_str() );
+         Info( "execute()", " ");
+         Info( "execute()", "BTag SF:");
+         Info( "execute()", "\t from tool = %f, from object = %f", SF, sfVec(*jet_itr).back());
+         Info( "execute()", "--------------------------------------");
+       }
+       
+       ++idx;
+       
     } // close jet loop
+    
+    // For *this* systematic, store the global SF weight for the event
+    //
+    if ( m_debug ) {
+       Info( "execute()", "--------------------------------------");
+       Info( "execute()", "GLOBAL BTag SF for event:");
+       Info( "execute()", "\t %f ", SF_GLOBAL );
+       Info( "execute()", "--------------------------------------");
+    }
+    sfVec_GLOBAL( *eventInfo ).push_back( SF_GLOBAL );
 
   } // close loop on systematics
 
