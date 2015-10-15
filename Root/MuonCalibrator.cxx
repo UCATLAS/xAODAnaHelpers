@@ -282,11 +282,9 @@ EL::StatusCode MuonCalibrator :: execute ()
 
     // apply syst
     //
-    if ( !syst_it.name().empty() ) {
-      if ( m_muonCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-        Error("execute()", "Failed to configure MuonCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
-        return EL::StatusCode::FAILURE;
-      }
+    if ( m_muonCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      Error("execute()", "Failed to configure MuonCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
+      return EL::StatusCode::FAILURE;
     }
 
     // create shallow copy for calibration - one per syst
