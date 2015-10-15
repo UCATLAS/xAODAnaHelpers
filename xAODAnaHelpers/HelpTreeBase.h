@@ -201,6 +201,7 @@ protected:
   // event
   int m_runNumber;
   int m_eventNumber;
+  int m_lumiBlock;
   int m_mcEventNumber;
   int m_mcChannelNumber;
   float m_mcEventWeight;
@@ -213,7 +214,6 @@ protected:
   int m_npv;
   float m_actualMu;
   float m_averageMu;
-  int m_lumiBlock;
   // event shapeEM
   double m_rhoEM;
   double m_rhoLC;
@@ -692,17 +692,26 @@ protected:
   std::vector<float> m_tau_charge;
 
   // met
-  float m_metFinal;
-  float m_metFinalPx;
-  float m_metFinalPy;
-  float m_metFinalPhi; 
-  float m_metFinalSumEt;
+  float m_metFinalClus;
+  float m_metFinalClusPx;
+  float m_metFinalClusPy;
+  float m_metFinalClusPhi; 
+  float m_metFinalClusSumEt;
+  
+  float m_metFinalTrk;
+  float m_metFinalTrkPx;
+  float m_metFinalTrkPy;
+  float m_metFinalTrkPhi; 
+  float m_metFinalTrkSumEt;  
    
-  float m_metEle;       float m_metElePhi;
-  float m_metGamma;     float m_metGammaPhi;
-  float m_metTau;       float m_metTauPhi;
-  float m_metMuons;     float m_metMuonsPhi;
-  float m_metSoftCluss; float m_metSoftClussPhi;
+  float m_metEle;       float m_metEleSumEt;      float m_metElePhi;
+  float m_metGamma;     float m_metGammaSumEt;    float m_metGammaPhi;
+  float m_metTau;       float m_metTauSumEt;      float m_metTauPhi;
+  float m_metMuons;     float m_metMuonsSumEt;    float m_metMuonsPhi;
+  float m_metJet;       float m_metJetSumEt;      float m_metJetPhi;
+  float m_metJetTrk;    float m_metJetTrkSumEt;   float m_metJetTrkPhi;
+  float m_metSoftClus;  float m_metSoftClusSumEt; float m_metSoftClusPhi;
+  float m_metSoftTrk;   float m_metSoftTrkSumEt;  float m_metSoftTrkPhi;
 
 };
 
