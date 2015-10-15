@@ -316,12 +316,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
     // apply syst
     //
-    //if ( !syst_it.name().empty() ) {
-      if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-        Error("initialize()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
-        return EL::StatusCode::FAILURE;
-      }
-    //}
+    if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      Error("initialize()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
+      return EL::StatusCode::FAILURE;
+    }
 
     // create shallow copy for calibration - one per syst
     //
