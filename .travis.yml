@@ -1,5 +1,5 @@
 env:
-  - ABV=2.3.28
+  - ABV=2.3.31
 
 before_install:
   - ls
