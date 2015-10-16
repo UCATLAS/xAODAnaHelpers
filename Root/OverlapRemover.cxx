@@ -323,7 +323,7 @@ EL::StatusCode OverlapRemover :: execute ()
   // --------------------------------------------------------------------------------------------
   //
   // always run the nominal case
-  
+ 
   executeOR(inElectrons, inMuons, inJets, inPhotons, inTaus, NOMINAL);
     
   // look what do we have in TStore
@@ -519,26 +519,26 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     case(0) :  // this is the nominal case
     {
       bool nomContainerNotFound(false);
-      if ( m_store->contains<const xAOD::ElectronContainer*>(m_inContainerName_Electrons) ) {
+      if ( m_store->contains<ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName_Electrons) ) {
         RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_verbose) ,"");
       } else {
         nomContainerNotFound = true;
         if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Electrons.c_str());  }
       }
-      if ( m_store->contains<const xAOD::MuonContainer*>(m_inContainerName_Muons) ) {
+      if ( m_store->contains<ConstDataVector<xAOD::MuonContainer> >(m_inContainerName_Muons) ) {
         RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
       } else {
         nomContainerNotFound = true;
         if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Muons.c_str()); }
       }
-      if ( m_store->contains<const xAOD::JetContainer*>(m_inContainerName_Jets) ) {
+      if ( m_store->contains<ConstDataVector<xAOD::JetContainer> >(m_inContainerName_Jets) ) {
         RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
       } else {
         nomContainerNotFound = true;
         if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Jets.c_str()); }
       }
       if ( m_usePhotons ) {      
-         if ( m_store->contains<const xAOD::PhotonContainer*>(m_inContainerName_Photons) ) {
+         if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
 	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_verbose) ,"");
          } else {
            nomContainerNotFound = true;
@@ -546,7 +546,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
          }
       }
       if ( m_useTaus ) {      
-         if ( m_store->contains<const xAOD::TauJetContainer*>(m_inContainerName_Taus) ) {   
+         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {   
 	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_verbose) ,"");
          } else {
            nomContainerNotFound = true;
