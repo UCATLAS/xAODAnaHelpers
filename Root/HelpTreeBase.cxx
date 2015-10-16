@@ -1170,78 +1170,78 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
   }
 
   if ( m_jetInfoSwitch->m_rapidity ) {
-    m_tree->Branch("jet_rapidity", &thisJet->m_jet_rapidity);
+    m_tree->Branch((jetName+"_rapidity").c_str(), &thisJet->m_jet_rapidity);
   }
 
   if( m_jetInfoSwitch->m_clean ) {
-    m_tree->Branch("jet_Timing",                        &thisJet->m_jet_time               );
-    m_tree->Branch("jet_LArQuality",                    &thisJet->m_jet_LArQuality         );
-    m_tree->Branch("jet_HECQuality",                    &thisJet->m_jet_hecq               );
-    m_tree->Branch("jet_NegativeE",                     &thisJet->m_jet_negE               );
-    m_tree->Branch("jet_AverageLArQF",                  &thisJet->m_jet_avLArQF            );
-    m_tree->Branch("jet_BchCorrCell",                   &thisJet->m_jet_bchCorrCell        );
-    m_tree->Branch("jet_N90Constituents",               &thisJet->m_jet_N90Const           );
-    m_tree->Branch("jet_LArBadHVEFracnergyFrac",        &thisJet->m_jet_LArBadHVEFrac   );
-    m_tree->Branch("jet_LArBadHVNCell",                 &thisJet->m_jet_LArBadHVNCell  	  );
-    m_tree->Branch("jet_OotFracClusters5",              &thisJet->m_jet_OotFracClus5  	    );
-    m_tree->Branch("jet_OotFracClusters10",             &thisJet->m_jet_OotFracClus10  	  );
-    m_tree->Branch("jet_LeadingClusterPt",              &thisJet->m_jet_LeadingClusterPt  	            );
-    m_tree->Branch("jet_LeadingClusterSecondLambda",    &thisJet->m_jet_LeadingClusterSecondLambda  	  );
-    m_tree->Branch("jet_LeadingClusterCenterLambda",    &thisJet->m_jet_LeadingClusterCenterLambda  	  );
-    m_tree->Branch("jet_LeadingClusterSecondR",         &thisJet->m_jet_LeadingClusterSecondR  	      );
-    m_tree->Branch("jet_clean_passLooseBad",            &thisJet->m_jet_clean_passLooseBad             );
-    m_tree->Branch("jet_clean_passLooseBadUgly",        &thisJet->m_jet_clean_passLooseBadUgly         );
-    m_tree->Branch("jet_clean_passTightBad",            &thisJet->m_jet_clean_passTightBad             );
-    m_tree->Branch("jet_clean_passTightBadUgly",        &thisJet->m_jet_clean_passTightBadUgly         );
+    m_tree->Branch((jetName+"_Timing").c_str(),                        &thisJet->m_jet_time               );
+    m_tree->Branch((jetName+"_LArQuality").c_str(),                    &thisJet->m_jet_LArQuality         );
+    m_tree->Branch((jetName+"_HECQuality").c_str(),                    &thisJet->m_jet_hecq               );
+    m_tree->Branch((jetName+"_NegativeE").c_str(),                     &thisJet->m_jet_negE               );
+    m_tree->Branch((jetName+"_AverageLArQF").c_str(),                  &thisJet->m_jet_avLArQF            );
+    m_tree->Branch((jetName+"_BchCorrCell").c_str(),                   &thisJet->m_jet_bchCorrCell        );
+    m_tree->Branch((jetName+"_N90Constituents").c_str(),               &thisJet->m_jet_N90Const           );
+    m_tree->Branch((jetName+"_LArBadHVEFracnergyFrac").c_str(),        &thisJet->m_jet_LArBadHVEFrac   );
+    m_tree->Branch((jetName+"_LArBadHVNCell").c_str(),                 &thisJet->m_jet_LArBadHVNCell  	  );
+    m_tree->Branch((jetName+"_OotFracClusters5").c_str(),              &thisJet->m_jet_OotFracClus5  	    );
+    m_tree->Branch((jetName+"_OotFracClusters10").c_str(),             &thisJet->m_jet_OotFracClus10  	  );
+    m_tree->Branch((jetName+"_LeadingClusterPt").c_str(),              &thisJet->m_jet_LeadingClusterPt  	            );
+    m_tree->Branch((jetName+"_LeadingClusterSecondLambda").c_str(),    &thisJet->m_jet_LeadingClusterSecondLambda  	  );
+    m_tree->Branch((jetName+"_LeadingClusterCenterLambda").c_str(),    &thisJet->m_jet_LeadingClusterCenterLambda  	  );
+    m_tree->Branch((jetName+"_LeadingClusterSecondR").c_str(),         &thisJet->m_jet_LeadingClusterSecondR  	      );
+    m_tree->Branch((jetName+"_clean_passLooseBad").c_str(),            &thisJet->m_jet_clean_passLooseBad             );
+    m_tree->Branch((jetName+"_clean_passLooseBadUgly").c_str(),        &thisJet->m_jet_clean_passLooseBadUgly         );
+    m_tree->Branch((jetName+"_clean_passTightBad").c_str(),            &thisJet->m_jet_clean_passTightBad             );
+    m_tree->Branch((jetName+"_clean_passTightBadUgly").c_str(),        &thisJet->m_jet_clean_passTightBadUgly         );
   }
 
   if ( m_jetInfoSwitch->m_energy ) {
-    m_tree->Branch("jet_HECFrac", 	            &thisJet->m_jet_HECf	    );
-    m_tree->Branch("jet_EMFrac",  	            &thisJet->m_jet_EMf	    );
-    m_tree->Branch("jet_CentroidR",	            &thisJet->m_jet_centroidR      );
-    m_tree->Branch("jet_FracSamplingMax",           &thisJet->m_jet_fracSampMax    );
-    m_tree->Branch("jet_FracSamplingMaxIndex",      &thisJet->m_jet_fracSampMaxIdx );
-    m_tree->Branch("jet_LowEtConstituentsFrac",     &thisJet->m_jet_lowEtFrac      );
-    m_tree->Branch("jet_GhostMuonSegmentCount",     &thisJet->m_jet_muonSegCount   );
-    m_tree->Branch("jet_Width",                     &thisJet->m_jet_width          );
+    m_tree->Branch((jetName+"_HECFrac").c_str(), 	            &thisJet->m_jet_HECf	    );
+    m_tree->Branch((jetName+"_EMFrac").c_str(),  	            &thisJet->m_jet_EMf	    );
+    m_tree->Branch((jetName+"_CentroidR").c_str(),	            &thisJet->m_jet_centroidR      );
+    m_tree->Branch((jetName+"_FracSamplingMax").c_str(),           &thisJet->m_jet_fracSampMax    );
+    m_tree->Branch((jetName+"_FracSamplingMaxIndex").c_str(),      &thisJet->m_jet_fracSampMaxIdx );
+    m_tree->Branch((jetName+"_LowEtConstituentsFrac").c_str(),     &thisJet->m_jet_lowEtFrac      );
+    m_tree->Branch((jetName+"_GhostMuonSegmentCount").c_str(),     &thisJet->m_jet_muonSegCount   );
+    m_tree->Branch((jetName+"_Width").c_str(),                     &thisJet->m_jet_width          );
   }
 
   if ( m_jetInfoSwitch->m_scales ) {
-    m_tree->Branch("jet_emScalePt",              &thisJet->m_jet_emPt            );
-    m_tree->Branch("jet_constScalePt",           &thisJet->m_jet_constPt         );
-    m_tree->Branch("jet_pileupScalePt",          &thisJet->m_jet_pileupPt        );
-    m_tree->Branch("jet_originConstitScalePt",   &thisJet->m_jet_originConstitPt );
-    m_tree->Branch("jet_etaJESScalePt",          &thisJet->m_jet_etaJESPt        );
-    m_tree->Branch("jet_gscScalePt",             &thisJet->m_jet_gscPt           );
-    m_tree->Branch("jet_insituScalePt",          &thisJet->m_jet_insituPt        );
+    m_tree->Branch((jetName+"_emScalePt").c_str(),              &thisJet->m_jet_emPt            );
+    m_tree->Branch((jetName+"_constScalePt").c_str(),           &thisJet->m_jet_constPt         );
+    m_tree->Branch((jetName+"_pileupScalePt").c_str(),          &thisJet->m_jet_pileupPt        );
+    m_tree->Branch((jetName+"_originConstitScalePt").c_str(),   &thisJet->m_jet_originConstitPt );
+    m_tree->Branch((jetName+"_etaJESScalePt").c_str(),          &thisJet->m_jet_etaJESPt        );
+    m_tree->Branch((jetName+"_gscScalePt").c_str(),             &thisJet->m_jet_gscPt           );
+    m_tree->Branch((jetName+"_insituScalePt").c_str(),          &thisJet->m_jet_insituPt        );
   }
 
   if ( m_jetInfoSwitch->m_layer ) {
-    m_tree->Branch("jet_EnergyPerSampling",     &thisJet->m_jet_ePerSamp   );
+    m_tree->Branch((jetName+"_EnergyPerSampling").c_str(),     &thisJet->m_jet_ePerSamp   );
   }
 
   if ( m_jetInfoSwitch->m_trackAll ) {
-    m_tree->Branch("jet_NumTrkPt1000",	    &thisJet->m_jet_NTrkPt1000   );
-    m_tree->Branch("jet_SumPtTrkPt1000",    &thisJet->m_jet_SumPtPt1000  );
-    m_tree->Branch("jet_TrackWidthPt1000",  &thisJet->m_jet_TrkWPt1000   );
-    m_tree->Branch("jet_NumTrkPt500",	    &thisJet->m_jet_NTrkPt500    );
-    m_tree->Branch("jet_SumPtTrkPt500",	    &thisJet->m_jet_SumPtPt500   );
-    m_tree->Branch("jet_TrackWidthPt500",   &thisJet->m_jet_TrkWPt500    );
-    m_tree->Branch("jet_JVF",		    &thisJet->m_jet_jvf	        );
+    m_tree->Branch((jetName+"_NumTrkPt1000").c_str(),	    &thisJet->m_jet_NTrkPt1000   );
+    m_tree->Branch((jetName+"_SumPtTrkPt1000").c_str(),    &thisJet->m_jet_SumPtPt1000  );
+    m_tree->Branch((jetName+"_TrackWidthPt1000").c_str(),  &thisJet->m_jet_TrkWPt1000   );
+    m_tree->Branch((jetName+"_NumTrkPt500").c_str(),	    &thisJet->m_jet_NTrkPt500    );
+    m_tree->Branch((jetName+"_SumPtTrkPt500").c_str(),	    &thisJet->m_jet_SumPtPt500   );
+    m_tree->Branch((jetName+"_TrackWidthPt500").c_str(),   &thisJet->m_jet_TrkWPt500    );
+    m_tree->Branch((jetName+"_JVF").c_str(),		    &thisJet->m_jet_jvf	        );
   }
 
   if ( m_jetInfoSwitch->m_trackPV ) {
-    m_tree->Branch("jet_NumTrkPt1000PV",      &thisJet->m_jet_NTrkPt1000PV   );
-    m_tree->Branch("jet_SumPtTrkPt1000PV",    &thisJet->m_jet_SumPtPt1000PV  );
-    m_tree->Branch("jet_TrackWidthPt1000PV",  &thisJet->m_jet_TrkWPt1000PV   );
-    m_tree->Branch("jet_NumTrkPt500PV",	      &thisJet->m_jet_NTrkPt500PV    );
-    m_tree->Branch("jet_SumPtTrkPt500PV",     &thisJet->m_jet_SumPtPt500PV   );
-    m_tree->Branch("jet_TrackWidthPt500PV",   &thisJet->m_jet_TrkWPt500PV    );
-    m_tree->Branch("jet_JVFPV",		      &thisJet->m_jet_jvfPV	        );
-    m_tree->Branch("jet_Jvt",		      &thisJet->m_jet_Jvt	          );
-    m_tree->Branch("jet_JvtJvfcorr",	      &thisJet->m_jet_JvtJvfcorr     );
-    m_tree->Branch("jet_JvtRpt",              &thisJet->m_jet_JvtRpt         );
-    //m_tree->Branch("jet_GhostTrackAssociationFraction", &thisJet->m_jet_ghostTrackAssFrac);
+    m_tree->Branch((jetName+"_NumTrkPt1000PV").c_str(),      &thisJet->m_jet_NTrkPt1000PV   );
+    m_tree->Branch((jetName+"_SumPtTrkPt1000PV").c_str(),    &thisJet->m_jet_SumPtPt1000PV  );
+    m_tree->Branch((jetName+"_TrackWidthPt1000PV").c_str(),  &thisJet->m_jet_TrkWPt1000PV   );
+    m_tree->Branch((jetName+"_NumTrkPt500PV").c_str(),	      &thisJet->m_jet_NTrkPt500PV    );
+    m_tree->Branch((jetName+"_SumPtTrkPt500PV").c_str(),     &thisJet->m_jet_SumPtPt500PV   );
+    m_tree->Branch((jetName+"_TrackWidthPt500PV").c_str(),   &thisJet->m_jet_TrkWPt500PV    );
+    m_tree->Branch((jetName+"_JVFPV").c_str(),		      &thisJet->m_jet_jvfPV	        );
+    m_tree->Branch((jetName+"_Jvt").c_str(),		      &thisJet->m_jet_Jvt	          );
+    m_tree->Branch((jetName+"_JvtJvfcorr").c_str(),	      &thisJet->m_jet_JvtJvfcorr     );
+    m_tree->Branch((jetName+"_JvtRpt").c_str(),              &thisJet->m_jet_JvtRpt         );
+    //m_tree->Branch((jetName+"_GhostTrackAssociationFraction").c_str(), &thisJet->m_jet_ghostTrackAssFrac);
   }
 
   if ( m_jetInfoSwitch->m_allTrack ) {
@@ -1254,120 +1254,120 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
       // to do this need to have AddJets return a status code
       //RETURN_CHECK( "HelpTreeBase::JetTrackSelection", m_trkSelTool->initialize(), "");
     }
-    m_tree->Branch("jet_GhostTrackCount",  &thisJet->m_jet_GhostTrackCount );
-    m_tree->Branch("jet_GhostTrackPt",     &thisJet->m_jet_GhostTrackPt    );
-    m_tree->Branch("jet_GhostTrack_pt",    &thisJet->m_jet_GhostTrack_pt   );
-    m_tree->Branch("jet_GhostTrack_qOverP",&thisJet->m_jet_GhostTrack_qOverP);
-    m_tree->Branch("jet_GhostTrack_eta",   &thisJet->m_jet_GhostTrack_eta  );
-    m_tree->Branch("jet_GhostTrack_phi",   &thisJet->m_jet_GhostTrack_phi  );
-    m_tree->Branch("jet_GhostTrack_e",     &thisJet->m_jet_GhostTrack_e    );
-    m_tree->Branch("jet_GhostTrack_d0",    &thisJet->m_jet_GhostTrack_d0   );
-    m_tree->Branch("jet_GhostTrack_z0",    &thisJet->m_jet_GhostTrack_z0   );
+    m_tree->Branch((jetName+"_GhostTrackCount").c_str(),  &thisJet->m_jet_GhostTrackCount );
+    m_tree->Branch((jetName+"_GhostTrackPt").c_str(),     &thisJet->m_jet_GhostTrackPt    );
+    m_tree->Branch((jetName+"_GhostTrack_pt").c_str(),    &thisJet->m_jet_GhostTrack_pt   );
+    m_tree->Branch((jetName+"_GhostTrack_qOverP").c_str(),&thisJet->m_jet_GhostTrack_qOverP);
+    m_tree->Branch((jetName+"_GhostTrack_eta").c_str(),   &thisJet->m_jet_GhostTrack_eta  );
+    m_tree->Branch((jetName+"_GhostTrack_phi").c_str(),   &thisJet->m_jet_GhostTrack_phi  );
+    m_tree->Branch((jetName+"_GhostTrack_e").c_str(),     &thisJet->m_jet_GhostTrack_e    );
+    m_tree->Branch((jetName+"_GhostTrack_d0").c_str(),    &thisJet->m_jet_GhostTrack_d0   );
+    m_tree->Branch((jetName+"_GhostTrack_z0").c_str(),    &thisJet->m_jet_GhostTrack_z0   );
     if ( m_jetInfoSwitch->m_allTrackDetail ) {
-      m_tree->Branch("jet_GhostTrack_nPixelHits",                           &thisJet->m_jet_GhostTrack_nPixHits);
-      m_tree->Branch("jet_GhostTrack_nSCTHits",                             &thisJet->m_jet_GhostTrack_nSCTHits);
-      m_tree->Branch("jet_GhostTrack_nTRTHits",                             &thisJet->m_jet_GhostTrack_nTRTHits);
-      m_tree->Branch("jet_GhostTrack_nPixelSharedHits",                     &thisJet->m_jet_GhostTrack_nPixSharedHits);
-      m_tree->Branch("jet_GhostTrack_nPixelSplitHits",                      &thisJet->m_jet_GhostTrack_nPixSplitHits);
-      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerHits",             &thisJet->m_jet_GhostTrack_nIMLPixHits);
-      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerSharedHits",       &thisJet->m_jet_GhostTrack_nIMLPixSharedHits);
-      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerSplitHits",        &thisJet->m_jet_GhostTrack_nIMLPixSplitHits);
-      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerHits",       &thisJet->m_jet_GhostTrack_nNIMLPixHits);
-      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerSharedHits", &thisJet->m_jet_GhostTrack_nNIMLPixSharedHits);
-      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerSplitHits",  &thisJet->m_jet_GhostTrack_nNIMLPixSplitHits);
+      m_tree->Branch((jetName+"_GhostTrack_nPixelHits").c_str(),                           &thisJet->m_jet_GhostTrack_nPixHits);
+      m_tree->Branch((jetName+"_GhostTrack_nSCTHits").c_str(),                             &thisJet->m_jet_GhostTrack_nSCTHits);
+      m_tree->Branch((jetName+"_GhostTrack_nTRTHits").c_str(),                             &thisJet->m_jet_GhostTrack_nTRTHits);
+      m_tree->Branch((jetName+"_GhostTrack_nPixelSharedHits").c_str(),                     &thisJet->m_jet_GhostTrack_nPixSharedHits);
+      m_tree->Branch((jetName+"_GhostTrack_nPixelSplitHits").c_str(),                      &thisJet->m_jet_GhostTrack_nPixSplitHits);
+      m_tree->Branch((jetName+"_GhostTrack_nInnermostPixelLayerHits").c_str(),             &thisJet->m_jet_GhostTrack_nIMLPixHits);
+      m_tree->Branch((jetName+"_GhostTrack_nInnermostPixelLayerSharedHits").c_str(),       &thisJet->m_jet_GhostTrack_nIMLPixSharedHits);
+      m_tree->Branch((jetName+"_GhostTrack_nInnermostPixelLayerSplitHits").c_str(),        &thisJet->m_jet_GhostTrack_nIMLPixSplitHits);
+      m_tree->Branch((jetName+"_GhostTrack_nNextToInnermostPixelLayerHits").c_str(),       &thisJet->m_jet_GhostTrack_nNIMLPixHits);
+      m_tree->Branch((jetName+"_GhostTrack_nNextToInnermostPixelLayerSharedHits").c_str(), &thisJet->m_jet_GhostTrack_nNIMLPixSharedHits);
+      m_tree->Branch((jetName+"_GhostTrack_nNextToInnermostPixelLayerSplitHits").c_str(),  &thisJet->m_jet_GhostTrack_nNIMLPixSplitHits);
     }
   }
 
   if ( m_jetInfoSwitch->m_constituent ) {
-    m_tree->Branch("jet_numConstituents" ,   &thisJet->m_jet_numConstituents);
+    m_tree->Branch((jetName+"_numConstituents").c_str() ,   &thisJet->m_jet_numConstituents);
   }
 
   if ( m_jetInfoSwitch->m_constituentAll ) {
-    m_tree->Branch("jet_constituentWeights", &thisJet->m_jet_constitWeights);
-    m_tree->Branch("jet_constituent_pt" ,    &thisJet->m_jet_constit_pt    );
-    m_tree->Branch("jet_constituent_eta",    &thisJet->m_jet_constit_eta   );
-    m_tree->Branch("jet_constituent_phi",    &thisJet->m_jet_constit_phi   );
-    m_tree->Branch("jet_constituent_e"  ,    &thisJet->m_jet_constit_e     );
+    m_tree->Branch((jetName+"_constituentWeights").c_str(), &thisJet->m_jet_constitWeights);
+    m_tree->Branch((jetName+"_constituent_pt").c_str(),    &thisJet->m_jet_constit_pt    );
+    m_tree->Branch((jetName+"_constituent_eta").c_str(),    &thisJet->m_jet_constit_eta   );
+    m_tree->Branch((jetName+"_constituent_phi").c_str(),    &thisJet->m_jet_constit_phi   );
+    m_tree->Branch((jetName+"_constituent_e").c_str(),    &thisJet->m_jet_constit_e     );
   }
 
   if( m_jetInfoSwitch->m_flavTag ) {
     if ( !m_DC14 ) {
-      m_tree->Branch("jet_SV0",           &thisJet->m_jet_sv0);
-      m_tree->Branch("jet_SV1",           &thisJet->m_jet_sv1);
-      m_tree->Branch("jet_IP3D",          &thisJet->m_jet_ip3d);
+      m_tree->Branch((jetName+"_SV0").c_str(),           &thisJet->m_jet_sv0);
+      m_tree->Branch((jetName+"_SV1").c_str(),           &thisJet->m_jet_sv1);
+      m_tree->Branch((jetName+"_IP3D").c_str(),          &thisJet->m_jet_ip3d);
     }
-    m_tree->Branch("jet_SV1IP3D",       &thisJet->m_jet_sv1ip3d);
-    m_tree->Branch("jet_MV1",           &thisJet->m_jet_mv1);
-    m_tree->Branch("jet_MV2c00",        &thisJet->m_jet_mv2c00);
-    m_tree->Branch("jet_MV2c20",        &thisJet->m_jet_mv2c20);
-    m_tree->Branch("jet_HadronConeExclTruthLabelID", &thisJet->m_jet_hadConeExclTruthLabel);
+    m_tree->Branch((jetName+"_SV1IP3D").c_str(),       &thisJet->m_jet_sv1ip3d);
+    m_tree->Branch((jetName+"_MV1").c_str(),           &thisJet->m_jet_mv1);
+    m_tree->Branch((jetName+"_MV2c00").c_str(),        &thisJet->m_jet_mv2c00);
+    m_tree->Branch((jetName+"_MV2c20").c_str(),        &thisJet->m_jet_mv2c20);
+    m_tree->Branch((jetName+"_HadronConeExclTruthLabelID").c_str(), &thisJet->m_jet_hadConeExclTruthLabel);
   }
 
   if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
     for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
       switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
         case 30 :
-	  m_tree->Branch("njets_mv2c20_Fix30",   &thisJet->m_njet_mv2c20_Fix30,"njets_mv2c20_Fix30/I");
-          m_tree->Branch("jet_MV2c20_isFix30",   &thisJet->m_jet_mv2c20_isFix30);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix30").c_str(),   &thisJet->m_njet_mv2c20_Fix30,("n"+jetName+"s_mv2c20_Fix30/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix30").c_str(),   &thisJet->m_jet_mv2c20_isFix30);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix30",   &thisJet->m_jet_mv2c20_sfFix30);
-            m_tree->Branch("weight_jet_MV2c20_SFFix30",   &thisJet->m_weight_jet_mv2c20_sfFix30);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix30").c_str(),   &thisJet->m_jet_mv2c20_sfFix30);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix30);	  
 	  }
           break;
         case 50 :
-	  m_tree->Branch("njets_mv2c20_Fix50",   &thisJet->m_njet_mv2c20_Fix50,"njets_mv2c20_Fix50/I");
-          m_tree->Branch("jet_MV2c20_isFix50",   &thisJet->m_jet_mv2c20_isFix50);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix50").c_str(),   &thisJet->m_njet_mv2c20_Fix50,("n"+jetName+"s_mv2c20_Fix50/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix50").c_str(),   &thisJet->m_jet_mv2c20_isFix50);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix50",   &thisJet->m_jet_mv2c20_sfFix50);
-            m_tree->Branch("weight_jet_MV2c20_SFFix50",   &thisJet->m_weight_jet_mv2c20_sfFix50);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix50").c_str(),   &thisJet->m_jet_mv2c20_sfFix50);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix50);	  
 	  }
           break;
         case 60 :
-	  m_tree->Branch("njets_mv2c20_Fix60",   &thisJet->m_njet_mv2c20_Fix60,"njets_mv2c20_Fix60/I");
-          m_tree->Branch("jet_MV2c20_isFix60",   &thisJet->m_jet_mv2c20_isFix60);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix60").c_str(),   &thisJet->m_njet_mv2c20_Fix60,("n"+jetName+"s_mv2c20_Fix60/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix60").c_str(),   &thisJet->m_jet_mv2c20_isFix60);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix60",   &thisJet->m_jet_mv2c20_sfFix60);
-            m_tree->Branch("weight_jet_MV2c20_SFFix60",   &thisJet->m_weight_jet_mv2c20_sfFix60);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix60").c_str(),   &thisJet->m_jet_mv2c20_sfFix60);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix60);	  
 	  }
           break;
         case 70 :
-	  m_tree->Branch("njets_mv2c20_Fix70",   &thisJet->m_njet_mv2c20_Fix70,"njets_mv2c20_Fix70/I");
-          m_tree->Branch("jet_MV2c20_isFix70",   &thisJet->m_jet_mv2c20_isFix70);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix70").c_str(),   &thisJet->m_njet_mv2c20_Fix70,("n"+jetName+"s_mv2c20_Fix70/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix70").c_str(),   &thisJet->m_jet_mv2c20_isFix70);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix70",   &thisJet->m_jet_mv2c20_sfFix70);
-            m_tree->Branch("weight_jet_MV2c20_SFFix70",   &thisJet->m_weight_jet_mv2c20_sfFix70);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix70").c_str(),   &thisJet->m_jet_mv2c20_sfFix70);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix70);	  
 	  }
           break;
         case 77 :
-	  m_tree->Branch("njets_mv2c20_Fix77",   &thisJet->m_njet_mv2c20_Fix77,"njets_mv2c20_Fix77/I");
-          m_tree->Branch("jet_MV2c20_isFix77",   &thisJet->m_jet_mv2c20_isFix77);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix77").c_str(),   &thisJet->m_njet_mv2c20_Fix77,("n"+jetName+"s_mv2c20_Fix77/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix77").c_str(),   &thisJet->m_jet_mv2c20_isFix77);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix77",   &thisJet->m_jet_mv2c20_sfFix77);
-            m_tree->Branch("weight_jet_MV2c20_SFFix77",   &thisJet->m_weight_jet_mv2c20_sfFix77);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix77").c_str(),   &thisJet->m_jet_mv2c20_sfFix77);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix77);	  
 	  }
           break;
         case 80 :
-	  m_tree->Branch("njets_mv2c20_Fix80",   &thisJet->m_njet_mv2c20_Fix80,"njets_mv2c20_Fix80/I");
-          m_tree->Branch("jet_MV2c20_isFix80",   &thisJet->m_jet_mv2c20_isFix80);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix80").c_str(),   &thisJet->m_njet_mv2c20_Fix80,("n"+jetName+"s_mv2c20_Fix80/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix80").c_str(),   &thisJet->m_jet_mv2c20_isFix80);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix80",   &thisJet->m_jet_mv2c20_sfFix80);
-            m_tree->Branch("weight_jet_MV2c20_SFFix80",   &thisJet->m_weight_jet_mv2c20_sfFix80);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix80").c_str(),   &thisJet->m_jet_mv2c20_sfFix80);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix80").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix80);	  
 	  }
           break;
         case 85 :
-	  m_tree->Branch("njets_mv2c20_Fix85",   &thisJet->m_njet_mv2c20_Fix85,"njets_mv2c20_Fix85/I");
-          m_tree->Branch("jet_MV2c20_isFix85",   &thisJet->m_jet_mv2c20_isFix85);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix85").c_str(),   &thisJet->m_njet_mv2c20_Fix85,("n"+jetName+"s_mv2c20_Fix85/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix85").c_str(),   &thisJet->m_jet_mv2c20_isFix85);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix85",   &thisJet->m_jet_mv2c20_sfFix85);
-            m_tree->Branch("weight_jet_MV2c20_SFFix85",   &thisJet->m_weight_jet_mv2c20_sfFix85);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix85").c_str(),   &thisJet->m_jet_mv2c20_sfFix85);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix85);	  
 	  }
           break;
         case 90 :
-	  m_tree->Branch("njets_mv2c20_Fix90",   &thisJet->m_njet_mv2c20_Fix90,"njets_mv2c20_Fix90/I");
-          m_tree->Branch("jet_MV2c20_isFix90",   &thisJet->m_jet_mv2c20_isFix90);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix90").c_str(),   &thisJet->m_njet_mv2c20_Fix90,("n"+jetName+"s_mv2c20_Fix90/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix90").c_str(),   &thisJet->m_jet_mv2c20_isFix90);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix90",   &thisJet->m_jet_mv2c20_sfFix90);
-            m_tree->Branch("weight_jet_MV2c20_SFFix90",   &thisJet->m_weight_jet_mv2c20_sfFix90);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix90").c_str(),   &thisJet->m_jet_mv2c20_sfFix90);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix90").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix90);	  
 	  }
           break;
         default:
@@ -1381,59 +1381,59 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
       switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
         case 30 :
-	  m_tree->Branch("njets_mv2c20_Flt30",   &thisJet->m_njet_mv2c20_Flt30,"njets_mv2c20_Flt30/I");
-          m_tree->Branch("jet_MV2c20_isFlt30",   &thisJet->m_jet_mv2c20_isFlt30);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt30").c_str(),   &thisJet->m_njet_mv2c20_Flt30,("n"+jetName+"s_mv2c20_Flt30/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt30").c_str(),   &thisJet->m_jet_mv2c20_isFlt30);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt30",   &thisJet->m_jet_mv2c20_sfFlt30);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt30",   &thisJet->m_weight_jet_mv2c20_sfFlt30);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt30").c_str(),   &thisJet->m_jet_mv2c20_sfFlt30);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt30);	  
 	  }
           break;
         case 40 :
-	  m_tree->Branch("njets_mv2c20_Flt40",   &thisJet->m_njet_mv2c20_Flt40,"njets_mv2c20_Flt40/I");
-          m_tree->Branch("jet_MV2c20_isFlt40",   &thisJet->m_jet_mv2c20_isFlt40);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt40").c_str(),   &thisJet->m_njet_mv2c20_Flt40,("n"+jetName+"s_mv2c20_Flt40/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt40").c_str(),   &thisJet->m_jet_mv2c20_isFlt40);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt40",   &thisJet->m_jet_mv2c20_sfFlt40);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt40",   &thisJet->m_weight_jet_mv2c20_sfFlt40);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt40").c_str(),   &thisJet->m_jet_mv2c20_sfFlt40);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt40").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt40);	  
 	  }
           break;
         case 50 :
-	  m_tree->Branch("njets_mv2c20_Flt50",   &thisJet->m_njet_mv2c20_Flt50,"njets_mv2c20_Flt50/I");
-          m_tree->Branch("jet_MV2c20_isFlt50",   &thisJet->m_jet_mv2c20_isFlt50);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt50").c_str(),   &thisJet->m_njet_mv2c20_Flt50,("n"+jetName+"s_mv2c20_Flt50/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt50").c_str(),   &thisJet->m_jet_mv2c20_isFlt50);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt50",   &thisJet->m_jet_mv2c20_sfFlt50);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt50",   &thisJet->m_weight_jet_mv2c20_sfFlt50);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt50").c_str(),   &thisJet->m_jet_mv2c20_sfFlt50);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt50);	  
 	  }
           break;
         case 60 :
-	  m_tree->Branch("njets_mv2c20_Flt60",   &thisJet->m_njet_mv2c20_Flt60,"njets_mv2c20_Flt60/I");
-          m_tree->Branch("jet_MV2c20_isFlt60",   &thisJet->m_jet_mv2c20_isFlt60);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt60").c_str(),   &thisJet->m_njet_mv2c20_Flt60,("n"+jetName+"s_mv2c20_Flt60/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt60").c_str(),   &thisJet->m_jet_mv2c20_isFlt60);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt60",   &thisJet->m_jet_mv2c20_sfFlt60);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt60",   &thisJet->m_weight_jet_mv2c20_sfFlt60);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt60").c_str(),   &thisJet->m_jet_mv2c20_sfFlt60);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt60);	  
 	  }
           break;
         case 70 :
-	  m_tree->Branch("njets_mv2c20_Flt70",   &thisJet->m_njet_mv2c20_Flt70,"njets_mv2c20_Flt70/I");
-          m_tree->Branch("jet_MV2c20_isFlt70",   &thisJet->m_jet_mv2c20_isFlt70);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt70").c_str(),   &thisJet->m_njet_mv2c20_Flt70,("n"+jetName+"s_mv2c20_Flt70/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt70").c_str(),   &thisJet->m_jet_mv2c20_isFlt70);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt70",   &thisJet->m_jet_mv2c20_sfFlt70);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt70",   &thisJet->m_weight_jet_mv2c20_sfFlt70);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt70").c_str(),   &thisJet->m_jet_mv2c20_sfFlt70);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt70);	  
 	  }
           break;
         case 77 :
-	  m_tree->Branch("njets_mv2c20_Flt77",   &thisJet->m_njet_mv2c20_Flt77,"njets_mv2c20_Flt77/I");
-          m_tree->Branch("jet_MV2c20_isFlt77",   &thisJet->m_jet_mv2c20_isFlt77);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt77").c_str(),   &thisJet->m_njet_mv2c20_Flt77,("n"+jetName+"s_mv2c20_Flt77/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt77").c_str(),   &thisJet->m_jet_mv2c20_isFlt77);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt77",   &thisJet->m_jet_mv2c20_sfFlt77);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt77",   &thisJet->m_weight_jet_mv2c20_sfFlt77);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt77").c_str(),   &thisJet->m_jet_mv2c20_sfFlt77);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt77);	  
 	  }
           break;
         case 85 :
-	  m_tree->Branch("njets_mv2c20_Flt85",   &thisJet->m_njet_mv2c20_Flt85,"njets_mv2c20_Flt85/I");
-          m_tree->Branch("jet_MV2c20_isFlt85",   &thisJet->m_jet_mv2c20_isFlt85);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt85").c_str(),   &thisJet->m_njet_mv2c20_Flt85,("n"+jetName+"s_mv2c20_Flt85/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt85").c_str(),   &thisJet->m_jet_mv2c20_isFlt85);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt85",   &thisJet->m_jet_mv2c20_sfFlt85);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt85",   &thisJet->m_weight_jet_mv2c20_sfFlt85);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt85").c_str(),   &thisJet->m_jet_mv2c20_sfFlt85);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt85);	  
 	  }
           break;
         default:
@@ -1444,51 +1444,51 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
   } // sfFTagFlt
 
   if( m_jetInfoSwitch->m_area ) {
-    m_tree->Branch("jet_GhostArea",     &thisJet->m_jet_ghostArea);
-    m_tree->Branch("jet_ActiveArea",    &thisJet->m_jet_activeArea);
-    m_tree->Branch("jet_VoronoiArea",   &thisJet->m_jet_voronoiArea);
-    m_tree->Branch("jet_ActiveArea4vec_pt", &thisJet->m_jet_activeArea_pt);
-    m_tree->Branch("jet_ActiveArea4vec_eta", &thisJet->m_jet_activeArea_eta);
-    m_tree->Branch("jet_ActiveArea4vec_phi", &thisJet->m_jet_activeArea_phi);
-    m_tree->Branch("jet_ActiveArea4vec_m",   &thisJet->m_jet_activeArea_m);
+    m_tree->Branch((jetName+"_GhostArea").c_str(),     &thisJet->m_jet_ghostArea);
+    m_tree->Branch((jetName+"_ActiveArea").c_str(),    &thisJet->m_jet_activeArea);
+    m_tree->Branch((jetName+"_VoronoiArea").c_str(),   &thisJet->m_jet_voronoiArea);
+    m_tree->Branch((jetName+"_ActiveArea4vec_pt").c_str(), &thisJet->m_jet_activeArea_pt);
+    m_tree->Branch((jetName+"_ActiveArea4vec_eta").c_str(), &thisJet->m_jet_activeArea_eta);
+    m_tree->Branch((jetName+"_ActiveArea4vec_phi").c_str(), &thisJet->m_jet_activeArea_phi);
+    m_tree->Branch((jetName+"_ActiveArea4vec_m").c_str(),   &thisJet->m_jet_activeArea_m);
   }
 
   if ( m_jetInfoSwitch->m_truth && m_isMC ) {
-    m_tree->Branch("jet_ConeTruthLabelID",   &thisJet->m_jet_truthConeLabelID );
-    m_tree->Branch("jet_TruthCount",         &thisJet->m_jet_truthCount     );
-//    m_tree->Branch("jet_TruthPt",            &thisJet->m_jet_truthPt        );
-    m_tree->Branch("jet_TruthLabelDeltaR_B", &thisJet->m_jet_truthDr_B      );
-    m_tree->Branch("jet_TruthLabelDeltaR_C", &thisJet->m_jet_truthDr_C      );
-    m_tree->Branch("jet_TruthLabelDeltaR_T", &thisJet->m_jet_truthDr_T      );
-    m_tree->Branch("jet_PartonTruthLabelID", &thisJet->m_jet_partonTruthID  );
-    m_tree->Branch("jet_GhostTruthAssociationFraction", &thisJet->m_jet_ghostTruthAssFrac);
-    m_tree->Branch("jet_truth_E",   &thisJet->m_jet_truth_E);
-    m_tree->Branch("jet_truth_pt",  &thisJet->m_jet_truth_pt);
-    m_tree->Branch("jet_truth_phi", &thisJet->m_jet_truth_phi);
-    m_tree->Branch("jet_truth_eta", &thisJet->m_jet_truth_eta);
+    m_tree->Branch((jetName+"_ConeTruthLabelID").c_str(),   &thisJet->m_jet_truthConeLabelID );
+    m_tree->Branch((jetName+"_TruthCount").c_str(),         &thisJet->m_jet_truthCount     );
+//    m_tree->Branch((jetName+"_TruthPt").c_str(),            &thisJet->m_jet_truthPt        );
+    m_tree->Branch((jetName+"_TruthLabelDeltaR_B").c_str(), &thisJet->m_jet_truthDr_B      );
+    m_tree->Branch((jetName+"_TruthLabelDeltaR_C").c_str(), &thisJet->m_jet_truthDr_C      );
+    m_tree->Branch((jetName+"_TruthLabelDeltaR_T").c_str(), &thisJet->m_jet_truthDr_T      );
+    m_tree->Branch((jetName+"_PartonTruthLabelID").c_str(), &thisJet->m_jet_partonTruthID  );
+    m_tree->Branch((jetName+"_GhostTruthAssociationFraction").c_str(), &thisJet->m_jet_ghostTruthAssFrac);
+    m_tree->Branch((jetName+"_truth_E").c_str(),   &thisJet->m_jet_truth_E);
+    m_tree->Branch((jetName+"_truth_pt").c_str(),  &thisJet->m_jet_truth_pt);
+    m_tree->Branch((jetName+"_truth_phi").c_str(), &thisJet->m_jet_truth_phi);
+    m_tree->Branch((jetName+"_truth_eta").c_str(), &thisJet->m_jet_truth_eta);
   }
 
   if ( m_jetInfoSwitch->m_truthDetails ) {
-    m_tree->Branch("jet_GhostBHadronsFinalCount",   &thisJet->m_jet_truthCount_BhadFinal );
-    m_tree->Branch("jet_GhostBHadronsInitialCount", &thisJet->m_jet_truthCount_BhadInit  );
-    m_tree->Branch("jet_GhostBQuarksFinalCount",    &thisJet->m_jet_truthCount_BQFinal   );
-    m_tree->Branch("jet_GhostBHadronsFinalPt",      &thisJet->m_jet_truthPt_BhadFinal    );
-    m_tree->Branch("jet_GhostBHadronsInitialPt",    &thisJet->m_jet_truthPt_BhadInit     );
-    m_tree->Branch("jet_GhostBQuarksFinalPt",       &thisJet->m_jet_truthPt_BQFinal      );
+    m_tree->Branch((jetName+"_GhostBHadronsFinalCount").c_str(),   &thisJet->m_jet_truthCount_BhadFinal );
+    m_tree->Branch((jetName+"_GhostBHadronsInitialCount").c_str(), &thisJet->m_jet_truthCount_BhadInit  );
+    m_tree->Branch((jetName+"_GhostBQuarksFinalCount").c_str(),    &thisJet->m_jet_truthCount_BQFinal   );
+    m_tree->Branch((jetName+"_GhostBHadronsFinalPt").c_str(),      &thisJet->m_jet_truthPt_BhadFinal    );
+    m_tree->Branch((jetName+"_GhostBHadronsInitialPt").c_str(),    &thisJet->m_jet_truthPt_BhadInit     );
+    m_tree->Branch((jetName+"_GhostBQuarksFinalPt").c_str(),       &thisJet->m_jet_truthPt_BQFinal      );
 
-    m_tree->Branch("jet_GhostCHadronsFinalCount",   &thisJet->m_jet_truthCount_ChadFinal );
-    m_tree->Branch("jet_GhostCHadronsInitialCount", &thisJet->m_jet_truthCount_ChadInit  );
-    m_tree->Branch("jet_GhostCQuarksFinalCount",    &thisJet->m_jet_truthCount_CQFinal   );
-    m_tree->Branch("jet_GhostCHadronsFinalPt",      &thisJet->m_jet_truthPt_ChadFinal    );
-    m_tree->Branch("jet_GhostCHadronsInitialPt",    &thisJet->m_jet_truthPt_ChadInit     );
-    m_tree->Branch("jet_GhostCQuarksFinalPt",       &thisJet->m_jet_truthPt_CQFinal      );
+    m_tree->Branch((jetName+"_GhostCHadronsFinalCount"  ).c_str(), &thisJet->m_jet_truthCount_ChadFinal );
+    m_tree->Branch((jetName+"_GhostCHadronsInitialCount").c_str(), &thisJet->m_jet_truthCount_ChadInit  );
+    m_tree->Branch((jetName+"_GhostCQuarksFinalCount"   ).c_str(), &thisJet->m_jet_truthCount_CQFinal   );
+    m_tree->Branch((jetName+"_GhostCHadronsFinalPt"     ).c_str(), &thisJet->m_jet_truthPt_ChadFinal    );
+    m_tree->Branch((jetName+"_GhostCHadronsInitialPt"   ).c_str(), &thisJet->m_jet_truthPt_ChadInit     );
+    m_tree->Branch((jetName+"_GhostCQuarksFinalPt"      ).c_str(), &thisJet->m_jet_truthPt_CQFinal      );
 
-    m_tree->Branch("jet_GhostTausFinalCount",       &thisJet->m_jet_truthCount_TausFinal );
-    m_tree->Branch("jet_GhostTausFinalPt",          &thisJet->m_jet_truthPt_TausFinal    );
+    m_tree->Branch((jetName+"_GhostTausFinalCount").c_str(),       &thisJet->m_jet_truthCount_TausFinal );
+    m_tree->Branch((jetName+"_GhostTausFinalPt"   ).c_str(),       &thisJet->m_jet_truthPt_TausFinal    );
 
-    m_tree->Branch("jet_truth_pdgId", &thisJet->m_jet_truth_pdgId);
-    m_tree->Branch("jet_truth_partonPt", &thisJet->m_jet_truth_partonPt);
-    m_tree->Branch("jet_truth_partonDR", &thisJet->m_jet_truth_partonDR);
+    m_tree->Branch((jetName+"_truth_pdgId"   ).c_str(), &thisJet->m_jet_truth_pdgId);
+    m_tree->Branch((jetName+"_truth_partonPt").c_str(), &thisJet->m_jet_truth_partonPt);
+    m_tree->Branch((jetName+"_truth_partonDR").c_str(), &thisJet->m_jet_truth_partonDR);
   }
 
   this->AddJetsUser(jetName);
