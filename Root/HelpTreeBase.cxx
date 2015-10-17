@@ -1148,96 +1148,100 @@ void HelpTreeBase::ClearElectrons() {
  *
  ********************/
 
-void HelpTreeBase::AddJets(const std::string detailStr)
+void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetName)
 {
 
-  if(m_debug) Info("AddJets()", "Adding jet variables: %s", detailStr.c_str());
+  if(m_debug) Info("AddJets()", "Adding jet %s with variables: %s", jetName.c_str(), detailStr.c_str());
 
   m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 
+  m_jets[jetName] = new jetInfo();
+
+  jetInfo* thisJet = m_jets[jetName];
+
   // always
-  m_tree->Branch("njets",    &m_njet,"njets/I");
+  m_tree->Branch(("n"+jetName).c_str(),    &thisJet->N,("n"+jetName+"/I").c_str());
 
   if ( m_jetInfoSwitch->m_kinematic ) {
-    m_tree->Branch("jet_E",   &m_jet_E);
-    m_tree->Branch("jet_pt",  &m_jet_pt);
-    m_tree->Branch("jet_phi", &m_jet_phi);
-    m_tree->Branch("jet_eta", &m_jet_eta);
+    m_tree->Branch((jetName+"_E"  ).c_str(),  &thisJet->m_jet_E);
+    m_tree->Branch((jetName+"_pt" ).c_str(),  &thisJet->m_jet_pt);
+    m_tree->Branch((jetName+"_phi").c_str(),  &thisJet->m_jet_phi);
+    m_tree->Branch((jetName+"_eta").c_str(),  &thisJet->m_jet_eta);
   }
 
   if ( m_jetInfoSwitch->m_rapidity ) {
-    m_tree->Branch("jet_rapidity", &m_jet_rapidity);
+    m_tree->Branch((jetName+"_rapidity").c_str(), &thisJet->m_jet_rapidity);
   }
 
   if( m_jetInfoSwitch->m_clean ) {
-    m_tree->Branch("jet_Timing",              &m_jet_time               );
-    m_tree->Branch("jet_LArQuality",          &m_jet_LArQuality         );
-    m_tree->Branch("jet_HECQuality",          &m_jet_hecq               );
-    m_tree->Branch("jet_NegativeE",           &m_jet_negE               );
-    m_tree->Branch("jet_AverageLArQF",        &m_jet_avLArQF            );
-    m_tree->Branch("jet_BchCorrCell",         &m_jet_bchCorrCell        );
-    m_tree->Branch("jet_N90Constituents",     &m_jet_N90Const           );
-    m_tree->Branch("jet_LArBadHVEFracnergyFrac", &m_jet_LArBadHVEFrac   );
-    m_tree->Branch("jet_LArBadHVNCell",       &m_jet_LArBadHVNCell  	  );
-    m_tree->Branch("jet_OotFracClusters5",    &m_jet_OotFracClus5  	    );
-    m_tree->Branch("jet_OotFracClusters10",   &m_jet_OotFracClus10  	  );
-    m_tree->Branch("jet_LeadingClusterPt",              &m_jet_LeadingClusterPt  	            );
-    m_tree->Branch("jet_LeadingClusterSecondLambda",    &m_jet_LeadingClusterSecondLambda  	  );
-    m_tree->Branch("jet_LeadingClusterCenterLambda",    &m_jet_LeadingClusterCenterLambda  	  );
-    m_tree->Branch("jet_LeadingClusterSecondR",         &m_jet_LeadingClusterSecondR  	      );
-    m_tree->Branch("jet_clean_passLooseBad",            &m_jet_clean_passLooseBad             );
-    m_tree->Branch("jet_clean_passLooseBadUgly",        &m_jet_clean_passLooseBadUgly         );
-    m_tree->Branch("jet_clean_passTightBad",            &m_jet_clean_passTightBad             );
-    m_tree->Branch("jet_clean_passTightBadUgly",        &m_jet_clean_passTightBadUgly         );
+    m_tree->Branch((jetName+"_Timing").c_str(),                        &thisJet->m_jet_time               );
+    m_tree->Branch((jetName+"_LArQuality").c_str(),                    &thisJet->m_jet_LArQuality         );
+    m_tree->Branch((jetName+"_HECQuality").c_str(),                    &thisJet->m_jet_hecq               );
+    m_tree->Branch((jetName+"_NegativeE").c_str(),                     &thisJet->m_jet_negE               );
+    m_tree->Branch((jetName+"_AverageLArQF").c_str(),                  &thisJet->m_jet_avLArQF            );
+    m_tree->Branch((jetName+"_BchCorrCell").c_str(),                   &thisJet->m_jet_bchCorrCell        );
+    m_tree->Branch((jetName+"_N90Constituents").c_str(),               &thisJet->m_jet_N90Const           );
+    m_tree->Branch((jetName+"_LArBadHVEFracnergyFrac").c_str(),        &thisJet->m_jet_LArBadHVEFrac   );
+    m_tree->Branch((jetName+"_LArBadHVNCell").c_str(),                 &thisJet->m_jet_LArBadHVNCell  	  );
+    m_tree->Branch((jetName+"_OotFracClusters5").c_str(),              &thisJet->m_jet_OotFracClus5  	    );
+    m_tree->Branch((jetName+"_OotFracClusters10").c_str(),             &thisJet->m_jet_OotFracClus10  	  );
+    m_tree->Branch((jetName+"_LeadingClusterPt").c_str(),              &thisJet->m_jet_LeadingClusterPt  	            );
+    m_tree->Branch((jetName+"_LeadingClusterSecondLambda").c_str(),    &thisJet->m_jet_LeadingClusterSecondLambda  	  );
+    m_tree->Branch((jetName+"_LeadingClusterCenterLambda").c_str(),    &thisJet->m_jet_LeadingClusterCenterLambda  	  );
+    m_tree->Branch((jetName+"_LeadingClusterSecondR").c_str(),         &thisJet->m_jet_LeadingClusterSecondR  	      );
+    m_tree->Branch((jetName+"_clean_passLooseBad").c_str(),            &thisJet->m_jet_clean_passLooseBad             );
+    m_tree->Branch((jetName+"_clean_passLooseBadUgly").c_str(),        &thisJet->m_jet_clean_passLooseBadUgly         );
+    m_tree->Branch((jetName+"_clean_passTightBad").c_str(),            &thisJet->m_jet_clean_passTightBad             );
+    m_tree->Branch((jetName+"_clean_passTightBadUgly").c_str(),        &thisJet->m_jet_clean_passTightBadUgly         );
   }
 
   if ( m_jetInfoSwitch->m_energy ) {
-    m_tree->Branch("jet_HECFrac", 	            &m_jet_HECf	    );
-    m_tree->Branch("jet_EMFrac",  	            &m_jet_EMf	    );
-    m_tree->Branch("jet_CentroidR",	            &m_jet_centroidR      );
-    m_tree->Branch("jet_FracSamplingMax",       &m_jet_fracSampMax    );
-    m_tree->Branch("jet_FracSamplingMaxIndex",  &m_jet_fracSampMaxIdx );
-    m_tree->Branch("jet_LowEtConstituentsFrac", &m_jet_lowEtFrac      );
-    m_tree->Branch("jet_GhostMuonSegmentCount", &m_jet_muonSegCount   );
-    m_tree->Branch("jet_Width",                 &m_jet_width          );
+    m_tree->Branch((jetName+"_HECFrac").c_str(), 	            &thisJet->m_jet_HECf	    );
+    m_tree->Branch((jetName+"_EMFrac").c_str(),  	            &thisJet->m_jet_EMf	    );
+    m_tree->Branch((jetName+"_CentroidR").c_str(),	            &thisJet->m_jet_centroidR      );
+    m_tree->Branch((jetName+"_FracSamplingMax").c_str(),           &thisJet->m_jet_fracSampMax    );
+    m_tree->Branch((jetName+"_FracSamplingMaxIndex").c_str(),      &thisJet->m_jet_fracSampMaxIdx );
+    m_tree->Branch((jetName+"_LowEtConstituentsFrac").c_str(),     &thisJet->m_jet_lowEtFrac      );
+    m_tree->Branch((jetName+"_GhostMuonSegmentCount").c_str(),     &thisJet->m_jet_muonSegCount   );
+    m_tree->Branch((jetName+"_Width").c_str(),                     &thisJet->m_jet_width          );
   }
 
   if ( m_jetInfoSwitch->m_scales ) {
-    m_tree->Branch("jet_emScalePt",              &m_jet_emPt            );
-    m_tree->Branch("jet_constScalePt",           &m_jet_constPt         );
-    m_tree->Branch("jet_pileupScalePt",          &m_jet_pileupPt        );
-    m_tree->Branch("jet_originConstitScalePt",   &m_jet_originConstitPt );
-    m_tree->Branch("jet_etaJESScalePt",          &m_jet_etaJESPt        );
-    m_tree->Branch("jet_gscScalePt",             &m_jet_gscPt           );
-    m_tree->Branch("jet_insituScalePt",          &m_jet_insituPt        );
+    m_tree->Branch((jetName+"_emScalePt").c_str(),              &thisJet->m_jet_emPt            );
+    m_tree->Branch((jetName+"_constScalePt").c_str(),           &thisJet->m_jet_constPt         );
+    m_tree->Branch((jetName+"_pileupScalePt").c_str(),          &thisJet->m_jet_pileupPt        );
+    m_tree->Branch((jetName+"_originConstitScalePt").c_str(),   &thisJet->m_jet_originConstitPt );
+    m_tree->Branch((jetName+"_etaJESScalePt").c_str(),          &thisJet->m_jet_etaJESPt        );
+    m_tree->Branch((jetName+"_gscScalePt").c_str(),             &thisJet->m_jet_gscPt           );
+    m_tree->Branch((jetName+"_insituScalePt").c_str(),          &thisJet->m_jet_insituPt        );
   }
 
   if ( m_jetInfoSwitch->m_layer ) {
-    m_tree->Branch("jet_EnergyPerSampling",     &m_jet_ePerSamp   );
+    m_tree->Branch((jetName+"_EnergyPerSampling").c_str(),     &thisJet->m_jet_ePerSamp   );
   }
 
   if ( m_jetInfoSwitch->m_trackAll ) {
-    m_tree->Branch("jet_NumTrkPt1000",	    &m_jet_NTrkPt1000   );
-    m_tree->Branch("jet_SumPtTrkPt1000",    &m_jet_SumPtPt1000  );
-    m_tree->Branch("jet_TrackWidthPt1000",  &m_jet_TrkWPt1000   );
-    m_tree->Branch("jet_NumTrkPt500",	      &m_jet_NTrkPt500    );
-    m_tree->Branch("jet_SumPtTrkPt500",	    &m_jet_SumPtPt500   );
-    m_tree->Branch("jet_TrackWidthPt500",   &m_jet_TrkWPt500    );
-    m_tree->Branch("jet_JVF",		            &m_jet_jvf	        );
+    m_tree->Branch((jetName+"_NumTrkPt1000").c_str(),	    &thisJet->m_jet_NTrkPt1000   );
+    m_tree->Branch((jetName+"_SumPtTrkPt1000").c_str(),    &thisJet->m_jet_SumPtPt1000  );
+    m_tree->Branch((jetName+"_TrackWidthPt1000").c_str(),  &thisJet->m_jet_TrkWPt1000   );
+    m_tree->Branch((jetName+"_NumTrkPt500").c_str(),	    &thisJet->m_jet_NTrkPt500    );
+    m_tree->Branch((jetName+"_SumPtTrkPt500").c_str(),	    &thisJet->m_jet_SumPtPt500   );
+    m_tree->Branch((jetName+"_TrackWidthPt500").c_str(),   &thisJet->m_jet_TrkWPt500    );
+    m_tree->Branch((jetName+"_JVF").c_str(),		    &thisJet->m_jet_jvf	        );
   }
 
   if ( m_jetInfoSwitch->m_trackPV ) {
-    m_tree->Branch("jet_NumTrkPt1000PV",      &m_jet_NTrkPt1000PV   );
-    m_tree->Branch("jet_SumPtTrkPt1000PV",    &m_jet_SumPtPt1000PV  );
-    m_tree->Branch("jet_TrackWidthPt1000PV",  &m_jet_TrkWPt1000PV   );
-    m_tree->Branch("jet_NumTrkPt500PV",	      &m_jet_NTrkPt500PV    );
-    m_tree->Branch("jet_SumPtTrkPt500PV",     &m_jet_SumPtPt500PV   );
-    m_tree->Branch("jet_TrackWidthPt500PV",   &m_jet_TrkWPt500PV    );
-    m_tree->Branch("jet_JVFPV",		            &m_jet_jvfPV	        );
-    m_tree->Branch("jet_Jvt",		              &m_jet_Jvt	          );
-    m_tree->Branch("jet_JvtJvfcorr",		      &m_jet_JvtJvfcorr     );
-    m_tree->Branch("jet_JvtRpt",              &m_jet_JvtRpt         );
-    //m_tree->Branch("jet_GhostTrackAssociationFraction", &m_jet_ghostTrackAssFrac);
+    m_tree->Branch((jetName+"_NumTrkPt1000PV").c_str(),      &thisJet->m_jet_NTrkPt1000PV   );
+    m_tree->Branch((jetName+"_SumPtTrkPt1000PV").c_str(),    &thisJet->m_jet_SumPtPt1000PV  );
+    m_tree->Branch((jetName+"_TrackWidthPt1000PV").c_str(),  &thisJet->m_jet_TrkWPt1000PV   );
+    m_tree->Branch((jetName+"_NumTrkPt500PV").c_str(),	      &thisJet->m_jet_NTrkPt500PV    );
+    m_tree->Branch((jetName+"_SumPtTrkPt500PV").c_str(),     &thisJet->m_jet_SumPtPt500PV   );
+    m_tree->Branch((jetName+"_TrackWidthPt500PV").c_str(),   &thisJet->m_jet_TrkWPt500PV    );
+    m_tree->Branch((jetName+"_JVFPV").c_str(),		      &thisJet->m_jet_jvfPV	        );
+    m_tree->Branch((jetName+"_Jvt").c_str(),		      &thisJet->m_jet_Jvt	          );
+    m_tree->Branch((jetName+"_JvtJvfcorr").c_str(),	      &thisJet->m_jet_JvtJvfcorr     );
+    m_tree->Branch((jetName+"_JvtRpt").c_str(),              &thisJet->m_jet_JvtRpt         );
+    //m_tree->Branch((jetName+"_GhostTrackAssociationFraction").c_str(), &thisJet->m_jet_ghostTrackAssFrac);
   }
 
   if ( m_jetInfoSwitch->m_allTrack ) {
@@ -1250,120 +1254,120 @@ void HelpTreeBase::AddJets(const std::string detailStr)
       // to do this need to have AddJets return a status code
       //RETURN_CHECK( "HelpTreeBase::JetTrackSelection", m_trkSelTool->initialize(), "");
     }
-    m_tree->Branch("jet_GhostTrackCount",  &m_jet_GhostTrackCount );
-    m_tree->Branch("jet_GhostTrackPt",     &m_jet_GhostTrackPt    );
-    m_tree->Branch("jet_GhostTrack_pt",    &m_jet_GhostTrack_pt   );
-    m_tree->Branch("jet_GhostTrack_qOverP",&m_jet_GhostTrack_qOverP);
-    m_tree->Branch("jet_GhostTrack_eta",   &m_jet_GhostTrack_eta  );
-    m_tree->Branch("jet_GhostTrack_phi",   &m_jet_GhostTrack_phi  );
-    m_tree->Branch("jet_GhostTrack_e",     &m_jet_GhostTrack_e    );
-    m_tree->Branch("jet_GhostTrack_d0",    &m_jet_GhostTrack_d0   );
-    m_tree->Branch("jet_GhostTrack_z0",    &m_jet_GhostTrack_z0   );
+    m_tree->Branch((jetName+"_GhostTrackCount").c_str(),  &thisJet->m_jet_GhostTrackCount );
+    m_tree->Branch((jetName+"_GhostTrackPt").c_str(),     &thisJet->m_jet_GhostTrackPt    );
+    m_tree->Branch((jetName+"_GhostTrack_pt").c_str(),    &thisJet->m_jet_GhostTrack_pt   );
+    m_tree->Branch((jetName+"_GhostTrack_qOverP").c_str(),&thisJet->m_jet_GhostTrack_qOverP);
+    m_tree->Branch((jetName+"_GhostTrack_eta").c_str(),   &thisJet->m_jet_GhostTrack_eta  );
+    m_tree->Branch((jetName+"_GhostTrack_phi").c_str(),   &thisJet->m_jet_GhostTrack_phi  );
+    m_tree->Branch((jetName+"_GhostTrack_e").c_str(),     &thisJet->m_jet_GhostTrack_e    );
+    m_tree->Branch((jetName+"_GhostTrack_d0").c_str(),    &thisJet->m_jet_GhostTrack_d0   );
+    m_tree->Branch((jetName+"_GhostTrack_z0").c_str(),    &thisJet->m_jet_GhostTrack_z0   );
     if ( m_jetInfoSwitch->m_allTrackDetail ) {
-      m_tree->Branch("jet_GhostTrack_nPixelHits", &m_jet_GhostTrack_nPixHits);
-      m_tree->Branch("jet_GhostTrack_nSCTHits",   &m_jet_GhostTrack_nSCTHits);
-      m_tree->Branch("jet_GhostTrack_nTRTHits",   &m_jet_GhostTrack_nTRTHits);
-      m_tree->Branch("jet_GhostTrack_nPixelSharedHits", &m_jet_GhostTrack_nPixSharedHits);
-      m_tree->Branch("jet_GhostTrack_nPixelSplitHits",  &m_jet_GhostTrack_nPixSplitHits);
-      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerHits",       &m_jet_GhostTrack_nIMLPixHits);
-      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerSharedHits", &m_jet_GhostTrack_nIMLPixSharedHits);
-      m_tree->Branch("jet_GhostTrack_nInnermostPixelLayerSplitHits",  &m_jet_GhostTrack_nIMLPixSplitHits);
-      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerHits", &m_jet_GhostTrack_nNIMLPixHits);
-      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerSharedHits", &m_jet_GhostTrack_nNIMLPixSharedHits);
-      m_tree->Branch("jet_GhostTrack_nNextToInnermostPixelLayerSplitHits",  &m_jet_GhostTrack_nNIMLPixSplitHits);
+      m_tree->Branch((jetName+"_GhostTrack_nPixelHits").c_str(),                           &thisJet->m_jet_GhostTrack_nPixHits);
+      m_tree->Branch((jetName+"_GhostTrack_nSCTHits").c_str(),                             &thisJet->m_jet_GhostTrack_nSCTHits);
+      m_tree->Branch((jetName+"_GhostTrack_nTRTHits").c_str(),                             &thisJet->m_jet_GhostTrack_nTRTHits);
+      m_tree->Branch((jetName+"_GhostTrack_nPixelSharedHits").c_str(),                     &thisJet->m_jet_GhostTrack_nPixSharedHits);
+      m_tree->Branch((jetName+"_GhostTrack_nPixelSplitHits").c_str(),                      &thisJet->m_jet_GhostTrack_nPixSplitHits);
+      m_tree->Branch((jetName+"_GhostTrack_nInnermostPixelLayerHits").c_str(),             &thisJet->m_jet_GhostTrack_nIMLPixHits);
+      m_tree->Branch((jetName+"_GhostTrack_nInnermostPixelLayerSharedHits").c_str(),       &thisJet->m_jet_GhostTrack_nIMLPixSharedHits);
+      m_tree->Branch((jetName+"_GhostTrack_nInnermostPixelLayerSplitHits").c_str(),        &thisJet->m_jet_GhostTrack_nIMLPixSplitHits);
+      m_tree->Branch((jetName+"_GhostTrack_nNextToInnermostPixelLayerHits").c_str(),       &thisJet->m_jet_GhostTrack_nNIMLPixHits);
+      m_tree->Branch((jetName+"_GhostTrack_nNextToInnermostPixelLayerSharedHits").c_str(), &thisJet->m_jet_GhostTrack_nNIMLPixSharedHits);
+      m_tree->Branch((jetName+"_GhostTrack_nNextToInnermostPixelLayerSplitHits").c_str(),  &thisJet->m_jet_GhostTrack_nNIMLPixSplitHits);
     }
   }
 
   if ( m_jetInfoSwitch->m_constituent ) {
-    m_tree->Branch("jet_numConstituents" ,   &m_jet_numConstituents);
+    m_tree->Branch((jetName+"_numConstituents").c_str() ,   &thisJet->m_jet_numConstituents);
   }
 
   if ( m_jetInfoSwitch->m_constituentAll ) {
-    m_tree->Branch("jet_constituentWeights", &m_jet_constitWeights);
-    m_tree->Branch("jet_constituent_pt" ,    &m_jet_constit_pt    );
-    m_tree->Branch("jet_constituent_eta",    &m_jet_constit_eta   );
-    m_tree->Branch("jet_constituent_phi",    &m_jet_constit_phi   );
-    m_tree->Branch("jet_constituent_e"  ,    &m_jet_constit_e     );
+    m_tree->Branch((jetName+"_constituentWeights").c_str(), &thisJet->m_jet_constitWeights);
+    m_tree->Branch((jetName+"_constituent_pt").c_str(),    &thisJet->m_jet_constit_pt    );
+    m_tree->Branch((jetName+"_constituent_eta").c_str(),    &thisJet->m_jet_constit_eta   );
+    m_tree->Branch((jetName+"_constituent_phi").c_str(),    &thisJet->m_jet_constit_phi   );
+    m_tree->Branch((jetName+"_constituent_e").c_str(),    &thisJet->m_jet_constit_e     );
   }
 
   if( m_jetInfoSwitch->m_flavTag ) {
     if ( !m_DC14 ) {
-      m_tree->Branch("jet_SV0",           &m_jet_sv0);
-      m_tree->Branch("jet_SV1",           &m_jet_sv1);
-      m_tree->Branch("jet_IP3D",          &m_jet_ip3d);
+      m_tree->Branch((jetName+"_SV0").c_str(),           &thisJet->m_jet_sv0);
+      m_tree->Branch((jetName+"_SV1").c_str(),           &thisJet->m_jet_sv1);
+      m_tree->Branch((jetName+"_IP3D").c_str(),          &thisJet->m_jet_ip3d);
     }
-    m_tree->Branch("jet_SV1IP3D",       &m_jet_sv1ip3d);
-    m_tree->Branch("jet_MV1",           &m_jet_mv1);
-    m_tree->Branch("jet_MV2c00",        &m_jet_mv2c00);
-    m_tree->Branch("jet_MV2c20",        &m_jet_mv2c20);
-    m_tree->Branch("jet_HadronConeExclTruthLabelID", &m_jet_hadConeExclTruthLabel);
+    m_tree->Branch((jetName+"_SV1IP3D").c_str(),       &thisJet->m_jet_sv1ip3d);
+    m_tree->Branch((jetName+"_MV1").c_str(),           &thisJet->m_jet_mv1);
+    m_tree->Branch((jetName+"_MV2c00").c_str(),        &thisJet->m_jet_mv2c00);
+    m_tree->Branch((jetName+"_MV2c20").c_str(),        &thisJet->m_jet_mv2c20);
+    m_tree->Branch((jetName+"_HadronConeExclTruthLabelID").c_str(), &thisJet->m_jet_hadConeExclTruthLabel);
   }
 
   if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
     for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
       switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
         case 30 :
-	  m_tree->Branch("njets_mv2c20_Fix30",   &m_njet_mv2c20_Fix30,"njets_mv2c20_Fix30/I");
-          m_tree->Branch("jet_MV2c20_isFix30",   &m_jet_mv2c20_isFix30);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix30").c_str(),   &thisJet->m_njet_mv2c20_Fix30,("n"+jetName+"s_mv2c20_Fix30/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix30").c_str(),   &thisJet->m_jet_mv2c20_isFix30);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix30",   &m_jet_mv2c20_sfFix30);
-            m_tree->Branch("weight_jet_MV2c20_SFFix30",   &m_weight_jet_mv2c20_sfFix30);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix30").c_str(),   &thisJet->m_jet_mv2c20_sfFix30);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix30);	  
 	  }
           break;
         case 50 :
-	  m_tree->Branch("njets_mv2c20_Fix50",   &m_njet_mv2c20_Fix50,"njets_mv2c20_Fix50/I");
-          m_tree->Branch("jet_MV2c20_isFix50",   &m_jet_mv2c20_isFix50);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix50").c_str(),   &thisJet->m_njet_mv2c20_Fix50,("n"+jetName+"s_mv2c20_Fix50/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix50").c_str(),   &thisJet->m_jet_mv2c20_isFix50);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix50",   &m_jet_mv2c20_sfFix50);
-            m_tree->Branch("weight_jet_MV2c20_SFFix50",   &m_weight_jet_mv2c20_sfFix50);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix50").c_str(),   &thisJet->m_jet_mv2c20_sfFix50);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix50);	  
 	  }
           break;
         case 60 :
-	  m_tree->Branch("njets_mv2c20_Fix60",   &m_njet_mv2c20_Fix60,"njets_mv2c20_Fix60/I");
-          m_tree->Branch("jet_MV2c20_isFix60",   &m_jet_mv2c20_isFix60);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix60").c_str(),   &thisJet->m_njet_mv2c20_Fix60,("n"+jetName+"s_mv2c20_Fix60/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix60").c_str(),   &thisJet->m_jet_mv2c20_isFix60);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix60",   &m_jet_mv2c20_sfFix60);
-            m_tree->Branch("weight_jet_MV2c20_SFFix60",   &m_weight_jet_mv2c20_sfFix60);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix60").c_str(),   &thisJet->m_jet_mv2c20_sfFix60);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix60);	  
 	  }
           break;
         case 70 :
-	  m_tree->Branch("njets_mv2c20_Fix70",   &m_njet_mv2c20_Fix70,"njets_mv2c20_Fix70/I");
-          m_tree->Branch("jet_MV2c20_isFix70",   &m_jet_mv2c20_isFix70);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix70").c_str(),   &thisJet->m_njet_mv2c20_Fix70,("n"+jetName+"s_mv2c20_Fix70/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix70").c_str(),   &thisJet->m_jet_mv2c20_isFix70);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix70",   &m_jet_mv2c20_sfFix70);
-            m_tree->Branch("weight_jet_MV2c20_SFFix70",   &m_weight_jet_mv2c20_sfFix70);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix70").c_str(),   &thisJet->m_jet_mv2c20_sfFix70);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix70);	  
 	  }
           break;
         case 77 :
-	  m_tree->Branch("njets_mv2c20_Fix77",   &m_njet_mv2c20_Fix77,"njets_mv2c20_Fix77/I");
-          m_tree->Branch("jet_MV2c20_isFix77",   &m_jet_mv2c20_isFix77);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix77").c_str(),   &thisJet->m_njet_mv2c20_Fix77,("n"+jetName+"s_mv2c20_Fix77/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix77").c_str(),   &thisJet->m_jet_mv2c20_isFix77);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix77",   &m_jet_mv2c20_sfFix77);
-            m_tree->Branch("weight_jet_MV2c20_SFFix77",   &m_weight_jet_mv2c20_sfFix77);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix77").c_str(),   &thisJet->m_jet_mv2c20_sfFix77);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix77);	  
 	  }
           break;
         case 80 :
-	  m_tree->Branch("njets_mv2c20_Fix80",   &m_njet_mv2c20_Fix80,"njets_mv2c20_Fix80/I");
-          m_tree->Branch("jet_MV2c20_isFix80",   &m_jet_mv2c20_isFix80);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix80").c_str(),   &thisJet->m_njet_mv2c20_Fix80,("n"+jetName+"s_mv2c20_Fix80/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix80").c_str(),   &thisJet->m_jet_mv2c20_isFix80);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix80",   &m_jet_mv2c20_sfFix80);
-            m_tree->Branch("weight_jet_MV2c20_SFFix80",   &m_weight_jet_mv2c20_sfFix80);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix80").c_str(),   &thisJet->m_jet_mv2c20_sfFix80);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix80").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix80);	  
 	  }
           break;
         case 85 :
-	  m_tree->Branch("njets_mv2c20_Fix85",   &m_njet_mv2c20_Fix85,"njets_mv2c20_Fix85/I");
-          m_tree->Branch("jet_MV2c20_isFix85",   &m_jet_mv2c20_isFix85);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix85").c_str(),   &thisJet->m_njet_mv2c20_Fix85,("n"+jetName+"s_mv2c20_Fix85/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix85").c_str(),   &thisJet->m_jet_mv2c20_isFix85);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix85",   &m_jet_mv2c20_sfFix85);
-            m_tree->Branch("weight_jet_MV2c20_SFFix85",   &m_weight_jet_mv2c20_sfFix85);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix85").c_str(),   &thisJet->m_jet_mv2c20_sfFix85);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix85);	  
 	  }
           break;
         case 90 :
-	  m_tree->Branch("njets_mv2c20_Fix90",   &m_njet_mv2c20_Fix90,"njets_mv2c20_Fix90/I");
-          m_tree->Branch("jet_MV2c20_isFix90",   &m_jet_mv2c20_isFix90);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix90").c_str(),   &thisJet->m_njet_mv2c20_Fix90,("n"+jetName+"s_mv2c20_Fix90/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFix90").c_str(),   &thisJet->m_jet_mv2c20_isFix90);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFix90",   &m_jet_mv2c20_sfFix90);
-            m_tree->Branch("weight_jet_MV2c20_SFFix90",   &m_weight_jet_mv2c20_sfFix90);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFix90").c_str(),   &thisJet->m_jet_mv2c20_sfFix90);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix90").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix90);	  
 	  }
           break;
         default:
@@ -1377,59 +1381,59 @@ void HelpTreeBase::AddJets(const std::string detailStr)
     for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
       switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
         case 30 :
-	  m_tree->Branch("njets_mv2c20_Flt30",   &m_njet_mv2c20_Flt30,"njets_mv2c20_Flt30/I");
-          m_tree->Branch("jet_MV2c20_isFlt30",   &m_jet_mv2c20_isFlt30);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt30").c_str(),   &thisJet->m_njet_mv2c20_Flt30,("n"+jetName+"s_mv2c20_Flt30/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt30").c_str(),   &thisJet->m_jet_mv2c20_isFlt30);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt30",   &m_jet_mv2c20_sfFlt30);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt30",   &m_weight_jet_mv2c20_sfFlt30);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt30").c_str(),   &thisJet->m_jet_mv2c20_sfFlt30);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt30);	  
 	  }
           break;
         case 40 :
-	  m_tree->Branch("njets_mv2c20_Flt40",   &m_njet_mv2c20_Flt40,"njets_mv2c20_Flt40/I");
-          m_tree->Branch("jet_MV2c20_isFlt40",   &m_jet_mv2c20_isFlt40);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt40").c_str(),   &thisJet->m_njet_mv2c20_Flt40,("n"+jetName+"s_mv2c20_Flt40/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt40").c_str(),   &thisJet->m_jet_mv2c20_isFlt40);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt40",   &m_jet_mv2c20_sfFlt40);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt40",   &m_weight_jet_mv2c20_sfFlt40);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt40").c_str(),   &thisJet->m_jet_mv2c20_sfFlt40);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt40").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt40);	  
 	  }
           break;
         case 50 :
-	  m_tree->Branch("njets_mv2c20_Flt50",   &m_njet_mv2c20_Flt50,"njets_mv2c20_Flt50/I");
-          m_tree->Branch("jet_MV2c20_isFlt50",   &m_jet_mv2c20_isFlt50);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt50").c_str(),   &thisJet->m_njet_mv2c20_Flt50,("n"+jetName+"s_mv2c20_Flt50/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt50").c_str(),   &thisJet->m_jet_mv2c20_isFlt50);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt50",   &m_jet_mv2c20_sfFlt50);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt50",   &m_weight_jet_mv2c20_sfFlt50);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt50").c_str(),   &thisJet->m_jet_mv2c20_sfFlt50);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt50);	  
 	  }
           break;
         case 60 :
-	  m_tree->Branch("njets_mv2c20_Flt60",   &m_njet_mv2c20_Flt60,"njets_mv2c20_Flt60/I");
-          m_tree->Branch("jet_MV2c20_isFlt60",   &m_jet_mv2c20_isFlt60);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt60").c_str(),   &thisJet->m_njet_mv2c20_Flt60,("n"+jetName+"s_mv2c20_Flt60/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt60").c_str(),   &thisJet->m_jet_mv2c20_isFlt60);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt60",   &m_jet_mv2c20_sfFlt60);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt60",   &m_weight_jet_mv2c20_sfFlt60);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt60").c_str(),   &thisJet->m_jet_mv2c20_sfFlt60);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt60);	  
 	  }
           break;
         case 70 :
-	  m_tree->Branch("njets_mv2c20_Flt70",   &m_njet_mv2c20_Flt70,"njets_mv2c20_Flt70/I");
-          m_tree->Branch("jet_MV2c20_isFlt70",   &m_jet_mv2c20_isFlt70);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt70").c_str(),   &thisJet->m_njet_mv2c20_Flt70,("n"+jetName+"s_mv2c20_Flt70/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt70").c_str(),   &thisJet->m_jet_mv2c20_isFlt70);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt70",   &m_jet_mv2c20_sfFlt70);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt70",   &m_weight_jet_mv2c20_sfFlt70);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt70").c_str(),   &thisJet->m_jet_mv2c20_sfFlt70);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt70);	  
 	  }
           break;
         case 77 :
-	  m_tree->Branch("njets_mv2c20_Flt77",   &m_njet_mv2c20_Flt77,"njets_mv2c20_Flt77/I");
-          m_tree->Branch("jet_MV2c20_isFlt77",   &m_jet_mv2c20_isFlt77);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt77").c_str(),   &thisJet->m_njet_mv2c20_Flt77,("n"+jetName+"s_mv2c20_Flt77/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt77").c_str(),   &thisJet->m_jet_mv2c20_isFlt77);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt77",   &m_jet_mv2c20_sfFlt77);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt77",   &m_weight_jet_mv2c20_sfFlt77);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt77").c_str(),   &thisJet->m_jet_mv2c20_sfFlt77);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt77);	  
 	  }
           break;
         case 85 :
-	  m_tree->Branch("njets_mv2c20_Flt85",   &m_njet_mv2c20_Flt85,"njets_mv2c20_Flt85/I");
-          m_tree->Branch("jet_MV2c20_isFlt85",   &m_jet_mv2c20_isFlt85);
+	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt85").c_str(),   &thisJet->m_njet_mv2c20_Flt85,("n"+jetName+"s_mv2c20_Flt85/I").c_str());
+          m_tree->Branch((jetName+"_MV2c20_isFlt85").c_str(),   &thisJet->m_jet_mv2c20_isFlt85);
           if ( m_isMC ) { 
-	    m_tree->Branch("jet_MV2c20_SFFlt85",   &m_jet_mv2c20_sfFlt85);
-            m_tree->Branch("weight_jet_MV2c20_SFFlt85",   &m_weight_jet_mv2c20_sfFlt85);	  
+	    m_tree->Branch((jetName+"_MV2c20_SFFlt85").c_str(),   &thisJet->m_jet_mv2c20_sfFlt85);
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt85);	  
 	  }
           break;
         default:
@@ -1440,60 +1444,60 @@ void HelpTreeBase::AddJets(const std::string detailStr)
   } // sfFTagFlt
 
   if( m_jetInfoSwitch->m_area ) {
-    m_tree->Branch("jet_GhostArea",     &m_jet_ghostArea);
-    m_tree->Branch("jet_ActiveArea",    &m_jet_activeArea);
-    m_tree->Branch("jet_VoronoiArea",   &m_jet_voronoiArea);
-    m_tree->Branch("jet_ActiveArea4vec_pt", &m_jet_activeArea_pt);
-    m_tree->Branch("jet_ActiveArea4vec_eta", &m_jet_activeArea_eta);
-    m_tree->Branch("jet_ActiveArea4vec_phi", &m_jet_activeArea_phi);
-    m_tree->Branch("jet_ActiveArea4vec_m",   &m_jet_activeArea_m);
+    m_tree->Branch((jetName+"_GhostArea").c_str(),     &thisJet->m_jet_ghostArea);
+    m_tree->Branch((jetName+"_ActiveArea").c_str(),    &thisJet->m_jet_activeArea);
+    m_tree->Branch((jetName+"_VoronoiArea").c_str(),   &thisJet->m_jet_voronoiArea);
+    m_tree->Branch((jetName+"_ActiveArea4vec_pt").c_str(), &thisJet->m_jet_activeArea_pt);
+    m_tree->Branch((jetName+"_ActiveArea4vec_eta").c_str(), &thisJet->m_jet_activeArea_eta);
+    m_tree->Branch((jetName+"_ActiveArea4vec_phi").c_str(), &thisJet->m_jet_activeArea_phi);
+    m_tree->Branch((jetName+"_ActiveArea4vec_m").c_str(),   &thisJet->m_jet_activeArea_m);
   }
 
   if ( m_jetInfoSwitch->m_truth && m_isMC ) {
-    m_tree->Branch("jet_ConeTruthLabelID",   &m_jet_truthConeLabelID );
-    m_tree->Branch("jet_TruthCount",         &m_jet_truthCount     );
-//    m_tree->Branch("jet_TruthPt",            &m_jet_truthPt        );
-    m_tree->Branch("jet_TruthLabelDeltaR_B", &m_jet_truthDr_B      );
-    m_tree->Branch("jet_TruthLabelDeltaR_C", &m_jet_truthDr_C      );
-    m_tree->Branch("jet_TruthLabelDeltaR_T", &m_jet_truthDr_T      );
-    m_tree->Branch("jet_PartonTruthLabelID", &m_jet_partonTruthID  );
-    m_tree->Branch("jet_GhostTruthAssociationFraction", &m_jet_ghostTruthAssFrac);
-    m_tree->Branch("jet_truth_E",   &m_jet_truth_E);
-    m_tree->Branch("jet_truth_pt",  &m_jet_truth_pt);
-    m_tree->Branch("jet_truth_phi", &m_jet_truth_phi);
-    m_tree->Branch("jet_truth_eta", &m_jet_truth_eta);
+    m_tree->Branch((jetName+"_ConeTruthLabelID").c_str(),   &thisJet->m_jet_truthConeLabelID );
+    m_tree->Branch((jetName+"_TruthCount").c_str(),         &thisJet->m_jet_truthCount     );
+//    m_tree->Branch((jetName+"_TruthPt").c_str(),            &thisJet->m_jet_truthPt        );
+    m_tree->Branch((jetName+"_TruthLabelDeltaR_B").c_str(), &thisJet->m_jet_truthDr_B      );
+    m_tree->Branch((jetName+"_TruthLabelDeltaR_C").c_str(), &thisJet->m_jet_truthDr_C      );
+    m_tree->Branch((jetName+"_TruthLabelDeltaR_T").c_str(), &thisJet->m_jet_truthDr_T      );
+    m_tree->Branch((jetName+"_PartonTruthLabelID").c_str(), &thisJet->m_jet_partonTruthID  );
+    m_tree->Branch((jetName+"_GhostTruthAssociationFraction").c_str(), &thisJet->m_jet_ghostTruthAssFrac);
+    m_tree->Branch((jetName+"_truth_E").c_str(),   &thisJet->m_jet_truth_E);
+    m_tree->Branch((jetName+"_truth_pt").c_str(),  &thisJet->m_jet_truth_pt);
+    m_tree->Branch((jetName+"_truth_phi").c_str(), &thisJet->m_jet_truth_phi);
+    m_tree->Branch((jetName+"_truth_eta").c_str(), &thisJet->m_jet_truth_eta);
   }
 
   if ( m_jetInfoSwitch->m_truthDetails ) {
-    m_tree->Branch("jet_GhostBHadronsFinalCount",   &m_jet_truthCount_BhadFinal );
-    m_tree->Branch("jet_GhostBHadronsInitialCount", &m_jet_truthCount_BhadInit  );
-    m_tree->Branch("jet_GhostBQuarksFinalCount",    &m_jet_truthCount_BQFinal   );
-    m_tree->Branch("jet_GhostBHadronsFinalPt",      &m_jet_truthPt_BhadFinal    );
-    m_tree->Branch("jet_GhostBHadronsInitialPt",    &m_jet_truthPt_BhadInit     );
-    m_tree->Branch("jet_GhostBQuarksFinalPt",       &m_jet_truthPt_BQFinal      );
+    m_tree->Branch((jetName+"_GhostBHadronsFinalCount").c_str(),   &thisJet->m_jet_truthCount_BhadFinal );
+    m_tree->Branch((jetName+"_GhostBHadronsInitialCount").c_str(), &thisJet->m_jet_truthCount_BhadInit  );
+    m_tree->Branch((jetName+"_GhostBQuarksFinalCount").c_str(),    &thisJet->m_jet_truthCount_BQFinal   );
+    m_tree->Branch((jetName+"_GhostBHadronsFinalPt").c_str(),      &thisJet->m_jet_truthPt_BhadFinal    );
+    m_tree->Branch((jetName+"_GhostBHadronsInitialPt").c_str(),    &thisJet->m_jet_truthPt_BhadInit     );
+    m_tree->Branch((jetName+"_GhostBQuarksFinalPt").c_str(),       &thisJet->m_jet_truthPt_BQFinal      );
 
-    m_tree->Branch("jet_GhostCHadronsFinalCount",   &m_jet_truthCount_ChadFinal );
-    m_tree->Branch("jet_GhostCHadronsInitialCount", &m_jet_truthCount_ChadInit  );
-    m_tree->Branch("jet_GhostCQuarksFinalCount",    &m_jet_truthCount_CQFinal   );
-    m_tree->Branch("jet_GhostCHadronsFinalPt",      &m_jet_truthPt_ChadFinal    );
-    m_tree->Branch("jet_GhostCHadronsInitialPt",    &m_jet_truthPt_ChadInit     );
-    m_tree->Branch("jet_GhostCQuarksFinalPt",       &m_jet_truthPt_CQFinal      );
+    m_tree->Branch((jetName+"_GhostCHadronsFinalCount"  ).c_str(), &thisJet->m_jet_truthCount_ChadFinal );
+    m_tree->Branch((jetName+"_GhostCHadronsInitialCount").c_str(), &thisJet->m_jet_truthCount_ChadInit  );
+    m_tree->Branch((jetName+"_GhostCQuarksFinalCount"   ).c_str(), &thisJet->m_jet_truthCount_CQFinal   );
+    m_tree->Branch((jetName+"_GhostCHadronsFinalPt"     ).c_str(), &thisJet->m_jet_truthPt_ChadFinal    );
+    m_tree->Branch((jetName+"_GhostCHadronsInitialPt"   ).c_str(), &thisJet->m_jet_truthPt_ChadInit     );
+    m_tree->Branch((jetName+"_GhostCQuarksFinalPt"      ).c_str(), &thisJet->m_jet_truthPt_CQFinal      );
 
-    m_tree->Branch("jet_GhostTausFinalCount",       &m_jet_truthCount_TausFinal );
-    m_tree->Branch("jet_GhostTausFinalPt",          &m_jet_truthPt_TausFinal    );
+    m_tree->Branch((jetName+"_GhostTausFinalCount").c_str(),       &thisJet->m_jet_truthCount_TausFinal );
+    m_tree->Branch((jetName+"_GhostTausFinalPt"   ).c_str(),       &thisJet->m_jet_truthPt_TausFinal    );
 
-    m_tree->Branch("jet_truth_pdgId", &m_jet_truth_pdgId);
-    m_tree->Branch("jet_truth_partonPt", &m_jet_truth_partonPt);
-    m_tree->Branch("jet_truth_partonDR", &m_jet_truth_partonDR);
+    m_tree->Branch((jetName+"_truth_pdgId"   ).c_str(), &thisJet->m_jet_truth_pdgId);
+    m_tree->Branch((jetName+"_truth_partonPt").c_str(), &thisJet->m_jet_truth_partonPt);
+    m_tree->Branch((jetName+"_truth_partonDR").c_str(), &thisJet->m_jet_truth_partonDR);
   }
 
-  this->AddJetsUser();
+  this->AddJetsUser(jetName);
 }
 
-void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
+void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, const std::string jetName ) {
 
-  this->ClearJets();
-  this->ClearJetsUser();
+  this->ClearJets(jetName);
+  this->ClearJetsUser(jetName);
 
   const xAOD::VertexContainer* vertices(nullptr);
   const xAOD::Vertex *pv = 0;
@@ -1503,46 +1507,49 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     pv = vertices->at( pvLocation );
   }
 
+  jetInfo* thisJet = m_jets[jetName];
+
   // Global event BTag SF weight (--> the product of each object's weight)
   //
   if ( m_isMC ) {
     const xAOD::EventInfo* eventInfo(nullptr);
     HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, false);
+    
 
     if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
       for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
     	switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
     	  case 30 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix30_GLOBAL("BTag_SF_FixedCutBEff_30_GLOBAL");
-            if ( sfFix30_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix30 = sfFix30_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix30.push_back(-999.0); }
+            if ( sfFix30_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix30 = sfFix30_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix30.push_back(-999.0); }
     	    break;
     	  case 50 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix50_GLOBAL("BTag_SF_FixedCutBEff_50_GLOBAL");
-            if ( sfFix50_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix50 = sfFix50_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix50.push_back(-999.0); }
+            if ( sfFix50_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix50 = sfFix50_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix50.push_back(-999.0); }
     	    break;
     	  case 60 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix60_GLOBAL("BTag_SF_FixedCutBEff_60_GLOBAL");
-            if ( sfFix60_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix60 = sfFix60_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix60.push_back(-999.0); }
+            if ( sfFix60_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix60 = sfFix60_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix60.push_back(-999.0); }
     	    break;
     	  case 70 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix70_GLOBAL("BTag_SF_FixedCutBEff_70_GLOBAL");
-            if ( sfFix70_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix70 = sfFix70_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix70.push_back(-999.0); }
+            if ( sfFix70_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix70 = sfFix70_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix70.push_back(-999.0); }
     	    break;
     	  case 77 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix77_GLOBAL("BTag_SF_FixedCutBEff_77_GLOBAL");
-            if ( sfFix77_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix77 = sfFix77_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix77.push_back(-999.0); }
+            if ( sfFix77_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix77 = sfFix77_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix77.push_back(-999.0); }
     	    break;
     	  case 80 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix80_GLOBAL("BTag_SF_FixedCutBEff_80_GLOBAL");
-            if ( sfFix80_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix80 = sfFix80_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix80.push_back(-999.0); }
+            if ( sfFix80_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix80 = sfFix80_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix80.push_back(-999.0); }
     	    break;
     	  case 85 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix85_GLOBAL("BTag_SF_FixedCutBEff_85_GLOBAL");
-            if ( sfFix85_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix85 = sfFix85_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix85.push_back(-999.0); }
+            if ( sfFix85_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix85 = sfFix85_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix85.push_back(-999.0); }
     	    break;
     	  case 90 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix90_GLOBAL("BTag_SF_FixedCutBEff_90_GLOBAL");
-            if ( sfFix90_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFix90 = sfFix90_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFix90.push_back(-999.0); }
+            if ( sfFix90_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix90 = sfFix90_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix90.push_back(-999.0); }
     	    break;
     	}
       }
@@ -1553,193 +1560,140 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     	switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
     	  case 30 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30_GLOBAL("BTag_SF_FlatBEff_30_GLOBAL");
-            if ( sfFlt30_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt30 = sfFlt30_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt30.push_back(-999.0); }
+            if ( sfFlt30_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt30 = sfFlt30_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt30.push_back(-999.0); }
     	    break;
     	  case 40 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40_GLOBAL("BTag_SF_FlatBEff_40_GLOBAL");
-            if ( sfFlt40_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt40 = sfFlt40_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt40.push_back(-999.0); }
+            if ( sfFlt40_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt40 = sfFlt40_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt40.push_back(-999.0); }
     	    break;
     	  case 50 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50_GLOBAL("BTag_SF_FlatBEff_50_GLOBAL");
-            if ( sfFlt50_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt50 = sfFlt50_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt50.push_back(-999.0); }
+            if ( sfFlt50_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt50 = sfFlt50_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt50.push_back(-999.0); }
     	    break;
     	  case 60 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60_GLOBAL("BTag_SF_FlatBEff_60_GLOBAL");
-            if ( sfFlt60_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt60 = sfFlt60_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt60.push_back(-999.0); }
+            if ( sfFlt60_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt60 = sfFlt60_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt60.push_back(-999.0); }
     	    break;
     	  case 70 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70_GLOBAL("BTag_SF_FlatBEff_70_GLOBAL");
-            if ( sfFlt70_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt70 = sfFlt70_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt70.push_back(-999.0); }
+            if ( sfFlt70_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt70 = sfFlt70_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt70.push_back(-999.0); }
     	    break;
     	  case 77 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77_GLOBAL("BTag_SF_FlatBEff_77_GLOBAL");
-            if ( sfFlt77_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt77 = sfFlt77_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt77.push_back(-999.0); }
+            if ( sfFlt77_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt77 = sfFlt77_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt77.push_back(-999.0); }
     	    break;
     	  case 85 : 
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85_GLOBAL("BTag_SF_FlatBEff_85_GLOBAL");
-            if ( sfFlt85_GLOBAL.isAvailable( *eventInfo ) ) { m_weight_jet_mv2c20_sfFlt85 = sfFlt85_GLOBAL( *eventInfo ); } else { m_weight_jet_mv2c20_sfFlt85.push_back(-999.0); }
+            if ( sfFlt85_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt85 = sfFlt85_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt85.push_back(-999.0); }
     	    break;
     	}
       }
     } // sfFTagFlt
-
   }
 
   for( auto jet_itr : *jets ) {
 
     if( m_jetInfoSwitch->m_kinematic ){
-      m_jet_pt.push_back ( jet_itr->pt() / m_units );
-      m_jet_eta.push_back( jet_itr->eta() );
-      m_jet_phi.push_back( jet_itr->phi() );
-      m_jet_E.push_back  ( jet_itr->e() / m_units );
+      thisJet->m_jet_pt.push_back ( jet_itr->pt() / m_units );
+      thisJet->m_jet_eta.push_back( jet_itr->eta() );
+      thisJet->m_jet_phi.push_back( jet_itr->phi() );
+      thisJet->m_jet_E.push_back  ( jet_itr->e() / m_units );
     }
 
+
     if( m_jetInfoSwitch->m_rapidity ){
-      m_jet_rapidity.push_back( jet_itr->rapidity() );
+      thisJet->m_jet_rapidity.push_back( jet_itr->rapidity() );
     }
 
     if (m_jetInfoSwitch->m_clean) {
 
       static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
-      if ( jetTime.isAvailable( *jet_itr ) ) {
-        m_jet_time.push_back( jetTime( *jet_itr ) );
-      } else { m_jet_time.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, jetTime, thisJet->m_jet_time, -999);
 
       static SG::AuxElement::ConstAccessor<float> LArQuality ("LArQuality");
-      if ( LArQuality.isAvailable( *jet_itr ) ) {
-        m_jet_LArQuality.push_back( LArQuality( *jet_itr ) );
-      } else { m_jet_LArQuality.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, LArQuality, thisJet->m_jet_LArQuality, -999);
 
       static SG::AuxElement::ConstAccessor<float> hecq ("HECQuality");
-      if ( hecq.isAvailable( *jet_itr ) ) {
-        m_jet_hecq.push_back( hecq( *jet_itr ) );
-      } else { m_jet_hecq.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, hecq, thisJet->m_jet_hecq, -999);
 
       static SG::AuxElement::ConstAccessor<float> negE ("NegativeE");
-      if ( negE.isAvailable( *jet_itr ) ) {
-        m_jet_negE.push_back( negE( *jet_itr ) / m_units );
-      } else { m_jet_negE.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, negE, thisJet->m_jet_negE, -999, m_units);
 
       static SG::AuxElement::ConstAccessor<float> avLArQF ("AverageLArQF");
-      if ( avLArQF.isAvailable( *jet_itr ) ) {
-        m_jet_avLArQF.push_back( avLArQF( *jet_itr ) );
-      } else { m_jet_avLArQF.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, avLArQF, thisJet->m_jet_avLArQF, -999);
 
       static SG::AuxElement::ConstAccessor<float> bchCorrCell ("BchCorrCell");
-      if ( bchCorrCell.isAvailable( *jet_itr ) ) {
-        m_jet_bchCorrCell.push_back( bchCorrCell( *jet_itr ) );
-      } else { m_jet_bchCorrCell.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, bchCorrCell, thisJet->m_jet_bchCorrCell, -999);
 
       static SG::AuxElement::ConstAccessor<float> N90Const ("N90Constituents");
-      if ( N90Const.isAvailable( *jet_itr ) ) {
-        m_jet_N90Const.push_back( N90Const( *jet_itr ) );
-      } else { m_jet_N90Const.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, N90Const, thisJet->m_jet_N90Const, -999);
 
       static SG::AuxElement::ConstAccessor<float> LArBadHVEFrac ("LArBadHVEnergyFrac");
-      if ( LArBadHVEFrac.isAvailable( *jet_itr ) ) {
-        m_jet_LArBadHVEFrac.push_back( LArBadHVEFrac( *jet_itr ) );
-      } else { m_jet_LArBadHVEFrac.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, LArBadHVEFrac, thisJet->m_jet_LArBadHVEFrac, -999);
 
       static SG::AuxElement::ConstAccessor<int> LArBadHVNCell ("LArBadHVNCell");
-      if ( LArBadHVNCell.isAvailable( *jet_itr ) ) {
-        m_jet_LArBadHVNCell.push_back( LArBadHVNCell( *jet_itr ) );
-      } else { m_jet_LArBadHVNCell.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, LArBadHVNCell, thisJet->m_jet_LArBadHVNCell, -999);
 
       static SG::AuxElement::ConstAccessor<float> OotFracClus5 ("OotFracClusters5");
-      if ( OotFracClus5.isAvailable( *jet_itr ) ) {
-        m_jet_OotFracClus5.push_back( OotFracClus5( *jet_itr ) );
-      } else { m_jet_OotFracClus5.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, OotFracClus5, thisJet->m_jet_OotFracClus5, -999);
 
       static SG::AuxElement::ConstAccessor<float> OotFracClus10 ("OotFracClusters10");
-      if ( OotFracClus10.isAvailable( *jet_itr ) ) {
-        m_jet_OotFracClus10.push_back( OotFracClus10( *jet_itr ) );
-      } else { m_jet_OotFracClus10.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, OotFracClus10, thisJet->m_jet_OotFracClus10, -999);
 
       static SG::AuxElement::ConstAccessor<float> leadClusPt ("LeadingClusterPt");
-      if ( leadClusPt.isAvailable( *jet_itr ) ) {
-        m_jet_LeadingClusterPt.push_back( leadClusPt( *jet_itr ) );
-      } else { m_jet_LeadingClusterPt.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, leadClusPt, thisJet->m_jet_LeadingClusterPt, -999);
 
       static SG::AuxElement::ConstAccessor<float> leadClusSecondLambda ("LeadingClusterSecondLambda");
-      if ( leadClusSecondLambda.isAvailable( *jet_itr ) ) {
-        m_jet_LeadingClusterSecondLambda.push_back( leadClusSecondLambda( *jet_itr ) );
-      } else { m_jet_LeadingClusterSecondLambda.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, leadClusSecondLambda, thisJet->m_jet_LeadingClusterSecondLambda, -999);
 
       static SG::AuxElement::ConstAccessor<float> leadClusCenterLambda ("LeadingClusterCenterLambda");
-      if ( leadClusCenterLambda.isAvailable( *jet_itr ) ) {
-        m_jet_LeadingClusterCenterLambda.push_back( leadClusCenterLambda( *jet_itr ) );
-      } else { m_jet_LeadingClusterCenterLambda.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, leadClusCenterLambda, thisJet->m_jet_LeadingClusterCenterLambda, -999);
 
       static SG::AuxElement::ConstAccessor<float> leadClusSecondR ("LeadingClusterSecondR");
-      if ( leadClusSecondR.isAvailable( *jet_itr ) ) {
-        m_jet_LeadingClusterSecondR.push_back( leadClusSecondR( *jet_itr ) );
-      } else { m_jet_LeadingClusterSecondR.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, leadClusSecondR, thisJet->m_jet_LeadingClusterSecondR, -999);
 
       static SG::AuxElement::ConstAccessor<char> clean_passLooseBad ("clean_passLooseBad");
-      if ( clean_passLooseBad.isAvailable( *jet_itr ) ) {
-        m_jet_clean_passLooseBad.push_back( clean_passLooseBad( *jet_itr ) );
-      } else { m_jet_clean_passLooseBad.push_back( -999 ); }
+      safeFill<char, int>(jet_itr, clean_passLooseBad, thisJet->m_jet_clean_passLooseBad, -999);
 
       static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
-      if ( clean_passLooseBadUgly.isAvailable( *jet_itr ) ) {
-        m_jet_clean_passLooseBadUgly.push_back( clean_passLooseBadUgly( *jet_itr ) );
-      } else { m_jet_clean_passLooseBadUgly.push_back( -999 ); }
+      safeFill<char, int>(jet_itr, clean_passLooseBadUgly, thisJet->m_jet_clean_passLooseBadUgly, -999);
 
       static SG::AuxElement::ConstAccessor<char> clean_passTightBad ("clean_passTightBad");
-      if ( clean_passTightBad.isAvailable( *jet_itr ) ) {
-        m_jet_clean_passTightBad.push_back( clean_passTightBad( *jet_itr ) );
-      } else { m_jet_clean_passTightBad.push_back( -999 ); }
+      safeFill<char, int>(jet_itr, clean_passTightBad, thisJet->m_jet_clean_passTightBad, -999);
 
       static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
-      if ( clean_passTightBadUgly.isAvailable( *jet_itr ) ) {
-        m_jet_clean_passTightBadUgly.push_back( clean_passTightBadUgly( *jet_itr ) );
-      } else { m_jet_clean_passTightBadUgly.push_back( -999 ); }
+      safeFill<char, int>(jet_itr, clean_passTightBadUgly, thisJet->m_jet_clean_passTightBadUgly, -999);
 
     } // clean
 
     if ( m_jetInfoSwitch->m_energy ) {
 
       static SG::AuxElement::ConstAccessor<float> HECf ("HECFrac");
-      if ( HECf.isAvailable( *jet_itr ) ) {
-        m_jet_HECf.push_back( HECf( *jet_itr ) );
-      } else { m_jet_HECf.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, HECf, thisJet->m_jet_HECf, -999);
 
       static SG::AuxElement::ConstAccessor<float> EMf ("EMFrac");
-      if ( EMf.isAvailable( *jet_itr ) ) {
-        m_jet_EMf.push_back( EMf( *jet_itr ) );
-      } else { m_jet_EMf.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, EMf, thisJet->m_jet_EMf, -999);
 
       static SG::AuxElement::ConstAccessor<float> centroidR ("CentroidR");
-      if ( centroidR.isAvailable( *jet_itr ) ) {
-        m_jet_centroidR.push_back( centroidR( *jet_itr ) );
-      } else { m_jet_centroidR.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, centroidR, thisJet->m_jet_centroidR, -999);
 
       static SG::AuxElement::ConstAccessor<float> fracSampMax ("FracSamplingMax");
-      if ( fracSampMax.isAvailable( *jet_itr ) ) {
-        m_jet_fracSampMax.push_back( fracSampMax( *jet_itr ) );
-      } else { m_jet_fracSampMax.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, fracSampMax, thisJet->m_jet_fracSampMax, -999);
 
       static SG::AuxElement::ConstAccessor<int> fracSampMaxIdx ("FracSamplingMaxIndex");
-      if ( fracSampMaxIdx.isAvailable( *jet_itr ) ) {
-        m_jet_fracSampMaxIdx.push_back( fracSampMaxIdx( *jet_itr ) );
-      } else { m_jet_fracSampMaxIdx.push_back( -999 ); }
+      safeFill<int, float>(jet_itr, fracSampMaxIdx, thisJet->m_jet_fracSampMaxIdx, -999);
 
       static SG::AuxElement::ConstAccessor<float> lowEtFrac ("LowEtConstituentsFrac");
-      if ( lowEtFrac.isAvailable( *jet_itr ) ) {
-        m_jet_lowEtFrac.push_back( lowEtFrac( *jet_itr ) );
-      } else { m_jet_lowEtFrac.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, lowEtFrac, thisJet->m_jet_lowEtFrac, -999);
 
       static SG::AuxElement::ConstAccessor<int> muonSegCount ("GhostMuonSegmentCount");
-      if ( muonSegCount.isAvailable( *jet_itr ) ) {
-        m_jet_muonSegCount.push_back( muonSegCount( *jet_itr ) );
-      } else { m_jet_muonSegCount.push_back( -999 ); }
+      safeFill<int, float>(jet_itr, muonSegCount, thisJet->m_jet_muonSegCount, -999);
 
       static SG::AuxElement::ConstAccessor<float> width ("Width");
-      if ( width.isAvailable( *jet_itr ) ) {
-        m_jet_width.push_back( width( *jet_itr ) );
-      } else { m_jet_width.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, width, thisJet->m_jet_width, -999);
 
     } // energy
+
 
     // each step of the calibration sequence
     if ( m_jetInfoSwitch->m_scales ) {
@@ -1747,48 +1701,48 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       bool status(false);
       // EM Scale
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEMScaleMomentum", fourVec );
-      if( status ) { m_jet_emPt.push_back( fourVec.Pt() / m_units ); }
-      else { m_jet_emPt.push_back( -999 ); }
+      if( status ) { thisJet->m_jet_emPt.push_back( fourVec.Pt() / m_units ); }
+      else { thisJet->m_jet_emPt.push_back( -999 ); }
       // Constit Scale
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetConstitScaleMomentum", fourVec );
-      if( status ) { m_jet_constPt.push_back( fourVec.Pt() / m_units ); }
-      else { m_jet_constPt.push_back( -999 ); }
+      if( status ) { thisJet->m_jet_constPt.push_back( fourVec.Pt() / m_units ); }
+      else { thisJet->m_jet_constPt.push_back( -999 ); }
       // Pileup Scale
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum", fourVec );
-      if( status ) { m_jet_pileupPt.push_back( fourVec.Pt() / m_units ); }
-      else { m_jet_pileupPt.push_back( -999 ); }
+      if( status ) { thisJet->m_jet_pileupPt.push_back( fourVec.Pt() / m_units ); }
+      else { thisJet->m_jet_pileupPt.push_back( -999 ); }
       // OriginConstit Scale
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetOriginConstitScaleMomentum", fourVec );
-      if( status ) { m_jet_originConstitPt.push_back( fourVec.Pt() / m_units ); }
-      else { m_jet_originConstitPt.push_back( -999 ); }
+      if( status ) { thisJet->m_jet_originConstitPt.push_back( fourVec.Pt() / m_units ); }
+      else { thisJet->m_jet_originConstitPt.push_back( -999 ); }
       // EtaJES Scale
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetEtaJESScaleMomentum", fourVec );
-      if( status ) { m_jet_etaJESPt.push_back( fourVec.Pt() / m_units ); }
-      else { m_jet_etaJESPt.push_back( -999 ); }
+      if( status ) { thisJet->m_jet_etaJESPt.push_back( fourVec.Pt() / m_units ); }
+      else { thisJet->m_jet_etaJESPt.push_back( -999 ); }
       // GSC Scale
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetGSCScaleMomentum", fourVec );
-      if( status ) { m_jet_gscPt.push_back( fourVec.Pt() / m_units ); }
-      else { m_jet_gscPt.push_back( -999 ); }
+      if( status ) { thisJet->m_jet_gscPt.push_back( fourVec.Pt() / m_units ); }
+      else { thisJet->m_jet_gscPt.push_back( -999 ); }
       // only available in data
       status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetInsituScaleMomentum", fourVec );
-      if(status) { m_jet_insituPt.push_back( fourVec.Pt() / m_units ); }
-      else { m_jet_insituPt.push_back( -999 ); }
+      if(status) { thisJet->m_jet_insituPt.push_back( fourVec.Pt() / m_units ); }
+      else { thisJet->m_jet_insituPt.push_back( -999 ); }
     }
 
     if ( m_jetInfoSwitch->m_layer ) {
       static SG::AuxElement::ConstAccessor< std::vector<float> > ePerSamp ("EnergyPerSampling");
       if ( ePerSamp.isAvailable( *jet_itr ) ) {
-        m_jet_ePerSamp.push_back( ePerSamp( *jet_itr ) );
-        m_jet_ePerSamp.back();
-        std::transform((m_jet_ePerSamp.back()).begin(),
-            (m_jet_ePerSamp.back()).end(),
-            (m_jet_ePerSamp.back()).begin(),
+        thisJet->m_jet_ePerSamp.push_back( ePerSamp( *jet_itr ) );
+        thisJet->m_jet_ePerSamp.back();
+        std::transform((thisJet->m_jet_ePerSamp.back()).begin(),
+            (thisJet->m_jet_ePerSamp.back()).end(),
+            (thisJet->m_jet_ePerSamp.back()).begin(),
             std::bind2nd(std::divides<float>(), m_units));
       } else {
         // could push back a vector of 24...
         // ... waste of space vs prevention of out of range down stream
         std::vector<float> junk(1,-999);
-        m_jet_ePerSamp.push_back( junk );
+        thisJet->m_jet_ePerSamp.push_back( junk );
       }
     }
 
@@ -1811,106 +1765,106 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
         std::vector<float> junkFlt(1,-999);
 
         if ( nTrk1000.isAvailable( *jet_itr ) ) {
-          m_jet_NTrkPt1000.push_back( nTrk1000( *jet_itr ) );
-        } else { m_jet_NTrkPt1000.push_back( junkInt ); }
+          thisJet->m_jet_NTrkPt1000.push_back( nTrk1000( *jet_itr ) );
+        } else { thisJet->m_jet_NTrkPt1000.push_back( junkInt ); }
 
         if ( sumPt1000.isAvailable( *jet_itr ) ) {
-          m_jet_SumPtPt1000.push_back( sumPt1000( *jet_itr ) );
-          std::transform((m_jet_SumPtPt1000.back()).begin(),
-              (m_jet_SumPtPt1000.back()).end(),
-              (m_jet_SumPtPt1000.back()).begin(),
+          thisJet->m_jet_SumPtPt1000.push_back( sumPt1000( *jet_itr ) );
+          std::transform((thisJet->m_jet_SumPtPt1000.back()).begin(),
+              (thisJet->m_jet_SumPtPt1000.back()).end(),
+              (thisJet->m_jet_SumPtPt1000.back()).begin(),
               std::bind2nd(std::divides<float>(), m_units));
-        } else { m_jet_SumPtPt1000.push_back( junkFlt ); }
+        } else { thisJet->m_jet_SumPtPt1000.push_back( junkFlt ); }
 
         if ( trkWidth1000.isAvailable( *jet_itr ) ) {
-          m_jet_TrkWPt1000.push_back( trkWidth1000( *jet_itr ) );
-        } else { m_jet_TrkWPt1000.push_back( junkFlt ); }
+          thisJet->m_jet_TrkWPt1000.push_back( trkWidth1000( *jet_itr ) );
+        } else { thisJet->m_jet_TrkWPt1000.push_back( junkFlt ); }
 
         if ( nTrk500.isAvailable( *jet_itr ) ) {
-          m_jet_NTrkPt500.push_back( nTrk500( *jet_itr ) );
-        } else { m_jet_NTrkPt500.push_back( junkInt ); }
+          thisJet->m_jet_NTrkPt500.push_back( nTrk500( *jet_itr ) );
+        } else { thisJet->m_jet_NTrkPt500.push_back( junkInt ); }
 
         if ( sumPt500.isAvailable( *jet_itr ) ) {
-          m_jet_SumPtPt500.push_back( sumPt500( *jet_itr ) );
-          std::transform((m_jet_SumPtPt500.back()).begin(),
-              (m_jet_SumPtPt500.back()).end(),
-              (m_jet_SumPtPt500.back()).begin(),
+          thisJet->m_jet_SumPtPt500.push_back( sumPt500( *jet_itr ) );
+          std::transform((thisJet->m_jet_SumPtPt500.back()).begin(),
+              (thisJet->m_jet_SumPtPt500.back()).end(),
+              (thisJet->m_jet_SumPtPt500.back()).begin(),
               std::bind2nd(std::divides<float>(), m_units));
-        } else { m_jet_SumPtPt500.push_back( junkFlt ); }
+        } else { thisJet->m_jet_SumPtPt500.push_back( junkFlt ); }
 
         if ( trkWidth500.isAvailable( *jet_itr ) ) {
-          m_jet_TrkWPt500.push_back( trkWidth500( *jet_itr ) );
-        } else { m_jet_TrkWPt500.push_back( junkFlt ); }
+          thisJet->m_jet_TrkWPt500.push_back( trkWidth500( *jet_itr ) );
+        } else { thisJet->m_jet_TrkWPt500.push_back( junkFlt ); }
 
         if ( jvf.isAvailable( *jet_itr ) ) {
-          m_jet_jvf.push_back( jvf( *jet_itr ) );
-        } else { m_jet_jvf.push_back( junkFlt ); }
+          thisJet->m_jet_jvf.push_back( jvf( *jet_itr ) );
+        } else { thisJet->m_jet_jvf.push_back( junkFlt ); }
 
       } // trackAll
 
       if ( m_jetInfoSwitch->m_trackPV && pvLocation >= 0 ) {
 
         if ( nTrk1000.isAvailable( *jet_itr ) ) {
-          m_jet_NTrkPt1000PV.push_back( nTrk1000( *jet_itr )[pvLocation] );
-        } else { m_jet_NTrkPt1000PV.push_back( -999 ); }
+          thisJet->m_jet_NTrkPt1000PV.push_back( nTrk1000( *jet_itr )[pvLocation] );
+        } else { thisJet->m_jet_NTrkPt1000PV.push_back( -999 ); }
 
         if ( sumPt1000.isAvailable( *jet_itr ) ) {
-          m_jet_SumPtPt1000PV.push_back( sumPt1000( *jet_itr )[pvLocation] / m_units );
-        } else { m_jet_SumPtPt1000PV.push_back( -999 ); }
+          thisJet->m_jet_SumPtPt1000PV.push_back( sumPt1000( *jet_itr )[pvLocation] / m_units );
+        } else { thisJet->m_jet_SumPtPt1000PV.push_back( -999 ); }
 
         if ( trkWidth1000.isAvailable( *jet_itr ) ) {
-          m_jet_TrkWPt1000PV.push_back( trkWidth1000( *jet_itr )[pvLocation] );
-        } else { m_jet_TrkWPt1000PV.push_back( -999 ); }
+          thisJet->m_jet_TrkWPt1000PV.push_back( trkWidth1000( *jet_itr )[pvLocation] );
+        } else { thisJet->m_jet_TrkWPt1000PV.push_back( -999 ); }
 
         if ( nTrk500.isAvailable( *jet_itr ) ) {
-          m_jet_NTrkPt500PV.push_back( nTrk500( *jet_itr )[pvLocation] );
-        } else { m_jet_NTrkPt500PV.push_back( -999 ); }
+          thisJet->m_jet_NTrkPt500PV.push_back( nTrk500( *jet_itr )[pvLocation] );
+        } else { thisJet->m_jet_NTrkPt500PV.push_back( -999 ); }
 
         if ( sumPt500.isAvailable( *jet_itr ) ) {
-          m_jet_SumPtPt500PV.push_back( sumPt500( *jet_itr )[pvLocation] / m_units );
-        } else { m_jet_SumPtPt500PV.push_back( -999 ); }
+          thisJet->m_jet_SumPtPt500PV.push_back( sumPt500( *jet_itr )[pvLocation] / m_units );
+        } else { thisJet->m_jet_SumPtPt500PV.push_back( -999 ); }
 
         if ( trkWidth500.isAvailable( *jet_itr ) ) {
-          m_jet_TrkWPt500PV.push_back( trkWidth500( *jet_itr )[pvLocation] );
-        } else { m_jet_TrkWPt500PV.push_back( -999 ); }
+          thisJet->m_jet_TrkWPt500PV.push_back( trkWidth500( *jet_itr )[pvLocation] );
+        } else { thisJet->m_jet_TrkWPt500PV.push_back( -999 ); }
 
         if ( jvf.isAvailable( *jet_itr ) ) {
-          m_jet_jvfPV.push_back( jvf( *jet_itr )[pvLocation] );
-        } else { m_jet_jvfPV.push_back( -999 ); }
+          thisJet->m_jet_jvfPV.push_back( jvf( *jet_itr )[pvLocation] );
+        } else { thisJet->m_jet_jvfPV.push_back( -999 ); }
 
       } // trackPV
 
       static SG::AuxElement::ConstAccessor< float > jvt ("Jvt");
       if ( jvt.isAvailable( *jet_itr ) ) {
-        m_jet_Jvt.push_back( jvt( *jet_itr ) );
-      } else { m_jet_Jvt.push_back( -999 ); }
+        thisJet->m_jet_Jvt.push_back( jvt( *jet_itr ) );
+      } else { thisJet->m_jet_Jvt.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor< float > jvtJvfcorr ("JvtJvfcorr");
       if ( jvtJvfcorr.isAvailable( *jet_itr ) ) {
-        m_jet_JvtJvfcorr.push_back( jvtJvfcorr( *jet_itr ) );
-      } else { m_jet_JvtJvfcorr.push_back( -999 ); }
+        thisJet->m_jet_JvtJvfcorr.push_back( jvtJvfcorr( *jet_itr ) );
+      } else { thisJet->m_jet_JvtJvfcorr.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor< float > jvtRpt ("JvtRpt");
       if ( jvtRpt.isAvailable( *jet_itr ) ) {
-        m_jet_JvtRpt.push_back( jvtRpt( *jet_itr ) );
-      } else { m_jet_JvtRpt.push_back( -999 ); }
+        thisJet->m_jet_JvtRpt.push_back( jvtRpt( *jet_itr ) );
+      } else { thisJet->m_jet_JvtRpt.push_back( -999 ); }
 
 //      static SG::AuxElement::ConstAccessor<float> ghostTrackAssFrac("GhostTrackAssociationFraction");
 //      if ( ghostTrackAssFrac.isAvailable( *jet_itr) ) {
-//        m_jet_ghostTrackAssFrac.push_back( ghostTrackAssFrac( *jet_itr) );
-//      } else { m_jet_ghostTrackAssFrac.push_back( -999 ) ; }
+//        thisJet->m_jet_ghostTrackAssFrac.push_back( ghostTrackAssFrac( *jet_itr) );
+//      } else { thisJet->m_jet_ghostTrackAssFrac.push_back( -999 ) ; }
 
     }
 
     if ( m_jetInfoSwitch->m_allTrack ) {
       static SG::AuxElement::ConstAccessor< int > ghostTrackCount("GhostTrackCount");
       if ( ghostTrackCount.isAvailable( *jet_itr ) ) {
-        m_jet_GhostTrackCount.push_back( ghostTrackCount( *jet_itr ) );
-      } else { m_jet_GhostTrackCount.push_back( -999 ); }
+        thisJet->m_jet_GhostTrackCount.push_back( ghostTrackCount( *jet_itr ) );
+      } else { thisJet->m_jet_GhostTrackCount.push_back( -999 ); }
       static SG::AuxElement::ConstAccessor< float > ghostTrackPt ("GhostTrackPt");
       if ( ghostTrackPt.isAvailable( *jet_itr ) ) {
-        m_jet_GhostTrackPt.push_back( ghostTrackPt( *jet_itr ) / m_units );
-      } else { m_jet_GhostTrackPt.push_back( -999 ); }
+        thisJet->m_jet_GhostTrackPt.push_back( ghostTrackPt( *jet_itr ) / m_units );
+      } else { thisJet->m_jet_GhostTrackPt.push_back( -999 ); }
       std::vector<float> pt;
       std::vector<float> qOverP;
       std::vector<float> eta;
@@ -1985,34 +1939,34 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
           }
         }
       } // if ghostTrack available
-      m_jet_GhostTrack_pt. push_back( pt  );
-      m_jet_GhostTrack_qOverP. push_back( qOverP );
-      m_jet_GhostTrack_eta.push_back( eta );
-      m_jet_GhostTrack_phi.push_back( phi );
-      m_jet_GhostTrack_e.  push_back( e   );
-      m_jet_GhostTrack_d0. push_back( d0  );
-      m_jet_GhostTrack_z0. push_back( z0  );
+      thisJet->m_jet_GhostTrack_pt. push_back( pt  );
+      thisJet->m_jet_GhostTrack_qOverP. push_back( qOverP );
+      thisJet->m_jet_GhostTrack_eta.push_back( eta );
+      thisJet->m_jet_GhostTrack_phi.push_back( phi );
+      thisJet->m_jet_GhostTrack_e.  push_back( e   );
+      thisJet->m_jet_GhostTrack_d0. push_back( d0  );
+      thisJet->m_jet_GhostTrack_z0. push_back( z0  );
       if( m_jetInfoSwitch->m_allTrackDetail ) {
-        m_jet_GhostTrack_nPixHits.push_back( nPixHits );
-        m_jet_GhostTrack_nSCTHits.push_back( nSCTHits );
-        m_jet_GhostTrack_nTRTHits.push_back( nTRTHits );
-        m_jet_GhostTrack_nPixSharedHits.push_back( nPixSharedHits );
-        m_jet_GhostTrack_nPixSplitHits.push_back( nPixSplitHits );
-        m_jet_GhostTrack_nIMLPixHits.push_back( nIMLPixHits );
-        m_jet_GhostTrack_nIMLPixSharedHits.push_back( nIMLPixSharedHits );
-        m_jet_GhostTrack_nIMLPixSplitHits.push_back( nIMLPixSplitHits );
-        m_jet_GhostTrack_nNIMLPixHits.push_back( nNIMLPixHits );
-        m_jet_GhostTrack_nNIMLPixSharedHits.push_back( nNIMLPixSharedHits );
-        m_jet_GhostTrack_nNIMLPixSplitHits.push_back( nNIMLPixSplitHits );
+        thisJet->m_jet_GhostTrack_nPixHits.push_back( nPixHits );
+        thisJet->m_jet_GhostTrack_nSCTHits.push_back( nSCTHits );
+        thisJet->m_jet_GhostTrack_nTRTHits.push_back( nTRTHits );
+        thisJet->m_jet_GhostTrack_nPixSharedHits.push_back( nPixSharedHits );
+        thisJet->m_jet_GhostTrack_nPixSplitHits.push_back( nPixSplitHits );
+        thisJet->m_jet_GhostTrack_nIMLPixHits.push_back( nIMLPixHits );
+        thisJet->m_jet_GhostTrack_nIMLPixSharedHits.push_back( nIMLPixSharedHits );
+        thisJet->m_jet_GhostTrack_nIMLPixSplitHits.push_back( nIMLPixSplitHits );
+        thisJet->m_jet_GhostTrack_nNIMLPixHits.push_back( nNIMLPixHits );
+        thisJet->m_jet_GhostTrack_nNIMLPixSharedHits.push_back( nNIMLPixSharedHits );
+        thisJet->m_jet_GhostTrack_nNIMLPixSplitHits.push_back( nNIMLPixSplitHits );
       }
     } // allTrack switch
 
     if( m_jetInfoSwitch->m_constituent ) {
-      m_jet_numConstituents.push_back( jet_itr->numConstituents() );
+      thisJet->m_jet_numConstituents.push_back( jet_itr->numConstituents() );
     }
 
     if( m_jetInfoSwitch->m_constituentAll ) {
-      m_jet_constitWeights.push_back( jet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
+      thisJet->m_jet_constitWeights.push_back( jet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
       std::vector<float> pt;
       std::vector<float> eta;
       std::vector<float> phi;
@@ -2032,10 +1986,10 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
           e.  push_back( constit->e() / m_units  );
         }
       }
-      m_jet_constit_pt. push_back( pt  );
-      m_jet_constit_eta.push_back( eta );
-      m_jet_constit_phi.push_back( phi );
-      m_jet_constit_e.  push_back( e   );
+      thisJet->m_jet_constit_pt. push_back( pt  );
+      thisJet->m_jet_constit_eta.push_back( eta );
+      thisJet->m_jet_constit_phi.push_back( phi );
+      thisJet->m_jet_constit_e.  push_back( e   );
     }
 
     if ( m_jetInfoSwitch->m_flavTag) {
@@ -2043,49 +1997,46 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       if ( !m_DC14 ) {
 
         static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
-        if ( SV0_significance3DAcc.isAvailable(*myBTag) ) { m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }
+        if ( SV0_significance3DAcc.isAvailable(*myBTag) ) { thisJet->m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }
 
-        m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
-        m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
+        thisJet->m_jet_sv1.push_back(     myBTag -> SV1_loglikelihoodratio()   );
+        thisJet->m_jet_ip3d.push_back(    myBTag -> IP3D_loglikelihoodratio()  );
 
       }
-      m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
-      m_jet_mv1.push_back(     myBTag -> MV1_discriminant()         );
+      thisJet->m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
+      thisJet->m_jet_mv1.push_back(     myBTag -> MV1_discriminant()         );
 
       //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
       double val(-999);
       myBTag->variable<double>("MV2c00", "discriminant", val);
-      m_jet_mv2c00.push_back( val );
+      thisJet->m_jet_mv2c00.push_back( val );
       myBTag->variable<double>("MV2c20", "discriminant", val);
-      m_jet_mv2c20.push_back( val );
+      thisJet->m_jet_mv2c20.push_back( val );
 
       // flavor groups truth definition
       static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
-      if( hadConeExclTruthLabel.isAvailable( *jet_itr ) ) {
-        m_jet_hadConeExclTruthLabel.push_back( hadConeExclTruthLabel(*jet_itr) );
-      } else {
-        m_jet_hadConeExclTruthLabel.push_back( -999 );
-      }
+      safeFill<int, int>(jet_itr, hadConeExclTruthLabel, thisJet->m_jet_hadConeExclTruthLabel, -999);
+
     }
 
     if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
       for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
         switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
-          case 30 : this->Fill_Fix30( jet_itr );
+          case 30 : this->Fill_Fix30( jet_itr, thisJet );
             break;
-          case 50 : this->Fill_Fix50( jet_itr );
+          case 50 : this->Fill_Fix50( jet_itr, thisJet );
             break;
-          case 60 : this->Fill_Fix60( jet_itr );
+          case 60 : this->Fill_Fix60( jet_itr, thisJet );
             break;
-          case 70 : this->Fill_Fix70( jet_itr );
+          case 70 : this->Fill_Fix70( jet_itr, thisJet );
             break;
-          case 77 : this->Fill_Fix77( jet_itr );
+          case 77 : this->Fill_Fix77( jet_itr, thisJet );
             break;
-          case 80 : this->Fill_Fix80( jet_itr );
+          case 80 : this->Fill_Fix80( jet_itr, thisJet );
             break;
-          case 85 : this->Fill_Fix85( jet_itr );
+          case 85 : this->Fill_Fix85( jet_itr, thisJet );
             break;
-          case 90 : this->Fill_Fix90( jet_itr );
+          case 90 : this->Fill_Fix90( jet_itr, thisJet );
             break;
         }
       }
@@ -2094,19 +2045,19 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) {
       for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
         switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
-          case 30 : this->Fill_Flt30( jet_itr );
+          case 30 : this->Fill_Flt30( jet_itr, thisJet );
             break;
-          case 40 : this->Fill_Flt40( jet_itr );
+          case 40 : this->Fill_Flt40( jet_itr, thisJet );
             break;
-          case 50 : this->Fill_Flt50( jet_itr );
+          case 50 : this->Fill_Flt50( jet_itr, thisJet );
             break;
-          case 60 : this->Fill_Flt60( jet_itr );
+          case 60 : this->Fill_Flt60( jet_itr, thisJet );
             break;
-          case 70 : this->Fill_Flt70( jet_itr );
+          case 70 : this->Fill_Flt70( jet_itr, thisJet );
             break;
-          case 77 : this->Fill_Flt77( jet_itr );
+          case 77 : this->Fill_Flt77( jet_itr, thisJet );
             break;
-          case 85 : this->Fill_Flt85( jet_itr );
+          case 85 : this->Fill_Flt85( jet_itr, thisJet );
             break;
         }
       }
@@ -2115,53 +2066,34 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
     if ( m_jetInfoSwitch->m_area ) {
 
       static SG::AuxElement::ConstAccessor<float> ghostArea("JetGhostArea");
-      if ( ghostArea.isAvailable( *jet_itr) ) {
-        m_jet_ghostArea.push_back( ghostArea( *jet_itr) );
-      } else { m_jet_ghostArea.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, ghostArea, thisJet->m_jet_ghostArea, -999);
 
       static SG::AuxElement::ConstAccessor<float> activeArea("ActiveArea");
-      if ( activeArea.isAvailable( *jet_itr) ) {
-        m_jet_activeArea.push_back( activeArea( *jet_itr) );
-      } else { m_jet_activeArea.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, activeArea, thisJet->m_jet_activeArea, -999);
 
       static SG::AuxElement::ConstAccessor<float> voronoiArea("VoronoiArea");
-      if ( voronoiArea.isAvailable( *jet_itr) ) {
-        m_jet_voronoiArea.push_back( voronoiArea( *jet_itr) );
-      } else { m_jet_voronoiArea.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, voronoiArea, thisJet->m_jet_voronoiArea, -999);
 
       static SG::AuxElement::ConstAccessor<float> activeArea_pt("ActiveArea4vec_pt");
-      if ( activeArea_pt.isAvailable( *jet_itr) ) {
-        m_jet_activeArea_pt.push_back( activeArea_pt( *jet_itr) );
-      } else { m_jet_activeArea_pt.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, activeArea_pt, thisJet->m_jet_activeArea_pt, -999);
 
       static SG::AuxElement::ConstAccessor<float> activeArea_eta("ActiveArea4vec_eta");
-      if ( activeArea_eta.isAvailable( *jet_itr) ) {
-        m_jet_activeArea_eta.push_back( activeArea_eta( *jet_itr) );
-      } else { m_jet_activeArea_eta.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, activeArea_eta, thisJet->m_jet_activeArea_eta, -999);
 
       static SG::AuxElement::ConstAccessor<float> activeArea_phi("ActiveArea4vec_phi");
-      if ( activeArea_phi.isAvailable( *jet_itr) ) {
-        m_jet_activeArea_phi.push_back( activeArea_phi( *jet_itr) );
-      } else { m_jet_activeArea_phi.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, activeArea_phi, thisJet->m_jet_activeArea_phi, -999);
 
       static SG::AuxElement::ConstAccessor<float> activeArea_m("ActiveArea4vec_m");
-      if ( activeArea_m.isAvailable( *jet_itr) ) {
-        m_jet_activeArea_m.push_back( activeArea_m( *jet_itr) );
-      } else { m_jet_activeArea_m.push_back( -999 ); }
-
+      safeFill<float, float>(jet_itr, activeArea_m, thisJet->m_jet_activeArea_m, -999);
     }
 
     if ( m_jetInfoSwitch->m_truth && m_isMC ) {
 
       static SG::AuxElement::ConstAccessor<int> ConeTruthLabelID ("ConeTruthLabelID");
-      if ( ConeTruthLabelID.isAvailable( *jet_itr) ) {
-        m_jet_truthConeLabelID.push_back( ConeTruthLabelID( *jet_itr) );
-      } else { m_jet_truthConeLabelID.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, ConeTruthLabelID, thisJet->m_jet_truthConeLabelID, -999);
 
       static SG::AuxElement::ConstAccessor<int> TruthCount ("TruthCount");
-      if ( TruthCount.isAvailable( *jet_itr) ) {
-        m_jet_truthCount.push_back( TruthCount( *jet_itr) );
-      } else { m_jet_truthCount.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, TruthCount, thisJet->m_jet_truthCount, -999);
 
 //    seems to be empty
 //      static SG::AuxElement::ConstAccessor<float> TruthPt ("TruthPt");
@@ -2170,41 +2102,31 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
 //      } else { m_jet_truthPt.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_B ("TruthLabelDeltaR_B");
-      if ( TruthLabelDeltaR_B.isAvailable( *jet_itr) ) {
-        m_jet_truthDr_B.push_back( TruthLabelDeltaR_B( *jet_itr) );
-      } else { m_jet_truthDr_B.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, TruthLabelDeltaR_B, thisJet->m_jet_truthDr_B, -999);
 
       static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_C ("TruthLabelDeltaR_C");
-      if ( TruthLabelDeltaR_C.isAvailable( *jet_itr) ) {
-        m_jet_truthDr_C.push_back( TruthLabelDeltaR_C( *jet_itr) );
-      } else { m_jet_truthDr_C.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, TruthLabelDeltaR_C, thisJet->m_jet_truthDr_C, -999);
 
       static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_T ("TruthLabelDeltaR_T");
-      if ( TruthLabelDeltaR_T.isAvailable( *jet_itr) ) {
-        m_jet_truthDr_T.push_back( TruthLabelDeltaR_T( *jet_itr) );
-      } else { m_jet_truthDr_T.push_back( -999 ) ; }
+      safeFill<float, float>(jet_itr, TruthLabelDeltaR_T, thisJet->m_jet_truthDr_T, -999);
 
       static SG::AuxElement::ConstAccessor<int> partonLabel("PartonTruthLabelID");
-      if ( partonLabel.isAvailable( *jet_itr) ) {
-        m_jet_partonTruthID.push_back( partonLabel( *jet_itr) );
-      } else { m_jet_partonTruthID.push_back( -999 ) ; }
+      safeFill<int, int>(jet_itr, partonLabel, thisJet->m_jet_partonTruthID, -999);
 
       static SG::AuxElement::ConstAccessor<float> ghostTruthAssFrac("GhostTruthAssociationFraction");
-      if ( ghostTruthAssFrac.isAvailable( *jet_itr) ) {
-        m_jet_ghostTruthAssFrac.push_back( ghostTruthAssFrac( *jet_itr) );
-      } else { m_jet_ghostTruthAssFrac.push_back( -999 ) ; }
+      safeFill<float, float>(jet_itr, ghostTruthAssFrac, thisJet->m_jet_ghostTruthAssFrac, -999);
 
       const xAOD::Jet* truthJet = HelperFunctions::getLink<xAOD::Jet>( jet_itr, "GhostTruthAssociationLink" );
       if(truthJet) {
-        m_jet_truth_pt.push_back ( truthJet->pt() / m_units );
-        m_jet_truth_eta.push_back( truthJet->eta() );
-        m_jet_truth_phi.push_back( truthJet->phi() );
-        m_jet_truth_E.push_back  ( truthJet->e() / m_units );
+        thisJet->m_jet_truth_pt.push_back ( truthJet->pt() / m_units );
+        thisJet->m_jet_truth_eta.push_back( truthJet->eta() );
+        thisJet->m_jet_truth_phi.push_back( truthJet->phi() );
+        thisJet->m_jet_truth_E.push_back  ( truthJet->e() / m_units );
       } else {
-        m_jet_truth_pt.push_back ( -999 );
-        m_jet_truth_eta.push_back( -999 );
-        m_jet_truth_phi.push_back( -999 );
-        m_jet_truth_E.push_back  ( -999 );
+        thisJet->m_jet_truth_pt.push_back ( -999 );
+        thisJet->m_jet_truth_eta.push_back( -999 );
+        thisJet->m_jet_truth_phi.push_back( -999 );
+        thisJet->m_jet_truth_E.push_back  ( -999 );
       }
 
     }
@@ -2215,85 +2137,53 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       // B-Hadron Details
       //
       static SG::AuxElement::ConstAccessor<int> GhostBHadronsFinalCount ("GhostBHadronsFinalCount");
-      if ( GhostBHadronsFinalCount.isAvailable( *jet_itr) ) {
-        m_jet_truthCount_BhadFinal.push_back( GhostBHadronsFinalCount( *jet_itr) );
-      } else { m_jet_truthCount_BhadFinal.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, GhostBHadronsFinalCount, thisJet->m_jet_truthCount_BhadFinal, -999);
 
       static SG::AuxElement::ConstAccessor<int> GhostBHadronsInitialCount ("GhostBHadronsInitialCount");
-      if ( GhostBHadronsInitialCount.isAvailable( *jet_itr) ) {
-        m_jet_truthCount_BhadInit.push_back( GhostBHadronsInitialCount( *jet_itr) );
-      } else { m_jet_truthCount_BhadInit.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, GhostBHadronsInitialCount, thisJet->m_jet_truthCount_BhadInit, -999);
 
       static SG::AuxElement::ConstAccessor<int> GhostBQuarksFinalCount ("GhostBQuarksFinalCount");
-      if ( GhostBQuarksFinalCount.isAvailable( *jet_itr) ) {
-        m_jet_truthCount_BQFinal.push_back( GhostBQuarksFinalCount( *jet_itr) );
-      } else { m_jet_truthCount_BQFinal.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, GhostBQuarksFinalCount, thisJet->m_jet_truthCount_BQFinal, -999);
 
       static SG::AuxElement::ConstAccessor<float> GhostBHadronsFinalPt ("GhostBHadronsFinalPt");
-      if ( GhostBHadronsFinalPt.isAvailable( *jet_itr) ) {
-        m_jet_truthPt_BhadFinal.push_back( GhostBHadronsFinalPt( *jet_itr) );
-      } else { m_jet_truthPt_BhadFinal.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, GhostBHadronsFinalPt, thisJet->m_jet_truthPt_BhadFinal, -999);
 
       static SG::AuxElement::ConstAccessor<float> GhostBHadronsInitialPt ("GhostBHadronsInitialPt");
-      if ( GhostBHadronsInitialPt.isAvailable( *jet_itr) ) {
-        m_jet_truthPt_BhadInit.push_back( GhostBHadronsInitialPt( *jet_itr) );
-      } else { m_jet_truthPt_BhadInit.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, GhostBHadronsInitialPt, thisJet->m_jet_truthPt_BhadInit, -999);
 
       static SG::AuxElement::ConstAccessor<float> GhostBQuarksFinalPt ("GhostBQuarksFinalPt");
-      if ( GhostBQuarksFinalPt.isAvailable( *jet_itr) ) {
-        m_jet_truthPt_BQFinal.push_back( GhostBQuarksFinalPt( *jet_itr) );
-      } else { m_jet_truthPt_BQFinal.push_back( -999 ); }
-
+      safeFill<float, float>(jet_itr, GhostBQuarksFinalPt, thisJet->m_jet_truthPt_BQFinal, -999);
 
       //
       // C-Hadron Details
       //
       static SG::AuxElement::ConstAccessor<int> GhostCHadronsFinalCount ("GhostCHadronsFinalCount");
-      if ( GhostCHadronsFinalCount.isAvailable( *jet_itr) ) {
-        m_jet_truthCount_ChadFinal.push_back( GhostCHadronsFinalCount( *jet_itr) );
-      } else { m_jet_truthCount_ChadFinal.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, GhostCHadronsFinalCount, thisJet->m_jet_truthCount_ChadFinal, -999);
 
       static SG::AuxElement::ConstAccessor<int> GhostCHadronsInitialCount ("GhostCHadronsInitialCount");
-      if ( GhostCHadronsInitialCount.isAvailable( *jet_itr) ) {
-        m_jet_truthCount_ChadInit.push_back( GhostCHadronsInitialCount( *jet_itr) );
-      } else { m_jet_truthCount_ChadInit.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, GhostCHadronsInitialCount, thisJet->m_jet_truthCount_ChadInit, -999);
 
       static SG::AuxElement::ConstAccessor<int> GhostCQuarksFinalCount ("GhostCQuarksFinalCount");
-      if ( GhostCQuarksFinalCount.isAvailable( *jet_itr) ) {
-        m_jet_truthCount_CQFinal.push_back( GhostCQuarksFinalCount( *jet_itr) );
-      } else { m_jet_truthCount_CQFinal.push_back( -999 ); }
+      safeFill<int, int>(jet_itr, GhostCQuarksFinalCount, thisJet->m_jet_truthCount_CQFinal, -999);
 
       static SG::AuxElement::ConstAccessor<float> GhostCHadronsFinalPt ("GhostCHadronsFinalPt");
-      if ( GhostCHadronsFinalPt.isAvailable( *jet_itr) ) {
-        m_jet_truthPt_ChadFinal.push_back( GhostCHadronsFinalPt( *jet_itr) );
-      } else { m_jet_truthPt_ChadFinal.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, GhostCHadronsFinalPt, thisJet->m_jet_truthPt_ChadFinal, -999);
 
       static SG::AuxElement::ConstAccessor<float> GhostCHadronsInitialPt ("GhostCHadronsInitialPt");
-      if ( GhostCHadronsInitialPt.isAvailable( *jet_itr) ) {
-        m_jet_truthPt_ChadInit.push_back( GhostCHadronsInitialPt( *jet_itr) );
-      } else { m_jet_truthPt_ChadInit.push_back( -999 ); }
+      safeFill<float, float>(jet_itr, GhostCHadronsInitialPt, thisJet->m_jet_truthPt_ChadInit, -999);
 
       static SG::AuxElement::ConstAccessor<float> GhostCQuarksFinalPt ("GhostCQuarksFinalPt");
-      if ( GhostCQuarksFinalPt.isAvailable( *jet_itr) ) {
-        m_jet_truthPt_CQFinal.push_back( GhostCQuarksFinalPt( *jet_itr) );
-      } else { m_jet_truthPt_CQFinal.push_back( -999 ); }
-
+      safeFill<float, float>(jet_itr, GhostCQuarksFinalPt, thisJet->m_jet_truthPt_CQFinal, -999);
 
       //
       // Tau Details
       //
       static SG::AuxElement::ConstAccessor<int> GhostTausFinalCount ("GhostTausFinalCount");
-      if ( GhostTausFinalCount.isAvailable( *jet_itr) ) {
-        m_jet_truthCount_TausFinal.push_back( GhostTausFinalCount( *jet_itr) );
-      } else { m_jet_truthCount_TausFinal.push_back( -999 ); }
-
-
-      /* THE ONLY UN-OFFICIAL PIECE OF CODE HERE USE WITH CAUTION */
+      safeFill<int, int>(jet_itr, GhostTausFinalCount, thisJet->m_jet_truthCount_TausFinal, -999);
+      
+      // THE ONLY UN-OFFICIAL PIECE OF CODE HERE USE WITH CAUTION 
       static SG::AuxElement::ConstAccessor<float> GhostTausFinalPt ("GhostTausFinalPt");
-      if ( GhostTausFinalPt.isAvailable( *jet_itr) ) {
-        m_jet_truthPt_TausFinal.push_back( GhostTausFinalPt( *jet_itr) );
-      } else { m_jet_truthPt_TausFinal.push_back( -999 ); }
-
+      safeFill<float, float>(jet_itr, GhostTausFinalPt, thisJet->m_jet_truthPt_TausFinal, -999);
 
       // light quark(1,2,3) , gluon (21 or 9), charm(4) and b(5)
       // GhostPartons should select for these pdgIds only
@@ -2304,301 +2194,304 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation ) {
       std::vector<const xAOD::TruthParticle*> truthPartons = jet_itr->getAssociatedObjects<xAOD::TruthParticle>("GhostPartons");
 
       if( truthPartons.size() == 0){
-        m_jet_truth_pdgId.push_back(-999);
+        thisJet->m_jet_truth_pdgId.push_back(-999);
       } else {
         int iParent = 0;
         for(unsigned int i=1; i < truthPartons.size(); ++i){
           if( (truthPartons.at(i)->pt() > 0.001) && (truthPartons.at(i)->e() > truthPartons.at(iParent)->e()) )
             iParent = i;
         }
-        m_jet_truth_pdgId.push_back(truthPartons.at(iParent)->pdgId());
-        m_jet_truth_partonPt.push_back(truthPartons.at(iParent)->pt() / m_units);
-        m_jet_truth_partonDR.push_back(truthPartons.at(iParent)->p4().DeltaR( jet_itr->p4() ));
+        thisJet->m_jet_truth_pdgId.push_back(truthPartons.at(iParent)->pdgId());
+        thisJet->m_jet_truth_partonPt.push_back(truthPartons.at(iParent)->pt() / m_units);
+        thisJet->m_jet_truth_partonDR.push_back(truthPartons.at(iParent)->p4().DeltaR( jet_itr->p4() ));
       }
 
 //    }
 
     }
 
-    this->FillJetsUser(jet_itr);
+    this->FillJetsUser(jet_itr, jetName);
 
-    m_njet++;
+    thisJet->N++;
 
   } // loop over jets
 }
 
-void HelpTreeBase::ClearJets() {
+void HelpTreeBase::ClearJets(const std::string jetName) {
 
-  m_njet = 0;
+  jetInfo* thisJet = m_jets[jetName];
+
+  thisJet->N = 0;
   if( m_jetInfoSwitch->m_kinematic ){
-    m_jet_pt.clear();
-    m_jet_eta.clear();
-    m_jet_phi.clear();
-    m_jet_E.clear();
+    thisJet->m_jet_pt.clear();
+    thisJet->m_jet_eta.clear();
+    thisJet->m_jet_phi.clear();
+    thisJet->m_jet_E.clear();
   }
+  
 
   // rapidity
   if( m_jetInfoSwitch->m_rapidity ) {
-    m_jet_rapidity.clear();
+    thisJet->m_jet_rapidity.clear();
   }
 
   // clean
   if( m_jetInfoSwitch->m_clean ) {
-    m_jet_time.clear();
-    m_jet_LArQuality.clear();
-    m_jet_hecq.clear();
-    m_jet_negE.clear();
-    m_jet_avLArQF.clear();
-    m_jet_bchCorrCell.clear();
-    m_jet_N90Const.clear();
-    m_jet_LArBadHVEFrac.clear();
-    m_jet_LArBadHVNCell.clear();
-    m_jet_OotFracClus5.clear();
-    m_jet_OotFracClus10.clear();
-    m_jet_LeadingClusterPt.clear();
-    m_jet_LeadingClusterSecondLambda.clear();
-    m_jet_LeadingClusterCenterLambda.clear();
-    m_jet_LeadingClusterSecondR.clear();
-    m_jet_clean_passLooseBad.clear();
-    m_jet_clean_passLooseBadUgly.clear();
-    m_jet_clean_passTightBad.clear();
-    m_jet_clean_passTightBadUgly.clear();
+    thisJet->m_jet_time.clear();
+    thisJet->m_jet_LArQuality.clear();
+    thisJet->m_jet_hecq.clear();
+    thisJet->m_jet_negE.clear();
+    thisJet->m_jet_avLArQF.clear();
+    thisJet->m_jet_bchCorrCell.clear();
+    thisJet->m_jet_N90Const.clear();
+    thisJet->m_jet_LArBadHVEFrac.clear();
+    thisJet->m_jet_LArBadHVNCell.clear();
+    thisJet->m_jet_OotFracClus5.clear();
+    thisJet->m_jet_OotFracClus10.clear();
+    thisJet->m_jet_LeadingClusterPt.clear();
+    thisJet->m_jet_LeadingClusterSecondLambda.clear();
+    thisJet->m_jet_LeadingClusterCenterLambda.clear();
+    thisJet->m_jet_LeadingClusterSecondR.clear();
+    thisJet->m_jet_clean_passLooseBad.clear();
+    thisJet->m_jet_clean_passLooseBadUgly.clear();
+    thisJet->m_jet_clean_passTightBad.clear();
+    thisJet->m_jet_clean_passTightBadUgly.clear();
   }
 
   // energy
   if ( m_jetInfoSwitch->m_energy ) {
-    m_jet_HECf.clear();
-    m_jet_EMf.clear();
-    m_jet_centroidR.clear();
-    m_jet_fracSampMax.clear();
-    m_jet_fracSampMaxIdx.clear();
-    m_jet_lowEtFrac.clear();
-    m_jet_muonSegCount.clear();
-    m_jet_width.clear();
+    thisJet->m_jet_HECf.clear();
+    thisJet->m_jet_EMf.clear();
+    thisJet->m_jet_centroidR.clear();
+    thisJet->m_jet_fracSampMax.clear();
+    thisJet->m_jet_fracSampMaxIdx.clear();
+    thisJet->m_jet_lowEtFrac.clear();
+    thisJet->m_jet_muonSegCount.clear();
+    thisJet->m_jet_width.clear();
   }
 
   // each step of the calibration sequence
   if ( m_jetInfoSwitch->m_scales ) {
-    m_jet_emPt.clear();
-    m_jet_constPt.clear();
-    m_jet_pileupPt.clear();
-    m_jet_originConstitPt.clear();
-    m_jet_etaJESPt.clear();
-    m_jet_gscPt.clear();
-    m_jet_insituPt.clear();
+    thisJet->m_jet_emPt.clear();
+    thisJet->m_jet_constPt.clear();
+    thisJet->m_jet_pileupPt.clear();
+    thisJet->m_jet_originConstitPt.clear();
+    thisJet->m_jet_etaJESPt.clear();
+    thisJet->m_jet_gscPt.clear();
+    thisJet->m_jet_insituPt.clear();
   }
 
   // layer
   if ( m_jetInfoSwitch->m_layer ) {
-    m_jet_ePerSamp.clear();
+    thisJet->m_jet_ePerSamp.clear();
   }
 
   // trackAll
   if ( m_jetInfoSwitch->m_trackAll ) {
-    m_jet_NTrkPt1000.clear();
-    m_jet_SumPtPt1000.clear();
-    m_jet_TrkWPt1000.clear();
-    m_jet_NTrkPt500.clear();
-    m_jet_SumPtPt500.clear();
-    m_jet_TrkWPt500.clear();
-    m_jet_jvf.clear();
-    //m_jet_jvfloose.clear();
+    thisJet->m_jet_NTrkPt1000.clear();
+    thisJet->m_jet_SumPtPt1000.clear();
+    thisJet->m_jet_TrkWPt1000.clear();
+    thisJet->m_jet_NTrkPt500.clear();
+    thisJet->m_jet_SumPtPt500.clear();
+    thisJet->m_jet_TrkWPt500.clear();
+    thisJet->m_jet_jvf.clear();
+    //thisJet->m_jet_jvfloose.clear();
   }
 
   // trackPV
   if ( m_jetInfoSwitch->m_trackPV ) {
-    m_jet_NTrkPt1000PV.clear();
-    m_jet_SumPtPt1000PV.clear();
-    m_jet_TrkWPt1000PV.clear();
-    m_jet_NTrkPt500PV.clear();
-    m_jet_SumPtPt500PV.clear();
-    m_jet_TrkWPt500PV.clear();
-    m_jet_jvfPV.clear();
+    thisJet->m_jet_NTrkPt1000PV.clear();
+    thisJet->m_jet_SumPtPt1000PV.clear();
+    thisJet->m_jet_TrkWPt1000PV.clear();
+    thisJet->m_jet_NTrkPt500PV.clear();
+    thisJet->m_jet_SumPtPt500PV.clear();
+    thisJet->m_jet_TrkWPt500PV.clear();
+    thisJet->m_jet_jvfPV.clear();
   }
 
   if ( m_jetInfoSwitch->m_trackAll || m_jetInfoSwitch->m_trackPV ) {
-    m_jet_Jvt.clear();
-    m_jet_JvtJvfcorr.clear();
-    m_jet_JvtRpt.clear();
-    //m_jet_ghostTrackAssFrac.clear();
+    thisJet->m_jet_Jvt.clear();
+    thisJet->m_jet_JvtJvfcorr.clear();
+    thisJet->m_jet_JvtRpt.clear();
+    //thisJet->m_jet_ghostTrackAssFrac.clear();
   }
 
 
   if ( m_jetInfoSwitch->m_allTrack ) {
-    m_jet_GhostTrackCount.clear();
-    m_jet_GhostTrackPt.clear();
-    m_jet_GhostTrack_pt.clear();
-    m_jet_GhostTrack_qOverP.clear();
-    m_jet_GhostTrack_eta.clear();
-    m_jet_GhostTrack_phi.clear();
-    m_jet_GhostTrack_e.clear();
-    m_jet_GhostTrack_d0.clear();
-    m_jet_GhostTrack_z0.clear();
+    thisJet->m_jet_GhostTrackCount.clear();
+    thisJet->m_jet_GhostTrackPt.clear();
+    thisJet->m_jet_GhostTrack_pt.clear();
+    thisJet->m_jet_GhostTrack_qOverP.clear();
+    thisJet->m_jet_GhostTrack_eta.clear();
+    thisJet->m_jet_GhostTrack_phi.clear();
+    thisJet->m_jet_GhostTrack_e.clear();
+    thisJet->m_jet_GhostTrack_d0.clear();
+    thisJet->m_jet_GhostTrack_z0.clear();
     if ( m_jetInfoSwitch->m_allTrackDetail ) {
-      m_jet_GhostTrack_nPixHits.clear();
-      m_jet_GhostTrack_nSCTHits.clear();
-      m_jet_GhostTrack_nTRTHits.clear();
-      m_jet_GhostTrack_nPixSharedHits.clear();
-      m_jet_GhostTrack_nPixSplitHits.clear();
-      m_jet_GhostTrack_nIMLPixHits.clear();
-      m_jet_GhostTrack_nIMLPixSharedHits.clear();
-      m_jet_GhostTrack_nIMLPixSplitHits.clear();
-      m_jet_GhostTrack_nNIMLPixHits.clear();
-      m_jet_GhostTrack_nNIMLPixSharedHits.clear();
-      m_jet_GhostTrack_nNIMLPixSplitHits.clear();
+      thisJet->m_jet_GhostTrack_nPixHits.clear();
+      thisJet->m_jet_GhostTrack_nSCTHits.clear();
+      thisJet->m_jet_GhostTrack_nTRTHits.clear();
+      thisJet->m_jet_GhostTrack_nPixSharedHits.clear();
+      thisJet->m_jet_GhostTrack_nPixSplitHits.clear();
+      thisJet->m_jet_GhostTrack_nIMLPixHits.clear();
+      thisJet->m_jet_GhostTrack_nIMLPixSharedHits.clear();
+      thisJet->m_jet_GhostTrack_nIMLPixSplitHits.clear();
+      thisJet->m_jet_GhostTrack_nNIMLPixHits.clear();
+      thisJet->m_jet_GhostTrack_nNIMLPixSharedHits.clear();
+      thisJet->m_jet_GhostTrack_nNIMLPixSplitHits.clear();
     }
   }
 
   if( m_jetInfoSwitch->m_constituent ) {
-    m_jet_numConstituents.clear();
+    thisJet->m_jet_numConstituents.clear();
   }
 
   if( m_jetInfoSwitch->m_constituentAll ) {
-    m_jet_constitWeights.clear();
-    m_jet_constit_pt.clear();
-    m_jet_constit_eta.clear();
-    m_jet_constit_phi.clear();
-    m_jet_constit_e.clear();
+    thisJet->m_jet_constitWeights.clear();
+    thisJet->m_jet_constit_pt.clear();
+    thisJet->m_jet_constit_eta.clear();
+    thisJet->m_jet_constit_phi.clear();
+    thisJet->m_jet_constit_e.clear();
   }
 
   // flavor tag
   if ( m_jetInfoSwitch->m_flavTag ) {
-    m_jet_sv0.clear();
-    m_jet_sv1.clear();
-    m_jet_ip3d.clear();
-    m_jet_sv1ip3d.clear();
-    m_jet_mv1.clear();
-    m_jet_mv2c00.clear();
-    m_jet_mv2c20.clear();
-    m_jet_hadConeExclTruthLabel.clear();
+    thisJet->m_jet_sv0.clear();
+    thisJet->m_jet_sv1.clear();
+    thisJet->m_jet_ip3d.clear();
+    thisJet->m_jet_sv1ip3d.clear();
+    thisJet->m_jet_mv1.clear();
+    thisJet->m_jet_mv2c00.clear();
+    thisJet->m_jet_mv2c20.clear();
+    thisJet->m_jet_hadConeExclTruthLabel.clear();
   }
 
   if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) { // just clear them all....
 
-    m_njet_mv2c20_Fix30 = 0;
-    m_jet_mv2c20_isFix30.clear();
-    m_weight_jet_mv2c20_sfFix30.clear();
-    m_jet_mv2c20_sfFix30.clear();
+    thisJet->m_njet_mv2c20_Fix30 = 0;
+    thisJet->m_jet_mv2c20_isFix30.clear();
+    thisJet->m_weight_jet_mv2c20_sfFix30.clear();
+    thisJet->m_jet_mv2c20_sfFix30.clear();
 
-    m_njet_mv2c20_Fix50 = 0;
-    m_jet_mv2c20_isFix50.clear();
-    m_weight_jet_mv2c20_sfFix50.clear();
-    m_jet_mv2c20_sfFix50.clear();
+    thisJet->m_njet_mv2c20_Fix50 = 0;
+    thisJet->m_jet_mv2c20_isFix50.clear();
+    thisJet->m_weight_jet_mv2c20_sfFix50.clear();
+    thisJet->m_jet_mv2c20_sfFix50.clear();
 
-    m_njet_mv2c20_Fix60 = 0;
-    m_jet_mv2c20_isFix60.clear();
-    m_weight_jet_mv2c20_sfFix60.clear();
-    m_jet_mv2c20_sfFix60.clear();
+    thisJet->m_njet_mv2c20_Fix60 = 0;
+    thisJet->m_jet_mv2c20_isFix60.clear();
+    thisJet->m_weight_jet_mv2c20_sfFix60.clear();
+    thisJet->m_jet_mv2c20_sfFix60.clear();
 
-    m_njet_mv2c20_Fix70 = 0;
-    m_jet_mv2c20_isFix70.clear();
-    m_weight_jet_mv2c20_sfFix70.clear();
-    m_jet_mv2c20_sfFix70.clear();
+    thisJet->m_njet_mv2c20_Fix70 = 0;
+    thisJet->m_jet_mv2c20_isFix70.clear();
+    thisJet->m_weight_jet_mv2c20_sfFix70.clear();
+    thisJet->m_jet_mv2c20_sfFix70.clear();
 
-    m_njet_mv2c20_Fix77 = 0;
-    m_jet_mv2c20_isFix77.clear();
-    m_weight_jet_mv2c20_sfFix77.clear();
-    m_jet_mv2c20_sfFix77.clear();
+    thisJet->m_njet_mv2c20_Fix77 = 0;
+    thisJet->m_jet_mv2c20_isFix77.clear();
+    thisJet->m_weight_jet_mv2c20_sfFix77.clear();
+    thisJet->m_jet_mv2c20_sfFix77.clear();
 
-    m_njet_mv2c20_Fix80 = 0;
-    m_jet_mv2c20_isFix80.clear();
-    m_weight_jet_mv2c20_sfFix80.clear();
-    m_jet_mv2c20_sfFix80.clear();
+    thisJet->m_njet_mv2c20_Fix80 = 0;
+    thisJet->m_jet_mv2c20_isFix80.clear();
+    thisJet->m_weight_jet_mv2c20_sfFix80.clear();
+    thisJet->m_jet_mv2c20_sfFix80.clear();
 
-    m_njet_mv2c20_Fix85 = 0;
-    m_jet_mv2c20_isFix85.clear();
-    m_weight_jet_mv2c20_sfFix85.clear();
-    m_jet_mv2c20_sfFix85.clear();
+    thisJet->m_njet_mv2c20_Fix85 = 0;
+    thisJet->m_jet_mv2c20_isFix85.clear();
+    thisJet->m_weight_jet_mv2c20_sfFix85.clear();
+    thisJet->m_jet_mv2c20_sfFix85.clear();
 
-    m_njet_mv2c20_Fix90 = 0;
-    m_jet_mv2c20_isFix90.clear();
-    m_weight_jet_mv2c20_sfFix90.clear();
-    m_jet_mv2c20_sfFix90.clear();
+    thisJet->m_njet_mv2c20_Fix90 = 0;
+    thisJet->m_jet_mv2c20_isFix90.clear();
+    thisJet->m_weight_jet_mv2c20_sfFix90.clear();
+    thisJet->m_jet_mv2c20_sfFix90.clear();
   }
 
   if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) { // just clear them all....
 
-    m_njet_mv2c20_Flt30 = 0;
-    m_jet_mv2c20_isFlt30.clear();
-    m_weight_jet_mv2c20_sfFlt30.clear();
-    m_jet_mv2c20_sfFlt30.clear();
+    thisJet->m_njet_mv2c20_Flt30 = 0;
+    thisJet->m_jet_mv2c20_isFlt30.clear();
+    thisJet->m_weight_jet_mv2c20_sfFlt30.clear();
+    thisJet->m_jet_mv2c20_sfFlt30.clear();
 
-    m_njet_mv2c20_Flt40 = 0;
-    m_jet_mv2c20_isFlt40.clear();
-    m_weight_jet_mv2c20_sfFlt40.clear();
-    m_jet_mv2c20_sfFlt40.clear();
+    thisJet->m_njet_mv2c20_Flt40 = 0;
+    thisJet->m_jet_mv2c20_isFlt40.clear();
+    thisJet->m_weight_jet_mv2c20_sfFlt40.clear();
+    thisJet->m_jet_mv2c20_sfFlt40.clear();
 
-    m_njet_mv2c20_Flt50 = 0;
-    m_jet_mv2c20_isFlt50.clear();
-    m_weight_jet_mv2c20_sfFlt50.clear();
-    m_jet_mv2c20_sfFlt50.clear();
+    thisJet->m_njet_mv2c20_Flt50 = 0;
+    thisJet->m_jet_mv2c20_isFlt50.clear();
+    thisJet->m_weight_jet_mv2c20_sfFlt50.clear();
+    thisJet->m_jet_mv2c20_sfFlt50.clear();
 
-    m_njet_mv2c20_Flt60 = 0;
-    m_jet_mv2c20_isFlt60.clear();
-    m_weight_jet_mv2c20_sfFlt60.clear();
-    m_jet_mv2c20_sfFlt60.clear();
+    thisJet->m_njet_mv2c20_Flt60 = 0;
+    thisJet->m_jet_mv2c20_isFlt60.clear();
+    thisJet->m_weight_jet_mv2c20_sfFlt60.clear();
+    thisJet->m_jet_mv2c20_sfFlt60.clear();
 
-    m_njet_mv2c20_Flt70 = 0;
-    m_jet_mv2c20_isFlt70.clear();
-    m_weight_jet_mv2c20_sfFlt70.clear();
-    m_jet_mv2c20_sfFlt70.clear();
+    thisJet->m_njet_mv2c20_Flt70 = 0;
+    thisJet->m_jet_mv2c20_isFlt70.clear();
+    thisJet->m_weight_jet_mv2c20_sfFlt70.clear();
+    thisJet->m_jet_mv2c20_sfFlt70.clear();
 
-    m_njet_mv2c20_Flt77 = 0;
-    m_jet_mv2c20_isFlt77.clear();
-    m_weight_jet_mv2c20_sfFlt77.clear();
-    m_jet_mv2c20_sfFlt77.clear();
+    thisJet->m_njet_mv2c20_Flt77 = 0;
+    thisJet->m_jet_mv2c20_isFlt77.clear();
+    thisJet->m_weight_jet_mv2c20_sfFlt77.clear();
+    thisJet->m_jet_mv2c20_sfFlt77.clear();
 
-    m_njet_mv2c20_Flt85 = 0;
-    m_jet_mv2c20_isFlt85.clear();
-    m_weight_jet_mv2c20_sfFlt85.clear();
-    m_jet_mv2c20_sfFlt85.clear();
+    thisJet->m_njet_mv2c20_Flt85 = 0;
+    thisJet->m_jet_mv2c20_isFlt85.clear();
+    thisJet->m_weight_jet_mv2c20_sfFlt85.clear();
+    thisJet->m_jet_mv2c20_sfFlt85.clear();
   }
 
   if ( m_jetInfoSwitch->m_area ) {
-    m_jet_ghostArea.clear();
-    m_jet_activeArea.clear();
-    m_jet_voronoiArea.clear();
-    m_jet_activeArea_pt.clear();
-    m_jet_activeArea_eta.clear();
-    m_jet_activeArea_phi.clear();
-    m_jet_activeArea_m.clear();
+    thisJet->m_jet_ghostArea.clear();
+    thisJet->m_jet_activeArea.clear();
+    thisJet->m_jet_voronoiArea.clear();
+    thisJet->m_jet_activeArea_pt.clear();
+    thisJet->m_jet_activeArea_eta.clear();
+    thisJet->m_jet_activeArea_phi.clear();
+    thisJet->m_jet_activeArea_m.clear();
   }
 
   // truth
   if ( m_jetInfoSwitch->m_truth && m_isMC ) {
-    m_jet_truthConeLabelID.clear();
-    m_jet_truthCount.clear();
-    m_jet_truthPt.clear();
-    m_jet_truthDr_B.clear();
-    m_jet_truthDr_C.clear();
-    m_jet_truthDr_T.clear();
-    m_jet_partonTruthID.clear();
-    m_jet_ghostTruthAssFrac.clear();
-    m_jet_truth_pt.clear();
-    m_jet_truth_eta.clear();
-    m_jet_truth_phi.clear();
-    m_jet_truth_E.clear();
+    thisJet->m_jet_truthConeLabelID.clear();
+    thisJet->m_jet_truthCount.clear();
+    thisJet->m_jet_truthPt.clear();
+    thisJet->m_jet_truthDr_B.clear();
+    thisJet->m_jet_truthDr_C.clear();
+    thisJet->m_jet_truthDr_T.clear();
+    thisJet->m_jet_partonTruthID.clear();
+    thisJet->m_jet_ghostTruthAssFrac.clear();
+    thisJet->m_jet_truth_pt.clear();
+    thisJet->m_jet_truth_eta.clear();
+    thisJet->m_jet_truth_phi.clear();
+    thisJet->m_jet_truth_E.clear();
   }
 
   // truth_detail
   if ( m_jetInfoSwitch->m_truthDetails ) {
-    m_jet_truthCount_BhadFinal.clear();
-    m_jet_truthCount_BhadInit.clear();
-    m_jet_truthCount_BQFinal.clear();
-    m_jet_truthPt_BhadFinal.clear();
-    m_jet_truthPt_BhadInit.clear();
-    m_jet_truthPt_BQFinal.clear();
-    m_jet_truthCount_ChadFinal.clear();
-    m_jet_truthCount_ChadInit.clear();
-    m_jet_truthCount_CQFinal.clear();
-    m_jet_truthPt_ChadFinal.clear();
-    m_jet_truthPt_ChadInit.clear();
-    m_jet_truthPt_CQFinal.clear();
-    m_jet_truthCount_TausFinal.clear();
-    m_jet_truthPt_TausFinal.clear();
-    m_jet_truth_pdgId.clear();
-    m_jet_truth_partonPt.clear();
-    m_jet_truth_partonDR.clear();
+    thisJet->m_jet_truthCount_BhadFinal.clear();
+    thisJet->m_jet_truthCount_BhadInit.clear();
+    thisJet->m_jet_truthCount_BQFinal.clear();
+    thisJet->m_jet_truthPt_BhadFinal.clear();
+    thisJet->m_jet_truthPt_BhadInit.clear();
+    thisJet->m_jet_truthPt_BQFinal.clear();
+    thisJet->m_jet_truthCount_ChadFinal.clear();
+    thisJet->m_jet_truthCount_ChadInit.clear();
+    thisJet->m_jet_truthCount_CQFinal.clear();
+    thisJet->m_jet_truthPt_ChadFinal.clear();
+    thisJet->m_jet_truthPt_ChadInit.clear();
+    thisJet->m_jet_truthPt_CQFinal.clear();
+    thisJet->m_jet_truthCount_TausFinal.clear();
+    thisJet->m_jet_truthPt_TausFinal.clear();
+    thisJet->m_jet_truth_pdgId.clear();
+    thisJet->m_jet_truth_partonPt.clear();
+    thisJet->m_jet_truth_partonDR.clear();
   }
 
 }
@@ -3049,246 +2942,246 @@ bool HelpTreeBase::writeTo( TFile* file ) {
 ///        it's ugly                                       ///
 //////////////////////////////////////////////////////////////
 
-void HelpTreeBase::Fill_Fix30( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Fix30( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix30("BTag_FixedCutBEff_30");
   if( isFix30.isAvailable( *jet ) ) {
-    if ( isFix30( *jet ) ) ++m_njet_mv2c20_Fix30;
-    m_jet_mv2c20_isFix30.push_back( isFix30( *jet ) );
-  } else { m_jet_mv2c20_isFix30.push_back( -1 ); }
+    if ( isFix30( *jet ) ) ++thisJet->m_njet_mv2c20_Fix30;
+    thisJet->m_jet_mv2c20_isFix30.push_back( isFix30( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFix30.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix30("BTag_SF_FixedCutBEff_30");
   if ( sfFix30.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFix30.push_back( sfFix30( *jet ) );
+    thisJet->m_jet_mv2c20_sfFix30.push_back( sfFix30( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFix30.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFix30.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Fix50( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Fix50( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix50("BTag_FixedCutBEff_50");
   if( isFix50.isAvailable( *jet ) ) {
-    if ( isFix50( *jet ) ) ++m_njet_mv2c20_Fix50;
-    m_jet_mv2c20_isFix50.push_back( isFix50( *jet ) );
-  } else { m_jet_mv2c20_isFix50.push_back( -1 ); }
+    if ( isFix50( *jet ) ) ++thisJet->m_njet_mv2c20_Fix50;
+    thisJet->m_jet_mv2c20_isFix50.push_back( isFix50( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFix50.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix50("BTag_SF_FixedCutBEff_50");
   if ( sfFix50.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFix50.push_back( sfFix50( *jet ) );
+    thisJet->m_jet_mv2c20_sfFix50.push_back( sfFix50( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFix50.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFix50.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Fix60( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Fix60( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix60("BTag_FixedCutBEff_60");
   if( isFix60.isAvailable( *jet ) ) {
-    if ( isFix60( *jet ) ) ++m_njet_mv2c20_Fix60;
-    m_jet_mv2c20_isFix60.push_back( isFix60( *jet ) );
-  } else { m_jet_mv2c20_isFix60.push_back( -1 ); }
+    if ( isFix60( *jet ) ) ++thisJet->m_njet_mv2c20_Fix60;
+    thisJet->m_jet_mv2c20_isFix60.push_back( isFix60( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFix60.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix60("BTag_SF_FixedCutBEff_60");
   if ( sfFix60.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFix60.push_back( sfFix60( *jet ) );
+    thisJet->m_jet_mv2c20_sfFix60.push_back( sfFix60( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFix60.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFix60.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Fix70( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Fix70( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix70("BTag_FixedCutBEff_70");
   if( isFix70.isAvailable( *jet ) ) {
-    if ( isFix70( *jet ) ) ++m_njet_mv2c20_Fix70;
-    m_jet_mv2c20_isFix70.push_back( isFix70( *jet ) );
-  } else { m_jet_mv2c20_isFix70.push_back( -1 ); }
+    if ( isFix70( *jet ) ) ++thisJet->m_njet_mv2c20_Fix70;
+    thisJet->m_jet_mv2c20_isFix70.push_back( isFix70( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFix70.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix70("BTag_SF_FixedCutBEff_70");
   if ( sfFix70.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFix70.push_back( sfFix70( *jet ) );
+    thisJet->m_jet_mv2c20_sfFix70.push_back( sfFix70( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFix70.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFix70.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Fix77( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Fix77( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix77("BTag_FixedCutBEff_77");
   if( isFix77.isAvailable( *jet ) ) {
-    if ( isFix77( *jet ) ) ++m_njet_mv2c20_Fix77;
-    m_jet_mv2c20_isFix77.push_back( isFix77( *jet ) );
-  } else { m_jet_mv2c20_isFix77.push_back( -1 ); }
+    if ( isFix77( *jet ) ) ++thisJet->m_njet_mv2c20_Fix77;
+    thisJet->m_jet_mv2c20_isFix77.push_back( isFix77( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFix77.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix77("BTag_SF_FixedCutBEff_77");
   if ( sfFix77.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFix77.push_back( sfFix77( *jet ) );
+    thisJet->m_jet_mv2c20_sfFix77.push_back( sfFix77( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFix77.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFix77.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Fix80( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Fix80( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix80("BTag_FixedCutBEff_80");
   if( isFix80.isAvailable( *jet ) ) {
-    if ( isFix80( *jet ) ) ++m_njet_mv2c20_Fix80;
-    m_jet_mv2c20_isFix80.push_back( isFix80( *jet ) );
-  } else { m_jet_mv2c20_isFix80.push_back( -1 ); }
+    if ( isFix80( *jet ) ) ++thisJet->m_njet_mv2c20_Fix80;
+    thisJet->m_jet_mv2c20_isFix80.push_back( isFix80( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFix80.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix80("BTag_SF_FixedCutBEff_80");
   if ( sfFix80.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFix80.push_back( sfFix80( *jet ) );
+    thisJet->m_jet_mv2c20_sfFix80.push_back( sfFix80( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFix80.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFix80.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Fix85( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Fix85( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix85("BTag_FixedCutBEff_85");
   if( isFix85.isAvailable( *jet ) ) {
-    if ( isFix85( *jet ) ) ++m_njet_mv2c20_Fix85;
-    m_jet_mv2c20_isFix85.push_back( isFix85( *jet ) );
-  } else { m_jet_mv2c20_isFix85.push_back( -1 ); }
+    if ( isFix85( *jet ) ) ++thisJet->m_njet_mv2c20_Fix85;
+    thisJet->m_jet_mv2c20_isFix85.push_back( isFix85( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFix85.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix85("BTag_SF_FixedCutBEff_85");
   if ( sfFix85.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFix85.push_back( sfFix85( *jet ) );
+    thisJet->m_jet_mv2c20_sfFix85.push_back( sfFix85( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFix85.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFix85.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Fix90( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Fix90( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix90("BTag_FixedCutBEff_90");
   if( isFix90.isAvailable( *jet ) ) {
-    if ( isFix90( *jet ) ) ++m_njet_mv2c20_Fix90;
-    m_jet_mv2c20_isFix90.push_back( isFix90( *jet ) );
-  } else { m_jet_mv2c20_isFix90.push_back( -1 ); }
+    if ( isFix90( *jet ) ) ++thisJet->m_njet_mv2c20_Fix90;
+    thisJet->m_jet_mv2c20_isFix90.push_back( isFix90( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFix90.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix90("BTag_SF_FixedCutBEff_90");
   if ( sfFix90.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFix90.push_back( sfFix90( *jet ) );
+    thisJet->m_jet_mv2c20_sfFix90.push_back( sfFix90( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFix90.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFix90.push_back(junk);
   }
 }
 
 
 ///// FLAT EFFICIENCY
 
-void HelpTreeBase::Fill_Flt30( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Flt30( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt30("BTag_FlatBEff_30");
   if( isFlt30.isAvailable( *jet ) ) {
-    if ( isFlt30( *jet ) ) ++m_njet_mv2c20_Flt30;
-    m_jet_mv2c20_isFlt30.push_back( isFlt30( *jet ) );
-  } else { m_jet_mv2c20_isFlt30.push_back( -1 ); }
+    if ( isFlt30( *jet ) ) ++thisJet->m_njet_mv2c20_Flt30;
+    thisJet->m_jet_mv2c20_isFlt30.push_back( isFlt30( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFlt30.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30("BTag_SF_FlatBEff_30");
   if ( sfFlt30.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFlt30.push_back( sfFlt30( *jet ) );
+    thisJet->m_jet_mv2c20_sfFlt30.push_back( sfFlt30( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFlt30.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFlt30.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Flt40( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Flt40( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt40("BTag_FlatBEff_40");
   if( isFlt40.isAvailable( *jet ) ) {
-    if ( isFlt40( *jet ) ) ++m_njet_mv2c20_Flt40;
-    m_jet_mv2c20_isFlt40.push_back( isFlt40( *jet ) );
-  } else { m_jet_mv2c20_isFlt40.push_back( -1 ); }
+    if ( isFlt40( *jet ) ) ++thisJet->m_njet_mv2c20_Flt40;
+    thisJet->m_jet_mv2c20_isFlt40.push_back( isFlt40( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFlt40.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40("BTag_SF_FlatBEff_40");
   if ( sfFlt40.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFlt40.push_back( sfFlt40( *jet ) );
+    thisJet->m_jet_mv2c20_sfFlt40.push_back( sfFlt40( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFlt40.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFlt40.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Flt50( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Flt50( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt50("BTag_FlatBEff_50");
   if( isFlt50.isAvailable( *jet ) ) {
-    if ( isFlt50( *jet ) )  ++m_njet_mv2c20_Flt50;
-    m_jet_mv2c20_isFlt50.push_back( isFlt50( *jet ) );
-  } else { m_jet_mv2c20_isFlt50.push_back( -1 ); }
+    if ( isFlt50( *jet ) )  ++thisJet->m_njet_mv2c20_Flt50;
+    thisJet->m_jet_mv2c20_isFlt50.push_back( isFlt50( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFlt50.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50("BTag_SF_FlatBEff_50");
   if ( sfFlt50.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFlt50.push_back( sfFlt50( *jet ) );
+    thisJet->m_jet_mv2c20_sfFlt50.push_back( sfFlt50( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFlt50.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFlt50.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Flt60( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Flt60( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt60("BTag_FlatBEff_60");
   if( isFlt60.isAvailable( *jet ) ) {
-    if ( isFlt60( *jet ) )  ++m_njet_mv2c20_Flt60;
-    m_jet_mv2c20_isFlt60.push_back( isFlt60( *jet ) );
-  } else { m_jet_mv2c20_isFlt60.push_back( -1 ); }
+    if ( isFlt60( *jet ) )  ++thisJet->m_njet_mv2c20_Flt60;
+    thisJet->m_jet_mv2c20_isFlt60.push_back( isFlt60( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFlt60.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60("BTag_SF_FlatBEff_60");
   if ( sfFlt60.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFlt60.push_back( sfFlt60( *jet ) );
+    thisJet->m_jet_mv2c20_sfFlt60.push_back( sfFlt60( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFlt60.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFlt60.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Flt70( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Flt70( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt70("BTag_FlatBEff_70");
   if( isFlt70.isAvailable( *jet ) ) {
-    if ( isFlt70( *jet ) ) ++m_njet_mv2c20_Flt70;
-    m_jet_mv2c20_isFlt70.push_back( isFlt70( *jet ) );
-  } else { m_jet_mv2c20_isFlt70.push_back( -1 ); }
+    if ( isFlt70( *jet ) ) ++thisJet->m_njet_mv2c20_Flt70;
+    thisJet->m_jet_mv2c20_isFlt70.push_back( isFlt70( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFlt70.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70("BTag_SF_FlatBEff_70");
   if ( sfFlt70.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFlt70.push_back( sfFlt70( *jet ) );
+    thisJet->m_jet_mv2c20_sfFlt70.push_back( sfFlt70( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFlt70.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFlt70.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Flt77( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Flt77( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt77("BTag_FlatBEff_77");
   if( isFlt77.isAvailable( *jet ) ) {
-    if ( isFlt77( *jet ) ) ++m_njet_mv2c20_Flt77;
-    m_jet_mv2c20_isFlt77.push_back( isFlt77( *jet ) );
-  } else { m_jet_mv2c20_isFlt77.push_back( -1 ); }
+    if ( isFlt77( *jet ) ) ++thisJet->m_njet_mv2c20_Flt77;
+    thisJet->m_jet_mv2c20_isFlt77.push_back( isFlt77( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFlt77.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77("BTag_SF_FlatBEff_77");
   if ( sfFlt77.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFlt77.push_back( sfFlt77( *jet ) );
+    thisJet->m_jet_mv2c20_sfFlt77.push_back( sfFlt77( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFlt77.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFlt77.push_back(junk);
   }
 }
 
-void HelpTreeBase::Fill_Flt85( const xAOD::Jet* jet ) {
+void HelpTreeBase::Fill_Flt85( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt85("BTag_FlatBEff_85");
   if( isFlt85.isAvailable( *jet ) ) {
-    if ( isFlt85( *jet ) ) ++m_njet_mv2c20_Flt85;
-    m_jet_mv2c20_isFlt85.push_back( isFlt85( *jet ) );
-  } else { m_jet_mv2c20_isFlt85.push_back( -1 ); }
+    if ( isFlt85( *jet ) ) ++thisJet->m_njet_mv2c20_Flt85;
+    thisJet->m_jet_mv2c20_isFlt85.push_back( isFlt85( *jet ) );
+  } else { thisJet->m_jet_mv2c20_isFlt85.push_back( -1 ); }
   if(!m_isMC) { return; }
   static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85("BTag_SF_FlatBEff_85");
   if ( sfFlt85.isAvailable( *jet ) ) {
-    m_jet_mv2c20_sfFlt85.push_back( sfFlt85( *jet ) );
+    thisJet->m_jet_mv2c20_sfFlt85.push_back( sfFlt85( *jet ) );
   } else {
     std::vector<float> junk(1,-999);
-    m_jet_mv2c20_sfFlt85.push_back(junk);
+    thisJet->m_jet_mv2c20_sfFlt85.push_back(junk);
   }
 }
 
