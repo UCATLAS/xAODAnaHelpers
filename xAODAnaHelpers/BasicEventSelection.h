@@ -94,11 +94,12 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_trigger;  //!
     
     // object cutflow
-    TH1D* m_el_cutflowHist_1;  //!
-    TH1D* m_el_cutflowHist_2;  //!
-    TH1D* m_mu_cutflowHist_1;  //!
-    TH1D* m_mu_cutflowHist_2;  //!
-    TH1D* m_jet_cutflowHist_1; //!    
+    TH1D* m_el_cutflowHist_1;    //!
+    TH1D* m_el_cutflowHist_2;    //!
+    TH1D* m_mu_cutflowHist_1;    //!
+    TH1D* m_mu_cutflowHist_2;    //!
+    TH1D* m_jet_cutflowHist_1;   //!
+    TH1D* m_truth_cutflowHist_1; //!
 
     // variables that don't get filled at submission time should be
     // protected from being send from the submission node to the worker
