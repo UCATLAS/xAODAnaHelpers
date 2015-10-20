@@ -195,7 +195,7 @@ EL::StatusCode TruthSelector :: initialize ()
     
     // retrieve the object cutflow
     //
-    m_truth_cutflowHist_1 = (TH1D*)file->Get("cutflow_jets_1");
+    m_truth_cutflowHist_1 = (TH1D*)file->Get("cutflow_truths_1");
 
     m_truth_cutflow_all             = m_truth_cutflowHist_1->GetXaxis()->FindBin("all");
     m_truth_cutflow_ptmax_cut       = m_truth_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");

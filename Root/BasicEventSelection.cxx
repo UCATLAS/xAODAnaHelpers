@@ -53,7 +53,8 @@ BasicEventSelection :: BasicEventSelection () :
   m_el_cutflowHist_2(nullptr),
   m_mu_cutflowHist_1(nullptr),
   m_mu_cutflowHist_2(nullptr),
-  m_jet_cutflowHist_1(nullptr)
+  m_jet_cutflowHist_1(nullptr),
+  m_truth_cutflowHist_1(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -454,16 +455,18 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
   //
-  m_el_cutflowHist_1  = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
+  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
   m_el_cutflowHist_1->SetBit(TH1::kCanRebin);
-  m_el_cutflowHist_2  = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
+  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
   m_el_cutflowHist_2->SetBit(TH1::kCanRebin);
-  m_mu_cutflowHist_1  = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
+  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
   m_mu_cutflowHist_1->SetBit(TH1::kCanRebin);
-  m_mu_cutflowHist_2  = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
+  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
   m_mu_cutflowHist_2->SetBit(TH1::kCanRebin);
-  m_jet_cutflowHist_1  = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
+  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
   m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);
+  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
+  m_truth_cutflowHist_1->SetBit(TH1::kCanRebin);
 
   // start labelling the bins for the event cutflow
   //

@@ -661,7 +661,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       if ( !isCleanAcc( *jet ) ) { return 0; }
     }
   }
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_cleaning_cut, 1 );        
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_cleaning_cut, 1 );
 
   // pT
   if ( m_pT_max != 1e8 ) {
