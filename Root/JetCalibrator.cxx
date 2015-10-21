@@ -333,13 +333,12 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
-  // ***********************************************************
-
+  // 
   // Get a list of recommended systematics for this tool
   //
-  const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
-  const CP::SystematicSet& recSyst = (systReg.recommendedSystematics());
+  const CP::SystematicSet recSyst = CP::SystematicSet();
   Info("initialize()"," Initializing Jet Calibrator Systematics :");
+
   //
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
