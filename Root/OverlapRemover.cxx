@@ -418,7 +418,7 @@ EL::StatusCode OverlapRemover :: execute ()
   // **************** //
 
   // look what do we have in TStore
-  if ( /*m_verbose*/ true ) { m_store->print(); }
+  if ( m_verbose ) { m_store->print(); }
 
   return EL::StatusCode::SUCCESS;
 
