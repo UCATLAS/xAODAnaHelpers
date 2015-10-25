@@ -22,7 +22,7 @@ The xAOD analysis framework, born out of ProofAna...or not.
 If you need to bump up the version of the AnalysisBase being used, please make sure you update the [travis.yml](.travis.yml) file first.
 
 ### Current
-Current AB is **Base,2.3.31**
+Current AB is **Base,2.3.32**
 
 
 ### Previous
