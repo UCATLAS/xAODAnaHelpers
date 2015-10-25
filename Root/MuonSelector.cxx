@@ -95,6 +95,7 @@ MuonSelector :: MuonSelector () :
 
   // configurable cuts
   //
+  m_muonQualityStr          = "Medium";
   m_muonType                = "";
   m_pass_max                = -1;
   m_pass_min                = -1;
@@ -147,9 +148,7 @@ EL::StatusCode  MuonSelector :: configure ()
 
     m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
 
-    std::string muonQuality   = config->GetValue("MuonQuality", "Medium");
-    HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
-    m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(muonQuality) );
+    m_muonQualityStr          = config->GetValue("MuonQuality", m_muonQualityStr.c_str());
     m_muonType                = config->GetValue("MuonType", m_muonType.c_str());
     m_pass_max                = config->GetValue("PassMax", m_pass_max);
     m_pass_min                = config->GetValue("PassMin", m_pass_min);
@@ -177,6 +176,10 @@ EL::StatusCode  MuonSelector :: configure ()
 
     delete config; config = nullptr;
   }
+
+  HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
+  m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
+
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
