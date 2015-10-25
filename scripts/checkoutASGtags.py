@@ -5,7 +5,7 @@
 # and apply svn patches if needed
 #
 # Authors:
-#  M.Milesi(mrco.milesi@cern.ch), G.Stark(g.stark@cern.ch)
+#  M.Milesi(mrco.milesi@cern.ch), G.Stark(g.stark@cern.ch), J.Dandoy(jeff.dandoy@cern.ch)
 #
 # Usage (from the directory where ASG release has been set up):
 #  python () (./xAODAnaHelpers/scripts/)checkoutASGtags.py RELEASE_NUMBER [X.Y.Z]
@@ -48,7 +48,11 @@ dict_pkg = {
                       ],
             '2.3.31': ["atlasoff/PhysicsAnalysis/D3PDTools/EventLoopGrid/tags/EventLoopGrid-00-00-44",
                        "atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency/tags/xAODBTaggingEfficiency-00-00-23"
+                      ],
+            '2.3.32': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency/tags/xAODBTaggingEfficiency-00-00-23",
+                       "atlasoff/Trigger/TrigConfiguration/TrigConfxAOD/tags/TrigConfxAOD-00-00-20"
                       ]
+
            }
 
 try:
@@ -83,12 +87,14 @@ GRL_AllGood_PeriodC = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data
 GRL_AllGood_PeriodD = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v64-pro19_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
 GRL_AllGood_PeriodE = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v65-pro19-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
 GRL_AllGood_PeriodG = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v67-pro19-02_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+GRL_AllGood_PeriodH = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v69-pro19-03_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
 GRL_AtlasReady = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/Atlas_Ready/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml"
 try:
   subprocess.call(["wget","-q",GRL_AllGood_PeriodC,"-O", "xAODAnaHelpers/data/PeriodC_"+GRL_AllGood_PeriodC.split('/')[-1]])
   subprocess.call(["wget","-q",GRL_AllGood_PeriodD,"-O", "xAODAnaHelpers/data/PeriodD_"+GRL_AllGood_PeriodD.split('/')[-1]])
   subprocess.call(["wget","-q",GRL_AllGood_PeriodE,"-O", "xAODAnaHelpers/data/PeriodE_"+GRL_AllGood_PeriodE.split('/')[-1]])
   subprocess.call(["wget","-q",GRL_AllGood_PeriodG,"-O", "xAODAnaHelpers/data/PeriodG_"+GRL_AllGood_PeriodG.split('/')[-1]])
+  subprocess.call(["wget","-q",GRL_AllGood_PeriodH,"-O", "xAODAnaHelpers/data/PeriodH_"+GRL_AllGood_PeriodG.split('/')[-1]])
   subprocess.call(["wget","-q",GRL_AtlasReady,"-O","xAODAnaHelpers/data/"+GRL_AtlasReady.split('/')[-1]])
 except OSError as e:
   print "Error, wget is not available.  Will not download grl.  You can find the latest ATLASREADY version at", GRL_AtlasReady
