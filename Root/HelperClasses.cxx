@@ -131,6 +131,10 @@ namespace HelperClasses{
     m_effSF         = parse("effSF");
   }
 
+  void PhotonInfoSwitch::initialize(){
+    m_kinematic     = parse("kinematic");
+  }
+
   void JetInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
     m_substructure  = parse("substructure");

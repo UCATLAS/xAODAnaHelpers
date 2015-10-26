@@ -260,7 +260,7 @@ EL::StatusCode PhotonSelector :: initialize ()
     // retrieve the object cutflow
     //
     m_ph_cutflowHist_1 = (TH1D*)file->Get("cutflow_photons_1");
-    
+
     m_ph_cutflow_all             = m_ph_cutflowHist_1->GetXaxis()->FindBin("all");
     m_ph_cutflow_author_cut      = m_ph_cutflowHist_1->GetXaxis()->FindBin("author_cut");     
     m_ph_cutflow_PID_cut         = m_ph_cutflowHist_1->GetXaxis()->FindBin("PID_cut");
@@ -638,7 +638,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return false;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_all, 1 );
+  m_ph_cutflowHist_1->Fill( m_ph_cutflow_author_cut, 1 );
 
   // *********************************************************************************************************************************************************************
   // 
