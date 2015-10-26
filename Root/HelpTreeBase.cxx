@@ -30,6 +30,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_trigInfoSwitch(nullptr),
   m_muInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
+  m_phInfoSwitch(nullptr),
   m_jetInfoSwitch(nullptr),
   m_truthInfoSwitch(nullptr),
   m_fatJetInfoSwitch(nullptr),
@@ -1181,6 +1182,67 @@ void HelpTreeBase::ClearElectrons() {
     m_el_PIDEff_SF_LHLoose.clear();
     m_el_PIDEff_SF_LHMedium.clear();
     m_el_PIDEff_SF_LHTight.clear();
+  }
+}
+
+/*********************
+ *
+ *   PHOTONS
+ *
+ ********************/
+
+void HelpTreeBase::AddPhotons(const std::string detailStr) {
+
+  if(m_debug)  Info("AddPhotons()", "Adding photon variables: %s", detailStr.c_str());
+
+  m_phInfoSwitch = new HelperClasses::PhotonInfoSwitch( detailStr );
+
+  // always
+  m_tree->Branch("nph",    &m_nph,"nph/I");
+
+  if ( m_phInfoSwitch->m_kinematic ) {
+    m_tree->Branch("ph_pt",  &m_ph_pt);
+    m_tree->Branch("ph_phi", &m_ph_phi);
+    m_tree->Branch("ph_eta", &m_ph_eta);
+    m_tree->Branch("ph_m",   &m_ph_m);
+  }
+
+  this->AddPhotonsUser();
+}
+
+void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
+
+  this->ClearPhotons();
+  this->ClearPhotonsUser();
+
+  m_nph = 0;
+
+  for ( auto ph_itr : *(photons) ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillPhotons()", "Filling photon w/ pT = %2f", ph_itr->pt() / m_units ); }
+
+    if ( m_phInfoSwitch->m_kinematic ) {
+      m_ph_pt.push_back ( (ph_itr)->pt() / m_units );
+      m_ph_eta.push_back( (ph_itr)->eta() );
+      m_ph_phi.push_back( (ph_itr)->phi() );
+      m_ph_m.push_back  ( (ph_itr)->m()  / m_units );
+    }
+
+    this->FillPhotonsUser(ph_itr);
+
+    m_nph++;
+  }
+}
+
+void HelpTreeBase::ClearPhotons() {
+
+  m_nph = 0;
+
+  if ( m_phInfoSwitch->m_kinematic ){
+    m_ph_pt.clear();
+    m_ph_eta.clear();
+    m_ph_phi.clear();
+    m_ph_m.clear();
   }
 }
 
