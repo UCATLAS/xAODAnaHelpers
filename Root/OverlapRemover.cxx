@@ -613,7 +613,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       
       if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
 
-      if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu, inPhotons : %lu", inElectrons->size(), inMuons->size(), inJets->size(), inPhotons->size());  }
+      if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(), inJets->size() );  }
 
       // do the actual OR
       //
@@ -715,7 +715,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	   return EL::StatusCode::FAILURE;
 	}
 	
-	if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu, inPhotons : %lu", inElectrons->size(), inMuons->size(),  inJets->size(), inPhotons->size());  }
+	if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size() );  }
 
         // do the actual OR
 	//
@@ -815,7 +815,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	   return EL::StatusCode::FAILURE;
 	}
 
-         if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu, inPhotons : %lu", inElectrons->size(), inMuons->size(),  inJets->size(), inPhotons->size());  }
+         if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu ", inElectrons->size(), inMuons->size(),  inJets->size() );  }
 
         // do the actual OR
 	//
@@ -917,7 +917,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	    return EL::StatusCode::FAILURE;
 	 }
 
-         if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu, inPhotons : %lu", inElectrons->size(), inMuons->size(),  inJets->size(), inPhotons->size());  }
+         if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu ", inElectrons->size(), inMuons->size(),  inJets->size() );  }
 
          // do the actual OR
 	 //
@@ -998,7 +998,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	    return EL::StatusCode::FAILURE;
 	 }
 
-         if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu, inPhotons : %lu", inElectrons->size(), inMuons->size(),  inJets->size(), inPhotons->size());  }
+         if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size() );  }
 
          // do the actual OR
 	 //
