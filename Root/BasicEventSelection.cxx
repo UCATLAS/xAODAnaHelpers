@@ -37,6 +37,7 @@
 #include "TTreeFormula.h"
 #include "TSystem.h"
 
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
 
@@ -73,6 +74,10 @@ BasicEventSelection :: BasicEventSelection () :
 
   // Metadata
   m_useMetaData = true;
+
+  // Check for duplicated events in Data and MC
+  m_checkDuplicatesData = false;
+  m_checkDuplicatesMC	= false;
 
   // GRL
   m_applyGRLCut = true;
@@ -130,6 +135,10 @@ EL::StatusCode BasicEventSelection :: configure ()
     m_derivationName    = config->GetValue("DerivationName", m_derivationName.c_str() );
     // temp flag for derivations with broken meta data
     m_useMetaData       = config->GetValue("UseMetaData", m_useMetaData);
+
+    // Check for duplicated events in Data and MC
+    m_checkDuplicatesData = config->GetValue("CheckDuplicatesData", m_checkDuplicatesData);
+    m_checkDuplicatesMC   = config->GetValue("CheckDuplicatesMC", m_checkDuplicatesMC);
 
     // GRL
     m_applyGRLCut       = config->GetValue("ApplyGRL",        m_applyGRLCut);
@@ -611,6 +620,21 @@ EL::StatusCode BasicEventSelection :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
+  //--------------------------------------------------------------------------------------------------------
+  // Before counting events, check  current event is not a duplicate
+  // This is done by checking against the std::set of <runNumber,eventNumber> filled for all previous events 
+  //--------------------------------------------------------------------------------------------------------
+
+  if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
+    std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
+    if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
+      if ( true ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
+      wk()->skipEvent();
+      return EL::StatusCode::SUCCESS; // go to next event  
+    }
+    m_RunNr_VS_EvtNr.insert(thispair);
+  } 
+  
   ++m_eventCounter;
 
   //-----------------------------------------
@@ -839,6 +863,8 @@ EL::StatusCode BasicEventSelection :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "Number of processed events \t= %i", m_eventCounter);
+
+  m_RunNr_VS_EvtNr.clear();
 
   if ( m_grl )          {  m_grl = nullptr;	     delete m_grl; }
   if ( m_pileuptool )   {  m_pileuptool = nullptr;   delete m_pileuptool; }
