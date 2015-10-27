@@ -347,15 +347,17 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     std::string derivationName = m_derivationName + "Kernel";
 
     if ( m_debug ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
-
-    for ( auto cbk :  *completeCBC ) {
-      if ( minCycle == cbk->cycle() && cbk->name() == "AllExecutedEvents" ) {
-	allEventsCBK = cbk;
+    
+    int maxCycle(-1);
+    for ( const auto& cbk: *completeCBC ) {
+      if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
+ 	allEventsCBK = cbk;
+ 	maxCycle = cbk->cycle();
       }
       if ( cbk->name() == derivationName ) {
-	DxAODEventsCBK = cbk;
+ 	 DxAODEventsCBK = cbk;
       }
-    }
+    }    
 
     m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();
     m_MD_initialSumW        = allEventsCBK->sumOfEventWeights();
