@@ -138,7 +138,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("weight_muon_IsoEff_SF_Gradient",	    	      &m_weight_muon_IsoEff_SF_Gradient);
     m_tree->Branch("weight_muon_IsoEff_SF_GradientLoose",  	      &m_weight_muon_IsoEff_SF_GradientLoose);
     m_tree->Branch("weight_muon_IsoEff_SF_UserDefinedFixEfficiency",  &m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency);
-    m_tree->Branch("weight_muon_IsoEff_SF_UserDefinedCut",	      &m_weight_muon_IsoEff_SF_UserDefinedCut);  
+    m_tree->Branch("weight_muon_IsoEff_SF_UserDefinedCut",	      &m_weight_muon_IsoEff_SF_UserDefinedCut);
   }
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
@@ -147,7 +147,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("weight_electron_PIDEff_SF_LHVeryLoose", &m_weight_electron_PIDEff_SF_LHVeryLoose);
     m_tree->Branch("weight_electron_PIDEff_SF_LHLoose",	    &m_weight_electron_PIDEff_SF_LHLoose);
     m_tree->Branch("weight_electron_PIDEff_SF_LHMedium",    &m_weight_electron_PIDEff_SF_LHMedium);
-    m_tree->Branch("weight_electron_PIDEff_SF_LHTight",	    &m_weight_electron_PIDEff_SF_LHTight);  
+    m_tree->Branch("weight_electron_PIDEff_SF_LHTight",	    &m_weight_electron_PIDEff_SF_LHTight);
   }
 
   this->AddEventUser();
@@ -170,7 +170,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
   }
 
   if ( m_eventInfoSwitch->m_pileup ) {
-    
+
     if ( m_event ) {
       const xAOD::VertexContainer* vertices(nullptr);
       HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
@@ -183,17 +183,17 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
     m_averageMu = eventInfo->averageInteractionsPerCrossing();
 
     if ( m_isMC ) {
-      
+
       static SG::AuxElement::ConstAccessor< double > weight_pileup ("PileupWeight");
       static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
       static SG::AuxElement::ConstAccessor< unsigned int > rand_run_nr("RandomRunNumber");
-      static SG::AuxElement::ConstAccessor< unsigned int > rand_lumiblock_nr("RandomLumiBlockNumber"); 
-      
+      static SG::AuxElement::ConstAccessor< unsigned int > rand_lumiblock_nr("RandomLumiBlockNumber");
+
       if ( weight_pileup.isAvailable( *eventInfo ) )	 { m_weight_pileup = weight_pileup( *eventInfo ); }	    else { m_weight_pileup = 1.0; }
       if ( correct_mu.isAvailable( *eventInfo ) )	 { m_correct_mu = correct_mu( *eventInfo ); }		    else { m_correct_mu = -1.0; }
       if ( rand_run_nr.isAvailable( *eventInfo ) )	 { m_rand_run_nr = rand_run_nr( *eventInfo ); } 	    else { m_rand_run_nr = 900000; }
       if ( rand_lumiblock_nr.isAvailable( *eventInfo ) ) { m_rand_lumiblock_nr = rand_lumiblock_nr( *eventInfo ); } else { m_rand_lumiblock_nr = 0; }
-    
+
     }
 
   }
@@ -267,7 +267,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
   }
 
   if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
-    
+
     SG::AuxElement::ConstAccessor< std::vector<float> >   muonTrigSFVec( "MuonEfficiencyCorrector_TrigSyst" );
     SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal("MuonEfficiencyCorrector_RecoSyst_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly_GLOBAL");
@@ -277,21 +277,21 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_GradientLoose("MuonEfficiencyCorrector_IsoSyst_GradientLoose_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_UserDefinedFixEfficiency("MuonEfficiencyCorrector_IsoSyst_UserDefinedFixEfficiency_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_UserDefinedCut("MuonEfficiencyCorrector_IsoSyst_UserDefinedCut_GLOBAL");
-    
+
     if( muonTrigSFVec.isAvailable( *eventInfo ) ) { m_weight_muon_trig = muonTrigSFVec( *eventInfo ); } else { m_weight_muon_trig.push_back(-999.0); }
     if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_muon_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_muon_RecoEff_SF.push_back(-999.0); }
-    if( accIsoSFGlobal_LooseTrackOnly.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_LooseTrackOnly = accIsoSFGlobal_LooseTrackOnly( *eventInfo ); } else { m_weight_muon_IsoEff_SF_LooseTrackOnly.push_back(-999.0); }    
-    if( accIsoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Loose = accIsoSFGlobal_Loose( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Loose.push_back(-999.0); }    
-    if( accIsoSFGlobal_Tight.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Tight = accIsoSFGlobal_Tight( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Tight.push_back(-999.0); }    
-    if( accIsoSFGlobal_Gradient.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Gradient = accIsoSFGlobal_Gradient( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Gradient.push_back(-999.0); }    
-    if( accIsoSFGlobal_GradientLoose.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_GradientLoose = accIsoSFGlobal_GradientLoose( *eventInfo ); } else { m_weight_muon_IsoEff_SF_GradientLoose.push_back(-999.0); }    
-    if( accIsoSFGlobal_UserDefinedFixEfficiency.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency = accIsoSFGlobal_UserDefinedFixEfficiency( *eventInfo ); } else { m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency.push_back(-999.0); }    
+    if( accIsoSFGlobal_LooseTrackOnly.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_LooseTrackOnly = accIsoSFGlobal_LooseTrackOnly( *eventInfo ); } else { m_weight_muon_IsoEff_SF_LooseTrackOnly.push_back(-999.0); }
+    if( accIsoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Loose = accIsoSFGlobal_Loose( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Loose.push_back(-999.0); }
+    if( accIsoSFGlobal_Tight.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Tight = accIsoSFGlobal_Tight( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Tight.push_back(-999.0); }
+    if( accIsoSFGlobal_Gradient.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Gradient = accIsoSFGlobal_Gradient( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Gradient.push_back(-999.0); }
+    if( accIsoSFGlobal_GradientLoose.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_GradientLoose = accIsoSFGlobal_GradientLoose( *eventInfo ); } else { m_weight_muon_IsoEff_SF_GradientLoose.push_back(-999.0); }
+    if( accIsoSFGlobal_UserDefinedFixEfficiency.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency = accIsoSFGlobal_UserDefinedFixEfficiency( *eventInfo ); } else { m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency.push_back(-999.0); }
     if( accIsoSFGlobal_UserDefinedCut.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_UserDefinedCut = accIsoSFGlobal_UserDefinedCut( *eventInfo ); } else { m_weight_muon_IsoEff_SF_UserDefinedCut.push_back(-999.0); }
 
   }
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
-    
+
     SG::AuxElement::ConstAccessor< std::vector<float> >   electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst" );
     SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal("ElectronEfficiencyCorrector_RecoSyst_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose_GLOBAL");
@@ -459,8 +459,8 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     m_tree->Branch("muon_isIsolated_Tight",	     &m_muon_isIsolated_Tight);
     m_tree->Branch("muon_isIsolated_Gradient",	     &m_muon_isIsolated_Gradient);
     m_tree->Branch("muon_isIsolated_GradientLoose",  &m_muon_isIsolated_GradientLoose);
-    m_tree->Branch("muon_isIsolated_GradientT1",     &m_muon_isIsolated_GradientT1);   
-    m_tree->Branch("muon_isIsolated_GradientT2",     &m_muon_isIsolated_GradientT2);   
+    m_tree->Branch("muon_isIsolated_GradientT1",     &m_muon_isIsolated_GradientT1);
+    m_tree->Branch("muon_isIsolated_GradientT2",     &m_muon_isIsolated_GradientT2);
     m_tree->Branch("muon_isIsolated_MU0p06",	     &m_muon_isIsolated_MU0p06);
     m_tree->Branch("muon_isIsolated_UserDefinedFixEfficiency",    &m_muon_isIsolated_UserDefinedFixEfficiency);
     m_tree->Branch("muon_isIsolated_UserDefinedCut",              &m_muon_isIsolated_UserDefinedCut);
@@ -526,7 +526,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
   this->ClearMuons();
   this->ClearMuonsUser();
-  
+
   m_nmuon = 0;
   for ( auto muon_itr : *(muons) ) {
 
@@ -712,8 +712,8 @@ void HelpTreeBase::ClearMuons() {
     m_muon_isIsolated_Tight.clear();
     m_muon_isIsolated_Gradient.clear();
     m_muon_isIsolated_GradientT1.clear();
-    m_muon_isIsolated_GradientT2.clear();    
-    m_muon_isIsolated_MU0p06.clear();   
+    m_muon_isIsolated_GradientT2.clear();
+    m_muon_isIsolated_MU0p06.clear();
     m_muon_isIsolated_GradientLoose.clear();
     m_muon_isIsolated_UserDefinedFixEfficiency.clear();
     m_muon_isIsolated_UserDefinedCut.clear();
@@ -808,8 +808,8 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_isIsolated_Tight",	   &m_el_isIsolated_Tight);
     m_tree->Branch("el_isIsolated_Gradient",	   &m_el_isIsolated_Gradient);
     m_tree->Branch("el_isIsolated_GradientLoose",  &m_el_isIsolated_GradientLoose);
-    m_tree->Branch("el_isIsolated_GradientT1",     &m_el_isIsolated_GradientT1);   
-    m_tree->Branch("el_isIsolated_GradientT2",     &m_el_isIsolated_GradientT2);   
+    m_tree->Branch("el_isIsolated_GradientT1",     &m_el_isIsolated_GradientT1);
+    m_tree->Branch("el_isIsolated_GradientT2",     &m_el_isIsolated_GradientT2);
     m_tree->Branch("el_isIsolated_EL0p06",	   &m_el_isIsolated_EL0p06);
     m_tree->Branch("el_isIsolated_UserDefinedFixEfficiency",    &m_el_isIsolated_UserDefinedFixEfficiency);
     m_tree->Branch("el_isIsolated_UserDefinedCut",              &m_el_isIsolated_UserDefinedCut);
@@ -1081,8 +1081,8 @@ void HelpTreeBase::ClearElectrons() {
     m_el_isIsolated_Gradient.clear();
     m_el_isIsolated_GradientLoose.clear();
     m_el_isIsolated_GradientT1.clear();
-    m_el_isIsolated_GradientT2.clear();    
-    m_el_isIsolated_EL0p06.clear();       
+    m_el_isIsolated_GradientT2.clear();
+    m_el_isIsolated_EL0p06.clear();
     m_el_isIsolated_UserDefinedFixEfficiency.clear();
     m_el_isIsolated_UserDefinedCut.clear();
     m_el_etcone20.clear();
@@ -1160,7 +1160,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
   jetInfo* thisJet = m_jets[jetName];
 
   // always
-  m_tree->Branch(("n"+jetName).c_str(),    &thisJet->N,("n"+jetName+"/I").c_str());
+  m_tree->Branch(("n"+jetName+"s").c_str(),    &thisJet->N,("n"+jetName+"s/I").c_str());
 
   if ( m_jetInfoSwitch->m_kinematic ) {
     m_tree->Branch((jetName+"_E"  ).c_str(),  &thisJet->m_jet_E);
@@ -1309,65 +1309,65 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
         case 30 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix30").c_str(),   &thisJet->m_njet_mv2c20_Fix30,("n"+jetName+"s_mv2c20_Fix30/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix30").c_str(),   &thisJet->m_jet_mv2c20_isFix30);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix30").c_str(),   &thisJet->m_jet_mv2c20_sfFix30);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix30);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix30);
 	  }
           break;
         case 50 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix50").c_str(),   &thisJet->m_njet_mv2c20_Fix50,("n"+jetName+"s_mv2c20_Fix50/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix50").c_str(),   &thisJet->m_jet_mv2c20_isFix50);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix50").c_str(),   &thisJet->m_jet_mv2c20_sfFix50);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix50);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix50);
 	  }
           break;
         case 60 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix60").c_str(),   &thisJet->m_njet_mv2c20_Fix60,("n"+jetName+"s_mv2c20_Fix60/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix60").c_str(),   &thisJet->m_jet_mv2c20_isFix60);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix60").c_str(),   &thisJet->m_jet_mv2c20_sfFix60);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix60);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix60);
 	  }
           break;
         case 70 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix70").c_str(),   &thisJet->m_njet_mv2c20_Fix70,("n"+jetName+"s_mv2c20_Fix70/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix70").c_str(),   &thisJet->m_jet_mv2c20_isFix70);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix70").c_str(),   &thisJet->m_jet_mv2c20_sfFix70);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix70);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix70);
 	  }
           break;
         case 77 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix77").c_str(),   &thisJet->m_njet_mv2c20_Fix77,("n"+jetName+"s_mv2c20_Fix77/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix77").c_str(),   &thisJet->m_jet_mv2c20_isFix77);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix77").c_str(),   &thisJet->m_jet_mv2c20_sfFix77);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix77);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix77);
 	  }
           break;
         case 80 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix80").c_str(),   &thisJet->m_njet_mv2c20_Fix80,("n"+jetName+"s_mv2c20_Fix80/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix80").c_str(),   &thisJet->m_jet_mv2c20_isFix80);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix80").c_str(),   &thisJet->m_jet_mv2c20_sfFix80);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix80").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix80);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix80").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix80);
 	  }
           break;
         case 85 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix85").c_str(),   &thisJet->m_njet_mv2c20_Fix85,("n"+jetName+"s_mv2c20_Fix85/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix85").c_str(),   &thisJet->m_jet_mv2c20_isFix85);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix85").c_str(),   &thisJet->m_jet_mv2c20_sfFix85);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix85);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix85);
 	  }
           break;
         case 90 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix90").c_str(),   &thisJet->m_njet_mv2c20_Fix90,("n"+jetName+"s_mv2c20_Fix90/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix90").c_str(),   &thisJet->m_jet_mv2c20_isFix90);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix90").c_str(),   &thisJet->m_jet_mv2c20_sfFix90);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix90").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix90);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix90").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix90);
 	  }
           break;
         default:
@@ -1383,57 +1383,57 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
         case 30 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt30").c_str(),   &thisJet->m_njet_mv2c20_Flt30,("n"+jetName+"s_mv2c20_Flt30/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFlt30").c_str(),   &thisJet->m_jet_mv2c20_isFlt30);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt30").c_str(),   &thisJet->m_jet_mv2c20_sfFlt30);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt30);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt30);
 	  }
           break;
         case 40 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt40").c_str(),   &thisJet->m_njet_mv2c20_Flt40,("n"+jetName+"s_mv2c20_Flt40/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFlt40").c_str(),   &thisJet->m_jet_mv2c20_isFlt40);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt40").c_str(),   &thisJet->m_jet_mv2c20_sfFlt40);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt40").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt40);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt40").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt40);
 	  }
           break;
         case 50 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt50").c_str(),   &thisJet->m_njet_mv2c20_Flt50,("n"+jetName+"s_mv2c20_Flt50/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFlt50").c_str(),   &thisJet->m_jet_mv2c20_isFlt50);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt50").c_str(),   &thisJet->m_jet_mv2c20_sfFlt50);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt50);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt50);
 	  }
           break;
         case 60 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt60").c_str(),   &thisJet->m_njet_mv2c20_Flt60,("n"+jetName+"s_mv2c20_Flt60/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFlt60").c_str(),   &thisJet->m_jet_mv2c20_isFlt60);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt60").c_str(),   &thisJet->m_jet_mv2c20_sfFlt60);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt60);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt60);
 	  }
           break;
         case 70 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt70").c_str(),   &thisJet->m_njet_mv2c20_Flt70,("n"+jetName+"s_mv2c20_Flt70/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFlt70").c_str(),   &thisJet->m_jet_mv2c20_isFlt70);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt70").c_str(),   &thisJet->m_jet_mv2c20_sfFlt70);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt70);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt70);
 	  }
           break;
         case 77 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt77").c_str(),   &thisJet->m_njet_mv2c20_Flt77,("n"+jetName+"s_mv2c20_Flt77/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFlt77").c_str(),   &thisJet->m_jet_mv2c20_isFlt77);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt77").c_str(),   &thisJet->m_jet_mv2c20_sfFlt77);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt77);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt77);
 	  }
           break;
         case 85 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt85").c_str(),   &thisJet->m_njet_mv2c20_Flt85,("n"+jetName+"s_mv2c20_Flt85/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFlt85").c_str(),   &thisJet->m_jet_mv2c20_isFlt85);
-          if ( m_isMC ) { 
+          if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt85").c_str(),   &thisJet->m_jet_mv2c20_sfFlt85);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt85);	  
+            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt85);
 	  }
           break;
         default:
@@ -1514,40 +1514,40 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
   if ( m_isMC ) {
     const xAOD::EventInfo* eventInfo(nullptr);
     HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, false);
-    
+
 
     if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
       for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
     	switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
-    	  case 30 : 
+    	  case 30 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix30_GLOBAL("BTag_SF_FixedCutBEff_30_GLOBAL");
             if ( sfFix30_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix30 = sfFix30_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix30.push_back(-999.0); }
     	    break;
-    	  case 50 : 
+    	  case 50 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix50_GLOBAL("BTag_SF_FixedCutBEff_50_GLOBAL");
             if ( sfFix50_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix50 = sfFix50_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix50.push_back(-999.0); }
     	    break;
-    	  case 60 : 
+    	  case 60 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix60_GLOBAL("BTag_SF_FixedCutBEff_60_GLOBAL");
             if ( sfFix60_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix60 = sfFix60_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix60.push_back(-999.0); }
     	    break;
-    	  case 70 : 
+    	  case 70 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix70_GLOBAL("BTag_SF_FixedCutBEff_70_GLOBAL");
             if ( sfFix70_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix70 = sfFix70_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix70.push_back(-999.0); }
     	    break;
-    	  case 77 : 
+    	  case 77 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix77_GLOBAL("BTag_SF_FixedCutBEff_77_GLOBAL");
             if ( sfFix77_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix77 = sfFix77_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix77.push_back(-999.0); }
     	    break;
-    	  case 80 : 
+    	  case 80 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix80_GLOBAL("BTag_SF_FixedCutBEff_80_GLOBAL");
             if ( sfFix80_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix80 = sfFix80_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix80.push_back(-999.0); }
     	    break;
-    	  case 85 : 
+    	  case 85 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix85_GLOBAL("BTag_SF_FixedCutBEff_85_GLOBAL");
             if ( sfFix85_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix85 = sfFix85_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix85.push_back(-999.0); }
     	    break;
-    	  case 90 : 
+    	  case 90 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix90_GLOBAL("BTag_SF_FixedCutBEff_90_GLOBAL");
             if ( sfFix90_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix90 = sfFix90_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix90.push_back(-999.0); }
     	    break;
@@ -1558,31 +1558,31 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
     if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) {
       for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
     	switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
-    	  case 30 : 
+    	  case 30 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30_GLOBAL("BTag_SF_FlatBEff_30_GLOBAL");
             if ( sfFlt30_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt30 = sfFlt30_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt30.push_back(-999.0); }
     	    break;
-    	  case 40 : 
+    	  case 40 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40_GLOBAL("BTag_SF_FlatBEff_40_GLOBAL");
             if ( sfFlt40_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt40 = sfFlt40_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt40.push_back(-999.0); }
     	    break;
-    	  case 50 : 
+    	  case 50 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50_GLOBAL("BTag_SF_FlatBEff_50_GLOBAL");
             if ( sfFlt50_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt50 = sfFlt50_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt50.push_back(-999.0); }
     	    break;
-    	  case 60 : 
+    	  case 60 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60_GLOBAL("BTag_SF_FlatBEff_60_GLOBAL");
             if ( sfFlt60_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt60 = sfFlt60_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt60.push_back(-999.0); }
     	    break;
-    	  case 70 : 
+    	  case 70 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70_GLOBAL("BTag_SF_FlatBEff_70_GLOBAL");
             if ( sfFlt70_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt70 = sfFlt70_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt70.push_back(-999.0); }
     	    break;
-    	  case 77 : 
+    	  case 77 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77_GLOBAL("BTag_SF_FlatBEff_77_GLOBAL");
             if ( sfFlt77_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt77 = sfFlt77_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt77.push_back(-999.0); }
     	    break;
-    	  case 85 : 
+    	  case 85 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85_GLOBAL("BTag_SF_FlatBEff_85_GLOBAL");
             if ( sfFlt85_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt85 = sfFlt85_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt85.push_back(-999.0); }
     	    break;
@@ -2180,8 +2180,8 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
       //
       static SG::AuxElement::ConstAccessor<int> GhostTausFinalCount ("GhostTausFinalCount");
       safeFill<int, int>(jet_itr, GhostTausFinalCount, thisJet->m_jet_truthCount_TausFinal, -999);
-      
-      // THE ONLY UN-OFFICIAL PIECE OF CODE HERE USE WITH CAUTION 
+
+      // THE ONLY UN-OFFICIAL PIECE OF CODE HERE USE WITH CAUTION
       static SG::AuxElement::ConstAccessor<float> GhostTausFinalPt ("GhostTausFinalPt");
       safeFill<float, float>(jet_itr, GhostTausFinalPt, thisJet->m_jet_truthPt_TausFinal, -999);
 
@@ -2228,7 +2228,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_phi.clear();
     thisJet->m_jet_E.clear();
   }
-  
+
 
   // rapidity
   if( m_jetInfoSwitch->m_rapidity ) {
@@ -2508,7 +2508,7 @@ void HelpTreeBase::AddTruthParts(const std::string truthName, const std::string 
   if(m_debug) Info("AddTruthParts()", "Adding truth particle %s with variables: %s", truthName.c_str(), detailStr.c_str());
 
   m_truthInfoSwitch = new HelperClasses::TruthInfoSwitch( detailStr );
-  
+
   m_truth[truthName] = new truthInfo();
 
   // always
@@ -2780,7 +2780,7 @@ void HelpTreeBase::AddMET( const std::string detailStr ) {
   }
   if ( m_metInfoSwitch->m_refGamma ) {
     m_tree->Branch("metGamma",       	 &m_metGamma,	       "metGamma/F");
-    m_tree->Branch("metGammaSumEt",  	 &m_metGammaSumEt,     "metGammaSumEt/F");    
+    m_tree->Branch("metGammaSumEt",  	 &m_metGammaSumEt,     "metGammaSumEt/F");
     m_tree->Branch("metGammaPhi",    	 &m_metGammaPhi,       "metGammaPhi/F");
   }
   if ( m_metInfoSwitch->m_refTau ) {
@@ -2790,19 +2790,19 @@ void HelpTreeBase::AddMET( const std::string detailStr ) {
   }
   if ( m_metInfoSwitch->m_refMuons ) {
     m_tree->Branch("metMuons",           &m_metMuons,	       "metMuons/F");
-    m_tree->Branch("metMuonsSumEt",      &m_metMuonsSumEt,     "metMuonsSumEt/F"); 
+    m_tree->Branch("metMuonsSumEt",      &m_metMuonsSumEt,     "metMuonsSumEt/F");
     m_tree->Branch("metMuonsPhi",        &m_metMuonsPhi,       "metMuonsPhi/F");
   }
   if ( m_metInfoSwitch->m_refJet ) {
     m_tree->Branch("metJet",             &m_metJet,	       "metJet/F");
-    m_tree->Branch("metJetSumEt",        &m_metJetSumEt,       "metJetSumEt/F"); 
+    m_tree->Branch("metJetSumEt",        &m_metJetSumEt,       "metJetSumEt/F");
     m_tree->Branch("metJetPhi",          &m_metJetPhi,         "metJetPhi/F");
   }
   if ( m_metInfoSwitch->m_refJetTrk ) {
     m_tree->Branch("metJetTrk",          &m_metJetTrk,         "metJetTrk/F");
-    m_tree->Branch("metJetTrkSumEt",     &m_metJetTrkSumEt,    "metJetTrkSumEt/F"); 
+    m_tree->Branch("metJetTrkSumEt",     &m_metJetTrkSumEt,    "metJetTrkSumEt/F");
     m_tree->Branch("metJetTrkPhi",       &m_metJetTrkPhi,      "metJetTrkPhi/F");
-  }  
+  }
   if ( m_metInfoSwitch->m_softClus) {
     m_tree->Branch("metSoftClus",        &m_metSoftClus,       "metSoftClus/F");
     m_tree->Branch("metSoftClusSumEt",   &m_metSoftClusSumEt,  "metSoftClusSumEt/F");
@@ -2813,7 +2813,7 @@ void HelpTreeBase::AddMET( const std::string detailStr ) {
     m_tree->Branch("metSoftTrkSumEt",    &m_metSoftTrkSumEt,   "metSoftTrkSumEt/F");
     m_tree->Branch("metSoftTrkPhi",      &m_metSoftTrkPhi,     "metSoftTrksPhi/F");
   }
-  
+
   this->AddMETUser();
 }
 
@@ -2868,13 +2868,13 @@ void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
     m_metJet             	     	 = ref_jet->met() / m_units;
     m_metJetSumEt        	     	 = ref_jet->sumet() / m_units;
     m_metJetPhi          	     	 = ref_jet->phi();
-  }  
+  }
   if ( m_metInfoSwitch->m_refJetTrk ) {
     const xAOD::MissingET* ref_jet_trk   = *met->find("RefJetTrk");
     m_metJetTrk             	     	 = ref_jet_trk->met() / m_units;
     m_metJetTrkSumEt        	     	 = ref_jet_trk->sumet() / m_units;
     m_metJetTrkPhi          	     	 = ref_jet_trk->phi();
-  }   
+  }
   if ( m_metInfoSwitch->m_softClus) {
     const xAOD::MissingET* ref_soft_clus = *met->find("SoftClus");
     m_metSoftClus            		 = ref_soft_clus->met() / m_units;
@@ -2886,8 +2886,8 @@ void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
     m_metSoftTrk             		 = ref_soft_trk->met() / m_units;
     m_metSoftTrkSumEt        		 = ref_soft_trk->sumet() / m_units;
     m_metSoftTrkPhi          		 = ref_soft_trk->phi();
-  }  
-  
+  }
+
   this->FillMETUser(met);
 }
 
@@ -2898,12 +2898,12 @@ void HelpTreeBase::ClearMET() {
   m_metFinalClusPy    = -999;
   m_metFinalClusSumEt = -999;
   m_metFinalClusPhi   = -999;
-  
+
   m_metFinalTrk	      = -999;
   m_metFinalTrkPx     = -999;
   m_metFinalTrkPy     = -999;
   m_metFinalTrkSumEt  = -999;
-  m_metFinalTrkPhi    = -999;  
+  m_metFinalTrkPhi    = -999;
 
   if ( m_metInfoSwitch->m_refEle ) {
     m_metEle = m_metEleSumEt = m_metElePhi = -999;
