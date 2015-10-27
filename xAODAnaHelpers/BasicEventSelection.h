@@ -61,6 +61,11 @@ class BasicEventSelection : public xAH::Algorithm
     // Metadata
     std::string m_derivationName;
     bool m_useMetaData;
+    
+    /* Check for duplicated events in Data and MC */
+    bool m_checkDuplicatesData;
+    bool m_checkDuplicatesMC;
+    std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; 
 
   private:
     GoodRunsListSelectionTool*   m_grl;        //!
