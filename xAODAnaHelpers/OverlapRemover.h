@@ -51,6 +51,8 @@ public:
   /* Photons */
   std::string m_inContainerName_Photons;
   std::string  m_outContainerName_Photons;        // output container name
+  std::string  m_inputAlgoPhotons;                // name of vector<string> of syst retrieved from TStore
+  std::string  m_outputAlgoPhotons;               // name of vector<string> of syst pushed in TStore
   /* Taus */
   std::string m_inContainerName_Taus;
   std::string  m_outContainerName_Taus;        // output container name
@@ -95,10 +97,12 @@ private:
   TH1D* m_el_cutflowHist_1;    //!
   TH1D* m_mu_cutflowHist_1;    //!
   TH1D* m_jet_cutflowHist_1;   //!
+  TH1D* m_ph_cutflowHist_1;   //!
 
   int m_el_cutflow_OR_cut;     //!
   int m_mu_cutflow_OR_cut;     //!
   int m_jet_cutflow_OR_cut;    //!
+  int m_ph_cutflow_OR_cut;    //!
   
 
   // variables that don't get filled at submission time should be
