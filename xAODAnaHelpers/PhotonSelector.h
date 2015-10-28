@@ -21,10 +21,10 @@ class PhotonSelector : public xAH::Algorithm
 {
 public:
   
-  bool m_useCutFlow;
+  bool m_useCutFlow;            
 
-  /* configuration variables */  
-
+  /* configuration variables */
+  
   std::string    m_inContainerName;          /* input container name */
   std::string    m_outContainerName;         /* output container name */
   std::string    m_outAuxContainerName;      /* output auxiliary container name */
@@ -32,8 +32,6 @@ public:
   std::string    m_outputAlgoSystNames;
   bool       	 m_decorateSelectedObjects;  /* decorate selected objects - default "passSel" */
   bool       	 m_createSelectedContainer;  /* fill using SG::VIEW_ELEMENTS to be light weight */
-  
-  /* event cut (multiplicity) */
   int        	 m_nToProcess;  	     /* look at n objects */
   int        	 m_pass_min;		     /* minimum number of objects passing cuts */
   int        	 m_pass_max;		     /* maximum number of objects passing cuts */
@@ -42,19 +40,21 @@ public:
   float      	 m_eta_max;		     /* require |eta| < eta_max */
   bool	     	 m_vetoCrack;		     /* require |eta| outside crack region */
   bool           m_doAuthorCut;
-
+  bool           m_doOQCut;
+  
   /* photon PID */
   std::string    m_photonIdCut;              /* Name of ID variable to cut */
-
+  
   /* isolation */
   std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
   std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
 
   /* trigger matching */
+  
   std::string    m_PhTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching. 
   				      This is passed by the user as input in configuration
 				      If left empty (as it is by default), no trigger matching will be attempted at all */
-  
+				   
 private:
   
   int m_numEvent;           //!
@@ -75,9 +75,10 @@ private:
 
   int   m_ph_cutflow_all;              //!
   int   m_ph_cutflow_author_cut;       //!
+  int   m_ph_cutflow_OQ_cut;           //!
   int   m_ph_cutflow_PID_cut;          //!
   int   m_ph_cutflow_ptmax_cut;        //!
-  int   m_ph_cutflow_ptmin_cut;        //!	     
+  int   m_ph_cutflow_ptmin_cut;        //!
   int   m_ph_cutflow_eta_cut;          //!
   int   m_ph_cutflow_iso_cut;          //!
 
@@ -92,15 +93,15 @@ private:
   Trig::TrigEgammaMatchingTool* m_match_Tool; //!
 
   std::vector<std::string> m_PhTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_ElTrigChains */
-  
+
 public:
-  
+
   /* this is a standard constructor */
   
   PhotonSelector ();
-  
+
   ~PhotonSelector();
-  
+
   /* these are the functions inherited from Algorithm */
   
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -112,7 +113,7 @@ public:
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
-  
+
   /* these are the functions not inherited from Algorithm */
   
   virtual EL::StatusCode configure ();
@@ -125,7 +126,7 @@ public:
   
   
   
-  ClassDef(PhotonSelector, 1);  
+  ClassDef(PhotonSelector, 1);
 };
 
 

@@ -91,6 +91,7 @@ PhotonSelector :: PhotonSelector () :
   m_eta_max                 = 1e8;
   m_vetoCrack               = true;
   m_doAuthorCut             = true;
+  m_doOQCut                 = true;
 
   // PID
   m_photonIdCut             = "None";
@@ -137,6 +138,7 @@ EL::StatusCode  PhotonSelector :: configure ()
     m_eta_max                 = config->GetValue("etaMax", m_eta_max);
     m_vetoCrack               = config->GetValue("VetoCrack", m_vetoCrack);
     m_doAuthorCut             = config->GetValue("DoAuthorCut", m_doAuthorCut);
+    m_doOQCut                 = config->GetValue("DoOQCut", m_doOQCut);
 
     m_photonIdCut             = config->GetValue("PhotonIdCut", m_photonIdCut.c_str());
 
@@ -262,7 +264,8 @@ EL::StatusCode PhotonSelector :: initialize ()
     m_ph_cutflowHist_1 = (TH1D*)file->Get("cutflow_photons_1");
 
     m_ph_cutflow_all             = m_ph_cutflowHist_1->GetXaxis()->FindBin("all");
-    m_ph_cutflow_author_cut      = m_ph_cutflowHist_1->GetXaxis()->FindBin("author_cut");     
+    m_ph_cutflow_author_cut      = m_ph_cutflowHist_1->GetXaxis()->FindBin("author_cut");
+    m_ph_cutflow_OQ_cut          = m_ph_cutflowHist_1->GetXaxis()->FindBin("OQ_cut");
     m_ph_cutflow_PID_cut         = m_ph_cutflowHist_1->GetXaxis()->FindBin("PID_cut");
     m_ph_cutflow_ptmax_cut       = m_ph_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");      
     m_ph_cutflow_ptmin_cut       = m_ph_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
@@ -274,20 +277,20 @@ EL::StatusCode PhotonSelector :: initialize ()
   
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  
+
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
-  
+
   if ( configure() == EL::StatusCode::FAILURE ) {
     Error("initialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
   }
-  
+
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
-  
+
   // *************************************
   //
   // Initialise CP::IsolationSelectionTool
@@ -307,29 +310,29 @@ EL::StatusCode PhotonSelector :: initialize ()
     if ( m_debug ) { Info("initialize()", "Adding extra isolation WP %s to IsolationSelectionTool", (*WP_itr).c_str() ); }
     RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->addPhotonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );    
   }
-  
+
   // ***************************************
   //
   // Initialise Trig::TrigEgammaMatchingTool
   //
-  // ***************************************  
+  // ***************************************
   if( !m_PhTrigChains.empty()) {
     std::string trig;
     std::istringstream ss(m_PhTrigChains);
-    
+
     while ( std::getline(ss, trig, ',') ) {
       m_PhTrigChainsList.push_back(trig);
     }
-    
+
     if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
       m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
     } else {
       Error("Initialize()", "the Trigger Decision Tool is not initialized.. [%s]", m_name.c_str());
       return EL::StatusCode::FAILURE;
     }
-    
+
     ToolHandle<Trig::TrigDecisionTool> trigDecHandle( m_trigDecTool );
-    
+
     //  everything went fine, let's initialise the tool!
     //
     const std::string MatchingToolName = m_name+"_TrigEgammaMatchingTool";
@@ -341,9 +344,11 @@ EL::StatusCode PhotonSelector :: initialize ()
       RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->initialize(), "Failed to properly initialize TrigMuonMatching." );
     } 
   }
+
+  // **********************************************************************************************
   
   Info("initialize()", "PhotonSelector Interface succesfully initialized!" );
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -354,13 +359,13 @@ EL::StatusCode PhotonSelector :: execute ()
   // events, e.g. read input variables, apply cuts, and fill
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
-  
+
   if ( m_debug ) { Info("execute()", "Applying Photon Selection... "); }
-  
+
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,
 	       Form("Failed in retrieving %s in %s", m_eventInfoContainerName.c_str(), m_name.c_str() ));
-  
+
   // MC event weight
   //
   float mcEvtWeight(1.0);
@@ -370,7 +375,7 @@ EL::StatusCode PhotonSelector :: execute ()
     return EL::StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
-  
+
   m_numEvent++;
 
   bool eventPass(false);
@@ -391,9 +396,9 @@ EL::StatusCode PhotonSelector :: execute ()
     if ( m_createSelectedContainer ) { selectedPhotons = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS); }  
 
     // find the selected photons, and return if event passes object selection
-    //    
+    //
     eventPass = executeSelection(inPhotons, mcEvtWeight, countPass, selectedPhotons );
-    
+
     if ( m_createSelectedContainer) {
       if ( eventPass ) {
         // add ConstDataVector to TStore
@@ -420,13 +425,13 @@ EL::StatusCode PhotonSelector :: execute ()
 
     // loop over systematic sets
     //
-    bool eventPassThisSyst(false);    
+    bool eventPassThisSyst(false);
     for ( auto systName : *systNames) {
-      
+
       if ( m_debug ) { Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() ); }
 
       RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName + systName, m_event, m_store, m_verbose), "");
-      
+
       // create output container (if requested) - one for each systematic
       //
       ConstDataVector<xAOD::PhotonContainer>* selectedPhotons(nullptr);
@@ -435,7 +440,7 @@ EL::StatusCode PhotonSelector :: execute ()
       // find the selected photons, and return if event passes object selection
       //
       eventPassThisSyst = executeSelection( inPhotons, mcEvtWeight, countPass, selectedPhotons );
-      
+
       if ( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
 
       if ( eventPassThisSyst ) {
@@ -443,11 +448,11 @@ EL::StatusCode PhotonSelector :: execute ()
 	//
 	vecOutContainerNames->push_back( systName );
       }
-      
+
       // if for at least one syst set the event passes selection, this will remain true!
       //
       eventPass = ( eventPass || eventPassThisSyst );
-      
+
       if ( m_debug ) { Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
 
       if ( m_createSelectedContainer ) {
@@ -462,7 +467,7 @@ EL::StatusCode PhotonSelector :: execute ()
         }
       }
     }
-    
+
     if ( m_debug ) {  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
 
     // record in TStore the list of systematics names that should be considered down stream
@@ -473,19 +478,19 @@ EL::StatusCode PhotonSelector :: execute ()
   // look what we have in TStore
   //
   if ( m_verbose ) { m_store->print(); }
-  
+
   if( !eventPass ) {
     wk()->skipEvent();
     return EL::StatusCode::SUCCESS;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
 bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons, 
 					  float mcEvtWeight, bool countPass,
 					  ConstDataVector<xAOD::PhotonContainer>* selectedPhotons )
-{  
+{
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
   
@@ -503,12 +508,12 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
     }
 
     nObj++;
-    
+
     bool passSel = this->passCuts( ph_itr );
     if ( m_decorateSelectedObjects ) {
       passSelDecor( *ph_itr ) = passSel;
     }
-    
+
     if ( passSel ) {
       nPass++;
       if ( m_createSelectedContainer ) {
@@ -522,7 +527,7 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
   if ( countPass ) {
     m_numObject     += nObj;
     m_numObjectPass += nPass;
-  } 
+  }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   //
@@ -531,7 +536,7 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
   }
   if ( m_pass_max > 0 && nPass > m_pass_max ) {
     return false;
-  }  
+  }
 
   // for cutflow: make sure to count passed events only once (i.e., this flag will be true only for nominal)
   //
@@ -550,32 +555,32 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
   if ( m_match_Tool && selectedPhotons ) {
     
     unsigned int nSelectedPhotons = selectedPhotons->size();
-    
+
     if ( nSelectedPhotons > 0 ) {
       
       if ( m_debug ) { Info("executeSelection()", "Now doing photon trigger matching..."); }
-      
+     
       for ( auto const &chain : m_PhTrigChainsList ) {
-	
+
 	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-	
+
 	for ( auto const photon : *selectedPhotons ) {
 	  
 	  SG::AuxElement::Decorator< std::map<std::string,bool> > isTrigMatchedMapPhDecor( "isTrigMatchedMapPh" );
 	  if ( !isTrigMatchedMapPhDecor.isAvailable( *photon ) ) {
 	    isTrigMatchedMapPhDecor( *photon ) = std::map<std::string,bool>();
 	  }
-	  
+
 	  bool matched = false;
-	  
+
 	  static const bool DO_TEMPORAL_MATCHING = true;
 	  
 	  if (!DO_TEMPORAL_MATCHING)  { // the current matching tool does not work for the photon 
 	    matched = ( m_match_Tool->matchHLT( photon, chain ) );  
-	    
+	   
 	    if ( m_debug ) { Info("executeSelection()", "\t\t is photon trigger matched? %s for %s", (matched ? "Y" : "N"), chain.c_str()); }
 	  } else {
-	    
+	   
 	    if(m_event->contains<xAOD::PhotonContainer>("HLT_xAOD__PhotonContainer_egamma_Photons")){ // check if trigger photon info exist
 	      // get trigger list from config file
 	      Trig::FeatureContainer fc = m_trigDecTool->features(chain);
@@ -601,7 +606,7 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
 	      matched = false;
 	    }
 	  }
-	  
+
 	  ( isTrigMatchedMapPhDecor( *photon ) )[chain] = matched;
 	}
       }
@@ -619,6 +624,11 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   // as for Egamma CP  recommendation
   //
   float eta   = ( photon->caloCluster() ) ? photon->caloCluster()->etaBE(2) : -999.0;
+
+  float reta = photon->showerShapeValue(xAOD::EgammaParameters::Reta);
+  float rphi = photon->showerShapeValue(xAOD::EgammaParameters::Rphi);
+
+  uint32_t oq= photon->auxdata<uint32_t>("OQ");
 
   // photon ID key name set
   std::string photonIDKeyName = "PhotonID_"+m_photonIdCut;
@@ -639,6 +649,18 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
     }
   }
   m_ph_cutflowHist_1->Fill( m_ph_cutflow_author_cut, 1 );
+
+  // *********************************************************************************************************************************************************************
+  // 
+  // Object Quality cut
+  //
+  if ( m_doOQCut ) {
+    if ( (oq & 134217728) != 0 && (reta > 0.98 || rphi > 1.0 || (oq & 67108864) != 0) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed Object Quality cut." ); }
+      return 0;
+    }
+  }
+  m_ph_cutflowHist_1->Fill( m_ph_cutflow_OQ_cut, 1 );      
 
   // *********************************************************************************************************************************************************************
   // 
@@ -807,4 +829,5 @@ EL::StatusCode PhotonSelector :: histFinalize ()
   
   return EL::StatusCode::SUCCESS;
 }
+
 
