@@ -642,12 +642,19 @@ protected:
   std::vector<float> m_el_topoetcone40;  
   
   // PID
+  int m_nel_LHVeryLoose; 
   std::vector<int>   m_el_LHVeryLoose;
+  int m_nel_LHLoose; 
   std::vector<int>   m_el_LHLoose;
+  int m_nel_LHMedium;
   std::vector<int>   m_el_LHMedium;
+  int m_nel_LHTight;
   std::vector<int>   m_el_LHTight;
+  int m_nel_IsEMLoose;
   std::vector<int>   m_el_IsEMLoose;
+  int m_nel_IsEMMedium;
   std::vector<int>   m_el_IsEMMedium;
+  int m_nel_IsEMTight;
   std::vector<int>   m_el_IsEMTight;
 
   // scale factors w/ sys
