@@ -185,7 +185,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
     if ( m_isMC ) {
 
-      static SG::AuxElement::ConstAccessor< double > weight_pileup ("PileupWeight");
+      static SG::AuxElement::ConstAccessor< float > weight_pileup ("PileupWeight");
       static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
       static SG::AuxElement::ConstAccessor< unsigned int > rand_run_nr("RandomRunNumber");
       static SG::AuxElement::ConstAccessor< unsigned int > rand_lumiblock_nr("RandomLumiBlockNumber");
