@@ -59,9 +59,11 @@ public:
   std::string    m_CaloBasedIsoType;         /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
   std::string    m_TrackBasedIsoType;        /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
   
-  // trigger matching
-  std::string    m_singleMuTrigChains;
-  std::string    m_diMuTrigChains;
+  /* trigger matching */
+  std::string    m_singleMuTrigChains;       /* A comma-separated string w/ alll the HLT single muon trigger chains for which you want to perform the matching. 
+  		                                If left empty (as it is by default), no trigger matching will be attempted at all */
+  std::string    m_diMuTrigChains;           /* A comma-separated string w/ alll the HLT dimuon trigger chains for which you want to perform the matching.
+  					     	If left empty (as it is by default), no trigger matching will be attempted at all */
   float          m_minDeltaR;
 
   std::string    m_passAuxDecorKeys;  
@@ -97,6 +99,12 @@ private:
   int   m_mu_cutflow_iso_cut;		    //!     
   
   std::vector<std::string> m_IsoKeys;       //!
+  
+  /* other private members */
+
+  std::vector<std::string>            m_singleMuTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_singleMuTrigChains */
+  std::vector<std::string>            m_diMuTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diMuTrigChains */
+
 
   // tools
   CP::IsolationSelectionTool*    m_IsolationSelectionTool;  //! 
