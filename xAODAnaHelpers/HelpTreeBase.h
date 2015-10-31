@@ -554,7 +554,8 @@ protected:
   std::vector<float> m_muon_m;
 
   // trigger
-  std::vector<int>  m_muon_isTrigMatched;
+  std::vector<int> m_muon_isTrigMatchedToChain;
+  std::vector<std::string> m_muon_listTrigChains;
 
   // isolation
   std::vector<int>   m_muon_isIsolated_LooseTrackOnly;

@@ -451,7 +451,10 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
   }
 
   if ( m_muInfoSwitch->m_trigger ){
-    m_tree->Branch("muon_isTrigMatched", &m_muon_isTrigMatched);
+    // a vector of trigger match decision for each muon trigger chain
+    m_tree->Branch( "muon_isTrigMatchedToChain", &m_muon_isTrigMatchedToChain );
+    // a vector of strings for each muon trigger chain - 1:1 correspondence w/ vector above
+    m_tree->Branch( "muon_listTrigChains", &m_muon_listTrigChains );
   }
 
   if ( m_muInfoSwitch->m_isolation ) {
@@ -539,13 +542,24 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       m_muon_m.push_back  ( muon_itr->m() / m_units  );
     }
 
-    static SG::AuxElement::Accessor<char> isTrigMatchedAcc("isTrigMatched");
     if ( m_muInfoSwitch->m_trigger ) {
-      if ( isTrigMatchedAcc.isAvailable( *muon_itr ) ) {
-        m_muon_isTrigMatched.push_back( static_cast<int>( isTrigMatchedAcc( *muon_itr ) ) );
-      } else {
-        m_muon_isTrigMatched.push_back( -1 );
-      }
+
+      // retrieve map<string,char> w/ chain,isMatched
+      //
+      static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapMuAcc("isTrigMatchedMapMu");
+
+      if ( isTrigMatchedMapMuAcc.isAvailable( *muon_itr ) ) {
+	 // loop over map and fill branches
+	 //
+	 for ( auto const &it : (isTrigMatchedMapMuAcc( *muon_itr )) ) {
+  	   m_muon_isTrigMatchedToChain.push_back( static_cast<int>(it.second) );
+	   m_muon_listTrigChains.push_back( it.first );
+	 }
+       } else {
+	 m_muon_isTrigMatchedToChain.push_back( -1 );
+	 m_muon_listTrigChains.push_back("NONE");
+       }
+
     }
 
     if ( m_muInfoSwitch->m_isolation ) {
@@ -704,7 +718,8 @@ void HelpTreeBase::ClearMuons() {
   }
 
   if ( m_muInfoSwitch->m_trigger ) {
-     m_muon_isTrigMatched.clear();
+    m_muon_isTrigMatchedToChain.clear();
+    m_muon_listTrigChains.clear();
   }
 
   if ( m_muInfoSwitch->m_isolation ) {
