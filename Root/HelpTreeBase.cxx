@@ -341,6 +341,7 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   if ( m_trigInfoSwitch->m_passTriggers ) {
     // vector of strings for trigger names which fired
     m_tree->Branch("passedTriggers",      &m_passTriggers    );
+    m_tree->Branch("triggerPrescales",      &m_triggerPrescales    );
   }
 
   //this->AddTriggerUser();
@@ -396,6 +397,8 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
     if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
 
+    static SG::AuxElement::ConstAccessor< std::vector< float > > trigPrescales("triggerPrescales");
+    if( trigPrescales.isAvailable( *eventInfo ) ) { m_triggerPrescales = trigPrescales( *eventInfo ); }
   }
 
 }
@@ -411,6 +414,7 @@ void HelpTreeBase::ClearTrigger() {
   m_HLTPSKey  = 0;
 
   m_passTriggers.clear();
+  m_triggerPrescales.clear();
 
 }
 
@@ -844,17 +848,17 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   if ( m_elInfoSwitch->m_PID ) {
     m_tree->Branch("nel_LHVeryLoose",  &m_nel_LHVeryLoose);
     m_tree->Branch("el_LHVeryLoose",   &m_el_LHVeryLoose);
-    m_tree->Branch("nel_LHLoose",      &m_nel_LHLoose);     
+    m_tree->Branch("nel_LHLoose",      &m_nel_LHLoose);
     m_tree->Branch("el_LHLoose",       &m_el_LHLoose);
-    m_tree->Branch("nel_LHMedium",     &m_nel_LHMedium);    
+    m_tree->Branch("nel_LHMedium",     &m_nel_LHMedium);
     m_tree->Branch("el_LHMedium",      &m_el_LHMedium);
-    m_tree->Branch("nel_LHTight",      &m_nel_LHTight);     
+    m_tree->Branch("nel_LHTight",      &m_nel_LHTight);
     m_tree->Branch("el_LHTight",       &m_el_LHTight);
-    m_tree->Branch("nel_IsEMLoose",    &m_nel_IsEMLoose);   
+    m_tree->Branch("nel_IsEMLoose",    &m_nel_IsEMLoose);
     m_tree->Branch("el_IsEMLoose",     &m_el_IsEMLoose);
-    m_tree->Branch("nel_IsEMMedium",   &m_nel_IsEMMedium);  
+    m_tree->Branch("nel_IsEMMedium",   &m_nel_IsEMMedium);
     m_tree->Branch("el_IsEMMedium",    &m_el_IsEMMedium);
-    m_tree->Branch("nel_IsEMTight",    &m_nel_IsEMTight);   
+    m_tree->Branch("nel_IsEMTight",    &m_nel_IsEMTight);
     m_tree->Branch("el_IsEMTight",     &m_el_IsEMTight);
   }
 
@@ -901,7 +905,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
   this->ClearElectronsUser();
 
   m_nel = 0;
-  m_nel_LHLoose = 0; 
+  m_nel_LHLoose = 0;
   m_nel_LHMedium = 0;
   m_nel_LHTight = 0;
   m_nel_IsEMLoose = 0;
@@ -988,33 +992,33 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       static SG::AuxElement::Accessor<char> EMMediumAcc ("Medium");
       static SG::AuxElement::Accessor<char> EMTightAcc ("Tight");
 
-      if ( LHVeryLooseAcc.isAvailable( *el_itr ) ) { 
-        m_el_LHVeryLoose.push_back( LHVeryLooseAcc( *el_itr ) ); 
+      if ( LHVeryLooseAcc.isAvailable( *el_itr ) ) {
+        m_el_LHVeryLoose.push_back( LHVeryLooseAcc( *el_itr ) );
 	if ( LHVeryLooseAcc( *el_itr ) == 1 ) { ++m_nel_LHVeryLoose; }
       } else { m_el_LHVeryLoose.push_back( -1 ); }
-      if ( LHLooseAcc.isAvailable( *el_itr ) ) { 
-        m_el_LHLoose.push_back( LHLooseAcc( *el_itr ) );         
+      if ( LHLooseAcc.isAvailable( *el_itr ) ) {
+        m_el_LHLoose.push_back( LHLooseAcc( *el_itr ) );
         if ( LHLooseAcc( *el_itr ) == 1 ) { ++m_nel_LHLoose; }
       }  else { m_el_LHLoose.push_back( -1 ); }
-      if ( LHMediumAcc.isAvailable( *el_itr ) ) { 
-        m_el_LHMedium.push_back( LHMediumAcc( *el_itr ) );       
+      if ( LHMediumAcc.isAvailable( *el_itr ) ) {
+        m_el_LHMedium.push_back( LHMediumAcc( *el_itr ) );
         if ( LHMediumAcc( *el_itr ) == 1 ) { ++m_nel_LHMedium; }
       }  else { m_el_LHMedium.push_back( -1 ); }
-      if ( LHTightAcc.isAvailable( *el_itr ) ) { 
-        m_el_LHTight.push_back( LHTightAcc( *el_itr ) );         
+      if ( LHTightAcc.isAvailable( *el_itr ) ) {
+        m_el_LHTight.push_back( LHTightAcc( *el_itr ) );
         if ( LHTightAcc( *el_itr ) == 1 ) { ++m_nel_LHTight; }
       } else { m_el_LHTight.push_back( -1 ); }
 
-      if ( EMLooseAcc.isAvailable( *el_itr ) ) { 
-        m_el_IsEMLoose.push_back( EMLooseAcc( *el_itr ) );   
+      if ( EMLooseAcc.isAvailable( *el_itr ) ) {
+        m_el_IsEMLoose.push_back( EMLooseAcc( *el_itr ) );
         if ( EMLooseAcc( *el_itr ) == 1 ) { ++m_nel_IsEMLoose; }
       } else { m_el_IsEMLoose.push_back( -1 ); }
-      if ( EMMediumAcc.isAvailable( *el_itr ) ) { 
-        m_el_IsEMMedium.push_back( EMMediumAcc( *el_itr ) ); 
+      if ( EMMediumAcc.isAvailable( *el_itr ) ) {
+        m_el_IsEMMedium.push_back( EMMediumAcc( *el_itr ) );
 	if ( EMMediumAcc( *el_itr ) == 1 ) { ++m_nel_IsEMMedium; }
       } else { m_el_IsEMMedium.push_back( -1 ); }
-      if ( EMTightAcc.isAvailable( *el_itr ) ) { 
-        m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );   
+      if ( EMTightAcc.isAvailable( *el_itr ) ) {
+        m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );
 	if ( EMTightAcc( *el_itr ) == 1 ) { ++m_nel_IsEMTight; }
       } else { m_el_IsEMTight.push_back( -1 ); }
 
@@ -1610,7 +1614,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_truth_partonDR").c_str(), &thisJet->m_jet_truth_partonDR);
   }
 
-  this->AddJetsUser(jetName);
+  this->AddJetsUser(detailStr, jetName);
 }
 
 void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, const std::string jetName ) {

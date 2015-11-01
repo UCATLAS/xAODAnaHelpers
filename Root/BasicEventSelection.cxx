@@ -5,6 +5,7 @@
  *
  * G. Facini (gabriel.facini@cern.ch)
  * M. Milesi (marco.milesi@cern.ch)
+ * J. Dandoy (jeff.dandoy@cern.ch)
  *
  *******************************************************/
 
@@ -29,7 +30,7 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "PATInterfaces/CorrectionCode.h"
- 
+
 // ROOT include(s):
 #include "TEnv.h"
 #include "TFile.h"
@@ -347,7 +348,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     std::string derivationName = m_derivationName + "Kernel";
 
     if ( m_debug ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
-    
+
     int maxCycle(-1);
     for ( const auto& cbk: *completeCBC ) {
       if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
@@ -357,7 +358,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       if ( cbk->name() == derivationName ) {
  	 DxAODEventsCBK = cbk;
       }
-    }    
+    }
 
     m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();
     m_MD_initialSumW        = allEventsCBK->sumOfEventWeights();
@@ -512,7 +513,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // 1.
   // initialize the GoodRunsListSelectionTool
   //
-  
+
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
   m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
@@ -524,7 +525,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // 2.
   // initialize the CP::PileupReweightingTool
   //
-  
+
   if ( m_doPUreweighting ) {
     m_pileuptool = new CP::PileupReweightingTool("Pileup");
 
@@ -573,16 +574,16 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lumiCalcFiles), "");
     if ( m_PU_default_channel ) {
       RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DefaultChannel", m_PU_default_channel), "");
-    }  
+    }
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "Failed to properly initialize CP::PileupReweightingTool");
   }
 
   // 3.
-  // initialize the Trig::TrigDecisionTool 
+  // initialize the Trig::TrigDecisionTool
   //
-  
+
   if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
-  
+
     m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "Failed to properly initialize TrigConf::xAODConfigTool");
     ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
@@ -593,7 +594,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
     Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
-  
+
   }
 
   // As a check, let's see the number of events in our file (long long int)
@@ -626,7 +627,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   //--------------------------------------------------------------------------------------------------------
   // Before counting events, check  current event is not a duplicate
-  // This is done by checking against the std::set of <runNumber,eventNumber> filled for all previous events 
+  // This is done by checking against the std::set of <runNumber,eventNumber> filled for all previous events
   //--------------------------------------------------------------------------------------------------------
 
   if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
@@ -634,11 +635,11 @@ EL::StatusCode BasicEventSelection :: execute ()
     if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
       if ( true ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
       wk()->skipEvent();
-      return EL::StatusCode::SUCCESS; // go to next event  
+      return EL::StatusCode::SUCCESS; // go to next event
     }
     m_RunNr_VS_EvtNr.insert(thispair);
-  } 
-  
+  }
+
   ++m_eventCounter;
 
   //-----------------------------------------
@@ -662,7 +663,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   float mcEvtWeight(1.0);
   //float pileupWeight(1.0);
-  
+
   if ( m_isMC ) {
     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weight (and systs) of all the MC events used in the simulation
     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
@@ -685,9 +686,9 @@ EL::StatusCode BasicEventSelection :: execute ()
                                          //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                          //  3.) the random run number ("RandomRunNumber")
                                          //  4.) the random lumiblock number ("RandomLumiBlockNumber")
-     
+
       //pileupWeight = m_pileuptool->getCombinedWeight(*eventInfo) ;
-      //mcEvtWeight *= pileupWeight; 
+      //mcEvtWeight *= pileupWeight;
     }
   }
 
@@ -708,7 +709,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_store->print();
     Info(m_name.c_str(), "End Content");
   }
-  
+
   //-----------------------------------------------------
   // If data, check if event passes GRL and even cleaning
   //-----------------------------------------------------
@@ -763,12 +764,12 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
-  } 
+  }
 
   //-----------------------------
   // Primary Vertex 'quality' cut
   //-----------------------------
-  
+
   const xAOD::VertexContainer* vertices(nullptr);
   if ( !m_truthLevelOnly && m_applyPrimaryVertexCut ) {
     RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_verbose) ,"");
@@ -805,15 +806,19 @@ EL::StatusCode BasicEventSelection :: execute ()
     if ( m_storeTrigDecisions ) {
 
       std::vector<std::string> passTriggers;
+      std::vector<float> triggerPrescales;
 
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool->getChainGroup( trigName );
         if ( trigChain->isPassed() ) {
           passTriggers.push_back( trigName );
+          triggerPrescales.push_back( trigChain->getPrescale() );
         }
       }
       static SG::AuxElement::Decorator< std::vector< std::string > > passTrigs("passTriggers");
       passTrigs( *eventInfo ) = passTriggers;
+      static SG::AuxElement::Decorator< std::vector< float > > trigPrescales("triggerPrescales");
+      trigPrescales( *eventInfo ) = triggerPrescales;
 
     }
 
