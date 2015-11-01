@@ -1,3 +1,12 @@
+/********************************************************
+ * JetCalibrator:
+ *
+ * This class handles jet calibration and systematics
+ *
+ * Jeff Dandoy (jeff.dandoy@cern.ch)
+ *
+ ********************************************************/
+
 #ifndef xAODAnaHelpers_JetCalibrator_H
 #define xAODAnaHelpers_JetCalibrator_H
 
