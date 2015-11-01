@@ -340,6 +340,7 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   if ( m_trigInfoSwitch->m_passTriggers ) {
     // vector of strings for trigger names which fired
     m_tree->Branch("passedTriggers",      &m_passTriggers    );
+    m_tree->Branch("triggerPrescales",      &m_triggerPrescales    );
   }
 
   //this->AddTriggerUser();
@@ -395,6 +396,8 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
     if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
 
+    static SG::AuxElement::ConstAccessor< std::vector< float > > trigPrescales("triggerPrescales");
+    if( trigPrescales.isAvailable( *eventInfo ) ) { m_triggerPrescales = trigPrescales( *eventInfo ); }
   }
 
 }
@@ -410,6 +413,7 @@ void HelpTreeBase::ClearTrigger() {
   m_HLTPSKey  = 0;
 
   m_passTriggers.clear();
+  m_triggerPrescales.clear();
 
 }
 
@@ -1491,7 +1495,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_truth_partonDR").c_str(), &thisJet->m_jet_truth_partonDR);
   }
 
-  this->AddJetsUser(jetName);
+  this->AddJetsUser(detailStr, jetName);
 }
 
 void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, const std::string jetName ) {
