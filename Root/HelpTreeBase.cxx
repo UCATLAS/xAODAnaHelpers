@@ -30,6 +30,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_trigInfoSwitch(nullptr),
   m_muInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
+  m_phInfoSwitch(nullptr),
   m_jetInfoSwitch(nullptr),
   m_truthInfoSwitch(nullptr),
   m_fatJetInfoSwitch(nullptr),
@@ -184,7 +185,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
     if ( m_isMC ) {
 
-      static SG::AuxElement::ConstAccessor< double > weight_pileup ("PileupWeight");
+      static SG::AuxElement::ConstAccessor< float > weight_pileup ("PileupWeight");
       static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
       static SG::AuxElement::ConstAccessor< unsigned int > rand_run_nr("RandomRunNumber");
       static SG::AuxElement::ConstAccessor< unsigned int > rand_lumiblock_nr("RandomLumiBlockNumber");
@@ -454,7 +455,10 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
   }
 
   if ( m_muInfoSwitch->m_trigger ){
-    m_tree->Branch("muon_isTrigMatched", &m_muon_isTrigMatched);
+    // a vector of trigger match decision for each muon trigger chain
+    m_tree->Branch( "muon_isTrigMatchedToChain", &m_muon_isTrigMatchedToChain );
+    // a vector of strings for each muon trigger chain - 1:1 correspondence w/ vector above
+    m_tree->Branch( "muon_listTrigChains", &m_muon_listTrigChains );
   }
 
   if ( m_muInfoSwitch->m_isolation ) {
@@ -542,13 +546,24 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       m_muon_m.push_back  ( muon_itr->m() / m_units  );
     }
 
-    static SG::AuxElement::Accessor<char> isTrigMatchedAcc("isTrigMatched");
     if ( m_muInfoSwitch->m_trigger ) {
-      if ( isTrigMatchedAcc.isAvailable( *muon_itr ) ) {
-        m_muon_isTrigMatched.push_back( static_cast<int>( isTrigMatchedAcc( *muon_itr ) ) );
-      } else {
-        m_muon_isTrigMatched.push_back( -1 );
-      }
+
+      // retrieve map<string,char> w/ chain,isMatched
+      //
+      static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapMuAcc("isTrigMatchedMapMu");
+
+      if ( isTrigMatchedMapMuAcc.isAvailable( *muon_itr ) ) {
+	 // loop over map and fill branches
+	 //
+	 for ( auto const &it : (isTrigMatchedMapMuAcc( *muon_itr )) ) {
+  	   m_muon_isTrigMatchedToChain.push_back( static_cast<int>(it.second) );
+	   m_muon_listTrigChains.push_back( it.first );
+	 }
+       } else {
+	 m_muon_isTrigMatchedToChain.push_back( -1 );
+	 m_muon_listTrigChains.push_back("NONE");
+       }
+
     }
 
     if ( m_muInfoSwitch->m_isolation ) {
@@ -707,7 +722,8 @@ void HelpTreeBase::ClearMuons() {
   }
 
   if ( m_muInfoSwitch->m_trigger ) {
-     m_muon_isTrigMatched.clear();
+    m_muon_isTrigMatchedToChain.clear();
+    m_muon_listTrigChains.clear();
   }
 
   if ( m_muInfoSwitch->m_isolation ) {
@@ -830,13 +846,20 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   }
 
   if ( m_elInfoSwitch->m_PID ) {
-    m_tree->Branch("el_LHVeryLoose",  &m_el_LHVeryLoose);
-    m_tree->Branch("el_LHLoose",      &m_el_LHLoose);
-    m_tree->Branch("el_LHMedium",     &m_el_LHMedium);
-    m_tree->Branch("el_LHTight",      &m_el_LHTight);
-    m_tree->Branch("el_IsEMLoose",    &m_el_IsEMLoose);
-    m_tree->Branch("el_IsEMMedium",   &m_el_IsEMMedium);
-    m_tree->Branch("el_IsEMTight",    &m_el_IsEMTight);
+    m_tree->Branch("nel_LHVeryLoose",  &m_nel_LHVeryLoose);
+    m_tree->Branch("el_LHVeryLoose",   &m_el_LHVeryLoose);
+    m_tree->Branch("nel_LHLoose",      &m_nel_LHLoose);
+    m_tree->Branch("el_LHLoose",       &m_el_LHLoose);
+    m_tree->Branch("nel_LHMedium",     &m_nel_LHMedium);
+    m_tree->Branch("el_LHMedium",      &m_el_LHMedium);
+    m_tree->Branch("nel_LHTight",      &m_nel_LHTight);
+    m_tree->Branch("el_LHTight",       &m_el_LHTight);
+    m_tree->Branch("nel_IsEMLoose",    &m_nel_IsEMLoose);
+    m_tree->Branch("el_IsEMLoose",     &m_el_IsEMLoose);
+    m_tree->Branch("nel_IsEMMedium",   &m_nel_IsEMMedium);
+    m_tree->Branch("el_IsEMMedium",    &m_el_IsEMMedium);
+    m_tree->Branch("nel_IsEMTight",    &m_nel_IsEMTight);
+    m_tree->Branch("el_IsEMTight",     &m_el_IsEMTight);
   }
 
   if ( m_elInfoSwitch->m_effSF && m_isMC ) {
@@ -882,6 +905,12 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
   this->ClearElectronsUser();
 
   m_nel = 0;
+  m_nel_LHLoose = 0;
+  m_nel_LHMedium = 0;
+  m_nel_LHTight = 0;
+  m_nel_IsEMLoose = 0;
+  m_nel_IsEMMedium = 0;
+  m_nel_IsEMTight = 0;
 
   for ( auto el_itr : *(electrons) ) {
 
@@ -963,14 +992,36 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       static SG::AuxElement::Accessor<char> EMMediumAcc ("Medium");
       static SG::AuxElement::Accessor<char> EMTightAcc ("Tight");
 
-      if ( LHVeryLooseAcc.isAvailable( *el_itr ) ) { m_el_LHVeryLoose.push_back( LHVeryLooseAcc( *el_itr ) ); } else { m_el_LHVeryLoose.push_back( -1 ); }
-      if ( LHLooseAcc.isAvailable( *el_itr ) )     { m_el_LHLoose.push_back( LHLooseAcc( *el_itr ) );         } else { m_el_LHLoose.push_back( -1 ); }
-      if ( LHMediumAcc.isAvailable( *el_itr ) )    { m_el_LHMedium.push_back( LHMediumAcc( *el_itr ) );       } else { m_el_LHMedium.push_back( -1 ); }
-      if ( LHTightAcc.isAvailable( *el_itr ) )     { m_el_LHTight.push_back( LHTightAcc( *el_itr ) );         } else { m_el_LHTight.push_back( -1 ); }
+      if ( LHVeryLooseAcc.isAvailable( *el_itr ) ) {
+        m_el_LHVeryLoose.push_back( LHVeryLooseAcc( *el_itr ) );
+	if ( LHVeryLooseAcc( *el_itr ) == 1 ) { ++m_nel_LHVeryLoose; }
+      } else { m_el_LHVeryLoose.push_back( -1 ); }
+      if ( LHLooseAcc.isAvailable( *el_itr ) ) {
+        m_el_LHLoose.push_back( LHLooseAcc( *el_itr ) );
+        if ( LHLooseAcc( *el_itr ) == 1 ) { ++m_nel_LHLoose; }
+      }  else { m_el_LHLoose.push_back( -1 ); }
+      if ( LHMediumAcc.isAvailable( *el_itr ) ) {
+        m_el_LHMedium.push_back( LHMediumAcc( *el_itr ) );
+        if ( LHMediumAcc( *el_itr ) == 1 ) { ++m_nel_LHMedium; }
+      }  else { m_el_LHMedium.push_back( -1 ); }
+      if ( LHTightAcc.isAvailable( *el_itr ) ) {
+        m_el_LHTight.push_back( LHTightAcc( *el_itr ) );
+        if ( LHTightAcc( *el_itr ) == 1 ) { ++m_nel_LHTight; }
+      } else { m_el_LHTight.push_back( -1 ); }
 
-      if ( EMLooseAcc.isAvailable( *el_itr ) )         { m_el_IsEMLoose.push_back( EMLooseAcc( *el_itr ) );   } else { m_el_IsEMLoose.push_back( -1 ); }
-      if ( EMMediumAcc.isAvailable( *el_itr ) )        { m_el_IsEMMedium.push_back( EMMediumAcc( *el_itr ) ); } else { m_el_IsEMMedium.push_back( -1 ); }
-      if ( EMTightAcc.isAvailable( *el_itr ) )         { m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );   } else { m_el_IsEMTight.push_back( -1 ); }
+      if ( EMLooseAcc.isAvailable( *el_itr ) ) {
+        m_el_IsEMLoose.push_back( EMLooseAcc( *el_itr ) );
+        if ( EMLooseAcc( *el_itr ) == 1 ) { ++m_nel_IsEMLoose; }
+      } else { m_el_IsEMLoose.push_back( -1 ); }
+      if ( EMMediumAcc.isAvailable( *el_itr ) ) {
+        m_el_IsEMMedium.push_back( EMMediumAcc( *el_itr ) );
+	if ( EMMediumAcc( *el_itr ) == 1 ) { ++m_nel_IsEMMedium; }
+      } else { m_el_IsEMMedium.push_back( -1 ); }
+      if ( EMTightAcc.isAvailable( *el_itr ) ) {
+        m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );
+	if ( EMTightAcc( *el_itr ) == 1 ) { ++m_nel_IsEMTight; }
+      } else { m_el_IsEMTight.push_back( -1 ); }
+
     }
 
     if ( m_elInfoSwitch->m_trackparams ) {
@@ -1102,12 +1153,19 @@ void HelpTreeBase::ClearElectrons() {
   }
 
   if ( m_elInfoSwitch->m_PID ) {
+    m_nel_LHVeryLoose = 0;
     m_el_LHVeryLoose.clear();
+    m_nel_LHLoose = 0;
     m_el_LHLoose.clear();
+    m_nel_LHMedium = 0;
     m_el_LHMedium.clear();
+    m_nel_LHTight = 0;
     m_el_LHTight.clear();
+    m_nel_IsEMLoose = 0;
     m_el_IsEMLoose.clear();
+    m_nel_IsEMMedium = 0;
     m_el_IsEMMedium.clear();
+    m_nel_IsEMTight = 0;
     m_el_IsEMTight.clear();
   }
 
@@ -1143,6 +1201,67 @@ void HelpTreeBase::ClearElectrons() {
     m_el_PIDEff_SF_LHLoose.clear();
     m_el_PIDEff_SF_LHMedium.clear();
     m_el_PIDEff_SF_LHTight.clear();
+  }
+}
+
+/*********************
+ *
+ *   PHOTONS
+ *
+ ********************/
+
+void HelpTreeBase::AddPhotons(const std::string detailStr) {
+
+  if(m_debug)  Info("AddPhotons()", "Adding photon variables: %s", detailStr.c_str());
+
+  m_phInfoSwitch = new HelperClasses::PhotonInfoSwitch( detailStr );
+
+  // always
+  m_tree->Branch("nph",    &m_nph,"nph/I");
+
+  if ( m_phInfoSwitch->m_kinematic ) {
+    m_tree->Branch("ph_pt",  &m_ph_pt);
+    m_tree->Branch("ph_phi", &m_ph_phi);
+    m_tree->Branch("ph_eta", &m_ph_eta);
+    m_tree->Branch("ph_m",   &m_ph_m);
+  }
+
+  this->AddPhotonsUser();
+}
+
+void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
+
+  this->ClearPhotons();
+  this->ClearPhotonsUser();
+
+  m_nph = 0;
+
+  for ( auto ph_itr : *(photons) ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillPhotons()", "Filling photon w/ pT = %2f", ph_itr->pt() / m_units ); }
+
+    if ( m_phInfoSwitch->m_kinematic ) {
+      m_ph_pt.push_back ( (ph_itr)->pt() / m_units );
+      m_ph_eta.push_back( (ph_itr)->eta() );
+      m_ph_phi.push_back( (ph_itr)->phi() );
+      m_ph_m.push_back  ( (ph_itr)->m()  / m_units );
+    }
+
+    this->FillPhotonsUser(ph_itr);
+
+    m_nph++;
+  }
+}
+
+void HelpTreeBase::ClearPhotons() {
+
+  m_nph = 0;
+
+  if ( m_phInfoSwitch->m_kinematic ){
+    m_ph_pt.clear();
+    m_ph_eta.clear();
+    m_ph_phi.clear();
+    m_ph_m.clear();
   }
 }
 
@@ -2949,7 +3068,7 @@ bool HelpTreeBase::writeTo( TFile* file ) {
 void HelpTreeBase::Fill_Fix30( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix30("BTag_FixedCutBEff_30");
   if( isFix30.isAvailable( *jet ) ) {
-    if ( isFix30( *jet ) ) ++thisJet->m_njet_mv2c20_Fix30;
+    if ( isFix30( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Fix30;
     thisJet->m_jet_mv2c20_isFix30.push_back( isFix30( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFix30.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -2965,7 +3084,7 @@ void HelpTreeBase::Fill_Fix30( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Fix50( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix50("BTag_FixedCutBEff_50");
   if( isFix50.isAvailable( *jet ) ) {
-    if ( isFix50( *jet ) ) ++thisJet->m_njet_mv2c20_Fix50;
+    if ( isFix50( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Fix50;
     thisJet->m_jet_mv2c20_isFix50.push_back( isFix50( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFix50.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -2981,7 +3100,7 @@ void HelpTreeBase::Fill_Fix50( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Fix60( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix60("BTag_FixedCutBEff_60");
   if( isFix60.isAvailable( *jet ) ) {
-    if ( isFix60( *jet ) ) ++thisJet->m_njet_mv2c20_Fix60;
+    if ( isFix60( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Fix60;
     thisJet->m_jet_mv2c20_isFix60.push_back( isFix60( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFix60.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -2997,7 +3116,7 @@ void HelpTreeBase::Fill_Fix60( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Fix70( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix70("BTag_FixedCutBEff_70");
   if( isFix70.isAvailable( *jet ) ) {
-    if ( isFix70( *jet ) ) ++thisJet->m_njet_mv2c20_Fix70;
+    if ( isFix70( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Fix70;
     thisJet->m_jet_mv2c20_isFix70.push_back( isFix70( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFix70.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3013,7 +3132,7 @@ void HelpTreeBase::Fill_Fix70( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Fix77( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix77("BTag_FixedCutBEff_77");
   if( isFix77.isAvailable( *jet ) ) {
-    if ( isFix77( *jet ) ) ++thisJet->m_njet_mv2c20_Fix77;
+    if ( isFix77( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Fix77;
     thisJet->m_jet_mv2c20_isFix77.push_back( isFix77( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFix77.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3029,7 +3148,7 @@ void HelpTreeBase::Fill_Fix77( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Fix80( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix80("BTag_FixedCutBEff_80");
   if( isFix80.isAvailable( *jet ) ) {
-    if ( isFix80( *jet ) ) ++thisJet->m_njet_mv2c20_Fix80;
+    if ( isFix80( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Fix80;
     thisJet->m_jet_mv2c20_isFix80.push_back( isFix80( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFix80.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3045,7 +3164,7 @@ void HelpTreeBase::Fill_Fix80( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Fix85( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix85("BTag_FixedCutBEff_85");
   if( isFix85.isAvailable( *jet ) ) {
-    if ( isFix85( *jet ) ) ++thisJet->m_njet_mv2c20_Fix85;
+    if ( isFix85( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Fix85;
     thisJet->m_jet_mv2c20_isFix85.push_back( isFix85( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFix85.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3061,7 +3180,7 @@ void HelpTreeBase::Fill_Fix85( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Fix90( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFix90("BTag_FixedCutBEff_90");
   if( isFix90.isAvailable( *jet ) ) {
-    if ( isFix90( *jet ) ) ++thisJet->m_njet_mv2c20_Fix90;
+    if ( isFix90( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Fix90;
     thisJet->m_jet_mv2c20_isFix90.push_back( isFix90( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFix90.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3080,7 +3199,7 @@ void HelpTreeBase::Fill_Fix90( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Flt30( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt30("BTag_FlatBEff_30");
   if( isFlt30.isAvailable( *jet ) ) {
-    if ( isFlt30( *jet ) ) ++thisJet->m_njet_mv2c20_Flt30;
+    if ( isFlt30( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Flt30;
     thisJet->m_jet_mv2c20_isFlt30.push_back( isFlt30( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFlt30.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3096,7 +3215,7 @@ void HelpTreeBase::Fill_Flt30( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Flt40( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt40("BTag_FlatBEff_40");
   if( isFlt40.isAvailable( *jet ) ) {
-    if ( isFlt40( *jet ) ) ++thisJet->m_njet_mv2c20_Flt40;
+    if ( isFlt40( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Flt40;
     thisJet->m_jet_mv2c20_isFlt40.push_back( isFlt40( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFlt40.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3112,7 +3231,7 @@ void HelpTreeBase::Fill_Flt40( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Flt50( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt50("BTag_FlatBEff_50");
   if( isFlt50.isAvailable( *jet ) ) {
-    if ( isFlt50( *jet ) )  ++thisJet->m_njet_mv2c20_Flt50;
+    if ( isFlt50( *jet ) == 1 )  ++thisJet->m_njet_mv2c20_Flt50;
     thisJet->m_jet_mv2c20_isFlt50.push_back( isFlt50( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFlt50.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3128,7 +3247,7 @@ void HelpTreeBase::Fill_Flt50( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Flt60( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt60("BTag_FlatBEff_60");
   if( isFlt60.isAvailable( *jet ) ) {
-    if ( isFlt60( *jet ) )  ++thisJet->m_njet_mv2c20_Flt60;
+    if ( isFlt60( *jet ) == 1 )  ++thisJet->m_njet_mv2c20_Flt60;
     thisJet->m_jet_mv2c20_isFlt60.push_back( isFlt60( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFlt60.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3144,7 +3263,7 @@ void HelpTreeBase::Fill_Flt60( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Flt70( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt70("BTag_FlatBEff_70");
   if( isFlt70.isAvailable( *jet ) ) {
-    if ( isFlt70( *jet ) ) ++thisJet->m_njet_mv2c20_Flt70;
+    if ( isFlt70( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Flt70;
     thisJet->m_jet_mv2c20_isFlt70.push_back( isFlt70( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFlt70.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3160,7 +3279,7 @@ void HelpTreeBase::Fill_Flt70( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Flt77( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt77("BTag_FlatBEff_77");
   if( isFlt77.isAvailable( *jet ) ) {
-    if ( isFlt77( *jet ) ) ++thisJet->m_njet_mv2c20_Flt77;
+    if ( isFlt77( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Flt77;
     thisJet->m_jet_mv2c20_isFlt77.push_back( isFlt77( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFlt77.push_back( -1 ); }
   if(!m_isMC) { return; }
@@ -3176,7 +3295,7 @@ void HelpTreeBase::Fill_Flt77( const xAOD::Jet* jet, jetInfo* thisJet ) {
 void HelpTreeBase::Fill_Flt85( const xAOD::Jet* jet, jetInfo* thisJet ) {
   static SG::AuxElement::ConstAccessor< int > isFlt85("BTag_FlatBEff_85");
   if( isFlt85.isAvailable( *jet ) ) {
-    if ( isFlt85( *jet ) ) ++thisJet->m_njet_mv2c20_Flt85;
+    if ( isFlt85( *jet ) == 1 ) ++thisJet->m_njet_mv2c20_Flt85;
     thisJet->m_jet_mv2c20_isFlt85.push_back( isFlt85( *jet ) );
   } else { thisJet->m_jet_mv2c20_isFlt85.push_back( -1 ); }
   if(!m_isMC) { return; }

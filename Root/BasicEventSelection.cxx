@@ -475,6 +475,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_mu_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
   m_mu_cutflowHist_2->SetBit(TH1::kCanRebin);
+  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
+  m_ph_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
   m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);

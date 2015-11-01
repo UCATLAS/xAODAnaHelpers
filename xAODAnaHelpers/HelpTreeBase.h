@@ -58,8 +58,9 @@ public:
   void AddJetTrigger  (const std::string detailStr = "");
   void AddMuons       (const std::string detailStr = "");
   void AddElectrons   (const std::string detailStr = "");
+  void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
-  void AddTruthParts  (const std::string truthName, const std::string detailStr = "");
+  void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
@@ -73,6 +74,7 @@ public:
   HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
   HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
+  HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
   HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
@@ -91,6 +93,7 @@ public:
   void FillJetTrigger();
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
+  void FillPhotons( const xAOD::PhotonContainer* photons );
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillFatJets( const xAOD::JetContainer* fatJets );
@@ -103,6 +106,7 @@ public:
   void ClearJetTrigger();
   void ClearMuons();
   void ClearElectrons();
+  void ClearPhotons();
   void ClearJets(const std::string jetName = "jet");
   void ClearTruth(const std::string truthName);
   void ClearFatJets();
@@ -131,6 +135,10 @@ public:
     if(m_debug) Info("AddElectronsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+  virtual void AddPhotonsUser(const std::string detailStr = "")  {
+    if(m_debug) Info("AddPhotonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
+  };
   virtual void AddJetsUser(const std::string detailStr = "", const std::string jetName = "jet")       {
     if(m_debug) Info("AddJetsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(), jetName.c_str());
     return;
@@ -156,6 +164,7 @@ public:
   virtual void ClearTriggerUser()   { return; };
   virtual void ClearMuonsUser()     { return; };
   virtual void ClearElectronsUser() { return; };
+  virtual void ClearPhotonsUser() { return; };
   virtual void ClearTruthUser(const std::string& /*truthName*/) 	    { return; };
   virtual void ClearJetsUser (const std::string /*jetName = "jet"*/ ) 	    { return; };
   virtual void ClearFatJetsUser()   { return; };
@@ -165,6 +174,7 @@ public:
   virtual void FillEventUser( const xAOD::EventInfo*  )        { return; };
   virtual void FillMuonsUser( const xAOD::Muon*  )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron*  )     { return; };
+  virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
   virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
   virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
   virtual void FillFatJetsUser( const xAOD::Jet*  )            { return; };
@@ -546,7 +556,8 @@ protected:
   std::vector<float> m_muon_m;
 
   // trigger
-  std::vector<int>  m_muon_isTrigMatched;
+  std::vector<int> m_muon_isTrigMatchedToChain;
+  std::vector<std::string> m_muon_listTrigChains;
 
   // isolation
   std::vector<int>   m_muon_isIsolated_LooseTrackOnly;
@@ -608,6 +619,7 @@ protected:
   std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
   std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
 
+  //
   // electrons
   int m_nel;
 
@@ -644,12 +656,19 @@ protected:
   std::vector<float> m_el_topoetcone40;
 
   // PID
+  int m_nel_LHVeryLoose; 
   std::vector<int>   m_el_LHVeryLoose;
+  int m_nel_LHLoose; 
   std::vector<int>   m_el_LHLoose;
+  int m_nel_LHMedium;
   std::vector<int>   m_el_LHMedium;
+  int m_nel_LHTight;
   std::vector<int>   m_el_LHTight;
+  int m_nel_IsEMLoose;
   std::vector<int>   m_el_IsEMLoose;
+  int m_nel_IsEMMedium;
   std::vector<int>   m_el_IsEMMedium;
+  int m_nel_IsEMTight;
   std::vector<int>   m_el_IsEMTight;
 
   // scale factors w/ sys
@@ -682,6 +701,17 @@ protected:
   std::vector<int> m_el_trknInnermostPixLayHits; // not available in DC14
   std::vector<float> m_el_trkPixdEdX;            // not available in DC14
 
+  //
+  // photons
+  int m_nph;
+
+  // kinematics
+  std::vector<float> m_ph_pt;
+  std::vector<float> m_ph_phi;
+  std::vector<float> m_ph_eta;
+  std::vector<float> m_ph_m;
+
+  //
   // taus
   int m_ntau;
 
