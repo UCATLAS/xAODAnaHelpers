@@ -85,6 +85,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   m_tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
   m_tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/I");
   m_tree->Branch("lumiBlock",          &m_lumiBlock,      "lumiBlock/I");
+  m_tree->Branch("coreFlags",          &m_coreFlags,      "coreFlags/i");
   if( m_isMC ) {
     m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
     m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
@@ -162,6 +163,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
   m_runNumber             = eventInfo->runNumber();
   m_eventNumber           = eventInfo->eventNumber();
   m_lumiBlock             = eventInfo->lumiBlock();
+  m_coreFlags             = eventInfo->eventFlags(xAOD::EventInfo::Core);
   if ( m_isMC ) {
     m_mcEventNumber         = eventInfo->mcEventNumber();
     m_mcChannelNumber       = eventInfo->mcChannelNumber();
@@ -2757,7 +2759,8 @@ void HelpTreeBase::ClearFatJets() {
 }
 
 void HelpTreeBase::ClearEvent() {
-  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = m_bcid = m_lumiBlock = -999;
+  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = m_bcid = m_lumiBlock;
+  m_coreFlags = 0;
   m_mcEventWeight = 1.;
   m_weight_pileup = 1.;
   // pileup

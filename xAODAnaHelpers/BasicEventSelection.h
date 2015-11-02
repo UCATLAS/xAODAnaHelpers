@@ -49,6 +49,7 @@ class BasicEventSelection : public xAH::Algorithm
         
     // Event Cleaning
     bool m_applyEventCleaningCut;
+    bool m_applyCoreFlagsCut;
     
     // Trigger
     std::string m_triggerSelection;

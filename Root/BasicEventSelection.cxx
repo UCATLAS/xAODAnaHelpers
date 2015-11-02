@@ -6,6 +6,7 @@
  * G. Facini (gabriel.facini@cern.ch)
  * M. Milesi (marco.milesi@cern.ch)
  * J. Dandoy (jeff.dandoy@cern.ch)
+ * J. Alison (john.alison@cern.ch)
  *
  *******************************************************/
 
@@ -102,6 +103,7 @@ BasicEventSelection :: BasicEventSelection () :
 
   // Event Cleaning
   m_applyEventCleaningCut = true;
+  m_applyCoreFlagsCut     = false;
 
   // Trigger
   m_triggerSelection = "";
@@ -155,6 +157,7 @@ EL::StatusCode BasicEventSelection :: configure ()
 
     // Event Cleaning
     m_applyEventCleaningCut      = config->GetValue("ApplyEventCleaningCut",    m_applyEventCleaningCut);
+    m_applyCoreFlagsCut          = config->GetValue("ApplyCoreFlagsCut",        m_applyCoreFlagsCut);
 
     // Primary Vertex
     m_vertexContainerName        = config->GetValue("VertexContainer",       m_vertexContainerName.c_str());
@@ -757,7 +760,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_tile, mcEvtWeight);
 
 
-    if ( m_applyEventCleaningCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
+    if ( m_applyCoreFlagsCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
