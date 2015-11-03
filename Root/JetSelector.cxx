@@ -75,6 +75,8 @@ JetSelector :: JetSelector () :
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = true;
+  m_decor   = "passSel";
+
   // additional functionality : create output container of selected objects
   //                            using the SG::VIEW_ELEMENTS option
   //                            decorating and output container should not be mutually exclusive
@@ -259,8 +261,6 @@ EL::StatusCode  JetSelector :: configure ()
     return EL::StatusCode::FAILURE;
   }
 
-  m_decor   = "passSel";
-  
   if ( m_decorateSelectedObjects ) {
     Info("configure()"," Decorate Jets with %s", m_decor.c_str());
   }
@@ -525,7 +525,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   bool passEventClean(true);
 
   static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
-  static SG::AuxElement::Decorator< char > passSelDecor( m_decor );
+
+  //
+  // This cannot be static as multiple instance of Jet Selector would 
+  //   then share the same passSelDecor, including the m_decor name
+  //
+  SG::AuxElement::Decorator< char > passSelDecor( m_decor );
 
   for ( auto jet_itr : *inJets ) { // duplicated of basic loop
 
