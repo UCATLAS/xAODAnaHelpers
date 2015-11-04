@@ -154,12 +154,17 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
   m_operatingPtCDI = m_operatingPt;
+  std::cout << "Using Standard OperatingPoint for CDI BTag Efficiency of " << m_operatingPtCDI << std::endl;
+
+  // Outdated code for translating user friendly Btag WP to cut value
+  // Code now accepts the user friendly Btag WP
+  /*
   if( m_operatingPtCDI.find("FixedCutBEff") != std::string::npos) {
     m_operatingPtCDI.erase(0,13); // remove FixedCutBEff_
     std::cout << "Get OperatingPoint for CDI BTag Efficiency using eff = " << m_operatingPtCDI << std::endl;
     m_operatingPtCDI = HelperFunctions::GetBTagMV2c20_CutStr( atoi( m_operatingPtCDI.c_str() ) );
   }
-
+  */
 
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 
