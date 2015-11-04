@@ -45,13 +45,13 @@ class HistogramManager {
      * @note This is an overloaded function. It will build the right histogram
      * given the correct number of input arguments.
      *
-     *  @param name     name of histogram, access it in ROOT file like "h_jetPt->Draw()"
+     *  @param name     name of histogram, access it in ROOT file like `h_jetPt->Draw()`
      *  @param title    usually pointless,put a description of the histogram in here
      *  @param xlabel   label to put on the x-axis
      *  @param xbins    number of xbins to use
      *  @param xlow     lower bound on xbins
      *  @param xhigh    upper bound on xbins
-     *  @param xbinsArr variable xbins
+     *  @param xbinsArr variable xbins, test math \f$(x_1,y_1)\f$ and \f$(x_2,y_2)\f$
      *  @param ylabel   label to put on the y-axis
      *  @param ylow     lower bound on ybins
      *  @param yhigh    upper bound on ybins
