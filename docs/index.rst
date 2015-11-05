@@ -1,7 +1,7 @@
 xAODAnaHelpers
 ==============
 
-Welcome home!
+The xAOD analysis framework, born out of ProofAna...or not.
 
 Contents
 --------
