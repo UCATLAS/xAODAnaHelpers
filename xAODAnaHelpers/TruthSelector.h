@@ -52,10 +52,10 @@ private:
   int   m_cutflow_bin;          //!
 
   /* object-level cutflow */
-  
+
   TH1D* m_truth_cutflowHist_1;  //!
 
-  int   m_truth_cutflow_all;           //! 
+  int   m_truth_cutflow_all;           //!
   int   m_truth_cutflow_ptmax_cut;     //!
   int   m_truth_cutflow_ptmin_cut;     //!
   int   m_truth_cutflow_eta_cut;       //!
@@ -88,8 +88,12 @@ public:
   // added functions not from Algorithm
   // why does this need to be virtual?
   virtual int PassCuts( const xAOD::TruthParticle* truthPart );
+
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(TruthSelector, 1);
+  /// @endcond
+
 };
 
 #endif
