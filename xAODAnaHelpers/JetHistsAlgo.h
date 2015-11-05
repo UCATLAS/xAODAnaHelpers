@@ -46,8 +46,11 @@ public:
   virtual EL::StatusCode configure ();
   EL::StatusCode AddHists( std::string name );
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetHistsAlgo, 1);
+  /// @endcond
+
 };
 
 #endif

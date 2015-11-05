@@ -40,14 +40,14 @@ public:
 
   std::string m_corrFileNamePID;
   std::string m_corrFileNameReco;
-  std::string m_corrFileNameTrig;  
+  std::string m_corrFileNameTrig;
 
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
   bool m_isMC;            //!
-  
+
   std::string m_PID_WP;   //!
 
   std::vector<CP::SystematicSet> m_systListPID; //!
@@ -87,8 +87,11 @@ public:
   virtual EL::StatusCode configure ();
   virtual EL::StatusCode executeSF (  const xAOD::ElectronContainer* inputElectrons, const xAOD::EventInfo* eventInfo, unsigned int countSyst  );
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronEfficiencyCorrector, 1);
+  /// @endcond
+
 };
 
 #endif

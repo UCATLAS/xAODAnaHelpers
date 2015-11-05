@@ -36,7 +36,7 @@ public:
   bool    m_sort;
   bool    m_toolInitializationAtTheFirstEventDone; //!
   bool    m_isMC; //!
-  
+
   // systematics
   std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
   			             // upstream algo (e.g., the SC containers with calibration systematics)
@@ -44,8 +44,8 @@ public:
   				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
   bool        m_useAFII;
   float       m_systVal;
-  std::string m_systName;  
-  
+  std::string m_systName;
+
   std::string m_esModel;
   std::string m_decorrelationModel;
 
@@ -58,10 +58,10 @@ private:
   std::string m_outSCAuxContainerName;
 
   std::vector<CP::SystematicSet> m_systList; //!
-  
+
   EL::StatusCode decorate(xAOD::Photon * photon);
   EL::StatusCode toolInitializationAtTheFirstEvent (const xAOD::EventInfo* eventInfo);
-  
+
   // tools
   CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool; //!
   CP::IsolationCorrectionTool*          m_IsolationCorrectionTool; //!
@@ -72,7 +72,7 @@ private:
   AsgPhotonEfficiencyCorrectionTool*    m_photonTightEffTool; //!
   AsgPhotonEfficiencyCorrectionTool*    m_photonMediumEffTool; //!
   AsgPhotonEfficiencyCorrectionTool*    m_photonLooseEffTool; //!
-  
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -98,8 +98,11 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(PhotonCalibrator, 1);
+  /// @endcond
+
 };
 
 #endif

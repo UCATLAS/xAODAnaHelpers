@@ -88,10 +88,10 @@ private:
   std::vector<std::string> m_failKeys;  //!
 
   /* object-level cutflow */
-  
+
   TH1D* m_jet_cutflowHist_1;  //!
 
-  int   m_jet_cutflow_all;           //! 
+  int   m_jet_cutflow_all;           //!
   int   m_jet_cutflow_cleaning_cut;  //!
   int   m_jet_cutflow_ptmax_cut;     //!
   int   m_jet_cutflow_ptmin_cut;     //!
@@ -131,8 +131,12 @@ public:
   // added functions not from Algorithm
   // why does this need to be virtual?
   virtual int PassCuts( const xAOD::Jet* jet );
+
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetSelector, 1);
+  /// @endcond
+
 };
 
 #endif

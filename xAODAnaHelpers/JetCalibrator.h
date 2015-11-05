@@ -118,8 +118,11 @@ public:
   virtual EL::StatusCode configure ();
 
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetCalibrator, 1);
+  /// @endcond
+
 };
 
 #endif

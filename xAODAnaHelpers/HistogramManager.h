@@ -3,9 +3,7 @@
 
 /** @file HistogramManager.h
  *  @brief Manage your histograms
- *  This is used by any class extending to pre-define a set of histograms to book by default.
-
- *  @author Giordon Stark
+ *  @author See AUTHORS.md
  *  @bug No known bugs
  */
 
@@ -19,7 +17,31 @@
 
 // for StatusCode::isSuccess
 #include "AsgTools/StatusCode.h"
+/**
+    @brief This is used by any class extending to pre-define a set of histograms to book by default.
+    @rst
+        .. note:: The expectation is that the user does not directly use this class but rather inherits from it.
 
+        We expect the user to create a new group of histograms, such as for jets::
+
+            class JetHists : public HistogramManager
+            {
+              public:
+                JetHists(std::string name, std::string detailStr);
+                virtual ~JetHists() ;
+
+                bool m_debug;
+                StatusCode initialize();
+                StatusCode execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc = -1);
+                StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );
+                using HistogramManager::book; // make other overloaded version of book() to show up in subclass
+                using HistogramManager::execute; // overload
+            };
+
+        The above example is taken from our implementation in :cpp:class:`JetHists`.
+
+    @endrst
+ */
 class HistogramManager {
 
   protected:
@@ -27,39 +49,77 @@ class HistogramManager {
     std::string m_name;
     /** @brief a detail level in the form of a string */
     std::string m_detailStr;
-    /** @brief a container holding all generated histograms
-     *  Loop over this to record to EL output */
+    /** @brief a container holding all generated histograms */
     std::vector< TH1* > m_allHists; //!
 
   public:
+    /**
+        @brief Initialization
+        @param name             The top-level path in which all histograms are stored under (think of `TDirectory`)
+        @param detailStr        Specify the various details of which to plot. For example, jets might want `"kinematic substructure"`.
+    */
     HistogramManager(std::string name, std::string detailStr);
+    /**
+        @brief Destructor, allows the user to delete histograms that are not being recorded.
+    */
     virtual ~HistogramManager();
 
-    // the following should be defined in other classes
+    /**
+        @brief Initialize and book all histograms.
+        @rst
+            .. note:: This should call the overloaded functions :cpp:func:`HistogramManager::book` to create the histograms so that the user can call `hists->record(wk())` to record all histograms to the EventLoop worker.
+
+            Example implementation::
+
+                StatusCode JetHists::initialize() {
+                  m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 3000.);
+                  return StatusCode::SUCCESS;
+                }
+
+        @endrst
+    */
     virtual StatusCode initialize(){      return StatusCode::SUCCESS; };
+    /**
+        @brief Execute by filling in the histograms.
+        @rst
+            Example implementation::
+
+                StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight ){
+                  for(const auto& jet: *jets)
+                    m_jetPt->Fill( jet->pt()/1.e3, eventWeight );
+                  return StatusCode::SUCCESS;
+                }
+
+        @endrst
+    */
     virtual StatusCode execute(){         return StatusCode::SUCCESS; };
+    /**
+        @brief Finalize anything that needs to be finalized.
+        @rst
+            .. warning:: This should rarely be used. There is not a good use case for this functionality but it needs to exist in the off-chance that a user comes along and needs it for their histogram class.
+
+        @endrst
+    */
     virtual StatusCode finalize(){        return StatusCode::SUCCESS; };
 
     /**
-     * @brief record a histogram and call various functions
-     * @note This is an overloaded function. It will build the right histogram
-     * given the correct number of input arguments.
-     *
-     *  @param name     name of histogram, access it in ROOT file like `h_jetPt->Draw()`
-     *  @param title    usually pointless,put a description of the histogram in here
-     *  @param xlabel   label to put on the x-axis
-     *  @param xbins    number of xbins to use
-     *  @param xlow     lower bound on xbins
-     *  @param xhigh    upper bound on xbins
-     *  @param xbinsArr variable xbins, test math \f$(x_1,y_1)\f$ and \f$(x_2,y_2)\f$
-     *  @param ylabel   label to put on the y-axis
-     *  @param ylow     lower bound on ybins
-     *  @param yhigh    upper bound on ybins
-     *  @param ybinsArr variable ybins
-     *  @param zlabel   label to put on the z-axix
-     *  @param zlow     lower bound on zbins
-     *  @param zhigh    upper bound on zbins
-     *  @param zbinsArr variable zbins
+        @brief record a histogram and call various functions
+        @note This is an overloaded function. It will build the right histogram given the correct number of input arguments.
+         @param name     name of histogram, access it in ROOT file like `h_jetPt->Draw()`
+         @param title    usually pointless,put a description of the histogram in here
+         @param xlabel   label to put on the x-axis
+         @param xbins    number of xbins to use
+         @param xlow     lower bound on xbins
+         @param xhigh    upper bound on xbins
+         @param xbinsArr variable xbins, test math \f$(x_1,y_1)\f$ and \f$(x_2,y_2)\f$
+         @param ylabel   label to put on the y-axis
+         @param ylow     lower bound on ybins
+         @param yhigh    upper bound on ybins
+         @param ybinsArr variable ybins
+         @param zlabel   label to put on the z-axix
+         @param zlow     lower bound on zbins
+         @param zhigh    upper bound on zbins
+         @param zbinsArr variable zbins
      */
     TH1F* book(std::string name, std::string title,
                std::string xlabel, int xbins, double xlow, double xhigh);

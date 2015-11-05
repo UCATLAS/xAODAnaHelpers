@@ -28,7 +28,7 @@ class MuonSelector : public xAH::Algorithm
 public:
 
   // cutflow
-  bool m_useCutFlow;            
+  bool m_useCutFlow;
 
   // configuration variables
   std::string    m_inContainerName;          /* input container name */
@@ -50,7 +50,7 @@ public:
   float          m_d0_max;                   /* require d0 < m_d0_max */
   float          m_d0sig_max; 	             /* require d0 significance (at BL) < m_d0sig_max */
   float	         m_z0sintheta_max;           /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
-  
+
   // isolation
   std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
   std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
@@ -58,16 +58,16 @@ public:
   std::string    m_TrackIsoEff;              /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
   std::string    m_CaloBasedIsoType;         /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
   std::string    m_TrackBasedIsoType;        /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
-  
+
   /* trigger matching */
-  std::string    m_singleMuTrigChains;       /* A comma-separated string w/ alll the HLT single muon trigger chains for which you want to perform the matching. 
+  std::string    m_singleMuTrigChains;       /* A comma-separated string w/ alll the HLT single muon trigger chains for which you want to perform the matching.
   		                                If left empty (as it is by default), no trigger matching will be attempted at all */
   std::string    m_diMuTrigChains;           /* A comma-separated string w/ alll the HLT dimuon trigger chains for which you want to perform the matching.
   					     	If left empty (as it is by default), no trigger matching will be attempted at all */
   float          m_minDeltaR;
 
-  std::string    m_passAuxDecorKeys;  
-  std::string    m_failAuxDecorKeys;  
+  std::string    m_passAuxDecorKeys;
+  std::string    m_failAuxDecorKeys;
 
 private:
 
@@ -83,23 +83,23 @@ private:
   int   m_cutflow_bin;      //!
 
   bool  m_isUsedBefore;     //!
-  
+
   // object cutflow
   TH1D* m_mu_cutflowHist_1;                 //!
   TH1D* m_mu_cutflowHist_2;                 //!
-    
-  int   m_mu_cutflow_all;		    //! 
+
+  int   m_mu_cutflow_all;		    //!
   int   m_mu_cutflow_eta_and_quaility_cut;  //!
   int   m_mu_cutflow_ptmax_cut;  	    //!
   int   m_mu_cutflow_ptmin_cut;  	    //!
-  int   m_mu_cutflow_type_cut;		    //! 	  
-  int   m_mu_cutflow_z0sintheta_cut;	    //!       
-  int   m_mu_cutflow_d0_cut;		    //!       
+  int   m_mu_cutflow_type_cut;		    //!
+  int   m_mu_cutflow_z0sintheta_cut;	    //!
+  int   m_mu_cutflow_d0_cut;		    //!
   int   m_mu_cutflow_d0sig_cut;  	    //!
-  int   m_mu_cutflow_iso_cut;		    //!     
-  
+  int   m_mu_cutflow_iso_cut;		    //!
+
   std::vector<std::string> m_IsoKeys;       //!
-  
+
   /* other private members */
 
   std::vector<std::string>            m_singleMuTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_singleMuTrigChains */
@@ -107,7 +107,7 @@ private:
 
 
   // tools
-  CP::IsolationSelectionTool*    m_IsolationSelectionTool;  //! 
+  CP::IsolationSelectionTool*    m_IsolationSelectionTool;  //!
   CP::MuonSelectionTool*         m_muonSelectionTool;	    //!
 
   Trig::TrigDecisionTool*        m_trigDecTool;	            //!
@@ -144,9 +144,12 @@ public:
   bool executeSelection( const xAOD::MuonContainer* inMuons, float mcEvtWeight, bool countPass,
                          ConstDataVector<xAOD::MuonContainer>* selectedMuons );
   virtual int passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex );
-  
+
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(MuonSelector, 1);
+  /// @endcond
+
 };
 
 #endif

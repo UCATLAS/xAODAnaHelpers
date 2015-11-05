@@ -1,17 +1,22 @@
-Welcome to xAODAnaHelpers's documentation!
-==========================================
+xAODAnaHelpers
+==============
 
-Contents:
+The xAOD analysis framework, born out of ProofAna...or not.
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
 
-   modules
+   Versions
+   Issues
+   Community
+   API
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-.. * :ref:`modindex`
 * :ref:`search`
 
