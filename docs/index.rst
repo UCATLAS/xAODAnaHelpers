@@ -1,12 +1,19 @@
-Welcome to xAODAnaHelpers's documentation!
-==========================================
+xAODAnaHelpers
+==============
 
-Contents:
+Welcome home!
+
+Contents
+--------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
-   api
+   Calibrators
+   Correctors
+   Selectors
+   Histograms
+   Outputs
 
 Indices and tables
 ==================
