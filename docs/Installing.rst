@@ -1,16 +1,29 @@
-Getting The Code
-----------------
+Installing
+----------
 
-So you're here. How do you start getting the code? First, let's clone the repository locally::
+::
 
+    setupATLAS
+    rcSetup Base,X.Y.Z
     git clone https://github.com/UCATLAS/xAODAnaHelpers
 
-or::
+or for a specific tag
 
-    git clone git@github.com:UCATLAS/xAODAnaHelpers
+::
 
-`if you have ssh-keys set up <https://help.github.com/articles/generating-ssh-keys/>`_.
+    rc checkout_pkg atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ xAODAnaHelpers
 
+::
+
+    git clone https://github.com/UCATLAS/xAODAnaHelpers
+    cd xAODAnaHelpers
+    git checkout tags/XX-YY-ZZ
+
+.. note::
+
+    `If you have ssh-keys set up <https://help.github.com/articles/generating-ssh-keys/>`_, then you can clone over SSH instead of HTTPS::
+
+        git clone git@github.com:UCATLAS/xAODAnaHelpers
 
 At this point, you have the FULL state of the code. You can run
 ``git log`` to view the recent changes (no more ChangeLog!). You can run

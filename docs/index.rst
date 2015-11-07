@@ -3,6 +3,8 @@ xAODAnaHelpers
 
 The xAOD analysis framework, born out of ProofAna...or not.
 
+Welcome to the xAODAnaHelpers wiki! This is an xAOD Analysis Framework built for Run II of ATLAS.
+
 Contents
 --------
 
