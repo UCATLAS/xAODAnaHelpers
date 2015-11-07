@@ -12,8 +12,9 @@ Contents
    :maxdepth: 2
 
    Intro
-   Versions
-   Issues
+   Installing
+   Algorithms
+   Development
    Community
    API
 
