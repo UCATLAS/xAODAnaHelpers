@@ -1,7 +1,7 @@
 Helper Functions
 ================
 
-.. doxygenclass:: HelperFunctions
+.. doxygennamespace:: HelperFunctions
    :members:
    :undoc-members:
    :protected-members:

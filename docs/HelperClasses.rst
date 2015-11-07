@@ -1,7 +1,7 @@
 Helper Classes
 ==============
 
-.. doxygenclass:: HelperClasses
+.. doxygennamespace:: HelperClasses
    :members:
    :undoc-members:
    :protected-members:
