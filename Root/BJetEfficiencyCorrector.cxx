@@ -78,7 +78,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
 EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 {
   if ( !getConfig().empty() ) {
-  
+
     Info("configure()", "Configuing BJetEfficiencyCorrector Interface. User configuration read from : %s ", getConfig().c_str());
 
     TEnv* config = new TEnv(getConfig(true).c_str());
@@ -154,12 +154,17 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
   m_operatingPtCDI = m_operatingPt;
+  std::cout << "Using Standard OperatingPoint for CDI BTag Efficiency of " << m_operatingPtCDI << std::endl;
+
+  // Outdated code for translating user friendly Btag WP to cut value
+  // Code now accepts the user friendly Btag WP
+  /*
   if( m_operatingPtCDI.find("FixedCutBEff") != std::string::npos) {
     m_operatingPtCDI.erase(0,13); // remove FixedCutBEff_
     std::cout << "Get OperatingPoint for CDI BTag Efficiency using eff = " << m_operatingPtCDI << std::endl;
     m_operatingPtCDI = HelperFunctions::GetBTagMV2c20_CutStr( atoi( m_operatingPtCDI.c_str() ) );
   }
-
+  */
 
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 
@@ -235,7 +240,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   } else {
     m_BJetSelectTool = new BTaggingSelectionTool( sel_tool_name );
   }
-  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
+  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
   //
   //  Configure the BJetSelectionTool
@@ -261,8 +266,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   } else {
     m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
   }
-  m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
-   
+  m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
+
   //
   //  Configure the BJetEfficiencyCorrectionTool
   //
@@ -311,8 +316,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     // Convert into a simple list -- nominal is included already here!!
     m_systList = CP::make_systematics_vector(recSysts);
     if( !m_systName.empty() ) {
-      for ( const auto& syst_it : m_systList ){
-        Info("initialize()"," available recommended systematic: %s", (syst_it.name()).c_str());
+      if(m_debug){
+        for ( const auto& syst_it : m_systList ){
+          Info("initialize()"," available recommended systematic: %s", (syst_it.name()).c_str());
+        }
       }
     } else { // remove all but the nominal
       std::vector<CP::SystematicSet>::iterator syst_it = m_systList.begin();
@@ -353,25 +360,28 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
-    
+
   if ( m_debug ) Info("execute()", "\n\n eventNumber: %lld\n", eventInfo->eventNumber() );
 
-  //
-  // loop over available systematics
-  //  
-  
+  //Create Scale Factor aux for all jets
+  SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decorSF );
+  for( auto jet_itr : *(correctedJets)) {
+      sfVec(*jet_itr) = std::vector<float>();
+  }
+
   // Define also an *event* weight, which is the product of all the BTag eff. SFs for each object in the event
   //
   std::string SF_NAME_GLOBAL = m_decorSF + "_GLOBAL";
   SG::AuxElement::Decorator< std::vector<float> > sfVec_GLOBAL ( SF_NAME_GLOBAL );
 
   std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
+  // loop over available systematics
   for(const auto& syst_it : m_systList){
-    
+
     // Initialise product of SFs for *this* systematic
     //
-    float SF_GLOBAL(1.0); 
-    
+    float SF_GLOBAL(1.0);
+
     //
     // if not running systematics, only compulte weight for specified systematic (m_systName)
     //    default is nominal (i.e., "")
@@ -394,6 +404,8 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // configure tool with syst variation
     //
     if (m_getScaleFactors ) {
+
+
       if (m_BJetEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
         Error("initialize()", "Failed to configure BJetEfficiencyCorrections for systematic %s.", syst_it.name().c_str());
         return EL::StatusCode::FAILURE;
@@ -404,37 +416,26 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     bool tagged(false);
     //
     // and now apply data-driven efficiency and efficiency SF!
-    //    
+    //
     unsigned int idx(0);
     for( auto jet_itr : *(correctedJets)) {
 
       //
       // Add decorator for decision
-      // 
+      //
       SG::AuxElement::Decorator< int > isBTag( m_decor );
-      if( m_BJetSelectTool->accept( *jet_itr ) ) { 
-        isBTag( *jet_itr ) = 1; 
+      if( m_BJetSelectTool->accept( *jet_itr ) ) {
+        isBTag( *jet_itr ) = 1;
         tagged = true;
       }
-      else { 
-        isBTag( *jet_itr ) = 0; 
+      else {
+        isBTag( *jet_itr ) = 0;
         tagged = false;
       }
- 
-      // if only decorator with decision because OP is not calibrated, go to next jet
-      if(!m_getScaleFactors) { continue; }
 
-      //
-      //  If btagging vector doesnt exist create it
-      //
-      SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decorSF );
-      sfVec(*jet_itr) = std::vector<float>();
-
-      //
-      // obtain efficiency SF
-      //
       float SF(1.0);
-      if ( fabs(jet_itr->eta()) < 2.5 ) {
+      // if only decorator with decision because OP is not calibrated, set SF to 1
+      if ( m_getScaleFactors && fabs(jet_itr->eta()) < 2.5 ) {
 
         CP::CorrectionCode BJetEffCode;
         // if passes cut take the efficiency scale factor
@@ -451,11 +452,9 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
         }
         // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
         //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
-      } 
-      
-      //
+      }//m_getScaleFacots && eta < 2.5
+
       // Add it to vector
-      //
       sfVec(*jet_itr).push_back(SF);
 
       SF_GLOBAL *= SF;
@@ -474,27 +473,26 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
         Info( "execute()", "\t reco efficiency = %g", eff );
       }
       */
-      
-      if ( m_debug ) { 
+
+      if ( m_debug ) {
          Info( "execute()", "===>>>");
-         Info( "execute()", " ");     
+         Info( "execute()", " ");
 	 Info( "execute()", "Jet %i, pt = %.2f GeV , eta = %.2f", idx, (jet_itr->pt() * 1e-3), jet_itr->eta() );
 	 Info( "execute()", " ");
 	 Info( "execute()", "BTag SF decoration: %s", m_decorSF.c_str() );
-	 Info( "execute()", " ");      
+	 Info( "execute()", " ");
          Info( "execute()", "Systematic: %s", syst_it.name().c_str() );
          Info( "execute()", " ");
          Info( "execute()", "BTag SF:");
          Info( "execute()", "\t from tool = %f, from object = %f", SF, sfVec(*jet_itr).back());
          Info( "execute()", "--------------------------------------");
        }
-       
+
        ++idx;
-       
+
     } // close jet loop
-    
+
     // For *this* systematic, store the global SF weight for the event
-    //
     if ( m_debug ) {
        Info( "execute()", "--------------------------------------");
        Info( "execute()", "GLOBAL BTag SF for event:");

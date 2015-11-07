@@ -49,6 +49,7 @@ class BasicEventSelection : public xAH::Algorithm
         
     // Event Cleaning
     bool m_applyEventCleaningCut;
+    bool m_applyCoreFlagsCut;
     
     // Trigger
     std::string m_triggerSelection;
@@ -61,6 +62,11 @@ class BasicEventSelection : public xAH::Algorithm
     // Metadata
     std::string m_derivationName;
     bool m_useMetaData;
+    
+    /* Check for duplicated events in Data and MC */
+    bool m_checkDuplicatesData;
+    bool m_checkDuplicatesMC;
+    std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; 
 
   private:
     GoodRunsListSelectionTool*   m_grl;        //!
@@ -98,6 +104,7 @@ class BasicEventSelection : public xAH::Algorithm
     TH1D* m_el_cutflowHist_2;    //!
     TH1D* m_mu_cutflowHist_1;    //!
     TH1D* m_mu_cutflowHist_2;    //!
+    TH1D* m_ph_cutflowHist_1;    //!
     TH1D* m_jet_cutflowHist_1;   //!
     TH1D* m_truth_cutflowHist_1; //!
 

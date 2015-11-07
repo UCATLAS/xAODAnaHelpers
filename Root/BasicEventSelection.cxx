@@ -5,6 +5,8 @@
  *
  * G. Facini (gabriel.facini@cern.ch)
  * M. Milesi (marco.milesi@cern.ch)
+ * J. Dandoy (jeff.dandoy@cern.ch)
+ * J. Alison (john.alison@cern.ch)
  *
  *******************************************************/
 
@@ -29,13 +31,14 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "PATInterfaces/CorrectionCode.h"
- 
+
 // ROOT include(s):
 #include "TEnv.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
 #include "TSystem.h"
+
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
@@ -74,9 +77,14 @@ BasicEventSelection :: BasicEventSelection () :
   // Metadata
   m_useMetaData = true;
 
+  // Check for duplicated events in Data and MC
+  m_checkDuplicatesData = false;
+  m_checkDuplicatesMC	= false;
+
   // GRL
   m_applyGRLCut = true;
-  m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml";  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
+  m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml";
+  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
   m_GRLExcludeList = "";
 
   // Clean Powheg huge weight
@@ -96,6 +104,7 @@ BasicEventSelection :: BasicEventSelection () :
 
   // Event Cleaning
   m_applyEventCleaningCut = true;
+  m_applyCoreFlagsCut     = false;
 
   // Trigger
   m_triggerSelection = "";
@@ -131,6 +140,10 @@ EL::StatusCode BasicEventSelection :: configure ()
     // temp flag for derivations with broken meta data
     m_useMetaData       = config->GetValue("UseMetaData", m_useMetaData);
 
+    // Check for duplicated events in Data and MC
+    m_checkDuplicatesData = config->GetValue("CheckDuplicatesData", m_checkDuplicatesData);
+    m_checkDuplicatesMC   = config->GetValue("CheckDuplicatesMC", m_checkDuplicatesMC);
+
     // GRL
     m_applyGRLCut       = config->GetValue("ApplyGRL",        m_applyGRLCut);
     m_applyGRLCut       = config->GetValue("ApplyGRLCut",        m_applyGRLCut);
@@ -145,6 +158,7 @@ EL::StatusCode BasicEventSelection :: configure ()
 
     // Event Cleaning
     m_applyEventCleaningCut      = config->GetValue("ApplyEventCleaningCut",    m_applyEventCleaningCut);
+    m_applyCoreFlagsCut          = config->GetValue("ApplyCoreFlagsCut",        m_applyCoreFlagsCut);
 
     // Primary Vertex
     m_vertexContainerName        = config->GetValue("VertexContainer",       m_vertexContainerName.c_str());
@@ -339,12 +353,14 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
     if ( m_debug ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
 
-    for ( auto cbk :  *completeCBC ) {
-      if ( minCycle == cbk->cycle() && cbk->name() == "AllExecutedEvents" ) {
-	allEventsCBK = cbk;
+    int maxCycle(-1);
+    for ( const auto& cbk: *completeCBC ) {
+      if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
+ 	allEventsCBK = cbk;
+ 	maxCycle = cbk->cycle();
       }
       if ( cbk->name() == derivationName ) {
-	DxAODEventsCBK = cbk;
+ 	 DxAODEventsCBK = cbk;
       }
     }
 
@@ -463,6 +479,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_mu_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
   m_mu_cutflowHist_2->SetBit(TH1::kCanRebin);
+  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
+  m_ph_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
   m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
@@ -499,7 +517,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // 1.
   // initialize the GoodRunsListSelectionTool
   //
-  
+
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
   m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
@@ -511,7 +529,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // 2.
   // initialize the CP::PileupReweightingTool
   //
-  
+
   if ( m_doPUreweighting ) {
     m_pileuptool = new CP::PileupReweightingTool("Pileup");
 
@@ -560,16 +578,16 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lumiCalcFiles), "");
     if ( m_PU_default_channel ) {
       RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DefaultChannel", m_PU_default_channel), "");
-    }  
+    }
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "Failed to properly initialize CP::PileupReweightingTool");
   }
 
   // 3.
-  // initialize the Trig::TrigDecisionTool 
+  // initialize the Trig::TrigDecisionTool
   //
-  
+
   if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
-  
+
     m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "Failed to properly initialize TrigConf::xAODConfigTool");
     ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
@@ -580,7 +598,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
     Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
-  
+
   }
 
   // As a check, let's see the number of events in our file (long long int)
@@ -611,6 +629,21 @@ EL::StatusCode BasicEventSelection :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
+  //--------------------------------------------------------------------------------------------------------
+  // Before counting events, check  current event is not a duplicate
+  // This is done by checking against the std::set of <runNumber,eventNumber> filled for all previous events
+  //--------------------------------------------------------------------------------------------------------
+
+  if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
+    std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
+    if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
+      if ( true ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
+      wk()->skipEvent();
+      return EL::StatusCode::SUCCESS; // go to next event
+    }
+    m_RunNr_VS_EvtNr.insert(thispair);
+  }
+
   ++m_eventCounter;
 
   //-----------------------------------------
@@ -634,7 +667,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   float mcEvtWeight(1.0);
   //float pileupWeight(1.0);
-  
+
   if ( m_isMC ) {
     const std::vector< float > weights = eventInfo->mcEventWeights(); // The weight (and systs) of all the MC events used in the simulation
     if ( weights.size() > 0 ) mcEvtWeight = weights[0];
@@ -657,9 +690,9 @@ EL::StatusCode BasicEventSelection :: execute ()
                                          //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                          //  3.) the random run number ("RandomRunNumber")
                                          //  4.) the random lumiblock number ("RandomLumiBlockNumber")
-     
+
       //pileupWeight = m_pileuptool->getCombinedWeight(*eventInfo) ;
-      //mcEvtWeight *= pileupWeight; 
+      //mcEvtWeight *= pileupWeight;
     }
   }
 
@@ -680,7 +713,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_store->print();
     Info(m_name.c_str(), "End Content");
   }
-  
+
   //-----------------------------------------------------
   // If data, check if event passes GRL and even cleaning
   //-----------------------------------------------------
@@ -728,19 +761,19 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_tile, mcEvtWeight);
 
 
-    if ( m_applyEventCleaningCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
+    if ( m_applyCoreFlagsCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
-  } 
+  }
 
   //-----------------------------
   // Primary Vertex 'quality' cut
   //-----------------------------
-  
+
   const xAOD::VertexContainer* vertices(nullptr);
   if ( !m_truthLevelOnly && m_applyPrimaryVertexCut ) {
     RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, m_verbose) ,"");
@@ -777,15 +810,19 @@ EL::StatusCode BasicEventSelection :: execute ()
     if ( m_storeTrigDecisions ) {
 
       std::vector<std::string> passTriggers;
+      std::vector<float> triggerPrescales;
 
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool->getChainGroup( trigName );
         if ( trigChain->isPassed() ) {
           passTriggers.push_back( trigName );
+          triggerPrescales.push_back( trigChain->getPrescale() );
         }
       }
       static SG::AuxElement::Decorator< std::vector< std::string > > passTrigs("passTriggers");
       passTrigs( *eventInfo ) = passTriggers;
+      static SG::AuxElement::Decorator< std::vector< float > > trigPrescales("triggerPrescales");
+      trigPrescales( *eventInfo ) = triggerPrescales;
 
     }
 
@@ -839,6 +876,8 @@ EL::StatusCode BasicEventSelection :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "Number of processed events \t= %i", m_eventCounter);
+
+  m_RunNr_VS_EvtNr.clear();
 
   if ( m_grl )          {  m_grl = nullptr;	     delete m_grl; }
   if ( m_pileuptool )   {  m_pileuptool = nullptr;   delete m_pileuptool; }

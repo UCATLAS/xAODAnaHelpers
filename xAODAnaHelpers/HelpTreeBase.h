@@ -5,9 +5,10 @@
  * Some branches are included by default while others
  * need to be added by the user
  *
- * John Alison (john.alison@cern.ch) 
- * Gabriel Facini (gabriel.facini@cern.ch) 
+ * John Alison (john.alison@cern.ch)
+ * Gabriel Facini (gabriel.facini@cern.ch)
  * Marco Milesi (marco.milesi@cern.ch)
+ * Jeff Dandoy (jeff.dandoy@cern.ch)
  *
  ********************************************************/
 
@@ -57,14 +58,15 @@ public:
   void AddJetTrigger  (const std::string detailStr = "");
   void AddMuons       (const std::string detailStr = "");
   void AddElectrons   (const std::string detailStr = "");
+  void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
-  void AddTruthParts  (const std::string truthName, const std::string detailStr = "");
+  void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
 
   xAOD::TEvent* m_event;
-  xAOD::TStore* m_store; 
+  xAOD::TStore* m_store;
 
   // control which branches are filled
   HelperClasses::EventInfoSwitch*      m_eventInfoSwitch;
@@ -72,6 +74,7 @@ public:
   HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
   HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
+  HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
   HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
@@ -84,12 +87,13 @@ public:
   TrigConf::xAODConfigTool*    m_trigConfTool;
   Trig::TrigDecisionTool*      m_trigDecTool;
 
-  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr ); 
-  
+  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr );
+
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
+  void FillPhotons( const xAOD::PhotonContainer* photons );
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillFatJets( const xAOD::JetContainer* fatJets );
@@ -102,6 +106,7 @@ public:
   void ClearJetTrigger();
   void ClearMuons();
   void ClearElectrons();
+  void ClearPhotons();
   void ClearJets(const std::string jetName = "jet");
   void ClearTruth(const std::string truthName);
   void ClearFatJets();
@@ -130,6 +135,10 @@ public:
     if(m_debug) Info("AddElectronsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+  virtual void AddPhotonsUser(const std::string detailStr = "")  {
+    if(m_debug) Info("AddPhotonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
+  };
   virtual void AddJetsUser(const std::string detailStr = "", const std::string jetName = "jet")       {
     if(m_debug) Info("AddJetsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(), jetName.c_str());
     return;
@@ -150,11 +159,12 @@ public:
     if(m_debug) Info("AddMETUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
-  
+
   virtual void ClearEventUser()     { return; };
   virtual void ClearTriggerUser()   { return; };
   virtual void ClearMuonsUser()     { return; };
   virtual void ClearElectronsUser() { return; };
+  virtual void ClearPhotonsUser() { return; };
   virtual void ClearTruthUser(const std::string& /*truthName*/) 	    { return; };
   virtual void ClearJetsUser (const std::string /*jetName = "jet"*/ ) 	    { return; };
   virtual void ClearFatJetsUser()   { return; };
@@ -164,6 +174,7 @@ public:
   virtual void FillEventUser( const xAOD::EventInfo*  )        { return; };
   virtual void FillMuonsUser( const xAOD::Muon*  )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron*  )     { return; };
+  virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
   virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
   virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
   virtual void FillFatJetsUser( const xAOD::Jet*  )            { return; };
@@ -171,9 +182,9 @@ public:
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
   virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
   virtual void FillJetTriggerUser()                            { return; };
-  
- protected: 
-  
+
+ protected:
+
   template<typename T, typename U>
     void safeFill(const xAOD::Jet* jet, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units = 1);
 
@@ -191,6 +202,7 @@ protected:
   int m_runNumber;
   int m_eventNumber;
   int m_lumiBlock;
+  uint32_t m_coreFlags;
   int m_mcEventNumber;
   int m_mcChannelNumber;
   float m_mcEventWeight;
@@ -256,6 +268,7 @@ protected:
 						   */
 
   std::vector<std::string> m_passTriggers;
+  std::vector<float> m_triggerPrescales;
 
   // jet trigger
 
@@ -387,77 +400,77 @@ protected:
     std::vector<int>                  m_jet_mv2c20_isFix30;
     std::vector<float>                m_weight_jet_mv2c20_sfFix30;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFix30;
-    
+
     int m_njet_mv2c20_Fix50;
     std::vector<int> m_jet_mv2c20_isFix50;
     std::vector<float>  m_weight_jet_mv2c20_sfFix50;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFix50;
-    
+
     int m_njet_mv2c20_Fix60;
     std::vector<int> m_jet_mv2c20_isFix60;
     std::vector<float>  m_weight_jet_mv2c20_sfFix60;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFix60;
-    
-    int m_njet_mv2c20_Fix70;  
+
+    int m_njet_mv2c20_Fix70;
     std::vector<int> m_jet_mv2c20_isFix70;
     std::vector<float>  m_weight_jet_mv2c20_sfFix70;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFix70;
-    
-    int m_njet_mv2c20_Fix77;   
+
+    int m_njet_mv2c20_Fix77;
     std::vector<int> m_jet_mv2c20_isFix77;
     std::vector<float>  m_weight_jet_mv2c20_sfFix77;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFix77;
-    
-    int m_njet_mv2c20_Fix80;   
+
+    int m_njet_mv2c20_Fix80;
     std::vector<int> m_jet_mv2c20_isFix80;
     std::vector<float>  m_weight_jet_mv2c20_sfFix80;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFix80;
-    
-    int m_njet_mv2c20_Fix85;   
+
+    int m_njet_mv2c20_Fix85;
     std::vector<int> m_jet_mv2c20_isFix85;
     std::vector<float>  m_weight_jet_mv2c20_sfFix85;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFix85;
-    
-    int m_njet_mv2c20_Fix90;   
+
+    int m_njet_mv2c20_Fix90;
     std::vector<int> m_jet_mv2c20_isFix90;
     std::vector<float>  m_weight_jet_mv2c20_sfFix90;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFix90;
-    
+
     int m_njet_mv2c20_Flt30;
     std::vector<int> m_jet_mv2c20_isFlt30;
     std::vector<float>  m_weight_jet_mv2c20_sfFlt30;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFlt30;
-    
-    int m_njet_mv2c20_Flt40;  
+
+    int m_njet_mv2c20_Flt40;
     std::vector<int> m_jet_mv2c20_isFlt40;
     std::vector<float>  m_weight_jet_mv2c20_sfFlt40;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFlt40;
-    
-    int m_njet_mv2c20_Flt50;  
+
+    int m_njet_mv2c20_Flt50;
     std::vector<int> m_jet_mv2c20_isFlt50;
     std::vector<float>  m_weight_jet_mv2c20_sfFlt50;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFlt50;
-    
-    int m_njet_mv2c20_Flt60;  
+
+    int m_njet_mv2c20_Flt60;
     std::vector<int> m_jet_mv2c20_isFlt60;
     std::vector<float>  m_weight_jet_mv2c20_sfFlt60;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFlt60;
-    
-    int m_njet_mv2c20_Flt70;  
+
+    int m_njet_mv2c20_Flt70;
     std::vector<int> m_jet_mv2c20_isFlt70;
     std::vector<float>  m_weight_jet_mv2c20_sfFlt70;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFlt70;
-    
-    int m_njet_mv2c20_Flt77;  
+
+    int m_njet_mv2c20_Flt77;
     std::vector<int> m_jet_mv2c20_isFlt77;
     std::vector<float>  m_weight_jet_mv2c20_sfFlt77;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFlt77;
-    
-    int m_njet_mv2c20_Flt85;  
+
+    int m_njet_mv2c20_Flt85;
     std::vector<int> m_jet_mv2c20_isFlt85;
     std::vector<float>  m_weight_jet_mv2c20_sfFlt85;
     std::vector< std::vector<float> > m_jet_mv2c20_sfFlt85;
-  
+
     // area
     std::vector<float> m_jet_ghostArea;
     std::vector<float> m_jet_activeArea;
@@ -466,7 +479,7 @@ protected:
     std::vector<float> m_jet_activeArea_eta;
     std::vector<float> m_jet_activeArea_phi;
     std::vector<float> m_jet_activeArea_m;
-  
+
     // truth
     std::vector<int>   m_jet_truthConeLabelID;
     std::vector<int>   m_jet_truthCount;
@@ -483,7 +496,7 @@ protected:
     std::vector<int> m_jet_truth_pdgId;
     std::vector<float> m_jet_truth_partonPt;
     std::vector<float> m_jet_truth_partonDR;
-  
+
     // truth detail
     std::vector<int>   m_jet_truthCount_BhadFinal;
     std::vector<int>   m_jet_truthCount_BhadInit;
@@ -544,7 +557,8 @@ protected:
   std::vector<float> m_muon_m;
 
   // trigger
-  std::vector<int>  m_muon_isTrigMatched;
+  std::vector<int> m_muon_isTrigMatchedToChain;
+  std::vector<std::string> m_muon_listTrigChains;
 
   // isolation
   std::vector<int>   m_muon_isIsolated_LooseTrackOnly;
@@ -552,9 +566,9 @@ protected:
   std::vector<int>   m_muon_isIsolated_Tight;
   std::vector<int>   m_muon_isIsolated_Gradient;
   std::vector<int>   m_muon_isIsolated_GradientLoose;
-  std::vector<int>   m_muon_isIsolated_GradientT1;  
-  std::vector<int>   m_muon_isIsolated_GradientT2;  
-  std::vector<int>   m_muon_isIsolated_MU0p06;  
+  std::vector<int>   m_muon_isIsolated_GradientT1;
+  std::vector<int>   m_muon_isIsolated_GradientT2;
+  std::vector<int>   m_muon_isIsolated_MU0p06;
   std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
   std::vector<int>   m_muon_isIsolated_UserDefinedCut;
   std::vector<float> m_muon_ptcone20;
@@ -562,10 +576,10 @@ protected:
   std::vector<float> m_muon_ptcone40;
   std::vector<float> m_muon_ptvarcone20;
   std::vector<float> m_muon_ptvarcone30;
-  std::vector<float> m_muon_ptvarcone40;  
+  std::vector<float> m_muon_ptvarcone40;
   std::vector<float> m_muon_topoetcone20;
   std::vector<float> m_muon_topoetcone30;
-  std::vector<float> m_muon_topoetcone40;  
+  std::vector<float> m_muon_topoetcone40;
 
   // quality
   std::vector<int>   m_muon_isVeryLoose;
@@ -606,6 +620,7 @@ protected:
   std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
   std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
 
+  //
   // electrons
   int m_nel;
 
@@ -614,11 +629,11 @@ protected:
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
-  
+
   // trigger
   std::vector<int> m_el_isTrigMatchedToChain;
   std::vector<std::string> m_el_listTrigChains;
-  
+
   // isolation
   std::vector<int>   m_el_isIsolated_LooseTrackOnly;
   std::vector<int>   m_el_isIsolated_Loose;
@@ -636,18 +651,25 @@ protected:
   std::vector<float> m_el_ptcone40;
   std::vector<float> m_el_ptvarcone20;
   std::vector<float> m_el_ptvarcone30;
-  std::vector<float> m_el_ptvarcone40;  
+  std::vector<float> m_el_ptvarcone40;
   std::vector<float> m_el_topoetcone20;
   std::vector<float> m_el_topoetcone30;
-  std::vector<float> m_el_topoetcone40;  
-  
+  std::vector<float> m_el_topoetcone40;
+
   // PID
+  int m_nel_LHVeryLoose; 
   std::vector<int>   m_el_LHVeryLoose;
+  int m_nel_LHLoose; 
   std::vector<int>   m_el_LHLoose;
+  int m_nel_LHMedium;
   std::vector<int>   m_el_LHMedium;
+  int m_nel_LHTight;
   std::vector<int>   m_el_LHTight;
+  int m_nel_IsEMLoose;
   std::vector<int>   m_el_IsEMLoose;
+  int m_nel_IsEMMedium;
   std::vector<int>   m_el_IsEMMedium;
+  int m_nel_IsEMTight;
   std::vector<int>   m_el_IsEMTight;
 
   // scale factors w/ sys
@@ -680,6 +702,17 @@ protected:
   std::vector<int> m_el_trknInnermostPixLayHits; // not available in DC14
   std::vector<float> m_el_trkPixdEdX;            // not available in DC14
 
+  //
+  // photons
+  int m_nph;
+
+  // kinematics
+  std::vector<float> m_ph_pt;
+  std::vector<float> m_ph_phi;
+  std::vector<float> m_ph_eta;
+  std::vector<float> m_ph_m;
+
+  //
   // taus
   int m_ntau;
 
@@ -695,15 +728,15 @@ protected:
   float m_metFinalClus;
   float m_metFinalClusPx;
   float m_metFinalClusPy;
-  float m_metFinalClusPhi; 
+  float m_metFinalClusPhi;
   float m_metFinalClusSumEt;
-  
+
   float m_metFinalTrk;
   float m_metFinalTrkPx;
   float m_metFinalTrkPy;
-  float m_metFinalTrkPhi; 
-  float m_metFinalTrkSumEt;  
-   
+  float m_metFinalTrkPhi;
+  float m_metFinalTrkSumEt;
+
   float m_metEle;       float m_metEleSumEt;      float m_metElePhi;
   float m_metGamma;     float m_metGammaSumEt;    float m_metGammaPhi;
   float m_metTau;       float m_metTauSumEt;      float m_metTauPhi;
@@ -714,7 +747,7 @@ protected:
   float m_metSoftTrk;   float m_metSoftTrkSumEt;  float m_metSoftTrkPhi;
 
  public:
-  
+
   void Fill_Fix30( const xAOD::Jet* jet, jetInfo* thisJet );
   void Fill_Fix50( const xAOD::Jet* jet, jetInfo* thisJet );
   void Fill_Fix60( const xAOD::Jet* jet, jetInfo* thisJet );
@@ -723,7 +756,7 @@ protected:
   void Fill_Fix80( const xAOD::Jet* jet, jetInfo* thisJet );
   void Fill_Fix85( const xAOD::Jet* jet, jetInfo* thisJet );
   void Fill_Fix90( const xAOD::Jet* jet, jetInfo* thisJet );
-						
+
   void Fill_Flt30( const xAOD::Jet* jet, jetInfo* thisJet );
   void Fill_Flt40( const xAOD::Jet* jet, jetInfo* thisJet );
   void Fill_Flt50( const xAOD::Jet* jet, jetInfo* thisJet );
@@ -740,8 +773,8 @@ template<typename T, typename U>
 void HelpTreeBase::safeFill(const xAOD::Jet* jet, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units){
   if ( accessor.isAvailable( *jet ) ) {
     destination.push_back( accessor( *jet ) / m_units );
-  } else { 
-    destination.push_back( defaultValue ); 
+  } else {
+    destination.push_back( defaultValue );
   }
   return;
 }

@@ -27,5 +27,20 @@
       }                                                                    \
    } while( false )
 
+/// Helper macro for checking EL return codes in a compact form in the code
+///
+/// @param CONTEXT A context string to print an error message on failure
+/// @param EXP The expression to execute in a checked manner
+///
+#define EL_RETURN_CHECK( CONTEXT, EXP )                              \
+  {								     \
+    if( EXP!=EL::StatusCode::SUCCESS)				     \
+      {                                                              \
+	::Error( CONTEXT, XAOD_MESSAGE( "Failed to execute: %s\n" ), \
+		 #EXP );		                             \
+	return EL::StatusCode::FAILURE;				     \
+      } 							     \
+  }
+
 #endif // xAODAnaHelpers_TOOLS_RETURNCHECK_H
 

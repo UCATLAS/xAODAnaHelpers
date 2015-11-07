@@ -26,6 +26,7 @@ namespace HelperClasses {
   enum class ToolName {
       MUONSELECTOR,
       ELECTRONSELECTOR,
+      PHOTONSELECTOR,
       JETSELECTOR,
       BJETSELECTOR,
       OVERLAPREMOVER,
@@ -109,6 +110,12 @@ namespace HelperClasses {
     bool m_effSF;
     void initialize();
     ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
+  struct PhotonInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    PhotonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
   struct JetInfoSwitch : InfoSwitch {
