@@ -251,7 +251,3 @@ HelpTreeBase is a class (not an algorithm) that creates and fills a
 TTree. When adding an object type i.e. jet, muon, or event level
 quantities, it can be easily configured with "info switches" ( See
 HelperClasses ) that take a space separated list of categories.
-
-Working Demonstrations
-======================
-
