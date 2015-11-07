@@ -26,6 +26,7 @@ parser.add_argument("--outPath", dest='outPath', default="./gridOutput/",
      help="Output path")
 parser.add_argument("--mergeRawDatasets", dest='mergeRawDatasets', default="True",
      help="Merge raw datasets (hadd)")
+parser.add_argument("--doFax", dest='doFax', default=False, action="store_true", help="Use get-fax")
 parser.add_argument("--renameRawDatasets", dest='renameRawDatasets', default="False",
      help="Rename raw datasets")
 parser.add_argument("--maxSize", dest='maxSize', default=-1,
@@ -74,8 +75,9 @@ def main():
 
     for iFile, file in enumerate(textFileList):
       with open(file, 'r') as containerFile:
-        for line in containerFile:
-          if not ( line.find("#") == 0 or len(line) < 1 ):
+        for rawline in containerFile:
+          line = rawline.rstrip()
+          if not ( line.find("#") == 0 or len(line) < 1 or not line ):
             rawDataset = line.rstrip().rstrip('/').rstrip('*')+'*/'
             containers.append( rawDataset )
 
@@ -118,8 +120,13 @@ def main():
   print '\n******************************************\ndownloading datasets'
   for idataset, dataset in enumerate(datasetList):
     print '\n ---------------------- downloading dataset ('+str(idataset)+'/'+numDownloads+'): %s'%dataset
-    print "rucio download "+dataset+" --ndownloader 5"
-    os.system("rucio download "+dataset+" --ndownloader 5")
+
+    if args.doFax:
+      print "fax-get "+dataset
+      os.system("fax-get "+dataset)
+    else:
+      print "rucio download "+dataset+" --ndownloader 5"
+      os.system("rucio download "+dataset+" --ndownloader 5")
 
     #remove scope from dataset name (i.e. user.x:)
     datasetList[idataset] = dataset.split(':')[1]
