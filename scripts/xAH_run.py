@@ -150,7 +150,7 @@ if __name__ == "__main__":
   prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
   prun.add_argument('--optGridMergeOutput',      metavar='', type=int, required=False, default=None)
   prun.add_argument('--optGridNFiles',           metavar='', type=float, required=False, default=None)
-  prun.add_argument('--optGridNFilesPerJob',     metavar='', type=int, required=False, default=None)
+  prun.add_argument('--optGridNFilesPerJob',     metavar='', type=float, required=False, default=None)
   prun.add_argument('--optGridNGBPerJob',        metavar='', type=int, required=False, default=2)
   prun.add_argument('--optGridNJobs',            metavar='', type=int, required=False, default=None)
   prun.add_argument('--optGridNoSubmit',         metavar='', type=int, required=False, default=None)
