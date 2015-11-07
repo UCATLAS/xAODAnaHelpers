@@ -9,5 +9,5 @@ API Reference
    Selectors
    Histograms
    Outputs
-
+   Utilities
 
