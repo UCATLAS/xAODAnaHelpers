@@ -48,3 +48,19 @@ going to the next step. If selectors are configured with limits in the
 number of events passing the cuts, only collections passing the cuts
 will be passed to algos downstream. If none pass, the next event is
 analyzed.
+
+Related Packages
+----------------
+
+Here we list some useful packages that don't depend on xAH, but can be used along with it.
+
+xAODDumper
+~~~~~~~~~~
+
+This RootCore package (developed by `Giordon Stark, UChicago <http://giordonstark.com/>`_) contains a useful python script to dump the full content of a generic xAOD file (full breakdown of available containers and attributes, basic plots, size and memory usage). See the dedicated `webpage <http://kratsg.github.io/xAODDumper/>`_ for more info.
+
+goodruns
+~~~~~~~~
+
+This python package (made by Noel Dawe, Univeristy of Melbourne) provides a useful set of tools to handle GoodRunLists, e.g., merging N GRLs into a single one etc. All the details and instructions are well documented `here <http://ndawe.github.io/goodruns/>`_.
+
