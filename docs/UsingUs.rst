@@ -113,3 +113,5 @@ API Reference
    :ref: xAH_run.parser
    :prog: xAH_run.py
 
+   --mode : @after
+       `class access <https://github.com/kratsg/TheAccountant/wiki/Access-Mode>`__ mode or `branch access <https://github.com/kratsg/TheAccountant/wiki/Access-Mode>`__ mode

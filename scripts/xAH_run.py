@@ -81,8 +81,8 @@ parser.add_argument('--nevents', dest='num_events', metavar='<n>', type=int, hel
 parser.add_argument('--skip', dest='skip_events', metavar='<n>', type=int, help='Number of events to skip at start for all datasets. (0 = no limit)', default=0)
 parser.add_argument('-f', '--force', dest='force_overwrite', action='store_true', help='Overwrite previous directory if it exists.')
 
-parser.add_argument('--version', action='version', version='xAH_run.py {version}'.format(version=__version__), help='Version {version}'.format(version=__version__))
-parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch}', choices=['class', 'branch'], default='class', help='run using `class access <https://github.com/kratsg/TheAccountant/wiki/Access-Mode>`__ mode or `branch access <https://github.com/kratsg/TheAccountant/wiki/Access-Mode>`__ mode')
+parser.add_argument('--version', action='version', version='xAH_run.py {version}'.format(version=__version__), help='{version}'.format(version=__version__))
+parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch}', choices=['class', 'branch'], default='class', help='run using class access mode or branch access mode')
 parser.add_argument( '--treeName', dest="treeName",     default="CollectionTree", help="Tree Name to run on")
 parser.add_argument( '--isMC',     action="store_true", dest="is_MC",    default=False, help="Running MC")
 parser.add_argument( '--isAFII',   action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
