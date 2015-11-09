@@ -1,8 +1,8 @@
 Community
 =========
 
-Tutorial
---------
+Tutorials
+---------
 
 `Brian Tuan <https://github.com/btuan>`_ made a `tutorial <http://twiki.mwt2.org/bin/view/UCATLAS/AnaHelpersExample>`_ for those starting with xAOD analysis for the first time.
 
