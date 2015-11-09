@@ -13,6 +13,7 @@ Contents
 
    Intro
    Installing
+   UsingUs
    Algorithms
    Development
    Community
