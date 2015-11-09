@@ -8,6 +8,7 @@ API Reference
    Correctors
    Selectors
    Histograms
+   ToolsUsed
    Outputs
-
+   Utilities
 
