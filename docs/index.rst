@@ -1,3 +1,5 @@
+.. _MainPage:
+
 xAODAnaHelpers
 ==============
 
