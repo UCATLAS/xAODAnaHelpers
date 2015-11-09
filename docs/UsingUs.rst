@@ -8,7 +8,14 @@ goal is to make it easier for a user to spin up an analysis without
 Introduction
 ------------
 
-An analysis job is defined by a few key things: - the files to run over - where to run the code - what algorithms to run and a few other minor features such as submission directory or how many events to run. Primarily, these three things listed above are all you need to get started. ``xAH_run.py`` manages all of these for you. A configuration file, written in `json <http://www.json.org/>`_ or python, is used to specify what algorithms to run, and in what order. You pass in a list of files you want to run over to the script itself, as well as where to run the code. It will take care of the rest for you.
+An analysis job is defined by a few key things:
+- the files to run over
+- where to run the code
+- what algorithms to run
+
+and a few other minor features such as submission directory or how many events to run. Primarily, these three things listed above are all you need to get started. ``xAH_run.py`` manages all of these for you.
+
+A configuration file, written in `json <http://www.json.org/>`_ or python, is used to specify what algorithms to run, and in what order. You pass in a list of files you want to run over to the script itself, as well as where to run the code. It will take care of the rest for you.
 
 Getting Started
 ---------------
