@@ -1,6 +1,3 @@
-.. note::
-    Written based on `e950a9 <https://github.com/UCATLAS/xAODAnaHelpers/tree/e950a91ffc37f939a262d749f6e7419dfd6de627>`_
-
 xAH_run.py
 ==========
 
