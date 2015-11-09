@@ -20,6 +20,8 @@ import shlex
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+# for adding xAH_run.py
+sys.path.insert(0, os.path.abspath('../scripts'))
 
 # -- General configuration ------------------------------------------------
 
@@ -40,6 +42,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'breathe',
+    'sphinxarg.ext',
 ]
 
 breathe_projects = {"xAH": "doxygen/xml"}

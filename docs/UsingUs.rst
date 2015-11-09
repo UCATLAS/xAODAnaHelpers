@@ -103,66 +103,13 @@ For everything listed below, the script contains all this information and is sel
 
 to see all the help information.
 
-Required Arguments
-------------------
+.. note::
+    The ``{driver}`` option tells the script where to run the code. There are lots of supported drivers and more can be added if you request it. For more information, you can type ``xAH_run.py -h drivers`` of available drivers.
 
-.. code:: bash
+API Reference
+-------------
 
-    xAH_run.py --files file ... --config path/to/file.json [options] {driver} [driver options]
-
-+------------+-------------+-----------+----------------------------------------+
-| Variable   | Type        | Default   | Description                            |
-+============+=============+===========+========================================+
-| --files    | string(s)   |           | path to file(s) to use in the script   |
-+------------+-------------+-----------+----------------------------------------+
-| --config   | string      |           | path to json configuration file        |
-+------------+-------------+-----------+----------------------------------------+
-| {driver}   | string      |           | the driver to use when running jobs    |
-+------------+-------------+-----------+----------------------------------------+
-
-There are only three required arguments.
-
--  The ``--files`` option gives all the input files for the script to
-   use. Depending on the other options specified, these could be DQ2
-   sample names, local paths, or text files containing a list of
-   filenames/paths.
--  The ``--config`` option tells the script which algorithms to load,
-   configure, run, and in which order. Without it, it becomes a headless
-   chicken.
--  The ``{driver}`` option tells the script where to run the code. There
-   are lots of supported drivers and more can be added if you request
-   it. For more information, you can type ``xAH_run.py -h drivers`` of
-   available drivers.
-
-Optional Arguments
-------------------
-
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Variable        | Type      | Default     | Description                                                                                                                                                                       |
-+=================+===========+=============+===================================================================================================================================================================================+
-| --submitDir     | string    | submitDir   | output directory to store the output                                                                                                                                              |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| --nevents       | int       | 0           | number of events to process for all datasets (0 = no limit)                                                                                                                       |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| --skip          | int       | 0           | number of events to skip at the start for all datasets (0 = no skip)                                                                                                              |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -f, --force     | FLAG      | false       | overwrite the submit directory if it exists                                                                                                                                       |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| --version       | FLAG      | false       | display the version number (git commit)                                                                                                                                           |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| --mode          | string    | class       | run using `class access <https://github.com/kratsg/TheAccountant/wiki/Access-Mode>`__ mode or `branch access <https://github.com/kratsg/TheAccountant/wiki/Access-Mode>`__ mode   |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| --inputList     | FLAG      | false       | if flagged, will interpret ``--files`` as a text file containing a list of paths/filenames                                                                                        |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| --inputDQ2      | FLAG      | false       | if flagged, will interpret each filename as a grid sample pattern                                                                                                                 |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -v, --verbose   | COUNTER   | 0           | verbosity counter, can increase verbosity of the script by adding more ``-vv``                                                                                                    |
-+-----------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
-Most of the variables mentioned here are self explanatory. For those
-labeled as ``FLAG``, you simply need to add the flag to your command
-such as ``xAH_run.py -f`` to use it. For verbosity, it is a special
-command which can increase the level of verbosity when debugging what
-goes on in the script such as ``xAH_run.py -v`` or
-``xAH_run.py -v--verbose-vv``.
+.. argparse::
+   :ref: xAH_run.parser
+   :prog: xAH_run.py
 
