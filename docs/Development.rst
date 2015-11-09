@@ -196,3 +196,46 @@ which are useful for testing using::
     test_multiAlgo submitDir /atlas/uct3/data/users/fizisist/xAOD <sample> <root file>
 
 
+Decorations
+~~~~~~~~~~~
+
+As a follow-up on the discussions in yesterday's meeting, xAOD decorations can be assigned and read more efficiently defining an decorators/accessors, since auxdata requires a string-comparison search for the correct branch on every call, whereas the static accessor finds this once and then no longer has the overhead.
+
+You can define a decorator ``static SG::AuxElement::Decorator<char> dec_baseline("baseline");`` which then can be used like ``dec_baseline(input) = isbaseline;`` and then in your code you can replace::
+
+    input.auxdecor<char>("baseline");
+
+by::
+
+    dec_baseline(input);
+
+These are the relevant lines of code inside SUSYObjDef \_xAOD:
+
+-  https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/Root/SUSYObjDef\_xAOD.cxx#L17
+-  https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/Root/SUSYObjDef\_xAOD.cxx#L595
+
+In SUSYToolsTester there is also an example of an AuxElement::Accessor like this::
+
+    static SG::AuxElement::Accessor<int> acc_truthType("truthType");
+    if (acc_truthType.isAvailable(*trackParticle)  ) muonTruthType = acc_truthType(*trackParticle);
+
+in:
+
+-  https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/util/SUSYToolsTester.cxx#L428
+
+Note that the difference between accessors and decorators is that accessors are for auxdata branches in general but will not let you modify a const object, whereas Decorators permit adding information to const collections.
+
+TString versus std::string
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+I've noticed that TString slows us down a little bit, so try to use std::string where possible. Code changes and equivalencies look like::
+
+    m_inContainerName.IsNull()
+    m_inContainerName.empty()
+
+    m_event->retrieve(jets, m_inContainerName.Data());
+    m_event->retrieve(jets, m_inContainerName);
+
+    Info("%s", m_inContainerName.Data());
+    Info("%s", m_inContainerName.c_str());
+
