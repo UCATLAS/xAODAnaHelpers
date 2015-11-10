@@ -149,9 +149,11 @@ namespace HelperClasses{
     if( m_allTrackDetail ) {
       m_allTrackPVSel = m_allTrackPVSel || parse("allTrackDetailPVSel") ;
     }
-    m_constituent   = parse("constituent");
-    m_constituentAll= parse("constituentAll");
-    m_flavTag       = parse("flavorTag");
+    m_constituent       = parse("constituent");
+    m_constituentAll    = parse("constituentAll");
+    m_flavTag           = parse("flavorTag");
+    m_flavTagHLT        = parse("flavorTagHLT");
+    m_jetFitterDetails  = parse("jetFitterDetails");
     m_sfFTagFix.clear();
     if( parse( "sfFTagFix" ) ) {
       std::string input(m_configStr);
