@@ -62,10 +62,10 @@ namespace HelperClasses {
         std::stringstream ss(m_configStr);
         std::istream_iterator<std::string> begin(ss);
         std::istream_iterator<std::string> end;
-        m_configDetails = std::vector<std::string>(begin, end)
+        m_configDetails = std::set<std::string>(begin, end)
         std::copy(m_configDetails.begin(), m_configDetails.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
     };
-    bool parse(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end() };
+    bool parse(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end(); };
   };
 
   struct EventInfoSwitch : InfoSwitch {
