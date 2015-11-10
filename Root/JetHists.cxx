@@ -2,7 +2,6 @@
 #include <sstream>
 
 #include "xAODAnaHelpers/tools/ReturnCheck.h"
-#include "xAODBTagging/BTaggingEnums.h"
 
 
 JetHists :: JetHists (std::string name, std::string detailStr) :
