@@ -214,7 +214,7 @@ StatusCode JetHists::initialize() {
 
   }
 
-  if( m_infoSwitch->m_flavTag || m_infoSwitch->m_HLTBTag ) {
+  if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
     if(m_debug) Info("JetHists::initialize()", "adding btagging plots");
 
     m_MV2c00          = book(m_name, "MV2c00", "MV2c00" ,   100,    -1.1,   1.1);
@@ -657,12 +657,12 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
   //
   // BTagging
   //
-  if( m_infoSwitch->m_flavTag || m_infoSwitch->m_HLTBTag ) {
+  if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
 
     const xAOD::BTagging *btag_info(0);
     if(m_infoSwitch->m_flavTag){
       btag_info = jet->btagging();
-    }else if(m_infoSwitch->m_HLTBTag){
+    }else if(m_infoSwitch->m_flavTagHLT){
       btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
       
@@ -700,7 +700,6 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
 	m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
 	m_SV1_plus_IP3D ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
 	
-	std::cout << "JetInfo: " << std::endl; ;
 	if(jf_nVTXAcc.isAvailable       (*btag_info)) m_jf_nVTXAcc        ->Fill(jf_nVTXAcc       (*btag_info), eventWeight);
 	if(jf_nSingleTracks.isAvailable (*btag_info)) m_jf_nSingleTracks  ->Fill(jf_nSingleTracks (*btag_info), eventWeight);
 	if(jf_nTracksAtVtx.isAvailable  (*btag_info)) m_jf_nTracksAtVtx   ->Fill(jf_nTracksAtVtx  (*btag_info), eventWeight);
@@ -713,13 +712,6 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
 	if(jf_pb.isAvailable            (*btag_info)) m_jf_pb             ->Fill(jf_pb            (*btag_info), eventWeight); 
 	if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight); 
 	
-	//<< " JetFitter_chi2() " << btag_info->tagInfo(JetFitter_chi2() 
-		//<< " JetFitter_deltaeta() " << btag_info->JetFitter_deltaeta() 
-		//<< " JetFitter_deltaphi() " << btag_info->JetFitter_deltaphi() 
-		//<< " JetFitter_energyFraction() " << btag_info->JetFitter_energyFraction() 
-		//<< " JetFitter_mass() " << btag_info->JetFitter_mass() 
-		//<< " JetFitter_ndof() " << btag_info->JetFitter_ndof() 
-	std::cout << std::endl;
       }
 
 

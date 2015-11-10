@@ -152,7 +152,7 @@ namespace HelperClasses{
     m_constituent       = parse("constituent");
     m_constituentAll    = parse("constituentAll");
     m_flavTag           = parse("flavorTag");
-    m_HLTBTag           = parse("HLTBTag");
+    m_flavTagHLT        = parse("flavorTagHLT");
     m_jetFitterDetails  = parse("jetFitterDetails");
     m_sfFTagFix.clear();
     if( parse( "sfFTagFix" ) ) {
