@@ -85,11 +85,6 @@ namespace HelperClasses{
    *  turn a set on
    *
    **************************************/
-  bool InfoSwitch::parse(const std::string flag)
-  {
-    return m_configStr.find(flag) != std::string::npos; // not equal to npos means it is found
-  }
-
   void EventInfoSwitch::initialize(){
     m_pileup        = parse("pileup");
     m_shapeEM       = parse("shapeEM");
@@ -99,13 +94,13 @@ namespace HelperClasses{
     m_muonSF        = parse("muonSF");
     m_electronSF    = parse("electronSF");
   }
-  
+
   void TriggerInfoSwitch::initialize(){
     m_basic             = parse("basic");
     m_menuKeys          = parse("menuKeys");
     m_passTriggers      = parse("passTriggers");
   }
-  
+
   void JetTriggerInfoSwitch::initialize(){
     m_kinematic     = parse("kinematic");
     m_clean         = parse("clean");
@@ -151,14 +146,14 @@ namespace HelperClasses{
     m_allTrack      = parse("allTrack");
     m_allTrackPVSel = parse("allTrackPVSel");
     m_allTrackDetail= parse("allTrackDetail");
-    if( m_allTrackDetail ) { 
+    if( m_allTrackDetail ) {
       m_allTrackPVSel = m_allTrackPVSel || parse("allTrackDetailPVSel") ;
     }
     m_constituent   = parse("constituent");
     m_constituentAll= parse("constituentAll");
     m_flavTag       = parse("flavorTag");
     m_sfFTagFix.clear();
-    if( parse( "sfFTagFix" ) ) { 
+    if( parse( "sfFTagFix" ) ) {
       std::string input(m_configStr);
       // erase everything before the interesting string
       input.erase( 0, input.find("sfFTagFix") );
@@ -181,7 +176,7 @@ namespace HelperClasses{
       }
     } // sfFTagFix
     m_sfFTagFlt.clear();
-    if( parse( "sfFTagFlt" ) ) { 
+    if( parse( "sfFTagFlt" ) ) {
       std::string input(m_configStr);
       // erase everything before the interesting string
       input.erase( 0, input.find("sfFTagFlt") );

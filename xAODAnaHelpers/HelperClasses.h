@@ -57,8 +57,15 @@ namespace HelperClasses {
 
   struct InfoSwitch {
     const std::string m_configStr;
-    InfoSwitch(const std::string configStr) : m_configStr(configStr) { };
-    bool parse(const std::string flag);
+    std::set<std::string> m_configDetails;
+    InfoSwitch(const std::string configStr) : m_configStr(configStr) {
+        std::stringstream ss(m_configStr);
+        std::istream_iterator<std::string> begin(ss);
+        std::istream_iterator<std::string> end;
+        m_configDetails = std::vector<std::string>(begin, end)
+        std::copy(m_configDetails.begin(), m_configDetails.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+    };
+    bool parse(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end() };
   };
 
   struct EventInfoSwitch : InfoSwitch {
@@ -80,7 +87,7 @@ namespace HelperClasses {
     void initialize();
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
-  
+
   struct JetTriggerInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_clean;
