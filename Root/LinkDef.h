@@ -17,7 +17,6 @@
 #include <xAODAnaHelpers/JetCalibrator.h>
 #include <xAODAnaHelpers/MuonCalibrator.h>
 /*#include <xAODAnaHelpers/GroomedFatJets.h>*/
-#include <xAODAnaHelpers/HLTJetRoIBuilder.h>
 
 /* Missing Energy Reconstruction */
 #include <xAODAnaHelpers/METConstructor.h>
@@ -61,7 +60,6 @@
 #pragma link C++ class ElectronCalibrator+;
 #pragma link C++ class PhotonCalibrator+;
 #pragma link C++ class JetCalibrator+;
-#pragma link C++ class HLTJetRoIBuilder+;
 #pragma link C++ class MuonCalibrator+;
 /*#pragma link C++ class GroomedFatJets+;*/
 

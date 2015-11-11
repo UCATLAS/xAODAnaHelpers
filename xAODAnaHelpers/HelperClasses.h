@@ -144,8 +144,6 @@ namespace HelperClasses {
     bool m_constituent;
     bool m_constituentAll;
     bool m_flavTag;
-    bool m_flavTagHLT;
-    bool m_jetFitterDetails;
     bool m_area;
     int  m_numLeadingJets;
     void initialize();
