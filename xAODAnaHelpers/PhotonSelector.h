@@ -20,11 +20,11 @@ namespace Trig {
 class PhotonSelector : public xAH::Algorithm
 {
 public:
-  
-  bool m_useCutFlow;            
+
+  bool m_useCutFlow;
 
   /* configuration variables */
-  
+
   std::string    m_inContainerName;          /* input container name */
   std::string    m_outContainerName;         /* output container name */
   std::string    m_outAuxContainerName;      /* output auxiliary container name */
@@ -41,22 +41,22 @@ public:
   bool	     	 m_vetoCrack;		     /* require |eta| outside crack region */
   bool           m_doAuthorCut;
   bool           m_doOQCut;
-  
+
   /* photon PID */
   std::string    m_photonIdCut;              /* Name of ID variable to cut */
-  
+
   /* isolation */
   std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
   std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
 
   /* trigger matching */
-  
-  std::string    m_PhTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching. 
+
+  std::string    m_PhTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching.
   				      This is passed by the user as input in configuration
 				      If left empty (as it is by default), no trigger matching will be attempted at all */
-				   
+
 private:
-  
+
   int m_numEvent;           //!
   int m_numObject;          //!
   int m_numEventPass;       //!
@@ -64,13 +64,13 @@ private:
   int m_numObjectPass;      //!
 
   /* event-level cutflow */
-  
+
   TH1D* m_cutflowHist;      //!
   TH1D* m_cutflowHistW;     //!
   int   m_cutflow_bin;      //!
-  
+
   /* object-level cutflow */
-  
+
   TH1D* m_ph_cutflowHist_1;            //!
 
   int   m_ph_cutflow_all;              //!
@@ -97,13 +97,13 @@ private:
 public:
 
   /* this is a standard constructor */
-  
+
   PhotonSelector ();
 
   ~PhotonSelector();
 
   /* these are the functions inherited from Algorithm */
-  
+
   virtual EL::StatusCode setupJob (EL::Job& job);
   virtual EL::StatusCode fileExecute ();
   virtual EL::StatusCode histInitialize ();
@@ -115,18 +115,20 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   /* these are the functions not inherited from Algorithm */
-  
+
   virtual EL::StatusCode configure ();
-  
-  /* added functions not from Algorithm */ 
+
+  /* added functions not from Algorithm */
 
   bool executeSelection( const xAOD::PhotonContainer* inPhotons, float mcEvtWeight, bool countPass,
 			  ConstDataVector<xAOD::PhotonContainer>* selectedPhotons );
   virtual bool passCuts( const xAOD::Photon* photon );
-  
-  
-  
+
+
+  /// @cond
   ClassDef(PhotonSelector, 1);
+  /// @endcond
+
 };
 
 

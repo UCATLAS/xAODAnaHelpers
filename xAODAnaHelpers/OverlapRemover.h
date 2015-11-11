@@ -24,10 +24,10 @@ class OverlapRemover : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  
+
   // configuration variables
-  
-  bool m_useCutFlow;            
+
+  bool m_useCutFlow;
 
   bool     m_decorateSelectedObjects;  // decorate selected objects? default passSel
   bool     m_createSelectedContainers; // fill using SG::VIEW_ELEMENTS to be light weight
@@ -93,7 +93,7 @@ private:
   };
 
   /* object-level cutflow */
-  
+
   TH1D* m_el_cutflowHist_1;    //!
   TH1D* m_mu_cutflowHist_1;    //!
   TH1D* m_jet_cutflowHist_1;   //!
@@ -103,7 +103,7 @@ private:
   int m_mu_cutflow_OR_cut;     //!
   int m_jet_cutflow_OR_cut;    //!
   int m_ph_cutflow_OR_cut;    //!
-  
+
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -135,8 +135,10 @@ public:
 				    const xAOD::PhotonContainer* inPhotons,	const xAOD::TauJetContainer* inTaus,
 				    SystType syst_type = NOMINAL, std::vector<std::string>* sysVec = nullptr);
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(OverlapRemover, 1);
+  /// @endcond
 };
 
 #endif

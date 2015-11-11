@@ -1,0 +1,30 @@
+id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
+# cross-sections are in pb
+
+################################################################################################################
+#  Quantum BlackHole signal samples n=6
+303456   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth04500   10.29  1.   1.0  1.
+303457   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth05000   3.729  1.   1.0  1.
+303458   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth05500   1.344  1.   1.0  1.
+303459   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth06000   0.4758  1.   1.0  1.
+303460   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth06500   0.1635  1.   1.0  1.
+303461   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth07000   0.05386  1.   1.0  1.
+303462   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth07500   0.01678  1.   1.0  1.
+303463   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth08000   0.004872  1.   1.0  1.
+303464   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth08500   0.001292  1.   1.0  1.
+303465   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth09000   0.0003054  1.   1.0  1.
+303466   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth09500   6.222e-05  1.   1.0  1.
+303467   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n6_Mth10000   1.04e-05  1.   1.0  1.
+
+
+################################################################################################################
+#  Quantum BlackHole signal samples n=1
+303501   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth04500   0.03882  1.   1.0  1.
+303502   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth05000   0.01347  1.   1.0  1.
+303503   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth05500   0.004651  1.   1.0  1.
+303504   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth06000   0.001577  1.   1.0  1.
+303505   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth06500   0.000519  1.   1.0  1.
+303506   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth07000   0.0001636  1.   1.0  1.
+303507   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth07500   4.868e-05  1.   1.0  1.
+303508   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth08000   1.346e-05  1.   1.0  1.
+303509   QBHPythia8EvtGen_A14CTEQ6L1_QBH_jetjet_n1_Mth08500   3.386e-06  1.   1.0  1.

@@ -1,0 +1,13 @@
+id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
+# cross-sections are in pb
+
+################################################################################################################
+# ttbar
+303722   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad_mtt_1   696.25  1.   0.0039582  1.
+303723   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad_mtt_2   696.24  1.   0.0016341  1.
+303724   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad_mtt_3   696.22  1.   0.00072348  1.
+303725   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad_mtt_4   696.24  1.   0.00043823  1.
+303726   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad_mtt_5   696.24  1.   0.00025914  1.
+
+410007   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad   696.21  1.   0.45618  1.
+

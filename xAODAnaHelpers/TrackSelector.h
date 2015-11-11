@@ -87,8 +87,10 @@ public:
   // why does this need to be virtual?
   virtual int PassCuts( const xAOD::TrackParticle* jet, const xAOD::Vertex *pvx );
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(TrackSelector, 1);
+  /// @endcond
 };
 
 #endif

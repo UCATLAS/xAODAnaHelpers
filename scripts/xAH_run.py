@@ -12,6 +12,7 @@
 #
 
 from __future__ import print_function
+#TODO: move into __main__
 import logging
 
 root_logger = logging.getLogger()
@@ -25,149 +26,151 @@ import sys
 import datetime
 import time
 
-
-SCRIPT_START_TIME = datetime.datetime.now()
-
 # think about using argcomplete
 # https://argcomplete.readthedocs.org/en/latest/#activating-global-completion%20argcomplete
 
-if __name__ == "__main__":
-  # if we want multiple custom formatters, use inheriting
-  class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
-    pass
+# if we want multiple custom formatters, use inheriting
+class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
+  pass
 
-  class _HelpAction(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-      if not values:
-        parser.print_help()
+class _HelpAction(argparse.Action):
+  def __call__(self, parser, namespace, values, option_string=None):
+    if not values:
+      parser.print_help()
+    else:
+      available_groups = [group.title for group in parser._action_groups]
+      if values in available_groups:
+        action_group = parser._action_groups[available_groups.index(values)]
+        formatter = parser._get_formatter()
+        formatter.start_section(action_group.title)
+        formatter.add_text(action_group.description)
+        formatter.add_arguments(action_group._group_actions)
+        formatter.end_section()
+        parser._print_message(formatter.format_help())
       else:
-        available_groups = [group.title for group in parser._action_groups]
-        if values in available_groups:
-          action_group = parser._action_groups[available_groups.index(values)]
-          formatter = parser._get_formatter()
-          formatter.start_section(action_group.title)
-          formatter.add_text(action_group.description)
-          formatter.add_arguments(action_group._group_actions)
-          formatter.end_section()
-          parser._print_message(formatter.format_help())
-        else:
-          print("That is not a valid subsection. Chose from {{{0:s}}}".format(','.join(available_groups)))
-      parser.exit()
+        print("That is not a valid subsection. Chose from {{{0:s}}}".format(','.join(available_groups)))
+    parser.exit()
 
-  __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
-  __short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
+__version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
+__short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
 
-  baseUsageStr = "%(prog)s --files ... file [file ...] --config path/to/file.json [options]"
-  parser = argparse.ArgumentParser(add_help=False, description='Spin up an analysis instantly!',
-                                   usage='{0} {{driver}} [driver options]'.format(baseUsageStr),
+baseUsageStr = """xAH_run.py --files ... file [file ...]
+                  --config path/to/file.json
+                  [options]
+                  {0:s} [{0:s} options]
+"""
+parser = argparse.ArgumentParser(add_help=False, description='Spin up an analysis instantly!',
+                                 usage=baseUsageStr.format('driver'),
+                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+
+# there are really no positional arguments in the automatic group
+parser_requiredNamed = parser.add_argument_group('required named arguments')
+
+# add custom help
+parser.add_argument('-h', '--help', metavar='subsection', nargs='?', action=_HelpAction, help='show this help message and exit. You can also pass in the name of a subsection.')
+
+# http://stackoverflow.com/a/16981688
+parser._positionals.title = "required"
+parser._optionals.title = "optional"
+
+# positional argument, require the first argument to be the input filename
+parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='file', type=str, nargs='+', required=True, help='input file(s) to read. This gives all the input files for the script to use. Depending on the other options specified, these could be DQ2 sample names, local paths, or text files containing a list of filenames/paths.')
+parser_requiredNamed.add_argument('--config', metavar='', type=str, required=True, help='configuration for the algorithms. This tells the script which algorithms to load, configure, run, and in which order. Without it, it becomes a headless chicken.')
+parser.add_argument('--submitDir', dest='submit_dir', metavar='<directory>', type=str, required=False, help='Output directory to store the output.', default='submitDir')
+parser.add_argument('--nevents', dest='num_events', metavar='<n>', type=int, help='Number of events to process for all datasets. (0 = no limit)', default=0)
+parser.add_argument('--skip', dest='skip_events', metavar='<n>', type=int, help='Number of events to skip at start for all datasets. (0 = no limit)', default=0)
+parser.add_argument('-f', '--force', dest='force_overwrite', action='store_true', help='Overwrite previous directory if it exists.')
+
+parser.add_argument('--version', action='version', version='xAH_run.py {version}'.format(version=__version__), help='{version}'.format(version=__version__))
+parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch}', choices=['class', 'branch'], default='class', help='run using class access mode or branch access mode')
+parser.add_argument( '--treeName', dest="treeName",     default="CollectionTree", help="Tree Name to run on")
+parser.add_argument( '--isMC',     action="store_true", dest="is_MC",    default=False, help="Running MC")
+parser.add_argument( '--isAFII',   action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
+
+
+parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of paths/filenames.')
+parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
+parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
+parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
+parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Can increase verbosity by adding more ``-vv``. Default: no verbosity')
+
+# first is the driver
+drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
+direct = drivers_parser.add_parser('direct',
+                                   help='Run your jobs locally.',
+                                   usage=baseUsageStr.format('direct'),
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
-  # there are really no positional arguments in the automatic group
-  parser_requiredNamed = parser.add_argument_group('required named arguments')
+prooflite = drivers_parser.add_parser('prooflite',
+                                      help='Run your jobs using ProofLite',
+                                      usage=baseUsageStr.format('prooflite'),
+                                      formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
-  # add custom help
-  parser.add_argument('-h', '--help', metavar='subsection', nargs='?', action=_HelpAction, help='show this help message and exit. You can also pass in the name of a subsection.')
+prun = drivers_parser.add_parser('prun',
+                                 help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.',
+                                 usage=baseUsageStr.format('prun'),
+                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
-  # http://stackoverflow.com/a/16981688
-  parser._positionals.title = "required"
-  parser._optionals.title = "optional"
+condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=baseUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=baseUsageStr.format('lsf'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
-  # positional argument, require the first argument to be the input filename
-  parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='file', type=str, nargs='+', required=True, help='input file(s) to read')
-  parser_requiredNamed.add_argument('--config', metavar='', type=str, required=True, help='configuration for the algorithms')
-  parser.add_argument('--submitDir', dest='submit_dir', metavar='<directory>', type=str, required=False, help='Output directory to store the output.', default='submitDir')
-  parser.add_argument('--nevents', dest='num_events', metavar='<n>', type=int, help='Number of events to process for all datasets.', default=0)
-  parser.add_argument('--skip', dest='skip_events', metavar='<n>', type=int, help='Number of events to skip at start.', default=0)
-  parser.add_argument('-f', '--force', dest='force_overwrite', action='store_true', help='Overwrite previous directory if it exists.')
+# standard options for other drivers
+#.add_argument('--optCacheLearnEntries', type=str, required=False, default=None)
+#.add_argument('--optCacheSize', type=str, required=False, default=None)
+#.add_argument('--optD3PDCacheMinByte', type=str, required=False, default=None)
+#.add_argument('--optD3PDCacheMinByteFraction', type=str, required=False, default=None)
+#.add_argument('--optD3PDCacheMinEvent', type=str, required=False, default=None)
+#.add_argument('--optD3PDCacheMinEventFraction', type=str, required=False, default=None)
+#.add_argument('--optD3PDPerfStats', type=str, required=False, default=None)
+#.add_argument('--optD3PDReadStats', type=str, required=False, default=None)
+#.add_argument('--optDisableMetrics', type=str, required=False, default=None)
+#.add_argument('--optEventsPerWorker', type=str, required=False, default=None)
+#.add_argument('--optFilesPerWorker', type=str, required=False, default=None)
+#.add_argument('--optMaxEvents', type=str, required=False, default=None)
+#.add_argument('--optPerfTree', type=str, required=False, default=None)
+#.add_argument('--optPrintPerFileStats', type=str, required=False, default=None)
+#.add_argument('--optRemoveSubmitDir', type=str, required=False, default=None)
+#.add_argument('--optResetShell', type=str, required=False, default=None)
+#.add_argument('--optSkipEvents', type=str, required=False, default=None)
+#.add_argument('--optSubmitFlags', type=str, required=False, default=None)
+#.add_argument('--optXAODPerfStats', type=str, required=False, default=None)
+#.add_argument('--optXAODReadStats', type=str, required=False, default=None)
+#.add_argument('--optXaodAccessMode', type=str, required=False, default=None)
+#.add_argument('--optXaodAccessMode_branch', type=str, required=False, default=None)
+#.add_argument('--optXaodAccessMode_class', type=str, required=False, default=None)
 
-  parser.add_argument('--version', action='version', version='%(prog)s {version}'.format(version=__version__))
-  parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch}', choices=['class', 'branch'], default='class', help='Run using branch access mode or class access mode. See kratsg/TheAccountant/wiki/Access-Mode for more information')
-  parser.add_argument( '--treeName', dest="treeName",     default="CollectionTree", help="Tree Name to run on")
-  parser.add_argument( '--isMC',     action="store_true", dest="is_MC",    default=False, help="Running MC")
-  parser.add_argument( '--isAFII',   action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
+# define arguments for prun driver
+prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
+prun.add_argument('--optGridDestSE',           metavar='', type=str, required=False, default="MWT2_UC_LOCALGROUPDISK")
+prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
+prun.add_argument('--optGridExpress',          metavar='', type=str, required=False, default=None)
+prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridMaxNFilesPerJob',  metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridMaxFileSize',      metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridMergeOutput',      metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridNFiles',           metavar='', type=float, required=False, default=None)
+prun.add_argument('--optGridNFilesPerJob',     metavar='', type=float, required=False, default=None)
+prun.add_argument('--optGridNGBPerJob',        metavar='', type=int, required=False, default=2)
+prun.add_argument('--optGridNJobs',            metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridNoSubmit',         metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
+prun.add_argument('--optGridUseChirpServer',   metavar='', type=int, required=False, default=None)
+prun.add_argument('--optSubmitFlags',          metavar='', type=str, required=False, default=None)
+prun.add_argument('--optTmpDir',               metavar='', type=str, required=False, default=None)
+prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
+prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
+prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
 
+# define arguments for condor driver
+condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true')
 
-  parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of files.')
-  parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
-  parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
-  parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
-  parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Default: no verbosity')
+# define arguments for lsf driver
+lsf.add_argument('--optLSFConf', metavar='', type=str, required=False, default='-q short')
 
-  driverUsageStr = '{0} {{0:s}} [{{0:s}} options]'.format(baseUsageStr)
-  # first is the driver
-  drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
-  direct = drivers_parser.add_parser('direct',
-                                     help='Run your jobs locally.',
-                                     usage=driverUsageStr.format('direct'),
-                                     formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-
-  prooflite = drivers_parser.add_parser('prooflite',
-                                        help='Run your jobs using ProofLite',
-                                        usage=driverUsageStr.format('prooflite'),
-                                        formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-
-  prun = drivers_parser.add_parser('prun',
-                                   help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.',
-                                   usage=driverUsageStr.format('prun'),
-                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-
-  condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=driverUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-  lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=driverUsageStr.format('lsf'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-
-  # standard options for other drivers
-  #.add_argument('--optCacheLearnEntries', type=str, required=False, default=None)
-  #.add_argument('--optCacheSize', type=str, required=False, default=None)
-  #.add_argument('--optD3PDCacheMinByte', type=str, required=False, default=None)
-  #.add_argument('--optD3PDCacheMinByteFraction', type=str, required=False, default=None)
-  #.add_argument('--optD3PDCacheMinEvent', type=str, required=False, default=None)
-  #.add_argument('--optD3PDCacheMinEventFraction', type=str, required=False, default=None)
-  #.add_argument('--optD3PDPerfStats', type=str, required=False, default=None)
-  #.add_argument('--optD3PDReadStats', type=str, required=False, default=None)
-  #.add_argument('--optDisableMetrics', type=str, required=False, default=None)
-  #.add_argument('--optEventsPerWorker', type=str, required=False, default=None)
-  #.add_argument('--optFilesPerWorker', type=str, required=False, default=None)
-  #.add_argument('--optMaxEvents', type=str, required=False, default=None)
-  #.add_argument('--optPerfTree', type=str, required=False, default=None)
-  #.add_argument('--optPrintPerFileStats', type=str, required=False, default=None)
-  #.add_argument('--optRemoveSubmitDir', type=str, required=False, default=None)
-  #.add_argument('--optResetShell', type=str, required=False, default=None)
-  #.add_argument('--optSkipEvents', type=str, required=False, default=None)
-  #.add_argument('--optSubmitFlags', type=str, required=False, default=None)
-  #.add_argument('--optXAODPerfStats', type=str, required=False, default=None)
-  #.add_argument('--optXAODReadStats', type=str, required=False, default=None)
-  #.add_argument('--optXaodAccessMode', type=str, required=False, default=None)
-  #.add_argument('--optXaodAccessMode_branch', type=str, required=False, default=None)
-  #.add_argument('--optXaodAccessMode_class', type=str, required=False, default=None)
-
-  # define arguments for prun driver
-  prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
-  prun.add_argument('--optGridDestSE',           metavar='', type=str, required=False, default="MWT2_UC_LOCALGROUPDISK")
-  prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
-  prun.add_argument('--optGridExpress',          metavar='', type=str, required=False, default=None)
-  prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridMaxNFilesPerJob',  metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridMaxFileSize',      metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridMergeOutput',      metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridNFiles',           metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridNFilesPerJob',     metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridNGBPerJob',        metavar='', type=int, required=False, default=2)
-  prun.add_argument('--optGridNJobs',            metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridNoSubmit',         metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
-  prun.add_argument('--optGridUseChirpServer',   metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optSubmitFlags',          metavar='', type=str, required=False, default=None)
-  prun.add_argument('--optTmpDir',               metavar='', type=str, required=False, default=None)
-  prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
-  prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
-  prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=False, default=None)
-  prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
-
-  # define arguments for condor driver
-  condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true')
-
-  # define arguments for lsf driver
-  lsf.add_argument('--optLSFConf', metavar='', type=str, required=False, default='-q short')
+if __name__ == "__main__":
+  SCRIPT_START_TIME = datetime.datetime.now()
 
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()

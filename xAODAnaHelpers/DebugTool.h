@@ -12,7 +12,7 @@ class DebugTool : public xAH::Algorithm
 public:
 
   // configuration variables
-  
+
   bool m_printStore;                   // check JVF
 
 public:
@@ -31,8 +31,10 @@ public:
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(DebugTool, 1);
+  /// @endcond
 };
 
 #endif

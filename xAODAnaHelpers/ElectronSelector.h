@@ -32,14 +32,14 @@ class ElectronSelector : public xAH::Algorithm
   variables that don't get filled at submission time should be
   protected from being send from the submission node to the worker
   node (done by the //!)
-  */  
-  
+  */
+
 public:
-  
-  bool m_useCutFlow;            
+
+  bool m_useCutFlow;
 
   /* configuration variables */
-  
+
   std::string    m_inContainerName;          /* input container name */
   std::string    m_outContainerName;         /* output container name */
   std::string    m_outAuxContainerName;      /* output auxiliary container name */
@@ -59,24 +59,24 @@ public:
   float	     	 m_z0sintheta_max;	     /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
   bool           m_doAuthorCut;
   bool           m_doOQCut;
-  
+
   /* electron PID */
-  
+
   bool           m_readIDFlagsFromDerivation;
   std::string    m_confDirPID;
-  
+
   /* likelihood-based  */
   bool           m_doLHPIDcut;
   std::string    m_LHConfigYear;
   std::string    m_LHOperatingPoint;
-  
+
   /* cut-based */
   bool           m_doCutBasedPIDcut;
   std::string    m_CutBasedConfigYear;
   std::string    m_CutBasedOperatingPoint;
-  
+
   /* isolation */
-  
+
   std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
   std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
   std::string    m_CaloIsoEff;               /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
@@ -85,13 +85,13 @@ public:
   std::string    m_TrackBasedIsoType;        /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
 
   /* trigger matching */
-  
-  std::string    m_ElTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching. 
+
+  std::string    m_ElTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching.
   				      This is passed by the user as input in configuration
 				      If left empty (as it is by default), no trigger matching will be attempted at all */
-				   
+
 private:
-  
+
   int m_numEvent;           //!
   int m_numObject;          //!
   int m_numEventPass;       //!
@@ -99,35 +99,35 @@ private:
   int m_numObjectPass;      //!
 
   /* event-level cutflow */
-  
+
   TH1D* m_cutflowHist;      //!
   TH1D* m_cutflowHistW;     //!
   int   m_cutflow_bin;      //!
-  
+
   bool  m_isUsedBefore;     //!
-  
+
   /* object-level cutflow */
-  
+
   TH1D* m_el_cutflowHist_1;            //!
   TH1D* m_el_cutflowHist_2;            //!
-  
-  int   m_el_cutflow_all;              //! 
+
+  int   m_el_cutflow_all;              //!
   int   m_el_cutflow_author_cut;       //!
   int   m_el_cutflow_OQ_cut;           //!
   int   m_el_cutflow_ptmax_cut;        //!
-  int   m_el_cutflow_ptmin_cut;        //!	     
-  int   m_el_cutflow_eta_cut;          //!       
-  int   m_el_cutflow_PID_cut;          //!       
+  int   m_el_cutflow_ptmin_cut;        //!
+  int   m_el_cutflow_eta_cut;          //!
+  int   m_el_cutflow_PID_cut;          //!
   int   m_el_cutflow_z0sintheta_cut;   //!
-  int   m_el_cutflow_d0_cut;           //!     
-  int   m_el_cutflow_d0sig_cut;        //!     
-  int   m_el_cutflow_iso_cut;          //!       
+  int   m_el_cutflow_d0_cut;           //!
+  int   m_el_cutflow_d0sig_cut;        //!
+  int   m_el_cutflow_iso_cut;          //!
 
   std::vector<std::string> m_IsoKeys;  //!
 
   /* tools */
 
-  CP::IsolationSelectionTool*      m_IsolationSelectionTool; //! 
+  CP::IsolationSelectionTool*      m_IsolationSelectionTool; //!
 
   /* PID manager(s) */
   ElectronLHPIDManager*            m_el_LH_PIDManager;       //!
@@ -143,13 +143,13 @@ private:
 public:
 
   /* this is a standard constructor */
-  
+
   ElectronSelector ();
 
   ~ElectronSelector();
 
   /* these are the functions inherited from Algorithm */
-  
+
   virtual EL::StatusCode setupJob (EL::Job& job);
   virtual EL::StatusCode fileExecute ();
   virtual EL::StatusCode histInitialize ();
@@ -161,18 +161,19 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   /* these are the functions not inherited from Algorithm */
-  
+
   virtual EL::StatusCode configure ();
 
-  /* added functions not from Algorithm */ 
-  
+  /* added functions not from Algorithm */
+
   bool executeSelection( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
                          ConstDataVector<xAOD::ElectronContainer>* selectedElectrons );
   virtual int passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex );
-  
+
+  /// @cond
   /* this is needed to distribute the algorithm to the workers */
-  
   ClassDef(ElectronSelector, 1);
+  /// @endcond
 };
 
 #endif
