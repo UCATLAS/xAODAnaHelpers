@@ -10,6 +10,7 @@ Selecting Objects
    JetSelector
    MuonSelector
    PhotonSelector
+   TauSelector
    TrackSelector
    TruthSelector
 

@@ -5,6 +5,7 @@
 #include <xAODAnaHelpers/BasicEventSelection.h>
 #include <xAODAnaHelpers/ElectronSelector.h>
 #include <xAODAnaHelpers/PhotonSelector.h>
+#include <xAODAnaHelpers/TauSelector.h>
 #include <xAODAnaHelpers/JetSelector.h>
 #include <xAODAnaHelpers/DebugTool.h>
 #include <xAODAnaHelpers/TruthSelector.h>
@@ -34,7 +35,6 @@
 /* Tree */
 #include <xAODAnaHelpers/TreeAlgo.h>
 
-
 /* Other */
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/Writer.h>
@@ -52,6 +52,7 @@
 #pragma link C++ class BasicEventSelection+;
 #pragma link C++ class ElectronSelector+;
 #pragma link C++ class PhotonSelector+;
+#pragma link C++ class TauSelector+;
 #pragma link C++ class JetSelector+;
 #pragma link C++ class DebugTool+;
 #pragma link C++ class TruthSelector+;
