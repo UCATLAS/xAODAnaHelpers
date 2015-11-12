@@ -501,6 +501,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cutflowHistW->GetXaxis()->FindBin("LAr");
     m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
     m_cutflowHistW->GetXaxis()->FindBin("tile");
+    m_cutflow_SCT = m_cutflowHist->GetXaxis()->FindBin("SCT");
+    m_cutflowHistW->GetXaxis()->FindBin("SCT");
     m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
     m_cutflowHistW->GetXaxis()->FindBin("core");
   }
@@ -637,7 +639,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
     std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
     if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
-      if ( true ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
+      if ( m_debug ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS; // go to next event
     }
@@ -760,6 +762,12 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHist ->Fill( m_cutflow_tile, 1 );
     m_cutflowHistW->Fill( m_cutflow_tile, mcEvtWeight);
 
+    if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::SCT)==xAOD::EventInfo::Error) ) {
+      wk()->skipEvent();
+      return EL::StatusCode::SUCCESS;
+    }
+    m_cutflowHist ->Fill( m_cutflow_SCT, 1 );
+    m_cutflowHistW->Fill( m_cutflow_SCT, mcEvtWeight);
 
     if ( m_applyCoreFlagsCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
       wk()->skipEvent();
