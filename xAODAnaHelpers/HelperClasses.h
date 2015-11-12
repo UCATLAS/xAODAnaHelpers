@@ -65,7 +65,9 @@ namespace HelperClasses {
         while ( std::getline(ss, token, ' ') )
             m_configDetails.insert(token);
     };
-    bool parse(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end(); };
+    bool parse(const std::string flag) { std::cout << "InfoSwitch::parse() deprecated soon!" << std::endl; return has_match(flag); }
+    bool has_exact(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end(); };
+    bool has_match(const std::string flag) { return m_configStr.find(flag) != std::string::npos; };
   };
 
   struct EventInfoSwitch : InfoSwitch {
