@@ -272,6 +272,8 @@ StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight,
 
 StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvLoc*/ ) {
 
+  if(m_debug) std::cout << "in execute " <<std::endl;
+
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
   m_jetEta->        Fill( jet->eta(),       eventWeight );
@@ -665,7 +667,6 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
       
-    
     double MV2c00 = -99;
     double MV2c10 = -99;
     double MV2c20 = -99;
@@ -676,8 +677,16 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
     m_MV2c10 ->  Fill( MV2c10, eventWeight );
     m_MV2c20 ->  Fill( MV2c20, eventWeight );
 
-    m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
-    m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
+    static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
+    if ( SV0_significance3DAcc.isAvailable(*btag_info) ) {
+      m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );
+      m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );
+      m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
+      m_SV1_plus_IP3D ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
+      m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
+      m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
+    }
+      
     if(m_infoSwitch->m_jetFitterDetails){
       static SG::AuxElement::ConstAccessor< int   > jf_nVTXAcc       ("JetFitter_nVTX");
       static SG::AuxElement::ConstAccessor< int   > jf_nSingleTracks ("JetFitter_nSingleTracks");
@@ -692,13 +701,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       static SG::AuxElement::ConstAccessor< double > jf_pc           ("JetFitter_pc");    
       static SG::AuxElement::ConstAccessor< double > jf_pu           ("JetFitter_pu");    
     
-      static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
-      if ( SV0_significance3DAcc.isAvailable(*btag_info) ) {
-	m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );
-	m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );
-	m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
-	m_SV1_plus_IP3D ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
-	
+      if ( jf_pu.isAvailable(*btag_info) ) {
 	if(jf_nVTXAcc.isAvailable       (*btag_info)) m_jf_nVTXAcc        ->Fill(jf_nVTXAcc       (*btag_info), eventWeight);
 	if(jf_nSingleTracks.isAvailable (*btag_info)) m_jf_nSingleTracks  ->Fill(jf_nSingleTracks (*btag_info), eventWeight);
 	if(jf_nTracksAtVtx.isAvailable  (*btag_info)) m_jf_nTracksAtVtx   ->Fill(jf_nTracksAtVtx  (*btag_info), eventWeight);
