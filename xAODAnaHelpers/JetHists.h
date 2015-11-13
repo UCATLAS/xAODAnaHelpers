@@ -141,6 +141,20 @@ class JetHists : public HistogramManager
     TH1F* m_JetFitter       ; //!
     TH1F* m_JetFitterCombNN ; //!
 
+    TH1F* m_jf_nVTXAcc        ; //!
+    TH1F* m_jf_nSingleTracks  ; //!
+    TH1F* m_jf_nTracksAtVtx   ; //!
+    TH1F* m_jf_mass           ; //!
+    TH1F* m_jf_energyFraction ; //!
+    TH1F* m_jf_significance3d ; //!
+    TH1F* m_jf_deltaeta       ; //!  
+    TH1F* m_jf_deltaphi       ; //!  
+    TH1F* m_jf_N2Tpar         ; //!
+    TH1F* m_jf_pb             ; //!
+    TH1F* m_jf_pc             ; //!
+    TH1F* m_jf_pu             ; //!
+
+
 
 
 };

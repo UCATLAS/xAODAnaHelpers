@@ -1,3 +1,12 @@
+/********************************************************
+ * JetCalibrator:
+ *
+ * This class handles jet calibration and systematics
+ *
+ * Jeff Dandoy (jeff.dandoy@cern.ch)
+ *
+ ********************************************************/
+
 #ifndef xAODAnaHelpers_JetCalibrator_H
 #define xAODAnaHelpers_JetCalibrator_H
 
@@ -109,8 +118,11 @@ public:
   virtual EL::StatusCode configure ();
 
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetCalibrator, 1);
+  /// @endcond
+
 };
 
 #endif

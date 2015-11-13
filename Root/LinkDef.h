@@ -4,15 +4,20 @@
 /* Event and Jet Selectors */
 #include <xAODAnaHelpers/BasicEventSelection.h>
 #include <xAODAnaHelpers/ElectronSelector.h>
+#include <xAODAnaHelpers/PhotonSelector.h>
 #include <xAODAnaHelpers/JetSelector.h>
+#include <xAODAnaHelpers/DebugTool.h>
+#include <xAODAnaHelpers/TruthSelector.h>
 #include <xAODAnaHelpers/TrackSelector.h>
 #include <xAODAnaHelpers/MuonSelector.h>
 
 /* Calibrations */
 #include <xAODAnaHelpers/ElectronCalibrator.h>
+#include <xAODAnaHelpers/PhotonCalibrator.h>
 #include <xAODAnaHelpers/JetCalibrator.h>
 #include <xAODAnaHelpers/MuonCalibrator.h>
 /*#include <xAODAnaHelpers/GroomedFatJets.h>*/
+#include <xAODAnaHelpers/HLTJetRoIBuilder.h>
 
 /* Missing Energy Reconstruction */
 #include <xAODAnaHelpers/METConstructor.h>
@@ -46,12 +51,17 @@
 
 #pragma link C++ class BasicEventSelection+;
 #pragma link C++ class ElectronSelector+;
+#pragma link C++ class PhotonSelector+;
 #pragma link C++ class JetSelector+;
+#pragma link C++ class DebugTool+;
+#pragma link C++ class TruthSelector+;
 #pragma link C++ class TrackSelector+;
 #pragma link C++ class MuonSelector+;
 
 #pragma link C++ class ElectronCalibrator+;
+#pragma link C++ class PhotonCalibrator+;
 #pragma link C++ class JetCalibrator+;
+#pragma link C++ class HLTJetRoIBuilder+;
 #pragma link C++ class MuonCalibrator+;
 /*#pragma link C++ class GroomedFatJets+;*/
 

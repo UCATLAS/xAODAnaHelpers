@@ -26,6 +26,7 @@ namespace HelperClasses {
   enum class ToolName {
       MUONSELECTOR,
       ELECTRONSELECTOR,
+      PHOTONSELECTOR,
       JETSELECTOR,
       BJETSELECTOR,
       OVERLAPREMOVER,
@@ -56,8 +57,17 @@ namespace HelperClasses {
 
   struct InfoSwitch {
     const std::string m_configStr;
-    InfoSwitch(const std::string configStr) : m_configStr(configStr) { };
-    bool parse(const std::string flag);
+    std::set<std::string> m_configDetails;
+    InfoSwitch(const std::string configStr) : m_configStr(configStr) {
+        // parse and split by space
+        std::string token;
+        std::istringstream ss(m_configStr);
+        while ( std::getline(ss, token, ' ') )
+            m_configDetails.insert(token);
+    };
+    bool parse(const std::string flag) { std::cout << "InfoSwitch::parse() deprecated soon!" << std::endl; return has_match(flag); };
+    bool has_exact(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end(); };
+    bool has_match(const std::string flag) { return m_configStr.find(flag) != std::string::npos; };
   };
 
   struct EventInfoSwitch : InfoSwitch {
@@ -79,7 +89,7 @@ namespace HelperClasses {
     void initialize();
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
-  
+
   struct JetTriggerInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_clean;
@@ -111,6 +121,12 @@ namespace HelperClasses {
     ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  struct PhotonInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    PhotonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
   struct JetInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_substructure;
@@ -130,6 +146,8 @@ namespace HelperClasses {
     bool m_constituent;
     bool m_constituentAll;
     bool m_flavTag;
+    bool m_flavTagHLT;
+    bool m_jetFitterDetails;
     bool m_area;
     int  m_numLeadingJets;
     void initialize();
@@ -137,6 +155,13 @@ namespace HelperClasses {
     std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
+
+  struct TruthInfoSwitch : InfoSwitch {
+    bool m_kinematic;
+    void initialize();
+    TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  };
+
 
   struct TauInfoSwitch : InfoSwitch {
     bool m_kinematic;
@@ -150,9 +175,11 @@ namespace HelperClasses {
     bool m_refEle;
     bool m_refGamma;
     bool m_refTau;
-    bool m_muons;
+    bool m_refMuons;
     bool m_refJet;
+    bool m_refJetTrk;
     bool m_softClus;
+    bool m_softTrk;
     void initialize();
     METInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };

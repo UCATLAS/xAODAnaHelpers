@@ -43,8 +43,11 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(TrackHistsAlgo, 1);
+  /// @endcond
+
 };
 
 #endif

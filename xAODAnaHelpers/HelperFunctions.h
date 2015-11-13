@@ -357,6 +357,16 @@ namespace HelperFunctions {
     return *sortedCont.asDataVector();
   }
 
+  /* return true if there's a least one non-empty string (i.e., syst name) in input list */
+  inline bool found_non_dummy_sys(std::vector<std::string>* sys_list) {
+    if ( sys_list ) {
+      for ( auto sys : *sys_list ) {
+	if ( !sys.empty() ) { return true; }
+      }
+    } 
+    return false;
+  }
+
 } // close namespace HelperFunctions
 
 # endif

@@ -37,15 +37,35 @@ StatusCode JetHists::initialize() {
   // N leading jets
   if( m_infoSwitch->m_numLeadingJets > 0 ){
     std::stringstream jetNum;
+    std::stringstream jetTitle;
     for(int iJet=0; iJet < m_infoSwitch->m_numLeadingJets; ++iJet){
       jetNum << iJet;
-      m_NjetsPt.push_back(       book(m_name, ("jetPt_jet"+jetNum.str()),       "jet p_{T} [GeV]", 120, 0, 3000.) );
-      m_NjetsEta.push_back(      book(m_name, ("jetEta_jet"+jetNum.str()),      "jet #eta",         80, -4, 4) );
-      m_NjetsPhi.push_back(      book(m_name, ("jetPhi_jet"+jetNum.str()),      "jet Phi",120, -TMath::Pi(), TMath::Pi() ) );
-      m_NjetsM.push_back(        book(m_name, ("jetMass_jet"+jetNum.str()),     "jet Mass [GeV]",120, 0, 400) );
-      m_NjetsE.push_back(        book(m_name, ("jetEnergy_jet"+jetNum.str()),   "jet Energy [GeV]",120, 0, 4000.) );
-      m_NjetsRapidity.push_back( book(m_name, ("jetRapidity_jet"+jetNum.str()), "jet Rapidity",120, -10, 10) );
+
+      jetTitle << iJet+1;
+      switch(iJet)
+	{
+	case 0:
+	  jetTitle << "^{st}";
+	  break;
+	case 1:
+	  jetTitle << "^{nd}";
+	  break;
+	case 2:
+	  jetTitle << "^{rd}";
+	  break;
+	default:
+	  jetTitle << "^{th}";
+	  break;
+	}
+
+      m_NjetsPt.push_back(       book(m_name, ("jetPt_jet"+jetNum.str()),       jetTitle.str()+" jet p_{T} [GeV]" ,120,            0,       3000. ) );
+      m_NjetsEta.push_back(      book(m_name, ("jetEta_jet"+jetNum.str()),      jetTitle.str()+" jet #eta"        , 80,           -4,           4 ) );
+      m_NjetsPhi.push_back(      book(m_name, ("jetPhi_jet"+jetNum.str()),      jetTitle.str()+" jet Phi"         ,120, -TMath::Pi(), TMath::Pi() ) );
+      m_NjetsM.push_back(        book(m_name, ("jetMass_jet"+jetNum.str()),     jetTitle.str()+" jet Mass [GeV]"  ,120,            0,         400 ) );
+      m_NjetsE.push_back(        book(m_name, ("jetEnergy_jet"+jetNum.str()),   jetTitle.str()+" jet Energy [GeV]",120,            0,       4000. ) );
+      m_NjetsRapidity.push_back( book(m_name, ("jetRapidity_jet"+jetNum.str()), jetTitle.str()+" jet Rapidity"    ,120,          -10,          10 ) );
       jetNum.str("");
+      jetTitle.str("");
     }//for iJet
   }
 
@@ -139,7 +159,7 @@ StatusCode JetHists::initialize() {
 
   }
 
-  m_chf         = book(m_name, "chfPV" ,    "PV(chf)" ,     120, 0, 600);
+  //m_chf         = book(m_name, "chfPV" ,    "PV(chf)" ,     120, 0, 600);
 
   // details for jet resolutions
   if( m_infoSwitch->m_resolution ) {
@@ -193,7 +213,7 @@ StatusCode JetHists::initialize() {
 
   }
 
-  if( m_infoSwitch->m_flavTag ) {
+  if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
     if(m_debug) Info("JetHists::initialize()", "adding btagging plots");
 
     m_MV2c00          = book(m_name, "MV2c00", "MV2c00" ,   100,    -1.1,   1.1);
@@ -208,6 +228,23 @@ StatusCode JetHists::initialize() {
     m_JetFitterCombNN = book(m_name, "JetFitterCombNN",   "JetFitterCombNN" ,     100,    -10,   10);
   }
 
+  if( m_infoSwitch->m_jetFitterDetails ) {
+    if(m_debug) Info("JetHists::initialize()", "adding JetFitter Detail plots");
+
+    m_jf_nVTXAcc        = book(m_name, "JetFitter_nVTX"          , "JetFitter_nVTX"          ,  10,  -0.5,   9.5 );
+    m_jf_nSingleTracks  = book(m_name, "JetFitter_nSingleTracks" , "JetFitter_nSingleTracks" ,  10,  -0.5,   9.5 );
+    m_jf_nTracksAtVtx   = book(m_name, "JetFitter_nTracksAtVtx"  , "JetFitter_nTracksAtVtx"  ,  20,  -0.5,  19.5 );
+    m_jf_mass           = book(m_name, "JetFitter_mass"          , "JetFitter_mass"          , 100,   0,     5 );
+    m_jf_energyFraction = book(m_name, "JetFitter_energyFraction", "JetFitter_energyFraction", 100,  -0.1,   1.1 );
+    m_jf_significance3d = book(m_name, "JetFitter_significance3d", "JetFitter_significance3d", 100,   0,    50 );
+    m_jf_deltaeta       = book(m_name, "JetFitter_deltaeta"      , "JetFitter_deltaeta"      , 100,  -0.2,   0.2);    
+    m_jf_deltaphi       = book(m_name, "JetFitter_deltaphi"      , "JetFitter_deltaphi"      , 100,  -0.2,   0.2);    
+    m_jf_N2Tpar         = book(m_name, "JetFitter_N2Tpair"       , "JetFitter_N2Tpair"       ,  20,  -0.5,  19.5);
+    m_jf_pb             = book(m_name, "JetFitter_pb"            , "JetFitter_pb"            , 100,  -0.1,   1);    
+    m_jf_pc             = book(m_name, "JetFitter_pc"            , "JetFitter_pc"            , 100,  -0.1,   1);    
+    m_jf_pu             = book(m_name, "JetFitter_pu"            , "JetFitter_pu"            , 100,  -0.1,   1);    
+
+  }
 
   return StatusCode::SUCCESS;
 }
@@ -234,6 +271,8 @@ StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight,
 }
 
 StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvLoc*/ ) {
+
+  if(m_debug) std::cout << "in execute " <<std::endl;
 
   //basic
   m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
@@ -619,10 +658,15 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
   //
   // BTagging
   //
-  if( m_infoSwitch->m_flavTag ) {
+  if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
 
-    const xAOD::BTagging *btag_info = jet->btagging();
-    
+    const xAOD::BTagging *btag_info(0);
+    if(m_infoSwitch->m_flavTag){
+      btag_info = jet->btagging();
+    }else if(m_infoSwitch->m_flavTagHLT){
+      btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
+    }
+      
     double MV2c00 = -99;
     double MV2c10 = -99;
     double MV2c20 = -99;
@@ -641,6 +685,37 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       m_SV1_plus_IP3D ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
       m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
       m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
+    }
+      
+    if(m_infoSwitch->m_jetFitterDetails){
+      static SG::AuxElement::ConstAccessor< int   > jf_nVTXAcc       ("JetFitter_nVTX");
+      static SG::AuxElement::ConstAccessor< int   > jf_nSingleTracks ("JetFitter_nSingleTracks");
+      static SG::AuxElement::ConstAccessor< int   > jf_nTracksAtVtx  ("JetFitter_nTracksAtVtx");
+      static SG::AuxElement::ConstAccessor< float > jf_mass          ("JetFitter_mass");
+      static SG::AuxElement::ConstAccessor< float > jf_energyFraction("JetFitter_energyFraction");
+      static SG::AuxElement::ConstAccessor< float > jf_significance3d("JetFitter_significance3d");
+      static SG::AuxElement::ConstAccessor< float > jf_deltaeta      ("JetFitter_deltaeta");    
+      static SG::AuxElement::ConstAccessor< float > jf_deltaphi      ("JetFitter_deltaphi");    
+      static SG::AuxElement::ConstAccessor< int   > jf_N2Tpar        ("JetFitter_N2Tpair");
+      static SG::AuxElement::ConstAccessor< double > jf_pb           ("JetFitter_pb");    
+      static SG::AuxElement::ConstAccessor< double > jf_pc           ("JetFitter_pc");    
+      static SG::AuxElement::ConstAccessor< double > jf_pu           ("JetFitter_pu");    
+    
+      if ( jf_pu.isAvailable(*btag_info) ) {
+	if(jf_nVTXAcc.isAvailable       (*btag_info)) m_jf_nVTXAcc        ->Fill(jf_nVTXAcc       (*btag_info), eventWeight);
+	if(jf_nSingleTracks.isAvailable (*btag_info)) m_jf_nSingleTracks  ->Fill(jf_nSingleTracks (*btag_info), eventWeight);
+	if(jf_nTracksAtVtx.isAvailable  (*btag_info)) m_jf_nTracksAtVtx   ->Fill(jf_nTracksAtVtx  (*btag_info), eventWeight);
+	if(jf_mass.isAvailable          (*btag_info)) m_jf_mass           ->Fill(jf_mass          (*btag_info)/1000, eventWeight); 
+	if(jf_energyFraction.isAvailable(*btag_info)) m_jf_energyFraction ->Fill(jf_energyFraction(*btag_info), eventWeight); 
+	if(jf_significance3d.isAvailable(*btag_info)) m_jf_significance3d ->Fill(jf_significance3d(*btag_info), eventWeight); 
+	if(jf_deltaeta.isAvailable      (*btag_info)) m_jf_deltaeta       ->Fill(jf_deltaeta      (*btag_info), eventWeight); 
+	if(jf_deltaphi.isAvailable      (*btag_info)) m_jf_deltaphi       ->Fill(jf_deltaphi      (*btag_info), eventWeight); 
+	if(jf_N2Tpar.isAvailable        (*btag_info)) m_jf_N2Tpar         ->Fill(jf_N2Tpar        (*btag_info), eventWeight);
+	if(jf_pb.isAvailable            (*btag_info)) m_jf_pb             ->Fill(jf_pb            (*btag_info), eventWeight); 
+	if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight); 
+      }
+
+
     }
     
     //m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }

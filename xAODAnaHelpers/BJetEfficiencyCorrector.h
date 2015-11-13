@@ -33,6 +33,7 @@ public:
   bool        m_useDevelopmentFile;
   bool        m_coneFlavourLabel;
 
+  std::string m_operatingPt;      // Operating point.
   std::string m_decor;            // The decoration key written to passing objects
   std::string m_decorSF;          // The decoration key written to passing objects
 
@@ -45,7 +46,6 @@ private:
   BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
 
   // configuration variables
-  std::string m_operatingPt;
   std::string m_operatingPtCDI; // the one CDI will understand
   bool m_getScaleFactors;
 
@@ -73,8 +73,10 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(BJetEfficiencyCorrector, 1);
+  /// @endcond
 
 };
 

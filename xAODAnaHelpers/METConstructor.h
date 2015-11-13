@@ -9,11 +9,11 @@
 #include "xAODRootAccess/TStore.h"
 
 
+
 using std::string; 
 
-namespace met{
-  class METMaker;
-}
+namespace met { class METMaker; }
+namespace TauAnalysisTools { class TauSelectionTool; }
 
 
 class METConstructor : public xAH::Algorithm
@@ -24,13 +24,6 @@ public:
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
-
-  bool m_debug;
-
-private:
-
-  // tools
-  met::METMaker* m_metmaker; //!
 
   // configuration variables
   TString m_referenceMETContainer;
@@ -48,6 +41,18 @@ private:
   bool    m_doTauCuts;
   bool    m_doMuonCuts;
 
+  bool    m_doMuonEloss;
+  bool    m_doIsolMuonEloss;
+  bool    m_doJVTCut;
+  
+  bool    m_useCaloJetTerm;
+  bool    m_useTrackJetTerm;
+
+private:
+
+  // tools
+  met::METMaker* m_metmaker; //!
+  TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

@@ -85,76 +85,77 @@ namespace HelperClasses{
    *  turn a set on
    *
    **************************************/
-  bool InfoSwitch::parse(const std::string flag)
-  {
-    return m_configStr.find(flag) != std::string::npos; // not equal to npos means it is found
+  void EventInfoSwitch::initialize(){
+    m_pileup        = has_exact("pileup");
+    m_shapeEM       = has_exact("shapeEM");
+    m_shapeLC       = has_exact("shapeLC");
+    m_truth         = has_exact("truth");
+    m_caloClus      = has_exact("caloClusters");
+    m_muonSF        = has_exact("muonSF");
+    m_electronSF    = has_exact("electronSF");
   }
 
-  void EventInfoSwitch::initialize(){
-    m_pileup        = parse("pileup");
-    m_shapeEM       = parse("shapeEM");
-    m_shapeLC       = parse("shapeLC");
-    m_truth         = parse("truth");
-    m_caloClus      = parse("caloClusters");
-    m_muonSF        = parse("muonSF");
-    m_electronSF    = parse("electronSF");
-  }
-  
   void TriggerInfoSwitch::initialize(){
-    m_basic             = parse("basic");
-    m_menuKeys          = parse("menuKeys");
-    m_passTriggers      = parse("passTriggers");
+    m_basic             = has_exact("basic");
+    m_menuKeys          = has_exact("menuKeys");
+    m_passTriggers      = has_exact("passTriggers");
   }
-  
+
   void JetTriggerInfoSwitch::initialize(){
-    m_kinematic     = parse("kinematic");
-    m_clean         = parse("clean");
+    m_kinematic     = has_exact("kinematic");
+    m_clean         = has_exact("clean");
   }
 
   void MuonInfoSwitch::initialize(){
-    m_kinematic     = parse("kinematic");
-    m_trigger       = parse("trigger");
-    m_isolation     = parse("isolation");
-    m_quality       = parse("quality");
-    m_trackparams   = parse("trackparams");
-    m_trackhitcont  = parse("trackhitcont");
-    m_effSF         = parse("effSF");
+    m_kinematic     = has_exact("kinematic");
+    m_trigger       = has_exact("trigger");
+    m_isolation     = has_exact("isolation");
+    m_quality       = has_exact("quality");
+    m_trackparams   = has_exact("trackparams");
+    m_trackhitcont  = has_exact("trackhitcont");
+    m_effSF         = has_exact("effSF");
   }
 
   void ElectronInfoSwitch::initialize(){
-    m_kinematic     = parse("kinematic");
-    m_trigger       = parse("trigger");
-    m_isolation     = parse("isolation");
-    m_PID           = parse("PID");
-    m_trackparams   = parse("trackparams");
-    m_trackhitcont  = parse("trackhitcont");
-    m_effSF         = parse("effSF");
+    m_kinematic     = has_exact("kinematic");
+    m_trigger       = has_exact("trigger");
+    m_isolation     = has_exact("isolation");
+    m_PID           = has_exact("PID");
+    m_trackparams   = has_exact("trackparams");
+    m_trackhitcont  = has_exact("trackhitcont");
+    m_effSF         = has_exact("effSF");
+  }
+
+  void PhotonInfoSwitch::initialize(){
+    m_kinematic     = has_exact("kinematic");
   }
 
   void JetInfoSwitch::initialize(){
-    m_kinematic     = parse("kinematic");
-    m_substructure  = parse("substructure");
-    m_rapidity      = parse("rapidity");
-    m_clean         = parse("clean");
-    m_energy        = parse("energy");
-    m_scales        = parse("scales");
-    m_resolution    = parse("resolution");
-    m_truth         = parse("truth");
-    m_truthDetails  = parse("truth_details");
-    m_layer         = parse("layer");
-    m_trackPV       = parse("trackPV");
-    m_trackAll      = parse("trackAll");
-    m_allTrack      = parse("allTrack");
-    m_allTrackPVSel = parse("allTrackPVSel");
-    m_allTrackDetail= parse("allTrackDetail");
-    if( m_allTrackDetail ) { 
-      m_allTrackPVSel = m_allTrackPVSel || parse("allTrackDetailPVSel") ;
+    m_kinematic     = has_exact("kinematic");
+    m_substructure  = has_exact("substructure");
+    m_rapidity      = has_exact("rapidity");
+    m_clean         = has_exact("clean");
+    m_energy        = has_exact("energy");
+    m_scales        = has_exact("scales");
+    m_resolution    = has_exact("resolution");
+    m_truth         = has_exact("truth");
+    m_truthDetails  = has_exact("truth_details");
+    m_layer         = has_exact("layer");
+    m_trackPV       = has_exact("trackPV");
+    m_trackAll      = has_exact("trackAll");
+    m_allTrack      = has_exact("allTrack");
+    m_allTrackPVSel = has_exact("allTrackPVSel");
+    m_allTrackDetail= has_exact("allTrackDetail");
+    if( m_allTrackDetail ) {
+      m_allTrackPVSel = m_allTrackPVSel || has_exact("allTrackDetailPVSel") ;
     }
-    m_constituent   = parse("constituent");
-    m_constituentAll= parse("constituentAll");
-    m_flavTag       = parse("flavorTag");
+    m_constituent       = has_exact("constituent");
+    m_constituentAll    = has_exact("constituentAll");
+    m_flavTag           = has_exact("flavorTag");
+    m_flavTagHLT        = has_exact("flavorTagHLT");
+    m_jetFitterDetails  = has_exact("jetFitterDetails");
     m_sfFTagFix.clear();
-    if( parse( "sfFTagFix" ) ) { 
+    if( has_match( "sfFTagFix" ) ) {
       std::string input(m_configStr);
       // erase everything before the interesting string
       input.erase( 0, input.find("sfFTagFix") );
@@ -177,7 +178,7 @@ namespace HelperClasses{
       }
     } // sfFTagFix
     m_sfFTagFlt.clear();
-    if( parse( "sfFTagFlt" ) ) { 
+    if( has_match( "sfFTagFlt" ) ) {
       std::string input(m_configStr);
       // erase everything before the interesting string
       input.erase( 0, input.find("sfFTagFlt") );
@@ -196,8 +197,8 @@ namespace HelperClasses{
         count++;
       }
     } // sfFTagFlt
-    m_area          = parse("area");
-    if( parse("LeadingJets") ){
+    m_area          = has_exact("area");
+    if( has_exact("LeadingJets") ){
       m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );
       if (m_numLeadingJets == 0){ //Perhaps infoSwitches are combined and Njets < 10
         m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-1 , 1)).c_str() );
@@ -207,19 +208,26 @@ namespace HelperClasses{
     }
   }
 
+  void TruthInfoSwitch::initialize(){
+    m_kinematic     = has_exact("kinematic");
+  }
+
+
   void TauInfoSwitch::initialize(){
-    m_kinematic     = parse("kinematic");
-    m_trackparams   = parse("trackparams");
-    m_trackhitcont  = parse("trackhitcont");
+    m_kinematic     = has_exact("kinematic");
+    m_trackparams   = has_exact("trackparams");
+    m_trackhitcont  = has_exact("trackhitcont");
   }
 
   void METInfoSwitch::initialize(){
-    m_refEle    = parse("refEle")   || parse("all");
-    m_refGamma  = parse("refGamma") || parse("all");
-    m_refTau    = parse("refTau")   || parse("all");
-    m_muons     = parse("muons")    || parse("all");
-    m_refJet    = parse("refJet")   || parse("all");
-    m_softClus  = parse("softClus") || parse("all");
+    m_refEle    = has_exact("refEle")   || has_exact("all");
+    m_refGamma  = has_exact("refGamma") || has_exact("all");
+    m_refTau    = has_exact("refTau")   || has_exact("all");
+    m_refMuons  = has_exact("refMuons") || has_exact("all");
+    m_refJet    = has_exact("refJet")   || has_exact("all");
+    m_refJetTrk = has_exact("refJetTrk"); // take this one *only* if requested by user explicitly
+    m_softClus  = has_exact("softClus") || has_exact("all");
+    m_softTrk   = has_exact("softTrk")  || has_exact("all");
   }
 
 } // close namespace HelperClasses

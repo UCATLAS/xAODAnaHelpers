@@ -314,6 +314,8 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
 
   std::vector< CP::SystematicSet > outSystList;
 
+  if ( debug ) { Info("HelperFunctions::getListofSystematics()","systName %s", (systName).c_str()); }
+
   // loop over input set
   //
   for ( const auto syst : inSysts ) {

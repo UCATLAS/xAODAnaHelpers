@@ -1,0 +1,63 @@
+id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
+# cross-sections are in pb
+
+################################################################################################################
+#  Graviton signal samples c=0.5
+
+301486   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c05_M500   0.22202  1.   1.0  1.
+301487   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c05_M1000   0.0085432  1.   1.0  1.
+
+
+################################################################################################################
+#  Graviton signal samples c=1.0
+
+301488   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M300   1.3181  1.   1.0  1.
+301490   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M500   0.89149  1.   1.0  1.
+301491   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M600   0.41016  1.   1.0  1.
+301492   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M700   0.20136  1.   1.0  1.
+301493   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M800   0.10544  1.   1.0  1.
+301494   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M900   0.058282  1.   1.0  1.
+301495   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M1000   0.033696  1.   1.0  1.
+301496   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M1100   0.02023  1.   1.0  1.
+301497   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M1200   0.012537  1.   1.0  1.
+301498   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M1300   0.0079815  1.   1.0  1.
+301499   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M1400   0.0051971  1.   1.0  1.
+301500   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M1500   0.003453  1.   1.0  1.
+301501   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M1600   0.0023348  1.   1.0  1.
+301502   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M1800   0.0011157  1.   1.0  1.
+301503   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M2000   0.00055923  1.   1.0  1.
+301504   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M2250   0.00024873  1.   1.0  1.
+301505   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M2500   0.00011584  1.   1.0  1.
+301506   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M2750   5.5896e-05  1.   1.0  1.
+301507   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c10_M3000   2.7746e-05  1.   1.0  1.
+
+################################################################################################################
+#  Graviton signal samples c=2.0
+
+301508   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M300   10.005  1.   1.0  1.
+301509   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M400   8.5603  1.   1.0  1.
+301510   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M500   3.7504  1.   1.0  1.
+301511   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M600   1.6571  1.   1.0  1.
+301512   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M700   0.78973  1.   1.0  1.
+301513   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M800   0.40408  1.   1.0  1.
+301514   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M900   0.21935  1.   1.0  1.
+301515   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M1000   0.12498  1.   1.0  1.
+301516   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M1100   0.074108  1.   1.0  1.
+301517   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M1200   0.045461  1.   1.0  1.
+301518   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M1300   0.028698  1.   1.0  1.
+301519   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M1400   0.018558  1.   1.0  1.
+301520   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M1500   0.012258  1.   1.0  1.
+301521   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M1600   0.0082479  1.   1.0  1.
+301522   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M1800   0.0039137  1.   1.0  1.
+301523   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M2000   0.0019553  1.   1.0  1.
+301524   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M2250   0.00086965  1.   1.0  1.
+301525   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M2500   0.00040708  1.   1.0  1.
+
+################################################################################################################
+#  ttbar Not covered in the susy file
+
+410007   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad   696.21  1.   0.45618  1.
+
+
+
+

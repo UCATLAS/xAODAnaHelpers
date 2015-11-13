@@ -16,6 +16,8 @@ public:
   std::string m_inContainerName;
   std::string m_outContainerName;
 
+  std::string m_release;
+
   // sort after calibration
   bool    m_sort;
 
@@ -30,9 +32,9 @@ public:
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
-  
+
   bool m_isMC;            //!
-  
+
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;
@@ -66,8 +68,11 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(MuonCalibrator, 1);
+  /// @endcond
+
 };
 
 #endif

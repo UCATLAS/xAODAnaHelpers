@@ -33,8 +33,8 @@ public:
   std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
   				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
   float       m_systVal;
-  std::string m_systName;  
-  
+  std::string m_systName;
+
   std::string m_esModel;
   std::string m_decorrelationModel;
 
@@ -76,8 +76,11 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 
+  /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(ElectronCalibrator, 1);
+  /// @endcond
+
 };
 
 #endif
