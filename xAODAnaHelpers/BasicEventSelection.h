@@ -95,6 +95,7 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_grl;      //!
     int m_cutflow_lar;      //!
     int m_cutflow_tile;     //!
+    int m_cutflow_SCT;      //!
     int m_cutflow_core;     //!
     int m_cutflow_npv;      //!
     int m_cutflow_trigger;  //!

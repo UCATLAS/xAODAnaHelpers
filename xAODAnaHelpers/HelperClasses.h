@@ -59,13 +59,15 @@ namespace HelperClasses {
     const std::string m_configStr;
     std::set<std::string> m_configDetails;
     InfoSwitch(const std::string configStr) : m_configStr(configStr) {
-        std::stringstream ss(m_configStr);
-        std::istream_iterator<std::string> begin(ss);
-        std::istream_iterator<std::string> end;
-        m_configDetails = std::set<std::string>(begin, end);
-        std::copy(m_configDetails.begin(), m_configDetails.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+        // parse and split by space
+        std::string token;
+        std::istringstream ss(m_configStr);
+        while ( std::getline(ss, token, ' ') )
+            m_configDetails.insert(token);
     };
-    bool parse(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end(); };
+    bool parse(const std::string flag) { std::cout << "InfoSwitch::parse() deprecated soon!" << std::endl; return has_match(flag); };
+    bool has_exact(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end(); };
+    bool has_match(const std::string flag) { return m_configStr.find(flag) != std::string::npos; };
   };
 
   struct EventInfoSwitch : InfoSwitch {
