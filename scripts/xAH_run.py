@@ -298,7 +298,14 @@ if __name__ == "__main__":
         if use_scanDQ2:
           ROOT.SH.scanDQ2(sh_all, fname)
         elif use_scanEOS:
-          ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
+          newEOS = True
+          if not newEOS:
+            ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
+          if newEOS:
+            print("Running on EOS directory "+fname+" with tag "+args.inputTag)
+            eoslist = ROOT.SH.DiskListEOS(fname)
+            ROOT.SH.scanDir (sh_all, eoslist, args.inputTag); #Run on all files within dir containing inputTag
+          #ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
         else:
           '''
           if fname.startswith("root://"):
