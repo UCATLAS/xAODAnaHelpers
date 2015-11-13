@@ -685,12 +685,13 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if ( m_useTaus )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
 
       if ( m_debug ) { 
-	if(m_useElectrons) Info("execute()",  "selectedElectrons : %lu", selectedElectrons->size()); 
-	if(m_useMuons    ) Info("execute()",  "selectedMuons : %lu",     selectedMuons->size()); 
+	if ( m_useElectrons) { Info("execute()",  "selectedElectrons : %lu", selectedElectrons->size()); } 
+	if ( m_useMuons    ) { Info("execute()",  "selectedMuons : %lu",     selectedMuons->size()); } 
 	Info("execute()",  "selectedJets : %lu", selectedJets->size()); 
-	if(m_usePhotons )  Info("execute()",  "selectedPhotons : %lu", selectedPhotons->size()); 
+	if ( m_usePhotons )  { Info("execute()",  "selectedPhotons : %lu", selectedPhotons->size()); } 
+        if ( m_useTaus )     { Info("execute()",  "selectedTaus : %lu", selectedTaus->size() ); }
       }
-
+      
       // add ConstDataVector to TStore
       //
       if ( m_createSelectedContainers ) {

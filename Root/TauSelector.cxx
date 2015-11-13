@@ -119,30 +119,11 @@ EL::StatusCode  TauSelector :: configure ()
 
     m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
 
-    m_muonQualityStr          = config->GetValue("MuonQuality", m_muonQualityStr.c_str());
-    m_muonType                = config->GetValue("MuonType", m_muonType.c_str());
+    m_configPath              = config->GetValue("ConfigPath", m_configPath.c_str());
+    m_EleOLRFilePath          = config->GetValue("EleOLRConfigPath", m_EleOLRFilePath.c_str());
     m_pass_max                = config->GetValue("PassMax", m_pass_max);
     m_pass_min                = config->GetValue("PassMin", m_pass_min);
-    m_pT_max                  = config->GetValue("pTMax",  m_pT_max);
-    m_pT_min                  = config->GetValue("pTMin",  m_pT_min);
-    m_eta_max                 = config->GetValue("etaMax", m_eta_max);
-    m_d0_max                  = config->GetValue("d0Max", m_d0_max);
-    m_d0sig_max     	      = config->GetValue("d0sigMax", m_d0sig_max);
-    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
-
-    m_MinIsoWPCut             = config->GetValue("MinIsoWPCut"       ,  m_MinIsoWPCut.c_str());
-    m_IsoWPList		      = config->GetValue("IsolationWPList"   ,  m_IsoWPList.c_str());
-    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  
-    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
-
-    m_singleMuTrigChains      = config->GetValue("SingleMuTrigChains" , m_singleMuTrigChains.c_str() );
-    m_singleMuTrigChains      = config->GetValue("SingleMuTrigChain" , m_singleMuTrigChains.c_str() );
-    m_diMuTrigChains	      = config->GetValue("DiMuTrigChains"     , m_diMuTrigChains.c_str() );
-    m_diMuTrigChains	      = config->GetValue("DiMuTrigChain"     , m_diMuTrigChains.c_str() );
-    m_minDeltaR 	      = config->GetValue("MinDeltaR"         , m_minDeltaR );
-
+ 
     config->Print();
 
     Info("configure()", "TauSelector Interface succesfully configured! ");
@@ -150,45 +131,7 @@ EL::StatusCode  TauSelector :: configure ()
     delete config; config = nullptr;
   }
 
-  HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
-  m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
-
-
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-
-  std::set<int> muonQualitySet;
-  muonQualitySet.insert(0);
-  muonQualitySet.insert(1);
-  muonQualitySet.insert(2);
-  muonQualitySet.insert(3);
-  if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
-    Error("configure()", "Unknown muon quality requested: %i!",m_muonQuality);
-    return EL::StatusCode::FAILURE;
-  }
-
-  std::set<std::string> muonTypeSet;
-  muonTypeSet.insert("");
-  muonTypeSet.insert("Combined");
-  muonTypeSet.insert("MuonStandAlone");
-  muonTypeSet.insert("SegmentTagged");
-  muonTypeSet.insert("CaloTagged");
-  muonTypeSet.insert("SiliconAssociatedForwardMuon");
-  if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
-    Error("configure()", "Unknown muon type requested: %s!",m_muonType.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-
-  // Parse input isolation WP list, split by comma, and put into a vector for later use
-  // Make sure it's not empty!
-  //
-  if ( m_IsoWPList.empty() ) {
-    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
-  } 
-  std::string token;
-  std::istringstream ss(m_IsoWPList);
-  while ( std::getline(ss, token, ',') ) {
-    m_IsoKeys.push_back(token);
-  }
 
   if ( m_inContainerName.empty() ){
     Error("configure()", "InputContainer is empty!");
@@ -298,31 +241,10 @@ EL::StatusCode TauSelector :: initialize ()
     
     // retrieve the object cutflow
     //
-    m_mu_cutflowHist_1  = (TH1D*)file->Get("cutflow_muons_1");
+    m_tau_cutflowHist_1  = (TH1D*)file->Get("cutflow_taus_1");
 
-    m_mu_cutflow_all                  = m_mu_cutflowHist_1->GetXaxis()->FindBin("all");
-    m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_1->GetXaxis()->FindBin("eta_and_quality_cut");     
-    m_mu_cutflow_ptmax_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");      
-    m_mu_cutflow_ptmin_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
-    m_mu_cutflow_type_cut             = m_mu_cutflowHist_1->GetXaxis()->FindBin("type_cut");
-    m_mu_cutflow_z0sintheta_cut       = m_mu_cutflowHist_1->GetXaxis()->FindBin("z0sintheta_cut");
-    m_mu_cutflow_d0_cut               = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
-    m_mu_cutflow_d0sig_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0sig_cut");
-    m_mu_cutflow_iso_cut              = m_mu_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
-
-    if ( m_isUsedBefore ) {
-       m_mu_cutflowHist_2 = (TH1D*)file->Get("cutflow_muons_2");
-
-       m_mu_cutflow_all 		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("all");
-       m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");     
-       m_mu_cutflow_ptmax_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");      
-       m_mu_cutflow_ptmin_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
-       m_mu_cutflow_type_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("type_cut");
-       m_mu_cutflow_z0sintheta_cut	 = m_mu_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
-       m_mu_cutflow_d0_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
-       m_mu_cutflow_d0sig_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
-       m_mu_cutflow_iso_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
-    }
+    m_tau_cutflow_all                  = m_tau_cutflowHist_1->GetXaxis()->FindBin("all");
+    m_tau_cutflow_selected             = m_tau_cutflowHist_1->GetXaxis()->FindBin("selected");     
     
   }
 

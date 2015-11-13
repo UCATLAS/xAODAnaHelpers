@@ -135,6 +135,8 @@ namespace HelperFunctions {
   template< typename T1, typename T2 >
     StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name ){
 
+     static SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
+
      for ( auto in_itr : *(intCont) ) {
 
        if (tool_name == HelperClasses::ToolName::CALIBRATOR || tool_name == HelperClasses::ToolName::CORRECTOR) /* copy full container */
@@ -143,9 +145,7 @@ namespace HelperFunctions {
 	 continue;
        }
 
-       static SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
-
-       if(!myAccessor.isAvailable(*(in_itr))){
+       if ( !myAccessor.isAvailable(*(in_itr)) ) {
          std::stringstream ss; ss << in_itr->type();
 	 Error("HelperFunctions::makeSubsetCont()", "flag %s is missing for object of type %s ! Will not make a subset of its container", flagSelect.c_str(), (ss.str()).c_str() );
          return StatusCode::FAILURE;
