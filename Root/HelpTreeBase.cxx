@@ -472,6 +472,9 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     m_tree->Branch("muon_isIsolated_GradientT1",     &m_muon_isIsolated_GradientT1);
     m_tree->Branch("muon_isIsolated_GradientT2",     &m_muon_isIsolated_GradientT2);
     m_tree->Branch("muon_isIsolated_MU0p06",	     &m_muon_isIsolated_MU0p06);
+    m_tree->Branch("muon_isIsolated_FixedCutLoose",	   &m_muon_isIsolated_FixedCutLoose);
+    m_tree->Branch("muon_isIsolated_FixedCutTight",	   &m_muon_isIsolated_FixedCutTight);
+    m_tree->Branch("muon_isIsolated_FixedCutTightTrackOnly", &m_muon_isIsolated_FixedCutTightTrackOnly);
     m_tree->Branch("muon_isIsolated_UserDefinedFixEfficiency",    &m_muon_isIsolated_UserDefinedFixEfficiency);
     m_tree->Branch("muon_isIsolated_UserDefinedCut",              &m_muon_isIsolated_UserDefinedCut);
     m_tree->Branch("muon_ptcone20",	  &m_muon_ptcone20);
@@ -578,6 +581,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       static SG::AuxElement::Accessor<char> isIsoGradientT1Acc ("isIsolated_GradientT1");
       static SG::AuxElement::Accessor<char> isIsoGradientT2Acc ("isIsolated_GradientT2");
       static SG::AuxElement::Accessor<char> isIsoMU0p06Acc ("isIsolated_MU0p06");
+      static SG::AuxElement::Accessor<char> isIsoFixedCutLooseAcc ("isIsolated_FixedCutLoose");
+      static SG::AuxElement::Accessor<char> isIsoFixedCutTightAcc ("isIsolated_FixedCutTight");
+      static SG::AuxElement::Accessor<char> isIsoFixedCutTightTrackOnlyAcc ("isIsolated_FixedCutTightTrackOnly");
       static SG::AuxElement::Accessor<char> isIsoUserDefinedFixEfficiencyAcc ("isIsolated_UserDefinedFixEfficiency");
       static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
 
@@ -589,6 +595,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       if ( isIsoGradientT1Acc.isAvailable( *muon_itr ) )     { m_muon_isIsolated_GradientT1.push_back( isIsoGradientT1Acc( *muon_itr ) ); } else { m_muon_isIsolated_GradientT1.push_back( -1 ); }
       if ( isIsoGradientT2Acc.isAvailable( *muon_itr ) )     { m_muon_isIsolated_GradientT2.push_back( isIsoGradientT2Acc( *muon_itr ) ); } else { m_muon_isIsolated_GradientT2.push_back( -1 ); }
       if ( isIsoMU0p06Acc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_MU0p06.push_back( isIsoMU0p06Acc( *muon_itr ) ); } else { m_muon_isIsolated_MU0p06.push_back( -1 ); }
+      if ( isIsoFixedCutLooseAcc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_FixedCutLoose.push_back( isIsoFixedCutLooseAcc( *muon_itr ) ); } else { m_muon_isIsolated_FixedCutLoose.push_back( -1 ); }
+      if ( isIsoFixedCutTightAcc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_FixedCutTight.push_back( isIsoFixedCutTightAcc( *muon_itr ) ); } else { m_muon_isIsolated_FixedCutTight.push_back( -1 ); }
+      if ( isIsoFixedCutTightTrackOnlyAcc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_FixedCutTightTrackOnly.push_back( isIsoFixedCutTightTrackOnlyAcc( *muon_itr ) ); } else { m_muon_isIsolated_FixedCutTightTrackOnly.push_back( -1 ); }
       if ( isIsoUserDefinedFixEfficiencyAcc.isAvailable( *muon_itr ) ) { m_muon_isIsolated_UserDefinedFixEfficiency.push_back( isIsoUserDefinedFixEfficiencyAcc( *muon_itr ) ); } else { m_muon_isIsolated_UserDefinedFixEfficiency.push_back( -1 ); }
       if ( isIsoUserDefinedCutAcc.isAvailable( *muon_itr ) )           { m_muon_isIsolated_UserDefinedCut.push_back( isIsoUserDefinedCutAcc( *muon_itr ) ); } else { m_muon_isIsolated_UserDefinedCut.push_back( -1 ); }
 
@@ -737,6 +746,9 @@ void HelpTreeBase::ClearMuons() {
     m_muon_isIsolated_GradientT2.clear();
     m_muon_isIsolated_MU0p06.clear();
     m_muon_isIsolated_GradientLoose.clear();
+    m_muon_isIsolated_FixedCutLoose.clear();
+    m_muon_isIsolated_FixedCutTight.clear();
+    m_muon_isIsolated_FixedCutTightTrackOnly.clear();
     m_muon_isIsolated_UserDefinedFixEfficiency.clear();
     m_muon_isIsolated_UserDefinedCut.clear();
     m_muon_ptcone20.clear();
@@ -833,6 +845,9 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_isIsolated_GradientT1",     &m_el_isIsolated_GradientT1);
     m_tree->Branch("el_isIsolated_GradientT2",     &m_el_isIsolated_GradientT2);
     m_tree->Branch("el_isIsolated_EL0p06",	   &m_el_isIsolated_EL0p06);
+    m_tree->Branch("el_isIsolated_FixedCutLoose",	   &m_el_isIsolated_FixedCutLoose);
+    m_tree->Branch("el_isIsolated_FixedCutTight",	   &m_el_isIsolated_FixedCutTight);
+    m_tree->Branch("el_isIsolated_FixedCutTightTrackOnly", &m_el_isIsolated_FixedCutTightTrackOnly);
     m_tree->Branch("el_isIsolated_UserDefinedFixEfficiency",    &m_el_isIsolated_UserDefinedFixEfficiency);
     m_tree->Branch("el_isIsolated_UserDefinedCut",              &m_el_isIsolated_UserDefinedCut);
     m_tree->Branch("el_etcone20",	  &m_el_etcone20);
@@ -957,6 +972,9 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       static SG::AuxElement::Accessor<char> isIsoGradientT1Acc ("isIsolated_GradientT1");
       static SG::AuxElement::Accessor<char> isIsoGradientT2Acc ("isIsolated_GradientT2");
       static SG::AuxElement::Accessor<char> isIsoEL0p06Acc ("isIsolated_EL0p06");
+      static SG::AuxElement::Accessor<char> isIsoFixedCutLooseAcc ("isIsolated_FixedCutLoose");
+      static SG::AuxElement::Accessor<char> isIsoFixedCutTightAcc ("isIsolated_FixedCutTight");
+      static SG::AuxElement::Accessor<char> isIsoFixedCutTightTrackOnlyAcc ("isIsolated_FixedCutTightTrackOnly");
       static SG::AuxElement::Accessor<char> isIsoUserDefinedFixEfficiencyAcc ("isIsolated_UserDefinedFixEfficiency");
       static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
 
@@ -968,6 +986,9 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       if ( isIsoGradientT1Acc.isAvailable( *el_itr ) )     { m_el_isIsolated_GradientT1.push_back( isIsoGradientT1Acc( *el_itr ) ); } else { m_el_isIsolated_GradientT1.push_back( -1 ); }
       if ( isIsoGradientT2Acc.isAvailable( *el_itr ) )     { m_el_isIsolated_GradientT2.push_back( isIsoGradientT2Acc( *el_itr ) ); } else { m_el_isIsolated_GradientT2.push_back( -1 ); }
       if ( isIsoEL0p06Acc.isAvailable( *el_itr ) )          { m_el_isIsolated_EL0p06.push_back( isIsoEL0p06Acc( *el_itr ) ); } else { m_el_isIsolated_EL0p06.push_back( -1 ); }
+      if ( isIsoFixedCutLooseAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_FixedCutLoose.push_back( isIsoFixedCutLooseAcc( *el_itr ) ); } else { m_el_isIsolated_FixedCutLoose.push_back( -1 ); }
+      if ( isIsoFixedCutTightAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_FixedCutTight.push_back( isIsoFixedCutTightAcc( *el_itr ) ); } else { m_el_isIsolated_FixedCutTight.push_back( -1 ); }
+      if ( isIsoFixedCutTightTrackOnlyAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_FixedCutTightTrackOnly.push_back( isIsoFixedCutTightTrackOnlyAcc( *el_itr ) ); } else { m_el_isIsolated_FixedCutTightTrackOnly.push_back( -1 ); }
       if ( isIsoUserDefinedFixEfficiencyAcc.isAvailable( *el_itr ) ) { m_el_isIsolated_UserDefinedFixEfficiency.push_back( isIsoUserDefinedFixEfficiencyAcc( *el_itr ) ); } else { m_el_isIsolated_UserDefinedFixEfficiency.push_back( -1 ); }
       if ( isIsoUserDefinedCutAcc.isAvailable( *el_itr ) )           { m_el_isIsolated_UserDefinedCut.push_back( isIsoUserDefinedCutAcc( *el_itr ) ); } else { m_el_isIsolated_UserDefinedCut.push_back( -1 ); }
 
@@ -1140,6 +1161,9 @@ void HelpTreeBase::ClearElectrons() {
     m_el_isIsolated_GradientT1.clear();
     m_el_isIsolated_GradientT2.clear();
     m_el_isIsolated_EL0p06.clear();
+    m_el_isIsolated_FixedCutLoose.clear();
+    m_el_isIsolated_FixedCutTight.clear();
+    m_el_isIsolated_FixedCutTightTrackOnly.clear();
     m_el_isIsolated_UserDefinedFixEfficiency.clear();
     m_el_isIsolated_UserDefinedCut.clear();
     m_el_etcone20.clear();

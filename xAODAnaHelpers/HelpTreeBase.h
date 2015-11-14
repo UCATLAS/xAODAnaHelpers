@@ -569,6 +569,9 @@ protected:
   std::vector<int>   m_muon_isIsolated_GradientT1;
   std::vector<int>   m_muon_isIsolated_GradientT2;
   std::vector<int>   m_muon_isIsolated_MU0p06;
+  std::vector<int>   m_muon_isIsolated_FixedCutLoose;
+  std::vector<int>   m_muon_isIsolated_FixedCutTight;
+  std::vector<int>   m_muon_isIsolated_FixedCutTightTrackOnly;
   std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
   std::vector<int>   m_muon_isIsolated_UserDefinedCut;
   std::vector<float> m_muon_ptcone20;
@@ -643,6 +646,9 @@ protected:
   std::vector<int>   m_el_isIsolated_GradientT1;
   std::vector<int>   m_el_isIsolated_GradientT2;
   std::vector<int>   m_el_isIsolated_EL0p06;
+  std::vector<int>   m_el_isIsolated_FixedCutLoose;
+  std::vector<int>   m_el_isIsolated_FixedCutTight;
+  std::vector<int>   m_el_isIsolated_FixedCutTightTrackOnly;
   std::vector<int>   m_el_isIsolated_UserDefinedFixEfficiency;
   std::vector<int>   m_el_isIsolated_UserDefinedCut;
   std::vector<float> m_el_etcone20;
