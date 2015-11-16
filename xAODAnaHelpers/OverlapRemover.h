@@ -65,8 +65,13 @@ private:
   int m_weightNumEventPass; //!
   int m_numObjectPass;    //!
 
+  bool m_useElectrons;
+  bool m_useMuons;
   bool m_usePhotons;
   bool m_useTaus;
+
+  const xAOD::ElectronContainer* m_dummyElectronContainer;
+  const xAOD::MuonContainer*     m_dummyMuonContainer;
 
   /* Electrons */
   std::string  m_outAuxContainerName_Electrons;     // output auxiliary container name

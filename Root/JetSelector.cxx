@@ -142,14 +142,6 @@ EL::StatusCode  JetSelector :: configure ()
     // input container to be read from TEvent or TStore
     m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
     m_jetScaleType            = config->GetValue("JetScaleType",  m_jetScaleType.c_str());
-    //If not set, find default from input container name
-    if (m_jetScaleType.size() == 0){
-      if( m_inContainerName.find("EMTopo") != std::string::npos){
-	 m_jetScaleType = "JetEMScaleMomentum";
-      }else{
-	 m_jetScaleType = "JetConstitScaleMomentum";
-      }
-    }
 
     // name of algo input container comes from - only if running on syst
     m_inputAlgo               = config->GetValue("InputAlgo",   m_inputAlgo.c_str());
@@ -208,6 +200,15 @@ EL::StatusCode  JetSelector :: configure ()
     Info("configure()", "JetSelector Interface succesfully configured! ");
 
     delete config; config = nullptr;
+  }
+
+  //If not set, find default from input container name
+  if (m_jetScaleType.size() == 0){
+    if( m_inContainerName.find("EMTopo") != std::string::npos){
+      m_jetScaleType = "JetEMScaleMomentum";
+    }else{
+      m_jetScaleType = "JetConstitScaleMomentum";
+    }
   }
 
 
@@ -495,6 +496,8 @@ EL::StatusCode JetSelector :: execute ()
     wk()->skipEvent();
   }
 
+  if ( m_debug ) { Info("execute()", "Leave Jet Selection... "); }
+
   return EL::StatusCode::SUCCESS;
 
 }
@@ -715,7 +718,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   // JVF pileup cut
   if ( m_doJVF ){
     if ( m_debug ) { Info("PassCuts()", "Doing JVF"); }
-
+    if ( m_debug ) { Info("PassCuts()", "Jet Pt %f" , jet->pt()); }
     if ( jet->pt() < m_pt_max_JVF ) {
       xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
       if ( fabs(jetScaleP4.eta()) < m_eta_max_JVF ){
@@ -729,12 +732,13 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   // JVT pileup cut
   //
   if ( m_doJVT ) {
-
+    if ( m_debug ) { Info("PassCuts()", "Doing JVT"); }
     if ( m_debug ) {
       if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { Info("passCuts()", " pt/eta = %2f/%2f ", jet->pt() , jet->eta() ); }
     }
 
     if ( jet->pt() < m_pt_max_JVT ) {
+      if ( m_debug ) { Info("PassCuts()", "Checking JVT value"); }
       xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
       if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
 	if(m_debug) Info("passCuts()", " Pass JVT-Eta Cut " );
@@ -742,7 +746,9 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
         if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
 	  if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - cutting this jet!!", m_JVTCut ); }
           return 0;
-        }
+        }else{
+	  if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - jet passes JVT ", m_JVTCut ); }
+	}
       }
     }
   } // m_doJVT
@@ -752,6 +758,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //  BTagging
   //
   if ( m_doBTagCut ) {
+    if ( m_debug ) { Info("PassCuts()", "Doing BTagging"); }
     if ( m_BJetSelectTool->accept( jet ) ) { 
       m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );        
     } else {
@@ -777,7 +784,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //  Truth Label
   //
   if ( m_truthLabel != -1 ) {
-
+    if ( m_debug ) { Info("PassCuts()", "Doing Truth Label"); }
     int this_TruthLabel = 0;
     static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
     if ( TruthLabelID.isAvailable( *jet) ) {
@@ -793,6 +800,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   }
 
+  if ( m_debug ) { Info("PassCuts()", "Passed Cuts"); }
   return 1;
 }
 
