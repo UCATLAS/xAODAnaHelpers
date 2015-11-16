@@ -1122,7 +1122,6 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       std::vector<float> junk(1,-999);
 
       if( accRecoSF.isAvailable( *el_itr ) ) { m_el_RecoEff_SF.push_back( accRecoSF( *el_itr ) ); } else { m_el_RecoEff_SF.push_back( junk ); }
-
       if( accPIDSF_LHVeryLoose.isAvailable( *el_itr ) ) { m_el_PIDEff_SF_LHVeryLoose.push_back( accPIDSF_LHVeryLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHVeryLoose.push_back( junk ); }
       if( accPIDSF_LHLoose.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLoose.push_back( accPIDSF_LHLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHLoose.push_back( junk ); }
       if( accPIDSF_LHMedium.isAvailable( *el_itr ) )    { m_el_PIDEff_SF_LHMedium.push_back( accPIDSF_LHMedium( *el_itr ) ); } else { m_el_PIDEff_SF_LHMedium.push_back( junk ); }
@@ -1252,6 +1251,27 @@ void HelpTreeBase::AddPhotons(const std::string detailStr) {
     m_tree->Branch("ph_m",   &m_ph_m);
   }
 
+  if ( m_phInfoSwitch->m_isolation ) {
+
+    m_tree->Branch("ph_isIsolated_Cone40CaloOnly", &m_ph_isIsolated_Cone40CaloOnly);
+    m_tree->Branch("ph_isIsolated_Cone40",         &m_ph_isIsolated_Cone40);
+    m_tree->Branch("ph_isIsolated_Cone20",         &m_ph_isIsolated_Cone20);
+
+    m_tree->Branch("ph_etcone20",         &m_ph_etcone20);
+    m_tree->Branch("ph_ptcone20",         &m_ph_ptcone20);
+    m_tree->Branch("ph_ptcone30",         &m_ph_ptcone30);
+    m_tree->Branch("ph_ptcone40",         &m_ph_ptcone40);
+    m_tree->Branch("ph_ptvarcone20",      &m_ph_ptvarcone20);
+    m_tree->Branch("ph_ptvarcone30",      &m_ph_ptvarcone30);
+    m_tree->Branch("ph_ptvarcone40",      &m_ph_ptvarcone40);
+    m_tree->Branch("ph_topoetcone20",     &m_ph_topoetcone20);
+    m_tree->Branch("ph_topoetcone30",     &m_ph_topoetcone30);
+    m_tree->Branch("ph_topoetcone40",     &m_ph_topoetcone40);
+  }
+
+  //if ( m_phInfoSwitch->m_PID ) {
+  //}
+
   this->AddPhotonsUser();
 }
 
@@ -1272,6 +1292,32 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
       m_ph_phi.push_back( (ph_itr)->phi() );
       m_ph_m.push_back  ( (ph_itr)->m()  / m_units );
     }
+
+    if ( m_phInfoSwitch->m_isolation ) {
+
+      static SG::AuxElement::Accessor<char> isIsoCone40CaloOnlyAcc ("isIsolated_Cone40CaloOnly");
+      static SG::AuxElement::Accessor<char> isIsoCone40Acc         ("isIsolated_Cone40");
+      static SG::AuxElement::Accessor<char> isIsoCone20Acc         ("isIsolated_Cone20");
+
+      if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) { m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) ); } else { m_ph_isIsolated_Cone40CaloOnly.push_back( -1 ); }
+      if ( isIsoCone40Acc.isAvailable( *ph_itr ) ) { m_ph_isIsolated_Cone40.push_back( isIsoCone40Acc( *ph_itr ) ); } else { m_ph_isIsolated_Cone40.push_back( -1 ); }
+      if ( isIsoCone20Acc.isAvailable( *ph_itr ) ) { m_ph_isIsolated_Cone20.push_back( isIsoCone20Acc( *ph_itr ) ); } else { m_ph_isIsolated_Cone20.push_back( -1 ); }
+
+      m_ph_etcone20.push_back( ph_itr->isolation( xAOD::Iso::etcone20 ) );
+      m_ph_ptcone20.push_back( ph_itr->isolation( xAOD::Iso::ptcone20 ) );
+      m_ph_ptcone30.push_back( ph_itr->isolation( xAOD::Iso::ptcone30 ) );
+      m_ph_ptcone40.push_back( ph_itr->isolation( xAOD::Iso::ptcone40 ) );
+      m_ph_ptvarcone20.push_back( ph_itr->isolation( xAOD::Iso::ptvarcone20 ) );
+      m_ph_ptvarcone30.push_back( ph_itr->isolation( xAOD::Iso::ptvarcone30 ) );
+      m_ph_ptvarcone40.push_back( ph_itr->isolation( xAOD::Iso::ptvarcone40 ) );
+      m_ph_topoetcone20.push_back( ph_itr->isolation( xAOD::Iso::topoetcone20 ) );
+      m_ph_topoetcone30.push_back( ph_itr->isolation( xAOD::Iso::topoetcone30 ) );
+      m_ph_topoetcone40.push_back( ph_itr->isolation( xAOD::Iso::topoetcone40 ) );
+
+    }
+
+    //if ( m_phInfoSwitch->m_PID ) {
+    //}
 
     this->FillPhotonsUser(ph_itr);
 

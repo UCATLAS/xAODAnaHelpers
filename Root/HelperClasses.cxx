@@ -128,6 +128,8 @@ namespace HelperClasses{
 
   void PhotonInfoSwitch::initialize(){
     m_kinematic     = has_exact("kinematic");
+    m_isolation     = has_exact("isolation");
+    m_PID           = has_exact("PID");
   }
 
   void JetInfoSwitch::initialize(){
