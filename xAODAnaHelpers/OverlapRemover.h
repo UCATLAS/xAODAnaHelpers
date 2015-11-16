@@ -65,6 +65,8 @@ private:
   int m_weightNumEventPass; //!
   int m_numObjectPass;    //!
 
+  bool m_useElectrons;
+  bool m_useMuons;
   bool m_usePhotons;
   bool m_useTaus;
 
