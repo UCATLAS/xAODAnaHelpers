@@ -94,6 +94,7 @@ TauSelector :: TauSelector () :
   m_ConfigPath              = "$ROOTCOREBIN/data/xAODAnaHelpers/TauConf/00-01-19/Selection/recommended_selection_mc15.conf";
   m_EleOLRFilePath          = "";
 
+  m_minPtDAOD               = 15e3;
 }
 
 TauSelector::~TauSelector() {}
@@ -121,10 +122,13 @@ EL::StatusCode  TauSelector :: configure ()
 
     m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
 
-    m_ConfigPath              = config->GetValue("ConfigPath", m_ConfigPath.c_str());
-    m_EleOLRFilePath          = config->GetValue("EleOLRFilePath", m_EleOLRFilePath.c_str());
     m_pass_max                = config->GetValue("PassMax", m_pass_max);
     m_pass_min                = config->GetValue("PassMin", m_pass_min);
+
+    m_ConfigPath              = config->GetValue("ConfigPath", m_ConfigPath.c_str());
+    m_EleOLRFilePath          = config->GetValue("EleOLRFilePath", m_EleOLRFilePath.c_str());
+   
+    m_minPtDAOD               = config->GetValue("MinPtDAOD", m_minPtDAOD);
  
     config->Print();
 
@@ -284,7 +288,7 @@ EL::StatusCode TauSelector :: initialize ()
   } else {
     m_TauSelTool = new TauAnalysisTools::TauSelectionTool("TauSelectionTool");
   }
-  m_TauSelTool->msg().setLevel( MSG::DEBUG); // VERBOSE, INFO, DEBUG
+  m_TauSelTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
   
   RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("ConfigPath",m_ConfigPath.c_str()), "Failed to set ConfigPath property");
   if ( !m_EleOLRFilePath.empty() ) { 
@@ -572,16 +576,20 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   m_tau_cutflowHist_1->Fill( m_tau_cutflow_all, 1 );
   if ( m_isUsedBefore ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_all, 1 ); }
 
-  // *********************************************************************************************************************************************************************
+  // **********************************************************************************************************
   // 
   // TauSelectorTool cut
   //
-  if ( m_debug ) { Info("PassCuts()", "Checking tau, pT = %f ", tau->pt()/1e3 ); }
 
+  if ( tau->pt() <= m_minPtDAOD ) {
+    if ( m_debug ) { Info("PassCuts()", "Tau failed minimal pT requirement for usage with derivations"); }
+    return 0;
+  }
+  
   m_TOELLHDecorator->decorate( *tau );
  
   if ( ! m_TauSelTool->accept( *tau ) ) {
-    if ( m_debug ) { Info("PassCuts()", "Tau failed requirements of TauSelectionTool."); }
+    if ( m_debug ) { Info("PassCuts()", "Tau failed requirements of TauSelectionTool"); }
     return 0;
   }
 

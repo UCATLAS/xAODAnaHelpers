@@ -38,6 +38,9 @@ public:
   int            m_pass_max;  	             /* maximum number of objects passing cuts */
   std::string    m_ConfigPath;               /* path to config file for the TauSelectionTool */
   std::string    m_EleOLRFilePath;           /* path to input file for overlap-based electron veto */
+  float          m_minPtDAOD;                /* a minimal pT threshold b/c some derivations may apply 
+                                                a thinning on tau tracks' features needed by the TauSelectionTool,
+						which would cause a crash at runtime */
 
   std::string    m_passAuxDecorKeys;
   std::string    m_failAuxDecorKeys;
