@@ -9,13 +9,11 @@
 #include "TH1D.h"
 
 // external tools include(s):
+#include "TauAnalysisTools/TauSelectionTool.h"
+#include "TauAnalysisTools/TauOverlappingElectronLLHDecorator.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
-
-namespace TauAnalysisTools{
-  class TauSelectionTool;
-}
 
 class TauSelector : public xAH::Algorithm
 {
@@ -61,12 +59,14 @@ private:
 
   // object cutflow
   TH1D* m_tau_cutflowHist_1;                //!
-
+  TH1D* m_tau_cutflowHist_2;                //!
+  
   int   m_tau_cutflow_all;		    //!
   int   m_tau_cutflow_selected;             //!
 
   // tools
-  TauAnalysisTools::TauSelectionTool         *m_TauSelTool ; //!
+  TauAnalysisTools::TauSelectionTool  *m_TauSelTool ; //!
+  TauAnalysisTools::TauOverlappingElectronLLHDecorator *m_TOELLHDecorator; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -97,8 +97,8 @@ public:
 
   // added functions not from Algorithm
   bool executeSelection( const xAOD::TauJetContainer* inTaus, float mcEvtWeight, bool countPass,
-                         ConstDataVector<xAOD::TauContainer>* selectedTaus );
-  virtual int passCuts( const xAOD::TauJet* tau);
+                         ConstDataVector<xAOD::TauJetContainer>* selectedTaus );
+  virtual int passCuts( const xAOD::TauJet* tau );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
