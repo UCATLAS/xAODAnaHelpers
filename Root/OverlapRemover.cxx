@@ -52,6 +52,8 @@ OverlapRemover :: OverlapRemover () :
   m_useMuons(false),
   m_usePhotons(false),
   m_useTaus(false),
+  m_dummyElectronContainer(nullptr),
+  m_dummyMuonContainer(nullptr),
   m_overlapRemovalTool(nullptr),
   m_el_cutflowHist_1(nullptr),
   m_mu_cutflowHist_1(nullptr),
@@ -193,8 +195,18 @@ EL::StatusCode  OverlapRemover :: configure ()
   }
 
   // be more flexible w/ photons and taus :)
-  if ( !m_inContainerName_Electrons.empty() ) { m_useElectrons = true; }
-  if ( !m_inContainerName_Muons.empty() )     { m_useMuons     = true; }
+  if ( !m_inContainerName_Electrons.empty() ) { 
+    m_useElectrons = true; 
+  } else{
+    m_dummyElectronContainer = new xAOD::ElectronContainer();
+  }
+
+  if ( !m_inContainerName_Muons.empty() )     { 
+    m_useMuons     = true; 
+  } else {
+    m_dummyMuonContainer = new xAOD::MuonContainer();
+  }
+
   if ( !m_inContainerName_Photons.empty() )   { m_usePhotons   = true; }
   if ( !m_inContainerName_Taus.empty() )      { m_useTaus      = true; }
   m_outAuxContainerName_Electrons   = m_outContainerName_Electrons + "Aux."; // the period is very important!
@@ -467,7 +479,9 @@ EL::StatusCode OverlapRemover :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_overlapRemovalTool ){ delete m_overlapRemovalTool; m_overlapRemovalTool = nullptr; }
+  if ( m_overlapRemovalTool    ){ delete m_overlapRemovalTool;     m_overlapRemovalTool     = nullptr; }
+  if ( m_dummyElectronContainer){ delete m_dummyElectronContainer; m_dummyElectronContainer = nullptr; }
+  if ( m_dummyMuonContainer    ){ delete m_dummyMuonContainer;     m_dummyMuonContainer     = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -583,7 +597,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	}
       } else{
 	// Create an empty container
-	inElectrons = new xAOD::ElectronContainer();
+	inElectrons = m_dummyElectronContainer;
       }
 
       if( m_useMuons ) {
@@ -594,7 +608,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	  if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Muons.c_str()); }
 	}
       } else{
-	inMuons = new xAOD::MuonContainer();
+	inMuons = m_dummyMuonContainer;
       }
 
 
@@ -1013,13 +1027,13 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_verbose) ,"");
       }else{
 	// Create an empty container
-	inElectrons = new xAOD::ElectronContainer();
+	inElectrons = m_dummyElectronContainer;
       }
       
       if ( m_useMuons ) {
 	RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
       } else {
-	inMuons = new xAOD::MuonContainer();
+	inMuons = m_dummyMuonContainer;
       }
 
       RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
@@ -1104,9 +1118,6 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
   } // end of switch
 
-  if(!m_useElectrons){
-    delete inElectrons;
-  }
 
   return EL::StatusCode::SUCCESS;
 
