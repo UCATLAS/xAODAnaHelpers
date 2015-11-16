@@ -717,6 +717,7 @@ protected:
   std::vector<float> m_ph_phi;
   std::vector<float> m_ph_eta;
   std::vector<float> m_ph_m;
+  std::vector<float> m_ph_E;
 
   // isolation
   std::vector<int>   m_ph_isIsolated_Cone40CaloOnly;

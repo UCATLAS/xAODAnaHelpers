@@ -1249,6 +1249,7 @@ void HelpTreeBase::AddPhotons(const std::string detailStr) {
     m_tree->Branch("ph_phi", &m_ph_phi);
     m_tree->Branch("ph_eta", &m_ph_eta);
     m_tree->Branch("ph_m",   &m_ph_m);
+    m_tree->Branch("ph_E",   &m_ph_E);
   }
 
   if ( m_phInfoSwitch->m_isolation ) {
@@ -1297,6 +1298,7 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
       m_ph_eta.push_back( (ph_itr)->eta() );
       m_ph_phi.push_back( (ph_itr)->phi() );
       m_ph_m.push_back  ( (ph_itr)->m()  / m_units );
+      m_ph_E.push_back  ( (ph_itr)->e()  / m_units );
     }
 
     if ( m_phInfoSwitch->m_isolation ) {
@@ -1373,6 +1375,7 @@ void HelpTreeBase::ClearPhotons() {
     m_ph_eta.clear();
     m_ph_phi.clear();
     m_ph_m.clear();
+    m_ph_E.clear();
   }
 
 
