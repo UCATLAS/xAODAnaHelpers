@@ -1269,8 +1269,14 @@ void HelpTreeBase::AddPhotons(const std::string detailStr) {
     m_tree->Branch("ph_topoetcone40",     &m_ph_topoetcone40);
   }
 
-  //if ( m_phInfoSwitch->m_PID ) {
-  //}
+  if ( m_phInfoSwitch->m_PID ) {
+    m_tree->Branch("nph_IsLoose",    &m_nph_IsLoose);
+    m_tree->Branch("ph_IsLoose",     &m_ph_IsLoose);
+    m_tree->Branch("nph_IsMedium",   &m_nph_IsMedium);
+    m_tree->Branch("ph_IsMedium",    &m_ph_IsMedium);
+    m_tree->Branch("nph_IsTight",    &m_nph_IsTight);
+    m_tree->Branch("ph_IsTight",     &m_ph_IsTight);
+  }
 
   this->AddPhotonsUser();
 }
@@ -1299,25 +1305,58 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
       static SG::AuxElement::Accessor<char> isIsoCone40Acc         ("isIsolated_Cone40");
       static SG::AuxElement::Accessor<char> isIsoCone20Acc         ("isIsolated_Cone20");
 
-      if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) { m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) ); } else { m_ph_isIsolated_Cone40CaloOnly.push_back( -1 ); }
-      if ( isIsoCone40Acc.isAvailable( *ph_itr ) ) { m_ph_isIsolated_Cone40.push_back( isIsoCone40Acc( *ph_itr ) ); } else { m_ph_isIsolated_Cone40.push_back( -1 ); }
-      if ( isIsoCone20Acc.isAvailable( *ph_itr ) ) { m_ph_isIsolated_Cone20.push_back( isIsoCone20Acc( *ph_itr ) ); } else { m_ph_isIsolated_Cone20.push_back( -1 ); }
+      if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) { 
+	m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) ); 
+      } else { 
+	m_ph_isIsolated_Cone40CaloOnly.push_back( -1 ); 
+      }
+      
+      if ( isIsoCone40Acc.isAvailable( *ph_itr ) ) { 
+	m_ph_isIsolated_Cone40.push_back( isIsoCone40Acc( *ph_itr ) ); 
+      } else { 
+	m_ph_isIsolated_Cone40.push_back( -1 ); 
+      }
+      
+      if ( isIsoCone20Acc.isAvailable( *ph_itr ) ) { 
+	m_ph_isIsolated_Cone20.push_back( isIsoCone20Acc( *ph_itr ) );
+      } else { 
+	m_ph_isIsolated_Cone20.push_back( -1 ); 
+      }
 
-      m_ph_etcone20.push_back( ph_itr->isolation( xAOD::Iso::etcone20 ) );
-      m_ph_ptcone20.push_back( ph_itr->isolation( xAOD::Iso::ptcone20 ) );
-      m_ph_ptcone30.push_back( ph_itr->isolation( xAOD::Iso::ptcone30 ) );
-      m_ph_ptcone40.push_back( ph_itr->isolation( xAOD::Iso::ptcone40 ) );
-      m_ph_ptvarcone20.push_back( ph_itr->isolation( xAOD::Iso::ptvarcone20 ) );
-      m_ph_ptvarcone30.push_back( ph_itr->isolation( xAOD::Iso::ptvarcone30 ) );
-      m_ph_ptvarcone40.push_back( ph_itr->isolation( xAOD::Iso::ptvarcone40 ) );
-      m_ph_topoetcone20.push_back( ph_itr->isolation( xAOD::Iso::topoetcone20 ) );
-      m_ph_topoetcone30.push_back( ph_itr->isolation( xAOD::Iso::topoetcone30 ) );
-      m_ph_topoetcone40.push_back( ph_itr->isolation( xAOD::Iso::topoetcone40 ) );
+      m_ph_etcone20    .push_back( ph_itr->isolation( xAOD::Iso::etcone20    ) / m_units  );
+      m_ph_ptcone20    .push_back( ph_itr->isolation( xAOD::Iso::ptcone20    ) / m_units  );
+      m_ph_ptcone30    .push_back( ph_itr->isolation( xAOD::Iso::ptcone30    ) / m_units  );
+      m_ph_ptcone40    .push_back( ph_itr->isolation( xAOD::Iso::ptcone40    ) / m_units  );
+      m_ph_ptvarcone20 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone20 ) / m_units  );
+      m_ph_ptvarcone30 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone30 ) / m_units  );
+      m_ph_ptvarcone40 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone40 ) / m_units  );
+      m_ph_topoetcone20.push_back( ph_itr->isolation( xAOD::Iso::topoetcone20) / m_units  );
+      m_ph_topoetcone30.push_back( ph_itr->isolation( xAOD::Iso::topoetcone30) / m_units  );
+      m_ph_topoetcone40.push_back( ph_itr->isolation( xAOD::Iso::topoetcone40) / m_units  );
 
     }
 
-    //if ( m_phInfoSwitch->m_PID ) {
-    //}
+    if ( m_phInfoSwitch->m_PID ) {
+      static SG::AuxElement::Accessor<bool> phLooseAcc  ("PhotonID_Loose");
+      static SG::AuxElement::Accessor<bool> phMediumAcc ("PhotonID_Medium");
+      static SG::AuxElement::Accessor<bool> phTightAcc  ("PhotonID_Tight");
+
+      if ( phLooseAcc.isAvailable( *ph_itr ) ) {
+        m_ph_IsLoose.push_back( phLooseAcc( *ph_itr ) );
+	if ( phLooseAcc( *ph_itr ) == 1 ) { ++m_nph_IsLoose; }
+      } else { m_ph_IsLoose.push_back( -1 ); }
+
+      if ( phMediumAcc.isAvailable( *ph_itr ) ) {
+        m_ph_IsMedium.push_back( phMediumAcc( *ph_itr ) );
+	if ( phMediumAcc( *ph_itr ) == 1 ) { ++m_nph_IsMedium; }
+      } else { m_ph_IsMedium.push_back( -1 ); }
+
+      if ( phTightAcc.isAvailable( *ph_itr ) ) {
+        m_ph_IsTight.push_back( phTightAcc( *ph_itr ) );
+	if ( phTightAcc( *ph_itr ) == 1 ) { ++m_nph_IsTight; }
+      } else { m_ph_IsTight.push_back( -1 ); }
+      
+    }
 
     this->FillPhotonsUser(ph_itr);
 
@@ -1335,6 +1374,34 @@ void HelpTreeBase::ClearPhotons() {
     m_ph_phi.clear();
     m_ph_m.clear();
   }
+
+
+  if ( m_phInfoSwitch->m_isolation ){
+    m_ph_isIsolated_Cone40CaloOnly.clear();
+    m_ph_isIsolated_Cone40.clear();
+    m_ph_isIsolated_Cone20.clear();
+    m_ph_etcone20.clear();
+    m_ph_ptcone20.clear();
+    m_ph_ptcone30.clear();
+    m_ph_ptcone40.clear();
+    m_ph_ptvarcone20.clear();
+    m_ph_ptvarcone30.clear();
+    m_ph_ptvarcone40.clear();
+    m_ph_topoetcone20.clear();
+    m_ph_topoetcone30.clear();
+    m_ph_topoetcone40.clear();
+  }
+
+
+  if ( m_phInfoSwitch->m_PID ) {
+    m_nph_IsLoose = 0;
+    m_ph_IsLoose.clear();
+    m_nph_IsMedium = 0;
+    m_ph_IsMedium.clear();
+    m_nph_IsTight = 0;
+    m_ph_IsTight.clear();
+  }
+
 }
 
 /*********************

@@ -733,6 +733,13 @@ protected:
   std::vector<float> m_ph_topoetcone30;
   std::vector<float> m_ph_topoetcone40;
 
+  // PID
+  int m_nph_IsLoose; 
+  std::vector<int>   m_ph_IsLoose;
+  int m_nph_IsMedium; 
+  std::vector<int>   m_ph_IsMedium;
+  int m_nph_IsTight; 
+  std::vector<int>   m_ph_IsTight;
 
   //
   // taus
