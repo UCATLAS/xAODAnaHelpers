@@ -51,7 +51,7 @@ From now on, we will have commands like ``mkvirtualenv``, ``workon``, and ``rmvi
 
     mkvirtualenv xAH
 
-This will also automatically call ``workon xAH`` for us in the future.
+This will also automatically call ``workon xAH``. This is something we will always run in the future to enter the virtual environment.
 
 .. note::
 
@@ -92,7 +92,7 @@ You may not always run all of these pieces each time you generate documentation.
 Documenting Code
 ----------------
 
-In most cases, we will want to follow the reStructuredText directives and formatting for doing the code documentation. We just want to use ``doxygen``+``breathe`` to expose those comments to ``sphinx`` to parse and display correctly. In what follows, we provide a set of guidelines (really, examples) to make it easier to document our code specifically.
+In most cases, we will want to follow the reStructuredText directives and formatting for doing the code documentation. We just want to use ``doxygen`` + ``breathe`` to expose those comments to ``sphinx`` to parse and display correctly. In what follows, we provide a set of guidelines (really, examples) to make it easier to document our code specifically.
 
 .. note:: All comments for a given class, function, variable should be prior to the given item you're adding documentation for.
 
