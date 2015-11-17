@@ -7,6 +7,7 @@ Development
 .. toctree::
    :maxdepth: 2
 
+   HowToDocumentation
    Versions
    Issues
 
