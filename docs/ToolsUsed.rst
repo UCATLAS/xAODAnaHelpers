@@ -24,3 +24,9 @@ Event Level
 -  `JetSelectorTools <https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/trunk/README.rst>`__
 -  `JVT <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/JetVertexTaggerTool>`__
 
+
+:math:`\tau` jets
+-----------------
+
+-  `TauAnalysisTools <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/TauPreRecommendations2015>`__
+
