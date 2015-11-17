@@ -150,6 +150,7 @@ namespace HelperClasses {
     bool m_flavTag;
     bool m_flavTagHLT;
     bool m_jetFitterDetails;
+    bool m_svDetails;
     bool m_area;
     int  m_numLeadingJets;
     void initialize();
