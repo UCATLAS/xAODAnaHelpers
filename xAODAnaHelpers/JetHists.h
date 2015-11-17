@@ -141,7 +141,7 @@ class JetHists : public HistogramManager
     TH1F* m_JetFitter       ; //!
     TH1F* m_JetFitterCombNN ; //!
 
-    TH1F* m_jf_nVTXAcc        ; //!
+    TH1F* m_jf_nVTX           ; //!
     TH1F* m_jf_nSingleTracks  ; //!
     TH1F* m_jf_nTracksAtVtx   ; //!
     TH1F* m_jf_mass           ; //!
@@ -154,7 +154,17 @@ class JetHists : public HistogramManager
     TH1F* m_jf_pc             ; //!
     TH1F* m_jf_pu             ; //!
 
+    TH1F* m_sv0_NGTinSvx ; //!
+    TH1F* m_sv0_N2Tpair  ; //!
+    TH1F* m_sv0_massvx   ; //!
+    TH1F* m_sv0_efracsvx ; //!
+    TH1F* m_sv0_normdist ; //!
 
+    TH1F* m_sv1_NGTinSvx ; //!
+    TH1F* m_sv1_N2Tpair  ; //!
+    TH1F* m_sv1_massvx   ; //!
+    TH1F* m_sv1_efracsvx ; //!
+    TH1F* m_sv1_normdist ; //!
 
 
 };
