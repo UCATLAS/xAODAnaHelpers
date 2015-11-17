@@ -717,6 +717,30 @@ protected:
   std::vector<float> m_ph_phi;
   std::vector<float> m_ph_eta;
   std::vector<float> m_ph_m;
+  std::vector<float> m_ph_E;
+
+  // isolation
+  std::vector<int>   m_ph_isIsolated_Cone40CaloOnly;
+  std::vector<int>   m_ph_isIsolated_Cone40;
+  std::vector<int>   m_ph_isIsolated_Cone20;
+  std::vector<float> m_ph_etcone20;
+  std::vector<float> m_ph_ptcone20;
+  std::vector<float> m_ph_ptcone30;
+  std::vector<float> m_ph_ptcone40;
+  std::vector<float> m_ph_ptvarcone20;
+  std::vector<float> m_ph_ptvarcone30;
+  std::vector<float> m_ph_ptvarcone40;
+  std::vector<float> m_ph_topoetcone20;
+  std::vector<float> m_ph_topoetcone30;
+  std::vector<float> m_ph_topoetcone40;
+
+  // PID
+  int m_nph_IsLoose; 
+  std::vector<int>   m_ph_IsLoose;
+  int m_nph_IsMedium; 
+  std::vector<int>   m_ph_IsMedium;
+  int m_nph_IsTight; 
+  std::vector<int>   m_ph_IsTight;
 
   //
   // taus

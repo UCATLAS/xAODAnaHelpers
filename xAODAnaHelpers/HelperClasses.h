@@ -123,6 +123,8 @@ namespace HelperClasses {
 
   struct PhotonInfoSwitch : InfoSwitch {
     bool m_kinematic;
+    bool m_isolation;
+    bool m_PID;
     void initialize();
     PhotonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
