@@ -135,7 +135,7 @@ namespace HelperFunctions {
   template< typename T1, typename T2 >
     StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name ){
 
-     static SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
+     SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
 
      for ( auto in_itr : *(intCont) ) {
 
