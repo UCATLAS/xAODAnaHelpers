@@ -262,6 +262,9 @@ StatusCode JetHists::initialize() {
 
   }
 
+  if( m_infoSwitch->m_ipDetails ) {
+  }
+
   return StatusCode::SUCCESS;
 }
 

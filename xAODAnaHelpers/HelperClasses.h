@@ -151,6 +151,7 @@ namespace HelperClasses {
     bool m_flavTagHLT;
     bool m_jetFitterDetails;
     bool m_svDetails;
+    bool m_ipDetails;
     bool m_area;
     int  m_numLeadingJets;
     void initialize();

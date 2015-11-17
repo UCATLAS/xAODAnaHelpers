@@ -157,6 +157,7 @@ namespace HelperClasses{
     m_flavTagHLT        = has_exact("flavorTagHLT");
     m_jetFitterDetails  = has_exact("jetFitterDetails");
     m_svDetails         = has_exact("svDetails");
+    m_ipDetails         = has_exact("ipDetails");
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
       std::string input(m_configStr);
