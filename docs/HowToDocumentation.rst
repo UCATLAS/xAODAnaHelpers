@@ -87,6 +87,67 @@ Now that we have ``doxygen`` and all of the required python packages installed, 
 
 and we're good to go. Sphinx provides a ``Makefile`` in ``docs/`` to make the html generation much easier to work with.
 
+You may not always run all of these pieces each time you generate documentation. For example, if you need to make a change to the header/source files of any kind, you will need to re-run ``doxygen``. In the rare case that the html generation isn't working right, you might want to run ``make clean`` so you start over again. If you're only changing the reStructuredText (rst) files in ``docs/`` you might only ever need to run ``make html``. All in all, it doesn't take more than 10-15 seconds to generate the necessary documentation.
+
+Documenting Code
+----------------
+
+In most cases, we will want to follow the reStructuredText directives and formatting for doing the code documentation. We just want to use ``doxygen``+``breathe`` to expose those comments to ``sphinx`` to parse and display correctly. In what follows, we provide a set of guidelines (really, examples) to make it easier to document our code specifically.
+
+.. note:: All comments for a given class, function, variable should be prior to the given item you're adding documentation for.
+
+If you have a question about how to do something, google it in the context of reStructuredText or ask on the mailing list. Also have a look through most of our source code and compare it to the docs to figure out how we do something.
+
+One-Line Comments
+~~~~~~~~~~~~~~~~~
+
+One-line comments are very useful in cases where we do not have much to say abut something, perhaps because it is a rather trivial item::
+
+    /** @brief generically the main name assigned to all histograms */
+    std::string m_name;
+
+which will render as
+
+.. doxygenvariable:: HistogramManager::m_name
+   :no-link:
+
+Block Comments
+~~~~~~~~~~~~~~
+
+Doxygen ``rst`` directive
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To tell ``doxygen`` and ``breathe`` that a given block of text should be considered as reStructuredText, we simply need to wrap it::
+
+    @rst
+        We are starting our ``rst`` block now.
+
+        .. note:: This should look like a pretty note.
+        .. warning:: This is a warning.
+
+        And we can show an example of a code-block::
+
+            pip install -r requirements.txt
+
+        And we can have links to other classes :cpp:class:`JetHists` as well since reStructuredText is the bees knees.
+
+    @endrst
+
+which will render as
+
+    We are starting our ``rst`` block now.
+
+    .. note:: This should look like a pretty note.
+    .. warning:: This is a warning.
+
+    And we can show an example of a code-block::
+
+        pip install -r requirements.txt
+
+    And we can have links to other classes :cpp:class:`JetHists` as well since reStructuredText is the bees knees.
+
+
+
 .. _Doxygen: http://www.doxygen.org/
 .. _breathe: http://breathe.readthedocs.org/en/latest/
 .. _sphinx: http://sphinx-doc.org/
