@@ -25,8 +25,8 @@ Event Level
 -  `JVT <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/JetVertexTaggerTool>`__
 
 
-:math:`\tau jets`
----------
+:math:`\tau` jets
+-----------------
 
 -  `TauAnalysisTools <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/TauPreRecommendations2015>`__
 

@@ -1,5 +1,5 @@
 :math:`\tau`
-==============
+============
 
 .. doxygenclass:: TauSelector
    :members:
