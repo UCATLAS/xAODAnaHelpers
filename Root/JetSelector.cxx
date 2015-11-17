@@ -782,7 +782,13 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     if(m_HLTBTagTaggerName=="MV2c20"){
       btag_info->MVx_discriminant("MV2c20", tagValue);
     }
-    
+
+    if(m_HLTBTagTaggerName=="COMB"){
+      float wIP3D = btag_info->IP3D_loglikelihoodratio();
+      float wSV1  = btag_info->SV1_loglikelihoodratio();
+      tagValue = wIP3D + wSV1;
+    }
+
     if(tagValue < m_HLTBTagCutValue){return 0;}
   }
 

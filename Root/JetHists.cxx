@@ -219,7 +219,7 @@ StatusCode JetHists::initialize() {
     m_MV2c00          = book(m_name, "MV2c00", "MV2c00" ,   100,    -1.1,   1.1);
     m_MV2c10          = book(m_name, "MV2c10", "MV2c10" ,   100,    -1.1,   1.1);
     m_MV2c20          = book(m_name, "MV2c20", "MV2c20" ,   100,    -1.1,   1.1);
-    m_SV1_plus_IP3D   = book(m_name, "SV1_plus_IP3D",    "SV1_plus_IP3D" ,      100,    -0.1,   1.1);
+    m_COMB            = book(m_name, "COMB",   "COMB" ,     100,    -20,   40);
     m_SV0             = book(m_name, "SV0",    "SV0" ,      100,    -20,  200);
     m_SV1             = book(m_name, "SV1",    "SV1" ,      100,    -5,   15);
     m_IP2D            = book(m_name, "IP2D",   "IP2D" ,     100,    -10,   40);
@@ -682,7 +682,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );
       m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );
       m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
-      m_SV1_plus_IP3D ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
+      m_COMB ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
       m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
       m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
     }
@@ -702,6 +702,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       static SG::AuxElement::ConstAccessor< double > jf_pu           ("JetFitter_pu");    
     
       if ( jf_pu.isAvailable(*btag_info) ) {
+
 	if(jf_nVTXAcc.isAvailable       (*btag_info)) m_jf_nVTXAcc        ->Fill(jf_nVTXAcc       (*btag_info), eventWeight);
 	if(jf_nSingleTracks.isAvailable (*btag_info)) m_jf_nSingleTracks  ->Fill(jf_nSingleTracks (*btag_info), eventWeight);
 	if(jf_nTracksAtVtx.isAvailable  (*btag_info)) m_jf_nTracksAtVtx   ->Fill(jf_nTracksAtVtx  (*btag_info), eventWeight);
