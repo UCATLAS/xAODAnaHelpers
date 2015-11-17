@@ -132,33 +132,48 @@ Doxygen ``rst`` directive
 To tell ``doxygen`` and ``breathe`` that a given block of text should be considered as reStructuredText, we simply need to wrap it::
 
     @rst
-        We are starting our ``rst`` block now.
-
-        .. note:: This should look like a pretty note.
-        .. warning:: This is a warning.
-
-        And we can show an example of a code-block::
-
-            pip install -r requirements.txt
-
-        And we can have links to other classes :cpp:class:`JetHists` as well since reStructuredText is the bees knees.
+        This is now inside a doxygen directive that tells doxygen not to parse it, so that breathe can parse it for Sphinx.
 
     @endrst
 
+which will render as expected if we were writing it inside a standard ``.rst`` file.  As usual, we have an example::
+
+    /**
+        @brief This is used by any class extending to pre-define a set of histograms to book by default.
+        @rst
+            .. note:: The expectation is that the user does not directly use this class but rather inherits from it.
+
+            We expect the user to create a new group of histograms, such as for jets::
+
+                class JetHists : public HistogramManager
+                {
+                  public:
+                    JetHists(std::string name, std::string detailStr);
+                    virtual ~JetHists() ;
+
+                    bool m_debug;
+                    StatusCode initialize();
+                    StatusCode execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc = -1);
+                    StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );
+                    using HistogramManager::book; // make other overloaded version of book() to show up in subclass
+                    using HistogramManager::execute; // overload
+                };
+
+            The above example is taken from our implementation in :cpp:class:`JetHists`.
+
+        @endrst
+     */
+    class HistogramManager {};
+
 which will render as
 
-    We are starting our ``rst`` block now.
+.. doxygenclass:: HistogramManager
+   :no-link:
 
-    .. note:: This should look like a pretty note.
-    .. warning:: This is a warning.
+For everything else...
+----------------------
 
-    And we can show an example of a code-block::
-
-        pip install -r requirements.txt
-
-    And we can have links to other classes :cpp:class:`JetHists` as well since reStructuredText is the bees knees.
-
-
+These cover the general basics of how to document code for |xAH|. Everything else is specific to how doxygen and Sphinx and breathe work. Most of these are well-supported with a large community, so googling is always very helpful here. Otherwise, feel free to ask on the mailing list.
 
 .. _Doxygen: http://www.doxygen.org/
 .. _breathe: http://breathe.readthedocs.org/en/latest/
