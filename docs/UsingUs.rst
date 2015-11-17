@@ -110,6 +110,8 @@ to see all the help information.
 .. note::
     The ``{driver}`` option tells the script where to run the code. There are lots of supported drivers and more can be added if you request it. For more information, you can type ``xAH_run.py -h drivers`` of available drivers.
 
+.. _xAHRunAPI:
+
 API Reference
 -------------
 
