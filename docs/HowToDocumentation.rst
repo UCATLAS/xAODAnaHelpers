@@ -22,7 +22,7 @@ Doxygen
 
 Get doxygen_ however you want. For Macs, we can use::
 
-    brew info doxygen
+    brew install doxygen
 
 to install it. At this point, one should be able to generate the XML tree by navigating to the ``docs`` folder and running ``doxygen`` with no arguments::
 
