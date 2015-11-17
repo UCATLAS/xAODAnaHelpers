@@ -101,7 +101,7 @@ If you have a question about how to do something, google it in the context of re
 One-Line Comments
 ~~~~~~~~~~~~~~~~~
 
-One-line comments are very useful in cases where we do not have much to say abut something, perhaps because it is a rather trivial item::
+One-line comments are very useful in cases where we do not have much to say about something, perhaps because it is a rather trivial item::
 
     /** @brief generically the main name assigned to all histograms */
     std::string m_name;
@@ -113,6 +113,18 @@ which will render as
 
 Block Comments
 ~~~~~~~~~~~~~~
+
+Block comments are very useful in all other cases. When in doubt, you can always make a block comment with just a single line, even for a variable. The flexibility allows us to include a lot more detail and formatting such as tables and latex::
+
+    /**
+        @brief Destructor, allows the user to delete histograms that are not being recorded.
+    */
+    virtual ~HistogramManager();
+
+which will render as
+
+.. doxygenfunction:: HistogramManager::~HistogramManager
+   :no-link:
 
 Doxygen ``rst`` directive
 ~~~~~~~~~~~~~~~~~~~~~~~~~
