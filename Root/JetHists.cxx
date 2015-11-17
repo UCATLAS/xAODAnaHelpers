@@ -219,7 +219,7 @@ StatusCode JetHists::initialize() {
     m_MV2c00          = book(m_name, "MV2c00", "MV2c00" ,   100,    -1.1,   1.1);
     m_MV2c10          = book(m_name, "MV2c10", "MV2c10" ,   100,    -1.1,   1.1);
     m_MV2c20          = book(m_name, "MV2c20", "MV2c20" ,   100,    -1.1,   1.1);
-    m_SV1_plus_IP3D   = book(m_name, "SV1_plus_IP3D",    "SV1_plus_IP3D" ,      100,    -0.1,   1.1);
+    m_COMB            = book(m_name, "COMB",   "COMB" ,     100,    -20,   40);
     m_SV0             = book(m_name, "SV0",    "SV0" ,      100,    -20,  200);
     m_SV1             = book(m_name, "SV1",    "SV1" ,      100,    -5,   15);
     m_IP2D            = book(m_name, "IP2D",   "IP2D" ,     100,    -10,   40);
@@ -679,10 +679,10 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
 
     static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
     if ( SV0_significance3DAcc.isAvailable(*btag_info) ) {
-      m_SV0 ->  Fill( btag_info->SV0_significance3D() , eventWeight );
+      m_SV0  ->  Fill( btag_info->SV0_significance3D() , eventWeight );
       m_IP2D ->  Fill( btag_info->IP2D_loglikelihoodratio() , eventWeight );
       m_IP3D ->  Fill( btag_info->IP3D_loglikelihoodratio() , eventWeight );
-      m_SV1_plus_IP3D ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
+      m_COMB ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
       m_JetFitter ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
       m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
     }
@@ -701,26 +701,20 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       static SG::AuxElement::ConstAccessor< double > jf_pc           ("JetFitter_pc");    
       static SG::AuxElement::ConstAccessor< double > jf_pu           ("JetFitter_pu");    
     
-      if ( jf_pu.isAvailable(*btag_info) ) {
-	if(jf_nVTXAcc.isAvailable       (*btag_info)) m_jf_nVTXAcc        ->Fill(jf_nVTXAcc       (*btag_info), eventWeight);
-	if(jf_nSingleTracks.isAvailable (*btag_info)) m_jf_nSingleTracks  ->Fill(jf_nSingleTracks (*btag_info), eventWeight);
-	if(jf_nTracksAtVtx.isAvailable  (*btag_info)) m_jf_nTracksAtVtx   ->Fill(jf_nTracksAtVtx  (*btag_info), eventWeight);
-	if(jf_mass.isAvailable          (*btag_info)) m_jf_mass           ->Fill(jf_mass          (*btag_info)/1000, eventWeight); 
-	if(jf_energyFraction.isAvailable(*btag_info)) m_jf_energyFraction ->Fill(jf_energyFraction(*btag_info), eventWeight); 
-	if(jf_significance3d.isAvailable(*btag_info)) m_jf_significance3d ->Fill(jf_significance3d(*btag_info), eventWeight); 
-	if(jf_deltaeta.isAvailable      (*btag_info)) m_jf_deltaeta       ->Fill(jf_deltaeta      (*btag_info), eventWeight); 
-	if(jf_deltaphi.isAvailable      (*btag_info)) m_jf_deltaphi       ->Fill(jf_deltaphi      (*btag_info), eventWeight); 
-	if(jf_N2Tpar.isAvailable        (*btag_info)) m_jf_N2Tpar         ->Fill(jf_N2Tpar        (*btag_info), eventWeight);
-	if(jf_pb.isAvailable            (*btag_info)) m_jf_pb             ->Fill(jf_pb            (*btag_info), eventWeight); 
-	if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight); 
-      }
-
-
+      if(jf_nVTXAcc.isAvailable       (*btag_info)) m_jf_nVTXAcc        ->Fill(jf_nVTXAcc       (*btag_info), eventWeight);
+      if(jf_nSingleTracks.isAvailable (*btag_info)) m_jf_nSingleTracks  ->Fill(jf_nSingleTracks (*btag_info), eventWeight);
+      if(jf_nTracksAtVtx.isAvailable  (*btag_info)) m_jf_nTracksAtVtx   ->Fill(jf_nTracksAtVtx  (*btag_info), eventWeight);
+      if(jf_mass.isAvailable          (*btag_info)) m_jf_mass           ->Fill(jf_mass          (*btag_info)/1000, eventWeight); 
+      if(jf_energyFraction.isAvailable(*btag_info)) m_jf_energyFraction ->Fill(jf_energyFraction(*btag_info), eventWeight); 
+      if(jf_significance3d.isAvailable(*btag_info)) m_jf_significance3d ->Fill(jf_significance3d(*btag_info), eventWeight); 
+      if(jf_deltaeta.isAvailable      (*btag_info)) m_jf_deltaeta       ->Fill(jf_deltaeta      (*btag_info), eventWeight); 
+      if(jf_deltaphi.isAvailable      (*btag_info)) m_jf_deltaphi       ->Fill(jf_deltaphi      (*btag_info), eventWeight); 
+      if(jf_N2Tpar.isAvailable        (*btag_info)) m_jf_N2Tpar         ->Fill(jf_N2Tpar        (*btag_info), eventWeight);
+      if(jf_pb.isAvailable            (*btag_info)) m_jf_pb             ->Fill(jf_pb            (*btag_info), eventWeight); 
+      if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight); 
     }
     
-    //m_jet_sv0.push_back(  myBTag -> SV0_significance3D() ); }
     m_SV1 ->  Fill( btag_info->SV1_loglikelihoodratio() , eventWeight );
-
 
   }
 

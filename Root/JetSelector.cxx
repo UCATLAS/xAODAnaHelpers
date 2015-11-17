@@ -123,6 +123,11 @@ JetSelector :: JetSelector () :
   m_b_eta_max               = 2.5;
   m_b_pt_min                = 20000;
 
+  // HLT Btag quality
+  m_doHLTBTagCut            = false;
+  m_HLTBTagTaggerName       = "MV2c20";
+  m_HLTBTagCutValue         = -0.4434;
+  
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
 
@@ -765,6 +770,28 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       return 0; 
     }
   }
+
+
+  //
+  //  HLT BTagging
+  //
+  if ( m_doHLTBTagCut ) {
+    const xAOD::BTagging *btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
+    
+    double tagValue = -99;
+    if(m_HLTBTagTaggerName=="MV2c20"){
+      btag_info->MVx_discriminant("MV2c20", tagValue);
+    }
+
+    if(m_HLTBTagTaggerName=="COMB"){
+      float wIP3D = btag_info->IP3D_loglikelihoodratio();
+      float wSV1  = btag_info->SV1_loglikelihoodratio();
+      tagValue = wIP3D + wSV1;
+    }
+
+    if(tagValue < m_HLTBTagCutValue){return 0;}
+  }
+
 
   //
   //  Pass Keys

@@ -64,6 +64,9 @@ public:
   double m_b_eta_max;
   double m_b_pt_min;
 
+  bool m_doHLTBTagCut;
+  std::string m_HLTBTagTaggerName;
+  float m_HLTBTagCutValue;
 
   std::string              m_passAuxDecorKeys;
   std::string              m_failAuxDecorKeys;
