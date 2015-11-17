@@ -166,6 +166,30 @@ class JetHists : public HistogramManager
     TH1F* m_sv1_efracsvx ; //!
     TH1F* m_sv1_normdist ; //!
 
+    TH1F* m_nIP2DTracks              ; //!  
+    TH1F* m_IP2D_gradeOfTracks       ; //!  
+    TH1F* m_IP2D_flagFromV0ofTracks  ; //!
+    TH1F* m_IP2D_valD0wrtPVofTracks  ; //!
+    TH1F* m_IP2D_sigD0wrtPVofTracks  ; //!
+    TH1F* m_IP2D_sigD0wrtPVofTracks_l; //!
+    TH1F* m_IP2D_weightBofTracks     ; //!
+    TH1F* m_IP2D_weightCofTracks     ; //!
+    TH1F* m_IP2D_weightUofTracks     ; //!
+
+    TH1F* m_nIP3DTracks              ; //!  
+    TH1F* m_IP3D_gradeOfTracks       ; //!  
+    TH1F* m_IP3D_flagFromV0ofTracks  ; //!
+    TH1F* m_IP3D_valD0wrtPVofTracks  ; //!
+    TH1F* m_IP3D_sigD0wrtPVofTracks  ; //!
+    TH1F* m_IP3D_sigD0wrtPVofTracks_l; //!
+    TH1F* m_IP3D_valZ0wrtPVofTracks  ; //!
+    TH1F* m_IP3D_sigZ0wrtPVofTracks  ; //!
+    TH1F* m_IP3D_sigZ0wrtPVofTracks_l; //!
+    TH1F* m_IP3D_weightBofTracks     ; //!
+    TH1F* m_IP3D_weightCofTracks     ; //!
+    TH1F* m_IP3D_weightUofTracks     ; //!
+
+
 
 };
 
