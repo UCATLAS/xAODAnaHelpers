@@ -250,13 +250,13 @@ StatusCode JetHists::initialize() {
     if(m_debug) Info("JetHists::initialize()", "adding JetFitter Detail plots");
     m_sv0_NGTinSvx  = book(m_name, "SV0_NGTinSvx",   "SV0_NGTinSvx",   20,  -0.5,  19.5);
     m_sv0_N2Tpair   = book(m_name, "SV0_N2Tpair ",   "SV0_N2Tpair ",   40,  -9.5,  29.5);
-    m_sv0_massvx    = book(m_name, "SV0_massvx  ",   "SV0_massvx  ",   100,  0,     8);
+    m_sv0_massvx    = book(m_name, "SV0_massvx  ",   "SV0_massvx  ",   100, -0.1,    8);
     m_sv0_efracsvx  = book(m_name, "SV0_efracsvx",   "SV0_efracsvx",   100, -0.1,   1.2);
     m_sv0_normdist  = book(m_name, "SV0_normdist",   "SV0_normdist",   100, -10,    70);
 
     m_sv1_NGTinSvx  = book(m_name, "SV1_NGTinSvx",   "SV1_NGTinSvx",   20,  -0.5,  19.5);
     m_sv1_N2Tpair   = book(m_name, "SV1_N2Tpair ",   "SV1_N2Tpair ",   40,  -9.5,  29.5);
-    m_sv1_massvx    = book(m_name, "SV1_massvx  ",   "SV1_massvx  ",   100,  0,     8);
+    m_sv1_massvx    = book(m_name, "SV1_massvx  ",   "SV1_massvx  ",   100, -0.1,     8);
     m_sv1_efracsvx  = book(m_name, "SV1_efracsvx",   "SV1_efracsvx",   100, -0.1,   1.2);
     m_sv1_normdist  = book(m_name, "SV1_normdist",   "SV1_normdist",   100, -10,    70);
 
@@ -743,14 +743,14 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       // @brief SV0 : Number of 2-track pairs
       static SG::AuxElement::ConstAccessor< int   >   sv0_N2TpairAcc      ("SV0_N2Tpair");   
       /// @brief SV0 : vertex mass
-      static SG::AuxElement::ConstAccessor< float   > sv0_massvxAcc       ("SV0_massvx");   
+      static SG::AuxElement::ConstAccessor< float   > sv0_masssvxAcc      ("SV0_masssvx");   
       /// @brief SV0 : energy fraction
       static SG::AuxElement::ConstAccessor< float   > sv0_efracsvxAcc     ("SV0_efracsvx");                                                                  	/// @brief SV0 : 3D vertex significance
       static SG::AuxElement::ConstAccessor< float   > sv0_normdistAcc     ("SV0_normdist");                                                             
 
       if(sv0_NGTinSvxAcc .isAvailable(*btag_info)) m_sv0_NGTinSvx -> Fill( sv0_NGTinSvxAcc (*btag_info), eventWeight);
       if(sv0_N2TpairAcc  .isAvailable(*btag_info)) m_sv0_N2Tpair  -> Fill( sv0_N2TpairAcc  (*btag_info), eventWeight);
-      if(sv0_massvxAcc   .isAvailable(*btag_info)) m_sv0_massvx   -> Fill( sv0_massvxAcc   (*btag_info), eventWeight);
+      if(sv0_masssvxAcc  .isAvailable(*btag_info)) m_sv0_massvx   -> Fill( sv0_masssvxAcc  (*btag_info)/1000, eventWeight);
       if(sv0_efracsvxAcc .isAvailable(*btag_info)) m_sv0_efracsvx -> Fill( sv0_efracsvxAcc (*btag_info), eventWeight);
       if(sv0_normdistAcc .isAvailable(*btag_info)) m_sv0_normdist -> Fill( sv0_normdistAcc (*btag_info), eventWeight);
 
@@ -763,14 +763,14 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       // @brief SV1 : Number of 2-track pairs
       static SG::AuxElement::ConstAccessor< int   >   sv1_N2TpairAcc      ("SV1_N2Tpair");   
       /// @brief SV1 : vertex mass
-      static SG::AuxElement::ConstAccessor< float   > sv1_massvxAcc       ("SV1_massvx");   
+      static SG::AuxElement::ConstAccessor< float   > sv1_masssvxAcc      ("SV1_masssvx");   
       /// @brief SV1 : energy fraction
       static SG::AuxElement::ConstAccessor< float   > sv1_efracsvxAcc     ("SV1_efracsvx");                                                                  	/// @brief SV1 : 3D vertex significance
       static SG::AuxElement::ConstAccessor< float   > sv1_normdistAcc     ("SV1_normdist");                                                             
 
       if(sv1_NGTinSvxAcc .isAvailable(*btag_info)) m_sv1_NGTinSvx -> Fill( sv1_NGTinSvxAcc (*btag_info), eventWeight);
       if(sv1_N2TpairAcc  .isAvailable(*btag_info)) m_sv1_N2Tpair  -> Fill( sv1_N2TpairAcc  (*btag_info), eventWeight);
-      if(sv1_massvxAcc   .isAvailable(*btag_info)) m_sv1_massvx   -> Fill( sv1_massvxAcc   (*btag_info), eventWeight);
+      if(sv1_masssvxAcc  .isAvailable(*btag_info)) m_sv1_massvx   -> Fill( sv1_masssvxAcc  (*btag_info)/1000, eventWeight);
       if(sv1_efracsvxAcc .isAvailable(*btag_info)) m_sv1_efracsvx -> Fill( sv1_efracsvxAcc (*btag_info), eventWeight);
       if(sv1_normdistAcc .isAvailable(*btag_info)) m_sv1_normdist -> Fill( sv1_normdistAcc (*btag_info), eventWeight);
 
