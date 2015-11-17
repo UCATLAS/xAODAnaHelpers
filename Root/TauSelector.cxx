@@ -297,7 +297,7 @@ EL::StatusCode TauSelector :: initialize ()
   RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->initialize(), "Failed to properly initialize TauSelectionTool");
 
   m_TOELLHDecorator = new TauAnalysisTools::TauOverlappingElectronLLHDecorator("TauOverlappingElectronLLHDecorator");
-  m_TOELLHDecorator->msg().setLevel( MSG::DEBUG); // VERBOSE, INFO, DEBUG
+  m_TOELLHDecorator->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
   RETURN_CHECK("TauSelector::initialize()", m_TOELLHDecorator->initialize(), "Failed to properly initialize TauOverlappingElectronLLHDecorator");
   
   Info("initialize()", "TauSelector Interface succesfully initialized!" );
