@@ -292,25 +292,10 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   Info("initialize()", "Initializing OverlapRemover Interface... ");
 
- if ( m_useCutFlow ) {
-    
-    // retrieve the file in which the cutflow hists are stored
-    //
-    TFile *file     = wk()->getOutputFile ("cutflow");
-        
-    // retrieve the object cutflow
-    //
-    m_el_cutflowHist_1    = (TH1D*)file->Get("cutflow_electrons_1");
-    m_el_cutflow_OR_cut   = m_el_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-    m_mu_cutflowHist_1    = (TH1D*)file->Get("cutflow_muons_1");
-    m_mu_cutflow_OR_cut   = m_mu_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-    m_jet_cutflowHist_1   = (TH1D*)file->Get("cutflow_jets_1");
-    m_jet_cutflow_OR_cut  = m_jet_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-    m_ph_cutflowHist_1    = (TH1D*)file->Get("cutflow_photons_1");
-    m_ph_cutflow_OR_cut   = m_ph_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-    m_tau_cutflowHist_1   = (TH1D*)file->Get("cutflow_taus_1");
-    m_tau_cutflow_OR_cut  = m_ph_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-  }
+  if ( setCutFlowHist() == EL::StatusCode::FAILURE ) {
+    Error("initialize()", "Failed to setup cutflow histograms. Exiting." );
+    return EL::StatusCode::FAILURE;
+  }  
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -322,9 +307,11 @@ EL::StatusCode OverlapRemover :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  m_numEvent      = 0;
-  m_numObject     = 0;
-
+  if ( setCounters() == EL::StatusCode::FAILURE ) {
+    Error("initialize()", "Failed to properly set event/object counters. Exiting." );
+    return EL::StatusCode::FAILURE;
+  }
+  
   // initialize ASG overlap removal tool
   //
   m_overlapRemovalTool = new OverlapRemovalTool( "OverlapRemovalTool" );
@@ -534,8 +521,8 @@ EL::StatusCode OverlapRemover :: histFinalize ()
 
 EL::StatusCode OverlapRemover :: fillObjectCutflow (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag)
 {
-  static SG::AuxElement::ConstAccessor<char> selectAcc(selectFlag);
-  static SG::AuxElement::ConstAccessor<char> overlapAcc(overlapFlag);
+  SG::AuxElement::ConstAccessor<char> selectAcc(selectFlag);
+  SG::AuxElement::ConstAccessor<char> overlapAcc(overlapFlag);
   static SG::AuxElement::ConstAccessor< ElementLink<xAOD::IParticleContainer> > objLinkAcc("overlapObject");
 
   for ( auto obj_itr : *(objCont) ) {
@@ -1250,4 +1237,38 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
   return EL::StatusCode::SUCCESS;
 
+}
+
+EL::StatusCode OverlapRemover :: setCutFlowHist( )
+{
+ 
+ if ( m_useCutFlow ) {
+   
+   // retrieve the file in which the cutflow hists are stored
+   //
+   TFile *file     = wk()->getOutputFile ("cutflow");
+       
+   // retrieve the object cutflow
+   //
+   m_el_cutflowHist_1	 = (TH1D*)file->Get("cutflow_electrons_1");
+   m_el_cutflow_OR_cut   = m_el_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+   m_mu_cutflowHist_1	 = (TH1D*)file->Get("cutflow_muons_1");
+   m_mu_cutflow_OR_cut   = m_mu_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+   m_jet_cutflowHist_1   = (TH1D*)file->Get("cutflow_jets_1");
+   m_jet_cutflow_OR_cut  = m_jet_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+   m_ph_cutflowHist_1	 = (TH1D*)file->Get("cutflow_photons_1");
+   m_ph_cutflow_OR_cut   = m_ph_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+   m_tau_cutflowHist_1   = (TH1D*)file->Get("cutflow_taus_1");
+   m_tau_cutflow_OR_cut  = m_tau_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+ }
+
+  return EL::StatusCode::SUCCESS;
+}
+
+EL::StatusCode OverlapRemover :: setCounters( )
+{
+  m_numEvent      = 0;
+  m_numObject     = 0;  
+  
+  return EL::StatusCode::SUCCESS;
 }
