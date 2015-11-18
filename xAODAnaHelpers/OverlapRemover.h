@@ -86,7 +86,10 @@ private:
   std::string  m_outAuxContainerName_Taus;      // output auxiliary container name
 
   // tools
+ protected:
   OverlapRemovalTool *m_overlapRemovalTool; //!
+
+ private:
 
   enum SystType {
     NOMINAL = 0,
@@ -140,6 +143,9 @@ public:
   virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
 				    const xAOD::PhotonContainer* inPhotons,	const xAOD::TauJetContainer* inTaus,
 				    SystType syst_type = NOMINAL, std::vector<std::string>* sysVec = nullptr);
+
+  EL::StatusCode setCutFlowHist();
+  EL::StatusCode setCounters();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
