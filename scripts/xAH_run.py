@@ -165,6 +165,7 @@ prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=Fa
 
 # define arguments for condor driver
 condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true')
+condor.add_argument('--optCondorWait', action='store_true' , required=False)
 
 # define arguments for lsf driver
 lsf.add_argument('--optLSFConf', metavar='', type=str, required=False, default='-q short')
@@ -202,8 +203,8 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working
-    use_scanDQ2 = (args.use_scanDQ2)|(args.driver in ['prun', 'lsf'])
-    if use_scanDQ2:
+    needXRD = (args.use_scanDQ2)|(args.driver in ['prun', 'condor','lsf'])
+    if needXRD:
       if os.getenv('XRDSYS') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
 
@@ -267,14 +268,14 @@ if __name__ == "__main__":
     # this portion is just to output for verbosity
     if args.use_inputFileList:
       xAH_logger.info("\t\tReading in file(s) containing list of files")
-      if use_scanDQ2:
+      if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
       elif use_scanEOS:
         xAH_logger.info("\t\tAdding samples using scanEOS")
       else:
         xAH_logger.info("\t\tAdding using readFileList")
     else:
-      if use_scanDQ2:
+      if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
       elif use_scanEOS:
         xAH_logger.info("\t\tAdding samples using scanEOS")
@@ -283,12 +284,12 @@ if __name__ == "__main__":
 
     for fname in args.input_filename:
       if args.use_inputFileList:
-        if (use_scanDQ2 or use_scanEOS):
+        if (args.use_scanDQ2 or use_scanEOS):
           with open(fname, 'r') as f:
             for line in f:
               if line.startswith('#') : continue
               if not line.strip()     : continue
-              if use_scanDQ2:
+              if args.use_scanDQ2:
                 ROOT.SH.scanDQ2(sh_all, line.rstrip())
               elif use_scanEOS:
                 base = os.path.basename(line)
@@ -299,7 +300,7 @@ if __name__ == "__main__":
           ROOT.SH.readFileList(sh_all, "sample", fname)
       else:
 
-        if use_scanDQ2:
+        if args.use_scanDQ2:
           ROOT.SH.scanDQ2(sh_all, fname)
         elif use_scanEOS:
           newEOS = True
@@ -328,7 +329,7 @@ if __name__ == "__main__":
 
     # print out the samples we found
     xAH_logger.info("\t%d different dataset(s) found", len(sh_all))
-    if not use_scanDQ2:
+    if not args.use_scanDQ2:
       for dataset in sh_all:
         xAH_logger.info("\t\t%d files in %s", dataset.numFiles(), dataset.name())
     sh_all.printContent()
@@ -482,15 +483,17 @@ if __name__ == "__main__":
 
     elif (args.driver == "condor"):
       driver = ROOT.EL.CondorDriver()
-      driver.options().setBool(ROOT.EL.Job.optBatchSharedFileSystem, False)
-      driver.options().setString(ROOT.EL.Job.optCondorConf, args.optCondorConf)
+      driver.options().setBool   (ROOT.EL.Job.optBatchSharedFileSystem, False)
+      driver.options().setString (ROOT.EL.Job.optCondorConf           , args.optCondorConf)
 
     elif (args.driver == "lsf"):
       driver = ROOT.EL.LSFDriver()
       driver.options().setString(ROOT.EL.Job.optSubmitFlags, args.optLSFConf)
 
     xAH_logger.info("\tsubmit job")
-    if args.driver in ["prun", "condor","lsf"]:
+    if args.driver in ["prun","lsf"]:
+      driver.submitOnly(job, args.submit_dir)
+    elif args.driver=="condor" and not args.optCondorWait:
       driver.submitOnly(job, args.submit_dir)
     else:
       driver.submit(job, args.submit_dir)
