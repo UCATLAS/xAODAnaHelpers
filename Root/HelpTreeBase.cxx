@@ -533,7 +533,14 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
   }
 
   if( m_muInfoSwitch->m_energyLoss ) {
-    m_tree->Branch("muon_trknBLayerHits",&m_muon_trknBLayerHits);
+    m_tree->Branch("muon_EnergyLoss"                ,  &m_muon_EnergyLoss               );
+    m_tree->Branch("muon_EnergyLossSigma"           ,  &m_muon_EnergyLossSigma          );    
+    m_tree->Branch("muon_energyLossType"            ,  &m_muon_energyLossType           );
+    m_tree->Branch("muon_MeasEnergyLoss"            ,  &m_muon_MeasEnergyLoss           );
+    m_tree->Branch("muon_MeasEnergyLossSigma"       ,  &m_muon_MeasEnergyLossSigma      );
+    m_tree->Branch("muon_ParamEnergyLoss"           ,  &m_muon_ParamEnergyLoss          );    
+    m_tree->Branch("muon_ParamEnergyLossSigmaMinus" ,  &m_muon_ParamEnergyLossSigmaMinus);
+    m_tree->Branch("muon_ParamEnergyLossSigmaPlus"  ,  &m_muon_ParamEnergyLossSigmaPlus );
   }
 
   this->AddMuonsUser();
@@ -719,6 +726,26 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
     }
 
+    if(m_muInfoSwitch->m_energyLoss ) {
+      static SG::AuxElement::Accessor< float >         accMuon_EnergyLoss                ("EnergyLoss");
+      static SG::AuxElement::Accessor< float >         accMuon_EnergyLossSigma           ("EnergyLossSigma");      
+      static SG::AuxElement::Accessor< unsigned char > accMuon_energyLossType            ("energyLossType");       
+      static SG::AuxElement::Accessor< float >         accMuon_MeasEnergyLoss            ("MeasEnergyLoss");          
+      static SG::AuxElement::Accessor< float >         accMuon_MeasEnergyLossSigma       ("MeasEnergyLossSigma");          
+      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLoss           ("ParamEnergyLoss");      
+      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLossSigmaMinus ("ParamEnergyLossSigmaMinus");
+      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLossSigmaPlus  ("ParamEnergyLossSigmaPlus"); 
+      
+      if(accMuon_EnergyLoss                .isAvailable( *muon_itr)) m_muon_EnergyLoss               .push_back(accMuon_EnergyLoss                (*muon_itr)  );
+      if(accMuon_EnergyLossSigma           .isAvailable( *muon_itr)) m_muon_EnergyLossSigma          .push_back(accMuon_EnergyLossSigma           (*muon_itr)  );
+      if(accMuon_energyLossType            .isAvailable( *muon_itr)) m_muon_energyLossType           .push_back(accMuon_energyLossType            (*muon_itr)  );
+      if(accMuon_MeasEnergyLoss            .isAvailable( *muon_itr)) m_muon_MeasEnergyLoss           .push_back(accMuon_MeasEnergyLoss            (*muon_itr)  );
+      if(accMuon_MeasEnergyLossSigma       .isAvailable( *muon_itr)) m_muon_MeasEnergyLossSigma      .push_back(accMuon_MeasEnergyLossSigma       (*muon_itr)  );
+      if(accMuon_ParamEnergyLoss           .isAvailable( *muon_itr)) m_muon_ParamEnergyLoss          .push_back(accMuon_ParamEnergyLoss           (*muon_itr)  );
+      if(accMuon_ParamEnergyLossSigmaMinus .isAvailable( *muon_itr)) m_muon_ParamEnergyLossSigmaMinus.push_back(accMuon_ParamEnergyLossSigmaMinus (*muon_itr)  );
+      if(accMuon_ParamEnergyLossSigmaPlus  .isAvailable( *muon_itr)) m_muon_ParamEnergyLossSigmaPlus .push_back(accMuon_ParamEnergyLossSigmaPlus  (*muon_itr)  );
+    }
+
     this->FillMuonsUser(muon_itr);
 
     m_nmuon++;
@@ -809,6 +836,19 @@ void HelpTreeBase::ClearMuons() {
     m_muon_IsoEff_SF_UserDefinedFixEfficiency.clear();
     m_muon_IsoEff_SF_UserDefinedCut.clear();
   }
+
+  if ( m_muInfoSwitch->m_energyLoss ) {
+    m_muon_EnergyLoss.clear();
+    m_muon_EnergyLossSigma.clear();		
+    m_muon_energyLossType.clear();		
+    m_muon_MeasEnergyLoss.clear();		
+    m_muon_MeasEnergyLossSigma.clear();	
+    m_muon_ParamEnergyLoss.clear();		
+    m_muon_ParamEnergyLossSigmaMinus.clear();
+    m_muon_ParamEnergyLossSigmaPlus.clear(); 
+
+  }
+
 }
 
 /*********************
