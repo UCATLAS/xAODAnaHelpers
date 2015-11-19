@@ -532,6 +532,10 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     }
   }
 
+  if( m_muInfoSwitch->m_energyLoss ) {
+    m_tree->Branch("muon_trknBLayerHits",&m_muon_trknBLayerHits);
+  }
+
   this->AddMuonsUser();
 }
 
