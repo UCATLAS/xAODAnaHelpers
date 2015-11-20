@@ -114,6 +114,7 @@ namespace HelperClasses{
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
+    m_energyLoss    = has_exact("energyLoss");
   }
 
   void ElectronInfoSwitch::initialize(){

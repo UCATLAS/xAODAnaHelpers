@@ -31,8 +31,13 @@ for line in inputFile:
     dsID = dsName.split(".")[1]
     print dsName
 
-    dsInfo = AtlasAPI.list_datasets(client, patterns = dsName, fields = ['events'])
-    nEvents = dsInfo[0]['events']
+    try: 
+        dsInfo = AtlasAPI.list_datasets(client, patterns = dsName, fields = ['events'])
+        nEvents = dsInfo[0]['events']
+    except: 
+        print "Skipping",dsName
+        continue
+    
 
     inputDS.append(dsName)
     eventCounts[dsName] = nEvents

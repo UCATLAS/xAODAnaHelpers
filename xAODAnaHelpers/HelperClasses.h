@@ -105,6 +105,7 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
+    bool m_energyLoss;
     void initialize();
     MuonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };

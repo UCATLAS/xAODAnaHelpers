@@ -623,6 +623,15 @@ protected:
   std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
   std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
 
+  std::vector<float>         m_muon_EnergyLoss;
+  std::vector<float>         m_muon_EnergyLossSigma;		
+  std::vector<unsigned char> m_muon_energyLossType;		
+  std::vector<float>         m_muon_MeasEnergyLoss;		
+  std::vector<float>         m_muon_MeasEnergyLossSigma;	
+  std::vector<float>         m_muon_ParamEnergyLoss;		
+  std::vector<float>         m_muon_ParamEnergyLossSigmaMinus;
+  std::vector<float>         m_muon_ParamEnergyLossSigmaPlus; 
+
   //
   // electrons
   int m_nel;
