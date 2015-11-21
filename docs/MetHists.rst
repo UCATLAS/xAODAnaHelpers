@@ -1,7 +1,7 @@
-METHists
+MetHists
 ========
 
-.. doxygenclass:: METHists
+.. doxygenclass:: MetHists
    :members:
    :undoc-members:
    :protected-members:

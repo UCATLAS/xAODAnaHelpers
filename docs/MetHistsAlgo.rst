@@ -1,7 +1,7 @@
-METHistsAlgo
+MetHistsAlgo
 ============
 
-.. doxygenclass:: METHistsAlgo
+.. doxygenclass:: MetHistsAlgo
    :members:
    :undoc-members:
    :protected-members:
