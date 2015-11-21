@@ -376,14 +376,14 @@ EL::StatusCode MuonSelector :: initialize ()
   // Initialise CP::MuonSelectionTool
   //
   // ********************************
-  
   //
   // Cannot get this from the ToolStore. Problem is that if you have two instances of
   //   Muon selector with differnet m_muonQuality cuts configured both tools will use the same
   //    m_muonSelectionTool
   //
-  m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelectionTool");
-  m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
+  std::string sel_tool_name = std::string("MuonSelectionTool_") + m_name;
+  m_muonSelectionTool = new CP::MuonSelectionTool( sel_tool_name );
+  m_muonSelectionTool->msg().setLevel(MSG::ERROR); // VERBOSE
 
   // Set eta and quality requirements in order to accept the muon - ID tracks required by default
   //
@@ -397,11 +397,8 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // *************************************
 
-  if ( asg::ToolStore::contains<CP::IsolationSelectionTool>("IsolationSelectionTool_Muons") ) {
-    m_IsolationSelectionTool = asg::ToolStore::get<CP::IsolationSelectionTool>("IsolationSelectionTool_Muons");
-  } else {
-    m_IsolationSelectionTool = new CP::IsolationSelectionTool("IsolationSelectionTool_Muons");
-  }
+  std::string iso_tool_name = std::string("IsolationSelectionTool_") + m_name;
+  m_IsolationSelectionTool = new CP::IsolationSelectionTool( iso_tool_name );
   m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
   
   // Do this only for the first WP in the list
@@ -453,11 +450,8 @@ EL::StatusCode MuonSelector :: initialize ()
 
     //  everything went fine, let's initialise the tool!
     //
-    if ( asg::ToolStore::contains<Trig::TrigMuonMatching>("TrigMuonMatcinghTool") ) {
-      m_trigMuonMatchTool = asg::ToolStore::get<Trig::TrigMuonMatching>("TrigMuonMatchingTool");
-    } else {
-      m_trigMuonMatchTool = new Trig::TrigMuonMatching("TrigMuonMatchingTool");
-    }
+    std::string trigmatch_tool_name = std::string("TrigMuonMatchingTool_") + m_name;
+    m_trigMuonMatchTool = new Trig::TrigMuonMatching( trigmatch_tool_name );
     RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
     RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
 

@@ -283,11 +283,8 @@ EL::StatusCode TauSelector :: initialize ()
   //
   // ********************************
   
-  if ( asg::ToolStore::contains<TauAnalysisTools::TauSelectionTool>("TauSelectionTool") ) {
-    m_TauSelTool = asg::ToolStore::get<TauAnalysisTools::TauSelectionTool>("TauSelectionTool");
-  } else {
-    m_TauSelTool = new TauAnalysisTools::TauSelectionTool("TauSelectionTool");
-  }
+  std::string sel_tool_name = std::string("TauSelectionTool_") + m_name;
+  m_TauSelTool = new TauAnalysisTools::TauSelectionTool( sel_tool_name );
   m_TauSelTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
   
   RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("ConfigPath",m_ConfigPath.c_str()), "Failed to set ConfigPath property");
@@ -296,7 +293,8 @@ EL::StatusCode TauSelector :: initialize ()
   }
   RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->initialize(), "Failed to properly initialize TauSelectionTool");
 
-  m_TOELLHDecorator = new TauAnalysisTools::TauOverlappingElectronLLHDecorator("TauOverlappingElectronLLHDecorator");
+  std::string eleOLR_tool_name = std::string("TauOverlappingElectronLLHDecorator_") + m_name;
+  m_TOELLHDecorator = new TauAnalysisTools::TauOverlappingElectronLLHDecorator( eleOLR_tool_name );
   m_TOELLHDecorator->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
   RETURN_CHECK("TauSelector::initialize()", m_TOELLHDecorator->initialize(), "Failed to properly initialize TauOverlappingElectronLLHDecorator");
   
