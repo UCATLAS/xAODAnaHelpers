@@ -38,7 +38,7 @@ This is a class that predefines all the histograms, defines the *execute* functi
 
    JetHists
    METHists
-   TrackHists
+   MuonHists
    VtxHists
 
 Algorithms
@@ -52,6 +52,7 @@ This is an EL Algorithm that incorporates the correspondingly-named class.
 
    JetHistsAlgo
    METHistsAlgo
+   MuonHistsAlgo
    TrackHistsAlgo
 
 
