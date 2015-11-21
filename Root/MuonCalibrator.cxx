@@ -303,9 +303,10 @@ EL::StatusCode MuonCalibrator :: execute ()
       for ( auto muSC_itr : *(calibMuonsSC.first) ) {
 
 	if ( m_debug ) { Info("execute()", "  uncailbrated muon %i, pt = %.2f GeV", idx, (muSC_itr->pt() * 1e-3)); }
-	
-	if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
-	  Warning("execute()", "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
+	if(muSC_itr-> primaryTrackParticle()){
+	  if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
+	    Warning("execute()", "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
+	  }
 	}
       
 	if ( m_debug ) { Info("execute()", "  corrected muon pt = %.2f GeV", (muSC_itr->pt() * 1e-3)); }

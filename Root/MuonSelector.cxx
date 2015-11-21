@@ -377,11 +377,12 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // ********************************
   
-  if ( asg::ToolStore::contains<CP::MuonSelectionTool>("MuonSelectionTool") ) {
-    m_muonSelectionTool = asg::ToolStore::get<CP::MuonSelectionTool>("MuonSelectionTool");
-  } else {
-    m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelectionTool");
-  }
+  //
+  // Cannot get this from the ToolStore. Problem is that if you have two instances of
+  //   Muon selector with differnet m_muonQuality cuts configured both tools will use the same
+  //    m_muonSelectionTool
+  //
+  m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelectionTool");
   m_muonSelectionTool->msg().setLevel( MSG::ERROR); // VERBOSE
 
   // Set eta and quality requirements in order to accept the muon - ID tracks required by default
@@ -876,24 +877,19 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   static SG::AuxElement::Decorator< char > isLooseQDecor("isLooseQ");
   static SG::AuxElement::Decorator< char > isMediumQDecor("isMediumQ");
   static SG::AuxElement::Decorator< char > isTightQDecor("isTightQ");
-  // initialise
-  isVeryLooseQDecor( *muon ) = -1;
-  isLooseQDecor( *muon )     = -1;
-  isMediumQDecor( *muon )    = -1;
-  isTightQDecor( *muon )     = -1;
 
   int this_quality = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );
+
+  isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
+  isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
+  isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
+  isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
 
   // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
   if ( ! m_muonSelectionTool->accept( *muon ) ) {
     if ( m_debug ) { Info("PassCuts()", "Muon failed requirements of MuonSelectionTool."); }
     return 0;
   }
-
-  isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
-  isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
-  isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
-  isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
 
   m_mu_cutflowHist_1->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 );
   if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 ); }
