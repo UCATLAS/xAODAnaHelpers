@@ -446,11 +446,8 @@ EL::StatusCode ElectronSelector :: initialize ()
   //
   // *************************************
 
-  if ( asg::ToolStore::contains<CP::IsolationSelectionTool>("IsolationSelectionTool_Electrons") ) {
-    m_IsolationSelectionTool = asg::ToolStore::get<CP::IsolationSelectionTool>("IsolationSelectionTool_Electrons");
-  } else {
-    m_IsolationSelectionTool = new CP::IsolationSelectionTool( "IsolationSelectionTool_Electrons" );
-  }
+  std::string iso_tool_name = std::string("IsolationSelectionTool_") + m_name;
+  m_IsolationSelectionTool = new CP::IsolationSelectionTool( iso_tool_name );
   m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
 
   // Do this only for the first WP in the list
@@ -501,13 +498,10 @@ EL::StatusCode ElectronSelector :: initialize ()
 
     //  everything went fine, let's initialise the tool!
     //
-    if ( asg::ToolStore::contains<Trig::TrigEgammaMatchingTool>("TrigEgammaMatchingTool") ) {
-      m_trigElMatchTool = asg::ToolStore::get<Trig::TrigEgammaMatchingTool>("TrigEgammaMatchingTool");
-    } else {
-      m_trigElMatchTool = new Trig::TrigEgammaMatchingTool("TrigEgammaMatchingTool");
-      RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
-      RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-    } 
+    std::string trigmatch_tool_name = std::string("TrigegammaMatchingTool_") + m_name;
+    m_trigElMatchTool = new Trig::TrigEgammaMatchingTool( trigmatch_tool_name );
+    RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
+    RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
     
   } else {
     Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");

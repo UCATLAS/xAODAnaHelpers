@@ -252,7 +252,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   if ( m_debug ) {
   
     // Get a list of affecting systematics
-   //  
+    //  
     CP::SystematicSet affectSystsReco = m_asgMuonEffCorrTool_muSF_Reco->affectingSystematics();
     //
     // Convert into a simple list

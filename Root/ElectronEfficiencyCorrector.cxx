@@ -296,7 +296,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   if ( m_debug ) {
   
     // Get a list of affecting systematics
-   //  
+    //  
     CP::SystematicSet affectSystsReco = m_asgElEffCorrTool_elSF_Reco->affectingSystematics();
     //
     // Convert into a simple list
