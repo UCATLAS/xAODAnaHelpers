@@ -39,6 +39,7 @@ This is a class that predefines all the histograms, defines the *execute* functi
    JetHists
    MetHists
    MuonHists
+   TrackHists
    VtxHists
 
 Algorithms
