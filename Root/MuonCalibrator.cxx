@@ -215,8 +215,8 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   // Get a list of recommended systematics for this tool
   //
-  const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
-  const CP::SystematicSet& recSyst = (systReg.recommendedSystematics());
+  const CP::SystematicSet recSyst = CP::SystematicSet();
+
   Info("initialize()"," Initializing Muon Calibrator Systematics :");
   //
   // Make a list of systematics to be used, based on configuration input
