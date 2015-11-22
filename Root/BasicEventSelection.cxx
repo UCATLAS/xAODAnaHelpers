@@ -44,23 +44,24 @@
 ClassImp(BasicEventSelection)
 
 BasicEventSelection :: BasicEventSelection () :
-  m_PU_default_channel(0),
-  m_grl(nullptr),
-  m_pileuptool(nullptr),
-  m_trigConfTool(nullptr),
-  m_trigDecTool(nullptr),
-  m_histEventCount(nullptr),
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr),
-  m_el_cutflowHist_1(nullptr),
-  m_el_cutflowHist_2(nullptr),
-  m_mu_cutflowHist_1(nullptr),
-  m_mu_cutflowHist_2(nullptr),
-  m_ph_cutflowHist_1(nullptr),
-  m_tau_cutflowHist_1(nullptr),
-  m_tau_cutflowHist_2(nullptr),
-  m_jet_cutflowHist_1(nullptr),
-  m_truth_cutflowHist_1(nullptr)
+    Algorithm("BasicEventSelection"),
+    m_PU_default_channel(0),
+    m_grl(nullptr),
+    m_pileuptool(nullptr),
+    m_trigConfTool(nullptr),
+    m_trigDecTool(nullptr),
+    m_histEventCount(nullptr),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_el_cutflowHist_1(nullptr),
+    m_el_cutflowHist_2(nullptr),
+    m_mu_cutflowHist_1(nullptr),
+    m_mu_cutflowHist_2(nullptr),
+    m_ph_cutflowHist_1(nullptr),
+    m_tau_cutflowHist_1(nullptr),
+    m_tau_cutflowHist_2(nullptr),
+    m_jet_cutflowHist_1(nullptr),
+    m_truth_cutflowHist_1(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
