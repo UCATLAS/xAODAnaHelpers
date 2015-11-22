@@ -164,10 +164,18 @@ namespace xAH {
         // will try to determine if data or if MC
         // returns: -1=unknown (could not determine), 0=data, 1=mc
         /**
-            @brief Try to determine if we are running over data or MC.
-            @retval -1  Unknown
-            @retval 0   Data
-            @retval 1   MC
+            @rst
+                Try to determine if we are running over data or MC.
+
+                ============ =======
+                Return Value Meaning
+                ============ =======
+                -1           Unknown
+                0            Data
+                1            MC
+                ============ =======
+
+            @endrst
          */
         int isMC();
 
