@@ -79,12 +79,6 @@ namespace xAH {
         // 1: this is mc
         int m_isMC;
 
-	// register the name of the algorithms
-	// in a record.
-	// This can be used as a 'database' for other algos
-	// to check if a class of the same type already exists
-	Algorithm* registerClass(AlgorithmRegistry &reg, std::string className);
-
       protected:
         // name of a config file to load in, optional
         std::string m_configName;
@@ -95,6 +89,13 @@ namespace xAH {
         // will try to determine if data or if MC
         // returns: -1=unknown (could not determine), 0=data, 1=mc
         int isMC();
+
+        /**
+            @rst
+                the moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
+            @endrst
+         */
+        std::string m_className;
 
         /**
             @rst
@@ -125,12 +126,6 @@ namespace xAH {
         void unregisterInstance();
 
       private:
-        /**
-            @rst
-                the moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
-            @endrst
-         */
-        std::string m_className;
         /**
             @rst
                 bookkeeps the number of times :cpp:member:`xAH::Algorithm::m_className` has been used in a variable shared among all classes/instances that inherit from me
