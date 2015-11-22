@@ -24,8 +24,9 @@ ClassImp(TrackSelector)
 
 
 TrackSelector :: TrackSelector () :
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr)
+    Algorithm("TrackSelector"),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put

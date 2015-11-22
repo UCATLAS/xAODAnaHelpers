@@ -17,7 +17,8 @@
 ClassImp(TrackHistsAlgo)
 
 TrackHistsAlgo :: TrackHistsAlgo () :
-  m_plots(nullptr)
+    Algorithm("TrackHistsAlgo"),
+    m_plots(nullptr)
 {
   m_inContainerName         = "";
   m_detailStr               = "";

@@ -6,7 +6,7 @@
  *
  * -) scale corrections for DATA
  * -) smearing corrections for MC
- * (data VS. MC check is done by the CP tool internally) 
+ * (data VS. MC check is done by the CP tool internally)
  *
  * M. Milesi (marco.milesi@cern.ch)
  *
@@ -49,8 +49,9 @@ ClassImp(ElectronCalibrator)
 
 
 ElectronCalibrator :: ElectronCalibrator () :
-  m_EgammaCalibrationAndSmearingTool(nullptr),
-  m_IsolationCorrectionTool(nullptr)
+    Algorithm("ElectronCalibrator"),
+    m_IsolationCorrectionTool(nullptr)
+    m_EgammaCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -79,7 +80,7 @@ ElectronCalibrator :: ElectronCalibrator () :
 
   m_esModel                 = "";
   m_decorrelationModel      = "";
-  
+
   m_useDataDrivenLeakageCorr = false;
 
 }
@@ -217,12 +218,12 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_numObject     = 0;
 
   // initialize the CP::EgammaCalibrationAndSmearingTool
-  //  
+  //
   if ( asg::ToolStore::contains<CP::EgammaCalibrationAndSmearingTool>("EgammaCalibrationAndSmearingTool") ) {
     m_EgammaCalibrationAndSmearingTool = asg::ToolStore::get<CP::EgammaCalibrationAndSmearingTool>("EgammaCalibrationAndSmearingTool");
   } else {
     m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool("EgammaCalibrationAndSmearingTool");
-  }  
+  }
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel),"Failed to set property ESModel");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel),"Failed to set property decorrelationModel");
@@ -230,26 +231,26 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // For AFII samples
   //
   if ( m_isMC ) {
-    
+
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
     //
     // N.B.: With SampleHandler, you can define sample metadata in job steering macro!
-    // 
+    //
     //       They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
     //       I reasonably suppose everyone will use SH...
     //
-    //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*) 
+    //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*)
     //
-    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); 
-    
+    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
+
     if ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) {
       Info("initialize()", "Setting simulation flavour to AFII");
       RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", true),"Failed to set property useAFII");
-      
-    } 
+
+    }
   }
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
-    
+
   // Get a list of recommended systematics for this tool
   //
   const CP::SystematicSet recSyst = CP::SystematicSet();
@@ -264,28 +265,28 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   Info("initialize()","Will be using EgammaCalibrationAndSmearingTool systematic:");
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!"); 
+      Info("initialize()","\t Running w/ nominal configuration only!");
       break;
     }
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
-  
+
   // ***********************************************************
-  
+
   // initialize the CP::IsolationCorrectionTool
-  //  
+  //
   if ( asg::ToolStore::contains<CP::IsolationCorrectionTool>("IsolationCorrectionTool") ) {
     m_IsolationCorrectionTool = asg::ToolStore::get<CP::IsolationCorrectionTool>("IsolationCorrectionTool");
   } else {
     m_IsolationCorrectionTool = new CP::IsolationCorrectionTool("IsolationCorrectionTool");
-  }  
+  }
   m_IsolationCorrectionTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ),"Failed to set property Apply_datadriven");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->setProperty("IsMC", m_isMC ),"Failed to set property IsMC");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->initialize(), "Failed to properly initialize the IsolationCorrectionTool");
 
   // ***********************************************************
-  
+
   Info("initialize()", "ElectronCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -374,11 +375,11 @@ EL::StatusCode ElectronCalibrator :: execute ()
 	  Warning("execute()", "Problem in CP::IsolationCorrectionTool::CorrectLeakage()");
 	}
       }
-      
+
       if ( m_debug ) { Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3)); }
-      
+
       ++idx;
-      
+
     } // close calibration loop
 
     if ( !xAOD::setOriginalObjectLink(*inElectrons, *(calibElectronsSC.first)) ) {

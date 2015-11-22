@@ -40,10 +40,11 @@
 ClassImp(JetCalibrator)
 
 JetCalibrator :: JetCalibrator () :
-  m_runSysts(false),          // gets set later is syst applies to this tool
-  m_jetCalibration(nullptr),  // JetCalibrationTool
-  m_JESUncertTool(nullptr),   // JetUncertaintiesTool
-  m_jetCleaning(nullptr)      // JetCleaningTool
+    Algorithm("JetCalibrator"),
+    m_runSysts(false),          // gets set later is syst applies to this tool
+    m_jetCalibration(nullptr),  // JetCalibrationTool
+    m_JESUncertTool(nullptr),   // JetUncertaintiesTool
+    m_jetCleaning(nullptr)      // JetCleaningTool
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -277,10 +278,10 @@ EL::StatusCode JetCalibrator :: initialize ()
     //       They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
     //       I reasonably suppose everyone will use SH...
     //
-    //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*) 
+    //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*)
 
     //
-    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour"); 
+    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
     if ( m_setAFII ) {
       Info("initialize()", "Setting simulation flavour to AFII");
       m_isFullSim = false;
@@ -333,7 +334,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
-  // 
+  //
   // Get a list of recommended systematics for this tool
   //
   const CP::SystematicSet recSyst = CP::SystematicSet();

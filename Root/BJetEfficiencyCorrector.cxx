@@ -34,8 +34,9 @@ ClassImp(BJetEfficiencyCorrector)
 
 
 BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
-  m_BJetSelectTool(nullptr),
-  m_BJetEffSFTool(nullptr)
+    Algorithm("BJetEfficiencyCorrector"),
+    m_BJetSelectTool(nullptr),
+    m_BJetEffSFTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put

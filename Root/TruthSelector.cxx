@@ -44,9 +44,10 @@
 ClassImp(TruthSelector)
 
 TruthSelector :: TruthSelector () :
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr),
-  m_truth_cutflowHist_1(nullptr)
+    Algorithm("TruthSelector"),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_truth_cutflowHist_1(nullptr)
 {
   Info("TruthSelector()", "Calling constructor");
 
@@ -131,7 +132,7 @@ EL::StatusCode  TruthSelector :: configure ()
   }
 
   m_decor   = "passSel";
-  
+
   if ( m_decorateSelectedObjects ) {
     Info("configure()"," Decorate Jets with %s", m_decor.c_str());
   }
@@ -179,29 +180,29 @@ EL::StatusCode TruthSelector :: changeInput (bool /*firstFile*/)
 EL::StatusCode TruthSelector :: initialize ()
 {
   Info("initialize()", "Calling initialize");
-  
+
   if ( m_useCutFlow ) {
 
    // retrieve the file in which the cutflow hists are stored
     //
     TFile *file     = wk()->getOutputFile ("cutflow");
-    
+
     // retrieve the event cutflows
     //
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
-    
+
     // retrieve the object cutflow
     //
     m_truth_cutflowHist_1 = (TH1D*)file->Get("cutflow_truths_1");
 
     m_truth_cutflow_all             = m_truth_cutflowHist_1->GetXaxis()->FindBin("all");
     m_truth_cutflow_ptmax_cut       = m_truth_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
-    m_truth_cutflow_ptmin_cut       = m_truth_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");      
-    m_truth_cutflow_eta_cut         = m_truth_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); 
- 
+    m_truth_cutflow_ptmin_cut       = m_truth_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
+    m_truth_cutflow_eta_cut         = m_truth_cutflowHist_1->GetXaxis()->FindBin("eta_cut");
+
   }
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
@@ -209,7 +210,7 @@ EL::StatusCode TruthSelector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -255,12 +256,12 @@ EL::StatusCode TruthSelector :: execute ()
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  
+
   // this will be the collection processed - no matter what!!
   RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
-    
+
   // look what we have in TStore
   if ( m_verbose ) { m_store->print(); }
 
@@ -353,7 +354,7 @@ EL::StatusCode TruthSelector :: postExecute ()
 EL::StatusCode TruthSelector :: finalize ()
 {
   Info("finalize()", "%s", m_name.c_str());
-  
+
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
@@ -380,12 +381,12 @@ int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {
   if ( m_pT_max != 1e8 ) {
     if ( truthPart->pt() > m_pT_max ) { return 0; }
   }
-  m_truth_cutflowHist_1->Fill( m_truth_cutflow_ptmax_cut, 1 );        
-  
+  m_truth_cutflowHist_1->Fill( m_truth_cutflow_ptmax_cut, 1 );
+
   if ( m_pT_min != 1e8 ) {
     if ( truthPart->pt() < m_pT_min ) { return 0; }
   }
-  m_truth_cutflowHist_1->Fill( m_truth_cutflow_ptmin_cut, 1 );        
+  m_truth_cutflowHist_1->Fill( m_truth_cutflow_ptmin_cut, 1 );
 
   // eta
   if ( m_eta_max != 1e8 ) {
@@ -394,7 +395,7 @@ int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {
   if ( m_eta_min != 1e8 ) {
     if ( fabs(truthPart->eta()) < m_eta_min ) { return 0; }
   }
-  m_truth_cutflowHist_1->Fill( m_truth_cutflow_eta_cut, 1 );        
+  m_truth_cutflowHist_1->Fill( m_truth_cutflow_eta_cut, 1 );
 
   // mass
   if ( m_mass_max != 1e8 ) {

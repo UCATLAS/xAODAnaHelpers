@@ -18,7 +18,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
 
-JetHistsAlgo :: JetHistsAlgo () {
+JetHistsAlgo :: JetHistsAlgo () :
+    Algorithm("JetHistsAlgo")
+{
   m_inContainerName         = "";
   // which plots will be turned on
   m_detailStr               = "";

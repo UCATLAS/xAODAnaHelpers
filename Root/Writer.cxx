@@ -20,7 +20,9 @@ ClassImp(Writer)
 
 
 
-Writer :: Writer () {
+Writer :: Writer () :
+    Algorithm("Writer")
+{
   m_outputLabel               = "";
 
   m_jetContainerNamesStr      = "";

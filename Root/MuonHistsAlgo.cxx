@@ -17,7 +17,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonHistsAlgo)
 
-MuonHistsAlgo :: MuonHistsAlgo () {
+MuonHistsAlgo :: MuonHistsAlgo () :
+    Algorithm("MuonHistsAlgo")
+{
   m_inContainerName         = "";
   // which plots will be turned on
   m_detailStr               = "";

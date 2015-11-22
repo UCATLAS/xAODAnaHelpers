@@ -42,7 +42,8 @@ using HelperClasses::ToolName;
 ClassImp(MuonCalibrator)
 
 MuonCalibrator :: MuonCalibrator () :
-  m_muonCalibrationAndSmearingTool(nullptr)
+    Algorithm("MuonCalibrator"),
+    m_muonCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -54,12 +55,12 @@ MuonCalibrator :: MuonCalibrator () :
   Info("MuonCalibrator()", "Calling constructor");
 
   m_debug                   = false;
-  
+
   // input container to be read from TEvent or TStore
   //
   m_inContainerName         = "";
   m_outContainerName        = "";
-  
+
   m_release                 = "PreRecs";
 
   m_sort                    = true;
@@ -190,7 +191,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
     Error("initialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
   }
-  
+
   // Check if is MC
   //
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -200,13 +201,13 @@ EL::StatusCode MuonCalibrator :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  // Initialize the CP::MuonCalibrationAndSmearingTool 
+  // Initialize the CP::MuonCalibrationAndSmearingTool
   //
   if ( asg::ToolStore::contains<CP::MuonCalibrationAndSmearingTool>("MuonCalibrationAndSmearingTool") ) {
     m_muonCalibrationAndSmearingTool = asg::ToolStore::get<CP::MuonCalibrationAndSmearingTool>("MuonCalibrationAndSmearingTool");
   } else {
     m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool("MuonCalibrationAndSmearingTool");
-  }  
+  }
   m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->setProperty("Release", m_release),"Failed to set property Release");
   RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
@@ -227,7 +228,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   Info("initialize()","Will be using MuonCalibrationAndSmearingTool systematic:");
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!"); 
+      Info("initialize()","\t Running w/ nominal configuration only!");
       break;
     }
     Info("initialize()","\t %s", (syst_it.name()).c_str());
@@ -308,11 +309,11 @@ EL::StatusCode MuonCalibrator :: execute ()
 	    Warning("execute()", "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
 	  }
 	}
-      
+
 	if ( m_debug ) { Info("execute()", "  corrected muon pt = %.2f GeV", (muSC_itr->pt() * 1e-3)); }
 
 	++idx;
-      
+
       } // close calibration loop
     }
 

@@ -16,7 +16,8 @@
 ClassImp(MetHistsAlgo)
 
 MetHistsAlgo :: MetHistsAlgo () :
-  m_plots(nullptr)
+    Algorithm("MetHistsAlgo"),
+    m_plots(nullptr)
 {
   m_inContainerName         = "";
   m_detailStr               = "";
