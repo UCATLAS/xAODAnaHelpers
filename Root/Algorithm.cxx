@@ -32,9 +32,8 @@ int xAH::AlgorithmRegistry::countRegistered(std::string className){
 // this is needed to distribute the algorithm to the workers
 ClassImp(xAH::Algorithm)
 
-xAH::Algorithm::Algorithm() :
+xAH::Algorithm::Algorithm(std::string className) :
   m_name(""),
-  m_classname(""),
   m_debug(false),
   m_verbose(false),
   m_systName(""),
@@ -44,8 +43,15 @@ xAH::Algorithm::Algorithm() :
   m_configName(""),
   m_event(nullptr),
   m_store(nullptr),
-  m_count_used(0)
-{}
+  m_className(className),
+  m_instanceRegistry()
+{
+    registerInstance();
+}
+
+xAH::Algorithm::~Algorithm() {
+    unregisterInstance();
+}
 
 xAH::Algorithm* xAH::Algorithm::setName(std::string name){
   m_name = name;
@@ -118,21 +124,21 @@ int xAH::Algorithm::isMC(){
   return (static_cast<uint32_t>(eventType(*ei)) & xAOD::EventInfo::IS_SIMULATION);
 }
 
-xAH::Algorithm* xAH::Algorithm::registerClass(xAH::AlgorithmRegistry &reg, std::string className){
-
-  Info("registerClass()","input class name: %s", className.c_str() );
-
-  m_classname = className;
-  
-  // the function will return 0 if the algo 
-  // isn't in the registry yet
-  m_count_used = reg.countRegistered(className);
-
-  // if not found already, set in the map in the registry the name of the algo
-  // and assign a value of 0 to the counter
-  if ( m_count_used == 0 ) { reg.m_registered_algos[className] = m_count_used; }
-
-  return this;
-
+void xAH::Algorithm::registerInstance(){
+    m_instanceRegistry[m_className]++;
 }
 
+int xAH::Algorithm::numInstances(){
+    if(m_instanceRegistry.find(m_className) == m_instanceRegistry.end()){
+        printf("numInstances: we seem to have recorded zero instances of %s. This should not happen.", m_className.c_str());
+        return 0;
+    }
+    return m_instanceRegistry.at(m_className);
+}
+
+void xAH::Algorithm::unregisterInstance(){
+    if(m_instanceRegistry.find(m_className) == m_instanceRegistry.end()){
+        printf("unregisterInstance: we seem to have recorded zero instances of %s. This should not happen.", m_className.c_str());
+    }
+    m_instanceRegistry[m_className]--;
+}

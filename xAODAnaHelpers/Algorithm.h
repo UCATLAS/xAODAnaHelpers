@@ -19,7 +19,9 @@ namespace xAH {
       public:
         AlgorithmRegistry(){};
 	virtual ~AlgorithmRegistry() {};
+        /// @cond
         ClassDef(AlgorithmRegistry, 1);
+        /// @endcond
 
         // this maps bookkeeps the names of the algorithms
         // which are used, and how many times they have
@@ -34,8 +36,11 @@ namespace xAH {
 
   class Algorithm : public EL::Algorithm {
       public:
-        Algorithm();
+        Algorithm(std::string className);
+        ~Algorithm();
+        /// @cond
         ClassDef(Algorithm, 1);
+        /// @endcond
 
         Algorithm* setName(std::string name);
         Algorithm* setConfig(std::string configName);
@@ -53,10 +58,7 @@ namespace xAH {
 
         // each algorithm should have a unique name for init, to differentiate them
         std::string m_name;
-	
-        // each algorithm have a 'class' name (e.g., 'ElectronSelector', 'JetCalibrator' ...) to identify the type
-	std::string m_classname;
-       
+
         // enable verbosity, debugging or not
         bool m_debug,
              m_verbose;
@@ -94,14 +96,47 @@ namespace xAH {
         // returns: -1=unknown (could not determine), 0=data, 1=mc
         int isMC();
 
-	// returns how many times an algo of *this* type
-	// has already been used
-	int countUsed() { return m_count_used; };
+        /**
+            @rst
+                Register the given instance under the moniker :cpp:member:`xAH::Algorithm::m_className`
+                This will increase the reference count by 1.
+            @endrst
+         */
+        void registerInstance();
+        /**
+            @rst
+                Return number of instances registered under the moniker :cpp:member:`xAH::Algorithm::m_className`
+
+                This will return the reference count.
+
+                .. warning:: If for some reason the instance wasn't registered, we spit out a warning.
+            @endrst
+         */
+        int numInstances();
+        /**
+            @rst
+                Unregister the given instance under the moniker :cpp:member:`xAH::Algorithm::m_className`
+
+                This will decrease the reference count by 1.
+
+                .. warning:: If for some reason the instance wasn't registered, we spit out a warning.
+            @endrst
+         */
+        void unregisterInstance();
 
       private:
-        // bookkeeps the number of times an algo of *this* type has been used
-	int m_count_used;
-
+        /**
+            @rst
+                the moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
+            @endrst
+         */
+        std::string m_className;
+        /**
+            @rst
+                bookkeeps the number of times :cpp:member:`xAH::Algorithm::m_className` has been used in a variable shared among all classes/instances that inherit from me
+            @endrst
+         */
+	static std::map<std::string, int> m_instanceRegistry;
   };
 
 }
