@@ -14,22 +14,83 @@
 
 namespace xAH {
 
+    /**
+        @rst
+
+            This is used by all algorithms within |xAH|.
+
+            .. note:: The expectation is that the user does not directly use this class but rather inherits from it.
+
+            The main goal of this algorithm class is to standardize how everyone defines an algorithm that plugs into |xAH|. A series of common utilities are provided such as :cpp:member:`~xAH::Algorithm::m_className` which defines the class name so we can manage a registry :cpp:member:`~xAH::Algorithm::m_instanceRegistry` to keep |xAH| as flexible as possible to our users.
+
+            We expect the user to create a new algorithm, such as a selector for jets::
+
+                class JetSelector : public xAH::Algorithm
+                {
+                    // ...
+                };
+
+            The above example is taken from our implementation in :cpp:class:`JetSelector`. Just remember that when you write your initializer, you will be expected to do something like::
+
+                // this is needed to distribute the algorithm to the workers
+                ClassImp(JetSelector)
+
+
+                JetSelector :: JetSelector () :
+                    Algorithm("JetSelector"),
+                    ...
+                {
+                    // ...
+                }
+
+            which this class will automatically register all instances of for you. Each instance can have a different name :cpp:member:`~xAH::Algorithm::m_name` but will have the same :cpp:member:`~xAH::Algorithm::m_className` so we can track how many references have been made. This is useful for selectors to deal with cutflows, but can be useful for other algorithms that need to know how many times they've been instantiated in a single job.
+
+        @endrst
+
+     */
   class Algorithm : public EL::Algorithm {
       public:
+        /**
+            @brief Initialization
+            @param className    This is the name of the class that inherits from :cpp:class:`~xAH::Algorithm`
+         */
         Algorithm(std::string className);
         ~Algorithm();
         /// @cond
         ClassDef(Algorithm, 1);
         /// @endcond
 
+        /**
+            @brief Set the name of this particular instance to something unique (used for ROOT's TObject name primarily)
+            @param name         The name of the instance
+         */
         Algorithm* setName(std::string name);
+        /**
+            @brief Let the algorithm know you wish to configure using a ROOT::TEnv() file
+            @param configName   The path to the config file you wish to use. Can expand the path for you automatically.
+         */
         Algorithm* setConfig(std::string configName);
+        /**
+            @brief Retrieve the path to the config file
+            @param expand       Whether to retrieve the raw string set or the expanded path version
+         */
         std::string getConfig(bool expand=false);
 
-        // 00 = no verbosity
-        // 01 = debug only
-        // 10 = verbose only
-        // 11 = debug and verbose
+        /**
+            @rst
+                Set the level of verbosity in algorithms.
+
+                ===== ====== ===== =======
+                Value Binary Debug Verbose
+                ===== ====== ===== =======
+                0     00
+                1     01     x
+                2     10           x
+                3     11     x     x
+                ===== ====== ===== =======
+
+            @endrst
+         */
         Algorithm* setLevel(int level);
 
         Algorithm* setSyst(std::string systName);
