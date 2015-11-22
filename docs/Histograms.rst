@@ -37,6 +37,8 @@ This is a class that predefines all the histograms, defines the *execute* functi
    :maxdepth: 2
 
    JetHists
+   MetHists
+   MuonHists
    TrackHists
    VtxHists
 
@@ -50,6 +52,8 @@ This is an EL Algorithm that incorporates the correspondingly-named class.
    :maxdepth: 2
 
    JetHistsAlgo
+   MetHistsAlgo
+   MuonHistsAlgo
    TrackHistsAlgo
 
 
