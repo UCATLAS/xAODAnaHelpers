@@ -93,42 +93,86 @@ namespace xAH {
          */
         Algorithm* setLevel(int level);
 
+        /**
+            @brief Enable and set the systematic with default value 0
+            @param systName     The systematic to set the value for
+         */
         Algorithm* setSyst(std::string systName);
+        /**
+            @brief Enable and set the systematic with the value
+            @param systName     The systematic to set the value for
+            @param systVal      The value to set the systematic to
+         */
         Algorithm* setSyst(std::string systName, float systVal);
+        /**
+            @brief Enable and set the systemtatic with the vector of values
+            @param systName             The systematic to set the value for
+            @param systValVector        The values to set the systematic to
+         */
         Algorithm* setSyst(std::string systName, std::vector<float> systValVector);
 
-        // each algorithm should have a unique name for init, to differentiate them
+        /** All algorithms initialized should have a unique name, to differentiate them at the TObject level */
         std::string m_name;
 
-        // enable verbosity, debugging or not
+        /** Booleans for enabling verbosity */
         bool m_debug,
              m_verbose;
 
-        // if running systs - the name of the systematic
+        /** If running systematics, the name of the systematic */
         std::string m_systName;
-        // if running systs - the value ( +/- 1 )
+        /** If running systematics, the value to set the systematic to
+            @rst
+                .. note:: This will set the systematic to the value :math:`\pm x`.
+            @endrst
+         */
         float m_systVal;
-        // for running multiple syst points
+        /** If running systematics, you can run multiple points and store them in here */
         std::vector<float> m_systValVector;
 
-        // custom EventInfo container name
+        /** If the xAOD has a different EventInfo container name, set it here */
         std::string m_eventInfoContainerName;
 
-        // override at algorithm level
-        // default: -1, use eventInfo object to determine if data or mc
-        // 0: this is data
-        // 1: this is mc
+        /**
+            @rst
+                This is an override at the algorithm level to force analyzing MC or not.
+
+                ===== ========================================================
+                Value Meaning
+                ===== ========================================================
+                -1    Default, use eventInfo object to determine if data or mc
+                0     Treat the input as data
+                1     Treat the input as MC
+                ===== ========================================================
+
+            @endrst
+         */
         int m_isMC;
 
       protected:
-        // name of a config file to load in, optional
+        /** The name of the TEnv config file to load in, optional */
         std::string m_configName;
 
+        /** The TEvent object */
         xAOD::TEvent* m_event; //!
+        /** The TStore object */
         xAOD::TStore* m_store; //!
 
         // will try to determine if data or if MC
         // returns: -1=unknown (could not determine), 0=data, 1=mc
+        /**
+            @rst
+                Try to determine if we are running over data or MC.
+
+                ============ =======
+                Return Value Meaning
+                ============ =======
+                -1           Unknown
+                0            Data
+                1            MC
+                ============ =======
+
+            @endrst
+         */
         int isMC();
 
         /**
