@@ -43,8 +43,7 @@ xAH::Algorithm::Algorithm(std::string className) :
   m_configName(""),
   m_event(nullptr),
   m_store(nullptr),
-  m_className(className),
-  m_instanceRegistry()
+  m_className(className)
 {
     registerInstance();
 }
