@@ -40,7 +40,8 @@ ClassImp(DebugTool)
 
 
 DebugTool :: DebugTool () :
-m_printStore(false)
+    Algorithm("DebugTool"),
+    m_printStore(false)
 {
   Info("DebugTool()", "Calling constructor");
 }
@@ -82,7 +83,7 @@ EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 EL::StatusCode DebugTool :: initialize ()
 {
   Info("initialize()", " ");
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -102,8 +103,8 @@ EL::StatusCode DebugTool :: execute ()
   //
   // look what we have in TStore
   //
-  if ( m_printStore ) { 
-    m_store->print(); 
+  if ( m_printStore ) {
+    m_store->print();
   }
 
   return EL::StatusCode::SUCCESS;
