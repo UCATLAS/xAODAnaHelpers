@@ -14,26 +14,6 @@
 
 namespace xAH {
 
-  class AlgorithmRegistry {
-
-      public:
-        AlgorithmRegistry(){};
-	virtual ~AlgorithmRegistry() {};
-        /// @cond
-        ClassDef(AlgorithmRegistry, 1);
-        /// @endcond
-
-        // this maps bookkeeps the names of the algorithms
-        // which are used, and how many times they have
-        // been used before as well
-        std::map<std::string, int> m_registered_algos;
-
-        // returns how many times an algo has been
-        // already used
-        int countRegistered(std::string className);
-
-  };
-
   class Algorithm : public EL::Algorithm {
       public:
         Algorithm(std::string className);

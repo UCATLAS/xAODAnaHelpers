@@ -10,26 +10,7 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include "xAODEventInfo/EventInfo.h"
 
-// this is needed to distribute the algorithm to the workers
-ClassImp(xAH::AlgorithmRegistry)
-
 std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
-
-int xAH::AlgorithmRegistry::countRegistered(std::string className){
-
-  auto iter = m_registered_algos.find(className);
-
-  if ( iter != m_registered_algos.end() ) {
-    Info("countRegistered()","input class name: %s is already in the registry! Increase counter by 1 and return it", className.c_str() );
-    m_registered_algos.at(className)++;
-    return m_registered_algos.at(className);
-  }
-
-  Info("countRegistered()","input class name: %s is not registered yet. Returning 0", className.c_str() );
-
-  return 0;
-
-}
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(xAH::Algorithm)
