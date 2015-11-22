@@ -13,6 +13,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(xAH::AlgorithmRegistry)
 
+std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
+
 int xAH::AlgorithmRegistry::countRegistered(std::string className){
 
   auto iter = m_registered_algos.find(className);
