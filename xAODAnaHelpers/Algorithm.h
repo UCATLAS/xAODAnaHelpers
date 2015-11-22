@@ -131,7 +131,7 @@ namespace xAH {
                 bookkeeps the number of times :cpp:member:`xAH::Algorithm::m_className` has been used in a variable shared among all classes/instances that inherit from me
             @endrst
          */
-	static std::map<std::string, int> m_instanceRegistry;
+	static std::map<std::string, int> m_instanceRegistry = {};
   };
 
 }
