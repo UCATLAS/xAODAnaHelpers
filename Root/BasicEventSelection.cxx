@@ -58,7 +58,7 @@ BasicEventSelection :: BasicEventSelection () :
   m_mu_cutflowHist_2(nullptr),
   m_ph_cutflowHist_1(nullptr),
   m_tau_cutflowHist_1(nullptr),
-  m_tau_cutflowHist_2(nullptr),  
+  m_tau_cutflowHist_2(nullptr),
   m_jet_cutflowHist_1(nullptr),
   m_truth_cutflowHist_1(nullptr)
 {
@@ -380,12 +380,15 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     // if not using a DAOD (or explicitly vetoing check on metadata),
     // simply retrieve the tree entries and weight
     //
-    TTree* CollectionTree = dynamic_cast<TTree*>( wk()->inputFile()->Get("CollectionTree") );
+    TTree* CollectionTree = static_cast<const TTree*>( wk()->inputFile()->Get("CollectionTree") );
 
-    m_MD_finalNevents       = m_MD_initialNevents     = CollectionTree->GetEntries();
-    m_MD_finalSumW          = m_MD_initialSumW        = CollectionTree->GetWeight() * CollectionTree->GetEntries();
-    m_MD_finalSumWSquared   = m_MD_initialSumWSquared = ( CollectionTree->GetWeight() * CollectionTree->GetWeight() ) * CollectionTree->GetEntries();
-
+    if(CollectionTree){
+        m_MD_finalNevents       = m_MD_initialNevents     = CollectionTree->GetEntries();
+        m_MD_finalSumW          = m_MD_initialSumW        = CollectionTree->GetWeight() * CollectionTree->GetEntries();
+        m_MD_finalSumWSquared   = m_MD_initialSumWSquared = ( CollectionTree->GetWeight() * CollectionTree->GetWeight() ) * CollectionTree->GetEntries();
+    } else {
+        Info("fileExecute()", "File contains no CollectionTree. No MetaData retrievable.");
+    }
   }
 
   // Write metadata event bookkeepers to histogram
