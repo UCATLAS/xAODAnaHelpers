@@ -316,32 +316,40 @@ EL::StatusCode MuonCalibrator :: execute ()
       } // close calibration loop
     }
 
+    if ( m_debug ) { Info("execute()", "setOriginalObjectLink"); }
     if ( !xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first)) ) {
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
     // save pointers in ConstDataVector with same order
     //
-    RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "", ToolName::CALIBRATOR), "");
+    if ( m_debug ) { Info("execute()", "makeSubsetCont"); }
+    RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "MuonCalibrator", ToolName::CALIBRATOR), "");
+    if ( m_debug ) { Info("execute()", "done makeSubsetCont"); }
 
     // sort after coping to CDV
     if ( m_sort ) {
+      if ( m_debug ) { Info("execute()", "sorting"); }
       std::sort( calibMuonsCDV->begin(), calibMuonsCDV->end(), HelperFunctions::sort_pt );
     }
 
     // add SC container to TStore
     //
+    if ( m_debug ) { Info("execute()", "recording calibMuonsSC"); }
     RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first,  outSCContainerName  ), "Failed to store container.");
     RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, outSCAuxContainerName ), "Failed to store aux container.");
+
     //
     // add ConstDataVector to TStore
     //
+    if ( m_debug ) { Info("execute()", "record calibMuonsCDV"); }
     RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, outContainerName), "Failed to store const data container.");
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
+  if ( m_debug ) { Info("execute()", "record m_outputAlgoSystNames"); }
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   // look what we have in TStore
