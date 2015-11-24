@@ -203,7 +203,7 @@ namespace HelperClasses{
       }
     } // sfFTagFlt
     m_area          = has_exact("area");
-    if( has_exact("LeadingJets") ){
+    if( has_match("LeadingJets") ){
       m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );
       if (m_numLeadingJets == 0){ //Perhaps infoSwitches are combined and Njets < 10
         m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-1 , 1)).c_str() );
