@@ -157,7 +157,6 @@ namespace HelperFunctions {
        }
 
      }
-
      return StatusCode::SUCCESS;
 
    }
