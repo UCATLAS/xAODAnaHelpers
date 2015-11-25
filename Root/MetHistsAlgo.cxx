@@ -38,6 +38,7 @@ EL::StatusCode MetHistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
+  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
   // needed here and not in initalize since this is called first
   Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
   if ( this->configure() == EL::StatusCode::FAILURE ) {

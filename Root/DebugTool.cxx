@@ -59,6 +59,8 @@ EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 EL::StatusCode DebugTool :: histInitialize ()
 {
   Info("histInitialize()", "Calling histInitialize");
+  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
+
   return EL::StatusCode::SUCCESS;
 }
 

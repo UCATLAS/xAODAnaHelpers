@@ -42,7 +42,7 @@ EL::StatusCode MuonHistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
-
+  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 

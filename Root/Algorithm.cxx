@@ -28,11 +28,15 @@ xAH::Algorithm::Algorithm(std::string className) :
   m_store(nullptr),
   m_className(className)
 {
-    registerInstance();
 }
 
 xAH::Algorithm::~Algorithm() {
     unregisterInstance();
+}
+
+StatusCode xAH::Algorithm::initialize(){
+    registerInstance();
+    return StatusCode::SUCCESS;
 }
 
 xAH::Algorithm* xAH::Algorithm::setName(std::string name){

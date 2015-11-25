@@ -155,7 +155,7 @@ EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
 EL::StatusCode TruthSelector :: histInitialize ()
 {
   Info("histInitialize()", "Calling histInitialize");
-
+  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 

@@ -178,7 +178,7 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-
+  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 

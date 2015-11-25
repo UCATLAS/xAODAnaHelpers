@@ -249,6 +249,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
+  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
 
   // Make sure configuration variables have been configured
   if ( !getConfig().empty() && ( this->configure() == EL::StatusCode::FAILURE ) ) {

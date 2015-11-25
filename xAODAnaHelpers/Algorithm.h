@@ -12,6 +12,9 @@
 
 #include <string>
 
+// for StatusCode::isSuccess
+#include "AsgTools/StatusCode.h"
+
 namespace xAH {
 
     /**
@@ -59,6 +62,11 @@ namespace xAH {
         /// @cond
         ClassDef(Algorithm, 1);
         /// @endcond
+
+        /**
+            @brief Run any initializations commmon to all xAH Algorithms (such as registerInstance). Call this inside :code:`histInitialize` for best results.
+         */
+        StatusCode initialize();
 
         /**
             @brief Set the name of this particular instance to something unique (used for ROOT's TObject name primarily)

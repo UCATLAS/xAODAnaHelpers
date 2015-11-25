@@ -192,6 +192,7 @@ EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 
 EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
+  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 

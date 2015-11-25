@@ -74,6 +74,7 @@ EL::StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
 
 EL::StatusCode HLTJetRoIBuilder :: histInitialize ()
 {
+  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
