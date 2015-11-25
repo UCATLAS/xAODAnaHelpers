@@ -380,7 +380,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     // if not using a DAOD (or explicitly vetoing check on metadata),
     // simply retrieve the tree entries and weight
     //
-    TTree* CollectionTree = static_cast<const TTree*>( wk()->inputFile()->Get("CollectionTree") );
+    const TTree* CollectionTree = static_cast<const TTree*>( wk()->inputFile()->Get("CollectionTree") );
 
     if(CollectionTree){
         m_MD_finalNevents       = m_MD_initialNevents     = CollectionTree->GetEntries();
