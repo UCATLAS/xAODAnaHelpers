@@ -303,7 +303,7 @@ EL::StatusCode JetSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::initialize()", xAH::Algorithm::initialize(), "");
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   return EL::StatusCode::SUCCESS;
 }

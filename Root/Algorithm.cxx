@@ -34,7 +34,7 @@ xAH::Algorithm::~Algorithm() {
     unregisterInstance();
 }
 
-StatusCode xAH::Algorithm::initialize(){
+StatusCode xAH::Algorithm::algInitialize(){
     registerInstance();
     return StatusCode::SUCCESS;
 }

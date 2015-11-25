@@ -66,7 +66,7 @@ namespace xAH {
         /**
             @brief Run any initializations commmon to all xAH Algorithms (such as registerInstance). Call this inside :code:`histInitialize` for best results.
          */
-        StatusCode initialize();
+        StatusCode algInitialize();
 
         /**
             @brief Set the name of this particular instance to something unique (used for ROOT's TObject name primarily)
