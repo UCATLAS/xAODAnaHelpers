@@ -47,8 +47,8 @@ using HelperClasses::ToolName;
 ClassImp(OverlapRemover)
 
 
-OverlapRemover :: OverlapRemover () :
-    Algorithm("OverlapRemover"),
+OverlapRemover :: OverlapRemover (std::string className) :
+    Algorithm(className),
     m_useElectrons(false),
     m_useMuons(false),
     m_usePhotons(false),

@@ -32,7 +32,7 @@ StatusCode MetHists::initialize() {
   m_metFinalClusPy    = book(m_name,  "metFinalClusPy",    "metFinalClusPy",    100,  -200,    200);
   m_metFinalClusSumEt = book(m_name,  "metFinalClusSumEt", "metFinalClusSumEt", 100,     0,   2000);
   m_metFinalClusPhi   = book(m_name,  "metFinalClusPhi",   "metFinalClusPhi",   100,    -3.2,    3.2);
-  
+
   m_metFinalTrk       = book(m_name, "metFinalTrk",       "metFinalTrk",       100,     0,    200);
   m_metFinalTrkPx     = book(m_name, "metFinalTrkPx",     "metFinalTrkPx",     100,  -200,    200);
   m_metFinalTrkPy     = book(m_name, "metFinalTrkPy",     "metFinalTrkPy",     100,  -200,    200);
@@ -43,13 +43,13 @@ StatusCode MetHists::initialize() {
 }
 
 StatusCode MetHists::execute( const xAOD::MissingETContainer* met, float eventWeight ) {
-  
+
   if(m_debug) std::cout << "in execute " <<std::endl;
 
   //
   // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
   //
-  const xAOD::MissingET* final_clus = *met->find("FinalClus"); 
+  const xAOD::MissingET* final_clus = *met->find("FinalClus");
   m_metFinalClus      -> Fill( final_clus->met()   / 1e3, eventWeight);
   m_metFinalClusPx    -> Fill( final_clus->mpx()   / 1e3, eventWeight);
   m_metFinalClusPy    -> Fill( final_clus->mpy()   / 1e3, eventWeight);
@@ -59,7 +59,7 @@ StatusCode MetHists::execute( const xAOD::MissingETContainer* met, float eventWe
   //
   // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
   //
-  const xAOD::MissingET* final_trk = *met->find("FinalTrk"); 
+  const xAOD::MissingET* final_trk = *met->find("FinalTrk");
   m_metFinalTrk       -> Fill( final_trk->met()   / 1e3,  eventWeight);
   m_metFinalTrkPx     -> Fill( final_trk->mpx()   / 1e3,  eventWeight);
   m_metFinalTrkPy     -> Fill( final_trk->mpy()   / 1e3,  eventWeight);

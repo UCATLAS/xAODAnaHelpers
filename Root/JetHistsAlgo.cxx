@@ -18,8 +18,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
 
-JetHistsAlgo :: JetHistsAlgo () :
-    Algorithm("JetHistsAlgo")
+JetHistsAlgo :: JetHistsAlgo (std::string className) :
+    Algorithm(className)
 {
   m_inContainerName         = "";
   // which plots will be turned on

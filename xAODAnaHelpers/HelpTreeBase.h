@@ -627,13 +627,13 @@ protected:
   std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
 
   std::vector<float>         m_muon_EnergyLoss;
-  std::vector<float>         m_muon_EnergyLossSigma;		
-  std::vector<unsigned char> m_muon_energyLossType;		
-  std::vector<float>         m_muon_MeasEnergyLoss;		
-  std::vector<float>         m_muon_MeasEnergyLossSigma;	
-  std::vector<float>         m_muon_ParamEnergyLoss;		
+  std::vector<float>         m_muon_EnergyLossSigma;
+  std::vector<unsigned char> m_muon_energyLossType;
+  std::vector<float>         m_muon_MeasEnergyLoss;
+  std::vector<float>         m_muon_MeasEnergyLossSigma;
+  std::vector<float>         m_muon_ParamEnergyLoss;
   std::vector<float>         m_muon_ParamEnergyLossSigmaMinus;
-  std::vector<float>         m_muon_ParamEnergyLossSigmaPlus; 
+  std::vector<float>         m_muon_ParamEnergyLossSigmaPlus;
 
   //
   // electrons
@@ -675,9 +675,9 @@ protected:
   std::vector<float> m_el_topoetcone40;
 
   // PID
-  int m_nel_LHVeryLoose; 
+  int m_nel_LHVeryLoose;
   std::vector<int>   m_el_LHVeryLoose;
-  int m_nel_LHLoose; 
+  int m_nel_LHLoose;
   std::vector<int>   m_el_LHLoose;
   int m_nel_LHMedium;
   std::vector<int>   m_el_LHMedium;
@@ -747,11 +747,11 @@ protected:
   std::vector<float> m_ph_topoetcone40;
 
   // PID
-  int m_nph_IsLoose; 
+  int m_nph_IsLoose;
   std::vector<int>   m_ph_IsLoose;
-  int m_nph_IsMedium; 
+  int m_nph_IsMedium;
   std::vector<int>   m_ph_IsMedium;
-  int m_nph_IsTight; 
+  int m_nph_IsTight;
   std::vector<int>   m_ph_IsTight;
 
   //

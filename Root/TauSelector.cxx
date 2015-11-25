@@ -39,8 +39,8 @@
 ClassImp(TauSelector)
 
 
-TauSelector :: TauSelector () :
-    Algorithm("TauSelector"),
+TauSelector :: TauSelector (std::string className) :
+    Algorithm(className),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_tau_cutflowHist_1(nullptr),

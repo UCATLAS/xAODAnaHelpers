@@ -15,8 +15,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MetHistsAlgo)
 
-MetHistsAlgo :: MetHistsAlgo () :
-    Algorithm("MetHistsAlgo"),
+MetHistsAlgo :: MetHistsAlgo (std::string className) :
+    Algorithm(className),
     m_plots(nullptr)
 {
   m_inContainerName         = "";

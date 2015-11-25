@@ -122,7 +122,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  MuonSelector ();
+  MuonSelector (std::string className = "MuonSelector");
 
   ~MuonSelector();
 

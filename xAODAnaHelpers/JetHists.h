@@ -147,8 +147,8 @@ class JetHists : public HistogramManager
     TH1F* m_jf_mass           ; //!
     TH1F* m_jf_energyFraction ; //!
     TH1F* m_jf_significance3d ; //!
-    TH1F* m_jf_deltaeta       ; //!  
-    TH1F* m_jf_deltaphi       ; //!  
+    TH1F* m_jf_deltaeta       ; //!
+    TH1F* m_jf_deltaphi       ; //!
     TH1F* m_jf_N2Tpar         ; //!
     TH1F* m_jf_pb             ; //!
     TH1F* m_jf_pc             ; //!
@@ -166,8 +166,8 @@ class JetHists : public HistogramManager
     TH1F* m_sv1_efracsvx ; //!
     TH1F* m_sv1_normdist ; //!
 
-    TH1F* m_nIP2DTracks              ; //!  
-    TH1F* m_IP2D_gradeOfTracks       ; //!  
+    TH1F* m_nIP2DTracks              ; //!
+    TH1F* m_IP2D_gradeOfTracks       ; //!
     TH1F* m_IP2D_flagFromV0ofTracks  ; //!
     TH1F* m_IP2D_valD0wrtPVofTracks  ; //!
     TH1F* m_IP2D_sigD0wrtPVofTracks  ; //!
@@ -176,8 +176,8 @@ class JetHists : public HistogramManager
     TH1F* m_IP2D_weightCofTracks     ; //!
     TH1F* m_IP2D_weightUofTracks     ; //!
 
-    TH1F* m_nIP3DTracks              ; //!  
-    TH1F* m_IP3D_gradeOfTracks       ; //!  
+    TH1F* m_nIP3DTracks              ; //!
+    TH1F* m_IP3D_gradeOfTracks       ; //!
     TH1F* m_IP3D_flagFromV0ofTracks  ; //!
     TH1F* m_IP3D_valD0wrtPVofTracks  ; //!
     TH1F* m_IP3D_sigD0wrtPVofTracks  ; //!

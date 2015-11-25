@@ -41,8 +41,8 @@ using HelperClasses::ToolName;
 ClassImp(ElectronEfficiencyCorrector)
 
 
-ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
-    Algorithm("ElectronEfficiencyCorrector"),
+ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string className) :
+    Algorithm(className),
     m_asgElEffCorrTool_elSF_PID(nullptr),
     m_asgElEffCorrTool_elSF_Reco(nullptr),
     m_asgElEffCorrTool_elSF_Trig(nullptr)

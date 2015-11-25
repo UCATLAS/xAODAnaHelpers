@@ -43,8 +43,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TruthSelector)
 
-TruthSelector :: TruthSelector () :
-    Algorithm("TruthSelector"),
+TruthSelector :: TruthSelector (std::string className) :
+    Algorithm(className),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_truth_cutflowHist_1(nullptr)

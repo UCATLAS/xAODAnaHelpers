@@ -39,8 +39,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)
 
-JetCalibrator :: JetCalibrator () :
-    Algorithm("JetCalibrator"),
+JetCalibrator :: JetCalibrator (std::string className) :
+    Algorithm(className),
     m_runSysts(false),          // gets set later is syst applies to this tool
     m_jetCalibration(nullptr),  // JetCalibrationTool
     m_JESUncertTool(nullptr),   // JetUncertaintiesTool

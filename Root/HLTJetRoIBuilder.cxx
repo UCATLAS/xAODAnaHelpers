@@ -46,8 +46,8 @@ using std::vector;
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetRoIBuilder)
 
-HLTJetRoIBuilder :: HLTJetRoIBuilder () :
-    Algorithm("HLTJetRoIBuilder"),
+HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
+    Algorithm(className),
     m_trigItem(""),
     m_outContainerName(""),
     m_trigDecTool(nullptr)

@@ -362,7 +362,7 @@ namespace HelperFunctions {
       for ( auto sys : *sys_list ) {
 	if ( !sys.empty() ) { return true; }
       }
-    } 
+    }
     return false;
   }
 

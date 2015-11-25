@@ -534,11 +534,11 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
 
   if( m_muInfoSwitch->m_energyLoss ) {
     m_tree->Branch("muon_EnergyLoss"                ,  &m_muon_EnergyLoss               );
-    m_tree->Branch("muon_EnergyLossSigma"           ,  &m_muon_EnergyLossSigma          );    
+    m_tree->Branch("muon_EnergyLossSigma"           ,  &m_muon_EnergyLossSigma          );
     m_tree->Branch("muon_energyLossType"            ,  &m_muon_energyLossType           );
     m_tree->Branch("muon_MeasEnergyLoss"            ,  &m_muon_MeasEnergyLoss           );
     m_tree->Branch("muon_MeasEnergyLossSigma"       ,  &m_muon_MeasEnergyLossSigma      );
-    m_tree->Branch("muon_ParamEnergyLoss"           ,  &m_muon_ParamEnergyLoss          );    
+    m_tree->Branch("muon_ParamEnergyLoss"           ,  &m_muon_ParamEnergyLoss          );
     m_tree->Branch("muon_ParamEnergyLossSigmaMinus" ,  &m_muon_ParamEnergyLossSigmaMinus);
     m_tree->Branch("muon_ParamEnergyLossSigmaPlus"  ,  &m_muon_ParamEnergyLossSigmaPlus );
   }
@@ -728,14 +728,14 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
     if(m_muInfoSwitch->m_energyLoss ) {
       static SG::AuxElement::Accessor< float >         accMuon_EnergyLoss                ("EnergyLoss");
-      static SG::AuxElement::Accessor< float >         accMuon_EnergyLossSigma           ("EnergyLossSigma");      
-      static SG::AuxElement::Accessor< unsigned char > accMuon_energyLossType            ("energyLossType");       
-      static SG::AuxElement::Accessor< float >         accMuon_MeasEnergyLoss            ("MeasEnergyLoss");          
-      static SG::AuxElement::Accessor< float >         accMuon_MeasEnergyLossSigma       ("MeasEnergyLossSigma");          
-      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLoss           ("ParamEnergyLoss");      
+      static SG::AuxElement::Accessor< float >         accMuon_EnergyLossSigma           ("EnergyLossSigma");
+      static SG::AuxElement::Accessor< unsigned char > accMuon_energyLossType            ("energyLossType");
+      static SG::AuxElement::Accessor< float >         accMuon_MeasEnergyLoss            ("MeasEnergyLoss");
+      static SG::AuxElement::Accessor< float >         accMuon_MeasEnergyLossSigma       ("MeasEnergyLossSigma");
+      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLoss           ("ParamEnergyLoss");
       static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLossSigmaMinus ("ParamEnergyLossSigmaMinus");
-      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLossSigmaPlus  ("ParamEnergyLossSigmaPlus"); 
-      
+      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLossSigmaPlus  ("ParamEnergyLossSigmaPlus");
+
       if(accMuon_EnergyLoss                .isAvailable( *muon_itr)) m_muon_EnergyLoss               .push_back(accMuon_EnergyLoss                (*muon_itr)  );
       if(accMuon_EnergyLossSigma           .isAvailable( *muon_itr)) m_muon_EnergyLossSigma          .push_back(accMuon_EnergyLossSigma           (*muon_itr)  );
       if(accMuon_energyLossType            .isAvailable( *muon_itr)) m_muon_energyLossType           .push_back(accMuon_energyLossType            (*muon_itr)  );
@@ -839,13 +839,13 @@ void HelpTreeBase::ClearMuons() {
 
   if ( m_muInfoSwitch->m_energyLoss ) {
     m_muon_EnergyLoss.clear();
-    m_muon_EnergyLossSigma.clear();		
-    m_muon_energyLossType.clear();		
-    m_muon_MeasEnergyLoss.clear();		
-    m_muon_MeasEnergyLossSigma.clear();	
-    m_muon_ParamEnergyLoss.clear();		
+    m_muon_EnergyLossSigma.clear();
+    m_muon_energyLossType.clear();
+    m_muon_MeasEnergyLoss.clear();
+    m_muon_MeasEnergyLossSigma.clear();
+    m_muon_ParamEnergyLoss.clear();
     m_muon_ParamEnergyLossSigmaMinus.clear();
-    m_muon_ParamEnergyLossSigmaPlus.clear(); 
+    m_muon_ParamEnergyLossSigmaPlus.clear();
 
   }
 
@@ -1351,22 +1351,22 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
       static SG::AuxElement::Accessor<char> isIsoCone40Acc         ("isIsolated_Cone40");
       static SG::AuxElement::Accessor<char> isIsoCone20Acc         ("isIsolated_Cone20");
 
-      if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) { 
-	m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) ); 
-      } else { 
-	m_ph_isIsolated_Cone40CaloOnly.push_back( -1 ); 
+      if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) {
+	m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) );
+      } else {
+	m_ph_isIsolated_Cone40CaloOnly.push_back( -1 );
       }
-      
-      if ( isIsoCone40Acc.isAvailable( *ph_itr ) ) { 
-	m_ph_isIsolated_Cone40.push_back( isIsoCone40Acc( *ph_itr ) ); 
-      } else { 
-	m_ph_isIsolated_Cone40.push_back( -1 ); 
+
+      if ( isIsoCone40Acc.isAvailable( *ph_itr ) ) {
+	m_ph_isIsolated_Cone40.push_back( isIsoCone40Acc( *ph_itr ) );
+      } else {
+	m_ph_isIsolated_Cone40.push_back( -1 );
       }
-      
-      if ( isIsoCone20Acc.isAvailable( *ph_itr ) ) { 
+
+      if ( isIsoCone20Acc.isAvailable( *ph_itr ) ) {
 	m_ph_isIsolated_Cone20.push_back( isIsoCone20Acc( *ph_itr ) );
-      } else { 
-	m_ph_isIsolated_Cone20.push_back( -1 ); 
+      } else {
+	m_ph_isIsolated_Cone20.push_back( -1 );
       }
 
       m_ph_etcone20    .push_back( ph_itr->isolation( xAOD::Iso::etcone20    ) / m_units  );
@@ -1401,7 +1401,7 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
         m_ph_IsTight.push_back( phTightAcc( *ph_itr ) );
 	if ( phTightAcc( *ph_itr ) == 1 ) { ++m_nph_IsTight; }
       } else { m_ph_IsTight.push_back( -1 ); }
-      
+
     }
 
     this->FillPhotonsUser(ph_itr);

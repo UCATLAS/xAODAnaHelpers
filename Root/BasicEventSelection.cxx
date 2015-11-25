@@ -43,8 +43,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
 
-BasicEventSelection :: BasicEventSelection () :
-    Algorithm("BasicEventSelection"),
+BasicEventSelection :: BasicEventSelection (std::string className) :
+    Algorithm(className),
     m_PU_default_channel(0),
     m_grl(nullptr),
     m_pileuptool(nullptr),

@@ -26,7 +26,7 @@ class MuonHists : public HistogramManager
     HelperClasses::MuonInfoSwitch* m_infoSwitch;
 
   private:
-    
+
     //basic
     TH1F* m_Pt;                  //!
     TH1F* m_Eta;                 //!
@@ -53,7 +53,7 @@ class MuonHists : public HistogramManager
     TH1F* m_isIsolated_FixedCutTightTrackOnly	   ; //!
     TH1F* m_isIsolated_UserDefinedFixEfficiency	   ; //!
     TH1F* m_isIsolated_UserDefinedCut		   ; //!
-    
+
     TH1F* m_ptcone20				   ; //!
     TH1F* m_ptcone30				   ; //!
     TH1F* m_ptcone40				   ; //!
@@ -69,7 +69,7 @@ class MuonHists : public HistogramManager
     TH1F* m_isLoose				   ; //!
     TH1F* m_isMedium				   ; //!
     TH1F* m_isTight                                ; //!
-    
+
 };
 
 #endif

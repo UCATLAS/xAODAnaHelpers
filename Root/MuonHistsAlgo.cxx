@@ -17,8 +17,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonHistsAlgo)
 
-MuonHistsAlgo :: MuonHistsAlgo () :
-    Algorithm("MuonHistsAlgo")
+MuonHistsAlgo :: MuonHistsAlgo (std::string className) :
+    Algorithm(className)
 {
   m_inContainerName         = "";
   // which plots will be turned on

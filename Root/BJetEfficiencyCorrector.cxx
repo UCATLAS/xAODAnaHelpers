@@ -33,8 +33,8 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
-    Algorithm("BJetEfficiencyCorrector"),
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
+    Algorithm(className),
     m_BJetSelectTool(nullptr),
     m_BJetEffSFTool(nullptr)
 {

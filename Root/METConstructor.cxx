@@ -52,8 +52,8 @@ using std::cout; using std::cerr; using std::endl;
 ClassImp(METConstructor)
 
 
-METConstructor :: METConstructor () :
-    Algorithm("METConstructor"),
+METConstructor :: METConstructor (std::string className) :
+    Algorithm(className),
     m_metmaker(0)
 {
 

@@ -46,8 +46,8 @@
 ClassImp(JetSelector)
 
 
-JetSelector :: JetSelector () :
-    Algorithm("JetSelector"),
+JetSelector :: JetSelector (std::string className) :
+    Algorithm(className),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_jet_cutflowHist_1(nullptr),

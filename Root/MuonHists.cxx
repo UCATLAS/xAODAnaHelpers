@@ -69,7 +69,7 @@ StatusCode MuonHists::initialize() {
     m_topoetcone30 = book(m_name, "topoetcone30", "topoetcone30", 100, 0, 10);
     m_topoetcone40 = book(m_name, "topoetcone40", "topoetcone40", 100, 0, 10);
 
-  }    
+  }
 
 
   // quality
@@ -159,7 +159,7 @@ StatusCode MuonHists::execute( const xAOD::Muon* muon, float eventWeight) {
     static SG::AuxElement::Accessor<char> isLooseQAcc ("isLooseQ");
     static SG::AuxElement::Accessor<char> isMediumQAcc ("isMediumQ");
     static SG::AuxElement::Accessor<char> isTightQAcc ("isTightQ");
-    
+
     if( isVeryLooseQAcc.isAvailable( *muon ) ) { m_isVeryLoose->Fill( static_cast<int>(isVeryLooseQAcc( *muon )),  eventWeight ); } else { m_isVeryLoose->Fill( -1 ,  eventWeight ); }
     if( isLooseQAcc.isAvailable( *muon ) )     { m_isLoose    ->Fill( static_cast<int>(isLooseQAcc    ( *muon )),  eventWeight ); }         else { m_isLoose->Fill( -1 ,  eventWeight ); }
     if( isMediumQAcc.isAvailable( *muon ) )    { m_isMedium   ->Fill( static_cast<int>(isMediumQAcc   ( *muon )),  eventWeight ); }       else { m_isMedium->Fill( -1 ,  eventWeight ); }

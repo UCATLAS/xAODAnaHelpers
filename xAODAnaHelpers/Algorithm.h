@@ -54,7 +54,7 @@ namespace xAH {
             @brief Initialization
             @param className    This is the name of the class that inherits from :cpp:class:`~xAH::Algorithm`
          */
-        Algorithm(std::string className);
+        Algorithm(std::string className = "Algorithm");
         ~Algorithm();
         /// @cond
         ClassDef(Algorithm, 1);

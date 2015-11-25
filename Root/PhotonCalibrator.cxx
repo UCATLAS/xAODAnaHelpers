@@ -60,8 +60,8 @@ using HelperClasses::ToolName;
 ClassImp(PhotonCalibrator)
 
 
-PhotonCalibrator :: PhotonCalibrator () :
-    Algorithm("PhotonCalibrator"),
+PhotonCalibrator :: PhotonCalibrator (std::string className) :
+    Algorithm(className),
     m_EgammaCalibrationAndSmearingTool(nullptr),
     m_photonFudgeMCTool(nullptr),
     m_photonTightIsEMSelector(nullptr),

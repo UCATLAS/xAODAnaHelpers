@@ -44,8 +44,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronSelector)
 
-ElectronSelector :: ElectronSelector () :
-    Algorithm("ElectronSelector"),
+ElectronSelector :: ElectronSelector (std::string className) :
+    Algorithm(className),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_el_cutflowHist_1(nullptr),

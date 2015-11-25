@@ -16,8 +16,8 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-int setupJob(int argc, char* argv[],  EL::Job& job, 
-	     std::string& configName, std::string& submitDir, std::string& systName, 
+int setupJob(int argc, char* argv[],  EL::Job& job,
+	     std::string& configName, std::string& submitDir, std::string& systName,
 	     float& systVal, bool& f_grid, bool& f_production, std::string& outputName,   std::vector< std::string >& outputContainerNames){
 
 
@@ -256,7 +256,7 @@ int setupJob(int argc, char* argv[],  EL::Job& job,
   }else{
     std::cout << "No Match " << outputName << std::endl;
   }
-    
+
 
   // Set the name of the input TTree. It's always "CollectionTree" for xAOD files.
   sh.setMetaString( "nc_tree", "CollectionTree" );

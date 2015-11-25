@@ -39,8 +39,8 @@
 ClassImp(DebugTool)
 
 
-DebugTool :: DebugTool () :
-    Algorithm("DebugTool"),
+DebugTool :: DebugTool (std::string className) :
+    Algorithm(className),
     m_printStore(false)
 {
   Info("DebugTool()", "Calling constructor");

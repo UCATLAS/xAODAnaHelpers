@@ -48,9 +48,9 @@ using HelperClasses::ToolName;
 ClassImp(ElectronCalibrator)
 
 
-ElectronCalibrator :: ElectronCalibrator () :
-    Algorithm("ElectronCalibrator"),
-    m_IsolationCorrectionTool(nullptr)
+ElectronCalibrator :: ElectronCalibrator (std::string className) :
+    Algorithm(className),
+    m_IsolationCorrectionTool(nullptr),
     m_EgammaCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,

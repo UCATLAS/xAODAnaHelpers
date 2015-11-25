@@ -16,8 +16,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
-TrackHistsAlgo :: TrackHistsAlgo () :
-    Algorithm("TrackHistsAlgo"),
+TrackHistsAlgo :: TrackHistsAlgo (std::string className) :
+    Algorithm(className),
     m_plots(nullptr)
 {
   m_inContainerName         = "";

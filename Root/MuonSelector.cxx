@@ -44,8 +44,8 @@
 ClassImp(MuonSelector)
 
 
-MuonSelector :: MuonSelector () :
-    Algorithm("MuonSelector"),
+MuonSelector :: MuonSelector (std::string className) :
+    Algorithm(className),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_mu_cutflowHist_1(nullptr),

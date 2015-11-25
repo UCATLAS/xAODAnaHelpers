@@ -41,8 +41,8 @@ using HelperClasses::ToolName;
 ClassImp(MuonEfficiencyCorrector)
 
 
-MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
-    Algorithm("MuonEfficiencyCorrector"),
+MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
+    Algorithm(className),
     m_asgMuonEffCorrTool_muSF_Reco(nullptr),
     m_asgMuonEffCorrTool_muSF_Iso(nullptr),
     m_asgMuonEffCorrTool_muSF_Trig(nullptr),

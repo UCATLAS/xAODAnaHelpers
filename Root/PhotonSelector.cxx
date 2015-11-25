@@ -39,8 +39,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(PhotonSelector)
 
-PhotonSelector :: PhotonSelector () :
-    Algorithm("PhotonSelector"),
+PhotonSelector :: PhotonSelector (std::string className) :
+    Algorithm(className),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_ph_cutflowHist_1(nullptr),
