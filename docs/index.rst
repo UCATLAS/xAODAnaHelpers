@@ -3,6 +3,9 @@
 xAODAnaHelpers
 ==============
 
+.. image:: https://zenodo.org/badge/doi/10.5281/zenodo.34183.svg
+   :target: http://dx.doi.org/10.5281/zenodo.34183
+
 The xAOD analysis framework, born out of ProofAna...or not.
 
 Welcome to the xAODAnaHelpers wiki! This is an xAOD Analysis Framework built for Run II of ATLAS.
