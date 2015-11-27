@@ -10,6 +10,7 @@
 
 // external tools include(s):
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
+#include "IsolationCorrections/IsolationCorrectionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -37,10 +38,15 @@ public:
 
   std::string m_esModel;
   std::string m_decorrelationModel;
+  
+  // for calo based isolation vars leakage correction 
+  bool        m_useDataDrivenLeakageCorr;
 
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
+
+  bool m_isMC;            //!
 
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
@@ -50,6 +56,7 @@ private:
 
   // tools
   CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool; //!
+  CP::IsolationCorrectionTool          *m_IsolationCorrectionTool;          //! /* apply leakage correction to calo based isolation variables for electrons */
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
