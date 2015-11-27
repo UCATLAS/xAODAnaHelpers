@@ -279,7 +279,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   } else {
     m_IsolationCorrectionTool = new CP::IsolationCorrectionTool("IsolationCorrectionTool");
   }  
-  m_IsolationCorrectionTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  m_IsolationCorrectionTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ),"Failed to set property Apply_datadriven");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->setProperty("IsMC", m_isMC ),"Failed to set property IsMC");
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->initialize(), "Failed to properly initialize the IsolationCorrectionTool");
@@ -370,7 +370,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 	if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
 	  Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
 	}
-	if ( m_IsolationCorrectionTool->CorrectLeakage( *elSC_itr ) != CP::CorrectionCode::Ok ) {
+	if ( elSC_itr->pt() > 7e3 && m_IsolationCorrectionTool->CorrectLeakage( *elSC_itr ) != CP::CorrectionCode::Ok ) {
 	  Warning("execute()", "Problem in CP::IsolationCorrectionTool::CorrectLeakage()");
 	}
       }
