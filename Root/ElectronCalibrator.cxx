@@ -49,7 +49,8 @@ ClassImp(ElectronCalibrator)
 
 
 ElectronCalibrator :: ElectronCalibrator () :
-  m_EgammaCalibrationAndSmearingTool(nullptr)
+  m_EgammaCalibrationAndSmearingTool(nullptr),
+  m_IsolationCorrectionTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -78,6 +79,8 @@ ElectronCalibrator :: ElectronCalibrator () :
 
   m_esModel                 = "";
   m_decorrelationModel      = "";
+  
+  m_useDataDrivenLeakageCorr = false;
 
 }
 
@@ -107,6 +110,8 @@ EL::StatusCode  ElectronCalibrator :: configure ()
 
     m_esModel		      = config->GetValue("ESModel" , m_esModel.c_str() );
     m_decorrelationModel      = config->GetValue("DecorrelationModel" , m_decorrelationModel.c_str() );
+
+    m_useDataDrivenLeakageCorr 	= config->GetValue("UseDataDrivenLeakageCorr" ,  m_useDataDrivenLeakageCorr);
 
     config->Print();
 
@@ -244,9 +249,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     } 
   }
   RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
-  
-  // ***********************************************************
-  
+    
   // Get a list of recommended systematics for this tool
   //
   const CP::SystematicSet recSyst = CP::SystematicSet();
@@ -266,6 +269,22 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     }
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
+  
+  // ***********************************************************
+  
+  // initialize the CP::IsolationCorrectionTool
+  //  
+  if ( asg::ToolStore::contains<CP::IsolationCorrectionTool>("IsolationCorrectionTool") ) {
+    m_IsolationCorrectionTool = asg::ToolStore::get<CP::IsolationCorrectionTool>("IsolationCorrectionTool");
+  } else {
+    m_IsolationCorrectionTool = new CP::IsolationCorrectionTool("IsolationCorrectionTool");
+  }  
+  m_IsolationCorrectionTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO
+  RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ),"Failed to set property Apply_datadriven");
+  RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->setProperty("IsMC", m_isMC ),"Failed to set property IsMC");
+  RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->initialize(), "Failed to properly initialize the IsolationCorrectionTool");
+
+  // ***********************************************************
   
   Info("initialize()", "ElectronCalibrator Interface succesfully initialized!" );
 
@@ -345,11 +364,14 @@ EL::StatusCode ElectronCalibrator :: execute ()
 	}
       }
 
-      // apply calibration (w/ syst)
+      // apply calibration (w/ syst) and leakage correction to calo based iso vars
       //
       if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
 	if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
 	  Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
+	}
+	if ( elSC_itr->pt() > 7e3 && m_IsolationCorrectionTool->CorrectLeakage( *elSC_itr ) != CP::CorrectionCode::Ok ) {
+	  Warning("execute()", "Problem in CP::IsolationCorrectionTool::CorrectLeakage()");
 	}
       }
       
@@ -421,6 +443,7 @@ EL::StatusCode ElectronCalibrator :: finalize ()
   Info("finalize()", "Deleting tool instances...");
 
   if ( m_EgammaCalibrationAndSmearingTool ) { m_EgammaCalibrationAndSmearingTool = nullptr; delete m_EgammaCalibrationAndSmearingTool; }
+  if ( m_IsolationCorrectionTool )          { m_IsolationCorrectionTool = nullptr; delete m_IsolationCorrectionTool; }
 
   return EL::StatusCode::SUCCESS;
 }

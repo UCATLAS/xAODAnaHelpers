@@ -12,9 +12,10 @@ Event Level
 :math:`e` and :math:`\gamma`
 ----------------------------
 
--  `ElectronIsolationTool <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ElectronIsolationSelectionTool>`__
+-  `IsolationSelectionTool <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/IsolationSelectionTool>`__
 -  `ElectronPhotonFourMomentumCorrection <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonFourMomentumCorrection>`__
 -  `ElectronPhotonSelectorTools <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonSelectorTools>`__
+-  `IsolationCorrectionTool <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/IsolationLeakageCorrections>`__
 
 :math:`j`
 ---------
