@@ -1807,7 +1807,6 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
 void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, const std::string jetName ) {
 
   this->ClearJets(jetName);
-  this->ClearJetsUser(jetName);
 
   const xAOD::VertexContainer* vertices(nullptr);
   const xAOD::Vertex *pv = 0;
@@ -2812,6 +2811,8 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_truth_partonPt.clear();
     thisJet->m_jet_truth_partonDR.clear();
   }
+
+  this->ClearJetsUser(jetName);
 
 }
 
