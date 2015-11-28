@@ -69,6 +69,11 @@ namespace xAH {
         StatusCode algInitialize();
 
         /**
+            @brief Run any finalizations common to all xAH Algorithms (such as unregisterInstance). Call this inside :code:`histFinalize` for best results.
+         */
+        StatusCode algFinalize();
+
+        /**
             @brief Set the name of this particular instance to something unique (used for ROOT's TObject name primarily)
             @param name         The name of the instance
          */

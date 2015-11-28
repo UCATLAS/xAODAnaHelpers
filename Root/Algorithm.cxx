@@ -30,12 +30,13 @@ xAH::Algorithm::Algorithm(std::string className) :
 {
 }
 
-xAH::Algorithm::~Algorithm() {
-    unregisterInstance();
-}
-
 StatusCode xAH::Algorithm::algInitialize(){
     registerInstance();
+    return StatusCode::SUCCESS;
+}
+
+StatusCode xAH::Algorithm::algFinalize(){
+    unregisterInstance();
     return StatusCode::SUCCESS;
 }
 
