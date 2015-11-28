@@ -44,16 +44,17 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronSelector)
 
-ElectronSelector :: ElectronSelector () :
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr),
-  m_el_cutflowHist_1(nullptr),
-  m_el_cutflowHist_2(nullptr),
-  m_IsolationSelectionTool(nullptr),
-  m_el_LH_PIDManager(nullptr),
-  m_el_CutBased_PIDManager(nullptr),
-  m_trigDecTool(nullptr),
-  m_trigElMatchTool(nullptr)
+ElectronSelector :: ElectronSelector (std::string className) :
+    Algorithm(className),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_el_cutflowHist_1(nullptr),
+    m_el_cutflowHist_2(nullptr),
+    m_IsolationSelectionTool(nullptr),
+    m_el_LH_PIDManager(nullptr),
+    m_el_CutBased_PIDManager(nullptr),
+    m_trigDecTool(nullptr),
+    m_trigElMatchTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -111,7 +112,7 @@ ElectronSelector :: ElectronSelector () :
 
   m_readIDFlagsFromDerivation = false;
   m_confDirPID              = "mc15_20150224";
-  
+
   // likelihood-based PID
   m_doLHPIDcut              = false;
   m_LHOperatingPoint        = "Loose";
@@ -126,8 +127,8 @@ ElectronSelector :: ElectronSelector () :
   //
   m_MinIsoWPCut             = "";
   m_IsoWPList		    = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
-  m_CaloIsoEff              = "0.1*x+90";  
-  m_TrackIsoEff             = "98";        
+  m_CaloIsoEff              = "0.1*x+90";
+  m_TrackIsoEff             = "98";
   m_CaloBasedIsoType        = "topoetcone20";
   m_TrackBasedIsoType       = "ptvarcone20";
 
@@ -184,7 +185,7 @@ EL::StatusCode  ElectronSelector :: configure ()
 
     m_MinIsoWPCut             = config->GetValue("MinIsoWPCut"       ,  m_MinIsoWPCut.c_str());
     m_IsoWPList		      = config->GetValue("IsolationWPList"   ,  m_IsoWPList.c_str());
-    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());  
+    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());
     m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());
     m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
     m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
@@ -197,7 +198,7 @@ EL::StatusCode  ElectronSelector :: configure ()
 
     delete config; config = nullptr;
   }
- 
+
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   if ( m_LHOperatingPoint != "VeryLoose" &&
@@ -219,13 +220,13 @@ EL::StatusCode  ElectronSelector :: configure ()
   //
   if ( m_IsoWPList.empty() ) {
     m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
-  } 
+  }
   std::string token;
   std::istringstream ss(m_IsoWPList);
   while ( std::getline(ss, token, ',') ) {
     m_IsoKeys.push_back(token);
   }
-  
+
   if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
@@ -263,7 +264,7 @@ EL::StatusCode ElectronSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -311,36 +312,36 @@ EL::StatusCode ElectronSelector :: initialize ()
   // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
   //
-  // This is the case when the selector algorithm is used for 
+  // This is the case when the selector algorithm is used for
   // preselecting objects, and then again for the final selection
   //
-  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_classname).c_str() );
-  if ( this->countUsed() > 0 ) {
+  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_className).c_str() );
+  if ( this->numInstances() > 0 ) {
     m_isUsedBefore = true;
-    Info("initialize()", "\t An algorithm of the same type has been already used %i times", this->countUsed() );
+    Info("initialize()", "\t An algorithm of the same type has been already used %i times", this->numInstances() );
   }
 
   if ( m_useCutFlow ) {
-    
+
     // retrieve the file in which the cutflow hists are stored
     //
     TFile *file     = wk()->getOutputFile ("cutflow");
-    
+
     // retrieve the event cutflows
     //
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
-    
+
     // retrieve the object cutflow
     //
     m_el_cutflowHist_1 = (TH1D*)file->Get("cutflow_electrons_1");
-    
+
     m_el_cutflow_all             = m_el_cutflowHist_1->GetXaxis()->FindBin("all");
-    m_el_cutflow_author_cut      = m_el_cutflowHist_1->GetXaxis()->FindBin("author_cut");     
-    m_el_cutflow_OQ_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("OQ_cut");         
-    m_el_cutflow_ptmax_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");      
+    m_el_cutflow_author_cut      = m_el_cutflowHist_1->GetXaxis()->FindBin("author_cut");
+    m_el_cutflow_OQ_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("OQ_cut");
+    m_el_cutflow_ptmax_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_el_cutflow_ptmin_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
     m_el_cutflow_eta_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
     m_el_cutflow_PID_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("PID_cut");
@@ -348,14 +349,14 @@ EL::StatusCode ElectronSelector :: initialize ()
     m_el_cutflow_d0_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
     m_el_cutflow_d0sig_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("d0sig_cut");
     m_el_cutflow_iso_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
-    
+
     if ( m_isUsedBefore ) {
        m_el_cutflowHist_2 = (TH1D*)file->Get("cutflow_electrons_2");
-    
+
        m_el_cutflow_all 	    = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
-       m_el_cutflow_author_cut      = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");	 
-       m_el_cutflow_OQ_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");	 
-       m_el_cutflow_ptmax_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");	 
+       m_el_cutflow_author_cut      = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
+       m_el_cutflow_OQ_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");
+       m_el_cutflow_ptmax_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
        m_el_cutflow_ptmin_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
        m_el_cutflow_eta_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
        m_el_cutflow_PID_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("PID_cut");
@@ -364,7 +365,7 @@ EL::StatusCode ElectronSelector :: initialize ()
        m_el_cutflow_d0sig_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
        m_el_cutflow_iso_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
     }
-    
+
   }
 
   m_event = wk()->xaodEvent();
@@ -383,7 +384,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-    
+
   // ****************************
   //
   // Initialise Electron ID tools
@@ -405,9 +406,9 @@ EL::StatusCode ElectronSelector :: initialize ()
     Info("initialize()", "Cutting on Electron Cut-Based PID! \n ********************" );
     Info("initialize()", "Selected cut-based WP: %s", (m_el_CutBased_PIDManager->getSelectedWP()).c_str() );
   } else {
-    Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decison (pass/not pass)!" ); 
+    Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decison (pass/not pass)!" );
   }
-  
+
   bool configTools_CutBased(false);
   if ( m_readIDFlagsFromDerivation ) {
     Info("initialize()", "Reading Electron cut-based ID from DAODs ..." );
@@ -417,7 +418,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     Info("initialize()", "Reading Electron cut-based ID from CP Tool ..." );
     RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupWPs( configTools_CutBased, this->m_name, confDir, m_CutBasedConfigYear ), "Failed to properly setup ElectronCutBasedPIDManager." );
   }
-   
+
   // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
   //
   std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "VeryLoose";
@@ -427,7 +428,7 @@ EL::StatusCode ElectronSelector :: initialize ()
        Info("initialize()", "Cutting on Electron Likelihood PID! \n ********************" );
        Info("initialize()", "\t Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() );
   } else {
-       Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decison (pass/not pass)!" ); 
+       Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decison (pass/not pass)!" );
   }
 
   bool configTools_LH(false);
@@ -460,22 +461,22 @@ EL::StatusCode ElectronSelector :: initialize ()
   // (start from 2nd element)
   //
   for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
-     
+
      if ( m_debug ) { Info("initialize()", "Adding extra isolation WP %s to IsolationSelectionTool", (*WP_itr).c_str() ); }
-     
+
      if ( (*WP_itr).find("UserDefined") != std::string::npos ) {
-      
+
        HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
-       
+
        std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
        myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
        myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
-      
+
        CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
        if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
-      
+
        RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Electron, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
-     
+
      } else {
         RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addElectronWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
      }
@@ -502,7 +503,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     m_trigElMatchTool = new Trig::TrigEgammaMatchingTool( trigmatch_tool_name );
     RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
     RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-    
+
   } else {
     Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
     Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
@@ -512,7 +513,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   }
 
   // **********************************************************************************************
-  
+
   Info("initialize()", "ElectronSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -545,7 +546,7 @@ EL::StatusCode ElectronSelector :: execute ()
   // QUESTION: why this must be done in execute(), and does not work in initialize()?
   //
   if ( m_numEvent == 1 && m_trigDecTool ) {
-    
+
     // store the trigger chains that will be considered for matching
     //
     if ( m_ElTrigChains.find("ALL") != std::string::npos ) {
@@ -556,11 +557,11 @@ EL::StatusCode ElectronSelector :: execute ()
       //
       std::string trig;
       std::istringstream ss(m_ElTrigChains);
-      
+
       while ( std::getline(ss, trig, ',') ) {
     	m_ElTrigChainsList.push_back(trig);
       }
-    }	 
+    }
 
     Info("execute()", "Input electron trigger chains that will be considered for matching:\n");
     for ( auto const &chain : m_ElTrigChainsList ) { Info("execute()", "\t %s", chain.c_str()); }
@@ -752,19 +753,19 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   //  2. there are no selected electrons in the event
   //
   if ( m_trigElMatchTool && selectedElectrons ) {
-    
+
     unsigned int nSelectedElectrons = selectedElectrons->size();
 
     if ( nSelectedElectrons > 0 ) {
-      
+
       if ( m_debug ) { Info("executeSelection()", "Now doing electron trigger matching..."); }
-     
+
       for ( auto const &chain : m_ElTrigChainsList ) {
-       
+
          if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-       
+
          for ( auto const electron : *selectedElectrons ) {
-    	   
+
            //  For each electron, decorate w/ a map<string,char> with the 'isMatched' info associated
 	   //  to each trigger chain in the input list.
            //  If decoration map doesn't exist, create it (will be done only for the 1st iteration on the chain names)
@@ -773,12 +774,12 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
            if ( !isTrigMatchedMapElDecor.isAvailable( *electron ) ) {
 	     isTrigMatchedMapElDecor( *electron ) = std::map<std::string,char>();
            }
-	     
-	   int matched = ( m_trigElMatchTool->matchHLT( electron, chain ) ) ? 1 : 0;  
-	   
+
+	   int matched = ( m_trigElMatchTool->matchHLT( electron, chain ) ) ? 1 : 0;
+
            if ( m_debug ) { Info("executeSelection()", "\t\t is electron trigger matched? %i", matched); }
-	   	   
-	   ( isTrigMatchedMapElDecor( *electron ) )[chain] = static_cast<char>(matched);  
+
+	   ( isTrigMatchedMapElDecor( *electron ) )[chain] = static_cast<char>(matched);
          }
       }
 
@@ -786,7 +787,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   }
 
   return true;
-  
+
 }
 
 EL::StatusCode ElectronSelector :: postExecute ()
@@ -820,7 +821,7 @@ EL::StatusCode ElectronSelector :: finalize ()
   if ( m_el_LH_PIDManager )       { m_el_LH_PIDManager = nullptr;       delete m_el_LH_PIDManager;  }
   if ( m_IsolationSelectionTool ) { m_IsolationSelectionTool = nullptr; delete m_IsolationSelectionTool; }
   if ( m_trigElMatchTool )        { m_trigElMatchTool = nullptr;        delete m_trigElMatchTool; }
-  
+
   if ( m_useCutFlow ) {
     Info("finalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
@@ -846,7 +847,7 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -854,7 +855,7 @@ EL::StatusCode ElectronSelector :: histFinalize ()
 int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex ) {
 
   float et    = electron->pt();
-  
+
   // all the eta cuts are done using the measurement of the cluster position with the 2nd layer cluster,
   // as for Egamma CP  recommendation
   //
@@ -867,7 +868,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_all, 1 ); }
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // author cut
   //
   if ( m_doAuthorCut ) {
@@ -875,12 +876,12 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       if ( m_debug ) { Info("PassCuts()", "Electron failed author kinematic cut." ); }
       return 0;
     }
-  }  
-  m_el_cutflowHist_1->Fill( m_el_cutflow_author_cut, 1 );        
+  }
+  m_el_cutflowHist_1->Fill( m_el_cutflow_author_cut, 1 );
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_author_cut, 1 ); }
-  
+
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // Object Quality cut
   //
   if ( m_doOQCut ) {
@@ -889,11 +890,11 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  m_el_cutflowHist_1->Fill( m_el_cutflow_OQ_cut, 1 );        
+  m_el_cutflowHist_1->Fill( m_el_cutflow_OQ_cut, 1 );
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_OQ_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // pT max cut
   //
   if ( m_pT_max != 1e8 ) {
@@ -902,11 +903,11 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  m_el_cutflowHist_1->Fill( m_el_cutflow_ptmax_cut, 1 );        
+  m_el_cutflowHist_1->Fill( m_el_cutflow_ptmax_cut, 1 );
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_ptmax_cut, 1 ); }
-  
+
   // *********************************************************************************************************************************************************************
-  //   
+  //
   // pT min cut
   //
   if ( m_pT_min != 1e8 ) {
@@ -915,14 +916,14 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  m_el_cutflowHist_1->Fill( m_el_cutflow_ptmin_cut, 1 );        
+  m_el_cutflowHist_1->Fill( m_el_cutflow_ptmin_cut, 1 );
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_ptmin_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // eta cuts
   //
-   
+
   // |eta| max cut
   //
   if ( m_eta_max != 1e8 ) {
@@ -943,25 +944,25 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_eta_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // electron PID cuts
   //
 
   //
   // likelihood PID
   //
-  
+
   // set default values for *this* electron decorations
   //
   m_el_LH_PIDManager->setDecorations( electron );
-  
+
   if ( m_readIDFlagsFromDerivation ) {
-    
+
     if ( m_doLHPIDcut &&  !electron->auxdata< int >( "DFCommonElectronsLH" + m_LHOperatingPoint ) ) {
    	if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
    	return 0;
     }
-    
+
     const std::set<std::string> myLHWPs = m_el_LH_PIDManager->getValidWPs();
     for ( auto it : (myLHWPs) ) {
       const std::string decorWP =  "LH" + it;
@@ -972,7 +973,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       electron->auxdecor<char>(decorWP) = static_cast<char>( electron->auxdata< int >( "DFCommonElectrons" + decorWP ) );
     }
   } else {
-  
+
     // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
     //
     typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
@@ -993,7 +994,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
 
     }
-  
+
   }
 
   //
@@ -1005,12 +1006,12 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   m_el_CutBased_PIDManager->setDecorations( electron );
 
   if ( m_readIDFlagsFromDerivation ) {
-    
+
     if ( m_doCutBasedPIDcut &&  !electron->auxdata< int >( "DFCommonElectrons" + m_CutBasedOperatingPoint ) ) {
    	if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut w/ operating point %s", m_CutBasedOperatingPoint.c_str() ); }
    	return 0;
     }
-    
+
     const std::set<std::string> myCutBasedWPs = m_el_CutBased_PIDManager->getValidWPs();
     for ( auto it : (myCutBasedWPs) ) {
       const std::string decorWP = it.erase(0,4);
@@ -1045,12 +1046,12 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
     }
 
   }
-  
+
   m_el_cutflowHist_1->Fill( m_el_cutflow_PID_cut, 1 );
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_PID_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // impact parameter cuts
   //
 
@@ -1062,10 +1063,10 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
     if ( m_debug ) Info( "PassCuts()", "Electron has no TrackParticle. Won't be selected.");
     return 0;
   }
-  
+
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
-  
+
   double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
 
   float z0sintheta = 1e8;
@@ -1082,14 +1083,14 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   }
   m_el_cutflowHist_1->Fill( m_el_cutflow_z0sintheta_cut, 1 );
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_z0sintheta_cut, 1 ); }
-  
+
   // d0 cut
   //
   if ( m_d0_max != 1e8 ) {
     if ( !( tp->d0() < m_d0_max ) ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed d0 cut."); }
       return 0;
-    }  
+    }
   }
   m_el_cutflowHist_1->Fill( m_el_cutflow_d0_cut, 1 );
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0_cut, 1 ); }
@@ -1110,32 +1111,32 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   d0SigDecor( *electron ) = static_cast<float>(d0_significance);
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // isolation cut
   //
-  
+
   // Get the "list" of input WPs with the accept() decision from the tool
   //
   Root::TAccept accept_list = m_IsolationSelectionTool->accept( *electron );
-  
+
   // Decorate w/ decision for all input WPs
   //
-  std::string base_decor("isIsolated");  
+  std::string base_decor("isIsolated");
   for ( auto WP_itr : m_IsoKeys ) {
-    
+
     std::string decorWP = base_decor + "_" + WP_itr;
-    
+
     if ( m_debug ) { Info("PassCuts()", "Decorate electron with %s - accept() ? %i", decorWP.c_str(), accept_list.getCutResult( WP_itr.c_str()) ); }
     electron->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
 
   }
-  
+
   // Apply the cut if needed
   //
   if ( !m_MinIsoWPCut.empty() && !accept_list.getCutResult( m_MinIsoWPCut.c_str() ) ) {
     if ( m_debug ) { Info("PassCuts()", "Electron failed isolation cut %s ",  m_MinIsoWPCut.c_str() ); }
     return 0;
-  }  
+  }
   m_el_cutflowHist_1->Fill( m_el_cutflow_iso_cut, 1 );
   if ( m_isUsedBefore ) { m_el_cutflowHist_2->Fill( m_el_cutflow_iso_cut, 1 ); }
 

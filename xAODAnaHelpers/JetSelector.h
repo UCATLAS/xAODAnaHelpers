@@ -114,7 +114,7 @@ public:
 
 
   // this is a standard constructor
-  JetSelector ();
+  JetSelector (std::string className = "JetSelector");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

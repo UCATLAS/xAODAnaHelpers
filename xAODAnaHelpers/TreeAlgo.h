@@ -43,7 +43,7 @@ private:
 public:
 
   // this is a standard constructor
-  TreeAlgo ();                                           //!
+  TreeAlgo (std::string className = "TreeAlgo");                                           //!
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);           //!

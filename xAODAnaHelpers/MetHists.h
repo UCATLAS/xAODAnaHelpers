@@ -26,7 +26,7 @@ class MetHists : public HistogramManager
     HelperClasses::METInfoSwitch* m_infoSwitch;
 
   private:
-    
+
     TH1F*   m_metFinalClus      ; //!
     TH1F*   m_metFinalClusPx    ; //!
     TH1F*   m_metFinalClusPy    ; //!
@@ -38,7 +38,7 @@ class MetHists : public HistogramManager
     TH1F*   m_metFinalTrkPy     ; //!
     TH1F*   m_metFinalTrkSumEt  ; //!
     TH1F*   m_metFinalTrkPhi    ; //!
-    
+
 };
 
 #endif

@@ -57,7 +57,7 @@ private:
 public:
 
   // this is a standard constructor
-  BJetEfficiencyCorrector ();
+  BJetEfficiencyCorrector (std::string className = "BJetEfficiencyCorrector");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

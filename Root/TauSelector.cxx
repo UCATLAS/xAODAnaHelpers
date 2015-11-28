@@ -39,13 +39,14 @@
 ClassImp(TauSelector)
 
 
-TauSelector :: TauSelector () :
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr),
-  m_tau_cutflowHist_1(nullptr),
-  m_tau_cutflowHist_2(nullptr),
-  m_TauSelTool(nullptr),
-  m_TOELLHDecorator(nullptr)
+TauSelector :: TauSelector (std::string className) :
+    Algorithm(className),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_tau_cutflowHist_1(nullptr),
+    m_tau_cutflowHist_2(nullptr),
+    m_TauSelTool(nullptr),
+    m_TOELLHDecorator(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -127,9 +128,9 @@ EL::StatusCode  TauSelector :: configure ()
 
     m_ConfigPath              = config->GetValue("ConfigPath", m_ConfigPath.c_str());
     m_EleOLRFilePath          = config->GetValue("EleOLRFilePath", m_EleOLRFilePath.c_str());
-   
+
     m_minPtDAOD               = config->GetValue("MinPtDAOD", m_minPtDAOD);
- 
+
     config->Print();
 
     Info("configure()", "TauSelector Interface succesfully configured! ");
@@ -176,7 +177,7 @@ EL::StatusCode TauSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -223,42 +224,42 @@ EL::StatusCode TauSelector :: initialize ()
   // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
   //
-  // This is the case when the selector algorithm is used for 
+  // This is the case when the selector algorithm is used for
   // preselecting objects, and then again for the final selection
   //
-  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_classname).c_str() );
-  if ( this->countUsed() > 0 ) {
+  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_className).c_str() );
+  if ( this->numInstances() > 0 ) {
     m_isUsedBefore = true;
-    Info("initialize()", "\t An algorithm of the same type has been already used %i times", this->countUsed() );
+    Info("initialize()", "\t An algorithm of the same type has been already used %i times", this->numInstances() );
   }
 
   if ( m_useCutFlow ) {
-    
+
     // retrieve the file in which the cutflow hists are stored
     //
     TFile *file     = wk()->getOutputFile ("cutflow");
-    
+
     // retrieve the event cutflows
     //
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
-    
+
     // retrieve the object cutflow
     //
     m_tau_cutflowHist_1  = (TH1D*)file->Get("cutflow_taus_1");
 
     m_tau_cutflow_all                  = m_tau_cutflowHist_1->GetXaxis()->FindBin("all");
-    m_tau_cutflow_selected             = m_tau_cutflowHist_1->GetXaxis()->FindBin("selected");     
-    
+    m_tau_cutflow_selected             = m_tau_cutflowHist_1->GetXaxis()->FindBin("selected");
+
     if ( m_isUsedBefore ) {
       m_tau_cutflowHist_2 = (TH1D*)file->Get("cutflow_taus_2");
-     
+
       m_tau_cutflow_all                  = m_tau_cutflowHist_2->GetXaxis()->FindBin("all");
-      m_tau_cutflow_selected             = m_tau_cutflowHist_2->GetXaxis()->FindBin("selected");     
+      m_tau_cutflow_selected             = m_tau_cutflowHist_2->GetXaxis()->FindBin("selected");
     }
-    
+
   }
 
   m_event = wk()->xaodEvent();
@@ -276,19 +277,19 @@ EL::StatusCode TauSelector :: initialize ()
   m_numEventPass  = 0;
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
-  
+
   // ********************************
   //
   // Initialise TauSelectionTool
   //
   // ********************************
-  
+
   std::string sel_tool_name = std::string("TauSelectionTool_") + m_name;
   m_TauSelTool = new TauAnalysisTools::TauSelectionTool( sel_tool_name );
   m_TauSelTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
-  
+
   RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("ConfigPath",m_ConfigPath.c_str()), "Failed to set ConfigPath property");
-  if ( !m_EleOLRFilePath.empty() ) { 
+  if ( !m_EleOLRFilePath.empty() ) {
     RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("EleOLRFilePath",m_EleOLRFilePath.c_str()), "Failed to set EleOLRFilePath property");
   }
   RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->initialize(), "Failed to properly initialize TauSelectionTool");
@@ -297,7 +298,7 @@ EL::StatusCode TauSelector :: initialize ()
   m_TOELLHDecorator = new TauAnalysisTools::TauOverlappingElectronLLHDecorator( eleOLR_tool_name );
   m_TOELLHDecorator->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
   RETURN_CHECK("TauSelector::initialize()", m_TOELLHDecorator->initialize(), "Failed to properly initialize TauOverlappingElectronLLHDecorator");
-  
+
   Info("initialize()", "TauSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -564,18 +565,18 @@ EL::StatusCode TauSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
 int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
- 
+
   // fill cutflow bin 'all' before any cut
   m_tau_cutflowHist_1->Fill( m_tau_cutflow_all, 1 );
   if ( m_isUsedBefore ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_all, 1 ); }
 
   // **********************************************************************************************************
-  // 
+  //
   // TauSelectorTool cut
   //
 
@@ -583,9 +584,9 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
     if ( m_debug ) { Info("PassCuts()", "Tau failed minimal pT requirement for usage with derivations"); }
     return 0;
   }
-  
+
   m_TOELLHDecorator->decorate( *tau );
- 
+
   if ( ! m_TauSelTool->accept( *tau ) ) {
     if ( m_debug ) { Info("PassCuts()", "Tau failed requirements of TauSelectionTool"); }
     return 0;

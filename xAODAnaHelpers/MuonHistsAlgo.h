@@ -27,7 +27,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  MuonHistsAlgo ();
+  MuonHistsAlgo (std::string className = "MuonHistsAlgo");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

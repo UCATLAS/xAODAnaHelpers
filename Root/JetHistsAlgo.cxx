@@ -18,7 +18,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
 
-JetHistsAlgo :: JetHistsAlgo () {
+JetHistsAlgo :: JetHistsAlgo (std::string className) :
+    Algorithm(className)
+{
   m_inContainerName         = "";
   // which plots will be turned on
   m_detailStr               = "";
@@ -41,7 +43,7 @@ EL::StatusCode JetHistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
-
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -175,4 +177,7 @@ EL::StatusCode JetHistsAlgo :: finalize () {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode JetHistsAlgo :: histFinalize () {
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  return EL::StatusCode::SUCCESS;
+}

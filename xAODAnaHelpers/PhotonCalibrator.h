@@ -82,7 +82,7 @@ public:
 
 
   // this is a standard constructor
-  PhotonCalibrator ();
+  PhotonCalibrator (std::string className = "PhotonCalibrator");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

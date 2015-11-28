@@ -39,8 +39,9 @@
 ClassImp(DebugTool)
 
 
-DebugTool :: DebugTool () :
-m_printStore(false)
+DebugTool :: DebugTool (std::string className) :
+    Algorithm(className),
+    m_printStore(false)
 {
   Info("DebugTool()", "Calling constructor");
 }
@@ -58,6 +59,8 @@ EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 EL::StatusCode DebugTool :: histInitialize ()
 {
   Info("histInitialize()", "Calling histInitialize");
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -82,7 +85,7 @@ EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 EL::StatusCode DebugTool :: initialize ()
 {
   Info("initialize()", " ");
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -102,8 +105,8 @@ EL::StatusCode DebugTool :: execute ()
   //
   // look what we have in TStore
   //
-  if ( m_printStore ) { 
-    m_store->print(); 
+  if ( m_printStore ) {
+    m_store->print();
   }
 
   return EL::StatusCode::SUCCESS;
@@ -130,6 +133,7 @@ EL::StatusCode DebugTool :: finalize ()
 EL::StatusCode DebugTool :: histFinalize ()
 {
   Info("histFinalize()", "Calling histFinalize");
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
 

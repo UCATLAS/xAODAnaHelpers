@@ -107,7 +107,7 @@ private:
   TH1D* m_jet_cutflowHist_1;   //!
   TH1D* m_ph_cutflowHist_1;    //!
   TH1D* m_tau_cutflowHist_1;   //!
-  
+
   int m_el_cutflow_OR_cut;     //!
   int m_mu_cutflow_OR_cut;     //!
   int m_jet_cutflow_OR_cut;    //!
@@ -123,7 +123,7 @@ public:
 
 
   // this is a standard constructor
-  OverlapRemover ();
+  OverlapRemover (std::string className = "OverlapRemover");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

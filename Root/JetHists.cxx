@@ -238,12 +238,12 @@ StatusCode JetHists::initialize() {
     m_jf_mass           = book(m_name, "JetFitter_mass"          , "JetFitter_mass"          , 100,   0,     5 );
     m_jf_energyFraction = book(m_name, "JetFitter_energyFraction", "JetFitter_energyFraction", 100,  -0.1,   1.1 );
     m_jf_significance3d = book(m_name, "JetFitter_significance3d", "JetFitter_significance3d", 100,   0,    50 );
-    m_jf_deltaeta       = book(m_name, "JetFitter_deltaeta"      , "JetFitter_deltaeta"      , 100,  -0.2,   0.2);    
-    m_jf_deltaphi       = book(m_name, "JetFitter_deltaphi"      , "JetFitter_deltaphi"      , 100,  -0.2,   0.2);    
+    m_jf_deltaeta       = book(m_name, "JetFitter_deltaeta"      , "JetFitter_deltaeta"      , 100,  -0.2,   0.2);
+    m_jf_deltaphi       = book(m_name, "JetFitter_deltaphi"      , "JetFitter_deltaphi"      , 100,  -0.2,   0.2);
     m_jf_N2Tpar         = book(m_name, "JetFitter_N2Tpair"       , "JetFitter_N2Tpair"       ,  20,  -0.5,  19.5);
-    m_jf_pb             = book(m_name, "JetFitter_pb"            , "JetFitter_pb"            , 100,  -0.1,   1);    
-    m_jf_pc             = book(m_name, "JetFitter_pc"            , "JetFitter_pc"            , 100,  -0.1,   1);    
-    m_jf_pu             = book(m_name, "JetFitter_pu"            , "JetFitter_pu"            , 100,  -0.1,   1);    
+    m_jf_pb             = book(m_name, "JetFitter_pb"            , "JetFitter_pb"            , 100,  -0.1,   1);
+    m_jf_pc             = book(m_name, "JetFitter_pc"            , "JetFitter_pc"            , 100,  -0.1,   1);
+    m_jf_pu             = book(m_name, "JetFitter_pu"            , "JetFitter_pu"            , 100,  -0.1,   1);
 
   }
 
@@ -264,8 +264,8 @@ StatusCode JetHists::initialize() {
   }
 
   if( m_infoSwitch->m_ipDetails ) {
-    m_nIP2DTracks               = book(m_name, "nIP2DTracks"              , "nIP2DTracks"            ,  20,  -0.5, 19.5);  
-    m_IP2D_gradeOfTracks        = book(m_name, "IP2D_gradeOfTracks"       , "IP2D_gradeOfTracks"     ,  20,  -0.5, 19.5);  
+    m_nIP2DTracks               = book(m_name, "nIP2DTracks"              , "nIP2DTracks"            ,  20,  -0.5, 19.5);
+    m_IP2D_gradeOfTracks        = book(m_name, "IP2D_gradeOfTracks"       , "IP2D_gradeOfTracks"     ,  20,  -0.5, 19.5);
     m_IP2D_flagFromV0ofTracks   = book(m_name, "IP2D_flagFromV0ofTracks"  , "IP2D_flagFromV0ofTracks",   5,  -0.5,  4.5);
     m_IP2D_valD0wrtPVofTracks   = book(m_name, "IP2D_valD0wrtPVofTracks"  , "IP2D_valD0wrtPVofTracks", 100,  -2.0,  2.0);
     m_IP2D_sigD0wrtPVofTracks   = book(m_name, "IP2D_sigD0wrtPVofTracks"  , "IP2D_sigD0wrtPVofTracks", 100, -15.0, 15.0);
@@ -274,8 +274,8 @@ StatusCode JetHists::initialize() {
     m_IP2D_weightCofTracks      = book(m_name, "IP2D_weightCofTracks"     , "IP2D_weightCofTracks"   , 100,  -0.1, 1.5);
     m_IP2D_weightUofTracks      = book(m_name, "IP2D_weightUofTracks"     , "IP2D_weightUofTracks"   , 100,  -0.1, 1.5);
 
-    m_nIP3DTracks               = book(m_name, "nIP3DTracks"              , "nIP3DTracks"            ,  20,  -0.5, 19.5);  
-    m_IP3D_gradeOfTracks        = book(m_name, "IP3D_gradeOfTracks"       , "IP3D_gradeOfTracks"     ,  20,  -0.5, 19.5);  
+    m_nIP3DTracks               = book(m_name, "nIP3DTracks"              , "nIP3DTracks"            ,  20,  -0.5, 19.5);
+    m_IP3D_gradeOfTracks        = book(m_name, "IP3D_gradeOfTracks"       , "IP3D_gradeOfTracks"     ,  20,  -0.5, 19.5);
     m_IP3D_flagFromV0ofTracks   = book(m_name, "IP3D_flagFromV0ofTracks"  , "IP3D_flagFromV0ofTracks",   5,  -0.5,  4.5);
     m_IP3D_valD0wrtPVofTracks   = book(m_name, "IP3D_valD0wrtPVofTracks"  , "IP3D_valD0wrtPVofTracks", 100,  -2.0,  2.0);
     m_IP3D_sigD0wrtPVofTracks   = book(m_name, "IP3D_sigD0wrtPVofTracks"  , "IP3D_sigD0wrtPVofTracks", 100, -15.0, 15.0);
@@ -709,7 +709,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
     }else if(m_infoSwitch->m_flavTagHLT){
       btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
-      
+
     double MV2c00 = -99;
     double MV2c10 = -99;
     double MV2c20 = -99;
@@ -730,7 +730,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       m_JetFitter       ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
       m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
     }
-      
+
     if(m_infoSwitch->m_jetFitterDetails){
       static SG::AuxElement::ConstAccessor< int   > jf_nVTXAcc       ("JetFitter_nVTX");
       static SG::AuxElement::ConstAccessor< int   > jf_nSingleTracks ("JetFitter_nSingleTracks");
@@ -738,24 +738,24 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       static SG::AuxElement::ConstAccessor< float > jf_mass          ("JetFitter_mass");
       static SG::AuxElement::ConstAccessor< float > jf_energyFraction("JetFitter_energyFraction");
       static SG::AuxElement::ConstAccessor< float > jf_significance3d("JetFitter_significance3d");
-      static SG::AuxElement::ConstAccessor< float > jf_deltaeta      ("JetFitter_deltaeta");    
-      static SG::AuxElement::ConstAccessor< float > jf_deltaphi      ("JetFitter_deltaphi");    
+      static SG::AuxElement::ConstAccessor< float > jf_deltaeta      ("JetFitter_deltaeta");
+      static SG::AuxElement::ConstAccessor< float > jf_deltaphi      ("JetFitter_deltaphi");
       static SG::AuxElement::ConstAccessor< int   > jf_N2Tpar        ("JetFitter_N2Tpair");
-      static SG::AuxElement::ConstAccessor< double > jf_pb           ("JetFitter_pb");    
-      static SG::AuxElement::ConstAccessor< double > jf_pc           ("JetFitter_pc");    
-      static SG::AuxElement::ConstAccessor< double > jf_pu           ("JetFitter_pu");    
-    
+      static SG::AuxElement::ConstAccessor< double > jf_pb           ("JetFitter_pb");
+      static SG::AuxElement::ConstAccessor< double > jf_pc           ("JetFitter_pc");
+      static SG::AuxElement::ConstAccessor< double > jf_pu           ("JetFitter_pu");
+
       if(jf_nVTXAcc.isAvailable       (*btag_info)) m_jf_nVTX           ->Fill(jf_nVTXAcc       (*btag_info), eventWeight);
       if(jf_nSingleTracks.isAvailable (*btag_info)) m_jf_nSingleTracks  ->Fill(jf_nSingleTracks (*btag_info), eventWeight);
       if(jf_nTracksAtVtx.isAvailable  (*btag_info)) m_jf_nTracksAtVtx   ->Fill(jf_nTracksAtVtx  (*btag_info), eventWeight);
-      if(jf_mass.isAvailable          (*btag_info)) m_jf_mass           ->Fill(jf_mass          (*btag_info)/1000, eventWeight); 
-      if(jf_energyFraction.isAvailable(*btag_info)) m_jf_energyFraction ->Fill(jf_energyFraction(*btag_info), eventWeight); 
-      if(jf_significance3d.isAvailable(*btag_info)) m_jf_significance3d ->Fill(jf_significance3d(*btag_info), eventWeight); 
-      if(jf_deltaeta.isAvailable      (*btag_info)) m_jf_deltaeta       ->Fill(jf_deltaeta      (*btag_info), eventWeight); 
-      if(jf_deltaphi.isAvailable      (*btag_info)) m_jf_deltaphi       ->Fill(jf_deltaphi      (*btag_info), eventWeight); 
+      if(jf_mass.isAvailable          (*btag_info)) m_jf_mass           ->Fill(jf_mass          (*btag_info)/1000, eventWeight);
+      if(jf_energyFraction.isAvailable(*btag_info)) m_jf_energyFraction ->Fill(jf_energyFraction(*btag_info), eventWeight);
+      if(jf_significance3d.isAvailable(*btag_info)) m_jf_significance3d ->Fill(jf_significance3d(*btag_info), eventWeight);
+      if(jf_deltaeta.isAvailable      (*btag_info)) m_jf_deltaeta       ->Fill(jf_deltaeta      (*btag_info), eventWeight);
+      if(jf_deltaphi.isAvailable      (*btag_info)) m_jf_deltaphi       ->Fill(jf_deltaphi      (*btag_info), eventWeight);
       if(jf_N2Tpar.isAvailable        (*btag_info)) m_jf_N2Tpar         ->Fill(jf_N2Tpar        (*btag_info), eventWeight);
-      if(jf_pb.isAvailable            (*btag_info)) m_jf_pb             ->Fill(jf_pb            (*btag_info), eventWeight); 
-      if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight); 
+      if(jf_pb.isAvailable            (*btag_info)) m_jf_pb             ->Fill(jf_pb            (*btag_info), eventWeight);
+      if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight);
     }
 
 
@@ -766,14 +766,14 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       //
 
       /// @brief SV0 : Number of good tracks in vertex
-      static SG::AuxElement::ConstAccessor< int   >   sv0_NGTinSvxAcc     ("SV0_NGTinSvx");   
+      static SG::AuxElement::ConstAccessor< int   >   sv0_NGTinSvxAcc     ("SV0_NGTinSvx");
       // @brief SV0 : Number of 2-track pairs
-      static SG::AuxElement::ConstAccessor< int   >   sv0_N2TpairAcc      ("SV0_N2Tpair");   
+      static SG::AuxElement::ConstAccessor< int   >   sv0_N2TpairAcc      ("SV0_N2Tpair");
       /// @brief SV0 : vertex mass
-      static SG::AuxElement::ConstAccessor< float   > sv0_masssvxAcc      ("SV0_masssvx");   
+      static SG::AuxElement::ConstAccessor< float   > sv0_masssvxAcc      ("SV0_masssvx");
       /// @brief SV0 : energy fraction
       static SG::AuxElement::ConstAccessor< float   > sv0_efracsvxAcc     ("SV0_efracsvx");                                                                  	/// @brief SV0 : 3D vertex significance
-      static SG::AuxElement::ConstAccessor< float   > sv0_normdistAcc     ("SV0_normdist");                                                             
+      static SG::AuxElement::ConstAccessor< float   > sv0_normdistAcc     ("SV0_normdist");
 
       if(sv0_NGTinSvxAcc .isAvailable(*btag_info)) m_sv0_NGTinSvx -> Fill( sv0_NGTinSvxAcc (*btag_info), eventWeight);
       if(sv0_N2TpairAcc  .isAvailable(*btag_info)) m_sv0_N2Tpair  -> Fill( sv0_N2TpairAcc  (*btag_info), eventWeight);
@@ -786,14 +786,14 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       //
 
       /// @brief SV1 : Number of good tracks in vertex
-      static SG::AuxElement::ConstAccessor< int   >   sv1_NGTinSvxAcc     ("SV1_NGTinSvx");   
+      static SG::AuxElement::ConstAccessor< int   >   sv1_NGTinSvxAcc     ("SV1_NGTinSvx");
       // @brief SV1 : Number of 2-track pairs
-      static SG::AuxElement::ConstAccessor< int   >   sv1_N2TpairAcc      ("SV1_N2Tpair");   
+      static SG::AuxElement::ConstAccessor< int   >   sv1_N2TpairAcc      ("SV1_N2Tpair");
       /// @brief SV1 : vertex mass
-      static SG::AuxElement::ConstAccessor< float   > sv1_masssvxAcc      ("SV1_masssvx");   
+      static SG::AuxElement::ConstAccessor< float   > sv1_masssvxAcc      ("SV1_masssvx");
       /// @brief SV1 : energy fraction
       static SG::AuxElement::ConstAccessor< float   > sv1_efracsvxAcc     ("SV1_efracsvx");                                                                  	/// @brief SV1 : 3D vertex significance
-      static SG::AuxElement::ConstAccessor< float   > sv1_normdistAcc     ("SV1_normdist");                                                             
+      static SG::AuxElement::ConstAccessor< float   > sv1_normdistAcc     ("SV1_normdist");
 
       if(sv1_NGTinSvxAcc .isAvailable(*btag_info)) m_sv1_NGTinSvx -> Fill( sv1_NGTinSvxAcc (*btag_info), eventWeight);
       if(sv1_N2TpairAcc  .isAvailable(*btag_info)) m_sv1_N2Tpair  -> Fill( sv1_N2TpairAcc  (*btag_info), eventWeight);
@@ -811,23 +811,23 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       //
 
       /// @brief IP2D: track grade
-      static SG::AuxElement::ConstAccessor< vector<int>   >   IP2D_gradeOfTracksAcc     ("IP2D_gradeOfTracks");   
+      static SG::AuxElement::ConstAccessor< vector<int>   >   IP2D_gradeOfTracksAcc     ("IP2D_gradeOfTracks");
       /// @brief IP2D : tracks from V0
-      static SG::AuxElement::ConstAccessor< vector<bool>   >  IP2D_flagFromV0ofTracksAcc("IP2D_flagFromV0ofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<bool>   >  IP2D_flagFromV0ofTracksAcc("IP2D_flagFromV0ofTracks");
       /// @brief IP2D : d0 value with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_valD0wrtPVofTracksAcc("IP2D_valD0wrtPVofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_valD0wrtPVofTracksAcc("IP2D_valD0wrtPVofTracks");
       /// @brief IP2D : d0 significance with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_sigD0wrtPVofTracksAcc("IP2D_sigD0wrtPVofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_sigD0wrtPVofTracksAcc("IP2D_sigD0wrtPVofTracks");
       /// @brief IP2D : track contribution to B likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightBofTracksAcc   ("IP2D_weightBofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightBofTracksAcc   ("IP2D_weightBofTracks");
       /// @brief IP2D : track contribution to C likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightCofTracksAcc   ("IP2D_weightCofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightCofTracksAcc   ("IP2D_weightCofTracks");
       /// @brief IP2D : track contribution to U likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightUofTracksAcc   ("IP2D_weightUofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightUofTracksAcc   ("IP2D_weightUofTracks");
 
       if(IP2D_gradeOfTracksAcc .isAvailable(*btag_info)){
 	unsigned int nIP2DTracks = IP2D_gradeOfTracksAcc(*btag_info).size();
-	m_nIP2DTracks -> Fill( nIP2DTracks, eventWeight);	  
+	m_nIP2DTracks -> Fill( nIP2DTracks, eventWeight);
 	for(int grade : IP2D_gradeOfTracksAcc(*btag_info))        m_IP2D_gradeOfTracks->Fill(grade, eventWeight);
       }
 
@@ -863,27 +863,27 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       //
 
       /// @brief IP3D: track grade
-      static SG::AuxElement::ConstAccessor< vector<int>   >   IP3D_gradeOfTracksAcc     ("IP3D_gradeOfTracks");   
+      static SG::AuxElement::ConstAccessor< vector<int>   >   IP3D_gradeOfTracksAcc     ("IP3D_gradeOfTracks");
       /// @brief IP3D : tracks from V0
-      static SG::AuxElement::ConstAccessor< vector<bool>   >  IP3D_flagFromV0ofTracksAcc("IP3D_flagFromV0ofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<bool>   >  IP3D_flagFromV0ofTracksAcc("IP3D_flagFromV0ofTracks");
       /// @brief IP3D : d0 value with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_valD0wrtPVofTracksAcc("IP3D_valD0wrtPVofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_valD0wrtPVofTracksAcc("IP3D_valD0wrtPVofTracks");
       /// @brief IP3D : d0 significance with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_sigD0wrtPVofTracksAcc("IP3D_sigD0wrtPVofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_sigD0wrtPVofTracksAcc("IP3D_sigD0wrtPVofTracks");
       /// @brief IP3D : z0 value with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_valZ0wrtPVofTracksAcc("IP3D_valZ0wrtPVofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_valZ0wrtPVofTracksAcc("IP3D_valZ0wrtPVofTracks");
       /// @brief IP3D : z0 significance with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_sigZ0wrtPVofTracksAcc("IP3D_sigZ0wrtPVofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_sigZ0wrtPVofTracksAcc("IP3D_sigZ0wrtPVofTracks");
       /// @brief IP3D : track contribution to B likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightBofTracksAcc   ("IP3D_weightBofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightBofTracksAcc   ("IP3D_weightBofTracks");
       /// @brief IP3D : track contribution to C likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightCofTracksAcc   ("IP3D_weightCofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightCofTracksAcc   ("IP3D_weightCofTracks");
       /// @brief IP3D : track contribution to U likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightUofTracksAcc   ("IP3D_weightUofTracks");   
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightUofTracksAcc   ("IP3D_weightUofTracks");
 
       if(IP3D_gradeOfTracksAcc .isAvailable(*btag_info)){
 	unsigned int nIP3DTracks = IP3D_gradeOfTracksAcc(*btag_info).size();
-	m_nIP3DTracks -> Fill( nIP3DTracks, eventWeight);	  
+	m_nIP3DTracks -> Fill( nIP3DTracks, eventWeight);
 	for(int grade : IP3D_gradeOfTracksAcc(*btag_info))        m_IP3D_gradeOfTracks->Fill(grade, eventWeight);
       }
 
@@ -926,7 +926,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       }
 
 
-      
+
     }
   }
 

@@ -52,7 +52,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  MuonCalibrator ();
+  MuonCalibrator (std::string className = "MuonCalibrator");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

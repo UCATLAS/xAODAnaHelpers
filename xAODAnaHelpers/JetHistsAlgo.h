@@ -29,7 +29,7 @@ public:
 
 
   // this is a standard constructor
-  JetHistsAlgo ();
+  JetHistsAlgo (std::string className = "JetHistsAlgo");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

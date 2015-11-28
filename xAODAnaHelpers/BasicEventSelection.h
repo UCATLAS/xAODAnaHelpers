@@ -106,8 +106,8 @@ class BasicEventSelection : public xAH::Algorithm
     TH1D* m_mu_cutflowHist_1;    //!
     TH1D* m_mu_cutflowHist_2;    //!
     TH1D* m_ph_cutflowHist_1;    //!
-    TH1D* m_tau_cutflowHist_1;   //!    
-    TH1D* m_tau_cutflowHist_2;   //!    
+    TH1D* m_tau_cutflowHist_1;   //!
+    TH1D* m_tau_cutflowHist_2;   //!
     TH1D* m_jet_cutflowHist_1;   //!
     TH1D* m_truth_cutflowHist_1; //!
 
@@ -120,7 +120,7 @@ class BasicEventSelection : public xAH::Algorithm
     //
 
     // this is a standard constructor
-    BasicEventSelection ();
+    BasicEventSelection (std::string className = "BasicEventSelection");
 
     // these are the functions inherited from Algorithm
     virtual EL::StatusCode setupJob (EL::Job& job);

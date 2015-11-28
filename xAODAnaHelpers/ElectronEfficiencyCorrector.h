@@ -70,7 +70,7 @@ public:
 
 
   // this is a standard constructor
-  ElectronEfficiencyCorrector ();
+  ElectronEfficiencyCorrector (std::string className = "ElectronEfficiencyCorrector");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

@@ -32,7 +32,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  Writer ();
+  Writer (std::string className = "Writer");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

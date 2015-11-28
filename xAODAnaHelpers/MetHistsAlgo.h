@@ -27,7 +27,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  MetHistsAlgo ();
+  MetHistsAlgo (std::string className = "MetHistsAlgo");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

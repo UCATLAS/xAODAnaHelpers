@@ -40,16 +40,17 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-using std::cout;  using std::endl;  
+using std::cout;  using std::endl;
 using std::vector;
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetRoIBuilder)
 
-HLTJetRoIBuilder :: HLTJetRoIBuilder () :
-  m_trigItem(""),
-  m_outContainerName(""),
-  m_trigDecTool(nullptr)
+HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
+    Algorithm(className),
+    m_trigItem(""),
+    m_outContainerName(""),
+    m_trigDecTool(nullptr)
 {
   Info("HLTJetRoIBuilder()", "Calling constructor");
 
@@ -73,6 +74,7 @@ EL::StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
 
 EL::StatusCode HLTJetRoIBuilder :: histInitialize ()
 {
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -122,7 +124,7 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 
   ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
 
-  // 
+  //
   //  Make accessors/decorators
   //
   static SG::AuxElement::ConstAccessor< vector<ElementLink<DataVector<xAOD::IParticle> > > > jetLinkAcc("BTagBtagToJetAssociator");
@@ -133,10 +135,10 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
   auto bjetFeatureContainers = fc.containerFeature<xAOD::BTaggingContainer>();
 
   if(m_debug) cout << "ncontainers  " << bjetFeatureContainers.size() << endl;
-  
+
   for(auto  jcont : bjetFeatureContainers) {
     for (const xAOD::BTagging*  hlt_btag : *jcont.cptr()) {
-      
+
       bool isAvailableJet = jetLinkAcc.isAvailable(*hlt_btag);
 
       if(isAvailableJet){
@@ -172,8 +174,8 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 	  //}else{
 	  //	if(m_debug) cout << " Trks Not Avalible." << endl;
 	  //}
-	  
-	  
+
+
 	  hltJets->push_back( newHLTBJet );
 	  if(m_debug) cout << "pushed back " << endl;
 	}
@@ -181,7 +183,7 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
       }else{
 	if(m_debug) cout << " Jet Not Avalible." << endl;
       }
-    }//BTagging 
+    }//BTagging
   }//bjetFeatures
 
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
@@ -213,5 +215,6 @@ EL::StatusCode HLTJetRoIBuilder :: finalize ()
 EL::StatusCode HLTJetRoIBuilder :: histFinalize ()
 {
   Info("histFinalize()", "Calling histFinalize");
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

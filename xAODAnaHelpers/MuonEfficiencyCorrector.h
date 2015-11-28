@@ -85,7 +85,7 @@ public:
 
 
   // this is a standard constructor
-  MuonEfficiencyCorrector ();
+  MuonEfficiencyCorrector (std::string className = "MuonEfficiencyCorrector");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

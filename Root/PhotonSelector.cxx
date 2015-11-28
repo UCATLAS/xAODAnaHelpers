@@ -39,13 +39,14 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(PhotonSelector)
 
-PhotonSelector :: PhotonSelector () :
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr),
-  m_ph_cutflowHist_1(nullptr),
-  m_IsolationSelectionTool(nullptr),
-  m_trigDecTool(nullptr),
-  m_match_Tool(nullptr)
+PhotonSelector :: PhotonSelector (std::string className) :
+    Algorithm(className),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_ph_cutflowHist_1(nullptr),
+    m_IsolationSelectionTool(nullptr),
+    m_trigDecTool(nullptr),
+    m_match_Tool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -54,14 +55,14 @@ PhotonSelector :: PhotonSelector () :
   // initialization code will go into histInitialize() and
   // initialize().
   Info("PhotonSelector()", "Calling constructor");
-  
+
   m_debug                   = false;
   m_useCutFlow              = true;
-  
+
   // input container to be read from TEvent or TStore
   //
   m_inContainerName         = "";
-  
+
   // Systematics stuff
   //
   m_inputAlgoSystNames      = "";
@@ -77,7 +78,7 @@ PhotonSelector :: PhotonSelector () :
   m_createSelectedContainer = true;
   // if requested, a new container is made using the SG::VIEW_ELEMENTS option
   m_outContainerName        = "";
-  
+
   // if only want to look at a subset of object
   //
   m_nToProcess              = -1;
@@ -95,7 +96,7 @@ PhotonSelector :: PhotonSelector () :
 
   // PID
   m_photonIdCut             = "None";
-  
+
   // isolation stuff
   //
   m_MinIsoWPCut             = "";
@@ -112,19 +113,19 @@ PhotonSelector::~PhotonSelector() {}
 EL::StatusCode  PhotonSelector :: configure ()
 {
   if ( !getConfig().empty() ) {
-    
+
     Info("configure()", "Configuing PhotonSelector Interface. User configuration read from : %s ", getConfig().c_str());
-    
+
     TEnv* config = new TEnv(getConfig(true).c_str());
-    
+
     m_debug                   = config->GetValue("Debug" ,      m_debug);
     m_useCutFlow              = config->GetValue("UseCutFlow",  m_useCutFlow);
-    
+
     m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    
+
     m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
     m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
-    
+
     m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
     m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
     m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
@@ -148,11 +149,11 @@ EL::StatusCode  PhotonSelector :: configure ()
     m_PhTrigChains            = config->GetValue("PhTrigChains"      , m_PhTrigChains.c_str() );
 
     config->Print();
-    
+
     Info("configure()", "PhotonSelector Interface succesfully configured! ");
     delete config; config = nullptr;
   }
-  
+
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   // Parse input isolation WP list, split by comma, and put into a vector for later use
@@ -163,12 +164,12 @@ EL::StatusCode  PhotonSelector :: configure ()
   while ( std::getline(ss, token, ',') ) {
     m_IsoKeys.push_back(token);
   }
-  
+
   if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -182,12 +183,12 @@ EL::StatusCode PhotonSelector :: setupJob (EL::Job& job)
   // sole advantage of putting it here is that it gets automatically
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
-  
+
   Info("setupJob()", "Calling setupJob");
-  
+
   job.useXAOD ();
   xAOD::Init( "PhotonSelector" ).ignore(); // call before opening first file
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -197,9 +198,9 @@ EL::StatusCode PhotonSelector :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  
-  Info("histInitialize()", "Calling histInitialize");
 
+  Info("histInitialize()", "Calling histInitialize");
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -241,11 +242,11 @@ EL::StatusCode PhotonSelector :: initialize ()
   // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
   //
-  // This is the case when the selector algorithm is used for 
+  // This is the case when the selector algorithm is used for
   // preselecting objects, and then again for the final selection
   //
-  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_classname).c_str() );
-  
+  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_className).c_str() );
+
   if ( m_useCutFlow ) {
 
     // retrieve the file in which the cutflow hists are stored
@@ -267,14 +268,14 @@ EL::StatusCode PhotonSelector :: initialize ()
     m_ph_cutflow_author_cut      = m_ph_cutflowHist_1->GetXaxis()->FindBin("author_cut");
     m_ph_cutflow_OQ_cut          = m_ph_cutflowHist_1->GetXaxis()->FindBin("OQ_cut");
     m_ph_cutflow_PID_cut         = m_ph_cutflowHist_1->GetXaxis()->FindBin("PID_cut");
-    m_ph_cutflow_ptmax_cut       = m_ph_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");      
+    m_ph_cutflow_ptmax_cut       = m_ph_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_ph_cutflow_ptmin_cut       = m_ph_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
     m_ph_cutflow_eta_cut         = m_ph_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
     m_ph_cutflow_iso_cut         = m_ph_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
 
 
   }
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -305,10 +306,10 @@ EL::StatusCode PhotonSelector :: initialize ()
   if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
   RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->setProperty("PhotonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
   RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
-  
-  for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {  
+
+  for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
     if ( m_debug ) { Info("initialize()", "Adding extra isolation WP %s to IsolationSelectionTool", (*WP_itr).c_str() ); }
-    RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->addPhotonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );    
+    RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->addPhotonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
   }
 
   // ***************************************
@@ -342,11 +343,11 @@ EL::StatusCode PhotonSelector :: initialize ()
       m_match_Tool = new Trig::TrigEgammaMatchingTool(MatchingToolName.c_str());
       RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
       RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-    } 
+    }
   }
 
   // **********************************************************************************************
-  
+
   Info("initialize()", "PhotonSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -379,7 +380,7 @@ EL::StatusCode PhotonSelector :: execute ()
   m_numEvent++;
 
   bool eventPass(false);
-  bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal  
+  bool countPass(true); // for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal
   const xAOD::PhotonContainer* inPhotons(nullptr);
 
   // if input comes from xAOD, or just running one collection,
@@ -393,7 +394,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
     // create output container (if requested)
     ConstDataVector<xAOD::PhotonContainer>* selectedPhotons(nullptr);
-    if ( m_createSelectedContainer ) { selectedPhotons = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS); }  
+    if ( m_createSelectedContainer ) { selectedPhotons = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS); }
 
     // find the selected photons, and return if event passes object selection
     //
@@ -487,14 +488,14 @@ EL::StatusCode PhotonSelector :: execute ()
   return EL::StatusCode::SUCCESS;
 }
 
-bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons, 
+bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons,
 					  float mcEvtWeight, bool countPass,
 					  ConstDataVector<xAOD::PhotonContainer>* selectedPhotons )
 {
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
-  
-  for ( auto ph_itr : *inPhotons ) { // duplicated of basic loop  
+
+  for ( auto ph_itr : *inPhotons ) { // duplicated of basic loop
 
     // if only looking at a subset of photons make sure all are decorated
     //
@@ -553,19 +554,19 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
   //  2. there are no selected photons in the event
   //
   if ( m_match_Tool && selectedPhotons ) {
-    
+
     unsigned int nSelectedPhotons = selectedPhotons->size();
 
     if ( nSelectedPhotons > 0 ) {
-      
+
       if ( m_debug ) { Info("executeSelection()", "Now doing photon trigger matching..."); }
-     
+
       for ( auto const &chain : m_PhTrigChainsList ) {
 
 	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
 
 	for ( auto const photon : *selectedPhotons ) {
-	  
+
 	  SG::AuxElement::Decorator< std::map<std::string,bool> > isTrigMatchedMapPhDecor( "isTrigMatchedMapPh" );
 	  if ( !isTrigMatchedMapPhDecor.isAvailable( *photon ) ) {
 	    isTrigMatchedMapPhDecor( *photon ) = std::map<std::string,bool>();
@@ -574,13 +575,13 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
 	  bool matched = false;
 
 	  static const bool DO_TEMPORAL_MATCHING = true;
-	  
-	  if (!DO_TEMPORAL_MATCHING)  { // the current matching tool does not work for the photon 
-	    matched = ( m_match_Tool->matchHLT( photon, chain ) );  
-	   
+
+	  if (!DO_TEMPORAL_MATCHING)  { // the current matching tool does not work for the photon
+	    matched = ( m_match_Tool->matchHLT( photon, chain ) );
+
 	    if ( m_debug ) { Info("executeSelection()", "\t\t is photon trigger matched? %s for %s", (matched ? "Y" : "N"), chain.c_str()); }
 	  } else {
-	   
+
 	    if(m_event->contains<xAOD::PhotonContainer>("HLT_xAOD__PhotonContainer_egamma_Photons")){ // check if trigger photon info exist
 	      // get trigger list from config file
 	      Trig::FeatureContainer fc = m_trigDecTool->features(chain);
@@ -612,14 +613,14 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
       }
     }
   }
-  
+
   return true;
 }
 
-bool PhotonSelector :: passCuts( const xAOD::Photon* photon ) 
+bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
 {
   float et    = photon->pt();
-  
+
   // all the eta cuts are done using the measurement of the cluster position with the 2nd layer cluster,
   // as for Egamma CP  recommendation
   //
@@ -637,9 +638,9 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   }
 
   m_ph_cutflowHist_1->Fill( m_ph_cutflow_all, 1 );
-  
+
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // author cut
   //
   if( m_doAuthorCut ) {
@@ -651,7 +652,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   m_ph_cutflowHist_1->Fill( m_ph_cutflow_author_cut, 1 );
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // Object Quality cut
   //
   if ( m_doOQCut ) {
@@ -660,13 +661,13 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return 0;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_OQ_cut, 1 );      
+  m_ph_cutflowHist_1->Fill( m_ph_cutflow_OQ_cut, 1 );
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // ID cut
-  //  
-  if ( m_photonIdCut != "None" ) {        
+  //
+  if ( m_photonIdCut != "None" ) {
     // it crashes in case the "PhotonID_X" is not stored on purpose
     if ( ! photon->auxdecor< bool >( photonIDKeyName ) ) {
       if ( m_debug ) { Info("PassCuts()", "Photon failed ID cut." ); }
@@ -676,7 +677,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   m_ph_cutflowHist_1->Fill( m_ph_cutflow_PID_cut, 1 );
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // pT max cut
   //
   if ( m_pT_max != 1e8 ) {
@@ -685,10 +686,10 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return false;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_ptmax_cut, 1 );        
-  
+  m_ph_cutflowHist_1->Fill( m_ph_cutflow_ptmax_cut, 1 );
+
   // *********************************************************************************************************************************************************************
-  //   
+  //
   // pT min cut
   //
   if ( m_pT_min != 1e8 ) {
@@ -697,13 +698,13 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return false;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_ptmin_cut, 1 );        
+  m_ph_cutflowHist_1->Fill( m_ph_cutflow_ptmin_cut, 1 );
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // eta cuts
   //
-   
+
   // |eta| max cut
   //
   if ( m_eta_max != 1e8 ) {
@@ -723,7 +724,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   m_ph_cutflowHist_1->Fill( m_ph_cutflow_eta_cut, 1 );
 
   // *********************************************************************************************************************************************************************
-  // 
+  //
   // isolation cut
   //
 
@@ -734,7 +735,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
 
   // Decorate w/ decision for all input WPs
   //
-  const std::string base_decor("isIsolated");  
+  const std::string base_decor("isIsolated");
   for ( auto WP_itr : m_IsoKeys ) {
 
     std::string decorWP = base_decor + "_" + WP_itr;
@@ -742,7 +743,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
     if ( m_debug ) { Info("PassCuts()", "Decorate photon with %s - accept() ? %i", decorWP.c_str(), accept_list.getCutResult( WP_itr.c_str()) ); }
     photon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
 
-  }  
+  }
 
   // Apply the cut if needed
   //
@@ -780,7 +781,7 @@ EL::StatusCode PhotonSelector :: finalize ()
   // submission node after all your histogram outputs have been
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
-  
+
   Info("finalize()", "Deleting tool instances...");
 
   if ( m_useCutFlow ) {
@@ -788,23 +789,23 @@ EL::StatusCode PhotonSelector :: finalize ()
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
-  
+
   if (m_debug) { Info("finalize()", "Cutflow filled"); }
-  
+
   if (m_IsolationSelectionTool) {
     delete m_IsolationSelectionTool;
     m_IsolationSelectionTool = nullptr;
   }
-  
+
   if (m_debug) { Info("finalize()", "Isolation Tool deleted"); }
-  
+
   if (m_match_Tool) {
     delete m_match_Tool;
     m_match_Tool = nullptr;
   }
-  
+
   if (m_debug) { Info("finalize()", "Matching Tool deleted"); }
-  
+
   Info("finalize()", "Finalization done.");
   return EL::StatusCode::SUCCESS;
 }
@@ -823,10 +824,10 @@ EL::StatusCode PhotonSelector :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-  
+
   Info("histFinalize()", "Calling histFinalize");
-  
-  
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+
   return EL::StatusCode::SUCCESS;
 }
 

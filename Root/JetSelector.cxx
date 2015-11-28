@@ -46,11 +46,12 @@
 ClassImp(JetSelector)
 
 
-JetSelector :: JetSelector () :
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr),
-  m_jet_cutflowHist_1(nullptr),
-  m_BJetSelectTool(nullptr)
+JetSelector :: JetSelector (std::string className) :
+    Algorithm(className),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_jet_cutflowHist_1(nullptr),
+    m_BJetSelectTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -58,7 +59,7 @@ JetSelector :: JetSelector () :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  
+
   Info("JetSelector()", "Calling constructor");
 
   // read debug flag from .config file
@@ -117,7 +118,7 @@ JetSelector :: JetSelector () :
   m_taggerName              = "MV2c20";
   m_operatingPt             = "FixedCutBEff_70";
   m_jetAuthor               = "AntiKt4EMTopoJets";
-  // for the b-tagging tool - these are the b-tagging groups minimums 
+  // for the b-tagging tool - these are the b-tagging groups minimums
   // users making tighter cuts can use the selector's parameters to keep
   // things consistent
   m_b_eta_max               = 2.5;
@@ -127,7 +128,7 @@ JetSelector :: JetSelector () :
   m_doHLTBTagCut            = false;
   m_HLTBTagTaggerName       = "MV2c20";
   m_HLTBTagCutValue         = -0.4434;
-  
+
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
 
@@ -302,6 +303,7 @@ EL::StatusCode JetSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -344,32 +346,32 @@ EL::StatusCode JetSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
   Info("initialize()", "Calling initialize");
-  
+
   if ( m_useCutFlow ) {
 
    // retrieve the file in which the cutflow hists are stored
     //
     TFile *file     = wk()->getOutputFile ("cutflow");
-    
+
     // retrieve the event cutflows
     //
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
-    
+
     // retrieve the object cutflow
     //
     m_jet_cutflowHist_1 = (TH1D*)file->Get("cutflow_jets_1");
 
     m_jet_cutflow_all             = m_jet_cutflowHist_1->GetXaxis()->FindBin("all");
-    m_jet_cutflow_cleaning_cut    = m_jet_cutflowHist_1->GetXaxis()->FindBin("cleaning_cut");     
+    m_jet_cutflow_cleaning_cut    = m_jet_cutflowHist_1->GetXaxis()->FindBin("cleaning_cut");
     m_jet_cutflow_ptmax_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
-    m_jet_cutflow_ptmin_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");      
-    m_jet_cutflow_eta_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); 
+    m_jet_cutflow_ptmin_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
+    m_jet_cutflow_eta_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("eta_cut");
     m_jet_cutflow_jvt_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("JVT_cut");
     m_jet_cutflow_btag_cut        = m_jet_cutflowHist_1->GetXaxis()->FindBin("BTag_cut");
- 
+
   }
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
@@ -386,8 +388,8 @@ EL::StatusCode JetSelector :: initialize ()
   } else {
     m_BJetSelectTool = new BTaggingSelectionTool( sel_tool_name );
   }
-  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR  
-  
+  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
+
   // if applying cut on nr. bjets, configure it
   //
   if ( m_doBTagCut ) {
@@ -406,7 +408,7 @@ EL::StatusCode JetSelector :: initialize ()
     RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
 
   }
-  
+
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -535,7 +537,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
 
   //
-  // This cannot be static as multiple instance of Jet Selector would 
+  // This cannot be static as multiple instance of Jet Selector would
   //   then share the same passSelDecor, including the m_decor name
   //
   SG::AuxElement::Decorator< char > passSelDecor( m_decor );
@@ -629,7 +631,7 @@ EL::StatusCode JetSelector :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "%s", m_name.c_str());
-  
+
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
@@ -657,7 +659,7 @@ EL::StatusCode JetSelector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -680,12 +682,12 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   if ( m_pT_max != 1e8 ) {
     if ( jet->pt() > m_pT_max ) { return 0; }
   }
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmax_cut, 1 );        
-  
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmax_cut, 1 );
+
   if ( m_pT_min != 1e8 ) {
     if ( jet->pt() < m_pT_min ) { return 0; }
   }
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmin_cut, 1 );        
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmin_cut, 1 );
 
   // eta
   if ( m_eta_max != 1e8 ) {
@@ -694,7 +696,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   if ( m_eta_min != 1e8 ) {
     if ( fabs(jet->eta()) < m_eta_min ) { return 0; }
   }
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_eta_cut, 1 );        
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_eta_cut, 1 );
 
   // detEta
   if ( m_detEta_max != 1e8 ) {
@@ -757,17 +759,17 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       }
     }
   } // m_doJVT
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );        
+  m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
 
   //
   //  BTagging
   //
   if ( m_doBTagCut ) {
     if ( m_debug ) { Info("PassCuts()", "Doing BTagging"); }
-    if ( m_BJetSelectTool->accept( jet ) ) { 
-      m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );        
+    if ( m_BJetSelectTool->accept( jet ) ) {
+      m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );
     } else {
-      return 0; 
+      return 0;
     }
   }
 
@@ -777,7 +779,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //
   if ( m_doHLTBTagCut ) {
     const xAOD::BTagging *btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
-    
+
     double tagValue = -99;
     if(m_HLTBTagTaggerName=="MV2c20"){
       btag_info->MVx_discriminant("MV2c20", tagValue);

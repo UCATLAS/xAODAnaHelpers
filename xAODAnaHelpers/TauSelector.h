@@ -38,7 +38,7 @@ public:
   int            m_pass_max;  	             /* maximum number of objects passing cuts */
   std::string    m_ConfigPath;               /* path to config file for the TauSelectionTool */
   std::string    m_EleOLRFilePath;           /* path to input file for overlap-based electron veto */
-  float          m_minPtDAOD;                /* a minimal pT threshold b/c some derivations may apply 
+  float          m_minPtDAOD;                /* a minimal pT threshold b/c some derivations may apply
                                                 a thinning on tau tracks' features needed by the TauSelectionTool,
 						which would cause a crash at runtime */
 
@@ -63,7 +63,7 @@ private:
   // object cutflow
   TH1D* m_tau_cutflowHist_1;                //!
   TH1D* m_tau_cutflowHist_2;                //!
-  
+
   int   m_tau_cutflow_all;		    //!
   int   m_tau_cutflow_selected;             //!
 
@@ -80,7 +80,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  TauSelector ();
+  TauSelector (std::string className = "TauSelector");
 
   ~TauSelector();
 

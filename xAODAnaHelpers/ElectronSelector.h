@@ -144,7 +144,7 @@ public:
 
   /* this is a standard constructor */
 
-  ElectronSelector ();
+  ElectronSelector (std::string className = "ElectronSelector");
 
   ~ElectronSelector();
 

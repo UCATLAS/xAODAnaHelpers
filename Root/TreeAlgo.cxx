@@ -20,8 +20,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TreeAlgo)
 
-TreeAlgo :: TreeAlgo () :
-  m_helpTree(nullptr)
+TreeAlgo :: TreeAlgo (std::string className) :
+    Algorithm(className),
+    m_helpTree(nullptr)
 {
   this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
 
@@ -44,7 +45,7 @@ TreeAlgo :: TreeAlgo () :
   m_jetContainerName        = "";
   m_fatJetContainerName     = "";
   m_tauContainerName        = "";
-  m_METContainerName        = "";  
+  m_METContainerName        = "";
 
   // DC14 switch for little things that need to happen to run
   // for those samples with the corresponding packages
@@ -113,7 +114,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   if ( !m_jetContainerName.empty() )    {   m_helpTree->AddJets       (m_jetDetailStr);     }
   if ( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets    (m_fatJetDetailStr);  }
   if ( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus       (m_tauDetailStr);     }
-  if ( !m_METContainerName.empty() )    {   m_helpTree->AddMET        (m_METDetailStr);     }  
+  if ( !m_METContainerName.empty() )    {   m_helpTree->AddMET        (m_METDetailStr);     }
 
   Info("treeInitialize()", "Successfully initialized output tree");
 
@@ -145,7 +146,7 @@ EL::StatusCode TreeAlgo :: configure ()
     m_jetContainerName        = config->GetValue("JetContainerName",        m_jetContainerName.c_str());
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     m_fatJetContainerName.c_str());
     m_tauContainerName        = config->GetValue("TauContainerName",        m_tauContainerName.c_str());
-    m_METContainerName        = config->GetValue("METContainerName",        m_METContainerName.c_str());    
+    m_METContainerName        = config->GetValue("METContainerName",        m_METContainerName.c_str());
 
     // DC14 switch for little things that need to happen to run
     // for those samples with the corresponding packages

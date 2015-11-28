@@ -43,24 +43,25 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
 
-BasicEventSelection :: BasicEventSelection () :
-  m_PU_default_channel(0),
-  m_grl(nullptr),
-  m_pileuptool(nullptr),
-  m_trigConfTool(nullptr),
-  m_trigDecTool(nullptr),
-  m_histEventCount(nullptr),
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr),
-  m_el_cutflowHist_1(nullptr),
-  m_el_cutflowHist_2(nullptr),
-  m_mu_cutflowHist_1(nullptr),
-  m_mu_cutflowHist_2(nullptr),
-  m_ph_cutflowHist_1(nullptr),
-  m_tau_cutflowHist_1(nullptr),
-  m_tau_cutflowHist_2(nullptr),
-  m_jet_cutflowHist_1(nullptr),
-  m_truth_cutflowHist_1(nullptr)
+BasicEventSelection :: BasicEventSelection (std::string className) :
+    Algorithm(className),
+    m_PU_default_channel(0),
+    m_grl(nullptr),
+    m_pileuptool(nullptr),
+    m_trigConfTool(nullptr),
+    m_trigDecTool(nullptr),
+    m_histEventCount(nullptr),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_el_cutflowHist_1(nullptr),
+    m_el_cutflowHist_2(nullptr),
+    m_mu_cutflowHist_1(nullptr),
+    m_mu_cutflowHist_2(nullptr),
+    m_ph_cutflowHist_1(nullptr),
+    m_tau_cutflowHist_1(nullptr),
+    m_tau_cutflowHist_2(nullptr),
+    m_jet_cutflowHist_1(nullptr),
+    m_truth_cutflowHist_1(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -248,6 +249,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   // Make sure configuration variables have been configured
   if ( !getConfig().empty() && ( this->configure() == EL::StatusCode::FAILURE ) ) {
@@ -919,6 +921,6 @@ EL::StatusCode BasicEventSelection :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

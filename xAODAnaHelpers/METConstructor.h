@@ -10,7 +10,7 @@
 
 
 
-using std::string; 
+using std::string;
 
 namespace met { class METMaker; }
 namespace TauAnalysisTools { class TauSelectionTool; }
@@ -44,7 +44,7 @@ public:
   bool    m_doMuonEloss;
   bool    m_doIsolMuonEloss;
   bool    m_doJVTCut;
-  
+
   bool    m_useCaloJetTerm;
   bool    m_useTrackJetTerm;
 
@@ -62,7 +62,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  METConstructor ();
+  METConstructor (std::string className = "METConstructor");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -77,7 +77,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  
+
   // this is needed to distribute the algorithm to the workers
   ClassDef(METConstructor, 1);
 };

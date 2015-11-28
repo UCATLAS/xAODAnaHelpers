@@ -16,8 +16,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
-TrackHistsAlgo :: TrackHistsAlgo () :
-  m_plots(nullptr)
+TrackHistsAlgo :: TrackHistsAlgo (std::string className) :
+    Algorithm(className),
+    m_plots(nullptr)
 {
   m_inContainerName         = "";
   m_detailStr               = "";
@@ -39,6 +40,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   // needed here and not in initalize since this is called first
   Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
   if ( this->configure() == EL::StatusCode::FAILURE ) {
@@ -128,5 +130,6 @@ EL::StatusCode TrackHistsAlgo :: histFinalize ()
 {
   // clean up memory
   if(m_plots) delete m_plots;
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

@@ -52,20 +52,23 @@ using std::cout; using std::cerr; using std::endl;
 ClassImp(METConstructor)
 
 
-METConstructor :: METConstructor () : m_metmaker(0) {
+METConstructor :: METConstructor (std::string className) :
+    Algorithm(className),
+    m_metmaker(0)
+{
 
   m_debug           = false;
-  
+
   m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
   m_mapName               = "METAssoc_AntiKt4LCTopo";
   m_coreName              = "MET_Core_AntiKt4LCTopo";
   m_outputContainer       = "NewRefFinal";
 
-  m_inputJets       = ""; 
-  m_inputElectrons  = ""; 
-  m_inputPhotons    = ""; 
-  m_inputTaus       = ""; 
-  m_inputMuons      = ""; 
+  m_inputJets       = "";
+  m_inputElectrons  = "";
+  m_inputPhotons    = "";
+  m_inputTaus       = "";
+  m_inputMuons      = "";
 
   m_doElectronCuts  = false;
   m_doPhotonCuts    = false;
@@ -125,7 +128,7 @@ EL::StatusCode  METConstructor :: configure ()
 
   m_useCaloJetTerm  = config->GetValue("UseCaloJetTerm",    m_useCaloJetTerm);
   m_useTrackJetTerm = config->GetValue("UseTrackJetTerm",   m_useTrackJetTerm);
-  
+
   if( m_mapName.Length() == 0 ) {
     Error("configure()", "MapName is empty!");
     return EL::StatusCode::FAILURE;
@@ -164,6 +167,7 @@ EL::StatusCode METConstructor :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -344,7 +348,7 @@ EL::StatusCode METConstructor :: execute ()
   const xAOD::MissingETContainer* coreMet(0);
   RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont, m_inputJets.Data(), m_event, m_store, m_verbose), "Failed retrieving jet cont.");
   RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(coreMet, m_coreName.Data(), m_event, m_store, m_verbose), "Failed retrieving MET Core.");
-  
+
   if ( m_useCaloJetTerm ) {
     RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut), "Failed to build cluster-based jet/MET.");
   } else if ( m_useTrackJetTerm ) {
@@ -434,6 +438,6 @@ EL::StatusCode METConstructor :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

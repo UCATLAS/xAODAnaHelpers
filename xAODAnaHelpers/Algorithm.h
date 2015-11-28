@@ -12,96 +12,228 @@
 
 #include <string>
 
+// for StatusCode::isSuccess
+#include "AsgTools/StatusCode.h"
+
 namespace xAH {
 
-  class AlgorithmRegistry {
+    /**
+        @rst
 
-      public:
-        AlgorithmRegistry(){};
-	virtual ~AlgorithmRegistry() {};
-        ClassDef(AlgorithmRegistry, 1);
+            This is used by all algorithms within |xAH|.
 
-        // this maps bookkeeps the names of the algorithms
-        // which are used, and how many times they have
-        // been used before as well
-        std::map<std::string, int> m_registered_algos;
+            .. note:: The expectation is that the user does not directly use this class but rather inherits from it.
 
-        // returns how many times an algo has been
-        // already used
-        int countRegistered(std::string className);
+            The main goal of this algorithm class is to standardize how everyone defines an algorithm that plugs into |xAH|. A series of common utilities are provided such as :cpp:member:`~xAH::Algorithm::m_className` which defines the class name so we can manage a registry :cpp:member:`~xAH::Algorithm::m_instanceRegistry` to keep |xAH| as flexible as possible to our users.
 
-  };
+            We expect the user to create a new algorithm, such as a selector for jets::
 
+                class JetSelector : public xAH::Algorithm
+                {
+                    // ...
+                };
+
+            The above example is taken from our implementation in :cpp:class:`JetSelector`. Just remember that when you write your initializer, you will be expected to do something like::
+
+                // this is needed to distribute the algorithm to the workers
+                ClassImp(JetSelector)
+
+
+                JetSelector :: JetSelector () :
+                    Algorithm("JetSelector"),
+                    ...
+                {
+                    // ...
+                }
+
+            which this class will automatically register all instances of for you. Each instance can have a different name :cpp:member:`~xAH::Algorithm::m_name` but will have the same :cpp:member:`~xAH::Algorithm::m_className` so we can track how many references have been made. This is useful for selectors to deal with cutflows, but can be useful for other algorithms that need to know how many times they've been instantiated in a single job.
+
+        @endrst
+
+     */
   class Algorithm : public EL::Algorithm {
       public:
-        Algorithm();
+        /**
+            @brief Initialization
+            @param className    This is the name of the class that inherits from :cpp:class:`~xAH::Algorithm`
+         */
+        Algorithm(std::string className = "Algorithm");
+        ~Algorithm();
+        /// @cond
         ClassDef(Algorithm, 1);
+        /// @endcond
 
+        /**
+            @brief Run any initializations commmon to all xAH Algorithms (such as registerInstance). Call this inside :code:`histInitialize` for best results.
+         */
+        StatusCode algInitialize();
+
+        /**
+            @brief Run any finalizations common to all xAH Algorithms (such as unregisterInstance). Call this inside :code:`histFinalize` for best results.
+         */
+        StatusCode algFinalize();
+
+        /**
+            @brief Set the name of this particular instance to something unique (used for ROOT's TObject name primarily)
+            @param name         The name of the instance
+         */
         Algorithm* setName(std::string name);
+        /**
+            @brief Let the algorithm know you wish to configure using a ROOT::TEnv() file
+            @param configName   The path to the config file you wish to use. Can expand the path for you automatically.
+         */
         Algorithm* setConfig(std::string configName);
+        /**
+            @brief Retrieve the path to the config file
+            @param expand       Whether to retrieve the raw string set or the expanded path version
+         */
         std::string getConfig(bool expand=false);
 
-        // 00 = no verbosity
-        // 01 = debug only
-        // 10 = verbose only
-        // 11 = debug and verbose
+        /**
+            @rst
+                Set the level of verbosity in algorithms.
+
+                ===== ====== ===== =======
+                Value Binary Debug Verbose
+                ===== ====== ===== =======
+                0     00
+                1     01     x
+                2     10           x
+                3     11     x     x
+                ===== ====== ===== =======
+
+            @endrst
+         */
         Algorithm* setLevel(int level);
 
+        /**
+            @brief Enable and set the systematic with default value 0
+            @param systName     The name of the systematic
+         */
         Algorithm* setSyst(std::string systName);
+        /**
+            @brief Enable and set the systematic with the value
+            @param systName     The name of the systematic
+            @param systVal      The value to set the systematic to
+            @rst
+                .. note:: This will set the systematic to the value :math:`\pm x`.
+            @endrst
+         */
         Algorithm* setSyst(std::string systName, float systVal);
+        /**
+            @brief Enable and set the systemtatic with the vector of values
+            @param systName             The name of the systematic
+            @param systValVector        The values to set the systematic to
+         */
         Algorithm* setSyst(std::string systName, std::vector<float> systValVector);
 
-        // each algorithm should have a unique name for init, to differentiate them
+        /** All algorithms initialized should have a unique name, to differentiate them at the TObject level */
         std::string m_name;
-	
-        // each algorithm have a 'class' name (e.g., 'ElectronSelector', 'JetCalibrator' ...) to identify the type
-	std::string m_classname;
-       
-        // enable verbosity, debugging or not
+
+        /** Enable debug output */
         bool m_debug,
+        /** Enable verbose output */
              m_verbose;
 
-        // if running systs - the name of the systematic
+        /** If running systematics, the name of the systematic */
         std::string m_systName;
-        // if running systs - the value ( +/- 1 )
+        /** If running systematics, the value to set the systematic to
+            @rst
+                .. note:: This will set the systematic to the value :math:`\pm x`.
+            @endrst
+         */
         float m_systVal;
-        // for running multiple syst points
+        /** If running systematics, you can run multiple points and store them in here */
         std::vector<float> m_systValVector;
 
-        // custom EventInfo container name
+        /** If the xAOD has a different EventInfo container name, set it here */
         std::string m_eventInfoContainerName;
 
-        // override at algorithm level
-        // default: -1, use eventInfo object to determine if data or mc
-        // 0: this is data
-        // 1: this is mc
+        /**
+            @rst
+                This is an override at the algorithm level to force analyzing MC or not.
+
+                ===== ========================================================
+                Value Meaning
+                ===== ========================================================
+                -1    Default, use eventInfo object to determine if data or mc
+                0     Treat the input as data
+                1     Treat the input as MC
+                ===== ========================================================
+
+            @endrst
+         */
         int m_isMC;
 
-	// register the name of the algorithms
-	// in a record.
-	// This can be used as a 'database' for other algos
-	// to check if a class of the same type already exists
-	Algorithm* registerClass(AlgorithmRegistry &reg, std::string className);
-
       protected:
-        // name of a config file to load in, optional
+        /** The name of the TEnv config file to load in, optional */
         std::string m_configName;
 
+        /** The TEvent object */
         xAOD::TEvent* m_event; //!
+        /** The TStore object */
         xAOD::TStore* m_store; //!
 
         // will try to determine if data or if MC
         // returns: -1=unknown (could not determine), 0=data, 1=mc
+        /**
+            @rst
+                Try to determine if we are running over data or MC.
+
+                ============ =======
+                Return Value Meaning
+                ============ =======
+                -1           Unknown
+                0            Data
+                1            MC
+                ============ =======
+
+            @endrst
+         */
         int isMC();
 
-	// returns how many times an algo of *this* type
-	// has already been used
-	int countUsed() { return m_count_used; };
+        /**
+            @rst
+                the moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
+            @endrst
+         */
+        std::string m_className;
+
+        /**
+            @rst
+                Register the given instance under the moniker :cpp:member:`xAH::Algorithm::m_className`
+                This will increase the reference count by 1.
+            @endrst
+         */
+        void registerInstance();
+        /**
+            @rst
+                Return number of instances registered under the moniker :cpp:member:`xAH::Algorithm::m_className`
+
+                This will return the reference count.
+
+                .. warning:: If for some reason the instance wasn't registered, we spit out a warning.
+            @endrst
+         */
+        int numInstances();
+        /**
+            @rst
+                Unregister the given instance under the moniker :cpp:member:`xAH::Algorithm::m_className`
+
+                This will decrease the reference count by 1.
+
+                .. warning:: If for some reason the instance wasn't registered, we spit out a warning.
+            @endrst
+         */
+        void unregisterInstance();
 
       private:
-        // bookkeeps the number of times an algo of *this* type has been used
-	int m_count_used;
-
+        /**
+            @rst
+                bookkeeps the number of times :cpp:member:`xAH::Algorithm::m_className` has been used in a variable shared among all classes/instances that inherit from me
+            @endrst
+         */
+	static std::map<std::string, int> m_instanceRegistry;
   };
 
 }

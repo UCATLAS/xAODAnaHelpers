@@ -20,7 +20,9 @@ ClassImp(Writer)
 
 
 
-Writer :: Writer () {
+Writer :: Writer (std::string className) :
+    Algorithm(className)
+{
   m_outputLabel               = "";
 
   m_jetContainerNamesStr      = "";
@@ -86,6 +88,7 @@ EL::StatusCode Writer :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -251,5 +254,6 @@ EL::StatusCode Writer :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

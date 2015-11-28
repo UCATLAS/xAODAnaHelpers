@@ -33,9 +33,10 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
-  m_BJetSelectTool(nullptr),
-  m_BJetEffSFTool(nullptr)
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
+    Algorithm(className),
+    m_BJetSelectTool(nullptr),
+    m_BJetEffSFTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -191,6 +192,7 @@ EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 
 EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -534,6 +536,8 @@ EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 {
   Info("histFinalize()", "Calling histFinalize");
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+
   return EL::StatusCode::SUCCESS;
 }
 

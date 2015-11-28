@@ -17,7 +17,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonHistsAlgo)
 
-MuonHistsAlgo :: MuonHistsAlgo () {
+MuonHistsAlgo :: MuonHistsAlgo (std::string className) :
+    Algorithm(className)
+{
   m_inContainerName         = "";
   // which plots will be turned on
   m_detailStr               = "";
@@ -40,7 +42,7 @@ EL::StatusCode MuonHistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
-
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -169,4 +171,7 @@ EL::StatusCode MuonHistsAlgo :: finalize () {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonHistsAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode MuonHistsAlgo :: histFinalize () {
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  return EL::StatusCode::SUCCESS;
+}

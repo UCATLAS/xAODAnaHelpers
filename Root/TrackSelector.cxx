@@ -23,9 +23,10 @@
 ClassImp(TrackSelector)
 
 
-TrackSelector :: TrackSelector () :
-  m_cutflowHist(nullptr),
-  m_cutflowHistW(nullptr)
+TrackSelector :: TrackSelector (std::string className) :
+    Algorithm(className),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -177,7 +178,7 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // connected.
 
   Info("histInitialize()", "Calling histInitialize");
-
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -380,6 +381,7 @@ EL::StatusCode TrackSelector :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
