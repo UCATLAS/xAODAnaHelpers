@@ -2,7 +2,6 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 #include <xAODAnaHelpers/Writer.h>
-#include <xAODAnaHelpers/util.h>
 
 #include "EventLoop/OutputStream.h"
 #include "xAODCore/ShallowCopy.h"
@@ -64,9 +63,9 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   }
 
 
-  m_jetContainerNames       = SplitString( m_jetContainerNamesStr,      ',' );
-  m_electronContainerNames  = SplitString( m_electronContainerNamesStr, ',' );
-  m_muonContainerNames      = SplitString( m_muonContainerNamesStr,     ',' );
+  m_jetContainerNames       = HelperFunctions::SplitString( m_jetContainerNamesStr,      ',' );
+  m_electronContainerNames  = HelperFunctions::SplitString( m_electronContainerNamesStr, ',' );
+  m_muonContainerNames      = HelperFunctions::SplitString( m_muonContainerNamesStr,     ',' );
 
   if ( m_outputLabel.Length() == 0 ) {
     Error("Writer::setupJob()", "No OutputLabel specified!");
