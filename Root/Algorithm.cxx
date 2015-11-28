@@ -30,6 +30,10 @@ xAH::Algorithm::Algorithm(std::string className) :
 {
 }
 
+xAH::Algorithm::~Algorithm()
+{
+}
+
 StatusCode xAH::Algorithm::algInitialize(){
     registerInstance();
     return StatusCode::SUCCESS;
