@@ -50,8 +50,8 @@ ClassImp(ElectronCalibrator)
 
 ElectronCalibrator :: ElectronCalibrator (std::string className) :
     Algorithm(className),
-    m_IsolationCorrectionTool(nullptr),
-    m_EgammaCalibrationAndSmearingTool(nullptr)
+    m_EgammaCalibrationAndSmearingTool(nullptr),
+    m_IsolationCorrectionTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
