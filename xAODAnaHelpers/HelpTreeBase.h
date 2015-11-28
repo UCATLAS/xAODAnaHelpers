@@ -94,7 +94,10 @@ public:
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
   void FillPhotons( const xAOD::PhotonContainer* photons );
+
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
+  void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
+
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillFatJets( const xAOD::JetContainer* fatJets );
   void FillTaus( const xAOD::TauJetContainer* taus );
