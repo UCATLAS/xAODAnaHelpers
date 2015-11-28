@@ -215,5 +215,6 @@ EL::StatusCode HLTJetRoIBuilder :: finalize ()
 EL::StatusCode HLTJetRoIBuilder :: histFinalize ()
 {
   Info("histFinalize()", "Calling histFinalize");
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

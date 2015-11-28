@@ -177,4 +177,7 @@ EL::StatusCode JetHistsAlgo :: finalize () {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode JetHistsAlgo :: histFinalize () {
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  return EL::StatusCode::SUCCESS;
+}

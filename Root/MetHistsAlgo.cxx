@@ -102,5 +102,7 @@ EL::StatusCode MetHistsAlgo :: histFinalize ()
 {
   // clean up memory
   if(m_plots) delete m_plots;
+
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

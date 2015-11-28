@@ -171,4 +171,7 @@ EL::StatusCode MuonHistsAlgo :: finalize () {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonHistsAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode MuonHistsAlgo :: histFinalize () {
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  return EL::StatusCode::SUCCESS;
+}

@@ -369,6 +369,7 @@ EL::StatusCode TruthSelector :: finalize ()
 EL::StatusCode TruthSelector :: histFinalize ()
 {
   Info("histFinalize()", "Calling histFinalize");
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
