@@ -43,7 +43,7 @@ namespace HelperFunctions {
   float GetBTagMV2c20_Cut( int efficiency );
   std::string GetBTagMV2c20_CutStr( int efficiency );
   std::string replaceString(std::string subjet, const std::string& search, const std::string& replace);
-
+  std::vector<TString> SplitString(TString& orig, const char separator);
 
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |
