@@ -107,13 +107,14 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     m_operatingPt             = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
 
     m_decor                   = config->GetValue("DecorationName", m_decor.c_str());
-    m_decorSF                 = m_decor + "_SF";
 
     config->Print();
     Info("configure()", "BJetEfficiencyCorrector Interface succesfully configured! ");
 
     delete config;
   }
+
+  m_decorSF = m_decor + "_SF";
 
   bool allOK(false);
   m_getScaleFactors = false;
@@ -150,7 +151,6 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 
   Info("configure()", "Decision Decoration Name     : %s", m_decor.c_str());
   Info("configure()", "Scale Factor Decoration Name : %s", m_decorSF.c_str());
-
 
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
