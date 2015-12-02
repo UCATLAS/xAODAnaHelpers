@@ -340,7 +340,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     // use the random runNumber weighted by integrated luminosity got from CP::PileupReweightingTool::getRandomRunNumber()
     // Source: // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Generating_PRW_config_files
     //
-    if ( m_runNumber == 900000 && m_pileuptool ) {
+    if ( m_isMC && m_runNumber == 900000 && m_pileuptool ) {
       runNumber = m_pileuptool->getRandomRunNumber( *eventInfo, false );
       Info("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from CP::PileupReweightingTool::getRandomRunNumber()", runNumber);
     } else {
