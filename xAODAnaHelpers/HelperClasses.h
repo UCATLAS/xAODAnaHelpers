@@ -55,9 +55,22 @@ namespace HelperClasses {
   };
 
 
+  /**
+    @brief A struct that is used for parsing configuration strings and assigning booleans to various properties. Currently used in plotting code.
+   */
   struct InfoSwitch {
+    /**
+        The input configuration string from which we split up into tokens.
+     */
     const std::string m_configStr;
+    /**
+        The vector of tokens from which we search through for finding matches.
+     */
     std::set<std::string> m_configDetails;
+    /**
+        @brief Constructor. Take in input string, create vector of tokens.
+        @param configStr        The configuration string to split up.
+     */
     InfoSwitch(const std::string configStr) : m_configStr(configStr) {
         // parse and split by space
         std::string token;
@@ -65,11 +78,38 @@ namespace HelperClasses {
         while ( std::getline(ss, token, ' ') )
             m_configDetails.insert(token);
     };
+    /**
+        @rst
+            .. deprecated:: 00-03-26
+               Use :cpp:func:`~HelperClasses::InfoSwitch::has_match` instead.
+
+        @endrst
+        @param flag     The string we search for.
+     */
     bool parse(const std::string flag) { std::cout << "InfoSwitch::parse() deprecated soon!" << std::endl; return has_match(flag); };
+    /**
+        @rst
+            Search for an exact match in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails`.
+
+        @endrst
+        @param flag     The string we search for.
+     */
     bool has_exact(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end(); };
+    /**
+        @rst
+            Search for a partial match in :cpp:member:`~HelperClasses::InfoSwitch::m_configStr`.
+
+        @endrst
+        @param flag     The string we search for.
+     */
     bool has_match(const std::string flag) { return m_configStr.find(flag) != std::string::npos; };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Event Information.
+    @endrst
+   */
   struct EventInfoSwitch : InfoSwitch {
     bool m_pileup;
     bool m_shapeEM;
@@ -82,6 +122,11 @@ namespace HelperClasses {
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Trigger Information.
+    @endrst
+   */
   struct TriggerInfoSwitch : InfoSwitch {
     bool m_basic;
     bool m_menuKeys;
@@ -90,6 +135,11 @@ namespace HelperClasses {
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Jet Trigger Information.
+    @endrst
+   */
   struct JetTriggerInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_clean;
@@ -97,6 +147,11 @@ namespace HelperClasses {
     JetTriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Muon Information.
+    @endrst
+   */
   struct MuonInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_trigger;
@@ -110,6 +165,11 @@ namespace HelperClasses {
     MuonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Electron Information.
+    @endrst
+   */
   struct ElectronInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_trigger;
@@ -122,6 +182,11 @@ namespace HelperClasses {
     ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Photon Information.
+    @endrst
+   */
   struct PhotonInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_isolation;
@@ -130,6 +195,11 @@ namespace HelperClasses {
     PhotonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Jet Information.
+    @endrst
+   */
   struct JetInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_substructure;
@@ -161,13 +231,22 @@ namespace HelperClasses {
     JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Truth Information.
+    @endrst
+   */
   struct TruthInfoSwitch : InfoSwitch {
     bool m_kinematic;
     void initialize();
     TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
-
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Tau Information.
+    @endrst
+   */
   struct TauInfoSwitch : InfoSwitch {
     bool m_kinematic;
     bool m_trackparams;
@@ -176,6 +255,11 @@ namespace HelperClasses {
     TauInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
 
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Missing :math:`\text{E}_{\text{T}}` Information.
+    @endrst
+   */
   struct METInfoSwitch : InfoSwitch {
     bool m_refEle;
     bool m_refGamma;
