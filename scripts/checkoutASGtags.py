@@ -54,7 +54,6 @@ dict_pkg = {
                        "atlasoff/Trigger/TrigConfiguration/TrigConfxAOD/tags/TrigConfxAOD-00-00-20",
                        "atlasoff/Trigger/TrigAnalysis/TrigEgammaMatchingTool/tags/TrigEgammaMatchingTool-00-00-11"
                       ]
-
            }
 
 try:
