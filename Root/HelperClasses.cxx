@@ -74,17 +74,14 @@ namespace HelperClasses{
     std::string SiliconAssociatedForwardMuon("SiliconAssociatedForwardMuon");   enumMap.insert(std::make_pair(SiliconAssociatedForwardMuon , xAOD::Muon::SiliconAssociatedForwardMuon));
   }
 
+  /*
+            !!!!!!!!!!!!!WARNING!!!!!!!!!!!!!
+              If you change the string here,
+                please update the relevant
+            documentation in the header file.
+            !!!!!!!!!!!!!WARNING!!!!!!!!!!!!!
+  */
 
-  /**************************************
-   *
-   *  Strings are used to turn on and off
-   *  histograms and branches in the tree
-   *  The following structs hold the bools
-   *  used to control the content and also
-   *  have the string which is necessary to
-   *  turn a set on
-   *
-   **************************************/
   void EventInfoSwitch::initialize(){
     m_pileup        = has_exact("pileup");
     m_shapeEM       = has_exact("shapeEM");
