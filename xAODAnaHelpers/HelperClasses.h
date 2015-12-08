@@ -57,6 +57,20 @@ namespace HelperClasses {
 
   /**
     @brief A struct that is used for parsing configuration strings and assigning booleans to various properties. Currently used in plotting code.
+
+    @rst
+        Strings are used to turn on and off histograms and branches in the tree The following structs hold the bools used to control the content and also have the string which is necessary to turn a set on.
+        See the derived members for more information about what is supported. Each derived member should provide a table of parameters, patterns, and type of matching scheme used. The pattern will use standard PCRE-syntax when appropriate.
+
+        We support two major matching schemes:
+
+            Exact
+                If a variable is matched exactly to a string, then a boolean is set to True or False based on whether an exact match exists or not.
+
+            Partial
+                If a variable is partially matched to a string, then there is some specific pattern we are extracting that will succeed the partial match that determines what the variable will be set to (usually not a bool).
+
+    @endrst
    */
   struct InfoSwitch {
     /**
@@ -108,6 +122,18 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Event Information.
+
+        ============== ============ =======
+        Parameter      Pattern      Match
+        ============== ============ =======
+        m_pileup       pileup       exact
+        m_shapeEM      shapeEM      exact
+        m_shapeLC      shapeLC      exact
+        m_truth        truth        exact
+        m_caloClus     caloClusters exact
+        m_muonSF       muonSF       exact
+        m_electronSF   electronSF   exact
+        ============== ============ =======
     @endrst
    */
   struct EventInfoSwitch : InfoSwitch {
@@ -125,6 +151,14 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Trigger Information.
+
+        ============== ============ =======
+        Parameter      Pattern      Match
+        ============== ============ =======
+        m_basic        basic        exact
+        m_menuKeys     menuKeys     exact
+        m_passTriggers passTriggers exact
+        ============== ============ =======
     @endrst
    */
   struct TriggerInfoSwitch : InfoSwitch {
@@ -138,6 +172,13 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Jet Trigger Information.
+
+        ============== ============ =======
+        Parameter      Pattern      Match
+        ============== ============ =======
+        m_kinematic    kinematic    exact
+        m_clean        clean        exact
+        ============== ============ =======
     @endrst
    */
   struct JetTriggerInfoSwitch : InfoSwitch {
@@ -150,6 +191,19 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Muon Information.
+
+        ============== ============ =======
+        Parameter      Pattern      Match
+        ============== ============ =======
+        m_kinematic    kinematic    exact
+        m_trigger      trigger      exact
+        m_isolation    isolation    exact
+        m_quality      quality      exact
+        m_trackparams  trackparams  exact
+        m_trackhitcont trackhitcont exact
+        m_effSF        effSF        exact
+        m_energyLoss   energyLoss   exact
+        ============== ============ =======
     @endrst
    */
   struct MuonInfoSwitch : InfoSwitch {
@@ -168,6 +222,18 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Electron Information.
+
+        ============== ============ =======
+        Parameter      Pattern      Match
+        ============== ============ =======
+        m_kinematic    kinematic    exact
+        m_trigger      trigger      exact
+        m_isolation    isolation    exact
+        m_PID          PID          exact
+        m_trackparams  trackparams  exact
+        m_trackhitcont trackhitcont exact
+        m_effSF        effSF        exact
+        ============== ============ =======
     @endrst
    */
   struct ElectronInfoSwitch : InfoSwitch {
@@ -185,6 +251,14 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Photon Information.
+
+        ============== ============ =======
+        Parameter      Pattern      Match
+        ============== ============ =======
+        m_kinematic    kinematic    exact
+        m_isolation    isolation    exact
+        m_PID          PID          exact
+        ============== ============ =======
     @endrst
    */
   struct PhotonInfoSwitch : InfoSwitch {
@@ -198,7 +272,56 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Jet Information.
+
+        ================ ============== =======
+        Parameter        Pattern        Match
+        ================ ============== =======
+        m_kinematic      kinematic      exact
+        m_substructure   substructure   exact
+        m_rapidity       rapidity       exact
+        m_clean          clean          exact
+        m_energy         energy         exact
+        m_scales         scales         exact
+        m_resolution     resolution     exact
+        m_truth          truth          exact
+        m_truthDetails   truth_details  exact
+        m_layer          layer          exact
+        m_trackPV        trackPV        exact
+        m_trackAll       trackAll       exact
+        m_allTrack       allTrack       exact
+        m_allTrackPVSel  allTrackPVSel  exact
+        m_allTrackDetail allTrackDetail exact
+        m_constituent    constituent    exact
+        m_constituentAll constituentAll exact
+        m_flavTag        flavorTag      exact
+        m_flavTagHLT     flavorTagHLT   exact
+        m_sfFTagFix      sfFTagFix      partial
+        m_sfFTagFlt      sfFTagFlt      partial
+        m_area           area           exact
+        m_numLeadingJets LeadingJets    partial
+        ================ ============== =======
+
+        .. note::
+            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable.
+
+            For example::
+
+                m_configStr = "... sfFTagFix010203 ..."
+
+            will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
+
+        .. note::
+            ``m_numLeadingJets`` requires a number ``XX`` to succeed it defining the number of leading jets and associate it with that variable.
+
+            For example::
+
+                m_configStr = "... LeadingJets4 ..."
+
+            will define :code:`int m_numLeadingJets = 4`.
+
+
     @endrst
+
    */
   struct JetInfoSwitch : InfoSwitch {
     bool m_kinematic;
@@ -234,6 +357,12 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Truth Information.
+
+        ================ ============== =======
+        Parameter        Pattern        Match
+        ================ ============== =======
+        m_kinematic      kinematic      exact
+        ================ ============== =======
     @endrst
    */
   struct TruthInfoSwitch : InfoSwitch {
@@ -245,6 +374,14 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Tau Information.
+
+        ================ ============== =======
+        Parameter        Pattern        Match
+        ================ ============== =======
+        m_kinematic      kinematic      exact
+        m_trackparams    trackparams    exact
+        m_trackhitcont   trackhitcont   exact
+        ================ ============== =======
     @endrst
    */
   struct TauInfoSwitch : InfoSwitch {
@@ -258,6 +395,22 @@ namespace HelperClasses {
   /**
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Missing :math:`\text{E}_{\text{T}}` Information.
+
+        ================ ============== =======
+        Parameter        Pattern        Match
+        ================ ============== =======
+        m_refEle         refEle|all     exact
+        m_refGamma       refGamma|all   exact
+        m_refTau         refTau|all     exact
+        m_refMuons       refMuons|all   exact
+        m_refJet         refJet|all     exact
+        m_refJetTrk      refJetTrk      exact
+        m_softClus       softClus|all   exact
+        m_softTrk        softTrk|all    exact
+        ================ ============== =======
+
+        .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information.
+
     @endrst
    */
   struct METInfoSwitch : InfoSwitch {
