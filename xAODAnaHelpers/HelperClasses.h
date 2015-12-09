@@ -143,6 +143,7 @@ namespace HelperClasses {
     bool m_allTrack;
     bool m_allTrackDetail;
     bool m_allTrackPVSel;
+    bool m_GSCDebug;
     bool m_constituent;
     bool m_constituentAll;
     bool m_flavTag;

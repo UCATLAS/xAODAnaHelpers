@@ -146,6 +146,7 @@ namespace HelperClasses{
     m_allTrack      = has_exact("allTrack");
     m_allTrackPVSel = has_exact("allTrackPVSel");
     m_allTrackDetail= has_exact("allTrackDetail");
+    m_GSCDebug      = has_exact("GSCDebug");
     if( m_allTrackDetail ) {
       m_allTrackPVSel = m_allTrackPVSel || has_exact("allTrackDetailPVSel") ;
     }
