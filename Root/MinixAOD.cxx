@@ -11,8 +11,9 @@
 #include "EventLoop/OutputStream.h"
 
 // EDM include(s):
-#include "xAODCore/ShallowCopy.h"
-#include "AthContainers/ConstDataVector.h"
+#include "xAODEventInfo/EventInfo.h"
+#include "xAODJet/JetContainer.h"
+#include "xAODJet/JetAuxContainer.h"
 
 // package include(s):
 #include "xAODEventInfo/EventInfo.h"
@@ -128,18 +129,19 @@ EL::StatusCode MinixAOD :: initialize ()
 
   // parse and split by comma
   std::string token;
+  std::istringstream ss("");
 
-  std::istringstream ss(m_shallowCopyKeys);
-  while ( std::getline(ss, token, ',') ) {
+  ss.clear(); ss.str(m_simpleCopyKeys);
+  while(std::getline(ss, token, ','))
+    m_simpleCopyKeys_vec.push_back(token);
+
+  ss.clear(); ss.str(m_shallowCopyKeys);
+  while(std::getline(ss, token, ','))
     m_shallowCopyKeys_vec.push_back(token);
-  }
 
-  ss.clear();
-  ss.str(m_deepCopyKeys);
-  while ( std::getline(ss, token, ',') ) {
-    std::cout << token << std::endl;
+  ss.clear(); ss.str(m_deepCopyKeys);
+  while(std::getline(ss, token, ','))
     m_deepCopyKeys_vec.push_back(token);
-  }
 
   Info("initialize()", "MinixAOD Interface succesfully initialized!" );
 
@@ -150,9 +152,21 @@ EL::StatusCode MinixAOD :: execute ()
 {
   if ( m_debug ) { Info("execute()", "Dumping objects..."); }
 
-  // retrieve event
-  const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  // simple copy is easiest - it's in the input, copy over, no need for types
+  for(const auto& key: m_simpleCopyKeys_vec)
+    RETURN_CHECK("MinixAOD::execute()", m_event->copy(key), std::string("Could not copy "+key+" from input file.").c_str());
+
+  // deep copy is the next easiest - we just need the container and aux container
+  for(const auto& key: m_deepCopyKeys_vec){
+    // all we need to do is retrieve it and figure out what type it is to record it
+    const xAOD::IParticleContainer* cont(nullptr);
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, m_debug), std::string("Could not retrieve container "+key+" from TStore. Enable m_debug to find out why.").c_str());
+
+    if(dynamic_cast<const xAOD::JetContainer*>(cont))
+      HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key);
+
+  }
+
 
   if ( m_debug ) { Info("execute()", "Finished dumping objects..."); }
 

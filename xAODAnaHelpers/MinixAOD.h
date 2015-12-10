@@ -8,6 +8,10 @@
 #include "xAODMetaDataCnv/FileMetaDataTool.h"
 #include "xAODTriggerCnv/TriggerMenuMetaDataTool.h"
 
+// EDM includes
+#include "xAODBase/IParticleContainer.h"
+#include "xAODCore/AuxContainerBase.h"
+
 class MinixAOD : public xAH::Algorithm
 {
 public:
@@ -23,6 +27,9 @@ public:
   /// copy the trigger containers and meta data over
   bool m_copyTriggerInfo; //!
 
+  /// names of containers to copy from input
+  std::string m_simpleCopyKeys; //!
+
   /// names of containers to shallow copy
   std::string m_shallowCopyKeys; //!
 
@@ -30,6 +37,7 @@ public:
   std::string m_deepCopyKeys; //!
 
 private:
+  std::vector<std::string> m_simpleCopyKeys_vec;      //!
   std::vector<std::string> m_shallowCopyKeys_vec;     //!
   std::vector<std::string> m_deepCopyKeys_vec;        //!
 
