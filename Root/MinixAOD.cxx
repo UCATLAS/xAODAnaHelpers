@@ -137,26 +137,26 @@ EL::StatusCode MinixAOD :: initialize ()
   std::string token;
   std::istringstream ss("");
 
-  // A,B,C,D,...,Z -> {A, B, C, D, ..., Z}
+  // A B C D ... Z -> {A, B, C, D, ..., Z}
   ss.clear(); ss.str(m_simpleCopyKeys);
-  while(std::getline(ss, token, ','))
+  while(std::getline(ss, token, ' '))
     m_simpleCopyKeys_vec.push_back(token);
 
-  // A,B,C,D,...,Z -> {A, B, C, D, ..., Z}
+  // A B C D ... Z -> {A, B, C, D, ..., Z}
   ss.clear(); ss.str(m_storeCopyKeys);
-  while(std::getline(ss, token, ','))
+  while(std::getline(ss, token, ' '))
     m_copyFromStoreToEventKeys_vec.push_back(token);
 
-  // A1|A2,B1|B2,C1|C2,...,Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
+  // A1|A2 B1|B2 C1|C2 ... Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
   ss.clear(); ss.str(m_shallowCopyKeys);
-  while(std::getline(ss, token, ',')){
+  while(std::getline(ss, token, ' ')){
     int pos = token.find_first_of('|');
     m_shallowCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
   }
 
-  // A1|A2,B1|B2,C1|C2,...,Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
+  // A1|A2 B1|B2 C1|C2 ... Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
   ss.clear(); ss.str(m_deepCopyKeys);
-  while(std::getline(ss, token, ',')){
+  while(std::getline(ss, token, ' ')){
     int pos = token.find_first_of('|');
     m_deepCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
   }
