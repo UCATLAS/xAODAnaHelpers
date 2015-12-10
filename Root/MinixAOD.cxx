@@ -26,9 +26,18 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MinixAOD)
 
-
 MinixAOD :: MinixAOD (std::string className) :
     Algorithm(className),
+    m_outputFileName("out_miniXAOD"),
+    m_createOutputFile(true),
+    m_copyFileMetaData(false),
+    m_copyTriggerInfo(false),
+    m_shallowCopyKeys(""),
+    m_deepCopyNames(""),
+    m_shallowCopyKeys_vec(),
+    m_deepCopyNames_vec(),
+    m_fileMetaDataTool(nullptr),
+    m_triggerMetaDataTool(nullptr)
 {
   Info("MinixAOD()", "Calling constructor");
 }
@@ -58,6 +67,12 @@ EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "MinixAOD" ).ignore(); // call before opening first file
 
+  // only create the output xaod if requested
+  if(m_createOutputFile){
+    EL::OutputStream out_xAOD (m_outputFileName, "xAOD");
+    job.outputAdd (out_xAOD);
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -84,6 +99,31 @@ EL::StatusCode MinixAOD :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
+  // always do this, obviously
+  TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
+  RETURN_CHECK("MinixAOD::initialize()", m_event->writeTo(file_xAOD), "Could not set output to file");
+
+  if(m_copyFileMetaData){
+    m_fileMetaDataTool = new xAODMaker::FileMetaDataTool();
+
+    if(m_verbose)
+      RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->setProperty("OutputLevel", MSG::VERBOSE ), "Could not set verbosity on fileMenuMetaDataTool");
+
+
+    RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->initialize(), "Could not initialize FileMetaDataTool");
+    Info("initialize()", "FileMetaDataTool initialized...");
+  }
+
+  if(m_copyTriggerInfo){
+    m_triggerMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();
+
+    if(m_verbose)
+      RETURN_CHECK("MinixAOD::initialize()", m_triggerMetaDataTool->setProperty("OutputLevel", MSG::VERBOSE ), "Could not set verbosity on TriggerMenuMetaDataTool");
+
+    RETURN_CHECK("MinixAOD::initialize()", m_triggerMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
+    Info("initialize()", "TriggerMenuMetaDataTool initialized...");
+  }
+
   // parse and split by comma
   std::string token;
 
@@ -103,8 +143,6 @@ EL::StatusCode MinixAOD :: initialize ()
 
   return EL::StatusCode::SUCCESS;
 }
-
-
 
 EL::StatusCode MinixAOD :: execute ()
 {
