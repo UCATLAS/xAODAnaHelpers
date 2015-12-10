@@ -54,6 +54,7 @@ EL::StatusCode  MinixAOD :: configure ()
 
     // read debug flag from .config file
     m_debug         = config->GetValue("Debug" ,      m_debug);
+    m_verbose       = config->GetValue("Verbose",     m_verbose);
 
     config->Print();
     Info("configure()", "MinixAOD Interface succesfully configured! ");
@@ -65,7 +66,7 @@ EL::StatusCode  MinixAOD :: configure ()
 
 EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
 {
-  Info("setupJob()", "Calling setupJob");
+  if(m_debug) Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MinixAOD" ).ignore(); // call before opening first file
@@ -92,7 +93,7 @@ EL::StatusCode MinixAOD :: changeInput (bool /*firstFile*/) { return EL::StatusC
 
 EL::StatusCode MinixAOD :: initialize ()
 {
-  Info("initialize()", "Calling initialize");
+  if(m_debug) Info("initialize()", "Calling initialize");
 
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("initialize()", "Failed to properly configure. Exiting." );
@@ -114,7 +115,7 @@ EL::StatusCode MinixAOD :: initialize ()
 
 
     RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->initialize(), "Could not initialize FileMetaDataTool");
-    Info("initialize()", "FileMetaDataTool initialized...");
+    if(m_debug) Info("initialize()", "FileMetaDataTool initialized...");
   }
 
   if(m_copyTriggerInfo){
@@ -124,7 +125,7 @@ EL::StatusCode MinixAOD :: initialize ()
       RETURN_CHECK("MinixAOD::initialize()", m_triggerMetaDataTool->setProperty("OutputLevel", MSG::VERBOSE ), "Could not set verbosity on TriggerMenuMetaDataTool");
 
     RETURN_CHECK("MinixAOD::initialize()", m_triggerMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
-    Info("initialize()", "TriggerMenuMetaDataTool initialized...");
+    if(m_debug) Info("initialize()", "TriggerMenuMetaDataTool initialized...");
   }
 
   // parse and split by comma
@@ -143,14 +144,14 @@ EL::StatusCode MinixAOD :: initialize ()
   while(std::getline(ss, token, ','))
     m_deepCopyKeys_vec.push_back(token);
 
-  Info("initialize()", "MinixAOD Interface succesfully initialized!" );
+  if(m_debug) Info("initialize()", "MinixAOD Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode MinixAOD :: execute ()
 {
-  if ( m_debug ) { Info("execute()", "Dumping objects..."); }
+  if(m_verbose) Info("execute()", "Dumping objects...");
 
   // simple copy is easiest - it's in the input, copy over, no need for types
   for(const auto& key: m_simpleCopyKeys_vec)
@@ -160,7 +161,7 @@ EL::StatusCode MinixAOD :: execute ()
   for(const auto& key: m_deepCopyKeys_vec){
     // all we need to do is retrieve it and figure out what type it is to record it
     const xAOD::IParticleContainer* cont(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, m_debug), std::string("Could not retrieve container "+key+" from TStore. Enable m_debug to find out why.").c_str());
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+key+" from TStore. Enable m_verbose to find out why.").c_str());
 
     if(dynamic_cast<const xAOD::JetContainer*>(cont))
       HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key);
@@ -168,7 +169,9 @@ EL::StatusCode MinixAOD :: execute ()
   }
 
 
-  if ( m_debug ) { Info("execute()", "Finished dumping objects..."); }
+  if(m_verbose) Info("execute()", "Finished dumping objects...");
+  m_event->fill();
+  if(m_verbose) Info("execute()", "Called m_event->fill() successfully.");
 
   return EL::StatusCode::SUCCESS;
 
