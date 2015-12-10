@@ -44,28 +44,28 @@ class MinixAOD : public xAH::Algorithm
 {
 public:
   /// name of the output file to use for xAOD dumping
-  std::string m_outputFileName; //!
+  std::string m_outputFileName;
 
   /// enable to create the output file for xAOD dumping
-  bool m_createOutputFile;      //!
+  bool m_createOutputFile;
 
   /// copy the file metadata over
-  bool m_copyFileMetaData; //!
+  bool m_copyFileMetaData;
 
   /// copy the trigger containers and meta data over
-  bool m_copyTriggerInfo; //!
+  bool m_copyTriggerInfo;
 
   /// names of containers to copy from input
-  std::string m_simpleCopyKeys; //!
+  std::string m_simpleCopyKeys;
 
   /// names of containers in the TStore to copy over
-  std::string m_storeCopyKeys; //!
+  std::string m_storeCopyKeys;
 
   /// names of containers to shallow copy
-  std::string m_shallowCopyKeys; //!
+  std::string m_shallowCopyKeys;
 
   /// names of containers to deep copy
-  std::string m_deepCopyKeys; //!
+  std::string m_deepCopyKeys;
 
 private:
   /// A vector of containers that are in TEvent that just need to be written to the output

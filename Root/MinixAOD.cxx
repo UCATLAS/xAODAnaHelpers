@@ -32,14 +32,6 @@ ClassImp(MinixAOD)
 
 MinixAOD :: MinixAOD (std::string className) :
     Algorithm(className),
-    m_outputFileName("out_miniXAOD"),
-    m_createOutputFile(true),
-    m_copyFileMetaData(false),
-    m_copyTriggerInfo(false),
-    m_simpleCopyKeys(""),
-    m_storeCopyKeys(""),
-    m_shallowCopyKeys(""),
-    m_deepCopyKeys(""),
     m_simpleCopyKeys_vec(),
     m_shallowCopyKeys_vec(),
     m_deepCopyKeys_vec(),
@@ -48,6 +40,14 @@ MinixAOD :: MinixAOD (std::string className) :
     m_trigMetaDataTool(nullptr)
 {
   Info("MinixAOD()", "Calling constructor");
+
+  m_outputFileName = "out_miniXAOD";
+  m_createOutputFile = true;
+  m_copyFileMetaData = false;
+  m_copyTriggerInfo = false;
+  m_simpleCopyKeys = "";
+  m_storeCopyKeys = "";
+  m_deepCopyKeys = "";
 }
 
 EL::StatusCode  MinixAOD :: configure ()
@@ -171,9 +171,12 @@ EL::StatusCode MinixAOD :: execute ()
   if(m_verbose) Info("execute()", "Dumping objects...");
 
   // simple copy is easiest - it's in the input, copy over, no need for types
-  for(const auto& key: m_simpleCopyKeys_vec)
+  for(const auto& key: m_simpleCopyKeys_vec){
     RETURN_CHECK("MinixAOD::execute()", m_event->copy(key), std::string("Could not copy "+key+" from input file.").c_str());
+    if(m_verbose) std::cout << "Copying " << key << " from input file" << std::endl;
+  }
 
+  // we need to make deep copies
   for(const auto& keypair: m_deepCopyKeys_vec){
     auto in_key = keypair.first;
     auto out_key = keypair.second;
@@ -185,6 +188,8 @@ EL::StatusCode MinixAOD :: execute ()
       HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, out_key.c_str(), t_cont);
 
     m_copyFromStoreToEventKeys_vec.push_back(out_key);
+
+    if(m_verbose) std::cout << "Deep-Copied " << in_key << " to " << out_key << " to record to output file" << std::endl;
   }
 
   // shallow IO handling (if no parent, assume deep copy)
@@ -197,6 +202,13 @@ EL::StatusCode MinixAOD :: execute ()
       if(std::find(m_copyFromStoreToEventKeys_vec.begin(), m_copyFromStoreToEventKeys_vec.end(), parent) == m_copyFromStoreToEventKeys_vec.end())
         m_copyFromStoreToEventKeys_vec.push_back(parent);
 
+    if(m_verbose){
+      std::cout << "Copying " << key;
+      if(!parent.empty())
+        std::cout << " as well as it's parent " << parent;
+      std::cout << std::endl;
+    }
+
     m_copyFromStoreToEventKeys_vec.push_back(key);
   }
 
@@ -207,12 +219,13 @@ EL::StatusCode MinixAOD :: execute ()
 
     if(dynamic_cast<const xAOD::JetContainer*>(cont))
       HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key);
+
+    if(m_verbose) std::cout << "Copied " << key << " and it's auxiliary container from TStore to TEvent" << std::endl;
   }
 
 
-  if(m_verbose) Info("execute()", "Finished dumping objects...");
   m_event->fill();
-  if(m_verbose) Info("execute()", "Called m_event->fill() successfully.");
+  if(m_verbose) Info("execute()", "Finished dumping objects...");
 
   return EL::StatusCode::SUCCESS;
 
