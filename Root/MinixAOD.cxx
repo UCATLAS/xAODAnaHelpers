@@ -41,7 +41,7 @@ MinixAOD :: MinixAOD (std::string className) :
     m_shallowCopyKeys_vec(),
     m_deepCopyKeys_vec(),
     m_fileMetaDataTool(nullptr),
-    m_triggerMetaDataTool(nullptr)
+    m_trigMetaDataTool(nullptr)
 {
   Info("MinixAOD()", "Calling constructor");
 }
@@ -120,12 +120,12 @@ EL::StatusCode MinixAOD :: initialize ()
   }
 
   if(m_copyTriggerInfo){
-    m_triggerMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();
+    m_trigMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();
 
     if(m_verbose)
-      RETURN_CHECK("MinixAOD::initialize()", m_triggerMetaDataTool->setProperty("OutputLevel", MSG::VERBOSE ), "Could not set verbosity on TriggerMenuMetaDataTool");
+      RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->setProperty("OutputLevel", MSG::VERBOSE ), "Could not set verbosity on TriggerMenuMetaDataTool");
 
-    RETURN_CHECK("MinixAOD::initialize()", m_triggerMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
+    RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
     if(m_debug) Info("initialize()", "TriggerMenuMetaDataTool initialized...");
   }
 
@@ -179,7 +179,15 @@ EL::StatusCode MinixAOD :: execute ()
 }
 
 EL::StatusCode MinixAOD :: postExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode MinixAOD :: finalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode MinixAOD :: finalize () {
+  TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
+  RETURN_CHECK("MinixAOD::finalize()", m_event->finishWritingTo(file_xAOD), "Could not finish writing to the output xAOD.");
+
+  if(m_fileMetaDataTool) delete m_fileMetaDataTool;
+  if(m_trigMetaDataTool) delete m_trigMetaDataTool;
+
+  return EL::StatusCode::SUCCESS;
+}
 EL::StatusCode MinixAOD :: histFinalize ()
 {
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");

@@ -70,7 +70,7 @@ private:
   std::vector<std::string> m_deepCopyKeys_vec;        //!
 
   xAODMaker::FileMetaDataTool          *m_fileMetaDataTool;    //!
-  xAODMaker::TriggerMenuMetaDataTool   *m_triggerMetaDataTool; //!
+  xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool; //!
 
 public:
   // this is a standard constructor
