@@ -55,16 +55,73 @@ public:
   /// copy the trigger containers and meta data over
   bool m_copyTriggerInfo;
 
-  /// names of containers to copy from input
+  /**
+    @brief names of containers to copy from the input file
+
+    @rst
+      Container names should be space-delimited::
+
+        "m_simpleCopyKeys": "EventInfo AntiKt4EMTopoJets"
+
+    @endrst
+   */
   std::string m_simpleCopyKeys;
 
-  /// names of containers in the TStore to copy over
+  /**
+    @brief names of containers in the TStore to copy over
+
+    @rst
+
+      .. note:: This option is appropriate for deep-copied containers.
+
+      Container names should be space-delimited::
+
+        "m_storeCopyKeys": "BrandNewJetContainer ReclusteredJets"
+
+    @endrst
+   */
   std::string m_storeCopyKeys;
 
-  /// names of containers to shallow copy
+  /**
+    @brief names of containers that have been shallow-copied
+
+    @rst
+
+      .. note:: This option is appropriate for shallow-copied containers.
+
+      This option is a little different because shallow-copied containers have parent containers. However, there are two options depending on the :code:`setShallowIO` option
+
+        True
+          If this is set to true, you will want to specify the parent container so that we copy it over as well (it is assumed that the parent container is in TStore or TEvent)::
+
+            "m_shallowCopyKeys": "SCAntiKt4EMTopoJets|AntiKt4EMTopoJets SCMuons|Muons_Presel"
+
+        False
+          If this is set to false, you will not want to specify the parent container
+
+            "m_shallowCopyKeys": "SCAntiKt4EMTopoJets| SCMuons|"
+
+      .. warning:: Please note that the :code:`shallowIO` option is what determines how the memory is managed. If you run into issues with shallow-copied containers here, make sure you know whether this option was enabled or not before asking for help.
+
+      Always specify your string in a space-delimited format where pairs are split up by ``shallow container name|parent container name``.
+
+    @endrst
+   */
   std::string m_shallowCopyKeys;
 
-  /// names of containers to deep copy
+  /**
+    @brief names of containers that have been shallow-copied
+
+    @rst
+
+      .. note:: This option is appropriate for view-only containers such as :code:`ConstDataVector`s.
+
+      Here, we will do the deep-copying for you, so that the containers can be correctly recorded into the output. Due to the way view-only containers work, we can't figure out whether the memory points to a specific parent container we can copy, or to a non-persistable, local (stack) memory. The best option is to just deep-copy and allocate new memory instead::
+
+          "m_deepCopyKeys": "AntiKt4EMTopoJets|DeepCopyAntiKt4Jets Muons|DeepCopyMuons"
+
+      Always specify your string in a space-delimited format where pairs are split up by ``input container name|output container name``.
+   */
   std::string m_deepCopyKeys;
 
 private:
@@ -78,7 +135,9 @@ private:
   /// A vector of containers (and aux-pairs) in TStore to record in TEvent
   std::vector<std::string> m_copyFromStoreToEventKeys_vec; //!
 
+  /// Pointer for the File MetaData Tool
   xAODMaker::FileMetaDataTool          *m_fileMetaDataTool;    //!
+  /// Pointer for the TriggerMenu MetaData Tool
   xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool; //!
 
 public:
