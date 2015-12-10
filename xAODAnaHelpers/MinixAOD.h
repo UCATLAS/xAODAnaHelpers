@@ -11,7 +11,35 @@
 // EDM includes
 #include "xAODBase/IParticleContainer.h"
 #include "xAODCore/AuxContainerBase.h"
+/**
+  @brief Produce xAOD outputs
+  @rst
 
+    .. warning:: Care must be taken when managing memory and using copies. You need to think about how copies point to each other and whether you can use shallow copies or deep copies or both.
+
+    I can think up the following cases when a user is doing an EL Algorithm:
+
+      * input containers in TEvent (simple)
+      * deep-copied containers in TStore (deep-copy)
+      * shallow-copied containers in TStore (shallow)
+      * CDV containers in TStore (cdv)
+
+    For the above use-cases, we might produce outputs like so:
+
+      * write the input container to the output. This uses :code:`TEvent::copy()`.
+      * write the deep-copied containers to the output. This calls :code:`TStore::retrieve()` and then :code:`TEvent::record()`.
+      * two options when we have shallow-copies:
+
+        #. :code:`shallowIO=false`: write to the output as a deep-copy like in the previous option
+        #. :code:`shallowIO=true`: write to the output as a shallow-copy, but make sure the original container is also written to the output
+
+      * make a deep-copy of the ConstDataVector and then move from :code:`TStore` to :code:`TEvent`. The problem is that we point to local memory that will not persist when making the CDV.
+
+    The trickiest case is with shallow copies because those could be our systematics -- and you might want to copy the original container, and only copy over systematics via true shallow copies to conserve memory and space.
+
+  @endrst
+
+ */
 class MinixAOD : public xAH::Algorithm
 {
 public:
