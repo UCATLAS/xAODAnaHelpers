@@ -7,6 +7,8 @@
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
+// output stream
+#include "EventLoop/OutputStream.h"
 
 // EDM include(s):
 #include "xAODCore/ShallowCopy.h"
@@ -33,9 +35,9 @@ MinixAOD :: MinixAOD (std::string className) :
     m_copyFileMetaData(false),
     m_copyTriggerInfo(false),
     m_shallowCopyKeys(""),
-    m_deepCopyNames(""),
+    m_deepCopyKeys(""),
     m_shallowCopyKeys_vec(),
-    m_deepCopyNames_vec(),
+    m_deepCopyKeys_vec(),
     m_fileMetaDataTool(nullptr),
     m_triggerMetaDataTool(nullptr)
 {
@@ -129,14 +131,14 @@ EL::StatusCode MinixAOD :: initialize ()
 
   std::istringstream ss(m_shallowCopyKeys);
   while ( std::getline(ss, token, ',') ) {
-    m_shallowCopyKeyNames.push_back(token);
+    m_shallowCopyKeys_vec.push_back(token);
   }
 
   ss.clear();
   ss.str(m_deepCopyKeys);
   while ( std::getline(ss, token, ',') ) {
     std::cout << token << std::endl;
-    m_deepCopyKeyNames.push_back(token);
+    m_deepCopyKeys_vec.push_back(token);
   }
 
   Info("initialize()", "MinixAOD Interface succesfully initialized!" );
