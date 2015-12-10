@@ -58,6 +58,9 @@ public:
   /// names of containers to copy from input
   std::string m_simpleCopyKeys; //!
 
+  /// names of containers in the TStore to copy over
+  std::string m_storeCopyKeys; //!
+
   /// names of containers to shallow copy
   std::string m_shallowCopyKeys; //!
 
@@ -65,9 +68,15 @@ public:
   std::string m_deepCopyKeys; //!
 
 private:
-  std::vector<std::string> m_simpleCopyKeys_vec;      //!
-  std::vector<std::string> m_shallowCopyKeys_vec;     //!
-  std::vector<std::string> m_deepCopyKeys_vec;        //!
+  /// A vector of containers that are in TEvent that just need to be written to the output
+  std::vector<std::string> m_simpleCopyKeys_vec; //!
+  /// A vector of (container name, parent name) pairs for shallow-copied objects -- if parent is empty, deep-copy it
+  std::vector<std::pair<std::string, std::string>> m_shallowCopyKeys_vec; //!
+  /// A vector of (in container, output container) that need to be deep-copied first before moving to TStore
+  std::vector<std::pair<std::string, std::string>> m_deepCopyKeys_vec; //!
+
+  /// A vector of containers (and aux-pairs) in TStore to record in TEvent
+  std::vector<std::string> m_copyFromStoreToEventKeys_vec; //!
 
   xAODMaker::FileMetaDataTool          *m_fileMetaDataTool;    //!
   xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool; //!

@@ -14,6 +14,7 @@
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"
+#include "xAODCore/ShallowCopy.h"
 
 // package include(s):
 #include "xAODEventInfo/EventInfo.h"
@@ -35,11 +36,14 @@ MinixAOD :: MinixAOD (std::string className) :
     m_createOutputFile(true),
     m_copyFileMetaData(false),
     m_copyTriggerInfo(false),
+    m_simpleCopyKeys(""),
+    m_storeCopyKeys(""),
     m_shallowCopyKeys(""),
     m_deepCopyKeys(""),
     m_simpleCopyKeys_vec(),
     m_shallowCopyKeys_vec(),
     m_deepCopyKeys_vec(),
+    m_copyFromStoreToEventKeys_vec(),
     m_fileMetaDataTool(nullptr),
     m_trigMetaDataTool(nullptr)
 {
@@ -133,17 +137,29 @@ EL::StatusCode MinixAOD :: initialize ()
   std::string token;
   std::istringstream ss("");
 
+  // A,B,C,D,...,Z -> {A, B, C, D, ..., Z}
   ss.clear(); ss.str(m_simpleCopyKeys);
   while(std::getline(ss, token, ','))
     m_simpleCopyKeys_vec.push_back(token);
 
-  ss.clear(); ss.str(m_shallowCopyKeys);
+  // A,B,C,D,...,Z -> {A, B, C, D, ..., Z}
+  ss.clear(); ss.str(m_storeCopyKeys);
   while(std::getline(ss, token, ','))
-    m_shallowCopyKeys_vec.push_back(token);
+    m_copyFromStoreToEventKeys_vec.push_back(token);
 
+  // A1|A2,B1|B2,C1|C2,...,Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
+  ss.clear(); ss.str(m_shallowCopyKeys);
+  while(std::getline(ss, token, ',')){
+    int pos = token.find_first_of('|');
+    m_shallowCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
+  }
+
+  // A1|A2,B1|B2,C1|C2,...,Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
   ss.clear(); ss.str(m_deepCopyKeys);
-  while(std::getline(ss, token, ','))
-    m_deepCopyKeys_vec.push_back(token);
+  while(std::getline(ss, token, ',')){
+    int pos = token.find_first_of('|');
+    m_deepCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
+  }
 
   if(m_debug) Info("initialize()", "MinixAOD Interface succesfully initialized!" );
 
@@ -158,15 +174,39 @@ EL::StatusCode MinixAOD :: execute ()
   for(const auto& key: m_simpleCopyKeys_vec)
     RETURN_CHECK("MinixAOD::execute()", m_event->copy(key), std::string("Could not copy "+key+" from input file.").c_str());
 
-  // deep copy is the next easiest - we just need the container and aux container
-  for(const auto& key: m_deepCopyKeys_vec){
+  for(const auto& keypair: m_deepCopyKeys_vec){
+    auto in_key = keypair.first;
+    auto out_key = keypair.second;
+
+    const xAOD::IParticleContainer* cont(nullptr);
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, in_key, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+in_key+" from TStore. Enable m_verbose to find out why.").c_str());
+
+    if(const xAOD::JetContainer* t_cont = dynamic_cast<const xAOD::JetContainer*>(cont))
+      HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, out_key.c_str(), t_cont);
+
+    m_copyFromStoreToEventKeys_vec.push_back(out_key);
+  }
+
+  // shallow IO handling (if no parent, assume deep copy)
+  for(const auto& keypair: m_shallowCopyKeys_vec){
+    auto key = keypair.first;
+    auto parent = keypair.second;
+
+    // only add the parent if it doesn't exist -- this could be if someone has multiple shallows to add from the same parent!
+    if(!parent.empty())
+      if(std::find(m_copyFromStoreToEventKeys_vec.begin(), m_copyFromStoreToEventKeys_vec.end(), parent) == m_copyFromStoreToEventKeys_vec.end())
+        m_copyFromStoreToEventKeys_vec.push_back(parent);
+
+    m_copyFromStoreToEventKeys_vec.push_back(key);
+  }
+
+  for(const auto& key: m_copyFromStoreToEventKeys_vec){
     // all we need to do is retrieve it and figure out what type it is to record it
     const xAOD::IParticleContainer* cont(nullptr);
     RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+key+" from TStore. Enable m_verbose to find out why.").c_str());
 
     if(dynamic_cast<const xAOD::JetContainer*>(cont))
       HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key);
-
   }
 
 
