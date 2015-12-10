@@ -385,7 +385,7 @@ namespace HelperFunctions {
     @endrst
    */
   template <typename T1, typename T2, typename T3>
-  StatusCode makeDeepCopy(const xAOD::TStore* m_store, std::string containerName, const T1* cont){
+  StatusCode makeDeepCopy(xAOD::TStore* m_store, std::string containerName, const T1* cont){
     T1* cont_new = new T1;
     T2* auxcont_new = new T2;
     cont_new->setStore(auxcont_new);
