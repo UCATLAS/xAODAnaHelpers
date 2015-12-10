@@ -37,6 +37,7 @@ MinixAOD :: MinixAOD (std::string className) :
     m_copyTriggerInfo(false),
     m_shallowCopyKeys(""),
     m_deepCopyKeys(""),
+    m_simpleCopyKeys_vec(),
     m_shallowCopyKeys_vec(),
     m_deepCopyKeys_vec(),
     m_fileMetaDataTool(nullptr),
