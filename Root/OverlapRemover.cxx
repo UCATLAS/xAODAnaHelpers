@@ -667,15 +667,17 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if ( m_debug ) { Info("execute()",  "Calling removeOverlaps()"); }
       RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-      // fill cutflow histograms
-      //
-      if ( m_debug ) { Info("execute()",  "Filling Cut Flow Histograms"); }
       std::string ORdecor("overlaps");
-      if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-      if ( m_useMuons )     fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-      fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-      if ( m_usePhotons )   fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-      if ( m_useTaus )      fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+      if(m_useCutFlow){
+        // fill cutflow histograms
+        //
+        if ( m_debug ) { Info("execute()",  "Filling Cut Flow Histograms"); }
+        if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
+        if ( m_useMuons )     fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
+        fillObjectCutflow("jet", inJets, "passSel", ORdecor);
+        if ( m_usePhotons )   fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
+        if ( m_useTaus )      fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+      }
 
       // make a copy of input container(s) with selected objects
       //
@@ -782,14 +784,16 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	//
         RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-        // fill cutflow histograms
-        //
-	std::string ORdecor("overlaps");
-        fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-	if ( m_useMuons )   fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-        fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-        if ( m_usePhotons ) fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-        if ( m_useTaus )    fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+        std::string ORdecor("overlaps");
+        if(m_useCutFlow){
+          // fill cutflow histograms
+          //
+          fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
+          if ( m_useMuons )   fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
+          fillObjectCutflow("jet", inJets, "passSel", ORdecor);
+          if ( m_usePhotons ) fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
+          if ( m_useTaus )    fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+      }
 
         // make a copy of input container(s) with selected objects
 	//
@@ -885,15 +889,16 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	//
         RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-        // fill cutflow histograms
-        //
-	std::string ORdecor("overlaps");
-        if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-        fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-        fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-        if( m_usePhotons )    fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-        if( m_useTaus )       fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
-
+        std::string ORdecor("overlaps");
+        if(m_useCutFlow){
+          // fill cutflow histograms
+          //
+          if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
+          fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
+          fillObjectCutflow("jet", inJets, "passSel", ORdecor);
+          if( m_usePhotons )    fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
+          if( m_useTaus )       fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+        }
         // make a copy of input container(s) with selected objects
 	//
         if ( m_createSelectedContainers ) {
@@ -992,14 +997,16 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	 //
          RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-	 // fill cutflow histograms
-	 //
-	 std::string ORdecor("overlaps");
-	 if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-	 if ( m_useMuons )     fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-	 fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-	 if( m_usePhotons )    fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-	 if( m_useTaus )       fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+         std::string ORdecor("overlaps");
+         if(m_useCutFlow){
+           // fill cutflow histograms
+           //
+           if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
+           if ( m_useMuons )     fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
+           fillObjectCutflow("jet", inJets, "passSel", ORdecor);
+           if( m_usePhotons )    fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
+           if( m_useTaus )       fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+        }
 
 	 // make a copy of input container(s) with selected objects
 	 //
@@ -1088,14 +1095,17 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	 //
          RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-	 // fill cutflow histograms
-	 //
+
          std::string ORdecor = std::string("overlaps");
-	 if( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-	 if( m_useMuons     ) fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-	 fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-	 fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-	 if( m_useTaus )      fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+         if(m_useCutFlow){
+           // fill cutflow histograms
+           //
+           if( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
+           if( m_useMuons     ) fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
+           fillObjectCutflow("jet", inJets, "passSel", ORdecor);
+           fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
+           if( m_useTaus )      fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+        }
 
         // make a copy of input container(s) with selected objects
 	//
@@ -1187,14 +1197,16 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	 //
          RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-	 // fill cutflow histograms
-	 //
          std::string ORdecor = std::string("overlaps");
-	 if( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-	 if( m_useMuons     ) fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-	 fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-	 if( m_usePhotons ) fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-	 fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+         if(m_useCutFlow){
+           // fill cutflow histograms
+           //
+           if( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
+           if( m_useMuons     ) fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
+           fillObjectCutflow("jet", inJets, "passSel", ORdecor);
+           if( m_usePhotons ) fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
+           fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+        }
 
 	 // make a copy of input container(s) with selected objects
 	 //
