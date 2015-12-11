@@ -420,7 +420,7 @@ namespace HelperFunctions {
 
         RETURN_CHECK("execute()", HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, "BaselineJets"));
 
-      where we build off the previous example of making a deep copy (see :cpp:function:`HelperFunctions::makeDeepCopy`).
+      where we build off the previous example of making a deep copy (see :cpp:func:`HelperFunctions::makeDeepCopy`).
     @endrst
    */
   template <typename T1, typename T2>
