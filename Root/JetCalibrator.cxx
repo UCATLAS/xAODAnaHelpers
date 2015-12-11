@@ -91,6 +91,7 @@ JetCalibrator :: JetCalibrator (std::string className) :
   m_saveAllCleanDecisions   = false;
   m_jetCleanUgly            = false;
   m_cleanParent             = false;
+  m_applyFatJetPreSel       = false;
 
   //recalculate JVT using calibrated jets
   m_redoJVT                 = false;
@@ -146,6 +147,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_jetCleanUgly            = config->GetValue("JetCleanUgly",            m_jetCleanUgly );
     m_saveAllCleanDecisions   = config->GetValue("SaveAllCleanDecisions",   m_saveAllCleanDecisions);
     m_cleanParent             = config->GetValue("CleanParent",             m_cleanParent);
+    m_applyFatJetPreSel       = config->GetValue("ApplyFatJetPreSel",       m_applyFatJetPreSel);
 
     m_redoJVT                 = config->GetValue("RedoJVT",         m_redoJVT);
 
@@ -537,8 +539,17 @@ EL::StatusCode JetCalibrator :: execute ()
           Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
           return EL::StatusCode::FAILURE;
         }
-        for ( auto jet_itr : *(calibJetsSC.first) ) {
+        
+	for ( auto jet_itr : *(calibJetsSC.first) ) {
           if ( m_runSysts ) {
+
+	    if (m_applyFatJetPreSel) {
+	      bool validForJES = (jet_itr->pt() >= 150e3 && jet_itr->pt() < 3000e3);
+	      validForJES &= (jet_itr->m()/jet_itr->pt() >= 0 && jet_itr->m()/jet_itr->pt() < 1);
+	      validForJES &= (fabs(jet_itr->eta()) < 2);
+	      if (!validForJES) continue;
+	    }	    
+
             if ( m_JESUncertTool->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
               Error("execute()", "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
               Error("execute()", "%s", m_name.c_str());
