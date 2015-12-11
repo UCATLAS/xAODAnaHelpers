@@ -860,8 +860,8 @@ EL::StatusCode MuonSelector :: histFinalize ()
 int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
 
   // fill cutflow bin 'all' before any cut
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_all, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_all, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_all, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_all, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //
@@ -887,8 +887,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     return 0;
   }
 
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //
@@ -900,8 +900,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptmax_cut, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptmax_cut, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptmax_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptmax_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //
@@ -913,8 +913,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptmin_cut, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptmin_cut, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptmin_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptmin_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //
@@ -927,8 +927,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       return 0;
     }
   }
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_type_cut, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_type_cut, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_type_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_type_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //
@@ -966,8 +966,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       if ( m_debug ) { Info("PassCuts()", "Muon failed z0*sin(theta) cut."); }
       return 0;
   }
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_z0sintheta_cut, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_z0sintheta_cut, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_z0sintheta_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_z0sintheta_cut, 1 ); }
 
   // d0 cut
   //
@@ -975,8 +975,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       if ( m_debug ) { Info("PassCuts()", "Muon failed d0 cut."); }
       return 0;
   }
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0_cut, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0_cut, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0_cut, 1 ); }
 
   // d0sig cut
   //
@@ -984,8 +984,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       if ( m_debug ) { Info("PassCuts()", "Muon failed d0 significance cut."); }
       return 0;
   }
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0sig_cut, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0sig_cut, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0sig_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0sig_cut, 1 ); }
 
   // decorate muon w/ d0sig info
   static SG::AuxElement::Decorator< float > d0SigDecor("d0sig");
@@ -1018,8 +1018,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     if ( m_debug ) { Info("PassCuts()", "Muon failed isolation cut %s ",  m_MinIsoWPCut.c_str() ); }
     return 0;
   }
-  m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
-  if ( m_isUsedBefore ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_iso_cut, 1 ); }
+  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_iso_cut, 1 ); }
 
   return 1;
 }
