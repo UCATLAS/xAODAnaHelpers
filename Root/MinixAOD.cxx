@@ -67,6 +67,7 @@ MinixAOD :: MinixAOD (std::string className) :
   m_simpleCopyKeys = "";
   m_storeCopyKeys = "";
   m_deepCopyKeys = "";
+  m_vectorCopyKeys = "";
 }
 
 EL::StatusCode  MinixAOD :: configure ()
@@ -85,6 +86,7 @@ EL::StatusCode  MinixAOD :: configure ()
     m_simpleCopyKeys    = config->GetValue("SimpleCopyKeys", m_simpleCopyKeys.c_str());
     m_storeCopyKeys     = config->GetValue("StoreCopyKeys", m_storeCopyKeys.c_str());
     m_deepCopyKeys      = config->GetValue("DeepCopyKeys", m_deepCopyKeys.c_str());
+    m_vectorCopyKeys    = config->GetValue("VectorCopyKeys", m_vectorCopyKeys.c_str());
 
     config->Print();
     Info("configure()", "MinixAOD Interface succesfully configured! ");
@@ -213,6 +215,13 @@ EL::StatusCode MinixAOD :: initialize ()
     m_deepCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
   }
 
+  // A1|A2 B1|B2 C1|C2 ... Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
+  ss.clear(); ss.str(m_vectorCopyKeys);
+  while(std::getline(ss, token, ' ')){
+    int pos = token.find_first_of('|');
+    m_vectorCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
+  }
+
   if(m_debug) Info("initialize()", "MinixAOD Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -262,23 +271,47 @@ EL::StatusCode MinixAOD :: execute ()
     auto key = keypair.first;
     auto parent = keypair.second;
 
-    // only add the parent if it doesn't exist -- this could be if someone has multiple shallows to add from the same parent!
-    if(!parent.empty())
-      if(std::find(m_copyFromStoreToEventKeys_vec.begin(), m_copyFromStoreToEventKeys_vec.end(), parent) == m_copyFromStoreToEventKeys_vec.end())
-        m_copyFromStoreToEventKeys_vec.push_back(parent);
+    // only add the parent if it doesn't exist
+    if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
 
     if(m_debug){
       std::cout << "Copying " << key;
-      if(!parent.empty())
-        std::cout << " as well as it's parent " << parent;
+      if(!parent.empty()) std::cout << " as well as it's parent " << parent;
       std::cout << std::endl;
     }
 
     m_copyFromStoreToEventKeys_vec.push_back(key);
   }
 
+  // vector handling (if no parent, assume deep copy)
+  for(const auto& keypair: m_vectorCopyKeys_vec){
+    auto vectorName = keypair.first;
+    auto parent = keypair.second;
+
+    std::vector<std::string>* vector(nullptr);
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(vector, vectorName, nullptr, m_store, m_verbose), std::string("Could not retrieve vector "+vectorName+" from TStore. Enable m_verbose to find out why.").c_str());
+
+    // only add the parent if it doesn't exist
+    if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
+
+    std::cout << "The following containers are being copied over:" << std::endl;
+    for(const auto& key: *vector){
+      if(m_debug) std::cout << "\t" << key << std::endl;
+      m_copyFromStoreToEventKeys_vec.push_back(key);
+    }
+    if(m_debug && !parent.empty()) std::cout << "... along with their parent " << parent << std::endl;
+
+  }
+
+  // remove duplicates from m_copyFromStoreToEventKeys_vec
+  // - see http://stackoverflow.com/a/1041939/1532974
+  std::set<std::string> s;
+  unsigned size = m_copyFromStoreToEventKeys_vec.size();
+  for( unsigned i = 0; i < size; ++i ) s.insert( m_copyFromStoreToEventKeys_vec[i] );
+  m_copyFromStoreToEventKeys_vec.assign( s.begin(), s.end() );
+
+  // all we need to do is retrieve it and figure out what type it is to record it and we're done
   for(const auto& key: m_copyFromStoreToEventKeys_vec){
-    // all we need to do is retrieve it and figure out what type it is to record it
     const xAOD::IParticleContainer* cont(nullptr);
     RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+key+" from TStore. Enable m_verbose to find out why.").c_str());
 

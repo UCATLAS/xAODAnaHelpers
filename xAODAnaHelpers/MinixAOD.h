@@ -129,6 +129,20 @@ public:
    */
   std::string m_deepCopyKeys;
 
+  /**
+    @brief names of vectors that have container names for its contents
+
+    @rst
+
+      .. note:: This option is appropriate for groups shallow-copied containers such as when you are dealing with systematics.
+
+      Here, we will do the copying for you by retrieving the vector of container names and copy each one over. See how :cpp:member:`MinixAOD::m_shallowCopyKeys` works.
+
+      Always specify your string in a space-delimited format where pairs are split up by ``vector name|parent container name``.
+    @endrst
+   */
+  std::string m_vectorCopyKeys;
+
 private:
   /// A vector of containers that are in TEvent that just need to be written to the output
   std::vector<std::string> m_simpleCopyKeys_vec; //!
@@ -136,6 +150,8 @@ private:
   std::vector<std::pair<std::string, std::string>> m_shallowCopyKeys_vec; //!
   /// A vector of (in container, output container) that need to be deep-copied first before moving to TStore
   std::vector<std::pair<std::string, std::string>> m_deepCopyKeys_vec; //!
+  /// A vector of (name of vector of container names, parent name) pairs for shallow-copied objects (like systematics) -- if parent is empty, deep-copy it
+  std::vector<std::pair<std::string, std::string>> m_vectorCopyKeys_vec; //!
 
   /// A vector of containers (and aux-pairs) in TStore to record in TEvent
   std::vector<std::string> m_copyFromStoreToEventKeys_vec; //!
