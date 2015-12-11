@@ -201,20 +201,22 @@ EL::StatusCode MinixAOD :: execute ()
     const xAOD::IParticleContainer* cont(nullptr);
     RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, in_key, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+in_key+" from TStore. Enable m_verbose to find out why.").c_str());
 
-    if(const xAOD::ElectronContainer* t_cont = dynamic_cast<const xAOD::ElectronContainer*>(cont))
-      RETURN_CHECK("MinixAOD::execute()", HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, out_key.c_str(), t_cont), std::string("Could not deep copy "+in_key+" to "+out_key).c_str());
-    else if(const xAOD::JetContainer* t_cont = dynamic_cast<const xAOD::JetContainer*>(cont))
-      RETURN_CHECK("MinixAOD::execute()", HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, out_key.c_str(), t_cont), std::string("Could not deep copy "+in_key+" to "+out_key).c_str());
-    else if(const xAOD::MissingETContainer* t_cont = dynamic_cast<const xAOD::MissingETContainer*>(cont))
-      RETURN_CHECK("MinixAOD::execute()", HelperFunctions::makeDeepCopy<xAOD::MissingETContainer, xAOD::MissingETAuxContainer, xAOD::MissingET>(m_store, out_key.c_str(), t_cont), std::string("Could not deep copy "+in_key+" to "+out_key).c_str());
-    else if(const xAOD::MuonContainer* t_cont = dynamic_cast<const xAOD::MuonContainer*>(cont))
-      RETURN_CHECK("MinixAOD::execute()", HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, out_key.c_str(), t_cont), std::string("Could not deep copy "+in_key+" to "+out_key).c_str());
-    else if(const xAOD::PhotonContainer* t_cont = dynamic_cast<const xAOD::PhotonContainer*>(cont))
-      RETURN_CHECK("MinixAOD::execute()", HelperFunctions::makeDeepCopy<xAOD::PhotonContainer, xAOD::PhotonAuxContainer, xAOD::Photon>(m_store, out_key.c_str(), t_cont), std::string("Could not deep copy "+in_key+" to "+out_key).c_str());
-    else if(const xAOD::TauJetContainer* t_cont = dynamic_cast<const xAOD::TauJetContainer*>(cont))
-      RETURN_CHECK("MinixAOD::execute()", HelperFunctions::makeDeepCopy<xAOD::TauJetContainer, xAOD::TauJetAuxContainer, xAOD::TauJet>(m_store, out_key.c_str(), t_cont), std::string("Could not deep copy "+in_key+" to "+out_key).c_str());
-    else
-      RETURN_CHECK("MinixAOD::execute()", StatusCode::FAILURE, std::string("Could not identify what container "+in_key+" corresponds to.").c_str());
+    if(const xAOD::ElectronContainer* t_cont = dynamic_cast<const xAOD::ElectronContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+    } else if(const xAOD::JetContainer* t_cont = dynamic_cast<const xAOD::JetContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+    } else if(const xAOD::MissingETContainer* t_cont = dynamic_cast<const xAOD::MissingETContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::MissingETContainer, xAOD::MissingETAuxContainer, xAOD::MissingET>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+    } else if(const xAOD::MuonContainer* t_cont = dynamic_cast<const xAOD::MuonContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+    } else if(const xAOD::PhotonContainer* t_cont = dynamic_cast<const xAOD::PhotonContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::PhotonContainer, xAOD::PhotonAuxContainer, xAOD::Photon>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+    } else if(const xAOD::TauJetContainer* t_cont = dynamic_cast<const xAOD::TauJetContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::TauJetContainer, xAOD::TauJetAuxContainer, xAOD::TauJet>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+    } else {
+      std::cout << "Could not identify what container " << in_key << " corresponds to for deep-copying." << std::endl;
+      return EL::StatusCode::FAILURE;
+    }
     m_copyFromStoreToEventKeys_vec.push_back(out_key);
 
     if(m_debug) std::cout << "Deep-Copied " << in_key << " to " << out_key << " to record to output file" << std::endl;
