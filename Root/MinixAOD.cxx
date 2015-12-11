@@ -30,6 +30,11 @@
 #include "xAODTau/TauJetAuxContainer.h"
 #include "xAODTau/TauJet.h"
 
+// CutBookkeeper Includes
+#include "xAODCutFlow/CutBookkeeper.h"
+#include "xAODCutFlow/CutBookkeeperContainer.h"
+#include "xAODCutFlow/CutBookkeeperAuxContainer.h"
+
 // package include(s):
 #include "xAODAnaHelpers/MinixAOD.h"
 #include "xAODAnaHelpers/HelperClasses.h"
@@ -58,6 +63,7 @@ MinixAOD :: MinixAOD (std::string className) :
   m_createOutputFile = true;
   m_copyFileMetaData = false;
   m_copyTriggerInfo = false;
+  m_copyCutBookkeeper = false;
   m_simpleCopyKeys = "";
   m_storeCopyKeys = "";
   m_deepCopyKeys = "";
@@ -69,10 +75,16 @@ EL::StatusCode  MinixAOD :: configure ()
     Info("configure()", "Configuing MinixAOD Interface. User configuration read from : %s ", getConfig().c_str());
 
     TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" ,      m_debug);
-    m_verbose       = config->GetValue("Verbose",     m_verbose);
+    m_debug             = config->GetValue("Debug" , m_debug);
+    m_verbose           = config->GetValue("Verbose", m_verbose);
+    m_outputFileName    = config->GetValue("OutputFileName", m_outputFileName.c_str());
+    m_createOutputFile  = config->GetValue("CreateOutputFile", m_createOutputFile);
+    m_copyFileMetaData  = config->GetValue("DoFileMetaData", m_copyFileMetaData);
+    m_copyTriggerInfo   = config->GetValue("DoTrigMetaData", m_copyTriggerInfo);
+    m_copyCutBookkeeper = config->GetValue("DoCutBookkeeper", m_copyCutBookkeeper);
+    m_simpleCopyKeys    = config->GetValue("SimpleCopyKeys", m_simpleCopyKeys.c_str());
+    m_storeCopyKeys     = config->GetValue("StoreCopyKeys", m_storeCopyKeys.c_str());
+    m_deepCopyKeys      = config->GetValue("DeepCopyKeys", m_deepCopyKeys.c_str());
 
     config->Print();
     Info("configure()", "MinixAOD Interface succesfully configured! ");
@@ -148,6 +160,29 @@ EL::StatusCode MinixAOD :: initialize ()
     if(m_debug) std::cout << "Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file." << std::endl;
     m_simpleCopyKeys_vec.push_back("xTrigDecision");
     m_simpleCopyKeys_vec.push_back("TrigConfKeys");
+  }
+
+  if(m_copyCutBookkeeper){
+    // Retrieve the input container:
+    const xAOD::CutBookkeeperContainer* input(nullptr);
+    m_event->retrieveMetaInput(input, "CutBookkeepers");
+
+    // Create an output container
+    xAOD::CutBookkeeperContainer* output =  new xAOD::CutBookkeeperContainer();
+    xAOD::CutBookkeeperAuxContainer* output_aux =  new xAOD::CutBookkeeperAuxContainer();
+    output->setStore( output_aux );
+
+
+    // Copy input to output
+    for( const xAOD::CutBookkeeper* cutbookkeeper : *input ) {
+      xAOD::CutBookkeeper* out = new xAOD::CutBookkeeper();
+      output->push_back( out );
+      *out = *cutbookkeeper;
+    }
+
+    m_event->recordMeta(output,"CutBookkeepers");
+    m_event->recordMeta(output_aux,"CutBookkeepersAux.");
+    m_event->fill();
   }
 
   // parse and split by comma

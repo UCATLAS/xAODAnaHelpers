@@ -55,6 +55,9 @@ public:
   /// copy the trigger containers and meta data over
   bool m_copyTriggerInfo;
 
+  /// [BROKEN?] copy the cutbookkeeper data over
+  bool m_copyCutBookkeeper;
+
   /**
     @brief names of containers to copy from the input file
 
