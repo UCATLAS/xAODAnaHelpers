@@ -572,8 +572,8 @@ EL::StatusCode TauSelector :: histFinalize ()
 int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
 
   // fill cutflow bin 'all' before any cut
-  m_tau_cutflowHist_1->Fill( m_tau_cutflow_all, 1 );
-  if ( m_isUsedBefore ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_all, 1 ); }
+  if(m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_all, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_all, 1 ); }
 
   // **********************************************************************************************************
   //
@@ -592,8 +592,8 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
     return 0;
   }
 
-  m_tau_cutflowHist_1->Fill( m_tau_cutflow_selected, 1 );
-  if ( m_isUsedBefore ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_selected, 1 ); }
+  if(m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_selected, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_selected, 1 ); }
 
   return 1;
 }

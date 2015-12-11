@@ -376,18 +376,18 @@ EL::StatusCode TruthSelector :: histFinalize ()
 int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {
 
   // fill cutflow bin 'all' before any cut
-  m_truth_cutflowHist_1->Fill( m_truth_cutflow_all, 1 );
+  if(m_useCutFlow) m_truth_cutflowHist_1->Fill( m_truth_cutflow_all, 1 );
 
   // pT
   if ( m_pT_max != 1e8 ) {
     if ( truthPart->pt() > m_pT_max ) { return 0; }
   }
-  m_truth_cutflowHist_1->Fill( m_truth_cutflow_ptmax_cut, 1 );
+  if(m_useCutFlow) m_truth_cutflowHist_1->Fill( m_truth_cutflow_ptmax_cut, 1 );
 
   if ( m_pT_min != 1e8 ) {
     if ( truthPart->pt() < m_pT_min ) { return 0; }
   }
-  m_truth_cutflowHist_1->Fill( m_truth_cutflow_ptmin_cut, 1 );
+  if(m_useCutFlow) m_truth_cutflowHist_1->Fill( m_truth_cutflow_ptmin_cut, 1 );
 
   // eta
   if ( m_eta_max != 1e8 ) {
@@ -396,7 +396,7 @@ int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {
   if ( m_eta_min != 1e8 ) {
     if ( fabs(truthPart->eta()) < m_eta_min ) { return 0; }
   }
-  m_truth_cutflowHist_1->Fill( m_truth_cutflow_eta_cut, 1 );
+  if(m_useCutFlow) m_truth_cutflowHist_1->Fill( m_truth_cutflow_eta_cut, 1 );
 
   // mass
   if ( m_mass_max != 1e8 ) {
