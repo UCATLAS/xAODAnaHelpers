@@ -8,9 +8,6 @@
 #include "xAODMetaDataCnv/FileMetaDataTool.h"
 #include "xAODTriggerCnv/TriggerMenuMetaDataTool.h"
 
-// EDM includes
-#include "xAODBase/IParticleContainer.h"
-#include "xAODCore/AuxContainerBase.h"
 /**
   @brief Produce xAOD outputs
   @rst

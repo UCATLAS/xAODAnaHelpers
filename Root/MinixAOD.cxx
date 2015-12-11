@@ -11,6 +11,8 @@
 #include "EventLoop/OutputStream.h"
 
 // EDM include(s):
+#include "xAODCore/AuxContainerBase.h"
+#include "xAODBase/IParticleContainer.h"
 #include "xAODCore/ShallowCopy.h"
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODEgamma/ElectronAuxContainer.h"
