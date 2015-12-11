@@ -735,7 +735,7 @@ protected:
   std::vector<int>   m_ph_isIsolated_Cone40CaloOnly;
   std::vector<int>   m_ph_isIsolated_Cone40;
   std::vector<int>   m_ph_isIsolated_Cone20;
-  std::vector<float> m_ph_etcone20;
+  //std::vector<float> m_ph_etcone20;
   std::vector<float> m_ph_ptcone20;
   std::vector<float> m_ph_ptcone30;
   std::vector<float> m_ph_ptcone40;

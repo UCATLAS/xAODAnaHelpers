@@ -1302,7 +1302,7 @@ void HelpTreeBase::AddPhotons(const std::string detailStr) {
     m_tree->Branch("ph_isIsolated_Cone40",         &m_ph_isIsolated_Cone40);
     m_tree->Branch("ph_isIsolated_Cone20",         &m_ph_isIsolated_Cone20);
 
-    m_tree->Branch("ph_etcone20",         &m_ph_etcone20);
+    //m_tree->Branch("ph_etcone20",         &m_ph_etcone20);
     m_tree->Branch("ph_ptcone20",         &m_ph_ptcone20);
     m_tree->Branch("ph_ptcone30",         &m_ph_ptcone30);
     m_tree->Branch("ph_ptcone40",         &m_ph_ptcone40);
@@ -1369,7 +1369,7 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
 	m_ph_isIsolated_Cone20.push_back( -1 );
       }
 
-      m_ph_etcone20    .push_back( ph_itr->isolation( xAOD::Iso::etcone20    ) / m_units  );
+      //m_ph_etcone20    .push_back( ph_itr->isolation( xAOD::Iso::etcone20    ) / m_units  );
       m_ph_ptcone20    .push_back( ph_itr->isolation( xAOD::Iso::ptcone20    ) / m_units  );
       m_ph_ptcone30    .push_back( ph_itr->isolation( xAOD::Iso::ptcone30    ) / m_units  );
       m_ph_ptcone40    .push_back( ph_itr->isolation( xAOD::Iso::ptcone40    ) / m_units  );
@@ -1427,7 +1427,7 @@ void HelpTreeBase::ClearPhotons() {
     m_ph_isIsolated_Cone40CaloOnly.clear();
     m_ph_isIsolated_Cone40.clear();
     m_ph_isIsolated_Cone20.clear();
-    m_ph_etcone20.clear();
+    //m_ph_etcone20.clear();
     m_ph_ptcone20.clear();
     m_ph_ptcone30.clear();
     m_ph_ptcone40.clear();
