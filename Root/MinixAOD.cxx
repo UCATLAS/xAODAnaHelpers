@@ -133,8 +133,8 @@ EL::StatusCode MinixAOD :: initialize ()
     if(m_debug) Info("initialize()", "TriggerMenuMetaDataTool initialized...");
 
     if(m_debug) std::cout << "Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file." << std::endl;
-    m_simpleCopyKeys.push_back("xTrigDecision");
-    m_simpleCopyKeys.push_back("TrigConfKeys");
+    m_simpleCopyKeys_vec.push_back("xTrigDecision");
+    m_simpleCopyKeys_vec.push_back("TrigConfKeys");
   }
 
   // parse and split by comma
