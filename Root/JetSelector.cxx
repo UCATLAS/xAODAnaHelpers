@@ -667,7 +667,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   if ( m_debug ) { Info("PassCuts()", "In pass cuts"); }
 
   // fill cutflow bin 'all' before any cut
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_all, 1 );
+  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_all, 1 );
 
   // clean jets
   static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
@@ -676,18 +676,18 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       if ( !isCleanAcc( *jet ) ) { return 0; }
     }
   }
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_cleaning_cut, 1 );
+  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_cleaning_cut, 1 );
 
   // pT
   if ( m_pT_max != 1e8 ) {
     if ( jet->pt() > m_pT_max ) { return 0; }
   }
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmax_cut, 1 );
+  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmax_cut, 1 );
 
   if ( m_pT_min != 1e8 ) {
     if ( jet->pt() < m_pT_min ) { return 0; }
   }
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmin_cut, 1 );
+  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmin_cut, 1 );
 
   // eta
   if ( m_eta_max != 1e8 ) {
@@ -696,7 +696,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   if ( m_eta_min != 1e8 ) {
     if ( fabs(jet->eta()) < m_eta_min ) { return 0; }
   }
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_eta_cut, 1 );
+  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_eta_cut, 1 );
 
   // detEta
   if ( m_detEta_max != 1e8 ) {
@@ -759,7 +759,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       }
     }
   } // m_doJVT
-  m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
+  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
 
   //
   //  BTagging
@@ -767,7 +767,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   if ( m_doBTagCut ) {
     if ( m_debug ) { Info("PassCuts()", "Doing BTagging"); }
     if ( m_BJetSelectTool->accept( jet ) ) {
-      m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );
+      if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );
     } else {
       return 0;
     }
