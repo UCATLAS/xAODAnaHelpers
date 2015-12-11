@@ -124,6 +124,8 @@ public:
           "m_deepCopyKeys": "AntiKt4EMTopoJets|DeepCopyAntiKt4Jets Muons|DeepCopyMuons"
 
       Always specify your string in a space-delimited format where pairs are split up by ``input container name|output container name``.
+
+    @endrst
    */
   std::string m_deepCopyKeys;
 
