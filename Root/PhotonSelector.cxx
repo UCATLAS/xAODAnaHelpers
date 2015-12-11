@@ -637,7 +637,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
     Error("passCuts()", Form("Please call PhotonCalibrator before calling PhotonSelector, or check the quality requirement (should be either of Tight/Medium/Loose) [%s %s]",m_name.c_str(), photonIDKeyName.c_str()) );
   }
 
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_all, 1 );
+  if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_all, 1 );
 
   // *********************************************************************************************************************************************************************
   //
@@ -649,7 +649,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return false;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_author_cut, 1 );
+  if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_author_cut, 1 );
 
   // *********************************************************************************************************************************************************************
   //
@@ -661,7 +661,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return 0;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_OQ_cut, 1 );
+  if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_OQ_cut, 1 );
 
   // *********************************************************************************************************************************************************************
   //
@@ -674,7 +674,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return false;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_PID_cut, 1 );
+  if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_PID_cut, 1 );
 
   // *********************************************************************************************************************************************************************
   //
@@ -686,7 +686,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return false;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_ptmax_cut, 1 );
+  if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_ptmax_cut, 1 );
 
   // *********************************************************************************************************************************************************************
   //
@@ -698,7 +698,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return false;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_ptmin_cut, 1 );
+  if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_ptmin_cut, 1 );
 
   // *********************************************************************************************************************************************************************
   //
@@ -721,7 +721,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
       return false;
     }
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_eta_cut, 1 );
+  if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_eta_cut, 1 );
 
   // *********************************************************************************************************************************************************************
   //
@@ -751,7 +751,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
     if ( m_debug ) { Info("PassCuts()", "Photon failed isolation cut %s ",  m_MinIsoWPCut.c_str() ); }
     return false;
   }
-  m_ph_cutflowHist_1->Fill( m_ph_cutflow_iso_cut, 1 );
+  if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_iso_cut, 1 );
 
   return true;
 }
