@@ -247,8 +247,22 @@ EL::StatusCode MinixAOD :: execute ()
     const xAOD::IParticleContainer* cont(nullptr);
     RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+key+" from TStore. Enable m_verbose to find out why.").c_str());
 
-    if(dynamic_cast<const xAOD::JetContainer*>(cont))
-      HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key);
+    if(dynamic_cast<const xAOD::ElectronContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::ElectronContainer, xAOD::ElectronAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::JetContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::MissingETContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MissingETContainer, xAOD::MissingETAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::MuonContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MuonContainer, xAOD::MuonAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent").c_str());
+    } else if(dynamic_cast<const xAOD::PhotonContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::PhotonContainer, xAOD::PhotonAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::TauJetContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::TauJetContainer, xAOD::TauJetAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+    } else {
+      std::cout << "Could not identify what container " << key << " corresponds to for copying from TStore to TEvent." << std::endl;
+      return EL::StatusCode::FAILURE;
+    }
 
     if(m_debug) std::cout << "Copied " << key << " and it's auxiliary container from TStore to TEvent" << std::endl;
   }
