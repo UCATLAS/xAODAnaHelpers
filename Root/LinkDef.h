@@ -37,6 +37,9 @@
 /* Tree */
 #include <xAODAnaHelpers/TreeAlgo.h>
 
+/* Mini xAOD */
+#include <xAODAnaHelpers/MinixAOD.h>
+
 /* Other */
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/Writer.h>
@@ -79,6 +82,8 @@
 #pragma link C++ class TrackHistsAlgo+;
 
 #pragma link C++ class TreeAlgo+;
+
+#pragma link C++ class MinixAOD+;
 
 #pragma link C++ class OverlapRemover+;
 #pragma link C++ class Writer+;
