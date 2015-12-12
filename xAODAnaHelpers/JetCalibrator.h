@@ -58,6 +58,7 @@ public:
   bool    m_sort;
   //Apply jet cleaning to parent jet
   bool    m_cleanParent;
+  bool    m_applyFatJetPreSel;
 
   // systematics
   bool m_runSysts;
