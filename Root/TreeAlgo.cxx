@@ -7,6 +7,7 @@
 #include <xAODTracking/VertexContainer.h>
 #include <xAODEventInfo/EventInfo.h>
 #include <AthContainers/ConstDataVector.h>
+#include <xAODEgamma/PhotonContainer.h>
 
 #include <xAODAnaHelpers/TreeAlgo.h>
 
@@ -35,6 +36,7 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_fatJetDetailStr         = "";
   m_tauDetailStr            = "";
   m_METDetailStr            = "";
+  m_photonDetailStr         = "";
 
   m_debug                   = false;
 
@@ -46,6 +48,7 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_fatJetContainerName     = "";
   m_tauContainerName        = "";
   m_METContainerName        = "";
+  m_photonContainerName     = "";
 
   // DC14 switch for little things that need to happen to run
   // for those samples with the corresponding packages
@@ -115,6 +118,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   if ( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets    (m_fatJetDetailStr);  }
   if ( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus       (m_tauDetailStr);     }
   if ( !m_METContainerName.empty() )    {   m_helpTree->AddMET        (m_METDetailStr);     }
+  if ( !m_photonContainerName.empty() ) {   m_helpTree->AddPhotons    (m_photonDetailStr);  }
 
   Info("treeInitialize()", "Successfully initialized output tree");
 
@@ -136,6 +140,7 @@ EL::StatusCode TreeAlgo :: configure ()
     m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      m_fatJetDetailStr.c_str());
     m_tauDetailStr            = config->GetValue("TauDetailStr",         m_tauDetailStr.c_str());
     m_METDetailStr            = config->GetValue("METDetailStr",         m_METDetailStr.c_str());
+    m_photonDetailStr         = config->GetValue("PhotonDetailStr",      m_photonDetailStr.c_str());
 
     m_debug                   = config->GetValue("Debug" ,           m_debug);
 
@@ -147,6 +152,7 @@ EL::StatusCode TreeAlgo :: configure ()
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     m_fatJetContainerName.c_str());
     m_tauContainerName        = config->GetValue("TauContainerName",        m_tauContainerName.c_str());
     m_METContainerName        = config->GetValue("METContainerName",        m_METContainerName.c_str());
+    m_photonContainerName     = config->GetValue("PhotonContainerName",     m_photonContainerName.c_str());
 
     // DC14 switch for little things that need to happen to run
     // for those samples with the corresponding packages
@@ -220,6 +226,11 @@ EL::StatusCode TreeAlgo :: execute ()
     const xAOD::MissingETContainer* inMETCont(nullptr);
     RETURN_CHECK("HTopMultilepTreeAlgo::execute()", HelperFunctions::retrieve(inMETCont, m_METContainerName, m_event, m_store, m_debug) , "");
     m_helpTree->FillMET( inMETCont );
+  }
+  if ( !m_photonContainerName.empty() ) {
+    const xAOD::PhotonContainer* inPhotons(nullptr);
+    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inPhotons, m_photonContainerName, m_event, m_store, m_verbose) ,"");
+    m_helpTree->FillPhotons( inPhotons );
   }
 
   // fill the tree
