@@ -26,6 +26,7 @@ public:
   std::string m_fatJetDetailStr;
   std::string m_tauDetailStr;
   std::string m_METDetailStr;
+  std::string m_photonDetailStr;
 
   std::string m_evtContainerName;
   std::string m_muContainerName;
@@ -34,6 +35,7 @@ public:
   std::string m_fatJetContainerName;
   std::string m_tauContainerName;
   std::string m_METContainerName;
+  std::string m_photonContainerName;
 
   bool m_DC14;
 

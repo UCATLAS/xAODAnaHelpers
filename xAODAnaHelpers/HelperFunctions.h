@@ -366,6 +366,76 @@ namespace HelperFunctions {
     return false;
   }
 
+  /**
+    @brief Make a deep copy of a container and put it in the TStore
+    @tparam T1              The type of the container you're going to deep copy into
+    @tparam T2              The type of the aux container you're going to deep copy into
+    @tparam T3              The type of the object inside the container you're going to deep copy
+    @param m_store          A pointer to the TStore object
+    @param containerName    The name of the container to create as output in the TStore
+    @param cont             The container to deep copy, it should be a container of pointers (IParticleContainer or ConstDataVector)
+
+    @rst
+      This is a very powerful templating function. The point is to remove the triviality of making deep copies by specifying all that is needed. The best way is to demonstrate via example::
+
+        const xAOD::JetContainer* selected_jets(nullptr);
+        RETURN_CHECK("execute()", m_event->retrieve( selected_jets, "SelectedJets" ));
+        RETURN_CHECK("execute()", HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets));
+
+    @endrst
+   */
+  template <typename T1, typename T2, typename T3>
+  StatusCode makeDeepCopy(xAOD::TStore* m_store, std::string containerName, const T1* cont){
+    T1* cont_new = new T1;
+    T2* auxcont_new = new T2;
+    cont_new->setStore(auxcont_new);
+
+    if(!m_store->record(cont_new, containerName).isSuccess()){
+      std::cout << "can't record " << containerName << std::endl;
+      return StatusCode::FAILURE;
+    }
+    if(!m_store->record(auxcont_new, containerName+"Aux.").isSuccess()){
+      std::cout << "can't record aux" << containerName << std::endl;
+      return StatusCode::FAILURE;
+    }
+
+    for(const auto p: *cont){
+      T3* p_new = new T3;
+      cont_new->push_back(p_new);
+      *p_new = *p;
+    }
+    return StatusCode::SUCCESS;
+  }
+
+  /**
+    @brief Copy a container from the TStore to be recorded in the TEvent (eg: to an output)
+    @tparam T1              The type of the container you're going to record
+    @tparam T2              The type of the aux container you're going to record
+    @param m_event          A pointer to the TEvent object
+    @param m_store          A pointer to the TStore object
+    @param containerName    The name of the container in the TStore to record to TEvent
+
+    @rst
+      If you have a container in the TStore, this function will record it into the output for you without an issue. As an example::
+
+        RETURN_CHECK("execute()", HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, "BaselineJets"));
+
+      where we build off the previous example of making a deep copy (see :cpp:func:`HelperFunctions::makeDeepCopy`).
+    @endrst
+   */
+  template <typename T1, typename T2>
+  StatusCode recordOutput(xAOD::TEvent* m_event, xAOD::TStore* m_store, std::string containerName){
+    T1* cont(nullptr);
+    T2* auxcont(nullptr);
+
+    if(!m_store->retrieve(cont, containerName).isSuccess()) return StatusCode::FAILURE;
+    if(!m_store->retrieve(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+
+    if(!m_event->record(cont, containerName).isSuccess()) return StatusCode::FAILURE;
+    if(!m_event->record(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+    return StatusCode::SUCCESS;
+  }
+
 } // close namespace HelperFunctions
 
 # endif
