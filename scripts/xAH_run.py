@@ -236,7 +236,7 @@ if __name__ == "__main__":
           # single line comment
           content = content[:match.start()] + content[match.end():]
           match = comment_re.search(content)
-        print(content)
+        #print(content)
         # Return json file
         return json.loads(content)
 
