@@ -236,7 +236,7 @@ if __name__ == "__main__":
           # single line comment
           content = content[:match.start()] + content[match.end():]
           match = comment_re.search(content)
-        print(content)
+        #print(content)
         # Return json file
         return json.loads(content)
 
@@ -381,7 +381,7 @@ if __name__ == "__main__":
 
     # formatted string
     algorithmConfiguration_string = []
-    printStr = "\tsetting {0: >20}.m_{1:<30} = {2}"
+    printStr = "\tsetting {0: >20}.{1:<30} = {2}"
 
     if load_json:
       xAH_logger.info("Loading json files")
