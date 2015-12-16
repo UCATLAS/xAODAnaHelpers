@@ -189,8 +189,17 @@ class JetHists : public HistogramManager
     TH1F* m_IP3D_weightCofTracks     ; //!
     TH1F* m_IP3D_weightUofTracks     ; //!
 
-
-
+    // substructure
+    TH1F* m_tau1; //!
+    TH1F* m_tau2; //!
+    TH1F* m_tau3; //!
+    TH1F* m_tau21; //!
+    TH1F* m_tau32; //!
+    TH1F* m_tau1_wta; //!
+    TH1F* m_tau2_wta; //!
+    TH1F* m_tau3_wta; //!
+    TH1F* m_tau21_wta; //!
+    TH1F* m_tau32_wta; //!
 };
 
 #endif
