@@ -86,6 +86,7 @@ JetCalibrator :: JetCalibrator (std::string className) :
   m_JERFullSys              = false;
   m_JERApplyNominal         = false;
 
+  m_doCleaning              = true;
   // CONFIG parameters for JetCleaningTool
   m_jetCleanCutLevel        = "LooseBad";
   m_saveAllCleanDecisions   = false;
@@ -142,6 +143,7 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_JERFullSys              = config->GetValue("JERFullSys",      m_JERFullSys);
     m_JERApplyNominal         = config->GetValue("JERApplyNominal", m_JERApplyNominal);
 
+    m_doCleaning              = config->GetValue("DoCleaning", m_doCleaning);
     // CONFIG parameters for JetCleaningTool
     m_jetCleanCutLevel        = config->GetValue("JetCleanCutLevel",        m_jetCleanCutLevel.c_str());
     m_jetCleanUgly            = config->GetValue("JetCleanUgly",            m_jetCleanUgly );
@@ -307,32 +309,34 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_jetCalibration->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
   RETURN_CHECK( "JetCalibrator::initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface succesfully initialized!");
 
-  // initialize and configure the jet cleaning tool
-  //------------------------------------------------
-  std::string jc_tool_name = std::string("JetCleaning_") + m_name;
-  m_jetCleaning = new JetCleaningTool( jc_tool_name.c_str() );
-  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCleanCutLevel), "");
-  if (m_jetCleanUgly){
-    RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "DoUgly", true), "");
-  }
-  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "JetCleaning Interface succesfully initialized!");
+  if(m_doCleaning){
+    // initialize and configure the jet cleaning tool
+    //------------------------------------------------
+    std::string jc_tool_name = std::string("JetCleaning_") + m_name;
+    m_jetCleaning = new JetCleaningTool( jc_tool_name.c_str() );
+    RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "CutLevel", m_jetCleanCutLevel), "");
+    if (m_jetCleanUgly){
+      RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "DoUgly", true), "");
+    }
+    RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "JetCleaning Interface succesfully initialized!");
 
-  if( m_saveAllCleanDecisions ){
-    //std::string m_decisionNames[] = {"LooseBad", TightBad"};
-    m_decisionNames.push_back( "LooseBad" );
-    m_decisionNames.push_back( "LooseBadUgly" );
-    m_decisionNames.push_back( "TightBad" );
-    m_decisionNames.push_back( "TightBadUgly" );
-    for(unsigned int i=0; i < m_decisionNames.size() ; ++i){
-      m_allJetCleaningTools.push_back( new JetCleaningTool((jc_tool_name+"_pass"+m_decisionNames.at(i)).c_str()) );
-      if( m_decisionNames.at(i).find("Ugly") != std::string::npos ){
-        std::cout << "adding for " << m_decisionNames.at(i).substr(0,m_decisionNames.at(i).size()-4) << std::endl;
-        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "CutLevel", m_decisionNames.at(i).substr(0,m_decisionNames.at(i).size()-4) ), "");
-        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "DoUgly", true ), "");
-      }else{
-        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "CutLevel", m_decisionNames.at(i)), "");
+    if( m_saveAllCleanDecisions ){
+      //std::string m_decisionNames[] = {"LooseBad", TightBad"};
+      m_decisionNames.push_back( "LooseBad" );
+      m_decisionNames.push_back( "LooseBadUgly" );
+      m_decisionNames.push_back( "TightBad" );
+      m_decisionNames.push_back( "TightBadUgly" );
+      for(unsigned int i=0; i < m_decisionNames.size() ; ++i){
+        m_allJetCleaningTools.push_back( new JetCleaningTool((jc_tool_name+"_pass"+m_decisionNames.at(i)).c_str()) );
+        if( m_decisionNames.at(i).find("Ugly") != std::string::npos ){
+          std::cout << "adding for " << m_decisionNames.at(i).substr(0,m_decisionNames.at(i).size()-4) << std::endl;
+          RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "CutLevel", m_decisionNames.at(i).substr(0,m_decisionNames.at(i).size()-4) ), "");
+          RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "DoUgly", true ), "");
+        }else{
+          RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "CutLevel", m_decisionNames.at(i)), "");
+        }
+        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->initialize(), ("JetCleaning Interface "+m_decisionNames.at(i)+" succesfully initialized!").c_str());
       }
-      RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->initialize(), ("JetCleaning Interface "+m_decisionNames.at(i)+" succesfully initialized!").c_str());
     }
   }
 
@@ -539,7 +543,7 @@ EL::StatusCode JetCalibrator :: execute ()
           Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
           return EL::StatusCode::FAILURE;
         }
-        
+
 	for ( auto jet_itr : *(calibJetsSC.first) ) {
           if ( m_runSysts ) {
 
@@ -548,7 +552,7 @@ EL::StatusCode JetCalibrator :: execute ()
 	      validForJES &= (jet_itr->m()/jet_itr->pt() >= 0 && jet_itr->m()/jet_itr->pt() < 1);
 	      validForJES &= (fabs(jet_itr->eta()) < 2);
 	      if (!validForJES) continue;
-	    }	    
+	    }
 
             if ( m_JESUncertTool->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
               Error("execute()", "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
@@ -582,29 +586,31 @@ EL::StatusCode JetCalibrator :: execute ()
 
     }// if m_runSysts
 
-    // decorate with cleaning decision
-    for ( auto jet_itr : *(calibJetsSC.first) ) {
+    if(m_doCleaning){
+      // decorate with cleaning decision
+      for ( auto jet_itr : *(calibJetsSC.first) ) {
 
-      static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
-      const xAOD::Jet* jetToClean = jet_itr;
+        static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
+        const xAOD::Jet* jetToClean = jet_itr;
 
-      if(m_cleanParent){
-        ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
-        if(!el_parent.isValid()){
-          Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
-        } else {
-          jetToClean = *el_parent;
+        if(m_cleanParent){
+          ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
+          if(!el_parent.isValid()){
+            Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
+          } else {
+            jetToClean = *el_parent;
+          }
         }
-      }
 
-      isCleanDecor(*jet_itr) = m_jetCleaning->accept(*jetToClean);
+        isCleanDecor(*jet_itr) = m_jetCleaning->accept(*jetToClean);
 
-      if( m_saveAllCleanDecisions ){
-        for(unsigned int i=0; i < m_allJetCleaningTools.size() ; ++i){
-          jet_itr->auxdata< char >(("clean_pass"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept(*jetToClean);
+        if( m_saveAllCleanDecisions ){
+          for(unsigned int i=0; i < m_allJetCleaningTools.size() ; ++i){
+            jet_itr->auxdata< char >(("clean_pass"+m_decisionNames.at(i)).c_str()) = m_allJetCleaningTools.at(i)->accept(*jetToClean);
+          }
         }
-      }
-    } //end cleaning decision
+      } //end cleaning decision
+    }
 
     if ( !xAOD::setOriginalObjectLink(*inJets, *(calibJetsSC.first)) ) {
       Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
@@ -676,7 +682,7 @@ EL::StatusCode JetCalibrator :: finalize ()
   if ( m_jetCalibration ) {
     delete m_jetCalibration; m_jetCalibration = nullptr;
   }
-  if ( m_jetCleaning ) {
+  if ( m_doCleaning && m_jetCleaning ) {
     delete m_jetCleaning; m_jetCleaning = nullptr;
   }
   if ( m_JESUncertTool ) {
