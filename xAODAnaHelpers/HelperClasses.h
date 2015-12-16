@@ -311,11 +311,11 @@ namespace HelperClasses {
             will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
 
         .. note::
-            ``m_numLeadingJets`` requires a number ``XX`` to succeed it defining the number of leading jets and associate it with that variable.
+            ``m_numLeadingJets`` requires a number ``XX`` to preceed it defining the number of leading jets and associate it with that variable.
 
             For example::
 
-                m_configStr = "... LeadingJets4 ..."
+                m_configStr = "... 4LeadingJets ..."
 
             will define :code:`int m_numLeadingJets = 4`.
 
