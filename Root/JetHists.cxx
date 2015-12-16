@@ -289,6 +289,19 @@ StatusCode JetHists::initialize() {
 
   }
 
+  if( m_infoSwitch->m_substructure ){
+    m_tau1                      = book(m_name, "Tau1", "#Tau_{1}", 100, 0, 1.0);
+    m_tau2                      = book(m_name, "Tau2", "#Tau_{2}", 100, 0, 1.0);
+    m_tau3                      = book(m_name, "Tau3", "#Tau_{3}", 100, 0, 1.0);
+    m_tau21                     = book(m_name, "tau21", "#Tau_{21}", 100, 0, 1.0);
+    m_tau32                     = book(m_name, "tau32", "#Tau_{32}", 100, 0, 1.0);
+    m_tau1_wta                  = book(m_name, "Tau1_wta", "#Tau_{1}^{wta}", 100, 0, 1.0);
+    m_tau2_wta                  = book(m_name, "Tau2_wta", "#Tau_{2}^{wta}", 100, 0, 1.0);
+    m_tau3_wta                  = book(m_name, "Tau3_wta", "#Tau_{3}^{wta}", 100, 0, 1.0);
+    m_tau21_wta                 = book(m_name, "Tau21_wta", "#Tau_{21}^{wta}", 100, 0, 1.0);
+    m_tau32_wta                 = book(m_name, "Tau32_wta", "#Tau_{32}^{wta}", 100, 0, 1.0);
+  }
+
   return StatusCode::SUCCESS;
 }
 
@@ -952,6 +965,26 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
     m_jetGhostTruthPt_vs_resolution -> Fill( ghostTruthPt/1e3, resolution, eventWeight );
   }
 
+  if( m_infoSwitch->m_substructure ){
+    static SG::AuxElement::ConstAccessor<float> Tau1("Tau1");
+    static SG::AuxElement::ConstAccessor<float> Tau2("Tau2");
+    static SG::AuxElement::ConstAccessor<float> Tau3("Tau3");
+    static SG::AuxElement::ConstAccessor<float> Tau1_wta("Tau1_wta");
+    static SG::AuxElement::ConstAccessor<float> Tau2_wta("Tau2_wta");
+    static SG::AuxElement::ConstAccessor<float> Tau3_wta("Tau3_wta");
+
+    if(Tau1.isAvailable(*jet)) m_tau1->Fill( Tau1(*jet), eventWeight );
+    if(Tau2.isAvailable(*jet)) m_tau2->Fill( Tau2(*jet), eventWeight );
+    if(Tau3.isAvailable(*jet)) m_tau3->Fill( Tau3(*jet), eventWeight );
+    if(Tau1.isAvailable(*jet) && Tau2.isAvailable(*jet)) m_tau21->Fill( Tau2(*jet)/Tau1(*jet), eventWeight );
+    if(Tau2.isAvailable(*jet) && Tau3.isAvailable(*jet)) m_tau32->Fill( Tau3(*jet)/Tau2(*jet), eventWeight );
+    if(Tau1_wta.isAvailable(*jet)) m_tau1_wta->Fill( Tau1_wta(*jet), eventWeight );
+    if(Tau2_wta.isAvailable(*jet)) m_tau2_wta->Fill( Tau2_wta(*jet), eventWeight );
+    if(Tau3_wta.isAvailable(*jet)) m_tau3_wta->Fill( Tau3_wta(*jet), eventWeight );
+    if(Tau1_wta.isAvailable(*jet) && Tau2_wta.isAvailable(*jet)) m_tau21_wta->Fill( Tau2_wta(*jet)/Tau1_wta(*jet), eventWeight );
+    if(Tau2_wta.isAvailable(*jet) && Tau3_wta.isAvailable(*jet)) m_tau32_wta->Fill( Tau3_wta(*jet)/Tau2_wta(*jet), eventWeight );
+
+  }
 
   return StatusCode::SUCCESS;
 }
