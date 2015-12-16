@@ -969,24 +969,20 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
     static SG::AuxElement::ConstAccessor<float> Tau1("Tau1");
     static SG::AuxElement::ConstAccessor<float> Tau2("Tau2");
     static SG::AuxElement::ConstAccessor<float> Tau3("Tau3");
-    static SG::AuxElement::ConstAccessor<float> Tau21("Tau21");
-    static SG::AuxElement::ConstAccessor<float> Tau32("Tau32");
     static SG::AuxElement::ConstAccessor<float> Tau1_wta("Tau1_wta");
     static SG::AuxElement::ConstAccessor<float> Tau2_wta("Tau2_wta");
     static SG::AuxElement::ConstAccessor<float> Tau3_wta("Tau3_wta");
-    static SG::AuxElement::ConstAccessor<float> Tau21_wta("Tau21_wta");
-    static SG::AuxElement::ConstAccessor<float> Tau32_wta("Tau32_wta");
 
     if(Tau1.isAvailable(*jet)) m_tau1->Fill( Tau1(*jet), eventWeight );
     if(Tau2.isAvailable(*jet)) m_tau2->Fill( Tau2(*jet), eventWeight );
     if(Tau3.isAvailable(*jet)) m_tau3->Fill( Tau3(*jet), eventWeight );
-    if(Tau21.isAvailable(*jet)) m_tau21->Fill( Tau21(*jet), eventWeight );
-    if(Tau32.isAvailable(*jet)) m_tau32->Fill( Tau32(*jet), eventWeight );
+    if(Tau1.isAvailable(*jet) && Tau2.isAvailable(*jet)) m_tau21->Fill( Tau2(*jet)/Tau1(*jet), eventWeight );
+    if(Tau2.isAvailable(*jet) && Tau3.isAvailable(*jet)) m_tau32->Fill( Tau3(*jet)/Tau2(*jet), eventWeight );
     if(Tau1_wta.isAvailable(*jet)) m_tau1_wta->Fill( Tau1_wta(*jet), eventWeight );
     if(Tau2_wta.isAvailable(*jet)) m_tau2_wta->Fill( Tau2_wta(*jet), eventWeight );
     if(Tau3_wta.isAvailable(*jet)) m_tau3_wta->Fill( Tau3_wta(*jet), eventWeight );
-    if(Tau21_wta.isAvailable(*jet)) m_tau21_wta->Fill( Tau21_wta(*jet), eventWeight );
-    if(Tau32_wta.isAvailable(*jet)) m_tau32_wta->Fill( Tau32_wta(*jet), eventWeight );
+    if(Tau1_wta.isAvailable(*jet) && Tau2_wta.isAvailable(*jet)) m_tau21_wta->Fill( Tau2_wta(*jet)/Tau1_wta(*jet), eventWeight );
+    if(Tau2_wta.isAvailable(*jet) && Tau3_wta.isAvailable(*jet)) m_tau32_wta->Fill( Tau3_wta(*jet)/Tau2_wta(*jet), eventWeight );
 
   }
 
