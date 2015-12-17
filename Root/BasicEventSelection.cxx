@@ -532,13 +532,15 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // initialize the GoodRunsListSelectionTool
   //
 
-  m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
-  std::vector<std::string> vecStringGRL;
-  m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
-  vecStringGRL.push_back(m_GRLxml);
-  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty( "GoodRunsListVec", vecStringGRL), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
-  RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
+  if(m_applyGRLCut){
+    m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
+    std::vector<std::string> vecStringGRL;
+    m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
+    vecStringGRL.push_back(m_GRLxml);
+    RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty( "GoodRunsListVec", vecStringGRL), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
+  }
 
   // 2.
   // initialize the CP::PileupReweightingTool
