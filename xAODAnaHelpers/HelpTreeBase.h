@@ -203,7 +203,7 @@ protected:
 
   // event
   int m_runNumber;
-  int m_eventNumber;
+  long int m_eventNumber;
   int m_lumiBlock;
   uint32_t m_coreFlags;
   int m_mcEventNumber;
