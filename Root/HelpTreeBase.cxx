@@ -83,7 +83,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
   // always
   m_tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
-  m_tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/I");
+  m_tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/LI");
   m_tree->Branch("lumiBlock",          &m_lumiBlock,      "lumiBlock/I");
   m_tree->Branch("coreFlags",          &m_coreFlags,      "coreFlags/i");
   if( m_isMC ) {
