@@ -300,6 +300,7 @@ StatusCode JetHists::initialize() {
     m_tau3_wta                  = book(m_name, "Tau3_wta", "#Tau_{3}^{wta}", 100, 0, 1.0);
     m_tau21_wta                 = book(m_name, "Tau21_wta", "#Tau_{21}^{wta}", 100, 0, 1.0);
     m_tau32_wta                 = book(m_name, "Tau32_wta", "#Tau_{32}^{wta}", 100, 0, 1.0);
+    m_numConstituents           = book(m_name, "numConstituents", "num. constituents", 501, -0.5, 500.5);
   }
 
   return StatusCode::SUCCESS;
@@ -983,6 +984,8 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
     if(Tau3_wta.isAvailable(*jet)) m_tau3_wta->Fill( Tau3_wta(*jet), eventWeight );
     if(Tau1_wta.isAvailable(*jet) && Tau2_wta.isAvailable(*jet)) m_tau21_wta->Fill( Tau2_wta(*jet)/Tau1_wta(*jet), eventWeight );
     if(Tau2_wta.isAvailable(*jet) && Tau3_wta.isAvailable(*jet)) m_tau32_wta->Fill( Tau3_wta(*jet)/Tau2_wta(*jet), eventWeight );
+
+    m_numConstituents->Fill( jet->numConstituents(), eventWeight );
 
   }
 
