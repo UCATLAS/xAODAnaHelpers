@@ -63,7 +63,7 @@ Next, we should probably add some obvious configurations that work for us. I loo
         "configs": {
           "m_debug": false,
           "m_truthLevelOnly": false,
-          "m_applyGRL": true,
+          "m_applyGRLCut": true,
           "m_GRLxml": "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml",
           "m_doPUreweighting": false,
           "m_vertexContainerName": "PrimaryVertices",
