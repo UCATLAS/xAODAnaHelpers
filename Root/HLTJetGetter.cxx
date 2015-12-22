@@ -19,6 +19,9 @@
 #include <EventLoop/Worker.h>
 
 // EDM include(s):
+<<<<<<< 23ea71dd850f66585ee1f7d2749bed218228fe87
+=======
+//CD: do we need all this stuff?
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"
@@ -53,7 +56,6 @@ HLTJetGetter :: HLTJetGetter (std::string className) :
 
   // read debug flag from .config file
   m_debug                   = false;
-    
   //m_sort                    = true;
 
 }
@@ -122,7 +124,6 @@ EL::StatusCode  HLTJetGetter :: configure ()
     
     return EL::StatusCode::SUCCESS;
 }
-
 
 
 EL::StatusCode HLTJetGetter :: initialize ()
