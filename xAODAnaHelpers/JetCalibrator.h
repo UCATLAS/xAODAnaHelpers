@@ -34,7 +34,7 @@ public:
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
-
+    
   std::string m_jetAlgo;
   std::string m_outputAlgo;
   std::string m_calibConfigData;
@@ -45,6 +45,9 @@ public:
   std::string m_JESUncertConfig;
   std::string m_JESUncertMCType;
   bool m_setAFII;
+    
+  // trigger flag (read from collection name)
+  bool m_isTrigger;
 
   std::string m_JERUncertConfig;
   bool m_JERFullSys;

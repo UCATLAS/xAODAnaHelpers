@@ -155,6 +155,9 @@ EL::StatusCode  JetCalibrator :: configure ()
 
     config->Print();
 
+    //set the flag for trigger jets
+    if (m_inContainerName.find("HLT") != std::string::npos) m_isTrigger = true;
+        
     delete config; config = nullptr;
   }
 
