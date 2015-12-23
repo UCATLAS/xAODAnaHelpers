@@ -427,6 +427,7 @@ void HelpTreeBase::ClearTrigger() {
  ********************/
 
 /* TODO: jet trigger */
+//CD: is this useful at all?
 void HelpTreeBase::AddJetTrigger( const std::string detailStr )
 {
   if ( m_debug )  Info("AddJetTrigger()", "Adding jet trigger variables: %s", detailStr.c_str());
