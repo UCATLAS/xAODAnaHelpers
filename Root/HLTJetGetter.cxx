@@ -19,17 +19,10 @@
 #include <EventLoop/Worker.h>
 
 // EDM include(s):
-//CD: do we need all this stuff?
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"
 #include "xAODJet/Jet.h"
-#include "xAODBase/IParticleHelpers.h"
-#include "xAODBase/IParticleContainer.h"
-#include "xAODBase/IParticle.h"
-#include "AthContainers/ConstDataVector.h"
-#include "AthContainers/DataVector.h"
-#include "xAODCore/ShallowCopy.h"
 
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
@@ -51,7 +44,6 @@ ClassImp(HLTJetGetter)
 
 HLTJetGetter :: HLTJetGetter (std::string className) :
     Algorithm(className),
-    //m_trigItem(""),
     m_triggerList(".*"),
     m_inContainerName(""),
     m_outContainerName(""),
@@ -125,10 +117,6 @@ EL::StatusCode  HLTJetGetter :: configure ()
         return EL::StatusCode::FAILURE;
     }
     
-    //Needed for later?
-    //m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-    //m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-    
     if ( !getConfig().empty() )
         Info("configure()", "JetCalibrator Interface succesfully configured! ");
     
@@ -148,7 +136,6 @@ EL::StatusCode HLTJetGetter :: initialize ()
   //
   // Grab the TrigDecTool from the ToolStore
   //
-  //m_trigDecTool = dynamic_cast<Trig::TrigDecisionTool*>(asg::ToolStore::get("TrigDecisionTool"));
 
   if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
     m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
@@ -178,19 +165,12 @@ EL::StatusCode HLTJetGetter :: execute ()
   xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
   hltJets->setStore( hltJetsAux ); //< Connect the two
 
-    std::cout << "1" << std::endl;
-    //std::cout << m_trigDecTool->Get << std::endl;
-    std::cout << "1" << std::endl;
   //Retrieving jets via trigger decision tool:
   const Trig::ChainGroup * chainGroup = m_trigDecTool->getChainGroup(m_triggerList.c_str()); //Trigger list:
-    std::cout << "2" << std::endl;
   auto chainFeatures = chainGroup->features(); //Gets features associated to chain defined above
-    std::cout << "3" << std::endl;
   std::string stripped_name = m_inContainerName;
   stripped_name.erase(0, 23); //Stripping 'HLT_xAOD__JetContainer_' from input container name
-    std::cout << "4" << std::endl;
   auto JetFeatureContainers = chainFeatures.containerFeature<xAOD::JetContainer>(stripped_name.c_str());
-    std::cout << "5" << std::endl;
 
   for( auto fContainer : JetFeatureContainers ) {
     for( auto trigJet : *fContainer.cptr() ) {

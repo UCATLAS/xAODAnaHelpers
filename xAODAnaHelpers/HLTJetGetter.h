@@ -28,13 +28,9 @@ class HLTJetGetter : public xAH::Algorithm
 public:
 
   // configuration variables
-  //std::string m_trigItem;
   std::string m_triggerList; /* List of triggers whose features will be extracted from TDT */
   std::string m_inContainerName; /* input container name */
   std::string m_outContainerName; /* output container name */
-
-  // sort after calibration
-  //bool    m_sort;
 
 private:
 
