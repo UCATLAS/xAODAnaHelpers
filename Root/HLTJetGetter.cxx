@@ -51,7 +51,9 @@ ClassImp(HLTJetGetter)
 
 HLTJetGetter :: HLTJetGetter (std::string className) :
     Algorithm(className),
-    m_trigItem(""),
+    //m_trigItem(""),
+    m_triggerList(".*"),
+    m_inContainerName(""),
     m_outContainerName(""),
     m_trigDecTool(nullptr)
 {
@@ -59,8 +61,8 @@ HLTJetGetter :: HLTJetGetter (std::string className) :
 
   // read debug flag from .config file
   m_debug                   = false;
-
-  m_sort                    = true;
+    
+  //m_sort                    = true;
 
 }
 
@@ -95,6 +97,44 @@ EL::StatusCode HLTJetGetter :: changeInput (bool /*firstFile*/)
   return EL::StatusCode::SUCCESS;
 }
 
+EL::StatusCode  HLTJetGetter :: configure ()
+{
+    if ( !getConfig().empty() ) {
+        
+        Info("configure()", "Configuring JetCalibrator Interface. User configuration read from : %s ", getConfig().c_str());
+        
+        TEnv* config = new TEnv(getConfig(true).c_str());
+        
+        // read debug flag from .config file
+        m_debug                   = config->GetValue("Debug" , m_debug);
+        // input container to be read from TDT (will be stripped - TODO: put here stripped name already?)
+        m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
+        // output container is passed on with this output container name
+        m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
+        // list of triggers whose features have to be pulled from TDT: ".*" for all
+        m_triggerList             = config->GetValue("TriggerList", m_triggerList.c_str());
+
+        config->Print();
+        
+        delete config; config = nullptr;
+    }
+    
+    // If there is no InputContainer we must stop
+    if ( m_inContainerName.empty() ) {
+        Error("configure()", "InputContainer is empty!");
+        return EL::StatusCode::FAILURE;
+    }
+    
+    //Needed for later?
+    //m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+    //m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+    
+    if ( !getConfig().empty() )
+        Info("configure()", "JetCalibrator Interface succesfully configured! ");
+    
+    return EL::StatusCode::SUCCESS;
+}
+
 
 
 EL::StatusCode HLTJetGetter :: initialize ()
@@ -108,7 +148,20 @@ EL::StatusCode HLTJetGetter :: initialize ()
   //
   // Grab the TrigDecTool from the ToolStore
   //
-  m_trigDecTool = dynamic_cast<Trig::TrigDecisionTool*>(asg::ToolStore::get("TrigDecisionTool"));
+  //m_trigDecTool = dynamic_cast<Trig::TrigDecisionTool*>(asg::ToolStore::get("TrigDecisionTool"));
+
+  if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
+    m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
+  } else {
+    Error("Initialize()", "the Trigger Decision Tool is not initialized.. [%s]", m_name.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+    
+  // Configure
+  if ( this->configure() == EL::StatusCode::FAILURE ) {
+    Error("initialize()", "Failed to properly configure. Exiting." );
+    return EL::StatusCode::FAILURE;
+  }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -125,72 +178,30 @@ EL::StatusCode HLTJetGetter :: execute ()
   xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
   hltJets->setStore( hltJetsAux ); //< Connect the two
 
-  ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
+    std::cout << "1" << std::endl;
+    //std::cout << m_trigDecTool->Get << std::endl;
+    std::cout << "1" << std::endl;
+  //Retrieving jets via trigger decision tool:
+  const Trig::ChainGroup * chainGroup = m_trigDecTool->getChainGroup(m_triggerList.c_str()); //Trigger list:
+    std::cout << "2" << std::endl;
+  auto chainFeatures = chainGroup->features(); //Gets features associated to chain defined above
+    std::cout << "3" << std::endl;
+  std::string stripped_name = m_inContainerName;
+  stripped_name.erase(0, 23); //Stripping 'HLT_xAOD__JetContainer_' from input container name
+    std::cout << "4" << std::endl;
+  auto JetFeatureContainers = chainFeatures.containerFeature<xAOD::JetContainer>(stripped_name.c_str());
+    std::cout << "5" << std::endl;
 
-  //
-  //  Make accessors/decorators
-  //
-  static SG::AuxElement::ConstAccessor< vector<ElementLink<DataVector<xAOD::IParticle> > > > jetLinkAcc("BTagBtagToJetAssociator");
-  static SG::AuxElement::ConstAccessor< vector<ElementLink<xAOD::TrackParticleContainer> > > trkLinkAcc("BTagTrackToJetAssociator");
-  static SG::AuxElement::Decorator< const xAOD::BTagging* > hltBTagDecor( "HLTBTag" );
-
-  Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItem);
-  auto bjetFeatureContainers = fc.containerFeature<xAOD::BTaggingContainer>();
-
-  if(m_debug) cout << "ncontainers  " << bjetFeatureContainers.size() << endl;
-
-  for(auto  jcont : bjetFeatureContainers) {
-    for (const xAOD::BTagging*  hlt_btag : *jcont.cptr()) {
-
-      bool isAvailableJet = jetLinkAcc.isAvailable(*hlt_btag);
-
-      if(isAvailableJet){
-	vector<ElementLink<DataVector<xAOD::IParticle> > > jetLinkObj = jetLinkAcc(*hlt_btag);
-	if(m_debug) cout << "Filling " << jetLinkObj.size() << " jets ... " <<endl;
-
-	if(jetLinkObj.size()){
-	  const xAOD::Jet* hltBJet = dynamic_cast<const xAOD::Jet*>(*(jetLinkObj.at(0)));
-	  if(m_debug) cout << "Adding hltBJet " << hltBJet << " " << hlt_btag << endl;
-
-	  xAOD::Jet* newHLTBJet = new xAOD::Jet();
-	  newHLTBJet->makePrivateStore( hltBJet );
-
-	  //
-	  // Add Link to BTagging Info
-	  //
-	  newHLTBJet->auxdecor< const xAOD::BTagging* >("HLTBTag") = hlt_btag;
-	  if(m_debug) cout << "Added link " << endl;
-
-	  //
-	  // Add Tracks to BJet
-	  //
-	  //bool isAvailableTrks = trkLinkAcc.isAvailable(*hlt_btag);
-	  //if(isAvailableTrks){
-	  //	vector<ElementLink<xAOD::TrackParticleContainer> > trkLinkObj = trkLinkAcc(*hlt_btag);
-	  //	//h_nTrks->Fill(trkLinkObj.size());
-	  //	if(m_debug) cout << "Filling " << trkLinkObj.size() << " tracks...";
-	  //
-	  //	for(auto& trkPtr: trkLinkObj){
-	  //	  const xAOD::TrackParticle* thisHLTTrk = *(trkPtr);
-	  //	  selectedTracks->push_back( thisHLTTrk );
-	  //	}
-	  //}else{
-	  //	if(m_debug) cout << " Trks Not Avalible." << endl;
-	  //}
-
-
-	  hltJets->push_back( newHLTBJet );
-	  if(m_debug) cout << "pushed back " << endl;
-	}
-	if(m_debug) cout << " ...done." << endl;
-      }else{
-	if(m_debug) cout << " Jet Not Avalible." << endl;
-      }
-    }//BTagging
-  }//bjetFeatures
-
-  RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
-  RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected dijetsAux.");
+  for( auto fContainer : JetFeatureContainers ) {
+    for( auto trigJet : *fContainer.cptr() ) {
+      xAOD::Jet *Jet = new xAOD::Jet();
+      *Jet = *trigJet;
+      hltJets->push_back( Jet );
+    }//end trigJet loop
+  }//end feature container loop
+  
+  RETURN_CHECK("HLTJetGetter::execute()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected hltJets");
+  RETURN_CHECK("HLTJetGetter::execute()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected hltJetsAux.");
 
   if ( m_debug ) { m_store->print(); }
 

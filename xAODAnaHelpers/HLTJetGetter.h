@@ -28,11 +28,13 @@ class HLTJetGetter : public xAH::Algorithm
 public:
 
   // configuration variables
-  std::string m_trigItem;
-  std::string m_outContainerName;
+  //std::string m_trigItem;
+  std::string m_triggerList; /* List of triggers whose features will be extracted from TDT */
+  std::string m_inContainerName; /* input container name */
+  std::string m_outContainerName; /* output container name */
 
   // sort after calibration
-  bool    m_sort;
+  //bool    m_sort;
 
 private:
 
@@ -54,6 +56,8 @@ public:
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
 
+  // these are the functions not inherited from Algorithm
+  virtual EL::StatusCode configure ();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
