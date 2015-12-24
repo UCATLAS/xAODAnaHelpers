@@ -29,4 +29,5 @@ The following list are packages / analyses searches that depend on xAH. We thank
 -  Punch-through studies
 -  `Multijet balance <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/MultijetBalanceRunIIFramework>`__
 -  `Standard Model inclusive jet cross section <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/InclusiveJetCrossSection>`__
+-  `Voronoi-Based Pileup Mitigation <https://github.com/AvivCukierman/Voronoi_xAOD>`__
 
