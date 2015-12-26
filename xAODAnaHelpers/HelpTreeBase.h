@@ -206,6 +206,9 @@ protected:
   long int m_eventNumber;
   int m_lumiBlock;
   uint32_t m_coreFlags;
+  bool m_TileError;
+  bool m_LArError;
+  bool m_SCTError;
   int m_mcEventNumber;
   int m_mcChannelNumber;
   float m_mcEventWeight;

@@ -30,6 +30,7 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_evtDetailStr            = "";
   m_trigDetailStr           = "";
   m_trigJetDetailStr        = "";
+  m_truthJetDetailStr       = "";
   m_muDetailStr             = "";
   m_elDetailStr             = "";
   m_jetDetailStr            = "";
@@ -115,6 +116,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   if ( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons  (m_elDetailStr);      }
   if ( !m_jetContainerName.empty() )    {   m_helpTree->AddJets       (m_jetDetailStr, "jet");     }
   if ( !m_trigJetContainerName.empty() ){   m_helpTree->AddJets       (m_trigJetDetailStr, "trigJet");     }
+  if ( !m_truthJetContainerName.empty() ){   m_helpTree->AddJets       (m_truthJetDetailStr, "truthJet");     }
   if ( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets    (m_fatJetDetailStr);  }
   if ( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus       (m_tauDetailStr);     }
   if ( !m_METContainerName.empty() )    {   m_helpTree->AddMET        (m_METDetailStr);     }
@@ -136,6 +138,7 @@ EL::StatusCode TreeAlgo :: configure ()
     m_trigJetDetailStr        = config->GetValue("TrigJetDetailStr",     m_trigJetDetailStr.c_str());
     m_muDetailStr             = config->GetValue("MuonDetailStr",        m_muDetailStr.c_str());
     m_elDetailStr             = config->GetValue("ElectronDetailStr",    m_elDetailStr.c_str());
+    m_truthJetDetailStr       = config->GetValue("TruthJetDetailStr",    m_truthJetDetailStr.c_str());
     m_jetDetailStr            = config->GetValue("JetDetailStr",         m_jetDetailStr.c_str());
     m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      m_fatJetDetailStr.c_str());
     m_tauDetailStr            = config->GetValue("TauDetailStr",         m_tauDetailStr.c_str());
@@ -149,6 +152,7 @@ EL::StatusCode TreeAlgo :: configure ()
     m_muContainerName         = config->GetValue("MuonContainerName",       m_muContainerName.c_str());
     m_elContainerName         = config->GetValue("ElectronContainerName",   m_elContainerName.c_str());
     m_jetContainerName        = config->GetValue("JetContainerName",        m_jetContainerName.c_str());
+    m_truthJetContainerName   = config->GetValue("TruthJetContainerName",   m_truthJetContainerName.c_str());
     m_trigJetContainerName    = config->GetValue("TrigJetContainerName",    m_trigJetContainerName.c_str());
     m_fatJetContainerName     = config->GetValue("FatJetContainerName",     m_fatJetContainerName.c_str());
     m_tauContainerName        = config->GetValue("TauContainerName",        m_tauContainerName.c_str());
@@ -217,6 +221,11 @@ EL::StatusCode TreeAlgo :: execute ()
     const xAOD::JetContainer* inTrigJets(nullptr);
     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTrigJets, m_trigJetContainerName, m_event, m_store, m_verbose) ,"");
     m_helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices), "trigJet" );
+  }
+  if ( !m_truthJetContainerName.empty() ) {
+    const xAOD::JetContainer* inTruthJets(nullptr);
+    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthJets, m_truthJetContainerName, m_event, m_store, m_verbose) ,"");
+        m_helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices), "truthJet" );
   }
   if ( !m_fatJetContainerName.empty() ) {
     const xAOD::JetContainer* inFatJets(nullptr);

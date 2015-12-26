@@ -94,6 +94,14 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("bcid",               &m_bcid,           "bcid/I");
   }
 
+  if ( m_eventInfoSwitch->m_eventCleaning ) {
+    
+    m_tree->Branch("TileError",          &m_TileError,      "TileError/O");
+    m_tree->Branch("SCTError",           &m_SCTError,      "SCTError/O");
+    m_tree->Branch("LArError",           &m_LArError,      "LArError/O");
+
+  }
+    
   if ( m_eventInfoSwitch->m_pileup ) {
     m_tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
     m_tree->Branch("NPV",                &m_npv,            "NPV/I");
@@ -170,6 +178,19 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
     m_mcEventWeight         = eventInfo->mcEventWeight();
   } else {
     m_bcid                  = eventInfo->bcid();
+  }
+    
+  if ( m_eventInfoSwitch->m_eventCleaning ) {
+      
+    if ( eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) m_LArError = true;
+    else m_LArError = false;
+    
+    if ( eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) m_TileError = true;
+    else m_TileError = false;
+    
+    if ( eventInfo->errorState(xAOD::EventInfo::SCT)==xAOD::EventInfo::Error ) m_SCTError = true;
+    else m_SCTError = false;
+
   }
 
   if ( m_eventInfoSwitch->m_pileup ) {
@@ -1912,7 +1933,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
 
 
 void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName ) {
-
+    
   jetInfo* thisJet = m_jets[jetName];
 
   if( m_jetInfoSwitch->m_kinematic ){
@@ -2529,10 +2550,11 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     }
 
   }
-
+    
   this->FillJetsUser(jet_itr, jetName);
-
   thisJet->N++;
+    
+  
   return;
 }
 
@@ -2957,6 +2979,10 @@ void HelpTreeBase::ClearFatJets() {
 void HelpTreeBase::ClearEvent() {
   m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = m_bcid = m_lumiBlock;
   m_coreFlags = 0;
+  //eventCleaning
+  m_LArError = false;
+  m_TileError = false;
+  m_SCTError = false;
   m_mcEventWeight = 1.;
   m_weight_pileup = 1.;
   // pileup
