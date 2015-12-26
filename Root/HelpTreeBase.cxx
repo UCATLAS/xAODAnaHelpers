@@ -1484,8 +1484,10 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
 
   if(m_debug) Info("AddJets()", "Adding jet %s with variables: %s", jetName.c_str(), detailStr.c_str());
 
-  m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
-
+  //m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
+  
+  m_thisJetInfoSwitch[jetName] = new HelperClasses::JetInfoSwitch( detailStr );
+    
   m_jets[jetName] = new jetInfo();
 
   jetInfo* thisJet = m_jets[jetName];
@@ -1493,18 +1495,18 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
   // always
   m_tree->Branch(("n"+jetName+"s").c_str(),    &thisJet->N,("n"+jetName+"s/I").c_str());
 
-  if ( m_jetInfoSwitch->m_kinematic ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_kinematic ) {
     m_tree->Branch((jetName+"_E"  ).c_str(),  &thisJet->m_jet_E);
     m_tree->Branch((jetName+"_pt" ).c_str(),  &thisJet->m_jet_pt);
     m_tree->Branch((jetName+"_phi").c_str(),  &thisJet->m_jet_phi);
     m_tree->Branch((jetName+"_eta").c_str(),  &thisJet->m_jet_eta);
   }
 
-  if ( m_jetInfoSwitch->m_rapidity ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_rapidity ) {
     m_tree->Branch((jetName+"_rapidity").c_str(), &thisJet->m_jet_rapidity);
   }
 
-  if( m_jetInfoSwitch->m_clean ) {
+  if( m_thisJetInfoSwitch[jetName]->m_clean ) {
     m_tree->Branch((jetName+"_Timing").c_str(),                        &thisJet->m_jet_time               );
     m_tree->Branch((jetName+"_LArQuality").c_str(),                    &thisJet->m_jet_LArQuality         );
     m_tree->Branch((jetName+"_HECQuality").c_str(),                    &thisJet->m_jet_hecq               );
@@ -1526,7 +1528,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_clean_passTightBadUgly").c_str(),        &thisJet->m_jet_clean_passTightBadUgly         );
   }
 
-  if ( m_jetInfoSwitch->m_energy ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_energy ) {
     m_tree->Branch((jetName+"_HECFrac").c_str(), 	            &thisJet->m_jet_HECf	    );
     m_tree->Branch((jetName+"_EMFrac").c_str(),  	            &thisJet->m_jet_EMf	    );
     m_tree->Branch((jetName+"_CentroidR").c_str(),	            &thisJet->m_jet_centroidR      );
@@ -1537,7 +1539,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_Width").c_str(),                     &thisJet->m_jet_width          );
   }
 
-  if ( m_jetInfoSwitch->m_scales ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_scales ) {
     m_tree->Branch((jetName+"_emScalePt").c_str(),              &thisJet->m_jet_emPt            );
     m_tree->Branch((jetName+"_constScalePt").c_str(),           &thisJet->m_jet_constPt         );
     m_tree->Branch((jetName+"_pileupScalePt").c_str(),          &thisJet->m_jet_pileupPt        );
@@ -1547,11 +1549,11 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_insituScalePt").c_str(),          &thisJet->m_jet_insituPt        );
   }
 
-  if ( m_jetInfoSwitch->m_layer ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_layer ) {
     m_tree->Branch((jetName+"_EnergyPerSampling").c_str(),     &thisJet->m_jet_ePerSamp   );
   }
 
-  if ( m_jetInfoSwitch->m_trackAll ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_trackAll ) {
     m_tree->Branch((jetName+"_NumTrkPt1000").c_str(),	    &thisJet->m_jet_NTrkPt1000   );
     m_tree->Branch((jetName+"_SumPtTrkPt1000").c_str(),    &thisJet->m_jet_SumPtPt1000  );
     m_tree->Branch((jetName+"_TrackWidthPt1000").c_str(),  &thisJet->m_jet_TrkWPt1000   );
@@ -1561,7 +1563,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_JVF").c_str(),		    &thisJet->m_jet_jvf	        );
   }
 
-  if ( m_jetInfoSwitch->m_trackPV ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_trackPV ) {
     m_tree->Branch((jetName+"_NumTrkPt1000PV").c_str(),      &thisJet->m_jet_NTrkPt1000PV   );
     m_tree->Branch((jetName+"_SumPtTrkPt1000PV").c_str(),    &thisJet->m_jet_SumPtPt1000PV  );
     m_tree->Branch((jetName+"_TrackWidthPt1000PV").c_str(),  &thisJet->m_jet_TrkWPt1000PV   );
@@ -1575,11 +1577,11 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     //m_tree->Branch((jetName+"_GhostTrackAssociationFraction").c_str(), &thisJet->m_jet_ghostTrackAssFrac);
   }
 
-  if ( m_jetInfoSwitch->m_allTrack ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_allTrack ) {
     // if want to apply the selection of the PV then need to setup track selection tool
     // this applies the JVF/JVT selection cuts
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
-    if( m_jetInfoSwitch->m_allTrackPVSel ) {
+    if( m_thisJetInfoSwitch[jetName]->m_allTrackPVSel ) {
       m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection", "Loose" );
       m_trkSelTool->initialize();
       // to do this need to have AddJets return a status code
@@ -1594,7 +1596,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_GhostTrack_e").c_str(),     &thisJet->m_jet_GhostTrack_e    );
     m_tree->Branch((jetName+"_GhostTrack_d0").c_str(),    &thisJet->m_jet_GhostTrack_d0   );
     m_tree->Branch((jetName+"_GhostTrack_z0").c_str(),    &thisJet->m_jet_GhostTrack_z0   );
-    if ( m_jetInfoSwitch->m_allTrackDetail ) {
+    if ( m_thisJetInfoSwitch[jetName]->m_allTrackDetail ) {
       m_tree->Branch((jetName+"_GhostTrack_nPixelHits").c_str(),                           &thisJet->m_jet_GhostTrack_nPixHits);
       m_tree->Branch((jetName+"_GhostTrack_nSCTHits").c_str(),                             &thisJet->m_jet_GhostTrack_nSCTHits);
       m_tree->Branch((jetName+"_GhostTrack_nTRTHits").c_str(),                             &thisJet->m_jet_GhostTrack_nTRTHits);
@@ -1609,11 +1611,11 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     }
   }
 
-  if ( m_jetInfoSwitch->m_constituent ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_constituent ) {
     m_tree->Branch((jetName+"_numConstituents").c_str() ,   &thisJet->m_jet_numConstituents);
   }
 
-  if ( m_jetInfoSwitch->m_constituentAll ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_constituentAll ) {
     m_tree->Branch((jetName+"_constituentWeights").c_str(), &thisJet->m_jet_constitWeights);
     m_tree->Branch((jetName+"_constituent_pt").c_str(),    &thisJet->m_jet_constit_pt    );
     m_tree->Branch((jetName+"_constituent_eta").c_str(),    &thisJet->m_jet_constit_eta   );
@@ -1621,7 +1623,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_constituent_e").c_str(),    &thisJet->m_jet_constit_e     );
   }
 
-  if( m_jetInfoSwitch->m_flavTag ) {
+  if( m_thisJetInfoSwitch[jetName]->m_flavTag ) {
     if ( !m_DC14 ) {
       m_tree->Branch((jetName+"_SV0").c_str(),           &thisJet->m_jet_sv0);
       m_tree->Branch((jetName+"_SV1").c_str(),           &thisJet->m_jet_sv1);
@@ -1634,9 +1636,9 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_HadronConeExclTruthLabelID").c_str(), &thisJet->m_jet_hadConeExclTruthLabel);
   }
 
-  if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
-    for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
-      switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
+  if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFix.empty() ) {
+    for( unsigned int i=0; i<m_thisJetInfoSwitch[jetName]->m_sfFTagFix.size(); i++ ) {
+      switch( m_thisJetInfoSwitch[jetName]->m_sfFTagFix.at(i) ) {
         case 30 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Fix30").c_str(),   &thisJet->m_njet_mv2c20_Fix30,("n"+jetName+"s_mv2c20_Fix30/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFix30").c_str(),   &thisJet->m_jet_mv2c20_isFix30);
@@ -1702,15 +1704,15 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
 	  }
           break;
         default:
-          std::cout << "BTag Fixed operating point of " << m_jetInfoSwitch->m_sfFTagFix.at(i)
+          std::cout << "BTag Fixed operating point of " << m_thisJetInfoSwitch[jetName]->m_sfFTagFix.at(i)
             << " is unknown to xAH" << std::endl;
       }
     }
   } // sfFTagFix
 
-  if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) {
-    for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
-      switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
+  if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.empty() ) {
+    for( unsigned int i=0; i<m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.size(); i++ ) {
+      switch( m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.at(i) ) {
         case 30 :
 	  m_tree->Branch(("n"+jetName+"s_mv2c20_Flt30").c_str(),   &thisJet->m_njet_mv2c20_Flt30,("n"+jetName+"s_mv2c20_Flt30/I").c_str());
           m_tree->Branch((jetName+"_MV2c20_isFlt30").c_str(),   &thisJet->m_jet_mv2c20_isFlt30);
@@ -1768,13 +1770,13 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
 	  }
           break;
         default:
-          std::cout << "BTag Flat operating point of " << m_jetInfoSwitch->m_sfFTagFlt.at(i)
+          std::cout << "BTag Flat operating point of " << m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.at(i)
             << " is unknown to xAH" << std::endl;
       }
     }
   } // sfFTagFlt
 
-  if( m_jetInfoSwitch->m_area ) {
+  if( m_thisJetInfoSwitch[jetName]->m_area ) {
     m_tree->Branch((jetName+"_GhostArea").c_str(),     &thisJet->m_jet_ghostArea);
     m_tree->Branch((jetName+"_ActiveArea").c_str(),    &thisJet->m_jet_activeArea);
     m_tree->Branch((jetName+"_VoronoiArea").c_str(),   &thisJet->m_jet_voronoiArea);
@@ -1784,7 +1786,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_ActiveArea4vec_m").c_str(),   &thisJet->m_jet_activeArea_m);
   }
 
-  if ( m_jetInfoSwitch->m_truth && m_isMC ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_truth && m_isMC ) {
     m_tree->Branch((jetName+"_ConeTruthLabelID").c_str(),   &thisJet->m_jet_truthConeLabelID );
     m_tree->Branch((jetName+"_TruthCount").c_str(),         &thisJet->m_jet_truthCount     );
 //    m_tree->Branch((jetName+"_TruthPt").c_str(),            &thisJet->m_jet_truthPt        );
@@ -1799,7 +1801,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_truth_eta").c_str(), &thisJet->m_jet_truth_eta);
   }
 
-  if ( m_jetInfoSwitch->m_truthDetails ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_truthDetails ) {
     m_tree->Branch((jetName+"_GhostBHadronsFinalCount").c_str(),   &thisJet->m_jet_truthCount_BhadFinal );
     m_tree->Branch((jetName+"_GhostBHadronsInitialCount").c_str(), &thisJet->m_jet_truthCount_BhadInit  );
     m_tree->Branch((jetName+"_GhostBQuarksFinalCount").c_str(),    &thisJet->m_jet_truthCount_BQFinal   );
@@ -1822,7 +1824,9 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_truth_partonDR").c_str(), &thisJet->m_jet_truth_partonDR);
   }
 
+
   this->AddJetsUser(detailStr, jetName);
+    
 }
 
 
@@ -1832,7 +1836,8 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
 
   const xAOD::VertexContainer* vertices(nullptr);
   const xAOD::Vertex *pv = 0;
-  if( m_jetInfoSwitch->m_trackPV || m_jetInfoSwitch->m_allTrack ) {
+    
+  if( m_thisJetInfoSwitch[jetName]->m_trackPV || m_thisJetInfoSwitch[jetName]->m_allTrack ) {
     HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
     pv = vertices->at( pvLocation );
@@ -1848,9 +1853,9 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
     HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, false);
 
 
-    if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
-      for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
-    	switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
+    if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFix.empty() ) {
+      for( unsigned int i=0; i<m_thisJetInfoSwitch[jetName]->m_sfFTagFix.size(); i++ ) {
+    	switch( m_thisJetInfoSwitch[jetName]->m_sfFTagFix.at(i) ) {
     	  case 30 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix30_GLOBAL("BTag_SF_FixedCutBEff_30_GLOBAL");
             if ( sfFix30_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFix30 = sfFix30_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFix30.push_back(-999.0); }
@@ -1887,9 +1892,9 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
       }
     } // sfFTagFix
 
-    if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) {
-      for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
-    	switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
+    if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.empty() ) {
+      for( unsigned int i=0; i<m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.size(); i++ ) {
+    	switch( m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.at(i) ) {
     	  case 30 :
             static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30_GLOBAL("BTag_SF_FlatBEff_30_GLOBAL");
             if ( sfFlt30_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_mv2c20_sfFlt30 = sfFlt30_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_mv2c20_sfFlt30.push_back(-999.0); }
@@ -1936,7 +1941,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     
   jetInfo* thisJet = m_jets[jetName];
 
-  if( m_jetInfoSwitch->m_kinematic ){
+  if( m_thisJetInfoSwitch[jetName]->m_kinematic ){
     thisJet->m_jet_pt.push_back ( jet_itr->pt() / m_units );
     thisJet->m_jet_eta.push_back( jet_itr->eta() );
     thisJet->m_jet_phi.push_back( jet_itr->phi() );
@@ -1944,11 +1949,11 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
   }
 
 
-  if( m_jetInfoSwitch->m_rapidity ){
+  if( m_thisJetInfoSwitch[jetName]->m_rapidity ){
     thisJet->m_jet_rapidity.push_back( jet_itr->rapidity() );
   }
 
-  if (m_jetInfoSwitch->m_clean) {
+  if (m_thisJetInfoSwitch[jetName]->m_clean) {
 
     static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
     safeFill<float, float>(jet_itr, jetTime, thisJet->m_jet_time, -999);
@@ -2009,7 +2014,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
   } // clean
 
-  if ( m_jetInfoSwitch->m_energy ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_energy ) {
 
     static SG::AuxElement::ConstAccessor<float> HECf ("HECFrac");
     safeFill<float, float>(jet_itr, HECf, thisJet->m_jet_HECf, -999);
@@ -2039,7 +2044,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
 
     // each step of the calibration sequence
-  if ( m_jetInfoSwitch->m_scales ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_scales ) {
     xAOD::JetFourMom_t fourVec;
     bool status(false);
     // EM Scale
@@ -2072,7 +2077,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     else { thisJet->m_jet_insituPt.push_back( -999 ); }
   }
 
-  if ( m_jetInfoSwitch->m_layer ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_layer ) {
     static SG::AuxElement::ConstAccessor< std::vector<float> > ePerSamp ("EnergyPerSampling");
     if ( ePerSamp.isAvailable( *jet_itr ) ) {
       thisJet->m_jet_ePerSamp.push_back( ePerSamp( *jet_itr ) );
@@ -2089,8 +2094,8 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     }
   }
 
-  if ( m_jetInfoSwitch->m_trackAll || m_jetInfoSwitch->m_trackPV ) {
-
+    
+  if ( m_thisJetInfoSwitch[jetName]->m_trackAll || m_thisJetInfoSwitch[jetName]->m_trackPV ) {
 
     // several moments calculated from all verticies
     // one accessor for each and just use appropiately in the following
@@ -2102,7 +2107,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     static SG::AuxElement::ConstAccessor< std::vector<float> > trkWidth500 ("TrackWidthPt500");
     static SG::AuxElement::ConstAccessor< std::vector<float> > jvf("JVF");
 
-    if ( m_jetInfoSwitch->m_trackAll ) {
+    if ( m_thisJetInfoSwitch[jetName]->m_trackAll ) {
 
       std::vector<int> junkInt(1,-999);
       std::vector<float> junkFlt(1,-999);
@@ -2144,8 +2149,8 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
       } else { thisJet->m_jet_jvf.push_back( junkFlt ); }
 
     } // trackAll
-
-    if ( m_jetInfoSwitch->m_trackPV && pvLocation >= 0 ) {
+      
+    if ( m_thisJetInfoSwitch[jetName]->m_trackPV && pvLocation >= 0 ) {
 
       if ( nTrk1000.isAvailable( *jet_itr ) ) {
 	thisJet->m_jet_NTrkPt1000PV.push_back( nTrk1000( *jet_itr )[pvLocation] );
@@ -2199,7 +2204,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
   }
 
-  if ( m_jetInfoSwitch->m_allTrack ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_allTrack ) {
     static SG::AuxElement::ConstAccessor< int > ghostTrackCount("GhostTrackCount");
     if ( ghostTrackCount.isAvailable( *jet_itr ) ) {
       thisJet->m_jet_GhostTrackCount.push_back( ghostTrackCount( *jet_itr ) );
@@ -2234,7 +2239,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 	if( !link_itr.isValid() ) { continue; }
 	const xAOD::TrackParticle* track = dynamic_cast<const xAOD::TrackParticle*>( *link_itr );
 	// if asking for tracks passing PV selection ( i.e. JVF JVT tracks )
-	if( m_jetInfoSwitch->m_allTrackPVSel ) {
+	if( m_thisJetInfoSwitch[jetName]->m_allTrackPVSel ) {
 	  // PV selection from
 	  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
 	  if( track->pt() < 500 )                { continue; } // pT cut
@@ -2251,7 +2256,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 	e.  push_back( track->e()  / m_units );
 	d0. push_back( track->d0() );
 	z0. push_back( track->z0() + track->vz() - pv->z() ); // store z0 wrt PV...most useful
-	if( m_jetInfoSwitch->m_allTrackDetail ) {
+	if( m_thisJetInfoSwitch[jetName]->m_allTrackDetail ) {
 	  uint8_t getInt(0);
 	  // n pix, sct, trt
 	  track->summaryValue( getInt, xAOD::numberOfPixelHits );
@@ -2289,7 +2294,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     thisJet->m_jet_GhostTrack_e.  push_back( e   );
     thisJet->m_jet_GhostTrack_d0. push_back( d0  );
     thisJet->m_jet_GhostTrack_z0. push_back( z0  );
-    if( m_jetInfoSwitch->m_allTrackDetail ) {
+    if( m_thisJetInfoSwitch[jetName]->m_allTrackDetail ) {
       thisJet->m_jet_GhostTrack_nPixHits.push_back( nPixHits );
       thisJet->m_jet_GhostTrack_nSCTHits.push_back( nSCTHits );
       thisJet->m_jet_GhostTrack_nTRTHits.push_back( nTRTHits );
@@ -2304,11 +2309,11 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     }
   } // allTrack switch
 
-  if( m_jetInfoSwitch->m_constituent ) {
+  if( m_thisJetInfoSwitch[jetName]->m_constituent ) {
     thisJet->m_jet_numConstituents.push_back( jet_itr->numConstituents() );
   }
 
-  if( m_jetInfoSwitch->m_constituentAll ) {
+  if( m_thisJetInfoSwitch[jetName]->m_constituentAll ) {
     thisJet->m_jet_constitWeights.push_back( jet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
     std::vector<float> pt;
     std::vector<float> eta;
@@ -2335,7 +2340,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     thisJet->m_jet_constit_e.  push_back( e   );
   }
 
-  if ( m_jetInfoSwitch->m_flavTag) {
+  if ( m_thisJetInfoSwitch[jetName]->m_flavTag) {
     const xAOD::BTagging * myBTag = jet_itr->btagging();
     if ( !m_DC14 ) {
 
@@ -2362,9 +2367,9 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
   }
 
-  if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) {
-    for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFix.size(); i++ ) {
-      switch( m_jetInfoSwitch->m_sfFTagFix.at(i) ) {
+  if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFix.empty() ) {
+    for( unsigned int i=0; i<m_thisJetInfoSwitch[jetName]->m_sfFTagFix.size(); i++ ) {
+      switch( m_thisJetInfoSwitch[jetName]->m_sfFTagFix.at(i) ) {
       case 30 : this->Fill_Fix30( jet_itr, thisJet );
 	break;
       case 50 : this->Fill_Fix50( jet_itr, thisJet );
@@ -2385,9 +2390,9 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     }
   } // sfFTagFix
 
-  if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) {
-    for( unsigned int i=0; i<m_jetInfoSwitch->m_sfFTagFlt.size(); i++ ) {
-      switch( m_jetInfoSwitch->m_sfFTagFlt.at(i) ) {
+  if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.empty() ) {
+    for( unsigned int i=0; i<m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.size(); i++ ) {
+      switch( m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.at(i) ) {
       case 30 : this->Fill_Flt30( jet_itr, thisJet );
 	break;
       case 40 : this->Fill_Flt40( jet_itr, thisJet );
@@ -2406,7 +2411,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     }
   } // sfFTagFlt
 
-  if ( m_jetInfoSwitch->m_area ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_area ) {
 
     static SG::AuxElement::ConstAccessor<float> ghostArea("JetGhostArea");
     safeFill<float, float>(jet_itr, ghostArea, thisJet->m_jet_ghostArea, -999);
@@ -2430,7 +2435,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     safeFill<float, float>(jet_itr, activeArea_m, thisJet->m_jet_activeArea_m, -999);
   }
 
-  if ( m_jetInfoSwitch->m_truth && m_isMC ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_truth && m_isMC ) {
 
     static SG::AuxElement::ConstAccessor<int> ConeTruthLabelID ("ConeTruthLabelID");
     safeFill<int, int>(jet_itr, ConeTruthLabelID, thisJet->m_jet_truthConeLabelID, -999);
@@ -2474,7 +2479,7 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
   }
 
-  if ( m_jetInfoSwitch->m_truthDetails ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_truthDetails ) {
 
     //
     // B-Hadron Details
@@ -2563,7 +2568,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   jetInfo* thisJet = m_jets[jetName];
 
   thisJet->N = 0;
-  if( m_jetInfoSwitch->m_kinematic ){
+  if( m_thisJetInfoSwitch[jetName]->m_kinematic ){
     thisJet->m_jet_pt.clear();
     thisJet->m_jet_eta.clear();
     thisJet->m_jet_phi.clear();
@@ -2572,12 +2577,12 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
 
 
   // rapidity
-  if( m_jetInfoSwitch->m_rapidity ) {
+  if( m_thisJetInfoSwitch[jetName]->m_rapidity ) {
     thisJet->m_jet_rapidity.clear();
   }
 
   // clean
-  if( m_jetInfoSwitch->m_clean ) {
+  if( m_thisJetInfoSwitch[jetName]->m_clean ) {
     thisJet->m_jet_time.clear();
     thisJet->m_jet_LArQuality.clear();
     thisJet->m_jet_hecq.clear();
@@ -2600,7 +2605,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
   // energy
-  if ( m_jetInfoSwitch->m_energy ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_energy ) {
     thisJet->m_jet_HECf.clear();
     thisJet->m_jet_EMf.clear();
     thisJet->m_jet_centroidR.clear();
@@ -2612,7 +2617,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
   // each step of the calibration sequence
-  if ( m_jetInfoSwitch->m_scales ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_scales ) {
     thisJet->m_jet_emPt.clear();
     thisJet->m_jet_constPt.clear();
     thisJet->m_jet_pileupPt.clear();
@@ -2623,12 +2628,12 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
   // layer
-  if ( m_jetInfoSwitch->m_layer ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_layer ) {
     thisJet->m_jet_ePerSamp.clear();
   }
 
   // trackAll
-  if ( m_jetInfoSwitch->m_trackAll ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_trackAll ) {
     thisJet->m_jet_NTrkPt1000.clear();
     thisJet->m_jet_SumPtPt1000.clear();
     thisJet->m_jet_TrkWPt1000.clear();
@@ -2640,7 +2645,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
   // trackPV
-  if ( m_jetInfoSwitch->m_trackPV ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_trackPV ) {
     thisJet->m_jet_NTrkPt1000PV.clear();
     thisJet->m_jet_SumPtPt1000PV.clear();
     thisJet->m_jet_TrkWPt1000PV.clear();
@@ -2650,7 +2655,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_jvfPV.clear();
   }
 
-  if ( m_jetInfoSwitch->m_trackAll || m_jetInfoSwitch->m_trackPV ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_trackAll || m_thisJetInfoSwitch[jetName]->m_trackPV ) {
     thisJet->m_jet_Jvt.clear();
     thisJet->m_jet_JvtJvfcorr.clear();
     thisJet->m_jet_JvtRpt.clear();
@@ -2658,7 +2663,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
 
-  if ( m_jetInfoSwitch->m_allTrack ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_allTrack ) {
     thisJet->m_jet_GhostTrackCount.clear();
     thisJet->m_jet_GhostTrackPt.clear();
     thisJet->m_jet_GhostTrack_pt.clear();
@@ -2668,7 +2673,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_GhostTrack_e.clear();
     thisJet->m_jet_GhostTrack_d0.clear();
     thisJet->m_jet_GhostTrack_z0.clear();
-    if ( m_jetInfoSwitch->m_allTrackDetail ) {
+    if ( m_thisJetInfoSwitch[jetName]->m_allTrackDetail ) {
       thisJet->m_jet_GhostTrack_nPixHits.clear();
       thisJet->m_jet_GhostTrack_nSCTHits.clear();
       thisJet->m_jet_GhostTrack_nTRTHits.clear();
@@ -2683,11 +2688,11 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     }
   }
 
-  if( m_jetInfoSwitch->m_constituent ) {
+  if( m_thisJetInfoSwitch[jetName]->m_constituent ) {
     thisJet->m_jet_numConstituents.clear();
   }
 
-  if( m_jetInfoSwitch->m_constituentAll ) {
+  if( m_thisJetInfoSwitch[jetName]->m_constituentAll ) {
     thisJet->m_jet_constitWeights.clear();
     thisJet->m_jet_constit_pt.clear();
     thisJet->m_jet_constit_eta.clear();
@@ -2696,7 +2701,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
   // flavor tag
-  if ( m_jetInfoSwitch->m_flavTag ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_flavTag ) {
     thisJet->m_jet_sv0.clear();
     thisJet->m_jet_sv1.clear();
     thisJet->m_jet_ip3d.clear();
@@ -2707,7 +2712,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_hadConeExclTruthLabel.clear();
   }
 
-  if( !m_jetInfoSwitch->m_sfFTagFix.empty() ) { // just clear them all....
+  if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFix.empty() ) { // just clear them all....
 
     thisJet->m_njet_mv2c20_Fix30 = 0;
     thisJet->m_jet_mv2c20_isFix30.clear();
@@ -2750,7 +2755,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_mv2c20_sfFix90.clear();
   }
 
-  if( !m_jetInfoSwitch->m_sfFTagFlt.empty() ) { // just clear them all....
+  if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.empty() ) { // just clear them all....
 
     thisJet->m_njet_mv2c20_Flt30 = 0;
     thisJet->m_jet_mv2c20_isFlt30.clear();
@@ -2788,7 +2793,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_mv2c20_sfFlt85.clear();
   }
 
-  if ( m_jetInfoSwitch->m_area ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_area ) {
     thisJet->m_jet_ghostArea.clear();
     thisJet->m_jet_activeArea.clear();
     thisJet->m_jet_voronoiArea.clear();
@@ -2799,7 +2804,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
   // truth
-  if ( m_jetInfoSwitch->m_truth && m_isMC ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_truth && m_isMC ) {
     thisJet->m_jet_truthConeLabelID.clear();
     thisJet->m_jet_truthCount.clear();
     thisJet->m_jet_truthPt.clear();
@@ -2815,7 +2820,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
   // truth_detail
-  if ( m_jetInfoSwitch->m_truthDetails ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_truthDetails ) {
     thisJet->m_jet_truthCount_BhadFinal.clear();
     thisJet->m_jet_truthCount_BhadInit.clear();
     thisJet->m_jet_truthCount_BQFinal.clear();

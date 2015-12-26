@@ -76,6 +76,7 @@ public:
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
   HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
+  std::map<std::string, HelperClasses::JetInfoSwitch*> m_thisJetInfoSwitch;
   HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
