@@ -1,3 +1,9 @@
+/**
+ * @file OverlapRemover.h
+ * @author Marco Milesi <marco.milesi@cern.ch>
+ * @brief |xAH| algorithm to perform overlap removal between reconstructed physics objects.
+ */
+
 #ifndef XAODANAHELPERS_OVERLAPREMOVER_H
 #define XAODANAHELPERS_OVERLAPREMOVER_H
 
@@ -30,9 +36,13 @@ public:
   /** @brief Fill the cutflow histogram for object (electrons, jets, ... ) counting */
   bool m_useCutFlow;
 
-  /** @brief Decorate selected objects (the default decoration string is :code:`passSel`)*/
+  /** @brief Decorate selected objects (the default decoration string is `passSel`)*/
   bool     m_decorateSelectedObjects;
-  /** @brief Make a copy of input container(s) with selected objects (using :code:`SG::VIEW_ELEMENTS` to be light weight) */
+  /**
+     @rst
+        Make a copy of input container(s) with selected objects (using :cpp:any:`SG::VIEW_ELEMENTS` to be light weight)
+     @endrst
+  */
   bool     m_createSelectedContainers;
   /** @brief In the OLR, consider only objects passing a (pre)selection */
   bool     m_useSelected;
@@ -42,11 +52,17 @@ public:
   /** @brief Output container name */
   std::string  m_outContainerName_Electrons;
   /**
-      @brief Name of the :code:`std::vector<std::string>` of systematics coming from the upstream algorithm
+     @brief
+     @rst
+        Name of the :cpp:type:`std::vector<std::string>` of systematics coming from the upstream algorithm
+     @endrst
   */
   std::string  m_inputAlgoElectrons;
   /**
-     @brief Name of the :code:`std::vector<std::string>` of systematics to be considered by the algos downstream
+     @brief
+     @rst
+        Name of the :cpp:type:`std::vector<std::string>` of systematics to be considered by the algos downstream
+     @endrst
   */
   std::string  m_outputAlgoElectrons;
 
@@ -87,7 +103,7 @@ private:
   /**
      @brief Consider electrons in the OLR
      @rst
-       This is set to :code:`false` if :code:`m_inContainerName_Electrons` is set as an empty string.
+       This is set to :cpp:any:`false` if :cpp:member:`~m_inContainerName_Electrons` is set as an empty string.
        Electrons (unlike jets) are considered "optional" objetcs in the OLR.
      @endrst
   */
@@ -95,7 +111,7 @@ private:
   /**
      @brief Consider muons in the OLR
      @rst
-       This is set to :code:`false` if :code:`m_inContainerName_Muons` is set as an empty string.
+       This is set to :cpp:any:`false` if :cpp:member:`~m_inContainerName_Muons` is set as an empty string.
        Muons (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
@@ -103,7 +119,7 @@ private:
   /**
      @brief Consider photons in the OLR
      @rst
-       This is set to :code:`false` if :code:`m_inContainerName_Photons` is set as an empty string.
+       This is set to :cpp:any:`false` if :cpp:member:`~m_inContainerName_Photons` is set as an empty string.
        Photons (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
@@ -111,7 +127,7 @@ private:
   /**
      @brief Consider taus in the OLR
      @rst
-       This is set to :code:`false` if :code:`m_inContainerName_Taus` is set as an empty string.
+       This is set to :cpp:any:`false` if :cpp:member:`~m_inContainerName_Taus` is set as an empty string.
        Taus (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
@@ -119,13 +135,13 @@ private:
 
   /**
      @rst
-       If :code:`m_useElectrons=false`, a dummy input electron contaner is passed as input to prevent the code from crashing, since electrons were considered as "default" objects in the original OLR logic implementation.
+       If :cpp:member:`m_useElectrons=false`, a dummy input electron contaner is passed as input to prevent the code from crashing, since electrons were considered as "default" objects in the original OLR logic implementation.
      @endrst
   */
   const xAOD::ElectronContainer* m_dummyElectronContainer; //!
   /**
      @rst
-       If :code:`m_useMuons=false`, a dummy input electron contaner is passed as input to prevent the code from crashing, since muons were considered as "default" objects in the original OLR logic implementation.
+       If :cpp:member:`m_useMuons=false`, a dummy input electron contaner is passed as input to prevent the code from crashing, since muons were considered as "default" objects in the original OLR logic implementation.
      @endrst
   */
   const xAOD::MuonContainer*     m_dummyMuonContainer;     //!
@@ -186,7 +202,10 @@ public:
   // this is a standard constructor
   /**
      @brief Initialization
-     @param className    This is the name of the class that inherits from :cpp:class:`~xAH::Algorithm`
+     @param className    This is the name of the class that inherits from
+        @rst
+          :cpp:class:`~xAH::Algorithm`
+	@endrst
   */
   OverlapRemover (std::string className = "OverlapRemover");
 
@@ -205,22 +224,21 @@ public:
   virtual EL::StatusCode configure ();
   /**
      @brief Fill the cutflow histograms
-     @param type             The object type ("electron\", "muon\", "jet\", "photon\", "tau\")
-     @param objCont          The :code:`xAOD` container to be considered
-     @param selectFlag       The string identifying selected objects (default is "passSel\")
-     @param overlapFlag      The string identifying objects overlapping with another object, to be removed (default is "overlaps\")
+     @param objCont          The `xAOD` container to be considered
+     @param overlapFlag      The string identifying objects overlapping with another object, to be removed (default is `overlaps`)
+     @param selectFlag       The string identifying selected objects (default is `passSel`)
   */
-  virtual EL::StatusCode fillObjectCutflow (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
+  virtual EL::StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont, const std::string& overlapFlag="overlaps", const std::string& selectFlag="passSel");
 
   /**
      @brief Function that internally calls the OLR tool for the input containers (and systematics)
-     @param inElectrons    Input :code:`xAOD` container for electrons
-     @param inMuons        Input :code:`xAOD` container for muons
-     @param inJets         Input :code:`xAOD` container for jets
-     @param inPhotons      Input :code:`xAOD` container for photons
-     @param inTaus         Input :code:`xAOD` container for taus
-     @param syst_type      The type of object for which input systematics should be considered. Default is :code:`NOMINAL`
-     @param sysVec         The list of the input systematics for a given object. Must match with the choice of :code:`syst_type`. Default is :code:`nullptr`
+     @param inElectrons    Input `xAOD` container for electrons
+     @param inMuons        Input `xAOD` container for muons
+     @param inJets         Input `xAOD` container for jets
+     @param inPhotons      Input `xAOD` container for photons
+     @param inTaus         Input `xAOD` container for taus
+     @param syst_type      The type of object for which input systematics should be considered. Default is `NOMINAL`
+     @param sysVec         The list of the input systematics for a given object. Must match with the choice of `syst_type`. Default is `nullptr`
   */
   virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
 				    const xAOD::PhotonContainer* inPhotons,	const xAOD::TauJetContainer* inTaus,
