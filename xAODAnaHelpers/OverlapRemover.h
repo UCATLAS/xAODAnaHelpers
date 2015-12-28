@@ -27,70 +27,128 @@ public:
 
   // configuration variables
 
+  /** @brief Fill the cutflow histogram for object (electrons, jets, ... ) counting */
   bool m_useCutFlow;
 
-  bool     m_decorateSelectedObjects;  // decorate selected objects? default passSel
-  bool     m_createSelectedContainers; // fill using SG::VIEW_ELEMENTS to be light weight
-  bool     m_useSelected; // pass only object passing selection to O.R. tool
+  /** @brief Decorate selected objects (the default decoration string is :code:`passSel`)*/
+  bool     m_decorateSelectedObjects;
+  /** @brief Make a copy of input container(s) with selected objects (using :code:`SG::VIEW_ELEMENTS` to be light weight) */
+  bool     m_createSelectedContainers;
+  /** @brief In the OLR, consider only objects passing a (pre)selection */
+  bool     m_useSelected;
 
-  /* Electrons */
+  /** @brief Input container name */
   std::string  m_inContainerName_Electrons;
-  std::string  m_outContainerName_Electrons;   // output container name
-  std::string  m_inputAlgoElectrons;           // name of vector<string> of syst retrieved from TStore
-  std::string  m_outputAlgoElectrons;          // name of vector<string> of syst pushed in TStore
+  /** @brief Output container name */
+  std::string  m_outContainerName_Electrons;
+  /**
+      @brief Name of the :code:`std::vector<std::string>` of systematics coming from the upstream algorithm
+  */
+  std::string  m_inputAlgoElectrons;
+  /**
+     @brief Name of the :code:`std::vector<std::string>` of systematics to be considered by the algos downstream
+  */
+  std::string  m_outputAlgoElectrons;
+
   /* Muons */
   std::string  m_inContainerName_Muons;
-  std::string  m_outContainerName_Muons;       // output container name
-  std::string  m_inputAlgoMuons;               // name of vector<string> of syst retrieved from TStore
-  std::string  m_outputAlgoMuons;              // name of vector<string> of syst pushed in TStore
+  std::string  m_outContainerName_Muons;
+  std::string  m_inputAlgoMuons;
+  std::string  m_outputAlgoMuons;
   /* Jets */
   std::string  m_inContainerName_Jets;
-  std::string  m_outContainerName_Jets;        // output container name
-  std::string  m_inputAlgoJets;                // name of vector<string> of syst retrieved from TStore
-  std::string  m_outputAlgoJets;               // name of vector<string> of syst pushed in TStore
+  std::string  m_outContainerName_Jets;
+  std::string  m_inputAlgoJets;
+  std::string  m_outputAlgoJets;
   /* Photons */
   std::string  m_inContainerName_Photons;
-  std::string  m_outContainerName_Photons;     // output container name
-  std::string  m_inputAlgoPhotons;             // name of vector<string> of syst retrieved from TStore
-  std::string  m_outputAlgoPhotons;            // name of vector<string> of syst pushed in TStore
+  std::string  m_outContainerName_Photons;
+  std::string  m_inputAlgoPhotons;
+  std::string  m_outputAlgoPhotons;
   /* Taus */
   std::string  m_inContainerName_Taus;
-  std::string  m_outContainerName_Taus;        // output container name
-  std::string  m_inputAlgoTaus;                // name of vector<string> of syst retrieved from TStore
-  std::string  m_outputAlgoTaus;               // name of vector<string> of syst pushed in TStore
+  std::string  m_outContainerName_Taus;
+  std::string  m_inputAlgoTaus;
+  std::string  m_outputAlgoTaus;
 
 private:
+
+  /** @brief A counter for the number of processed events */
   int m_numEvent;           //!
+  /** @brief A counter for the number of processed objects */
   int m_numObject;          //!
+  /** @brief A counter for the number of passed events */
   int m_numEventPass;       //!
+  /** @brief A counter for the number of passed *weighted* events */
   int m_weightNumEventPass; //!
+  /** @brief A counter for the number of passed objects */
   int m_numObjectPass;      //!
 
+  /**
+     @brief Consider electrons in the OLR
+     @rst
+       This is set to :code:`false` if :code:`m_inContainerName_Electrons` is set as an empty string.
+       Electrons (unlike jets) are considered "optional" objetcs in the OLR.
+     @endrst
+  */
   bool m_useElectrons;
+  /**
+     @brief Consider muons in the OLR
+     @rst
+       This is set to :code:`false` if :code:`m_inContainerName_Muons` is set as an empty string.
+       Muons (unlike jets) are considered "optional" objects in the OLR.
+     @endrst
+  */
   bool m_useMuons;
+  /**
+     @brief Consider photons in the OLR
+     @rst
+       This is set to :code:`false` if :code:`m_inContainerName_Photons` is set as an empty string.
+       Photons (unlike jets) are considered "optional" objects in the OLR.
+     @endrst
+  */
   bool m_usePhotons;
+  /**
+     @brief Consider taus in the OLR
+     @rst
+       This is set to :code:`false` if :code:`m_inContainerName_Taus` is set as an empty string.
+       Taus (unlike jets) are considered "optional" objects in the OLR.
+     @endrst
+  */
   bool m_useTaus;
 
-  const xAOD::ElectronContainer* m_dummyElectronContainer;
-  const xAOD::MuonContainer*     m_dummyMuonContainer;
+  /**
+     @rst
+       If :code:`m_useElectrons=false`, a dummy input electron contaner is passed as input to prevent the code from crashing, since electrons were considered as "default" objects in the original OLR logic implementation.
+     @endrst
+  */
+  const xAOD::ElectronContainer* m_dummyElectronContainer; //!
+  /**
+     @rst
+       If :code:`m_useMuons=false`, a dummy input electron contaner is passed as input to prevent the code from crashing, since muons were considered as "default" objects in the original OLR logic implementation.
+     @endrst
+  */
+  const xAOD::MuonContainer*     m_dummyMuonContainer;     //!
 
-  /* Electrons */
-  std::string  m_outAuxContainerName_Electrons; // output auxiliary container name
-  /* Muons */
-  std::string  m_outAuxContainerName_Muons;     // output auxiliary container name
-  /* Jets */
-  std::string  m_outAuxContainerName_Jets;      // output auxiliary container name
-  /* Photons */
-  std::string  m_outAuxContainerName_Photons;   // output auxiliary container name
-  /* Taus */
-  std::string  m_outAuxContainerName_Taus;      // output auxiliary container name
+  /** @brief Output auxiliary container name */
+  std::string  m_outAuxContainerName_Electrons;
+  /** @brief Output auxiliary container name */
+  std::string  m_outAuxContainerName_Muons;
+  /** @brief Output auxiliary container name */
+  std::string  m_outAuxContainerName_Jets;
+  /** @brief Output auxiliary container name */
+  std::string  m_outAuxContainerName_Photons;
+  /** @brief Output auxiliary container name */
+  std::string  m_outAuxContainerName_Taus;
 
   // tools
  protected:
+  /** @brief Pointer to the CP Tool which performs the actual OLR. */
   OverlapRemovalTool *m_overlapRemovalTool; //!
 
  private:
 
+  /** @brief An enum encoding systematics according to the various objects */
   enum SystType {
     NOMINAL = 0,
     ELSYST  = 1,
@@ -100,12 +158,17 @@ private:
     TAUSYST = 5,
   };
 
-  /* object-level cutflow */
+  // object-level cutflow
 
+  /**  @brief Pointer to the histogram for the electron cutflow */
   TH1D* m_el_cutflowHist_1;    //!
+  /**  @brief Pointer to the histogram for the muon cutflow */
   TH1D* m_mu_cutflowHist_1;    //!
+  /**  @brief Pointer to the histogram for the jet cutflow */
   TH1D* m_jet_cutflowHist_1;   //!
+  /**  @brief Pointer to the histogram for the photon cutflow */
   TH1D* m_ph_cutflowHist_1;    //!
+  /**  @brief Pointer to the histogram for the tau cutflow */
   TH1D* m_tau_cutflowHist_1;   //!
 
   int m_el_cutflow_OR_cut;     //!
@@ -117,12 +180,14 @@ private:
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
-public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
 
+public:
 
   // this is a standard constructor
+  /**
+     @brief Initialization
+     @param className    This is the name of the class that inherits from :cpp:class:`~xAH::Algorithm`
+  */
   OverlapRemover (std::string className = "OverlapRemover");
 
   // these are the functions inherited from Algorithm
@@ -138,13 +203,32 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
+  /**
+     @brief Fill the cutflow histograms
+     @param type             The object type ("electron\", "muon\", "jet\", "photon\", "tau\")
+     @param objCont          The :code:`xAOD` container to be considered
+     @param selectFlag       The string identifying selected objects (default is "passSel\")
+     @param overlapFlag      The string identifying objects overlapping with another object, to be removed (default is "overlaps\")
+  */
   virtual EL::StatusCode fillObjectCutflow (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag);
 
+  /**
+     @brief Function that internally calls the OLR tool for the input containers (and systematics)
+     @param inElectrons    Input :code:`xAOD` container for electrons
+     @param inMuons        Input :code:`xAOD` container for muons
+     @param inJets         Input :code:`xAOD` container for jets
+     @param inPhotons      Input :code:`xAOD` container for photons
+     @param inTaus         Input :code:`xAOD` container for taus
+     @param syst_type      The type of object for which input systematics should be considered. Default is :code:`NOMINAL`
+     @param sysVec         The list of the input systematics for a given object. Must match with the choice of :code:`syst_type`. Default is :code:`nullptr`
+  */
   virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
 				    const xAOD::PhotonContainer* inPhotons,	const xAOD::TauJetContainer* inTaus,
 				    SystType syst_type = NOMINAL, std::vector<std::string>* sysVec = nullptr);
 
+  /** @brief Setup cutflow histogrmas */
   EL::StatusCode setCutFlowHist();
+  /**@brief Initialise counters for events/objects */
   EL::StatusCode setCounters();
 
   /// @cond
