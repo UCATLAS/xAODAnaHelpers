@@ -416,7 +416,7 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
   // save a vector of strings holding passing decisions
   if ( m_trigInfoSwitch->m_passTriggers ) {
 
-    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_passTriggers"); }
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_passTriggers"); }
     static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
     if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
 

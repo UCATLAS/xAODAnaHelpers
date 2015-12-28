@@ -42,7 +42,7 @@ public:
 
   bool m_DC14;
 
-private:
+protected:
   HelpTreeBase* m_helpTree;            //!
 
 public:

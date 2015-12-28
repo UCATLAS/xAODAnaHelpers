@@ -100,6 +100,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
+    
   m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, 1e3, m_debug, m_DC14 );
 
   // tell the tree to go into the file
@@ -180,6 +181,7 @@ EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusC
 
 EL::StatusCode TreeAlgo :: execute ()
 {
+    
   // Get EventInfo and the PrimaryVertices
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
