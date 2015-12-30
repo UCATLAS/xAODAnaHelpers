@@ -109,7 +109,9 @@ public:
   /**
      @rst
         Name of the :cpp:type:`std::vector<std::string>` of systematics to be considered by the algos downstream
+
 	.. note:: This data member is currently kept only to preserve backwards compatibility in terms of algorithm configuration. In fact, it's just a dummy variable, since the OLR is not expected to create any output systematics list.
+
      @endrst
   */
   std::string  m_outputAlgoElectrons;
