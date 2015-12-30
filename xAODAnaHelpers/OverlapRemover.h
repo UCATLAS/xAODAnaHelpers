@@ -25,6 +25,55 @@
 // ROOT include(s):
 #include "TH1D.h"
 
+/**
+   @brief A wrapper of the overlap removal tool in the ASG [AssociationUtils](https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/AnalysisCommon/AssociationUtils/trunk/doc/README.rst) package.
+   @rst
+      The logic of the OLR belongs to the ASG tool itself, and is described extensively in the `Analysis Harmonisation Task Force <https://cds.cern.ch/record/1700874>`_ note.
+
+      If you wish to apply a custom OLR scheme, please contact the author marco.milesi@cern.ch for detailed instructions.
+
+      The idea behind this algorithm is to consistently thread together the inputs from upstream |xAH| algorithms based on user's configuration, handling also the case where systematics on the input physics objects are taken into account. Here follows a usage example.
+
+      Consider the simplified scenario where we care only about **jets** and **electrons**.
+      Assuming the typical |xAH| analysis configuration through :py:class:`~xAH_config`, the analysis workflow could look like the following::
+
+          c = xAH_config()
+          # ...
+          c.setalg("JetSelector", JetSelectorDict)
+          c.setalg("ElectronSelector", ElectronSelectorDict)
+          # ...
+          c.setalg("OverlapRemover", OverlapRemoverDict)
+          # ...
+
+      where each algorithm has the following I/O systematics configuration (via python dictionaries)::
+
+          JetSelectorDict = {
+              # ...
+              "m_inputAlgo" : "JetCalibrator_Syst",
+              "m_outputAlgo" : "JetSelector_Syst",
+              # ...
+          }
+
+          ElectronSelectorDict = {
+              # ...
+              "m_inputAlgo" : "ElectronCalibrator_Syst",
+              "m_outputAlgo" : "ElectronSelector_Syst",
+              # ...
+         }
+
+         OverlapRemoverDict = {
+              # ...
+              "m_inputAlgoJets" : "JetSelector_Syst", # leave empty when not considering jet systematics
+              "m_inputAlgoElectrons" : "ElectronSelector_Syst", # leave empty when not considering electron systematics
+              # ...
+         }
+
+      In this way the overlap removal algorithm will be able to correctly work out all the combinatorics, generating output :cpp:any:`xAOD` containers for jets and electrons for each input systematics combination to be subsequently used downstream according to the user's needs.
+
+      .. note:: The overlap removal algorithm is *not* designed to create any output systematic list. All the algorithms downstream must be configured to pick up the systematic list(s) from upstream algorithms (e.g., the selectors or the calibrators).
+
+   @endrst
+ */
 class OverlapRemover : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
@@ -33,10 +82,10 @@ public:
 
   // configuration variables
 
-  /** @brief Fill the cutflow histogram for object (electrons, jets, ... ) counting */
+  /** @brief Fill the cutflow histogram(s) for object counting */
   bool m_useCutFlow;
 
-  /** @brief Decorate selected objects (the default decoration string is `passSel`)*/
+  /** @brief Decorate selected objects (the default decoration string is `passSel`) */
   bool     m_decorateSelectedObjects;
   /**
      @rst
@@ -52,36 +101,35 @@ public:
   /** @brief Output container name */
   std::string  m_outContainerName_Electrons;
   /**
-     @brief
      @rst
         Name of the :cpp:type:`std::vector<std::string>` of systematics coming from the upstream algorithm
      @endrst
   */
   std::string  m_inputAlgoElectrons;
   /**
-     @brief
      @rst
         Name of the :cpp:type:`std::vector<std::string>` of systematics to be considered by the algos downstream
+	.. note:: This data member is currently kept only to preserve backwards compatibility in terms of algorithm configuration. In fact, it's just a dummy variable, since the OLR is not expected to create any output systematics list.
      @endrst
   */
   std::string  m_outputAlgoElectrons;
 
-  /* Muons */
+  // Muons
   std::string  m_inContainerName_Muons;
   std::string  m_outContainerName_Muons;
   std::string  m_inputAlgoMuons;
   std::string  m_outputAlgoMuons;
-  /* Jets */
+  // Jets
   std::string  m_inContainerName_Jets;
   std::string  m_outContainerName_Jets;
   std::string  m_inputAlgoJets;
   std::string  m_outputAlgoJets;
-  /* Photons */
+  // Photons
   std::string  m_inContainerName_Photons;
   std::string  m_outContainerName_Photons;
   std::string  m_inputAlgoPhotons;
   std::string  m_outputAlgoPhotons;
-  /* Taus */
+  // Taus
   std::string  m_inContainerName_Taus;
   std::string  m_outContainerName_Taus;
   std::string  m_inputAlgoTaus;
@@ -201,7 +249,7 @@ public:
 
   // this is a standard constructor
   /**
-     @brief Initialization
+     @brief Constructor
      @param className    This is the name of the class that inherits from
         @rst
           :cpp:class:`~xAH::Algorithm`
@@ -225,10 +273,12 @@ public:
   /**
      @brief Fill the cutflow histograms
      @param objCont          The `xAOD` container to be considered
-     @param overlapFlag      The string identifying objects overlapping with another object, to be removed (default is `overlaps`)
-     @param selectFlag       The string identifying selected objects (default is `passSel`)
+     @param overlapFlag      The string identifying objects overlapping with another object, to be removed (default is `"overlaps"`)
+     @param selectFlag       The string identifying selected objects (default is `"passSel"`)
   */
-  virtual EL::StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont, const std::string& overlapFlag="overlaps", const std::string& selectFlag="passSel");
+  virtual EL::StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont,
+					    const std::string& overlapFlag = "overlaps",
+					    const std::string& selectFlag = "passSel");
 
   /**
      @brief Function that internally calls the OLR tool for the input containers (and systematics)
@@ -240,19 +290,24 @@ public:
      @param syst_type      The type of object for which input systematics should be considered. Default is `NOMINAL`
      @param sysVec         The list of the input systematics for a given object. Must match with the choice of `syst_type`. Default is `nullptr`
   */
-  virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
-				    const xAOD::PhotonContainer* inPhotons,	const xAOD::TauJetContainer* inTaus,
-				    SystType syst_type = NOMINAL, std::vector<std::string>* sysVec = nullptr);
+  virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons,
+				    const xAOD::MuonContainer* inMuons,
+				    const xAOD::JetContainer* inJets,
+				    const xAOD::PhotonContainer* inPhotons,
+				    const xAOD::TauJetContainer* inTaus,
+				    SystType syst_type = NOMINAL,
+				    std::vector<std::string>* sysVec = nullptr);
 
   /** @brief Setup cutflow histogrmas */
   EL::StatusCode setCutFlowHist();
-  /**@brief Initialise counters for events/objects */
+  /** @brief Initialise counters for events/objects */
   EL::StatusCode setCounters();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(OverlapRemover, 1);
   /// @endcond
+
 };
 
 #endif
