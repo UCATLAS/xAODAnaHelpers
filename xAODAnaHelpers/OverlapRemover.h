@@ -151,7 +151,7 @@ private:
   /**
      @brief Consider electrons in the OLR
      @rst
-       This is set to :cpp:any:`false` if :cpp:member:`~m_inContainerName_Electrons` is set as an empty string.
+       This is set to ``false`` if :cpp:member:`~m_inContainerName_Electrons` is set as an empty string.
        Electrons (unlike jets) are considered "optional" objetcs in the OLR.
      @endrst
   */
@@ -159,7 +159,7 @@ private:
   /**
      @brief Consider muons in the OLR
      @rst
-       This is set to :cpp:any:`false` if :cpp:member:`~m_inContainerName_Muons` is set as an empty string.
+       This is set to ``false`` if :cpp:member:`~m_inContainerName_Muons` is set as an empty string.
        Muons (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
@@ -167,7 +167,7 @@ private:
   /**
      @brief Consider photons in the OLR
      @rst
-       This is set to :cpp:any:`false` if :cpp:member:`~m_inContainerName_Photons` is set as an empty string.
+       This is set to ``false`` if :cpp:member:`~m_inContainerName_Photons` is set as an empty string.
        Photons (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
@@ -175,7 +175,7 @@ private:
   /**
      @brief Consider taus in the OLR
      @rst
-       This is set to :cpp:any:`false` if :cpp:member:`~m_inContainerName_Taus` is set as an empty string.
+       This is set to ``false`` if :cpp:member:`~m_inContainerName_Taus` is set as an empty string.
        Taus (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
@@ -183,13 +183,13 @@ private:
 
   /**
      @rst
-       If :cpp:member:`m_useElectrons=false`, a dummy input electron contaner is passed as input to prevent the code from crashing, since electrons were considered as "default" objects in the original OLR logic implementation.
+       If :cpp:member:`m_useElectrons` is ``false``, a dummy input electron contaner is passed as input to prevent the code from crashing, since electrons were considered as "default" objects in the original OLR logic implementation.
      @endrst
   */
   const xAOD::ElectronContainer* m_dummyElectronContainer; //!
   /**
      @rst
-       If :cpp:member:`m_useMuons=false`, a dummy input electron contaner is passed as input to prevent the code from crashing, since muons were considered as "default" objects in the original OLR logic implementation.
+       If :cpp:member:`m_useMuons` is ``false``, a dummy input electron contaner is passed as input to prevent the code from crashing, since muons were considered as "default" objects in the original OLR logic implementation.
      @endrst
   */
   const xAOD::MuonContainer*     m_dummyMuonContainer;     //!
@@ -250,10 +250,12 @@ public:
   // this is a standard constructor
   /**
      @brief Constructor
-     @param className    This is the name of the class that inherits from
-        @rst
-          :cpp:class:`~xAH::Algorithm`
-	@endrst
+     @param className
+     @rst
+         This is the name of the class that inherits from :cpp:class:`~xAH::Algorithm`
+
+     @endrst
+
   */
   OverlapRemover (std::string className = "OverlapRemover");
 
@@ -298,7 +300,7 @@ public:
 				    SystType syst_type = NOMINAL,
 				    std::vector<std::string>* sysVec = nullptr);
 
-  /** @brief Setup cutflow histogrmas */
+  /** @brief Setup cutflow histograms */
   EL::StatusCode setCutFlowHist();
   /** @brief Initialise counters for events/objects */
   EL::StatusCode setCounters();
