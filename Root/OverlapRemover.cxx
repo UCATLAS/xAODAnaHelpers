@@ -521,7 +521,7 @@ EL::StatusCode OverlapRemover :: histFinalize ()
 }
 
 
-EL::StatusCode OverlapRemover :: fillObjectCutflow (const char* type, const xAOD::IParticleContainer* objCont, const std::string& selectFlag, const std::string& overlapFlag)
+EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContainer* objCont, const std::string& overlapFlag, const std::string& selectFlag)
 {
   SG::AuxElement::ConstAccessor<char> selectAcc(selectFlag);
   SG::AuxElement::ConstAccessor<char> overlapAcc(overlapFlag);
@@ -529,10 +529,12 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const char* type, const xAOD
 
   for ( auto obj_itr : *(objCont) ) {
 
+    std::string type;
+
     // Safety check
     //
     if ( !overlapAcc.isAvailable( *obj_itr ) ) {
-      Error("fillObjectCutflow()", "Overlap decoration missing for object of type %s ", type );
+      Error("fillObjectCutflow()", "Overlap decoration missing for this object");
       return EL::StatusCode::FAILURE;
     }
     if ( !overlapAcc( *obj_itr ) ) {
@@ -540,18 +542,23 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const char* type, const xAOD
 	{
 	case xAOD::Type::Electron:
 	  m_el_cutflowHist_1->Fill( m_el_cutflow_OR_cut, 1 );
+	  type = "electron";
 	  break;
 	case xAOD::Type::Muon:
 	  m_mu_cutflowHist_1->Fill( m_mu_cutflow_OR_cut, 1 );
+	  type = "muon";
 	  break;
 	case xAOD::Type::Jet:
 	  m_jet_cutflowHist_1->Fill( m_jet_cutflow_OR_cut, 1 );
+	  type = "jet";
 	  break;
 	case xAOD::Type::Photon:
 	  m_ph_cutflowHist_1->Fill( m_ph_cutflow_OR_cut, 1 );
+	  type = "photon";
 	  break;
 	case xAOD::Type::Tau:
 	  m_tau_cutflowHist_1->Fill( m_tau_cutflow_OR_cut, 1 );
+	  type = "tau";
 	  break;
 	default:
 	  Error("OverlapRemover::fillObjectCutflow()","Unsupported object");
@@ -562,9 +569,9 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const char* type, const xAOD
 
     if ( m_debug ) {
       if ( selectAcc.isAvailable( *obj_itr) ){
-        Info("fillObjectCutflow()", "  %s pt %6.2f eta %5.2f phi %5.2f selected %i overlaps %i ", type, (obj_itr)->pt()/1000., (obj_itr)->eta(), (obj_itr)->phi(), selectAcc( *obj_itr ), overlapAcc( *obj_itr ) );
+        Info("fillObjectCutflow()", "  %s pt %6.2f eta %5.2f phi %5.2f selected %i overlaps %i ", type.c_str(), (obj_itr)->pt()/1000., (obj_itr)->eta(), (obj_itr)->phi(), selectAcc( *obj_itr ), overlapAcc( *obj_itr ) );
       } else {
-        Info("fillObjectCutflow()", "  %s pt %6.2f eta %5.2f phi %5.2f overlaps %i ", type, (obj_itr)->pt()/1000., (obj_itr)->eta(), (obj_itr)->phi(), overlapAcc( *obj_itr) );
+        Info("fillObjectCutflow()", "  %s pt %6.2f eta %5.2f phi %5.2f overlaps %i ", type.c_str(), (obj_itr)->pt()/1000., (obj_itr)->eta(), (obj_itr)->phi(), overlapAcc( *obj_itr) );
       }
       // Check for overlap object link
       if ( objLinkAcc.isAvailable( *obj_itr ) && objLinkAcc( *obj_itr ).isValid() ) {
@@ -672,11 +679,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         // fill cutflow histograms
         //
         if ( m_debug ) { Info("execute()",  "Filling Cut Flow Histograms"); }
-        if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-        if ( m_useMuons )     fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-        fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-        if ( m_usePhotons )   fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-        if ( m_useTaus )      fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+        if ( m_useElectrons ) fillObjectCutflow(inElectrons);
+        if ( m_useMuons )     fillObjectCutflow(inMuons);
+        fillObjectCutflow(inJets);
+        if ( m_usePhotons )   fillObjectCutflow(inPhotons);
+        if ( m_useTaus )      fillObjectCutflow(inTaus);
       }
 
       // make a copy of input container(s) with selected objects
@@ -788,12 +795,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         if(m_useCutFlow){
           // fill cutflow histograms
           //
-          fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-          if ( m_useMuons )   fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-          fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-          if ( m_usePhotons ) fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-          if ( m_useTaus )    fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
-      }
+          fillObjectCutflow(inElectrons);
+          if ( m_useMuons )   fillObjectCutflow(inMuons);
+          fillObjectCutflow(inJets);
+          if ( m_usePhotons ) fillObjectCutflow(inPhotons);
+          if ( m_useTaus )    fillObjectCutflow(inTaus);
+	}
 
         // make a copy of input container(s) with selected objects
 	//
@@ -893,11 +900,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         if(m_useCutFlow){
           // fill cutflow histograms
           //
-          if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-          fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-          fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-          if( m_usePhotons )    fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-          if( m_useTaus )       fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+          if ( m_useElectrons ) fillObjectCutflow(inElectrons);
+          fillObjectCutflow(inMuons);
+          fillObjectCutflow(inJets);
+          if( m_usePhotons )    fillObjectCutflow(inPhotons);
+          if( m_useTaus )       fillObjectCutflow(inTaus);
         }
         // make a copy of input container(s) with selected objects
 	//
@@ -1001,11 +1008,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
          if(m_useCutFlow){
            // fill cutflow histograms
            //
-           if ( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-           if ( m_useMuons )     fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-           fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-           if( m_usePhotons )    fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-           if( m_useTaus )       fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+           if ( m_useElectrons ) fillObjectCutflow(inElectrons);
+           if ( m_useMuons )     fillObjectCutflow(inMuons);
+           fillObjectCutflow(inJets);
+           if( m_usePhotons )    fillObjectCutflow(inPhotons);
+           if( m_useTaus )       fillObjectCutflow(inTaus);
         }
 
 	 // make a copy of input container(s) with selected objects
@@ -1100,11 +1107,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
          if(m_useCutFlow){
            // fill cutflow histograms
            //
-           if( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-           if( m_useMuons     ) fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-           fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-           fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-           if( m_useTaus )      fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
+           if( m_useElectrons ) fillObjectCutflow(inElectrons);
+           if( m_useMuons     ) fillObjectCutflow(inMuons);
+           fillObjectCutflow(inJets);
+           fillObjectCutflow(inPhotons);
+           if( m_useTaus )      fillObjectCutflow(inTaus);
         }
 
         // make a copy of input container(s) with selected objects
@@ -1201,12 +1208,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
          if(m_useCutFlow){
            // fill cutflow histograms
            //
-           if( m_useElectrons ) fillObjectCutflow("electron", inElectrons, "passSel", ORdecor);
-           if( m_useMuons     ) fillObjectCutflow("muon", inMuons, "passSel", ORdecor);
-           fillObjectCutflow("jet", inJets, "passSel", ORdecor);
-           if( m_usePhotons ) fillObjectCutflow("photon", inPhotons, "passSel", ORdecor);
-           fillObjectCutflow("tau", inTaus, "passSel", ORdecor);
-        }
+           if( m_useElectrons ) fillObjectCutflow(inElectrons);
+           if( m_useMuons     ) fillObjectCutflow(inMuons);
+           fillObjectCutflow(inJets);
+           if( m_usePhotons ) fillObjectCutflow(inPhotons);
+           fillObjectCutflow(inTaus);
+	 }
 
 	 // make a copy of input container(s) with selected objects
 	 //

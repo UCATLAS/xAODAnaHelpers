@@ -114,7 +114,7 @@ public:
 
     @rst
 
-      .. note:: This option is appropriate for view-only containers such as :code:`ConstDataVector`s.
+      .. note:: This option is appropriate for view-only containers such as :code:`ConstDataVector`.
 
       Here, we will do the deep-copying for you, so that the containers can be correctly recorded into the output. Due to the way view-only containers work, we can't figure out whether the memory points to a specific parent container we can copy, or to a non-persistable, local (stack) memory. The best option is to just deep-copy and allocate new memory instead::
 
