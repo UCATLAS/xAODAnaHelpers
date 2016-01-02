@@ -46,9 +46,8 @@ public:
   std::string m_JESUncertMCType;
   bool m_setAFII;
     
-  // trigger flag (read from collection name)
-  bool m_isTrigger;
-
+  bool m_isTrigger; // whether the jet collection is trigger or not (soon: different calibrations)
+    
   std::string m_JERUncertConfig;
   bool m_JERFullSys;
   bool m_JERApplyNominal;

@@ -152,12 +152,12 @@ EL::StatusCode  JetCalibrator :: configure ()
     m_applyFatJetPreSel       = config->GetValue("ApplyFatJetPreSel",       m_applyFatJetPreSel);
 
     m_redoJVT                 = config->GetValue("RedoJVT",         m_redoJVT);
+    
+    //set the flag for trigger jets
+    m_isTrigger                 = config->GetValue("TriggerJets",         m_isTrigger);
 
     config->Print();
-
-    //set the flag for trigger jets
-    if (m_inContainerName.find("HLT") != std::string::npos) m_isTrigger = true;
-        
+      
     delete config; config = nullptr;
   }
 
