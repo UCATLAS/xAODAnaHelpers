@@ -1883,7 +1883,6 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
     pv = vertices->at( pvLocation );
   }
 
-
   jetInfo* thisJet = m_jets[jetName];
 
   // Global event BTag SF weight (--> the product of each object's weight)
@@ -1967,7 +1966,6 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
       }
     } // sfFTagFlt
   }
-
 
   for( auto jet_itr : *jets ) {
     this->FillJet(jet_itr, pv, pvLocation, jetName);

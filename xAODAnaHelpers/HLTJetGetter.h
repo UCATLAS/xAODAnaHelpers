@@ -17,8 +17,12 @@
 #include "xAODAnaHelpers/Algorithm.h"
 
 
+namespace TrigConf {
+    class xAODConfigTool;
+}
+
 namespace Trig {
-  class TrigDecisionTool;
+    class TrigDecisionTool;
 }
 
 
@@ -34,7 +38,8 @@ public:
 
 private:
 
-  Trig::TrigDecisionTool*      m_trigDecTool;   //!
+  Trig::TrigDecisionTool*        m_trigDecTool;   //!
+  TrigConf::xAODConfigTool*      m_trigConfTool;   //!
 
 public:
 

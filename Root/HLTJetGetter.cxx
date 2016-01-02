@@ -124,6 +124,7 @@ EL::StatusCode  HLTJetGetter :: configure ()
 
 EL::StatusCode HLTJetGetter :: initialize ()
 {
+
     
     Info("initialize()", "Initializing HLTJetGetter Interface... ");
     
