@@ -27,10 +27,10 @@ class HLTJetGetter : public xAH::Algorithm
 
 public:
 
-  // configuration variables
-  std::string m_triggerList; /* List of triggers whose features will be extracted from TDT */
-  std::string m_inContainerName; /* input container name */
-  std::string m_outContainerName; /* output container name */
+  /* configuration variables */
+  std::string m_triggerList; // List of triggers whose features will be extracted from TDT
+  std::string m_inContainerName; // input container name, WITHOUT the HLT_xAOD__JetContainer_ prefix
+  std::string m_outContainerName; // output container name
 
 private:
 

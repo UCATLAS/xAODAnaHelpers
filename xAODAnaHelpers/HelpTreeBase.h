@@ -51,7 +51,7 @@ public:
 
   HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false, xAOD::TStore* store = nullptr );
   HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, bool DC14 = false );
-  virtual ~HelpTreeBase() {;}
+  virtual ~HelpTreeBase();
 
   void AddEvent       (const std::string detailStr = "");
   void AddTrigger     (const std::string detailStr = "");
@@ -75,7 +75,6 @@ public:
   HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
   HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-  HelperClasses::JetInfoSwitch*        m_jetInfoSwitch;
   std::map<std::string, HelperClasses::JetInfoSwitch*> m_thisJetInfoSwitch;
   HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;

@@ -31,7 +31,6 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_muInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
   m_phInfoSwitch(nullptr),
-  m_jetInfoSwitch(nullptr),
   m_truthInfoSwitch(nullptr),
   m_fatJetInfoSwitch(nullptr),
   m_tauInfoSwitch(nullptr),
@@ -57,6 +56,49 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
 }
+
+HelpTreeBase::~HelpTreeBase() {
+    
+    //delete all the info switches that have been built earlier on
+    
+    //event
+    delete m_eventInfoSwitch;
+    
+    //trig
+    delete m_trigInfoSwitch;
+    
+    //mu
+    delete m_muInfoSwitch;
+    
+    //el
+    delete m_elInfoSwitch;
+    
+    //ph
+    delete m_phInfoSwitch;
+    
+    //truth
+    delete m_truthInfoSwitch;
+    
+    //fatjet
+    delete m_fatJetInfoSwitch;
+    
+    //tau
+    delete m_tauInfoSwitch;
+    
+    //met
+    delete m_metInfoSwitch;
+    
+    //jet
+    
+    std::map<std::string, HelperClasses::JetInfoSwitch*>::iterator jetInfoSwitchMap_itr = m_thisJetInfoSwitch.begin();
+    std::map<std::string, HelperClasses::JetInfoSwitch*>::iterator jetInfoSwitchMap_end = m_thisJetInfoSwitch.end();
+    for( ; jetInfoSwitchMap_itr != jetInfoSwitchMap_end; ++jetInfoSwitchMap_itr) {
+        delete jetInfoSwitchMap_itr->second;
+    }
+    
+    
+}
+
 
 HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug, bool DC14):
   HelpTreeBase(event, tree, file, units, debug, DC14, store)
@@ -1483,8 +1525,6 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
 {
 
   if(m_debug) Info("AddJets()", "Adding jet %s with variables: %s", jetName.c_str(), detailStr.c_str());
-
-  //m_jetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
   
   m_thisJetInfoSwitch[jetName] = new HelperClasses::JetInfoSwitch( detailStr );
     
