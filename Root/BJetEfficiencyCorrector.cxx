@@ -105,6 +105,7 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
     // Btag quality
     //
     m_operatingPt             = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
+    m_operatingPtCDI          = config->GetValue("OperatingPointCDI", m_operatingPtCDI.c_str());
 
     m_decor                   = config->GetValue("DecorationName", m_decor.c_str());
 
@@ -154,7 +155,7 @@ EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
-  m_operatingPtCDI = m_operatingPt;
+  if(m_operatingPtCDI.empty()) m_operatingPtCDI = m_operatingPt;
   std::cout << "Using Standard OperatingPoint for CDI BTag Efficiency of " << m_operatingPtCDI << std::endl;
 
   // Outdated code for translating user friendly Btag WP to cut value

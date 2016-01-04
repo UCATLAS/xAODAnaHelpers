@@ -34,6 +34,7 @@ public:
   bool        m_coneFlavourLabel;
 
   std::string m_operatingPt;      // Operating point.
+  std::string m_operatingPtCDI;   // the one CDI will understand
   std::string m_decor;            // The decoration key written to passing objects
   std::string m_decorSF;          // The decoration key written to passing objects
 
@@ -46,8 +47,7 @@ private:
   BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
 
   // configuration variables
-  std::string m_operatingPtCDI; // the one CDI will understand
-  bool m_getScaleFactors;
+  bool m_getScaleFactors;  //!
 
   std::vector<CP::SystematicSet> m_systList; //!
 
