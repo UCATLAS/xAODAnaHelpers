@@ -169,6 +169,7 @@ condor.add_argument('--optCondorWait', action='store_true' , required=False)
 
 # define arguments for lsf driver
 lsf.add_argument('--optLSFConf', metavar='', type=str, required=False, default='-q short')
+lsf.add_argument('--optLSFNFilesPerJob', metavar='', type=int, required=False, default=1)
 
 if __name__ == "__main__":
   SCRIPT_START_TIME = datetime.datetime.now()
@@ -354,6 +355,7 @@ if __name__ == "__main__":
 
     if args.driver == 'lsf':
       job.options().setBool(ROOT.EL.Job.optResetShell, False);
+      job.options().setDouble(ROOT.EL.Job.optFilesPerWorker, args.optLSFNFilesPerJob)
 
     if args.num_events > 0:
       xAH_logger.info("\tprocessing only %d events", args.num_events)
