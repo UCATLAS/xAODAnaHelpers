@@ -209,8 +209,8 @@ EL::StatusCode HLTJetGetter :: finalize ()
     Info("finalize()", "Deleting tool instances...");
     
     //question: are we doing this twice?
-    if ( m_trigDecTool )  {  m_trigDecTool = nullptr;  delete m_trigDecTool; }
-    if ( m_trigConfTool ) {  m_trigConfTool = nullptr; delete m_trigConfTool; }
+    if ( m_trigDecTool )  {  delete m_trigDecTool; m_trigDecTool = nullptr;  }
+    if ( m_trigConfTool ) {  delete m_trigConfTool; m_trigConfTool = nullptr; }
     
     return EL::StatusCode::SUCCESS;
 }
