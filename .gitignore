@@ -1,7 +1,3 @@
-# Files I don't want to commit #
-################################
-BasicEventSelection.*
-
 # Compiled source #
 ###################
 *.com
