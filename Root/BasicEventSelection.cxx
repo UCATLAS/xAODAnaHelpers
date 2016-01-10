@@ -913,10 +913,10 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   m_RunNr_VS_EvtNr.clear();
 
-  if ( m_grl )          {  m_grl = nullptr;	     delete m_grl; }
-  if ( m_pileuptool )   {  m_pileuptool = nullptr;   delete m_pileuptool; }
-  if ( m_trigDecTool )  {  m_trigDecTool = nullptr;  delete m_trigDecTool; }
-  if ( m_trigConfTool ) {  m_trigConfTool = nullptr; delete m_trigConfTool; }
+    if ( m_grl )        { delete m_grl; m_grl = nullptr; }
+  if ( m_pileuptool )   { delete m_pileuptool;  m_pileuptool = nullptr; }
+  if ( m_trigDecTool )  { delete m_trigDecTool;  m_trigDecTool = nullptr; }
+  if ( m_trigConfTool ) { delete m_trigConfTool;  m_trigConfTool = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }
