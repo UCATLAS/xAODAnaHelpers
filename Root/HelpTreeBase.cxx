@@ -89,13 +89,9 @@ HelpTreeBase::~HelpTreeBase() {
     delete m_metInfoSwitch;
     
     //jet
-    
-    std::map<std::string, HelperClasses::JetInfoSwitch*>::iterator jetInfoSwitchMap_itr = m_thisJetInfoSwitch.begin();
-    std::map<std::string, HelperClasses::JetInfoSwitch*>::iterator jetInfoSwitchMap_end = m_thisJetInfoSwitch.end();
-    for( ; jetInfoSwitchMap_itr != jetInfoSwitchMap_end; ++jetInfoSwitchMap_itr) {
-        delete jetInfoSwitchMap_itr->second;
-    }
-    
+
+    for(auto jetInfoSwitch: m_thisJetInfoSwitch)
+        delete jetInfoSwitch.second;    
     
 }
 

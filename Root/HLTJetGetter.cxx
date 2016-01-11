@@ -28,7 +28,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HLTJetGetter.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
@@ -36,24 +35,22 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-using std::cout;  using std::endl;
-using std::vector;
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetGetter)
 
 HLTJetGetter :: HLTJetGetter (std::string className) :
 Algorithm(className),
-m_triggerList(".*"),
-m_inContainerName(""),
-m_outContainerName(""),
 m_trigDecTool(nullptr)
 {
     Info("HLTJetGetter()", "Calling constructor");
-    
-    // read debug flag from .config file
-    m_debug                   = false;
-    
+
+    // regex list of triggers
+    m_triggerList = ".*";
+    // input container to be read from TEvent or TStore
+    m_inContainerName = "";
+    // shallow copies are made with this output container name
+    m_outContainerName = "";
+
 }
 
 
