@@ -603,19 +603,31 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //
 
   if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+      
+    //if it's there, it must be already configured
+    if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) && asg::ToolStore::contains<TrigConf::xAODConfigTool>("xAODConfigTool")) {
+        
+      m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
+      m_trigConfTool = asg::ToolStore::get<TrigConf::xAODConfigTool>("xAODConfigTool");
 
-    m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "Failed to properly initialize TrigConf::xAODConfigTool");
-    ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
+    }
+    
+    else {
 
-    m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
-    Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
+      m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "Failed to properly initialize TrigConf::xAODConfigTool");
+      ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
 
-  }
+      m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
+      Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
+        
+    }
+      
+  }//end trigger configuration
 
   // As a check, let's see the number of events in our file (long long int)
   //
@@ -901,10 +913,10 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   m_RunNr_VS_EvtNr.clear();
 
-  if ( m_grl )          {  m_grl = nullptr;	     delete m_grl; }
-  if ( m_pileuptool )   {  m_pileuptool = nullptr;   delete m_pileuptool; }
-  if ( m_trigDecTool )  {  m_trigDecTool = nullptr;  delete m_trigDecTool; }
-  if ( m_trigConfTool ) {  m_trigConfTool = nullptr; delete m_trigConfTool; }
+    if ( m_grl )        { delete m_grl; m_grl = nullptr; }
+  if ( m_pileuptool )   { delete m_pileuptool;  m_pileuptool = nullptr; }
+  if ( m_trigDecTool )  { delete m_trigDecTool;  m_trigDecTool = nullptr; }
+  if ( m_trigConfTool ) { delete m_trigConfTool;  m_trigConfTool = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }

@@ -37,6 +37,20 @@ https://github.com/UCATLAS/xAODAnaHelpers/wiki/xAH\_BasicEventSelection.h
 Jet Related
 -----------
 
+HLTJetGetter
+~~~~~~~~~~~~~
+
+The HLTJetGetter Algorithm retrieves jets from the TrigDecisionTool.
+The output is a shallow copy of the trigger feature that is requested
+via the combination of the name of the jet collection (m_inContainerName) and
+the jet trigger that is selected m_triggerList. The name of the copy
+is chosen via the m_outContainerName.
+The input container name should be given without any HLT_xAOD__JetContainer prefix
+if the collection comes directly from the xAOD.
+The list of triggers must be given as a regular expression using an or (|) if
+more than a trigger is requested. To request all triggers, use \*.
+
+
 JetCalibrator
 ~~~~~~~~~~~~~
 

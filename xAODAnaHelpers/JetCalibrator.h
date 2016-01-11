@@ -34,7 +34,7 @@ public:
   // configuration variables
   std::string m_inContainerName;
   std::string m_outContainerName;
-
+    
   std::string m_jetAlgo;
   std::string m_outputAlgo;
   std::string m_calibConfigData;
@@ -45,7 +45,9 @@ public:
   std::string m_JESUncertConfig;
   std::string m_JESUncertMCType;
   bool m_setAFII;
-
+    
+  bool m_isTrigger; // whether the jet collection is trigger or not (soon: different calibrations)
+    
   std::string m_JERUncertConfig;
   bool m_JERFullSys;
   bool m_JERApplyNominal;
