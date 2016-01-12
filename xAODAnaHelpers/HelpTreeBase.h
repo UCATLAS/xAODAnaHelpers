@@ -64,6 +64,7 @@ public:
   void AddFatJets     (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
+  virtual void AddLeptons() { };
 
   xAOD::TEvent* m_event;
   xAOD::TStore* m_store;
@@ -88,20 +89,18 @@ public:
   Trig::TrigDecisionTool*      m_trigDecTool;
 
   void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr );
-
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
   void FillPhotons( const xAOD::PhotonContainer* photons );
-
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
-
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillFatJets( const xAOD::JetContainer* fatJets );
   void FillTaus( const xAOD::TauJetContainer* taus );
   void FillMET( const xAOD::MissingETContainer* met );
+  virtual void FillLeptons( const xAOD::IParticleContainer* ) { };
 
   void Fill();
   void ClearEvent();
@@ -115,6 +114,7 @@ public:
   void ClearFatJets();
   void ClearTaus();
   void ClearMET();
+  virtual void ClearLeptons() { };
 
   bool writeTo( TFile *file );
 
