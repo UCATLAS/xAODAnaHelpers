@@ -31,10 +31,11 @@ class ElectronLHPIDManager
      ElectronLHPIDManager ( std::string WP, bool debug = false ) :
         m_asgElectronLikelihoodTool_VeryLoose(nullptr),
 	m_asgElectronLikelihoodTool_Loose(nullptr),
+	m_asgElectronLikelihoodTool_Loose_CutBL(nullptr),
 	m_asgElectronLikelihoodTool_Medium(nullptr),
 	m_asgElectronLikelihoodTool_Tight(nullptr)
      {
-	m_selectedWP = WP;
+	m_selectedWP = ( WP == "Loose_CutBL" ) ? "Loose" : WP;
 	m_debug      = debug;
 
         /*  fill the multimap with WPs and corresponding tools */
@@ -50,14 +51,19 @@ class ElectronLHPIDManager
 	std::pair < std::string, AsgElectronLikelihoodTool* > tight = std::make_pair( std::string("Tight"), m_asgElectronLikelihoodTool_Tight );
         m_allWPTools.insert(tight);
 	m_allWPs.insert("Tight");
+
+	std::pair < std::string, AsgElectronLikelihoodTool* > loose_CutBL = std::make_pair( std::string("Loose_CutBL"), m_asgElectronLikelihoodTool_Loose_CutBL );
+        m_allWPTools.insert(loose_CutBL);
+
      };
 
      ~ElectronLHPIDManager()
      {
-     	if ( m_asgElectronLikelihoodTool_VeryLoose ) { m_asgElectronLikelihoodTool_VeryLoose = nullptr; delete m_asgElectronLikelihoodTool_VeryLoose; }
-     	if ( m_asgElectronLikelihoodTool_Loose )     { m_asgElectronLikelihoodTool_Loose = nullptr;	delete m_asgElectronLikelihoodTool_Loose;     }
-     	if ( m_asgElectronLikelihoodTool_Medium )    { m_asgElectronLikelihoodTool_Medium = nullptr;	delete m_asgElectronLikelihoodTool_Medium;    }
-     	if ( m_asgElectronLikelihoodTool_Tight )     { m_asgElectronLikelihoodTool_Tight = nullptr;	delete m_asgElectronLikelihoodTool_Tight;     }
+     	if ( m_asgElectronLikelihoodTool_VeryLoose )   { m_asgElectronLikelihoodTool_VeryLoose = nullptr; delete m_asgElectronLikelihoodTool_VeryLoose; }
+     	if ( m_asgElectronLikelihoodTool_Loose )       { m_asgElectronLikelihoodTool_Loose = nullptr;	delete m_asgElectronLikelihoodTool_Loose;     }
+	if ( m_asgElectronLikelihoodTool_Loose_CutBL ) { m_asgElectronLikelihoodTool_Loose_CutBL = nullptr;	delete m_asgElectronLikelihoodTool_Loose_CutBL; }
+     	if ( m_asgElectronLikelihoodTool_Medium )      { m_asgElectronLikelihoodTool_Medium = nullptr;	delete m_asgElectronLikelihoodTool_Medium;    }
+     	if ( m_asgElectronLikelihoodTool_Tight )       { m_asgElectronLikelihoodTool_Tight = nullptr;	delete m_asgElectronLikelihoodTool_Tight;     }
      };
 
 
@@ -78,19 +84,24 @@ class ElectronLHPIDManager
 	  for ( auto it : (m_allWPTools) ) {
 
 	      /* instantiate tools (do it for all) */
-	      std::string tool_name = it.first + selector_name;
-	      it.second =  new AsgElectronLikelihoodTool( tool_name.c_str() );
 
-              HelperClasses::EnumParser<LikeEnum::Menu>  itWP_parser;
-              unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it.first) );
+	      std::string WP            = ( it.first == "Loose_CutBL" ) ? "Loose" : it.first;
+	      std::string extra_string  = ( it.first == "Loose_CutBL" ) ? "_CutBL" : "";
+
+	      it.second =  new AsgElectronLikelihoodTool( (WP + selector_name).c_str() );
+
+              HelperClasses::EnumParser<LikeEnum::Menu>  WP_parser;
+              unsigned int WP_enum = static_cast<unsigned int>( WP_parser.parseEnum(WP) );
 
               /* if this WP is looser than user's WP, skip to next */
-              if ( itWP_enum < selectedWP_enum ) { continue; }
+              if ( WP_enum < selectedWP_enum ) { continue; }
 
               /* configure and initialise only tools with (WP >= selectedWP) */
               it.second->msg().setLevel( MSG::INFO); /* ERROR, VERBOSE, DEBUG, INFO */
 	      RETURN_CHECK( "ParticlePIDManager::setupWPs()", it.second->setProperty("primaryVertexContainer", "PrimaryVertices"), "Failed to set primaryVertexContainer property");
-	      std::string config_string = confDir + "ElectronLikelihood" + it.first + "OfflineConfig" + year + ".conf";
+
+
+	      std::string config_string = confDir + "ElectronLikelihood" + WP + "OfflineConfig" + year + extra_string + ".conf";
 
 	      Info("setupWPs()", "Configuration file for LH tool: %s", config_string.c_str() );
 
@@ -105,11 +116,11 @@ class ElectronLHPIDManager
 
 	  for ( auto it : (m_allWPs) ) {
 
-              HelperClasses::EnumParser<LikeEnum::Menu>  itWP_parser;
-              unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it) );
+              HelperClasses::EnumParser<LikeEnum::Menu>  WP_parser;
+              unsigned int WP_enum = static_cast<unsigned int>( WP_parser.parseEnum(it) );
 
               /* if this WP is looser than user's WP, skip to next */
-              if ( itWP_enum < selectedWP_enum ) { continue; }
+              if ( WP_enum < selectedWP_enum ) { continue; }
 
 	      /* copy map element into container of valid WPs for later usage */
 	      m_validWPs.insert( it );
@@ -155,6 +166,7 @@ class ElectronLHPIDManager
 
      AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_VeryLoose;
      AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Loose;
+     AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Loose_CutBL;
      AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Medium;
      AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Tight;
 
