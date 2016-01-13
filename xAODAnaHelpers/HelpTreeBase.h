@@ -694,6 +694,7 @@ protected:
   // scale factors w/ sys
   // per object
   std::vector< std::vector< float > > m_el_RecoEff_SF;
+  std::vector< std::vector< float > > m_el_TrigEff_SF;
   std::vector< std::vector< float > > m_el_IsoEff_SF_FixedCutTight;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHVeryLoose;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHLoose;
