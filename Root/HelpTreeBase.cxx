@@ -528,6 +528,8 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
   }
 
   if ( m_muInfoSwitch->m_trigger ){
+    // this is true if there's a match for at least one trigger chain
+    m_tree->Branch("muon_isTrigMatched", &m_muon_isTrigMatched);
     // a vector of trigger match decision for each muon trigger chain
     m_tree->Branch( "muon_isTrigMatchedToChain", &m_muon_isTrigMatchedToChain );
     // a vector of strings for each muon trigger chain - 1:1 correspondence w/ vector above
@@ -630,23 +632,32 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
     if ( m_muInfoSwitch->m_trigger ) {
 
-      // retrieve map<string,char> w/ chain,isMatched
+      // retrieve map<string,char> w/ <chain,isMatched>
       //
       static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapMuAcc("isTrigMatchedMapMu");
+
+      std::vector<int> matches; 
 
       if ( isTrigMatchedMapMuAcc.isAvailable( *muon_itr ) ) {
 	 // loop over map and fill branches
 	 //
 	 for ( auto const &it : (isTrigMatchedMapMuAcc( *muon_itr )) ) {
-  	   m_muon_isTrigMatchedToChain.push_back( static_cast<int>(it.second) );
+  	   matches.push_back( static_cast<int>(it.second) );
 	   m_muon_listTrigChains.push_back( it.first );
 	 }
        } else {
-	 m_muon_isTrigMatchedToChain.push_back( -1 );
+	 matches.push_back( -1 );
 	 m_muon_listTrigChains.push_back("NONE");
        }
-
+       
+       m_muon_isTrigMatchedToChain.push_back(matches);
+       
+       // if at least one match among the chains is found, say this muon is trigger matched
+       if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_muon_isTrigMatched.push_back(1); }
+       else { m_muon_isTrigMatched.push_back(0); }
+       
     }
+
 
     if ( m_muInfoSwitch->m_isolation ) {
 
@@ -820,6 +831,7 @@ void HelpTreeBase::ClearMuons() {
   }
 
   if ( m_muInfoSwitch->m_trigger ) {
+    m_muon_isTrigMatched.clear();
     m_muon_isTrigMatchedToChain.clear();
     m_muon_listTrigChains.clear();
   }
@@ -925,10 +937,12 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   }
 
   if ( m_elInfoSwitch->m_trigger ){
+    // this is true if there's a match for at least one trigger chain
+    m_tree->Branch("el_isTrigMatched", &m_el_isTrigMatched);
     // a vector of trigger match decision for each electron trigger chain
-    m_tree->Branch( "el_isTrigMatchedToChain", &m_el_isTrigMatchedToChain );
-    // a vector of strings for each electron trigger chain - 1:1 correspondence w/ vector above
-    m_tree->Branch( "el_listTrigChains", &m_el_listTrigChains );
+    m_tree->Branch("el_isTrigMatchedToChain", &m_el_isTrigMatchedToChain);
+    // a vector of strings with the electron trigger chain names - 1:1 correspondence w/ vector above
+    m_tree->Branch("el_listTrigChains", &m_el_listTrigChains);
   }
 
   if ( m_elInfoSwitch->m_isolation ) {
@@ -1038,22 +1052,30 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 
     if ( m_elInfoSwitch->m_trigger ) {
 
-      // retrieve map<string,char> w/ chain,isMatched
+      // retrieve map<string,char> w/ <chain,isMatched>
       //
       static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapElAcc("isTrigMatchedMapEl");
+
+      std::vector<int> matches; 
 
       if ( isTrigMatchedMapElAcc.isAvailable( *el_itr ) ) {
 	 // loop over map and fill branches
 	 //
 	 for ( auto const &it : (isTrigMatchedMapElAcc( *el_itr )) ) {
-  	   m_el_isTrigMatchedToChain.push_back( static_cast<int>(it.second) );
+  	   matches.push_back( static_cast<int>(it.second) );
 	   m_el_listTrigChains.push_back( it.first );
 	 }
        } else {
-	 m_el_isTrigMatchedToChain.push_back( -1 );
+	 matches.push_back( -1 );
 	 m_el_listTrigChains.push_back("NONE");
        }
-
+       
+       m_el_isTrigMatchedToChain.push_back(matches);
+       
+       // if at least one match among the chains is found, say this electron is trigger matched
+       if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_el_isTrigMatched.push_back(1); }
+       else { m_el_isTrigMatched.push_back(0); }
+       
     }
 
     if ( m_elInfoSwitch->m_isolation ) {
@@ -1239,6 +1261,7 @@ void HelpTreeBase::ClearElectrons() {
   }
 
   if ( m_elInfoSwitch->m_trigger ) {
+    m_el_isTrigMatched.clear();
     m_el_isTrigMatchedToChain.clear();
     m_el_listTrigChains.clear();
   }

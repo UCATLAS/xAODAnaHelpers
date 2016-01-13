@@ -1048,7 +1048,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        sfVecTrig( *el_itr ).push_back( trigEffSF );
 
-       trigEffSF_GLOBAL *= trigEffSF; // is it the right way? What if more than one electron per event is trigger-matched?
+       trigEffSF_GLOBAL *= ( 1.0 - trigEffSF ); // is it the right way? 
 
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
@@ -1074,6 +1074,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        Info( "executeSF()", "\t %f ", trigEffSF_GLOBAL );
        Info( "executeSF()", "--------------------------------------");
     }
+    
+    trigEffSF_GLOBAL = 1.0 - trigEffSF_GLOBAL;
+    
     sfVecTrig_GLOBAL( *eventInfo ).push_back( trigEffSF_GLOBAL );
 
   }  // close loop on Trig efficiency systematics

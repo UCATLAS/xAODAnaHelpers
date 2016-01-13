@@ -568,7 +568,8 @@ protected:
   std::vector<float> m_muon_m;
 
   // trigger
-  std::vector<int> m_muon_isTrigMatchedToChain;
+  std::vector<int> m_muon_isTrigMatched;
+  std::vector<std::vector<int> > m_muon_isTrigMatchedToChain;
   std::vector<std::string> m_muon_listTrigChains;
 
   // isolation
@@ -650,8 +651,9 @@ protected:
   std::vector<float> m_el_m;
 
   // trigger
-  std::vector<int> m_el_isTrigMatchedToChain;
-  std::vector<std::string> m_el_listTrigChains;
+  std::vector<int> m_el_isTrigMatched;
+  std::vector<std::vector<int> > m_el_isTrigMatchedToChain;
+  std::vector<std::string>       m_el_listTrigChains;
 
   // isolation
   std::vector<int>   m_el_isIsolated_LooseTrackOnly;
