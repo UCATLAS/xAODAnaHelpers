@@ -427,6 +427,8 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   if ( m_inputAlgoSystNames.empty() ) {
 
     RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+      
+   if ( m_debug ) { Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) ); }
 
     // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
     //
@@ -448,7 +450,9 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
            RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
 
     	   if ( m_debug ){
-    	     unsigned int idx(0);
+	     Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) ); 
+	     Info( "execute", "Input syst: %s", systName.c_str() );
+	     unsigned int idx(0);
     	     for ( auto mu : *(inputMuons) ) {
     	       Info( "execute", "Input muon %i, pt = %.2f GeV ", idx, (mu->pt() * 1e-3) );
     	       ++idx;
@@ -795,7 +799,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     // and now apply trigger efficiency SF!
     //
     unsigned int nMuons = inputMuons->size();
-    if ( m_debug ) { Info( "executeSF", "Applying trigger efficiency SF: \n Number of muons : %u", nMuons); }
+    if ( m_debug ) { Info( "executeSF", "Applying trigger efficiency SF"); }
 
     // obtain trigger efficiency SF
     //

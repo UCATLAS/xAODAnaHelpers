@@ -463,7 +463,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // initialise containers
   //
   const xAOD::ElectronContainer* inputElectrons(nullptr);
-
+	    
   // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
 
@@ -475,6 +475,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   if ( m_inputAlgoSystNames.empty() ) {
 
       RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+ 
+      if ( m_debug ) { Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) ); }
 
       // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
       //
@@ -496,6 +498,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
           RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
 
           if ( m_debug ){
+              Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) );
+	      Info( "execute", "Input syst: %s", systName.c_str() );
               unsigned int idx(0);
               for ( auto el : *(inputElectrons) ) {
                   Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
@@ -956,16 +960,24 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 
 
   // 4.
-  // Trig efficiency SFs - this is a per-EVENT weight
+  // Trig efficiency SFs - this is a per-ELECTRON weight
   //
-  SG::AuxElement::Decorator< std::vector<float> > sfVecTrig ( m_outputSystNamesTrig  );
-
-  // Loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
+  // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
+  
+  // Define also an *event* weight
+  //
+  std::string TRIG_SF_NAME_GLOBAL = m_outputSystNamesTrig + "_GLOBAL";
+  SG::AuxElement::Decorator< std::vector<float> > sfVecTrig_GLOBAL ( TRIG_SF_NAME_GLOBAL );
+  
   for ( const auto& syst_it : m_systListTrig ) {
 
-    // Create the name of the SF weight to be Trigrded
+    // Initialise product of SFs for *this* systematic
+    //
+    float trigEffSF_GLOBAL(1.0);
+
+    // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElTrigEff_SF
     //
     std::string sfName  = "ElTrigEff_SF";
@@ -988,18 +1000,21 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     // and now apply trigger efficiency SF!
     //
     unsigned int idx(0);
-    double trigSF(1.0); // tool wants a double
     for ( auto el_itr : *(inputElectrons) ) {
 
-       // Retrieve the SF only from first electron (for any other selected electron, this info is just duplicated!)
-       // This is a per-EVENT weight!
-       // Do not increase counter until we find a "good" electron
-       //
-       if ( idx > 0 ) { break; }
-
-       if ( m_debug ) { Info( "executeSF()", "Applying Trig efficiency SF" ); }
-
+       if ( m_debug ) { Info( "executeSF()", "Applying Trigger efficiency SF" ); }
+       
        bool isBadElectron(false);
+
+       //
+       // obtain Trigger efficiency SF as a float (to be stored away separately)
+       //
+       //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
+       //
+       SG::AuxElement::Decorator< std::vector<float> > sfVecTrig ( m_outputSystNamesTrig  );
+       if ( !sfVecTrig.isAvailable( *el_itr )  ) {
+         sfVecTrig ( *el_itr ) = std::vector<float>();
+       }
 
        // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
        //
@@ -1022,33 +1037,46 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        // obtain efficiency SF for Trig
        //
-       if ( !isBadElectron && m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigSF ) != CP::CorrectionCode::Ok ) {
+       double trigEffSF(1.0); // tool wants a double
+       if ( !isBadElectron && m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigEffSF ) != CP::CorrectionCode::Ok ) {
          Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
 	 isBadElectron = true;
-	 trigSF = 1.0;
+	 trigEffSF = 1.0;
        }
+       //
+       // Add it to decoration vector
+       //
+       sfVecTrig( *el_itr ).push_back( trigEffSF );
+
+       trigEffSF_GLOBAL *= trigEffSF; // is it the right way? What if more than one electron per event is trigger-matched?
 
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
+	 Info( "executeSF()", "Electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) );
+	 Info( "executeSF()", " ");
          Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
          Info( "executeSF()", " ");
-         Info( "executeSF()", "Trig efficiency SF:");
-         Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", trigSF );
+         Info( "executeSF()", "Trigger efficiency SF:");
+         Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", trigEffSF );
          Info( "executeSF()", "--------------------------------------");
        }
 
-       if ( !isBadElectron ) ++idx;
+       ++idx;
 
     } // close electron loop
-
+    
+    // For *this* systematic, store the global SF weight for the event
     //
-    // Add trigger SF to event decoration vector
-    //
-    sfVecTrig( *eventInfo ).push_back( trigSF );
+    if ( m_debug ) {
+       Info( "executeSF()", "--------------------------------------");
+       Info( "executeSF()", "GLOBAL Trigger efficiency SF for event:");
+       Info( "executeSF()", "\t %f ", trigEffSF_GLOBAL );
+       Info( "executeSF()", "--------------------------------------");
+    }
+    sfVecTrig_GLOBAL( *eventInfo ).push_back( trigEffSF_GLOBAL );
 
   }  // close loop on Trig efficiency systematics
-
 
   //
   // add list of efficiency systematics names to TStore
