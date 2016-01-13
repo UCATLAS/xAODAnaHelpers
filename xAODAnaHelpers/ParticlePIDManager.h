@@ -88,7 +88,11 @@ class ElectronLHPIDManager
 	      std::string WP            = ( it.first == "Loose_CutBL" ) ? "Loose" : it.first;
 	      std::string extra_string  = ( it.first == "Loose_CutBL" ) ? "_CutBL" : "";
 
-	      it.second =  new AsgElectronLikelihoodTool( (WP + selector_name).c_str() );
+	      std::string tool_name     = selector_name + "_" + WP + extra_string; 
+	      
+	      Info("setupWPs()", "initialising AsgElectronLikelihoodTool w/ name: %s", tool_name.c_str() );
+
+	      it.second =  new AsgElectronLikelihoodTool( tool_name.c_str() );
 
               HelperClasses::EnumParser<LikeEnum::Menu>  WP_parser;
               unsigned int WP_enum = static_cast<unsigned int>( WP_parser.parseEnum(WP) );
