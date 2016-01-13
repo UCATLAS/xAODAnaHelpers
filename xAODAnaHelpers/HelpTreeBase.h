@@ -260,9 +260,9 @@ protected:
   std::vector<float> m_weight_muon_IsoEff_SF_Tight;
   std::vector<float> m_weight_muon_IsoEff_SF_Gradient;
   std::vector<float> m_weight_muon_IsoEff_SF_GradientLoose;
-  std::vector<float> m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency;
-  std::vector<float> m_weight_muon_IsoEff_SF_UserDefinedCut;
+  std::vector<float> m_weight_muon_IsoEff_SF_FixedCutTightTrackOnly;
   std::vector<float> m_weight_electron_RecoEff_SF;
+  std::vector<float> m_weight_electron_IsoEff_SF_FixedCutTight;
   std::vector<float> m_weight_electron_PIDEff_SF_LHVeryLoose;
   std::vector<float> m_weight_electron_PIDEff_SF_LHLoose;
   std::vector<float> m_weight_electron_PIDEff_SF_LHMedium;
@@ -577,11 +577,7 @@ protected:
   std::vector<int>   m_muon_isIsolated_Tight;
   std::vector<int>   m_muon_isIsolated_Gradient;
   std::vector<int>   m_muon_isIsolated_GradientLoose;
-  std::vector<int>   m_muon_isIsolated_GradientT1;
-  std::vector<int>   m_muon_isIsolated_GradientT2;
-  std::vector<int>   m_muon_isIsolated_MU0p06;
   std::vector<int>   m_muon_isIsolated_FixedCutLoose;
-  std::vector<int>   m_muon_isIsolated_FixedCutTight;
   std::vector<int>   m_muon_isIsolated_FixedCutTightTrackOnly;
   std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
   std::vector<int>   m_muon_isIsolated_UserDefinedCut;
@@ -609,8 +605,8 @@ protected:
   std::vector< std::vector< float > > m_muon_IsoEff_SF_Tight;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_Gradient;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_GradientLoose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_UserDefinedFixEfficiency;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_UserDefinedCut;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutLoose;  
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutTightTrackOnly;
 
   // track parameters
   std::vector<float> m_muon_trkd0;
@@ -663,9 +659,6 @@ protected:
   std::vector<int>   m_el_isIsolated_Tight;
   std::vector<int>   m_el_isIsolated_Gradient;
   std::vector<int>   m_el_isIsolated_GradientLoose;
-  std::vector<int>   m_el_isIsolated_GradientT1;
-  std::vector<int>   m_el_isIsolated_GradientT2;
-  std::vector<int>   m_el_isIsolated_EL0p06;
   std::vector<int>   m_el_isIsolated_FixedCutLoose;
   std::vector<int>   m_el_isIsolated_FixedCutTight;
   std::vector<int>   m_el_isIsolated_FixedCutTightTrackOnly;
@@ -701,6 +694,7 @@ protected:
   // scale factors w/ sys
   // per object
   std::vector< std::vector< float > > m_el_RecoEff_SF;
+  std::vector< std::vector< float > > m_el_IsoEff_SF_FixedCutTight;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHVeryLoose;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHLoose;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHMedium;

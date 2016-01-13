@@ -30,16 +30,20 @@ public:
 
   float m_systValPID;
   float m_systValReco;
+  float m_systValIso;
   float m_systValTrig;
   std::string m_systNamePID;
   std::string m_systNameReco;
+  std::string m_systNameIso;  
   std::string m_systNameTrig;
   std::string m_outputSystNamesPID;
   std::string m_outputSystNamesReco;
+  std::string m_outputSystNamesIso;
   std::string m_outputSystNamesTrig;
 
   std::string m_corrFileNamePID;
   std::string m_corrFileNameReco;
+  std::string m_corrFileNameIso;
   std::string m_corrFileNameTrig;
 
 private:
@@ -49,14 +53,17 @@ private:
   bool m_isMC;            //!
 
   std::string m_PID_WP;   //!
+  std::string m_Iso_WP;   //!
 
-  std::vector<CP::SystematicSet> m_systListPID; //!
+  std::vector<CP::SystematicSet> m_systListPID;  //!
   std::vector<CP::SystematicSet> m_systListReco; //!
+  std::vector<CP::SystematicSet> m_systListIso;  //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
 
   // tools
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID;  //!
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso;  //!
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig; //!
 
   // variables that don't get filled at submission time should be
