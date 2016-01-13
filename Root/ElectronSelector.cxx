@@ -201,9 +201,10 @@ EL::StatusCode  ElectronSelector :: configure ()
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
-  if ( m_LHOperatingPoint != "VeryLoose" &&
-       m_LHOperatingPoint != "Loose"     &&
-       m_LHOperatingPoint != "Medium"    &&
+  if ( m_LHOperatingPoint != "VeryLoose"    &&
+       m_LHOperatingPoint != "Loose"        &&
+       m_LHOperatingPoint != "Loose_CutBL"  &&
+       m_LHOperatingPoint != "Medium"       &&
        m_LHOperatingPoint != "Tight"     ) {
     Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
     return EL::StatusCode::FAILURE;
@@ -426,13 +427,13 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if  ( m_doLHPIDcut ) {
        Info("initialize()", "Cutting on Electron Likelihood PID! \n ********************" );
-       Info("initialize()", "\t Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() );
+       Info("initialize()", "\t Input WP: %s corresponding to actual LikeEnum::Menu WP: %s", likelihoodWP.c_str(), (m_el_LH_PIDManager->getSelectedWP()).c_str() );
   } else {
        Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decison (pass/not pass)!" );
   }
 
   bool configTools_LH(false);
-  if ( m_readIDFlagsFromDerivation ) {
+  if ( m_readIDFlagsFromDerivation && likelihoodWP != "Loose_CutBL" ) {
     Info("initialize()", "Reading Electron LH ID from DAODs ..." );
     RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupWPs( configTools_LH ), "Failed to properly setup ElectronLHPIDManager." );
   } else {
