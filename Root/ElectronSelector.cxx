@@ -961,20 +961,44 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   if ( m_readIDFlagsFromDerivation ) {
 
-    if ( m_doLHPIDcut &&  !electron->auxdata< int >( "DFCommonElectronsLH" + m_LHOperatingPoint ) ) {
+    if ( m_doLHPIDcut ) {
+
+      bool passSelID(false);
+      // need this exception check b/c an interface change in DF happened at some point :(
+      try {
+	passSelID = electron->auxdataConst<int> ( "DFCommonElectronsLH" + m_LHOperatingPoint );
+      }
+      catch(std::exception& e) {
+	passSelID = electron->auxdataConst<char>( "DFCommonElectronsLH" + m_LHOperatingPoint );
+      }
+
+      if ( !passSelID ) {
    	if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
    	return 0;
+      }
     }
 
     const std::set<std::string> myLHWPs = m_el_LH_PIDManager->getValidWPs();
     for ( auto it : (myLHWPs) ) {
+
       const std::string decorWP =  "LH" + it;
+
+      bool passThisID(false);
+      try {
+	passThisID = electron->auxdataConst<int> ( "DFCommonElectrons" + decorWP );
+      }
+      catch(std::exception& e) {
+	passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+      }
+
       if ( m_debug ) {
    	Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
-   	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), electron->auxdata< int >( "DFCommonElectrons" + decorWP ) );
+   	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
       }
-      electron->auxdecor<char>(decorWP) = static_cast<char>( electron->auxdata< int >( "DFCommonElectrons" + decorWP ) );
+      electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
+
     }
+
   } else {
 
     // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
@@ -1010,20 +1034,45 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   if ( m_readIDFlagsFromDerivation ) {
 
-    if ( m_doCutBasedPIDcut &&  !electron->auxdata< int >( "DFCommonElectrons" + m_CutBasedOperatingPoint ) ) {
+    if ( m_doCutBasedPIDcut ) {
+
+      bool passSelID(false);
+      // need this exception check b/c an interface change in DF happened at some point :(
+      try {
+	passSelID = electron->auxdataConst<int> ( "DFCommonElectrons" + m_CutBasedOperatingPoint );
+      }
+      catch(std::exception& e) {
+	passSelID = electron->auxdataConst<char>( "DFCommonElectrons" + m_CutBasedOperatingPoint );
+      }
+
+      if ( !passSelID ) {
    	if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut w/ operating point %s", m_CutBasedOperatingPoint.c_str() ); }
    	return 0;
+      }
+
     }
 
     const std::set<std::string> myCutBasedWPs = m_el_CutBased_PIDManager->getValidWPs();
     for ( auto it : (myCutBasedWPs) ) {
+
       const std::string decorWP = it.erase(0,4);
+
+      bool passThisID(false);
+      try {
+	passThisID = electron->auxdataConst<int> ( "DFCommonElectronsIsEM" + decorWP );
+      }
+      catch(std::exception& e) {
+	passThisID = electron->auxdataConst<char>( "DFCommonElectronsIsEM" + decorWP );
+      }
+
       if ( m_debug ) {
    	Info("PassCuts()", "Decorating electron with deciison for cut-based WP : %s ", ( decorWP ).c_str() );
-   	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), electron->auxdata< int >( "DFCommonElectronsIsEM" + decorWP ) );
+   	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
       }
-      electron->auxdecor<char>(decorWP) = static_cast<char>( electron->auxdata< int >( "DFCommonElectronsIsEM" + decorWP ) );
+      electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
+
     }
+
   } else {
 
     // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
