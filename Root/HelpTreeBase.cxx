@@ -934,6 +934,7 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_phi", &m_el_phi);
     m_tree->Branch("el_eta", &m_el_eta);
     m_tree->Branch("el_m",   &m_el_m);
+    m_tree->Branch("el_caloCluster_eta", &m_el_caloCluster_eta);
   }
 
   if ( m_elInfoSwitch->m_trigger ){
@@ -1049,6 +1050,10 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       m_el_eta.push_back( (el_itr)->eta() );
       m_el_phi.push_back( (el_itr)->phi() );
       m_el_m.push_back  ( (el_itr)->m() / m_units );
+      
+      float calo_eta   = ( el_itr->caloCluster() ) ? el_itr->caloCluster()->etaBE(2) : -999.0;
+      m_el_caloCluster_eta.push_back( calo_eta );
+
     }
 
     if ( m_elInfoSwitch->m_trigger ) {
@@ -1261,6 +1266,7 @@ void HelpTreeBase::ClearElectrons() {
     m_el_eta.clear();
     m_el_phi.clear();
     m_el_m.clear();
+    m_el_caloCluster_eta.clear();
   }
 
   if ( m_elInfoSwitch->m_trigger ) {

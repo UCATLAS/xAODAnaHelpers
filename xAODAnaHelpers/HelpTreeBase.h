@@ -649,6 +649,7 @@ protected:
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
+  std::vector<float> m_el_caloCluster_eta;
 
   // trigger
   std::vector<int> m_el_isTrigMatched;
