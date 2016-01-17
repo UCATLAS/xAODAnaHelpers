@@ -251,7 +251,6 @@ protected:
 
   // trigger scale factors
   std::vector<float> m_weight_muon_trig;
-  std::vector<float> m_weight_electron_trig;
 
   // lepton SFs per event (product of each object SF)
   std::vector<float> m_weight_muon_RecoEff_SF;
