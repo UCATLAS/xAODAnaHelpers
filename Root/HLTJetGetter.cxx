@@ -50,6 +50,8 @@ m_trigDecTool(nullptr)
     m_inContainerName = "";
     // shallow copies are made with this output container name
     m_outContainerName = "";
+    // flag to own TDT and TCT
+    m_ownTDTAndTCT = false;
 
 }
 
@@ -136,6 +138,7 @@ EL::StatusCode HLTJetGetter :: initialize ()
         m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
     } else {
         Info ("Initialize()", "the Trigger Decision Tool is not yet initialized...[%s]. Doing so now.", m_name.c_str());
+        m_ownTDTAndTCT = true;
         
         m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
         RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "Failed to properly initialize TrigConf::xAODConfigTool");
@@ -205,9 +208,12 @@ EL::StatusCode HLTJetGetter :: finalize ()
 {
     Info("finalize()", "Deleting tool instances...");
     
-    //question: are we doing this twice?
-    if ( m_trigDecTool )  {  delete m_trigDecTool; m_trigDecTool = nullptr;  }
-    if ( m_trigConfTool ) {  delete m_trigConfTool; m_trigConfTool = nullptr; }
+    // this is necessary because in most cases the pointer will be set to null
+    // after deletion in BasicEventSelection, but it will not propagate here
+    if ( m_ownTDTAndTCT ) {
+      if ( m_trigDecTool )  { delete m_trigDecTool; m_trigDecTool = nullptr;  }
+      if ( m_trigConfTool ) {  delete m_trigConfTool; m_trigConfTool = nullptr; }
+    }
     
     return EL::StatusCode::SUCCESS;
 }

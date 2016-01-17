@@ -54,7 +54,11 @@ TreeAlgo :: TreeAlgo (std::string className) :
   // DC14 switch for little things that need to happen to run
   // for those samples with the corresponding packages
   m_DC14                    = false;
-
+    
+  //Units, defaulting to GeV
+  m_units                   = 1e3;
+    
+    
 }
 
 EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
@@ -101,7 +105,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
     
-  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, 1e3, m_debug, m_DC14 );
+  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, m_units, m_debug, m_DC14 );
 
   // tell the tree to go into the file
   outTree->SetDirectory( treeFile );

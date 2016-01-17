@@ -41,6 +41,7 @@ public:
   std::string m_photonContainerName;
 
   bool m_DC14;
+  float m_units;
 
 protected:
   HelpTreeBase* m_helpTree;            //!

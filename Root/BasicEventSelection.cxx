@@ -471,32 +471,32 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
   //
   m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
-  m_cutflowHist->SetBit(TH1::kCanRebin);
+  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
   //
   m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
-  m_cutflowHistW->SetBit(TH1::kCanRebin);
+  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
 
   // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
   //
   m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
-  m_el_cutflowHist_1->SetBit(TH1::kCanRebin);
+  m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
   m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
-  m_el_cutflowHist_2->SetBit(TH1::kCanRebin);
+  m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
   m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
-  m_mu_cutflowHist_1->SetBit(TH1::kCanRebin);
+  m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
   m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
-  m_mu_cutflowHist_2->SetBit(TH1::kCanRebin);
+  m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
   m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
-  m_ph_cutflowHist_1->SetBit(TH1::kCanRebin);
+  m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
   m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
-  m_tau_cutflowHist_1->SetBit(TH1::kCanRebin);
+  m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
   m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
-  m_tau_cutflowHist_2->SetBit(TH1::kCanRebin);
+  m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
   m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
-  m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);
+  m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
   m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
-  m_truth_cutflowHist_1->SetBit(TH1::kCanRebin);
+  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
 
   // start labelling the bins for the event cutflow
   //
@@ -842,7 +842,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     // save passed triggers in eventInfo
     //
     if ( m_storeTrigDecisions ) {
-
+        
       std::vector<std::string> passTriggers;
       std::vector<float> triggerPrescales;
 
@@ -913,7 +913,7 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   m_RunNr_VS_EvtNr.clear();
 
-    if ( m_grl )        { delete m_grl; m_grl = nullptr; }
+  if ( m_grl )          { delete m_grl; m_grl = nullptr; }
   if ( m_pileuptool )   { delete m_pileuptool;  m_pileuptool = nullptr; }
   if ( m_trigDecTool )  { delete m_trigDecTool;  m_trigDecTool = nullptr; }
   if ( m_trigConfTool ) { delete m_trigConfTool;  m_trigConfTool = nullptr; }

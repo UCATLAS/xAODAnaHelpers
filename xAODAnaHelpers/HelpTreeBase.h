@@ -206,6 +206,8 @@ protected:
   long int m_eventNumber;
   int m_lumiBlock;
   uint32_t m_coreFlags;
+  uint32_t m_timeStamp;
+  uint32_t m_timeStampNSOffset;
   bool m_TileError;
   bool m_LArError;
   bool m_SCTError;

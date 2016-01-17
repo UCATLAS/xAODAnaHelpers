@@ -330,9 +330,9 @@ if __name__ == "__main__":
 
     # print out the samples we found
     xAH_logger.info("\t%d different dataset(s) found", len(sh_all))
-    if not args.use_scanDQ2:
-      for dataset in sh_all:
-        xAH_logger.info("\t\t%d files in %s", dataset.numFiles(), dataset.name())
+        #if not args.use_scanDQ2:
+        #for dataset in sh_all:
+        #xAH_logger.info("\t\t%d files in %s", dataset.numFiles(), dataset.name())
     sh_all.printContent()
 
     if len(sh_all) == 0:

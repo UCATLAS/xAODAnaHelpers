@@ -134,9 +134,11 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
   if ( m_eventInfoSwitch->m_eventCleaning ) {
     
-    m_tree->Branch("TileError",          &m_TileError,      "TileError/O");
-    m_tree->Branch("SCTError",           &m_SCTError,      "SCTError/O");
-    m_tree->Branch("LArError",           &m_LArError,      "LArError/O");
+    m_tree->Branch("timeStamp",          &m_timeStamp,         "timeStamp/i");
+    m_tree->Branch("timeStampNSOffset",  &m_timeStampNSOffset, "timeStampNSOffset/i");
+    m_tree->Branch("TileError",          &m_TileError,         "TileError/O");
+    m_tree->Branch("SCTError",           &m_SCTError,          "SCTError/O");
+    m_tree->Branch("LArError",           &m_LArError,          "LArError/O");
 
   }
     
@@ -228,6 +230,10 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
     
     if ( eventInfo->errorState(xAOD::EventInfo::SCT)==xAOD::EventInfo::Error ) m_SCTError = true;
     else m_SCTError = false;
+      
+      
+    m_timeStamp = eventInfo->timeStamp();
+    m_timeStampNSOffset = eventInfo->timeStampNSOffset();
 
   }
 
@@ -3024,6 +3030,8 @@ void HelpTreeBase::ClearEvent() {
   m_SCTError = false;
   m_mcEventWeight = 1.;
   m_weight_pileup = 1.;
+  m_timeStamp = -999;
+  m_timeStampNSOffset = -999;
   // pileup
   m_npv = -999;
   m_actualMu = m_averageMu = -999;
