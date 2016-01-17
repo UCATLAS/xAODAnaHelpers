@@ -1020,16 +1020,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Every systematic will correspond to a different SF!
   //
   
-  // Define also an *event* weight
-  //
-  std::string TRIG_SF_NAME_GLOBAL = m_outputSystNamesTrig + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<float> > sfVecTrig_GLOBAL ( TRIG_SF_NAME_GLOBAL );
+  // NB: calculation of the event SF is up to the analyzer
   
   for ( const auto& syst_it : m_systListTrig ) {
-
-    // Initialise product of SFs for *this* systematic
-    //
-    float trigEffSF_GLOBAL(1.0);
 
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElTrigEff_SF
@@ -1102,8 +1095,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        sfVecTrig( *el_itr ).push_back( trigEffSF );
 
-       trigEffSF_GLOBAL *= ( 1.0 - trigEffSF ); // is it the right way? 
-
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
@@ -1119,19 +1110,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        ++idx;
 
     } // close electron loop
-    
-    // For *this* systematic, store the global SF weight for the event
-    //
-    if ( m_debug ) {
-       Info( "executeSF()", "--------------------------------------");
-       Info( "executeSF()", "GLOBAL Trigger efficiency SF for event:");
-       Info( "executeSF()", "\t %f ", trigEffSF_GLOBAL );
-       Info( "executeSF()", "--------------------------------------");
-    }
-    
-    trigEffSF_GLOBAL = 1.0 - trigEffSF_GLOBAL;
-    
-    sfVecTrig_GLOBAL( *eventInfo ).push_back( trigEffSF_GLOBAL );
 
   }  // close loop on Trig efficiency SF systematics
 

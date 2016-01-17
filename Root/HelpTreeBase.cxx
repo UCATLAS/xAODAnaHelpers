@@ -192,7 +192,6 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   }
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
-    m_tree->Branch("weight_electron_trig", 		    &m_weight_electron_trig);
     m_tree->Branch("weight_electron_RecoEff_SF"  ,	    &m_weight_electron_RecoEff_SF  );
     m_tree->Branch("weight_electron_IsoEff_SF_Loose",   &m_weight_electron_IsoEff_SF_Loose);
     m_tree->Branch("weight_electron_IsoEff_SF_FixedCutTight",   &m_weight_electron_IsoEff_SF_FixedCutTight);
@@ -364,7 +363,6 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
 
-    SG::AuxElement::ConstAccessor< std::vector<float> >   electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst_GLOBAL" );
     SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal("ElectronEfficiencyCorrector_RecoSyst_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Loose("ElectronEfficiencyCorrector_IsoSyst_IsoLoose_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_FixedCutTight("ElectronEfficiencyCorrector_IsoSyst_IsoFixedCutTight_GLOBAL");
@@ -373,7 +371,6 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight_GLOBAL");
 
-    if( electronTrigSFVec.isAvailable( *eventInfo ) ) { m_weight_electron_trig = electronTrigSFVec( *eventInfo ); } else { m_weight_electron_trig.push_back(-999); }
     if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_electron_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_electron_RecoEff_SF.push_back(-999.0); }
     if( accIsoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_electron_IsoEff_SF_Loose = accIsoSFGlobal_Loose( *eventInfo ); } else { m_weight_electron_IsoEff_SF_Loose.push_back(-999.0); }
     if( accIsoSFGlobal_FixedCutTight.isAvailable( *eventInfo ) ) { m_weight_electron_IsoEff_SF_FixedCutTight = accIsoSFGlobal_FixedCutTight( *eventInfo ); } else { m_weight_electron_IsoEff_SF_FixedCutTight.push_back(-999.0); }
@@ -3081,7 +3078,6 @@ void HelpTreeBase::ClearEvent() {
   }
 
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
-    m_weight_electron_trig.clear();
     m_weight_electron_RecoEff_SF.clear();
     m_weight_electron_IsoEff_SF_Loose.clear();
     m_weight_electron_IsoEff_SF_FixedCutTight.clear();
