@@ -470,7 +470,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     // initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
   //
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
+  
   m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
   m_cutflowHist->SetBit(TH1::kCanRebin);
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
@@ -479,7 +479,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_cutflowHistW->SetBit(TH1::kCanRebin);
 
   // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  //
+  
   m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
   m_el_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
@@ -498,9 +498,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);
   m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
   m_truth_cutflowHist_1->SetBit(TH1::kCanRebin);
-    
-  // Note: the following commented-out code is needed for anyone developing/running in ROOT 6.04.10
   /*
+  // Note: the following commented-out code is needed for anyone developing/running in ROOT 6.04.10
+  
   //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
   //
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
@@ -531,8 +531,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
   m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
   m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
-  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);*/
-
+  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  */
   // start labelling the bins for the event cutflow
   //
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");

@@ -211,6 +211,9 @@ protected:
   bool m_TileError;
   bool m_LArError;
   bool m_SCTError;
+  uint32_t m_TileFlags;
+  uint32_t m_LArFlags;
+  uint32_t m_SCTFlags;
   int m_mcEventNumber;
   int m_mcChannelNumber;
   float m_mcEventWeight;
