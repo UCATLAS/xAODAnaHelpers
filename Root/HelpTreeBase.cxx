@@ -194,8 +194,10 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
     m_tree->Branch("weight_electron_trig", 		    &m_weight_electron_trig);
     m_tree->Branch("weight_electron_RecoEff_SF"  ,	    &m_weight_electron_RecoEff_SF  );
+    m_tree->Branch("weight_electron_IsoEff_SF_Loose",   &m_weight_electron_IsoEff_SF_Loose);
     m_tree->Branch("weight_electron_IsoEff_SF_FixedCutTight",   &m_weight_electron_IsoEff_SF_FixedCutTight);
     m_tree->Branch("weight_electron_PIDEff_SF_LHVeryLoose", &m_weight_electron_PIDEff_SF_LHVeryLoose);
+    m_tree->Branch("weight_electron_PIDEff_SF_LHLooseAndBLayer",	    &m_weight_electron_PIDEff_SF_LHLooseAndBLayer);
     m_tree->Branch("weight_electron_PIDEff_SF_LHLoose",	    &m_weight_electron_PIDEff_SF_LHLoose);
     m_tree->Branch("weight_electron_PIDEff_SF_LHMedium",    &m_weight_electron_PIDEff_SF_LHMedium);
     m_tree->Branch("weight_electron_PIDEff_SF_LHTight",	    &m_weight_electron_PIDEff_SF_LHTight);
@@ -365,16 +367,20 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
     SG::AuxElement::ConstAccessor< std::vector<float> >   electronTrigSFVec( "ElectronEfficiencyCorrector_TrigSyst_GLOBAL" );
     SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal("ElectronEfficiencyCorrector_RecoSyst_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Loose("ElectronEfficiencyCorrector_IsoSyst_IsoLoose_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_FixedCutTight("ElectronEfficiencyCorrector_IsoSyst_IsoFixedCutTight_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose_GLOBAL");
+    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LHLooseAndBLayer_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight_GLOBAL");
 
     if( electronTrigSFVec.isAvailable( *eventInfo ) ) { m_weight_electron_trig = electronTrigSFVec( *eventInfo ); } else { m_weight_electron_trig.push_back(-999); }
     if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_electron_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_electron_RecoEff_SF.push_back(-999.0); }
+    if( accIsoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_electron_IsoEff_SF_Loose = accIsoSFGlobal_Loose( *eventInfo ); } else { m_weight_electron_IsoEff_SF_Loose.push_back(-999.0); }
     if( accIsoSFGlobal_FixedCutTight.isAvailable( *eventInfo ) ) { m_weight_electron_IsoEff_SF_FixedCutTight = accIsoSFGlobal_FixedCutTight( *eventInfo ); } else { m_weight_electron_IsoEff_SF_FixedCutTight.push_back(-999.0); }
     if( accPIDSFGlobal_LHVeryLoose.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHVeryLoose = accPIDSFGlobal_LHVeryLoose( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHVeryLoose.push_back(-999.0); }
+    if( accPIDSFGlobal_LHLooseAndBLayer.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHLooseAndBLayer = accPIDSFGlobal_LHLooseAndBLayer( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHLooseAndBLayer.push_back(-999.0); }
     if( accPIDSFGlobal_LHLoose.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHLoose = accPIDSFGlobal_LHLoose( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHLoose.push_back(-999.0); }
     if( accPIDSFGlobal_LHMedium.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHMedium = accPIDSFGlobal_LHMedium( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHMedium.push_back(-999.0); }
     if( accPIDSFGlobal_LHTight.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHTight= accPIDSFGlobal_LHTight( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHTight.push_back(-999.0); }
@@ -636,7 +642,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       //
       static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapMuAcc("isTrigMatchedMapMu");
 
-      std::vector<int> matches; 
+      std::vector<int> matches;
 
       if ( isTrigMatchedMapMuAcc.isAvailable( *muon_itr ) ) {
 	 // loop over map and fill branches
@@ -649,13 +655,13 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 	 matches.push_back( -1 );
 	 m_muon_listTrigChains.push_back("NONE");
        }
-       
+
        m_muon_isTrigMatchedToChain.push_back(matches);
-       
+
        // if at least one match among the chains is found, say this muon is trigger matched
        if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_muon_isTrigMatched.push_back(1); }
        else { m_muon_isTrigMatched.push_back(0); }
-       
+
     }
 
 
@@ -990,8 +996,10 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_RecoEff_SF"  ,		 &m_el_RecoEff_SF  );
     m_tree->Branch("el_TrigEff_SF"  ,		 &m_el_TrigEff_SF  );
     m_tree->Branch("el_TrigMCEff"   ,		 &m_el_TrigMCEff  );
+    m_tree->Branch("el_IsoEff_SF_Loose"  , &m_el_IsoEff_SF_Loose );
     m_tree->Branch("el_IsoEff_SF_FixedCutTight"  , &m_el_IsoEff_SF_FixedCutTight );
     m_tree->Branch("el_PIDEff_SF_LHVeryLoose",   &m_el_PIDEff_SF_LHVeryLoose);
+    m_tree->Branch("el_PIDEff_SF_LHLooseAndBLayer",  &m_el_PIDEff_SF_LHLooseAndBLayer);
     m_tree->Branch("el_PIDEff_SF_LHLoose",       &m_el_PIDEff_SF_LHLoose);
     m_tree->Branch("el_PIDEff_SF_LHMedium",      &m_el_PIDEff_SF_LHMedium);
     m_tree->Branch("el_PIDEff_SF_LHTight",       &m_el_PIDEff_SF_LHTight);
@@ -1050,7 +1058,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       m_el_eta.push_back( (el_itr)->eta() );
       m_el_phi.push_back( (el_itr)->phi() );
       m_el_m.push_back  ( (el_itr)->m() / m_units );
-      
+
       float calo_eta   = ( el_itr->caloCluster() ) ? el_itr->caloCluster()->etaBE(2) : -999.0;
       m_el_caloCluster_eta.push_back( calo_eta );
 
@@ -1062,7 +1070,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       //
       static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapElAcc("isTrigMatchedMapEl");
 
-      std::vector<int> matches; 
+      std::vector<int> matches;
 
       if ( isTrigMatchedMapElAcc.isAvailable( *el_itr ) ) {
 	 // loop over map and fill branches
@@ -1075,13 +1083,13 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 	 matches.push_back( -1 );
 	 m_el_listTrigChains.push_back("NONE");
        }
-       
+
        m_el_isTrigMatchedToChain.push_back(matches);
-       
+
        // if at least one match among the chains is found, say this electron is trigger matched
        if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_el_isTrigMatched.push_back(1); }
        else { m_el_isTrigMatched.push_back(0); }
-       
+
     }
 
     if ( m_elInfoSwitch->m_isolation ) {
@@ -1232,9 +1240,11 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
       static SG::AuxElement::Accessor< std::vector< float > > accTrigSF("ElectronEfficiencyCorrector_TrigSyst");
       static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff("ElectronEfficiencyCorrector_TrigMCEffSyst");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Loose("ElectronEfficiencyCorrector_IsoSyst_IsoLoose");
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_FixedCutTight("ElectronEfficiencyCorrector_IsoSyst_IsoFixedCutTight");
       static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose");
-      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose");
+      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LHLoose");
+      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLooseAndBLayer");
       static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium");
       static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight");
 
@@ -1243,8 +1253,10 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       if( accRecoSF.isAvailable( *el_itr ) ) { m_el_RecoEff_SF.push_back( accRecoSF( *el_itr ) ); } else { m_el_RecoEff_SF.push_back( junk ); }
       if( accTrigSF.isAvailable( *el_itr ) ) { m_el_TrigEff_SF.push_back( accTrigSF( *el_itr ) ); } else { m_el_TrigEff_SF.push_back( junk ); }
       if( accTrigMCEff.isAvailable( *el_itr ) ) { m_el_TrigMCEff.push_back( accIsoSF_FixedCutTight( *el_itr ) ); } else { m_el_TrigMCEff.push_back( junk ); }
+      if( accIsoSF_Loose.isAvailable( *el_itr ) ) { m_el_IsoEff_SF_Loose.push_back( accIsoSF_Loose( *el_itr ) ); } else { m_el_IsoEff_SF_Loose.push_back( junk ); }
       if( accIsoSF_FixedCutTight.isAvailable( *el_itr ) ) { m_el_IsoEff_SF_FixedCutTight.push_back( accIsoSF_FixedCutTight( *el_itr ) ); } else { m_el_IsoEff_SF_FixedCutTight.push_back( junk ); }
       if( accPIDSF_LHVeryLoose.isAvailable( *el_itr ) ) { m_el_PIDEff_SF_LHVeryLoose.push_back( accPIDSF_LHVeryLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHVeryLoose.push_back( junk ); }
+      if( accPIDSF_LHLooseAndBLayer.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( accPIDSF_LHLooseAndBLayer( *el_itr ) ); } else { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( junk ); }
       if( accPIDSF_LHLoose.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLoose.push_back( accPIDSF_LHLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHLoose.push_back( junk ); }
       if( accPIDSF_LHMedium.isAvailable( *el_itr ) )    { m_el_PIDEff_SF_LHMedium.push_back( accPIDSF_LHMedium( *el_itr ) ); } else { m_el_PIDEff_SF_LHMedium.push_back( junk ); }
       if( accPIDSF_LHTight.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHTight.push_back( accPIDSF_LHTight( *el_itr ) ); } else { m_el_PIDEff_SF_LHTight.push_back( junk ); }
@@ -1345,8 +1357,10 @@ void HelpTreeBase::ClearElectrons() {
     m_el_RecoEff_SF.clear();
     m_el_TrigEff_SF.clear();
     m_el_TrigMCEff.clear();
+    m_el_IsoEff_SF_Loose.clear();
     m_el_IsoEff_SF_FixedCutTight.clear();
     m_el_PIDEff_SF_LHVeryLoose.clear();
+    m_el_PIDEff_SF_LHLooseAndBLayer.clear();
     m_el_PIDEff_SF_LHLoose.clear();
     m_el_PIDEff_SF_LHMedium.clear();
     m_el_PIDEff_SF_LHTight.clear();
@@ -3085,8 +3099,10 @@ void HelpTreeBase::ClearEvent() {
   if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
     m_weight_electron_trig.clear();
     m_weight_electron_RecoEff_SF.clear();
+    m_weight_electron_IsoEff_SF_Loose.clear();
     m_weight_electron_IsoEff_SF_FixedCutTight.clear();
     m_weight_electron_PIDEff_SF_LHVeryLoose.clear();
+    m_weight_electron_PIDEff_SF_LHLooseAndBLayer.clear();
     m_weight_electron_PIDEff_SF_LHLoose.clear();
     m_weight_electron_PIDEff_SF_LHMedium.clear();
     m_weight_electron_PIDEff_SF_LHTight.clear();
