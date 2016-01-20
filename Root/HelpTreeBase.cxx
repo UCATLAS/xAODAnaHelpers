@@ -196,8 +196,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("weight_electron_RecoEff_SF"  ,	    &m_weight_electron_RecoEff_SF  );
     m_tree->Branch("weight_electron_IsoEff_SF_Loose",   &m_weight_electron_IsoEff_SF_Loose);
     m_tree->Branch("weight_electron_IsoEff_SF_FixedCutTight",   &m_weight_electron_IsoEff_SF_FixedCutTight);
-    m_tree->Branch("weight_electron_PIDEff_SF_LHVeryLoose", &m_weight_electron_PIDEff_SF_LHVeryLoose);
-    m_tree->Branch("weight_electron_PIDEff_SF_LHLooseAndBLayer",	    &m_weight_electron_PIDEff_SF_LHLooseAndBLayer);
+    m_tree->Branch("weight_electron_PIDEff_SF_LHLooseAndBLayer", &m_weight_electron_PIDEff_SF_LHLooseAndBLayer);
     m_tree->Branch("weight_electron_PIDEff_SF_LHLoose",	    &m_weight_electron_PIDEff_SF_LHLoose);
     m_tree->Branch("weight_electron_PIDEff_SF_LHMedium",    &m_weight_electron_PIDEff_SF_LHMedium);
     m_tree->Branch("weight_electron_PIDEff_SF_LHTight",	    &m_weight_electron_PIDEff_SF_LHTight);
@@ -369,7 +368,6 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
     SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal("ElectronEfficiencyCorrector_RecoSyst_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Loose("ElectronEfficiencyCorrector_IsoSyst_IsoLoose_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_FixedCutTight("ElectronEfficiencyCorrector_IsoSyst_IsoFixedCutTight_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LHLooseAndBLayer_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose_GLOBAL");
     SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium_GLOBAL");
@@ -379,7 +377,6 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
     if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_electron_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_electron_RecoEff_SF.push_back(-999.0); }
     if( accIsoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_electron_IsoEff_SF_Loose = accIsoSFGlobal_Loose( *eventInfo ); } else { m_weight_electron_IsoEff_SF_Loose.push_back(-999.0); }
     if( accIsoSFGlobal_FixedCutTight.isAvailable( *eventInfo ) ) { m_weight_electron_IsoEff_SF_FixedCutTight = accIsoSFGlobal_FixedCutTight( *eventInfo ); } else { m_weight_electron_IsoEff_SF_FixedCutTight.push_back(-999.0); }
-    if( accPIDSFGlobal_LHVeryLoose.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHVeryLoose = accPIDSFGlobal_LHVeryLoose( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHVeryLoose.push_back(-999.0); }
     if( accPIDSFGlobal_LHLooseAndBLayer.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHLooseAndBLayer = accPIDSFGlobal_LHLooseAndBLayer( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHLooseAndBLayer.push_back(-999.0); }
     if( accPIDSFGlobal_LHLoose.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHLoose = accPIDSFGlobal_LHLoose( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHLoose.push_back(-999.0); }
     if( accPIDSFGlobal_LHMedium.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHMedium = accPIDSFGlobal_LHMedium( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHMedium.push_back(-999.0); }
@@ -976,8 +973,6 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   }
 
   if ( m_elInfoSwitch->m_PID ) {
-    m_tree->Branch("nel_LHVeryLoose",  &m_nel_LHVeryLoose);
-    m_tree->Branch("el_LHVeryLoose",   &m_el_LHVeryLoose);
     m_tree->Branch("nel_LHLoose",      &m_nel_LHLoose);
     m_tree->Branch("el_LHLoose",       &m_el_LHLoose);
     m_tree->Branch("nel_LHMedium",     &m_nel_LHMedium);
@@ -998,7 +993,6 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
     m_tree->Branch("el_TrigMCEff"   ,		 &m_el_TrigMCEff  );
     m_tree->Branch("el_IsoEff_SF_Loose"  , &m_el_IsoEff_SF_Loose );
     m_tree->Branch("el_IsoEff_SF_FixedCutTight"  , &m_el_IsoEff_SF_FixedCutTight );
-    m_tree->Branch("el_PIDEff_SF_LHVeryLoose",   &m_el_PIDEff_SF_LHVeryLoose);
     m_tree->Branch("el_PIDEff_SF_LHLooseAndBLayer",  &m_el_PIDEff_SF_LHLooseAndBLayer);
     m_tree->Branch("el_PIDEff_SF_LHLoose",       &m_el_PIDEff_SF_LHLoose);
     m_tree->Branch("el_PIDEff_SF_LHMedium",      &m_el_PIDEff_SF_LHMedium);
@@ -1130,7 +1124,6 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
 
     if ( m_elInfoSwitch->m_PID ) {
 
-      static SG::AuxElement::Accessor<char> LHVeryLooseAcc ("LHVeryLoose");
       static SG::AuxElement::Accessor<char> LHLooseAcc ("LHLoose");
       static SG::AuxElement::Accessor<char> LHMediumAcc ("LHMedium");
       static SG::AuxElement::Accessor<char> LHTightAcc ("LHTight");
@@ -1139,10 +1132,6 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       static SG::AuxElement::Accessor<char> EMMediumAcc ("Medium");
       static SG::AuxElement::Accessor<char> EMTightAcc ("Tight");
 
-      if ( LHVeryLooseAcc.isAvailable( *el_itr ) ) {
-        m_el_LHVeryLoose.push_back( LHVeryLooseAcc( *el_itr ) );
-	if ( LHVeryLooseAcc( *el_itr ) == 1 ) { ++m_nel_LHVeryLoose; }
-      } else { m_el_LHVeryLoose.push_back( -1 ); }
       if ( LHLooseAcc.isAvailable( *el_itr ) ) {
         m_el_LHLoose.push_back( LHLooseAcc( *el_itr ) );
         if ( LHLooseAcc( *el_itr ) == 1 ) { ++m_nel_LHLoose; }
@@ -1242,7 +1231,6 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff("ElectronEfficiencyCorrector_TrigMCEffSyst");
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Loose("ElectronEfficiencyCorrector_IsoSyst_IsoLoose");
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_FixedCutTight("ElectronEfficiencyCorrector_IsoSyst_IsoFixedCutTight");
-      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHVeryLoose("ElectronEfficiencyCorrector_PIDSyst_LHVeryLoose");
       static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LHLoose");
       static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLooseAndBLayer");
       static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium");
@@ -1255,7 +1243,6 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       if( accTrigMCEff.isAvailable( *el_itr ) ) { m_el_TrigMCEff.push_back( accIsoSF_FixedCutTight( *el_itr ) ); } else { m_el_TrigMCEff.push_back( junk ); }
       if( accIsoSF_Loose.isAvailable( *el_itr ) ) { m_el_IsoEff_SF_Loose.push_back( accIsoSF_Loose( *el_itr ) ); } else { m_el_IsoEff_SF_Loose.push_back( junk ); }
       if( accIsoSF_FixedCutTight.isAvailable( *el_itr ) ) { m_el_IsoEff_SF_FixedCutTight.push_back( accIsoSF_FixedCutTight( *el_itr ) ); } else { m_el_IsoEff_SF_FixedCutTight.push_back( junk ); }
-      if( accPIDSF_LHVeryLoose.isAvailable( *el_itr ) ) { m_el_PIDEff_SF_LHVeryLoose.push_back( accPIDSF_LHVeryLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHVeryLoose.push_back( junk ); }
       if( accPIDSF_LHLooseAndBLayer.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( accPIDSF_LHLooseAndBLayer( *el_itr ) ); } else { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( junk ); }
       if( accPIDSF_LHLoose.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLoose.push_back( accPIDSF_LHLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHLoose.push_back( junk ); }
       if( accPIDSF_LHMedium.isAvailable( *el_itr ) )    { m_el_PIDEff_SF_LHMedium.push_back( accPIDSF_LHMedium( *el_itr ) ); } else { m_el_PIDEff_SF_LHMedium.push_back( junk ); }
@@ -1311,8 +1298,6 @@ void HelpTreeBase::ClearElectrons() {
   }
 
   if ( m_elInfoSwitch->m_PID ) {
-    m_nel_LHVeryLoose = 0;
-    m_el_LHVeryLoose.clear();
     m_nel_LHLoose = 0;
     m_el_LHLoose.clear();
     m_nel_LHMedium = 0;
@@ -1359,7 +1344,6 @@ void HelpTreeBase::ClearElectrons() {
     m_el_TrigMCEff.clear();
     m_el_IsoEff_SF_Loose.clear();
     m_el_IsoEff_SF_FixedCutTight.clear();
-    m_el_PIDEff_SF_LHVeryLoose.clear();
     m_el_PIDEff_SF_LHLooseAndBLayer.clear();
     m_el_PIDEff_SF_LHLoose.clear();
     m_el_PIDEff_SF_LHMedium.clear();
@@ -3101,7 +3085,6 @@ void HelpTreeBase::ClearEvent() {
     m_weight_electron_RecoEff_SF.clear();
     m_weight_electron_IsoEff_SF_Loose.clear();
     m_weight_electron_IsoEff_SF_FixedCutTight.clear();
-    m_weight_electron_PIDEff_SF_LHVeryLoose.clear();
     m_weight_electron_PIDEff_SF_LHLooseAndBLayer.clear();
     m_weight_electron_PIDEff_SF_LHLoose.clear();
     m_weight_electron_PIDEff_SF_LHMedium.clear();
