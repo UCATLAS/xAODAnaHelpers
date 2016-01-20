@@ -249,11 +249,8 @@ protected:
   std::vector<float> m_caloCluster_phi;
   std::vector<float> m_caloCluster_e;
 
-  // trigger scale factors
-  std::vector<float> m_weight_muon_trig;
-
   // lepton SFs per event (product of each object SF)
-  std::vector<float> m_weight_muon_RecoEff_SF;
+  std::vector<float> m_weight_muon_RecoEff_SF_Loose;
   std::vector<float> m_weight_muon_IsoEff_SF_LooseTrackOnly;
   std::vector<float> m_weight_muon_IsoEff_SF_Loose;
   std::vector<float> m_weight_muon_IsoEff_SF_Tight;
@@ -600,7 +597,11 @@ protected:
 
   // scale factors w/ sys
   // per object
-  std::vector< std::vector< float > > m_muon_RecoEff_SF;
+  std::vector< std::vector< float > > m_muon_RecoEff_SF_Loose;
+  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_Loose;
+  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly;
+  std::vector< float >                m_muon_TrigMCEff_Loose_Loose;
+  std::vector< float >                m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_LooseTrackOnly;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_Loose;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_Tight;
@@ -695,8 +696,10 @@ protected:
   // scale factors w/ sys
   // per object
   std::vector< std::vector< float > > m_el_RecoEff_SF;
-  std::vector< std::vector< float > > m_el_TrigEff_SF;
-  std::vector< std::vector< float > > m_el_TrigMCEff;
+  std::vector< std::vector< float > > m_el_TrigEff_SF_LHLooseAndBLayer;
+  std::vector< std::vector< float > > m_el_TrigEff_SF_LHTight;  
+  std::vector< std::vector< float > > m_el_TrigMCEff_LHLooseAndBLayer;
+  std::vector< std::vector< float > > m_el_TrigMCEff_LHTight;
   std::vector< std::vector< float > > m_el_IsoEff_SF_Loose;
   std::vector< std::vector< float > > m_el_IsoEff_SF_FixedCutTight;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHLooseAndBLayer;
