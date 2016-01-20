@@ -51,15 +51,15 @@ class ElectronLHPIDManager
 
      ~ElectronLHPIDManager()
      {
-     	if ( m_asgElectronLikelihoodTool_Loose )       { m_asgElectronLikelihoodTool_Loose = nullptr;	delete m_asgElectronLikelihoodTool_Loose;     }
-     	if ( m_asgElectronLikelihoodTool_Medium )      { m_asgElectronLikelihoodTool_Medium = nullptr;	delete m_asgElectronLikelihoodTool_Medium;    }
-     	if ( m_asgElectronLikelihoodTool_Tight )       { m_asgElectronLikelihoodTool_Tight = nullptr;	delete m_asgElectronLikelihoodTool_Tight;     }
+     	if ( m_asgElectronLikelihoodTool_Loose )  { delete m_asgElectronLikelihoodTool_Loose;	 m_asgElectronLikelihoodTool_Loose = nullptr;  }
+     	if ( m_asgElectronLikelihoodTool_Medium ) { delete m_asgElectronLikelihoodTool_Medium;   m_asgElectronLikelihoodTool_Medium = nullptr; }
+     	if ( m_asgElectronLikelihoodTool_Tight )  { delete m_asgElectronLikelihoodTool_Tight;	 m_asgElectronLikelihoodTool_Tight = nullptr;  }
      };
 
 
      StatusCode setupWPs( bool configTools, std::string selector_name = "", std::string confDir = "", std::string year = "" ) {
 	
-	const std::string selectedWP = ( m_selectedWP == "Loose_CutBL" ) ? "Loose" : m_selectedWP;
+	const std::string selectedWP = ( m_selectedWP == "LooseAndBLayer" ) ? "Loose" : m_selectedWP;
 
         HelperClasses::EnumParser<LikeEnum::Menu> selectedWP_parser;
         unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(selectedWP) );
@@ -78,7 +78,7 @@ class ElectronLHPIDManager
 	      /* instantiate tools (do it for all) */
 
 	      const std::string WP            = it.first;
-	      const std::string extra_string  = ( m_selectedWP == "Loose_CutBL" && (WP.find("Loose") != std::string::npos) ) ? "_CutBL" : "";
+	      const std::string extra_string  = ( m_selectedWP == "LooseAndBLayer" && (WP.find("Loose") != std::string::npos) ) ? "_CutBL" : "";
 
 	      std::string tool_name = selector_name + "_" + WP + extra_string; 
 	      
@@ -142,7 +142,7 @@ class ElectronLHPIDManager
 
      const std::string getSelectedWP () { 
        
-       const std::string WP = ( m_selectedWP == "Loose_CutBL" ) ? "Loose" : m_selectedWP;
+       const std::string WP = ( m_selectedWP == "LooseAndBLayer" ) ? "Loose" : m_selectedWP;
        return WP; 
        
      }

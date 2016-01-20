@@ -59,7 +59,8 @@ public:
   float	     	 m_z0sintheta_max;	     /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
   bool           m_doAuthorCut;
   bool           m_doOQCut;
-
+  bool           m_doBLTrackQualityCut;
+ 
   /* electron PID */
 
   bool           m_readIDFlagsFromDerivation;
@@ -117,10 +118,11 @@ private:
   int   m_el_cutflow_ptmax_cut;        //!
   int   m_el_cutflow_ptmin_cut;        //!
   int   m_el_cutflow_eta_cut;          //!
-  int   m_el_cutflow_PID_cut;          //!
   int   m_el_cutflow_z0sintheta_cut;   //!
   int   m_el_cutflow_d0_cut;           //!
   int   m_el_cutflow_d0sig_cut;        //!
+  int   m_el_cutflow_BL_cut;           //!
+  int   m_el_cutflow_PID_cut;          //!
   int   m_el_cutflow_iso_cut;          //!
 
   std::vector<std::string> m_IsoKeys;  //!

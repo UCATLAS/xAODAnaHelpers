@@ -264,7 +264,6 @@ protected:
   std::vector<float> m_weight_electron_RecoEff_SF;
   std::vector<float> m_weight_electron_IsoEff_SF_Loose;
   std::vector<float> m_weight_electron_IsoEff_SF_FixedCutTight;
-  std::vector<float> m_weight_electron_PIDEff_SF_LHVeryLoose;
   std::vector<float> m_weight_electron_PIDEff_SF_LHLooseAndBLayer;
   std::vector<float> m_weight_electron_PIDEff_SF_LHLoose;
   std::vector<float> m_weight_electron_PIDEff_SF_LHMedium;
@@ -681,8 +680,6 @@ protected:
   std::vector<float> m_el_topoetcone40;
 
   // PID
-  int m_nel_LHVeryLoose;
-  std::vector<int>   m_el_LHVeryLoose;
   int m_nel_LHLoose;
   std::vector<int>   m_el_LHLoose;
   int m_nel_LHMedium;
@@ -703,7 +700,6 @@ protected:
   std::vector< std::vector< float > > m_el_TrigMCEff;
   std::vector< std::vector< float > > m_el_IsoEff_SF_Loose;
   std::vector< std::vector< float > > m_el_IsoEff_SF_FixedCutTight;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHVeryLoose;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHLooseAndBLayer;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHLoose;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHMedium;
