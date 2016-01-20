@@ -48,6 +48,8 @@ public:
   std::string m_corrFileNameIso;
   std::string m_corrFileNameTrig;
   std::string m_corrFileNameTrigMCEff;
+  
+  std::string   m_WorkingPointIDTrig;
 
 private:
   int m_numEvent;         //!

@@ -241,16 +241,22 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // 1.
   // initialize the CP::MuonEfficiencyScaleFactors Tool for reco efficiency SF
   //
+  std::string recoEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Reco_" + m_WorkingPointReco;
 
-  if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>("MuonEfficiencyScaleFactors_effSF_Reco") ) {
-    m_asgMuonEffCorrTool_muSF_Reco = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>("MuonEfficiencyScaleFactors_effSF_Reco");
+  if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(recoEffSF_tool_name) ) {
+    m_asgMuonEffCorrTool_muSF_Reco = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>(recoEffSF_tool_name);
   } else {
-    m_asgMuonEffCorrTool_muSF_Reco = new CP::MuonEfficiencyScaleFactors("MuonEfficiencyScaleFactors_effSF_Reco");
+    m_asgMuonEffCorrTool_muSF_Reco = new CP::MuonEfficiencyScaleFactors(recoEffSF_tool_name);
     RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Reco->setProperty("WorkingPoint", m_WorkingPointReco ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for reco efficiency SF");
     RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Reco->setProperty("doAudit", false),"Failed to set doAudit property of MuonEfficiencyScaleFactors");
     RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Reco->initialize(), "Failed to properly initialize MuonEfficiencyScaleFactors for reco efficiency SF");
   }
 
+  //
+  //  Add the chosen WP to the string labelling the vector<SF> decoration
+  //
+  m_outputSystNamesReco = m_outputSystNamesReco + "_" + m_WorkingPointReco;
+    
   if ( m_debug ) {
 
     // Get a list of affecting systematics
@@ -284,13 +290,18 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   //
   // Add an "Iso" suffix to the WP (required for tool configuration)
   //
-  std::string tool_WP = m_WorkingPointIso + "Iso";
 
   std::string isoEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Iso_" + m_WorkingPointIso;
-  m_asgMuonEffCorrTool_muSF_Iso = new CP::MuonEfficiencyScaleFactors(isoEffSF_tool_name);
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->setProperty("WorkingPoint", tool_WP ), "Failed to set Working Point property of MuonEfficiencyScaleFactors for iso efficiency SF");
-  RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->initialize(), "Failed to properly initialize MuonEfficiencyScaleFactors for iso efficiency SF");
-
+  
+  if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(isoEffSF_tool_name) ) {
+    m_asgMuonEffCorrTool_muSF_Iso = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>(isoEffSF_tool_name);
+  } else {  
+    m_asgMuonEffCorrTool_muSF_Iso = new CP::MuonEfficiencyScaleFactors(isoEffSF_tool_name);
+    std::string tool_WP = m_WorkingPointIso + "Iso";
+    RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->setProperty("WorkingPoint", tool_WP ), "Failed to set Working Point property of MuonEfficiencyScaleFactors for iso efficiency SF");
+    RETURN_CHECK( "MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Iso->initialize(), "Failed to properly initialize MuonEfficiencyScaleFactors for iso efficiency SF");
+  }
+  
   //
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -324,12 +335,15 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // 3.
   // Initialise the CP::MuonTriggerScaleFactors tool
+  //  
   //
 
-  if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>("MuonTriggerScaleFactors_effSF_Trig") ) {
-    m_asgMuonEffCorrTool_muSF_Trig = asg::ToolStore::get<CP::MuonTriggerScaleFactors>("MuonTriggerScaleFactors_effSF_Trig");
-  } else {
-    m_asgMuonEffCorrTool_muSF_Trig = new CP::MuonTriggerScaleFactors("MuonTriggerScaleFactors_effSF_Trig");
+  std::string trigEff_tool_name = "MuonTriggerScaleFactors_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+  
+  if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>(trigEff_tool_name) ) {
+    m_asgMuonEffCorrTool_muSF_Trig = asg::ToolStore::get<CP::MuonTriggerScaleFactors>(trigEff_tool_name);
+  } else { 
+    m_asgMuonEffCorrTool_muSF_Trig = new CP::MuonTriggerScaleFactors(trigEff_tool_name);
 
     int runNumber(m_runNumber);
     if ( asg::ToolStore::contains<CP::PileupReweightingTool>("Pileup") ) {
@@ -349,15 +363,20 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     if( m_asgMuonEffCorrTool_muSF_Trig->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
       Warning("initialize()","Cannot set RunNumber for MuonTriggerScaleFactors tool");
     }
-    //
+    
     // Add an "Iso" prefix to the WP (required for tool configuration)
     //
-    std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
+    std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;  
+    
     RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Trig->setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
     RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Trig->setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
     RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_asgMuonEffCorrTool_muSF_Trig->initialize(), "Failed to properly initialize MuonTriggerScaleFactors");
   }
 
+  //  Add the chosen WP to the string labelling the vector<SF> decoration
+  //
+  m_outputSystNamesTrig = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+  
   if ( m_debug ) {
 
     // Get a list of affecting systematics
@@ -572,12 +591,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_MuRecoEff_SF
     //
-    std::string sfName = "MuRecoEff_SF";
+    std::string sfName = "MuRecoEff_SF_" + m_WorkingPointReco;;
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
        sfName.insert( 0, prepend );
     }
-    if ( m_debug ) { Info("executeSF()", "Muon reco efficiency SF decoration name is: %s", sfName.c_str()); }
+    if ( m_debug ) { Info("executeSF()", "Muon reco efficiency SF sys names vector name is: %s", sfName.c_str()); }
     sysVariationNamesReco->push_back(sfName);
 
     // apply syst
@@ -632,6 +651,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
          Info( "executeSF()", " ");
 	 Info( "executeSF()", "Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
 	 Info( "executeSF()", " ");
+	 Info( "executeSF()", "Reco eff. SF decoration: %s", m_outputSystNamesReco.c_str() );
+	 Info( "executeSF()", " ");
          Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
          Info( "executeSF()", " ");
          Info( "executeSF()", "Reco efficiency:");
@@ -684,7 +705,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        std::string prepend = syst_it.name() + "_";
        sfName.insert( 0, prepend );
     }
-    if ( m_debug ) { Info("executeSF()", "Muon iso efficiency SF decoration name is: %s", sfName.c_str()); }
+    if ( m_debug ) { Info("executeSF()", "Muon iso efficiency SF sys names vector name is: %s", sfName.c_str()); }
     sysVariationNamesIso->push_back(sfName);
 
     // apply syst
@@ -767,25 +788,29 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
   }  // close loop on isolation efficiency SF systematics
 
-  // 3.
-  // Trigger efficiency SF - this is a per-EVENT weight
-  //
-  SG::AuxElement::Decorator< std::vector<float> > sfVecTrig( m_outputSystNamesTrig );
 
-  // Loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
+  // 3.
+  // Trigger efficiency SF - this is in principle given by the MCP tool as a per-EVENT weight
+  // 
+  // To allow more freedom to the user, we calculate it as a per-muon weight with a trick
+  // We store also the MC efficiency per-muon
+
+  // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
-  for ( const auto& syst_it : m_systListTrig ) {
+  // NB: calculation of the event SF is up to the analyzer
+   
+  for ( const auto& syst_it : m_systListIso ) {
 
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_MuTrigEff_SF
     //
-    std::string sfName = "MuTrigEff_SF";
+    std::string sfName = "MuTrigEff_SF_" + m_WorkingPointRecoTrig + "_" + m_WorkingPointIsoTrig;
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
        sfName.insert( 0, prepend );
     }
-    if ( m_debug ) { Info("executeSF()", "Trigger efficiency SF decoration name is: %s", sfName.c_str()); }
+    if ( m_debug ) { Info("executeSF()", "Trigger efficiency SF sys names vector name is: %s", sfName.c_str()); }
     sysVariationNamesTrig->push_back(sfName);
 
     // apply syst
@@ -796,58 +821,76 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     }
     if ( m_debug ) { Info("executeSF()", "Successfully applied systematic: %s", syst_it.name().c_str()); }
 
+
+    // decoration for muon MC trigger efficiency 
+    // (NB: it's assumed to be w/o syst, hence it's a flat "double". All uncertainties are in the SF) 
+    //
+    std::string eff_decor = "MuonEfficiencyCorrector_TrigMCEff_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+    SG::AuxElement::Decorator< double > effMC( eff_decor );
+    
     // and now apply trigger efficiency SF!
     //
-    unsigned int nMuons = inputMuons->size();
-    if ( m_debug ) { Info( "executeSF", "Applying trigger efficiency SF"); }
+    unsigned int idx(0);
+    for ( auto mu_itr : *(inputMuons) ) {
 
-    // obtain trigger efficiency SF
-    //
-    double triggerEffSF(1.0); // tool wants a double
-    if ( nMuons > 0 ) {
-      if ( !m_SingleMuTrig.empty() ) {
-	if ( m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *inputMuons, triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
-	  Warning( "executeSF()", "Problem in getTriggerScaleFactor - single muon trigger(s)");
-	  triggerEffSF = 1.0;
-	}
-        if ( m_debug ) {
-          Info( "executeSF()", "===>>>");
-          Info( "executeSF()", " ");
-          Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
-          Info( "executeSF()", " ");
-          Info( "executeSF()", "Trigger efficiency SF:");
-          Info( "executeSF()", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
-          Info( "executeSF()", "--------------------------------------");
-        }
-      }
-      /*
-      if ( nMuons == 2 ) {
-        if ( !m_DiMuTrig.empty() ) {
-          if ( m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *inputMuons, triggerEffSF, m_DiMuTrig ) != CP::CorrectionCode::Ok ) {
-	    Warning( "executeSF()", "Problem in getTriggerScaleFactor - dimuon trigger(s)");
-	    triggerEffSF = 1.0;
-          }
-          if ( m_debug ) {
-            Info( "executeSF()", "===>>>");
-            Info( "executeSF()", " ");
-            Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
-            Info( "executeSF()", " ");
-            Info( "executeSF()", "Trigger efficiency SF:");
-            Info( "executeSF()", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
-            Info( "executeSF()", "--------------------------------------");
-          }
-        }
-      }
-      */
-    }
-    //
-    // Add trigger SF to event decoration vector
-    //
-    sfVecTrig( *eventInfo ).push_back( triggerEffSF );
+       if ( m_debug ) { Info( "executeSF()", "Applying trigger efficiency SF and MC efficiency" ); }
 
+       // Pass a container with only the muon in question to the tool
+       // (use a view container to be light weight)
+       //
+       ConstDataVector<xAOD::MuonContainer> mySingleMuonCont(SG::VIEW_ELEMENTS); 
+       mySingleMuonCont.push_back( mu_itr );
+       
+       //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
+       //
+       SG::AuxElement::Decorator< std::vector<float> > sfVecTrig( m_outputSystNamesTrig );
+       if ( !sfVecTrig.isAvailable( *mu_itr ) ) {
+	 sfVecTrig( *mu_itr ) = std::vector<float>();
+       }  
+       
+       double triggerEffSF(1.0); // tool wants a double  
+       if ( !m_SingleMuTrig.empty() && m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
+	 Warning( "executeSF()", "Problem in getTriggerScaleFactor - single muon trigger(s)");
+	 triggerEffSF = 1.0;
+       }
+        
+       // Add it to decoration vector
+       //
+       sfVecTrig( *mu_itr ).push_back(triggerEffSF);
+
+       double triggerMCEff(0.0); // tool wants a double 
+       if ( !m_SingleMuTrig.empty() && m_asgMuonEffCorrTool_muSF_Trig->getTriggerEfficiency( *mu_itr, triggerMCEff, m_SingleMuTrig, !m_isMC ) != CP::CorrectionCode::Ok ) {
+         Warning( "executeSF()", "Problem in getTriggerEfficiency - single muon trigger(s)");
+         triggerMCEff = 0.0;
+       }
+       // Decorate muon (only once)
+       //
+       if ( !effMC.isAvailable( *mu_itr ) ) { effMC( *mu_itr ) = triggerMCEff; }
+
+       if ( m_debug ) {
+         Info( "executeSF()", "===>>>");
+         Info( "executeSF()", " ");
+	 Info( "executeSF()", "Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
+	 Info( "executeSF()", " ");
+	 Info( "executeSF()", "Trigger efficiency SF decoration: %s", m_outputSystNamesTrig.c_str() );
+	 Info( "executeSF()", "Trigger MC efficiency decoration: %s", eff_decor.c_str() );
+	 Info( "executeSF()", " ");
+         Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+         Info( "executeSF()", " ");
+         Info( "executeSF()", "Trigger efficiency SF:");
+         Info( "executeSF()", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
+         Info( "executeSF()", "Trigger MC efficiency:");
+         Info( "executeSF()", "\t %f (from getTriggerEfficiency())", triggerMCEff );	 
+         Info( "executeSF()", "--------------------------------------");
+       }
+
+       ++idx;
+
+    } // close muon loop
+    
   }  // close loop on trigger efficiency SF systematics
 
-  //
+
   // add list of reco/iso/trigger efficiency SF systematics names to TStore
   //
   // NB: we need to make sure that this is not pushed more than once in TStore!

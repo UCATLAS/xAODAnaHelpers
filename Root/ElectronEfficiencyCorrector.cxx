@@ -82,6 +82,8 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
   m_outputSystNamesTrig     = "ElectronEfficiencyCorrector_TrigSyst";
   m_outputSystNamesTrigMCEff = "ElectronEfficiencyCorrector_TrigMCEffSyst";
 
+  m_WorkingPointIDTrig      = "LooseAndBLayer";
+  
   // file(s) containing corrections
   //
   m_corrFileNamePID         = "";
@@ -132,6 +134,7 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     m_corrFileNameIso         = config->GetValue("CorrectionFileNameIso" , m_corrFileNameIso.c_str());
     m_corrFileNameTrig        = config->GetValue("CorrectionFileNameTrig" , m_corrFileNameTrig.c_str());
     m_corrFileNameTrigMCEff   = config->GetValue("CorrectionFileNameTrigMCEff" , m_corrFileNameTrigMCEff.c_str());
+    m_WorkingPointIDTrig      = config->GetValue("WorkingPointIDTrig" , m_WorkingPointIDTrig.c_str());
     
     config->Print();
 
@@ -404,18 +407,28 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // Initialise the AsgElectronEfficiencyCorrectionTool for Trigger Efficiency SF
   //
 
-  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_Trig") ) {
-    m_asgElEffCorrTool_elSF_Trig = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_Trig");
-  } else {
-    m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool("ElectronEfficiencyCorrectionTool_effSF_Trig");
-
-    m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-
-    std::vector<std::string> inputFilesTrig{ m_corrFileNameTrig } ; // initialise vector w/ all the files containing corrections
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("CorrectionFileNameList",inputFilesTrig),"Failed to set property CorrectionFileNameList");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Trig");
+  if ( m_WorkingPointIDTrig.empty() ) {
+    Error("initialize()", "m_WorkingPointIDTrig should not be empty! Exiting." );
+    return EL::StatusCode::FAILURE;
   }
+  
+  std::cout << "\n\n Trig ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
+  
+  //
+  //  Add the chosen WP to the string labelling the vector<SF> decoration
+  //
+  m_outputSystNamesTrig = m_outputSystNamesTrig + "_" + m_WorkingPointIDTrig;
+
+  std::string TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig;
+
+  m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool(TrigEffSF_tool_name);
+
+  m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+
+  std::vector<std::string> inputFilesTrig{ m_corrFileNameTrig } ; // initialise vector w/ all the files containing corrections
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("CorrectionFileNameList",inputFilesTrig),"Failed to set property CorrectionFileNameList");
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Trig");
 
   if ( m_debug ) {
 
@@ -446,19 +459,22 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // 5.
   // Initialise the AsgElectronEfficiencyCorrectionTool for Trigger Efficiency (for MC)
   //
+  
+  //
+  //  Add the chosen WP to the string labelling the vector<SF> decoration
+  //
+  m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_" + m_WorkingPointIDTrig;
 
-  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_TrigMCEff") ) {
-    m_asgElEffCorrTool_elSF_TrigMCEff = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>("ElectronEfficiencyCorrectionTool_effSF_TrigMCEff");
-  } else {
-    m_asgElEffCorrTool_elSF_TrigMCEff = new AsgElectronEfficiencyCorrectionTool("ElectronEfficiencyCorrectionTool_effSF_TrigMCEff");
+  std::string TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig;
 
-    m_asgElEffCorrTool_elSF_TrigMCEff->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  m_asgElEffCorrTool_elSF_TrigMCEff = new AsgElectronEfficiencyCorrectionTool(TrigMCEff_tool_name);
 
-    std::vector<std::string> inputFilesTrigMCEff{ m_corrFileNameTrigMCEff } ; // initialise vector w/ all the files containing corrections
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("CorrectionFileNameList",inputFilesTrigMCEff),"Failed to set property CorrectionFileNameList");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool TrigMCEff");
-  }
+  m_asgElEffCorrTool_elSF_TrigMCEff->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+
+  std::vector<std::string> inputFilesTrigMCEff{ m_corrFileNameTrigMCEff } ; // initialise vector w/ all the files containing corrections
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("CorrectionFileNameList",inputFilesTrigMCEff),"Failed to set property CorrectionFileNameList");
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+  RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool TrigMCEff");
 
   if ( m_debug ) {
 
@@ -606,11 +622,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_asgElEffCorrTool_elSF_PID )  { m_asgElEffCorrTool_elSF_PID = nullptr;   delete m_asgElEffCorrTool_elSF_PID;  }
-  if ( m_asgElEffCorrTool_elSF_Reco ) { m_asgElEffCorrTool_elSF_Reco = nullptr;  delete m_asgElEffCorrTool_elSF_Reco; }
-  if ( m_asgElEffCorrTool_elSF_Iso )  { m_asgElEffCorrTool_elSF_Iso = nullptr;   delete m_asgElEffCorrTool_elSF_Iso; }
-  if ( m_asgElEffCorrTool_elSF_Trig ) { m_asgElEffCorrTool_elSF_Trig = nullptr;  delete m_asgElEffCorrTool_elSF_Trig; }
-  if ( m_asgElEffCorrTool_elSF_TrigMCEff ) { m_asgElEffCorrTool_elSF_TrigMCEff = nullptr;  delete m_asgElEffCorrTool_elSF_TrigMCEff; }
+  if ( m_asgElEffCorrTool_elSF_PID )       { delete m_asgElEffCorrTool_elSF_PID;       m_asgElEffCorrTool_elSF_PID = nullptr;	    }
+  //if ( m_asgElEffCorrTool_elSF_Reco )      { delete m_asgElEffCorrTool_elSF_Reco;      m_asgElEffCorrTool_elSF_Reco = nullptr;	    } // why this crashes?
+  if ( m_asgElEffCorrTool_elSF_Iso )       { delete m_asgElEffCorrTool_elSF_Iso;       m_asgElEffCorrTool_elSF_Iso = nullptr;	    }
+  if ( m_asgElEffCorrTool_elSF_Trig )      { delete m_asgElEffCorrTool_elSF_Trig;      m_asgElEffCorrTool_elSF_Trig = nullptr;	    }
+  if ( m_asgElEffCorrTool_elSF_TrigMCEff ) { delete m_asgElEffCorrTool_elSF_TrigMCEff; m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }
