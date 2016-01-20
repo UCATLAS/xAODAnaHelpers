@@ -40,6 +40,7 @@ private:
 
   Trig::TrigDecisionTool*        m_trigDecTool;   //!
   TrigConf::xAODConfigTool*      m_trigConfTool;   //!
+  bool                           m_ownTDTAndTCT;   //!
 
 public:
 

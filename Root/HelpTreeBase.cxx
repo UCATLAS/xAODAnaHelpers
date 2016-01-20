@@ -134,9 +134,14 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
   if ( m_eventInfoSwitch->m_eventCleaning ) {
     
-    m_tree->Branch("TileError",          &m_TileError,      "TileError/O");
-    m_tree->Branch("SCTError",           &m_SCTError,      "SCTError/O");
-    m_tree->Branch("LArError",           &m_LArError,      "LArError/O");
+    m_tree->Branch("timeStamp",          &m_timeStamp,         "timeStamp/i");
+    m_tree->Branch("timeStampNSOffset",  &m_timeStampNSOffset, "timeStampNSOffset/i");
+    m_tree->Branch("TileError",          &m_TileError,         "TileError/O");
+    m_tree->Branch("SCTError",           &m_SCTError,          "SCTError/O");
+    m_tree->Branch("LArError",           &m_LArError,          "LArError/O");
+    m_tree->Branch("TileFlags",          &m_TileFlags,         "TileFlags/i");
+    m_tree->Branch("SCTFlags",           &m_SCTFlags,          "SCTFlags/i");
+    m_tree->Branch("LArFlags",           &m_LArFlags,          "LArFlags/i");
 
   }
     
@@ -222,12 +227,19 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
       
     if ( eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) m_LArError = true;
     else m_LArError = false;
-    
+    m_LArFlags = eventInfo->eventFlags(xAOD::EventInfo::LAr);
+      
     if ( eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) m_TileError = true;
     else m_TileError = false;
-    
+    m_TileFlags = eventInfo->eventFlags(xAOD::EventInfo::Tile);
+      
     if ( eventInfo->errorState(xAOD::EventInfo::SCT)==xAOD::EventInfo::Error ) m_SCTError = true;
     else m_SCTError = false;
+    m_SCTFlags = eventInfo->eventFlags(xAOD::EventInfo::SCT);
+      
+      
+    m_timeStamp = eventInfo->timeStamp();
+    m_timeStampNSOffset = eventInfo->timeStampNSOffset();
 
   }
 
@@ -3022,8 +3034,13 @@ void HelpTreeBase::ClearEvent() {
   m_LArError = false;
   m_TileError = false;
   m_SCTError = false;
+  m_LArFlags = 0;
+  m_TileFlags = 0;
+  m_SCTFlags = 0;
   m_mcEventWeight = 1.;
   m_weight_pileup = 1.;
+  m_timeStamp = -999;
+  m_timeStampNSOffset = -999;
   // pileup
   m_npv = -999;
   m_actualMu = m_averageMu = -999;
