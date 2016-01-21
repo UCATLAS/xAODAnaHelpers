@@ -98,7 +98,7 @@ try:
   subprocess.call(["wget","-q",GRL_AllGood_PeriodE,"-O", "xAODAnaHelpers/data/PeriodE_"+GRL_AllGood_PeriodE.split('/')[-1]])
   subprocess.call(["wget","-q",GRL_AllGood_PeriodG,"-O", "xAODAnaHelpers/data/PeriodG_"+GRL_AllGood_PeriodG.split('/')[-1]])
   subprocess.call(["wget","-q",GRL_AllGood_PeriodH,"-O", "xAODAnaHelpers/data/PeriodH_"+GRL_AllGood_PeriodH.split('/')[-1]])
-  subprocess.call(["wget","-q",GRL_AllGood_PeriodJ,"-O", "xAODAnaJelpers/data/PeriodJ_"+GRL_AllGood_PeriodJ.split('/')[-1]])
+  subprocess.call(["wget","-q",GRL_AllGood_PeriodJ,"-O", "xAODAnaHelpers/data/PeriodJ_"+GRL_AllGood_PeriodJ.split('/')[-1]])
   subprocess.call(["wget","-q",GRL_AtlasReady,"-O","xAODAnaHelpers/data/"+GRL_AtlasReady.split('/')[-1]])
 except OSError as e:
   print "Error, wget is not available.  Will not download grl.  You can find the latest ATLASREADY version at", GRL_AtlasReady
