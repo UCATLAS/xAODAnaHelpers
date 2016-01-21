@@ -94,25 +94,32 @@ parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help=
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Can increase verbosity by adding more ``-vv``. Default: no verbosity')
 
-# first is the driver
+# first is the driver common arguments
+drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
+drivers_common.add_argument('--optSubmitFlags', metavar='', type=str, required=False, default=None)
+
+# then the drivers we provide support for
 drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
 direct = drivers_parser.add_parser('direct',
                                    help='Run your jobs locally.',
                                    usage=baseUsageStr.format('direct'),
-                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                   parents=[drivers_common])
 
 prooflite = drivers_parser.add_parser('prooflite',
                                       help='Run your jobs using ProofLite',
                                       usage=baseUsageStr.format('prooflite'),
-                                      formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+                                      formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                      parents=[drivers_common])
 
 prun = drivers_parser.add_parser('prun',
                                  help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.',
                                  usage=baseUsageStr.format('prun'),
-                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                 parents=[drivers_common])
 
-condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=baseUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
-lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=baseUsageStr.format('lsf'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=baseUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30), parents=[drivers_common])
+lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=baseUsageStr.format('lsf'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30), parents=[drivers_common])
 
 # standard options for other drivers
 #.add_argument('--optCacheLearnEntries', type=str, required=False, default=None)
@@ -162,7 +169,6 @@ prun.add_argument('--optCmtConfig',            metavar='', type=str, required=Fa
 prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=False, default=None)
 prun.add_argument('--optOfficial',             metavar='', type=int, required=False, default=None)
 prun.add_argument('--optVoms',                 metavar='', type=int, required=False, default=None)
-prun.add_argument('--optSubmitFlags',          metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
 
 # define arguments for condor driver
@@ -170,7 +176,6 @@ condor.add_argument('--optCondorConf', metavar='', type=str, required=False, def
 condor.add_argument('--optCondorWait', action='store_true' , required=False)
 
 # define arguments for lsf driver
-lsf.add_argument('--optLSFConf', metavar='', type=str, required=False, default='-q short')
 lsf.add_argument('--optLSFNFilesPerJob', metavar='', type=int, required=False, default=1)
 
 if __name__ == "__main__":
@@ -476,10 +481,8 @@ if __name__ == "__main__":
           setter = 'setBool'
         else:
           setter = 'setString'
-
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
         xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
-
 
       nc_outputSampleNameStr = args.optGridOutputSampleName
       driver.options().setString("nc_outputSampleName", nc_outputSampleNameStr)
@@ -488,11 +491,35 @@ if __name__ == "__main__":
     elif (args.driver == "condor"):
       driver = ROOT.EL.CondorDriver()
       driver.options().setBool   (ROOT.EL.Job.optBatchSharedFileSystem, False)
-      driver.options().setString (ROOT.EL.Job.optCondorConf           , args.optCondorConf)
+      for opt, t in map(lambda x: (x.dest, x.type), condor._actions):
+        if getattr(args, opt) is None: continue  # skip if not set
+        if opt in ['help', 'optCondorWait']: continue  # skip some options
+        if t in [float]:
+          setter = 'setDouble'
+        elif t in [int]:
+          setter = 'setInteger'
+        elif t in [bool]:
+          setter = 'setBool'
+        else:
+          setter = 'setString'
+        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
 
     elif (args.driver == "lsf"):
       driver = ROOT.EL.LSFDriver()
-      driver.options().setString(ROOT.EL.Job.optSubmitFlags, args.optLSFConf)
+      for opt, t in map(lambda x: (x.dest, x.type), lsf._actions):
+        if getattr(args, opt) is None: continue  # skip if not set
+        if opt in ['help', 'optLSFNFilesPerJob']: continue  # skip some options
+        if t in [float]:
+          setter = 'setDouble'
+        elif t in [int]:
+          setter = 'setInteger'
+        elif t in [bool]:
+          setter = 'setBool'
+        else:
+          setter = 'setString'
+        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
 
     xAH_logger.info("\tsubmit job")
     if args.driver in ["prun","lsf"]:
