@@ -141,7 +141,7 @@ lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=base
 
 # define arguments for prun driver
 prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridDestSE',           metavar='', type=str, required=False, default="MWT2_UC_LOCALGROUPDISK")
+prun.add_argument('--optGridDestSE',           metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridExpress',          metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
