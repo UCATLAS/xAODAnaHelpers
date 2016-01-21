@@ -136,8 +136,17 @@ prun = drivers_parser.add_parser('prun',
                                  formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                  parents=[drivers_common])
 
-condor = drivers_parser.add_parser('condor', help='Flock your jobs to condor', usage=baseUsageStr.format('condor'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30), parents=[drivers_common])
-lsf = drivers_parser.add_parser('lsf', help='Flock your jobs to lsf', usage=baseUsageStr.format('lsf'), formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30), parents=[drivers_common])
+condor = drivers_parser.add_parser('condor',
+                                   help='Flock your jobs to condor',
+                                   usage=baseUsageStr.format('condor'),
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                   parents=[drivers_common])
+
+lsf = drivers_parser.add_parser('lsf',
+                                help='Flock your jobs to lsf',
+                                usage=baseUsageStr.format('lsf'),
+                                formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                parents=[drivers_common])
 
 # define arguments for prooflite driver
 prooflite.add_argument('--optPerfTree',          metavar='', type=int, required=False, default=None, help='the option to turn on the performance tree in PROOF.  if this is set to 1, it will write out the tree')
@@ -166,6 +175,7 @@ prun.add_argument('--optCmtConfig',            metavar='', type=str, required=Fa
 prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=False, default=None)
 prun.add_argument('--optOfficial',             metavar='', type=int, required=False, default=None)
 prun.add_argument('--optVoms',                 metavar='', type=int, required=False, default=None)
+# the following is not technically supported by Job.h but it is a valid option for prun, emailed pathelp about it
 prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
 
 # define arguments for condor driver
@@ -458,6 +468,7 @@ if __name__ == "__main__":
     driver = None
     if (args.driver == "direct"):
       driver = ROOT.EL.DirectDriver()
+
     elif (args.driver == "prooflite"):
       driver = ROOT.EL.ProofDriver()
       for opt, t in map(lambda x: (x.dest, x.type), prooflite._actions):
@@ -476,7 +487,6 @@ if __name__ == "__main__":
 
     elif (args.driver == "prun"):
       driver = ROOT.EL.PrunDriver()
-
       for opt, t in map(lambda x: (x.dest, x.type), prun._actions):
         if getattr(args, opt) is None: continue  # skip if not set
         if opt in ['help', 'optGridOutputSampleName']: continue  # skip some options
@@ -490,7 +500,6 @@ if __name__ == "__main__":
           setter = 'setString'
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
         xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
-
       nc_outputSampleNameStr = args.optGridOutputSampleName
       driver.options().setString("nc_outputSampleName", nc_outputSampleNameStr)
       xAH_logger.info("\t - driver.options().setString(nc_outputSampleName, {0:s})".format(nc_outputSampleNameStr))
@@ -516,7 +525,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.LSFDriver()
       for opt, t in map(lambda x: (x.dest, x.type), lsf._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optLSFNFilesPerJob']: continue  # skip some options
+        if opt in ['help']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
