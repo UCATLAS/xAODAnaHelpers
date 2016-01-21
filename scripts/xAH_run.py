@@ -102,6 +102,7 @@ drivers_common.add_argument('--optFilesPerWorker', metavar='', type=float, requi
 drivers_common.add_argument('--optDisableMetrics', metavar='', type=int, required=False, default=None, help='the option to turn off collection of performance data')
 drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, required=False, default=None, help='the option to turn on printing of i/o statistics at the end of each file. warning: this is not supported for all drivers.')
 drivers_common.add_argument('--optRemoveSubmitDir', metavar='', type=int, required=False, default=None, help='the name of the option for overwriting the submission directory.  if you set this to a non-zero value it will remove any existing submit-directory before tryingto create a new one. You can also use -f/--force as well in xAH_run.py.')
+drivers_common.add_argument('--optBatchSharedFileSystem', metavar='', type=bool, required=False, default=None, help='the name of the option for signifying whether your batch driver is running on a shared filesystem or flocking to a remote cluster')
 
 # These are handled by xAH_run.py at the top level instead of down by drivers
 #.add_argument('--optMaxEvents', type=str, required=False, default=None)
@@ -506,7 +507,6 @@ if __name__ == "__main__":
 
     elif (args.driver == "condor"):
       driver = ROOT.EL.CondorDriver()
-      driver.options().setBool   (ROOT.EL.Job.optBatchSharedFileSystem, False)
       for opt, t in map(lambda x: (x.dest, x.type), condor._actions):
         if getattr(args, opt) is None: continue  # skip if not set
         if opt in ['help', 'optCondorWait']: continue  # skip some options
