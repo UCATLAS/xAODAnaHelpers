@@ -22,6 +22,7 @@ Contents
    Algorithms
    Development
    Community
+   FAQs
    API
 
 Indices and tables
