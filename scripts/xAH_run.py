@@ -103,6 +103,7 @@ drivers_common.add_argument('--optDisableMetrics', metavar='', type=int, require
 drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, required=False, default=None, help='the option to turn on printing of i/o statistics at the end of each file. warning: this is not supported for all drivers.')
 drivers_common.add_argument('--optRemoveSubmitDir', metavar='', type=int, required=False, default=None, help='the name of the option for overwriting the submission directory.  if you set this to a non-zero value it will remove any existing submit-directory before tryingto create a new one. You can also use -f/--force as well in xAH_run.py.')
 drivers_common.add_argument('--optBatchSharedFileSystem', metavar='', type=bool, required=False, default=None, help='the name of the option for signifying whether your batch driver is running on a shared filesystem or flocking to a remote cluster')
+drivers_common.add_argument('--optBatchWait', action='store_true' , required=False, help='submit using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
 
 # These are handled by xAH_run.py at the top level instead of down by drivers
 #.add_argument('--optMaxEvents', type=str, required=False, default=None)
@@ -181,7 +182,6 @@ prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=Fa
 
 # define arguments for condor driver
 condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true', help='the name of the option for supplying extra parameters for condor systems')
-condor.add_argument('--optCondorWait', action='store_true' , required=False, help='submit to condor using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
 
 # define arguments for lsf driver
 lsf.add_argument('--optResetShell', metavar='', type=bool, required=False, default=False, help='the option to reset the shell on the worker nodes')
@@ -474,7 +474,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.ProofDriver()
       for opt, t in map(lambda x: (x.dest, x.type), prooflite._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help']: continue  # skip some options
+        if opt in ['help', 'optBatchWait']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -490,7 +490,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.PrunDriver()
       for opt, t in map(lambda x: (x.dest, x.type), prun._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optGridOutputSampleName']: continue  # skip some options
+        if opt in ['help', 'optGridOutputSampleName', 'optBatchWait']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -509,7 +509,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.CondorDriver()
       for opt, t in map(lambda x: (x.dest, x.type), condor._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optCondorWait']: continue  # skip some options
+        if opt in ['help', 'optBatchWait']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -525,7 +525,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.LSFDriver()
       for opt, t in map(lambda x: (x.dest, x.type), lsf._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help']: continue  # skip some options
+        if opt in ['help', 'optBatchWait']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -538,9 +538,7 @@ if __name__ == "__main__":
         xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
 
     xAH_logger.info("\tsubmit job")
-    if args.driver in ["prun","lsf"]:
-      driver.submitOnly(job, args.submit_dir)
-    elif args.driver=="condor" and not args.optCondorWait:
+    if args.driver in ["prun","lsf", "condor"] and not args.optBatchWait:
       driver.submitOnly(job, args.submit_dir)
     else:
       driver.submit(job, args.submit_dir)
