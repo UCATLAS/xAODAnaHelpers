@@ -169,11 +169,11 @@ prun.add_argument('--optVoms',                 metavar='', type=int, required=Fa
 prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
 
 # define arguments for condor driver
-condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true')
-condor.add_argument('--optCondorWait', action='store_true' , required=False)
+condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true', help='the name of the option for supplying extra parameters for condor systems')
+condor.add_argument('--optCondorWait', action='store_true' , required=False, help='submit to condor using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
 
 # define arguments for lsf driver
-lsf.add_argument('--optResetShell', metavar='', type=bool, required=False, default=False)
+lsf.add_argument('--optResetShell', metavar='', type=bool, required=False, default=False, help='the option to reset the shell on the worker nodes')
 
 # start the script
 if __name__ == "__main__":
