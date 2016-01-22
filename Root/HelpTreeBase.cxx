@@ -180,26 +180,6 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
     m_tree->Branch("caloCluster_e",   &m_caloCluster_e);
   }
 
-  if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
-    m_tree->Branch("weight_muon_RecoEff_SF_Loose",		      &m_weight_muon_RecoEff_SF_Loose);
-    m_tree->Branch("weight_muon_IsoEff_SF_LooseTrackOnly", 	      &m_weight_muon_IsoEff_SF_LooseTrackOnly);
-    m_tree->Branch("weight_muon_IsoEff_SF_Loose",	    	      &m_weight_muon_IsoEff_SF_Loose);
-    m_tree->Branch("weight_muon_IsoEff_SF_Tight",	    	      &m_weight_muon_IsoEff_SF_Tight);
-    m_tree->Branch("weight_muon_IsoEff_SF_Gradient",	    	      &m_weight_muon_IsoEff_SF_Gradient);
-    m_tree->Branch("weight_muon_IsoEff_SF_GradientLoose",  	      &m_weight_muon_IsoEff_SF_GradientLoose);
-    m_tree->Branch("weight_muon_IsoEff_SF_FixedCutTightTrackOnly",    &m_weight_muon_IsoEff_SF_FixedCutTightTrackOnly);
-  }
-
-  if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
-    m_tree->Branch("weight_electron_RecoEff_SF"  ,	         &m_weight_electron_RecoEff_SF  );
-    m_tree->Branch("weight_electron_IsoEff_SF_Loose",            &m_weight_electron_IsoEff_SF_Loose);
-    m_tree->Branch("weight_electron_IsoEff_SF_FixedCutTight",    &m_weight_electron_IsoEff_SF_FixedCutTight);
-    m_tree->Branch("weight_electron_PIDEff_SF_LHLooseAndBLayer", &m_weight_electron_PIDEff_SF_LHLooseAndBLayer);
-    m_tree->Branch("weight_electron_PIDEff_SF_LHLoose",	    &m_weight_electron_PIDEff_SF_LHLoose);
-    m_tree->Branch("weight_electron_PIDEff_SF_LHMedium",    &m_weight_electron_PIDEff_SF_LHMedium);
-    m_tree->Branch("weight_electron_PIDEff_SF_LHTight",	    &m_weight_electron_PIDEff_SF_LHTight);
-  }
-
   this->AddEventUser();
 }
 
@@ -333,46 +313,6 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 //        }
 
     }
-
-  }
-
-  if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
-
-    SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal_Loose("MuonEfficiencyCorrector_RecoSyst_Loose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Loose("MuonEfficiencyCorrector_IsoSyst_Loose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Tight("MuonEfficiencyCorrector_IsoSyst_Tight_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Gradient("MuonEfficiencyCorrector_IsoSyst_Gradient_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_GradientLoose("MuonEfficiencyCorrector_IsoSyst_GradientLoose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_FixedCutTightTrackOnly("MuonEfficiencyCorrector_IsoSyst_FixedCutTightTrackOnly_GLOBAL");
-
-    if( accRecoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_muon_RecoEff_SF_Loose = accRecoSFGlobal_Loose( *eventInfo ); } else { m_weight_muon_RecoEff_SF_Loose.push_back(-999.0); }
-    if( accIsoSFGlobal_LooseTrackOnly.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_LooseTrackOnly = accIsoSFGlobal_LooseTrackOnly( *eventInfo ); } else { m_weight_muon_IsoEff_SF_LooseTrackOnly.push_back(-999.0); }
-    if( accIsoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Loose = accIsoSFGlobal_Loose( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Loose.push_back(-999.0); }
-    if( accIsoSFGlobal_Tight.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Tight = accIsoSFGlobal_Tight( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Tight.push_back(-999.0); }
-    if( accIsoSFGlobal_Gradient.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_Gradient = accIsoSFGlobal_Gradient( *eventInfo ); } else { m_weight_muon_IsoEff_SF_Gradient.push_back(-999.0); }
-    if( accIsoSFGlobal_GradientLoose.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_GradientLoose = accIsoSFGlobal_GradientLoose( *eventInfo ); } else { m_weight_muon_IsoEff_SF_GradientLoose.push_back(-999.0); }
-    if( accIsoSFGlobal_FixedCutTightTrackOnly.isAvailable( *eventInfo ) ) { m_weight_muon_IsoEff_SF_FixedCutTightTrackOnly = accIsoSFGlobal_FixedCutTightTrackOnly( *eventInfo ); } else { m_weight_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back(-999.0); }
-
-  }
-
-  if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
-
-    SG::AuxElement::ConstAccessor< std::vector< float > > accRecoSFGlobal("ElectronEfficiencyCorrector_RecoSyst_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_Loose("ElectronEfficiencyCorrector_IsoSyst_IsoLoose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accIsoSFGlobal_FixedCutTight("ElectronEfficiencyCorrector_IsoSyst_IsoFixedCutTight_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LHLooseAndBLayer_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium_GLOBAL");
-    SG::AuxElement::ConstAccessor< std::vector< float > > accPIDSFGlobal_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight_GLOBAL");
-
-    if( accRecoSFGlobal.isAvailable( *eventInfo ) ) { m_weight_electron_RecoEff_SF = accRecoSFGlobal( *eventInfo ); } else { m_weight_electron_RecoEff_SF.push_back(-999.0); }
-    if( accIsoSFGlobal_Loose.isAvailable( *eventInfo ) ) { m_weight_electron_IsoEff_SF_Loose = accIsoSFGlobal_Loose( *eventInfo ); } else { m_weight_electron_IsoEff_SF_Loose.push_back(-999.0); }
-    if( accIsoSFGlobal_FixedCutTight.isAvailable( *eventInfo ) ) { m_weight_electron_IsoEff_SF_FixedCutTight = accIsoSFGlobal_FixedCutTight( *eventInfo ); } else { m_weight_electron_IsoEff_SF_FixedCutTight.push_back(-999.0); }
-    if( accPIDSFGlobal_LHLooseAndBLayer.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHLooseAndBLayer = accPIDSFGlobal_LHLooseAndBLayer( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHLooseAndBLayer.push_back(-999.0); }
-    if( accPIDSFGlobal_LHLoose.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHLoose = accPIDSFGlobal_LHLoose( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHLoose.push_back(-999.0); }
-    if( accPIDSFGlobal_LHMedium.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHMedium = accPIDSFGlobal_LHMedium( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHMedium.push_back(-999.0); }
-    if( accPIDSFGlobal_LHTight.isAvailable( *eventInfo ) ) { m_weight_electron_PIDEff_SF_LHTight= accPIDSFGlobal_LHTight( *eventInfo ); } else { m_weight_electron_PIDEff_SF_LHTight.push_back(-999.0); }
 
   }
 
@@ -775,28 +715,29 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       static SG::AuxElement::Accessor< std::vector< float > > accRecoSF_Loose("MuonEfficiencyCorrector_RecoSyst_Loose");
       static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Loose_Loose("MuonEfficiencyCorrector_TrigSyst_RecoLoose_IsoLoose");
       static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Loose_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigSyst_RecoLoose_IsoFixedCutTightTrackOnly");
-      static SG::AuxElement::Accessor< double >               accTrigMCEff_Loose_Loose("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoLoose");
-      static SG::AuxElement::Accessor< double >               accTrigMCEff_Loose_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoFixedCutTightTrackOnly");
+      static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Loose_Loose("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoLoose");
+      static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Loose_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoFixedCutTightTrackOnly");
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Loose("MuonEfficiencyCorrector_IsoSyst_Loose");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Tight("MuonEfficiencyCorrector_IsoSyst_Tight");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Gradient("MuonEfficiencyCorrector_IsoSyst_Gradient");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_GradientLoose("MuonEfficiencyCorrector_IsoSyst_GradientLoose");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_FixedCutTightTrackOnly("MuonEfficiencyCorrector_IsoSyst_FixedCutTightTrackOnly");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Loose("MuonEfficiencyCorrector_IsoSyst_IsoLoose");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Tight("MuonEfficiencyCorrector_IsoSyst_IsoTight");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Gradient("MuonEfficiencyCorrector_IsoSyst_IsoGradient");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_GradientLoose("MuonEfficiencyCorrector_IsoSyst_IsoGradientLoose");
+      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_FixedCutTightTrackOnly("MuonEfficiencyCorrector_IsoSyst_IsoFixedCutTightTrackOnly");
 
-      std::vector<float> junk(1,-999);
+      std::vector<float> junkSF(1,1.0);
+      std::vector<float> junkEff(1,0.0);
 
-      if( accRecoSF_Loose.isAvailable( *muon_itr ) )         { m_muon_RecoEff_SF_Loose.push_back( accRecoSF_Loose( *muon_itr ) ); } else { m_muon_RecoEff_SF_Loose.push_back( junk ); }
-      if ( accTrigSF_Loose_Loose.isAvailable( *muon_itr ) )                     { m_muon_TrigEff_SF_Loose_Loose.push_back( accTrigSF_Loose_Loose( *muon_itr ) ); } else { m_muon_TrigEff_SF_Loose_Loose.push_back( junk ); }
-      if ( accTrigSF_Loose_FixedCutTightTrackOnly.isAvailable( *muon_itr ) )    { m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly.push_back( accTrigSF_Loose_FixedCutTightTrackOnly( *muon_itr ) ); } else { m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly.push_back( junk ); }
-      if ( accTrigMCEff_Loose_Loose.isAvailable( *muon_itr ) )                  { m_muon_TrigMCEff_Loose_Loose.push_back( accTrigMCEff_Loose_Loose( *muon_itr ) ); } else { m_muon_TrigMCEff_Loose_Loose.push_back( 0.0 ); }
-      if ( accTrigMCEff_Loose_FixedCutTightTrackOnly.isAvailable( *muon_itr ) ) { m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly.push_back( accTrigMCEff_Loose_FixedCutTightTrackOnly( *muon_itr ) ); } else { m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly.push_back( 0.0 ); }
-      if( accIsoSF_LooseTrackOnly.isAvailable( *muon_itr ) ) { m_muon_IsoEff_SF_LooseTrackOnly.push_back( accIsoSF_LooseTrackOnly( *muon_itr ) ); } else { m_muon_IsoEff_SF_LooseTrackOnly.push_back( junk ); }
-      if( accIsoSF_Loose.isAvailable( *muon_itr ) )          { m_muon_IsoEff_SF_Loose.push_back( accIsoSF_Loose( *muon_itr ) ); } else { m_muon_IsoEff_SF_Loose.push_back( junk ); }
-      if( accIsoSF_Tight.isAvailable( *muon_itr ) )          { m_muon_IsoEff_SF_Tight.push_back( accIsoSF_Tight( *muon_itr ) ); } else { m_muon_IsoEff_SF_Tight.push_back( junk ); }
-      if( accIsoSF_GradientLoose.isAvailable( *muon_itr ) )  { m_muon_IsoEff_SF_GradientLoose.push_back( accIsoSF_GradientLoose( *muon_itr ) ); } else {  m_muon_IsoEff_SF_GradientLoose.push_back( junk ); }
-      if( accIsoSF_Gradient.isAvailable( *muon_itr ) )       { m_muon_IsoEff_SF_Gradient.push_back( accIsoSF_Gradient( *muon_itr ) ); } else { m_muon_IsoEff_SF_Gradient.push_back( junk ); }
-      if( accIsoSF_FixedCutTightTrackOnly.isAvailable( *muon_itr ) )  { m_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back( accIsoSF_FixedCutTightTrackOnly( *muon_itr ) ); } else {  m_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back( junk ); }
+      if( accRecoSF_Loose.isAvailable( *muon_itr ) )         { m_muon_RecoEff_SF_Loose.push_back( accRecoSF_Loose( *muon_itr ) ); } else { m_muon_RecoEff_SF_Loose.push_back( junkSF ); }
+      if ( accTrigSF_Loose_Loose.isAvailable( *muon_itr ) )                     { m_muon_TrigEff_SF_Loose_Loose.push_back( accTrigSF_Loose_Loose( *muon_itr ) ); } else { m_muon_TrigEff_SF_Loose_Loose.push_back( junkSF ); }
+      if ( accTrigSF_Loose_FixedCutTightTrackOnly.isAvailable( *muon_itr ) )    { m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly.push_back( accTrigSF_Loose_FixedCutTightTrackOnly( *muon_itr ) ); } else { m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly.push_back( junkSF ); }
+      if ( accTrigMCEff_Loose_Loose.isAvailable( *muon_itr ) )                  { m_muon_TrigMCEff_Loose_Loose.push_back( accTrigMCEff_Loose_Loose( *muon_itr ) ); } else { m_muon_TrigMCEff_Loose_Loose.push_back( junkEff ); }
+      if ( accTrigMCEff_Loose_FixedCutTightTrackOnly.isAvailable( *muon_itr ) ) { m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly.push_back( accTrigMCEff_Loose_FixedCutTightTrackOnly( *muon_itr ) ); } else { m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly.push_back( junkEff ); }
+      if( accIsoSF_LooseTrackOnly.isAvailable( *muon_itr ) ) { m_muon_IsoEff_SF_LooseTrackOnly.push_back( accIsoSF_LooseTrackOnly( *muon_itr ) ); } else { m_muon_IsoEff_SF_LooseTrackOnly.push_back( junkSF ); }
+      if( accIsoSF_Loose.isAvailable( *muon_itr ) )          { m_muon_IsoEff_SF_Loose.push_back( accIsoSF_Loose( *muon_itr ) ); } else { m_muon_IsoEff_SF_Loose.push_back( junkSF ); }
+      if( accIsoSF_Tight.isAvailable( *muon_itr ) )          { m_muon_IsoEff_SF_Tight.push_back( accIsoSF_Tight( *muon_itr ) ); } else { m_muon_IsoEff_SF_Tight.push_back( junkSF ); }
+      if( accIsoSF_GradientLoose.isAvailable( *muon_itr ) )  { m_muon_IsoEff_SF_GradientLoose.push_back( accIsoSF_GradientLoose( *muon_itr ) ); } else {  m_muon_IsoEff_SF_GradientLoose.push_back( junkSF ); }
+      if( accIsoSF_Gradient.isAvailable( *muon_itr ) )       { m_muon_IsoEff_SF_Gradient.push_back( accIsoSF_Gradient( *muon_itr ) ); } else { m_muon_IsoEff_SF_Gradient.push_back( junkSF ); }
+      if( accIsoSF_FixedCutTightTrackOnly.isAvailable( *muon_itr ) )  { m_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back( accIsoSF_FixedCutTightTrackOnly( *muon_itr ) ); } else {  m_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back( junkSF ); }
 
     }
 
@@ -1237,32 +1178,31 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
     if ( m_elInfoSwitch->m_effSF && m_isMC ) {
 
       static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
-      
       static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_TrigSyst_LHLooseAndBLayer");
       static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_LHTight("ElectronEfficiencyCorrector_TrigSyst_LHTight");
       static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_LHLooseAndBLayer("ElectronEfficiencyCorrector_TrigMCEffSyst_LHLooseAndBLayer");
       static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_LHTight("ElectronEfficiencyCorrector_TrigMCEffSyst_LHTight");
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Loose("ElectronEfficiencyCorrector_IsoSyst_IsoLoose");
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_FixedCutTight("ElectronEfficiencyCorrector_IsoSyst_IsoFixedCutTight");
-      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LHLoose");
-      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLooseAndBLayer");
+      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LHLooseAndBLayer");
+      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LHLoose");
       static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_LHMedium");
       static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("ElectronEfficiencyCorrector_PIDSyst_LHTight");
 
-      std::vector<float> junk(1,-999);
+      std::vector<float> junkSF(1,1.0);
+      std::vector<float> junkEff(1,0.0);
 
-      if( accRecoSF.isAvailable( *el_itr ) ) { m_el_RecoEff_SF.push_back( accRecoSF( *el_itr ) ); } else { m_el_RecoEff_SF.push_back( junk ); }
-      
-      if( accTrigSF_LHLooseAndBLayer.isAvailable( *el_itr ) )    { m_el_TrigEff_SF_LHLooseAndBLayer.push_back( accTrigSF_LHLooseAndBLayer( *el_itr ) ); } else { m_el_TrigEff_SF_LHLooseAndBLayer.push_back( junk ); }
-      if( accTrigSF_LHTight.isAvailable( *el_itr ) )             { m_el_TrigEff_SF_LHTight.push_back( accTrigSF_LHTight( *el_itr ) ); } else { m_el_TrigEff_SF_LHTight.push_back( junk ); }
-      if( accTrigMCEff_LHLooseAndBLayer.isAvailable( *el_itr ) ) { m_el_TrigMCEff_LHLooseAndBLayer.push_back( accTrigMCEff_LHLooseAndBLayer( *el_itr ) ); } else { m_el_TrigMCEff_LHLooseAndBLayer.push_back( junk ); }
-      if( accTrigMCEff_LHTight.isAvailable( *el_itr ) )          { m_el_TrigMCEff_LHTight.push_back( accTrigMCEff_LHTight( *el_itr ) ); } else { m_el_TrigMCEff_LHTight.push_back( junk ); }
-      if( accIsoSF_Loose.isAvailable( *el_itr ) ) { m_el_IsoEff_SF_Loose.push_back( accIsoSF_Loose( *el_itr ) ); } else { m_el_IsoEff_SF_Loose.push_back( junk ); }
-      if( accIsoSF_FixedCutTight.isAvailable( *el_itr ) ) { m_el_IsoEff_SF_FixedCutTight.push_back( accIsoSF_FixedCutTight( *el_itr ) ); } else { m_el_IsoEff_SF_FixedCutTight.push_back( junk ); }
-      if( accPIDSF_LHLooseAndBLayer.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( accPIDSF_LHLooseAndBLayer( *el_itr ) ); } else { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( junk ); }
-      if( accPIDSF_LHLoose.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLoose.push_back( accPIDSF_LHLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHLoose.push_back( junk ); }
-      if( accPIDSF_LHMedium.isAvailable( *el_itr ) )    { m_el_PIDEff_SF_LHMedium.push_back( accPIDSF_LHMedium( *el_itr ) ); } else { m_el_PIDEff_SF_LHMedium.push_back( junk ); }
-      if( accPIDSF_LHTight.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHTight.push_back( accPIDSF_LHTight( *el_itr ) ); } else { m_el_PIDEff_SF_LHTight.push_back( junk ); }
+      if( accRecoSF.isAvailable( *el_itr ) )                     { m_el_RecoEff_SF.push_back( accRecoSF( *el_itr ) ); } else { m_el_RecoEff_SF.push_back( junkSF ); }
+      if( accTrigSF_LHLooseAndBLayer.isAvailable( *el_itr ) )    { m_el_TrigEff_SF_LHLooseAndBLayer.push_back( accTrigSF_LHLooseAndBLayer( *el_itr ) ); } else { m_el_TrigEff_SF_LHLooseAndBLayer.push_back( junkSF ); }
+      if( accTrigSF_LHTight.isAvailable( *el_itr ) )             { m_el_TrigEff_SF_LHTight.push_back( accTrigSF_LHTight( *el_itr ) ); } else { m_el_TrigEff_SF_LHTight.push_back( junkSF ); }
+      if( accTrigMCEff_LHLooseAndBLayer.isAvailable( *el_itr ) ) { m_el_TrigMCEff_LHLooseAndBLayer.push_back( accTrigMCEff_LHLooseAndBLayer( *el_itr ) ); } else { m_el_TrigMCEff_LHLooseAndBLayer.push_back( junkEff ); }
+      if( accTrigMCEff_LHTight.isAvailable( *el_itr ) )          { m_el_TrigMCEff_LHTight.push_back( accTrigMCEff_LHTight( *el_itr ) ); } else { m_el_TrigMCEff_LHTight.push_back( junkEff ); }
+      if( accIsoSF_Loose.isAvailable( *el_itr ) )                { m_el_IsoEff_SF_Loose.push_back( accIsoSF_Loose( *el_itr ) ); } else { m_el_IsoEff_SF_Loose.push_back( junkSF ); }
+      if( accIsoSF_FixedCutTight.isAvailable( *el_itr ) )        { m_el_IsoEff_SF_FixedCutTight.push_back( accIsoSF_FixedCutTight( *el_itr ) ); } else { m_el_IsoEff_SF_FixedCutTight.push_back( junkSF ); }
+      if( accPIDSF_LHLooseAndBLayer.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( accPIDSF_LHLooseAndBLayer( *el_itr ) ); } else { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( junkSF ); }
+      if( accPIDSF_LHLoose.isAvailable( *el_itr ) )              { m_el_PIDEff_SF_LHLoose.push_back( accPIDSF_LHLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHLoose.push_back( junkSF ); }
+      if( accPIDSF_LHMedium.isAvailable( *el_itr ) )             { m_el_PIDEff_SF_LHMedium.push_back( accPIDSF_LHMedium( *el_itr ) ); } else { m_el_PIDEff_SF_LHMedium.push_back( junkSF ); }
+      if( accPIDSF_LHTight.isAvailable( *el_itr ) )              { m_el_PIDEff_SF_LHTight.push_back( accPIDSF_LHTight( *el_itr ) ); } else { m_el_PIDEff_SF_LHTight.push_back( junkSF ); }
 
     }
 
@@ -3085,26 +3025,6 @@ void HelpTreeBase::ClearEvent() {
     m_caloCluster_eta.clear();
     m_caloCluster_phi.clear();
     m_caloCluster_e.clear();
-  }
-
-  if( m_eventInfoSwitch->m_muonSF && m_isMC ) {
-    m_weight_muon_RecoEff_SF_Loose.clear();
-    m_weight_muon_IsoEff_SF_LooseTrackOnly.clear();
-    m_weight_muon_IsoEff_SF_Loose.clear();
-    m_weight_muon_IsoEff_SF_Tight.clear();
-    m_weight_muon_IsoEff_SF_Gradient.clear();
-    m_weight_muon_IsoEff_SF_GradientLoose.clear();
-    m_weight_muon_IsoEff_SF_FixedCutTightTrackOnly.clear();
-  }
-
-  if( m_eventInfoSwitch->m_electronSF && m_isMC ) {
-    m_weight_electron_RecoEff_SF.clear();
-    m_weight_electron_IsoEff_SF_Loose.clear();
-    m_weight_electron_IsoEff_SF_FixedCutTight.clear();
-    m_weight_electron_PIDEff_SF_LHLooseAndBLayer.clear();
-    m_weight_electron_PIDEff_SF_LHLoose.clear();
-    m_weight_electron_PIDEff_SF_LHMedium.clear();
-    m_weight_electron_PIDEff_SF_LHTight.clear();
   }
 
 }

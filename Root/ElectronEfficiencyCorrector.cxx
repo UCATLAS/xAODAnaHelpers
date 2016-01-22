@@ -677,27 +677,18 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Every systematic will correspond to a different SF!
   //
 
-  // Define also an *event* weight, which is the product of all the PID eff. SFs for each object in the event
-  //
-  std::string PID_SF_NAME_GLOBAL = m_outputSystNamesPID + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<float> > sfVecPID_GLOBAL ( PID_SF_NAME_GLOBAL );
-
   for ( const auto& syst_it : m_systListPID ) {
-
-    // Initialise product of SFs for *this* systematic
-    //
-    float pidEffSF_GLOBAL(1.0);
 
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElPIDEff_SF
     //
-    std::string sfName  = "ElPIDEff_SF";
+    std::string sfName  = "ElPIDEff_SF_" + m_PID_WP;
 
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
        sfName.insert( 0, prepend );
     }
-    if(m_debug) Info("executeSF()", "Electron PID efficiency SF  name is: %s", sfName.c_str());
+    if(m_debug) Info("executeSF()", "Electron PID efficiency sys names vector name is: %s", sfName.c_str());
     sysVariationNamesPID->push_back(sfName);
 
     // apply syst
@@ -758,8 +749,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        sfVecPID( *el_itr ).push_back( pidEffSF );
 
-       pidEffSF_GLOBAL *= pidEffSF;
-
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
@@ -778,16 +767,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 
     } // close electron loop
 
-    // For *this* systematic, store the global SF weight for the event
-    //
-    if ( m_debug ) {
-       Info( "executeSF()", "--------------------------------------");
-       Info( "executeSF()", "GLOBAL PID efficiency SF for event:");
-       Info( "executeSF()", "\t %f ", pidEffSF_GLOBAL );
-       Info( "executeSF()", "--------------------------------------");
-    }
-    sfVecPID_GLOBAL( *eventInfo ).push_back( pidEffSF_GLOBAL );
-
   }  // close loop on PID efficiency systematics
 
   // 2.
@@ -797,27 +776,18 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Every systematic will correspond to a different SF!
   //
 
-  // Define also an *event* weight, which is the product of all the Iso eff. SFs for each object in the event
-  //
-  std::string Iso_SF_NAME_GLOBAL = m_outputSystNamesIso + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<float> > sfVecIso_GLOBAL ( Iso_SF_NAME_GLOBAL );
-
   for ( const auto& syst_it : m_systListIso ) {
-
-    // Initialise product of SFs for *this* systematic
-    //
-    float IsoEffSF_GLOBAL(1.0);
 
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElIsoEff_SF
     //
-    std::string sfName  = "ElIsoEff_SF";
+    std::string sfName  = "ElIsoEff_SF_" + m_Iso_WP;
 
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
        sfName.insert( 0, prepend );
     }
-    if(m_debug) Info("executeSF()", "Electron Iso efficiency SF  name is: %s", sfName.c_str());
+    if(m_debug) Info("executeSF()", "Electron Iso efficiency sys names vector name is: %s", sfName.c_str());
     sysVariationNamesIso->push_back(sfName);
 
     // apply syst
@@ -878,8 +848,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        sfVecIso( *el_itr ).push_back( IsoEffSF );
 
-       IsoEffSF_GLOBAL *= IsoEffSF;
-
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
@@ -898,16 +866,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
 
     } // close electron loop
 
-    // For *this* systematic, store the global SF weight for the event
-    //
-    if ( m_debug ) {
-       Info( "executeSF()", "--------------------------------------");
-       Info( "executeSF()", "GLOBAL Iso efficiency SF for event:");
-       Info( "executeSF()", "\t %f ", IsoEffSF_GLOBAL );
-       Info( "executeSF()", "--------------------------------------");
-    }
-    sfVecIso_GLOBAL( *eventInfo ).push_back( IsoEffSF_GLOBAL );
-
   }  // close loop on Iso efficiency systematics
 
   // 3.
@@ -917,16 +875,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Every systematic will correspond to a different SF!
   //
 
-  // Define also an *event* weight, which is the product of all the reco eff. SFs for each object in the event
-  //
-  std::string RECO_SF_NAME_GLOBAL = m_outputSystNamesReco + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<float> > sfVecReco_GLOBAL ( RECO_SF_NAME_GLOBAL );
-
   for ( const auto& syst_it : m_systListReco ) {
-
-    // Initialise product of SFs for *this* systematic
-    //
-    float recoEffSF_GLOBAL(1.0);
 
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElRecoEff_SF
@@ -965,7 +914,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        SG::AuxElement::Decorator< std::vector<float> > sfVecReco ( m_outputSystNamesReco  );
        if ( !sfVecReco.isAvailable( *el_itr )  ) {
          sfVecReco ( *el_itr ) = std::vector<float>();
-       }
+       } 
 
        // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
        //
@@ -998,13 +947,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        //
        sfVecReco( *el_itr ).push_back( recoEffSF );
 
-       recoEffSF_GLOBAL *= recoEffSF;
-
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
 	 Info( "executeSF()", "Electron %i, pt = %.2f GeV ", idx, (el_itr->pt() * 1e-3) );
 	 Info( "executeSF()", " ");
+         Info( "executeSF()", "Reco SF decoration: %s", m_outputSystNamesReco.c_str() );
+         Info( "executeSF()", " ");
          Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
          Info( "executeSF()", " ");
          Info( "executeSF()", "Reco efficiency SF:");
@@ -1015,16 +964,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        ++idx;
 
     } // close electron loop
-
-    // For *this* systematic, store the global SF weight for the event
-    //
-    if ( m_debug ) {
-       Info( "executeSF()", "--------------------------------------");
-       Info( "executeSF()", "GLOBAL Reco efficiency SF for event:");
-       Info( "executeSF()", "\t %f ", recoEffSF_GLOBAL );
-       Info( "executeSF()", "--------------------------------------");
-    }
-    sfVecReco_GLOBAL( *eventInfo ).push_back( recoEffSF_GLOBAL );
 
   }  // close loop on Reco efficiency systematics
 
@@ -1043,7 +982,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElTrigEff_SF
     //
-    std::string sfName  = "ElTrigEff_SF";
+    std::string sfName  = "ElTrigEff_SF_" + m_WorkingPointIDTrig;
 
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
@@ -1141,7 +1080,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_ElTrigEff_SF
     //
-    std::string sfName  = "ElTrigMCEff_";
+    std::string sfName  = "ElTrigMCEff_" + m_WorkingPointIDTrig;
 
     if ( !syst_it.name().empty() ) {
        std::string prepend = syst_it.name() + "_";
