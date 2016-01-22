@@ -126,6 +126,7 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
+        m_eventCleaning  eventCleaning  exact
         m_pileup         pileup         exact
         m_shapeEM        shapeEM        exact
         m_shapeLC        shapeLC        exact

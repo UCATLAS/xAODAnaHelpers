@@ -90,6 +90,7 @@ namespace HelperClasses{
     m_caloClus      = has_exact("caloClusters");
     m_muonSF        = has_exact("muonSF");
     m_electronSF    = has_exact("electronSF");
+    m_eventCleaning = has_exact("eventCleaning");
   }
 
   void TriggerInfoSwitch::initialize(){
