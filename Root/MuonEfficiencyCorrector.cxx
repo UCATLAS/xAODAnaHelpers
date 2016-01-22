@@ -305,7 +305,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   //
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
-  m_outputSystNamesIso = m_outputSystNamesIso + "_" + m_WorkingPointIso;
+  m_outputSystNamesIso = m_outputSystNamesIso + "_Iso" + m_WorkingPointIso;
 
   if ( m_debug ) {
 
@@ -577,16 +577,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Every systematic will correspond to a different SF!
   //
 
-  // Define also an *event* weight, which is the product of all the reco eff. SFs for each object in the event
-  //
-  std::string RECO_SF_NAME_GLOBAL = m_outputSystNamesReco + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<float> > sfVecReco_GLOBAL ( RECO_SF_NAME_GLOBAL );
-
   for ( const auto& syst_it : m_systListReco ) {
-
-    // Initialise product of SFs for *this* systematic
-    //
-    float recoEffSF_GLOBAL(1.0);
 
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_MuRecoEff_SF
@@ -644,8 +635,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        //
        sfVecReco( *mu_itr ).push_back( recoEffSF );
 
-       recoEffSF_GLOBAL *= recoEffSF;
-
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
@@ -667,16 +656,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
     } // close muon loop
 
-    // For *this* systematic, store the global SF weight for the event
-    //
-    if ( m_debug ) {
-       Info( "executeSF()", "--------------------------------------");
-       Info( "executeSF()", "GLOBAL Reco efficiency SF for event:");
-       Info( "executeSF()", "\t %f ", recoEffSF_GLOBAL );
-       Info( "executeSF()", "--------------------------------------");
-    }
-    sfVecReco_GLOBAL( *eventInfo ).push_back( recoEffSF_GLOBAL );
-
   }  // close loop on reco efficiency SF systematics
 
   // 2.
@@ -686,16 +665,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Every systematic will correspond to a different SF!
   //
 
-  // Define also an *event* weight, which is the product of all the iso eff. SFs for each object in the event
-  //
-  std::string ISO_SF_NAME_GLOBAL = m_outputSystNamesIso + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<float> > sfVecIso_GLOBAL ( ISO_SF_NAME_GLOBAL );
-
   for ( const auto& syst_it : m_systListIso ) {
-
-    // Initialise product of SFs for *this* systematic
-    //
-    float isoEffSF_GLOBAL(1.0);
 
     // Create the name of the SF weight to be recorded
     //   template:  SYSNAME_MuIsoEff_SF_WP
@@ -753,8 +723,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        //
        sfVecIso( *mu_itr ).push_back(IsoEffSF);
 
-       isoEffSF_GLOBAL *= IsoEffSF;
-
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
@@ -776,16 +744,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
     } // close muon loop
 
-    // For *this* systematic, store the global SF weight for the event
-    //
-    if ( m_debug ) {
-       Info( "executeSF()", "--------------------------------------");
-       Info( "executeSF()", "GLOBAL Iso efficiency SF for event:");
-       Info( "executeSF()", "\t %f ", isoEffSF_GLOBAL );
-       Info( "executeSF()", "--------------------------------------");
-    }
-    sfVecIso_GLOBAL( *eventInfo ).push_back( isoEffSF_GLOBAL );
-
   }  // close loop on isolation efficiency SF systematics
 
 
@@ -799,6 +757,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Every systematic will correspond to a different SF!
   //
   // NB: calculation of the event SF is up to the analyzer
+
+  // decoration name for muon MC trigger efficiency 
+  //
+  std::string eff_decor = "MuonEfficiencyCorrector_TrigMCEff_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
    
   for ( const auto& syst_it : m_systListIso ) {
 
@@ -821,13 +783,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     }
     if ( m_debug ) { Info("executeSF()", "Successfully applied systematic: %s", syst_it.name().c_str()); }
 
-
-    // decoration for muon MC trigger efficiency 
-    // (NB: it's assumed to be w/o syst, hence it's a flat "double". All uncertainties are in the SF) 
-    //
-    std::string eff_decor = "MuonEfficiencyCorrector_TrigMCEff_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-    SG::AuxElement::Decorator< double > effMC( eff_decor );
-    
     // and now apply trigger efficiency SF!
     //
     unsigned int idx(0);
@@ -847,6 +802,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
        if ( !sfVecTrig.isAvailable( *mu_itr ) ) {
 	 sfVecTrig( *mu_itr ) = std::vector<float>();
        }  
+       SG::AuxElement::Decorator< std::vector<float> > effMC( eff_decor );
+       if ( !effMC.isAvailable( *mu_itr ) ) {
+	 effMC( *mu_itr ) = std::vector<float>();
+       }        
        
        double triggerEffSF(1.0); // tool wants a double  
        if ( !m_SingleMuTrig.empty() && m_asgMuonEffCorrTool_muSF_Trig->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
@@ -863,10 +822,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
          Warning( "executeSF()", "Problem in getTriggerEfficiency - single muon trigger(s)");
          triggerMCEff = 0.0;
        }
-       // Decorate muon (only once)
+       
+       // Add it to decoration vector
        //
-       if ( !effMC.isAvailable( *mu_itr ) ) { effMC( *mu_itr ) = triggerMCEff; }
-
+       effMC( *mu_itr ).push_back(triggerMCEff);
+       
        if ( m_debug ) {
          Info( "executeSF()", "===>>>");
          Info( "executeSF()", " ");
