@@ -81,7 +81,7 @@ Next, we should probably add some obvious configurations that work for us. I loo
       }
     ]
 
-and I save this into ``xah_run_example.json``.
+and I save this into ``xah_run_example.json``. If you want more variables in your plots, add other possibilities in the detailStr field, separated by a space. 
 
 Running the script
 ^^^^^^^^^^^^^^^^^^
