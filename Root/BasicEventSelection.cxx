@@ -466,41 +466,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
   TFile *fileCF = wk()->getOutputFile ("cutflow");
   fileCF->cd();
 
-    
-    // initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
-  //
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  
-  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
-  m_cutflowHist->SetBit(TH1::kCanRebin);
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
-  m_cutflowHistW->SetBit(TH1::kCanRebin);
+  // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
+  // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
 
-  // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  
-  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
-  m_el_cutflowHist_1->SetBit(TH1::kCanRebin);
-  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
-  m_el_cutflowHist_2->SetBit(TH1::kCanRebin);
-  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
-  m_mu_cutflowHist_1->SetBit(TH1::kCanRebin);
-  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
-  m_mu_cutflowHist_2->SetBit(TH1::kCanRebin);
-  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
-  m_ph_cutflowHist_1->SetBit(TH1::kCanRebin);
-  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
-  m_tau_cutflowHist_1->SetBit(TH1::kCanRebin);
-  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
-  m_tau_cutflowHist_2->SetBit(TH1::kCanRebin);
-  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
-  m_jet_cutflowHist_1->SetBit(TH1::kCanRebin);
-  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
-  m_truth_cutflowHist_1->SetBit(TH1::kCanRebin);
-  /*
-  // Note: the following commented-out code is needed for anyone developing/running in ROOT 6.04.10
-  
   //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
   //
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
@@ -532,12 +500,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
   m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
   m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  */
+
   // start labelling the bins for the event cutflow
   //
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
-
 
   if ( !m_isMC ) {
     if ( m_applyGRLCut ) {
@@ -638,15 +605,15 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //
 
   if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
-      
+
     //if it's there, it must be already configured
     if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) && asg::ToolStore::contains<TrigConf::xAODConfigTool>("xAODConfigTool")) {
-        
+
       m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
       m_trigConfTool = asg::ToolStore::get<TrigConf::xAODConfigTool>("xAODConfigTool");
 
     }
-    
+
     else {
 
       m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
@@ -659,9 +626,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
       RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
       RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
       Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
-        
+
     }
-      
+
   }//end trigger configuration
 
   // As a check, let's see the number of events in our file (long long int)
@@ -877,7 +844,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     // save passed triggers in eventInfo
     //
     if ( m_storeTrigDecisions ) {
-        
+
       std::vector<std::string> passTriggers;
       std::vector<float> triggerPrescales;
 
