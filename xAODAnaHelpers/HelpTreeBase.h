@@ -593,6 +593,7 @@ protected:
   std::vector< std::vector< float > > m_muon_IsoEff_SF_GradientLoose;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutLoose;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutTightTrackOnly;
+  std::vector< std::vector< float > > m_muon_TTVAEff_SF;
 
   // track parameters
   std::vector<float> m_muon_trkd0;
@@ -681,7 +682,7 @@ protected:
   // per object
   std::vector< std::vector< float > > m_el_RecoEff_SF;
   std::vector< std::vector< float > > m_el_TrigEff_SF_LHLooseAndBLayer;
-  std::vector< std::vector< float > > m_el_TrigEff_SF_LHTight;  
+  std::vector< std::vector< float > > m_el_TrigEff_SF_LHTight;
   std::vector< std::vector< float > > m_el_TrigMCEff_LHLooseAndBLayer;
   std::vector< std::vector< float > > m_el_TrigMCEff_LHTight;
   std::vector< std::vector< float > > m_el_IsoEff_SF_Loose;
