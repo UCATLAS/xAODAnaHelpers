@@ -504,6 +504,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr) {
     m_tree->Branch("muon_IsoEff_SF_Gradient",	    &m_muon_IsoEff_SF_Gradient);
     m_tree->Branch("muon_IsoEff_SF_GradientLoose",  &m_muon_IsoEff_SF_GradientLoose);
     m_tree->Branch("muon_IsoEff_SF_FixedCutTightTrackOnly",  &m_muon_IsoEff_SF_FixedCutTightTrackOnly);
+    m_tree->Branch("muon_TTVAEff_SF",  &m_muon_TTVAEff_SF);
   }
 
   if ( m_muInfoSwitch->m_quality ) {
@@ -723,6 +724,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Gradient("MuonEfficiencyCorrector_IsoSyst_IsoGradient");
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_GradientLoose("MuonEfficiencyCorrector_IsoSyst_IsoGradientLoose");
       static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_FixedCutTightTrackOnly("MuonEfficiencyCorrector_IsoSyst_IsoFixedCutTightTrackOnly");
+      static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuonEfficiencyCorrector_TTVASyst_TTVA");
 
       std::vector<float> junkSF(1,1.0);
       std::vector<float> junkEff(1,0.0);
@@ -738,6 +740,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       if( accIsoSF_GradientLoose.isAvailable( *muon_itr ) )  { m_muon_IsoEff_SF_GradientLoose.push_back( accIsoSF_GradientLoose( *muon_itr ) ); } else {  m_muon_IsoEff_SF_GradientLoose.push_back( junkSF ); }
       if( accIsoSF_Gradient.isAvailable( *muon_itr ) )       { m_muon_IsoEff_SF_Gradient.push_back( accIsoSF_Gradient( *muon_itr ) ); } else { m_muon_IsoEff_SF_Gradient.push_back( junkSF ); }
       if( accIsoSF_FixedCutTightTrackOnly.isAvailable( *muon_itr ) )  { m_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back( accIsoSF_FixedCutTightTrackOnly( *muon_itr ) ); } else {  m_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back( junkSF ); }
+      if( accTTVASF.isAvailable( *muon_itr ) )         { m_muon_TTVAEff_SF.push_back( accTTVASF( *muon_itr ) ); } else { m_muon_TTVAEff_SF.push_back( junkSF ); }
 
     }
 
@@ -850,6 +853,7 @@ void HelpTreeBase::ClearMuons() {
     m_muon_IsoEff_SF_Gradient.clear();
     m_muon_IsoEff_SF_GradientLoose.clear();
     m_muon_IsoEff_SF_FixedCutTightTrackOnly.clear();
+    m_muon_TTVAEff_SF.clear();
   }
 
   if ( m_muInfoSwitch->m_energyLoss ) {
@@ -1296,7 +1300,7 @@ void HelpTreeBase::ClearElectrons() {
 
   if( m_elInfoSwitch->m_effSF && m_isMC ) {
     m_el_RecoEff_SF.clear();
-    m_el_TrigEff_SF_LHLooseAndBLayer.clear();    
+    m_el_TrigEff_SF_LHLooseAndBLayer.clear();
     m_el_TrigEff_SF_LHTight.clear();
     m_el_TrigMCEff_LHLooseAndBLayer.clear();
     m_el_TrigMCEff_LHTight.clear();
