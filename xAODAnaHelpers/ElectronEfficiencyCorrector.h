@@ -35,7 +35,7 @@ public:
   float m_systValTrigMCEff;
   std::string m_systNamePID;
   std::string m_systNameReco;
-  std::string m_systNameIso;  
+  std::string m_systNameIso;
   std::string m_systNameTrig;
   std::string m_systNameTrigMCEff;
   std::string m_outputSystNamesPID;
@@ -48,7 +48,7 @@ public:
   std::string m_corrFileNameIso;
   std::string m_corrFileNameTrig;
   std::string m_corrFileNameTrigMCEff;
-  
+
   std::string   m_WorkingPointIDTrig;
 
 private:
@@ -99,7 +99,7 @@ public:
 
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
-  virtual EL::StatusCode executeSF (  const xAOD::ElectronContainer* inputElectrons, const xAOD::EventInfo* eventInfo, unsigned int countSyst  );
+  virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

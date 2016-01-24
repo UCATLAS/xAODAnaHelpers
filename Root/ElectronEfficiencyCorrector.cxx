@@ -71,7 +71,7 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
   m_systValReco             = 0.0;
   m_systValIso              = 0.0;
   m_systValTrig             = 0.0;
-  m_systValTrigMCEff        = 0.0; 
+  m_systValTrigMCEff        = 0.0;
   m_systNamePID             = "";
   m_systNameReco            = "";
   m_systNameTrig            = "";
@@ -83,14 +83,14 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
   m_outputSystNamesTrigMCEff = "ElectronEfficiencyCorrector_TrigMCEffSyst";
 
   m_WorkingPointIDTrig      = "LooseAndBLayer";
-  
+
   // file(s) containing corrections
   //
   m_corrFileNamePID         = "";
   m_corrFileNameReco        = "";
   m_corrFileNameIso         = "";
   m_corrFileNameTrig        = "";
-  m_corrFileNameTrigMCEff   = ""; 
+  m_corrFileNameTrigMCEff   = "";
 }
 
 
@@ -135,7 +135,7 @@ EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
     m_corrFileNameTrig        = config->GetValue("CorrectionFileNameTrig" , m_corrFileNameTrig.c_str());
     m_corrFileNameTrigMCEff   = config->GetValue("CorrectionFileNameTrigMCEff" , m_corrFileNameTrigMCEff.c_str());
     m_WorkingPointIDTrig      = config->GetValue("WorkingPointIDTrig" , m_WorkingPointIDTrig.c_str());
-    
+
     config->Print();
 
     Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! ");
@@ -242,7 +242,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       sim_flav = 3;
     }
   }
-  
+
   // 1.
   // initialize the AsgElectronEfficiencyCorrectionTool for PID efficiency SF
   //
@@ -257,9 +257,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     Error("initialize()", "m_PID_WP should not be empty! Exiting." );
     return EL::StatusCode::FAILURE;
   }
-  
+
   std::cout << "\n\n PID wp: " << m_PID_WP << "\n\n" << std::endl;
-  
+
   //
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -316,9 +316,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     Error("initialize()", "m_Iso_WP should not be empty! Exiting." );
     return EL::StatusCode::FAILURE;
   }
-  
+
   std::cout << "\n\n Iso wp: " << m_Iso_WP << "\n\n" << std::endl;
-  
+
   //
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -411,9 +411,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     Error("initialize()", "m_WorkingPointIDTrig should not be empty! Exiting." );
     return EL::StatusCode::FAILURE;
   }
-  
+
   std::cout << "\n\n Trig ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
-  
+
   //
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -459,7 +459,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // 5.
   // Initialise the AsgElectronEfficiencyCorrectionTool for Trigger Efficiency (for MC)
   //
-  
+
   //
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -531,7 +531,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // initialise containers
   //
   const xAOD::ElectronContainer* inputElectrons(nullptr);
-	    
+
   // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
 
@@ -543,12 +543,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   if ( m_inputAlgoSystNames.empty() ) {
 
       RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
- 
+
       if ( m_debug ) { Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) ); }
 
       // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
       //
-      this->executeSF( inputElectrons, eventInfo, countInputCont );
+      this->executeSF( inputElectrons, countInputCont );
 
   } else {
   // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo.
@@ -577,7 +577,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
           // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
 	  //
-          this->executeSF( inputElectrons, eventInfo, countInputCont );
+          this->executeSF( inputElectrons, countInputCont );
 
           // increment counter
 	  //
@@ -651,16 +651,15 @@ EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronContainer* inputElectrons, const xAOD::EventInfo* eventInfo, unsigned int countSyst  )
+EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst )
 {
 
+  // In the following, every electron gets decorated with several vector<double>'s (for various SFs),
   //
-  // In the following, every electron gets decorated with 2 vector<double>'s (for reco/PID efficiency SFs),
-  // and the event w/ 1 vector<double> (for trigger efficiency SFs)
   // Each vector contains the SFs, one SF for each syst (first component of each vector will be the nominal SF).
   //
   // Additionally, we create these vector<string> with the SF syst names, so that we know which component corresponds to.
-  // ( there's a 1:1 correspondence with the vector<double> defined above )
+  // ( there's a 1:1 correspondence with the vector<double>'s defined above )
   //
   // These vector<string> are eventually stored in TStore
   //
@@ -668,7 +667,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   std::vector< std::string >* sysVariationNamesReco = new std::vector< std::string >;
   std::vector< std::string >* sysVariationNamesIso  = new std::vector< std::string >;
   std::vector< std::string >* sysVariationNamesTrig = new std::vector< std::string >;
-  std::vector< std::string >* sysVariationNamesTrigMCEff = new std::vector< std::string >;  
+  std::vector< std::string >* sysVariationNamesTrigMCEff = new std::vector< std::string >;
 
   // 1.
   // PID efficiency SFs - this is a per-ELECTRON weight
@@ -914,7 +913,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
        SG::AuxElement::Decorator< std::vector<float> > sfVecReco ( m_outputSystNamesReco  );
        if ( !sfVecReco.isAvailable( *el_itr )  ) {
          sfVecReco ( *el_itr ) = std::vector<float>();
-       } 
+       }
 
        // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
        //
@@ -974,9 +973,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
-  
+
   // NB: calculation of the event SF is up to the analyzer
-  
+
   for ( const auto& syst_it : m_systListTrig ) {
 
     // Create the name of the SF weight to be recorded
@@ -1005,7 +1004,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     for ( auto el_itr : *(inputElectrons) ) {
 
        if ( m_debug ) { Info( "executeSF()", "Applying Trigger efficiency SF" ); }
-       
+
        bool isBadElectron(false);
 
        //
@@ -1074,7 +1073,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
   // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
-  
+
   for ( const auto& syst_it : m_systListTrigMCEff ) {
 
     // Create the name of the SF weight to be recorded
@@ -1103,7 +1102,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF (  const xAOD::ElectronC
     for ( auto el_itr : *(inputElectrons) ) {
 
        if ( m_debug ) { Info( "executeSF()", "Applying Trigger MC efficiency" ); }
-       
+
        bool isBadElectron(false);
 
        //
