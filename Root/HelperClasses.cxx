@@ -89,8 +89,6 @@ namespace HelperClasses{
     m_shapeLC       = has_exact("shapeLC");
     m_truth         = has_exact("truth");
     m_caloClus      = has_exact("caloClusters");
-    m_muonSF        = has_exact("muonSF");
-    m_electronSF    = has_exact("electronSF");
   }
 
   void TriggerInfoSwitch::initialize(){

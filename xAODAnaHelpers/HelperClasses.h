@@ -132,9 +132,6 @@ namespace HelperClasses {
         m_shapeLC        shapeLC        exact
         m_truth          truth          exact
         m_caloClus       caloClusters   exact
-        m_muonSF         muonSF         exact
-        m_electronSF     electronSF     exact
-        m_eventCleaning  eventCleaning  exact
         ================ ============== =======
     @endrst
    */
@@ -145,8 +142,6 @@ namespace HelperClasses {
     bool m_shapeLC;
     bool m_truth;
     bool m_caloClus;
-    bool m_muonSF;
-    bool m_electronSF;
     void initialize();
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   };
