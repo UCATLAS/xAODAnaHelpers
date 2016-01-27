@@ -40,17 +40,19 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-using std::cout;  using std::endl;
+using std::cout;  using std::endl;  
 using std::vector;
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetRoIBuilder)
 
 HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
-    Algorithm(className),
-    m_trigItem(""),
-    m_outContainerName(""),
-    m_trigDecTool(nullptr)
+  Algorithm(className),
+  m_trigItem(""),
+  m_doHLTBJet(true),
+  m_doHLTJet (false),
+  m_outContainerName(""),
+  m_trigDecTool(nullptr)
 {
   Info("HLTJetRoIBuilder()", "Calling constructor");
 
@@ -115,6 +117,23 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 {
   if ( m_debug ) { Info("execute()", "Doing HLT JEt ROI Building... "); }
 
+  if(m_doHLTBJet){
+    return buildHLTBJets();
+  }else if(m_doHLTJet){
+    return buildHLTJets();
+  }
+
+
+
+  if ( m_debug ) { m_store->print(); }
+
+  return EL::StatusCode::SUCCESS;
+}
+
+
+  
+EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
+{
   //
   // Create the new container and its auxiliary store.
   //
@@ -122,9 +141,9 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
   xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
   hltJets->setStore( hltJetsAux ); //< Connect the two
 
-  ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
+  //ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
 
-  //
+  // 
   //  Make accessors/decorators
   //
   static SG::AuxElement::ConstAccessor< vector<ElementLink<DataVector<xAOD::IParticle> > > > jetLinkAcc("BTagBtagToJetAssociator");
@@ -135,10 +154,10 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
   auto bjetFeatureContainers = fc.containerFeature<xAOD::BTaggingContainer>();
 
   if(m_debug) cout << "ncontainers  " << bjetFeatureContainers.size() << endl;
-
+  
   for(auto  jcont : bjetFeatureContainers) {
     for (const xAOD::BTagging*  hlt_btag : *jcont.cptr()) {
-
+      
       bool isAvailableJet = jetLinkAcc.isAvailable(*hlt_btag);
 
       if(isAvailableJet){
@@ -174,8 +193,8 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 	  //}else{
 	  //	if(m_debug) cout << " Trks Not Avalible." << endl;
 	  //}
-
-
+	  
+	  
 	  hltJets->push_back( newHLTBJet );
 	  if(m_debug) cout << "pushed back " << endl;
 	}
@@ -183,14 +202,44 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
       }else{
 	if(m_debug) cout << " Jet Not Avalible." << endl;
       }
-    }//BTagging
+    }//BTagging 
   }//bjetFeatures
 
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected dijetsAux.");
+  return EL::StatusCode::SUCCESS;
+}
 
-  if ( m_verbose ) { m_store->print(); }
 
+  
+EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
+{
+  //
+  // Create the new container and its auxiliary store.
+  //
+  xAOD::JetContainer*     hltJets    = new xAOD::JetContainer();
+  xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
+  hltJets->setStore( hltJetsAux ); //< Connect the two
+
+  Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItem);
+  auto jetFeatureContainers = fc.containerFeature<xAOD::JetContainer>();
+
+  if(m_debug) cout << "ncontainers  " << jetFeatureContainers.size() << endl;
+  
+  //DataModel_detail::const_iterator<JetContainer >::reference {aka const xAOD::Jet_v1*}
+
+  for(auto  jcont : jetFeatureContainers) {
+    for (const xAOD::Jet*  hlt_jet : *jcont.cptr()) {
+      
+      xAOD::Jet* newHLTJet = new xAOD::Jet();
+      newHLTJet->makePrivateStore( hlt_jet );
+
+      hltJets->push_back( newHLTJet );
+    }
+  }
+
+  RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
+  RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected dijetsAux.");
   return EL::StatusCode::SUCCESS;
 }
 
