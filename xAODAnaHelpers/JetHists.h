@@ -148,7 +148,9 @@ class JetHists : public HistogramManager
     TH1F* m_jf_energyFraction ; //!
     TH1F* m_jf_significance3d ; //!
     TH1F* m_jf_deltaeta       ; //!
+    TH1F* m_jf_deltaeta_l     ; //!
     TH1F* m_jf_deltaphi       ; //!
+    TH1F* m_jf_deltaphi_l     ; //!
     TH1F* m_jf_N2Tpar         ; //!
     TH1F* m_jf_pb             ; //!
     TH1F* m_jf_pc             ; //!
