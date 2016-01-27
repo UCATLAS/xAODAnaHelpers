@@ -27,6 +27,8 @@ public:
 
   // configuration variables
   std::string m_trigItem;
+  bool        m_doHLTBJet;
+  bool        m_doHLTJet;
   std::string m_outContainerName;
 
   // sort after calibration
@@ -35,6 +37,9 @@ public:
 private:
 
   Trig::TrigDecisionTool*      m_trigDecTool;   //!
+
+  EL::StatusCode buildHLTBJets ();
+  EL::StatusCode buildHLTJets  ();
 
 public:
 
