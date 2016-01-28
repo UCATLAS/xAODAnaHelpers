@@ -109,7 +109,8 @@ ElectronSelector :: ElectronSelector (std::string className) :
   m_z0sintheta_max          = 1e8;
   m_doAuthorCut             = true;
   m_doOQCut                 = true;
-
+  m_doBLTrackQualityCut     = false;
+  
   m_readIDFlagsFromDerivation = false;
   m_confDirPID              = "mc15_20150224";
 
@@ -173,7 +174,8 @@ EL::StatusCode  ElectronSelector :: configure ()
     m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
     m_doAuthorCut             = config->GetValue("DoAuthorCut", m_doAuthorCut);
     m_doOQCut                 = config->GetValue("DoOQCut", m_doOQCut);
-
+    m_doBLTrackQualityCut     = config->GetValue("DoBLTrackQualityCut", m_doBLTrackQualityCut);
+    
     m_readIDFlagsFromDerivation = config->GetValue("ReadIDFlagsFromDerivation", m_readIDFlagsFromDerivation);
     m_confDirPID              = config->GetValue("ConfDirPID", m_confDirPID.c_str());
     m_doLHPIDcut              = config->GetValue("DoLHPIDCut", m_doLHPIDcut);
@@ -201,9 +203,9 @@ EL::StatusCode  ElectronSelector :: configure ()
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
-  if ( m_LHOperatingPoint != "VeryLoose" &&
-       m_LHOperatingPoint != "Loose"     &&
-       m_LHOperatingPoint != "Medium"    &&
+  if ( m_LHOperatingPoint != "Loose"        &&
+       m_LHOperatingPoint != "LooseAndBLayer"  &&
+       m_LHOperatingPoint != "Medium"       &&
        m_LHOperatingPoint != "Tight"     ) {
     Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
     return EL::StatusCode::FAILURE;
@@ -344,26 +346,28 @@ EL::StatusCode ElectronSelector :: initialize ()
     m_el_cutflow_ptmax_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_el_cutflow_ptmin_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
     m_el_cutflow_eta_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
-    m_el_cutflow_PID_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("PID_cut");
     m_el_cutflow_z0sintheta_cut  = m_el_cutflowHist_1->GetXaxis()->FindBin("z0sintheta_cut");
     m_el_cutflow_d0_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
     m_el_cutflow_d0sig_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("d0sig_cut");
+    m_el_cutflow_BL_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("BL_cut");
+    m_el_cutflow_PID_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("PID_cut");
     m_el_cutflow_iso_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
 
     if ( m_isUsedBefore ) {
-       m_el_cutflowHist_2 = (TH1D*)file->Get("cutflow_electrons_2");
-
-       m_el_cutflow_all 	    = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
-       m_el_cutflow_author_cut      = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
-       m_el_cutflow_OQ_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");
-       m_el_cutflow_ptmax_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
-       m_el_cutflow_ptmin_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
-       m_el_cutflow_eta_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
-       m_el_cutflow_PID_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("PID_cut");
-       m_el_cutflow_z0sintheta_cut  = m_el_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
-       m_el_cutflow_d0_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
-       m_el_cutflow_d0sig_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
-       m_el_cutflow_iso_cut	    = m_el_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
+      m_el_cutflowHist_2 = (TH1D*)file->Get("cutflow_electrons_2");
+      
+      m_el_cutflow_all  	   = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
+      m_el_cutflow_author_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
+      m_el_cutflow_OQ_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");
+      m_el_cutflow_ptmax_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
+      m_el_cutflow_ptmin_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
+      m_el_cutflow_eta_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
+      m_el_cutflow_z0sintheta_cut  = m_el_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
+      m_el_cutflow_d0_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
+      m_el_cutflow_d0sig_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
+      m_el_cutflow_BL_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("BL_cut");
+      m_el_cutflow_PID_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("PID_cut");
+      m_el_cutflow_iso_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
     }
 
   }
@@ -421,12 +425,15 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
   //
-  std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "VeryLoose";
+  std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "Loose";
   m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, m_debug );
+
+  // make sure the actual WP is (Loose || Medium || Tight)
+   m_LHOperatingPoint = ( m_LHOperatingPoint == "LooseAndBLayer" ) ? "Loose" : m_LHOperatingPoint;
 
   if  ( m_doLHPIDcut ) {
        Info("initialize()", "Cutting on Electron Likelihood PID! \n ********************" );
-       Info("initialize()", "\t Selected LH WP: %s", (m_el_LH_PIDManager->getSelectedWP()).c_str() );
+       Info("initialize()", "\t Input WP: %s corresponding to actual LikeEnum::Menu WP: %s", likelihoodWP.c_str(), (m_el_LH_PIDManager->getSelectedWP()).c_str() );
   } else {
        Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decison (pass/not pass)!" );
   }
@@ -817,10 +824,10 @@ EL::StatusCode ElectronSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_el_CutBased_PIDManager ) { m_el_CutBased_PIDManager = nullptr; delete m_el_CutBased_PIDManager;  }
-  if ( m_el_LH_PIDManager )       { m_el_LH_PIDManager = nullptr;       delete m_el_LH_PIDManager;  }
-  if ( m_IsolationSelectionTool ) { m_IsolationSelectionTool = nullptr; delete m_IsolationSelectionTool; }
-  if ( m_trigElMatchTool )        { m_trigElMatchTool = nullptr;        delete m_trigElMatchTool; }
+  if ( m_el_CutBased_PIDManager ) { delete m_el_CutBased_PIDManager;  m_el_CutBased_PIDManager = nullptr; }
+  if ( m_el_LH_PIDManager )       { delete m_el_LH_PIDManager;	      m_el_LH_PIDManager = nullptr;	  }
+  if ( m_IsolationSelectionTool ) { delete m_IsolationSelectionTool;  m_IsolationSelectionTool = nullptr; }
+  if ( m_trigElMatchTool )        { delete m_trigElMatchTool;	      m_trigElMatchTool = nullptr;	  }
 
   if ( m_useCutFlow ) {
     Info("finalize()", "Filling cutflow");
@@ -943,6 +950,87 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_eta_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_eta_cut, 1 ); }
 
+
+  // *********************************************************************************************************************************************************************
+  //
+  // Tracking cuts AFTER acceptance, in case of derivation reduction.
+  //
+
+  const xAOD::TrackParticle* tp  = electron->trackParticle();
+  if ( !tp ) {
+    if ( m_debug ) Info( "PassCuts()", "Electron has no TrackParticle. Won't be selected.");
+    return 0;
+  }
+
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+
+  double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
+
+  float z0sintheta = 1e8;
+  if (primaryVertex) z0sintheta = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
+
+
+  // z0*sin(theta) cut
+  //
+  if ( m_z0sintheta_max != 1e8 ) {
+    if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed z0*sin(theta) cut." ); }
+      return 0;
+    }
+  }
+  if ( m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_z0sintheta_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_z0sintheta_cut, 1 ); }
+
+  // d0 cut
+  //
+  if ( m_d0_max != 1e8 ) {
+    if ( !( tp->d0() < m_d0_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 cut."); }
+      return 0;
+    }
+  }
+  if ( m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_d0_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0_cut, 1 ); }
+
+  // d0sig cut
+  //
+  if ( m_d0sig_max != 1e8 ) {
+    if ( !( d0_significance < m_d0sig_max ) ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 significance cut."); }
+      return 0;
+    }
+  }
+  if ( m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_d0sig_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0sig_cut, 1 ); }
+
+  // decorate electron w/ d0sig info
+  static SG::AuxElement::Decorator< float > d0SigDecor("d0sig");
+  d0SigDecor( *electron ) = static_cast<float>(d0_significance);
+  
+  
+  // BLayer track quality cut
+  //
+  if ( m_doBLTrackQualityCut ) {
+  
+    // this is taken from ElectronPhotonSelectorTools/Root/AsgElectronLikelihoodTool.cxx															 
+    
+    uint8_t expectBlayer(true);
+    uint8_t nBlayerHits(0);
+    uint8_t nBlayerOutliers(0);
+    
+    tp->summaryValue(expectBlayer,    xAOD::expectBLayerHit);
+    tp->summaryValue(nBlayerHits,     xAOD::numberOfBLayerHits);
+    tp->summaryValue(nBlayerOutliers, xAOD::numberOfBLayerOutliers);
+    
+    if ( expectBlayer && (nBlayerHits+nBlayerOutliers) < 1 ) {
+      if ( m_debug ) { Info("PassCuts()", "Electron failed BL track quality cut."); }
+      return 0;
+    }
+  }
+  if ( m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_BL_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_BL_cut, 1 ); }
+
   // *********************************************************************************************************************************************************************
   //
   // electron PID cuts
@@ -958,20 +1046,44 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   if ( m_readIDFlagsFromDerivation ) {
 
-    if ( m_doLHPIDcut &&  !electron->auxdata< int >( "DFCommonElectronsLH" + m_LHOperatingPoint ) ) {
+    if ( m_doLHPIDcut ) {
+
+      bool passSelID(false);
+      // need this exception check b/c an interface change in DF happened at some point :(
+      try {
+	passSelID = electron->auxdataConst<int> ( "DFCommonElectronsLH" + m_LHOperatingPoint );
+      }
+      catch(std::exception& e) {
+	passSelID = electron->auxdataConst<char>( "DFCommonElectronsLH" + m_LHOperatingPoint );
+      }
+
+      if ( !passSelID ) {
    	if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
    	return 0;
+      }
     }
 
     const std::set<std::string> myLHWPs = m_el_LH_PIDManager->getValidWPs();
     for ( auto it : (myLHWPs) ) {
+
       const std::string decorWP =  "LH" + it;
+
+      bool passThisID(false);
+      try {
+	passThisID = electron->auxdataConst<int> ( "DFCommonElectrons" + decorWP );
+      }
+      catch(std::exception& e) {
+	passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+      }
+
       if ( m_debug ) {
    	Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
-   	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), electron->auxdata< int >( "DFCommonElectrons" + decorWP ) );
+   	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
       }
-      electron->auxdecor<char>(decorWP) = static_cast<char>( electron->auxdata< int >( "DFCommonElectrons" + decorWP ) );
+      electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
+
     }
+
   } else {
 
     // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
@@ -1007,20 +1119,45 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   if ( m_readIDFlagsFromDerivation ) {
 
-    if ( m_doCutBasedPIDcut &&  !electron->auxdata< int >( "DFCommonElectrons" + m_CutBasedOperatingPoint ) ) {
+    if ( m_doCutBasedPIDcut ) {
+
+      bool passSelID(false);
+      // need this exception check b/c an interface change in DF happened at some point :(
+      try {
+	passSelID = electron->auxdataConst<int> ( "DFCommonElectrons" + m_CutBasedOperatingPoint );
+      }
+      catch(std::exception& e) {
+	passSelID = electron->auxdataConst<char>( "DFCommonElectrons" + m_CutBasedOperatingPoint );
+      }
+
+      if ( !passSelID ) {
    	if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut w/ operating point %s", m_CutBasedOperatingPoint.c_str() ); }
    	return 0;
+      }
+
     }
 
     const std::set<std::string> myCutBasedWPs = m_el_CutBased_PIDManager->getValidWPs();
     for ( auto it : (myCutBasedWPs) ) {
+
       const std::string decorWP = it.erase(0,4);
+
+      bool passThisID(false);
+      try {
+	passThisID = electron->auxdataConst<int> ( "DFCommonElectronsIsEM" + decorWP );
+      }
+      catch(std::exception& e) {
+	passThisID = electron->auxdataConst<char>( "DFCommonElectronsIsEM" + decorWP );
+      }
+
       if ( m_debug ) {
    	Info("PassCuts()", "Decorating electron with deciison for cut-based WP : %s ", ( decorWP ).c_str() );
-   	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), electron->auxdata< int >( "DFCommonElectronsIsEM" + decorWP ) );
+   	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
       }
-      electron->auxdecor<char>(decorWP) = static_cast<char>( electron->auxdata< int >( "DFCommonElectronsIsEM" + decorWP ) );
+      electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
+
     }
+
   } else {
 
     // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
@@ -1050,65 +1187,6 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_PID_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_PID_cut, 1 ); }
 
-  // *********************************************************************************************************************************************************************
-  //
-  // impact parameter cuts
-  //
-
-  // Tracking cuts AFTER acceptance, in case of derivation reduction.
-
-  const xAOD::TrackParticle* tp  = electron->trackParticle();
-
-  if ( !tp ) {
-    if ( m_debug ) Info( "PassCuts()", "Electron has no TrackParticle. Won't be selected.");
-    return 0;
-  }
-
-  const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
-
-  double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
-
-  float z0sintheta = 1e8;
-  if (primaryVertex) z0sintheta = ( tp->z0() + tp->vz() - primaryVertex->z() ) * sin( tp->theta() );
-
-
-  // z0*sin(theta) cut
-  //
-  if ( m_z0sintheta_max != 1e8 ) {
-    if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed z0*sin(theta) cut." ); }
-      return 0;
-    }
-  }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_z0sintheta_cut, 1 );
-  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_z0sintheta_cut, 1 ); }
-
-  // d0 cut
-  //
-  if ( m_d0_max != 1e8 ) {
-    if ( !( tp->d0() < m_d0_max ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 cut."); }
-      return 0;
-    }
-  }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_d0_cut, 1 );
-  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0_cut, 1 ); }
-
-  // d0sig cut
-  //
-  if ( m_d0sig_max != 1e8 ) {
-    if ( !( d0_significance < m_d0sig_max ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed d0 significance cut."); }
-      return 0;
-    }
-  }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_d0sig_cut, 1 );
-  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0sig_cut, 1 ); }
-
-  // decorate electron w/ d0sig info
-  static SG::AuxElement::Decorator< float > d0SigDecor("d0sig");
-  d0SigDecor( *electron ) = static_cast<float>(d0_significance);
 
   // *********************************************************************************************************************************************************************
   //

@@ -261,20 +261,21 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   Info("initialize()", "BTaggingSelectionTool initialized : %s ", m_BJetSelectTool->name().c_str() );
 
   //
-  // initialize the BJetEfficiencyCorrectionTool
-  //
-  std::string sf_tool_name = std::string("BJetEfficiencyCorrectionTool_") + m_name;
-  if ( asg::ToolStore::contains<BTaggingEfficiencyTool>( sf_tool_name ) ) {
-    m_BJetEffSFTool = asg::ToolStore::get<BTaggingEfficiencyTool>( sf_tool_name );
-  } else {
-    m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
-  }
-  m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
-
-  //
   //  Configure the BJetEfficiencyCorrectionTool
   //
   if( m_getScaleFactors ) {
+
+    //
+    // initialize the BJetEfficiencyCorrectionTool
+    //
+    std::string sf_tool_name = std::string("BJetEfficiencyCorrectionTool_") + m_name;
+    if ( asg::ToolStore::contains<BTaggingEfficiencyTool>( sf_tool_name ) ) {
+      m_BJetEffSFTool = asg::ToolStore::get<BTaggingEfficiencyTool>( sf_tool_name );
+    } else {
+      m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
+    }
+    m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
+
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName),"Failed to set property");
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPtCDI),"Failed to set property");
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property");
@@ -408,7 +409,6 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     //
     if (m_getScaleFactors ) {
 
-
       if (m_BJetEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
         Error("initialize()", "Failed to configure BJetEfficiencyCorrections for systematic %s.", syst_it.name().c_str());
         return EL::StatusCode::FAILURE;
@@ -455,7 +455,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
         }
         // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
         //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
-      }//m_getScaleFacots && eta < 2.5
+      } //m_getScaleFactors && eta < 2.5
 
       // Add it to vector
       sfVec(*jet_itr).push_back(SF);
@@ -463,7 +463,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       SF_GLOBAL *= SF;
 
       /*
-      if(m_debug){
+      if( m_getScaleFactors && m_debug){
         //
         // directly obtain reco efficiency
         //
@@ -526,9 +526,10 @@ EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
 EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 {
   Info("finalize()", "Deleting tool instances...");
-  if(m_BJetEffSFTool){
-    delete m_BJetEffSFTool; m_BJetEffSFTool = nullptr;
-  }
+
+  if ( m_BJetSelectTool ) { delete m_BJetSelectTool; m_BJetSelectTool = nullptr;  }
+  if ( m_BJetEffSFTool )  { delete m_BJetEffSFTool; m_BJetEffSFTool = nullptr; }
+
   return EL::StatusCode::SUCCESS;
 }
 
