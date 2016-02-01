@@ -8,7 +8,6 @@ Development
    :maxdepth: 2
 
    HowToDocumentation
-   Versions
    Issues
 
 Development Workflow

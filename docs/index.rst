@@ -10,6 +10,20 @@ The xAOD analysis framework, born out of ProofAna...or not.
 
 Welcome to the xAODAnaHelpers wiki! This is an xAOD Analysis Framework built for Run II of ATLAS.
 
+.. _Versions:
+
+Current Version
+---------------
+
+.. Cannot bold just yet: http://stackoverflow.com/questions/33537747/substitution-inside-inline-markup-while-escaping-whitespace
+
+Current AnalysisBase release for |xAH| is Base,\ |analysis_base_release|\ .
+
+.. note::
+    If you need to bump up the version of the AnalysisBase being used, please make sure you update the `.travis.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.travis.yml>`_ file first.
+
+
+
 Contents
 --------
 
