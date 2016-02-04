@@ -424,3 +424,11 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
 }
 
 
+
+float HelperFunctions::dPhi(float phi1, float phi2)
+{
+  float dPhi = phi1 - phi2;
+  if(dPhi > 3.14)  dPhi -= 2*3.14;
+  if(dPhi < -3.14) dPhi += 2*3.14;
+  return dPhi;
+}

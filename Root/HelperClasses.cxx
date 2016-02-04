@@ -155,6 +155,26 @@ namespace HelperClasses{
     m_jetFitterDetails  = has_exact("jetFitterDetails");
     m_svDetails         = has_exact("svDetails");
     m_ipDetails         = has_exact("ipDetails");
+
+    if(has_match("tracksInJet")){
+      m_tracksInJet       = true;
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("tracksInJet_") );
+      // erase everything after the interesting string
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
+      // remove tracksInJet_ to just leave the tack name
+      input.erase(0,12);
+      
+      m_trackName = input;
+    }else{
+      m_tracksInJet       = false;
+      m_trackName         = "";
+    }
+
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
       std::string input(m_configStr);

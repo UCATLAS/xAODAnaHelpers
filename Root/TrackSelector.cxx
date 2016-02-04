@@ -19,6 +19,8 @@
 #include <typeinfo>
 #include <sstream>
 
+using std::vector;
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackSelector)
 
@@ -28,12 +30,6 @@ TrackSelector :: TrackSelector (std::string className) :
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr)
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
   Info("TrackSelector()", "Calling constructor");
 
   // read debug flag from .config file
@@ -42,6 +38,7 @@ TrackSelector :: TrackSelector (std::string className) :
 
   // input container to be read from TEvent or TStore
   m_inContainerName  = "";
+  m_inJetContainerName  = "";
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = true;
@@ -73,6 +70,8 @@ TrackSelector :: TrackSelector (std::string className) :
   m_passAuxDecorKeys        = "";
 
   m_failAuxDecorKeys        = "";
+
+  m_doTracksInJets          = false;
 
 }
 
@@ -252,13 +251,20 @@ EL::StatusCode TrackSelector :: initialize ()
 
 EL::StatusCode TrackSelector :: execute ()
 {
-  // Here you do everything that needs to be done on every single
-  // events, e.g. read input variables, apply cuts, and fill
-  // histograms and trees.  This is where most of your actual analysis
-  // code will go.
 
   if(m_debug) Info("execute()", "Applying Track Selection... ");
 
+  if(m_doTracksInJets){
+    return executeTracksInJets();
+  } else{
+    return executeTrackCollection();
+  }
+
+  return EL::StatusCode::SUCCESS;
+}
+
+EL::StatusCode TrackSelector :: executeTrackCollection ()
+{  
   float mcEvtWeight(1); // FIXME - set to something from eventInfo
 
   m_numEvent++;
@@ -335,6 +341,73 @@ EL::StatusCode TrackSelector :: execute ()
 
   return EL::StatusCode::SUCCESS;
 }
+
+
+EL::StatusCode TrackSelector :: executeTracksInJets ()
+{
+  m_numEvent++;
+
+  // get input jet collection
+  const xAOD::JetContainer* inJets(nullptr);
+  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, m_verbose) ,"");
+
+  // get primary vertex
+  const xAOD::VertexContainer *vertices(nullptr);
+  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
+  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
+
+  int nPass(0); int nObj(0);
+
+  //
+  //  Accessor for adding the output jets
+  //
+  xAOD::Jet::Decorator<vector<const xAOD::TrackParticle*> > m_track_decoration(m_outContainerName.c_str());
+  xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration  ((m_outContainerName+"_vtx").c_str());
+
+  //
+  // loop on Jets
+  //
+  for ( auto jet_itr : *inJets ) { 
+
+    //  
+    //  output container with in the jet
+    //
+    vector<const xAOD::TrackParticle*> outputTracks;
+
+    //
+    // loop on tracks with in jet
+    //
+    const vector<const xAOD::TrackParticle*> inputTracks = jet_itr->auxdata< vector<const xAOD::TrackParticle*>  >(m_inContainerName);
+    for(const xAOD::TrackParticle* trkInJet: inputTracks){
+
+      nObj++;
+
+      //
+      // Get cut desicion
+      //
+      int passSel = this->PassCuts( trkInJet, pvx );
+
+      //
+      // if 
+      //
+      if(passSel) {
+	nPass++;
+	outputTracks.push_back(trkInJet);
+      }
+    }// tracks
+
+    m_numObject     += nObj;
+    m_numObjectPass += nPass;
+
+    m_track_decoration(*jet_itr)  = outputTracks;
+    m_vtx_decoration(*jet_itr)    = jet_itr->auxdata<const xAOD::Vertex*>(m_inContainerName+"_vtx");
+
+  }//jets
+
+  m_numEventPass++;
+  return EL::StatusCode::SUCCESS;
+}
+
 
 
 EL::StatusCode TrackSelector :: postExecute ()

@@ -3,6 +3,7 @@
 
 #include "xAODAnaHelpers/HistogramManager.h"
 #include "xAODAnaHelpers/HelperClasses.h"
+#include "xAODAnaHelpers/TracksInJetHists.h"
 #include <xAODJet/JetContainer.h>
 
 class JetHists : public HistogramManager
@@ -19,13 +20,15 @@ class JetHists : public HistogramManager
     StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
-
+    virtual void record(EL::Worker* wk);
+    
   protected:
 
     // holds bools that control which histograms are filled
     HelperClasses::JetInfoSwitch* m_infoSwitch;
 
   private:
+
     //basic
     TH1F* m_jetPt;                  //!
     TH1F* m_jetEta;                 //!
@@ -203,6 +206,10 @@ class JetHists : public HistogramManager
     TH1F* m_tau21_wta; //!
     TH1F* m_tau32_wta; //!
     TH1F* m_numConstituents; //!
+
+    // Tracks in Jets
+    TH1F* m_nTrk; //!
+    TracksInJetHists* m_tracksInJet; //!
 };
 
 #endif

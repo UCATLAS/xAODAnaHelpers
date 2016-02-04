@@ -42,6 +42,9 @@ public:
   std::string              m_passAuxDecorKeys;
   std::string              m_failAuxDecorKeys;
 
+  bool m_doTracksInJets; // do track selection on track within jets
+  std::string m_inJetContainerName;      // input jet container name
+
 private:
 
   std::vector<std::string> m_passKeys;
@@ -76,6 +79,8 @@ public:
   virtual EL::StatusCode changeInput (bool firstFile);
   virtual EL::StatusCode initialize ();
   virtual EL::StatusCode execute ();
+  EL::StatusCode executeTrackCollection ();
+  EL::StatusCode executeTracksInJets ();
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();

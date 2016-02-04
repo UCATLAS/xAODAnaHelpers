@@ -16,6 +16,7 @@ JetHists :: ~JetHists () {
   if(m_infoSwitch) delete m_infoSwitch;
 }
 
+
 StatusCode JetHists::initialize() {
 
   // These plots are always made
@@ -182,8 +183,8 @@ StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_truth ) {
     if(m_debug) Info("JetHists::initialize()", "adding truth plots");
 
-    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          30,  -0.5,  29.5);
-    m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          50,  -0.5,  49.5);
+    m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          40,  -10.5,  29.5);
+    m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          60,  -10.5,  49.5);
     m_truthPt        = book(m_name, "TruthPt",             "Truth Pt",              100,   0,   100.0);
 
     m_truthDr_B            = book(m_name, "TruthLabelDeltaR_B",   "Truth Label dR(b)" ,          120, -0.1,   1.0);
@@ -305,8 +306,27 @@ StatusCode JetHists::initialize() {
     m_numConstituents           = book(m_name, "numConstituents", "num. constituents", 501, -0.5, 500.5);
   }
 
+  //
+  // Tracks in Jet
+  //
+  if( m_infoSwitch->m_tracksInJet ){
+    m_nTrk                      = book(m_name, "nTrk", "nTrk", 100, -0.5, 99.5);
+
+    m_tracksInJet = new TracksInJetHists(m_name+"trk_", "");
+    m_tracksInJet -> initialize( );
+  }
+
   return StatusCode::SUCCESS;
 }
+
+void JetHists::record(EL::Worker* wk) {
+  HistogramManager::record(wk);
+
+  if(m_infoSwitch->m_tracksInJet){
+    m_tracksInJet -> record( wk );
+  }
+}
+
 
 StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc ) {
   for( auto jet_itr : *jets ) {
@@ -996,6 +1016,18 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
 
     m_numConstituents->Fill( jet->numConstituents(), eventWeight );
 
+  }
+
+  if( m_infoSwitch->m_tracksInJet ){
+    
+    const vector<const xAOD::TrackParticle*> matchedTracks = jet->auxdata< vector<const xAOD::TrackParticle*>  >(m_infoSwitch->m_trackName);
+    const xAOD::Vertex *pvx  = jet->auxdata<const xAOD::Vertex*>(m_infoSwitch->m_trackName+"_vtx");
+
+    m_nTrk->Fill(matchedTracks.size(), eventWeight);
+
+    for(auto& trkPtr: matchedTracks){
+      RETURN_CHECK("JetHists::execute()", m_tracksInJet->execute(trkPtr, jet, pvx, eventWeight), "");
+    }
   }
 
   return StatusCode::SUCCESS;
