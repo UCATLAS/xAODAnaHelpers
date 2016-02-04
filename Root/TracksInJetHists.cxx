@@ -1,7 +1,8 @@
 #include "xAODAnaHelpers/TracksInJetHists.h"
 #include <math.h>
 #include <xAODTracking/TrackParticle.h>
-
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include "xAODAnaHelpers/HelperFunctions.h"
 
 using std::cout;  using std::endl;
 
@@ -13,6 +14,12 @@ TracksInJetHists :: TracksInJetHists (std::string name, std::string detailStr) :
 TracksInJetHists :: ~TracksInJetHists () {}
 
 StatusCode TracksInJetHists::initialize() {
+
+  //
+  // TrackHists
+  //
+  m_trkPlots = new TrackHists(m_name, "IPDetails HitCounts TPErrors Chi2Details Debugging");
+  m_trkPlots -> initialize();
 
   // 
   //  d0
@@ -47,7 +54,19 @@ StatusCode TracksInJetHists::initialize() {
 }
 
 
+void TracksInJetHists::record(EL::Worker* wk) {
+  HistogramManager::record(wk);
+  m_trkPlots -> record( wk );
+}
+
+
+
 StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD::Jet* jet,  const xAOD::Vertex *pvx, float eventWeight ) { 
+
+  //
+  //  Fill track hists
+  //
+  RETURN_CHECK("TracksInJetHists::execute()", m_trkPlots   ->execute(trk, pvx, eventWeight), "");
 
   // d0
   float sign         = getD0Sign(trk, jet);
@@ -79,10 +98,12 @@ StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD
 
   m_trk_z0sinTd0->Fill(z0_wrtPV_signed*sinT, signedD0, eventWeight);
 
+  float dEta = trk->eta() - jet->p4().Eta();
+  float dPhi = HelperFunctions::dPhi(trk->phi(), jet->p4().Phi());
+  float dR   = sqrt(dPhi*dPhi + dEta*dEta);
+  //float dR = trk->p4().DeltaR(jet->p4());
 
-  float dR = trk->p4().DeltaR(jet->p4());
-
-  m_trk_jetdPhi ->Fill(trk->p4().DeltaPhi(jet->p4()), eventWeight);
+  m_trk_jetdPhi ->Fill(HelperFunctions::dPhi(trk->phi(),jet->p4().Phi()), eventWeight);
   m_trk_jetdEta ->Fill(trk->eta() - jet->eta(),       eventWeight);
   m_trk_jetdR   ->Fill(dR,   eventWeight);
   m_trk_jetdR_l ->Fill(dR,   eventWeight);

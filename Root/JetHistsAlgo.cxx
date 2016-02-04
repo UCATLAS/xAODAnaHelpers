@@ -28,7 +28,6 @@ JetHistsAlgo :: JetHistsAlgo (std::string className) :
   m_inputAlgo               = "";
 
   m_debug                   = false;
-
 }
 
 EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)

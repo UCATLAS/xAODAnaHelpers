@@ -44,6 +44,7 @@ namespace HelperFunctions {
   std::string GetBTagMV2c20_CutStr( int efficiency );
   std::string replaceString(std::string subjet, const std::string& search, const std::string& replace);
   std::vector<TString> SplitString(TString& orig, const char separator);
+  float dPhi(float phi1, float phi2);
 
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |

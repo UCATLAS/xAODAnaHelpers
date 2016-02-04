@@ -141,7 +141,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
   hltJets->setStore( hltJetsAux ); //< Connect the two
 
-  //ConstDataVector<xAOD::TrackParticleContainer>* selectedTracks = new ConstDataVector<xAOD::TrackParticleContainer>(SG::VIEW_ELEMENTS);
+  //
+  //  For Adding Tracks to the Jet
+  //
+  xAOD::Jet::Decorator<vector<const xAOD::TrackParticle*> > m_track_decoration("HLTBJetTracks");
+  xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration  ("HLTBJetTracks_vtx");
+
+  const xAOD::VertexContainer *vertices = 0;
+  if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
+    Error("execute()", "Failed to retrieve PrimaryVertices. Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+  const xAOD::Vertex* pvx = HelperFunctions::getPrimaryVertex(vertices);
+
 
   // 
   //  Make accessors/decorators
@@ -165,6 +177,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	if(m_debug) cout << "Filling " << jetLinkObj.size() << " jets ... " <<endl;
 
 	if(jetLinkObj.size()){
+	  if(m_debug) cout << "Casting "  << endl;
 	  const xAOD::Jet* hltBJet = dynamic_cast<const xAOD::Jet*>(*(jetLinkObj.at(0)));
 	  if(m_debug) cout << "Adding hltBJet " << hltBJet << " " << hlt_btag << endl;
 
@@ -180,20 +193,29 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	  //
 	  // Add Tracks to BJet
 	  //
-	  //bool isAvailableTrks = trkLinkAcc.isAvailable(*hlt_btag);
-	  //if(isAvailableTrks){
-	  //	vector<ElementLink<xAOD::TrackParticleContainer> > trkLinkObj = trkLinkAcc(*hlt_btag);
-	  //	//h_nTrks->Fill(trkLinkObj.size());
-	  //	if(m_debug) cout << "Filling " << trkLinkObj.size() << " tracks...";
-	  //
-	  //	for(auto& trkPtr: trkLinkObj){
-	  //	  const xAOD::TrackParticle* thisHLTTrk = *(trkPtr);
-	  //	  selectedTracks->push_back( thisHLTTrk );
-	  //	}
-	  //}else{
-	  //	if(m_debug) cout << " Trks Not Avalible." << endl;
-	  //}
+	  bool isAvailableTrks = trkLinkAcc.isAvailable(*hlt_btag);
+	  if(isAvailableTrks){
+	    vector<ElementLink<xAOD::TrackParticleContainer> > trkLinkObj = trkLinkAcc(*hlt_btag);
+	    if(m_debug) cout << "trkLinkObj has " << trkLinkObj.size() << " objects" << endl;
+
+	    vector<const xAOD::TrackParticle*> matchedTracks;	    
+
+	    for(auto& trkPtr: trkLinkObj){
+	      const xAOD::TrackParticle* thisHLTTrk = *(trkPtr);
+	      if(m_debug) cout <<  "\tAdding  track " 
+			       << thisHLTTrk->pt()   << " "
+			       << thisHLTTrk->eta()  << " "
+			       << thisHLTTrk->phi()  << endl;
+	      matchedTracks.push_back(thisHLTTrk);
+	    }
+
+	    if(m_debug) cout <<  "Adding tracks to jet " << endl;	    
+	    m_track_decoration(*newHLTBJet)  = matchedTracks;	  
+	    m_vtx_decoration  (*newHLTBJet)  = pvx;
 	  
+	  }else{
+	    if(m_debug) cout << " Trks Not Avalible." << endl;
+	  }
 	  
 	  hltJets->push_back( newHLTBJet );
 	  if(m_debug) cout << "pushed back " << endl;
@@ -214,6 +236,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   
 EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
 {
+  if(m_debug) cout << "In buildHLTJets  " <<endl;
   //
   // Create the new container and its auxiliary store.
   //
@@ -240,6 +263,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
 
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected dijetsAux.");
+  if(m_debug) cout << "Left buildHLTJets  " <<endl;
   return EL::StatusCode::SUCCESS;
 }
 

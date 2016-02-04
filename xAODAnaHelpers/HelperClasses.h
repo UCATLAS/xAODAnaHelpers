@@ -302,6 +302,7 @@ namespace HelperClasses {
         m_sfFTagFlt      sfFTagFlt      partial
         m_area           area           exact
         m_numLeadingJets LeadingJets    partial
+        m_tracksInJet    tracksInJet    partial
         ================ ============== =======
 
         .. note::
@@ -349,9 +350,11 @@ namespace HelperClasses {
     bool m_jetFitterDetails;
     bool m_svDetails;
     bool m_ipDetails;
+    bool m_tracksInJet;
     bool m_area;
     int  m_numLeadingJets;
     void initialize();
+    std::string      m_trackName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };

@@ -3,6 +3,7 @@
 
 #include "xAODAnaHelpers/HistogramManager.h"
 #include <xAODJet/Jet.h>
+#include <xAODAnaHelpers/TrackHists.h>
 
 class TracksInJetHists : public HistogramManager
 {
@@ -17,10 +18,14 @@ class TracksInJetHists : public HistogramManager
     StatusCode execute( const xAOD::TrackParticle* trk, const xAOD::Jet* jet,  const xAOD::Vertex *pvx, float eventWeight );
     using HistogramManager::book; // make other overloaded versions of book() to show up in subclass
     using HistogramManager::execute; // overload
+    virtual void record(EL::Worker* wk);
 
   protected: 
 
   private:
+    
+    TrackHists*       m_trkPlots; //!
+
     // Histograms
     TH1F* m_trk_d0                ; //!
     TH1F* m_trk_d0Sig     	    ; //!
