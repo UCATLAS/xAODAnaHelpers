@@ -84,13 +84,11 @@ namespace HelperClasses{
 
   void EventInfoSwitch::initialize(){
     m_pileup        = has_exact("pileup");
+    m_eventCleaning = has_exact("eventCleaning");
     m_shapeEM       = has_exact("shapeEM");
     m_shapeLC       = has_exact("shapeLC");
     m_truth         = has_exact("truth");
     m_caloClus      = has_exact("caloClusters");
-    m_muonSF        = has_exact("muonSF");
-    m_electronSF    = has_exact("electronSF");
-    m_eventCleaning = has_exact("eventCleaning");
   }
 
   void TriggerInfoSwitch::initialize(){

@@ -86,7 +86,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   m_checkDuplicatesMC	= false;
 
   // GRL
-  m_applyGRLCut = true;
+  m_applyGRLCut = false;
   m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml";
   //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
   m_GRLExcludeList = "";
@@ -102,12 +102,12 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
 
   // Primary Vertex
   m_vertexContainerName = "PrimaryVertices";
-  m_applyPrimaryVertexCut = true;
+  m_applyPrimaryVertexCut = false;
   // number of tracks to require to count PVs
   m_PVNTrack = 2; // harmonized cut
 
   // Event Cleaning
-  m_applyEventCleaningCut = true;
+  m_applyEventCleaningCut = false;
   m_applyCoreFlagsCut     = false;
 
   // Trigger
@@ -597,6 +597,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
     if ( m_PU_default_channel ) {
       RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DefaultChannel", m_PU_default_channel), "");
     }
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DataScaleFactor", 1.0/1.16), "Failed to set pileup reweighting data scale factor");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DataScaleFactorUP", 1.0), "Failed to set pileup reweighting data scale factor up");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DataScaleFactorDOWN", 1.0/1.23), "Failed to set pileup reweighting data scale factor down");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "Failed to properly initialize CP::PileupReweightingTool");
   }
 

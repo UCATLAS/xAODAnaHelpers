@@ -249,25 +249,6 @@ protected:
   std::vector<float> m_caloCluster_phi;
   std::vector<float> m_caloCluster_e;
 
-  // trigger scale factors
-  std::vector<float> m_weight_muon_trig;
-  std::vector<float> m_weight_electron_trig;
-
-  // lepton SFs per event (product of each object SF)
-  std::vector<float> m_weight_muon_RecoEff_SF;
-  std::vector<float> m_weight_muon_IsoEff_SF_LooseTrackOnly;
-  std::vector<float> m_weight_muon_IsoEff_SF_Loose;
-  std::vector<float> m_weight_muon_IsoEff_SF_Tight;
-  std::vector<float> m_weight_muon_IsoEff_SF_Gradient;
-  std::vector<float> m_weight_muon_IsoEff_SF_GradientLoose;
-  std::vector<float> m_weight_muon_IsoEff_SF_UserDefinedFixEfficiency;
-  std::vector<float> m_weight_muon_IsoEff_SF_UserDefinedCut;
-  std::vector<float> m_weight_electron_RecoEff_SF;
-  std::vector<float> m_weight_electron_PIDEff_SF_LHVeryLoose;
-  std::vector<float> m_weight_electron_PIDEff_SF_LHLoose;
-  std::vector<float> m_weight_electron_PIDEff_SF_LHMedium;
-  std::vector<float> m_weight_electron_PIDEff_SF_LHTight;
-
   // trigger
   int m_passL1;
   int m_passHLT;
@@ -568,7 +549,8 @@ protected:
   std::vector<float> m_muon_m;
 
   // trigger
-  std::vector<int> m_muon_isTrigMatchedToChain;
+  std::vector<int> m_muon_isTrigMatched;
+  std::vector<std::vector<int> > m_muon_isTrigMatchedToChain;
   std::vector<std::string> m_muon_listTrigChains;
 
   // isolation
@@ -577,11 +559,7 @@ protected:
   std::vector<int>   m_muon_isIsolated_Tight;
   std::vector<int>   m_muon_isIsolated_Gradient;
   std::vector<int>   m_muon_isIsolated_GradientLoose;
-  std::vector<int>   m_muon_isIsolated_GradientT1;
-  std::vector<int>   m_muon_isIsolated_GradientT2;
-  std::vector<int>   m_muon_isIsolated_MU0p06;
   std::vector<int>   m_muon_isIsolated_FixedCutLoose;
-  std::vector<int>   m_muon_isIsolated_FixedCutTight;
   std::vector<int>   m_muon_isIsolated_FixedCutTightTrackOnly;
   std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
   std::vector<int>   m_muon_isIsolated_UserDefinedCut;
@@ -603,14 +581,19 @@ protected:
 
   // scale factors w/ sys
   // per object
-  std::vector< std::vector< float > > m_muon_RecoEff_SF;
+  std::vector< std::vector< float > > m_muon_RecoEff_SF_Loose;
+  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_Loose;
+  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly;
+  std::vector< std::vector< float > > m_muon_TrigMCEff_Loose_Loose;
+  std::vector< std::vector< float > > m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_LooseTrackOnly;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_Loose;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_Tight;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_Gradient;
   std::vector< std::vector< float > > m_muon_IsoEff_SF_GradientLoose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_UserDefinedFixEfficiency;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_UserDefinedCut;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutLoose;
+  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutTightTrackOnly;
+  std::vector< std::vector< float > > m_muon_TTVAEff_SF;
 
   // track parameters
   std::vector<float> m_muon_trkd0;
@@ -652,10 +635,12 @@ protected:
   std::vector<float> m_el_phi;
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
+  std::vector<float> m_el_caloCluster_eta;
 
   // trigger
-  std::vector<int> m_el_isTrigMatchedToChain;
-  std::vector<std::string> m_el_listTrigChains;
+  std::vector<int> m_el_isTrigMatched;
+  std::vector<std::vector<int> > m_el_isTrigMatchedToChain;
+  std::vector<std::string>       m_el_listTrigChains;
 
   // isolation
   std::vector<int>   m_el_isIsolated_LooseTrackOnly;
@@ -663,9 +648,6 @@ protected:
   std::vector<int>   m_el_isIsolated_Tight;
   std::vector<int>   m_el_isIsolated_Gradient;
   std::vector<int>   m_el_isIsolated_GradientLoose;
-  std::vector<int>   m_el_isIsolated_GradientT1;
-  std::vector<int>   m_el_isIsolated_GradientT2;
-  std::vector<int>   m_el_isIsolated_EL0p06;
   std::vector<int>   m_el_isIsolated_FixedCutLoose;
   std::vector<int>   m_el_isIsolated_FixedCutTight;
   std::vector<int>   m_el_isIsolated_FixedCutTightTrackOnly;
@@ -683,8 +665,6 @@ protected:
   std::vector<float> m_el_topoetcone40;
 
   // PID
-  int m_nel_LHVeryLoose;
-  std::vector<int>   m_el_LHVeryLoose;
   int m_nel_LHLoose;
   std::vector<int>   m_el_LHLoose;
   int m_nel_LHMedium;
@@ -701,7 +681,13 @@ protected:
   // scale factors w/ sys
   // per object
   std::vector< std::vector< float > > m_el_RecoEff_SF;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHVeryLoose;
+  std::vector< std::vector< float > > m_el_TrigEff_SF_LHLooseAndBLayer;
+  std::vector< std::vector< float > > m_el_TrigEff_SF_LHTight;
+  std::vector< std::vector< float > > m_el_TrigMCEff_LHLooseAndBLayer;
+  std::vector< std::vector< float > > m_el_TrigMCEff_LHTight;
+  std::vector< std::vector< float > > m_el_IsoEff_SF_Loose;
+  std::vector< std::vector< float > > m_el_IsoEff_SF_FixedCutTight;
+  std::vector< std::vector< float > > m_el_PIDEff_SF_LHLooseAndBLayer;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHLoose;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHMedium;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHTight;

@@ -27,6 +27,8 @@ public:
   // configuration variables
   std::string   m_inContainerName;
 
+  std::string   m_calibRelease;
+
   // Reco efficiency SF
   std::string   m_WorkingPointReco;
 
@@ -40,6 +42,9 @@ public:
   std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
   std::string   m_DiMuTrig;          // this can be either a dimuon trigger chain, or an OR of ( N single muon trigger chains, dimuon chain )
 
+  // TTVA efficiency SF
+  std::string   m_WorkingPointTTVA;
+
   // systematics
   std::string   m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
   			               // upstream algo (e.g., the SC containers with calibration systematics)
@@ -47,12 +52,15 @@ public:
   float         m_systValReco;
   float         m_systValIso;
   float         m_systValTrig;
+  float         m_systValTTVA;
   std::string   m_systNameReco;
   std::string   m_systNameIso;
   std::string   m_systNameTrig;
+  std::string   m_systNameTTVA;
   std::string   m_outputSystNamesReco;
   std::string   m_outputSystNamesIso;
   std::string   m_outputSystNamesTrig;
+  std::string   m_outputSystNamesTTVA;
 
 private:
 
@@ -67,11 +75,13 @@ private:
   std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListIso;  //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
+  std::vector<CP::SystematicSet> m_systListTTVA; //!
 
   // tools
   CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_Reco;     //!
   CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_Iso;      //!
   CP::MuonTriggerScaleFactors     *m_asgMuonEffCorrTool_muSF_Trig ;    //!
+  CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_TTVA;     //!
   CP::PileupReweightingTool       *m_pileuptool;                       //!
 
   // variables that don't get filled at submission time should be
@@ -82,7 +92,6 @@ public:
 
   // Tree *myTree; //!
   // TH1 *myHist;  //!
-
 
   // this is a standard constructor
   MuonEfficiencyCorrector (std::string className = "MuonEfficiencyCorrector");
@@ -101,7 +110,7 @@ public:
   // these are the functions not inherited from Algorithm
   virtual EL::StatusCode configure ();
 
-  virtual EL::StatusCode executeSF (  const xAOD::MuonContainer* inputMuons, const xAOD::EventInfo* eventInfo, unsigned int countSyst  );
+  virtual EL::StatusCode executeSF (  const xAOD::MuonContainer* inputMuons, unsigned int countSyst  );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

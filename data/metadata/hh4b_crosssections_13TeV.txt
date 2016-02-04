@@ -54,6 +54,42 @@ id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
 301525   MadGraphPythia8EvtGen_A14NNPDF23LO_RS_G_hh_bbbb_c20_M2500   0.00040708  1.   1.0  1.
 
 ################################################################################################################
+#  non resonant hh
+342619   aMcAtNloHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_hh_4b   25.3e-03  1.   1.0  1.
+
+################################################################################################################
+#  2HDM
+343394   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m260_4b   150.55  1.   1.0  1.
+343395   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m300_4b   221.7  1.   1.0  1.
+343396   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m400_4b   229.6  1.   1.0  1.
+343397   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m500_4b   99.0  1.   1.0  1.
+343398   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m600_4b   39.0  1.   1.0  1.
+343399   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m700_4b   16.0  1.   1.0  1.
+343400   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m800_4b   6.9  1.   1.0  1.
+343401   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m900_4b   3.2  1.   1.0  1.
+343402   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m1000_4b   1.6  1.   1.0  1.
+343403   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m1100_4b   0.80  1.   1.0  1.
+343404   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m1200_4b   0.423  1.   1.0  1.
+343405   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m1300_4b   0.233  1.   1.0  1.
+343406   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m1400_4b   0.132  1.   1.0  1.
+343407   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m1500_4b   0.077  1.   1.0  1.
+343410   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m2000_4b   0.0071  1.   1.0  1.
+343411   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m2250_4b   0.00249  1.   1.0  1.
+343413   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m2750_4b   0.000372  1.   1.0  1.
+343414   MadGraphHerwigppEvtGen_UEEE5_CTEQ6L1_CT10ME_Xhh_m3000_4b   0.000155  1.   1.0  1.
+
+
+
+################################################################################################################
+#  hadronic Z Not covered in the susy file
+304825   Pythia8EvtGen_A14NNPDF23LO_ZHad_160_280   87.002  1.   1.0  1.
+304628   Pythia8EvtGen_A14NNPDF23LO_ZHad_280_500   10.455  1.   1.0  1.
+304629   Pythia8EvtGen_A14NNPDF23LO_ZHad_500_700   0.67488  1.   1.0  1.
+304630   Pythia8EvtGen_A14NNPDF23LO_ZHad_700_1000   0.12507  1.   1.0  1.
+304631   Pythia8EvtGen_A14NNPDF23LO_ZHad_1000_1400   0.015797  1.   1.0  1.
+304632   Pythia8EvtGen_A14NNPDF23LO_ZHad_1400   0.001705  1.   1.0  1.
+
+################################################################################################################
 #  ttbar Not covered in the susy file
 
 410007   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad   696.21  1.   0.45618  1.
