@@ -458,8 +458,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       }
     }
 
-    std::cout << m_name << " doNominal: " << doNominal << "  (" << syst_it.name() << ")"<< std::endl;
-
     //
     // if not running systematics, only compulte weight for specified systematic (m_systName)
     //    default is nominal (i.e., "")
