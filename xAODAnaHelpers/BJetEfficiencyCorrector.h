@@ -21,6 +21,7 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 public:
   std::string m_inContainerName;
+  std::string m_inputAlgo;
 
   // systematics
   bool m_runAllSyst;
@@ -66,6 +67,9 @@ public:
   virtual EL::StatusCode changeInput (bool firstFile);
   virtual EL::StatusCode initialize ();
   virtual EL::StatusCode execute ();
+  EL::StatusCode executeEfficiencyCorrection(const xAOD::JetContainer* inJets,   
+					     const xAOD::EventInfo* eventInfo, 
+					     bool doNominal);
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
