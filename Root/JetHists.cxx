@@ -240,9 +240,9 @@ StatusCode JetHists::initialize() {
     m_jf_energyFraction = book(m_name, "JetFitter_energyFraction", "JetFitter_energyFraction", 100,  -0.1,   1.1 );
     m_jf_significance3d = book(m_name, "JetFitter_significance3d", "JetFitter_significance3d", 100,   0,    100 );
     m_jf_deltaeta       = book(m_name, "JetFitter_deltaeta"      , "JetFitter_deltaeta"      , 100,  -0.2,   0.2);
-    m_jf_deltaeta_l     = book(m_name, "JetFitter_deltaeta_l"    , "JetFitter_deltaeta"      , 100,  -0.4,   0.4);    
+    m_jf_deltaeta_l     = book(m_name, "JetFitter_deltaeta_l"    , "JetFitter_deltaeta"      , 100,  -0.4,   0.4);
     m_jf_deltaphi       = book(m_name, "JetFitter_deltaphi"      , "JetFitter_deltaphi"      , 100,  -0.2,   0.2);
-    m_jf_deltaphi_l     = book(m_name, "JetFitter_deltaphi_l"    , "JetFitter_deltaphi"      , 100,  -0.4,   0.4);    
+    m_jf_deltaphi_l     = book(m_name, "JetFitter_deltaphi_l"    , "JetFitter_deltaphi"      , 100,  -0.4,   0.4);
     m_jf_N2Tpar         = book(m_name, "JetFitter_N2Tpair"       , "JetFitter_N2Tpair"       ,  20,  -0.5,  19.5);
     m_jf_pb             = book(m_name, "JetFitter_pb"            , "JetFitter_pb"            , 100,  -0.1,   1);
     m_jf_pc             = book(m_name, "JetFitter_pc"            , "JetFitter_pc"            , 100,  -0.1,   1);
@@ -296,8 +296,8 @@ StatusCode JetHists::initialize() {
     m_tau1                      = book(m_name, "Tau1", "#Tau_{1}", 100, 0, 1.0);
     m_tau2                      = book(m_name, "Tau2", "#Tau_{2}", 100, 0, 1.0);
     m_tau3                      = book(m_name, "Tau3", "#Tau_{3}", 100, 0, 1.0);
-    m_tau21                     = book(m_name, "tau21", "#Tau_{21}", 100, 0, 1.0);
-    m_tau32                     = book(m_name, "tau32", "#Tau_{32}", 100, 0, 1.0);
+    m_tau21                     = book(m_name, "Tau21", "#Tau_{21}", 100, 0, 1.0);
+    m_tau32                     = book(m_name, "Tau32", "#Tau_{32}", 100, 0, 1.0);
     m_tau1_wta                  = book(m_name, "Tau1_wta", "#Tau_{1}^{wta}", 100, 0, 1.0);
     m_tau2_wta                  = book(m_name, "Tau2_wta", "#Tau_{2}^{wta}", 100, 0, 1.0);
     m_tau3_wta                  = book(m_name, "Tau3_wta", "#Tau_{3}^{wta}", 100, 0, 1.0);
@@ -797,7 +797,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
       }
       if(jf_N2Tpar.isAvailable        (*btag_info)) m_jf_N2Tpar         ->Fill(jf_N2Tpar        (*btag_info), eventWeight);
       if(jf_pb.isAvailable            (*btag_info)) m_jf_pb             ->Fill(jf_pb            (*btag_info), eventWeight);
-      if(jf_pc.isAvailable            (*btag_info)) m_jf_pc             ->Fill(jf_pc            (*btag_info), eventWeight); 
+      if(jf_pc.isAvailable            (*btag_info)) m_jf_pc             ->Fill(jf_pc            (*btag_info), eventWeight);
       if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight);
     }
 
@@ -1019,7 +1019,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvL
   }
 
   if( m_infoSwitch->m_tracksInJet ){
-    
+
     const vector<const xAOD::TrackParticle*> matchedTracks = jet->auxdata< vector<const xAOD::TrackParticle*>  >(m_infoSwitch->m_trackName);
     const xAOD::Vertex *pvx  = jet->auxdata<const xAOD::Vertex*>(m_infoSwitch->m_trackName+"_vtx");
 
