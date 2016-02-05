@@ -50,6 +50,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
   // read flags set from .config file
   m_debug                   = false;
   m_inContainerName         = "";
+  m_inputAlgo               = "";
   m_systName                = "";      // default: no syst
   m_outputSystName          = "BJetEfficiency_Algo";
 
@@ -352,39 +353,112 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   return EL::StatusCode::SUCCESS;
 }
 
-
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
+  if ( m_debug ) { Info("execute()", "Applying BJet Efficency Corrector... "); }
 
-  if(m_debug) Info("execute()", "Applying BJet Cuts and Efficiency Correction (when applicable...) ");
-
-  // get the collection from TEvent or TStore
-  const xAOD::JetContainer* correctedJets(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(correctedJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
-
+  //
+  // retrieve event
+  //
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
-
   if ( m_debug ) Info("execute()", "\n\n eventNumber: %lld\n", eventInfo->eventNumber() );
 
-  //Create Scale Factor aux for all jets
-  SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decorSF );
-  for( auto jet_itr : *(correctedJets)) {
-      sfVec(*jet_itr) = std::vector<float>();
+  //
+  //  input jets
+  //
+  const xAOD::JetContainer* inJets(nullptr);
+
+  //
+  // if input comes from xAOD, or just running one collection,
+  // then get the one collection and be done with it
+  //
+  if ( m_inputAlgo.empty() ) {
+
+    // this will be the collection processed - no matter what!!
+    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
+
+    executeEfficiencyCorrection( inJets, eventInfo, true);
+
+  }
+  //
+  // get the list of systematics to run over
+  //
+  else { 
+
+    //
+    // get vector of string giving the names
+    //
+    std::vector<std::string>* systNames(nullptr);
+    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_verbose) ,"");
+
+    //
+    // loop over systematics
+    //
+    for ( auto systName : *systNames ) {
+
+      bool doNominal = (systName == "");
+
+      RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+
+      executeEfficiencyCorrection( inJets, eventInfo, doNominal );
+
+    }
+
   }
 
+  if ( m_debug ) { Info("execute()", "Leave Efficency Selection... "); }
+
+  return EL::StatusCode::SUCCESS;
+
+}
+
+
+
+
+EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,   
+								      const xAOD::EventInfo* eventInfo, 
+								      bool doNominal)
+{
+  if(m_debug) Info("execute()", "Applying BJet Cuts and Efficiency Correction (when applicable...) ");
+
+  //
+  // Create Scale Factor aux for all jets
+  //
+  SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decorSF );
+  for( auto jet_itr : *(inJets)) {
+    sfVec(*jet_itr) = std::vector<float>();
+  }
+
+  //
   // Define also an *event* weight, which is the product of all the BTag eff. SFs for each object in the event
   //
   std::string SF_NAME_GLOBAL = m_decorSF + "_GLOBAL";
   SG::AuxElement::Decorator< std::vector<float> > sfVec_GLOBAL ( SF_NAME_GLOBAL );
 
   std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
+
+  //
   // loop over available systematics
+  //
   for(const auto& syst_it : m_systList){
 
+    //
     // Initialise product of SFs for *this* systematic
     //
     float SF_GLOBAL(1.0);
+
+    //
+    //  If not nominal jets, dont calculate systematics
+    //
+    if ( !doNominal ) {    
+      if( syst_it.name() != "" ) {
+        if ( m_debug ) Info("execute()","Not running B-tag systematics when doing JES systematics");
+        continue;
+      }
+    }
+
+    std::cout << m_name << " doNominal: " << doNominal << "  (" << syst_it.name() << ")"<< std::endl;
 
     //
     // if not running systematics, only compulte weight for specified systematic (m_systName)
@@ -421,7 +495,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // and now apply data-driven efficiency and efficiency SF!
     //
     unsigned int idx(0);
-    for( auto jet_itr : *(correctedJets)) {
+    for( auto jet_itr : *(inJets)) {
 
       //
       // Add decorator for decision
@@ -460,7 +534,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       // Add it to vector
       sfVec(*jet_itr).push_back(SF);
 
-      SF_GLOBAL *= SF;
+      if(doNominal) SF_GLOBAL *= SF;
 
       /*
       if( m_getScaleFactors && m_debug){
@@ -490,11 +564,10 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
          Info( "execute()", "\t from tool = %f, from object = %f", SF, sfVec(*jet_itr).back());
          Info( "execute()", "--------------------------------------");
        }
-
-       ++idx;
+      ++idx;
 
     } // close jet loop
-
+    
     // For *this* systematic, store the global SF weight for the event
     if ( m_debug ) {
        Info( "execute()", "--------------------------------------");
@@ -502,15 +575,27 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
        Info( "execute()", "\t %f ", SF_GLOBAL );
        Info( "execute()", "--------------------------------------");
     }
-    sfVec_GLOBAL( *eventInfo ).push_back( SF_GLOBAL );
+
+    //
+    //  Add the SF only if doing nominal Jets
+    //
+    if(doNominal) sfVec_GLOBAL( *eventInfo ).push_back( SF_GLOBAL );
+      
 
   } // close loop on systematics
 
   //
   // add list of sys names to TStore
   //
-  RETURN_CHECK( "BJetEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystName), "Failed to record vector of systematic names.");
-
+  if(doNominal){
+    RETURN_CHECK( "BJetEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystName), "Failed to record vector of systematic names.");
+    
+    if(m_debug){
+      std::cout << "Size is " << sysVariationNames->size() << std::endl;
+      for(auto sysName : *sysVariationNames) std::cout << sysName << std::endl;
+    }
+  }
+      
   return EL::StatusCode::SUCCESS;
 }
 
