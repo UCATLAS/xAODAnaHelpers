@@ -32,7 +32,6 @@
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers

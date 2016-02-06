@@ -33,7 +33,6 @@
 #include "PATInterfaces/CorrectionCode.h"
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TTreeFormula.h"

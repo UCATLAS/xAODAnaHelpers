@@ -35,7 +35,6 @@
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TFile.h"
 #include "TSystem.h"
 #include "TObjArray.h"

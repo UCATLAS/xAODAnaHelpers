@@ -34,7 +34,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-#include "TEnv.h"
 #include "TSystem.h"
 
 namespace xAOD {

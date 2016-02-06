@@ -11,7 +11,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
-#include "TEnv.h"
 #include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers

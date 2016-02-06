@@ -51,7 +51,6 @@
 #include <PATCore/PATCoreEnums.h>
 
 // ROOT include(s):
-#include <TEnv.h>
 #include <TSystem.h>
 
 using HelperClasses::ToolName;

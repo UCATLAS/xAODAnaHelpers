@@ -37,7 +37,6 @@
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TSystem.h"
 
 using std::cout;  using std::endl;

@@ -33,7 +33,6 @@
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TSystem.h"
 
 using HelperClasses::ToolName;

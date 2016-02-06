@@ -31,7 +31,6 @@
 // external tools include(s):
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TFile.h"
 #include "TSystem.h"
 
