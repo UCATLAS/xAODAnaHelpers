@@ -20,10 +20,10 @@ class TracksInJetHists : public HistogramManager
     using HistogramManager::execute; // overload
     virtual void record(EL::Worker* wk);
 
-  protected: 
+  protected:
 
   private:
-    
+
     TrackHists*       m_trkPlots; //!
 
     // Histograms

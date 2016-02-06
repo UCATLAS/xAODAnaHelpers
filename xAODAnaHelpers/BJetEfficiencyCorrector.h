@@ -67,15 +67,12 @@ public:
   virtual EL::StatusCode changeInput (bool firstFile);
   virtual EL::StatusCode initialize ();
   virtual EL::StatusCode execute ();
-  EL::StatusCode executeEfficiencyCorrection(const xAOD::JetContainer* inJets,   
-					     const xAOD::EventInfo* eventInfo, 
+  EL::StatusCode executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
+					     const xAOD::EventInfo* eventInfo,
 					     bool doNominal);
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
-
-  // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode configure ();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

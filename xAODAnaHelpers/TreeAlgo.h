@@ -62,9 +62,6 @@ public:
   virtual EL::StatusCode finalize ();                       //!
   virtual EL::StatusCode treeFinalize ();                   //!
 
-  // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode configure ();                      //!
-
   /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(TreeAlgo, 1);                                 //!

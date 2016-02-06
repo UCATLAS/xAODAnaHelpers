@@ -116,10 +116,6 @@ public:
 
   /* these are the functions not inherited from Algorithm */
 
-  virtual EL::StatusCode configure ();
-
-  /* added functions not from Algorithm */
-
   bool executeSelection( const xAOD::PhotonContainer* inPhotons, float mcEvtWeight, bool countPass,
 			  ConstDataVector<xAOD::PhotonContainer>* selectedPhotons );
   virtual bool passCuts( const xAOD::Photon* photon );

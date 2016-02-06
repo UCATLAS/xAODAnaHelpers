@@ -85,9 +85,6 @@ public:
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
 
-  // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode configure ();
-
   // added functions not from Algorithm
   // why does this need to be virtual?
   virtual int PassCuts( const xAOD::TrackParticle* jet, const xAOD::Vertex *pvx );

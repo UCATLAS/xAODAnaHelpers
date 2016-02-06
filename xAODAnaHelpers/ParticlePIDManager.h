@@ -58,7 +58,7 @@ class ElectronLHPIDManager
 
 
      StatusCode setupWPs( bool configTools, std::string selector_name = "", std::string confDir = "", std::string year = "" ) {
-	
+
 	const std::string selectedWP = ( m_selectedWP == "LooseAndBLayer" ) ? "Loose" : m_selectedWP;
 
         HelperClasses::EnumParser<LikeEnum::Menu> selectedWP_parser;
@@ -80,8 +80,8 @@ class ElectronLHPIDManager
 	      const std::string WP            = it.first;
 	      const std::string extra_string  = ( m_selectedWP == "LooseAndBLayer" && (WP.find("Loose") != std::string::npos) ) ? "_CutBL" : "";
 
-	      std::string tool_name = selector_name + "_" + WP + extra_string; 
-	      
+	      std::string tool_name = selector_name + "_" + WP + extra_string;
+
 	      Info("setupWPs()", "initialising AsgElectronLikelihoodTool w/ name: %s", tool_name.c_str() );
 
 	      it.second =  new AsgElectronLikelihoodTool( tool_name.c_str() );
@@ -140,11 +140,11 @@ class ElectronLHPIDManager
        return StatusCode::SUCCESS;
      }
 
-     const std::string getSelectedWP () { 
-       
+     const std::string getSelectedWP () {
+
        const std::string WP = ( m_selectedWP == "LooseAndBLayer" ) ? "Loose" : m_selectedWP;
-       return WP; 
-       
+       return WP;
+
      }
 
      /* returns a map containing all the tools */
