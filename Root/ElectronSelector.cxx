@@ -141,45 +141,6 @@ ElectronSelector :: ElectronSelector (std::string className) :
 
 ElectronSelector::~ElectronSelector() {}
 
-EL::StatusCode  ElectronSelector :: configure ()
-{
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-
-  if ( m_LHOperatingPoint != "Loose"        &&
-       m_LHOperatingPoint != "LooseAndBLayer"  &&
-       m_LHOperatingPoint != "Medium"       &&
-       m_LHOperatingPoint != "Tight"     ) {
-    Error("configure()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-  if ( m_CutBasedOperatingPoint != "IsEMLoose"  &&
-       m_CutBasedOperatingPoint != "IsEMMedium" &&
-       m_CutBasedOperatingPoint != "IsEMTight"  ) {
-    Error("configure()", "Unknown electron cut-based PID requested %s!",m_CutBasedOperatingPoint.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-
-  // Parse input isolation WP list, split by comma, and put into a vector for later use
-  // Make sure it's not empty!
-  //
-  if ( m_IsoWPList.empty() ) {
-    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
-  }
-  std::string token;
-  std::istringstream ss(m_IsoWPList);
-  while ( std::getline(ss, token, ',') ) {
-    m_IsoKeys.push_back(token);
-  }
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode ElectronSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -319,10 +280,39 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+
+  if ( m_LHOperatingPoint != "Loose"        &&
+       m_LHOperatingPoint != "LooseAndBLayer"  &&
+       m_LHOperatingPoint != "Medium"       &&
+       m_LHOperatingPoint != "Tight"     ) {
+    Error("initialize()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
     return EL::StatusCode::FAILURE;
   }
+  if ( m_CutBasedOperatingPoint != "IsEMLoose"  &&
+       m_CutBasedOperatingPoint != "IsEMMedium" &&
+       m_CutBasedOperatingPoint != "IsEMTight"  ) {
+    Error("initialize()", "Unknown electron cut-based PID requested %s!",m_CutBasedOperatingPoint.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+
+  // Parse input isolation WP list, split by comma, and put into a vector for later use
+  // Make sure it's not empty!
+  //
+  if ( m_IsoWPList.empty() ) {
+    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  }
+  std::string token;
+  std::istringstream ss(m_IsoWPList);
+  while ( std::getline(ss, token, ',') ) {
+    m_IsoKeys.push_back(token);
+  }
+
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
+    return EL::StatusCode::FAILURE;
+  }
+
 
   m_numEvent      = 0;
   m_numObject     = 0;

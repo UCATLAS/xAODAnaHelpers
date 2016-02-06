@@ -123,12 +123,6 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
 }
 
 
-EL::StatusCode BasicEventSelection :: configure ()
-{
-
-  return EL::StatusCode::SUCCESS;
-}
-
 EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -164,12 +158,6 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   Info("histInitialize()", "Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
-
-  // Make sure configuration variables have been configured
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("histInitialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
 
   // write the metadata hist to this file so algos downstream can pick up the pointer
   TFile *fileMD = wk()->getOutputFile ("metadata");

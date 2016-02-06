@@ -102,25 +102,6 @@ JetCalibrator :: JetCalibrator (std::string className) :
   m_systVal                 = 0.;
 }
 
-EL::StatusCode  JetCalibrator :: configure ()
-{
-  // If there is no InputContainer we must stop
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  if ( m_outputAlgo.empty() ) {
-    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
-  }
-
-  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -196,10 +177,18 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  // If there is no InputContainer we must stop
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
+
+  if ( m_outputAlgo.empty() ) {
+    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
+  }
+
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
   m_numEvent      = 0;
   m_numObject     = 0;

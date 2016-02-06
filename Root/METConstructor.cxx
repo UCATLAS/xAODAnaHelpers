@@ -84,12 +84,6 @@ METConstructor :: METConstructor (std::string className) :
 
 }
 
-EL::StatusCode  METConstructor :: configure ()
-{
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode METConstructor :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -157,11 +151,6 @@ EL::StatusCode METConstructor :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   //m_store->print();
-
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
 
   m_metmaker = new met::METMaker("METMaker");
   if(m_metmaker->initialize().isFailure()){

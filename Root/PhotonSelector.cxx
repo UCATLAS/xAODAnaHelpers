@@ -110,28 +110,6 @@ PhotonSelector :: PhotonSelector (std::string className) :
 
 PhotonSelector::~PhotonSelector() {}
 
-EL::StatusCode  PhotonSelector :: configure ()
-{
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-
-  // Parse input isolation WP list, split by comma, and put into a vector for later use
-  // Make sure it's not empty!
-  //
-  std::string token;
-  std::istringstream ss(m_IsoWPList);
-  while ( std::getline(ss, token, ',') ) {
-    m_IsoKeys.push_back(token);
-  }
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode PhotonSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -239,10 +217,22 @@ EL::StatusCode PhotonSelector :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+
+  // Parse input isolation WP list, split by comma, and put into a vector for later use
+  // Make sure it's not empty!
+  //
+  std::string token;
+  std::istringstream ss(m_IsoWPList);
+  while ( std::getline(ss, token, ',') ) {
+    m_IsoKeys.push_back(token);
+  }
+
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
+
 
   m_numEvent      = 0;
   m_numObject     = 0;

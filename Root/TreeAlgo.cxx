@@ -93,14 +93,6 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  // get the input from user which determines which branches are created!
-  if ( this->configure() != EL::StatusCode::SUCCESS ) {
-    Error("treeInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
-    return EL::StatusCode::FAILURE;
-  } else {
-    Info("treeInitialize()", "Succesfully configured! ");
-  }
-
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
 
@@ -128,11 +120,6 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
   Info("treeInitialize()", "Successfully initialized output tree");
 
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode TreeAlgo :: configure ()
-{
   return EL::StatusCode::SUCCESS;
 }
 

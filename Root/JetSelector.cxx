@@ -134,75 +134,6 @@ JetSelector :: JetSelector (std::string className) :
 
 }
 
-EL::StatusCode  JetSelector :: configure ()
-{
-  //If not set, find default from input container name
-  if (m_jetScaleType.size() == 0){
-    if( m_inContainerName.find("EMTopo") != std::string::npos){
-      m_jetScaleType = "JetEMScaleMomentum";
-    }else{
-      m_jetScaleType = "JetConstitScaleMomentum";
-    }
-  }
-
-
-  if ( m_outputAlgo.empty() ) {
-    m_outputAlgo = m_inputAlgo + "_JetSelect";
-  }
-
-  m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
-  m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
-
-  // parse and split by comma
-  std::string token;
-
-  std::istringstream ss(m_passAuxDecorKeys);
-  while ( std::getline(ss, token, ',') ) {
-    m_passKeys.push_back(token);
-  }
-
-  ss.clear();
-  ss.str(m_failAuxDecorKeys);
-  while ( std::getline(ss, token, ',') ) {
-    std::cout << token << std::endl;
-    m_failKeys.push_back(token);
-  }
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  bool allOK(true);
-  if (!m_operatingPt.empty() || m_doBTagCut ) { allOK = false; }
-  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_60") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_70") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_77") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_85") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_30") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_40") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_50") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_60") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_70") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_77") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_85") { allOK = true; }
-
-  if( !allOK ) {
-    Error("configure()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-
-  if ( m_decorateSelectedObjects ) {
-    Info("configure()"," Decorate Jets with %s", m_decor.c_str());
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
 EL::StatusCode JetSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -302,9 +233,68 @@ EL::StatusCode JetSelector :: initialize ()
 
   }
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  //If not set, find default from input container name
+  if (m_jetScaleType.size() == 0){
+    if( m_inContainerName.find("EMTopo") != std::string::npos){
+      m_jetScaleType = "JetEMScaleMomentum";
+    }else{
+      m_jetScaleType = "JetConstitScaleMomentum";
+    }
+  }
+
+
+  if ( m_outputAlgo.empty() ) {
+    m_outputAlgo = m_inputAlgo + "_JetSelect";
+  }
+
+  m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
+  m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
+
+  // parse and split by comma
+  std::string token;
+
+  std::istringstream ss(m_passAuxDecorKeys);
+  while ( std::getline(ss, token, ',') ) {
+    m_passKeys.push_back(token);
+  }
+
+  ss.clear();
+  ss.str(m_failAuxDecorKeys);
+  while ( std::getline(ss, token, ',') ) {
+    std::cout << token << std::endl;
+    m_failKeys.push_back(token);
+  }
+
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
+  }
+
+  bool allOK(true);
+  if (!m_operatingPt.empty() || m_doBTagCut ) { allOK = false; }
+  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_60") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_70") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_77") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_85") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_40") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_60") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_70") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_77") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_85") { allOK = true; }
+
+  if( !allOK ) {
+    Error("initialize()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+
+  if ( m_decorateSelectedObjects ) {
+    Info("initialize()"," Decorate Jets with %s", m_decor.c_str());
   }
 
   //

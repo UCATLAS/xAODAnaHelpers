@@ -73,23 +73,6 @@ MuonCalibrator :: MuonCalibrator (std::string className) :
 
 }
 
-EL::StatusCode  MuonCalibrator :: configure ()
-{
-
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-  // shallow copies are made with this output container name
-  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -159,10 +142,16 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  // shallow copies are made with this output container name
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
+
 
   // Check if is MC
   //

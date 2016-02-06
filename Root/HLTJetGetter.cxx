@@ -86,18 +86,6 @@ EL::StatusCode HLTJetGetter :: changeInput (bool /*firstFile*/)
     return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode  HLTJetGetter :: configure ()
-{
-    // If there is no InputContainer we must stop
-    if ( m_inContainerName.empty() ) {
-        Error("configure()", "InputContainer is empty!");
-        return EL::StatusCode::FAILURE;
-    }
-
-    return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode HLTJetGetter :: initialize ()
 {
 
@@ -129,9 +117,9 @@ EL::StatusCode HLTJetGetter :: initialize ()
         Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
     }
 
-    // Configure
-    if ( this->configure() == EL::StatusCode::FAILURE ) {
-        Error("initialize()", "Failed to properly configure. Exiting." );
+    // If there is no InputContainer we must stop
+    if ( m_inContainerName.empty() ) {
+        Error("initialize()", "InputContainer is empty!");
         return EL::StatusCode::FAILURE;
     }
 

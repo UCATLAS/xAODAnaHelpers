@@ -86,23 +86,6 @@ ElectronCalibrator :: ElectronCalibrator (std::string className) :
 }
 
 
-EL::StatusCode  ElectronCalibrator :: configure ()
-{
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-  // shallow copies are made with this output container name
-  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode ElectronCalibrator :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -172,10 +155,16 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
+
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  // shallow copies are made with this output container name
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+
 
   // Check if is MC
   //

@@ -94,18 +94,6 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
 }
 
 
-EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
-{
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode ElectronEfficiencyCorrector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -175,10 +163,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
+
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");

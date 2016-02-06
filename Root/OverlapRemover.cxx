@@ -139,39 +139,6 @@ OverlapRemover :: OverlapRemover (std::string className) :
 
 }
 
-EL::StatusCode  OverlapRemover :: configure ()
-{
-
-  if ( m_inContainerName_Jets.empty() ) {
-    Error("configure()", "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
-
-  // be more flexible w/ electrons, muons, photons and taus :)
-  if ( !m_inContainerName_Electrons.empty() ) {
-    m_useElectrons = true;
-  } else{
-    m_dummyElectronContainer = new xAOD::ElectronContainer();
-  }
-
-  if ( !m_inContainerName_Muons.empty() )     {
-    m_useMuons     = true;
-  } else {
-    m_dummyMuonContainer = new xAOD::MuonContainer();
-  }
-
-  if ( !m_inContainerName_Photons.empty() )   { m_usePhotons   = true; }
-  if ( !m_inContainerName_Taus.empty() )      { m_useTaus      = true; }
-  m_outAuxContainerName_Electrons   = m_outContainerName_Electrons + "Aux."; // the period is very important!
-  m_outAuxContainerName_Muons       = m_outContainerName_Muons + "Aux.";     // the period is very important!
-  m_outAuxContainerName_Jets        = m_outContainerName_Jets + "Aux.";      // the period is very important!
-  m_outAuxContainerName_Photons     = m_outContainerName_Photons + "Aux.";   // the period is very important!
-  m_outAuxContainerName_Taus        = m_outContainerName_Taus + "Aux.";      // the period is very important!
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode OverlapRemover :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -246,10 +213,31 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  if ( m_inContainerName_Jets.empty() ) {
+    Error("initialize()", "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
     return EL::StatusCode::FAILURE;
   }
+
+  // be more flexible w/ electrons, muons, photons and taus :)
+  if ( !m_inContainerName_Electrons.empty() ) {
+    m_useElectrons = true;
+  } else{
+    m_dummyElectronContainer = new xAOD::ElectronContainer();
+  }
+
+  if ( !m_inContainerName_Muons.empty() )     {
+    m_useMuons     = true;
+  } else {
+    m_dummyMuonContainer = new xAOD::MuonContainer();
+  }
+
+  if ( !m_inContainerName_Photons.empty() )   { m_usePhotons   = true; }
+  if ( !m_inContainerName_Taus.empty() )      { m_useTaus      = true; }
+  m_outAuxContainerName_Electrons   = m_outContainerName_Electrons + "Aux."; // the period is very important!
+  m_outAuxContainerName_Muons       = m_outContainerName_Muons + "Aux.";     // the period is very important!
+  m_outAuxContainerName_Jets        = m_outContainerName_Jets + "Aux.";      // the period is very important!
+  m_outAuxContainerName_Photons     = m_outContainerName_Photons + "Aux.";   // the period is very important!
+  m_outAuxContainerName_Taus        = m_outContainerName_Taus + "Aux.";      // the period is very important!
 
   if ( setCounters() == EL::StatusCode::FAILURE ) {
     Error("initialize()", "Failed to properly set event/object counters. Exiting." );

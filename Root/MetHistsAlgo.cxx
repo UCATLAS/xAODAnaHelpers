@@ -39,28 +39,15 @@ EL::StatusCode MetHistsAlgo :: histInitialize ()
 
   Info("histInitialize()", "%s", m_name.c_str() );
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
-  // needed here and not in initalize since this is called first
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
+  if( m_inContainerName.empty() || m_detailStr.empty() ){
+    Error("histInitialize()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
-  } else {
-    Info("histInitialize()", "Successfully configured! ");
   }
 
   // declare class and add histograms to output
   m_plots = new MetHists(m_name, m_detailStr);
   RETURN_CHECK("MetHistsAlgo::histInitialize()", m_plots -> initialize(), "");
   m_plots -> record( wk() );
-
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode MetHistsAlgo :: configure ()
-{
-  if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("configure()", "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
-  }
 
   return EL::StatusCode::SUCCESS;
 }

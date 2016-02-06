@@ -72,11 +72,6 @@ MinixAOD :: MinixAOD (std::string className) :
   m_vectorCopyKeys = "";
 }
 
-EL::StatusCode  MinixAOD :: configure ()
-{
-  return EL::StatusCode::SUCCESS;
-}
-
 EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
 {
   if(m_debug) Info("setupJob()", "Calling setupJob");
@@ -107,11 +102,6 @@ EL::StatusCode MinixAOD :: changeInput (bool /*firstFile*/) { return EL::StatusC
 EL::StatusCode MinixAOD :: initialize ()
 {
   if(m_debug) Info("initialize()", "Calling initialize");
-
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();

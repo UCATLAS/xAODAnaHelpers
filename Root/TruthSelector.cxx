@@ -82,24 +82,6 @@ TruthSelector :: TruthSelector (std::string className) :
   m_rapidity_min            = 1e8;
 }
 
-EL::StatusCode  TruthSelector :: configure ()
-{
-
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  m_decor   = "passSel";
-
-  if ( m_decorateSelectedObjects ) {
-    Info("configure()"," Decorate Jets with %s", m_decor.c_str());
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
 EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
 {
   Info("setupJob()", "Calling setupJob");
@@ -165,9 +147,15 @@ EL::StatusCode TruthSelector :: initialize ()
 
   }
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
+  }
+
+  m_decor   = "passSel";
+
+  if ( m_decorateSelectedObjects ) {
+    Info("initialize()"," Decorate Jets with %s", m_decor.c_str());
   }
 
 

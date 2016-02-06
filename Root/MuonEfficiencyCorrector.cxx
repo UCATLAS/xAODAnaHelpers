@@ -105,18 +105,6 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
 }
 
 
-EL::StatusCode  MuonEfficiencyCorrector :: configure ()
-{
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode MuonEfficiencyCorrector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -186,10 +174,11 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
+
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");

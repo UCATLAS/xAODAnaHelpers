@@ -58,17 +58,6 @@ EL::StatusCode MuonHistsAlgo::AddHists( std::string name ) {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonHistsAlgo :: configure ()
-{
-  // in case anything was missing or blank...
-  if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("configure()", "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
 EL::StatusCode MuonHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
 EL::StatusCode MuonHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
 
@@ -76,14 +65,12 @@ EL::StatusCode MuonHistsAlgo :: initialize ()
 {
   Info("initialize()", m_name.c_str());
 
-  // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", m_configName.c_str());
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
+  // in case anything was missing or blank...
+  if( m_inContainerName.empty() || m_detailStr.empty() ){
+    Error("initialize()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
-  } else {
-    Info("histInitialize()", "Succesfully configured! ");
   }
+
 
   // only running 1 collection
   if(m_inputAlgo.empty()) { AddHists( "" ); }

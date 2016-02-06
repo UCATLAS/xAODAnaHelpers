@@ -126,58 +126,6 @@ MuonSelector :: MuonSelector (std::string className) :
 
 MuonSelector::~MuonSelector() {}
 
-EL::StatusCode  MuonSelector :: configure ()
-{
-
-  HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
-  m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
-
-
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-
-  std::set<int> muonQualitySet;
-  muonQualitySet.insert(0);
-  muonQualitySet.insert(1);
-  muonQualitySet.insert(2);
-  muonQualitySet.insert(3);
-  if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
-    Error("configure()", "Unknown muon quality requested: %i!",m_muonQuality);
-    return EL::StatusCode::FAILURE;
-  }
-
-  std::set<std::string> muonTypeSet;
-  muonTypeSet.insert("");
-  muonTypeSet.insert("Combined");
-  muonTypeSet.insert("MuonStandAlone");
-  muonTypeSet.insert("SegmentTagged");
-  muonTypeSet.insert("CaloTagged");
-  muonTypeSet.insert("SiliconAssociatedForwardMuon");
-  if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
-    Error("configure()", "Unknown muon type requested: %s!",m_muonType.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-
-  // Parse input isolation WP list, split by comma, and put into a vector for later use
-  // Make sure it's not empty!
-  //
-  if ( m_IsoWPList.empty() ) {
-    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
-  }
-  std::string token;
-  std::istringstream ss(m_IsoWPList);
-  while ( std::getline(ss, token, ',') ) {
-    m_IsoKeys.push_back(token);
-  }
-
-  if ( m_inContainerName.empty() ){
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode MuonSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -311,8 +259,48 @@ EL::StatusCode MuonSelector :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
+  m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
+
+
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+
+  std::set<int> muonQualitySet;
+  muonQualitySet.insert(0);
+  muonQualitySet.insert(1);
+  muonQualitySet.insert(2);
+  muonQualitySet.insert(3);
+  if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
+    Error("initialize()", "Unknown muon quality requested: %i!",m_muonQuality);
+    return EL::StatusCode::FAILURE;
+  }
+
+  std::set<std::string> muonTypeSet;
+  muonTypeSet.insert("");
+  muonTypeSet.insert("Combined");
+  muonTypeSet.insert("MuonStandAlone");
+  muonTypeSet.insert("SegmentTagged");
+  muonTypeSet.insert("CaloTagged");
+  muonTypeSet.insert("SiliconAssociatedForwardMuon");
+  if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
+    Error("initialize()", "Unknown muon type requested: %s!",m_muonType.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+
+  // Parse input isolation WP list, split by comma, and put into a vector for later use
+  // Make sure it's not empty!
+  //
+  if ( m_IsoWPList.empty() ) {
+    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  }
+  std::string token;
+  std::istringstream ss(m_IsoWPList);
+  while ( std::getline(ss, token, ',') ) {
+    m_IsoKeys.push_back(token);
+  }
+
+  if ( m_inContainerName.empty() ){
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
