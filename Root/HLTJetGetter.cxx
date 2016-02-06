@@ -94,9 +94,6 @@ EL::StatusCode  HLTJetGetter :: configure ()
         return EL::StatusCode::FAILURE;
     }
 
-    if ( !getConfig().empty() )
-    Info("configure()", "JetCalibrator Interface succesfully configured! ");
-
     return EL::StatusCode::SUCCESS;
 }
 

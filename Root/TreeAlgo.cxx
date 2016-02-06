@@ -86,7 +86,6 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 {
   Info("treeInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
-  Info("treeInitialize()", "Attempting to configure using: %s", getConfig().c_str());
 
   TTree * outTree = new TTree(m_name.c_str(),m_name.c_str());
   if ( !outTree ) {

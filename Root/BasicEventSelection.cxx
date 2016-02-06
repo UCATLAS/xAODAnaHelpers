@@ -166,7 +166,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   // Make sure configuration variables have been configured
-  if ( !getConfig().empty() && ( this->configure() == EL::StatusCode::FAILURE ) ) {
+  if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "Failed to properly configure. Exiting." );
     return EL::StatusCode::FAILURE;
   }

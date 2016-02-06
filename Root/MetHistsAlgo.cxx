@@ -40,7 +40,6 @@ EL::StatusCode MetHistsAlgo :: histInitialize ()
   Info("histInitialize()", "%s", m_name.c_str() );
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
   if ( this->configure() == EL::StatusCode::FAILURE ) {
     Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
     return EL::StatusCode::FAILURE;

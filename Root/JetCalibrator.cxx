@@ -117,9 +117,6 @@ EL::StatusCode  JetCalibrator :: configure ()
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
-  if ( !getConfig().empty() )
-    Info("configure()", "JetCalibrator Interface succesfully configured! ");
-
   return EL::StatusCode::SUCCESS;
 }
 
