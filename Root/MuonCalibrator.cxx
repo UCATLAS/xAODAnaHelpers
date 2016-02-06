@@ -76,35 +76,6 @@ MuonCalibrator :: MuonCalibrator (std::string className) :
 EL::StatusCode  MuonCalibrator :: configure ()
 {
 
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuing MuonCalibrator Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug", m_debug);
-    // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-
-    m_release                 = config->GetValue("Release", m_release.c_str());
-
-    m_sort                    = config->GetValue("Sort",  m_sort);
-
-    // Systematics stuff
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
-    m_systName		      = config->GetValue("SystName" , m_systName.c_str());
-    m_systVal 		      = config->GetValue("SystVal" , m_systVal);
-
-    config->Print();
-
-    Info("configure()", "MuonCalibrator Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
   // shallow copies are made with this output container name
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";

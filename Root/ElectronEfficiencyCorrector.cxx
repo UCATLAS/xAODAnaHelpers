@@ -97,52 +97,6 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
 EL::StatusCode  ElectronEfficiencyCorrector :: configure ()
 {
 
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuing ElectronEfficiencyCorrector Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // read debug flag from .config file
-    //
-    m_debug                   = config->GetValue("Debug", m_debug);
-
-    // input container to be read from TEvent or TStore
-    //
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-
-    // Systematics stuff
-    //
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_systNamePID             = config->GetValue("SystNamePID"  , m_systNamePID.c_str());
-    m_systNameReco            = config->GetValue("SystNameReco" , m_systNameReco.c_str());
-    m_systNameIso             = config->GetValue("SystNameIso" , m_systNameIso.c_str());
-    m_systNameTrig            = config->GetValue("SystNameTrig" , m_systNameTrig.c_str());
-    m_systNameTrigMCEff       = config->GetValue("SystNameTrigMCEff" , m_systNameTrigMCEff.c_str());
-    m_outputSystNamesPID      = config->GetValue("OutputSystNamesPID" ,  m_outputSystNamesPID.c_str());
-    m_outputSystNamesReco     = config->GetValue("OutputSystNamesReco",  m_outputSystNamesReco.c_str());
-    m_outputSystNamesIso      = config->GetValue("OutputSystNamesIso",  m_outputSystNamesIso.c_str());
-    m_outputSystNamesTrig     = config->GetValue("OutputSystNamesTrig",  m_outputSystNamesTrig.c_str());
-    m_outputSystNamesTrigMCEff = config->GetValue("OutputSystNamesTrigMCEff",  m_outputSystNamesTrigMCEff.c_str());
-    m_systValPID              = config->GetValue("SystValPID"  , m_systValPID);
-    m_systValReco             = config->GetValue("SystValReco" , m_systValReco);
-    m_systValTrig             = config->GetValue("SystValTrig" , m_systValTrig);
-    m_systValTrigMCEff        = config->GetValue("SystValTrigMCEff" , m_systValTrigMCEff);
-    // file(s) containing corrections
-    m_corrFileNamePID         = config->GetValue("CorrectionFileNamePID" , m_corrFileNamePID.c_str());
-    m_corrFileNameReco        = config->GetValue("CorrectionFileNameReco" , m_corrFileNameReco.c_str());
-    m_corrFileNameIso         = config->GetValue("CorrectionFileNameIso" , m_corrFileNameIso.c_str());
-    m_corrFileNameTrig        = config->GetValue("CorrectionFileNameTrig" , m_corrFileNameTrig.c_str());
-    m_corrFileNameTrigMCEff   = config->GetValue("CorrectionFileNameTrigMCEff" , m_corrFileNameTrigMCEff.c_str());
-    m_WorkingPointIDTrig      = config->GetValue("WorkingPointIDTrig" , m_WorkingPointIDTrig.c_str());
-
-    config->Print();
-
-    Info("configure()", "ElectronEfficiencyCorrector Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
   if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;

@@ -110,7 +110,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
   m_doAuthorCut             = true;
   m_doOQCut                 = true;
   m_doBLTrackQualityCut     = false;
-  
+
   m_readIDFlagsFromDerivation = false;
   m_confDirPID              = "mc15_20150224";
 
@@ -143,64 +143,6 @@ ElectronSelector::~ElectronSelector() {}
 
 EL::StatusCode  ElectronSelector :: configure ()
 {
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuing ElectronSelector Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    m_debug                   = config->GetValue("Debug" ,      m_debug);
-    m_useCutFlow              = config->GetValue("UseCutFlow",  m_useCutFlow);
-
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
-
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-
-    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
-
-    m_pass_max                = config->GetValue("PassMax", m_pass_max);
-    m_pass_min                = config->GetValue("PassMin", m_pass_min);
-    m_pT_max                  = config->GetValue("pTMax",  m_pT_max);
-    m_pT_min                  = config->GetValue("pTMin",  m_pT_min);
-    m_eta_max                 = config->GetValue("etaMax", m_eta_max);
-    m_vetoCrack               = config->GetValue("VetoCrack", m_vetoCrack);
-    m_d0_max                  = config->GetValue("d0Max", m_d0_max);
-    m_d0sig_max     	      = config->GetValue("d0sigMax", m_d0sig_max);
-    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
-    m_doAuthorCut             = config->GetValue("DoAuthorCut", m_doAuthorCut);
-    m_doOQCut                 = config->GetValue("DoOQCut", m_doOQCut);
-    m_doBLTrackQualityCut     = config->GetValue("DoBLTrackQualityCut", m_doBLTrackQualityCut);
-    
-    m_readIDFlagsFromDerivation = config->GetValue("ReadIDFlagsFromDerivation", m_readIDFlagsFromDerivation);
-    m_confDirPID              = config->GetValue("ConfDirPID", m_confDirPID.c_str());
-    m_doLHPIDcut              = config->GetValue("DoLHPIDCut", m_doLHPIDcut);
-    m_LHOperatingPoint        = config->GetValue("LHOperatingPoint", m_LHOperatingPoint.c_str());
-    m_LHConfigYear            = config->GetValue("LHConfigYear", m_LHConfigYear.c_str());
-    m_doCutBasedPIDcut        = config->GetValue("DoCutBasedPIDCut", m_doCutBasedPIDcut);
-    m_CutBasedOperatingPoint  = config->GetValue("CutBasedOperatingPoint", m_CutBasedOperatingPoint.c_str());
-    m_CutBasedConfigYear      = config->GetValue("CutBasedConfigYear", m_CutBasedConfigYear.c_str());
-
-    m_MinIsoWPCut             = config->GetValue("MinIsoWPCut"       ,  m_MinIsoWPCut.c_str());
-    m_IsoWPList		      = config->GetValue("IsolationWPList"   ,  m_IsoWPList.c_str());
-    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());
-    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
-
-    m_ElTrigChains            = config->GetValue("ElTrigChains"      , m_ElTrigChains.c_str() );
-
-    config->Print();
-
-    Info("configure()", "ElectronSelector Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   if ( m_LHOperatingPoint != "Loose"        &&
@@ -355,7 +297,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
     if ( m_isUsedBefore ) {
       m_el_cutflowHist_2 = (TH1D*)file->Get("cutflow_electrons_2");
-      
+
       m_el_cutflow_all  	   = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
       m_el_cutflow_author_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
       m_el_cutflow_OQ_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");
@@ -1007,22 +949,22 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   // decorate electron w/ d0sig info
   static SG::AuxElement::Decorator< float > d0SigDecor("d0sig");
   d0SigDecor( *electron ) = static_cast<float>(d0_significance);
-  
-  
+
+
   // BLayer track quality cut
   //
   if ( m_doBLTrackQualityCut ) {
-  
-    // this is taken from ElectronPhotonSelectorTools/Root/AsgElectronLikelihoodTool.cxx															 
-    
+
+    // this is taken from ElectronPhotonSelectorTools/Root/AsgElectronLikelihoodTool.cxx
+
     uint8_t expectBlayer(true);
     uint8_t nBlayerHits(0);
     uint8_t nBlayerOutliers(0);
-    
+
     tp->summaryValue(expectBlayer,    xAOD::expectBLayerHit);
     tp->summaryValue(nBlayerHits,     xAOD::numberOfBLayerHits);
     tp->summaryValue(nBlayerOutliers, xAOD::numberOfBLayerOutliers);
-    
+
     if ( expectBlayer && (nBlayerHits+nBlayerOutliers) < 1 ) {
       if ( m_debug ) { Info("PassCuts()", "Electron failed BL track quality cut."); }
       return 0;

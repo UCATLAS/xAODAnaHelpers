@@ -60,26 +60,6 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
 
 EL::StatusCode TrackHistsAlgo :: configure ()
 {
-  if(!getConfig().empty()){
-    // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    //
-    //  If Container Name is already set dont read it from the config
-    //   (Allows to pass as argument in setup script)
-    //
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    m_detailStr               = config->GetValue("DetailStr",       m_detailStr.c_str());
-    m_debug                   = config->GetValue("Debug" ,          m_debug);
-
-    Info("configure()", "Loaded in configuration values");
-
-    // everything seems preliminarily ok, let's print config and say we were successful
-    config->Print();
-
-    delete config;
-  }
-
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;

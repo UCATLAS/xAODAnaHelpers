@@ -74,27 +74,6 @@ MinixAOD :: MinixAOD (std::string className) :
 
 EL::StatusCode  MinixAOD :: configure ()
 {
-  if ( !getConfig().empty() ) {
-    Info("configure()", "Configuing MinixAOD Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-    m_debug             = config->GetValue("Debug" , m_debug);
-    m_verbose           = config->GetValue("Verbose", m_verbose);
-    m_outputFileName    = config->GetValue("OutputFileName", m_outputFileName.c_str());
-    m_createOutputFile  = config->GetValue("CreateOutputFile", m_createOutputFile);
-    m_copyFileMetaData  = config->GetValue("DoFileMetaData", m_copyFileMetaData);
-    m_copyTriggerInfo   = config->GetValue("DoTrigMetaData", m_copyTriggerInfo);
-    m_copyCutBookkeeper = config->GetValue("DoCutBookkeeper", m_copyCutBookkeeper);
-    m_simpleCopyKeys    = config->GetValue("SimpleCopyKeys", m_simpleCopyKeys.c_str());
-    m_storeCopyKeys     = config->GetValue("StoreCopyKeys", m_storeCopyKeys.c_str());
-    m_deepCopyKeys      = config->GetValue("DeepCopyKeys", m_deepCopyKeys.c_str());
-    m_vectorCopyKeys    = config->GetValue("VectorCopyKeys", m_vectorCopyKeys.c_str());
-
-    config->Print();
-    Info("configure()", "MinixAOD Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
   return EL::StatusCode::SUCCESS;
 }
 

@@ -77,55 +77,6 @@ TrackSelector :: TrackSelector (std::string className) :
 
 EL::StatusCode  TrackSelector :: configure ()
 {
-  if(!getConfig().empty()){
-    Info("configure()", "Configuing TrackSelector Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" ,      m_debug);
-    m_useCutFlow    = config->GetValue("UseCutFlow",  m_useCutFlow);
-
-    // input container to be read from TEvent or TStore
-    m_inContainerName  = config->GetValue("InputContainer",  m_inContainerName.c_str());
-
-    // decorate selected objects that pass the cuts
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
-    // additional functionality : create output container of selected objects
-    //                            using the SG::VIEW_ELEMENTS option
-    //                            decorating and output container should not be mutually exclusive
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
-    // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-    // if only want to look at a subset of object
-    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
-
-    // cuts
-    m_pass_max                = config->GetValue("PassMax",      m_pass_max);
-    m_pass_min                = config->GetValue("PassMin",      m_pass_min);
-    m_pT_max                  = config->GetValue("pTMax",        m_pT_max);
-    m_pT_min                  = config->GetValue("pTMin",        m_pT_min);
-    m_eta_max                 = config->GetValue("etaMax",       m_eta_max);
-    m_eta_min                 = config->GetValue("etaMin",       m_eta_min);
-    m_d0_max                  = config->GetValue("d0Max",        m_d0_max);
-    m_z0_max                  = config->GetValue("z0Max",        m_z0_max);
-    m_z0sinT_max              = config->GetValue("z0SinTMax",    m_z0sinT_max);
-    m_nBL_min                 = config->GetValue("nBLMin",       m_nBL_min);
-    m_nSi_min                 = config->GetValue("nSiMin",       m_nSi_min);
-    m_nPixHoles_max           = config->GetValue("nPixHolesMax", m_nPixHoles_max);
-    m_chi2NdofCut_max         = config->GetValue("chi2NdofMax",  m_chi2NdofCut_max);
-    m_chi2Prob_max            = config->GetValue("chi2ProbMax",  m_chi2Prob_max);
-
-    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
-
-    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
-
-    config->Print();
-    Info("configure()", "TrackSelector Interface succesfully configured! ");
-
-    delete config;
-  }
-
   // parse and split by comma
   std::string token;
   std::istringstream ss(m_passAuxDecorKeys);
@@ -264,7 +215,7 @@ EL::StatusCode TrackSelector :: execute ()
 }
 
 EL::StatusCode TrackSelector :: executeTrackCollection ()
-{  
+{
   float mcEvtWeight(1); // FIXME - set to something from eventInfo
 
   m_numEvent++;
@@ -367,9 +318,9 @@ EL::StatusCode TrackSelector :: executeTracksInJets ()
   //
   // loop on Jets
   //
-  for ( auto jet_itr : *inJets ) { 
+  for ( auto jet_itr : *inJets ) {
 
-    //  
+    //
     //  output container with in the jet
     //
     vector<const xAOD::TrackParticle*> outputTracks;
@@ -388,7 +339,7 @@ EL::StatusCode TrackSelector :: executeTracksInJets ()
       int passSel = this->PassCuts( trkInJet, pvx );
 
       //
-      // if 
+      // if
       //
       if(passSel) {
 	nPass++;

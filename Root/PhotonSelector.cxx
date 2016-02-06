@@ -112,48 +112,6 @@ PhotonSelector::~PhotonSelector() {}
 
 EL::StatusCode  PhotonSelector :: configure ()
 {
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuing PhotonSelector Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    m_debug                   = config->GetValue("Debug" ,      m_debug);
-    m_useCutFlow              = config->GetValue("UseCutFlow",  m_useCutFlow);
-
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
-
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-
-    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
-
-    m_pass_max                = config->GetValue("PassMax", m_pass_max);
-    m_pass_min                = config->GetValue("PassMin", m_pass_min);
-    m_pT_max                  = config->GetValue("pTMax",  m_pT_max);
-    m_pT_min                  = config->GetValue("pTMin",  m_pT_min);
-    m_eta_max                 = config->GetValue("etaMax", m_eta_max);
-    m_vetoCrack               = config->GetValue("VetoCrack", m_vetoCrack);
-    m_doAuthorCut             = config->GetValue("DoAuthorCut", m_doAuthorCut);
-    m_doOQCut                 = config->GetValue("DoOQCut", m_doOQCut);
-
-    m_photonIdCut             = config->GetValue("PhotonIdCut", m_photonIdCut.c_str());
-
-    m_MinIsoWPCut             = config->GetValue("MinIsoWPCut"       ,  m_MinIsoWPCut.c_str());
-    m_IsoWPList		      = config->GetValue("IsolationWPList"   ,  m_IsoWPList.c_str());
-
-    m_PhTrigChains            = config->GetValue("PhTrigChains"      , m_PhTrigChains.c_str() );
-
-    config->Print();
-
-    Info("configure()", "PhotonSelector Interface succesfully configured! ");
-    delete config; config = nullptr;
-  }
-
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   // Parse input isolation WP list, split by comma, and put into a vector for later use

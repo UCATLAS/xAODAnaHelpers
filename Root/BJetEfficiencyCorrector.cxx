@@ -79,43 +79,6 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
 
 EL::StatusCode  BJetEfficiencyCorrector :: configure ()
 {
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuing BJetEfficiencyCorrector Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    //
-    // read flags set from .config file
-    //
-    m_debug                   = config->GetValue("Debug" , m_debug );
-    m_inContainerName         = config->GetValue("InputContainer", m_inContainerName.c_str());
-    m_systName                = config->GetValue("SystName" ,       m_systName.c_str() );      // default: no syst
-    m_outputSystName          = config->GetValue("OutputSystName",  m_outputSystName.c_str() );
-
-    //
-    // configuration of the bjet eff tool
-    //
-    m_corrFileName           = config->GetValue("CorrectionFileName", m_corrFileName.c_str() );
-    m_jetAuthor              = config->GetValue("JetAuthor",          m_jetAuthor.c_str() );
-    m_taggerName             = config->GetValue("TaggerName",         m_taggerName.c_str() );
-    m_useDevelopmentFile     = config->GetValue("UseDevelopmentFile", m_useDevelopmentFile);
-    m_coneFlavourLabel       = config->GetValue("ConeFlavourLabel",   m_coneFlavourLabel);
-
-    //
-    // Btag quality
-    //
-    m_operatingPt             = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
-    m_operatingPtCDI          = config->GetValue("OperatingPointCDI", m_operatingPtCDI.c_str());
-
-    m_decor                   = config->GetValue("DecorationName", m_decor.c_str());
-
-    config->Print();
-    Info("configure()", "BJetEfficiencyCorrector Interface succesfully configured! ");
-
-    delete config;
-  }
-
   m_decorSF = m_decor + "_SF";
 
   bool allOK(false);
@@ -384,7 +347,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   //
   // get the list of systematics to run over
   //
-  else { 
+  else {
 
     //
     // get vector of string giving the names
@@ -416,8 +379,8 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,   
-								      const xAOD::EventInfo* eventInfo, 
+EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
+								      const xAOD::EventInfo* eventInfo,
 								      bool doNominal)
 {
   if(m_debug) Info("execute()", "Applying BJet Cuts and Efficiency Correction (when applicable...) ");
@@ -451,7 +414,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     //
     //  If not nominal jets, dont calculate systematics
     //
-    if ( !doNominal ) {    
+    if ( !doNominal ) {
       if( syst_it.name() != "" ) {
         if ( m_debug ) Info("execute()","Not running B-tag systematics when doing JES systematics");
         continue;
@@ -565,7 +528,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       ++idx;
 
     } // close jet loop
-    
+
     // For *this* systematic, store the global SF weight for the event
     if ( m_debug ) {
        Info( "execute()", "--------------------------------------");
@@ -578,7 +541,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     //  Add the SF only if doing nominal Jets
     //
     if(doNominal) sfVec_GLOBAL( *eventInfo ).push_back( SF_GLOBAL );
-      
+
 
   } // close loop on systematics
 
@@ -587,13 +550,13 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   if(doNominal){
     RETURN_CHECK( "BJetEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystName), "Failed to record vector of systematic names.");
-    
+
     if(m_debug){
       std::cout << "Size is " << sysVariationNames->size() << std::endl;
       for(auto sysName : *sysVariationNames) std::cout << sysName << std::endl;
     }
   }
-      
+
   return EL::StatusCode::SUCCESS;
 }
 

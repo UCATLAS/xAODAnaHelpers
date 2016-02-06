@@ -108,60 +108,6 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
 EL::StatusCode  MuonEfficiencyCorrector :: configure ()
 {
 
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuing MuonEfficiencyCorrector Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // Read debug flag from .config file
-    //
-    m_debug                      = config->GetValue("Debug", m_debug);
-
-    // Input container to be read from TEvent or TStore
-    //
-    m_inContainerName            = config->GetValue("InputContainer",  m_inContainerName.c_str());
-
-    // Reco efficiency SF
-    //
-    m_WorkingPointReco           = config->GetValue("WorkingPointReco", m_WorkingPointReco.c_str());
-
-    // Iso efficiency SF
-    //
-    m_WorkingPointIso            = config->GetValue("WorkingPointIso", m_WorkingPointIso.c_str());
-
-    // Trigger efficiency SF
-    //
-    m_runNumber                  = config->GetValue("RunNumber", m_runNumber);
-    m_WorkingPointRecoTrig       = config->GetValue("WorkingPointRecoTrig", m_WorkingPointRecoTrig.c_str());
-    m_WorkingPointIsoTrig        = config->GetValue("WorkingPointIsoTrig", m_WorkingPointIsoTrig.c_str());
-    m_SingleMuTrig               = config->GetValue("SingleMuTrig", m_SingleMuTrig.c_str());
-    m_DiMuTrig                   = config->GetValue("DiMuTrig", m_DiMuTrig.c_str());
-
-    // TTVA SF
-    //
-    m_WorkingPointTTVA           = config->GetValue("WorkingPointTTVA", m_WorkingPointTTVA.c_str());
-
-    // Systematics stuff
-    m_inputAlgoSystNames         = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_systValReco 		 = config->GetValue("SystValReco" , m_systValReco);
-    m_systValIso 		 = config->GetValue("SystValIso" , m_systValIso);
-    m_systValTrig 		 = config->GetValue("SystValTrig" , m_systValTrig);
-    m_systNameReco	         = config->GetValue("SystNameReco" , m_systNameReco.c_str());
-    m_systNameIso	         = config->GetValue("SystNameIso" , m_systNameIso.c_str());
-    m_systNameTrig		 = config->GetValue("SystNameTrig" , m_systNameTrig.c_str());
-    m_outputSystNamesReco        = config->GetValue("OutputSystNamesReco", m_outputSystNamesReco.c_str());
-    m_outputSystNamesIso         = config->GetValue("OutputSystNamesIso",  m_outputSystNamesIso.c_str());
-    m_outputSystNamesTrig        = config->GetValue("OutputSystNamesTrig", m_outputSystNamesTrig.c_str());
-    m_outputSystNamesTTVA        = config->GetValue("OutputSystNamesTTVA",  m_outputSystNamesTTVA.c_str());
-
-    config->Print();
-
-    Info("configure()", "MuonEfficiencyCorrector Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
   if ( m_inContainerName.empty() ) {
     Error("configure()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;

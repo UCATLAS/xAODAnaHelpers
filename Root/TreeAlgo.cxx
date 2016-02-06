@@ -54,11 +54,11 @@ TreeAlgo :: TreeAlgo (std::string className) :
   // DC14 switch for little things that need to happen to run
   // for those samples with the corresponding packages
   m_DC14                    = false;
-    
+
   //Units, defaulting to GeV
   m_units                   = 1e3;
-    
-    
+
+
 }
 
 EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
@@ -104,7 +104,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
-    
+
   m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, m_units, m_debug, m_DC14 );
 
   // tell the tree to go into the file
@@ -134,48 +134,6 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
 EL::StatusCode TreeAlgo :: configure ()
 {
-  if (!getConfig().empty()) {
-
-    // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(getConfig(true).c_str());
-    m_evtDetailStr            = config->GetValue("EventDetailStr",       m_evtDetailStr.c_str());
-    m_trigDetailStr           = config->GetValue("TrigDetailStr",        m_trigDetailStr.c_str());
-    m_trigJetDetailStr        = config->GetValue("TrigJetDetailStr",     m_trigJetDetailStr.c_str());
-    m_muDetailStr             = config->GetValue("MuonDetailStr",        m_muDetailStr.c_str());
-    m_elDetailStr             = config->GetValue("ElectronDetailStr",    m_elDetailStr.c_str());
-    m_truthJetDetailStr       = config->GetValue("TruthJetDetailStr",    m_truthJetDetailStr.c_str());
-    m_jetDetailStr            = config->GetValue("JetDetailStr",         m_jetDetailStr.c_str());
-    m_fatJetDetailStr         = config->GetValue("FatJetDetailStr",      m_fatJetDetailStr.c_str());
-    m_tauDetailStr            = config->GetValue("TauDetailStr",         m_tauDetailStr.c_str());
-    m_METDetailStr            = config->GetValue("METDetailStr",         m_METDetailStr.c_str());
-    m_photonDetailStr         = config->GetValue("PhotonDetailStr",      m_photonDetailStr.c_str());
-
-    m_debug                   = config->GetValue("Debug" ,           m_debug);
-
-    m_outHistDir              = config->GetValue("SameHistsOutDir",  m_outHistDir);
-
-    m_muContainerName         = config->GetValue("MuonContainerName",       m_muContainerName.c_str());
-    m_elContainerName         = config->GetValue("ElectronContainerName",   m_elContainerName.c_str());
-    m_jetContainerName        = config->GetValue("JetContainerName",        m_jetContainerName.c_str());
-    m_truthJetContainerName   = config->GetValue("TruthJetContainerName",   m_truthJetContainerName.c_str());
-    m_trigJetContainerName    = config->GetValue("TrigJetContainerName",    m_trigJetContainerName.c_str());
-    m_fatJetContainerName     = config->GetValue("FatJetContainerName",     m_fatJetContainerName.c_str());
-    m_tauContainerName        = config->GetValue("TauContainerName",        m_tauContainerName.c_str());
-    m_METContainerName        = config->GetValue("METContainerName",        m_METContainerName.c_str());
-    m_photonContainerName     = config->GetValue("PhotonContainerName",     m_photonContainerName.c_str());
-
-    // DC14 switch for little things that need to happen to run
-    // for those samples with the corresponding packages
-    m_DC14                    = config->GetValue("DC14", m_DC14);
-
-    Info("configure()", "Loaded in configuration values");
-
-    // everything seems preliminarily ok, let's print config and say we were successful
-    config->Print();
-
-    delete config; config = nullptr;
-  }
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -185,7 +143,7 @@ EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusC
 
 EL::StatusCode TreeAlgo :: execute ()
 {
-    
+
   // Get EventInfo and the PrimaryVertices
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");

@@ -60,25 +60,6 @@ EL::StatusCode MuonHistsAlgo::AddHists( std::string name ) {
 
 EL::StatusCode MuonHistsAlgo :: configure ()
 {
-  if(!getConfig().empty()){
-    // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(getConfig(true).c_str());
-    // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    // which plots will be turned on
-    m_detailStr               = config->GetValue("DetailStr",       m_detailStr.c_str());
-    // name of algo input container comes from - only if
-    m_inputAlgo               = config->GetValue("InputAlgo",       m_inputAlgo.c_str());
-
-    m_debug                   = config->GetValue("Debug" ,           m_debug);
-
-    Info("configure()", "Loaded in configuration values");
-
-    // everything seems preliminarily ok, let's print config and say we were successful
-    config->Print();
-    delete config;
-  }
-
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     Error("configure()", "One or more required configuration values are empty");
