@@ -156,9 +156,6 @@ namespace xAH {
         int m_isMC;
 
       protected:
-        /** The name of the TEnv config file to load in, optional */
-        std::string m_configName;
-
         /** The TEvent object */
         xAOD::TEvent* m_event; //!
         /** The TStore object */

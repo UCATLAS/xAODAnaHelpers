@@ -23,7 +23,6 @@ xAH::Algorithm::Algorithm(std::string className) :
   m_systVal(0),
   m_eventInfoContainerName("EventInfo"),
   m_isMC(-1),
-  m_configName(""),
   m_event(nullptr),
   m_store(nullptr),
   m_className(className)
