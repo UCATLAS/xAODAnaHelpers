@@ -31,9 +31,6 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
-// ROOT include(s):
-#include "TSystem.h"
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetGetter)
 

@@ -31,9 +31,8 @@
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-// ROOT include(s):
+// ROOT includes:
 #include "TSystem.h"
-
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)

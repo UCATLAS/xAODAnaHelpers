@@ -31,9 +31,6 @@
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-// ROOT include(s):
-#include "TSystem.h"
-
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers

@@ -34,8 +34,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-#include "TSystem.h"
-
 namespace xAOD {
 #ifndef XAODJET_JETCONTAINER_H
   class JetContainer;

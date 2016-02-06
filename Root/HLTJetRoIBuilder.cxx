@@ -36,9 +36,6 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
-// ROOT include(s):
-#include "TSystem.h"
-
 using std::cout;  using std::endl;
 using std::vector;
 

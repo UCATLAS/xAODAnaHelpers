@@ -1,8 +1,5 @@
 #include <xAODAnaHelpers/Algorithm.h>
 
-// ROOT includes
-#include <TSystem.h>
-
 // RCU include for throwing an exception+message
 #include <RootCoreUtils/ThrowMsg.h>
 

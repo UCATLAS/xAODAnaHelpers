@@ -37,7 +37,6 @@
 
 // ROOT include(s):
 #include "TFile.h"
-#include "TSystem.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
