@@ -72,7 +72,8 @@ namespace HelperClasses {
 
     @endrst
    */
-  struct InfoSwitch {
+  class InfoSwitch {
+  protected:
     /**
         The input configuration string from which we split up into tokens.
      */
@@ -81,6 +82,7 @@ namespace HelperClasses {
         The vector of tokens from which we search through for finding matches.
      */
     std::set<std::string> m_configDetails;
+  public:
     /**
         @brief Constructor. Take in input string, create vector of tokens.
         @param configStr        The configuration string to split up.
@@ -135,15 +137,17 @@ namespace HelperClasses {
         ================ ============== =======
     @endrst
    */
-  struct EventInfoSwitch : InfoSwitch {
+  class EventInfoSwitch : public InfoSwitch {
+  public:
     bool m_eventCleaning;
     bool m_pileup;
     bool m_shapeEM;
     bool m_shapeLC;
     bool m_truth;
     bool m_caloClus;
-    void initialize();
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
   };
 
   /**
@@ -159,12 +163,14 @@ namespace HelperClasses {
         ============== ============ =======
     @endrst
    */
-  struct TriggerInfoSwitch : InfoSwitch {
+  class TriggerInfoSwitch : public InfoSwitch {
+  public:
     bool m_basic;
     bool m_menuKeys;
     bool m_passTriggers;
-    void initialize();
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
   };
 
   /**
@@ -179,11 +185,45 @@ namespace HelperClasses {
         ============== ============ =======
     @endrst
    */
-  struct JetTriggerInfoSwitch : InfoSwitch {
+
+  class JetTriggerInfoSwitch : public InfoSwitch {
+  public:
     bool m_kinematic;
     bool m_clean;
-    void initialize();
     JetTriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
+  };
+
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for IParticle Information.
+
+        ============== ============ =======
+        Parameter      Pattern      Match
+        ============== ============ =======
+        m_kinematic    kinematic    exact
+        m_numLeading   NLeading     partial
+        ============== ============ =======
+
+        .. note::
+            ``m_numLeading`` requires a number ``XX`` to follow it, defining the number of leading partiles and associate it with that variable.
+
+            For example::
+
+                m_configStr = "... NLeading4 ..."
+
+            will define :code:`int m_numLeading = 4`.
+    @endrst
+   */
+  class IParticleInfoSwitch : public InfoSwitch {
+  public:
+    bool m_kinematic;
+    int  m_numLeading;
+    IParticleInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); }
+    virtual ~IParticleInfoSwitch() {}
+  protected:
+    virtual void initialize();
   };
 
   /**
@@ -204,7 +244,8 @@ namespace HelperClasses {
         ============== ============ =======
     @endrst
    */
-  struct MuonInfoSwitch : InfoSwitch {
+  class MuonInfoSwitch : public InfoSwitch {
+  public:
     bool m_kinematic;
     bool m_trigger;
     bool m_isolation;
@@ -213,8 +254,9 @@ namespace HelperClasses {
     bool m_trackhitcont;
     bool m_effSF;
     bool m_energyLoss;
-    void initialize();
     MuonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
   };
 
   /**
@@ -234,7 +276,8 @@ namespace HelperClasses {
         ============== ============ =======
     @endrst
    */
-  struct ElectronInfoSwitch : InfoSwitch {
+  class ElectronInfoSwitch : public InfoSwitch {
+  public:
     bool m_kinematic;
     bool m_trigger;
     bool m_isolation;
@@ -242,8 +285,9 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
-    void initialize();
     ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
   };
 
   /**
@@ -253,18 +297,19 @@ namespace HelperClasses {
         ============== ============ =======
         Parameter      Pattern      Match
         ============== ============ =======
-        m_kinematic    kinematic    exact
         m_isolation    isolation    exact
         m_PID          PID          exact
         ============== ============ =======
     @endrst
    */
-  struct PhotonInfoSwitch : InfoSwitch {
-    bool m_kinematic;
+  class PhotonInfoSwitch : public IParticleInfoSwitch {
+  public:
     bool m_isolation;
     bool m_PID;
-    void initialize();
-    PhotonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    PhotonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) {}
+    virtual ~PhotonInfoSwitch() {}
+  protected:
+    virtual void initialize();
   };
 
   /**
@@ -322,7 +367,8 @@ namespace HelperClasses {
     @endrst
 
    */
-  struct JetInfoSwitch : InfoSwitch {
+  class JetInfoSwitch : public InfoSwitch {
+  public:
     bool m_kinematic;
     bool m_substructure;
     bool m_rapidity;
@@ -348,11 +394,12 @@ namespace HelperClasses {
     bool m_tracksInJet;
     bool m_area;
     int  m_numLeadingJets;
-    void initialize();
     std::string      m_trackName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
   };
 
   /**
@@ -366,10 +413,12 @@ namespace HelperClasses {
         ================ ============== =======
     @endrst
    */
-  struct TruthInfoSwitch : InfoSwitch {
+  class TruthInfoSwitch : public InfoSwitch {
+  public:
     bool m_kinematic;
-    void initialize();
     TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
   };
 
   /**
@@ -385,12 +434,14 @@ namespace HelperClasses {
         ================ ============== =======
     @endrst
    */
-  struct TauInfoSwitch : InfoSwitch {
+  class TauInfoSwitch : public InfoSwitch {
+  public:
     bool m_kinematic;
     bool m_trackparams;
     bool m_trackhitcont;
-    void initialize();
     TauInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
   };
 
   /**
@@ -414,7 +465,8 @@ namespace HelperClasses {
 
     @endrst
    */
-  struct METInfoSwitch : InfoSwitch {
+  class METInfoSwitch : public InfoSwitch {
+  public:
     bool m_refEle;
     bool m_refGamma;
     bool m_refTau;
@@ -423,8 +475,9 @@ namespace HelperClasses {
     bool m_refJetTrk;
     bool m_softClus;
     bool m_softTrk;
-    void initialize();
     METInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
   };
 
 } // close namespace HelperClasses

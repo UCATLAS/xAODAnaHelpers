@@ -1,0 +1,30 @@
+#ifndef xAODAnaHelpers_PhotonHists_H
+#define xAODAnaHelpers_PhotonHists_H
+
+#include "xAODAnaHelpers/IParticleHists.h"
+#include <xAODEgamma/PhotonContainer.h>
+
+#include <AthContainers/DataVector.h>
+
+class PhotonHists : public IParticleHists
+{
+  public:
+
+
+    PhotonHists(std::string name, std::string detailStr);
+    virtual ~PhotonHists() ;
+
+    StatusCode initialize();
+    StatusCode execute( const xAOD::PhotonContainer* photons, float eventWeight, int pvLoc = -1);
+    StatusCode execute( const xAOD::Photon* photon, float eventWeight, int pvLoc = -1 );
+    using HistogramManager::book; // make other overloaded version of book() to show up in subclass
+    using HistogramManager::execute; // overload
+
+  protected:
+
+    // holds bools that control which histograms are filled
+    HelperClasses::PhotonInfoSwitch* m_infoSwitch;
+
+};
+
+#endif

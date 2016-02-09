@@ -102,6 +102,20 @@ namespace HelperClasses{
     m_clean         = has_exact("clean");
   }
 
+  void IParticleInfoSwitch::initialize(){
+    m_kinematic     = has_exact("kinematic");
+
+    m_numLeading    = 0;
+    for(auto configDetail : m_configDetails)
+      {
+	if( configDetail.compare(0,8,"NLeading")==0) 
+	  {
+	    m_numLeading = std::atoi( configDetail.substr(8, std::string::npos).c_str() );
+	    break;
+	  }
+      }
+  }
+
   void MuonInfoSwitch::initialize(){
     m_kinematic     = has_exact("kinematic");
     m_trigger       = has_exact("trigger");
@@ -124,7 +138,7 @@ namespace HelperClasses{
   }
 
   void PhotonInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
+    IParticleInfoSwitch::initialize();
     m_isolation     = has_exact("isolation");
     m_PID           = has_exact("PID");
   }
