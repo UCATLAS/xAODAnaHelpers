@@ -14,13 +14,15 @@ TrackHists :: ~TrackHists () {}
 StatusCode TrackHists::initialize() {
 
   // These plots are always made
-  m_trk_Pt        = book(m_name, "pt",          "trk p_{T} [GeV]",  100, 0, 10);
-  m_trk_Pt_l      = book(m_name, "pt_l",        "trk p_{T} [GeV]",  100, 0, 100);
-  m_trk_Eta       = book(m_name, "eta",         "trk #eta",         80, -4, 4);
-  m_trk_Phi       = book(m_name, "phi",         "trk Phi",120, -TMath::Pi(), TMath::Pi() );
-  m_trk_d0        = book(m_name, "d0",          "d0[mm]",   100,  -2.0, 2.0 );
-  m_trk_z0        = book(m_name, "z0",          "z0[mm]",   100,  -5.0, 5.0 );
-  m_trk_z0sinT    = book(m_name, "z0sinT",           "z0xsin(#theta)[mm]",             100,  -2.0, 2.0 );
+  m_trk_n         = book(m_name, "trk_n",       "trk multiplicity", 10, -0.5, 9.5 );
+
+  m_trk_Pt        = book(m_name, "pt",          "trk p_{T} [GeV]", 100, 0, 10 );
+  m_trk_Pt_l      = book(m_name, "pt_l",        "trk p_{T} [GeV]", 100, 0, 100 );
+  m_trk_Eta       = book(m_name, "eta",         "trk #eta", 80, -4, 4);
+  m_trk_Phi       = book(m_name, "phi",         "trk #phi",120, -TMath::Pi(), TMath::Pi() );
+  m_trk_d0        = book(m_name, "d0",          "d0[mm]", 100,-2.0, 2.0 );
+  m_trk_z0        = book(m_name, "z0",          "z0[mm]", 100,-5.0, 5.0 );
+  m_trk_z0sinT    = book(m_name, "z0sinT",      "z0xsin(#theta)[mm]", 100, -2.0, 2.0 );
 
   m_trk_chi2Prob  = book(m_name, "chi2Prob",    "chi2Prob", 100,   -0.01,     1.0);
   m_trk_charge    = book(m_name, "charge" ,     "charge",   3,  -1.5,  1.5   );
@@ -126,6 +128,8 @@ StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const 
   for( ; trk_itr != trk_end; ++trk_itr ) {
     RETURN_CHECK("TrackHists::execute()", this->execute( (*trk_itr), pvx, eventWeight ), "");
   }
+
+  m_trk_n -> Fill( trks->size(), eventWeight );
 
   return StatusCode::SUCCESS;
 }
