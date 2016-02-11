@@ -43,10 +43,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-// ROOT include(s):
-#include "TEnv.h"
-#include "TSystem.h"
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(MinixAOD)
 
@@ -70,32 +66,6 @@ MinixAOD :: MinixAOD (std::string className) :
   m_storeCopyKeys = "";
   m_deepCopyKeys = "";
   m_vectorCopyKeys = "";
-}
-
-EL::StatusCode  MinixAOD :: configure ()
-{
-  if ( !getConfig().empty() ) {
-    Info("configure()", "Configuing MinixAOD Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-    m_debug             = config->GetValue("Debug" , m_debug);
-    m_verbose           = config->GetValue("Verbose", m_verbose);
-    m_outputFileName    = config->GetValue("OutputFileName", m_outputFileName.c_str());
-    m_createOutputFile  = config->GetValue("CreateOutputFile", m_createOutputFile);
-    m_copyFileMetaData  = config->GetValue("DoFileMetaData", m_copyFileMetaData);
-    m_copyTriggerInfo   = config->GetValue("DoTrigMetaData", m_copyTriggerInfo);
-    m_copyCutBookkeeper = config->GetValue("DoCutBookkeeper", m_copyCutBookkeeper);
-    m_simpleCopyKeys    = config->GetValue("SimpleCopyKeys", m_simpleCopyKeys.c_str());
-    m_storeCopyKeys     = config->GetValue("StoreCopyKeys", m_storeCopyKeys.c_str());
-    m_deepCopyKeys      = config->GetValue("DeepCopyKeys", m_deepCopyKeys.c_str());
-    m_vectorCopyKeys    = config->GetValue("VectorCopyKeys", m_vectorCopyKeys.c_str());
-
-    config->Print();
-    Info("configure()", "MinixAOD Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-  return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
@@ -128,11 +98,6 @@ EL::StatusCode MinixAOD :: changeInput (bool /*firstFile*/) { return EL::StatusC
 EL::StatusCode MinixAOD :: initialize ()
 {
   if(m_debug) Info("initialize()", "Calling initialize");
-
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();

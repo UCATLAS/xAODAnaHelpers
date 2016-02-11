@@ -36,9 +36,7 @@
 // external tools include(s):
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TFile.h"
-#include "TSystem.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
@@ -132,147 +130,6 @@ JetSelector :: JetSelector (std::string className) :
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
 
-}
-
-EL::StatusCode  JetSelector :: configure ()
-{
-  if ( !getConfig().empty() ) {
-    Info("configure()", "Configuing JetSelector Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" ,      m_debug);
-    m_useCutFlow    = config->GetValue("UseCutFlow",  m_useCutFlow);
-
-    // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    m_jetScaleType            = config->GetValue("JetScaleType",  m_jetScaleType.c_str());
-
-    // name of algo input container comes from - only if running on syst
-    m_inputAlgo               = config->GetValue("InputAlgo",   m_inputAlgo.c_str());
-    m_outputAlgo              = config->GetValue("OutputAlgo",  m_outputAlgo.c_str());
-
-    // decorate selected objects that pass the cuts
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
-    // additional functionality : create output container of selected objects
-    //                            using the SG::VIEW_ELEMENTS option
-    //                            decorating and output container should not be mutually exclusive
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
-    // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-    // if only want to look at a subset of object
-    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
-
-    // cuts
-    m_cleanJets               = config->GetValue("CleanJets",  m_cleanJets);
-    m_cleanEvtLeadJets        = config->GetValue("CleanEventWithLeadJets", m_cleanEvtLeadJets); // indepedent of previous switch
-    m_pass_max                = config->GetValue("PassMax",      m_pass_max);
-    m_pass_min                = config->GetValue("PassMin",      m_pass_min);
-    m_pT_max                  = config->GetValue("pTMax",       m_pT_max);
-    m_pT_min                  = config->GetValue("pTMin",       m_pT_min);
-    m_eta_max                 = config->GetValue("etaMax",      m_eta_max);
-    m_eta_min                 = config->GetValue("etaMin",      m_eta_min);
-    m_detEta_max              = config->GetValue("detEtaMax",   m_detEta_max);
-    m_detEta_min              = config->GetValue("detEtaMin",   m_detEta_min);
-    m_mass_max                = config->GetValue("massMax",     m_mass_max);
-    m_mass_min                = config->GetValue("massMin",     m_mass_min);
-    m_rapidity_max            = config->GetValue("rapidityMax", m_rapidity_max);
-    m_rapidity_min            = config->GetValue("rapidityMin", m_rapidity_min);
-    m_truthLabel 	      = config->GetValue("TruthLabel",   m_truthLabel);
-
-    m_doJVF 		      = config->GetValue("DoJVF",       m_doJVF);
-    m_pt_max_JVF 	      = config->GetValue("pTMaxJVF",    m_pt_max_JVF);
-    m_eta_max_JVF 	      = config->GetValue("etaMaxJVF",   m_eta_max_JVF);
-    m_JVFCut 		      = config->GetValue("JVFCut",      m_JVFCut);
-
-    m_doJVT 		      = config->GetValue("DoJVT",       m_doJVT);
-    m_pt_max_JVT 	      = config->GetValue("pTMaxJVT",    m_pt_max_JVT);
-    m_eta_max_JVT 	      = config->GetValue("etaMaxJVT",   m_eta_max_JVT);
-    m_JVTCut 		      = config->GetValue("JVTCut",      m_JVTCut);
-
-    // Btag quality
-    m_doBTagCut		      = config->GetValue("DoBTagCut",       m_doBTagCut);
-    m_jetAuthor               = config->GetValue("JetAuthor",       m_jetAuthor.c_str() );
-    m_taggerName              = config->GetValue("TaggerName",      m_taggerName.c_str() );
-    m_operatingPt             = config->GetValue("OperatingPoint",  m_operatingPt.c_str());
-    m_b_eta_max               = config->GetValue("B_etaMax",        m_b_eta_max);
-    m_b_pt_min                = config->GetValue("B_pTMin",         m_b_pt_min);
-
-    m_passAuxDecorKeys        = config->GetValue("PassDecorKeys", m_passAuxDecorKeys.c_str());
-    m_failAuxDecorKeys        = config->GetValue("FailDecorKeys", m_failAuxDecorKeys.c_str());
-
-    config->Print();
-    Info("configure()", "JetSelector Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
-  //If not set, find default from input container name
-  if (m_jetScaleType.size() == 0){
-    if( m_inContainerName.find("EMTopo") != std::string::npos){
-      m_jetScaleType = "JetEMScaleMomentum";
-    }else{
-      m_jetScaleType = "JetConstitScaleMomentum";
-    }
-  }
-
-
-  if ( m_outputAlgo.empty() ) {
-    m_outputAlgo = m_inputAlgo + "_JetSelect";
-  }
-
-  m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
-  m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
-
-  // parse and split by comma
-  std::string token;
-
-  std::istringstream ss(m_passAuxDecorKeys);
-  while ( std::getline(ss, token, ',') ) {
-    m_passKeys.push_back(token);
-  }
-
-  ss.clear();
-  ss.str(m_failAuxDecorKeys);
-  while ( std::getline(ss, token, ',') ) {
-    std::cout << token << std::endl;
-    m_failKeys.push_back(token);
-  }
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  bool allOK(true);
-  if (!m_operatingPt.empty() || m_doBTagCut ) { allOK = false; }
-  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_60") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_70") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_77") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_85") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_30") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_40") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_50") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_60") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_70") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_77") { allOK = true; }
-  if (m_operatingPt == "FlatCutBEff_85") { allOK = true; }
-
-  if( !allOK ) {
-    Error("configure()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-
-  if ( m_decorateSelectedObjects ) {
-    Info("configure()"," Decorate Jets with %s", m_decor.c_str());
-  }
-
-  return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode JetSelector :: setupJob (EL::Job& job)
@@ -374,9 +231,68 @@ EL::StatusCode JetSelector :: initialize ()
 
   }
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  //If not set, find default from input container name
+  if (m_jetScaleType.size() == 0){
+    if( m_inContainerName.find("EMTopo") != std::string::npos){
+      m_jetScaleType = "JetEMScaleMomentum";
+    }else{
+      m_jetScaleType = "JetConstitScaleMomentum";
+    }
+  }
+
+
+  if ( m_outputAlgo.empty() ) {
+    m_outputAlgo = m_inputAlgo + "_JetSelect";
+  }
+
+  m_isEMjet = m_inContainerName.find("EMTopoJets") != std::string::npos;
+  m_isLCjet = m_inContainerName.find("LCTopoJets") != std::string::npos;
+
+  // parse and split by comma
+  std::string token;
+
+  std::istringstream ss(m_passAuxDecorKeys);
+  while ( std::getline(ss, token, ',') ) {
+    m_passKeys.push_back(token);
+  }
+
+  ss.clear();
+  ss.str(m_failAuxDecorKeys);
+  while ( std::getline(ss, token, ',') ) {
+    std::cout << token << std::endl;
+    m_failKeys.push_back(token);
+  }
+
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
+  }
+
+  bool allOK(true);
+  if (!m_operatingPt.empty() || m_doBTagCut ) { allOK = false; }
+  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_60") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_70") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_77") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_85") { allOK = true; }
+  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_30") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_40") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_50") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_60") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_70") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_77") { allOK = true; }
+  if (m_operatingPt == "FlatCutBEff_85") { allOK = true; }
+
+  if( !allOK ) {
+    Error("initialize()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+
+  if ( m_decorateSelectedObjects ) {
+    Info("initialize()"," Decorate Jets with %s", m_decor.c_str());
   }
 
   //

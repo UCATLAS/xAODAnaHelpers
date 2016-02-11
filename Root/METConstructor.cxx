@@ -34,9 +34,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-#include "TEnv.h"
-#include "TSystem.h"
-
 namespace xAOD {
 #ifndef XAODJET_JETCONTAINER_H
   class JetContainer;
@@ -83,63 +80,6 @@ METConstructor :: METConstructor (std::string className) :
   m_useTrackJetTerm = false;
 
 }
-
-EL::StatusCode  METConstructor :: configure ()
-{
-  Info("configure()", "Configuing METConstructor Interface. User configuration read from : %s ", getConfig(true).c_str());
-
-  if (getConfig(true).empty()) return EL::StatusCode::SUCCESS;
-
-  getConfig(true) = gSystem->ExpandPathName( getConfig(true).c_str() );
-  // check if file exists
-  /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-  FileStat_t fStats;
-  int fSuccess = gSystem->GetPathInfo(getConfig(true).c_str(), fStats);
-  if(fSuccess != 0){
-    Error("configure()", "Could not find the configuration file");
-    return EL::StatusCode::FAILURE;
-  }
-  Info("configure()", "Found configuration file");
-
-  TEnv* config = new TEnv(getConfig(true).c_str());
-
-  // read debug flag from .config file
-  m_debug           = config->GetValue("Debug" , m_debug);
-  m_referenceMETContainer = config->GetValue("Reference", m_referenceMETContainer);
-
-  m_mapName         = config->GetValue("MapName",           m_mapName);
-  m_coreName        = config->GetValue("CoreName",          m_coreName);
-  m_outputContainer = config->GetValue("OutputContainer",   m_outputContainer);
-
-  m_inputJets       = config->GetValue("InputJets",         m_inputJets);
-  m_inputElectrons  = config->GetValue("InputElectrons",    m_inputElectrons);
-  m_inputPhotons    = config->GetValue("InputPhotons",      m_inputPhotons);
-  m_inputTaus       = config->GetValue("InputTaus",         m_inputTaus);
-  m_inputMuons      = config->GetValue("InputMuons",        m_inputMuons);
-
-  m_doElectronCuts  = config->GetValue("ApplyElectronCuts", m_doElectronCuts);
-  m_doPhotonCuts    = config->GetValue("ApplyPhotonCuts",   m_doPhotonCuts);
-  m_doTauCuts       = config->GetValue("ApplyTauCuts",      m_doTauCuts);
-  m_doMuonCuts      = config->GetValue("ApplyMuonCuts",     m_doMuonCuts);
-
-  m_doMuonEloss     = config->GetValue("DoMuonEloss",       m_doMuonEloss);
-  m_doIsolMuonEloss = config->GetValue("DoIsolMuonEloss",   m_doIsolMuonEloss);
-  m_doJVTCut        = config->GetValue("DoJVTCut",          m_doJVTCut);
-
-  m_useCaloJetTerm  = config->GetValue("UseCaloJetTerm",    m_useCaloJetTerm);
-  m_useTrackJetTerm = config->GetValue("UseTrackJetTerm",   m_useTrackJetTerm);
-
-  if( m_mapName.Length() == 0 ) {
-    Error("configure()", "MapName is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  config->Print();
-  Info("configure()", "METConstructor Interface succesfully configured!");
-
-  return EL::StatusCode::SUCCESS;
-}
-
 
 EL::StatusCode METConstructor :: setupJob (EL::Job& job)
 {
@@ -208,11 +148,6 @@ EL::StatusCode METConstructor :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   //m_store->print();
-
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
 
   m_metmaker = new met::METMaker("METMaker");
   if(m_metmaker->initialize().isFailure()){

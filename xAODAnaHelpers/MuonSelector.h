@@ -137,9 +137,6 @@ public:
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
 
-  // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode configure ();
-
   // added functions not from Algorithm
   bool executeSelection( const xAOD::MuonContainer* inMuons, float mcEvtWeight, bool countPass,
                          ConstDataVector<xAOD::MuonContainer>* selectedMuons );

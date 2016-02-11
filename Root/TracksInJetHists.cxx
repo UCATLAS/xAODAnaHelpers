@@ -6,7 +6,7 @@
 
 using std::cout;  using std::endl;
 
-TracksInJetHists :: TracksInJetHists (std::string name, std::string detailStr) : 
+TracksInJetHists :: TracksInJetHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
 {
 }
@@ -21,29 +21,29 @@ StatusCode TracksInJetHists::initialize() {
   m_trkPlots = new TrackHists(m_name, "IPDetails HitCounts TPErrors Chi2Details Debugging");
   m_trkPlots -> initialize();
 
-  // 
+  //
   //  d0
   //
   m_trk_d0        = book(m_name, "d0_signed",          "d0[mm] (signed)",   100,  -2.0, 2.0 );
   m_trk_d0Sig     = book(m_name, "d0Sig_signed",       "d0Sig (signed)",   240,   -20.0, 40.0 );
   m_trk_d0SigPDF  = book(m_name, "d0Sig_signed_pdf",   "d0Sig (signed)",   42,    -21.0, 21.0 );
-  m_trk_z0sinTd0  = book(m_name, "z0sinTsigned_vs_d0signed",    
-			 "z0xsin0[mm](signed)", 50, -2.0, 2.0, 
+  m_trk_z0sinTd0  = book(m_name, "z0sinTsigned_vs_d0signed",
+			 "z0xsin0[mm](signed)", 50, -2.0, 2.0,
 			 "d0[mm](signed);",     50, -2.0, 2.0 );
-					   
 
-  //                                                                                                                                   
-  //  z0                                                                                                              
-  //                                                                                                                                   
+
+  //
+  //  z0
+  //
   m_trk_z0_signed        = book(m_name, "z0_signed"   ,     "z0[mm] (signed)",               100,  -5.0, 5.0 );
   m_trk_z0sinT_signed    = book(m_name, "z0sinT_signed",    "z0xsin(#theta)[mm] (signed)",   100,  -2.0, 2.0 );
   m_trk_z0Sig_signed     = book(m_name, "z0Sig_signed",     "z0 significance (signed)",      100,  -25.0, 25.0 );
   m_trk_z0Sig_signed_pdf = book(m_name, "z0Sig_signed_pdf", "z0 significance (signed)",       42,  -21.0, 20.0 );
   m_trk_z0SigsinT_signed = book(m_name, "z0SigsinT_signed", "z0 significance x sin(#theta)", 100,  -25.0, 25.0 );
 
-  //                                                                                                                                   
-  //  wrt Jet                                                                                                                          
-  //                                                                                                                                   
+  //
+  //  wrt Jet
+  //
   m_trk_jetdPhi = book(m_name, "jetdPhi",  "jetdPhi",  100,  -0.5, 0.5 );
   m_trk_jetdEta = book(m_name, "jetdEta",  "jetdEta",  100,  -0.5, 0.5 );
   m_trk_jetdR      = book(m_name, "jetdR" ,   "jetdR",    300,  -0.1, 0.5 );
@@ -61,7 +61,7 @@ void TracksInJetHists::record(EL::Worker* wk) {
 
 
 
-StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD::Jet* jet,  const xAOD::Vertex *pvx, float eventWeight ) { 
+StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD::Jet* jet,  const xAOD::Vertex *pvx, float eventWeight ) {
 
   //
   //  Fill track hists
@@ -79,9 +79,9 @@ StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD
   m_trk_d0Sig    ->Fill(d0SigSigned, eventWeight);
   m_trk_d0SigPDF ->Fill(d0SigSigned, eventWeight);
 
-  //                                                                                                                                   
-  // Signed Z0                                                                                                                         
-  //                                                                                                                                   
+  //
+  // Signed Z0
+  //
   float signZ0           = getZ0Sign(trk, jet, pvx);
   float z0               = trk->z0() + trk->vz() - pvx->z();
   float z0_wrtPV_signed  = fabs(z0)*signZ0;

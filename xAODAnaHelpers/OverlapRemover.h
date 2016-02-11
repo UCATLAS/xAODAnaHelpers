@@ -273,7 +273,6 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode configure ();
   /**
      @brief Fill the cutflow histograms
      @param objCont          The `xAOD` container to be considered

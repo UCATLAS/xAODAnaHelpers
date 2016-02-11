@@ -34,9 +34,7 @@
 // external tools include(s):
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TFile.h"
-#include "TSystem.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
@@ -80,64 +78,6 @@ TruthSelector :: TruthSelector (std::string className) :
   m_mass_min                = 1e8;
   m_rapidity_max            = 1e8;
   m_rapidity_min            = 1e8;
-}
-
-EL::StatusCode  TruthSelector :: configure ()
-{
-  if ( !getConfig().empty() ) {
-    Info("configure()", "Configuing TruthSelector Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // read debug flag from .config file
-    m_debug         = config->GetValue("Debug" ,      m_debug);
-    m_useCutFlow    = config->GetValue("UseCutFlow",  m_useCutFlow);
-
-    // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-
-    // decorate selected objects that pass the cuts
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
-    // additional functionality : create output container of selected objects
-    //                            using the SG::VIEW_ELEMENTS option
-    //                            decorating and output container should not be mutually exclusive
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
-    // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-    // if only want to look at a subset of object
-    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
-
-    // cuts
-    m_pass_max                = config->GetValue("PassMax",      m_pass_max);
-    m_pass_min                = config->GetValue("PassMin",      m_pass_min);
-    m_pT_max                  = config->GetValue("pTMax",       m_pT_max);
-    m_pT_min                  = config->GetValue("pTMin",       m_pT_min);
-    m_eta_max                 = config->GetValue("etaMax",      m_eta_max);
-    m_eta_min                 = config->GetValue("etaMin",      m_eta_min);
-    m_mass_max                = config->GetValue("massMax",     m_mass_max);
-    m_mass_min                = config->GetValue("massMin",     m_mass_min);
-    m_rapidity_max            = config->GetValue("rapidityMax", m_rapidity_max);
-    m_rapidity_min            = config->GetValue("rapidityMin", m_rapidity_min);
-
-    config->Print();
-    Info("configure()", "TruthSelector Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  m_decor   = "passSel";
-
-  if ( m_decorateSelectedObjects ) {
-    Info("configure()"," Decorate Jets with %s", m_decor.c_str());
-  }
-
-  return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
@@ -205,9 +145,15 @@ EL::StatusCode TruthSelector :: initialize ()
 
   }
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
+  }
+
+  m_decor   = "passSel";
+
+  if ( m_decorateSelectedObjects ) {
+    Info("initialize()"," Decorate Jets with %s", m_decor.c_str());
   }
 
 

@@ -33,7 +33,6 @@
 #include "PATInterfaces/CorrectionCode.h"
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
@@ -123,98 +122,6 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
 }
 
 
-EL::StatusCode BasicEventSelection :: configure ()
-{
-
-  if ( !getConfig().empty() ) {
-
-    // read in user configuration from text file
-    TEnv *config = new TEnv(getConfig(true).c_str());
-    if ( !config ) {
-      Error("BasicEventSelection()", "Failed to initialize reading of config file. Exiting." );
-      return EL::StatusCode::FAILURE;
-    }
-
-    // basics
-    m_debug             = config->GetValue("Debug"     ,     m_debug);
-    m_truthLevelOnly    = config->GetValue("TruthLevelOnly", m_truthLevelOnly);
-
-    // derivation name
-    m_derivationName    = config->GetValue("DerivationName", m_derivationName.c_str() );
-    // temp flag for derivations with broken meta data
-    m_useMetaData       = config->GetValue("UseMetaData", m_useMetaData);
-
-    // Check for duplicated events in Data and MC
-    m_checkDuplicatesData = config->GetValue("CheckDuplicatesData", m_checkDuplicatesData);
-    m_checkDuplicatesMC   = config->GetValue("CheckDuplicatesMC", m_checkDuplicatesMC);
-
-    // GRL
-    m_applyGRLCut       = config->GetValue("ApplyGRL",        m_applyGRLCut);
-    m_applyGRLCut       = config->GetValue("ApplyGRLCut",        m_applyGRLCut);
-    m_GRLxml            = config->GetValue("GRL", m_GRLxml.c_str());
-    m_GRLExcludeList    = config->GetValue("GRLExclude", m_GRLExcludeList.c_str());
-
-    // Pileup Reweighting
-    m_doPUreweighting    = config->GetValue("DoPileupReweighting", m_doPUreweighting);
-    m_lumiCalcFileNames  = config->GetValue("LumiCalcFiles",       m_lumiCalcFileNames.c_str());
-    m_PRWFileNames       = config->GetValue("PRWFiles",            m_PRWFileNames.c_str());
-    m_PU_default_channel = config->GetValue("PUDefaultChannel",    m_PU_default_channel);
-
-    // Event Cleaning
-    m_applyEventCleaningCut      = config->GetValue("ApplyEventCleaningCut",    m_applyEventCleaningCut);
-    m_applyCoreFlagsCut          = config->GetValue("ApplyCoreFlagsCut",        m_applyCoreFlagsCut);
-
-    // Primary Vertex
-    m_vertexContainerName        = config->GetValue("VertexContainer",       m_vertexContainerName.c_str());
-    m_applyPrimaryVertexCut      = config->GetValue("ApplyPrimaryVertexCut", m_applyPrimaryVertexCut);
-    // number of tracks to require to count PVs
-    m_PVNTrack                   = config->GetValue("NTrackForPrimaryVertex",  m_PVNTrack);
-
-    // Trigger
-    m_triggerSelection           = config->GetValue("Trigger",            m_triggerSelection.c_str());
-    m_applyTriggerCut            = config->GetValue("ApplyTriggerCut",    m_applyTriggerCut);
-    m_storeTrigDecisions         = config->GetValue("StoreTrigDecision",  m_storeTrigDecisions);
-    m_storePassL1                = config->GetValue("StorePassL1",        m_storePassL1);
-    m_storePassHLT               = config->GetValue("StorePassHLT",       m_storePassHLT);
-    m_storeTrigKeys              = config->GetValue("StoreTrigKeys",      m_storeTrigKeys);
-
-    // if truth level make sure parameters are set properly
-    if( m_truthLevelOnly ) {
-      Info("configure()", "Truth only! Turn off trigger stuff");
-      m_triggerSelection = "";
-      m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
-      Info("configure()", "Truth only! Turn off GRL");
-      m_applyGRLCut = false;
-      Info("configure()", "Truth only! Turn off Pile-up Reweight");
-      m_doPUreweighting = false;
-    }
-
-    if( !m_triggerSelection.empty() )
-      Info("configure()", "Using Trigger %s", m_triggerSelection.c_str() );
-    if( !m_applyTriggerCut )
-      Info("configure()", "WILL NOT CUT ON TRIGGER AS YOU REQUESTED!");
-
-    if( m_doPUreweighting ){
-      if( m_lumiCalcFileNames.size() == 0){
-        Error("BasicEventSelection()", "Pileup Reweighting is requested but no LumiCalc file is specified. Exiting" );
-        return EL::StatusCode::FAILURE;
-      }
-      if( m_PRWFileNames.size() == 0){
-        Error("BasicEventSelection()", "Pileup Reweighting is requested but no PRW file is specified. Exiting" );
-        return EL::StatusCode::FAILURE;
-      }
-    }
-
-    config->Print();
-
-    Info("configure()", "BasicEventSelection succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
 EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
@@ -250,12 +157,6 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   Info("histInitialize()", "Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
-
-  // Make sure configuration variables have been configured
-  if ( !getConfig().empty() && ( this->configure() == EL::StatusCode::FAILURE ) ) {
-    Error("histInitialize()", "Failed to properly configure. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
 
   // write the metadata hist to this file so algos downstream can pick up the pointer
   TFile *fileMD = wk()->getOutputFile ("metadata");
@@ -436,6 +337,17 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // input events.
 
   Info("initialize()", "Initializing BasicEventSelection... ");
+
+  // if truth level make sure parameters are set properly
+  if( m_truthLevelOnly ) {
+    Info("configure()", "Truth only! Turn off trigger stuff");
+    m_triggerSelection = "";
+    m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
+    Info("configure()", "Truth only! Turn off GRL");
+    m_applyGRLCut = false;
+    Info("configure()", "Truth only! Turn off Pile-up Reweight");
+    m_doPUreweighting = false;
+  }
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");

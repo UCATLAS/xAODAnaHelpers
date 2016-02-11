@@ -31,10 +31,8 @@
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-// ROOT include(s):
-#include "TEnv.h"
+// ROOT includes:
 #include "TSystem.h"
-
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)
@@ -101,85 +99,6 @@ JetCalibrator :: JetCalibrator (std::string className) :
   m_systName                = "";
   m_systVal                 = 0.;
 }
-
-EL::StatusCode  JetCalibrator :: configure ()
-{
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuring JetCalibrator Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug" , m_debug);
-    m_sort                    = config->GetValue("Sort",            m_sort);
-    // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    // shallow copies are made with this output container name
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-
-    // CONFIG parameters for JetCalibrationTool and systematic variations
-    m_jetAlgo                 = config->GetValue("JetAlgorithm",        m_jetAlgo.c_str());
-    m_outputAlgo     = config->GetValue("OutputAlgoSystNames", m_outputAlgo.c_str());
-    m_outputAlgo     = config->GetValue("OutputAlgo", m_outputAlgo.c_str()); //legacy option
-
-    // Provisional default, since "None" is assigned to this string if this default is not set here
-    m_systName                = config->GetValue("SystName",            m_systName.c_str());
-    m_systVal                 = config->GetValue("SystVal",             m_systVal);
-
-    // when running data "_Insitu" is appended to this string
-    m_calibSequence           = config->GetValue("CalibSequence",           m_calibSequence.c_str());
-    m_calibConfigFullSim      = config->GetValue("configNameFullSim",       m_calibConfigFullSim.c_str());
-    m_calibConfigAFII         = config->GetValue("configNameAFII",          m_calibConfigAFII.c_str());
-    m_calibConfigData         = config->GetValue("configNameData",          m_calibConfigData.c_str());
-
-    // CONFIG parameters for JetUncertaintiesTool
-    m_JESUncertConfig         = config->GetValue("JESUncertConfig", m_JESUncertConfig.c_str());
-    m_JESUncertMCType         = config->GetValue("JESUncertMCType", m_JESUncertMCType.c_str());
-    m_setAFII                 = config->GetValue("SetAFII",  m_setAFII);
-
-    // CONFIG parameters for JERSmearingTool
-    m_JERUncertConfig         = config->GetValue("JERUncertConfig", m_JERUncertConfig.c_str());
-    m_JERFullSys              = config->GetValue("JERFullSys",      m_JERFullSys);
-    m_JERApplyNominal         = config->GetValue("JERApplyNominal", m_JERApplyNominal);
-
-    m_doCleaning              = config->GetValue("DoCleaning", m_doCleaning);
-    // CONFIG parameters for JetCleaningTool
-    m_jetCleanCutLevel        = config->GetValue("JetCleanCutLevel",        m_jetCleanCutLevel.c_str());
-    m_jetCleanUgly            = config->GetValue("JetCleanUgly",            m_jetCleanUgly );
-    m_saveAllCleanDecisions   = config->GetValue("SaveAllCleanDecisions",   m_saveAllCleanDecisions);
-    m_cleanParent             = config->GetValue("CleanParent",             m_cleanParent);
-    m_applyFatJetPreSel       = config->GetValue("ApplyFatJetPreSel",       m_applyFatJetPreSel);
-
-    m_redoJVT                 = config->GetValue("RedoJVT",         m_redoJVT);
-    
-    //set the flag for trigger jets
-    m_isTrigger                 = config->GetValue("TriggerJets",         m_isTrigger);
-
-    config->Print();
-      
-    delete config; config = nullptr;
-  }
-
-  // If there is no InputContainer we must stop
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  if ( m_outputAlgo.empty() ) {
-    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
-  }
-
-  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-
-  if ( !getConfig().empty() )
-    Info("configure()", "JetCalibrator Interface succesfully configured! ");
-
-  return EL::StatusCode::SUCCESS;
-}
-
 
 EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
 {
@@ -256,10 +175,18 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  // If there is no InputContainer we must stop
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
+
+  if ( m_outputAlgo.empty() ) {
+    m_outputAlgo = m_jetAlgo + "_Calib_Algo";
+  }
+
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
   m_numEvent      = 0;
   m_numObject     = 0;

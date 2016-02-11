@@ -11,9 +11,6 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
-#include "TEnv.h"
-#include "TSystem.h"
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(Writer)
 
@@ -43,25 +40,6 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   // let's initialize the algorithm to use the xAODRootAccess package
   job.useXAOD ();
   xAOD::Init( "Writer" ).ignore(); // call before opening first file
-
-  if(!getConfig().empty()){
-    TEnv* config = new TEnv(getConfig(true).c_str());
-    if( !config ) {
-      Error("Writer::setupJob()", "Failed to read config file!");
-      Error("Writer::setupJob()", "config name : %s",getConfig().c_str());
-      return EL::StatusCode::FAILURE;
-    }
-
-    m_outputLabel               = config->GetValue("OutputLabel"            , m_outputLabel);
-
-    m_jetContainerNamesStr      = config->GetValue("JetContainerNames"      , m_jetContainerNamesStr);
-    m_electronContainerNamesStr = config->GetValue("ElectronContainerNames" , m_electronContainerNamesStr);
-    m_muonContainerNamesStr     = config->GetValue("MuonContainerNames"     , m_muonContainerNamesStr);
-    m_debug                   = config->GetValue("Debug",                m_debug);
-
-    delete config;
-  }
-
 
   m_jetContainerNames       = HelperFunctions::SplitString( m_jetContainerNamesStr,      ',' );
   m_electronContainerNames  = HelperFunctions::SplitString( m_electronContainerNamesStr, ',' );

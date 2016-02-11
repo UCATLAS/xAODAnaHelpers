@@ -41,7 +41,6 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode configure ();
   EL::StatusCode AddHists( std::string name );
 
   /// @cond

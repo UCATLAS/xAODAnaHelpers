@@ -54,6 +54,8 @@ Make a directory called run. This is where your script will be located::
 Code and Data
 -------------
 
+.. warning:: setConfig and getConfig are eliminated as ``ROOT::TEnv`` support is now deprecated.
+
 Place the following code in your **``makeSlimmedTree.cxx``**. Skim through it to familiarize yourself with the sequence of the analysis::
 
     void makeSlimmedTree (const std::string& submitDir)

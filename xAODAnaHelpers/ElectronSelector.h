@@ -60,7 +60,7 @@ public:
   bool           m_doAuthorCut;
   bool           m_doOQCut;
   bool           m_doBLTrackQualityCut;
- 
+
   /* electron PID */
 
   bool           m_readIDFlagsFromDerivation;
@@ -161,10 +161,6 @@ public:
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
-
-  /* these are the functions not inherited from Algorithm */
-
-  virtual EL::StatusCode configure ();
 
   /* added functions not from Algorithm */
 

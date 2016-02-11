@@ -34,9 +34,7 @@
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TFile.h"
-#include "TSystem.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
@@ -125,109 +123,6 @@ MuonSelector :: MuonSelector (std::string className) :
 }
 
 MuonSelector::~MuonSelector() {}
-
-EL::StatusCode  MuonSelector :: configure ()
-{
-
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuing MuonSelector Interface. User configuration read from : %s ", m_configName.c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    m_debug                   = config->GetValue("Debug" ,      m_debug);
-    m_useCutFlow              = config->GetValue("UseCutFlow",  m_useCutFlow);
-
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
-
-    m_decorateSelectedObjects = config->GetValue("DecorateSelectedObjects", m_decorateSelectedObjects);
-    m_createSelectedContainer = config->GetValue("CreateSelectedContainer", m_createSelectedContainer);
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-
-    m_nToProcess              = config->GetValue("NToProcess", m_nToProcess);
-
-    m_muonQualityStr          = config->GetValue("MuonQuality", m_muonQualityStr.c_str());
-    m_muonType                = config->GetValue("MuonType", m_muonType.c_str());
-    m_pass_max                = config->GetValue("PassMax", m_pass_max);
-    m_pass_min                = config->GetValue("PassMin", m_pass_min);
-    m_pT_max                  = config->GetValue("pTMax",  m_pT_max);
-    m_pT_min                  = config->GetValue("pTMin",  m_pT_min);
-    m_eta_max                 = config->GetValue("etaMax", m_eta_max);
-    m_d0_max                  = config->GetValue("d0Max", m_d0_max);
-    m_d0sig_max     	      = config->GetValue("d0sigMax", m_d0sig_max);
-    m_z0sintheta_max          = config->GetValue("z0sinthetaMax", m_z0sintheta_max);
-
-    m_MinIsoWPCut             = config->GetValue("MinIsoWPCut"       ,  m_MinIsoWPCut.c_str());
-    m_IsoWPList		      = config->GetValue("IsolationWPList"   ,  m_IsoWPList.c_str());
-    m_CaloIsoEff              = config->GetValue("CaloIsoEfficiecny" ,  m_CaloIsoEff.c_str());
-    m_TrackIsoEff             = config->GetValue("TrackIsoEfficiency",  m_TrackIsoEff.c_str());
-    m_CaloBasedIsoType        = config->GetValue("CaloBasedIsoType"  ,  m_CaloBasedIsoType.c_str());
-    m_TrackBasedIsoType       = config->GetValue("TrackBasedIsoType" ,  m_TrackBasedIsoType.c_str());
-
-    m_singleMuTrigChains      = config->GetValue("SingleMuTrigChains" , m_singleMuTrigChains.c_str() );
-    m_singleMuTrigChains      = config->GetValue("SingleMuTrigChain" , m_singleMuTrigChains.c_str() );
-    m_diMuTrigChains	      = config->GetValue("DiMuTrigChains"     , m_diMuTrigChains.c_str() );
-    m_diMuTrigChains	      = config->GetValue("DiMuTrigChain"     , m_diMuTrigChains.c_str() );
-    m_minDeltaR 	      = config->GetValue("MinDeltaR"         , m_minDeltaR );
-
-    config->Print();
-
-    Info("configure()", "MuonSelector Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
-  HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
-  m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
-
-
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-
-  std::set<int> muonQualitySet;
-  muonQualitySet.insert(0);
-  muonQualitySet.insert(1);
-  muonQualitySet.insert(2);
-  muonQualitySet.insert(3);
-  if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
-    Error("configure()", "Unknown muon quality requested: %i!",m_muonQuality);
-    return EL::StatusCode::FAILURE;
-  }
-
-  std::set<std::string> muonTypeSet;
-  muonTypeSet.insert("");
-  muonTypeSet.insert("Combined");
-  muonTypeSet.insert("MuonStandAlone");
-  muonTypeSet.insert("SegmentTagged");
-  muonTypeSet.insert("CaloTagged");
-  muonTypeSet.insert("SiliconAssociatedForwardMuon");
-  if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
-    Error("configure()", "Unknown muon type requested: %s!",m_muonType.c_str());
-    return EL::StatusCode::FAILURE;
-  }
-
-  // Parse input isolation WP list, split by comma, and put into a vector for later use
-  // Make sure it's not empty!
-  //
-  if ( m_IsoWPList.empty() ) {
-    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
-  }
-  std::string token;
-  std::istringstream ss(m_IsoWPList);
-  while ( std::getline(ss, token, ',') ) {
-    m_IsoKeys.push_back(token);
-  }
-
-  if ( m_inContainerName.empty() ){
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
 
 EL::StatusCode MuonSelector :: setupJob (EL::Job& job)
 {
@@ -362,8 +257,48 @@ EL::StatusCode MuonSelector :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
+  m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
+
+
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+
+  std::set<int> muonQualitySet;
+  muonQualitySet.insert(0);
+  muonQualitySet.insert(1);
+  muonQualitySet.insert(2);
+  muonQualitySet.insert(3);
+  if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
+    Error("initialize()", "Unknown muon quality requested: %i!",m_muonQuality);
+    return EL::StatusCode::FAILURE;
+  }
+
+  std::set<std::string> muonTypeSet;
+  muonTypeSet.insert("");
+  muonTypeSet.insert("Combined");
+  muonTypeSet.insert("MuonStandAlone");
+  muonTypeSet.insert("SegmentTagged");
+  muonTypeSet.insert("CaloTagged");
+  muonTypeSet.insert("SiliconAssociatedForwardMuon");
+  if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
+    Error("initialize()", "Unknown muon type requested: %s!",m_muonType.c_str());
+    return EL::StatusCode::FAILURE;
+  }
+
+  // Parse input isolation WP list, split by comma, and put into a vector for later use
+  // Make sure it's not empty!
+  //
+  if ( m_IsoWPList.empty() ) {
+    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  }
+  std::string token;
+  std::istringstream ss(m_IsoWPList);
+  while ( std::getline(ss, token, ',') ) {
+    m_IsoKeys.push_back(token);
+  }
+
+  if ( m_inContainerName.empty() ){
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 

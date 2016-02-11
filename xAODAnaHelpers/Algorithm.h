@@ -78,16 +78,6 @@ namespace xAH {
             @param name         The name of the instance
          */
         Algorithm* setName(std::string name);
-        /**
-            @brief Let the algorithm know you wish to configure using a ROOT::TEnv() file
-            @param configName   The path to the config file you wish to use. Can expand the path for you automatically.
-         */
-        Algorithm* setConfig(std::string configName);
-        /**
-            @brief Retrieve the path to the config file
-            @param expand       Whether to retrieve the raw string set or the expanded path version
-         */
-        std::string getConfig(bool expand=false);
 
         /**
             @rst
@@ -166,9 +156,6 @@ namespace xAH {
         int m_isMC;
 
       protected:
-        /** The name of the TEnv config file to load in, optional */
-        std::string m_configName;
-
         /** The TEvent object */
         xAOD::TEvent* m_event; //!
         /** The TStore object */

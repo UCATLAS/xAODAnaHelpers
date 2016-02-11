@@ -12,9 +12,6 @@
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-#include "TEnv.h"
-#include "TSystem.h"
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetHistsAlgo)
 
@@ -58,36 +55,6 @@ EL::StatusCode JetHistsAlgo::AddHists( std::string name ) {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo :: configure ()
-{
-  if(!getConfig().empty()){
-    // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(getConfig(true).c_str());
-    // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    // which plots will be turned on
-    m_detailStr               = config->GetValue("DetailStr",       m_detailStr.c_str());
-    // name of algo input container comes from - only if
-    m_inputAlgo               = config->GetValue("InputAlgo",       m_inputAlgo.c_str());
-
-    m_debug                   = config->GetValue("Debug" ,           m_debug);
-
-    Info("configure()", "Loaded in configuration values");
-
-    // everything seems preliminarily ok, let's print config and say we were successful
-    config->Print();
-    delete config;
-  }
-
-  // in case anything was missing or blank...
-  if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("configure()", "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
 EL::StatusCode JetHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
 EL::StatusCode JetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
 
@@ -95,13 +62,10 @@ EL::StatusCode JetHistsAlgo :: initialize ()
 {
   Info("initialize()", m_name.c_str());
 
-  // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", m_configName.c_str());
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
+  // in case anything was missing or blank...
+  if( m_inContainerName.empty() || m_detailStr.empty() ){
+    Error("initialize()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
-  } else {
-    Info("histInitialize()", "Succesfully configured! ");
   }
 
   // only running 1 collection

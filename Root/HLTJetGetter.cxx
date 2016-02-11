@@ -31,10 +31,6 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
-// ROOT include(s):
-#include "TEnv.h"
-#include "TSystem.h"
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetGetter)
 
@@ -86,64 +82,29 @@ EL::StatusCode HLTJetGetter :: changeInput (bool /*firstFile*/)
     return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode  HLTJetGetter :: configure ()
-{
-    if ( !getConfig().empty() ) {
-        
-        Info("configure()", "Configuring JetCalibrator Interface. User configuration read from : %s ", getConfig().c_str());
-        
-        TEnv* config = new TEnv(getConfig(true).c_str());
-        
-        // read debug flag from .config file
-        m_debug                   = config->GetValue("Debug" , m_debug);
-        // input container to be read from TDT
-        m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-        // output container is passed on with this output container name
-        m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-        // list of triggers whose features have to be pulled from TDT: ".*" for all
-        m_triggerList             = config->GetValue("TriggerList", m_triggerList.c_str());
-        
-        config->Print();
-        
-        delete config; config = nullptr;
-    }
-    
-    // If there is no InputContainer we must stop
-    if ( m_inContainerName.empty() ) {
-        Error("configure()", "InputContainer is empty!");
-        return EL::StatusCode::FAILURE;
-    }
-    
-    if ( !getConfig().empty() )
-    Info("configure()", "JetCalibrator Interface succesfully configured! ");
-    
-    return EL::StatusCode::SUCCESS;
-}
-
-
 EL::StatusCode HLTJetGetter :: initialize ()
 {
 
-    
+
     Info("initialize()", "Initializing HLTJetGetter Interface... ");
-    
+
     m_event = wk()->xaodEvent();
     m_store = wk()->xaodStore();
-    
+
     //
     // Grab the TrigDecTool from the ToolStore
     //
-    
+
     if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
         m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
     } else {
         Info ("Initialize()", "the Trigger Decision Tool is not yet initialized...[%s]. Doing so now.", m_name.c_str());
         m_ownTDTAndTCT = true;
-        
+
         m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
         RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "Failed to properly initialize TrigConf::xAODConfigTool");
         ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
-        
+
         m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
         RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
         RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
@@ -151,13 +112,13 @@ EL::StatusCode HLTJetGetter :: initialize ()
         RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
         Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
     }
-    
-    // Configure
-    if ( this->configure() == EL::StatusCode::FAILURE ) {
-        Error("initialize()", "Failed to properly configure. Exiting." );
+
+    // If there is no InputContainer we must stop
+    if ( m_inContainerName.empty() ) {
+        Error("initialize()", "InputContainer is empty!");
         return EL::StatusCode::FAILURE;
     }
-    
+
     return EL::StatusCode::SUCCESS;
 }
 
@@ -165,22 +126,22 @@ EL::StatusCode HLTJetGetter :: initialize ()
 EL::StatusCode HLTJetGetter :: execute ()
 {
     if ( m_debug ) { Info("execute()", "Getting HLT jets... "); }
-    
+
     //
     // Create the new container and its auxiliary store.
     //
     xAOD::JetContainer*     hltJets    = new xAOD::JetContainer();
     xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
     hltJets->setStore( hltJetsAux ); //< Connect the two
-    
+
     //Retrieving jets via trigger decision tool:
     const Trig::ChainGroup * chainGroup = m_trigDecTool->getChainGroup(m_triggerList.c_str()); //Trigger list:
     auto chainFeatures = chainGroup->features(); //Gets features associated to chain defined above
     auto JetFeatureContainers = chainFeatures.containerFeature<xAOD::JetContainer>(m_inContainerName.c_str());
-    
+
     RETURN_CHECK("HLTJetGetter::execute()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected hltJets");
     RETURN_CHECK("HLTJetGetter::execute()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected hltJetsAux.");
-    
+
     for( auto fContainer : JetFeatureContainers ) {
         for( auto trigJet : *fContainer.cptr() ) {
             xAOD::Jet *Jet = new xAOD::Jet();
@@ -188,9 +149,9 @@ EL::StatusCode HLTJetGetter :: execute ()
             hltJets->push_back( Jet );
         }//end trigJet loop
     }//end feature container loop
-    
+
     if ( m_verbose ) { m_store->print(); }
-    
+
     return EL::StatusCode::SUCCESS;
 }
 
@@ -207,14 +168,14 @@ EL::StatusCode HLTJetGetter :: postExecute ()
 EL::StatusCode HLTJetGetter :: finalize ()
 {
     Info("finalize()", "Deleting tool instances...");
-    
+
     // this is necessary because in most cases the pointer will be set to null
     // after deletion in BasicEventSelection, but it will not propagate here
     if ( m_ownTDTAndTCT ) {
       if ( m_trigDecTool )  { delete m_trigDecTool; m_trigDecTool = nullptr;  }
       if ( m_trigConfTool ) {  delete m_trigConfTool; m_trigConfTool = nullptr; }
     }
-    
+
     return EL::StatusCode::SUCCESS;
 }
 

@@ -38,10 +38,6 @@
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-// ROOT include(s):
-#include "TEnv.h"
-#include "TSystem.h"
-
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -83,55 +79,6 @@ ElectronCalibrator :: ElectronCalibrator (std::string className) :
 
   m_useDataDrivenLeakageCorr = false;
 
-}
-
-
-EL::StatusCode  ElectronCalibrator :: configure ()
-{
-
-  if ( !getConfig().empty() ) {
-
-    Info("configure()", "Configuing ElectronCalibrator Interface. User configuration read from : %s ", getConfig().c_str());
-
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    // read debug flag from .config file
-    m_debug                   = config->GetValue("Debug", m_debug);
-    // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    m_outContainerName        = config->GetValue("OutputContainer", m_outContainerName.c_str());
-
-    m_sort                    = config->GetValue("Sort", m_sort);
-
-   // Systematics stuff
-    m_inputAlgoSystNames      = config->GetValue("InputAlgoSystNames",  m_inputAlgoSystNames.c_str());
-    m_outputAlgoSystNames     = config->GetValue("OutputAlgoSystNames", m_outputAlgoSystNames.c_str());
-    m_systName		      = config->GetValue("SystName" , m_systName.c_str() );
-    m_systVal 		      = config->GetValue("SystVal" , m_systVal );
-
-    m_esModel		      = config->GetValue("ESModel" , m_esModel.c_str() );
-    m_decorrelationModel      = config->GetValue("DecorrelationModel" , m_decorrelationModel.c_str() );
-
-    m_useDataDrivenLeakageCorr 	= config->GetValue("UseDataDrivenLeakageCorr" ,  m_useDataDrivenLeakageCorr);
-
-    config->Print();
-
-    Info("configure()", "ElectronCalibrator Interface succesfully configured! ");
-
-    delete config; config = nullptr;
-  }
-
-  if ( m_inContainerName.empty() ) {
-    Error("configure()", "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
-  }
-
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-  // shallow copies are made with this output container name
-  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-
-  return EL::StatusCode::SUCCESS;
 }
 
 
@@ -204,10 +151,16 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("initialize()", "Failed to properly configure. Exiting." );
+  if ( m_inContainerName.empty() ) {
+    Error("initialize()", "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
+
+  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+  // shallow copies are made with this output container name
+  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+
 
   // Check if is MC
   //

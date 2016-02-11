@@ -98,7 +98,6 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode configure ();
   virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst );
 
   /// @cond

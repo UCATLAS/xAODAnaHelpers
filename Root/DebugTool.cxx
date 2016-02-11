@@ -31,9 +31,7 @@
 // external tools include(s):
 
 // ROOT include(s):
-#include "TEnv.h"
 #include "TFile.h"
-#include "TSystem.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(DebugTool)
