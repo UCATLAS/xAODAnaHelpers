@@ -338,6 +338,17 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   Info("initialize()", "Initializing BasicEventSelection... ");
 
+  // if truth level make sure parameters are set properly
+  if( m_truthLevelOnly ) {
+    Info("configure()", "Truth only! Turn off trigger stuff");
+    m_triggerSelection = "";
+    m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
+    Info("configure()", "Truth only! Turn off GRL");
+    m_applyGRLCut = false;
+    Info("configure()", "Truth only! Turn off Pile-up Reweight");
+    m_doPUreweighting = false;
+  }
+
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
