@@ -9,9 +9,6 @@
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-#include "TEnv.h"
-#include "TSystem.h"
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(ClusterHistsAlgo)
 
@@ -41,50 +38,16 @@ EL::StatusCode ClusterHistsAlgo :: histInitialize ()
   Info("histInitialize()", "%s", m_name.c_str() );
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", getConfig().c_str());
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
+  if( m_inContainerName.empty() || m_detailStr.empty() ){
+    Error("histInitialize()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
-  } else {
-    Info("histInitialize()", "Successfully configured! ");
   }
+
 
   // declare class and add histograms to output
   m_plots = new ClusterHists(m_name, m_detailStr);
   RETURN_CHECK("ClusterHistsAlgo::histInitialize()", m_plots -> initialize(), "");
   m_plots -> record( wk() );
-
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode ClusterHistsAlgo :: configure ()
-{
-  if(!getConfig().empty()){
-    // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(getConfig(true).c_str());
-
-    //
-    //  If Container Name is already set dont read it from the config
-    //   (Allows to pass as argument in setup script)
-    //
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    m_detailStr               = config->GetValue("DetailStr",       m_detailStr.c_str());
-    m_debug                   = config->GetValue("Debug" ,          m_debug);
-
-    Info("configure()", "Loaded in configuration values");
-
-    // everything seems preliminarily ok, let's print config and say we were successful
-    config->Print();
-
-    delete config;
-  }
-  std::cout << m_inContainerName << std::endl;
-  std::cout << m_detailStr << std::endl;
-  if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("configure()", "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
-  }
-
 
   return EL::StatusCode::SUCCESS;
 }
