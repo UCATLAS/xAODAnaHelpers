@@ -56,6 +56,10 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_nSCT; //!
     TH1F* m_trk_nPix; //!
     TH1F* m_trk_nPixHoles; //!
+    TH1F* m_trk_nPixDead; //!
+    TH1F* m_trk_nTRT; //!
+    // TH1F* m_trk_nTRTHoles; //!
+    // TH1F* m_trk_nTRTDead; //!
     TH1F* m_trk_nBL; //!
     TH1F* m_trk_phiErr; //!
     TH1F* m_trk_thetaErr; //!
