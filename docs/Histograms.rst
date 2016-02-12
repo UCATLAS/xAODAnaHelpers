@@ -36,6 +36,7 @@ This is a class that predefines all the histograms, defines the *execute* functi
 .. toctree::
    :maxdepth: 2
 
+   ClusterHists
    JetHists
    MetHists
    MuonHists
@@ -51,6 +52,7 @@ This is an EL Algorithm that incorporates the correspondingly-named class.
 .. toctree::
    :maxdepth: 2
 
+   ClusterHistsAlgo
    JetHistsAlgo
    MetHistsAlgo
    MuonHistsAlgo
