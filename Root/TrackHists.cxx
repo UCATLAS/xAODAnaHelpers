@@ -14,13 +14,15 @@ TrackHists :: ~TrackHists () {}
 StatusCode TrackHists::initialize() {
 
   // These plots are always made
-  m_trk_Pt        = book(m_name, "pt",          "trk p_{T} [GeV]",  100, 0, 10);
-  m_trk_Pt_l      = book(m_name, "pt_l",        "trk p_{T} [GeV]",  100, 0, 100);
-  m_trk_Eta       = book(m_name, "eta",         "trk #eta",         80, -4, 4);
-  m_trk_Phi       = book(m_name, "phi",         "trk Phi",120, -TMath::Pi(), TMath::Pi() );
-  m_trk_d0        = book(m_name, "d0",          "d0[mm]",   100,  -2.0, 2.0 );
-  m_trk_z0        = book(m_name, "z0",          "z0[mm]",   100,  -5.0, 5.0 );
-  m_trk_z0sinT    = book(m_name, "z0sinT",           "z0xsin(#theta)[mm]",             100,  -2.0, 2.0 );
+  m_trk_n         = book(m_name, "trk_n",       "trk multiplicity", 10, -0.5, 9.5 );
+
+  m_trk_Pt        = book(m_name, "pt",          "trk p_{T} [GeV]", 100, 0, 10 );
+  m_trk_Pt_l      = book(m_name, "pt_l",        "trk p_{T} [GeV]", 100, 0, 100 );
+  m_trk_Eta       = book(m_name, "eta",         "trk #eta", 80, -4, 4);
+  m_trk_Phi       = book(m_name, "phi",         "trk #phi",120, -TMath::Pi(), TMath::Pi() );
+  m_trk_d0        = book(m_name, "d0",          "d0[mm]", 100,-5.0, 5.0 );
+  m_trk_z0        = book(m_name, "z0",          "z0[mm]", 100,-5.0, 5.0 );
+  m_trk_z0sinT    = book(m_name, "z0sinT",      "z0xsin(#theta)[mm]", 100, -5.0, 5.0 );
 
   m_trk_chi2Prob  = book(m_name, "chi2Prob",    "chi2Prob", 100,   -0.01,     1.0);
   m_trk_charge    = book(m_name, "charge" ,     "charge",   3,  -1.5,  1.5   );
@@ -55,11 +57,14 @@ StatusCode TrackHists::initialize() {
     m_fillHitCounts = true;
     m_trk_nSi        = book(m_name, "nSi",        "nSi",         30,   -0.5, 29.5 );
     m_trk_nSiAndDead = book(m_name, "nSiAndDead", "nSi(+Dead)",  30,   -0.5, 29.5 );
-    m_trk_nSiDead    = book(m_name, "nSiDead",    "nSiDead",     10,   -0.5, 9.5 );
+    m_trk_nSiDead    = book(m_name, "nSiDead",    "nSiDead",     10,   -0.5,  9.5 );
     m_trk_nSCT       = book(m_name, "nSCT",       "nSCTHits",    20,   -0.5, 19.5 );
-    m_trk_nPix       = book(m_name, "nPix",       "nPix",        10,   -0.5, 9.5 );
-    m_trk_nPixHoles  = book(m_name, "nPixHoles",  "nPixHoles",   10,   -0.5, 9.5 );
+    m_trk_nPix       = book(m_name, "nPix",       "nPix",        10,   -0.5,  9.5 );
+    m_trk_nPixHoles  = book(m_name, "nPixHoles",  "nPixHoles",   10,   -0.5,  9.5 );
     m_trk_nBL        = book(m_name, "nBL",        "nBL",          3,   -0.5,  2.5 );
+    m_trk_nTRT       = book(m_name, "nTRT",       "nTRT",        50,   -0.5, 49.5 );
+    // m_trk_nTRTHoles  = book(m_name, "nTRTHoles",  "nTRTHoles",   50,   -0.5, 49.5 );
+    // m_trk_nTRTDead   = book(m_name, "nTRTDead",   "nTRTDead",    50,   -0.5, 49.5 );
   }
 
   //
@@ -127,6 +132,8 @@ StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const 
     RETURN_CHECK("TrackHists::execute()", this->execute( (*trk_itr), pvx, eventWeight ), "");
   }
 
+  m_trk_n -> Fill( trks->size(), eventWeight );
+
   return StatusCode::SUCCESS;
 }
 
@@ -180,6 +187,9 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     uint8_t nPixHoles = -1;
     uint8_t nSCT      = -1;
     uint8_t nSCTDead  = -1;
+    uint8_t nTRT      = -1;
+    uint8_t nTRTHoles = -1;
+    uint8_t nTRTDead  = -1;
 
     if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("TrackHists::execute()", "BLayer hits not filled");
     if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        Error("TrackHists::execute()", "Pix hits not filled");
@@ -187,6 +197,9 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       Error("TrackHists::execute()", "Pix holes not filled");
     if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          Error("TrackHists::execute()", "SCT hits not filled");
     if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   Error("TrackHists::execute()", "SCT Dead not filled");
+    if(!trk->summaryValue(nTRT,      xAOD::numberOfTRTHits))          Error("TrackHists::execute()", "TRT hits not filled");
+    // if(!trk->summaryValue(nTRTHoles, xAOD::numberOfTRTHoles))         Error("TrackHists::execute()", "TRT holes not filled");
+    // if(!trk->summaryValue(nTRTDead,  xAOD::numberOfTRTDeadStraws))    Error("TrackHists::execute()", "TRT Dead not filled");
 
     uint8_t nSi     = nPix     + nSCT;
     uint8_t nSiDead = nPixDead + nSCTDead;
@@ -197,6 +210,9 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     m_trk_nSCT       -> Fill( nSCT        , eventWeight );
     m_trk_nPix       -> Fill( nPix        , eventWeight );
     m_trk_nPixHoles  -> Fill( nPixHoles   , eventWeight );
+    m_trk_nTRT       -> Fill( nTRT        , eventWeight );
+    // m_trk_nTRTHoles  -> Fill( nTRTHoles   , eventWeight );
+    // m_trk_nTRTDead   -> Fill( nTRTDead    , eventWeight );
 
   }
 

@@ -21,11 +21,11 @@ public:
   // configuration variables
   std::string m_inContainerName;      // input container name
   std::string m_outContainerName;     // output container name
-  bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
-  bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
-  int  m_nToProcess;               // look at n objects
-  int m_pass_min;                 // minimum number of objects passing cuts
-  int m_pass_max;                 // maximum number of objects passing cuts
+  bool  m_decorateSelectedObjects; // decorate selected objects? defaul passSel
+  bool  m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
+  int   m_nToProcess;               // look at n objects
+  int   m_pass_min;                 // minimum number of objects passing cuts
+  int   m_pass_max;                 // maximum number of objects passing cuts
   float m_pT_max;                 // require pT < pt_max
   float m_pT_min;                 // require pT > pt_max
   float m_eta_max;                // require eta < eta_max
