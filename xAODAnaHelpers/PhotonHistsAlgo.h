@@ -26,10 +26,8 @@ public:
   // Tree *myTree; //!
   // TH1 *myHist; //!
 
-
-
   // this is a standard constructor
-  PhotonHistsAlgo ();
+  PhotonHistsAlgo (std::string className = "PhotonHistsAlgo");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -43,7 +41,6 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode configure ();
   EL::StatusCode AddHists( std::string name );
 
   /// @cond

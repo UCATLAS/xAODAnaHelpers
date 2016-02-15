@@ -14,13 +14,12 @@
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 
-#include "TEnv.h"
-#include "TSystem.h"
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(PhotonHistsAlgo)
 
-PhotonHistsAlgo :: PhotonHistsAlgo () {
+PhotonHistsAlgo :: PhotonHistsAlgo (std::string className) :
+    Algorithm(className)
+{
   m_inContainerName         = "";
   // which plots will be turned on
   m_detailStr               = "";
@@ -43,7 +42,7 @@ EL::StatusCode PhotonHistsAlgo :: histInitialize ()
 {
 
   Info("histInitialize()", "%s", m_name.c_str() );
-
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -59,36 +58,6 @@ EL::StatusCode PhotonHistsAlgo::AddHists( std::string name ) {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonHistsAlgo :: configure ()
-{
-  if(!getConfig().empty()){
-    // the file exists, use TEnv to read it off
-    TEnv* config = new TEnv(getConfig(true).c_str());
-    // input container to be read from TEvent or TStore
-    m_inContainerName         = config->GetValue("InputContainer",  m_inContainerName.c_str());
-    // which plots will be turned on
-    m_detailStr               = config->GetValue("DetailStr",       m_detailStr.c_str());
-    // name of algo input container comes from - only if
-    m_inputAlgo               = config->GetValue("InputAlgo",       m_inputAlgo.c_str());
-
-    m_debug                   = config->GetValue("Debug" ,           m_debug);
-
-    Info("configure()", "Loaded in configuration values");
-
-    // everything seems preliminarily ok, let's print config and say we were successful
-    config->Print();
-    delete config;
-  }
-
-  // in case anything was missing or blank...
-  if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("configure()", "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
-  }
-
-  return EL::StatusCode::SUCCESS;
-}
-
 EL::StatusCode PhotonHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
 EL::StatusCode PhotonHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
 
@@ -96,14 +65,12 @@ EL::StatusCode PhotonHistsAlgo :: initialize ()
 {
   Info("initialize()", m_name.c_str());
 
-  // needed here and not in initalize since this is called first
-  Info("histInitialize()", "Attempting to configure using: %s", m_configName.c_str());
-  if ( this->configure() == EL::StatusCode::FAILURE ) {
-    Error("histInitialize()", "%s failed to properly configure. Exiting.", m_name.c_str() );
+  // in case anything was missing or blank...
+  if( m_inContainerName.empty() || m_detailStr.empty() ){
+    Error("initialize()", "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
-  } else {
-    Info("histInitialize()", "Succesfully configured! ");
   }
+
 
   // only running 1 collection
   if(m_inputAlgo.empty()) { AddHists( "" ); }
@@ -125,11 +92,6 @@ EL::StatusCode PhotonHistsAlgo :: execute ()
   double eff    =wk()->metaData()->castDouble(SH::MetaFields::filterEfficiency,1);
   eventWeight *= xs * eff;
 
-  // get the highest sum pT^2 primary vertex location in the PV vector
-  const xAOD::VertexContainer* vertices(nullptr);
-  RETURN_CHECK("PhotonHistsAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
-  int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
-
   // this will hold the collection processed
   const xAOD::PhotonContainer* inPhotons = 0;
 
@@ -141,11 +103,11 @@ EL::StatusCode PhotonHistsAlgo :: execute ()
     /* two ways to fill */
 
     // 1. pass the photon collection
-    RETURN_CHECK("PhotonHistsAlgo::execute()", m_plots[""]->execute( inPhotons, eventWeight, pvLocation ), "");
+    RETURN_CHECK("PhotonHistsAlgo::execute()", m_plots[""]->execute( inPhotons, eventWeight ), "");
 
     /* 2. loop over the photons
        for( auto photon_itr : *inPhotons ) {
-       m_plots[""]->execute( photon_itr, eventWeight, pvLocation );
+       m_plots[""]->execute( photon_itr, eventWeight );
        }
     */
 
@@ -160,7 +122,7 @@ EL::StatusCode PhotonHistsAlgo :: execute ()
     for( auto systName : *systNames ) {
       RETURN_CHECK("PhotonHistsAlgo::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
       if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
-      RETURN_CHECK("PhotonHistsAlgo::execute()", m_plots[systName]->execute( inPhotons, eventWeight, pvLocation ), "");
+      RETURN_CHECK("PhotonHistsAlgo::execute()", m_plots[systName]->execute( inPhotons, eventWeight ), "");
     }
 
   }
@@ -180,4 +142,7 @@ EL::StatusCode PhotonHistsAlgo :: finalize () {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonHistsAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode PhotonHistsAlgo :: histFinalize () {
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  return EL::StatusCode::SUCCESS;
+}

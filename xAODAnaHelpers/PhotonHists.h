@@ -15,8 +15,8 @@ class PhotonHists : public IParticleHists
     virtual ~PhotonHists() ;
 
     StatusCode initialize();
-    StatusCode execute( const xAOD::PhotonContainer* photons, float eventWeight, int pvLoc = -1);
-    StatusCode execute( const xAOD::Photon* photon, float eventWeight, int pvLoc = -1 );
+    StatusCode execute( const xAOD::PhotonContainer* photons, float eventWeight);
+    StatusCode execute( const xAOD::Photon* photon, float eventWeight);
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 

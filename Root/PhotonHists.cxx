@@ -33,18 +33,18 @@ StatusCode PhotonHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode PhotonHists::execute( const xAOD::PhotonContainer* photons, float eventWeight, int pvLoc ) {
-  IParticleHists::execute(photons, eventWeight, pvLoc);
+StatusCode PhotonHists::execute( const xAOD::PhotonContainer* photons, float eventWeight ) {
+  IParticleHists::execute(photons, eventWeight);
 
   for( auto photon_itr : *photons ) {
-    RETURN_CHECK("PhotonHists::execute()", this->execute( photon_itr, eventWeight, pvLoc ), "");
+    RETURN_CHECK("PhotonHists::execute()", this->execute( photon_itr, eventWeight ), "");
   }
 
   return StatusCode::SUCCESS;
 }
 
-StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight, int pvLoc ) {
-  IParticleHists::execute(photon, eventWeight, pvLoc);
+StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight ) {
+  IParticleHists::execute(photon, eventWeight);
 
   if(m_debug) std::cout << "in execute " <<std::endl;
 
