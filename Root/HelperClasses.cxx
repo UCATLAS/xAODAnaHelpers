@@ -144,7 +144,7 @@ namespace HelperClasses{
   }
 
   void JetInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
+    IParticleInfoSwitch::initialize();
     m_substructure  = has_exact("substructure");
     m_rapidity      = has_exact("rapidity");
     m_clean         = has_exact("clean");
@@ -236,14 +236,6 @@ namespace HelperClasses{
       }
     } // sfFTagFlt
     m_area          = has_exact("area");
-    if( has_match("LeadingJets") ){
-      m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );
-      if (m_numLeadingJets == 0){ //Perhaps infoSwitches are combined and Njets < 10
-        m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-1 , 1)).c_str() );
-      }
-    }else{
-      m_numLeadingJets = 0;
-    }
   }
 
   void TruthInfoSwitch::initialize(){

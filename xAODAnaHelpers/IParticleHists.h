@@ -4,13 +4,13 @@
 #include "xAODAnaHelpers/HistogramManager.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 
-#include "xAODBase/IParticleContainer.h"
+#include <xAODBase/IParticleContainer.h>
 
 class IParticleHists : public HistogramManager
 {
   public:
 
-  IParticleHists(std::string name, std::string detailStr, std::string prefix, std::string title);
+    IParticleHists(std::string name, std::string detailStr, std::string prefix="", std::string title="");
     virtual ~IParticleHists() ;
 
     bool m_debug;

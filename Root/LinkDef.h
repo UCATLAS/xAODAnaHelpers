@@ -30,6 +30,7 @@
 #include <xAODAnaHelpers/BJetEfficiencyCorrector.h>
 
 /* Plotting Tools */
+#include <xAODAnaHelpers/IParticleHistsAlgo.h>
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/MuonHistsAlgo.h>
 #include <xAODAnaHelpers/PhotonHistsAlgo.h>
@@ -80,6 +81,7 @@
 #pragma link C++ class MuonEfficiencyCorrector+;
 #pragma link C++ class BJetEfficiencyCorrector+;
 
+#pragma link C++ class IParticleHistsAlgo+;
 #pragma link C++ class JetHistsAlgo+;
 #pragma link C++ class MuonHistsAlgo+;
 #pragma link C++ class PhotonHistsAlgo+;

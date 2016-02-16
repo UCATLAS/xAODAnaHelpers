@@ -2,6 +2,8 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+#include <SampleHandler/MetaFields.h>
+
 #include <xAODJet/JetContainer.h>
 #include <xAODTracking/VertexContainer.h>
 #include <xAODEventInfo/EventInfo.h>
@@ -84,6 +86,9 @@ EL::StatusCode JetHistsAlgo :: execute ()
   if( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
     eventWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
   }
+  double xs     =wk()->metaData()->castDouble(SH::MetaFields::crossSection    ,1);
+  double eff    =wk()->metaData()->castDouble(SH::MetaFields::filterEfficiency,1);
+  eventWeight *= xs * eff;
 
   // get the highest sum pT^2 primary vertex location in the PV vector
   const xAOD::VertexContainer* vertices(nullptr);

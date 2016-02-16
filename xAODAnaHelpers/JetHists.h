@@ -1,12 +1,12 @@
 #ifndef xAODAnaHelpers_JetHists_H
 #define xAODAnaHelpers_JetHists_H
 
-#include "xAODAnaHelpers/HistogramManager.h"
+#include "xAODAnaHelpers/IParticleHists.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/TracksInJetHists.h"
 #include <xAODJet/JetContainer.h>
 
-class JetHists : public HistogramManager
+class JetHists : public IParticleHists
 {
   public:
 
@@ -14,13 +14,11 @@ class JetHists : public HistogramManager
     JetHists(std::string name, std::string detailStr);
     virtual ~JetHists() ;
 
-    bool m_debug;
     StatusCode initialize();
     StatusCode execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc = -1);
     StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
-    virtual void record(EL::Worker* wk);
     
   protected:
 
@@ -28,27 +26,6 @@ class JetHists : public HistogramManager
     HelperClasses::JetInfoSwitch* m_infoSwitch;
 
   private:
-
-    //basic
-    TH1F* m_jetPt;                  //!
-    TH1F* m_jetEta;                 //!
-    TH1F* m_jetPhi;                 //!
-    TH1F* m_jetM;                   //!
-    TH1F* m_jetE;                   //!
-    TH1F* m_jetRapidity;            //!
-
-    // kinematic
-    TH1F* m_jetPx;                  //!
-    TH1F* m_jetPy;                  //!
-    TH1F* m_jetPz;                  //!
-
-    //NLeadingJets
-    std::vector< TH1F* > m_NjetsPt;       //!
-    std::vector< TH1F* > m_NjetsEta;      //!
-    std::vector< TH1F* > m_NjetsPhi;      //!
-    std::vector< TH1F* > m_NjetsM;        //!
-    std::vector< TH1F* > m_NjetsE;        //!
-    std::vector< TH1F* > m_NjetsRapidity; //!
 
     // clean
     TH1F* m_jetTime;                //!

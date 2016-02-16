@@ -292,7 +292,7 @@ namespace HelperClasses {
 
   /**
     @rst
-        The :cpp:class:`HelperClasses::InfoSwitch` struct for Photon Information.
+        The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Photon Information.
 
         ============== ============ =======
         Parameter      Pattern      Match
@@ -314,12 +314,11 @@ namespace HelperClasses {
 
   /**
     @rst
-        The :cpp:class:`HelperClasses::InfoSwitch` struct for Jet Information.
+        The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Jet Information.
 
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
-        m_kinematic      kinematic      exact
         m_substructure   substructure   exact
         m_rapidity       rapidity       exact
         m_clean          clean          exact
@@ -341,7 +340,6 @@ namespace HelperClasses {
         m_sfFTagFix      sfFTagFix      partial
         m_sfFTagFlt      sfFTagFlt      partial
         m_area           area           exact
-        m_numLeadingJets LeadingJets    partial
         m_tracksInJet    tracksInJet    partial
         ================ ============== =======
 
@@ -354,22 +352,11 @@ namespace HelperClasses {
 
             will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
 
-        .. note::
-            ``m_numLeadingJets`` requires a number ``XX`` to preceed it defining the number of leading jets and associate it with that variable.
-
-            For example::
-
-                m_configStr = "... 4LeadingJets ..."
-
-            will define :code:`int m_numLeadingJets = 4`.
-
-
     @endrst
 
    */
-  class JetInfoSwitch : public InfoSwitch {
+  class JetInfoSwitch : public IParticleInfoSwitch {
   public:
-    bool m_kinematic;
     bool m_substructure;
     bool m_rapidity;
     bool m_clean;
@@ -393,13 +380,13 @@ namespace HelperClasses {
     bool m_ipDetails;
     bool m_tracksInJet;
     bool m_area;
-    int  m_numLeadingJets;
     std::string      m_trackName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
-    JetInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+    virtual ~JetInfoSwitch() {}
   protected:
-    void initialize();
+    virtual void initialize();
   };
 
   /**

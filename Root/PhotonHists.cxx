@@ -1,9 +1,8 @@
 #include <xAODAnaHelpers/PhotonHists.h>
 #include <sstream>
 
+#include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/tools/ReturnCheck.h"
-
-using std::vector;
 
 PhotonHists :: PhotonHists (std::string name, std::string detailStr) :
   IParticleHists(name, detailStr, "photon", "photon"),
@@ -15,7 +14,7 @@ PhotonHists :: ~PhotonHists () {
 }
 
 StatusCode PhotonHists::initialize() {
-  IParticleHists::initialize();
+  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
 
   // // details for jet cleaning
   // if( m_infoSwitch->m_clean ) {
@@ -34,17 +33,16 @@ StatusCode PhotonHists::initialize() {
 }
 
 StatusCode PhotonHists::execute( const xAOD::PhotonContainer* photons, float eventWeight ) {
-  IParticleHists::execute(photons, eventWeight);
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(photons, eventWeight), "");
 
-  for( auto photon_itr : *photons ) {
+  for( auto photon_itr : *photons )
     RETURN_CHECK("PhotonHists::execute()", this->execute( photon_itr, eventWeight ), "");
-  }
 
   return StatusCode::SUCCESS;
 }
 
 StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight ) {
-  IParticleHists::execute(photon, eventWeight);
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(photon, eventWeight), "");
 
   if(m_debug) std::cout << "in execute " <<std::endl;
 
