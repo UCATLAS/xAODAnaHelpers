@@ -74,9 +74,6 @@ private:
   bool m_isMC;            //!
   bool m_isFullSim;       //!
 
-  std::string m_outSCContainerName;     //!
-  std::string m_outSCAuxContainerName;  //!
-
   std::vector<CP::SystematicSet> m_systList; //!
   std::vector<int> m_systType; //!
 
