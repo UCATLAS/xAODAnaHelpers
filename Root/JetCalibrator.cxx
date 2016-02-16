@@ -576,8 +576,6 @@ EL::StatusCode JetCalibrator :: execute ()
   // add vector of systematic names to TStore
   RETURN_CHECK( "JetCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
-  // Store nominal if it has not been saved yet
-
   // look what do we have in TStore
 
   if ( m_verbose ) { m_store->print(); }
