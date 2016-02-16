@@ -68,9 +68,7 @@
               # ...
          }
 
-      In this way the overlap removal algorithm will be able to correctly work out all the combinatorics, generating output :cpp:any:`xAOD` containers for jets and electrons for each input systematics combination to be subsequently used downstream according to the user's needs.
-
-      .. note:: The overlap removal algorithm is *not* designed to create any output systematic list. All the algorithms downstream must be configured to pick up the systematic list(s) from upstream algorithms (e.g., the selectors or the calibrators).
+      In this way the overlap removal algorithm will be able to correctly work out all the combinatorics, generating output :cpp:any:`xAOD` containers for jets and electrons for each input systematics combination to be subsequently used downstream according to the user's needs. The overlap removal algorithm creates an output systematic list that is a combination of systematics from all input containers.
 
    @endrst
  */
@@ -96,6 +94,9 @@ public:
   /** @brief In the OLR, consider only objects passing a (pre)selection */
   bool     m_useSelected;
 
+  /** @brief Output systematics list container name */
+  std::string  m_outputAlgo;
+
   /** @brief Input container name */
   std::string  m_inContainerName_Electrons;
   /** @brief Output container name */
@@ -106,36 +107,23 @@ public:
      @endrst
   */
   std::string  m_inputAlgoElectrons;
-  /**
-     @rst
-        Name of the :cpp:type:`std::vector<std::string>` of systematics to be considered by the algos downstream
-
-	.. note:: This data member is currently kept only to preserve backwards compatibility in terms of algorithm configuration. In fact, it's just a dummy variable, since the OLR is not expected to create any output systematics list.
-
-     @endrst
-  */
-  std::string  m_outputAlgoElectrons;
 
   // Muons
   std::string  m_inContainerName_Muons;
   std::string  m_outContainerName_Muons;
   std::string  m_inputAlgoMuons;
-  std::string  m_outputAlgoMuons;
   // Jets
   std::string  m_inContainerName_Jets;
   std::string  m_outContainerName_Jets;
   std::string  m_inputAlgoJets;
-  std::string  m_outputAlgoJets;
   // Photons
   std::string  m_inContainerName_Photons;
   std::string  m_outContainerName_Photons;
   std::string  m_inputAlgoPhotons;
-  std::string  m_outputAlgoPhotons;
   // Taus
   std::string  m_inContainerName_Taus;
   std::string  m_outContainerName_Taus;
   std::string  m_inputAlgoTaus;
-  std::string  m_outputAlgoTaus;
 
 private:
 
@@ -149,6 +137,8 @@ private:
   int m_weightNumEventPass; //!
   /** @brief A counter for the number of passed objects */
   int m_numObjectPass;      //!
+  /** @brief Container to be filled by executeOR with combined systematics */
+  std::vector<std::string> *m_vecOutContainerNames; //!
 
   /**
      @brief Consider electrons in the OLR
