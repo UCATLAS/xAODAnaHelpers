@@ -1,7 +1,6 @@
 #ifndef xAODAnaHelpers_PhotonHistsAlgo_H
 #define xAODAnaHelpers_PhotonHistsAlgo_H
 
-// algorithm wrapper
 #include "xAODAnaHelpers/IParticleHistsAlgo.h"
 
 class PhotonHistsAlgo : public IParticleHistsAlgo

@@ -74,13 +74,12 @@ StatusCode IParticleHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode IParticleHists::execute( const xAOD::IParticleContainer* particles, float eventWeight, int pvLoc ) {
+StatusCode IParticleHists::execute( const xAOD::IParticleContainer* particles, float eventWeight) {
   for( auto particle_itr : *particles ) {
-    RETURN_CHECK("IParticleHists::execute()", this->execute( particle_itr, eventWeight, pvLoc ), "");
+    RETURN_CHECK("IParticleHists::execute()", this->execute( particle_itr, eventWeight), "");
   }
 
   if( m_infoSwitch->m_numLeading > 0){
-
     int numParticles = std::min( m_infoSwitch->m_numLeading, (int)particles->size() );
     for(int iParticle=0; iParticle < numParticles; ++iParticle){
       m_NPt.at(iParticle)->        Fill( particles->at(iParticle)->pt()/1e3,   eventWeight);
@@ -95,7 +94,7 @@ StatusCode IParticleHists::execute( const xAOD::IParticleContainer* particles, f
   return StatusCode::SUCCESS;
 }
 
-StatusCode IParticleHists::execute( const xAOD::IParticle* particle, float eventWeight, int /*pvLoc*/ ) {
+StatusCode IParticleHists::execute( const xAOD::IParticle* particle, float eventWeight) {
 
   if(m_debug) std::cout << "in execute " <<std::endl;
 

@@ -14,9 +14,9 @@ class IParticleHists : public HistogramManager
     virtual ~IParticleHists() ;
 
     bool m_debug;
-    StatusCode initialize();
-    StatusCode execute( const xAOD::IParticleContainer* particles, float eventWeight, int pvLoc = -1);
-    StatusCode execute( const xAOD::IParticle* particle, float eventWeight, int pvLoc = -1 );
+    virtual StatusCode initialize();
+    StatusCode execute( const xAOD::IParticleContainer* particles, float eventWeight );
+    virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight );
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 

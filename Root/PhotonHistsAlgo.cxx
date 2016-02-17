@@ -3,8 +3,6 @@
 #include <EventLoop/Worker.h>
 
 #include <xAODEgamma/PhotonContainer.h>
-#include <xAODEventInfo/EventInfo.h>
-#include <AthContainers/ConstDataVector.h>
 
 #include <xAODAnaHelpers/PhotonHistsAlgo.h>
 #include <xAODAnaHelpers/PhotonHists.h>
