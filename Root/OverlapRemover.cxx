@@ -73,46 +73,27 @@ OverlapRemover :: OverlapRemover (std::string className) :
 
   // input container(s) to be read from TEvent or TStore
 
+  m_outputAlgo                  = "OR_Algo";                   // name of vector<string> of combined syst pushed in TStore. 
+
   /* Muons */
   m_inContainerName_Muons       = "";
   m_inputAlgoMuons              = "";  // name of vector<string> of syst retrieved from TStore
-  m_outputAlgoMuons             = "MuonCollection_OR_Algo";    // name of vector<string> of syst pushed in TStore
-                                                               // NB: This is practically useless for the OR, since OR does not skim events
-                                                               // (unlike the Selectors)!
-                                                               // --> output syst set will be equal to input syst set, no matter what.
-                                                               // KEEP THIS ATTRIBUTE ONLY FOR BW COMPATIBILITY
 
   /* Electrons */
   m_inContainerName_Electrons   = "";
   m_inputAlgoElectrons          = "";  // name of vector<string> of syst retrieved from TStore
-  m_outputAlgoElectrons         = "ElectronCollection_OR_Algo";    // name of vector<string> of syst pushed in TStore
-                                                                   // NB: This is practically useless for the OR, since OR does not skim events
-                                                                   // (unlike the Selectors)!
-                                                                   // --> output syst set will be equal to input syst set, no matter what.
-                                                                   // KEEP THIS ATTRIBUTE ONLY FOR BW COMPATIBILITY
 
   /* Jets */
   m_inContainerName_Jets        = "";
   m_inputAlgoJets               = "";  // name of vector<string> of syst retrieved from TStore
-  m_outputAlgoJets              = "JetCollection_OR_Algo";    // name of vector<string> of syst pushed in TStore
-                                                              // NB: This is practically useless for the OR, since OR does not skim events
-                                                              // (unlike the Selectors)!
-                                                              // --> output syst set will be equal to input syst set, no matter what.
-                                                              // KEEP THIS ATTRIBUTE ONLY FOR BW COMPATIBILITY
 
   /* Photons */
   m_inContainerName_Photons     = "";
   m_inputAlgoPhotons            = "";  // name of vector<string> of syst retrieved from TStore
-  m_outputAlgoPhotons           = "PhotonCollection_OR_Algo";    // name of vector<string> of syst pushed in TStore
 
   /* Taus */
   m_inContainerName_Taus        = "";
   m_inputAlgoTaus               = "";  // name of vector<string> of syst retrieved from TStore
-  m_outputAlgoTaus              = "TauCollection_OR_Algo";    // name of vector<string> of syst pushed in TStore
-                                                              // NB: This is practically useless for the OR, since OR does not skim events
-                                                              // (unlike the Selectors)!
-                                                              // --> output syst set will be equal to input syst set, no matter what.
-                                                              // KEEP THIS ATTRIBUTE ONLY FOR BW COMPATIBILITY
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects     = true;
@@ -276,6 +257,9 @@ EL::StatusCode OverlapRemover :: execute ()
   const xAOD::PhotonContainer* inPhotons     (nullptr);
   const xAOD::TauJetContainer* inTaus        (nullptr);
 
+  // syst container name 
+  m_vecOutContainerNames = new std::vector< std::string >;
+
   // --------------------------------------------------------------------------------------------
   //
   // always run the nominal case
@@ -385,6 +369,9 @@ EL::StatusCode OverlapRemover :: execute ()
     executeOR(inElectrons, inMuons, inJets, inPhotons, inTaus, TAUSYST, systNames_tau);
 
   }
+
+  // save list of systs that should be considered down stream
+  RETURN_CHECK( "OverlapRemover::execute()", m_store->record( m_vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
   if ( m_verbose ) { m_store->print(); }
@@ -653,6 +640,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         if ( m_useTaus )     { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus ), "Failed to store const data container"); }
       }
 
+      m_vecOutContainerNames->push_back("");
       break;
     }
  case ELSYST : // electron syst
@@ -756,6 +744,8 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_usePhotons ){ RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons, m_outContainerName_Photons + systName ), "Failed to store const data container"); }
           if ( m_useTaus )   { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
         }
+
+	m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Electrons)
 
       break;
@@ -862,6 +852,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
         }
 
+	m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Muons)
 
       break;
@@ -970,6 +961,8 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 	   if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons, m_outContainerName_Photons + systName ), "Failed to store const data container"); }
 	   if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
 	 }
+
+	m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Jets)
 
       break;
@@ -977,15 +970,10 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
  case PHSYST : // photon systematics
     {
       if ( m_debug ) { Info("execute()",  "Doing  photon systematics"); }
-      // prepare a vector of the names of CDV containers
-      // must be a pointer to be recorded in TStore
-      // for now just copy the one you just retrieved in it!
-      //
-      std::vector< std::string >* vecOutContainerNames_photon = new std::vector< std::string >(*sysVec);
       // just to check everything is fine
       if ( m_debug ) {
-        Info("execute()","output vector already contains the following PHOTON systematics:" );
-        for ( auto it : *vecOutContainerNames_photon) { Info("execute()" ,"\t %s ", it.c_str());  }
+        Info("execute()","will consider the following PHOTON systematics:" );
+        for ( auto it : *sysVec ) { Info("execute()" ,"\t %s ", it.c_str());  }
       }
 
       // these input containers won't change in the photon syst loop ...
@@ -1069,11 +1057,9 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons,   m_outContainerName_Photons + systName ), "Failed to store const data container");
           if ( m_useTaus )    { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
         }
-      } // close loop on systematic sets available from upstream algo (Photons)
 
-      // add vector<string container_names_syst> to TStore
-      //
-      RETURN_CHECK( "OverlapRemover::execute()", m_store->record( vecOutContainerNames_photon, m_outputAlgoPhotons ), "Failed to record vector of output container names.");
+	m_vecOutContainerNames->push_back(systName);
+      } // close loop on systematic sets available from upstream algo (Photons)
 
       break;
     }
@@ -1170,6 +1156,8 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_usePhotons )  { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons,   m_outContainerName_Photons + systName ), "Failed to store const data container"); }
           RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container");
         }
+
+	m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Taus)
 
       break;
