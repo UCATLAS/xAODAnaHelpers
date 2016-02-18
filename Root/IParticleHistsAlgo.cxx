@@ -44,7 +44,14 @@ EL::StatusCode IParticleHistsAlgo :: histInitialize ()
 }
 
 EL::StatusCode IParticleHistsAlgo::AddHists( std::string name ) {
-  return AddHists<IParticleHists>(name);
+  std::string fullname(m_name);
+  fullname += name; // add systematic
+  IParticleHists* particleHists = new IParticleHists( fullname, m_detailStr, m_histPrefix, m_histTitle ); // add systematic
+  RETURN_CHECK((m_name+"::AddHists").c_str(), particleHists->initialize(), "");
+  particleHists->record( wk() );
+  m_plots[name] = particleHists;
+
+  return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode IParticleHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
