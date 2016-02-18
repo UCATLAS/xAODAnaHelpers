@@ -314,7 +314,26 @@ if __name__ == "__main__":
               else:
                 raise Exception("What just happened?")
         else:
-          ROOT.SH.readFileList(sh_all, "sample", fname)
+          # Sample name
+          sname='.'.join(os.path.basename(fname).split('.')[:-1]) # input filelist name without extension
+          # Read settings
+          fcname=sname+'.config' # replace .txt with .config
+          config={}
+          if os.path.exists(fcname): # load configuration if it exists
+            with open(fcname, 'r') as f:
+              for line in f:
+                line=line.strip()
+                parts=line.split('=')
+                if len(parts)!=2: continue
+                config[parts[0].strip()]=parts[1].strip()
+          xsec   =float(config.get('xsec'   ,1))
+          filteff=float(config.get('filteff',1))
+          nEvents=float(config.get('nEvents',1))
+
+          ROOT.SH.readFileList(sh_all, sname, fname)
+          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.crossSection    ,xsec)
+          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.filterEfficiency,filteff)
+          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.numEvents       ,nEvents)
       else:
 
         if args.use_scanDQ2:
