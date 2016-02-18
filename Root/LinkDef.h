@@ -32,7 +32,9 @@
 /* Plotting Tools */
 #include <xAODAnaHelpers/IParticleHistsAlgo.h>
 #include <xAODAnaHelpers/JetHistsAlgo.h>
+#include <xAODAnaHelpers/ElectronHistsAlgo.h>
 #include <xAODAnaHelpers/MuonHistsAlgo.h>
+#include <xAODAnaHelpers/TauHistsAlgo.h>
 #include <xAODAnaHelpers/PhotonHistsAlgo.h>
 #include <xAODAnaHelpers/MetHistsAlgo.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
@@ -83,7 +85,9 @@
 
 #pragma link C++ class IParticleHistsAlgo+;
 #pragma link C++ class JetHistsAlgo+;
+#pragma link C++ class ElectronHistsAlgo+;
 #pragma link C++ class MuonHistsAlgo+;
+#pragma link C++ class TauHistsAlgo+;
 #pragma link C++ class PhotonHistsAlgo+;
 #pragma link C++ class MetHistsAlgo+;
 #pragma link C++ class TrackHistsAlgo+;

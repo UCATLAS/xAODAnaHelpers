@@ -228,12 +228,11 @@ namespace HelperClasses {
 
   /**
     @rst
-        The :cpp:class:`HelperClasses::InfoSwitch` struct for Muon Information.
+        The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Muon Information.
 
         ============== ============ =======
         Parameter      Pattern      Match
         ============== ============ =======
-        m_kinematic    kinematic    exact
         m_trigger      trigger      exact
         m_isolation    isolation    exact
         m_quality      quality      exact
@@ -244,9 +243,8 @@ namespace HelperClasses {
         ============== ============ =======
     @endrst
    */
-  class MuonInfoSwitch : public InfoSwitch {
+  class MuonInfoSwitch : public IParticleInfoSwitch {
   public:
-    bool m_kinematic;
     bool m_trigger;
     bool m_isolation;
     bool m_quality;
@@ -254,19 +252,19 @@ namespace HelperClasses {
     bool m_trackhitcont;
     bool m_effSF;
     bool m_energyLoss;
-    MuonInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    MuonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+    virtual ~MuonInfoSwitch() {}
   protected:
-    void initialize();
+    virtual void initialize();
   };
 
   /**
     @rst
-        The :cpp:class:`HelperClasses::InfoSwitch` struct for Electron Information.
+        The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Electron Information.
 
         ============== ============ =======
         Parameter      Pattern      Match
         ============== ============ =======
-        m_kinematic    kinematic    exact
         m_trigger      trigger      exact
         m_isolation    isolation    exact
         m_PID          PID          exact
@@ -276,18 +274,18 @@ namespace HelperClasses {
         ============== ============ =======
     @endrst
    */
-  class ElectronInfoSwitch : public InfoSwitch {
+  class ElectronInfoSwitch : public IParticleInfoSwitch {
   public:
-    bool m_kinematic;
     bool m_trigger;
     bool m_isolation;
     bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
-    ElectronInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+    virtual ~ElectronInfoSwitch() {}
   protected:
-    void initialize();
+    virtual void initialize();
   };
 
   /**
@@ -410,25 +408,24 @@ namespace HelperClasses {
 
   /**
     @rst
-        The :cpp:class:`HelperClasses::InfoSwitch` struct for Tau Information.
+        The :cpp:class:`HelperClasses::IParticleInfoSwitch` struct for Tau Information.
 
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
-        m_kinematic      kinematic      exact
         m_trackparams    trackparams    exact
         m_trackhitcont   trackhitcont   exact
         ================ ============== =======
     @endrst
    */
-  class TauInfoSwitch : public InfoSwitch {
+  class TauInfoSwitch : public IParticleInfoSwitch {
   public:
-    bool m_kinematic;
     bool m_trackparams;
     bool m_trackhitcont;
-    TauInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    TauInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+    virtual ~TauInfoSwitch() { }
   protected:
-    void initialize();
+    virtual void initialize();
   };
 
   /**

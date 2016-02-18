@@ -15,33 +15,16 @@
 using std::vector;
 
 MuonHists :: MuonHists (std::string name, std::string detailStr) :
-  HistogramManager(name, detailStr),
+  IParticleHists(name, detailStr, "muon", "muon"),
   m_infoSwitch(new HelperClasses::MuonInfoSwitch(m_detailStr))
-{
-  m_debug = false;
-}
+{ }
 
 MuonHists :: ~MuonHists () {
   if(m_infoSwitch) delete m_infoSwitch;
 }
 
 StatusCode MuonHists::initialize() {
-
-  // These plots are always made
-  m_Pt          = book(m_name, "muonPt",  "muon p_{T} [GeV]", 120, 0, 200.);
-  m_Eta         = book(m_name, "muonEta", "muon #eta",         80, -4, 4);
-  m_Phi         = book(m_name, "muonPhi", "muon Phi",120, -TMath::Pi(), TMath::Pi() );
-  m_M           = book(m_name, "muonMass", "muon Mass [GeV]",50, 0, 0.2);
-  m_E           = book(m_name, "muonEnergy", "muon Energy [GeV]",120, 0, 4000.);
-
-  if(m_debug) Info("MuonHists::initialize()", m_name.c_str());
-  // details of the muon kinematics
-  if( m_infoSwitch->m_kinematic ) {
-    if(m_debug) Info("MuonHists::initialize()", "adding kinematic plots");
-    m_Px     = book(m_name, "muonPx",     "muon Px [GeV]",     120, 0, 1000);
-    m_Py     = book(m_name, "muonPy",     "muon Py [GeV]",     120, 0, 1000);
-    m_Pz     = book(m_name, "muonPz",     "muon Pz [GeV]",     120, 0, 4000);
-  }
+  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
 
   // Isolation
   if(m_infoSwitch->m_isolation){
@@ -84,32 +67,9 @@ StatusCode MuonHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode MuonHists::execute( const xAOD::MuonContainer* muons, float eventWeight ) {
-  for( auto muon_itr : *muons ) {
-    RETURN_CHECK("MuonHists::execute()", this->execute( muon_itr, eventWeight ), "");
-  }
-
-  return StatusCode::SUCCESS;
-}
-
 StatusCode MuonHists::execute( const xAOD::Muon* muon, float eventWeight) {
-
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(muon, eventWeight), "");
   if(m_debug) std::cout << "in execute " <<std::endl;
-
-  //basic
-  m_Pt ->        Fill( muon->pt()/1e3,    eventWeight );
-  m_Eta->        Fill( muon->eta(),       eventWeight );
-  m_Phi->        Fill( muon->phi(),       eventWeight );
-  m_M->          Fill( muon->m()/1e3,     eventWeight );
-  m_E->          Fill( muon->e()/1e3,     eventWeight );
-
-  // kinematic
-  if( m_infoSwitch->m_kinematic ) {
-    m_Px->  Fill( muon->p4().Px()/1e3,  eventWeight );
-    m_Py->  Fill( muon->p4().Py()/1e3,  eventWeight );
-    m_Pz->  Fill( muon->p4().Pz()/1e3,  eventWeight );
-  } // fillKinematic
-
 
   if ( m_infoSwitch->m_isolation ) {
 

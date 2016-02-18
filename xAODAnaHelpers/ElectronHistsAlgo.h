@@ -1,9 +1,9 @@
-#ifndef xAODAnaHelpers_MuonHistsAlgo_H
-#define xAODAnaHelpers_MuonHistsAlgo_H
+#ifndef xAODAnaHelpers_ElectronHistsAlgo_H
+#define xAODAnaHelpers_ElectronHistsAlgo_H
 
 #include "xAODAnaHelpers/IParticleHistsAlgo.h"
 
-class MuonHistsAlgo : public IParticleHistsAlgo
+class ElectronHistsAlgo : public IParticleHistsAlgo
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
@@ -17,7 +17,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  MuonHistsAlgo (std::string className = "MuonHistsAlgo");
+  ElectronHistsAlgo (std::string className = "ElectronHistsAlgo");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -28,7 +28,7 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(MuonHistsAlgo, 1);
+  ClassDef(ElectronHistsAlgo, 1);
   /// @endcond
 
 };

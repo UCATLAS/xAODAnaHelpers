@@ -69,13 +69,13 @@ public:
     if( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
       eventWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
     }
-    if(isMC())
-      {
-	double xs     =wk()->metaData()->castDouble(SH::MetaFields::crossSection    ,1);
-	double eff    =wk()->metaData()->castDouble(SH::MetaFields::filterEfficiency,1);
-	double kfac   =wk()->metaData()->castDouble(SH::MetaFields::kfactor         ,1);
-	eventWeight *= xs * eff * kfac;
-      }
+    // if(isMC())
+    //   {
+    // 	double xs     =wk()->metaData()->castDouble(SH::MetaFields::crossSection    ,1);
+    // 	double eff    =wk()->metaData()->castDouble(SH::MetaFields::filterEfficiency,1);
+    // 	double kfac   =wk()->metaData()->castDouble(SH::MetaFields::kfactor         ,1);
+    // 	eventWeight *= xs * eff * kfac;
+    //   }
 
     // this will hold the collection processed
     const CONT_T* inParticles = 0;
