@@ -21,6 +21,10 @@ public:
   std::string m_inContainerName;
   std::string m_detailStr;
   std::string m_inputAlgo;
+  /** Histogram name prefix when using IParticleHistsAlgo directly */
+  std::string m_histPrefix;
+  /** Histogram xaxis title when using IParticleHistsAlgo directly */
+  std::string m_histTitle;
 
 private:
   std::map< std::string, IParticleHists* > m_plots; //!
