@@ -102,8 +102,22 @@ namespace HelperClasses{
     m_clean         = has_exact("clean");
   }
 
-  void MuonInfoSwitch::initialize(){
+  void IParticleInfoSwitch::initialize(){
     m_kinematic     = has_exact("kinematic");
+
+    m_numLeading    = 0;
+    for(auto configDetail : m_configDetails)
+      {
+	if( configDetail.compare(0,8,"NLeading")==0) 
+	  {
+	    m_numLeading = std::atoi( configDetail.substr(8, std::string::npos).c_str() );
+	    break;
+	  }
+      }
+  }
+
+  void MuonInfoSwitch::initialize(){
+    IParticleInfoSwitch::initialize();
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
     m_quality       = has_exact("quality");
@@ -114,7 +128,7 @@ namespace HelperClasses{
   }
 
   void ElectronInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
+    IParticleInfoSwitch::initialize();
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
     m_PID           = has_exact("PID");
@@ -124,13 +138,13 @@ namespace HelperClasses{
   }
 
   void PhotonInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
+    IParticleInfoSwitch::initialize();
     m_isolation     = has_exact("isolation");
     m_PID           = has_exact("PID");
   }
 
   void JetInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
+    IParticleInfoSwitch::initialize();
     m_substructure  = has_exact("substructure");
     m_rapidity      = has_exact("rapidity");
     m_clean         = has_exact("clean");
@@ -222,14 +236,6 @@ namespace HelperClasses{
       }
     } // sfFTagFlt
     m_area          = has_exact("area");
-    if( has_match("LeadingJets") ){
-      m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-2 , 2)).c_str() );
-      if (m_numLeadingJets == 0){ //Perhaps infoSwitches are combined and Njets < 10
-        m_numLeadingJets = std::atoi( (m_configStr.substr( m_configStr.find("LeadingJets")-1 , 1)).c_str() );
-      }
-    }else{
-      m_numLeadingJets = 0;
-    }
   }
 
   void TruthInfoSwitch::initialize(){
@@ -238,7 +244,7 @@ namespace HelperClasses{
 
 
   void TauInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
+    IParticleInfoSwitch::initialize();
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
   }

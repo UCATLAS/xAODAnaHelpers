@@ -6,11 +6,9 @@
 using std::vector;
 
 JetHists :: JetHists (std::string name, std::string detailStr) :
-  HistogramManager(name, detailStr),
+  IParticleHists(name, detailStr, "jet", "jet"),
   m_infoSwitch(new HelperClasses::JetInfoSwitch(m_detailStr))
-{
-  m_debug = false;
-}
+{ }
 
 JetHists :: ~JetHists () {
   if(m_infoSwitch) delete m_infoSwitch;
@@ -18,59 +16,9 @@ JetHists :: ~JetHists () {
 
 
 StatusCode JetHists::initialize() {
-
-  // These plots are always made
-  m_jetPt          = book(m_name, "jetPt",  "jet p_{T} [GeV]", 120, 0, 3000.);
-  m_jetEta         = book(m_name, "jetEta", "jet #eta",         80, -4, 4);
-  m_jetPhi         = book(m_name, "jetPhi", "jet Phi",120, -TMath::Pi(), TMath::Pi() );
-  m_jetM           = book(m_name, "jetMass", "jet Mass [GeV]",120, 0, 400);
-  m_jetE           = book(m_name, "jetEnergy", "jet Energy [GeV]",120, 0, 4000.);
-  m_jetRapidity    = book(m_name, "jetRapidity", "jet Rapidity",120, -10, 10);
+  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
 
   if(m_debug) Info("JetHists::initialize()", m_name.c_str());
-  // details of the jet kinematics
-  if( m_infoSwitch->m_kinematic ) {
-    if(m_debug) Info("JetHists::initialize()", "adding kinematic plots");
-    m_jetPx     = book(m_name, "jetPx",     "jet Px [GeV]",     120, 0, 1000);
-    m_jetPy     = book(m_name, "jetPy",     "jet Py [GeV]",     120, 0, 1000);
-    m_jetPz     = book(m_name, "jetPz",     "jet Pz [GeV]",     120, 0, 4000);
-  }
-
-  // N leading jets
-  if( m_infoSwitch->m_numLeadingJets > 0 ){
-    std::stringstream jetNum;
-    std::stringstream jetTitle;
-    for(int iJet=0; iJet < m_infoSwitch->m_numLeadingJets; ++iJet){
-      jetNum << iJet;
-
-      jetTitle << iJet+1;
-      switch(iJet)
-	{
-	case 0:
-	  jetTitle << "^{st}";
-	  break;
-	case 1:
-	  jetTitle << "^{nd}";
-	  break;
-	case 2:
-	  jetTitle << "^{rd}";
-	  break;
-	default:
-	  jetTitle << "^{th}";
-	  break;
-	}
-
-      m_NjetsPt.push_back(       book(m_name, ("jetPt_jet"+jetNum.str()),       jetTitle.str()+" jet p_{T} [GeV]" ,120,            0,       3000. ) );
-      m_NjetsEta.push_back(      book(m_name, ("jetEta_jet"+jetNum.str()),      jetTitle.str()+" jet #eta"        , 80,           -4,           4 ) );
-      m_NjetsPhi.push_back(      book(m_name, ("jetPhi_jet"+jetNum.str()),      jetTitle.str()+" jet Phi"         ,120, -TMath::Pi(), TMath::Pi() ) );
-      m_NjetsM.push_back(        book(m_name, ("jetMass_jet"+jetNum.str()),     jetTitle.str()+" jet Mass [GeV]"  ,120,            0,         400 ) );
-      m_NjetsE.push_back(        book(m_name, ("jetEnergy_jet"+jetNum.str()),   jetTitle.str()+" jet Energy [GeV]",120,            0,       4000. ) );
-      m_NjetsRapidity.push_back( book(m_name, ("jetRapidity_jet"+jetNum.str()), jetTitle.str()+" jet Rapidity"    ,120,          -10,          10 ) );
-      jetNum.str("");
-      jetTitle.str("");
-    }//for iJet
-  }
-
 
   // details for jet cleaning
   if( m_infoSwitch->m_clean ) {
@@ -319,54 +267,10 @@ StatusCode JetHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-void JetHists::record(EL::Worker* wk) {
-  HistogramManager::record(wk);
-
-  if(m_infoSwitch->m_tracksInJet){
-    m_tracksInJet -> record( wk );
-  }
-}
-
-
-StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc ) {
-  for( auto jet_itr : *jets ) {
-    RETURN_CHECK("JetHists::execute()", this->execute( jet_itr, eventWeight, pvLoc ), "");
-  }
-
-  if( m_infoSwitch->m_numLeadingJets > 0){
-
-    int numJets = std::min( m_infoSwitch->m_numLeadingJets, (int)jets->size() );
-    for(int iJet=0; iJet < numJets; ++iJet){
-      m_NjetsPt.at(iJet)->        Fill( jets->at(iJet)->pt()/1e3,   eventWeight);
-      m_NjetsEta.at(iJet)->       Fill( jets->at(iJet)->eta(),      eventWeight);
-      m_NjetsPhi.at(iJet)->       Fill( jets->at(iJet)->phi(),      eventWeight);
-      m_NjetsM.at(iJet)->         Fill( jets->at(iJet)->m()/1e3,    eventWeight);
-      m_NjetsE.at(iJet)->         Fill( jets->at(iJet)->e()/1e3,    eventWeight);
-      m_NjetsRapidity.at(iJet)->  Fill( jets->at(iJet)->rapidity(), eventWeight);
-    }
-  }
-
-  return StatusCode::SUCCESS;
-}
-
-StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, int /*pvLoc*/ ) {
+StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(jet, eventWeight), "");
 
   if(m_debug) std::cout << "in execute " <<std::endl;
-
-  //basic
-  m_jetPt ->        Fill( jet->pt()/1e3,    eventWeight );
-  m_jetEta->        Fill( jet->eta(),       eventWeight );
-  m_jetPhi->        Fill( jet->phi(),       eventWeight );
-  m_jetM->          Fill( jet->m()/1e3,     eventWeight );
-  m_jetE->          Fill( jet->e()/1e3,     eventWeight );
-  m_jetRapidity->   Fill( jet->rapidity(),  eventWeight );
-
-  // kinematic
-  if( m_infoSwitch->m_kinematic ) {
-    m_jetPx->  Fill( jet->px()/1e3,  eventWeight );
-    m_jetPy->  Fill( jet->py()/1e3,  eventWeight );
-    m_jetPz->  Fill( jet->pz()/1e3,  eventWeight );
-  } // fillKinematic
 
   // clean
   if( m_infoSwitch->m_clean ) {
