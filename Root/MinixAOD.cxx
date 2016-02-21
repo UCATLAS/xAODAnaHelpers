@@ -151,7 +151,6 @@ EL::StatusCode MinixAOD :: initialize ()
 
     m_event->recordMeta(output,"CutBookkeepers");
     m_event->recordMeta(output_aux,"CutBookkeepersAux.");
-    m_event->fill();
   }
 
   // parse and split by comma
