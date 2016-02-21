@@ -268,9 +268,9 @@ StatusCode JetHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(jet, eventWeight), "");
-
+StatusCode JetHists::execute( const xAOD::IParticle* in_jet, float eventWeight ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(in_jet, eventWeight), "");
+  const xAOD::Jet* jet = dynamic_cast<const xAOD::Jet*>(in_jet);
   if(m_debug) std::cout << "in execute " <<std::endl;
 
   // clean
@@ -707,7 +707,6 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
       if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight);
     }
 
-
     if(m_infoSwitch->m_svDetails){
 
       //
@@ -749,6 +748,8 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
       if(sv1_masssvxAcc  .isAvailable(*btag_info)) m_sv1_massvx   -> Fill( sv1_masssvxAcc  (*btag_info)/1000, eventWeight);
       if(sv1_efracsvxAcc .isAvailable(*btag_info)) m_sv1_efracsvx -> Fill( sv1_efracsvxAcc (*btag_info), eventWeight);
       if(sv1_normdistAcc .isAvailable(*btag_info)) m_sv1_normdist -> Fill( sv1_normdistAcc (*btag_info), eventWeight);
+      //float m_sv1_mass;
+      //btag_info->variable<float>("SV1", "masssvx" , m_sv1_mass);
 
     }
 
