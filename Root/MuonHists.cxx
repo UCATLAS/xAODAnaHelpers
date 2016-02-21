@@ -67,10 +67,18 @@ StatusCode MuonHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
+StatusCode MuonHists::execute( const xAOD::MuonContainer* muons, float eventWeight ){
+  for( const auto& muon : *muons ) {
+    RETURN_CHECK("MuonHists::execute()", this->execute( muon, eventWeight), "");
+  }
+
+  return StatusCode::SUCCESS;
+}
+
 StatusCode MuonHists::execute( const xAOD::Muon* muon, float eventWeight) {
   RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(muon, eventWeight), "");
 
-  if(m_debug) std::cout << "in execute " <<std::endl;
+  if(m_debug) std::cout << "MuonHists: in execute " <<std::endl;
 
   if ( m_infoSwitch->m_isolation ) {
 

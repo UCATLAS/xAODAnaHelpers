@@ -32,10 +32,18 @@ StatusCode PhotonHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
+StatusCode PhotonHists::execute( const xAOD::PhotonContainer* photons, float eventWeight ){
+  for( const auto& photon : *photons ) {
+    RETURN_CHECK("PhotonHists::execute()", this->execute( photon, eventWeight), "");
+  }
+
+  return StatusCode::SUCCESS;
+}
+
 StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight ) {
   RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(photon, eventWeight), "");
 
-  if(m_debug) std::cout << "in execute " <<std::endl;
+  if(m_debug) std::cout << "PhotonHists: in execute " <<std::endl;
 
   // //basic
   // m_photonPt ->        Fill( photon->pt()/1e3,    eventWeight );

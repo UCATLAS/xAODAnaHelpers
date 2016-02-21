@@ -13,6 +13,7 @@ class MuonHists : public IParticleHists
     virtual ~MuonHists() ;
 
     virtual StatusCode initialize();
+    virtual StatusCode execute( const xAOD::MuonContainer* muons, float eventWeight);
     virtual StatusCode execute( const xAOD::Muon* muon, float eventWeight);
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using IParticleHists::execute; // overload
