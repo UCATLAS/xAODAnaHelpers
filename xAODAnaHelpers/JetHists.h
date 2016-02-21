@@ -116,11 +116,19 @@ class JetHists : public IParticleHists
     TH1F* m_MV2c20_l ; //!
     TH1F* m_COMB   ; //!
     TH1F* m_SV0             ; //!
-    TH1F* m_SV1             ; //!
-    TH1F* m_IP2D            ; //!
-    TH1F* m_IP3D            ; //!
     TH1F* m_JetFitter       ; //!
     TH1F* m_JetFitterCombNN ; //!
+
+    TH1F* m_trkSum_ntrk     ; //!
+    TH1F* m_trkSum_sPt      ; //!
+    TH1F* m_trkSum_vPt      ; //!
+    TH1F* m_trkSum_vAbsEta  ; //!
+    TH1F* m_width           ; //!
+    TH1F* m_n_trk_sigd0cut  ; //!
+    TH1F* m_trk3_d0sig      ; //!
+    TH1F* m_trk3_z0sig      ; //!
+    TH1F* m_sv_scaled_efc   ; //!
+    TH1F* m_jf_scaled_efc   ; //!
 
     TH1F* m_jf_nVTX           ; //!
     TH1F* m_jf_nSingleTracks  ; //!
@@ -132,10 +140,13 @@ class JetHists : public IParticleHists
     TH1F* m_jf_deltaeta_l     ; //!
     TH1F* m_jf_deltaphi       ; //!
     TH1F* m_jf_deltaphi_l     ; //!
+    TH1F* m_jf_deltaR         ; //!
     TH1F* m_jf_N2Tpar         ; //!
     TH1F* m_jf_pb             ; //!
     TH1F* m_jf_pc             ; //!
     TH1F* m_jf_pu             ; //!
+    TH1F* m_jf_mass_unco      ; //!
+    TH1F* m_jf_dR_flight      ; //!
 
     TH1F* m_sv0_NGTinSvx ; //!
     TH1F* m_sv0_N2Tpair  ; //!
@@ -143,11 +154,21 @@ class JetHists : public IParticleHists
     TH1F* m_sv0_efracsvx ; //!
     TH1F* m_sv0_normdist ; //!
 
+    TH1F* m_SV1_pu       ; //!
+    TH1F* m_SV1_pb       ; //!
+    TH1F* m_SV1_pc       ; //!
+    TH1F* m_SV1          ; //!
+    TH1F* m_SV1_c        ; //!
+    TH1F* m_SV1_cu       ; //!
     TH1F* m_sv1_NGTinSvx ; //!
     TH1F* m_sv1_N2Tpair  ; //!
     TH1F* m_sv1_massvx   ; //!
     TH1F* m_sv1_efracsvx ; //!
     TH1F* m_sv1_normdist ; //!
+    TH1F* m_SV1_Lxy        ; //!
+    TH1F* m_SV1_L3d        ; //!
+    TH1F* m_SV1_distmatlay ; //!
+    TH1F* m_SV1_dR         ; //!
 
     TH1F* m_nIP2DTracks              ; //!
     TH1F* m_IP2D_gradeOfTracks       ; //!
@@ -158,6 +179,12 @@ class JetHists : public IParticleHists
     TH1F* m_IP2D_weightBofTracks     ; //!
     TH1F* m_IP2D_weightCofTracks     ; //!
     TH1F* m_IP2D_weightUofTracks     ; //!
+    TH1F* m_IP2D_pu                  ; //!
+    TH1F* m_IP2D_pb                  ; //!
+    TH1F* m_IP2D_pc                  ; //!
+    TH1F* m_IP2D                     ; //!
+    TH1F* m_IP2D_c                   ; //!
+    TH1F* m_IP2D_cu                  ; //!
 
     TH1F* m_nIP3DTracks              ; //!
     TH1F* m_IP3D_gradeOfTracks       ; //!
@@ -171,6 +198,12 @@ class JetHists : public IParticleHists
     TH1F* m_IP3D_weightBofTracks     ; //!
     TH1F* m_IP3D_weightCofTracks     ; //!
     TH1F* m_IP3D_weightUofTracks     ; //!
+    TH1F* m_IP3D_pu                  ; //!
+    TH1F* m_IP3D_pb                  ; //!
+    TH1F* m_IP3D_pc                  ; //!
+    TH1F* m_IP3D                     ; //!
+    TH1F* m_IP3D_c                   ; //!
+    TH1F* m_IP3D_cu                  ; //!
 
     // substructure
     TH1F* m_tau1; //!

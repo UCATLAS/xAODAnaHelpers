@@ -373,6 +373,7 @@ namespace HelperClasses {
     bool m_constituentAll;
     bool m_flavTag;
     bool m_flavTagHLT;
+    bool m_btag_jettrk;
     bool m_jetFitterDetails;
     bool m_svDetails;
     bool m_ipDetails;
