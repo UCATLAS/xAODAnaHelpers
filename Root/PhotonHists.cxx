@@ -32,17 +32,10 @@ StatusCode PhotonHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode PhotonHists::execute( const xAOD::IParticle* particle, float eventWeight ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(photon, eventWeight), "");
 
   if(m_debug) std::cout << "in execute " <<std::endl;
-
-  const xAOD::Photon* photon=dynamic_cast<const xAOD::Photon*>(particle);
-  if(photon==0)
-    {
-      ::Error( "PhotonHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Photon" ));
-      return StatusCode::FAILURE;
-    }
 
   // //basic
   // m_photonPt ->        Fill( photon->pt()/1e3,    eventWeight );
