@@ -28,7 +28,7 @@ TrackSelector :: TrackSelector (std::string className) :
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr)
 {
-  Info("TrackSelector()", "Calling constructor");
+  if(m_debug) Info("TrackSelector()", "Calling constructor");
 
   // read debug flag from .config file
   m_debug         = false;
@@ -83,7 +83,7 @@ EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  if(m_debug) Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TrackSelector" ).ignore(); // call before opening first file
@@ -100,7 +100,7 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize");
+  if(m_debug) Info("histInitialize()", "Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
@@ -112,7 +112,7 @@ EL::StatusCode TrackSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute");
+  if(m_debug) Info("fileExecute()", "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -125,7 +125,7 @@ EL::StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput");
+  if(m_debug) Info("changeInput()", "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -172,14 +172,14 @@ EL::StatusCode TrackSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  if(m_debug) Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
   m_numObjectPass = 0;
 
-  Info("initialize()", "TrackSelector Interface succesfully initialized!" );
+  if(m_debug) Info("initialize()", "TrackSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -372,7 +372,7 @@ EL::StatusCode TrackSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances...");
+  if(m_debug) Info("finalize()", "Deleting tool instances...");
 
   return EL::StatusCode::SUCCESS;
 }

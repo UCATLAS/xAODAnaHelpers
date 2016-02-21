@@ -24,11 +24,12 @@ class xAH_config(object):
           raise AttributeError(k)
         self._log.append((alg, k, v))
         setattr(alg_obj, k, v)
-      print
+      #print
 
 
       #
       # Add the constructed algo to the list of algorithms to run
       #
       self._algorithms.append(alg_obj)
+
 
