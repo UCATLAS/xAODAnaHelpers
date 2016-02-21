@@ -56,15 +56,15 @@ public:
   /**
       @brief Fill histograms with particles in a container
       @rst
-          Tempalated (container type) function that loops over all systematics (or nominal only) 
-	  and fills the corresponding histogram objects. 
-	  
+          Tempalated (container type) function that loops over all systematics (or nominal only)
+	  and fills the corresponding histogram objects.
+
 	  The event weight, in case of Monte Carlo samples, is
 	   mcEventWeight*crossSection*filterEfficiency*kfactor
 	  where the sample-weights are taken from SampleHandler and set to 1 by default.
       @endrst
   */
-  template<class CONT_T> EL::StatusCode execute ()
+  template<class HIST_T, class CONT_T> EL::StatusCode execute ()
   {
     const xAOD::EventInfo* eventInfo(nullptr);
     RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
@@ -90,7 +90,7 @@ public:
       RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, m_verbose) ,("Failed to get "+m_inContainerName).c_str());
 
       // pass the photon collection
-      RETURN_CHECK("IParticleHistsAlgo::execute()", m_plots[""]->execute( inParticles, eventWeight ), "");
+      RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[""])->execute( inParticles, eventWeight ), "");
     }
     else { // get the list of systematics to run over
 
@@ -102,7 +102,7 @@ public:
       for( auto systName : *systNames ) {
 	RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
 	if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
-	RETURN_CHECK("IParticleHistsAlgo::execute()", m_plots[systName]->execute( inParticles, eventWeight ), "");
+	RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight ), "");
       }
     }
 
@@ -130,10 +130,11 @@ public:
     std::string fullname(m_name);
     fullname += name; // add systematic
     HIST_T* particleHists = new HIST_T( fullname, m_detailStr ); // add systematic
+    particleHists->m_debug = m_debug;
     RETURN_CHECK((m_name+"::AddHists").c_str(), particleHists->initialize(), "");
     particleHists->record( wk() );
     m_plots[name] = particleHists;
-    
+
     return EL::StatusCode::SUCCESS;
   }
 

@@ -44,7 +44,7 @@ StatusCode MetHists::initialize() {
 
 StatusCode MetHists::execute( const xAOD::MissingETContainer* met, float eventWeight ) {
 
-  if(m_debug) std::cout << "in execute " <<std::endl;
+  if(m_debug) std::cout << "MetHists: in execute " <<std::endl;
 
   //
   // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)

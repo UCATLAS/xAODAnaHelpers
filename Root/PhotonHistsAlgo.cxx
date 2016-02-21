@@ -29,5 +29,5 @@ EL::StatusCode PhotonHistsAlgo::AddHists( std::string name ) {
 }
 
 EL::StatusCode PhotonHistsAlgo :: execute () {
-  return IParticleHistsAlgo::execute<xAOD::PhotonContainer>();
+  return IParticleHistsAlgo::execute<PhotonHists, xAOD::PhotonContainer>();
 }

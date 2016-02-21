@@ -29,5 +29,5 @@ EL::StatusCode MuonHistsAlgo::AddHists( std::string name ) {
 }
 
 EL::StatusCode MuonHistsAlgo :: execute () {
-  return IParticleHistsAlgo::execute<xAOD::MuonContainer>();
+  return IParticleHistsAlgo::execute<MuonHists, xAOD::MuonContainer>();
 }

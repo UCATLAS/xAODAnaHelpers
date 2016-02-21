@@ -30,5 +30,5 @@ EL::StatusCode JetHistsAlgo::AddHists( std::string name ) {
 
 EL::StatusCode JetHistsAlgo :: execute ()
 {
-  return IParticleHistsAlgo::execute<xAOD::JetContainer>();
+  return IParticleHistsAlgo::execute<JetHists, xAOD::JetContainer>();
 }

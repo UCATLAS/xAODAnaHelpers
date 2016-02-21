@@ -15,11 +15,11 @@ class JetHists : public IParticleHists
     virtual ~JetHists() ;
 
     virtual StatusCode initialize();
-    virtual StatusCode execute( const xAOD::IParticle* jet, float eventWeight );
+    virtual StatusCode execute( const xAOD::JetContainer* jets, float eventWeight );
+    virtual StatusCode execute( const xAOD::Jet* jet, float eventWeight );
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
-    using HistogramManager::execute; // overload
     using IParticleHists::execute; // overload
-    
+
   protected:
 
     // holds bools that control which histograms are filled

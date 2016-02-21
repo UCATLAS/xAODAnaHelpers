@@ -305,17 +305,18 @@ StatusCode JetHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight ) {
+  for( const auto& jet : *jets ) {
+    RETURN_CHECK("JetHists::execute()", this->execute( jet, eventWeight), "");
+  }
 
-  if(m_debug) std::cout << "in execute " <<std::endl;
+  return StatusCode::SUCCESS;
+}
 
-  const xAOD::Jet* jet=dynamic_cast<const xAOD::Jet*>(particle);
-  if(jet==0)
-    {
-      ::Error( "JetHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Jet" ));
-      return StatusCode::FAILURE;
-    }
+StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(jet, eventWeight), "");
+
+  if(m_debug) std::cout << "JetHists: in execute " <<std::endl;
 
   // clean
   if( m_infoSwitch->m_clean ) {
@@ -715,7 +716,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
     if(m_infoSwitch->m_btag_jettrk){
       unsigned trkSum_ntrk   = btag_info->isAvailable<unsigned>("trkSum_ntrk") ? btag_info->auxdata<unsigned>("trkSum_ntrk") : -1;
-      float    trkSum_sPt    = btag_info->isAvailable<float   >("trkSum_SPt" ) ? btag_info->auxdata<float   >("trkSum_SPt" ) : -1000;//<== -1 GeV                         
+      float    trkSum_sPt    = btag_info->isAvailable<float   >("trkSum_SPt" ) ? btag_info->auxdata<float   >("trkSum_SPt" ) : -1000;//<== -1 GeV
       float trkSum_vPt    = 0;
       float trkSum_vAbsEta= -10;
       if (trkSum_ntrk>0) {
@@ -758,29 +759,29 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	  const xAOD::TrackParticle* aTemp = **trkIter;
 	  TLorentzVector trk;
 	  trk.SetPtEtaPhiM(aTemp->pt(), aTemp->eta(), aTemp->phi(), 0.);
-	  // no need for a dedicated selection here, the tracks are already                                                                              
-	  // selected by the IP3D algorithm                                                                                                              
+	  // no need for a dedicated selection here, the tracks are already
+	  // selected by the IP3D algorithm
 	  const float d0sig = vectD0Signi.at(trkIndex);
 	  const float z0sig = vectZ0Signi.at(trkIndex);
 	  trkIndex++;
 
 	  if (std::fabs(d0sig) > 1.8)
 	    n_trk_d0cut++;
-	  // track width components                                                                                                                      
+	  // track width components
 	  sum_pt += trk.Pt();
 	  const float dRtoJet = trk.DeltaR(jet->p4());
 	  sum_pt_dr += dRtoJet * trk.Pt();
 
-	  // for 3rd higest d0/z0 significance                                                                                                           
+	  // for 3rd higest d0/z0 significance
 	  trk_d0_z0.push_back(std::make_pair(d0sig, z0sig));
-	} //end of trk loop   
-      
-	// sort by highest signed d0 sig                                                                                                                 
+	} //end of trk loop
+
+	// sort by highest signed d0 sig
 	std::sort(trk_d0_z0.begin(), trk_d0_z0.end(), [](const std::pair<float, float>& a, const std::pair<float, float>& b) {
 	    return a.first > b.first;
 	  } );
 
-	//Assign MVb variables                                                                                                                           
+	//Assign MVb variables
 	float width          = sum_pt > 0 ? sum_pt_dr / sum_pt : 0;
 	int   n_trk_sigd0cut = n_trk_d0cut;
 	float trk3_d0sig     = trk_d0_z0.size() > 2 ? trk_d0_z0[2].first : -100;
@@ -803,7 +804,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	m_sv_scaled_efc->Fill(sv_scaled_efc, eventWeight);
 	m_jf_scaled_efc->Fill(jf_scaled_efc, eventWeight);
       }//trkOK
-      
+
     }
 
 
@@ -840,7 +841,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       if(jf_pb.isAvailable            (*btag_info)) m_jf_pb             ->Fill(jf_pb            (*btag_info), eventWeight);
       if(jf_pc.isAvailable            (*btag_info)) m_jf_pc             ->Fill(jf_pc            (*btag_info), eventWeight);
       if(jf_pu.isAvailable            (*btag_info)) m_jf_pu             ->Fill(jf_pu            (*btag_info), eventWeight);
-      
+
 
       float jf_mass_unco; btag_info->variable<float>("JetFitter", "massUncorr" , jf_mass_unco);
       float jf_dR_flight; btag_info->variable<float>("JetFitter", "dRFlightDir", jf_dR_flight);
@@ -867,17 +868,17 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       static SG::AuxElement::ConstAccessor< float   > sv0_efracsvxAcc     ("SV0_efracsvx");                                                                  	/// @brief SV0 : 3D vertex significance
       static SG::AuxElement::ConstAccessor< float   > sv0_normdistAcc     ("SV0_normdist");
 
-      
+
       if(sv0_NGTinSvxAcc .isAvailable(*btag_info)) m_sv0_NGTinSvx -> Fill( sv0_NGTinSvxAcc (*btag_info), eventWeight);
       if(sv0_N2TpairAcc  .isAvailable(*btag_info)) m_sv0_N2Tpair  -> Fill( sv0_N2TpairAcc  (*btag_info), eventWeight);
       if(sv0_masssvxAcc  .isAvailable(*btag_info)) m_sv0_massvx   -> Fill( sv0_masssvxAcc  (*btag_info)/1000, eventWeight);
       if(sv0_efracsvxAcc .isAvailable(*btag_info)) m_sv0_efracsvx -> Fill( sv0_efracsvxAcc (*btag_info), eventWeight);
       if(sv0_normdistAcc .isAvailable(*btag_info)) m_sv0_normdist -> Fill( sv0_normdistAcc (*btag_info), eventWeight);
-      
+
       double sv0;
       btag_info->variable<double>("SV0", "significance3D", sv0);
       m_SV0             ->  Fill( sv0 , eventWeight );
-    
+
 
       //
       // SV1
@@ -892,7 +893,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       /// @brief SV1 : energy fraction
       static SG::AuxElement::ConstAccessor< float   > sv1_efracsvxAcc     ("SV1_efracsvx");                                                                 /// @brief SV1 : 3D vertex significance
       static SG::AuxElement::ConstAccessor< float   > sv1_normdistAcc     ("SV1_normdist");
-	
+
       if(sv1_NGTinSvxAcc .isAvailable(*btag_info)) m_sv1_NGTinSvx -> Fill( sv1_NGTinSvxAcc (*btag_info), eventWeight);
       if(sv1_N2TpairAcc  .isAvailable(*btag_info)) m_sv1_N2Tpair  -> Fill( sv1_N2TpairAcc  (*btag_info), eventWeight);
       if(sv1_masssvxAcc  .isAvailable(*btag_info)) m_sv1_massvx   -> Fill( sv1_masssvxAcc  (*btag_info)/1000, eventWeight);
@@ -902,11 +903,11 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       double sv1_pu = -30;  btag_info->variable<double>("SV1", "pu", sv1_pu);
       double sv1_pb = -30;  btag_info->variable<double>("SV1", "pb", sv1_pb);
       double sv1_pc = -30;  btag_info->variable<double>("SV1", "pc", sv1_pc);
-      
+
       m_SV1_pu         ->  Fill(sv1_pu  , eventWeight );
       m_SV1_pb         ->  Fill(sv1_pb  , eventWeight );
       m_SV1_pc         ->  Fill(sv1_pc  , eventWeight );
-      
+
       m_SV1            ->  Fill( btag_info->calcLLR(sv1_pb,sv1_pu) , eventWeight );
       m_SV1_c          ->  Fill( btag_info->calcLLR(sv1_pb,sv1_pc) , eventWeight );
       m_SV1_cu         ->  Fill( btag_info->calcLLR(sv1_pc,sv1_pu) , eventWeight );
@@ -977,7 +978,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       if(IP2D_weightUofTracksAcc .isAvailable(*btag_info)){
 	for(float weightU : IP2D_weightUofTracksAcc(*btag_info))  m_IP2D_weightUofTracks->Fill(weightU, eventWeight);
       }
-      
+
       double ip2_pu = -30;  btag_info->variable<double>("IP2D", "pu", ip2_pu);
       double ip2_pb = -30;  btag_info->variable<double>("IP2D", "pb", ip2_pb);
       double ip2_pc = -30;  btag_info->variable<double>("IP2D", "pc", ip2_pc);

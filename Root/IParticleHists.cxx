@@ -99,7 +99,7 @@ StatusCode IParticleHists::execute( const xAOD::IParticleContainer* particles, f
 
 StatusCode IParticleHists::execute( const xAOD::IParticle* particle, float eventWeight) {
 
-  if(m_debug) std::cout << "in execute " <<std::endl;
+  if(m_debug) std::cout << "IParticleHists: in execute " <<std::endl;
 
   //basic
   m_Pt_l ->      Fill( particle->pt()/1e3,    eventWeight );
