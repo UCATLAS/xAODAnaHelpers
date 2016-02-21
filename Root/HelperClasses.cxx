@@ -166,6 +166,7 @@ namespace HelperClasses{
     m_constituentAll    = has_exact("constituentAll");
     m_flavTag           = has_exact("flavorTag");
     m_flavTagHLT        = has_exact("flavorTagHLT");
+    m_btag_jettrk       = has_exact("btag_jettrk");
     m_jetFitterDetails  = has_exact("jetFitterDetails");
     m_svDetails         = has_exact("svDetails");
     m_ipDetails         = has_exact("ipDetails");
