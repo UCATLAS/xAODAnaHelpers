@@ -169,6 +169,7 @@ StatusCode JetHists::initialize() {
     m_MV2c00          = book(m_name, "MV2c00", "MV2c00" ,   100,    -1.1,   1.1);
     m_MV2c10          = book(m_name, "MV2c10", "MV2c10" ,   100,    -1.1,   1.1);
     m_MV2c20          = book(m_name, "MV2c20", "MV2c20" ,   100,    -1.1,   1.1);
+    m_MV2c20_l        = book(m_name, "MV2c20_l", "MV2c20" , 500,    -1.1,   1.1);
     m_COMB            = book(m_name, "COMB",   "COMB" ,     100,    -20,   40);
     m_SV0             = book(m_name, "SV0",    "SV0" ,      100,    -20,  200);
     m_SV1             = book(m_name, "SV1",    "SV1" ,      100,    -5,   15);
@@ -656,9 +657,10 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
     btag_info->MVx_discriminant("MV2c00", MV2c00);
     btag_info->MVx_discriminant("MV2c10", MV2c10);
     btag_info->MVx_discriminant("MV2c20", MV2c20);
-    m_MV2c00 ->  Fill( MV2c00, eventWeight );
-    m_MV2c10 ->  Fill( MV2c10, eventWeight );
-    m_MV2c20 ->  Fill( MV2c20, eventWeight );
+    m_MV2c00   ->  Fill( MV2c00, eventWeight );
+    m_MV2c10   ->  Fill( MV2c10, eventWeight );
+    m_MV2c20   ->  Fill( MV2c20, eventWeight );
+    m_MV2c20_l ->  Fill( MV2c20, eventWeight );
 
     static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
     if ( SV0_significance3DAcc.isAvailable(*btag_info) ) {
