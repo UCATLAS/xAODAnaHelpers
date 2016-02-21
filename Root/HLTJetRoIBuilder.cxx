@@ -50,7 +50,7 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   m_outContainerName(""),
   m_trigDecTool(nullptr)
 {
-  Info("HLTJetRoIBuilder()", "Calling constructor");
+  if(m_debug) Info("HLTJetRoIBuilder()", "Calling constructor");
 
   // read debug flag from .config file
   m_debug                   = false;
@@ -62,7 +62,7 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
 
 EL::StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
 {
-  Info("setupJob()", "Calling setupJob");
+  if(m_debug) Info("setupJob()", "Calling setupJob");
   job.useXAOD ();
   xAOD::Init( "HLTJetRoIBuilder" ).ignore(); // call before opening first file
   return EL::StatusCode::SUCCESS;
@@ -95,7 +95,7 @@ EL::StatusCode HLTJetRoIBuilder :: changeInput (bool /*firstFile*/)
 EL::StatusCode HLTJetRoIBuilder :: initialize ()
 {
 
-  Info("initialize()", "Initializing HLTJetRoIBuilder Interface... ");
+  if(m_debug) Info("initialize()", "Initializing HLTJetRoIBuilder Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -279,7 +279,7 @@ EL::StatusCode HLTJetRoIBuilder :: postExecute ()
 
 EL::StatusCode HLTJetRoIBuilder :: finalize ()
 {
-  Info("finalize()", "Deleting tool instances...");
+  if(m_debug) Info("finalize()", "Deleting tool instances...");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -287,7 +287,7 @@ EL::StatusCode HLTJetRoIBuilder :: finalize ()
 
 EL::StatusCode HLTJetRoIBuilder :: histFinalize ()
 {
-  Info("histFinalize()", "Calling histFinalize");
+  if(m_debug) Info("histFinalize()", "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

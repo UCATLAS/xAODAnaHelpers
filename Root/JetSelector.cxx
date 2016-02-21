@@ -58,7 +58,7 @@ JetSelector :: JetSelector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("JetSelector()", "Calling constructor");
+  if(m_debug) Info("JetSelector()", "Calling constructor");
 
   // read debug flag from .config file
   m_debug         = false;
@@ -142,7 +142,7 @@ EL::StatusCode JetSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  if(m_debug) Info("setupJob()", "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "JetSelector" ).ignore(); // call before opening first file
@@ -159,7 +159,7 @@ EL::StatusCode JetSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize");
+  if(m_debug) Info("histInitialize()", "Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   return EL::StatusCode::SUCCESS;
@@ -172,7 +172,7 @@ EL::StatusCode JetSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute");
+  if(m_debug) Info("fileExecute()", "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -185,7 +185,7 @@ EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput");
+  if(m_debug) Info("changeInput()", "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -202,7 +202,7 @@ EL::StatusCode JetSelector :: initialize ()
   // doesn't get called if no events are processed.  So any objects
   // you create here won't be available in the output if you have no
   // input events.
-  Info("initialize()", "Calling initialize");
+  if(m_debug) Info("initialize()", "Calling initialize");
 
   if ( m_useCutFlow ) {
 
@@ -328,7 +328,7 @@ EL::StatusCode JetSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  if(m_debug) Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -336,7 +336,7 @@ EL::StatusCode JetSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  Info("initialize()", "JetSelector Interface succesfully initialized!" );
+  if(m_debug) Info("initialize()", "JetSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -546,10 +546,10 @@ EL::StatusCode JetSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "%s", m_name.c_str());
+  if(m_debug) Info("finalize()", "%s", m_name.c_str());
 
   if ( m_useCutFlow ) {
-    Info("histFinalize()", "Filling cutflow");
+    if(m_debug) Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
@@ -574,7 +574,7 @@ EL::StatusCode JetSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize");
+  if(m_debug) Info("histFinalize()", "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

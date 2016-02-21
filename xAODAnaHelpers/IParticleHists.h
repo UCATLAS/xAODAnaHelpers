@@ -30,7 +30,10 @@ class IParticleHists : public HistogramManager
     std::string m_title;
 
     //basic
+    TH1F* m_Pt_l;                //!
     TH1F* m_Pt;                  //!
+    TH1F* m_Pt_m;                //!
+    TH1F* m_Pt_s;                //!
     TH1F* m_Eta;                 //!
     TH1F* m_Phi;                 //!
     TH1F* m_M;                   //!

@@ -59,7 +59,7 @@ EL::StatusCode IParticleHistsAlgo :: changeInput (bool /*firstFile*/) { return E
 
 EL::StatusCode IParticleHistsAlgo :: initialize ()
 {
-  Info("initialize()", m_name.c_str());
+  if(m_debug) Info("initialize()", m_name.c_str());
 
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
@@ -83,7 +83,7 @@ EL::StatusCode IParticleHistsAlgo :: execute ()
 EL::StatusCode IParticleHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode IParticleHistsAlgo :: finalize () {
-  Info("finalize()", m_name.c_str());
+  if(m_debug) Info("finalize()", m_name.c_str());
   if(!m_plots.empty()){
     for( auto plots : m_plots ) {
       if(plots.second) delete plots.second;
