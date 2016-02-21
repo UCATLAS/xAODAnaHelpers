@@ -67,9 +67,17 @@ StatusCode MuonHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode MuonHists::execute( const xAOD::Muon* muon, float eventWeight) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(muon, eventWeight), "");
+StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeight) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+
   if(m_debug) std::cout << "in execute " <<std::endl;
+
+  const xAOD::Muon* muon=dynamic_cast<const xAOD::Muon*>(particle);
+  if(muon==0)
+    {
+      ::Error( "MuonHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Muon" ));
+      return StatusCode::FAILURE;
+    }
 
   if ( m_infoSwitch->m_isolation ) {
 
