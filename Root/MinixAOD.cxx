@@ -32,11 +32,6 @@
 #include "xAODTau/TauJetAuxContainer.h"
 #include "xAODTau/TauJet.h"
 
-// CutBookkeeper Includes
-#include "xAODCutFlow/CutBookkeeper.h"
-#include "xAODCutFlow/CutBookkeeperContainer.h"
-#include "xAODCutFlow/CutBookkeeperAuxContainer.h"
-
 // package include(s):
 #include "xAODAnaHelpers/MinixAOD.h"
 #include "xAODAnaHelpers/HelperClasses.h"
@@ -92,8 +87,42 @@ EL::StatusCode MinixAOD :: histInitialize ()
   return EL::StatusCode::SUCCESS;
 }
 
+EL::StatusCode MinixAOD :: changeInput (bool firstFile)
+{
+  //
+  // Update CutBookkeeper
+  if(m_copyCutBookkeeper)
+    {
+      // Retrieve the input container:
+      const xAOD::CutBookkeeperContainer* inputCBKContainer(nullptr);
+      RETURN_CHECK("MinixAOD::fileExecute()", wk()->xaodEvent()->retrieveMetaInput(inputCBKContainer, "CutBookkeepers"), "");
+
+      if(firstFile)
+	{
+	  // Create an output container
+	  m_outputCBKContainer     = new xAOD::CutBookkeeperContainer();
+	  m_outputCBKContainer_aux = new xAOD::CutBookkeeperAuxContainer();
+	  m_outputCBKContainer->setStore( m_outputCBKContainer_aux );
+
+	  // Create an empty incomplete output container
+	  m_outputInCBKContainer     = new xAOD::CutBookkeeperContainer();
+	  m_outputInCBKContainer_aux = new xAOD::CutBookkeeperAuxContainer();
+	  m_outputInCBKContainer->setStore( m_outputInCBKContainer_aux );
+
+	  // Create our cutbookkeeper
+	  m_outputCBK=new xAOD::CutBookkeeper();
+	  m_outputCBK->setName("MinixAODKernel");    
+	  m_outputCBK->setCycle(inputCBKContainer->maxCycle()+1);
+	}
+
+      // Merge
+      m_outputCBKContainer->merge(inputCBKContainer);
+    }
+
+  return EL::StatusCode::SUCCESS; 
+}
+
 EL::StatusCode MinixAOD :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode MinixAOD :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode MinixAOD :: initialize ()
 {
@@ -129,28 +158,6 @@ EL::StatusCode MinixAOD :: initialize ()
     if(m_debug) std::cout << "Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file." << std::endl;
     m_simpleCopyKeys_vec.push_back("xTrigDecision");
     m_simpleCopyKeys_vec.push_back("TrigConfKeys");
-  }
-
-  if(m_copyCutBookkeeper){
-    // Retrieve the input container:
-    const xAOD::CutBookkeeperContainer* input(nullptr);
-    m_event->retrieveMetaInput(input, "CutBookkeepers");
-
-    // Create an output container
-    xAOD::CutBookkeeperContainer* output =  new xAOD::CutBookkeeperContainer();
-    xAOD::CutBookkeeperAuxContainer* output_aux =  new xAOD::CutBookkeeperAuxContainer();
-    output->setStore( output_aux );
-
-
-    // Copy input to output
-    for( const xAOD::CutBookkeeper* cutbookkeeper : *input ) {
-      xAOD::CutBookkeeper* out = new xAOD::CutBookkeeper();
-      output->push_back( out );
-      *out = *cutbookkeeper;
-    }
-
-    m_event->recordMeta(output,"CutBookkeepers");
-    m_event->recordMeta(output_aux,"CutBookkeepersAux.");
   }
 
   // parse and split by comma
@@ -196,6 +203,25 @@ EL::StatusCode MinixAOD :: initialize ()
 EL::StatusCode MinixAOD :: execute ()
 {
   if(m_verbose) Info("execute()", "Dumping objects...");
+
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_verbose) ,"");
+
+  //
+  // Fill cutbookkeeper
+  if(m_copyCutBookkeeper)
+    {
+      float eventWeight(1);
+      if ( eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION) )
+	eventWeight = eventInfo->mcEventWeight();
+
+      m_outputCBK->addNAcceptedEvents(1);
+      m_outputCBK->addSumOfEventWeights(eventWeight);
+      m_outputCBK->addSumOfEventWeightsSquared(eventWeight*eventWeight);
+    }
+
+  //
+  // Copy code
 
   // simple copy is easiest - it's in the input, copy over, no need for types
   for(const auto& key: m_simpleCopyKeys_vec){
@@ -310,7 +336,22 @@ EL::StatusCode MinixAOD :: execute ()
 }
 
 EL::StatusCode MinixAOD :: postExecute () { return EL::StatusCode::SUCCESS; }
+
 EL::StatusCode MinixAOD :: finalize () {
+  //
+  // Save cutbookkeeper
+  if(m_copyCutBookkeeper)
+    {
+      wk()->xaodEvent()->recordMeta(m_outputCBKContainer,"CutBookkeepers");
+      wk()->xaodEvent()->recordMeta(m_outputCBKContainer_aux,"CutBookkeepersAux.");
+      wk()->xaodEvent()->recordMeta(m_outputInCBKContainer,"IncompleteCutBookkeepers");
+      wk()->xaodEvent()->recordMeta(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux.");
+
+      m_outputCBKContainer->push_back(m_outputCBK);
+    }
+
+  //
+  // Close file
   TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
   RETURN_CHECK("MinixAOD::finalize()", m_event->finishWritingTo(file_xAOD), "Could not finish writing to the output xAOD.");
 

@@ -5,8 +5,12 @@
 #include "xAODAnaHelpers/Algorithm.h"
 
 //MetaData
-#include "xAODMetaDataCnv/FileMetaDataTool.h"
-#include "xAODTriggerCnv/TriggerMenuMetaDataTool.h"
+#include <xAODMetaDataCnv/FileMetaDataTool.h>
+#include <xAODTriggerCnv/TriggerMenuMetaDataTool.h>
+
+#include <xAODCutFlow/CutBookkeeper.h>
+#include <xAODCutFlow/CutBookkeeperContainer.h>
+#include <xAODCutFlow/CutBookkeeperAuxContainer.h>
 
 /**
   @brief Produce xAOD outputs
@@ -52,7 +56,7 @@ public:
   /// copy the trigger containers and meta data over
   bool m_copyTriggerInfo;
 
-  /// [BROKEN?] copy the cutbookkeeper data over
+  /// copy the cutbookkeeper data over
   bool m_copyCutBookkeeper;
 
   /**
@@ -157,6 +161,13 @@ private:
   xAODMaker::FileMetaDataTool          *m_fileMetaDataTool;    //!
   /// Pointer for the TriggerMenu MetaData Tool
   xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool; //!
+
+  /// Pointer for our CutBookkeeper
+  xAOD::CutBookkeeperContainer    *m_outputCBKContainer;       //!
+  xAOD::CutBookkeeperAuxContainer *m_outputCBKContainer_aux;   //!
+  xAOD::CutBookkeeperContainer    *m_outputInCBKContainer;     //!
+  xAOD::CutBookkeeperAuxContainer *m_outputInCBKContainer_aux; //!
+  xAOD::CutBookkeeper             *m_outputCBK;                //!
 
 public:
   // this is a standard constructor
