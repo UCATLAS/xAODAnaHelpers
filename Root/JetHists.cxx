@@ -306,6 +306,8 @@ StatusCode JetHists::initialize() {
 }
 
 StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(jets, eventWeight), "");
+
   for( const auto& jet : *jets ) {
     RETURN_CHECK("JetHists::execute()", this->execute( jet, eventWeight), "");
   }
@@ -314,8 +316,6 @@ StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight 
 }
 
 StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(jet, eventWeight), "");
-
   if(m_debug) std::cout << "JetHists: in execute " <<std::endl;
 
   // clean
