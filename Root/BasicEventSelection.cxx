@@ -210,89 +210,74 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //check if file is from a DxAOD
   bool m_isDerivation = !MetaData->GetBranch("StreamAOD");
 
-  if ( m_isDerivation && m_useMetaData ) {
+  // check for corruption
+  //
+  // If there are some Incomplete CBK, throw a FAILURE,
+  // unless ALL of them have inputStream == "unknownStream"
+  //
+  const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
+  if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
+    Error("initializeEvent()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+  bool allFromUnknownStream(true);
+  if ( incompleteCBC->size() != 0 ) {
 
-    // check for corruption
-    //
-    // If there are some Incomplete CBK, throw a FAILURE,
-    // unless ALL of them have inputStream == "unknownStream"
-    //
-    const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
-    if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
-      Error("initializeEvent()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
-      return EL::StatusCode::FAILURE;
-    }
-    bool allFromUnknownStream(true);
-    if ( incompleteCBC->size() != 0 ) {
-
-      for ( auto cbk : *incompleteCBC ) {
-	if ( cbk->inputStream() != "unknownStream" ) {
-	  allFromUnknownStream = false;
-	  break;
-	}
+    for ( auto cbk : *incompleteCBC ) {
+      if ( cbk->inputStream() != "unknownStream" ) {
+        allFromUnknownStream = false;
+        break;
       }
-      if ( !allFromUnknownStream ) {
-	Error("initializeEvent()","Found incomplete Bookkeepers! Check file for corruption.");
-	return EL::StatusCode::FAILURE;
-      }
-
     }
-
-    // Now, let's find the actual information
-    //
-    const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
-    if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ) {
-      Error("fileExecute()","Failed to retrieve CutBookkeepers from MetaData! Exiting.");
+    if ( !allFromUnknownStream ) {
+      Error("initializeEvent()","Found incomplete Bookkeepers! Check file for corruption.");
       return EL::StatusCode::FAILURE;
     }
 
-    // Find the smallest cycle number, the original first processing step/cycle
-    int minCycle(10000);
-    for ( auto cbk : *completeCBC ) {
-      if ( !( cbk->name().empty() )  && ( minCycle > cbk->cycle() ) ){ minCycle = cbk->cycle(); }
+  }
+
+  // Now, let's find the actual information
+  //
+  const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
+  if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ) {
+    Error("fileExecute()","Failed to retrieve CutBookkeepers from MetaData! Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+
+  // Find the smallest cycle number, the original first processing step/cycle
+  int minCycle(10000);
+  for ( auto cbk : *completeCBC ) {
+    if ( !( cbk->name().empty() )  && ( minCycle > cbk->cycle() ) ){ minCycle = cbk->cycle(); }
+  }
+
+  // Now, let's actually find the right one that contains all the needed info...
+  const xAOD::CutBookkeeper* allEventsCBK(nullptr);
+  const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
+
+  std::string derivationName = m_derivationName + "Kernel";
+
+  if ( m_isDerivation && m_useMetaData ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
+
+  int maxCycle(-1);
+  for ( const auto& cbk: *completeCBC ) {
+    if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
+      allEventsCBK = cbk;
+      maxCycle = cbk->cycle();
     }
-
-    // Now, let's actually find the right one that contains all the needed info...
-    const xAOD::CutBookkeeper* allEventsCBK(nullptr);
-    const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
-    std::string derivationName = m_derivationName + "Kernel";
-
-    if ( m_debug ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
-
-    int maxCycle(-1);
-    for ( const auto& cbk: *completeCBC ) {
-      if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
- 	allEventsCBK = cbk;
- 	maxCycle = cbk->cycle();
-      }
+    if ( m_isDerivation && m_useMetaData ) {
       if ( cbk->name() == derivationName ) {
- 	 DxAODEventsCBK = cbk;
+        DxAODEventsCBK = cbk;
       }
-    }
-
-    m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();
-    m_MD_initialSumW        = allEventsCBK->sumOfEventWeights();
-    m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
-
-    m_MD_finalNevents       = DxAODEventsCBK->nAcceptedEvents();
-    m_MD_finalSumW          = DxAODEventsCBK->sumOfEventWeights();
-    m_MD_finalSumWSquared   = DxAODEventsCBK->sumOfEventWeightsSquared();
-
-  } else {
-
-    // if not using a DAOD (or explicitly vetoing check on metadata),
-    // simply retrieve the tree entries and weight
-    //
-    const TTree* CollectionTree = static_cast<const TTree*>( wk()->inputFile()->Get("CollectionTree") );
-
-    if(CollectionTree){
-        m_MD_finalNevents       = m_MD_initialNevents     = CollectionTree->GetEntries();
-        m_MD_finalSumW          = m_MD_initialSumW        = CollectionTree->GetWeight() * CollectionTree->GetEntries();
-        m_MD_finalSumWSquared   = m_MD_initialSumWSquared = ( CollectionTree->GetWeight() * CollectionTree->GetWeight() ) * CollectionTree->GetEntries();
-    } else {
-        Info("fileExecute()", "File contains no CollectionTree. No MetaData retrievable.");
     }
   }
+
+  m_MD_initialNevents	  = allEventsCBK->nAcceptedEvents();
+  m_MD_initialSumW	  = allEventsCBK->sumOfEventWeights();
+  m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
+
+  m_MD_finalNevents	  = ( m_isDerivation && m_useMetaData ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
+  m_MD_finalSumW	  = ( m_isDerivation && m_useMetaData ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
+  m_MD_finalSumWSquared   = ( m_isDerivation && m_useMetaData ) ? DxAODEventsCBK->sumOfEventWeightsSquared() : m_MD_initialSumWSquared;
 
   // Write metadata event bookkeepers to histogram
   //
