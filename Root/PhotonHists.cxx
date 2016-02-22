@@ -16,42 +16,51 @@ PhotonHists :: ~PhotonHists () {
 StatusCode PhotonHists::initialize() {
   RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
 
-  // // details for jet cleaning
-  // if( m_infoSwitch->m_clean ) {
-  //   if(m_debug) Info("JetHists::initialize()", "adding clean plots");
-  //   // units?
-  //   m_jetTime     = book(m_name, "JetTimming" ,   "Jet Timming",      120, -80, 80);
-  //   m_LArQuality  = book(m_name, "LArQuality" ,   "LAr Quality",      120, -600, 600);
-  //   m_hecq        = book(m_name, "HECQuality" ,   "HEC Quality",      120, -10, 10);
-  //   m_negE        = book(m_name, "NegativeE" ,    "Negative Energy",  120, -10, 10);
-  //   m_avLArQF     = book(m_name, "AverageLArQF" , "<LAr Quality Factor>" , 120, 0, 1000);
-  //   m_bchCorrCell = book(m_name, "BchCorrCell" ,  "BCH Corr Cell" ,   120, 0, 600);
-  //   m_N90Const    = book(m_name, "N90Constituents", "N90 Constituents" ,  120, 0, 40);
-  // }
-
-  return StatusCode::SUCCESS;
-}
-
-StatusCode PhotonHists::execute( const xAOD::PhotonContainer* photons, float eventWeight ){
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(photons, eventWeight), "");
-
-  for( const auto& photon : *photons ) {
-    RETURN_CHECK("PhotonHists::execute()", this->execute( photon, eventWeight), "");
+  // isolation
+  if( m_infoSwitch->m_isolation ) {
+    if(m_debug) Info("PhotonHists::initialize()", "adding isolation plots");
+    m_ptcone20    = book(m_name, "ptcone20" ,     "ptcone20",      120, -10, 100);
+    m_ptcone30    = book(m_name, "ptcone30" ,     "ptcone30",      120, -10, 100);
+    m_ptcone40    = book(m_name, "ptcone40" ,     "ptcone40",      120, -10, 100);
+    m_ptvarcone20 = book(m_name, "ptvarcone20" ,  "ptvarcone20",   120, -10, 100);
+    m_ptvarcone30 = book(m_name, "ptvarcone30" ,  "ptvarcone30",   120, -10, 100);
+    m_ptvarcone40 = book(m_name, "ptvarcone40" ,  "ptvarcone40",   120, -10, 100);
+    m_topoetcone20= book(m_name, "topoetcone20" , "topoetcone20",  120, -10, 100);
+    m_topoetcone30= book(m_name, "topoetcone30" , "topoetcone30",  120, -10, 100);
+    m_topoetcone40= book(m_name, "topoetcone40" , "topoetcone40",  120, -10, 100);
   }
 
   return StatusCode::SUCCESS;
 }
 
 StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight ) {
+  return execute(static_cast<const xAOD::IParticle*>(photon), eventWeight);
+}
+
+StatusCode PhotonHists::execute( const xAOD::IParticle* particle, float eventWeight ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+
   if(m_debug) std::cout << "PhotonHists: in execute " <<std::endl;
 
-  // //basic
-  // m_photonPt ->        Fill( photon->pt()/1e3,    eventWeight );
-  // m_photonEta->        Fill( photon->eta(),       eventWeight );
-  // m_photonPhi->        Fill( photon->phi(),       eventWeight );
-  // m_photonM->          Fill( photon->m()/1e3,     eventWeight );
-  // m_photonE->          Fill( photon->e()/1e3,     eventWeight );
-  // m_photonRapidity->   Fill( photon->rapidity(),  eventWeight );
+  const xAOD::Photon* photon=dynamic_cast<const xAOD::Photon*>(particle);
+  if(photon==0)
+    {
+      ::Error( "PhotonHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Photon" ));
+      return StatusCode::FAILURE;
+    }
+
+  // isolation
+  if ( m_infoSwitch->m_isolation ) {
+    m_ptcone20    ->Fill( photon->isolation( xAOD::Iso::ptcone20    ) / 1e3, eventWeight );
+    m_ptcone30    ->Fill( photon->isolation( xAOD::Iso::ptcone30    ) / 1e3, eventWeight );
+    m_ptcone40    ->Fill( photon->isolation( xAOD::Iso::ptcone40    ) / 1e3, eventWeight );
+    m_ptvarcone20 ->Fill( photon->isolation( xAOD::Iso::ptvarcone20 ) / 1e3, eventWeight );
+    m_ptvarcone30 ->Fill( photon->isolation( xAOD::Iso::ptvarcone30 ) / 1e3, eventWeight );
+    m_ptvarcone40 ->Fill( photon->isolation( xAOD::Iso::ptvarcone40 ) / 1e3, eventWeight );
+    m_topoetcone20->Fill( photon->isolation( xAOD::Iso::topoetcone20) / 1e3, eventWeight );
+    m_topoetcone30->Fill( photon->isolation( xAOD::Iso::topoetcone30) / 1e3, eventWeight );
+    m_topoetcone40->Fill( photon->isolation( xAOD::Iso::topoetcone40) / 1e3, eventWeight );
+  }
 
   return StatusCode::SUCCESS;
 }

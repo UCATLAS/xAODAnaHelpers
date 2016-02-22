@@ -305,18 +305,21 @@ StatusCode JetHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode JetHists::execute( const xAOD::JetContainer* jets, float eventWeight ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(jets, eventWeight), "");
-
-  for( const auto& jet : *jets ) {
-    RETURN_CHECK("JetHists::execute()", this->execute( jet, eventWeight), "");
-  }
-
-  return StatusCode::SUCCESS;
+StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
+  return execute(static_cast<const xAOD::IParticle*>(jet), eventWeight);
 }
 
-StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
+StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+
   if(m_debug) std::cout << "JetHists: in execute " <<std::endl;
+
+  const xAOD::Jet* jet=dynamic_cast<const xAOD::Jet*>(particle);
+  if(jet==0)
+    {
+      ::Error( "JetHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Jet" ));
+      return StatusCode::FAILURE;
+    }
 
   // clean
   if( m_infoSwitch->m_clean ) {
