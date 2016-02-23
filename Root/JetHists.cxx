@@ -305,6 +305,14 @@ StatusCode JetHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
+void JetHists::record(EL::Worker* wk) {
+  HistogramManager::record(wk);
+
+  if(m_infoSwitch->m_tracksInJet){
+    m_tracksInJet -> record( wk );
+  }
+}
+
 StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
   return execute(static_cast<const xAOD::IParticle*>(jet), eventWeight);
 }
@@ -1123,6 +1131,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
   }
 
+  if(m_debug) std::cout << m_name << "::Matching tracks in Jet: " << m_infoSwitch->m_tracksInJet << std::endl;
+
   if( m_infoSwitch->m_tracksInJet ){
 
     const vector<const xAOD::TrackParticle*> matchedTracks = jet->auxdata< vector<const xAOD::TrackParticle*>  >(m_infoSwitch->m_trackName);
@@ -1130,6 +1140,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
     m_nTrk->Fill(matchedTracks.size(), eventWeight);
 
+    if(m_debug) std::cout << "Track Size " << matchedTracks.size() << std::endl;
     for(auto& trkPtr: matchedTracks){
       RETURN_CHECK("JetHists::execute()", m_tracksInJet->execute(trkPtr, jet, pvx, eventWeight), "");
     }
