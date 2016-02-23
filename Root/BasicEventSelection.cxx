@@ -605,45 +605,49 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   //------------------------------------------------------------------------------------------
+  // Update Pile-Up Reweighting
+  //------------------------------------------------------------------------------------------
+  if ( m_isMC && m_doPUreweighting ) {
+      m_pileuptool->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
+                                         //  1.) the PU weight ("PileupWeight")
+                                         //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
+                                         //  3.) the random run number ("RandomRunNumber")
+                                         //  4.) the random lumiblock number ("RandomLumiBlockNumber")
+    }
+
+  //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the *total* MC event weight
   // This will be the product of all the weights, SFs applied to MC downstream from this algo!
   //------------------------------------------------------------------------------------------
   static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
 
   float mcEvtWeight(1.0);
-  //float pileupWeight(1.0);
 
   if ( m_isMC ) {
-    const std::vector< float > weights = eventInfo->mcEventWeights(); // The weight (and systs) of all the MC events used in the simulation
-    if ( weights.size() > 0 ) mcEvtWeight = weights[0];
+    // Check if need to create xAH event weight
+    if(!mcEvtWeightDecor.isAvailable(*eventInfo)) {
+      const std::vector< float > weights = eventInfo->mcEventWeights(); // The weight (and systs) of all the MC events used in the simulation
+      if ( weights.size() > 0 ) mcEvtWeight = weights[0];
 
-    //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
+      //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
 
-    // kill the powheg event with a huge weight
-    if( m_cleanPowheg ) {
-      if( eventInfo->eventNumber() == 1652845 ) {
-        Info("execute()","Dropping huge weight event. Weight should be 352220000");
-        Info("execute()","WEIGHT : %f ", mcEvtWeight);
-        wk()->skipEvent();
-        return EL::StatusCode::SUCCESS; // go to next event
+      // kill the powheg event with a huge weight
+      if( m_cleanPowheg ) {
+  	if( eventInfo->eventNumber() == 1652845 ) {
+  	  Info("execute()","Dropping huge weight event. Weight should be 352220000");
+  	  Info("execute()","WEIGHT : %f ", mcEvtWeight);
+  	  wk()->skipEvent();
+  	  return EL::StatusCode::SUCCESS; // go to next event
+  	}
       }
-    }
-
-    if ( m_doPUreweighting ) {
-      m_pileuptool->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
-                                         //  1.) the PU weight ("PileupWeight")
-                                         //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
-                                         //  3.) the random run number ("RandomRunNumber")
-                                         //  4.) the random lumiblock number ("RandomLumiBlockNumber")
-
-      //pileupWeight = m_pileuptool->getCombinedWeight(*eventInfo) ;
-      //mcEvtWeight *= pileupWeight;
+  
+      // Decorate event with the *total* MC event weight
+      //
+      mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
+    } else {
+      mcEvtWeight=mcEvtWeightDecor(*eventInfo);
     }
   }
-
-  // Decorate event with the *total* MC event weight
-  //
-  mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
 
   // print every 1000 events, so we know where we are:
   //
