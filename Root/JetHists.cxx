@@ -1149,3 +1149,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   return StatusCode::SUCCESS;
 }
 
+StatusCode JetHists::finalize() {
+    m_tracksInJet->finalize();
+    IParticleHists::finalize();
+    return StatusCode::SUCCESS;
+}
