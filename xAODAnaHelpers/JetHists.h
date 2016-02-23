@@ -16,6 +16,7 @@ class JetHists : public IParticleHists
 
     virtual StatusCode initialize();
     virtual StatusCode execute( const xAOD::Jet* jet, float eventWeight );
+    virtual StatusCode finalize();
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using IParticleHists::execute; // overload
     virtual void record(EL::Worker* wk);
