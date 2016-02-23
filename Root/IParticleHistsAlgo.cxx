@@ -85,12 +85,10 @@ EL::StatusCode IParticleHistsAlgo :: postExecute () { return EL::StatusCode::SUC
 
 EL::StatusCode IParticleHistsAlgo :: finalize () {
   if(m_debug) Info("finalize()", m_name.c_str());
-  if(!m_plots.empty()){
-    for( auto plots : m_plots ) {
-      if(plots.second){
-        plots.second->finalize();
-        delete plots.second;
-      }
+  for( auto plots : m_plots ) {
+    if(plots.second){
+      plots.second->finalize();
+      delete plots.second;
     }
   }
   return EL::StatusCode::SUCCESS;
