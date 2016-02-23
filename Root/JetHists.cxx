@@ -8,7 +8,8 @@ using std::vector;
 
 JetHists :: JetHists (std::string name, std::string detailStr) :
   IParticleHists(name, detailStr, "jet", "jet"),
-  m_infoSwitch(new HelperClasses::JetInfoSwitch(m_detailStr))
+  m_infoSwitch(new HelperClasses::JetInfoSwitch(m_detailStr)),
+  m_tracksInJet(0)
 { }
 
 JetHists :: ~JetHists () {
@@ -1154,6 +1155,5 @@ StatusCode JetHists::finalize() {
         m_tracksInJet->finalize();
         delete m_tracksInJet;
     }
-    IParticleHists::finalize();
-    return StatusCode::SUCCESS;
+    return IParticleHists::finalize();
 }
