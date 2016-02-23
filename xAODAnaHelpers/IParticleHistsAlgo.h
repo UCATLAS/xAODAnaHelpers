@@ -56,7 +56,7 @@ public:
   /**
       @brief Fill histograms with particles in a container
       @rst
-          Tempalated (container type) function that loops over all systematics (or nominal only)
+          Templated (container type) function that loops over all systematics (or nominal only)
 	  and fills the corresponding histogram objects.
 
 	  The event weight, in case of Monte Carlo samples, is
@@ -66,12 +66,14 @@ public:
   */
   template<class HIST_T, class CONT_T> EL::StatusCode execute ()
   {
+    static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
+
     const xAOD::EventInfo* eventInfo(nullptr);
     RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
     float eventWeight(1);
-    if( eventInfo->isAvailable< float >( "mcEventWeight" ) ) {
-      eventWeight = eventInfo->auxdecor< float >( "mcEventWeight" );
+    if ( mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
+      eventWeight = mcEvtWeightAcc( *eventInfo );
     }
     // if(isMC())
     //   {
