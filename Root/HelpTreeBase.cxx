@@ -93,6 +93,9 @@ HelpTreeBase::~HelpTreeBase() {
     for(auto jetInfoSwitch: m_thisJetInfoSwitch)
         delete jetInfoSwitch.second;
 
+    for (auto jet: m_jets)
+      delete jet.second;
+
 }
 
 
