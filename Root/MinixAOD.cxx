@@ -342,10 +342,10 @@ EL::StatusCode MinixAOD :: finalize () {
   // Save cutbookkeeper
   if(m_copyCutBookkeeper)
     {
-      wk()->xaodEvent()->recordMeta(m_outputCBKContainer,"CutBookkeepers");
-      wk()->xaodEvent()->recordMeta(m_outputCBKContainer_aux,"CutBookkeepersAux.");
-      wk()->xaodEvent()->recordMeta(m_outputInCBKContainer,"IncompleteCutBookkeepers");
-      wk()->xaodEvent()->recordMeta(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux.");
+      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputCBKContainer      ,"CutBookkeepers")              , "");
+      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputCBKContainer_aux  ,"CutBookkeepersAux.")          , "");
+      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputInCBKContainer    ,"IncompleteCutBookkeepers")    , "");
+      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux."), "");
 
       m_outputCBKContainer->push_back(m_outputCBK);
     }
