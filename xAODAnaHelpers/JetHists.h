@@ -86,6 +86,7 @@ class JetHists : public IParticleHists
 
     // truth jets
     TH1F* m_truthLabelID;          //!
+    TH1F* m_hadronConeExclTruthLabelID;          //!
     TH1F* m_truthCount;            //!
     TH1F* m_truthPt;               //!
     TH1F* m_truthDr_B;             //!

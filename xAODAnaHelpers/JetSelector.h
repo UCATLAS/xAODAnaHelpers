@@ -46,6 +46,7 @@ public:
   float m_rapidity_max;           // require rapidity < rapidity_max
   float m_rapidity_min;           // require rapidity > rapidity_min
   int   m_truthLabel;             // require truth level on truth jets
+  bool  m_useHadronConeExcl;      // use HadronConeExclTruthLabelID for truth match (default)
 
   bool m_doJVF;                   // check JVF
   float m_pt_max_JVF;             // max pT (JVF is a pileup cut)
