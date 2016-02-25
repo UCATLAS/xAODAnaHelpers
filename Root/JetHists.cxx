@@ -134,10 +134,11 @@ StatusCode JetHists::initialize() {
     if(m_debug) Info("JetHists::initialize()", "adding truth plots");
 
     m_truthLabelID   = book(m_name, "TruthLabelID",        "Truth Label" ,          40,  -10.5,  29.5);
+    m_hadronConeExclTruthLabelID   = book(m_name, "HadronConeExclTruthLabelID",        "HadronConeExclTruthLabelID" ,          40,  -10.5,  29.5);
     m_truthCount     = book(m_name, "TruthCount",          "Truth Count" ,          60,  -10.5,  49.5);
     m_truthPt        = book(m_name, "TruthPt",             "Truth Pt",              100,   0,   100.0);
 
-    m_truthDr_B            = book(m_name, "TruthLabelDeltaR_B",   "Truth Label dR(b)" ,          120, -0.1,   1.0);
+    m_truthDr_B      = book(m_name, "TruthLabelDeltaR_B",   "Truth Label dR(b)" ,          120, -0.1,   1.0);
     m_truthDr_C      = book(m_name, "TruthLabelDeltaR_C",  "Truth Label dR(c)" ,    120, -0.1, 1.0);
     m_truthDr_T      = book(m_name, "TruthLabelDeltaR_T",  "Truth Label dR(tau)" ,  120, -0.1, 1.0);
 
@@ -581,6 +582,11 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       }
     }
 
+    static SG::AuxElement::ConstAccessor<int> HadronConeExclTruthLabelID ("HadronConeExclTruthLabelID");
+    if( HadronConeExclTruthLabelID.isAvailable( *jet ) ) {
+      m_hadronConeExclTruthLabelID ->  Fill( HadronConeExclTruthLabelID( *jet ), eventWeight );
+    }
+
     static SG::AuxElement::ConstAccessor<int> TruthCount ("TruthCount");
     if( TruthCount.isAvailable( *jet ) ) {
       m_truthCount ->  Fill( TruthCount( *jet ), eventWeight );
@@ -590,7 +596,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     if( TruthPt.isAvailable( *jet ) ) {
       m_truthPt ->  Fill( TruthPt( *jet )/1000, eventWeight );
     }
-
+    
     static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_B ("TruthLabelDeltaR_B");
     if( TruthLabelDeltaR_B.isAvailable( *jet ) ) {
       m_truthDr_B ->  Fill( TruthLabelDeltaR_B( *jet ), eventWeight );
