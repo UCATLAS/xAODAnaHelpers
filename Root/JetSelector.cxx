@@ -737,7 +737,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
     static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
     
-    if( HadronConeExclTruthLabelID.isAvailable( *jet) ){
+    if( m_useHadronConeExcl && HadronConeExclTruthLabelID.isAvailable( *jet) ){
       this_TruthLabel = HadronConeExclTruthLabelID(( *jet) );
     } else if ( TruthLabelID.isAvailable( *jet) ) {
       this_TruthLabel = TruthLabelID( *jet );
