@@ -608,11 +608,11 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Update Pile-Up Reweighting
   //------------------------------------------------------------------------------------------
   if ( m_isMC && m_doPUreweighting ) {
-    m_pileuptool->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
-                                       //  1.) the PU weight ("PileupWeight")
-                                       //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
-                                       //  3.) the random run number ("RandomRunNumber")
-                                       //  4.) the random lumiblock number ("RandomLumiBlockNumber")
+      m_pileuptool->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
+                                         //  1.) the PU weight ("PileupWeight")
+                                         //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
+                                         //  3.) the random run number ("RandomRunNumber")
+                                         //  4.) the random lumiblock number ("RandomLumiBlockNumber")
     }
 
   //------------------------------------------------------------------------------------------
