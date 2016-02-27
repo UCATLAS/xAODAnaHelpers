@@ -652,21 +652,20 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
         //
 	// NB.:
 	// All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
-	// The refernce  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
+	// The reference  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
 	// Remember that the beamspot size ( of O(10 micrometers) in the transverse plane) is << average vertex transverse position resolution ( O(60-80 micrometers) )
 	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
 	//
         m_muon_trkd0.push_back( trk->d0() );
         static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
-        float d0_significance =  ( d0SigAcc.isAvailable( *muon_itr ) ) ? fabs( d0SigAcc( *muon_itr ) ) : -9999.0;
+        float d0_significance =  ( d0SigAcc.isAvailable( *muon_itr ) ) ? fabs( d0SigAcc( *muon_itr ) ) : -1.0;
 	m_muon_trkd0sig.push_back( d0_significance );
-	float z0 =   trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
-								       // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
-	float theta = trk->theta();
-        m_muon_trkz0.push_back( z0 );
-        m_muon_trkz0sintheta.push_back(  z0 * sin(theta) );
+        m_muon_trkz0.push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
+        static SG::AuxElement::Accessor<float> z0sinthetaAcc("z0sintheta");
+        float z0sintheta =  ( z0sinthetaAcc.isAvailable( *muon_itr ) ) ? z0sinthetaAcc( *muon_itr ) : -999.0;
+        m_muon_trkz0sintheta.push_back( z0sintheta );
         m_muon_trkphi0.push_back( trk->phi0() );
-        m_muon_trktheta.push_back( theta );
+        m_muon_trktheta.push_back( trk->theta() );
         m_muon_trkcharge.push_back( trk->charge() );
         m_muon_trkqOverP.push_back( trk->qOverP() );
       } else {
@@ -1120,21 +1119,20 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
         //
 	// NB.:
 	// All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
-	// The refernce  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
+	// The reference  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
 	// Remember that the beamspot size ( of O(10 micrometers) in the transverse plane) is << average vertex transverse position resolution ( O(60-80 micrometers) )
 	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
 	//
         m_el_trkd0.push_back( trk->d0() );
         static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
-        float d0_significance =  ( d0SigAcc.isAvailable( *el_itr ) ) ? fabs( d0SigAcc( *el_itr ) ) : -9999.0;
-        m_el_trkd0sig.push_back( d0_significance );
-	      float z0 =  trk->z0()  - ( primaryVertex->z() - trk->vz() ) ; // distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() )
-								      // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
-	      float theta = trk->theta();
-        m_el_trkz0.push_back( z0 );
-        m_el_trkz0sintheta.push_back( z0 * sin(theta) );
+        float d0_significance =  ( d0SigAcc.isAvailable( *el_itr ) ) ? fabs( d0SigAcc( *el_itr ) ) : -1.0;
+	m_el_trkd0sig.push_back( d0_significance );
+        m_el_trkz0.push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
+        static SG::AuxElement::Accessor<float> z0sinthetaAcc("z0sintheta");
+        float z0sintheta =  ( z0sinthetaAcc.isAvailable( *el_itr ) ) ? z0sinthetaAcc( *el_itr ) : -999.0;
+        m_el_trkz0sintheta.push_back( z0sintheta );
         m_el_trkphi0.push_back( trk->phi0() );
-        m_el_trktheta.push_back( theta );
+        m_el_trktheta.push_back( trk->theta() );
         m_el_trkcharge.push_back( trk->charge() );
         m_el_trkqOverP.push_back( trk->qOverP() );
       } else {
