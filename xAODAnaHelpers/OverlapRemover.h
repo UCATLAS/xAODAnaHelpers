@@ -76,7 +76,7 @@ class OverlapRemover : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
-public:
+ public:
 
   // configuration variables
 
@@ -125,7 +125,7 @@ public:
   std::string  m_outContainerName_Taus;
   std::string  m_inputAlgoTaus;
 
-private:
+ protected:
 
   /** @brief A counter for the number of processed events */
   int m_numEvent;           //!
@@ -197,12 +197,8 @@ private:
   /** @brief Output auxiliary container name */
   std::string  m_outAuxContainerName_Taus;
 
-  // tools
- protected:
   /** @brief Pointer to the CP Tool which performs the actual OLR. */
   OverlapRemovalTool *m_overlapRemovalTool; //!
-
- private:
 
   /** @brief An enum encoding systematics according to the various objects */
   enum SystType {
