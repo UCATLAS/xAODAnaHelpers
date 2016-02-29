@@ -136,15 +136,17 @@ namespace HelperFunctions {
   template< typename T1, typename T2 >
     StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect, HelperClasses::ToolName tool_name ){
 
+
+      if (tool_name == HelperClasses::ToolName::CALIBRATOR || tool_name == HelperClasses::ToolName::CORRECTOR) /* copy full container */
+      {
+        for ( auto in_itr : *(intCont) ) outCont->push_back( in_itr );
+        return StatusCode::SUCCESS;
+      }
+
+
      SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
 
      for ( auto in_itr : *(intCont) ) {
-
-       if (tool_name == HelperClasses::ToolName::CALIBRATOR || tool_name == HelperClasses::ToolName::CORRECTOR) /* copy full container */
-       {
-         outCont->push_back( in_itr );
-	 continue;
-       }
 
        if ( !myAccessor.isAvailable(*(in_itr)) ) {
          std::stringstream ss; ss << in_itr->type();
