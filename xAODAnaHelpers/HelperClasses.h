@@ -32,6 +32,8 @@ namespace HelperClasses {
       OVERLAPREMOVER,
       CALIBRATOR,
       CORRECTOR,
+      SELECTOR,
+      DEFAULT
   };
 
   /* template enum parser

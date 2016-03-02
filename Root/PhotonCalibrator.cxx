@@ -407,7 +407,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
     // save pointers in ConstDataVector with same order
     //
-    RETURN_CHECK( "PhotonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibPhotonsSC.first, calibPhotonsCDV, "", ToolName::CALIBRATOR), "");
+    RETURN_CHECK( "PhotonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibPhotonsSC.first, calibPhotonsCDV), "");
 
     // Sort after copying to CDV.
     if ( m_sort ) {

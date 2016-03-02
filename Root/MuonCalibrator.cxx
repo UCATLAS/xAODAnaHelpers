@@ -282,7 +282,7 @@ EL::StatusCode MuonCalibrator :: execute ()
     // save pointers in ConstDataVector with same order
     //
     if ( m_debug ) { Info("execute()", "makeSubsetCont"); }
-    RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, "MuonCalibrator", ToolName::CALIBRATOR), "");
+    RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV), "");
     if ( m_debug ) { Info("execute()", "done makeSubsetCont"); }
 
     // sort after coping to CDV
