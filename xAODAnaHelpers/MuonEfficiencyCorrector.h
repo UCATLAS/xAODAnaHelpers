@@ -1,3 +1,10 @@
+/**
+ * @file   MuonEfficiencyCorrector.h
+ * @Author Marco Milesi <marco.milesi@cern.ch>
+ * @brief  Interface to the tools of the MuonEfficiencyCorrections package.
+ *
+ */
+
 #ifndef xAODAnaHelpers_MuonEfficiencyCorrector_H
 #define xAODAnaHelpers_MuonEfficiencyCorrector_H
 
@@ -60,6 +67,7 @@ public:
   std::string   m_outputSystNamesReco;
   std::string   m_outputSystNamesIso;
   std::string   m_outputSystNamesTrig;
+  std::string   m_outputSystNamesTrigMCEff;
   std::string   m_outputSystNamesTTVA;
 
 private:
@@ -67,7 +75,7 @@ private:
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
 
-  bool m_isMC;        //!
+  bool m_isMC;            //!
 
   int m_numEvent;         //!
   int m_numObject;        //!
@@ -79,9 +87,13 @@ private:
 
   // tools
   CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_Reco;     //!
+  std::string m_recoEffSF_tool_name;                                   //!
   CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_Iso;      //!
+  std::string m_isoEffSF_tool_name;                                    //!
   CP::MuonTriggerScaleFactors     *m_asgMuonEffCorrTool_muSF_Trig ;    //!
+  std::string m_trigEffSF_tool_name;                                   //!
   CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_TTVA;     //!
+  std::string m_TTVAEffSF_tool_name;                                   //!
   CP::PileupReweightingTool       *m_pileuptool;                       //!
 
   // variables that don't get filled at submission time should be
