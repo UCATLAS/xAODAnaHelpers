@@ -97,8 +97,8 @@ public:
     else { // get the list of systematics to run over
 
       // get vector of string giving the names
-      std::vector<std::string>* systNames(nullptr);
-      RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_verbose) ,"");
+      const std::vector<std::string>* systNames(nullptr);
+      RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, m_event, m_store, m_verbose) ,"");
 
       // loop over systematics
       for( auto systName : *systNames ) {
