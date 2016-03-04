@@ -570,9 +570,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
-  
-  //std::cout << "\n Has this tool been used? " << m_toolAlreadyUsed.find(m_recoEffSF_tool_name)->second << " \n" << std::endl;
-  
+    
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !( m_toolAlreadyUsed.find(m_recoEffSF_tool_name)->second ) ) {
@@ -587,7 +585,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if ( m_debug ) { Info("executeSF()", "Muon reco efficiency SF sys names vector name is: %s", sfName.c_str()); }
+      if ( m_debug ) { Info("executeSF()", "Muon reco efficiency SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str()); }
       sysVariationNamesReco->push_back(sfName);
 
       // apply syst
@@ -658,6 +656,16 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
     }  // close loop on reco efficiency SF systematics
 
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //    
+    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesReco, m_outputSystNamesReco), "Failed to record vector of systematic names for muon reco efficiency SF" ); }
+
   }
 
   // 2.
@@ -681,7 +689,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if ( m_debug ) { Info("executeSF()", "Muon iso efficiency SF sys names vector name is: %s", sfName.c_str()); }
+      if ( m_debug ) { Info("executeSF()", "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str()); }
       sysVariationNamesIso->push_back(sfName);
 
       // apply syst
@@ -752,6 +760,16 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
     }  // close loop on isolation efficiency SF systematics
 
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //
+    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesIso, m_outputSystNamesIso),   "Failed to record vector of systematic names for muon iso efficiency SF" ); }
+
   }
 
   // 3.
@@ -779,7 +797,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if ( m_debug ) { Info("executeSF()", "Trigger efficiency SF sys names vector name is: %s", sfName.c_str()); }
+      if ( m_debug ) { Info("executeSF()", "Trigger efficiency SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str()); }
       sysVariationNamesTrig->push_back(sfName);
 
       // apply syst
@@ -857,6 +875,16 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
     }  // close loop on trigger efficiency SF systematics
 
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //    
+    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names for muon trigger efficiency  SF" ); }
+
   }
   
   // 4.
@@ -880,7 +908,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if ( m_debug ) { Info("executeSF()", "Muon iso efficiency SF sys names vector name is: %s", sfName.c_str()); }
+      if ( m_debug ) { Info("executeSF()", "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str()); }
       sysVariationNamesTTVA->push_back(sfName);
 
       // apply syst
@@ -948,22 +976,17 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
 
     }  // close loop on TTVA efficiency SF systematics
 
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //
+    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTTVA, m_outputSystNamesTTVA), "Failed to record vector of systematic names for muon TTVA efficiency  SF" ); }
+
   }
   
-  // add list of reco/iso/trigger/TTVA efficiency SF systematics names to TStore
-  //
-  // NB: we need to make sure that this is not pushed more than once in TStore!
-  // This will be the case when this executeSF() function gets called for every syst varied input container,
-  // e.g. the different SC containers w/ calibration systematics upstream.
-  //
-  // Use the counter defined in execute() to check this is done only once
-  //
-  if ( countSyst == 0 ) {
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesReco) ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesReco, m_outputSystNamesReco), "Failed to record vector of systematic names for muon reco efficiency SF" ); }
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesIso) )  { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesIso, m_outputSystNamesIso),   "Failed to record vector of systematic names for muon iso efficiency SF" ); }
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesTrig) ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names for muon trigger efficiency  SF" ); }
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesTTVA) ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTTVA, m_outputSystNamesTTVA), "Failed to record vector of systematic names for muon TTVA efficiency  SF" ); }
-  }
-
   return EL::StatusCode::SUCCESS;
 }

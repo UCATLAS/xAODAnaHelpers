@@ -623,8 +623,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   // Every systematic will correspond to a different SF!
   //
 
-  std::cout << "\n Has this tool been used? " << m_toolAlreadyUsed.find(m_pidEffSF_tool_name)->second << " \n" << std::endl;
-  
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !( m_toolAlreadyUsed.find(m_pidEffSF_tool_name)->second ) ) {
@@ -640,7 +638,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if(m_debug) Info("executeSF()", "Electron PID efficiency sys names vector name is: %s", sfName.c_str());
+      if ( m_debug ) Info("executeSF()", "Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
       sysVariationNamesPID->push_back(sfName);
 
       // apply syst
@@ -720,6 +718,16 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       } // close electron loop
 
     }  // close loop on PID efficiency systematics
+    
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //
+    if ( countSyst == 0 ) { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesPID,  m_outputSystNamesPID ), "Failed to record vector of systematic names PID"  ); }
   
   }
   
@@ -745,7 +753,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if(m_debug) Info("executeSF()", "Electron Iso efficiency sys names vector name is: %s", sfName.c_str());
+      if ( m_debug ) Info("executeSF()", "Electron Iso efficiency sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
       sysVariationNamesIso->push_back(sfName);
 
       // apply syst
@@ -825,6 +833,16 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       } // close electron loop
 
     }  // close loop on Iso efficiency systematics
+    
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //
+    if ( countSyst == 0 ) { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesIso,  m_outputSystNamesIso), "Failed to record vector of systematic names Iso" ); }
 
   }
   
@@ -850,7 +868,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if(m_debug) Info("executeSF()", "Electron Reco efficiency SF decoration name is: %s", sfName.c_str());
+      if ( m_debug ) Info("executeSF()", "Electron Reco efficiency sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
       sysVariationNamesReco->push_back(sfName);
 
       // apply syst
@@ -930,6 +948,16 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       } // close electron loop
 
     }  // close loop on Reco efficiency systematics
+    
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //
+    if ( countSyst == 0 ) { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesReco, m_outputSystNamesReco), "Failed to record vector of systematic names Reco" ); }
 
   }
   
@@ -957,7 +985,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if(m_debug) Info("executeSF()", "Electron Trig efficiency SF decoration name is: %s", sfName.c_str());
+      if ( m_debug ) Info("executeSF()", "Electron Trig efficiency SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
       sysVariationNamesTrig->push_back(sfName);
 
       // apply syst
@@ -1037,6 +1065,16 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     }  // close loop on Trig efficiency SF systematics
 
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //
+    if ( countSyst == 0 ) { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names Trig" ); }
+
   }
   
   // 5.
@@ -1061,7 +1099,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if(m_debug) Info("executeSF()", "Electron Trig MC efficiency decoration name is: %s", sfName.c_str());
+      if ( m_debug ) Info("executeSF()", "Electron Trig MC efficiency sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
       sysVariationNamesTrigMCEff->push_back(sfName);
 
       // apply syst
@@ -1141,26 +1179,17 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     }  // close loop on Trig efficiency SF systematics
 
-  }
+    // Add list of systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSF() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    // Use the counter defined in execute() to check this is done only once per event
+    //
+    if ( countSyst == 0 ) { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrigMCEff, m_outputSystNamesTrigMCEff), "Failed to record vector of systematic names TrigMCEff" ); }
   
-  //
-  // add list of efficiency systematics names to TStore
-  //
-  // NB: we need to make sure that this is not pushed more than once in TStore!
-  // This will be the case when this executeSF() function gets called for every syst varied input container,
-  // e.g. the different SC containers w/ calibration systematics upstream.
-  //
-  // Use the counter defined in execute() to check this is done only once
-  //
-  // Also, make sure TStore does not contain the object yet (can happen if this module is instantiated more than once)
-  //
-  if ( countSyst == 0 ) {
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesPID) )       { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesPID,  m_outputSystNamesPID ), "Failed to record vector of systematic names PID"  ); }
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesReco) )      { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesReco, m_outputSystNamesReco), "Failed to record vector of systematic names Reco" ); }
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesIso) )       { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesIso,  m_outputSystNamesIso), "Failed to record vector of systematic names Iso" ); }
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesTrig) )      { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names Trig" ); }
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesTrigMCEff) ) { RETURN_CHECK( "ElectronEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrigMCEff, m_outputSystNamesTrigMCEff), "Failed to record vector of systematic names TrigMCEff" ); }
-  }
-
+  }  
+  
   return EL::StatusCode::SUCCESS;
 }
