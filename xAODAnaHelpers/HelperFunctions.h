@@ -18,6 +18,8 @@
 #include "AthContainers/ConstDataVector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 
+#include <xAODCore/ShallowAuxContainer.h>
+
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicSet.h"
@@ -413,6 +415,38 @@ namespace HelperFunctions {
   }
 
   /**
+    @brief Make a deep copy of a container and put it in the TEvent
+    @tparam T1              The type of the container you're going to deep copy into
+    @tparam T2              The type of the aux container you're going to deep copy into
+    @tparam T3              The type of the object inside the container you're going to deep copy
+    @param m_event          A pointer to the TEvent object
+    @param containerName    The name of the container to copy
+    @param cont             The container to deep copy, it should be a container of pointers (IParticleContainer or ConstDataVector)
+   */
+  template <typename T1, typename T2, typename T3>
+  StatusCode makeDeepCopy(xAOD::TEvent* m_event, std::string containerName, const T1* cont){
+    T1* cont_new = new T1;
+    T2* auxcont_new = new T2;
+    cont_new->setStore(auxcont_new);
+
+    if(!m_event->record(cont_new, containerName).isSuccess()){
+      std::cout << "can't record " << containerName << std::endl;
+      return StatusCode::FAILURE;
+    }
+    if(!m_event->record(auxcont_new, containerName+"Aux.").isSuccess()){
+      std::cout << "can't record aux" << containerName << std::endl;
+      return StatusCode::FAILURE;
+    }
+
+    for(const auto p: *cont){
+      T3* p_new = new T3;
+      cont_new->push_back(p_new);
+      *p_new = *p;
+    }
+    return StatusCode::SUCCESS;
+  }
+
+  /**
     @brief Copy a container from the TStore to be recorded in the TEvent (eg: to an output)
     @tparam T1              The type of the container you're going to record
     @tparam T2              The type of the aux container you're going to record
@@ -435,6 +469,34 @@ namespace HelperFunctions {
 
     if(!m_store->retrieve(cont, containerName).isSuccess()) return StatusCode::FAILURE;
     if(!m_store->retrieve(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+
+    if(!m_event->record(cont, containerName).isSuccess()) return StatusCode::FAILURE;
+    if(!m_event->record(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+    return StatusCode::SUCCESS;
+  }
+
+  /**
+    @brief Copy a shallow container from the TStore to be recorded in the TEvent (eg: to an output)
+    @tparam T1              The type of the container you're going to record
+    @param m_event          A pointer to the TEvent object
+    @param m_store          A pointer to the TStore object
+    @param containerName    The name of the container in the TStore to record to TEvent
+
+    @rst
+      If you have a container in the TStore, this function will record it into the output for you without an issue. As an example::
+
+        RETURN_CHECK("execute()", HelperFunctions::recordOutput<xAOD::JetContainer>(m_event, m_store, "BaselineJets", true));
+    @endrst
+   */
+  template <typename T1>
+  StatusCode recordOutput(xAOD::TEvent* m_event, xAOD::TStore* m_store, const std::string& containerName, bool shallowIO){
+    T1* cont(nullptr);
+    xAOD::ShallowAuxContainer* auxcont(nullptr);
+
+    if(!m_store->retrieve(cont, containerName).isSuccess()) return StatusCode::FAILURE;
+    if(!m_store->retrieve(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+
+    auxcont->setShallowIO(shallowIO);
 
     if(!m_event->record(cont, containerName).isSuccess()) return StatusCode::FAILURE;
     if(!m_event->record(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
