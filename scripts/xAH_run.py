@@ -317,7 +317,7 @@ if __name__ == "__main__":
           # Sample name
           sname='.'.join(os.path.basename(fname).split('.')[:-1]) # input filelist name without extension
           # Read settings
-          fcname=sname+'.config' # replace .txt with .config
+          fcname=os.path.dirname(fname)+'/'+sname+'.config' # replace .txt with .config
           config={}
           if os.path.exists(fcname): # load configuration if it exists
             with open(fcname, 'r') as f:
@@ -326,6 +326,7 @@ if __name__ == "__main__":
                 parts=line.split('=')
                 if len(parts)!=2: continue
                 config[parts[0].strip()]=parts[1].strip()
+
           xsec   =float(config.get('xsec'   ,1))
           filteff=float(config.get('filteff',1))
           nEvents=float(config.get('nEvents',1))
