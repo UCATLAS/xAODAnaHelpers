@@ -1,3 +1,10 @@
+/**
+ * @file   ElectronEfficiencyCorrector.h
+ * @Author Marco Milesi <marco.milesi@cern.ch>
+ * @brief  Interface to the tools of the ElectronEfficiencyCorrection package.
+ *
+ */
+
 #ifndef xAODAnaHelpers_ElectronEfficiencyCorrector_H
 #define xAODAnaHelpers_ElectronEfficiencyCorrector_H
 
@@ -29,23 +36,23 @@ public:
   			             // upstream algo (e.g., the SC containers with calibration systematics)
 
   float m_systValPID;
-  float m_systValReco;
   float m_systValIso;
+  float m_systValReco;  
   float m_systValTrig;
   float m_systValTrigMCEff;
   std::string m_systNamePID;
-  std::string m_systNameReco;
   std::string m_systNameIso;
+  std::string m_systNameReco;  
   std::string m_systNameTrig;
   std::string m_systNameTrigMCEff;
   std::string m_outputSystNamesPID;
-  std::string m_outputSystNamesReco;
   std::string m_outputSystNamesIso;
+  std::string m_outputSystNamesReco;  
   std::string m_outputSystNamesTrig;
   std::string m_outputSystNamesTrigMCEff;
   std::string m_corrFileNamePID;
-  std::string m_corrFileNameReco;
   std::string m_corrFileNameIso;
+  std::string m_corrFileNameReco;  
   std::string m_corrFileNameTrig;
   std::string m_corrFileNameTrigMCEff;
 
@@ -61,17 +68,22 @@ private:
   std::string m_Iso_WP;   //!
 
   std::vector<CP::SystematicSet> m_systListPID;  //!
-  std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListIso;  //!
+  std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
   std::vector<CP::SystematicSet> m_systListTrigMCEff; //!
 
   // tools
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID;  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID;  //!  
+  std::string m_pidEffSF_tool_name;                                   //!
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso;  //!
+  std::string m_IsoEffSF_tool_name;                                   //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco; //!
+  std::string m_RecoEffSF_tool_name;                                  //!
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig; //!
+  std::string m_TrigEffSF_tool_name;                                  //!
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff; //!
+  std::string m_TrigMCEff_tool_name;                                  //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

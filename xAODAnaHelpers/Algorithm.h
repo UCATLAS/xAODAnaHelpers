@@ -214,6 +214,14 @@ namespace xAH {
          */
         void unregisterInstance();
 
+        /**
+            @rst
+                Map containing info about whether a CP Tool of a given name has been already used or not by this :cpp:`xAH::Algorithm`
+		Its content must be set in `:cpp:EL::initialize()`, depending on whether the tool it's created from scratch, or retrieved from `:cpp:asg::ToolStore`
+            @endrst
+         */
+        std::map<std::string, bool> m_toolAlreadyUsed; //!
+
       private:
         /**
             @rst
