@@ -20,6 +20,7 @@
 #include "MuonEfficiencyCorrections/MuonTriggerScaleFactors.h"
 #include "MuonSelectorTools/MuonSelectionTool.h"
 #include "PileupReweighting/PileupReweightingTool.h"
+#include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -94,7 +95,8 @@ private:
   std::string m_trigEffSF_tool_name;                                   //!
   CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_TTVA;     //!
   std::string m_TTVAEffSF_tool_name;                                   //!
-  CP::PileupReweightingTool       *m_pileuptool;                       //!
+
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
