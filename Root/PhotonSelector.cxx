@@ -98,7 +98,7 @@ PhotonSelector :: PhotonSelector (std::string className) :
   // isolation stuff
   //
   m_MinIsoWPCut             = "";
-  m_IsoWPList		    = "Cone40CaloOnly,Cone40,Cone20";
+  m_IsoWPList		    = "FixedCutTightCaloOnly,FixedCutTight,FixedCutLoose";
 
   // trigger matching stuff
   //
