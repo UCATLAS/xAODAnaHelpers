@@ -288,10 +288,10 @@ EL::StatusCode TrackSelector :: executeTracksInJets ()
   const xAOD::JetContainer* inJets(nullptr);
   RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, m_verbose) ,"");
 
-  // get primary vertex
-  const xAOD::VertexContainer *vertices(nullptr);
-  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
-  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
+  //// get primary vertex
+  //const xAOD::VertexContainer *vertices(nullptr);
+  //RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
+  //const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
 
@@ -315,6 +315,7 @@ EL::StatusCode TrackSelector :: executeTracksInJets ()
     // loop on tracks with in jet
     //
     const vector<const xAOD::TrackParticle*> inputTracks = jet_itr->auxdata< vector<const xAOD::TrackParticle*>  >(m_inContainerName);
+    const xAOD::Vertex* pvx                              = jet_itr->auxdata< const xAOD::Vertex*                 >(m_inContainerName+"_vtx");
     for(const xAOD::TrackParticle* trkInJet: inputTracks){
 
       nObj++;
@@ -424,7 +425,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   //  Z0
   //
-  float z0 = (trk->z0() + trk->vz() - pvx->z());
+  float z0 = (trk->z0() + trk->vz() - HelperFunctions::getPrimaryVertexZ(pvx));
   if( m_z0_max != 1e8 ){
     if( fabs(z0) > m_z0_max ) {return 0; }
   }
