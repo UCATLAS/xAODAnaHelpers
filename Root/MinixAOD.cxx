@@ -195,12 +195,12 @@ EL::StatusCode MinixAOD :: initialize ()
   while(std::getline(ss, token, ' '))
     m_shallowCopyKeys_vec.push_back(MinixAODCopyInfo(token));
 
-  // A B C D ... Z -> {A, B, C, D, ..., Z}
+  // deep copy
   ss.clear(); ss.str(m_deepCopyKeys);
   while(std::getline(ss, token, ' '))
     m_deepCopyKeys_vec.push_back(MinixAODCopyInfo(token));
 
-  // A1|A2 B1|B2 C1|C2 ... Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
+  // smart copy
   ss.clear(); ss.str(m_particleCopyKeys);
   while(std::getline(ss, token, ' '))
     m_particleCopyKeys_vec.push_back(MinixAODCopyInfo(token));
