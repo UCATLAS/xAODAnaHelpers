@@ -143,14 +143,6 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   xAOD::Jet::Decorator<vector<const xAOD::TrackParticle*> > m_track_decoration("HLTBJetTracks");
   xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration  ("HLTBJetTracks_vtx");
 
-  const xAOD::VertexContainer *vertices = 0;
-  if (!m_event->retrieve(vertices, "PrimaryVertices").isSuccess()) {
-    Error("execute()", "Failed to retrieve PrimaryVertices. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
-  const xAOD::Vertex* pvx = HelperFunctions::getPrimaryVertex(vertices);
-
-
   //
   //  Make accessors/decorators
   //
@@ -159,73 +151,114 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   static SG::AuxElement::Decorator< const xAOD::BTagging* > hltBTagDecor( "HLTBTag" );
 
   Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItem);
-  auto bjetFeatureContainers = fc.containerFeature<xAOD::BTaggingContainer>();
+  vector<Trig::Feature<xAOD::BTaggingContainer> > bjetFeatureContainers = fc.containerFeature<xAOD::BTaggingContainer>();
 
+
+  //
+  //  Gettign the Primary Vertex
+  //
+  vector<Trig::Feature<xAOD::VertexContainer> > vtxFeatureContainers     = fc.containerFeature<xAOD::VertexContainer>("xPrimVx");
+  vector<Trig::Feature<xAOD::VertexContainer> > histVtxFeatureContainers = fc.containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx");
+
+  const xAOD::Vertex*               pvx = 0;
+  if(vtxFeatureContainers.size() == 1){
+    pvx = HelperFunctions::getPrimaryVertex(vtxFeatureContainers.at(0).cptr());
+  }else if(histVtxFeatureContainers.size() == 1){
+    pvx = HelperFunctions::getPrimaryVertex(histVtxFeatureContainers.at(0).cptr());
+  }else{
+    cout << "ERROR Vertex size not 1: " << vtxFeatureContainers.size() << " " << histVtxFeatureContainers.size() << " " << m_name << endl;
+    if(vtxFeatureContainers.size() > 0){
+      pvx = HelperFunctions::getPrimaryVertex(vtxFeatureContainers.at(0).cptr());
+    }else if(histVtxFeatureContainers.size() > 0){
+      pvx = HelperFunctions::getPrimaryVertex(histVtxFeatureContainers.at(0).cptr());
+    }
+  }
+
+  //
+  //  Loop on ROIs
+  //
   if(m_debug) cout << "ncontainers  " << bjetFeatureContainers.size() << endl;
+  unsigned int nTrigROIs = bjetFeatureContainers.size();
+  for(unsigned int iROI = 0; iROI < nTrigROIs; ++iROI){
 
-  for(auto  jcont : bjetFeatureContainers) {
-    for (const xAOD::BTagging*  hlt_btag : *jcont.cptr()) {
+    const xAOD::BTaggingContainer* btagCont = bjetFeatureContainers.at(iROI).cptr();
+    if(!btagCont->size() == 1){
+      cout << "ERROR BTaggingContainer size " << btagCont->size();
+      continue;
+    }
 
-      bool isAvailableJet = jetLinkAcc.isAvailable(*hlt_btag);
+    const xAOD::BTagging*  hlt_btag = btagCont->at(0);
 
-      if(isAvailableJet){
-	vector<ElementLink<DataVector<xAOD::IParticle> > > jetLinkObj = jetLinkAcc(*hlt_btag);
-	if(m_debug) cout << "Filling " << jetLinkObj.size() << " jets ... " <<endl;
+    bool isAvailableJet = jetLinkAcc.isAvailable(*hlt_btag);
+    if(!isAvailableJet){
+      cout << "ERROR Jet Link Acc not availible " << endl;;
+      continue;
+    }
 
-	if(!jetLinkObj.size()) continue;
+    vector<ElementLink<DataVector<xAOD::IParticle> > > jetLinkObj = jetLinkAcc(*hlt_btag);
+    if(m_debug) cout << "Filling " << jetLinkObj.size() << " jets ... " <<endl;
 
-	if(!jetLinkObj.at(0).isValid()) continue;
+    if(!jetLinkObj.size()) {
+      cout << "ERROR Jet Link Acc empty " << endl;;
+      continue;
+    }
 
-	if(m_debug) cout << "Casting "  << endl;
-	const xAOD::IParticle* iPart = *(jetLinkObj.at(0));
+    if(!jetLinkObj.at(0).isValid()) {
+      cout << "ERROR Jet Link inValid " << endl;;
+      continue;
+    }
 
+    if(m_debug) cout << "Casting "  << endl;
+    const xAOD::IParticle* iPart = *(jetLinkObj.at(0));
 
-	const xAOD::Jet* hltBJet = dynamic_cast<const xAOD::Jet*>(iPart);
-	if(m_debug) cout << "Adding hltBJet " << hltBJet << " " << hlt_btag << endl;
+    const xAOD::Jet* hltBJet = dynamic_cast<const xAOD::Jet*>(iPart);
+    if(m_debug) cout << "Adding hltBJet " << hltBJet << " " << hlt_btag << endl;
 
-	xAOD::Jet* newHLTBJet = new xAOD::Jet();
-	newHLTBJet->makePrivateStore( hltBJet );
+    xAOD::Jet* newHLTBJet = new xAOD::Jet();
+    newHLTBJet->makePrivateStore( hltBJet );
+    
+    //
+    // Add Link to BTagging Info
+    //
+    newHLTBJet->auxdecor< const xAOD::BTagging* >("HLTBTag") = hlt_btag;
+    if(m_debug) cout << "Added link " << endl;
 
-	//
-	// Add Link to BTagging Info
-	//
-	newHLTBJet->auxdecor< const xAOD::BTagging* >("HLTBTag") = hlt_btag;
-	if(m_debug) cout << "Added link " << endl;
+    //
+    // Add Tracks to BJet
+    //
+    bool isAvailableTrks = trkLinkAcc.isAvailable(*hlt_btag);
+    if(isAvailableTrks){
+      vector<ElementLink<xAOD::TrackParticleContainer> > trkLinkObj = trkLinkAcc(*hlt_btag);
+      if(m_debug) cout << "trkLinkObj has " << trkLinkObj.size() << " objects" << endl;
 
-	//
-	// Add Tracks to BJet
-	//
-	bool isAvailableTrks = trkLinkAcc.isAvailable(*hlt_btag);
-	if(isAvailableTrks){
-	  vector<ElementLink<xAOD::TrackParticleContainer> > trkLinkObj = trkLinkAcc(*hlt_btag);
-	  if(m_debug) cout << "trkLinkObj has " << trkLinkObj.size() << " objects" << endl;
-
-	  vector<const xAOD::TrackParticle*> matchedTracks;
-
-	  for(auto& trkPtr: trkLinkObj){
-	    const xAOD::TrackParticle* thisHLTTrk = *(trkPtr);
-	    if(m_debug) cout <<  "\tAdding  track "
-			     << thisHLTTrk->pt()   << " "
-			     << thisHLTTrk->eta()  << " "
-			     << thisHLTTrk->phi()  << endl;
-	    matchedTracks.push_back(thisHLTTrk);
-	  }
-
-	  if(m_debug) cout <<  "Adding tracks to jet " << endl;
-	  m_track_decoration(*newHLTBJet)  = matchedTracks;
-	  m_vtx_decoration  (*newHLTBJet)  = pvx;
-
-	}else{
-	  if(m_debug) cout << " Trks Not Avalible." << endl;
-	}
-
-	hltJets->push_back( newHLTBJet );
-	if(m_debug) cout << "pushed back " << endl;
-      }else{
-	if(m_debug) cout << " Jet Not Avalible." << endl;
+      vector<const xAOD::TrackParticle*> matchedTracks;
+      
+      if(m_debug)cout << "Trk Size" << trkLinkObj.size() << endl;
+      for(auto& trkPtr: trkLinkObj){
+        const xAOD::TrackParticle* thisHLTTrk = *(trkPtr);
+        if(m_debug) cout <<  "\tAdding  track "
+                         << thisHLTTrk->pt()   << " "
+                         << thisHLTTrk->eta()  << " "
+                         << thisHLTTrk->phi()  << endl;
+        matchedTracks.push_back(thisHLTTrk);
       }
-    }//BTagging
-  }//bjetFeatures
+
+      if(m_debug) cout <<  "Adding tracks to jet " << endl;
+      m_track_decoration(*newHLTBJet)  = matchedTracks;
+
+    }else{
+      if(m_debug) cout << " Trks Not Avalible." << endl;
+    }
+
+    //
+    //  Add the Vertex
+    //
+    m_vtx_decoration  (*newHLTBJet)  = pvx;
+
+    hltJets->push_back( newHLTBJet );
+    if(m_debug) cout << "pushed back " << endl;
+
+  }//ROIs
 
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected dijetsAux.");
