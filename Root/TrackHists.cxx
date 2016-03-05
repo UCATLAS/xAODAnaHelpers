@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "xAODAnaHelpers/tools/ReturnCheck.h"
+#include "xAODAnaHelpers/HelperFunctions.h"
 
 TrackHists :: TrackHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
@@ -145,8 +146,7 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
   float        ndof        = trk->numberDoF();
   float        chi2Prob    = TMath::Prob(chi2,ndof);
   float        d0          = trk->d0();
-  float        z0          = trk->z0() + trk->vz();
-  if(pvx)      z0          -= pvx->z();
+  float        z0          = trk->z0() + trk->vz() - HelperFunctions::getPrimaryVertexZ(pvx);
 
   float        sinT        = sin(trk->theta());
 

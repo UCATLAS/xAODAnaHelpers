@@ -83,7 +83,9 @@ StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD
   // Signed Z0
   //
   float signZ0           = getZ0Sign(trk, jet, pvx);
-  float z0               = trk->z0() + trk->vz() - pvx->z();
+
+  float z0               = trk->z0() + trk->vz() - HelperFunctions::getPrimaryVertexZ(pvx);
+
   float z0_wrtPV_signed  = fabs(z0)*signZ0;
   float z0Err            = sqrt((trk->definingParametersCovMatrixVec().at(2)));
   float sinT             = sin(trk->theta());
@@ -130,7 +132,9 @@ float TracksInJetHists::getZ0Sign(const xAOD::TrackParticle* trk, const xAOD::Je
   float trk_eta  = trk->eta();
   float jetEta   = jet->eta();
   float dEta     = jetEta - trk_eta;
-  float trk_z0_wrtPV = trk->z0() + trk->vz() - pvx->z();
+
+  float trk_z0_wrtPV = trk->z0() + trk->vz() - HelperFunctions::getPrimaryVertexZ(pvx);
+
   float signZ0 = (trk_z0_wrtPV*dEta) > 0 ? 1.0 : -1.0;
   return signZ0;
 }

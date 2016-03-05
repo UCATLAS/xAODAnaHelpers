@@ -38,6 +38,7 @@ namespace HelperFunctions {
   bool passPrimaryVertexSelection(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
   int countPrimaryVertices(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
   const xAOD::Vertex* getPrimaryVertex(const xAOD::VertexContainer* vertexContainer);
+  float getPrimaryVertexZ(const xAOD::Vertex* pvx);
   int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer);
   bool applyPrimaryVertexSelection( const xAOD::JetContainer* jets, const xAOD::VertexContainer* vertices );
   float GetBTagMV2c20_Cut( int efficiency );
