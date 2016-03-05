@@ -452,6 +452,36 @@ namespace HelperFunctions {
     @tparam T2              The type of the aux container you're going to record
     @param m_event          A pointer to the TEvent object
     @param m_store          A pointer to the TStore object
+    @param inputContainerName  The name of the container in the TStore to record to TEvent
+    @param outputContainerName The name of the container when recorded in TEvent
+
+    @rst
+      If you have a container in the TStore, this function will record it into the output for you without an issue. As an example::
+
+        RETURN_CHECK("execute()", HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, "BaselineJets", "OutputBaselineJets"));
+
+      where we build off the previous example of making a deep copy (see :cpp:func:`HelperFunctions::makeDeepCopy`).
+    @endrst
+   */
+  template <typename T1, typename T2>
+  StatusCode recordOutput(xAOD::TEvent* m_event, xAOD::TStore* m_store, const std::string& inputContainerName, const std::string& outputContainerName){
+    T1* cont(nullptr);
+    T2* auxcont(nullptr);
+
+    if(!m_store->retrieve(cont,    inputContainerName).isSuccess()) return StatusCode::FAILURE;
+    if(!m_store->retrieve(auxcont, inputContainerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+
+    if(!m_event->record(cont,      outputContainerName).isSuccess()) return StatusCode::FAILURE;
+    if(!m_event->record(auxcont,   outputContainerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+    return StatusCode::SUCCESS;
+  }
+
+  /**
+    @brief Copy a container from the TStore to be recorded in the TEvent (eg: to an output)
+    @tparam T1              The type of the container you're going to record
+    @tparam T2              The type of the aux container you're going to record
+    @param m_event          A pointer to the TEvent object
+    @param m_store          A pointer to the TStore object
     @param containerName    The name of the container in the TStore to record to TEvent
 
     @rst
@@ -464,14 +494,35 @@ namespace HelperFunctions {
    */
   template <typename T1, typename T2>
   StatusCode recordOutput(xAOD::TEvent* m_event, xAOD::TStore* m_store, std::string containerName){
+    return recordOutput<T1,T2>(m_event,m_store,containerName,containerName);
+  }
+
+  /**
+    @brief Copy a shallow container from the TStore to be recorded in the TEvent (eg: to an output)
+    @tparam T1              The type of the container you're going to record
+    @param m_event          A pointer to the TEvent object
+    @param m_store          A pointer to the TStore object
+    @param inputContainerName  The name of the container in the TStore to record to TEvent
+    @param outputContainerName The name of the container when recorded in TEvent
+
+    @rst
+      If you have a container in the TStore, this function will record it into the output for you without an issue. As an example::
+
+        RETURN_CHECK("execute()", HelperFunctions::recordOutput<xAOD::JetContainer>(m_event, m_store, "BaselineJets", "NewBaselineJets", true));
+    @endrst
+   */
+  template <typename T1>
+  StatusCode recordOutput(xAOD::TEvent* m_event, xAOD::TStore* m_store, const std::string& inputContainerName, const std::string& outputContainerName, bool shallowIO){
     T1* cont(nullptr);
-    T2* auxcont(nullptr);
+    xAOD::ShallowAuxContainer* auxcont(nullptr);
 
-    if(!m_store->retrieve(cont, containerName).isSuccess()) return StatusCode::FAILURE;
-    if(!m_store->retrieve(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+    if(!m_store->retrieve(cont,    inputContainerName).isSuccess()) return StatusCode::FAILURE;
+    if(!m_store->retrieve(auxcont, inputContainerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
 
-    if(!m_event->record(cont, containerName).isSuccess()) return StatusCode::FAILURE;
-    if(!m_event->record(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
+    auxcont->setShallowIO(shallowIO);
+
+    if(!m_event->record(cont,    outputContainerName).isSuccess()) return StatusCode::FAILURE;
+    if(!m_event->record(auxcont, outputContainerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
     return StatusCode::SUCCESS;
   }
 
@@ -490,17 +541,7 @@ namespace HelperFunctions {
    */
   template <typename T1>
   StatusCode recordOutput(xAOD::TEvent* m_event, xAOD::TStore* m_store, const std::string& containerName, bool shallowIO){
-    T1* cont(nullptr);
-    xAOD::ShallowAuxContainer* auxcont(nullptr);
-
-    if(!m_store->retrieve(cont, containerName).isSuccess()) return StatusCode::FAILURE;
-    if(!m_store->retrieve(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
-
-    auxcont->setShallowIO(shallowIO);
-
-    if(!m_event->record(cont, containerName).isSuccess()) return StatusCode::FAILURE;
-    if(!m_event->record(auxcont, containerName+"Aux.").isSuccess()) return StatusCode::FAILURE;
-    return StatusCode::SUCCESS;
+    return recordOutput<T1>(m_event,m_store,containerName,containerName,shallowIO);
   }
 
 } // close namespace HelperFunctions

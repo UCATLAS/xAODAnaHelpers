@@ -13,6 +13,43 @@
 #include <xAODCutFlow/CutBookkeeperAuxContainer.h>
 
 /**
+  @brief Information for copying a container
+*/
+class MinixAODCopyInfo
+{
+public:
+  /// Name of input container
+  std::string inputContainerName;
+
+  /// Name of output conainer
+  std::string outputContainerName;
+
+  /// Name of the systematics list (for particle copies only)
+  std::string systAlgo;
+
+  /// shallowIO mode (for shallw copies only)
+  bool shallowIO;
+
+public:
+  MinixAODCopyInfo() {}
+
+  /**
+     @rst
+      Parses a container copy string in the format
+       inputContainer*>outputContainer|systAlgo
+       
+       inputContainer - name of the container to copy
+       outputContainer - name for the container in the output file (optional, default is to use the same name)
+       systAlgo - name of the systematics list container (m_particleCopy only)
+       * - for shallow copy, set shallowIO=false
+     @endrst
+
+     @param copyString copy description string
+  */
+  MinixAODCopyInfo(const std::string& copyString);
+};
+
+/**
   @brief Produce xAOD outputs
   @rst
 
@@ -78,9 +115,9 @@ public:
 
       .. note:: This option is appropriate for existing deep-copied containers.
 
-      Container names should be space-delimited::
+      Container names should be space-delimited. To specify a new name for the output container, use ``>NewContainerName`` syntax.
 
-        "m_storeCopyKeys": "BrandNewJetContainer ReclusteredJets"
+        "m_storeCopyKeys": "BrandNewJetContainer ReclusteredJets>NewContainerName"
 
     @endrst
    */
@@ -103,11 +140,11 @@ public:
         False
           If this is set to false, you do not need to save the parent container. Instead add a * at the end to enable deep-copy.
 
-            "m_shallowCopyKeys": "SCAntiKt4EMTopoJets* SCMuons*"
+            "m_shallowCopyKeys": "SCAntiKt4EMTopoJets* SCMuons*>NewContainerName"
 
       .. warning:: Please note that the :code:`shallowIO` option is what determines how the memory is managed. If you run into issues with shallow-copied containers here, make sure you know whether this option was enabled or not before asking for help.
 
-      Always specify your string in a space-delimited format, adding a * for deep copy operations ``shallow container name``.
+      Always specify your string in a space-delimited format, adding a * for deep copy operations ``shallow container name``. To rename a container in output, use the ``>NewContainerName`` syntax.
 
     @endrst
    */
@@ -141,22 +178,28 @@ public:
        3. If it is is a ConstDataVector, a new deep-copy is saved.
        4. Rest is directly copied over from TEvent.
 
-      Always specify your string in a space-delimited format, with systematics list separated by | ``vector name|systAlgo``.
+      Always specify your string in a space-delimited format, with each container in the syntax ``inputContainer*>outputContainer|systAlgo``, where
+       
+       inputContainer - name of the container to copy
+       outputContainer - name for the container in the output file (optional, default is to use the same name)
+       systAlgo - name of the systematics list container
+       * - for shallow copy, set shallowIO=false
+
     @endrst
    */
   std::string m_particleCopyKeys;
 
 private:
   /// A vector of containers that are in TEvent that just need to be written to the output
-  std::vector<std::string> m_simpleCopyKeys_vec; //!
+  std::vector<MinixAODCopyInfo> m_simpleCopyKeys_vec; //!
   /// A vector of (container name, shallowIO) pairs for shallow-copied objects
-  std::vector<std::pair<std::string, bool>> m_shallowCopyKeys_vec; //!
+  std::vector<MinixAODCopyInfo> m_shallowCopyKeys_vec; //!
   /// A vector of containers that need to be deep-copied first before moving to TEvent
-  std::vector<std::string> m_deepCopyKeys_vec; //!
+  std::vector<MinixAODCopyInfo> m_deepCopyKeys_vec; //!
   /// A vector of containers that can be directly copied from TStore
-  std::vector<std::string> m_storeCopyKeys_vec; //!
+  std::vector<MinixAODCopyInfo> m_storeCopyKeys_vec; //!
   /// A vector of container for which mode should be determine automatically.
-  std::vector<std::pair<std::string, std::string>> m_particleCopyKeys_vec; //!
+  std::vector<MinixAODCopyInfo> m_particleCopyKeys_vec; //!
 
   /// Pointer for the File MetaData Tool
   xAODMaker::FileMetaDataTool          *m_fileMetaDataTool;    //!
