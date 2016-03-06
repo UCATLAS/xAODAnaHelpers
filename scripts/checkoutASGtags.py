@@ -56,7 +56,8 @@ dict_pkg = {
                       ],
             '2.3.38': ["atlasoff/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency/tags/xAODBTaggingEfficiency-00-00-26"],
             '2.3.39': ["atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-02-03"],
-            '2.3.41': []
+            '2.3.41': [],
+            '2.3.44': []
            }
 
 try:
@@ -87,20 +88,14 @@ for pkg in packages_to_patch:
 
 #### Update Run II GRLs ####
 print "Updating GRL..."
-GRL_AllGood_PeriodC = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v63-pro18-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
-GRL_AllGood_PeriodD = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v64-pro19_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
-GRL_AllGood_PeriodE = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v65-pro19-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
-GRL_AllGood_PeriodG = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v67-pro19-02_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
-GRL_AllGood_PeriodH = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v69-pro19-03_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
-GRL_AllGood_PeriodJ = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v70-pro19-04_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+GRL_AllGood_Nominal = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v73-pro19-08_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml"
+GRL_AllGood_25nsOnly = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v73-pro19-08_DQDefects-00-01-02_PHYS_StandardGRL_All_Good_25ns.xml"
+GRL_AllGood_IBLOff = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v73-pro19-08_DQDefects-00-01-02_PHYS_StandardGRL_All_Good_tolerable_IBLSTANDBY-DISABLE.xml"
 GRL_AtlasReady = "http://atlasdqm.web.cern.ch/atlasdqm/grlgen/Atlas_Ready/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml"
 try:
-  subprocess.call(["wget","-q",GRL_AllGood_PeriodC,"-O", "xAODAnaHelpers/data/PeriodC_"+GRL_AllGood_PeriodC.split('/')[-1]])
-  subprocess.call(["wget","-q",GRL_AllGood_PeriodD,"-O", "xAODAnaHelpers/data/PeriodD_"+GRL_AllGood_PeriodD.split('/')[-1]])
-  subprocess.call(["wget","-q",GRL_AllGood_PeriodE,"-O", "xAODAnaHelpers/data/PeriodE_"+GRL_AllGood_PeriodE.split('/')[-1]])
-  subprocess.call(["wget","-q",GRL_AllGood_PeriodG,"-O", "xAODAnaHelpers/data/PeriodG_"+GRL_AllGood_PeriodG.split('/')[-1]])
-  subprocess.call(["wget","-q",GRL_AllGood_PeriodH,"-O", "xAODAnaHelpers/data/PeriodH_"+GRL_AllGood_PeriodH.split('/')[-1]])
-  subprocess.call(["wget","-q",GRL_AllGood_PeriodJ,"-O", "xAODAnaHelpers/data/PeriodJ_"+GRL_AllGood_PeriodJ.split('/')[-1]])
+  subprocess.call(["wget","-q",GRL_AllGood_Nominal,"-O", "xAODAnaHelpers/data/"+GRL_AllGood_Nominal.split('/')[-1]])
+  subprocess.call(["wget","-q",GRL_AllGood_25nsOnly,"-O", "xAODAnaHelpers/data/25nsOnly_"+GRL_AllGood_25nsOnly.split('/')[-1]])
+  subprocess.call(["wget","-q",GRL_AllGood_IBLOff,"-O", "xAODAnaHelpers/data/IBLOff_"+GRL_AllGood_IBLOff.split('/')[-1]])
   subprocess.call(["wget","-q",GRL_AtlasReady,"-O","xAODAnaHelpers/data/"+GRL_AtlasReady.split('/')[-1]])
 except OSError as e:
   print "Error, wget is not available.  Will not download grl.  You can find the latest ATLASREADY version at", GRL_AtlasReady
