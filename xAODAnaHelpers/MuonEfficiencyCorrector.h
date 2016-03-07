@@ -20,6 +20,7 @@
 #include "MuonEfficiencyCorrections/MuonTriggerScaleFactors.h"
 #include "MuonSelectorTools/MuonSelectionTool.h"
 #include "PileupReweighting/PileupReweightingTool.h"
+#include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -44,6 +45,7 @@ public:
 
   // Trigger efficiency SF
   int           m_runNumber;
+  bool          m_useRandomRunNumber;
   std::string   m_WorkingPointRecoTrig;
   std::string   m_WorkingPointIsoTrig;
   std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
@@ -94,7 +96,8 @@ private:
   std::string m_trigEffSF_tool_name;                                   //!
   CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_TTVA;     //!
   std::string m_TTVAEffSF_tool_name;                                   //!
-  CP::PileupReweightingTool       *m_pileuptool;                       //!
+
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -120,7 +123,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF (  const xAOD::MuonContainer* inputMuons, unsigned int countSyst  );
+  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst  );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

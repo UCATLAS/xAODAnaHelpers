@@ -1,18 +1,3 @@
-/********************************************************
- *
- * Basic event selection. Performs general simple cuts
- * (GRL, Event Cleaning, Min nr. Tracks for PV candidate)
- *
- * G. Facini (gabriel.facini@cern.ch)
- * M. Milesi (marco.milesi@cern.ch)
- * J. Dandoy (jeff.dandoy@cern.ch)
- * J. Alison (john.alison@cern.ch)
- *
- *******************************************************/
-
-//#include "PATInterfaces/CorrectionCode.h"
-//#include "AsgTools/StatusCode.h"
-
 // EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
@@ -31,6 +16,7 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "PATInterfaces/CorrectionCode.h"
+//#include "AsgTools/StatusCode.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -46,7 +32,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
     Algorithm(className),
     m_PU_default_channel(0),
     m_grl(nullptr),
-    m_pileuptool(nullptr),
+    m_pileup_tool_handle("CP::PileupReweightingTool/PileupToolName"),
     m_trigConfTool(nullptr),
     m_trigDecTool(nullptr),
     m_histEventCount(nullptr),
@@ -219,7 +205,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       //
       const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
       if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
-	  Error("initializeEvent()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
+	  Error("fileExecute()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
 	  return EL::StatusCode::FAILURE;
       }
       bool allFromUnknownStream(true);
@@ -232,7 +218,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 	      }
 	  }
 	  if ( !allFromUnknownStream ) {
-	      Error("initializeEvent()","Found incomplete Bookkeepers! Check file for corruption.");
+	      Error("fileExecute()","Found incomplete Bookkeepers! Check file for corruption.");
 	      return EL::StatusCode::FAILURE;
 	  }
 
@@ -283,13 +269,13 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
       // Write metadata event bookkeepers to histogram
       //
-      Info("histInitialize()", "Meta data from this file:");
-      Info("histInitialize()", "Initial  events	 = %u",            static_cast<unsigned int>(m_MD_initialNevents) );
-      Info("histInitialize()", "Selected events	 = %u",            static_cast<unsigned int>(m_MD_finalNevents) );
-      Info("histInitialize()", "Initial  sum of weights = %f",         m_MD_initialSumW);
-      Info("histInitialize()", "Selected sum of weights = %f",         m_MD_finalSumW);
-      Info("histInitialize()", "Initial  sum of weights squared = %f", m_MD_initialSumWSquared);
-      Info("histInitialize()", "Selected sum of weights squared = %f", m_MD_finalSumWSquared);
+      Info("fileExecute()", "Meta data from this file:");
+      Info("fileExecute()", "Initial  events  = %u",	     static_cast<unsigned int>(m_MD_initialNevents) );
+      Info("fileExecute()", "Selected events  = %u",	     static_cast<unsigned int>(m_MD_finalNevents) );
+      Info("fileExecute()", "Initial  sum of weights = %f",	 m_MD_initialSumW);
+      Info("fileExecute()", "Selected sum of weights = %f",	 m_MD_finalSumW);
+      Info("fileExecute()", "Initial  sum of weights squared = %f", m_MD_initialSumWSquared);
+      Info("fileExecute()", "Selected sum of weights squared = %f", m_MD_finalSumWSquared);
 
       m_histEventCount -> Fill(1, m_MD_initialNevents);
       m_histEventCount -> Fill(2, m_MD_finalNevents);
@@ -329,12 +315,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // if truth level make sure parameters are set properly
   if( m_truthLevelOnly ) {
-    Info("configure()", "Truth only! Turn off trigger stuff");
+    Info("initialize()", "Truth only! Turn off trigger stuff");
     m_triggerSelection = "";
     m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
-    Info("configure()", "Truth only! Turn off GRL");
+    Info("initialize()", "Truth only! Turn off GRL");
     m_applyGRLCut = false;
-    Info("configure()", "Truth only! Turn off Pile-up Reweight");
+    Info("initialize()", "Truth only! Turn off Pile-up Reweight");
     m_doPUreweighting = false;
   }
 
@@ -450,9 +436,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //
 
   if ( m_doPUreweighting ) {
-    m_pileuptool = new CP::PileupReweightingTool("Pileup");
 
-    //m_pileuptool->EnableDebugging(true);
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.make("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");;
 
     std::vector<std::string> PRWFiles;
     std::vector<std::string> lumiCalcFiles;
@@ -493,15 +478,17 @@ EL::StatusCode BasicEventSelection :: initialize ()
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
 
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("ConfigFiles", PRWFiles), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("LumiCalcFiles", lumiCalcFiles), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
     if ( m_PU_default_channel ) {
-      RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DefaultChannel", m_PU_default_channel), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DefaultChannel", m_PU_default_channel), "");
     }
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DataScaleFactor", 1.0/1.16), "Failed to set pileup reweighting data scale factor");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DataScaleFactorUP", 1.0), "Failed to set pileup reweighting data scale factor up");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->setProperty("DataScaleFactorDOWN", 1.0/1.23), "Failed to set pileup reweighting data scale factor down");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileuptool->initialize(), "Failed to properly initialize CP::PileupReweightingTool");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.16), "Failed to set pileup reweighting data scale factor");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0), "Failed to set pileup reweighting data scale factor up");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.23), "Failed to set pileup reweighting data scale factor down");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.initialize(), "Failed to properly initialize CP::PileupReweightingTool");
+    //m_pileup_tool_handle->EnableDebugging(true);
+
   }
 
   // 3.
@@ -597,12 +584,12 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Update Pile-Up Reweighting
   //------------------------------------------------------------------------------------------
   if ( m_isMC && m_doPUreweighting ) {
-      m_pileuptool->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
-                                         //  1.) the PU weight ("PileupWeight")
-                                         //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
-                                         //  3.) the random run number ("RandomRunNumber")
-                                         //  4.) the random lumiblock number ("RandomLumiBlockNumber")
-    }
+      m_pileup_tool_handle->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
+                                                 //  1.) the PU weight ("PileupWeight")
+                                                 //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
+                                                 //  3.) the random run number ("RandomRunNumber")
+                                                 //  4.) the random lumiblock number ("RandomLumiBlockNumber")
+  }
 
   //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the *total* MC event weight
@@ -824,7 +811,6 @@ EL::StatusCode BasicEventSelection :: finalize ()
   m_RunNr_VS_EvtNr.clear();
 
   if ( m_grl )          { delete m_grl; m_grl = nullptr; }
-  if ( m_pileuptool )   { delete m_pileuptool;  m_pileuptool = nullptr; }
   if ( m_trigDecTool )  { delete m_trigDecTool;  m_trigDecTool = nullptr; }
   if ( m_trigConfTool ) { delete m_trigConfTool;  m_trigConfTool = nullptr; }
 

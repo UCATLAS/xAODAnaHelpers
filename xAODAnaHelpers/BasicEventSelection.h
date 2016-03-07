@@ -1,3 +1,14 @@
+/**
+ * @file   BasicEventSelection.h
+ * @Author Gabriel Facini <gabriel.facini@cern.ch>
+ * @Author Marco Milesi <marco.milesi@cern.ch>
+ * @Author Jeff Dandoy <jeff.dandoy@cern.ch>
+ * @Author John Alison <john.alison@cern.ch>
+ * @brief Algorithm performing general basic cuts for an analysis (GRL, Event Cleaning, Min nr. Tracks for PV candidate).
+ *
+ */
+
+
 #ifndef xAODAnaHelpers_BasicEventSelection_H
 #define xAODAnaHelpers_BasicEventSelection_H
 
@@ -7,6 +18,7 @@
 // rootcore includes
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
 #include "PileupReweighting/PileupReweightingTool.h"
+#include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -69,9 +81,9 @@ class BasicEventSelection : public xAH::Algorithm
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr;
 
   private:
-    GoodRunsListSelectionTool*   m_grl;        //!
-    CP::PileupReweightingTool*   m_pileuptool; //!
 
+    GoodRunsListSelectionTool*   m_grl;        //!
+    asg::AnaToolHandle<CP::IPileupReweightingTool>   m_pileup_tool_handle; //!
     TrigConf::xAODConfigTool*    m_trigConfTool;  //!
     Trig::TrigDecisionTool*      m_trigDecTool;   //!
 
