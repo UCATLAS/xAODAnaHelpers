@@ -75,6 +75,10 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_derivationName;
     bool m_useMetaData;
 
+    // Output Stream Names
+    std::string m_metaDataStreamName;
+    std::string m_cutFlowStreamName;
+
     /* Check for duplicated events in Data and MC */
     bool m_checkDuplicatesData;
     bool m_checkDuplicatesMC;

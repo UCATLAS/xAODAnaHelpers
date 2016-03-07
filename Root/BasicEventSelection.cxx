@@ -66,6 +66,10 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   // Metadata
   m_useMetaData = true;
 
+  // Output Stream Names
+  m_metaDataStreamName = "metadata";
+  m_cutFlowStreamName = "cutflow";
+
   // Check for duplicated events in Data and MC
   m_checkDuplicatesData = false;
   m_checkDuplicatesMC	= false;
@@ -124,10 +128,12 @@ EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
   // let's initialize the algorithm to use the xAODRootAccess package
   xAOD::Init("BasicEventSelection").ignore(); // call before opening first file
 
-  EL::OutputStream outForCFlow("cutflow");
-  job.outputAdd ( outForCFlow );
-  EL::OutputStream outForMetadata("metadata");
-  job.outputAdd ( outForMetadata );
+
+  EL::OutputStream outForCFlow(m_cutFlowStreamName);
+  if(!job.outputHas(m_cutFlowStreamName) ){job.outputAdd ( outForCFlow );}
+
+  EL::OutputStream outForMetadata(m_metaDataStreamName);
+  if(!job.outputHas(m_metaDataStreamName) ){job.outputAdd ( outForMetadata );}
 
   return EL::StatusCode::SUCCESS;
 }
@@ -145,7 +151,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   // write the metadata hist to this file so algos downstream can pick up the pointer
-  TFile *fileMD = wk()->getOutputFile ("metadata");
+  TFile *fileMD = wk()->getOutputFile (m_metaDataStreamName);
   fileMD->cd();
 
   // event counts from meta data
@@ -350,7 +356,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // write the cutflows to this file so algos downstream can pick up the pointer
   //
-  TFile *fileCF = wk()->getOutputFile ("cutflow");
+  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
   fileCF->cd();
 
   // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
