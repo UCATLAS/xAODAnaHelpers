@@ -81,6 +81,9 @@ public:
 class MinixAOD : public xAH::Algorithm
 {
 public:
+  /// XRootD path to copy file to (leave empty to save to disk)
+  std::string m_outputXRootD;
+
   /// name of the output file to use for xAOD dumping
   std::string m_outputFileName;
 

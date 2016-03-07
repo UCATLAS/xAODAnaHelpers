@@ -8,7 +8,8 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 // output stream
-#include "EventLoop/OutputStream.h"
+#include <EventLoop/OutputStream.h>
+#include <SampleHandler/DiskOutputXRD.h>
 
 // EDM include(s):
 #include "xAODCore/AuxContainerBase.h"
@@ -68,6 +69,7 @@ MinixAOD :: MinixAOD (std::string className) :
 {
   Info("MinixAOD()", "Calling constructor");
 
+  m_outputXRootD = "";
   m_outputFileName = "out_miniXAOD";
   m_createOutputFile = true;
   m_copyFileMetaData = false;
@@ -89,6 +91,7 @@ EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
   // only create the output xaod if requested
   if(m_createOutputFile){
     EL::OutputStream out_xAOD (m_outputFileName, "xAOD");
+    if(!m_outputXRootD.empty()) out_xAOD.output(new SH::DiskOutputXRD(m_outputXRootD));
     job.outputAdd (out_xAOD);
   }
 
