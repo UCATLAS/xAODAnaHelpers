@@ -75,7 +75,14 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_derivationName;
     bool m_useMetaData;
 
-    // Output Stream Names
+    /* Output Stream Names */
+
+    /*
+        The following public variables allow for rerouting of the 
+        metadata and cutflow histograms to non-default output
+        streams. E.g. can combine all outputs into a single stream
+    */
+    
     std::string m_metaDataStreamName;
     std::string m_cutFlowStreamName;
 
