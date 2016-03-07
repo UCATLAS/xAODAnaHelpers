@@ -175,7 +175,7 @@ prun.add_argument('--optGridMaxNFilesPerJob',  metavar='', type=int, required=Fa
 prun.add_argument('--optGridUseChirpServer',   metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridExpress',          metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridNoSubmit',         metavar='', type=int, required=False, default=None)
-prun.add_argument('--optGridMergeOutput',      metavar='', type=int, required=False, default=None)
+prun.add_argument('--optGridMergeOutput',      metavar='', type=float, required=False, default=None)
 prun.add_argument('--optTmpDir',               metavar='', type=str, required=False, default=None)
 prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
 prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
