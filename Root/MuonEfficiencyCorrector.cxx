@@ -35,7 +35,7 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
     m_asgMuonEffCorrTool_muSF_Iso(nullptr),
     m_asgMuonEffCorrTool_muSF_Trig(nullptr),
     m_asgMuonEffCorrTool_muSF_TTVA(nullptr),
-    m_pileup_tool_handle("CP::PileupReweightingTool/Pileup")
+    m_pileup_tool_handle("CP::PileupReweightingTool/PileupToolName")
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -64,7 +64,9 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
 
   // Trigger efficiency SF
   //
-  m_runNumber                  = 900000; // do NOT change this default value!
+  m_runNumber                  = 276329; 
+  m_useRandomRunNumber         = true;
+  
   m_WorkingPointRecoTrig       = "Loose";
   m_WorkingPointIsoTrig        = "LooseTrackOnly";
   m_SingleMuTrig               = "HLT_mu20_iloose_L1MU15";
@@ -284,12 +286,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_trigEffSF_tool_name = "MuonTriggerScaleFactors_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
 
   if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name) ) {
+  
     m_asgMuonEffCorrTool_muSF_Trig = asg::ToolStore::get<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name);
     m_toolAlreadyUsed[m_trigEffSF_tool_name] = true;
+  
   } else {
     m_asgMuonEffCorrTool_muSF_Trig = new CP::MuonTriggerScaleFactors(m_trigEffSF_tool_name);
     m_toolAlreadyUsed[m_trigEffSF_tool_name] = false;
-    int runNumber(m_runNumber);
 
     RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.make("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");;
     RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.initialize(), "Failed to properly initialize CP::PileupReweightingTool");
@@ -298,16 +301,14 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     // use the random runNumber weighted by integrated luminosity got from CP::PileupReweightingTool::getRandomRunNumber()
     // Source: // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Generating_PRW_config_files
     //
-    if ( m_isMC && m_runNumber == 900000 ) {
-      runNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, false );
-      Info("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from CP::PileupReweightingTool::getRandomRunNumber()", runNumber);
-    } else {
-      Warning("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from user's configuration - NOT RECOMMENDED", runNumber );
+    
+    if ( m_isMC && !m_useRandomRunNumber ) {
+      Warning("initialize()","CP::MuonTriggerScaleFactors - setting runNumber %i read from user's configuration - NOT RECOMMENDED", m_runNumber );
+      if( m_asgMuonEffCorrTool_muSF_Trig->setRunNumber( m_runNumber ) == CP::CorrectionCode::Error ) {
+        Warning("initialize()","Cannot set RunNumber for MuonTriggerScaleFactors tool");
+      }
     }
-    if( m_asgMuonEffCorrTool_muSF_Trig->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
-      Warning("initialize()","Cannot set RunNumber for MuonTriggerScaleFactors tool");
-    }
-
+    
     // Add an "Iso" prefix to the WP (required for tool configuration)
     //
     std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
@@ -443,7 +444,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
     // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
     //
-    this->executeSF( inputMuons, countInputCont );
+    this->executeSF( eventInfo, inputMuons, countInputCont );
 
   } else {
   // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo. This is the case of calibrators: one different SC
@@ -472,7 +473,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
 	   // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
 	   //
-	   this->executeSF( inputMuons, countInputCont );
+           this->executeSF( eventInfo, inputMuons, countInputCont );
 
 	   // increment counter
 	   //
@@ -545,7 +546,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer* inputMuons, unsigned int countSyst  )
+EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst  )
 {
 
   //
@@ -785,6 +786,27 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF (  const xAOD::MuonContainer
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !( m_toolAlreadyUsed.find(m_trigEffSF_tool_name)->second ) ) {
+
+    // Unless specifically switched off by the user,
+    // use the per-event random runNumber weighted by integrated luminosity got from CP::PileupReweightingTool::getRandomRunNumber()
+    // Source: 
+    // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Generating_PRW_config_files
+    // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MCPAnalysisGuidelinesMC15#Muon_trigger_efficiency_scale_fa
+    //
+    if ( m_isMC && m_useRandomRunNumber ) {
+    
+      // Use mu-dependent randomization (recommended)
+      //
+      int randRunNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, true );
+      
+      int runNumber = ( randRunNumber != 0 ) ? randRunNumber : m_runNumber;
+
+      if( m_asgMuonEffCorrTool_muSF_Trig->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
+    	Error("executeSF()", "Failed to set RunNumber for MuonTriggerScaleFactors tool");
+    	return EL::StatusCode::FAILURE;
+      }
+      	
+    }
 
     for ( const auto& syst_it : m_systListIso ) {
 

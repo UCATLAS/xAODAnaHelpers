@@ -45,6 +45,7 @@ public:
 
   // Trigger efficiency SF
   int           m_runNumber;
+  bool          m_useRandomRunNumber;
   std::string   m_WorkingPointRecoTrig;
   std::string   m_WorkingPointIsoTrig;
   std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
@@ -122,7 +123,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF (  const xAOD::MuonContainer* inputMuons, unsigned int countSyst  );
+  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst  );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

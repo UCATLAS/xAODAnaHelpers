@@ -1,3 +1,14 @@
+/**
+ * @file   BasicEventSelection.h
+ * @Author Gabriel Facini <gabriel.facini@cern.ch>
+ * @Author Marco Milesi <marco.milesi@cern.ch>
+ * @Author Jeff Dandoy <jeff.dandoy@cern.ch>
+ * @Author John Alison <john.alison@cern.ch>
+ * @brief Algorithm performing general basic cuts for an analysis (GRL, Event Cleaning, Min nr. Tracks for PV candidate).
+ *
+ */
+
+
 #ifndef xAODAnaHelpers_BasicEventSelection_H
 #define xAODAnaHelpers_BasicEventSelection_H
 

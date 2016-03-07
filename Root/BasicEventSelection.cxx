@@ -1,18 +1,3 @@
-/********************************************************
- *
- * Basic event selection. Performs general simple cuts
- * (GRL, Event Cleaning, Min nr. Tracks for PV candidate)
- *
- * G. Facini (gabriel.facini@cern.ch)
- * M. Milesi (marco.milesi@cern.ch)
- * J. Dandoy (jeff.dandoy@cern.ch)
- * J. Alison (john.alison@cern.ch)
- *
- *******************************************************/
-
-//#include "PATInterfaces/CorrectionCode.h"
-//#include "AsgTools/StatusCode.h"
-
 // EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
@@ -31,6 +16,7 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "PATInterfaces/CorrectionCode.h"
+//#include "AsgTools/StatusCode.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -46,7 +32,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
     Algorithm(className),
     m_PU_default_channel(0),
     m_grl(nullptr),
-    m_pileup_tool_handle("CP::PileupReweightingTool/Pileup"),
+    m_pileup_tool_handle("CP::PileupReweightingTool/PileupToolName"),
     m_trigConfTool(nullptr),
     m_trigDecTool(nullptr),
     m_histEventCount(nullptr),
@@ -603,7 +589,7 @@ EL::StatusCode BasicEventSelection :: execute ()
                                                  //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                                  //  3.) the random run number ("RandomRunNumber")
                                                  //  4.) the random lumiblock number ("RandomLumiBlockNumber")
-    }
+  }
 
   //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the *total* MC event weight
