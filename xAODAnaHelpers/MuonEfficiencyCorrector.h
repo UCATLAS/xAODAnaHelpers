@@ -1,6 +1,6 @@
 /**
  * @file   MuonEfficiencyCorrector.h
- * @Author Marco Milesi <marco.milesi@cern.ch>
+ * @author Marco Milesi <marco.milesi@cern.ch>
  * @brief  Interface to the tools of the MuonEfficiencyCorrections package.
  *
  */

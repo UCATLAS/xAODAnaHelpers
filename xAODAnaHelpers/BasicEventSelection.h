@@ -1,13 +1,12 @@
 /**
  * @file   BasicEventSelection.h
- * @Author Gabriel Facini <gabriel.facini@cern.ch>
- * @Author Marco Milesi <marco.milesi@cern.ch>
- * @Author Jeff Dandoy <jeff.dandoy@cern.ch>
- * @Author John Alison <john.alison@cern.ch>
- * @brief Algorithm performing general basic cuts for an analysis (GRL, Event Cleaning, Min nr. Tracks for PV candidate).
+ * @author Gabriel Facini <gabriel.facini@cern.ch>
+ * @author Marco Milesi <marco.milesi@cern.ch>
+ * @author Jeff Dandoy <jeff.dandoy@cern.ch>
+ * @author John Alison <john.alison@cern.ch>
+ * @brief  Algorithm performing general basic cuts for an analysis (GRL, Event Cleaning, Min nr. Tracks for PV candidate).
  *
  */
-
 
 #ifndef xAODAnaHelpers_BasicEventSelection_H
 #define xAODAnaHelpers_BasicEventSelection_H
@@ -78,11 +77,11 @@ class BasicEventSelection : public xAH::Algorithm
     /* Output Stream Names */
 
     /*
-        The following public variables allow for rerouting of the 
+        The following public variables allow for rerouting of the
         metadata and cutflow histograms to non-default output
         streams. E.g. can combine all outputs into a single stream
     */
-    
+
     std::string m_metaDataStreamName;
     std::string m_cutFlowStreamName;
 
