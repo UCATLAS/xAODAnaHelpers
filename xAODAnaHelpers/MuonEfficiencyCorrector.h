@@ -88,16 +88,15 @@ private:
   std::vector<CP::SystematicSet> m_systListTTVA; //!
 
   // tools
-  CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_Reco;     //!
-  std::string m_recoEffSF_tool_name;                                   //!
-  CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_Iso;      //!
-  std::string m_isoEffSF_tool_name;                                    //!
-  CP::MuonTriggerScaleFactors     *m_asgMuonEffCorrTool_muSF_Trig ;    //!
-  std::string m_trigEffSF_tool_name;                                   //!
-  CP::MuonEfficiencyScaleFactors  *m_asgMuonEffCorrTool_muSF_TTVA;     //!
-  std::string m_TTVAEffSF_tool_name;                                   //!
-
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle; //!
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool_handle; //!
+  std::string m_recoEffSF_tool_name;                                          //!
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muIsoSF_tool_handle;  //!
+  std::string m_isoEffSF_tool_name;                                           //!
+  asg::AnaToolHandle<CP::IMuonTriggerScaleFactors> m_muTrigSF_tool_handle;    //!
+  std::string m_trigEffSF_tool_name;                                          //!
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muTTVASF_tool_handle; //!
+  std::string m_TTVAEffSF_tool_name;                                          //!
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;        //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

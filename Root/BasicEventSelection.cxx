@@ -32,7 +32,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
     Algorithm(className),
     m_PU_default_channel(0),
     m_grl(nullptr),
-    m_pileup_tool_handle("CP::PileupReweightingTool/PileupToolName"),
+    m_pileup_tool_handle("CP::PileupReweightingTool/PileupToolName", nullptr),
     m_trigConfTool(nullptr),
     m_trigDecTool(nullptr),
     m_histEventCount(nullptr),
