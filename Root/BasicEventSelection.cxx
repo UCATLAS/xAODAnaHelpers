@@ -443,8 +443,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   if ( m_doPUreweighting ) {
 
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.make("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");;
-
     std::vector<std::string> PRWFiles;
     std::vector<std::string> lumiCalcFiles;
 
@@ -475,15 +473,17 @@ EL::StatusCode BasicEventSelection :: initialize ()
         tmp_lumiCalcFileNames.erase(0, pos+1);
       }
     }
-    Info("initialize()", "CP::PileupReweightingTool is adding Pileup files:");
+    Info("initialize()", "Adding Pileup files for CP::PileupReweightingTool:");
     for( unsigned int i=0; i < PRWFiles.size(); ++i){
       printf( "\t %s \n", PRWFiles.at(i).c_str() );
     }
-    Info("initialize()", "CP::PileupReweightingTool is adding LumiCalc files:");
+    Info("initialize()", "Adding LumiCalc files for CP::PileupReweightingTool:");
     for( unsigned int i=0; i < lumiCalcFiles.size(); ++i){
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
 
+    RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "" );
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.makeNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
     if ( m_PU_default_channel ) {

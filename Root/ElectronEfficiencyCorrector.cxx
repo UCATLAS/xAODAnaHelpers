@@ -192,13 +192,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   std::cout << "\n\n PID wp: " << m_PID_WP << "\n\n" << std::endl;
 
   m_pidEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_PID_" + m_PID_WP;
+
+  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name), "" );
   
   if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name) ) {
     m_asgElEffCorrTool_elSF_PID = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name);
-    m_toolAlreadyUsed[m_pidEffSF_tool_name] = true;
   } else {
     m_asgElEffCorrTool_elSF_PID = new AsgElectronEfficiencyCorrectionTool(m_pidEffSF_tool_name);
-    m_toolAlreadyUsed[m_pidEffSF_tool_name] = false;
     m_asgElEffCorrTool_elSF_PID->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
     std::vector<std::string> inputFilesPID{ m_corrFileNamePID } ; // initialise vector w/ all the files containing corrections
     RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("CorrectionFileNameList",inputFilesPID),"Failed to set property CorrectionFileNameList");
@@ -256,12 +256,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   m_IsoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Iso_" + m_Iso_WP;
 
+  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name), "" );
+
   if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name) ) {
     m_asgElEffCorrTool_elSF_Iso = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name);
-    m_toolAlreadyUsed[m_IsoEffSF_tool_name] = true;
   } else {
     m_asgElEffCorrTool_elSF_Iso = new AsgElectronEfficiencyCorrectionTool(m_IsoEffSF_tool_name);
-    m_toolAlreadyUsed[m_IsoEffSF_tool_name] = false;
     m_asgElEffCorrTool_elSF_Iso->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
     std::vector<std::string> inputFilesIso{ m_corrFileNameIso } ; // initialise vector w/ all the files containing corrections
     RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Iso->setProperty("CorrectionFileNameList",inputFilesIso),"Failed to set property CorrectionFileNameList");
@@ -305,12 +305,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   m_RecoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Reco";
 
+  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name), "" );
+
   if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name) ) {
     m_asgElEffCorrTool_elSF_Reco = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name);
-    m_toolAlreadyUsed[m_RecoEffSF_tool_name] = true;
   } else {
     m_asgElEffCorrTool_elSF_Reco = new AsgElectronEfficiencyCorrectionTool(m_RecoEffSF_tool_name);
-    m_toolAlreadyUsed[m_RecoEffSF_tool_name] = false;
     m_asgElEffCorrTool_elSF_Reco->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
     std::vector<std::string> inputFilesReco{ m_corrFileNameReco } ; // initialise vector w/ all the files containing corrections
     RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("CorrectionFileNameList",inputFilesReco),"Failed to set property CorrectionFileNameList");
@@ -356,13 +356,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   std::cout << "\n\n Trig ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
 
   m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig;
+
+  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name), "" );
   
   if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name) ) {
     m_asgElEffCorrTool_elSF_Trig = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name);
-    m_toolAlreadyUsed[m_TrigEffSF_tool_name] = true;
   } else {
     m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool(m_TrigEffSF_tool_name);
-    m_toolAlreadyUsed[m_TrigEffSF_tool_name] = false;
     m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
     std::vector<std::string> inputFilesTrig{ m_corrFileNameTrig } ; // initialise vector w/ all the files containing corrections
     RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("CorrectionFileNameList",inputFilesTrig),"Failed to set property CorrectionFileNameList");
@@ -405,13 +405,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   //
 
   m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig;
+
+  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name), "" );
   
   if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name) ) {
     m_asgElEffCorrTool_elSF_TrigMCEff= asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name);
-    m_toolAlreadyUsed[m_TrigMCEff_tool_name] = true;
   } else {
     m_asgElEffCorrTool_elSF_TrigMCEff = new AsgElectronEfficiencyCorrectionTool(m_TrigMCEff_tool_name);
-    m_toolAlreadyUsed[m_TrigMCEff_tool_name] = false;
     m_asgElEffCorrTool_elSF_TrigMCEff->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
     std::vector<std::string> inputFilesTrigMCEff{ m_corrFileNameTrigMCEff } ; // initialise vector w/ all the files containing corrections
     RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("CorrectionFileNameList",inputFilesTrigMCEff),"Failed to set property CorrectionFileNameList");
@@ -625,7 +625,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   // Do it only if a tool with *this* name hasn't already been used
   //
-  if ( !( m_toolAlreadyUsed.find(m_pidEffSF_tool_name)->second ) ) {
+  if ( !isToolAlreadyUsed(m_pidEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListPID ) {
 
@@ -740,7 +740,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   
   // Do it only if a tool with *this* name hasn't already been used
   //
-  if ( !( m_toolAlreadyUsed.find(m_IsoEffSF_tool_name)->second ) ) {
+  if ( !isToolAlreadyUsed(m_IsoEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListIso ) {
 
@@ -855,7 +855,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   
   // Do it only if a tool with *this* name hasn't already been used
   //
-  if ( !( m_toolAlreadyUsed.find(m_RecoEffSF_tool_name)->second ) ) {
+  if ( !isToolAlreadyUsed(m_RecoEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListReco ) {
 
@@ -972,7 +972,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   // Do it only if a tool with *this* name hasn't already been used
   //
-  if ( !( m_toolAlreadyUsed.find(m_TrigEffSF_tool_name)->second ) ) {
+  if ( !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListTrig ) {
 
@@ -1086,7 +1086,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   
   // Do it only if a tool with *this* name hasn't already been used
   //
-  if ( !( m_toolAlreadyUsed.find(m_TrigMCEff_tool_name)->second ) ) {
+  if ( !isToolAlreadyUsed(m_TrigMCEff_tool_name) ) {
 
     for ( const auto& syst_it : m_systListTrigMCEff ) {
 
