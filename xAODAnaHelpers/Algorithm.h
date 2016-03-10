@@ -15,6 +15,8 @@
 // for StatusCode::isSuccess
 #include "AsgTools/StatusCode.h"
 
+#include "AsgTools/ToolStore.h"
+
 namespace xAH {
 
     /**
@@ -216,11 +218,33 @@ namespace xAH {
 
         /**
             @rst
-                Map containing info about whether a CP Tool of a given name has been already used or not by this :cpp:`xAH::Algorithm`
-		Its content must be set in `:cpp:EL::initialize()`, depending on whether the tool it's created from scratch, or retrieved from `:cpp:asg::ToolStore`
+                Check whether the input CP tool already exists with *this* name in the asg::ToolStore
+
+		Depending on the outcome, the content of the map :cpp:member:`xAH::Algorithm::m_toolAlreadyUsed` wll be set accordingly.
             @endrst
          */
-        std::map<std::string, bool> m_toolAlreadyUsed; //!
+        template< typename T >
+        StatusCode checkToolStore( const std::string& tool_name ) {
+
+            if ( !asg::ToolStore::contains<T>(tool_name) ) {
+              m_toolAlreadyUsed[tool_name] = false;
+              Info("checkToolStore()", "Tool %s is being used for the first time!", tool_name.c_str() );
+            } else {
+              m_toolAlreadyUsed[tool_name] = true;
+              Info("checkToolStore()", "Tool %s has been already used!", tool_name.c_str() );
+            }
+
+            return StatusCode::SUCCESS;
+        }
+
+        /**
+            @rst
+                Check whether the input CP tool has been already used by any :cpp:`xAH::Algorithm` in the current job by scanning :cpp:member:`xAH::Algorithm::m_toolAlreadyUsed`.
+            @endrst
+         */
+	inline bool isToolAlreadyUsed( const std::string& tool_name ) {
+	   return ( m_toolAlreadyUsed.find(tool_name)->second );
+	}
 
       private:
         /**
@@ -229,6 +253,15 @@ namespace xAH {
             @endrst
          */
 	static std::map<std::string, int> m_instanceRegistry;
+
+        /**
+            @rst
+                Map containing info about whether a CP Tool of a given name has been already used or not by this :cpp:`xAH::Algorithm`
+		Its content gets set through :cpp:member:`xAH::Algorithm::checkToolStore()`, depending on whether the tool it's created from scratch, or retrieved from :cpp:`asg::ToolStore`
+            @endrst
+         */
+        std::map<std::string, bool> m_toolAlreadyUsed; //!
+
   };
 
 }
