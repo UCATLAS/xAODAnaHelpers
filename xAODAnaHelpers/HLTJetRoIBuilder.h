@@ -1,11 +1,9 @@
-/********************************************************
- * HLTJetRoIBuilder:
+/**
+ * @file   HLTJetRoIBuilder.h
+ * @author John Alison <john.alison@cern.ch>
+ * @brief  This class builds HLT jets and thier associated objects
  *
- * This class builds HLT jets and thier associated objects
- *
- * John Alison (john.alison@cern.ch)
- *
- ********************************************************/
+ */
 
 #ifndef xAODAnaHelpers_HLTJetRoIBuilder_H
 #define xAODAnaHelpers_HLTJetRoIBuilder_H
@@ -26,13 +24,26 @@ class HLTJetRoIBuilder : public xAH::Algorithm
 public:
 
   // configuration variables
-  std::string m_trigItem;
-  bool        m_doHLTBJet;
-  bool        m_doHLTJet;
-  std::string m_outContainerName;
 
-  // sort after calibration
-  bool    m_sort;
+  /**
+    @brief name of trigger chain to load
+   */
+  std::string m_trigItem;
+
+  /**
+    @brief Do we load a full BJet trigger chain?
+   */
+  bool        m_doHLTBJet;
+
+  /**
+    @brief Do we load a jet trigger chain?
+   */
+  bool        m_doHLTJet;
+
+  /**
+    @brief Name of the output container
+   */
+  std::string m_outContainerName;
 
 private:
 
@@ -79,12 +90,8 @@ public:
       return 0;;
     }
 
-    //const xAOD::Jet*  hlt_jet = 
     return trigCol->at(0);
   }
-
-
-
 
 };
 

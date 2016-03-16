@@ -57,8 +57,6 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   // read debug flag from .config file
   m_debug                   = false;
 
-  m_sort                    = true;
-
 }
 
 
