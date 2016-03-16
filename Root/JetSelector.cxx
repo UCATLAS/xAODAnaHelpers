@@ -359,12 +359,14 @@ EL::StatusCode JetSelector :: execute ()
 
   // MC event weight
   float mcEvtWeight(1.0);
-  static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
-  if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
+  if(eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ){
+    static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
+    if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
+      Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
+      return EL::StatusCode::FAILURE;
+    }
+    mcEvtWeight = mcEvtWeightAcc( *eventInfo );
   }
-  mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
   m_numEvent++;
 

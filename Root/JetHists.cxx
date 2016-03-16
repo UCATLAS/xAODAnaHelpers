@@ -325,6 +325,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   if(m_debug) std::cout << "JetHists: in execute " <<std::endl;
 
   const xAOD::Jet* jet=dynamic_cast<const xAOD::Jet*>(particle);
+  if(m_debug) std::cout << "JetHists: got jet " << jet << std::endl;
   if(jet==0)
     {
       ::Error( "JetHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Jet" ));
@@ -333,6 +334,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
   // clean
   if( m_infoSwitch->m_clean ) {
+    if(m_debug) std::cout << "JetHists: m_clean " <<std::endl;
 
     static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
     if( jetTime.isAvailable( *jet ) ) {
@@ -387,6 +389,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
   // energy
   if( m_infoSwitch->m_energy ) {
+    if(m_debug) std::cout << "JetHists: m_energy " <<std::endl;
 
     static SG::AuxElement::ConstAccessor<float> HECf ("HECFrac");
     if( HECf.isAvailable( *jet ) ) {
@@ -432,6 +435,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   }
 
   if( m_infoSwitch->m_layer ){
+    if(m_debug) std::cout << "JetHists: m_layer " <<std::endl;
+
     static SG::AuxElement::ConstAccessor< vector<float> > ePerSamp ("EnergyPerSampling");
     if( ePerSamp.isAvailable( *jet ) ) {
       vector<float> ePerSampVals = ePerSamp( *jet );
@@ -571,6 +576,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
  // 0043       TruthMFindex,
 
   if( m_infoSwitch->m_truth ) {
+    if(m_debug) std::cout << "JetHists: m_truth " <<std::endl;
 
     static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
     if( TruthLabelID.isAvailable( *jet ) ) {
@@ -616,6 +622,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
 
   if( m_infoSwitch->m_truthDetails ) {
+    if(m_debug) std::cout << "JetHists: m_truthDetails " <<std::endl;
 
     //
     // B-Hadron Details
@@ -706,7 +713,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   // BTagging
   //
   if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
-
+    if(m_debug) std::cout << "JetHists: m_flavTag " <<std::endl;
     const xAOD::BTagging *btag_info(0);
     if(m_infoSwitch->m_flavTag){
       btag_info = jet->btagging();
@@ -733,6 +740,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     }
 
     if(m_infoSwitch->m_btag_jettrk){
+      if(m_debug) std::cout << "JetHists: m_btag_jettrk " <<std::endl;
       unsigned trkSum_ntrk   = btag_info->isAvailable<unsigned>("trkSum_ntrk") ? btag_info->auxdata<unsigned>("trkSum_ntrk") : -1;
       float    trkSum_sPt    = btag_info->isAvailable<float   >("trkSum_SPt" ) ? btag_info->auxdata<float   >("trkSum_SPt" ) : -1000;//<== -1 GeV
       float trkSum_vPt    = 0;
@@ -827,6 +835,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
 
     if(m_infoSwitch->m_jetFitterDetails){
+      if(m_debug) std::cout << "JetHists: m_jetFitterDetails " <<std::endl;
       static SG::AuxElement::ConstAccessor< int   > jf_nVTXAcc       ("JetFitter_nVTX");
       static SG::AuxElement::ConstAccessor< int   > jf_nSingleTracks ("JetFitter_nSingleTracks");
       static SG::AuxElement::ConstAccessor< int   > jf_nTracksAtVtx  ("JetFitter_nTracksAtVtx");
@@ -871,7 +880,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     }
 
     if(m_infoSwitch->m_svDetails){
-
+      if(m_debug) std::cout << "JetHists: m_svDetails " <<std::endl;
       //
       // SV0
       //
@@ -944,7 +953,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
 
     if(m_infoSwitch->m_ipDetails){
-
+      if(m_debug) std::cout << "JetHists: m_ipDetails " <<std::endl;
       //
       // IP2D
       //
@@ -1107,6 +1116,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
   // testing
   if( m_infoSwitch->m_resolution ) {
+    if(m_debug) std::cout << "JetHists: m_resolution " <<std::endl;
     //float ghostTruthPt = jet->getAttribute( xAOD::JetAttribute::GhostTruthPt );
     float ghostTruthPt = jet->auxdata< float >( "GhostTruthPt" );
     m_jetGhostTruthPt -> Fill( ghostTruthPt/1e3, eventWeight );
@@ -1116,6 +1126,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   }
 
   if( m_infoSwitch->m_substructure ){
+    if(m_debug) std::cout << "JetHists: m_substructure " <<std::endl;
     static SG::AuxElement::ConstAccessor<float> Tau1("Tau1");
     static SG::AuxElement::ConstAccessor<float> Tau2("Tau2");
     static SG::AuxElement::ConstAccessor<float> Tau3("Tau3");
@@ -1141,7 +1152,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   if(m_debug) std::cout << m_name << "::Matching tracks in Jet: " << m_infoSwitch->m_tracksInJet << std::endl;
 
   if( m_infoSwitch->m_tracksInJet ){
-
+    if(m_debug) std::cout << "JetHists: m_tracksInJet " <<std::endl;
     const vector<const xAOD::TrackParticle*> matchedTracks = jet->auxdata< vector<const xAOD::TrackParticle*>  >(m_infoSwitch->m_trackName);
     const xAOD::Vertex *pvx  = jet->auxdata<const xAOD::Vertex*>(m_infoSwitch->m_trackName+"_vtx");
 
@@ -1153,6 +1164,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     }
   }
 
+  if(m_debug) std::cout << "JetHists: leave " <<std::endl;
   return StatusCode::SUCCESS;
 }
 
