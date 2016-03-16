@@ -631,6 +631,16 @@ EL::StatusCode BasicEventSelection :: execute ()
     mcEvtWeight=mcEvtWeightAcc(*eventInfo);
   }
 
+  if( !m_useMetaData )
+    {
+      m_histEventCount -> Fill(1, 1);
+      m_histEventCount -> Fill(2, 1);
+      m_histEventCount -> Fill(3, mcEvtWeight);
+      m_histEventCount -> Fill(4, mcEvtWeight);
+      m_histEventCount -> Fill(5, mcEvtWeight*mcEvtWeight);
+      m_histEventCount -> Fill(6, mcEvtWeight*mcEvtWeight);
+    }
+
   // print every 1000 events, so we know where we are:
   //
   m_cutflowHist ->Fill( m_cutflow_all, 1 );
