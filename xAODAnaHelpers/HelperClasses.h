@@ -306,7 +306,7 @@ namespace HelperClasses {
   public:
     bool m_isolation;
     bool m_PID;
-    PhotonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) {}
+    PhotonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
     virtual ~PhotonInfoSwitch() {}
   protected:
     virtual void initialize();

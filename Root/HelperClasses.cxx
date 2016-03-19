@@ -117,7 +117,6 @@ namespace HelperClasses{
   }
 
   void MuonInfoSwitch::initialize(){
-    IParticleInfoSwitch::initialize();
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
     m_quality       = has_exact("quality");
@@ -128,7 +127,6 @@ namespace HelperClasses{
   }
 
   void ElectronInfoSwitch::initialize(){
-    IParticleInfoSwitch::initialize();
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
     m_PID           = has_exact("PID");
@@ -138,13 +136,11 @@ namespace HelperClasses{
   }
 
   void PhotonInfoSwitch::initialize(){
-    IParticleInfoSwitch::initialize();
     m_isolation     = has_exact("isolation");
     m_PID           = has_exact("PID");
   }
 
   void JetInfoSwitch::initialize(){
-    IParticleInfoSwitch::initialize();
     m_substructure  = has_exact("substructure");
     m_rapidity      = has_exact("rapidity");
     m_clean         = has_exact("clean");
@@ -245,7 +241,6 @@ namespace HelperClasses{
 
 
   void TauInfoSwitch::initialize(){
-    IParticleInfoSwitch::initialize();
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
   }
