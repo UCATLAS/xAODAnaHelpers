@@ -186,6 +186,8 @@ namespace HelperClasses{
       m_trackName         = "";
     }
 
+    m_charge            = has_exact("charge");
+
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
       std::string input(m_configStr);

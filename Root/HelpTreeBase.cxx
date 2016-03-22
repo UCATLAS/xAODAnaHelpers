@@ -10,13 +10,16 @@
 #include "xAODCaloEvent/CaloClusterContainer.h"
 #include "xAODPrimitives/IsolationType.h"
 
+
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
+#include "JetSubStructureUtils/Charge.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelpTreeBase.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
+
 
 #include "AsgTools/StatusCode.h"
 
@@ -1512,6 +1515,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
   // always
   m_tree->Branch(("n"+jetName+"s").c_str(),    &thisJet->N,("n"+jetName+"s/I").c_str());
 
+
   if ( m_thisJetInfoSwitch[jetName]->m_kinematic ) {
     m_tree->Branch((jetName+"_E"  ).c_str(),  &thisJet->m_jet_E);
     m_tree->Branch((jetName+"_pt" ).c_str(),  &thisJet->m_jet_pt);
@@ -1842,6 +1846,10 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
   }
 
 
+  if ( m_thisJetInfoSwitch[jetName]->m_charge ) {
+    m_tree->Branch((jetName+"_charge").c_str(), &thisJet->m_jet_charge);
+  }
+
   this->AddJetsUser(detailStr, jetName);
 
 }
@@ -1962,7 +1970,6 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     thisJet->m_jet_phi.push_back( jet_itr->phi() );
     thisJet->m_jet_E.push_back  ( jet_itr->e() / m_units );
   }
-
 
   if( m_thisJetInfoSwitch[jetName]->m_rapidity ){
     thisJet->m_jet_rapidity.push_back( jet_itr->rapidity() );
@@ -2571,6 +2578,12 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
   }
 
+  if ( m_thisJetInfoSwitch[jetName]->m_charge ) {
+    static JetSubStructureUtils::Charge charge_calculator(1.0); //k is the exponent in the jet charge formula, defaults to 1.0]
+    thisJet->m_jet_charge.push_back(charge_calculator.result(*jet_itr));
+  }
+
+
   this->FillJetsUser(jet_itr, jetName);
   thisJet->N++;
 
@@ -2853,6 +2866,10 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_truth_pdgId.clear();
     thisJet->m_jet_truth_partonPt.clear();
     thisJet->m_jet_truth_partonDR.clear();
+  }
+
+  if( m_thisJetInfoSwitch[jetName]->m_charge ) {
+    thisJet->m_jet_charge.clear();
   }
 
   this->ClearJetsUser(jetName);
