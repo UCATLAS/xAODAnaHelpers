@@ -505,6 +505,9 @@ protected:
     std::vector<int>   m_jet_truthCount_TausFinal;
     std::vector<float> m_jet_truthPt_TausFinal;
 
+    // charge
+    std::vector<double> m_jet_charge;
+
     jetInfo(){ }
 
   };
