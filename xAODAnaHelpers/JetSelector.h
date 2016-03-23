@@ -1,3 +1,14 @@
+/**
+ * @file   JetSelector.h
+ *
+ * @author Gabriel Facini <gabriel.facini@cern.ch>
+ * @author Marco Milesi <marco.milesi@cern.ch>
+ * @author John Alison <john.alison@cern.ch>
+ *
+ * @brief  Select jets and apply JVT corrections.
+ *
+ */
+
 #ifndef xAODAnaHelpers_JetSelector_H
 #define xAODAnaHelpers_JetSelector_H
 
@@ -13,6 +24,8 @@
 
 // external tools include(s):
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
+#include "JetJvtEfficiency/JetJvtEfficiency.h"
+#include "AsgTools/AnaToolHandle.h"
 
 class JetSelector : public xAH::Algorithm
 {
@@ -55,7 +68,37 @@ public:
   bool m_doJVT;                   // check JVT
   float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
   float m_eta_max_JVT;            // detector eta cut
-  float m_JVTCut;                 // cut value
+
+    /**
+        @brief Minimum value of JVT for selecting jets.
+
+        @rst
+            .. warning:: If set to a non-negative value (default is -1.0), it will override any set value for :cpp:member:`JetSelector::m_WorkingPointJVT`
+        @endrst
+    */
+  float m_JVTCut;
+
+        /**
+        @rst
+            Available working points for JVT cut from the ``CP::IJetJvtEfficiency`` tool.
+
+            The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
+
+            ======== ================= =============
+            Value    JVT Cut           Efficiency
+            ======== ================= =============
+            "Medium"  (Default) 0.59    92%
+            "Loose"   0.11              97%
+            "Tight"   0.91              85%
+            ======== ================= =============
+
+        @endrst
+        */
+  std::string m_WorkingPointJVT;
+  std::string m_outputSystNamesJVT;
+
+  float         m_systValJVT;
+  std::string   m_systNameJVT;
 
   // for BTaggingSelectionTool -- doubles are needed or will crash
   bool  m_doBTagCut;              // Flag to apply btagging cut, if false just decorate decisions
@@ -103,7 +146,12 @@ private:
   int   m_jet_cutflow_jvt_cut;       //!
   int   m_jet_cutflow_btag_cut;      //!
 
-  BTaggingSelectionTool   *m_BJetSelectTool; //!
+  std::vector<CP::SystematicSet> m_systListJVT; //!
+
+  BTaggingSelectionTool   *m_BJetSelectTool;    //!
+
+  std::string m_JVT_tool_name;                                 //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency> m_JVT_tool_handle; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

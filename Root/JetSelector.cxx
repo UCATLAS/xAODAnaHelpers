@@ -1,13 +1,3 @@
-/************************************
- *
- * Jet selector tool
- *
- * G.Facini (gabriel.facini@cern.ch)
- * M. Milesi (marco.milesi@cern.ch)
- * J.Alison (john.alison@cern.ch)
- *
- ************************************/
-
 // c++ include(s):
 #include <iostream>
 #include <typeinfo>
@@ -49,7 +39,8 @@ JetSelector :: JetSelector (std::string className) :
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_jet_cutflowHist_1(nullptr),
-    m_BJetSelectTool(nullptr)
+    m_BJetSelectTool(nullptr),
+    m_JVT_tool_handle("CP::JetJvtEfficiency/JVTToolName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -74,7 +65,7 @@ JetSelector :: JetSelector (std::string className) :
 
   // decorate selected objects that pass the cuts
   m_decorateSelectedObjects = true;
-  m_decor   = "passSel";
+  m_decor                   = "passSel";
 
   // additional functionality : create output container of selected objects
   //                            using the SG::VIEW_ELEMENTS option
@@ -110,7 +101,12 @@ JetSelector :: JetSelector (std::string className) :
   m_doJVT 		    = false;
   m_pt_max_JVT 	            = 50e3;
   m_eta_max_JVT 	    = 2.4;
-  m_JVTCut 		    = 0.64;
+  m_JVTCut 		    = -1.0;
+  m_WorkingPointJVT         = "Medium";
+
+  m_systValJVT 	            = 0.0;
+  m_systNameJVT	            = "";
+  m_outputSystNamesJVT      = "JetJvtEfficiency_JVTSyst";
 
   // Btag quality
   m_doBTagCut 		    = false;
@@ -203,7 +199,15 @@ EL::StatusCode JetSelector :: initialize ()
   // doesn't get called if no events are processed.  So any objects
   // you create here won't be available in the output if you have no
   // input events.
-  if(m_debug) Info("initialize()", "Calling initialize");
+  
+  if ( m_debug ) Info("initialize()", "Calling initialize");
+
+  m_event = wk()->xaodEvent();
+  m_store = wk()->xaodStore();
+  
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("JetSelector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   if ( m_useCutFlow ) {
 
@@ -326,8 +330,39 @@ EL::StatusCode JetSelector :: initialize ()
 
   }
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
+  // initialize the CP::JetJvtEfficiency Tool
+  //
+  m_JVT_tool_name = "JetJvtEfficiency_effSF";
+  std::string JVT_handle_name = "CP::JetJvtEfficiency/" + m_JVT_tool_name;
+ 
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::JetJvtEfficiency>(m_JVT_tool_name), "" );
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.makeNew<CP::JetJvtEfficiency>(JVT_handle_name), "Failed to create handle to CP::JetJvtEfficiency for JVT");
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.initialize(), "Failed to properly initialize CP::JetJvtEfficiency for JVT");
+  
+  //  Add the chosen WP to the string labelling the vector<SF> decoration
+  //
+  m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
+
+  if ( m_debug ) {
+    CP::SystematicSet affectSystsJVT = m_JVT_tool_handle->affectingSystematics();
+    for ( const auto& syst_it : affectSystsJVT ) { Info("initialize()","JetJvtEfficiency tool can be affected by JVT efficiency systematic: %s", (syst_it.name()).c_str()); }
+  }
+  //
+  // Make a list of systematics to be used, based on configuration input
+  // Use HelperFunctions::getListofSystematics() for this!
+  //
+  const CP::SystematicSet recSystsJVT = m_JVT_tool_handle->recommendedSystematics();
+  m_systListJVT = HelperFunctions::getListofSystematics( recSystsJVT, m_systNameJVT, m_systValJVT, m_debug );
+
+  Info("initialize()","Will be using JetJvtEfficiency tool JVT efficiency systematic:");
+  for ( const auto& syst_it : m_systListJVT ) {
+    if ( m_systNameJVT.empty() ) {
+      Info("initialize()","\t Running w/ nominal configuration only!");
+      break;
+    }
+    Info("initialize()","\t %s", (syst_it.name()).c_str());
+  }
 
   if(m_debug) Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
@@ -385,8 +420,7 @@ EL::StatusCode JetSelector :: execute ()
 
     pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName);
 
-  }
-  else { // get the list of systematics to run over
+  }  else { // get the list of systematics to run over
 
     // get vector of string giving the names
     std::vector<std::string>* systNames(nullptr);
@@ -495,14 +529,105 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     }
   }
 
-  if ( count ) {
-    m_numObject     += nObj;
-    m_numObjectPass += nPass;
-  }
+  // Loop over selected jets and decorate with JVT efficiency SF
+  // Do it only for MC
+  //
+  if ( m_isMC ) {
+    
+    std::vector< std::string >* sysVariationNamesJVT  = new std::vector< std::string >;
+
+    // Do it only if a tool with *this* name hasn't already been used
+    //
+    if ( !isToolAlreadyUsed(m_JVT_tool_name) ) {
+
+      for ( const auto& syst_it : m_systListJVT ) {
+         
+	// Create the name of the SF weight to be recorded
+        //   template:  SYSNAME_JVTEff_SF
+        //
+        std::string sfName = "JVTEff_SF_" + m_WorkingPointJVT;;
+        if ( !syst_it.name().empty() ) {
+           std::string prepend = syst_it.name() + "_";
+           sfName.insert( 0, prepend );
+        }
+        if ( m_debug ) { Info("executeSelection()", "JVT SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str()); }
+        sysVariationNamesJVT->push_back(sfName);
+
+        // apply syst
+        //
+        if ( m_JVT_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+          Error("executeSelection()", "Failed to configure CP::JetJvtEfficiency for systematic %s", syst_it.name().c_str());
+          return EL::StatusCode::FAILURE;
+        }
+        if ( m_debug ) { Info("executeSelection()", "Successfully applied systematic: %s", syst_it.name().c_str()); }
+
+        // and now apply JVT SF!
+        //
+        unsigned int idx(0);
+        for ( auto jet : *(selectedJets) ) {
+
+           if ( m_debug ) { Info( "executeSelection()", "Applying JVT SF" ); }
+
+           // obtain JVT SF as a float (to be stored away separately)
+           //
+           //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
+           //
+           SG::AuxElement::Decorator< std::vector<float> > sfVecJVT( m_outputSystNamesJVT );
+           if ( !sfVecJVT.isAvailable( *jet ) ) {
+             sfVecJVT( *jet ) = std::vector<float>();
+           }
+
+           float jvtSF(1.0);
+	   if ( jet->pt() < m_pt_max_JVT && fabs(jet->eta()) < m_eta_max_JVT ) {
+             if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
+               Warning( "executeSelection()", "Problem in getEfficiencyScaleFactor");
+               jvtSF = 1.0;
+             }
+	   }
+           //
+           // Add it to decoration vector
+           //
+           sfVecJVT( *jet ).push_back( jvtSF );
+
+           if ( m_debug ) {
+             Info( "executeSelection()", "===>>>");
+             Info( "executeSelection()", " ");
+             Info( "executeSelection()", "Jet %i, pt = %.2f GeV, |eta| = %.2f", idx, (jet->pt() * 1e-3), fabs(jet->eta()) );
+             Info( "executeSelection()", " ");
+             Info( "executeSelection()", "JVT SF decoration: %s", m_outputSystNamesJVT.c_str() );
+             Info( "executeSelection()", " ");
+             Info( "executeSelection()", "Systematic: %s", syst_it.name().c_str() );
+             Info( "executeSelection()", " ");
+             Info( "executeSelection()", "JVT SF:");
+             Info( "executeSelection()", "\t %f (from getEfficiencyScaleFactor())", jvtSF );
+             Info( "executeSelection()", "--------------------------------------");
+           }
+
+           ++idx;      
+	} 
+
+      } 
+      
+    } 
+
+    // Add list of JVT systematics names to TStore
+    //
+    // NB: we need to make sure that this is not pushed more than once in TStore!
+    // This will be the case when this executeSelection() function gets called for every syst varied input container,
+    // e.g. the different SC containers w/ calibration systematics upstream.
+    //
+    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { RETURN_CHECK( "JetSelector::executeSelection()", m_store->record( sysVariationNamesJVT, m_outputSystNamesJVT), "Failed to record vector of systematic names for JVT efficiency SF" ); }
+
+  } 
 
   // add ConstDataVector to TStore
   if ( m_createSelectedContainer ) {
-    RETURN_CHECK("JetSelector::execute()", m_store->record( selectedJets, outContainerName ), "Failed to store const data container.");
+    RETURN_CHECK("JetSelector::executeSelection()", m_store->record( selectedJets, outContainerName ), "Failed to store const data container.");
+  }
+
+  if ( count ) {
+    m_numObject     += nObj;
+    m_numObjectPass += nPass;
   }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
@@ -658,27 +783,35 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   // JVT pileup cut
   //
   if ( m_doJVT ) {
-    if ( m_debug ) { Info("PassCuts()", "Doing JVT"); }
+    if ( m_debug ) { Info("PassCuts()", "Checking JVT cut..."); }
     if ( m_debug ) {
-      if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { Info("passCuts()", " pt/eta = %2f/%2f ", jet->pt() , jet->eta() ); }
+      if ( m_JVTCut > 0 && jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { Info("passCuts()", " pt/eta = %2f/%2f ", jet->pt() , jet->eta() ); }
     }
 
     if ( jet->pt() < m_pt_max_JVT ) {
-      if ( m_debug ) { Info("PassCuts()", "Checking JVT value"); }
+      if ( m_debug ) { Info("PassCuts()", "Pass JVT-pT Cut"); }
       xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
       if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
-	if(m_debug) Info("passCuts()", " Pass JVT-Eta Cut " );
-        if ( m_debug ) { Info("passCuts()", " JVT = %2f ", jet->getAttribute< float >( "Jvt" ) ); }
-        if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
-	  if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - cutting this jet!!", m_JVTCut ); }
-          return 0;
-        }else{
-	  if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - jet passes JVT ", m_JVTCut ); }
+	if ( m_debug ) Info("passCuts()", " Pass JVT-Eta Cut " );
+        
+	// Old usage: check manually whether this jet passes JVT cut
+	//
+	if ( m_JVTCut > 0 ) {
+	  if ( m_debug ) { Info("passCuts()", " JVT = %2f ", jet->getAttribute< float >( "Jvt" ) ); }
+          if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
+	    if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - cutting this jet!!", m_JVTCut ); }
+            return 0;
+          } else {
+	    if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - jet passes JVT ", m_JVTCut ); }
+	  }
+	} else {
+  	  if ( !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
 	}
+
       }
     }
   } // m_doJVT
-  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
+  if ( m_useCutFlow ) m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
 
   //
   //  BTagging
