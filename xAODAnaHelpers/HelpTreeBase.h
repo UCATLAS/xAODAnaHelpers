@@ -509,7 +509,7 @@ protected:
     std::vector<float> m_jet_truthPt_TausFinal;
 
     // charge
-    std::vector<double> m_jet_charge;
+    std::vector<float> m_jet_charge;
 
     jetInfo(){ }
 

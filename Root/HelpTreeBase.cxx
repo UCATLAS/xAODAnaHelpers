@@ -13,7 +13,6 @@
 
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
-#include "JetSubStructureUtils/Charge.h"
 
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
@@ -2594,8 +2593,19 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
   }
 
   if ( m_thisJetInfoSwitch[jetName]->m_charge ) {
-    static JetSubStructureUtils::Charge charge_calculator(1.0); //k is the exponent in the jet charge formula, defaults to 1.0]
-    thisJet->m_jet_charge.push_back(charge_calculator.result(*jet_itr));
+
+    xAOD::JetFourMom_t p4UsedInJetCharge;
+    bool status = jet_itr->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum", p4UsedInJetCharge );
+    static SG::AuxElement::ConstAccessor<float>              uncalibratedJetCharge ("Charge");
+
+    if(status){
+      float ptUsedInJetCharge   = p4UsedInJetCharge.Pt();
+      float calibratedJetCharge = jet_itr->pt() ? (ptUsedInJetCharge * uncalibratedJetCharge(*jet_itr) / jet_itr->pt()) : -99;
+      thisJet->m_jet_charge.push_back(calibratedJetCharge);
+    }else{
+      thisJet->m_jet_charge.push_back(-99);
+    }
+
   }
 
 
