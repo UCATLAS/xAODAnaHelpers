@@ -68,11 +68,18 @@ public:
   bool m_doJVT;                   // check JVT
   float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
   float m_eta_max_JVT;            // detector eta cut
-  float m_JVTCut;                 // cut value
+
+  /** 
+      @brief Minimum value of JVT for selecting jets. 
+      
+      .. warning:: If set to a non-negative value, it will override any set value for :cpp:member:`JetSelector::m_WorkingPointJVT` 
+  
+  */
+  float m_JVTCut;                 
 
   /**
       @rst
-  	  Available working points for JVT cut.
+  	  Available working points for JVT cut in :cpp:`CP::IJetJvtEfficiency` tool.
 
   	  ======== ================= =============================
   	  Value    JVT Cut           Efficiency

@@ -341,7 +341,10 @@ protected:
     std::vector<float> m_jet_jvfPV;
 
     // tracksAll or tracksPV
-    std::vector<float> m_jet_Jvt;
+    std::vector<float> m_jet_Jvt;    
+    std::vector< std::vector<float> > m_jet_JvtSF_loose;
+    std::vector< std::vector<float> > m_jet_JvtSF_medium;
+    std::vector< std::vector<float> > m_jet_JvtSF_tight;
     std::vector<float> m_jet_JvtJvfcorr;
     std::vector<float> m_jet_JvtRpt;
     //std::vector<float> m_jet_ghostTrackAssFrac;

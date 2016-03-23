@@ -804,9 +804,9 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
           } else {
 	    if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - jet passes JVT ", m_JVTCut ); }
 	  }
+	} else {
+  	  if ( !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
 	}
-	
-	if ( !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
 
       }
     }

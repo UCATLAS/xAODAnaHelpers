@@ -1595,6 +1595,11 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_Jvt").c_str(),		      &thisJet->m_jet_Jvt	          );
     m_tree->Branch((jetName+"_JvtJvfcorr").c_str(),	      &thisJet->m_jet_JvtJvfcorr     );
     m_tree->Branch((jetName+"_JvtRpt").c_str(),              &thisJet->m_jet_JvtRpt         );
+    if ( m_isMC ) {
+      m_tree->Branch((jetName+"_JvtEff_SF_Loose").c_str(),     &thisJet->m_jet_JvtSF_loose );
+      m_tree->Branch((jetName+"_JvtEff_SF_Medium").c_str(),    &thisJet->m_jet_JvtSF_medium );
+      m_tree->Branch((jetName+"_JvtEff_SF_Tight").c_str(),     &thisJet->m_jet_JvtSF_tight );
+    }
     //m_tree->Branch((jetName+"_GhostTrackAssociationFraction").c_str(), &thisJet->m_jet_ghostTrackAssFrac);
   }
 
@@ -2219,6 +2224,16 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
       thisJet->m_jet_JvtRpt.push_back( jvtRpt( *jet_itr ) );
     } else { thisJet->m_jet_JvtRpt.push_back( -999 ); }
 
+    if ( m_isMC ) {
+      static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Loose("JetJvtEfficiency_JVTSyst_JVT_Loose");
+      static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Medium("JetJvtEfficiency_JVTSyst_JVT_Medium");
+      static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Tight("JetJvtEfficiency_JVTSyst_JVT_Tight");
+      std::vector<float> junkSF(1,1.0);
+
+      if ( jvtSF_Loose.isAvailable( *jet_itr ) )  { thisJet->m_jet_JvtSF_loose.push_back( jvtSF_Loose( *jet_itr ) );   } else { thisJet->m_jet_JvtSF_loose.push_back( junkSF ); }
+      if ( jvtSF_Medium.isAvailable( *jet_itr ) ) { thisJet->m_jet_JvtSF_medium.push_back( jvtSF_Medium( *jet_itr ) ); } else { thisJet->m_jet_JvtSF_medium.push_back( junkSF ); }
+      if ( jvtSF_Tight.isAvailable( *jet_itr ) )  { thisJet->m_jet_JvtSF_tight.push_back( jvtSF_Tight( *jet_itr ) );   } else { thisJet->m_jet_JvtSF_tight.push_back( junkSF ); }
+    }
     //      static SG::AuxElement::ConstAccessor<float> ghostTrackAssFrac("GhostTrackAssociationFraction");
     //      if ( ghostTrackAssFrac.isAvailable( *jet_itr) ) {
     //        thisJet->m_jet_ghostTrackAssFrac.push_back( ghostTrackAssFrac( *jet_itr) );
@@ -2687,6 +2702,11 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_Jvt.clear();
     thisJet->m_jet_JvtJvfcorr.clear();
     thisJet->m_jet_JvtRpt.clear();
+    if ( m_isMC ) {
+      thisJet->m_jet_JvtSF_loose.clear();
+      thisJet->m_jet_JvtSF_medium.clear();
+      thisJet->m_jet_JvtSF_tight.clear();
+    }
     //thisJet->m_jet_ghostTrackAssFrac.clear();
   }
 
