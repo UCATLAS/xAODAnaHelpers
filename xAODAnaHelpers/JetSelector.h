@@ -69,28 +69,31 @@ public:
   float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
   float m_eta_max_JVT;            // detector eta cut
 
-  /** 
-      @brief Minimum value of JVT for selecting jets. 
-      
-      .. warning:: If set to a non-negative value, it will override any set value for :cpp:member:`JetSelector::m_WorkingPointJVT` 
-  
-  */
-  float m_JVTCut;                 
+    /**
+        @brief Minimum value of JVT for selecting jets.
 
-  /**
-      @rst
-  	  Available working points for JVT cut in :cpp:`CP::IJetJvtEfficiency` tool.
+        @rst
+            .. warning:: If set to a non-negative value (default is -1.0), it will override any set value for :cpp:member:`JetSelector::m_WorkingPointJVT`
+        @endrst
+    */
+  float m_JVTCut;
 
-  	  ======== ================= =============================
-  	  Value    JVT Cut           Efficiency
-  	  ======== ================= =============================
-  	  "Medium"  (Default) 0.59    92%
-  	  "Loose"   0.11              97%
-  	  "Tight"   0.91              85%
-  	  ======== ================= =============================
+        /**
+        @rst
+            Available working points for JVT cut from the ``CP::IJetJvtEfficiency`` tool.
 
-      @endrst
-   */
+            The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
+
+            ======== ================= =============
+            Value    JVT Cut           Efficiency
+            ======== ================= =============
+            "Medium"  (Default) 0.59    92%
+            "Loose"   0.11              97%
+            "Tight"   0.91              85%
+            ======== ================= =============
+
+        @endrst
+        */
   std::string m_WorkingPointJVT;
   std::string m_outputSystNamesJVT;
 
