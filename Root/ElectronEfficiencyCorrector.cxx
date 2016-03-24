@@ -177,278 +177,289 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // 1.
   // initialize the AsgElectronEfficiencyCorrectionTool for PID efficiency SF
   //
+  if ( !m_corrFileNamePID.empty() ) {
 
-  //
-  // Parse the PID WP from m_corrFileNamePID (needs to be of the form "LH+WP")
-  //
-  std::size_t init_pos_PID = m_corrFileNamePID.find("offline") + 8;
-  std::size_t end_pos_PID  = m_corrFileNamePID.find("LLH");
-  m_PID_WP = "LH" + m_corrFileNamePID.substr( init_pos_PID, (end_pos_PID - init_pos_PID) );
-  if ( m_PID_WP.empty() ) {
-    Error("initialize()", "m_PID_WP should not be empty! Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-
-  std::cout << "\n\n PID wp: " << m_PID_WP << "\n\n" << std::endl;
-
-  m_pidEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_PID_" + m_PID_WP;
-
-  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name), "" );
-  
-  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name) ) {
-    m_asgElEffCorrTool_elSF_PID = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name);
-  } else {
-    m_asgElEffCorrTool_elSF_PID = new AsgElectronEfficiencyCorrectionTool(m_pidEffSF_tool_name);
-    m_asgElEffCorrTool_elSF_PID->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-    std::vector<std::string> inputFilesPID{ m_corrFileNamePID } ; // initialise vector w/ all the files containing corrections
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("CorrectionFileNameList",inputFilesPID),"Failed to set property CorrectionFileNameList");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("ForceDataType",sim_flav),"Failed to set property ForceDataType");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool PID");    
-  }
-  
-  if ( m_debug ) {
-
-    // Get a list of affecting systematics
-   //
-    CP::SystematicSet affectSystsPID = m_asgElEffCorrTool_elSF_PID->affectingSystematics();
+    // Parse the PID WP from m_corrFileNamePID (needs to be of the form "LH+WP")
     //
-    // Convert into a simple list
-    //
-    for ( const auto& syst_it : affectSystsPID ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by PID efficiency systematic: %s", (syst_it.name()).c_str()); }
-  }
-  //
-  // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!
-  //
-  const CP::SystematicSet recSystsPID = m_asgElEffCorrTool_elSF_PID->recommendedSystematics();
-  m_systListPID = HelperFunctions::getListofSystematics( recSystsPID, m_systNamePID, m_systValPID, m_debug );
-
-  Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool PID efficiency systematic:");
-  for ( const auto& syst_it : m_systListPID ) {
-    if ( m_systNamePID.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!");
-      break;
+    std::size_t init_pos_PID = m_corrFileNamePID.find("offline") + 8;
+    std::size_t end_pos_PID  = m_corrFileNamePID.find("LLH");
+    m_PID_WP = "LH" + m_corrFileNamePID.substr( init_pos_PID, (end_pos_PID - init_pos_PID) );
+    if ( m_PID_WP.empty() ) {
+      Error("initialize()", "m_PID_WP should not be empty! Exiting." );
+      return EL::StatusCode::FAILURE;
     }
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
+
+    std::cout << "\n\n PID wp: " << m_PID_WP << "\n\n" << std::endl;
+
+    m_pidEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_PID_" + m_PID_WP;
+
+    RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name), "" );
+    
+    if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name) ) {
+      m_asgElEffCorrTool_elSF_PID = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name);
+    } else {
+      m_asgElEffCorrTool_elSF_PID = new AsgElectronEfficiencyCorrectionTool(m_pidEffSF_tool_name);
+      m_asgElEffCorrTool_elSF_PID->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+      std::vector<std::string> inputFilesPID{ m_corrFileNamePID } ; // initialise vector w/ all the files containing corrections
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("CorrectionFileNameList",inputFilesPID),"Failed to set property CorrectionFileNameList");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->setProperty("ForceDataType",sim_flav),"Failed to set property ForceDataType");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_PID->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool PID");    
+    }
+    
+    if ( m_debug ) {
+
+      // Get a list of affecting systematics
+     //
+      CP::SystematicSet affectSystsPID = m_asgElEffCorrTool_elSF_PID->affectingSystematics();
+      //
+      // Convert into a simple list
+      //
+      for ( const auto& syst_it : affectSystsPID ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by PID efficiency systematic: %s", (syst_it.name()).c_str()); }
+    }
+    //
+    // Make a list of systematics to be used, based on configuration input
+    // Use HelperFunctions::getListofSystematics() for this!
+    //
+    const CP::SystematicSet recSystsPID = m_asgElEffCorrTool_elSF_PID->recommendedSystematics();
+    m_systListPID = HelperFunctions::getListofSystematics( recSystsPID, m_systNamePID, m_systValPID, m_debug );
+
+    Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool PID efficiency systematic:");
+    for ( const auto& syst_it : m_systListPID ) {
+      if ( m_systNamePID.empty() ) {
+    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	break;
+      }
+      Info("initialize()","\t %s", (syst_it.name()).c_str());
+    }
+
+    //  Add the chosen WP to the string labelling the vector<SF> decoration
+    //
+    m_outputSystNamesPID = m_outputSystNamesPID + "_" + m_PID_WP;
+
   }
-
-  //  Add the chosen WP to the string labelling the vector<SF> decoration
-  //
-  m_outputSystNamesPID = m_outputSystNamesPID + "_" + m_PID_WP;
-
-
+  
   // 2.
   // initialize the AsgElectronEfficiencyCorrectionTool for isolation efficiency SF
   //
+  if ( !m_corrFileNameIso.empty() ) {
+    
+    // Parse the isolation WP from m_corrFileNameIso (needs to be of the form "isol+WP")
+    //
+    std::size_t init_pos_Iso = m_corrFileNameIso.find("_isol") + 5;
+    std::size_t end_pos_Iso  = m_corrFileNameIso.find(".2015");
+    m_Iso_WP = "Iso" + m_corrFileNameIso.substr( init_pos_Iso, (end_pos_Iso - init_pos_Iso) );
+    if ( m_Iso_WP.empty() ) {
+      Error("initialize()", "m_Iso_WP should not be empty! Exiting." );
+      return EL::StatusCode::FAILURE;
+    }
 
-  //
-  // Parse the isolation WP from m_corrFileNameIso (needs to be of the form "isol+WP")
-  //
-  std::size_t init_pos_Iso = m_corrFileNameIso.find("_isol") + 5;
-  std::size_t end_pos_Iso  = m_corrFileNameIso.find(".2015");
-  m_Iso_WP = "Iso" + m_corrFileNameIso.substr( init_pos_Iso, (end_pos_Iso - init_pos_Iso) );
-  if ( m_Iso_WP.empty() ) {
-    Error("initialize()", "m_Iso_WP should not be empty! Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+    std::cout << "\n\n Iso wp: " << m_Iso_WP << "\n\n" << std::endl;
 
-  std::cout << "\n\n Iso wp: " << m_Iso_WP << "\n\n" << std::endl;
+    m_IsoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Iso_" + m_Iso_WP;
 
-  m_IsoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Iso_" + m_Iso_WP;
+    RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name), "" );
 
-  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name), "" );
+    if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name) ) {
+      m_asgElEffCorrTool_elSF_Iso = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name);
+    } else {
+      m_asgElEffCorrTool_elSF_Iso = new AsgElectronEfficiencyCorrectionTool(m_IsoEffSF_tool_name);
+      m_asgElEffCorrTool_elSF_Iso->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+      std::vector<std::string> inputFilesIso{ m_corrFileNameIso } ; // initialise vector w/ all the files containing corrections
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Iso->setProperty("CorrectionFileNameList",inputFilesIso),"Failed to set property CorrectionFileNameList");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Iso->setProperty("ForceDataType",sim_flav),"Failed to set property ForceDataType");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Iso->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Iso");
+    }
+    
+    if ( m_debug ) {
 
-  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name) ) {
-    m_asgElEffCorrTool_elSF_Iso = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name);
-  } else {
-    m_asgElEffCorrTool_elSF_Iso = new AsgElectronEfficiencyCorrectionTool(m_IsoEffSF_tool_name);
-    m_asgElEffCorrTool_elSF_Iso->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-    std::vector<std::string> inputFilesIso{ m_corrFileNameIso } ; // initialise vector w/ all the files containing corrections
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Iso->setProperty("CorrectionFileNameList",inputFilesIso),"Failed to set property CorrectionFileNameList");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Iso->setProperty("ForceDataType",sim_flav),"Failed to set property ForceDataType");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Iso->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Iso");
+      // Get a list of affecting systematics
+     //
+      CP::SystematicSet affectSystsIso = m_asgElEffCorrTool_elSF_Iso->affectingSystematics();
+      //
+      // Convert into a simple list
+      //
+      for ( const auto& syst_it : affectSystsIso ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by Iso efficiency systematic: %s", (syst_it.name()).c_str()); }
+    }
+    //
+    // Make a list of systematics to be used, based on configuration input
+    // Use HelperFunctions::getListofSystematics() for this!
+    //
+    const CP::SystematicSet recSystsIso = m_asgElEffCorrTool_elSF_Iso->recommendedSystematics();
+    m_systListIso = HelperFunctions::getListofSystematics( recSystsIso, m_systNameIso, m_systValIso, m_debug );
+
+    Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool Iso efficiency systematic:");
+    for ( const auto& syst_it : m_systListIso ) {
+      if ( m_systNameIso.empty() ) {
+    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	break;
+      }
+      Info("initialize()","\t %s", (syst_it.name()).c_str());
+    }
+
+    //  Add the chosen WP to the string labelling the vector<SF> decoration
+    //
+    m_outputSystNamesIso = m_outputSystNamesIso + "_" + m_Iso_WP;
+    
   }
   
-  if ( m_debug ) {
-
-    // Get a list of affecting systematics
-   //
-    CP::SystematicSet affectSystsIso = m_asgElEffCorrTool_elSF_Iso->affectingSystematics();
-    //
-    // Convert into a simple list
-    //
-    for ( const auto& syst_it : affectSystsIso ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by Iso efficiency systematic: %s", (syst_it.name()).c_str()); }
-  }
-  //
-  // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!
-  //
-  const CP::SystematicSet recSystsIso = m_asgElEffCorrTool_elSF_Iso->recommendedSystematics();
-  m_systListIso = HelperFunctions::getListofSystematics( recSystsIso, m_systNameIso, m_systValIso, m_debug );
-
-  Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool Iso efficiency systematic:");
-  for ( const auto& syst_it : m_systListIso ) {
-    if ( m_systNameIso.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!");
-      break;
-    }
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
-  }
-
-  //  Add the chosen WP to the string labelling the vector<SF> decoration
-  //
-  m_outputSystNamesIso = m_outputSystNamesIso + "_" + m_Iso_WP;
-
   // 3.
   // initialize the AsgElectronEfficiencyCorrectionTool for Reco Efficiency SF
   //
+  if ( !m_corrFileNameReco.empty() ) {
+    
+    m_RecoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Reco";
 
-  m_RecoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Reco";
+    RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name), "" );
 
-  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name), "" );
-
-  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name) ) {
-    m_asgElEffCorrTool_elSF_Reco = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name);
-  } else {
-    m_asgElEffCorrTool_elSF_Reco = new AsgElectronEfficiencyCorrectionTool(m_RecoEffSF_tool_name);
-    m_asgElEffCorrTool_elSF_Reco->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-    std::vector<std::string> inputFilesReco{ m_corrFileNameReco } ; // initialise vector w/ all the files containing corrections
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("CorrectionFileNameList",inputFilesReco),"Failed to set property CorrectionFileNameList");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Reco");
-  }
-
-  if ( m_debug ) {
-
-    // Get a list of affecting systematics
-    //
-    CP::SystematicSet affectSystsReco = m_asgElEffCorrTool_elSF_Reco->affectingSystematics();
-    //
-    // Convert into a simple list
-    //
-    for ( const auto& syst_it : affectSystsReco ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by reco efficiency systematic: %s", (syst_it.name()).c_str()); }
-  }
-  //
-  // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!
-  //
-  const CP::SystematicSet recSystsReco = m_asgElEffCorrTool_elSF_Reco->recommendedSystematics();
-  m_systListReco = HelperFunctions::getListofSystematics( recSystsReco, m_systNameReco, m_systValReco, m_debug );
-
-  Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool reco efficiency systematic:");
-  for ( const auto& syst_it : m_systListReco ) {
-    if ( m_systNameReco.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!");
-      break;
+    if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name) ) {
+      m_asgElEffCorrTool_elSF_Reco = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name);
+    } else {
+      m_asgElEffCorrTool_elSF_Reco = new AsgElectronEfficiencyCorrectionTool(m_RecoEffSF_tool_name);
+      m_asgElEffCorrTool_elSF_Reco->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+      std::vector<std::string> inputFilesReco{ m_corrFileNameReco } ; // initialise vector w/ all the files containing corrections
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("CorrectionFileNameList",inputFilesReco),"Failed to set property CorrectionFileNameList");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Reco");
     }
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
+
+    if ( m_debug ) {
+
+      // Get a list of affecting systematics
+      //
+      CP::SystematicSet affectSystsReco = m_asgElEffCorrTool_elSF_Reco->affectingSystematics();
+      //
+      // Convert into a simple list
+      //
+      for ( const auto& syst_it : affectSystsReco ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by reco efficiency systematic: %s", (syst_it.name()).c_str()); }
+    }
+    //
+    // Make a list of systematics to be used, based on configuration input
+    // Use HelperFunctions::getListofSystematics() for this!
+    //
+    const CP::SystematicSet recSystsReco = m_asgElEffCorrTool_elSF_Reco->recommendedSystematics();
+    m_systListReco = HelperFunctions::getListofSystematics( recSystsReco, m_systNameReco, m_systValReco, m_debug );
+
+    Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool reco efficiency systematic:");
+    for ( const auto& syst_it : m_systListReco ) {
+      if ( m_systNameReco.empty() ) {
+    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	break;
+      }
+      Info("initialize()","\t %s", (syst_it.name()).c_str());
+    }
   }
 
   // 4.
   // Initialise the AsgElectronEfficiencyCorrectionTool for Trigger Efficiency SF
   //
+  if ( !m_corrFileNameTrig.empty() ) {
 
-  if ( m_WorkingPointIDTrig.empty() ) {
-    Error("initialize()", "m_WorkingPointIDTrig should not be empty! Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
-
-  std::cout << "\n\n Trig ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
-
-  m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig;
-
-  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name), "" );
-  
-  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name) ) {
-    m_asgElEffCorrTool_elSF_Trig = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name);
-  } else {
-    m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool(m_TrigEffSF_tool_name);
-    m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-    std::vector<std::string> inputFilesTrig{ m_corrFileNameTrig } ; // initialise vector w/ all the files containing corrections
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("CorrectionFileNameList",inputFilesTrig),"Failed to set property CorrectionFileNameList");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Trig");
-  }
-  
-  if ( m_debug ) {
-
-    // Get a list of affecting systematics
-   //
-    CP::SystematicSet affectSystsTrig = m_asgElEffCorrTool_elSF_Trig->affectingSystematics();
-    //
-    // Convert into a simple list
-    //
-    for ( const auto& syst_it : affectSystsTrig ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by Trig efficiency SF systematic: %s", (syst_it.name()).c_str()); }
-  }
-  //
-  // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!
-  //
-  const CP::SystematicSet recSystsTrig = m_asgElEffCorrTool_elSF_Trig->recommendedSystematics();
-  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
-
-  Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool Trig efficiency SF systematic:");
-  for ( const auto& syst_it : m_systListTrig ) {
-    if ( m_systNameTrig.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!");
-      break;
+    if ( m_WorkingPointIDTrig.empty() ) {
+      Error("initialize()", "m_WorkingPointIDTrig should not be empty! Exiting." );
+      return EL::StatusCode::FAILURE;
     }
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
+
+    std::cout << "\n\n Trig ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
+
+    m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig;
+
+    RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name), "" );
+    
+    if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name) ) {
+      m_asgElEffCorrTool_elSF_Trig = asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name);
+    } else {
+      m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool(m_TrigEffSF_tool_name);
+      m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+      std::vector<std::string> inputFilesTrig{ m_corrFileNameTrig } ; // initialise vector w/ all the files containing corrections
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("CorrectionFileNameList",inputFilesTrig),"Failed to set property CorrectionFileNameList");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Trig");
+    }
+    
+    if ( m_debug ) {
+
+      // Get a list of affecting systematics
+     //
+      CP::SystematicSet affectSystsTrig = m_asgElEffCorrTool_elSF_Trig->affectingSystematics();
+      //
+      // Convert into a simple list
+      //
+      for ( const auto& syst_it : affectSystsTrig ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by Trig efficiency SF systematic: %s", (syst_it.name()).c_str()); }
+    }
+    //
+    // Make a list of systematics to be used, based on configuration input
+    // Use HelperFunctions::getListofSystematics() for this!
+    //
+    const CP::SystematicSet recSystsTrig = m_asgElEffCorrTool_elSF_Trig->recommendedSystematics();
+    m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
+
+    Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool Trig efficiency SF systematic:");
+    for ( const auto& syst_it : m_systListTrig ) {
+      if ( m_systNameTrig.empty() ) {
+    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	break;
+      }
+      Info("initialize()","\t %s", (syst_it.name()).c_str());
+    }
+
+    //  Add the chosen WP to the string labelling the vector<SF> decoration
+    //
+    m_outputSystNamesTrig = m_outputSystNamesTrig + "_" + m_WorkingPointIDTrig;
+
   }
-
-  //  Add the chosen WP to the string labelling the vector<SF> decoration
-  //
-  m_outputSystNamesTrig = m_outputSystNamesTrig + "_" + m_WorkingPointIDTrig;
-
+  
   // 5.
   // Initialise the AsgElectronEfficiencyCorrectionTool for Trigger Efficiency (for MC)
   //
+  if ( !m_corrFileNameTrigMCEff.empty() ) {
 
-  m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig;
+    m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig;
 
-  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name), "" );
-  
-  if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name) ) {
-    m_asgElEffCorrTool_elSF_TrigMCEff= asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name);
-  } else {
-    m_asgElEffCorrTool_elSF_TrigMCEff = new AsgElectronEfficiencyCorrectionTool(m_TrigMCEff_tool_name);
-    m_asgElEffCorrTool_elSF_TrigMCEff->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-    std::vector<std::string> inputFilesTrigMCEff{ m_corrFileNameTrigMCEff } ; // initialise vector w/ all the files containing corrections
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("CorrectionFileNameList",inputFilesTrigMCEff),"Failed to set property CorrectionFileNameList");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
-    RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool TrigMCEff");
-  }
-  
-  if ( m_debug ) {
-
-    // Get a list of affecting systematics
-   //
-    CP::SystematicSet affectSystsTrigMCEff = m_asgElEffCorrTool_elSF_TrigMCEff->affectingSystematics();
-    //
-    // Convert into a simple list
-    //
-    for ( const auto& syst_it : affectSystsTrigMCEff ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by TrigMCEff efficiency systematic: %s", (syst_it.name()).c_str()); }
-  }
-  //
-  // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!
-  //
-  const CP::SystematicSet recSystsTrigMCEff = m_asgElEffCorrTool_elSF_TrigMCEff->recommendedSystematics();
-  m_systListTrigMCEff = HelperFunctions::getListofSystematics( recSystsTrigMCEff, m_systNameTrigMCEff, m_systValTrigMCEff, m_debug );
-
-  Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool TrigMCEff efficiency systematic:");
-  for ( const auto& syst_it : m_systListTrigMCEff ) {
-    if ( m_systNameTrigMCEff.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!");
-      break;
+    RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name), "" );
+    
+    if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name) ) {
+      m_asgElEffCorrTool_elSF_TrigMCEff= asg::ToolStore::get<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name);
+    } else {
+      m_asgElEffCorrTool_elSF_TrigMCEff = new AsgElectronEfficiencyCorrectionTool(m_TrigMCEff_tool_name);
+      m_asgElEffCorrTool_elSF_TrigMCEff->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+      std::vector<std::string> inputFilesTrigMCEff{ m_corrFileNameTrigMCEff } ; // initialise vector w/ all the files containing corrections
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("CorrectionFileNameList",inputFilesTrigMCEff),"Failed to set property CorrectionFileNameList");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool TrigMCEff");
     }
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
+    
+    if ( m_debug ) {
+
+      // Get a list of affecting systematics
+     //
+      CP::SystematicSet affectSystsTrigMCEff = m_asgElEffCorrTool_elSF_TrigMCEff->affectingSystematics();
+      //
+      // Convert into a simple list
+      //
+      for ( const auto& syst_it : affectSystsTrigMCEff ) { Info("initialize()","AsgElectronEfficiencyCorrectionTool can be affected by TrigMCEff efficiency systematic: %s", (syst_it.name()).c_str()); }
+    }
+    //
+    // Make a list of systematics to be used, based on configuration input
+    // Use HelperFunctions::getListofSystematics() for this!
+    //
+    const CP::SystematicSet recSystsTrigMCEff = m_asgElEffCorrTool_elSF_TrigMCEff->recommendedSystematics();
+    m_systListTrigMCEff = HelperFunctions::getListofSystematics( recSystsTrigMCEff, m_systNameTrigMCEff, m_systValTrigMCEff, m_debug );
+
+    Info("initialize()","Will be using AsgElectronEfficiencyCorrectionTool TrigMCEff efficiency systematic:");
+    for ( const auto& syst_it : m_systListTrigMCEff ) {
+      if ( m_systNameTrigMCEff.empty() ) {
+  	Info("initialize()","\t Running w/ nominal configuration only!");
+  	break;
+      }
+      Info("initialize()","\t %s", (syst_it.name()).c_str());
+    }
+
+    //  Add the chosen WP to the string labelling the vector<SF> decoration
+    //
+    m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_" + m_WorkingPointIDTrig;
+
   }
-
-  //  Add the chosen WP to the string labelling the vector<SF> decoration
-  //
-  m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_" + m_WorkingPointIDTrig;
-
+  
   // *********************************************************************************
 
   Info("initialize()", "ElectronEfficiencyCorrector Interface succesfully initialized!" );
@@ -623,9 +634,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   // Every systematic will correspond to a different SF!
   //
 
-  // Do it only if a tool with *this* name hasn't already been used
+  // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
-  if ( !isToolAlreadyUsed(m_pidEffSF_tool_name) ) {
+  if ( !m_corrFileNamePID.empty() && !isToolAlreadyUsed(m_pidEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListPID ) {
 
@@ -738,9 +749,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   // Every systematic will correspond to a different SF!
   //
   
-  // Do it only if a tool with *this* name hasn't already been used
+  // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
-  if ( !isToolAlreadyUsed(m_IsoEffSF_tool_name) ) {
+  if ( !m_corrFileNameIso.empty() && !isToolAlreadyUsed(m_IsoEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListIso ) {
 
@@ -853,9 +864,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   // Every systematic will correspond to a different SF!
   //
   
-  // Do it only if a tool with *this* name hasn't already been used
+  // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
-  if ( !isToolAlreadyUsed(m_RecoEffSF_tool_name) ) {
+  if ( !m_corrFileNameReco.empty() && !isToolAlreadyUsed(m_RecoEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListReco ) {
 
@@ -970,9 +981,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   // NB: calculation of the event SF is up to the analyzer
 
-  // Do it only if a tool with *this* name hasn't already been used
+  // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
-  if ( !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
+  if ( !m_corrFileNameTrig.empty() && !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListTrig ) {
 
@@ -1084,9 +1095,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   // Every systematic will correspond to a different SF!
   //
   
-  // Do it only if a tool with *this* name hasn't already been used
+  // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
-  if ( !isToolAlreadyUsed(m_TrigMCEff_tool_name) ) {
+  if ( !m_corrFileNameTrigMCEff.empty() && !isToolAlreadyUsed(m_TrigMCEff_tool_name) ) {
 
     for ( const auto& syst_it : m_systListTrigMCEff ) {
 
