@@ -20,7 +20,7 @@
 
 namespace Trig {
   class TrigDecisionTool;
-  class TrigEgammaMatchingTool;
+  //class TrigEgammaMatchingTool;
 }
 
 class ElectronSelector : public xAH::Algorithm
@@ -136,7 +136,7 @@ private:
   ElectronCutBasedPIDManager*      m_el_CutBased_PIDManager; //!
 
   Trig::TrigDecisionTool*          m_trigDecTool;            //!
-  Trig::TrigEgammaMatchingTool*    m_trigElMatchTool;        //!
+  //Trig::TrigEgammaMatchingTool*    m_trigElMatchTool;        //!
 
   /* other private members */
 

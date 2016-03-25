@@ -12,7 +12,7 @@ namespace CP {
 
 namespace Trig {
   class TrigDecisionTool;
-  class TrigEgammaMatchingTool;
+  //class TrigEgammaMatchingTool;
 }
 
 #include <TH1D.h>
@@ -90,7 +90,7 @@ private:
 
   /* trigger decision and matching */
   Trig::TrigDecisionTool* m_trigDecTool; //!
-  Trig::TrigEgammaMatchingTool* m_match_Tool; //!
+  //Trig::TrigEgammaMatchingTool* m_match_Tool; //!
 
   std::vector<std::string> m_PhTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_ElTrigChains */
 

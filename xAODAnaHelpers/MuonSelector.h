@@ -17,7 +17,7 @@
 
 namespace Trig {
   class TrigDecisionTool;
-  class TrigMuonMatching;
+  //class TrigMuonMatching;
 }
 
 class MuonSelector : public xAH::Algorithm
@@ -111,7 +111,7 @@ private:
   CP::MuonSelectionTool*         m_muonSelectionTool;	    //!
 
   Trig::TrigDecisionTool*        m_trigDecTool;	            //!
-  Trig::TrigMuonMatching*        m_trigMuonMatchTool;       //!
+  //Trig::TrigMuonMatching*        m_trigMuonMatchTool;       //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
