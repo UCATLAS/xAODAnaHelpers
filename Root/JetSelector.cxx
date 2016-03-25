@@ -333,7 +333,7 @@ EL::StatusCode JetSelector :: initialize ()
   // initialize the CP::JetJvtEfficiency Tool
   //
   m_JVT_tool_name = "JetJvtEfficiency_effSF";
-  std::string JVT_handle_name = "CP::JetJvtEfficiency/" + m_JVT_tool_name;
+  std::string JVT_handle_name = "CP::JetJvtEfficiency/" + m_JVT_tool_name +"_"+m_name;
  
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::JetJvtEfficiency>(m_JVT_tool_name), "" );
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.makeNew<CP::JetJvtEfficiency>(JVT_handle_name), "Failed to create handle to CP::JetJvtEfficiency for JVT");
@@ -386,7 +386,7 @@ EL::StatusCode JetSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Jet Selection... "); }
+  if ( m_debug ) { Info("execute()", "Applying Jet Selection... %s", m_name.c_str()); }
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -468,7 +468,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     std::string outContainerName
     )
 {
-  if ( m_debug ) { Info("executeSelection()", "in executeSelection... "); }
+  if ( m_debug ) { Info("executeSelection()", "in executeSelection... %s", m_name.c_str()); }
 
   // create output container (if requested)
   ConstDataVector<xAOD::JetContainer>* selectedJets(nullptr);
@@ -532,7 +532,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // Loop over selected jets and decorate with JVT efficiency SF
   // Do it only for MC
   //
-  if ( m_isMC ) {
+  if ( m_doJVT && m_isMC ) {
     
     std::vector< std::string >* sysVariationNamesJVT  = new std::vector< std::string >;
 
