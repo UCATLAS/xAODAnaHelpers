@@ -23,7 +23,7 @@
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
-#include "TrigEgammaMatchingTool/TrigEgammaMatchingTool.h"
+//#include "TrigEgammaMatchingTool/TrigEgammaMatchingTool.h"
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):
@@ -44,7 +44,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
     m_el_LH_PIDManager(nullptr),
     m_el_CutBased_PIDManager(nullptr),
     m_trigDecTool(nullptr),
-    m_trigElMatchTool_handle("Trig::TrigEgammaMatchingTool/TrigElectronMatchingName", nullptr)
+    //m_trigElMatchTool_handle("Trig::TrigEgammaMatchingTool/TrigElectronMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -434,13 +434,13 @@ EL::StatusCode ElectronSelector :: initialize ()
 
     //  everything went fine, let's initialise the tool!
     //
-    m_trigElMatchTool_name                  = "TrigEgammaMatchingTool_" + m_name;
-    std::string trigElMatchTool_handle_name = "Trig::TrigEgammaMatchingTool/" + m_trigElMatchTool_name;
+    //m_trigElMatchTool_name                  = "TrigEgammaMatchingTool_" + m_name;
+    //std::string trigElMatchTool_handle_name = "Trig::TrigEgammaMatchingTool/" + m_trigElMatchTool_name;
 
-    RETURN_CHECK("ElectronSelector::initialize()", checkToolStore<Trig::TrigEgammaMatchingTool>(m_trigElMatchTool_name), "" );
-    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.makeNew<Trig::TrigEgammaMatchingTool>(trigElMatchTool_handle_name), "Failed to create handle to TrigEgammaMatchingTool");
-    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigEgammaMatchingTool" );
-    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.initialize(), "Failed to properly initialize TrigEgammaMatchingTool." );
+    //RETURN_CHECK("ElectronSelector::initialize()", checkToolStore<Trig::TrigEgammaMatchingTool>(m_trigElMatchTool_name), "" );
+    //RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.makeNew<Trig::TrigEgammaMatchingTool>(trigElMatchTool_handle_name), "Failed to create handle to TrigEgammaMatchingTool");
+    //RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigEgammaMatchingTool" );
+    //RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.initialize(), "Failed to properly initialize TrigEgammaMatchingTool." );
 
   } else {
 
@@ -693,6 +693,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   //  1. the user didn't pass any trigger chains to the algo (see initialize(): in that case, the tool is not even initialised!)
   //  2. there are no selected electrons in the event
   //
+  /*
   if ( m_doTrigMatch && selectedElectrons ) {
 
     unsigned int nSelectedElectrons = selectedElectrons->size();
@@ -726,6 +727,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
     }
   }
+  */
 
   return true;
 
@@ -760,6 +762,7 @@ EL::StatusCode ElectronSelector :: finalize ()
 
   if ( m_el_CutBased_PIDManager ) { delete m_el_CutBased_PIDManager;  m_el_CutBased_PIDManager = nullptr; }
   if ( m_el_LH_PIDManager )       { delete m_el_LH_PIDManager;	      m_el_LH_PIDManager = nullptr;	  }
+  //  if ( m_trigElMatchTool )        { delete m_trigElMatchTool;	      m_trigElMatchTool = nullptr;	  }
 
   if ( m_useCutFlow ) {
     Info("finalize()", "Filling cutflow");
