@@ -50,6 +50,7 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   m_outContainerName(""),
   m_trigDecTool(nullptr),
   m_jetName("EFJet"),
+  m_trkName("InDetTrigTrackingxAODCnv_Bjet_IDTrig"),
   m_vtxName("EFHistoPrmVtx")
 {
   if(m_debug) Info("HLTJetRoIBuilder()", "Calling constructor");
@@ -108,6 +109,16 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
   if(m_trigItem.find("split") != std::string::npos){
     m_jetName = "SplitJet";
     m_vtxName = "xPrimVx";
+  }
+
+  if(m_trigItem.find("FTK") != std::string::npos){
+    m_trkName = "InDetTrigTrackingxAODCnv_Bjet_FTK";
+    m_vtxName = "";
+    //m_vtxName = "HLT_PrimVertexFTK";
+  }
+
+  if(m_trigItem.find("FTKRefit") != std::string::npos){
+    m_trkName = "InDetTrigTrackingxAODCnv_Bjet_FTKRefit";
   }
 
   return EL::StatusCode::SUCCESS;
@@ -174,9 +185,13 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   for( ; comb!=combEnd ; ++comb) {
     std::vector< Trig::Feature<xAOD::JetContainer> >            jetCollections  = comb->containerFeature<xAOD::JetContainer>(m_jetName);
     std::vector< Trig::Feature<xAOD::BTaggingContainer> >       bjetCollections = comb->containerFeature<xAOD::BTaggingContainer>("HLTBjetFex");
-    std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  trkCollections  = comb->containerFeature<xAOD::TrackParticleContainer>("InDetTrigTrackingxAODCnv_Bjet_IDTrig");
-    std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  ftfCollections  = comb->containerFeature<xAOD::TrackParticleContainer>("InDetTrigTrackingxAODCnv_Bjet_FTF");
-    std::vector<Trig::Feature<xAOD::VertexContainer> >          vtxCollections  = comb->containerFeature<xAOD::VertexContainer>(m_vtxName);
+    std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  trkCollections  = comb->containerFeature<xAOD::TrackParticleContainer>(m_trkName);
+    //std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  ftfCollections  = comb->containerFeature<xAOD::TrackParticleContainer>("InDetTrigTrackingxAODCnv_Bjet_FTF");
+    std::vector<Trig::Feature<xAOD::VertexContainer> >          vtxCollections;
+    if(m_vtxName.size())
+      vtxCollections = comb->containerFeature<xAOD::VertexContainer>(m_vtxName);
+    else
+      vtxCollections = comb->containerFeature<xAOD::VertexContainer>();
     
     bool isValid = true;
 
@@ -192,13 +207,15 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       isValid = false;
     }
 
-    if(jetCollections.size() != ftfCollections.size()){
-      cout << "ERROR Problem in container size: " << m_name  << " jets: "<< jetCollections.size() << " ftfs: "<< ftfCollections.size() << endl;
-      isValid = false;
-    }
+    //if(jetCollections.size() != ftfCollections.size()){
+    //  cout << "ERROR Problem in container size: " << m_name  << " jets: "<< jetCollections.size() << " ftfs: "<< ftfCollections.size() << endl;
+    //  isValid = false;
+    //}
 
     if(jetCollections.size() != vtxCollections.size()){
-      cout << "ERROR Problem in container size: " << m_name  << " jets: "<< jetCollections.size() << " ftfs: "<< vtxCollections.size() << endl;
+      cout << "ERROR Problem in container size: " << m_name  
+	   << " jets: "<< jetCollections.size() << " " << m_jetName 
+	   << " vtx: "<< vtxCollections.size()  << "  "<< m_vtxName << endl;
       isValid = false;
     }
 

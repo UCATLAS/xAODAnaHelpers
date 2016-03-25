@@ -49,6 +49,7 @@ private:
 
   Trig::TrigDecisionTool*      m_trigDecTool;   //!
   std::string                  m_jetName;       //!
+  std::string                  m_trkName;       //!
   std::string                  m_vtxName;       //!
 
   EL::StatusCode buildHLTBJets ();
