@@ -408,6 +408,10 @@ if __name__ == "__main__":
       xAH_logger.info("No datasets found. Exiting.")
       sys.exit(0)
 
+    if args.optEventsPerWorker is not None:
+      xAH_logger.info("Splitting up events onto each worker. optEventsPerWorker was set!")
+      ROOT.SH.scanNEvents(sh_all)
+
     # set the name of the tree in our files (should be configurable)
     sh_all.setMetaString( "nc_tree", args.treeName)
     #sh_all.setMetaString( "nc_excludeSite", "ANALY_RAL_SL6");
