@@ -51,7 +51,7 @@ class _HelpAction(argparse.Action):
         print("That is not a valid subsection. Chose from {{{0:s}}}".format(','.join(available_groups)))
     parser.exit()
 
-try:  
+try:
   __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
   __short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
 except:
@@ -477,8 +477,18 @@ if __name__ == "__main__":
       #
       from xAH_config import xAH_config
       for k,v in configLocals.iteritems():
+
         if isinstance(v, xAH_config):
-          map(job.algsAdd, v._algorithms)
+          
+	  # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
+	  # is created and added to the job *before* the service 
+	  #
+	  for alg in v._algorithms:
+            if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
+              job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
+          # Add the algorithms to the job
+	  #
+	  map(job.algsAdd, v._algorithms)
 
           for configLog in v._log:
             if len(configLog) == 1:  # this is when we have just the algorithm name
