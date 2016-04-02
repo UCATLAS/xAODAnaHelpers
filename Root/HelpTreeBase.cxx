@@ -1869,7 +1869,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
   if( m_thisJetInfoSwitch[jetName]->m_trackPV || m_thisJetInfoSwitch[jetName]->m_allTrack ) {
     HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
-    pv = vertices->at( pvLocation );
+    if ( pvLocation >= 0 ) pv = vertices->at( pvLocation );
   }
 
   jetInfo* thisJet = m_jets[jetName];
