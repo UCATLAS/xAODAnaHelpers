@@ -1669,7 +1669,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFix30").c_str(),   &thisJet->m_jet_mv2c20_isFix30);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix30").c_str(),   &thisJet->m_jet_mv2c20_sfFix30);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix30);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFix30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix30);
 	  }
           break;
         case 50 :
@@ -1677,7 +1677,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFix50").c_str(),   &thisJet->m_jet_mv2c20_isFix50);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix50").c_str(),   &thisJet->m_jet_mv2c20_sfFix50);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix50);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFix50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix50);
 	  }
           break;
         case 60 :
@@ -1685,7 +1685,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFix60").c_str(),   &thisJet->m_jet_mv2c20_isFix60);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix60").c_str(),   &thisJet->m_jet_mv2c20_sfFix60);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix60);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFix60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix60);
 	  }
           break;
         case 70 :
@@ -1693,7 +1693,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFix70").c_str(),   &thisJet->m_jet_mv2c20_isFix70);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix70").c_str(),   &thisJet->m_jet_mv2c20_sfFix70);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix70);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFix70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix70);
 	  }
           break;
         case 77 :
@@ -1701,7 +1701,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFix77").c_str(),   &thisJet->m_jet_mv2c20_isFix77);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix77").c_str(),   &thisJet->m_jet_mv2c20_sfFix77);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix77);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFix77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix77);
 	  }
           break;
         case 80 :
@@ -1709,7 +1709,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFix80").c_str(),   &thisJet->m_jet_mv2c20_isFix80);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix80").c_str(),   &thisJet->m_jet_mv2c20_sfFix80);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix80").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix80);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFix80").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix80);
 	  }
           break;
         case 85 :
@@ -1717,7 +1717,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFix85").c_str(),   &thisJet->m_jet_mv2c20_isFix85);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix85").c_str(),   &thisJet->m_jet_mv2c20_sfFix85);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix85);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFix85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix85);
 	  }
           break;
         case 90 :
@@ -1725,7 +1725,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFix90").c_str(),   &thisJet->m_jet_mv2c20_isFix90);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFix90").c_str(),   &thisJet->m_jet_mv2c20_sfFix90);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFix90").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix90);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFix90").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFix90);
 	  }
           break;
         default:
@@ -1743,7 +1743,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFlt30").c_str(),   &thisJet->m_jet_mv2c20_isFlt30);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt30").c_str(),   &thisJet->m_jet_mv2c20_sfFlt30);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt30);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFlt30").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt30);
 	  }
           break;
         case 40 :
@@ -1751,7 +1751,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFlt40").c_str(),   &thisJet->m_jet_mv2c20_isFlt40);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt40").c_str(),   &thisJet->m_jet_mv2c20_sfFlt40);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt40").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt40);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFlt40").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt40);
 	  }
           break;
         case 50 :
@@ -1759,7 +1759,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFlt50").c_str(),   &thisJet->m_jet_mv2c20_isFlt50);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt50").c_str(),   &thisJet->m_jet_mv2c20_sfFlt50);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt50);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFlt50").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt50);
 	  }
           break;
         case 60 :
@@ -1767,7 +1767,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFlt60").c_str(),   &thisJet->m_jet_mv2c20_isFlt60);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt60").c_str(),   &thisJet->m_jet_mv2c20_sfFlt60);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt60);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFlt60").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt60);
 	  }
           break;
         case 70 :
@@ -1775,7 +1775,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFlt70").c_str(),   &thisJet->m_jet_mv2c20_isFlt70);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt70").c_str(),   &thisJet->m_jet_mv2c20_sfFlt70);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt70);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFlt70").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt70);
 	  }
           break;
         case 77 :
@@ -1783,7 +1783,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFlt77").c_str(),   &thisJet->m_jet_mv2c20_isFlt77);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt77").c_str(),   &thisJet->m_jet_mv2c20_sfFlt77);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt77);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFlt77").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt77);
 	  }
           break;
         case 85 :
@@ -1791,7 +1791,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
           m_tree->Branch((jetName+"_MV2c20_isFlt85").c_str(),   &thisJet->m_jet_mv2c20_isFlt85);
           if ( m_isMC ) {
 	    m_tree->Branch((jetName+"_MV2c20_SFFlt85").c_str(),   &thisJet->m_jet_mv2c20_sfFlt85);
-            m_tree->Branch(("weight_"+jetName+"__MV2c20_SFFlt85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt85);
+            m_tree->Branch(("weight_"+jetName+"_MV2c20_SFFlt85").c_str(),   &thisJet->m_weight_jet_mv2c20_sfFlt85);
 	  }
           break;
         default:

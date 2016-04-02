@@ -94,6 +94,9 @@ TauSelector :: TauSelector (std::string className) :
   m_EleOLRFilePath          = "";
 
   m_minPtDAOD               = 15e3;
+
+  m_setTauOverlappingEleLLHDecor = true;
+
 }
 
 TauSelector::~TauSelector() {}
@@ -246,10 +249,12 @@ EL::StatusCode TauSelector :: initialize ()
   }
   RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->initialize(), "Failed to properly initialize TauSelectionTool");
 
-  std::string eleOLR_tool_name = std::string("TauOverlappingElectronLLHDecorator_") + m_name;
-  m_TOELLHDecorator = new TauAnalysisTools::TauOverlappingElectronLLHDecorator( eleOLR_tool_name );
-  m_TOELLHDecorator->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
-  RETURN_CHECK("TauSelector::initialize()", m_TOELLHDecorator->initialize(), "Failed to properly initialize TauOverlappingElectronLLHDecorator");
+  if ( m_setTauOverlappingEleLLHDecor ) {
+    std::string eleOLR_tool_name = std::string("TauOverlappingElectronLLHDecorator_") + m_name;
+    m_TOELLHDecorator = new TauAnalysisTools::TauOverlappingElectronLLHDecorator( eleOLR_tool_name );
+    m_TOELLHDecorator->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
+    RETURN_CHECK("TauSelector::initialize()", m_TOELLHDecorator->initialize(), "Failed to properly initialize TauOverlappingElectronLLHDecorator");
+  }
 
   Info("initialize()", "TauSelector Interface succesfully initialized!" );
 
@@ -537,7 +542,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
     return 0;
   }
 
-  m_TOELLHDecorator->decorate( *tau );
+  if ( m_setTauOverlappingEleLLHDecor ) { m_TOELLHDecorator->decorate( *tau ); }
 
   if ( ! m_TauSelTool->accept( *tau ) ) {
     if ( m_debug ) { Info("PassCuts()", "Tau failed requirements of TauSelectionTool"); }
