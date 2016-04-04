@@ -48,6 +48,11 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_METContainerName        = "";
   m_photonContainerName     = "";
 
+  m_muSysts                 = "";
+  m_elSysts                 = "";
+  m_jetSysts                = "";
+  m_photonSysts             = "";
+
   // DC14 switch for little things that need to happen to run
   // for those samples with the corresponding packages
   m_DC14                    = false;
@@ -84,36 +89,87 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   Info("treeInitialize()", "%s", m_name.c_str() );
   // needed here and not in initalize since this is called first
 
-  TTree * outTree = new TTree(m_name.c_str(),m_name.c_str());
-  if ( !outTree ) {
-    Error("treeInitialize()","Failed to instantiate output tree!");
-    return EL::StatusCode::FAILURE;
+  // make a tree for every systematic we need to process
+  std::vector<std::string> all_systNames;
+  all_systNames.push_back(""); // handle the nominal case (merge all) specially
+
+  // temporarily hold vector retrieved
+  std::vector<std::string>* systNames(nullptr);
+
+  // note that the way we set this up, none of the below m_##SystNames vectors contain the nominal case
+  if(!m_muSysts.empty()){
+    RETURN_CHECK("TreeAlgo::treeInitialize()", HelperFunctions::retrieve(systNames, m_muSystsVec, 0, m_store, m_verbose) ,"");
+    for(const auto& systName: *systNames){
+      if (std::find(all_systNames.begin(), all_systNames.end(), systName) != all_systNames.end()) continue;
+      all_systNames.push_back(systName);
+      m_muSystNames.push_back(systName);
+    }
+  }
+
+  if(!m_elSysts.empty()){
+    RETURN_CHECK("TreeAlgo::treeInitialize()", HelperFunctions::retrieve(systNames, m_elSystsVec, 0, m_store, m_verbose) ,"");
+    for(const auto& systName: *systNames){
+      if (std::find(all_systNames.begin(), all_systNames.end(), systName) != all_systNames.end()) continue;
+      all_systNames.push_back(systName);
+      m_elSystNames.push_back(systName);
+    }
+  }
+
+  if(!m_jetSysts.empty()){
+    RETURN_CHECK("TreeAlgo::treeInitialize()", HelperFunctions::retrieve(systNames, m_jetSystsVec, 0, m_store, m_verbose) ,"");
+    for(const auto& systName: *systNames){
+      if (std::find(all_systNames.begin(), all_systNames.end(), systName) != all_systNames.end()) continue;
+      all_systNames.push_back(systName);
+      m_jetSystNames.push_back(systName);
+    }
+  }
+
+  if(!m_photonSysts.empty()){
+    RETURN_CHECK("TreeAlgo::treeInitialize()", HelperFunctions::retrieve(systNames, m_photonSystsVec, 0, m_store, m_verbose) ,"");
+    for(const auto& systName: *systNames){
+      if (std::find(all_systNames.begin(), all_systNames.end(), systName) != all_systNames.end()) continue;
+      all_systNames.push_back(systName);
+      m_photonSystNames.push_back(systName);
+    }
   }
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
 
-  m_helpTree = new HelpTreeBase( m_event, outTree, treeFile, m_units, m_debug, m_DC14 );
+  // let's make the tdirectory and ttrees
+  for(const auto& systName: all_systNames){
+    std::string treeName = systName;
+    if(systName.empty()) treeName = "nominal";
+    treeName = m_name+"/"+treeName;
 
-  // tell the tree to go into the file
-  outTree->SetDirectory( treeFile );
-  // choose if want to add tree to same directory as ouput histograms
-  if ( m_outHistDir ) {
-    wk()->addOutput( outTree );
+    TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
+    if ( !outTree ) {
+      Error("treeInitialize()","Failed to instantiate output tree!");
+      return EL::StatusCode::FAILURE;
+    }
+
+    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, m_debug, m_DC14 );
+    const auto& helpTree = m_trees[systName];
+
+    // tell the tree to go into the file
+    outTree->SetDirectory( treeFile );
+    // choose if want to add tree to same directory as ouput histograms
+    if ( m_outHistDir ) {
+      wk()->addOutput( outTree );
+    }
+
+    helpTree->AddEvent( m_evtDetailStr );
+    if ( !m_trigDetailStr.empty() )       {   helpTree->AddTrigger    (m_trigDetailStr);    }
+    if ( !m_muContainerName.empty() )     {   helpTree->AddMuons      (m_muDetailStr);      }
+    if ( !m_elContainerName.empty() )     {   helpTree->AddElectrons  (m_elDetailStr);      }
+    if ( !m_jetContainerName.empty() )    {   helpTree->AddJets       (m_jetDetailStr, "jet");     }
+    if ( !m_trigJetContainerName.empty() ){   helpTree->AddJets       (m_trigJetDetailStr, "trigJet");     }
+    if ( !m_truthJetContainerName.empty() ){  helpTree->AddJets       (m_truthJetDetailStr, "truthJet");     }
+    if ( !m_fatJetContainerName.empty() ) {   helpTree->AddFatJets    (m_fatJetDetailStr);  }
+    if ( !m_tauContainerName.empty() )    {   helpTree->AddTaus       (m_tauDetailStr);     }
+    if ( !m_METContainerName.empty() )    {   helpTree->AddMET        (m_METDetailStr);     }
+    if ( !m_photonContainerName.empty() ) {   helpTree->AddPhotons    (m_photonDetailStr);  }
   }
-
-  m_helpTree->AddEvent( m_evtDetailStr );
-
-  if ( !m_trigDetailStr.empty() )       {   m_helpTree->AddTrigger    (m_trigDetailStr);    }
-  if ( !m_muContainerName.empty() )     {   m_helpTree->AddMuons      (m_muDetailStr);      }
-  if ( !m_elContainerName.empty() )     {   m_helpTree->AddElectrons  (m_elDetailStr);      }
-  if ( !m_jetContainerName.empty() )    {   m_helpTree->AddJets       (m_jetDetailStr, "jet");     }
-  if ( !m_trigJetContainerName.empty() ){   m_helpTree->AddJets       (m_trigJetDetailStr, "trigJet");     }
-  if ( !m_truthJetContainerName.empty() ){   m_helpTree->AddJets       (m_truthJetDetailStr, "truthJet");     }
-  if ( !m_fatJetContainerName.empty() ) {   m_helpTree->AddFatJets    (m_fatJetDetailStr);  }
-  if ( !m_tauContainerName.empty() )    {   m_helpTree->AddTaus       (m_tauDetailStr);     }
-  if ( !m_METContainerName.empty() )    {   m_helpTree->AddMET        (m_METDetailStr);     }
-  if ( !m_photonContainerName.empty() ) {   m_helpTree->AddPhotons    (m_photonDetailStr);  }
 
   Info("treeInitialize()", "Successfully initialized output tree");
 
@@ -135,68 +191,85 @@ EL::StatusCode TreeAlgo :: execute ()
   // get the primaryVertex
   const xAOD::Vertex* primaryVertex = HelperFunctions::getPrimaryVertex( vertices );
 
-  m_helpTree->FillEvent( eventInfo, m_event );
+  for(const auto& item: m_trees){
+    const auto& systName = item.first;
+    const auto& helpTree = item.second;
 
-  // Fill trigger information
-  if ( !m_trigDetailStr.empty() )    {
-    m_helpTree->FillTrigger( eventInfo );
-  }
+    // assume the nominal container by default
+    std::string muSuffix("");
+    std::string elSuffix("");
+    std::string jetSuffix("");
+    std::string photonSuffix("");
+    // if we find the systematic in the corresponding vector, we will use that container's systematic version instead of nominal version
+    if (std::find(m_muSystNames.begin(), m_muSystNames.end(), systName) != m_muSystNames.end()) muSuffix = systName;
+    if (std::find(m_elSystNames.begin(), m_elSystNames.end(), systName) != m_elSystNames.end()) elSuffix = systName;
+    if (std::find(m_jetSystNames.begin(), m_jetSystNames.end(), systName) != m_jetSystNames.end()) jetSuffix = systName;
+    if (std::find(m_photonSystNames.begin(), m_photonSystNames.end(), systName) != m_photonSystNames.end()) photonSuffix = systName;
 
-  // Fill jet trigger information - this can be used if with layer/cleaning info we need to turn off some variables?
-  /*if ( !m_trigJetDetailStr.empty() ) {
-    m_helpTree->FillJetTrigger();
-  }*/
+    helpTree->FillEvent( eventInfo, m_event );
 
-  // for the containers the were supplied, fill the appropriate vectors
-  if ( !m_muContainerName.empty() ) {
-    const xAOD::MuonContainer* inMuon(nullptr);
-    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inMuon, m_muContainerName, m_event, m_store, m_verbose) ,"");
-    m_helpTree->FillMuons( inMuon, primaryVertex );
-  }
+    // Fill trigger information
+    if ( !m_trigDetailStr.empty() )    {
+      helpTree->FillTrigger( eventInfo );
+    }
 
-  if ( !m_elContainerName.empty() ) {
-    const xAOD::ElectronContainer* inElec(nullptr);
-    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inElec, m_elContainerName, m_event, m_store, m_verbose) ,"");
-    m_helpTree->FillElectrons( inElec, primaryVertex );
-  }
-  if ( !m_jetContainerName.empty() ) {
-    const xAOD::JetContainer* inJets(nullptr);
-    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainerName, m_event, m_store, m_verbose) ,"");
-    m_helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices), "jet" );
-  }
-  if ( !m_trigJetContainerName.empty() ) {
-    const xAOD::JetContainer* inTrigJets(nullptr);
-    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTrigJets, m_trigJetContainerName, m_event, m_store, m_verbose) ,"");
-    m_helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices), "trigJet" );
-  }
-  if ( !m_truthJetContainerName.empty() ) {
-    const xAOD::JetContainer* inTruthJets(nullptr);
-    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthJets, m_truthJetContainerName, m_event, m_store, m_verbose) ,"");
-        m_helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices), "truthJet" );
-  }
-  if ( !m_fatJetContainerName.empty() ) {
-    const xAOD::JetContainer* inFatJets(nullptr);
-    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName, m_event, m_store, m_verbose) ,"");
-    m_helpTree->FillFatJets( inFatJets );
-  }
-  if ( !m_tauContainerName.empty() ) {
-    const xAOD::TauJetContainer* inTaus(nullptr);
-    RETURN_CHECK("HTopMultilepTreeAlgo::execute()", HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, m_verbose) , "");
-    m_helpTree->FillTaus( inTaus );
-  }
-  if ( !m_METContainerName.empty() ) {
-    const xAOD::MissingETContainer* inMETCont(nullptr);
-    RETURN_CHECK("HTopMultilepTreeAlgo::execute()", HelperFunctions::retrieve(inMETCont, m_METContainerName, m_event, m_store, m_debug) , "");
-    m_helpTree->FillMET( inMETCont );
-  }
-  if ( !m_photonContainerName.empty() ) {
-    const xAOD::PhotonContainer* inPhotons(nullptr);
-    RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inPhotons, m_photonContainerName, m_event, m_store, m_verbose) ,"");
-    m_helpTree->FillPhotons( inPhotons );
-  }
+    // Fill jet trigger information - this can be used if with layer/cleaning info we need to turn off some variables?
+    /*if ( !m_trigJetDetailStr.empty() ) {
+      helpTree->FillJetTrigger();
+    }*/
 
-  // fill the tree
-  m_helpTree->Fill();
+    // for the containers the were supplied, fill the appropriate vectors
+    if ( !m_muContainerName.empty() ) {
+      const xAOD::MuonContainer* inMuon(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inMuon, m_muContainerName, m_event, m_store, m_verbose) ,"");
+      helpTree->FillMuons( inMuon, primaryVertex );
+    }
+
+    if ( !m_elContainerName.empty() ) {
+      const xAOD::ElectronContainer* inElec(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inElec, m_elContainerName, m_event, m_store, m_verbose) ,"");
+      helpTree->FillElectrons( inElec, primaryVertex );
+    }
+    if ( !m_jetContainerName.empty() ) {
+      const xAOD::JetContainer* inJets(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainerName, m_event, m_store, m_verbose) ,"");
+      helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices), "jet" );
+    }
+    if ( !m_trigJetContainerName.empty() ) {
+      const xAOD::JetContainer* inTrigJets(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTrigJets, m_trigJetContainerName, m_event, m_store, m_verbose) ,"");
+      helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices), "trigJet" );
+    }
+    if ( !m_truthJetContainerName.empty() ) {
+      const xAOD::JetContainer* inTruthJets(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthJets, m_truthJetContainerName, m_event, m_store, m_verbose) ,"");
+          helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices), "truthJet" );
+    }
+    if ( !m_fatJetContainerName.empty() ) {
+      const xAOD::JetContainer* inFatJets(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName, m_event, m_store, m_verbose) ,"");
+      helpTree->FillFatJets( inFatJets );
+    }
+    if ( !m_tauContainerName.empty() ) {
+      const xAOD::TauJetContainer* inTaus(nullptr);
+      RETURN_CHECK("HTopMultilepTreeAlgo::execute()", HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, m_verbose) , "");
+      helpTree->FillTaus( inTaus );
+    }
+    if ( !m_METContainerName.empty() ) {
+      const xAOD::MissingETContainer* inMETCont(nullptr);
+      RETURN_CHECK("HTopMultilepTreeAlgo::execute()", HelperFunctions::retrieve(inMETCont, m_METContainerName, m_event, m_store, m_debug) , "");
+      helpTree->FillMET( inMETCont );
+    }
+    if ( !m_photonContainerName.empty() ) {
+      const xAOD::PhotonContainer* inPhotons(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inPhotons, m_photonContainerName, m_event, m_store, m_verbose) ,"");
+      helpTree->FillPhotons( inPhotons );
+    }
+
+    // fill the tree
+    helpTree->Fill();
+
+  }
 
   return EL::StatusCode::SUCCESS;
 

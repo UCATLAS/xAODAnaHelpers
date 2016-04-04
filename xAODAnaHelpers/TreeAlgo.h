@@ -40,11 +40,21 @@ public:
   std::string m_METContainerName;
   std::string m_photonContainerName;
 
+  // if these are set, assume systematics are being processed over
+  std::string m_muSystsVec;
+  std::string m_elSystsVec;
+  std::string m_jetSystsVec;
+  std::string m_photonSystsVec;
+
   bool m_DC14;
   float m_units;
 
 protected:
-  HelpTreeBase* m_helpTree;            //!
+  std::map<std::string, HelpTreeBase*> m_trees;            //!
+  std::vector<std::string> m_muSystNames; //!
+  std::vector<std::string> m_elSystNames; //!
+  std::vector<std::string> m_jetSystNames; //!
+  std::vector<std::string> m_photonSystNames; //!
 
 public:
 
