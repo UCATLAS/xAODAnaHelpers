@@ -20,7 +20,11 @@ ClassImp(TreeAlgo)
 
 TreeAlgo :: TreeAlgo (std::string className) :
     Algorithm(className),
-    m_helpTree(nullptr)
+    m_trees({}),
+    m_muSystNames({}),
+    m_elSystNames({}),
+    m_jetSystNames({}),
+    m_photonSystNames({})
 {
   this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
 
@@ -48,10 +52,10 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_METContainerName        = "";
   m_photonContainerName     = "";
 
-  m_muSysts                 = "";
-  m_elSysts                 = "";
-  m_jetSysts                = "";
-  m_photonSysts             = "";
+  m_muSystsVec              = "";
+  m_elSystsVec              = "";
+  m_jetSystsVec             = "";
+  m_photonSystsVec          = "";
 
   // DC14 switch for little things that need to happen to run
   // for those samples with the corresponding packages
@@ -97,7 +101,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
   std::vector<std::string>* systNames(nullptr);
 
   // note that the way we set this up, none of the below m_##SystNames vectors contain the nominal case
-  if(!m_muSysts.empty()){
+  if(!m_muSystsVec.empty()){
     RETURN_CHECK("TreeAlgo::treeInitialize()", HelperFunctions::retrieve(systNames, m_muSystsVec, 0, m_store, m_verbose) ,"");
     for(const auto& systName: *systNames){
       if (std::find(all_systNames.begin(), all_systNames.end(), systName) != all_systNames.end()) continue;
@@ -106,7 +110,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     }
   }
 
-  if(!m_elSysts.empty()){
+  if(!m_elSystsVec.empty()){
     RETURN_CHECK("TreeAlgo::treeInitialize()", HelperFunctions::retrieve(systNames, m_elSystsVec, 0, m_store, m_verbose) ,"");
     for(const auto& systName: *systNames){
       if (std::find(all_systNames.begin(), all_systNames.end(), systName) != all_systNames.end()) continue;
@@ -115,7 +119,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     }
   }
 
-  if(!m_jetSysts.empty()){
+  if(!m_jetSystsVec.empty()){
     RETURN_CHECK("TreeAlgo::treeInitialize()", HelperFunctions::retrieve(systNames, m_jetSystsVec, 0, m_store, m_verbose) ,"");
     for(const auto& systName: *systNames){
       if (std::find(all_systNames.begin(), all_systNames.end(), systName) != all_systNames.end()) continue;
@@ -124,7 +128,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     }
   }
 
-  if(!m_photonSysts.empty()){
+  if(!m_photonSystsVec.empty()){
     RETURN_CHECK("TreeAlgo::treeInitialize()", HelperFunctions::retrieve(systNames, m_photonSystsVec, 0, m_store, m_verbose) ,"");
     for(const auto& systName: *systNames){
       if (std::find(all_systNames.begin(), all_systNames.end(), systName) != all_systNames.end()) continue;
@@ -142,6 +146,7 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     if(systName.empty()) treeName = "nominal";
     treeName = m_name+"/"+treeName;
 
+    Info("treeInitialize()", "Making tree %s", treeName.c_str());
     TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
     if ( !outTree ) {
       Error("treeInitialize()","Failed to instantiate output tree!");
@@ -191,9 +196,9 @@ EL::StatusCode TreeAlgo :: execute ()
   // get the primaryVertex
   const xAOD::Vertex* primaryVertex = HelperFunctions::getPrimaryVertex( vertices );
 
-  for(const auto& item: m_trees){
-    const auto& systName = item.first;
-    const auto& helpTree = item.second;
+  for(auto& item: m_trees){
+    auto& systName = item.first;
+    auto& helpTree = item.second;
 
     // assume the nominal container by default
     std::string muSuffix("");
@@ -281,7 +286,10 @@ EL::StatusCode TreeAlgo :: finalize () {
 
   Info("finalize()", "Deleting tree instances...");
 
-  if ( m_helpTree ) { delete m_helpTree;   m_helpTree = nullptr; }
+  for(auto& item: m_trees){
+    if(item.second) {delete item.second; item.second = nullptr; }
+  }
+  m_trees.clear();
 
   return EL::StatusCode::SUCCESS;
 }
