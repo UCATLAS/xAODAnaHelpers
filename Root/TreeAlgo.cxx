@@ -84,8 +84,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  this->treeInitialize();
-  return EL::StatusCode::SUCCESS;
+  return this->treeInitialize();
 }
 
 EL::StatusCode TreeAlgo :: treeInitialize ()
