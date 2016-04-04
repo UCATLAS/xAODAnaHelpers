@@ -139,12 +139,12 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile ("tree");
+  treeFile->mkdir(m_name.c_str());
 
   // let's make the tdirectory and ttrees
   for(const auto& systName: all_systNames){
     std::string treeName = systName;
     if(systName.empty()) treeName = "nominal";
-    treeName = m_name+"/"+treeName;
 
     Info("treeInitialize()", "Making tree %s", treeName.c_str());
     TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
@@ -157,9 +157,10 @@ EL::StatusCode TreeAlgo :: treeInitialize ()
     const auto& helpTree = m_trees[systName];
 
     // tell the tree to go into the file
-    outTree->SetDirectory( treeFile );
+    outTree->SetDirectory( treeFile->GetDirectory(m_name.c_str()) );
     // choose if want to add tree to same directory as ouput histograms
     if ( m_outHistDir ) {
+      if(m_trees.size() > 1) Warning("treeInitialize()", "You're running systematics! You may find issues in writing all of the output TTrees to the output histogram file... Set `m_outHistDir = false` if you run into issues!");
       wk()->addOutput( outTree );
     }
 
