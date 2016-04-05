@@ -51,10 +51,6 @@ public:
 
 protected:
   std::map<std::string, HelpTreeBase*> m_trees;            //!
-  std::vector<std::string> m_muSystNames; //!
-  std::vector<std::string> m_elSystNames; //!
-  std::vector<std::string> m_jetSystNames; //!
-  std::vector<std::string> m_photonSystNames; //!
 
 public:
 
