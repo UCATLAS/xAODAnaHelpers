@@ -48,6 +48,7 @@ int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* verte
     }
     location++;
   }
+  Warning("HelperFunctions::getPrimaryVertexLocation()","No primary vertex location was found! Returning -1");
   return -1;
 }
 
@@ -320,6 +321,7 @@ const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContaine
     if(vtx_itr->vertexType() != xAOD::VxType::VertexType::PriVtx) { continue; }
     return vtx_itr;
   }
+  Warning("HelperFunctions::getPrimaryVertex()","No primary vertex was found! Returning nullptr");
 
   return 0;
 }
