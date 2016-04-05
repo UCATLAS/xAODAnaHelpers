@@ -248,18 +248,17 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeper* allEventsCBK(nullptr);
       const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
-      std::string derivationName = m_derivationName + "Kernel";
-
-      if ( m_isDerivation ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
+      if ( m_isDerivation ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", m_derivationName.c_str()); }
 
       int maxCycle(-1);
       for ( const auto& cbk: *completeCBC ) {
+	  Info ("fileExecute()", "cbk name: %s", (cbk->name()).c_str());
 	  if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
 	      allEventsCBK = cbk;
 	      maxCycle = cbk->cycle();
 	  }
 	  if ( m_isDerivation ) {
-	      if ( cbk->name() == derivationName ) {
+	      if ( cbk->name() == m_derivationName ) {
 		  DxAODEventsCBK = cbk;
 	      }
 	  }
@@ -268,6 +267,11 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();
       m_MD_initialSumW	      = allEventsCBK->sumOfEventWeights();
       m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
+
+      if ( !DxAODEventsCBK ) {
+        Error("fileExecute()", "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
+        return EL::StatusCode::FAILURE;
+      }
 
       m_MD_finalNevents	      = ( m_isDerivation ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
       m_MD_finalSumW	      = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
