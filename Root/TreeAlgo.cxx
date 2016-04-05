@@ -88,6 +88,13 @@ EL::StatusCode TreeAlgo :: initialize ()
   return EL::StatusCode::SUCCESS;
 }
 
+EL::StatusCode TreeAlgo :: histInitialize ()
+{
+  Info("histInitialize()", "%s", m_name.c_str() );
+  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  return EL::StatusCode::SUCCESS;
+}
+
 EL::StatusCode TreeAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
 EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
 
@@ -143,6 +150,8 @@ EL::StatusCode TreeAlgo :: execute ()
       photonSystNames.push_back(systName);
     }
   }
+
+  TFile* treeFile = wk()->getOutputFile ("tree");
 
   // let's make the tdirectory and ttrees
   for(const auto& systName: event_systNames){
@@ -296,4 +305,4 @@ EL::StatusCode TreeAlgo :: finalize () {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TreeAlgo :: treeFinalize () { return EL::StatusCode::SUCCESS; }
+EL::StatusCode TreeAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }

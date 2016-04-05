@@ -60,13 +60,13 @@ public:
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);           //!
   virtual EL::StatusCode fileExecute ();                    //!
-  virtual EL::StatusCode treeInitialize ();                 //!
+  virtual EL::StatusCode histInitialize ();                 //!
   virtual EL::StatusCode changeInput (bool firstFile);      //!
   virtual EL::StatusCode initialize ();                     //!
   virtual EL::StatusCode execute ();                        //!
   virtual EL::StatusCode postExecute ();                    //!
   virtual EL::StatusCode finalize ();                       //!
-  virtual EL::StatusCode treeFinalize ();                   //!
+  virtual EL::StatusCode histFinalize ();                   //!
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
