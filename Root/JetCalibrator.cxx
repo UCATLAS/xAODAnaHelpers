@@ -401,23 +401,13 @@ EL::StatusCode JetCalibrator :: initialize ()
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->initialize(), "");
   }
 
-
-  std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-
-
-
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
       Info("initialize()","\t Running w/ nominal configuration only!");
       break;
     }
     Info("initialize()","\t %s", (syst_it.name()).c_str());
-
-    vecOutContainerNames->push_back( syst_it.name() );
   }
-
-  // add vector of systematic names to TStore
-  RETURN_CHECK( "JetCalibrator::initialize()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
 
   return EL::StatusCode::SUCCESS;
 }
