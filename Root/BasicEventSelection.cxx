@@ -204,9 +204,9 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
   if (  m_useMetaData ) {
 
-      // check for corruption
+      // Check for potential file corruption
       //
-      // If there are some Incomplete CBK, throw a FAILURE,
+      // If there are some Incomplete CBK, throw a WARNING,
       // unless ALL of them have inputStream == "unknownStream"
       //
       const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
@@ -217,16 +217,16 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       bool allFromUnknownStream(true);
       if ( incompleteCBC->size() != 0 ) {
 
+	  std::string stream("");
 	  for ( auto cbk : *incompleteCBC ) {
+	      Info ("fileExecute()", "Incomplete cbk name: %s - stream: %s ", (cbk->name()).c_str(), (cbk->inputStream()).c_str());
 	      if ( cbk->inputStream() != "unknownStream" ) {
 		  allFromUnknownStream = false;
+		  stream = cbk->inputStream();
 		  break;
 	      }
 	  }
-	  if ( !allFromUnknownStream ) {
-	      Error("fileExecute()","Found incomplete Bookkeepers! Check file for corruption.");
-	      return EL::StatusCode::FAILURE;
-	  }
+	  if ( !allFromUnknownStream ) { Warning("fileExecute()","Found incomplete Bookkeepers from stream: %s ! Check input file for potential corruption...", stream.c_str() ); }
 
       }
 
@@ -252,7 +252,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
       int maxCycle(-1);
       for ( const auto& cbk: *completeCBC ) {
-	  Info ("fileExecute()", "cbk name: %s", (cbk->name()).c_str());
+	  Info ("fileExecute()", "Complete cbk name: %s - stream: %s", (cbk->name()).c_str(), (cbk->inputStream()).c_str() );
 	  if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
 	      allEventsCBK = cbk;
 	      maxCycle = cbk->cycle();
