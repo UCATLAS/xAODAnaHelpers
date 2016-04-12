@@ -84,6 +84,7 @@ class BasicEventSelection : public xAH::Algorithm
 
     std::string m_metaDataStreamName;
     std::string m_cutFlowStreamName;
+    std::string m_duplicatesStreamName;
 
     /* Check for duplicated events in Data and MC */
     bool m_checkDuplicatesData;
@@ -111,16 +112,17 @@ class BasicEventSelection : public xAH::Algorithm
     double m_MD_finalSumWSquared;    //!
 
     // cutflow
-    TH1D* m_cutflowHist;    //!
-    TH1D* m_cutflowHistW;   //!
-    int m_cutflow_all;      //!
-    int m_cutflow_grl;      //!
-    int m_cutflow_lar;      //!
-    int m_cutflow_tile;     //!
-    int m_cutflow_SCT;      //!
-    int m_cutflow_core;     //!
-    int m_cutflow_npv;      //!
-    int m_cutflow_trigger;  //!
+    TH1D* m_cutflowHist;      //!
+    TH1D* m_cutflowHistW;     //!
+    int m_cutflow_all;        //!
+    int m_cutflow_duplicates; //!
+    int m_cutflow_grl;        //!
+    int m_cutflow_lar;        //!
+    int m_cutflow_tile;       //!
+    int m_cutflow_SCT;        //!
+    int m_cutflow_core;       //!
+    int m_cutflow_npv;        //!
+    int m_cutflow_trigger;    //!
 
     // object cutflow
     TH1D* m_el_cutflowHist_1;    //!
@@ -132,6 +134,12 @@ class BasicEventSelection : public xAH::Algorithm
     TH1D* m_tau_cutflowHist_2;   //!
     TH1D* m_jet_cutflowHist_1;   //!
     TH1D* m_truth_cutflowHist_1; //!
+
+    /** TTree for duplicates bookeeping */
+    
+    TTree*   m_duplicatesTree;  //!
+    int      m_duplRunNumber;
+    long int m_duplEventNumber;
 
     // variables that don't get filled at submission time should be
     // protected from being send from the submission node to the worker
