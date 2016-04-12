@@ -580,7 +580,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
            float jvtSF(1.0);
 	   if ( jet->pt() < m_pt_max_JVT && fabs(jet->eta()) < m_eta_max_JVT ) {
              if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-               Warning( "executeSelection()", "Problem in getEfficiencyScaleFactor");
+               Warning( "executeSelection()", "Problem in JVT Tool getEfficiencyScaleFactor");
                jvtSF = 1.0;
              }
 	   }
