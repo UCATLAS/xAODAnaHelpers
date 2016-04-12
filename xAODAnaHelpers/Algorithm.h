@@ -98,26 +98,6 @@ namespace xAH {
          */
         Algorithm* setLevel(int level);
 
-        /**
-            @brief Enable and set the systematic with default value 0
-            @param systName     The name of the systematic
-         */
-        Algorithm* setSyst(std::string systName);
-        /**
-            @brief Enable and set the systematic with the value
-            @param systName     The name of the systematic
-            @param systVal      The value to set the systematic to
-            @rst
-                .. note:: This will set the systematic to the value :math:`\pm x`.
-            @endrst
-         */
-        Algorithm* setSyst(std::string systName, float systVal);
-        /**
-            @brief Enable and set the systemtatic with the vector of values
-            @param systName             The name of the systematic
-            @param systValVector        The values to set the systematic to
-         */
-        Algorithm* setSyst(std::string systName, std::vector<float> systValVector);
 
         /** All algorithms initialized should have a unique name, to differentiate them at the TObject level */
         std::string m_name;
@@ -135,8 +115,16 @@ namespace xAH {
             @endrst
          */
         float m_systVal;
-        /** If running systematics, you can run multiple points and store them in here */
+        /** If running systematics, you can run multiple points and store them in here. 
+            A comma separated list of working points should be given to m_systValVectorString,
+            and then parsed by calling parseSystValVector.
+         */
+        std::string m_systValVectorString;
         std::vector<float> m_systValVector;
+        /**
+            @brief Parse string of systematic sigma levels in m_systValVectorString into m_systValVector 
+         */
+        StatusCode parseSystValVector();
 
         /** If the xAOD has a different EventInfo container name, set it here */
         std::string m_eventInfoContainerName;

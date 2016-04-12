@@ -97,7 +97,7 @@ JetCalibrator :: JetCalibrator (std::string className) :
 
   // Initialize systematics variables
   m_systName                = "";
-  m_systVal                 = 0.;
+  m_systVal                 = 1.;
 }
 
 EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
@@ -301,6 +301,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()"," Initializing Jet Systematics :");
 
     //If just one systVal, then push it to the vector
+    this->parseSystValVector();
     if( m_systValVector.size() == 0) {
       if ( m_debug ){ Info("initialize()", "Pushing the following systVal to m_systValVector: %f", m_systVal ); }
       m_systValVector.push_back(m_systVal);
