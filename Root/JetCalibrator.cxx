@@ -301,7 +301,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()"," Initializing Jet Systematics :");
 
     //If just one systVal, then push it to the vector
-    this->parseSystValVector();
+    RETURN_CHECK("JetCalibrator::execute()", this->parseSystValVector(), "Failed to parse vector of systematic sigma values.");
     if( m_systValVector.size() == 0) {
       if ( m_debug ){ Info("initialize()", "Pushing the following systVal to m_systValVector: %f", m_systVal ); }
       m_systValVector.push_back(m_systVal);
