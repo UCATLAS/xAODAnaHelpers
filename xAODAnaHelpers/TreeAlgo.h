@@ -40,11 +40,17 @@ public:
   std::string m_METContainerName;
   std::string m_photonContainerName;
 
+  // if these are set, assume systematics are being processed over
+  std::string m_muSystsVec;
+  std::string m_elSystsVec;
+  std::string m_jetSystsVec;
+  std::string m_photonSystsVec;
+
   bool m_DC14;
   float m_units;
 
 protected:
-  HelpTreeBase* m_helpTree;            //!
+  std::map<std::string, HelpTreeBase*> m_trees;            //!
 
 public:
 
@@ -54,13 +60,13 @@ public:
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);           //!
   virtual EL::StatusCode fileExecute ();                    //!
-  virtual EL::StatusCode treeInitialize ();                 //!
+  virtual EL::StatusCode histInitialize ();                 //!
   virtual EL::StatusCode changeInput (bool firstFile);      //!
   virtual EL::StatusCode initialize ();                     //!
   virtual EL::StatusCode execute ();                        //!
   virtual EL::StatusCode postExecute ();                    //!
   virtual EL::StatusCode finalize ();                       //!
-  virtual EL::StatusCode treeFinalize ();                   //!
+  virtual EL::StatusCode histFinalize ();                   //!
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
