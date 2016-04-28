@@ -9,6 +9,11 @@ Tutorials
 
    Brian Tuan's Tutorial <Tutorial_BrianTuan>
 
+Email List
+----------
+
+For other inquiries in which you don't have a Github account or prefer to ask a question to the community at large, please feel free to both subscribe and email to `atlas-sw-xAODAnaHelpersFW <atlas-sw-xAODAnaHelpersFW@cern.ch>`_.
+
 Who uses us?
 ------------
 
