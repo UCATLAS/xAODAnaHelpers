@@ -1,11 +1,3 @@
-/********************************************
- *
- * Interface to CP Electron selection tool(s).
- *
- * M. Milesi (marco.milesi@cern.ch)
- *
- *******************************************/
-
 // c++ include(s):
 #include <iostream>
 #include <typeinfo>
@@ -48,11 +40,11 @@ ElectronSelector :: ElectronSelector (std::string className) :
     m_cutflowHistW(nullptr),
     m_el_cutflowHist_1(nullptr),
     m_el_cutflowHist_2(nullptr),
-    m_IsolationSelectionTool(nullptr),
+    m_isolationSelectionTool_handle("CP::IsolationSelectionTool/ElectronIsoSelToolName", nullptr),
     m_el_LH_PIDManager(nullptr),
     m_el_CutBased_PIDManager(nullptr),
     m_trigDecTool(nullptr),
-    m_trigElMatchTool(nullptr)
+    m_trigElMatchTool_handle("Trig::TrigEgammaMatchingTool/TrigElectronMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -134,6 +126,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
   // trigger matching stuff
   //
   m_ElTrigChains            = "";
+  m_doTrigMatch             = true;
 
 }
 
@@ -384,16 +377,17 @@ EL::StatusCode ElectronSelector :: initialize ()
   //
   // *************************************
 
-  std::string iso_tool_name = std::string("IsolationSelectionTool_") + m_name;
-  m_IsolationSelectionTool = new CP::IsolationSelectionTool( iso_tool_name );
-  m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
+  m_isolationSelectionTool_name                  = "IsolationSelectionTool_" + m_name;
+  std::string isolationSelectionTool_handle_name = "CP::IsolationSelectionTool/" + m_isolationSelectionTool_name;
 
+  RETURN_CHECK("ElectronSelector::initialize()", checkToolStore<CP::IsolationSelectionTool>(m_isolationSelectionTool_name), "" );
+  RETURN_CHECK("ElectronSelector::initialize()", m_isolationSelectionTool_handle.makeNew<CP::IsolationSelectionTool>(isolationSelectionTool_handle_name), "Failed to create handle to CP::IsolationSelectionTool");
   // Do this only for the first WP in the list
   //
   if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
-  RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
-  RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
-  //
+  RETURN_CHECK("ElectronSelector::initialize()", m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
+  RETURN_CHECK("ElectronSelector::initialize()", m_isolationSelectionTool_handle.initialize(), "Failed to properly initialize IsolationSelectionTool." );
+
   // Add the remaining input WPs to the tool
   // (start from 2nd element)
   //
@@ -412,12 +406,16 @@ EL::StatusCode ElectronSelector :: initialize ()
        CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
        if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
 
-       RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Electron, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
+       RETURN_CHECK( "ElectronSelector::initialize()",  m_isolationSelectionTool_handle->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Electron, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
 
      } else {
-        RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addElectronWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+
+        RETURN_CHECK( "ElectronSelector::initialize()", m_isolationSelectionTool_handle->addElectronWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+
      }
   }
+
+  //m_isolationSelectionTool_handle->msg().setLevel(MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
 
   // ***************************************
   //
@@ -436,12 +434,18 @@ EL::StatusCode ElectronSelector :: initialize ()
 
     //  everything went fine, let's initialise the tool!
     //
-    std::string trigmatch_tool_name = std::string("TrigegammaMatchingTool_") + m_name;
-    m_trigElMatchTool = new Trig::TrigEgammaMatchingTool( trigmatch_tool_name );
-    RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
-    RETURN_CHECK( "ElectronSelector::initialize()", m_trigElMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
+    m_trigElMatchTool_name                  = "TrigEgammaMatchingTool_" + m_name;
+    std::string trigElMatchTool_handle_name = "Trig::TrigEgammaMatchingTool/" + m_trigElMatchTool_name;
+
+    RETURN_CHECK("ElectronSelector::initialize()", checkToolStore<Trig::TrigEgammaMatchingTool>(m_trigElMatchTool_name), "" );
+    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.makeNew<Trig::TrigEgammaMatchingTool>(trigElMatchTool_handle_name), "Failed to create handle to TrigEgammaMatchingTool");
+    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigEgammaMatchingTool" );
+    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.initialize(), "Failed to properly initialize TrigEgammaMatchingTool." );
 
   } else {
+
+    m_doTrigMatch = false;
+
     Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
     Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
     Warning("initialize()", "\t AND/OR" );
@@ -689,7 +693,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   //  1. the user didn't pass any trigger chains to the algo (see initialize(): in that case, the tool is not even initialised!)
   //  2. there are no selected electrons in the event
   //
-  if ( m_trigElMatchTool && selectedElectrons ) {
+  if ( m_doTrigMatch && selectedElectrons ) {
 
     unsigned int nSelectedElectrons = selectedElectrons->size();
 
@@ -712,7 +716,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 	     isTrigMatchedMapElDecor( *electron ) = std::map<std::string,char>();
            }
 
-	   int matched = ( m_trigElMatchTool->matchHLT( electron, chain ) ) ? 1 : 0;
+	   int matched = ( m_trigElMatchTool_handle->matchHLT( electron, chain ) ) ? 1 : 0;
 
            if ( m_debug ) { Info("executeSelection()", "\t\t is electron trigger matched? %i", matched); }
 
@@ -756,8 +760,6 @@ EL::StatusCode ElectronSelector :: finalize ()
 
   if ( m_el_CutBased_PIDManager ) { delete m_el_CutBased_PIDManager;  m_el_CutBased_PIDManager = nullptr; }
   if ( m_el_LH_PIDManager )       { delete m_el_LH_PIDManager;	      m_el_LH_PIDManager = nullptr;	  }
-  if ( m_IsolationSelectionTool ) { delete m_IsolationSelectionTool;  m_IsolationSelectionTool = nullptr; }
-  if ( m_trigElMatchTool )        { delete m_trigElMatchTool;	      m_trigElMatchTool = nullptr;	  }
 
   if ( m_useCutFlow ) {
     Info("finalize()", "Filling cutflow");
@@ -1131,7 +1133,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   // Get the "list" of input WPs with the accept() decision from the tool
   //
-  Root::TAccept accept_list = m_IsolationSelectionTool->accept( *electron );
+  Root::TAccept accept_list = m_isolationSelectionTool_handle->accept( *electron );
 
   // Decorate w/ decision for all input WPs
   //
