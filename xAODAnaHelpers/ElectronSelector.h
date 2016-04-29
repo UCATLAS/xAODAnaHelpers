@@ -144,8 +144,8 @@ private:
   ElectronLHPIDManager*            m_el_LH_PIDManager;       //!
   ElectronCutBasedPIDManager*      m_el_CutBased_PIDManager; //!
   Trig::TrigDecisionTool*          m_trigDecTool;            //!
-  //asg::AnaToolHandle<Trig::TrigEgammaMatchingTool>  m_trigElMatchTool_handle; //!
-  //std::string m_trigElMatchTool_name;    //!
+  asg::AnaToolHandle<Trig::TrigEgammaMatchingTool>  m_trigElMatchTool_handle; //!
+  std::string m_trigElMatchTool_name;    //!
   bool m_doTrigMatch;
 
   /* other private members */

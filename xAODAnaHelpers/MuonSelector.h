@@ -121,8 +121,8 @@ private:
   asg::AnaToolHandle<CP::IMuonSelectionTool>      m_muonSelectionTool_handle;      //!
   std::string m_muonSelectionTool_name;                                            //!
   Trig::TrigDecisionTool*                         m_trigDecTool;                   //!
-  //asg::AnaToolHandle<Trig::TrigMuonMatching>      m_trigMuonMatchTool_handle;      //!
-  //std::string m_trigMuonMatchTool_name;                                            //!
+  asg::AnaToolHandle<Trig::TrigMuonMatching>      m_trigMuonMatchTool_handle;      //!
+  std::string m_trigMuonMatchTool_name;                                            //!
   bool m_doTrigMatch;
 
   // variables that don't get filled at submission time should be
