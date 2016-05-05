@@ -441,6 +441,26 @@ EL::StatusCode JetCalibrator :: execute ()
 
   for ( auto jet_itr : *(calibJetsSC.first) ) {
     m_numObject++;
+    
+    //Set isBjet for JES calibration
+    int this_TruthLabel = 0;
+
+    static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
+    static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
+    
+    if ( TruthLabelID.isAvailable( *jet_itr) ) {
+      this_TruthLabel = TruthLabelID( *jet_itr );
+      if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
+    } else {
+      this_TruthLabel = PartonTruthLabelID( *jet_itr );
+      if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
+    }
+
+    bool isBjet = false; // decide whether or not the jet is a b-jet (truth-labelling + kinematic selections)
+    if (this_TruthLabel == 5)
+      isBjet = true;
+    SG::AuxElement::Accessor<char> accIsBjet("IsBjet"); // char due to limitations of ROOT I/O, still treat it as a bool
+    accIsBjet(*jet_itr) = isBjet;
 
     if ( m_jetCalibration->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
       Error("execute()", "JetCalibration tool reported a CP::CorrectionCode::Error");
