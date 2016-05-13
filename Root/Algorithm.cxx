@@ -53,20 +53,18 @@ xAH::Algorithm* xAH::Algorithm::setLevel(int level){
   return this;
 }
 
-xAH::Algorithm* xAH::Algorithm::setSyst(std::string systName){
-  return this->setSyst(systName, 0);
-}
+StatusCode xAH::Algorithm::parseSystValVector(){
 
-xAH::Algorithm* xAH::Algorithm::setSyst(std::string systName, float systVal){
-  m_systName = systName;
-  m_systVal = systVal;
-  return this;
-}
+    std::stringstream ss(m_systValVectorString);
+    float systVal;
+    while( ss >> systVal ){
+      m_systValVector.push_back(systVal);
+      if (ss.peek() == ',')
+        ss.ignore();
+    }
+    ss.str("");
 
-xAH::Algorithm* xAH::Algorithm::setSyst(std::string systName, std::vector<float> systValVector){
-  m_systName = systName;
-  m_systValVector = systValVector;
-  return this;
+    return StatusCode::SUCCESS;
 }
 
 int xAH::Algorithm::isMC(){

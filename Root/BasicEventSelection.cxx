@@ -46,7 +46,8 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
     m_tau_cutflowHist_1(nullptr),
     m_tau_cutflowHist_2(nullptr),
     m_jet_cutflowHist_1(nullptr),
-    m_truth_cutflowHist_1(nullptr)
+    m_truth_cutflowHist_1(nullptr),
+    m_duplicatesTree(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -67,8 +68,9 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   m_useMetaData = true;
 
   // Output Stream Names
-  m_metaDataStreamName = "metadata";
-  m_cutFlowStreamName = "cutflow";
+  m_metaDataStreamName   = "metadata";
+  m_cutFlowStreamName    = "cutflow";
+  m_duplicatesStreamName = "duplicates_tree";
 
   // Check for duplicated events in Data and MC
   m_checkDuplicatesData = false;
@@ -128,12 +130,14 @@ EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
   // let's initialize the algorithm to use the xAODRootAccess package
   xAOD::Init("BasicEventSelection").ignore(); // call before opening first file
 
-
   EL::OutputStream outForCFlow(m_cutFlowStreamName);
-  if(!job.outputHas(m_cutFlowStreamName) ){job.outputAdd ( outForCFlow );}
+  if(!job.outputHas(m_cutFlowStreamName) ){ job.outputAdd ( outForCFlow ); }
 
   EL::OutputStream outForMetadata(m_metaDataStreamName);
-  if(!job.outputHas(m_metaDataStreamName) ){job.outputAdd ( outForMetadata );}
+  if(!job.outputHas(m_metaDataStreamName) ){ job.outputAdd ( outForMetadata ); }
+  
+  EL::OutputStream outForDuplicates(m_duplicatesStreamName);
+  if(!job.outputHas(m_duplicatesStreamName) ){ job.outputAdd ( outForDuplicates ); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -204,9 +208,9 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
   if (  m_useMetaData ) {
 
-      // check for corruption
+      // Check for potential file corruption
       //
-      // If there are some Incomplete CBK, throw a FAILURE,
+      // If there are some Incomplete CBK, throw a WARNING,
       // unless ALL of them have inputStream == "unknownStream"
       //
       const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
@@ -217,16 +221,16 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       bool allFromUnknownStream(true);
       if ( incompleteCBC->size() != 0 ) {
 
+	  std::string stream("");
 	  for ( auto cbk : *incompleteCBC ) {
+	      Info ("fileExecute()", "Incomplete cbk name: %s - stream: %s ", (cbk->name()).c_str(), (cbk->inputStream()).c_str());
 	      if ( cbk->inputStream() != "unknownStream" ) {
 		  allFromUnknownStream = false;
+		  stream = cbk->inputStream();
 		  break;
 	      }
 	  }
-	  if ( !allFromUnknownStream ) {
-	      Error("fileExecute()","Found incomplete Bookkeepers! Check file for corruption.");
-	      return EL::StatusCode::FAILURE;
-	  }
+	  if ( !allFromUnknownStream ) { Warning("fileExecute()","Found incomplete Bookkeepers from stream: %s ! Check input file for potential corruption...", stream.c_str() ); }
 
       }
 
@@ -248,18 +252,17 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeper* allEventsCBK(nullptr);
       const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
-      std::string derivationName = m_derivationName + "Kernel";
-
-      if ( m_isDerivation ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", derivationName.c_str()); }
+      if ( m_isDerivation ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", m_derivationName.c_str()); }
 
       int maxCycle(-1);
       for ( const auto& cbk: *completeCBC ) {
+	  Info ("fileExecute()", "Complete cbk name: %s - stream: %s", (cbk->name()).c_str(), (cbk->inputStream()).c_str() );
 	  if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
 	      allEventsCBK = cbk;
 	      maxCycle = cbk->cycle();
 	  }
 	  if ( m_isDerivation ) {
-	      if ( cbk->name() == derivationName ) {
+	      if ( cbk->name() == m_derivationName ) {
 		  DxAODEventsCBK = cbk;
 	      }
 	  }
@@ -268,6 +271,11 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();
       m_MD_initialSumW	      = allEventsCBK->sumOfEventWeights();
       m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
+
+      if ( !DxAODEventsCBK ) {
+        Error("fileExecute()", "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
+        return EL::StatusCode::FAILURE;
+      }
 
       m_MD_finalNevents	      = ( m_isDerivation ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
       m_MD_finalSumW	      = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
@@ -399,6 +407,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
 
+  if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
+    m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
+    m_cutflowHistW->GetXaxis()->FindBin("Duplicates");
+  }
+  
   if ( !m_isMC ) {
     if ( m_applyGRLCut ) {
       m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
@@ -419,9 +432,21 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
-
+  
+  // -------------------------------------------------------------------------------------------------
+  
+  // Create TTree for bookeeeping duplicated events
+  //
+  TFile *fileDPL = wk()->getOutputFile (m_duplicatesStreamName);
+  fileDPL->cd();
+  
+  m_duplicatesTree = new TTree("duplicates","Info on duplicated events");
+  m_duplicatesTree->Branch("runNumber",    &m_duplRunNumber,      "runNumber/I");
+  m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/LI");
+  
+  // -------------------------------------------------------------------------------------------------
+  
   Info("initialize()", "Setting Up Tools");
-
 
   // 1.
   // initialize the GoodRunsListSelectionTool
@@ -531,7 +556,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // As a check, let's see the number of events in our file (long long int)
   //
   Info("initialize()", "Number of events in file = %lli", m_event->getEntries());
-  // count number of events
+  
+  // Initialize counter for number of entries
   m_eventCounter   = 0;
 
   Info("initialize()", "BasicEventSelection succesfully initialized!");
@@ -550,33 +576,21 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   if( m_debug ) { Info("execute()", "Basic Event Selection"); }
 
-  //------------------
-  // Event information
-  //------------------
-  const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
-
-  //--------------------------------------------------------------------------------------------------------
-  // Before counting events, check  current event is not a duplicate
-  // This is done by checking against the std::set of <runNumber,eventNumber> filled for all previous events
-  //--------------------------------------------------------------------------------------------------------
-
-  if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
-    std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
-    if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
-      if ( m_debug ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS; // go to next event
+  // Print every 1000 entries, so we know where we are:
+  //
+  if ( (m_eventCounter % 1000) == 0 ) {
+    Info("execute()", "Entry number = %i", m_eventCounter);
+    if ( m_verbose ) {
+      Info(m_name.c_str(), "Store Content:");
+      m_store->print();
+      Info(m_name.c_str(), "End Content");
     }
-    m_RunNr_VS_EvtNr.insert(thispair);
   }
 
-  ++m_eventCounter;
-
   //-----------------------------------------
-  //Print trigger's used for first event only
+  // Print triggers used for first entry only
   //-----------------------------------------
-  if ( m_eventCounter == 1 && !m_triggerSelection.empty() ) {
+  if ( m_eventCounter == 0 && !m_triggerSelection.empty() ) {
     Info("execute()", "*** Triggers used (in OR) are:\n");
     auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
     std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
@@ -584,22 +598,18 @@ EL::StatusCode BasicEventSelection :: execute ()
       printf("    %s\n", triggersUsed.at(iTrigger).c_str());
     }
     printf("\n");
-  }
+  }  
+  
+  ++m_eventCounter;
+
+  //------------------
+  // Grab event
+  //------------------
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
   //------------------------------------------------------------------------------------------
-  // Update Pile-Up Reweighting
-  //------------------------------------------------------------------------------------------
-  if ( m_isMC && m_doPUreweighting ) {
-      m_pileup_tool_handle->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
-                                                 //  1.) the PU weight ("PileupWeight")
-                                                 //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
-                                                 //  3.) the random run number ("RandomRunNumber")
-                                                 //  4.) the random lumiblock number ("RandomLumiBlockNumber")
-  }
-
-  //------------------------------------------------------------------------------------------
-  // Declare an 'eventInfo' decorator with the *total* MC event weight
-  // This will be the product of all the weights, SFs applied to MC downstream from this algo!
+  // Declare an 'eventInfo' decorator with the MC event weight
   //------------------------------------------------------------------------------------------
   static SG::AuxElement::Decorator< float > mcEvtWeightDecor("mcEventWeight");
   static SG::AuxElement::Accessor< float >  mcEvtWeightAcc("mcEventWeight");
@@ -607,7 +617,8 @@ EL::StatusCode BasicEventSelection :: execute ()
   float mcEvtWeight(1.0);
 
   // Check if need to create xAH event weight
-  if(!mcEvtWeightDecor.isAvailable(*eventInfo)) {
+  //
+  if ( !mcEvtWeightDecor.isAvailable(*eventInfo) ) {
     if ( m_isMC ) {
       const std::vector< float > weights = eventInfo->mcEventWeights(); // The weight (and systs) of all the MC events used in the simulation
       if ( weights.size() > 0 ) mcEvtWeight = weights[0];
@@ -628,8 +639,15 @@ EL::StatusCode BasicEventSelection :: execute ()
     //
     mcEvtWeightDecor(*eventInfo) = mcEvtWeight;
   } else {
-    mcEvtWeight=mcEvtWeightAcc(*eventInfo);
+    mcEvtWeight = mcEvtWeightAcc(*eventInfo);
   }
+  
+  //------------------------------------------------------------------------------------------
+  // Fill initial bin of cutflow
+  //------------------------------------------------------------------------------------------
+
+  m_cutflowHist ->Fill( m_cutflow_all, 1 );
+  m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
 
   if( !m_useMetaData )
     {
@@ -641,23 +659,52 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_histEventCount -> Fill(6, mcEvtWeight*mcEvtWeight);
     }
 
-  // print every 1000 events, so we know where we are:
-  //
-  m_cutflowHist ->Fill( m_cutflow_all, 1 );
-  m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
-  if ( (m_eventCounter % 1000) == 0 ) {
-    Info("execute()", "Event number = %i", m_eventCounter);
+  //--------------------------------------------------------------------------------------------------------
+  // Check current event is not a duplicate
+  // This is done by checking against the std::set of <runNumber,eventNumber> filled for all previous events
+  //--------------------------------------------------------------------------------------------------------
+
+  if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
+    
+    std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
+    
+    if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
+      
+      if ( m_debug ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
+      
+      // Bookkeep info in duplicates TTree
+      //
+      m_duplRunNumber   = eventInfo->runNumber();
+      m_duplEventNumber = eventInfo->eventNumber();
+      
+      m_duplicatesTree->Fill();
+      
+      wk()->skipEvent();
+      return EL::StatusCode::SUCCESS; // go to next event
+    }
+    
+    m_RunNr_VS_EvtNr.insert(thispair);
+  
+    m_cutflowHist ->Fill( m_cutflow_duplicates, 1 );
+    m_cutflowHistW->Fill( m_cutflow_duplicates, mcEvtWeight);
+  
   }
 
-  if ( m_verbose && (m_eventCounter % 500) == 0 ) {
-    Info(m_name.c_str(), "Store Content:");
-    m_store->print();
-    Info(m_name.c_str(), "End Content");
+  //------------------------------------------------------------------------------------------
+  // Update Pile-Up Reweighting
+  //------------------------------------------------------------------------------------------
+  if ( m_isMC && m_doPUreweighting ) {
+      m_pileup_tool_handle->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
+                                                 //  1.) the PU weight ("PileupWeight")
+                                                 //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
+                                                 //  3.) the random run number ("RandomRunNumber")
+                                                 //  4.) the random lumiblock number ("RandomLumiBlockNumber")
   }
 
-  //-----------------------------------------------------
-  // If data, check if event passes GRL and even cleaning
-  //-----------------------------------------------------
+
+  //------------------------------------------------------
+  // If data, check if event passes GRL and event cleaning
+  //------------------------------------------------------
   if ( !m_isMC ) {
 
     if ( m_debug ) {

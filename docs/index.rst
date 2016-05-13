@@ -4,7 +4,7 @@ xAODAnaHelpers
 ==============
 
 .. image:: https://zenodo.org/badge/doi/10.5281/zenodo.35355.svg
-   :target: http://dx.doi.org/10.5281/zenodo.35355
+   :target: https://doi.org/10.5281/zenodo.35355
 
 The xAOD analysis framework, born out of ProofAna...or not.
 

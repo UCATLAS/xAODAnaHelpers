@@ -199,12 +199,12 @@ EL::StatusCode JetSelector :: initialize ()
   // doesn't get called if no events are processed.  So any objects
   // you create here won't be available in the output if you have no
   // input events.
-  
+
   if ( m_debug ) Info("initialize()", "Calling initialize");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  
+
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("JetSelector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
@@ -334,12 +334,12 @@ EL::StatusCode JetSelector :: initialize ()
   //
   m_JVT_tool_name = "JetJvtEfficiency_effSF";
   std::string JVT_handle_name = "CP::JetJvtEfficiency/" + m_JVT_tool_name;
- 
+
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::JetJvtEfficiency>(m_JVT_tool_name), "" );
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.makeNew<CP::JetJvtEfficiency>(JVT_handle_name), "Failed to create handle to CP::JetJvtEfficiency for JVT");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.initialize(), "Failed to properly initialize CP::JetJvtEfficiency for JVT");
-  
+
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
   m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
@@ -532,8 +532,8 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // Loop over selected jets and decorate with JVT efficiency SF
   // Do it only for MC
   //
-  if ( m_isMC ) {
-    
+  if ( m_isMC && m_doJVT ) {
+
     std::vector< std::string >* sysVariationNamesJVT  = new std::vector< std::string >;
 
     // Do it only if a tool with *this* name hasn't already been used
@@ -541,7 +541,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     if ( !isToolAlreadyUsed(m_JVT_tool_name) ) {
 
       for ( const auto& syst_it : m_systListJVT ) {
-         
+
 	// Create the name of the SF weight to be recorded
         //   template:  SYSNAME_JVTEff_SF
         //
@@ -580,7 +580,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
            float jvtSF(1.0);
 	   if ( jet->pt() < m_pt_max_JVT && fabs(jet->eta()) < m_eta_max_JVT ) {
              if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-               Warning( "executeSelection()", "Problem in getEfficiencyScaleFactor");
+               Warning( "executeSelection()", "Problem in JVT Tool getEfficiencyScaleFactor");
                jvtSF = 1.0;
              }
 	   }
@@ -603,12 +603,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
              Info( "executeSelection()", "--------------------------------------");
            }
 
-           ++idx;      
-	} 
+           ++idx;
+	}
 
-      } 
-      
-    } 
+      }
+
+    }
 
     // Add list of JVT systematics names to TStore
     //
@@ -618,7 +618,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     //
     if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { RETURN_CHECK( "JetSelector::executeSelection()", m_store->record( sysVariationNamesJVT, m_outputSystNamesJVT), "Failed to record vector of systematic names for JVT efficiency SF" ); }
 
-  } 
+  }
 
   // add ConstDataVector to TStore
   if ( m_createSelectedContainer ) {
@@ -793,7 +793,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
       if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
 	if ( m_debug ) Info("passCuts()", " Pass JVT-Eta Cut " );
-        
+
 	// Old usage: check manually whether this jet passes JVT cut
 	//
 	if ( m_JVTCut > 0 ) {
@@ -871,7 +871,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     static SG::AuxElement::ConstAccessor<int> HadronConeExclTruthLabelID ("HadronConeExclTruthLabelID");
     static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
     static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
-    
+
     if( m_useHadronConeExcl && HadronConeExclTruthLabelID.isAvailable( *jet) ){
       this_TruthLabel = HadronConeExclTruthLabelID(( *jet) );
     } else if ( TruthLabelID.isAvailable( *jet) ) {
