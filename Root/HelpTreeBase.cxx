@@ -3026,13 +3026,13 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
       static SG::AuxElement::ConstAccessor<float> Split23("Split23");
       static SG::AuxElement::ConstAccessor<float> Split34("Split34");      
       if ( Split12.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_Split12.push_back( Split12( *fatjet_itr ) );
+        m_fatjet_Split12.push_back( Split12( *fatjet_itr ) / m_units );
       } else { m_fatjet_Split12.push_back( -999 ); }
       if ( Split23.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_Split23.push_back(Split23( *fatjet_itr ) );
+	m_fatjet_Split23.push_back(Split23( *fatjet_itr ) / m_units );
       } else { m_fatjet_Split34.push_back( -999 ); }
       if ( Split34.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_Split34.push_back( Split34( *fatjet_itr ) );
+	m_fatjet_Split34.push_back( Split34( *fatjet_itr ) / m_units );
       } else { m_fatjet_Split34.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor<float> tau1_wta ("Tau1_wta");
@@ -3058,13 +3058,13 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
       static SG::AuxElement::ConstAccessor<float> ECF2("ECF2");
       static SG::AuxElement::ConstAccessor<float> ECF3 ("ECF3");
       if ( ECF1.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_ECF1.push_back( ECF1( *fatjet_itr ) );
+	m_fatjet_ECF1.push_back( ECF1( *fatjet_itr ) / m_units);
       } else { m_fatjet_ECF1.push_back( -999 ); }
       if ( ECF2.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_ECF2.push_back( ECF2( *fatjet_itr ) );
+	m_fatjet_ECF2.push_back( ECF2( *fatjet_itr ) / m_units);
       } else { m_fatjet_ECF2.push_back( -999 ); }
       if ( ECF3.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_ECF3.push_back( ECF3( *fatjet_itr ) );
+	m_fatjet_ECF3.push_back( ECF3( *fatjet_itr ) / m_units);
       } else { m_fatjet_ECF3.push_back( -999 ); }
 
     }
