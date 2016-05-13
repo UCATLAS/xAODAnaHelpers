@@ -3026,6 +3026,7 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
       static SG::AuxElement::ConstAccessor<float> Split23("Split23");
       static SG::AuxElement::ConstAccessor<float> Split34("Split34");      
       if ( Split12.isAvailable( *fatjet_itr ) ) {
+<<<<<<< HEAD
         m_fatjet_Split12.push_back( Split12( *fatjet_itr ) / m_units );
       } else { m_fatjet_Split12.push_back( -999 ); }
       if ( Split23.isAvailable( *fatjet_itr ) ) {
@@ -3066,7 +3067,6 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
       if ( ECF3.isAvailable( *fatjet_itr ) ) {
 	m_fatjet_ECF3.push_back( ECF3( *fatjet_itr ) / m_units);
       } else { m_fatjet_ECF3.push_back( -999 ); }
-
     }
     this->FillFatJetsUser(fatjet_itr);
 
