@@ -25,10 +25,9 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
-
 namespace Trig {
   class TrigDecisionTool;
-  //class TrigEgammaMatchingTool;
+  class IMatchingTool;
 }
 
 class ElectronSelector : public xAH::Algorithm
@@ -141,11 +140,11 @@ private:
   std::string m_isolationSelectionTool_name;                                      //!
 
   /* PID manager(s) */
-  ElectronLHPIDManager*            m_el_LH_PIDManager;       //!
-  ElectronCutBasedPIDManager*      m_el_CutBased_PIDManager; //!
-  Trig::TrigDecisionTool*          m_trigDecTool;            //!
-  asg::AnaToolHandle<Trig::TrigEgammaMatchingTool>  m_trigElMatchTool_handle; //!
-  std::string m_trigElMatchTool_name;    //!
+  ElectronLHPIDManager*                    m_el_LH_PIDManager;       //!
+  ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager; //!
+  Trig::TrigDecisionTool*                  m_trigDecTool;            //!
+  asg::AnaToolHandle<Trig::IMatchingTool>  m_trigElMatchTool_handle; //!
+  std::string m_trigElMatchTool_name;                                //!
   bool m_doTrigMatch;
 
   /* other private members */

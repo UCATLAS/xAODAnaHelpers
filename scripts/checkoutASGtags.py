@@ -58,7 +58,8 @@ dict_pkg = {
             '2.3.39': ["atlasoff/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/tags/MuonEfficiencyCorrections-03-02-03"],
             '2.3.41': [],
             '2.3.44': [],
-            '2.3.45': []
+            '2.3.45': [],
+            '2.3.50': [],
            }
 
 try:
