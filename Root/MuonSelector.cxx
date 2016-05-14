@@ -1,6 +1,7 @@
 // c++ include(s):
 #include <iostream>
 #include <typeinfo>
+#include <tuple>
 
 // EL include(s):
 #include <EventLoop/Job.h>
@@ -22,7 +23,7 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
-#include "TrigMuonMatching/TrigMuonMatching.h"
+#include "TriggerMatchingTool/MatchingTool.h"
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):
@@ -43,7 +44,7 @@ MuonSelector :: MuonSelector (std::string className) :
     m_isolationSelectionTool_handle("CP::IsolationSelectionTool/MuonIsoSelToolName", nullptr),
     m_muonSelectionTool_handle("CP::MuonSelectionTool/MuonSelToolName", nullptr),
     m_trigDecTool(nullptr),
-    m_trigMuonMatchTool_handle("Trig::TrigMuonMatching/TrigMuonMatchingName", nullptr)
+    m_trigMuonMatchTool_handle("Trig::IMatchingTool/TrigMuonMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -110,7 +111,7 @@ MuonSelector :: MuonSelector (std::string className) :
   //
   m_singleMuTrigChains      = "";
   m_diMuTrigChains          = "";
-  m_minDeltaR               = 0.1;
+  m_minDeltaR               = 0.1; // Recommended threshold for muon triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   m_doTrigMatch             = true;
 
 }
@@ -335,7 +336,7 @@ EL::StatusCode MuonSelector :: initialize ()
   if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
   RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
   RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.initialize(), "Failed to properly initialize IsolationSelectionTool." );
-  
+
   // Add the remaining input WPs to the tool
   // (start from 2nd element)
   //
@@ -368,7 +369,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
   // **************************************
   //
-  // Initialise Trig::TrigMuonMatching tool
+  // Initialise Trig::MatchingTool
   //
   // **************************************
 
@@ -383,22 +384,27 @@ EL::StatusCode MuonSelector :: initialize ()
     //  everything went fine, let's initialise the tool!
     //
     m_trigMuonMatchTool_name                  = "TrigMuonMatchingTool_" + m_name;
-    std::string trigMuonMatchTool_handle_name = "Trig::TrigMuonMatching/" + m_trigMuonMatchTool_name;
+    std::string trigMuonMatchTool_handle_name = "Trig::IMatchingTool/" + m_trigMuonMatchTool_name;
 
-    RETURN_CHECK("MuonSelector::initialize()", checkToolStore<Trig::TrigMuonMatching>(m_trigMuonMatchTool_name), "" );
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::TrigMuonMatching>(trigMuonMatchTool_handle_name), "Failed to create handle to TrigMuonMatching");
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize TrigMuonMatching." );
+    RETURN_CHECK("MuonSelector::initialize()", checkToolStore<Trig::MatchingTool>(m_trigMuonMatchTool_name), "" );
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::IMatchingTool>(trigMuonMatchTool_handle_name), "Failed to create handle to MatchingTool");
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", trigDecHandle ), "Failed to pass TrigDecisionTool to MatchingTool" );
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "DefaultMatchingThreshold", m_minDeltaR ), "Failed to set trigger match threshold (DeltaR)" );
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize MatchingTool" );
 
   } else {
 
     m_doTrigMatch = false;
 
-    Warning("initialize()", "\n***********************************************************\n Will not perform any muon trigger matching at this stage b/c : \n ");
-    Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
-    Warning("initialize()", "\t AND/OR" );
-    Warning("initialize()", "\t -) input HLT trigger chain list is empty \n" );
-    Warning("initialize()", "\n*********************************************************** \n If you didn't want to apply the matching now, it's all good!");
+    std::cout << "***********************************************************" << std::endl;
+    Warning("initialize()", "Will not perform any muon trigger matching at this stage b/c :");
+    std::cout << "" << std::endl;
+    std::cout << "\t -) could not find the TrigDecisionTool in asg::ToolStore" << std::endl;
+    std::cout << "\t AND/OR" << std::endl;
+    std::cout << "\t -) all input HLT trigger chain lists are empty" << std::endl;
+    std::cout << "" << std::endl;
+    std::cout << "However, if you really didn't want to apply the matching now, it's all good!");
+    std::cout << "***********************************************************" << std::endl;
   }
 
   Info("initialize()", "MuonSelector Interface succesfully initialized!" );
@@ -663,7 +669,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
     if ( nSelectedMuons > 0 ) {
 
-      if ( m_debug ) { Info("executeSelection()", "Single Muon Trigger Matching "); }
+      if ( m_debug ) { Info("executeSelection()", "Single Muon Trigger Matching"); }
 
       for ( auto const &chain : m_singleMuTrigChainsList ) {
 
@@ -679,54 +685,65 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
             isTrigMatchedMapMuDecor( *muon ) = std::map<std::string,char>();
           }
 
-          int matched = ( m_trigMuonMatchTool_handle->match( muon, chain, m_minDeltaR ) ) ? 1 : 0;
+          char matched = ( m_trigMuonMatchTool_handle->match( muon, chain, m_minDeltaR ) );
 
           if ( m_debug ) { Info("executeSelection()", "\t\t is muon trigger matched? %i", matched); }
 
-          ( isTrigMatchedMapMuDecor( *muon ) )[chain] = static_cast<char>(matched);
+          ( isTrigMatchedMapMuDecor( *muon ) )[chain] = matched;
         }
       }
 
     }
 
+    // If checking dilepton trigger, form lepton pairs and test matching for each one.
+    // Save a:
+    //
+    // map< tuple<chain, idx_lep_i, idx_lep_j>, ismatched >
+    //
+    // as *event* decoration to store which
+    // pairs are matched (to a given chain) and which aren't.
+    //
+    // By retrieving this map later on, user can decide what to do with the event
+    // (Generally one could just loop over the map and save a flag if there's at least one pair that matches a given chain)
+
     if ( nSelectedMuons > 1 ) {
 
-      if ( m_debug ) { Info("executeSelection()", "DiMuon Trigger Matching "); }
+      if ( m_debug ) { Info("executeSelection()", "DiMuon Trigger Matching"); }
+
+      typedef std::map< std::tuple<std::string,int,int>, char > dimuon_trigmatch_pair_map;
+      static SG::AuxElement::Decorator< dimuon_trigmatch_pair_map > diMuonTrigMatchPairMapDecor( "diMuonTrigMatchPairMap" );
 
       for ( auto const &chain : m_diMuTrigChainsList ) {
 
 	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
 
-        // take the first two muons in the selected container
-        //
-        const xAOD::Muon* mu1 = selectedMuons->at(0);
-        const xAOD::Muon* mu2 = selectedMuons->at(1);
+	std::vector<const xAOD::IParticle*> myMuons;
 
-        //  For each muon, decorate w/ a map<string,char> with the 'isMatched' info associated
-        //  to each trigger chain in the input list.
-        //  If decoration map doesn't exist for this muon yet, create it
-        //
-        if ( !isTrigMatchedMapMuDecor.isAvailable( *mu1 ) ) {
-          isTrigMatchedMapMuDecor( *mu1 ) = std::map<std::string,char>();
-        }
-        if ( !isTrigMatchedMapMuDecor.isAvailable( *mu2 ) ) {
-          isTrigMatchedMapMuDecor( *mu2 ) = std::map<std::string,char>();
-        }
+	for ( auto imu = 0; imu < selectedMuons->size()-1; ++imu ) {
 
-        std::pair<Bool_t,Bool_t> result1, result2;
-        bool valid = m_trigMuonMatchTool_handle->matchDimuon( mu1, mu2, chain, result1, result2, m_minDeltaR );
+	  for ( auto jmu = imu+1; jmu < selectedMuons->size(); ++jmu ) {
 
-        if ( valid ) {
-	  if ( m_debug ) { Info("executeSelection()", "\t\t is muon[0] trigger matched? %i", result1.first); }
-	  ( isTrigMatchedMapMuDecor( *mu1 ) )[chain] = static_cast<char>(result1.first);
-	  if ( m_debug ) { Info("executeSelection()", "\t\t is muon[1] trigger matched? %i", result2.first); }
-	  ( isTrigMatchedMapMuDecor( *mu2 ) )[chain] = static_cast<char>(result2.first);
-       } else {
-         if ( m_debug ) { Info("executeSelection()", "\t\t chain %s not supported", chain.c_str()); }
-       }
+            // test a new pair
+            //
+	    myMuons.clear();
+	    myMuons.push_back( selectedMuons->at(imu) );
+	    myMuons.push_back( selectedMuons->at(jmu) );
+
+            // check whether the pair is matched
+            //
+	    char matched = m_trigMuonMatchTool_handle->match( myMuons, chain, m_minDeltaR );
+
+       	    if ( m_debug ) { Info("executeSelection()", "\t\t is the muon pair (%i,%i) trigger matched? %i", imu, jmu, matched); }
+
+	    std::tuple <std::string,int,int> chain_idxs = std::make_tuple(chain,imu,jmu);
+	    diMuonTrigMatchPairMapDecor( *eventInfo )[chain_idxs] = matched;
+
+	  }
+	}
 
       }
     }
+
   }
 
   return true;

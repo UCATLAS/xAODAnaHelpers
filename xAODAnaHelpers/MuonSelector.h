@@ -25,7 +25,7 @@
 
 namespace Trig {
   class TrigDecisionTool;
-  class TrigMuonMatching;
+  class IMatchingTool;
 }
 
 class MuonSelector : public xAH::Algorithm
@@ -121,7 +121,7 @@ private:
   asg::AnaToolHandle<CP::IMuonSelectionTool>      m_muonSelectionTool_handle;      //!
   std::string m_muonSelectionTool_name;                                            //!
   Trig::TrigDecisionTool*                         m_trigDecTool;                   //!
-  asg::AnaToolHandle<Trig::TrigMuonMatching>      m_trigMuonMatchTool_handle;      //!
+  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigMuonMatchTool_handle;      //!
   std::string m_trigMuonMatchTool_name;                                            //!
   bool m_doTrigMatch;
 
