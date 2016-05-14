@@ -1,11 +1,3 @@
-/*****************************************
- *
- * Interface to CP Muon selection tool(s).
- *
- * M. Milesi (marco.milesi@cern.ch)
- *
- *****************************************/
-
 // c++ include(s):
 #include <iostream>
 #include <typeinfo>
@@ -48,10 +40,10 @@ MuonSelector :: MuonSelector (std::string className) :
     m_cutflowHistW(nullptr),
     m_mu_cutflowHist_1(nullptr),
     m_mu_cutflowHist_2(nullptr),
-    m_IsolationSelectionTool(nullptr),
-    m_muonSelectionTool(nullptr),
+    m_isolationSelectionTool_handle("CP::IsolationSelectionTool/MuonIsoSelToolName", nullptr),
+    m_muonSelectionTool_handle("CP::MuonSelectionTool/MuonSelToolName", nullptr),
     m_trigDecTool(nullptr),
-    m_trigMuonMatchTool(nullptr)
+    m_trigMuonMatchTool_handle("Trig::TrigMuonMatching/TrigMuonMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -119,6 +111,7 @@ MuonSelector :: MuonSelector (std::string className) :
   m_singleMuTrigChains      = "";
   m_diMuTrigChains          = "";
   m_minDeltaR               = 0.1;
+  m_doTrigMatch             = true;
 
 }
 
@@ -314,19 +307,17 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // ********************************
   //
-  // Cannot get this from the ToolStore. Problem is that if you have two instances of
-  //   Muon selector with differnet m_muonQuality cuts configured both tools will use the same
-  //    m_muonSelectionTool
-  //
-  std::string sel_tool_name = std::string("MuonSelectionTool_") + m_name;
-  m_muonSelectionTool = new CP::MuonSelectionTool( sel_tool_name );
-  m_muonSelectionTool->msg().setLevel(MSG::ERROR); // VERBOSE
-
   // Set eta and quality requirements in order to accept the muon - ID tracks required by default
   //
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MaxEta",    static_cast<double>(m_eta_max)), "Failed to set MaxEta property");
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->setProperty("MuQuality", m_muonQuality), "Failed to set MuQuality property" );
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool->initialize(), "Failed to properly initialize the Muon Selection Tool");
+
+  m_muonSelectionTool_name                  = "MuonSelectionTool_" + m_name;
+  std::string muonSelectionTool_handle_name = "CP::MuonSelectionTool/" + m_muonSelectionTool_name;
+
+  RETURN_CHECK("MuonSelector::initialize()", checkToolStore<CP::MuonSelectionTool>(m_muonSelectionTool_name), "" );
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.makeNew<CP::MuonSelectionTool>(muonSelectionTool_handle_name), "Failed to create handle to CP::MuonSelectionTool");
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ),"Failed to set Failed to set MaxEta property");
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ),"Failed to set MuQuality property");
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.initialize(), "Failed to properly initialize CP::MuonSelectionTool");
 
   // *************************************
   //
@@ -334,16 +325,17 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // *************************************
 
-  std::string iso_tool_name = std::string("IsolationSelectionTool_") + m_name;
-  m_IsolationSelectionTool = new CP::IsolationSelectionTool( iso_tool_name );
-  m_IsolationSelectionTool->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
+  m_isolationSelectionTool_name                  = "IsolationSelectionTool_" + m_name;
+  std::string isolationSelectionTool_handle_name = "CP::IsolationSelectionTool/" + m_isolationSelectionTool_name;
 
+  RETURN_CHECK("MuonSelector::initialize()", checkToolStore<CP::IsolationSelectionTool>(m_isolationSelectionTool_name), "" );
+  RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.makeNew<CP::IsolationSelectionTool>(isolationSelectionTool_handle_name), "Failed to create handle to CP::IsolationSelectionTool");
   // Do this only for the first WP in the list
   //
   if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
-  RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
-  RETURN_CHECK( "MuonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
-  //
+  RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
+  RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.initialize(), "Failed to properly initialize IsolationSelectionTool." );
+  
   // Add the remaining input WPs to the tool
   // (start from 2nd element)
   //
@@ -362,14 +354,17 @@ EL::StatusCode MuonSelector :: initialize ()
        CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
        if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
 
-       RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
+       RETURN_CHECK( "ElectronSelector::initialize()",  m_isolationSelectionTool_handle->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
 
      } else {
 
-        RETURN_CHECK( "ElectronSelector::initialize()", m_IsolationSelectionTool->addMuonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+        RETURN_CHECK( "ElectronSelector::initialize()", m_isolationSelectionTool_handle->addMuonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
 
      }
   }
+
+  //m_isolationSelectionTool_handle->msg().setLevel( MSG::ERROR); // ERROR, VERBOSE, DEBUG, INFO
+
 
   // **************************************
   //
@@ -378,7 +373,7 @@ EL::StatusCode MuonSelector :: initialize ()
   // **************************************
 
   // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
-  //     do not initialise if there are no input trigger chains
+  //     do not initialise if there are no input trigger chains, or the TrigDecisionTool hasn't been configured yet
   //
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) && asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
 
@@ -387,12 +382,18 @@ EL::StatusCode MuonSelector :: initialize ()
 
     //  everything went fine, let's initialise the tool!
     //
-    std::string trigmatch_tool_name = std::string("TrigMuonMatchingTool_") + m_name;
-    m_trigMuonMatchTool = new Trig::TrigMuonMatching( trigmatch_tool_name );
-    RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
-    RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
+    m_trigMuonMatchTool_name                  = "TrigMuonMatchingTool_" + m_name;
+    std::string trigMuonMatchTool_handle_name = "Trig::TrigMuonMatching/" + m_trigMuonMatchTool_name;
+
+    RETURN_CHECK("MuonSelector::initialize()", checkToolStore<Trig::TrigMuonMatching>(m_trigMuonMatchTool_name), "" );
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::TrigMuonMatching>(trigMuonMatchTool_handle_name), "Failed to create handle to TrigMuonMatching");
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize TrigMuonMatching." );
 
   } else {
+
+    m_doTrigMatch = false;
+
     Warning("initialize()", "\n***********************************************************\n Will not perform any muon trigger matching at this stage b/c : \n ");
     Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
     Warning("initialize()", "\t AND/OR" );
@@ -654,7 +655,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   //  2. there are no selected muons in the event
   //
 
-  if ( m_trigMuonMatchTool && selectedMuons ) {
+  if ( m_doTrigMatch && selectedMuons ) {
 
     unsigned int nSelectedMuons = selectedMuons->size();
 
@@ -678,7 +679,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
             isTrigMatchedMapMuDecor( *muon ) = std::map<std::string,char>();
           }
 
-          int matched = ( m_trigMuonMatchTool->match( muon, chain, m_minDeltaR ) ) ? 1 : 0;
+          int matched = ( m_trigMuonMatchTool_handle->match( muon, chain, m_minDeltaR ) ) ? 1 : 0;
 
           if ( m_debug ) { Info("executeSelection()", "\t\t is muon trigger matched? %i", matched); }
 
@@ -713,7 +714,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
         }
 
         std::pair<Bool_t,Bool_t> result1, result2;
-        bool valid = m_trigMuonMatchTool->matchDimuon( mu1, mu2, chain, result1, result2, m_minDeltaR );
+        bool valid = m_trigMuonMatchTool_handle->matchDimuon( mu1, mu2, chain, result1, result2, m_minDeltaR );
 
         if ( valid ) {
 	  if ( m_debug ) { Info("executeSelection()", "\t\t is muon[0] trigger matched? %i", result1.first); }
@@ -758,10 +759,6 @@ EL::StatusCode MuonSelector :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "Deleting tool instances...");
-
-  if ( m_muonSelectionTool )      { m_muonSelectionTool = nullptr;      delete m_muonSelectionTool;      }
-  if ( m_IsolationSelectionTool ) { m_IsolationSelectionTool = nullptr; delete m_IsolationSelectionTool; }
-  if ( m_trigMuonMatchTool )      {  m_trigMuonMatchTool = nullptr;     delete m_trigMuonMatchTool;      }
 
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
@@ -809,7 +806,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   static SG::AuxElement::Decorator< char > isMediumQDecor("isMediumQ");
   static SG::AuxElement::Decorator< char > isTightQDecor("isTightQ");
 
-  int this_quality = static_cast<int>( m_muonSelectionTool->getQuality( *muon ) );
+  int this_quality = static_cast<int>( m_muonSelectionTool_handle->getQuality( *muon ) );
 
   isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
   isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
@@ -817,7 +814,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
 
   // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
-  if ( ! m_muonSelectionTool->accept( *muon ) ) {
+  if ( ! m_muonSelectionTool_handle->accept( *muon ) ) {
     if ( m_debug ) { Info("PassCuts()", "Muon failed requirements of MuonSelectionTool."); }
     return 0;
   }
@@ -939,7 +936,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   // Get the "list" of input WPs with the accept() decision from the tool
   //
-  Root::TAccept accept_list = m_IsolationSelectionTool->accept( *muon );
+  Root::TAccept accept_list = m_isolationSelectionTool_handle->accept( *muon );
 
   // Decorate w/ decision for all input WPs
   //

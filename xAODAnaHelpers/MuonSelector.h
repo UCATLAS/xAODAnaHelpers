@@ -1,3 +1,10 @@
+/**
+ * @file   MuonSelector.h
+ * @author Marco Milesi <marco.milesi@cern.ch>
+ * @brief  Interface to the tools of the MuonSelectorTools package.
+ *
+ */
+
 #ifndef xAODAnaHelpers_MuonSelector_H
 #define xAODAnaHelpers_MuonSelector_H
 
@@ -11,6 +18,7 @@
 // external tools include(s):
 #include "IsolationSelection/IsolationSelectionTool.h"
 #include "MuonSelectorTools/MuonSelectionTool.h"
+#include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -107,11 +115,15 @@ private:
 
 
   // tools
-  CP::IsolationSelectionTool*    m_IsolationSelectionTool;  //!
-  CP::MuonSelectionTool*         m_muonSelectionTool;	    //!
 
-  Trig::TrigDecisionTool*        m_trigDecTool;	            //!
-  Trig::TrigMuonMatching*        m_trigMuonMatchTool;       //!
+  asg::AnaToolHandle<CP::IsolationSelectionTool>  m_isolationSelectionTool_handle; //!
+  std::string m_isolationSelectionTool_name;                                       //!
+  asg::AnaToolHandle<CP::IMuonSelectionTool>      m_muonSelectionTool_handle;      //!
+  std::string m_muonSelectionTool_name;                                            //!
+  Trig::TrigDecisionTool*                         m_trigDecTool;                   //!
+  asg::AnaToolHandle<Trig::TrigMuonMatching>      m_trigMuonMatchTool_handle;      //!
+  std::string m_trigMuonMatchTool_name;                                            //!
+  bool m_doTrigMatch;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
