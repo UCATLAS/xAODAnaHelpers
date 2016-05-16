@@ -25,7 +25,6 @@
 
 
 #include <IsolationSelection/IsolationSelectionTool.h>
-#include <TrigEgammaMatchingTool/TrigEgammaMatchingTool.h>
 #include <TrigDecisionTool/TrigDecisionTool.h>
 
 // ROOT include(s):
@@ -43,8 +42,8 @@ PhotonSelector :: PhotonSelector (std::string className) :
     m_cutflowHistW(nullptr),
     m_ph_cutflowHist_1(nullptr),
     m_IsolationSelectionTool(nullptr),
-    m_trigDecTool(nullptr),
-    m_match_Tool(nullptr)
+    m_trigDecTool(nullptr)
+//m_match_Tool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -283,13 +282,13 @@ EL::StatusCode PhotonSelector :: initialize ()
     //  everything went fine, let's initialise the tool!
     //
     const std::string MatchingToolName = m_name+"_TrigEgammaMatchingTool";
-    if ( asg::ToolStore::contains<Trig::TrigEgammaMatchingTool>(MatchingToolName.c_str()) ) {
-      m_match_Tool = asg::ToolStore::get<Trig::TrigEgammaMatchingTool>(MatchingToolName.c_str());
-    } else {
-      m_match_Tool = new Trig::TrigEgammaMatchingTool(MatchingToolName.c_str());
-      RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
-      RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-    }
+    //    if ( asg::ToolStore::contains<Trig::TrigEgammaMatchingTool>(MatchingToolName.c_str()) ) {
+      //m_match_Tool = asg::ToolStore::get<Trig::TrigEgammaMatchingTool>(MatchingToolName.c_str());
+    //} else {
+      //m_match_Tool = new Trig::TrigEgammaMatchingTool(MatchingToolName.c_str());
+      //RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
+      //RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->initialize(), "Failed to properly initialize TrigMuonMatching." );
+    //}
   }
 
   // **********************************************************************************************
@@ -499,66 +498,66 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
   //  1. the user didn't pass any trigger chains to the algo (see initialize(): in that case, the tool is not even initialised!)
   //  2. there are no selected photons in the event
   //
-  if ( m_match_Tool && selectedPhotons ) {
-
-    unsigned int nSelectedPhotons = selectedPhotons->size();
-
-    if ( nSelectedPhotons > 0 ) {
-
-      if ( m_debug ) { Info("executeSelection()", "Now doing photon trigger matching..."); }
-
-      for ( auto const &chain : m_PhTrigChainsList ) {
-
-	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-
-	for ( auto const photon : *selectedPhotons ) {
-
-	  SG::AuxElement::Decorator< std::map<std::string,bool> > isTrigMatchedMapPhDecor( "isTrigMatchedMapPh" );
-	  if ( !isTrigMatchedMapPhDecor.isAvailable( *photon ) ) {
-	    isTrigMatchedMapPhDecor( *photon ) = std::map<std::string,bool>();
-	  }
-
-	  bool matched = false;
-
-	  static const bool DO_TEMPORAL_MATCHING = true;
-
-	  if (!DO_TEMPORAL_MATCHING)  { // the current matching tool does not work for the photon
-	    matched = ( m_match_Tool->matchHLT( photon, chain ) );
-
-	    if ( m_debug ) { Info("executeSelection()", "\t\t is photon trigger matched? %s for %s", (matched ? "Y" : "N"), chain.c_str()); }
-	  } else {
-
-	    if(m_event->contains<xAOD::PhotonContainer>("HLT_xAOD__PhotonContainer_egamma_Photons")){ // check if trigger photon info exist
-	      // get trigger list from config file
-	      Trig::FeatureContainer fc = m_trigDecTool->features(chain);
-	      const auto vec = fc.containerFeature<xAOD::PhotonContainer>("egamma_Photons");
-	      if ( m_debug ) { Info("executeSelection()", "%d trigger objects are found and to be used for the matching", (int) vec.size() ); }
-	      double deltaR = 0.;
-	      for(auto feat : vec){
-		const xAOD::PhotonContainer *cont = feat.cptr();
-		for(const auto& phTrig : *cont){
-		  double eta1 = photon->eta();
-		  double phi1 = photon->phi();
-		  double eta2 = phTrig->eta();
-		  double phi2 = phTrig->phi();
-		  double deta = fabs(eta1 - eta2);
-		  double dphi = fabs(phi1 - phi2) < TMath::Pi() ? fabs(phi1 - phi2) : 2*TMath::Pi() - fabs(phi1 - phi2);
-		  deltaR = sqrt(deta*deta + dphi*dphi);
-		  if(deltaR < 0.07) matched = true;
-		}
-		if ( m_debug ) { Info("executeSelection()", "\t\t is photon trigger matched? %s for %s", (matched ? "Y" : "N"), chain.c_str()); }
-	      } // loop over trigger list
-	    } else {
-	      if ( m_debug ) { Info("executeSelection()", "HLT_xAOD__PhotonContainer_egamma_Photons is not available in this datafile"); }
-	      matched = false;
-	    }
-	  }
-
-	  ( isTrigMatchedMapPhDecor( *photon ) )[chain] = matched;
-	}
-      }
-    }
-  }
+//  if ( m_match_Tool && selectedPhotons ) {
+//
+//    unsigned int nSelectedPhotons = selectedPhotons->size();
+//
+//    if ( nSelectedPhotons > 0 ) {
+//
+//      if ( m_debug ) { Info("executeSelection()", "Now doing photon trigger matching..."); }
+//
+//      for ( auto const &chain : m_PhTrigChainsList ) {
+//
+//	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
+//
+//	for ( auto const photon : *selectedPhotons ) {
+//
+//	  SG::AuxElement::Decorator< std::map<std::string,bool> > isTrigMatchedMapPhDecor( "isTrigMatchedMapPh" );
+//	  if ( !isTrigMatchedMapPhDecor.isAvailable( *photon ) ) {
+//	    isTrigMatchedMapPhDecor( *photon ) = std::map<std::string,bool>();
+//	  }
+//
+//	  bool matched = false;
+//
+//	  static const bool DO_TEMPORAL_MATCHING = true;
+//
+//	  if (!DO_TEMPORAL_MATCHING)  { // the current matching tool does not work for the photon
+//	    matched = ( m_match_Tool->matchHLT( photon, chain ) );
+//
+//	    if ( m_debug ) { Info("executeSelection()", "\t\t is photon trigger matched? %s for %s", (matched ? "Y" : "N"), chain.c_str()); }
+//	  } else {
+//
+//	    if(m_event->contains<xAOD::PhotonContainer>("HLT_xAOD__PhotonContainer_egamma_Photons")){ // check if trigger photon info exist
+//	      // get trigger list from config file
+//	      Trig::FeatureContainer fc = m_trigDecTool->features(chain);
+//	      const auto vec = fc.containerFeature<xAOD::PhotonContainer>("egamma_Photons");
+//	      if ( m_debug ) { Info("executeSelection()", "%d trigger objects are found and to be used for the matching", (int) vec.size() ); }
+//	      double deltaR = 0.;
+//	      for(auto feat : vec){
+//		const xAOD::PhotonContainer *cont = feat.cptr();
+//		for(const auto& phTrig : *cont){
+//		  double eta1 = photon->eta();
+//		  double phi1 = photon->phi();
+//		  double eta2 = phTrig->eta();
+//		  double phi2 = phTrig->phi();
+//		  double deta = fabs(eta1 - eta2);
+//		  double dphi = fabs(phi1 - phi2) < TMath::Pi() ? fabs(phi1 - phi2) : 2*TMath::Pi() - fabs(phi1 - phi2);
+//		  deltaR = sqrt(deta*deta + dphi*dphi);
+//		  if(deltaR < 0.07) matched = true;
+//		}
+//		if ( m_debug ) { Info("executeSelection()", "\t\t is photon trigger matched? %s for %s", (matched ? "Y" : "N"), chain.c_str()); }
+//	      } // loop over trigger list
+//	    } else {
+//	      if ( m_debug ) { Info("executeSelection()", "HLT_xAOD__PhotonContainer_egamma_Photons is not available in this datafile"); }
+//	      matched = false;
+//	    }
+//	  }
+//
+//	  ( isTrigMatchedMapPhDecor( *photon ) )[chain] = matched;
+//	}
+//      }
+//    }
+//  }
 
   return true;
 }
@@ -745,10 +744,10 @@ EL::StatusCode PhotonSelector :: finalize ()
 
   if (m_debug) { Info("finalize()", "Isolation Tool deleted"); }
 
-  if (m_match_Tool) {
-    delete m_match_Tool;
-    m_match_Tool = nullptr;
-  }
+//  if (m_match_Tool) {
+//    delete m_match_Tool;
+//    m_match_Tool = nullptr;
+//  }
 
   if (m_debug) { Info("finalize()", "Matching Tool deleted"); }
 

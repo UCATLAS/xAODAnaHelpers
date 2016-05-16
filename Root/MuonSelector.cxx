@@ -22,7 +22,7 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
-#include "TrigMuonMatching/TrigMuonMatching.h"
+//#include "TrigMuonMatching/TrigMuonMatching.h"
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):
@@ -42,8 +42,8 @@ MuonSelector :: MuonSelector (std::string className) :
     m_mu_cutflowHist_2(nullptr),
     m_isolationSelectionTool_handle("CP::IsolationSelectionTool/MuonIsoSelToolName", nullptr),
     m_muonSelectionTool_handle("CP::MuonSelectionTool/MuonSelToolName", nullptr),
-    m_trigDecTool(nullptr),
-    m_trigMuonMatchTool_handle("Trig::TrigMuonMatching/TrigMuonMatchingName", nullptr)
+    m_trigDecTool(nullptr)
+    //m_trigMuonMatchTool_handle("Trig::TrigMuonMatching/TrigMuonMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -335,7 +335,7 @@ EL::StatusCode MuonSelector :: initialize ()
   if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
   RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
   RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.initialize(), "Failed to properly initialize IsolationSelectionTool." );
-  
+
   // Add the remaining input WPs to the tool
   // (start from 2nd element)
   //
@@ -382,13 +382,13 @@ EL::StatusCode MuonSelector :: initialize ()
 
     //  everything went fine, let's initialise the tool!
     //
-    m_trigMuonMatchTool_name                  = "TrigMuonMatchingTool_" + m_name;
-    std::string trigMuonMatchTool_handle_name = "Trig::TrigMuonMatching/" + m_trigMuonMatchTool_name;
+    //m_trigMuonMatchTool_name                  = "TrigMuonMatchingTool_" + m_name;
+    //std::string trigMuonMatchTool_handle_name = "Trig::TrigMuonMatching/" + m_trigMuonMatchTool_name;
 
-    RETURN_CHECK("MuonSelector::initialize()", checkToolStore<Trig::TrigMuonMatching>(m_trigMuonMatchTool_name), "" );
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::TrigMuonMatching>(trigMuonMatchTool_handle_name), "Failed to create handle to TrigMuonMatching");
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize TrigMuonMatching." );
+    //RETURN_CHECK("MuonSelector::initialize()", checkToolStore<Trig::TrigMuonMatching>(m_trigMuonMatchTool_name), "" );
+    //RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::TrigMuonMatching>(trigMuonMatchTool_handle_name), "Failed to create handle to TrigMuonMatching");
+    //RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
+    //RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize TrigMuonMatching." );
 
   } else {
 
@@ -655,6 +655,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   //  2. there are no selected muons in the event
   //
 
+  /*
   if ( m_doTrigMatch && selectedMuons ) {
 
     unsigned int nSelectedMuons = selectedMuons->size();
@@ -728,6 +729,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
       }
     }
   }
+  */
 
   return true;
 }
