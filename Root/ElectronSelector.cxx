@@ -2,6 +2,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <sstream>
+#include <tuple>
 
 // EL include(s):
 #include <EventLoop/Job.h>
@@ -23,7 +24,7 @@
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
-//#include "TrigEgammaMatchingTool/TrigEgammaMatchingTool.h"
+#include "TriggerMatchingTool/MatchingTool.h"
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):
@@ -44,7 +45,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
     m_el_LH_PIDManager(nullptr),
     m_el_CutBased_PIDManager(nullptr),
     m_trigDecTool(nullptr),
-    m_trigElMatchTool_handle("Trig::TrigEgammaMatchingTool/TrigElectronMatchingName", nullptr)
+    m_trigElMatchTool_handle("Trig::MatchingTool/TrigElectronMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -125,7 +126,9 @@ ElectronSelector :: ElectronSelector (std::string className) :
 
   // trigger matching stuff
   //
-  m_ElTrigChains            = "";
+  m_singleElTrigChains      = "";
+  m_diElTrigChains          = "";
+  m_minDeltaR               = 0.07; // Recommended threshold for egamma triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   m_doTrigMatch             = true;
 
 }
@@ -420,7 +423,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   // ***************************************
   //
-  // Initialise Trig::TrigEgammaMatchingTool
+  // Initialise Trig::MatchingTool
   //
   // ***************************************
 
@@ -428,30 +431,34 @@ EL::StatusCode ElectronSelector :: initialize ()
   // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
   //     do not initialise if there are no input trigger chains
   //
-  if( !m_ElTrigChains.empty() && asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
+  if(  !( m_singleElTrigChains.empty() && m_diElTrigChains.empty() ) && asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
 
     m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
     ToolHandle<Trig::TrigDecisionTool> trigDecHandle( m_trigDecTool );
 
     //  everything went fine, let's initialise the tool!
     //
-    m_trigElMatchTool_name                  = "TrigEgammaMatchingTool_" + m_name;
-    std::string trigElMatchTool_handle_name = "Trig::TrigEgammaMatchingTool/" + m_trigElMatchTool_name;
+    m_trigElMatchTool_name                  = "MatchingTool_" + m_name;
+    std::string trigElMatchTool_handle_name = "Trig::MatchingTool/" + m_trigElMatchTool_name;
 
-    RETURN_CHECK("ElectronSelector::initialize()", checkToolStore<Trig::TrigEgammaMatchingTool>(m_trigElMatchTool_name), "" );
-    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.makeNew<Trig::TrigEgammaMatchingTool>(trigElMatchTool_handle_name), "Failed to create handle to TrigEgammaMatchingTool");
-    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigEgammaMatchingTool" );
-    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.initialize(), "Failed to properly initialize TrigEgammaMatchingTool." );
+    RETURN_CHECK("ElectronSelector::initialize()", checkToolStore<Trig::MatchingTool>(m_trigElMatchTool_name), "" );
+    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.makeNew<Trig::MatchingTool>(trigElMatchTool_handle_name), "Failed to create handle to MatchingTool");
+    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.setProperty( "TrigDecisionTool", trigDecHandle ), "Failed to pass TrigDecisionTool to MatchingTool" );
+    RETURN_CHECK("ElectronSelector::initialize()", m_trigElMatchTool_handle.initialize(), "Failed to properly initialize MatchingTool" );
 
   } else {
 
     m_doTrigMatch = false;
 
-    Warning("initialize()", "\n***********************************************************\n Will not perform any electron trigger matching at this stage b/c : \n ");
-    Warning("initialize()", "\t -) could not find the TrigDecisionTool in asg::ToolStore" );
-    Warning("initialize()", "\t AND/OR" );
-    Warning("initialize()", "\t -) input HLT trigger chain list is empty \n" );
-    Warning("initialize()", "\n*********************************************************** \n If you didn't want to apply the matching now, it's all good!");
+    std::cout << "***********************************************************" << std::endl;
+    Warning("initialize()", "Will not perform any electron trigger matching at this stage b/c :");
+    std::cout << "" << std::endl;
+    std::cout << "\t -) could not find the TrigDecisionTool in asg::ToolStore" << std::endl;
+    std::cout << "\t AND/OR" << std::endl;
+    std::cout << "\t -) all input HLT trigger chain lists are empty" << std::endl;
+    std::cout << "" << std::endl;
+    std::cout << "However, if you really didn't want to do the matching now, it's all good!" << std::endl;
+    std::cout << "***********************************************************" << std::endl;
   }
 
   // **********************************************************************************************
@@ -489,25 +496,30 @@ EL::StatusCode ElectronSelector :: execute ()
   //
   if ( m_numEvent == 1 && m_trigDecTool ) {
 
-    // store the trigger chains that will be considered for matching
+    // parse input electron trigger chain list, split by comma and fill vector
     //
-    if ( m_ElTrigChains.find("ALL") != std::string::npos ) {
-      std::vector<std::string> list = (m_trigDecTool->getChainGroup("HLT_e.*"))->getListOfTriggers();
-      for ( auto &trig : list ) { m_ElTrigChainsList.push_back(trig); }
-    } else {
-      // parse input electron trigger chain list, split by comma and fill vector
-      //
-      std::string trig;
-      std::istringstream ss(m_ElTrigChains);
+    std::string singleel_trig;
+    std::istringstream ss_singleel_trig(m_singleElTrigChains);
 
-      while ( std::getline(ss, trig, ',') ) {
-    	m_ElTrigChainsList.push_back(trig);
-      }
+    while ( std::getline(ss_singleel_trig, singleel_trig, ',') ) {
+      m_singleElTrigChainsList.push_back(singleel_trig);
     }
 
-    Info("execute()", "Input electron trigger chains that will be considered for matching:\n");
-    for ( auto const &chain : m_ElTrigChainsList ) { Info("execute()", "\t %s", chain.c_str()); }
+    std::string diel_trig;
+    std::istringstream ss_diel_trig(m_diElTrigChains);
+
+    while ( std::getline(ss_diel_trig, diel_trig, ',') ) {
+      m_diElTrigChainsList.push_back(diel_trig);
+    }
+
+    Info("execute()", "Input single electron trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_singleElTrigChainsList ) { Info("execute()", "\t %s", chain.c_str()); }
     Info("execute()", "\n");
+
+    Info("execute()", "Input di-electron trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_diElTrigChainsList ) { Info("execute()", "\t %s", chain.c_str()); }
+    Info("execute()", "\n");
+
   }
 
   // did any collection pass the cuts?
@@ -698,11 +710,13 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
     unsigned int nSelectedElectrons = selectedElectrons->size();
 
+    static  SG::AuxElement::Decorator< std::map<std::string,char> > isTrigMatchedMapElDecor( "isTrigMatchedMapEl" );
+
     if ( nSelectedElectrons > 0 ) {
 
-      if ( m_debug ) { Info("executeSelection()", "Now doing electron trigger matching..."); }
+      if ( m_debug ) { Info("executeSelection()", "Single electron trigger matching..."); }
 
-      for ( auto const &chain : m_ElTrigChainsList ) {
+      for ( auto const &chain : m_singleElTrigChainsList ) {
 
          if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
 
@@ -712,20 +726,78 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 	   //  to each trigger chain in the input list.
            //  If decoration map doesn't exist, create it (will be done only for the 1st iteration on the chain names)
            //
-           SG::AuxElement::Decorator< std::map<std::string,char> > isTrigMatchedMapElDecor( "isTrigMatchedMapEl" );
            if ( !isTrigMatchedMapElDecor.isAvailable( *electron ) ) {
 	     isTrigMatchedMapElDecor( *electron ) = std::map<std::string,char>();
            }
 
-	   int matched = ( m_trigElMatchTool_handle->matchHLT( electron, chain ) ) ? 1 : 0;
+	   char matched = ( m_trigElMatchTool_handle->match( *electron, chain, m_minDeltaR ) );
 
            if ( m_debug ) { Info("executeSelection()", "\t\t is electron trigger matched? %i", matched); }
 
-	   ( isTrigMatchedMapElDecor( *electron ) )[chain] = static_cast<char>(matched);
+	   ( isTrigMatchedMapElDecor( *electron ) )[chain] = matched;
          }
       }
 
     }
+
+    // If checking dilepton trigger, form lepton pairs and test matching for each one.
+    // Save a:
+    //
+    // map< tuple<chain, idx_lep_i, idx_lep_j>, ismatched >
+    //
+    // as *event* decoration to store which
+    // pairs are matched (to a given chain) and which aren't.
+    //
+    // By retrieving this map later on, user can decide what to do with the event
+    // (Generally one could just loop over the map and save a flag if there's at least one pair that matches a given chain)
+
+    if ( nSelectedElectrons > 1 ) {
+
+	if ( m_debug ) { Info("executeSelection()", "Di-electron trigger matching..."); }
+
+	const xAOD::EventInfo* eventInfo(nullptr);
+	RETURN_CHECK("ElectronSelector::executeSelection()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+
+	typedef std::map< std::tuple<std::string,unsigned int,unsigned int>, char > dielectron_trigmatch_pair_map;
+	static SG::AuxElement::Decorator< dielectron_trigmatch_pair_map > diElectronTrigMatchPairMapDecor( "diElectronTrigMatchPairMap" );
+
+	for ( auto const &chain : m_diElTrigChainsList ) {
+
+	    if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
+
+	    //  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
+	    //
+	    if ( !diElectronTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
+		diElectronTrigMatchPairMapDecor( *eventInfo ) = dielectron_trigmatch_pair_map();
+	    }
+
+	    std::vector<const xAOD::IParticle*> myElectrons;
+
+	    for ( unsigned int iel = 0; iel < selectedElectrons->size()-1; ++iel ) {
+
+		for ( unsigned int jel = iel+1; jel < selectedElectrons->size(); ++jel ) {
+
+		    // test a new pair
+		    //
+		    myElectrons.clear();
+		    myElectrons.push_back( selectedElectrons->at(iel) );
+		    myElectrons.push_back( selectedElectrons->at(jel) );
+
+		    // check whether the pair is matched
+		    //
+		    char matched = m_trigElMatchTool_handle->match( myElectrons, chain, m_minDeltaR );
+
+		    if ( m_debug ) { Info("executeSelection()", "\t\t is the electron pair (%i,%i) trigger matched? %i", iel, jel, matched); }
+
+		    std::tuple <std::string,int,int> chain_idxs = std::make_tuple(chain,iel,jel);
+		    diElectronTrigMatchPairMapDecor( *eventInfo )[chain_idxs] = matched;
+
+		}
+	    }
+
+	}
+    }
+
   }
 
   return true;

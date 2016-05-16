@@ -27,7 +27,7 @@
 
 namespace Trig {
   class TrigDecisionTool;
-  class IMatchingTool;
+  class MatchingTool;
 }
 
 class ElectronSelector : public xAH::Algorithm
@@ -94,9 +94,13 @@ public:
 
   /* trigger matching */
 
-  std::string    m_ElTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching.
-  				      This is passed by the user as input in configuration
-				      If left empty (as it is by default), no trigger matching will be attempted at all */
+  std::string    m_singleElTrigChains;   /* A comma-separated string w/ alll the HLT single electron trigger chains for which you want to perform the matching.
+  			      	            This is passed by the user as input in configuration
+				            If left empty (as it is by default), no trigger matching will be attempted at all */
+  std::string    m_diElTrigChains;       /* A comma-separated string w/ alll the HLT di-electron trigger chains for which you want to perform the matching.
+  			   	            This is passed by the user as input in configuration
+			                    If left empty (as it is by default), no trigger matching will be attempted at all */
+  double         m_minDeltaR;
 
 private:
 
@@ -140,16 +144,17 @@ private:
   std::string m_isolationSelectionTool_name;                                      //!
 
   /* PID manager(s) */
-  ElectronLHPIDManager*                    m_el_LH_PIDManager;       //!
-  ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager; //!
-  Trig::TrigDecisionTool*                  m_trigDecTool;            //!
-  asg::AnaToolHandle<Trig::IMatchingTool>  m_trigElMatchTool_handle; //!
-  std::string m_trigElMatchTool_name;                                //!
+  ElectronLHPIDManager*                    m_el_LH_PIDManager;        //!
+  ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager;  //!
+  Trig::TrigDecisionTool*                  m_trigDecTool;             //!
+  asg::AnaToolHandle<Trig::MatchingTool>   m_trigElMatchTool_handle;  //!
+  std::string m_trigElMatchTool_name;                                 //!
   bool m_doTrigMatch;
 
   /* other private members */
 
-  std::vector<std::string>            m_ElTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_ElTrigChains */
+  std::vector<std::string>            m_singleElTrigChainsList;  //!  /* contains all the HLT trigger chains tokens extracted from m_singleElTrigChains */
+  std::vector<std::string>            m_diElTrigChainsList;      //!  /* contains all the HLT trigger chains tokens extracted from m_diElTrigChains */
 
 public:
 

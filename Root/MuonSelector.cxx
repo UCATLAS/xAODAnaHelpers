@@ -44,7 +44,7 @@ MuonSelector :: MuonSelector (std::string className) :
     m_isolationSelectionTool_handle("CP::IsolationSelectionTool/MuonIsoSelToolName", nullptr),
     m_muonSelectionTool_handle("CP::MuonSelectionTool/MuonSelToolName", nullptr),
     m_trigDecTool(nullptr),
-    m_trigMuonMatchTool_handle("Trig::IMatchingTool/TrigMuonMatchingName", nullptr)
+    m_trigMuonMatchTool_handle("Trig::MatchingTool/TrigMuonMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -383,13 +383,12 @@ EL::StatusCode MuonSelector :: initialize ()
 
     //  everything went fine, let's initialise the tool!
     //
-    m_trigMuonMatchTool_name                  = "TrigMuonMatchingTool_" + m_name;
-    std::string trigMuonMatchTool_handle_name = "Trig::IMatchingTool/" + m_trigMuonMatchTool_name;
+    m_trigMuonMatchTool_name                  = "MatchingTool_" + m_name;
+    std::string trigMuonMatchTool_handle_name = "Trig::MatchingTool/" + m_trigMuonMatchTool_name;
 
     RETURN_CHECK("MuonSelector::initialize()", checkToolStore<Trig::MatchingTool>(m_trigMuonMatchTool_name), "" );
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::IMatchingTool>(trigMuonMatchTool_handle_name), "Failed to create handle to MatchingTool");
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::MatchingTool>(trigMuonMatchTool_handle_name), "Failed to create handle to MatchingTool");
     RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", trigDecHandle ), "Failed to pass TrigDecisionTool to MatchingTool" );
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "DefaultMatchingThreshold", m_minDeltaR ), "Failed to set trigger match threshold (DeltaR)" );
     RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize MatchingTool" );
 
   } else {
@@ -403,7 +402,7 @@ EL::StatusCode MuonSelector :: initialize ()
     std::cout << "\t AND/OR" << std::endl;
     std::cout << "\t -) all input HLT trigger chain lists are empty" << std::endl;
     std::cout << "" << std::endl;
-    std::cout << "However, if you really didn't want to apply the matching now, it's all good!");
+    std::cout << "However, if you really didn't want to do the matching now, it's all good!" << std::endl;
     std::cout << "***********************************************************" << std::endl;
   }
 
@@ -440,27 +439,20 @@ EL::StatusCode MuonSelector :: execute ()
   //
   if ( m_numEvent == 1 && m_trigDecTool ) {
 
-    // store the trigger chains that will be considered for matching
+    // parse input muon trigger chain list, split by comma and fill vector
     //
-    if ( m_singleMuTrigChains.find("ALL") != std::string::npos ) {
-      std::vector<std::string> list = (m_trigDecTool->getChainGroup("HLT_mu.*"))->getListOfTriggers();
-      for ( auto &trig : list ) { m_singleMuTrigChainsList.push_back(trig); }
-    } else {
-      // parse input muon trigger chain list, split by comma and fill vector
-      //
-      std::string singlemu_trig;
-      std::istringstream ss_singlemu_trig(m_singleMuTrigChains);
+    std::string singlemu_trig;
+    std::istringstream ss_singlemu_trig(m_singleMuTrigChains);
 
-      while ( std::getline(ss_singlemu_trig, singlemu_trig, ',') ) {
-    	m_singleMuTrigChainsList.push_back(singlemu_trig);
-      }
+    while ( std::getline(ss_singlemu_trig, singlemu_trig, ',') ) {
+   	m_singleMuTrigChainsList.push_back(singlemu_trig);
+    }
 
-      std::string dimu_trig;
-      std::istringstream ss_dimu_trig(m_diMuTrigChains);
+    std::string dimu_trig;
+    std::istringstream ss_dimu_trig(m_diMuTrigChains);
 
-      while ( std::getline(ss_dimu_trig, dimu_trig, ',') ) {
-    	m_diMuTrigChainsList.push_back(dimu_trig);
-      }
+    while ( std::getline(ss_dimu_trig, dimu_trig, ',') ) {
+   	m_diMuTrigChainsList.push_back(dimu_trig);
     }
 
     Info("execute()", "Input single muon trigger chains that will be considered for matching:\n");
@@ -670,7 +662,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
     if ( nSelectedMuons > 0 ) {
 
-      if ( m_debug ) { Info("executeSelection()", "Single Muon Trigger Matching"); }
+      if ( m_debug ) { Info("executeSelection()", "Doing single muon trigger matching..."); }
 
       for ( auto const &chain : m_singleMuTrigChainsList ) {
 
@@ -686,7 +678,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
             isTrigMatchedMapMuDecor( *muon ) = std::map<std::string,char>();
           }
 
-          char matched = ( m_trigMuonMatchTool_handle->match( muon, chain, m_minDeltaR ) );
+          char matched = ( m_trigMuonMatchTool_handle->match( *muon, chain, m_minDeltaR ) );
 
           if ( m_debug ) { Info("executeSelection()", "\t\t is muon trigger matched? %i", matched); }
 
@@ -709,20 +701,29 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
     if ( nSelectedMuons > 1 ) {
 
-      if ( m_debug ) { Info("executeSelection()", "DiMuon Trigger Matching"); }
+      if ( m_debug ) { Info("executeSelection()", "Doing di-muon trigger matching..."); }
 
-      typedef std::map< std::tuple<std::string,int,int>, char > dimuon_trigmatch_pair_map;
+      const xAOD::EventInfo* eventInfo(nullptr);
+      RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+
+      typedef std::map< std::tuple<std::string,unsigned int,unsigned int>, char > dimuon_trigmatch_pair_map;
       static SG::AuxElement::Decorator< dimuon_trigmatch_pair_map > diMuonTrigMatchPairMapDecor( "diMuonTrigMatchPairMap" );
 
       for ( auto const &chain : m_diMuTrigChainsList ) {
 
 	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
 
+	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
+	//
+	if ( !diMuonTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
+          diMuonTrigMatchPairMapDecor( *eventInfo ) = dimuon_trigmatch_pair_map();
+	}
+
 	std::vector<const xAOD::IParticle*> myMuons;
 
-	for ( auto imu = 0; imu < selectedMuons->size()-1; ++imu ) {
+	for ( unsigned int imu = 0; imu < selectedMuons->size()-1; ++imu ) {
 
-	  for ( auto jmu = imu+1; jmu < selectedMuons->size(); ++jmu ) {
+	  for ( unsigned int jmu = imu+1; jmu < selectedMuons->size(); ++jmu ) {
 
             // test a new pair
             //

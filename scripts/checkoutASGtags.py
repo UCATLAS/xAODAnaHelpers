@@ -59,7 +59,7 @@ dict_pkg = {
             '2.3.41': [],
             '2.3.44': [],
             '2.3.45': [],
-            '2.3.50': [],
+            '2.3.50': ["atlasoff/PhysicsAnalysis/TopPhys/QuickAna/tags/QuickAna-00-01-07"],
            }
 
 try:
