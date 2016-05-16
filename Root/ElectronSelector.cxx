@@ -43,7 +43,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
     m_isolationSelectionTool_handle("CP::IsolationSelectionTool/ElectronIsoSelToolName", nullptr),
     m_el_LH_PIDManager(nullptr),
     m_el_CutBased_PIDManager(nullptr),
-    m_trigDecTool(nullptr),
+    m_trigDecTool(nullptr)
     //m_trigElMatchTool_handle("Trig::TrigEgammaMatchingTool/TrigElectronMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
