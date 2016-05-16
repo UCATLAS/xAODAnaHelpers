@@ -25,7 +25,7 @@
 
 
 #include <IsolationSelection/IsolationSelectionTool.h>
-#include <TrigEgammaMatchingTool/TrigEgammaMatchingTool.h>
+//#include <TrigEgammaMatchingTool/TrigEgammaMatchingTool.h>
 #include <TrigDecisionTool/TrigDecisionTool.h>
 
 // ROOT include(s):
@@ -43,8 +43,8 @@ PhotonSelector :: PhotonSelector (std::string className) :
     m_cutflowHistW(nullptr),
     m_ph_cutflowHist_1(nullptr),
     m_IsolationSelectionTool(nullptr),
-    m_trigDecTool(nullptr),
-    m_match_Tool(nullptr)
+    m_trigDecTool(nullptr)
+//    m_match_Tool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -263,6 +263,7 @@ EL::StatusCode PhotonSelector :: initialize ()
   // Initialise Trig::TrigEgammaMatchingTool
   //
   // ***************************************
+/*
   if( !m_PhTrigChains.empty()) {
     std::string trig;
     std::istringstream ss(m_PhTrigChains);
@@ -283,6 +284,7 @@ EL::StatusCode PhotonSelector :: initialize ()
     //  everything went fine, let's initialise the tool!
     //
     const std::string MatchingToolName = m_name+"_TrigEgammaMatchingTool";
+
     if ( asg::ToolStore::contains<Trig::TrigEgammaMatchingTool>(MatchingToolName.c_str()) ) {
       m_match_Tool = asg::ToolStore::get<Trig::TrigEgammaMatchingTool>(MatchingToolName.c_str());
     } else {
@@ -291,7 +293,7 @@ EL::StatusCode PhotonSelector :: initialize ()
       RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->initialize(), "Failed to properly initialize TrigMuonMatching." );
     }
   }
-
+*/
   // **********************************************************************************************
 
   Info("initialize()", "PhotonSelector Interface succesfully initialized!" );
@@ -492,6 +494,7 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
     m_weightNumEventPass += mcEvtWeight;
   }
 
+/*
   // Perform trigger matching on the "good" (selected) photons
   //
   // NB: this part will be skipped if:
@@ -559,7 +562,7 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
       }
     }
   }
-
+*/
   return true;
 }
 
@@ -745,10 +748,12 @@ EL::StatusCode PhotonSelector :: finalize ()
 
   if (m_debug) { Info("finalize()", "Isolation Tool deleted"); }
 
+/*
   if (m_match_Tool) {
     delete m_match_Tool;
     m_match_Tool = nullptr;
   }
+*/
 
   if (m_debug) { Info("finalize()", "Matching Tool deleted"); }
 

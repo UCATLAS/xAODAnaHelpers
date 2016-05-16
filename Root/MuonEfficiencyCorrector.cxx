@@ -220,14 +220,14 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   m_isoEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Iso_" + m_WorkingPointIso;
   std::string isoEffSF_handle_name = "CP::MuonEfficiencyScaleFactors/" + m_isoEffSF_tool_name;
- 
+
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonEfficiencyScaleFactors>(m_isoEffSF_tool_name), "" );
   std::string tool_WP = m_WorkingPointIso + "Iso";
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.makeNew<CP::MuonEfficiencyScaleFactors>(isoEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for iso efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.setProperty("WorkingPoint", tool_WP ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for iso efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ),"Failed to set calibration release property of MuonEfficiencyScaleFactors for iso efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.initialize(), "Failed to properly initialize CP::MuonEfficiencyScaleFactors for iso efficiency SF");
-  
+
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
   m_outputSystNamesIso = m_outputSystNamesIso + "_Iso" + m_WorkingPointIso;
@@ -259,22 +259,23 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   m_trigEffSF_tool_name = "MuonTriggerScaleFactors_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
   std::string trigEffSF_handle_name = "CP::MuonTriggerScaleFactors/" + m_trigEffSF_tool_name;
-  
+
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name), "" );
   std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.makeNew<CP::MuonTriggerScaleFactors>(trigEffSF_handle_name), "Failed to create handle to CP::MuonTriggerScaleFactors for trigger efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.initialize(), "Failed to properly initialize CP::MuonTriggerScaleFactors for trigger efficiency SF");
-    
+
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "" );
   if ( m_isMC && ( !m_useRandomRunNumber || !isToolAlreadyUsed("Pileup") ) ) {
     Warning("initialize()","m_useRandomRunNumber is disabled OR couldn't find a configured CP::PileupReweightingTool in the asg::ToolStore!" );
     Warning("initialize()"," ===> setting runNumber %i read from user's configuration - NOT RECOMMENDED", m_runNumber );
     if ( m_muTrigSF_tool_handle->setRunNumber( m_runNumber ) == CP::CorrectionCode::Error ) { Warning("initialize()","Cannot set RunNumber for MuonTriggerScaleFactors tool"); }
   }
-  
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.makeNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
+
+//  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.makeNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.make("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.initialize(), "Failed to properly initialize CP::PileupReweightingTool");
 
   //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration
@@ -511,7 +512,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_recoEffSF_tool_name) ) {
-  
+
     for ( const auto& syst_it : m_systListReco ) {
 
       // Create the name of the SF weight to be recorded

@@ -25,7 +25,7 @@
 
 namespace Trig {
   class TrigDecisionTool;
-  class IMatchingTool;
+  class MatchingTool;
 }
 
 class MuonSelector : public xAH::Algorithm
@@ -72,7 +72,7 @@ public:
   		                                If left empty (as it is by default), no trigger matching will be attempted at all */
   std::string    m_diMuTrigChains;           /* A comma-separated string w/ alll the HLT dimuon trigger chains for which you want to perform the matching.
   					     	If left empty (as it is by default), no trigger matching will be attempted at all */
-  float          m_minDeltaR;
+  double         m_minDeltaR;
 
   std::string    m_passAuxDecorKeys;
   std::string    m_failAuxDecorKeys;
@@ -113,7 +113,6 @@ private:
   std::vector<std::string>            m_singleMuTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_singleMuTrigChains */
   std::vector<std::string>            m_diMuTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diMuTrigChains */
 
-
   // tools
 
   asg::AnaToolHandle<CP::IsolationSelectionTool>  m_isolationSelectionTool_handle; //!
@@ -121,7 +120,7 @@ private:
   asg::AnaToolHandle<CP::IMuonSelectionTool>      m_muonSelectionTool_handle;      //!
   std::string m_muonSelectionTool_name;                                            //!
   Trig::TrigDecisionTool*                         m_trigDecTool;                   //!
-  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigMuonMatchTool_handle;      //!
+  asg::AnaToolHandle<Trig::MatchingTool>         m_trigMuonMatchTool_handle;       //!
   std::string m_trigMuonMatchTool_name;                                            //!
   bool m_doTrigMatch;
 
