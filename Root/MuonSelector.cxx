@@ -42,7 +42,7 @@ MuonSelector :: MuonSelector (std::string className) :
     m_mu_cutflowHist_2(nullptr),
     m_isolationSelectionTool_handle("CP::IsolationSelectionTool/MuonIsoSelToolName", nullptr),
     m_muonSelectionTool_handle("CP::MuonSelectionTool/MuonSelToolName", nullptr),
-    m_trigDecTool(nullptr),
+    m_trigDecTool(nullptr)
     //m_trigMuonMatchTool_handle("Trig::TrigMuonMatching/TrigMuonMatchingName", nullptr)
 {
   // Here you put any code for the base initialization of variables,
