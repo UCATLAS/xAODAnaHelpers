@@ -189,7 +189,7 @@ EL::StatusCode TrackSelector :: initialize ()
 EL::StatusCode TrackSelector :: execute ()
 {
 
-  if(m_debug) Info("execute()", "Applying Track Selection... ");
+  if(m_debug) Info("execute()", "Applying Track Selection... %s", m_name.c_str());
 
   if(m_doTracksInJets){
     return executeTracksInJets();
@@ -282,6 +282,7 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
 EL::StatusCode TrackSelector :: executeTracksInJets ()
 {
+  if(m_debug) Info("execute()", "Applying TracksInJet Selection... %s", m_inJetContainerName.c_str());
   m_numEvent++;
 
   // get input jet collection

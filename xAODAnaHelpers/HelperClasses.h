@@ -341,6 +341,7 @@ namespace HelperClasses {
         m_sfFTagFlt      sfFTagFlt      partial
         m_area           area           exact
         m_tracksInJet    tracksInJet    partial
+        m_hltVtxComp     hltVtxComp     exact
         m_charge         charge         exact
         ================ ============== =======
 
@@ -381,6 +382,7 @@ namespace HelperClasses {
     bool m_svDetails;
     bool m_ipDetails;
     bool m_tracksInJet;
+    bool m_hltVtxComp;
     bool m_charge;
     bool m_area;
     std::string      m_trackName;

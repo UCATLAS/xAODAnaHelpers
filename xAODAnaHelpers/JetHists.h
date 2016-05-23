@@ -225,6 +225,13 @@ class JetHists : public IParticleHists
     // Tracks in Jets
     TH1F* m_nTrk; //!
     TracksInJetHists* m_tracksInJet; //!
+
+    // HLT Vertex Comp
+    TH1F* m_vtxOnlineValid; //!
+    TH1F* m_vtxOfflineValid; //!
+    TH1F* m_vtxDiffz0; //!
+    TH1F* m_vtxDiffz0_m; //!
+
 };
 
 #endif

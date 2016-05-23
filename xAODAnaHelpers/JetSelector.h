@@ -111,6 +111,8 @@ public:
   bool m_doHLTBTagCut;
   std::string m_HLTBTagTaggerName;
   float m_HLTBTagCutValue;
+  bool  m_requireHLTVtx;
+  bool  m_requireNoHLTVtx;
 
   std::string              m_passAuxDecorKeys;
   std::string              m_failAuxDecorKeys;

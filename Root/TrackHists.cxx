@@ -22,7 +22,10 @@ StatusCode TrackHists::initialize() {
   m_trk_Eta       = book(m_name, "eta",         "trk #eta", 80, -4, 4);
   m_trk_Phi       = book(m_name, "phi",         "trk #phi",120, -TMath::Pi(), TMath::Pi() );
   m_trk_d0        = book(m_name, "d0",          "d0[mm]", 100,-5.0, 5.0 );
+  m_trk_d0_s      = book(m_name, "d0_s" ,       "d0[mm]", 100,  -1.0, 1.0 );
+
   m_trk_z0        = book(m_name, "z0",          "z0[mm]", 100,-5.0, 5.0 );
+  m_trk_z0_s      = book(m_name, "z0_s",        "z0[mm]", 100,-1.0, 1.0 );
   m_trk_z0sinT    = book(m_name, "z0sinT",      "z0xsin(#theta)[mm]", 100, -5.0, 5.0 );
 
   m_trk_chi2Prob  = book(m_name, "chi2Prob",    "chi2Prob", 100,   -0.01,     1.0);
@@ -37,6 +40,8 @@ StatusCode TrackHists::initialize() {
 
     m_trk_d0Err        = book(m_name, "d0Err",            "d0Err[mm]",        100,  0, 0.4 );
     m_trk_d0_l         = book(m_name, "d0_l" ,            "d0[mm]",           100,  -10.0, 10.0 );
+    m_trk_d0_ss        = book(m_name, "d0_ss" ,           "d0[mm]",           100,  -0.2, 0.2 );
+
     m_trk_d0Sig        = book(m_name, "d0Sig",            "d0Sig",            240,  -20.0, 40.0 );
 
     m_trk_z0_l         = book(m_name, "z0_l" ,            "z0[mm]",                         100,  -600.0, 600.0 );
@@ -116,7 +121,9 @@ StatusCode TrackHists::initialize() {
     m_fillDebugging = true;
     m_trk_eta_vl      = book(m_name, "eta_vl",        "eta",       100,  -6,    6     );
     m_trk_z0_vl       = book(m_name, "z0_vl",         "z0[mm]",    100,  -10000.0, 10000.0 );
-    m_trk_z0_m_raw    = book(m_name, "z0_m_raw",         "z0[mm]",   100,  -100.0,  100.0 );
+    m_trk_z0_raw_m    = book(m_name, "z0_raw_m",      "z0[mm]",   100,  -100.0,  100.0 );
+    m_trk_z0_atlas_m  = book(m_name, "z0_atlas_m",   "z0[mm]",   100,  -100.0,  100.0 );
+    m_trk_vz          = book(m_name, "vz",            "z0[mm]",   100,  -100.0,  100.0 );
     m_trk_z0_m        = book(m_name, "z0_m",         "z0[mm]",   100,  -100.0,  100.0 );
     m_trk_d0_vl       = book(m_name, "d0_vl",         "d0[mm]",    100,  -10000.0, 10000.0 );
     m_trk_pt_ss       = book(m_name, "pt_ss",         "Pt[GeV",    100,  0,     2.0  );
@@ -180,7 +187,9 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
   m_trk_Eta      -> Fill( trk->eta(),       eventWeight );
   m_trk_Phi      -> Fill( trk->phi(),       eventWeight );
   m_trk_d0       -> Fill( d0,               eventWeight );
+  m_trk_d0_s     -> Fill( d0,               eventWeight );
   m_trk_z0       -> Fill( z0,               eventWeight );
+  m_trk_z0_s     -> Fill( z0,               eventWeight );
   m_trk_z0sinT   -> Fill(z0*sinT,           eventWeight );
 
   m_trk_chi2Prob -> Fill( chi2Prob ,        eventWeight );
@@ -190,6 +199,7 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     float d0Err = sqrt((trk->definingParametersCovMatrixVec().at(0)));
     float d0Sig = (d0Err > 0) ? d0/d0Err : -1 ;
     m_trk_d0_l         -> Fill(d0    , eventWeight );
+    m_trk_d0_ss        -> Fill(d0    , eventWeight );
     m_trk_d0Err        -> Fill(d0Err , eventWeight );
     m_trk_d0Sig        -> Fill(d0Sig , eventWeight );
 
@@ -260,7 +270,9 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     m_trk_eta_vl      -> Fill( trk->eta(), eventWeight );
     m_trk_z0_vl       -> Fill( z0,         eventWeight );
     m_trk_z0_m        -> Fill( z0,         eventWeight );
-    m_trk_z0_m_raw    -> Fill( trk->z0(),  eventWeight );
+    m_trk_z0_raw_m    -> Fill( trk->z0(),  eventWeight );
+    m_trk_z0_atlas_m  -> Fill( trk->z0() + trk->vz(),  eventWeight );
+    m_trk_vz          -> Fill( trk->vz(),  eventWeight );
     m_trk_d0_vl       -> Fill( d0,         eventWeight );
     m_trk_pt_ss       -> Fill( trkPt,      eventWeight );
     m_trk_phiManyBins -> Fill( trk->phi(), eventWeight );
