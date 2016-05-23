@@ -34,7 +34,10 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_Eta; //!
     TH1F* m_trk_Phi; //!
     TH1F* m_trk_d0; //!
+    TH1F* m_trk_d0_s; //!
+    TH1F* m_trk_d0_ss; //!
     TH1F* m_trk_z0; //!
+    TH1F* m_trk_z0_s; //!
     TH1F* m_trk_chi2Prob; //!
     TH1F* m_trk_charge; //!
     TH1F* m_trk_d0_l; //!
@@ -71,7 +74,9 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_eta_vl; //!
     TH1F* m_trk_z0_vl; //!
     TH1F* m_trk_z0_m; //!
-    TH1F* m_trk_z0_m_raw; //!
+    TH1F* m_trk_z0_raw_m; //!
+    TH1F* m_trk_vz; //!
+    TH1F* m_trk_z0_atlas_m; //!
     TH1F* m_trk_d0_vl; //!
     TH1F* m_trk_pt_ss; //!
     TH1F* m_trk_phiManyBins; //!

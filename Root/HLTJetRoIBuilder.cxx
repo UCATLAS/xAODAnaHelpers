@@ -156,27 +156,22 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //
   //  For Adding Tracks to the Jet
   //
-  xAOD::Jet::Decorator<vector<const xAOD::TrackParticle*> > m_track_decoration("HLTBJetTracks");
-  xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration  ("HLTBJetTracks_vtx");
+  xAOD::Jet::Decorator<vector<const xAOD::TrackParticle*> > m_track_decoration      ("HLTBJetTracks");
+  xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration        ("HLTBJetTracks_vtx");
+  xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_offline_vtx_decoration("offline_vtx");
+
+  //
+  // get primary vertex
+  //
+  const xAOD::VertexContainer *offline_vertices(nullptr);
+  RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
+  const xAOD::Vertex *offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices);
+
 
   //
   //  Make accessors/decorators
   //
   static SG::AuxElement::Decorator< const xAOD::BTagging* > hltBTagDecor( "HLTBTag" );
-
-//  const xAOD::Vertex*               pvx = 0;
-//  if(vtxFeatureContainers.size() == 1){
-//    pvx = HelperFunctions::getPrimaryVertex(vtxFeatureContainers.at(0).cptr());
-//  }else if(histVtxFeatureContainers.size() == 1){
-//    pvx = HelperFunctions::getPrimaryVertex(histVtxFeatureContainers.at(0).cptr());
-//  }else{
-//    cout << "ERROR Vertex size not 1: " << vtxFeatureContainers.size() << " " << histVtxFeatureContainers.size() << " " << m_name << endl;
-//    if(vtxFeatureContainers.size() > 0){
-//      pvx = HelperFunctions::getPrimaryVertex(vtxFeatureContainers.at(0).cptr());
-//    }else if(histVtxFeatureContainers.size() > 0){
-//      pvx = HelperFunctions::getPrimaryVertex(histVtxFeatureContainers.at(0).cptr());
-//    }
-//  }
 
   Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItem, TrigDefs::Physics );
   Trig::FeatureContainer::combination_const_iterator comb   (fc.getCombinations().begin());
@@ -188,10 +183,11 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  trkCollections  = comb->containerFeature<xAOD::TrackParticleContainer>(m_trkName);
     //std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  ftfCollections  = comb->containerFeature<xAOD::TrackParticleContainer>("InDetTrigTrackingxAODCnv_Bjet_FTF");
     std::vector<Trig::Feature<xAOD::VertexContainer> >          vtxCollections;
-    if(m_vtxName.size())
+    if(m_vtxName.size()){
       vtxCollections = comb->containerFeature<xAOD::VertexContainer>(m_vtxName);
-    else
+    }else{
       vtxCollections = comb->containerFeature<xAOD::VertexContainer>();
+    }
     
     bool isValid = true;
 
@@ -254,8 +250,9 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       }
       
       if(m_debug) cout <<  "Adding tracks to jet " << endl;
-      m_track_decoration(*newHLTBJet)  = matchedTracks;
-      m_vtx_decoration  (*newHLTBJet)  = HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr());
+      m_track_decoration(*newHLTBJet)         = matchedTracks;
+      m_vtx_decoration  (*newHLTBJet)         = HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr());
+      m_offline_vtx_decoration (*newHLTBJet)  = offline_pvx;
 
       hltJets->push_back( newHLTBJet );
       if(m_debug) cout << "pushed back " << endl;

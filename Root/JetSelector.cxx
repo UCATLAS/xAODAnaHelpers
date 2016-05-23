@@ -123,6 +123,8 @@ JetSelector :: JetSelector (std::string className) :
   m_doHLTBTagCut            = false;
   m_HLTBTagTaggerName       = "MV2c20";
   m_HLTBTagCutValue         = -0.4434;
+  m_requireHLTVtx           = false;
+  m_requireNoHLTVtx         = false;
 
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
@@ -844,6 +846,19 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     }
 
     if(tagValue < m_HLTBTagCutValue){return 0;}
+  }
+
+  //
+  // HLT Valid Vtx
+  //
+  if ( m_requireHLTVtx ) {
+    const xAOD::Vertex *online_pvx   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+    if(!online_pvx) {return 0;}
+  }
+
+  if ( m_requireNoHLTVtx ) {
+    const xAOD::Vertex *online_pvx   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+    if(online_pvx) {return 0;}
   }
 
 

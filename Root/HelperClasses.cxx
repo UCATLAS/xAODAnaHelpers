@@ -186,7 +186,8 @@ namespace HelperClasses{
       m_trackName         = "";
     }
 
-    m_charge            = has_exact("charge");
+    m_hltVtxComp          = has_exact("hltVtxComp");
+    m_charge              = has_exact("charge");
 
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
