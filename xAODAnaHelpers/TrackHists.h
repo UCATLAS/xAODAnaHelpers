@@ -12,8 +12,8 @@ class TrackHists : public HistogramManager
     ~TrackHists();
 
     StatusCode initialize();
-    StatusCode execute( const xAOD::TrackParticleContainer* tracks,  const xAOD::Vertex *pvx, float eventWeight );
-    StatusCode execute( const xAOD::TrackParticle* track,            const xAOD::Vertex *pvx, float eventWeight );
+    StatusCode execute( const xAOD::TrackParticleContainer* tracks,  const xAOD::Vertex *pvx, float eventWeight, uint32_t lumiBlock = 0 );
+    StatusCode execute( const xAOD::TrackParticle* track,            const xAOD::Vertex *pvx, float eventWeight, uint32_t lumiBlock = 0 );
     using HistogramManager::book; // make other overloaded versions of book() to show up in subclass
     using HistogramManager::execute; // overload
 
@@ -24,6 +24,7 @@ class TrackHists : public HistogramManager
     bool m_fillChi2Details; //!
     bool m_fillTPErrors; //!
     bool m_fillDebugging; //!
+    bool m_fillVsLumi; //!
 
   private:
     // Histograms
@@ -74,6 +75,10 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_d0_vl; //!
     TH1F* m_trk_pt_ss; //!
     TH1F* m_trk_phiManyBins; //!
+
+    TProfile* m_trk_z0_vs_lBlock; //!
+    TProfile* m_trk_z0_raw_vs_lBlock; //!
+    TProfile* m_trk_vz_vs_lBlock; //!
 
 };
 

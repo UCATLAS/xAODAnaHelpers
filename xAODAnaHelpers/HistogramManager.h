@@ -12,6 +12,7 @@
 #include <TH1F.h>
 #include <TH2F.h>
 #include <TH3F.h>
+#include <TProfile.h>
 #include <EventLoop/Worker.h>
 #include <xAODRootAccess/TEvent.h>
 
@@ -173,6 +174,14 @@ class HistogramManager {
                std::string xlabel, int xbins, const Double_t* xbinsArr,
                std::string ylabel, int ybins, const Double_t* ybinsArr,
                std::string zlabel, int zbins, const Double_t* zbinsArr);
+
+    /**
+     * @overload
+     */
+    TProfile* book(std::string name, std::string title,
+		   std::string xlabel, int xbins, double xlow, double xhigh,
+		   std::string ylabel, double ylow, double yhigh, 
+		   std::string option = "");
 
     /**
      * @brief record all histograms from HistogramManager#m_allHists to the worker
