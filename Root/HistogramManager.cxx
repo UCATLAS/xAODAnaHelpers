@@ -65,6 +65,19 @@ TH3F* HistogramManager::book(std::string name, std::string title,
   return tmp;
 }
 
+TProfile* HistogramManager::book(std::string name, std::string title,
+				 std::string xlabel, int xbins, double xlow, double xhigh,
+				 std::string ylabel, double ylow, double yhigh, 
+				 std::string option)
+{
+  TProfile* tmp = new TProfile( (name + title).c_str(), title.c_str(), xbins, xlow, xhigh, ylow, yhigh, option.c_str());
+  SetLabel(tmp, xlabel, ylabel);
+  //this->Sumw2(tmp);
+  this->record(tmp);
+  return tmp;
+}
+
+
 /////// Variable Binned Histograms ///////
 TH1F* HistogramManager::book(std::string name, std::string title,
                              std::string xlabel, int xbins, const Double_t* xbinArr)
