@@ -18,7 +18,7 @@ StatusCode TracksInJetHists::initialize() {
   //
   // TrackHists
   //
-  m_trkPlots = new TrackHists(m_name, "IPDetails HitCounts TPErrors Chi2Details Debugging");
+  m_trkPlots = new TrackHists(m_name, "IPDetails HitCounts TPErrors Chi2Details Debugging vsLumiBlock");
   m_trkPlots -> initialize();
 
   //
@@ -61,12 +61,12 @@ void TracksInJetHists::record(EL::Worker* wk) {
 
 
 
-StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD::Jet* jet,  const xAOD::Vertex *pvx, float eventWeight ) {
+StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD::Jet* jet,  const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo ) {
 
   //
   //  Fill track hists
   //
-  RETURN_CHECK("TracksInJetHists::execute()", m_trkPlots   ->execute(trk, pvx, eventWeight), "");
+  RETURN_CHECK("TracksInJetHists::execute()", m_trkPlots   ->execute(trk, pvx, eventWeight, eventInfo), "");
 
   // d0
   float sign         = getD0Sign(trk, jet);

@@ -92,7 +92,7 @@ public:
       RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, m_verbose) ,("Failed to get "+m_inContainerName).c_str());
 
       // pass the photon collection
-      RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[""])->execute( inParticles, eventWeight ), "");
+      RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[""])->execute( inParticles, eventWeight, eventInfo ), "");
     }
     else { // get the list of systematics to run over
 
@@ -104,7 +104,7 @@ public:
       for( auto systName : *systNames ) {
 	RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
 	if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
-	RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight ), "");
+	RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight, eventInfo ), "");
       }
     }
 
