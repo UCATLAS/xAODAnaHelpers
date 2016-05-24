@@ -67,12 +67,12 @@ StatusCode MuonHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode MuonHists::execute( const xAOD::Muon* muon, float eventWeight) {
-  return execute(static_cast<const xAOD::IParticle*>(muon), eventWeight);
+StatusCode MuonHists::execute( const xAOD::Muon* muon, float eventWeight, const xAOD::EventInfo* eventInfo) {
+  return execute(static_cast<const xAOD::IParticle*>(muon), eventWeight, eventInfo);
 }
 
-StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeight ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo  ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
 
   if(m_debug) std::cout << "MuonHists: in execute " <<std::endl;
 

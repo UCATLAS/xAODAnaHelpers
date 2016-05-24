@@ -138,10 +138,14 @@ StatusCode TrackHists::initialize() {
   if(m_detailStr.find("vsLumiBlock") != std::string::npos ){
     m_fillVsLumi = true;
     
-    m_trk_z0_vs_lBlock      = book(m_name, "z0_vs_lBlock", "LumiBlock",  100, 0, 1000, "z0", -100, 100);
-    m_trk_z0_raw_vs_lBlock  = book(m_name, "z0_raw_vs_lBlock", "LumiBlock",  100, 0, 1000, "z0 raw", -100, 100);
+    m_lBlock                  = book(m_name, "lBlock",             "LumiBlock",  100, 0, 1000);
+    m_trk_z0_vs_lBlock        = book(m_name, "z0_vs_lBlock",       "LumiBlock",  100, 0, 1000, "z0",      -100, 100);
+    m_trk_z0_raw_vs_lBlock    = book(m_name, "z0_raw_vs_lBlock",   "LumiBlock",  100, 0, 1000, "z0 raw",  -100, 100);
+    m_trk_z0_atlas_vs_lBlock  = book(m_name, "z0_atlas_vs_lBlock", "LumiBlock",  100, 0, 1000, "z0 atlas", -100, 100);
 
-    m_trk_vz_vs_lBlock      = book(m_name, "vz_vs_lBlock", "LumiBlock",  100, 0, 1000, "vz", -100, 100);
+    m_trk_vz_vs_lBlock        = book(m_name, "vz_vs_lBlock",       "LumiBlock",  100, 0, 1000, "vz",   -100, 100);
+    m_pvz_vs_lBlock           = book(m_name, "pvz_vs_lBlock",      "LumiBlock",  100, 0, 1000, "pvz",   -100, 100);
+    m_pv_valid_vs_lBlock      = book(m_name, "pv_valid_vs_lBlock", "LumiBlock",  100, 0, 1000, "valid", -0.1, 1.1);
 
     //m_trk_eta_vl      = book(m_name, "eta_vl",        "eta",       100,  -6,    6     );
     //m_trk_z0_vl       = book(m_name, "z0_vl",         "z0[mm]",    100,  -10000.0, 10000.0 );
@@ -158,11 +162,11 @@ StatusCode TrackHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const xAOD::Vertex *pvx, float eventWeight, uint32_t lumiBlock ) {
+StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo ) {
   xAOD::TrackParticleContainer::const_iterator trk_itr = trks->begin();
   xAOD::TrackParticleContainer::const_iterator trk_end = trks->end();
   for( ; trk_itr != trk_end; ++trk_itr ) {
-    RETURN_CHECK("TrackHists::execute()", this->execute( (*trk_itr), pvx, eventWeight, lumiBlock ), "");
+    RETURN_CHECK("TrackHists::execute()", this->execute( (*trk_itr), pvx, eventWeight, eventInfo ), "");
   }
 
   m_trk_n -> Fill( trks->size(), eventWeight );
@@ -170,7 +174,7 @@ StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const 
   return StatusCode::SUCCESS;
 }
 
-StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx, float eventWeight, uint32_t lumiBlock ) {
+StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo ) {
 
   //basic
   float        trkPt       = trk->pt()/1e3;
@@ -178,7 +182,8 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
   float        ndof        = trk->numberDoF();
   float        chi2Prob    = TMath::Prob(chi2,ndof);
   float        d0          = trk->d0();
-  float        z0          = trk->z0() + trk->vz() - HelperFunctions::getPrimaryVertexZ(pvx);
+  float        pvz         = HelperFunctions::getPrimaryVertexZ(pvx);
+  float        z0          = trk->z0() + trk->vz() - pvz;
 
   float        sinT        = sin(trk->theta());
 
@@ -278,11 +283,18 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     m_trk_phiManyBins -> Fill( trk->phi(), eventWeight );
   }
 
-  if(m_fillVsLumi){
-    m_trk_z0_vs_lBlock    ->Fill(lumiBlock, z0,        eventWeight);
-    m_trk_z0_raw_vs_lBlock->Fill(lumiBlock, trk->z0(), eventWeight);
+  if(m_fillVsLumi && eventInfo){
+    uint32_t lumiBlock = eventInfo->lumiBlock();
 
-    m_trk_vz_vs_lBlock    ->Fill(lumiBlock, trk->vz(), eventWeight);
+    m_lBlock                ->Fill(lumiBlock, eventWeight);
+    m_trk_z0_vs_lBlock      ->Fill(lumiBlock, z0,                     eventWeight);
+    m_trk_z0_raw_vs_lBlock  ->Fill(lumiBlock, trk->z0(),              eventWeight);
+    m_trk_z0_atlas_vs_lBlock->Fill(lumiBlock, trk->z0() + trk->vz(),  eventWeight);
+    m_trk_vz_vs_lBlock      ->Fill(lumiBlock, trk->vz(),              eventWeight);
+    m_pvz_vs_lBlock         ->Fill(lumiBlock, pvz,                    eventWeight);
+
+    m_pv_valid_vs_lBlock    ->Fill(lumiBlock, bool(pvx),              eventWeight);
+
   }
 
   return StatusCode::SUCCESS;

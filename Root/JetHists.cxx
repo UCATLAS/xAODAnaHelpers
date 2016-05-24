@@ -323,12 +323,12 @@ void JetHists::record(EL::Worker* wk) {
   }
 }
 
-StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
-  return execute(static_cast<const xAOD::IParticle*>(jet), eventWeight);
+StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, const xAOD::EventInfo* eventInfo  ) {
+  return execute(static_cast<const xAOD::IParticle*>(jet), eventWeight, eventInfo);
 }
 
-StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
 
   if(m_debug) std::cout << "JetHists: in execute " <<std::endl;
 
@@ -1168,7 +1168,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
     if(m_debug) std::cout << "Track Size " << matchedTracks.size() << std::endl;
     for(auto& trkPtr: matchedTracks){
-      RETURN_CHECK("JetHists::execute()", m_tracksInJet->execute(trkPtr, jet, pvx, eventWeight), "");
+      RETURN_CHECK("JetHists::execute()", m_tracksInJet->execute(trkPtr, jet, pvx, eventWeight, eventInfo), "");
     }
   }
 
