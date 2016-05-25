@@ -3021,13 +3021,13 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
 
       if ( tau1_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau1_wta.push_back( tau1_wta( *fatjet_itr ) );
-      } else if { m_tau1_WTA.isAvailable( *fatjet_itr ) ){
+      } else if ( tau1_WTA.isAvailable( *fatjet_itr ) ){
 	m_fatjet_tau1_wta.push_back( tau1_WTA( *fatjet_itr ) );
       } else { m_fatjet_tau1_wta.push_back( -999 ); }
 
       if ( tau2_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau2_wta.push_back( tau2_wta( *fatjet_itr ) );
-      } else if { m_tau2_WTA.isAvailable( *fatjet_itr ) ){
+      } else if ( tau2_WTA.isAvailable( *fatjet_itr ) ){
 	m_fatjet_tau2_wta.push_back( tau2_WTA( *fatjet_itr ) );
       } else { m_fatjet_tau2_wta.push_back( -999 ); }
 
@@ -3039,7 +3039,7 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
 
       if(tau21_wta.isAvailable( *fatjet_itr )){
         m_fatjet_tau21_wta.push_back( tau21_wta( *fatjet_itr ) );
-      } else if(tau21_WTA.isAvailable( *fatjet_itr )){
+      } else if ( tau21_WTA.isAvailable( *fatjet_itr )){
         m_fatjet_tau21_wta.push_back( tau21_WTA( *fatjet_itr ) );
       } else if ( tau1_wta.isAvailable( *fatjet_itr ) and tau2_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau21_wta.push_back( tau2_wta( *fatjet_itr ) / tau1_wta( *fatjet_itr ) );
