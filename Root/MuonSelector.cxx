@@ -382,12 +382,6 @@ EL::StatusCode MuonSelector :: initialize ()
 
     //  everything went fine, let's initialise the tool!
     //
-<<<<<<< HEAD
-    std::string trigmatch_tool_name = std::string("TrigMuonMatchingTool_") + m_name;
-    //m_trigMuonMatchTool = new Trig::TrigMuonMatching( trigmatch_tool_name );
-    //RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
-    //RETURN_CHECK( "MuonSelector::initialize()", m_trigMuonMatchTool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-=======
     //m_trigMuonMatchTool_name                  = "TrigMuonMatchingTool_" + m_name;
     //std::string trigMuonMatchTool_handle_name = "Trig::TrigMuonMatching/" + m_trigMuonMatchTool_name;
 
@@ -395,7 +389,6 @@ EL::StatusCode MuonSelector :: initialize ()
     //RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::TrigMuonMatching>(trigMuonMatchTool_handle_name), "Failed to create handle to TrigMuonMatching");
     //RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TriggerTool", trigDecHandle ), "Failed to pass TrigDecisionTool to TrigMuonMatching" );
     //RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize TrigMuonMatching." );
->>>>>>> upstream/master
 
   } else {
 
@@ -662,81 +655,6 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   //  2. there are no selected muons in the event
   //
 
-<<<<<<< HEAD
-//  if ( m_trigMuonMatchTool && selectedMuons ) {
-//
-//    unsigned int nSelectedMuons = selectedMuons->size();
-//
-//    static SG::AuxElement::Decorator< std::map<std::string,char> > isTrigMatchedMapMuDecor( "isTrigMatchedMapMu" );
-//
-//    if ( nSelectedMuons > 0 ) {
-//
-//      if ( m_debug ) { Info("executeSelection()", "Single Muon Trigger Matching "); }
-//
-//      for ( auto const &chain : m_singleMuTrigChainsList ) {
-//
-//        if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-//
-//        for ( auto const muon : *selectedMuons ) {
-//
-//          //  For each muon, decorate w/ a map<string,char> with the 'isMatched' info associated
-//          //  to each trigger chain in the input list.
-//          //  If decoration map doesn't exist for this muon yet, create it (will be done only for the 1st iteration on the chain names)
-//          //
-//          if ( !isTrigMatchedMapMuDecor.isAvailable( *muon ) ) {
-//            isTrigMatchedMapMuDecor( *muon ) = std::map<std::string,char>();
-//          }
-//
-//          int matched = ( m_trigMuonMatchTool->match( muon, chain, m_minDeltaR ) ) ? 1 : 0;
-//
-//          if ( m_debug ) { Info("executeSelection()", "\t\t is muon trigger matched? %i", matched); }
-//
-//          ( isTrigMatchedMapMuDecor( *muon ) )[chain] = static_cast<char>(matched);
-//        }
-//      }
-//
-//    }
-//
-//    if ( nSelectedMuons > 1 ) {
-//
-//      if ( m_debug ) { Info("executeSelection()", "DiMuon Trigger Matching "); }
-//
-//      for ( auto const &chain : m_diMuTrigChainsList ) {
-//
-//	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-//
-//        // take the first two muons in the selected container
-//        //
-//        const xAOD::Muon* mu1 = selectedMuons->at(0);
-//        const xAOD::Muon* mu2 = selectedMuons->at(1);
-//
-//        //  For each muon, decorate w/ a map<string,char> with the 'isMatched' info associated
-//        //  to each trigger chain in the input list.
-//        //  If decoration map doesn't exist for this muon yet, create it
-//        //
-//        if ( !isTrigMatchedMapMuDecor.isAvailable( *mu1 ) ) {
-//          isTrigMatchedMapMuDecor( *mu1 ) = std::map<std::string,char>();
-//        }
-//        if ( !isTrigMatchedMapMuDecor.isAvailable( *mu2 ) ) {
-//          isTrigMatchedMapMuDecor( *mu2 ) = std::map<std::string,char>();
-//        }
-//
-//        std::pair<Bool_t,Bool_t> result1, result2;
-//        bool valid = false; //m_trigMuonMatchTool->matchDimuon( mu1, mu2, chain, result1, result2, m_minDeltaR );
-//
-//        if ( valid ) {
-//	  if ( m_debug ) { Info("executeSelection()", "\t\t is muon[0] trigger matched? %i", result1.first); }
-//	  ( isTrigMatchedMapMuDecor( *mu1 ) )[chain] = static_cast<char>(result1.first);
-//	  if ( m_debug ) { Info("executeSelection()", "\t\t is muon[1] trigger matched? %i", result2.first); }
-//	  ( isTrigMatchedMapMuDecor( *mu2 ) )[chain] = static_cast<char>(result2.first);
-//       } else {
-//         if ( m_debug ) { Info("executeSelection()", "\t\t chain %s not supported", chain.c_str()); }
-//       }
-//
-//      }
-//    }
-//  }
-=======
   /*
   if ( m_doTrigMatch && selectedMuons ) {
 
@@ -812,7 +730,6 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     }
   }
   */
->>>>>>> upstream/master
 
   return true;
 }
@@ -845,13 +762,6 @@ EL::StatusCode MuonSelector :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-<<<<<<< HEAD
-  if ( m_muonSelectionTool )      { m_muonSelectionTool = nullptr;      delete m_muonSelectionTool;      }
-  if ( m_IsolationSelectionTool ) { m_IsolationSelectionTool = nullptr; delete m_IsolationSelectionTool; }
-  //  if ( m_trigMuonMatchTool )      {  m_trigMuonMatchTool = nullptr;     delete m_trigMuonMatchTool;      }
-
-=======
->>>>>>> upstream/master
   if ( m_useCutFlow ) {
     Info("histFinalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
