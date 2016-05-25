@@ -4,6 +4,7 @@
 #include "xAODAnaHelpers/HistogramManager.h"
 #include <xAODTracking/TrackParticleContainer.h>
 #include <xAODTracking/Vertex.h>
+#include <xAODEventInfo/EventInfo.h>
 
 class TrackHists : public HistogramManager
 {
@@ -12,8 +13,8 @@ class TrackHists : public HistogramManager
     ~TrackHists();
 
     StatusCode initialize();
-    StatusCode execute( const xAOD::TrackParticleContainer* tracks,  const xAOD::Vertex *pvx, float eventWeight );
-    StatusCode execute( const xAOD::TrackParticle* track,            const xAOD::Vertex *pvx, float eventWeight );
+    StatusCode execute( const xAOD::TrackParticleContainer* tracks,  const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo = 0 );
+    StatusCode execute( const xAOD::TrackParticle* track,            const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo = 0);
     using HistogramManager::book; // make other overloaded versions of book() to show up in subclass
     using HistogramManager::execute; // overload
 
@@ -24,6 +25,7 @@ class TrackHists : public HistogramManager
     bool m_fillChi2Details; //!
     bool m_fillTPErrors; //!
     bool m_fillDebugging; //!
+    bool m_fillVsLumi; //!
 
   private:
     // Histograms
@@ -33,7 +35,10 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_Eta; //!
     TH1F* m_trk_Phi; //!
     TH1F* m_trk_d0; //!
+    TH1F* m_trk_d0_s; //!
+    TH1F* m_trk_d0_ss; //!
     TH1F* m_trk_z0; //!
+    TH1F* m_trk_z0_s; //!
     TH1F* m_trk_chi2Prob; //!
     TH1F* m_trk_charge; //!
     TH1F* m_trk_d0_l; //!
@@ -70,10 +75,20 @@ class TrackHists : public HistogramManager
     TH1F* m_trk_eta_vl; //!
     TH1F* m_trk_z0_vl; //!
     TH1F* m_trk_z0_m; //!
-    TH1F* m_trk_z0_m_raw; //!
+    TH1F* m_trk_z0_raw_m; //!
+    TH1F* m_trk_vz; //!
+    TH1F* m_trk_z0_atlas_m; //!
     TH1F* m_trk_d0_vl; //!
     TH1F* m_trk_pt_ss; //!
     TH1F* m_trk_phiManyBins; //!
+
+    TH1F*     m_lBlock; //!
+    TProfile* m_trk_z0_vs_lBlock; //!
+    TProfile* m_trk_z0_raw_vs_lBlock; //!
+    TProfile* m_trk_z0_atlas_vs_lBlock; //!
+    TProfile* m_trk_vz_vs_lBlock; //!
+    TProfile* m_pvz_vs_lBlock; //!
+    TProfile* m_pv_valid_vs_lBlock; //!
 
 };
 

@@ -304,6 +304,14 @@ StatusCode JetHists::initialize() {
     m_tracksInJet -> initialize( );
   }
 
+  if( m_infoSwitch->m_hltVtxComp ){
+    m_vtxOnlineValid                 = book(m_name, "vtx_online_valid",  "vtx_online_valid",  2, -0.5, 1.5);
+    m_vtxOfflineValid                = book(m_name, "vtx_offline_valid", "vtx_offline_valid", 2, -0.5, 1.5);
+    m_vtxDiffz0                      = book(m_name, "vtx_diff_z0",   "vtx_diff_z0",   100, -100, 100);
+    m_vtxDiffz0_m                    = book(m_name, "vtx_diff_z0_m", "vtx_diff_z0_m", 100,  -20,  20);
+
+  }
+
   return StatusCode::SUCCESS;
 }
 
@@ -315,12 +323,12 @@ void JetHists::record(EL::Worker* wk) {
   }
 }
 
-StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight ) {
-  return execute(static_cast<const xAOD::IParticle*>(jet), eventWeight);
+StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, const xAOD::EventInfo* eventInfo  ) {
+  return execute(static_cast<const xAOD::IParticle*>(jet), eventWeight, eventInfo);
 }
 
-StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
 
   if(m_debug) std::cout << "JetHists: in execute " <<std::endl;
 
@@ -1160,7 +1168,23 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
     if(m_debug) std::cout << "Track Size " << matchedTracks.size() << std::endl;
     for(auto& trkPtr: matchedTracks){
-      RETURN_CHECK("JetHists::execute()", m_tracksInJet->execute(trkPtr, jet, pvx, eventWeight), "");
+      RETURN_CHECK("JetHists::execute()", m_tracksInJet->execute(trkPtr, jet, pvx, eventWeight, eventInfo), "");
+    }
+  }
+
+  if( m_infoSwitch->m_hltVtxComp ){
+    const xAOD::Vertex *online_pvx   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+    const xAOD::Vertex *offline_pvx  = jet->auxdata<const xAOD::Vertex*>("offline_vtx");
+
+    if(online_pvx)  m_vtxOnlineValid ->Fill(1.0, eventWeight);
+    else            m_vtxOnlineValid ->Fill(0.0, eventWeight);
+					     
+    if(offline_pvx) m_vtxOfflineValid->Fill(1.0, eventWeight);
+    else            m_vtxOfflineValid->Fill(0.0, eventWeight);
+
+    if(offline_pvx && online_pvx){
+      m_vtxDiffz0  ->Fill(online_pvx->z() - offline_pvx->z(), eventWeight);
+      m_vtxDiffz0_m->Fill(online_pvx->z() - offline_pvx->z(), eventWeight);
     }
   }
 

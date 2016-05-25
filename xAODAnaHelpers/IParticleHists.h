@@ -4,6 +4,7 @@
 #include "xAODAnaHelpers/HistogramManager.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 
+#include <xAODEventInfo/EventInfo.h>
 #include <xAODBase/IParticleContainer.h>
 
 class IParticleHists : public HistogramManager
@@ -15,8 +16,8 @@ class IParticleHists : public HistogramManager
 
     bool m_debug;
     virtual StatusCode initialize();
-    StatusCode execute( const xAOD::IParticleContainer* particles, float eventWeight );
-    virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight );
+    StatusCode execute( const xAOD::IParticleContainer* particles, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
+    virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 

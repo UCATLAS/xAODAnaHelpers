@@ -15,13 +15,13 @@ class PhotonHists : public IParticleHists
     virtual ~PhotonHists() ;
 
     virtual StatusCode initialize();
-    virtual StatusCode execute( const xAOD::Photon* photon, float eventWeight);
+    virtual StatusCode execute( const xAOD::Photon* photon, float eventWeight, const xAOD::EventInfo* eventInfo = 0);
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using IParticleHists::execute; // overload
 
   protected:
 
-    virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight );
+    virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
 
     // holds bools that control which histograms are filled
     HelperClasses::PhotonInfoSwitch* m_infoSwitch;

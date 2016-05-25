@@ -1,3 +1,10 @@
+/**
+ * @file   ElectronSelector.h
+ * @author Marco Milesi <marco.milesi@cern.ch>
+ * @brief  Interface to the tools of the ElectronPhotonSelectorTools package.
+ *
+ */
+
 #ifndef xAODAnaHelpers_ElectronSelector_H
 #define xAODAnaHelpers_ElectronSelector_H
 
@@ -13,6 +20,7 @@
 
 // external tools include(s):
 #include "IsolationSelection/IsolationSelectionTool.h"
+#include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -129,14 +137,16 @@ private:
 
   /* tools */
 
-  CP::IsolationSelectionTool*      m_IsolationSelectionTool; //!
+  asg::AnaToolHandle<CP::IsolationSelectionTool> m_isolationSelectionTool_handle; //!
+  std::string m_isolationSelectionTool_name;                                      //!
 
   /* PID manager(s) */
   ElectronLHPIDManager*            m_el_LH_PIDManager;       //!
   ElectronCutBasedPIDManager*      m_el_CutBased_PIDManager; //!
-
   Trig::TrigDecisionTool*          m_trigDecTool;            //!
-  //Trig::TrigEgammaMatchingTool*    m_trigElMatchTool;        //!
+  //asg::AnaToolHandle<Trig::TrigEgammaMatchingTool>  m_trigElMatchTool_handle; //!
+  //std::string m_trigElMatchTool_name;    //!
+  bool m_doTrigMatch;
 
   /* other private members */
 

@@ -15,7 +15,7 @@ class JetHists : public IParticleHists
     virtual ~JetHists() ;
 
     virtual StatusCode initialize();
-    virtual StatusCode execute( const xAOD::Jet* jet, float eventWeight );
+    virtual StatusCode execute( const xAOD::Jet* jet, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
     virtual StatusCode finalize();
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using IParticleHists::execute; // overload
@@ -23,7 +23,7 @@ class JetHists : public IParticleHists
 
   protected:
 
-    virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight );
+    virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
 
     // holds bools that control which histograms are filled
     HelperClasses::JetInfoSwitch* m_infoSwitch;
@@ -225,6 +225,13 @@ class JetHists : public IParticleHists
     // Tracks in Jets
     TH1F* m_nTrk; //!
     TracksInJetHists* m_tracksInJet; //!
+
+    // HLT Vertex Comp
+    TH1F* m_vtxOnlineValid; //!
+    TH1F* m_vtxOfflineValid; //!
+    TH1F* m_vtxDiffz0; //!
+    TH1F* m_vtxDiffz0_m; //!
+
 };
 
 #endif

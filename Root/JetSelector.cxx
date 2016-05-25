@@ -123,6 +123,8 @@ JetSelector :: JetSelector (std::string className) :
   m_doHLTBTagCut            = false;
   m_HLTBTagTaggerName       = "MV2c20";
   m_HLTBTagCutValue         = -0.4434;
+  m_requireHLTVtx           = false;
+  m_requireNoHLTVtx         = false;
 
   m_passAuxDecorKeys        = "";
   m_failAuxDecorKeys        = "";
@@ -334,7 +336,6 @@ EL::StatusCode JetSelector :: initialize ()
   //
   m_JVT_tool_name = "JetJvtEfficiency_effSF";
   std::string JVT_handle_name = "CP::JetJvtEfficiency/" + m_JVT_tool_name +"_"+m_name;
- 
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::JetJvtEfficiency>(m_JVT_tool_name), "" );
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.makeNew<CP::JetJvtEfficiency>(JVT_handle_name), "Failed to create handle to CP::JetJvtEfficiency for JVT");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
@@ -532,7 +533,6 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // Loop over selected jets and decorate with JVT efficiency SF
   // Do it only for MC
   //
-
   if ( m_isMC && m_doJVT ) {
     
     std::vector< std::string >* sysVariationNamesJVT  = new std::vector< std::string >;
@@ -845,6 +845,19 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     }
 
     if(tagValue < m_HLTBTagCutValue){return 0;}
+  }
+
+  //
+  // HLT Valid Vtx
+  //
+  if ( m_requireHLTVtx ) {
+    const xAOD::Vertex *online_pvx   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+    if(!online_pvx) {return 0;}
+  }
+
+  if ( m_requireNoHLTVtx ) {
+    const xAOD::Vertex *online_pvx   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+    if(online_pvx) {return 0;}
   }
 
 
