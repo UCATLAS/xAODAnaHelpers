@@ -3011,50 +3011,27 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
       static SG::AuxElement::ConstAccessor<float> tau1_wta ("Tau1_wta");
       static SG::AuxElement::ConstAccessor<float> tau2_wta ("Tau2_wta");
       static SG::AuxElement::ConstAccessor<float> tau3_wta ("Tau3_wta");
-      static SG::AuxElement::ConstAccessor<float> tau1_WTA ("Tau1_WTA");
-      static SG::AuxElement::ConstAccessor<float> tau2_WTA ("Tau2_WTA");
-      static SG::AuxElement::ConstAccessor<float> tau3_WTA ("Tau3_WTA");
       static SG::AuxElement::ConstAccessor<float> tau21_wta ("Tau21_wta");
       static SG::AuxElement::ConstAccessor<float> tau32_wta ("Tau32_wta");
-      static SG::AuxElement::ConstAccessor<float> tau21_WTA ("Tau21_WTA");
-      static SG::AuxElement::ConstAccessor<float> tau32_WTA ("Tau32_WTA");
 
       if ( tau1_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau1_wta.push_back( tau1_wta( *fatjet_itr ) );
-      } else if ( tau1_WTA.isAvailable( *fatjet_itr ) ){
-	m_fatjet_tau1_wta.push_back( tau1_WTA( *fatjet_itr ) );
       } else { m_fatjet_tau1_wta.push_back( -999 ); }
-
       if ( tau2_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau2_wta.push_back( tau2_wta( *fatjet_itr ) );
-      } else if ( tau2_WTA.isAvailable( *fatjet_itr ) ){
-	m_fatjet_tau2_wta.push_back( tau2_WTA( *fatjet_itr ) );
       } else { m_fatjet_tau2_wta.push_back( -999 ); }
-
       if ( tau3_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau3_wta.push_back( tau3_wta( *fatjet_itr ) );
-      } else if ( tau3_WTA.isAvailable( *fatjet_itr) ){
-	m_fatjet_tau3_wta.push_back( tau3_WTA( *fatjet_itr ) );
       } else { m_fatjet_tau3_wta.push_back( -999 ); }
-
       if(tau21_wta.isAvailable( *fatjet_itr )){
         m_fatjet_tau21_wta.push_back( tau21_wta( *fatjet_itr ) );
-      } else if ( tau21_WTA.isAvailable( *fatjet_itr )){
-        m_fatjet_tau21_wta.push_back( tau21_WTA( *fatjet_itr ) );
       } else if ( tau1_wta.isAvailable( *fatjet_itr ) and tau2_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau21_wta.push_back( tau2_wta( *fatjet_itr ) / tau1_wta( *fatjet_itr ) );
-      } else if ( tau1_WTA.isAvailable( *fatjet_itr ) and tau2_WTA.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_tau21_wta.push_back( tau2_WTA( *fatjet_itr ) / tau1_WTA( *fatjet_itr ) );
       } else { m_fatjet_tau21_wta.push_back( -999 ); }
-
       if(tau32_wta.isAvailable( *fatjet_itr )){
 	m_fatjet_tau32_wta.push_back( tau32_wta( *fatjet_itr ) );
-      } else if(tau32_WTA.isAvailable( *fatjet_itr )){
-	m_fatjet_tau32_wta.push_back( tau32_WTA( *fatjet_itr ) );
       } else if ( tau2_wta.isAvailable( *fatjet_itr ) and tau3_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau32_wta.push_back( tau3_wta( *fatjet_itr ) / tau2_wta( *fatjet_itr ) );
-      } else if ( tau2_WTA.isAvailable( *fatjet_itr ) and tau3_WTA.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_tau32_wta.push_back( tau3_WTA( *fatjet_itr ) / tau2_WTA( *fatjet_itr ) );
       } else { m_fatjet_tau32_wta.push_back( -999 ); }
 
       static SG::AuxElement::ConstAccessor<float> ECF1 ("ECF1");
