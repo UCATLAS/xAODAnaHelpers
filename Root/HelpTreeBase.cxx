@@ -2961,18 +2961,21 @@ void HelpTreeBase::AddFatJets(std::string detailStr) {
     m_tree->Branch("fatjet_eta", &m_fatjet_eta);
   }
   if ( m_fatJetInfoSwitch->m_substructure ) {
-    m_tree->Branch("fatjet_Split12",   &m_fatjet_Split12);
-    m_tree->Branch("fatjet_Split23",   &m_fatjet_Split23);
-    m_tree->Branch("fatjet_Split34",   &m_fatjet_Split34);
-    m_tree->Branch("fatjet_tau1_wta",   &m_fatjet_tau1_wta);
-    m_tree->Branch("fatjet_tau2_wta",   &m_fatjet_tau2_wta);
-    m_tree->Branch("fatjet_tau3_wta",   &m_fatjet_tau3_wta);
-    m_tree->Branch("fatjet_tau21_wta",   &m_fatjet_tau21_wta);
-    m_tree->Branch("fatjet_tau32_wta",   &m_fatjet_tau32_wta);    
-    m_tree->Branch("fatjet_ECF1",   &m_fatjet_ECF1);
-    m_tree->Branch("fatjet_ECF2",   &m_fatjet_ECF2);
-    m_tree->Branch("fatjet_ECF3",   &m_fatjet_ECF3);
-    m_tree->Branch("fatjet_D2",   &m_fatjet_D2);
+
+    m_tree->Branch("fatjet_Split12",&m_fatjet_Split12);
+    m_tree->Branch("fatjet_Split23",&m_fatjet_Split23);
+    m_tree->Branch("fatjet_Split34",&m_fatjet_Split34);
+    m_tree->Branch("fatjet_tau1_wta",&m_fatjet_tau1_wta);
+    m_tree->Branch("fatjet_tau2_wta",&m_fatjet_tau2_wta);
+    m_tree->Branch("fatjet_tau3_wta",&m_fatjet_tau3_wta);
+    m_tree->Branch("fatjet_tau21_wta",   &m_fatjet_tau21_wta);    
+    m_tree->Branch("fatjet_tau32_wta",   &m_fatjet_tau32_wta);
+    m_tree->Branch("fatjet_ECF1",&m_fatjet_ECF1);
+    m_tree->Branch("fatjet_ECF2",&m_fatjet_ECF2);
+    m_tree->Branch("fatjet_ECF3",&m_fatjet_ECF3);
+    m_tree->Branch("fatjet_C2",&m_fatjet_C2);
+    m_tree->Branch("fatjet_D2",&m_fatjet_D2);
+    m_tree->Branch("fatjet_NTrimSubjets",&m_fatjet_NTrimSubjets);
   }
 
   this->AddFatJetsUser();
@@ -3010,6 +3013,7 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
       static SG::AuxElement::ConstAccessor<float> tau3_wta ("Tau3_wta");
       static SG::AuxElement::ConstAccessor<float> tau21_wta ("Tau21_wta");
       static SG::AuxElement::ConstAccessor<float> tau32_wta ("Tau32_wta");
+
       if ( tau1_wta.isAvailable( *fatjet_itr ) ) {
         m_fatjet_tau1_wta.push_back( tau1_wta( *fatjet_itr ) );
       } else { m_fatjet_tau1_wta.push_back( -999 ); }
@@ -3033,15 +3037,23 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
       static SG::AuxElement::ConstAccessor<float> ECF1 ("ECF1");
       static SG::AuxElement::ConstAccessor<float> ECF2("ECF2");
       static SG::AuxElement::ConstAccessor<float> ECF3 ("ECF3");
+      static SG::AuxElement::ConstAccessor<float> C2("C2");
       static SG::AuxElement::ConstAccessor<float> D2 ("D2");
+
+      if(C2.isAvailable(*fatjet_itr)){
+	m_fatjet_C2.push_back(C2(*fatjet_itr));
+      } else if( ECF1.isAvailable(*fatjet_itr) && ECF2.isAvailable(*fatjet_itr) && ECF3.isAvailable(*fatjet_itr)){
+      	m_fatjet_C2.push_back( ECF3(*fatjet_itr)*ECF1(*fatjet_itr)/pow(ECF2(*fatjet_itr),2.0));
+      } else{ m_fatjet_C2.push_back(-999); }
+
       if( D2.isAvailable( *fatjet_itr ) ) {
 	m_fatjet_D2.push_back( D2( *fatjet_itr ));
-      }
-      else if (ECF1.isAvailable( *fatjet_itr ) && ECF2.isAvailable( *fatjet_itr ) && ECF3.isAvailable( *fatjet_itr )){
+      } else if (ECF1.isAvailable( *fatjet_itr ) && ECF2.isAvailable( *fatjet_itr ) && ECF3.isAvailable( *fatjet_itr )){
 	float e2=(ECF2( *fatjet_itr )/(ECF1( *fatjet_itr )*ECF1( *fatjet_itr )));
 	float e3=(ECF3( *fatjet_itr )/(ECF1( *fatjet_itr )*ECF1( *fatjet_itr )*ECF1( *fatjet_itr )));
 	m_fatjet_D2.push_back( e3/(e2*e2*e2) );
-      }
+      } else{ m_fatjet_D2.push_back(-999); }
+
       if ( ECF1.isAvailable( *fatjet_itr ) ) {
 	m_fatjet_ECF1.push_back( ECF1( *fatjet_itr ) / m_units);
       } else { m_fatjet_ECF1.push_back( -999 ); }
@@ -3051,6 +3063,11 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
       if ( ECF3.isAvailable( *fatjet_itr ) ) {
 	m_fatjet_ECF3.push_back( ECF3( *fatjet_itr ) / m_units);
       } else { m_fatjet_ECF3.push_back( -999 ); }
+
+      static SG::AuxElement::ConstAccessor<int> NTrimSubjets("NTrimSubjets");
+      if( NTrimSubjets.isAvailable(*fatjet_itr) ){
+	m_fatjet_NTrimSubjets.push_back(NTrimSubjets(*fatjet_itr));
+      } else{ m_fatjet_NTrimSubjets.push_back(-999); }
     }
     this->FillFatJetsUser(fatjet_itr);
 
@@ -3082,7 +3099,9 @@ void HelpTreeBase::ClearFatJets() {
     m_fatjet_ECF1.clear();
     m_fatjet_ECF2.clear();
     m_fatjet_ECF3.clear();
+    m_fatjet_C2.clear();
     m_fatjet_D2.clear();
+    m_fatjet_NTrimSubjets.clear();
   }
 
 }
