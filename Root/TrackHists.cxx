@@ -138,14 +138,18 @@ StatusCode TrackHists::initialize() {
   if(m_detailStr.find("vsLumiBlock") != std::string::npos ){
     m_fillVsLumi = true;
     
-    m_lBlock                  = book(m_name, "lBlock",             "LumiBlock",  100, 0, 1000);
-    m_trk_z0_vs_lBlock        = book(m_name, "z0_vs_lBlock",       "LumiBlock",  100, 0, 1000, "z0",      -100, 100);
-    m_trk_z0_raw_vs_lBlock    = book(m_name, "z0_raw_vs_lBlock",   "LumiBlock",  100, 0, 1000, "z0 raw",  -100, 100);
-    m_trk_z0_atlas_vs_lBlock  = book(m_name, "z0_atlas_vs_lBlock", "LumiBlock",  100, 0, 1000, "z0 atlas", -100, 100);
+    m_lBlock                  = book(m_name, "lBlock",                "LumiBlock",  100, 0, 1000);
+    m_trk_z0_vs_lBlock        = book(m_name, "z0_vs_lBlock",          "LumiBlock",  100, 0, 1000, "z0",      -100, 100);
+    m_trk_z0_raw_vs_lBlock    = book(m_name, "z0_raw_vs_lBlock",      "LumiBlock",  100, 0, 1000, "z0 raw",  -100, 100);
+    m_trk_z0_atlas_vs_lBlock  = book(m_name, "z0_atlas_vs_lBlock",    "LumiBlock",  100, 0, 1000, "z0 atlas", -100, 100);
+								      
+    m_trk_vz_vs_lBlock        = book(m_name, "vz_vs_lBlock",          "LumiBlock",  100, 0, 1000, "vz",       -100, 100);
+    m_pvz_vs_lBlock           = book(m_name, "pvz_vs_lBlock",         "LumiBlock",  100, 0, 1000, "pvz",      -100, 100);
+    m_pv_valid_vs_lBlock      = book(m_name, "pv_valid_vs_lBlock",    "LumiBlock",  100, 0, 1000, "valid",    -0.1, 1.1);
 
-    m_trk_vz_vs_lBlock        = book(m_name, "vz_vs_lBlock",       "LumiBlock",  100, 0, 1000, "vz",   -100, 100);
-    m_pvz_vs_lBlock           = book(m_name, "pvz_vs_lBlock",      "LumiBlock",  100, 0, 1000, "pvz",   -100, 100);
-    m_pv_valid_vs_lBlock      = book(m_name, "pv_valid_vs_lBlock", "LumiBlock",  100, 0, 1000, "valid", -0.1, 1.1);
+    m_bsX_vs_lBlock           = book(m_name, "bsX_vs_lBlock",      "LumiBlock",  100, 0, 1000, "valid", -0.1, 0.1);
+    m_bsY_vs_lBlock           = book(m_name, "bsY_vs_lBlock",      "LumiBlock",  100, 0, 1000, "valid", -0.1, 0.1);
+    m_bsZ_vs_lBlock           = book(m_name, "bsZ_vs_lBlock",      "LumiBlock",  100, 0, 1000, "valid", -10, 10);
 
     //m_trk_eta_vl      = book(m_name, "eta_vl",        "eta",       100,  -6,    6     );
     //m_trk_z0_vl       = book(m_name, "z0_vl",         "z0[mm]",    100,  -10000.0, 10000.0 );
@@ -294,6 +298,10 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     m_pvz_vs_lBlock         ->Fill(lumiBlock, pvz,                    eventWeight);
 
     m_pv_valid_vs_lBlock    ->Fill(lumiBlock, bool(pvx),              eventWeight);
+
+    m_bsX_vs_lBlock    ->Fill(lumiBlock, eventInfo->beamPosX(),              eventWeight);
+    m_bsY_vs_lBlock    ->Fill(lumiBlock, eventInfo->beamPosY(),              eventWeight);
+    m_bsZ_vs_lBlock    ->Fill(lumiBlock, eventInfo->beamPosZ(),              eventWeight);
 
   }
 

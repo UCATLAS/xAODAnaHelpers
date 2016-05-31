@@ -343,6 +343,7 @@ namespace HelperClasses {
         m_tracksInJet    tracksInJet    partial
         m_hltVtxComp     hltVtxComp     exact
         m_charge         charge         exact
+        m_vsLumiBlock    vsLumiBlock    exact
         ================ ============== =======
 
         .. note::
@@ -384,6 +385,7 @@ namespace HelperClasses {
     bool m_tracksInJet;
     bool m_hltVtxComp;
     bool m_charge;
+    bool m_vsLumiBlock;
     bool m_area;
     std::string      m_trackName;
     std::vector<int> m_sfFTagFix;

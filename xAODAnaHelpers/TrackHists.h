@@ -89,7 +89,9 @@ class TrackHists : public HistogramManager
     TProfile* m_trk_vz_vs_lBlock; //!
     TProfile* m_pvz_vs_lBlock; //!
     TProfile* m_pv_valid_vs_lBlock; //!
-
+    TProfile* m_bsX_vs_lBlock; //!
+    TProfile* m_bsY_vs_lBlock; //!
+    TProfile* m_bsZ_vs_lBlock; //!
 };
 
 

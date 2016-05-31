@@ -188,6 +188,7 @@ namespace HelperClasses{
 
     m_hltVtxComp          = has_exact("hltVtxComp");
     m_charge              = has_exact("charge");
+    m_vsLumiBlock         = has_exact("vsLumiBlock");
 
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
