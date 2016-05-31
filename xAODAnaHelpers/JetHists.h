@@ -123,6 +123,14 @@ class JetHists : public IParticleHists
     TH1F* m_JetFitter       ; //!
     TH1F* m_JetFitterCombNN ; //!
 
+    TProfile* m_vtxHadDummy_vs_lBlock; //!
+    TProfile* m_frac_MV2c2040_vs_lBlock; //!
+    TProfile* m_frac_MV2c2050_vs_lBlock; //!
+    TProfile* m_frac_MV2c2060_vs_lBlock; //!
+    TProfile* m_frac_MV2c2070_vs_lBlock; //!
+    TProfile* m_frac_MV2c2077_vs_lBlock; //!
+    TProfile* m_frac_MV2c2085_vs_lBlock; //!
+
     TH1F* m_trkSum_ntrk     ; //!
     TH1F* m_trkSum_sPt      ; //!
     TH1F* m_trkSum_vPt      ; //!
@@ -231,7 +239,7 @@ class JetHists : public IParticleHists
     TH1F* m_vtxOfflineValid; //!
     TH1F* m_vtxDiffz0; //!
     TH1F* m_vtxDiffz0_m; //!
-
+    TH1F* m_vtxHadDummy; //!
 };
 
 #endif
