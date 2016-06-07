@@ -219,20 +219,20 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 	  return EL::StatusCode::FAILURE;
       }
       bool allFromUnknownStream(true);
-      if ( incompleteCBC->size() != 0 ) {
+   //    if ( incompleteCBC->size() != 0 ) {
 
-	  std::string stream("");
-	  for ( auto cbk : *incompleteCBC ) {
-	      Info ("fileExecute()", "Incomplete cbk name: %s - stream: %s ", (cbk->name()).c_str(), (cbk->inputStream()).c_str());
-	      if ( cbk->inputStream() != "unknownStream" ) {
-		  allFromUnknownStream = false;
-		  stream = cbk->inputStream();
-		  break;
-	      }
-	  }
-	  if ( !allFromUnknownStream ) { Warning("fileExecute()","Found incomplete Bookkeepers from stream: %s ! Check input file for potential corruption...", stream.c_str() ); }
+	  // std::string stream("");
+	  // for ( auto cbk : *incompleteCBC ) {
+	  //     Info ("fileExecute()", "Incomplete cbk name: %s - stream: %s ", (cbk->name()).c_str(), (cbk->inputStream()).c_str());
+	  //     if ( cbk->inputStream() != "unknownStream" ) {
+		 //  allFromUnknownStream = false;
+		 //  stream = cbk->inputStream();
+		 //  break;
+	  //     }
+	  // }
+	  // if ( !allFromUnknownStream ) { Warning("fileExecute()","Found incomplete Bookkeepers from stream: %s ! Check input file for potential corruption...", stream.c_str() ); }
 
-      }
+   //    }
 
       // Now, let's find the actual information
       //
@@ -250,7 +250,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
       // Now, let's actually find the right one that contains all the needed info...
       const xAOD::CutBookkeeper* allEventsCBK(nullptr);
-      const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
+      //const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
       if ( m_isDerivation ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", m_derivationName.c_str()); }
 
@@ -263,7 +263,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 	  }
 	  if ( m_isDerivation ) {
 	      if ( cbk->name() == m_derivationName ) {
-		  DxAODEventsCBK = cbk;
+		  //DxAODEventsCBK = cbk;
 	      }
 	  }
       }
@@ -272,14 +272,14 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_MD_initialSumW	      = allEventsCBK->sumOfEventWeights();
       m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
 
-      if ( !DxAODEventsCBK ) {
-        Error("fileExecute()", "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
-        return EL::StatusCode::FAILURE;
-      }
+      // if ( !DxAODEventsCBK ) {
+      //   Error("fileExecute()", "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
+      //   return EL::StatusCode::FAILURE;
+      // }
 
-      m_MD_finalNevents	      = ( m_isDerivation ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
-      m_MD_finalSumW	      = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
-      m_MD_finalSumWSquared   = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeightsSquared() : m_MD_initialSumWSquared;
+      // m_MD_finalNevents	      = ( m_isDerivation ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
+      // m_MD_finalSumW	      = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
+      // m_MD_finalSumWSquared   = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeightsSquared() : m_MD_initialSumWSquared;
 
       // Write metadata event bookkeepers to histogram
       //

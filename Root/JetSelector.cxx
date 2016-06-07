@@ -110,6 +110,7 @@ JetSelector :: JetSelector (std::string className) :
 
   // Btag quality
   m_doBTagCut 		    = false;
+  m_corrFileName            = "";
   m_taggerName              = "MV2c20";
   m_operatingPt             = "FixedCutBEff_70";
   m_jetAuthor               = "AntiKt4EMTopoJets";
@@ -322,7 +323,7 @@ EL::StatusCode JetSelector :: initialize ()
     //
     RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
     RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
-    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName","$ROOTCOREBIN/data/xAODBTaggingEfficiency/cutprofiles_22072015.root"),"Failed to set property:FlvTagCutDefinitionsFileName");
+    RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName",m_corrFileName),"Failed to set property:FlvTagCutDefinitionsFileName");
     // configurable parameters
     //
     RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",	      m_taggerName),"Failed to set property: TaggerName");
