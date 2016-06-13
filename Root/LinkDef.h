@@ -34,6 +34,7 @@
 #include <xAODAnaHelpers/JetHistsAlgo.h>
 #include <xAODAnaHelpers/MuonHistsAlgo.h>
 #include <xAODAnaHelpers/PhotonHistsAlgo.h>
+#include <xAODAnaHelpers/ElectronHistsAlgo.h>
 #include <xAODAnaHelpers/MetHistsAlgo.h>
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 #include <xAODAnaHelpers/ClusterHistsAlgo.h>
@@ -85,6 +86,7 @@
 #pragma link C++ class JetHistsAlgo+;
 #pragma link C++ class MuonHistsAlgo+;
 #pragma link C++ class PhotonHistsAlgo+;
+#pragma link C++ class ElectronHistsAlgo+;
 #pragma link C++ class MetHistsAlgo+;
 #pragma link C++ class TrackHistsAlgo+;
 #pragma link C++ class ClusterHistsAlgo+;
