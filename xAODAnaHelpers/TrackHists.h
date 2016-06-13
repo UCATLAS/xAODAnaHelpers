@@ -92,6 +92,9 @@ class TrackHists : public HistogramManager
     TProfile* m_bsX_vs_lBlock; //!
     TProfile* m_bsY_vs_lBlock; //!
     TProfile* m_bsZ_vs_lBlock; //!
+    TH1F*    m_bsX; //!
+    TH1F*    m_bsY; //!
+    TH1F*    m_bsZ; //!
 };
 
 

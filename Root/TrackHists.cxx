@@ -147,9 +147,13 @@ StatusCode TrackHists::initialize() {
     m_pvz_vs_lBlock           = book(m_name, "pvz_vs_lBlock",         "LumiBlock",  100, 0, 1000, "pvz",      -100, 100);
     m_pv_valid_vs_lBlock      = book(m_name, "pv_valid_vs_lBlock",    "LumiBlock",  100, 0, 1000, "valid",    -0.1, 1.1);
 
-    m_bsX_vs_lBlock           = book(m_name, "bsX_vs_lBlock",      "LumiBlock",  100, 0, 1000, "valid", -0.1, 0.1);
-    m_bsY_vs_lBlock           = book(m_name, "bsY_vs_lBlock",      "LumiBlock",  100, 0, 1000, "valid", -0.1, 0.1);
-    m_bsZ_vs_lBlock           = book(m_name, "bsZ_vs_lBlock",      "LumiBlock",  100, 0, 1000, "valid", -10, 10);
+
+    m_bsX                     = book(m_name, "bsX",                "beamPos X",  100, -10, 10);
+    m_bsY                     = book(m_name, "bsY",                "beamPos Y",  100, -10, 10);
+    m_bsZ                     = book(m_name, "bsZ",                "beamPos Z",  100, -10, 10);
+    m_bsX_vs_lBlock           = book(m_name, "bsX_vs_lBlock",      "LumiBlock",  100, 0, 1000, "bxX", -1, 1);
+    m_bsY_vs_lBlock           = book(m_name, "bsY_vs_lBlock",      "LumiBlock",  100, 0, 1000, "bsY", -1, 1);
+    m_bsZ_vs_lBlock           = book(m_name, "bsZ_vs_lBlock",      "LumiBlock",  100, 0, 1000, "bsZ", -10, 10);
 
     //m_trk_eta_vl      = book(m_name, "eta_vl",        "eta",       100,  -6,    6     );
     //m_trk_z0_vl       = book(m_name, "z0_vl",         "z0[mm]",    100,  -10000.0, 10000.0 );
@@ -298,6 +302,10 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     m_pvz_vs_lBlock         ->Fill(lumiBlock, pvz,                    eventWeight);
 
     m_pv_valid_vs_lBlock    ->Fill(lumiBlock, bool(pvx),              eventWeight);
+
+    m_bsX    ->Fill(eventInfo->beamPosX(),              eventWeight);
+    m_bsY    ->Fill(eventInfo->beamPosY(),              eventWeight);
+    m_bsZ    ->Fill(eventInfo->beamPosZ(),              eventWeight);
 
     m_bsX_vs_lBlock    ->Fill(lumiBlock, eventInfo->beamPosX(),              eventWeight);
     m_bsY_vs_lBlock    ->Fill(lumiBlock, eventInfo->beamPosY(),              eventWeight);
