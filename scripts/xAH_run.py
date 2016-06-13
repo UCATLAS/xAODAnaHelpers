@@ -91,7 +91,7 @@ parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, bra
 parser.add_argument('--treeName', dest="treeName",     default="CollectionTree", help="Tree Name to run on")
 parser.add_argument('--isMC',     action="store_true", dest="is_MC",    default=False, help="Running MC")
 parser.add_argument('--isAFII',   action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
-
+parser.add_argument('--extraOptions', dest="extra_options", metavar="[param=val]", type=str, required=False, help='Pass in extra options straight into the python config file. These can be accessed by using argparse: `parser.parse_args(shlex.split(args.extra_options))`.', default='')
 
 parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of paths/filenames.')
 parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
