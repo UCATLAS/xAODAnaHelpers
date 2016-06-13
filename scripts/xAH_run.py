@@ -88,9 +88,9 @@ parser.add_argument('-f', '--force', dest='force_overwrite', action='store_true'
 
 parser.add_argument('--version', action='version', version='xAH_run.py {version}'.format(version=__version__), help='{version}'.format(version=__version__))
 parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch, athena}', choices=['class', 'branch', 'athena'], default='class', help='run using class access mode, branch access mode, or athena access mode')
-parser.add_argument( '--treeName', dest="treeName",     default="CollectionTree", help="Tree Name to run on")
-parser.add_argument( '--isMC',     action="store_true", dest="is_MC",    default=False, help="Running MC")
-parser.add_argument( '--isAFII',   action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
+parser.add_argument('--treeName', dest="treeName",     default="CollectionTree", help="Tree Name to run on")
+parser.add_argument('--isMC',     action="store_true", dest="is_MC",    default=False, help="Running MC")
+parser.add_argument('--isAFII',   action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
 
 
 parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of paths/filenames.')
@@ -479,9 +479,9 @@ if __name__ == "__main__":
       for k,v in configLocals.iteritems():
 
         if isinstance(v, xAH_config):
-          
+
           # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
-          # is created and added to the job *before* the service 
+          # is created and added to the job *before* the service
           #
           for alg in v._algorithms:
             if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
