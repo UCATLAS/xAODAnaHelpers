@@ -209,10 +209,16 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     //  isValid = false;
     //}
 
-    if(jetCollections.size() != vtxCollections.size()){
+    if(vtxCollections.size() < jetCollections.size()){
       cout << "ERROR Problem in container size: " << m_name  
 	   << " jets: "<< jetCollections.size() << " " << m_jetName 
 	   << " vtx: "<< vtxCollections.size()  << "  "<< m_vtxName << endl;
+      for ( unsigned ifeat=0 ; ifeat<vtxCollections.size() ; ifeat++ ) {
+	cout << "Feture: " << ifeat << endl;
+	for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ){
+	  cout << vtx_itr->vertexType() <<endl;
+	}
+      }
       isValid = false;
     }
 
