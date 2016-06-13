@@ -239,7 +239,19 @@ class JetHists : public IParticleHists
     TH1F* m_vtxOfflineValid; //!
     TH1F* m_vtxDiffz0; //!
     TH1F* m_vtxDiffz0_m; //!
+    TH1F* m_vtxDiffz0_s; //!
+
+    TH1F* m_vtxDiffx0; //!
+    TH1F* m_vtxDiffx0_l; //!
+
+    TH1F* m_vtxDiffy0; //!
+    TH1F* m_vtxDiffy0_l; //!
+
+
     TH1F* m_vtxHadDummy; //!
+    TProfile*   m_vtxDiffx0_vs_lBlock    ; //!
+    TProfile*   m_vtxDiffy0_vs_lBlock    ; //!
+    TProfile*   m_vtxDiffz0_vs_lBlock    ; //!
 };
 
 #endif

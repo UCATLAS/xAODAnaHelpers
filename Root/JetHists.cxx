@@ -179,9 +179,6 @@ StatusCode JetHists::initialize() {
 
     if(m_infoSwitch->m_vsLumiBlock){
 
-      if(m_infoSwitch->m_flavTagHLT)
-	m_vtxHadDummy_vs_lBlock   = book(m_name, "vtxHadDummy_vs_lBlock", "LumiBlock",  100, 0, 1000, "hadDummy", -0.1, 1.1);
-
 
       m_frac_MV2c2040_vs_lBlock  = book(m_name, "frac_MV2c2040_vs_lBlock",  "LumiBlock",  100, 0, 1000, "frac. pass MV2c2040", 0, 1);
       m_frac_MV2c2050_vs_lBlock  = book(m_name, "frac_MV2c2050_vs_lBlock",  "LumiBlock",  100, 0, 1000, "frac. pass MV2c2050", 0, 1);
@@ -321,9 +318,25 @@ StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_hltVtxComp ){
     m_vtxOnlineValid                 = book(m_name, "vtx_online_valid",  "vtx_online_valid",  2, -0.5, 1.5);
     m_vtxOfflineValid                = book(m_name, "vtx_offline_valid", "vtx_offline_valid", 2, -0.5, 1.5);
+
+    m_vtxDiffx0                      = book(m_name, "vtx_diff_x0",     "vtx_diff_x0",     100,  -0.1,  0.1);
+    m_vtxDiffx0_l                    = book(m_name, "vtx_diff_x0_l",   "vtx_diff_x0_l",   100, -1, 1);
+
+    m_vtxDiffy0                      = book(m_name, "vtx_diff_y0",     "vtx_diff_y0",     100,  -0.1,  0.1);
+    m_vtxDiffy0_l                    = book(m_name, "vtx_diff_y0_l",   "vtx_diff_y0_l",   100, -1, 1);
+
     m_vtxDiffz0                      = book(m_name, "vtx_diff_z0",   "vtx_diff_z0",   100, -100, 100);
     m_vtxDiffz0_m                    = book(m_name, "vtx_diff_z0_m", "vtx_diff_z0_m", 100,  -20,  20);
+    m_vtxDiffz0_s                    = book(m_name, "vtx_diff_z0_s", "vtx_diff_z0_s", 100,  -5,  5);
     m_vtxHadDummy                    = book(m_name, "vtx_hadDummy",  "vtx_hadDummy",  2, -0.5, 1.5);
+
+    if(m_infoSwitch->m_vsLumiBlock){
+      m_vtxDiffx0_vs_lBlock      = book(m_name, "vtxDiffx0_vs_lBlock",    "LumiBlock",  100, 0, 1000, "vtx_diff_x0",    -0.1, 0.1);
+      m_vtxDiffy0_vs_lBlock      = book(m_name, "vtxDiffy0_vs_lBlock",    "LumiBlock",  100, 0, 1000, "vtx_diff_y0",    -0.1, 0.1);
+      m_vtxDiffz0_vs_lBlock      = book(m_name, "vtxDiffz0_vs_lBlock",    "LumiBlock",  100, 0, 1000, "vtx_diff_z0",    -5, 5);
+      m_vtxHadDummy_vs_lBlock    = book(m_name, "vtxHadDummy_vs_lBlock",  "LumiBlock",  100, 0, 1000, "hadDummy", -0.1, 1.1);
+
+    }
 
   }
 
@@ -775,7 +788,6 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	passMV2c2077 = (MV2c20 > -0.764668);
 	passMV2c2085 = (MV2c20 > -0.938441);
 
-	m_vtxHadDummy_vs_lBlock ->Fill(lumiBlock, bool(jet->auxdata< char >("hadDummyPV") == '1'),              eventWeight);
       }
 
       m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c2040,  eventWeight);
@@ -784,6 +796,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       m_frac_MV2c2070_vs_lBlock  -> Fill(lumiBlock, passMV2c2070,  eventWeight);
       m_frac_MV2c2077_vs_lBlock  -> Fill(lumiBlock, passMV2c2077,  eventWeight);
       m_frac_MV2c2085_vs_lBlock  -> Fill(lumiBlock, passMV2c2085,  eventWeight);
+
+
     }
 
     static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
@@ -1228,12 +1242,34 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     if(offline_pvx) m_vtxOfflineValid->Fill(1.0, eventWeight);
     else            m_vtxOfflineValid->Fill(0.0, eventWeight);
 
-    if(jet->auxdata< char >("hadDummyPV") == '1')  m_vtxHadDummy ->Fill(1.0, eventWeight);
-    else                                           m_vtxHadDummy ->Fill(0.0, eventWeight);
+    bool hadDummyPV = (jet->auxdata< char >("hadDummyPV") == '1');
+    if(hadDummyPV)  m_vtxHadDummy ->Fill(1.0, eventWeight);
+    else            m_vtxHadDummy ->Fill(0.0, eventWeight);
 
     if(offline_pvx && online_pvx){
-      m_vtxDiffz0  ->Fill(online_pvx->z() - offline_pvx->z(), eventWeight);
-      m_vtxDiffz0_m->Fill(online_pvx->z() - offline_pvx->z(), eventWeight);
+      float vtxDiffz0 = online_pvx->z() - offline_pvx->z();
+      m_vtxDiffz0  ->Fill(vtxDiffz0, eventWeight);
+      m_vtxDiffz0_m->Fill(vtxDiffz0, eventWeight);
+      m_vtxDiffz0_s->Fill(vtxDiffz0, eventWeight);
+
+      float vtxDiffx0 = online_pvx->x() - offline_pvx->x();
+      m_vtxDiffx0  ->Fill(vtxDiffx0, eventWeight);
+      m_vtxDiffx0_l->Fill(vtxDiffx0, eventWeight);
+
+      float vtxDiffy0 = online_pvx->y() - offline_pvx->y();
+      m_vtxDiffy0  ->Fill(vtxDiffy0, eventWeight);
+      m_vtxDiffy0_l->Fill(vtxDiffy0, eventWeight);
+
+
+      if(m_infoSwitch->m_vsLumiBlock){
+	uint32_t lumiBlock = eventInfo->lumiBlock();
+
+	m_vtxDiffx0_vs_lBlock     ->Fill(lumiBlock, vtxDiffx0          , eventWeight);
+	m_vtxDiffy0_vs_lBlock     ->Fill(lumiBlock, vtxDiffy0          , eventWeight);
+	m_vtxDiffz0_vs_lBlock     ->Fill(lumiBlock, vtxDiffz0          , eventWeight);
+	m_vtxHadDummy_vs_lBlock   ->Fill(lumiBlock, bool(hadDummyPV),    eventWeight);
+      }
+
     }
   }
 
