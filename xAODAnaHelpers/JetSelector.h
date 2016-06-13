@@ -102,6 +102,7 @@ public:
 
   // for BTaggingSelectionTool -- doubles are needed or will crash
   bool  m_doBTagCut;              // Flag to apply btagging cut, if false just decorate decisions
+  std::string m_corrFileName;
   std::string m_jetAuthor;
   std::string m_taggerName;
   std::string m_operatingPt;
