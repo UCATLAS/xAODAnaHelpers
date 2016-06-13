@@ -1648,7 +1648,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_constituent_e").c_str(),    &thisJet->m_jet_constit_e     );
   }
 
-  if( m_thisJetInfoSwitch[jetName]->m_flavTag ) {
+  if( m_thisJetInfoSwitch[jetName]->m_flavTag  || m_thisJetInfoSwitch[jetName]->m_flavTagHLT  ) {
     if ( !m_DC14 ) {
       m_tree->Branch((jetName+"_SV0").c_str(),           &thisJet->m_jet_sv0);
       m_tree->Branch((jetName+"_SV1").c_str(),           &thisJet->m_jet_sv1);
@@ -2341,8 +2341,15 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     thisJet->m_jet_constit_e.  push_back( e   );
   }
 
-  if ( m_thisJetInfoSwitch[jetName]->m_flavTag) {
-    const xAOD::BTagging * myBTag = jet_itr->btagging();
+  if ( m_thisJetInfoSwitch[jetName]->m_flavTag || m_thisJetInfoSwitch[jetName]->m_flavTagHLT ) {
+    const xAOD::BTagging * myBTag(0);
+    
+    if(m_thisJetInfoSwitch[jetName]->m_flavTag){
+      myBTag = jet_itr->btagging();
+    }else if(m_thisJetInfoSwitch[jetName]->m_flavTagHLT){
+      myBTag = jet_itr->auxdata< const xAOD::BTagging* >("HLTBTag");
+    }
+
     if ( !m_DC14 ) {
 
       static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
@@ -2725,7 +2732,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   }
 
   // flavor tag
-  if ( m_thisJetInfoSwitch[jetName]->m_flavTag ) {
+  if ( m_thisJetInfoSwitch[jetName]->m_flavTag || m_thisJetInfoSwitch[jetName]->m_flavTagHLT  ) {
     thisJet->m_jet_sv0.clear();
     thisJet->m_jet_sv1.clear();
     thisJet->m_jet_ip3d.clear();
