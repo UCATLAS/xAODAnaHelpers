@@ -3,6 +3,7 @@
 #include "xAODMuon/Muon.h"
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/egammaPIDdefs.h"
+#include "ElectronPhotonSelectorTools/LikelihoodEnums.h"
 
 
 namespace HelperClasses{
@@ -35,6 +36,9 @@ namespace HelperClasses{
   template <>
   EnumParser<egammaPID::egammaIDQuality>::EnumParser()
   {
+    std::string ElectronIDLoose("ElectronIDLoose");           enumMap.insert(std::make_pair(ElectronIDLoose    , egammaPID::ElectronIDLoose));
+    std::string ElectronIDMedium("ElectronIDMedum");          enumMap.insert(std::make_pair(ElectronIDMedium   , egammaPID::ElectronIDMedium));
+    std::string ElectronIDTight("ElectronIDTight");           enumMap.insert(std::make_pair(ElectronIDTight    , egammaPID::ElectronIDTight));
     std::string ElectronIDLoosePP("ElectronIDLoosePP");       enumMap.insert(std::make_pair(ElectronIDLoosePP  , egammaPID::ElectronIDLoosePP));
     std::string ElectronIDLoose1("ElectronIDLoose1");         enumMap.insert(std::make_pair(ElectronIDLoose1   , egammaPID::ElectronIDLoose1));
     std::string ElectronIDLooseHLT("ElectronIDLooseHLT");     enumMap.insert(std::make_pair(ElectronIDLooseHLT , egammaPID::ElectronIDLooseHLT));
@@ -45,13 +49,13 @@ namespace HelperClasses{
     std::string ElectronIDTight1("ElectronIDTight1");         enumMap.insert(std::make_pair(ElectronIDTight1   , egammaPID::ElectronIDTight1));
     std::string ElectronIDTightHLT("ElectronIDTightHLT");     enumMap.insert(std::make_pair(ElectronIDTightHLT , egammaPID::ElectronIDTightHLT));
   }
-  template <>
-  EnumParser<egammaPID::PID>::EnumParser()
-  {
-    std::string IsEMLoose("IsEMLoose");     enumMap.insert(std::make_pair( IsEMLoose , egammaPID::IsEMLoose));
-    std::string IsEMMedium("IsEMMedium");   enumMap.insert(std::make_pair( IsEMMedium, egammaPID::IsEMMedium));
-    std::string IsEMTight("IsEMTight");     enumMap.insert(std::make_pair( IsEMTight , egammaPID::IsEMTight));
-  }
+//  template <>
+//  EnumParser<egammaPID::PID>::EnumParser()
+//  {
+//    std::string IsEMLoose("IsEMLoose");     enumMap.insert(std::make_pair( IsEMLoose , egammaPID::IsEMLoose));
+//    std::string IsEMMedium("IsEMMedium");   enumMap.insert(std::make_pair( IsEMMedium, egammaPID::IsEMMedium));
+//    std::string IsEMTight("IsEMTight");     enumMap.insert(std::make_pair( IsEMTight , egammaPID::IsEMTight));
+//  }
 
   /* parser for muon quality enum */
   template <>

@@ -1655,7 +1655,6 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
       m_tree->Branch((jetName+"_IP3D").c_str(),          &thisJet->m_jet_ip3d);
     }
     m_tree->Branch((jetName+"_SV1IP3D").c_str(),       &thisJet->m_jet_sv1ip3d);
-    m_tree->Branch((jetName+"_MV1").c_str(),           &thisJet->m_jet_mv1);
     m_tree->Branch((jetName+"_MV2c00").c_str(),        &thisJet->m_jet_mv2c00);
     m_tree->Branch((jetName+"_MV2c10").c_str(),        &thisJet->m_jet_mv2c10);
     m_tree->Branch((jetName+"_MV2c20").c_str(),        &thisJet->m_jet_mv2c20);
@@ -2354,7 +2353,6 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
     }
     thisJet->m_jet_sv1ip3d.push_back( myBTag -> SV1plusIP3D_discriminant() );
-    thisJet->m_jet_mv1.push_back(     myBTag -> MV1_discriminant()         );
 
     //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
     double val(-999);
@@ -2732,7 +2730,6 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_sv1.clear();
     thisJet->m_jet_ip3d.clear();
     thisJet->m_jet_sv1ip3d.clear();
-    thisJet->m_jet_mv1.clear();
     thisJet->m_jet_mv2c00.clear();
     thisJet->m_jet_mv2c10.clear();
     thisJet->m_jet_mv2c20.clear();

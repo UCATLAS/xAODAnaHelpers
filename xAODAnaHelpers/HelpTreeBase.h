@@ -386,7 +386,6 @@ protected:
     std::vector<float> m_jet_sv1;
     std::vector<float> m_jet_ip3d;
     std::vector<float> m_jet_sv1ip3d;
-    std::vector<float> m_jet_mv1;
     std::vector<float> m_jet_mv2c00;
     std::vector<float> m_jet_mv2c10;
     std::vector<float> m_jet_mv2c20;

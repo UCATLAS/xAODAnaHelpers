@@ -13,6 +13,7 @@
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 #include "ElectronPhotonSelectorTools/egammaPIDdefs.h"
+#include "ElectronPhotonSelectorTools/LikelihoodEnums.h"
 
 // EDM include(s):
 #include "xAODEgamma/ElectronContainer.h"
@@ -185,15 +186,15 @@ class ElectronCutBasedPIDManager
 	m_debug      = debug;
 
         /*  fill the multimap with WPs and corresponding tools. Use an ordered index to reflect the tightness order (0: loosest WP, ...) */
-	std::pair < std::string, AsgElectronIsEMSelector* > loose = std::make_pair( std::string("IsEMLoose"), m_asgElectronIsEMSelector_Loose );
+	std::pair < std::string, AsgElectronIsEMSelector* > loose = std::make_pair( std::string("ElectronIDLoose"), m_asgElectronIsEMSelector_Loose );
         m_allWPTools.insert( loose );
-	m_allWPs.insert("IsEMLoose");
-	std::pair < std::string, AsgElectronIsEMSelector* > medium = std::make_pair( std::string("IsEMMedium"), m_asgElectronIsEMSelector_Medium );
+	m_allWPs.insert("ElectronIDLoose");
+	std::pair < std::string, AsgElectronIsEMSelector* > medium = std::make_pair( std::string("ElectronIDMedium"), m_asgElectronIsEMSelector_Medium );
         m_allWPTools.insert( medium );
-	m_allWPs.insert("IsEMMedium");
-	std::pair < std::string, AsgElectronIsEMSelector* > tight = std::make_pair( std::string("IsEMTight"), m_asgElectronIsEMSelector_Tight );
+	m_allWPs.insert("ElectronIDMedium");
+	std::pair < std::string, AsgElectronIsEMSelector* > tight = std::make_pair( std::string("ElectronIDTight"), m_asgElectronIsEMSelector_Tight );
         m_allWPTools.insert( tight );
-	m_allWPs.insert("IsEMTight");
+	m_allWPs.insert("ElectronIDTight");
      };
 
      ~ElectronCutBasedPIDManager()
@@ -205,7 +206,7 @@ class ElectronCutBasedPIDManager
 
      StatusCode setupWPs( bool configTools, std::string selector_name = "", std::string confDir = "", std::string year = "" ) {
 
-        HelperClasses::EnumParser<egammaPID::PID> selectedWP_parser;
+        HelperClasses::EnumParser<egammaPID::egammaIDQuality> selectedWP_parser;
         unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(m_selectedWP) );
 
         /*
@@ -226,7 +227,7 @@ class ElectronCutBasedPIDManager
 	      std::string tool_name = it.first + selector_name;
 	      it.second =  new AsgElectronIsEMSelector( tool_name.c_str() );
 
-              HelperClasses::EnumParser<egammaPID::PID>  itWP_parser;
+              HelperClasses::EnumParser<egammaPID::egammaIDQuality>  itWP_parser;
               unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it.first) );
 
               /* if this WP is looser than user's WP, skip to next */
@@ -244,11 +245,11 @@ class ElectronCutBasedPIDManager
 	      /* set the bitmask only for samples with 2012 config */
     	      if ( year == "2012" )  {
     	  	unsigned int EMMask = 999;
-    	  	if ( (it.first).find("IsEMLoose") != std::string::npos ) {
+    	  	if ( (it.first).find("ElectronIDLoosePP") != std::string::npos ) {
     	  	  EMMask = egammaPID::ElectronLoosePP;
-    	  	} else if ( (it.first).find("IsEMMedium") != std::string::npos ) {
+    	  	} else if ( (it.first).find("ElectronIDMediumPP") != std::string::npos ) {
     	  	  EMMask = egammaPID::ElectronMediumPP;
-    	  	} else if ( (it.first).find("IsEMTight") != std::string::npos ) {
+    	  	} else if ( (it.first).find("ElectronIDTightPP") != std::string::npos ) {
     	  	  EMMask = egammaPID::ElectronTightPP;
     	  	} else {
     	  	  Error("setupWPs()", "Unavailable electron cut-based PID bitmask for this operating point!");
@@ -267,7 +268,7 @@ class ElectronCutBasedPIDManager
 
 	  for ( auto it : (m_allWPs) ) {
 
-              HelperClasses::EnumParser<egammaPID::PID>  itWP_parser;
+              HelperClasses::EnumParser<egammaPID::egammaIDQuality>  itWP_parser;
               unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it) );
 
               /* if this WP is looser than user's WP, skip to next */
