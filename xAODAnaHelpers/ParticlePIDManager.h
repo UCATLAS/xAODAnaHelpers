@@ -29,31 +29,31 @@ class ElectronLHPIDManager
    public:
      ElectronLHPIDManager ();
      ElectronLHPIDManager ( std::string WP, bool debug = false ) :
-	m_asgElectronLikelihoodTool_Loose(nullptr),
-	m_asgElectronLikelihoodTool_Medium(nullptr),
-	m_asgElectronLikelihoodTool_Tight(nullptr)
+     m_asgElectronLikelihoodTool_VeryLoose(nullptr),
+     m_asgElectronLikelihoodTool_Loose(nullptr),
+     m_asgElectronLikelihoodTool_Medium(nullptr),
+     m_asgElectronLikelihoodTool_Tight(nullptr)
      {
-	m_selectedWP = WP;
-	m_debug      = debug;
-
+       m_selectedWP = WP;
+       m_debug      = debug;
+       
         /*  fill the multimap with WPs and corresponding tools */
-
-	std::pair < std::string, AsgElectronLikelihoodTool* > loose = std::make_pair( std::string("Loose"), m_asgElectronLikelihoodTool_Loose );
-        m_allWPTools.insert(loose);
-	m_allWPs.insert("Loose");
-	std::pair < std::string, AsgElectronLikelihoodTool* > medium = std::make_pair( std::string("Medium"), m_asgElectronLikelihoodTool_Medium );
-        m_allWPTools.insert(medium);
-	m_allWPs.insert("Medium");
-	std::pair < std::string, AsgElectronLikelihoodTool* > tight = std::make_pair( std::string("Tight"), m_asgElectronLikelihoodTool_Tight );
-        m_allWPTools.insert(tight);
-	m_allWPs.insert("Tight");
+       std::pair < std::string, AsgElectronLikelihoodTool* > veryloose = std::make_pair( std::string("VeryLoose"), m_asgElectronLikelihoodTool_VeryLoose );
+       std::pair < std::string, AsgElectronLikelihoodTool* > loose     = std::make_pair( std::string("Loose"),     m_asgElectronLikelihoodTool_Loose     );
+       std::pair < std::string, AsgElectronLikelihoodTool* > medium    = std::make_pair( std::string("Medium"),    m_asgElectronLikelihoodTool_Medium    );
+       std::pair < std::string, AsgElectronLikelihoodTool* > tight     = std::make_pair( std::string("Tight"),     m_asgElectronLikelihoodTool_Tight     );
+       m_allWPTools.insert(veryloose); m_allWPs.insert("VeryLoose");
+       m_allWPTools.insert(loose);     m_allWPs.insert("Loose");
+       m_allWPTools.insert(medium);    m_allWPs.insert("Medium");
+       m_allWPTools.insert(tight);     m_allWPs.insert("Tight");
      };
 
      ~ElectronLHPIDManager()
      {
-     	if ( m_asgElectronLikelihoodTool_Loose )  { delete m_asgElectronLikelihoodTool_Loose;	 m_asgElectronLikelihoodTool_Loose = nullptr;  }
-     	if ( m_asgElectronLikelihoodTool_Medium ) { delete m_asgElectronLikelihoodTool_Medium;   m_asgElectronLikelihoodTool_Medium = nullptr; }
-     	if ( m_asgElectronLikelihoodTool_Tight )  { delete m_asgElectronLikelihoodTool_Tight;	 m_asgElectronLikelihoodTool_Tight = nullptr;  }
+        if ( m_asgElectronLikelihoodTool_VeryLoose ) { delete m_asgElectronLikelihoodTool_VeryLoose; m_asgElectronLikelihoodTool_VeryLoose = nullptr; }
+        if ( m_asgElectronLikelihoodTool_Loose )     { delete m_asgElectronLikelihoodTool_Loose;     m_asgElectronLikelihoodTool_Loose     = nullptr; }
+        if ( m_asgElectronLikelihoodTool_Medium )    { delete m_asgElectronLikelihoodTool_Medium;    m_asgElectronLikelihoodTool_Medium    = nullptr; }
+        if ( m_asgElectronLikelihoodTool_Tight )     { delete m_asgElectronLikelihoodTool_Tight;     m_asgElectronLikelihoodTool_Tight     = nullptr; }
      };
 
 
@@ -165,6 +165,7 @@ class ElectronLHPIDManager
      std::set<std::string> m_allWPs;
      std::set<std::string> m_validWPs;
 
+     AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_VeryLoose;
      AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Loose;
      AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Medium;
      AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Tight;
