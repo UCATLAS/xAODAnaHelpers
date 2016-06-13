@@ -273,9 +273,10 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
-  if ( m_LHOperatingPoint != "Loose"        &&
+  if ( m_LHOperatingPoint != "VeryLoose"       &&
+       m_LHOperatingPoint != "Loose"           &&
        m_LHOperatingPoint != "LooseAndBLayer"  &&
-       m_LHOperatingPoint != "Medium"       &&
+       m_LHOperatingPoint != "Medium"          &&
        m_LHOperatingPoint != "Tight"     ) {
     Error("initialize()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
     return EL::StatusCode::FAILURE;
@@ -348,10 +349,10 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
   //
-  std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "Loose";
+  std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "VeryLoose";
   m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, m_debug );
 
-  // make sure the actual WP is (Loose || Medium || Tight)
+  // make sure the actual WP is (VeryLoose || Loose || Medium || Tight)
    m_LHOperatingPoint = ( m_LHOperatingPoint == "LooseAndBLayer" ) ? "Loose" : m_LHOperatingPoint;
 
   if  ( m_doLHPIDcut ) {
