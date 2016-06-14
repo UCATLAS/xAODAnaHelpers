@@ -928,7 +928,9 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_d0sig_cut, 1 ); }
 
   // decorate muon w/ d0sig info
+  static SG::AuxElement::Decorator< float > d0Decor   ("d0");
   static SG::AuxElement::Decorator< float > d0SigDecor("d0sig");
+  d0Decor   ( *muon ) = static_cast<float>(tp->d0());
   d0SigDecor( *muon ) = static_cast<float>(d0_significance);
 
   // *********************************************************************************************************************************************************************
