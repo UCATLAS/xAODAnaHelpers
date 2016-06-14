@@ -21,10 +21,12 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include "PATCore/TAccept.h"
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
+#include "IsolationSelection/IsolationSelectionTool.h"
+#include "MuonSelectorTools/MuonSelectionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
-#include "PATCore/TAccept.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -33,7 +35,6 @@
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
-
 
 MuonSelector :: MuonSelector (std::string className) :
     Algorithm(className),
@@ -315,7 +316,8 @@ EL::StatusCode MuonSelector :: initialize ()
   std::string muonSelectionTool_handle_name = "CP::MuonSelectionTool/" + m_muonSelectionTool_name;
 
   RETURN_CHECK("MuonSelector::initialize()", checkToolStore<CP::MuonSelectionTool>(m_muonSelectionTool_name), "" );
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.makeNew<CP::MuonSelectionTool>(muonSelectionTool_handle_name), "Failed to create handle to CP::MuonSelectionTool");
+  //RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.makeNew<CP::MuonSelectionTool>(muonSelectionTool_handle_name), "Failed to create handle to CP::MuonSelectionTool");
+  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.make(muonSelectionTool_handle_name), "Failed to create handle to CP::MuonSelectionTool");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ),"Failed to set Failed to set MaxEta property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ),"Failed to set MuQuality property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.initialize(), "Failed to properly initialize CP::MuonSelectionTool");
@@ -330,7 +332,8 @@ EL::StatusCode MuonSelector :: initialize ()
   std::string isolationSelectionTool_handle_name = "CP::IsolationSelectionTool/" + m_isolationSelectionTool_name;
 
   RETURN_CHECK("MuonSelector::initialize()", checkToolStore<CP::IsolationSelectionTool>(m_isolationSelectionTool_name), "" );
-  RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.makeNew<CP::IsolationSelectionTool>(isolationSelectionTool_handle_name), "Failed to create handle to CP::IsolationSelectionTool");
+  //RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.makeNew<CP::IsolationSelectionTool>(isolationSelectionTool_handle_name), "Failed to create handle to CP::IsolationSelectionTool");
+  RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.make(isolationSelectionTool_handle_name), "Failed to create handle to CP::IsolationSelectionTool");
   // Do this only for the first WP in the list
   //
   if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
@@ -355,11 +358,11 @@ EL::StatusCode MuonSelector :: initialize ()
        CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
        if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
 
-       RETURN_CHECK( "ElectronSelector::initialize()",  m_isolationSelectionTool_handle->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
+       RETURN_CHECK( "MuonSelector::initialize()",  m_isolationSelectionTool_handle->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
 
      } else {
 
-        RETURN_CHECK( "ElectronSelector::initialize()", m_isolationSelectionTool_handle->addMuonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+        RETURN_CHECK( "MuonSelector::initialize()", m_isolationSelectionTool_handle->addMuonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
 
      }
   }
@@ -387,7 +390,8 @@ EL::StatusCode MuonSelector :: initialize ()
     std::string trigMuonMatchTool_handle_name = "Trig::MatchingTool/" + m_trigMuonMatchTool_name;
 
     RETURN_CHECK("MuonSelector::initialize()", checkToolStore<Trig::MatchingTool>(m_trigMuonMatchTool_name), "" );
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::MatchingTool>(trigMuonMatchTool_handle_name), "Failed to create handle to MatchingTool");
+    //RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::MatchingTool>(trigMuonMatchTool_handle_name), "Failed to create handle to MatchingTool");
+    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.make(trigMuonMatchTool_handle_name), "Failed to create handle to MatchingTool");
     RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", trigDecHandle ), "Failed to pass TrigDecisionTool to MatchingTool" );
     RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize MatchingTool" );
 

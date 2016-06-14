@@ -17,11 +17,13 @@
 #include "AthContainers/DataVector.h"
 
 // package include(s):
+#include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/MuonEfficiencyCorrector.h"
-
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
+#include "MuonEfficiencyCorrections/MuonTriggerScaleFactors.h"
+#include "PileupReweighting/PileupReweightingTool.h"
 
 using HelperClasses::ToolName;
 
@@ -186,6 +188,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonEfficiencyScaleFactors>(m_recoEffSF_tool_name), "" );
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.makeNew<CP::MuonEfficiencyScaleFactors>(recoEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for reco efficiency SF");
+  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.make(recoEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for reco efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.setProperty("WorkingPoint", m_WorkingPointReco ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for reco efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ),"Failed to set calibration release property of MuonEfficiencyScaleFactors for reco efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.initialize(), "Failed to properly initialize CP::MuonEfficiencyScaleFactors for reco efficiency SF");
@@ -224,6 +227,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonEfficiencyScaleFactors>(m_isoEffSF_tool_name), "" );
   std::string tool_WP = m_WorkingPointIso + "Iso";
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.makeNew<CP::MuonEfficiencyScaleFactors>(isoEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for iso efficiency SF");
+  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.make(isoEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for iso efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.setProperty("WorkingPoint", tool_WP ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for iso efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ),"Failed to set calibration release property of MuonEfficiencyScaleFactors for iso efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.initialize(), "Failed to properly initialize CP::MuonEfficiencyScaleFactors for iso efficiency SF");
@@ -263,6 +267,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name), "" );
   std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.makeNew<CP::MuonTriggerScaleFactors>(trigEffSF_handle_name), "Failed to create handle to CP::MuonTriggerScaleFactors for trigger efficiency SF");
+  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.make(trigEffSF_handle_name), "Failed to create handle to CP::MuonTriggerScaleFactors for trigger efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.initialize(), "Failed to properly initialize CP::MuonTriggerScaleFactors for trigger efficiency SF");
@@ -310,7 +315,8 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   std::string TTVAEffSF_handle_name = "CP::MuonEfficiencyScaleFactors/" + m_TTVAEffSF_tool_name;
 
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name), "" );
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.makeNew<CP::MuonEfficiencyScaleFactors>(TTVAEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for TTVA efficiency SF");
+  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.makeNew<CP::MuonEfficiencyScaleFactors>(TTVAEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for TTVA efficiency SF");
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.make(TTVAEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for TTVA efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.setProperty("WorkingPoint", m_WorkingPointTTVA ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for TTVA efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ),"Failed to set calibration release property of MuonEfficiencyScaleFactors for TTVA efficiency SF");
   RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.initialize(), "Failed to properly initialize CP::MuonEfficiencyScaleFactors for TTVA efficiency SF");

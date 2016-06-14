@@ -16,14 +16,17 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
-#include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
-#include "MuonEfficiencyCorrections/MuonTriggerScaleFactors.h"
-#include "MuonSelectorTools/MuonSelectionTool.h"
-#include "PileupReweighting/PileupReweightingTool.h"
 #include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
+
+namespace CP {
+  class IMuonEfficiencyScaleFactors;
+  //class MuonEfficiencyScaleFactors;
+  class IMuonTriggerScaleFactors;
+  class IPileupReweightingTool;
+}
 
 class MuonEfficiencyCorrector : public xAH::Algorithm
 {
@@ -89,6 +92,7 @@ private:
 
   // tools
   asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool_handle; //!
+  //asg::AnaToolHandle<CP::MuonEfficiencyScaleFactors> m_muRecoSF_tool_handle; //!
   std::string m_recoEffSF_tool_name;                                          //!
   asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muIsoSF_tool_handle;  //!
   std::string m_isoEffSF_tool_name;                                           //!
