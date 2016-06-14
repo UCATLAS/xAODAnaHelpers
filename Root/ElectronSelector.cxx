@@ -947,7 +947,9 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0sig_cut, 1 ); }
 
   // decorate electron w/ d0sig info
+  static SG::AuxElement::Decorator< float > d0Decor   ("d0");
   static SG::AuxElement::Decorator< float > d0SigDecor("d0sig");
+  d0Decor   ( *electron ) = static_cast<float>(tp->d0());
   d0SigDecor( *electron ) = static_cast<float>(d0_significance);
 
 
