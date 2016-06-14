@@ -16,8 +16,6 @@
 #include "TH1D.h"
 
 // external tools include(s):
-#include "IsolationSelection/IsolationSelectionTool.h"
-#include "MuonSelectorTools/MuonSelectionTool.h"
 #include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
@@ -25,7 +23,13 @@
 
 namespace Trig {
   class TrigDecisionTool;
-  class MatchingTool;
+  class IMatchingTool;
+}
+
+namespace CP {
+  class IMuonSelectionTool;
+  //class IIsolationSelectionTool;
+  class IsolationSelectionTool;
 }
 
 class MuonSelector : public xAH::Algorithm
@@ -115,13 +119,14 @@ private:
 
   // tools
 
-  asg::AnaToolHandle<CP::IsolationSelectionTool>  m_isolationSelectionTool_handle; //!
-  std::string m_isolationSelectionTool_name;                                       //!
-  asg::AnaToolHandle<CP::IMuonSelectionTool>      m_muonSelectionTool_handle;      //!
-  std::string m_muonSelectionTool_name;                                            //!
-  Trig::TrigDecisionTool*                         m_trigDecTool;                   //!
-  asg::AnaToolHandle<Trig::MatchingTool>         m_trigMuonMatchTool_handle;       //!
-  std::string m_trigMuonMatchTool_name;                                            //!
+  //asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle;  //!
+  asg::AnaToolHandle<CP::IsolationSelectionTool>  m_isolationSelectionTool_handle;  //!
+  std::string m_isolationSelectionTool_name;                                         //!
+  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle;       //!
+  std::string m_muonSelectionTool_name;                                              //!
+  Trig::TrigDecisionTool*                          m_trigDecTool;                    //!
+  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle;       //!
+  std::string m_trigMuonMatchTool_name;                                              //!
   bool m_doTrigMatch;
 
   // variables that don't get filled at submission time should be
