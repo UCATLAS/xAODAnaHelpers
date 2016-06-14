@@ -28,6 +28,8 @@ public:
   				     // algo (these will be the m_inputAlgoSystNames of the algo downstream)
   float       m_systVal;
   std::string m_systName;
+  
+  bool    m_forceDataCalib;
 
 private:
   int m_numEvent;         //!
