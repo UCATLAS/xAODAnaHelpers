@@ -578,6 +578,7 @@ EL::StatusCode MuonSelector :: execute ()
     return EL::StatusCode::SUCCESS;
   }
 
+  if ( m_debug ) { Info("execute()", "Left Muon Selection..." ); }
   return EL::StatusCode::SUCCESS;
 
 }
@@ -586,6 +587,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 					    ConstDataVector<xAOD::MuonContainer>* selectedMuons )
 {
 
+  if ( m_debug ) { Info("execute()", "In  executeSelection..." ); }
   const xAOD::VertexContainer* vertices(nullptr);
   RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
@@ -731,6 +733,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
   }
   */
 
+  if ( m_debug ) { Info("execute()", "Left  executeSelection..." ); }
   return true;
 }
 
@@ -793,10 +796,11 @@ EL::StatusCode MuonSelector :: histFinalize ()
 
 int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
 
+  if ( m_debug ) { Info("execute()", "In  passCuts..." ); }
   // fill cutflow bin 'all' before any cut
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_all, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_all, 1 ); }
-
+  if ( m_debug ) { Info("execute()", "In  passCuts2..." ); }
   // *********************************************************************************************************************************************************************
   //
   // MuonSelectorTool cut: quality & |eta| acceptance cut
@@ -807,14 +811,14 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   static SG::AuxElement::Decorator< char > isLooseQDecor("isLooseQ");
   static SG::AuxElement::Decorator< char > isMediumQDecor("isMediumQ");
   static SG::AuxElement::Decorator< char > isTightQDecor("isTightQ");
-
+  if ( m_debug ) { Info("execute()", "Got the decors" ); }
   int this_quality = static_cast<int>( m_muonSelectionTool_handle->getQuality( *muon ) );
-
+  if ( m_debug ) { Info("execute()", "Got quality" ); }
   isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
   isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
   isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
   isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
-
+  if ( m_debug ) { Info("execute()", "Doing muon quality" ); }
   // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
   if ( ! m_muonSelectionTool_handle->accept( *muon ) ) {
     if ( m_debug ) { Info("PassCuts()", "Muon failed requirements of MuonSelectionTool."); }
@@ -828,6 +832,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   //
   // pT max cut
   //
+  if ( m_debug ) { Info("execute()", "Doing pt cuts" ); }
   if ( m_pT_max != 1e8 ) {
     if (  muon->pt() > m_pT_max ) {
       if ( m_debug ) { Info("PassCuts()", "Muon failed pT max cut."); }
@@ -961,6 +966,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_iso_cut, 1 ); }
 
+  if ( m_debug ) { Info("execute()", "LEave passCuts... pass" ); }
   return 1;
 }
 

@@ -66,7 +66,7 @@ MuonCalibrator :: MuonCalibrator (std::string className) :
   m_outputAlgoSystNames     = "MuonCalibrator_Syst";
   m_systName		    = "";
   m_systVal 		    = 0.;
-
+  m_forceDataCalib          = false;
 }
 
 EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)
@@ -208,7 +208,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   m_numEvent++;
 
-  if ( !m_isMC ) {
+  if ( !m_isMC && !m_forceDataCalib ) {
     if ( m_numEvent == 1 ) { Info("execute()", "Sample is Data! Do not apply any Muon Calibration... "); }
   }
 
@@ -256,7 +256,7 @@ EL::StatusCode MuonCalibrator :: execute ()
     // now calibrate!
     //
     unsigned int idx(0);
-    if ( m_isMC ) {
+    if ( m_isMC || m_forceDataCalib ) {
 
       for ( auto muSC_itr : *(calibMuonsSC.first) ) {
 
@@ -314,6 +314,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   //
   if ( m_verbose ) { m_store->print(); }
 
+  if ( m_debug ) { Info("execute()", "Left "); }
   return EL::StatusCode::SUCCESS;
 
 }
