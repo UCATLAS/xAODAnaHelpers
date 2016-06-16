@@ -315,7 +315,8 @@ if __name__ == "__main__":
                 ROOT.SH.scanDQ2(sh_all, line.rstrip())
               elif use_scanEOS:
                 base = os.path.basename(line)
-                ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.eosDataSet).scanEOS(sh_all,base)
+                eosDataSet = os.path.dirname(line)
+                ROOT.SH.ScanDir().sampleDepth(0).samplePattern(eosDataSet).scanEOS(sh_all,base)
               else:
                 raise Exception("What just happened?")
         else:
