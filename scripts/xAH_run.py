@@ -97,6 +97,7 @@ parser.add_argument('--inputList', dest='use_inputFileList', action='store_true'
 parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
 parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
+parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Can increase verbosity by adding more ``-vv``. Default: no verbosity')
 
 # first is the driver common arguments
@@ -306,7 +307,7 @@ if __name__ == "__main__":
 
     for fname in args.input_filename:
       if args.use_inputFileList:
-        if (args.use_scanDQ2 or use_scanEOS):
+        if (args.use_scanDQ2 or use_scanEOS or args.use_scanXRD):
           with open(fname, 'r') as f:
             for line in f:
               if line.startswith('#') : continue
@@ -317,6 +318,11 @@ if __name__ == "__main__":
                 base = os.path.basename(line)
                 eosDataSet = os.path.dirname(line)
                 ROOT.SH.ScanDir().sampleDepth(0).samplePattern(eosDataSet).scanEOS(sh_all,base)
+              elif args.use_scanXRD:
+                # assume format like root://someserver//path/to/files/*pattern*.root
+                server, path = line.replace('root://', '').split('//')
+                sh_list = ROOT.SH.DiskListXRD(server, path, True)
+                ROOT.SH.ScanDir().scan(sh_all, sh_list)
               else:
                 raise Exception("What just happened?")
         else:
@@ -354,15 +360,12 @@ if __name__ == "__main__":
             eoslist = ROOT.SH.DiskListEOS(fname)
             ROOT.SH.scanDir (sh_all, eoslist, args.inputTag); #Run on all files within dir containing inputTag
           #ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
+        elif args.use_scanXRD:
+          # assume format like root://someserver//path/to/files/*pattern*.root
+          server, path = fname.replace('root://', '').split('//')
+          sh_list = ROOT.SH.DiskListXRD(server, os.path.join(path, ''), True)
+          ROOT.SH.ScanDir().scan(sh_all, sh_list)
         else:
-          '''
-          if fname.startswith("root://"):
-            # magic!
-            server, path = [string[::-1] for string in fname[::-1].split("//",1)][::-1]
-            sh_list = ROOT.SH.DiskListXRD(server, '/{0:s}'.format(path), True)
-            ROOT.SH.ScanDir().scan(sh_all, sh_list)
-          else:
-          '''
           # need to parse and split it up
           fname_base = os.path.basename(fname)
           sample_dir = os.path.dirname(os.path.abspath(fname))
@@ -481,12 +484,13 @@ if __name__ == "__main__":
 
         if isinstance(v, xAH_config):
 
-          # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
-          # is created and added to the job *before* the service
-          #
-          for alg in v._algorithms:
-            if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
-              job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
+          if hasattr(ROOT.EL, 'NTupleSvc'):
+            # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
+            # is created and added to the job *before* the service
+            #
+            for alg in v._algorithms:
+              if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
+                job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
           # Add the algorithms to the job
           #
           map(job.algsAdd, v._algorithms)
