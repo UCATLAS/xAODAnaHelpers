@@ -312,8 +312,9 @@ if __name__ == "__main__":
             for line in f:
               if line.startswith('#') : continue
               if not line.strip()     : continue
+              line = line.strip()
               if args.use_scanDQ2:
-                ROOT.SH.scanDQ2(sh_all, line.rstrip())
+                ROOT.SH.scanDQ2(sh_all, line)
               elif use_scanEOS:
                 base = os.path.basename(line)
                 eosDataSet = os.path.dirname(line)
