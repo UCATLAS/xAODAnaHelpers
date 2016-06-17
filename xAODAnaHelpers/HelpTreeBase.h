@@ -390,6 +390,11 @@ protected:
     std::vector<float> m_jet_mv2c10;
     std::vector<float> m_jet_mv2c20;
     std::vector<int>   m_jet_hadConeExclTruthLabel;
+    std::vector<float> m_jet_vtxOnlineValid;
+    std::vector<float> m_jet_vtxHadDummy;
+    std::vector<float> m_jet_vtxDiffx0;
+    std::vector<float> m_jet_vtxDiffy0;
+    std::vector<float> m_jet_vtxDiffz0;
 
     int m_njet_Fix30;
     std::vector<int>                  m_jet_isFix30;

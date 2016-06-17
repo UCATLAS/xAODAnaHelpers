@@ -1661,6 +1661,16 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_HadronConeExclTruthLabelID").c_str(), &thisJet->m_jet_hadConeExclTruthLabel);
   }
 
+
+  if( m_thisJetInfoSwitch[jetName]->m_flavTagHLT  ) {
+    m_tree->Branch((jetName+"_vtxOnlineValid").c_str(),&thisJet->m_jet_vtxOnlineValid);
+    m_tree->Branch((jetName+"_vtxHadDummy"   ).c_str(),&thisJet->m_jet_vtxHadDummy   );
+    m_tree->Branch((jetName+"_vtxDiffx0"     ).c_str(),&thisJet->m_jet_vtxDiffx0     );
+    m_tree->Branch((jetName+"_vtxDiffy0"     ).c_str(),&thisJet->m_jet_vtxDiffy0     );
+    m_tree->Branch((jetName+"_vtxDiffz0"     ).c_str(),&thisJet->m_jet_vtxDiffz0     );
+
+  }
+
   if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFix.empty() ) {
     int BTagWP[] = {30, 50, 60, 70, 77, 80, 85, 90}; 
     std::string BTagWPstr[] = {"30", "50", "60", "70", "77", "80", "85", "90"}; 
@@ -2374,6 +2384,33 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
     safeFill<int, int>(jet_itr, hadConeExclTruthLabel, thisJet->m_jet_hadConeExclTruthLabel, -999);
 
+    if(m_thisJetInfoSwitch[jetName]->m_flavTagHLT ) {
+
+      const xAOD::Vertex *online_pvx   = jet_itr->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+      const xAOD::Vertex *offline_pvx  = jet_itr->auxdata<const xAOD::Vertex*>("offline_vtx");      
+
+      if(online_pvx)  thisJet->m_jet_vtxOnlineValid.push_back(1.0);
+      else            thisJet->m_jet_vtxOnlineValid.push_back(0.0);
+
+      bool hadDummyPV = (jet_itr->auxdata< char >("hadDummyPV") == '1');
+      if(hadDummyPV)  thisJet->m_jet_vtxHadDummy.push_back(1.0);
+      else            thisJet->m_jet_vtxHadDummy.push_back(0.0);
+
+      float vtxDiffz0 = -99;
+      float vtxDiffx0 = -99;
+      float vtxDiffy0 = -99;
+
+      if(online_pvx){
+	vtxDiffz0 = online_pvx->z() - offline_pvx->z() ;
+	vtxDiffx0 = online_pvx->x() - offline_pvx->x() ;
+	vtxDiffy0 = online_pvx->y() - offline_pvx->y() ;
+      }
+
+      thisJet->m_jet_vtxDiffz0.push_back( vtxDiffz0 );
+      thisJet->m_jet_vtxDiffx0.push_back( vtxDiffx0 );
+      thisJet->m_jet_vtxDiffy0.push_back( vtxDiffy0 );
+    }
+
   }
 
   if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFix.empty() ) {
@@ -2741,6 +2778,15 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_mv2c10.clear();
     thisJet->m_jet_mv2c20.clear();
     thisJet->m_jet_hadConeExclTruthLabel.clear();
+  }
+
+  if ( m_thisJetInfoSwitch[jetName]->m_flavTagHLT  ) {
+    thisJet->m_jet_vtxOnlineValid.clear();
+    thisJet->m_jet_vtxHadDummy.clear();
+    thisJet->m_jet_vtxDiffx0.clear();
+    thisJet->m_jet_vtxDiffy0.clear();
+    thisJet->m_jet_vtxDiffz0.clear();
+
   }
 
   if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFix.empty() ) { // just clear them all....
