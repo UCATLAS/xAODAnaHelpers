@@ -3137,22 +3137,22 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
       thisJet->m_jet_IP2D_weightCofTracks      .clear();
       thisJet->m_jet_IP2D_weightUofTracks      .clear();
 
-//      thisJet->m_jet_IP3D_pu                   .clear();
-//      thisJet->m_jet_IP3D_pb                   .clear();
-//      thisJet->m_jet_IP3D_pc                   .clear();
-//      thisJet->m_jet_IP3D                      .clear();
-//      thisJet->m_jet_IP3D_c                    .clear();
-//      thisJet->m_jet_IP3D_cu                   .clear();
-//      thisJet->m_jet_nIP3DTracks               .clear();
-//      thisJet->m_jet_IP3D_gradeOfTracks        .clear();
-//      thisJet->m_jet_IP3D_flagFromV0ofTracks   .clear();
-//      thisJet->m_jet_IP3D_valD0wrtPVofTracks   .clear();
-//      thisJet->m_jet_IP3D_sigD0wrtPVofTracks   .clear();
-//      thisJet->m_jet_IP3D_valZ0wrtPVofTracks   .clear();
-//      thisJet->m_jet_IP3D_sigZ0wrtPVofTracks   .clear();
-//      thisJet->m_jet_IP3D_weightBofTracks      .clear();
-//      thisJet->m_jet_IP3D_weightCofTracks      .clear();
-//      thisJet->m_jet_IP3D_weightUofTracks      .clear();
+      thisJet->m_jet_IP3D_pu                   .clear();
+      thisJet->m_jet_IP3D_pb                   .clear();
+      thisJet->m_jet_IP3D_pc                   .clear();
+      thisJet->m_jet_IP3D                      .clear();
+      thisJet->m_jet_IP3D_c                    .clear();
+      thisJet->m_jet_IP3D_cu                   .clear();
+      thisJet->m_jet_nIP3DTracks               .clear();
+      thisJet->m_jet_IP3D_gradeOfTracks        .clear();
+      thisJet->m_jet_IP3D_flagFromV0ofTracks   .clear();
+      thisJet->m_jet_IP3D_valD0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP3D_sigD0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP3D_valZ0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP3D_sigZ0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP3D_weightBofTracks      .clear();
+      thisJet->m_jet_IP3D_weightCofTracks      .clear();
+      thisJet->m_jet_IP3D_weightUofTracks      .clear();
     }
     
 
