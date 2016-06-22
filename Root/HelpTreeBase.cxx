@@ -1745,11 +1745,21 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
   }
 
   if( m_thisJetInfoSwitch[jetName]->m_flavTagHLT  ) {
+
     m_tree->Branch((jetName+"_vtxOnlineValid").c_str(),&thisJet->m_jet_vtxOnlineValid);
     m_tree->Branch((jetName+"_vtxHadDummy"   ).c_str(),&thisJet->m_jet_vtxHadDummy   );
-    m_tree->Branch((jetName+"_vtxDiffx0"     ).c_str(),&thisJet->m_jet_vtxDiffx0     );
-    m_tree->Branch((jetName+"_vtxDiffy0"     ).c_str(),&thisJet->m_jet_vtxDiffy0     );
-    m_tree->Branch((jetName+"_vtxDiffz0"     ).c_str(),&thisJet->m_jet_vtxDiffz0     );
+
+    m_tree->Branch((jetName+"_vtx_offline_x0"     ).c_str(),&thisJet->m_jet_vtx_offline_x0     );
+    m_tree->Branch((jetName+"_vtx_offline_y0"     ).c_str(),&thisJet->m_jet_vtx_offline_y0     );
+    m_tree->Branch((jetName+"_vtx_offline_z0"     ).c_str(),&thisJet->m_jet_vtx_offline_z0     );
+
+    m_tree->Branch((jetName+"_vtx_online_x0"      ).c_str(),&thisJet->m_jet_vtx_online_x0     );
+    m_tree->Branch((jetName+"_vtx_online_y0"      ).c_str(),&thisJet->m_jet_vtx_online_y0     );
+    m_tree->Branch((jetName+"_vtx_online_z0"      ).c_str(),&thisJet->m_jet_vtx_online_z0     );
+						 
+    m_tree->Branch((jetName+"_vtx_online_bkg_x0"  ).c_str(),&thisJet->m_jet_vtx_online_bkg_x0     );
+    m_tree->Branch((jetName+"_vtx_online_bkg_y0"  ).c_str(),&thisJet->m_jet_vtx_online_bkg_y0     );
+    m_tree->Branch((jetName+"_vtx_online_bkg_z0"  ).c_str(),&thisJet->m_jet_vtx_online_bkg_z0     );
 
   }
 
@@ -2685,8 +2695,9 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
     if(m_thisJetInfoSwitch[jetName]->m_flavTagHLT ) {
 
-      const xAOD::Vertex *online_pvx   = jet_itr->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
-      const xAOD::Vertex *offline_pvx  = jet_itr->auxdata<const xAOD::Vertex*>("offline_vtx");      
+      const xAOD::Vertex *online_pvx       = jet_itr->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+      const xAOD::Vertex *online_pvx_bkg   = jet_itr->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx_bkg");
+      const xAOD::Vertex *offline_pvx      = jet_itr->auxdata<const xAOD::Vertex*>("offline_vtx");      
 
       if(online_pvx)  thisJet->m_jet_vtxOnlineValid.push_back(1.0);
       else            thisJet->m_jet_vtxOnlineValid.push_back(0.0);
@@ -2695,19 +2706,31 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
       if(hadDummyPV)  thisJet->m_jet_vtxHadDummy.push_back(1.0);
       else            thisJet->m_jet_vtxHadDummy.push_back(0.0);
 
-      float vtxDiffz0 = -99;
-      float vtxDiffx0 = -99;
-      float vtxDiffy0 = -99;
+      thisJet->m_jet_vtx_offline_x0.push_back( offline_pvx->x() );
+      thisJet->m_jet_vtx_offline_y0.push_back( offline_pvx->y() );
+      thisJet->m_jet_vtx_offline_z0.push_back( offline_pvx->z() );
 
       if(online_pvx){
-	vtxDiffz0 = online_pvx->z() - offline_pvx->z() ;
-	vtxDiffx0 = online_pvx->x() - offline_pvx->x() ;
-	vtxDiffy0 = online_pvx->y() - offline_pvx->y() ;
+	thisJet->m_jet_vtx_online_x0.push_back( online_pvx->x() );
+	thisJet->m_jet_vtx_online_y0.push_back( online_pvx->y() );
+	thisJet->m_jet_vtx_online_z0.push_back( online_pvx->z() );
+      }else{	       
+	thisJet->m_jet_vtx_online_x0.push_back( -999 );
+	thisJet->m_jet_vtx_online_y0.push_back( -999 );
+	thisJet->m_jet_vtx_online_z0.push_back( -999 );
       }
 
-      thisJet->m_jet_vtxDiffz0.push_back( vtxDiffz0 );
-      thisJet->m_jet_vtxDiffx0.push_back( vtxDiffx0 );
-      thisJet->m_jet_vtxDiffy0.push_back( vtxDiffy0 );
+
+      if(online_pvx_bkg){
+	thisJet->m_jet_vtx_online_bkg_x0.push_back( online_pvx_bkg->x() );
+	thisJet->m_jet_vtx_online_bkg_y0.push_back( online_pvx_bkg->y() );
+	thisJet->m_jet_vtx_online_bkg_z0.push_back( online_pvx_bkg->z() );
+      }else{	       
+	thisJet->m_jet_vtx_online_bkg_x0.push_back( -999 );
+	thisJet->m_jet_vtx_online_bkg_y0.push_back( -999 );
+	thisJet->m_jet_vtx_online_bkg_z0.push_back( -999 );
+      }
+
     }
 
   }
@@ -3161,9 +3184,14 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
   if ( m_thisJetInfoSwitch[jetName]->m_flavTagHLT  ) {
     thisJet->m_jet_vtxOnlineValid.clear();
     thisJet->m_jet_vtxHadDummy.clear();
-    thisJet->m_jet_vtxDiffx0.clear();
-    thisJet->m_jet_vtxDiffy0.clear();
-    thisJet->m_jet_vtxDiffz0.clear();
+
+    thisJet->m_jet_vtx_offline_x0.clear();
+    thisJet->m_jet_vtx_offline_y0.clear();
+    thisJet->m_jet_vtx_offline_z0.clear();
+
+    thisJet->m_jet_vtx_online_bkg_x0.clear();
+    thisJet->m_jet_vtx_online_bkg_y0.clear();
+    thisJet->m_jet_vtx_online_bkg_z0.clear();
 
   }
 

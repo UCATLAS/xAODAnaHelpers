@@ -473,9 +473,18 @@ protected:
 
     std::vector<float> m_jet_vtxOnlineValid;
     std::vector<float> m_jet_vtxHadDummy;
-    std::vector<float> m_jet_vtxDiffx0;
-    std::vector<float> m_jet_vtxDiffy0;
-    std::vector<float> m_jet_vtxDiffz0;
+
+    std::vector<float> m_jet_vtx_offline_x0;
+    std::vector<float> m_jet_vtx_offline_y0;
+    std::vector<float> m_jet_vtx_offline_z0;
+
+    std::vector<float> m_jet_vtx_online_x0;
+    std::vector<float> m_jet_vtx_online_y0;
+    std::vector<float> m_jet_vtx_online_z0;
+
+    std::vector<float> m_jet_vtx_online_bkg_x0;
+    std::vector<float> m_jet_vtx_online_bkg_y0;
+    std::vector<float> m_jet_vtx_online_bkg_z0;
 
     int m_njet_Fix30;
     std::vector<int>                  m_jet_isFix30;
