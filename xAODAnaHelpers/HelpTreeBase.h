@@ -188,8 +188,14 @@ public:
 
  protected:
 
-  template<typename T, typename U>
-    void safeFill(const xAOD::Jet* jet, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units = 1);
+  template<typename T, typename U, typename V>
+    void safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units = 1);
+
+  template<typename T, typename U, typename V>
+    void safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >& destination, int m_units = 1);
+
+  template<typename T>
+    void setBranch(std::string prefix, std::string varName, std::vector<T>* localVectorPtr);
 
 protected:
 
@@ -390,11 +396,95 @@ protected:
     std::vector<float> m_jet_mv2c10;
     std::vector<float> m_jet_mv2c20;
     std::vector<int>   m_jet_hadConeExclTruthLabel;
+
+    std::vector<float>   m_jet_COMB;
+
+    // Jet Fitter 
+    std::vector<float>  m_jet_jf_nVTX           ;
+    std::vector<float>  m_jet_jf_nSingleTracks  ;
+    std::vector<float>  m_jet_jf_nTracksAtVtx   ;
+    std::vector<float>  m_jet_jf_mass           ;
+    std::vector<float>  m_jet_jf_energyFraction ;
+    std::vector<float>  m_jet_jf_significance3d ;
+    std::vector<float>  m_jet_jf_deltaeta       ;
+    std::vector<float>  m_jet_jf_deltaphi       ;
+    std::vector<float>  m_jet_jf_N2Tpar         ;
+    //std::vector<float>  m_jet_jf_pb             ;
+    //std::vector<float>  m_jet_jf_pc             ;
+    //std::vector<float>  m_jet_jf_pu             ;
+
+    // SV Details
+    std::vector<float> m_jet_sv0_NGTinSvx  ;
+    std::vector<float> m_jet_sv0_N2Tpair   ;
+    std::vector<float> m_jet_sv0_massvx    ;
+    std::vector<float> m_jet_sv0_efracsvx  ;
+    std::vector<float> m_jet_sv0_normdist  ;
+
+    std::vector<float> m_jet_sv1_pu        ;
+    std::vector<float> m_jet_sv1_pb        ;
+    std::vector<float> m_jet_sv1_pc        ;
+    std::vector<float> m_jet_sv1_c         ;
+    std::vector<float> m_jet_sv1_cu        ;
+    std::vector<float> m_jet_sv1_NGTinSvx  ;
+    std::vector<float> m_jet_sv1_N2Tpair   ;
+    std::vector<float> m_jet_sv1_massvx    ;
+    std::vector<float> m_jet_sv1_efracsvx  ;
+    std::vector<float> m_jet_sv1_normdist  ;
+    std::vector<float> m_jet_sv1_Lxy       ;
+    std::vector<float> m_jet_sv1_L3d       ;
+    std::vector<float> m_jet_sv1_distmatlay;
+    std::vector<float> m_jet_sv1_dR        ;
+
+    // IP3D
+    std::vector<float> m_jet_IP2D_pu                   ;
+    std::vector<float> m_jet_IP2D_pb                   ;
+    std::vector<float> m_jet_IP2D_pc                   ;
+    std::vector<float> m_jet_IP2D                      ;
+    std::vector<float> m_jet_IP2D_c                    ;
+    std::vector<float> m_jet_IP2D_cu                   ;
+    std::vector<float> m_jet_nIP2DTracks               ;
+
+    std::vector<std::vector<float> > m_jet_IP2D_gradeOfTracks        ;
+    std::vector<std::vector<float> > m_jet_IP2D_flagFromV0ofTracks   ;
+    std::vector<std::vector<float> > m_jet_IP2D_valD0wrtPVofTracks   ;
+    std::vector<std::vector<float> > m_jet_IP2D_sigD0wrtPVofTracks   ;
+    std::vector<std::vector<float> > m_jet_IP2D_weightBofTracks      ;
+    std::vector<std::vector<float> > m_jet_IP2D_weightCofTracks      ;
+    std::vector<std::vector<float> > m_jet_IP2D_weightUofTracks      ;
+
+    std::vector<float> m_jet_IP3D_pu                   ;
+    std::vector<float> m_jet_IP3D_pb                   ;
+    std::vector<float> m_jet_IP3D_pc                   ;
+    std::vector<float> m_jet_IP3D                      ;
+    std::vector<float> m_jet_IP3D_c                    ;
+    std::vector<float> m_jet_IP3D_cu                   ;
+    std::vector<float> m_jet_nIP3DTracks               ;
+    std::vector<std::vector<float> > m_jet_IP3D_gradeOfTracks        ;
+    std::vector<std::vector<float> > m_jet_IP3D_flagFromV0ofTracks   ;
+    std::vector<std::vector<float> > m_jet_IP3D_valD0wrtPVofTracks   ;
+    std::vector<std::vector<float> > m_jet_IP3D_sigD0wrtPVofTracks   ;
+    std::vector<std::vector<float> > m_jet_IP3D_valZ0wrtPVofTracks   ;
+    std::vector<std::vector<float> > m_jet_IP3D_sigZ0wrtPVofTracks   ;
+    std::vector<std::vector<float> > m_jet_IP3D_weightBofTracks      ;
+    std::vector<std::vector<float> > m_jet_IP3D_weightCofTracks      ;
+    std::vector<std::vector<float> > m_jet_IP3D_weightUofTracks      ;
+
+
+
     std::vector<float> m_jet_vtxOnlineValid;
     std::vector<float> m_jet_vtxHadDummy;
-    std::vector<float> m_jet_vtxDiffx0;
-    std::vector<float> m_jet_vtxDiffy0;
-    std::vector<float> m_jet_vtxDiffz0;
+
+    std::vector<float> m_jet_vtx_offline_x0;
+    std::vector<float> m_jet_vtx_offline_y0;
+    std::vector<float> m_jet_vtx_offline_z0;
+
+    std::vector<float> m_jet_vtx_online_x0;
+    std::vector<float> m_jet_vtx_online_y0;
+    std::vector<float> m_jet_vtx_online_z0;
+
+    std::vector<float> m_jet_vtx_online_bkg_x0;
+    std::vector<float> m_jet_vtx_online_bkg_y0;
+    std::vector<float> m_jet_vtx_online_bkg_z0;
 
     int m_njet_Fix30;
     std::vector<int>                  m_jet_isFix30;
@@ -839,14 +929,30 @@ protected:
 };
 
 
-template<typename T, typename U>
-void HelpTreeBase::safeFill(const xAOD::Jet* jet, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units){
-  if ( accessor.isAvailable( *jet ) ) {
-    destination.push_back( accessor( *jet ) / m_units );
+template<typename T, typename U, typename V>
+void HelpTreeBase::safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units){
+  if ( accessor.isAvailable( *xAODObj ) ) {
+    destination.push_back( accessor( *xAODObj ) / m_units );
   } else {
     destination.push_back( defaultValue );
   }
   return;
+}
+
+template<typename T, typename U, typename V>
+void HelpTreeBase::safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >& destination, int m_units){
+  destination.push_back( std::vector<U>() );
+
+  if ( accessor.isAvailable( *xAODObj ) ) {
+    for(U itemInVec : accessor(*xAODObj))        destination.back().push_back(itemInVec / m_units);
+  } 
+  return;
+}
+
+
+template<typename T>
+void HelpTreeBase::setBranch(std::string prefix, std::string varName, std::vector<T>* localVectorPtr){
+  m_tree->Branch((prefix+"_"+varName).c_str(),        localVectorPtr);
 }
 
 

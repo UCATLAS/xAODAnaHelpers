@@ -22,6 +22,8 @@
 
 #include "AsgTools/StatusCode.h"
 
+using std::vector;
+
 // needed? should it be here?
 #ifdef __MAKECINT__
 #pragma link C++ class vector<float>+;
@@ -1657,17 +1659,107 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
     m_tree->Branch((jetName+"_SV1IP3D").c_str(),       &thisJet->m_jet_sv1ip3d);
     m_tree->Branch((jetName+"_MV2c00").c_str(),        &thisJet->m_jet_mv2c00);
     m_tree->Branch((jetName+"_MV2c10").c_str(),        &thisJet->m_jet_mv2c10);
-    m_tree->Branch((jetName+"_MV2c20").c_str(),        &thisJet->m_jet_mv2c20);
+    setBranch<float>(jetName,  "MV2c20",    &thisJet->m_jet_mv2c20);
+
     m_tree->Branch((jetName+"_HadronConeExclTruthLabelID").c_str(), &thisJet->m_jet_hadConeExclTruthLabel);
+
+    setBranch<float>(jetName,  "COMB",            &thisJet->m_jet_COMB           );
+
+    if( m_thisJetInfoSwitch[jetName]->m_jetFitterDetails){
+
+      setBranch<float>(jetName, "JetFitter_nVTX"          ,   &thisJet->m_jet_jf_nVTX            );
+      setBranch<float>(jetName, "JetFitter_nSingleTracks" ,   &thisJet->m_jet_jf_nSingleTracks   );
+      setBranch<float>(jetName, "JetFitter_nTracksAtVtx"  ,   &thisJet->m_jet_jf_nTracksAtVtx    );
+      setBranch<float>(jetName, "JetFitter_mass"          ,   &thisJet->m_jet_jf_mass            );
+      setBranch<float>(jetName, "JetFitter_energyFraction",   &thisJet->m_jet_jf_energyFraction  );
+      setBranch<float>(jetName, "JetFitter_significance3d",   &thisJet->m_jet_jf_significance3d  );
+      setBranch<float>(jetName, "JetFitter_deltaeta"      ,   &thisJet->m_jet_jf_deltaeta        );
+      setBranch<float>(jetName, "JetFitter_deltaphi"      ,   &thisJet->m_jet_jf_deltaphi        );
+      setBranch<float>(jetName, "JetFitter_N2Tpair"       ,   &thisJet->m_jet_jf_N2Tpar          );
+      //setBranch<float>(jetName, "JetFitter_pb"            ,   &thisJet->m_jet_jf_pb              );
+      //setBranch<float>(jetName, "JetFitter_pc"            ,   &thisJet->m_jet_jf_pc              );
+      //setBranch<float>(jetName, "JetFitter_pu"            ,   &thisJet->m_jet_jf_pu              );
+      
+    }
+
+    if( m_thisJetInfoSwitch[jetName]->m_svDetails){
+
+      setBranch<float>(jetName, "sv0_NGTinSvx",      &thisJet->m_jet_sv0_NGTinSvx  );
+      setBranch<float>(jetName, "sv0_N2Tpair",       &thisJet->m_jet_sv0_N2Tpair   );
+      setBranch<float>(jetName, "sv0_massvx",        &thisJet->m_jet_sv0_massvx    );
+      setBranch<float>(jetName, "sv0_efracsvx",      &thisJet->m_jet_sv0_efracsvx  );
+      setBranch<float>(jetName, "sv0_normdist",      &thisJet->m_jet_sv0_normdist  );
+      setBranch<float>(jetName, "sv1_pu",            &thisJet->m_jet_sv1_pu        );
+      setBranch<float>(jetName, "sv1_pb",            &thisJet->m_jet_sv1_pb        );
+      setBranch<float>(jetName, "sv1_pc",            &thisJet->m_jet_sv1_pc        );
+      setBranch<float>(jetName, "sv1_c",             &thisJet->m_jet_sv1_c         );
+      setBranch<float>(jetName, "sv1_cu",            &thisJet->m_jet_sv1_cu        );
+      setBranch<float>(jetName, "sv1_NGTinSvx",      &thisJet->m_jet_sv1_NGTinSvx  );
+      setBranch<float>(jetName, "sv1_N2Tpair",       &thisJet->m_jet_sv1_N2Tpair   );
+      setBranch<float>(jetName, "sv1_massvx",        &thisJet->m_jet_sv1_massvx    );
+      setBranch<float>(jetName, "sv1_efracsvx",      &thisJet->m_jet_sv1_efracsvx  );
+      setBranch<float>(jetName, "sv1_normdist",      &thisJet->m_jet_sv1_normdist  );
+      setBranch<float>(jetName, "sv1_Lxy",           &thisJet->m_jet_sv1_Lxy       );
+      setBranch<float>(jetName, "sv1_L3d",           &thisJet->m_jet_sv1_L3d       );
+      setBranch<float>(jetName, "sv1_distmatlay",    &thisJet->m_jet_sv1_distmatlay);
+      setBranch<float>(jetName, "sv1_dR",            &thisJet->m_jet_sv1_dR        );
+
+    }
+
+    if( m_thisJetInfoSwitch[jetName]->m_ipDetails){    
+
+      setBranch<float>(jetName,  "IP2D_pu",                   &thisJet->m_jet_IP2D_pu                   );
+      setBranch<float>(jetName,  "IP2D_pb",                   &thisJet->m_jet_IP2D_pb                   );
+      setBranch<float>(jetName,  "IP2D_pc",                   &thisJet->m_jet_IP2D_pc                   );
+      setBranch<float>(jetName,  "IP2D",                      &thisJet->m_jet_IP2D                      );
+      setBranch<float>(jetName,  "IP2D_c",                    &thisJet->m_jet_IP2D_c                    );
+      setBranch<float>(jetName,  "IP2D_cu",                   &thisJet->m_jet_IP2D_cu                   );
+      setBranch<float>(jetName,  "nIP2DTracks"              , &thisJet->m_jet_nIP2DTracks               );
+      setBranch<vector<float> >(jetName,  "IP2D_gradeOfTracks"       , &thisJet->m_jet_IP2D_gradeOfTracks        );
+      setBranch<vector<float> >(jetName,  "IP2D_flagFromV0ofTracks"  , &thisJet->m_jet_IP2D_flagFromV0ofTracks   );
+      setBranch<vector<float> >(jetName,  "IP2D_valD0wrtPVofTracks"  , &thisJet->m_jet_IP2D_valD0wrtPVofTracks   );
+      setBranch<vector<float> >(jetName,  "IP2D_sigD0wrtPVofTracks"  , &thisJet->m_jet_IP2D_sigD0wrtPVofTracks   );
+      setBranch<vector<float> >(jetName,  "IP2D_weightBofTracks"     , &thisJet->m_jet_IP2D_weightBofTracks      );
+      setBranch<vector<float> >(jetName,  "IP2D_weightCofTracks"     , &thisJet->m_jet_IP2D_weightCofTracks      );
+      setBranch<vector<float> >(jetName,  "IP2D_weightUofTracks"     , &thisJet->m_jet_IP2D_weightUofTracks      );
+
+      setBranch<float>(jetName,  "IP3D_pu",                   &thisJet->m_jet_IP3D_pu                   );
+      setBranch<float>(jetName,  "IP3D_pb",                   &thisJet->m_jet_IP3D_pb                   );
+      setBranch<float>(jetName,  "IP3D_pc",                   &thisJet->m_jet_IP3D_pc                   );
+      setBranch<float>(jetName,  "IP3D",                      &thisJet->m_jet_IP3D                      );
+      setBranch<float>(jetName,  "IP3D_c",                    &thisJet->m_jet_IP3D_c                    );
+      setBranch<float>(jetName,  "IP3D_cu",                   &thisJet->m_jet_IP3D_cu                   );
+      setBranch<float>(jetName,  "nIP3DTracks"              , &thisJet->m_jet_nIP3DTracks               );
+      setBranch<vector<float> >(jetName,  "IP3D_gradeOfTracks"       , &thisJet->m_jet_IP3D_gradeOfTracks        );
+      setBranch<vector<float> >(jetName,  "IP3D_flagFromV0ofTracks"  , &thisJet->m_jet_IP3D_flagFromV0ofTracks   );
+      setBranch<vector<float> >(jetName,  "IP3D_valD0wrtPVofTracks"  , &thisJet->m_jet_IP3D_valD0wrtPVofTracks   );
+      setBranch<vector<float> >(jetName,  "IP3D_sigD0wrtPVofTracks"  , &thisJet->m_jet_IP3D_sigD0wrtPVofTracks   );
+      setBranch<vector<float> >(jetName,  "IP3D_valZ0wrtPVofTracks"  , &thisJet->m_jet_IP3D_valZ0wrtPVofTracks   );
+      setBranch<vector<float> >(jetName,  "IP3D_sigZ0wrtPVofTracks"  , &thisJet->m_jet_IP3D_sigZ0wrtPVofTracks   );
+      setBranch<vector<float> >(jetName,  "IP3D_weightBofTracks"     , &thisJet->m_jet_IP3D_weightBofTracks      );
+      setBranch<vector<float> >(jetName,  "IP3D_weightCofTracks"     , &thisJet->m_jet_IP3D_weightCofTracks      );
+      setBranch<vector<float> >(jetName,  "IP3D_weightUofTracks"     , &thisJet->m_jet_IP3D_weightUofTracks      );
+
+    }
+
   }
 
-
   if( m_thisJetInfoSwitch[jetName]->m_flavTagHLT  ) {
+
     m_tree->Branch((jetName+"_vtxOnlineValid").c_str(),&thisJet->m_jet_vtxOnlineValid);
     m_tree->Branch((jetName+"_vtxHadDummy"   ).c_str(),&thisJet->m_jet_vtxHadDummy   );
-    m_tree->Branch((jetName+"_vtxDiffx0"     ).c_str(),&thisJet->m_jet_vtxDiffx0     );
-    m_tree->Branch((jetName+"_vtxDiffy0"     ).c_str(),&thisJet->m_jet_vtxDiffy0     );
-    m_tree->Branch((jetName+"_vtxDiffz0"     ).c_str(),&thisJet->m_jet_vtxDiffz0     );
+
+    m_tree->Branch((jetName+"_vtx_offline_x0"     ).c_str(),&thisJet->m_jet_vtx_offline_x0     );
+    m_tree->Branch((jetName+"_vtx_offline_y0"     ).c_str(),&thisJet->m_jet_vtx_offline_y0     );
+    m_tree->Branch((jetName+"_vtx_offline_z0"     ).c_str(),&thisJet->m_jet_vtx_offline_z0     );
+
+    m_tree->Branch((jetName+"_vtx_online_x0"      ).c_str(),&thisJet->m_jet_vtx_online_x0     );
+    m_tree->Branch((jetName+"_vtx_online_y0"      ).c_str(),&thisJet->m_jet_vtx_online_y0     );
+    m_tree->Branch((jetName+"_vtx_online_z0"      ).c_str(),&thisJet->m_jet_vtx_online_z0     );
+						 
+    m_tree->Branch((jetName+"_vtx_online_bkg_x0"  ).c_str(),&thisJet->m_jet_vtx_online_bkg_x0     );
+    m_tree->Branch((jetName+"_vtx_online_bkg_y0"  ).c_str(),&thisJet->m_jet_vtx_online_bkg_y0     );
+    m_tree->Branch((jetName+"_vtx_online_bkg_z0"  ).c_str(),&thisJet->m_jet_vtx_online_bkg_z0     );
 
   }
 
@@ -1957,89 +2049,89 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
   if (m_thisJetInfoSwitch[jetName]->m_clean) {
 
     static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
-    safeFill<float, float>(jet_itr, jetTime, thisJet->m_jet_time, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, jetTime, thisJet->m_jet_time, -999);
 
     static SG::AuxElement::ConstAccessor<float> LArQuality ("LArQuality");
-    safeFill<float, float>(jet_itr, LArQuality, thisJet->m_jet_LArQuality, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, LArQuality, thisJet->m_jet_LArQuality, -999);
 
     static SG::AuxElement::ConstAccessor<float> hecq ("HECQuality");
-    safeFill<float, float>(jet_itr, hecq, thisJet->m_jet_hecq, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, hecq, thisJet->m_jet_hecq, -999);
 
     static SG::AuxElement::ConstAccessor<float> negE ("NegativeE");
-    safeFill<float, float>(jet_itr, negE, thisJet->m_jet_negE, -999, m_units);
+    safeFill<float, float, xAOD::Jet>(jet_itr, negE, thisJet->m_jet_negE, -999, m_units);
 
     static SG::AuxElement::ConstAccessor<float> avLArQF ("AverageLArQF");
-    safeFill<float, float>(jet_itr, avLArQF, thisJet->m_jet_avLArQF, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, avLArQF, thisJet->m_jet_avLArQF, -999);
 
     static SG::AuxElement::ConstAccessor<float> bchCorrCell ("BchCorrCell");
-    safeFill<float, float>(jet_itr, bchCorrCell, thisJet->m_jet_bchCorrCell, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, bchCorrCell, thisJet->m_jet_bchCorrCell, -999);
 
     static SG::AuxElement::ConstAccessor<float> N90Const ("N90Constituents");
-    safeFill<float, float>(jet_itr, N90Const, thisJet->m_jet_N90Const, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, N90Const, thisJet->m_jet_N90Const, -999);
 
     static SG::AuxElement::ConstAccessor<float> LArBadHVEFrac ("LArBadHVEnergyFrac");
-    safeFill<float, float>(jet_itr, LArBadHVEFrac, thisJet->m_jet_LArBadHVEFrac, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, LArBadHVEFrac, thisJet->m_jet_LArBadHVEFrac, -999);
 
     static SG::AuxElement::ConstAccessor<int> LArBadHVNCell ("LArBadHVNCell");
-    safeFill<int, int>(jet_itr, LArBadHVNCell, thisJet->m_jet_LArBadHVNCell, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, LArBadHVNCell, thisJet->m_jet_LArBadHVNCell, -999);
 
     static SG::AuxElement::ConstAccessor<float> OotFracClus5 ("OotFracClusters5");
-    safeFill<float, float>(jet_itr, OotFracClus5, thisJet->m_jet_OotFracClus5, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, OotFracClus5, thisJet->m_jet_OotFracClus5, -999);
 
     static SG::AuxElement::ConstAccessor<float> OotFracClus10 ("OotFracClusters10");
-    safeFill<float, float>(jet_itr, OotFracClus10, thisJet->m_jet_OotFracClus10, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, OotFracClus10, thisJet->m_jet_OotFracClus10, -999);
 
     static SG::AuxElement::ConstAccessor<float> leadClusPt ("LeadingClusterPt");
-    safeFill<float, float>(jet_itr, leadClusPt, thisJet->m_jet_LeadingClusterPt, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, leadClusPt, thisJet->m_jet_LeadingClusterPt, -999);
 
     static SG::AuxElement::ConstAccessor<float> leadClusSecondLambda ("LeadingClusterSecondLambda");
-    safeFill<float, float>(jet_itr, leadClusSecondLambda, thisJet->m_jet_LeadingClusterSecondLambda, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, leadClusSecondLambda, thisJet->m_jet_LeadingClusterSecondLambda, -999);
 
     static SG::AuxElement::ConstAccessor<float> leadClusCenterLambda ("LeadingClusterCenterLambda");
-    safeFill<float, float>(jet_itr, leadClusCenterLambda, thisJet->m_jet_LeadingClusterCenterLambda, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, leadClusCenterLambda, thisJet->m_jet_LeadingClusterCenterLambda, -999);
 
     static SG::AuxElement::ConstAccessor<float> leadClusSecondR ("LeadingClusterSecondR");
-    safeFill<float, float>(jet_itr, leadClusSecondR, thisJet->m_jet_LeadingClusterSecondR, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, leadClusSecondR, thisJet->m_jet_LeadingClusterSecondR, -999);
 
     static SG::AuxElement::ConstAccessor<char> clean_passLooseBad ("clean_passLooseBad");
-    safeFill<char, int>(jet_itr, clean_passLooseBad, thisJet->m_jet_clean_passLooseBad, -999);
+    safeFill<char, int, xAOD::Jet>(jet_itr, clean_passLooseBad, thisJet->m_jet_clean_passLooseBad, -999);
 
     static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
-    safeFill<char, int>(jet_itr, clean_passLooseBadUgly, thisJet->m_jet_clean_passLooseBadUgly, -999);
+    safeFill<char, int, xAOD::Jet>(jet_itr, clean_passLooseBadUgly, thisJet->m_jet_clean_passLooseBadUgly, -999);
 
     static SG::AuxElement::ConstAccessor<char> clean_passTightBad ("clean_passTightBad");
-    safeFill<char, int>(jet_itr, clean_passTightBad, thisJet->m_jet_clean_passTightBad, -999);
+    safeFill<char, int, xAOD::Jet>(jet_itr, clean_passTightBad, thisJet->m_jet_clean_passTightBad, -999);
 
     static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
-    safeFill<char, int>(jet_itr, clean_passTightBadUgly, thisJet->m_jet_clean_passTightBadUgly, -999);
+    safeFill<char, int, xAOD::Jet>(jet_itr, clean_passTightBadUgly, thisJet->m_jet_clean_passTightBadUgly, -999);
 
   } // clean
 
   if ( m_thisJetInfoSwitch[jetName]->m_energy ) {
 
     static SG::AuxElement::ConstAccessor<float> HECf ("HECFrac");
-    safeFill<float, float>(jet_itr, HECf, thisJet->m_jet_HECf, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, HECf, thisJet->m_jet_HECf, -999);
 
     static SG::AuxElement::ConstAccessor<float> EMf ("EMFrac");
-    safeFill<float, float>(jet_itr, EMf, thisJet->m_jet_EMf, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, EMf, thisJet->m_jet_EMf, -999);
 
     static SG::AuxElement::ConstAccessor<float> centroidR ("CentroidR");
-    safeFill<float, float>(jet_itr, centroidR, thisJet->m_jet_centroidR, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, centroidR, thisJet->m_jet_centroidR, -999);
 
     static SG::AuxElement::ConstAccessor<float> fracSampMax ("FracSamplingMax");
-    safeFill<float, float>(jet_itr, fracSampMax, thisJet->m_jet_fracSampMax, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, fracSampMax, thisJet->m_jet_fracSampMax, -999);
 
     static SG::AuxElement::ConstAccessor<int> fracSampMaxIdx ("FracSamplingMaxIndex");
-    safeFill<int, float>(jet_itr, fracSampMaxIdx, thisJet->m_jet_fracSampMaxIdx, -999);
+    safeFill<int, float, xAOD::Jet>(jet_itr, fracSampMaxIdx, thisJet->m_jet_fracSampMaxIdx, -999);
 
     static SG::AuxElement::ConstAccessor<float> lowEtFrac ("LowEtConstituentsFrac");
-    safeFill<float, float>(jet_itr, lowEtFrac, thisJet->m_jet_lowEtFrac, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, lowEtFrac, thisJet->m_jet_lowEtFrac, -999);
 
     static SG::AuxElement::ConstAccessor<int> muonSegCount ("GhostMuonSegmentCount");
-    safeFill<int, float>(jet_itr, muonSegCount, thisJet->m_jet_muonSegCount, -999);
+    safeFill<int, float, xAOD::Jet>(jet_itr, muonSegCount, thisJet->m_jet_muonSegCount, -999);
 
     static SG::AuxElement::ConstAccessor<float> width ("Width");
-    safeFill<float, float>(jet_itr, width, thisJet->m_jet_width, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, width, thisJet->m_jet_width, -999);
 
   } // energy
 
@@ -2382,12 +2474,230 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 
     // flavor groups truth definition
     static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
-    safeFill<int, int>(jet_itr, hadConeExclTruthLabel, thisJet->m_jet_hadConeExclTruthLabel, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, hadConeExclTruthLabel, thisJet->m_jet_hadConeExclTruthLabel, -999);
+
+
+    thisJet->m_jet_COMB           .push_back( (myBTag->SV1_loglikelihoodratio() + myBTag->IP3D_loglikelihoodratio() ) );
+
+    if(m_thisJetInfoSwitch[jetName]->m_jetFitterDetails ) {
+
+      static SG::AuxElement::ConstAccessor< int   > jf_nVTXAcc       ("JetFitter_nVTX");
+      safeFill<int, float, xAOD::BTagging>(myBTag, jf_nVTXAcc, thisJet->m_jet_jf_nVTX, -999);
+
+      static SG::AuxElement::ConstAccessor< int   > jf_nSingleTracks ("JetFitter_nSingleTracks");
+      safeFill<int, float, xAOD::BTagging>(myBTag, jf_nSingleTracks, thisJet->m_jet_jf_nSingleTracks, -999);
+
+      static SG::AuxElement::ConstAccessor< int   > jf_nTracksAtVtx  ("JetFitter_nTracksAtVtx");
+      safeFill<int, float, xAOD::BTagging>(myBTag, jf_nTracksAtVtx, thisJet->m_jet_jf_nTracksAtVtx, -999);
+
+      static SG::AuxElement::ConstAccessor< float > jf_mass          ("JetFitter_mass");
+      safeFill<float, float, xAOD::BTagging>(myBTag, jf_mass, thisJet->m_jet_jf_mass, -999);
+
+      static SG::AuxElement::ConstAccessor< float > jf_energyFraction("JetFitter_energyFraction");
+      safeFill<float, float, xAOD::BTagging>(myBTag, jf_energyFraction, thisJet->m_jet_jf_energyFraction, -999);
+
+      static SG::AuxElement::ConstAccessor< float > jf_significance3d("JetFitter_significance3d");
+      safeFill<float, float, xAOD::BTagging>(myBTag, jf_significance3d, thisJet->m_jet_jf_significance3d, -999);
+
+      static SG::AuxElement::ConstAccessor< float > jf_deltaeta      ("JetFitter_deltaeta");
+      safeFill<float, float, xAOD::BTagging>(myBTag, jf_deltaeta, thisJet->m_jet_jf_deltaeta, -999);
+
+      static SG::AuxElement::ConstAccessor< float > jf_deltaphi      ("JetFitter_deltaphi");
+      safeFill<float, float, xAOD::BTagging>(myBTag, jf_deltaphi, thisJet->m_jet_jf_deltaphi, -999);
+
+      static SG::AuxElement::ConstAccessor< int   > jf_N2Tpar        ("JetFitter_N2Tpair");
+      safeFill<int, float, xAOD::BTagging>(myBTag, jf_N2Tpar, thisJet->m_jet_jf_N2Tpar, -999);
+
+      //static SG::AuxElement::ConstAccessor< double > jf_pb           ("JetFitterCombNN_pb");
+      //safeFill<double, float, xAOD::BTagging>(myBTag, jf_pb, thisJet->m_jet_jf_pb, -999);
+      //
+      //static SG::AuxElement::ConstAccessor< double > jf_pc           ("JetFitterCombNN_pc");
+      //safeFill<double, float, xAOD::BTagging>(myBTag, jf_pc, thisJet->m_jet_jf_pc, -999);
+      //
+      //static SG::AuxElement::ConstAccessor< double > jf_pu           ("JetFitterCombNN_pu");
+      //safeFill<double, float, xAOD::BTagging>(myBTag, jf_pu, thisJet->m_jet_jf_pu, -999);
+
+    }
+
+    if(m_thisJetInfoSwitch[jetName]->m_svDetails ) {
+
+      /// @brief SV0 : Number of good tracks in vertex
+      static SG::AuxElement::ConstAccessor< int   >   sv0_NGTinSvxAcc     ("SV0_NGTinSvx");
+      safeFill<int, float, xAOD::BTagging>(myBTag,    sv0_NGTinSvxAcc, thisJet->m_jet_sv0_NGTinSvx, -999);
+
+      // @brief SV0 : Number of 2-track pairs
+      static SG::AuxElement::ConstAccessor< int   >   sv0_N2TpairAcc      ("SV0_N2Tpair");
+      safeFill<int, float, xAOD::BTagging>(myBTag, sv0_N2TpairAcc, thisJet->m_jet_sv0_N2Tpair, -999);
+
+      /// @brief SV0 : vertex mass
+      static SG::AuxElement::ConstAccessor< float   > sv0_masssvxAcc      ("SV0_masssvx");
+      safeFill<float, float, xAOD::BTagging>(myBTag, sv0_masssvxAcc, thisJet->m_jet_sv0_massvx, -999);
+
+      /// @brief SV0 : energy fraction
+      static SG::AuxElement::ConstAccessor< float   > sv0_efracsvxAcc     ("SV0_efracsvx");                                    
+      safeFill<float, float, xAOD::BTagging>(myBTag, sv0_efracsvxAcc, thisJet->m_jet_sv0_efracsvx, -999);
+      
+      /// @brief SV0 : 3D vertex significance
+      static SG::AuxElement::ConstAccessor< float   > sv0_normdistAcc     ("SV0_normdist");
+      safeFill<float, float, xAOD::BTagging>(myBTag, sv0_normdistAcc, thisJet->m_jet_sv0_normdist, -999);
+
+      double sv0;
+      myBTag->variable<double>("SV0", "significance3D", sv0);
+      thisJet->m_jet_sv0.push_back(sv0);
+
+
+      /// @brief SV1 : Number of good tracks in vertex
+      static SG::AuxElement::ConstAccessor< int   >   sv1_NGTinSvxAcc     ("SV1_NGTinSvx");
+      safeFill<int, float, xAOD::BTagging>(myBTag, sv1_NGTinSvxAcc, thisJet->m_jet_sv1_NGTinSvx, -999);
+
+      // @brief SV1 : Number of 2-track pairs
+      static SG::AuxElement::ConstAccessor< int   >   sv1_N2TpairAcc      ("SV1_N2Tpair");
+      safeFill<int, float, xAOD::BTagging>(myBTag, sv1_N2TpairAcc, thisJet->m_jet_sv1_N2Tpair, -999);
+
+      /// @brief SV1 : vertex mass
+      static SG::AuxElement::ConstAccessor< float   > sv1_masssvxAcc      ("SV1_masssvx");
+      safeFill<float, float, xAOD::BTagging>(myBTag, sv1_masssvxAcc, thisJet->m_jet_sv1_massvx, -999);
+
+      /// @brief SV1 : energy fraction
+      static SG::AuxElement::ConstAccessor< float   > sv1_efracsvxAcc     ("SV1_efracsvx");
+      safeFill<float, float, xAOD::BTagging>(myBTag, sv1_efracsvxAcc, thisJet->m_jet_sv1_efracsvx, -999);
+
+      /// @brief SV1 : 3D vertex significance
+      static SG::AuxElement::ConstAccessor< float   > sv1_normdistAcc     ("SV1_normdist");
+      safeFill<float, float, xAOD::BTagging>(myBTag, sv1_normdistAcc, thisJet->m_jet_sv1_normdist, -999);
+
+      double sv1_pu = -30;  myBTag->variable<double>("SV1", "pu", sv1_pu);
+      double sv1_pb = -30;  myBTag->variable<double>("SV1", "pb", sv1_pb);
+      double sv1_pc = -30;  myBTag->variable<double>("SV1", "pc", sv1_pc);
+
+      thisJet->m_jet_sv1_pu         .push_back(sv1_pu);
+      thisJet->m_jet_sv1_pb         .push_back(sv1_pb);
+      thisJet->m_jet_sv1_pc         .push_back(sv1_pc);
+      thisJet->m_jet_sv1            .push_back( myBTag->calcLLR(sv1_pb,sv1_pu)  );
+      thisJet->m_jet_sv1_c          .push_back( myBTag->calcLLR(sv1_pb,sv1_pc)  );
+      thisJet->m_jet_sv1_cu         .push_back( myBTag->calcLLR(sv1_pc,sv1_pu)  );
+
+      float sv1_Lxy;        myBTag->variable<float>("SV1", "Lxy"         , sv1_Lxy);
+      float sv1_L3d;        myBTag->variable<float>("SV1", "L3d"         , sv1_L3d);
+      float sv1_distmatlay; myBTag->variable<float>("SV1", "dstToMatLay" , sv1_distmatlay);
+      float sv1_dR;         myBTag->variable<float>("SV1", "deltaR"      , sv1_dR );
+
+      thisJet->m_jet_sv1_Lxy        .push_back(sv1_Lxy        );
+      thisJet->m_jet_sv1_L3d        .push_back(sv1_L3d	      );
+      thisJet->m_jet_sv1_distmatlay .push_back(sv1_distmatlay );
+      thisJet->m_jet_sv1_dR         .push_back(sv1_dR         );
+  
+      
+    }
+
+    if(m_thisJetInfoSwitch[jetName]->m_ipDetails ) {
+
+      //
+      // IP2D
+      //
+
+      /// @brief IP2D: track grade
+      static SG::AuxElement::ConstAccessor< vector<int>   >   IP2D_gradeOfTracksAcc     ("IP2D_gradeOfTracks");
+      safeVecFill<int, float, xAOD::BTagging>(myBTag, IP2D_gradeOfTracksAcc, thisJet->m_jet_IP2D_gradeOfTracks);
+
+      /// @brief IP2D : tracks from V0
+      static SG::AuxElement::ConstAccessor< vector<bool>   >  IP2D_flagFromV0ofTracksAcc("IP2D_flagFromV0ofTracks");
+      safeVecFill<bool, float, xAOD::BTagging>(myBTag, IP2D_flagFromV0ofTracksAcc, thisJet->m_jet_IP2D_flagFromV0ofTracks);
+
+      /// @brief IP2D : d0 value with respect to primary vertex
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_valD0wrtPVofTracksAcc("IP2D_valD0wrtPVofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_valD0wrtPVofTracksAcc, thisJet->m_jet_IP2D_valD0wrtPVofTracks);
+
+      /// @brief IP2D : d0 significance with respect to primary vertex
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_sigD0wrtPVofTracksAcc("IP2D_sigD0wrtPVofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_sigD0wrtPVofTracksAcc, thisJet->m_jet_IP2D_sigD0wrtPVofTracks);
+
+      /// @brief IP2D : track contribution to B likelihood
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightBofTracksAcc   ("IP2D_weightBofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_weightBofTracksAcc, thisJet->m_jet_IP2D_weightBofTracks);
+
+      /// @brief IP2D : track contribution to C likelihood
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightCofTracksAcc   ("IP2D_weightCofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_weightCofTracksAcc, thisJet->m_jet_IP2D_weightCofTracks);
+
+      /// @brief IP2D : track contribution to U likelihood
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightUofTracksAcc   ("IP2D_weightUofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_weightUofTracksAcc, thisJet->m_jet_IP2D_weightUofTracks);
+
+      double ip2_pu = -99;  myBTag->variable<double>("IP2D", "pu", ip2_pu);
+      double ip2_pb = -99;  myBTag->variable<double>("IP2D", "pb", ip2_pb);
+      double ip2_pc = -99;  myBTag->variable<double>("IP2D", "pc", ip2_pc);
+
+      thisJet->m_jet_IP2D_pu         .push_back(ip2_pu);
+      thisJet->m_jet_IP2D_pb         .push_back(ip2_pb);
+      thisJet->m_jet_IP2D_pc         .push_back(ip2_pc);
+
+      thisJet->m_jet_IP2D            .push_back( myBTag->calcLLR(ip2_pb,ip2_pu)  );
+      thisJet->m_jet_IP2D_c          .push_back( myBTag->calcLLR(ip2_pb,ip2_pc)  );
+      thisJet->m_jet_IP2D_cu         .push_back( myBTag->calcLLR(ip2_pc,ip2_pu)  );
+
+
+      //
+      // IP3D
+      //
+
+      /// @brief IP3D: track grade
+      static SG::AuxElement::ConstAccessor< vector<int>   >   IP3D_gradeOfTracksAcc     ("IP3D_gradeOfTracks");
+      safeVecFill<int, float, xAOD::BTagging>(myBTag, IP3D_gradeOfTracksAcc, thisJet->m_jet_IP3D_gradeOfTracks);
+
+      /// @brief IP3D : tracks from V0
+      static SG::AuxElement::ConstAccessor< vector<bool>   >  IP3D_flagFromV0ofTracksAcc("IP3D_flagFromV0ofTracks");
+      safeVecFill<bool, float, xAOD::BTagging>(myBTag, IP3D_flagFromV0ofTracksAcc, thisJet->m_jet_IP3D_flagFromV0ofTracks);
+
+      /// @brief IP3D : d0 value with respect to primary vertex
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_valD0wrtPVofTracksAcc("IP3D_valD0wrtPVofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_valD0wrtPVofTracksAcc, thisJet->m_jet_IP3D_valD0wrtPVofTracks);
+
+      /// @brief IP3D : d0 significance with respect to primary vertex
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_sigD0wrtPVofTracksAcc("IP3D_sigD0wrtPVofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_sigD0wrtPVofTracksAcc, thisJet->m_jet_IP3D_sigD0wrtPVofTracks);
+
+      /// @brief IP3D : z0 value with respect to primary vertex
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_valZ0wrtPVofTracksAcc("IP3D_valZ0wrtPVofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_valZ0wrtPVofTracksAcc, thisJet->m_jet_IP3D_valZ0wrtPVofTracks);
+
+      /// @brief IP3D : z0 significance with respect to primary vertex
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_sigZ0wrtPVofTracksAcc("IP3D_sigZ0wrtPVofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_sigZ0wrtPVofTracksAcc, thisJet->m_jet_IP3D_sigZ0wrtPVofTracks);
+
+      /// @brief IP3D : track contribution to B likelihood
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightBofTracksAcc   ("IP3D_weightBofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_weightBofTracksAcc, thisJet->m_jet_IP3D_weightBofTracks);
+
+      /// @brief IP3D : track contribution to C likelihood
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightCofTracksAcc   ("IP3D_weightCofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_weightCofTracksAcc, thisJet->m_jet_IP3D_weightCofTracks);
+
+      /// @brief IP3D : track contribution to U likelihood
+      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightUofTracksAcc   ("IP3D_weightUofTracks");
+      safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_weightUofTracksAcc, thisJet->m_jet_IP3D_weightUofTracks);
+
+      double ip3_pu = -30;  myBTag->variable<double>("IP3D", "pu", ip3_pu);
+      double ip3_pb = -30;  myBTag->variable<double>("IP3D", "pb", ip3_pb);
+      double ip3_pc = -30;  myBTag->variable<double>("IP3D", "pc", ip3_pc);
+
+      thisJet->m_jet_IP3D_pu         .push_back(ip3_pu  );
+      thisJet->m_jet_IP3D_pb         .push_back(ip3_pb  );
+      thisJet->m_jet_IP3D_pc         .push_back(ip3_pc  );
+
+      thisJet->m_jet_IP3D            .push_back( myBTag->calcLLR(ip3_pb,ip3_pu)  );
+      thisJet->m_jet_IP3D_c          .push_back( myBTag->calcLLR(ip3_pb,ip3_pc)  );
+      thisJet->m_jet_IP3D_cu         .push_back( myBTag->calcLLR(ip3_pc,ip3_pu)  );
+
+    }
+
+
 
     if(m_thisJetInfoSwitch[jetName]->m_flavTagHLT ) {
 
-      const xAOD::Vertex *online_pvx   = jet_itr->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
-      const xAOD::Vertex *offline_pvx  = jet_itr->auxdata<const xAOD::Vertex*>("offline_vtx");      
+      const xAOD::Vertex *online_pvx       = jet_itr->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+      const xAOD::Vertex *online_pvx_bkg   = jet_itr->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx_bkg");
+      const xAOD::Vertex *offline_pvx      = jet_itr->auxdata<const xAOD::Vertex*>("offline_vtx");      
 
       if(online_pvx)  thisJet->m_jet_vtxOnlineValid.push_back(1.0);
       else            thisJet->m_jet_vtxOnlineValid.push_back(0.0);
@@ -2396,19 +2706,31 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
       if(hadDummyPV)  thisJet->m_jet_vtxHadDummy.push_back(1.0);
       else            thisJet->m_jet_vtxHadDummy.push_back(0.0);
 
-      float vtxDiffz0 = -99;
-      float vtxDiffx0 = -99;
-      float vtxDiffy0 = -99;
+      thisJet->m_jet_vtx_offline_x0.push_back( offline_pvx->x() );
+      thisJet->m_jet_vtx_offline_y0.push_back( offline_pvx->y() );
+      thisJet->m_jet_vtx_offline_z0.push_back( offline_pvx->z() );
 
       if(online_pvx){
-	vtxDiffz0 = online_pvx->z() - offline_pvx->z() ;
-	vtxDiffx0 = online_pvx->x() - offline_pvx->x() ;
-	vtxDiffy0 = online_pvx->y() - offline_pvx->y() ;
+	thisJet->m_jet_vtx_online_x0.push_back( online_pvx->x() );
+	thisJet->m_jet_vtx_online_y0.push_back( online_pvx->y() );
+	thisJet->m_jet_vtx_online_z0.push_back( online_pvx->z() );
+      }else{	       
+	thisJet->m_jet_vtx_online_x0.push_back( -999 );
+	thisJet->m_jet_vtx_online_y0.push_back( -999 );
+	thisJet->m_jet_vtx_online_z0.push_back( -999 );
       }
 
-      thisJet->m_jet_vtxDiffz0.push_back( vtxDiffz0 );
-      thisJet->m_jet_vtxDiffx0.push_back( vtxDiffx0 );
-      thisJet->m_jet_vtxDiffy0.push_back( vtxDiffy0 );
+
+      if(online_pvx_bkg){
+	thisJet->m_jet_vtx_online_bkg_x0.push_back( online_pvx_bkg->x() );
+	thisJet->m_jet_vtx_online_bkg_y0.push_back( online_pvx_bkg->y() );
+	thisJet->m_jet_vtx_online_bkg_z0.push_back( online_pvx_bkg->z() );
+      }else{	       
+	thisJet->m_jet_vtx_online_bkg_x0.push_back( -999 );
+	thisJet->m_jet_vtx_online_bkg_y0.push_back( -999 );
+	thisJet->m_jet_vtx_online_bkg_z0.push_back( -999 );
+      }
+
     }
 
   }
@@ -2460,34 +2782,34 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
   if ( m_thisJetInfoSwitch[jetName]->m_area ) {
 
     static SG::AuxElement::ConstAccessor<float> ghostArea("JetGhostArea");
-    safeFill<float, float>(jet_itr, ghostArea, thisJet->m_jet_ghostArea, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, ghostArea, thisJet->m_jet_ghostArea, -999);
 
     static SG::AuxElement::ConstAccessor<float> activeArea("ActiveArea");
-    safeFill<float, float>(jet_itr, activeArea, thisJet->m_jet_activeArea, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, activeArea, thisJet->m_jet_activeArea, -999);
 
     static SG::AuxElement::ConstAccessor<float> voronoiArea("VoronoiArea");
-    safeFill<float, float>(jet_itr, voronoiArea, thisJet->m_jet_voronoiArea, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, voronoiArea, thisJet->m_jet_voronoiArea, -999);
 
     static SG::AuxElement::ConstAccessor<float> activeArea_pt("ActiveArea4vec_pt");
-    safeFill<float, float>(jet_itr, activeArea_pt, thisJet->m_jet_activeArea_pt, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, activeArea_pt, thisJet->m_jet_activeArea_pt, -999);
 
     static SG::AuxElement::ConstAccessor<float> activeArea_eta("ActiveArea4vec_eta");
-    safeFill<float, float>(jet_itr, activeArea_eta, thisJet->m_jet_activeArea_eta, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, activeArea_eta, thisJet->m_jet_activeArea_eta, -999);
 
     static SG::AuxElement::ConstAccessor<float> activeArea_phi("ActiveArea4vec_phi");
-    safeFill<float, float>(jet_itr, activeArea_phi, thisJet->m_jet_activeArea_phi, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, activeArea_phi, thisJet->m_jet_activeArea_phi, -999);
 
     static SG::AuxElement::ConstAccessor<float> activeArea_m("ActiveArea4vec_m");
-    safeFill<float, float>(jet_itr, activeArea_m, thisJet->m_jet_activeArea_m, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, activeArea_m, thisJet->m_jet_activeArea_m, -999);
   }
 
   if ( m_thisJetInfoSwitch[jetName]->m_truth && m_isMC ) {
 
     static SG::AuxElement::ConstAccessor<int> ConeTruthLabelID ("ConeTruthLabelID");
-    safeFill<int, int>(jet_itr, ConeTruthLabelID, thisJet->m_jet_truthConeLabelID, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, ConeTruthLabelID, thisJet->m_jet_truthConeLabelID, -999);
 
     static SG::AuxElement::ConstAccessor<int> TruthCount ("TruthCount");
-    safeFill<int, int>(jet_itr, TruthCount, thisJet->m_jet_truthCount, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, TruthCount, thisJet->m_jet_truthCount, -999);
 
     //    seems to be empty
     //      static SG::AuxElement::ConstAccessor<float> TruthPt ("TruthPt");
@@ -2496,19 +2818,19 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     //      } else { m_jet_truthPt.push_back( -999 ); }
 
     static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_B ("TruthLabelDeltaR_B");
-    safeFill<float, float>(jet_itr, TruthLabelDeltaR_B, thisJet->m_jet_truthDr_B, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, TruthLabelDeltaR_B, thisJet->m_jet_truthDr_B, -999);
 
     static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_C ("TruthLabelDeltaR_C");
-    safeFill<float, float>(jet_itr, TruthLabelDeltaR_C, thisJet->m_jet_truthDr_C, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, TruthLabelDeltaR_C, thisJet->m_jet_truthDr_C, -999);
 
     static SG::AuxElement::ConstAccessor<float> TruthLabelDeltaR_T ("TruthLabelDeltaR_T");
-    safeFill<float, float>(jet_itr, TruthLabelDeltaR_T, thisJet->m_jet_truthDr_T, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, TruthLabelDeltaR_T, thisJet->m_jet_truthDr_T, -999);
 
     static SG::AuxElement::ConstAccessor<int> partonLabel("PartonTruthLabelID");
-    safeFill<int, int>(jet_itr, partonLabel, thisJet->m_jet_partonTruthID, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, partonLabel, thisJet->m_jet_partonTruthID, -999);
 
     static SG::AuxElement::ConstAccessor<float> ghostTruthAssFrac("GhostTruthAssociationFraction");
-    safeFill<float, float>(jet_itr, ghostTruthAssFrac, thisJet->m_jet_ghostTruthAssFrac, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, ghostTruthAssFrac, thisJet->m_jet_ghostTruthAssFrac, -999);
 
     const xAOD::Jet* truthJet = HelperFunctions::getLink<xAOD::Jet>( jet_itr, "GhostTruthAssociationLink" );
     if(truthJet) {
@@ -2531,53 +2853,53 @@ void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
     // B-Hadron Details
     //
     static SG::AuxElement::ConstAccessor<int> GhostBHadronsFinalCount ("GhostBHadronsFinalCount");
-    safeFill<int, int>(jet_itr, GhostBHadronsFinalCount, thisJet->m_jet_truthCount_BhadFinal, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, GhostBHadronsFinalCount, thisJet->m_jet_truthCount_BhadFinal, -999);
 
     static SG::AuxElement::ConstAccessor<int> GhostBHadronsInitialCount ("GhostBHadronsInitialCount");
-    safeFill<int, int>(jet_itr, GhostBHadronsInitialCount, thisJet->m_jet_truthCount_BhadInit, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, GhostBHadronsInitialCount, thisJet->m_jet_truthCount_BhadInit, -999);
 
     static SG::AuxElement::ConstAccessor<int> GhostBQuarksFinalCount ("GhostBQuarksFinalCount");
-    safeFill<int, int>(jet_itr, GhostBQuarksFinalCount, thisJet->m_jet_truthCount_BQFinal, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, GhostBQuarksFinalCount, thisJet->m_jet_truthCount_BQFinal, -999);
 
     static SG::AuxElement::ConstAccessor<float> GhostBHadronsFinalPt ("GhostBHadronsFinalPt");
-    safeFill<float, float>(jet_itr, GhostBHadronsFinalPt, thisJet->m_jet_truthPt_BhadFinal, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, GhostBHadronsFinalPt, thisJet->m_jet_truthPt_BhadFinal, -999);
 
     static SG::AuxElement::ConstAccessor<float> GhostBHadronsInitialPt ("GhostBHadronsInitialPt");
-    safeFill<float, float>(jet_itr, GhostBHadronsInitialPt, thisJet->m_jet_truthPt_BhadInit, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, GhostBHadronsInitialPt, thisJet->m_jet_truthPt_BhadInit, -999);
 
     static SG::AuxElement::ConstAccessor<float> GhostBQuarksFinalPt ("GhostBQuarksFinalPt");
-    safeFill<float, float>(jet_itr, GhostBQuarksFinalPt, thisJet->m_jet_truthPt_BQFinal, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, GhostBQuarksFinalPt, thisJet->m_jet_truthPt_BQFinal, -999);
 
     //
     // C-Hadron Details
     //
     static SG::AuxElement::ConstAccessor<int> GhostCHadronsFinalCount ("GhostCHadronsFinalCount");
-    safeFill<int, int>(jet_itr, GhostCHadronsFinalCount, thisJet->m_jet_truthCount_ChadFinal, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, GhostCHadronsFinalCount, thisJet->m_jet_truthCount_ChadFinal, -999);
 
     static SG::AuxElement::ConstAccessor<int> GhostCHadronsInitialCount ("GhostCHadronsInitialCount");
-    safeFill<int, int>(jet_itr, GhostCHadronsInitialCount, thisJet->m_jet_truthCount_ChadInit, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, GhostCHadronsInitialCount, thisJet->m_jet_truthCount_ChadInit, -999);
 
     static SG::AuxElement::ConstAccessor<int> GhostCQuarksFinalCount ("GhostCQuarksFinalCount");
-    safeFill<int, int>(jet_itr, GhostCQuarksFinalCount, thisJet->m_jet_truthCount_CQFinal, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, GhostCQuarksFinalCount, thisJet->m_jet_truthCount_CQFinal, -999);
 
     static SG::AuxElement::ConstAccessor<float> GhostCHadronsFinalPt ("GhostCHadronsFinalPt");
-    safeFill<float, float>(jet_itr, GhostCHadronsFinalPt, thisJet->m_jet_truthPt_ChadFinal, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, GhostCHadronsFinalPt, thisJet->m_jet_truthPt_ChadFinal, -999);
 
     static SG::AuxElement::ConstAccessor<float> GhostCHadronsInitialPt ("GhostCHadronsInitialPt");
-    safeFill<float, float>(jet_itr, GhostCHadronsInitialPt, thisJet->m_jet_truthPt_ChadInit, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, GhostCHadronsInitialPt, thisJet->m_jet_truthPt_ChadInit, -999);
 
     static SG::AuxElement::ConstAccessor<float> GhostCQuarksFinalPt ("GhostCQuarksFinalPt");
-    safeFill<float, float>(jet_itr, GhostCQuarksFinalPt, thisJet->m_jet_truthPt_CQFinal, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, GhostCQuarksFinalPt, thisJet->m_jet_truthPt_CQFinal, -999);
 
     //
     // Tau Details
     //
     static SG::AuxElement::ConstAccessor<int> GhostTausFinalCount ("GhostTausFinalCount");
-    safeFill<int, int>(jet_itr, GhostTausFinalCount, thisJet->m_jet_truthCount_TausFinal, -999);
+    safeFill<int, int, xAOD::Jet>(jet_itr, GhostTausFinalCount, thisJet->m_jet_truthCount_TausFinal, -999);
 
     // THE ONLY UN-OFFICIAL PIECE OF CODE HERE USE WITH CAUTION
     static SG::AuxElement::ConstAccessor<float> GhostTausFinalPt ("GhostTausFinalPt");
-    safeFill<float, float>(jet_itr, GhostTausFinalPt, thisJet->m_jet_truthPt_TausFinal, -999);
+    safeFill<float, float, xAOD::Jet>(jet_itr, GhostTausFinalPt, thisJet->m_jet_truthPt_TausFinal, -999);
 
     // light quark(1,2,3) , gluon (21 or 9), charm(4) and b(5)
     // GhostPartons should select for these pdgIds only
@@ -2778,14 +3100,98 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
     thisJet->m_jet_mv2c10.clear();
     thisJet->m_jet_mv2c20.clear();
     thisJet->m_jet_hadConeExclTruthLabel.clear();
+
+    thisJet->m_jet_COMB            .clear();
+
+    if( m_thisJetInfoSwitch[jetName]->m_jetFitterDetails){
+      
+      thisJet->m_jet_jf_nVTX            .clear();
+      thisJet->m_jet_jf_nSingleTracks   .clear();
+      thisJet->m_jet_jf_nTracksAtVtx    .clear();
+      thisJet->m_jet_jf_mass            .clear();
+      thisJet->m_jet_jf_energyFraction  .clear();
+      thisJet->m_jet_jf_significance3d  .clear();
+      thisJet->m_jet_jf_deltaeta        .clear();
+      thisJet->m_jet_jf_deltaphi        .clear();
+      thisJet->m_jet_jf_N2Tpar          .clear();
+      //thisJet->m_jet_jf_pb              .clear();
+      //thisJet->m_jet_jf_pc              .clear();
+      //thisJet->m_jet_jf_pu              .clear();
+    }
+
+    if( m_thisJetInfoSwitch[jetName]->m_svDetails){
+      thisJet->m_jet_sv0           .clear();
+      thisJet->m_jet_sv0_NGTinSvx  .clear();
+      thisJet->m_jet_sv0_N2Tpair   .clear();
+      thisJet->m_jet_sv0_massvx    .clear();
+      thisJet->m_jet_sv0_efracsvx  .clear();
+      thisJet->m_jet_sv0_normdist  .clear();
+
+      thisJet->m_jet_sv1_pu        .clear();
+      thisJet->m_jet_sv1_pb        .clear();
+      thisJet->m_jet_sv1_pc        .clear();
+      thisJet->m_jet_sv1_c         .clear();
+      thisJet->m_jet_sv1_cu        .clear();
+      thisJet->m_jet_sv1_NGTinSvx  .clear();
+      thisJet->m_jet_sv1_N2Tpair   .clear();
+      thisJet->m_jet_sv1_massvx    .clear();
+      thisJet->m_jet_sv1_efracsvx  .clear();
+      thisJet->m_jet_sv1_normdist  .clear();
+      thisJet->m_jet_sv1_Lxy       .clear();
+      thisJet->m_jet_sv1_L3d       .clear();
+      thisJet->m_jet_sv1_distmatlay.clear();
+      thisJet->m_jet_sv1_dR        .clear();
+    }
+
+    if( m_thisJetInfoSwitch[jetName]->m_ipDetails){
+
+      thisJet->m_jet_IP2D_pu                   .clear();
+      thisJet->m_jet_IP2D_pb                   .clear();
+      thisJet->m_jet_IP2D_pc                   .clear();
+      thisJet->m_jet_IP2D                      .clear();
+      thisJet->m_jet_IP2D_c                    .clear();
+      thisJet->m_jet_IP2D_cu                   .clear();
+      thisJet->m_jet_nIP2DTracks               .clear();
+      thisJet->m_jet_IP2D_gradeOfTracks        .clear();
+      thisJet->m_jet_IP2D_flagFromV0ofTracks   .clear();
+      thisJet->m_jet_IP2D_valD0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP2D_sigD0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP2D_weightBofTracks      .clear();
+      thisJet->m_jet_IP2D_weightCofTracks      .clear();
+      thisJet->m_jet_IP2D_weightUofTracks      .clear();
+
+      thisJet->m_jet_IP3D_pu                   .clear();
+      thisJet->m_jet_IP3D_pb                   .clear();
+      thisJet->m_jet_IP3D_pc                   .clear();
+      thisJet->m_jet_IP3D                      .clear();
+      thisJet->m_jet_IP3D_c                    .clear();
+      thisJet->m_jet_IP3D_cu                   .clear();
+      thisJet->m_jet_nIP3DTracks               .clear();
+      thisJet->m_jet_IP3D_gradeOfTracks        .clear();
+      thisJet->m_jet_IP3D_flagFromV0ofTracks   .clear();
+      thisJet->m_jet_IP3D_valD0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP3D_sigD0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP3D_valZ0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP3D_sigZ0wrtPVofTracks   .clear();
+      thisJet->m_jet_IP3D_weightBofTracks      .clear();
+      thisJet->m_jet_IP3D_weightCofTracks      .clear();
+      thisJet->m_jet_IP3D_weightUofTracks      .clear();
+    }
+    
+
   }
 
   if ( m_thisJetInfoSwitch[jetName]->m_flavTagHLT  ) {
     thisJet->m_jet_vtxOnlineValid.clear();
     thisJet->m_jet_vtxHadDummy.clear();
-    thisJet->m_jet_vtxDiffx0.clear();
-    thisJet->m_jet_vtxDiffy0.clear();
-    thisJet->m_jet_vtxDiffz0.clear();
+
+    thisJet->m_jet_vtx_offline_x0.clear();
+    thisJet->m_jet_vtx_offline_y0.clear();
+    thisJet->m_jet_vtx_offline_z0.clear();
+
+    thisJet->m_jet_vtx_online_bkg_x0.clear();
+    thisJet->m_jet_vtx_online_bkg_y0.clear();
+    thisJet->m_jet_vtx_online_bkg_z0.clear();
 
   }
 
