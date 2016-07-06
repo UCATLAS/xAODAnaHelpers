@@ -14,7 +14,7 @@
 
 namespace xAH {
 
-    class MuonContainer : public ParticleContainer<Muon,HelperClasses::MuonInfoSwitch>
+  class MuonContainer : public ParticleContainer<Muon,HelperClasses::MuonInfoSwitch>
     {
     public:
       MuonContainer(const std::string& name = "muon", const std::string& detailStr="");

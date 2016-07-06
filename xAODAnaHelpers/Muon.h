@@ -9,6 +9,10 @@ namespace xAH {
   class Muon : public Particle
   {
   public:
+
+    //Muon() {};
+    //virtual ~Muon() { };
+
     // clean
     int isMedium;
     int isTight;

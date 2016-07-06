@@ -10,6 +10,10 @@ namespace xAH {
   class Jet : public Particle
     {
     public:
+      
+      //Jet() { };
+      //virtual ~Jet();
+
       // clean
       float Timing;
       float LArQuality;

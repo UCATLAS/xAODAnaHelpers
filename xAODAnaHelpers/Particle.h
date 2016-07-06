@@ -7,7 +7,12 @@ namespace xAH {
   
   class Particle
   {
+    
   public:
+
+    //Particle() {};
+    virtual ~Particle() {}
+
     TLorentzVector p4;
   };
 

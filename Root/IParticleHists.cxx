@@ -122,3 +122,31 @@ StatusCode IParticleHists::execute( const xAOD::IParticle* particle, float event
   return StatusCode::SUCCESS;
 }
 
+
+StatusCode IParticleHists::execute( const xAH::Particle* particle, float eventWeight ) {
+
+  if(m_debug) std::cout << "IParticleHists: in execute " <<std::endl;
+
+  const TLorentzVector& partP4 = particle->p4;
+
+  //basic
+  m_Pt_l ->      Fill( partP4.Pt(),    eventWeight );
+  m_Pt ->        Fill( partP4.Pt(),    eventWeight );
+  m_Pt_m ->      Fill( partP4.Pt(),    eventWeight );
+  m_Pt_s ->      Fill( partP4.Pt(),    eventWeight );
+  m_Eta->        Fill( partP4.Eta(),       eventWeight );
+  m_Phi->        Fill( partP4.Phi(),       eventWeight );
+  m_M->          Fill( partP4.M(),     eventWeight );
+  m_E->          Fill( partP4.E(),     eventWeight );
+  m_Rapidity->   Fill( partP4.Rapidity(),  eventWeight );
+
+  // kinematic
+  if( m_infoSwitch->m_kinematic ) {
+    m_Px->  Fill( partP4.Px(),  eventWeight );
+    m_Py->  Fill( partP4.Py(),  eventWeight );
+    m_Pz->  Fill( partP4.Pz(),  eventWeight );
+  } // fillKinematic
+
+  return StatusCode::SUCCESS;
+}
+

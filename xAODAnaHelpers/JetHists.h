@@ -5,18 +5,21 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/TracksInJetHists.h"
 #include <xAODJet/JetContainer.h>
+#include "xAODAnaHelpers/Jet.h"
 
 class JetHists : public IParticleHists
 {
   public:
 
 
-    JetHists(std::string name, std::string detailStr);
+  JetHists(std::string name, std::string detailStr, const std::string& prefix="jet", const std::string& titleprefix="jet");
     virtual ~JetHists() ;
 
     virtual StatusCode initialize();
     virtual StatusCode execute( const xAOD::Jet* jet, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
+    virtual StatusCode execute( const xAH::Jet* jet, float eventWeight);
     virtual StatusCode finalize();
+
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using IParticleHists::execute; // overload
     virtual void record(EL::Worker* wk);
@@ -24,11 +27,14 @@ class JetHists : public IParticleHists
   protected:
 
     virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
+    virtual StatusCode execute( const xAH::Particle* particle,   float eventWeight );
 
     // holds bools that control which histograms are filled
     HelperClasses::JetInfoSwitch* m_infoSwitch;
 
   private:
+
+    std::string m_titlePrefix;         
 
     // clean
     TH1F* m_jetTime;                //!
@@ -38,6 +44,20 @@ class JetHists : public IParticleHists
     TH1F* m_avLArQF;                //!
     TH1F* m_bchCorrCell;            //!
     TH1F* m_N90Const;               //!
+    //TH1F* m_LArQmean;
+    //TH1F* m_LArBadHVEFrac;
+    //TH1F* m_LArBadHVNCell;
+    //TH1F* m_OotFracClusters5;
+    //TH1F* m_OotFracClusters10;
+    //TH1F* m_LeadingClusterPt;
+    //TH1F* m_LeadingClusterSecondLambda;
+    //TH1F* m_LeadingClusterCenterLambda;
+    //TH1F* m_LeadingClusterSecondR;
+    //TH1F* m_clean_passLooseBad;
+    //TH1F* m_clean_passLooseBadUgly;
+    //TH1F* m_clean_passTightBad;
+    //TH1F* m_clean_passTightBadUgly;
+
 
     //layer
     TH1F* m_PreSamplerB;
@@ -78,6 +98,9 @@ class JetHists : public IParticleHists
     TH1F* m_fracSampMax;            //!
     TH1F* m_fracSampMaxIdx;         //!
     TH1F* m_lowEtFrac;              //!
+    //TH1F* m_GhostMuonSegmentCount;
+    //TH1F* m_Width;
+
 
     // resolution
     TH1F* m_jetGhostTruthPt;        //!
@@ -87,11 +110,17 @@ class JetHists : public IParticleHists
     // truth jets
     TH1F* m_truthLabelID;          //!
     TH1F* m_hadronConeExclTruthLabelID;          //!
+    TH1F* m_partonTruthLabelID;          //!
     TH1F* m_truthCount;            //!
     TH1F* m_truthPt;               //!
+    TH1F* m_truthPt_m;               //!
+    TH1F* m_truthPt_l;               //!
+    TH1F* m_truthEta;               //!
+    TH1F* m_truthPhi;               //!
     TH1F* m_truthDr_B;             //!
     TH1F* m_truthDr_C;             //!
     TH1F* m_truthDr_T;             //!
+    //TH1F *m_GhostTruthAssociationFraction;
 
     // Detailed truth jet plots
     TH1F* m_truthCount_BhadFinal;  //!
@@ -122,6 +151,9 @@ class JetHists : public IParticleHists
     TH1F* m_SV0             ; //!
     TH1F* m_JetFitter       ; //!
     TH1F* m_JetFitterCombNN ; //!
+    //TH1F* m_MV2;
+    //TH2F* m_IP3DvsMV2c20;
+
 
     TProfile* m_vtxHadDummy_vs_lBlock; //!
     TProfile* m_frac_MV2c2040_vs_lBlock; //!
@@ -252,6 +284,26 @@ class JetHists : public IParticleHists
     TProfile*   m_vtxDiffx0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffy0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffz0_vs_lBlock    ; //!
+
+    // trackPV
+    //TH1F* m_NumTrkPt1000PV;
+    //TH1F* m_SumPtTrkPt1000PV;
+    //TH1F* m_TrackWidthPt1000PV;
+    //TH1F* m_NumTrkPt500PV;
+    //TH1F* m_SumPtTrkPt500PV;
+    //TH1F* m_TrackWidthPt500PV;
+    //TH1F* m_JVFPV;
+
+    // trackAll or trackPV
+    //TH1F* m_Jvt;
+    //TH1F* m_JvtJvfcorr;
+    //TH1F* m_JvtRpt;
+
+
+    // charge
+    //TH1F *m_charge;
+
+
 };
 
 #endif
