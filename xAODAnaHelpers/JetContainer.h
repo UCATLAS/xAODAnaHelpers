@@ -406,7 +406,6 @@ namespace xAH {
 }
 
 
-
 template<typename T, typename U, typename V>
 void xAH::JetContainer::safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>* destination, U defaultValue, int units){
   if ( accessor.isAvailable( *xAODObj ) ) {

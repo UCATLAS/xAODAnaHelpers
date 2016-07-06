@@ -736,6 +736,7 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
     }
 
 
+
   for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) 
     {
       switch( m_infoSwitch.m_sfFTagFix[i] ) 
@@ -748,7 +749,7 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
         case 80: m_btag_Fix80->setTree(tree); break;
         case 85: m_btag_Fix85->setTree(tree); break;         
         case 90: m_btag_Fix90->setTree(tree); break;
-        }
+      }
     }
 
   for(uint i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ ) 
@@ -878,6 +879,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     }
 
 
+
   static const std::vector<float> dummy1 = {1.};
   for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) 
     {
@@ -981,9 +983,6 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 void JetContainer::setBranches(TTree *tree)
 {
   ParticleContainer::setBranches(tree);
-//  // always
-//  m_tree->Branch(("n"+jetName+"s").c_str(),    &thisJet->N,("n"+jetName+"s/I").c_str());
-//
 
   if ( m_infoSwitch.m_rapidity ) {
     setBranch<float>(tree,"rapidity",                      m_rapidity              );
@@ -1167,7 +1166,6 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<float>(tree, "sv1_L3d",           m_sv1_L3d       );
       setBranch<float>(tree, "sv1_distmatlay",    m_sv1_distmatlay);
       setBranch<float>(tree, "sv1_dR",            m_sv1_dR        );
-
     }
 
     if( m_infoSwitch.m_ipDetails){    
