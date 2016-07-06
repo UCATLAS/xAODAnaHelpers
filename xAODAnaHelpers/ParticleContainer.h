@@ -101,13 +101,13 @@ namespace xAH {
       }
     
       std::string m_name;
-      T_INFOSWITCH m_infoSwitch;
     
       std::vector<T_PARTICLE> m_particles;
     
       int m_n;
     
     public:
+      T_INFOSWITCH m_infoSwitch;
       bool m_mc;
     
     private:
