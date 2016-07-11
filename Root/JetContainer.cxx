@@ -736,7 +736,6 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
     }
 
 
-
   for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) 
     {
       switch( m_infoSwitch.m_sfFTagFix[i] ) 
@@ -877,7 +876,6 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
     }
-
 
 
   static const std::vector<float> dummy1 = {1.};
@@ -2512,6 +2510,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 }
 
 
+<<<<<<< HEAD
 void JetContainer::FillGlobalBTagSF( const xAOD::EventInfo* eventInfo ){
 
   if( !m_infoSwitch.m_sfFTagFix.empty() ) {
