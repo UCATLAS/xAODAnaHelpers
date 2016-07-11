@@ -573,26 +573,6 @@ protected:
   float m_metSoftClus;  float m_metSoftClusSumEt; float m_metSoftClusPhi;
   float m_metSoftTrk;   float m_metSoftTrkSumEt;  float m_metSoftTrkPhi;
 
- public:
-
-  //void Fill_Fix30( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Fix50( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Fix60( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Fix70( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Fix77( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Fix80( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Fix85( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Fix90( const xAOD::Jet* jet, jetInfo* thisJet );
-  //
-  //void Fill_Flt30( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Flt40( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Flt50( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Flt60( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Flt70( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Flt77( const xAOD::Jet* jet, jetInfo* thisJet );
-  //void Fill_Flt85( const xAOD::Jet* jet, jetInfo* thisJet );
-
-
 };
 
 

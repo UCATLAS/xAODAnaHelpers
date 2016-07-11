@@ -10,6 +10,7 @@
 #include "xAODJet/JetContainer.h"
 
 #include <xAODAnaHelpers/HelperClasses.h>
+#include <xAODAnaHelpers/HelperFunctions.h>
 
 #include <xAODAnaHelpers/Jet.h>
 #include <xAODAnaHelpers/ParticleContainer.h>
@@ -254,10 +255,59 @@ namespace xAH {
       std::vector<float> *m_vtx_online_bkg_z0;
 
       struct btagOpPoint {
-	int m_njets;
-	std::vector<int>                  m_isTag;
-	std::vector<float>                m_weight_sf;
-	std::vector< std::vector<float> > m_sf;
+        std::string m_name;
+        bool m_mc;
+        std::string m_acessorName;
+        std::string m_tagger;
+        int m_njets;
+        std::vector<int>*                  m_isTag;
+        std::vector<float>*                m_weight_sf;
+        std::vector< std::vector<float> >* m_sf;
+
+      btagOpPoint(std::string name, bool mc, std::string acessorName, std::string tagger="mv2c20"): m_name(name), m_mc(mc), m_acessorName(acessorName), m_tagger(tagger) {
+	  m_isTag = new std::vector<int>();
+	  m_sf    = new std::vector< std::vector<float> >();
+	}
+
+	~btagOpPoint(){
+	  delete m_isTag;
+	  delete m_sf;
+	}
+
+        void setTree(TTree *tree){
+          tree->SetBranchStatus  (("njets_"+m_tagger+"_"+m_name).c_str(), 1);
+          tree->SetBranchAddress (("njets_"+m_tagger+"_"+m_name).c_str(), &m_njets);
+	  HelperFunctions::connectBranch<int>     (m_name, tree,"MV2c20_is"+m_name,      &m_isTag);
+          if(m_mc) HelperFunctions::connectBranch<std::vector<float> >(m_name, tree,"MV2c20_SF"+m_name,       &m_sf);
+        }
+
+	void clear(){
+	  m_njets = 0;
+	  m_isTag->clear();
+	  m_weight_sf->clear();
+	  m_sf->clear();
+	}
+
+	void Fill( const xAOD::Jet* jet ) {
+
+	  SG::AuxElement::ConstAccessor< int > isTag("BTag_"+m_acessorName);
+	  if( isTag.isAvailable( *jet ) ) {
+	    if ( isTag( *jet ) == 1 ) ++m_njets;
+	    m_isTag->push_back( isTag( *jet ) );
+	  } else { 
+	    m_isTag->push_back( -1 ); 
+	  }
+	  
+	  if(!m_mc) { return; }
+	  static SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_acessorName);
+	  if ( sf.isAvailable( *jet ) ) {
+	    m_sf->push_back( sf( *jet ) );
+	  } else {
+	    std::vector<float> junk(1,-999);
+	    m_sf->push_back(junk);
+	  }
+	}
+
       };
       
       btagOpPoint* m_btag_Fix30;
