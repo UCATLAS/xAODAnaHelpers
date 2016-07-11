@@ -8,6 +8,7 @@
 #include <string>
 
 #include <xAODAnaHelpers/HelperClasses.h>
+#include <xAODAnaHelpers/HelperFunctions.h>
 
 #include <xAODAnaHelpers/Particle.h>
 
@@ -42,11 +43,11 @@ namespace xAH {
       {
         if(m_infoSwitch.m_kinematic)
           {
-    	connectBranch<float>(tree,"pt" ,&m_pt);
-    	connectBranch<float>(tree,"eta",&m_eta);
-    	connectBranch<float>(tree,"phi",&m_phi);
-    	if(m_useMass) connectBranch<float>(tree,"m"  ,&m_M);
-	else          connectBranch<float>(tree,"E"  ,&m_E);
+	    connectBranch<float>(tree,"pt" ,&m_pt);
+	    connectBranch<float>(tree,"eta",&m_eta);
+	    connectBranch<float>(tree,"phi",&m_phi);
+	    if(m_useMass) connectBranch<float>(tree,"m"  ,&m_M);
+	    else          connectBranch<float>(tree,"E"  ,&m_E);
           }
       }
     
