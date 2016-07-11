@@ -335,7 +335,6 @@ namespace xAH {
 	  return;
 	}
 	
-	
       };
       
       btagOpPoint* m_btag_Fix30;
