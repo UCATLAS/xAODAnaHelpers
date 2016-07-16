@@ -1533,6 +1533,10 @@ void JetContainer::clear()
     m_vtx_offline_y0->clear();
     m_vtx_offline_z0->clear();
 
+    m_vtx_online_x0->clear();
+    m_vtx_online_y0->clear();
+    m_vtx_online_z0->clear();
+
     m_vtx_online_bkg_x0->clear();
     m_vtx_online_bkg_y0->clear();
     m_vtx_online_bkg_z0->clear();
