@@ -66,6 +66,7 @@ for ds in inputDS:
     #print dsInfo['logicalDatasetName']
     #print "\tcross section",dsInfo["crossSection_mean"]
     #print "\tfilter Eff.",dsInfo["GenFiltEff_mean"]
+    print "totalEvents:",dsInfo['totalEvents']
     unit = dsInfo['crossSection_unit']
     getSF = getUnitSF(unit)
     if fh_out==None:
