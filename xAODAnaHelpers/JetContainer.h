@@ -30,6 +30,7 @@ namespace xAH {
       virtual void setBranches(TTree *tree);
       virtual void clear();
       virtual void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation );
+      virtual void FillGlobalBTagSF( const xAOD::EventInfo* eventInfo );
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
       float m_units;
@@ -261,7 +262,7 @@ namespace xAH {
         std::string m_tagger;
         int m_njets;
         std::vector<int>*                  m_isTag;
-        std::vector<float>*                m_weight_sf;
+        std::vector<float>                 m_weight_sf;
         std::vector< std::vector<float> >* m_sf;
 
       btagOpPoint(std::string name, bool mc, std::string acessorName, std::string tagger="mv2c20"): m_name(name), m_mc(mc), m_acessorName(acessorName), m_tagger(tagger) {
@@ -284,7 +285,7 @@ namespace xAH {
 	void clear(){
 	  m_njets = 0;
 	  m_isTag->clear();
-	  m_weight_sf->clear();
+	  m_weight_sf.clear();
 	  m_sf->clear();
 	}
 
@@ -299,15 +300,29 @@ namespace xAH {
 	  }
 	  
 	  if(!m_mc) { return; }
-	  static SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_acessorName);
+	  SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_acessorName);
 	  if ( sf.isAvailable( *jet ) ) {
 	    m_sf->push_back( sf( *jet ) );
 	  } else {
 	    std::vector<float> junk(1,-999);
 	    m_sf->push_back(junk);
 	  }
+
+	  return;
 	}
 
+	void FillGlobalSF( const xAOD::EventInfo* eventInfo ) {
+	  SG::AuxElement::ConstAccessor< std::vector<float> > sf_GLOBAL("BTag_SF_"+m_acessorName+"_GLOBAL");
+	  if ( sf_GLOBAL.isAvailable( *eventInfo ) ) { 
+	    m_weight_sf = sf_GLOBAL( *eventInfo ); 
+	  } else { 
+	    m_weight_sf.push_back(-999.0); 
+	  }
+
+	  return;
+	}
+	
+	
       };
       
       btagOpPoint* m_btag_Fix30;

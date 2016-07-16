@@ -1535,81 +1535,8 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
     const xAOD::EventInfo* eventInfo(nullptr);
     HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, false);
 
-    /*
-    if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFix.empty() ) {
-      for( unsigned int i=0; i<m_thisJetInfoSwitch[jetName]->m_sfFTagFix.size(); i++ ) {
-    	switch( m_thisJetInfoSwitch[jetName]->m_sfFTagFix.at(i) ) {
-    	  case 30 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix30_GLOBAL("BTag_SF_FixedCutBEff_30_GLOBAL");
-            if ( sfFix30_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFix30 = sfFix30_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFix30.push_back(-999.0); }
-    	    break;
-    	  case 50 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix50_GLOBAL("BTag_SF_FixedCutBEff_50_GLOBAL");
-            if ( sfFix50_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFix50 = sfFix50_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFix50.push_back(-999.0); }
-    	    break;
-    	  case 60 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix60_GLOBAL("BTag_SF_FixedCutBEff_60_GLOBAL");
-            if ( sfFix60_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFix60 = sfFix60_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFix60.push_back(-999.0); }
-    	    break;
-    	  case 70 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix70_GLOBAL("BTag_SF_FixedCutBEff_70_GLOBAL");
-            if ( sfFix70_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFix70 = sfFix70_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFix70.push_back(-999.0); }
-    	    break;
-    	  case 77 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix77_GLOBAL("BTag_SF_FixedCutBEff_77_GLOBAL");
-            if ( sfFix77_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFix77 = sfFix77_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFix77.push_back(-999.0); }
-    	    break;
-    	  case 80 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix80_GLOBAL("BTag_SF_FixedCutBEff_80_GLOBAL");
-            if ( sfFix80_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFix80 = sfFix80_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFix80.push_back(-999.0); }
-    	    break;
-    	  case 85 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix85_GLOBAL("BTag_SF_FixedCutBEff_85_GLOBAL");
-            if ( sfFix85_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFix85 = sfFix85_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFix85.push_back(-999.0); }
-    	    break;
-    	  case 90 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFix90_GLOBAL("BTag_SF_FixedCutBEff_90_GLOBAL");
-            if ( sfFix90_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFix90 = sfFix90_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFix90.push_back(-999.0); }
-    	    break;
-    	}
-      }
-    } // sfFTagFix
+    thisJet->FillGlobalBTagSF(eventInfo);
 
-    if( !m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.empty() ) {
-      for( unsigned int i=0; i<m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.size(); i++ ) {
-    	switch( m_thisJetInfoSwitch[jetName]->m_sfFTagFlt.at(i) ) {
-    	  case 30 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt30_GLOBAL("BTag_SF_FlatBEff_30_GLOBAL");
-            if ( sfFlt30_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFlt30 = sfFlt30_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFlt30.push_back(-999.0); }
-    	    break;
-    	  case 40 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt40_GLOBAL("BTag_SF_FlatBEff_40_GLOBAL");
-            if ( sfFlt40_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFlt40 = sfFlt40_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFlt40.push_back(-999.0); }
-    	    break;
-    	  case 50 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt50_GLOBAL("BTag_SF_FlatBEff_50_GLOBAL");
-            if ( sfFlt50_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFlt50 = sfFlt50_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFlt50.push_back(-999.0); }
-    	    break;
-    	  case 60 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt60_GLOBAL("BTag_SF_FlatBEff_60_GLOBAL");
-            if ( sfFlt60_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFlt60 = sfFlt60_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFlt60.push_back(-999.0); }
-    	    break;
-    	  case 70 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt70_GLOBAL("BTag_SF_FlatBEff_70_GLOBAL");
-            if ( sfFlt70_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFlt70 = sfFlt70_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFlt70.push_back(-999.0); }
-    	    break;
-    	  case 77 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt77_GLOBAL("BTag_SF_FlatBEff_77_GLOBAL");
-            if ( sfFlt77_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFlt77 = sfFlt77_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFlt77.push_back(-999.0); }
-    	    break;
-    	  case 85 :
-            static SG::AuxElement::ConstAccessor< std::vector<float> > sfFlt85_GLOBAL("BTag_SF_FlatBEff_85_GLOBAL");
-            if ( sfFlt85_GLOBAL.isAvailable( *eventInfo ) ) { thisJet->m_weight_jet_sfFlt85 = sfFlt85_GLOBAL( *eventInfo ); } else { thisJet->m_weight_jet_sfFlt85.push_back(-999.0); }
-    	    break;
-    	}
-      }
-    } // sfFTagFlt
-    */
   }
 
   for( auto jet_itr : *jets ) {
