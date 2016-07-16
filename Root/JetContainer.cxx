@@ -2510,7 +2510,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 }
 
 
-<<<<<<< HEAD
 void JetContainer::FillGlobalBTagSF( const xAOD::EventInfo* eventInfo ){
 
   if( !m_infoSwitch.m_sfFTagFix.empty() ) {
@@ -2544,6 +2543,8 @@ void JetContainer::FillGlobalBTagSF( const xAOD::EventInfo* eventInfo ){
   return;
 }
 
+
 bool JetContainer::findBTagSF(const std::vector<int>& sfList, int workingPt){
   return (std::find(sfList.begin(), sfList.end(),workingPt ) != sfList.end());
  }
+

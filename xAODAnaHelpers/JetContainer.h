@@ -263,7 +263,6 @@ namespace xAH {
         std::string m_tagger;
         int m_njets;
         std::vector<int>*                  m_isTag;
-<<<<<<< HEAD
         std::vector<float>                 m_weight_sf;
         std::vector< std::vector<float> >* m_sf;
 
@@ -284,7 +283,6 @@ namespace xAH {
           if(m_mc) HelperFunctions::connectBranch<std::vector<float> >(m_name, tree,"MV2c20_SF"+m_name,       &m_sf);
         }
 
-<<<<<<< HEAD
 
         void setBranch(TTree *tree, std::string jetName){
 	  tree->Branch(("n"+jetName+"s_"+m_name).c_str(), &m_njets, ("n"+jetName+"s_"+m_name+"/I").c_str());
@@ -315,7 +313,6 @@ namespace xAH {
 	  }
 	  
 	  if(!m_mc) { return; }
-<<<<<<< HEAD
 	  SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_acessorName);
 	  if ( sf.isAvailable( *jet ) ) {
 	    m_sf->push_back( sf( *jet ) );
@@ -323,7 +320,6 @@ namespace xAH {
 	    std::vector<float> junk(1,-999);
 	    m_sf->push_back(junk);
 	  }
-<<<<<<< HEAD
 
 	  return;
 	}
