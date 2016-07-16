@@ -8,7 +8,8 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 // output stream
-#include "EventLoop/OutputStream.h"
+#include <EventLoop/OutputStream.h>
+#include <SampleHandler/DiskOutputXRD.h>
 
 // EDM include(s):
 #include "xAODCore/AuxContainerBase.h"
@@ -41,17 +42,34 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MinixAOD)
 
+MinixAODCopyInfo::MinixAODCopyInfo(const std::string& copyString)
+{
+  size_t posOut = copyString.find_first_of('>');
+  size_t posSys = copyString.find_first_of('|');
+  this->inputContainerName =copyString.substr(0,std::min(posOut,posSys));
+  this->outputContainerName=copyString.substr(posOut+1,posSys);
+  if(this->outputContainerName.empty()) this->outputContainerName=this->inputContainerName; // Default is empty
+
+  if(posSys!=std::string::npos) this->systAlgo =copyString.substr(posSys+1);
+
+  this->shallowIO=this->inputContainerName.back()!='*';
+  if(!this->shallowIO) this->inputContainerName.pop_back();
+
+  //std::cout << "TEST " << copyString << " = " << this->inputContainerName << " " << this->outputContainerName << " " << this->systAlgo << " " << this->shallowIO << std::endl;
+}
+
 MinixAOD :: MinixAOD (std::string className) :
     Algorithm(className),
     m_simpleCopyKeys_vec(),
     m_shallowCopyKeys_vec(),
     m_deepCopyKeys_vec(),
-    m_copyFromStoreToEventKeys_vec(),
+    m_particleCopyKeys_vec(),
     m_fileMetaDataTool(nullptr),
     m_trigMetaDataTool(nullptr)
 {
   Info("MinixAOD()", "Calling constructor");
 
+  m_outputXRootD = "";
   m_outputFileName = "out_miniXAOD";
   m_createOutputFile = true;
   m_copyFileMetaData = false;
@@ -60,7 +78,7 @@ MinixAOD :: MinixAOD (std::string className) :
   m_simpleCopyKeys = "";
   m_storeCopyKeys = "";
   m_deepCopyKeys = "";
-  m_vectorCopyKeys = "";
+  m_particleCopyKeys = "";
 }
 
 EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
@@ -73,6 +91,7 @@ EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
   // only create the output xaod if requested
   if(m_createOutputFile){
     EL::OutputStream out_xAOD (m_outputFileName, "xAOD");
+    if(!m_outputXRootD.empty()) out_xAOD.output(new SH::DiskOutputXRD(m_outputXRootD));
     job.outputAdd (out_xAOD);
   }
 
@@ -156,44 +175,38 @@ EL::StatusCode MinixAOD :: initialize ()
     if(m_debug) Info("initialize()", "TriggerMenuMetaDataTool initialized...");
 
     if(m_debug) std::cout << "Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file." << std::endl;
-    m_simpleCopyKeys_vec.push_back("xTrigDecision");
-    m_simpleCopyKeys_vec.push_back("TrigConfKeys");
+    m_simpleCopyKeys_vec.push_back(MinixAODCopyInfo("xTrigDecision"));
+    m_simpleCopyKeys_vec.push_back(MinixAODCopyInfo("TrigConfKeys"));
   }
 
   // parse and split by comma
   std::string token;
   std::istringstream ss("");
 
-  // A B C D ... Z -> {A, B, C, D, ..., Z}
+  // simple copy
   ss.clear(); ss.str(m_simpleCopyKeys);
   while(std::getline(ss, token, ' '))
-    m_simpleCopyKeys_vec.push_back(token);
+    m_simpleCopyKeys_vec.push_back(MinixAODCopyInfo(token));
 
-  // A B C D ... Z -> {A, B, C, D, ..., Z}
+  // store copy
   ss.clear(); ss.str(m_storeCopyKeys);
   while(std::getline(ss, token, ' '))
-    m_copyFromStoreToEventKeys_vec.push_back(token);
+    m_storeCopyKeys_vec.push_back(MinixAODCopyInfo(token));
 
-  // A1|A2 B1|B2 C1|C2 ... Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
+  // shallow copy
   ss.clear(); ss.str(m_shallowCopyKeys);
-  while(std::getline(ss, token, ' ')){
-    int pos = token.find_first_of('|');
-    m_shallowCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
-  }
+  while(std::getline(ss, token, ' '))
+    m_shallowCopyKeys_vec.push_back(MinixAODCopyInfo(token));
 
-  // A1|A2 B1|B2 C1|C2 ... Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
+  // deep copy
   ss.clear(); ss.str(m_deepCopyKeys);
-  while(std::getline(ss, token, ' ')){
-    int pos = token.find_first_of('|');
-    m_deepCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
-  }
+  while(std::getline(ss, token, ' '))
+    m_deepCopyKeys_vec.push_back(MinixAODCopyInfo(token));
 
-  // A1|A2 B1|B2 C1|C2 ... Z1|Z2 -> {(A1, A2), (B1, B2), ..., (Z1, Z2)}
-  ss.clear(); ss.str(m_vectorCopyKeys);
-  while(std::getline(ss, token, ' ')){
-    int pos = token.find_first_of('|');
-    m_vectorCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
-  }
+  // smart copy
+  ss.clear(); ss.str(m_particleCopyKeys);
+  while(std::getline(ss, token, ' '))
+    m_particleCopyKeys_vec.push_back(MinixAODCopyInfo(token));
 
   if(m_debug) Info("initialize()", "MinixAOD Interface succesfully initialized!" );
 
@@ -221,112 +234,158 @@ EL::StatusCode MinixAOD :: execute ()
     }
 
   //
-  // Copy code
+  // Determine what should be copied how
+  std::vector<MinixAODCopyInfo> simpleCopyKeys_vec =m_simpleCopyKeys_vec;
+  std::vector<MinixAODCopyInfo> shallowCopyKeys_vec=m_shallowCopyKeys_vec;
+  std::vector<MinixAODCopyInfo> deepCopyKeys_vec   =m_deepCopyKeys_vec;
+  std::vector<MinixAODCopyInfo> storeCopyKeys_vec  =m_storeCopyKeys_vec;
+  std::vector<std::string>      vectorCopyKeys_vec;
+  
+  for(const auto& copy: m_particleCopyKeys_vec){
+    std::vector<std::string>* systNames(nullptr);
+    if(copy.systAlgo.empty())
+      {
+	systNames=new std::vector<std::string>();
+	systNames->push_back("");
+      }
+    else
+      {
+	vectorCopyKeys_vec.push_back(copy.systAlgo);
+	RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(systNames, copy.systAlgo, m_event, m_store, m_verbose) ,"");
+      }
 
+    for(auto systName : *systNames)
+      {
+	// copy from container
+	MinixAODCopyInfo newCopyInfo;
+	newCopyInfo.inputContainerName =copy.inputContainerName +systName;
+	newCopyInfo.outputContainerName=copy.outputContainerName+systName;
+
+	if(m_store->contains<xAOD::IParticleContainer>(newCopyInfo.inputContainerName))
+	  {
+	    // Is this a shallow copy?
+	    if(m_store->contains<xAOD::ShallowAuxContainer>(newCopyInfo.inputContainerName+"Aux."))
+	      {
+		newCopyInfo.shallowIO=copy.shallowIO;
+		shallowCopyKeys_vec.push_back(newCopyInfo);
+		continue;
+	      }
+
+	    // Is this a normal container?
+	    if(m_store->contains<xAOD::AuxContainerBase>(newCopyInfo.inputContainerName+"Aux."))
+	      {
+		storeCopyKeys_vec.push_back(newCopyInfo);
+		continue;
+	      }
+
+	    // This is a ConstDataVector
+	    deepCopyKeys_vec.push_back(newCopyInfo);
+	    continue;
+	  }
+
+	// simple copy
+	simpleCopyKeys_vec.push_back(newCopyInfo);
+      }
+
+    if(copy.systAlgo.empty())
+      delete systNames;
+  }
+    
+  //
+  // Copy code
+  
   // simple copy is easiest - it's in the input, copy over, no need for types
-  for(const auto& key: m_simpleCopyKeys_vec){
-    RETURN_CHECK("MinixAOD::execute()", m_event->copy(key), std::string("Could not copy "+key+" from input file.").c_str());
-    if(m_debug) std::cout << "Copying " << key << " from input file" << std::endl;
+  for(const auto& copy: simpleCopyKeys_vec){
+    if(m_debug) std::cout << "Copying " << copy.inputContainerName << " from input file" << std::endl;
+    RETURN_CHECK("MinixAOD::execute()", m_event->copy(copy.inputContainerName), std::string("Could not copy "+copy.inputContainerName+" from input file.").c_str());
   }
 
   // we need to make deep copies
-  for(const auto& keypair: m_deepCopyKeys_vec){
-    auto in_key = keypair.first;
-    auto out_key = keypair.second;
-
+  for(const auto& copy: deepCopyKeys_vec){
     const xAOD::IParticleContainer* cont(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, in_key, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+in_key+" from TStore. Enable m_verbose to find out why.").c_str());
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, copy.inputContainerName, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+copy.inputContainerName+" from TStore. Enable m_verbose to find out why.").c_str());
 
     if(const xAOD::ElectronContainer* t_cont = dynamic_cast<const xAOD::ElectronContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer,  xAOD::ElectronAuxContainer,  xAOD::Electron> (m_event, copy.outputContainerName, t_cont)), std::string("Could not deep copy "+copy.outputContainerName+".").c_str());
     } else if(const xAOD::JetContainer* t_cont = dynamic_cast<const xAOD::JetContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer,       xAOD::JetAuxContainer,       xAOD::Jet>      (m_event, copy.outputContainerName, t_cont)), std::string("Could not deep copy "+copy.outputContainerName+".").c_str());
     } else if(const xAOD::MissingETContainer* t_cont = dynamic_cast<const xAOD::MissingETContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::MissingETContainer, xAOD::MissingETAuxContainer, xAOD::MissingET>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::MissingETContainer, xAOD::MissingETAuxContainer, xAOD::MissingET>(m_event, copy.outputContainerName, t_cont)), std::string("Could not deep copy "+copy.outputContainerName+".").c_str());
     } else if(const xAOD::MuonContainer* t_cont = dynamic_cast<const xAOD::MuonContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::MuonContainer,      xAOD::MuonAuxContainer,      xAOD::Muon>     (m_event, copy.outputContainerName, t_cont)), std::string("Could not deep copy "+copy.outputContainerName+".").c_str());
     } else if(const xAOD::PhotonContainer* t_cont = dynamic_cast<const xAOD::PhotonContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::PhotonContainer, xAOD::PhotonAuxContainer, xAOD::Photon>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::PhotonContainer,    xAOD::PhotonAuxContainer,    xAOD::Photon>   (m_event, copy.outputContainerName, t_cont)), std::string("Could not deep copy "+copy.outputContainerName+".").c_str());
     } else if(const xAOD::TauJetContainer* t_cont = dynamic_cast<const xAOD::TauJetContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::TauJetContainer, xAOD::TauJetAuxContainer, xAOD::TauJet>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::TauJetContainer,    xAOD::TauJetAuxContainer,    xAOD::TauJet>   (m_event, copy.outputContainerName, t_cont)), std::string("Could not deep copy "+copy.outputContainerName+".").c_str());
     } else {
-      std::cout << "Could not identify what container " << in_key << " corresponds to for deep-copying." << std::endl;
+      std::cout << "Could not identify what container " << copy.inputContainerName << " corresponds to for deep-copying." << std::endl;
       return EL::StatusCode::FAILURE;
     }
-    m_copyFromStoreToEventKeys_vec.push_back(out_key);
 
-    if(m_debug) std::cout << "Deep-Copied " << in_key << " to " << out_key << " to record to output file" << std::endl;
+    if(m_debug) std::cout << "Deep-Copied " << copy.inputContainerName << " to record to output file as " << copy.outputContainerName << std::endl;
   }
 
-  // shallow IO handling (if no parent, assume deep copy)
-  for(const auto& keypair: m_shallowCopyKeys_vec){
-    auto key = keypair.first;
-    auto parent = keypair.second;
+  // shallow IO handling 
+  for(const auto& copy: shallowCopyKeys_vec){
+    const xAOD::IParticleContainer* cont(nullptr);
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, copy.inputContainerName, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+copy.inputContainerName+" from TStore. Enable m_verbose to find out why.").c_str());
 
-    // only add the parent if it doesn't exist
-    if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
-
-    if(m_debug){
-      std::cout << "Copying " << key;
-      if(!parent.empty()) std::cout << " as well as it's parent " << parent;
-      std::cout << std::endl;
+    if(dynamic_cast<const xAOD::ElectronContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::ElectronContainer> (m_event, m_store, copy.inputContainerName, copy.outputContainerName, copy.shallowIO)), std::string("Could not copy "+copy.outputContainerName+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::JetContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::JetContainer>      (m_event, m_store, copy.inputContainerName, copy.outputContainerName, copy.shallowIO)), std::string("Could not copy "+copy.outputContainerName+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::MissingETContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MissingETContainer>(m_event, m_store, copy.inputContainerName, copy.outputContainerName, copy.shallowIO)), std::string("Could not copy "+copy.outputContainerName+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::MuonContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MuonContainer>     (m_event, m_store, copy.inputContainerName, copy.outputContainerName, copy.shallowIO)), std::string("Could not copy "+copy.outputContainerName+" from TStore to TEvent").c_str());
+    } else if(dynamic_cast<const xAOD::PhotonContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::PhotonContainer>   (m_event, m_store, copy.inputContainerName, copy.outputContainerName, copy.shallowIO)), std::string("Could not copy "+copy.outputContainerName+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::TauJetContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::TauJetContainer>   (m_event, m_store, copy.inputContainerName, copy.outputContainerName, copy.shallowIO)), std::string("Could not copy "+copy.outputContainerName+" from TStore to TEvent.").c_str());
+    } else {
+      std::cout << "Could not identify what container " << copy.inputContainerName << " corresponds to for copying from TStore to TEvent." << std::endl;
+      return EL::StatusCode::FAILURE;
     }
 
-    m_copyFromStoreToEventKeys_vec.push_back(key);
   }
 
-  // vector handling (if no parent, assume deep copy)
-  for(const auto& keypair: m_vectorCopyKeys_vec){
-    auto vectorName = keypair.first;
-    auto parent = keypair.second;
+  // all we need to do is retrieve it and figure out what type it is to record it and we're done
+  for(const auto& copy: storeCopyKeys_vec){
+    const xAOD::IParticleContainer* cont(nullptr);
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, copy.inputContainerName, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+copy.inputContainerName+" from TStore. Enable m_verbose to find out why.").c_str());
 
-    std::vector<std::string>* vector(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(vector, vectorName, nullptr, m_store, m_verbose), std::string("Could not retrieve vector "+vectorName+" from TStore. Enable m_verbose to find out why.").c_str());
-
-    // only add the parent if it doesn't exist
-    if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
-
-    std::cout << "The following containers are being copied over:" << std::endl;
-    for(const auto& key: *vector){
-      if(m_debug) std::cout << "\t" << key << std::endl;
-      m_copyFromStoreToEventKeys_vec.push_back(key);
+    if(dynamic_cast<const xAOD::ElectronContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::ElectronContainer,  xAOD::ElectronAuxContainer> (m_event, m_store, copy.inputContainerName, copy.outputContainerName)), std::string("Could not copy "+copy.inputContainerName+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::JetContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::JetContainer,       xAOD::JetAuxContainer>      (m_event, m_store, copy.inputContainerName, copy.outputContainerName)), std::string("Could not copy "+copy.inputContainerName+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::MissingETContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MissingETContainer, xAOD::MissingETAuxContainer>(m_event, m_store, copy.inputContainerName, copy.outputContainerName)), std::string("Could not copy "+copy.inputContainerName+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::MuonContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MuonContainer,      xAOD::MuonAuxContainer>     (m_event, m_store, copy.inputContainerName, copy.outputContainerName)), std::string("Could not copy "+copy.inputContainerName+" from TStore to TEvent").c_str());
+    } else if(dynamic_cast<const xAOD::PhotonContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::PhotonContainer,    xAOD::PhotonAuxContainer>   (m_event, m_store, copy.inputContainerName, copy.outputContainerName)), std::string("Could not copy "+copy.inputContainerName+" from TStore to TEvent.").c_str());
+    } else if(dynamic_cast<const xAOD::TauJetContainer*>(cont)){
+      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::TauJetContainer,    xAOD::TauJetAuxContainer>   (m_event, m_store, copy.inputContainerName, copy.outputContainerName)), std::string("Could not copy "+copy.inputContainerName+" from TStore to TEvent.").c_str());
+    } else {
+      std::cout << "Could not identify what container " << copy.inputContainerName << " corresponds to for copying from TStore to TEvent." << std::endl;
+      return EL::StatusCode::FAILURE;
     }
-    if(m_debug && !parent.empty()) std::cout << "... along with their parent " << parent << std::endl;
 
+    if(m_debug) std::cout << "Copied " << copy.inputContainerName << " and its auxiliary container from TStore to TEvent" << std::endl;
   }
 
   // remove duplicates from m_copyFromStoreToEventKeys_vec
   // - see http://stackoverflow.com/a/1041939/1532974
   std::set<std::string> s;
-  unsigned size = m_copyFromStoreToEventKeys_vec.size();
-  for( unsigned i = 0; i < size; ++i ) s.insert( m_copyFromStoreToEventKeys_vec[i] );
-  m_copyFromStoreToEventKeys_vec.assign( s.begin(), s.end() );
+  unsigned size = vectorCopyKeys_vec.size();
+  for( unsigned i = 0; i < size; ++i ) s.insert( vectorCopyKeys_vec[i] );
+  vectorCopyKeys_vec.assign( s.begin(), s.end() );
 
-  // all we need to do is retrieve it and figure out what type it is to record it and we're done
-  for(const auto& key: m_copyFromStoreToEventKeys_vec){
-    const xAOD::IParticleContainer* cont(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, m_verbose), std::string("Could not retrieve container "+key+" from TStore. Enable m_verbose to find out why.").c_str());
-
-    if(dynamic_cast<const xAOD::ElectronContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::ElectronContainer, xAOD::ElectronAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
-    } else if(dynamic_cast<const xAOD::JetContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
-    } else if(dynamic_cast<const xAOD::MissingETContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MissingETContainer, xAOD::MissingETAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
-    } else if(dynamic_cast<const xAOD::MuonContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MuonContainer, xAOD::MuonAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent").c_str());
-    } else if(dynamic_cast<const xAOD::PhotonContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::PhotonContainer, xAOD::PhotonAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
-    } else if(dynamic_cast<const xAOD::TauJetContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::TauJetContainer, xAOD::TauJetAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
-    } else {
-      std::cout << "Could not identify what container " << key << " corresponds to for copying from TStore to TEvent." << std::endl;
-      return EL::StatusCode::FAILURE;
-    }
-
-    if(m_debug) std::cout << "Copied " << key << " and it's auxiliary container from TStore to TEvent" << std::endl;
+  for(const auto& systAlgoName: vectorCopyKeys_vec){
+    std::vector<std::string>* systNames(nullptr);
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(systNames, systAlgoName, m_event, m_store, m_verbose) ,"");
+    m_event->record(systNames, systAlgoName);
   }
-
 
   m_event->fill();
   if(m_debug) Info("execute()", "Finished dumping objects...");

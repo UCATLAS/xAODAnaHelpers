@@ -13,6 +13,43 @@
 #include <xAODCutFlow/CutBookkeeperAuxContainer.h>
 
 /**
+  @brief Information for copying a container
+*/
+class MinixAODCopyInfo
+{
+public:
+  /// Name of input container
+  std::string inputContainerName;
+
+  /// Name of output conainer
+  std::string outputContainerName;
+
+  /// Name of the systematics list (for particle copies only)
+  std::string systAlgo;
+
+  /// shallowIO mode (for shallw copies only)
+  bool shallowIO;
+
+public:
+  MinixAODCopyInfo() {}
+
+  /**
+     @rst
+      Parses a container copy string in the format
+       inputContainer*>outputContainer|systAlgo
+       
+       inputContainer - name of the container to copy
+       outputContainer - name for the container in the output file (optional, default is to use the same name)
+       systAlgo - name of the systematics list container (m_particleCopy only)
+       * - for shallow copy, set shallowIO=false
+     @endrst
+
+     @param copyString copy description string
+  */
+  MinixAODCopyInfo(const std::string& copyString);
+};
+
+/**
   @brief Produce xAOD outputs
   @rst
 
@@ -34,9 +71,9 @@
         #. :code:`shallowIO=false`: write to the output as a deep-copy like in the previous option
         #. :code:`shallowIO=true`: write to the output as a shallow-copy, but make sure the original container is also written to the output
 
-      * make a deep-copy of the ConstDataVector and then move from :code:`TStore` to :code:`TEvent`. The problem is that we point to local memory that will not persist when making the CDV.
+      * make a deep-copy of the ConstDataVector and :code:`TEvent::record()`. The problem is that we point to local memory that will not persist when making the CDV.
 
-    The trickiest case is with shallow copies because those could be our systematics -- and you might want to copy the original container, and only copy over systematics via true shallow copies to conserve memory and space.
+    The trickiest case is with shallow copies because those could be our systematics -- and you might want to copy the original container, and only copy over systematics via true shallow copies to conserve memory and space. It is up to the user to handle this correctly.
 
   @endrst
 
@@ -44,6 +81,9 @@
 class MinixAOD : public xAH::Algorithm
 {
 public:
+  /// XRootD path to copy file to (leave empty to save to disk)
+  std::string m_outputXRootD;
+
   /// name of the output file to use for xAOD dumping
   std::string m_outputFileName;
 
@@ -72,15 +112,15 @@ public:
   std::string m_simpleCopyKeys;
 
   /**
-    @brief names of containers in the TStore to copy over
+    @brief names of deep-copy containers in the TStore to copy over
 
     @rst
 
-      .. note:: This option is appropriate for deep-copied containers.
+      .. note:: This option is appropriate for existing deep-copied containers.
 
-      Container names should be space-delimited::
+      Container names should be space-delimited. To specify a new name for the output container, use ``>NewContainerName`` syntax.
 
-        "m_storeCopyKeys": "BrandNewJetContainer ReclusteredJets"
+        "m_storeCopyKeys": "BrandNewJetContainer ReclusteredJets>NewContainerName"
 
     @endrst
    */
@@ -93,21 +133,21 @@ public:
 
       .. note:: This option is appropriate for shallow-copied containers.
 
-      This option is a little different because shallow-copied containers have parent containers. However, there are two options depending on the :code:`setShallowIO` option
+      Shallow-copied containers have parent containers. However, there are two options depending on the :code:`setShallowIO` option
 
         True
-          If this is set to true, you will want to specify the parent container so that we copy it over as well (it is assumed that the parent container is in TStore or TEvent)::
+          If this is set to true, you will want to exclicitely save the parent container
 
-            "m_shallowCopyKeys": "SCAntiKt4EMTopoJets|AntiKt4EMTopoJets SCMuons|Muons_Presel"
+            "m_shallowCopyKeys": "SCAntiKt4EMTopoJets"
 
         False
-          If this is set to false, you will not want to specify the parent container
+          If this is set to false, you do not need to save the parent container. Instead add a * at the end to enable deep-copy.
 
-            "m_shallowCopyKeys": "SCAntiKt4EMTopoJets| SCMuons|"
+            "m_shallowCopyKeys": "SCAntiKt4EMTopoJets* SCMuons*>NewContainerName"
 
       .. warning:: Please note that the :code:`shallowIO` option is what determines how the memory is managed. If you run into issues with shallow-copied containers here, make sure you know whether this option was enabled or not before asking for help.
 
-      Always specify your string in a space-delimited format where pairs are split up by ``shallow container name|parent container name``.
+      Always specify your string in a space-delimited format, adding a * for deep copy operations ``shallow container name``. To rename a container in output, use the ``>NewContainerName`` syntax.
 
     @endrst
    */
@@ -122,40 +162,47 @@ public:
 
       Here, we will do the deep-copying for you, so that the containers can be correctly recorded into the output. Due to the way view-only containers work, we can't figure out whether the memory points to a specific parent container we can copy, or to a non-persistable, local (stack) memory. The best option is to just deep-copy and allocate new memory instead::
 
-          "m_deepCopyKeys": "AntiKt4EMTopoJets|DeepCopyAntiKt4Jets Muons|DeepCopyMuons"
+          "m_deepCopyKeys": "AntiKt4EMTopoJets"
 
-      Always specify your string in a space-delimited format where pairs are split up by ``input container name|output container name``.
+      Always specify your string in a space-delimited format ``input container name``.
 
     @endrst
    */
   std::string m_deepCopyKeys;
 
   /**
-    @brief names of vectors that have container names for its contents
+    @brief names of IParticle containers that should be copied, along with the systematics containers
 
     @rst
 
-      .. note:: This option is appropriate for groups shallow-copied containers such as when you are dealing with systematics.
+      Here, we will automatically determine the best method to copy a container. The heuristics applied are
+       1. If it is a shallow copy, result is saved with ShallowIO=True
+       2. If it is an already existing deep copy in TStore, result is copied over
+       3. If it is is a ConstDataVector, a new deep-copy is saved.
+       4. Rest is directly copied over from TEvent.
 
-      Here, we will do the copying for you by retrieving the vector of container names and copy each one over. See how :cpp:member:`MinixAOD::m_shallowCopyKeys` works.
+      Always specify your string in a space-delimited format, with each container in the syntax ``inputContainer*>outputContainer|systAlgo``, where
+       
+       inputContainer - name of the container to copy
+       outputContainer - name for the container in the output file (optional, default is to use the same name)
+       systAlgo - name of the systematics list container
+       * - for shallow copy, set shallowIO=false
 
-      Always specify your string in a space-delimited format where pairs are split up by ``vector name|parent container name``.
     @endrst
    */
-  std::string m_vectorCopyKeys;
+  std::string m_particleCopyKeys;
 
 private:
   /// A vector of containers that are in TEvent that just need to be written to the output
-  std::vector<std::string> m_simpleCopyKeys_vec; //!
-  /// A vector of (container name, parent name) pairs for shallow-copied objects -- if parent is empty, deep-copy it
-  std::vector<std::pair<std::string, std::string>> m_shallowCopyKeys_vec; //!
-  /// A vector of (in container, output container) that need to be deep-copied first before moving to TStore
-  std::vector<std::pair<std::string, std::string>> m_deepCopyKeys_vec; //!
-  /// A vector of (name of vector of container names, parent name) pairs for shallow-copied objects (like systematics) -- if parent is empty, deep-copy it
-  std::vector<std::pair<std::string, std::string>> m_vectorCopyKeys_vec; //!
-
-  /// A vector of containers (and aux-pairs) in TStore to record in TEvent
-  std::vector<std::string> m_copyFromStoreToEventKeys_vec; //!
+  std::vector<MinixAODCopyInfo> m_simpleCopyKeys_vec; //!
+  /// A vector of (container name, shallowIO) pairs for shallow-copied objects
+  std::vector<MinixAODCopyInfo> m_shallowCopyKeys_vec; //!
+  /// A vector of containers that need to be deep-copied first before moving to TEvent
+  std::vector<MinixAODCopyInfo> m_deepCopyKeys_vec; //!
+  /// A vector of containers that can be directly copied from TStore
+  std::vector<MinixAODCopyInfo> m_storeCopyKeys_vec; //!
+  /// A vector of container for which mode should be determine automatically.
+  std::vector<MinixAODCopyInfo> m_particleCopyKeys_vec; //!
 
   /// Pointer for the File MetaData Tool
   xAODMaker::FileMetaDataTool          *m_fileMetaDataTool;    //!
