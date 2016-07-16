@@ -29,11 +29,10 @@ namespace xAH {
       virtual void setTree    (TTree *tree, std::string tagger="MV2c10");
       virtual void setBranches(TTree *tree);
       virtual void clear();
-      virtual void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation );
+      virtual void FillJet( const xAOD::Jet* jet,            const xAOD::Vertex* pv, int pvLocation );
+      virtual void FillJet( const xAOD::IParticle* particle, const xAOD::Vertex* pv, int pvLocation );
       virtual void FillGlobalBTagSF( const xAOD::EventInfo* eventInfo );
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
-
-      float m_units;
 
     protected:
       virtual void updateParticle(uint idx, Jet& jet);
@@ -44,18 +43,20 @@ namespace xAH {
       template<typename T, typename U, typename V>
 	void safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >* destination, int m_units = 1);
 
-      template<typename T>
-	void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr);
+//template<typename T>
+//	void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr);
     
     private:
 
+      bool findBTagSF(const std::vector<int>& sfList, int workingPt);
+      
       InDet::InDetTrackSelectionTool * m_trkSelTool;
 
       //
       // Vector branches
     
       // rapidity
-      std::vector<float> m_jet_rapidity;
+      std::vector<float> *m_rapidity;
 
       // clean
       std::vector<float> *m_Timing;
@@ -282,6 +283,18 @@ namespace xAH {
           if(m_mc) HelperFunctions::connectBranch<std::vector<float> >(m_name, tree,"MV2c20_SF"+m_name,       &m_sf);
         }
 
+
+        void setBranch(TTree *tree, std::string jetName){
+	  tree->Branch(("n"+jetName+"s_"+m_name).c_str(), &m_njets, ("n"+jetName+"s_"+m_name+"/I").c_str());
+	  tree->Branch((jetName+"_is"+m_name).c_str(),        &m_isTag);
+
+	  if ( m_mc ) {
+	    tree->Branch((jetName+"_SF"+m_name).c_str(),        &m_sf);
+	    tree->Branch(("weight_"+jetName+"SF"+m_name).c_str(), &m_weight_sf);
+	  }
+        }
+
+
 	void clear(){
 	  m_njets = 0;
 	  m_isTag->clear();
@@ -392,16 +405,12 @@ namespace xAH {
     };
 }
 
-template<typename T>
-void xAH::JetContainer::setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr){
-  tree->Branch((m_name+"_"+varName).c_str(),        localVectorPtr);
-}
 
 
 template<typename T, typename U, typename V>
-void xAH::JetContainer::safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>* destination, U defaultValue, int m_units){
+void xAH::JetContainer::safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>* destination, U defaultValue, int units){
   if ( accessor.isAvailable( *xAODObj ) ) {
-    destination->push_back( accessor( *xAODObj ) / m_units );
+    destination->push_back( accessor( *xAODObj ) / units );
   } else {
     destination->push_back( defaultValue );
   }
@@ -410,11 +419,11 @@ void xAH::JetContainer::safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor
 
 
 template<typename T, typename U, typename V>
-void xAH::JetContainer::safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >* destination, int m_units){
+void xAH::JetContainer::safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >* destination, int units){
   destination->push_back( std::vector<U>() );
 
   if ( accessor.isAvailable( *xAODObj ) ) {
-    for(U itemInVec : accessor(*xAODObj))        destination->back().push_back(itemInVec / m_units);
+    for(U itemInVec : accessor(*xAODObj))        destination->back().push_back(itemInVec / units);
   } 
   return;
 }

@@ -13,6 +13,7 @@ namespace xAH {
       
       //Jet() { };
       //virtual ~Jet();
+      float rapidity;
 
       // clean
       float Timing;

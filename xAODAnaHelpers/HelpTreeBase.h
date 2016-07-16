@@ -263,29 +263,13 @@ protected:
   						   / This list is created when configuring ElectronSelector.cxx, where the electron trigger matching is actually performed
 						   */
 
+  // jet trigger
   std::vector<std::string> m_passTriggers;
   std::vector<float> m_triggerPrescales;
 
-  // jet trigger
-
   //
-  // jet Info
+  //  Jets
   //
-  struct jetInfo{
-
-    int N;
-    std::vector<float> m_jet_pt;
-    std::vector<float> m_jet_eta;
-    std::vector<float> m_jet_phi;
-    std::vector<float> m_jet_E;
-
-    // rapidity
-    std::vector<float> m_jet_rapidity;
-
-
-    jetInfo(){ }
-
-  };
   std::map<std::string, xAH::JetContainer*> m_jets;
 
   //
