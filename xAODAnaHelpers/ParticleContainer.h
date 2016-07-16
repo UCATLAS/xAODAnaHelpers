@@ -19,8 +19,8 @@ namespace xAH {
     class ParticleContainer
     {
     public:
-    ParticleContainer(const std::string& name, const std::string& detailStr="", float units = 1e3, bool useMass=false)
-      : m_name(name), m_infoSwitch(detailStr), m_mc(false), m_units(units), m_useMass(useMass)
+    ParticleContainer(const std::string& name, const std::string& detailStr="", float units = 1e3, bool useMass=false, bool useTheS = true)
+      : m_name(name), m_infoSwitch(detailStr), m_mc(false), m_units(units), m_useMass(useMass), m_useTheS(useTheS)
       {
 	m_n = 0;
 
@@ -46,9 +46,14 @@ namespace xAH {
     
       virtual void setTree(TTree *tree)
       {
-
-	tree->SetBranchStatus  (("n"+m_name+"s").c_str() , 1);
-	tree->SetBranchAddress (("n"+m_name+"s").c_str() , &m_n);
+	
+	if(m_useTheS){
+	  tree->SetBranchStatus  (("n"+m_name+"s").c_str() , 1);
+	  tree->SetBranchAddress (("n"+m_name+"s").c_str() , &m_n);
+	}else{
+	  tree->SetBranchStatus  (("n"+m_name).c_str() , 1);
+	  tree->SetBranchAddress (("n"+m_name).c_str() , &m_n);
+	}
 
         if(m_infoSwitch.m_kinematic)
           {
@@ -63,11 +68,15 @@ namespace xAH {
       virtual void setBranches(TTree *tree)
       {
 
-	tree->Branch(("n"+m_name+"s").c_str(),    &m_n, ("n"+m_name+"s/I").c_str());
+	if(m_useTheS){
+	  tree->Branch(("n"+m_name+"s").c_str(),    &m_n, ("n"+m_name+"s/I").c_str());
+	}else{
+	  tree->Branch(("n"+m_name).c_str(),    &m_n, ("n"+m_name+"/I").c_str());
+	}
 
         if(m_infoSwitch.m_kinematic) {
-	  if(m_useMass)  setBranch<float>(tree,"E",                        m_E                );
-	  else           setBranch<float>(tree,"m",                        m_M                );
+	  if(m_useMass)  setBranch<float>(tree,"m",                        m_M                );
+	  else           setBranch<float>(tree,"E",                        m_E                );
 	  setBranch<float>(tree,"pt",                       m_pt               );
 	  setBranch<float>(tree,"phi",                      m_phi              );
 	  setBranch<float>(tree,"eta",                      m_eta              );
@@ -79,8 +88,8 @@ namespace xAH {
 	m_n = 0;
 
         if(m_infoSwitch.m_kinematic) {
-	  if(m_useMass)  m_E->clear();
-	  else           m_M->clear();
+	  if(m_useMass)  m_M->clear();
+	  else           m_E->clear();
 	  m_pt  ->clear();
 	  m_phi ->clear();
 	  m_eta ->clear();
@@ -167,6 +176,7 @@ namespace xAH {
     
     private:
       bool m_useMass;
+      bool m_useTheS;
 
       //
       // Vector branches

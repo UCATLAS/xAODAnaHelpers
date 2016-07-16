@@ -5,7 +5,7 @@
 using namespace xAH;
 
 MuonContainer::MuonContainer(const std::string& name, const std::string& detailStr)
-  : ParticleContainer(name,detailStr,true)
+  : ParticleContainer(name, detailStr, 1e3, true, false)
 {
 
   m_isMedium   = new std::vector<int>();
@@ -25,9 +25,6 @@ void MuonContainer::setTree(TTree *tree)
   //
   // Connect branches
   ParticleContainer::setTree(tree);
-
-  tree->SetBranchStatus  (("n"+m_name).c_str() , 1);
-  tree->SetBranchAddress (("n"+m_name).c_str() , &m_n);
 
   if ( m_infoSwitch.m_quality ) {
 
