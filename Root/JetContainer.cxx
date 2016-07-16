@@ -2583,3 +2583,35 @@ void JetContainer::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, in
 }
 
 
+void JetContainer::FillGlobalBTagSF( const xAOD::EventInfo* eventInfo ){
+
+  if( !m_infoSwitch.m_sfFTagFix.empty() ) {
+    for( unsigned int i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) {
+      switch( m_infoSwitch.m_sfFTagFix.at(i) ) {
+      case 30 :  m_btag_Fix30->FillGlobalSF(eventInfo); break;
+      case 50 :  m_btag_Fix50->FillGlobalSF(eventInfo); break;
+      case 60 :  m_btag_Fix60->FillGlobalSF(eventInfo); break;
+      case 70 :  m_btag_Fix70->FillGlobalSF(eventInfo); break;
+      case 77 :  m_btag_Fix77->FillGlobalSF(eventInfo); break;
+      case 80 :  m_btag_Fix80->FillGlobalSF(eventInfo); break;
+      case 85 :  m_btag_Fix85->FillGlobalSF(eventInfo); break;
+      case 90 :  m_btag_Fix90->FillGlobalSF(eventInfo); break;
+      }
+    }
+  } // sfFTagFix
+
+  if( !m_infoSwitch.m_sfFTagFlt.empty() ) {
+    for( unsigned int i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ ) {
+      switch( m_infoSwitch.m_sfFTagFlt.at(i) ) {
+      case 30 :  m_btag_Flt30->FillGlobalSF(eventInfo); break;
+      case 50 :	 m_btag_Flt50->FillGlobalSF(eventInfo); break;
+      case 60 :	 m_btag_Flt60->FillGlobalSF(eventInfo); break;
+      case 70 :	 m_btag_Flt70->FillGlobalSF(eventInfo); break;
+      case 77 :	 m_btag_Flt77->FillGlobalSF(eventInfo); break;
+      case 85 :	 m_btag_Flt85->FillGlobalSF(eventInfo); break;
+      }	 
+    }
+  } // sfFTagFlt
+
+  return;
+}
