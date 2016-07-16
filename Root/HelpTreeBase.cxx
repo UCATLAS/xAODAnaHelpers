@@ -32,7 +32,6 @@ using std::vector;
 HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14, xAOD::TStore* store):
   m_eventInfoSwitch(nullptr),
   m_trigInfoSwitch(nullptr),
-  m_muInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
   m_phInfoSwitch(nullptr),
   m_truthInfoSwitch(nullptr),
@@ -70,8 +69,9 @@ HelpTreeBase::~HelpTreeBase() {
     //trig
     delete m_trigInfoSwitch;
 
-    //mu
-    delete m_muInfoSwitch;
+    //muon
+    for (auto muon: m_muons)
+      delete muon.second;
 
     //el
     delete m_elInfoSwitch;
@@ -92,7 +92,6 @@ HelpTreeBase::~HelpTreeBase() {
     delete m_metInfoSwitch;
 
     //jet
-
     for (auto jet: m_jets)
       delete jet.second;
 
@@ -450,425 +449,45 @@ void HelpTreeBase::ClearJetTrigger(  ) { }
  *
  ********************/
 
-void HelpTreeBase::AddMuons(const std::string detailStr) {
+void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonName) {
 
   if ( m_debug )  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
-  m_muInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
-  // always
-  m_tree->Branch("nmuon",   &m_nmuon, "nmuon/I");
+  m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units);
 
-  if ( m_muInfoSwitch->m_kinematic ){
-    m_tree->Branch("muon_pt",  &m_muon_pt);
-    m_tree->Branch("muon_phi", &m_muon_phi);
-    m_tree->Branch("muon_eta", &m_muon_eta);
-    m_tree->Branch("muon_m",   &m_muon_m);
-  }
+  xAH::MuonContainer* thisMuon = m_muons[muonName];
 
-  if ( m_muInfoSwitch->m_trigger ){
-    // this is true if there's a match for at least one trigger chain
-    m_tree->Branch("muon_isTrigMatched", &m_muon_isTrigMatched);
-    // a vector of trigger match decision for each muon trigger chain
-    m_tree->Branch( "muon_isTrigMatchedToChain", &m_muon_isTrigMatchedToChain );
-    // a vector of strings for each muon trigger chain - 1:1 correspondence w/ vector above
-    m_tree->Branch( "muon_listTrigChains", &m_muon_listTrigChains );
-  }
-
-  if ( m_muInfoSwitch->m_isolation ) {
-    m_tree->Branch("muon_isIsolated_LooseTrackOnly", &m_muon_isIsolated_LooseTrackOnly);
-    m_tree->Branch("muon_isIsolated_Loose",	     &m_muon_isIsolated_Loose);
-    m_tree->Branch("muon_isIsolated_Tight",	     &m_muon_isIsolated_Tight);
-    m_tree->Branch("muon_isIsolated_Gradient",	     &m_muon_isIsolated_Gradient);
-    m_tree->Branch("muon_isIsolated_GradientLoose",  &m_muon_isIsolated_GradientLoose);
-    m_tree->Branch("muon_isIsolated_FixedCutLoose",	   &m_muon_isIsolated_FixedCutLoose);
-    m_tree->Branch("muon_isIsolated_FixedCutTightTrackOnly", &m_muon_isIsolated_FixedCutTightTrackOnly);
-    m_tree->Branch("muon_isIsolated_UserDefinedFixEfficiency",    &m_muon_isIsolated_UserDefinedFixEfficiency);
-    m_tree->Branch("muon_isIsolated_UserDefinedCut",              &m_muon_isIsolated_UserDefinedCut);
-    m_tree->Branch("muon_ptcone20",	  &m_muon_ptcone20);
-    m_tree->Branch("muon_ptcone30",	  &m_muon_ptcone30);
-    m_tree->Branch("muon_ptcone40",	  &m_muon_ptcone40);
-    m_tree->Branch("muon_ptvarcone20",	  &m_muon_ptvarcone20);
-    m_tree->Branch("muon_ptvarcone30",	  &m_muon_ptvarcone30);
-    m_tree->Branch("muon_ptvarcone40",	  &m_muon_ptvarcone40);
-    m_tree->Branch("muon_topoetcone20",   &m_muon_topoetcone20);
-    m_tree->Branch("muon_topoetcone30",   &m_muon_topoetcone30);
-    m_tree->Branch("muon_topoetcone40",   &m_muon_topoetcone40);
-  }
-
-  if ( m_muInfoSwitch->m_effSF && m_isMC ) {
-    m_tree->Branch("muon_RecoEff_SF_Loose",         &m_muon_RecoEff_SF_Loose);
-    m_tree->Branch("muon_TrigEff_SF_Loose_Loose",		    &m_muon_TrigEff_SF_Loose_Loose);
-    m_tree->Branch("muon_TrigEff_SF_Loose_FixedCutTightTrackOnly",  &m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly);
-    m_tree->Branch("muon_TrigMCEff_Loose_Loose",		    &m_muon_TrigMCEff_Loose_Loose);
-    m_tree->Branch("muon_TrigMCEff_Loose_FixedCutTightTrackOnly",   &m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly);
-    m_tree->Branch("muon_IsoEff_SF_LooseTrackOnly", &m_muon_IsoEff_SF_LooseTrackOnly);
-    m_tree->Branch("muon_IsoEff_SF_Loose",	    &m_muon_IsoEff_SF_Loose);
-    m_tree->Branch("muon_IsoEff_SF_Tight",	    &m_muon_IsoEff_SF_Tight);
-    m_tree->Branch("muon_IsoEff_SF_Gradient",	    &m_muon_IsoEff_SF_Gradient);
-    m_tree->Branch("muon_IsoEff_SF_GradientLoose",  &m_muon_IsoEff_SF_GradientLoose);
-    m_tree->Branch("muon_IsoEff_SF_FixedCutTightTrackOnly",  &m_muon_IsoEff_SF_FixedCutTightTrackOnly);
-    m_tree->Branch("muon_TTVAEff_SF",  &m_muon_TTVAEff_SF);
-  }
-
-  if ( m_muInfoSwitch->m_quality ) {
-    m_tree->Branch("muon_isVeryLoose",  &m_muon_isVeryLoose);
-    m_tree->Branch("muon_isLoose",      &m_muon_isLoose);
-    m_tree->Branch("muon_isMedium",     &m_muon_isMedium);
-    m_tree->Branch("muon_isTight",      &m_muon_isTight);
-  }
-
-  if ( m_muInfoSwitch->m_trackparams ) {
-    m_tree->Branch("muon_trkd0",          &m_muon_trkd0);
-    m_tree->Branch("muon_trkd0sig",       &m_muon_trkd0sig);
-    m_tree->Branch("muon_trkz0",          &m_muon_trkz0);
-    m_tree->Branch("muon_trkz0sintheta",  &m_muon_trkz0sintheta);
-    m_tree->Branch("muon_trkphi0",        &m_muon_trkphi0);
-    m_tree->Branch("muon_trktheta",       &m_muon_trktheta);
-    m_tree->Branch("muon_trkcharge",      &m_muon_trkcharge);
-    m_tree->Branch("muon_trkqOverP",      &m_muon_trkqOverP);
-  }
-
-  if ( m_muInfoSwitch->m_trackhitcont ) {
-    m_tree->Branch("muon_trknSiHits",    &m_muon_trknSiHits);
-    m_tree->Branch("muon_trknPixHits",   &m_muon_trknPixHits);
-    m_tree->Branch("muon_trknPixHoles",  &m_muon_trknPixHoles);
-    m_tree->Branch("muon_trknSCTHits",   &m_muon_trknSCTHits);
-    m_tree->Branch("muon_trknSCTHoles",  &m_muon_trknSCTHoles);
-    m_tree->Branch("muon_trknTRTHits",   &m_muon_trknTRTHits);
-    m_tree->Branch("muon_trknTRTHoles",  &m_muon_trknTRTHoles);
-    m_tree->Branch("muon_trknBLayerHits",&m_muon_trknBLayerHits);
-    if ( !m_DC14 ) {
-      m_tree->Branch("muon_trknInnermostPixLayHits",  &m_muon_trknInnermostPixLayHits);
-      m_tree->Branch("muon_trkPixdEdX",    &m_muon_trkPixdEdX);
-    }
-  }
-
-  if( m_muInfoSwitch->m_energyLoss ) {
-    m_tree->Branch("muon_EnergyLoss"                ,  &m_muon_EnergyLoss               );
-    m_tree->Branch("muon_EnergyLossSigma"           ,  &m_muon_EnergyLossSigma          );
-    m_tree->Branch("muon_energyLossType"            ,  &m_muon_energyLossType           );
-    m_tree->Branch("muon_MeasEnergyLoss"            ,  &m_muon_MeasEnergyLoss           );
-    m_tree->Branch("muon_MeasEnergyLossSigma"       ,  &m_muon_MeasEnergyLossSigma      );
-    m_tree->Branch("muon_ParamEnergyLoss"           ,  &m_muon_ParamEnergyLoss          );
-    m_tree->Branch("muon_ParamEnergyLossSigmaMinus" ,  &m_muon_ParamEnergyLossSigmaMinus);
-    m_tree->Branch("muon_ParamEnergyLossSigmaPlus"  ,  &m_muon_ParamEnergyLossSigmaPlus );
-  }
-
+  thisMuon->setBranches(m_tree);
   this->AddMuonsUser();
 }
 
-void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex ) {
+void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex, const std::string muonName ) {
 
-  this->ClearMuons();
-  this->ClearMuonsUser();
+  this->ClearMuons(muonName);
 
-  m_nmuon = 0;
-  for ( auto muon_itr : *(muons) ) {
-
-    if ( m_debug ) { Info("HelpTreeBase::FillMuons()", "Filling muon w/ pT = %2f", muon_itr->pt() / m_units ); }
-    if ( m_muInfoSwitch->m_kinematic ) {
-      m_muon_pt.push_back ( muon_itr->pt() / m_units  );
-      m_muon_eta.push_back( muon_itr->eta() );
-      m_muon_phi.push_back( muon_itr->phi() );
-      m_muon_m.push_back  ( muon_itr->m() / m_units  );
-    }
-
-    if ( m_muInfoSwitch->m_trigger ) {
-
-      // retrieve map<string,char> w/ <chain,isMatched>
-      //
-      static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapMuAcc("isTrigMatchedMapMu");
-
-      std::vector<int> matches;
-
-      if ( isTrigMatchedMapMuAcc.isAvailable( *muon_itr ) ) {
-	 // loop over map and fill branches
-	 //
-	 for ( auto const &it : (isTrigMatchedMapMuAcc( *muon_itr )) ) {
-  	   matches.push_back( static_cast<int>(it.second) );
-	   m_muon_listTrigChains.push_back( it.first );
-	 }
-       } else {
-	 matches.push_back( -1 );
-	 m_muon_listTrigChains.push_back("NONE");
-       }
-
-       m_muon_isTrigMatchedToChain.push_back(matches);
-
-       // if at least one match among the chains is found, say this muon is trigger matched
-       if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_muon_isTrigMatched.push_back(1); }
-       else { m_muon_isTrigMatched.push_back(0); }
-
-    }
-
-
-    if ( m_muInfoSwitch->m_isolation ) {
-
-      static SG::AuxElement::Accessor<char> isIsoLooseTrackOnlyAcc ("isIsolated_LooseTrackOnly");
-      static SG::AuxElement::Accessor<char> isIsoLooseAcc ("isIsolated_Loose");
-      static SG::AuxElement::Accessor<char> isIsoTightAcc ("isIsolated_Tight");
-      static SG::AuxElement::Accessor<char> isIsoGradientAcc ("isIsolated_Gradient");
-      static SG::AuxElement::Accessor<char> isIsoGradientLooseAcc ("isIsolated_GradientLoose");
-      static SG::AuxElement::Accessor<char> isIsoFixedCutLooseAcc ("isIsolated_FixedCutLoose");
-      static SG::AuxElement::Accessor<char> isIsoFixedCutTightTrackOnlyAcc ("isIsolated_FixedCutTightTrackOnly");
-      static SG::AuxElement::Accessor<char> isIsoUserDefinedFixEfficiencyAcc ("isIsolated_UserDefinedFixEfficiency");
-      static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
-
-      if ( isIsoLooseTrackOnlyAcc.isAvailable( *muon_itr ) ) { m_muon_isIsolated_LooseTrackOnly.push_back( isIsoLooseTrackOnlyAcc( *muon_itr ) ); } else { m_muon_isIsolated_LooseTrackOnly.push_back( -1 ); }
-      if ( isIsoLooseAcc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_Loose.push_back( isIsoLooseAcc( *muon_itr ) ); } else { m_muon_isIsolated_Loose.push_back( -1 ); }
-      if ( isIsoTightAcc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_Tight.push_back( isIsoTightAcc( *muon_itr ) ); } else { m_muon_isIsolated_Tight.push_back( -1 ); }
-      if ( isIsoGradientAcc.isAvailable( *muon_itr ) )       { m_muon_isIsolated_Gradient.push_back( isIsoGradientAcc( *muon_itr ) ); } else { m_muon_isIsolated_Gradient.push_back( -1 ); }
-      if ( isIsoGradientLooseAcc.isAvailable( *muon_itr ) )  { m_muon_isIsolated_GradientLoose.push_back( isIsoGradientLooseAcc( *muon_itr ) ); } else { m_muon_isIsolated_GradientLoose.push_back( -1 ); }
-      if ( isIsoFixedCutLooseAcc.isAvailable( *muon_itr ) )          { m_muon_isIsolated_FixedCutLoose.push_back( isIsoFixedCutLooseAcc( *muon_itr ) ); } else { m_muon_isIsolated_FixedCutLoose.push_back( -1 ); }
-      if ( isIsoFixedCutTightTrackOnlyAcc.isAvailable( *muon_itr ) )   { m_muon_isIsolated_FixedCutTightTrackOnly.push_back( isIsoFixedCutTightTrackOnlyAcc( *muon_itr ) ); } else { m_muon_isIsolated_FixedCutTightTrackOnly.push_back( -1 ); }
-      if ( isIsoUserDefinedFixEfficiencyAcc.isAvailable( *muon_itr ) ) { m_muon_isIsolated_UserDefinedFixEfficiency.push_back( isIsoUserDefinedFixEfficiencyAcc( *muon_itr ) ); } else { m_muon_isIsolated_UserDefinedFixEfficiency.push_back( -1 ); }
-      if ( isIsoUserDefinedCutAcc.isAvailable( *muon_itr ) )           { m_muon_isIsolated_UserDefinedCut.push_back( isIsoUserDefinedCutAcc( *muon_itr ) ); } else { m_muon_isIsolated_UserDefinedCut.push_back( -1 ); }
-
-      m_muon_ptcone20.push_back( muon_itr->isolation( xAOD::Iso::ptcone20 ) );
-      m_muon_ptcone30.push_back( muon_itr->isolation( xAOD::Iso::ptcone30 ) );
-      m_muon_ptcone40.push_back( muon_itr->isolation( xAOD::Iso::ptcone40 ) );
-      m_muon_ptvarcone20.push_back( muon_itr->isolation( xAOD::Iso::ptvarcone20 ) );
-      m_muon_ptvarcone30.push_back( muon_itr->isolation( xAOD::Iso::ptvarcone30 ) );
-      m_muon_ptvarcone40.push_back( muon_itr->isolation( xAOD::Iso::ptvarcone40 ) );
-      m_muon_topoetcone20.push_back( muon_itr->isolation( xAOD::Iso::topoetcone20 ) );
-      m_muon_topoetcone30.push_back( muon_itr->isolation( xAOD::Iso::topoetcone30 ) );
-      m_muon_topoetcone40.push_back( muon_itr->isolation( xAOD::Iso::topoetcone40 ) );
-
-    }
-
-    if ( m_muInfoSwitch->m_quality ) {
-      static SG::AuxElement::Accessor<char> isVeryLooseQAcc ("isVeryLooseQ");
-      static SG::AuxElement::Accessor<char> isLooseQAcc ("isLooseQ");
-      static SG::AuxElement::Accessor<char> isMediumQAcc ("isMediumQ");
-      static SG::AuxElement::Accessor<char> isTightQAcc ("isTightQ");
-
-      if ( isVeryLooseQAcc.isAvailable( *muon_itr ) ) { m_muon_isVeryLoose.push_back( isVeryLooseQAcc( *muon_itr ) ); } else { m_muon_isVeryLoose.push_back( -1 ); }
-      if ( isLooseQAcc.isAvailable( *muon_itr ) )     { m_muon_isLoose.push_back( isLooseQAcc( *muon_itr ) ); }         else { m_muon_isLoose.push_back( -1 ); }
-      if ( isMediumQAcc.isAvailable( *muon_itr ) )    { m_muon_isMedium.push_back( isMediumQAcc( *muon_itr ) ); }       else { m_muon_isMedium.push_back( -1 ); }
-      if ( isTightQAcc.isAvailable( *muon_itr ) )     { m_muon_isTight.push_back( isTightQAcc( *muon_itr ) ); }         else { m_muon_isTight.push_back( -1 ); }
-    }
-
-    const xAOD::TrackParticle* trk = muon_itr->primaryTrackParticle();
-
-    if ( m_muInfoSwitch->m_trackparams ) {
-      if ( trk ) {
-        //
-	// NB.:
-	// All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
-	// The reference  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
-	// Remember that the beamspot size ( of O(10 micrometers) in the transverse plane) is << average vertex transverse position resolution ( O(60-80 micrometers) )
-	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
-	//
-        m_muon_trkd0.push_back( trk->d0() );
-        static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
-        float d0_significance =  ( d0SigAcc.isAvailable( *muon_itr ) ) ? fabs( d0SigAcc( *muon_itr ) ) : -1.0;
-	m_muon_trkd0sig.push_back( d0_significance );
-        m_muon_trkz0.push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
-        static SG::AuxElement::Accessor<float> z0sinthetaAcc("z0sintheta");
-        float z0sintheta =  ( z0sinthetaAcc.isAvailable( *muon_itr ) ) ? z0sinthetaAcc( *muon_itr ) : -999.0;
-        m_muon_trkz0sintheta.push_back( z0sintheta );
-        m_muon_trkphi0.push_back( trk->phi0() );
-        m_muon_trktheta.push_back( trk->theta() );
-        m_muon_trkcharge.push_back( trk->charge() );
-        m_muon_trkqOverP.push_back( trk->qOverP() );
-      } else {
-        m_muon_trkd0.push_back( -999.0 );
-        m_muon_trkd0sig.push_back( -1.0 );
-        m_muon_trkz0.push_back( -999.0 );
-        m_muon_trkz0sintheta.push_back( -999.0 );
-        m_muon_trkphi0.push_back( -999.0 );
-        m_muon_trktheta.push_back( -999.0 );
-        m_muon_trkcharge.push_back( -999.0 );
-        m_muon_trkqOverP.push_back( -999.0 );
-      }
-    }
-
-    if ( m_muInfoSwitch->m_trackhitcont ) {
-      uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
-      float pixdEdX(-1.0);
-      if ( trk ) {
-        trk->summaryValue( nPixHits,     xAOD::numberOfPixelHits );
-        trk->summaryValue( nPixHoles,    xAOD::numberOfPixelHoles );
-      	trk->summaryValue( nSCTHits,     xAOD::numberOfSCTHits );
-      	trk->summaryValue( nSCTHoles,    xAOD::numberOfSCTHoles );
-      	trk->summaryValue( nTRTHits,     xAOD::numberOfTRTHits );
-      	trk->summaryValue( nTRTHoles,    xAOD::numberOfTRTHoles );
-        trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
-        if ( !m_DC14 ) {
-	  trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
-          trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
-        }
-      }
-      m_muon_trknSiHits.push_back( nPixHits + nSCTHits );
-      m_muon_trknPixHits.push_back( nPixHits );
-      m_muon_trknPixHoles.push_back( nPixHoles );
-      m_muon_trknSCTHits.push_back( nSCTHits );
-      m_muon_trknSCTHoles.push_back( nSCTHoles );
-      m_muon_trknTRTHits.push_back( nTRTHits );
-      m_muon_trknTRTHoles.push_back( nTRTHoles );
-      m_muon_trknBLayerHits.push_back( nBLayerHits );
-      if ( !m_DC14 ) {
-        m_muon_trknInnermostPixLayHits.push_back( nInnermostPixLayHits );
-        m_muon_trkPixdEdX.push_back( pixdEdX );
-      }
-    }
-
-    if ( m_muInfoSwitch->m_effSF && m_isMC ) {
-
-      static SG::AuxElement::Accessor< std::vector< float > > accRecoSF_Loose("MuonEfficiencyCorrector_RecoSyst_Loose");
-      static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Loose_Loose("MuonEfficiencyCorrector_TrigSyst_RecoLoose_IsoLoose");
-      static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Loose_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigSyst_RecoLoose_IsoFixedCutTightTrackOnly");
-      static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Loose_Loose("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoLoose");
-      static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Loose_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoFixedCutTightTrackOnly");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Loose("MuonEfficiencyCorrector_IsoSyst_IsoLoose");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Tight("MuonEfficiencyCorrector_IsoSyst_IsoTight");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Gradient("MuonEfficiencyCorrector_IsoSyst_IsoGradient");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_GradientLoose("MuonEfficiencyCorrector_IsoSyst_IsoGradientLoose");
-      static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_FixedCutTightTrackOnly("MuonEfficiencyCorrector_IsoSyst_IsoFixedCutTightTrackOnly");
-      static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuonEfficiencyCorrector_TTVASyst_TTVA");
-
-      std::vector<float> junkSF(1,1.0);
-      std::vector<float> junkEff(1,0.0);
-
-      if( accRecoSF_Loose.isAvailable( *muon_itr ) )         { m_muon_RecoEff_SF_Loose.push_back( accRecoSF_Loose( *muon_itr ) ); } else { m_muon_RecoEff_SF_Loose.push_back( junkSF ); }
-      if ( accTrigSF_Loose_Loose.isAvailable( *muon_itr ) )                     { m_muon_TrigEff_SF_Loose_Loose.push_back( accTrigSF_Loose_Loose( *muon_itr ) ); } else { m_muon_TrigEff_SF_Loose_Loose.push_back( junkSF ); }
-      if ( accTrigSF_Loose_FixedCutTightTrackOnly.isAvailable( *muon_itr ) )    { m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly.push_back( accTrigSF_Loose_FixedCutTightTrackOnly( *muon_itr ) ); } else { m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly.push_back( junkSF ); }
-      if ( accTrigMCEff_Loose_Loose.isAvailable( *muon_itr ) )                  { m_muon_TrigMCEff_Loose_Loose.push_back( accTrigMCEff_Loose_Loose( *muon_itr ) ); } else { m_muon_TrigMCEff_Loose_Loose.push_back( junkEff ); }
-      if ( accTrigMCEff_Loose_FixedCutTightTrackOnly.isAvailable( *muon_itr ) ) { m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly.push_back( accTrigMCEff_Loose_FixedCutTightTrackOnly( *muon_itr ) ); } else { m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly.push_back( junkEff ); }
-      if( accIsoSF_LooseTrackOnly.isAvailable( *muon_itr ) ) { m_muon_IsoEff_SF_LooseTrackOnly.push_back( accIsoSF_LooseTrackOnly( *muon_itr ) ); } else { m_muon_IsoEff_SF_LooseTrackOnly.push_back( junkSF ); }
-      if( accIsoSF_Loose.isAvailable( *muon_itr ) )          { m_muon_IsoEff_SF_Loose.push_back( accIsoSF_Loose( *muon_itr ) ); } else { m_muon_IsoEff_SF_Loose.push_back( junkSF ); }
-      if( accIsoSF_Tight.isAvailable( *muon_itr ) )          { m_muon_IsoEff_SF_Tight.push_back( accIsoSF_Tight( *muon_itr ) ); } else { m_muon_IsoEff_SF_Tight.push_back( junkSF ); }
-      if( accIsoSF_GradientLoose.isAvailable( *muon_itr ) )  { m_muon_IsoEff_SF_GradientLoose.push_back( accIsoSF_GradientLoose( *muon_itr ) ); } else {  m_muon_IsoEff_SF_GradientLoose.push_back( junkSF ); }
-      if( accIsoSF_Gradient.isAvailable( *muon_itr ) )       { m_muon_IsoEff_SF_Gradient.push_back( accIsoSF_Gradient( *muon_itr ) ); } else { m_muon_IsoEff_SF_Gradient.push_back( junkSF ); }
-      if( accIsoSF_FixedCutTightTrackOnly.isAvailable( *muon_itr ) )  { m_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back( accIsoSF_FixedCutTightTrackOnly( *muon_itr ) ); } else {  m_muon_IsoEff_SF_FixedCutTightTrackOnly.push_back( junkSF ); }
-      if( accTTVASF.isAvailable( *muon_itr ) )         { m_muon_TTVAEff_SF.push_back( accTTVASF( *muon_itr ) ); } else { m_muon_TTVAEff_SF.push_back( junkSF ); }
-
-    }
-
-    if(m_muInfoSwitch->m_energyLoss ) {
-      static SG::AuxElement::Accessor< float >         accMuon_EnergyLoss                ("EnergyLoss");
-      static SG::AuxElement::Accessor< float >         accMuon_EnergyLossSigma           ("EnergyLossSigma");
-      static SG::AuxElement::Accessor< unsigned char > accMuon_energyLossType            ("energyLossType");
-      static SG::AuxElement::Accessor< float >         accMuon_MeasEnergyLoss            ("MeasEnergyLoss");
-      static SG::AuxElement::Accessor< float >         accMuon_MeasEnergyLossSigma       ("MeasEnergyLossSigma");
-      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLoss           ("ParamEnergyLoss");
-      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLossSigmaMinus ("ParamEnergyLossSigmaMinus");
-      static SG::AuxElement::Accessor< float >         accMuon_ParamEnergyLossSigmaPlus  ("ParamEnergyLossSigmaPlus");
-
-      if(accMuon_EnergyLoss                .isAvailable( *muon_itr)) m_muon_EnergyLoss               .push_back(accMuon_EnergyLoss                (*muon_itr)  );
-      if(accMuon_EnergyLossSigma           .isAvailable( *muon_itr)) m_muon_EnergyLossSigma          .push_back(accMuon_EnergyLossSigma           (*muon_itr)  );
-      if(accMuon_energyLossType            .isAvailable( *muon_itr)) m_muon_energyLossType           .push_back(accMuon_energyLossType            (*muon_itr)  );
-      if(accMuon_MeasEnergyLoss            .isAvailable( *muon_itr)) m_muon_MeasEnergyLoss           .push_back(accMuon_MeasEnergyLoss            (*muon_itr)  );
-      if(accMuon_MeasEnergyLossSigma       .isAvailable( *muon_itr)) m_muon_MeasEnergyLossSigma      .push_back(accMuon_MeasEnergyLossSigma       (*muon_itr)  );
-      if(accMuon_ParamEnergyLoss           .isAvailable( *muon_itr)) m_muon_ParamEnergyLoss          .push_back(accMuon_ParamEnergyLoss           (*muon_itr)  );
-      if(accMuon_ParamEnergyLossSigmaMinus .isAvailable( *muon_itr)) m_muon_ParamEnergyLossSigmaMinus.push_back(accMuon_ParamEnergyLossSigmaMinus (*muon_itr)  );
-      if(accMuon_ParamEnergyLossSigmaPlus  .isAvailable( *muon_itr)) m_muon_ParamEnergyLossSigmaPlus .push_back(accMuon_ParamEnergyLossSigmaPlus  (*muon_itr)  );
-    }
-
-    this->FillMuonsUser(muon_itr);
-
-    m_nmuon++;
+  for( auto muon_itr : *muons ) {
+    this->FillMuon(muon_itr, primaryVertex, muonName);
   }
+
 }
 
-void HelpTreeBase::ClearMuons() {
+void HelpTreeBase::FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primaryVertex, const std::string muonName ) {
 
-  m_nmuon = 0;
+  xAH::MuonContainer* thisMuon = m_muons[muonName];
+  
+  thisMuon->FillMuon(muon, primaryVertex);
 
-  if ( m_muInfoSwitch->m_kinematic ) {
-    m_muon_pt.clear();
-    m_muon_eta.clear();
-    m_muon_phi.clear();
-    m_muon_m.clear();
-  }
+  this->FillMuonsUser(muon, muonName);
 
-  if ( m_muInfoSwitch->m_trigger ) {
-    m_muon_isTrigMatched.clear();
-    m_muon_isTrigMatchedToChain.clear();
-    m_muon_listTrigChains.clear();
-  }
+  return;
+}
 
-  if ( m_muInfoSwitch->m_isolation ) {
-    m_muon_isIsolated_LooseTrackOnly.clear();
-    m_muon_isIsolated_Loose.clear();
-    m_muon_isIsolated_Tight.clear();
-    m_muon_isIsolated_Gradient.clear();
-    m_muon_isIsolated_GradientLoose.clear();
-    m_muon_isIsolated_FixedCutLoose.clear();
-    m_muon_isIsolated_FixedCutTightTrackOnly.clear();
-    m_muon_isIsolated_UserDefinedFixEfficiency.clear();
-    m_muon_isIsolated_UserDefinedCut.clear();
-    m_muon_ptcone20.clear();
-    m_muon_ptcone30.clear();
-    m_muon_ptcone40.clear();
-    m_muon_ptvarcone20.clear();
-    m_muon_ptvarcone30.clear();
-    m_muon_ptvarcone40.clear();
-    m_muon_topoetcone20.clear();
-    m_muon_topoetcone30.clear();
-    m_muon_topoetcone40.clear();
-  }
+void HelpTreeBase::ClearMuons(const std::string muonName) {
 
-  if ( m_muInfoSwitch->m_quality ) {
-    m_muon_isVeryLoose.clear();
-    m_muon_isLoose.clear();
-    m_muon_isMedium.clear();
-    m_muon_isTight.clear();
-  }
+  xAH::MuonContainer* thisMuon = m_muons[muonName];
+  thisMuon->clear();
 
-  if ( m_muInfoSwitch->m_trackparams ) {
-    m_muon_trkd0.clear();
-    m_muon_trkd0sig.clear();
-    m_muon_trkz0.clear();
-    m_muon_trkz0sintheta.clear();
-    m_muon_trkphi0.clear();
-    m_muon_trktheta.clear();
-    m_muon_trkcharge.clear();
-    m_muon_trkqOverP.clear();
-  }
-
-  if ( m_muInfoSwitch->m_trackhitcont ) {
-    m_muon_trknSiHits.clear();
-    m_muon_trknPixHits.clear();
-    m_muon_trknPixHoles.clear();
-    m_muon_trknSCTHits.clear();
-    m_muon_trknSCTHoles.clear();
-    m_muon_trknTRTHits.clear();
-    m_muon_trknTRTHoles.clear();
-    m_muon_trknBLayerHits.clear();
-    if ( !m_DC14 ) {
-      m_muon_trknInnermostPixLayHits.clear();
-      m_muon_trkPixdEdX.clear();
-    }
-  }
-
-  if ( m_muInfoSwitch->m_effSF && m_isMC ) {
-    m_muon_RecoEff_SF_Loose.clear();
-    m_muon_TrigEff_SF_Loose_Loose.clear();
-    m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly.clear();
-    m_muon_TrigMCEff_Loose_Loose.clear();
-    m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly.clear();
-    m_muon_IsoEff_SF_LooseTrackOnly.clear();
-    m_muon_IsoEff_SF_Loose.clear();
-    m_muon_IsoEff_SF_Tight.clear();
-    m_muon_IsoEff_SF_Gradient.clear();
-    m_muon_IsoEff_SF_GradientLoose.clear();
-    m_muon_IsoEff_SF_FixedCutTightTrackOnly.clear();
-    m_muon_TTVAEff_SF.clear();
-  }
-
-  if ( m_muInfoSwitch->m_energyLoss ) {
-    m_muon_EnergyLoss.clear();
-    m_muon_EnergyLossSigma.clear();
-    m_muon_energyLossType.clear();
-    m_muon_MeasEnergyLoss.clear();
-    m_muon_MeasEnergyLossSigma.clear();
-    m_muon_ParamEnergyLoss.clear();
-    m_muon_ParamEnergyLossSigmaMinus.clear();
-    m_muon_ParamEnergyLossSigmaPlus.clear();
-
-  }
+  this->ClearMuonsUser();
 
 }
 

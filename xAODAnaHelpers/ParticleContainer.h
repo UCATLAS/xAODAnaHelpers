@@ -143,7 +143,25 @@ namespace xAH {
       template<typename T> void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr){
 	tree->Branch((m_name+"_"+varName).c_str(),        localVectorPtr);
       }
-    
+
+      template<typename T, typename U, typename V> void safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>* destination, U defaultValue, int units = 1){
+	if ( accessor.isAvailable( *xAODObj ) ) {
+	  destination->push_back( accessor( *xAODObj ) / units );
+	} else {
+	  destination->push_back( defaultValue );
+	}
+      }
+
+
+      template<typename T, typename U, typename V> void safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >* destination, int units = 1){
+	destination->push_back( std::vector<U>() );
+
+	if ( accessor.isAvailable( *xAODObj ) ) {
+	  for(U itemInVec : accessor(*xAODObj))        destination->back().push_back(itemInVec / units);
+	} 
+	return;
+      }
+      
       virtual void updateParticle(uint idx, T_PARTICLE& particle)
       {
         if(m_infoSwitch.m_kinematic)

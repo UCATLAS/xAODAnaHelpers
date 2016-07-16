@@ -35,13 +35,9 @@ namespace xAH {
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
     protected:
+
       virtual void updateParticle(uint idx, Jet& jet);
 
-      template<typename T, typename U, typename V>
-	void safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>* destination, U defaultValue, int m_units = 1);
-
-      template<typename T, typename U, typename V>
-	void safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >* destination, int m_units = 1);
 
 //template<typename T>
 //	void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr);
@@ -402,28 +398,6 @@ namespace xAH {
       // charge
       std::vector<double> *m_charge;
     };
-}
-
-
-template<typename T, typename U, typename V>
-void xAH::JetContainer::safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>* destination, U defaultValue, int units){
-  if ( accessor.isAvailable( *xAODObj ) ) {
-    destination->push_back( accessor( *xAODObj ) / units );
-  } else {
-    destination->push_back( defaultValue );
-  }
-  return;
-}
-
-
-template<typename T, typename U, typename V>
-void xAH::JetContainer::safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >* destination, int units){
-  destination->push_back( std::vector<U>() );
-
-  if ( accessor.isAvailable( *xAODObj ) ) {
-    for(U itemInVec : accessor(*xAODObj))        destination->back().push_back(itemInVec / units);
-  } 
-  return;
 }
 
 

@@ -29,6 +29,7 @@
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/JetContainer.h"
+#include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
@@ -56,7 +57,7 @@ public:
   void AddEvent       (const std::string detailStr = "");
   void AddTrigger     (const std::string detailStr = "");
   void AddJetTrigger  (const std::string detailStr = "");
-  void AddMuons       (const std::string detailStr = "");
+  void AddMuons       (const std::string detailStr = "", const std::string muonName = "muon");
   void AddElectrons   (const std::string detailStr = "");
   void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
@@ -89,7 +90,10 @@ public:
 
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();
-  void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
+
+  void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex, const std::string muonName = "muon" );
+  void FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primaryVertex, const std::string muonName = "muon" );
+
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
   void FillPhotons( const xAOD::PhotonContainer* photons );
 
@@ -105,7 +109,7 @@ public:
   void ClearEvent();
   void ClearTrigger();
   void ClearJetTrigger();
-  void ClearMuons();
+  void ClearMuons(const std::string jetName = "muon");
   void ClearElectrons();
   void ClearPhotons();
   void ClearJets(const std::string jetName = "jet");
@@ -173,7 +177,7 @@ public:
   virtual void ClearMETUser()       { return; };
 
   virtual void FillEventUser( const xAOD::EventInfo*  )        { return; };
-  virtual void FillMuonsUser( const xAOD::Muon*  )             { return; };
+  virtual void FillMuonsUser( const xAOD::Muon*, const std::string /*muonName = "muon"*/  )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron*  )     { return; };
   virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
   virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
@@ -315,91 +319,7 @@ protected:
   std::vector<float> m_fatjet_NTrimSubjets;
 
   // muons
-  int m_nmuon;
-
-  // kinematics
-  std::vector<float> m_muon_pt;
-  std::vector<float> m_muon_eta;
-  std::vector<float> m_muon_phi;
-  std::vector<float> m_muon_m;
-
-  // trigger
-  std::vector<int> m_muon_isTrigMatched;
-  std::vector<std::vector<int> > m_muon_isTrigMatchedToChain;
-  std::vector<std::string> m_muon_listTrigChains;
-
-  // isolation
-  std::vector<int>   m_muon_isIsolated_LooseTrackOnly;
-  std::vector<int>   m_muon_isIsolated_Loose;
-  std::vector<int>   m_muon_isIsolated_Tight;
-  std::vector<int>   m_muon_isIsolated_Gradient;
-  std::vector<int>   m_muon_isIsolated_GradientLoose;
-  std::vector<int>   m_muon_isIsolated_FixedCutLoose;
-  std::vector<int>   m_muon_isIsolated_FixedCutTightTrackOnly;
-  std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
-  std::vector<int>   m_muon_isIsolated_UserDefinedCut;
-  std::vector<float> m_muon_ptcone20;
-  std::vector<float> m_muon_ptcone30;
-  std::vector<float> m_muon_ptcone40;
-  std::vector<float> m_muon_ptvarcone20;
-  std::vector<float> m_muon_ptvarcone30;
-  std::vector<float> m_muon_ptvarcone40;
-  std::vector<float> m_muon_topoetcone20;
-  std::vector<float> m_muon_topoetcone30;
-  std::vector<float> m_muon_topoetcone40;
-
-  // quality
-  std::vector<int>   m_muon_isVeryLoose;
-  std::vector<int>   m_muon_isLoose;
-  std::vector<int>   m_muon_isMedium;
-  std::vector<int>   m_muon_isTight;
-
-  // scale factors w/ sys
-  // per object
-  std::vector< std::vector< float > > m_muon_RecoEff_SF_Loose;
-  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_Loose;
-  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_TrigMCEff_Loose_Loose;
-  std::vector< std::vector< float > > m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_LooseTrackOnly;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Loose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Tight;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Gradient;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_GradientLoose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutLoose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_TTVAEff_SF;
-
-  // track parameters
-  std::vector<float> m_muon_trkd0;
-  std::vector<float> m_muon_trkd0sig;
-  std::vector<float> m_muon_trkz0;
-  std::vector<float> m_muon_trkz0sintheta;
-  std::vector<float> m_muon_trkphi0;
-  std::vector<float> m_muon_trktheta;
-  std::vector<float> m_muon_trkcharge;
-  std::vector<float> m_muon_trkqOverP;
-
-  // track hit content
-  std::vector<int> m_muon_trknSiHits;
-  std::vector<int> m_muon_trknPixHits;
-  std::vector<int> m_muon_trknPixHoles;
-  std::vector<int> m_muon_trknSCTHits;
-  std::vector<int> m_muon_trknSCTHoles;
-  std::vector<int> m_muon_trknTRTHits;
-  std::vector<int> m_muon_trknTRTHoles;
-  std::vector<int> m_muon_trknBLayerHits;
-  std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
-  std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
-
-  std::vector<float>         m_muon_EnergyLoss;
-  std::vector<float>         m_muon_EnergyLossSigma;
-  std::vector<unsigned char> m_muon_energyLossType;
-  std::vector<float>         m_muon_MeasEnergyLoss;
-  std::vector<float>         m_muon_MeasEnergyLossSigma;
-  std::vector<float>         m_muon_ParamEnergyLoss;
-  std::vector<float>         m_muon_ParamEnergyLossSigmaMinus;
-  std::vector<float>         m_muon_ParamEnergyLossSigmaPlus;
+  std::map<std::string, xAH::MuonContainer*> m_muons;
 
   //
   // electrons
