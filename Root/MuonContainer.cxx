@@ -205,15 +205,88 @@ void MuonContainer::setTree(TTree *tree)
   // Connect branches
   ParticleContainer::setTree(tree);
 
-  if ( m_infoSwitch.m_quality ) {
-
-    connectBranch<int  >     (tree, "isMedium"   ,      &m_isMedium    ); 
-    connectBranch<int  >     (tree, "isTight"    ,      &m_isTight     ); 
-
+  if ( m_infoSwitch.m_trigger ){
+    connectBranch<int>         (tree, "isTrigMatched",       &m_isTrigMatched);
+    connectBranch<vector<int> >(tree,"isTrigMatchedToChain", &m_isTrigMatchedToChain );
+    connectBranch<string>      (tree, "listTrigChains",      &m_listTrigChains );
   }
 
-  if( m_infoSwitch.m_energyLoss ) {
-    connectBranch<float>     (tree, "EnergyLoss" ,      &m_EnergyLoss  ); 
+  if ( m_infoSwitch.m_isolation ) {
+    connectBranch<int>(tree,"isIsolated_LooseTrackOnly", &m_isIsolated_LooseTrackOnly);
+    connectBranch<int>(tree,"isIsolated_Loose",	     &m_isIsolated_Loose);
+    connectBranch<int>(tree,"isIsolated_Tight",	     &m_isIsolated_Tight);
+    connectBranch<int>(tree,"isIsolated_Gradient",	     &m_isIsolated_Gradient);
+    connectBranch<int>(tree,"isIsolated_GradientLoose",  &m_isIsolated_GradientLoose);
+    connectBranch<int>(tree,"isIsolated_FixedCutLoose",	   &m_isIsolated_FixedCutLoose);
+    connectBranch<int>(tree,"isIsolated_FixedCutTightTrackOnly", &m_isIsolated_FixedCutTightTrackOnly);
+    connectBranch<int>(tree,"isIsolated_UserDefinedFixEfficiency",    &m_isIsolated_UserDefinedFixEfficiency);
+    connectBranch<int>(tree,"isIsolated_UserDefinedCut",              &m_isIsolated_UserDefinedCut);
+    connectBranch<float>(tree,"ptcone20",	  &m_ptcone20);
+    connectBranch<float>(tree,"ptcone30",	  &m_ptcone30);
+    connectBranch<float>(tree,"ptcone40",	  &m_ptcone40);
+    connectBranch<float>(tree,"ptvarcone20",	  &m_ptvarcone20);
+    connectBranch<float>(tree,"ptvarcone30",	  &m_ptvarcone30);
+    connectBranch<float>(tree,"ptvarcone40",	  &m_ptvarcone40);
+    connectBranch<float>(tree,"topoetcone20",   &m_topoetcone20);
+    connectBranch<float>(tree,"topoetcone30",   &m_topoetcone30);
+    connectBranch<float>(tree,"topoetcone40",   &m_topoetcone40);
+  }
+
+  if ( m_infoSwitch.m_effSF && m_mc ) {
+    connectBranch<vector<float> >(tree,"RecoEff_SF_Loose",         &m_RecoEff_SF_Loose);
+    connectBranch<vector<float> >(tree,"TrigEff_SF_Loose_Loose",		    &m_TrigEff_SF_Loose_Loose);
+    connectBranch<vector<float> >(tree,"TrigEff_SF_Loose_FixedCutTightTrackOnly",  &m_TrigEff_SF_Loose_FixedCutTightTrackOnly);
+    connectBranch<vector<float> >(tree,"TrigMCEff_Loose_Loose",		    &m_TrigMCEff_Loose_Loose);
+    connectBranch<vector<float> >(tree,"TrigMCEff_Loose_FixedCutTightTrackOnly",   &m_TrigMCEff_Loose_FixedCutTightTrackOnly);
+    connectBranch<vector<float> >(tree,"IsoEff_SF_LooseTrackOnly", &m_IsoEff_SF_LooseTrackOnly);
+    connectBranch<vector<float> >(tree,"IsoEff_SF_Loose",	    &m_IsoEff_SF_Loose);
+    connectBranch<vector<float> >(tree,"IsoEff_SF_Tight",	    &m_IsoEff_SF_Tight);
+    connectBranch<vector<float> >(tree,"IsoEff_SF_Gradient",	    &m_IsoEff_SF_Gradient);
+    connectBranch<vector<float> >(tree,"IsoEff_SF_GradientLoose",  &m_IsoEff_SF_GradientLoose);
+    connectBranch<vector<float> >(tree,"IsoEff_SF_FixedCutTightTrackOnly",  &m_IsoEff_SF_FixedCutTightTrackOnly);
+    connectBranch<vector<float> >(tree,"TTVAEff_SF",  &m_TTVAEff_SF);
+  }
+
+  if ( m_infoSwitch.m_quality ) {
+    connectBranch<int>(tree,"isVeryLoose",  &m_isVeryLoose);
+    connectBranch<int>(tree,"isLoose",      &m_isLoose);
+    connectBranch<int>(tree,"isMedium",     &m_isMedium);
+    connectBranch<int>(tree,"isTight",      &m_isTight);
+  }
+
+  if ( m_infoSwitch.m_trackparams ) {
+    connectBranch<float>(tree,"trkd0",          &m_trkd0);
+    connectBranch<float>(tree,"trkd0sig",       &m_trkd0sig);
+    connectBranch<float>(tree,"trkz0",          &m_trkz0);
+    connectBranch<float>(tree,"trkz0sintheta",  &m_trkz0sintheta);
+    connectBranch<float>(tree,"trkphi0",        &m_trkphi0);
+    connectBranch<float>(tree,"trktheta",       &m_trktheta);
+    connectBranch<float>(tree,"trkcharge",      &m_trkcharge);
+    connectBranch<float>(tree,"trkqOverP",      &m_trkqOverP);
+  }
+
+  if ( m_infoSwitch.m_trackhitcont ) {
+    connectBranch<int>(tree,"trknSiHits",    &m_trknSiHits);
+    connectBranch<int>(tree,"trknPixHits",   &m_trknPixHits);
+    connectBranch<int>(tree,"trknPixHoles",  &m_trknPixHoles);
+    connectBranch<int>(tree,"trknSCTHits",   &m_trknSCTHits);
+    connectBranch<int>(tree,"trknSCTHoles",  &m_trknSCTHoles);
+    connectBranch<int>(tree,"trknTRTHits",   &m_trknTRTHits);
+    connectBranch<int>(tree,"trknTRTHoles",  &m_trknTRTHoles);
+    connectBranch<int>(tree,"trknBLayerHits",&m_trknBLayerHits);
+    connectBranch<int>(tree,"trknInnermostPixLayHits",  &m_trknInnermostPixLayHits);
+    connectBranch<float>(tree,"trkPixdEdX",    &m_trkPixdEdX);
+  }
+
+  if(m_infoSwitch.m_energyLoss ) {
+    connectBranch<float>(tree,"EnergyLoss"                ,  &m_EnergyLoss               );
+    connectBranch<float>(tree,"EnergyLossSigma"           ,  &m_EnergyLossSigma          );
+    connectBranch<unsigned char>(tree,"energyLossType"            ,  &m_energyLossType           );
+    connectBranch<float>(tree,"MeasEnergyLoss"            ,  &m_MeasEnergyLoss           );
+    connectBranch<float>(tree,"MeasEnergyLossSigma"       ,  &m_MeasEnergyLossSigma      );
+    connectBranch<float>(tree,"ParamEnergyLoss"           ,  &m_ParamEnergyLoss          );
+    connectBranch<float>(tree,"ParamEnergyLossSigmaMinus" ,  &m_ParamEnergyLossSigmaMinus);
+    connectBranch<float>(tree,"ParamEnergyLossSigmaPlus"  ,  &m_ParamEnergyLossSigmaPlus );
   }
 
 
@@ -223,13 +296,95 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
 {
   ParticleContainer::updateParticle(idx,muon);  
 
-  if( m_infoSwitch.m_quality ) {
-    muon.isMedium                    =m_isMedium                    ->at(idx);
-    muon.isTight                     =m_isTight                     ->at(idx);
+  // trigger
+  if ( m_infoSwitch.m_trigger ) {
+    muon.isTrigMatched         =     m_isTrigMatched         ->at(idx);
+    muon.isTrigMatchedToChain  =     m_isTrigMatchedToChain  ->at(idx);
+    muon.listTrigChains        =     m_listTrigChains        ->at(idx);
+  }
+    
+  // isolation
+  if ( m_infoSwitch.m_isolation ) {
+    muon.isIsolated_LooseTrackOnly                =     m_isIsolated_LooseTrackOnly                  ->at(idx);
+    muon.isIsolated_Loose                         =     m_isIsolated_Loose                           ->at(idx);
+    muon.isIsolated_Tight                         =     m_isIsolated_Tight                           ->at(idx);
+    muon.isIsolated_Gradient                      =     m_isIsolated_Gradient                        ->at(idx);
+    muon.isIsolated_GradientLoose                 =     m_isIsolated_GradientLoose                   ->at(idx);
+    muon.isIsolated_FixedCutLoose                 =     m_isIsolated_FixedCutLoose                   ->at(idx);
+    muon.isIsolated_FixedCutTightTrackOnly        =     m_isIsolated_FixedCutTightTrackOnly          ->at(idx);
+    muon.isIsolated_UserDefinedFixEfficiency      =     m_isIsolated_UserDefinedFixEfficiency        ->at(idx);
+    muon.isIsolated_UserDefinedCut                =     m_isIsolated_UserDefinedCut                  ->at(idx);
+    muon.ptcone20                                 =     m_ptcone20                                   ->at(idx);
+    muon.ptcone30                                 =     m_ptcone30                                   ->at(idx);
+    muon.ptcone40                                 =     m_ptcone40                                   ->at(idx);
+    muon.ptvarcone20                              =     m_ptvarcone20                                ->at(idx);
+    muon.ptvarcone30                              =     m_ptvarcone30                                ->at(idx);
+    muon.ptvarcone40                              =     m_ptvarcone40                                ->at(idx);
+    muon.topoetcone20                             =     m_topoetcone20                               ->at(idx);
+    muon.topoetcone30                             =     m_topoetcone30                               ->at(idx);
+    muon.topoetcone40                             =     m_topoetcone40                               ->at(idx);
+  }
+  
+  // quality
+  if ( m_infoSwitch.m_quality ) {
+    muon.isVeryLoose    = m_isVeryLoose  ->at(idx);   
+    muon.isLoose        = m_isLoose      ->at(idx);   
+    muon.isMedium       = m_isMedium     ->at(idx);   
+    muon.isTight        = m_isTight      ->at(idx);   
+  }
+  
+  // scale factors w/ sys
+  // per object
+  if ( m_infoSwitch.m_effSF && m_mc ) {
+    muon.RecoEff_SF_Loose                               = m_RecoEff_SF_Loose                              ->at(idx);
+    muon.TrigEff_SF_Loose_Loose                         = m_TrigEff_SF_Loose_Loose                        ->at(idx);
+    muon.TrigEff_SF_Loose_FixedCutTightTrackOnly        = m_TrigEff_SF_Loose_FixedCutTightTrackOnly       ->at(idx);
+    muon.TrigMCEff_Loose_Loose                          = m_TrigMCEff_Loose_Loose                         ->at(idx);
+    muon.TrigMCEff_Loose_FixedCutTightTrackOnly         = m_TrigMCEff_Loose_FixedCutTightTrackOnly        ->at(idx);
+    muon.IsoEff_SF_LooseTrackOnly                       = m_IsoEff_SF_LooseTrackOnly                      ->at(idx);
+    muon.IsoEff_SF_Loose                                = m_IsoEff_SF_Loose                               ->at(idx);
+    muon.IsoEff_SF_Tight                                = m_IsoEff_SF_Tight                               ->at(idx);
+    muon.IsoEff_SF_Gradient                             = m_IsoEff_SF_Gradient                            ->at(idx);
+    muon.IsoEff_SF_GradientLoose                        = m_IsoEff_SF_GradientLoose                       ->at(idx);
+    muon.IsoEff_SF_FixedCutLoose                        = m_IsoEff_SF_FixedCutLoose                       ->at(idx);
+    muon.IsoEff_SF_FixedCutTightTrackOnly               = m_IsoEff_SF_FixedCutTightTrackOnly              ->at(idx);
+    muon.TTVAEff_SF                                     = m_TTVAEff_SF                                    ->at(idx);
+  }
+      // track parameters
+  if ( m_infoSwitch.m_trackparams ) {
+    muon.trkd0             = m_trkd0            ->at(idx);
+    muon.trkd0sig          = m_trkd0sig         ->at(idx);
+    muon.trkz0             = m_trkz0            ->at(idx);
+    muon.trkz0sintheta     = m_trkz0sintheta    ->at(idx);
+    muon.trkphi0           = m_trkphi0          ->at(idx);
+    muon.trktheta          = m_trktheta         ->at(idx);
+    muon.trkcharge         = m_trkcharge        ->at(idx);
+    muon.trkqOverP         = m_trkqOverP        ->at(idx);
   }
 
-  if( m_infoSwitch.m_energyLoss ) {
-    muon.EnergyLoss                  =m_EnergyLoss                  ->at(idx)/1000;
+      // track hit content
+  if ( m_infoSwitch.m_trackhitcont ) {
+    muon.trknSiHits                 = m_trknSiHits                ->at(idx);
+    muon.trknPixHits                = m_trknPixHits               ->at(idx);
+    muon.trknPixHoles               = m_trknPixHoles              ->at(idx);
+    muon.trknSCTHits                = m_trknSCTHits               ->at(idx);
+    muon.trknSCTHoles               = m_trknSCTHoles              ->at(idx);
+    muon.trknTRTHits                = m_trknTRTHits               ->at(idx);
+    muon.trknTRTHoles               = m_trknTRTHoles              ->at(idx);
+    muon.trknBLayerHits             = m_trknBLayerHits            ->at(idx);
+    muon.trknInnermostPixLayHits    = m_trknInnermostPixLayHits   ->at(idx);         // not available in DC14
+    muon.trkPixdEdX                 = m_trkPixdEdX                ->at(idx);         // not available in DC14
+  }
+
+  if ( m_infoSwitch.m_energyLoss ) {
+    muon.EnergyLoss                    = m_EnergyLoss                   ->at(idx);
+    muon.EnergyLossSigma               = m_EnergyLossSigma              ->at(idx);
+    muon.energyLossType                = m_energyLossType               ->at(idx);
+    muon.MeasEnergyLoss                = m_MeasEnergyLoss               ->at(idx);
+    muon.MeasEnergyLossSigma           = m_MeasEnergyLossSigma          ->at(idx);
+    muon.ParamEnergyLoss               = m_ParamEnergyLoss              ->at(idx);
+    muon.ParamEnergyLossSigmaMinus     = m_ParamEnergyLossSigmaMinus    ->at(idx);
+    muon.ParamEnergyLossSigmaPlus      = m_ParamEnergyLossSigmaPlus     ->at(idx);
   }
 
 }

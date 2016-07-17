@@ -980,7 +980,6 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
 void JetContainer::setBranches(TTree *tree)
 {
-
   ParticleContainer::setBranches(tree);
 
   if ( m_infoSwitch.m_rapidity ) {
