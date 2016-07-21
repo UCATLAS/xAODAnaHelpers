@@ -28,10 +28,11 @@
 #include "xAODMissingET/MissingETContainer.h"
 
 #include "xAODAnaHelpers/HelperClasses.h"
+#include "xAODAnaHelpers/JetContainer.h"
+#include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-#include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
 
 // root includes
 #include "TTree.h"
@@ -56,7 +57,7 @@ public:
   void AddEvent       (const std::string detailStr = "");
   void AddTrigger     (const std::string detailStr = "");
   void AddJetTrigger  (const std::string detailStr = "");
-  void AddMuons       (const std::string detailStr = "");
+  void AddMuons       (const std::string detailStr = "", const std::string muonName = "muon");
   void AddElectrons   (const std::string detailStr = "");
   void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
@@ -75,13 +76,11 @@ public:
   HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
   HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-  std::map<std::string, HelperClasses::JetInfoSwitch*> m_thisJetInfoSwitch;
   HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
   HelperClasses::METInfoSwitch*        m_metInfoSwitch;
 
-  InDet::InDetTrackSelectionTool * m_trkSelTool;
 
   std::string                  m_triggerSelection;
   TrigConf::xAODConfigTool*    m_trigConfTool;
@@ -91,7 +90,10 @@ public:
 
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();
-  void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
+
+  void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex, const std::string muonName = "muon" );
+  void FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primaryVertex, const std::string muonName = "muon" );
+
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
   void FillPhotons( const xAOD::PhotonContainer* photons );
 
@@ -107,7 +109,7 @@ public:
   void ClearEvent();
   void ClearTrigger();
   void ClearJetTrigger();
-  void ClearMuons();
+  void ClearMuons(const std::string jetName = "muon");
   void ClearElectrons();
   void ClearPhotons();
   void ClearJets(const std::string jetName = "jet");
@@ -175,7 +177,7 @@ public:
   virtual void ClearMETUser()       { return; };
 
   virtual void FillEventUser( const xAOD::EventInfo*  )        { return; };
-  virtual void FillMuonsUser( const xAOD::Muon*  )             { return; };
+  virtual void FillMuonsUser( const xAOD::Muon*, const std::string /*muonName = "muon"*/  )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron*  )     { return; };
   virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
   virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
@@ -265,361 +267,14 @@ protected:
   						   / This list is created when configuring ElectronSelector.cxx, where the electron trigger matching is actually performed
 						   */
 
+  // jet trigger
   std::vector<std::string> m_passTriggers;
   std::vector<float> m_triggerPrescales;
 
-  // jet trigger
-
   //
-  // jet Info
+  //  Jets
   //
-  struct jetInfo{
-
-    int N;
-    std::vector<float> m_jet_pt;
-    std::vector<float> m_jet_eta;
-    std::vector<float> m_jet_phi;
-    std::vector<float> m_jet_E;
-
-    // rapidity
-    std::vector<float> m_jet_rapidity;
-
-    // clean
-    std::vector<float> m_jet_time;
-    std::vector<float> m_jet_LArQuality;
-    std::vector<float> m_jet_hecq;
-    std::vector<float> m_jet_negE;
-    std::vector<float> m_jet_avLArQF;
-    std::vector<float> m_jet_bchCorrCell;
-    std::vector<float> m_jet_N90Const;
-    std::vector<float> m_jet_LArBadHVEFrac;
-    std::vector<int>   m_jet_LArBadHVNCell;
-    std::vector<float> m_jet_OotFracClus5;
-    std::vector<float> m_jet_OotFracClus10;
-    std::vector<float> m_jet_LeadingClusterPt;
-    std::vector<float> m_jet_LeadingClusterSecondLambda;
-    std::vector<float> m_jet_LeadingClusterCenterLambda;
-    std::vector<float> m_jet_LeadingClusterSecondR;
-    std::vector<int>   m_jet_clean_passLooseBad;
-    std::vector<int>   m_jet_clean_passLooseBadUgly;
-    std::vector<int>   m_jet_clean_passTightBad;
-    std::vector<int>   m_jet_clean_passTightBadUgly;
-
-    // energy
-    std::vector<float> m_jet_HECf;
-    std::vector<float> m_jet_EMf;
-    std::vector<float> m_jet_centroidR;
-    std::vector<float> m_jet_fracSampMax;
-    std::vector<float> m_jet_fracSampMaxIdx;
-    std::vector<float> m_jet_lowEtFrac;
-    std::vector<float> m_jet_muonSegCount;
-    std::vector<float> m_jet_width;
-
-    // scales
-    std::vector<float> m_jet_emPt;
-    std::vector<float> m_jet_constPt;
-    std::vector<float> m_jet_pileupPt;
-    std::vector<float> m_jet_originConstitPt;
-    std::vector<float> m_jet_etaJESPt;
-    std::vector<float> m_jet_gscPt;
-    std::vector<float> m_jet_insituPt;
-
-    // layer
-    std::vector< std::vector<float> > m_jet_ePerSamp;
-
-    // tracksAll
-    std::vector< std::vector<int> >   m_jet_NTrkPt1000;
-    std::vector< std::vector<float> > m_jet_SumPtPt1000;
-    std::vector< std::vector<float> > m_jet_TrkWPt1000;
-    std::vector< std::vector<int> >   m_jet_NTrkPt500;
-    std::vector< std::vector<float> > m_jet_SumPtPt500;
-    std::vector< std::vector<float> > m_jet_TrkWPt500;
-    std::vector< std::vector<float> > m_jet_jvf;
-    std::vector< std::vector<float> > m_jet_jvfloose;
-
-    // tracksPV
-    std::vector<int>   m_jet_NTrkPt1000PV;
-    std::vector<float> m_jet_SumPtPt1000PV;
-    std::vector<float> m_jet_TrkWPt1000PV;
-    std::vector<int>   m_jet_NTrkPt500PV;
-    std::vector<float> m_jet_SumPtPt500PV;
-    std::vector<float> m_jet_TrkWPt500PV;
-    std::vector<float> m_jet_jvfPV;
-
-    // tracksAll or tracksPV
-    std::vector<float> m_jet_Jvt;    
-    std::vector< std::vector<float> > m_jet_JvtSF_loose;
-    std::vector< std::vector<float> > m_jet_JvtSF_medium;
-    std::vector< std::vector<float> > m_jet_JvtSF_tight;
-    std::vector<float> m_jet_JvtJvfcorr;
-    std::vector<float> m_jet_JvtRpt;
-    //std::vector<float> m_jet_ghostTrackAssFrac;
-
-    // allTrack
-    std::vector<int>                  m_jet_GhostTrackCount;
-    std::vector<float>                m_jet_GhostTrackPt;
-    std::vector< std::vector<float> > m_jet_GhostTrack_pt;
-    std::vector< std::vector<float> > m_jet_GhostTrack_qOverP;
-    std::vector< std::vector<float> > m_jet_GhostTrack_eta;
-    std::vector< std::vector<float> > m_jet_GhostTrack_phi;
-    std::vector< std::vector<float> > m_jet_GhostTrack_e;
-    std::vector< std::vector<float> > m_jet_GhostTrack_d0;
-    std::vector< std::vector<float> > m_jet_GhostTrack_z0;
-
-    // allTrackDetail
-    std::vector< std::vector<int> > m_jet_GhostTrack_nPixHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nSCTHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nTRTHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nPixSharedHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nPixSplitHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixSharedHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixSplitHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixSharedHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixSplitHits;
-
-    // constituent
-    std::vector< int >                m_jet_numConstituents;
-    std::vector< std::vector<float> > m_jet_constitWeights;
-    std::vector< std::vector<float> > m_jet_constit_pt;
-    std::vector< std::vector<float> > m_jet_constit_eta;
-    std::vector< std::vector<float> > m_jet_constit_phi;
-    std::vector< std::vector<float> > m_jet_constit_e;
-
-    // flavor tag
-    std::vector<float> m_jet_sv0;
-    std::vector<float> m_jet_sv1;
-    std::vector<float> m_jet_ip3d;
-    std::vector<float> m_jet_sv1ip3d;
-    std::vector<float> m_jet_mv2c00;
-    std::vector<float> m_jet_mv2c10;
-    std::vector<float> m_jet_mv2c20;
-    std::vector<int>   m_jet_hadConeExclTruthLabel;
-
-    std::vector<float>   m_jet_COMB;
-
-    // Jet Fitter 
-    std::vector<float>  m_jet_jf_nVTX           ;
-    std::vector<float>  m_jet_jf_nSingleTracks  ;
-    std::vector<float>  m_jet_jf_nTracksAtVtx   ;
-    std::vector<float>  m_jet_jf_mass           ;
-    std::vector<float>  m_jet_jf_energyFraction ;
-    std::vector<float>  m_jet_jf_significance3d ;
-    std::vector<float>  m_jet_jf_deltaeta       ;
-    std::vector<float>  m_jet_jf_deltaphi       ;
-    std::vector<float>  m_jet_jf_N2Tpar         ;
-    //std::vector<float>  m_jet_jf_pb             ;
-    //std::vector<float>  m_jet_jf_pc             ;
-    //std::vector<float>  m_jet_jf_pu             ;
-
-    // SV Details
-    std::vector<float> m_jet_sv0_NGTinSvx  ;
-    std::vector<float> m_jet_sv0_N2Tpair   ;
-    std::vector<float> m_jet_sv0_massvx    ;
-    std::vector<float> m_jet_sv0_efracsvx  ;
-    std::vector<float> m_jet_sv0_normdist  ;
-
-    std::vector<float> m_jet_sv1_pu        ;
-    std::vector<float> m_jet_sv1_pb        ;
-    std::vector<float> m_jet_sv1_pc        ;
-    std::vector<float> m_jet_sv1_c         ;
-    std::vector<float> m_jet_sv1_cu        ;
-    std::vector<float> m_jet_sv1_NGTinSvx  ;
-    std::vector<float> m_jet_sv1_N2Tpair   ;
-    std::vector<float> m_jet_sv1_massvx    ;
-    std::vector<float> m_jet_sv1_efracsvx  ;
-    std::vector<float> m_jet_sv1_normdist  ;
-    std::vector<float> m_jet_sv1_Lxy       ;
-    std::vector<float> m_jet_sv1_L3d       ;
-    std::vector<float> m_jet_sv1_distmatlay;
-    std::vector<float> m_jet_sv1_dR        ;
-
-    // IP3D
-    std::vector<float> m_jet_IP2D_pu                   ;
-    std::vector<float> m_jet_IP2D_pb                   ;
-    std::vector<float> m_jet_IP2D_pc                   ;
-    std::vector<float> m_jet_IP2D                      ;
-    std::vector<float> m_jet_IP2D_c                    ;
-    std::vector<float> m_jet_IP2D_cu                   ;
-    std::vector<float> m_jet_nIP2DTracks               ;
-
-    std::vector<std::vector<float> > m_jet_IP2D_gradeOfTracks        ;
-    std::vector<std::vector<float> > m_jet_IP2D_flagFromV0ofTracks   ;
-    std::vector<std::vector<float> > m_jet_IP2D_valD0wrtPVofTracks   ;
-    std::vector<std::vector<float> > m_jet_IP2D_sigD0wrtPVofTracks   ;
-    std::vector<std::vector<float> > m_jet_IP2D_weightBofTracks      ;
-    std::vector<std::vector<float> > m_jet_IP2D_weightCofTracks      ;
-    std::vector<std::vector<float> > m_jet_IP2D_weightUofTracks      ;
-
-    std::vector<float> m_jet_IP3D_pu                   ;
-    std::vector<float> m_jet_IP3D_pb                   ;
-    std::vector<float> m_jet_IP3D_pc                   ;
-    std::vector<float> m_jet_IP3D                      ;
-    std::vector<float> m_jet_IP3D_c                    ;
-    std::vector<float> m_jet_IP3D_cu                   ;
-    std::vector<float> m_jet_nIP3DTracks               ;
-    std::vector<std::vector<float> > m_jet_IP3D_gradeOfTracks        ;
-    std::vector<std::vector<float> > m_jet_IP3D_flagFromV0ofTracks   ;
-    std::vector<std::vector<float> > m_jet_IP3D_valD0wrtPVofTracks   ;
-    std::vector<std::vector<float> > m_jet_IP3D_sigD0wrtPVofTracks   ;
-    std::vector<std::vector<float> > m_jet_IP3D_valZ0wrtPVofTracks   ;
-    std::vector<std::vector<float> > m_jet_IP3D_sigZ0wrtPVofTracks   ;
-    std::vector<std::vector<float> > m_jet_IP3D_weightBofTracks      ;
-    std::vector<std::vector<float> > m_jet_IP3D_weightCofTracks      ;
-    std::vector<std::vector<float> > m_jet_IP3D_weightUofTracks      ;
-
-
-
-    std::vector<float> m_jet_vtxOnlineValid;
-    std::vector<float> m_jet_vtxHadDummy;
-
-    std::vector<float> m_jet_vtx_offline_x0;
-    std::vector<float> m_jet_vtx_offline_y0;
-    std::vector<float> m_jet_vtx_offline_z0;
-
-    std::vector<float> m_jet_vtx_online_x0;
-    std::vector<float> m_jet_vtx_online_y0;
-    std::vector<float> m_jet_vtx_online_z0;
-
-    std::vector<float> m_jet_vtx_online_bkg_x0;
-    std::vector<float> m_jet_vtx_online_bkg_y0;
-    std::vector<float> m_jet_vtx_online_bkg_z0;
-
-    int m_njet_Fix30;
-    std::vector<int>                  m_jet_isFix30;
-    std::vector<float>                m_weight_jet_sfFix30;
-    std::vector< std::vector<float> > m_jet_sfFix30;
-
-    int m_njet_Fix50;
-    std::vector<int> m_jet_isFix50;
-    std::vector<float>  m_weight_jet_sfFix50;
-    std::vector< std::vector<float> > m_jet_sfFix50;
-
-    int m_njet_Fix60;
-    std::vector<int> m_jet_isFix60;
-    std::vector<float>  m_weight_jet_sfFix60;
-    std::vector< std::vector<float> > m_jet_sfFix60;
-
-    int m_njet_Fix70;
-    std::vector<int> m_jet_isFix70;
-    std::vector<float>  m_weight_jet_sfFix70;
-    std::vector< std::vector<float> > m_jet_sfFix70;
-
-    int m_njet_Fix77;
-    std::vector<int> m_jet_isFix77;
-    std::vector<float>  m_weight_jet_sfFix77;
-    std::vector< std::vector<float> > m_jet_sfFix77;
-
-    int m_njet_Fix80;
-    std::vector<int> m_jet_isFix80;
-    std::vector<float>  m_weight_jet_sfFix80;
-    std::vector< std::vector<float> > m_jet_sfFix80;
-
-    int m_njet_Fix85;
-    std::vector<int> m_jet_isFix85;
-    std::vector<float>  m_weight_jet_sfFix85;
-    std::vector< std::vector<float> > m_jet_sfFix85;
-
-    int m_njet_Fix90;
-    std::vector<int> m_jet_isFix90;
-    std::vector<float>  m_weight_jet_sfFix90;
-    std::vector< std::vector<float> > m_jet_sfFix90;
-
-    int m_njet_Flt30;
-    std::vector<int> m_jet_isFlt30;
-    std::vector<float>  m_weight_jet_sfFlt30;
-    std::vector< std::vector<float> > m_jet_sfFlt30;
-
-    int m_njet_Flt40;
-    std::vector<int> m_jet_isFlt40;
-    std::vector<float>  m_weight_jet_sfFlt40;
-    std::vector< std::vector<float> > m_jet_sfFlt40;
-
-    int m_njet_Flt50;
-    std::vector<int> m_jet_isFlt50;
-    std::vector<float>  m_weight_jet_sfFlt50;
-    std::vector< std::vector<float> > m_jet_sfFlt50;
-
-    int m_njet_Flt60;
-    std::vector<int> m_jet_isFlt60;
-    std::vector<float>  m_weight_jet_sfFlt60;
-    std::vector< std::vector<float> > m_jet_sfFlt60;
-
-    int m_njet_Flt70;
-    std::vector<int> m_jet_isFlt70;
-    std::vector<float>  m_weight_jet_sfFlt70;
-    std::vector< std::vector<float> > m_jet_sfFlt70;
-
-    int m_njet_Flt77;
-    std::vector<int> m_jet_isFlt77;
-    std::vector<float>  m_weight_jet_sfFlt77;
-    std::vector< std::vector<float> > m_jet_sfFlt77;
-
-    int m_njet_Flt80;
-    std::vector<int> m_jet_isFlt80;
-    std::vector<float>  m_weight_jet_sfFlt80;
-    std::vector< std::vector<float> > m_jet_sfFlt80;
-
-    int m_njet_Flt85;
-    std::vector<int> m_jet_isFlt85;
-    std::vector<float>  m_weight_jet_sfFlt85;
-    std::vector< std::vector<float> > m_jet_sfFlt85;
-
-    int m_njet_Flt90;
-    std::vector<int> m_jet_isFlt90;
-    std::vector<float>  m_weight_jet_sfFlt90;
-    std::vector< std::vector<float> > m_jet_sfFlt90;
-
-    // area
-    std::vector<float> m_jet_ghostArea;
-    std::vector<float> m_jet_activeArea;
-    std::vector<float> m_jet_voronoiArea;
-    std::vector<float> m_jet_activeArea_pt;
-    std::vector<float> m_jet_activeArea_eta;
-    std::vector<float> m_jet_activeArea_phi;
-    std::vector<float> m_jet_activeArea_m;
-
-    // truth
-    std::vector<int>   m_jet_truthConeLabelID;
-    std::vector<int>   m_jet_truthCount;
-    std::vector<float> m_jet_truthPt;
-    std::vector<float> m_jet_truthDr_B;
-    std::vector<float> m_jet_truthDr_C;
-    std::vector<float> m_jet_truthDr_T;
-    std::vector<int>   m_jet_partonTruthID;
-    std::vector<float> m_jet_ghostTruthAssFrac;
-    std::vector<float> m_jet_truth_pt;
-    std::vector<float> m_jet_truth_eta;
-    std::vector<float> m_jet_truth_phi;
-    std::vector<float> m_jet_truth_E;
-    std::vector<int> m_jet_truth_pdgId;
-    std::vector<float> m_jet_truth_partonPt;
-    std::vector<float> m_jet_truth_partonDR;
-
-    // truth detail
-    std::vector<int>   m_jet_truthCount_BhadFinal;
-    std::vector<int>   m_jet_truthCount_BhadInit;
-    std::vector<int>   m_jet_truthCount_BQFinal;
-    std::vector<float> m_jet_truthPt_BhadFinal;
-    std::vector<float> m_jet_truthPt_BhadInit;
-    std::vector<float> m_jet_truthPt_BQFinal;
-    std::vector<int>   m_jet_truthCount_ChadFinal;
-    std::vector<int>   m_jet_truthCount_ChadInit;
-    std::vector<int>   m_jet_truthCount_CQFinal;
-    std::vector<float> m_jet_truthPt_ChadFinal;
-    std::vector<float> m_jet_truthPt_ChadInit;
-    std::vector<float> m_jet_truthPt_CQFinal;
-    std::vector<int>   m_jet_truthCount_TausFinal;
-    std::vector<float> m_jet_truthPt_TausFinal;
-
-    // charge
-    std::vector<float> m_jet_charge;
-
-    jetInfo(){ }
-
-  };
-  std::map<std::string, jetInfo*> m_jets;
+  std::map<std::string, xAH::JetContainer*> m_jets;
 
   //
   // Truth
@@ -664,91 +319,7 @@ protected:
   std::vector<float> m_fatjet_NTrimSubjets;
 
   // muons
-  int m_nmuon;
-
-  // kinematics
-  std::vector<float> m_muon_pt;
-  std::vector<float> m_muon_eta;
-  std::vector<float> m_muon_phi;
-  std::vector<float> m_muon_m;
-
-  // trigger
-  std::vector<int> m_muon_isTrigMatched;
-  std::vector<std::vector<int> > m_muon_isTrigMatchedToChain;
-  std::vector<std::string> m_muon_listTrigChains;
-
-  // isolation
-  std::vector<int>   m_muon_isIsolated_LooseTrackOnly;
-  std::vector<int>   m_muon_isIsolated_Loose;
-  std::vector<int>   m_muon_isIsolated_Tight;
-  std::vector<int>   m_muon_isIsolated_Gradient;
-  std::vector<int>   m_muon_isIsolated_GradientLoose;
-  std::vector<int>   m_muon_isIsolated_FixedCutLoose;
-  std::vector<int>   m_muon_isIsolated_FixedCutTightTrackOnly;
-  std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
-  std::vector<int>   m_muon_isIsolated_UserDefinedCut;
-  std::vector<float> m_muon_ptcone20;
-  std::vector<float> m_muon_ptcone30;
-  std::vector<float> m_muon_ptcone40;
-  std::vector<float> m_muon_ptvarcone20;
-  std::vector<float> m_muon_ptvarcone30;
-  std::vector<float> m_muon_ptvarcone40;
-  std::vector<float> m_muon_topoetcone20;
-  std::vector<float> m_muon_topoetcone30;
-  std::vector<float> m_muon_topoetcone40;
-
-  // quality
-  std::vector<int>   m_muon_isVeryLoose;
-  std::vector<int>   m_muon_isLoose;
-  std::vector<int>   m_muon_isMedium;
-  std::vector<int>   m_muon_isTight;
-
-  // scale factors w/ sys
-  // per object
-  std::vector< std::vector< float > > m_muon_RecoEff_SF_Loose;
-  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_Loose;
-  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_TrigMCEff_Loose_Loose;
-  std::vector< std::vector< float > > m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_LooseTrackOnly;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Loose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Tight;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Gradient;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_GradientLoose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutLoose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_TTVAEff_SF;
-
-  // track parameters
-  std::vector<float> m_muon_trkd0;
-  std::vector<float> m_muon_trkd0sig;
-  std::vector<float> m_muon_trkz0;
-  std::vector<float> m_muon_trkz0sintheta;
-  std::vector<float> m_muon_trkphi0;
-  std::vector<float> m_muon_trktheta;
-  std::vector<float> m_muon_trkcharge;
-  std::vector<float> m_muon_trkqOverP;
-
-  // track hit content
-  std::vector<int> m_muon_trknSiHits;
-  std::vector<int> m_muon_trknPixHits;
-  std::vector<int> m_muon_trknPixHoles;
-  std::vector<int> m_muon_trknSCTHits;
-  std::vector<int> m_muon_trknSCTHoles;
-  std::vector<int> m_muon_trknTRTHits;
-  std::vector<int> m_muon_trknTRTHoles;
-  std::vector<int> m_muon_trknBLayerHits;
-  std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
-  std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
-
-  std::vector<float>         m_muon_EnergyLoss;
-  std::vector<float>         m_muon_EnergyLossSigma;
-  std::vector<unsigned char> m_muon_energyLossType;
-  std::vector<float>         m_muon_MeasEnergyLoss;
-  std::vector<float>         m_muon_MeasEnergyLossSigma;
-  std::vector<float>         m_muon_ParamEnergyLoss;
-  std::vector<float>         m_muon_ParamEnergyLossSigmaMinus;
-  std::vector<float>         m_muon_ParamEnergyLossSigmaPlus;
+  std::map<std::string, xAH::MuonContainer*> m_muons;
 
   //
   // electrons
@@ -905,26 +476,6 @@ protected:
   float m_metJetTrk;    float m_metJetTrkSumEt;   float m_metJetTrkPhi;
   float m_metSoftClus;  float m_metSoftClusSumEt; float m_metSoftClusPhi;
   float m_metSoftTrk;   float m_metSoftTrkSumEt;  float m_metSoftTrkPhi;
-
- public:
-
-  void Fill_Fix30( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix50( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix60( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix70( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix77( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix80( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix85( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix90( const xAOD::Jet* jet, jetInfo* thisJet );
-
-  void Fill_Flt30( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt40( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt50( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt60( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt70( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt77( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt85( const xAOD::Jet* jet, jetInfo* thisJet );
-
 
 };
 

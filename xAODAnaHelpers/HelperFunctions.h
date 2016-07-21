@@ -441,6 +441,14 @@ namespace HelperFunctions {
     return StatusCode::SUCCESS;
   }
 
+  template <typename T_BR> void connectBranch(std::string name, TTree *tree, const std::string& branch, std::vector<T_BR> **variable)
+    {
+      tree->SetBranchStatus  ((name+"_"+branch).c_str()  , 1);
+      tree->SetBranchAddress ((name+"_"+branch).c_str()  , variable);
+    }
+
+
+
 } // close namespace HelperFunctions
 
 # endif
