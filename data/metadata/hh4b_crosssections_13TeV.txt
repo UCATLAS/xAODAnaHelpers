@@ -93,7 +93,16 @@ id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
 #  ttbar Not covered in the susy file
 
 410007   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad   696.21  1.   0.45618  1.
-
-
-
-
+410037	PowhegPythiaEvtGen_P2012_ttbar_hdamp170_nonallhad	745.4900	1.	0.5436400	1.
+410038	PowhegPythiaEvtGen_P2012_ttbar_hdamp171p5_nonallhad	715.3700	1.	0.5436800	1.
+410039	PowhegPythiaEvtGen_P2012_ttbar_hdamp173p5_nonallhad	677.4300	1.	0.5437200	1.
+410040	PowhegPythiaEvtGen_P2012_ttbar_hdamp175_nonallhad	650.5300	1.	0.5438400	1.
+410041	PowhegPythiaEvtGen_P2012_ttbar_hdamp177p5_nonallhad	608.4400	1.	0.5438100	1.
+410042	PowhegPythiaEvtGen_P2012_ttbar_hdamp170_allhad	        745.5700	1.	0.4561600	1.
+410043	PowhegPythiaEvtGen_P2012_ttbar_hdamp171p5_allhad	715.4900	1.	0.4562000	1.
+410044	PowhegPythiaEvtGen_P2012_ttbar_hdamp173p5_allhad	677.5500	1.	0.4561800	1.
+410045	PowhegPythiaEvtGen_P2012_ttbar_hdamp175_allhad	        650.6200	1.	0.4561700	1.
+410046	PowhegPythiaEvtGen_P2012_ttbar_hdamp177p5_allhad	608.5300	1.	0.4562500	1.
+410161	PowhegPythiaEvtGen_P2012radHi_ttbar_hdamp345_down_allhad	783.8400	1.	0.4560200	1.
+410162	PowhegPythiaEvtGen_P2012radLo_ttbar_hdamp172p5_up_allhad	611.1200	1.	0.4561600	1.
+410163	PowhegHerwigppEvtGen_UEEE5_ttbar_hdamp172p5_allhad	696.3400	1.	0.4561900	1.
