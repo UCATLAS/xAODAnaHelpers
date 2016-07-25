@@ -19,7 +19,7 @@ namespace xAH {
   class MuonContainer : public ParticleContainer<Muon,HelperClasses::MuonInfoSwitch>
     {
     public:
-      MuonContainer(const std::string& name = "muon", const std::string& detailStr="", float units = 1e3);
+      MuonContainer(const std::string& name = "muon", const std::string& detailStr="", float units = 1e3, bool mc = false);
       virtual ~MuonContainer();
     
       virtual void setTree(TTree *tree);
