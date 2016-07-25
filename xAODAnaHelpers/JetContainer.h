@@ -23,7 +23,7 @@ namespace xAH {
     class JetContainer : public ParticleContainer<Jet,HelperClasses::JetInfoSwitch>
     {
     public:
-      JetContainer(const std::string& name = "jet", const std::string& detailStr="", float units = 1e3);
+      JetContainer(const std::string& name = "jet", const std::string& detailStr="", float units = 1e3, bool mc = false);
       virtual ~JetContainer();
     
       virtual void setTree    (TTree *tree, std::string tagger="MV2c10");

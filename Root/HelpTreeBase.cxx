@@ -453,7 +453,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
 
   if ( m_debug )  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
-  m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units);
+  m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units, m_isMC);
 
   xAH::MuonContainer* thisMuon = m_muons[muonName];
 
@@ -1122,7 +1122,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
 
   if(m_debug) Info("AddJets()", "Adding jet %s with variables: %s", jetName.c_str(), detailStr.c_str());
 
-  m_jets[jetName] = new xAH::JetContainer(jetName, detailStr, m_units);
+  m_jets[jetName] = new xAH::JetContainer(jetName, detailStr, m_units, m_isMC);
 
   xAH::JetContainer* thisJet = m_jets[jetName];
   thisJet->setBranches(m_tree);

@@ -6,8 +6,8 @@ using namespace xAH;
 using std::vector;
 using std::string;
 
-MuonContainer::MuonContainer(const std::string& name, const std::string& detailStr, float units)
-  : ParticleContainer(name, detailStr, units, true, false)
+MuonContainer::MuonContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
+  : ParticleContainer(name, detailStr, units, mc, true, false)
 {
 
   // trigger

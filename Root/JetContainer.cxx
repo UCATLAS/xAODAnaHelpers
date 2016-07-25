@@ -7,8 +7,8 @@ using namespace xAH;
 using std::vector;  using std::endl;  using std::cout;
 
 
-JetContainer::JetContainer(const std::string& name, const std::string& detailStr, float units)
-  : ParticleContainer(name,detailStr,units),
+JetContainer::JetContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
+  : ParticleContainer(name,detailStr,units,mc),
     m_trkSelTool(nullptr)
 
 {

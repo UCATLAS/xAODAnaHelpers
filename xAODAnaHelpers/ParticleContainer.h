@@ -19,8 +19,8 @@ namespace xAH {
     class ParticleContainer
     {
     public:
-    ParticleContainer(const std::string& name, const std::string& detailStr="", float units = 1e3, bool useMass=false, bool useTheS = true)
-      : m_name(name), m_infoSwitch(detailStr), m_mc(false), m_units(units), m_useMass(useMass), m_useTheS(useTheS)
+    ParticleContainer(const std::string& name, const std::string& detailStr="", float units = 1e3, bool mc = false, bool useMass=false, bool useTheS = true)
+      : m_name(name), m_infoSwitch(detailStr), m_mc(mc), m_units(units), m_useMass(useMass), m_useTheS(useTheS)
       {
 	m_n = 0;
 
