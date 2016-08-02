@@ -272,11 +272,14 @@ namespace xAH {
 	  delete m_sf;
 	}
 
-        void setTree(TTree *tree){
-          tree->SetBranchStatus  (("njets_"+m_tagger+"_"+m_name).c_str(), 1);
-          tree->SetBranchAddress (("njets_"+m_tagger+"_"+m_name).c_str(), &m_njets);
-	  HelperFunctions::connectBranch<int>     (m_name, tree,"MV2c20_is"+m_name,      &m_isTag);
-          if(m_mc) HelperFunctions::connectBranch<std::vector<float> >(m_name, tree,"MV2c20_SF"+m_name,       &m_sf);
+        void setTree(TTree *tree, std::string jetName){
+          //tree->SetBranchStatus  (("n"+jetName+"s_"+m_tagger+"_"+m_name).c_str(), 1);
+          //tree->SetBranchAddress (("n"+jetName+"s_"+m_tagger+"_"+m_name).c_str(), &m_njets);
+          tree->SetBranchStatus  (("n"+jetName+"s_"+m_name).c_str(), 1);
+          tree->SetBranchAddress (("n"+jetName+"s_"+m_name).c_str(), &m_njets);
+
+	  HelperFunctions::connectBranch<int>     (jetName, tree,"is"+m_name,      &m_isTag);
+          if(m_mc) HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF"+m_name,       &m_sf);
         }
 
 

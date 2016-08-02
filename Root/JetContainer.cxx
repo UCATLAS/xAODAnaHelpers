@@ -88,9 +88,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_SumPtTrkPt500PV      =new std::vector<float>();
     m_TrackWidthPt500PV    =new std::vector<float>();
     m_JVFPV                =new std::vector<float>();
-    cout << "Makeing m_Jvt " << endl;
     m_Jvt                = new std::vector<float>();
-    cout << "Makde m_Jvt " << m_Jvt << endl;
     m_JvtJvfcorr         = new std::vector<float>();
     m_JvtRpt             = new std::vector<float>();
     if( m_mc ){
@@ -740,14 +738,14 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
     {
       switch( m_infoSwitch.m_sfFTagFix[i] ) 
         {
-        case 30: m_btag_Fix30->setTree(tree); break;
-        case 50: m_btag_Fix50->setTree(tree); break;
-        case 60: m_btag_Fix60->setTree(tree); break;
-        case 70: m_btag_Fix70->setTree(tree); break;
-        case 77: m_btag_Fix77->setTree(tree); break;
-        case 80: m_btag_Fix80->setTree(tree); break;
-        case 85: m_btag_Fix85->setTree(tree); break;         
-        case 90: m_btag_Fix90->setTree(tree); break;
+        case 30: m_btag_Fix30->setTree(tree, m_name); break;
+        case 50: m_btag_Fix50->setTree(tree, m_name); break;
+        case 60: m_btag_Fix60->setTree(tree, m_name); break;
+        case 70: m_btag_Fix70->setTree(tree, m_name); break;
+        case 77: m_btag_Fix77->setTree(tree, m_name); break;
+        case 80: m_btag_Fix80->setTree(tree, m_name); break;
+        case 85: m_btag_Fix85->setTree(tree, m_name); break;         
+        case 90: m_btag_Fix90->setTree(tree, m_name); break;
       }
     }
 
@@ -755,24 +753,12 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
     {
       switch( m_infoSwitch.m_sfFTagFlt[i] ) 
         {
-        case 30:
-	  m_btag_Flt30->setTree(tree);
-          break;
-        case 50:
-	  m_btag_Flt50->setTree(tree);
-          break;
-        case 60:              
-	  m_btag_Flt60->setTree(tree);
-          break;
-        case 70:
-	  m_btag_Flt70->setTree(tree);
-          break;
-        case 77:
-	  m_btag_Flt77->setTree(tree);
-          break;
-        case 85:
-	  m_btag_Flt85->setTree(tree);
-          break;
+        case 30: m_btag_Flt30->setTree(tree, m_name); break;
+        case 50: m_btag_Flt50->setTree(tree, m_name); break;
+        case 60: m_btag_Flt60->setTree(tree, m_name); break;              
+        case 70: m_btag_Flt70->setTree(tree, m_name); break;
+        case 77: m_btag_Flt77->setTree(tree, m_name); break;
+        case 85: m_btag_Flt85->setTree(tree, m_name); break;
         }
     }
 
@@ -895,7 +881,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
           jet.MV2c20_isFix60       =m_btag_Fix60->m_isTag->at(idx);
           jet.MV2c20_sfFix60       =(m_mc)?m_btag_Fix60->m_sf->at(idx):dummy1;
           break;
-        case 70:
+        case 70: 
           jet.MV2c20_isFix70       =m_btag_Fix70->m_isTag->at(idx);
           jet.MV2c20_sfFix70       =(m_mc)?m_btag_Fix70->m_sf->at(idx):dummy1;
           break;
