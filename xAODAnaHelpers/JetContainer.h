@@ -159,10 +159,6 @@ namespace xAH {
 
 
       // flavTag
-      std::vector<float> *m_SV0;
-      std::vector<float> *m_SV1;
-      std::vector<float> *m_SV1IP3D;
-      //std::vector<float> *m_MV1;
       std::vector<float> *m_MV2c00;
       std::vector<float> *m_MV2c10;
       std::vector<float> *m_MV2c20;
@@ -182,12 +178,15 @@ namespace xAH {
 
 
       // SV Details
+      std::vector<float> *m_SV0;
       std::vector<float> *m_sv0_NGTinSvx  ;
       std::vector<float> *m_sv0_N2Tpair   ;
       std::vector<float> *m_sv0_massvx    ;
       std::vector<float> *m_sv0_efracsvx  ;
       std::vector<float> *m_sv0_normdist  ;
-      
+
+      std::vector<float> *m_SV1;
+      std::vector<float> *m_SV1IP3D;
       std::vector<float> *m_sv1_pu        ;
       std::vector<float> *m_sv1_pb        ;
       std::vector<float> *m_sv1_pc        ;

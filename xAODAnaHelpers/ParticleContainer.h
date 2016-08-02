@@ -20,7 +20,7 @@ namespace xAH {
     {
     public:
     ParticleContainer(const std::string& name, const std::string& detailStr="", float units = 1e3, bool mc = false, bool useMass=false, bool useTheS = true)
-      : m_name(name), m_infoSwitch(detailStr), m_mc(mc), m_units(units), m_useMass(useMass), m_useTheS(useTheS)
+      : m_name(name), m_infoSwitch(detailStr), m_mc(mc), m_debug(false), m_units(units), m_useMass(useMass), m_useTheS(useTheS)
       {
 	m_n = 0;
 
@@ -190,6 +190,7 @@ namespace xAH {
     public:
       T_INFOSWITCH m_infoSwitch;
       bool m_mc;
+      bool m_debug;
       float m_units;
     
     private:
