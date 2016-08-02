@@ -145,10 +145,6 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   // flavTag
   if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
     
-    m_SV0                       =new std::vector<float>();
-    m_SV1                       =new std::vector<float>();
-    m_IP3D                      =new std::vector<float>();
-    m_SV1IP3D                   =new std::vector<float>();
     //m_MV1                       =new std::vector<float>();
     m_MV2c00                    =new std::vector<float>();
     m_MV2c10                    =new std::vector<float>();
@@ -171,12 +167,18 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
     // SV Details
     if( m_infoSwitch.m_svDetails){
+
+      m_SV0               = new      std::vector<float>();
+
+
       m_sv0_NGTinSvx      = new     std::vector<float>(); 
       m_sv0_N2Tpair       = new     std::vector<float>(); 
       m_sv0_massvx        = new     std::vector<float>(); 
       m_sv0_efracsvx      = new     std::vector<float>(); 
       m_sv0_normdist      = new     std::vector<float>(); 
 
+      m_SV1               = new     std::vector<float>();
+      m_SV1IP3D           = new     std::vector<float>();
       m_sv1_pu            = new     std::vector<float>(); 
       m_sv1_pb            = new     std::vector<float>(); 
       m_sv1_pc            = new     std::vector<float>(); 
@@ -211,6 +213,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_IP2D_weightCofTracks            = new std::vector<std::vector<float> >(); 
       m_IP2D_weightUofTracks            = new std::vector<std::vector<float> >(); 
 
+      m_IP3D         = new std::vector<float>();
       m_IP3D_pu      = new std::vector<float>(); 
       m_IP3D_pb      = new std::vector<float>(); 
       m_IP3D_pc      = new std::vector<float>(); 
@@ -463,10 +466,7 @@ JetContainer::~JetContainer()
   // flavTag
   if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
     // flavTag
-    delete m_SV0;
-    delete m_SV1;
-    delete m_IP3D;
-    delete m_SV1IP3D;
+
     //delete m_MV1;
     delete m_MV2;
     delete m_MV2c00;
@@ -490,12 +490,16 @@ JetContainer::~JetContainer()
 
     // SV Details
     if( m_infoSwitch.m_svDetails){
+
+      delete m_SV0;
       delete m_sv0_NGTinSvx  ; 
       delete m_sv0_N2Tpair   ; 
       delete m_sv0_massvx    ; 
       delete m_sv0_efracsvx  ; 
       delete m_sv0_normdist  ; 
 
+      delete m_SV1;
+      delete m_SV1IP3D;
       delete m_sv1_pu        ; 
       delete m_sv1_pb        ; 
       delete m_sv1_pc        ; 
@@ -529,7 +533,8 @@ JetContainer::~JetContainer()
       delete m_IP2D_weightBofTracks   ; 
       delete m_IP2D_weightCofTracks   ; 
       delete m_IP2D_weightUofTracks   ; 
-
+      
+      delete m_IP3D;
       delete m_IP3D_pu     ; 
       delete m_IP3D_pb     ; 
       delete m_IP3D_pc     ; 
@@ -718,11 +723,6 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
 
   if(m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT)
     {
-      connectBranch<float>(tree,"SV0",                  &m_SV0);
-      connectBranch<float>(tree,"SV1",                  &m_SV1);
-      connectBranch<float>(tree,"IP3D",                 &m_IP3D);
-      connectBranch<float>(tree,"SV1IP3D",              &m_SV1IP3D);
-      //connectBranch<float>(tree,"MV1",                  &m_MV1);
       connectBranch<float>(tree,"MV2c00",               &m_MV2c00);
       connectBranch<float>(tree,"MV2c10",               &m_MV2c10);
       connectBranch<float>(tree,"MV2c20",               &m_MV2c20);
@@ -761,12 +761,15 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
 
     if( m_infoSwitch.m_svDetails){
 
+      connectBranch<float>(tree, "SV0",               &m_SV0);
       connectBranch<float>(tree, "sv0_NGTinSvx",      &m_sv0_NGTinSvx  );
       connectBranch<float>(tree, "sv0_N2Tpair",       &m_sv0_N2Tpair   );
       connectBranch<float>(tree, "sv0_massvx",        &m_sv0_massvx    );
       connectBranch<float>(tree, "sv0_efracsvx",      &m_sv0_efracsvx  );
       connectBranch<float>(tree, "sv0_normdist",      &m_sv0_normdist  );
 
+      connectBranch<float>(tree, "SV1",               &m_SV1);
+      connectBranch<float>(tree, "SV1IP3D",           &m_SV1IP3D);
       connectBranch<float>(tree, "sv1_pu",            &m_sv1_pu        );
       connectBranch<float>(tree, "sv1_pb",            &m_sv1_pb        );
       connectBranch<float>(tree, "sv1_pc",            &m_sv1_pc        );
@@ -785,6 +788,7 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
     }
 
     if( m_infoSwitch.m_ipDetails){    
+
       connectBranch<float>         (tree,  "IP2D_pu",                   &m_IP2D_pu                   );
       connectBranch<float>         (tree,  "IP2D_pb",                   &m_IP2D_pb                   );
       connectBranch<float>         (tree,  "IP2D_pc",                   &m_IP2D_pc                   );
@@ -799,6 +803,7 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
       connectBranch<vector<float> >(tree,  "IP2D_weightCofTracks"     , &m_IP2D_weightCofTracks      );
       connectBranch<vector<float> >(tree,  "IP2D_weightUofTracks"     , &m_IP2D_weightUofTracks      );
 
+      connectBranch<float>         (tree,  "IP3D",                      &m_IP3D);
       connectBranch<float>         (tree,  "IP3D_pu",                   &m_IP3D_pu                   );
       connectBranch<float>         (tree,  "IP3D_pb",                   &m_IP3D_pb                   );
       connectBranch<float>         (tree,  "IP3D_pc",                   &m_IP3D_pc                   );
@@ -871,6 +876,7 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
 
 void JetContainer::updateParticle(uint idx, Jet& jet)
 {
+  if(m_debug) cout << "in JetContainer::updateParticle " << endl;
   ParticleContainer::updateParticle(idx,jet);  
 
   if(m_infoSwitch.m_rapidity)
@@ -880,6 +886,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
   if(m_infoSwitch.m_clean)
     {
+      if(m_debug) cout << "updating clean " << endl;
       jet.Timing                    =m_Timing                    ->at(idx);
       jet.LArQuality                =m_LArQuality                ->at(idx);
       jet.HECQuality                =m_HECQuality                ->at(idx);
@@ -903,6 +910,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
   if(m_infoSwitch.m_energy)
     {
+      if(m_debug) cout << "updating energy " << endl;
       jet.HECFrac              =m_HECFrac              ->at(idx);
       jet.EMFrac               =m_EMFrac               ->at(idx);
       jet.CentroidR            =m_CentroidR            ->at(idx);
@@ -933,22 +941,20 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
   
   if(m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT)
     {
-      //jet.SV0                       =m_SV0                  ->at(idx);
-      jet.SV1                       =m_SV1                  ->at(idx);
-      jet.IP3D                      =m_IP3D                 ->at(idx);
-      jet.SV1IP3D                   =m_SV1IP3D              ->at(idx);
-      //jet.MV1                       =m_MV1                  ->at(idx);
+      if(m_debug) cout << "updating flavTag " << endl;
       jet.MV2c00                    =m_MV2c00               ->at(idx);
       jet.MV2c10                    =m_MV2c10               ->at(idx);
       jet.MV2c20                    =m_MV2c20               ->at(idx);
       jet.MV2                       =m_MV2                  ->at(idx);
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
+      if(m_debug) cout << "leave flavTag " << endl;
     }
 
 
   if(m_infoSwitch.m_flavTagHLT)
     {
+      if(m_debug) cout << "updating flavTagHLT " << endl;
       jet.vtxHadDummy                       =m_vtxHadDummy                  ->at(idx);
       jet.vtx_offline_x0                    =m_vtx_offline_x0                  ->at(idx);
       jet.vtx_offline_y0                    =m_vtx_offline_y0                  ->at(idx);
@@ -976,12 +982,15 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
   if(m_infoSwitch.m_svDetails){
 
+    jet.SV0            = m_SV0           ->at(idx);
     jet.sv0_NGTinSvx   = m_sv0_NGTinSvx  ->at(idx);
     jet.sv0_N2Tpair    = m_sv0_N2Tpair   ->at(idx);
     jet.sv0_massvx     = m_sv0_massvx    ->at(idx);
     jet.sv0_efracsvx   = m_sv0_efracsvx  ->at(idx);
     jet.sv0_normdist   = m_sv0_normdist  ->at(idx);
 
+    jet.SV1            = m_SV1           ->at(idx);
+    jet.SV1IP3D        = m_SV1IP3D       ->at(idx);
     jet.sv1_pu         = m_sv1_pu        ->at(idx);
     jet.sv1_pb         = m_sv1_pb        ->at(idx);
     jet.sv1_pc         = m_sv1_pc        ->at(idx);
@@ -1015,6 +1024,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.IP2D_weightCofTracks             = m_IP2D_weightCofTracks      ->at(idx);
     jet.IP2D_weightUofTracks             = m_IP2D_weightUofTracks      ->at(idx);
 
+    jet.IP3D                             = m_IP3D                      ->at(idx);
     jet.IP3D_pu                          = m_IP3D_pu                   ->at(idx);
     jet.IP3D_pb                          = m_IP3D_pb                   ->at(idx);
     jet.IP3D_pc                          = m_IP3D_pc                   ->at(idx);
@@ -1031,7 +1041,6 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.IP3D_weightCofTracks             = m_IP3D_weightCofTracks      ->at(idx);
     jet.IP3D_weightUofTracks             = m_IP3D_weightUofTracks      ->at(idx);
   }
-
 
   static const std::vector<float> dummy1 = {1.};
   for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) 
@@ -1051,6 +1060,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
           jet.MV2c20_sfFix60       =(m_mc)?m_btag_Fix60->m_sf->at(idx):dummy1;
           break;
         case 70: 
+	  if(m_debug) cout << "updating flavTag70 " << endl;
           jet.MV2c20_isFix70       =m_btag_Fix70->m_isTag->at(idx);
           jet.MV2c20_sfFix70       =(m_mc)?m_btag_Fix70->m_sf->at(idx):dummy1;
           break;
@@ -1127,7 +1137,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     {
       jet.charge=m_charge->at(idx);
     }
-  
+
+  if(m_debug) cout << "leave JetContainer::updateParticle " << endl;
   return;
 }
 
@@ -1268,15 +1279,10 @@ void JetContainer::setBranches(TTree *tree)
 
 
   if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
-    //if ( !m_DC14 ) {
-      setBranch<float>(tree,"SV0",           m_SV0);
-      setBranch<float>(tree,"SV1",           m_SV1);
-      setBranch<float>(tree,"IP3D",          m_IP3D);
-      //}
-    setBranch<float>(tree,"SV1IP3D",       m_SV1IP3D);
+
     setBranch<float>(tree,"MV2c00",        m_MV2c00);
     setBranch<float>(tree,"MV2c10",        m_MV2c10);
-    setBranch<float>(tree,  "MV2c20",    m_MV2c20);
+    setBranch<float>(tree,"MV2c20",    m_MV2c20);
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
 
@@ -1299,12 +1305,15 @@ void JetContainer::setBranches(TTree *tree)
     }
 
     if( m_infoSwitch.m_svDetails){
-
+      setBranch<float>(tree, "SV0",               m_SV0);
       setBranch<float>(tree, "sv0_NGTinSvx",      m_sv0_NGTinSvx  );
       setBranch<float>(tree, "sv0_N2Tpair",       m_sv0_N2Tpair   );
       setBranch<float>(tree, "sv0_massvx",        m_sv0_massvx    );
       setBranch<float>(tree, "sv0_efracsvx",      m_sv0_efracsvx  );
       setBranch<float>(tree, "sv0_normdist",      m_sv0_normdist  );
+
+      setBranch<float>(tree, "SV1",               m_SV1);
+      setBranch<float>(tree, "SV1IP3D",           m_SV1IP3D);
       setBranch<float>(tree, "sv1_pu",            m_sv1_pu        );
       setBranch<float>(tree, "sv1_pb",            m_sv1_pb        );
       setBranch<float>(tree, "sv1_pc",            m_sv1_pc        );
@@ -1338,6 +1347,7 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<vector<float> >(tree,  "IP2D_weightCofTracks"     , m_IP2D_weightCofTracks      );
       setBranch<vector<float> >(tree,  "IP2D_weightUofTracks"     , m_IP2D_weightUofTracks      );
 
+      setBranch<float>(tree,  "IP3D",                      m_IP3D);
       setBranch<float>(tree,  "IP3D_pu",                   m_IP3D_pu                   );
       setBranch<float>(tree,  "IP3D_pb",                   m_IP3D_pb                   );
       setBranch<float>(tree,  "IP3D_pc",                   m_IP3D_pc                   );
@@ -1595,10 +1605,7 @@ void JetContainer::clear()
 
   // flavor tag
   if ( m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT  ) {
-    m_SV0                       ->clear();
-    m_SV1                       ->clear();
-    m_IP3D                      ->clear();
-    m_SV1IP3D                   ->clear();
+
     m_MV2c00                    ->clear();
     m_MV2c10                    ->clear();
     m_MV2c20                    ->clear();
@@ -1619,12 +1626,15 @@ void JetContainer::clear()
     }
 
     if( m_infoSwitch.m_svDetails){
+      m_SV0               ->clear();
       m_sv0_NGTinSvx      ->clear(); 
       m_sv0_N2Tpair       ->clear(); 
       m_sv0_massvx        ->clear(); 
       m_sv0_efracsvx      ->clear(); 
       m_sv0_normdist      ->clear(); 
-
+      
+      m_SV1               ->clear();
+      m_SV1IP3D           ->clear();
       m_sv1_pu            ->clear(); 
       m_sv1_pb            ->clear(); 
       m_sv1_pc            ->clear(); 
@@ -1658,6 +1668,7 @@ void JetContainer::clear()
       m_IP2D_weightCofTracks            ->clear(); 
       m_IP2D_weightUofTracks            ->clear(); 
 
+      m_IP3D         ->clear();
       m_IP3D_pu      ->clear(); 
       m_IP3D_pb      ->clear(); 
       m_IP3D_pc      ->clear(); 
@@ -2190,16 +2201,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       myBTag = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
 
-    //if ( !m_DC14 ) {
 
-    //static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
-    //if ( SV0_significance3DAcc.isAvailable(*myBTag) ) { m_SV0->push_back(  myBTag -> SV0_significance3D() ); }
-
-    //m_SV1->push_back(     myBTag -> SV1_loglikelihoodratio()   );
-    //m_IP3D->push_back(    myBTag -> IP3D_loglikelihoodratio()  );
-
-    //}
-    m_SV1IP3D->push_back( myBTag -> SV1plusIP3D_discriminant() );
 
     //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
     double val(-999);
@@ -2279,6 +2281,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       double sv0;
       myBTag->variable<double>("SV0", "significance3D", sv0);
       m_SV0->push_back(sv0);
+
+      m_SV1IP3D->push_back( myBTag -> SV1plusIP3D_discriminant() );
 
 
       /// @brief SV1 : Number of good tracks in vertex
@@ -2415,6 +2419,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       double ip3_pu = -30;  myBTag->variable<double>("IP3D", "pu", ip3_pu);
       double ip3_pb = -30;  myBTag->variable<double>("IP3D", "pb", ip3_pb);
       double ip3_pc = -30;  myBTag->variable<double>("IP3D", "pc", ip3_pc);
+
+      m_IP3D->push_back(    myBTag -> IP3D_loglikelihoodratio()  );
 
       m_IP3D_pu         ->push_back(ip3_pu  );
       m_IP3D_pb         ->push_back(ip3_pb  );
