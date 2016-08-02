@@ -72,6 +72,78 @@ namespace xAH {
       float MV2;
       int  HadronConeExclTruthLabelID;
     
+      float vtxHadDummy;
+      float vtx_offline_x0;
+      float vtx_offline_y0;
+      float vtx_offline_z0;
+    
+      float vtx_online_x0;
+      float vtx_online_y0;
+      float vtx_online_z0;
+    
+      float JetFitter_nVTX           ;
+      float JetFitter_nSingleTracks  ;
+      float JetFitter_nTracksAtVtx   ;
+      float JetFitter_mass           ;
+      float JetFitter_energyFraction ;
+      float JetFitter_significance3d ;
+      float JetFitter_deltaeta       ;
+      float JetFitter_deltaphi       ;
+      float JetFitter_N2Tpar         ;
+    
+      float sv0_NGTinSvx  ;
+      float sv0_N2Tpair   ;
+      float sv0_massvx    ;
+      float sv0_efracsvx  ;
+      float sv0_normdist  ;
+      float sv1_pu        ;
+      float sv1_pb        ;
+      float sv1_pc        ;
+      float sv1_c         ;
+      float sv1_cu        ;
+      float sv1_NGTinSvx  ;
+      float sv1_N2Tpair   ;
+      float sv1_massvx    ;
+      float sv1_efracsvx  ;
+      float sv1_normdist  ;
+      float sv1_Lxy       ;
+      float sv1_L3d       ;
+      float sv1_distmatlay;
+      float sv1_dR        ;
+    
+      float IP2D_pu     ;
+      float IP2D_pb     ;
+      float IP2D_pc     ;
+      float IP2D        ;
+      float IP2D_c      ;
+      float IP2D_cu     ;
+      float nIP2DTracks ;
+    
+      std::vector<float> IP2D_gradeOfTracks         ;
+      std::vector<float> IP2D_flagFromV0ofTracks    ;
+      std::vector<float> IP2D_valD0wrtPVofTracks    ;
+      std::vector<float> IP2D_sigD0wrtPVofTracks    ;
+      std::vector<float> IP2D_weightBofTracks       ;
+      std::vector<float> IP2D_weightCofTracks       ;
+      std::vector<float> IP2D_weightUofTracks       ;
+    
+      float IP3D_pu     ;
+      float IP3D_pb     ;
+      float IP3D_pc     ;
+      float IP3D_c      ;
+      float IP3D_cu     ;
+      float nIP3DTracks ;
+    
+      std::vector<float> IP3D_gradeOfTracks      ;
+      std::vector<float> IP3D_flagFromV0ofTracks ;
+      std::vector<float> IP3D_valD0wrtPVofTracks ;
+      std::vector<float> IP3D_sigD0wrtPVofTracks ;
+      std::vector<float> IP3D_valZ0wrtPVofTracks ;
+      std::vector<float> IP3D_sigZ0wrtPVofTracks ;
+      std::vector<float> IP3D_weightBofTracks    ;
+      std::vector<float> IP3D_weightCofTracks    ;
+      std::vector<float> IP3D_weightUofTracks    ;
+
       int MV2c20_isFix30;
       std::vector<float> MV2c20_sfFix30;
     
