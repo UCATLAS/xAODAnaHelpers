@@ -1432,6 +1432,139 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight )
     }
 
 
+  if(m_infoSwitch->m_hltVtxComp)
+    {
+      //std::cout << " flav " << std::endl;
+      m_vtxHadDummy               ->Fill(jet->vtxHadDummy          , eventWeight);
+      m_vtxDiffx0                 ->Fill(jet->vtx_offline_x0 - jet->vtx_online_x0          , eventWeight);
+      m_vtxDiffx0_l               ->Fill(jet->vtx_offline_x0 - jet->vtx_online_x0          , eventWeight);
+
+      m_vtxDiffy0                 ->Fill(jet->vtx_offline_y0 - jet->vtx_online_y0          , eventWeight);
+      m_vtxDiffy0_l               ->Fill(jet->vtx_offline_y0 - jet->vtx_online_y0          , eventWeight);
+
+      m_vtxDiffz0                 ->Fill(jet->vtx_offline_z0 - jet->vtx_online_z0          , eventWeight);
+      m_vtxDiffz0_m               ->Fill(jet->vtx_offline_z0 - jet->vtx_online_z0          , eventWeight);
+      m_vtxDiffz0_s               ->Fill(jet->vtx_offline_z0 - jet->vtx_online_z0          , eventWeight);
+      //m_vtx_offline_z                 ->Fill(jet->vtx_offline_z0          , eventWeight);
+      //m_vtx_online_z                 ->Fill(jet->vtx_online_z0          , eventWeight);
+
+    }
+
+    if(m_infoSwitch->m_jetFitterDetails){
+
+      m_jf_nVTX           ->Fill(jet->JetFitter_nVTX           ,      eventWeight);
+      m_jf_nSingleTracks  ->Fill(jet->JetFitter_nSingleTracks  ,      eventWeight);
+      m_jf_nTracksAtVtx   ->Fill(jet->JetFitter_nTracksAtVtx   ,      eventWeight);
+      m_jf_mass           ->Fill(jet->JetFitter_mass           /1000, eventWeight);
+      m_jf_energyFraction ->Fill(jet->JetFitter_energyFraction ,      eventWeight);
+      m_jf_significance3d ->Fill(jet->JetFitter_significance3d ,      eventWeight);
+      m_jf_deltaeta       ->Fill(jet->JetFitter_deltaeta       ,      eventWeight);
+      m_jf_deltaeta_l     ->Fill(jet->JetFitter_deltaeta       ,      eventWeight);
+      m_jf_deltaR         ->Fill(hypot(jet->JetFitter_deltaphi         ,jet->JetFitter_deltaeta), eventWeight);
+      m_jf_deltaphi       ->Fill(jet->JetFitter_deltaphi       ,      eventWeight);
+      m_jf_deltaphi_l     ->Fill(jet->JetFitter_deltaphi       ,      eventWeight);
+      m_jf_N2Tpar         ->Fill(jet->JetFitter_N2Tpar         ,      eventWeight);
+    }
+
+    if(m_infoSwitch->m_svDetails){
+      //
+      // SV0
+      //
+      m_sv0_NGTinSvx -> Fill( jet->sv0_NGTinSvx, eventWeight);
+      m_sv0_N2Tpair  -> Fill( jet->sv0_N2Tpair , eventWeight);
+      m_sv0_massvx   -> Fill( jet->sv0_massvx  /1000, eventWeight);
+      m_sv0_efracsvx -> Fill( jet->sv0_efracsvx, eventWeight);
+      m_sv0_normdist -> Fill( jet->sv0_normdist, eventWeight);
+
+      //
+      // SV1
+      //
+      m_sv1_NGTinSvx -> Fill( jet->sv1_NGTinSvx, eventWeight);
+      m_sv1_N2Tpair  -> Fill( jet->sv1_N2Tpair , eventWeight);
+      m_sv1_massvx   -> Fill( jet->sv1_massvx  /1000, eventWeight);
+      m_sv1_efracsvx -> Fill( jet->sv1_efracsvx, eventWeight);
+      m_sv1_normdist -> Fill( jet->sv1_normdist, eventWeight);
+
+      
+      m_SV1_pu         ->  Fill(jet->sv1_pu  , eventWeight );
+      m_SV1_pb         ->  Fill(jet->sv1_pb  , eventWeight );
+      m_SV1_pc         ->  Fill(jet->sv1_pc  , eventWeight );
+
+      m_SV1_c          ->  Fill(jet->sv1_c  , eventWeight );
+      m_SV1_cu         ->  Fill(jet->sv1_cu , eventWeight );
+
+      m_SV1_Lxy        -> Fill(jet->sv1_Lxy,         eventWeight);
+      m_SV1_L3d        -> Fill(jet->sv1_L3d,         eventWeight);
+      m_SV1_distmatlay -> Fill(jet->sv1_distmatlay,  eventWeight);
+      m_SV1_dR         -> Fill(jet->sv1_dR,          eventWeight);
+
+    }
+
+
+    if(m_infoSwitch->m_ipDetails){
+      //
+      // IP2D
+      //
+      m_nIP2DTracks -> Fill( jet->nIP2DTracks, eventWeight);
+      for(float grade : jet->IP2D_gradeOfTracks)        m_IP2D_gradeOfTracks->Fill(grade, eventWeight);
+      for(float flag  : jet->IP2D_flagFromV0ofTracks)   m_IP2D_flagFromV0ofTracks->Fill(flag, eventWeight);
+      for(float d0    : jet->IP2D_valD0wrtPVofTracks)   m_IP2D_valD0wrtPVofTracks->Fill(d0, eventWeight);
+
+      for(float d0Sig : jet->IP2D_sigD0wrtPVofTracks) {
+	  m_IP2D_sigD0wrtPVofTracks  ->Fill(d0Sig, eventWeight);
+	  m_IP2D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+      }
+
+      for(float weightB : jet->IP2D_weightBofTracks)  m_IP2D_weightBofTracks->Fill(weightB, eventWeight);
+      for(float weightC : jet->IP2D_weightCofTracks)  m_IP2D_weightCofTracks->Fill(weightC, eventWeight);
+      for(float weightU : jet->IP2D_weightUofTracks)  m_IP2D_weightUofTracks->Fill(weightU, eventWeight);
+
+
+      m_IP2D_pu         ->  Fill(jet->IP2D_pu  , eventWeight );
+      m_IP2D_pb         ->  Fill(jet->IP2D_pb  , eventWeight );
+      m_IP2D_pc         ->  Fill(jet->IP2D_pc  , eventWeight );
+
+      m_IP2D            ->  Fill( jet->IP2D    , eventWeight );
+      m_IP2D_c          ->  Fill( jet->IP2D_c  , eventWeight );
+      m_IP2D_cu         ->  Fill( jet->IP2D_cu , eventWeight );
+
+
+      //
+      // IP3D
+      //
+      m_nIP3DTracks -> Fill( jet->nIP3DTracks, eventWeight);
+      for(float grade : jet->IP3D_gradeOfTracks     )   m_IP3D_gradeOfTracks->Fill(grade, eventWeight);
+      for(float flag  : jet->IP3D_flagFromV0ofTracks)   m_IP3D_flagFromV0ofTracks->Fill(flag, eventWeight);
+      for(float d0    : jet->IP3D_valD0wrtPVofTracks)   m_IP3D_valD0wrtPVofTracks->Fill(d0, eventWeight);
+      
+      for(float d0Sig : jet->IP3D_sigD0wrtPVofTracks){
+	m_IP3D_sigD0wrtPVofTracks  ->Fill(d0Sig, eventWeight);
+	m_IP3D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+      }
+      
+      for(float z0 : jet->IP3D_valZ0wrtPVofTracks)    m_IP3D_valZ0wrtPVofTracks->Fill(z0, eventWeight);
+      
+      for(float z0Sig : jet->IP3D_sigZ0wrtPVofTracks){
+	m_IP3D_sigZ0wrtPVofTracks  ->Fill(z0Sig, eventWeight);
+	m_IP3D_sigZ0wrtPVofTracks_l->Fill(z0Sig, eventWeight);
+      }
+
+      for(float weightB : jet->IP3D_weightBofTracks)  m_IP3D_weightBofTracks->Fill(weightB, eventWeight);
+      for(float weightC : jet->IP3D_weightCofTracks)  m_IP3D_weightCofTracks->Fill(weightC, eventWeight);
+      for(float weightU : jet->IP3D_weightUofTracks)  m_IP3D_weightUofTracks->Fill(weightU, eventWeight);
+
+      m_IP3D_pu         ->  Fill(jet->IP3D_pu  , eventWeight );
+      m_IP3D_pb         ->  Fill(jet->IP3D_pb  , eventWeight );
+      m_IP3D_pc         ->  Fill(jet->IP3D_pc  , eventWeight );
+
+      m_IP3D_c          ->  Fill( jet->IP3D_c , eventWeight );
+      m_IP3D_cu         ->  Fill( jet->IP3D_cu, eventWeight );
+
+    }
+
+
+
+
   // truth
   if(m_infoSwitch->m_truth)
     {

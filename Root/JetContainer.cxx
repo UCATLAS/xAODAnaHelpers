@@ -716,7 +716,7 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
       connectBranch<float>(tree, "JvtRpt",     &m_JvtRpt);
     }
 
-  if(m_infoSwitch.m_flavTag)
+  if(m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT)
     {
       connectBranch<float>(tree,"SV0",                  &m_SV0);
       connectBranch<float>(tree,"SV1",                  &m_SV1);
@@ -730,6 +730,89 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
 
       if(tagger == "MV2c20")  m_MV2 = m_MV2c20;
       if(tagger == "MV2c10")  m_MV2 = m_MV2c10;
+
+    }
+
+  if(m_infoSwitch.m_flavTagHLT)
+    {
+      connectBranch<float>(tree,"vtxHadDummy",    &m_vtxHadDummy);
+      connectBranch<float>(tree,"vtx_offline_x0", &m_vtx_offline_x0);
+      connectBranch<float>(tree,"vtx_offline_y0", &m_vtx_offline_y0);
+      connectBranch<float>(tree,"vtx_offline_z0", &m_vtx_offline_z0);
+
+      connectBranch<float>(tree,"vtx_online_x0",  &m_vtx_online_x0);
+      connectBranch<float>(tree,"vtx_online_y0",  &m_vtx_online_y0);
+      connectBranch<float>(tree,"vtx_online_z0",  &m_vtx_online_z0);
+    }
+
+  if(m_infoSwitch.m_jetFitterDetails)
+    {
+      connectBranch<float>(tree,"JetFitter_nVTX"          ,  &m_JetFitter_nVTX           );
+      connectBranch<float>(tree,"JetFitter_nSingleTracks" ,  &m_JetFitter_nSingleTracks  );
+      connectBranch<float>(tree,"JetFitter_nTracksAtVtx"  ,  &m_JetFitter_nTracksAtVtx   );
+      connectBranch<float>(tree,"JetFitter_mass"          ,  &m_JetFitter_mass           );
+      connectBranch<float>(tree,"JetFitter_energyFraction",  &m_JetFitter_energyFraction );
+      connectBranch<float>(tree,"JetFitter_significance3d",  &m_JetFitter_significance3d );
+      connectBranch<float>(tree,"JetFitter_deltaeta"      ,  &m_JetFitter_deltaeta       );
+      connectBranch<float>(tree,"JetFitter_deltaphi"      ,  &m_JetFitter_deltaphi       );
+      connectBranch<float>(tree,"JetFitter_N2Tpair"       ,  &m_JetFitter_N2Tpar         );
+
+    }
+
+    if( m_infoSwitch.m_svDetails){
+
+      connectBranch<float>(tree, "sv0_NGTinSvx",      &m_sv0_NGTinSvx  );
+      connectBranch<float>(tree, "sv0_N2Tpair",       &m_sv0_N2Tpair   );
+      connectBranch<float>(tree, "sv0_massvx",        &m_sv0_massvx    );
+      connectBranch<float>(tree, "sv0_efracsvx",      &m_sv0_efracsvx  );
+      connectBranch<float>(tree, "sv0_normdist",      &m_sv0_normdist  );
+
+      connectBranch<float>(tree, "sv1_pu",            &m_sv1_pu        );
+      connectBranch<float>(tree, "sv1_pb",            &m_sv1_pb        );
+      connectBranch<float>(tree, "sv1_pc",            &m_sv1_pc        );
+      connectBranch<float>(tree, "sv1_c",             &m_sv1_c         );
+      connectBranch<float>(tree, "sv1_cu",            &m_sv1_cu        );
+      connectBranch<float>(tree, "sv1_NGTinSvx",      &m_sv1_NGTinSvx  );
+      connectBranch<float>(tree, "sv1_N2Tpair",       &m_sv1_N2Tpair   );
+      connectBranch<float>(tree, "sv1_massvx",        &m_sv1_massvx    );
+      connectBranch<float>(tree, "sv1_efracsvx",      &m_sv1_efracsvx  );
+      connectBranch<float>(tree, "sv1_normdist",      &m_sv1_normdist  );
+      connectBranch<float>(tree, "sv1_Lxy",           &m_sv1_Lxy       );
+      connectBranch<float>(tree, "sv1_L3d",           &m_sv1_L3d       );
+      connectBranch<float>(tree, "sv1_distmatlay",    &m_sv1_distmatlay);
+      connectBranch<float>(tree, "sv1_dR",            &m_sv1_dR        );
+
+    }
+
+    if( m_infoSwitch.m_ipDetails){    
+      connectBranch<float>         (tree,  "IP2D_pu",                   &m_IP2D_pu                   );
+      connectBranch<float>         (tree,  "IP2D_pb",                   &m_IP2D_pb                   );
+      connectBranch<float>         (tree,  "IP2D_pc",                   &m_IP2D_pc                   );
+      connectBranch<float>         (tree,  "IP2D",                      &m_IP2D                      );
+      connectBranch<float>         (tree,  "IP2D_c",                    &m_IP2D_c                    );
+      connectBranch<float>         (tree,  "IP2D_cu",                   &m_IP2D_cu                   );
+      connectBranch<vector<float> >(tree,  "IP2D_gradeOfTracks"       , &m_IP2D_gradeOfTracks        );
+      connectBranch<vector<float> >(tree,  "IP2D_flagFromV0ofTracks"  , &m_IP2D_flagFromV0ofTracks   );
+      connectBranch<vector<float> >(tree,  "IP2D_valD0wrtPVofTracks"  , &m_IP2D_valD0wrtPVofTracks   );
+      connectBranch<vector<float> >(tree,  "IP2D_sigD0wrtPVofTracks"  , &m_IP2D_sigD0wrtPVofTracks   );
+      connectBranch<vector<float> >(tree,  "IP2D_weightBofTracks"     , &m_IP2D_weightBofTracks      );
+      connectBranch<vector<float> >(tree,  "IP2D_weightCofTracks"     , &m_IP2D_weightCofTracks      );
+      connectBranch<vector<float> >(tree,  "IP2D_weightUofTracks"     , &m_IP2D_weightUofTracks      );
+
+      connectBranch<float>         (tree,  "IP3D_pu",                   &m_IP3D_pu                   );
+      connectBranch<float>         (tree,  "IP3D_pb",                   &m_IP3D_pb                   );
+      connectBranch<float>         (tree,  "IP3D_pc",                   &m_IP3D_pc                   );
+      connectBranch<float>         (tree,  "IP3D_c",                    &m_IP3D_c                    );
+      connectBranch<float>         (tree,  "IP3D_cu",                   &m_IP3D_cu                   );
+      connectBranch<vector<float> >(tree,  "IP3D_gradeOfTracks"       , &m_IP3D_gradeOfTracks        );
+      connectBranch<vector<float> >(tree,  "IP3D_flagFromV0ofTracks"  , &m_IP3D_flagFromV0ofTracks   );
+      connectBranch<vector<float> >(tree,  "IP3D_valD0wrtPVofTracks"  , &m_IP3D_valD0wrtPVofTracks   );
+      connectBranch<vector<float> >(tree,  "IP3D_sigD0wrtPVofTracks"  , &m_IP3D_sigD0wrtPVofTracks   );
+      connectBranch<vector<float> >(tree,  "IP3D_valZ0wrtPVofTracks"  , &m_IP3D_valZ0wrtPVofTracks   );
+      connectBranch<vector<float> >(tree,  "IP3D_sigZ0wrtPVofTracks"  , &m_IP3D_sigZ0wrtPVofTracks   );
+      connectBranch<vector<float> >(tree,  "IP3D_weightBofTracks"     , &m_IP3D_weightBofTracks      );
+      connectBranch<vector<float> >(tree,  "IP3D_weightCofTracks"     , &m_IP3D_weightCofTracks      );
+      connectBranch<vector<float> >(tree,  "IP3D_weightUofTracks"     , &m_IP3D_weightUofTracks      );
 
     }
 
@@ -848,11 +931,11 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.JvtRpt    =m_JvtRpt    ->at(idx);
     }
   
-  if(m_infoSwitch.m_flavTag)
+  if(m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT)
     {
       //jet.SV0                       =m_SV0                  ->at(idx);
-      //jet.SV1                       =m_SV1                  ->at(idx);
-      //jet.IP3D                      =m_IP3D                 ->at(idx);
+      jet.SV1                       =m_SV1                  ->at(idx);
+      jet.IP3D                      =m_IP3D                 ->at(idx);
       jet.SV1IP3D                   =m_SV1IP3D              ->at(idx);
       //jet.MV1                       =m_MV1                  ->at(idx);
       jet.MV2c00                    =m_MV2c00               ->at(idx);
@@ -862,6 +945,92 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
     }
+
+
+  if(m_infoSwitch.m_flavTagHLT)
+    {
+      jet.vtxHadDummy                       =m_vtxHadDummy                  ->at(idx);
+      jet.vtx_offline_x0                    =m_vtx_offline_x0                  ->at(idx);
+      jet.vtx_offline_y0                    =m_vtx_offline_y0                  ->at(idx);
+      jet.vtx_offline_z0                    =m_vtx_offline_z0                  ->at(idx);
+
+      jet.vtx_online_x0                     =m_vtx_online_x0                  ->at(idx);
+      jet.vtx_online_y0                     =m_vtx_online_y0                  ->at(idx);
+      jet.vtx_online_z0                     =m_vtx_online_z0                  ->at(idx);
+
+    }
+
+  if(m_infoSwitch.m_jetFitterDetails)
+    {
+      jet.JetFitter_nVTX                  =m_JetFitter_nVTX           ->at(idx);
+      jet.JetFitter_nSingleTracks         =m_JetFitter_nSingleTracks  ->at(idx);
+      jet.JetFitter_nTracksAtVtx          =m_JetFitter_nTracksAtVtx   ->at(idx);
+      jet.JetFitter_mass                  =m_JetFitter_mass           ->at(idx);
+      jet.JetFitter_energyFraction        =m_JetFitter_energyFraction ->at(idx);
+      jet.JetFitter_significance3d        =m_JetFitter_significance3d ->at(idx);
+      jet.JetFitter_deltaeta              =m_JetFitter_deltaeta       ->at(idx);
+      jet.JetFitter_deltaphi              =m_JetFitter_deltaphi       ->at(idx);
+      jet.JetFitter_N2Tpar                =m_JetFitter_N2Tpar         ->at(idx);
+
+    }
+
+  if(m_infoSwitch.m_svDetails){
+
+    jet.sv0_NGTinSvx   = m_sv0_NGTinSvx  ->at(idx);
+    jet.sv0_N2Tpair    = m_sv0_N2Tpair   ->at(idx);
+    jet.sv0_massvx     = m_sv0_massvx    ->at(idx);
+    jet.sv0_efracsvx   = m_sv0_efracsvx  ->at(idx);
+    jet.sv0_normdist   = m_sv0_normdist  ->at(idx);
+
+    jet.sv1_pu         = m_sv1_pu        ->at(idx);
+    jet.sv1_pb         = m_sv1_pb        ->at(idx);
+    jet.sv1_pc         = m_sv1_pc        ->at(idx);
+    jet.sv1_c          = m_sv1_c         ->at(idx);
+    jet.sv1_cu         = m_sv1_cu        ->at(idx);
+    jet.sv1_NGTinSvx   = m_sv1_NGTinSvx  ->at(idx);
+    jet.sv1_N2Tpair    = m_sv1_N2Tpair   ->at(idx);
+    jet.sv1_massvx     = m_sv1_massvx    ->at(idx);
+    jet.sv1_efracsvx   = m_sv1_efracsvx  ->at(idx);
+    jet.sv1_normdist   = m_sv1_normdist  ->at(idx);
+    jet.sv1_Lxy        = m_sv1_Lxy       ->at(idx);
+    jet.sv1_L3d        = m_sv1_L3d       ->at(idx);
+    jet.sv1_distmatlay = m_sv1_distmatlay->at(idx);
+    jet.sv1_dR         = m_sv1_dR        ->at(idx);
+  }
+
+  if(m_infoSwitch.m_ipDetails){
+    jet.IP2D_pu                          = m_IP2D_pu                   ->at(idx);
+    jet.IP2D_pb                          = m_IP2D_pb                   ->at(idx);
+    jet.IP2D_pc                          = m_IP2D_pc                   ->at(idx);
+    jet.IP2D                             = m_IP2D                      ->at(idx);
+    jet.IP2D_c                           = m_IP2D_c                    ->at(idx);
+    jet.IP2D_cu                          = m_IP2D_cu                   ->at(idx);
+    jet.nIP2DTracks                      = m_IP2D_gradeOfTracks        ->at(idx).size();
+
+    jet.IP2D_gradeOfTracks               = m_IP2D_gradeOfTracks        ->at(idx);
+    jet.IP2D_flagFromV0ofTracks          = m_IP2D_flagFromV0ofTracks   ->at(idx);
+    jet.IP2D_valD0wrtPVofTracks          = m_IP2D_valD0wrtPVofTracks   ->at(idx);
+    jet.IP2D_sigD0wrtPVofTracks          = m_IP2D_sigD0wrtPVofTracks   ->at(idx);
+    jet.IP2D_weightBofTracks             = m_IP2D_weightBofTracks      ->at(idx);
+    jet.IP2D_weightCofTracks             = m_IP2D_weightCofTracks      ->at(idx);
+    jet.IP2D_weightUofTracks             = m_IP2D_weightUofTracks      ->at(idx);
+
+    jet.IP3D_pu                          = m_IP3D_pu                   ->at(idx);
+    jet.IP3D_pb                          = m_IP3D_pb                   ->at(idx);
+    jet.IP3D_pc                          = m_IP3D_pc                   ->at(idx);
+    jet.IP3D_c                           = m_IP3D_c                    ->at(idx);
+    jet.IP3D_cu                          = m_IP3D_cu                   ->at(idx);
+    jet.nIP3DTracks                      = m_IP3D_gradeOfTracks        ->at(idx).size();
+    jet.IP3D_gradeOfTracks               = m_IP3D_gradeOfTracks        ->at(idx);
+    jet.IP3D_flagFromV0ofTracks          = m_IP3D_flagFromV0ofTracks   ->at(idx);
+    jet.IP3D_valD0wrtPVofTracks          = m_IP3D_valD0wrtPVofTracks   ->at(idx);
+    jet.IP3D_sigD0wrtPVofTracks          = m_IP3D_sigD0wrtPVofTracks   ->at(idx);
+    jet.IP3D_valZ0wrtPVofTracks          = m_IP3D_valZ0wrtPVofTracks   ->at(idx);
+    jet.IP3D_sigZ0wrtPVofTracks          = m_IP3D_sigZ0wrtPVofTracks   ->at(idx);
+    jet.IP3D_weightBofTracks             = m_IP3D_weightBofTracks      ->at(idx);
+    jet.IP3D_weightCofTracks             = m_IP3D_weightCofTracks      ->at(idx);
+    jet.IP3D_weightUofTracks             = m_IP3D_weightUofTracks      ->at(idx);
+  }
 
 
   static const std::vector<float> dummy1 = {1.};
