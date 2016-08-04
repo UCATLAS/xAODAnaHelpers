@@ -96,11 +96,11 @@ namespace xAH {
 
       float theta_muon = p4.Theta();
       float phi_muon   = p4.Phi();
-      float elossX     = EnergyLoss * sin(theta_muon) * cos(phi_muon);
-      float elossY     = EnergyLoss * sin(theta_muon) * sin(phi_muon);
-      float elossZ     = EnergyLoss * cos(theta_muon);
+      float elossX     = EnergyLoss/1000 * sin(theta_muon) * cos(phi_muon);
+      float elossY     = EnergyLoss/1000 * sin(theta_muon) * sin(phi_muon);
+      float elossZ     = EnergyLoss/1000 * cos(theta_muon);
 
-      TLorentzVector muonELoss(elossX,elossY,elossZ,EnergyLoss);
+      TLorentzVector muonELoss(elossX,elossY,elossZ,EnergyLoss/1000);
 
       return muonELoss;
     }

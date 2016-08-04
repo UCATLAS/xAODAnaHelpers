@@ -115,9 +115,9 @@ namespace xAH {
     
         for(int i=0;i<m_n;i++)
           {
-    	T_PARTICLE particle;
-    	updateParticle(i,particle);
-    	m_particles.push_back(particle);
+	    T_PARTICLE particle;
+	    updateParticle(i,particle);
+	    m_particles.push_back(particle);
           }
       }
     
