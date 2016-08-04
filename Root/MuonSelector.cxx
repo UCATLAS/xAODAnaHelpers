@@ -695,23 +695,25 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     // If checking dilepton trigger, form lepton pairs and test matching for each one.
     // Save a:
     //
-    // map< tuple<chain, idx_lep_i, idx_lep_j>, ismatched >
+    // multimap< chain, pair< pair<idx_i, idx_j>, ismatched > >
     //
     // as *event* decoration to store which
     // pairs are matched (to a given chain) and which aren't.
+    // A multimap is used b/c a given key (i.e., a chain) can be associated to more than one pair. This is the case for e.g., trilepton events.
     //
     // By retrieving this map later on, user can decide what to do with the event
     // (Generally one could just loop over the map and save a flag if there's at least one pair that matches a given chain)
 
-    if ( nSelectedMuons > 1 ) {
+    if ( nSelectedMuons > 1 && !m_diMuTrigChains.empty() ) {
 
       if ( m_debug ) { Info("executeSelection()", "Doing di-muon trigger matching..."); }
 
       const xAOD::EventInfo* eventInfo(nullptr);
       RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
-      typedef std::map< std::tuple<std::string,unsigned int,unsigned int>, char > dimuon_trigmatch_pair_map;
-      static SG::AuxElement::Decorator< dimuon_trigmatch_pair_map > diMuonTrigMatchPairMapDecor( "diMuonTrigMatchPairMap" );
+      typedef std::pair< std::pair<unsigned int,unsigned int>, char> dimuon_trigmatch_pair;
+      typedef std::multimap< std::string, dimuon_trigmatch_pair >    dimuon_trigmatch_pair_map;      
+      static SG::AuxElement::Decorator< dimuon_trigmatch_pair_map >  diMuonTrigMatchPairMapDecor( "diMuonTrigMatchPairMap" );
 
       for ( auto const &chain : m_diMuTrigChainsList ) {
 
@@ -721,7 +723,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 	//
 	if ( !diMuonTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
           diMuonTrigMatchPairMapDecor( *eventInfo ) = dimuon_trigmatch_pair_map();
-	}
+	}	
 
 	std::vector<const xAOD::IParticle*> myMuons;
 
@@ -741,15 +743,14 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
        	    if ( m_debug ) { Info("executeSelection()", "\t\t is the muon pair (%i,%i) trigger matched? %i", imu, jmu, matched); }
 
-	    std::tuple <std::string,int,int> chain_idxs = std::make_tuple(chain,imu,jmu);
-	    diMuonTrigMatchPairMapDecor( *eventInfo )[chain_idxs] = matched;
-
+	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
+            dimuon_trigmatch_pair                   chain_decision = std::make_pair(chain_idxs,matched);
+            diMuonTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dimuon_trigmatch_pair >(chain,chain_decision) );
+	    
 	  }
 	}
-
       }
     }
-
   }
 
   if ( m_debug ) { Info("execute()", "Left  executeSelection..." ); }
@@ -987,7 +988,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_iso_cut, 1 ); }
 
-  if ( m_debug ) { Info("execute()", "LEave passCuts... pass" ); }
+  if ( m_debug ) { Info("execute()", "Leave passCuts... pass" ); }
   return 1;
 }
 

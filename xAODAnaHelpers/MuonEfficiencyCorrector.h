@@ -16,16 +16,14 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
-#include "AsgTools/AnaToolHandle.h"
+/* #include "AsgTools/AnaToolHandle.h" */
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
 namespace CP {
-  class IMuonEfficiencyScaleFactors;
-  //class MuonEfficiencyScaleFactors;
-  class IMuonTriggerScaleFactors;
-  class IPileupReweightingTool;
+  class MuonEfficiencyScaleFactors;
+  class MuonTriggerScaleFactors;
 }
 
 class MuonEfficiencyCorrector : public xAH::Algorithm
@@ -91,16 +89,14 @@ private:
   std::vector<CP::SystematicSet> m_systListTTVA; //!
 
   // tools
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool_handle; //!
-  //asg::AnaToolHandle<CP::MuonEfficiencyScaleFactors> m_muRecoSF_tool_handle; //!
-  std::string m_recoEffSF_tool_name;                                          //!
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muIsoSF_tool_handle;  //!
-  std::string m_isoEffSF_tool_name;                                           //!
-  asg::AnaToolHandle<CP::IMuonTriggerScaleFactors> m_muTrigSF_tool_handle;    //!
-  std::string m_trigEffSF_tool_name;                                          //!
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muTTVASF_tool_handle; //!
-  std::string m_TTVAEffSF_tool_name;                                          //!
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;        //!
+  CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool;  //!
+  std::string m_recoEffSF_tool_name;                //!
+  CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool;   //!
+  std::string m_isoEffSF_tool_name;                 //!
+  CP::MuonTriggerScaleFactors*  m_muTrigSF_tool;    //!
+  std::string m_trigEffSF_tool_name;                //!
+  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool;  //!
+  std::string m_TTVAEffSF_tool_name;                //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

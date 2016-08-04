@@ -506,7 +506,7 @@ void HelpTreeBase::safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<s
 
   if ( accessor.isAvailable( *xAODObj ) ) {
     for(U itemInVec : accessor(*xAODObj))        destination.back().push_back(itemInVec / m_units);
-  } 
+  }
   return;
 }
 
