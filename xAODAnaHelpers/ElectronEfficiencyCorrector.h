@@ -57,6 +57,7 @@ public:
   std::string m_corrFileNameTrigMCEff;
 
   std::string   m_WorkingPointIDTrig;
+  std::string   m_WorkingPointIsoTrig;  
 
 private:
   int m_numEvent;         //!
