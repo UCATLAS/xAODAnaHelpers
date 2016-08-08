@@ -1288,6 +1288,16 @@ void HelpTreeBase::AddFatJets(std::string detailStr) {
     m_tree->Branch("fatjet_D2",&m_fatjet_D2);
     m_tree->Branch("fatjet_NTrimSubjets",&m_fatjet_NTrimSubjets);
   }
+  if ( m_fatJetInfoSwitch->m_constituent) {
+    m_tree->Branch("fatjet_numConstituents",&m_fatjet_numConstituents);
+  }
+  if ( m_fatJetInfoSwitch->m_constituentAll) {
+    m_tree->Branch("fatjet_constituentWeights",&m_fatjet_constituentWeights);
+    m_tree->Branch("fatjet_constituent_pt",&m_fatjet_constituent_pt);
+    m_tree->Branch("fatjet_constituent_eta",&m_fatjet_constituent_eta);
+    m_tree->Branch("fatjet_constituent_phi",&m_fatjet_constituent_phi);
+    m_tree->Branch("fatjet_constituent_e",&m_fatjet_constituent_e);
+  }
 
   this->AddFatJetsUser();
 }
@@ -1380,6 +1390,35 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets ) {
 	m_fatjet_NTrimSubjets.push_back(NTrimSubjets(*fatjet_itr));
       } else{ m_fatjet_NTrimSubjets.push_back(-999); }
     }
+
+    if( m_fatJetInfoSwitch->m_constituent ){    
+      m_fatjet_numConstituents.push_back( fatjet_itr->numConstituents() );
+    }
+    if( m_fatJetInfoSwitch->m_constituentAll ){
+      m_fatjet_constituentWeights.push_back( fatjet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
+      std::vector<float> pt;
+      std::vector<float> eta;
+      std::vector<float> phi;
+      std::vector<float> e;
+      xAOD::JetConstituentVector consVec = fatjet_itr->getConstituents();
+      if( consVec.isValid() ) {
+	// use the example provided in
+	// http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODJet/xAODJet/JetConstituentVector.h
+	xAOD::JetConstituentVector::iterator constit = consVec.begin();
+	xAOD::JetConstituentVector::iterator constitE = consVec.end();
+	for( ; constit != constitE; constit++){
+	  pt. push_back( constit->pt() / m_units );
+	  eta.push_back( constit->eta() );
+	  phi.push_back( constit->phi() );
+	  e.  push_back( constit->e() / m_units  );
+	}
+      }
+      m_fatjet_constituent_pt.push_back( pt  );
+      m_fatjet_constituent_eta.push_back( eta );
+      m_fatjet_constituent_phi.push_back( phi );
+      m_fatjet_constituent_e.push_back( e   );
+    }
+
     this->FillFatJetsUser(fatjet_itr);
 
     m_nfatjet++;
@@ -1414,7 +1453,16 @@ void HelpTreeBase::ClearFatJets() {
     m_fatjet_D2.clear();
     m_fatjet_NTrimSubjets.clear();
   }
-
+  if( m_fatJetInfoSwitch->m_constituent ){
+    m_fatjet_numConstituents.clear();
+  }
+  if( m_fatJetInfoSwitch->m_constituentAll ){
+    m_fatjet_constituentWeights.clear();
+    m_fatjet_constituent_pt.clear();
+    m_fatjet_constituent_eta.clear();
+    m_fatjet_constituent_phi.clear();
+    m_fatjet_constituent_e.clear();
+  }
 }
 
 void HelpTreeBase::ClearEvent() {
