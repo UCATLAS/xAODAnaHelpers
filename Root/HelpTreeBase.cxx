@@ -1345,6 +1345,12 @@ void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
     m_tree->Branch("truth_fatjet_constituent_phi",&m_truth_fatjet_constituent_phi);
     m_tree->Branch("truth_fatjet_constituent_e",&m_truth_fatjet_constituent_e);
   }
+  if (m_truthFatJetInfoSwitch->m_truth) {
+    m_tree->Branch("truth_fatjet_GhostTQuarks",&m_truth_fatjet_GhostTQuarks);
+    m_tree->Branch("truth_fatjet_GhostWBosons",&m_truth_fatjet_GhostWBosons);
+    m_tree->Branch("truth_fatjet_GhostZBosons",&m_truth_fatjet_GhostZBosons);
+    m_tree->Branch("truth_fatjet_GhostHBosons",&m_truth_fatjet_GhostHBosons);
+  }
 
   this->AddTruthFatJetsUser();
 }
@@ -1480,14 +1486,14 @@ void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets
 
   for( auto truth_fatjet_itr : *truthTruthFatJets ) {
 
-    if( m_fatJetInfoSwitch->m_kinematic ){
+    if( m_truthFatJetInfoSwitch->m_kinematic ){
       m_truth_fatjet_pt.push_back ( truth_fatjet_itr->pt() / m_units );
       m_truth_fatjet_m.push_back ( truth_fatjet_itr->m() / m_units );
       m_truth_fatjet_eta.push_back( truth_fatjet_itr->eta() );
       m_truth_fatjet_phi.push_back( truth_fatjet_itr->phi() );
       m_truth_fatjet_E.push_back  ( truth_fatjet_itr->e() / m_units );
     }
-    if( m_fatJetInfoSwitch->m_substructure ){
+    if( m_truthFatJetInfoSwitch->m_substructure ){
       static SG::AuxElement::ConstAccessor<float> Split12("Split12");
       static SG::AuxElement::ConstAccessor<float> Split23("Split23");
       static SG::AuxElement::ConstAccessor<float> Split34("Split34");
@@ -1563,10 +1569,10 @@ void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets
       } else{ m_truth_fatjet_NTrimSubjets.push_back(-999); }
     }
 
-    if( m_fatJetInfoSwitch->m_constituent ){
+    if( m_truthFatJetInfoSwitch->m_constituent ){
       m_truth_fatjet_numConstituents.push_back( truth_fatjet_itr->numConstituents() );
     }
-    if( m_fatJetInfoSwitch->m_constituentAll ){
+    if( m_truthFatJetInfoSwitch->m_constituentAll ){
       m_truth_fatjet_constituentWeights.push_back( truth_fatjet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
       std::vector<float> pt;
       std::vector<float> eta;
@@ -1589,6 +1595,17 @@ void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets
       m_truth_fatjet_constituent_eta.push_back( eta );
       m_truth_fatjet_constituent_phi.push_back( phi );
       m_truth_fatjet_constituent_e.push_back( e   );
+    }
+
+    if( m_truthFatJetInfoSwitch->m_truth && m_isMC){
+      static SG::AuxElement::ConstAccessor< int > truthfatjet_TQuarks("GhostTQuarksFinalCount");
+      if(truthfatjet_TQuarks.isAvailable(*truth_fatjet_itr)){m_truth_fatjet_GhostTQuarks.push_back(truthfatjet_TQuarks(*truth_fatjet_itr));} else{m_truth_fatjet_GhostTQuarks.push_back(-999);}
+      static SG::AuxElement::ConstAccessor< int > truthfatjet_WBosons("GhostWBosonsCount");
+      if(truthfatjet_WBosons.isAvailable(*truth_fatjet_itr)){m_truth_fatjet_GhostWBosons.push_back(truthfatjet_WBosons(*truth_fatjet_itr));} else{m_truth_fatjet_GhostWBosons.push_back(-999);}
+      static SG::AuxElement::ConstAccessor< int > truthfatjet_ZBosons("GhostZBosonsCount");
+      if(truthfatjet_ZBosons.isAvailable(*truth_fatjet_itr)){m_truth_fatjet_GhostZBosons.push_back(truthfatjet_ZBosons(*truth_fatjet_itr));} else{m_truth_fatjet_GhostZBosons.push_back(-999);}
+      static SG::AuxElement::ConstAccessor< int > truthfatjet_HBosons("GhostHBosonsCount");
+      if(truthfatjet_HBosons.isAvailable(*truth_fatjet_itr)){m_truth_fatjet_GhostHBosons.push_back(truthfatjet_HBosons(*truth_fatjet_itr));} else{m_truth_fatjet_GhostHBosons.push_back(-999);}
     }
 
     this->FillTruthFatJetsUser(truth_fatjet_itr);
@@ -1672,6 +1689,12 @@ void HelpTreeBase::ClearTruthFatJets() {
     m_truth_fatjet_constituent_eta.clear();
     m_truth_fatjet_constituent_phi.clear();
     m_truth_fatjet_constituent_e.clear();
+  }
+  if( m_truthFatJetInfoSwitch->m_truth ){
+    m_truth_fatjet_GhostTQuarks.clear();
+    m_truth_fatjet_GhostWBosons.clear();
+    m_truth_fatjet_GhostZBosons.clear();
+    m_truth_fatjet_GhostHBosons.clear();
   }
 }
 

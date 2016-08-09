@@ -374,6 +374,12 @@ protected:
   std::vector< std::vector<float> > m_truth_fatjet_constituent_phi;
   std::vector< std::vector<float> > m_truth_fatjet_constituent_e;
 
+  // truth
+  std::vector<int> m_truth_fatjet_GhostTQuarks;
+  std::vector<int> m_truth_fatjet_GhostWBosons; 
+  std::vector<int> m_truth_fatjet_GhostZBosons;
+  std::vector<int> m_truth_fatjet_GhostHBosons;
+
   // muons
   std::map<std::string, xAH::MuonContainer*> m_muons;
 
