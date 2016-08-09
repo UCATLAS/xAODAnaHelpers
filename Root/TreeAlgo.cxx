@@ -197,7 +197,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_trigJetContainerName.empty() ){   helpTree->AddJets       (m_trigJetDetailStr, "trigJet");     }
     if ( !m_truthJetContainerName.empty() ){  helpTree->AddJets       (m_truthJetDetailStr, "truthJet");     }
     if ( !m_fatJetContainerName.empty() ) {   helpTree->AddFatJets    (m_fatJetDetailStr);  }
-    if ( !m_truthFatJetContainerName.empty() ) {   helpTree->AddTruthFatJets    (m_fatJetDetailStr);  }
+    if ( !m_truthFatJetContainerName.empty() ) {   helpTree->AddTruthFatJets    (m_truthFatJetDetailStr);  }
     if ( !m_tauContainerName.empty() )    {   helpTree->AddTaus       (m_tauDetailStr);     }
     if ( !m_METContainerName.empty() )    {   helpTree->AddMET        (m_METDetailStr);     }
     if ( !m_photonContainerName.empty() ) {   helpTree->AddPhotons    (m_photonDetailStr);  }
