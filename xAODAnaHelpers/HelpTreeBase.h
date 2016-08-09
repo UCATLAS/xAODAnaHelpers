@@ -320,13 +320,13 @@ protected:
 
   // constituent
   std::vector< int >                m_fatjet_numConstituents;
+
+  // constituentAll
   std::vector< std::vector<float> > m_fatjet_constituentWeights;
   std::vector< std::vector<float> > m_fatjet_constituent_pt;
   std::vector< std::vector<float> > m_fatjet_constituent_eta;
   std::vector< std::vector<float> > m_fatjet_constituent_phi;
   std::vector< std::vector<float> > m_fatjet_constituent_e;
-
-  // constituentAll
 
   // muons
   std::map<std::string, xAH::MuonContainer*> m_muons;
