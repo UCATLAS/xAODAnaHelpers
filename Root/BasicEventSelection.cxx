@@ -135,7 +135,7 @@ EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
 
   EL::OutputStream outForMetadata(m_metaDataStreamName);
   if(!job.outputHas(m_metaDataStreamName) ){ job.outputAdd ( outForMetadata ); }
-  
+
   EL::OutputStream outForDuplicates(m_duplicatesStreamName);
   if(!job.outputHas(m_duplicatesStreamName) ){ job.outputAdd ( outForDuplicates ); }
 
@@ -411,7 +411,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
     m_cutflowHistW->GetXaxis()->FindBin("Duplicates");
   }
-  
+
   if ( !m_isMC ) {
     if ( m_applyGRLCut ) {
       m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
@@ -432,20 +432,20 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
-  
+
   // -------------------------------------------------------------------------------------------------
-  
+
   // Create TTree for bookeeeping duplicated events
   //
   TFile *fileDPL = wk()->getOutputFile (m_duplicatesStreamName);
   fileDPL->cd();
-  
+
   m_duplicatesTree = new TTree("duplicates","Info on duplicated events");
   m_duplicatesTree->Branch("runNumber",    &m_duplRunNumber,      "runNumber/I");
   m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/LI");
-  
+
   // -------------------------------------------------------------------------------------------------
-  
+
   Info("initialize()", "Setting Up Tools");
 
   // 1.
@@ -507,8 +507,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
 
-    RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "" );
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.makeNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
+    RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "Failed to check whether tool already exists in asg::ToolStore" );
+    //RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.makeNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.make("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
     if ( m_PU_default_channel ) {
@@ -556,7 +557,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // As a check, let's see the number of events in our file (long long int)
   //
   Info("initialize()", "Number of events in file = %lli", m_event->getEntries());
-  
+
   // Initialize counter for number of entries
   m_eventCounter   = 0;
 
@@ -598,8 +599,8 @@ EL::StatusCode BasicEventSelection :: execute ()
       printf("    %s\n", triggersUsed.at(iTrigger).c_str());
     }
     printf("\n");
-  }  
-  
+  }
+
   ++m_eventCounter;
 
   //------------------
@@ -641,7 +642,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   } else {
     mcEvtWeight = mcEvtWeightAcc(*eventInfo);
   }
-  
+
   //------------------------------------------------------------------------------------------
   // Fill initial bin of cutflow
   //------------------------------------------------------------------------------------------
@@ -665,29 +666,29 @@ EL::StatusCode BasicEventSelection :: execute ()
   //--------------------------------------------------------------------------------------------------------
 
   if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
-    
+
     std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
-    
+
     if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
-      
+
       if ( m_debug ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
-      
+
       // Bookkeep info in duplicates TTree
       //
       m_duplRunNumber   = eventInfo->runNumber();
       m_duplEventNumber = eventInfo->eventNumber();
-      
+
       m_duplicatesTree->Fill();
-      
+
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS; // go to next event
     }
-    
+
     m_RunNr_VS_EvtNr.insert(thispair);
-  
+
     m_cutflowHist ->Fill( m_cutflow_duplicates, 1 );
     m_cutflowHistW->Fill( m_cutflow_duplicates, mcEvtWeight);
-  
+
   }
 
   //------------------------------------------------------------------------------------------

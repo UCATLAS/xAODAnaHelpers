@@ -71,6 +71,7 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
   m_outputSystNamesTrigMCEff = "ElectronEfficiencyCorrector_TrigMCEffSyst";
 
   m_WorkingPointIDTrig      = "LooseAndBLayer";
+  m_WorkingPointIsoTrig     = "Loose";
 
   // file(s) containing corrections
   //
@@ -181,7 +182,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     // Parse the PID WP from m_corrFileNamePID (needs to be of the form "LH+WP")
     //
-    std::size_t init_pos_PID = m_corrFileNamePID.find("offline") + 8;
+    std::size_t init_pos_PID = m_corrFileNamePID.find("efficiencySF.offline") + 21;    
     std::size_t end_pos_PID  = m_corrFileNamePID.find("LLH");
     m_PID_WP = "LH" + m_corrFileNamePID.substr( init_pos_PID, (end_pos_PID - init_pos_PID) );
     if ( m_PID_WP.empty() ) {
@@ -246,7 +247,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     // Parse the isolation WP from m_corrFileNameIso (needs to be of the form "isol+WP")
     //
     std::size_t init_pos_Iso = m_corrFileNameIso.find("_isol") + 5;
-    std::size_t end_pos_Iso  = m_corrFileNameIso.find(".2015");
+    std::size_t end_pos_Iso  = m_corrFileNameIso.find(".root");
     m_Iso_WP = "Iso" + m_corrFileNameIso.substr( init_pos_Iso, (end_pos_Iso - init_pos_Iso) );
     if ( m_Iso_WP.empty() ) {
       Error("initialize()", "m_Iso_WP should not be empty! Exiting." );
@@ -359,9 +360,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
 
-    std::cout << "\n\n Trig ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
+    std::cout << "\n\n Trig ID wp: " << m_WorkingPointIDTrig  << std::endl;
+    std::cout << " Trig Iso wp: "    << m_WorkingPointIsoTrig << "\n\n" << std::endl;
 
-    m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig;
+    m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig + "_isol" + m_WorkingPointIsoTrig;
 
     RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name), "" );
     
@@ -413,7 +415,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   //
   if ( !m_corrFileNameTrigMCEff.empty() ) {
 
-    m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig;
+    m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig + "_isol" + m_WorkingPointIsoTrig;
 
     RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name), "" );
     
@@ -579,12 +581,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
   // gets called on worker nodes that processed input events.
 
   Info("finalize()", "Deleting tool instances...");
-
-  if ( m_asgElEffCorrTool_elSF_PID )       { delete m_asgElEffCorrTool_elSF_PID;       m_asgElEffCorrTool_elSF_PID = nullptr;	    }
-  //if ( m_asgElEffCorrTool_elSF_Reco )      { delete m_asgElEffCorrTool_elSF_Reco;      m_asgElEffCorrTool_elSF_Reco = nullptr;	    } // why this crashes?
-  if ( m_asgElEffCorrTool_elSF_Iso )       { delete m_asgElEffCorrTool_elSF_Iso;       m_asgElEffCorrTool_elSF_Iso = nullptr;	    }
-  if ( m_asgElEffCorrTool_elSF_Trig )      { delete m_asgElEffCorrTool_elSF_Trig;      m_asgElEffCorrTool_elSF_Trig = nullptr;	    }
-  if ( m_asgElEffCorrTool_elSF_TrigMCEff ) { delete m_asgElEffCorrTool_elSF_TrigMCEff; m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }
