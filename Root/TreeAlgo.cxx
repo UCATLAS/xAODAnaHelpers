@@ -32,6 +32,7 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_elDetailStr             = "";
   m_jetDetailStr            = "";
   m_fatJetDetailStr         = "";
+  m_truthFatJetDetailStr    = "";
   m_tauDetailStr            = "";
   m_METDetailStr            = "";
   m_photonDetailStr         = "";
@@ -44,6 +45,7 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_elContainerName         = "";
   m_jetContainerName        = "";
   m_fatJetContainerName     = "";
+  m_truthFatJetContainerName= "";
   m_tauContainerName        = "";
   m_METContainerName        = "";
   m_photonContainerName     = "";
@@ -195,6 +197,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_trigJetContainerName.empty() ){   helpTree->AddJets       (m_trigJetDetailStr, "trigJet");     }
     if ( !m_truthJetContainerName.empty() ){  helpTree->AddJets       (m_truthJetDetailStr, "truthJet");     }
     if ( !m_fatJetContainerName.empty() ) {   helpTree->AddFatJets    (m_fatJetDetailStr);  }
+    if ( !m_truthFatJetContainerName.empty() ) {   helpTree->AddTruthFatJets    (m_fatJetDetailStr);  }
     if ( !m_tauContainerName.empty() )    {   helpTree->AddTaus       (m_tauDetailStr);     }
     if ( !m_METContainerName.empty() )    {   helpTree->AddMET        (m_METDetailStr);     }
     if ( !m_photonContainerName.empty() ) {   helpTree->AddPhotons    (m_photonDetailStr);  }
@@ -275,6 +278,11 @@ EL::StatusCode TreeAlgo :: execute ()
       const xAOD::JetContainer* inFatJets(nullptr);
       RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName+fatJetSuffix, m_event, m_store, m_verbose) ,"");
       helpTree->FillFatJets( inFatJets );
+    }
+    if ( !m_truthFatJetContainerName.empty() ) {
+      const xAOD::JetContainer* inTruthFatJets(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName+fatJetSuffix, m_event, m_store, m_verbose) ,"");
+      helpTree->FillTruthFatJets( inTruthFatJets );
     }
     if ( !m_tauContainerName.empty() ) {
       const xAOD::TauJetContainer* inTaus(nullptr);
