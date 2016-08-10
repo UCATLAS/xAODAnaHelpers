@@ -29,6 +29,7 @@ public:
   std::string m_tauDetailStr;
   std::string m_METDetailStr;
   std::string m_photonDetailStr;
+  std::string m_truthParticlesDetailStr;
 
   std::string m_evtContainerName;
   std::string m_muContainerName;
@@ -41,6 +42,7 @@ public:
   std::string m_tauContainerName;
   std::string m_METContainerName;
   std::string m_photonContainerName;
+  std::string m_truthParticlesContainerName;
 
   // if these are set, assume systematics are being processed over
   std::string m_muSystsVec;
