@@ -24,43 +24,45 @@ TreeAlgo :: TreeAlgo (std::string className) :
 {
   this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
 
-  m_evtDetailStr            = "";
-  m_trigDetailStr           = "";
-  m_trigJetDetailStr        = "";
-  m_truthJetDetailStr       = "";
-  m_muDetailStr             = "";
-  m_elDetailStr             = "";
-  m_jetDetailStr            = "";
-  m_fatJetDetailStr         = "";
-  m_truthFatJetDetailStr    = "";
-  m_tauDetailStr            = "";
-  m_METDetailStr            = "";
-  m_photonDetailStr         = "";
+  m_evtDetailStr                = "";
+  m_trigDetailStr               = "";
+  m_trigJetDetailStr            = "";
+  m_truthJetDetailStr           = "";
+  m_muDetailStr                 = "";
+  m_elDetailStr                 = "";
+  m_jetDetailStr                = "";
+  m_fatJetDetailStr             = "";
+  m_truthFatJetDetailStr        = "";
+  m_tauDetailStr                = "";
+  m_METDetailStr                = "";
+  m_photonDetailStr             = "";
+  m_truthParticlesDetailStr     = "";
 
-  m_debug                   = false;
+  m_debug                       = false;
 
-  m_outHistDir              = false;
+  m_outHistDir                  = false;
 
-  m_muContainerName         = "";
-  m_elContainerName         = "";
-  m_jetContainerName        = "";
-  m_fatJetContainerName     = "";
-  m_truthFatJetContainerName= "";
-  m_tauContainerName        = "";
-  m_METContainerName        = "";
-  m_photonContainerName     = "";
+  m_muContainerName             = "";
+  m_elContainerName             = "";
+  m_jetContainerName            = "";
+  m_fatJetContainerName         = "";
+  m_truthFatJetContainerName    = "";
+  m_tauContainerName            = "";
+  m_METContainerName            = "";
+  m_photonContainerName         = "";
+  m_truthParticlesContainerName = "";
 
-  m_muSystsVec              = "";
-  m_elSystsVec              = "";
-  m_jetSystsVec             = "";
-  m_photonSystsVec          = "";
-  m_fatJetSystsVec          = "";
+  m_muSystsVec                  = "";
+  m_elSystsVec                  = "";
+  m_jetSystsVec                 = "";
+  m_photonSystsVec              = "";
+  m_fatJetSystsVec              = "";
   // DC14 switch for little things that need to happen to run
   // for those samples with the corresponding packages
-  m_DC14                    = false;
+  m_DC14                        = false;
 
   //Units, defaulting to GeV
-  m_units                   = 1e3;
+  m_units                       = 1e3;
 
 
 }
@@ -190,17 +192,18 @@ EL::StatusCode TreeAlgo :: execute ()
 
     // initialize all branch addresses since we just added this tree
     helpTree->AddEvent( m_evtDetailStr );
-    if ( !m_trigDetailStr.empty() )       {   helpTree->AddTrigger    (m_trigDetailStr);    }
-    if ( !m_muContainerName.empty() )     {   helpTree->AddMuons      (m_muDetailStr);      }
-    if ( !m_elContainerName.empty() )     {   helpTree->AddElectrons  (m_elDetailStr);      }
-    if ( !m_jetContainerName.empty() )    {   helpTree->AddJets       (m_jetDetailStr, "jet");     }
-    if ( !m_trigJetContainerName.empty() ){   helpTree->AddJets       (m_trigJetDetailStr, "trigJet");     }
-    if ( !m_truthJetContainerName.empty() ){  helpTree->AddJets       (m_truthJetDetailStr, "truthJet");     }
-    if ( !m_fatJetContainerName.empty() ) {   helpTree->AddFatJets    (m_fatJetDetailStr);  }
-    if ( !m_truthFatJetContainerName.empty() ) {   helpTree->AddTruthFatJets    (m_truthFatJetDetailStr);  }
-    if ( !m_tauContainerName.empty() )    {   helpTree->AddTaus       (m_tauDetailStr);     }
-    if ( !m_METContainerName.empty() )    {   helpTree->AddMET        (m_METDetailStr);     }
-    if ( !m_photonContainerName.empty() ) {   helpTree->AddPhotons    (m_photonDetailStr);  }
+    if (!m_trigDetailStr.empty() )              { helpTree->AddTrigger(m_trigDetailStr);                           }
+    if (!m_muContainerName.empty() )            { helpTree->AddMuons(m_muDetailStr);                               }
+    if (!m_elContainerName.empty() )            { helpTree->AddElectrons(m_elDetailStr);                           }
+    if (!m_jetContainerName.empty() )           { helpTree->AddJets(m_jetDetailStr, "jet");                        }
+    if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
+    if (!m_truthJetContainerName.empty() )      { helpTree->AddJets(m_truthJetDetailStr, "truthJet");              }
+    if (!m_fatJetContainerName.empty() )        { helpTree->AddFatJets(m_fatJetDetailStr);                         }
+    if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr);               }
+    if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
+    if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
+    if (!m_photonContainerName.empty() )        { helpTree->AddPhotons(m_photonDetailStr);                         }
+    if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts("xAH_truth", m_truthParticlesDetailStr); }
   }
 
   /* THIS IS WHERE WE START PROCESSING THE EVENT AND PLOTTING THINGS */
@@ -298,6 +301,11 @@ EL::StatusCode TreeAlgo :: execute ()
       const xAOD::PhotonContainer* inPhotons(nullptr);
       RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inPhotons, m_photonContainerName+photonSuffix, m_event, m_store, m_verbose) ,"");
       helpTree->FillPhotons( inPhotons );
+    }
+    if ( !m_truthParticlesContainerName.empty() ) {
+      const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthParticles, m_truthParticlesContainerName, m_event, m_store, m_verbose), "");
+      helpTree->FillTruth("xAH_truth", inTruthParticles);
     }
 
     // fill the tree
