@@ -25,9 +25,11 @@ public:
   std::string m_jetDetailStr;
   std::string m_truthJetDetailStr;
   std::string m_fatJetDetailStr;
+  std::string m_truthFatJetDetailStr;
   std::string m_tauDetailStr;
   std::string m_METDetailStr;
   std::string m_photonDetailStr;
+  std::string m_truthParticlesDetailStr;
 
   std::string m_evtContainerName;
   std::string m_muContainerName;
@@ -36,9 +38,11 @@ public:
   std::string m_truthJetContainerName;
   std::string m_trigJetContainerName;
   std::string m_fatJetContainerName;
+  std::string m_truthFatJetContainerName;
   std::string m_tauContainerName;
   std::string m_METContainerName;
   std::string m_photonContainerName;
+  std::string m_truthParticlesContainerName;
 
   // if these are set, assume systematics are being processed over
   std::string m_muSystsVec;

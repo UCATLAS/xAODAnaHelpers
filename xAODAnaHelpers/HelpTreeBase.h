@@ -34,6 +34,8 @@
 #include "xAODRootAccess/TStore.h"
 
 
+#include <map>
+
 // root includes
 #include "TTree.h"
 #include "TFile.h"
@@ -62,7 +64,8 @@ public:
   void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
-  void AddFatJets     (const std::string detailStr = "");
+  void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "");
+  void AddTruthFatJets (const std::string detailStr = "");  
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
 
@@ -78,6 +81,7 @@ public:
   HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
   HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
+  HelperClasses::JetInfoSwitch*        m_truthFatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
   HelperClasses::METInfoSwitch*        m_metInfoSwitch;
 
@@ -101,7 +105,10 @@ public:
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
-  void FillFatJets( const xAOD::JetContainer* fatJets );
+  
+  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string fatjetName);
+  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets );
+
   void FillTaus( const xAOD::TauJetContainer* taus );
   void FillMET( const xAOD::MissingETContainer* met );
 
@@ -114,7 +121,8 @@ public:
   void ClearPhotons();
   void ClearJets(const std::string jetName = "jet");
   void ClearTruth(const std::string truthName);
-  void ClearFatJets();
+  void ClearFatJets(std::string fatjetName);
+  void ClearTruthFatJets();
   void ClearTaus();
   void ClearMET();
 
@@ -156,6 +164,10 @@ public:
     if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+  virtual void AddTruthFatJetsUser(const std::string detailStr = "")       {
+    if(m_debug) Info("AddTruthFatJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+    return;
+  };
   virtual void AddTausUser(const std::string detailStr = "")       {
     if(m_debug) Info("AddTausUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
@@ -173,6 +185,7 @@ public:
   virtual void ClearTruthUser(const std::string& /*truthName*/) 	    { return; };
   virtual void ClearJetsUser (const std::string /*jetName = "jet"*/ ) 	    { return; };
   virtual void ClearFatJetsUser()   { return; };
+  virtual void ClearTruthFatJetsUser()   { return; };
   virtual void ClearTausUser() 	    { return; };
   virtual void ClearMETUser()       { return; };
 
@@ -183,6 +196,7 @@ public:
   virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
   virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
   virtual void FillFatJetsUser( const xAOD::Jet*  )            { return; };
+  virtual void FillTruthFatJetsUser( const xAOD::Jet*  )            { return; };
   virtual void FillTausUser( const xAOD::TauJet*  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
   virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
@@ -282,41 +296,98 @@ protected:
   struct truthInfo{
 
     int  N;
+    std::vector<int> pdgId;
+    std::vector<int> status;
+
     std::vector<float> pt;
     std::vector<float> eta;
     std::vector<float> phi;
     std::vector<float> E;
-
+    std::vector<float> m;
+    
     truthInfo(){ }
 
   };
   std::map<std::string, truthInfo*> m_truth;
 
   // fat jets
-  int m_nfatjet;
+  std::map<std::string, int> m_nfatjet;
 
   // kinematics
-  std::vector<float> m_fatjet_pt;
-  std::vector<float> m_fatjet_eta;
-  std::vector<float> m_fatjet_phi;
-  std::vector<float> m_fatjet_m;
-  std::vector<float> m_fatjet_E;
+  std::map<std::string, std::vector<float> > m_fatjet_pt;
+  std::map<std::string, std::vector<float> > m_fatjet_eta;
+  std::map<std::string, std::vector<float> > m_fatjet_phi;
+  std::map<std::string, std::vector<float> > m_fatjet_m;
+  std::map<std::string, std::vector<float> > m_fatjet_E;
 
   // substructure
-  std::vector<float> m_fatjet_Split12;
-  std::vector<float> m_fatjet_Split23;
-  std::vector<float> m_fatjet_Split34;
-  std::vector<float> m_fatjet_tau1_wta;
-  std::vector<float> m_fatjet_tau2_wta;
-  std::vector<float> m_fatjet_tau3_wta;
-  std::vector<float> m_fatjet_tau21_wta;
-  std::vector<float> m_fatjet_tau32_wta;
-  std::vector<float> m_fatjet_ECF1;
-  std::vector<float> m_fatjet_ECF2;
-  std::vector<float> m_fatjet_ECF3;
-  std::vector<float> m_fatjet_C2;
-  std::vector<float> m_fatjet_D2;
-  std::vector<float> m_fatjet_NTrimSubjets;
+  std::map<std::string, std::vector<float> > m_fatjet_Split12;
+  std::map<std::string, std::vector<float> > m_fatjet_Split23;
+  std::map<std::string, std::vector<float> > m_fatjet_Split34;
+  std::map<std::string, std::vector<float> > m_fatjet_tau1_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_tau2_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_tau3_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_tau21_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_tau32_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_ECF1;
+  std::map<std::string, std::vector<float> > m_fatjet_ECF2;
+  std::map<std::string, std::vector<float> > m_fatjet_ECF3;
+  std::map<std::string, std::vector<float> > m_fatjet_C2;
+  std::map<std::string, std::vector<float> > m_fatjet_D2;
+  std::map<std::string, std::vector<float> > m_fatjet_NTrimSubjets;
+  std::map<std::string, std::vector<int> > m_fatjet_NClusters;
+
+  // constituent
+  std::map<std::string, std::vector< int > >  m_fatjet_numConstituents;
+
+  // constituentAll
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituentWeights;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituent_pt;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituent_eta;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituent_phi;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituent_e;
+
+  // fat jets
+  int m_ntruthfatjet;
+
+  // kinematics
+  std::vector<float> m_truth_fatjet_pt;
+  std::vector<float> m_truth_fatjet_eta;
+  std::vector<float> m_truth_fatjet_phi;
+  std::vector<float> m_truth_fatjet_m;
+  std::vector<float> m_truth_fatjet_E;
+
+  // substructure
+  std::vector<float> m_truth_fatjet_Split12;
+  std::vector<float> m_truth_fatjet_Split23;
+  std::vector<float> m_truth_fatjet_Split34;
+  std::vector<float> m_truth_fatjet_tau1_wta;
+  std::vector<float> m_truth_fatjet_tau2_wta;
+  std::vector<float> m_truth_fatjet_tau3_wta;
+  std::vector<float> m_truth_fatjet_tau21_wta;
+  std::vector<float> m_truth_fatjet_tau32_wta;
+  std::vector<float> m_truth_fatjet_ECF1;
+  std::vector<float> m_truth_fatjet_ECF2;
+  std::vector<float> m_truth_fatjet_ECF3;
+  std::vector<float> m_truth_fatjet_C2;
+  std::vector<float> m_truth_fatjet_D2;
+  std::vector<float> m_truth_fatjet_NTrimSubjets;
+
+  // constituent
+  std::vector< int >                m_truth_fatjet_numConstituents;
+
+  // constituentAll
+  std::vector< std::vector<float> > m_truth_fatjet_constituentWeights;
+  std::vector< std::vector<float> > m_truth_fatjet_constituent_pt;
+  std::vector< std::vector<float> > m_truth_fatjet_constituent_eta;
+  std::vector< std::vector<float> > m_truth_fatjet_constituent_phi;
+  std::vector< std::vector<float> > m_truth_fatjet_constituent_e;
+
+  // truth
+  std::vector<int> m_truth_fatjet_GhostTQuarks;
+  std::vector<int> m_truth_fatjet_GhostWBosons; 
+  std::vector<int> m_truth_fatjet_GhostZBosons;
+  std::vector<int> m_truth_fatjet_GhostHBosons;
 
   // muons
   std::map<std::string, xAH::MuonContainer*> m_muons;
@@ -496,7 +567,7 @@ void HelpTreeBase::safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<s
 
   if ( accessor.isAvailable( *xAODObj ) ) {
     for(U itemInVec : accessor(*xAODObj))        destination.back().push_back(itemInVec / m_units);
-  } 
+  }
   return;
 }
 

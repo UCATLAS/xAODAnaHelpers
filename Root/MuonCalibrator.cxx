@@ -57,7 +57,7 @@ MuonCalibrator :: MuonCalibrator (std::string className) :
   m_inContainerName         = "";
   m_outContainerName        = "";
 
-  m_release                 = "PreRecs";
+  m_release                 = "";
 
   m_sort                    = true;
 
@@ -166,7 +166,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
     m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool("MuonCalibrationAndSmearingTool");
   }
   m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-  RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->setProperty("Release", m_release),"Failed to set property Release");
+  if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->setProperty("Release", m_release),"Failed to set property Release"); }
   RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
 
   // ***********************************************************
