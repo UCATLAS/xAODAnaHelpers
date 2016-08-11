@@ -46,6 +46,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
     m_tau_cutflowHist_1(nullptr),
     m_tau_cutflowHist_2(nullptr),
     m_jet_cutflowHist_1(nullptr),
+    m_trk_cutflowHist_1(nullptr),
     m_truth_cutflowHist_1(nullptr),
     m_duplicatesTree(nullptr)
 {
@@ -399,6 +400,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
   m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
   m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
+  m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
   m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
   m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
 
