@@ -133,6 +133,7 @@ class BasicEventSelection : public xAH::Algorithm
     TH1D* m_tau_cutflowHist_1;   //!
     TH1D* m_tau_cutflowHist_2;   //!
     TH1D* m_jet_cutflowHist_1;   //!
+    TH1D* m_trk_cutflowHist_1;   //!
     TH1D* m_truth_cutflowHist_1; //!
 
     /** TTree for duplicates bookeeping */
