@@ -198,7 +198,8 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_jetContainerName.empty() )           { helpTree->AddJets(m_jetDetailStr, "jet");                        }
     if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
     if (!m_truthJetContainerName.empty() )      { helpTree->AddJets(m_truthJetDetailStr, "truthJet");              }
-    if (!m_fatJetContainerName.empty() )        { helpTree->AddFatJets(m_fatJetDetailStr);                         }
+    if ( !m_fatJetContainerName.empty() ) {
+      helpTree->AddFatJets    (m_fatJetDetailStr, m_fatJetContainerName);  }
     if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr);               }
     if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
@@ -278,9 +279,17 @@ EL::StatusCode TreeAlgo :: execute ()
           helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices), "truthJet" );
     }
     if ( !m_fatJetContainerName.empty() ) {
-      const xAOD::JetContainer* inFatJets(nullptr);
-      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName+fatJetSuffix, m_event, m_store, m_verbose) ,"");
-      helpTree->FillFatJets( inFatJets );
+		  std::string tempName;
+		  std::vector <std::string> fatjetNames;
+		  std::stringstream s(m_fatJetContainerName);
+		  while(s>> tempName)
+		  fatjetNames.push_back(tempName);
+
+			for(unsigned int i=0; i<fatjetNames.size(); i++){
+      	const xAOD::JetContainer* inFatJets(nullptr);
+      	RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, fatjetNames[i]+fatJetSuffix, m_event, m_store, m_verbose) ,"");
+      	helpTree->FillFatJets( inFatJets, fatjetNames[i] );
+			}
     }
     if ( !m_truthFatJetContainerName.empty() ) {
       const xAOD::JetContainer* inTruthFatJets(nullptr);
