@@ -292,6 +292,9 @@ protected:
   struct truthInfo{
 
     int  N;
+    std::vector<int> pdgId;
+    std::vector<int> status;
+
     std::vector<float> pt;
     std::vector<float> eta;
     std::vector<float> phi;

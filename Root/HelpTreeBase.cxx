@@ -1203,6 +1203,8 @@ void HelpTreeBase::AddTruthParts(const std::string truthName, const std::string 
 
   // always
   m_tree->Branch(("n"+truthName).c_str(),    &m_truth[truthName]->N, ("n"+truthName+"/I").c_str());
+  m_tree->Branch((truthName+"_pdgId").c_str(),    &m_truth[truthName]->pdgId);
+  m_tree->Branch((truthName+"_status").c_str(),    &m_truth[truthName]->status);
 
   if ( m_truthInfoSwitch->m_kinematic ) {
     m_tree->Branch((truthName+"_E"  ).c_str(), &m_truth[truthName]->E);
@@ -1219,10 +1221,14 @@ void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthPart
   this->ClearTruth(truthName);
   this->ClearTruthUser(truthName);
 
+  // We need some basic cuts here to avoid many PseudoRapiditity warnings being thrown ...
   float truthparticle_ptmax = 5.0;
   float truthparticle_etamax = 6.0;
 
   for( auto truth_itr : *truthParts ) {
+
+    m_truth[truthName]->pdgId.push_back  ( truth_itr->pdgId() );
+    m_truth[truthName]->status.push_back  ( truth_itr->status() );
 
     if( m_truthInfoSwitch->m_kinematic ){
       if(truth_itr->pt() / m_units > truthparticle_ptmax && fabs(truth_itr->eta()) < truthparticle_etamax){
@@ -1244,6 +1250,8 @@ void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthPart
 void HelpTreeBase::ClearTruth(const std::string truthName) {
 
   m_truth[truthName]->N = 0;
+  m_truth[truthName]->pdgId.clear();
+  m_truth[truthName]->status.clear();
   if( m_truthInfoSwitch->m_kinematic ){
     m_truth[truthName]->pt.clear();
     m_truth[truthName]->eta.clear();
