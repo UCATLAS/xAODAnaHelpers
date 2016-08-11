@@ -299,7 +299,8 @@ protected:
     std::vector<float> eta;
     std::vector<float> phi;
     std::vector<float> E;
-
+    std::vector<float> m;
+    
     truthInfo(){ }
 
   };

@@ -1207,10 +1207,11 @@ void HelpTreeBase::AddTruthParts(const std::string truthName, const std::string 
   m_tree->Branch((truthName+"_status").c_str(),    &m_truth[truthName]->status);
 
   if ( m_truthInfoSwitch->m_kinematic ) {
-    m_tree->Branch((truthName+"_E"  ).c_str(), &m_truth[truthName]->E);
     m_tree->Branch((truthName+"_pt" ).c_str(), &m_truth[truthName]->pt);
-    m_tree->Branch((truthName+"_phi").c_str(), &m_truth[truthName]->phi);
     m_tree->Branch((truthName+"_eta").c_str(), &m_truth[truthName]->eta);
+    m_tree->Branch((truthName+"_phi").c_str(), &m_truth[truthName]->phi);
+    m_tree->Branch((truthName+"_E"  ).c_str(), &m_truth[truthName]->E);
+    m_tree->Branch((truthName+"_m"  ).c_str(), &m_truth[truthName]->m);
   }
 
   this->AddTruthUser(truthName);
@@ -1236,6 +1237,7 @@ void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthPart
 	m_truth[truthName]->eta.push_back  ( truth_itr->eta() );
 	m_truth[truthName]->phi.push_back  ( truth_itr->phi() );
 	m_truth[truthName]->E  .push_back  ( truth_itr->e() / m_units );
+	m_truth[truthName]->m  .push_back  ( truth_itr->m() / m_units );
       }
     }
 
@@ -1257,6 +1259,7 @@ void HelpTreeBase::ClearTruth(const std::string truthName) {
     m_truth[truthName]->eta.clear();
     m_truth[truthName]->phi.clear();
     m_truth[truthName]->E.clear();
+    m_truth[truthName]->m.clear();
   }
 
 }
