@@ -1219,13 +1219,18 @@ void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthPart
   this->ClearTruth(truthName);
   this->ClearTruthUser(truthName);
 
+  float truthparticle_ptmax = 5.0;
+  float truthparticle_etamax = 6.0;
+
   for( auto truth_itr : *truthParts ) {
 
     if( m_truthInfoSwitch->m_kinematic ){
-      m_truth[truthName]->pt .push_back  ( truth_itr->pt() / m_units );
-      m_truth[truthName]->eta.push_back  ( truth_itr->eta() );
-      m_truth[truthName]->phi.push_back  ( truth_itr->phi() );
-      m_truth[truthName]->E  .push_back  ( truth_itr->e() / m_units );
+      if(truth_itr->pt() / m_units > truthparticle_ptmax && fabs(truth_itr->eta()) < truthparticle_etamax){
+	m_truth[truthName]->pt .push_back  ( truth_itr->pt() / m_units );
+	m_truth[truthName]->eta.push_back  ( truth_itr->eta() );
+	m_truth[truthName]->phi.push_back  ( truth_itr->phi() );
+	m_truth[truthName]->E  .push_back  ( truth_itr->e() / m_units );
+      }
     }
 
     this->FillTruthUser(truthName, truth_itr);
