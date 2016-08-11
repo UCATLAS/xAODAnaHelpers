@@ -6,6 +6,10 @@ xAODAnaHelpers
 .. image:: https://zenodo.org/badge/doi/10.5281/zenodo.35355.svg
    :target: https://doi.org/10.5281/zenodo.35355
 
+.. image:: https://landscape.io/github/UCATLAS/xAODAnaHelpers/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/UCATLAS/xAODAnaHelpers/master
+   :alt: Code Health
+
 The xAOD analysis framework, born out of ProofAna...or not.
 
 Welcome to the xAODAnaHelpers wiki! This is an xAOD Analysis Framework built for Run II of ATLAS.
