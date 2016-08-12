@@ -198,7 +198,13 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_jetContainerName.empty() )           { helpTree->AddJets(m_jetDetailStr, "jet");                        }
     if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
     if (!m_truthJetContainerName.empty() )      { helpTree->AddJets(m_truthJetDetailStr, "truthJet");              }
-    if (!m_fatJetContainerName.empty() )        { helpTree->AddFatJets(m_fatJetDetailStr);                         }
+    if ( !m_fatJetContainerName.empty() ) {
+	    std::string token;
+  	  std::istringstream ss(m_fatJetContainerName);
+    	while ( std::getline(ss, token, ' ') ){
+      	  helpTree->AddFatJets(m_fatJetDetailStr, token);
+			}
+		}
     if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr);               }
     if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
@@ -278,9 +284,13 @@ EL::StatusCode TreeAlgo :: execute ()
           helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices), "truthJet" );
     }
     if ( !m_fatJetContainerName.empty() ) {
-      const xAOD::JetContainer* inFatJets(nullptr);
-      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, m_fatJetContainerName+fatJetSuffix, m_event, m_store, m_verbose) ,"");
-      helpTree->FillFatJets( inFatJets );
+      std::string token; 
+      std::istringstream ss(m_fatJetContainerName);
+      while ( std::getline(ss, token, ' ') ){
+      	const xAOD::JetContainer* inFatJets(nullptr);
+      	RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, m_verbose) ,"");
+      	helpTree->FillFatJets( inFatJets, token );
+			}
     }
     if ( !m_truthFatJetContainerName.empty() ) {
       const xAOD::JetContainer* inTruthFatJets(nullptr);

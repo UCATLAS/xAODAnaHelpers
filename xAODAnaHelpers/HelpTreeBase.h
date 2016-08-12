@@ -34,6 +34,8 @@
 #include "xAODRootAccess/TStore.h"
 
 
+#include <map>
+
 // root includes
 #include "TTree.h"
 #include "TFile.h"
@@ -62,7 +64,7 @@ public:
   void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
-  void AddFatJets     (const std::string detailStr = "");
+  void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "", const std::string suffix="");
   void AddTruthFatJets (const std::string detailStr = "");  
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
@@ -103,8 +105,10 @@ public:
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
-  void FillFatJets( const xAOD::JetContainer* fatJets );
+  
+  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string fatjetName);
   void FillTruthFatJets( const xAOD::JetContainer* truthFatJets );
+
   void FillTaus( const xAOD::TauJetContainer* taus );
   void FillMET( const xAOD::MissingETContainer* met );
 
@@ -117,7 +121,7 @@ public:
   void ClearPhotons();
   void ClearJets(const std::string jetName = "jet");
   void ClearTruth(const std::string truthName);
-  void ClearFatJets();
+  void ClearFatJets(std::string fatjetName);
   void ClearTruthFatJets();
   void ClearTaus();
   void ClearMET();
@@ -307,40 +311,41 @@ protected:
   std::map<std::string, truthInfo*> m_truth;
 
   // fat jets
-  int m_nfatjet;
+  std::map<std::string, int> m_nfatjet;
 
   // kinematics
-  std::vector<float> m_fatjet_pt;
-  std::vector<float> m_fatjet_eta;
-  std::vector<float> m_fatjet_phi;
-  std::vector<float> m_fatjet_m;
-  std::vector<float> m_fatjet_E;
+  std::map<std::string, std::vector<float> > m_fatjet_pt;
+  std::map<std::string, std::vector<float> > m_fatjet_eta;
+  std::map<std::string, std::vector<float> > m_fatjet_phi;
+  std::map<std::string, std::vector<float> > m_fatjet_m;
+  std::map<std::string, std::vector<float> > m_fatjet_E;
 
   // substructure
-  std::vector<float> m_fatjet_Split12;
-  std::vector<float> m_fatjet_Split23;
-  std::vector<float> m_fatjet_Split34;
-  std::vector<float> m_fatjet_tau1_wta;
-  std::vector<float> m_fatjet_tau2_wta;
-  std::vector<float> m_fatjet_tau3_wta;
-  std::vector<float> m_fatjet_tau21_wta;
-  std::vector<float> m_fatjet_tau32_wta;
-  std::vector<float> m_fatjet_ECF1;
-  std::vector<float> m_fatjet_ECF2;
-  std::vector<float> m_fatjet_ECF3;
-  std::vector<float> m_fatjet_C2;
-  std::vector<float> m_fatjet_D2;
-  std::vector<float> m_fatjet_NTrimSubjets;
+  std::map<std::string, std::vector<float> > m_fatjet_Split12;
+  std::map<std::string, std::vector<float> > m_fatjet_Split23;
+  std::map<std::string, std::vector<float> > m_fatjet_Split34;
+  std::map<std::string, std::vector<float> > m_fatjet_tau1_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_tau2_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_tau3_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_tau21_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_tau32_wta;
+  std::map<std::string, std::vector<float> > m_fatjet_ECF1;
+  std::map<std::string, std::vector<float> > m_fatjet_ECF2;
+  std::map<std::string, std::vector<float> > m_fatjet_ECF3;
+  std::map<std::string, std::vector<float> > m_fatjet_C2;
+  std::map<std::string, std::vector<float> > m_fatjet_D2;
+  std::map<std::string, std::vector<float> > m_fatjet_NTrimSubjets;
+  std::map<std::string, std::vector<int> > m_fatjet_NClusters;
 
   // constituent
-  std::vector< int >                m_fatjet_numConstituents;
+  std::map<std::string, std::vector< int > >  m_fatjet_numConstituents;
 
   // constituentAll
-  std::vector< std::vector<float> > m_fatjet_constituentWeights;
-  std::vector< std::vector<float> > m_fatjet_constituent_pt;
-  std::vector< std::vector<float> > m_fatjet_constituent_eta;
-  std::vector< std::vector<float> > m_fatjet_constituent_phi;
-  std::vector< std::vector<float> > m_fatjet_constituent_e;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituentWeights;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituent_pt;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituent_eta;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituent_phi;
+  std::map<std::string, std::vector< std::vector<float> > > m_fatjet_constituent_e;
 
   // fat jets
   int m_ntruthfatjet;
