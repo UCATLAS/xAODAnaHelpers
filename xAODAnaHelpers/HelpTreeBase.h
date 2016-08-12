@@ -64,7 +64,7 @@ public:
   void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
-  void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "");
+  void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "", const std::string suffix="");
   void AddTruthFatJets (const std::string detailStr = "");  
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
