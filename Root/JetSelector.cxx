@@ -517,7 +517,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     }
 
     // event level cut if any of the N leading jets are not clean
-    if ( m_cleanEvtLeadJets > 0 && nObj <= m_cleanEvtLeadJets ) {
+    if ( m_cleanEvtLeadJets > 0 && nObj <= m_cleanEvtLeadJets && passSel) {
       if ( isCleanAcc.isAvailable( *jet_itr ) ) {
         if( !isCleanAcc( *jet_itr ) ) { passEventClean = false; }
       }
