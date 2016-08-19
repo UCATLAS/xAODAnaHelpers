@@ -28,7 +28,18 @@ public:
   				     // algo (these will be the m_inputAlgoSystNames of the algo downstream)
   float       m_systVal;
   std::string m_systName;
-  
+
+  /**
+      @rst
+          Force ``MuonCalibrationAndSmearingTool`` to calibrate data.
+
+          ``MuonSelectorTool`` depends on a specific decoration existing on Muons, namely ``MuonSpectrometerPt``. This is decorated by the ``MuonCalibrationAndSmearingTool``. However, you do not calibrate data by default so this tool would not be run on data.
+
+          In the case where you need the tool to be forced to run on data in order to have this decoration on your muons, you need to flip this boolean. See `the Muon Combined Performance Working Group twiki <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/McpAnalysisFaq#SG_ExcBadAuxVar_from_MuonSelecti>`_ for more information.
+
+          .. note:: This should *not* modify the momentum of muons in data (according to the tool as of ``MuonMomentumCorrections-01-00-37``).
+      @endrst
+   */
   bool    m_forceDataCalib;
 
 private:
