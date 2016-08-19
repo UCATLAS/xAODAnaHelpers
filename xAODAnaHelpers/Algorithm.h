@@ -57,7 +57,7 @@ namespace xAH {
       public:
         /**
             @brief Initialization
-            @param className    This is the name of the class that inherits from :cpp:class:`~xAH::Algorithm`
+            @param className    This is the name of the class that inherits from :cpp:namespace:`~xAH::Algorithm`
          */
         Algorithm(std::string className = "Algorithm");
         ~Algorithm();
@@ -115,14 +115,14 @@ namespace xAH {
             @endrst
          */
         float m_systVal;
-        /** If running systematics, you can run multiple points and store them in here. 
+        /** If running systematics, you can run multiple points and store them in here.
             A comma separated list of working points should be given to m_systValVectorString,
             and then parsed by calling parseSystValVector.
          */
         std::string m_systValVectorString;
         std::vector<float> m_systValVector;
         /**
-            @brief Parse string of systematic sigma levels in m_systValVectorString into m_systValVector 
+            @brief Parse string of systematic sigma levels in m_systValVectorString into m_systValVector
          */
         StatusCode parseSystValVector();
 
@@ -171,7 +171,8 @@ namespace xAH {
 
         /**
             @rst
-                the moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
+                The moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
+
             @endrst
          */
         std::string m_className;
@@ -179,7 +180,9 @@ namespace xAH {
         /**
             @rst
                 Register the given instance under the moniker :cpp:member:`xAH::Algorithm::m_className`
+
                 This will increase the reference count by 1.
+
             @endrst
          */
         void registerInstance();
@@ -190,6 +193,7 @@ namespace xAH {
                 This will return the reference count.
 
                 .. warning:: If for some reason the instance wasn't registered, we spit out a warning.
+
             @endrst
          */
         int numInstances();
@@ -200,6 +204,7 @@ namespace xAH {
                 This will decrease the reference count by 1.
 
                 .. warning:: If for some reason the instance wasn't registered, we spit out a warning.
+
             @endrst
          */
         void unregisterInstance();
@@ -209,6 +214,7 @@ namespace xAH {
                 Check whether the input CP tool already exists with *this* name in the asg::ToolStore
 
 		Depending on the outcome, the content of the map :cpp:member:`xAH::Algorithm::m_toolAlreadyUsed` wll be set accordingly.
+
             @endrst
          */
         template< typename T >
@@ -227,7 +233,8 @@ namespace xAH {
 
         /**
             @rst
-                Check whether the input CP tool has been already used by any :cpp:`xAH::Algorithm` in the current job by scanning :cpp:member:`xAH::Algorithm::m_toolAlreadyUsed`.
+                Check whether the input CP tool has been already used by any :cpp:class:`xAH::Algorithm` in the current job by scanning :cpp:member:`xAH::Algorithm::m_toolAlreadyUsed`.
+
             @endrst
          */
 	inline bool isToolAlreadyUsed( const std::string& tool_name ) {
@@ -237,15 +244,18 @@ namespace xAH {
       private:
         /**
             @rst
-                bookkeeps the number of times :cpp:member:`xAH::Algorithm::m_className` has been used in a variable shared among all classes/instances that inherit from me
+                Bookkeeps the number of times :cpp:member:`xAH::Algorithm::m_className` has been used in a variable shared among all classes/instances that inherit from me
+
             @endrst
          */
 	static std::map<std::string, int> m_instanceRegistry;
 
         /**
             @rst
-                Map containing info about whether a CP Tool of a given name has been already used or not by this :cpp:`xAH::Algorithm`
-		Its content gets set through :cpp:member:`xAH::Algorithm::checkToolStore()`, depending on whether the tool it's created from scratch, or retrieved from :cpp:`asg::ToolStore`
+                Map containing info about whether a CP Tool of a given name has been already used or not by this :cpp:class:`xAH::Algorithm`.
+
+		Its content gets set through :cpp:func:`xAH::Algorithm::checkToolStore`, depending on whether the tool it's created from scratch, or retrieved from :cpp:class:`asg::ToolStore`
+
             @endrst
          */
         std::map<std::string, bool> m_toolAlreadyUsed; //!
