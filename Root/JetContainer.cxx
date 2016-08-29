@@ -217,7 +217,6 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_IP3D_pu      = new std::vector<float>(); 
       m_IP3D_pb      = new std::vector<float>(); 
       m_IP3D_pc      = new std::vector<float>(); 
-      m_IP3D         = new std::vector<float>(); 
       m_IP3D_c       = new std::vector<float>(); 
       m_IP3D_cu      = new std::vector<float>(); 
       m_nIP3DTracks  = new std::vector<float>(); 
@@ -332,6 +331,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
 JetContainer::~JetContainer()
 {
+  if(m_debug) cout << " Deleting JetContainer "  << endl;  
   if(m_infoSwitch.m_rapidity) {
     delete m_rapidity;
   }
@@ -487,7 +487,6 @@ JetContainer::~JetContainer()
       delete m_JetFitter_deltaphi      ;
       delete m_JetFitter_N2Tpar        ;
     }
-
     // SV Details
     if( m_infoSwitch.m_svDetails){
 
@@ -518,6 +517,7 @@ JetContainer::~JetContainer()
 
     // IP3D
     if( m_infoSwitch.m_ipDetails){    
+
       delete m_IP2D_pu     ; 
       delete m_IP2D_pb     ; 
       delete m_IP2D_pc     ; 
@@ -533,14 +533,14 @@ JetContainer::~JetContainer()
       delete m_IP2D_weightBofTracks   ; 
       delete m_IP2D_weightCofTracks   ; 
       delete m_IP2D_weightUofTracks   ; 
-      
+
       delete m_IP3D;
       delete m_IP3D_pu     ; 
       delete m_IP3D_pb     ; 
       delete m_IP3D_pc     ; 
-      delete m_IP3D        ; 
       delete m_IP3D_c      ; 
       delete m_IP3D_cu     ; 
+
       delete m_nIP3DTracks ; 
       delete m_IP3D_gradeOfTracks       ;
       delete m_IP3D_flagFromV0ofTracks  ;
@@ -551,6 +551,7 @@ JetContainer::~JetContainer()
       delete m_IP3D_weightBofTracks     ;
       delete m_IP3D_weightCofTracks     ;
       delete m_IP3D_weightUofTracks     ;
+
     }
   }
 
@@ -572,7 +573,6 @@ JetContainer::~JetContainer()
     delete m_vtx_online_bkg_z0  ; 
   }
 
-
   if( !m_infoSwitch.m_sfFTagFix.empty() ) {
     delete m_btag_Fix30;
     delete m_btag_Fix50;
@@ -583,6 +583,7 @@ JetContainer::~JetContainer()
     delete m_btag_Fix85;
     delete m_btag_Fix90;
   }
+
 
   if( !m_infoSwitch.m_sfFTagFlt.empty() ) {
     delete m_btag_Flt30;
