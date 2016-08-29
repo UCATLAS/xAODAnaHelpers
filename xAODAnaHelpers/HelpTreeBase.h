@@ -65,7 +65,7 @@ public:
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
   void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "", const std::string suffix="");
-  void AddTruthFatJets (const std::string detailStr = "");  
+  void AddTruthFatJets (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
 
@@ -105,8 +105,8 @@ public:
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
-  
-  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string fatjetName);
+
+  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string fatjetName = "" );
   void FillTruthFatJets( const xAOD::JetContainer* truthFatJets );
 
   void FillTaus( const xAOD::TauJetContainer* taus );
@@ -304,7 +304,7 @@ protected:
     std::vector<float> phi;
     std::vector<float> E;
     std::vector<float> m;
-    
+
     truthInfo(){ }
 
   };
@@ -385,7 +385,7 @@ protected:
 
   // truth
   std::vector<int> m_truth_fatjet_GhostTQuarks;
-  std::vector<int> m_truth_fatjet_GhostWBosons; 
+  std::vector<int> m_truth_fatjet_GhostWBosons;
   std::vector<int> m_truth_fatjet_GhostZBosons;
   std::vector<int> m_truth_fatjet_GhostHBosons;
 
