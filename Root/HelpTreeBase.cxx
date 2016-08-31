@@ -1007,9 +1007,9 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
 
     if ( m_phInfoSwitch->m_isolation ) {
 
-      static SG::AuxElement::Accessor isIsoCone40CaloOnlyAcc    ("isIsolated_FixedCutTightCaloOnly");
-      static SG::AuxElement::Accessor isIsoCone40Acc            ("isIsolated_FixedCutTight");
-      static SG::AuxElement::Accessor isIsoCone20Acc            ("isIsolated_FixedCutLoose");
+      static SG::AuxElement::Accessor<char> isIsoCone40CaloOnlyAcc    ("isIsolated_FixedCutTightCaloOnly");
+      static SG::AuxElement::Accessor<char> isIsoCone40Acc            ("isIsolated_FixedCutTight");
+      static SG::AuxElement::Accessor<char> isIsoCone20Acc            ("isIsolated_FixedCutLoose");
 
       if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) {
 	m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) );
