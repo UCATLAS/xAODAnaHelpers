@@ -474,7 +474,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 void HelpTreeBase::FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primaryVertex, const std::string muonName ) {
 
   xAH::MuonContainer* thisMuon = m_muons[muonName];
-  
+
   thisMuon->FillMuon(muon, primaryVertex);
 
   this->FillMuonsUser(muon, muonName);
@@ -1007,9 +1007,9 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
 
     if ( m_phInfoSwitch->m_isolation ) {
 
-      static SG::AuxElement::Accessor<char> isIsoCone40CaloOnlyAcc ("isIsolated_Cone40CaloOnly");
-      static SG::AuxElement::Accessor<char> isIsoCone40Acc         ("isIsolated_Cone40");
-      static SG::AuxElement::Accessor<char> isIsoCone20Acc         ("isIsolated_Cone20");
+      static SG::AuxElement::Accessor isIsoCone40CaloOnlyAcc    ("isIsolated_FixedCutTightCaloOnly");
+      static SG::AuxElement::Accessor isIsoCone40Acc            ("isIsolated_FixedCutTight");
+      static SG::AuxElement::Accessor isIsoCone20Acc            ("isIsolated_FixedCutLoose");
 
       if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) {
 	m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) );
@@ -1169,7 +1169,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
 void HelpTreeBase::FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName ) {
 
   xAH::JetContainer* thisJet = m_jets[jetName];
-  
+
   thisJet->FillJet(jet_itr, pv, pvLocation);
 
   this->FillJetsUser(jet_itr, jetName);
@@ -1275,10 +1275,10 @@ void HelpTreeBase::AddFatJets(std::string detailStr, std::string fatjetContainer
 
   if(m_debug) Info("AddFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
 	if(suffix.empty()){ suffix = fatjetContainerName; }
-  
+
 
     m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
-    
+
     // always
     m_tree->Branch(("nfatjets"+suffix).c_str(),    &m_nfatjet[suffix],"nfatjets/I");
 
@@ -1296,7 +1296,7 @@ void HelpTreeBase::AddFatJets(std::string detailStr, std::string fatjetContainer
       m_tree->Branch(("fatjet_tau1_wta_"+suffix).c_str(),&m_fatjet_tau1_wta[suffix]);
       m_tree->Branch(("fatjet_tau2_wta_"+suffix).c_str(),&m_fatjet_tau2_wta[suffix]);
       m_tree->Branch(("fatjet_tau3_wta_"+suffix).c_str(),&m_fatjet_tau3_wta[suffix]);
-      m_tree->Branch(("fatjet_tau21_wta_"+suffix).c_str(),   &m_fatjet_tau21_wta[suffix]);    
+      m_tree->Branch(("fatjet_tau21_wta_"+suffix).c_str(),   &m_fatjet_tau21_wta[suffix]);
       m_tree->Branch(("fatjet_tau32_wta_"+suffix).c_str(),   &m_fatjet_tau32_wta[suffix]);
       m_tree->Branch(("fatjet_ECF1_"+suffix).c_str(),&m_fatjet_ECF1[suffix]);
       m_tree->Branch(("fatjet_ECF2_"+suffix).c_str(),&m_fatjet_ECF2[suffix]);
@@ -1316,14 +1316,14 @@ void HelpTreeBase::AddFatJets(std::string detailStr, std::string fatjetContainer
       m_tree->Branch(("fatjet_constituent_phi"+suffix).c_str(),&m_fatjet_constituent_phi[suffix]);
       m_tree->Branch(("fatjet_constituent_e"+suffix).c_str(),&m_fatjet_constituent_e[suffix]);
     }
-    
+
     this->AddFatJetsUser();
 }
-  
+
 void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
-  
+
   if(m_debug) Info("AddTruthFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
-  
+
   m_truthFatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 
   // always
@@ -1390,7 +1390,7 @@ void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
     if( m_fatJetInfoSwitch->m_substructure ){
       static SG::AuxElement::ConstAccessor<float> acc_Split12("Split12");
       static SG::AuxElement::ConstAccessor<float> acc_Split23("Split23");
-      static SG::AuxElement::ConstAccessor<float> acc_Split34("Split34");      
+      static SG::AuxElement::ConstAccessor<float> acc_Split34("Split34");
       if ( acc_Split12.isAvailable( *fatjet_itr ) ) {
         m_fatjet_Split12[fatjetName].push_back( acc_Split12( *fatjet_itr ) / m_units );
       } else { m_fatjet_Split12[fatjetName].push_back( -999 ); }
@@ -1467,7 +1467,7 @@ void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
       } else{ m_fatjet_NTrimSubjets[fatjetName].push_back(-999); }
     }
 
-    if( m_fatJetInfoSwitch->m_constituent ){    
+    if( m_fatJetInfoSwitch->m_constituent ){
       m_fatjet_numConstituents[fatjetName].push_back( fatjet_itr->numConstituents() );
     }
     if( m_fatJetInfoSwitch->m_constituentAll ){
