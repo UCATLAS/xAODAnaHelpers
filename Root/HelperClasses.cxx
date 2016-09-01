@@ -142,6 +142,7 @@ namespace HelperClasses{
   void PhotonInfoSwitch::initialize(){
     m_isolation     = has_exact("isolation");
     m_PID           = has_exact("PID");
+    m_purity        = has_exact("purity");
   }
 
   void JetInfoSwitch::initialize(){
