@@ -983,6 +983,19 @@ void HelpTreeBase::AddPhotons(const std::string detailStr) {
     m_tree->Branch("ph_IsTight",     &m_ph_IsTight);
   }
 
+  if ( m_phInfoSwitch->m_purity) {
+    m_tree->Branch("m_ph_radhad1",   &m_ph_radhad1);
+    m_tree->Branch("m_ph_radhad",    &m_ph_radhad );
+    m_tree->Branch("m_ph_e277",      &m_ph_e277   );
+    m_tree->Branch("m_ph_reta",      &m_ph_reta   );
+    m_tree->Branch("m_ph_rphi",      &m_ph_rphi   );
+    m_tree->Branch("m_ph_weta2",     &m_ph_weta2  );
+    m_tree->Branch("m_ph_f1",        &m_ph_f1     );
+    m_tree->Branch("m_ph_wtot",      &m_ph_wtot   );
+    m_tree->Branch("m_ph_deltae",    &m_ph_deltae );
+    m_tree->Branch("m_ph_eratio",    &m_ph_eratio );
+  }
+
   this->AddPhotonsUser();
 }
 
@@ -1064,6 +1077,33 @@ void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
 
     }
 
+    if (m_phInfoSwitch->m_purity) {
+      static SG::AuxElement::Accessor<float> radhad1  ("Rhad1"  );
+      static SG::AuxElement::Accessor<float> radhad   ("Rhad"   );
+      static SG::AuxElement::Accessor<float> e277     ("e277"   );
+      static SG::AuxElement::Accessor<float> reta     ("Reta"   );
+      static SG::AuxElement::Accessor<float> rphi     ("Rphi"   );
+      static SG::AuxElement::Accessor<float> weta2    ("weta2"  );
+      static SG::AuxElement::Accessor<float> f1       ("f1"     );
+      static SG::AuxElement::Accessor<float> wtot     ("wtots1" );
+      //static SG::AuxElement::Accessor<float> w1       ("w1"     );
+      static SG::AuxElement::Accessor<float> deltae   ("DeltaE" );
+      static SG::AuxElement::Accessor<float> eratio   ("Eratio" );
+      
+      m_ph_radhad1  .push_back( radhad1(*ph_itr) );
+      m_ph_radhad   .push_back( radhad (*ph_itr) );
+      m_ph_e277     .push_back( e277   (*ph_itr) );
+      m_ph_reta     .push_back( reta   (*ph_itr) );
+      m_ph_rphi     .push_back( rphi   (*ph_itr) );
+      m_ph_weta2    .push_back( weta2  (*ph_itr) );
+      m_ph_f1       .push_back( f1     (*ph_itr) );
+      m_ph_wtot     .push_back( wtot   (*ph_itr) );
+      //m_ph_w1       .push_back( w1     (*ph_itr) );
+      m_ph_deltae   .push_back( deltae (*ph_itr) );
+      m_ph_eratio   .push_back( eratio (*ph_itr) );
+
+    }
+
     this->FillPhotonsUser(ph_itr);
 
     m_nph++;
@@ -1107,6 +1147,20 @@ void HelpTreeBase::ClearPhotons() {
     m_ph_IsMedium.clear();
     m_nph_IsTight = 0;
     m_ph_IsTight.clear();
+  }
+
+  if(m_phInfoSwitch->m_purity){
+    m_ph_radhad1.clear();
+    m_ph_radhad.clear();
+    m_ph_e277.clear();
+    m_ph_reta.clear();
+    m_ph_rphi.clear();
+    m_ph_weta2.clear();
+    m_ph_f1.clear();
+    m_ph_wtot.clear();
+    m_ph_deltae.clear();
+    m_ph_eratio.clear(); 
+
   }
 
 }

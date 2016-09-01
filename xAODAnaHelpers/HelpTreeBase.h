@@ -514,6 +514,19 @@ protected:
   int m_nph_IsTight;
   std::vector<int>   m_ph_IsTight;
 
+  //Purity
+  std::vector<float> m_ph_radhad1;
+  std::vector<float> m_ph_radhad;
+  std::vector<float> m_ph_e277;
+  std::vector<float> m_ph_reta;
+  std::vector<float> m_ph_rphi;
+  std::vector<float> m_ph_weta2;
+  std::vector<float> m_ph_f1;
+  std::vector<float> m_ph_wtot;
+  //std::vector<float> m_ph_w1;
+  std::vector<float> m_ph_deltae;
+  std::vector<float> m_ph_eratio;
+
   //
   // taus
   int m_ntau;

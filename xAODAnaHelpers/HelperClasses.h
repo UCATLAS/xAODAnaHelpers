@@ -299,6 +299,7 @@ namespace HelperClasses {
         ============== ============ =======
         m_isolation    isolation    exact
         m_PID          PID          exact
+        m_purity       purity       exact
         ============== ============ =======
     @endrst
    */
@@ -306,6 +307,7 @@ namespace HelperClasses {
   public:
     bool m_isolation;
     bool m_PID;
+    bool m_purity;
     PhotonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
     virtual ~PhotonInfoSwitch() {}
   protected:
