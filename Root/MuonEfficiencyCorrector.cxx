@@ -70,6 +70,8 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
 
   m_WorkingPointRecoTrig       = "Loose";
   m_WorkingPointIsoTrig        = "LooseTrackOnly";
+  m_Year                       = "";
+  m_MCCampaign                 = "";
   m_SingleMuTrig               = "HLT_mu20_iloose_L1MU15";
   m_DiMuTrig                   = "HLT_2mu14";
 
@@ -300,6 +302,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     m_muTrigSF_tool = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_name );
     RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
     RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
+    if ( !m_Year.empty() ) {
+      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->setProperty("Year", m_Year ),"Failed to set Year property of MuonTriggerScaleFactors");
+    }
+    if ( !m_MCCampaign.empty() ) {
+    RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->setProperty("mc", m_MCCampaign ),"Failed to set MC Campaign property of MuonTriggerScaleFactors");
+    
+    }
     RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->initialize(), "Failed to properly initialize CP::MuonTriggerScaleFactors for trigger efficiency SF");
 
     //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration

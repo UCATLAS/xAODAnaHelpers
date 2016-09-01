@@ -49,6 +49,8 @@ public:
   bool          m_useRandomRunNumber;
   std::string   m_WorkingPointRecoTrig;
   std::string   m_WorkingPointIsoTrig;
+  std::string   m_Year;
+  std::string   m_MCCampaign;
   std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
   std::string   m_DiMuTrig;          // this can be either a dimuon trigger chain, or an OR of ( N single muon trigger chains, dimuon chain )
 
