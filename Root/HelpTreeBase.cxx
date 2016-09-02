@@ -1343,7 +1343,8 @@ void HelpTreeBase::ClearTruth(const std::string truthName) {
  *
  ********************/
 
-void HelpTreeBase::AddFatJets(std::string detailStr, std::string fatjetContainerName, std::string suffix) {
+void HelpTreeBase::AddFatJets(const std::string& detailStr, std::string fatjetContainerName,
+        std::string suffix) {
 
   if(m_debug) Info("AddFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
 	if(suffix.empty()){ suffix = fatjetContainerName; }
@@ -1389,7 +1390,7 @@ void HelpTreeBase::AddFatJets(std::string detailStr, std::string fatjetContainer
       m_tree->Branch(("fatjet_constituent_e"+suffix).c_str(),&m_fatjet_constituent_e[suffix]);
     }
 
-    this->AddFatJetsUser();
+    this->AddFatJetsUser(detailStr, fatjetContainerName, suffix);
 }
 
 void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
@@ -1446,9 +1447,9 @@ void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
 }
 
 
- void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , std::string fatjetName) {
+ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName) {
    this->ClearFatJets(fatjetName);
-   this->ClearFatJetsUser();
+   this->ClearFatJetsUser(fatjetName);
 
   for( auto fatjet_itr : *fatJets ) {
 
@@ -1567,7 +1568,7 @@ void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
       m_fatjet_constituent_e[fatjetName].push_back( e   );
     }
 
-    this->FillFatJetsUser(fatjet_itr);
+    this->FillFatJetsUser(fatjet_itr, fatjetName);
 
     m_nfatjet[fatjetName]++;
 
@@ -1712,7 +1713,7 @@ void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets
 
 }
 
-void HelpTreeBase::ClearFatJets(std::string fatjetName) {
+void HelpTreeBase::ClearFatJets(const std::string& fatjetName) {
 
   m_nfatjet[fatjetName] = 0;
   if( m_fatJetInfoSwitch->m_kinematic ){
