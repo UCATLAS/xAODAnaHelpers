@@ -1389,7 +1389,7 @@ void HelpTreeBase::AddFatJets(std::string detailStr, std::string fatjetContainer
       m_tree->Branch(("fatjet_constituent_e"+suffix).c_str(),&m_fatjet_constituent_e[suffix]);
     }
 
-    this->AddFatJetsUser();
+    this->AddFatJetsUser(detailStr, fatjetContainerName, suffix);
 }
 
 void HelpTreeBase::AddTruthFatJets(std::string detailStr) {

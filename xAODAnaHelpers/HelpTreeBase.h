@@ -160,7 +160,7 @@ public:
     if(m_debug) Info("AddTruthUser","Empty function called from HelpTreeBase %s %s",truthName.c_str(), detailStr.c_str());
     return;
   };
-  virtual void AddFatJetsUser(const std::string detailStr = "")       {
+  virtual void AddFatJetsUser(const std::string detailStr = "", const std::string fatjetName = "", const std::string suffix = "")       {
     if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
