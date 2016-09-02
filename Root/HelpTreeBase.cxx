@@ -349,8 +349,13 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   // Trigger Decision for each and every trigger in a vector
   if ( m_trigInfoSwitch->m_passTriggers ) {
     // vector of strings for trigger names which fired
-    m_tree->Branch("passedTriggers",      &m_passTriggers    );
-    m_tree->Branch("triggerPrescales",      &m_triggerPrescales    );
+    m_tree->Branch("passedTriggers",       &m_passTriggers        );
+    m_tree->Branch("triggerPrescales",     &m_triggerPrescales    );
+  }
+
+  if ( m_trigInfoSwitch->m_passTrigBits ) {
+    m_tree->Branch("isPassBits",           &m_isPassBits          );
+    m_tree->Branch("isPassBitsNames",      &m_isPassBitsNames     );
   }
 
   //this->AddTriggerUser();
@@ -408,6 +413,17 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
 
     static SG::AuxElement::ConstAccessor< std::vector< float > > trigPrescales("triggerPrescales");
     if( trigPrescales.isAvailable( *eventInfo ) ) { m_triggerPrescales = trigPrescales( *eventInfo ); }
+
+  }
+
+  if ( m_trigInfoSwitch->m_passTrigBits ) {
+
+    static SG::AuxElement::ConstAccessor< std::vector< unsigned int > > isPassBits("isPassedBits");
+    if( isPassBits.isAvailable( *eventInfo ) ) { m_isPassBits = isPassBits( *eventInfo ); }
+
+    static SG::AuxElement::ConstAccessor< std::vector< std::string > > isPassBitsNames("isPassedBitsNames");
+    if( isPassBitsNames.isAvailable( *eventInfo ) ) { m_isPassBitsNames = isPassBitsNames( *eventInfo ); }
+
   }
 
 }
@@ -424,6 +440,8 @@ void HelpTreeBase::ClearTrigger() {
 
   m_passTriggers.clear();
   m_triggerPrescales.clear();
+  m_isPassBits.clear();
+  m_isPassBitsNames.clear();
 
 }
 

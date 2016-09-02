@@ -822,8 +822,10 @@ EL::StatusCode BasicEventSelection :: execute ()
     //
     if ( m_storeTrigDecisions ) {
 
-      std::vector<std::string> passTriggers;
-      std::vector<float> triggerPrescales;
+      std::vector<std::string>  passTriggers;
+      std::vector<float>        triggerPrescales;
+      std::vector<std::string>  isPassedBitsNames;
+      std::vector<unsigned int> isPassedBits;
 
       // Save info for the triggers used to skim events
       //
@@ -833,6 +835,8 @@ EL::StatusCode BasicEventSelection :: execute ()
           passTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
         }
+	isPassedBitsNames.push_back( trigName );
+	isPassedBits     .push_back( m_trigDecTool->isPassedBits(trigName) );
       }
       
       // Save info for extra triggers
@@ -847,13 +851,19 @@ EL::StatusCode BasicEventSelection :: execute ()
 	    passTriggers.push_back( trigName );
 	    triggerPrescales.push_back( trigChain->getPrescale() );
 	  }
+	  isPassedBitsNames.push_back( trigName );
+	  isPassedBits     .push_back( m_trigDecTool->isPassedBits(trigName) );
 	}
       }
 
-      static SG::AuxElement::Decorator< std::vector< std::string > > passTrigs("passTriggers");
+      static SG::AuxElement::Decorator< std::vector< std::string > >  passTrigs("passTriggers");
       passTrigs( *eventInfo ) = passTriggers;
-      static SG::AuxElement::Decorator< std::vector< float > > trigPrescales("triggerPrescales");
+      static SG::AuxElement::Decorator< std::vector< float > >        trigPrescales("triggerPrescales");
       trigPrescales( *eventInfo ) = triggerPrescales;
+      static SG::AuxElement::Decorator< std::vector< unsigned int > > isPassBits("isPassedBits");
+      isPassBits( *eventInfo ) = isPassedBits;
+      static SG::AuxElement::Decorator< std::vector< std::string > >  isPassBitsNames("isPassedBitsNames");
+      isPassBitsNames( *eventInfo ) = isPassedBitsNames;
 
     }
 

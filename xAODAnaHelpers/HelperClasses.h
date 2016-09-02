@@ -162,6 +162,7 @@ namespace HelperClasses {
         m_basic        basic        exact
         m_menuKeys     menuKeys     exact
         m_passTriggers passTriggers exact
+        m_passTrigBits passTrigBits exact
         ============== ============ =======
     @endrst
    */
@@ -170,6 +171,7 @@ namespace HelperClasses {
     bool m_basic;
     bool m_menuKeys;
     bool m_passTriggers;
+    bool m_passTrigBits;
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
