@@ -63,7 +63,16 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_applyCoreFlagsCut;
 
     // Trigger
+    /**
+       @brief Decisions of Triggers listed in m_triggerSelection are saved and cut on depending on m_applyTriggerCut
+    */
     std::string m_triggerSelection;
+
+    /**
+       @brief Decisions of Triggers listed in m_extraTriggerSelection are saved but not cut on
+    */
+    std::string m_extraTriggerSelection;
+
     bool m_applyTriggerCut;
     bool m_storeTrigDecisions;
     bool m_storePassL1;
