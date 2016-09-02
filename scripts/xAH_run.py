@@ -95,7 +95,8 @@ parser.add_argument('--extraOptions', dest="extra_options", metavar="[param=val]
 
 parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of paths/filenames.')
 parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
-parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='If enabled, will search using DQ2. Can be combined with `--inputList`.')
+parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='[DEPRECATION] If enabled, will search using DQ2. Can be combined with `--inputList`.')
+parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', help='If enabled, will search using Rucio. Can be combined with `--inputList`.')
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Can increase verbosity by adding more ``-vv``. Default: no verbosity')
@@ -226,7 +227,7 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working
-    needXRD = (args.use_scanDQ2)|(args.driver in ['prun', 'condor','lsf'])
+    needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['prun', 'condor','lsf'])
     if needXRD:
       if os.getenv('XRDSYS') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
@@ -293,6 +294,9 @@ if __name__ == "__main__":
       xAH_logger.info("\t\tReading in file(s) containing list of files")
       if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
+        xAH_logger.warning("\033[5m\t\tTHIS IS BEING DEPRECATED SOON\033[0m")
+      elif args.use_scanRucio:
+        xAH_logger.info("\t\tAdding samples using scanRucio")
       elif use_scanEOS:
         xAH_logger.info("\t\tAdding samples using scanEOS")
       else:
@@ -300,6 +304,9 @@ if __name__ == "__main__":
     else:
       if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
+        xAH_logger.warning("\033[5m\t\tTHIS IS BEING DEPRECATED SOON\033[0m")
+      if args.use_scanRucio:
+        xAH_logger.info("\t\tAdding samples using scanRucio")
       elif use_scanEOS:
         xAH_logger.info("\t\tAdding samples using scanEOS")
       else:
@@ -307,7 +314,7 @@ if __name__ == "__main__":
 
     for fname in args.input_filename:
       if args.use_inputFileList:
-        if (args.use_scanDQ2 or use_scanEOS or args.use_scanXRD):
+        if (args.use_scanDQ2 or use_scanEOS or args.use_scanXRD or args.use_scanRucio):
           with open(fname, 'r') as f:
             for line in f:
               if line.startswith('#') : continue
@@ -315,6 +322,8 @@ if __name__ == "__main__":
               line = line.strip()
               if args.use_scanDQ2:
                 ROOT.SH.scanDQ2(sh_all, line)
+              elif args.use_scanRucio:
+                ROOT.SH.scanRucio(sh_all, line)
               elif use_scanEOS:
                 base = os.path.basename(line)
                 eosDataSet = os.path.dirname(line)
@@ -352,6 +361,8 @@ if __name__ == "__main__":
 
         if args.use_scanDQ2:
           ROOT.SH.scanDQ2(sh_all, fname)
+        elif args.use_scanRucio:
+          ROOT.SH.scanRucio(sh_all, fname)
         elif use_scanEOS:
           newEOS = True
           if not newEOS:
@@ -596,7 +607,7 @@ if __name__ == "__main__":
       f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__short_hash__))
       f.write('Start: {0}\nStop:  {1}\nDelta: {2}\n\n'.format(SCRIPT_START_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME - SCRIPT_START_TIME))
       f.write('job runner options\n')
-      for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'verbose', 'driver']:
+      for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'use_scanRucio', 'use_scanEOS', 'use_scanXRD', 'verbose', 'driver']:
         f.write('\t{0: <51} = {1}\n'.format(opt, getattr(args, opt)))
       for algConfig_str in algorithmConfiguration_string:
         f.write('{0}\n'.format(algConfig_str))
