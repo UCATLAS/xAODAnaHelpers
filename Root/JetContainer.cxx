@@ -230,6 +230,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_IP3D_weightCofTracks      = new  std::vector<std::vector<float> >();
       m_IP3D_weightUofTracks      = new  std::vector<std::vector<float> >();
     }
+
+    if( m_infoSwitch.m_JVC ) {
+      m_JetVertexCharge_discriminant = new std::vector<double>();
+    }
+
   }
 
   //  flavTagHLT
@@ -553,6 +558,11 @@ JetContainer::~JetContainer()
       delete m_IP3D_weightUofTracks     ;
 
     }
+
+    if( m_infoSwitch.m_JVC ) {
+      delete m_JetVertexCharge_discriminant          ;
+    }
+
   }
 
     //  flavTagHLT
@@ -1368,6 +1378,9 @@ void JetContainer::setBranches(TTree *tree)
 
     }
 
+    if( m_infoSwitch.m_JVC ) {
+      setBranch<double>(tree,"JetVertexCharge_discriminant",     m_JetVertexCharge_discriminant);
+    }
   }
 
   if( m_infoSwitch.m_flavTagHLT  ) {
@@ -1688,7 +1701,9 @@ void JetContainer::clear()
       m_IP3D_weightUofTracks      ->clear();
     }
     
-
+    if( m_infoSwitch.m_JVC ){
+      m_JetVertexCharge_discriminant->clear();
+    }
   }
 
   if ( m_infoSwitch.m_flavTagHLT  ) {
@@ -1733,7 +1748,7 @@ void JetContainer::clear()
     m_btag_Flt90->clear();
   
   }
-
+  
 
   if ( m_infoSwitch.m_area ) {
     m_GhostArea          ->clear();
@@ -2202,7 +2217,10 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       myBTag = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
 
-
+    if(m_infoSwitch.m_JVC ) {
+      static SG::AuxElement::ConstAccessor<double> JetVertexCharge_discriminant("JetVertexCharge_discriminant");
+      safeFill<double, double, xAOD::BTagging>(myBTag, JetVertexCharge_discriminant, m_JetVertexCharge_discriminant, -999);
+    }
 
     //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
     double val(-999);
@@ -2507,7 +2525,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       }
     }
   } // sfFTagFlt
-
 
 
   if ( m_infoSwitch.m_area ) {

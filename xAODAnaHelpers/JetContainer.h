@@ -352,6 +352,9 @@ namespace xAH {
       btagOpPoint* m_btag_Flt85;
       btagOpPoint* m_btag_Flt90;
 
+      // JVC
+      std::vector<double> *m_JetVertexCharge_discriminant;
+
       // area
       std::vector<float> *m_GhostArea;
       std::vector<float> *m_ActiveArea;
