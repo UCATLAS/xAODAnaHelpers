@@ -103,6 +103,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   m_applyCoreFlagsCut     = false;
 
   // Trigger
+  m_extraTriggerSelection = "";
   m_triggerSelection = "";
   m_applyTriggerCut = false;
   m_storeTrigDecisions = false;
@@ -331,7 +332,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // if truth level make sure parameters are set properly
   if( m_truthLevelOnly ) {
     Info("initialize()", "Truth only! Turn off trigger stuff");
-    m_triggerSelection = "";
+    m_triggerSelection      = "";
+    m_extraTriggerSelection = "";
     m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
     Info("initialize()", "Truth only! Turn off GRL");
     m_applyGRLCut = false;
@@ -530,7 +532,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // initialize the Trig::TrigDecisionTool
   //
 
-  if( !m_triggerSelection.empty() || m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+  if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() || 
+      m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
 
     //if it's there, it must be already configured
     if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) && asg::ToolStore::contains<TrigConf::xAODConfigTool>("xAODConfigTool")) {
@@ -603,6 +606,18 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
     printf("\n");
   }
+
+  if ( m_eventCounter == 0 && !m_extraTriggerSelection.empty() ) {
+    Info("execute()", "*** Extra Trigger Info Saved are :\n");
+    auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_extraTriggerSelection);
+    std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
+    for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
+      printf("    %s\n", triggersUsed.at(iTrigger).c_str());
+    }
+    printf("\n");
+  }
+
+
 
   ++m_eventCounter;
 
@@ -810,6 +825,8 @@ EL::StatusCode BasicEventSelection :: execute ()
       std::vector<std::string> passTriggers;
       std::vector<float> triggerPrescales;
 
+      // Save info for the triggers used to skim events
+      //
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool->getChainGroup( trigName );
         if ( trigChain->isPassed() ) {
@@ -817,6 +834,22 @@ EL::StatusCode BasicEventSelection :: execute ()
           triggerPrescales.push_back( trigChain->getPrescale() );
         }
       }
+      
+      // Save info for extra triggers
+      //
+      if ( !m_extraTriggerSelection.empty() ) {
+
+	auto extraTriggerChainGroup = m_trigDecTool->getChainGroup(m_extraTriggerSelection);
+
+	for ( auto &trigName : extraTriggerChainGroup->getListOfTriggers() ) {
+	  auto trigChain = m_trigDecTool->getChainGroup( trigName );
+	  if ( trigChain->isPassed() ) {
+	    passTriggers.push_back( trigName );
+	    triggerPrescales.push_back( trigChain->getPrescale() );
+	  }
+	}
+      }
+
       static SG::AuxElement::Decorator< std::vector< std::string > > passTrigs("passTriggers");
       passTrigs( *eventInfo ) = passTriggers;
       static SG::AuxElement::Decorator< std::vector< float > > trigPrescales("triggerPrescales");
