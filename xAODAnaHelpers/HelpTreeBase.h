@@ -284,6 +284,8 @@ protected:
   // jet trigger
   std::vector<std::string> m_passTriggers;
   std::vector<float> m_triggerPrescales;
+  std::vector<std::string>  m_isPassBitsNames;
+  std::vector<unsigned int> m_isPassBits;
 
   //
   //  Jets
