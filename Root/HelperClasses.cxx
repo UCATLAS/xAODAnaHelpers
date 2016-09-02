@@ -242,6 +242,7 @@ namespace HelperClasses{
       }
     } // sfFTagFlt
     m_area          = has_exact("area");
+    m_JVC           = has_exact("JVC");
   }
 
   void TruthInfoSwitch::initialize(){
