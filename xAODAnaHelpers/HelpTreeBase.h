@@ -64,10 +64,13 @@ public:
   void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
-  void AddFatJets     (const std::string& detailStr = "", std::string fatjetName = "", std::string suffix="");
+  void AddFatJets     (const std::string& detailStr = "", const std::string& fatjetName = "fatjet", const std::string& suffix = "");
   void AddTruthFatJets (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
+
+  // helper function to address fatjet collections
+  static std::string FatJetCollectionName(const std::string& fatjetName = "fatjet", const std::string& suffix = "");
 
   xAOD::TEvent* m_event;
   xAOD::TStore* m_store;
@@ -106,7 +109,7 @@ public:
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
 
-  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName = "" );
+  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName = "fatjet", const std::string& suffix = "");
   void FillTruthFatJets( const xAOD::JetContainer* truthFatJets );
 
   void FillTaus( const xAOD::TauJetContainer* taus );
@@ -121,7 +124,7 @@ public:
   void ClearPhotons();
   void ClearJets(const std::string jetName = "jet");
   void ClearTruth(const std::string truthName);
-  void ClearFatJets(const std::string& fatjetName);
+  void ClearFatJets(const std::string& fatjetName, const std::string& suffix);
   void ClearTruthFatJets();
   void ClearTaus();
   void ClearMET();
@@ -184,7 +187,7 @@ public:
   virtual void ClearPhotonsUser() { return; };
   virtual void ClearTruthUser(const std::string& /*truthName*/) 	    { return; };
   virtual void ClearJetsUser (const std::string /*jetName = "jet"*/ ) 	    { return; };
-  virtual void ClearFatJetsUser(const std::string& /*fatjetName = "fatjet"*/ )   { return; };
+  virtual void ClearFatJetsUser(const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/)   { return; };
   virtual void ClearTruthFatJetsUser()   { return; };
   virtual void ClearTausUser() 	    { return; };
   virtual void ClearMETUser()       { return; };
@@ -195,7 +198,7 @@ public:
   virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
   virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
   virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
-  virtual void FillFatJetsUser( const xAOD::Jet*, const std::string& /*fatjetName = "fatjet"*/  )            { return; };
+  virtual void FillFatJetsUser( const xAOD::Jet*, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
   virtual void FillTruthFatJetsUser( const xAOD::Jet*  )            { return; };
   virtual void FillTausUser( const xAOD::TauJet*  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
