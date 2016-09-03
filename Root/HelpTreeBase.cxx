@@ -1347,50 +1347,50 @@ void HelpTreeBase::AddFatJets(const std::string& detailStr, std::string fatjetCo
         std::string suffix) {
 
   if(m_debug) Info("AddFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
-	if(suffix.empty()){ suffix = fatjetContainerName; }
+  if(suffix.empty()){ suffix = fatjetContainerName; }
 
 
-    m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
+  m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
 
-    // always
-    m_tree->Branch(("nfatjets"+suffix).c_str(),    &m_nfatjet[suffix],"nfatjets/I");
+  // always
+  m_tree->Branch(("nfatjets"+suffix).c_str(),    &m_nfatjet[suffix],"nfatjets/I");
 
-    if ( m_fatJetInfoSwitch->m_kinematic ) {
-      m_tree->Branch(("fatjet_E_"+suffix).c_str(),   &m_fatjet_E[suffix]);
-      m_tree->Branch(("fatjet_m_"+suffix).c_str(),   &m_fatjet_m[suffix]);
-      m_tree->Branch(("fatjet_pt_"+suffix).c_str(),  &m_fatjet_pt[suffix]);
-      m_tree->Branch(("fatjet_phi_"+suffix).c_str(), &m_fatjet_phi[suffix]);
-      m_tree->Branch(("fatjet_eta_"+suffix).c_str(), &m_fatjet_eta[suffix]);
-    }
-    if ( m_fatJetInfoSwitch->m_substructure ) {
-      m_tree->Branch(("fatjet_Split12_"+suffix).c_str(),&m_fatjet_Split12[suffix]);
-      m_tree->Branch(("fatjet_Split23_"+suffix).c_str(),&m_fatjet_Split23[suffix]);
-      m_tree->Branch(("fatjet_Split34_"+suffix).c_str(),&m_fatjet_Split34[suffix]);
-      m_tree->Branch(("fatjet_tau1_wta_"+suffix).c_str(),&m_fatjet_tau1_wta[suffix]);
-      m_tree->Branch(("fatjet_tau2_wta_"+suffix).c_str(),&m_fatjet_tau2_wta[suffix]);
-      m_tree->Branch(("fatjet_tau3_wta_"+suffix).c_str(),&m_fatjet_tau3_wta[suffix]);
-      m_tree->Branch(("fatjet_tau21_wta_"+suffix).c_str(),   &m_fatjet_tau21_wta[suffix]);
-      m_tree->Branch(("fatjet_tau32_wta_"+suffix).c_str(),   &m_fatjet_tau32_wta[suffix]);
-      m_tree->Branch(("fatjet_ECF1_"+suffix).c_str(),&m_fatjet_ECF1[suffix]);
-      m_tree->Branch(("fatjet_ECF2_"+suffix).c_str(),&m_fatjet_ECF2[suffix]);
-      m_tree->Branch(("fatjet_ECF3_"+suffix).c_str(),&m_fatjet_ECF3[suffix]);
-      m_tree->Branch(("fatjet_C2_"+suffix).c_str(),&m_fatjet_C2[suffix]);
-      m_tree->Branch(("fatjet_D2_"+suffix).c_str(),&m_fatjet_D2[suffix]);
-      m_tree->Branch(("fatjet_NTrimSubjets_"+suffix).c_str(),&m_fatjet_NTrimSubjets[suffix]);
-      m_tree->Branch(("fatjet_Nclusters_"+suffix).c_str(),&m_fatjet_NClusters[suffix]);
-    }
-    if ( m_fatJetInfoSwitch->m_constituent) {
-      m_tree->Branch(("fatjet_numConstituents"+suffix).c_str(),&m_fatjet_numConstituents[suffix]);
-    }
-    if ( m_fatJetInfoSwitch->m_constituentAll) {
-      m_tree->Branch(("fatjet_constituentWeights"+suffix).c_str(),&m_fatjet_constituentWeights[suffix]);
-      m_tree->Branch(("fatjet_constituent_pt"+suffix).c_str(),&m_fatjet_constituent_pt[suffix]);
-      m_tree->Branch(("fatjet_constituent_eta"+suffix).c_str(),&m_fatjet_constituent_eta[suffix]);
-      m_tree->Branch(("fatjet_constituent_phi"+suffix).c_str(),&m_fatjet_constituent_phi[suffix]);
-      m_tree->Branch(("fatjet_constituent_e"+suffix).c_str(),&m_fatjet_constituent_e[suffix]);
-    }
+  if ( m_fatJetInfoSwitch->m_kinematic ) {
+    m_tree->Branch(("fatjet_E_"+suffix).c_str(),   &m_fatjet_E[suffix]);
+    m_tree->Branch(("fatjet_m_"+suffix).c_str(),   &m_fatjet_m[suffix]);
+    m_tree->Branch(("fatjet_pt_"+suffix).c_str(),  &m_fatjet_pt[suffix]);
+    m_tree->Branch(("fatjet_phi_"+suffix).c_str(), &m_fatjet_phi[suffix]);
+    m_tree->Branch(("fatjet_eta_"+suffix).c_str(), &m_fatjet_eta[suffix]);
+  }
+  if ( m_fatJetInfoSwitch->m_substructure ) {
+    m_tree->Branch(("fatjet_Split12_"+suffix).c_str(),&m_fatjet_Split12[suffix]);
+    m_tree->Branch(("fatjet_Split23_"+suffix).c_str(),&m_fatjet_Split23[suffix]);
+    m_tree->Branch(("fatjet_Split34_"+suffix).c_str(),&m_fatjet_Split34[suffix]);
+    m_tree->Branch(("fatjet_tau1_wta_"+suffix).c_str(),&m_fatjet_tau1_wta[suffix]);
+    m_tree->Branch(("fatjet_tau2_wta_"+suffix).c_str(),&m_fatjet_tau2_wta[suffix]);
+    m_tree->Branch(("fatjet_tau3_wta_"+suffix).c_str(),&m_fatjet_tau3_wta[suffix]);
+    m_tree->Branch(("fatjet_tau21_wta_"+suffix).c_str(),   &m_fatjet_tau21_wta[suffix]);
+    m_tree->Branch(("fatjet_tau32_wta_"+suffix).c_str(),   &m_fatjet_tau32_wta[suffix]);
+    m_tree->Branch(("fatjet_ECF1_"+suffix).c_str(),&m_fatjet_ECF1[suffix]);
+    m_tree->Branch(("fatjet_ECF2_"+suffix).c_str(),&m_fatjet_ECF2[suffix]);
+    m_tree->Branch(("fatjet_ECF3_"+suffix).c_str(),&m_fatjet_ECF3[suffix]);
+    m_tree->Branch(("fatjet_C2_"+suffix).c_str(),&m_fatjet_C2[suffix]);
+    m_tree->Branch(("fatjet_D2_"+suffix).c_str(),&m_fatjet_D2[suffix]);
+    m_tree->Branch(("fatjet_NTrimSubjets_"+suffix).c_str(),&m_fatjet_NTrimSubjets[suffix]);
+    m_tree->Branch(("fatjet_Nclusters_"+suffix).c_str(),&m_fatjet_NClusters[suffix]);
+  }
+  if ( m_fatJetInfoSwitch->m_constituent) {
+    m_tree->Branch(("fatjet_numConstituents"+suffix).c_str(),&m_fatjet_numConstituents[suffix]);
+  }
+  if ( m_fatJetInfoSwitch->m_constituentAll) {
+    m_tree->Branch(("fatjet_constituentWeights"+suffix).c_str(),&m_fatjet_constituentWeights[suffix]);
+    m_tree->Branch(("fatjet_constituent_pt"+suffix).c_str(),&m_fatjet_constituent_pt[suffix]);
+    m_tree->Branch(("fatjet_constituent_eta"+suffix).c_str(),&m_fatjet_constituent_eta[suffix]);
+    m_tree->Branch(("fatjet_constituent_phi"+suffix).c_str(),&m_fatjet_constituent_phi[suffix]);
+    m_tree->Branch(("fatjet_constituent_e"+suffix).c_str(),&m_fatjet_constituent_e[suffix]);
+  }
 
-    this->AddFatJetsUser(detailStr, fatjetContainerName, suffix);
+  this->AddFatJetsUser(detailStr, fatjetContainerName, suffix);
 }
 
 void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
