@@ -64,12 +64,31 @@ public:
   void AddPhotons     (const std::string detailStr = "");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
+
+  /**
+   *  @brief  Declare a new collection of fatjets to be written to the output tree.
+   *  @param  detailStr   A (space-separated) list of detail options. These keywords specify
+   *                      exactly which information about each jet is written out. Current
+   *                      influential options are: `kinematic` `substructure` `constituent`
+   *                      `constituentAll`
+   *  @param  fatjetName  The (prefix) name of the container. Default: `fatjet`.
+   *  @param  suffix      If non-empty, append the given suffix to all branch names.
+   **/
   void AddFatJets     (const std::string& detailStr = "", const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+
   void AddTruthFatJets (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
 
-  // helper function to address fatjet collections
+  /**
+   *  @brief  Helper function to lookup each fatjet container name/suffix combo in the internal map
+   *          of vectors for vectors. You probably don't need this but it might be useful if you're
+   *          implementing `[Add/Fill/Clear]FatJetsUser()`.
+   *  @param  fatjetName  The (prefix) name of the container.
+   *  @param  suffix      The container branch suffix.
+   *
+   *  @return a string that uniquely identifies the collection name/suffix in the lookup map.
+   **/
   static std::string FatJetCollectionName(const std::string& fatjetName = "fatjet", const std::string& suffix = "");
 
   xAOD::TEvent* m_event;
@@ -109,6 +128,15 @@ public:
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
 
+  /**
+   *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
+   *          container name and suffix should be declared beforehand using `AddFatJets()`.
+   *          This clears the current branch state for the collection so it only makes sense to
+   *          call once per call to `Fill()`.
+   *  @param  fatJets     A container of jets to be written out.
+   *  @param  fatjetName  The name of the output collection to write to.
+   *  @param  suffix      The suffix of the output collection to write to.
+   */
   void FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName = "fatjet", const std::string& suffix = "");
   void FillTruthFatJets( const xAOD::JetContainer* truthFatJets );
 
@@ -163,6 +191,13 @@ public:
     if(m_debug) Info("AddTruthUser","Empty function called from HelpTreeBase %s %s",truthName.c_str(), detailStr.c_str());
     return;
   };
+  /**
+   *  @brief  Declare a new fat jet collection. Automatically called once per call to `AddFatJets()`;
+   *          override this if you want to provide your own additional branches for fatjets.
+   *  @param  detailStr   The space-separated list of detail requested by the called.
+   *  @param  fatjetName  The (prefix) name of the output collection.
+   *  @param  suffix      A suffix to be appeneded to the end of the output branch name(s).
+   */
   virtual void AddFatJetsUser(const std::string& /*detailStr = ""*/, const std::string& /*fatjetName*/, const std::string& /*suffix*/)       {
     if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase");
     return;
@@ -198,7 +233,15 @@ public:
   virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
   virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
   virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
-  virtual void FillFatJetsUser( const xAOD::Jet*, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
+  /**
+   *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
+   *          information to your jet collection.
+   *  @param  jet         a pointer to the current xAOD::Jet object that should be written to the
+   *                      output branch(s).
+   *  @param  fatjetName  the (prefix) name of the output collection
+   *  @param  suffix      the suffix to append to output branches.
+   */
+  virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
   virtual void FillTruthFatJetsUser( const xAOD::Jet*  )            { return; };
   virtual void FillTausUser( const xAOD::TauJet*  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
