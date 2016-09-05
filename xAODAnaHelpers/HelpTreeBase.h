@@ -16,7 +16,6 @@
 #ifndef xAODAnaHelpers_HelpTreeBase_H
 #define xAODAnaHelpers_HelpTreeBase_H
 
-#include "xAODEventShape/EventShape.h"
 
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
@@ -28,6 +27,7 @@
 #include "xAODMissingET/MissingETContainer.h"
 
 #include "xAODAnaHelpers/HelperClasses.h"
+#include "xAODAnaHelpers/EventInfo.h"
 #include "xAODAnaHelpers/JetContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODRootAccess/TEvent.h"
@@ -95,7 +95,6 @@ public:
   xAOD::TStore* m_store;
 
   // control which branches are filled
-  HelperClasses::EventInfoSwitch*      m_eventInfoSwitch;
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
   HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
   HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
@@ -270,52 +269,7 @@ protected:
   bool m_isMC;
 
   // event
-  int m_runNumber;
-  long int m_eventNumber;
-  int m_lumiBlock;
-  uint32_t m_coreFlags;
-  uint32_t m_timeStamp;
-  uint32_t m_timeStampNSOffset;
-  bool m_TileError;
-  bool m_LArError;
-  bool m_SCTError;
-  uint32_t m_TileFlags;
-  uint32_t m_LArFlags;
-  uint32_t m_SCTFlags;
-  int m_mcEventNumber;
-  int m_mcChannelNumber;
-  float m_mcEventWeight;
-  float m_weight_pileup;
-  float m_correct_mu;
-  int   m_rand_run_nr;
-  int   m_rand_lumiblock_nr;
-  int m_bcid;
-  // event pileup
-  int m_npv;
-  float m_actualMu;
-  float m_averageMu;
-  // event shapeEM
-  double m_rhoEM;
-  double m_rhoLC;
-  // truth
-  int m_pdgId1;
-  int m_pdgId2;
-  int m_pdfId1;
-  int m_pdfId2;
-  float m_x1;
-  float m_x2;
-  //float m_scale;
-  float m_q;
-  //float m_pdf1;
-  //float m_pdf2;
-  float m_xf1;
-  float m_xf2;
-
-  // CaloCluster
-  std::vector<float> m_caloCluster_pt;
-  std::vector<float> m_caloCluster_eta;
-  std::vector<float> m_caloCluster_phi;
-  std::vector<float> m_caloCluster_e;
+  xAH::EventInfo*      m_eventInfo;
 
   // trigger
   int m_passL1;

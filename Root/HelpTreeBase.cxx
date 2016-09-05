@@ -5,9 +5,7 @@
 #include "xAODBTagging/BTagging.h"
 #include "xAODTracking/TrackParticle.h"
 #include "xAODTracking/TrackSummaryAccessors_v1.h"
-#include "xAODTruth/TruthEventContainer.h"
 #include "xAODJet/JetConstituentVector.h"
-#include "xAODCaloEvent/CaloClusterContainer.h"
 #include "xAODPrimitives/IsolationType.h"
 
 
@@ -30,7 +28,6 @@ using std::vector;
 #endif
 
 HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14, xAOD::TStore* store):
-  m_eventInfoSwitch(nullptr),
   m_trigInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
   m_phInfoSwitch(nullptr),
@@ -39,7 +36,8 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_tauInfoSwitch(nullptr),
   m_metInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
-  m_trigDecTool(nullptr)
+  m_trigDecTool(nullptr),
+  m_eventInfo(nullptr)
 {
 
   m_units = units;
@@ -62,9 +60,8 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
 HelpTreeBase::~HelpTreeBase() {
 
     //delete all the info switches that have been built earlier on
-
     //event
-    delete m_eventInfoSwitch;
+    delete m_eventInfo;
 
     //trig
     delete m_trigInfoSwitch;
@@ -119,69 +116,8 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
   if(m_debug)  Info("AddEvent()", "Adding event variables: %s", detailStr.c_str());
 
-  m_eventInfoSwitch = new HelperClasses::EventInfoSwitch( detailStr );
-
-  // always
-  m_tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
-  m_tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/LI");
-  m_tree->Branch("lumiBlock",          &m_lumiBlock,      "lumiBlock/I");
-  m_tree->Branch("coreFlags",          &m_coreFlags,      "coreFlags/i");
-  if( m_isMC ) {
-    m_tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
-    m_tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
-    m_tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
-  } else {
-    m_tree->Branch("bcid",               &m_bcid,           "bcid/I");
-  }
-
-  if ( m_eventInfoSwitch->m_eventCleaning ) {
-    m_tree->Branch("timeStamp",          &m_timeStamp,         "timeStamp/i");
-    m_tree->Branch("timeStampNSOffset",  &m_timeStampNSOffset, "timeStampNSOffset/i");
-    m_tree->Branch("TileError",          &m_TileError,         "TileError/O");
-    m_tree->Branch("SCTError",           &m_SCTError,          "SCTError/O");
-    m_tree->Branch("LArError",           &m_LArError,          "LArError/O");
-    m_tree->Branch("TileFlags",          &m_TileFlags,         "TileFlags/i");
-    m_tree->Branch("SCTFlags",           &m_SCTFlags,          "SCTFlags/i");
-    m_tree->Branch("LArFlags",           &m_LArFlags,          "LArFlags/i");
-  }
-
-  if ( m_eventInfoSwitch->m_pileup ) {
-    m_tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
-    m_tree->Branch("NPV",                &m_npv,            "NPV/I");
-    m_tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
-    m_tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
-  }
-
-  if ( m_eventInfoSwitch->m_shapeEM ) {
-    m_tree->Branch("rhoEM",                &m_rhoEM,            "rhoEM/D");
-  }
-
-  if ( m_eventInfoSwitch->m_shapeLC ) {
-    m_tree->Branch("rhoLC",                &m_rhoLC,            "rhoLC/D");
-  }
-
-  if( m_eventInfoSwitch->m_truth && m_isMC ) {
-    m_tree->Branch("pdgId1",            &m_pdgId1,        "pdgId1/I" );
-    m_tree->Branch("pdgId2",            &m_pdgId2,        "pdgId2/I" );
-    m_tree->Branch("pdfId1",            &m_pdfId1,        "pdfId1/I" );
-    m_tree->Branch("pdfId2",            &m_pdfId2,        "pdfId2/I" );
-    m_tree->Branch("x1",                &m_x1,            "x1/F"  );
-    m_tree->Branch("x2",                &m_x2,            "x2/F"  );
-    //m_tree->Branch("scale",             &m_scale,         "scale/F");
-    //m_tree->Branch("q",                 &m_q,             "q/F");
-    //m_tree->Branch("pdf1",              &m_pdf1,          "pdf1/F");
-    //m_tree->Branch("pdf2",              &m_pdf2,          "pdf2/F");
-    m_tree->Branch("xf1",               &m_xf1,           "xf1/F");
-    m_tree->Branch("xf2",               &m_xf2,           "xf2/F");
-  }
-
-  if ( m_eventInfoSwitch->m_caloClus ) {
-    m_tree->Branch("caloCluster_pt",  &m_caloCluster_pt);
-    m_tree->Branch("caloCluster_phi", &m_caloCluster_phi);
-    m_tree->Branch("caloCluster_eta", &m_caloCluster_eta);
-    m_tree->Branch("caloCluster_e",   &m_caloCluster_e);
-  }
-
+  m_eventInfo       = new xAH::EventInfo(detailStr, m_units, m_isMC);
+  m_eventInfo -> setBranches(m_tree);
   this->AddEventUser();
 }
 
@@ -190,133 +126,7 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
   this->ClearEvent();
   this->ClearEventUser();
 
-  m_runNumber             = eventInfo->runNumber();
-  m_eventNumber           = eventInfo->eventNumber();
-  m_lumiBlock             = eventInfo->lumiBlock();
-  m_coreFlags             = eventInfo->eventFlags(xAOD::EventInfo::Core);
-  if ( m_isMC ) {
-    m_mcEventNumber         = eventInfo->mcEventNumber();
-    m_mcChannelNumber       = eventInfo->mcChannelNumber();
-    m_mcEventWeight         = eventInfo->mcEventWeight();
-  } else {
-    m_bcid                  = eventInfo->bcid();
-  }
-
-  if ( m_eventInfoSwitch->m_eventCleaning ) {
-
-    if ( eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) m_LArError = true;
-    else m_LArError = false;
-    m_LArFlags = eventInfo->eventFlags(xAOD::EventInfo::LAr);
-
-    if ( eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) m_TileError = true;
-    else m_TileError = false;
-    m_TileFlags = eventInfo->eventFlags(xAOD::EventInfo::Tile);
-
-    if ( eventInfo->errorState(xAOD::EventInfo::SCT)==xAOD::EventInfo::Error ) m_SCTError = true;
-    else m_SCTError = false;
-    m_SCTFlags = eventInfo->eventFlags(xAOD::EventInfo::SCT);
-
-    m_timeStamp = eventInfo->timeStamp();
-    m_timeStampNSOffset = eventInfo->timeStampNSOffset();
-
-  }
-
-  if ( m_eventInfoSwitch->m_pileup ) {
-
-    if ( m_event ) {
-      const xAOD::VertexContainer* vertices(nullptr);
-      HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
-      m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
-    } else {
-      m_npv = -1;
-    }
-
-    m_actualMu  = eventInfo->actualInteractionsPerCrossing();
-    m_averageMu = eventInfo->averageInteractionsPerCrossing();
-
-    if ( m_isMC ) {
-
-      static SG::AuxElement::ConstAccessor< float > weight_pileup ("PileupWeight");
-      static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
-      static SG::AuxElement::ConstAccessor< unsigned int > rand_run_nr("RandomRunNumber");
-      static SG::AuxElement::ConstAccessor< unsigned int > rand_lumiblock_nr("RandomLumiBlockNumber");
-
-      if ( weight_pileup.isAvailable( *eventInfo ) )	 { m_weight_pileup = weight_pileup( *eventInfo ); }	    else { m_weight_pileup = 1.0; }
-      if ( correct_mu.isAvailable( *eventInfo ) )	 { m_correct_mu = correct_mu( *eventInfo ); }		    else { m_correct_mu = -1.0; }
-      if ( rand_run_nr.isAvailable( *eventInfo ) )	 { m_rand_run_nr = rand_run_nr( *eventInfo ); } 	    else { m_rand_run_nr = 900000; }
-      if ( rand_lumiblock_nr.isAvailable( *eventInfo ) ) { m_rand_lumiblock_nr = rand_lumiblock_nr( *eventInfo ); } else { m_rand_lumiblock_nr = 0; }
-
-    }
-
-  }
-
-  if ( m_eventInfoSwitch->m_shapeLC && m_event ) {
-    const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", m_event, 0 );
-    if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoLC ) ) {
-      Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
-      m_rhoLC = -999;
-    }
-  }
-
-  if ( m_eventInfoSwitch->m_shapeEM && m_event ) {
-    const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", m_event, 0 );
-    if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
-      Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
-      m_rhoEM = -999;
-    }
-  }
-
-  if( m_eventInfoSwitch->m_caloClus && m_event ) {
-    const xAOD::CaloClusterContainer* caloClusters = 0;
-    HelperFunctions::retrieve( caloClusters, "CaloCalTopoClusters", m_event, 0);
-    // save the clusters at the EM scale
-    for( auto clus : * caloClusters ) {
-      if ( clus->pt ( xAOD::CaloCluster::State::UNCALIBRATED ) < 2000 ) { continue; } // 2 GeV cut
-      m_caloCluster_pt. push_back( clus->pt ( xAOD::CaloCluster::State::UNCALIBRATED ) / m_units );
-      m_caloCluster_eta.push_back( clus->eta( xAOD::CaloCluster::State::UNCALIBRATED ) );
-      m_caloCluster_phi.push_back( clus->phi( xAOD::CaloCluster::State::UNCALIBRATED ) );
-      m_caloCluster_e.  push_back( clus->e  ( xAOD::CaloCluster::State::UNCALIBRATED ) / m_units );
-    }
-  }
-
-  if( m_eventInfoSwitch->m_truth && m_event && m_isMC ) {
-    //MC Truth
-    const xAOD::TruthEventContainer* truthE = 0;
-    HelperFunctions::retrieve( truthE, "TruthEvents", m_event, 0 );
-    if( truthE ) {
-      const xAOD::TruthEvent* truthEvent = truthE->at(0);
-      truthEvent->pdfInfoParameter(m_pdgId1,   xAOD::TruthEvent::PDGID1);
-      truthEvent->pdfInfoParameter(m_pdgId2,   xAOD::TruthEvent::PDGID2);
-      truthEvent->pdfInfoParameter(m_pdfId1,   xAOD::TruthEvent::PDFID1);
-      truthEvent->pdfInfoParameter(m_pdfId2,   xAOD::TruthEvent::PDFID2);
-      truthEvent->pdfInfoParameter(m_x1,       xAOD::TruthEvent::X1);
-      truthEvent->pdfInfoParameter(m_x2,       xAOD::TruthEvent::X2);
-      //truthEvent->pdfInfoParameter(m_scale,    xAOD::TruthEvent::SCALE);
-      //truthEvent->pdfInfoParameter(m_q,        xAOD::TruthEvent::Q);
-      //truthEvent->pdfInfoParameter(m_pdf1,     xAOD::TruthEvent::PDF1);
-      //truthEvent->pdfInfoParameter(m_pdf2,     xAOD::TruthEvent::PDF2);
-      truthEvent->pdfInfoParameter(m_xf1,      xAOD::TruthEvent::XF1);
-      truthEvent->pdfInfoParameter(m_xf2,      xAOD::TruthEvent::XF2);
-
-//      // crashes because of q?`
-//        const xAOD::TruthEvent::PdfInfo info = truthEvent->pdfInfo();
-//        if( info.valid() ) {
-//          m_pdgId1 = info.pdgId1;
-//          m_pdgId2 = info.pdgId2;
-//          m_pdfId1 = info.pdfId1;
-//          m_pdfId2 = info.pdfId2;
-//          m_x1     = info.x1;
-//          m_x2     = info.x2;
-//          //m_q      = info.Q;
-//          m_xf1    = info.xf1;
-//          m_xf2    = info.xf2;
-//        }
-
-    }
-
-  }
+  m_eventInfo->FillEvent(eventInfo, m_event);
 
   this->FillEventUser(eventInfo);
 }
@@ -1818,41 +1628,7 @@ void HelpTreeBase::ClearTruthFatJets() {
 }
 
 void HelpTreeBase::ClearEvent() {
-  m_runNumber = m_eventNumber = m_mcEventNumber = m_mcChannelNumber = m_bcid = m_lumiBlock;
-  m_coreFlags = 0;
-  //eventCleaning
-  m_LArError = false;
-  m_TileError = false;
-  m_SCTError = false;
-  m_LArFlags = 0;
-  m_TileFlags = 0;
-  m_SCTFlags = 0;
-  m_mcEventWeight = 1.;
-  m_weight_pileup = 1.;
-  m_timeStamp = -999;
-  m_timeStampNSOffset = -999;
-  // pileup
-  m_npv = -999;
-  m_actualMu = m_averageMu = -999;
-  // shapeEM
-  m_rhoEM = -999;
-  // shapeLC
-  m_rhoLC = -999;
-  // truth
-  m_pdgId1 = m_pdgId2 = m_pdfId1 = m_pdfId2 = -999;
-  m_x1 = m_x2 = -999;
-  m_xf1 = m_xf2 = -999;
-
-  //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
-
-  // CaloCluster
-  if( m_eventInfoSwitch->m_caloClus){
-    m_caloCluster_pt.clear();
-    m_caloCluster_eta.clear();
-    m_caloCluster_phi.clear();
-    m_caloCluster_e.clear();
-  }
-
+  m_eventInfo->clear();
 }
 
 

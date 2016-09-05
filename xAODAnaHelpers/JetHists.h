@@ -6,6 +6,7 @@
 #include "xAODAnaHelpers/TracksInJetHists.h"
 #include <xAODJet/JetContainer.h>
 #include "xAODAnaHelpers/Jet.h"
+#include "xAODAnaHelpers/EventInfo.h"
 
 class JetHists : public IParticleHists
 {
@@ -17,7 +18,7 @@ class JetHists : public IParticleHists
 
     virtual StatusCode initialize();
     virtual StatusCode execute( const xAOD::Jet* jet, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
-    virtual StatusCode execute( const xAH::Jet* jet, float eventWeight);
+    virtual StatusCode execute( const xAH::Jet* jet,  float eventWeight, const xAH::EventInfo* eventInfo = 0);
     virtual StatusCode finalize();
 
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
@@ -27,7 +28,7 @@ class JetHists : public IParticleHists
   protected:
 
     virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
-    virtual StatusCode execute( const xAH::Particle* particle,   float eventWeight );
+    virtual StatusCode execute( const xAH::Particle* particle,   float eventWeight, const xAH::EventInfo* eventInfo = 0 );
 
     // holds bools that control which histograms are filled
     HelperClasses::JetInfoSwitch* m_infoSwitch;
