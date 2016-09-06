@@ -157,6 +157,12 @@ class JetHists : public IParticleHists
 
 
     TProfile* m_vtxHadDummy_vs_lBlock; //!
+    TProfile* m_vtxEff10_vs_lBlock; //!
+    TProfile* m_vtxEff1_vs_lBlock; //!
+    TProfile* m_vtxEff10_raw_vs_lBlock; //!
+    TProfile* m_vtxEff1_raw_vs_lBlock; //!
+    TProfile* m_vtxEff10_noDummy_vs_lBlock; //!
+    TProfile* m_vtxEff1_noDummy_vs_lBlock; //!
     TProfile* m_frac_MV2c2040_vs_lBlock; //!
     TProfile* m_frac_MV2c2050_vs_lBlock; //!
     TProfile* m_frac_MV2c2060_vs_lBlock; //!
@@ -268,6 +274,14 @@ class JetHists : public IParticleHists
     TracksInJetHists* m_tracksInJet; //!
 
     // HLT Vertex Comp
+    TH1F*     m_vtx_online_x0; //!
+    TH1F*     m_vtx_online_y0; //!
+    TH1F*     m_vtx_online_z0; //!
+    TH1F*     m_vtx_online_x0_raw; //!
+    TH1F*     m_vtx_online_y0_raw; //!
+    TH1F*     m_vtx_online_z0_raw; //!
+
+
     TH1F* m_vtxOnlineValid; //!
     TH1F* m_vtxOfflineValid; //!
     TH1F* m_vtxDiffz0; //!
