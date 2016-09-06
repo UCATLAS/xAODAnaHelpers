@@ -1415,7 +1415,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     }
 
 
-  if(m_infoSwitch->m_flavTag)
+  if(m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT)
     {
 //      h_SV0                       ->Fill(jet->SV0                  , eventWeight);
 //      h_SV1                       ->Fill(jet->SV1                  , eventWeight);
@@ -1423,14 +1423,13 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
       float MV2c20 = jet->MV2c20;
 
-      m_COMB                      ->Fill(jet->SV1IP3D              , eventWeight);
       m_MV2c00                    ->Fill(jet->MV2c00               , eventWeight);
       m_MV2c10                    ->Fill(jet->MV2c10               , eventWeight);
       m_MV2c20                    ->Fill(jet->MV2c20               , eventWeight);
       m_MV2c20_l                  ->Fill(MV2c20                    , eventWeight);
       //      h_MV2                       ->Fill(jet->MV2                  , eventWeight);
 
-      if(m_infoSwitch->m_vsLumiBlock){
+      if(m_infoSwitch->m_vsLumiBlock && eventInfo){
       
 	uint32_t lumiBlock = eventInfo->m_lumiBlock;
       
@@ -1442,25 +1441,29 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 	bool passMV2c2085 = (MV2c20 > -0.7887);
 
 
-      if(m_infoSwitch->m_flavTagHLT){
-	passMV2c2040 = (MV2c20 > 0.75);
-	passMV2c2050 = (MV2c20 > 0.50);
-	passMV2c2060 = (MV2c20 > -0.022472);
-	passMV2c2070 = (MV2c20 > -0.509032);
-	passMV2c2077 = (MV2c20 > -0.764668);
-	passMV2c2085 = (MV2c20 > -0.938441);
+	if(m_infoSwitch->m_flavTagHLT){
+	  passMV2c2040 = (MV2c20 > 0.75);
+	  passMV2c2050 = (MV2c20 > 0.50);
+	  passMV2c2060 = (MV2c20 > -0.022472);
+	  passMV2c2070 = (MV2c20 > -0.509032);
+	  passMV2c2077 = (MV2c20 > -0.764668);
+	  passMV2c2085 = (MV2c20 > -0.938441);
+	}
+
+	m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c2040,  eventWeight);
+	m_frac_MV2c2050_vs_lBlock  -> Fill(lumiBlock, passMV2c2050,  eventWeight);
+	m_frac_MV2c2060_vs_lBlock  -> Fill(lumiBlock, passMV2c2060,  eventWeight);
+	m_frac_MV2c2070_vs_lBlock  -> Fill(lumiBlock, passMV2c2070,  eventWeight);
+	m_frac_MV2c2077_vs_lBlock  -> Fill(lumiBlock, passMV2c2077,  eventWeight);
+	m_frac_MV2c2085_vs_lBlock  -> Fill(lumiBlock, passMV2c2085,  eventWeight);
+
+
       }
 
-      m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c2040,  eventWeight);
-      m_frac_MV2c2050_vs_lBlock  -> Fill(lumiBlock, passMV2c2050,  eventWeight);
-      m_frac_MV2c2060_vs_lBlock  -> Fill(lumiBlock, passMV2c2060,  eventWeight);
-      m_frac_MV2c2070_vs_lBlock  -> Fill(lumiBlock, passMV2c2070,  eventWeight);
-      m_frac_MV2c2077_vs_lBlock  -> Fill(lumiBlock, passMV2c2077,  eventWeight);
-      m_frac_MV2c2085_vs_lBlock  -> Fill(lumiBlock, passMV2c2085,  eventWeight);
-
-
-    }
-
+      m_COMB                      ->Fill(jet->SV1IP3D              , eventWeight);
+      //m_JetFitter               ->Fill(jet->JetFitter            , eventWeight);
+      //m_JetFitterCombNN         ->Fill(jet->JetFitter            , eventWeight);
+    
 //
 //      h_IP3DvsMV2c20->Fill(jet->MV2c20, jet->IP3D);
     }
@@ -1470,17 +1473,30 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     {
       //std::cout << " flav " << std::endl;
       m_vtxHadDummy               ->Fill(jet->vtxHadDummy          , eventWeight);
-      m_vtxDiffx0                 ->Fill(jet->vtx_offline_x0 - jet->vtx_online_x0          , eventWeight);
-      m_vtxDiffx0_l               ->Fill(jet->vtx_offline_x0 - jet->vtx_online_x0          , eventWeight);
+      float vtxDiffx0 = jet->vtx_offline_x0 - jet->vtx_online_x0;
+      m_vtxDiffx0                 ->Fill(vtxDiffx0          , eventWeight);
+      m_vtxDiffx0_l               ->Fill(vtxDiffx0          , eventWeight);
 
-      m_vtxDiffy0                 ->Fill(jet->vtx_offline_y0 - jet->vtx_online_y0          , eventWeight);
-      m_vtxDiffy0_l               ->Fill(jet->vtx_offline_y0 - jet->vtx_online_y0          , eventWeight);
+      float vtxDiffy0 = jet->vtx_offline_y0 - jet->vtx_online_y0;
+      m_vtxDiffy0                 ->Fill(vtxDiffy0          , eventWeight);
+      m_vtxDiffy0_l               ->Fill(vtxDiffy0          , eventWeight);
 
-      m_vtxDiffz0                 ->Fill(jet->vtx_offline_z0 - jet->vtx_online_z0          , eventWeight);
-      m_vtxDiffz0_m               ->Fill(jet->vtx_offline_z0 - jet->vtx_online_z0          , eventWeight);
-      m_vtxDiffz0_s               ->Fill(jet->vtx_offline_z0 - jet->vtx_online_z0          , eventWeight);
+      float vtxDiffz0 = jet->vtx_offline_z0 - jet->vtx_online_z0;
+      m_vtxDiffz0                 ->Fill(vtxDiffz0          , eventWeight);
+      m_vtxDiffz0_m               ->Fill(vtxDiffz0          , eventWeight);
+      m_vtxDiffz0_s               ->Fill(vtxDiffz0          , eventWeight);
       //m_vtx_offline_z                 ->Fill(jet->vtx_offline_z0          , eventWeight);
       //m_vtx_online_z                 ->Fill(jet->vtx_online_z0          , eventWeight);
+
+      if(m_infoSwitch->m_vsLumiBlock && eventInfo){
+	uint32_t lumiBlock = eventInfo->m_lumiBlock;
+
+	m_vtxDiffx0_vs_lBlock     ->Fill(lumiBlock, vtxDiffx0          , eventWeight);
+	m_vtxDiffy0_vs_lBlock     ->Fill(lumiBlock, vtxDiffy0          , eventWeight);
+	m_vtxDiffz0_vs_lBlock     ->Fill(lumiBlock, vtxDiffz0          , eventWeight);
+	m_vtxHadDummy_vs_lBlock   ->Fill(lumiBlock, bool(jet->vtxHadDummy),    eventWeight);
+      }
+
 
     }
 
