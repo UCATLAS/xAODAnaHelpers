@@ -1,5 +1,8 @@
 // c++ include(s):
 #include <iostream>
+#include <map>
+#include <random>
+#include <algorithm>
 
 // EL include(s):
 #include <EventLoop/Job.h>
@@ -35,8 +38,9 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
     Algorithm(className),
     m_muRecoSF_tool(nullptr),
     m_muIsoSF_tool(nullptr),
-    m_muTrigSF_tool(nullptr),
     m_muTTVASF_tool(nullptr)
+    // trigger SF map is not 
+    // initialized in ctor
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -65,12 +69,14 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
 
   // Trigger efficiency SF
   //
-  m_runNumber                  = 276329;
+  m_runNumber2015              = 276329;
+  m_runNumber2016              = 300345;
   m_useRandomRunNumber         = true;
 
   m_WorkingPointRecoTrig       = "Loose";
   m_WorkingPointIsoTrig        = "LooseTrackOnly";
-  m_Year                       = "";
+  // list of comma-separated years
+  m_Years                      = "2016"; 
   m_MCCampaign                 = "";
   m_SingleMuTrig               = "HLT_mu20_iloose_L1MU15";
   m_DiMuTrig                   = "HLT_2mu14";
@@ -285,64 +291,121 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   
   // 3.
   // Initialise the CP::MuonTriggerScaleFactors tool
+  // several years can be configured
   //
+  
+  //std::vector<std::string> m_YearsList;
+  std::string tmp_years = m_Years;
+ 
+  // Parse all comma seperated years
   //
-
-  m_trigEffSF_tool_name = "MuonTriggerScaleFactors_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-  std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
-
-  std::cout << "" << std::endl;
-  Info("MuonEfficiencyCorrector::initialize()", " Initialising CP::MuonTriggerScaleFactors for TRIGGER efficiency SF..." );
-  std::cout << "" << std::endl;
-
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name), "Failed to check whether tool already exists in asg::ToolStore" );
-  if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_name ) ) {
-    m_muTrigSF_tool = asg::ToolStore::get<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_name );
-  } else {
-    m_muTrigSF_tool = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_name );
-    RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
-    RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
-    if ( !m_Year.empty() ) {
-      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->setProperty("Year", m_Year ),"Failed to set Year property of MuonTriggerScaleFactors");
-    }
-    if ( !m_MCCampaign.empty() ) {
-    RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->setProperty("mc", m_MCCampaign ),"Failed to set MC Campaign property of MuonTriggerScaleFactors");
-    
-    }
-    RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool->initialize(), "Failed to properly initialize CP::MuonTriggerScaleFactors for trigger efficiency SF");
-
-    //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration
-    //
-    m_outputSystNamesTrig      = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-    m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-
-    if ( m_debug ) {
-      CP::SystematicSet affectSystsTrig = m_muTrigSF_tool->affectingSystematics();
-      for ( const auto& syst_it : affectSystsTrig ) { Info("initialize()","MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: %s", (syst_it.name()).c_str()); }
-    }
-    //
-    // Make a list of systematics to be used, based on configuration input
-    // Use HelperFunctions::getListofSystematics() for this!
-    //
-    const CP::SystematicSet recSystsTrig = m_muTrigSF_tool->recommendedSystematics();
-    m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
-
-    Info("initialize()","Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
-    for ( const auto& syst_it : m_systListTrig ) {
-      if ( m_systNameTrig.empty() ) {
-    	Info("initialize()","\t Running w/ nominal configuration only!");
-    	break;
-      }
-      Info("initialize()","\t %s", (syst_it.name()).c_str());
-    }
-
-    if ( m_isMC && !m_useRandomRunNumber ) {
-      Warning("initialize()","m_useRandomRunNumber is set to false!" );
-      Warning("initialize()"," ===> setting default runNumber %i, read from user's configuration - NOT RECOMMENDED", m_runNumber );
-      if ( m_muTrigSF_tool->setRunNumber( m_runNumber ) == CP::CorrectionCode::Error ) { Warning("initialize()","Cannot set RunNumber for MuonTriggerScaleFactors tool"); }
+  while ( tmp_years.size() > 0) {
+    size_t pos = tmp_years.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_years.size();
+      m_YearsList.push_back(tmp_years.substr(0, pos));
+      tmp_years.erase(0, pos);
+    } else {
+      m_YearsList.push_back(tmp_years.substr(0, pos));
+      tmp_years.erase(0, pos+1);
     }
   }
-
+  
+  // Initialize vector of names
+  //
+  for(auto yr : m_YearsList) {
+    m_trigEffSF_tool_names[yr] = "MuonTriggerScaleFactors_" + yr + "_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+  }
+  
+  // Loop over all years and initialize corresponding tools
+  //
+  for(auto yr : m_YearsList) {
+  
+    std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
+ 
+    std::cout << "" << std::endl;
+    Info("MuonEfficiencyCorrector::initialize()", " Initialising CP::MuonTriggerScaleFactors for TRIGGER efficiency SF..." );
+    std::cout << "" << std::endl;
+ 
+    RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_names[yr]), "Failed to check whether tool already exists in asg::ToolStore" );
+    if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_names[yr] ) ) {
+      m_muTrigSF_tools[yr] = asg::ToolStore::get<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_names[yr] );
+    } else {
+      m_muTrigSF_tools[yr] = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_names[yr] );
+      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
+      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
+      if ( !yr.empty() ) {
+        RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("Year", yr ),"Failed to set Year property of MuonTriggerScaleFactors");
+      }
+      if ( !m_MCCampaign.empty() ) {
+      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("mc", m_MCCampaign ),"Failed to set MC Campaign property of MuonTriggerScaleFactors");
+      
+      }
+      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->initialize(), "Failed to properly initialize CP::MuonTriggerScaleFactors for trigger efficiency SF");
+      
+      
+      
+      /*    
+      //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration
+      //
+      m_outputSystNamesTrig      = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+      m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+  
+      if ( m_debug ) {
+        CP::SystematicSet affectSystsTrig = m_muTrigSF_tools[yr]->affectingSystematics();
+        for ( const auto& syst_it : affectSystsTrig ) { Info("initialize()","MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: %s", (syst_it.name()).c_str()); }
+      }
+      //
+      // Make a list of systematics to be used, based on configuration input
+      // Use HelperFunctions::getListofSystematics() for this!
+      //
+      const CP::SystematicSet recSystsTrig = m_muTrigSF_tools[yr]->recommendedSystematics();
+      m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
+  
+      Info("initialize()","Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
+      for ( const auto& syst_it : m_systListTrig ) {
+        if ( m_systNameTrig.empty() ) {
+      	Info("initialize()","\t Running w/ nominal configuration only!");
+      	break;
+        }
+        Info("initialize()","\t %s", (syst_it.name()).c_str());
+      }
+      */ 
+    }
+  
+  } 
+  
+  
+  //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration
+  //
+  m_outputSystNamesTrig      = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+  m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+  
+  if ( m_debug ) {
+    CP::SystematicSet affectSystsTrig = m_muTrigSF_tools[m_YearsList[0]]->affectingSystematics();
+    for ( const auto& syst_it : affectSystsTrig ) { Info("initialize()","MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: %s", (syst_it.name()).c_str()); }
+  }
+  //
+  // Make a list of systematics to be used, based on configuration input
+  // Use HelperFunctions::getListofSystematics() for this!
+  //
+  const CP::SystematicSet recSystsTrig = m_muTrigSF_tools[m_YearsList[0]]->recommendedSystematics();
+  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
+  
+  Info("initialize()","Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
+  for ( const auto& syst_it : m_systListTrig ) {
+    if ( m_systNameTrig.empty() ) {
+  	Info("initialize()","\t Running w/ nominal configuration only!");
+  	break;
+    }
+    Info("initialize()","\t %s", (syst_it.name()).c_str());
+  }
+  
+  
+  
+  
+  
+  
 
   // 4.
   // initialize the CP::MuonEfficiencyScaleFactors Tool for track-to-vertex association (TTVA) SF
@@ -773,33 +836,62 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
   // Do it only if a tool with *this* name hasn't already been used
   //
-  if ( !isToolAlreadyUsed(m_trigEffSF_tool_name) ) {
-
+  
+  std::string randYear = "2016";
+    
+  if ( m_isMC && m_useRandomRunNumber ) {
+    
     // Unless specifically switched off by the user,
     // use the per-event random runNumber weighted by integrated luminosity got from CP::PileupReweightingTool::getRandomRunNumber()
     // Source:
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Generating_PRW_config_files
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MCPAnalysisGuidelinesMC15#Muon_trigger_efficiency_scale_fa
     //
-    if ( m_isMC && m_useRandomRunNumber ) {
+    // Use mu-dependent randomization (recommended)
+    //
+    //
+    // TEMP! Commenting this out b/c stupid AnaToolHandle does not work as it should...
+    //
+    //int randRunNumber = m_pileup_tool->getRandomRunNumber( *eventInfo, true );
+    int randRunNumber = asg::ToolStore::get<CP::PileupReweightingTool>("Pileup")->getRandomRunNumber( *eventInfo, true ); 
+    int runNumber = randRunNumber;
 
-      // Use mu-dependent randomization (recommended)
-      //
-      //
-      // TEMP! Commenting this out b/c stupid AnaToolHandle does not work as it should...
-      //
-      //int randRunNumber = m_pileup_tool->getRandomRunNumber( *eventInfo, true );
-      //
-      int randRunNumber = asg::ToolStore::get<CP::PileupReweightingTool>("Pileup")->getRandomRunNumber( *eventInfo, true );
-     
-      int runNumber = ( randRunNumber != 0 ) ? randRunNumber : m_runNumber;
-
-      if( m_muTrigSF_tool->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
-    	Error("executeSF()", "Failed to set RunNumber for MuonTriggerScaleFactors tool");
-    	return EL::StatusCode::FAILURE;
-      }
-
+    if (runNumber >= 266904 && runNumber <= 284484 ) { 
+      randYear = "2015";
+    } else if (runNumber >= 296939 && runNumber <= 304494) { 
+      randYear = "2016";
+    } else {
+      
+      std::srand ( unsigned ( std::time(0) ) ); 
+      std::random_shuffle ( m_YearsList.begin(), m_YearsList.end() ); 
+      randYear = m_YearsList[0];
+    
     }
+    
+    if( m_muTrigSF_tools[randYear]->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
+      Error("executeSF()", "Failed to set RunNumber for MuonTriggerScaleFactors tool");
+      return EL::StatusCode::FAILURE;
+    }
+  
+  }
+    
+  if ( m_isMC && !m_useRandomRunNumber ) {
+    Warning("executeSF()","m_useRandomRunNumber is set to false!" );
+    
+    if ( m_YearsList.size() > 1 ) { 
+      Warning("executeSF()","but m_YearsList contains more that one element!!!" );
+      Warning("executeSF()","only consider first element of the list to fix the run number");
+    }
+    
+    int rn = 0;
+    if ( m_YearsList[0] == "2015" ) { rn = m_runNumber2015; }
+    if ( m_YearsList[0] == "2016" ) { rn = m_runNumber2016; }
+    if ( m_muTrigSF_tools[m_YearsList[0]]->setRunNumber( rn ) == CP::CorrectionCode::Error ) { Warning("executeSF()","Cannot set RunNumber for MuonTriggerScaleFactors tool"); }
+    randYear = m_YearsList[0];
+  }
+    
+    
+  if ( !isToolAlreadyUsed(m_trigEffSF_tool_names[randYear]) ) {
 
     for ( const auto& syst_it : m_systListIso ) {
 
@@ -816,7 +908,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
       // apply syst
       //
-      if ( m_muTrigSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_muTrigSF_tools[randYear]->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	Error("executeSF()", "Failed to configure MuonTriggerScaleFactors for systematic %s", syst_it.name().c_str());
     	return EL::StatusCode::FAILURE;
       }
@@ -847,7 +939,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 }
 
     	 double triggerEffSF(1.0); // tool wants a double
-    	 if ( !m_SingleMuTrig.empty() && m_muTrigSF_tool->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
+    	 if ( !m_SingleMuTrig.empty() && m_muTrigSF_tools[randYear]->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
   	   Warning( "executeSF()", "Problem in getTriggerScaleFactor - single muon trigger(s)");
   	   triggerEffSF = 1.0;
     	 }
@@ -857,7 +949,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 sfVecTrig( *mu_itr ).push_back(triggerEffSF);
 
     	 double triggerMCEff(0.0); // tool wants a double
-    	 if ( !m_SingleMuTrig.empty() && m_muTrigSF_tool->getTriggerEfficiency( *mu_itr, triggerMCEff, m_SingleMuTrig, !m_isMC ) != CP::CorrectionCode::Ok ) {
+    	 if ( !m_SingleMuTrig.empty() && m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerMCEff, m_SingleMuTrig, !m_isMC ) != CP::CorrectionCode::Ok ) {
     	   Warning( "executeSF()", "Problem in getTriggerEfficiency - single muon trigger(s)");
     	   triggerMCEff = 0.0;
     	 }
@@ -869,6 +961,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 if ( m_debug ) {
     	   Info( "executeSF()", "===>>>");
     	   Info( "executeSF()", " ");
+    	   Info( "executeSF()", "Random year: %s", randYear.c_str() );
   	   Info( "executeSF()", "Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
   	   Info( "executeSF()", " ");
   	   Info( "executeSF()", "Trigger efficiency SF decoration: %s", m_outputSystNamesTrig.c_str() );
