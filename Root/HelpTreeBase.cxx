@@ -1078,71 +1078,49 @@ void HelpTreeBase::AddTruthParts(const std::string truthName, const std::string 
 {
 
   if(m_debug) Info("AddTruthParts()", "Adding truth particle %s with variables: %s", truthName.c_str(), detailStr.c_str());
-
-  m_truthInfoSwitch = new HelperClasses::TruthInfoSwitch( detailStr );
-
-  m_truth[truthName] = new truthInfo();
-
-  // always
-  m_tree->Branch(("n"+truthName).c_str(),    &m_truth[truthName]->N, ("n"+truthName+"/I").c_str());
-  m_tree->Branch((truthName+"_pdgId").c_str(),    &m_truth[truthName]->pdgId);
-  m_tree->Branch((truthName+"_status").c_str(),    &m_truth[truthName]->status);
-
-  if ( m_truthInfoSwitch->m_kinematic ) {
-    m_tree->Branch((truthName+"_pt" ).c_str(), &m_truth[truthName]->pt);
-    m_tree->Branch((truthName+"_eta").c_str(), &m_truth[truthName]->eta);
-    m_tree->Branch((truthName+"_phi").c_str(), &m_truth[truthName]->phi);
-    m_tree->Branch((truthName+"_E"  ).c_str(), &m_truth[truthName]->E);
-    m_tree->Branch((truthName+"_m"  ).c_str(), &m_truth[truthName]->m);
-  }
-
+  m_truth[truthName] = new xAH::TruthContainer(truthName, detailStr, m_units);
+  
+  xAH::TruthContainer* thisTruth = m_truth[truthName];
+  thisTruth->setBranches(m_tree);
   this->AddTruthUser(truthName);
 }
 
 void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truthParts ) {
 
   this->ClearTruth(truthName);
-  this->ClearTruthUser(truthName);
 
   // We need some basic cuts here to avoid many PseudoRapiditity warnings being thrown ...
-  float truthparticle_ptmax = 5.0;
-  float truthparticle_etamax = 6.0;
+  float truthparticle_ptmin  = 2.0;
+  float truthparticle_etamin = 8.0;
 
   for( auto truth_itr : *truthParts ) {
-
-    m_truth[truthName]->pdgId.push_back  ( truth_itr->pdgId() );
-    m_truth[truthName]->status.push_back  ( truth_itr->status() );
-
-    if( m_truthInfoSwitch->m_kinematic ){
-      if(truth_itr->pt() / m_units > truthparticle_ptmax && fabs(truth_itr->eta()) < truthparticle_etamax){
-	m_truth[truthName]->pt .push_back  ( truth_itr->pt() / m_units );
-	m_truth[truthName]->eta.push_back  ( truth_itr->eta() );
-	m_truth[truthName]->phi.push_back  ( truth_itr->phi() );
-	m_truth[truthName]->E  .push_back  ( truth_itr->e() / m_units );
-	m_truth[truthName]->m  .push_back  ( truth_itr->m() / m_units );
-      }
+    
+    if((truth_itr->pt() / m_units < truthparticle_ptmin) || (fabs(truth_itr->eta()) < truthparticle_etamin) ){
+      continue;
     }
-
-    this->FillTruthUser(truthName, truth_itr);
-
-    m_truth[truthName]->N++;
-
-  } // loop over Truth
+    
+    this->FillTruth(truth_itr, truthName);
+  }
 
 }
 
-void HelpTreeBase::ClearTruth(const std::string truthName) {
+void HelpTreeBase::FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName )
+{
+  xAH::TruthContainer* thisTruth = m_truth[truthName];
 
-  m_truth[truthName]->N = 0;
-  m_truth[truthName]->pdgId.clear();
-  m_truth[truthName]->status.clear();
-  if( m_truthInfoSwitch->m_kinematic ){
-    m_truth[truthName]->pt.clear();
-    m_truth[truthName]->eta.clear();
-    m_truth[truthName]->phi.clear();
-    m_truth[truthName]->E.clear();
-    m_truth[truthName]->m.clear();
-  }
+  thisTruth->FillTruth(truthPart);
+
+  this->FillTruthUser(truthName, truthPart);
+
+  return;
+}
+
+void HelpTreeBase::ClearTruth(const std::string truthName) {
+  
+  xAH::TruthContainer* thisTruth = m_truth[truthName];
+  thisTruth->clear();
+
+  this->ClearTruthUser(truthName);
 
 }
 

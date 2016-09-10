@@ -410,12 +410,16 @@ namespace HelperClasses {
         Parameter        Pattern        Match
         ================ ============== =======
         m_kinematic      kinematic      exact
+        m_type           type           exact
+        m_bVtx           bVtx           exact
         ================ ============== =======
     @endrst
    */
   class TruthInfoSwitch : public InfoSwitch {
   public:
     bool m_kinematic;
+    bool m_type;
+    bool m_bVtx;
     TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
