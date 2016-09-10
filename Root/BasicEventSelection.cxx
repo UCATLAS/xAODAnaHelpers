@@ -92,6 +92,9 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   m_PRWFileNames       = "";
   m_PU_default_channel = 0;
 
+  // Data weight for unprescaling data
+  m_savePrescaleDataWeight  = false;
+  
   // Primary Vertex
   m_vertexContainerName = "PrimaryVertices";
   m_applyPrimaryVertexCut = false;
@@ -527,11 +530,18 @@ EL::StatusCode BasicEventSelection :: initialize ()
     //m_pileup_tool_handle->EnableDebugging(true);
 
   }
-
+  
+  // pileup reweighing tool is needed to get the data weight for unprescaling  
+  if ( m_savePrescaleDataWeight && !m_doPUreweighting) {
+    
+    Error("initialize()", "m_savePrescaleDataWeight is true but m_doPUreweighting is false !!!");
+    return EL::StatusCode::FAILURE;
+  
+  } 
+  
   // 3.
   // initialize the Trig::TrigDecisionTool
   //
-
   if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() || 
       m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
 
@@ -596,15 +606,23 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   //-----------------------------------------
   // Print triggers used for first entry only
+  // and fill the trigger expression for 
+  // unprescaling data
   //-----------------------------------------
-  if ( m_eventCounter == 0 && !m_triggerSelection.empty() ) {
-    Info("execute()", "*** Triggers used (in OR) are:\n");
-    auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
-    std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
-    for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
-      printf("    %s\n", triggersUsed.at(iTrigger).c_str());
+  
+  std::string TriggerExpression = ""; 
+
+  if ( !m_triggerSelection.empty() ) {
+    if (m_eventCounter == 0 || m_savePrescaleDataWeight) {
+      if (m_eventCounter == 0) Info("execute()", "*** Triggers used (in OR) are:\n");
+      auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
+      std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
+      for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
+        if (m_eventCounter == 0) printf("    %s\n", triggersUsed.at(iTrigger).c_str());
+        TriggerExpression.append(triggersUsed.at(iTrigger).c_str());
+        if ( iTrigger != triggersUsed.size() - 1) TriggerExpression.append(" || ");
+      }
     }
-    printf("\n");
   }
 
   if ( m_eventCounter == 0 && !m_extraTriggerSelection.empty() ) {
@@ -660,6 +678,35 @@ EL::StatusCode BasicEventSelection :: execute ()
   } else {
     mcEvtWeight = mcEvtWeightAcc(*eventInfo);
   }
+
+  //------------------------------------------------------------------------------------------
+  // Declare an 'eventInfo' decorator with prescale weight for unprescaling data
+  // https://cds.cern.ch/record/2014726/files/ATL-COM-SOFT-2015-119.pdf (line 130)
+  //------------------------------------------------------------------------------------------
+  
+  static SG::AuxElement::Decorator< float > prsc_DataWeightDecor("prescale_DataWeight");
+  static SG::AuxElement::Accessor< float >  prsc_DataWeightAcc("prescale_DataWeight");
+
+  float prsc_DataWeight(1.0);
+  
+  // Check if need to create xAH event weight
+  //
+  if ( !prsc_DataWeightDecor.isAvailable(*eventInfo) ) {
+    if ( !m_isMC && m_savePrescaleDataWeight ) {
+      
+      // get mu dependent data weight
+      prsc_DataWeight = m_pileup_tool_handle->getDataWeight( *eventInfo, TriggerExpression, true );
+    }
+    
+    // Decorate event with the *total* MC event weight
+    //
+    prsc_DataWeightDecor(*eventInfo) = prsc_DataWeight;
+  } else {
+    prsc_DataWeight = prsc_DataWeightAcc(*eventInfo);
+  }
+
+
+
 
   //------------------------------------------------------------------------------------------
   // Fill initial bin of cutflow

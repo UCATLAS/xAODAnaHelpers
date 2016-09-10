@@ -33,6 +33,7 @@ void EventInfo::setTree(TTree *tree)
     connectBranch<float   >(tree, "mcEventWeight",              &m_mcEventWeight);       
   } else {
     connectBranch<int     >(tree, "bcid",                       &m_bcid);                 
+    connectBranch<float   >(tree, "prescale_DataWeight",               &m_prescale_DataWeight);       
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -114,6 +115,7 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
   } else {
     tree->Branch("bcid",               &m_bcid,           "bcid/I");
+    tree->Branch("prescale_DataWeight",       &m_prescale_DataWeight,  "prescale_DataWeight/F");
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -185,6 +187,7 @@ void EventInfo::clear()
   m_TileFlags = 0;
   m_SCTFlags = 0;
   m_mcEventWeight = 1.;
+  m_prescale_DataWeight = 1.;
   m_weight_pileup = 1.;
   m_timeStamp = -999;
   m_timeStampNSOffset = -999;
@@ -270,6 +273,14 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
       if ( correct_mu.isAvailable( *eventInfo ) )	 { m_correct_mu = correct_mu( *eventInfo ); }		    else { m_correct_mu = -1.0; }
       if ( rand_run_nr.isAvailable( *eventInfo ) )	 { m_rand_run_nr = rand_run_nr( *eventInfo ); } 	    else { m_rand_run_nr = 900000; }
       if ( rand_lumiblock_nr.isAvailable( *eventInfo ) ) { m_rand_lumiblock_nr = rand_lumiblock_nr( *eventInfo ); } else { m_rand_lumiblock_nr = 0; }
+
+    }
+
+    if ( !m_mc ) {
+
+      static SG::AuxElement::ConstAccessor< float > prsc_DataWeight ("prescale_DataWeight");
+
+      if ( prsc_DataWeight.isAvailable( *eventInfo ) )	 { m_prescale_DataWeight = prsc_DataWeight( *eventInfo ); }	    else { m_prescale_DataWeight = 1.0; }
 
     }
 
