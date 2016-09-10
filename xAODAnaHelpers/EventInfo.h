@@ -56,6 +56,7 @@ namespace xAH {
     int      m_rand_run_nr;
     int      m_rand_lumiblock_nr;
     int      m_bcid;
+    float    m_prescale_DataWeight;
 
     // event pileup
     int      m_npv;

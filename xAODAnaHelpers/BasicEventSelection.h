@@ -53,6 +53,9 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_PRWFileNames;
     int m_PU_default_channel;
 
+    // Unprescaling data
+    bool m_savePrescaleDataWeight;
+
     // Primary Vertex
     std::string m_vertexContainerName;
     bool m_applyPrimaryVertexCut;
