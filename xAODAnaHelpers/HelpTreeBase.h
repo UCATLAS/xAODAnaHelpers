@@ -101,7 +101,6 @@ public:
   HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
   HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-  HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_truthFatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
@@ -298,22 +297,6 @@ protected:
   // Truth
   //
   std::map<std::string, xAH::TruthContainer*> m_truth;
-  //struct truthInfo{
-  //
-  //  int  N;
-  //  std::vector<int> pdgId;
-  //  std::vector<int> status;
-  //
-  //  std::vector<float> pt;
-  //  std::vector<float> eta;
-  //  std::vector<float> phi;
-  //  std::vector<float> E;
-  //  std::vector<float> m;
-  //
-  //  truthInfo(){ }
-  //
-  //};
-
 
   // fat jets
   std::map<std::string, int> m_nfatjet;

@@ -31,7 +31,6 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_trigInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
   m_phInfoSwitch(nullptr),
-  m_truthInfoSwitch(nullptr),
   m_fatJetInfoSwitch(nullptr),
   m_tauInfoSwitch(nullptr),
   m_metInfoSwitch(nullptr),
@@ -75,9 +74,6 @@ HelpTreeBase::~HelpTreeBase() {
 
     //ph
     delete m_phInfoSwitch;
-
-    //truth
-    delete m_truthInfoSwitch;
 
     //fatjet
     delete m_fatJetInfoSwitch;

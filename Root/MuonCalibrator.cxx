@@ -167,7 +167,6 @@ EL::StatusCode MuonCalibrator :: initialize ()
   }
   m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->setProperty("Release", m_release),"Failed to set property Release"); }
-  std::cout << "initializeing with " << m_release << std::endl;
   RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
 
   // ***********************************************************
