@@ -29,6 +29,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/EventInfo.h"
 #include "xAODAnaHelpers/JetContainer.h"
+#include "xAODAnaHelpers/TruthContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
@@ -100,7 +101,6 @@ public:
   HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
   HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-  HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
   HelperClasses::JetInfoSwitch*        m_truthFatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
@@ -126,6 +126,7 @@ public:
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
+  void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
 
   /**
    *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
@@ -295,22 +296,7 @@ protected:
   //
   // Truth
   //
-  struct truthInfo{
-
-    int  N;
-    std::vector<int> pdgId;
-    std::vector<int> status;
-
-    std::vector<float> pt;
-    std::vector<float> eta;
-    std::vector<float> phi;
-    std::vector<float> E;
-    std::vector<float> m;
-
-    truthInfo(){ }
-
-  };
-  std::map<std::string, truthInfo*> m_truth;
+  std::map<std::string, xAH::TruthContainer*> m_truth;
 
   // fat jets
   std::map<std::string, int> m_nfatjet;

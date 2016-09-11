@@ -248,6 +248,8 @@ namespace HelperClasses{
 
   void TruthInfoSwitch::initialize(){
     m_kinematic     = has_exact("kinematic");
+    m_type          = has_exact("type");
+    m_bVtx          = has_exact("bVtx");
   }
 
 
