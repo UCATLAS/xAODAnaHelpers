@@ -412,6 +412,8 @@ namespace HelperClasses {
         m_kinematic      kinematic      exact
         m_type           type           exact
         m_bVtx           bVtx           exact
+        m_parents        parents        exact
+        m_children       children       exact
         ================ ============== =======
     @endrst
    */
@@ -420,6 +422,8 @@ namespace HelperClasses {
     bool m_kinematic;
     bool m_type;
     bool m_bVtx;
+    bool m_parents;
+    bool m_children;
     TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();

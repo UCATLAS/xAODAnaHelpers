@@ -44,6 +44,7 @@ namespace xAH {
       // All
       std::vector<int>* m_pdgId;
       std::vector<int>* m_status;
+      std::vector<int>* m_barcode;
     
       // type
       std::vector<int>* m_is_higgs;
@@ -53,6 +54,18 @@ namespace xAH {
       std::vector<float>* m_Bdecay_x;
       std::vector<float>* m_Bdecay_y;
       std::vector<float>* m_Bdecay_z;
+
+      // parents
+      std::vector<int>* m_nParents;
+      std::vector< std::vector<int> >* m_parent_pdgId;
+      std::vector< std::vector<int> >* m_parent_barcode;
+      std::vector< std::vector<int> >* m_parent_status;
+
+      // children
+      std::vector<int>* m_nChildren;
+      std::vector< std::vector<int> >* m_child_pdgId;
+      std::vector< std::vector<int> >* m_child_barcode;
+      std::vector< std::vector<int> >* m_child_status;
 
     };
 }
