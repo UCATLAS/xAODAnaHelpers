@@ -13,6 +13,7 @@ namespace xAH {
       //virtual ~TruthPart();
       int pdgId;
       int status;
+      int barcode;
 
       // type
       bool is_higgs;
@@ -23,6 +24,18 @@ namespace xAH {
       float Bdecay_y;
       float Bdecay_z;
       
+      // Parents
+      int nParents;
+      std::vector<int> parent_pdgId;
+      std::vector<int> parent_barcode;
+      std::vector<int> parent_status;
+
+      // Children
+      int nChildren;
+      std::vector<int> child_pdgId;
+      std::vector<int> child_barcode;
+      std::vector<int> child_status;
+
     };
 
 }//xAH

@@ -250,6 +250,8 @@ namespace HelperClasses{
     m_kinematic     = has_exact("kinematic");
     m_type          = has_exact("type");
     m_bVtx          = has_exact("bVtx");
+    m_parents       = has_exact("parents");
+    m_children      = has_exact("children");
   }
 
 
