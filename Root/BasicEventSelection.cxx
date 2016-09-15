@@ -32,8 +32,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
     Algorithm(className),
     m_PU_default_channel(0),
     m_grl(nullptr),
-    // m_pileup_tool_handle("CP::PileupReweightingTool/PileupToolName", nullptr),
-    m_pileup_tool_handle("CP::PileupReweightingTool/Pileup"), // fix to run on condor
+    m_pileup_tool_handle("CP::PileupReweightingTool/Pileup"),
     m_trigConfTool(nullptr),
     m_trigDecTool(nullptr),
     m_histEventCount(nullptr),
@@ -518,9 +517,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
     RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "Failed to check whether tool already exists in asg::ToolStore" );
     //RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.makeNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
-    // RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.make("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
-    RETURN_CHECK("initialize()", ASG_MAKE_ANA_TOOL(m_pileup_tool_handle, CP::PileupReweightingTool), "Could not make the tool"); // fix to run on condor
-
+    RETURN_CHECK("initialize()", ASG_MAKE_ANA_TOOL(m_pileup_tool_handle, CP::PileupReweightingTool), "Could not make the tool");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
     if ( m_PU_default_channel ) {
@@ -530,7 +527,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0), "Failed to set pileup reweighting data scale factor up");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.23), "Failed to set pileup reweighting data scale factor down");
     // RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.initialize(), "Failed to properly initialize CP::PileupReweightingTool");
-    RETURN_CHECK("BasicEventSelection::retrieve()", m_pileup_tool_handle.retrieve(), "Failed to properly retrieve CP::PileupReweightingTool"); // fix to run on condor
+    RETURN_CHECK("BasicEventSelection::retrieve()", m_pileup_tool_handle.retrieve(), "Failed to properly retrieve CP::PileupReweightingTool");
 
     //m_pileup_tool_handle->EnableDebugging(true);
 
