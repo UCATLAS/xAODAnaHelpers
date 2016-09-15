@@ -61,7 +61,7 @@ where ``N`` is the number of commits to rebase. And then rebase with master to m
 
 and push your commits to the remote (setting upstream)::
 
-    git push -u origin newFeature
+    git push -u origin feature/newFeature
 
 and then submit a pull request by going to `xAODAnaHelpers <https://github.com/UCATLAS/xAODAnaHelpers>`__, finding your branch, and making a pull request (usually shiny green buttons).  When it's been merged, you can run::
 
