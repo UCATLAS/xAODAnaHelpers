@@ -45,10 +45,13 @@ public:
   std::string   m_WorkingPointIso;
 
   // Trigger efficiency SF
-  int           m_runNumber;
+  int           m_runNumber2015;
+  int           m_runNumber2016;
   bool          m_useRandomRunNumber;
   std::string   m_WorkingPointRecoTrig;
   std::string   m_WorkingPointIsoTrig;
+  std::string   m_Years;
+  std::string   m_MCCampaign;
   std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
   std::string   m_DiMuTrig;          // this can be either a dimuon trigger chain, or an OR of ( N single muon trigger chains, dimuon chain )
 
@@ -89,14 +92,15 @@ private:
   std::vector<CP::SystematicSet> m_systListTTVA; //!
 
   // tools
-  CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool;  //!
-  std::string m_recoEffSF_tool_name;                //!
-  CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool;   //!
-  std::string m_isoEffSF_tool_name;                 //!
-  CP::MuonTriggerScaleFactors*  m_muTrigSF_tool;    //!
-  std::string m_trigEffSF_tool_name;                //!
-  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool;  //!
-  std::string m_TTVAEffSF_tool_name;                //!
+  CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool;                         //!
+  std::string m_recoEffSF_tool_name;                                       //!
+  CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool;                          //!
+  std::string m_isoEffSF_tool_name;                                        //!
+  std::map<std::string, CP::MuonTriggerScaleFactors*>  m_muTrigSF_tools;   //!   
+  std::map<std::string, std::string> m_trigEffSF_tool_names;               //!
+  std::vector<std::string> m_YearsList;                                    //!
+  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool;                         //!
+  std::string m_TTVAEffSF_tool_name;                                       //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
