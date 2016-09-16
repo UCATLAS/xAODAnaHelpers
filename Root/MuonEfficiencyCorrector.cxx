@@ -40,7 +40,7 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
     m_muIsoSF_tool(nullptr),
     m_muTTVASF_tool(nullptr)
     // trigger SF map is not 
-    // initialized in ctor
+    // initialized in ctor!
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -311,6 +311,16 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     }
   }
   
+  // If no random run number is used the list should contain only one element 
+  if ( m_isMC && !m_useRandomRunNumber ) {
+    Warning("executeSF()","m_useRandomRunNumber is set to false! This is not recommended!!!" );
+    if ( m_YearsList.size() > 1 ) { 
+      Error("executeSF()","In this case the list of years should contain only one element"); 
+      return EL::StatusCode::FAILURE;
+    }
+  }
+  
+  
   // Initialize vector of names
   //
   for(auto yr : m_YearsList) {
@@ -343,34 +353,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
       }
       RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->initialize(), "Failed to properly initialize CP::MuonTriggerScaleFactors for trigger efficiency SF");
       
-      
-      
-      /*    
-      //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration
-      //
-      m_outputSystNamesTrig      = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-      m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-  
-      if ( m_debug ) {
-        CP::SystematicSet affectSystsTrig = m_muTrigSF_tools[yr]->affectingSystematics();
-        for ( const auto& syst_it : affectSystsTrig ) { Info("initialize()","MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: %s", (syst_it.name()).c_str()); }
-      }
-      //
-      // Make a list of systematics to be used, based on configuration input
-      // Use HelperFunctions::getListofSystematics() for this!
-      //
-      const CP::SystematicSet recSystsTrig = m_muTrigSF_tools[yr]->recommendedSystematics();
-      m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
-  
-      Info("initialize()","Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
-      for ( const auto& syst_it : m_systListTrig ) {
-        if ( m_systNameTrig.empty() ) {
-      	Info("initialize()","\t Running w/ nominal configuration only!");
-      	break;
-        }
-        Info("initialize()","\t %s", (syst_it.name()).c_str());
-      }
-      */ 
     }
   
   } 
@@ -400,11 +382,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     }
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
-  
-  
-  
-  
-  
   
 
   // 4.
@@ -853,20 +830,46 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     // TEMP! Commenting this out b/c stupid AnaToolHandle does not work as it should...
     //
     //int randRunNumber = m_pileup_tool->getRandomRunNumber( *eventInfo, true );
+    
     int randRunNumber = asg::ToolStore::get<CP::PileupReweightingTool>("Pileup")->getRandomRunNumber( *eventInfo, true ); 
     int runNumber = randRunNumber;
 
     if (runNumber >= 266904 && runNumber <= 284484 ) { 
+      
       randYear = "2015";
-    } else if (runNumber >= 296939 && runNumber <= 304494) { 
+      if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
+        Error("executeSF()", "Random runNumber is 2015 but no corresponding MuonTriggerEfficiency tool has been initialized. Check ilumicalc config or extend m_Years!");
+        return EL::StatusCode::FAILURE; 
+      }
+      
+    } else if (runNumber >= 296939 ) { 
+      
       randYear = "2016";
+      if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
+       Error("executeSF()", "Random runNumber is 2016 but no corresponding MuonTriggerEfficiency tool has been initialized. Check ilumicalc config or extend m_Years!");
+       return EL::StatusCode::FAILURE;
+      }
+
     } else {
       
+      Warning("executeSF()", "Random runNumber generated outside hardcoded run number ranges");
+      Warning("executeSF()", "Setting the year as randomly chosen in the years list");
       std::srand ( unsigned ( std::time(0) ) ); 
-      std::random_shuffle ( m_YearsList.begin(), m_YearsList.end() ); 
-      randYear = m_YearsList[0];
+      std::vector<std::string> randomYearsList = m_YearsList;
+      std::random_shuffle ( randomYearsList.begin(), randomYearsList.end() ); 
+      randYear = randomYearsList[0];
     
     }
+    
+    if ( runNumber == 0 && randYear == "2016") { 
+      runNumber = m_runNumber2016; 
+      if ( m_debug ) Info("executeSF()", "runNumber is 0. Setting the tool to randYear 2016");
+    }
+    if ( runNumber == 0 && randYear == "2015") { 
+      runNumber = m_runNumber2015; 
+      if ( m_debug ) Info("executeSF()", "runNumber is 0. Setting the tool to randYear 2015");
+    }
+    
     
     if( m_muTrigSF_tools[randYear]->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
       Error("executeSF()", "Failed to set RunNumber for MuonTriggerScaleFactors tool");
@@ -876,17 +879,18 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   }
     
   if ( m_isMC && !m_useRandomRunNumber ) {
-    Warning("executeSF()","m_useRandomRunNumber is set to false!" );
-    
-    if ( m_YearsList.size() > 1 ) { 
-      Warning("executeSF()","but m_YearsList contains more that one element!!!" );
-      Warning("executeSF()","only consider first element of the list to fix the run number");
-    }
     
     int rn = 0;
     if ( m_YearsList[0] == "2015" ) { rn = m_runNumber2015; }
-    if ( m_YearsList[0] == "2016" ) { rn = m_runNumber2016; }
-    if ( m_muTrigSF_tools[m_YearsList[0]]->setRunNumber( rn ) == CP::CorrectionCode::Error ) { Warning("executeSF()","Cannot set RunNumber for MuonTriggerScaleFactors tool"); }
+    else if ( m_YearsList[0] == "2016" ) { rn = m_runNumber2016; }
+    else {
+      Error("executeSF()", "Unrecognized first element in list of years");
+      return EL::StatusCode::FAILURE;
+    }
+    if ( m_muTrigSF_tools[m_YearsList[0]]->setRunNumber( rn ) == CP::CorrectionCode::Error ) { 
+      Error("executeSF()","Cannot set RunNumber for MuonTriggerScaleFactors tool"); 
+      return EL::StatusCode::FAILURE;
+    }
     randYear = m_YearsList[0];
   }
     
