@@ -235,7 +235,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 		  break;
 	      }
 	  }
-	  if ( !allFromUnknownStream ) { Warning("fileExecute()","Found incomplete Bookkeepers from stream: %s ! Check input file for potential corruption...", stream.c_str() ); }
+	  if ( !allFromUnknownStream ) { Warning("fileExecute()","Found incomplete CBK from stream: %s. This is not necessarily a sign of file corruption (incomplete CBK appear when 'maxevents' is set in the AOD jo, for instance), but you may still want to check input file for potential corruption...", stream.c_str() ); }
 
       }
 
@@ -277,7 +277,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_MD_initialSumW	      = allEventsCBK->sumOfEventWeights();
       m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
 
-      if ( !DxAODEventsCBK ) {
+      if ( m_isDerivation && !DxAODEventsCBK ) {
         Error("fileExecute()", "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
         return EL::StatusCode::FAILURE;
       }
