@@ -47,6 +47,14 @@ namespace HelperFunctions {
   std::vector<TString> SplitString(TString& orig, const char separator);
   float dPhi(float phi1, float phi2);
 
+  /**
+    Function which returns the position of the n-th occurence of a character in a string searching backwards.
+    Returns -1 if no occurencies are found.
+
+    Source: http://stackoverflow.com/questions/18972258/index-of-nth-occurrence-of-the-string
+  */
+  std::size_t string_pos( const std::string& inputstr, const char& occurence, int n_occurencies );
+
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |
   |   Author  : Marco Milesi                                                   |
@@ -116,54 +124,54 @@ namespace HelperFunctions {
   bool sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB);
 
   std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug = false );
-  
+
   /**
    * @author Marco Milesi (marco.milesi@cern.ch)
-   * @brief Function to copy a subset of a generic input xAOD container into a generic output xAOD container. 
+   * @brief Function to copy a subset of a generic input xAOD container into a generic output xAOD container.
    *
    * If the optional parameters aren't specified, the function will just make a full copy of the input
    * container into the output one.
    *
    * @param [in] intCont input container
-   * @param [in,out] outCont output container   
+   * @param [in,out] outCont output container
    * @param [in] flagSelect (optional) the name of the decoration for objects passing a certain selection (e.g. "passSel", "overlaps" ...). When explicitly specified, it must not be empty.
    * @param [in] tool_name (optional) an enum specifying the tool type which is calling this function (definition in `HelperClasses::ToolName`)
-   */  
+   */
   template< typename T1, typename T2 >
     StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT ){
 
      if ( tool_name == HelperClasses::ToolName::DEFAULT ) {
-       
+
        for ( auto in_itr : *(intCont) ) { outCont->push_back( in_itr ); }
        return StatusCode::SUCCESS;
-     
+
      }
 
      if ( flagSelect.empty() ) {
        Error("HelperFunctions::makeSubsetCont()", "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR, or OVERLAPREMOVER). Please pass a non-empty flagSelect!" );
-       return StatusCode::FAILURE;	 
-     }  
-       
+       return StatusCode::FAILURE;
+     }
+
      SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
-     
-     for ( auto in_itr : *(intCont) ) { 
-       
+
+     for ( auto in_itr : *(intCont) ) {
+
        if ( !myAccessor.isAvailable(*(in_itr)) ) {
      	 std::stringstream ss; ss << in_itr->type();
          Error("HelperFunctions::makeSubsetCont()", "flag %s is missing for object of type %s ! Will not make a subset of its container", flagSelect.c_str(), (ss.str()).c_str() );
      	 return StatusCode::FAILURE;
        }
-      
+
        if ( tool_name == HelperClasses::ToolName::OVERLAPREMOVER ){ /* this tool uses reverted logic for "flagSelect", that's why I put this check */
      	 if ( !myAccessor(*(in_itr)) ){ outCont->push_back( in_itr ); }
        } else {
      	 if ( myAccessor(*(in_itr)) ) { outCont->push_back( in_itr ); }
        }
-     
+
      }
-            
+
      return StatusCode::SUCCESS;
-     
+
    }
 
   /*    type_name<T>()      The awesome type demangler!
@@ -446,8 +454,6 @@ namespace HelperFunctions {
       tree->SetBranchStatus  ((name+"_"+branch).c_str()  , 1);
       tree->SetBranchAddress ((name+"_"+branch).c_str()  , variable);
     }
-
-
 
 } // close namespace HelperFunctions
 

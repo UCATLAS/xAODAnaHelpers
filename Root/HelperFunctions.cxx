@@ -442,3 +442,19 @@ float HelperFunctions::dPhi(float phi1, float phi2)
   if(dPhi < -3.14) dPhi += 2*3.14;
   return dPhi;
 }
+
+
+std::size_t HelperFunctions::string_pos( const std::string& inputstr, const char& occurence, int n_occurencies )
+{
+
+  std::string read("");
+  std::string cache(inputstr);
+
+  for ( int i(1); i < n_occurencies+1; ++i ) {
+    std::size_t found = cache.rfind(occurence);
+    read += cache.substr(found);
+    cache.erase(found);
+    if ( i == n_occurencies ) { return ( inputstr.size() - read.size() ) + 1; }
+  }
+  return std::string::npos;
+}

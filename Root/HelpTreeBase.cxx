@@ -604,7 +604,7 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
         trk->summaryValue( nTRTHits,  xAOD::numberOfTRTHits );
         trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );
         trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
-	      if ( !m_DC14 ) {
+	if ( !m_DC14 ) {
           trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
           trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
         }
