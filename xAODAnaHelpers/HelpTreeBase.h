@@ -49,6 +49,8 @@ namespace Trig {
   class TrigDecisionTool;
 }
 
+typedef SG::AuxElement::Accessor< std::vector< float > > floatAccessor ;
+
 class HelpTreeBase {
 
 public:
@@ -435,16 +437,16 @@ protected:
   // scale factors w/ sys
   // per object
   std::vector< std::vector< float > > m_el_RecoEff_SF;
-  std::vector< std::vector< float > > m_el_TrigEff_SF_LHLooseAndBLayer;
-  std::vector< std::vector< float > > m_el_TrigEff_SF_LHTight;
-  std::vector< std::vector< float > > m_el_TrigMCEff_LHLooseAndBLayer;
-  std::vector< std::vector< float > > m_el_TrigMCEff_LHTight;
-  std::vector< std::vector< float > > m_el_IsoEff_SF_Loose;
-  std::vector< std::vector< float > > m_el_IsoEff_SF_FixedCutTight;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHLooseAndBLayer;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHLoose;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHMedium;
   std::vector< std::vector< float > > m_el_PIDEff_SF_LHTight;
+
+  std::map< std::string, std::vector< std::vector< float > > > m_el_IsoEff_SF;
+  std::map< std::string, std::vector< std::vector< float > > > m_el_TrigEff_SF;
+  std::map< std::string, std::vector< std::vector< float > > > m_el_TrigMCEff;
+  const std::vector< std::string > m_PIDWPs = {"LooseAndBLayerLLH","MediumLLH","TightLLH"};
+  const std::vector< std::string > m_isolWPs = {"isolFixedCutLoose","isolFixedCutTight","isolFixedCutTightTrackOnly","isolGradient","isolGradientLoose","isolLoose","isolLooseTrackOnly","isolTight"};
 
   // track parameters
   std::vector<float> m_el_trkd0;
