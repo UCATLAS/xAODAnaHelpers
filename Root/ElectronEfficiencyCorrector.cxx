@@ -698,7 +698,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 double pidEffSF(1.0); // tool wants a double
     	 if ( !isBadElectron &&  m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidEffSF ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+    	   Warning( "executeSF()", "Problem in PID getEfficiencyScaleFactor Tool");
   	   pidEffSF = 1.0;
     	 }
     	 //
@@ -813,7 +813,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 double IsoEffSF(1.0); // tool wants a double
     	 if ( !isBadElectron &&  m_asgElEffCorrTool_elSF_Iso->getEfficiencyScaleFactor( *el_itr, IsoEffSF ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+    	   Warning( "executeSF()", "Problem in Iso getEfficiencyScaleFactor Tool");
   	   IsoEffSF = 1.0;
     	 }
     	 //
@@ -928,7 +928,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 double recoEffSF(1.0); // tool wants a double
     	 if ( !isBadElectron && m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+    	   Warning( "executeSF()", "Problem in Reco getEfficiencyScaleFactor Tool");
   	   recoEffSF = 1.0;
     	 }
     	 //
@@ -1045,7 +1045,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 double trigEffSF(1.0); // tool wants a double
     	 if ( !isBadElectron && m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigEffSF ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+    	   Warning( "executeSF()", "Problem in Trig getEfficiencyScaleFactor Tool");
   	   isBadElectron = true;
   	   trigEffSF = 1.0;
     	 }
@@ -1159,7 +1159,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 double trigMCEff(0.0); // tool wants a double
     	 if ( !isBadElectron && m_asgElEffCorrTool_elSF_TrigMCEff->getEfficiencyScaleFactor( *el_itr, trigMCEff ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in getEfficiencyScaleFactor");
+    	   Warning( "executeSF()", "Problem in TrigMCEff getEfficiencyScaleFactor Tool");
   	   isBadElectron = true;
   	   trigMCEff = 0.0;
     	 }
