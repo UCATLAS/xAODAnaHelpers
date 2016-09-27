@@ -94,14 +94,15 @@ JetSelector :: JetSelector (std::string className) :
   m_truthLabel 	            = -1;
   m_useHadronConeExcl       = true;
 
-  m_doJVF 		    = false;
+  m_doJVF 		              = false;
   m_pt_max_JVF 	            = 50e3;
-  m_eta_max_JVF 	    = 2.4;
-  m_JVFCut 		    = 0.5;
-  m_doJVT 		    = false;
-  m_pt_max_JVT 	            = 50e3;
-  m_eta_max_JVT 	    = 2.4;
-  m_JVTCut 		    = -1.0;
+  m_eta_max_JVF 	          = 2.4;
+  m_JVFCut 		              = 0.5;
+  m_doJVT 		              = false;
+
+  m_pt_max_JVT 	            = 60e3;
+  m_eta_max_JVT 	          = 2.4;
+  m_JVTCut 		              = -1.0;
   m_WorkingPointJVT         = "Medium";
 
   m_systValJVT 	            = 0.0;
