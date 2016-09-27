@@ -894,10 +894,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     randYear = m_YearsList[0];
   }
     
-    
   if ( !isToolAlreadyUsed(m_trigEffSF_tool_names[randYear]) ) {
 
-    for ( const auto& syst_it : m_systListIso ) {
+    for ( const auto& syst_it : m_systListTrig ) {
 
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_MuTrigEff_SF

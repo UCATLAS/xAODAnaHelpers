@@ -68,10 +68,24 @@ namespace xAH {
       // scale factors w/ sys
       // per object
       std::vector< std::vector< float > > *m_RecoEff_SF_Loose;
+      std::vector< std::vector< float > > *m_RecoEff_SF_Medium;
+      
       std::vector< std::vector< float > > *m_TrigEff_SF_Loose_Loose;
       std::vector< std::vector< float > > *m_TrigEff_SF_Loose_FixedCutTightTrackOnly;
+      std::vector< std::vector< float > > *m_TrigEff_SF_Loose_Gradient;
+      std::vector< std::vector< float > > *m_TrigEff_SF_Loose_GradientLoose;
+      std::vector< std::vector< float > > *m_TrigEff_SF_Medium_FixedCutTightTrackOnly;
+      std::vector< std::vector< float > > *m_TrigEff_SF_Medium_Gradient;
+      std::vector< std::vector< float > > *m_TrigEff_SF_Medium_GradientLoose;
+      
       std::vector< std::vector< float > > *m_TrigMCEff_Loose_Loose;
       std::vector< std::vector< float > > *m_TrigMCEff_Loose_FixedCutTightTrackOnly;
+      std::vector< std::vector< float > > *m_TrigMCEff_Loose_Gradient;
+      std::vector< std::vector< float > > *m_TrigMCEff_Loose_GradientLoose;
+      std::vector< std::vector< float > > *m_TrigMCEff_Medium_FixedCutTightTrackOnly;
+      std::vector< std::vector< float > > *m_TrigMCEff_Medium_Gradient;
+      std::vector< std::vector< float > > *m_TrigMCEff_Medium_GradientLoose;
+      
       std::vector< std::vector< float > > *m_IsoEff_SF_LooseTrackOnly;
       std::vector< std::vector< float > > *m_IsoEff_SF_Loose;
       std::vector< std::vector< float > > *m_IsoEff_SF_Tight;
