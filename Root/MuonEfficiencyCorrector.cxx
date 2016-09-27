@@ -852,8 +852,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
     } else {
       
-      Warning("executeSF()", "Random runNumber generated outside hardcoded run number ranges");
-      Warning("executeSF()", "Setting the year as randomly chosen in the years list");
+      if ( m_debug ) Warning("executeSF()", "Random runNumber generated outside hardcoded run number ranges");
+      if ( m_debug ) Warning("executeSF()", "Setting the year as randomly chosen in the years list");
       std::srand ( unsigned ( std::time(0) ) ); 
       std::vector<std::string> randomYearsList = m_YearsList;
       std::random_shuffle ( randomYearsList.begin(), randomYearsList.end() ); 
