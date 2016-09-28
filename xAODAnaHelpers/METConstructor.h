@@ -8,11 +8,16 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+#include "PATInterfaces/SystematicRegistry.h"
+//look at https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT
 
 
 using std::string;
 
-namespace met { class METMaker; }
+namespace met { 
+       class METMaker; 
+       class METSystematicsTool;
+	 }
 namespace TauAnalysisTools { class TauSelectionTool; }
 
 
@@ -36,6 +41,11 @@ public:
   TString m_inputTaus;
   TString m_inputMuons;
 
+  std::string  m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
+  std::string  m_inputAlgoSystMuons;  // name of vector<string> of syst retrieved from TStore
+  std::string  m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
+  std::string m_inputAlgoPhotons; // name of vector<string> of syst retrieved from TStore
+
   bool    m_doElectronCuts;
   bool    m_doPhotonCuts;
   bool    m_doTauCuts;
@@ -48,11 +58,25 @@ public:
   bool    m_useCaloJetTerm;
   bool    m_useTrackJetTerm;
 
+  bool m_runNominal;
+  
+  float m_systVal;
+  std::string m_systName;
+  
+  std::string m_SoftTermSystConfigFile;
+
 private:
 
   // tools
   met::METMaker* m_metmaker; //!
+  met::METSystematicsTool* metSystTool; //!   
+
   TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
+
+  TString coreMetKey;
+  std::vector<CP::SystematicSet> sysList; //!
+
+  int m_numEvent;         //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

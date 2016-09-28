@@ -211,9 +211,13 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
   Info("initialize()","Will be using EgammaCalibrationAndSmearingTool systematic:");
+
+  std::vector< std::string >* SystPhotonsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
+    SystPhotonsNames->push_back(syst_it.name());
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
+    RETURN_CHECK("PhotonCalibrator::initialize()",m_store->record(SystPhotonsNames, "photons_Syst" ), "Failed to record vector of jet systs names.");
 
   //isEM selector tools
   //------------------
