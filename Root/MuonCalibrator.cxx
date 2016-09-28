@@ -183,13 +183,17 @@ EL::StatusCode MuonCalibrator :: initialize ()
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
   Info("initialize()","Will be using MuonCalibrationAndSmearingTool systematic:");
+  std::vector< std::string >* SystMuonsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
       Info("initialize()","\t Running w/ nominal configuration only!");
       break;
     }
+    SystMuonsNames->push_back(syst_it.name());
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
+
+  RETURN_CHECK("MuonCalibrator::initialize()",m_store->record(SystMuonsNames, "muons_Syst" ), "Failed to record vector of jet systs names.");
 
   Info("initialize()", "MuonCalibrator Interface succesfully initialized!" );
 

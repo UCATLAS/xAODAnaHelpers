@@ -217,13 +217,17 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
   Info("initialize()","Will be using EgammaCalibrationAndSmearingTool systematic:");
+  std::vector< std::string >* SystElectronsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
       Info("initialize()","\t Running w/ nominal configuration only!");
       break;
     }
+    SystElectronsNames->push_back(syst_it.name());
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
+
+  RETURN_CHECK("ElectronCalibrator::initialize()",m_store->record(SystElectronsNames, "ele_Syst" ), "Failed to record vector of ele systs names.");
 
   // ***********************************************************
 

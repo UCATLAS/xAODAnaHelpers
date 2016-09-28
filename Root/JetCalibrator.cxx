@@ -401,13 +401,18 @@ EL::StatusCode JetCalibrator :: initialize ()
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->initialize(), "");
   }
 
+  std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
       Info("initialize()","\t Running w/ nominal configuration only!");
       break;
     }
+    SystJetsNames->push_back(syst_it.name());
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
+
+  RETURN_CHECK("JetCalibrator::initialize()",m_store->record(SystJetsNames, "jets_Syst" ), "Failed to record vector of jet systs names.");
+
 
   return EL::StatusCode::SUCCESS;
 }
