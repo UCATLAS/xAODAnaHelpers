@@ -177,13 +177,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   //
   if ( !m_corrFileNamePID.empty() ) {
 
-    // Parse the PID WP from m_corrFileNamePID
-    //
-    std::size_t init_pos_PID = HelperFunctions::string_pos( m_corrFileNamePID, '.', 2 );
-    std::size_t end_pos_PID  = m_corrFileNamePID.find("LLH");
-    m_PID_WP = m_corrFileNamePID.substr( init_pos_PID, (end_pos_PID - init_pos_PID) ) + "LLH";
+    m_PID_WP = HelperFunctions::parse_wp( "ID", m_corrFileNamePID );
+
     if ( m_PID_WP.empty() ) {
-      Error("initialize()", "m_PID_WP should not be empty! Exiting." );
+      Error("initialize()", "ID working point for electronID SF not found in config file! This should not happen. Exiting." );
       return EL::StatusCode::FAILURE;
     }
 
@@ -240,20 +237,18 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // initialize the AsgElectronEfficiencyCorrectionTool for isolation efficiency SF
   //
   if ( !m_corrFileNameIso.empty() ) {
+    
+    m_Iso_WP    = HelperFunctions::parse_wp( "ISO", m_corrFileNameIso );
+    m_IsoPID_WP = HelperFunctions::parse_wp( "ID", m_corrFileNameIso );
 
-    // Parse the isolation WP from m_corrFileNameIso (needs to be of the form "isol+WP")
-    //
-    std::size_t init_pos_Iso = m_corrFileNameIso.find("_isol") + 5;
-    std::size_t end_pos_Iso  = m_corrFileNameIso.find(".root");
-    m_Iso_WP = m_corrFileNameIso.substr( init_pos_Iso, (end_pos_Iso - init_pos_Iso) );
     if ( m_Iso_WP.empty() ) {
-      Error("initialize()","Couldn't parse isolation WP from configuration file name! Exiting." );
+      Error("initialize()","ISO working point for isolation SF not found in config file! This should not happen. Exiting." );
       return EL::StatusCode::FAILURE;
     }
-
-    std::size_t init_pos_PID = HelperFunctions::string_pos( m_corrFileNameIso, '.', 2 );
-    std::size_t end_pos_PID  = m_corrFileNameIso.find("LLH");
-    m_IsoPID_WP = m_corrFileNameIso.substr( init_pos_PID, (end_pos_PID - init_pos_PID) ) + "LLH";
+    if ( m_IsoPID_WP.empty() ) {
+      Error("initialize()", "ID working point for isolation SF not found in config file! This should not happen. Exiting." );
+      return EL::StatusCode::FAILURE;
+    }
 
     std::cout << "\n\n ISOLATION wp: " << m_Iso_WP << "\n ID wp (for isolation): " << m_IsoPID_WP << "\n\n" << std::endl;
 
@@ -356,27 +351,20 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   //
   if ( !m_corrFileNameTrig.empty() ) {
 
-    std::size_t init_pos_TrigIso = m_corrFileNameTrig.find("_isol") + 5;
-    std::size_t end_pos_TrigIso  = m_corrFileNameTrig.find(".root");
-    m_WorkingPointIsoTrig = m_corrFileNameTrig.substr( init_pos_TrigIso, (end_pos_TrigIso - init_pos_TrigIso) );
-
-    if ( m_WorkingPointIsoTrig.empty() ) {
-      Error("initialize()","Couldn't parse trigger isolation WP from configuration file name! Exiting." );
-      return EL::StatusCode::FAILURE;
-    }
-
-    std::size_t init_pos_TrigID = HelperFunctions::string_pos( m_corrFileNameTrig, '.', 2 );
-    std::size_t end_pos_TrigID  = m_corrFileNameTrig.find("LLH");
-    m_WorkingPointIDTrig = m_corrFileNameTrig.substr( init_pos_TrigID, (end_pos_TrigID - init_pos_TrigID) ) + "LLH";
+    m_WorkingPointIsoTrig = HelperFunctions::parse_wp( "ISO", m_corrFileNameTrig );
+    m_WorkingPointIDTrig  = HelperFunctions::parse_wp( "ID", m_corrFileNameTrig );
 
     if ( m_WorkingPointIDTrig.empty() ) {
-      Error("initialize()", "Couldn't parse trigger ID WP from configuration file name! Exiting." );
+      Error("initialize()", "ID working point for trigger SF not found in config file! This should not happen. Exiting." );
       return EL::StatusCode::FAILURE;
     }
 
     std::cout << "\n\n Trigger ISOLATION wp: " << m_WorkingPointIsoTrig << "\n Trigger ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
 
-    m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig + "_isol" + m_WorkingPointIsoTrig;
+    m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig;
+    if ( !m_WorkingPointIsoTrig.empty() ) {
+      m_TrigEffSF_tool_name += ( "_isol" + m_WorkingPointIsoTrig );
+    }
 
     RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name), "" );
 
@@ -419,8 +407,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
-    m_outputSystNamesTrig = m_outputSystNamesTrig + "_" + m_WorkingPointIDTrig + "_isol" + m_WorkingPointIsoTrig;
-
+    m_outputSystNamesTrig = m_outputSystNamesTrig + "_" + m_WorkingPointIDTrig;
+    if ( !m_WorkingPointIsoTrig.empty() ) {
+      m_outputSystNamesTrig += ( "_isol" + m_WorkingPointIsoTrig );
+    }
+    
   }
 
   // 5.
@@ -428,8 +419,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   //
   if ( !m_corrFileNameTrigMCEff.empty() ) {
 
-    m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig + "_isol" + m_WorkingPointIsoTrig;
-
+    m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig;
+    if ( !m_WorkingPointIsoTrig.empty() ) {
+      m_TrigMCEff_tool_name += ( "_isol" + m_WorkingPointIsoTrig );
+    }    
+    
     RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name), "" );
 
     if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name) ) {
@@ -471,8 +465,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
-    m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_" + m_WorkingPointIDTrig + "_isol" + m_WorkingPointIsoTrig;
-
+    m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_" + m_WorkingPointIDTrig;;
+    if ( !m_WorkingPointIsoTrig.empty() ) {
+      m_outputSystNamesTrigMCEff += ( "_isol" + m_WorkingPointIsoTrig );
+    }
+    
   }
 
   // *********************************************************************************
@@ -992,6 +989,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
+  
   if ( !m_corrFileNameTrig.empty() && !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListTrig ) {
@@ -999,7 +997,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_ElTrigEff_SF
       //
-      std::string sfName  = "ElTrigEff_SF_" + m_WorkingPointIDTrig + "_isol" + m_WorkingPointIsoTrig;
+      std::string sfName  = "ElTrigEff_SF_" + m_WorkingPointIDTrig;
+      if ( !m_WorkingPointIsoTrig.empty() ) {
+        sfName += ( "_isol" + m_WorkingPointIsoTrig );
+      } 
 
       if ( !syst_it.name().empty() ) {
     	 std::string prepend = syst_it.name() + "_";
@@ -1115,7 +1116,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_ElTrigEff_SF
       //
-      std::string sfName  = "ElTrigMCEff_" + m_WorkingPointIDTrig + "_isol" + m_WorkingPointIsoTrig;
+      std::string sfName  = "ElTrigMCEff_" + m_WorkingPointIDTrig;
+      if ( !m_WorkingPointIsoTrig.empty() ) {
+        sfName += ( "_isol" + m_WorkingPointIsoTrig );
+      }      
 
       if ( !syst_it.name().empty() ) {
     	 std::string prepend = syst_it.name() + "_";

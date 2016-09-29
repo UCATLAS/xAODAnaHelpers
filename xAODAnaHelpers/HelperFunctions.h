@@ -55,6 +55,13 @@ namespace HelperFunctions {
   */
   std::size_t string_pos( const std::string& inputstr, const char& occurence, int n_occurencies );
 
+  /**
+    Function which returns the WP for ISO/ID from a config file.
+    Returns empty string if no WP is found.
+
+  */  
+  std::string parse_wp( const std::string& type, const std::string& config_name );
+
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |
   |   Author  : Marco Milesi                                                   |

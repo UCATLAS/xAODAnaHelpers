@@ -434,7 +434,6 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
 }
 
 
-
 float HelperFunctions::dPhi(float phi1, float phi2)
 {
   float dPhi = phi1 - phi2;
@@ -457,4 +456,50 @@ std::size_t HelperFunctions::string_pos( const std::string& inputstr, const char
     if ( i == n_occurencies ) { return ( inputstr.size() - read.size() ) + 1; }
   }
   return std::string::npos;
+}
+
+
+std::string HelperFunctions::parse_wp( const std::string& type, const std::string& config_name )
+{
+
+  std::string wp("");
+  
+  std::size_t init;
+  std::size_t end;
+  
+  if ( type.compare("ISO") == 0 ) {
+    
+    std::size_t found_iso = config_name.find("_isol");
+    
+    // Return empty string if no isolation in config name
+    
+    if ( found_iso == std::string::npos ) { return wp; }
+    
+    init = found_iso + 5; 
+    end  = config_name.find(".root");
+  
+  } else if ( type.compare("ID") == 0 ) {
+ 
+    std::size_t found_ID = config_name.find("LLH");
+    
+    // Return empty string if no LLH in config name
+    
+    if ( found_ID == std::string::npos ) { return wp; }
+       
+    init = string_pos( config_name, '.', 2 );
+    end  = found_ID;
+    
+  } else {
+  
+    Warning("HelperFunctions::parse_wp()","WP type can be either 'ISO' or 'ID'. Please check passed parameters of this function. Returning empty WP.");
+    return wp;
+  
+  }
+  
+  wp = config_name.substr( init, (end - init) );
+  
+  if ( type.compare("ID") == 0 ) { wp += "LLH"; }
+
+  return wp;
+
 }
