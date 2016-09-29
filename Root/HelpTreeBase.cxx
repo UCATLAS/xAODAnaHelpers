@@ -388,9 +388,10 @@ void HelpTreeBase::AddElectrons(const std::string detailStr) {
   if ( m_elInfoSwitch->m_effSF && m_isMC ) {
     for (auto& PID : m_PIDWPs) {
       for (auto& isol : m_isolWPs) {
-        m_tree->Branch( ("el_IsoEff_SF_" + PID + "_" + isol).c_str() , &m_el_IsoEff_SF[ PID+isol ] );
-        m_tree->Branch( ("el_TrigEff_SF_" + PID + "_" + isol).c_str() , &m_el_TrigEff_SF[ PID+isol ] );
-        m_tree->Branch( ("el_TrigMCEff_" + PID + "_" + isol).c_str() , &m_el_TrigMCEff[ PID+isol ] );
+        m_tree->Branch( ("el_TrigEff_SF_" + PID + isol).c_str() , &m_el_TrigEff_SF[ PID+isol ] );
+        m_tree->Branch( ("el_TrigMCEff_" + PID + isol).c_str() , &m_el_TrigMCEff[ PID+isol ] );
+        if(isol.empty()) continue;
+        m_tree->Branch( ("el_IsoEff_SF_" + PID + isol).c_str() , &m_el_IsoEff_SF[ PID+isol ] );
       }
     }
     m_tree->Branch("el_RecoEff_SF"  ,    &m_el_RecoEff_SF  );
@@ -634,15 +635,16 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
       static std::map< std::string, floatAccessor > accTrigEFF;
       for (auto& PID : m_PIDWPs) {
         for (auto& isol : m_isolWPs) {
-          accIsoSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_IsoSyst_" + PID + "_" + isol ) ) );
-          accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigMCEffSyst_" + PID + "_" + isol ) ) );
-          accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigSyst_" + PID + "_" + isol ) ) );
-          if( (accIsoSF.at( PID+isol )).isAvailable( *el_itr ) ) { (m_el_IsoEff_SF.at( PID+isol )).push_back( (accIsoSF.at( PID+isol ))( *el_itr ) ); }
-          else { (m_el_IsoEff_SF.at( PID+isol )).push_back( junkSF ); }
+          accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigMCEffSyst_" + PID + isol ) ) );
+          accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigSyst_" + PID + isol ) ) );
           if( (accTrigSF.at( PID+isol )).isAvailable( *el_itr ) ) { (m_el_TrigEff_SF.at( PID+isol )).push_back( (accTrigSF.at( PID+isol ))( *el_itr ) ); }
           else { (m_el_TrigEff_SF.at( PID+isol )).push_back( junkSF ); }
           if( (accTrigEFF.at( PID+isol )).isAvailable( *el_itr ) ) { (m_el_TrigMCEff.at( PID+isol )).push_back( (accTrigEFF.at( PID+isol ))( *el_itr ) ); }
           else { (m_el_TrigMCEff.at( PID+isol )).push_back( junkEff ); }
+          if(isol.empty()) continue;
+          accIsoSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_IsoSyst_" + PID + isol ) ) );
+          if( (accIsoSF.at( PID+isol )).isAvailable( *el_itr ) ) { (m_el_IsoEff_SF.at( PID+isol )).push_back( (accIsoSF.at( PID+isol ))( *el_itr ) ); }
+          else { (m_el_IsoEff_SF.at( PID+isol )).push_back( junkSF ); }
         }
       }
 
@@ -751,9 +753,10 @@ void HelpTreeBase::ClearElectrons() {
   if( m_elInfoSwitch->m_effSF && m_isMC ) {
     for (auto& PID : m_PIDWPs) {
       for (auto& isol : m_isolWPs) {
-        (m_el_IsoEff_SF[ PID+isol ]).clear();
         (m_el_TrigEff_SF[ PID+isol ]).clear();
         (m_el_TrigMCEff[ PID+isol ]).clear();
+        if(isol.empty()) continue;
+        (m_el_IsoEff_SF[ PID+isol ]).clear();
       }
     }
     m_el_RecoEff_SF.clear();
