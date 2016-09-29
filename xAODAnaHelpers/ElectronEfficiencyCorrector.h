@@ -56,17 +56,18 @@ public:
   std::string m_corrFileNameTrig;
   std::string m_corrFileNameTrigMCEff;
 
-  std::string   m_WorkingPointIDTrig;
-  std::string   m_WorkingPointIsoTrig;  
-
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
   bool m_isMC;            //!
 
-  std::string m_PID_WP;   //!
-  std::string m_Iso_WP;   //!
+  std::string m_PID_WP;    //!
+  std::string m_Iso_WP;    //!
+  std::string m_IsoPID_WP; //!
+
+  std::string m_WorkingPointIDTrig;  //!
+  std::string m_WorkingPointIsoTrig; //! 
 
   std::vector<CP::SystematicSet> m_systListPID;  //!
   std::vector<CP::SystematicSet> m_systListIso;  //!
