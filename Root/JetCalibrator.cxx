@@ -454,7 +454,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
       static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
       static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
-    
+
       if ( TruthLabelID.isAvailable( *jet_itr) ) {
 	this_TruthLabel = TruthLabelID( *jet_itr );
 	if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
