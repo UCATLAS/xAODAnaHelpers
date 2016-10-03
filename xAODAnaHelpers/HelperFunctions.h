@@ -46,6 +46,7 @@ namespace HelperFunctions {
   std::string replaceString(std::string subjet, const std::string& search, const std::string& replace);
   std::vector<TString> SplitString(TString& orig, const char separator);
   float dPhi(float phi1, float phi2);
+  bool has_exact(const std::string input, const std::string flag); 
 
   /**
     Function which returns the position of the n-th occurence of a character in a string searching backwards.
@@ -125,6 +126,7 @@ namespace HelperFunctions {
     double radius = 0.3,
     double fcut = 0.05,
     fastjet::JetAlgorithm s_alg = fastjet::kt_algorithm);
+
 
 
   // miscellaneous
@@ -461,6 +463,7 @@ namespace HelperFunctions {
       tree->SetBranchStatus  ((name+"_"+branch).c_str()  , 1);
       tree->SetBranchAddress ((name+"_"+branch).c_str()  , variable);
     }
+
 
 } // close namespace HelperFunctions
 
