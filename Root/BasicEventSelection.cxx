@@ -35,6 +35,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
     m_pileup_tool_handle("CP::PileupReweightingTool/Pileup"),
     m_trigConfTool(nullptr),
     m_trigDecTool(nullptr),
+    m_reweightSherpa22_tool_handle("PMGTools::PMGSherpa22VJetsWeightTool/ReweightSherpa22"),
     m_histEventCount(nullptr),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
@@ -85,6 +86,9 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
 
   // Clean Powheg huge weight
   m_cleanPowheg = false;
+
+  // Weight for Sherpa 2.2 samples
+  m_reweightSherpa22 = false;
 
   // Pileup Reweighting
   m_doPUreweighting    = false;
@@ -365,6 +369,42 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cleanPowheg = true;
     Info("initialize()", "This is J5 Powheg - cleaning that nasty huge weight event");
   }
+
+  //////// Initialize Tool for Sherpa 2.2 Reweighting ////////////
+  // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
+  m_reweightSherpa22 = false;
+  if( m_isMC && 
+      ( (eventInfo->mcChannelNumber() >= 363331 && eventInfo->mcChannelNumber() <= 363483 ) ||
+        (eventInfo->mcChannelNumber() >= 363102 && eventInfo->mcChannelNumber() <= 363122 ) ||
+        (eventInfo->mcChannelNumber() >= 363361 && eventInfo->mcChannelNumber() <= 363435 ) ) ){
+    Info("initialize()", "This is Sherpa 2.2 dataset and should be reweighted.  An extra weight will be saved to EventInfo called \"weight_Sherpa22\".");
+    m_reweightSherpa22 = true;
+
+    //Choose Jet Truth container, WZ has more information and is favored by the tool
+    std::string pmg_TruthJetContainer = "";
+    if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthWZJets") ){
+      pmg_TruthJetContainer = "AntiKt4TruthWZJets";
+    } else if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthJets") ){
+      pmg_TruthJetContainer = "AntiKt4TruthJets";
+    } else {
+      Warning("initialize()", "No Truth Jet Container found for Sherpa 22 reweighting, weight_Sherpa22 will not be set.");
+      m_reweightSherpa22 = false;
+    }
+
+    //Initialize Tool
+    if( m_reweightSherpa22 ){
+
+      if (!m_reweightSherpa22_tool_handle.isUserConfigured()) {
+
+        RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<PMGTools::PMGSherpa22VJetsWeightTool>("ReweightSherpa22"), "Failed to check whether tool already exists in asg::ToolStore" );
+        RETURN_CHECK( "initialize()", ASG_MAKE_ANA_TOOL(m_reweightSherpa22_tool_handle, PMGTools::PMGSherpa22VJetsWeightTool), "Could not make the tool");
+        RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ), "Failed to set TruthJetContainer" );
+        RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.retrieve(), "Failed to properly retrieve PMGTools::PMGSherpa22VJetsWeightTool");
+
+      }
+    }
+  }//if isMC and a Sherpa 2.2 sample
+
 
   Info("initialize()", "Setting up histograms");
 
@@ -666,12 +706,12 @@ EL::StatusCode BasicEventSelection :: execute ()
 
       // kill the powheg event with a huge weight
       if( m_cleanPowheg ) {
-	if( eventInfo->eventNumber() == 1652845 ) {
-	  Info("execute()","Dropping huge weight event. Weight should be 352220000");
-	  Info("execute()","WEIGHT : %f ", mcEvtWeight);
-	  wk()->skipEvent();
-	  return EL::StatusCode::SUCCESS; // go to next event
-	}
+        if( eventInfo->eventNumber() == 1652845 ) {
+          Info("execute()","Dropping huge weight event. Weight should be 352220000");
+          Info("execute()","WEIGHT : %f ", mcEvtWeight);
+          wk()->skipEvent();
+          return EL::StatusCode::SUCCESS; // go to next event
+        }
       }
     }
     // Decorate event with the *total* MC event weight
@@ -708,6 +748,23 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
 
+  //------------------------------------------------------------------------------------------
+  // Declare an 'eventInfo' decorator with the Sherpa 2.2 reweight to multijet truth
+  // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
+  //------------------------------------------------------------------------------------------
+  
+  if ( m_reweightSherpa22 ){
+    static SG::AuxElement::Decorator< float > weight_Sherpa22Decor("weight_Sherpa22");
+    // Check if weight needs to be added
+    if ( !weight_Sherpa22Decor.isAvailable(*eventInfo) ) {
+
+      float weight_Sherpa22 = -999.;
+      weight_Sherpa22 = m_reweightSherpa22_tool_handle->getWeight();
+      weight_Sherpa22Decor( *eventInfo ) = weight_Sherpa22;
+      if( m_debug)  Info("exectue()","Setting Sherpa 2.2 reweight to %f", weight_Sherpa22);
+
+    } // If not already decorated
+  } // if m_reweightSherpa22
 
 
   //------------------------------------------------------------------------------------------
