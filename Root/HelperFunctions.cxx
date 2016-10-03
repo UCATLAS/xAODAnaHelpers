@@ -501,5 +501,18 @@ std::string HelperFunctions::parse_wp( const std::string& type, const std::strin
   if ( type.compare("ID") == 0 ) { wp += "LLH"; }
 
   return wp;
+}
 
+bool HelperFunctions::has_exact(const std::string input, const std::string flag) 
+{ 
+  std::set<std::string> inputSet;
+  
+  // parse and split by space
+  std::string token;
+  std::istringstream ss(input);
+  while ( std::getline(ss, token, ' ') )
+    inputSet.insert(token);
+
+
+  return inputSet.find(flag) != inputSet.end(); 
 }
