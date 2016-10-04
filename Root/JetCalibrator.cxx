@@ -228,11 +228,11 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   // initialize jet calibration tool
   std::string jcal_tool_name = std::string("JetCorrectionTool_") + m_name;
-  m_jetCalibration = new JetCalibrationTool(jcal_tool_name.c_str(),
-      m_jetAlgo,
-      m_calibConfig,
-      m_calibSequence,
-      !m_isMC);
+  m_jetCalibration = new JetCalibrationTool(jcal_tool_name.c_str());
+  m_jetCalibration->setProperty("JetCollection",m_jetAlgo);
+  m_jetCalibration->setProperty("ConfigFile",m_calibConfig);
+  m_jetCalibration->setProperty("CalibSequence",m_calibSequence);
+  m_jetCalibration->setProperty("IsData",!m_isMC);
   m_jetCalibration->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
   RETURN_CHECK( "JetCalibrator::initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface succesfully initialized!");
 
