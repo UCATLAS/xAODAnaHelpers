@@ -33,10 +33,10 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_phInfoSwitch(nullptr),
   m_fatJetInfoSwitch(nullptr),
   m_tauInfoSwitch(nullptr),
-  m_metInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
-  m_eventInfo(nullptr)
+  m_eventInfo(nullptr),
+  m_met(nullptr)
 {
 
   m_units = units;
@@ -82,7 +82,7 @@ HelpTreeBase::~HelpTreeBase() {
     delete m_tauInfoSwitch;
 
     //met
-    delete m_metInfoSwitch;
+    delete m_met;
 
     //jet
     for (auto jet: m_jets)
@@ -1692,61 +1692,8 @@ void HelpTreeBase::AddMET( const std::string detailStr ) {
 
   if(m_debug) Info("AddMET()", "Adding MET variables: %s", detailStr.c_str());
 
-  m_metInfoSwitch = new HelperClasses::METInfoSwitch( detailStr );
-
-  m_tree->Branch("metFinalClus",	 &m_metFinalClus,      "metFinalClus/F");
-  m_tree->Branch("metFinalClusPx",       &m_metFinalClusPx,    "metFinalClusPx/F");
-  m_tree->Branch("metFinalClusPy",       &m_metFinalClusPy,    "metFinalClusPy/F");
-  m_tree->Branch("metFinalClusSumEt",    &m_metFinalClusSumEt, "metFinalClusSumEt/F");
-  m_tree->Branch("metFinalClusPhi",      &m_metFinalClusPhi,   "metFinalClusPhi/F");
-
-  m_tree->Branch("metFinalTrk",	         &m_metFinalTrk,       "metFinalTrk/F");
-  m_tree->Branch("metFinalTrkPx",        &m_metFinalTrkPx,     "metFinalTrkPx/F");
-  m_tree->Branch("metFinalTrkPy",        &m_metFinalTrkPy,     "metFinalTrkPy/F");
-  m_tree->Branch("metFinalTrkSumEt",     &m_metFinalTrkSumEt,  "metFinalTrkSumEt/F");
-  m_tree->Branch("metFinalTrkPhi",       &m_metFinalTrkPhi,    "metFinalTrkPhi/F");
-
-  if ( m_metInfoSwitch->m_refEle ) {
-    m_tree->Branch("metEle",             &m_metEle,	       "metEle/F");
-    m_tree->Branch("metEleSumEt",        &m_metEleSumEt,       "metEleSumEt/F");
-    m_tree->Branch("metElePhi",          &m_metElePhi,         "metElePhi/F");
-  }
-  if ( m_metInfoSwitch->m_refGamma ) {
-    m_tree->Branch("metGamma",       	 &m_metGamma,	       "metGamma/F");
-    m_tree->Branch("metGammaSumEt",  	 &m_metGammaSumEt,     "metGammaSumEt/F");
-    m_tree->Branch("metGammaPhi",    	 &m_metGammaPhi,       "metGammaPhi/F");
-  }
-  if ( m_metInfoSwitch->m_refTau ) {
-    m_tree->Branch("metTau",             &m_metTau,	       "metTau/F");
-    m_tree->Branch("metTauSumEt",        &m_metTauSumEt,       "metTauSumEt/F");
-    m_tree->Branch("metTauPhi",          &m_metTauPhi,         "metTauPhi/F");
-  }
-  if ( m_metInfoSwitch->m_refMuons ) {
-    m_tree->Branch("metMuons",           &m_metMuons,	       "metMuons/F");
-    m_tree->Branch("metMuonsSumEt",      &m_metMuonsSumEt,     "metMuonsSumEt/F");
-    m_tree->Branch("metMuonsPhi",        &m_metMuonsPhi,       "metMuonsPhi/F");
-  }
-  if ( m_metInfoSwitch->m_refJet ) {
-    m_tree->Branch("metJet",             &m_metJet,	       "metJet/F");
-    m_tree->Branch("metJetSumEt",        &m_metJetSumEt,       "metJetSumEt/F");
-    m_tree->Branch("metJetPhi",          &m_metJetPhi,         "metJetPhi/F");
-  }
-  if ( m_metInfoSwitch->m_refJetTrk ) {
-    m_tree->Branch("metJetTrk",          &m_metJetTrk,         "metJetTrk/F");
-    m_tree->Branch("metJetTrkSumEt",     &m_metJetTrkSumEt,    "metJetTrkSumEt/F");
-    m_tree->Branch("metJetTrkPhi",       &m_metJetTrkPhi,      "metJetTrkPhi/F");
-  }
-  if ( m_metInfoSwitch->m_softClus) {
-    m_tree->Branch("metSoftClus",        &m_metSoftClus,       "metSoftClus/F");
-    m_tree->Branch("metSoftClusSumEt",   &m_metSoftClusSumEt,  "metSoftClusSumEt/F");
-    m_tree->Branch("metSoftClusPhi",     &m_metSoftClusPhi,    "metSoftClussPhi/F");
-  }
-  if ( m_metInfoSwitch->m_softTrk) {
-    m_tree->Branch("metSoftTrk",         &m_metSoftTrk,        "metSoftTrk/F");
-    m_tree->Branch("metSoftTrkSumEt",    &m_metSoftTrkSumEt,   "metSoftTrkSumEt/F");
-    m_tree->Branch("metSoftTrkPhi",      &m_metSoftTrkPhi,     "metSoftTrksPhi/F");
-  }
-
+  m_met = new xAH::MetContainer(detailStr, m_units);
+  m_met -> setBranches(m_tree);
   this->AddMETUser();
 }
 
@@ -1756,109 +1703,13 @@ void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
   this->ClearMET();
   this->ClearMETUser();
 
-  if ( m_debug ) { Info("HelpTreeBase::FillMET()", "Filling MET info"); }
-
-  const xAOD::MissingET* final_clus = *met->find("FinalClus"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
-  m_metFinalClus      = final_clus->met() / m_units;
-  m_metFinalClusPx    = final_clus->mpx() / m_units;
-  m_metFinalClusPy    = final_clus->mpy() / m_units;
-  m_metFinalClusSumEt = final_clus->sumet() / m_units;
-  m_metFinalClusPhi   = final_clus->phi();
-
-  const xAOD::MissingET* final_trk = *met->find("FinalTrk"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
-  m_metFinalTrk	      = final_trk->met() / m_units;
-  m_metFinalTrkPx     = final_trk->mpx() / m_units;
-  m_metFinalTrkPy     = final_trk->mpy() / m_units;
-  m_metFinalTrkSumEt  = final_trk->sumet() / m_units;
-  m_metFinalTrkPhi    = final_trk->phi();
-
-  if ( m_metInfoSwitch->m_refEle ) {
-    const xAOD::MissingET* ref_ele       = *met->find("RefEle");
-    m_metEle         		         = ref_ele->met() / m_units;
-    m_metEleSumEt    		         = ref_ele->sumet() / m_units;
-    m_metElePhi      		         = ref_ele->phi();
-  }
-  if ( m_metInfoSwitch->m_refGamma ) {
-    const xAOD::MissingET* ref_gamma     = *met->find("RefGamma");
-    m_metGamma             	         = ref_gamma->met() / m_units;
-    m_metGammaSumEt        	         = ref_gamma->sumet() / m_units;
-    m_metGammaPhi          	         = ref_gamma->phi();
-  }
-  if ( m_metInfoSwitch->m_refTau ) {
-    const xAOD::MissingET* ref_tau  	 = *met->find("RefTau");
-    m_metTau             	    	 = ref_tau->met() / m_units;
-    m_metTauSumEt        	    	 = ref_tau->sumet() / m_units;
-    m_metTauPhi          	    	 = ref_tau->phi();
-  }
-  if ( m_metInfoSwitch->m_refMuons ) {
-    const xAOD::MissingET* ref_muon  	 = *met->find("Muons");
-    m_metMuons             	     	 = ref_muon->met() / m_units;
-    m_metMuonsSumEt        	     	 = ref_muon->sumet() / m_units;
-    m_metMuonsPhi          	     	 = ref_muon->phi();
-  }
-  if ( m_metInfoSwitch->m_refJet ) {
-    const xAOD::MissingET* ref_jet  	 = *met->find("RefJet");
-    m_metJet             	     	 = ref_jet->met() / m_units;
-    m_metJetSumEt        	     	 = ref_jet->sumet() / m_units;
-    m_metJetPhi          	     	 = ref_jet->phi();
-  }
-  if ( m_metInfoSwitch->m_refJetTrk ) {
-    const xAOD::MissingET* ref_jet_trk   = *met->find("RefJetTrk");
-    m_metJetTrk             	     	 = ref_jet_trk->met() / m_units;
-    m_metJetTrkSumEt        	     	 = ref_jet_trk->sumet() / m_units;
-    m_metJetTrkPhi          	     	 = ref_jet_trk->phi();
-  }
-  if ( m_metInfoSwitch->m_softClus) {
-    const xAOD::MissingET* ref_soft_clus = *met->find("SoftClus");
-    m_metSoftClus            		 = ref_soft_clus->met() / m_units;
-    m_metSoftClusSumEt       		 = ref_soft_clus->sumet() / m_units;
-    m_metSoftClusPhi         		 = ref_soft_clus->phi();
-  }
-  if ( m_metInfoSwitch->m_softTrk) {
-    const xAOD::MissingET* ref_soft_trk  = *met->find("PVSoftTrk");
-    m_metSoftTrk             		 = ref_soft_trk->met() / m_units;
-    m_metSoftTrkSumEt        		 = ref_soft_trk->sumet() / m_units;
-    m_metSoftTrkPhi          		 = ref_soft_trk->phi();
-  }
+  m_met->FillMET(met);
 
   this->FillMETUser(met);
 }
 
 void HelpTreeBase::ClearMET() {
-
-  m_metFinalClus      = -999;
-  m_metFinalClusPx    = -999;
-  m_metFinalClusPy    = -999;
-  m_metFinalClusSumEt = -999;
-  m_metFinalClusPhi   = -999;
-
-  m_metFinalTrk	      = -999;
-  m_metFinalTrkPx     = -999;
-  m_metFinalTrkPy     = -999;
-  m_metFinalTrkSumEt  = -999;
-  m_metFinalTrkPhi    = -999;
-
-  if ( m_metInfoSwitch->m_refEle ) {
-    m_metEle = m_metEleSumEt = m_metElePhi = -999;
-  }
-  if ( m_metInfoSwitch->m_refGamma ) {
-    m_metGamma = m_metGammaSumEt = m_metGammaPhi = -999;
-  }
-  if ( m_metInfoSwitch->m_refTau ) {
-    m_metTau = m_metTauSumEt = m_metTauPhi = -999;
-  }
-  if ( m_metInfoSwitch->m_refMuons ) {
-    m_metMuons = m_metMuonsSumEt = m_metMuonsPhi = -999;
-  }
-  if ( m_metInfoSwitch->m_refJet ) {
-    m_metJet = m_metJetSumEt = m_metJetPhi = -999;
-  }
-  if ( m_metInfoSwitch->m_refJetTrk ) {
-    m_metJetTrk = m_metJetTrkSumEt = m_metJetTrkPhi = -999;
-  }
-	  if ( m_metInfoSwitch->m_softClus) {
-    m_metSoftClus = m_metSoftClusSumEt = m_metSoftClusPhi = -999;
-  }
+  m_met->clear();
 }
 
 

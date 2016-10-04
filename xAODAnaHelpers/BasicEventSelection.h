@@ -18,6 +18,7 @@
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
 #include "PileupReweighting/PileupReweightingTool.h"
 #include "AsgTools/AnaToolHandle.h"
+#include "PMGTools/PMGSherpa22VJetsWeightTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -46,6 +47,9 @@ class BasicEventSelection : public xAH::Algorithm
 
     // Clean Powheg huge weight
     bool m_cleanPowheg;
+
+    // Reweight Sherpa 2.2 Samples
+    bool  m_reweightSherpa22;
 
     //PU Reweighting
     bool m_doPUreweighting;
@@ -109,6 +113,8 @@ class BasicEventSelection : public xAH::Algorithm
     asg::AnaToolHandle<CP::IPileupReweightingTool>   m_pileup_tool_handle; //!
     TrigConf::xAODConfigTool*    m_trigConfTool;  //!
     Trig::TrigDecisionTool*      m_trigDecTool;   //!
+
+    asg::AnaToolHandle<IWeightTool> m_reweightSherpa22_tool_handle; //!
 
     bool m_isMC;      //!
 

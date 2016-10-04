@@ -136,8 +136,8 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
     if(m_mc){
       tree->Branch("correct_mu"       ,          &m_correct_mu       ,"correct_mu/F"       );          
-      tree->Branch("rand_run_nr"      ,          &m_rand_run_nr      ,"rand_run_nr/i"      );         
-      tree->Branch("rand_lumiblock_nr",          &m_rand_lumiblock_nr,"rand_lumiblock_nr/i");  
+      tree->Branch("rand_run_nr"      ,          &m_rand_run_nr      ,"rand_run_nr/I"      );         
+      tree->Branch("rand_lumiblock_nr",          &m_rand_lumiblock_nr,"rand_lumiblock_nr/I");  
     }
   }
 

@@ -2,15 +2,11 @@
 #define xAODAnaHelpers_EventInfo_H
 
 #include <TTree.h>
-//#include <TLorentzVector.h>
-
-//#include <vector>
 #include <string>
 
 #include "xAODEventInfo/EventInfo.h"
 
 #include <xAODAnaHelpers/HelperClasses.h>
-//#include <xAODAnaHelpers/HelperFunctions.h>
 
 namespace xAH {
 
