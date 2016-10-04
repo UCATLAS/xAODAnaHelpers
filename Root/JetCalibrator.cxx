@@ -411,7 +411,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
-  RETURN_CHECK("JetCalibrator::initialize()",m_store->record(SystJetsNames, "jets_Syst" ), "Failed to record vector of jet systs names.");
+  RETURN_CHECK("JetCalibrator::initialize()",m_store->record(SystJetsNames, "jets_Syst_"+m_inContainerName ), "Failed to record vector of jet systs names.");
 
 
   return EL::StatusCode::SUCCESS;
