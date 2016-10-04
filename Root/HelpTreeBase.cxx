@@ -1097,11 +1097,11 @@ void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthPart
 
   // We need some basic cuts here to avoid many PseudoRapiditity warnings being thrown ...
   float truthparticle_ptmin  = 2.0;
-  float truthparticle_etamin = 8.0;
+  float truthparticle_etamax = 8.0;
 
   for( auto truth_itr : *truthParts ) {
     
-    if((truth_itr->pt() / m_units < truthparticle_ptmin) || (fabs(truth_itr->eta()) < truthparticle_etamin) ){
+    if((truth_itr->pt() / m_units < truthparticle_ptmin) || (fabs(truth_itr->eta()) > truthparticle_etamax) ){
       continue;
     }
     
