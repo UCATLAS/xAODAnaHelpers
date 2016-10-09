@@ -324,6 +324,8 @@ namespace HelperClasses {
         Parameter        Pattern        Match
         ================ ============== =======
         m_substructure   substructure   exact
+        m_bosonCount     bosonCount     exact
+        m_VTags          VTags          exact
         m_rapidity       rapidity       exact
         m_clean          clean          exact
         m_energy         energy         exact
@@ -346,6 +348,7 @@ namespace HelperClasses {
         m_area           area           exact
         m_JVC            JVC            exact
         m_tracksInJet    tracksInJet    partial
+	m_trackJetName   trackJetName   partial
         m_hltVtxComp     hltVtxComp     exact
         m_charge         charge         exact
         m_vsLumiBlock    vsLumiBlock    exact
@@ -366,6 +369,8 @@ namespace HelperClasses {
   class JetInfoSwitch : public IParticleInfoSwitch {
   public:
     bool m_substructure;
+    bool m_bosonCount;
+    bool m_VTags;
     bool m_rapidity;
     bool m_clean;
     bool m_energy;
@@ -388,12 +393,14 @@ namespace HelperClasses {
     bool m_svDetails;
     bool m_ipDetails;
     bool m_tracksInJet;
+    bool m_trackJets;
     bool m_hltVtxComp;
     bool m_charge;
     bool m_vsLumiBlock;
     bool m_area;
     bool m_JVC;
     std::string      m_trackName;
+    std::string      m_trackJetName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };

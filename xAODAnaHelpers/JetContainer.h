@@ -34,10 +34,7 @@ namespace xAH {
       virtual void FillGlobalBTagSF( const xAOD::EventInfo* eventInfo );
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
-    protected:
-
       virtual void updateParticle(uint idx, Jet& jet);
-
 
 //template<typename T>
 //	void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr);
@@ -162,6 +159,7 @@ namespace xAH {
       std::vector<float> *m_MV2c00;
       std::vector<float> *m_MV2c10;
       std::vector<float> *m_MV2c20;
+      std::vector<float> *m_MV2c100;
       std::vector<float> *m_MV2;
       std::vector<int>   *m_HadronConeExclTruthLabelID;
     

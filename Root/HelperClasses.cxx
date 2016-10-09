@@ -148,6 +148,8 @@ namespace HelperClasses{
 
   void JetInfoSwitch::initialize(){
     m_substructure  = has_exact("substructure");
+    m_bosonCount    = has_exact("bosonCount");
+    m_VTags         = has_exact("VTags");
     m_rapidity      = has_exact("rapidity");
     m_clean         = has_exact("clean");
     m_energy        = has_exact("energy");
@@ -191,6 +193,27 @@ namespace HelperClasses{
       m_tracksInJet       = false;
       m_trackName         = "";
     }
+
+
+    if(has_match("trackJetName")){
+      m_trackJets       = true;
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("trackJetName_") );
+      // erase everything after the interesting string
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
+      // remove trackJetName_ to just leave the tack name
+      input.erase(0,13);
+
+      m_trackJetName = input;
+    }else{
+      m_trackJets            = false;
+      m_trackJetName         = "";
+    }
+
 
     m_hltVtxComp          = has_exact("hltVtxComp");
     m_charge              = has_exact("charge");
