@@ -511,14 +511,17 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
     }
     
     if(m_mc){
-      m_nHBosons->push_back( fatJetParentJet->auxdata<int>("GhostHBosonsCount") );
-      m_nWBosons->push_back( fatJetParentJet->auxdata<int>("GhostWBosonsCount") );
-      m_nZBosons->push_back( fatJetParentJet->auxdata<int>("GhostZBosonsCount") );
-    }
-    else{
-      m_nHBosons->push_back(-1);
-      m_nWBosons->push_back(-1);
-      m_nZBosons->push_back(-1);
+      static SG::AuxElement::ConstAccessor< int > truthfatjet_TQuarks("GhostTQuarksFinalCount");
+      safeFill<int, int, xAOD::Jet>(fatjet, truthfatjet_TQuarks, m_nTQuarks, -999);
+
+      static SG::AuxElement::ConstAccessor< int > truthfatjet_WBosons("GhostWBosonsCount");
+      safeFill<int, int, xAOD::Jet>(fatjet, truthfatjet_WBosons, m_nWBosons, -999);
+
+      static SG::AuxElement::ConstAccessor< int > truthfatjet_ZBosons("GhostZBosonsCount");
+      safeFill<int, int, xAOD::Jet>(fatjet, truthfatjet_ZBosons, m_nZBosons, -999);
+
+      static SG::AuxElement::ConstAccessor< int > truthfatjet_HBosons("GhostHBosonsCount");
+      safeFill<int, int, xAOD::Jet>(fatjet, truthfatjet_HBosons, m_nHBosons, -999);
     }
   }
   
