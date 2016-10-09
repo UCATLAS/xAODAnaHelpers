@@ -1157,57 +1157,16 @@ void HelpTreeBase::AddFatJets(const std::string& detailStr, const std::string& f
   this->AddFatJetsUser(detailStr, fatjetName, suffix);
 }
 
-void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
+void HelpTreeBase::AddTruthFatJets(const std::string& detailStr, const std::string& truthFatJetName) {
 
   if(m_debug) Info("AddTruthFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
 
-  m_truthFatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
+  m_truth_fatjets[truthFatJetName] = new xAH::FatJetContainer(truthFatJetName, detailStr, "", m_units, m_isMC);
 
-  // always
-  m_tree->Branch("ntruthfatjets",    &m_ntruthfatjet,"ntruthfatjets/I");
+  xAH::FatJetContainer* thisTruthFatJet = m_truth_fatjets[truthFatJetName];
+  thisTruthFatJet->setBranches(m_tree);
 
-  if ( m_truthFatJetInfoSwitch->m_kinematic ) {
-    m_tree->Branch("truth_fatjet_E",   &m_truth_fatjet_E);
-    m_tree->Branch("truth_fatjet_m",   &m_truth_fatjet_m);
-    m_tree->Branch("truth_fatjet_pt",  &m_truth_fatjet_pt);
-    m_tree->Branch("truth_fatjet_phi", &m_truth_fatjet_phi);
-    m_tree->Branch("truth_fatjet_eta", &m_truth_fatjet_eta);
-  }
-  if ( m_truthFatJetInfoSwitch->m_substructure ) {
-
-    m_tree->Branch("truth_fatjet_Split12",&m_truth_fatjet_Split12);
-    m_tree->Branch("truth_fatjet_Split23",&m_truth_fatjet_Split23);
-    m_tree->Branch("truth_fatjet_Split34",&m_truth_fatjet_Split34);
-    m_tree->Branch("truth_fatjet_tau1_wta",&m_truth_fatjet_tau1_wta);
-    m_tree->Branch("truth_fatjet_tau2_wta",&m_truth_fatjet_tau2_wta);
-    m_tree->Branch("truth_fatjet_tau3_wta",&m_truth_fatjet_tau3_wta);
-    m_tree->Branch("truth_fatjet_tau21_wta",   &m_truth_fatjet_tau21_wta);
-    m_tree->Branch("truth_fatjet_tau32_wta",   &m_truth_fatjet_tau32_wta);
-    m_tree->Branch("truth_fatjet_ECF1",&m_truth_fatjet_ECF1);
-    m_tree->Branch("truth_fatjet_ECF2",&m_truth_fatjet_ECF2);
-    m_tree->Branch("truth_fatjet_ECF3",&m_truth_fatjet_ECF3);
-    m_tree->Branch("truth_fatjet_C2",&m_truth_fatjet_C2);
-    m_tree->Branch("truth_fatjet_D2",&m_truth_fatjet_D2);
-    m_tree->Branch("truth_fatjet_NTrimSubjets",&m_truth_fatjet_NTrimSubjets);
-  }
-  if ( m_truthFatJetInfoSwitch->m_constituent) {
-    m_tree->Branch("truth_fatjet_numConstituents",&m_truth_fatjet_numConstituents);
-  }
-  if ( m_truthFatJetInfoSwitch->m_constituentAll) {
-    m_tree->Branch("truth_fatjet_constituentWeights",&m_truth_fatjet_constituentWeights);
-    m_tree->Branch("truth_fatjet_constituent_pt",&m_truth_fatjet_constituent_pt);
-    m_tree->Branch("truth_fatjet_constituent_eta",&m_truth_fatjet_constituent_eta);
-    m_tree->Branch("truth_fatjet_constituent_phi",&m_truth_fatjet_constituent_phi);
-    m_tree->Branch("truth_fatjet_constituent_e",&m_truth_fatjet_constituent_e);
-  }
-  if (m_truthFatJetInfoSwitch->m_truth) {
-    m_tree->Branch("truth_fatjet_GhostTQuarks",&m_truth_fatjet_GhostTQuarks);
-    m_tree->Branch("truth_fatjet_GhostWBosons",&m_truth_fatjet_GhostWBosons);
-    m_tree->Branch("truth_fatjet_GhostZBosons",&m_truth_fatjet_GhostZBosons);
-    m_tree->Branch("truth_fatjet_GhostHBosons",&m_truth_fatjet_GhostHBosons);
-  }
-
-  this->AddTruthFatJetsUser();
+  this->AddTruthFatJetsUser(detailStr, truthFatJetName);
 }
 
 
@@ -1237,143 +1196,28 @@ void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, const std::string& f
 
 
 
-void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets ) {
+void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets, const std::string& truthFatJetName ) {
   this->ClearTruthFatJets();
-  this->ClearTruthFatJetsUser();
 
   for( auto truth_fatjet_itr : *truthTruthFatJets ) {
 
-    if( m_truthFatJetInfoSwitch->m_kinematic ){
-      m_truth_fatjet_pt.push_back ( truth_fatjet_itr->pt() / m_units );
-      m_truth_fatjet_m.push_back ( truth_fatjet_itr->m() / m_units );
-      m_truth_fatjet_eta.push_back( truth_fatjet_itr->eta() );
-      m_truth_fatjet_phi.push_back( truth_fatjet_itr->phi() );
-      m_truth_fatjet_E.push_back  ( truth_fatjet_itr->e() / m_units );
-    }
-
-    if( m_truthFatJetInfoSwitch->m_substructure ){
-      static SG::AuxElement::ConstAccessor<float> Split12("Split12");
-      static SG::AuxElement::ConstAccessor<float> Split23("Split23");
-      static SG::AuxElement::ConstAccessor<float> Split34("Split34");
-      if ( Split12.isAvailable( *truth_fatjet_itr ) ) {
-	m_truth_fatjet_Split12.push_back( Split12( *truth_fatjet_itr ) / m_units );
-      } else { m_truth_fatjet_Split12.push_back( -999 ); }
-      if ( Split23.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_Split23.push_back(Split23( *truth_fatjet_itr ) / m_units );
-      } else { m_truth_fatjet_Split34.push_back( -999 ); }
-      if ( Split34.isAvailable( *truth_fatjet_itr ) ) {
-	m_truth_fatjet_Split34.push_back( Split34( *truth_fatjet_itr ) / m_units );
-      } else { m_truth_fatjet_Split34.push_back( -999 ); }
-
-      static SG::AuxElement::ConstAccessor<float> tau1_wta ("Tau1_wta");
-      static SG::AuxElement::ConstAccessor<float> tau2_wta ("Tau2_wta");
-      static SG::AuxElement::ConstAccessor<float> tau3_wta ("Tau3_wta");
-      static SG::AuxElement::ConstAccessor<float> tau21_wta ("Tau21_wta");
-      static SG::AuxElement::ConstAccessor<float> tau32_wta ("Tau32_wta");
-
-      if ( tau1_wta.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_tau1_wta.push_back( tau1_wta( *truth_fatjet_itr ) );
-      } else { m_truth_fatjet_tau1_wta.push_back( -999 ); }
-      if ( tau2_wta.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_tau2_wta.push_back( tau2_wta( *truth_fatjet_itr ) );
-      } else { m_truth_fatjet_tau2_wta.push_back( -999 ); }
-      if ( tau3_wta.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_tau3_wta.push_back( tau3_wta( *truth_fatjet_itr ) );
-      } else { m_truth_fatjet_tau3_wta.push_back( -999 ); }
-      if(tau21_wta.isAvailable( *truth_fatjet_itr )){
-        m_truth_fatjet_tau21_wta.push_back( tau21_wta( *truth_fatjet_itr ) );
-      } else if ( tau1_wta.isAvailable( *truth_fatjet_itr ) and tau2_wta.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_tau21_wta.push_back( tau2_wta( *truth_fatjet_itr ) / tau1_wta( *truth_fatjet_itr ) );
-      } else { m_truth_fatjet_tau21_wta.push_back( -999 ); }
-      if(tau32_wta.isAvailable( *truth_fatjet_itr )){
-        m_truth_fatjet_tau32_wta.push_back( tau32_wta( *truth_fatjet_itr ) );
-      } else if ( tau2_wta.isAvailable( *truth_fatjet_itr ) and tau3_wta.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_tau32_wta.push_back( tau3_wta( *truth_fatjet_itr ) / tau2_wta( *truth_fatjet_itr ) );
-      } else { m_truth_fatjet_tau32_wta.push_back( -999 ); }
-
-      static SG::AuxElement::ConstAccessor<float> ECF1 ("ECF1");
-      static SG::AuxElement::ConstAccessor<float> ECF2("ECF2");
-      static SG::AuxElement::ConstAccessor<float> ECF3 ("ECF3");
-      static SG::AuxElement::ConstAccessor<float> C2("C2");
-      static SG::AuxElement::ConstAccessor<float> D2 ("D2");
-
-      if(C2.isAvailable(*truth_fatjet_itr)){
-	m_truth_fatjet_C2.push_back(C2(*truth_fatjet_itr));
-      } else if( ECF1.isAvailable(*truth_fatjet_itr) && ECF2.isAvailable(*truth_fatjet_itr) && ECF3.isAvailable(*truth_fatjet_itr)){
-        m_truth_fatjet_C2.push_back( ECF3(*truth_fatjet_itr)*ECF1(*truth_fatjet_itr)/pow(ECF2(*truth_fatjet_itr),2.0));
-      } else{ m_truth_fatjet_C2.push_back(-999); }
-
-      if( D2.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_D2.push_back( D2( *truth_fatjet_itr ));
-      } else if (ECF1.isAvailable( *truth_fatjet_itr ) && ECF2.isAvailable( *truth_fatjet_itr ) && ECF3.isAvailable( *truth_fatjet_itr )){
-	float e2=(ECF2( *truth_fatjet_itr )/(ECF1( *truth_fatjet_itr )*ECF1( *truth_fatjet_itr )));
-	float e3=(ECF3( *truth_fatjet_itr )/(ECF1( *truth_fatjet_itr )*ECF1( *truth_fatjet_itr )*ECF1( *truth_fatjet_itr )));
-        m_truth_fatjet_D2.push_back( e3/(e2*e2*e2) );
-      } else{ m_truth_fatjet_D2.push_back(-999); }
-
-      if ( ECF1.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_ECF1.push_back( ECF1( *truth_fatjet_itr ) / m_units);
-      } else { m_truth_fatjet_ECF1.push_back( -999 ); }
-      if ( ECF2.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_ECF2.push_back( ECF2( *truth_fatjet_itr ) / m_units);
-      } else { m_truth_fatjet_ECF2.push_back( -999 ); }
-      if ( ECF3.isAvailable( *truth_fatjet_itr ) ) {
-        m_truth_fatjet_ECF3.push_back( ECF3( *truth_fatjet_itr ) / m_units);
-      } else { m_truth_fatjet_ECF3.push_back( -999 ); }
-
-      static SG::AuxElement::ConstAccessor<int> NTrimSubjets("NTrimSubjets");
-      if( NTrimSubjets.isAvailable(*truth_fatjet_itr) ){
-        m_truth_fatjet_NTrimSubjets.push_back(NTrimSubjets(*truth_fatjet_itr));
-      } else{ m_truth_fatjet_NTrimSubjets.push_back(-999); }
-    }
-
-
-    if( m_truthFatJetInfoSwitch->m_constituent ){
-      m_truth_fatjet_numConstituents.push_back( truth_fatjet_itr->numConstituents() );
-    }
-    if( m_truthFatJetInfoSwitch->m_constituentAll ){
-      m_truth_fatjet_constituentWeights.push_back( truth_fatjet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
-      std::vector<float> pt;
-      std::vector<float> eta;
-      std::vector<float> phi;
-      std::vector<float> e;
-      xAOD::JetConstituentVector consVec = truth_fatjet_itr->getConstituents();
-      if( consVec.isValid() ) {
-	// use the example provided in
-        // http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODJet/xAODJet/JetConstituentVector.h
-	xAOD::JetConstituentVector::iterator constit = consVec.begin();
-	xAOD::JetConstituentVector::iterator constitE = consVec.end();
-        for( ; constit != constitE; constit++){
-          pt. push_back( constit->pt() / m_units );
-          eta.push_back( constit->eta() );
-          phi.push_back( constit->phi() );
-          e.  push_back( constit->e() / m_units  );
-        }
-      }
-      m_truth_fatjet_constituent_pt.push_back( pt  );
-      m_truth_fatjet_constituent_eta.push_back( eta );
-      m_truth_fatjet_constituent_phi.push_back( phi );
-      m_truth_fatjet_constituent_e.push_back( e   );
-    }
-
-    if( m_truthFatJetInfoSwitch->m_truth && m_isMC){
-      static SG::AuxElement::ConstAccessor< int > truthfatjet_TQuarks("GhostTQuarksFinalCount");
-      if(truthfatjet_TQuarks.isAvailable(*truth_fatjet_itr)){m_truth_fatjet_GhostTQuarks.push_back(truthfatjet_TQuarks(*truth_fatjet_itr));} else{m_truth_fatjet_GhostTQuarks.push_back(-999);}
-      static SG::AuxElement::ConstAccessor< int > truthfatjet_WBosons("GhostWBosonsCount");
-      if(truthfatjet_WBosons.isAvailable(*truth_fatjet_itr)){m_truth_fatjet_GhostWBosons.push_back(truthfatjet_WBosons(*truth_fatjet_itr));} else{m_truth_fatjet_GhostWBosons.push_back(-999);}
-      static SG::AuxElement::ConstAccessor< int > truthfatjet_ZBosons("GhostZBosonsCount");
-      if(truthfatjet_ZBosons.isAvailable(*truth_fatjet_itr)){m_truth_fatjet_GhostZBosons.push_back(truthfatjet_ZBosons(*truth_fatjet_itr));} else{m_truth_fatjet_GhostZBosons.push_back(-999);}
-      static SG::AuxElement::ConstAccessor< int > truthfatjet_HBosons("GhostHBosonsCount");
-      if(truthfatjet_HBosons.isAvailable(*truth_fatjet_itr)){m_truth_fatjet_GhostHBosons.push_back(truthfatjet_HBosons(*truth_fatjet_itr));} else{m_truth_fatjet_GhostHBosons.push_back(-999);}
-    }
-
-    this->FillTruthFatJetsUser(truth_fatjet_itr);
-
-    m_ntruthfatjet++;
+    this->FillTruthFatJet(truth_fatjet_itr, truthFatJetName);
 
   } // loop over fat jets
 
 }
+
+void HelpTreeBase::FillTruthFatJet( const xAOD::Jet* truth_fatjet_itr, const std::string& truthFatJetName ) {
+
+  xAH::FatJetContainer* thisTruthFatJet = m_truth_fatjets[truthFatJetName];
+
+  thisTruthFatJet->FillFatJet(truth_fatjet_itr);
+
+  this->FillTruthFatJetsUser(truth_fatjet_itr, truthFatJetName);
+
+  return;
+}
+
 
 void HelpTreeBase::ClearFatJets(const std::string& fatjetName, const std::string& suffix) {
   const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
@@ -1384,48 +1228,12 @@ void HelpTreeBase::ClearFatJets(const std::string& fatjetName, const std::string
   this->ClearFatJetsUser(fatjetName, suffix);
 }
 
-void HelpTreeBase::ClearTruthFatJets() {
+void HelpTreeBase::ClearTruthFatJets(const std::string& truthFatJetName) {
 
-  m_ntruthfatjet = 0;
-  if( m_truthFatJetInfoSwitch->m_kinematic ){
-    m_truth_fatjet_pt.clear();
-    m_truth_fatjet_eta.clear();
-    m_truth_fatjet_phi.clear();
-    m_truth_fatjet_E.clear();
-    m_truth_fatjet_m.clear();
-  }
-  if( m_truthFatJetInfoSwitch->m_substructure ){
-    m_truth_fatjet_Split12.clear();
-    m_truth_fatjet_Split23.clear();
-    m_truth_fatjet_Split34.clear();
-    m_truth_fatjet_tau1_wta.clear();
-    m_truth_fatjet_tau2_wta.clear();
-    m_truth_fatjet_tau3_wta.clear();
-    m_truth_fatjet_tau21_wta.clear();
-    m_truth_fatjet_tau32_wta.clear();
-    m_truth_fatjet_ECF1.clear();
-    m_truth_fatjet_ECF2.clear();
-    m_truth_fatjet_ECF3.clear();
-    m_truth_fatjet_C2.clear();
-    m_truth_fatjet_D2.clear();
-    m_truth_fatjet_NTrimSubjets.clear();
-  }
-  if( m_truthFatJetInfoSwitch->m_constituent ){
-    m_truth_fatjet_numConstituents.clear();
-  }
-  if( m_truthFatJetInfoSwitch->m_constituentAll ){
-    m_truth_fatjet_constituentWeights.clear();
-    m_truth_fatjet_constituent_pt.clear();
-    m_truth_fatjet_constituent_eta.clear();
-    m_truth_fatjet_constituent_phi.clear();
-    m_truth_fatjet_constituent_e.clear();
-  }
-  if( m_truthFatJetInfoSwitch->m_truth ){
-    m_truth_fatjet_GhostTQuarks.clear();
-    m_truth_fatjet_GhostWBosons.clear();
-    m_truth_fatjet_GhostZBosons.clear();
-    m_truth_fatjet_GhostHBosons.clear();
-  }
+  xAH::FatJetContainer* thisTruthFatJet = m_truth_fatjets[truthFatJetName];
+  thisTruthFatJet->clear();
+
+  this->ClearTruthFatJetsUser();
 }
 
 void HelpTreeBase::ClearEvent() {

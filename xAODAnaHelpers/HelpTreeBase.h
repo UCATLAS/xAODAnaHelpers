@@ -80,8 +80,8 @@ public:
    *  @param  suffix      If non-empty, append the given suffix to all branch names.
    **/
   void AddFatJets     (const std::string& detailStr = "", const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+  void AddTruthFatJets(const std::string& detailStr = "", const std::string& truthFatJetName = "truth_fatjet");
 
-  void AddTruthFatJets (const std::string detailStr = "");
   void AddTaus        (const std::string detailStr = "");
   void AddMET         (const std::string detailStr = "");
 
@@ -102,11 +102,8 @@ public:
   // control which branches are filled
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
   HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
-  HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
   HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-  HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
-  HelperClasses::JetInfoSwitch*        m_truthFatJetInfoSwitch;
   HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
 
 
@@ -143,7 +140,8 @@ public:
   void FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName = "fatjet", const std::string& suffix = "");
   void FillFatJet ( const xAOD::Jet* fatjet_itr,        const std::string& fatjetName = "fatjet", const std::string& suffix = "");
 
-  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets );
+  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     const std::string& truthFatJetName="truth_fatjet" );
+  void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, const std::string& truthFatJetName="truth_fatjet" );
 
   void FillTaus( const xAOD::TauJetContainer* taus );
   void FillMET( const xAOD::MissingETContainer* met );
@@ -158,7 +156,7 @@ public:
   void ClearJets(const std::string jetName = "jet");
   void ClearTruth(const std::string truthName);
   void ClearFatJets(const std::string& fatjetName, const std::string& suffix="");
-  void ClearTruthFatJets();
+  void ClearTruthFatJets(const std::string& truthFatJetName = "truth_fatjet");
   void ClearTaus();
   void ClearMET();
 
@@ -216,8 +214,8 @@ public:
     return;
   };
 
-  virtual void AddTruthFatJetsUser(const std::string detailStr = "")       {
-    if(m_debug) Info("AddTruthFatJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+  virtual void AddTruthFatJetsUser(const std::string& detailStr = "", const std::string& truthFatJetName = "truth_fatjet")       {
+    if(m_debug) Info("AddTruthFatJetsUser","Empty function called from HelpTreeBase %s for %s", detailStr.c_str(), truthFatJetName.c_str());
     return;
   };
 
@@ -258,7 +256,7 @@ public:
    *  @param  suffix      the suffix to append to output branches.
    */
   virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
-  virtual void FillTruthFatJetsUser( const xAOD::Jet*  )            { return; };
+  virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "truth_fatjet"*/   )            { return; };
   virtual void FillTausUser( const xAOD::TauJet*  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
   virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
@@ -322,52 +320,16 @@ protected:
   //
   // truth fat jets
   //
-  int m_ntruthfatjet;
+  std::map<std::string, xAH::FatJetContainer*> m_truth_fatjets;
 
-  // kinematics
-  std::vector<float> m_truth_fatjet_pt;
-  std::vector<float> m_truth_fatjet_eta;
-  std::vector<float> m_truth_fatjet_phi;
-  std::vector<float> m_truth_fatjet_m;
-  std::vector<float> m_truth_fatjet_E;
-
-  // substructure
-  std::vector<float> m_truth_fatjet_Split12;
-  std::vector<float> m_truth_fatjet_Split23;
-  std::vector<float> m_truth_fatjet_Split34;
-  std::vector<float> m_truth_fatjet_tau1_wta;
-  std::vector<float> m_truth_fatjet_tau2_wta;
-  std::vector<float> m_truth_fatjet_tau3_wta;
-  std::vector<float> m_truth_fatjet_tau21_wta;
-  std::vector<float> m_truth_fatjet_tau32_wta;
-  std::vector<float> m_truth_fatjet_ECF1;
-  std::vector<float> m_truth_fatjet_ECF2;
-  std::vector<float> m_truth_fatjet_ECF3;
-  std::vector<float> m_truth_fatjet_C2;
-  std::vector<float> m_truth_fatjet_D2;
-  std::vector<float> m_truth_fatjet_NTrimSubjets;
-
-  // constituent
-  std::vector< int >                m_truth_fatjet_numConstituents;
-
-  // constituentAll
-  std::vector< std::vector<float> > m_truth_fatjet_constituentWeights;
-  std::vector< std::vector<float> > m_truth_fatjet_constituent_pt;
-  std::vector< std::vector<float> > m_truth_fatjet_constituent_eta;
-  std::vector< std::vector<float> > m_truth_fatjet_constituent_phi;
-  std::vector< std::vector<float> > m_truth_fatjet_constituent_e;
-
-  // truth
-  std::vector<int> m_truth_fatjet_GhostTQuarks;
-  std::vector<int> m_truth_fatjet_GhostWBosons;
-  std::vector<int> m_truth_fatjet_GhostZBosons;
-  std::vector<int> m_truth_fatjet_GhostHBosons;
-
+  //
   // muons
+  //
   std::map<std::string, xAH::MuonContainer*> m_muons;
 
   //
   // electrons
+  //
   int m_nel;
 
   // kinematics
@@ -376,7 +338,7 @@ protected:
   std::vector<float> m_el_eta;
   std::vector<float> m_el_m;
   std::vector<float> m_el_caloCluster_eta;
-
+ 
   // trigger
   std::vector<int> m_el_isTrigMatched;
   std::vector<std::vector<int> > m_el_isTrigMatchedToChain;

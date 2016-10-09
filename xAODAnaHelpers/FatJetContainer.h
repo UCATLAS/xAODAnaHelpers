@@ -88,10 +88,11 @@ namespace xAH {
       std::vector< std::vector<float> >  *m_constituent_e;
 
       // bosonCount
+      std::vector< int > *m_nTQuarks;
       std::vector< int > *m_nHBosons;      
       std::vector< int > *m_nWBosons;            
       std::vector< int > *m_nZBosons;      
-      
+
       // VTag
       std::vector< int > *m_Wtag_medium;
       std::vector< int > *m_Ztag_medium;
