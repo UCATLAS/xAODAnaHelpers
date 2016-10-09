@@ -450,34 +450,36 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
       Error("fillObjectCutflow()", "Overlap decoration missing for this object");
       return EL::StatusCode::FAILURE;
     }
-    if ( !overlapAcc( *obj_itr ) ) {
-      switch(obj_itr->type())
-	{
-	case xAOD::Type::Electron:
-	  m_el_cutflowHist_1->Fill( m_el_cutflow_OR_cut, 1 );
-	  type = "electron";
-	  break;
-	case xAOD::Type::Muon:
-	  m_mu_cutflowHist_1->Fill( m_mu_cutflow_OR_cut, 1 );
-	  type = "muon";
-	  break;
-	case xAOD::Type::Jet:
-	  m_jet_cutflowHist_1->Fill( m_jet_cutflow_OR_cut, 1 );
-	  type = "jet";
-	  break;
-	case xAOD::Type::Photon:
-	  m_ph_cutflowHist_1->Fill( m_ph_cutflow_OR_cut, 1 );
-	  type = "photon";
-	  break;
-	case xAOD::Type::Tau:
-	  m_tau_cutflowHist_1->Fill( m_tau_cutflow_OR_cut, 1 );
-	  type = "tau";
-	  break;
-	default:
-	  Error("OverlapRemover::fillObjectCutflow()","Unsupported object");
-	  return EL::StatusCode::FAILURE;
-	  break;
-	}
+    switch(obj_itr->type()) {
+      case xAOD::Type::Electron:
+        type = "electron";
+        if (!overlapAcc( *obj_itr )) 
+          m_el_cutflowHist_1->Fill( m_el_cutflow_OR_cut, 1 );
+        break;
+      case xAOD::Type::Muon:
+        if (!overlapAcc( *obj_itr )) 
+          m_mu_cutflowHist_1->Fill( m_mu_cutflow_OR_cut, 1 );
+        type = "muon";
+        break;
+      case xAOD::Type::Jet:
+        if (!overlapAcc( *obj_itr )) 
+          m_jet_cutflowHist_1->Fill( m_jet_cutflow_OR_cut, 1 );
+        type = "jet";
+        break;
+      case xAOD::Type::Photon:
+        if (!overlapAcc( *obj_itr )) 
+          m_ph_cutflowHist_1->Fill( m_ph_cutflow_OR_cut, 1 );
+        type = "photon";
+        break;
+      case xAOD::Type::Tau:
+        if (!overlapAcc( *obj_itr )) 
+          m_tau_cutflowHist_1->Fill( m_tau_cutflow_OR_cut, 1 );
+        type = "tau";
+        break;
+      default:
+        Error("OverlapRemover::fillObjectCutflow()","Unsupported object");
+        return EL::StatusCode::FAILURE;
+        break;
     }
 
     if ( m_debug ) {
