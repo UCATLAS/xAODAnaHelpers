@@ -31,7 +31,6 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_trigInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
   m_phInfoSwitch(nullptr),
-  m_fatJetInfoSwitch(nullptr),
   m_tauInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
@@ -76,7 +75,8 @@ HelpTreeBase::~HelpTreeBase() {
     delete m_phInfoSwitch;
 
     //fatjet
-    delete m_fatJetInfoSwitch;
+    for (auto fatjet: m_fatjets)
+      delete fatjet.second;
 
     //tau
     delete m_tauInfoSwitch;
@@ -1139,68 +1139,20 @@ void HelpTreeBase::ClearTruth(const std::string truthName) {
 
 // make a unique container:suffix key to lookup the branches in the maps
 std::string HelpTreeBase::FatJetCollectionName(const std::string& fatjetName,
-    const std::string& suffix) {
+					       const std::string& suffix) {
   return suffix.empty() ? fatjetName : (fatjetName + ":" + suffix);
 }
 
 void HelpTreeBase::AddFatJets(const std::string& detailStr, const std::string& fatjetName,
-        const std::string& suffix) {
+			      const std::string& suffix) {
 
   if(m_debug) Info("AddFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
 
-  // Simple function to formulate the branch names given the variable name.
-  // Eliminates a lot of verbosity in the rest of the function...
-  auto bname = [&](const std::string& varName) {
-    std::string name = fatjetName + "_" + varName;
-    if (not suffix.empty()) {
-      name += "_" + suffix;
-    }
-    return name;
-  };
-
   const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
+  m_fatjets[collectionName] = new xAH::FatJetContainer(fatjetName, detailStr, suffix, m_units, m_isMC);
 
-  m_fatJetInfoSwitch = new HelperClasses::JetInfoSwitch( detailStr );
-
-  // always
-  std::string counterName = "n"+fatjetName;
-  if (not suffix.empty()) { counterName += "_" + suffix; }
-  m_tree->Branch(counterName.c_str(), &m_nfatjet[collectionName], (counterName+"/I").c_str());
-
-  if ( m_fatJetInfoSwitch->m_kinematic ) {
-    m_tree->Branch(bname("E").c_str(),   &m_fatjet_E[collectionName]);
-    m_tree->Branch(bname("m").c_str(),   &m_fatjet_m[collectionName]);
-    m_tree->Branch(bname("pt").c_str(),  &m_fatjet_pt[collectionName]);
-    m_tree->Branch(bname("phi").c_str(), &m_fatjet_phi[collectionName]);
-    m_tree->Branch(bname("eta").c_str(), &m_fatjet_eta[collectionName]);
-  }
-  if ( m_fatJetInfoSwitch->m_substructure ) {
-    m_tree->Branch(bname("Split12").c_str(),      &m_fatjet_Split12[collectionName]);
-    m_tree->Branch(bname("Split23").c_str(),      &m_fatjet_Split23[collectionName]);
-    m_tree->Branch(bname("Split34").c_str(),      &m_fatjet_Split34[collectionName]);
-    m_tree->Branch(bname("tau1_wta").c_str(),     &m_fatjet_tau1_wta[collectionName]);
-    m_tree->Branch(bname("tau2_wta").c_str(),     &m_fatjet_tau2_wta[collectionName]);
-    m_tree->Branch(bname("tau3_wta").c_str(),     &m_fatjet_tau3_wta[collectionName]);
-    m_tree->Branch(bname("tau21_wta").c_str(),    &m_fatjet_tau21_wta[collectionName]);
-    m_tree->Branch(bname("tau32_wta").c_str(),    &m_fatjet_tau32_wta[collectionName]);
-    m_tree->Branch(bname("ECF1").c_str(),         &m_fatjet_ECF1[collectionName]);
-    m_tree->Branch(bname("ECF2").c_str(),         &m_fatjet_ECF2[collectionName]);
-    m_tree->Branch(bname("ECF3").c_str(),         &m_fatjet_ECF3[collectionName]);
-    m_tree->Branch(bname("C2").c_str(),           &m_fatjet_C2[collectionName]);
-    m_tree->Branch(bname("D2").c_str(),           &m_fatjet_D2[collectionName]);
-    m_tree->Branch(bname("NTrimSubjets").c_str(), &m_fatjet_NTrimSubjets[collectionName]);
-    m_tree->Branch(bname("Nclusters").c_str(),    &m_fatjet_NClusters[collectionName]);
-  }
-  if ( m_fatJetInfoSwitch->m_constituent) {
-    m_tree->Branch(bname("numConstituents").c_str(), &m_fatjet_numConstituents[collectionName]);
-  }
-  if ( m_fatJetInfoSwitch->m_constituentAll) {
-    m_tree->Branch(bname("constituentWeights").c_str(), &m_fatjet_constituentWeights[collectionName]);
-    m_tree->Branch(bname("constituent_pt").c_str(),     &m_fatjet_constituent_pt[collectionName]);
-    m_tree->Branch(bname("constituent_eta").c_str(),    &m_fatjet_constituent_eta[collectionName]);
-    m_tree->Branch(bname("constituent_phi").c_str(),    &m_fatjet_constituent_phi[collectionName]);
-    m_tree->Branch(bname("constituent_e").c_str(),      &m_fatjet_constituent_e[collectionName]);
-  }
+  xAH::FatJetContainer* thisFatJet = m_fatjets[collectionName];
+  thisFatJet->setBranches(m_tree);
 
   this->AddFatJetsUser(detailStr, fatjetName, suffix);
 }
@@ -1260,135 +1212,29 @@ void HelpTreeBase::AddTruthFatJets(std::string detailStr) {
 
 
 void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName, const std::string& suffix) {
+  
   this->ClearFatJets(fatjetName, suffix);
-  this->ClearFatJetsUser(fatjetName, suffix);
-
-  const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
 
   for( auto fatjet_itr : *fatJets ) {
-
-    if( m_fatJetInfoSwitch->m_kinematic ){
-      m_fatjet_pt[collectionName].push_back ( fatjet_itr->pt() / m_units );
-      m_fatjet_m[collectionName].push_back ( fatjet_itr->m() / m_units );
-      m_fatjet_eta[collectionName].push_back( fatjet_itr->eta() );
-      m_fatjet_phi[collectionName].push_back( fatjet_itr->phi() );
-      m_fatjet_E[collectionName].push_back  ( fatjet_itr->e() / m_units );
-    }
-    if( m_fatJetInfoSwitch->m_substructure ){
-      static SG::AuxElement::ConstAccessor<float> acc_Split12("Split12");
-      static SG::AuxElement::ConstAccessor<float> acc_Split23("Split23");
-      static SG::AuxElement::ConstAccessor<float> acc_Split34("Split34");
-      if ( acc_Split12.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_Split12[collectionName].push_back( acc_Split12( *fatjet_itr ) / m_units );
-      } else { m_fatjet_Split12[collectionName].push_back( -999 ); }
-      if ( acc_Split23.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_Split23[collectionName].push_back(acc_Split23( *fatjet_itr ) / m_units );
-      } else { m_fatjet_Split34[collectionName].push_back( -999 ); }
-      if ( acc_Split34.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_Split34[collectionName].push_back( acc_Split34( *fatjet_itr ) / m_units );
-      } else { m_fatjet_Split34[collectionName].push_back( -999 ); }
-
-      static SG::AuxElement::ConstAccessor<float> acc_tau1_wta ("Tau1_wta");
-      static SG::AuxElement::ConstAccessor<float> acc_tau2_wta ("Tau2_wta");
-      static SG::AuxElement::ConstAccessor<float> acc_tau3_wta ("Tau3_wta");
-      static SG::AuxElement::ConstAccessor<float> acc_tau21_wta ("Tau21_wta");
-      static SG::AuxElement::ConstAccessor<float> acc_tau32_wta ("Tau32_wta");
-
-      if ( acc_tau1_wta.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_tau1_wta[collectionName].push_back( acc_tau1_wta( *fatjet_itr ) );
-      } else { m_fatjet_tau1_wta[collectionName].push_back( -999 ); }
-      if ( acc_tau2_wta.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_tau2_wta[collectionName].push_back( acc_tau2_wta( *fatjet_itr ) );
-      } else { m_fatjet_tau2_wta[collectionName].push_back( -999 ); }
-      if ( acc_tau3_wta.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_tau3_wta[collectionName].push_back( acc_tau3_wta( *fatjet_itr ) );
-      } else { m_fatjet_tau3_wta[collectionName].push_back( -999 ); }
-      if(acc_tau21_wta.isAvailable( *fatjet_itr )){
-        m_fatjet_tau21_wta[collectionName].push_back( acc_tau21_wta( *fatjet_itr ) );
-      } else if ( acc_tau1_wta.isAvailable( *fatjet_itr ) and acc_tau2_wta.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_tau21_wta[collectionName].push_back( acc_tau2_wta( *fatjet_itr ) / acc_tau1_wta( *fatjet_itr ) );
-      } else { m_fatjet_tau21_wta[collectionName].push_back( -999 ); }
-      if(acc_tau32_wta.isAvailable( *fatjet_itr )){
-	m_fatjet_tau32_wta[collectionName].push_back( acc_tau32_wta( *fatjet_itr ) );
-      } else if ( acc_tau2_wta.isAvailable( *fatjet_itr ) and acc_tau3_wta.isAvailable( *fatjet_itr ) ) {
-        m_fatjet_tau32_wta[collectionName].push_back( acc_tau3_wta( *fatjet_itr ) / acc_tau2_wta( *fatjet_itr ) );
-      } else { m_fatjet_tau32_wta[collectionName].push_back( -999 ); }
-
-      static SG::AuxElement::ConstAccessor<float> acc_ECF1 ("ECF1");
-      static SG::AuxElement::ConstAccessor<float> acc_ECF2("ECF2");
-      static SG::AuxElement::ConstAccessor<float> acc_ECF3 ("ECF3");
-      static SG::AuxElement::ConstAccessor<float> acc_C2("C2");
-      static SG::AuxElement::ConstAccessor<float> acc_D2 ("D2");
-      static SG::AuxElement::ConstAccessor<int> acc_NClusters ("MyNClusters");
-
-      if(acc_NClusters.isAvailable(*fatjet_itr)){ m_fatjet_NClusters[collectionName].push_back(acc_NClusters(*fatjet_itr));}
-      else{ m_fatjet_NClusters[collectionName].push_back(-999); }
-
-      if(acc_C2.isAvailable(*fatjet_itr)){
-	m_fatjet_C2[collectionName].push_back(acc_C2(*fatjet_itr));
-      } else if( acc_ECF1.isAvailable(*fatjet_itr) && acc_ECF2.isAvailable(*fatjet_itr) && acc_ECF3.isAvailable(*fatjet_itr)){
-	m_fatjet_C2[collectionName].push_back( acc_ECF3(*fatjet_itr)*acc_ECF1(*fatjet_itr)/pow(acc_ECF2(*fatjet_itr),2.0));
-      } else{ m_fatjet_C2[collectionName].push_back(-999); }
-
-      if( acc_D2.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_D2[collectionName].push_back( acc_D2( *fatjet_itr ));
-      } else if (acc_ECF1.isAvailable( *fatjet_itr ) && acc_ECF2.isAvailable( *fatjet_itr ) && acc_ECF3.isAvailable( *fatjet_itr )){
-	float e2=(acc_ECF2( *fatjet_itr )/(acc_ECF1( *fatjet_itr )*acc_ECF1( *fatjet_itr )));
-	float e3=(acc_ECF3( *fatjet_itr )/(acc_ECF1( *fatjet_itr )*acc_ECF1( *fatjet_itr )*acc_ECF1( *fatjet_itr )));
-	m_fatjet_D2[collectionName].push_back( e3/(e2*e2*e2) );
-      } else{ m_fatjet_D2[collectionName].push_back(-999); }
-
-      if ( acc_ECF1.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_ECF1[collectionName].push_back( acc_ECF1( *fatjet_itr ) / m_units);
-      } else { m_fatjet_ECF1[collectionName].push_back( -999 ); }
-      if ( acc_ECF2.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_ECF2[collectionName].push_back( acc_ECF2( *fatjet_itr ) / m_units);
-      } else { m_fatjet_ECF2[collectionName].push_back( -999 ); }
-      if ( acc_ECF3.isAvailable( *fatjet_itr ) ) {
-	m_fatjet_ECF3[collectionName].push_back( acc_ECF3( *fatjet_itr ) / m_units);
-      } else { m_fatjet_ECF3[collectionName].push_back( -999 ); }
-
-      static SG::AuxElement::ConstAccessor<int> NTrimSubjets("NTrimSubjets");
-      if( NTrimSubjets.isAvailable(*fatjet_itr) ){
-	m_fatjet_NTrimSubjets[collectionName].push_back(NTrimSubjets(*fatjet_itr));
-      } else{ m_fatjet_NTrimSubjets[collectionName].push_back(-999); }
-    }
-
-    if( m_fatJetInfoSwitch->m_constituent ){
-      m_fatjet_numConstituents[collectionName].push_back( fatjet_itr->numConstituents() );
-    }
-    if( m_fatJetInfoSwitch->m_constituentAll ){
-      m_fatjet_constituentWeights[collectionName].push_back( fatjet_itr->getAttribute< std::vector<float> >( "constituentWeights" ) );
-      std::vector<float> pt;
-      std::vector<float> eta;
-      std::vector<float> phi;
-      std::vector<float> e;
-      xAOD::JetConstituentVector consVec = fatjet_itr->getConstituents();
-      if( consVec.isValid() ) {
-	// use the example provided in
-	// http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODJet/xAODJet/JetConstituentVector.h
-	xAOD::JetConstituentVector::iterator constit = consVec.begin();
-	xAOD::JetConstituentVector::iterator constitE = consVec.end();
-	for( ; constit != constitE; constit++){
-	  pt. push_back( constit->pt() / m_units );
-	  eta.push_back( constit->eta() );
-	  phi.push_back( constit->phi() );
-	  e.  push_back( constit->e() / m_units  );
-	}
-      }
-      m_fatjet_constituent_pt[collectionName].push_back( pt  );
-      m_fatjet_constituent_eta[collectionName].push_back( eta );
-      m_fatjet_constituent_phi[collectionName].push_back( phi );
-      m_fatjet_constituent_e[collectionName].push_back( e   );
-    }
-
-    this->FillFatJetsUser(fatjet_itr, fatjetName, suffix);
-
-    m_nfatjet[collectionName]++;
+    
+    this->FillFatJet(fatjet_itr, fatjetName, suffix);
 
   } // loop over fat jets
 
 }
+
+void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, const std::string& fatjetName, const std::string& suffix ) {
+
+  const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
+  xAH::FatJetContainer* thisFatJet = m_fatjets[collectionName];
+
+  thisFatJet->FillFatJet(fatjet_itr);
+
+  this->FillFatJetsUser(fatjet_itr, fatjetName, suffix);
+
+  return;
+}
+
 
 
 void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets ) {
@@ -1404,6 +1250,7 @@ void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets
       m_truth_fatjet_phi.push_back( truth_fatjet_itr->phi() );
       m_truth_fatjet_E.push_back  ( truth_fatjet_itr->e() / m_units );
     }
+
     if( m_truthFatJetInfoSwitch->m_substructure ){
       static SG::AuxElement::ConstAccessor<float> Split12("Split12");
       static SG::AuxElement::ConstAccessor<float> Split23("Split23");
@@ -1480,6 +1327,7 @@ void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets
       } else{ m_truth_fatjet_NTrimSubjets.push_back(-999); }
     }
 
+
     if( m_truthFatJetInfoSwitch->m_constituent ){
       m_truth_fatjet_numConstituents.push_back( truth_fatjet_itr->numConstituents() );
     }
@@ -1530,41 +1378,10 @@ void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets
 void HelpTreeBase::ClearFatJets(const std::string& fatjetName, const std::string& suffix) {
   const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
 
-  m_nfatjet[collectionName] = 0;
-  if( m_fatJetInfoSwitch->m_kinematic ){
-    m_fatjet_pt[collectionName].clear();
-    m_fatjet_eta[collectionName].clear();
-    m_fatjet_phi[collectionName].clear();
-    m_fatjet_E[collectionName].clear();
-    m_fatjet_m[collectionName].clear();
-  }
-  if( m_fatJetInfoSwitch->m_substructure ){
-    m_fatjet_Split12[collectionName].clear();
-    m_fatjet_Split23[collectionName].clear();
-    m_fatjet_Split34[collectionName].clear();
-    m_fatjet_tau1_wta[collectionName].clear();
-    m_fatjet_tau2_wta[collectionName].clear();
-    m_fatjet_tau3_wta[collectionName].clear();
-    m_fatjet_tau21_wta[collectionName].clear();
-    m_fatjet_tau32_wta[collectionName].clear();
-    m_fatjet_ECF1[collectionName].clear();
-    m_fatjet_ECF2[collectionName].clear();
-    m_fatjet_ECF3[collectionName].clear();
-    m_fatjet_C2[collectionName].clear();
-    m_fatjet_D2[collectionName].clear();
-    m_fatjet_NTrimSubjets[collectionName].clear();
-  }
+  xAH::FatJetContainer* thisFatJet = m_fatjets[collectionName];
+  thisFatJet->clear();
 
-  if( m_fatJetInfoSwitch->m_constituent ){
-    m_fatjet_numConstituents[collectionName].clear();
-  }
-  if( m_fatJetInfoSwitch->m_constituentAll ){
-    m_fatjet_constituentWeights[collectionName].clear();
-    m_fatjet_constituent_pt[collectionName].clear();
-    m_fatjet_constituent_eta[collectionName].clear();
-    m_fatjet_constituent_phi[collectionName].clear();
-    m_fatjet_constituent_e[collectionName].clear();
-  }
+  this->ClearFatJetsUser(fatjetName, suffix);
 }
 
 void HelpTreeBase::ClearTruthFatJets() {
