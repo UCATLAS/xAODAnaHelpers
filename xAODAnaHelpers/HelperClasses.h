@@ -36,9 +36,8 @@ namespace HelperClasses {
       DEFAULT
   };
 
-  /* template enum parser
-  copied from: http://stackoverflow.com/a/726681
-  */
+  /** template enum parser. Copied from: http://stackoverflow.com/a/726681
+   */
   template <typename T>
   class EnumParser
   {
