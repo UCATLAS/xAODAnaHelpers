@@ -852,22 +852,22 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       
       uint32_t lumiBlock = eventInfo->lumiBlock();
       
-      bool passMV2c2040 = false; //(MV2c20 >  0.9540);
-      bool passMV2c2050 = false; //(MV2c20 >  0.7535);
-      bool passMV2c2060 = false; //(MV2c20 >  0.4496);
-      bool passMV2c2070 = false; //(MV2c20 > -0.0436);
-      bool passMV2c2077 = false; //(MV2c20 > -0.4434);
-      bool passMV2c2085 = false; //(MV2c20 > -0.7887);
+      bool passMV2c2040 = (MV2c20 >  0.9540);
+      bool passMV2c2050 = (MV2c20 >  0.7535);
+      bool passMV2c2060 = (MV2c20 >  0.4496);
+      bool passMV2c2070 = (MV2c20 > -0.0436);
+      bool passMV2c2077 = (MV2c20 > -0.4434);
+      bool passMV2c2085 = (MV2c20 > -0.7887);
 
 
-//      if(m_infoSwitch->m_flavTagHLT){
-//	      passMV2c2040 = (MV2c20 > 0.75);
-//	      passMV2c2050 = (MV2c20 > 0.50);
-//	      passMV2c2060 = (MV2c20 > -0.022472);
-//	      passMV2c2070 = (MV2c20 > -0.509032);
-//	      passMV2c2077 = (MV2c20 > -0.764668);
-//	      passMV2c2085 = (MV2c20 > -0.938441);
-//      }
+      if(m_infoSwitch->m_flavTagHLT){
+	      passMV2c2040 = (MV2c20 > 0.75);
+	      passMV2c2050 = (MV2c20 > 0.50);
+	      passMV2c2060 = (MV2c20 > -0.022472);
+	      passMV2c2070 = (MV2c20 > -0.509032);
+	      passMV2c2077 = (MV2c20 > -0.764668);
+	      passMV2c2085 = (MV2c20 > -0.938441);
+      }
 
       m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c2040,  eventWeight);
       m_frac_MV2c2050_vs_lBlock  -> Fill(lumiBlock, passMV2c2050,  eventWeight);
@@ -1483,22 +1483,22 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       
 	uint32_t lumiBlock = eventInfo->m_lumiBlock;
       
-	bool passMV2c2040 = false; //(MV2c20 >  0.9540);
-	bool passMV2c2050 = false; //(MV2c20 >  0.7535);
-	bool passMV2c2060 = false; //(MV2c20 >  0.4496);
-	bool passMV2c2070 = false; //(MV2c20 > -0.0436);
-	bool passMV2c2077 = false; //(MV2c20 > -0.4434);
-	bool passMV2c2085 = false; //(MV2c20 > -0.7887);
+	bool passMV2c2040 = (MV2c20 >  0.9540);
+	bool passMV2c2050 = (MV2c20 >  0.7535);
+	bool passMV2c2060 = (MV2c20 >  0.4496);
+	bool passMV2c2070 = (MV2c20 > -0.0436);
+	bool passMV2c2077 = (MV2c20 > -0.4434);
+	bool passMV2c2085 = (MV2c20 > -0.7887);
 
 
-//	if(m_infoSwitch->m_flavTagHLT){
-//	  passMV2c2040 = (MV2c20 > 0.75);
-//	  passMV2c2050 = (MV2c20 > 0.50);
-//	  passMV2c2060 = (MV2c20 > -0.022472);
-//	  passMV2c2070 = (MV2c20 > -0.509032);
-//	  passMV2c2077 = (MV2c20 > -0.764668);
-//	  passMV2c2085 = (MV2c20 > -0.938441);
-//	}
+	if(m_infoSwitch->m_flavTagHLT){
+	  passMV2c2040 = (MV2c20 > 0.75);
+	  passMV2c2050 = (MV2c20 > 0.50);
+	  passMV2c2060 = (MV2c20 > -0.022472);
+	  passMV2c2070 = (MV2c20 > -0.509032);
+	  passMV2c2077 = (MV2c20 > -0.764668);
+	  passMV2c2085 = (MV2c20 > -0.938441);
+	}
 
 	m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c2040,  eventWeight);
 	m_frac_MV2c2050_vs_lBlock  -> Fill(lumiBlock, passMV2c2050,  eventWeight);

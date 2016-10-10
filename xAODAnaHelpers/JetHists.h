@@ -163,6 +163,8 @@ class JetHists : public IParticleHists
     TProfile* m_vtxEff1_raw_vs_lBlock; //!
     TProfile* m_vtxEff10_noDummy_vs_lBlock; //!
     TProfile* m_vtxEff1_noDummy_vs_lBlock; //!
+    /** @brief Histograms to check beamspot offline vs. online 
+     *  @note MV2c20 b-tagging values may be incorrect and should not be relied on */
     TProfile* m_frac_MV2c2040_vs_lBlock; //!
     TProfile* m_frac_MV2c2050_vs_lBlock; //!
     TProfile* m_frac_MV2c2060_vs_lBlock; //!
