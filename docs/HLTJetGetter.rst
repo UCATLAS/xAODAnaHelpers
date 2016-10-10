@@ -1,4 +1,4 @@
-HLT jet getter
+HLT Jet Getter
 ==============
 
 .. doxygenclass:: HLTJetGetter
