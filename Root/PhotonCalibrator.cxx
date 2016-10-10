@@ -217,7 +217,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
     SystPhotonsNames->push_back(syst_it.name());
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
-    RETURN_CHECK("PhotonCalibrator::initialize()",m_store->record(SystPhotonsNames, "photons_Syst" ), "Failed to record vector of jet systs names.");
+    RETURN_CHECK("PhotonCalibrator::initialize()",m_store->record(SystPhotonsNames, "photons_Syst"+m_name ), "Failed to record vector of jet systs names.");
 
   //isEM selector tools
   //------------------

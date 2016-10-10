@@ -193,7 +193,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
-  RETURN_CHECK("MuonCalibrator::initialize()",m_store->record(SystMuonsNames, "muons_Syst" ), "Failed to record vector of jet systs names.");
+  RETURN_CHECK("MuonCalibrator::initialize()",m_store->record(SystMuonsNames, "muons_Syst"+m_name ), "Failed to record vector of jet systs names.");
 
   Info("initialize()", "MuonCalibrator Interface succesfully initialized!" );
 
