@@ -354,16 +354,15 @@ namespace HelperClasses {
         m_area           area           exact
         m_JVC            JVC            exact
         m_tracksInJet    tracksInJet    partial
-	m_trackJetName   trackJetName   partial
+        m_trackJetName   trackJetName   partial
         m_hltVtxComp     hltVtxComp     exact
         m_charge         charge         exact
         m_vsLumiBlock    vsLumiBlock    exact
         ================ ============== =======
 
         .. note::
-            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable.
 
-            For example::
+            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
 
                 m_configStr = "... sfFTagFix010203 ..."
 
