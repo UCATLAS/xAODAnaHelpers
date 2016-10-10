@@ -137,6 +137,7 @@ namespace HelperClasses {
         m_truth          truth          exact
         m_caloClus       caloClusters   exact
         ================ ============== =======
+
     @endrst
    */
   class EventInfoSwitch : public InfoSwitch {
@@ -164,6 +165,7 @@ namespace HelperClasses {
         m_passTriggers passTriggers exact
         m_passTrigBits passTrigBits exact
         ============== ============ =======
+
     @endrst
    */
   class TriggerInfoSwitch : public InfoSwitch {
@@ -187,6 +189,7 @@ namespace HelperClasses {
         m_kinematic    kinematic    exact
         m_clean        clean        exact
         ============== ============ =======
+
     @endrst
    */
 
@@ -218,6 +221,7 @@ namespace HelperClasses {
                 m_configStr = "... NLeading4 ..."
 
             will define :code:`int m_numLeading = 4`.
+
     @endrst
    */
   class IParticleInfoSwitch : public InfoSwitch {
@@ -245,6 +249,7 @@ namespace HelperClasses {
         m_effSF        effSF        exact
         m_energyLoss   energyLoss   exact
         ============== ============ =======
+
     @endrst
    */
   class MuonInfoSwitch : public IParticleInfoSwitch {
@@ -276,6 +281,7 @@ namespace HelperClasses {
         m_trackhitcont trackhitcont exact
         m_effSF        effSF        exact
         ============== ============ =======
+
     @endrst
    */
   class ElectronInfoSwitch : public IParticleInfoSwitch {
@@ -303,6 +309,7 @@ namespace HelperClasses {
         m_PID          PID          exact
         m_purity       purity       exact
         ============== ============ =======
+
     @endrst
    */
   class PhotonInfoSwitch : public IParticleInfoSwitch {
@@ -364,7 +371,6 @@ namespace HelperClasses {
             will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
 
     @endrst
-
    */
   class JetInfoSwitch : public IParticleInfoSwitch {
   public:
@@ -422,6 +428,7 @@ namespace HelperClasses {
         m_parents        parents        exact
         m_children       children       exact
         ================ ============== =======
+
     @endrst
    */
   class TruthInfoSwitch : public InfoSwitch {
@@ -446,6 +453,7 @@ namespace HelperClasses {
         m_trackparams    trackparams    exact
         m_trackhitcont   trackhitcont   exact
         ================ ============== =======
+
     @endrst
    */
   class TauInfoSwitch : public IParticleInfoSwitch {
