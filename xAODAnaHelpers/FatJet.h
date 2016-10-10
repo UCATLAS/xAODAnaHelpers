@@ -39,6 +39,7 @@ namespace xAH {
       std::vector<float>  constituent_e;
 
       // bosons 
+      int nTQuarks;
       int nHBosons;
       int nWBosons;
       int nZBosons;

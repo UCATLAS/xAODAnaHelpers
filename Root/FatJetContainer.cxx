@@ -47,6 +47,7 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
   }
 
   if ( m_infoSwitch.m_bosonCount) {
+    m_nTQuarks  = new std::vector< int > ();
     m_nHBosons  = new std::vector< int > ();      
     m_nWBosons  = new std::vector< int > ();            
     m_nZBosons  = new std::vector< int > ();      
@@ -113,6 +114,7 @@ FatJetContainer::~FatJetContainer()
   }
 
   if ( m_infoSwitch.m_bosonCount) {
+    delete m_nTQuarks;
     delete m_nHBosons;
     delete m_nWBosons;
     delete m_nZBosons;
@@ -178,6 +180,7 @@ void FatJetContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_bosonCount) {
+    connectBranch< int >(tree, "nTQuarks",  &m_nTQuarks);
     connectBranch< int >(tree, "nHBosons",  &m_nHBosons);
     connectBranch< int >(tree, "nWBosons",  &m_nWBosons);
     connectBranch< int >(tree, "nZBosons",  &m_nZBosons);
@@ -235,6 +238,7 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
   }
 
   if(m_infoSwitch.m_bosonCount){
+    fatjet.nTQuarks = m_nTQuarks->at(idx);
     fatjet.nHBosons = m_nHBosons->at(idx);
     fatjet.nWBosons = m_nWBosons->at(idx);
     fatjet.nZBosons = m_nZBosons->at(idx);
@@ -302,6 +306,7 @@ void FatJetContainer::setBranches(TTree *tree)
   }
 
   if(m_infoSwitch.m_bosonCount){
+    setBranch< int >(tree, "nTQuarks",       m_nTQuarks);
     setBranch< int >(tree, "nHBosons",       m_nHBosons);
     setBranch< int >(tree, "nWBosons",       m_nWBosons);
     setBranch< int >(tree, "nZBosons",       m_nZBosons);
@@ -361,6 +366,7 @@ void FatJetContainer::clear()
   }
 
   if(m_infoSwitch.m_bosonCount){
+    m_nTQuarks->clear();
     m_nHBosons->clear();
     m_nWBosons->clear();
     m_nZBosons->clear();
@@ -512,16 +518,16 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
     
     if(m_mc){
       static SG::AuxElement::ConstAccessor< int > truthfatjet_TQuarks("GhostTQuarksFinalCount");
-      safeFill<int, int, xAOD::Jet>(fatjet, truthfatjet_TQuarks, m_nTQuarks, -999);
+      safeFill<int, int, xAOD::Jet>(fatJetParentJet, truthfatjet_TQuarks, m_nTQuarks, -999);
 
       static SG::AuxElement::ConstAccessor< int > truthfatjet_WBosons("GhostWBosonsCount");
-      safeFill<int, int, xAOD::Jet>(fatjet, truthfatjet_WBosons, m_nWBosons, -999);
+      safeFill<int, int, xAOD::Jet>(fatJetParentJet, truthfatjet_WBosons, m_nWBosons, -999);
 
       static SG::AuxElement::ConstAccessor< int > truthfatjet_ZBosons("GhostZBosonsCount");
-      safeFill<int, int, xAOD::Jet>(fatjet, truthfatjet_ZBosons, m_nZBosons, -999);
+      safeFill<int, int, xAOD::Jet>(fatJetParentJet, truthfatjet_ZBosons, m_nZBosons, -999);
 
       static SG::AuxElement::ConstAccessor< int > truthfatjet_HBosons("GhostHBosonsCount");
-      safeFill<int, int, xAOD::Jet>(fatjet, truthfatjet_HBosons, m_nHBosons, -999);
+      safeFill<int, int, xAOD::Jet>(fatJetParentJet, truthfatjet_HBosons, m_nHBosons, -999);
     }
   }
   
