@@ -100,10 +100,10 @@ METConstructor :: METConstructor (std::string className) :
   m_inputAlgoSystEle = "";
   m_inputAlgoPhotons = "";
 
-  m_jetSystematics  = "";
-  m_eleSystematics  = "";
-  m_muonSystematics = "";
-  m_phoSystematics  = "";
+  m_jetSystematics  = "jets_Syst";
+  m_eleSystematics  = "ele_Syst";
+  m_muonSystematics = "muons_Syst";
+  m_phoSystematics  = "photons_Syst";
 }
 
 EL::StatusCode METConstructor :: setupJob (EL::Job& job)
