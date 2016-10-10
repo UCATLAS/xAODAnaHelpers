@@ -14,8 +14,8 @@
 
 using std::string;
 
-namespace met { 
-       class METMaker; 
+namespace met {
+       class METMaker;
        class METSystematicsTool;
 	 }
 namespace TauAnalysisTools { class TauSelectionTool; }
@@ -26,9 +26,6 @@ class METConstructor : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
 
   // configuration variables
   TString m_referenceMETContainer;
@@ -41,9 +38,9 @@ public:
   TString m_inputTaus;
   TString m_inputMuons;
 
-  std::string  m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
-  std::string  m_inputAlgoSystMuons;  // name of vector<string> of syst retrieved from TStore
-  std::string  m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
+  std::string m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
+  std::string m_inputAlgoSystMuons;  // name of vector<string> of syst retrieved from TStore
+  std::string m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
   std::string m_inputAlgoPhotons; // name of vector<string> of syst retrieved from TStore
 
   bool    m_doElectronCuts;
@@ -59,17 +56,41 @@ public:
   bool    m_useTrackJetTerm;
 
   bool m_runNominal;
-  
+
   float m_systVal;
   std::string m_systName;
-  
+
   std::string m_SoftTermSystConfigFile;
+
+  /** @rst
+        Name of jet systematics vector from  :cpp:class:`~JetCalibrator`.
+      @endrst
+   */
+  std::string m_jetSystematics;
+  /** @rst
+        Name of electron systematics vector from  :cpp:class:`~ElectronCalibrator`.
+      @endrst
+   */
+  std::string m_eleSystematics;
+  /** @rst
+        Name of muon systematics vector from  :cpp:class:`~MuonCalibrator`.
+      @endrst
+   */
+  std::string m_muonSystematics;
+  /** @rst
+        Name of photon systematics vector from :cpp:class:`~PhotonCalibrator`.
+      @endrst
+   */
+  std::string m_phoSystematics;
 
 private:
 
+  xAOD::TEvent *m_event;  //!
+  xAOD::TStore *m_store;  //!
+
   // tools
   met::METMaker* m_metmaker; //!
-  met::METSystematicsTool* metSystTool; //!   
+  met::METSystematicsTool* metSystTool; //!
 
   TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 
