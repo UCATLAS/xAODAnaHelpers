@@ -26,8 +26,6 @@
 #include "xAODMissingET/MissingETComposition.h"
 #include "xAODMissingET/MissingETAssociationMap.h"
 
-#include <xAODEventInfo/EventInfo.h>
-
 // #include "xAODParticleEvent/Particle.h"
 // #include "xAODParticleEvent/ParticleContainer.h"
 // #include "xAODParticleEvent/ParticleAuxContainer.h"
@@ -101,7 +99,6 @@ METConstructor :: METConstructor (std::string className) :
   m_inputAlgoSystMuons = "";
   m_inputAlgoSystEle = "";
   m_inputAlgoPhotons = "";
-  
 }
 
 EL::StatusCode METConstructor :: setupJob (EL::Job& job)
@@ -194,7 +191,7 @@ EL::StatusCode METConstructor :: initialize ()
    Error("Initialize()", "initialization of the met Syst tools failed.  Exiting");
    return EL::StatusCode::FAILURE;
   }
- 
+
   m_metmaker = new met::METMaker("METMaker");
   if(m_metmaker->initialize().isFailure()){
     Error("initialize()", "Failed to properly initialize MET maker. Exiting." );
@@ -220,7 +217,6 @@ EL::StatusCode METConstructor :: initialize ()
 // get the syst from met syst tool
 const CP::SystematicSet recSyst = metSystTool->recommendedSystematics();
 sysList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
-
 
  //add the syst for jets 
  if(!m_inputAlgoJets.empty()){
@@ -282,14 +278,6 @@ sysList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal,
 
 
   m_numEvent = 0;//just as a check 
-
-  // define m_isMC
-  const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("METConstructor::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
-
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  if ( m_debug ) { Info("initialize()", "Is MC? %i", static_cast<int>(m_isMC) ); }
-
 
 
 
@@ -539,24 +527,21 @@ EL::StatusCode METConstructor :: execute ()
    //after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied
    // assert(   metSystTool->applySystematicVariation(iSysSet) );
    //
-   
-  if (m_isMC) {
-    if( metSystTool->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
-      cout<<"Error !!! not able to applySystematicVariation "<< endl;
-    }
+   if( metSystTool->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
+     cout<<"Error !!! not able to applySystematicVariation "<< endl;
    }
 
    //get the soft cluster term, and applyCorrection
    xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
    //assert( softClusMet != 0); //check we retrieved the clust term
-   if( m_isMC && metSystTool->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
+   if( metSystTool->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
      Error("METConstructor::execute()", "Could not apply correction to soft clus met !!!! ");
    }
    if (m_debug) std::cout << "Soft cluster met term met : " << softClusMet->met() << std::endl;
 
    //get the track soft term, and applyCorrection
    xAOD::MissingET * softTrkMet = (*newMet)["PVSoftTrk"];
-   if( m_isMC && metSystTool->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
+   if( metSystTool->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
      Error("METConstructor::execute()", "Could not apply correction to soft track met !!!! ");
    }
    if (m_debug) std::cout << "track met soft term : " << softTrkMet->met() << std::endl;
