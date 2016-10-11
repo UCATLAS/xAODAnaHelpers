@@ -60,6 +60,8 @@ public:
 
   bool m_runNominal;
   
+  bool m_isMC;
+  
   float m_systVal;
   std::string m_systName;
   
