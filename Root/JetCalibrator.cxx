@@ -411,7 +411,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
-  RETURN_CHECK("JetCalibrator::initialize()",m_store->record(SystJetsNames, "jets_Syst" ), "Failed to record vector of jet systs names.");
+  RETURN_CHECK("JetCalibrator::initialize()",m_store->record(SystJetsNames, "jets_Syst"+m_name ), "Failed to record vector of jet systs names.");
 
 
   return EL::StatusCode::SUCCESS;
@@ -454,7 +454,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
       static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
       static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
-    
+
       if ( TruthLabelID.isAvailable( *jet_itr) ) {
 	this_TruthLabel = TruthLabelID( *jet_itr );
 	if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
