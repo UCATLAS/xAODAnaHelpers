@@ -29,7 +29,6 @@ namespace HelperClasses {
       PHOTONSELECTOR,
       JETSELECTOR,
       BJETSELECTOR,
-      OVERLAPREMOVER,
       CALIBRATOR,
       CORRECTOR,
       SELECTOR,
