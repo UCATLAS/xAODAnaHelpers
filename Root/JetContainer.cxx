@@ -739,7 +739,7 @@ void JetContainer::setTree(TTree *tree, std::string tagger)
       connectBranch<float>(tree,"MV2c00",               &m_MV2c00);
       connectBranch<float>(tree,"MV2c10",               &m_MV2c10);
       connectBranch<float>(tree,"MV2c20",               &m_MV2c20);
-      //connectBranch<float>(tree,"MV2c100",              &m_MV2c100);
+      connectBranch<float>(tree,"MV2c100",              &m_MV2c100);
       connectBranch<int>  (tree,"HadronConeExclTruthLabelID",&m_HadronConeExclTruthLabelID);
 
       if(tagger == "MV2c20")  m_MV2 = m_MV2c20;
@@ -959,7 +959,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.MV2c00                    =m_MV2c00               ->at(idx);
       jet.MV2c10                    =m_MV2c10               ->at(idx);
       jet.MV2c20                    =m_MV2c20               ->at(idx);
-      //jet.MV2c100                   =m_MV2c100              ->at(idx);
+      jet.MV2c100                   =m_MV2c100              ->at(idx);
       jet.MV2                       =m_MV2                  ->at(idx);
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
