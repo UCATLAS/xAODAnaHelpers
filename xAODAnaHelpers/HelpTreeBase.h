@@ -33,6 +33,7 @@
 #include "xAODAnaHelpers/FatJetContainer.h"
 #include "xAODAnaHelpers/TruthContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
+#include "xAODAnaHelpers/TauContainer.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
@@ -82,7 +83,7 @@ public:
   void AddFatJets     (const std::string& detailStr = "", const std::string& fatjetName = "fatjet", const std::string& suffix = "");
   void AddTruthFatJets(const std::string& detailStr = "", const std::string& truthFatJetName = "truth_fatjet");
 
-  void AddTaus        (const std::string detailStr = "");
+  void AddTaus        (const std::string detailStr = "",  const std::string& tauName = "tau");
   void AddMET         (const std::string detailStr = "");
 
   /**
@@ -104,7 +105,6 @@ public:
   HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
   HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
   HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-  HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
 
 
   std::string                  m_triggerSelection;
@@ -143,7 +143,8 @@ public:
   void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     const std::string& truthFatJetName="truth_fatjet" );
   void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, const std::string& truthFatJetName="truth_fatjet" );
 
-  void FillTaus( const xAOD::TauJetContainer* taus );
+  void FillTaus( const xAOD::TauJetContainer* taus, const std::string tauName = "tau" );
+  void FillTau ( const xAOD::TauJet* tau,           const std::string tauName = "tau" );
   void FillMET( const xAOD::MissingETContainer* met );
 
   void Fill();
@@ -157,7 +158,7 @@ public:
   void ClearTruth(const std::string truthName);
   void ClearFatJets(const std::string& fatjetName, const std::string& suffix="");
   void ClearTruthFatJets(const std::string& truthFatJetName = "truth_fatjet");
-  void ClearTaus();
+  void ClearTaus(const std::string tauName = "tau" );
   void ClearMET();
 
   bool writeTo( TFile *file );
@@ -257,7 +258,7 @@ public:
    */
   virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
   virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "truth_fatjet"*/   )            { return; };
-  virtual void FillTausUser( const xAOD::TauJet*  )            { return; };
+  virtual void FillTausUser( const xAOD::TauJet*,           const std::string /*tauName = "tau"*/  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
   virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
   virtual void FillJetTriggerUser()                            { return; };
@@ -465,15 +466,8 @@ protected:
 
   //
   // taus
-  int m_ntau;
-
-  // kinematics
-  std::vector<float> m_tau_pt;
-  std::vector<float> m_tau_eta;
-  std::vector<float> m_tau_phi;
-  std::vector<float> m_tau_m;
-  std::vector<int>   m_tau_ntrk;
-  std::vector<float> m_tau_charge;
+  //
+  std::map<std::string, xAH::TauContainer*> m_taus;
 
   // met
   xAH::MetContainer*      m_met;

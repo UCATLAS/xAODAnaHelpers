@@ -31,7 +31,6 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_trigInfoSwitch(nullptr),
   m_elInfoSwitch(nullptr),
   m_phInfoSwitch(nullptr),
-  m_tauInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
   m_eventInfo(nullptr),
@@ -79,7 +78,8 @@ HelpTreeBase::~HelpTreeBase() {
       delete fatjet.second;
 
     //tau
-    delete m_tauInfoSwitch;
+    for (auto tau: m_taus)
+      delete tau.second;
 
     //met
     delete m_met;
@@ -1247,63 +1247,43 @@ void HelpTreeBase::ClearEvent() {
  *
  ********************/
 
-void HelpTreeBase::AddTaus(const std::string detailStr) {
+void HelpTreeBase::AddTaus(const std::string detailStr, const std::string& tauName) {
 
-  m_tauInfoSwitch = new HelperClasses::TauInfoSwitch( detailStr );
+  if ( m_debug )  Info("AddTaus()", "Adding tau variables: %s", detailStr.c_str());
 
-  // always
-  m_tree->Branch("ntau",   &m_ntau, "ntau/I");
+  m_taus[tauName] = new xAH::TauContainer(tauName, detailStr, m_units, m_isMC);
 
-  if ( m_tauInfoSwitch->m_kinematic ) {
-    m_tree->Branch("tau_pt",     &m_tau_pt);
-    m_tree->Branch("tau_phi",    &m_tau_phi);
-    m_tree->Branch("tau_eta",    &m_tau_eta);
-    m_tree->Branch("tau_m",      &m_tau_m);
-    m_tree->Branch("tau_ntrk",   &m_tau_ntrk);
-    m_tree->Branch("tau_charge", &m_tau_charge);
-  }
+  xAH::TauContainer* thisTau = m_taus[tauName];
 
+  thisTau->setBranches(m_tree);
   this->AddTausUser();
 }
 
-void HelpTreeBase::FillTaus( const xAOD::TauJetContainer* taus ) {
+void HelpTreeBase::FillTaus( const xAOD::TauJetContainer* taus, const std::string tauName ) {
 
   this->ClearTaus();
-  this->ClearTausUser();
 
-  m_ntau = 0;
-  for ( auto tau_itr : *(taus) ) {
-
-    if ( m_debug ) { Info("HelpTreeBase::FillTaus()", "Filling tau w/ pT = %2f", tau_itr->pt() / m_units ); }
-
-    if ( m_tauInfoSwitch->m_kinematic ) {
-      m_tau_pt.push_back ( tau_itr->pt() / m_units  );
-      m_tau_eta.push_back( tau_itr->eta() );
-      m_tau_phi.push_back( tau_itr->phi() );
-      m_tau_m.push_back  ( tau_itr->m() / m_units  );
-      m_tau_charge.push_back( tau_itr->charge() );
-      m_tau_ntrk.push_back( tau_itr->nTracks() );
-    }
-
-    this->FillTausUser(tau_itr);
-
-    m_ntau++;
+  for( auto tau_itr : *taus ) {
+    this->FillTau(tau_itr, tauName);
   }
 }
 
-void HelpTreeBase::ClearTaus() {
+void HelpTreeBase::FillTau( const xAOD::TauJet* tau, const std::string tauName ) {
 
-  m_ntau = 0;
+  xAH::TauContainer* thisTau = m_taus[tauName];
 
-  if ( m_tauInfoSwitch->m_kinematic ){
-    m_tau_pt.clear();
-    m_tau_eta.clear();
-    m_tau_phi.clear();
-    m_tau_m.clear();
-    m_tau_charge.clear();
-    m_tau_ntrk.clear();
-  }
+  thisTau->FillTau(tau);
 
+  this->FillTausUser(tau, tauName);
+}
+
+void HelpTreeBase::ClearTaus(const std::string tauName) {
+
+  xAH::TauContainer* thisTau = m_taus[tauName];
+  thisTau->clear();
+  
+  this->ClearTausUser();
+  
 }
 
 
