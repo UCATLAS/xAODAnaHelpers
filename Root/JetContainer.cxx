@@ -149,7 +149,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_MV2c00                    =new std::vector<float>();
     m_MV2c10                    =new std::vector<float>();
     m_MV2c20                    =new std::vector<float>();
-    //m_MV2c100                   =new std::vector<float>();
+    m_MV2c100                   =new std::vector<float>();
     m_MV2                       =new std::vector<float>();
     m_HadronConeExclTruthLabelID=new std::vector<int>();
 
@@ -478,7 +478,7 @@ JetContainer::~JetContainer()
     delete m_MV2c00;
     delete m_MV2c10;
     delete m_MV2c20;
-    //delete m_MV2c100;
+    delete m_MV2c100;
 
     delete m_HadronConeExclTruthLabelID;
 
@@ -1298,7 +1298,7 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"MV2c00",        m_MV2c00);
     setBranch<float>(tree,"MV2c10",        m_MV2c10);
     setBranch<float>(tree,"MV2c20",    m_MV2c20);
-    //setBranch<float>(tree,"MV2c100",    m_MV2c100);
+    setBranch<float>(tree,"MV2c100",    m_MV2c100);
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
 
@@ -1628,7 +1628,7 @@ void JetContainer::clear()
     m_MV2c00                    ->clear();
     m_MV2c10                    ->clear();
     m_MV2c20                    ->clear();
-    //m_MV2c100                   ->clear();
+    m_MV2c100                   ->clear();
     m_MV2                       ->clear();
     m_HadronConeExclTruthLabelID->clear();
 
@@ -2236,8 +2236,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_MV2c10->push_back( val );
     myBTag->variable<double>("MV2c20", "discriminant", val);
     m_MV2c20->push_back( val );
-    //myBTag->variable<double>("MV2c100", "discriminant", val);
-    //m_MV2c100->push_back( val );
+    myBTag->variable<double>("MV2c100", "discriminant", val);
+    m_MV2c100->push_back( val );
 
     // flavor groups truth definition
     static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
