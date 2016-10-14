@@ -159,7 +159,7 @@ namespace xAH {
       std::vector<float> *m_MV2c00;
       std::vector<float> *m_MV2c10;
       std::vector<float> *m_MV2c20;
-      //std::vector<float> *m_MV2c100;
+      std::vector<float> *m_MV2c100;
       std::vector<float> *m_MV2;
       std::vector<int>   *m_HadronConeExclTruthLabelID;
     
