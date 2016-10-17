@@ -26,20 +26,38 @@ This is for users who do not have write access to ``UCATLAS/xAODAnaHelpers`` to 
     cd xAODAnaHelpers
     git remote add upstream git@github.com:UCATLAS/xAODAnaHelpers
 
-Make your changes, and when you are ready to submit a pull-request, do
-the following first::
+Note: If you do not have an ssh-key set up, you may want to use the HTTPS version of the above URL::
+
+    git remote add upstream https://github.com/UCATLAS/xAODAnaHelpers
+
+Next, make your changes for the feature/bug/fix::
+
+    vim Root/JetSelector.cxx
+    vim Root/HelpTreeBase.cxx
+    git status # make sure you changed the files you want to change
+    git diff # make sure the changes are what you want
+
+Then go ahead and commit your changes::
+
+    git add Root/JetSelector.cxx
+    git commit -m "Update with new jet calibration recommendations"
+    git add Root/HelpTreeBase.cxx
+    git commit -m "make sure that the tree dumps the systematics for new calibrations"
+
+When you are ready to submit a pull-request, do the following first::
 
     git fetch upstream
     git rebase upstream/master
 
-to make sure your code is up to date with the forked repository. You will want to rebase all of your changes into a single commit if you wish, and that can be done via::
+to make sure your code is up to date with the `upstream repository <https://github.com/UCATLAS/xAODAnaHelpers>`__.
+
+You may want to rebase all of your changes into a single commit if you wish, and that can be done via::
 
     git rebase -i HEAD~N
 
 where ``N`` is the number of commits to rebase. Then you just follow the instructions. Take care not to rebase through commits that are already on master of the upstream repo. Then submit a pull-request! See https://help.github.com/articles/creating-a-pull-request/ for information on this.
 
-After the pull-request has been merged, you can bring yourself up to
-date with::
+After the pull-request has been merged, you can bring yourself up to date with::
 
     git fetch upstream
     git rebase upstream/master
