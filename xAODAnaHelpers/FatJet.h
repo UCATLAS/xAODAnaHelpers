@@ -10,6 +10,17 @@ namespace xAH {
     {
     public:
 
+      // scale
+      float JetConstitScaleMomentum_eta;
+      float JetConstitScaleMomentum_phi;
+      float JetConstitScaleMomentum_m;
+      float JetConstitScaleMomentum_pt;
+
+      float JetEMScaleMomentum_eta;
+      float JetEMScaleMomentum_phi;
+      float JetEMScaleMomentum_m;
+      float JetEMScaleMomentum_pt;
+
       // substructure
       float  Split12;
       float  Split23;
