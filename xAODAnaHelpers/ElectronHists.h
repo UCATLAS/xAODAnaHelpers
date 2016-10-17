@@ -3,7 +3,8 @@
 
 #include "xAODAnaHelpers/IParticleHists.h"
 #include <xAODEgamma/ElectronContainer.h>
-
+#include "xAODAnaHelpers/Electron.h"
+#include "xAODAnaHelpers/EventInfo.h"
 #include <AthContainers/DataVector.h>
 
 class ElectronHists : public IParticleHists
@@ -16,12 +17,14 @@ class ElectronHists : public IParticleHists
 
     virtual StatusCode initialize();
     virtual StatusCode execute( const xAOD::Electron* electron, float eventWeight, const xAOD::EventInfo* eventInfo = 0);
+    virtual StatusCode execute( const xAH::Electron*  electron, float eventWeight, const xAH::EventInfo*  eventInfo = 0);
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using IParticleHists::execute; // overload
 
   protected:
 
     virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
+    virtual StatusCode execute( const xAH::Particle* particle,   float eventWeight, const xAH::EventInfo*  eventInfo = 0 );
 
     // holds bools that control which histograms are filled
     HelperClasses::ElectronInfoSwitch* m_infoSwitch;
