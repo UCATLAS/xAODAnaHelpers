@@ -65,3 +65,38 @@ StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventW
   return StatusCode::SUCCESS;
 }
 
+
+
+StatusCode ElectronHists::execute( const xAH::Electron* elec, float eventWeight, const xAH::EventInfo* eventInfo ) {
+  return execute(static_cast<const xAH::Particle*>(elec), eventWeight, eventInfo);
+}
+
+
+StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* /*eventInfo*/  ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+
+  if(m_debug) std::cout << "MuonHists: in execute " <<std::endl;
+
+  const xAH::Electron* elec=dynamic_cast<const xAH::Electron*>(particle);
+  if(elec==0)
+    {
+      ::Error( "ElctronHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Electron" ));
+      return StatusCode::FAILURE;
+    }
+
+
+  // isolation
+  if ( m_infoSwitch->m_isolation ) {
+    m_ptcone20    ->Fill( elec->ptcone20    , eventWeight );
+    m_ptcone30    ->Fill( elec->ptcone30    , eventWeight );
+    m_ptcone40    ->Fill( elec->ptcone40    , eventWeight );
+    m_ptvarcone20 ->Fill( elec->ptvarcone20 , eventWeight );
+    m_ptvarcone30 ->Fill( elec->ptvarcone30 , eventWeight );
+    m_ptvarcone40 ->Fill( elec->ptvarcone40 , eventWeight );
+    m_topoetcone20->Fill( elec->topoetcone20, eventWeight );
+    m_topoetcone30->Fill( elec->topoetcone30, eventWeight );
+    m_topoetcone40->Fill( elec->topoetcone40, eventWeight );
+  }
+
+  return StatusCode::SUCCESS;
+}
