@@ -90,10 +90,6 @@ public:
 
 
   
-  float m_systVal;
-  std::string m_systName;
-  
-  std::string m_SoftTermSystConfigFile;
 
 private:
 
