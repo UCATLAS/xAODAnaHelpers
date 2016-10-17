@@ -1,6 +1,7 @@
 /**
  * @file OverlapRemover.h
  * @author Marco Milesi <marco.milesi@cern.ch>
+ * @author Jeff Dandoy
  * @brief |xAH| algorithm to perform overlap removal between reconstructed physics objects.
  */
 
@@ -17,7 +18,10 @@
 #include "xAODTau/TauJetContainer.h"
 
 // external tools include(s):
+#include "AssociationUtils/OverlapRemovalInit.h"
 #include "AssociationUtils/OverlapRemovalTool.h"
+#include "AssociationUtils/ToolBox.h"
+
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -93,6 +97,15 @@ class OverlapRemover : public xAH::Algorithm
   bool     m_createSelectedContainers;
   /** @brief In the OLR, consider only objects passing a (pre)selection */
   bool     m_useSelected;
+  /** @brief Use b-tagging decision, set previously with the given decoration name, to remove electrons and muons 
+   * @note This is automatically set by BJetEfficiencyCorrector */
+  std::string m_bTagWP;
+  /** @brief Create a link between overlapped objects */
+  bool m_linkOverlapObjects;
+  /** @brief Use boosted object working point */
+  bool m_useBoostedLeptons;
+  /** @brief Do overlap removal between electrons (HSG2 prescription) */
+  bool m_doEleEleOR;
 
   /** @brief Output systematics list container name */
   std::string  m_outputAlgo;
@@ -198,7 +211,7 @@ class OverlapRemover : public xAH::Algorithm
   std::string  m_outAuxContainerName_Taus;
 
   /** @brief Pointer to the CP Tool which performs the actual OLR. */
-  OverlapRemovalTool *m_overlapRemovalTool; //!
+  ORUtils::ToolBox m_ORToolbox;        //!
 
   /** @brief An enum encoding systematics according to the various objects */
   enum SystType {
@@ -262,11 +275,11 @@ public:
   /**
      @brief Fill the cutflow histograms
      @param objCont          The `xAOD` container to be considered
-     @param overlapFlag      The string identifying objects overlapping with another object, to be removed (default is `"overlaps"`)
+     @param overlapFlag      The string identifying objects not overlapping with another object, to be kept (default is `"passOR"`)
      @param selectFlag       The string identifying selected objects (default is `"passSel"`)
   */
   virtual EL::StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont,
-					    const std::string& overlapFlag = "overlaps",
+					    const std::string& overlapFlag = "passOR",
 					    const std::string& selectFlag = "passSel");
 
   /**

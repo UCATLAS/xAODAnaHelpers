@@ -19,8 +19,21 @@ namespace xAH {
     class ParticleContainer
     {
     public:
-    ParticleContainer(const std::string& name, const std::string& detailStr="", float units = 1e3, bool mc = false, bool useMass=false, bool useTheS = true)
-      : m_name(name), m_infoSwitch(detailStr), m_mc(mc), m_debug(false), m_units(units), m_useMass(useMass), m_useTheS(useTheS)
+    ParticleContainer(const std::string& name, 
+		      const std::string& detailStr="", 
+		      float units = 1e3, 
+		      bool mc = false, 
+		      bool useMass=false, 
+		      bool useTheS = true,
+		      const std::string& suffix="")
+      : m_name(name), 
+	m_infoSwitch(detailStr), 
+	m_mc(mc), 
+	m_debug(false), 
+	m_units(units), 
+	m_useMass(useMass), 
+	m_useTheS(useTheS),
+	m_suffix(suffix)
       {
 	m_n = 0;
 
@@ -46,14 +59,13 @@ namespace xAH {
     
       virtual void setTree(TTree *tree)
       {
-	
-	if(m_useTheS){
-	  tree->SetBranchStatus  (("n"+m_name+"s").c_str() , 1);
-	  tree->SetBranchAddress (("n"+m_name+"s").c_str() , &m_n);
-	}else{
-	  tree->SetBranchStatus  (("n"+m_name).c_str() , 1);
-	  tree->SetBranchAddress (("n"+m_name).c_str() , &m_n);
-	}
+
+	std::string              counterName = "n"+m_name;
+	if (!m_suffix.empty()) { counterName += "_" + m_suffix; }	
+	if (m_useTheS)         { counterName += "s"; }
+
+	tree->SetBranchStatus  (counterName.c_str() , 1);
+	tree->SetBranchAddress (counterName.c_str() , &m_n);
 
         if(m_infoSwitch.m_kinematic)
           {
@@ -68,11 +80,11 @@ namespace xAH {
       virtual void setBranches(TTree *tree)
       {
 
-	if(m_useTheS){
-	  tree->Branch(("n"+m_name+"s").c_str(),    &m_n, ("n"+m_name+"s/I").c_str());
-	}else{
-	  tree->Branch(("n"+m_name).c_str(),    &m_n, ("n"+m_name+"/I").c_str());
-	}
+	std::string              counterName = "n"+m_name;
+	if (!m_suffix.empty()) { counterName += "_" + m_suffix; }	
+	if (m_useTheS)         { counterName += "s"; }
+
+	tree->Branch(counterName.c_str(),    &m_n, (counterName+"/I").c_str());
 
         if(m_infoSwitch.m_kinematic) {
 	  if(m_useMass)  setBranch<float>(tree,"m",                        m_M                );
@@ -132,16 +144,21 @@ namespace xAH {
     
       uint size() const
       { return m_particles.size(); }
-    
+
+
     protected:
       template <typename T_BR> void connectBranch(TTree *tree, const std::string& branch, std::vector<T_BR> **variable)
       {
-        tree->SetBranchStatus  ((m_name+"_"+branch).c_str()  , 1);
-        tree->SetBranchAddress ((m_name+"_"+branch).c_str()  , variable);
+	std::string name = m_name + "_" + branch;
+	if (! m_suffix.empty()) { name += "_" + m_suffix;	}
+        tree->SetBranchStatus  (name.c_str()  , 1);
+        tree->SetBranchAddress (name.c_str()  , variable);
       }
 
       template<typename T> void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr){
-	tree->Branch((m_name+"_"+varName).c_str(),        localVectorPtr);
+	std::string name = m_name + "_" + varName;
+	if (! m_suffix.empty()) { name += "_" + m_suffix;	}
+	tree->Branch(name.c_str(),        localVectorPtr);
       }
 
       template<typename T, typename U, typename V> void safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>* destination, U defaultValue, int units = 1){
@@ -185,17 +202,19 @@ namespace xAH {
     
       std::vector<T_PARTICLE> m_particles;
     
-      int m_n;
-    
     public:
       T_INFOSWITCH m_infoSwitch;
       bool m_mc;
       bool m_debug;
       float m_units;
+
+      int m_n;
+    
     
     private:
-      bool m_useMass;
-      bool m_useTheS;
+      bool        m_useMass;
+      bool        m_useTheS;
+      std::string m_suffix;
 
       //
       // Vector branches

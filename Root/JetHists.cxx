@@ -861,13 +861,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
 
       if(m_infoSwitch->m_flavTagHLT){
-	passMV2c2040 = (MV2c20 > 0.75);
-	passMV2c2050 = (MV2c20 > 0.50);
-	passMV2c2060 = (MV2c20 > -0.022472);
-	passMV2c2070 = (MV2c20 > -0.509032);
-	passMV2c2077 = (MV2c20 > -0.764668);
-	passMV2c2085 = (MV2c20 > -0.938441);
-
+	      passMV2c2040 = (MV2c20 > 0.75);
+	      passMV2c2050 = (MV2c20 > 0.50);
+	      passMV2c2060 = (MV2c20 > -0.022472);
+	      passMV2c2070 = (MV2c20 > -0.509032);
+	      passMV2c2077 = (MV2c20 > -0.764668);
+	      passMV2c2085 = (MV2c20 > -0.938441);
       }
 
       m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c2040,  eventWeight);

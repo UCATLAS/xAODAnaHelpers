@@ -69,6 +69,7 @@ namespace xAH {
       float MV2c00;
       float MV2c10;
       float MV2c20;
+      float MV2c100;
       float MV2;
       int  HadronConeExclTruthLabelID;
     

@@ -29,16 +29,14 @@ namespace HelperClasses {
       PHOTONSELECTOR,
       JETSELECTOR,
       BJETSELECTOR,
-      OVERLAPREMOVER,
       CALIBRATOR,
       CORRECTOR,
       SELECTOR,
       DEFAULT
   };
 
-  /* template enum parser
-  copied from: http://stackoverflow.com/a/726681
-  */
+  /** template enum parser. Copied from: http://stackoverflow.com/a/726681
+   */
   template <typename T>
   class EnumParser
   {
@@ -137,6 +135,7 @@ namespace HelperClasses {
         m_truth          truth          exact
         m_caloClus       caloClusters   exact
         ================ ============== =======
+
     @endrst
    */
   class EventInfoSwitch : public InfoSwitch {
@@ -164,6 +163,7 @@ namespace HelperClasses {
         m_passTriggers passTriggers exact
         m_passTrigBits passTrigBits exact
         ============== ============ =======
+
     @endrst
    */
   class TriggerInfoSwitch : public InfoSwitch {
@@ -187,6 +187,7 @@ namespace HelperClasses {
         m_kinematic    kinematic    exact
         m_clean        clean        exact
         ============== ============ =======
+
     @endrst
    */
 
@@ -218,6 +219,7 @@ namespace HelperClasses {
                 m_configStr = "... NLeading4 ..."
 
             will define :code:`int m_numLeading = 4`.
+
     @endrst
    */
   class IParticleInfoSwitch : public InfoSwitch {
@@ -245,6 +247,7 @@ namespace HelperClasses {
         m_effSF        effSF        exact
         m_energyLoss   energyLoss   exact
         ============== ============ =======
+
     @endrst
    */
   class MuonInfoSwitch : public IParticleInfoSwitch {
@@ -275,7 +278,20 @@ namespace HelperClasses {
         m_trackparams  trackparams  exact
         m_trackhitcont trackhitcont exact
         m_effSF        effSF        exact
+        m_PIDWPs["LooseAndBLayerLLH"]            LooseAndBLayerLLH           exact
+        m_PIDWPs["MediumLLH"]                    MediumLLH                   exact
+        m_PIDWPs["TightLLH"]                     TightLLH                    exact
+        m_isolWPs["_isolFixedCutLoose"]          isolFixedCutLoose           exact
+        m_isolWPs["_isolFixedCutTight"]          isolFixedCutTight           exact
+        m_isolWPs["_isolFixedCutTightTrackOnly"] isolFixedCutTightTrackOnly  exact
+        m_isolWPs["_isolGradient"]               isolGradient                exact
+        m_isolWPs["_isolGradientLoose"]          isolGradientLoose           exact
+        m_isolWPs["_isolLoose"]                  isolLoose                   exact
+        m_isolWPs["_isolLooseTrackOnly"]         isolLooseTrackOnly          exact
+        m_isolWPs["_isolTight"]                  isolTight                   exact
+        m_isolWPs[""]                            isolNoRequirement           exact
         ============== ============ =======
+
     @endrst
    */
   class ElectronInfoSwitch : public IParticleInfoSwitch {
@@ -286,6 +302,8 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
+    std::map<std::string,bool> m_PIDWPs;
+    std::map<std::string,bool> m_isolWPs;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:
@@ -303,6 +321,7 @@ namespace HelperClasses {
         m_PID          PID          exact
         m_purity       purity       exact
         ============== ============ =======
+
     @endrst
    */
   class PhotonInfoSwitch : public IParticleInfoSwitch {
@@ -324,6 +343,8 @@ namespace HelperClasses {
         Parameter        Pattern        Match
         ================ ============== =======
         m_substructure   substructure   exact
+        m_bosonCount     bosonCount     exact
+        m_VTags          VTags          exact
         m_rapidity       rapidity       exact
         m_clean          clean          exact
         m_energy         energy         exact
@@ -346,26 +367,27 @@ namespace HelperClasses {
         m_area           area           exact
         m_JVC            JVC            exact
         m_tracksInJet    tracksInJet    partial
+        m_trackJetName   trackJetName   partial
         m_hltVtxComp     hltVtxComp     exact
         m_charge         charge         exact
         m_vsLumiBlock    vsLumiBlock    exact
         ================ ============== =======
 
         .. note::
-            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable.
 
-            For example::
+            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
 
                 m_configStr = "... sfFTagFix010203 ..."
 
             will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
 
     @endrst
-
    */
   class JetInfoSwitch : public IParticleInfoSwitch {
   public:
     bool m_substructure;
+    bool m_bosonCount;
+    bool m_VTags;
     bool m_rapidity;
     bool m_clean;
     bool m_energy;
@@ -388,12 +410,14 @@ namespace HelperClasses {
     bool m_svDetails;
     bool m_ipDetails;
     bool m_tracksInJet;
+    bool m_trackJets;
     bool m_hltVtxComp;
     bool m_charge;
     bool m_vsLumiBlock;
     bool m_area;
     bool m_JVC;
     std::string      m_trackName;
+    std::string      m_trackJetName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
@@ -415,6 +439,7 @@ namespace HelperClasses {
         m_parents        parents        exact
         m_children       children       exact
         ================ ============== =======
+
     @endrst
    */
   class TruthInfoSwitch : public InfoSwitch {
@@ -439,6 +464,7 @@ namespace HelperClasses {
         m_trackparams    trackparams    exact
         m_trackhitcont   trackhitcont   exact
         ================ ============== =======
+
     @endrst
    */
   class TauInfoSwitch : public IParticleInfoSwitch {

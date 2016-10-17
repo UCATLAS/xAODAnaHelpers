@@ -138,6 +138,19 @@ namespace HelperClasses{
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
+    // working points for scale-factors    
+    m_PIDWPs["LooseAndBLayerLLH"]  = has_exact("LooseAndBLayerLLH");
+    m_PIDWPs["MediumLLH"]          = has_exact("MediumLLH");
+    m_PIDWPs["TightLLH"]           = has_exact("TightLLH");
+    m_isolWPs["_isolFixedCutLoose"]            = has_exact("isolFixedCutLoose");
+    m_isolWPs["_isolFixedCutTight"]            = has_exact("isolFixedCutTight");
+    m_isolWPs["_isolFixedCutTightTrackOnly"]   = has_exact("isolFixedCutTightTrackOnly");
+    m_isolWPs["_isolGradient"]                 = has_exact("isolGradient");
+    m_isolWPs["_isolGradientLoose"]            = has_exact("isolGradientLoose");
+    m_isolWPs["_isolLoose"]                    = has_exact("isolLoose");
+    m_isolWPs["_isolLooseTrackOnly"]           = has_exact("isolLooseTrackOnly");
+    m_isolWPs["_isolTight"]                    = has_exact("isolTight");
+    m_isolWPs[""]                              = has_exact("isolNoRequirement");
   }
 
   void PhotonInfoSwitch::initialize(){
@@ -148,6 +161,8 @@ namespace HelperClasses{
 
   void JetInfoSwitch::initialize(){
     m_substructure  = has_exact("substructure");
+    m_bosonCount    = has_exact("bosonCount");
+    m_VTags         = has_exact("VTags");
     m_rapidity      = has_exact("rapidity");
     m_clean         = has_exact("clean");
     m_energy        = has_exact("energy");
@@ -191,6 +206,27 @@ namespace HelperClasses{
       m_tracksInJet       = false;
       m_trackName         = "";
     }
+
+
+    if(has_match("trackJetName")){
+      m_trackJets       = true;
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("trackJetName_") );
+      // erase everything after the interesting string
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
+      // remove trackJetName_ to just leave the tack name
+      input.erase(0,13);
+
+      m_trackJetName = input;
+    }else{
+      m_trackJets            = false;
+      m_trackJetName         = "";
+    }
+
 
     m_hltVtxComp          = has_exact("hltVtxComp");
     m_charge              = has_exact("charge");

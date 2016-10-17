@@ -447,7 +447,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       //
       // Add decorator for decision
       //
-      SG::AuxElement::Decorator< int > isBTag( m_decor );
+      SG::AuxElement::Decorator< char > isBTag( m_decor );
       if( m_BJetSelectTool->accept( *jet_itr ) ) {
         isBTag( *jet_itr ) = 1;
         tagged = true;

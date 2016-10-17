@@ -157,7 +157,7 @@ namespace HelperFunctions {
      }
 
      if ( flagSelect.empty() ) {
-       Error("HelperFunctions::makeSubsetCont()", "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR, or OVERLAPREMOVER). Please pass a non-empty flagSelect!" );
+       Error("HelperFunctions::makeSubsetCont()", "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" );
        return StatusCode::FAILURE;
      }
 
@@ -171,11 +171,7 @@ namespace HelperFunctions {
      	 return StatusCode::FAILURE;
        }
 
-       if ( tool_name == HelperClasses::ToolName::OVERLAPREMOVER ){ /* this tool uses reverted logic for "flagSelect", that's why I put this check */
-     	 if ( !myAccessor(*(in_itr)) ){ outCont->push_back( in_itr ); }
-       } else {
      	 if ( myAccessor(*(in_itr)) ) { outCont->push_back( in_itr ); }
-       }
 
      }
 

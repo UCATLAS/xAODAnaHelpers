@@ -144,3 +144,61 @@ StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeigh
   return StatusCode::SUCCESS;
 }
 
+StatusCode MuonHists::execute( const xAH::Muon* muon, float eventWeight, const xAH::EventInfo* eventInfo ) {
+  return execute(static_cast<const xAH::Particle*>(muon), eventWeight, eventInfo);
+}
+
+
+StatusCode MuonHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* /*eventInfo*/  ) {
+  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+
+  if(m_debug) std::cout << "MuonHists: in execute " <<std::endl;
+
+  const xAH::Muon* muon=dynamic_cast<const xAH::Muon*>(particle);
+  if(muon==0)
+    {
+      ::Error( "MuonHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Muon" ));
+      return StatusCode::FAILURE;
+    }
+
+  if ( m_infoSwitch->m_isolation ) {
+
+
+    m_isIsolated_LooseTrackOnly           ->Fill( muon->isIsolated_LooseTrackOnly ,  eventWeight );
+    m_isIsolated_Loose                    ->Fill( muon->isIsolated_Loose ,  eventWeight ); 
+    m_isIsolated_Tight                    ->Fill( muon->isIsolated_Tight ,  eventWeight ); 
+    m_isIsolated_Gradient                 ->Fill( muon->isIsolated_Gradient ,  eventWeight );
+    m_isIsolated_GradientLoose            ->Fill( muon->isIsolated_GradientLoose ,  eventWeight );
+    //m_isIsolated_GradientT1               ->Fill( muon->isIsolated_GradientLoose ,  eventWeight ); 
+    //m_isIsolated_GradientT2               ->Fill( muon->isIsoGradientT2Acc ,  eventWeight ); 
+    //m_isIsolated_MU0p06                   ->Fill( muon->isIsoMU0p06Acc ,  eventWeight ); 
+    m_isIsolated_FixedCutLoose            ->Fill( muon->isIsolated_FixedCutLoose ,  eventWeight ); 
+    //m_isIsolated_FixedCutTight            ->Fill( muon->isIsolated_FixedCutTight ,  eventWeight ); 
+    m_isIsolated_FixedCutTightTrackOnly   ->Fill( muon->isIsolated_FixedCutTightTrackOnly ,  eventWeight ); 
+    m_isIsolated_UserDefinedFixEfficiency ->Fill( muon->isIsolated_UserDefinedFixEfficiency ,  eventWeight ); 
+    m_isIsolated_UserDefinedCut           ->Fill( muon->isIsolated_UserDefinedCut ,  eventWeight ); 
+
+    m_ptcone20     ->Fill( muon->ptcone20,  eventWeight );
+    m_ptcone30     ->Fill( muon->ptcone30,  eventWeight );
+    m_ptcone40     ->Fill( muon->ptcone40,  eventWeight );
+    m_ptvarcone20  ->Fill( muon->ptvarcone20,  eventWeight );
+    m_ptvarcone30  ->Fill( muon->ptvarcone30,  eventWeight );
+    m_ptvarcone40  ->Fill( muon->ptvarcone40,  eventWeight );
+    m_topoetcone20 ->Fill( muon->topoetcone20,  eventWeight );
+    m_topoetcone30 ->Fill( muon->topoetcone30,  eventWeight );
+    m_topoetcone40 ->Fill( muon->topoetcone40,  eventWeight );
+
+  }
+
+
+  if ( m_infoSwitch->m_quality ) {
+
+    m_isVeryLoose->Fill( muon->  isVeryLoose,  eventWeight ); 
+    m_isLoose    ->Fill( muon->  isLoose    ,  eventWeight ); 
+    m_isMedium   ->Fill( muon->  isMedium   ,  eventWeight ); 
+    m_isTight    ->Fill( muon->  isTight    ,  eventWeight ); 
+
+  }
+
+  return StatusCode::SUCCESS;
+}

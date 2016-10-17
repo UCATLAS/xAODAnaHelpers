@@ -3,6 +3,8 @@
 
 #include "xAODAnaHelpers/IParticleHists.h"
 #include <xAODMuon/MuonContainer.h>
+#include "xAODAnaHelpers/Muon.h"
+#include "xAODAnaHelpers/EventInfo.h"
 
 class MuonHists : public IParticleHists
 {
@@ -14,12 +16,14 @@ class MuonHists : public IParticleHists
 
     virtual StatusCode initialize();
     virtual StatusCode execute( const xAOD::Muon* muon, float eventWeight, const xAOD::EventInfo* eventInfo = 0);
+    virtual StatusCode execute( const xAH::Muon*  muon, float eventWeight, const xAH::EventInfo*  eventInfo = 0);
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using IParticleHists::execute; // overload
 
   protected:
 
     virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
+    virtual StatusCode execute( const xAH::Particle* particle,   float eventWeight, const xAH::EventInfo*  eventInfo = 0 );
 
     // holds bools that control which histograms are filled
     HelperClasses::MuonInfoSwitch* m_infoSwitch;

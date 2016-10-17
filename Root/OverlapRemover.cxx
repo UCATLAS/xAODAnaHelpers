@@ -4,6 +4,7 @@
  ( applying recommendations from Harmonisation TF ).
  *
  * M. Milesi (marco.milesi@cern.ch)
+ * J. Dandoy
  *
  ************************************************/
 
@@ -51,7 +52,6 @@ OverlapRemover :: OverlapRemover (std::string className) :
     m_useTaus(false),
     m_dummyElectronContainer(nullptr),
     m_dummyMuonContainer(nullptr),
-    m_overlapRemovalTool(nullptr),
     m_el_cutflowHist_1(nullptr),
     m_mu_cutflowHist_1(nullptr),
     m_jet_cutflowHist_1(nullptr),
@@ -72,7 +72,6 @@ OverlapRemover :: OverlapRemover (std::string className) :
   m_useCutFlow    = true;
 
   // input container(s) to be read from TEvent or TStore
-
   m_outputAlgo                  = "OR_Algo";                   // name of vector<string> of combined syst pushed in TStore. 
 
   /* Muons */
@@ -103,15 +102,16 @@ OverlapRemover :: OverlapRemover (std::string className) :
   m_createSelectedContainers    = false;
 
   m_useSelected = false;
+  m_bTagWP      = "";  // Decoration name like "BTag", potentially from BJetEfficiencyCorrector
+  m_linkOverlapObjects = true;
+  m_useBoostedLeptons  = false;
+  m_doEleEleOR = false;
+
 
   m_outContainerName_Electrons  = "";
-
   m_outContainerName_Muons      = "";
-
   m_outContainerName_Jets       = "";
-
   m_outContainerName_Photons    = "";
-
   m_outContainerName_Taus       = "";
 
 }
@@ -222,17 +222,26 @@ EL::StatusCode OverlapRemover :: initialize ()
   }
 
   // initialize ASG overlap removal tool
-  //
-  m_overlapRemovalTool = new OverlapRemovalTool( "OverlapRemovalTool" );
-  m_overlapRemovalTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
-
-  // set input object "selection" decoration
-  //
   const std::string selected_label = ( m_useSelected ) ? "passSel" : "";  // set with decoration flag you use for selected objects if want to consider only selected objects in OR, otherwise it will perform OR on all objects
-  RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->setProperty("InputLabel",  selected_label), "");
-  RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->setProperty("OverlapLabel", "overlaps"), "Failed to set property OverlapLabel"); // tool will decorate objects with 'overlaps' boolean if they overlap
-  RETURN_CHECK( "OverlapRemover::initialize()", m_overlapRemovalTool->initialize(), "Failed to properly initialize the OverlapRemovalTool.");
 
+  //Set Flags for recommended overlap procedures
+  ORUtils::ORFlags orFlags("OverlapRemovalTool", selected_label, "passOR");
+
+  orFlags.outputPassValue     = true; 
+  orFlags.linkOverlapObjects  = m_linkOverlapObjects; 
+  orFlags.bJetLabel           = m_bTagWP; 
+  orFlags.boostedLeptons      = m_useBoostedLeptons; 
+  orFlags.doEleEleOR          = m_doEleEleOR; 
+
+  orFlags.doJets      = true;
+  orFlags.doMuons     = m_useMuons;
+  orFlags.doElectrons = m_useElectrons;
+  orFlags.doTaus      = m_useTaus;
+  orFlags.doPhotons   = m_usePhotons;
+  orFlags.doFatJets   = false;
+
+  RETURN_CHECK( "OverlapRemover::initialize()", ORUtils::recommendedTools(orFlags, m_ORToolbox), "Failed to get recommended tools in Overlap Removal Tool." );
+  RETURN_CHECK( "OverlapRemover::initialize()", m_ORToolbox.initialize(), "Failed to initialize Overlap Removal Tool." );
   Info("initialize()", "OverlapRemover Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -406,7 +415,6 @@ EL::StatusCode OverlapRemover :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_overlapRemovalTool    ){ delete m_overlapRemovalTool;     m_overlapRemovalTool     = nullptr; }
   if ( m_dummyElectronContainer){ delete m_dummyElectronContainer; m_dummyElectronContainer = nullptr; }
   if ( m_dummyMuonContainer    ){ delete m_dummyMuonContainer;     m_dummyMuonContainer     = nullptr; }
 
@@ -450,47 +458,54 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
       Error("fillObjectCutflow()", "Overlap decoration missing for this object");
       return EL::StatusCode::FAILURE;
     }
-    if ( !overlapAcc( *obj_itr ) ) {
-      switch(obj_itr->type())
-	{
-	case xAOD::Type::Electron:
-	  m_el_cutflowHist_1->Fill( m_el_cutflow_OR_cut, 1 );
-	  type = "electron";
-	  break;
-	case xAOD::Type::Muon:
-	  m_mu_cutflowHist_1->Fill( m_mu_cutflow_OR_cut, 1 );
-	  type = "muon";
-	  break;
-	case xAOD::Type::Jet:
-	  m_jet_cutflowHist_1->Fill( m_jet_cutflow_OR_cut, 1 );
-	  type = "jet";
-	  break;
-	case xAOD::Type::Photon:
-	  m_ph_cutflowHist_1->Fill( m_ph_cutflow_OR_cut, 1 );
-	  type = "photon";
-	  break;
-	case xAOD::Type::Tau:
-	  m_tau_cutflowHist_1->Fill( m_tau_cutflow_OR_cut, 1 );
-	  type = "tau";
-	  break;
-	default:
-	  Error("OverlapRemover::fillObjectCutflow()","Unsupported object");
-	  return EL::StatusCode::FAILURE;
-	  break;
-	}
+    switch(obj_itr->type()) {
+      case xAOD::Type::Electron:
+        type = "electron";
+        if (!overlapAcc( *obj_itr )) 
+          m_el_cutflowHist_1->Fill( m_el_cutflow_OR_cut, 1 );
+        break;
+      case xAOD::Type::Muon:
+        if (!overlapAcc( *obj_itr )) 
+          m_mu_cutflowHist_1->Fill( m_mu_cutflow_OR_cut, 1 );
+        type = "muon";
+        break;
+      case xAOD::Type::Jet:
+        if (!overlapAcc( *obj_itr )) 
+          m_jet_cutflowHist_1->Fill( m_jet_cutflow_OR_cut, 1 );
+        type = "jet";
+        break;
+      case xAOD::Type::Photon:
+        if (!overlapAcc( *obj_itr )) 
+          m_ph_cutflowHist_1->Fill( m_ph_cutflow_OR_cut, 1 );
+        type = "photon";
+        break;
+      case xAOD::Type::Tau:
+        if (!overlapAcc( *obj_itr )) 
+          m_tau_cutflowHist_1->Fill( m_tau_cutflow_OR_cut, 1 );
+        type = "tau";
+        break;
+      default:
+        Error("OverlapRemover::fillObjectCutflow()","Unsupported object");
+        return EL::StatusCode::FAILURE;
+        break;
     }
 
     if ( m_debug ) {
+      SG::AuxElement::Decorator< char > isBTag( m_bTagWP );
+      int isBTagged = 0;
+      if( isBTag.isAvailable( *obj_itr ) && isBTag(*obj_itr)==true )
+        isBTagged = 1;
+
       if ( selectAcc.isAvailable( *obj_itr) ){
-        Info("fillObjectCutflow()", "  %s pt %6.2f eta %5.2f phi %5.2f selected %i overlaps %i ", type.c_str(), (obj_itr)->pt()/1000., (obj_itr)->eta(), (obj_itr)->phi(), selectAcc( *obj_itr ), overlapAcc( *obj_itr ) );
+        Info("fillObjectCutflow()", "  %s pt %6.2f eta %5.2f phi %5.2f btagged %i selected %i passesOR %i ", type.c_str(), (obj_itr)->pt()/1000., (obj_itr)->eta(), (obj_itr)->phi(), isBTagged, selectAcc( *obj_itr ), overlapAcc( *obj_itr ) );
       } else {
-        Info("fillObjectCutflow()", "  %s pt %6.2f eta %5.2f phi %5.2f overlaps %i ", type.c_str(), (obj_itr)->pt()/1000., (obj_itr)->eta(), (obj_itr)->phi(), overlapAcc( *obj_itr) );
+        Info("fillObjectCutflow()", "  %s pt %6.2f eta %5.2f phi %5.2f btagged %i passesOR %i ", type.c_str(), (obj_itr)->pt()/1000., (obj_itr)->eta(), (obj_itr)->phi(), isBTagged, overlapAcc( *obj_itr) );
       }
       // Check for overlap object link
       if ( objLinkAcc.isAvailable( *obj_itr ) && objLinkAcc( *obj_itr ).isValid() ) {
         const xAOD::IParticle* overlapObj = *objLinkAcc( *obj_itr );
         std::stringstream ss_or; ss_or << overlapObj->type();
-        Info("fillObjectCutflow()", "	Overlap: type %s pt %6.2f", (ss_or.str()).c_str(), overlapObj->pt()/1e3);
+        Info("fillObjectCutflow()", " Overlap: type %s pt %6.2f", (ss_or.str()).c_str(), overlapObj->pt()/1e3);
       }
     }
 
@@ -502,17 +517,17 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
 
 
 EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
-					     const xAOD::PhotonContainer* inPhotons,   const xAOD::TauJetContainer* inTaus,
-					     SystType syst_type, std::vector<std::string>* sysVec)
+               const xAOD::PhotonContainer* inPhotons,   const xAOD::TauJetContainer* inTaus,
+               SystType syst_type, std::vector<std::string>* sysVec)
 {
 
   // instantiate output container(s)
   //
   ConstDataVector<xAOD::ElectronContainer> *selectedElectrons   (nullptr);
-  ConstDataVector<xAOD::MuonContainer>     *selectedMuons	(nullptr);
-  ConstDataVector<xAOD::JetContainer>      *selectedJets	(nullptr);
-  ConstDataVector<xAOD::PhotonContainer>   *selectedPhotons	(nullptr);
-  ConstDataVector<xAOD::TauJetContainer>   *selectedTaus	(nullptr);
+  ConstDataVector<xAOD::MuonContainer>     *selectedMuons (nullptr);
+  ConstDataVector<xAOD::JetContainer>      *selectedJets  (nullptr);
+  ConstDataVector<xAOD::PhotonContainer>   *selectedPhotons (nullptr);
+  ConstDataVector<xAOD::TauJetContainer>   *selectedTaus  (nullptr);
 
   // Set input containers to dummys if not using particles
   //
@@ -530,64 +545,64 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       bool nomContainerNotFound(false);
 
       if( m_useElectrons ) {
-	if ( m_store->contains<ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName_Electrons) ) {
-	  RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_verbose) ,"");
-	} else {
-	  nomContainerNotFound = true;
-	  if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Electrons.c_str());  }
-	}
+        if ( m_store->contains<ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName_Electrons) ) {
+          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_verbose) ,"");
+        } else {
+          nomContainerNotFound = true;
+          if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Electrons.c_str());  }
+        }
       }
 
       if( m_useMuons ) {
-	if ( m_store->contains<ConstDataVector<xAOD::MuonContainer> >(m_inContainerName_Muons) ) {
-	  RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
-	} else {
-	  nomContainerNotFound = true;
-	  if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Muons.c_str()); }
-	}
+        if ( m_store->contains<ConstDataVector<xAOD::MuonContainer> >(m_inContainerName_Muons) ) {
+          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
+        } else {
+          nomContainerNotFound = true;
+          if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Muons.c_str()); }
+        }
       }
 
       if ( m_store->contains<ConstDataVector<xAOD::JetContainer> >(m_inContainerName_Jets) ) {
-	RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
       } else {
         nomContainerNotFound = true;
         if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Jets.c_str()); }
       }
 
       if ( m_usePhotons ) {
-         if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
-	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_verbose) ,"");
-         } else {
-           nomContainerNotFound = true;
-           if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Photons.c_str()); }
-         }
+        if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
+          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_verbose) ,"");
+        } else {
+          nomContainerNotFound = true;
+          if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Photons.c_str()); }
+        }
       }
 
       if ( m_useTaus ) {
-         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
-	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_verbose) ,"");
-         } else {
-           nomContainerNotFound = true;
-	   if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Taus.c_str()); }
-	 }
+        if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
+          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_verbose) ,"");
+        } else {
+          nomContainerNotFound = true;
+          if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Taus.c_str()); }
+        }
       }
 
       if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
 
       if ( m_debug ) {
-	if ( m_useElectrons ) { Info("execute()",  "inElectrons : %lu", inElectrons->size()); }
-	if ( m_useMuons )     { Info("execute()",  "inMuons : %lu", inMuons->size()); }
-	Info("execute()",  "inJets : %lu", inJets->size() );
-	if ( m_usePhotons )   { Info("execute()",  "inPhotons : %lu", inPhotons->size());  }
-	if ( m_useTaus    )   { Info("execute()",  "inTaus : %lu",    inTaus->size());  }
+        if ( m_useElectrons ) { Info("execute()",  "inElectrons : %lu", inElectrons->size()); }
+        if ( m_useMuons )     { Info("execute()",  "inMuons : %lu", inMuons->size()); }
+        Info("execute()",  "inJets : %lu", inJets->size() );
+        if ( m_usePhotons )   { Info("execute()",  "inPhotons : %lu", inPhotons->size());  }
+        if ( m_useTaus    )   { Info("execute()",  "inTaus : %lu",    inTaus->size());  }
       }
 
       // do the actual OR
       //
       if ( m_debug ) { Info("execute()",  "Calling removeOverlaps()"); }
-      RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
+      RETURN_CHECK( "OverlapRemover::execute()", m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-      std::string ORdecor("overlaps");
+      std::string ORdecor("passOR");
       if(m_useCutFlow){
         // fill cutflow histograms
         //
@@ -602,40 +617,40 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       // make a copy of input container(s) with selected objects
       //
       if ( m_createSelectedContainers ) {
-	if ( m_debug ) { Info("execute()",  "Creating selected Containers"); }
+        if ( m_debug ) { Info("execute()",  "Creating selected Containers"); }
         if( m_useElectrons ) selectedElectrons  = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
         if( m_useMuons )     selectedMuons      = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-        selectedJets	    = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-        if ( m_usePhotons )  selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
-        if ( m_useTaus )     selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
+        selectedJets      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+        if ( m_usePhotons )  selectedPhotons  = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
+        if ( m_useTaus )     selectedTaus = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
       }
 
       // resize containers basd on OR decision:
       //
-      // if an object has been flagged as 'overlaps', it won't be stored in the 'selected' container
+      // if an object has been flagged as 'passOR', it will be stored in the 'selected' container
       //
       if ( m_debug ) { Info("execute()",  "Resizing"); }
-      if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-      if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-      RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-      if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-      if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
+      if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+      if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+      RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
+      if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+      if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
       if ( m_debug ) {
-	if ( m_useElectrons) { Info("execute()",  "selectedElectrons : %lu", selectedElectrons->size()); }
-	if ( m_useMuons )    { Info("execute()",  "selectedMuons : %lu",     selectedMuons->size()); }
-	Info("execute()",  "selectedJets : %lu", selectedJets->size());
-	if ( m_usePhotons )  { Info("execute()",  "selectedPhotons : %lu", selectedPhotons->size()); }
+        if ( m_useElectrons) { Info("execute()",  "selectedElectrons : %lu", selectedElectrons->size()); }
+        if ( m_useMuons )    { Info("execute()",  "selectedMuons : %lu",     selectedMuons->size()); }
+        Info("execute()",  "selectedJets : %lu", selectedJets->size());
+        if ( m_usePhotons )  { Info("execute()",  "selectedPhotons : %lu", selectedPhotons->size()); }
         if ( m_useTaus )     { Info("execute()",  "selectedTaus : %lu", selectedTaus->size() ); }
       }
 
       // add ConstDataVector to TStore
       //
       if ( m_createSelectedContainers ) {
-	if ( m_debug ) { Info("execute()",  "Recording"); }
+        if ( m_debug ) { Info("execute()",  "Recording"); }
         if ( m_useElectrons ){ RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons,   m_outContainerName_Electrons ), "Failed to store const data container"); }
-        if ( m_useMuons )    { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons,	 m_outContainerName_Muons ), "Failed to store const data container"); }
-        RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets,	 m_outContainerName_Jets ), "Failed to store const data container");
+        if ( m_useMuons )    { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons,  m_outContainerName_Muons ), "Failed to store const data container"); }
+        RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets,  m_outContainerName_Jets ), "Failed to store const data container");
         if ( m_usePhotons )  { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons, m_outContainerName_Photons ), "Failed to store const data container"); }
         if ( m_useTaus )     { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus ), "Failed to store const data container"); }
       }
@@ -643,69 +658,40 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       m_vecOutContainerNames->push_back("");
       break;
     }
- case ELSYST : // electron syst
+    case ELSYST : // electron syst
     {
       if ( m_debug ) { Info("execute()",  "Doing electron systematics"); }
       // just to check everything is fine
       if ( m_debug ) {
            Info("execute()","will consider the following ELECTRON systematics:" );
-           for ( auto it : *sysVec ) {	Info("execute()" ,"\t %s ", it.c_str()); }
+           for ( auto it : *sysVec ) {  Info("execute()" ,"\t %s ", it.c_str()); }
       }
 
       // these input containers won't change in the electron syst loop ...
-      //
-      if ( m_useMuons ) {
-        if ( m_store->contains<ConstDataVector<xAOD::MuonContainer> >(m_inContainerName_Muons) ) {
-          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
-        } else {
-          Error("executeOR()", "Attempt at running w/ electron systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Muons.c_str());
-      	  return EL::StatusCode::FAILURE;
-        }
-      }
-      if ( m_store->contains<ConstDataVector<xAOD::JetContainer> >(m_inContainerName_Jets) ) {
-        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
-      } else {
-        Error("executeOR()", "Attempt at running w/ electron systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Jets.c_str());
-	return EL::StatusCode::FAILURE;
-      }
-      if ( m_usePhotons ) {
-         if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
-	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_verbose) ,"");
-         } else {
-           Error("executeOR()", "Attempt at running w/ electron systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Photons.c_str());
-	   return EL::StatusCode::FAILURE;
-         }
-      }
-      if ( m_useTaus ) {
-         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
-	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_verbose) ,"");
-         } else {
-           Error("executeOR()", "Attempt at running w/ electron systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Taus.c_str());
-	   return EL::StatusCode::FAILURE;
-	 }
-      }
+      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, 0, m_store, m_verbose) , ("Could not find Jets container "+m_inContainerName_Jets+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useMuons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, 0, m_store, m_verbose) , ("Could not find Muons container "+m_inContainerName_Muons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_usePhotons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, 0, m_store, m_verbose) , ("Could not find Photons container "+m_inContainerName_Photons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useTaus ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, 0, m_store, m_verbose) , ("Could not find Taus container "+m_inContainerName_Taus+" in xAOD::TStore. Aborting").c_str() );
 
       for ( auto systName : *sysVec) {
 
-	if ( systName.empty() ) continue;
+        if ( systName.empty() ) continue;
 
         // ... instead, the electron input container will be different for each syst
-	//
-	std::string el_syst_cont_name = m_inContainerName_Electrons + systName;
-        if ( m_store->contains<ConstDataVector<xAOD::ElectronContainer> >(el_syst_cont_name) ) {
-          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, el_syst_cont_name, m_event, m_store, m_verbose) ,"");
-        } else {
-           Error("executeOR()", "Attempt at running w/ electron systematics. Could not find syst container %s in xAOD::TStore. Aborting", el_syst_cont_name.c_str());
-	   return EL::StatusCode::FAILURE;
-	}
+        //
+        std::string el_syst_cont_name = m_inContainerName_Electrons + systName;
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, el_syst_cont_name, 0, m_store, m_verbose) , ("Could not find Electrons syst container "+el_syst_cont_name+" in xAOD::TStore. Aborting").c_str() );
 
-	if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size() );  }
+        if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size() );  }
 
         // do the actual OR
-	//
-        RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
+        //
+        RETURN_CHECK( "OverlapRemover::execute()", m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-        std::string ORdecor("overlaps");
+        std::string ORdecor("passOR");
         if(m_useCutFlow){
           // fill cutflow histograms
           //
@@ -714,28 +700,28 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           fillObjectCutflow(inJets);
           if ( m_usePhotons ) fillObjectCutflow(inPhotons);
           if ( m_useTaus )    fillObjectCutflow(inTaus);
-	}
+        }
 
         // make a copy of input container(s) with selected objects
-	//
+        //
         if ( m_createSelectedContainers ) {
           selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-          if ( m_useMuons )    selectedMuons	= new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-          selectedJets	      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-          if ( m_usePhotons )  selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
-          if ( m_useTaus )     selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
+          if ( m_useMuons )    selectedMuons  = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+          selectedJets        = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+          if ( m_usePhotons )  selectedPhotons  = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
+          if ( m_useTaus )     selectedTaus = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
         }
 
         // resize containers basd on OR decision
-	//
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-        if ( m_useMuons )  {  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-        if ( m_usePhotons ){ RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        if ( m_useTaus )   {	RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
+        //
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_useMuons )  {  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_usePhotons ){ RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useTaus )   {  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
         // add ConstDataVector to TStore
-	//
+        //
         if ( m_createSelectedContainers ) {
           // a different syst varied container will be stored for each syst variation
           RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons + systName ), "Failed to store const data container");
@@ -745,74 +731,46 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_useTaus )   { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
         }
 
-	m_vecOutContainerNames->push_back(systName);
+        m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Electrons)
 
       break;
     }
- case MUSYST: // muon syst
+    case MUSYST: // muon syst
     {
       if ( m_debug ) { Info("execute()",  "Doing  muon systematics"); }
       // just to check everything is fine
       if ( m_debug ) {
          Info("execute()","will consider the following MUON systematics:" );
-         for ( auto it : *sysVec ){	Info("execute()" ,"\t %s ", it.c_str()); }
+         for ( auto it : *sysVec ){ Info("execute()" ,"\t %s ", it.c_str()); }
       }
 
       // these input containers won't change in the muon syst loop ...
-      //
-      if ( m_useElectrons ) {
-        if ( m_store->contains<ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName_Electrons) ) {
-          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_verbose) ,"");
-        } else {
-          Error("executeOR()", "Attempt at running w/ muon systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Electrons.c_str());
-      	  return EL::StatusCode::FAILURE;
-        }
-      }
-      if ( m_store->contains<ConstDataVector<xAOD::JetContainer> >(m_inContainerName_Jets) ) {
-        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
-      } else {
-        Error("executeOR()", "Attempt at running w/ muon systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Jets.c_str());
-	return EL::StatusCode::FAILURE;
-      }
-      if ( m_usePhotons ) {
-         if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
-	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_verbose) ,"");
-         } else {
-           Error("executeOR()", "Attempt at running w/ muon systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Photons.c_str());
-	   return EL::StatusCode::FAILURE;
-         }
-      }
-      if ( m_useTaus ) {
-         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
-	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_verbose) ,"");
-         } else {
-           Error("executeOR()", "Attempt at running w/ muon systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Taus.c_str());
-	   return EL::StatusCode::FAILURE;
-	 }
-      }
+      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, 0, m_store, m_verbose) , ("Could not find Jets container "+m_inContainerName_Jets+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useElectrons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, 0, m_store, m_verbose) , ("Could not find Electrons container "+m_inContainerName_Electrons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_usePhotons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, 0, m_store, m_verbose) , ("Could not find Photons container "+m_inContainerName_Photons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useTaus ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, 0, m_store, m_verbose) , ("Could not find Taus container "+m_inContainerName_Taus+" in xAOD::TStore. Aborting").c_str() );
+
 
       for ( auto systName : *sysVec) {
 
-	if ( systName.empty() ) continue;
+        if ( systName.empty() ) continue;
 
-	// ... instead, the muon input container will be different for each syst
-	//
-	std::string mu_syst_cont_name = m_inContainerName_Muons + systName;
-        if ( m_store->contains<ConstDataVector<xAOD::MuonContainer> >(mu_syst_cont_name) ) {
-          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, mu_syst_cont_name, m_event, m_store, m_verbose) ,"");
-        } else {
-           Error("executeOR()", "Attempt at running w/ muon systematics. Could not find syst container %s in xAOD::TStore. Aborting",mu_syst_cont_name.c_str());
-	   return EL::StatusCode::FAILURE;
-	}
+        // ... instead, the muon input container will be different for each syst
+        //
+        std::string mu_syst_cont_name = m_inContainerName_Muons + systName;
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, mu_syst_cont_name, 0, m_store, m_verbose) , ("Could not find Muons Systematic container "+mu_syst_cont_name+" in xAOD::TStore. Aborting").c_str() );
 
-         if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu ", inElectrons->size(), inMuons->size(),  inJets->size() );  }
+        if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu ", inElectrons->size(), inMuons->size(),  inJets->size() );  }
 
         // do the actual OR
-	//
-        RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
+        //
+        RETURN_CHECK( "OverlapRemover::execute()", m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-        std::string ORdecor("overlaps");
+        std::string ORdecor("passOR");
         if(m_useCutFlow){
           // fill cutflow histograms
           //
@@ -823,28 +781,28 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if( m_useTaus )       fillObjectCutflow(inTaus);
         }
         // make a copy of input container(s) with selected objects
-	//
+        //
         if ( m_createSelectedContainers ) {
           if ( m_useElectrons ) selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-          selectedMuons	      = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-          selectedJets	      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-          if ( m_usePhotons )   selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
-          if ( m_useTaus )      selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
+          selectedMuons       = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+          selectedJets        = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+          if ( m_usePhotons )   selectedPhotons = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
+          if ( m_useTaus )      selectedTaus  = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
         }
 
         // resize containers based on OR decision
-	//
-        if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-        if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        if ( m_useTaus )      {	RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
+        //
+        if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), "");
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
         // add ConstDataVector to TStore
-	//
+        //
         if ( m_createSelectedContainers ) {
           // a different syst varied container will be stored for each syst variation
-	  //
+          //
           if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons + systName ), "Failed to store const data container"); }
           RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons,     m_outContainerName_Muons + systName ), "Failed to store const data container");
           RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets,      m_outContainerName_Jets + systName ), "Failed to store const data container");
@@ -852,12 +810,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
         }
 
-	m_vecOutContainerNames->push_back(systName);
+        m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Muons)
 
       break;
     }
- case JETSYST: // jet systematics
+    case JETSYST: // jet systematics
     {
       if ( m_debug ) { Info("execute()",  "Doing  jet systematics"); }
       // just to check everything is fine
@@ -867,107 +825,77 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       }
 
       // these input containers won't change in the jet syst loop ...
-      //
-      if ( m_useElectrons ) {
-        if ( m_store->contains<ConstDataVector<xAOD::ElectronContainer> >(m_inContainerName_Electrons) ) {
-          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_verbose) ,"");
-        } else {
-          Error("executeOR()", "Attempt at running w/ jet systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Electrons.c_str());
-      	  return EL::StatusCode::FAILURE;
-        }
-      }
-      if ( m_useMuons ) {
-        if ( m_store->contains<ConstDataVector<xAOD::MuonContainer> >(m_inContainerName_Muons) ) {
-          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
-        } else {
-          Error("executeOR()", "Attempt at running w/ jet systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Muons.c_str());
-      	  return EL::StatusCode::FAILURE;
-        }
-      }
-      if ( m_usePhotons ) {
-         if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
-	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_verbose) ,"");
-         } else {
-           Error("executeOR()", "Attempt at running w/ jet systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Photons.c_str());
-	   return EL::StatusCode::FAILURE;
-         }
-      }
-      if ( m_useTaus ) {
-         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
-	   RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_verbose) ,"");
-         } else {
-           Error("executeOR()", "Attempt at running w/ jet systematics. Could not find nominal container %s in xAOD::TStore. Aborting", m_inContainerName_Taus.c_str());
-	   return EL::StatusCode::FAILURE;
-	 }
-      }
+      if ( m_useMuons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, 0, m_store, m_verbose) , ("Could not find Muons container "+m_inContainerName_Muons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useElectrons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, 0, m_store, m_verbose) , ("Could not find Electrons container "+m_inContainerName_Electrons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_usePhotons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, 0, m_store, m_verbose) , ("Could not find Photons container "+m_inContainerName_Photons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useTaus ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, 0, m_store, m_verbose) , ("Could not find Taus container "+m_inContainerName_Taus+" in xAOD::TStore. Aborting").c_str() );
 
       for( auto systName : *sysVec ) {
 
-	 if ( systName.empty() ) continue;
+        if ( systName.empty() ) continue;
 
-	 // ... instead, the jet input container will be different for each syst
-	 //
-	 std::string jet_syst_cont_name = m_inContainerName_Jets + systName;
-         if ( m_store->contains<ConstDataVector<xAOD::JetContainer> >(jet_syst_cont_name) ) {
-           RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, jet_syst_cont_name, m_event, m_store, m_verbose) ,"");
-         } else {
-            Error("executeOR()", "Attempt at running w/ jet systematics. Could not find syst container %s in xAOD::TStore. Aborting",jet_syst_cont_name.c_str());
-	    return EL::StatusCode::FAILURE;
-	 }
+        // ... instead, the jet input container will be different for each syst
+        //
+        std::string jet_syst_cont_name = m_inContainerName_Jets + systName;
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, jet_syst_cont_name, 0, m_store, m_verbose) , ("Could not find Jets container "+jet_syst_cont_name+" in xAOD::TStore. Aborting").c_str() );
 
-         if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu ", inElectrons->size(), inMuons->size(),  inJets->size() );  }
+        if ( m_debug ) { Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu ", inElectrons->size(), inMuons->size(),  inJets->size() );  }
 
-         // do the actual OR
-	 //
-         RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
+        // do the actual OR
+        //
+        RETURN_CHECK( "OverlapRemover::execute()", m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-         std::string ORdecor("overlaps");
-         if(m_useCutFlow){
-           // fill cutflow histograms
-           //
-           if ( m_useElectrons ) fillObjectCutflow(inElectrons);
-           if ( m_useMuons )     fillObjectCutflow(inMuons);
-           fillObjectCutflow(inJets);
-           if( m_usePhotons )    fillObjectCutflow(inPhotons);
-           if( m_useTaus )       fillObjectCutflow(inTaus);
+        std::string ORdecor("passOR");
+        if(m_useCutFlow){
+          // fill cutflow histograms
+          //
+          if ( m_useElectrons ) fillObjectCutflow(inElectrons);
+          if ( m_useMuons )     fillObjectCutflow(inMuons);
+          fillObjectCutflow(inJets);
+          if( m_usePhotons )    fillObjectCutflow(inPhotons);
+          if( m_useTaus )       fillObjectCutflow(inTaus);
         }
 
-	 // make a copy of input container(s) with selected objects
-	 //
-	 if ( m_createSelectedContainers ) {
-	   if ( m_useElectrons ) selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-	   if ( m_useMuons )     selectedMuons	    = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-	   selectedJets	      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-	   if ( m_usePhotons )   selectedPhotons	= new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
-	   if ( m_useTaus )      selectedTaus	= new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
-	 }
+        // make a copy of input container(s) with selected objects
+        //
+        if ( m_createSelectedContainers ) {
+          if ( m_useElectrons ) selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
+          if ( m_useMuons )     selectedMuons      = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+          selectedJets       = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+          if ( m_usePhotons )   selectedPhotons  = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
+          if ( m_useTaus )      selectedTaus = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
+        }
 
-	 // resize containers basd on OR decision
-	 //
-	 if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-	 if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-	 RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-	 if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-	 if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
+        // resize containers basd on OR decision
+        //
+        if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
-	 // add ConstDataVector to TStore
-	 //
-	 if ( m_createSelectedContainers ) {
-	   // a different syst varied container will be stored for each syst variation
-	   //
-	   if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons + systName ), "Failed to store const data container"); }
-	   if ( m_useMuons )	 { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons,     m_outContainerName_Muons + systName ), "Failed to store const data container"); }
-	   RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets,      m_outContainerName_Jets + systName ), "Failed to store const data container");
-	   if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons, m_outContainerName_Photons + systName ), "Failed to store const data container"); }
-	   if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
-	 }
+        // add ConstDataVector to TStore
+        //
+        if ( m_createSelectedContainers ) {
+          // a different syst varied container will be stored for each syst variation
+          //
+          if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons + systName ), "Failed to store const data container"); }
+          if ( m_useMuons )   { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons,     m_outContainerName_Muons + systName ), "Failed to store const data container"); }
+          RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets,      m_outContainerName_Jets + systName ), "Failed to store const data container");
+          if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedPhotons, m_outContainerName_Photons + systName ), "Failed to store const data container"); }
+          if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
+        }
 
-	m_vecOutContainerNames->push_back(systName);
+        m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Jets)
 
       break;
     }
- case PHSYST : // photon systematics
+    case PHSYST : // photon systematics
     {
       if ( m_debug ) { Info("execute()",  "Doing  photon systematics"); }
       // just to check everything is fine
@@ -977,75 +905,66 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       }
 
       // these input containers won't change in the photon syst loop ...
-      //
-      if ( m_useElectrons ) {
-	RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_verbose) ,"");
-      }
-
-      if ( m_useMuons ) {
-	RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
-      }
-
-      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
-      if ( m_useTaus )     RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, 0, m_store, m_verbose) , ("Could not find Jets container "+m_inContainerName_Jets+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useElectrons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, 0, m_store, m_verbose) , ("Could not find Electrons container "+m_inContainerName_Electrons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useMuons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, 0, m_store, m_verbose) , ("Could not find Muons container "+m_inContainerName_Muons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useTaus ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, 0, m_store, m_verbose) , ("Could not find Taus container "+m_inContainerName_Taus+" in xAOD::TStore. Aborting").c_str() );
 
       for( auto systName : *sysVec ) {
 
-	 if ( systName.empty() ) continue;
+        if ( systName.empty() ) continue;
 
-	 // ... instead, the photon input container will be different for each syst
-	 //
-	 std::string photon_syst_cont_name = m_inContainerName_Photons + systName;
-         if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(photon_syst_cont_name) ) {
-           RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, photon_syst_cont_name, m_event, m_store, m_verbose) ,"");
-         } else {
-            Error("executeOR()", "Attempt at running w/ photon systematics. Could not find syst container %s in xAOD::TStore. Aborting",photon_syst_cont_name.c_str());
-	    return EL::StatusCode::FAILURE;
-	 }
+        // ... instead, the photon input container will be different for each syst
+        //
+        std::string photon_syst_cont_name = m_inContainerName_Photons + systName;
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, photon_syst_cont_name, 0, m_store, m_verbose) , ("Could not find Photons systematic container "+photon_syst_cont_name+" in xAOD::TStore. Aborting").c_str() );
 
-         if ( m_debug ) {
-	   Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size() );
-	 }
+        if ( m_debug ) {
+          Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size() );
+        }
 
-         // do the actual OR
-	 //
-         RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
+        // do the actual OR
+        //
+        RETURN_CHECK( "OverlapRemover::execute()", m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
 
-         std::string ORdecor = std::string("overlaps");
-         if(m_useCutFlow){
-           // fill cutflow histograms
-           //
-           if( m_useElectrons ) fillObjectCutflow(inElectrons);
-           if( m_useMuons     ) fillObjectCutflow(inMuons);
-           fillObjectCutflow(inJets);
-           fillObjectCutflow(inPhotons);
-           if( m_useTaus )      fillObjectCutflow(inTaus);
+        std::string ORdecor = std::string("passOR");
+        if(m_useCutFlow){
+          // fill cutflow histograms
+          //
+          if( m_useElectrons ) fillObjectCutflow(inElectrons);
+          if( m_useMuons     ) fillObjectCutflow(inMuons);
+          fillObjectCutflow(inJets);
+          fillObjectCutflow(inPhotons);
+          if( m_useTaus )      fillObjectCutflow(inTaus);
         }
 
         // make a copy of input container(s) with selected objects
-	//
+        //
         if ( m_createSelectedContainers ) {
           if( m_useElectrons ) selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
           if( m_useMuons     ) selectedMuons       = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-          selectedJets	      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-	  selectedPhotons     = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
-          if ( m_useTaus )     selectedTaus	   = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
+          selectedJets        = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+          selectedPhotons     = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
+          if ( m_useTaus )     selectedTaus    = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
         }
 
         // resize containers based on OR decision
-	//
-        if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-	RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-        if ( m_useTaus )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
+        //
+        if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_useTaus )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
         // add ConstDataVector to TStore
-	//
+        //
         if ( m_createSelectedContainers ) {
           // a different syst varied container will be stored for each syst variation
-	  //
+          //
           if( m_useElectrons ){ RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons + systName ), "Failed to store const data container"); }
           if( m_useMuons )    { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons,     m_outContainerName_Muons + systName ), "Failed to store const data container"); }
           RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets,      m_outContainerName_Jets + systName ), "Failed to store const data container");
@@ -1053,12 +972,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_useTaus )    { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container"); }
         }
 
-	m_vecOutContainerNames->push_back(systName);
+        m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Photons)
 
       break;
     }
-  case TAUSYST : // tau systematics
+    case TAUSYST : // tau systematics
     {
       if ( m_debug ) { Info("execute()",  "Doing tau systematics"); }
 
@@ -1069,77 +988,65 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       }
 
       // these input containers won't change in the tau syst loop ...
-      //
-      if ( m_useElectrons ) {
-	RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, m_verbose) ,"");
-      }
-
-      if ( m_useMuons ) {
-	RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
-      }
-
-      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
-
-      if ( m_usePhotons ) {
-	RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_verbose) ,"");
-      }
+      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, 0, m_store, m_verbose) , ("Could not find Jets container "+m_inContainerName_Jets+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useElectrons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, 0, m_store, m_verbose) , ("Could not find Electrons container "+m_inContainerName_Electrons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_useMuons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, 0, m_store, m_verbose) , ("Could not find Muons container "+m_inContainerName_Muons+" in xAOD::TStore. Aborting").c_str() );
+      if ( m_usePhotons ) 
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, 0, m_store, m_verbose) , ("Could not find Photons container "+m_inContainerName_Photons+" in xAOD::TStore. Aborting").c_str() );
 
       for( auto systName : *sysVec ) {
 
-	 if ( systName.empty() ) continue;
+        if ( systName.empty() ) continue;
+      
+        // ... instead, the tau input container will be different for each syst
+        //
+        std::string tau_syst_cont_name = m_inContainerName_Taus + systName;
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, tau_syst_cont_name, 0, m_store, m_verbose) , ("Could not find Taus container "+tau_syst_cont_name+" in xAOD::TStore. Aborting").c_str() );
 
-	 // ... instead, the tau input container will be different for each syst
-	 //
-	 std::string tau_syst_cont_name = m_inContainerName_Taus + systName;
-         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(tau_syst_cont_name) ) {
-           RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, tau_syst_cont_name, m_event, m_store, m_verbose) ,"");
-         } else {
-            Error("executeOR()", "Attempt at running w/ tau systematics. Could not find syst container %s in xAOD::TStore. Aborting", tau_syst_cont_name.c_str());
-	    return EL::StatusCode::FAILURE;
-	 }
+        if ( m_debug ) {
+          Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size() );
+        }
 
-         if ( m_debug ) {
-	   Info("execute()",  "inElectrons : %lu, inMuons : %lu, inJets : %lu", inElectrons->size(), inMuons->size(),  inJets->size() );
-	 }
+        // do the actual OR
+        //
+        RETURN_CHECK( "OverlapRemover::execute()", m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
 
-         // do the actual OR
-	 //
-         RETURN_CHECK( "OverlapRemover::execute()", m_overlapRemovalTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
+        std::string ORdecor = std::string("passOR");
+        if(m_useCutFlow){
+          // fill cutflow histograms
+          //
+          if( m_useElectrons ) fillObjectCutflow(inElectrons);
+          if( m_useMuons     ) fillObjectCutflow(inMuons);
+          fillObjectCutflow(inJets);
+          if( m_usePhotons ) fillObjectCutflow(inPhotons);
+          fillObjectCutflow(inTaus);
+        }
 
-         std::string ORdecor = std::string("overlaps");
-         if(m_useCutFlow){
-           // fill cutflow histograms
-           //
-           if( m_useElectrons ) fillObjectCutflow(inElectrons);
-           if( m_useMuons     ) fillObjectCutflow(inMuons);
-           fillObjectCutflow(inJets);
-           if( m_usePhotons ) fillObjectCutflow(inPhotons);
-           fillObjectCutflow(inTaus);
-	 }
-
-	 // make a copy of input container(s) with selected objects
-	 //
-	 if ( m_createSelectedContainers ) {
-	   if( m_useElectrons ) selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
-	   if( m_useMuons )     selectedMuons       = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
-	   selectedJets	      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-	   if ( m_usePhotons )  selectedPhotons     = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
-	   selectedTaus	      = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
+        // make a copy of input container(s) with selected objects
+        //
+        if ( m_createSelectedContainers ) {
+          if( m_useElectrons ) selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
+          if( m_useMuons )     selectedMuons       = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+          selectedJets       = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+          if ( m_usePhotons )  selectedPhotons     = new ConstDataVector<xAOD::PhotonContainer>(SG::VIEW_ELEMENTS);
+          selectedTaus       = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
         }
 
         // resize containers based on OR decision
-	//
-        if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
-	if ( m_usePhotons )  { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::OVERLAPREMOVER), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::OVERLAPREMOVER), "");
+        //
+        if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_usePhotons )  { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), "");
 
         // add ConstDataVector to TStore
-	//
+        //
         if ( m_createSelectedContainers ) {
           // a different syst varied container will be stored for each syst variation
-	  //
+          //
           if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons, m_outContainerName_Electrons + systName ), "Failed to store const data container"); }
           if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons,     m_outContainerName_Muons + systName ), "Failed to store const data container"); }
           RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets,      m_outContainerName_Jets + systName ), "Failed to store const data container");
@@ -1147,12 +1054,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedTaus, m_outContainerName_Taus + systName ), "Failed to store const data container");
         }
 
-	m_vecOutContainerNames->push_back(systName);
+        m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Taus)
 
       break;
     }
- default :
+    default :
     {
       Error("OverlapRemover::execute()","Unknown systematics type. Aborting");
       return EL::StatusCode::FAILURE;
@@ -1167,25 +1074,25 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 EL::StatusCode OverlapRemover :: setCutFlowHist( )
 {
 
- if ( m_useCutFlow ) {
+  if ( m_useCutFlow ) {
 
-   // retrieve the file in which the cutflow hists are stored
-   //
-   TFile *file     = wk()->getOutputFile ("cutflow");
+    // retrieve the file in which the cutflow hists are stored
+    //
+    TFile *file     = wk()->getOutputFile ("cutflow");
 
-   // retrieve the object cutflow
-   //
-   m_el_cutflowHist_1	 = (TH1D*)file->Get("cutflow_electrons_1");
-   m_el_cutflow_OR_cut   = m_el_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-   m_mu_cutflowHist_1	 = (TH1D*)file->Get("cutflow_muons_1");
-   m_mu_cutflow_OR_cut   = m_mu_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-   m_jet_cutflowHist_1   = (TH1D*)file->Get("cutflow_jets_1");
-   m_jet_cutflow_OR_cut  = m_jet_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-   m_ph_cutflowHist_1	 = (TH1D*)file->Get("cutflow_photons_1");
-   m_ph_cutflow_OR_cut   = m_ph_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-   m_tau_cutflowHist_1   = (TH1D*)file->Get("cutflow_taus_1");
-   m_tau_cutflow_OR_cut  = m_tau_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
- }
+    // retrieve the object cutflow
+    //
+    m_el_cutflowHist_1  = (TH1D*)file->Get("cutflow_electrons_1");
+    m_el_cutflow_OR_cut   = m_el_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+    m_mu_cutflowHist_1  = (TH1D*)file->Get("cutflow_muons_1");
+    m_mu_cutflow_OR_cut   = m_mu_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+    m_jet_cutflowHist_1   = (TH1D*)file->Get("cutflow_jets_1");
+    m_jet_cutflow_OR_cut  = m_jet_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+    m_ph_cutflowHist_1  = (TH1D*)file->Get("cutflow_photons_1");
+    m_ph_cutflow_OR_cut   = m_ph_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+    m_tau_cutflowHist_1   = (TH1D*)file->Get("cutflow_taus_1");
+    m_tau_cutflow_OR_cut  = m_tau_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
+  }
 
   return EL::StatusCode::SUCCESS;
 }

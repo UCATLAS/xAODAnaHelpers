@@ -1,9 +1,8 @@
-HLT Jet Getter
-==============
+MET Constructor
+===============
 
-.. doxygenclass:: HLTJetGetter
+.. doxygenclass:: METConstructor
    :members:
    :undoc-members:
    :protected-members:
    :private-members:
-

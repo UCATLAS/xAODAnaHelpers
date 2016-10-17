@@ -227,7 +227,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
 
-  RETURN_CHECK("ElectronCalibrator::initialize()",m_store->record(SystElectronsNames, "ele_Syst" ), "Failed to record vector of ele systs names.");
+  RETURN_CHECK("ElectronCalibrator::initialize()",m_store->record(SystElectronsNames, "ele_Syst"+m_name ), "Failed to record vector of ele systs names.");
 
   // ***********************************************************
 
