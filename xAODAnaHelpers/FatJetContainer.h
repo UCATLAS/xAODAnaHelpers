@@ -59,7 +59,7 @@ namespace xAH {
       // Vector branches
       //
 
-      // scale
+      // scales
       std::vector<float> *m_JetConstitScaleMomentum_eta;
       std::vector<float> *m_JetConstitScaleMomentum_phi;
       std::vector<float> *m_JetConstitScaleMomentum_m;
