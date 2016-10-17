@@ -234,7 +234,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_calibSequence,
       !m_isMC);
   m_jetCalibration->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
-  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface succesfully initialized!");
+  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface successfully initialized!");
 
   if(m_doCleaning){
     // initialize and configure the jet cleaning tool
@@ -245,7 +245,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     if (m_jetCleanUgly){
       RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->setProperty( "DoUgly", true), "");
     }
-    RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "JetCleaning Interface succesfully initialized!");
+    RETURN_CHECK( "JetCalibrator::initialize()", m_jetCleaning->initialize(), "JetCleaning Interface successfully initialized!");
 
     if( m_saveAllCleanDecisions ){
       //std::string m_decisionNames[] = {"LooseBad", TightBad"};
@@ -262,7 +262,7 @@ EL::StatusCode JetCalibrator :: initialize ()
         }else{
           RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->setProperty( "CutLevel", m_decisionNames.at(i)), "");
         }
-        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->initialize(), ("JetCleaning Interface "+m_decisionNames.at(i)+" succesfully initialized!").c_str());
+        RETURN_CHECK( "JetCalibrator::initialize()", m_allJetCleaningTools.at( i )->initialize(), ("JetCleaning Interface "+m_decisionNames.at(i)+" successfully initialized!").c_str());
       }
     }
   }
