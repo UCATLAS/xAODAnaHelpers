@@ -348,7 +348,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
         RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("Year", yr ),"Failed to set Year property of MuonTriggerScaleFactors");
       }
       if ( !m_MCCampaign.empty() ) {
-      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("mc", m_MCCampaign ),"Failed to set MC Campaign property of MuonTriggerScaleFactors");
+      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("MC", m_MCCampaign ),"Failed to set MC Campaign property of MuonTriggerScaleFactors");
       
       }
       RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->initialize(), "Failed to properly initialize CP::MuonTriggerScaleFactors for trigger efficiency SF");
