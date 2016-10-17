@@ -14,6 +14,18 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_trackJetEtaCut(2.5)
 {
 
+  if (m_infoSwitch.m_scale) {
+      m_JetConstitScaleMomentum_eta       = new std::vector<float>();
+      m_JetConstitScaleMomentum_phi       = new std::vector<float>();
+      m_JetConstitScaleMomentum_m       = new std::vector<float>();
+      m_JetConstitScaleMomentum_pt        = new std::vector<float>();
+
+      m_JetEMScaleMomentum_eta        = new std::vector<float>();
+      m_JetEMScaleMomentum_phi        = new std::vector<float>();
+      m_JetEMScaleMomentum_m        = new std::vector<float>();
+      m_JetEMScaleMomentum_pt       = new std::vector<float>();
+  }
+
   if ( m_infoSwitch.m_substructure ) {
     m_Split12           = new std::vector<float>();
     m_Split23           = new std::vector<float>();
@@ -82,6 +94,18 @@ FatJetContainer::~FatJetContainer()
 {
   if(m_debug) cout << " Deleting FatJetContainer "  << endl;  
 
+  if ( m_infoSwitch.m_scale ) {
+      delete m_JetConstitScaleMomentum_eta ;
+      delete m_JetConstitScaleMomentum_phi ;
+      delete m_JetConstitScaleMomentum_m   ;
+      delete m_JetConstitScaleMomentum_pt  ;
+
+      delete m_JetEMScaleMomentum_eta      ;
+      delete m_JetEMScaleMomentum_phi      ;
+      delete m_JetEMScaleMomentum_m        ;
+      delete m_JetEMScaleMomentum_pt       ;
+  }
+
   if ( m_infoSwitch.m_substructure ) {
     delete m_Split12     ;
     delete m_Split23     ;
@@ -148,6 +172,18 @@ void FatJetContainer::setTree(TTree *tree)
   // Connect branches
   ParticleContainer::setTree(tree);
 
+  if( m_infoSwitch.m_scale ) {
+      connectBranch<float>(tree, "JetConstitScaleMomentum_eta", &m_JetConstitScaleMomentum_eta;
+      connectBranch<float>(tree, "JetConstitScaleMomentum_phi", &m_JetConstitScaleMomentum_phi;
+      connectBranch<float>(tree, "JetConstitScaleMomentum_m", &m_JetConstitScaleMomentum_m;
+      connectBranch<float>(tree, "JetConstitScaleMomentum_pt", &m_JetConstitScaleMomentum_pt;
+
+      connectBranch<float>(tree, "JetEMScaleMomentum_eta", &m_JetEMScaleMomentum_eta;
+      connectBranch<float>(tree, "JetEMScaleMomentum_phi", &m_JetEMScaleMomentum_phi;
+      connectBranch<float>(tree, "JetEMScaleMomentum_m", &m_JetEMScaleMomentum_m;
+      connectBranch<float>(tree, "JetEMScaleMomentum_pt", &m_JetEMScaleMomentum_pt;
+  }
+
   if ( m_infoSwitch.m_substructure ) {
     connectBranch<float>(tree, "Split12",      &m_Split12);
     connectBranch<float>(tree, "Split23",      &m_Split23);
@@ -205,6 +241,18 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
 {
   if(m_debug) cout << "in FatJetContainer::updateParticle " << endl;
   ParticleContainer::updateParticle(idx,fatjet);  
+
+  if ( m_infoSwitch.m_scale ) {
+      fatjet.JetConstitScaleMomentum_eta = m_JetConstitScaleMomentum_eta ->at(idx);
+      fatjet.JetConstitScaleMomentum_phi = m_JetConstitScaleMomentum_phi ->at(idx);
+      fatjet.JetConstitScaleMomentum_m = m_JetConstitScaleMomentum_m ->at(idx);
+      fatjet.JetConstitScaleMomentum_pt = m_JetConstitScaleMomentum_pt ->at(idx);
+
+      fatjet.JetEMScaleMomentum_eta = m_JetEMScaleMomentum_eta ->at(idx);
+      fatjet.JetEMScaleMomentum_phi = m_JetEMScaleMomentum_phi ->at(idx);
+      fatjet.JetEMScaleMomentum_m = m_JetEMScaleMomentum_m ->at(idx);
+      fatjet.JetEMScaleMomentum_pt = m_JetEMScaleMomentum_pt ->at(idx);
+  }
 
   if ( m_infoSwitch.m_substructure ) {
     fatjet.Split12      = m_Split12     ->at(idx);
@@ -274,6 +322,18 @@ void FatJetContainer::setBranches(TTree *tree)
 {
   ParticleContainer::setBranches(tree);
 
+  if ( m_infoSwitch.m_scale ) {
+      setBranch<float>(tree, "JetConstitScaleMomentum_eta", m_JetConstitScaleMomentum_eta);
+      setBranch<float>(tree, "JetConstitScaleMomentum_phi", m_JetConstitScaleMomentum_phi);
+      setBranch<float>(tree, "JetConstitScaleMomentum_m", m_JetConstitScaleMomentum_m);
+      setBranch<float>(tree, "JetConstitScaleMomentum_pt", m_JetConstitScaleMomentum_pt);
+
+      setBranch<float>(tree, "JetEMScaleMomentum_eta", m_JetEMScaleMomentum_eta);
+      setBranch<float>(tree, "JetEMScaleMomentum_phi", m_JetEMScaleMomentum_phi);
+      setBranch<float>(tree, "JetEMScaleMomentum_m", m_JetEMScaleMomentum_m);
+      setBranch<float>(tree, "JetEMScaleMomentum_pt", m_JetEMScaleMomentum_pt);
+  }
+
   if ( m_infoSwitch.m_substructure ) {
     setBranch<float>(tree, "Split12",      m_Split12);
     setBranch<float>(tree, "Split23",      m_Split23);
@@ -333,6 +393,18 @@ void FatJetContainer::clear()
 {
   
   ParticleContainer::clear();
+
+  if ( m_infoSwitch.m_scale ) {
+    JetConstitScaleMomentum_eta   ->clear();
+    JetConstitScaleMomentum_phi   ->clear();
+    JetConstitScaleMomentum_m   ->clear();
+    JetConstitScaleMomentum_pt    ->clear();
+
+    JetEMScaleMomentum_eta    ->clear();
+    JetEMScaleMomentum_phi    ->clear();
+    JetEMScaleMomentum_m    ->clear();
+    JetEMScaleMomentum_pt   ->clear();
+  }
 
   if ( m_infoSwitch.m_substructure ) {
     m_Split12     ->clear();
@@ -397,6 +469,26 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
   ParticleContainer::FillParticle(particle);
 
   const xAOD::Jet* fatjet=dynamic_cast<const xAOD::Jet*>(particle);
+
+  if( m_infoSwitch.m_scale ){
+    static SG::AuxElement::ConstAccessor<float> acc_JetConstitScaleMomentum_eta("JetConstitScaleMomentum_eta");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_JetConstitScaleMomentum_eta, m_JetConstitScaleMomentum_eta, -999)
+    static SG::AuxElement::ConstAccessor<float> acc_JetConstitScaleMomentum_phi("JetConstitScaleMomentum_phi");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_JetConstitScaleMomentum_phi, m_JetConstitScaleMomentum_phi, -999)
+    static SG::AuxElement::ConstAccessor<float> acc_JetConstitScaleMomentum_m("JetConstitScaleMomentum_m");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_JetConstitScaleMomentum_m, m_JetConstitScaleMomentum_m, -999, m_units)
+    static SG::AuxElement::ConstAccessor<float> acc_JetConstitScaleMomentum_pt("JetConstitScaleMomentum_pt");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_JetConstitScaleMomentum_pt, m_JetConstitScaleMomentum_pt, -999, m_units)
+
+    static SG::AuxElement::ConstAccessor<float> acc_JetEMScaleMomentum_eta("JetEMScaleMomentum_eta");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_JetEMScaleMomentum_eta, m_JetEMScaleMomentum_eta, -999)
+    static SG::AuxElement::ConstAccessor<float> acc_JetEMScaleMomentum_phi("JetEMScaleMomentum_phi");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_JetEMScaleMomentum_phi, m_JetEMScaleMomentum_phi, -999)
+    static SG::AuxElement::ConstAccessor<float> acc_JetEMScaleMomentum_m("JetEMScaleMomentum_m");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_JetEMScaleMomentum_m, m_JetEMScaleMomentum_m, -999, m_units)
+    static SG::AuxElement::ConstAccessor<float> acc_JetEMScaleMomentum_pt("JetEMScaleMomentum_pt");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_JetEMScaleMomentum_pt, m_JetEMScaleMomentum_pt, -999, m_units)
+  }
 
   if( m_infoSwitch.m_substructure ){
     static SG::AuxElement::ConstAccessor<float> acc_Split12("Split12");
