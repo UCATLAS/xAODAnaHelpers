@@ -59,6 +59,17 @@ namespace xAH {
       // Vector branches
       //
 
+      // scale
+      std::vector<float> *m_JetConstitScaleMomentum_eta;
+      std::vector<float> *m_JetConstitScaleMomentum_phi;
+      std::vector<float> *m_JetConstitScaleMomentum_m;
+      std::vector<float> *m_JetConstitScaleMomentum_pt;
+
+      std::vector<float> *m_JetEMScaleMomentum_eta;
+      std::vector<float> *m_JetEMScaleMomentum_phi;
+      std::vector<float> *m_JetEMScaleMomentum_m;
+      std::vector<float> *m_JetEMScaleMomentum_pt;
+
       // substructure
       std::vector<float> *m_Split12;
       std::vector<float> *m_Split23;
