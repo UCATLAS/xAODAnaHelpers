@@ -278,6 +278,18 @@ namespace HelperClasses {
         m_trackparams  trackparams  exact
         m_trackhitcont trackhitcont exact
         m_effSF        effSF        exact
+        m_PIDWPs["LooseAndBLayerLLH"]            LooseAndBLayerLLH           exact
+        m_PIDWPs["MediumLLH"]                    MediumLLH                   exact
+        m_PIDWPs["TightLLH"]                     TightLLH                    exact
+        m_isolWPs["_isolFixedCutLoose"]          isolFixedCutLoose           exact
+        m_isolWPs["_isolFixedCutTight"]          isolFixedCutTight           exact
+        m_isolWPs["_isolFixedCutTightTrackOnly"] isolFixedCutTightTrackOnly  exact
+        m_isolWPs["_isolGradient"]               isolGradient                exact
+        m_isolWPs["_isolGradientLoose"]          isolGradientLoose           exact
+        m_isolWPs["_isolLoose"]                  isolLoose                   exact
+        m_isolWPs["_isolLooseTrackOnly"]         isolLooseTrackOnly          exact
+        m_isolWPs["_isolTight"]                  isolTight                   exact
+        m_isolWPs[""]                            isolNoRequirement           exact
         ============== ============ =======
 
     @endrst
@@ -290,6 +302,8 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
+    std::map<std::string,bool> m_PIDWPs;
+    std::map<std::string,bool> m_isolWPs;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:

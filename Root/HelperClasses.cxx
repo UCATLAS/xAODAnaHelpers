@@ -138,6 +138,19 @@ namespace HelperClasses{
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
+    // working points for scale-factors    
+    m_PIDWPs["LooseAndBLayerLLH"]  = has_exact("LooseAndBLayerLLH");
+    m_PIDWPs["MediumLLH"]          = has_exact("MediumLLH");
+    m_PIDWPs["TightLLH"]           = has_exact("TightLLH");
+    m_isolWPs["_isolFixedCutLoose"]            = has_exact("isolFixedCutLoose");
+    m_isolWPs["_isolFixedCutTight"]            = has_exact("isolFixedCutTight");
+    m_isolWPs["_isolFixedCutTightTrackOnly"]   = has_exact("isolFixedCutTightTrackOnly");
+    m_isolWPs["_isolGradient"]                 = has_exact("isolGradient");
+    m_isolWPs["_isolGradientLoose"]            = has_exact("isolGradientLoose");
+    m_isolWPs["_isolLoose"]                    = has_exact("isolLoose");
+    m_isolWPs["_isolLooseTrackOnly"]           = has_exact("isolLooseTrackOnly");
+    m_isolWPs["_isolTight"]                    = has_exact("isolTight");
+    m_isolWPs[""]                              = has_exact("isolNoRequirement");
   }
 
   void PhotonInfoSwitch::initialize(){
