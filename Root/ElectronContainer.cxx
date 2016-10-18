@@ -103,6 +103,26 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_trkPixdEdX                 = new std::vector<float> ();
   }
 
+  if ( m_infoSwitch.m_effSF && m_mc ) {
+    auto PID_it = std::begin(m_PIDWPs);
+    auto iso_it = std::begin(m_isolWPs);
+    while ( PID_it != std::end(m_PIDWPs) ) {
+      if (!m_infoSwitch.m_PIDWPs[ *PID_it ]) PID_it = m_PIDWPs.erase( PID_it );
+      else PID_it++;
+    }
+    while ( iso_it != std::end(m_isolWPs) ) {
+      if (!m_infoSwitch.m_isolWPs[ *iso_it ]) iso_it = m_isolWPs.erase( iso_it );
+      else iso_it++;
+    }
+    if (m_debug) {
+      for (auto& PID : m_PIDWPs) {
+        for (auto& isol : m_isolWPs) {
+          Info("ElectronConainer()", "Used working points: %s%s", PID.c_str(), isol.c_str() );
+        }
+      }
+    }
+  }   
+
 
 }
 
@@ -255,9 +275,7 @@ void ElectronContainer::setTree(TTree *tree)
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
     for (auto& PID : m_PIDWPs) {
-      if (!m_infoSwitch.m_PIDWPs[PID]) continue;
       for (auto& isol : m_isolWPs) {
-        if (!m_infoSwitch.m_isolWPs[isol]) continue;
         tree->SetBranchStatus ( (m_name+"_TrigEff_SF_" + PID + isol).c_str() , 1 );
         tree->SetBranchAddress( (m_name+"_TrigEff_SF_" + PID + isol).c_str() , & (*m_TrigEff_SF)[ PID+isol ] );
 
@@ -357,9 +375,7 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
     for (auto& PID : m_PIDWPs) {
-      if (!m_infoSwitch.m_PIDWPs[PID]) continue;
       for (auto& iso : m_isolWPs) {
-        if (!m_infoSwitch.m_isolWPs[iso]) continue;
         elec.TrigEff_SF[ PID+iso ] = (*m_TrigEff_SF)[ PID+iso ].at(idx);
         elec.TrigMCEff [ PID+iso ] = (*m_TrigMCEff )[ PID+iso ].at(idx);
         if(iso.empty()) continue;
@@ -464,9 +480,7 @@ void ElectronContainer::setBranches(TTree *tree)
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
     for (auto& PID : m_PIDWPs) {
-      if (!m_infoSwitch.m_PIDWPs[PID]) continue;
       for (auto& isol : m_isolWPs) {
-        if (!m_infoSwitch.m_isolWPs[isol]) continue;
         tree->Branch( (m_name+"_TrigEff_SF_" + PID + isol).c_str() , & (*m_TrigEff_SF)[ PID+isol ] );
         tree->Branch( (m_name+"_TrigMCEff_"  + PID + isol).c_str() , & (*m_TrigMCEff) [ PID+isol ] );
         if(isol.empty()) continue;
@@ -573,9 +587,7 @@ void ElectronContainer::clear()
   if ( m_infoSwitch.m_effSF && m_mc ) {
     
     for (auto& PID : m_PIDWPs) {
-      if (!m_infoSwitch.m_PIDWPs[PID]) continue;
       for (auto& isol : m_isolWPs) {
-        if (!m_infoSwitch.m_isolWPs[isol]) continue;
         (*m_TrigEff_SF)[ PID+isol ].clear();
         (*m_TrigMCEff)[ PID+isol ].clear();
         if(isol.empty()) continue;
@@ -824,50 +836,46 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     static std::map< std::string, floatAccessor > accTrigEFF;
 
     for (auto& PID : m_PIDWPs) {
-      if (!m_infoSwitch.m_PIDWPs[PID]) continue;
       
       for (auto& isol : m_isolWPs) {
-	if (!m_infoSwitch.m_isolWPs[isol]) continue;
-	
-	accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigMCEffSyst_" + PID + isol ) ) );
-	if( (accTrigSF.at( PID+isol )).isAvailable( *elec ) ) { 
-	  m_TrigEff_SF->at( PID+isol ).push_back( (accTrigSF.at( PID+isol ))( *elec ) ); 
-	}else { 
-	  m_TrigEff_SF->at( PID+isol ).push_back( junkSF ); 
-	}
-	
-	accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigSyst_" + PID + isol ) ) );
-	if( (accTrigEFF.at( PID+isol )).isAvailable( *elec ) ) { 
-	  m_TrigMCEff->at( PID+isol ).push_back( (accTrigEFF.at( PID+isol ))( *elec ) ); 
-	} else { 
-	  m_TrigMCEff->at( PID+isol ).push_back( junkEff ); 
-	}
-	
-	if(isol.empty()) continue;
-	accIsoSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_IsoSyst_" + PID + isol ) ) );
-	if( (accIsoSF.at( PID+isol )).isAvailable( *elec ) ) { 
-	  m_IsoEff_SF->at( PID+isol ).push_back( (accIsoSF.at( PID+isol ))( *elec ) ); 
-	} else { 
-	  m_IsoEff_SF->at( PID+isol ).push_back( junkSF ); 
-	}
-	
-	
-      }
-    }
 
-    static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
-    static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LooseAndBLayerLLH");
-    static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LooseLLh");
-    static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_MediumLLH");
-    static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("ElectronEfficiencyCorrector_PIDSyst_TightLLH");
-    
-    if( accRecoSF.isAvailable( *elec ) )                     { m_RecoEff_SF->push_back( accRecoSF( *elec ) ); } else { m_RecoEff_SF->push_back( junkSF ); }
-    if( accPIDSF_LHLooseAndBLayer.isAvailable( *elec ) )     { m_PIDEff_SF_LHLooseAndBLayer->push_back( accPIDSF_LHLooseAndBLayer( *elec ) ); } else { m_PIDEff_SF_LHLooseAndBLayer->push_back( junkSF ); }
-    if( accPIDSF_LHLoose.isAvailable( *elec ) )              { m_PIDEff_SF_LHLoose->push_back( accPIDSF_LHLoose( *elec ) ); } else { m_PIDEff_SF_LHLoose->push_back( junkSF ); }
-    if( accPIDSF_LHMedium.isAvailable( *elec ) )             { m_PIDEff_SF_LHMedium->push_back( accPIDSF_LHMedium( *elec ) ); } else { m_PIDEff_SF_LHMedium->push_back( junkSF ); }
-    if( accPIDSF_LHTight.isAvailable( *elec ) )              { m_PIDEff_SF_LHTight->push_back( accPIDSF_LHTight( *elec ) ); } else { m_PIDEff_SF_LHTight->push_back( junkSF ); }
-    
-  }
+       accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigMCEffSyst_" + PID + isol ) ) );
+       if( (accTrigSF.at( PID+isol )).isAvailable( *elec ) ) { 
+         m_TrigEff_SF->at( PID+isol ).push_back( (accTrigSF.at( PID+isol ))( *elec ) ); 
+       }else { 
+         m_TrigEff_SF->at( PID+isol ).push_back( junkSF ); 
+       }
+
+       accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigSyst_" + PID + isol ) ) );
+       if( (accTrigEFF.at( PID+isol )).isAvailable( *elec ) ) { 
+         m_TrigMCEff->at( PID+isol ).push_back( (accTrigEFF.at( PID+isol ))( *elec ) ); 
+       } else { 
+         m_TrigMCEff->at( PID+isol ).push_back( junkEff ); 
+       }
+
+       if(isol.empty()) continue;
+       accIsoSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_IsoSyst_" + PID + isol ) ) );
+       if( (accIsoSF.at( PID+isol )).isAvailable( *elec ) ) { 
+         m_IsoEff_SF->at( PID+isol ).push_back( (accIsoSF.at( PID+isol ))( *elec ) ); 
+       } else { 
+         m_IsoEff_SF->at( PID+isol ).push_back( junkSF ); 
+       }
+     }
+   }
+
+   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
+   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LooseAndBLayerLLH");
+   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LooseLLh");
+   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_MediumLLH");
+   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("ElectronEfficiencyCorrector_PIDSyst_TightLLH");
+
+   if( accRecoSF.isAvailable( *elec ) )                     { m_RecoEff_SF->push_back( accRecoSF( *elec ) ); } else { m_RecoEff_SF->push_back( junkSF ); }
+   if( accPIDSF_LHLooseAndBLayer.isAvailable( *elec ) )     { m_PIDEff_SF_LHLooseAndBLayer->push_back( accPIDSF_LHLooseAndBLayer( *elec ) ); } else { m_PIDEff_SF_LHLooseAndBLayer->push_back( junkSF ); }
+   if( accPIDSF_LHLoose.isAvailable( *elec ) )              { m_PIDEff_SF_LHLoose->push_back( accPIDSF_LHLoose( *elec ) ); } else { m_PIDEff_SF_LHLoose->push_back( junkSF ); }
+   if( accPIDSF_LHMedium.isAvailable( *elec ) )             { m_PIDEff_SF_LHMedium->push_back( accPIDSF_LHMedium( *elec ) ); } else { m_PIDEff_SF_LHMedium->push_back( junkSF ); }
+   if( accPIDSF_LHTight.isAvailable( *elec ) )              { m_PIDEff_SF_LHTight->push_back( accPIDSF_LHTight( *elec ) ); } else { m_PIDEff_SF_LHTight->push_back( junkSF ); }
+
+ }
 
   return;
 }
