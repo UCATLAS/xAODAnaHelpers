@@ -31,6 +31,7 @@
 #include "xAODAnaHelpers/MetContainer.h"
 #include "xAODAnaHelpers/JetContainer.h"
 #include "xAODAnaHelpers/ElectronContainer.h"
+#include "xAODAnaHelpers/PhotonContainer.h"
 #include "xAODAnaHelpers/FatJetContainer.h"
 #include "xAODAnaHelpers/TruthContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
@@ -68,7 +69,7 @@ public:
   void AddJetTrigger  (const std::string detailStr = "");
   void AddMuons       (const std::string detailStr = "", const std::string muonName = "muon");
   void AddElectrons   (const std::string detailStr = "", const std::string elecName = "el");
-  void AddPhotons     (const std::string detailStr = "");
+  void AddPhotons     (const std::string detailStr = "", const std::string photonName = "ph");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
 
@@ -104,8 +105,6 @@ public:
   // control which branches are filled
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
   HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
-  HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-
 
   std::string                  m_triggerSelection;
   TrigConf::xAODConfigTool*    m_trigConfTool;
@@ -122,7 +121,8 @@ public:
   void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex, const std::string elecName = "el" );
   void FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex* primaryVertex, const std::string elecName = "el" );
 
-  void FillPhotons( const xAOD::PhotonContainer* photons );
+  void FillPhotons( const xAOD::PhotonContainer* photons, const std::string photonName = "ph" );
+  void FillPhoton ( const xAOD::Photon*          photon,  const std::string photonName = "ph" );
 
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
@@ -153,14 +153,14 @@ public:
   void ClearEvent();
   void ClearTrigger();
   void ClearJetTrigger();
-  void ClearMuons(const std::string jetName = "muon");
-  void ClearElectrons(const std::string elecName = "el");
-  void ClearPhotons();
-  void ClearJets(const std::string jetName = "jet");
-  void ClearTruth(const std::string truthName);
-  void ClearFatJets(const std::string& fatjetName, const std::string& suffix="");
+  void ClearMuons       (const std::string jetName = "muon");
+  void ClearElectrons   (const std::string elecName = "el");
+  void ClearPhotons     (const std::string photonName = "ph");
+  void ClearJets        (const std::string jetName = "jet");
+  void ClearTruth       (const std::string truthName);
+  void ClearFatJets     (const std::string& fatjetName, const std::string& suffix="");
   void ClearTruthFatJets(const std::string& truthFatJetName = "truth_fatjet");
-  void ClearTaus(const std::string tauName = "tau" );
+  void ClearTaus        (const std::string tauName = "tau" );
   void ClearMET();
 
   bool writeTo( TFile *file );
@@ -236,7 +236,7 @@ public:
   virtual void ClearTriggerUser     ()   { return; };
   virtual void ClearMuonsUser       (const std::string& /*muonName = muon"*/)     { return; };
   virtual void ClearElectronsUser   (const std::string& /*elecName = "el"*/) { return; };
-  virtual void ClearPhotonsUser     () { return; };
+  virtual void ClearPhotonsUser     (const std::string& /*photonName = "ph"*/) { return; };
   virtual void ClearTruthUser       (const std::string& /*truthName*/) 	    { return; };
   virtual void ClearJetsUser        (const std::string& /*jetName = "jet"*/ ) 	    { return; };
   virtual void ClearFatJetsUser     (const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/)   { return; };
@@ -244,12 +244,12 @@ public:
   virtual void ClearTausUser        (const std::string& /*tauName = "tau"*/) 	    { return; };
   virtual void ClearMETUser         ()       { return; };
 
-  virtual void FillEventUser( const xAOD::EventInfo*  )        { return; };
-  virtual void FillMuonsUser( const xAOD::Muon*, const std::string /*muonName = "muon"*/  )             { return; };
+  virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
+  virtual void FillMuonsUser    ( const xAOD::Muon*,     const std::string /*muonName = "muon"*/  )             { return; };
   virtual void FillElectronsUser( const xAOD::Electron*, const std::string /*elecName = "el"*/ )     { return; };
-  virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
-  virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
-  virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
+  virtual void FillPhotonsUser  ( const xAOD::Photon*,   const std::string /*photonName = "ph"*/ )     { return; };
+  virtual void FillJetsUser     ( const xAOD::Jet*,      const std::string /*jetName = "jet"*/  )               { return; };
+  virtual void FillTruthUser    ( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
   /**
    *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
    *          information to your jet collection.
@@ -336,50 +336,8 @@ protected:
   
   //
   // photons
-  int m_nph;
-
-  // kinematics
-  std::vector<float> m_ph_pt;
-  std::vector<float> m_ph_phi;
-  std::vector<float> m_ph_eta;
-  std::vector<float> m_ph_m;
-  std::vector<float> m_ph_E;
-
-  // isolation
-  std::vector<int>   m_ph_isIsolated_Cone40CaloOnly;
-  std::vector<int>   m_ph_isIsolated_Cone40;
-  std::vector<int>   m_ph_isIsolated_Cone20;
-  //std::vector<float> m_ph_etcone20;
-  std::vector<float> m_ph_ptcone20;
-  std::vector<float> m_ph_ptcone30;
-  std::vector<float> m_ph_ptcone40;
-  std::vector<float> m_ph_ptvarcone20;
-  std::vector<float> m_ph_ptvarcone30;
-  std::vector<float> m_ph_ptvarcone40;
-  std::vector<float> m_ph_topoetcone20;
-  std::vector<float> m_ph_topoetcone30;
-  std::vector<float> m_ph_topoetcone40;
-
-  // PID
-  int m_nph_IsLoose;
-  std::vector<int>   m_ph_IsLoose;
-  int m_nph_IsMedium;
-  std::vector<int>   m_ph_IsMedium;
-  int m_nph_IsTight;
-  std::vector<int>   m_ph_IsTight;
-
-  //Purity
-  std::vector<float> m_ph_radhad1;
-  std::vector<float> m_ph_radhad;
-  std::vector<float> m_ph_e277;
-  std::vector<float> m_ph_reta;
-  std::vector<float> m_ph_rphi;
-  std::vector<float> m_ph_weta2;
-  std::vector<float> m_ph_f1;
-  std::vector<float> m_ph_wtot;
-  //std::vector<float> m_ph_w1;
-  std::vector<float> m_ph_deltae;
-  std::vector<float> m_ph_eratio;
+  //
+  std::map<std::string, xAH::PhotonContainer*> m_photons;
 
   //
   // taus

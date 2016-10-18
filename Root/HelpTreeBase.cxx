@@ -29,7 +29,6 @@ using std::vector;
 
 HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14, xAOD::TStore* store):
   m_trigInfoSwitch(nullptr),
-  m_phInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
   m_eventInfo(nullptr),
@@ -70,7 +69,8 @@ HelpTreeBase::~HelpTreeBase() {
       delete elec.second;
 
     //ph
-    delete m_phInfoSwitch;
+    for (auto photon: m_photons)
+      delete photon.second;
 
     //fatjet
     for (auto fatjet: m_fatjets)
@@ -119,7 +119,6 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*event*/ ) {
 
   this->ClearEvent();
-  this->ClearEventUser();
 
   m_eventInfo->FillEvent(eventInfo, m_event);
 
@@ -329,7 +328,7 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
   xAH::ElectronContainer* thisElec = m_elecs[elecName];
 
   thisElec->setBranches(m_tree);
-  this->AddElectronsUser();
+  this->AddElectronsUser(elecName);
 }
 
 
@@ -368,230 +367,46 @@ void HelpTreeBase::ClearElectrons(const std::string elecName) {
  *
  ********************/
 
-void HelpTreeBase::AddPhotons(const std::string detailStr) {
+void HelpTreeBase::AddPhotons(const std::string detailStr, const std::string photonName) {
 
   if(m_debug)  Info("AddPhotons()", "Adding photon variables: %s", detailStr.c_str());
 
-  m_phInfoSwitch = new HelperClasses::PhotonInfoSwitch( detailStr );
+  m_photons[photonName] = new xAH::PhotonContainer(photonName, detailStr, m_units, m_isMC);
 
-  // always
-  m_tree->Branch("nph",    &m_nph,"nph/I");
+  xAH::PhotonContainer* thisPhoton = m_photons[photonName];
 
-  if ( m_phInfoSwitch->m_kinematic ) {
-    m_tree->Branch("ph_pt",  &m_ph_pt);
-    m_tree->Branch("ph_phi", &m_ph_phi);
-    m_tree->Branch("ph_eta", &m_ph_eta);
-    m_tree->Branch("ph_m",   &m_ph_m);
-    m_tree->Branch("ph_E",   &m_ph_E);
-  }
-
-  if ( m_phInfoSwitch->m_isolation ) {
-
-    m_tree->Branch("ph_isIsolated_Cone40CaloOnly", &m_ph_isIsolated_Cone40CaloOnly);
-    m_tree->Branch("ph_isIsolated_Cone40",         &m_ph_isIsolated_Cone40);
-    m_tree->Branch("ph_isIsolated_Cone20",         &m_ph_isIsolated_Cone20);
-
-    //m_tree->Branch("ph_etcone20",         &m_ph_etcone20);
-    m_tree->Branch("ph_ptcone20",         &m_ph_ptcone20);
-    m_tree->Branch("ph_ptcone30",         &m_ph_ptcone30);
-    m_tree->Branch("ph_ptcone40",         &m_ph_ptcone40);
-    m_tree->Branch("ph_ptvarcone20",      &m_ph_ptvarcone20);
-    m_tree->Branch("ph_ptvarcone30",      &m_ph_ptvarcone30);
-    m_tree->Branch("ph_ptvarcone40",      &m_ph_ptvarcone40);
-    m_tree->Branch("ph_topoetcone20",     &m_ph_topoetcone20);
-    m_tree->Branch("ph_topoetcone30",     &m_ph_topoetcone30);
-    m_tree->Branch("ph_topoetcone40",     &m_ph_topoetcone40);
-  }
-
-  if ( m_phInfoSwitch->m_PID ) {
-    m_tree->Branch("nph_IsLoose",    &m_nph_IsLoose);
-    m_tree->Branch("ph_IsLoose",     &m_ph_IsLoose);
-    m_tree->Branch("nph_IsMedium",   &m_nph_IsMedium);
-    m_tree->Branch("ph_IsMedium",    &m_ph_IsMedium);
-    m_tree->Branch("nph_IsTight",    &m_nph_IsTight);
-    m_tree->Branch("ph_IsTight",     &m_ph_IsTight);
-  }
-
-  if ( m_phInfoSwitch->m_purity) {
-    m_tree->Branch("m_ph_radhad1",   &m_ph_radhad1);
-    m_tree->Branch("m_ph_radhad",    &m_ph_radhad );
-    m_tree->Branch("m_ph_e277",      &m_ph_e277   );
-    m_tree->Branch("m_ph_reta",      &m_ph_reta   );
-    m_tree->Branch("m_ph_rphi",      &m_ph_rphi   );
-    m_tree->Branch("m_ph_weta2",     &m_ph_weta2  );
-    m_tree->Branch("m_ph_f1",        &m_ph_f1     );
-    m_tree->Branch("m_ph_wtot",      &m_ph_wtot   );
-    m_tree->Branch("m_ph_deltae",    &m_ph_deltae );
-    m_tree->Branch("m_ph_eratio",    &m_ph_eratio );
-  }
-
-  this->AddPhotonsUser();
+  thisPhoton->setBranches(m_tree);
+  this->AddPhotonsUser(photonName);
 }
 
-void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
 
-  this->ClearPhotons();
-  this->ClearPhotonsUser();
+void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons, const std::string photonName ) {
 
-  m_nph = 0;
+  this->ClearPhotons(photonName);
 
-  for ( auto ph_itr : *(photons) ) {
-
-    if ( m_debug ) { Info("HelpTreeBase::FillPhotons()", "Filling photon w/ pT = %2f", ph_itr->pt() / m_units ); }
-
-    if ( m_phInfoSwitch->m_kinematic ) {
-      m_ph_pt.push_back ( (ph_itr)->pt() / m_units );
-      m_ph_eta.push_back( (ph_itr)->eta() );
-      m_ph_phi.push_back( (ph_itr)->phi() );
-      m_ph_m.push_back  ( (ph_itr)->m()  / m_units );
-      m_ph_E.push_back  ( (ph_itr)->e()  / m_units );
-    }
-
-    if ( m_phInfoSwitch->m_isolation ) {
-
-      static SG::AuxElement::Accessor<char> isIsoCone40CaloOnlyAcc    ("isIsolated_FixedCutTightCaloOnly");
-      static SG::AuxElement::Accessor<char> isIsoCone40Acc            ("isIsolated_FixedCutTight");
-      static SG::AuxElement::Accessor<char> isIsoCone20Acc            ("isIsolated_FixedCutLoose");
-
-      if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) {
-	m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) );
-      } else {
-	m_ph_isIsolated_Cone40CaloOnly.push_back( -1 );
-      }
-
-      if ( isIsoCone40Acc.isAvailable( *ph_itr ) ) {
-	m_ph_isIsolated_Cone40.push_back( isIsoCone40Acc( *ph_itr ) );
-      } else {
-	m_ph_isIsolated_Cone40.push_back( -1 );
-      }
-
-      if ( isIsoCone20Acc.isAvailable( *ph_itr ) ) {
-	m_ph_isIsolated_Cone20.push_back( isIsoCone20Acc( *ph_itr ) );
-      } else {
-	m_ph_isIsolated_Cone20.push_back( -1 );
-      }
-
-      //m_ph_etcone20    .push_back( ph_itr->isolation( xAOD::Iso::etcone20    ) / m_units  );
-      m_ph_ptcone20    .push_back( ph_itr->isolation( xAOD::Iso::ptcone20    ) / m_units  );
-      m_ph_ptcone30    .push_back( ph_itr->isolation( xAOD::Iso::ptcone30    ) / m_units  );
-      m_ph_ptcone40    .push_back( ph_itr->isolation( xAOD::Iso::ptcone40    ) / m_units  );
-      m_ph_ptvarcone20 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone20 ) / m_units  );
-      m_ph_ptvarcone30 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone30 ) / m_units  );
-      m_ph_ptvarcone40 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone40 ) / m_units  );
-      m_ph_topoetcone20.push_back( ph_itr->isolation( xAOD::Iso::topoetcone20) / m_units  );
-      m_ph_topoetcone30.push_back( ph_itr->isolation( xAOD::Iso::topoetcone30) / m_units  );
-      m_ph_topoetcone40.push_back( ph_itr->isolation( xAOD::Iso::topoetcone40) / m_units  );
-
-    }
-
-    if ( m_phInfoSwitch->m_PID ) {
-      static SG::AuxElement::Accessor<bool> phLooseAcc  ("PhotonID_Loose");
-      static SG::AuxElement::Accessor<bool> phMediumAcc ("PhotonID_Medium");
-      static SG::AuxElement::Accessor<bool> phTightAcc  ("PhotonID_Tight");
-
-      if ( phLooseAcc.isAvailable( *ph_itr ) ) {
-        m_ph_IsLoose.push_back( phLooseAcc( *ph_itr ) );
-	if ( phLooseAcc( *ph_itr ) == 1 ) { ++m_nph_IsLoose; }
-      } else { m_ph_IsLoose.push_back( -1 ); }
-
-      if ( phMediumAcc.isAvailable( *ph_itr ) ) {
-        m_ph_IsMedium.push_back( phMediumAcc( *ph_itr ) );
-	if ( phMediumAcc( *ph_itr ) == 1 ) { ++m_nph_IsMedium; }
-      } else { m_ph_IsMedium.push_back( -1 ); }
-
-      if ( phTightAcc.isAvailable( *ph_itr ) ) {
-        m_ph_IsTight.push_back( phTightAcc( *ph_itr ) );
-	if ( phTightAcc( *ph_itr ) == 1 ) { ++m_nph_IsTight; }
-      } else { m_ph_IsTight.push_back( -1 ); }
-
-    }
-
-    if (m_phInfoSwitch->m_purity) {
-      static SG::AuxElement::Accessor<float> radhad1  ("Rhad1"  );
-      static SG::AuxElement::Accessor<float> radhad   ("Rhad"   );
-      static SG::AuxElement::Accessor<float> e277     ("e277"   );
-      static SG::AuxElement::Accessor<float> reta     ("Reta"   );
-      static SG::AuxElement::Accessor<float> rphi     ("Rphi"   );
-      static SG::AuxElement::Accessor<float> weta2    ("weta2"  );
-      static SG::AuxElement::Accessor<float> f1       ("f1"     );
-      static SG::AuxElement::Accessor<float> wtot     ("wtots1" );
-      //static SG::AuxElement::Accessor<float> w1       ("w1"     );
-      static SG::AuxElement::Accessor<float> deltae   ("DeltaE" );
-      static SG::AuxElement::Accessor<float> eratio   ("Eratio" );
-      
-      m_ph_radhad1  .push_back( radhad1(*ph_itr) );
-      m_ph_radhad   .push_back( radhad (*ph_itr) );
-      m_ph_e277     .push_back( e277   (*ph_itr) );
-      m_ph_reta     .push_back( reta   (*ph_itr) );
-      m_ph_rphi     .push_back( rphi   (*ph_itr) );
-      m_ph_weta2    .push_back( weta2  (*ph_itr) );
-      m_ph_f1       .push_back( f1     (*ph_itr) );
-      m_ph_wtot     .push_back( wtot   (*ph_itr) );
-      //m_ph_w1       .push_back( w1     (*ph_itr) );
-      m_ph_deltae   .push_back( deltae (*ph_itr) );
-      m_ph_eratio   .push_back( eratio (*ph_itr) );
-
-    }
-
-    this->FillPhotonsUser(ph_itr);
-
-    m_nph++;
+  for ( auto ph_itr : *photons ) {
+    this->FillPhoton(ph_itr, photonName);
   }
 }
 
-void HelpTreeBase::ClearPhotons() {
+void HelpTreeBase::FillPhoton( const xAOD::Photon* photon, const std::string photonName ) {
 
-  m_nph = 0;
+  xAH::PhotonContainer* thisPhoton = m_photons[photonName];
 
-  if ( m_phInfoSwitch->m_kinematic ){
-    m_ph_pt.clear();
-    m_ph_eta.clear();
-    m_ph_phi.clear();
-    m_ph_m.clear();
-    m_ph_E.clear();
-  }
+  thisPhoton->FillPhoton(photon);
 
+  this->FillPhotonsUser(photon, photonName);
 
-  if ( m_phInfoSwitch->m_isolation ){
-    m_ph_isIsolated_Cone40CaloOnly.clear();
-    m_ph_isIsolated_Cone40.clear();
-    m_ph_isIsolated_Cone20.clear();
-    //m_ph_etcone20.clear();
-    m_ph_ptcone20.clear();
-    m_ph_ptcone30.clear();
-    m_ph_ptcone40.clear();
-    m_ph_ptvarcone20.clear();
-    m_ph_ptvarcone30.clear();
-    m_ph_ptvarcone40.clear();
-    m_ph_topoetcone20.clear();
-    m_ph_topoetcone30.clear();
-    m_ph_topoetcone40.clear();
-  }
+  return;
+}
 
 
-  if ( m_phInfoSwitch->m_PID ) {
-    m_nph_IsLoose = 0;
-    m_ph_IsLoose.clear();
-    m_nph_IsMedium = 0;
-    m_ph_IsMedium.clear();
-    m_nph_IsTight = 0;
-    m_ph_IsTight.clear();
-  }
+void HelpTreeBase::ClearPhotons(const std::string photonName) {
 
-  if(m_phInfoSwitch->m_purity){
-    m_ph_radhad1.clear();
-    m_ph_radhad.clear();
-    m_ph_e277.clear();
-    m_ph_reta.clear();
-    m_ph_rphi.clear();
-    m_ph_weta2.clear();
-    m_ph_f1.clear();
-    m_ph_wtot.clear();
-    m_ph_deltae.clear();
-    m_ph_eratio.clear(); 
-
-  }
-
+  xAH::PhotonContainer* thisPhoton = m_photons[photonName];
+  thisPhoton->clear();
+ 
+  this->ClearPhotonsUser(photonName);
 }
 
 /*********************
@@ -833,6 +648,7 @@ void HelpTreeBase::ClearTruthFatJets(const std::string& truthFatJetName) {
 
 void HelpTreeBase::ClearEvent() {
   m_eventInfo->clear();
+  this->ClearEventUser();
 }
 
 
