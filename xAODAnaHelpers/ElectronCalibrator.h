@@ -39,6 +39,9 @@ public:
   std::string m_esModel;
   std::string m_decorrelationModel;
 
+  /** @brief Force AFII flag in calibration, in case metadata is broken */
+  bool m_setAFII;
+
   // for calo based isolation vars leakage correction
   bool        m_useDataDrivenLeakageCorr;
 

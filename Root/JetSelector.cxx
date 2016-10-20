@@ -78,7 +78,8 @@ JetSelector :: JetSelector (std::string className) :
 
   // cuts
   m_cleanJets               = true;
-  m_cleanEvtLeadJets        = 0; // indepedent of previous switch
+  m_cleanEvtLeadJets        = -1; // indepedent of previous switch
+  m_cleanEvent              = false;
   m_pass_max                = -1;
   m_pass_min                = -1;
   m_pT_max                  = 1e8;
@@ -231,12 +232,12 @@ EL::StatusCode JetSelector :: initialize ()
     m_jet_cutflowHist_1 = (TH1D*)file->Get("cutflow_jets_1");
 
     m_jet_cutflow_all             = m_jet_cutflowHist_1->GetXaxis()->FindBin("all");
-    m_jet_cutflow_cleaning_cut    = m_jet_cutflowHist_1->GetXaxis()->FindBin("cleaning_cut");
     m_jet_cutflow_ptmax_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_jet_cutflow_ptmin_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
     m_jet_cutflow_eta_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("eta_cut");
     m_jet_cutflow_jvt_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("JVT_cut");
     m_jet_cutflow_btag_cut        = m_jet_cutflowHist_1->GetXaxis()->FindBin("BTag_cut");
+    m_jet_cutflow_cleaning_cut    = m_jet_cutflowHist_1->GetXaxis()->FindBin("cleaning_cut");
 
   }
 
@@ -512,17 +513,32 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     }
 
     nObj++;
+    // All selections but Cleaning
     int passSel = this->PassCuts( jet_itr );
     if ( m_decorateSelectedObjects ) {
       passSelDecor( *jet_itr ) = passSel;
     }
 
-    // event level cut if any of the N leading jets are not clean
-    if ( m_cleanEvtLeadJets > 0 && nObj <= m_cleanEvtLeadJets && passSel) {
-      if ( isCleanAcc.isAvailable( *jet_itr ) ) {
-        if( !isCleanAcc( *jet_itr ) ) { passEventClean = false; }
-      }
-    }
+    // Cleaning Selection must come after kinematic and JVT selections
+    if ( passSel && isCleanAcc.isAvailable( *jet_itr ) ) {
+      if( !isCleanAcc( *jet_itr ) ) { 
+        passSel = false;
+        if ( m_decorateSelectedObjects )
+          passSelDecor( *jet_itr ) = passSel;
+
+        // If any of the passing jets fail the recommendation is to remove the jet (and MET is wrong)
+        // If any of the N leading jets are not clean the event should be removed
+        if( m_cleanEvent || nObj <= m_cleanEvtLeadJets ){
+          passEventClean = false; 
+          if (m_debug) Info("executeSelection()", "Remove event due to bad jet with pt %f", jet_itr->pt() );
+        }// if cleaning the event 
+
+      }// if jet is not clean
+    }// if jet clean aux missing
+    if( m_useCutFlow && passSel )
+      m_jet_cutflowHist_1->Fill( m_jet_cutflow_cleaning_cut, 1 );
+
+
 
     if ( passSel ) {
       if ( m_debug ) { Info("executeSelection()", "passSel"); }
@@ -716,15 +732,6 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // fill cutflow bin 'all' before any cut
   if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_all, 1 );
-
-  // clean jets
-  static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
-  if ( m_cleanJets ) {
-    if ( isCleanAcc.isAvailable( *jet ) ) {
-      if ( !isCleanAcc( *jet ) ) { return 0; }
-    }
-  }
-  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_cleaning_cut, 1 );
 
   // pT
   if ( m_pT_max != 1e8 ) {

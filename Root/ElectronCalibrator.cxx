@@ -77,6 +77,8 @@ ElectronCalibrator :: ElectronCalibrator (std::string className) :
   m_esModel                 = "";
   m_decorrelationModel      = "";
 
+  m_setAFII                 = false;
+
   m_useDataDrivenLeakageCorr = false;
 
 }
@@ -197,7 +199,8 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     //
     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
 
-    if ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) {
+    if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ){
+
       Info("initialize()", "Setting simulation flavour to AFII");
       RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", true),"Failed to set property useAFII");
 

@@ -401,7 +401,7 @@ EL::StatusCode METConstructor :: execute ()
 
  if( m_inputElectrons.Length() > 0 ) {
    const xAOD::ElectronContainer* eleCont(0);
-   if ( m_store->retrieve(eleCont ,  m_inputElectrons.Data() +sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::ElectronContainer>(m_inputElectrons.Data()+sysListItrString ) ) {
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(eleCont, m_inputElectrons.Data()+sysListItrString, m_event, m_store, m_debug), "Failed retrieving electron cont.");
      if (m_debug) cout<< "retrieving ele container "<<    m_inputElectrons.Data() +sysListItrString << " to be added to the met "<< endl;
    }else{
@@ -425,7 +425,7 @@ EL::StatusCode METConstructor :: execute ()
 
   if( m_inputPhotons.Length() > 0 ) {
    const xAOD::PhotonContainer* phoCont(0);
-   if ( m_store->retrieve(phoCont ,  m_inputPhotons.Data() +sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::PhotonContainer>(m_inputPhotons.Data()+sysListItrString ) ) {
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data()+sysListItrString, m_event, m_store, m_verbose), "Failed retrieving photon cont.");
      if (m_debug) cout<< "retrieving ph container "<<    m_inputPhotons.Data() +sysListItrString << " to be added to the met "<< endl;
    }else{
@@ -465,7 +465,7 @@ EL::StatusCode METConstructor :: execute ()
 
   if( m_inputTaus.Length() > 0 ) {
     const xAOD::TauJetContainer* tauCont(0);
-   if ( m_store->retrieve(tauCont ,  m_inputTaus.Data() +sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::TauJetContainer>(m_inputTaus.Data()+sysListItrString ) ) {
 
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data()+sysListItrString, m_event, m_store, m_verbose), "Failed retrieving photon cont.");
      if (m_debug) cout<< "retrieving tau container "<<    m_inputTaus.Data() +sysListItrString << " to be added to the met "<< endl;
@@ -496,7 +496,7 @@ EL::StatusCode METConstructor :: execute ()
  if( m_inputMuons.Length() > 0 ) {
    std::string m_inputMuons_Syst =  m_inputMuons.Data() +sysListItrString;
    const xAOD::MuonContainer* muonCont(0);
-   if ( m_store->retrieve(muonCont ,  m_inputMuons.Data() +sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::MuonContainer>(m_inputMuons.Data()+sysListItrString ) ) {
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(muonCont, m_inputMuons.Data()+sysListItrString, m_event, m_store, m_debug), "Failed retrieving muon cont.");
    }
    else{
@@ -518,7 +518,7 @@ EL::StatusCode METConstructor :: execute ()
    std::string m_inputJets_Syst =  m_inputJets.Data() +sysListItrString;// just for convenience
    if (m_debug) cout<<" the jet container name is : "<<m_inputJets_Syst<< endl;
 
-   if ( m_store->retrieve(jetCont ,  m_inputJets.Data()+sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::JetContainer>(m_inputJets.Data()+sysListItrString ) ) {
      if (m_debug) cout << "syst is = "<<sysListItrString <<endl;
      //RETURN_CHECK( "METConstructor::execute()", metSystTool->evtStore()->retrieve( jetCont,m_inputJets_Syst  ), "");// is this necessary?
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont,m_inputJets_Syst, m_event, m_store, m_debug  ), " Failed retrieving jet cont.");
