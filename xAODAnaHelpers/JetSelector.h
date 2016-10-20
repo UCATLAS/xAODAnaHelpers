@@ -2,6 +2,7 @@
  * @file   JetSelector.h
  *
  * @author Gabriel Facini <gabriel.facini@cern.ch>
+ * @author Jeff Dandoy  <jeff.dandoy@cern.ch>
  * @author Marco Milesi <marco.milesi@cern.ch>
  * @author John Alison <john.alison@cern.ch>
  *
@@ -46,6 +47,8 @@ public:
   int m_nToProcess;               // look at n objects
   bool m_cleanJets;               // require cleanJet decoration to not be set and false
   int m_cleanEvtLeadJets;         // kill event if any of the N leading jets are not clean
+  /** @brief Kill event if any passing jets are not clean */
+  bool m_cleanEvent;
   int m_pass_min;                 // minimum number of objects passing cuts
   int m_pass_max;                 // maximum number of objects passing cuts
   float m_pT_max;                 // require pT < pt_max
