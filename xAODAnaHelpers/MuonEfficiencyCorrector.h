@@ -54,6 +54,7 @@ public:
   std::string   m_MCCampaign;
   std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
   std::string   m_DiMuTrig;          // this can be either a dimuon trigger chain, or an OR of ( N single muon trigger chains, dimuon chain )
+  std::string   m_SingleMuTrigList;  // list of comma-separated single-mu trigger corrections. Individual legs of di-mu menus can be parsed
 
   // TTVA efficiency SF
   std::string   m_WorkingPointTTVA;
@@ -101,6 +102,7 @@ private:
   std::vector<std::string> m_YearsList;                                    //!
   CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool;                         //!
   std::string m_TTVAEffSF_tool_name;                                       //!
+  std::vector<std::string> m_SingleMuTriggers;                             //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

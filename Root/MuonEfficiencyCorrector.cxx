@@ -80,6 +80,9 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   m_MCCampaign                 = "";
   m_SingleMuTrig               = "HLT_mu20_iloose_L1MU15";
   m_DiMuTrig                   = "HLT_2mu14";
+  
+  // list of trigger legs. For di-mu triggers pass individual legs  
+  m_SingleMuTrigList           = "HLT_mu26_imedium";
 
   // TTVA SF
   //
@@ -357,6 +360,21 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   
   } 
   
+  std::string tmp_triggers = m_SingleMuTrigList;
+ 
+  // Parse all comma seperated trigger corrections
+  //
+  while ( tmp_triggers.size() > 0) {
+    size_t pos = tmp_triggers.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_triggers.size();
+      m_SingleMuTriggers.push_back(tmp_triggers.substr(0, pos));
+      tmp_triggers.erase(0, pos);
+    } else {
+      m_SingleMuTriggers.push_back(tmp_triggers.substr(0, pos));
+      tmp_triggers.erase(0, pos+1);
+    }
+  }
   
   //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration
   //
@@ -897,92 +915,136 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   if ( !isToolAlreadyUsed(m_trigEffSF_tool_names[randYear]) ) {
 
     for ( const auto& syst_it : m_systListTrig ) {
+      for ( const auto& trig_it : m_SingleMuTriggers ) {
 
-      // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_MuTrigEff_SF
-      //
-      std::string sfName = "MuTrigEff_SF_" + m_WorkingPointRecoTrig + "_" + m_WorkingPointIsoTrig;
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      if ( m_debug ) { Info("executeSF()", "Trigger efficiency SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str()); }
-      sysVariationNamesTrig->push_back(sfName);
+        // Create the name of the SF weight to be recorded
+        //   template:  SYSNAME_MuTrigEff_SF
+        //
+        std::string sfName = "MuTrigEff_SF_" + trig_it + "_" + m_WorkingPointRecoTrig + "_" + m_WorkingPointIsoTrig;
+        if ( !syst_it.name().empty() ) {
+           std::string prepend = syst_it.name() + "_";
+           sfName.insert( 0, prepend );
+        }
+        if ( m_debug ) { Info("executeSF()", "Trigger efficiency SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str()); }
+        sysVariationNamesTrig->push_back(sfName);
+        
+        // apply syst
+        //
+        if ( m_muTrigSF_tools[randYear]->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+          Error("executeSF()", "Failed to configure MuonTriggerScaleFactors for trigger %s systematic %s", trig_it.c_str(), syst_it.name().c_str());
+          return EL::StatusCode::FAILURE;
+        }
+        if ( m_debug ) { Info("executeSF()", "Successfully applied systematic %s for trigger %s", syst_it.name().c_str(), trig_it.c_str()); }
+        
+        // and now apply trigger efficiency SF!
+        //
+        unsigned int idx(0);
+        for ( auto mu_itr : *(inputMuons) ) {
+        
+           if ( m_debug ) { Info( "executeSF()", "Applying trigger efficiency SF and MC efficiency" ); }
+        
+           // Pass a container with only the muon in question to the tool
+           // (use a view container to be light weight)
+           //
+           ConstDataVector<xAOD::MuonContainer> mySingleMuonCont(SG::VIEW_ELEMENTS);
+           mySingleMuonCont.push_back( mu_itr );
+        
+           //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
+           //
+           
+           std::string eff_string = m_outputSystNamesTrigMCEff ;
+           std::string ineffstr  = "MuonEfficiencyCorrector_TrigMCEff_";
+           std::string outeffstr = "MuonEfficiencyCorrector_TrigMCEff_" + trig_it + "_";
+           
+           for(std::string::size_type i = 0; (i = eff_string.find(ineffstr, i)) != std::string::npos;) {
+             eff_string.replace(i, ineffstr.length(), outeffstr);
+             i += outeffstr.length();
+           } 
+           
+           std::string sf_string = m_outputSystNamesTrig;
+           std::string insfstr  = "MuonEfficiencyCorrector_TrigSyst_";
+           std::string outsfstr = "MuonEfficiencyCorrector_TrigSyst_" + trig_it + "_";
+           
+           for(std::string::size_type i = 0; (i = sf_string.find(insfstr, i)) != std::string::npos;) {
+             sf_string.replace(i, insfstr.length(), outsfstr);
+             i += outsfstr.length();
+           } 
+           
+           std::cout << "Fucking here " << sf_string << " " << std::endl;
+           std::cout << "and here " << eff_string << " " << std::endl;
 
-      // apply syst
-      //
-      if ( m_muTrigSF_tools[randYear]->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-    	Error("executeSF()", "Failed to configure MuonTriggerScaleFactors for systematic %s", syst_it.name().c_str());
-    	return EL::StatusCode::FAILURE;
-      }
-      if ( m_debug ) { Info("executeSF()", "Successfully applied systematic: %s", syst_it.name().c_str()); }
-
-      // and now apply trigger efficiency SF!
-      //
-      unsigned int idx(0);
-      for ( auto mu_itr : *(inputMuons) ) {
-
-    	 if ( m_debug ) { Info( "executeSF()", "Applying trigger efficiency SF and MC efficiency" ); }
-
-    	 // Pass a container with only the muon in question to the tool
-    	 // (use a view container to be light weight)
-    	 //
-    	 ConstDataVector<xAOD::MuonContainer> mySingleMuonCont(SG::VIEW_ELEMENTS);
-    	 mySingleMuonCont.push_back( mu_itr );
-
-    	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
-    	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecTrig( m_outputSystNamesTrig );
-    	 if ( !sfVecTrig.isAvailable( *mu_itr ) ) {
-  	   sfVecTrig( *mu_itr ) = std::vector<float>();
-    	 }
-    	 SG::AuxElement::Decorator< std::vector<float> > effMC( m_outputSystNamesTrigMCEff );
-    	 if ( !effMC.isAvailable( *mu_itr ) ) {
-  	   effMC( *mu_itr ) = std::vector<float>();
-    	 }
-
-    	 double triggerEffSF(1.0); // tool wants a double
-    	 if ( !m_SingleMuTrig.empty() && m_muTrigSF_tools[randYear]->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, m_SingleMuTrig ) != CP::CorrectionCode::Ok ) {
-  	   Warning( "executeSF()", "Problem in getTriggerScaleFactor - single muon trigger(s)");
-  	   triggerEffSF = 1.0;
-    	 }
-
-    	 // Add it to decoration vector
-    	 //
-    	 sfVecTrig( *mu_itr ).push_back(triggerEffSF);
-
-    	 double triggerMCEff(0.0); // tool wants a double
-    	 if ( !m_SingleMuTrig.empty() && m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerMCEff, m_SingleMuTrig, !m_isMC ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in getTriggerEfficiency - single muon trigger(s)");
-    	   triggerMCEff = 0.0;
-    	 }
-
-    	 // Add it to decoration vector
-    	 //
-    	 effMC( *mu_itr ).push_back(triggerMCEff);
-
-    	 if ( m_debug ) {
-    	   Info( "executeSF()", "===>>>");
-    	   Info( "executeSF()", " ");
-    	   Info( "executeSF()", "Random year: %s", randYear.c_str() );
-  	   Info( "executeSF()", "Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
-  	   Info( "executeSF()", " ");
-  	   Info( "executeSF()", "Trigger efficiency SF decoration: %s", m_outputSystNamesTrig.c_str() );
-  	   Info( "executeSF()", "Trigger MC efficiency decoration: %s", m_outputSystNamesTrigMCEff.c_str() );
-  	   Info( "executeSF()", " ");
-    	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
-    	   Info( "executeSF()", " ");
-    	   Info( "executeSF()", "Trigger efficiency SF:");
-    	   Info( "executeSF()", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
-    	   Info( "executeSF()", "Trigger MC efficiency:");
-    	   Info( "executeSF()", "\t %f (from getTriggerEfficiency())", triggerMCEff );
-    	   Info( "executeSF()", "--------------------------------------");
-    	 }
-
-    	 ++idx;
-
-      } // close muon loop
-
+           SG::AuxElement::Decorator< std::vector<float> > effMC( eff_string );
+           if ( !effMC.isAvailable( *mu_itr ) ) {
+             effMC( *mu_itr ) = std::vector<float>();
+           }
+           
+           SG::AuxElement::Decorator< std::vector<float> > sfVecTrig( sf_string );
+           if ( !sfVecTrig.isAvailable( *mu_itr ) ) {
+             sfVecTrig( *mu_itr ) = std::vector<float>();
+           }
+           
+           // ugly ass hardcoding 
+           //
+           std::string full_scan_chain = "HLT_mu8noL1";
+           
+           double triggerMCEff(0.0); // tool wants a double
+           if ( m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerMCEff, trig_it, !m_isMC ) != CP::CorrectionCode::Ok ) {
+             Warning( "executeSF()", "Problem in getTriggerEfficiency - single muon trigger(s)");
+             triggerMCEff = 0.0;
+           }
+           // Add it to decoration vector
+           //
+           effMC( *mu_itr ).push_back(triggerMCEff);
+           
+           // retrieve MC efficiency for full scan chain 
+           //
+           double triggerDataEff(0.0); // tool wants a double
+           if ( trig_it == full_scan_chain ) {
+             if ( m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerDataEff, trig_it, m_isMC ) != CP::CorrectionCode::Ok ) {
+               Warning( "executeSF()", "Problem in getTriggerEfficiency - single muon trigger(s)");
+               triggerDataEff = 0.0;
+             }
+           } 
+           
+           double triggerEffSF(1.0); // tool wants a double
+           if ( trig_it != full_scan_chain ) {
+             if ( m_muTrigSF_tools[randYear]->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, trig_it ) != CP::CorrectionCode::Ok ) {
+               Warning( "executeSF()", "Problem in getTriggerScaleFactor - single muon trigger(s)");
+               triggerEffSF = 1.0;
+             }
+           } else {
+             if ( triggerMCEff > 0.0 ) {
+               triggerEffSF = triggerDataEff / triggerMCEff;
+             }
+           } 
+           
+           // Add it to decoration vector
+           //
+           sfVecTrig( *mu_itr ).push_back(triggerEffSF);
+        
+        
+           if ( m_debug ) {
+             Info( "executeSF()", "===>>>");
+             Info( "executeSF()", " ");
+             Info( "executeSF()", "Random year: %s", randYear.c_str() );
+             Info( "executeSF()", "Muon %i, pt = %.2f GeV ", idx, (mu_itr->pt() * 1e-3) );
+             Info( "executeSF()", " ");
+             Info( "executeSF()", "Trigger efficiency SF decoration: %s", m_outputSystNamesTrig.c_str() );
+             Info( "executeSF()", "Trigger MC efficiency decoration: %s", m_outputSystNamesTrigMCEff.c_str() );
+             Info( "executeSF()", " ");
+             Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
+             Info( "executeSF()", " ");
+             Info( "executeSF()", "Trigger efficiency SF:");
+             Info( "executeSF()", "\t %f (from getTriggerScaleFactor())", triggerEffSF );
+             Info( "executeSF()", "Trigger MC efficiency:");
+             Info( "executeSF()", "\t %f (from getTriggerEfficiency())", triggerDataEff );
+             Info( "executeSF()", "--------------------------------------");
+           }
+        
+           ++idx;
+        
+        } // close muon loop
+      } // close  trigger loop
     }  // close loop on trigger efficiency SF systematics
 
     // Add list of systematics names to TStore
