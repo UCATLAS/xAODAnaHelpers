@@ -24,7 +24,8 @@ Event Level
 -  `JERSmearingTool <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JetResolution2015Prerecom>`__
 -  `JetSelectorTools <https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/trunk/README.rst>`__
 -  `JVT <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration>`__
--  `BTaggingEfficiencyTool <http://atlas.web.cern.ch/Atlas/GROUPS/DATABASE/GroupData/xAODBTaggingEfficiency/13TeV/>`
+-  `BTaggingEfficiencyTool <http://atlas.web.cern.ch/Atlas/GROUPS/DATABASE/GroupData/xAODBTaggingEfficiency/13TeV/>`__
+-  `JetCleaning2016 <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/HowToCleanJets2016>`__
 
 
 :math:`\tau` jets
