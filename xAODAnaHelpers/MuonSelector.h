@@ -63,6 +63,9 @@ public:
   float          m_d0sig_max; 	             /* require d0 significance (at BL) < m_d0sig_max */
   float	         m_z0sintheta_max;           /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
 
+  /** @brief Remove events with a bad muon, defined by poor q/p */
+  bool           m_removeEventBadMuon;
+
   // isolation
   std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
   std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */

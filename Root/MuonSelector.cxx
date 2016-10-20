@@ -96,8 +96,10 @@ MuonSelector :: MuonSelector (std::string className) :
   m_pT_min                  = 1e8;
   m_eta_max                 = 1e8;
   m_d0_max                  = 1e8;
-  m_d0sig_max     	    = 1e8;
+  m_d0sig_max     	        = 1e8;
   m_z0sintheta_max          = 1e8;
+
+  m_removeEventBadMuon      = true;
 
   // isolation stuff
   //
@@ -616,6 +618,14 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
       passSelDecor( *mu_itr ) = passSel;
     }
 
+    // Remove events with isBadMuon (poor q/p)
+    if( m_removeEventBadMuon ){
+      if( m_muonSelectionTool_handle->isBadMuon( *mu_itr ) ){
+        if( m_debug )  Info("executeSelection()", "Rejecting event with bad muon (pt = %f)", mu_itr->pt() ); 
+        return false;
+      }
+    }
+
     if ( passSel ) {
       nPass++;
       if ( m_createSelectedContainer ) {
@@ -717,41 +727,41 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
       for ( auto const &chain : m_diMuTrigChainsList ) {
 
-	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-
-	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
-	//
-	if ( !diMuonTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
+      	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
+      
+      	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
+      	//
+      	if ( !diMuonTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
           diMuonTrigMatchPairMapDecor( *eventInfo ) = dimuon_trigmatch_pair_map();
-	}	
-
-	std::vector<const xAOD::IParticle*> myMuons;
-
-	for ( unsigned int imu = 0; imu < selectedMuons->size()-1; ++imu ) {
-
-	  for ( unsigned int jmu = imu+1; jmu < selectedMuons->size(); ++jmu ) {
-
+      	}	
+      
+      	std::vector<const xAOD::IParticle*> myMuons;
+      
+      	for ( unsigned int imu = 0; imu < selectedMuons->size()-1; ++imu ) {
+      
+      	  for ( unsigned int jmu = imu+1; jmu < selectedMuons->size(); ++jmu ) {
+      
             // test a new pair
             //
-	    myMuons.clear();
-	    myMuons.push_back( selectedMuons->at(imu) );
-	    myMuons.push_back( selectedMuons->at(jmu) );
-
+      	    myMuons.clear();
+      	    myMuons.push_back( selectedMuons->at(imu) );
+      	    myMuons.push_back( selectedMuons->at(jmu) );
+      
             // check whether the pair is matched
             //
-	    char matched = m_trigMuonMatchTool_handle->match( myMuons, chain, m_minDeltaR );
-
-       	    if ( m_debug ) { Info("executeSelection()", "\t\t is the muon pair (%i,%i) trigger matched? %i", imu, jmu, matched); }
-
-	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
-            dimuon_trigmatch_pair                   chain_decision = std::make_pair(chain_idxs,matched);
+      	    char matched = m_trigMuonMatchTool_handle->match( myMuons, chain, m_minDeltaR );
+      
+      	    if ( m_debug ) { Info("executeSelection()", "\t\t is the muon pair (%i,%i) trigger matched? %i", imu, jmu, matched); }
+      
+      	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
+            dimuon_trigmatch_pair  chain_decision = std::make_pair(chain_idxs,matched);
             diMuonTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dimuon_trigmatch_pair >(chain,chain_decision) );
-	    
-	  }
-	}
-      }
-    }
-  }
+      	    
+      	  }
+      	}
+      } //for m_diMuTrigChainsList
+    } //if nSelectedMuons > 1 && !m_diMuTrigChains.empty()
+  } //if m_doTrigMatch && selectedMuons
 
   if ( m_debug ) { Info("execute()", "Left  executeSelection..." ); }
   return true;
