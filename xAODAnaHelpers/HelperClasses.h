@@ -259,6 +259,9 @@ namespace HelperClasses {
     bool m_trackhitcont;
     bool m_effSF;
     bool m_energyLoss;
+    std::map<std::string,bool> m_recoWPs;
+    std::map<std::string,bool> m_isolWPs;
+    std::map<std::string,bool> m_triggers;
     MuonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~MuonInfoSwitch() {}
   protected:

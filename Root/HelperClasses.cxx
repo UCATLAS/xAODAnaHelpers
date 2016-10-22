@@ -129,6 +129,48 @@ namespace HelperClasses{
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
     m_energyLoss    = has_exact("energyLoss");
+    
+    m_recoWPs["Loose"]  = has_exact("Loose");
+    m_recoWPs["Medium"] = has_exact("Medium");
+    m_recoWPs["Tight"]  = has_exact("Tight");
+
+    m_isolWPs["Loose"]                  = has_exact("Loose");
+    m_isolWPs["FixedCutTightTrackOnly"] = has_exact("FixedCutTightTrackOnly");
+    m_isolWPs["Gradient"]               = has_exact("Gradient");
+    m_isolWPs["GradientLoose"]          = has_exact("GradientLoose");
+
+    m_triggers["HLT_mu10"]                                                = has_exact("HLT_mu10");
+    m_triggers["HLT_mu14"]                                                = has_exact("HLT_mu14");
+    m_triggers["HLT_mu18"]                                                = has_exact("HLT_mu18");
+    m_triggers["HLT_mu20"]                                                = has_exact("HLT_mu20");
+    m_triggers["HLT_mu22"]                                                = has_exact("HLT_mu22");
+    m_triggers["HLT_mu24"]                                                = has_exact("HLT_mu24");
+    m_triggers["HLT_mu26"]                                                = has_exact("HLT_mu26");
+    m_triggers["HLT_mu40"]                                                = has_exact("HLT_mu40");
+    m_triggers["HLT_mu50"]                                                = has_exact("HLT_mu50");
+    m_triggers["HLT_mu8noL1"]                                             = has_exact("HLT_mu8noL1");
+    m_triggers["HLT_mu20_iloose_L1MU15"]                                  = has_exact("HLT_mu20_iloose_L1MU15");
+    m_triggers["HLT_mu24_iloose_L1MU15"]                                  = has_exact("HLT_mu24_iloose_L1MU15");
+    m_triggers["HLT_mu24_imedium"]                                        = has_exact("HLT_mu24_imedium");
+    m_triggers["HLT_mu26_imedium"]                                        = has_exact("HLT_mu26_imedium");
+    m_triggers["HLT_mu20_iloose_L1MU15_OR_HLT_mu50"]                      = has_exact("HLT_mu20_iloose_L1MU15_OR_HLT_mu50");
+    m_triggers["HLT_mu24_iloose_L1MU15_OR_HLT_mu50"]                      = has_exact("HLT_mu24_iloose_L1MU15_OR_HLT_mu50");
+    m_triggers["HLT_mu24_imedium_OR_HLT_mu50"]                            = has_exact("HLT_mu24_imedium_OR_HLT_mu50");
+    m_triggers["HLT_mu26_imedium_OR_HLT_mu50"]                            = has_exact("HLT_mu26_imedium_OR_HLT_mu50");
+    m_triggers["HLT_mu20_iloose_L1MU15_OR_HLT_mu40"]                      = has_exact("HLT_mu20_iloose_L1MU15_OR_HLT_mu40");
+    m_triggers["HLT_mu24_iloose_L1MU15_OR_HLT_mu40"]                      = has_exact("HLT_mu24_iloose_L1MU15_OR_HLT_mu40");
+    m_triggers["HLT_mu24_imedium_OR_HLT_mu40"]                            = has_exact("HLT_mu24_imedium_OR_HLT_mu40");
+    m_triggers["HLT_mu26_imedium_OR_HLT_mu40"]                            = has_exact("HLT_mu26_imedium_OR_HLT_mu40");
+    m_triggers["HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose"]               = has_exact("HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose");
+    m_triggers["HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu40"]   = has_exact("HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu40");
+    m_triggers["HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu50"]   = has_exact("HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu50");
+    m_triggers["HLT_mu24_ivarmedium"]                                     = has_exact("HLT_mu24_ivarmedium");
+    m_triggers["HLT_mu24_ivarmedium_OR_HLT_mu40"]                         = has_exact("HLT_mu24_ivarmedium_OR_HLT_mu40");
+    m_triggers["HLT_mu24_ivarmedium_OR_HLT_mu50"]                         = has_exact("HLT_mu24_ivarmedium_OR_HLT_mu50");
+    m_triggers["HLT_mu26_ivarmedium"]                                     = has_exact("HLT_mu26_ivarmedium");
+    m_triggers["HLT_mu26_ivarmedium_OR_HLT_mu40"]                         = has_exact("HLT_mu26_ivarmedium_OR_HLT_mu40");
+    m_triggers["HLT_mu26_ivarmedium_OR_HLT_mu50"]                         = has_exact("HLT_mu26_ivarmedium_OR_HLT_mu50");                        
+
   }
 
   void ElectronInfoSwitch::initialize(){

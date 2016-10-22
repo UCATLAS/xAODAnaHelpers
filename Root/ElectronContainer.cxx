@@ -839,14 +839,14 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       
       for (auto& isol : m_isolWPs) {
 
-       accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigMCEffSyst_" + PID + isol ) ) );
+       accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigSyst_" + PID + isol ) ) );
        if( (accTrigSF.at( PID+isol )).isAvailable( *elec ) ) { 
          m_TrigEff_SF->at( PID+isol ).push_back( (accTrigSF.at( PID+isol ))( *elec ) ); 
        }else { 
          m_TrigEff_SF->at( PID+isol ).push_back( junkSF ); 
        }
 
-       accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigSyst_" + PID + isol ) ) );
+       accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigMCEffSyst_" + PID + isol ) ) );
        if( (accTrigEFF.at( PID+isol )).isAvailable( *elec ) ) { 
          m_TrigMCEff->at( PID+isol ).push_back( (accTrigEFF.at( PID+isol ))( *elec ) ); 
        } else { 

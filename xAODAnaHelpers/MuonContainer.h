@@ -14,6 +14,8 @@
 #include <xAODAnaHelpers/Muon.h>
 #include <xAODAnaHelpers/ParticleContainer.h>
 
+typedef SG::AuxElement::Accessor< std::vector< float > > floatAccessor ;
+
 namespace xAH {
 
   class MuonContainer : public ParticleContainer<Muon,HelperClasses::MuonInfoSwitch>
@@ -70,21 +72,60 @@ namespace xAH {
       std::vector< std::vector< float > > *m_RecoEff_SF_Loose;
       std::vector< std::vector< float > > *m_RecoEff_SF_Medium;
       
-      std::vector< std::vector< float > > *m_TrigEff_SF_Loose_Loose;
-      std::vector< std::vector< float > > *m_TrigEff_SF_Loose_FixedCutTightTrackOnly;
-      std::vector< std::vector< float > > *m_TrigEff_SF_Loose_Gradient;
-      std::vector< std::vector< float > > *m_TrigEff_SF_Loose_GradientLoose;
-      std::vector< std::vector< float > > *m_TrigEff_SF_Medium_FixedCutTightTrackOnly;
-      std::vector< std::vector< float > > *m_TrigEff_SF_Medium_Gradient;
-      std::vector< std::vector< float > > *m_TrigEff_SF_Medium_GradientLoose;
+      std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
+      std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
+      std::vector< std::string > m_triggers = {
+                                                "HLT_mu10",
+                                                "HLT_mu14",
+                                                "HLT_mu18",
+                                                "HLT_mu20",
+                                                "HLT_mu22",
+                                                "HLT_mu24",
+                                                "HLT_mu26",
+                                                "HLT_mu40", 
+                                                "HLT_mu50",
+                                                "HLT_mu8noL1", 
+                                                "HLT_mu20_iloose_L1MU15",
+                                                "HLT_mu24_iloose_L1MU15",
+                                                "HLT_mu24_imedium",
+                                                "HLT_mu26_imedium",
+                                                "HLT_mu20_iloose_L1MU15_OR_HLT_mu50",
+                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu50",
+                                                "HLT_mu24_imedium_OR_HLT_mu50",
+                                                "HLT_mu26_imedium_OR_HLT_mu50",
+                                                "HLT_mu20_iloose_L1MU15_OR_HLT_mu40",
+                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu40",
+                                                "HLT_mu24_imedium_OR_HLT_mu40",
+                                                "HLT_mu26_imedium_OR_HLT_mu40",
+                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose",
+                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu40",
+                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu50",
+                                                "HLT_mu24_ivarmedium",
+                                                "HLT_mu24_ivarmedium_OR_HLT_mu40",
+                                                "HLT_mu24_ivarmedium_OR_HLT_mu50",
+                                                "HLT_mu26_ivarmedium",
+                                                "HLT_mu26_ivarmedium_OR_HLT_mu40",
+                                                "HLT_mu26_ivarmedium_OR_HLT_mu50",
+                                                };
+
+      std::vector< std::string > m_recoWPs = {"Loose","Medium","Tight"};
+      std::vector< std::string > m_isolWPs = {"Loose","FixedCutTightTrackOnly","Gradient","GradientLoose"};
       
-      std::vector< std::vector< float > > *m_TrigMCEff_Loose_Loose;
-      std::vector< std::vector< float > > *m_TrigMCEff_Loose_FixedCutTightTrackOnly;
-      std::vector< std::vector< float > > *m_TrigMCEff_Loose_Gradient;
-      std::vector< std::vector< float > > *m_TrigMCEff_Loose_GradientLoose;
-      std::vector< std::vector< float > > *m_TrigMCEff_Medium_FixedCutTightTrackOnly;
-      std::vector< std::vector< float > > *m_TrigMCEff_Medium_Gradient;
-      std::vector< std::vector< float > > *m_TrigMCEff_Medium_GradientLoose;
+      //std::vector< std::vector< float > > *m_TrigEff_SF_Loose_Loose;
+      //std::vector< std::vector< float > > *m_TrigEff_SF_Loose_FixedCutTightTrackOnly;
+      //std::vector< std::vector< float > > *m_TrigEff_SF_Loose_Gradient;
+      //std::vector< std::vector< float > > *m_TrigEff_SF_Loose_GradientLoose;
+      //std::vector< std::vector< float > > *m_TrigEff_SF_Medium_FixedCutTightTrackOnly;
+      //std::vector< std::vector< float > > *m_TrigEff_SF_Medium_Gradient;
+      //std::vector< std::vector< float > > *m_TrigEff_SF_Medium_GradientLoose;
+      
+      //std::vector< std::vector< float > > *m_TrigMCEff_Loose_Loose;
+      //std::vector< std::vector< float > > *m_TrigMCEff_Loose_FixedCutTightTrackOnly;
+      //std::vector< std::vector< float > > *m_TrigMCEff_Loose_Gradient;
+      //std::vector< std::vector< float > > *m_TrigMCEff_Loose_GradientLoose;
+      //std::vector< std::vector< float > > *m_TrigMCEff_Medium_FixedCutTightTrackOnly;
+      //std::vector< std::vector< float > > *m_TrigMCEff_Medium_Gradient;
+      //std::vector< std::vector< float > > *m_TrigMCEff_Medium_GradientLoose;
       
       std::vector< std::vector< float > > *m_IsoEff_SF_LooseTrackOnly;
       std::vector< std::vector< float > > *m_IsoEff_SF_Loose;
