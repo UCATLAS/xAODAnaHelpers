@@ -78,11 +78,9 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   // list of comma-separated years
   m_Years                      = "2016"; 
   m_MCCampaign                 = "";
-  m_SingleMuTrig               = "HLT_mu20_iloose_L1MU15";
-  m_DiMuTrig                   = "HLT_2mu14";
   
   // list of trigger legs. For di-mu triggers pass individual legs  
-  m_SingleMuTrigList           = "HLT_mu26_imedium";
+  m_MuTrigLegs                 = "HLT_mu26_imedium";
 
   // TTVA SF
   //
@@ -360,7 +358,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   
   } 
   
-  std::string tmp_triggers = m_SingleMuTrigList;
+  std::string tmp_triggers = m_MuTrigLegs;
  
   // Parse all comma seperated trigger corrections
   //
