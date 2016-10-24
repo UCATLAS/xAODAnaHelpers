@@ -26,6 +26,8 @@
 #include "xAODMissingET/MissingETComposition.h"
 #include "xAODMissingET/MissingETAssociationMap.h"
 
+#include <xAODEventInfo/EventInfo.h>
+
 // #include "xAODParticleEvent/Particle.h"
 // #include "xAODParticleEvent/ParticleContainer.h"
 // #include "xAODParticleEvent/ParticleAuxContainer.h"
@@ -34,7 +36,8 @@
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
-// for METsyst
+
+// for METsyst 
 #include <xAODAnaHelpers/HelperClasses.h>
 #include "PATInterfaces/SystematicVariation.h"
 #include "METUtilities/METSystematicsTool.h"
@@ -53,7 +56,7 @@ namespace xAOD {
 }
 
 using std::cout; using std::cerr; using std::endl;
-using std::string;
+using std::string; 
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(METConstructor)
@@ -89,22 +92,25 @@ METConstructor :: METConstructor (std::string className) :
   m_useCaloJetTerm  = true;
   m_useTrackJetTerm = false;
 
-  // used for systematics
+
+  // used for systematics 
   m_runNominal         = true; // set to false if you want to run met systematics
   m_systName = "All";// do not change it, not useful
   m_systVal = 1;
   m_SoftTermSystConfigFile = "TrackSoftTerms.config";
 
-  m_inputAlgoJets = "";
+    m_inputAlgoJets = "";
   m_inputAlgoSystMuons = "";
   m_inputAlgoSystEle = "";
   m_inputAlgoPhotons = "";
 
+  // add for met syst tool
   m_jetSystematics  = "jets_Syst";
   m_eleSystematics  = "ele_Syst";
   m_muonSystematics = "muons_Syst";
   m_phoSystematics  = "photons_Syst";
-}
+
+  }
 
 EL::StatusCode METConstructor :: setupJob (EL::Job& job)
 {
@@ -196,7 +202,7 @@ EL::StatusCode METConstructor :: initialize ()
    Error("Initialize()", "initialization of the met Syst tools failed.  Exiting");
    return EL::StatusCode::FAILURE;
   }
-
+ 
   m_metmaker = new met::METMaker("METMaker");
   if(m_metmaker->initialize().isFailure()){
     Error("initialize()", "Failed to properly initialize MET maker. Exiting." );
@@ -223,7 +229,8 @@ EL::StatusCode METConstructor :: initialize ()
 const CP::SystematicSet recSyst = metSystTool->recommendedSystematics();
 sysList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
- //add the syst for jets
+
+ //add the syst for jets 
  if(!m_inputAlgoJets.empty()){
    std::vector<std::string>* sysJetsNames(nullptr);
    RETURN_CHECK("METConstructor::initialize()", HelperFunctions::retrieve(sysJetsNames, m_jetSystematics, 0, m_store, m_debug), "Failed retrieving object systematics.");
@@ -267,13 +274,11 @@ sysList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal,
    }
  }
 
-   //add the syst for taus
-   // (...)
-
 
 }else { //run nominal
   sysList.push_back(CP::SystematicSet()); // add empty systematic (Nominal case)
       }
+
 
  for ( const auto& syst_it : sysList ) {
     if (m_debug) cout<<"syst_it = "<<syst_it.name()<<endl;
@@ -283,6 +288,15 @@ sysList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal,
 
 
   m_numEvent = 0;//just as a check
+
+
+  // define m_isMC
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("METConstructor::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+
+  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
+  if ( m_debug ) { Info("initialize()", "Is MC? %i", static_cast<int>(m_isMC) ); }
+
 
 
 
@@ -302,6 +316,7 @@ EL::StatusCode METConstructor :: execute ()
   m_numEvent ++ ;
   //if (m_debug) cout<< "number of processed events now is : "<< m_numEvent <<endl;
 
+    
   const xAOD::MissingETContainer* coreMet(0);
   RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(coreMet, m_coreName.Data(), m_event, m_store, m_debug), "Failed retrieving MET Core.");
 
@@ -366,9 +381,10 @@ EL::StatusCode METConstructor :: execute ()
    std::string sysListItrString;// just for convenience, to retrieve the containers
    sysListItrString= (*sysListItr).name();
 
+	
    if (m_debug) cout<<" loop over systematic = "<<sysListItr->name() <<endl;
    vecOutContainerNames->push_back( sysListItr->name() );
-
+	
    //create a met container, one for each syst
    xAOD::MissingETContainer* newMet = new xAOD::MissingETContainer();
    xAOD::MissingETAuxContainer* metAuxCont = new xAOD::MissingETAuxContainer();
@@ -385,7 +401,7 @@ EL::StatusCode METConstructor :: execute ()
 
  if( m_inputElectrons.Length() > 0 ) {
    const xAOD::ElectronContainer* eleCont(0);
-   if ( m_store->retrieve(eleCont ,  m_inputElectrons.Data() +sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::ElectronContainer>(m_inputElectrons.Data()+sysListItrString ) ) {
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(eleCont, m_inputElectrons.Data()+sysListItrString, m_event, m_store, m_debug), "Failed retrieving electron cont.");
      if (m_debug) cout<< "retrieving ele container "<<    m_inputElectrons.Data() +sysListItrString << " to be added to the met "<< endl;
    }else{
@@ -409,7 +425,7 @@ EL::StatusCode METConstructor :: execute ()
 
   if( m_inputPhotons.Length() > 0 ) {
    const xAOD::PhotonContainer* phoCont(0);
-   if ( m_store->retrieve(phoCont ,  m_inputPhotons.Data() +sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::PhotonContainer>(m_inputPhotons.Data()+sysListItrString ) ) {
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data()+sysListItrString, m_event, m_store, m_verbose), "Failed retrieving photon cont.");
      if (m_debug) cout<< "retrieving ph container "<<    m_inputPhotons.Data() +sysListItrString << " to be added to the met "<< endl;
    }else{
@@ -449,7 +465,7 @@ EL::StatusCode METConstructor :: execute ()
 
   if( m_inputTaus.Length() > 0 ) {
     const xAOD::TauJetContainer* tauCont(0);
-   if ( m_store->retrieve(tauCont ,  m_inputTaus.Data() +sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::TauJetContainer>(m_inputTaus.Data()+sysListItrString ) ) {
 
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data()+sysListItrString, m_event, m_store, m_verbose), "Failed retrieving photon cont.");
      if (m_debug) cout<< "retrieving tau container "<<    m_inputTaus.Data() +sysListItrString << " to be added to the met "<< endl;
@@ -480,7 +496,7 @@ EL::StatusCode METConstructor :: execute ()
  if( m_inputMuons.Length() > 0 ) {
    std::string m_inputMuons_Syst =  m_inputMuons.Data() +sysListItrString;
    const xAOD::MuonContainer* muonCont(0);
-   if ( m_store->retrieve(muonCont ,  m_inputMuons.Data() +sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::MuonContainer>(m_inputMuons.Data()+sysListItrString ) ) {
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(muonCont, m_inputMuons.Data()+sysListItrString, m_event, m_store, m_debug), "Failed retrieving muon cont.");
    }
    else{
@@ -502,7 +518,7 @@ EL::StatusCode METConstructor :: execute ()
    std::string m_inputJets_Syst =  m_inputJets.Data() +sysListItrString;// just for convenience
    if (m_debug) cout<<" the jet container name is : "<<m_inputJets_Syst<< endl;
 
-   if ( m_store->retrieve(jetCont ,  m_inputJets.Data()+sysListItrString ).isSuccess() ) {
+   if ( m_store->contains<xAOD::JetContainer>(m_inputJets.Data()+sysListItrString ) ) {
      if (m_debug) cout << "syst is = "<<sysListItrString <<endl;
      //RETURN_CHECK( "METConstructor::execute()", metSystTool->evtStore()->retrieve( jetCont,m_inputJets_Syst  ), "");// is this necessary?
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont,m_inputJets_Syst, m_event, m_store, m_debug  ), " Failed retrieving jet cont.");
@@ -517,7 +533,8 @@ EL::StatusCode METConstructor :: execute ()
    // to build MET using a calorimeter or track based jet term, respectively.
    // pass to rebuildJetMET calibrated jets (full container)
    //
-   // NOTE: you have to set m_doJVTCut correctly when running!
+
+   // NOTE: you have to set m_doJVTCut correctly when running! 
 
   if ( m_useCaloJetTerm ) {
     RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut), "Failed to build cluster-based jet/MET.");
@@ -532,21 +549,24 @@ EL::StatusCode METConstructor :: execute ()
    //after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied
    // assert(   metSystTool->applySystematicVariation(iSysSet) );
    //
-   if( metSystTool->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
-     cout<<"Error !!! not able to applySystematicVariation "<< endl;
+   
+  if (m_isMC) {
+    if( metSystTool->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
+      cout<<"Error !!! not able to applySystematicVariation "<< endl;
+    }
    }
 
    //get the soft cluster term, and applyCorrection
    xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
    //assert( softClusMet != 0); //check we retrieved the clust term
-   if( metSystTool->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
+   if( m_isMC && metSystTool->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
      Error("METConstructor::execute()", "Could not apply correction to soft clus met !!!! ");
    }
    if (m_debug) std::cout << "Soft cluster met term met : " << softClusMet->met() << std::endl;
 
    //get the track soft term, and applyCorrection
    xAOD::MissingET * softTrkMet = (*newMet)["PVSoftTrk"];
-   if( metSystTool->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
+   if( m_isMC && metSystTool->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
      Error("METConstructor::execute()", "Could not apply correction to soft track met !!!! ");
    }
    if (m_debug) std::cout << "track met soft term : " << softTrkMet->met() << std::endl;
@@ -570,7 +590,7 @@ EL::StatusCode METConstructor :: execute ()
    if (m_debug) cout<< "storing met container :  "<< (m_outputContainer+ sysListItr->name()).Data() << endl;
    if (m_debug) cout<< "storing  Aux met container :  "<< (m_outputContainer+ sysListItr->name() + "Aux.").Data() << endl;
 
-
+	
   if ( m_debug ) {
     const xAOD::MissingETContainer* oldMet(0);
     RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(oldMet, m_referenceMETContainer.Data(), m_event, m_store, m_verbose) ,"");
@@ -598,9 +618,10 @@ EL::StatusCode METConstructor :: execute ()
  // add vector of systematic names to TStore
    RETURN_CHECK("METConstructor::execute()",m_store->record(vecOutContainerNames, (m_outputContainer+"_Syst").Data() ), "Failed to record vector of output container names.");
 
+   
   //if (m_debug) m_store->print();// print TStore content
-  if (m_debug) cout<< "vecOutContainerNames in tstore :  "<<  (m_outputContainer+"_Syst").Data() << endl;
-
+  if (m_debug) cout<< "vecOutContainerNames in tstore :  "<<  (m_outputContainer+"_Syst").Data() << endl; 
+ 
   return EL::StatusCode::SUCCESS;
 
 }

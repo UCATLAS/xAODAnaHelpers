@@ -29,8 +29,6 @@ using std::vector;
 
 HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14, xAOD::TStore* store):
   m_trigInfoSwitch(nullptr),
-  m_elInfoSwitch(nullptr),
-  m_phInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
   m_eventInfo(nullptr),
@@ -39,7 +37,6 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
 
   m_units = units;
   m_debug = debug;
-  m_DC14  = DC14;
   m_tree = tree;
   m_tree->SetDirectory( file );
   m_event = event;
@@ -68,10 +65,12 @@ HelpTreeBase::~HelpTreeBase() {
       delete muon.second;
 
     //el
-    delete m_elInfoSwitch;
+    for (auto elec: m_elecs)
+      delete elec.second;
 
     //ph
-    delete m_phInfoSwitch;
+    for (auto photon: m_photons)
+      delete photon.second;
 
     //fatjet
     for (auto fatjet: m_fatjets)
@@ -120,7 +119,6 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*event*/ ) {
 
   this->ClearEvent();
-  this->ClearEventUser();
 
   m_eventInfo->FillEvent(eventInfo, m_event);
 
@@ -311,7 +309,7 @@ void HelpTreeBase::ClearMuons(const std::string muonName) {
   xAH::MuonContainer* thisMuon = m_muons[muonName];
   thisMuon->clear();
 
-  this->ClearMuonsUser();
+  this->ClearMuonsUser(muonName);
 
 }
 
@@ -321,450 +319,46 @@ void HelpTreeBase::ClearMuons(const std::string muonName) {
  *
  ********************/
 
-void HelpTreeBase::AddElectrons(const std::string detailStr) {
+void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string elecName) {
 
   if(m_debug)  Info("AddElectrons()", "Adding electron variables: %s", detailStr.c_str());
 
-  m_elInfoSwitch = new HelperClasses::ElectronInfoSwitch( detailStr );
+  m_elecs[elecName] = new xAH::ElectronContainer(elecName, detailStr, m_units, m_isMC);
 
-  // always
-  m_tree->Branch("nel",    &m_nel,"nel/I");
+  xAH::ElectronContainer* thisElec = m_elecs[elecName];
 
-  if ( m_elInfoSwitch->m_kinematic ) {
-    m_tree->Branch("el_pt",  &m_el_pt);
-    m_tree->Branch("el_phi", &m_el_phi);
-    m_tree->Branch("el_eta", &m_el_eta);
-    m_tree->Branch("el_m",   &m_el_m);
-    m_tree->Branch("el_caloCluster_eta", &m_el_caloCluster_eta);
-  }
-
-  if ( m_elInfoSwitch->m_trigger ){
-    // this is true if there's a match for at least one trigger chain
-    m_tree->Branch("el_isTrigMatched", &m_el_isTrigMatched);
-    // a vector of trigger match decision for each electron trigger chain
-    m_tree->Branch("el_isTrigMatchedToChain", &m_el_isTrigMatchedToChain);
-    // a vector of strings with the electron trigger chain names - 1:1 correspondence w/ vector above
-    m_tree->Branch("el_listTrigChains", &m_el_listTrigChains);
-  }
-
-  if ( m_elInfoSwitch->m_isolation ) {
-    m_tree->Branch("el_isIsolated_LooseTrackOnly", &m_el_isIsolated_LooseTrackOnly);
-    m_tree->Branch("el_isIsolated_Loose",	   &m_el_isIsolated_Loose);
-    m_tree->Branch("el_isIsolated_Tight",	   &m_el_isIsolated_Tight);
-    m_tree->Branch("el_isIsolated_Gradient",	   &m_el_isIsolated_Gradient);
-    m_tree->Branch("el_isIsolated_GradientLoose",  &m_el_isIsolated_GradientLoose);
-    m_tree->Branch("el_isIsolated_FixedCutLoose",	   &m_el_isIsolated_FixedCutLoose);
-    m_tree->Branch("el_isIsolated_FixedCutTight",	   &m_el_isIsolated_FixedCutTight);
-    m_tree->Branch("el_isIsolated_FixedCutTightTrackOnly", &m_el_isIsolated_FixedCutTightTrackOnly);
-    m_tree->Branch("el_isIsolated_UserDefinedFixEfficiency",    &m_el_isIsolated_UserDefinedFixEfficiency);
-    m_tree->Branch("el_isIsolated_UserDefinedCut",              &m_el_isIsolated_UserDefinedCut);
-    m_tree->Branch("el_etcone20",	  &m_el_etcone20);
-    m_tree->Branch("el_ptcone20",	  &m_el_ptcone20);
-    m_tree->Branch("el_ptcone30",	  &m_el_ptcone30);
-    m_tree->Branch("el_ptcone40",	  &m_el_ptcone40);
-    m_tree->Branch("el_ptvarcone20",	  &m_el_ptvarcone20);
-    m_tree->Branch("el_ptvarcone30",	  &m_el_ptvarcone30);
-    m_tree->Branch("el_ptvarcone40",	  &m_el_ptvarcone40);
-    m_tree->Branch("el_topoetcone20",     &m_el_topoetcone20);
-    m_tree->Branch("el_topoetcone30",     &m_el_topoetcone30);
-    m_tree->Branch("el_topoetcone40",     &m_el_topoetcone40);
-  }
-
-  if ( m_elInfoSwitch->m_PID ) {
-    m_tree->Branch("nel_LHLoose",      &m_nel_LHLoose);
-    m_tree->Branch("el_LHLoose",       &m_el_LHLoose);
-    m_tree->Branch("nel_LHMedium",     &m_nel_LHMedium);
-    m_tree->Branch("el_LHMedium",      &m_el_LHMedium);
-    m_tree->Branch("nel_LHTight",      &m_nel_LHTight);
-    m_tree->Branch("el_LHTight",       &m_el_LHTight);
-    m_tree->Branch("nel_IsEMLoose",    &m_nel_IsEMLoose);
-    m_tree->Branch("el_IsEMLoose",     &m_el_IsEMLoose);
-    m_tree->Branch("nel_IsEMMedium",   &m_nel_IsEMMedium);
-    m_tree->Branch("el_IsEMMedium",    &m_el_IsEMMedium);
-    m_tree->Branch("nel_IsEMTight",    &m_nel_IsEMTight);
-    m_tree->Branch("el_IsEMTight",     &m_el_IsEMTight);
-  }
-
-  if ( m_elInfoSwitch->m_effSF && m_isMC ) {
-    for (auto& PID : m_PIDWPs) {
-      for (auto& isol : m_isolWPs) {
-        m_tree->Branch( ("el_TrigEff_SF_" + PID + isol).c_str() , &m_el_TrigEff_SF[ PID+isol ] );
-        m_tree->Branch( ("el_TrigMCEff_" + PID + isol).c_str() , &m_el_TrigMCEff[ PID+isol ] );
-        if(isol.empty()) continue;
-        m_tree->Branch( ("el_IsoEff_SF_" + PID + isol).c_str() , &m_el_IsoEff_SF[ PID+isol ] );
-      }
-    }
-    m_tree->Branch("el_RecoEff_SF"  ,    &m_el_RecoEff_SF  );
-    m_tree->Branch("el_PIDEff_SF_LHLooseAndBLayer",  &m_el_PIDEff_SF_LHLooseAndBLayer);
-    m_tree->Branch("el_PIDEff_SF_LHLoose",       &m_el_PIDEff_SF_LHLoose);
-    m_tree->Branch("el_PIDEff_SF_LHMedium",      &m_el_PIDEff_SF_LHMedium);
-    m_tree->Branch("el_PIDEff_SF_LHTight",       &m_el_PIDEff_SF_LHTight);
-  }
-
-  if ( m_elInfoSwitch->m_trackparams ) {
-    m_tree->Branch("el_trkd0",      &m_el_trkd0);
-    m_tree->Branch("el_trkd0sig",   &m_el_trkd0sig);
-    m_tree->Branch("el_trkz0",      &m_el_trkz0);
-    m_tree->Branch("el_trkz0sintheta",  &m_el_trkz0sintheta);
-    m_tree->Branch("el_trkphi0",    &m_el_trkphi0);
-    m_tree->Branch("el_trktheta",   &m_el_trktheta);
-    m_tree->Branch("el_trkcharge",  &m_el_trkcharge);
-    m_tree->Branch("el_trkqOverP",  &m_el_trkqOverP);
-  }
-
-  if ( m_elInfoSwitch->m_trackhitcont ) {
-    m_tree->Branch("el_trknSiHits",    &m_el_trknSiHits);
-    m_tree->Branch("el_trknPixHits",   &m_el_trknPixHits);
-    m_tree->Branch("el_trknPixHoles",  &m_el_trknPixHoles);
-    m_tree->Branch("el_trknSCTHits",   &m_el_trknSCTHits);
-    m_tree->Branch("el_trknSCTHoles",  &m_el_trknSCTHoles);
-    m_tree->Branch("el_trknTRTHits",   &m_el_trknTRTHits);
-    m_tree->Branch("el_trknTRTHoles",  &m_el_trknTRTHoles);
-    m_tree->Branch("el_trknBLayerHits",&m_el_trknBLayerHits);
-    if ( !m_DC14 ) {
-      m_tree->Branch("el_trknInnermostPixLayHits",  &m_el_trknInnermostPixLayHits);
-      m_tree->Branch("el_trkPixdEdX",    &m_el_trkPixdEdX);
-    }
-  }
-
-  this->AddElectronsUser();
+  thisElec->setBranches(m_tree);
+  this->AddElectronsUser(elecName);
 }
 
-void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex ) {
 
-  this->ClearElectrons();
-  this->ClearElectronsUser();
+void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex, const std::string elecName ) {
 
-  m_nel = 0;
-  m_nel_LHLoose = 0;
-  m_nel_LHMedium = 0;
-  m_nel_LHTight = 0;
-  m_nel_IsEMLoose = 0;
-  m_nel_IsEMMedium = 0;
-  m_nel_IsEMTight = 0;
+  this->ClearElectrons(elecName);
 
-  for ( auto el_itr : *(electrons) ) {
-
-    if ( m_debug ) { Info("HelpTreeBase::FillElectrons()", "Filling electron w/ pT = %2f", el_itr->pt() / m_units ); }
-
-    const xAOD::TrackParticle* trk = el_itr->trackParticle();
-
-    if ( m_elInfoSwitch->m_kinematic ) {
-      m_el_pt.push_back ( (el_itr)->pt() / m_units );
-      m_el_eta.push_back( (el_itr)->eta() );
-      m_el_phi.push_back( (el_itr)->phi() );
-      m_el_m.push_back  ( (el_itr)->m() / m_units );
-
-      float calo_eta   = ( el_itr->caloCluster() ) ? el_itr->caloCluster()->etaBE(2) : -999.0;
-      m_el_caloCluster_eta.push_back( calo_eta );
-
-    }
-
-    if ( m_elInfoSwitch->m_trigger ) {
-
-      // retrieve map<string,char> w/ <chain,isMatched>
-      //
-      static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapElAcc("isTrigMatchedMapEl");
-
-      std::vector<int> matches;
-
-      if ( isTrigMatchedMapElAcc.isAvailable( *el_itr ) ) {
-	 // loop over map and fill branches
-	 //
-	 for ( auto const &it : (isTrigMatchedMapElAcc( *el_itr )) ) {
-  	   matches.push_back( static_cast<int>(it.second) );
-	   m_el_listTrigChains.push_back( it.first );
-	 }
-       } else {
-	 matches.push_back( -1 );
-	 m_el_listTrigChains.push_back("NONE");
-       }
-
-       m_el_isTrigMatchedToChain.push_back(matches);
-
-       // if at least one match among the chains is found, say this electron is trigger matched
-       if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_el_isTrigMatched.push_back(1); }
-       else { m_el_isTrigMatched.push_back(0); }
-
-    }
-
-    if ( m_elInfoSwitch->m_isolation ) {
-
-      static SG::AuxElement::Accessor<char> isIsoLooseTrackOnlyAcc ("isIsolated_LooseTrackOnly");
-      static SG::AuxElement::Accessor<char> isIsoLooseAcc ("isIsolated_Loose");
-      static SG::AuxElement::Accessor<char> isIsoTightAcc ("isIsolated_Tight");
-      static SG::AuxElement::Accessor<char> isIsoGradientAcc ("isIsolated_Gradient");
-      static SG::AuxElement::Accessor<char> isIsoGradientLooseAcc ("isIsolated_GradientLoose");
-      static SG::AuxElement::Accessor<char> isIsoFixedCutLooseAcc ("isIsolated_FixedCutLoose");
-      static SG::AuxElement::Accessor<char> isIsoFixedCutTightAcc ("isIsolated_FixedCutTight");
-      static SG::AuxElement::Accessor<char> isIsoFixedCutTightTrackOnlyAcc ("isIsolated_FixedCutTightTrackOnly");
-      static SG::AuxElement::Accessor<char> isIsoUserDefinedFixEfficiencyAcc ("isIsolated_UserDefinedFixEfficiency");
-      static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
-
-      if ( isIsoLooseTrackOnlyAcc.isAvailable( *el_itr ) ) { m_el_isIsolated_LooseTrackOnly.push_back( isIsoLooseTrackOnlyAcc( *el_itr ) ); } else { m_el_isIsolated_LooseTrackOnly.push_back( -1 ); }
-      if ( isIsoLooseAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_Loose.push_back( isIsoLooseAcc( *el_itr ) ); } else { m_el_isIsolated_Loose.push_back( -1 ); }
-      if ( isIsoTightAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_Tight.push_back( isIsoTightAcc( *el_itr ) ); } else { m_el_isIsolated_Tight.push_back( -1 ); }
-      if ( isIsoGradientAcc.isAvailable( *el_itr ) )       { m_el_isIsolated_Gradient.push_back( isIsoGradientAcc( *el_itr ) ); } else { m_el_isIsolated_Gradient.push_back( -1 ); }
-      if ( isIsoGradientLooseAcc.isAvailable( *el_itr ) )  { m_el_isIsolated_GradientLoose.push_back( isIsoGradientLooseAcc( *el_itr ) ); } else { m_el_isIsolated_GradientLoose.push_back( -1 ); }
-      if ( isIsoFixedCutLooseAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_FixedCutLoose.push_back( isIsoFixedCutLooseAcc( *el_itr ) ); } else { m_el_isIsolated_FixedCutLoose.push_back( -1 ); }
-      if ( isIsoFixedCutTightAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_FixedCutTight.push_back( isIsoFixedCutTightAcc( *el_itr ) ); } else { m_el_isIsolated_FixedCutTight.push_back( -1 ); }
-      if ( isIsoFixedCutTightTrackOnlyAcc.isAvailable( *el_itr ) )          { m_el_isIsolated_FixedCutTightTrackOnly.push_back( isIsoFixedCutTightTrackOnlyAcc( *el_itr ) ); } else { m_el_isIsolated_FixedCutTightTrackOnly.push_back( -1 ); }
-      if ( isIsoUserDefinedFixEfficiencyAcc.isAvailable( *el_itr ) ) { m_el_isIsolated_UserDefinedFixEfficiency.push_back( isIsoUserDefinedFixEfficiencyAcc( *el_itr ) ); } else { m_el_isIsolated_UserDefinedFixEfficiency.push_back( -1 ); }
-      if ( isIsoUserDefinedCutAcc.isAvailable( *el_itr ) )           { m_el_isIsolated_UserDefinedCut.push_back( isIsoUserDefinedCutAcc( *el_itr ) ); } else { m_el_isIsolated_UserDefinedCut.push_back( -1 ); }
-
-      m_el_etcone20.push_back( el_itr->isolation( xAOD::Iso::etcone20 ) );
-      m_el_ptcone20.push_back( el_itr->isolation( xAOD::Iso::ptcone20 ) );
-      m_el_ptcone30.push_back( el_itr->isolation( xAOD::Iso::ptcone30 ) );
-      m_el_ptcone40.push_back( el_itr->isolation( xAOD::Iso::ptcone40 ) );
-      m_el_ptvarcone20.push_back( el_itr->isolation( xAOD::Iso::ptvarcone20 ) );
-      m_el_ptvarcone30.push_back( el_itr->isolation( xAOD::Iso::ptvarcone30 ) );
-      m_el_ptvarcone40.push_back( el_itr->isolation( xAOD::Iso::ptvarcone40 ) );
-      m_el_topoetcone20.push_back( el_itr->isolation( xAOD::Iso::topoetcone20 ) );
-      m_el_topoetcone30.push_back( el_itr->isolation( xAOD::Iso::topoetcone30 ) );
-      m_el_topoetcone40.push_back( el_itr->isolation( xAOD::Iso::topoetcone40 ) );
-    }
-
-    if ( m_elInfoSwitch->m_PID ) {
-
-      static SG::AuxElement::Accessor<char> LHLooseAcc ("LHLoose");
-      static SG::AuxElement::Accessor<char> LHMediumAcc ("LHMedium");
-      static SG::AuxElement::Accessor<char> LHTightAcc ("LHTight");
-
-      static SG::AuxElement::Accessor<char> EMLooseAcc ("Loose");
-      static SG::AuxElement::Accessor<char> EMMediumAcc ("Medium");
-      static SG::AuxElement::Accessor<char> EMTightAcc ("Tight");
-
-      if ( LHLooseAcc.isAvailable( *el_itr ) ) {
-        m_el_LHLoose.push_back( LHLooseAcc( *el_itr ) );
-        if ( LHLooseAcc( *el_itr ) == 1 ) { ++m_nel_LHLoose; }
-      }  else { m_el_LHLoose.push_back( -1 ); }
-      if ( LHMediumAcc.isAvailable( *el_itr ) ) {
-        m_el_LHMedium.push_back( LHMediumAcc( *el_itr ) );
-        if ( LHMediumAcc( *el_itr ) == 1 ) { ++m_nel_LHMedium; }
-      }  else { m_el_LHMedium.push_back( -1 ); }
-      if ( LHTightAcc.isAvailable( *el_itr ) ) {
-        m_el_LHTight.push_back( LHTightAcc( *el_itr ) );
-        if ( LHTightAcc( *el_itr ) == 1 ) { ++m_nel_LHTight; }
-      } else { m_el_LHTight.push_back( -1 ); }
-
-      if ( EMLooseAcc.isAvailable( *el_itr ) ) {
-        m_el_IsEMLoose.push_back( EMLooseAcc( *el_itr ) );
-        if ( EMLooseAcc( *el_itr ) == 1 ) { ++m_nel_IsEMLoose; }
-      } else { m_el_IsEMLoose.push_back( -1 ); }
-      if ( EMMediumAcc.isAvailable( *el_itr ) ) {
-        m_el_IsEMMedium.push_back( EMMediumAcc( *el_itr ) );
-	if ( EMMediumAcc( *el_itr ) == 1 ) { ++m_nel_IsEMMedium; }
-      } else { m_el_IsEMMedium.push_back( -1 ); }
-      if ( EMTightAcc.isAvailable( *el_itr ) ) {
-        m_el_IsEMTight.push_back( EMTightAcc( *el_itr ) );
-	if ( EMTightAcc( *el_itr ) == 1 ) { ++m_nel_IsEMTight; }
-      } else { m_el_IsEMTight.push_back( -1 ); }
-
-    }
-
-    if ( m_elInfoSwitch->m_trackparams ) {
-      if ( trk ) {
-        //
-	// NB.:
-	// All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
-	// The reference  frame is chosen to be a system centered in the beamspot position, with z axis parallel to the beam line.
-	// Remember that the beamspot size ( of O(10 micrometers) in the transverse plane) is << average vertex transverse position resolution ( O(60-80 micrometers) )
-	// The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
-	//
-        m_el_trkd0.push_back( trk->d0() );
-        static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
-        float d0_significance =  ( d0SigAcc.isAvailable( *el_itr ) ) ? fabs( d0SigAcc( *el_itr ) ) : -1.0;
-	m_el_trkd0sig.push_back( d0_significance );
-        m_el_trkz0.push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
-        static SG::AuxElement::Accessor<float> z0sinthetaAcc("z0sintheta");
-        float z0sintheta =  ( z0sinthetaAcc.isAvailable( *el_itr ) ) ? z0sinthetaAcc( *el_itr ) : -999.0;
-        m_el_trkz0sintheta.push_back( z0sintheta );
-        m_el_trkphi0.push_back( trk->phi0() );
-        m_el_trktheta.push_back( trk->theta() );
-        m_el_trkcharge.push_back( trk->charge() );
-        m_el_trkqOverP.push_back( trk->qOverP() );
-      } else {
-        m_el_trkd0.push_back( -999.0 );
-        m_el_trkd0sig.push_back( -1.0 );
-        m_el_trkz0.push_back( -999.0 );
-        m_el_trkz0sintheta.push_back( -999.0 );
-        m_el_trkphi0.push_back( -999.0 );
-        m_el_trktheta.push_back( -999.0 );
-        m_el_trkcharge.push_back( -999.0 );
-        m_el_trkqOverP.push_back( -999.0 );
-      }
-    }
-
-    if ( m_elInfoSwitch->m_trackhitcont ) {
-      uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
-      float pixdEdX(-1.0);
-      if ( trk ) {
-        trk->summaryValue( nPixHits,  xAOD::numberOfPixelHits );
-        trk->summaryValue( nPixHoles, xAOD::numberOfPixelHoles );
-        trk->summaryValue( nSCTHits,  xAOD::numberOfSCTHits );
-        trk->summaryValue( nSCTHoles, xAOD::numberOfSCTHoles );
-        trk->summaryValue( nTRTHits,  xAOD::numberOfTRTHits );
-        trk->summaryValue( nTRTHoles, xAOD::numberOfTRTHoles );
-        trk->summaryValue( nBLayerHits,  xAOD::numberOfBLayerHits );
-	if ( !m_DC14 ) {
-          trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
-          trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
-        }
-      }
-      m_el_trknSiHits.push_back( nPixHits + nSCTHits );
-      m_el_trknPixHits.push_back( nPixHits );
-      m_el_trknPixHoles.push_back( nPixHoles );
-      m_el_trknSCTHits.push_back( nSCTHits );
-      m_el_trknSCTHoles.push_back( nSCTHoles );
-      m_el_trknTRTHits.push_back( nTRTHits );
-      m_el_trknTRTHoles.push_back( nTRTHoles );
-      m_el_trknBLayerHits.push_back( nBLayerHits );
-      if ( !m_DC14 ) {
-        m_el_trknInnermostPixLayHits.push_back( nInnermostPixLayHits );
-        m_el_trkPixdEdX.push_back( pixdEdX );
-      }
-    }
-
-    if ( m_elInfoSwitch->m_effSF && m_isMC ) {
-
-      std::vector<float> junkSF(1,1.0);
-      std::vector<float> junkEff(1,0.0);
-
-      static std::map< std::string, floatAccessor > accIsoSF;
-      static std::map< std::string, floatAccessor > accTrigSF;
-      static std::map< std::string, floatAccessor > accTrigEFF;
-      for (auto& PID : m_PIDWPs) {
-        for (auto& isol : m_isolWPs) {
-          accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigMCEffSyst_" + PID + isol ) ) );
-          accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigSyst_" + PID + isol ) ) );
-          if( (accTrigSF.at( PID+isol )).isAvailable( *el_itr ) ) { (m_el_TrigEff_SF.at( PID+isol )).push_back( (accTrigSF.at( PID+isol ))( *el_itr ) ); }
-          else { (m_el_TrigEff_SF.at( PID+isol )).push_back( junkSF ); }
-          if( (accTrigEFF.at( PID+isol )).isAvailable( *el_itr ) ) { (m_el_TrigMCEff.at( PID+isol )).push_back( (accTrigEFF.at( PID+isol ))( *el_itr ) ); }
-          else { (m_el_TrigMCEff.at( PID+isol )).push_back( junkEff ); }
-          if(isol.empty()) continue;
-          accIsoSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_IsoSyst_" + PID + isol ) ) );
-          if( (accIsoSF.at( PID+isol )).isAvailable( *el_itr ) ) { (m_el_IsoEff_SF.at( PID+isol )).push_back( (accIsoSF.at( PID+isol ))( *el_itr ) ); }
-          else { (m_el_IsoEff_SF.at( PID+isol )).push_back( junkSF ); }
-        }
-      }
-
-      static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
-      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LooseAndBLayerLLH");
-      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LooseLLh");
-      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_MediumLLH");
-      static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("ElectronEfficiencyCorrector_PIDSyst_TightLLH");
-
-      if( accRecoSF.isAvailable( *el_itr ) )                     { m_el_RecoEff_SF.push_back( accRecoSF( *el_itr ) ); } else { m_el_RecoEff_SF.push_back( junkSF ); }
-      if( accPIDSF_LHLooseAndBLayer.isAvailable( *el_itr ) )     { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( accPIDSF_LHLooseAndBLayer( *el_itr ) ); } else { m_el_PIDEff_SF_LHLooseAndBLayer.push_back( junkSF ); }
-      if( accPIDSF_LHLoose.isAvailable( *el_itr ) )              { m_el_PIDEff_SF_LHLoose.push_back( accPIDSF_LHLoose( *el_itr ) ); } else { m_el_PIDEff_SF_LHLoose.push_back( junkSF ); }
-      if( accPIDSF_LHMedium.isAvailable( *el_itr ) )             { m_el_PIDEff_SF_LHMedium.push_back( accPIDSF_LHMedium( *el_itr ) ); } else { m_el_PIDEff_SF_LHMedium.push_back( junkSF ); }
-      if( accPIDSF_LHTight.isAvailable( *el_itr ) )              { m_el_PIDEff_SF_LHTight.push_back( accPIDSF_LHTight( *el_itr ) ); } else { m_el_PIDEff_SF_LHTight.push_back( junkSF ); }
-
-    }
-
-    this->FillElectronsUser(el_itr);
-
-    m_nel++;
+  for ( auto el_itr : *electrons ) {
+    this->FillElectron(el_itr, primaryVertex, elecName);
   }
 }
 
-void HelpTreeBase::ClearElectrons() {
+void HelpTreeBase::FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex* primaryVertex, const std::string elecName ) {
 
-  m_nel = 0;
+  xAH::ElectronContainer* thisElec = m_elecs[elecName];
 
-  if ( m_elInfoSwitch->m_kinematic ){
-    m_el_pt.clear();
-    m_el_eta.clear();
-    m_el_phi.clear();
-    m_el_m.clear();
-    m_el_caloCluster_eta.clear();
-  }
+  thisElec->FillElectron(elec, primaryVertex);
 
-  if ( m_elInfoSwitch->m_trigger ) {
-    m_el_isTrigMatched.clear();
-    m_el_isTrigMatchedToChain.clear();
-    m_el_listTrigChains.clear();
-  }
+  this->FillElectronsUser(elec, elecName);
 
-  if ( m_elInfoSwitch->m_isolation ) {
-    m_el_isIsolated_LooseTrackOnly.clear();
-    m_el_isIsolated_Loose.clear();
-    m_el_isIsolated_Tight.clear();
-    m_el_isIsolated_Gradient.clear();
-    m_el_isIsolated_GradientLoose.clear();
-    m_el_isIsolated_FixedCutLoose.clear();
-    m_el_isIsolated_FixedCutTight.clear();
-    m_el_isIsolated_FixedCutTightTrackOnly.clear();
-    m_el_isIsolated_UserDefinedFixEfficiency.clear();
-    m_el_isIsolated_UserDefinedCut.clear();
-    m_el_etcone20.clear();
-    m_el_ptcone20.clear();
-    m_el_ptcone30.clear();
-    m_el_ptcone40.clear();
-    m_el_ptvarcone20.clear();
-    m_el_ptvarcone30.clear();
-    m_el_ptvarcone40.clear();
-    m_el_topoetcone20.clear();
-    m_el_topoetcone30.clear();
-    m_el_topoetcone40.clear();
-  }
+  return;
+}
 
-  if ( m_elInfoSwitch->m_PID ) {
-    m_nel_LHLoose = 0;
-    m_el_LHLoose.clear();
-    m_nel_LHMedium = 0;
-    m_el_LHMedium.clear();
-    m_nel_LHTight = 0;
-    m_el_LHTight.clear();
-    m_nel_IsEMLoose = 0;
-    m_el_IsEMLoose.clear();
-    m_nel_IsEMMedium = 0;
-    m_el_IsEMMedium.clear();
-    m_nel_IsEMTight = 0;
-    m_el_IsEMTight.clear();
-  }
 
-  if ( m_elInfoSwitch->m_trackparams ) {
-    m_el_trkd0.clear();
-    m_el_trkd0sig.clear();
-    m_el_trkz0.clear();
-    m_el_trkz0sintheta.clear();
-    m_el_trkphi0.clear();
-    m_el_trktheta.clear();
-    m_el_trkcharge.clear();
-    m_el_trkqOverP.clear();
-  }
+void HelpTreeBase::ClearElectrons(const std::string elecName) {
 
-  if ( m_elInfoSwitch->m_trackhitcont ) {
-    m_el_trknSiHits.clear();
-    m_el_trknPixHits.clear();
-    m_el_trknPixHoles.clear();
-    m_el_trknSCTHits.clear();
-    m_el_trknSCTHoles.clear();
-    m_el_trknTRTHits.clear();
-    m_el_trknTRTHoles.clear();
-    m_el_trknBLayerHits.clear();
-    if ( !m_DC14 ) {
-      m_el_trknInnermostPixLayHits.clear();
-      m_el_trkPixdEdX.clear();
-    }
-  }
+  xAH::ElectronContainer* thisElec = m_elecs[elecName];
+  thisElec->clear();
 
-  if( m_elInfoSwitch->m_effSF && m_isMC ) {
-    for (auto& PID : m_PIDWPs) {
-      for (auto& isol : m_isolWPs) {
-        (m_el_TrigEff_SF[ PID+isol ]).clear();
-        (m_el_TrigMCEff[ PID+isol ]).clear();
-        if(isol.empty()) continue;
-        (m_el_IsoEff_SF[ PID+isol ]).clear();
-      }
-    }
-    m_el_RecoEff_SF.clear();
-    m_el_PIDEff_SF_LHLooseAndBLayer.clear();
-    m_el_PIDEff_SF_LHLoose.clear();
-    m_el_PIDEff_SF_LHMedium.clear();
-    m_el_PIDEff_SF_LHTight.clear();
-  }
+  this->ClearElectronsUser(elecName);
 }
 
 /*********************
@@ -773,230 +367,46 @@ void HelpTreeBase::ClearElectrons() {
  *
  ********************/
 
-void HelpTreeBase::AddPhotons(const std::string detailStr) {
+void HelpTreeBase::AddPhotons(const std::string detailStr, const std::string photonName) {
 
   if(m_debug)  Info("AddPhotons()", "Adding photon variables: %s", detailStr.c_str());
 
-  m_phInfoSwitch = new HelperClasses::PhotonInfoSwitch( detailStr );
+  m_photons[photonName] = new xAH::PhotonContainer(photonName, detailStr, m_units, m_isMC);
 
-  // always
-  m_tree->Branch("nph",    &m_nph,"nph/I");
+  xAH::PhotonContainer* thisPhoton = m_photons[photonName];
 
-  if ( m_phInfoSwitch->m_kinematic ) {
-    m_tree->Branch("ph_pt",  &m_ph_pt);
-    m_tree->Branch("ph_phi", &m_ph_phi);
-    m_tree->Branch("ph_eta", &m_ph_eta);
-    m_tree->Branch("ph_m",   &m_ph_m);
-    m_tree->Branch("ph_E",   &m_ph_E);
-  }
-
-  if ( m_phInfoSwitch->m_isolation ) {
-
-    m_tree->Branch("ph_isIsolated_Cone40CaloOnly", &m_ph_isIsolated_Cone40CaloOnly);
-    m_tree->Branch("ph_isIsolated_Cone40",         &m_ph_isIsolated_Cone40);
-    m_tree->Branch("ph_isIsolated_Cone20",         &m_ph_isIsolated_Cone20);
-
-    //m_tree->Branch("ph_etcone20",         &m_ph_etcone20);
-    m_tree->Branch("ph_ptcone20",         &m_ph_ptcone20);
-    m_tree->Branch("ph_ptcone30",         &m_ph_ptcone30);
-    m_tree->Branch("ph_ptcone40",         &m_ph_ptcone40);
-    m_tree->Branch("ph_ptvarcone20",      &m_ph_ptvarcone20);
-    m_tree->Branch("ph_ptvarcone30",      &m_ph_ptvarcone30);
-    m_tree->Branch("ph_ptvarcone40",      &m_ph_ptvarcone40);
-    m_tree->Branch("ph_topoetcone20",     &m_ph_topoetcone20);
-    m_tree->Branch("ph_topoetcone30",     &m_ph_topoetcone30);
-    m_tree->Branch("ph_topoetcone40",     &m_ph_topoetcone40);
-  }
-
-  if ( m_phInfoSwitch->m_PID ) {
-    m_tree->Branch("nph_IsLoose",    &m_nph_IsLoose);
-    m_tree->Branch("ph_IsLoose",     &m_ph_IsLoose);
-    m_tree->Branch("nph_IsMedium",   &m_nph_IsMedium);
-    m_tree->Branch("ph_IsMedium",    &m_ph_IsMedium);
-    m_tree->Branch("nph_IsTight",    &m_nph_IsTight);
-    m_tree->Branch("ph_IsTight",     &m_ph_IsTight);
-  }
-
-  if ( m_phInfoSwitch->m_purity) {
-    m_tree->Branch("m_ph_radhad1",   &m_ph_radhad1);
-    m_tree->Branch("m_ph_radhad",    &m_ph_radhad );
-    m_tree->Branch("m_ph_e277",      &m_ph_e277   );
-    m_tree->Branch("m_ph_reta",      &m_ph_reta   );
-    m_tree->Branch("m_ph_rphi",      &m_ph_rphi   );
-    m_tree->Branch("m_ph_weta2",     &m_ph_weta2  );
-    m_tree->Branch("m_ph_f1",        &m_ph_f1     );
-    m_tree->Branch("m_ph_wtot",      &m_ph_wtot   );
-    m_tree->Branch("m_ph_deltae",    &m_ph_deltae );
-    m_tree->Branch("m_ph_eratio",    &m_ph_eratio );
-  }
-
-  this->AddPhotonsUser();
+  thisPhoton->setBranches(m_tree);
+  this->AddPhotonsUser(photonName);
 }
 
-void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons ) {
 
-  this->ClearPhotons();
-  this->ClearPhotonsUser();
+void HelpTreeBase::FillPhotons( const xAOD::PhotonContainer* photons, const std::string photonName ) {
 
-  m_nph = 0;
+  this->ClearPhotons(photonName);
 
-  for ( auto ph_itr : *(photons) ) {
-
-    if ( m_debug ) { Info("HelpTreeBase::FillPhotons()", "Filling photon w/ pT = %2f", ph_itr->pt() / m_units ); }
-
-    if ( m_phInfoSwitch->m_kinematic ) {
-      m_ph_pt.push_back ( (ph_itr)->pt() / m_units );
-      m_ph_eta.push_back( (ph_itr)->eta() );
-      m_ph_phi.push_back( (ph_itr)->phi() );
-      m_ph_m.push_back  ( (ph_itr)->m()  / m_units );
-      m_ph_E.push_back  ( (ph_itr)->e()  / m_units );
-    }
-
-    if ( m_phInfoSwitch->m_isolation ) {
-
-      static SG::AuxElement::Accessor<char> isIsoCone40CaloOnlyAcc    ("isIsolated_FixedCutTightCaloOnly");
-      static SG::AuxElement::Accessor<char> isIsoCone40Acc            ("isIsolated_FixedCutTight");
-      static SG::AuxElement::Accessor<char> isIsoCone20Acc            ("isIsolated_FixedCutLoose");
-
-      if ( isIsoCone40CaloOnlyAcc.isAvailable( *ph_itr ) ) {
-	m_ph_isIsolated_Cone40CaloOnly.push_back( isIsoCone40CaloOnlyAcc( *ph_itr ) );
-      } else {
-	m_ph_isIsolated_Cone40CaloOnly.push_back( -1 );
-      }
-
-      if ( isIsoCone40Acc.isAvailable( *ph_itr ) ) {
-	m_ph_isIsolated_Cone40.push_back( isIsoCone40Acc( *ph_itr ) );
-      } else {
-	m_ph_isIsolated_Cone40.push_back( -1 );
-      }
-
-      if ( isIsoCone20Acc.isAvailable( *ph_itr ) ) {
-	m_ph_isIsolated_Cone20.push_back( isIsoCone20Acc( *ph_itr ) );
-      } else {
-	m_ph_isIsolated_Cone20.push_back( -1 );
-      }
-
-      //m_ph_etcone20    .push_back( ph_itr->isolation( xAOD::Iso::etcone20    ) / m_units  );
-      m_ph_ptcone20    .push_back( ph_itr->isolation( xAOD::Iso::ptcone20    ) / m_units  );
-      m_ph_ptcone30    .push_back( ph_itr->isolation( xAOD::Iso::ptcone30    ) / m_units  );
-      m_ph_ptcone40    .push_back( ph_itr->isolation( xAOD::Iso::ptcone40    ) / m_units  );
-      m_ph_ptvarcone20 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone20 ) / m_units  );
-      m_ph_ptvarcone30 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone30 ) / m_units  );
-      m_ph_ptvarcone40 .push_back( ph_itr->isolation( xAOD::Iso::ptvarcone40 ) / m_units  );
-      m_ph_topoetcone20.push_back( ph_itr->isolation( xAOD::Iso::topoetcone20) / m_units  );
-      m_ph_topoetcone30.push_back( ph_itr->isolation( xAOD::Iso::topoetcone30) / m_units  );
-      m_ph_topoetcone40.push_back( ph_itr->isolation( xAOD::Iso::topoetcone40) / m_units  );
-
-    }
-
-    if ( m_phInfoSwitch->m_PID ) {
-      static SG::AuxElement::Accessor<bool> phLooseAcc  ("PhotonID_Loose");
-      static SG::AuxElement::Accessor<bool> phMediumAcc ("PhotonID_Medium");
-      static SG::AuxElement::Accessor<bool> phTightAcc  ("PhotonID_Tight");
-
-      if ( phLooseAcc.isAvailable( *ph_itr ) ) {
-        m_ph_IsLoose.push_back( phLooseAcc( *ph_itr ) );
-	if ( phLooseAcc( *ph_itr ) == 1 ) { ++m_nph_IsLoose; }
-      } else { m_ph_IsLoose.push_back( -1 ); }
-
-      if ( phMediumAcc.isAvailable( *ph_itr ) ) {
-        m_ph_IsMedium.push_back( phMediumAcc( *ph_itr ) );
-	if ( phMediumAcc( *ph_itr ) == 1 ) { ++m_nph_IsMedium; }
-      } else { m_ph_IsMedium.push_back( -1 ); }
-
-      if ( phTightAcc.isAvailable( *ph_itr ) ) {
-        m_ph_IsTight.push_back( phTightAcc( *ph_itr ) );
-	if ( phTightAcc( *ph_itr ) == 1 ) { ++m_nph_IsTight; }
-      } else { m_ph_IsTight.push_back( -1 ); }
-
-    }
-
-    if (m_phInfoSwitch->m_purity) {
-      static SG::AuxElement::Accessor<float> radhad1  ("Rhad1"  );
-      static SG::AuxElement::Accessor<float> radhad   ("Rhad"   );
-      static SG::AuxElement::Accessor<float> e277     ("e277"   );
-      static SG::AuxElement::Accessor<float> reta     ("Reta"   );
-      static SG::AuxElement::Accessor<float> rphi     ("Rphi"   );
-      static SG::AuxElement::Accessor<float> weta2    ("weta2"  );
-      static SG::AuxElement::Accessor<float> f1       ("f1"     );
-      static SG::AuxElement::Accessor<float> wtot     ("wtots1" );
-      //static SG::AuxElement::Accessor<float> w1       ("w1"     );
-      static SG::AuxElement::Accessor<float> deltae   ("DeltaE" );
-      static SG::AuxElement::Accessor<float> eratio   ("Eratio" );
-      
-      m_ph_radhad1  .push_back( radhad1(*ph_itr) );
-      m_ph_radhad   .push_back( radhad (*ph_itr) );
-      m_ph_e277     .push_back( e277   (*ph_itr) );
-      m_ph_reta     .push_back( reta   (*ph_itr) );
-      m_ph_rphi     .push_back( rphi   (*ph_itr) );
-      m_ph_weta2    .push_back( weta2  (*ph_itr) );
-      m_ph_f1       .push_back( f1     (*ph_itr) );
-      m_ph_wtot     .push_back( wtot   (*ph_itr) );
-      //m_ph_w1       .push_back( w1     (*ph_itr) );
-      m_ph_deltae   .push_back( deltae (*ph_itr) );
-      m_ph_eratio   .push_back( eratio (*ph_itr) );
-
-    }
-
-    this->FillPhotonsUser(ph_itr);
-
-    m_nph++;
+  for ( auto ph_itr : *photons ) {
+    this->FillPhoton(ph_itr, photonName);
   }
 }
 
-void HelpTreeBase::ClearPhotons() {
+void HelpTreeBase::FillPhoton( const xAOD::Photon* photon, const std::string photonName ) {
 
-  m_nph = 0;
+  xAH::PhotonContainer* thisPhoton = m_photons[photonName];
 
-  if ( m_phInfoSwitch->m_kinematic ){
-    m_ph_pt.clear();
-    m_ph_eta.clear();
-    m_ph_phi.clear();
-    m_ph_m.clear();
-    m_ph_E.clear();
-  }
+  thisPhoton->FillPhoton(photon);
 
+  this->FillPhotonsUser(photon, photonName);
 
-  if ( m_phInfoSwitch->m_isolation ){
-    m_ph_isIsolated_Cone40CaloOnly.clear();
-    m_ph_isIsolated_Cone40.clear();
-    m_ph_isIsolated_Cone20.clear();
-    //m_ph_etcone20.clear();
-    m_ph_ptcone20.clear();
-    m_ph_ptcone30.clear();
-    m_ph_ptcone40.clear();
-    m_ph_ptvarcone20.clear();
-    m_ph_ptvarcone30.clear();
-    m_ph_ptvarcone40.clear();
-    m_ph_topoetcone20.clear();
-    m_ph_topoetcone30.clear();
-    m_ph_topoetcone40.clear();
-  }
+  return;
+}
 
 
-  if ( m_phInfoSwitch->m_PID ) {
-    m_nph_IsLoose = 0;
-    m_ph_IsLoose.clear();
-    m_nph_IsMedium = 0;
-    m_ph_IsMedium.clear();
-    m_nph_IsTight = 0;
-    m_ph_IsTight.clear();
-  }
+void HelpTreeBase::ClearPhotons(const std::string photonName) {
 
-  if(m_phInfoSwitch->m_purity){
-    m_ph_radhad1.clear();
-    m_ph_radhad.clear();
-    m_ph_e277.clear();
-    m_ph_reta.clear();
-    m_ph_rphi.clear();
-    m_ph_weta2.clear();
-    m_ph_f1.clear();
-    m_ph_wtot.clear();
-    m_ph_deltae.clear();
-    m_ph_eratio.clear(); 
-
-  }
-
+  xAH::PhotonContainer* thisPhoton = m_photons[photonName];
+  thisPhoton->clear();
+ 
+  this->ClearPhotonsUser(photonName);
 }
 
 /*********************
@@ -1233,11 +643,12 @@ void HelpTreeBase::ClearTruthFatJets(const std::string& truthFatJetName) {
   xAH::FatJetContainer* thisTruthFatJet = m_truth_fatjets[truthFatJetName];
   thisTruthFatJet->clear();
 
-  this->ClearTruthFatJetsUser();
+  this->ClearTruthFatJetsUser(truthFatJetName);
 }
 
 void HelpTreeBase::ClearEvent() {
   m_eventInfo->clear();
+  this->ClearEventUser();
 }
 
 
@@ -1282,7 +693,7 @@ void HelpTreeBase::ClearTaus(const std::string tauName) {
   xAH::TauContainer* thisTau = m_taus[tauName];
   thisTau->clear();
   
-  this->ClearTausUser();
+  this->ClearTausUser(tauName);
   
 }
 

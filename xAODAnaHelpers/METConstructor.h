@@ -14,8 +14,9 @@
 
 using std::string;
 
-namespace met {
-       class METMaker;
+
+namespace met { 
+       class METMaker; 
        class METSystematicsTool;
 	 }
 namespace TauAnalysisTools { class TauSelectionTool; }
@@ -38,9 +39,10 @@ public:
   TString m_inputTaus;
   TString m_inputMuons;
 
-  std::string m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
-  std::string m_inputAlgoSystMuons;  // name of vector<string> of syst retrieved from TStore
-  std::string m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
+
+  std::string  m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
+  std::string  m_inputAlgoSystMuons;  // name of vector<string> of syst retrieved from TStore
+  std::string  m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
   std::string m_inputAlgoPhotons; // name of vector<string> of syst retrieved from TStore
 
   bool    m_doElectronCuts;
@@ -56,7 +58,10 @@ public:
   bool    m_useTrackJetTerm;
 
   bool m_runNominal;
+  
+  bool m_isMC; //add bool 
 
+  
   float m_systVal;
   std::string m_systName;
 
@@ -83,6 +88,9 @@ public:
    */
   std::string m_phoSystematics;
 
+
+  
+
 private:
 
   xAOD::TEvent *m_event;  //!
@@ -90,7 +98,8 @@ private:
 
   // tools
   met::METMaker* m_metmaker; //!
-  met::METSystematicsTool* metSystTool; //!
+
+  met::METSystematicsTool* metSystTool; //!   
 
   TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 

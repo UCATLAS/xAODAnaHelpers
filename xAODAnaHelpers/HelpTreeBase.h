@@ -30,6 +30,8 @@
 #include "xAODAnaHelpers/EventInfo.h"
 #include "xAODAnaHelpers/MetContainer.h"
 #include "xAODAnaHelpers/JetContainer.h"
+#include "xAODAnaHelpers/ElectronContainer.h"
+#include "xAODAnaHelpers/PhotonContainer.h"
 #include "xAODAnaHelpers/FatJetContainer.h"
 #include "xAODAnaHelpers/TruthContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
@@ -66,8 +68,8 @@ public:
   void AddTrigger     (const std::string detailStr = "");
   void AddJetTrigger  (const std::string detailStr = "");
   void AddMuons       (const std::string detailStr = "", const std::string muonName = "muon");
-  void AddElectrons   (const std::string detailStr = "");
-  void AddPhotons     (const std::string detailStr = "");
+  void AddElectrons   (const std::string detailStr = "", const std::string elecName = "el");
+  void AddPhotons     (const std::string detailStr = "", const std::string photonName = "ph");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
 
@@ -103,9 +105,6 @@ public:
   // control which branches are filled
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
   HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
-  HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
-  HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-
 
   std::string                  m_triggerSelection;
   TrigConf::xAODConfigTool*    m_trigConfTool;
@@ -119,8 +118,11 @@ public:
   void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex, const std::string muonName = "muon" );
   void FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primaryVertex, const std::string muonName = "muon" );
 
-  void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
-  void FillPhotons( const xAOD::PhotonContainer* photons );
+  void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex, const std::string elecName = "el" );
+  void FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex* primaryVertex, const std::string elecName = "el" );
+
+  void FillPhotons( const xAOD::PhotonContainer* photons, const std::string photonName = "ph" );
+  void FillPhoton ( const xAOD::Photon*          photon,  const std::string photonName = "ph" );
 
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
@@ -151,14 +153,14 @@ public:
   void ClearEvent();
   void ClearTrigger();
   void ClearJetTrigger();
-  void ClearMuons(const std::string jetName = "muon");
-  void ClearElectrons();
-  void ClearPhotons();
-  void ClearJets(const std::string jetName = "jet");
-  void ClearTruth(const std::string truthName);
-  void ClearFatJets(const std::string& fatjetName, const std::string& suffix="");
+  void ClearMuons       (const std::string jetName = "muon");
+  void ClearElectrons   (const std::string elecName = "el");
+  void ClearPhotons     (const std::string photonName = "ph");
+  void ClearJets        (const std::string jetName = "jet");
+  void ClearTruth       (const std::string truthName);
+  void ClearFatJets     (const std::string& fatjetName, const std::string& suffix="");
   void ClearTruthFatJets(const std::string& truthFatJetName = "truth_fatjet");
-  void ClearTaus(const std::string tauName = "tau" );
+  void ClearTaus        (const std::string tauName = "tau" );
   void ClearMET();
 
   bool writeTo( TFile *file );
@@ -230,24 +232,24 @@ public:
     return;
   };
 
-  virtual void ClearEventUser()     { return; };
-  virtual void ClearTriggerUser()   { return; };
-  virtual void ClearMuonsUser()     { return; };
-  virtual void ClearElectronsUser() { return; };
-  virtual void ClearPhotonsUser() { return; };
-  virtual void ClearTruthUser(const std::string& /*truthName*/) 	    { return; };
-  virtual void ClearJetsUser (const std::string /*jetName = "jet"*/ ) 	    { return; };
-  virtual void ClearFatJetsUser(const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/)   { return; };
-  virtual void ClearTruthFatJetsUser()   { return; };
-  virtual void ClearTausUser() 	    { return; };
-  virtual void ClearMETUser()       { return; };
+  virtual void ClearEventUser       ()     { return; };
+  virtual void ClearTriggerUser     ()   { return; };
+  virtual void ClearMuonsUser       (const std::string& /*muonName = muon"*/)     { return; };
+  virtual void ClearElectronsUser   (const std::string& /*elecName = "el"*/) { return; };
+  virtual void ClearPhotonsUser     (const std::string& /*photonName = "ph"*/) { return; };
+  virtual void ClearTruthUser       (const std::string& /*truthName*/) 	    { return; };
+  virtual void ClearJetsUser        (const std::string& /*jetName = "jet"*/ ) 	    { return; };
+  virtual void ClearFatJetsUser     (const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/)   { return; };
+  virtual void ClearTruthFatJetsUser(const std::string& /*truthFatJetName = "truth_fatjet"*/)   { return; };
+  virtual void ClearTausUser        (const std::string& /*tauName = "tau"*/) 	    { return; };
+  virtual void ClearMETUser         ()       { return; };
 
-  virtual void FillEventUser( const xAOD::EventInfo*  )        { return; };
-  virtual void FillMuonsUser( const xAOD::Muon*, const std::string /*muonName = "muon"*/  )             { return; };
-  virtual void FillElectronsUser( const xAOD::Electron*  )     { return; };
-  virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
-  virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
-  virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
+  virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
+  virtual void FillMuonsUser    ( const xAOD::Muon*,     const std::string /*muonName = "muon"*/  )             { return; };
+  virtual void FillElectronsUser( const xAOD::Electron*, const std::string /*elecName = "el"*/ )     { return; };
+  virtual void FillPhotonsUser  ( const xAOD::Photon*,   const std::string /*photonName = "ph"*/ )     { return; };
+  virtual void FillJetsUser     ( const xAOD::Jet*,      const std::string /*jetName = "jet"*/  )               { return; };
+  virtual void FillTruthUser    ( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
   /**
    *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
    *          information to your jet collection.
@@ -281,7 +283,6 @@ protected:
   int m_units; //For MeV to GeV conversion in output
 
   bool m_debug;
-  bool m_DC14;
   bool m_isMC;
 
   // event
@@ -331,138 +332,12 @@ protected:
   //
   // electrons
   //
-  int m_nel;
-
-  // kinematics
-  std::vector<float> m_el_pt;
-  std::vector<float> m_el_phi;
-  std::vector<float> m_el_eta;
-  std::vector<float> m_el_m;
-  std::vector<float> m_el_caloCluster_eta;
- 
-  // trigger
-  std::vector<int> m_el_isTrigMatched;
-  std::vector<std::vector<int> > m_el_isTrigMatchedToChain;
-  std::vector<std::string>       m_el_listTrigChains;
-
-  // isolation
-  std::vector<int>   m_el_isIsolated_LooseTrackOnly;
-  std::vector<int>   m_el_isIsolated_Loose;
-  std::vector<int>   m_el_isIsolated_Tight;
-  std::vector<int>   m_el_isIsolated_Gradient;
-  std::vector<int>   m_el_isIsolated_GradientLoose;
-  std::vector<int>   m_el_isIsolated_FixedCutLoose;
-  std::vector<int>   m_el_isIsolated_FixedCutTight;
-  std::vector<int>   m_el_isIsolated_FixedCutTightTrackOnly;
-  std::vector<int>   m_el_isIsolated_UserDefinedFixEfficiency;
-  std::vector<int>   m_el_isIsolated_UserDefinedCut;
-  std::vector<float> m_el_etcone20;
-  std::vector<float> m_el_ptcone20;
-  std::vector<float> m_el_ptcone30;
-  std::vector<float> m_el_ptcone40;
-  std::vector<float> m_el_ptvarcone20;
-  std::vector<float> m_el_ptvarcone30;
-  std::vector<float> m_el_ptvarcone40;
-  std::vector<float> m_el_topoetcone20;
-  std::vector<float> m_el_topoetcone30;
-  std::vector<float> m_el_topoetcone40;
-
-  // PID
-  int m_nel_LHLoose;
-  std::vector<int>   m_el_LHLoose;
-  int m_nel_LHMedium;
-  std::vector<int>   m_el_LHMedium;
-  int m_nel_LHTight;
-  std::vector<int>   m_el_LHTight;
-  int m_nel_IsEMLoose;
-  std::vector<int>   m_el_IsEMLoose;
-  int m_nel_IsEMMedium;
-  std::vector<int>   m_el_IsEMMedium;
-  int m_nel_IsEMTight;
-  std::vector<int>   m_el_IsEMTight;
-
-  // scale factors w/ sys
-  // per object
-  std::vector< std::vector< float > > m_el_RecoEff_SF;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHLooseAndBLayer;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHLoose;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHMedium;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHTight;
-
-  std::map< std::string, std::vector< std::vector< float > > > m_el_IsoEff_SF;
-  std::map< std::string, std::vector< std::vector< float > > > m_el_TrigEff_SF;
-  std::map< std::string, std::vector< std::vector< float > > > m_el_TrigMCEff;
-  const std::vector< std::string > m_PIDWPs = {"LooseAndBLayerLLH","MediumLLH","TightLLH"};
-  const std::vector< std::string > m_isolWPs = {"","_isolFixedCutLoose","_isolFixedCutTight","_isolFixedCutTightTrackOnly","_isolGradient","_isolGradientLoose","_isolLoose","_isolLooseTrackOnly","_isolTight"};
-
-  // track parameters
-  std::vector<float> m_el_trkd0;
-  std::vector<float> m_el_trkd0sig;
-  std::vector<float> m_el_trkz0;
-  std::vector<float> m_el_trkz0sintheta;
-  std::vector<float> m_el_trkphi0;
-  std::vector<float> m_el_trktheta;
-  std::vector<float> m_el_trkcharge;
-  std::vector<float> m_el_trkqOverP;
-
-  // track hit content
-  std::vector<int> m_el_trknSiHits;
-  std::vector<int> m_el_trknPixHits;
-  std::vector<int> m_el_trknPixHoles;
-  std::vector<int> m_el_trknSCTHits;
-  std::vector<int> m_el_trknSCTHoles;
-  std::vector<int> m_el_trknTRTHits;
-  std::vector<int> m_el_trknTRTHoles;
-  std::vector<int> m_el_trknBLayerHits;
-  std::vector<int> m_el_trknInnermostPixLayHits; // not available in DC14
-  std::vector<float> m_el_trkPixdEdX;            // not available in DC14
-
+  std::map<std::string, xAH::ElectronContainer*> m_elecs;
+  
   //
   // photons
-  int m_nph;
-
-  // kinematics
-  std::vector<float> m_ph_pt;
-  std::vector<float> m_ph_phi;
-  std::vector<float> m_ph_eta;
-  std::vector<float> m_ph_m;
-  std::vector<float> m_ph_E;
-
-  // isolation
-  std::vector<int>   m_ph_isIsolated_Cone40CaloOnly;
-  std::vector<int>   m_ph_isIsolated_Cone40;
-  std::vector<int>   m_ph_isIsolated_Cone20;
-  //std::vector<float> m_ph_etcone20;
-  std::vector<float> m_ph_ptcone20;
-  std::vector<float> m_ph_ptcone30;
-  std::vector<float> m_ph_ptcone40;
-  std::vector<float> m_ph_ptvarcone20;
-  std::vector<float> m_ph_ptvarcone30;
-  std::vector<float> m_ph_ptvarcone40;
-  std::vector<float> m_ph_topoetcone20;
-  std::vector<float> m_ph_topoetcone30;
-  std::vector<float> m_ph_topoetcone40;
-
-  // PID
-  int m_nph_IsLoose;
-  std::vector<int>   m_ph_IsLoose;
-  int m_nph_IsMedium;
-  std::vector<int>   m_ph_IsMedium;
-  int m_nph_IsTight;
-  std::vector<int>   m_ph_IsTight;
-
-  //Purity
-  std::vector<float> m_ph_radhad1;
-  std::vector<float> m_ph_radhad;
-  std::vector<float> m_ph_e277;
-  std::vector<float> m_ph_reta;
-  std::vector<float> m_ph_rphi;
-  std::vector<float> m_ph_weta2;
-  std::vector<float> m_ph_f1;
-  std::vector<float> m_ph_wtot;
-  //std::vector<float> m_ph_w1;
-  std::vector<float> m_ph_deltae;
-  std::vector<float> m_ph_eratio;
+  //
+  std::map<std::string, xAH::PhotonContainer*> m_photons;
 
   //
   // taus
