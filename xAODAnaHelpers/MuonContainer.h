@@ -69,11 +69,13 @@ namespace xAH {
     
       // scale factors w/ sys
       // per object
-      std::vector< std::vector< float > > *m_RecoEff_SF_Loose;
-      std::vector< std::vector< float > > *m_RecoEff_SF_Medium;
-      
+      std::vector< std::vector< float > > *m_TTVAEff_SF;
+    
+      std::map< std::string, std::vector< std::vector< float > > >* m_RecoEff_SF;
+      std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
+      
       std::vector< std::string > m_triggers = {
                                                 "HLT_mu10",
                                                 "HLT_mu14",
@@ -108,34 +110,13 @@ namespace xAH {
                                                 "HLT_mu26_ivarmedium_OR_HLT_mu50",
                                                 };
 
-      std::vector< std::string > m_recoWPs = {"Loose","Medium","Tight"};
-      std::vector< std::string > m_isolWPs = {"Loose","FixedCutTightTrackOnly","Gradient","GradientLoose"};
+      std::vector< std::string > m_reco = {"RecoLoose","RecoMedium","RecoTight"};
+      std::vector< std::string > m_isol = {"IsoLoose","IsoFixedCutTightTrackOnly","IsoGradient","IsoGradientLoose"};
       
-      //std::vector< std::vector< float > > *m_TrigEff_SF_Loose_Loose;
-      //std::vector< std::vector< float > > *m_TrigEff_SF_Loose_FixedCutTightTrackOnly;
-      //std::vector< std::vector< float > > *m_TrigEff_SF_Loose_Gradient;
-      //std::vector< std::vector< float > > *m_TrigEff_SF_Loose_GradientLoose;
-      //std::vector< std::vector< float > > *m_TrigEff_SF_Medium_FixedCutTightTrackOnly;
-      //std::vector< std::vector< float > > *m_TrigEff_SF_Medium_Gradient;
-      //std::vector< std::vector< float > > *m_TrigEff_SF_Medium_GradientLoose;
-      
-      //std::vector< std::vector< float > > *m_TrigMCEff_Loose_Loose;
-      //std::vector< std::vector< float > > *m_TrigMCEff_Loose_FixedCutTightTrackOnly;
-      //std::vector< std::vector< float > > *m_TrigMCEff_Loose_Gradient;
-      //std::vector< std::vector< float > > *m_TrigMCEff_Loose_GradientLoose;
-      //std::vector< std::vector< float > > *m_TrigMCEff_Medium_FixedCutTightTrackOnly;
-      //std::vector< std::vector< float > > *m_TrigMCEff_Medium_Gradient;
-      //std::vector< std::vector< float > > *m_TrigMCEff_Medium_GradientLoose;
-      
-      std::vector< std::vector< float > > *m_IsoEff_SF_LooseTrackOnly;
-      std::vector< std::vector< float > > *m_IsoEff_SF_Loose;
-      std::vector< std::vector< float > > *m_IsoEff_SF_Tight;
-      std::vector< std::vector< float > > *m_IsoEff_SF_Gradient;
-      std::vector< std::vector< float > > *m_IsoEff_SF_GradientLoose;
-      std::vector< std::vector< float > > *m_IsoEff_SF_FixedCutLoose;
-      std::vector< std::vector< float > > *m_IsoEff_SF_FixedCutTightTrackOnly;
-      std::vector< std::vector< float > > *m_TTVAEff_SF;
-    
+      std::vector< std::string > m_recoWPs;
+      std::vector< std::string > m_isolWPs;
+      std::vector< std::string > m_trigWPs;
+  
       // track parameters
       std::vector<float> *m_trkd0;
       std::vector<float> *m_trkd0sig;

@@ -223,7 +223,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
-    m_outputSystNamesReco = m_outputSystNamesReco + "_" + m_WorkingPointReco;
+    m_outputSystNamesReco = m_outputSystNamesReco + "_Reco" + m_WorkingPointReco;
 
     if ( m_debug ) {
       CP::SystematicSet affectSystsReco = m_muRecoSF_tool->affectingSystematics();
@@ -970,9 +970,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
              i += outsfstr.length();
            } 
            
-           std::cout << "Fucking here " << sf_string << " " << std::endl;
-           std::cout << "and here " << eff_string << " " << std::endl;
-
            SG::AuxElement::Decorator< std::vector<float> > effMC( eff_string );
            if ( !effMC.isAvailable( *mu_itr ) ) {
              effMC( *mu_itr ) = std::vector<float>();
