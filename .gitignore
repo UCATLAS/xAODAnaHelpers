@@ -1,3 +1,6 @@
+# GRLs #
+data/*.xml
+
 # Compiled source #
 ###################
 *.com
