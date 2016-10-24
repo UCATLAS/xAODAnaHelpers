@@ -294,7 +294,7 @@ if __name__ == "__main__":
       xAH_logger.info("\t\tReading in file(s) containing list of files")
       if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
-        xAH_logger.warning("\033[5m\t\tTHIS IS BEING DEPRECATED SOON\033[0m")
+        xAH_logger.warning("\033[5m\t\tUse inputRucio instead\033[0m")
       elif args.use_scanRucio:
         xAH_logger.info("\t\tAdding samples using scanRucio")
       elif use_scanEOS:
@@ -304,7 +304,7 @@ if __name__ == "__main__":
     else:
       if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
-        xAH_logger.warning("\033[5m\t\tTHIS IS BEING DEPRECATED SOON\033[0m")
+        xAH_logger.warning("\033[5m\t\tUse inputRucio instead\033[0m")
       if args.use_scanRucio:
         xAH_logger.info("\t\tAdding samples using scanRucio")
       elif use_scanEOS:
