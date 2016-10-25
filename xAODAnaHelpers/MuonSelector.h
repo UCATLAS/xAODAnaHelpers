@@ -63,6 +63,8 @@ public:
   float          m_d0sig_max; 	             /* require d0 significance (at BL) < m_d0sig_max */
   float	         m_z0sintheta_max;           /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
 
+  /** @brief Remove cosmic muons that fail absolute z0 and d0 selections */
+  bool           m_removeCosmicMuon;
   /** @brief Remove events with a bad muon, defined by poor q/p */
   bool           m_removeEventBadMuon;
 
@@ -112,6 +114,7 @@ private:
   int   m_mu_cutflow_d0_cut;		    //!
   int   m_mu_cutflow_d0sig_cut;  	    //!
   int   m_mu_cutflow_iso_cut;		    //!
+  int   m_mu_cutflow_cosmic_cut;		    //!
 
   std::vector<std::string> m_IsoKeys;       //!
 
