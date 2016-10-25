@@ -17,6 +17,10 @@ Event Level
 -  `ElectronPhotonSelectorTools <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonSelectorTools>`__
 -  `IsolationCorrectionTool <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/IsolationLeakageCorrections>`__
 
+:math:`\mu`
+---------
+-  `MuonSelectionTool <https://twiki.cern.ch/twiki/bin/view/Atlas/MuonSelectionTool>`__
+
 :math:`j`
 ---------
 
