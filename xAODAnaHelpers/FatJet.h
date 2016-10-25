@@ -21,6 +21,15 @@ namespace xAH {
       float JetEMScaleMomentum_m;
       float JetEMScaleMomentum_pt;
 
+      // area
+      float GhostArea;
+      float ActiveArea;
+      float VoronoiArea;
+      float ActiveArea4vec_pt;
+      float ActiveArea4vec_eta;
+      float ActiveArea4vec_phi;
+      float ActiveArea4vec_m;
+
       // substructure
       float  Split12;
       float  Split23;

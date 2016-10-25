@@ -70,6 +70,16 @@ namespace xAH {
       std::vector<float> *m_JetEMScaleMomentum_m;
       std::vector<float> *m_JetEMScaleMomentum_pt;
 
+      // area
+      std::vector<float> *m_GhostArea;
+      std::vector<float> *m_ActiveArea;
+      std::vector<float> *m_VoronoiArea;
+
+      std::vector<float> *m_ActiveArea4vec_pt;
+      std::vector<float> *m_ActiveArea4vec_eta;
+      std::vector<float> *m_ActiveArea4vec_phi;
+      std::vector<float> *m_ActiveArea4vec_m;
+
       // substructure
       std::vector<float> *m_Split12;
       std::vector<float> *m_Split23;
