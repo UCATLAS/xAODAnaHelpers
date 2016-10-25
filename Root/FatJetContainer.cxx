@@ -26,6 +26,17 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
       m_JetEMScaleMomentum_pt       = new std::vector<float>();
   }
 
+  if (m_infoSwitch.m_area) {
+    m_GhostArea = new std::vector<float>();
+    m_ActiveArea = new std::vector<float>();
+    m_VoronoiArea = new std::vector<float>();
+
+    m_ActiveArea4vec_pt = new std::vector<float>();
+    m_ActiveArea4vec_eta = new std::vector<float>();
+    m_ActiveArea4vec_phi = new std::vector<float>();
+    m_ActiveArea4vec_m = new std::vector<float>();
+  }
+
   if ( m_infoSwitch.m_substructure ) {
     m_Split12           = new std::vector<float>();
     m_Split23           = new std::vector<float>();
@@ -106,6 +117,17 @@ FatJetContainer::~FatJetContainer()
       delete m_JetEMScaleMomentum_pt       ;
   }
 
+  if ( m_infoSwitch.m_area ) {
+    delete m_GhostArea;
+    delete m_ActiveArea;
+    delete m_VoronoiArea;
+
+    delete m_ActiveArea4vec_pt;
+    delete m_ActiveArea4vec_eta;
+    delete m_ActiveArea4vec_phi;
+    delete m_ActiveArea4vec_m;
+  }
+
   if ( m_infoSwitch.m_substructure ) {
     delete m_Split12     ;
     delete m_Split23     ;
@@ -184,6 +206,17 @@ void FatJetContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "JetEMScaleMomentum_pt", &m_JetEMScaleMomentum_pt);
   }
 
+  if ( m_infoSwitch.m_area ) {
+    connectBranch<float>(tree, "m_GhostArea", &m_GhostArea);
+    connectBranch<float>(tree, "m_ActiveArea", &m_ActiveArea);
+    connectBranch<float>(tree, "m_VoronoiArea", &m_VoronoiArea);
+
+    connectBranch<float>(tree, "m_ActiveArea4vec_pt", &m_ActiveArea4vec_pt);
+    connectBranch<float>(tree, "m_ActiveArea4vec_eta", &m_ActiveArea4vec_eta);
+    connectBranch<float>(tree, "m_ActiveArea4vec_phi", &m_ActiveArea4vec_phi);
+    connectBranch<float>(tree, "m_ActiveArea4vec_m", &m_ActiveArea4vec_m);
+  }
+
   if ( m_infoSwitch.m_substructure ) {
     connectBranch<float>(tree, "Split12",      &m_Split12);
     connectBranch<float>(tree, "Split23",      &m_Split23);
@@ -252,6 +285,16 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
       fatjet.JetEMScaleMomentum_phi = m_JetEMScaleMomentum_phi ->at(idx);
       fatjet.JetEMScaleMomentum_m = m_JetEMScaleMomentum_m ->at(idx);
       fatjet.JetEMScaleMomentum_pt = m_JetEMScaleMomentum_pt ->at(idx);
+  }
+
+  if ( m_infoSwitch.m_area ) {
+    fatjet.GhostArea = m_GhostArea->at(idx);
+    fatjet.ActiveArea = m_ActiveArea->at(idx);
+    fatjet.VoronoiArea = m_VoronoiArea->at(idx);
+    fatjet.ActiveArea4vec_pt = m_ActiveArea4vec_pt->at(idx);
+    fatjet.ActiveArea4vec_eta = m_ActiveArea4vec_eta->at(idx);
+    fatjet.ActiveArea4vec_phi = m_ActiveArea4vec_phi->at(idx);
+    fatjet.ActiveArea4vec_m = m_ActiveArea4vec_m->at(idx);
   }
 
   if ( m_infoSwitch.m_substructure ) {
@@ -334,6 +377,17 @@ void FatJetContainer::setBranches(TTree *tree)
       setBranch<float>(tree, "JetEMScaleMomentum_pt", m_JetEMScaleMomentum_pt);
   }
 
+  if ( m_infoSwitch.m_area ) {
+    setBranch<float>(tree, "GhostArea", m_GhostArea); 
+    setBranch<float>(tree, "ActiveArea", m_ActiveArea); 
+    setBranch<float>(tree, "VoronoiArea", m_VoronoiArea); 
+    setBranch<float>(tree, "ActiveArea4vec_pt", m_ActiveArea4vec_pt); 
+    setBranch<float>(tree, "ActiveArea4vec_eta", m_ActiveArea4vec_eta); 
+    setBranch<float>(tree, "ActiveArea4vec_phi", m_ActiveArea4vec_phi); 
+    setBranch<float>(tree, "ActiveArea4vec_m", m_ActiveArea4vec_m); 
+
+  }
+
   if ( m_infoSwitch.m_substructure ) {
     setBranch<float>(tree, "Split12",      m_Split12);
     setBranch<float>(tree, "Split23",      m_Split23);
@@ -404,6 +458,16 @@ void FatJetContainer::clear()
     m_JetEMScaleMomentum_phi    ->clear();
     m_JetEMScaleMomentum_m    ->clear();
     m_JetEMScaleMomentum_pt   ->clear();
+  }
+
+  if ( m_infoSwitch.m_area ) {
+    m_GhostArea->clear(); 
+    m_ActiveArea->clear(); 
+    m_VoronoiArea->clear(); 
+    m_ActiveArea4vec_pt->clear(); 
+    m_ActiveArea4vec_eta->clear(); 
+    m_ActiveArea4vec_phi->clear(); 
+    m_ActiveArea4vec_m->clear(); 
   }
 
   if ( m_infoSwitch.m_substructure ) {
@@ -488,6 +552,23 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
     safeFill<float, float, xAOD::Jet>(fatjet, acc_JetEMScaleMomentum_m, m_JetEMScaleMomentum_m, -999, m_units);
     static SG::AuxElement::ConstAccessor<float> acc_JetEMScaleMomentum_pt("JetEMScaleMomentum_pt");
     safeFill<float, float, xAOD::Jet>(fatjet, acc_JetEMScaleMomentum_pt, m_JetEMScaleMomentum_pt, -999, m_units);
+  }
+
+  if ( m_infoSwitch.m_area ) {
+    static SG::AuxElement::ConstAccessor<float> acc_GhostArea("GhostArea");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_GhostArea, m_GhostArea, -999); 
+    static SG::AuxElement::ConstAccessor<float> acc_ActiveArea("ActiveArea");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_ActiveArea, m_ActiveArea, -999); 
+    static SG::AuxElement::ConstAccessor<float> acc_VoronoiArea("VoronoiArea");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_VoronoiArea, m_VoronoiArea, -999); 
+    static SG::AuxElement::ConstAccessor<float> acc_ActiveArea4vec_pt("ActiveArea4vec_pt");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_ActiveArea4vec_pt, m_ActiveArea4vec_pt, -999, m_units); 
+    static SG::AuxElement::ConstAccessor<float> acc_ActiveArea4vec_eta("ActiveArea4vec_eta");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_ActiveArea4vec_eta, m_ActiveArea4vec_eta, -999); 
+    static SG::AuxElement::ConstAccessor<float> acc_ActiveArea4vec_phi("ActiveArea4vec_phi");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_ActiveArea4vec_phi, m_ActiveArea4vec_phi, -999); 
+    static SG::AuxElement::ConstAccessor<float> acc_ActiveArea4vec_m("ActiveArea4vec_m");
+    safeFill<float, float, xAOD::Jet>(fatjet, acc_ActiveArea4vec_m, m_ActiveArea4vec_m, -999, m_units); 
   }
 
   if( m_infoSwitch.m_substructure ){
