@@ -364,14 +364,11 @@ if __name__ == "__main__":
         elif args.use_scanRucio:
           ROOT.SH.scanRucio(sh_all, fname)
         elif use_scanEOS:
-          newEOS = True
-          if not newEOS:
-            ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
-          if newEOS:
-            print("Running on EOS directory "+fname+" with tag "+args.inputTag)
-            eoslist = ROOT.SH.DiskListEOS(fname)
-            ROOT.SH.scanDir (sh_all, eoslist, args.inputTag); #Run on all files within dir containing inputTag
-          #ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
+          tag=args.inputTag
+          if ( tag == "" ):
+            tag="*"
+          print("Running on EOS directory "+fname+" with tag "+tag)
+          ROOT.SH.ScanDir().filePattern(tag).scanEOS(sh_all,fname)
         elif args.use_scanXRD:
           # assume format like root://someserver//path/to/files/*pattern*.root
           server, path = fname.replace('root://', '').split('//')
