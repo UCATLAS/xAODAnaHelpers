@@ -169,6 +169,25 @@ namespace HelperClasses{
     m_isolWPs["_isolLooseTrackOnly"]           = has_exact("isolLooseTrackOnly");
     m_isolWPs["_isolTight"]                    = has_exact("isolTight");
     m_isolWPs[""]                              = has_exact("isolNoRequirement");
+    m_trigWPs["DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH_"]       = has_exact("DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH");
+    m_trigWPs["DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"]                = has_exact("DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0");
+    m_trigWPs["DI_E_2015_e17_lhloose_2016_e17_lhloose_"]                               = has_exact("DI_E_2015_e17_lhloose_2016_e17_lhloose");
+    m_trigWPs["MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0_"]                       = has_exact("MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0");
+    m_trigWPs["MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0_"]                       = has_exact("MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0");
+    m_trigWPs["MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0_"]                       = has_exact("MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0");
+    m_trigWPs["MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI_"] = has_exact("MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI");
+    m_trigWPs["MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI_"] = has_exact("MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI");
+    m_trigWPs["SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"] = has_exact("SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0");
+    m_trigWPs["SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"] = has_exact("SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0");
+    m_trigWPs["TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_"]                           = has_exact("TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0");
+    m_trigWPs["TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0_"]                          = has_exact("TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0");
+    m_trigWPs["TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_"]                         = has_exact("TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0");
+    m_trigWPs["TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0_"]                        = has_exact("TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0");
+    m_trigWPs["e17_lhloose_L1EM15_"]                                                   = has_exact("e17_lhloose_L1EM15");
+    m_trigWPs["e17_lhmedium_"]                                                         = has_exact("e17_lhmedium");
+    m_trigWPs["e17_lhmedium_nod0_"]                                                    = has_exact("e17_lhmedium_nod0");
+    m_trigWPs["e17_lhmedium_nod0_L1EM15HI_"]                                           = has_exact("e17_lhmedium_nod0_L1EM15HI");
+    m_trigWPs["e17_lhmedium_nod0_ivarloose_L1EM15HI_"]                                 = has_exact("e17_lhmedium_nod0_ivarloose_L1EM15HI");
   }
 
   void PhotonInfoSwitch::initialize(){

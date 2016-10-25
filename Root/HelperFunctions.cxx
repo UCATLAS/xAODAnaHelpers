@@ -489,6 +489,17 @@ std::string HelperFunctions::parse_wp( const std::string& type, const std::strin
     init = string_pos( config_name, '.', 2 );
     end  = found_ID;
     
+  } else if ( type.compare("TRIG") == 0 ) {
+ 
+    std::size_t found_trigger = config_name.find("trigger");
+    
+    // Return empty string if no LLH in config name
+    
+    if ( found_trigger == std::string::npos ) { return wp; }
+       
+    init = string_pos( config_name, '.', 3 );
+    end  = string_pos( config_name, '.', 2 ) - 1;
+    
   } else {
   
     Warning("HelperFunctions::parse_wp()","WP type can be either 'ISO' or 'ID'. Please check passed parameters of this function. Returning empty WP.");
