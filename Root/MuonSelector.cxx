@@ -619,7 +619,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     }
 
     // Remove events with isBadMuon (poor q/p)
-    if( m_removeEventBadMuon && pasSel ){
+    if( m_removeEventBadMuon && passSel ){
       if( m_muonSelectionTool_handle->isBadMuon( *mu_itr ) ){
         if( m_debug )  Info("executeSelection()", "Rejecting event with bad muon (pt = %f)", mu_itr->pt() ); 
         return false;
