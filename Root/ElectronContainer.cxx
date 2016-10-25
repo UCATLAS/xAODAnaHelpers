@@ -839,14 +839,14 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       
       for (auto& isol : m_isolWPs) {
 
-       accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigSyst_" + PID + isol ) ) );
+       accTrigSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "EleEffCorr_TrigSyst_" + PID + isol ) ) );
        if( (accTrigSF.at( PID+isol )).isAvailable( *elec ) ) { 
          m_TrigEff_SF->at( PID+isol ).push_back( (accTrigSF.at( PID+isol ))( *elec ) ); 
        }else { 
          m_TrigEff_SF->at( PID+isol ).push_back( junkSF ); 
        }
 
-       accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_TrigMCEffSyst_" + PID + isol ) ) );
+       accTrigEFF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "EleEffCorr_TrigMCEffSyst_" + PID + isol ) ) );
        if( (accTrigEFF.at( PID+isol )).isAvailable( *elec ) ) { 
          m_TrigMCEff->at( PID+isol ).push_back( (accTrigEFF.at( PID+isol ))( *elec ) ); 
        } else { 
@@ -854,7 +854,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
        }
 
        if(isol.empty()) continue;
-       accIsoSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "ElectronEfficiencyCorrector_IsoSyst_" + PID + isol ) ) );
+       accIsoSF.insert( std::pair<std::string, floatAccessor > ( PID+isol , floatAccessor( "EleEffCorr_IsoSyst_" + PID + isol ) ) );
        if( (accIsoSF.at( PID+isol )).isAvailable( *elec ) ) { 
          m_IsoEff_SF->at( PID+isol ).push_back( (accIsoSF.at( PID+isol ))( *elec ) ); 
        } else { 
@@ -863,11 +863,11 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
      }
    }
 
-   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElectronEfficiencyCorrector_RecoSyst");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("ElectronEfficiencyCorrector_PIDSyst_LooseAndBLayerLLH");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("ElectronEfficiencyCorrector_PIDSyst_LooseLLh");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("ElectronEfficiencyCorrector_PIDSyst_MediumLLH");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("ElectronEfficiencyCorrector_PIDSyst_TightLLH");
+   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("EleEffCorr_RecoSyst");
+   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("EleEffCorr_PIDSyst_LooseAndBLayerLLH");
+   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("EleEffCorr_PIDSyst_LooseLLh");
+   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("EleEffCorr_PIDSyst_MediumLLH");
+   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("EleEffCorr_PIDSyst_TightLLH");
 
    if( accRecoSF.isAvailable( *elec ) )                     { m_RecoEff_SF->push_back( accRecoSF( *elec ) ); } else { m_RecoEff_SF->push_back( junkSF ); }
    if( accPIDSF_LHLooseAndBLayer.isAvailable( *elec ) )     { m_PIDEff_SF_LHLooseAndBLayer->push_back( accPIDSF_LHLooseAndBLayer( *elec ) ); } else { m_PIDEff_SF_LHLooseAndBLayer->push_back( junkSF ); }

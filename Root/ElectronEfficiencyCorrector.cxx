@@ -64,11 +64,11 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
   m_systNameTrig            = "";
   m_systNameReco            = "";
   m_systNameTrigMCEff       = "";
-  m_outputSystNamesPID      = "ElectronEfficiencyCorrector_PIDSyst";
-  m_outputSystNamesIso      = "ElectronEfficiencyCorrector_IsoSyst";
-  m_outputSystNamesReco     = "ElectronEfficiencyCorrector_RecoSyst";
-  m_outputSystNamesTrig     = "ElectronEfficiencyCorrector_TrigSyst";
-  m_outputSystNamesTrigMCEff = "ElectronEfficiencyCorrector_TrigMCEffSyst";
+  m_outputSystNamesPID      = "EleEffCorr_PIDSyst";
+  m_outputSystNamesIso      = "EleEffCorr_IsoSyst";
+  m_outputSystNamesReco     = "EleEffCorr_RecoSyst";
+  m_outputSystNamesTrig     = "EleEffCorr_TrigSyst";
+  m_outputSystNamesTrigMCEff = "EleEffCorr_TrigMCEffSyst";
 
   // file(s) containing corrections
   //
