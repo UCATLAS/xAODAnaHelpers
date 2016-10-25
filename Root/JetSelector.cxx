@@ -520,7 +520,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     }
 
     // Cleaning Selection must come after kinematic and JVT selections
-    if ( passSel && isCleanAcc.isAvailable( *jet_itr ) ) {
+    if ( m_cleanJets && passSel && isCleanAcc.isAvailable( *jet_itr ) ) {
       if( !isCleanAcc( *jet_itr ) ) { 
         passSel = false;
         if ( m_decorateSelectedObjects )

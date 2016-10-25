@@ -95,7 +95,7 @@ parser.add_argument('--extraOptions', dest="extra_options", metavar="[param=val]
 
 parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of paths/filenames.')
 parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
-parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='[DEPRECATION] If enabled, will search using DQ2. Can be combined with `--inputList`.')
+parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='[DEPRECATION] Use inputRucio instead.')
 parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', help='If enabled, will search using Rucio. Can be combined with `--inputList`.')
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
@@ -294,7 +294,7 @@ if __name__ == "__main__":
       xAH_logger.info("\t\tReading in file(s) containing list of files")
       if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
-        xAH_logger.warning("\033[5m\t\tTHIS IS BEING DEPRECATED SOON\033[0m")
+        xAH_logger.warning("\033[5m\t\tUse inputRucio instead\033[0m")
       elif args.use_scanRucio:
         xAH_logger.info("\t\tAdding samples using scanRucio")
       elif use_scanEOS:
@@ -304,7 +304,7 @@ if __name__ == "__main__":
     else:
       if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
-        xAH_logger.warning("\033[5m\t\tTHIS IS BEING DEPRECATED SOON\033[0m")
+        xAH_logger.warning("\033[5m\t\tUse inputRucio instead\033[0m")
       if args.use_scanRucio:
         xAH_logger.info("\t\tAdding samples using scanRucio")
       elif use_scanEOS:
@@ -364,14 +364,11 @@ if __name__ == "__main__":
         elif args.use_scanRucio:
           ROOT.SH.scanRucio(sh_all, fname)
         elif use_scanEOS:
-          newEOS = True
-          if not newEOS:
-            ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
-          if newEOS:
-            print("Running on EOS directory "+fname+" with tag "+args.inputTag)
-            eoslist = ROOT.SH.DiskListEOS(fname)
-            ROOT.SH.scanDir (sh_all, eoslist, args.inputTag); #Run on all files within dir containing inputTag
-          #ROOT.SH.ScanDir().sampleDepth(0).samplePattern(args.inputTag).scanEOS(sh_all,fname)
+          tag=args.inputTag
+          if ( tag == "" ):
+            tag="*"
+          print("Running on EOS directory "+fname+" with tag "+tag)
+          ROOT.SH.ScanDir().filePattern(tag).scanEOS(sh_all,fname)
         elif args.use_scanXRD:
           # assume format like root://someserver//path/to/files/*pattern*.root
           server, path = fname.replace('root://', '').split('//')

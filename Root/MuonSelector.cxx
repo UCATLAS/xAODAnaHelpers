@@ -96,8 +96,11 @@ MuonSelector :: MuonSelector (std::string className) :
   m_pT_min                  = 1e8;
   m_eta_max                 = 1e8;
   m_d0_max                  = 1e8;
-  m_d0sig_max     	    = 1e8;
+  m_d0sig_max     	        = 1e8;
   m_z0sintheta_max          = 1e8;
+
+  m_removeCosmicMuon        = false;
+  m_removeEventBadMuon      = true;
 
   // isolation stuff
   //
@@ -230,22 +233,27 @@ EL::StatusCode MuonSelector :: initialize ()
     m_mu_cutflow_d0_cut               = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
     m_mu_cutflow_d0sig_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0sig_cut");
     m_mu_cutflow_iso_cut              = m_mu_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
+    if( m_removeCosmicMuon )
+      m_mu_cutflow_cosmic_cut              = m_mu_cutflowHist_1->GetXaxis()->FindBin("cosmic_cut");
+
 
     if ( m_isUsedBefore ) {
-       m_mu_cutflowHist_2 = (TH1D*)file->Get("cutflow_muons_2");
+      m_mu_cutflowHist_2 = (TH1D*)file->Get("cutflow_muons_2");
 
-       m_mu_cutflow_all 		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("all");
-       m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");
-       m_mu_cutflow_ptmax_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
-       m_mu_cutflow_ptmin_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
-       m_mu_cutflow_type_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("type_cut");
-       m_mu_cutflow_z0sintheta_cut	 = m_mu_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
-       m_mu_cutflow_d0_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
-       m_mu_cutflow_d0sig_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
-       m_mu_cutflow_iso_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
+      m_mu_cutflow_all 		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("all");
+      m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");
+      m_mu_cutflow_ptmax_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
+      m_mu_cutflow_ptmin_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
+      m_mu_cutflow_type_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("type_cut");
+      m_mu_cutflow_z0sintheta_cut	 = m_mu_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
+      m_mu_cutflow_d0_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
+      m_mu_cutflow_d0sig_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
+      m_mu_cutflow_iso_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
+      if( m_removeCosmicMuon )
+        m_mu_cutflow_cosmic_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("cosmic_cut");
     }
 
-  }
+  }// if m_useCutFlow
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -616,6 +624,14 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
       passSelDecor( *mu_itr ) = passSel;
     }
 
+    // Remove events with isBadMuon (poor q/p)
+    if( m_removeEventBadMuon && passSel ){
+      if( m_muonSelectionTool_handle->isBadMuon( *mu_itr ) ){
+        if( m_debug )  Info("executeSelection()", "Rejecting event with bad muon (pt = %f)", mu_itr->pt() ); 
+        return false;
+      }
+    }
+
     if ( passSel ) {
       nPass++;
       if ( m_createSelectedContainer ) {
@@ -717,41 +733,41 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
       for ( auto const &chain : m_diMuTrigChainsList ) {
 
-	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-
-	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
-	//
-	if ( !diMuonTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
+      	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
+      
+      	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
+      	//
+      	if ( !diMuonTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
           diMuonTrigMatchPairMapDecor( *eventInfo ) = dimuon_trigmatch_pair_map();
-	}	
-
-	std::vector<const xAOD::IParticle*> myMuons;
-
-	for ( unsigned int imu = 0; imu < selectedMuons->size()-1; ++imu ) {
-
-	  for ( unsigned int jmu = imu+1; jmu < selectedMuons->size(); ++jmu ) {
-
+      	}	
+      
+      	std::vector<const xAOD::IParticle*> myMuons;
+      
+      	for ( unsigned int imu = 0; imu < selectedMuons->size()-1; ++imu ) {
+      
+      	  for ( unsigned int jmu = imu+1; jmu < selectedMuons->size(); ++jmu ) {
+      
             // test a new pair
             //
-	    myMuons.clear();
-	    myMuons.push_back( selectedMuons->at(imu) );
-	    myMuons.push_back( selectedMuons->at(jmu) );
-
+      	    myMuons.clear();
+      	    myMuons.push_back( selectedMuons->at(imu) );
+      	    myMuons.push_back( selectedMuons->at(jmu) );
+      
             // check whether the pair is matched
             //
-	    char matched = m_trigMuonMatchTool_handle->match( myMuons, chain, m_minDeltaR );
-
-       	    if ( m_debug ) { Info("executeSelection()", "\t\t is the muon pair (%i,%i) trigger matched? %i", imu, jmu, matched); }
-
-	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
-            dimuon_trigmatch_pair                   chain_decision = std::make_pair(chain_idxs,matched);
+      	    char matched = m_trigMuonMatchTool_handle->match( myMuons, chain, m_minDeltaR );
+      
+      	    if ( m_debug ) { Info("executeSelection()", "\t\t is the muon pair (%i,%i) trigger matched? %i", imu, jmu, matched); }
+      
+      	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
+            dimuon_trigmatch_pair  chain_decision = std::make_pair(chain_idxs,matched);
             diMuonTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dimuon_trigmatch_pair >(chain,chain_decision) );
-	    
-	  }
-	}
-      }
-    }
-  }
+      	    
+      	  }
+      	}
+      } //for m_diMuTrigChainsList
+    } //if nSelectedMuons > 1 && !m_diMuTrigChains.empty()
+  } //if m_doTrigMatch && selectedMuons
 
   if ( m_debug ) { Info("execute()", "Left  executeSelection..." ); }
   return true;
@@ -987,6 +1003,22 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_iso_cut, 1 ); }
+
+  if( m_removeCosmicMuon ){
+
+    double muon_d0 = tp->d0();
+    double pv_z = primaryVertex ? primaryVertex->z() : 0;
+    double muon_z0_exPV = tp->z0() + tp->vz() - pv_z;
+
+    if( fabs(muon_z0_exPV) >= 1.0 || fabs(muon_d0) >= 0.2 ){
+      if ( m_debug )   Info("PassCuts()", "Muon failed cosmic cut" );
+      return 0;
+    }
+    if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_cosmic_cut, 1 );
+    if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_cosmic_cut, 1 ); }
+
+  }
+
 
   if ( m_debug ) { Info("execute()", "Leave passCuts... pass" ); }
   return 1;
