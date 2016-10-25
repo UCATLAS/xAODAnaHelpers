@@ -233,7 +233,7 @@ EL::StatusCode MuonSelector :: initialize ()
     m_mu_cutflow_d0_cut               = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
     m_mu_cutflow_d0sig_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0sig_cut");
     m_mu_cutflow_iso_cut              = m_mu_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
-    if( m_removeEventBadMuon )
+    if( m_removeCosmicMuon )
       m_mu_cutflow_cosmic_cut              = m_mu_cutflowHist_1->GetXaxis()->FindBin("cosmic_cut");
 
 
@@ -249,7 +249,7 @@ EL::StatusCode MuonSelector :: initialize ()
       m_mu_cutflow_d0_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
       m_mu_cutflow_d0sig_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
       m_mu_cutflow_iso_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
-      if( m_removeEventBadMuon )
+      if( m_removeCosmicMuon )
         m_mu_cutflow_cosmic_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("cosmic_cut");
     }
 
