@@ -107,13 +107,11 @@ ElectronSelector :: ElectronSelector (std::string className) :
   m_doLHPID                 = true;
   m_doLHPIDcut              = false;
   m_LHOperatingPoint        = "Loose";
-  m_LHConfigYear            = "2015";
 
   // cut-based PID
   m_doCutBasedPID           = true;
   m_doCutBasedPIDcut        = false;
   m_CutBasedOperatingPoint  = "Loose";
-  m_CutBasedConfigYear      = "2012";
 
   // isolation stuff
   //
