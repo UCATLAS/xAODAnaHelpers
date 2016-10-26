@@ -71,7 +71,6 @@ public:
   /* electron PID */
 
   bool           m_readIDFlagsFromDerivation;
-  std::string    m_confDirPID;
 
   /* likelihood-based  */
   bool           m_doLHPIDcut;

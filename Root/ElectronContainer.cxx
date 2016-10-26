@@ -741,19 +741,19 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     } else { m_LHTight->push_back( -1 ); }
 
 
-    static SG::AuxElement::Accessor<char> EMLooseAcc ("Loose");
+    static SG::AuxElement::Accessor<char> EMLooseAcc ("IsEMLoose");
     if ( EMLooseAcc.isAvailable( *elec ) ) {
       m_IsEMLoose->push_back( EMLooseAcc( *elec ) );
       if ( EMLooseAcc( *elec ) == 1 ) { ++m_n_IsEMLoose; }
     } else { m_IsEMLoose->push_back( -1 ); }
 
-    static SG::AuxElement::Accessor<char> EMMediumAcc ("Medium");
+    static SG::AuxElement::Accessor<char> EMMediumAcc ("IsEMMedium");
     if ( EMMediumAcc.isAvailable( *elec ) ) {
       m_IsEMMedium->push_back( EMMediumAcc( *elec ) );
       if ( EMMediumAcc( *elec ) == 1 ) { ++m_n_IsEMMedium; }
     } else { m_IsEMMedium->push_back( -1 ); }
 
-    static SG::AuxElement::Accessor<char> EMTightAcc ("Tight");
+    static SG::AuxElement::Accessor<char> EMTightAcc ("IsEMTight");
     if ( EMTightAcc.isAvailable( *elec ) ) {
       m_IsEMTight->push_back( EMTightAcc( *elec ) );
       if ( EMTightAcc( *elec ) == 1 ) { ++m_n_IsEMTight; }
