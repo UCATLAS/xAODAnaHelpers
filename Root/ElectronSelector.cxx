@@ -874,8 +874,6 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   float eta   = ( electron->caloCluster() ) ? electron->caloCluster()->etaBE(2) : -999.0;
 
-  int oq      = static_cast<int>( electron->auxdata<uint32_t>("OQ") & 1446 );
-
   // fill cutflow bin 'all' before any cut
   if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_all, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_all, 1 ); }
@@ -898,8 +896,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   // Object Quality cut
   //
   if ( m_doOQCut ) {
-    if ( !(oq == 0) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed Object Quality cut." ); }
+    if( !electron->isGoodOQ(xAOD::EgammaParameters::BADCLUSELECTRON) ){
+      if ( m_debug ) { Info("PassCuts()", "Electron failed Object Quality cut BADCLUSELECTRON." ); }
       return 0;
     }
   }
