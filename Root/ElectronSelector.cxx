@@ -96,7 +96,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
   m_eta_max                 = 1e8;
   m_vetoCrack               = true;
   m_d0_max                  = 1e8;
-  m_d0sig_max     	    = 1e8;
+  m_d0sig_max           = 1e8;
   m_z0sintheta_max          = 1e8;
   m_doAuthorCut             = true;
   m_doOQCut                 = true;
@@ -118,7 +118,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
   // isolation stuff
   //
   m_MinIsoWPCut             = "";
-  m_IsoWPList		    = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  m_IsoWPList       = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
   m_CaloIsoEff              = "0.1*x+90";
   m_TrackIsoEff             = "98";
   m_CaloBasedIsoType        = "topoetcone20";
@@ -253,18 +253,18 @@ EL::StatusCode ElectronSelector :: initialize ()
     if ( m_isUsedBefore ) {
       m_el_cutflowHist_2 = (TH1D*)file->Get("cutflow_electrons_2");
 
-      m_el_cutflow_all  	   = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
-      m_el_cutflow_author_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
-      m_el_cutflow_OQ_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");
-      m_el_cutflow_ptmax_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
-      m_el_cutflow_ptmin_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
-      m_el_cutflow_eta_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
+      m_el_cutflow_all       = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
+      m_el_cutflow_author_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
+      m_el_cutflow_OQ_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");
+      m_el_cutflow_ptmax_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
+      m_el_cutflow_ptmin_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
+      m_el_cutflow_eta_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
       m_el_cutflow_z0sintheta_cut  = m_el_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
-      m_el_cutflow_d0_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
-      m_el_cutflow_d0sig_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
-      m_el_cutflow_BL_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("BL_cut");
-      m_el_cutflow_PID_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("PID_cut");
-      m_el_cutflow_iso_cut	   = m_el_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
+      m_el_cutflow_d0_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
+      m_el_cutflow_d0sig_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("d0sig_cut");
+      m_el_cutflow_BL_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("BL_cut");
+      m_el_cutflow_PID_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("PID_cut");
+      m_el_cutflow_iso_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("iso_cut");
     }
 
   }
@@ -295,7 +295,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   // Make sure it's not empty!
   //
   if ( m_IsoWPList.empty() ) {
-    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+    m_IsoWPList = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
   }
   std::string token;
   std::istringstream ss(m_IsoWPList);
@@ -552,7 +552,6 @@ EL::StatusCode ElectronSelector :: execute ()
     if ( m_createSelectedContainer) {
       if ( eventPass ) {
         // add ConstDataVector to TStore
-	//
         RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName ), "Failed to store const data container");
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
@@ -594,9 +593,8 @@ EL::StatusCode ElectronSelector :: execute ()
       if ( countPass ) { countPass = false; } // only count objects/events for 1st syst collection in iteration (i.e., nominal)
 
       if ( eventPassThisSyst ) {
-	// save the string of syst set under question if event is passing the selection
-	//
-	vecOutContainerNames->push_back( systName );
+        // save the string of syst set under question if event is passing the selection
+        vecOutContainerNames->push_back( systName );
       }
 
       // if for at least one syst set the event passes selection, this will remain true!
@@ -608,11 +606,9 @@ EL::StatusCode ElectronSelector :: execute ()
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
-	  //
           RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName+systName ), "Failed to store const data container");
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
-	  //
           delete selectedElectrons; selectedElectrons = nullptr;
         }
       }
@@ -641,7 +637,7 @@ EL::StatusCode ElectronSelector :: execute ()
 }
 
 bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
-					    ConstDataVector<xAOD::ElectronContainer>* selectedElectrons )
+              ConstDataVector<xAOD::ElectronContainer>* selectedElectrons )
 {
 
   const xAOD::VertexContainer* vertices(nullptr);
@@ -741,8 +737,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
           ( isTrigMatchedMapElDecor( *electron ) )[chain] = matched;
         }
       }
-
-    }
+    }// if nSelectedElectrons > 0
 
     // If checking dilepton trigger, form lepton pairs and test matching for each one.
     // Save a:
@@ -769,41 +764,38 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
       for ( auto const &chain : m_diElTrigChainsList ) {
 
-	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
+        if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
 
-	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
-	//
-	if ( !diElectronTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
+        //  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
+        if ( !diElectronTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
           diElectronTrigMatchPairMapDecor( *eventInfo ) = dielectron_trigmatch_pair_map();
-	}	
+        } 
 
-	std::vector<const xAOD::IParticle*> myElectrons;
+        std::vector<const xAOD::IParticle*> myElectrons;
 
-	for ( unsigned int iel = 0; iel < selectedElectrons->size()-1; ++iel ) {
+        for ( unsigned int iel = 0; iel < selectedElectrons->size()-1; ++iel ) {
 
-	  for ( unsigned int jel = iel+1; jel < selectedElectrons->size(); ++jel ) {
+          for ( unsigned int jel = iel+1; jel < selectedElectrons->size(); ++jel ) {
 
             // test a new pair
-            //
-	    myElectrons.clear();
-	    myElectrons.push_back( selectedElectrons->at(iel) );
-	    myElectrons.push_back( selectedElectrons->at(jel) );
+            myElectrons.clear();
+            myElectrons.push_back( selectedElectrons->at(iel) );
+            myElectrons.push_back( selectedElectrons->at(jel) );
 
             // check whether the pair is matched
-            //
-	    char matched = m_trigElectronMatchTool_handle->match( myElectrons, chain, m_minDeltaR );
+            char matched = m_trigElectronMatchTool_handle->match( myElectrons, chain, m_minDeltaR );
 
-       	    if ( m_debug ) { Info("executeSelection()", "\t\t is the electron pair (%i,%i) trigger matched? %i", iel, jel, matched); }
+            if ( m_debug ) { Info("executeSelection()", "\t\t is the electron pair (%i,%i) trigger matched? %i", iel, jel, matched); }
 
-	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(iel,jel);
+            std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(iel,jel);
             dielectron_trigmatch_pair                   chain_decision = std::make_pair(chain_idxs,matched);
             diElectronTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dielectron_trigmatch_pair >(chain,chain_decision) );
-	    
-	  }
-	}
-      }
-    }
-  }
+      
+          }
+        }
+      }//for m_diElTrigChainsList
+    } // if electrons
+  }// if m_doTrigMatch
 
   return true;
 
@@ -837,7 +829,7 @@ EL::StatusCode ElectronSelector :: finalize ()
   Info("finalize()", "Deleting tool instances...");
 
   if ( m_el_CutBased_PIDManager ) { delete m_el_CutBased_PIDManager;  m_el_CutBased_PIDManager = nullptr; }
-  if ( m_el_LH_PIDManager )       { delete m_el_LH_PIDManager;	      m_el_LH_PIDManager = nullptr;	  }
+  if ( m_el_LH_PIDManager )       { delete m_el_LH_PIDManager;        m_el_LH_PIDManager = nullptr;   }
   if ( m_useCutFlow ) {
     Info("finalize()", "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
@@ -1059,16 +1051,15 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   if( m_doLHPID ) {
     if ( m_readIDFlagsFromDerivation ) {
-   std::cout << "LH Derivation" << std::endl;
   
       if ( m_doLHPIDcut ) {
   
         bool passSelID(false);
-  	    passSelID = electron->auxdataConst<char>( "DFCommonElectronsLH" + m_LHOperatingPoint );
+        passSelID = electron->auxdataConst<char>( "DFCommonElectronsLH" + m_LHOperatingPoint );
   
         if ( !passSelID ) {
-     	    if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
-     	    return 0;
+          if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
+          return 0;
         }
       }
   
@@ -1078,43 +1069,38 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP =  "LH"+it;
   
         bool passThisID(false);
-  	    passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+        passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
   
         if ( m_debug ) {
-     	    Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
-     	    Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
+          Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
+          Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
         }
         electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
   
       }
   
     } else {
-   std::cout << "LH Local" << std::endl;
   
       // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
       //
       typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
       LHToolsMap myLHTools = m_el_LH_PIDManager->getValidWPTools();
   
-      std::cout << " trying m_LHOperatingPoint " << m_LHOperatingPoint << std::endl;
       if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
-      	if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
-      	return 0;
+        if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
+        return 0;
       }
-      std::cout << "next" <<std::endl;
   
       for ( auto it : (myLHTools) ) {
   
         const std::string decorWP =  "LH" + it.first;
         if ( m_debug ) {
-      	Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
-      	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
+          Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
+          Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
         }
-      std::cout << "next2" <<std::endl;
         electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
   
       }
-      std::cout << "next3" <<std::endl;
   
     }
   }// if m_doLHPID
@@ -1129,17 +1115,16 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   if( m_doCutBasedPID ) {
     if ( m_readIDFlagsFromDerivation ) {
-   std::cout << "Cut Derivation" << std::endl;
   
       if ( m_doCutBasedPIDcut ) {
   
         bool passSelID(false);
         // need this exception check b/c an interface change in DF happened at some point :(
-  	    passSelID = electron->auxdataConst<char>( "DFCommonElectronsIsEM" + m_CutBasedOperatingPoint );
+        passSelID = electron->auxdataConst<char>( "DFCommonElectronsIsEM" + m_CutBasedOperatingPoint );
   
         if ( !passSelID ) {
-     	    if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut w/ operating point %s", m_CutBasedOperatingPoint.c_str() ); }
-     	    return 0;
+          if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut w/ operating point %s", m_CutBasedOperatingPoint.c_str() ); }
+          return 0;
         }
   
       }
@@ -1150,18 +1135,17 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP = "IsEM"+it;
   
         bool passThisID(false);
-  	    passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+        passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
   
         if ( m_debug ) {
-     	    Info("PassCuts()", "Decorating electron with deciison for cut-based WP : %s ", ( decorWP ).c_str() );
-     	    Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
+          Info("PassCuts()", "Decorating electron with deciison for cut-based WP : %s ", ( decorWP ).c_str() );
+          Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
         }
         electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
   
       }
   
     } else {
-   std::cout << "Cut Local" << std::endl;
   
       // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
       //
@@ -1169,8 +1153,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       CutBasedToolsMap myCutBasedTools = m_el_CutBased_PIDManager->getValidWPTools();
   
       if ( m_doCutBasedPIDcut && !( ( myCutBasedTools.find( m_CutBasedOperatingPoint )->second )->accept( *electron ) ) ) {
-      	if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut." ); }
-      	return 0;
+        if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut." ); }
+        return 0;
       }
   
       for ( auto it : (myCutBasedTools) ) {
@@ -1178,8 +1162,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP = "IsEM"+it.second->getOperatingPointName( );
   
         if ( m_debug ) {
-      	Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() );
-      	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
+          Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() );
+          Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
         }
   
         electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
