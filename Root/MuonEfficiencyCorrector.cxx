@@ -358,21 +358,11 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   
   } 
   
-  std::string tmp_triggers = m_MuTrigLegs;
- 
-  // Parse all comma seperated trigger corrections
-  //
-  while ( tmp_triggers.size() > 0) {
-    size_t pos = tmp_triggers.find_first_of(',');
-    if ( pos == std::string::npos ) {
-      pos = tmp_triggers.size();
-      m_SingleMuTriggers.push_back(tmp_triggers.substr(0, pos));
-      tmp_triggers.erase(0, pos);
-    } else {
-      m_SingleMuTriggers.push_back(tmp_triggers.substr(0, pos));
-      tmp_triggers.erase(0, pos+1);
-    }
-  }
+  std::string token;
+  std::istringstream ss(m_MuTrigLegs);
+  while ( std::getline(ss, token, ',') ) {
+    m_SingleMuTriggers.push_back(token);
+  } 
   
   //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration
   //

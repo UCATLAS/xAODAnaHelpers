@@ -131,62 +131,21 @@ namespace HelperClasses{
     m_energyLoss    = has_exact("energyLoss");
    
     // working points combinations for trigger corrections 
-    std::vector< std::string > triggers = {
-                                              "HLT_mu10",
-                                              "HLT_mu14",
-                                              "HLT_mu18",
-                                              "HLT_mu20",
-                                              "HLT_mu22",
-                                              "HLT_mu24",
-                                              "HLT_mu26",
-                                              "HLT_mu40", 
-                                              "HLT_mu50",
-                                              "HLT_mu8noL1", 
-                                              "HLT_mu20_iloose_L1MU15",
-                                              "HLT_mu24_iloose_L1MU15",
-                                              "HLT_mu24_imedium",
-                                              "HLT_mu26_imedium",
-                                              "HLT_mu20_iloose_L1MU15_OR_HLT_mu50",
-                                              "HLT_mu24_iloose_L1MU15_OR_HLT_mu50",
-                                              "HLT_mu24_imedium_OR_HLT_mu50",
-                                              "HLT_mu26_imedium_OR_HLT_mu50",
-                                              "HLT_mu20_iloose_L1MU15_OR_HLT_mu40",
-                                              "HLT_mu24_iloose_L1MU15_OR_HLT_mu40",
-                                              "HLT_mu24_imedium_OR_HLT_mu40",
-                                              "HLT_mu26_imedium_OR_HLT_mu40",
-                                              "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose",
-                                              "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu40",
-                                              "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu50",
-                                              "HLT_mu24_ivarmedium",
-                                              "HLT_mu24_ivarmedium_OR_HLT_mu40",
-                                              "HLT_mu24_ivarmedium_OR_HLT_mu50",
-                                              "HLT_mu26_ivarmedium",
-                                              "HLT_mu26_ivarmedium_OR_HLT_mu40",
-                                              "HLT_mu26_ivarmedium_OR_HLT_mu50",
-                                              };
-
-    std::vector< std::string > recoWPs = {"RecoLoose","RecoMedium","RecoTight"};
-    std::vector< std::string > isolWPs = {"IsoLoose","IsoFixedCutTightTrackOnly","IsoGradient","IsoGradientLoose"};
-    std::vector< std::string > trigWPs;
-
-
-    for (auto& trig : triggers) {
-      for (auto& reco : recoWPs) {
-        for (auto& isol : isolWPs) {
-          std::string trigStr = "";
-          trigStr.append(trig);
-          trigStr.append("_");
-          trigStr.append(reco); 
-          trigStr.append("_"); 
-          trigStr.append(isol);
-          trigWPs.push_back(trigStr);
-        }
-      }
-    }
+    std::string token;
+    std::string reco_prfx = "Reco";
+    std::string isol_prfx = "Iso";
+    std::string trig_prfx = "HLT";
     
-    for (const auto& isol : isolWPs) { m_isolWPsMap[isol] = has_exact(isol); }                        
-    for (const auto& reco : recoWPs) { m_recoWPsMap[reco] = has_exact(reco); }                        
-    for (const auto& trig : trigWPs) { m_trigWPsMap[trig] = has_exact(trig); }                        
+    std::istringstream ss(m_configStr);
+    while ( std::getline(ss, token, ' ') ) {
+      if ( token.compare( 0, reco_prfx.length(), reco_prfx ) == 0 ) { m_recoWPs.push_back(token); }
+      if ( token.compare( 0, isol_prfx.length(), isol_prfx ) == 0 ) { m_isolWPs.push_back(token); }
+      if ( token.compare( 0, trig_prfx.length(), trig_prfx ) == 0 ) { m_trigWPs.push_back(token); }
+    }  
+    
+    //for (const auto& isol : isolWPs) { m_isolWPsMap[isol] = has_exact(isol); }                        
+    //for (const auto& reco : recoWPs) { m_recoWPsMap[reco] = has_exact(reco); }                        
+    //for (const auto& trig : trigWPs) { m_trigWPsMap[trig] = has_exact(trig); }                        
 
   }
 

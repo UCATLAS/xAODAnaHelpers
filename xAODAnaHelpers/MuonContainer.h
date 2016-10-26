@@ -14,8 +14,6 @@
 #include <xAODAnaHelpers/Muon.h>
 #include <xAODAnaHelpers/ParticleContainer.h>
 
-typedef SG::AuxElement::Accessor< std::vector< float > > floatAccessor ;
-
 namespace xAH {
 
   class MuonContainer : public ParticleContainer<Muon,HelperClasses::MuonInfoSwitch>
@@ -76,47 +74,6 @@ namespace xAH {
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
       
-      std::vector< std::string > m_triggers = {
-                                                "HLT_mu10",
-                                                "HLT_mu14",
-                                                "HLT_mu18",
-                                                "HLT_mu20",
-                                                "HLT_mu22",
-                                                "HLT_mu24",
-                                                "HLT_mu26",
-                                                "HLT_mu40", 
-                                                "HLT_mu50",
-                                                "HLT_mu8noL1", 
-                                                "HLT_mu20_iloose_L1MU15",
-                                                "HLT_mu24_iloose_L1MU15",
-                                                "HLT_mu24_imedium",
-                                                "HLT_mu26_imedium",
-                                                "HLT_mu20_iloose_L1MU15_OR_HLT_mu50",
-                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu50",
-                                                "HLT_mu24_imedium_OR_HLT_mu50",
-                                                "HLT_mu26_imedium_OR_HLT_mu50",
-                                                "HLT_mu20_iloose_L1MU15_OR_HLT_mu40",
-                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu40",
-                                                "HLT_mu24_imedium_OR_HLT_mu40",
-                                                "HLT_mu26_imedium_OR_HLT_mu40",
-                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose",
-                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu40",
-                                                "HLT_mu24_iloose_L1MU15_OR_HLT_mu24_iloose_OR_HLT_mu50",
-                                                "HLT_mu24_ivarmedium",
-                                                "HLT_mu24_ivarmedium_OR_HLT_mu40",
-                                                "HLT_mu24_ivarmedium_OR_HLT_mu50",
-                                                "HLT_mu26_ivarmedium",
-                                                "HLT_mu26_ivarmedium_OR_HLT_mu40",
-                                                "HLT_mu26_ivarmedium_OR_HLT_mu50",
-                                                };
-
-      std::vector< std::string > m_reco = {"RecoLoose","RecoMedium","RecoTight"};
-      std::vector< std::string > m_isol = {"IsoLoose","IsoFixedCutTightTrackOnly","IsoGradient","IsoGradientLoose"};
-      
-      std::vector< std::string > m_recoWPs;
-      std::vector< std::string > m_isolWPs;
-      std::vector< std::string > m_trigWPs;
-  
       // track parameters
       std::vector<float> *m_trkd0;
       std::vector<float> *m_trkd0sig;
