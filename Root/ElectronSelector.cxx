@@ -104,11 +104,13 @@ ElectronSelector :: ElectronSelector (std::string className) :
   m_readIDFlagsFromDerivation = false;
 
   // likelihood-based PID
+  m_doLHPID                 = true;
   m_doLHPIDcut              = false;
   m_LHOperatingPoint        = "Loose";
   m_LHConfigYear            = "2015";
 
   // cut-based PID
+  m_doCutBasedPID           = true;
   m_doCutBasedPIDcut        = false;
   m_CutBasedOperatingPoint  = "Loose";
   m_CutBasedConfigYear      = "2012";
@@ -329,49 +331,53 @@ EL::StatusCode ElectronSelector :: initialize ()
   // initialise PID tool(s) using classes defined in ParticlePIDManager.h
   //
   // if not using cut-based PID, make sure all the decorations will be set ... by choosing the loosest WP!
-  std::string cutbasedWP = ( m_doCutBasedPIDcut ) ? m_CutBasedOperatingPoint : "Loose";
-  m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP, m_debug );
+  if( m_doCutBasedPID ){
+    std::string cutbasedWP = ( m_doCutBasedPIDcut ) ? m_CutBasedOperatingPoint : "Loose";
+    m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP, m_debug );
 
-  if  ( m_doCutBasedPIDcut ) {
-    Info("initialize()", "Cutting on Electron Cut-Based PID! \n ********************" );
-    Info("initialize()", "Selected cut-based WP: %s", (m_el_CutBased_PIDManager->getSelectedWP()).c_str() );
-  } else {
-    Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decison (pass/not pass)!" );
-  }
-
-  if ( m_readIDFlagsFromDerivation ) {
-    Info("initialize()", "Reading Electron cut-based ID from DAODs ..." );
-    RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupWPs( false ), "Failed to setup ElectronCutBasedPIDManager in Derivation mode." );
-  } else {
-    Info("initialize()", "Reading Electron cut-based ID from CP Tool ..." );
-    RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupWPs( true, this->m_name ), "Failed to setup ElectronCutBasedPIDManager in tool mode." );
-  }
-
-  // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
-  std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "Loose"; 
-  m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, m_debug );
-
-
-  if  ( m_doLHPIDcut ) {
-       Info("initialize()", "Cutting on Electron Likelihood PID! \n ********************" );
-       Info("initialize()", "\t Input WP: %s corresponding to actual LikeEnum::Menu WP: %s", likelihoodWP.c_str(), (m_el_LH_PIDManager->getSelectedWP()).c_str() );
-  } else {
-       Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decison (pass/not pass)!" );
-  }
-
-  if ( m_readIDFlagsFromDerivation ) {
-    // LooseBL is not in Derivations, so choose Loose and do BLayer cut locally
-    if( m_LHOperatingPoint == "LooseBL" ){
-      m_LHOperatingPoint = "Loose";
-      m_doBLTrackQualityCut = true;
+    if  ( m_doCutBasedPIDcut ) {
+      Info("initialize()", "Cutting on Electron Cut-Based PID! \n ********************" );
+      Info("initialize()", "Selected cut-based WP: %s", (m_el_CutBased_PIDManager->getSelectedWP()).c_str() );
+    } else {
+      Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decison (pass/not pass)!" );
     }
 
-    Info("initialize()", "Reading Electron LH ID from DAODs ..." );
-    RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupWPs( false ), "Failed to setup ElectronLHPIDManager in Derivation mode." );
-  } else {
-    Info("initialize()", "Reading Electron LH ID from CP Tool ..." );
-    RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupWPs( true, this->m_name), "Failed to setup ElectronLHPIDManager in tool mode." );
-  }
+    if ( m_readIDFlagsFromDerivation ) {
+      Info("initialize()", "Reading Electron cut-based ID from DAODs ..." );
+      RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupWPs( false ), "Failed to setup ElectronCutBasedPIDManager in Derivation mode." );
+    } else {
+      Info("initialize()", "Reading Electron cut-based ID from CP Tool ..." );
+      RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupWPs( true, this->m_name ), "Failed to setup ElectronCutBasedPIDManager in tool mode." );
+    }
+  }// if m_doCutBasedPID
+
+  if( m_doLHPID ){
+    // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
+    std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "Loose"; 
+    m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, m_debug );
+
+
+    if  ( m_doLHPIDcut ) {
+         Info("initialize()", "Cutting on Electron Likelihood PID! \n ********************" );
+         Info("initialize()", "\t Input WP: %s corresponding to actual LikeEnum::Menu WP: %s", likelihoodWP.c_str(), (m_el_LH_PIDManager->getSelectedWP()).c_str() );
+    } else {
+         Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decison (pass/not pass)!" );
+    }
+
+    if ( m_readIDFlagsFromDerivation ) {
+      // LooseBL is not in Derivations, so choose Loose and do BLayer cut locally
+      if( m_LHOperatingPoint == "LooseBL" ){
+        m_LHOperatingPoint = "Loose";
+        m_doBLTrackQualityCut = true;
+      }
+
+      Info("initialize()", "Reading Electron LH ID from DAODs ..." );
+      RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupWPs( false ), "Failed to setup ElectronLHPIDManager in Derivation mode." );
+    } else {
+      Info("initialize()", "Reading Electron LH ID from CP Tool ..." );
+      RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupWPs( true, this->m_name), "Failed to setup ElectronLHPIDManager in tool mode." );
+    }
+  }// if m_doLHPID
 
   // *************************************
   //
@@ -1051,66 +1057,67 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   m_el_LH_PIDManager->setDecorations( electron );
 
-  if ( m_readIDFlagsFromDerivation ) {
- std::cout << "LH Derivation" << std::endl;
-
-    if ( m_doLHPIDcut ) {
-
-      bool passSelID(false);
-	    passSelID = electron->auxdataConst<char>( "DFCommonElectronsLH" + m_LHOperatingPoint );
-
-      if ( !passSelID ) {
-   	    if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
-   	    return 0;
+  if( m_doLHPID ) {
+    if ( m_readIDFlagsFromDerivation ) {
+   std::cout << "LH Derivation" << std::endl;
+  
+      if ( m_doLHPIDcut ) {
+  
+        bool passSelID(false);
+  	    passSelID = electron->auxdataConst<char>( "DFCommonElectronsLH" + m_LHOperatingPoint );
+  
+        if ( !passSelID ) {
+     	    if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
+     	    return 0;
+        }
       }
-    }
-
-    const std::set<std::string> myLHWPs = m_el_LH_PIDManager->getValidWPs();
-    for ( auto it : (myLHWPs) ) {
-
-      const std::string decorWP =  "LH"+it;
-
-      bool passThisID(false);
-	    passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
-
-      if ( m_debug ) {
-   	    Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
-   	    Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
+  
+      const std::set<std::string> myLHWPs = m_el_LH_PIDManager->getValidWPs();
+      for ( auto it : (myLHWPs) ) {
+  
+        const std::string decorWP =  "LH"+it;
+  
+        bool passThisID(false);
+  	    passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+  
+        if ( m_debug ) {
+     	    Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
+     	    Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
+        }
+        electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
+  
       }
-      electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
-
-    }
-
-  } else {
- std::cout << "LH Local" << std::endl;
-
-    // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
-    //
-    typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
-    LHToolsMap myLHTools = m_el_LH_PIDManager->getValidWPTools();
-
-    std::cout << " trying m_LHOperatingPoint " << m_LHOperatingPoint << std::endl;
-    if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
-    	if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
-    	return 0;
-    }
-    std::cout << "next" <<std::endl;
-
-    for ( auto it : (myLHTools) ) {
-
-      const std::string decorWP =  "LH" + it.first;
-      if ( m_debug ) {
-    	Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
-    	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
+  
+    } else {
+   std::cout << "LH Local" << std::endl;
+  
+      // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
+      //
+      typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
+      LHToolsMap myLHTools = m_el_LH_PIDManager->getValidWPTools();
+  
+      std::cout << " trying m_LHOperatingPoint " << m_LHOperatingPoint << std::endl;
+      if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
+      	if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
+      	return 0;
       }
-    std::cout << "next2" <<std::endl;
-      electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
-
+      std::cout << "next" <<std::endl;
+  
+      for ( auto it : (myLHTools) ) {
+  
+        const std::string decorWP =  "LH" + it.first;
+        if ( m_debug ) {
+      	Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
+      	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
+        }
+      std::cout << "next2" <<std::endl;
+        electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
+  
+      }
+      std::cout << "next3" <<std::endl;
+  
     }
-    std::cout << "next3" <<std::endl;
-
-  }
-    std::cout << "next4" <<std::endl;
+  }// if m_doLHPID
 
   //
   // cut-based PID
@@ -1120,65 +1127,66 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   m_el_CutBased_PIDManager->setDecorations( electron );
 
-    std::cout << "next5" <<std::endl;
-  if ( m_readIDFlagsFromDerivation ) {
- std::cout << "Cut Derivation" << std::endl;
-
-    if ( m_doCutBasedPIDcut ) {
-
-      bool passSelID(false);
-      // need this exception check b/c an interface change in DF happened at some point :(
-	    passSelID = electron->auxdataConst<char>( "DFCommonElectronsIsEM" + m_CutBasedOperatingPoint );
-
-      if ( !passSelID ) {
-   	    if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut w/ operating point %s", m_CutBasedOperatingPoint.c_str() ); }
-   	    return 0;
+  if( m_doCutBasedPID ) {
+    if ( m_readIDFlagsFromDerivation ) {
+   std::cout << "Cut Derivation" << std::endl;
+  
+      if ( m_doCutBasedPIDcut ) {
+  
+        bool passSelID(false);
+        // need this exception check b/c an interface change in DF happened at some point :(
+  	    passSelID = electron->auxdataConst<char>( "DFCommonElectronsIsEM" + m_CutBasedOperatingPoint );
+  
+        if ( !passSelID ) {
+     	    if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut w/ operating point %s", m_CutBasedOperatingPoint.c_str() ); }
+     	    return 0;
+        }
+  
       }
-
-    }
-
-    const std::set<std::string> myCutBasedWPs = m_el_CutBased_PIDManager->getValidWPs();
-    for ( auto it : (myCutBasedWPs) ) {
-
-      const std::string decorWP = "IsEM"+it;
-
-      bool passThisID(false);
-	    passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
-
-      if ( m_debug ) {
-   	    Info("PassCuts()", "Decorating electron with deciison for cut-based WP : %s ", ( decorWP ).c_str() );
-   	    Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
+  
+      const std::set<std::string> myCutBasedWPs = m_el_CutBased_PIDManager->getValidWPs();
+      for ( auto it : (myCutBasedWPs) ) {
+  
+        const std::string decorWP = "IsEM"+it;
+  
+        bool passThisID(false);
+  	    passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+  
+        if ( m_debug ) {
+     	    Info("PassCuts()", "Decorating electron with deciison for cut-based WP : %s ", ( decorWP ).c_str() );
+     	    Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
+        }
+        electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
+  
       }
-      electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
-
-    }
-
-  } else {
- std::cout << "Cut Local" << std::endl;
-
-    // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
-    //
-    typedef std::multimap< std::string, AsgElectronIsEMSelector* > CutBasedToolsMap;
-    CutBasedToolsMap myCutBasedTools = m_el_CutBased_PIDManager->getValidWPTools();
-
-    if ( m_doCutBasedPIDcut && !( ( myCutBasedTools.find( m_CutBasedOperatingPoint )->second )->accept( *electron ) ) ) {
-    	if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut." ); }
-    	return 0;
-    }
-
-    for ( auto it : (myCutBasedTools) ) {
-
-      const std::string decorWP = "IsEM"+it.second->getOperatingPointName( );
-
-      if ( m_debug ) {
-    	Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() );
-    	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
+  
+    } else {
+   std::cout << "Cut Local" << std::endl;
+  
+      // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
+      //
+      typedef std::multimap< std::string, AsgElectronIsEMSelector* > CutBasedToolsMap;
+      CutBasedToolsMap myCutBasedTools = m_el_CutBased_PIDManager->getValidWPTools();
+  
+      if ( m_doCutBasedPIDcut && !( ( myCutBasedTools.find( m_CutBasedOperatingPoint )->second )->accept( *electron ) ) ) {
+      	if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut." ); }
+      	return 0;
       }
-
-      electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
+  
+      for ( auto it : (myCutBasedTools) ) {
+  
+        const std::string decorWP = "IsEM"+it.second->getOperatingPointName( );
+  
+        if ( m_debug ) {
+      	Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() );
+      	Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
+        }
+  
+        electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
+      }
+  
     }
-
-  }
+  }// if m_doCutBasedPID
 
   if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_PID_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_PID_cut, 1 ); }

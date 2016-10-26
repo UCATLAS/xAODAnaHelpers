@@ -73,11 +73,13 @@ public:
   bool           m_readIDFlagsFromDerivation;
 
   /* likelihood-based  */
+  bool           m_doLHPID;
   bool           m_doLHPIDcut;
   std::string    m_LHConfigYear;
   std::string    m_LHOperatingPoint;
 
   /* cut-based */
+  bool           m_doCutBasedPID;
   bool           m_doCutBasedPIDcut;
   std::string    m_CutBasedConfigYear;
   std::string    m_CutBasedOperatingPoint;
