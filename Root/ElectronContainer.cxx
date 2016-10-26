@@ -726,7 +726,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     if ( LHLooseAcc.isAvailable( *elec ) ) {
       m_LHLoose->push_back( LHLooseAcc( *elec ) );
       if ( LHLooseAcc( *elec ) == 1 ) { ++m_n_LHLoose; }
-    }  else { m_LHLoose->push_back( -1 ); }
+    }  else {  m_LHLoose->push_back( -1 ); }
 
     static SG::AuxElement::Accessor<char> LHMediumAcc ("LHMedium");
     if ( LHMediumAcc.isAvailable( *elec ) ) {

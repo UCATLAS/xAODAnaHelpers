@@ -339,7 +339,7 @@ EL::StatusCode ElectronSelector :: initialize ()
       Info("initialize()", "Cutting on Electron Cut-Based PID! \n ********************" );
       Info("initialize()", "Selected cut-based WP: %s", (m_el_CutBased_PIDManager->getSelectedWP()).c_str() );
     } else {
-      Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decison (pass/not pass)!" );
+      Info("initialize()", "Will decorate each electron with all Electron Cut-Based PID WPs decision (pass/not pass)!" );
     }
 
     if ( m_readIDFlagsFromDerivation ) {
@@ -361,7 +361,7 @@ EL::StatusCode ElectronSelector :: initialize ()
          Info("initialize()", "Cutting on Electron Likelihood PID! \n ********************" );
          Info("initialize()", "\t Input WP: %s corresponding to actual LikeEnum::Menu WP: %s", likelihoodWP.c_str(), (m_el_LH_PIDManager->getSelectedWP()).c_str() );
     } else {
-         Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decison (pass/not pass)!" );
+         Info("initialize()", "Will decorate each electron with all Electron Likelihood PID WPs decision (pass/not pass)!" );
     }
 
     if ( m_readIDFlagsFromDerivation ) {
@@ -1072,7 +1072,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
   
         if ( m_debug ) {
-          Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
+          Info("PassCuts()", "Decorating electron with decision for LH WP : %s ", ( decorWP ).c_str() );
           Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
         }
         electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
@@ -1095,7 +1095,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   
         const std::string decorWP =  "LH" + it.first;
         if ( m_debug ) {
-          Info("PassCuts()", "Decorating electron with decison for LH WP : %s ", ( decorWP ).c_str() );
+          Info("PassCuts()", "Decorating electron with decision for LH WP : %s ", ( decorWP ).c_str() );
           Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
         }
         electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
@@ -1136,11 +1136,13 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   
         bool passThisID(false);
         passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+        std::cout << "looking for " << passThisID << std::endl;
   
         if ( m_debug ) {
-          Info("PassCuts()", "Decorating electron with deciison for cut-based WP : %s ", ( decorWP ).c_str() );
+          Info("PassCuts()", "Decorating electron with decision for cut-based WP : %s ", ( decorWP ).c_str() );
           Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
         }
+        std::cout << "made it!" << std::endl;
         electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
   
       }
@@ -1162,7 +1164,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP = "IsEM"+it.second->getOperatingPointName( );
   
         if ( m_debug ) {
-          Info("PassCuts()", "Decorating electron with decison for cut-based WP : %s ", ( decorWP ).c_str() );
+          Info("PassCuts()", "Decorating electron with decision for cut-based WP : %s ", ( decorWP ).c_str() );
           Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), static_cast<int>( it.second->accept( *electron ) ) );
         }
   
