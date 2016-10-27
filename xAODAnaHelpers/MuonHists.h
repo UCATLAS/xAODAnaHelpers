@@ -11,7 +11,7 @@ class MuonHists : public IParticleHists
   public:
 
 
-    MuonHists(std::string name, std::string detailStr);
+    MuonHists(std::string name, std::string detailStr, const std::string& prefix="muon", const std::string& titleprefix="muon");
     virtual ~MuonHists() ;
 
     virtual StatusCode initialize();
@@ -54,6 +54,17 @@ class MuonHists : public IParticleHists
     TH1F* m_topoetcone20			   ; //!
     TH1F* m_topoetcone30			   ; //!
     TH1F* m_topoetcone40			   ; //!
+
+    TH1F* m_ptcone20_rel				   ; //!
+    TH1F* m_ptcone30_rel				   ; //!
+    TH1F* m_ptcone40_rel				   ; //!
+    TH1F* m_ptvarcone20_rel				   ; //!
+    TH1F* m_ptvarcone30_rel				   ; //!
+    TH1F* m_ptvarcone40_rel				   ; //!
+    TH1F* m_topoetcone20_rel			   ; //!
+    TH1F* m_topoetcone30_rel			   ; //!
+    TH1F* m_topoetcone40_rel			   ; //!
+
 
     // quality
     TH1F* m_isVeryLoose				   ; //!

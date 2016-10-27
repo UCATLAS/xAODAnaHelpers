@@ -14,8 +14,8 @@
 
 using std::vector;
 
-MuonHists :: MuonHists (std::string name, std::string detailStr) :
-  IParticleHists(name, detailStr, "muon", "muon"),
+MuonHists :: MuonHists (std::string name, std::string detailStr, const std::string& prefix, const std::string& titlePrefix) :
+  IParticleHists(name, detailStr, prefix, titlePrefix),
   m_infoSwitch(new HelperClasses::MuonInfoSwitch(m_detailStr))
 { }
 
@@ -43,14 +43,25 @@ StatusCode MuonHists::initialize() {
     m_isIsolated_UserDefinedCut           = book(m_name, "isIsolated_UserDefinedCut",          "isIsolated_UserDefinedCut", 3, -1.5, 1.5);
 
     m_ptcone20     = book(m_name, "ptcone20",     "ptcone20",     100, 0, 10);
-    m_ptcone30     = book(m_name, "ptcone30",     "ptcone30",     100, 0, 10);
-    m_ptcone40     = book(m_name, "ptcone40",     "ptcone40",     100, 0, 10);
-    m_ptvarcone20  = book(m_name, "ptvarcone20",  "ptvarcone20",  100, 0, 10);
+    m_ptcone30     = book(m_name, "ptcone30",     "ptcone30",     100, 0, 20);
+    m_ptcone40     = book(m_name, "ptcone40",     "ptcone40",     100, 0, 20);
+    m_ptvarcone20  = book(m_name, "ptvarcone20",  "ptvarcone20",  100, 0, 20);
     m_ptvarcone30  = book(m_name, "ptvarcone30",  "ptvarcone30",  100, 0, 10);
-    m_ptvarcone40  = book(m_name, "ptvarcone40",  "ptvarcone40",  100, 0, 10);
+    m_ptvarcone40  = book(m_name, "ptvarcone40",  "ptvarcone40",  100, 0, 20);
     m_topoetcone20 = book(m_name, "topoetcone20", "topoetcone20", 100, 0, 10);
-    m_topoetcone30 = book(m_name, "topoetcone30", "topoetcone30", 100, 0, 10);
-    m_topoetcone40 = book(m_name, "topoetcone40", "topoetcone40", 100, 0, 10);
+    m_topoetcone30 = book(m_name, "topoetcone30", "topoetcone30", 100, 0, 20);
+    m_topoetcone40 = book(m_name, "topoetcone40", "topoetcone40", 100, 0, 20);
+
+    m_ptcone20_rel     = book(m_name, "ptcone20_rel",     "ptcone20_rel",     100, 0, 2);
+    m_ptcone30_rel     = book(m_name, "ptcone30_rel",     "ptcone30_rel",     100, 0, 2);
+    m_ptcone40_rel     = book(m_name, "ptcone40_rel",     "ptcone40_rel",     100, 0, 2);
+    m_ptvarcone20_rel  = book(m_name, "ptvarcone20_rel",  "ptvarcone20_rel",  100, 0, 2);
+    m_ptvarcone30_rel  = book(m_name, "ptvarcone30_rel",  "ptvarcone30_rel",  100, 0, 2);
+    m_ptvarcone40_rel  = book(m_name, "ptvarcone40_rel",  "ptvarcone40_rel",  100, 0, 2);
+    m_topoetcone20_rel = book(m_name, "topoetcone20_rel", "topoetcone20_rel", 100, -0.2, 2);
+    m_topoetcone30_rel = book(m_name, "topoetcone30_rel", "topoetcone30_rel", 100, -0.2, 2);
+    m_topoetcone40_rel = book(m_name, "topoetcone40_rel", "topoetcone40_rel", 100, -0.2, 2);
+
 
   }
 
@@ -123,6 +134,18 @@ StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeigh
     m_topoetcone30 ->Fill( muon->isolation( xAOD::Iso::topoetcone30 ) / 1e3,  eventWeight );
     m_topoetcone40 ->Fill( muon->isolation( xAOD::Iso::topoetcone40 ) / 1e3,  eventWeight );
 
+    float muonPt = muon->pt();
+    m_ptcone20_rel     ->Fill( muon->isolation( xAOD::Iso::ptcone20 )     / muonPt,  eventWeight );
+    m_ptcone30_rel     ->Fill( muon->isolation( xAOD::Iso::ptcone30 )     / muonPt,  eventWeight );
+    m_ptcone40_rel     ->Fill( muon->isolation( xAOD::Iso::ptcone40 )     / muonPt,  eventWeight );
+    m_ptvarcone20_rel  ->Fill( muon->isolation( xAOD::Iso::ptvarcone20 )  / muonPt,  eventWeight );
+    m_ptvarcone30_rel  ->Fill( muon->isolation( xAOD::Iso::ptvarcone30 )  / muonPt,  eventWeight );
+    m_ptvarcone40_rel  ->Fill( muon->isolation( xAOD::Iso::ptvarcone40 )  / muonPt,  eventWeight );
+    m_topoetcone20_rel ->Fill( muon->isolation( xAOD::Iso::topoetcone20 ) / muonPt,  eventWeight );
+    m_topoetcone30_rel ->Fill( muon->isolation( xAOD::Iso::topoetcone30 ) / muonPt,  eventWeight );
+    m_topoetcone40_rel ->Fill( muon->isolation( xAOD::Iso::topoetcone40 ) / muonPt,  eventWeight );
+
+
   }
 
 
@@ -187,6 +210,17 @@ StatusCode MuonHists::execute( const xAH::Particle* particle, float eventWeight,
     m_topoetcone20 ->Fill( muon->topoetcone20,  eventWeight );
     m_topoetcone30 ->Fill( muon->topoetcone30,  eventWeight );
     m_topoetcone40 ->Fill( muon->topoetcone40,  eventWeight );
+
+    float muonPt = muon->p4.Pt();
+    m_ptcone20_rel     ->Fill( muon->ptcone20/muonPt,  eventWeight );
+    m_ptcone30_rel     ->Fill( muon->ptcone30/muonPt,  eventWeight );
+    m_ptcone40_rel     ->Fill( muon->ptcone40/muonPt,  eventWeight );
+    m_ptvarcone20_rel  ->Fill( muon->ptvarcone20 /muonPt    ,  eventWeight );
+    m_ptvarcone30_rel  ->Fill( muon->ptvarcone30 /muonPt    ,  eventWeight );
+    m_ptvarcone40_rel  ->Fill( muon->ptvarcone40 /muonPt    ,  eventWeight );
+    m_topoetcone20_rel ->Fill( muon->topoetcone20/muonPt    ,  eventWeight );
+    m_topoetcone30_rel ->Fill( muon->topoetcone30/muonPt    ,  eventWeight );
+    m_topoetcone40_rel ->Fill( muon->topoetcone40/muonPt    ,  eventWeight );
 
   }
 
