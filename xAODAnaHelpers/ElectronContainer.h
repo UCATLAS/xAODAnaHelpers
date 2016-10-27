@@ -69,6 +69,8 @@ namespace xAH {
       // PID
       int m_n_LHLoose;
       std::vector<int>*   m_LHLoose;
+      int m_n_LHLooseBL;
+      std::vector<int>*   m_LHLooseBL;
       int m_n_LHMedium;
       std::vector<int>*   m_LHMedium;
       int m_n_LHTight;
