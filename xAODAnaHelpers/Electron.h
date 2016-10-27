@@ -42,6 +42,7 @@ namespace xAH {
 
     // PID
     int   LHLoose;
+    int   LHLooseBL;
     int   LHMedium;
     int   LHTight;
     int   IsEMLoose;

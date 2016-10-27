@@ -48,6 +48,9 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_n_LHLoose = 0;
     m_LHLoose = new std::vector<int>   ();
 
+    m_n_LHLooseBL = 0;
+    m_LHLooseBL = new std::vector<int>   ();
+
     m_n_LHMedium = 0;
     m_LHMedium = new std::vector<int>   ();
     
@@ -163,6 +166,7 @@ ElectronContainer::~ElectronContainer()
 
   if ( m_infoSwitch.m_PID ) {
     delete m_LHLoose    ;
+    delete m_LHLooseBL  ;
     delete m_LHMedium   ;
     delete m_LHTight    ;
     delete m_IsEMLoose  ;
@@ -249,8 +253,12 @@ void ElectronContainer::setTree(TTree *tree)
 
   if ( m_infoSwitch.m_PID ) {
     tree->SetBranchStatus (("n"+m_name+"_LHLoose").c_str(),     1);
-    tree->SetBranchAddress(("n"+m_name+"_LHLoose").c_str(),      &m_n_LHLoose);
+    tree->SetBranchAddress(("n"+m_name+"_LHLoose").c_str(),     &m_n_LHLoose);
     connectBranch<int>(tree, "LHLoose",         &m_LHLoose);
+
+    tree->SetBranchStatus (("n"+m_name+"_LHLooseBL").c_str(),   1);
+    tree->SetBranchAddress(("n"+m_name+"_LHLooseBL").c_str(),   &m_n_LHLooseBL);
+    connectBranch<int>(tree, "LHLooseBL",         &m_LHLooseBL);
 
     tree->SetBranchStatus (("n"+m_name+"_LHMedium").c_str(),      1);
     tree->SetBranchAddress(("n"+m_name+"_LHMedium").c_str(),      &m_n_LHMedium);
@@ -362,12 +370,13 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
   
   // quality
   if ( m_infoSwitch.m_PID ) {
-    elec.LHLoose       = m_LHLoose  ->at(idx);   
-    elec.LHMedium      = m_LHMedium      ->at(idx);   
-    elec.LHTight       = m_LHTight     ->at(idx);   
-    elec.IsEMLoose     = m_IsEMLoose      ->at(idx);   
-    elec.IsEMMedium    = m_IsEMMedium      ->at(idx);   
-    elec.IsEMTight     = m_IsEMTight      ->at(idx);   
+    elec.LHLoose       = m_LHLoose    ->at(idx);   
+    elec.LHLooseBL     = m_LHLooseBL  ->at(idx);   
+    elec.LHMedium      = m_LHMedium   ->at(idx);   
+    elec.LHTight       = m_LHTight    ->at(idx);   
+    elec.IsEMLoose     = m_IsEMLoose  ->at(idx);   
+    elec.IsEMMedium    = m_IsEMMedium ->at(idx);   
+    elec.IsEMTight     = m_IsEMTight  ->at(idx);   
   }
   
   // scale factors w/ sys
@@ -461,6 +470,9 @@ void ElectronContainer::setBranches(TTree *tree)
   if ( m_infoSwitch.m_PID ) {
     tree->Branch(("n"+m_name+"_LHLoose").c_str(),      &m_n_LHLoose);
     setBranch<int>(tree, "LHLoose",         m_LHLoose);
+
+    tree->Branch(("n"+m_name+"_LHLooseBL").c_str(),      &m_n_LHLooseBL);
+    setBranch<int>(tree, "LHLooseBL",         m_LHLooseBL);
 
     tree->Branch(("n"+m_name+"_LHMedium").c_str(),      &m_n_LHMedium);
     setBranch<int>(tree, "LHMedium",      m_LHMedium);
@@ -566,6 +578,9 @@ void ElectronContainer::clear()
   if ( m_infoSwitch.m_PID ) {
     m_n_LHLoose = 0;
     m_LHLoose   -> clear();
+
+    m_n_LHLooseBL = 0;
+    m_LHLooseBL   -> clear();
 
     m_n_LHMedium = 0;
     m_LHMedium   -> clear();
@@ -726,7 +741,13 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     if ( LHLooseAcc.isAvailable( *elec ) ) {
       m_LHLoose->push_back( LHLooseAcc( *elec ) );
       if ( LHLooseAcc( *elec ) == 1 ) { ++m_n_LHLoose; }
-    }  else { m_LHLoose->push_back( -1 ); }
+    }  else {  m_LHLoose->push_back( -1 ); }
+
+    static SG::AuxElement::Accessor<char> LHLooseBLAcc ("LHLooseBL");
+    if ( LHLooseBLAcc.isAvailable( *elec ) ) {
+      m_LHLooseBL->push_back( LHLooseBLAcc( *elec ) );
+      if ( LHLooseBLAcc( *elec ) == 1 ) { ++m_n_LHLooseBL; }
+    }  else { m_LHLooseBL->push_back( -1 ); }
 
     static SG::AuxElement::Accessor<char> LHMediumAcc ("LHMedium");
     if ( LHMediumAcc.isAvailable( *elec ) ) {
@@ -741,19 +762,19 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     } else { m_LHTight->push_back( -1 ); }
 
 
-    static SG::AuxElement::Accessor<char> EMLooseAcc ("Loose");
+    static SG::AuxElement::Accessor<char> EMLooseAcc ("IsEMLoose");
     if ( EMLooseAcc.isAvailable( *elec ) ) {
       m_IsEMLoose->push_back( EMLooseAcc( *elec ) );
       if ( EMLooseAcc( *elec ) == 1 ) { ++m_n_IsEMLoose; }
     } else { m_IsEMLoose->push_back( -1 ); }
 
-    static SG::AuxElement::Accessor<char> EMMediumAcc ("Medium");
+    static SG::AuxElement::Accessor<char> EMMediumAcc ("IsEMMedium");
     if ( EMMediumAcc.isAvailable( *elec ) ) {
       m_IsEMMedium->push_back( EMMediumAcc( *elec ) );
       if ( EMMediumAcc( *elec ) == 1 ) { ++m_n_IsEMMedium; }
     } else { m_IsEMMedium->push_back( -1 ); }
 
-    static SG::AuxElement::Accessor<char> EMTightAcc ("Tight");
+    static SG::AuxElement::Accessor<char> EMTightAcc ("IsEMTight");
     if ( EMTightAcc.isAvailable( *elec ) ) {
       m_IsEMTight->push_back( EMTightAcc( *elec ) );
       if ( EMTightAcc( *elec ) == 1 ) { ++m_n_IsEMTight; }

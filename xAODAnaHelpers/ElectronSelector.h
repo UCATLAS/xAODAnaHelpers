@@ -66,21 +66,29 @@ public:
   float	     	 m_z0sintheta_max;	     /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
   bool           m_doAuthorCut;
   bool           m_doOQCut;
+
+  ///// electron PID /////
+
+  /** @brief To read electron PID decision from DAOD, rather than recalculate with tool */
+  bool           m_readIDFlagsFromDerivation;
+  /** @brief Performs the Likelihood PID B-Layer cut locally.
+   * @note Occurs automatically only if :cpp:member:`xAH::ElectronSelector::m_LHOperatingPoint` is LooseBL and :cpp:member:`xAH::ElectronSelector::m_readIDFlagsFromDerivation`` is true */
   bool           m_doBLTrackQualityCut;
 
-  /* electron PID */
-
-  bool           m_readIDFlagsFromDerivation;
-  std::string    m_confDirPID;
-
-  /* likelihood-based  */
+  //// likelihood-based  ////
+  /** @brief Instantiate and perform the electron Likelihood PID */
+  bool           m_doLHPID;
+  /** @brief Cut on electron Likelihood PID */
   bool           m_doLHPIDcut;
-  std::string    m_LHConfigYear;
+  /** @brief Loosest Likelihood PID operating point to save */
   std::string    m_LHOperatingPoint;
 
-  /* cut-based */
+  //// cut-based ////
+  /** @brief Instantiate and perform the electron cut-based PID */
+  bool           m_doCutBasedPID;
+  /** @brief Cut on electron cut-based PID */
   bool           m_doCutBasedPIDcut;
-  std::string    m_CutBasedConfigYear;
+  /** @brief Loosest cut-based PID operating point to save */
   std::string    m_CutBasedOperatingPoint;
 
   /* isolation */
