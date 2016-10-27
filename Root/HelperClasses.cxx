@@ -129,6 +129,24 @@ namespace HelperClasses{
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
     m_energyLoss    = has_exact("energyLoss");
+   
+    // working points combinations for trigger corrections 
+    std::string token;
+    std::string reco_prfx = "Reco";
+    std::string isol_prfx = "Iso";
+    std::string trig_prfx = "HLT";
+    
+    std::istringstream ss(m_configStr);
+    while ( std::getline(ss, token, ' ') ) {
+      if ( token.compare( 0, reco_prfx.length(), reco_prfx ) == 0 ) { m_recoWPs.push_back(token); }
+      if ( token.compare( 0, isol_prfx.length(), isol_prfx ) == 0 ) { m_isolWPs.push_back(token); }
+      if ( token.compare( 0, trig_prfx.length(), trig_prfx ) == 0 ) { m_trigWPs.push_back(token); }
+    }  
+    
+    //for (const auto& isol : isolWPs) { m_isolWPsMap[isol] = has_exact(isol); }                        
+    //for (const auto& reco : recoWPs) { m_recoWPsMap[reco] = has_exact(reco); }                        
+    //for (const auto& trig : trigWPs) { m_trigWPsMap[trig] = has_exact(trig); }                        
+
   }
 
   void ElectronInfoSwitch::initialize(){

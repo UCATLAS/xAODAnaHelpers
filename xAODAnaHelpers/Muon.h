@@ -46,32 +46,11 @@ namespace xAH {
     
     // scale factors w/ sys
     // per object
-    std::vector< float >  RecoEff_SF_Loose;
-    std::vector< float >  RecoEff_SF_Medium;
+    std::map< std::string, std::vector< float > > RecoEff_SF;
+    std::map< std::string, std::vector< float > > IsoEff_SF;
+    std::map< std::string, std::vector< float > > TrigEff_SF;
+    std::map< std::string, std::vector< float > > TrigMCEff;
     
-    std::vector< float >  TrigEff_SF_Loose_Loose;
-    std::vector< float >  TrigEff_SF_Loose_FixedCutTightTrackOnly;
-    std::vector< float >  TrigEff_SF_Loose_Gradient;
-    std::vector< float >  TrigEff_SF_Loose_GradientLoose;
-    std::vector< float >  TrigEff_SF_Medium_FixedCutTightTrackOnly;
-    std::vector< float >  TrigEff_SF_Medium_Gradient;
-    std::vector< float >  TrigEff_SF_Medium_GradientLoose;
-    
-    std::vector< float >  TrigMCEff_Loose_Loose;
-    std::vector< float >  TrigMCEff_Loose_FixedCutTightTrackOnly;
-    std::vector< float >  TrigMCEff_Loose_Gradient;
-    std::vector< float >  TrigMCEff_Loose_GradientLoose;
-    std::vector< float >  TrigMCEff_Medium_FixedCutTightTrackOnly;
-    std::vector< float >  TrigMCEff_Medium_Gradient;
-    std::vector< float >  TrigMCEff_Medium_GradientLoose;
-    
-    std::vector< float >  IsoEff_SF_LooseTrackOnly;
-    std::vector< float >  IsoEff_SF_Loose;
-    std::vector< float >  IsoEff_SF_Tight;
-    std::vector< float >  IsoEff_SF_Gradient;
-    std::vector< float >  IsoEff_SF_GradientLoose;
-    std::vector< float >  IsoEff_SF_FixedCutLoose;
-    std::vector< float >  IsoEff_SF_FixedCutTightTrackOnly;
     std::vector< float >  TTVAEff_SF;
     
     // track parameters
