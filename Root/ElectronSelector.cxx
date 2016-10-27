@@ -109,7 +109,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
   m_LHOperatingPoint        = "Loose";
 
   // cut-based PID
-  m_doCutBasedPID           = true;
+  m_doCutBasedPID           = false;
   m_doCutBasedPIDcut        = false;
   m_CutBasedOperatingPoint  = "Loose";
 
