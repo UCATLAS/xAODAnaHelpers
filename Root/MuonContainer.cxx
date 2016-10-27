@@ -13,7 +13,7 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
   // trigger
   if ( m_infoSwitch.m_trigger ) {
     m_isTrigMatched          = new     vector<int>               ();
-    m_isTrigMatchedToChain   = new     vector<vector<int> > ();
+    m_isTrigMatchedToChain   = new     vector<vector<int> >      ();
     m_listTrigChains         = new     vector<std::string>       ();
   }
     
@@ -50,34 +50,14 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    m_RecoEff_SF_Loose                              = new vector< vector< float > > ();
-    m_RecoEff_SF_Medium                             = new vector< vector< float > > ();
     
-    m_TrigEff_SF_Loose_Loose                        = new vector< vector< float > > ();
-    m_TrigEff_SF_Loose_FixedCutTightTrackOnly       = new vector< vector< float > > ();
-    m_TrigEff_SF_Loose_Gradient                     = new vector< vector< float > > ();
-    m_TrigEff_SF_Loose_GradientLoose                = new vector< vector< float > > ();
-    m_TrigEff_SF_Medium_FixedCutTightTrackOnly      = new vector< vector< float > > ();
-    m_TrigEff_SF_Medium_Gradient                    = new vector< vector< float > > ();
-    m_TrigEff_SF_Medium_GradientLoose               = new vector< vector< float > > ();
-    
-    m_TrigMCEff_Loose_Loose                         = new vector< vector< float > > ();
-    m_TrigMCEff_Loose_FixedCutTightTrackOnly        = new vector< vector< float > > ();
-    m_TrigMCEff_Loose_Gradient                      = new vector< vector< float > > ();
-    m_TrigMCEff_Loose_GradientLoose                 = new vector< vector< float > > ();
-    m_TrigMCEff_Medium_FixedCutTightTrackOnly       = new vector< vector< float > > ();
-    m_TrigMCEff_Medium_Gradient                     = new vector< vector< float > > ();
-    m_TrigMCEff_Medium_GradientLoose                = new vector< vector< float > > ();
-    
-    m_IsoEff_SF_LooseTrackOnly                      = new vector< vector< float > > ();
-    m_IsoEff_SF_Loose                               = new vector< vector< float > > ();
-    m_IsoEff_SF_Tight                               = new vector< vector< float > > ();
-    m_IsoEff_SF_Gradient                            = new vector< vector< float > > ();
-    m_IsoEff_SF_GradientLoose                       = new vector< vector< float > > ();
-    m_IsoEff_SF_FixedCutLoose                       = new vector< vector< float > > ();
-    m_IsoEff_SF_FixedCutTightTrackOnly              = new vector< vector< float > > ();
-    
-    m_TTVAEff_SF                                    = new vector< vector< float > > ();
+    m_RecoEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
+    m_IsoEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
+    m_TrigEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
+    m_TrigMCEff  = new std::map< std::string, std::vector< std::vector< float > > >();
+  
+    m_TTVAEff_SF = new vector< vector< float > > ();
+  
   }
       // track parameters
   if ( m_infoSwitch.m_trackparams ) {
@@ -161,33 +141,13 @@ MuonContainer::~MuonContainer()
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    delete m_RecoEff_SF_Loose                              ;
-    delete m_RecoEff_SF_Medium                             ;
-
-    delete m_TrigEff_SF_Loose_Loose                        ;
-    delete m_TrigEff_SF_Loose_FixedCutTightTrackOnly       ;
-    delete m_TrigEff_SF_Loose_Gradient                     ;
-    delete m_TrigEff_SF_Loose_GradientLoose                ;
-    delete m_TrigEff_SF_Medium_FixedCutTightTrackOnly      ;
-    delete m_TrigEff_SF_Medium_Gradient                    ;
-    delete m_TrigEff_SF_Medium_GradientLoose               ;
     
-    delete m_TrigMCEff_Loose_Loose                         ;
-    delete m_TrigMCEff_Loose_FixedCutTightTrackOnly        ;
-    delete m_TrigMCEff_Loose_Gradient                      ;
-    delete m_TrigMCEff_Loose_GradientLoose                 ;
-    delete m_TrigMCEff_Medium_FixedCutTightTrackOnly       ;
-    delete m_TrigMCEff_Medium_Gradient                     ;
-    delete m_TrigMCEff_Medium_GradientLoose                ;
+    delete m_RecoEff_SF ;
+    delete m_IsoEff_SF  ;
+    delete m_TrigEff_SF ;
+    delete m_TrigMCEff  ;
     
-    delete m_IsoEff_SF_LooseTrackOnly                      ;
-    delete m_IsoEff_SF_Loose                               ;
-    delete m_IsoEff_SF_Tight                               ;
-    delete m_IsoEff_SF_Gradient                            ;
-    delete m_IsoEff_SF_GradientLoose                       ;
-    delete m_IsoEff_SF_FixedCutLoose                       ;
-    delete m_IsoEff_SF_FixedCutTightTrackOnly              ;
-    delete m_TTVAEff_SF                                    ;
+    delete m_TTVAEff_SF ;
   }
       // track parameters
   if ( m_infoSwitch.m_trackparams ) {
@@ -235,9 +195,9 @@ void MuonContainer::setTree(TTree *tree)
   ParticleContainer::setTree(tree);
 
   if ( m_infoSwitch.m_trigger ){
-    connectBranch<int>         (tree, "isTrigMatched",       &m_isTrigMatched);
-    connectBranch<vector<int> >(tree,"isTrigMatchedToChain", &m_isTrigMatchedToChain );
-    connectBranch<string>      (tree, "listTrigChains",      &m_listTrigChains );
+    connectBranch<int>         (tree, "isTrigMatched",        &m_isTrigMatched);
+    connectBranch<vector<int> >(tree, "isTrigMatchedToChain", &m_isTrigMatchedToChain );
+    connectBranch<string>      (tree, "listTrigChains",       &m_listTrigChains );
   }
 
   if ( m_infoSwitch.m_isolation ) {
@@ -262,31 +222,26 @@ void MuonContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    connectBranch<vector<float> >(tree,"RecoEff_SF_Loose",         &m_RecoEff_SF_Loose);
-    connectBranch<vector<float> >(tree,"RecoEff_SF_Medium",         &m_RecoEff_SF_Loose);
     
-    connectBranch<vector<float> >(tree,"TrigEff_SF_Loose_Loose",		    &m_TrigEff_SF_Loose_Loose);
-    connectBranch<vector<float> >(tree,"TrigEff_SF_Loose_FixedCutTightTrackOnly",  &m_TrigEff_SF_Loose_FixedCutTightTrackOnly);
-    connectBranch<vector<float> >(tree,"TrigEff_SF_Loose_Gradient",  &m_TrigEff_SF_Loose_Gradient);
-    connectBranch<vector<float> >(tree,"TrigEff_SF_Loose_GradientLoose",  &m_TrigEff_SF_Loose_GradientLoose);
-    connectBranch<vector<float> >(tree,"TrigEff_SF_Medium_FixedCutTightTrackOnly",  &m_TrigEff_SF_Medium_FixedCutTightTrackOnly);
-    connectBranch<vector<float> >(tree,"TrigEff_SF_Medium_Gradient",  &m_TrigEff_SF_Medium_Gradient);
-    connectBranch<vector<float> >(tree,"TrigEff_SF_Medium_GradientLoose",  &m_TrigEff_SF_Medium_GradientLoose);
+    for (auto& reco : m_infoSwitch.m_recoWPs) {
+      std::string recoEffSF = "muon_RecoEff_SF_" + reco; 
+      tree->SetBranchAddress( recoEffSF.c_str() , & (*m_RecoEff_SF)[ reco ] );
+    }
     
-    connectBranch<vector<float> >(tree,"TrigMCEff_Loose_Loose",		    &m_TrigMCEff_Loose_Loose);
-    connectBranch<vector<float> >(tree,"TrigMCEff_Loose_FixedCutTightTrackOnly",  &m_TrigMCEff_Loose_FixedCutTightTrackOnly);
-    connectBranch<vector<float> >(tree,"TrigMCEff_Loose_Gradient",  &m_TrigMCEff_Loose_Gradient);
-    connectBranch<vector<float> >(tree,"TrigMCEff_Loose_GradientLoose",  &m_TrigMCEff_Loose_GradientLoose);
-    connectBranch<vector<float> >(tree,"TrigMCEff_Medium_FixedCutTightTrackOnly",  &m_TrigMCEff_Medium_FixedCutTightTrackOnly);
-    connectBranch<vector<float> >(tree,"TrigMCEff_Medium_Gradient",  &m_TrigMCEff_Medium_Gradient);
-    connectBranch<vector<float> >(tree,"TrigMCEff_Medium_GradientLoose",  &m_TrigMCEff_Medium_GradientLoose);
-   
-    connectBranch<vector<float> >(tree,"IsoEff_SF_LooseTrackOnly", &m_IsoEff_SF_LooseTrackOnly);
-    connectBranch<vector<float> >(tree,"IsoEff_SF_Loose",	    &m_IsoEff_SF_Loose);
-    connectBranch<vector<float> >(tree,"IsoEff_SF_Tight",	    &m_IsoEff_SF_Tight);
-    connectBranch<vector<float> >(tree,"IsoEff_SF_Gradient",	    &m_IsoEff_SF_Gradient);
-    connectBranch<vector<float> >(tree,"IsoEff_SF_GradientLoose",  &m_IsoEff_SF_GradientLoose);
-    connectBranch<vector<float> >(tree,"IsoEff_SF_FixedCutTightTrackOnly",  &m_IsoEff_SF_FixedCutTightTrackOnly);
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      std::string isolEffSF = "muon_IsoEff_SF_" + isol; 
+      tree->SetBranchAddress( isolEffSF.c_str() , & (*m_IsoEff_SF)[ isol ] );
+    }
+    
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      std::string trigEffSF = "muon_TrigEff_SF_" + trig; 
+      tree->SetBranchAddress( trigEffSF.c_str() , & (*m_TrigEff_SF)[ trig ] );
+      
+      
+      std::string trigMCEff = "muon_TrigMCEff_" + trig;
+      tree->SetBranchAddress( trigMCEff.c_str() , & (*m_TrigMCEff)[ trig ] );
+    }
+    
     connectBranch<vector<float> >(tree,"TTVAEff_SF",  &m_TTVAEff_SF);
   }
 
@@ -379,33 +334,21 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    muon.RecoEff_SF_Loose                               = m_RecoEff_SF_Loose                              ->at(idx);
-    muon.RecoEff_SF_Medium                              = m_RecoEff_SF_Medium                             ->at(idx);
     
-    muon.TrigEff_SF_Loose_Loose                         = m_TrigEff_SF_Loose_Loose                        ->at(idx);
-    muon.TrigEff_SF_Loose_FixedCutTightTrackOnly        = m_TrigEff_SF_Loose_FixedCutTightTrackOnly       ->at(idx);
-    muon.TrigEff_SF_Loose_Gradient                      = m_TrigEff_SF_Loose_Gradient                     ->at(idx);
-    muon.TrigEff_SF_Loose_GradientLoose                 = m_TrigEff_SF_Loose_GradientLoose                ->at(idx);
-    muon.TrigEff_SF_Medium_FixedCutTightTrackOnly       = m_TrigEff_SF_Medium_FixedCutTightTrackOnly      ->at(idx);
-    muon.TrigEff_SF_Medium_Gradient                     = m_TrigEff_SF_Medium_Gradient                    ->at(idx);
-    muon.TrigEff_SF_Medium_GradientLoose                = m_TrigEff_SF_Medium_GradientLoose               ->at(idx);
+    for (auto& reco : m_infoSwitch.m_recoWPs) {
+      muon.RecoEff_SF[ reco ] = (*m_RecoEff_SF)[ reco ].at(idx);
+    }
     
-    muon.TrigMCEff_Loose_Loose                          = m_TrigMCEff_Loose_Loose                         ->at(idx);
-    muon.TrigMCEff_Loose_FixedCutTightTrackOnly         = m_TrigMCEff_Loose_FixedCutTightTrackOnly        ->at(idx);
-    muon.TrigMCEff_Loose_Gradient                       = m_TrigMCEff_Loose_Gradient                      ->at(idx);
-    muon.TrigMCEff_Loose_GradientLoose                  = m_TrigMCEff_Loose_GradientLoose                 ->at(idx);
-    muon.TrigMCEff_Medium_FixedCutTightTrackOnly        = m_TrigMCEff_Medium_FixedCutTightTrackOnly       ->at(idx);
-    muon.TrigMCEff_Medium_Gradient                      = m_TrigMCEff_Medium_Gradient                     ->at(idx);
-    muon.TrigMCEff_Medium_GradientLoose                 = m_TrigMCEff_Medium_GradientLoose                ->at(idx);
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      muon.IsoEff_SF[ isol ] = (*m_IsoEff_SF)[ isol ].at(idx);
+    }
     
-    muon.IsoEff_SF_LooseTrackOnly                       = m_IsoEff_SF_LooseTrackOnly                      ->at(idx);
-    muon.IsoEff_SF_Loose                                = m_IsoEff_SF_Loose                               ->at(idx);
-    muon.IsoEff_SF_Tight                                = m_IsoEff_SF_Tight                               ->at(idx);
-    muon.IsoEff_SF_Gradient                             = m_IsoEff_SF_Gradient                            ->at(idx);
-    muon.IsoEff_SF_GradientLoose                        = m_IsoEff_SF_GradientLoose                       ->at(idx);
-    muon.IsoEff_SF_FixedCutLoose                        = m_IsoEff_SF_FixedCutLoose                       ->at(idx);
-    muon.IsoEff_SF_FixedCutTightTrackOnly               = m_IsoEff_SF_FixedCutTightTrackOnly              ->at(idx);
-    muon.TTVAEff_SF                                     = m_TTVAEff_SF                                    ->at(idx);
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      muon.TrigEff_SF[ trig ] = (*m_TrigEff_SF)[ trig ].at(idx);
+      muon.TrigMCEff [ trig ] = (*m_TrigMCEff )[ trig ].at(idx);
+    }
+
+    muon.TTVAEff_SF = m_TTVAEff_SF -> at(idx);
   }
       // track parameters
   if ( m_infoSwitch.m_trackparams ) {
@@ -483,32 +426,27 @@ void MuonContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    setBranch<vector<float> >(tree,"RecoEff_SF_Loose",         m_RecoEff_SF_Loose);
-    setBranch<vector<float> >(tree,"RecoEff_SF_Medium",         m_RecoEff_SF_Medium);
     
-    setBranch<vector<float> >(tree,"TrigEff_SF_Loose_Loose",		    m_TrigEff_SF_Loose_Loose);
-    setBranch<vector<float> >(tree,"TrigEff_SF_Loose_FixedCutTightTrackOnly",  m_TrigEff_SF_Loose_FixedCutTightTrackOnly);
-    setBranch<vector<float> >(tree,"TrigEff_SF_Loose_Gradient",  m_TrigEff_SF_Loose_Gradient);
-    setBranch<vector<float> >(tree,"TrigEff_SF_Loose_GradientLoose",  m_TrigEff_SF_Loose_GradientLoose);
-    setBranch<vector<float> >(tree,"TrigEff_SF_Medium_FixedCutTightTrackOnly",  m_TrigEff_SF_Medium_FixedCutTightTrackOnly);
-    setBranch<vector<float> >(tree,"TrigEff_SF_Medium_Gradient",  m_TrigEff_SF_Medium_Gradient);
-    setBranch<vector<float> >(tree,"TrigEff_SF_Medium_GradientLoose",  m_TrigEff_SF_Medium_GradientLoose);
+    for (auto& reco : m_infoSwitch.m_recoWPs) {
+      std::string recoEffSF = "muon_RecoEff_SF_" + reco;
+      tree->Branch( recoEffSF.c_str() , & (*m_RecoEff_SF)[ reco ] );
+
+    }
     
-    setBranch<vector<float> >(tree,"TrigMCEff_Loose_Loose",		    m_TrigMCEff_Loose_Loose);
-    setBranch<vector<float> >(tree,"TrigMCEff_Loose_FixedCutTightTrackOnly",  m_TrigMCEff_Loose_FixedCutTightTrackOnly);
-    setBranch<vector<float> >(tree,"TrigMCEff_Loose_Gradient",  m_TrigMCEff_Loose_Gradient);
-    setBranch<vector<float> >(tree,"TrigMCEff_Loose_GradientLoose",  m_TrigMCEff_Loose_GradientLoose);
-    setBranch<vector<float> >(tree,"TrigMCEff_Medium_FixedCutTightTrackOnly",  m_TrigMCEff_Medium_FixedCutTightTrackOnly);
-    setBranch<vector<float> >(tree,"TrigMCEff_Medium_Gradient",  m_TrigMCEff_Medium_Gradient);
-    setBranch<vector<float> >(tree,"TrigMCEff_Medium_GradientLoose",  m_TrigMCEff_Medium_GradientLoose);
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      std::string isolEffSF = "muon_IsoEff_SF_" + isol;
+      tree->Branch( isolEffSF.c_str() , & (*m_IsoEff_SF)[ isol ] );
+    }
     
-    setBranch<vector<float> >(tree,"IsoEff_SF_LooseTrackOnly", m_IsoEff_SF_LooseTrackOnly);
-    setBranch<vector<float> >(tree,"IsoEff_SF_Loose",	    m_IsoEff_SF_Loose);
-    setBranch<vector<float> >(tree,"IsoEff_SF_Tight",	    m_IsoEff_SF_Tight);
-    setBranch<vector<float> >(tree,"IsoEff_SF_Gradient",	    m_IsoEff_SF_Gradient);
-    setBranch<vector<float> >(tree,"IsoEff_SF_GradientLoose",  m_IsoEff_SF_GradientLoose);
-    setBranch<vector<float> >(tree,"IsoEff_SF_FixedCutTightTrackOnly",  m_IsoEff_SF_FixedCutTightTrackOnly);
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      std::string trigEffSF = "muon_TrigEff_SF_" + trig;
+      std::string trigMCEff = "muon_TrigMCEff_" + trig; 
+      tree->Branch( trigEffSF.c_str() , & (*m_TrigEff_SF)[ trig ] );
+      tree->Branch( trigMCEff.c_str() , & (*m_TrigMCEff)[ trig ] );
+    }
+    
     setBranch<vector<float> >(tree,"TTVAEff_SF",  m_TTVAEff_SF);
+    
   }
 
   if ( m_infoSwitch.m_quality ) {
@@ -545,7 +483,7 @@ void MuonContainer::setBranches(TTree *tree)
   if( m_infoSwitch.m_energyLoss ) {
     setBranch<float>(tree,"EnergyLoss"                ,  m_EnergyLoss               );
     setBranch<float>(tree,"EnergyLossSigma"           ,  m_EnergyLossSigma          );
-    setBranch<unsigned char>(tree,"energyLossType"            ,  m_energyLossType           );
+    setBranch<unsigned char>(tree,"energyLossType"    ,  m_energyLossType           );
     setBranch<float>(tree,"MeasEnergyLoss"            ,  m_MeasEnergyLoss           );
     setBranch<float>(tree,"MeasEnergyLossSigma"       ,  m_MeasEnergyLossSigma      );
     setBranch<float>(tree,"ParamEnergyLoss"           ,  m_ParamEnergyLoss          );
@@ -622,31 +560,20 @@ void MuonContainer::clear()
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    m_RecoEff_SF_Loose->clear();
-    m_RecoEff_SF_Medium->clear();
     
-    m_TrigEff_SF_Loose_Loose->clear();
-    m_TrigEff_SF_Loose_FixedCutTightTrackOnly->clear();
-    m_TrigEff_SF_Loose_Gradient->clear();
-    m_TrigEff_SF_Loose_GradientLoose->clear();
-    m_TrigEff_SF_Medium_FixedCutTightTrackOnly->clear();
-    m_TrigEff_SF_Medium_Gradient->clear();
-    m_TrigEff_SF_Medium_GradientLoose->clear();
+    for (auto& reco : m_infoSwitch.m_recoWPs) {
+      (*m_RecoEff_SF)[ reco ].clear();
+    }
     
-    m_TrigMCEff_Loose_Loose->clear();
-    m_TrigMCEff_Loose_FixedCutTightTrackOnly->clear();
-    m_TrigMCEff_Loose_Gradient->clear();
-    m_TrigMCEff_Loose_GradientLoose->clear();
-    m_TrigMCEff_Medium_FixedCutTightTrackOnly->clear();
-    m_TrigMCEff_Medium_Gradient->clear();
-    m_TrigMCEff_Medium_GradientLoose->clear();
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      (*m_IsoEff_SF)[ isol ].clear();
+    }
     
-    m_IsoEff_SF_LooseTrackOnly->clear();
-    m_IsoEff_SF_Loose->clear();
-    m_IsoEff_SF_Tight->clear();
-    m_IsoEff_SF_Gradient->clear();
-    m_IsoEff_SF_GradientLoose->clear();
-    m_IsoEff_SF_FixedCutTightTrackOnly->clear();
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      (*m_TrigEff_SF)[ trig ].clear();
+      (*m_TrigMCEff)[ trig ].clear();
+    }
+    
     m_TTVAEff_SF->clear();
   }
 
@@ -831,61 +758,60 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
-    static SG::AuxElement::Accessor< std::vector< float > > accRecoSF_Loose("MuonEfficiencyCorrector_RecoSyst_Loose");
-    static SG::AuxElement::Accessor< std::vector< float > > accRecoSF_Medium("MuonEfficiencyCorrector_RecoSyst_Medium");
-    
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Loose_Loose("MuonEfficiencyCorrector_TrigSyst_RecoLoose_IsoLoose");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Loose_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigSyst_RecoLoose_IsoFixedCutTightTrackOnly");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Loose_Gradient("MuonEfficiencyCorrector_TrigSyst_RecoLoose_IsoGradient");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Loose_GradientLoose("MuonEfficiencyCorrector_TrigSyst_RecoLoose_IsoGradientLoose");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Medium_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigSyst_RecoMedium_IsoFixedCutTightTrackOnly");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Medium_Gradient("MuonEfficiencyCorrector_TrigSyst_RecoMedium_IsoGradient");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigSF_Medium_GradientLoose("MuonEfficiencyCorrector_TrigSyst_RecoMedium_IsoGradientLoose");
-    
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Loose_Loose("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoLoose");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Loose_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoFixedCutTightTrackOnly");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Loose_Gradient("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoGradient");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Loose_GradientLoose("MuonEfficiencyCorrector_TrigMCEff_RecoLoose_IsoGradientLoose");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Medium_FixedCutTightTrackOnly("MuonEfficiencyCorrector_TrigMCEff_RecoMedium_IsoFixedCutTightTrackOnly");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Medium_Gradient("MuonEfficiencyCorrector_TrigMCEff_RecoMedium_IsoGradient");
-    static SG::AuxElement::Accessor< std::vector< float > > accTrigMCEff_Medium_GradientLoose("MuonEfficiencyCorrector_TrigMCEff_RecoMedium_IsoGradientLoose");
-    
-    static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_LooseTrackOnly("MuonEfficiencyCorrector_IsoSyst_LooseTrackOnly");
-    static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Loose("MuonEfficiencyCorrector_IsoSyst_IsoLoose");
-    static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Tight("MuonEfficiencyCorrector_IsoSyst_IsoTight");
-    static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_Gradient("MuonEfficiencyCorrector_IsoSyst_IsoGradient");
-    static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_GradientLoose("MuonEfficiencyCorrector_IsoSyst_IsoGradientLoose");
-    static SG::AuxElement::Accessor< std::vector< float > > accIsoSF_FixedCutTightTrackOnly("MuonEfficiencyCorrector_IsoSyst_IsoFixedCutTightTrackOnly");
-    static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuonEfficiencyCorrector_TTVASyst_TTVA");
-
     std::vector<float> junkSF(1,1.0);
     std::vector<float> junkEff(1,0.0);
+    
+    static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuonEfficiencyCorrector_TTVASyst_TTVA");
+    
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accRecoSF;
+    
+    for (auto& reco : m_infoSwitch.m_recoWPs) {
+            
+      std::string recoEffSF = "MuonEfficiencyCorrector_RecoSyst_" + reco;
+      accRecoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( reco , SG::AuxElement::Accessor< std::vector< float > >( recoEffSF ) ) );
+      if( (accRecoSF.at( reco  )).isAvailable( *muon ) ) { 
+        m_RecoEff_SF->at( reco ).push_back( (accRecoSF.at( reco ))( *muon ) ); 
+      }else { 
+        m_RecoEff_SF->at( reco  ).push_back( junkSF ); 
+      }
+    }
+    
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
+    
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+            
+      std::string isolEffSF = "MuonEfficiencyCorrector_IsoSyst_" + isol;
+      accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( isol , SG::AuxElement::Accessor< std::vector< float > >( isolEffSF ) ) );
+      if( (accIsoSF.at( isol  )).isAvailable( *muon ) ) { 
+        m_IsoEff_SF->at( isol ).push_back( (accIsoSF.at( isol ))( *muon ) ); 
+      }else { 
+        m_IsoEff_SF->at( isol  ).push_back( junkSF ); 
+      }
+    }
+    
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
+    
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+            
+      std::string trigEffSF = "MuonEfficiencyCorrector_TrigSyst_" + trig;
+      accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigEffSF ) ) );
+      if( (accTrigSF.at( trig  )).isAvailable( *muon ) ) { 
+        m_TrigEff_SF->at( trig ).push_back( (accTrigSF.at( trig ))( *muon ) ); 
+      }else { 
+        m_TrigEff_SF->at( trig  ).push_back( junkSF ); 
+      }
+      
+      std::string trigMCEff = "MuonEfficiencyCorrector_TrigMCEff_" + trig;
+      accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigMCEff ) ) );
+      if( (accTrigEFF.at( trig  )).isAvailable( *muon ) ) { 
+        m_TrigMCEff->at( trig  ).push_back( (accTrigEFF.at( trig  ))( *muon ) ); 
+      } else { 
+        m_TrigMCEff->at( trig  ).push_back( junkEff ); 
+      }
+    }
 
-    if( accRecoSF_Loose.isAvailable( *muon ) )         { m_RecoEff_SF_Loose->push_back( accRecoSF_Loose( *muon ) ); } else { m_RecoEff_SF_Loose->push_back( junkSF ); }
-    if( accRecoSF_Medium.isAvailable( *muon ) )         { m_RecoEff_SF_Medium->push_back( accRecoSF_Medium( *muon ) ); } else { m_RecoEff_SF_Medium->push_back( junkSF ); }
-    
-    if ( accTrigSF_Loose_Loose.isAvailable( *muon ) )                     { m_TrigEff_SF_Loose_Loose->push_back( accTrigSF_Loose_Loose( *muon ) ); } else { m_TrigEff_SF_Loose_Loose->push_back( junkSF ); }
-    if ( accTrigSF_Loose_FixedCutTightTrackOnly.isAvailable( *muon ) )    { m_TrigEff_SF_Loose_FixedCutTightTrackOnly->push_back( accTrigSF_Loose_FixedCutTightTrackOnly( *muon ) ); } else { m_TrigEff_SF_Loose_FixedCutTightTrackOnly->push_back( junkSF ); }
-    if ( accTrigSF_Loose_Gradient.isAvailable( *muon ) )    { m_TrigEff_SF_Loose_Gradient->push_back( accTrigSF_Loose_Gradient( *muon ) ); } else { m_TrigEff_SF_Loose_Gradient->push_back( junkSF ); }
-    if ( accTrigSF_Loose_GradientLoose.isAvailable( *muon ) )    { m_TrigEff_SF_Loose_GradientLoose->push_back( accTrigSF_Loose_GradientLoose( *muon ) ); } else { m_TrigEff_SF_Loose_GradientLoose->push_back( junkSF ); }
-    if ( accTrigSF_Medium_FixedCutTightTrackOnly.isAvailable( *muon ) )    { m_TrigEff_SF_Medium_FixedCutTightTrackOnly->push_back( accTrigSF_Medium_FixedCutTightTrackOnly( *muon ) ); } else { m_TrigEff_SF_Medium_FixedCutTightTrackOnly->push_back( junkSF ); }
-    if ( accTrigSF_Medium_Gradient.isAvailable( *muon ) )    { m_TrigEff_SF_Medium_Gradient->push_back( accTrigSF_Medium_Gradient( *muon ) ); } else { m_TrigEff_SF_Medium_Gradient->push_back( junkSF ); }
-    if ( accTrigSF_Medium_GradientLoose.isAvailable( *muon ) )    { m_TrigEff_SF_Medium_GradientLoose->push_back( accTrigSF_Medium_GradientLoose( *muon ) ); } else { m_TrigEff_SF_Medium_GradientLoose->push_back( junkSF ); }
-    
-    if ( accTrigMCEff_Loose_Loose.isAvailable( *muon ) )                  { m_TrigMCEff_Loose_Loose->push_back( accTrigMCEff_Loose_Loose( *muon ) ); } else { m_TrigMCEff_Loose_Loose->push_back( junkEff ); }
-    if ( accTrigMCEff_Loose_FixedCutTightTrackOnly.isAvailable( *muon ) ) { m_TrigMCEff_Loose_FixedCutTightTrackOnly->push_back( accTrigMCEff_Loose_FixedCutTightTrackOnly( *muon ) ); } else { m_TrigMCEff_Loose_FixedCutTightTrackOnly->push_back( junkEff ); }
-    if ( accTrigMCEff_Loose_Gradient.isAvailable( *muon ) ) { m_TrigMCEff_Loose_Gradient->push_back( accTrigMCEff_Loose_Gradient( *muon ) ); } else { m_TrigMCEff_Loose_Gradient->push_back( junkEff ); }
-    if ( accTrigMCEff_Loose_GradientLoose.isAvailable( *muon ) ) { m_TrigMCEff_Loose_GradientLoose->push_back( accTrigMCEff_Loose_GradientLoose( *muon ) ); } else { m_TrigMCEff_Loose_GradientLoose->push_back( junkEff ); }
-    if ( accTrigMCEff_Medium_FixedCutTightTrackOnly.isAvailable( *muon ) ) { m_TrigMCEff_Medium_FixedCutTightTrackOnly->push_back( accTrigMCEff_Medium_FixedCutTightTrackOnly( *muon ) ); } else { m_TrigMCEff_Medium_FixedCutTightTrackOnly->push_back( junkEff ); }
-    if ( accTrigMCEff_Medium_Gradient.isAvailable( *muon ) ) { m_TrigMCEff_Medium_Gradient->push_back( accTrigMCEff_Medium_Gradient( *muon ) ); } else { m_TrigMCEff_Medium_Gradient->push_back( junkEff ); }
-    if ( accTrigMCEff_Medium_GradientLoose.isAvailable( *muon ) ) { m_TrigMCEff_Medium_GradientLoose->push_back( accTrigMCEff_Medium_GradientLoose( *muon ) ); } else { m_TrigMCEff_Medium_GradientLoose->push_back( junkEff ); }
-    
-    if( accIsoSF_LooseTrackOnly.isAvailable( *muon ) ) { m_IsoEff_SF_LooseTrackOnly->push_back( accIsoSF_LooseTrackOnly( *muon ) ); } else { m_IsoEff_SF_LooseTrackOnly->push_back( junkSF ); }
-    if( accIsoSF_Loose.isAvailable( *muon ) )          { m_IsoEff_SF_Loose->push_back( accIsoSF_Loose( *muon ) ); } else { m_IsoEff_SF_Loose->push_back( junkSF ); }
-    if( accIsoSF_Tight.isAvailable( *muon ) )          { m_IsoEff_SF_Tight->push_back( accIsoSF_Tight( *muon ) ); } else { m_IsoEff_SF_Tight->push_back( junkSF ); }
-    if( accIsoSF_GradientLoose.isAvailable( *muon ) )  { m_IsoEff_SF_GradientLoose->push_back( accIsoSF_GradientLoose( *muon ) ); } else {  m_IsoEff_SF_GradientLoose->push_back( junkSF ); }
-    if( accIsoSF_Gradient.isAvailable( *muon ) )       { m_IsoEff_SF_Gradient->push_back( accIsoSF_Gradient( *muon ) ); } else { m_IsoEff_SF_Gradient->push_back( junkSF ); }
-    if( accIsoSF_FixedCutTightTrackOnly.isAvailable( *muon ) )  { m_IsoEff_SF_FixedCutTightTrackOnly->push_back( accIsoSF_FixedCutTightTrackOnly( *muon ) ); } else {  m_IsoEff_SF_FixedCutTightTrackOnly->push_back( junkSF ); }
+
     if( accTTVASF.isAvailable( *muon ) )         { m_TTVAEff_SF->push_back( accTTVASF( *muon ) ); } else { m_TTVAEff_SF->push_back( junkSF ); }
 
   }
