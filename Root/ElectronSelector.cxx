@@ -1057,7 +1057,9 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       if ( m_doLHPIDcut ) {
   
         bool passSelID(false);
-        passSelID = electron->auxdataConst<char>( "DFCommonElectronsLH" + m_LHOperatingPoint );
+        static SG::AuxElement::ConstAccessor< char > LHDecision( "DFCommonElectronsLH" + m_LHOperatingPoint );
+        if( LHDecision.isAvailable( *electron ) )
+            passSelID = LHDecision( *electron );
   
         if ( !passSelID ) {
           if ( m_debug ) { Info("PassCuts()", "Electron failed likelihood PID cut w/ operating point %s", m_LHOperatingPoint.c_str() ); }
@@ -1071,7 +1073,9 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP =  "LH"+it;
   
         bool passThisID(false);
-        passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+        static SG::AuxElement::ConstAccessor< char > LHDecisionAll( "DFCommonElectrons" + decorWP );
+        if( LHDecisionAll.isAvailable( *electron ) )
+            passThisID = LHDecisionAll( *electron );
   
         if ( m_debug ) {
           Info("PassCuts()", "Decorating electron with decision for LH WP : %s ", ( decorWP ).c_str() );
@@ -1121,8 +1125,9 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       if ( m_doCutBasedPIDcut ) {
   
         bool passSelID(false);
-        // need this exception check b/c an interface change in DF happened at some point :(
-        passSelID = electron->auxdataConst<char>( "DFCommonElectronsIsEM" + m_CutBasedOperatingPoint );
+        static SG::AuxElement::ConstAccessor< char > CutDecision( "DFCommonElectronsIsEM" + m_CutBasedOperatingPoint );
+        if( CutDecision.isAvailable( *electron ) )
+            passSelID = CutDecision( *electron );
   
         if ( !passSelID ) {
           if ( m_debug ) { Info("PassCuts()", "Electron failed cut-based PID cut w/ operating point %s", m_CutBasedOperatingPoint.c_str() ); }
@@ -1137,7 +1142,9 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP = "IsEM"+it;
   
         bool passThisID(false);
-        passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
+        static SG::AuxElement::ConstAccessor< char > CutDecisionAll( "DFCommonElectrons" + decorWP );
+        if( CutDecisionAll.isAvailable( *electron ) )
+            passThisID = CutDecisionAll( *electron );
   
         if ( m_debug ) {
           Info("PassCuts()", "Decorating electron with decision for cut-based WP : %s ", ( decorWP ).c_str() );
