@@ -662,15 +662,15 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
     safeFill<char, int, xAOD::Muon>(muon, isIsoUserDefinedCutAcc, m_isIsolated_UserDefinedCut, -1);
 
-    m_ptcone20    ->push_back( muon->isolation( xAOD::Iso::ptcone20 ) );
-    m_ptcone30    ->push_back( muon->isolation( xAOD::Iso::ptcone30 ) );
-    m_ptcone40    ->push_back( muon->isolation( xAOD::Iso::ptcone40 ) );
-    m_ptvarcone20 ->push_back( muon->isolation( xAOD::Iso::ptvarcone20 ) );
-    m_ptvarcone30 ->push_back( muon->isolation( xAOD::Iso::ptvarcone30 ) );
-    m_ptvarcone40 ->push_back( muon->isolation( xAOD::Iso::ptvarcone40 ) );
-    m_topoetcone20->push_back( muon->isolation( xAOD::Iso::topoetcone20 ) );
-    m_topoetcone30->push_back( muon->isolation( xAOD::Iso::topoetcone30 ) );
-    m_topoetcone40->push_back( muon->isolation( xAOD::Iso::topoetcone40 ) );
+    m_ptcone20    ->push_back( muon->isolation( xAOD::Iso::ptcone20 )    /m_units );
+    m_ptcone30    ->push_back( muon->isolation( xAOD::Iso::ptcone30 )    /m_units );
+    m_ptcone40    ->push_back( muon->isolation( xAOD::Iso::ptcone40 )    /m_units );
+    m_ptvarcone20 ->push_back( muon->isolation( xAOD::Iso::ptvarcone20 ) /m_units );
+    m_ptvarcone30 ->push_back( muon->isolation( xAOD::Iso::ptvarcone30 ) /m_units );
+    m_ptvarcone40 ->push_back( muon->isolation( xAOD::Iso::ptvarcone40 ) /m_units );
+    m_topoetcone20->push_back( muon->isolation( xAOD::Iso::topoetcone20 )/m_units );
+    m_topoetcone30->push_back( muon->isolation( xAOD::Iso::topoetcone30 )/m_units );
+    m_topoetcone40->push_back( muon->isolation( xAOD::Iso::topoetcone40 )/m_units );
     
   }
 
