@@ -274,9 +274,13 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
+  // Compatible with Efficiency Nomenclature
+  if( m_LHOperatingPoint == "LooseAndBLayer" )
+    m_LHOperatingPoint = "LooseBL";
+
   if ( // m_LHOperatingPoint != "VeryLoose"       &&
        m_LHOperatingPoint != "Loose"           &&
-       m_LHOperatingPoint != "LooseBL"  &&
+       m_LHOperatingPoint != "LooseBL"         &&
        m_LHOperatingPoint != "Medium"          &&
        m_LHOperatingPoint != "Tight"     ) {
     Error("initialize()", "Unknown electron likelihood PID requested %s!",m_LHOperatingPoint.c_str());
@@ -1045,9 +1049,9 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   // set default values for *this* electron decorations
   //
-  m_el_LH_PIDManager->setDecorations( electron );
-
   if( m_doLHPID ) {
+    m_el_LH_PIDManager->setDecorations( electron );
+
     if ( m_readIDFlagsFromDerivation ) {
   
       if ( m_doLHPIDcut ) {
@@ -1109,9 +1113,9 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   // set default values for *this* electron decorations
   //
-  m_el_CutBased_PIDManager->setDecorations( electron );
-
   if( m_doCutBasedPID ) {
+    m_el_CutBased_PIDManager->setDecorations( electron );
+
     if ( m_readIDFlagsFromDerivation ) {
   
       if ( m_doCutBasedPIDcut ) {
@@ -1134,13 +1138,11 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   
         bool passThisID(false);
         passThisID = electron->auxdataConst<char>( "DFCommonElectrons" + decorWP );
-        std::cout << "looking for " << passThisID << std::endl;
   
         if ( m_debug ) {
           Info("PassCuts()", "Decorating electron with decision for cut-based WP : %s ", ( decorWP ).c_str() );
           Info("PassCuts()", "\t does electron pass %s ? %i ", ( decorWP ).c_str(), passThisID );
         }
-        std::cout << "made it!" << std::endl;
         electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
   
       }
