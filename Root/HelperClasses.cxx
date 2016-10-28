@@ -169,13 +169,15 @@ namespace HelperClasses{
     
     std::istringstream ss(m_configStr);
     while ( std::getline(ss, token, ' ') ) {
-     if ( token.find(PID_keyword ) != std::string::npos )        { m_PIDWPs.push_back(token); }
-     if ( token.find(isol_keyword ) != std::string::npos )       { m_isolWPs.push_back(token); }
+     if ( token.find(PID_keyword ) != std::string::npos ) { m_PIDWPs.push_back(token); }
      if ( token.find("isolNoRequirement") != std::string::npos ) { m_isolWPs.push_back(""); }
+     if ( (token.compare( 0, isol_keyword.length(), isol_keyword ) == 0) && 
+           token!="isolation" && 
+           token!="isolNoRequirement" ) { m_isolWPs.push_back(token); }
      if ( (token.find(trig_keyword1 ) != std::string::npos) ||
-      (token.find(trig_keyword2 ) != std::string::npos) ||
-      (token.find(trig_keyword3 ) != std::string::npos) ||
-      (token.find(trig_keyword4 ) != std::string::npos)  )   { m_trigWPs.push_back(token); }
+          (token.find(trig_keyword2 ) != std::string::npos) ||
+          (token.find(trig_keyword3 ) != std::string::npos) ||
+          (token.find(trig_keyword4 ) != std::string::npos)  ) { m_trigWPs.push_back(token); }
    } 
 
   }

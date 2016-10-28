@@ -388,10 +388,12 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
       for (auto& iso : m_infoSwitch.m_isolWPs) {
-        elec.TrigEff_SF[ PID+iso ] = (*m_TrigEff_SF)[ PID+iso ].at(idx);
-        elec.TrigMCEff [ PID+iso ] = (*m_TrigMCEff )[ PID+iso ].at(idx);
-        if(iso.empty()) continue;
-        elec.IsoEff_SF[ PID+iso ] =  (*m_IsoEff_SF) [ PID+iso ].at(idx);
+        if(!iso.empty())
+          elec.IsoEff_SF[ PID+iso ] =  (*m_IsoEff_SF) [ PID+iso ].at(idx);
+        for (auto& trig : m_infoSwitch.m_trigWPs) {
+          elec.TrigEff_SF[ trig+PID+iso ] = (*m_TrigEff_SF)[ trig+PID+iso ].at(idx);
+          elec.TrigMCEff [ trig+PID+iso ] = (*m_TrigMCEff )[ trig+PID+iso ].at(idx);
+        }
       }
     }
 
@@ -868,7 +870,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       for (auto& isol : m_infoSwitch.m_isolWPs) {
 
         if(!isol.empty()) {
-          std::string IsoSF = "EleEffCorr_IsoSyst_" + PID + isol;
+          std::string IsoSF = "EleEffCorr_IsoSyst_" + PID + "_" + isol;
           accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID+isol , SG::AuxElement::Accessor< std::vector< float > >( IsoSF ) ) );
           if( (accIsoSF.at( PID+isol )).isAvailable( *elec ) ) { 
             m_IsoEff_SF->at( PID+isol ).push_back( (accIsoSF.at( PID+isol ))( *elec ) ); 
