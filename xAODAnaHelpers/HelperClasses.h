@@ -291,35 +291,30 @@ namespace HelperClasses {
         m_PIDWPs["MediumLLH"]                    MediumLLH                   exact
         m_PIDWPs["TightLLH"]                     TightLLH                    exact
 
-        m_isolWPs["_isolFixedCutLoose"]          isolFixedCutLoose           exact
-        m_isolWPs["_isolFixedCutTight"]          isolFixedCutTight           exact
-        m_isolWPs["_isolFixedCutTightTrackOnly"] isolFixedCutTightTrackOnly  exact
-        m_isolWPs["_isolGradient"]               isolGradient                exact
-        m_isolWPs["_isolGradientLoose"]          isolGradientLoose           exact
-        m_isolWPs["_isolLoose"]                  isolLoose                   exact
-        m_isolWPs["_isolLooseTrackOnly"]         isolLooseTrackOnly          exact
-        m_isolWPs["_isolTight"]                  isolTight                   exact
-        m_isolWPs[""]                            isolNoRequirement           exact
+        m_isolWPs["isolFixedCutLoose"]          isolFixedCutLoose           exact
+        m_isolWPs["isolFixedCutTight"]          isolFixedCutTight           exact
+        m_isolWPs["isolFixedCutTightTrackOnly"] isolFixedCutTightTrackOnly  exact
+        m_isolWPs["isolGradient"]               isolGradient                exact
+        m_isolWPs["isolGradientLoose"]          isolGradientLoose           exact
+        m_isolWPs["isolLoose"]                  isolLoose                   exact
+        m_isolWPs["isolLooseTrackOnly"]         isolLooseTrackOnly          exact
+        m_isolWPs["isolTight"]                  isolTight                   exact
+        m_isolWPs[""]                           isolNoRequirement           exact
 
-        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH_]      DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH   exact
-        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_]               DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0            exact
-        m_trigWPs[DI_E_2015_e17_lhloose_2016_e17_lhloose_]                              DI_E_2015_e17_lhloose_2016_e17_lhloose                           exact
-        m_trigWPs[MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0_]                      MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0                   exact
-        m_trigWPs[MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0_]                      MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0                   exact
-        m_trigWPs[MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0_]                      MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0                   exact
-        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI_]      MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI        exact
-        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI_]      MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI        exact
-        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_]   SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
-        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_]   SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
-        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_]                          TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0                       exact
-        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0_]                         TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0                      exact
-        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_]                        TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0                     exact
-        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0_]                       TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0                    exact
-        m_trigWPs[e17_lhloose_L1EM15_]                                                  e17_lhloose_L1EM15                                               exact
-        m_trigWPs[e17_lhmedium_]                                                        e17_lhmedium                                                     exact
-        m_trigWPs[e17_lhmedium_nod0_]                                                   e17_lhmedium_nod0                                                exact
-        m_trigWPs[e17_lhmedium_nod0_L1EM15HI_]                                          e17_lhmedium_nod0_L1EM15HI                                       exact
-        m_trigWPs[e17_lhmedium_nod0_ivarloose_L1EM15HI_]                                e17_lhmedium_nod0_ivarloose_L1EM15HI                             exact
+        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH]      DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH   exact
+        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0]               DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0            exact
+        m_trigWPs[DI_E_2015_e17_lhloose_2016_e17_lhloose]                              DI_E_2015_e17_lhloose_2016_e17_lhloose                           exact
+        m_trigWPs[MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0]                      MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0                   exact
+        m_trigWPs[MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0]                      MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0                   exact
+        m_trigWPs[MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0]                      MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0                   exact
+        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI]      MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI        exact
+        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI]      MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI        exact
+        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0]   SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
+        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0]   SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
+        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_                          TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0                       exact
+        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0]                         TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0                      exact
+        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0]                        TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0                     exact
+        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0]                       TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0                    exact
         ============== ============ =======
 
     @endrst
@@ -332,9 +327,9 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
-    std::map<std::string,bool> m_PIDWPs;
-    std::map<std::string,bool> m_isolWPs;
-    std::map<std::string,bool> m_trigWPs;
+    std::vector< std::string > m_PIDWPs;
+    std::vector< std::string > m_isolWPs;
+    std::vector< std::string > m_trigWPs;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:

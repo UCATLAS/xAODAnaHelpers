@@ -14,8 +14,6 @@
 #include <xAODAnaHelpers/Electron.h>
 #include <xAODAnaHelpers/ParticleContainer.h>
 
-typedef SG::AuxElement::Accessor< std::vector< float > > floatAccessor ;
-
 namespace xAH {
 
   class ElectronContainer : public ParticleContainer<Electron,HelperClasses::ElectronInfoSwitch>
@@ -93,29 +91,6 @@ namespace xAH {
       std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
-      std::vector< std::string > m_PIDWPs = {"LooseAndBLayerLLH","MediumLLH","TightLLH"};
-      std::vector< std::string > m_isolWPs = {"","_isolFixedCutLoose","_isolFixedCutTight","_isolFixedCutTightTrackOnly","_isolGradient","_isolGradientLoose","_isolLoose","_isolLooseTrackOnly","_isolTight"};
-      std::vector< std::string > m_trigWPs = {
-          "DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH_",
-          "DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_",
-          "DI_E_2015_e17_lhloose_2016_e17_lhloose_",
-          "MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0_",
-          "MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0_",
-          "MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0_",
-          "MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI_",
-          "MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI_",
-          "SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_",
-          "SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_",
-          "TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_",
-          "TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0_",
-          "TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_",
-          "TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0_",
-          "e17_lhloose_L1EM15_",
-          "e17_lhmedium_",
-          "e17_lhmedium_nod0_",
-          "e17_lhmedium_nod0_L1EM15HI_",
-          "e17_lhmedium_nod0_ivarloose_L1EM15HI_"
-                                              };
       
       // track parameters
       std::vector<float>* m_trkd0;

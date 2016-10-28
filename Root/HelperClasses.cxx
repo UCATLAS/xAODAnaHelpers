@@ -156,38 +156,28 @@ namespace HelperClasses{
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
-    // working points for scale-factors    
-    m_PIDWPs["LooseAndBLayerLLH"]  = has_exact("LooseAndBLayerLLH");
-    m_PIDWPs["MediumLLH"]          = has_exact("MediumLLH");
-    m_PIDWPs["TightLLH"]           = has_exact("TightLLH");
-    m_isolWPs["_isolFixedCutLoose"]            = has_exact("isolFixedCutLoose");
-    m_isolWPs["_isolFixedCutTight"]            = has_exact("isolFixedCutTight");
-    m_isolWPs["_isolFixedCutTightTrackOnly"]   = has_exact("isolFixedCutTightTrackOnly");
-    m_isolWPs["_isolGradient"]                 = has_exact("isolGradient");
-    m_isolWPs["_isolGradientLoose"]            = has_exact("isolGradientLoose");
-    m_isolWPs["_isolLoose"]                    = has_exact("isolLoose");
-    m_isolWPs["_isolLooseTrackOnly"]           = has_exact("isolLooseTrackOnly");
-    m_isolWPs["_isolTight"]                    = has_exact("isolTight");
-    m_isolWPs[""]                              = has_exact("isolNoRequirement");
-    m_trigWPs["DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH_"]       = has_exact("DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH");
-    m_trigWPs["DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"]                = has_exact("DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0");
-    m_trigWPs["DI_E_2015_e17_lhloose_2016_e17_lhloose_"]                               = has_exact("DI_E_2015_e17_lhloose_2016_e17_lhloose");
-    m_trigWPs["MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0_"]                       = has_exact("MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0");
-    m_trigWPs["MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0_"]                       = has_exact("MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0");
-    m_trigWPs["MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0_"]                       = has_exact("MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0");
-    m_trigWPs["MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI_"] = has_exact("MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI");
-    m_trigWPs["MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI_"] = has_exact("MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI");
-    m_trigWPs["SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"] = has_exact("SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0");
-    m_trigWPs["SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"] = has_exact("SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0");
-    m_trigWPs["TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_"]                           = has_exact("TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0");
-    m_trigWPs["TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0_"]                          = has_exact("TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0");
-    m_trigWPs["TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0_"]                         = has_exact("TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0");
-    m_trigWPs["TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0_"]                        = has_exact("TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0");
-    m_trigWPs["e17_lhloose_L1EM15_"]                                                   = has_exact("e17_lhloose_L1EM15");
-    m_trigWPs["e17_lhmedium_"]                                                         = has_exact("e17_lhmedium");
-    m_trigWPs["e17_lhmedium_nod0_"]                                                    = has_exact("e17_lhmedium_nod0");
-    m_trigWPs["e17_lhmedium_nod0_L1EM15HI_"]                                           = has_exact("e17_lhmedium_nod0_L1EM15HI");
-    m_trigWPs["e17_lhmedium_nod0_ivarloose_L1EM15HI_"]                                 = has_exact("e17_lhmedium_nod0_ivarloose_L1EM15HI");
+    // working points for scale-factors
+
+    // working points combinations for trigger corrections 
+    std::string token;
+    std::string PID_keyword = "LLH";
+    std::string isol_keyword = "isol";
+    std::string trig_keyword1 = "DI_E_";
+    std::string trig_keyword2 = "MULTI_L_";
+    std::string trig_keyword3 = "SINGLE_E_";
+    std::string trig_keyword4 = "TRI_E_";
+    
+    std::istringstream ss(m_configStr);
+    while ( std::getline(ss, token, ' ') ) {
+     if ( token.find(PID_keyword ) != std::string::npos )        { m_PIDWPs.push_back(token); }
+     if ( token.find(isol_keyword ) != std::string::npos )       { m_isolWPs.push_back(token); }
+     if ( token.find("isolNoRequirement") != std::string::npos ) { m_isolWPs.push_back(""); }
+     if ( (token.find(trig_keyword1 ) != std::string::npos) ||
+      (token.find(trig_keyword2 ) != std::string::npos) ||
+      (token.find(trig_keyword3 ) != std::string::npos) ||
+      (token.find(trig_keyword4 ) != std::string::npos)  )   { m_trigWPs.push_back(token); }
+   } 
+
   }
 
   void PhotonInfoSwitch::initialize(){
