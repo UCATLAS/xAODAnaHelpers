@@ -170,6 +170,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       Info("initialize()", "Setting simulation flavour to AFII");
       sim_flav = 3;
     }
+    else if ( stringMeta.empty() ) {
+      Warning("initialize()", "No meta-data string found. Simulation flavour will be set to FullSim. Care if you are running on Fast-Sim MC.");
+    }
   }
 
   // 1.
@@ -315,7 +318,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       m_asgElEffCorrTool_elSF_Reco->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
       std::vector<std::string> inputFilesReco{ m_corrFileNameReco } ; // initialise vector w/ all the files containing corrections
       RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("CorrectionFileNameList",inputFilesReco),"Failed to set property CorrectionFileNameList");
-      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->setProperty("ForceDataType",sim_flav),"Failed to set property ForceDataType");
       RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Reco->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Reco");
     }
 
@@ -353,6 +356,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     m_WorkingPointIsoTrig = HelperFunctions::parse_wp( "ISO", m_corrFileNameTrig );
     m_WorkingPointIDTrig  = HelperFunctions::parse_wp( "ID", m_corrFileNameTrig );
+    m_WorkingPointTrigTrig = HelperFunctions::parse_wp( "TRIG", m_corrFileNameTrigMCEff );
 
     if ( m_WorkingPointIDTrig.empty() ) {
       Error("initialize()", "ID working point for trigger SF not found in config file! This should not happen. Exiting." );
@@ -361,7 +365,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     std::cout << "\n\n Trigger ISOLATION wp: " << m_WorkingPointIsoTrig << "\n Trigger ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
 
-    m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointIDTrig;
+    m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
     if ( !m_WorkingPointIsoTrig.empty() ) {
       m_TrigEffSF_tool_name += ( "_isol" + m_WorkingPointIsoTrig );
     }
@@ -375,7 +379,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
       std::vector<std::string> inputFilesTrig{ m_corrFileNameTrig } ; // initialise vector w/ all the files containing corrections
       RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("CorrectionFileNameList",inputFilesTrig),"Failed to set property CorrectionFileNameList");
-      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",sim_flav),"Failed to set property ForceDataType");
       RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_Trig->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool Trig");
     }
 
@@ -407,7 +411,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
-    m_outputSystNamesTrig = m_outputSystNamesTrig + "_" + m_WorkingPointIDTrig;
+    m_outputSystNamesTrig = m_outputSystNamesTrig + "_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
     if ( !m_WorkingPointIsoTrig.empty() ) {
       m_outputSystNamesTrig += ( "_isol" + m_WorkingPointIsoTrig );
     }
@@ -419,7 +423,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   //
   if ( !m_corrFileNameTrigMCEff.empty() ) {
 
-    m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointIDTrig;
+    m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
     if ( !m_WorkingPointIsoTrig.empty() ) {
       m_TrigMCEff_tool_name += ( "_isol" + m_WorkingPointIsoTrig );
     }    
@@ -433,7 +437,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       m_asgElEffCorrTool_elSF_TrigMCEff->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
       std::vector<std::string> inputFilesTrigMCEff{ m_corrFileNameTrigMCEff } ; // initialise vector w/ all the files containing corrections
       RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("CorrectionFileNameList",inputFilesTrigMCEff),"Failed to set property CorrectionFileNameList");
-      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("ForceDataType",1),"Failed to set property ForceDataType");
+      RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("ForceDataType",sim_flav),"Failed to set property ForceDataType");
       RETURN_CHECK( "ElectronEfficiencyCorrector::initialize()", m_asgElEffCorrTool_elSF_TrigMCEff->initialize(), "Failed to properly initialize the AsgElectronEfficiencyCorrectionTool TrigMCEff");
     }
 
@@ -465,7 +469,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
-    m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_" + m_WorkingPointIDTrig;;
+    m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;;
     if ( !m_WorkingPointIsoTrig.empty() ) {
       m_outputSystNamesTrigMCEff += ( "_isol" + m_WorkingPointIsoTrig );
     }

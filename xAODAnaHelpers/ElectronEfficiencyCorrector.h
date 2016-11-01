@@ -68,6 +68,7 @@ private:
 
   std::string m_WorkingPointIDTrig;  //!
   std::string m_WorkingPointIsoTrig; //! 
+  std::string m_WorkingPointTrigTrig; //! 
 
   std::vector<CP::SystematicSet> m_systListPID;  //!
   std::vector<CP::SystematicSet> m_systListIso;  //!
