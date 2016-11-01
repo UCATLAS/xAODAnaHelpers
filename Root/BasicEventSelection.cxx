@@ -80,6 +80,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
 
   // GRL
   m_applyGRLCut = false;
+  // list of comma-separated grls
   m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml";
   //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
   m_GRLExcludeList = "";
@@ -504,7 +505,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
     std::vector<std::string> vecStringGRL;
     m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
-    vecStringGRL.push_back(m_GRLxml);
+
+    std::string grl;
+    std::istringstream ss(m_GRLxml);
+    while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
+
     RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty( "GoodRunsListVec", vecStringGRL), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
