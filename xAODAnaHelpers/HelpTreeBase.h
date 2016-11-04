@@ -82,10 +82,10 @@ public:
    *  @param  fatjetName  The (prefix) name of the container. Default: `fatjet`.
    *  @param  suffix      If non-empty, append the given suffix to all branch names.
    **/
-  void AddFatJets     (const std::string& detailStr = "", const std::string& fatjetName = "fatjet", const std::string& suffix = "");
-  void AddTruthFatJets(const std::string& detailStr = "", const std::string& truthFatJetName = "truth_fatjet");
+  void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "fatjet", const std::string suffix = "");
+  void AddTruthFatJets(const std::string detailStr = "", const std::string truthFatJetName = "truth_fatjet");
 
-  void AddTaus        (const std::string detailStr = "",  const std::string& tauName = "tau");
+  void AddTaus        (const std::string detailStr = "",  const std::string tauName = "tau");
   void AddMET         (const std::string detailStr = "");
 
   /**
@@ -97,7 +97,7 @@ public:
    *
    *  @return a string that uniquely identifies the collection name/suffix in the lookup map.
    **/
-  static std::string FatJetCollectionName(const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+  static std::string FatJetCollectionName(const std::string fatjetName = "fatjet", const std::string suffix = "");
 
   xAOD::TEvent* m_event;
   xAOD::TStore* m_store;
@@ -139,11 +139,11 @@ public:
    *  @param  fatjetName  The name of the output collection to write to.
    *  @param  suffix      The suffix of the output collection to write to.
    */
-  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName = "fatjet", const std::string& suffix = "");
-  void FillFatJet ( const xAOD::Jet* fatjet_itr,        const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string fatjetName = "fatjet", const std::string suffix = "");
+  void FillFatJet ( const xAOD::Jet* fatjet_itr,        const std::string fatjetName = "fatjet", const std::string suffix = "");
 
-  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     const std::string& truthFatJetName="truth_fatjet" );
-  void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, const std::string& truthFatJetName="truth_fatjet" );
+  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     const std::string truthFatJetName="truth_fatjet" );
+  void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, const std::string truthFatJetName="truth_fatjet" );
 
   void FillTaus( const xAOD::TauJetContainer* taus, const std::string tauName = "tau" );
   void FillTau ( const xAOD::TauJet* tau,           const std::string tauName = "tau" );
@@ -158,8 +158,8 @@ public:
   void ClearPhotons     (const std::string photonName = "ph");
   void ClearJets        (const std::string jetName = "jet");
   void ClearTruth       (const std::string truthName);
-  void ClearFatJets     (const std::string& fatjetName, const std::string& suffix="");
-  void ClearTruthFatJets(const std::string& truthFatJetName = "truth_fatjet");
+  void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
+  void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
   void ClearTaus        (const std::string tauName = "tau" );
   void ClearMET();
 
@@ -212,12 +212,12 @@ public:
    *  @param  fatjetName  The (prefix) name of the output collection.
    *  @param  suffix      A suffix to be appeneded to the end of the output branch name(s).
    */
-  virtual void AddFatJetsUser(const std::string& /*detailStr = ""*/, const std::string& /*fatjetName*/, const std::string& /*suffix*/)       {
-    if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase");
+  virtual void AddFatJetsUser(const std::string detailStr = "", const std::string fatjetName = "", const std::string suffix = "")       {
+    if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase %s for %s with suffix %s", detailStr.c_str(), fatjetName.c_str(), suffix.c_str());
     return;
   };
 
-  virtual void AddTruthFatJetsUser(const std::string& detailStr = "", const std::string& truthFatJetName = "truth_fatjet")       {
+  virtual void AddTruthFatJetsUser(const std::string detailStr = "", const std::string truthFatJetName = "truth_fatjet")       {
     if(m_debug) Info("AddTruthFatJetsUser","Empty function called from HelpTreeBase %s for %s", detailStr.c_str(), truthFatJetName.c_str());
     return;
   };
@@ -234,14 +234,14 @@ public:
 
   virtual void ClearEventUser       ()     { return; };
   virtual void ClearTriggerUser     ()   { return; };
-  virtual void ClearMuonsUser       (const std::string& /*muonName = muon"*/)     { return; };
-  virtual void ClearElectronsUser   (const std::string& /*elecName = "el"*/) { return; };
-  virtual void ClearPhotonsUser     (const std::string& /*photonName = "ph"*/) { return; };
-  virtual void ClearTruthUser       (const std::string& /*truthName*/) 	    { return; };
-  virtual void ClearJetsUser        (const std::string& /*jetName = "jet"*/ ) 	    { return; };
-  virtual void ClearFatJetsUser     (const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/)   { return; };
-  virtual void ClearTruthFatJetsUser(const std::string& /*truthFatJetName = "truth_fatjet"*/)   { return; };
-  virtual void ClearTausUser        (const std::string& /*tauName = "tau"*/) 	    { return; };
+  virtual void ClearMuonsUser       (const std::string /*muonName = muon"*/)     { return; };
+  virtual void ClearElectronsUser   (const std::string /*elecName = "el"*/) { return; };
+  virtual void ClearPhotonsUser     (const std::string /*photonName = "ph"*/) { return; };
+  virtual void ClearTruthUser       (const std::string /*truthName*/) 	    { return; };
+  virtual void ClearJetsUser        (const std::string /*jetName = "jet"*/ ) 	    { return; };
+  virtual void ClearFatJetsUser     (const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/)   { return; };
+  virtual void ClearTruthFatJetsUser(const std::string /*truthFatJetName = "truth_fatjet"*/)   { return; };
+  virtual void ClearTausUser        (const std::string /*tauName = "tau"*/) 	    { return; };
   virtual void ClearMETUser         ()       { return; };
 
   virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
@@ -249,7 +249,7 @@ public:
   virtual void FillElectronsUser( const xAOD::Electron*, const std::string /*elecName = "el"*/ )     { return; };
   virtual void FillPhotonsUser  ( const xAOD::Photon*,   const std::string /*photonName = "ph"*/ )     { return; };
   virtual void FillJetsUser     ( const xAOD::Jet*,      const std::string /*jetName = "jet"*/  )               { return; };
-  virtual void FillTruthUser    ( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
+  virtual void FillTruthUser    ( const std::string /*truthName*/, const xAOD::TruthParticle*  )               { return; };
   /**
    *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
    *          information to your jet collection.
@@ -258,8 +258,8 @@ public:
    *  @param  fatjetName  the (prefix) name of the output collection
    *  @param  suffix      the suffix to append to output branches.
    */
-  virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
-  virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "truth_fatjet"*/   )            { return; };
+  virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/) { return; };
+  virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, const std::string /*fatjetName = "truth_fatjet"*/   )            { return; };
   virtual void FillTausUser( const xAOD::TauJet*,           const std::string /*tauName = "tau"*/  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
   virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
