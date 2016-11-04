@@ -548,13 +548,13 @@ void HelpTreeBase::ClearTruth(const std::string truthName) {
  ********************/
 
 // make a unique container:suffix key to lookup the branches in the maps
-std::string HelpTreeBase::FatJetCollectionName(const std::string& fatjetName,
-					       const std::string& suffix) {
+std::string HelpTreeBase::FatJetCollectionName(const std::string fatjetName,
+					       const std::string suffix) {
   return suffix.empty() ? fatjetName : (fatjetName + ":" + suffix);
 }
 
-void HelpTreeBase::AddFatJets(const std::string& detailStr, const std::string& fatjetName,
-			      const std::string& suffix) {
+void HelpTreeBase::AddFatJets(const std::string detailStr, const std::string fatjetName,
+			      const std::string suffix) {
 
   if(m_debug) Info("AddFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
 
@@ -567,7 +567,7 @@ void HelpTreeBase::AddFatJets(const std::string& detailStr, const std::string& f
   this->AddFatJetsUser(detailStr, fatjetName, suffix);
 }
 
-void HelpTreeBase::AddTruthFatJets(const std::string& detailStr, const std::string& truthFatJetName) {
+void HelpTreeBase::AddTruthFatJets(const std::string detailStr, const std::string truthFatJetName) {
 
   if(m_debug) Info("AddTruthFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
 
@@ -580,7 +580,7 @@ void HelpTreeBase::AddTruthFatJets(const std::string& detailStr, const std::stri
 }
 
 
-void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName, const std::string& suffix) {
+void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , const std::string fatjetName, const std::string suffix) {
   
   this->ClearFatJets(fatjetName, suffix);
 
@@ -592,7 +592,7 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , const std::s
 
 }
 
-void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, const std::string& fatjetName, const std::string& suffix ) {
+void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, const std::string fatjetName, const std::string suffix ) {
 
   const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
   xAH::FatJetContainer* thisFatJet = m_fatjets[collectionName];
@@ -606,7 +606,7 @@ void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, const std::string& f
 
 
 
-void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets, const std::string& truthFatJetName ) {
+void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets, const std::string truthFatJetName ) {
   this->ClearTruthFatJets();
 
   for( auto truth_fatjet_itr : *truthTruthFatJets ) {
@@ -617,7 +617,7 @@ void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets
 
 }
 
-void HelpTreeBase::FillTruthFatJet( const xAOD::Jet* truth_fatjet_itr, const std::string& truthFatJetName ) {
+void HelpTreeBase::FillTruthFatJet( const xAOD::Jet* truth_fatjet_itr, const std::string truthFatJetName ) {
 
   xAH::FatJetContainer* thisTruthFatJet = m_truth_fatjets[truthFatJetName];
 
@@ -629,7 +629,7 @@ void HelpTreeBase::FillTruthFatJet( const xAOD::Jet* truth_fatjet_itr, const std
 }
 
 
-void HelpTreeBase::ClearFatJets(const std::string& fatjetName, const std::string& suffix) {
+void HelpTreeBase::ClearFatJets(const std::string fatjetName, const std::string suffix) {
   const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
 
   xAH::FatJetContainer* thisFatJet = m_fatjets[collectionName];
@@ -638,7 +638,7 @@ void HelpTreeBase::ClearFatJets(const std::string& fatjetName, const std::string
   this->ClearFatJetsUser(fatjetName, suffix);
 }
 
-void HelpTreeBase::ClearTruthFatJets(const std::string& truthFatJetName) {
+void HelpTreeBase::ClearTruthFatJets(const std::string truthFatJetName) {
 
   xAH::FatJetContainer* thisTruthFatJet = m_truth_fatjets[truthFatJetName];
   thisTruthFatJet->clear();
@@ -658,7 +658,7 @@ void HelpTreeBase::ClearEvent() {
  *
  ********************/
 
-void HelpTreeBase::AddTaus(const std::string detailStr, const std::string& tauName) {
+void HelpTreeBase::AddTaus(const std::string detailStr, const std::string tauName) {
 
   if ( m_debug )  Info("AddTaus()", "Adding tau variables: %s", detailStr.c_str());
 
