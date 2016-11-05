@@ -568,9 +568,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
     if ( m_PU_default_channel ) {
       RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DefaultChannel", m_PU_default_channel), "");
     }
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.16), "Failed to set pileup reweighting data scale factor");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09), "Failed to set pileup reweighting data scale factor");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0), "Failed to set pileup reweighting data scale factor up");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.23), "Failed to set pileup reweighting data scale factor down");
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.18), "Failed to set pileup reweighting data scale factor down");
     // RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.initialize(), "Failed to properly initialize CP::PileupReweightingTool");
     RETURN_CHECK("BasicEventSelection::retrieve()", m_pileup_tool_handle.retrieve(), "Failed to properly retrieve CP::PileupReweightingTool");
 
