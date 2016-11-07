@@ -156,19 +156,30 @@ namespace HelperClasses{
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
-    // working points for scale-factors    
-    m_PIDWPs["LooseAndBLayerLLH"]  = has_exact("LooseAndBLayerLLH");
-    m_PIDWPs["MediumLLH"]          = has_exact("MediumLLH");
-    m_PIDWPs["TightLLH"]           = has_exact("TightLLH");
-    m_isolWPs["_isolFixedCutLoose"]            = has_exact("isolFixedCutLoose");
-    m_isolWPs["_isolFixedCutTight"]            = has_exact("isolFixedCutTight");
-    m_isolWPs["_isolFixedCutTightTrackOnly"]   = has_exact("isolFixedCutTightTrackOnly");
-    m_isolWPs["_isolGradient"]                 = has_exact("isolGradient");
-    m_isolWPs["_isolGradientLoose"]            = has_exact("isolGradientLoose");
-    m_isolWPs["_isolLoose"]                    = has_exact("isolLoose");
-    m_isolWPs["_isolLooseTrackOnly"]           = has_exact("isolLooseTrackOnly");
-    m_isolWPs["_isolTight"]                    = has_exact("isolTight");
-    m_isolWPs[""]                              = has_exact("isolNoRequirement");
+    // working points for scale-factors
+
+    // working points combinations for trigger corrections 
+    std::string token;
+    std::string PID_keyword = "LLH";
+    std::string isol_keyword = "isol";
+    std::string trig_keyword1 = "DI_E_";
+    std::string trig_keyword2 = "MULTI_L_";
+    std::string trig_keyword3 = "SINGLE_E_";
+    std::string trig_keyword4 = "TRI_E_";
+    
+    std::istringstream ss(m_configStr);
+    while ( std::getline(ss, token, ' ') ) {
+     if ( token.find(PID_keyword ) != std::string::npos ) { m_PIDWPs.push_back(token); }
+     if ( token.find("isolNoRequirement") != std::string::npos ) { m_isolWPs.push_back(""); }
+     if ( (token.compare( 0, isol_keyword.length(), isol_keyword ) == 0) && 
+           token!="isolation" && 
+           token!="isolNoRequirement" ) { m_isolWPs.push_back(token); }
+     if ( (token.find(trig_keyword1 ) != std::string::npos) ||
+          (token.find(trig_keyword2 ) != std::string::npos) ||
+          (token.find(trig_keyword3 ) != std::string::npos) ||
+          (token.find(trig_keyword4 ) != std::string::npos)  ) { m_trigWPs.push_back(token); }
+   } 
+
   }
 
   void PhotonInfoSwitch::initialize(){
