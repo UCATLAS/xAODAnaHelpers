@@ -202,7 +202,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ){
 
       Info("initialize()", "Setting simulation flavour to AFII");
-      RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", true),"Failed to set property useAFII");
+      RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1),"Failed to set property useAFII");
 
     }
   }
