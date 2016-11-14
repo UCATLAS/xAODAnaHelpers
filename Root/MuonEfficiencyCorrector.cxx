@@ -19,7 +19,6 @@
 #include "xAODBase/IParticle.h"
 #include "AthContainers/ConstDataVector.h"
 #include "AthContainers/DataVector.h"
-#include "AsgTools/AnaToolHandle.h"
 
 // package include(s):
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
@@ -28,7 +27,6 @@
 #include "xAODAnaHelpers/MuonEfficiencyCorrector.h"
 #include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
 #include "MuonEfficiencyCorrections/MuonTriggerScaleFactors.h"
-#include "PileupReweighting/PileupReweightingTool.h"
 
 using HelperClasses::ToolName;
 
@@ -203,7 +201,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // Create a ToolHandle of the PRW tool which is passed to the MuonEfficiencyScaleFactors class later
   //
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;
   m_pileup_tool_handle.setTypeAndName("CP::PileupReweightingTool/Pileup");
   if( m_isMC ){
     if( m_pileup_tool_handle.isUserConfigured() ){
@@ -653,9 +650,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with reco efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyMCEfficiency");
-    	 }
+//    	 if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+//    	   Warning( "executeSF()", "Problem in applyMCEfficiency");
+//    	 }
     	 if ( m_muRecoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
     	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
     	 }
@@ -689,8 +686,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
-    	   Info( "executeSF()", "Reco efficiency:");
-    	   Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "Efficiency" ) );
+//    	   Info( "executeSF()", "Reco efficiency:");
+//    	   Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "Efficiency" ) );
     	   Info( "executeSF()", "and its SF:");
     	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", recoEffSF );
@@ -757,9 +754,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with iso efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyIsoEfficiency");
-    	 }
+//    	 if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+//    	   Warning( "executeSF()", "Problem in applyIsoEfficiency");
+//    	 }
     	 if ( m_muIsoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
     	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
     	 }
@@ -793,8 +790,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
-    	   Info( "executeSF()", "Iso efficiency:");
-    	   Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOEfficiency" ) );
+//    	   Info( "executeSF()", "Iso efficiency:");
+//    	   Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOEfficiency" ) );
     	   Info( "executeSF()", "and its SF:");
     	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", IsoEffSF );
@@ -850,8 +847,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     //
     //int randRunNumber = m_pileup_tool->getRandomRunNumber( *eventInfo, true );
     
-    int randRunNumber = asg::ToolStore::get<CP::PileupReweightingTool>("Pileup")->getRandomRunNumber( *eventInfo, true ); 
+    int randRunNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, true ); 
+    //int randRunNumber = asg::ToolStore::get<CP::PileupReweightingTool>("Pileup")->getRandomRunNumber( *eventInfo, true ); 
     int runNumber = randRunNumber;
+    
 
     if (runNumber >= 266904 && runNumber <= 284484 ) { 
       
@@ -1103,9 +1102,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with TTVA efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyTTVAEfficiency");
-    	 }
+//    	 if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+//    	   Warning( "executeSF()", "Problem in applyTTVAEfficiency");
+//    	 }
     	 if ( m_muTTVASF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {	 
     	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
     	 }
