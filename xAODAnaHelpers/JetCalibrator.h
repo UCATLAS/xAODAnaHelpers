@@ -79,20 +79,14 @@ private:
   std::vector<int> m_systType; //!
 
   // tools
-  JetCalibrationTool       * m_jetCalibration; //!
+  asg::AnaToolHandle<IJetCalibrationTool> m_JetCalibrationTool_handle; //!
 
   JetUncertaintiesTool     * m_JESUncertTool;      //!
-
-  //JERTool                  * m_JERTool;        //!
-  //JERSmearingTool          * m_JERSmearTool;   //!
-  //ToolHandle<IJERTool>       m_JERToolHandle;  //!
 
   asg::AnaToolHandle<IJERTool> m_JERTool_handle;    //!
   asg::AnaToolHandle<IJERSmearingTool> m_JERSmearingTool_handle;    //!
 
   asg::AnaToolHandle<JetVertexTaggerTool> m_JVTUpdateTool_handle; //!
-  //JetVertexTaggerTool      * m_JVTTool;        //!
-  //ToolHandle<IJetUpdateJvt>  m_JVTToolHandle;  //!
 
   JetCleaningTool          * m_jetCleaning;    //!
   std::vector<std::string>  m_decisionNames;    //!

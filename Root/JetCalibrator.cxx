@@ -40,7 +40,7 @@ ClassImp(JetCalibrator)
 JetCalibrator :: JetCalibrator (std::string className) :
     Algorithm(className),
     m_runSysts(false),          // gets set later is syst applies to this tool
-    m_jetCalibration(nullptr),  // JetCalibrationTool
+    m_JetCalibrationTool_handle("JetCalibrationTool/JetCalibrationTool"),
     m_JESUncertTool(nullptr),   // JetUncertaintiesTool
     m_JERTool_handle("JERTool/JERTool"),
     m_JERSmearingTool_handle("JERSmearingTool/JERSmearingTool"),
@@ -230,14 +230,15 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize jet calibration tool
-  std::string jcal_tool_name = std::string("JetCorrectionTool_") + m_name;
-  m_jetCalibration = new JetCalibrationTool(jcal_tool_name.c_str());
-  m_jetCalibration->setProperty("JetCollection",m_jetAlgo);
-  m_jetCalibration->setProperty("ConfigFile",m_calibConfig);
-  m_jetCalibration->setProperty("CalibSequence",m_calibSequence);
-  m_jetCalibration->setProperty("IsData",!m_isMC);
-  m_jetCalibration->msg().setLevel( MSG::INFO); // VERBOSE, INFO, DEBUG
-  RETURN_CHECK( "JetCalibrator::initialize()", m_jetCalibration->initializeTool( jcal_tool_name.c_str() ), "JetCalibrator Interface successfully initialized!");
+  if( !m_JetCalibrationTool_handle.isUserConfigured() ){
+    RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool), "Could not make JetCalibrationTool");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo), "Failed to set JetCollection");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig), "Failed to set ConfigFile");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence), "Failed to set CalibSequence");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("IsData",!m_isMC), "Failed to set IsData");
+
+    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.retrieve(), "Failed to retrieve JetCalibrationTool");
+  }
 
   if(m_doCleaning){
     // initialize and configure the jet cleaning tool
@@ -469,7 +470,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
 
 
-    if ( m_jetCalibration->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
+    if ( m_JetCalibrationTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
       Error("execute()", "JetCalibration tool reported a CP::CorrectionCode::Error");
       Error("execute()", "%s", m_name.c_str());
       return StatusCode::FAILURE;
@@ -640,9 +641,6 @@ EL::StatusCode JetCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_jetCalibration ) {
-    delete m_jetCalibration; m_jetCalibration = nullptr;
-  }
   if ( m_doCleaning && m_jetCleaning ) {
     delete m_jetCleaning; m_jetCleaning = nullptr;
   }
