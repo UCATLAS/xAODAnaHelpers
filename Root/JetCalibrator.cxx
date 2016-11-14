@@ -42,6 +42,8 @@ JetCalibrator :: JetCalibrator (std::string className) :
     m_runSysts(false),          // gets set later is syst applies to this tool
     m_jetCalibration(nullptr),  // JetCalibrationTool
     m_JESUncertTool(nullptr),   // JetUncertaintiesTool
+    m_JERTool_handle("JERTool/JERTool"),
+    m_JERSmearingTool_handle("JERSmearingTool/JERSmearingTool"),
     m_JVTUpdateTool_handle("JetVertexTaggerTool/JVTUpdateTool"),
     m_jetCleaning(nullptr)      // JetCleaningTool
 {
@@ -341,37 +343,34 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the JET Smearing tool
   if ( !m_JERUncertConfig.empty() ) {
 
-    // Instantiate the tools
-    std::string JERTool_name  = std::string("JERTool_") + m_name;
-    std::string JERSmearingTool_name = std::string("JERSmearingTool_") + m_name;
-    m_JERTool     = new JERTool( JERTool_name.c_str() );
-    m_JERSmearTool = new JERSmearingTool( JERSmearingTool_name.c_str() );
+    // Instantiate the JER tool
+    if( !m_JERTool_handle.isUserConfigured() ){
+      RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JERTool_handle, JERTool), "Could not make JERTool");
 
-    // Configure the JERTool
-    //m_JERTool->msg().setLevel(MSG::DEBUG);
-    RETURN_CHECK( "initialize()", m_JERTool->setProperty("PlotFileName", m_JERUncertConfig.c_str()), "");
-    RETURN_CHECK( "initialize()", m_JERTool->setProperty("CollectionName", m_jetAlgo), "");
+      RETURN_CHECK("JetCalibrator::initialize()", m_JERTool_handle.setProperty("PlotFileName", m_JERUncertConfig.c_str()), "");
+      RETURN_CHECK("JetCalibrator::initialize()", m_JERTool_handle.setProperty("CollectionName", m_jetAlgo), "");
 
-    //m_JERSmearTool->msg().setLevel(MSG::DEBUG);
-    m_JERToolHandle = ToolHandle<IJERTool>(m_JERTool->name());
-    RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("JERTool", m_JERToolHandle), "");
+      RETURN_CHECK("JetCalibrator::initialize()", m_JERTool_handle.retrieve(), "Failed to retrieve JERTool");
+    }
 
-    RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("isMC", m_isMC), "");
+    // Instantiate the JER Smearing tool
+    if( !m_JERSmearingTool_handle.isUserConfigured() ){
+      RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JERSmearingTool_handle, JERSmearingTool), "Could not make JERSmearingTool");
 
-    //m_JERApplyNominal = true;
-    RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("ApplyNominalSmearing", m_JERApplyNominal), "");
+      RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("JERTool", m_JERTool_handle.getHandle()), "Failed to set JERTool");
+      RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("isMC", m_isMC), "Failed to set isMC");
+      RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("ApplyNominalSmearing", m_JERApplyNominal), "Failed to set ApplyNominalSmearing");
+      if( m_JERFullSys )
+        RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("SystematicMode", "Full"), "Failed to set SystematicMode");
+      else
+        RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("SystematicMode", "Simple"), "Failed to set SystematicMode");
 
-    //m_JERFullSys = true;
-    if( m_JERFullSys )
-      RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("SystematicMode", "Full"), "");
-    else
-      RETURN_CHECK( "initialize()", m_JERSmearTool->setProperty("SystematicMode", "Simple"), "");
+      RETURN_CHECK("JetCalibrator::initialize()", m_JERSmearingTool_handle.retrieve(), "Failed to retrieve JERSmearingTool");
+    }
 
 
-    RETURN_CHECK( "initialize()", m_JERTool->initialize(), "Failed to properly initialize the JER Tool");
-    RETURN_CHECK( "initialize()", m_JERSmearTool->initialize(), "Failed to properly initialize the JERSmearTool Tool");
 
-    const CP::SystematicSet recSysts = m_JERSmearTool->recommendedSystematics();
+    const CP::SystematicSet recSysts = m_JERSmearingTool_handle->recommendedSystematics();
     Info("initialize()", " Initializing JER Systematics :");
 
     std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1, m_debug ); //Only 1 sys allowed
@@ -390,8 +389,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
   else {
     Info("initialize()", "No JER Uncertainities considered");
-    // m_JERSmearTool not streamed so have to do this
-    m_JERSmearTool = nullptr;
   }
 
   // initialize and configure the JVT correction tool
@@ -527,19 +524,19 @@ EL::StatusCode JetCalibrator :: execute ()
       if ( thisSysType == 2 || m_JERApplyNominal){
         if( m_debug ) { std::cout << "Configure JER for systematic variation : " << syst_it.name() << std::endl; }
         if( thisSysType == 2){ //apply this systematic
-          if ( m_JERSmearTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+          if ( m_JERSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
             Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
             return EL::StatusCode::FAILURE;
           }
         }else{ //apply nominal, which is always first element of m_systList
-          if ( m_JERSmearTool->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
+          if ( m_JERSmearingTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
             Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
             return EL::StatusCode::FAILURE;
           }
         }
         // JER Uncertainty Systematic
         for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-          if ( m_JERSmearTool->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
+          if ( m_JERSmearingTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
             Error("execute()", "JERSmearTool tool reported a CP::CorrectionCode::Error");
             Error("execute()", "%s", m_name.c_str());
           }

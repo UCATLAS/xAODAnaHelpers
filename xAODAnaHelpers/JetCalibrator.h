@@ -83,9 +83,12 @@ private:
 
   JetUncertaintiesTool     * m_JESUncertTool;      //!
 
-  JERTool                  * m_JERTool;        //!
-  JERSmearingTool          * m_JERSmearTool;   //!
-  ToolHandle<IJERTool>       m_JERToolHandle;  //!
+  //JERTool                  * m_JERTool;        //!
+  //JERSmearingTool          * m_JERSmearTool;   //!
+  //ToolHandle<IJERTool>       m_JERToolHandle;  //!
+
+  asg::AnaToolHandle<IJERTool> m_JERTool_handle;    //!
+  asg::AnaToolHandle<IJERSmearingTool> m_JERSmearingTool_handle;    //!
 
   asg::AnaToolHandle<JetVertexTaggerTool> m_JVTUpdateTool_handle; //!
   //JetVertexTaggerTool      * m_JVTTool;        //!
