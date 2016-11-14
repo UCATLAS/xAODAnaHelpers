@@ -80,17 +80,16 @@ private:
 
   // tools
   asg::AnaToolHandle<IJetCalibrationTool> m_JetCalibrationTool_handle; //!
-
-  JetUncertaintiesTool     * m_JESUncertTool;      //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool> m_JetUncertaintiesTool_handle; //!
 
   asg::AnaToolHandle<IJERTool> m_JERTool_handle;    //!
   asg::AnaToolHandle<IJERSmearingTool> m_JERSmearingTool_handle;    //!
 
-  asg::AnaToolHandle<JetVertexTaggerTool> m_JVTUpdateTool_handle; //!
+  asg::AnaToolHandle<IJetUpdateJvt> m_JVTUpdateTool_handle; //!
 
-  JetCleaningTool          * m_jetCleaning;    //!
+  asg::AnaToolHandle<IJetSelector> m_JetCleaningTool_handle; //!
   std::vector<std::string>  m_decisionNames;    //!
-  std::vector< JetCleaningTool* > m_allJetCleaningTools;   //!
+  std::vector< asg::AnaToolHandle<IJetSelector> > m_AllJetCleaningTool_handles;   //!
 
 
   // variables that don't get filled at submission time should be
