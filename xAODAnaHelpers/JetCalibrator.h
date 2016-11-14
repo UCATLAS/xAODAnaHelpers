@@ -22,6 +22,7 @@
 #include "JetResolution/JERSmearingTool.h"
 #include "JetSelectorTools/JetCleaningTool.h"
 #include "JetMomentTools/JetVertexTaggerTool.h"
+#include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -86,8 +87,9 @@ private:
   JERSmearingTool          * m_JERSmearTool;   //!
   ToolHandle<IJERTool>       m_JERToolHandle;  //!
 
-  JetVertexTaggerTool      * m_JVTTool;        //!
-  ToolHandle<IJetUpdateJvt>  m_JVTToolHandle;  //!
+  asg::AnaToolHandle<JetVertexTaggerTool> m_JVTUpdateTool_handle; //!
+  //JetVertexTaggerTool      * m_JVTTool;        //!
+  //ToolHandle<IJetUpdateJvt>  m_JVTToolHandle;  //!
 
   JetCleaningTool          * m_jetCleaning;    //!
   std::vector<std::string>  m_decisionNames;    //!

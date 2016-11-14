@@ -42,6 +42,7 @@ JetCalibrator :: JetCalibrator (std::string className) :
     m_runSysts(false),          // gets set later is syst applies to this tool
     m_jetCalibration(nullptr),  // JetCalibrationTool
     m_JESUncertTool(nullptr),   // JetUncertaintiesTool
+    m_JVTUpdateTool_handle("JetVertexTaggerTool/JVTUpdateTool"),
     m_jetCleaning(nullptr)      // JetCleaningTool
 {
   // Here you put any code for the base initialization of variables,
@@ -394,11 +395,11 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize and configure the JVT correction tool
-  if(m_redoJVT){
-    m_JVTTool = new JetVertexTaggerTool("jvtag");
-    m_JVTToolHandle = ToolHandle<IJetUpdateJvt>("jvtag");
-    RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->setProperty("JVTFileName","JetMomentTools/JVTlikelihood_20140805.root"), "");
-    RETURN_CHECK("JetCalibrator::initialize()", m_JVTTool->initialize(), "");
+  if( m_redoJVT && !m_JVTUpdateTool_handle.isUserConfigured() ){
+    RETURN_CHECK( "JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JVTUpdateTool_handle, JetVertexTaggerTool), "Could not make the tool");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.setProperty("JVTFileName","JetMomentTools/JVTlikelihood_20140805.root"), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.retrieve(), "Failed to retrieve JVTUpdateTool");
+
   }
 
   std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
@@ -580,7 +581,7 @@ EL::StatusCode JetCalibrator :: execute ()
     // Recalculate JVT using calibrated Jets
     if(m_redoJVT){
       for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-        jet_itr->auxdata< float >("Jvt") = m_JVTToolHandle->updateJvt(*jet_itr);
+        jet_itr->auxdata< float >("Jvt") = m_JVTUpdateTool_handle->updateJvt(*jet_itr);
       }
     }
 
