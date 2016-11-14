@@ -63,8 +63,7 @@ ClassImp(METConstructor)
 
 
 METConstructor :: METConstructor (std::string className) :
-    Algorithm(className),
-    m_metmaker_handle(0)
+    Algorithm(className)
 {
 
   m_debug           = false;

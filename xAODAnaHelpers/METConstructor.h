@@ -20,10 +20,6 @@ using std::string;
 class IMETMaker;
 class IMETSystematicsTool;
 
-//namespace met { 
-//       class METMaker; 
-//       class METSystematicsTool;
-//	 }
 namespace TauAnalysisTools { class TauSelectionTool; }
 
 
