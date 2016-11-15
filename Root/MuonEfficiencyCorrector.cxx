@@ -204,8 +204,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_pileup_tool_handle.setTypeAndName("CP::PileupReweightingTool/Pileup");
   if( m_isMC ){
     if( m_pileup_tool_handle.isUserConfigured() ){
-      m_pileup_tool_handle.retrieve();
-      std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! It's been retrieved!!" << std::endl;
+      RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.retrieve(), "Failed to retrieve Pileup Tool");
     }else{
       Error("initialize()","A configured CP::PileupReweightingTool must already exist in the asg::ToolStore! Are you creating one in xAH::BasicEventSelector?" );
       return EL::StatusCode::FAILURE;
@@ -650,11 +649,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with reco efficiency (useful at all?), and the corresponding SF
     	 //
-//    	 if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-//    	   Warning( "executeSF()", "Problem in applyMCEfficiency");
-//    	 }
+    	 if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	   Warning( "executeSF()", "Problem in applyMCEfficiency for Reco");
+    	 }
     	 if ( m_muRecoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
+    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Reco");
     	 }
 
     	 // b)
@@ -686,8 +685,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
-//    	   Info( "executeSF()", "Reco efficiency:");
-//    	   Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "Efficiency" ) );
+    	   Info( "executeSF()", "Reco efficiency:");
+    	   Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "Efficiency" ) );
     	   Info( "executeSF()", "and its SF:");
     	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", recoEffSF );
@@ -754,11 +753,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with iso efficiency (useful at all?), and the corresponding SF
     	 //
-//    	 if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-//    	   Warning( "executeSF()", "Problem in applyIsoEfficiency");
-//    	 }
+    	 if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	   Warning( "executeSF()", "Problem in applyMCEfficiency for Iso");
+    	 }
     	 if ( m_muIsoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
+    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Iso");
     	 }
 
     	 // b)
@@ -1102,11 +1101,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with TTVA efficiency (useful at all?), and the corresponding SF
     	 //
-//    	 if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-//    	   Warning( "executeSF()", "Problem in applyTTVAEfficiency");
-//    	 }
+    	 if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	   Warning( "executeSF()", "Problem in applyMCEfficiency for TTVA");
+    	 }
     	 if ( m_muTTVASF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {	 
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor");
+    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for TTVA");
     	 }
 
     	 // b)
