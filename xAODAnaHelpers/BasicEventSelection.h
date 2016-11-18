@@ -55,7 +55,6 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_doPUreweighting;
     std::string m_lumiCalcFileNames;
     std::string m_PRWFileNames;
-    int m_PU_default_channel;
 
     // Unprescaling data
     bool m_savePrescaleDataWeight;

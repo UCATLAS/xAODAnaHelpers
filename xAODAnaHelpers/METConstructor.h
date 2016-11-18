@@ -7,6 +7,8 @@
 #include "xAODRootAccess/Init.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
+#include "AsgTools/AnaToolHandle.h"
+
 
 #include "PATInterfaces/SystematicRegistry.h"
 //look at https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT
@@ -15,10 +17,9 @@
 using std::string;
 
 
-namespace met { 
-       class METMaker; 
-       class METSystematicsTool;
-	 }
+class IMETMaker;
+class IMETSystematicsTool;
+
 namespace TauAnalysisTools { class TauSelectionTool; }
 
 
@@ -97,9 +98,9 @@ private:
   xAOD::TStore *m_store;  //!
 
   // tools
-  met::METMaker* m_metmaker; //!
+  asg::AnaToolHandle<IMETMaker> m_metmaker_handle; //!
 
-  met::METSystematicsTool* metSystTool; //!   
+  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle; //!   
 
   TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 

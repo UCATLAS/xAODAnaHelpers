@@ -63,8 +63,7 @@ ClassImp(METConstructor)
 
 
 METConstructor :: METConstructor (std::string className) :
-    Algorithm(className),
-    m_metmaker(0)
+    Algorithm(className)
 {
 
   m_debug           = false;
@@ -185,29 +184,41 @@ EL::StatusCode METConstructor :: initialize ()
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  //m_store->print();
 
-
-  // METSystematicsTool initialization
-  // creation and set properties of the tools:
-  metSystTool = new met::METSystematicsTool("METSystematicsTool");
-  //this is needed to do jet track systematics (here not useful):
-  //RETURN_CHECK( "METConstructor::initialize()", metSystTool->setProperty( "ConfigJetTrkFile", "METTrack_2012.config"), "");
-  //RETURN_CHECK( "METConstructor::initialize()", metSystTool->setProperty(  "ConfigSoftCaloFile", "METRefFinal_Obsolete2012_V2.config"), "");//NO CST syst provided at the moment
-  RETURN_CHECK( "METConstructor::initialize()", metSystTool->setProperty(  "ConfigSoftTrkFile", m_SoftTermSystConfigFile), "");
-  RETURN_CHECK( "METConstructor::initialize()", metSystTool->setProperty( "JetColl", m_inputJets.Data() ), "");//this should be the same type as you give to rebuildJetMet
-  //metSystTool->msg().setLevel(MSG::WARNING);  //to have more messages :  VERBOSE, INFO, DEBUG, WARNING
-
-  if( ( metSystTool->initialize().isFailure() )){
-   Error("Initialize()", "initialization of the met Syst tools failed.  Exiting");
-   return EL::StatusCode::FAILURE;
-  }
+  //////////// IMETMaker ////////////////
+  ASG_SET_ANA_TOOL_TYPE(m_metmaker_handle, met::METMaker);
+  m_metmaker_handle.setName("METMaker");
+  m_metmaker_handle.retrieve();
  
-  m_metmaker = new met::METMaker("METMaker");
-  if(m_metmaker->initialize().isFailure()){
-    Error("initialize()", "Failed to properly initialize MET maker. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+//  m_metmaker_handle = new met::METMaker("METMaker");
+//  if(m_metmaker_handle->initialize().isFailure()){
+//    Error("initialize()", "Failed to properly initialize MET maker. Exiting." );
+//    return EL::StatusCode::FAILURE;
+//  }
+
+
+  ///////////// IMETSystematicsTool ///////////////////
+  ASG_SET_ANA_TOOL_TYPE(m_metSyst_handle, met::METSystematicsTool);
+  m_metSyst_handle.setName("METSyst");
+  m_metSyst_handle.retrieve();
+
+//  // METSystematicsTool initialization
+//  // creation and set properties of the tools:
+//  m_metSyst_handle = new met::METSystematicsTool("METSystematicsTool");
+//  //this is needed to do jet track systematics (here not useful):
+//  //RETURN_CHECK( "METConstructor::initialize()", m_metSyst_handle->setProperty( "ConfigJetTrkFile", "METTrack_2012.config"), "");
+//  //RETURN_CHECK( "METConstructor::initialize()", m_metSyst_handle->setProperty(  "ConfigSoftCaloFile", "METRefFinal_Obsolete2012_V2.config"), "");//NO CST syst provided at the moment
+//  RETURN_CHECK( "METConstructor::initialize()", m_metSyst_handle->setProperty(  "ConfigSoftTrkFile", m_SoftTermSystConfigFile), "");
+//  RETURN_CHECK( "METConstructor::initialize()", m_metSyst_handle->setProperty( "JetColl", m_inputJets.Data() ), "");//this should be the same type as you give to rebuildJetMet
+//  //m_metSyst_handle->msg().setLevel(MSG::WARNING);  //to have more messages :  VERBOSE, INFO, DEBUG, WARNING
+//
+//  if( ( m_metSyst_handle->initialize().isFailure() )){
+//   Error("Initialize()", "initialization of the met Syst tools failed.  Exiting");
+//   return EL::StatusCode::FAILURE;
+//  }
+
+//  RETURN_CHECK( "METConstructor::initialize()", m_m_metSyst_handle->setProperty( "DoMuonEloss", m_doMuonEloss), "");
+//  RETURN_CHECK( "METConstructor::initialize()", m_m_metSyst_handle->setProperty( "DoIsolMuonEloss", m_doIsolMuonEloss), "");
 
   m_tauSelTool = new TauAnalysisTools::TauSelectionTool( "TauSelectionTool" );
   if (m_tauSelTool->initialize().isFailure()) {
@@ -215,8 +226,6 @@ EL::StatusCode METConstructor :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  RETURN_CHECK( "METConstructor::initialize()", m_metmaker->setProperty( "DoMuonEloss", m_doMuonEloss), "");
-  RETURN_CHECK( "METConstructor::initialize()", m_metmaker->setProperty( "DoIsolMuonEloss", m_doIsolMuonEloss), "");
 
   Info("initialize()", "METConstructor Interface %s succesfully initialized!", m_name.c_str());
 
@@ -226,7 +235,7 @@ EL::StatusCode METConstructor :: initialize ()
   if(!m_runNominal && !m_systName.empty()) { //  m_systName is set by default to m_systName= "All", do not change it
 
 // get the syst from met syst tool
-const CP::SystematicSet recSyst = metSystTool->recommendedSystematics();
+const CP::SystematicSet recSyst = m_metSyst_handle->recommendedSystematics();
 sysList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
 
@@ -372,7 +381,7 @@ EL::StatusCode METConstructor :: execute ()
    //CP::SystematicSet iSysSet( (*sysListItr).name());
    //tell the tool that we are using this SystematicSet (of one SystematicVariation for now)
    //after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied
-   //assert(    metSystTool->applySystematicVariation(sysList) );
+   //assert(    m_metSyst_handle->applySystematicVariation(sysList) );
    //
    // info from https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/MET/METUtilities/trunk/util/example_METMaker_METSystematicsTool.cxx
 
@@ -411,9 +420,9 @@ EL::StatusCode METConstructor :: execute ()
    if (m_doElectronCuts) {
      ConstDataVector<xAOD::ElectronContainer> metElectrons(SG::VIEW_ELEMENTS);
      for (const auto& el : *eleCont) if (CutsMETMaker::accept(el)) metElectrons.push_back(el);
-     RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefEle", xAOD::Type::Electron, newMet, metElectrons.asDataVector(), metMap), "Failed rebuilding electron component.");
+     RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("RefEle", xAOD::Type::Electron, newMet, metElectrons.asDataVector(), metMap), "Failed rebuilding electron component.");
    } else {
-     RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefEle", xAOD::Type::Electron, newMet, eleCont, metMap), "Failed rebuilding electron component.");
+     RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("RefEle", xAOD::Type::Electron, newMet, eleCont, metMap), "Failed rebuilding electron component.");
    }
   }// close "if( m_inputElectrons.Length() > 0 )"
 
@@ -450,9 +459,9 @@ EL::StatusCode METConstructor :: execute ()
 
         metPhotons.push_back(ph);
       }
-      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, metPhotons.asDataVector(), metMap), "Failed rebuilding photon component.");
+      RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, metPhotons.asDataVector(), metMap), "Failed rebuilding photon component.");
     } else {
-      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, phoCont, metMap), "Failed rebuilding photon component.");
+      RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("RefGamma", xAOD::Type::Photon, newMet, phoCont, metMap), "Failed rebuilding photon component.");
     }
   }
 
@@ -483,9 +492,9 @@ EL::StatusCode METConstructor :: execute ()
 
         metTaus.push_back(tau);
       }
-      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, metTaus.asDataVector(), metMap), "Failed rebuilding tau component.");
+      RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet, metTaus.asDataVector(), metMap), "Failed rebuilding tau component.");
     } else {
-      RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("RefTau", xAOD::Type::Tau, newMet, tauCont, metMap), "Failed rebuilding tau component.");
+      RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet, tauCont, metMap), "Failed rebuilding tau component.");
     }
   }
 
@@ -505,9 +514,9 @@ EL::StatusCode METConstructor :: execute ()
    if (m_doMuonCuts) {
      ConstDataVector<xAOD::MuonContainer> metMuons(SG::VIEW_ELEMENTS);
      for (const auto& mu : *muonCont) if (CutsMETMaker::accept(mu)) metMuons.push_back(mu);
-     RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("Muons", xAOD::Type::Muon, newMet, metMuons.asDataVector(), metMap), "Failed rebuilding muon component.");
+     RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("Muons", xAOD::Type::Muon, newMet, metMuons.asDataVector(), metMap), "Failed rebuilding muon component.");
    } else {
-     RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildMET("Muons", xAOD::Type::Muon, newMet, muonCont, metMap), "Failed rebuilding muon component.");
+     RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("Muons", xAOD::Type::Muon, newMet, muonCont, metMap), "Failed rebuilding muon component.");
    }
  }
 
@@ -520,12 +529,12 @@ EL::StatusCode METConstructor :: execute ()
 
    if ( m_store->contains<xAOD::JetContainer>(m_inputJets.Data()+sysListItrString ) ) {
      if (m_debug) cout << "syst is = "<<sysListItrString <<endl;
-     //RETURN_CHECK( "METConstructor::execute()", metSystTool->evtStore()->retrieve( jetCont,m_inputJets_Syst  ), "");// is this necessary?
+     //RETURN_CHECK( "METConstructor::execute()", m_metSyst_handle->evtStore()->retrieve( jetCont,m_inputJets_Syst  ), "");// is this necessary?
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont,m_inputJets_Syst, m_event, m_store, m_debug  ), " Failed retrieving jet cont.");
    }
    else {
    if (m_debug) cout<<" not found this jet container : "<< m_inputJets.Data()+sysListItrString<< endl;
-     //RETURN_CHECK( "METConstructor::execute()", metSystTool->evtStore()->retrieve( jetCont, m_inputJets.Data() ), "");// is this necessary?
+     //RETURN_CHECK( "METConstructor::execute()", m_metSyst_handle->evtStore()->retrieve( jetCont, m_inputJets.Data() ), "");// is this necessary?
      RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont, m_inputJets.Data(), m_event, m_store, m_debug  ), " Failed retrieving jet cont.");
    }
 
@@ -537,21 +546,21 @@ EL::StatusCode METConstructor :: execute ()
    // NOTE: you have to set m_doJVTCut correctly when running! 
 
   if ( m_useCaloJetTerm ) {
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut), "Failed to build cluster-based jet/MET.");
+    RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut), "Failed to build cluster-based jet/MET.");
   } else if ( m_useTrackJetTerm ) {
-    RETURN_CHECK("METConstructor::execute()", m_metmaker->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut), "Failed to build track-based jet/MET.");
+    RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut), "Failed to build track-based jet/MET.");
   } else {
     Error("execute()", "Both m_useCaloJetTerm and m_useTrackJetTerm appear to be set to 'false'. This should not happen. Please check your MET configuration file");
     return EL::StatusCode::FAILURE;
   }
 
-   //now tell the metSystTool that we are using this SystematicSet (of one SystematicVariation for now)
+   //now tell the m_metSyst_handle that we are using this SystematicSet (of one SystematicVariation for now)
    //after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied
-   // assert(   metSystTool->applySystematicVariation(iSysSet) );
+   // assert(   m_metSyst_handle->applySystematicVariation(iSysSet) );
    //
    
   if (m_isMC) {
-    if( metSystTool->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
+    if( m_metSyst_handle->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
       cout<<"Error !!! not able to applySystematicVariation "<< endl;
     }
    }
@@ -559,14 +568,14 @@ EL::StatusCode METConstructor :: execute ()
    //get the soft cluster term, and applyCorrection
    xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
    //assert( softClusMet != 0); //check we retrieved the clust term
-   if( m_isMC && metSystTool->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
+   if( m_isMC && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
      Error("METConstructor::execute()", "Could not apply correction to soft clus met !!!! ");
    }
    if (m_debug) std::cout << "Soft cluster met term met : " << softClusMet->met() << std::endl;
 
    //get the track soft term, and applyCorrection
    xAOD::MissingET * softTrkMet = (*newMet)["PVSoftTrk"];
-   if( m_isMC && metSystTool->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
+   if( m_isMC && m_metSyst_handle->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
      Error("METConstructor::execute()", "Could not apply correction to soft track met !!!! ");
    }
    if (m_debug) std::cout << "track met soft term : " << softTrkMet->met() << std::endl;
@@ -579,8 +588,8 @@ EL::StatusCode METConstructor :: execute ()
      std::cout << "Jet met term met " << jetMet->met() << std::endl;*/
 
    // build met:
-   RETURN_CHECK("METConstructor::execute()", m_metmaker->buildMETSum("FinalClus", newMet, MissingETBase::Source::LCTopo), "Failed to build FinalClus MET.");
-   RETURN_CHECK("METConstructor::execute()", m_metmaker->buildMETSum("FinalTrk",  newMet, MissingETBase::Source::Track),  "Failed to build FinalTrk MET.");
+   RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->buildMETSum("FinalClus", newMet, MissingETBase::Source::LCTopo), "Failed to build FinalClus MET.");
+   RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->buildMETSum("FinalTrk",  newMet, MissingETBase::Source::Track),  "Failed to build FinalTrk MET.");
 
    RETURN_CHECK("METConstructor::execute()", m_store->record(newMet, (m_outputContainer+ sysListItr->name()).Data() ), "Failed to store MET output container.");
    RETURN_CHECK("METConstructor::execute()", m_store->record(metAuxCont, (m_outputContainer+  sysListItr->name() + "Aux.").Data()), "Failed to store MET output container.");
@@ -655,10 +664,10 @@ EL::StatusCode METConstructor::finalize()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if (m_metmaker) {
-    delete m_metmaker;
-    m_metmaker = 0;
-  }
+//  if (m_metmaker_handle) {
+//    delete m_metmaker_handle;
+//    m_metmaker_handle = 0;
+//  }
 
   return EL::StatusCode::SUCCESS;
 }

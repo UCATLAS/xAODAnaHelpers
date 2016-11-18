@@ -16,7 +16,8 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
-/* #include "AsgTools/AnaToolHandle.h" */
+#include "AsgTools/AnaToolHandle.h"
+#include "PileupReweighting/PileupReweightingTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -91,6 +92,7 @@ private:
   std::vector<CP::SystematicSet> m_systListTTVA; //!
 
   // tools
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;     //!
   CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool;                         //!
   std::string m_recoEffSF_tool_name;                                       //!
   CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool;                          //!
