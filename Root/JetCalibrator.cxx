@@ -230,6 +230,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize jet calibration tool
+  m_JetCalibrationTool_handle.setTypeAndName("JetCalibrationTool/JetCalibrationTool_" + m_name);
   if( !m_JetCalibrationTool_handle.isUserConfigured() ){
     RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool), "Could not make JetCalibrationTool");
 
@@ -245,6 +246,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     // initialize and configure the jet cleaning tool
     //------------------------------------------------
 
+    m_JetCleaningTool_handle.setTypeAndName("JetCleaningTool/JetCleaningTool_" + m_name);
     if( !m_JetCleaningTool_handle.isUserConfigured() ){
       RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetCleaningTool_handle, JetCleaningTool), "Could not make JetCleaningTool");
 
@@ -303,6 +305,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   //------------------------------------------------
   if ( !m_JESUncertConfig.empty() && !m_systName.empty()  && m_systName != "None" ) {
 
+    m_JetUncertaintiesTool_handle.setTypeAndName("JetUncertaintiesTool/JetUncertaintiesTool_" + m_name);
     if( !m_JetUncertaintiesTool_handle.isUserConfigured() ){
 
       RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetUncertaintiesTool_handle, JetUncertaintiesTool), "Could not make JetUncertaintiesTool");
@@ -361,6 +364,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   if ( !m_JERUncertConfig.empty() ) {
 
     // Instantiate the JER tool
+    m_JERTool_handle.setTypeAndName("JERTool/JERTool_" + m_name);
     if( !m_JERTool_handle.isUserConfigured() ){
       RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JERTool_handle, JERTool), "Could not make JERTool");
 
@@ -371,6 +375,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
 
     // Instantiate the JER Smearing tool
+    m_JERSmearingTool_handle.setTypeAndName("JERSmearingTool/JERSmearingTool_" + m_name);
     if( !m_JERSmearingTool_handle.isUserConfigured() ){
       RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JERSmearingTool_handle, JERSmearingTool), "Could not make JERSmearingTool");
 
@@ -409,6 +414,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize and configure the JVT correction tool
+
+  m_JVTUpdateTool_handle.setTypeAndName("JetVertexTaggerTool/JVTUpdateTool_" + m_name);
   if( m_redoJVT && !m_JVTUpdateTool_handle.isUserConfigured() ){
     RETURN_CHECK( "JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JVTUpdateTool_handle, JetVertexTaggerTool), "Could not make the tool");
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.setProperty("JVTFileName","JetMomentTools/JVTlikelihood_20140805.root"), "");
