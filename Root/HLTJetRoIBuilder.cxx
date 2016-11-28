@@ -121,6 +121,10 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
     m_trkName = "InDetTrigTrackingxAODCnv_Bjet_FTKRefit";
   }
 
+  if(m_trigItem.find("FTKVtx") != std::string::npos){
+    m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -192,6 +196,24 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       vtxCollections = comb->containerFeature<xAOD::VertexContainer>();
     }
 
+    // FTK Vertex debugging
+    //    cout << " Test Size " << endl;
+    //    cout << " \tempty: " << comb->containerFeature<xAOD::VertexContainer>().size() << endl;
+    //    cout << " \tEFHistoPrmVtx: " << comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx").size() <<endl;
+    //    cout << " \txPrimVx: " << comb->containerFeature<xAOD::VertexContainer>("xPrimVx").size() << endl;
+    //    cout << " \tPrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTK").size() << endl;
+    //    cout << " \tPrimVertexFTKRaw " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTKRaw").size() << endl;
+    //    cout << " \tPrimVertexFTKRefit " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTKRefit").size()<< endl;
+    //    cout << " \tHLT_PrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("HLT_PrimVertexFTK").size() << endl;
+    //
+    //    std::vector<Trig::Feature<xAOD::VertexContainer> > EvtxCollections = comb->containerFeature<xAOD::VertexContainer>();
+    //    for ( unsigned ifeat=0 ; ifeat<EvtxCollections.size() ; ifeat++ ) {
+    //      cout << EvtxCollections.at(ifeat).label() << endl;
+    //      for( auto vtx_itr : *(EvtxCollections.at(ifeat).cptr()) ){
+    //	cout << vtx_itr->vertexType() << " " << endl;
+    //      }
+    //    }
+
     bool isValid = true;
 
     if(m_debug) cout << "ncontainers  " << bjetCollections.size() << endl;
@@ -203,6 +225,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
     if(jetCollections.size() != trkCollections.size()){
       cout << "ERROR Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " trks: "<< trkCollections.size() << endl;
+      cout << " Jet Collection " << m_jetName << " Trk Collection:  " << m_trkName << endl;
       isValid = false;
     }
 
@@ -214,7 +237,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     if(vtxCollections.size() < jetCollections.size()){
       cout << "ERROR Problem in container size: " << m_name  
 	   << " jets: "<< jetCollections.size() << " " << m_jetName 
-	   << " vtx: "<< vtxCollections.size()  << "  "<< m_vtxName << endl;
+	   << " vtx: "<< vtxCollections.size()  << " " << m_vtxName << endl;
       for ( unsigned ifeat=0 ; ifeat<vtxCollections.size() ; ifeat++ ) {
 	cout << "Feture: " << ifeat << endl;
 	for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ){
@@ -225,6 +248,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     }
 
     if(!isValid) continue;
+
+    //cout << " is Valid " << jetCollections.size() << " " << vtxCollections.size() << endl;
 
     for ( unsigned ifeat=0 ; ifeat<jetCollections.size() ; ifeat++ ) {
       const xAOD::Jet* hlt_jet = getTrigObject<xAOD::Jet, xAOD::JetContainer>(jetCollections.at(ifeat));

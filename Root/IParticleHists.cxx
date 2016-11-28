@@ -1,7 +1,6 @@
 #include <xAODAnaHelpers/IParticleHists.h>
 #include <sstream>
 
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
 
 using std::vector;
 
@@ -63,7 +62,10 @@ StatusCode IParticleHists::initialize() {
 	  break;
 	}
 
-      m_NPt.push_back(       book(m_name, (m_prefix+"Pt_"+pNum.str()),       pTitle.str()+" "+m_title+" p_{T} [GeV]" ,120,            0,       3000. ) );
+      m_NPt_l.push_back(       book(m_name, (m_prefix+"Pt_l_"+pNum.str()),       pTitle.str()+" "+m_title+" p_{T} [GeV]" ,120,            0,       3000. ) );
+      m_NPt .push_back(       book(m_name, (m_prefix+"Pt_"+pNum.str()),       pTitle.str()+" "+m_title+" p_{T} [GeV]" ,100,            0,       1000. ) );
+      m_NPt_m.push_back(       book(m_name, (m_prefix+"Pt_m_"+pNum.str()),       pTitle.str()+" "+m_title+" p_{T} [GeV]" ,100,            0,       500. ) );
+      m_NPt_s.push_back(       book(m_name, (m_prefix+"Pt_s_"+pNum.str()),       pTitle.str()+" "+m_title+" p_{T} [GeV]" ,100,            0,       100. ) );
       m_NEta.push_back(      book(m_name, (m_prefix+"Eta_"+pNum.str()),      pTitle.str()+" "+m_title+" #eta"        , 80,           -4,           4 ) );
       m_NPhi.push_back(      book(m_name, (m_prefix+"Phi_"+pNum.str()),      pTitle.str()+" "+m_title+" Phi"         ,120, -TMath::Pi(), TMath::Pi() ) );
       m_NM.push_back(        book(m_name, (m_prefix+"Mass_"+pNum.str()),     pTitle.str()+" "+m_title+" Mass [GeV]"  ,120,            0,         400 ) );
@@ -85,7 +87,10 @@ StatusCode IParticleHists::execute( const xAOD::IParticleContainer* particles, f
   if( m_infoSwitch->m_numLeading > 0){
     int numParticles = std::min( m_infoSwitch->m_numLeading, (int)particles->size() );
     for(int iParticle=0; iParticle < numParticles; ++iParticle){
+      m_NPt_l.at(iParticle)->        Fill( particles->at(iParticle)->pt()/1e3,   eventWeight);
       m_NPt.at(iParticle)->        Fill( particles->at(iParticle)->pt()/1e3,   eventWeight);
+      m_NPt_m.at(iParticle)->        Fill( particles->at(iParticle)->pt()/1e3,   eventWeight);
+      m_NPt_s.at(iParticle)->        Fill( particles->at(iParticle)->pt()/1e3,   eventWeight);
       m_NEta.at(iParticle)->       Fill( particles->at(iParticle)->eta(),      eventWeight);
       m_NPhi.at(iParticle)->       Fill( particles->at(iParticle)->phi(),      eventWeight);
       m_NM.at(iParticle)->         Fill( particles->at(iParticle)->m()/1e3,    eventWeight);
@@ -123,7 +128,9 @@ StatusCode IParticleHists::execute( const xAOD::IParticle* particle, float event
 }
 
 
-StatusCode IParticleHists::execute( const xAH::Particle* particle, float eventWeight ) {
+
+
+StatusCode IParticleHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* /*eventInfo*/ ) {
 
   if(m_debug) std::cout << "IParticleHists: in execute " <<std::endl;
 

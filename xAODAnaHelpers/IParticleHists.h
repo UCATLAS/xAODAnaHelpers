@@ -3,10 +3,13 @@
 
 #include "xAODAnaHelpers/HistogramManager.h"
 #include "xAODAnaHelpers/HelperClasses.h"
-#include "xAODAnaHelpers/Particle.h"
+#include "xAODAnaHelpers/ParticleContainer.h"
 
-#include <xAODEventInfo/EventInfo.h>
+#include <xAODAnaHelpers/Jet.h>
+#include <xAODAnaHelpers/EventInfo.h>
 #include <xAODBase/IParticleContainer.h>
+#include "xAODAnaHelpers/tools/ReturnCheck.h"
+
 
 class IParticleHists : public HistogramManager
 {
@@ -19,7 +22,12 @@ class IParticleHists : public HistogramManager
     virtual StatusCode initialize();
     StatusCode execute( const xAOD::IParticleContainer* particles, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
     virtual StatusCode execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
-    virtual StatusCode execute( const xAH::Particle* particle, float eventWeight);
+
+    template <class T_PARTICLE, class T_INFOSWITCH>
+      StatusCode execute( const xAH::ParticleContainer<T_PARTICLE, T_INFOSWITCH>* particles, float eventWeight, const xAH::EventInfo* eventInfo = 0);
+
+    //StatusCode execute( const xAH::ParticleContainer* particles, float eventWeight, const xAH::EventInfo* eventInfo = 0 );
+    virtual StatusCode execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* eventInfo = 0);
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
 
@@ -49,7 +57,10 @@ class IParticleHists : public HistogramManager
     TH1F* m_Pz;                  //!
 
     //NLeadingParticles
+    std::vector< TH1F* > m_NPt_l;       //!
     std::vector< TH1F* > m_NPt;       //!
+    std::vector< TH1F* > m_NPt_m;       //!
+    std::vector< TH1F* > m_NPt_s;       //!
     std::vector< TH1F* > m_NEta;      //!
     std::vector< TH1F* > m_NPhi;      //!
     std::vector< TH1F* > m_NM;        //!
@@ -57,5 +68,35 @@ class IParticleHists : public HistogramManager
     std::vector< TH1F* > m_NRapidity; //!
 
 };
+
+
+template <class T_PARTICLE, class T_INFOSWITCH>
+StatusCode IParticleHists::execute( const xAH::ParticleContainer<T_PARTICLE, T_INFOSWITCH>* particles, float eventWeight, const xAH::EventInfo* eventInfo) {
+  unsigned int nPart = particles->size();
+  for(unsigned int i = 0;  i<nPart; ++i){
+    RETURN_CHECK("IParticleHists::execute()", this->execute( static_cast<const xAH::Particle*>(&particles->at(i)), eventWeight, eventInfo), "");
+    
+  }
+
+  if( m_infoSwitch->m_numLeading > 0){
+    int numParticles = std::min( m_infoSwitch->m_numLeading, (int)particles->size() );
+    for(int iParticle=0; iParticle < numParticles; ++iParticle){
+      const TLorentzVector& partP4 = particles->at(iParticle).p4;
+
+      m_NPt_l.at(iParticle)->        Fill( partP4.Pt(),   eventWeight);
+      m_NPt.at(iParticle)->        Fill( partP4.Pt(),   eventWeight);
+      m_NPt_m.at(iParticle)->        Fill( partP4.Pt(),   eventWeight);
+      m_NPt_s.at(iParticle)->        Fill( partP4.Pt(),   eventWeight);
+      m_NEta.at(iParticle)->       Fill( partP4.Eta(),      eventWeight);
+      m_NPhi.at(iParticle)->       Fill( partP4.Phi(),      eventWeight);
+      m_NM.at(iParticle)->         Fill( partP4.M(),    eventWeight);
+      m_NE.at(iParticle)->         Fill( partP4.E(),    eventWeight);
+      m_NRapidity.at(iParticle)->  Fill( partP4.Rapidity(), eventWeight);
+    }
+  }
+
+  return StatusCode::SUCCESS;
+}
+
 
 #endif

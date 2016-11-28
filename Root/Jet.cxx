@@ -2,6 +2,11 @@
 
 using namespace xAH;
 
+Jet::Jet() : matchedJet(0) 
+{
+}
+
+
 void Jet::muonInJetCorrection(const xAH::MuonContainer* muons){
 
   TLorentzVector& jetVec = p4;
