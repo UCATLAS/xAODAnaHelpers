@@ -11,8 +11,7 @@ namespace xAH {
     {
     public:
       
-      //Jet() { };
-      //virtual ~Jet();
+      Jet();
       float rapidity;
 
       // clean
@@ -204,6 +203,7 @@ namespace xAH {
       double charge;
 
       const Muon* matchedMuon;
+      const Jet * matchedJet;
 
     public:
 
