@@ -210,6 +210,7 @@ StatusCode JetHists::initialize() {
     //m_MV2           = book(m_name, "MV2",               m_titlePrefix+" jet MV2"          , 100,   -1  ,  1);
     //m_IP3DvsMV2c20  = book(m_name, "IP3DvsMV2c20",      m_titlePrefix+" jet MV2c20"       , 100,   -1  ,  1,
 
+    
     if(m_infoSwitch->m_vsLumiBlock){
 
 
@@ -299,6 +300,8 @@ StatusCode JetHists::initialize() {
     m_IP2D_valD0wrtPVofTracks   = book(m_name, "IP2D_valD0wrtPVofTracks"  , "IP2D_valD0wrtPVofTracks", 100,  -2.0,  2.0);
     m_IP2D_sigD0wrtPVofTracks   = book(m_name, "IP2D_sigD0wrtPVofTracks"  , "IP2D_sigD0wrtPVofTracks", 100, -15.0, 15.0);
     m_IP2D_sigD0wrtPVofTracks_l = book(m_name, "IP2D_sigD0wrtPVofTracks_l", "IP2D_sigD0wrtPVofTracks", 100, -50.0, 50.0);
+    m_IP2D_errD0wrtPVofTracks   = book(m_name, "IP2D_errD0wrtPVofTracks"  , "IP2D_errD0wrtPVofTracks", 100, 0.0, 1.0);
+
     m_IP2D_weightBofTracks      = book(m_name, "IP2D_weightBofTracks"     , "IP2D_weightBofTracks"   , 100,  -0.1, 1.5);
     m_IP2D_weightCofTracks      = book(m_name, "IP2D_weightCofTracks"     , "IP2D_weightCofTracks"   , 100,  -0.1, 1.5);
     m_IP2D_weightUofTracks      = book(m_name, "IP2D_weightUofTracks"     , "IP2D_weightUofTracks"   , 100,  -0.1, 1.5);
@@ -315,9 +318,14 @@ StatusCode JetHists::initialize() {
     m_IP3D_valD0wrtPVofTracks   = book(m_name, "IP3D_valD0wrtPVofTracks"  , "IP3D_valD0wrtPVofTracks", 100,  -2.0,  2.0);
     m_IP3D_sigD0wrtPVofTracks   = book(m_name, "IP3D_sigD0wrtPVofTracks"  , "IP3D_sigD0wrtPVofTracks", 100, -15.0, 15.0);
     m_IP3D_sigD0wrtPVofTracks_l = book(m_name, "IP3D_sigD0wrtPVofTracks_l", "IP3D_sigD0wrtPVofTracks", 100, -50.0, 50.0);
+    m_IP3D_errD0wrtPVofTracks   = book(m_name, "IP3D_errD0wrtPVofTracks"  , "IP3D_errD0wrtPVofTracks", 100, 0.0, 1.0);
+    
     m_IP3D_valZ0wrtPVofTracks   = book(m_name, "IP3D_valZ0wrtPVofTracks"  , "IP3D_valZ0wrtPVofTracks", 100,  -2.0,  2.0);
     m_IP3D_sigZ0wrtPVofTracks   = book(m_name, "IP3D_sigZ0wrtPVofTracks"  , "IP3D_sigZ0wrtPVofTracks", 100, -15.0, 15.0);
     m_IP3D_sigZ0wrtPVofTracks_l = book(m_name, "IP3D_sigZ0wrtPVofTracks_l", "IP3D_sigZ0wrtPVofTracks", 100, -50.0, 50.0);
+    m_IP3D_errZ0wrtPVofTracks   = book(m_name, "IP3D_errZ0wrtPVofTracks"  , "IP3D_errZ0wrtPVofTracks", 100, 0.0, 1.0);
+
+    
     m_IP3D_weightBofTracks      = book(m_name, "IP3D_weightBofTracks"     , "IP3D_weightBofTracks"   , 100,  -0.1, 1.5);
     m_IP3D_weightCofTracks      = book(m_name, "IP3D_weightCofTracks"     , "IP3D_weightCofTracks"   , 100,  -0.1, 1.5);
     m_IP3D_weightUofTracks      = book(m_name, "IP3D_weightUofTracks"     , "IP3D_weightUofTracks"   , 100,  -0.1, 1.5);
@@ -350,9 +358,15 @@ StatusCode JetHists::initialize() {
 
   if( m_infoSwitch->m_hltVtxComp ){
 
+    m_vtx_offline_x0                  = book(m_name, "vtx_offline_x0",  "vtx_offline_x0",   100,  -0.2,  0.2);
+    m_vtx_offline_y0                  = book(m_name, "vtx_offline_y0",  "vtx_offline_y0",   100,  -0.2,  0.2);
+    m_vtx_offline_z0                  = book(m_name, "vtx_offline_z0",  "vtx_offline_z0",   100, -200, 200);
+    m_vtx_offline_z0_s                = book(m_name, "vtx_offline_z0_s",  "vtx_offline_z0_s",   100, -10, 10);
+    
     m_vtx_online_x0                  = book(m_name, "vtx_online_x0",  "vtx_online_x0",   100,  -0.2,  0.2);
     m_vtx_online_y0                  = book(m_name, "vtx_online_y0",  "vtx_online_y0",   100,  -0.2,  0.2);
     m_vtx_online_z0                  = book(m_name, "vtx_online_z0",  "vtx_online_z0",   100, -200, 200);
+    m_vtx_online_z0_s                = book(m_name, "vtx_online_z0_s",  "vtx_online_z0_s",   100, -10, 10);
 
     m_vtx_online_x0_raw              = book(m_name, "vtx_online_x0_raw",  "vtx_online_x0_raw",   100,  -0.2,  0.2);
     m_vtx_online_y0_raw              = book(m_name, "vtx_online_y0_raw",  "vtx_online_y0_raw",   100,  -0.2,  0.2);
@@ -370,9 +384,40 @@ StatusCode JetHists::initialize() {
     m_vtxDiffz0                      = book(m_name, "vtx_diff_z0",   "vtx_diff_z0",   100, -100, 100);
     m_vtxDiffz0_m                    = book(m_name, "vtx_diff_z0_m", "vtx_diff_z0_m", 100,  -20,  20);
     m_vtxDiffz0_s                    = book(m_name, "vtx_diff_z0_s", "vtx_diff_z0_s", 100,  -5,  5);
-    m_vtxHadDummy                    = book(m_name, "vtx_hadDummy",  "vtx_hadDummy",  2, -0.5, 1.5);
+    m_vtxHadDummy                    = book(m_name, "vtx_hadDummy",  "vtx_hadDummy",  3, -0.5, 2.5);
+    
+    m_bs_online_vz                  = book(m_name, "bs_online_vz",  "bs_online_vz",   200, -5, 5);
+    m_bs_online_vy                  = book(m_name, "bs_online_vy",  "bs_online_vy",   200, -2, 2);
+    m_bs_online_vx                  = book(m_name, "bs_online_vx",  "bs_online_vx",   200, -2, 2);
 
- 
+    m_vtxDiffz0_vs_vtx_offline_z0     = book(m_name, "vtxDiffz0_vs_vtx_offline_z0",
+					     "vtx_offline_z0",  100, -200, 200,
+					     "vtx_diff_z0",     100, -100, 100);
+    
+    m_vtxDiffz0_s_vs_vtx_offline_z0    = book(m_name, "vtxDiffz0_s_vs_vtx_offline_z0",
+					      "vtx_offline_z0", 100, -200, 200,
+					      "vtx_diff_z0",    100, -10, 10);
+    
+    m_vtxDiffz0_s_vs_vtxDiffx0          = book(m_name, "vtxDiffz0_s_vs_vtxDiffx0",
+					       "vtx_diff_x0",   100,  -0.1,  0.1,
+					       "vtx_diff_z0",   100, -10, 10);
+    
+    m_vtxDiffz0_s_vs_vtxDiffy0          = book(m_name, "vtxDiffz0_s_vs_vtxDiffy0",
+					       "vtx_diff_y0",   100,  -0.1,  0.1,
+					       "vtx_diff_z0",   100, -10, 10);
+
+    m_vtxHadDummy_vs_jetPt            = book(m_name, "vtxHadDummy_vs_jetPt",
+					     "jetPt",  100, 0, 1000,
+					     "hadDummy", -0.1, 2.1);
+
+    m_vtx_online_y0_vs_vtx_online_z0  = book(m_name, "vtx_online_y0_vs_vtx_online_z0",					  
+					     "vtx_online_z0", 100, -50, 50,					     
+					     "vtx_online_y0", -50, 50);
+    
+    m_vtx_online_x0_vs_vtx_online_z0  = book(m_name, "vtx_online_x0_vs_vtx_online_z0",					  
+					     "vtx_online_z0", 100, -50, 50,					     
+					     "vtx_online_x0", -50, 50);
+
 
     if(m_infoSwitch->m_vsLumiBlock){
       m_vtxDiffx0_vs_lBlock      = book(m_name, "vtxDiffx0_vs_lBlock",    "LumiBlock",  200, 0, 2000, "vtx_diff_x0",    -0.1, 0.1);
@@ -416,6 +461,24 @@ StatusCode JetHists::initialize() {
   if(m_infoSwitch->m_charge)
     {
       //m_charge= book(m_name, "charge", m_titlePrefix+"charge", 100, -10, 10);
+    }
+
+  // Average Mu
+  if(m_infoSwitch->m_byAverageMu){
+    m_avgMu               = book(m_name, "avgMu",  "Average Mu", 51, -0.5, 50);
+    m_jetPt_avgMu_00_15   = book(m_name, "jetPt_avgMu_00_15",  "jet p_{T} [GeV]", 120, 0, 600);
+    m_jetPt_avgMu_15_25   = book(m_name, "jetPt_avgMu_15_25",  "jet p_{T} [GeV]", 120, 0, 600);
+    m_jetPt_avgMu_25      = book(m_name, "jetPt_avgMu_25",     "jet p_{T} [GeV]", 120, 0, 600);
+    m_avgMu_vs_jetPt      = book(m_name, "avgMu_vs_jetPt",
+				 "jet p_{T} [GeV]", 120, 0, 600,
+				 "Average Mu", 51, -0.5, 50);
+  }
+
+  // Eta-Phi Map
+  if(m_infoSwitch->m_etaPhiMap)
+    {
+      m_etaPhi = book(m_name, "etaPhi", m_titlePrefix+"#eta", 100, -2.5, 2.5,
+		      m_titlePrefix+"#phi", 120, -TMath::Pi(), TMath::Pi() );
     }
 
 
@@ -847,7 +910,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     m_MV2c10   ->  Fill( MV2c10, eventWeight );
     m_MV2c20   ->  Fill( MV2c20, eventWeight );
     m_MV2c20_l ->  Fill( MV2c20, eventWeight );
-
+    
     if(m_infoSwitch->m_vsLumiBlock){
       
       uint32_t lumiBlock = eventInfo->lumiBlock();
@@ -861,12 +924,13 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
 
       if(m_infoSwitch->m_flavTagHLT){
-	      passMV2c2040 = (MV2c20 > 0.75);
-	      passMV2c2050 = (MV2c20 > 0.50);
-	      passMV2c2060 = (MV2c20 > -0.022472);
-	      passMV2c2070 = (MV2c20 > -0.509032);
-	      passMV2c2077 = (MV2c20 > -0.764668);
-	      passMV2c2085 = (MV2c20 > -0.938441);
+	passMV2c2040 = (MV2c20 > 0.75);
+	passMV2c2050 = (MV2c20 > 0.50);
+	passMV2c2060 = (MV2c20 > -0.022472);
+	passMV2c2070 = (MV2c20 > -0.509032);
+	passMV2c2077 = (MV2c20 > -0.764668);
+	passMV2c2085 = (MV2c20 > -0.938441);
+
       }
 
       m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c2040,  eventWeight);
@@ -1138,9 +1202,11 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	for(float d0Sig : IP2D_sigD0wrtPVofTracksAcc(*btag_info)) {
 	  m_IP2D_sigD0wrtPVofTracks  ->Fill(d0Sig, eventWeight);
 	  m_IP2D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+
+
 	}
       }
-
+	
       if(IP2D_weightBofTracksAcc .isAvailable(*btag_info)){
 	for(float weightB : IP2D_weightBofTracksAcc(*btag_info))  m_IP2D_weightBofTracks->Fill(weightB, eventWeight);
       }
@@ -1317,13 +1383,25 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
     if(online_pvx)  m_vtxOnlineValid ->Fill(1.0, eventWeight);
     else            m_vtxOnlineValid ->Fill(0.0, eventWeight);
+    
 
     if(offline_pvx) m_vtxOfflineValid->Fill(1.0, eventWeight);
     else            m_vtxOfflineValid->Fill(0.0, eventWeight);
 
-    bool hadDummyPV = (jet->auxdata< char >("hadDummyPV") == '1');
-    if(hadDummyPV)  m_vtxHadDummy ->Fill(1.0, eventWeight);
-    else            m_vtxHadDummy ->Fill(0.0, eventWeight);
+    char hadDummyPV = jet->auxdata< char >("hadDummyPV");
+    if( hadDummyPV == '0')  m_vtxHadDummy -> Fill(0.0, eventWeight);
+    if( hadDummyPV == '1')  m_vtxHadDummy -> Fill(1.0, eventWeight);
+    if( hadDummyPV == '2')  m_vtxHadDummy -> Fill(2.0, eventWeight);
+
+    float bs_online_vx = jet->auxdata< float >("bs_online_vx");
+    m_bs_online_vx -> Fill( bs_online_vx , eventWeight);
+    float bs_online_vy = jet->auxdata< float >("bs_online_vy");
+    m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
+    float bs_online_vz = jet->auxdata< float >("bs_online_vz");
+    m_bs_online_vz -> Fill( bs_online_vz , eventWeight);
+
+    //if(hadDummyPV)  m_vtxHadDummy ->Fill(1.0, eventWeight);
+    //else            m_vtxHadDummy ->Fill(0.0, eventWeight);
 
     if(offline_pvx && online_pvx){
 
@@ -1336,19 +1414,21 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	online_z0_raw = 0;
       }
 
-
+      m_vtx_offline_x0    -> Fill(offline_pvx->x(), eventWeight);
       m_vtx_online_x0     -> Fill(online_pvx->x(), eventWeight);
       m_vtx_online_x0_raw -> Fill(online_x0_raw, eventWeight);
       float vtxDiffx0 = online_pvx->x() - offline_pvx->x();
       m_vtxDiffx0  ->Fill(vtxDiffx0, eventWeight);
       m_vtxDiffx0_l->Fill(vtxDiffx0, eventWeight);
 
+      m_vtx_offline_y0    -> Fill(offline_pvx->y(), eventWeight);
       m_vtx_online_y0     -> Fill(online_pvx->y(), eventWeight);
       m_vtx_online_y0_raw -> Fill(online_y0_raw, eventWeight);
       float vtxDiffy0 = online_pvx->y() - offline_pvx->y();
       m_vtxDiffy0  ->Fill(vtxDiffy0, eventWeight);
       m_vtxDiffy0_l->Fill(vtxDiffy0, eventWeight);
 
+      m_vtx_offline_z0    -> Fill(offline_pvx->z(), eventWeight);
       m_vtx_online_z0     -> Fill(online_pvx->z(), eventWeight);
       m_vtx_online_z0_raw -> Fill(online_z0_raw, eventWeight);
       float vtxDiffz0     = online_pvx->z() - offline_pvx->z();
@@ -1356,6 +1436,17 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       m_vtxDiffz0  ->Fill(vtxDiffz0, eventWeight);
       m_vtxDiffz0_m->Fill(vtxDiffz0, eventWeight);
       m_vtxDiffz0_s->Fill(vtxDiffz0, eventWeight);
+      
+      m_vtxDiffz0_s_vs_vtx_offline_z0->Fill(offline_pvx->z(), vtxDiffz0, eventWeight);
+      m_vtxDiffz0_vs_vtx_offline_z0  ->Fill(offline_pvx->z(), vtxDiffz0, eventWeight);
+      m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);
+      m_vtxDiffz0_s_vs_vtxDiffy0      ->Fill(vtxDiffy0, vtxDiffz0, eventWeight);
+
+      m_vtxHadDummy_vs_jetPt        ->Fill(jet->pt()/1e3, bool(hadDummyPV), eventWeight);
+
+      m_vtx_online_y0_vs_vtx_online_z0 -> Fill(online_pvx->z(), online_pvx->y(), eventWeight);
+      m_vtx_online_x0_vs_vtx_online_z0 -> Fill(online_pvx->z(), online_pvx->x(), eventWeight);
+       
 
       if(m_infoSwitch->m_vsLumiBlock){
 	uint32_t lumiBlock = eventInfo->lumiBlock();
@@ -1381,8 +1472,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	m_vtxEff10_raw_vs_lBlock  ->Fill(lumiBlock, correctVtx10_raw,    eventWeight);
 
       }
-	  
 
+      
     }
   }
 
@@ -1521,6 +1612,17 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
   if(m_infoSwitch->m_hltVtxComp)
     {
+
+      /*std::cout << " Cout is working:  " << jet->vtxOnlineValid << std::endl;
+      if(jet->vtxOnlineValid)  {
+	std::cout << "valid online vtx: " << std::endl;
+	m_vtxOnlineValid ->Fill(1.0, eventWeight);
+      }
+      else  {
+	std::cout << "non-valid online vtx: ";
+	m_vtxOnlineValid ->Fill(0.0, eventWeight);
+	}*/
+      
       float online_x0_raw = jet->vtx_online_x0;
       float online_y0_raw = jet->vtx_online_y0;
       float online_z0_raw = jet->vtx_online_z0;
@@ -1531,21 +1633,34 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       }
       
       m_vtxHadDummy               ->Fill(jet->vtxHadDummy          , eventWeight);
+
+      float bs_online_vx = jet->bs_online_vx;
+      m_bs_online_vx -> Fill( bs_online_vx , eventWeight);
+      float bs_online_vy = jet->bs_online_vy;
+      m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
+      float bs_online_vz = jet->bs_online_vz;
+      m_bs_online_vz -> Fill( bs_online_vz , eventWeight);
+      
       float vtxDiffx0      = jet->vtx_online_x0 - jet->vtx_offline_x0;
 
+      m_vtx_offline_x0             ->Fill(jet->vtx_offline_x0 , eventWeight);
       m_vtx_online_x0             ->Fill(jet->vtx_online_x0 , eventWeight);
       m_vtx_online_x0_raw         ->Fill(online_x0_raw      , eventWeight);
       m_vtxDiffx0                 ->Fill(vtxDiffx0          , eventWeight);
       m_vtxDiffx0_l               ->Fill(vtxDiffx0          , eventWeight);
 
+      m_vtx_offline_y0             ->Fill(jet->vtx_offline_y0 , eventWeight);
       m_vtx_online_y0             ->Fill(jet->vtx_online_y0 , eventWeight);
       m_vtx_online_y0_raw         ->Fill(online_y0_raw      , eventWeight);
       float vtxDiffy0 = jet->vtx_online_y0 - jet->vtx_offline_y0;
       m_vtxDiffy0                 ->Fill(vtxDiffy0          , eventWeight);
       m_vtxDiffy0_l               ->Fill(vtxDiffy0          , eventWeight);
 
-      m_vtx_online_z0             ->Fill(jet->vtx_online_z0 , eventWeight);
-      m_vtx_online_z0_raw         ->Fill(online_z0_raw      , eventWeight);
+      m_vtx_offline_z0             ->Fill(jet->vtx_offline_z0 , eventWeight);
+      m_vtx_online_z0              ->Fill(jet->vtx_online_z0 , eventWeight);
+      m_vtx_offline_z0_s           ->Fill(jet->vtx_offline_z0 , eventWeight);
+      m_vtx_online_z0_s            ->Fill(jet->vtx_online_z0 , eventWeight);
+      m_vtx_online_z0_raw          ->Fill(online_z0_raw      , eventWeight);
       float vtxDiffz0     = jet->vtx_online_z0  - jet->vtx_offline_z0;
       float vtxDiffz0_raw = online_z0_raw       - jet->vtx_offline_z0;
       m_vtxDiffz0                 ->Fill(vtxDiffz0          , eventWeight);
@@ -1554,6 +1669,16 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       //m_vtx_offline_z                 ->Fill(jet->vtx_offline_z0          , eventWeight);
       //m_vtx_online_z                 ->Fill(jet->vtx_online_z0          , eventWeight);
 
+      m_vtxDiffz0_s_vs_vtx_offline_z0->Fill(jet->vtx_offline_z0, vtxDiffz0, eventWeight);
+      m_vtxDiffz0_vs_vtx_offline_z0  ->Fill(jet->vtx_offline_z0, vtxDiffz0, eventWeight);
+      m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);
+      m_vtxDiffz0_s_vs_vtxDiffy0      ->Fill(vtxDiffy0, vtxDiffz0, eventWeight);
+      
+      m_vtxHadDummy_vs_jetPt   ->Fill(jet->p4.Pt(), bool(jet->vtxHadDummy),    eventWeight);
+
+      m_vtx_online_y0_vs_vtx_online_z0 ->Fill(jet->vtx_online_z0, jet->vtx_online_y0, eventWeight);
+      m_vtx_online_x0_vs_vtx_online_z0 ->Fill(jet->vtx_online_z0, jet->vtx_online_x0, eventWeight);
+      
       if(m_infoSwitch->m_vsLumiBlock && eventInfo){
 	uint32_t lumiBlock = eventInfo->m_lumiBlock;
 
@@ -1641,12 +1766,17 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_nIP2DTracks -> Fill( jet->nIP2DTracks, eventWeight);
       for(float grade : jet->IP2D_gradeOfTracks)        m_IP2D_gradeOfTracks->Fill(grade, eventWeight);
       for(float flag  : jet->IP2D_flagFromV0ofTracks)   m_IP2D_flagFromV0ofTracks->Fill(flag, eventWeight);
-      for(float d0    : jet->IP2D_valD0wrtPVofTracks)   m_IP2D_valD0wrtPVofTracks->Fill(d0, eventWeight);
-
-      for(float d0Sig : jet->IP2D_sigD0wrtPVofTracks) {
-	  m_IP2D_sigD0wrtPVofTracks  ->Fill(d0Sig, eventWeight);
+   
+      for(unsigned int i=0; i<jet->IP2D_sigD0wrtPVofTracks.size(); i++){
+	  float d0Sig=jet->IP2D_sigD0wrtPVofTracks[i];
+	  float d0Val=jet->IP2D_valD0wrtPVofTracks[i];
+	  float d0Err=d0Val/d0Sig;
+	  m_IP2D_errD0wrtPVofTracks->Fill  (d0Err, eventWeight);
+	  m_IP2D_sigD0wrtPVofTracks->Fill  (d0Sig, eventWeight);
 	  m_IP2D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+	  m_IP2D_valD0wrtPVofTracks->Fill  (d0Val, eventWeight);
       }
+	
 
       for(float weightB : jet->IP2D_weightBofTracks)  m_IP2D_weightBofTracks->Fill(weightB, eventWeight);
       for(float weightC : jet->IP2D_weightCofTracks)  m_IP2D_weightCofTracks->Fill(weightC, eventWeight);
@@ -1668,18 +1798,25 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_nIP3DTracks -> Fill( jet->nIP3DTracks, eventWeight);
       for(float grade : jet->IP3D_gradeOfTracks     )   m_IP3D_gradeOfTracks->Fill(grade, eventWeight);
       for(float flag  : jet->IP3D_flagFromV0ofTracks)   m_IP3D_flagFromV0ofTracks->Fill(flag, eventWeight);
-      for(float d0    : jet->IP3D_valD0wrtPVofTracks)   m_IP3D_valD0wrtPVofTracks->Fill(d0, eventWeight);
-      
-      for(float d0Sig : jet->IP3D_sigD0wrtPVofTracks){
-	m_IP3D_sigD0wrtPVofTracks  ->Fill(d0Sig, eventWeight);
-	m_IP3D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+
+      for(unsigned int i=0; i<jet->IP3D_sigD0wrtPVofTracks.size(); i++){
+	  float d0Sig=jet->IP3D_sigD0wrtPVofTracks[i];
+	  float d0Val=jet->IP3D_valD0wrtPVofTracks[i];
+	  float d0Err=d0Val/d0Sig;
+	  m_IP3D_errD0wrtPVofTracks->Fill  (d0Err, eventWeight);
+	  m_IP3D_sigD0wrtPVofTracks->Fill  (d0Sig, eventWeight);
+	  m_IP3D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+	  m_IP3D_valD0wrtPVofTracks->Fill  (d0Val, eventWeight);
       }
       
-      for(float z0 : jet->IP3D_valZ0wrtPVofTracks)    m_IP3D_valZ0wrtPVofTracks->Fill(z0, eventWeight);
-      
-      for(float z0Sig : jet->IP3D_sigZ0wrtPVofTracks){
-	m_IP3D_sigZ0wrtPVofTracks  ->Fill(z0Sig, eventWeight);
-	m_IP3D_sigZ0wrtPVofTracks_l->Fill(z0Sig, eventWeight);
+      for(unsigned int i=0; i<jet->IP3D_sigZ0wrtPVofTracks.size(); i++){
+	  float z0Sig=jet->IP3D_sigZ0wrtPVofTracks[i];
+	  float z0Val=jet->IP3D_valZ0wrtPVofTracks[i];
+	  float z0Err=z0Val/z0Sig;
+	  m_IP3D_errZ0wrtPVofTracks->Fill  (z0Err, eventWeight);
+	  m_IP3D_sigZ0wrtPVofTracks->Fill  (z0Sig, eventWeight);
+	  m_IP3D_sigZ0wrtPVofTracks_l->Fill(z0Sig, eventWeight);
+	  m_IP3D_valZ0wrtPVofTracks->Fill  (z0Val, eventWeight);
       }
 
       for(float weightB : jet->IP3D_weightBofTracks)  m_IP3D_weightBofTracks->Fill(weightB, eventWeight);
@@ -1726,8 +1863,29 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     }
 
 
+  
+  if(m_infoSwitch->m_byAverageMu)
+    {
+      
+      float avg_mu=-99;      
+      avg_mu = eventInfo->m_averageMu;
+      m_avgMu->Fill(avg_mu, eventWeight);
+      if(avg_mu <  15.0)                  m_jetPt_avgMu_00_15 -> Fill(jet->p4.Pt(), eventWeight);
+      if(avg_mu >= 15.0 && avg_mu < 25.0) m_jetPt_avgMu_15_25 -> Fill(jet->p4.Pt(), eventWeight);
+      if(avg_mu >= 25.0)                  m_jetPt_avgMu_25    -> Fill(jet->p4.Pt(), eventWeight);
+      m_avgMu_vs_jetPt->Fill(jet->p4.Pt(), avg_mu, eventWeight);
+    
+    }
+  
+  if(m_infoSwitch->m_etaPhiMap)
+    {
+      m_etaPhi->Fill(jet->p4.Eta(), jet->p4.Phi(), eventWeight);
+      
+    }
+
 
   return StatusCode::SUCCESS;
+
 }
 
 

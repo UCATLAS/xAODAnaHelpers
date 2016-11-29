@@ -71,8 +71,14 @@ namespace xAH {
       float MV2c100;
       float MV2;
       int  HadronConeExclTruthLabelID;
-    
+
+      float vtxOnlineValid;
       float vtxHadDummy;
+      
+      float bs_online_vx;
+      float bs_online_vy;
+      float bs_online_vz;
+
       float vtx_offline_x0;
       float vtx_offline_y0;
       float vtx_offline_z0;

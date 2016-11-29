@@ -397,6 +397,8 @@ namespace HelperClasses {
         m_hltVtxComp     hltVtxComp     exact
         m_charge         charge         exact
         m_vsLumiBlock    vsLumiBlock    exact
+        m_byAverageMu    byAverageMu    exact
+        m_etaPhiMap      etaPhiMap      exact
         ================ ============== =======
 
         .. note::
@@ -439,7 +441,9 @@ namespace HelperClasses {
     bool m_trackJets;
     bool m_hltVtxComp;
     bool m_charge;
+    bool m_etaPhiMap;
     bool m_vsLumiBlock;
+    bool m_byAverageMu;
     bool m_area;
     bool m_JVC;
     std::string      m_trackName;
