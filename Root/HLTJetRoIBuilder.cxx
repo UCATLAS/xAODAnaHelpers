@@ -1,3 +1,4 @@
+
 /******************************************
  *
  * This class builds HLT jets and thier associated objects
@@ -165,7 +166,12 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration_bkg    ("HLTBJetTracks_vtx_bkg");
   static xAOD::Jet::Decorator<char >                               m_vtx_hadDummyPV        ("hadDummyPV");
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_offline_vtx_decoration("offline_vtx");
+  
+  static xAOD::Jet::Decorator<float >                              m_bs_online_vz       ("bs_online_vz");
+  static xAOD::Jet::Decorator<float >                              m_bs_online_vy       ("bs_online_vy");
+  static xAOD::Jet::Decorator<float >                              m_bs_online_vx       ("bs_online_vx");
 
+  
   //
   // get primary vertex
   //
@@ -190,6 +196,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     //std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  ftfCollections  = comb->containerFeature<xAOD::TrackParticleContainer>("InDetTrigTrackingxAODCnv_Bjet_FTF");
     std::vector<Trig::Feature<xAOD::VertexContainer> > vtxCollections;
     std::vector<Trig::Feature<xAOD::VertexContainer> > backupVtxCollections = comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx");
+
     if(m_vtxName.size()){
       vtxCollections = comb->containerFeature<xAOD::VertexContainer>(m_vtxName);
     }else{
@@ -274,6 +281,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //
       vector<const xAOD::TrackParticle*> matchedTracks;
       if(m_debug)cout << "Trk Size" << hlt_tracks->size() << endl;
+
       
       for(const xAOD::TrackParticle* thisHLTTrk: *hlt_tracks){
       	if(m_debug) cout <<  "\tAdding  track "
@@ -282,6 +290,31 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       			 << thisHLTTrk->phi()  << endl;
       	matchedTracks.push_back(thisHLTTrk);
       }
+
+      //
+      // Adding online beamspot information from online track
+      //
+
+
+      float var_bs_online_vx=999;
+      float var_bs_online_vy=999;
+      float var_bs_online_vz=999;
+      
+      if(hlt_tracks->size()){
+	var_bs_online_vx=hlt_tracks->at(0)->vx();
+	var_bs_online_vy=hlt_tracks->at(0)->vy();
+	var_bs_online_vz=hlt_tracks->at(0)->vz();
+      }
+     	
+      if(m_debug){
+	cout << "bs_online_vx  " << var_bs_online_vx
+	     << "bs_online_vy  " << var_bs_online_vy
+	     << "bs_online_vz  " << var_bs_online_vz << endl;
+      }
+
+      m_bs_online_vx (*newHLTBJet) = var_bs_online_vx;
+      m_bs_online_vy (*newHLTBJet) = var_bs_online_vy;
+      m_bs_online_vz (*newHLTBJet) = var_bs_online_vz;
       
       if(m_debug) cout <<  "Adding tracks to jet " << endl;
       m_track_decoration(*newHLTBJet)         = matchedTracks;
@@ -289,11 +322,21 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //
       // Check for dummy verticies
       //
+      // hadDummyPV => class with three option
+      //               0 - IDTrig  Found Vertex
+      //               1 - EFHisto Found Vertex
+      //               2 - No Vertex found
+
+      if(m_debug){
+	cout << "Doing it for:        " << m_trigItem << endl;
+	cout << "Check for m_jetName: " << m_jetName << endl;
+	cout << "Check for m_vtxName: " << m_vtxName << endl;
+      }
+      
       if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr())){
-	m_vtx_hadDummyPV  (*newHLTBJet)         = '1';
 
 	if(m_debug){
-	  cout << "HAVE  No Online Vtx!!! " << endl;
+	  cout << "HAVE  No Online Vtx!!! m_vtxName is  " << m_vtxName << endl;
 	  for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ){
 	    cout << vtx_itr->vertexType() <<endl;
 	  }
@@ -304,15 +347,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	//
 	if(backupVtxCollections.size()){
 	  if(m_debug) cout << "Have EFHistoPrmVtx.  " << endl;
+	  m_vtx_hadDummyPV  (*newHLTBJet)         = '1';
 	  const xAOD::Vertex *backup_pvx = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr());
 	  if(m_debug) cout << "backup_pvx.  " << backup_pvx << endl;
 	  m_vtx_decoration  (*newHLTBJet)         = backup_pvx;	    
 	  m_vtx_decoration_bkg(*newHLTBJet)       = backup_pvx;	    
 	}else{
 	  cout << "No EFHistoPrmVtx....  " << endl;
+	  m_vtx_hadDummyPV  (*newHLTBJet)         = '2';
 	  m_vtx_decoration  (*newHLTBJet)         = 0;	    
 	  m_vtx_decoration_bkg(*newHLTBJet)       = 0;
 	}
+
+	//cout << "hadDummy and vtxType " << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName << endl;
 
       }else{
 
@@ -329,6 +376,13 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
       m_offline_vtx_decoration (*newHLTBJet)  = offline_pvx;
 
+      if(m_debug) cout << "hadDummy and vtxType" << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName << endl;
+
+      //if(m_vtx_hadDummyPV (*newHLTBJet) != '0' ){
+      //   cout << "hadDummy and vtxType and m_outContainerName  " << m_vtx_hadDummyPV (*newHLTBJet) << " "
+      //	<< m_vtxName << ' '<< m_outContainerName <<endl;
+      //}
+      
       hltJets->push_back( newHLTBJet );
       if(m_debug) cout << "pushed back " << endl;
 

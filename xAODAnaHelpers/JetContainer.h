@@ -236,6 +236,12 @@ namespace xAH {
 
       std::vector<float> *m_vtxOnlineValid;
       std::vector<float> *m_vtxHadDummy;
+
+      
+      std::vector<float> *m_bs_online_vx;
+      std::vector<float> *m_bs_online_vy;
+      std::vector<float> *m_bs_online_vz;
+      
        
       std::vector<float> *m_vtx_offline_x0;
       std::vector<float> *m_vtx_offline_y0;

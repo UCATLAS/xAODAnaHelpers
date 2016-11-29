@@ -1,3 +1,4 @@
+
 #ifndef xAODAnaHelpers_JetHists_H
 #define xAODAnaHelpers_JetHists_H
 
@@ -155,7 +156,8 @@ class JetHists : public IParticleHists
     //TH1F* m_MV2;
     //TH2F* m_IP3DvsMV2c20;
 
-
+    
+    
     TProfile* m_vtxHadDummy_vs_lBlock; //!
     TProfile* m_vtxEff10_vs_lBlock; //!
     TProfile* m_vtxEff1_vs_lBlock; //!
@@ -163,8 +165,6 @@ class JetHists : public IParticleHists
     TProfile* m_vtxEff1_raw_vs_lBlock; //!
     TProfile* m_vtxEff10_noDummy_vs_lBlock; //!
     TProfile* m_vtxEff1_noDummy_vs_lBlock; //!
-    /** @brief Histograms to check beamspot offline vs. online 
-     *  @note MV2c20 b-tagging values may be incorrect and should not be relied on */
     TProfile* m_frac_MV2c2040_vs_lBlock; //!
     TProfile* m_frac_MV2c2050_vs_lBlock; //!
     TProfile* m_frac_MV2c2060_vs_lBlock; //!
@@ -229,6 +229,7 @@ class JetHists : public IParticleHists
     TH1F* m_IP2D_valD0wrtPVofTracks  ; //!
     TH1F* m_IP2D_sigD0wrtPVofTracks  ; //!
     TH1F* m_IP2D_sigD0wrtPVofTracks_l; //!
+    TH1F* m_IP2D_errD0wrtPVofTracks  ; //!
     TH1F* m_IP2D_weightBofTracks     ; //!
     TH1F* m_IP2D_weightCofTracks     ; //!
     TH1F* m_IP2D_weightUofTracks     ; //!
@@ -245,9 +246,11 @@ class JetHists : public IParticleHists
     TH1F* m_IP3D_valD0wrtPVofTracks  ; //!
     TH1F* m_IP3D_sigD0wrtPVofTracks  ; //!
     TH1F* m_IP3D_sigD0wrtPVofTracks_l; //!
+    TH1F* m_IP3D_errD0wrtPVofTracks  ; //!
     TH1F* m_IP3D_valZ0wrtPVofTracks  ; //!
     TH1F* m_IP3D_sigZ0wrtPVofTracks  ; //!
     TH1F* m_IP3D_sigZ0wrtPVofTracks_l; //!
+    TH1F* m_IP3D_errZ0wrtPVofTracks  ; //!
     TH1F* m_IP3D_weightBofTracks     ; //!
     TH1F* m_IP3D_weightCofTracks     ; //!
     TH1F* m_IP3D_weightUofTracks     ; //!
@@ -276,13 +279,17 @@ class JetHists : public IParticleHists
     TracksInJetHists* m_tracksInJet; //!
 
     // HLT Vertex Comp
+    TH1F*     m_vtx_offline_x0; //!
+    TH1F*     m_vtx_offline_y0; //!
+    TH1F*     m_vtx_offline_z0; //!
+    TH1F*     m_vtx_offline_z0_s; //!
     TH1F*     m_vtx_online_x0; //!
     TH1F*     m_vtx_online_y0; //!
     TH1F*     m_vtx_online_z0; //!
+    TH1F*     m_vtx_online_z0_s; //!
     TH1F*     m_vtx_online_x0_raw; //!
     TH1F*     m_vtx_online_y0_raw; //!
     TH1F*     m_vtx_online_z0_raw; //!
-
 
     TH1F* m_vtxOnlineValid; //!
     TH1F* m_vtxOfflineValid; //!
@@ -296,12 +303,18 @@ class JetHists : public IParticleHists
     TH1F* m_vtxDiffy0; //!
     TH1F* m_vtxDiffy0_l; //!
 
+    TH1F* m_bs_online_vx; //!
+    TH1F* m_bs_online_vy; //!
+    TH1F* m_bs_online_vz; //!
 
     TH1F* m_vtxHadDummy; //!
     TProfile*   m_vtxDiffx0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffy0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffz0_vs_lBlock    ; //!
 
+    TProfile*   m_vtx_online_x0_vs_vtx_online_z0;
+    TProfile*   m_vtx_online_y0_vs_vtx_online_z0;
+    
     // trackPV
     //TH1F* m_NumTrkPt1000PV;
     //TH1F* m_SumPtTrkPt1000PV;
@@ -319,6 +332,24 @@ class JetHists : public IParticleHists
 
     // charge
     //TH1F *m_charge;
+
+    TH1F* m_avgMu;
+    TH1F* m_jetPt_avgMu_00_15;
+    TH1F* m_jetPt_avgMu_15_25;
+    TH1F* m_jetPt_avgMu_25;
+    TH2F* m_avgMu_vs_jetPt;
+    
+    // Eta-phi map
+    TH2F* m_etaPhi;
+
+    // Some other 2D plots
+    TH2F* m_vtxDiffz0_vs_vtx_offline_z0;
+    TH2F* m_vtxDiffz0_s_vs_vtx_offline_z0;
+    TH2F* m_vtxDiffz0_s_vs_vtxDiffx0;
+    TH2F* m_vtxDiffz0_s_vs_vtxDiffy0;
+
+    // TProfile in prep for showing it is flat
+    TProfile*  m_vtxHadDummy_vs_jetPt;
 
 
 };

@@ -259,6 +259,8 @@ namespace HelperClasses{
 
     m_hltVtxComp          = has_exact("hltVtxComp");
     m_charge              = has_exact("charge");
+    m_etaPhiMap           = has_exact("etaPhiMap");
+    m_byAverageMu         = has_exact("byAverageMu");
     m_vsLumiBlock         = has_exact("vsLumiBlock");
 
     m_sfFTagFix.clear();
