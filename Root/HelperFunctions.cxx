@@ -312,7 +312,7 @@ TLorentzVector HelperFunctions::jetTrimming(
 
 }
 
-const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContainer* vertexContainer)
+const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContainer* vertexContainer, bool quiet)
 {
   // vertex types are listed on L328 of
   // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODTracking/trunk/xAODTracking/TrackingPrimitives.h
@@ -321,7 +321,9 @@ const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContaine
     if(vtx_itr->vertexType() != xAOD::VxType::VertexType::PriVtx) { continue; }
     return vtx_itr;
   }
-  Warning("HelperFunctions::getPrimaryVertex()","No primary vertex was found! Returning nullptr");
+
+  if(!quiet)
+    Warning("HelperFunctions::getPrimaryVertex()","No primary vertex was found! Returning nullptr");
 
   return 0;
 }

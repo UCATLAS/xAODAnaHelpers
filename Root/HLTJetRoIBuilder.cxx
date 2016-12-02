@@ -46,6 +46,7 @@ ClassImp(HLTJetRoIBuilder)
 HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   Algorithm(className),
   m_trigItem(""),
+  m_trigItemVeto(""),
   m_doHLTBJet(true),
   m_doHLTJet (false),
   m_outContainerName(""),
@@ -126,6 +127,13 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
     m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";
   }
 
+  cout << "HLTJetRoIBuilder::Configured " << m_name << " with " << endl;
+  cout << "m_trigItem: " << m_trigItem << endl;
+  cout << "m_trigItemVeto: " << m_trigItemVeto << endl;
+  cout << "m_trkName: " << m_trkName << endl;
+  cout << "m_vtxName: " << m_vtxName << endl;
+  cout << "m_jetName: " << m_jetName << endl;
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -151,6 +159,36 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 
 EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 {
+  auto triggerChainGroup = m_trigDecTool->getChainGroup(m_trigItem);
+  
+  std::vector<std::string> triggersUsed = triggerChainGroup->getListOfTriggers();
+  std::vector<std::string> triggersAfterVeto;
+  for(std::string trig : triggersUsed){
+    if((m_trigItemVeto != "") && (trig.find(m_trigItemVeto) != std::string::npos)){
+      continue;
+    }
+    triggersAfterVeto.push_back(trig);
+  }
+
+  std::string m_trigItemAfterVeto = "";
+  bool firstItem = true;
+  for(std::string trig : triggersAfterVeto){
+    if(firstItem) m_trigItemAfterVeto += trig;
+    else          m_trigItemAfterVeto += "||"+trig;
+    firstItem = false;
+  }
+
+  if(m_debug){
+    cout << m_name << " " << m_trigItem << " matches" << endl;
+    cout << m_trigItemAfterVeto << endl;
+    auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
+    std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
+    for(std::string trig : triggersUsedAfterVeto){
+      cout << " \t " << trig << endl;
+    }
+  }
+
+
   //
   // Create the new container and its auxiliary store.
   //
@@ -185,9 +223,10 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //
   static SG::AuxElement::Decorator< const xAOD::BTagging* > hltBTagDecor( "HLTBTag" );
 
-  Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItem, TrigDefs::Physics );
+  Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItemAfterVeto, TrigDefs::Physics );
   Trig::FeatureContainer::combination_const_iterator comb   (fc.getCombinations().begin());
   Trig::FeatureContainer::combination_const_iterator combEnd(fc.getCombinations().end());
+  if(m_debug) cout << m_name << " New Event --------------- " << endl;
 
   for( ; comb!=combEnd ; ++comb) {
     std::vector< Trig::Feature<xAOD::JetContainer> >            jetCollections  = comb->containerFeature<xAOD::JetContainer>(m_jetName);
@@ -257,10 +296,17 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     if(!isValid) continue;
 
     //cout << " is Valid " << jetCollections.size() << " " << vtxCollections.size() << endl;
-
     for ( unsigned ifeat=0 ; ifeat<jetCollections.size() ; ifeat++ ) {
       const xAOD::Jet* hlt_jet = getTrigObject<xAOD::Jet, xAOD::JetContainer>(jetCollections.at(ifeat));
       if(!hlt_jet) continue;
+
+      bool passOverlap = true;
+      for( const xAOD::Jet* previousJet : *hltJets){
+	if(previousJet->p4().DeltaR(hlt_jet->p4()) < 0.4) passOverlap = false;
+      }
+
+      if(!passOverlap) continue;
+      if(m_debug) cout << "New Jet: pt: " << hlt_jet->pt() << " eta: " << hlt_jet->eta() << " phi: " << hlt_jet->phi() << endl;
 
       const xAOD::BTagging* hlt_btag = getTrigObject<xAOD::BTagging, xAOD::BTaggingContainer>(bjetCollections.at(ifeat));
       if(!hlt_btag) continue;
@@ -333,7 +379,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	cout << "Check for m_vtxName: " << m_vtxName << endl;
       }
       
-      if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr())){
+      if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), true)){
 
 	if(m_debug){
 	  cout << "HAVE  No Online Vtx!!! m_vtxName is  " << m_vtxName << endl;

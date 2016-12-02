@@ -29,6 +29,7 @@ public:
     @brief name of trigger chain to load
    */
   std::string m_trigItem;
+  std::string m_trigItemVeto;
 
   /**
     @brief Do we load a full BJet trigger chain?
