@@ -55,6 +55,9 @@ class IParticleHists : public HistogramManager
     TH1F* m_Px;                  //!
     TH1F* m_Py;                  //!
     TH1F* m_Pz;                  //!
+    TH1F* m_Et;                  //!
+    TH1F* m_Et_m;                //!
+    TH1F* m_Et_s;                //!
 
     //NLeadingParticles
     std::vector< TH1F* > m_NPt_l;       //!
@@ -66,7 +69,11 @@ class IParticleHists : public HistogramManager
     std::vector< TH1F* > m_NM;        //!
     std::vector< TH1F* > m_NE;        //!
     std::vector< TH1F* > m_NRapidity; //!
-
+    
+    // kinematic
+    std::vector< TH1F* > m_NEt;       //!
+    std::vector< TH1F* > m_NEt_m;       //!
+    std::vector< TH1F* > m_NEt_s;       //!
 };
 
 
@@ -92,6 +99,13 @@ StatusCode IParticleHists::execute( const xAH::ParticleContainer<T_PARTICLE, T_I
       m_NM.at(iParticle)->         Fill( partP4.M(),    eventWeight);
       m_NE.at(iParticle)->         Fill( partP4.E(),    eventWeight);
       m_NRapidity.at(iParticle)->  Fill( partP4.Rapidity(), eventWeight);
+      
+      if(m_infoSwitch->m_kinematic){
+	m_NEt  .at(iParticle)->        Fill( partP4.Et(),   eventWeight);
+	m_NEt_m.at(iParticle)->        Fill( partP4.Et(),   eventWeight);
+	m_NEt_s.at(iParticle)->        Fill( partP4.Et(),   eventWeight);
+      }
+
     }
   }
 
