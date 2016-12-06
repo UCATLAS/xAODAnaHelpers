@@ -158,7 +158,7 @@ class JetHists : public IParticleHists
 
     
     
-    TProfile* m_vtxHadDummy_vs_lBlock; //!
+    TProfile* m_vtxClass_vs_lBlock; //!
     TProfile* m_vtxEff10_vs_lBlock; //!
     TProfile* m_vtxEff1_vs_lBlock; //!
     TProfile* m_vtxEff10_raw_vs_lBlock; //!
@@ -306,8 +306,9 @@ class JetHists : public IParticleHists
     TH1F* m_bs_online_vx; //!
     TH1F* m_bs_online_vy; //!
     TH1F* m_bs_online_vz; //!
+    TH1F* m_bs_online_vz_l; //!
 
-    TH1F* m_vtxHadDummy; //!
+    TH1F* m_vtxClass; //!
     TProfile*   m_vtxDiffx0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffy0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffz0_vs_lBlock    ; //!
@@ -349,7 +350,7 @@ class JetHists : public IParticleHists
     TH2F* m_vtxDiffz0_s_vs_vtxDiffy0;
 
     // TProfile in prep for showing it is flat
-    TProfile*  m_vtxHadDummy_vs_jetPt;
+    TH2F*  m_vtxClass_vs_jetPt;
 
 
 };
