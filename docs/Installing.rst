@@ -1,10 +1,11 @@
 Installing
 ==========
 
-::
+.. parsed-literal::
 
     setupATLAS
-    rcSetup Base,X.Y.Z
+    rcSetup Base,\ |analysis_base_release|\
+
     git clone https://github.com/UCATLAS/xAODAnaHelpers
 
 or for a specific tag
