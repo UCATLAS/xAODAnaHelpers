@@ -42,6 +42,12 @@ public:
   bool        m_doHLTJet;
 
   /**
+    @brief Do we read in the HLT tracks?
+   */
+  bool        m_readHLTTracks;
+
+
+  /**
     @brief Name of the output container
    */
   std::string m_outContainerName;
