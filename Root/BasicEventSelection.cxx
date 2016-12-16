@@ -62,8 +62,8 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   m_debug = false;
   m_truthLevelOnly = false;
 
-  // derivation name
-  m_overrideDerivationName = "";
+  // override derivation name
+  m_derivationName = "";
 
   // Metadata
   m_useMetaData = true;
@@ -261,8 +261,8 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
       if ( m_isDerivation ) { 
-	if(m_overrideDerivationName != ""){
-	  Info("fileExecute()","Override auto config to look at DAOD made by Derivation Algorithm: %s", m_overrideDerivationName.c_str()); 
+	if(m_derivationName != ""){
+	  Info("fileExecute()","Override auto config to look at DAOD made by Derivation Algorithm: %s", m_derivationName.c_str()); 
 	}else{
 	  Info("fileExecute()","Will autoconfig to look at DAOD made by Derivation Algorithm."); 
 	}
@@ -277,9 +277,9 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 	  }
 	  if ( m_isDerivation ) {
 
-	    if(m_overrideDerivationName != ""){
+	    if(m_derivationName != ""){
 
-	      if ( cbk->name() == m_overrideDerivationName ) {
+	      if ( cbk->name() == m_derivationName ) {
 		DxAODEventsCBK = cbk;
 	      } 
 	      
