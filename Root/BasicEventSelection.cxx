@@ -63,7 +63,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   m_truthLevelOnly = false;
 
   // derivation name
-  m_derivationName = "";
+  m_overrideDerivationName = "";
 
   // Metadata
   m_useMetaData = true;
@@ -260,7 +260,13 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeper* allEventsCBK(nullptr);
       const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
-      if ( m_isDerivation ) { Info("fileExecute()","Looking at DAOD made by Derivation Algorithm: %s", m_derivationName.c_str()); }
+      if ( m_isDerivation ) { 
+	if(m_overrideDerivationName != ""){
+	  Info("fileExecute()","Override auto config to look at DAOD made by Derivation Algorithm: %s", m_overrideDerivationName.c_str()); 
+	}else{
+	  Info("fileExecute()","Will autoconfig to look at DAOD made by Derivation Algorithm."); 
+	}
+      }
 
       int maxCycle(-1);
       for ( const auto& cbk: *completeCBC ) {
@@ -270,10 +276,19 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 	      maxCycle = cbk->cycle();
 	  }
 	  if ( m_isDerivation ) {
-	      if ( cbk->name() == m_derivationName ) {
-		  DxAODEventsCBK = cbk;
-	      }
-	  }
+
+	    if(m_overrideDerivationName != ""){
+
+	      if ( cbk->name() == m_overrideDerivationName ) {
+		DxAODEventsCBK = cbk;
+	      } 
+	      
+	    } else if( cbk->name().find("Kernel") != std::string::npos ){
+	      Info("fileExecute()","Auto config found DAOD made by Derivation Algorithm: %s", cbk->name().c_str()); 
+	      DxAODEventsCBK = cbk;
+	    }
+
+	  } // is derivation
       }
 
       m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();

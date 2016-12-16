@@ -86,7 +86,7 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_storeTrigKeys;
 
     // Metadata
-    std::string m_derivationName;
+    std::string m_overrideDerivationName;
     bool m_useMetaData;
 
     /* Output Stream Names */
