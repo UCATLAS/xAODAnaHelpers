@@ -165,6 +165,10 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   std::vector<std::string> triggersUsed = triggerChainGroup->getListOfTriggers();
   std::vector<std::string> triggersAfterVeto;
   for(std::string trig : triggersUsed){
+    if(trig.find("antimatchdr") != std::string::npos){
+      continue;
+    }
+
     if((m_trigItemVeto != "") && (trig.find(m_trigItemVeto) != std::string::npos)){
       continue;
     }
@@ -269,6 +273,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     if(jetCollections.size() != bjetCollections.size()){
       cout << "ERROR Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " bjets: "<< bjetCollections.size() << endl;
       isValid = false;
+
+      if(m_debug){
+	auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
+	std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
+	cout << "Passed Triggers " << endl;
+	for(std::string trig : triggersUsedAfterVeto){
+	  auto trigChain = m_trigDecTool->getChainGroup(trig);
+	  if(trigChain->isPassed())
+	    cout << " \t " << trig << endl;
+	}
+      }
+
+
     }
 
     if(m_readHLTTracks && jetCollections.size() != trkCollections.size()){
