@@ -1073,7 +1073,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP =  "LH"+it;
   
         bool passThisID(false);
-        static SG::AuxElement::ConstAccessor< char > LHDecisionAll( "DFCommonElectrons" + decorWP );
+        SG::AuxElement::ConstAccessor< char > LHDecisionAll( "DFCommonElectrons" + decorWP );
         if( LHDecisionAll.isAvailable( *electron ) )
             passThisID = LHDecisionAll( *electron );
   
@@ -1142,7 +1142,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP = "IsEM"+it;
   
         bool passThisID(false);
-        static SG::AuxElement::ConstAccessor< char > CutDecisionAll( "DFCommonElectrons" + decorWP );
+        SG::AuxElement::ConstAccessor< char > CutDecisionAll( "DFCommonElectrons" + decorWP );
         if( CutDecisionAll.isAvailable( *electron ) )
             passThisID = CutDecisionAll( *electron );
   
