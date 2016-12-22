@@ -421,6 +421,7 @@ void HelpTreeBase::AddJets(const std::string detailStr, const std::string jetNam
   if(m_debug) Info("AddJets()", "Adding jet %s with variables: %s", jetName.c_str(), detailStr.c_str());
 
   m_jets[jetName] = new xAH::JetContainer(jetName, detailStr, m_units, m_isMC);
+  m_jets[jetName]->m_debug = m_debug;
 
   xAH::JetContainer* thisJet = m_jets[jetName];
   thisJet->setBranches(m_tree);

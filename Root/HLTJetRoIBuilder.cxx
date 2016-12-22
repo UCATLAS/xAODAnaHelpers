@@ -49,6 +49,7 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   m_trigItemVeto(""),
   m_doHLTBJet(true),
   m_doHLTJet (false),
+  m_readHLTTracks(true),
   m_outContainerName(""),
   m_trigDecTool(nullptr),
   m_jetName("EFJet"),
@@ -164,6 +165,10 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   std::vector<std::string> triggersUsed = triggerChainGroup->getListOfTriggers();
   std::vector<std::string> triggersAfterVeto;
   for(std::string trig : triggersUsed){
+    if(trig.find("antimatchdr") != std::string::npos){
+      continue;
+    }
+
     if((m_trigItemVeto != "") && (trig.find(m_trigItemVeto) != std::string::npos)){
       continue;
     }
@@ -231,7 +236,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   for( ; comb!=combEnd ; ++comb) {
     std::vector< Trig::Feature<xAOD::JetContainer> >            jetCollections  = comb->containerFeature<xAOD::JetContainer>(m_jetName);
     std::vector< Trig::Feature<xAOD::BTaggingContainer> >       bjetCollections = comb->containerFeature<xAOD::BTaggingContainer>("HLTBjetFex");
-    std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  trkCollections  = comb->containerFeature<xAOD::TrackParticleContainer>(m_trkName);
+    std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  trkCollections;
+    if(m_readHLTTracks) trkCollections = comb->containerFeature<xAOD::TrackParticleContainer>(m_trkName);
     //std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  ftfCollections  = comb->containerFeature<xAOD::TrackParticleContainer>("InDetTrigTrackingxAODCnv_Bjet_FTF");
     std::vector<Trig::Feature<xAOD::VertexContainer> > vtxCollections;
     std::vector<Trig::Feature<xAOD::VertexContainer> > backupVtxCollections = comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx");
@@ -267,9 +273,22 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     if(jetCollections.size() != bjetCollections.size()){
       cout << "ERROR Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " bjets: "<< bjetCollections.size() << endl;
       isValid = false;
+
+      if(m_debug){
+	auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
+	std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
+	cout << "Passed Triggers " << endl;
+	for(std::string trig : triggersUsedAfterVeto){
+	  auto trigChain = m_trigDecTool->getChainGroup(trig);
+	  if(trigChain->isPassed())
+	    cout << " \t " << trig << endl;
+	}
+      }
+
+
     }
 
-    if(jetCollections.size() != trkCollections.size()){
+    if(m_readHLTTracks && jetCollections.size() != trkCollections.size()){
       cout << "ERROR Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " trks: "<< trkCollections.size() << endl;
       cout << " Jet Collection " << m_jetName << " Trk Collection:  " << m_trkName << endl;
       isValid = false;
@@ -311,8 +330,11 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       const xAOD::BTagging* hlt_btag = getTrigObject<xAOD::BTagging, xAOD::BTaggingContainer>(bjetCollections.at(ifeat));
       if(!hlt_btag) continue;
 
-      const xAOD::TrackParticleContainer* hlt_tracks = trkCollections.at(ifeat).cptr();
-      if(!hlt_tracks) continue;
+      const xAOD::TrackParticleContainer* hlt_tracks(nullptr);
+      if(m_readHLTTracks){
+	hlt_tracks = trkCollections.at(ifeat).cptr();
+	if(!hlt_tracks) continue;
+      }
 
       xAOD::Jet* newHLTBJet = new xAOD::Jet();
       newHLTBJet->makePrivateStore( hlt_jet );
@@ -325,53 +347,54 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //
       // Add Tracks to BJet
       //
-      vector<const xAOD::TrackParticle*> matchedTracks;
-      if(m_debug)cout << "Trk Size" << hlt_tracks->size() << endl;
+      if(m_readHLTTracks){
 
+	vector<const xAOD::TrackParticle*> matchedTracks;
+	if(m_debug)cout << "Trk Size" << hlt_tracks->size() << endl;
       
-      for(const xAOD::TrackParticle* thisHLTTrk: *hlt_tracks){
-      	if(m_debug) cout <<  "\tAdding  track "
-      			 << thisHLTTrk->pt()   << " "
-      			 << thisHLTTrk->eta()  << " "
-      			 << thisHLTTrk->phi()  << endl;
-      	matchedTracks.push_back(thisHLTTrk);
-      }
+	for(const xAOD::TrackParticle* thisHLTTrk: *hlt_tracks){
+	  if(m_debug) cout <<  "\tAdding  track "
+			   << thisHLTTrk->pt()   << " "
+			   << thisHLTTrk->eta()  << " "
+			   << thisHLTTrk->phi()  << endl;
+	  matchedTracks.push_back(thisHLTTrk);
+	}
 
-      //
-      // Adding online beamspot information from online track
-      //
+	//
+	// Adding online beamspot information from online track
+	//
 
-
-      float var_bs_online_vx=999;
-      float var_bs_online_vy=999;
-      float var_bs_online_vz=999;
+	float var_bs_online_vx=999;
+	float var_bs_online_vy=999;
+	float var_bs_online_vz=999;
       
-      if(hlt_tracks->size()){
-	var_bs_online_vx=hlt_tracks->at(0)->vx();
-	var_bs_online_vy=hlt_tracks->at(0)->vy();
-	var_bs_online_vz=hlt_tracks->at(0)->vz();
-      }
+	if(hlt_tracks->size()){
+	  var_bs_online_vx=hlt_tracks->at(0)->vx();
+	  var_bs_online_vy=hlt_tracks->at(0)->vy();
+	  var_bs_online_vz=hlt_tracks->at(0)->vz();
+	}
      	
-      if(m_debug){
-	cout << "bs_online_vx  " << var_bs_online_vx
-	     << "bs_online_vy  " << var_bs_online_vy
-	     << "bs_online_vz  " << var_bs_online_vz << endl;
-      }
+	if(m_debug){
+	  cout << "bs_online_vx  " << var_bs_online_vx
+	       << "bs_online_vy  " << var_bs_online_vy
+	       << "bs_online_vz  " << var_bs_online_vz << endl;
+	}
 
-      m_bs_online_vx (*newHLTBJet) = var_bs_online_vx;
-      m_bs_online_vy (*newHLTBJet) = var_bs_online_vy;
-      m_bs_online_vz (*newHLTBJet) = var_bs_online_vz;
+	m_bs_online_vx (*newHLTBJet) = var_bs_online_vx;
+	m_bs_online_vy (*newHLTBJet) = var_bs_online_vy;
+	m_bs_online_vz (*newHLTBJet) = var_bs_online_vz;
       
-      if(m_debug) cout <<  "Adding tracks to jet " << endl;
-      m_track_decoration(*newHLTBJet)         = matchedTracks;
+	if(m_debug) cout <<  "Adding tracks to jet " << endl;
+	m_track_decoration(*newHLTBJet)         = matchedTracks;
 
-      //
-      // Check for dummy verticies
-      //
-      // hadDummyPV => class with three option
-      //               0 - IDTrig  Found Vertex
-      //               1 - EFHisto Found Vertex
-      //               2 - No Vertex found
+	//
+	// Check for dummy verticies
+	//
+	// hadDummyPV => class with three option
+	//               0 - IDTrig  Found Vertex
+	//               1 - EFHisto Found Vertex
+	//               2 - No Vertex found
+      }
 
       if(m_debug){
 	cout << "Doing it for:        " << m_trigItem << endl;

@@ -1838,6 +1838,7 @@ void JetContainer::FillJet( const xAOD::Jet* jet, const xAOD::Vertex* pv, int pv
 }
 
 void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex* pv, int pvLocation ){
+  if(m_debug) cout << "In JetContainer::FillJet " << endl;
 
   ParticleContainer::FillParticle(particle);
 
@@ -2304,6 +2305,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     if(m_infoSwitch.m_svDetails ) {
+      if(m_debug) cout << "Filling m_svDetails " << endl;
 
       /// @brief SV0 : Number of good tracks in vertex
       static SG::AuxElement::ConstAccessor< int   >   sv0_NGTinSvxAcc     ("SV0_NGTinSvx");
@@ -2377,6 +2379,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     if(m_infoSwitch.m_ipDetails ) {
+      if(m_debug) cout << "Filling m_ipDetails " << endl;
 
       //
       // IP2D
@@ -2482,7 +2485,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
 
     if(m_infoSwitch.m_flavTagHLT ) {
-
+      if(m_debug) cout << "Filling m_flavTagHLT " << endl;
       const xAOD::Vertex *online_pvx       = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
       const xAOD::Vertex *online_pvx_bkg   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx_bkg");
       const xAOD::Vertex *offline_pvx      = jet->auxdata<const xAOD::Vertex*>("offline_vtx");      
@@ -2495,23 +2498,35 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       if( hadDummyPV == '1')  m_vtxHadDummy->push_back(1.0);
       if( hadDummyPV == '2')  m_vtxHadDummy->push_back(2.0);
 
-      float bs_online_vz = jet->auxdata< float >("bs_online_vz");
-      //std::cout << "**bs_online_vz " << bs_online_vz << std::endl;
-      m_bs_online_vz->push_back( bs_online_vz );
+      static SG::AuxElement::ConstAccessor< float > acc_bs_online_vs ("bs_online_vz");
+      if(acc_bs_online_vs.isAvailable( *jet) ){
+	if(m_debug) cout << "Have bs_online_vz " << endl;
+	float bs_online_vz = jet->auxdata< float >("bs_online_vz");
+	//std::cout << "**bs_online_vz " << bs_online_vz << std::endl;
+	m_bs_online_vz->push_back( bs_online_vz );
 
-      float bs_online_vx = jet->auxdata< float >("bs_online_vx");
-      //std::cout << "**bs_online_vx " << bs_online_vx << std::endl;
-      m_bs_online_vx->push_back( bs_online_vx );
+	float bs_online_vx = jet->auxdata< float >("bs_online_vx");
+	//std::cout << "**bs_online_vx " << bs_online_vx << std::endl;
+	m_bs_online_vx->push_back( bs_online_vx );
 
-      float bs_online_vy = jet->auxdata< float >("bs_online_vy");
-      //std::cout << "**bs_online_vy " << bs_online_vy << std::endl;
-      m_bs_online_vy->push_back( bs_online_vy );
-      
+	float bs_online_vy = jet->auxdata< float >("bs_online_vy");
+	//std::cout << "**bs_online_vy " << bs_online_vy << std::endl;
+	m_bs_online_vy->push_back( bs_online_vy );
+      }else{
+	m_bs_online_vz->push_back( -999 );
+	m_bs_online_vx->push_back( -999 );
+	m_bs_online_vy->push_back( -999 );
+      }
+
+      if(m_debug) cout << "Filling m_vtx_offline " << endl;
       m_vtx_offline_x0->push_back( offline_pvx->x() );
       m_vtx_offline_y0->push_back( offline_pvx->y() );
       m_vtx_offline_z0->push_back( offline_pvx->z() );
+      if(m_debug) cout << "Done Filling m_vtx_offline " << endl;
 
+      if(m_debug) cout << "Filling m_vtx_online... " << endl;
       if(online_pvx){
+	if(m_debug) cout << " ... online_pvx valid " << endl;
         m_vtx_online_x0->push_back( online_pvx->x() );
         m_vtx_online_y0->push_back( online_pvx->y() );
         m_vtx_online_z0->push_back( online_pvx->z() );
@@ -2521,8 +2536,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         m_vtx_online_z0->push_back( -999 );
       }
 
-
+      if(m_debug) cout << "Filling m_vtx_online... " << endl;
       if(online_pvx_bkg){
+	if(m_debug) cout << " ...online_pvx_bkg valid " << endl;
         m_vtx_online_bkg_x0->push_back( online_pvx_bkg->x() );
         m_vtx_online_bkg_y0->push_back( online_pvx_bkg->y() );
         m_vtx_online_bkg_z0->push_back( online_pvx_bkg->z() );
@@ -2532,8 +2548,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         m_vtx_online_bkg_z0->push_back( -999 );
       }
 
-    }
-
+    }// m_flavTagHLT
+    if(m_debug) cout << "Done m_flavTagHLT " << endl;
   }
 
 
