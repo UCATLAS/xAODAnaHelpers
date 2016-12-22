@@ -313,6 +313,13 @@ class JetHists : public IParticleHists
     TProfile*   m_vtxDiffy0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffz0_vs_lBlock    ; //!
 
+    TH2F* m_lumiB_runN;
+    TH2F* m_lumiB_runN_vtxClass     ;
+    TH2F* m_lumiB_runN_vtxDiffz0    ;
+    TH2F* m_lumiB_runN_lumiB        ;
+    TH2F* m_lumiB_runN_bs_online_vz ;
+    TH2F* m_lumiB_runN_bs_den       ;
+
     TProfile*   m_vtx_online_x0_vs_vtx_online_z0;
     TProfile*   m_vtx_online_y0_vs_vtx_online_z0;
     

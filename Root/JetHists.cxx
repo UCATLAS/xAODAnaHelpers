@@ -432,8 +432,19 @@ StatusCode JetHists::initialize() {
       m_vtxEff10_noDummy_vs_lBlock   = book(m_name, "vtxEff10_noDummy_vs_lBlock", "LumiBlock",  200, 0, 2000, "vtx eff (10mm)", -0.1, 1.1);
 
     }
-     
 
+    if(m_infoSwitch->m_lumiB_runN){
+
+      Double_t runBins[]= { 297730, 298595, 298609, 298633, 298687, 298690, 298771, 298773, 298862, 298967, 299055, 299144, 299147, 299184, 299243, 299584, 300279, 300345, 300415, 300418, 300487, 300540, 300571, 300600, 300655, 300687, 300784, 300800, 300863, 300908, 301912, 301918, 301932, 301973, 302053, 302137, 302265, 302269, 302300, 302347, 302380, 302391, 302393, 302737, 302831, 302872, 302919, 302925, 302956, 303007, 303079, 303201, 303208, 303264, 303266, 303291, 303304, 303338, 303421, 303499, 303560, 303638, 303832, 303846, 303892, 303943, 304006, 304008, 304128, 304178, 304198, 304211, 304243, 304308, 304337, 304409, 304431, 304494, 305380, 305543, 305571, 305618, 305671, 305674, 305723, 305727, 305735, 305777, 305811, 305920, 306269, 306278, 306310, 306384, 306419, 306442, 306448, 306451, 307126, 307195, 307259, 307306, 307354, 307358, 307394, 307454, 307514, 307539, 307569, 307601, 307619, 307656, 307710, 307716, 307732, 307861, 307935, 308047, 308084, 309375, 309390, 309440, 309516, 309640, 309674, 309759, 310015, 310247, 310249, 310341, 310370, 310405, 310468, 310473, 310634, 310691, 310738, 310809, 310863, 310872, 310969, 311071, 311170, 311244, 311287, 311321, 311365, 311402, 311473, 311481, 311500 };
+      int nRunBins=150;
+      
+      m_lumiB_runN              = book(m_name, "lumiB_runN",              "Lumi Block", 2000, 0, 2000, "Run Number", nRunBins, runBins);
+      m_lumiB_runN_bs_online_vz = book(m_name, "lumiB_runN_bs_online_vz", "Lumi Block", 2000, 0, 2000, "Run Number", nRunBins, runBins);
+      m_lumiB_runN_bs_den       = book(m_name, "lumiB_runN_bs_den",       "Lumi Block", 2000, 0, 2000, "Run Number", nRunBins, runBins);
+      m_lumiB_runN_vtxClass     = book(m_name, "lumiB_runN_vtxClass",     "Lumi Block", 2000, 0, 2000, "Run Number", nRunBins, runBins);
+      //m_lumiB_runN_vtxDiffz0    = book(m_name, "lumiB_runN_vtxDiffz0",    "Lumi Block", 2000, 0, 2000, "Run Number", nRunBins, runBins);
+      m_lumiB_runN_lumiB        = book(m_name, "lumiB_runN_lumiB",        "Lumi Block", 2000, 0, 2000, "Run Number", nRunBins, runBins);
+    }
   }
 
 
@@ -1401,9 +1412,15 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     float bs_online_vy = jet->auxdata< float >("bs_online_vy");
     m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
     float bs_online_vz = jet->auxdata< float >("bs_online_vz");
-    m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
-    m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
 
+    if( fabs(bs_online_vy) > 0.1 ){  
+        m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
+    	m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
+    }
+  
+
+
+    
     //if(hadDummyPV)  m_vtxClass ->Fill(1.0, eventWeight);
     //else            m_vtxClass ->Fill(0.0, eventWeight);
 
@@ -1476,9 +1493,28 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	m_vtxEff10_raw_vs_lBlock  ->Fill(lumiBlock, correctVtx10_raw,    eventWeight);
 
       }
-
-      
+ 
     }
+
+    if(m_infoSwitch->m_lumiB_runN){
+	uint32_t lumiBlock = eventInfo->lumiBlock();
+	uint32_t runNumber = eventInfo->runNumber();
+	m_lumiB_runN              -> Fill(lumiBlock, runNumber, eventWeight);
+	m_lumiB_runN_vtxClass     -> Fill(lumiBlock, runNumber, eventWeight * vtxClass);
+	m_lumiB_runN_lumiB        -> Fill(lumiBlock, runNumber, eventWeight * lumiBlock);
+
+	if(bs_online_vz < 900){
+	  m_lumiB_runN_bs_online_vz -> Fill(lumiBlock, runNumber, eventWeight * bs_online_vz);
+	  m_lumiB_runN_bs_den       -> Fill(lumiBlock, runNumber, eventWeight );
+	}
+
+	//if(offline_pvx && online_pvx){
+        //  float vtxDiffz0     = online_pvx->z() - offline_pvx->z();
+	//  m_lumiB_runN_vtxDiffz0  -> Fill(lumiBlock, runNumber, eventWeight * vtxDiffz0);
+	//}
+    }
+
+
   }
 
   if(m_debug) std::cout << "JetHists: leave " <<std::endl;
@@ -1641,13 +1677,21 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       
       m_vtxClass               ->Fill(vtxClass          , eventWeight);
 
+      
       float bs_online_vx = jet->bs_online_vx;
       m_bs_online_vx -> Fill( bs_online_vx , eventWeight);
       float bs_online_vy = jet->bs_online_vy;
       m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
       float bs_online_vz = jet->bs_online_vz;
-      m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
-      m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
+
+      if( fabs(bs_online_vy) > 0.1 ){  
+	m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
+	m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
+      }
+      
+      //if( fabs(bs_online_vy) < 0.1 ){
+      //   std::cout << " -> bs_online_vx" << bs_online_vx << "bs_online_vy" << bs_online_vy << "bs_online_vz" << bs_online_vz << std::endl;
+      //}
       
       float vtxDiffx0      = jet->vtx_online_x0 - jet->vtx_offline_x0;
 
@@ -1704,8 +1748,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 	  m_vtxEff1_noDummy_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
 	  m_vtxEff10_noDummy_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
 	}
-
-
+      	
 	bool correctVtx1_raw  = (fabs(vtxDiffz0_raw) < 1);
 	bool correctVtx10_raw = (fabs(vtxDiffz0_raw) < 10);
 	m_vtxEff1_raw_vs_lBlock   ->Fill(lumiBlock, correctVtx1_raw,    eventWeight);
@@ -1713,6 +1756,19 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
       }
 
+      if(m_infoSwitch->m_lumiB_runN){	
+	uint32_t lumiBlock = eventInfo->m_lumiBlock;
+	uint32_t runNumber = eventInfo->m_runNumber;
+	m_lumiB_runN               -> Fill(lumiBlock, runNumber, eventWeight);
+	m_lumiB_runN_vtxClass      -> Fill(lumiBlock, runNumber, eventWeight * vtxClass);
+	m_lumiB_runN_lumiB      -> Fill(lumiBlock, runNumber, eventWeight*lumiBlock);
+
+	if(bs_online_vz < 900 ){
+	  m_lumiB_runN_bs_online_vz  -> Fill(lumiBlock, runNumber, eventWeight * bs_online_vz);
+	  m_lumiB_runN_bs_den        -> Fill(lumiBlock, runNumber, eventWeight );
+	}
+	
+      }
 
     }
 
