@@ -1413,10 +1413,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
     float bs_online_vz = jet->auxdata< float >("bs_online_vz");
 
-    if( fabs(bs_online_vy) > 0.1 ){  
-        m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
-    	m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
-    }
+    m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
+    m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
   
 
 
@@ -1684,10 +1682,8 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
       float bs_online_vz = jet->bs_online_vz;
 
-      if( fabs(bs_online_vy) > 0.1 ){  
-	m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
-	m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
-      }
+      m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
+      m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
       
       //if( fabs(bs_online_vy) < 0.1 ){
       //   std::cout << " -> bs_online_vx" << bs_online_vx << "bs_online_vy" << bs_online_vy << "bs_online_vz" << bs_online_vz << std::endl;
