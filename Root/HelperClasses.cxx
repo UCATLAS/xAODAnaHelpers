@@ -262,6 +262,7 @@ namespace HelperClasses{
     m_etaPhiMap           = has_exact("etaPhiMap");
     m_byAverageMu         = has_exact("byAverageMu");
     m_vsLumiBlock         = has_exact("vsLumiBlock");
+    m_lumiB_runN          = has_exact("lumiB_runN");
 
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {

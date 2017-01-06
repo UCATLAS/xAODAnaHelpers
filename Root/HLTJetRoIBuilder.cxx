@@ -232,7 +232,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   Trig::FeatureContainer::combination_const_iterator comb   (fc.getCombinations().begin());
   Trig::FeatureContainer::combination_const_iterator combEnd(fc.getCombinations().end());
   if(m_debug) cout << m_name << " New Event --------------- " << endl;
-
+    
   for( ; comb!=combEnd ; ++comb) {
     std::vector< Trig::Feature<xAOD::JetContainer> >            jetCollections  = comb->containerFeature<xAOD::JetContainer>(m_jetName);
     std::vector< Trig::Feature<xAOD::BTaggingContainer> >       bjetCollections = comb->containerFeature<xAOD::BTaggingContainer>("HLTBjetFex");
@@ -314,6 +314,37 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
     if(!isValid) continue;
 
+    //Loop over jets until a jet with track size > 0 is found
+    
+    // Declare variables here as same bs for all jets
+    float var_bs_online_vx=999;
+    float var_bs_online_vy=999;
+    float var_bs_online_vz=999;  
+
+    if(m_readHLTTracks){
+      for ( unsigned ifeat=0 ; ifeat<jetCollections.size() ; ifeat++ ) {
+	
+	const xAOD::TrackParticleContainer* hlt_tracks(nullptr);
+
+	hlt_tracks = trkCollections.at(ifeat).cptr();
+	if(!hlt_tracks) continue;
+      
+	if(hlt_tracks->size()){
+	  var_bs_online_vx=hlt_tracks->at(0)->vx();
+	  var_bs_online_vy=hlt_tracks->at(0)->vy();
+	  var_bs_online_vz=hlt_tracks->at(0)->vz();
+	  break;
+	}	
+      }
+    }
+    
+    if(m_debug){
+      cout << " bs_online_vx " << var_bs_online_vx
+	   << " bs_online_vy " << var_bs_online_vy
+	   << " bs_online_vz " << var_bs_online_vz << endl;
+    }
+
+    
     //cout << " is Valid " << jetCollections.size() << " " << vtxCollections.size() << endl;
     for ( unsigned ifeat=0 ; ifeat<jetCollections.size() ; ifeat++ ) {
       const xAOD::Jet* hlt_jet = getTrigObject<xAOD::Jet, xAOD::JetContainer>(jetCollections.at(ifeat));
@@ -364,20 +395,17 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	// Adding online beamspot information from online track
 	//
 
-	float var_bs_online_vx=999;
-	float var_bs_online_vy=999;
-	float var_bs_online_vz=999;
-      
 	if(hlt_tracks->size()){
-	  var_bs_online_vx=hlt_tracks->at(0)->vx();
-	  var_bs_online_vy=hlt_tracks->at(0)->vy();
-	  var_bs_online_vz=hlt_tracks->at(0)->vz();
-	}
-     	
-	if(m_debug){
-	  cout << "bs_online_vx  " << var_bs_online_vx
-	       << "bs_online_vy  " << var_bs_online_vy
-	       << "bs_online_vz  " << var_bs_online_vz << endl;
+	  if(m_debug) {
+	    cout << "Found a hlt_tracks   "
+		 << hlt_tracks->at(0)->vx() << " "
+		 << hlt_tracks->at(0)->vy() << " "
+		 << hlt_tracks->at(0)->vz() << endl;
+	    cout << "Compares to variable " << " "
+		 << var_bs_online_vx << " "
+		 << var_bs_online_vy << " "
+		 << var_bs_online_vz << endl;
+	  }
 	}
 
 	m_bs_online_vx (*newHLTBJet) = var_bs_online_vx;
@@ -387,13 +415,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	if(m_debug) cout <<  "Adding tracks to jet " << endl;
 	m_track_decoration(*newHLTBJet)         = matchedTracks;
 
-	//
-	// Check for dummy verticies
-	//
-	// hadDummyPV => class with three option
-	//               0 - IDTrig  Found Vertex
-	//               1 - EFHisto Found Vertex
-	//               2 - No Vertex found
+
       }
 
       if(m_debug){
@@ -401,6 +423,14 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	cout << "Check for m_jetName: " << m_jetName << endl;
 	cout << "Check for m_vtxName: " << m_vtxName << endl;
       }
+
+      //
+      // Check for dummy verticies
+      //
+      // hadDummyPV => class with three option
+      //               0 - IDTrig  Found Vertex
+      //               1 - EFHisto Found Vertex
+      //               2 - No Vertex found
       
       if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), true)){
 
