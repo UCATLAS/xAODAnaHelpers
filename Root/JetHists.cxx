@@ -432,6 +432,7 @@ StatusCode JetHists::initialize() {
       m_vtxEff10_noDummy_vs_lBlock   = book(m_name, "vtxEff10_noDummy_vs_lBlock", "LumiBlock",  200, 0, 2000, "vtx eff (10mm)", -0.1, 1.1);
 
     }
+     
 
     if(m_infoSwitch->m_lumiB_runN){
 
@@ -1412,6 +1413,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     float bs_online_vy = jet->auxdata< float >("bs_online_vy");
     m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
     float bs_online_vz = jet->auxdata< float >("bs_online_vz");
+<<<<<<< HEAD
 
     m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
     m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
@@ -1419,6 +1421,11 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
 
     
+=======
+    m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
+    m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
+
+>>>>>>> vtxClass change, wider PVz
     //if(hadDummyPV)  m_vtxClass ->Fill(1.0, eventWeight);
     //else            m_vtxClass ->Fill(0.0, eventWeight);
 
@@ -1681,6 +1688,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       float bs_online_vy = jet->bs_online_vy;
       m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
       float bs_online_vz = jet->bs_online_vz;
+<<<<<<< HEAD
 
       m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
       m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
@@ -1688,6 +1696,10 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       //if( fabs(bs_online_vy) < 0.1 ){
       //   std::cout << " -> bs_online_vx" << bs_online_vx << "bs_online_vy" << bs_online_vy << "bs_online_vz" << bs_online_vz << std::endl;
       //}
+=======
+      m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
+      m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
+>>>>>>> vtxClass change, wider PVz
       
       float vtxDiffx0      = jet->vtx_online_x0 - jet->vtx_offline_x0;
 
