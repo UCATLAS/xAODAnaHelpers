@@ -54,7 +54,8 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   m_trigDecTool(nullptr),
   m_jetName("EFJet"),
   m_trkName("InDetTrigTrackingxAODCnv_Bjet_IDTrig"),
-  m_vtxName("EFHistoPrmVtx")
+  m_vtxName("EFHistoPrmVtx"),
+  m_onlineBSTool()
 {
   if(m_debug) Info("HLTJetRoIBuilder()", "Calling constructor");
 
@@ -219,8 +220,14 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   // get primary vertex
   //
   const xAOD::VertexContainer *offline_vertices(nullptr);
-  RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
   const xAOD::Vertex *offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices);
+
+  //
+  // get event info
+  //
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
 
   //
@@ -317,27 +324,10 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     //Loop over jets until a jet with track size > 0 is found
     
     // Declare variables here as same bs for all jets
-    float var_bs_online_vx=999;
-    float var_bs_online_vy=999;
-    float var_bs_online_vz=999;  
+    float var_bs_online_vx = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSx);
+    float var_bs_online_vy = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSy);
+    float var_bs_online_vz = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSz);
 
-    if(m_readHLTTracks){
-      for ( unsigned ifeat=0 ; ifeat<jetCollections.size() ; ifeat++ ) {
-	
-	const xAOD::TrackParticleContainer* hlt_tracks(nullptr);
-
-	hlt_tracks = trkCollections.at(ifeat).cptr();
-	if(!hlt_tracks) continue;
-      
-	if(hlt_tracks->size()){
-	  var_bs_online_vx=hlt_tracks->at(0)->vx();
-	  var_bs_online_vy=hlt_tracks->at(0)->vy();
-	  var_bs_online_vz=hlt_tracks->at(0)->vz();
-	  break;
-	}	
-      }
-    }
-    
     if(m_debug){
       cout << " bs_online_vx " << var_bs_online_vx
 	   << " bs_online_vy " << var_bs_online_vy

@@ -11,6 +11,7 @@
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
+#include "xAODAnaHelpers/OnlineBeamSpotTool.h"
 #include "TrigDecisionTool/Feature.h"
 
 namespace Trig {
@@ -58,6 +59,7 @@ private:
   std::string                  m_jetName;       //!
   std::string                  m_trkName;       //!
   std::string                  m_vtxName;       //!
+  xAH::OnlineBeamSpotTool      m_onlineBSTool;  //!
 
   EL::StatusCode buildHLTBJets ();
   EL::StatusCode buildHLTJets  ();
