@@ -23,6 +23,8 @@
 #include "TTree.h"
 #include "TTreeFormula.h"
 #include "TSystem.h"
+#include "xAODCore/tools/IOStats.h"
+#include "xAODCore/tools/ReadStats.h"
 
 
 // this is needed to distribute the algorithm to the workers
@@ -107,6 +109,9 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   // Event Cleaning
   m_applyEventCleaningCut = false;
   m_applyCoreFlagsCut     = false;
+
+  // Print Branch List 
+  m_printBranchList       = false;
 
   // Trigger
   m_extraTriggerSelection = "";
@@ -1050,6 +1055,11 @@ EL::StatusCode BasicEventSelection :: finalize ()
   if ( m_grl )          { delete m_grl; m_grl = nullptr; }
   if ( m_trigDecTool )  { delete m_trigDecTool;  m_trigDecTool = nullptr; }
   if ( m_trigConfTool ) { delete m_trigConfTool;  m_trigConfTool = nullptr; }
+
+  //after execution loop 
+  if(m_printBranchList){
+    xAOD::IOStats::instance().stats().printSmartSlimmingBranchList();
+  }
 
   return EL::StatusCode::SUCCESS;
 }
