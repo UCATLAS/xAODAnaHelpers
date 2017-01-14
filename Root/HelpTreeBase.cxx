@@ -87,6 +87,13 @@ HelpTreeBase::~HelpTreeBase() {
     for (auto jet: m_jets)
       delete jet.second;
 
+    //truth fat jet
+    for (auto truth_fatjet: m_truth_fatjets)
+      delete truth_fatjet.second;
+
+    //truth
+    for (auto truth: m_truth)
+      delete truth.second;
 }
 
 
