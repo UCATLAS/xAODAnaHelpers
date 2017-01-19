@@ -8,6 +8,7 @@
 #include <xAODJet/JetContainer.h>
 #include "xAODAnaHelpers/Jet.h"
 #include "xAODAnaHelpers/EventInfo.h"
+#include "xAODAnaHelpers/OnlineBeamSpotTool.h"
 
 class JetHists : public IParticleHists
 {
@@ -36,7 +37,8 @@ class JetHists : public IParticleHists
 
   private:
 
-    std::string m_titlePrefix;         
+    std::string m_titlePrefix; 
+    xAH::OnlineBeamSpotTool      m_onlineBSTool;  //!        
 
     // clean
     TH1F* m_jetTime;                //!
@@ -308,20 +310,24 @@ class JetHists : public IParticleHists
     TH1F* m_bs_online_vz; //!
     TH1F* m_bs_online_vz_l; //!
 
+    TH1F* m_eta_bs_online_vz_0_1  ; //!
+    TH1F* m_eta_bs_online_vz_1_1p5; //! 
+    TH1F* m_eta_bs_online_vz_1p5_2; //! 
+
     TH1F* m_vtxClass; //!
     TProfile*   m_vtxDiffx0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffy0_vs_lBlock    ; //!
     TProfile*   m_vtxDiffz0_vs_lBlock    ; //!
 
-    TH2F* m_lumiB_runN;
-    TH2F* m_lumiB_runN_vtxClass     ;
-    TH2F* m_lumiB_runN_vtxDiffz0    ;
-    TH2F* m_lumiB_runN_lumiB        ;
-    TH2F* m_lumiB_runN_bs_online_vz ;
-    TH2F* m_lumiB_runN_bs_den       ;
+    TH2F* m_lumiB_runN; //!
+    TH2F* m_lumiB_runN_vtxClass     ; //!
+    TH2F* m_lumiB_runN_vtxDiffz0    ; //!
+    TH2F* m_lumiB_runN_lumiB        ; //!
+    TH2F* m_lumiB_runN_bs_online_vz ; //!
+    TH2F* m_lumiB_runN_bs_den       ; //!
 
-    TProfile*   m_vtx_online_x0_vs_vtx_online_z0;
-    TProfile*   m_vtx_online_y0_vs_vtx_online_z0;
+    TProfile*   m_vtx_online_x0_vs_vtx_online_z0; //!
+    TProfile*   m_vtx_online_y0_vs_vtx_online_z0; //!
     
     // trackPV
     //TH1F* m_NumTrkPt1000PV;
@@ -358,7 +364,6 @@ class JetHists : public IParticleHists
 
     // TProfile in prep for showing it is flat
     TH2F*  m_vtxClass_vs_jetPt;
-
 
 };
 

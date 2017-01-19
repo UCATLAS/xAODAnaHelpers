@@ -395,9 +395,11 @@ namespace HelperClasses {
         m_tracksInJet    tracksInJet    partial
         m_trackJetName   trackJetName   partial
         m_hltVtxComp     hltVtxComp     exact
+        m_onlineBS       onlineBS       exact
+        m_onlineBSTool   onlineBSTool   exact
         m_charge         charge         exact
         m_vsLumiBlock    vsLumiBlock    exact
-        m_lumiB_runN    lumiB_runN    exact
+        m_lumiB_runN     lumiB_runN     exact
         m_byAverageMu    byAverageMu    exact
         m_etaPhiMap      etaPhiMap      exact
         ================ ============== =======
@@ -441,6 +443,8 @@ namespace HelperClasses {
     bool m_tracksInJet;
     bool m_trackJets;
     bool m_hltVtxComp;
+    bool m_onlineBS;
+    bool m_onlineBSTool;
     bool m_charge;
     bool m_etaPhiMap;
     bool m_vsLumiBlock;

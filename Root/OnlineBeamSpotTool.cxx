@@ -89,6 +89,10 @@ float OnlineBeamSpotTool::getOnlineBSInfo(const xAOD::EventInfo* eventInfo, Onli
   return getOnlineBSInfo(eventInfo->runNumber(), eventInfo->lumiBlock(), eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ), datakey);
 }
 
+float OnlineBeamSpotTool::getOnlineBSInfo(const xAH::EventInfo* eventInfo, OnlineBeamSpotTool::BSData datakey){
+  return getOnlineBSInfo(eventInfo->m_runNumber, eventInfo->m_lumiBlock, eventInfo->m_mc, datakey);
+}
+
 float OnlineBeamSpotTool::getOnlineBSInfo(int runNumber, int lumiBlock, bool isMC, OnlineBeamSpotTool::BSData datakey){
   //cout << "In OnlineBeamSpotTool (" << runNumber << " , " << lumiBlock<< ")" << endl;
 
