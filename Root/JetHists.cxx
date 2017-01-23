@@ -356,6 +356,15 @@ StatusCode JetHists::initialize() {
     m_tracksInJet -> initialize( );
   }
 
+  if( m_infoSwitch->m_byEta){
+
+    m_jetPt_eta_0_1   = book(m_name, "jetPt_eta_0_1",   "p_{T} [GeV]",100, 0, 1000);
+    m_jetPt_eta_1_2   = book(m_name, "jetPt_eta_1_2",   "p_{T} [GeV]",100, 0, 1000);
+    m_jetPt_eta_2_2p5 = book(m_name, "jetPt_eta_2_2p5", "p_{T} [GeV]",100, 0, 1000);
+
+  }
+      
+  
   if( m_infoSwitch->m_onlineBS ){
 
     m_bs_online_vz                  = book(m_name, "bs_online_vz",  "bs_online_vz",   200,   -5,   5);
@@ -1405,6 +1414,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     }
   }
 
+  if(  m_infoSwitch->m_byEta ){
+    if (fabs(jet->eta()) < 1)          m_jetPt_eta_0_1   -> Fill(jet->pt()/1e3, eventWeight);
+    else if ( fabs(jet->eta()) < 2 )   m_jetPt_eta_1_2   -> Fill(jet->pt()/1e3, eventWeight); 
+    else if ( fabs(jet->eta()) < 2.5 ) m_jetPt_eta_2_2p5 -> Fill(jet->pt()/1e3, eventWeight);
+  }
+    
   if(  m_infoSwitch->m_onlineBS ){
     
     float bs_online_vx = jet->auxdata< float >("bs_online_vx");
@@ -1683,6 +1698,12 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 //      h_IP3DvsMV2c20->Fill(jet->MV2c20, jet->IP3D);
       
     }
+
+  if(  m_infoSwitch->m_byEta ){
+    if (fabs(jet->p4.Eta()) < 1)          m_jetPt_eta_0_1   -> Fill(jet->p4.Pt(), eventWeight);
+    else if ( fabs(jet->p4.Eta()) < 2 )   m_jetPt_eta_1_2   -> Fill(jet->p4.Pt(), eventWeight); 
+    else if ( fabs(jet->p4.Eta()) < 2.5 ) m_jetPt_eta_2_2p5 -> Fill(jet->p4.Pt(), eventWeight);
+  }
 
   if(  m_infoSwitch->m_onlineBS ){
 

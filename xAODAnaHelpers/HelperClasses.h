@@ -401,6 +401,7 @@ namespace HelperClasses {
         m_vsLumiBlock    vsLumiBlock    exact
         m_lumiB_runN     lumiB_runN     exact
         m_byAverageMu    byAverageMu    exact
+        m_byEta          byEta          exact
         m_etaPhiMap      etaPhiMap      exact
         ================ ============== =======
 
@@ -449,6 +450,7 @@ namespace HelperClasses {
     bool m_etaPhiMap;
     bool m_vsLumiBlock;
     bool m_lumiB_runN;
+    bool m_byEta;
     bool m_byAverageMu;
     bool m_area;
     bool m_JVC;

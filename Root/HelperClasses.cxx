@@ -265,6 +265,7 @@ namespace HelperClasses{
     m_charge              = has_exact("charge");
     m_etaPhiMap           = has_exact("etaPhiMap");
     m_byAverageMu         = has_exact("byAverageMu");
+    m_byEta               = has_exact("byEta");
     m_vsLumiBlock         = has_exact("vsLumiBlock");
     m_lumiB_runN          = has_exact("lumiB_runN");
 

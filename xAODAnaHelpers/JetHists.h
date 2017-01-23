@@ -280,6 +280,21 @@ class JetHists : public IParticleHists
     TH1F* m_nTrk; //!
     TracksInJetHists* m_tracksInJet; //!
 
+    // By eta
+    TH1F* m_jetPt_eta_0_1; //!
+    TH1F* m_jetPt_eta_1_2; //!   
+    TH1F* m_jetPt_eta_2_2p5; //! 
+    
+    // bs information
+    TH1F* m_bs_online_vx; //!
+    TH1F* m_bs_online_vy; //!
+    TH1F* m_bs_online_vz; //!
+    TH1F* m_bs_online_vz_l; //!
+
+    TH1F* m_eta_bs_online_vz_0_1  ; //!
+    TH1F* m_eta_bs_online_vz_1_1p5; //! 
+    TH1F* m_eta_bs_online_vz_1p5_2; //! 
+
     // HLT Vertex Comp
     TH1F*     m_vtx_offline_x0; //!
     TH1F*     m_vtx_offline_y0; //!
@@ -304,15 +319,6 @@ class JetHists : public IParticleHists
 
     TH1F* m_vtxDiffy0; //!
     TH1F* m_vtxDiffy0_l; //!
-
-    TH1F* m_bs_online_vx; //!
-    TH1F* m_bs_online_vy; //!
-    TH1F* m_bs_online_vz; //!
-    TH1F* m_bs_online_vz_l; //!
-
-    TH1F* m_eta_bs_online_vz_0_1  ; //!
-    TH1F* m_eta_bs_online_vz_1_1p5; //! 
-    TH1F* m_eta_bs_online_vz_1p5_2; //! 
 
     TH1F* m_vtxClass; //!
     TProfile*   m_vtxDiffx0_vs_lBlock    ; //!
