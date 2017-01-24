@@ -68,6 +68,9 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_applyEventCleaningCut;
     bool m_applyCoreFlagsCut;
 
+    // Print Branch List
+    bool m_printBranchList;
+
     // Trigger
     /**
        @brief Decisions of Triggers listed in m_triggerSelection are saved and cut on depending on m_applyTriggerCut
