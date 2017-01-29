@@ -34,8 +34,6 @@ public:
 
   // sort after calibration
   bool    m_sort;
-  bool    m_toolInitializationAtTheFirstEventDone; //!
-  bool    m_isMC; //!
 
   // systematics
   std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
@@ -50,8 +48,8 @@ public:
   std::string m_decorrelationModel;
 
 private:
-  int m_numEvent;         //!
-  int m_numObject;        //!
+  bool    m_toolInitializationAtTheFirstEventDone; //!
+  bool    m_isMC; //!
 
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;

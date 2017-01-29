@@ -85,6 +85,7 @@ PhotonCalibrator :: PhotonCalibrator (std::string className) :
 
   m_sort                    = true;
   m_isMC                    = false;
+  m_useAFII                 = false;
 
   m_toolInitializationAtTheFirstEventDone = false;
 
@@ -181,9 +182,6 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
   MSG::Level msgLevel = (m_debug) ? MSG::VERBOSE : MSG::INFO;
-
-  m_numEvent      = 0;
-  m_numObject     = 0;
 
   // initialize the CP::EgammaCalibrationAndSmearingTool
   //
@@ -305,8 +303,6 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
   if ( m_debug ) { Info("execute()", "Applying Photon Calibration ... "); }
 
-  m_numEvent++;
-
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -391,8 +387,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
 	  Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
 	}
 
-	//if ( m_IsolationCorrectionTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) { /// indeed wrong
-	if ( m_IsolationCorrectionTool->CorrectLeakage( *phSC_itr ) != CP::CorrectionCode::Ok ) {
+	if ( m_IsolationCorrectionTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
 	  Warning("execute()", "Problem in CP::IsolationCorrection::applyCorrection()");
 	}
       }
@@ -569,7 +564,7 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 
     // configuration files not yet available for 13 TeV :(
     //sf only available after basic kinematic selection
-    if(cluster_et > 20000. && fabs(cluster_eta) < 2.37 && !inCrack){
+    if(cluster_et > 10000. && fabs(cluster_eta) < 2.37 && !inCrack){
       // SF
       if(m_photonTightEffTool->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
 	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
@@ -672,8 +667,8 @@ EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xA
 
     // todo : Set input files ** not yet available for 13 TeV ** Date : 13 May
     // recommended files here: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommended_input_files
-    std::string file_unc = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.unc.v01.root");
-    std::string file_con = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.con.v01.root");
+    std::string file_unc = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.unc.v02.root");
+    std::string file_con = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.con.v02.root");
     if(m_useAFII){
       file_unc = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.unc.v01.root");
       file_con = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.con.v01.root");
@@ -706,11 +701,6 @@ EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xA
     m_IsolationCorrectionTool = new CP::IsolationCorrectionTool(IsoCorrToolName.c_str());
   }
 
-  if (m_isMC) {
-    RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->setProperty("IsMC", true), "Failed in IsolationCorrectionTool setProperty");
-  } else {
-    RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->setProperty("IsMC", false), "Failed in IsolationCorrectionTool setProperty");
-  }
   RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->initialize(), "Failed in IsolationCorrectionTool initialization");
   m_IsolationCorrectionTool->msg().setLevel( msgLevel );
 
