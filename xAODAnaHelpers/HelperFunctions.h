@@ -254,6 +254,49 @@ namespace HelperFunctions {
     return StatusCode::SUCCESS;
   }
 
+  /*  isAvailable()    return true if an arbitrary object from TStore / TEvent is availible
+        - tries to make your life simple by providing a one-stop container check shop for all types
+        @ cont  : pass in a pointer to the object to store the retrieved container in
+        @ name  : the name of the object to look up
+        @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
+        @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
+        @ debug : turn on more verbose output, helpful for debugging
+
+      Example Usage:
+      const xAOD::JetContainer* jets(0);
+      // look for "AntiKt10LCTopoJets" in both TEvent and TStore
+      HelperFunctions::isAvailable(jets, "AntiKt10LCTopoJets", m_event, m_store) 
+      // look for "AntiKt10LCTopoJets" in only TStore
+      HelperFunctions::isAvailable(jets, "AntiKt10LCTopoJets", 0, m_store)
+      // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
+      HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, true)
+  */
+  template <typename T>
+  bool isAvailable(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug=false){
+    /* Checking Order:
+        - check if store contains 'xAOD::JetContainer' named 'name'
+        --- checkstore store
+        - check if event contains 'xAOD::JetContainer' named 'name'
+        --- checkstore event
+    */
+    if(debug) Info("HelperFunctions::isAvailable()", "\tAttempting to retrieve %s of type %s", name.c_str(), type_name<T>().c_str());
+    if((store == NULL) && (debug))                      Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TEvent");
+    if((event == NULL) && (debug))                      Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TStore");
+    if((event != NULL) && (store != NULL) && (debug))   Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TStore, xAOD::TEvent");
+    if((store != NULL) && (store->contains<T>(name))){
+      if(debug) Info("HelperFunctions::isAvailable()", "\t\t\tFound inside xAOD::TStore");
+      return true;
+    } else if((event != NULL) && (event->contains<T>(name))){
+      if(debug) Info("HelperFunctions::isAvailable()", "\t\t\tFound inside xAOD::TEvent");
+      return true;
+    } else {
+      return false;
+    }
+    return false;
+  }
+
+
+
   /* update with better logic
       -- call HelperFunctions::retrieve() instead
       -- if user wants `const DataVector<T>` and `ConstDataVector<T>` exists but `const DataVector<T>` does not, auto-convert for them
