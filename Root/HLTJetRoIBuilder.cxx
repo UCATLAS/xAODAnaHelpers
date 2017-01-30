@@ -115,6 +115,11 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
     m_vtxName = "xPrimVx";
   }
 
+  if(m_trigItem.find("gsc") != std::string::npos){
+    m_jetName = "GSCJet";
+    m_vtxName = "xPrimVx";
+  }
+
   if(m_trigItem.find("FTK") != std::string::npos){
     m_trkName = "InDetTrigTrackingxAODCnv_Bjet_FTK";
     m_vtxName = "";
@@ -220,8 +225,11 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   // get primary vertex
   //
   const xAOD::VertexContainer *offline_vertices(nullptr);
-  RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
-  const xAOD::Vertex *offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices);
+  const xAOD::Vertex *offline_pvx(nullptr);
+  if(HelperFunctions::isAvailable(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose)){
+    RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
+    offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices);
+  }
 
   //
   // get event info
@@ -255,6 +263,11 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       vtxCollections = comb->containerFeature<xAOD::VertexContainer>();
     }
 
+//    cout << " Test Size " << endl;
+//    cout << " \tSplitJet: " << comb->containerFeature<xAOD::JetContainer>("SplitJet").size() << endl;
+//    cout << " \tGSCJet: "   << comb->containerFeature<xAOD::JetContainer>("GSCJet")  .size() << endl;
+//    cout << " \tEFJet:  "   << comb->containerFeature<xAOD::JetContainer>("EFJet")   .size() << endl;
+//
     // FTK Vertex debugging
     //    cout << " Test Size " << endl;
     //    cout << " \tempty: " << comb->containerFeature<xAOD::VertexContainer>().size() << endl;
