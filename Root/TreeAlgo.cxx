@@ -45,6 +45,9 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_muContainerName             = "";
   m_elContainerName             = "";
   m_jetContainerName            = "";
+  m_jetBranchName               = "jet";
+  m_truthJetContainerName       = "";
+  m_truthJetBranchName          = "truthJet";
   m_fatJetContainerName         = "";
   m_truthFatJetContainerName    = "";
   m_tauContainerName            = "";
@@ -88,6 +91,34 @@ EL::StatusCode TreeAlgo :: initialize ()
   TFile* treeFile = wk()->getOutputFile ("tree");
   treeFile->mkdir(m_name.c_str());
   treeFile->cd(m_name.c_str());
+
+  // to handle more than one jet collections (reco and truth)
+  std::string token;
+  std::istringstream ss_reco_containers(m_jetContainerName);
+  while ( std::getline(ss_reco_containers, token, ' ') ){
+    m_jetContainers.push_back(token);
+  }
+  std::istringstream ss_reco_names(m_jetBranchName);
+  while ( std::getline(ss_reco_names, token, ' ') ){
+    m_jetBranches.push_back(token);
+  }
+  if( !m_jetContainerName.empty() && m_jetContainers.size()!=m_jetBranches.size()){
+    Error("initialize()", "The number of jet containers must be equal to the number of jet name branches. Exiting");
+    return EL::StatusCode::FAILURE;		    
+  }
+  std::istringstream ss_truth_containers(m_truthJetContainerName);
+  while ( std::getline(ss_truth_containers, token, ' ') ){
+    m_truthJetContainers.push_back(token);
+  }    
+  std::istringstream ss_truth_names(m_truthJetBranchName);
+  while ( std::getline(ss_truth_names, token, ' ') ){
+    m_truthJetBranches.push_back(token);
+  }
+  if( !m_truthJetContainerName.empty() && m_truthJetContainers.size()!=m_truthJetBranches.size()){
+    Error("initialize()", "The number of truth jet containers must be equal to the number of truth jet name branches. Exiting");
+    return EL::StatusCode::FAILURE;		    
+  }
+
 
   return EL::StatusCode::SUCCESS;
 }
@@ -195,9 +226,17 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_trigDetailStr.empty() )              { helpTree->AddTrigger(m_trigDetailStr);                           }
     if (!m_muContainerName.empty() )            { helpTree->AddMuons(m_muDetailStr);                               }
     if (!m_elContainerName.empty() )            { helpTree->AddElectrons(m_elDetailStr);                           }
-    if (!m_jetContainerName.empty() )           { helpTree->AddJets(m_jetDetailStr, "jet");                        }
+    if (!m_jetContainerName.empty() )           {  
+      for(unsigned int ll=0; ll<m_jetContainers.size();++ll){
+        helpTree->AddJets       (m_jetDetailStr, m_jetBranches.at(ll).c_str());
+      }
+    }
     if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
-    if (!m_truthJetContainerName.empty() )      { helpTree->AddJets(m_truthJetDetailStr, "truthJet");              }
+    if (!m_truthJetContainerName.empty() )      {
+      for(unsigned int ll=0; ll<m_truthJetContainers.size();++ll){
+        helpTree->AddJets       (m_truthJetDetailStr, m_truthJetBranches.at(ll).c_str());
+      }
+    }
     if ( !m_fatJetContainerName.empty() ) {
 	    std::string token;
   	  std::istringstream ss(m_fatJetContainerName);
@@ -269,9 +308,13 @@ EL::StatusCode TreeAlgo :: execute ()
       helpTree->FillElectrons( inElec, primaryVertex );
     }
     if ( !m_jetContainerName.empty() ) {
-      const xAOD::JetContainer* inJets(nullptr);
-      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainerName+jetSuffix, m_event, m_store, m_verbose) ,"");
-      helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices), "jet" );
+      for(unsigned int ll=0;ll<m_jetContainers.size();++ll){ // Systs only for first jet container
+        const xAOD::JetContainer* inJets(nullptr);
+        if(ll==0) RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, m_verbose) ,"");
+        else{     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainers.at(ll), m_event, m_store, m_verbose) ,""); }
+        helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices), m_jetBranches.at(ll) );
+      }
+
     }
     if ( !m_trigJetContainerName.empty() ) {
       const xAOD::JetContainer* inTrigJets(nullptr);
@@ -279,9 +322,11 @@ EL::StatusCode TreeAlgo :: execute ()
       helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices), "trigJet" );
     }
     if ( !m_truthJetContainerName.empty() ) {
-      const xAOD::JetContainer* inTruthJets(nullptr);
-      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthJets, m_truthJetContainerName, m_event, m_store, m_verbose) ,"");
-          helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices), "truthJet" );
+     for(unsigned int ll=0;ll<m_truthJetContainers.size();++ll){
+        const xAOD::JetContainer* inTruthJets(nullptr);
+        RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthJets, m_truthJetContainers.at(ll), m_event, m_store, m_verbose) ,"");
+        helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices), m_truthJetBranches.at(ll) );
+      }
     }
     if ( !m_fatJetContainerName.empty() ) {
       std::string token; 

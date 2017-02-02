@@ -35,7 +35,13 @@ public:
   std::string m_muContainerName;
   std::string m_elContainerName;
   std::string m_jetContainerName;
+  std::vector<std::string> m_jetContainers;
+  std::string m_jetBranchName;
+  std::vector<std::string> m_jetBranches;
   std::string m_truthJetContainerName;
+  std::vector<std::string> m_truthJetContainers;
+  std::string m_truthJetBranchName;
+  std::vector<std::string> m_truthJetBranches;
   std::string m_trigJetContainerName;
   std::string m_fatJetContainerName;
   std::string m_truthFatJetContainerName;
