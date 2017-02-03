@@ -54,6 +54,7 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_METContainerName            = "";
   m_photonContainerName         = "";
   m_truthParticlesContainerName = "";
+  m_l1JetContainerName          = "";
 
   m_muSystsVec                  = "";
   m_elSystsVec                  = "";
@@ -118,6 +119,17 @@ EL::StatusCode TreeAlgo :: initialize ()
     Error("initialize()", "The number of truth jet containers must be equal to the number of truth jet name branches. Exiting");
     return EL::StatusCode::FAILURE;		    
   }
+
+  // allow to store different variables for each jet collection (reco only, default: store the same)
+  std::istringstream ss(m_jetDetailStr);
+  while ( std::getline(ss, token, '|') ){
+    m_jetDetails.push_back(token);
+  }
+  if( m_jetDetails.size()!=1  && m_jetContainers.size()!=m_jetDetails.size()){
+    Error("initialize()", "The size of m_jetContainers should be equal to the size of m_jetDetailStr. Exiting");
+    return EL::StatusCode::FAILURE;		    
+  }
+
 
 
   return EL::StatusCode::SUCCESS;
@@ -228,9 +240,11 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_elContainerName.empty() )            { helpTree->AddElectrons(m_elDetailStr);                           }
     if (!m_jetContainerName.empty() )           {  
       for(unsigned int ll=0; ll<m_jetContainers.size();++ll){
-        helpTree->AddJets       (m_jetDetailStr, m_jetBranches.at(ll).c_str());
+        if(m_jetDetails.size()==1) helpTree->AddJets       (m_jetDetailStr, m_jetBranches.at(ll).c_str());
+	else{ helpTree->AddJets       (m_jetDetails.at(ll), m_jetBranches.at(ll).c_str()); }
       }
     }
+    if (!m_l1JetContainerName.empty() )         { helpTree->AddL1Jets();                                           }
     if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
     if (!m_truthJetContainerName.empty() )      {
       for(unsigned int ll=0; ll<m_truthJetContainers.size();++ll){
@@ -315,6 +329,11 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices), m_jetBranches.at(ll) );
       }
 
+    }
+    if ( !m_l1JetContainerName.empty() ){
+      const xAOD::JetRoIContainer* inL1Jets(nullptr);
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inL1Jets, m_l1JetContainerName, m_event, m_store, m_verbose) ,"");
+      helpTree->FillL1Jets( inL1Jets);
     }
     if ( !m_trigJetContainerName.empty() ) {
       const xAOD::JetContainer* inTrigJets(nullptr);
