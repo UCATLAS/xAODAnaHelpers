@@ -22,6 +22,7 @@
 #include "xAODEgamma/PhotonContainer.h"
 #include "xAODMuon/MuonContainer.h"
 #include "xAODJet/JetContainer.h"
+#include "xAODTrigger/JetRoIContainer.h"
 #include "xAODTruth/TruthParticleContainer.h"
 #include "xAODTau/TauJetContainer.h"
 #include "xAODMissingET/MissingETContainer.h"
@@ -71,6 +72,7 @@ public:
   void AddElectrons   (const std::string detailStr = "", const std::string elecName = "el");
   void AddPhotons     (const std::string detailStr = "", const std::string photonName = "ph");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
+  void AddL1Jets      ();
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
 
   /**
@@ -126,6 +128,7 @@ public:
 
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
+  void FillL1Jets( const xAOD::JetRoIContainer* jets );
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
@@ -157,6 +160,7 @@ public:
   void ClearElectrons   (const std::string elecName = "el");
   void ClearPhotons     (const std::string photonName = "ph");
   void ClearJets        (const std::string jetName = "jet");
+  void ClearL1Jets      ();
   void ClearTruth       (const std::string truthName);
   void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
   void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
@@ -308,6 +312,14 @@ protected:
   //  Jets
   //
   std::map<std::string, xAH::JetContainer*> m_jets;
+
+  //
+  // L1 Jets
+  //
+  int m_nL1Jet;
+  std::vector<float> *m_l1Jet_et8x8;
+  std::vector<float> *m_l1Jet_eta;
+  std::vector<float> *m_l1Jet_phi;
 
   //
   // Truth

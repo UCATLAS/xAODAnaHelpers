@@ -418,6 +418,44 @@ void HelpTreeBase::ClearPhotons(const std::string photonName) {
 
 /*********************
  *
+ *   L1 JETS
+ *
+ ********************/
+
+void HelpTreeBase::AddL1Jets()
+{
+
+  if(m_debug) Info("AddL1Jets()", "Adding kinematics jet variables");
+
+  m_tree->Branch("nL1Jets",     &m_nL1Jet,"nL1Jets/I");
+  m_tree->Branch("L1Jet_et8x8", &m_l1Jet_et8x8);
+  m_tree->Branch("L1Jet_eta",   &m_l1Jet_eta);
+  m_tree->Branch("L1Jet_phi",   &m_l1Jet_phi);
+
+}
+
+void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets ) {
+
+  this->ClearL1Jets();
+
+  for( auto jet_itr : *jets ) {
+    m_l1Jet_et8x8->push_back ( jet_itr->et8x8() / m_units );
+    m_l1Jet_eta->push_back( jet_itr->eta() );
+    m_l1Jet_phi->push_back( jet_itr->phi() );
+    m_nL1Jet++;
+  }
+}
+
+void HelpTreeBase::ClearL1Jets() {
+  m_nL1Jet = 0;
+  m_l1Jet_et8x8->clear();
+  m_l1Jet_eta->clear();
+  m_l1Jet_phi->clear();
+}
+
+
+/*********************
+ *
  *   JETS
  *
  ********************/
