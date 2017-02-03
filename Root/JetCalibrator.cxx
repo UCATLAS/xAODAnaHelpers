@@ -68,14 +68,13 @@ JetCalibrator :: JetCalibrator (std::string className) :
 
   // CONFIG parameters for JetCalibrationTool
   m_jetAlgo                 = "";
-  m_outputAlgo     = "";
-
-  // when running data "_Insitu" is appended to this string
+  m_outputAlgo              = "";
   m_calibSequence           = "JetArea_Residual_Origin_EtaJES_GSC";
   m_calibConfigFullSim      = "JES_MC15Prerecommendation_April2015.config";
   m_calibConfigAFII         = "JES_Prerecommendation2015_AFII_Apr2015.config";
   m_calibConfigData         = "JES_MC15Prerecommendation_April2015.config";
   m_calibConfig             = "";
+  m_forceInsitu             = true; // when running data "_Insitu" is appended to this string
 
   // CONFIG parameters for JetUncertaintiesTool
   m_JESUncertConfig         = "";
@@ -191,8 +190,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  //Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
-  if ( !m_isMC && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
+  // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
+  if ( m_forceInsitu && !m_isMC && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
 
   if( m_isMC && m_calibSequence.find("Insitu") != std::string::npos){
     Error("initialize()", "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
