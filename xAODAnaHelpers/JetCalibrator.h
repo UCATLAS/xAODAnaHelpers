@@ -46,6 +46,7 @@ public:
   std::string m_JESUncertConfig;
   std::string m_JESUncertMCType;
   bool m_setAFII;
+  bool m_forceInsitu;
 
   bool m_isTrigger; // whether the jet collection is trigger or not (soon: different calibrations)
 
