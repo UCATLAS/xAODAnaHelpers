@@ -317,9 +317,9 @@ protected:
   // L1 Jets
   //
   int m_nL1Jet;
-  std::vector<float> *m_l1Jet_et8x8;
-  std::vector<float> *m_l1Jet_eta;
-  std::vector<float> *m_l1Jet_phi;
+  std::vector<float> m_l1Jet_et8x8;
+  std::vector<float> m_l1Jet_eta;
+  std::vector<float> m_l1Jet_phi;
 
   //
   // Truth
