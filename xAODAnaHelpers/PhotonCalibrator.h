@@ -32,6 +32,19 @@ public:
   std::string m_inContainerName;
   std::string m_outContainerName;
 
+  // Calibration information
+  // recommended files here: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommended_input_files
+  std::string m_conEffCalibPath;
+  std::string m_uncEffCalibPath;
+  std::string m_conEffAFIICalibPath;
+  std::string m_uncEffAFIICalibPath;
+
+  // ID information
+  // recommended files here: ElectronLikelihoodLooseOfflineConfig2016_Smooth.conf
+  std::string m_tightIDConfigPath;
+  std::string m_mediumIDConfigPath;
+  std::string m_looseIDConfigPath;
+
   // sort after calibration
   bool    m_sort;
 
