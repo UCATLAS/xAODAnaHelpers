@@ -85,6 +85,17 @@ PhotonCalibrator :: PhotonCalibrator (std::string className) :
 
   m_sort                    = true;
   m_isMC                    = false;
+  m_useAFII                 = false;
+
+  m_conEffCalibPath ="PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.con.v00.root";
+  m_uncEffCalibPath ="PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.unc.v00.root";
+
+  m_conEffAFIICalibPath ="PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.con.v01.root";
+  m_uncEffAFIICalibPath ="PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.unc.v01.root";
+
+  m_tightIDConfigPath  = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMTightSelectorCutDefs.conf";
+  m_mediumIDConfigPath = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMMediumSelectorCutDefs.conf";
+  m_looseIDConfigPath  = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMLooseSelectorCutDefs.conf";
 
   m_toolInitializationAtTheFirstEventDone = false;
 
@@ -182,9 +193,6 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   MSG::Level msgLevel = (m_debug) ? MSG::VERBOSE : MSG::INFO;
 
-  m_numEvent      = 0;
-  m_numObject     = 0;
-
   // initialize the CP::EgammaCalibrationAndSmearingTool
   //
   const std::string CalibToolName = m_name + "_EgammaCalibrationAndSmearingTool_Photons";
@@ -257,13 +265,13 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   //set the configuration file
   // todo : monitor the config files!
   RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonTightIsEMSelector->setProperty("ConfigFile","ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMTightSelectorCutDefs.conf"),
+	       m_photonTightIsEMSelector->setProperty("ConfigFile", m_tightIDConfigPath),
 	       "failed in setting property");
   RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonMediumIsEMSelector->setProperty("ConfigFile","ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMMediumSelectorCutDefs.conf"),
+	       m_photonMediumIsEMSelector->setProperty("ConfigFile",m_mediumIDConfigPath),
 	       "failed in setting property");
   RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonLooseIsEMSelector->setProperty("ConfigFile","ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMLooseSelectorCutDefs.conf"),
+	       m_photonLooseIsEMSelector->setProperty("ConfigFile", m_looseIDConfigPath),
 	       "failed in setting property");
 
 
@@ -304,8 +312,6 @@ EL::StatusCode PhotonCalibrator :: execute ()
   // code will go.
 
   if ( m_debug ) { Info("execute()", "Applying Photon Calibration ... "); }
-
-  m_numEvent++;
 
   // get the collection from TEvent or TStore
   //
@@ -391,8 +397,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
 	  Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
 	}
 
-	//if ( m_IsolationCorrectionTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) { /// indeed wrong
-	if ( m_IsolationCorrectionTool->CorrectLeakage( *phSC_itr ) != CP::CorrectionCode::Ok ) {
+	if ( m_IsolationCorrectionTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
 	  Warning("execute()", "Problem in CP::IsolationCorrection::applyCorrection()");
 	}
       }
@@ -569,7 +574,7 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 
     // configuration files not yet available for 13 TeV :(
     //sf only available after basic kinematic selection
-    if(cluster_et > 20000. && fabs(cluster_eta) < 2.37 && !inCrack){
+    if(cluster_et > 10000. && fabs(cluster_eta) < 2.37 && !inCrack){
       // SF
       if(m_photonTightEffTool->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
 	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
@@ -670,21 +675,19 @@ EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xA
     }
     m_photonLooseEffTool->msg().setLevel( msgLevel );
 
-    // todo : Set input files ** not yet available for 13 TeV ** Date : 13 May
-    // recommended files here: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommended_input_files
-    std::string file_unc = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.unc.v01.root");
-    std::string file_con = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.con.v01.root");
+    std::string conEffCalibPath  = PathResolverFindCalibFile(m_conEffCalibPath );
+    std::string uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffCalibPath );
     if(m_useAFII){
-      file_unc = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.unc.v01.root");
-      file_con = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.con.v01.root");
+      conEffCalibPath  = PathResolverFindCalibFile(m_conEffAFIICalibPath );
+      uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffAFIICalibPath );
     }
 
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool->setProperty("CorrectionFileNameConv",file_con), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool->setProperty("CorrectionFileNameUnconv",file_unc), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->setProperty("CorrectionFileNameConv",file_con), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->setProperty("CorrectionFileNameUnconv",file_unc), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool->setProperty("CorrectionFileNameConv",file_con), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool->setProperty("CorrectionFileNameUnconv",file_unc), "failed in setting property");
+    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool ->setProperty("CorrectionFileNameConv"  ,conEffCalibPath), "failed in setting property");
+    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool ->setProperty("CorrectionFileNameUnconv",uncEffCalibPath), "failed in setting property");
+    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->setProperty("CorrectionFileNameConv"  ,conEffCalibPath), "failed in setting property");
+    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->setProperty("CorrectionFileNameUnconv",uncEffCalibPath), "failed in setting property");
+    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool ->setProperty("CorrectionFileNameConv"  ,conEffCalibPath), "failed in setting property");
+    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool ->setProperty("CorrectionFileNameUnconv",uncEffCalibPath), "failed in setting property");
 
     // set data type
     RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool->setProperty("ForceDataType", dataType), "failed in setting property");
@@ -706,11 +709,6 @@ EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xA
     m_IsolationCorrectionTool = new CP::IsolationCorrectionTool(IsoCorrToolName.c_str());
   }
 
-  if (m_isMC) {
-    RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->setProperty("IsMC", true), "Failed in IsolationCorrectionTool setProperty");
-  } else {
-    RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->setProperty("IsMC", false), "Failed in IsolationCorrectionTool setProperty");
-  }
   RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->initialize(), "Failed in IsolationCorrectionTool initialization");
   m_IsolationCorrectionTool->msg().setLevel( msgLevel );
 
