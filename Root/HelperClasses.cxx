@@ -196,6 +196,7 @@ namespace HelperClasses{
     m_clean         = has_exact("clean");
     m_energy        = has_exact("energy");
     m_scales        = has_exact("scales");
+    m_constscaleEta = has_exact("constscaleEta");
     m_resolution    = has_exact("resolution");
     m_truth         = has_exact("truth");
     m_truthDetails  = has_exact("truth_details");
