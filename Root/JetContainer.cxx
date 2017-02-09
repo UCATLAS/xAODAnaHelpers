@@ -63,6 +63,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_insituScalePt	    = new std::vector<float>(); 
   }
 
+  // constscale eta
+  if ( m_infoSwitch.m_constscaleEta ) {
+    m_constScaleEta               = new std::vector<float>(); 
+  }
+
   // layer
   if ( m_infoSwitch.m_layer ) {
     m_EnergyPerSampling       = new std::vector< std::vector<float> >();
@@ -390,6 +395,11 @@ JetContainer::~JetContainer()
     delete m_etaJESScalePt	   ;
     delete m_gscScalePt		   ;
     delete m_insituScalePt	   ;
+  }
+
+  // constscale eta 
+  if ( m_infoSwitch.m_constscaleEta ) {
+    delete m_constScaleEta         ;
   }
 
 
@@ -1226,6 +1236,10 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"insituScalePt",          m_insituScalePt        );
   }
 
+  if ( m_infoSwitch.m_constscaleEta ) {
+    setBranch<float>(tree,"constScaleEta",              m_constScaleEta            );
+  }
+
   if ( m_infoSwitch.m_layer ) {
     setBranch<vector<float> >(tree,"EnergyPerSampling",     m_EnergyPerSampling   );
   }
@@ -1562,6 +1576,11 @@ void JetContainer::clear()
     m_etaJESScalePt	    ->clear();
     m_gscScalePt	    ->clear(); 
     m_insituScalePt	    ->clear();
+  }
+
+  // eta at constScale
+  if ( m_infoSwitch.m_constscaleEta ) {
+    m_constScaleEta	    ->clear();
   }
 
   // layer
@@ -1969,6 +1988,14 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetInsituScaleMomentum", fourVec );
     if(status) { m_insituScalePt->push_back( fourVec.Pt() / m_units ); }
     else { m_insituScalePt->push_back( -999 ); }
+  }
+
+  if ( m_infoSwitch.m_constscaleEta ) {
+    xAOD::JetFourMom_t fourVec;
+    bool status(false);
+    status = jet->getAttribute<xAOD::JetFourMom_t>( "JetConstitScaleMomentum", fourVec );
+    if( status ) { m_constScaleEta->push_back( fourVec.Eta() ); }
+    else { m_constScaleEta->push_back( -999 ); }
   }
 
   if ( m_infoSwitch.m_layer ) {

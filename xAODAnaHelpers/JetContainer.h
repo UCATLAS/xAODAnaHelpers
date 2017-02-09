@@ -90,6 +90,9 @@ namespace xAH {
       std::vector<float> *m_etaJESScalePt;
       std::vector<float> *m_gscScalePt;
       std::vector<float> *m_insituScalePt;
+
+      // constScale Eta
+      std::vector<float> *m_constScaleEta;
       
 
       // layer
