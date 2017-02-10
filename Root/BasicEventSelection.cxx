@@ -1053,7 +1053,7 @@ EL::StatusCode BasicEventSelection :: finalize ()
   m_RunNr_VS_EvtNr.clear();
 
   if ( m_grl )          { delete m_grl; m_grl = nullptr; }
-  if ( m_trigDecTool )  { delete m_trigDecTool;  m_trigDecTool = nullptr; }
+  if ( m_trigDecTool )  { m_trigDecTool->finalize(); delete m_trigDecTool;  m_trigDecTool = nullptr; }
   if ( m_trigConfTool ) { delete m_trigConfTool;  m_trigConfTool = nullptr; }
 
   //after execution loop 
