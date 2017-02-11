@@ -649,12 +649,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with reco efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyMCEfficiency for Reco");
-    	 }
-    	 if ( m_muRecoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Reco");
-    	 }
+    	 //if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for Reco");
+    	 //}
+    	 //if ( m_muRecoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Reco");
+    	 //}
 
     	 // b)
     	 // obtain reco efficiency SF as a float (to be stored away separately)
@@ -753,12 +753,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with iso efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyMCEfficiency for Iso");
-    	 }
-    	 if ( m_muIsoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Iso");
-    	 }
+    	 //if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for Iso");
+    	 //}
+    	 //if ( m_muIsoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Iso");
+    	 //}
 
     	 // b)
     	 // obtain iso efficiency SF as a float (to be stored away separately)
@@ -1101,12 +1101,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with TTVA efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyMCEfficiency for TTVA");
-    	 }
-    	 if ( m_muTTVASF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {	 
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for TTVA");
-    	 }
+    	 //if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for TTVA");
+    	 //}
+    	 //if ( m_muTTVASF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {	 
+    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for TTVA");
+    	 //}
 
     	 // b)
     	 // obtain TTVA efficiency SF as a float (to be stored away separately)
