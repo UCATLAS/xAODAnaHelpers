@@ -26,13 +26,13 @@ namespace xAH {
       JetContainer(const std::string& name = "jet", const std::string& detailStr="", float units = 1e3, bool mc = false);
       virtual ~JetContainer();
     
-      virtual void setTree    (TTree *tree, std::string tagger="MV2c10");
+      virtual void setTree    (TTree *tree);
+      virtual void setTree    (TTree *tree, const std::string& tagger/*="MV2c10"*/);
       virtual void setBranches(TTree *tree);
       virtual void clear();
       virtual void FillJet( const xAOD::Jet* jet,            const xAOD::Vertex* pv, int pvLocation );
       virtual void FillJet( const xAOD::IParticle* particle, const xAOD::Vertex* pv, int pvLocation );
       virtual void FillGlobalBTagSF( const xAOD::EventInfo* eventInfo );
-      using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
       virtual void updateParticle(uint idx, Jet& jet);
 

@@ -683,7 +683,12 @@ JetContainer::~JetContainer()
 
 }
 
-void JetContainer::setTree(TTree *tree, std::string tagger)
+void JetContainer::setTree(TTree *tree)
+{
+  JetContainer::setTree(tree, "");
+}
+
+void JetContainer::setTree(TTree *tree, const std::string& tagger)
 {
   //
   // Connect branches
