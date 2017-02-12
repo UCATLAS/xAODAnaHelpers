@@ -612,3 +612,4 @@ if __name__ == "__main__":
   except Exception, e:
     # we crashed
     xAH_logger.exception("{0}\nAn exception was caught!".format("-"*20))
+    sys.exit(1)
