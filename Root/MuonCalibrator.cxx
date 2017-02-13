@@ -305,7 +305,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   if (runNumber >= 266904 && runNumber <= 284484 ) { 
     randYear = "Data15";
     if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
-      Error("executeSF()", "Random runNumber is 2015 but no corresponding MuonTriggerEfficiency tool has been initialized. Check ilumicalc config or extend m_Years!");
+      Error("executeSF()", "Random runNumber is 2015 but no corresponding MuonCalibrationAndSmearingTool tool has been initialized. Check ilumicalc config or extend m_Years!");
       return EL::StatusCode::FAILURE; 
     }
     
@@ -313,7 +313,7 @@ EL::StatusCode MuonCalibrator :: execute ()
     
     randYear = "Data16";
     if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
-     Error("executeSF()", "Random runNumber is 2016 but no corresponding MuonTriggerEfficiency tool has been initialized. Check ilumicalc config or extend m_Years!");
+     Error("executeSF()", "Random runNumber is 2016 but no corresponding MuonCalibrationAndSmearingTool tool has been initialized. Check ilumicalc config or extend m_Years!");
      return EL::StatusCode::FAILURE;
     }
 
