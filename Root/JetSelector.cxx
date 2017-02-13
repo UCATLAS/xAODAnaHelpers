@@ -105,6 +105,7 @@ JetSelector :: JetSelector (std::string className) :
   m_eta_max_JVT             = 2.4;
   m_JVTCut                  = -1.0;
   m_WorkingPointJVT         = "Medium";
+  m_SFFileJVT               = "JetJvtEfficiency/Moriond2017/JvtSFFile_EM.root";
 
   m_systValJVT 	            = 0.0;
   m_systNameJVT	            = "";
@@ -338,12 +339,13 @@ EL::StatusCode JetSelector :: initialize ()
 
   // initialize the CP::JetJvtEfficiency Tool
   //
-  m_JVT_tool_name = "JetJvtEfficiency_effSF";
-  std::string JVT_handle_name = "CP::JetJvtEfficiency/" + m_JVT_tool_name +"_"+m_name;
-  RETURN_CHECK("JetSelector::initialize()", checkToolStore<CP::JetJvtEfficiency>(m_JVT_tool_name), "" );
-  RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.makeNew<CP::JetJvtEfficiency>(JVT_handle_name), "Failed to create handle to CP::JetJvtEfficiency for JVT");
-  RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
-  RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.initialize(), "Failed to properly initialize CP::JetJvtEfficiency for JVT");
+  m_JVT_tool_handle.setTypeAndName("CP::JetJvtEfficiency/JetJvtEfficiency_effSF_"+m_name);
+  if(!m_JVT_tool_handle.isUserConfigured()) {
+    RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency), "Could not make JetJetEfficiency");
+    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
+    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ),      "Failed to set SFFile property of JetJvtEfficiency for JVT");
+    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.retrieve(), "Failed to retrieve CP::JetJvtEfficiency");
+  }
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -592,13 +594,13 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
            //
            //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
            //
-           SG::AuxElement::Decorator< std::vector<float> > sfVecJVT( m_outputSystNamesJVT );
+           static const SG::AuxElement::Decorator< std::vector<float> > sfVecJVT( m_outputSystNamesJVT );
            if ( !sfVecJVT.isAvailable( *jet ) ) {
              sfVecJVT( *jet ) = std::vector<float>();
            }
 
            float jvtSF(1.0);
-	   if ( jet->pt() < m_pt_max_JVT && fabs(jet->eta()) < m_eta_max_JVT ) {
+	   if ( m_JVT_tool_handle->isInRange(*jet) ) {
              if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
                Warning( "executeSelection()", "Problem in JVT Tool getEfficiencyScaleFactor");
                jvtSF = 1.0;
@@ -799,15 +801,15 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       if ( m_JVTCut > 0 && jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { Info("passCuts()", " pt/eta = %2f/%2f ", jet->pt() , jet->eta() ); }
     }
 
-    if ( jet->pt() < m_pt_max_JVT ) {
-      if ( m_debug ) { Info("PassCuts()", "Pass JVT-pT Cut"); }
-      xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
-      if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
-	if ( m_debug ) Info("passCuts()", " Pass JVT-Eta Cut " );
+    // Old usage: check manually whether this jet passes JVT cut
+    //
+    if ( m_JVTCut > 0 ) {
+      if ( jet->pt() < m_pt_max_JVT ) {
+	if ( m_debug ) { Info("PassCuts()", "Pass JVT-pT Cut"); }
+	xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
+	if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
+	  if ( m_debug ) Info("passCuts()", " Pass JVT-Eta Cut " );
 
-	// Old usage: check manually whether this jet passes JVT cut
-	//
-	if ( m_JVTCut > 0 ) {
 	  if ( m_debug ) { Info("passCuts()", " JVT = %2f ", jet->getAttribute< float >( "Jvt" ) ); }
           if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
 	    if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - cutting this jet!!", m_JVTCut ); }
@@ -815,11 +817,10 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
           } else {
 	    if ( m_debug ) { Info("passCuts()", " upper JVTCut is %2f - jet passes JVT ", m_JVTCut ); }
 	  }
-	} else {
-  	  if ( !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
 	}
-
       }
+    } else {
+      if ( !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
     }
   } // m_doJVT
   if ( m_useCutFlow ) m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
