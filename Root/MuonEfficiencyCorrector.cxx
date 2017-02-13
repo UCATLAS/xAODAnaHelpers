@@ -72,6 +72,8 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   m_runNumber2015              = 276329;
   m_runNumber2016              = 300345;
   m_useRandomRunNumber         = true;
+  m_AllowZeroSF                = false;
+
 
   m_WorkingPointRecoTrig       = "Loose";
   m_WorkingPointIsoTrig        = "LooseTrackOnly";
@@ -353,6 +355,12 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
       m_muTrigSF_tools[yr] = asg::ToolStore::get<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_names[yr] );
     } else {
       m_muTrigSF_tools[yr] = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_names[yr] );
+      
+      if ( m_AllowZeroSF ) {
+    	Warning( "MuonEfficiencyCorrector::initialize()", "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
+        RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("AllowZeroSF", m_AllowZeroSF ),"Failed to set AllowZeroSF property of MuonTriggerScaleFactors");
+      } 
+      
       RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
       RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
       if ( !yr.empty() ) {
