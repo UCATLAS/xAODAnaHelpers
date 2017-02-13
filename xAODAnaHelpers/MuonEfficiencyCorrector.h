@@ -49,6 +49,7 @@ public:
   int           m_runNumber2015;
   int           m_runNumber2016;
   bool          m_useRandomRunNumber;
+  bool          m_AllowZeroSF; // Use with caution!!!
   std::string   m_WorkingPointRecoTrig;
   std::string   m_WorkingPointIsoTrig;
   std::string   m_Years;
