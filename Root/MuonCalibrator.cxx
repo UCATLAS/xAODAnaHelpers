@@ -3,7 +3,7 @@
  * Interface to CP Muon calibration tool(s).
  *
  * M. Milesi (marco.milesi@cern.ch)
- *
+ * F. Scutti (federico.scutti@cern.ch)
  ********************************************/
 
 // c++ include(s):
@@ -38,8 +38,8 @@ using HelperClasses::ToolName;
 ClassImp(MuonCalibrator)
 
 MuonCalibrator :: MuonCalibrator (std::string className) :
-    Algorithm(className),
-    m_muonCalibrationAndSmearingTool(nullptr)
+    Algorithm(className)
+    //m_muonCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -58,6 +58,13 @@ MuonCalibrator :: MuonCalibrator (std::string className) :
   m_outContainerName        = "";
 
   m_release                 = "";
+
+  // list of comma-separated years
+  m_Years                   = "Data16,Data15"; 
+  
+  m_do_sagittaCorr          = false;
+  m_sagittaRelease          = "sagittaBiasDataAll_06_02_17";
+  m_do_sagittaMCDistortion  = false;
 
   m_sort                    = true;
 
@@ -155,19 +162,84 @@ EL::StatusCode MuonCalibrator :: initialize ()
   RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
 
+  // Create a ToolHandle of the PRW tool which is used for the random generation
+  // of run numbers. Depending on the outcome a specific initialization of the tool
+  // will be used.
+  //
+  m_pileup_tool_handle.setTypeAndName("CP::PileupReweightingTool/Pileup");
+  if( m_isMC ){
+    if( m_pileup_tool_handle.isUserConfigured() ){
+      RETURN_CHECK("MuonCalibrator::initialize()", m_pileup_tool_handle.retrieve(), "Failed to retrieve Pileup Tool");
+    }else{
+      Error("initialize()","A configured CP::PileupReweightingTool must already exist in the asg::ToolStore! Are you creating one in xAH::BasicEventSelector?" );
+      return EL::StatusCode::FAILURE;
+    }
+  }
+
   m_numEvent      = 0;
   m_numObject     = 0;
 
+  std::string tmp_years = m_Years;
+ 
+  // Parse all comma seperated years
+  //
+  while ( tmp_years.size() > 0) {
+    size_t pos = tmp_years.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_years.size();
+      m_YearsList.push_back(tmp_years.substr(0, pos));
+      tmp_years.erase(0, pos);
+    } else {
+      m_YearsList.push_back(tmp_years.substr(0, pos));
+      tmp_years.erase(0, pos+1);
+    }
+  }
+  
+  // Initialize vector of names
+  //
+  for(auto yr : m_YearsList) {
+    m_muonCalibrationAndSmearingTool_names[yr] = "MuonCalibrationAndSmearingTool_" + yr;
+  }
+  
   // Initialize the CP::MuonCalibrationAndSmearingTool
   //
-  if ( asg::ToolStore::contains<CP::MuonCalibrationAndSmearingTool>("MuonCalibrationAndSmearingTool") ) {
-    m_muonCalibrationAndSmearingTool = asg::ToolStore::get<CP::MuonCalibrationAndSmearingTool>("MuonCalibrationAndSmearingTool");
-  } else {
-    m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool("MuonCalibrationAndSmearingTool");
+  for(auto yr : m_YearsList) {
+    RETURN_CHECK("MuonCalibrator::initialize()", checkToolStore<CP::MuonCalibrationAndSmearingTool>(m_muonCalibrationAndSmearingTool_names[yr]), "Failed to check whether tool already exists in asg::ToolStore" );
+
+    if ( asg::ToolStore::contains<CP::MuonCalibrationAndSmearingTool>( m_muonCalibrationAndSmearingTool_names[yr] ) ) {
+      m_muonCalibrationAndSmearingTools[yr] = asg::ToolStore::get<CP::MuonCalibrationAndSmearingTool>( m_muonCalibrationAndSmearingTool_names[yr] );
+    } else {
+      m_muonCalibrationAndSmearingTools[yr] = new CP::MuonCalibrationAndSmearingTool( m_muonCalibrationAndSmearingTool_names[yr]);
+      m_muonCalibrationAndSmearingTools[yr]->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+      if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release),"Failed to set property Release"); }
+      if ( !yr.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ),"Failed to set Year property of MuonCalibrationAndSmearingTool"); }
+      if ( yr == "Data16") { 
+        // The following properties are supported in MuonMomentumCorrections-01-00-58
+        // not in AB 2.4.26. Remember to uncomment them for future releases!
+        //
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonTriggerScaleFactors"); 
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonTriggerScaleFactors"); 
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonTriggerScaleFactors"); 
+      } else {
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ),"Failed to set SagittaCorr property of MuonTriggerScaleFactors"); 
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ),"Failed to set doSagittaMCDistortion property of MuonTriggerScaleFactors"); 
+      }
+
+      RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
+
+    }
   }
-  m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-  if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->setProperty("Release", m_release),"Failed to set property Release"); }
-  RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
+  
+  // Initialize the CP::MuonCalibrationAndSmearingTool
+  //
+  //if ( asg::ToolStore::contains<CP::MuonCalibrationAndSmearingTool>("MuonCalibrationAndSmearingTool") ) {
+  //  m_muonCalibrationAndSmearingTool = asg::ToolStore::get<CP::MuonCalibrationAndSmearingTool>("MuonCalibrationAndSmearingTool");
+  //} else {
+  //  m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool("MuonCalibrationAndSmearingTool");
+  //}
+  //m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+  //if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->setProperty("Release", m_release),"Failed to set property Release"); }
+  //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
 
   // ***********************************************************
 
@@ -215,10 +287,42 @@ EL::StatusCode MuonCalibrator :: execute ()
   if ( !m_isMC && !m_forceDataCalib ) {
     if ( m_numEvent == 1 ) { Info("execute()", "Sample is Data! Do not apply any Muon Calibration... "); }
   }
+  
+  const xAOD::EventInfo* eventInfo(nullptr);
+  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  
+  std::string randYear = "Data16";
 
+  // a default 2016 run
+  int runNumber = 296939; 
+  
+  if ( !m_isMC && m_forceDataCalib ) {
+    runNumber = eventInfo->runNumber();
+  } else if ( m_isMC ) {
+    runNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, true ); 
+  } 
+  
+  if (runNumber >= 266904 && runNumber <= 284484 ) { 
+    randYear = "Data15";
+    if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
+      Error("executeSF()", "Random runNumber is 2015 but no corresponding MuonTriggerEfficiency tool has been initialized. Check ilumicalc config or extend m_Years!");
+      return EL::StatusCode::FAILURE; 
+    }
+    
+  } else if (runNumber >= 296939 ) { 
+    
+    randYear = "Data16";
+    if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
+     Error("executeSF()", "Random runNumber is 2016 but no corresponding MuonTriggerEfficiency tool has been initialized. Check ilumicalc config or extend m_Years!");
+     return EL::StatusCode::FAILURE;
+    }
+
+  } 
+  
+  
+  
   // get the collections from TEvent or TStore
   //
-  const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   const xAOD::MuonContainer* inMuons(nullptr);
   RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
@@ -244,7 +348,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_muonCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_muonCalibrationAndSmearingTools[randYear]->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       Error("execute()", "Failed to configure MuonCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;
     }
@@ -266,7 +370,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
 	if ( m_debug ) { Info("execute()", "  uncailbrated muon %i, pt = %.2f GeV", idx, (muSC_itr->pt() * 1e-3)); }
 	if(muSC_itr-> primaryTrackParticle()){
-	  if ( m_muonCalibrationAndSmearingTool->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
+	  if ( m_muonCalibrationAndSmearingTools[randYear]->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
 	    Warning("execute()", "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
 	  }
 	}
@@ -350,8 +454,10 @@ EL::StatusCode MuonCalibrator :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_muonCalibrationAndSmearingTool ) { m_muonCalibrationAndSmearingTool = nullptr; delete m_muonCalibrationAndSmearingTool; }
-
+  for(auto yr : m_YearsList) {
+    if ( m_muonCalibrationAndSmearingTools[yr] ) { m_muonCalibrationAndSmearingTools[yr] = nullptr; delete m_muonCalibrationAndSmearingTools[yr]; }
+  }
+  
   return EL::StatusCode::SUCCESS;
 }
 
