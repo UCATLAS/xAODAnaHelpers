@@ -217,12 +217,12 @@ EL::StatusCode MuonCalibrator :: initialize ()
         // The following properties are supported in MuonMomentumCorrections-01-00-58
         // not in AB 2.4.26. Remember to uncomment them for future releases!
         //
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonTriggerScaleFactors"); 
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonTriggerScaleFactors"); 
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonTriggerScaleFactors"); 
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonCalibrationAndSmearingTool"); 
       } else {
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ),"Failed to set SagittaCorr property of MuonTriggerScaleFactors"); 
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ),"Failed to set doSagittaMCDistortion property of MuonTriggerScaleFactors"); 
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
+        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
       }
 
       RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
