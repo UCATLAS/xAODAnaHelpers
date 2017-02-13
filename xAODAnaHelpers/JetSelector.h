@@ -98,6 +98,17 @@ public:
         @endrst
         */
   std::string m_WorkingPointJVT;
+
+  /**
+     @brief Configuration containting JVT scale factors.
+     
+     @rst
+     The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
+
+     See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration for latest recommendation.
+     @endrst
+  */ 
+  std::string m_SFFileJVT;
   std::string m_outputSystNamesJVT;
 
   float         m_systValJVT;
