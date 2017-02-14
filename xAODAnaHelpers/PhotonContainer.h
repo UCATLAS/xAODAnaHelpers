@@ -72,7 +72,17 @@ namespace xAH {
       std::vector<float>* m_deltae;
       std::vector<float>* m_eratio;
     
-    
+      // effSF
+      std::vector<float> *m_LooseEffSF;
+      std::vector<float> *m_MediumEffSF;
+      std::vector<float> *m_TightEffSF;
+
+      std::vector<float> *m_LooseEffSF_Error;
+      std::vector<float> *m_MediumEffSF_Error;
+      std::vector<float> *m_TightEffSF_Error;
+
+      // trigger
+      std::vector<std::vector<std::string> > *m_trigMatched;
     };
 }
 #endif // xAODAnaHelpers_PhotonContainer_H

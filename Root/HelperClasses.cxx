@@ -186,6 +186,8 @@ namespace HelperClasses{
     m_isolation     = has_exact("isolation");
     m_PID           = has_exact("PID");
     m_purity        = has_exact("purity");
+    m_effSF         = has_exact("effSF");
+    m_trigger       = has_exact("trigger");
   }
 
   void JetInfoSwitch::initialize(){

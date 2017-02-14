@@ -10,11 +10,6 @@ namespace CP {
   class IsolationSelectionTool;
 }
 
-namespace Trig {
-  class TrigDecisionTool;
-  //class TrigEgammaMatchingTool;
-}
-
 #include <TH1D.h>
 
 class PhotonSelector : public xAH::Algorithm
@@ -49,12 +44,6 @@ public:
   std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
   std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
 
-  /* trigger matching */
-
-  std::string    m_PhTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching.
-  				      This is passed by the user as input in configuration
-				      If left empty (as it is by default), no trigger matching will be attempted at all */
-
 private:
 
   int m_numEvent;           //!
@@ -87,12 +76,6 @@ private:
 
   /* tools */
   CP::IsolationSelectionTool* m_IsolationSelectionTool; //!
-
-  /* trigger decision and matching */
-  Trig::TrigDecisionTool* m_trigDecTool; //!
-  //Trig::TrigEgammaMatchingTool* m_match_Tool; //!
-
-  std::vector<std::string> m_PhTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_ElTrigChains */
 
 public:
 

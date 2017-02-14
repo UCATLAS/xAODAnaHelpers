@@ -41,6 +41,17 @@ namespace xAH {
       float  deltae;
       float  eratio;
 
+      // effSF
+      float LooseEffSF;
+      float MediumEffSF;
+      float TightEffSF;
+
+      float LooseEffSF_Error;
+      float MediumEffSF_Error;
+      float TightEffSF_Error;
+
+      // trigger
+      std::vector<std::string> trigMatched;
   };
 
 }//xAH

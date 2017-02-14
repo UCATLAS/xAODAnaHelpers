@@ -47,6 +47,7 @@
 
 /* Other */
 #include <xAODAnaHelpers/OverlapRemover.h>
+#include <xAODAnaHelpers/TrigMatcher.h>
 #include <xAODAnaHelpers/Writer.h>
 
 #ifdef __CINT__
@@ -96,5 +97,6 @@
 #pragma link C++ class MinixAOD+;
 
 #pragma link C++ class OverlapRemover+;
+#pragma link C++ class TrigMatcher+;
 #pragma link C++ class Writer+;
 #endif
