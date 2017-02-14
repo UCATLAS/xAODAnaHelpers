@@ -106,7 +106,7 @@ PhotonCalibrator :: PhotonCalibrator (std::string className) :
   m_systName		    = "";
   m_systVal 		    = 0.;
 
-  m_esModel                 = "";
+  m_esModel                 = "es2016data_mc15c";
   m_decorrelationModel      = "";
 
 }
@@ -204,6 +204,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel),"Failed to set property ESModel");
   RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel),"Failed to set property decorrelationModel");
+  RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("randomRunNumber", EgammaCalibPeriodRunNumbersExample::run_2016), "Failed to set property decorrelationModel");
   if (m_useAFII) {
     RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1), "Failed to set property useAFII");
   }
@@ -295,6 +296,9 @@ EL::StatusCode PhotonCalibrator :: initialize ()
     m_photonFudgeMCTool = new ElectronPhotonShowerShapeFudgeTool(FudgeMCToolName.c_str());
   }
   m_photonFudgeMCTool->msg().setLevel( msgLevel );
+
+  int FFset = 21; // for MC15 samples, which are based on a geometry derived from GEO-21 from 2015+2016 data
+  m_photonFudgeMCTool->setProperty("Preselection",FFset);
   RETURN_CHECK("PhotonHandler::initializeTools()", m_photonFudgeMCTool->initialize(),
 	       "failed in initialization of fudge MC tool");
 
@@ -538,7 +542,7 @@ EL::StatusCode PhotonCalibrator :: histFinalize ()
 EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 {
   // (1) apply fudge factors
-  if((!m_useAFII) && m_isMC){
+  if(!m_useAFII && m_isMC){
     if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
       Error("decorate()", "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
       return EL::StatusCode::FAILURE;
@@ -696,9 +700,8 @@ EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xA
 
     //initialize
     RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool->initialize(), "failed in initialization");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->initialize(), "failed in initialization");
+    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->initialize(),"failed in initialization");
     RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool->initialize(), "failed in initialization");
-
   }
 
   //IsolationCorrectionTool
