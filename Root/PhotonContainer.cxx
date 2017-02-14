@@ -41,17 +41,30 @@ PhotonContainer::PhotonContainer(const std::string& name, const std::string& det
       //Purity
       m_radhad1    = new std::vector<float> ();
       m_radhad     = new std::vector<float> ();
-      m_e277	      = new std::vector<float> ();
-      m_reta	      = new std::vector<float> ();
-      m_rphi	      = new std::vector<float> ();
+      m_e277	   = new std::vector<float> ();
+      m_reta	   = new std::vector<float> ();
+      m_rphi	   = new std::vector<float> ();
       m_weta2      = new std::vector<float> ();
-      m_f1	      = new std::vector<float> ();
-      m_wtot	      = new std::vector<float> ();
+      m_f1	   = new std::vector<float> ();
+      m_wtot	   = new std::vector<float> ();
       m_deltae     = new std::vector<float> ();
       m_eratio     = new std::vector<float> ();
       //std::vector<float> m_w1
   }
   
+  if(m_infoSwitch.m_effSF && m_mc){
+    m_LooseEffSF =new std::vector<float>();
+    m_MediumEffSF=new std::vector<float>();
+    m_TightEffSF =new std::vector<float>();
+
+    m_LooseEffSF_Error =new std::vector<float>();
+    m_MediumEffSF_Error=new std::vector<float>();
+    m_TightEffSF_Error =new std::vector<float>();
+  }
+
+  if(m_infoSwitch.m_trigger){
+    m_trigMatched=new std::vector<std::vector<std::string> >();
+  }
 }
 
 PhotonContainer::~PhotonContainer()
@@ -63,12 +76,12 @@ PhotonContainer::~PhotonContainer()
     delete m_ptcone20		   ;
     delete m_ptcone30		   ;
     delete m_ptcone40		   ;
-    delete m_ptvarcone20		   ;
-    delete m_ptvarcone30		   ;
-    delete m_ptvarcone40		   ;
-    delete m_topoetcone20		   ;
-    delete m_topoetcone30		   ;
-    delete m_topoetcone40             ;
+    delete m_ptvarcone20	   ;
+    delete m_ptvarcone30	   ;
+    delete m_ptvarcone40	   ;
+    delete m_topoetcone20	   ;
+    delete m_topoetcone30	   ;
+    delete m_topoetcone40          ;
   }    
 
   // PID
@@ -92,6 +105,19 @@ PhotonContainer::~PhotonContainer()
     //std::vector<float> m_w1
   }
 
+  if(m_infoSwitch.m_effSF){
+    delete m_LooseEffSF;
+    delete m_MediumEffSF;
+    delete m_TightEffSF;
+
+    delete m_LooseEffSF_Error;
+    delete m_MediumEffSF_Error;
+    delete m_TightEffSF_Error;
+  }
+
+  if(m_infoSwitch.m_trigger){
+    delete m_trigMatched;
+  }
 }
 
 void PhotonContainer::setTree(TTree *tree)
@@ -100,6 +126,8 @@ void PhotonContainer::setTree(TTree *tree)
   // Connect branches
   ParticleContainer::setTree(tree);
 
+  tree->SetBranchStatus  ("nph" , 1);
+  tree->SetBranchAddress ("nph" , &m_n);
 
   if(m_infoSwitch.m_isolation){
     connectBranch<int>  (tree, "isIsolated_Cone40CaloOnly", &m_isIsolated_Cone40CaloOnly );
@@ -145,12 +173,27 @@ void PhotonContainer::setTree(TTree *tree)
     connectBranch<float>(tree,"eratio" , &m_eratio );
   }
 
+  if(m_infoSwitch.m_effSF && m_mc)
+    {
+      connectBranch<float>(tree, "LooseEffSF", &m_LooseEffSF);
+      connectBranch<float>(tree, "MediumEffSF",&m_MediumEffSF);
+      connectBranch<float>(tree, "TightEffSF", &m_TightEffSF);
+
+      connectBranch<float>(tree, "LooseEffSF_Error", &m_LooseEffSF_Error);
+      connectBranch<float>(tree, "MediumEffSF_Error",&m_MediumEffSF_Error);
+      connectBranch<float>(tree, "TightEffSF_Error", &m_TightEffSF_Error);
+    }
+
+  if(m_infoSwitch.m_trigger)
+    {
+      connectBranch<std::vector<std::string> >(tree, "trigMatched", &m_trigMatched);
+    }
 
 }
 
 void PhotonContainer::updateParticle(uint idx, Photon& photon)
 {
-  ParticleContainer::updateParticle(idx,photon);  
+  ParticleContainer::updateParticle(idx,photon);
 
   if(m_infoSwitch.m_isolation){
     photon.isIsolated_Cone40CaloOnly =  m_isIsolated_Cone40CaloOnly ->at(idx);
@@ -188,7 +231,19 @@ void PhotonContainer::updateParticle(uint idx, Photon& photon)
     photon.eratio =  m_eratio ->at(idx);
   }
 
+  if(m_infoSwitch.m_effSF && m_mc){
+    photon.LooseEffSF =m_LooseEffSF ->at(idx);
+    photon.MediumEffSF=m_MediumEffSF->at(idx);
+    photon.TightEffSF =m_TightEffSF ->at(idx);
 
+    photon.LooseEffSF_Error =m_LooseEffSF_Error ->at(idx);
+    photon.MediumEffSF_Error=m_MediumEffSF_Error->at(idx);
+    photon.TightEffSF_Error =m_TightEffSF_Error ->at(idx);
+  }
+
+  if(m_infoSwitch.m_trigger){
+    photon.trigMatched =m_trigMatched->at(idx);
+  }
 
 }
 
@@ -225,7 +280,7 @@ void PhotonContainer::setBranches(TTree *tree)
     setBranch<int>(tree,  "IsTight"  , m_IsTight );
   }
 
-  
+  // purity
   if(m_infoSwitch.m_purity){
     setBranch<float>(tree,"radhad1", m_radhad1);
     setBranch<float>(tree,"radhad" , m_radhad );
@@ -239,7 +294,21 @@ void PhotonContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"eratio" , m_eratio );
   }
 
+  // effSF
+  if(m_infoSwitch.m_effSF && m_mc){
+    setBranch<float>(tree, "LooseEffSF" , m_LooseEffSF);
+    setBranch<float>(tree, "MediumEffSF", m_MediumEffSF);
+    setBranch<float>(tree, "TightEffSF" , m_TightEffSF);
 
+    setBranch<float>(tree, "LooseEffSF_Error" , m_LooseEffSF_Error);
+    setBranch<float>(tree, "MediumEffSF_Error", m_MediumEffSF_Error);
+    setBranch<float>(tree, "TightEffSF_Error" , m_TightEffSF_Error);
+  }
+
+  // trigger
+  if(m_infoSwitch.m_trigger){
+    setBranch<std::vector<std::string> >(tree, "trigMatched", m_trigMatched);
+  }
 
   return;
 }
@@ -258,12 +327,12 @@ void PhotonContainer::clear()
     m_ptcone20		  -> clear() ;
     m_ptcone30		  -> clear() ;
     m_ptcone40		  -> clear() ;
-    m_ptvarcone20		  -> clear() ;
-    m_ptvarcone30		  -> clear() ;
-    m_ptvarcone40		  -> clear() ;
-    m_topoetcone20		  -> clear() ;
-    m_topoetcone30		  -> clear() ;
-    m_topoetcone40             -> clear();
+    m_ptvarcone20	  -> clear() ;
+    m_ptvarcone30	  -> clear() ;
+    m_ptvarcone40	  -> clear() ;
+    m_topoetcone20	  -> clear() ;
+    m_topoetcone30	  -> clear() ;
+    m_topoetcone40        -> clear();
   }    
 
   // PID
@@ -278,6 +347,7 @@ void PhotonContainer::clear()
     m_IsTight -> clear();
   }
 
+  // purity
   if(m_infoSwitch.m_purity){
     m_radhad1-> clear();
     m_radhad -> clear();
@@ -292,6 +362,21 @@ void PhotonContainer::clear()
     //std::vector<float> m_w1
   }
 
+  // effSF
+  if(m_infoSwitch.m_effSF && m_mc){
+    m_LooseEffSF ->clear();
+    m_MediumEffSF->clear();
+    m_TightEffSF ->clear();
+
+    m_LooseEffSF_Error ->clear();
+    m_MediumEffSF_Error->clear();
+    m_TightEffSF_Error ->clear();
+  }
+
+  // trigger
+  if(m_infoSwitch.m_trigger){
+    m_trigMatched->clear();
+  }
 
 }
 
@@ -367,6 +452,31 @@ void PhotonContainer::FillPhoton( const xAOD::IParticle* particle )
     m_wtot     -> push_back( wtot   (*photon) );
     m_deltae   -> push_back( deltae (*photon) );
     m_eratio   -> push_back( eratio (*photon) );
+  }
+
+  if (m_infoSwitch.m_effSF && m_mc) {
+    static SG::AuxElement::Accessor<float> PhotonID_Tight_EffSF  ("PhotonID_Tight_EffSF"  );
+    static SG::AuxElement::Accessor<float> PhotonID_Medium_EffSF ("PhotonID_Medium_EffSF" );
+    static SG::AuxElement::Accessor<float> PhotonID_Loose_EffSF  ("PhotonID_Loose_EffSF"  );
+
+    static SG::AuxElement::Accessor<float> PhotonID_Tight_EffSF_Error  ("PhotonID_Tight_EffSF_Error" );
+    static SG::AuxElement::Accessor<float> PhotonID_Medium_EffSF_Error ("PhotonID_Medium_EffSF_Error" );
+    static SG::AuxElement::Accessor<float> PhotonID_Loose_EffSF_Error  ("PhotonID_Loose_EffSF_Error" );
+
+
+    m_TightEffSF  ->push_back( PhotonID_Tight_EffSF (*photon) );
+    m_MediumEffSF ->push_back( PhotonID_Medium_EffSF(*photon) );
+    m_LooseEffSF  ->push_back( PhotonID_Loose_EffSF (*photon) );
+
+    m_TightEffSF_Error  ->push_back( PhotonID_Tight_EffSF_Error (*photon) );
+    m_MediumEffSF_Error ->push_back( PhotonID_Medium_EffSF_Error(*photon) );
+    m_LooseEffSF_Error  ->push_back( PhotonID_Loose_EffSF_Error (*photon) );
+  }
+
+  if (m_infoSwitch.m_trigger) {
+    static SG::AuxElement::Accessor< std::vector< std::string> > trigMatched("trigMatched");
+
+    m_trigMatched ->push_back( trigMatched(*photon) );
   }
 
   return;
