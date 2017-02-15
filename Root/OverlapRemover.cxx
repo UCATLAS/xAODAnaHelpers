@@ -50,8 +50,6 @@ OverlapRemover :: OverlapRemover (std::string className) :
     m_useMuons(false),
     m_usePhotons(false),
     m_useTaus(false),
-    m_dummyElectronContainer(nullptr),
-    m_dummyMuonContainer(nullptr),
     m_el_cutflowHist_1(nullptr),
     m_mu_cutflowHist_1(nullptr),
     m_jet_cutflowHist_1(nullptr),
@@ -195,21 +193,11 @@ EL::StatusCode OverlapRemover :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  // be more flexible w/ electrons, muons, photons and taus :)
-  if ( !m_inContainerName_Electrons.empty() ) {
-    m_useElectrons = true;
-  } else{
-    m_dummyElectronContainer = new xAOD::ElectronContainer();
-  }
-
-  if ( !m_inContainerName_Muons.empty() )     {
-    m_useMuons     = true;
-  } else {
-    m_dummyMuonContainer = new xAOD::MuonContainer();
-  }
-
-  if ( !m_inContainerName_Photons.empty() )   { m_usePhotons   = true; }
+  if ( !m_inContainerName_Electrons.empty() ) { m_useElectrons = true; }
+  if ( !m_inContainerName_Muons.empty() )     { m_useMuons     = true; }
   if ( !m_inContainerName_Taus.empty() )      { m_useTaus      = true; }
+  if ( !m_inContainerName_Photons.empty() )   { m_usePhotons   = true; }
+
   m_outAuxContainerName_Electrons   = m_outContainerName_Electrons + "Aux."; // the period is very important!
   m_outAuxContainerName_Muons       = m_outContainerName_Muons + "Aux.";     // the period is very important!
   m_outAuxContainerName_Jets        = m_outContainerName_Jets + "Aux.";      // the period is very important!
@@ -272,7 +260,6 @@ EL::StatusCode OverlapRemover :: execute ()
   // --------------------------------------------------------------------------------------------
   //
   // always run the nominal case
-
   executeOR(inElectrons, inMuons, inJets, inPhotons, inTaus, NOMINAL);
 
   // look what do we have in TStore
@@ -415,9 +402,6 @@ EL::StatusCode OverlapRemover :: finalize ()
 
   Info("finalize()", "Deleting tool instances...");
 
-  if ( m_dummyElectronContainer){ delete m_dummyElectronContainer; m_dummyElectronContainer = nullptr; }
-  if ( m_dummyMuonContainer    ){ delete m_dummyMuonContainer;     m_dummyMuonContainer     = nullptr; }
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -528,11 +512,6 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
   ConstDataVector<xAOD::JetContainer>      *selectedJets  (nullptr);
   ConstDataVector<xAOD::PhotonContainer>   *selectedPhotons (nullptr);
   ConstDataVector<xAOD::TauJetContainer>   *selectedTaus  (nullptr);
-
-  // Set input containers to dummys if not using particles
-  //
-  if(!m_useElectrons) inElectrons = m_dummyElectronContainer;
-  if(!m_useMuons)     inMuons     = m_dummyMuonContainer;
 
   // make a switch for systematics types
   //
