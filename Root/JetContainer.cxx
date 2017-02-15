@@ -1221,14 +1221,14 @@ void JetContainer::setBranches(TTree *tree)
 
 
   if ( m_infoSwitch.m_energy ) {
-    setBranch<float>(tree,"_HECFrac",                   m_HECFrac            );
-    setBranch<float>(tree,"_EMFrac",                    m_EMFrac     );
-    setBranch<float>(tree,"_CentroidR",                 m_CentroidR      );
-    setBranch<float>(tree,"_FracSamplingMax",           m_FracSamplingMax    );
-    setBranch<float>(tree,"_FracSamplingMaxIndex",      m_FracSamplingMaxIndex );
-    setBranch<float>(tree,"_LowEtConstituentsFrac",     m_LowEtConstituentsFrac      );
-    setBranch<float>(tree,"_GhostMuonSegmentCount",     m_GhostMuonSegmentCount   );
-    setBranch<float>(tree,"_Width",                     m_Width          );
+    setBranch<float>(tree,"HECFrac",                   m_HECFrac            );
+    setBranch<float>(tree,"EMFrac",                    m_EMFrac     );
+    setBranch<float>(tree,"CentroidR",                 m_CentroidR      );
+    setBranch<float>(tree,"FracSamplingMax",           m_FracSamplingMax    );
+    setBranch<float>(tree,"FracSamplingMaxIndex",      m_FracSamplingMaxIndex );
+    setBranch<float>(tree,"LowEtConstituentsFrac",     m_LowEtConstituentsFrac      );
+    setBranch<float>(tree,"GhostMuonSegmentCount",     m_GhostMuonSegmentCount   );
+    setBranch<float>(tree,"Width",                     m_Width          );
   }
 
   if ( m_infoSwitch.m_scales ) {
