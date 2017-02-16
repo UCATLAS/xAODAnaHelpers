@@ -89,7 +89,7 @@ MuonSelector :: MuonSelector (std::string className) :
   // configurable cuts
   //
   m_muonQualityStr          = "Medium";
-  m_muonType                = "";
+  //m_muonType                = "";
   m_pass_max                = -1;
   m_pass_min                = -1;
   m_pT_max                  = 1e8;
@@ -283,10 +283,10 @@ EL::StatusCode MuonSelector :: initialize ()
   muonTypeSet.insert("SegmentTagged");
   muonTypeSet.insert("CaloTagged");
   muonTypeSet.insert("SiliconAssociatedForwardMuon");
-  if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
-    Error("initialize()", "Unknown muon type requested: %s!",m_muonType.c_str());
-    return EL::StatusCode::FAILURE;
-  }
+  //if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
+  //  Error("initialize()", "Unknown muon type requested: %s!",m_muonType.c_str());
+  //  return EL::StatusCode::FAILURE;
+  //}
 
   // Parse input isolation WP list, split by comma, and put into a vector for later use
   // Make sure it's not empty!
@@ -897,15 +897,15 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   //
   // muon type cut
   //
-  HelperClasses::EnumParser<xAOD::Muon::MuonType> muTypeParser;
-  if ( !m_muonType.empty() ) {
-    if ( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
-      if ( m_debug ) { Info("PassCuts()", "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str()); }
-      return 0;
-    }
-  }
-  if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_type_cut, 1 );
-  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_type_cut, 1 ); }
+  //HelperClasses::EnumParser<xAOD::Muon::MuonType> muTypeParser;
+  //if ( !m_muonType.empty() ) {
+  //  if ( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
+  //    if ( m_debug ) { Info("PassCuts()", "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str()); }
+  //    return 0;
+  //  }
+  //}
+  //if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_type_cut, 1 );
+  //if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_type_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //

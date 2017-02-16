@@ -57,7 +57,7 @@ public:
   float          m_pT_min;		     /* require pT > pt_min */
   int            m_muonQuality;	             /* require quality */
   std::string    m_muonQualityStr;           /* require type */
-  std::string    m_muonType;	             /* require type */
+  //std::string    m_muonType;	             /* require type */
   float          m_eta_max;		     /* require |eta| < eta_max */
   float          m_d0_max;                   /* require d0 < m_d0_max */
   float          m_d0sig_max; 	             /* require d0 significance (at BL) < m_d0sig_max */
