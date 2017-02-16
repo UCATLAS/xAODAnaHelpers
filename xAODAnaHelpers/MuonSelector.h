@@ -125,7 +125,6 @@ private:
 
   // tools
 
-  //asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle;  //!
   asg::AnaToolHandle<CP::IsolationSelectionTool>  m_isolationSelectionTool_handle;  //!
   std::string m_isolationSelectionTool_name;                                         //!
   asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle;       //!

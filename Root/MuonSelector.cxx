@@ -276,13 +276,13 @@ EL::StatusCode MuonSelector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  std::set<std::string> muonTypeSet;
-  muonTypeSet.insert("");
-  muonTypeSet.insert("Combined");
-  muonTypeSet.insert("MuonStandAlone");
-  muonTypeSet.insert("SegmentTagged");
-  muonTypeSet.insert("CaloTagged");
-  muonTypeSet.insert("SiliconAssociatedForwardMuon");
+  //std::set<std::string> muonTypeSet;
+  //muonTypeSet.insert("");
+  //muonTypeSet.insert("Combined");
+  //muonTypeSet.insert("MuonStandAlone");
+  //muonTypeSet.insert("SegmentTagged");
+  //muonTypeSet.insert("CaloTagged");
+  //muonTypeSet.insert("SiliconAssociatedForwardMuon");
   //if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
   //  Error("initialize()", "Unknown muon type requested: %s!",m_muonType.c_str());
   //  return EL::StatusCode::FAILURE;
