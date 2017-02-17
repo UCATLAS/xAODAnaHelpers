@@ -186,19 +186,6 @@ class OverlapRemover : public xAH::Algorithm
   */
   bool m_useTaus;
 
-  /**
-     @rst
-       If :cpp:member:`m_useElectrons` is ``false``, a dummy input electron contaner is passed as input to prevent the code from crashing, since electrons were considered as "default" objects in the original OLR logic implementation.
-     @endrst
-  */
-  const xAOD::ElectronContainer* m_dummyElectronContainer; //!
-  /**
-     @rst
-       If :cpp:member:`m_useMuons` is ``false``, a dummy input electron contaner is passed as input to prevent the code from crashing, since muons were considered as "default" objects in the original OLR logic implementation.
-     @endrst
-  */
-  const xAOD::MuonContainer*     m_dummyMuonContainer;     //!
-
   /** @brief Output auxiliary container name */
   std::string  m_outAuxContainerName_Electrons;
   /** @brief Output auxiliary container name */
