@@ -217,9 +217,9 @@ EL::StatusCode MuonCalibrator :: initialize ()
         // The following properties are supported in MuonMomentumCorrections-01-00-58
         // not in AB 2.4.26. Remember to uncomment them for future releases!
         //
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonCalibrationAndSmearingTool"); 
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonCalibrationAndSmearingTool"); 
       } else {
         //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
         //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
@@ -245,7 +245,8 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   // Get a list of recommended systematics for this tool
   //
-  const CP::SystematicSet recSyst = CP::SystematicSet();
+  //const CP::SystematicSet recSyst = CP::SystematicSet();
+  const CP::SystematicSet& recSyst = m_muonCalibrationAndSmearingTools[m_YearsList.at(0)]->recommendedSystematics();
 
   Info("initialize()"," Initializing Muon Calibrator Systematics :");
   //
