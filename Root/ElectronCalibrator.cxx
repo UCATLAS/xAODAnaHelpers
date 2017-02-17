@@ -210,7 +210,8 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   // Get a list of recommended systematics for this tool
   //
-  const CP::SystematicSet recSyst = CP::SystematicSet();
+  //const CP::SystematicSet recSyst = CP::SystematicSet();
+  const CP::SystematicSet& recSyst = m_EgammaCalibrationAndSmearingTool->recommendedSystematics();
 
   Info("initialize()"," Initializing Electron Calibrator Systematics :");
   //
