@@ -214,15 +214,13 @@ EL::StatusCode MuonCalibrator :: initialize ()
       if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release),"Failed to set property Release"); }
       if ( !yr.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ),"Failed to set Year property of MuonCalibrationAndSmearingTool"); }
       if ( yr == "Data16") { 
-        // The following properties are supported in MuonMomentumCorrections-01-00-58
-        // not in AB 2.4.26. Remember to uncomment them for future releases!
-        //
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonCalibrationAndSmearingTool"); 
+        
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonCalibrationAndSmearingTool"); 
       } else {
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
-        //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
       }
 
       RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
@@ -230,17 +228,6 @@ EL::StatusCode MuonCalibrator :: initialize ()
     }
   }
   
-  // Initialize the CP::MuonCalibrationAndSmearingTool
-  //
-  //if ( asg::ToolStore::contains<CP::MuonCalibrationAndSmearingTool>("MuonCalibrationAndSmearingTool") ) {
-  //  m_muonCalibrationAndSmearingTool = asg::ToolStore::get<CP::MuonCalibrationAndSmearingTool>("MuonCalibrationAndSmearingTool");
-  //} else {
-  //  m_muonCalibrationAndSmearingTool = new CP::MuonCalibrationAndSmearingTool("MuonCalibrationAndSmearingTool");
-  //}
-  //m_muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-  //if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->setProperty("Release", m_release),"Failed to set property Release"); }
-  //RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
-
   // ***********************************************************
 
   // Get a list of recommended systematics for this tool

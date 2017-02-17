@@ -64,8 +64,6 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  //CP::MuonCalibrationAndSmearingTool *m_muonCalibrationAndSmearingTool; //!
-
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;                            //!
   std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;  //!   
   std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                      //!
