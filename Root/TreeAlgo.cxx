@@ -352,13 +352,13 @@ EL::StatusCode TreeAlgo :: execute ()
       std::istringstream ss(m_fatJetContainerName);
       while ( std::getline(ss, token, ' ') ){
       	const xAOD::JetContainer* inFatJets(nullptr);
-      	RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, m_verbose) ,"");
+	RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, m_verbose) ,"");
       	helpTree->FillFatJets( inFatJets, token );
-			}
+      }
     }
     if ( !m_truthFatJetContainerName.empty() ) {
       const xAOD::JetContainer* inTruthFatJets(nullptr);
-      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName+fatJetSuffix, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName, m_event, m_store, m_verbose) ,"");
       helpTree->FillTruthFatJets( inTruthFatJets );
     }
     if ( !m_tauContainerName.empty() ) {
