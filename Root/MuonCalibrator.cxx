@@ -214,6 +214,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
       if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release),"Failed to set property Release"); }
       if ( !yr.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ),"Failed to set Year property of MuonCalibrationAndSmearingTool"); }
       if ( yr == "Data16") { 
+
         
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
@@ -232,7 +233,8 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   // Get a list of recommended systematics for this tool
   //
-  const CP::SystematicSet recSyst = CP::SystematicSet();
+  //const CP::SystematicSet recSyst = CP::SystematicSet();
+  const CP::SystematicSet& recSyst = m_muonCalibrationAndSmearingTools[m_YearsList.at(0)]->recommendedSystematics();
 
   Info("initialize()"," Initializing Muon Calibrator Systematics :");
   //

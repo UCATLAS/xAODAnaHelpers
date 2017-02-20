@@ -33,6 +33,7 @@ public:
   std::string m_taggerName;
   bool        m_useDevelopmentFile;
   bool        m_coneFlavourLabel;
+  std::string m_systematicsStrategy;
 
   std::string m_operatingPt;      // Operating point.
   std::string m_operatingPtCDI;   // the one CDI will understand

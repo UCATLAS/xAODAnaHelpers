@@ -57,6 +57,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
   m_taggerName             = "MV2c10";
   m_useDevelopmentFile     = true;
   m_coneFlavourLabel       = true;
+  m_systematicsStrategy    = "SFEigen";
 
   // allowed operating points:
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
@@ -227,6 +228,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName),"Failed to set property");
+    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("SystematicsStrategy", m_systematicsStrategy ), "Failed to set property");
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPtCDI),"Failed to set property");
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property");
     RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ScaleFactorFileName", m_corrFileName),"Failed to set property");
