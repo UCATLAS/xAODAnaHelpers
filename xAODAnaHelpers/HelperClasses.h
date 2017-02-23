@@ -3,6 +3,7 @@
 
 #include <map>
 #include <iostream>
+#include <sstream>
 
 #include "TString.h"
 
