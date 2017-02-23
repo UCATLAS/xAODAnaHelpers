@@ -59,6 +59,7 @@ public:
 
   std::string m_esModel;
   std::string m_decorrelationModel;
+  int m_randomRunNumber;
 
 private:
   bool    m_toolInitializationAtTheFirstEventDone; //!

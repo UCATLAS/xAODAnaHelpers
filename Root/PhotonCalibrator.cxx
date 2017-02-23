@@ -109,6 +109,8 @@ PhotonCalibrator :: PhotonCalibrator (std::string className) :
   m_esModel                 = "es2016data_mc15c";
   m_decorrelationModel      = "";
 
+  m_randomRunNumber         = -1;
+
 }
 
 
@@ -204,7 +206,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel),"Failed to set property ESModel");
   RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel),"Failed to set property decorrelationModel");
-  RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("randomRunNumber", EgammaCalibPeriodRunNumbersExample::run_2016), "Failed to set property decorrelationModel");
+  if(m_randomRunNumber>0) RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("randomRunNumber", m_randomRunNumber), "Failed to set property randomRunNumber");
   if (m_useAFII) {
     RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1), "Failed to set property useAFII");
   }
