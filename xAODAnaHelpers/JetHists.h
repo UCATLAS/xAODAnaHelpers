@@ -283,7 +283,8 @@ class JetHists : public IParticleHists
     // By eta
     TH1F* m_jetPt_eta_0_1; //!
     TH1F* m_jetPt_eta_1_2; //!   
-    TH1F* m_jetPt_eta_2_2p5; //! 
+    TH1F* m_jetPt_eta_2_2p5; //!  
+    TH1F* m_jetPt_eta_1_2p5; //! 
     
     // bs information
     TH1F* m_bs_online_vx; //!

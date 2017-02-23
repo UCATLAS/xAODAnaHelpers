@@ -361,6 +361,7 @@ StatusCode JetHists::initialize() {
     m_jetPt_eta_0_1   = book(m_name, "jetPt_eta_0_1",   "p_{T} [GeV]",100, 0, 1000);
     m_jetPt_eta_1_2   = book(m_name, "jetPt_eta_1_2",   "p_{T} [GeV]",100, 0, 1000);
     m_jetPt_eta_2_2p5 = book(m_name, "jetPt_eta_2_2p5", "p_{T} [GeV]",100, 0, 1000);
+    m_jetPt_eta_1_2p5 = book(m_name, "jetPt_eta_1_2p5", "p_{T} [GeV]",100, 0, 1000);
 
   }
       
@@ -1415,9 +1416,9 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   }
 
   if(  m_infoSwitch->m_byEta ){
-    if (fabs(jet->eta()) < 1)          m_jetPt_eta_0_1   -> Fill(jet->pt()/1e3, eventWeight);
-    else if ( fabs(jet->eta()) < 2 )   m_jetPt_eta_1_2   -> Fill(jet->pt()/1e3, eventWeight); 
-    else if ( fabs(jet->eta()) < 2.5 ) m_jetPt_eta_2_2p5 -> Fill(jet->pt()/1e3, eventWeight);
+    if (fabs(jet->eta()) < 1)           m_jetPt_eta_0_1   -> Fill(jet->pt()/1e3, eventWeight);
+    else if ( fabs(jet->eta()) < 2 ){   m_jetPt_eta_1_2   -> Fill(jet->pt()/1e3, eventWeight); m_jetPt_eta_1_2p5 -> Fill(jet->pt()/1e3, eventWeight);}
+    else if ( fabs(jet->eta()) < 2.5 ){ m_jetPt_eta_2_2p5 -> Fill(jet->pt()/1e3, eventWeight); m_jetPt_eta_1_2p5 -> Fill(jet->pt()/1e3, eventWeight);}
   }
     
   if(  m_infoSwitch->m_onlineBS ){
@@ -1700,9 +1701,9 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     }
 
   if(  m_infoSwitch->m_byEta ){
-    if (fabs(jet->p4.Eta()) < 1)          m_jetPt_eta_0_1   -> Fill(jet->p4.Pt(), eventWeight);
-    else if ( fabs(jet->p4.Eta()) < 2 )   m_jetPt_eta_1_2   -> Fill(jet->p4.Pt(), eventWeight); 
-    else if ( fabs(jet->p4.Eta()) < 2.5 ) m_jetPt_eta_2_2p5 -> Fill(jet->p4.Pt(), eventWeight);
+    if (fabs(jet->p4.Eta()) < 1)           m_jetPt_eta_0_1   -> Fill(jet->p4.Pt(), eventWeight);
+    else if ( fabs(jet->p4.Eta()) < 2 )   {m_jetPt_eta_1_2   -> Fill(jet->p4.Pt(), eventWeight); m_jetPt_eta_1_2p5 -> Fill(jet->p4.Pt(), eventWeight);}
+    else if ( fabs(jet->p4.Eta()) < 2.5 ) {m_jetPt_eta_2_2p5 -> Fill(jet->p4.Pt(), eventWeight); m_jetPt_eta_1_2p5 -> Fill(jet->p4.Pt(), eventWeight);}
   }
 
   if(  m_infoSwitch->m_onlineBS ){
@@ -1738,6 +1739,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 	}
 
 
+      }
   }
   
   if(m_infoSwitch->m_hltVtxComp ||  m_infoSwitch->m_onlineBS )
@@ -1838,8 +1840,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       }
 
     }
-  }
-
+  
   if(m_infoSwitch->m_jetFitterDetails){
 
     m_jf_nVTX           ->Fill(jet->JetFitter_nVTX           ,      eventWeight);
