@@ -77,7 +77,7 @@ void EventInfo::setTree(TTree *tree)
     connectBranch<float>(tree, "x1",      &m_x1);  
     connectBranch<float>(tree, "x2",      &m_x2);  
     //connectBranch<float>(tree, "scale",   &m_scale);       
-    //connectBranch<float>(tree, "q",       &m_q);   
+    connectBranch<float>(tree, "q",       &m_q);   
     //connectBranch<float>(tree, "pdf1",    &m_pdf1);        
     //connectBranch<float>(tree, "pdf2",    &m_pdf2);        
     connectBranch<float>(tree, "xf1",     &m_xf1); 
@@ -157,7 +157,7 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("x1",                &m_x1,            "x1/F"  );
     tree->Branch("x2",                &m_x2,            "x2/F"  );
     //tree->Branch("scale",             &m_scale,         "scale/F");
-    //tree->Branch("q",                 &m_q,             "q/F");
+    tree->Branch("q",                 &m_q,             "q/F");
     //tree->Branch("pdf1",              &m_pdf1,          "pdf1/F");
     //tree->Branch("pdf2",              &m_pdf2,          "pdf2/F");
     tree->Branch("xf1",               &m_xf1,           "xf1/F");
@@ -330,26 +330,11 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
       truthEvent->pdfInfoParameter(m_x1,       xAOD::TruthEvent::X1);
       truthEvent->pdfInfoParameter(m_x2,       xAOD::TruthEvent::X2);
       //truthEvent->pdfInfoParameter(m_scale,    xAOD::TruthEvent::SCALE);
-      //truthEvent->pdfInfoParameter(m_q,        xAOD::TruthEvent::Q);
+      truthEvent->pdfInfoParameter(m_q,        xAOD::TruthEvent::Q);
       //truthEvent->pdfInfoParameter(m_pdf1,     xAOD::TruthEvent::PDF1);
       //truthEvent->pdfInfoParameter(m_pdf2,     xAOD::TruthEvent::PDF2);
       truthEvent->pdfInfoParameter(m_xf1,      xAOD::TruthEvent::XF1);
       truthEvent->pdfInfoParameter(m_xf2,      xAOD::TruthEvent::XF2);
-
-//      // crashes because of q?`
-//        const xAOD::TruthEvent::PdfInfo info = truthEvent->pdfInfo();
-//        if( info.valid() ) {
-//          m_pdgId1 = info.pdgId1;
-//          m_pdgId2 = info.pdgId2;
-//          m_pdfId1 = info.pdfId1;
-//          m_pdfId2 = info.pdfId2;
-//          m_x1     = info.x1;
-//          m_x2     = info.x2;
-//          //m_q      = info.Q;
-//          m_xf1    = info.xf1;
-//          m_xf2    = info.xf2;
-//        }
-
     }
 
   }
