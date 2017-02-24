@@ -31,6 +31,22 @@ class ElectronHists : public IParticleHists
 
   private:
 
+    // Isolation
+    TH1F* m_isIsolated_LooseTrackOnly              ; //!
+    TH1F* m_isIsolated_Loose			   ; //!
+    TH1F* m_isIsolated_Tight			   ; //!
+    TH1F* m_isIsolated_Gradient			   ; //!
+    TH1F* m_isIsolated_GradientLoose		   ; //!
+    TH1F* m_isIsolated_GradientT1		   ; //!
+    TH1F* m_isIsolated_GradientT2		   ; //!
+    TH1F* m_isIsolated_MU0p06			   ; //!
+    TH1F* m_isIsolated_FixedCutLoose		   ; //!
+    TH1F* m_isIsolated_FixedCutTight		   ; //!
+    TH1F* m_isIsolated_FixedCutTightTrackOnly	   ; //!
+    TH1F* m_isIsolated_UserDefinedFixEfficiency	   ; //!
+    TH1F* m_isIsolated_UserDefinedCut		   ; //!
+
+    
     // clean
     TH1F* m_ptcone20;                //!
     TH1F* m_ptcone30;                //!
