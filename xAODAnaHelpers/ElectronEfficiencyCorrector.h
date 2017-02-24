@@ -55,6 +55,7 @@ public:
   std::string m_corrFileNameReco;
   std::string m_corrFileNameTrig;
   std::string m_corrFileNameTrigMCEff;
+  std::string m_correlationModel;
 
 private:
   int m_numEvent;         //!
