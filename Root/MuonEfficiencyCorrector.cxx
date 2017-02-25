@@ -657,12 +657,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with reco efficiency (useful at all?), and the corresponding SF
     	 //
-    	 //if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for Reco");
-    	 //}
-    	 //if ( m_muRecoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Reco");
-    	 //}
+    	 if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	   Warning( "executeSF()", "Problem in applyMCEfficiency for Reco");
+    	 }
+    	 if ( m_muRecoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Reco");
+    	 }
 
     	 // b)
     	 // obtain reco efficiency SF as a float (to be stored away separately)
@@ -694,7 +694,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Reco efficiency:");
-    	   Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "Efficiency" ) );
+    	   Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "mcEfficiency" ) );
     	   Info( "executeSF()", "and its SF:");
     	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", recoEffSF );
@@ -761,12 +761,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with iso efficiency (useful at all?), and the corresponding SF
     	 //
-    	 //if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for Iso");
-    	 //}
-    	 //if ( m_muIsoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Iso");
-    	 //}
+    	 if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	   Warning( "executeSF()", "Problem in applyMCEfficiency for Iso");
+    	 }
+    	 if ( m_muIsoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Iso");
+    	 }
 
     	 // b)
     	 // obtain iso efficiency SF as a float (to be stored away separately)
@@ -797,8 +797,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
-//    	   Info( "executeSF()", "Iso efficiency:");
-//    	   Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOEfficiency" ) );
+           Info( "executeSF()", "Iso efficiency:");
+           Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOmcEfficiency" ) );
     	   Info( "executeSF()", "and its SF:");
     	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", IsoEffSF );
@@ -1109,12 +1109,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with TTVA efficiency (useful at all?), and the corresponding SF
     	 //
-    	 //if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for TTVA");
-    	 //}
-    	 //if ( m_muTTVASF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {	 
-    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for TTVA");
-    	 //}
+    	 if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	   Warning( "executeSF()", "Problem in applyMCEfficiency for TTVA");
+    	 }
+    	 if ( m_muTTVASF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {	 
+    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for TTVA");
+    	 }
 
     	 // b)
     	 // obtain TTVA efficiency SF as a float (to be stored away separately)
@@ -1145,9 +1145,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
-    	   Info( "executeSF()", "TTVA efficiency SF:");
+           Info( "executeSF()", "TTVA efficiency:");
+           Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "TTVAmcEfficiency" ) );
+    	   Info( "executeSF()", "and its SF:");
+    	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "TTVAEfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", TTVAEffSF );
-    	   Info( "executeSF()", "--------------------------------------");
+           Info( "executeSF()", "--------------------------------------");
     	 }
 
     	 ++idx;
