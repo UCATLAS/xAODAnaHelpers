@@ -94,6 +94,11 @@ HelpTreeBase::~HelpTreeBase() {
     //truth
     for (auto truth: m_truth)
       delete truth.second;
+    
+    //track
+    for (auto track: m_tracks)
+      delete track.second;
+
 }
 
 
@@ -586,6 +591,60 @@ void HelpTreeBase::ClearTruth(const std::string truthName) {
 
 }
 
+/*********************
+ *
+ *   TRACKS
+ *
+ ********************/
+
+void HelpTreeBase::AddTrackParts(const std::string trackName, const std::string detailStr)
+{
+  if(m_debug) Info("AddTrackParts()", "Adding track particle %s with variables: %s", trackName.c_str(), detailStr.c_str());
+  m_tracks[trackName] = new xAH::TrackContainer(trackName, detailStr, m_units);
+
+  xAH::TrackContainer* thisTrack = m_tracks[trackName];
+  thisTrack->setBranches(m_tree);
+  this->AddTracksUser(trackName);
+}
+
+void HelpTreeBase::FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* trackParts ) {
+
+  this->ClearTracks(trackName);
+
+  // We need some basic cuts here to avoid many PseudoRapiditity warnings being thrown ...
+  // float trackparticle_ptmin  = 1.0;
+  // float trackparticle_etamax = 8.0;
+
+  for( auto track_itr : *trackParts ) {
+
+    // if((track_itr->pt() / m_units < trackparticle_ptmin) || (fabs(track_itr->eta()) > trackparticle_etamax) ){
+    //  continue;
+    // }
+
+    this->FillTrack(track_itr, trackName);
+  }
+
+}
+
+void HelpTreeBase::FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName )
+{
+  xAH::TrackContainer* thisTrack = m_tracks[trackName];
+
+  thisTrack->FillTrack(trackPart);
+
+  this->FillTracksUser(trackName, trackPart);
+
+  return;
+}
+
+void HelpTreeBase::ClearTracks(const std::string trackName) {
+
+  xAH::TrackContainer* thisTrack = m_tracks[trackName];
+  thisTrack->clear();
+
+  this->ClearTracksUser(trackName);
+
+}
 
 /*********************
  *
