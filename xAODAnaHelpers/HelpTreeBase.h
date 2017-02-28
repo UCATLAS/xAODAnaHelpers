@@ -136,7 +136,7 @@ public:
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
 
-  void FillTracks( const std::string trackName, const xAOD::TruthParticleContainer* tracks);
+  void FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* tracks);
   void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
 
   /**

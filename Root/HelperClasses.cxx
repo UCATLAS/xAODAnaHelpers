@@ -325,6 +325,12 @@ namespace HelperClasses{
     m_children      = has_exact("children");
   }
 
+  void TrackInfoSwitch::initialize(){
+    m_kinematic     = has_exact("kinematic");
+    m_fitpars	    = has_exact("fitpars");
+    m_numbers	    = has_exact("numbers");
+    m_vertex	    = has_exact("vertex");
+  }
 
   void TauInfoSwitch::initialize(){
     m_trackparams   = has_exact("trackparams");

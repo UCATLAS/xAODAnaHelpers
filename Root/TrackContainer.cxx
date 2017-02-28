@@ -42,9 +42,11 @@ TrackContainer::TrackContainer(const std::string& name, const std::string& detai
   m_theta = new vector<float >;
 
   if(m_infoSwitch.m_vertex){
-    m_vertexLink = new vector<Int_t >;
-    m_vertexLink_persIndex = new vector<UInt_t >;
-    m_vertexLink_persKey = new vector<UInt_t >;
+    /*
+      m_vertexLink = new vector<Int_t >;
+      m_vertexLink_persIndex = new vector<UInt_t >;
+      m_vertexLink_persKey = new vector<UInt_t >;
+    */
     m_vz = new vector<float >;
     m_z0 = new vector<float >;
   }
@@ -87,9 +89,11 @@ TrackContainer::~TrackContainer()
   delete m_theta;
 
   if(m_infoSwitch.m_vertex){
-    delete m_vertexLink;
-    delete m_vertexLink_persIndex;
-    delete m_vertexLink_persKey;
+    /*
+      delete m_vertexLink;
+      delete m_vertexLink_persIndex;
+      delete m_vertexLink_persKey;
+    */
     delete m_vz;
     delete m_z0;
   }
@@ -132,9 +136,11 @@ void TrackContainer::setTree(TTree *tree)
   connectBranch<float>(tree, "theta", &m_theta);
   
   if(m_infoSwitch.m_vertex){
-    connectBranch<Int_t>(tree, "vertexLink", &m_vertexLink);
-    connectBranch<UInt_t>(tree, "vertexLink_persIndex", &m_vertexLink_persIndex);
-    connectBranch<UInt_t>(tree, "vertexLink_persKey", &m_vertexLink_persKey);
+    /*
+      connectBranch<Int_t>(tree, "vertexLink", &m_vertexLink);
+      connectBranch<UInt_t>(tree, "vertexLink_persIndex", &m_vertexLink_persIndex);
+      connectBranch<UInt_t>(tree, "vertexLink_persKey", &m_vertexLink_persKey);
+    */
     connectBranch<float>(tree, "vz", &m_vz);
     connectBranch<float>(tree, "z0", &m_z0);
   }
@@ -178,9 +184,11 @@ void TrackContainer::updateParticle(uint idx, TrackPart& track)
   track.theta = m_theta->at(idx);
 
   if(m_infoSwitch.m_vertex){
-    track.vertexLink = m_vertexLink->at(idx);
-    track.vertexLink_persIndex = m_vertexLink_persIndex->at(idx);
-    track.vertexLink_persKey = m_vertexLink_persKey->at(idx);
+    /*
+      track.vertexLink = m_vertexLink->at(idx);
+      track.vertexLink_persIndex = m_vertexLink_persIndex->at(idx);
+      track.vertexLink_persKey = m_vertexLink_persKey->at(idx);
+    */
     track.vz = m_vz->at(idx);
     track.z0 = m_z0->at(idx);
   }  
@@ -226,9 +234,11 @@ void TrackContainer::setBranches(TTree *tree)
   setBranch<float>(tree, "theta", m_theta);
 
   if(m_infoSwitch.m_vertex){
-    setBranch<Int_t>(tree, "vertexLink", m_vertexLink);
-    setBranch<UInt_t>(tree, "vertexLink_persIndex", m_vertexLink_persIndex);
-    setBranch<UInt_t>(tree, "vertexLink_persKey", m_vertexLink_persKey);
+    /*
+      setBranch<Int_t>(tree, "vertexLink", m_vertexLink);
+      setBranch<UInt_t>(tree, "vertexLink_persIndex", m_vertexLink_persIndex);
+      setBranch<UInt_t>(tree, "vertexLink_persKey", m_vertexLink_persKey);
+    */
     setBranch<float>(tree, "vz", m_vz);
     setBranch<float>(tree, "z0", m_z0);
   }
@@ -271,9 +281,11 @@ void TrackContainer::clear()
   m_theta->clear();
 
   if(m_infoSwitch.m_vertex){
-    m_vertexLink->clear();
-    m_vertexLink_persIndex->clear();
-    m_vertexLink_persKey->clear();
+    /*
+      m_vertexLink->clear();
+      m_vertexLink_persIndex->clear();
+      m_vertexLink_persKey->clear();
+    */
     m_vz->clear();
     m_z0->clear();
   }
@@ -292,32 +304,71 @@ void TrackContainer::FillTrack( const xAOD::IParticle* particle ){
   
   if(m_infoSwitch.m_fitpars){
     if(m_debug) std::cout << "Filling fitpars" << std::endl;
+
     m_chiSquared->push_back( track->chiSquared() );
     m_d0->push_back( track->d0() );
     m_numberDoF->push_back( track->numberDoF() );
-    m_definingParametersCovMatrix ->push_back(track->definingParametersCovMatrix() );
-    m_expectInnermostPixelLayerHit->push_back(track->expectInnermostPixelLayerHit() );
-    m_expectNextToInnermostPixelLayerHit->push_back(track->expectNextToInnermostPixelLayerHit() );
+    //m_definingParametersCovMatrix ->push_back(track->definingParametersCovMatrix() ); // fix this too
+
+    static SG::AuxElement::ConstAccessor<char> expectInnermostPixelLayerHit("expectInnermostPixelLayerHit");
+    //safeFill<char, int, xAOD::TrackParticle>(track, expectInnermostPixelLayerHit, m_expectInnermostPixelLayerHit, -999);    
+    m_expectInnermostPixelLayerHit->push_back(expectInnermostPixelLayerHit(*track));
+
+    //m_expectNextToInnermostPixelLayerHit->push_back(track->expectNextToInnermostPixelLayerHit() );
+    static SG::AuxElement::ConstAccessor<char> expectNextToInnermostPixelLayerHit("expectNextToInnermostPixelLayerHit");
+    m_expectNextToInnermostPixelLayerHit->push_back(expectNextToInnermostPixelLayerHit(*track));
   }
 
   if(m_infoSwitch.m_numbers){
     if(m_debug) std::cout << "Filling numbers" << std::endl;
-    m_numberOfInnermostPixelLayerHits->push_back(track->numberOfInnermostPixelLayerHits() );
-    m_numberOfNextToInnermostPixelLayerHits->push_back(track->numberOfNextToInnermostPixelLayerHits() );
-    m_numberOfPhiHoleLayers->push_back(track->numberOfPhiHoleLayers() );
-    m_numberOfPhiLayers->push_back(track->numberOfPhiLayers() );
-    m_numberOfPixelDeadSensors->push_back(track->numberOfPixelDeadSensors() );
-    m_numberOfPixelHits->push_back(track->numberOfPixelHits() );
-    m_numberOfPixelHoles->push_back(track->numberOfPixelHoles() );
-    m_numberOfPixelSharedHits->push_back(track->numberOfPixelSharedHits() );
-    m_numberOfPrecisionHoleLayers->push_back(track->numberOfPrecisionHoleLayers() );
-    m_numberOfPrecisionLayers->push_back(track->numberOfPrecisionLayers() );
-    m_numberOfSCTDeadSensors->push_back(track->numberOfSCTDeadSensors() );
-    m_numberOfSCTHits->push_back(track->numberOfSCTHits() );
-    m_numberOfSCTHoles->push_back(track->numberOfSCTHoles() );
-    m_numberOfSCTSharedHits->push_back(track->numberOfSCTSharedHits() );
-    m_numberOfTRTHits->push_back(track->numberOfTRTHits() );
-    m_numberOfTRTOutliers->push_back(track->numberOfTRTOutliers() );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfInnermostPixelLayerHits("numberOfInnermostPixelLayerHits");
+    m_numberOfInnermostPixelLayerHits->push_back(numberOfInnermostPixelLayerHits(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfNextToInnermostPixelLayerHits("numberOfNextToInnermostPixelLayerHits");
+    m_numberOfNextToInnermostPixelLayerHits->push_back(numberOfNextToInnermostPixelLayerHits(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfPhiHoleLayers("numberOfPhiHoleLayers");
+    m_numberOfPhiHoleLayers->push_back(numberOfPhiHoleLayers(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfPhiLayers("numberOfPhiLayers");
+    m_numberOfPhiLayers->push_back(numberOfPhiLayers(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfPixelDeadSensors("numberOfPixelDeadSensors");
+    m_numberOfPixelDeadSensors->push_back(numberOfPixelDeadSensors(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfPixelHits("numberOfPixelHits");
+    m_numberOfPixelHits->push_back(numberOfPixelHits(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfPixelHoles("numberOfPixelHoles");
+    m_numberOfPixelHoles->push_back(numberOfPixelHoles(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfPixelSharedHits("numberOfPixelSharedHits");
+    m_numberOfPixelSharedHits->push_back(numberOfPixelSharedHits(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfPrecisionHoleLayers("numberOfPrecisionHoleLayers");
+    m_numberOfPrecisionHoleLayers->push_back(numberOfPrecisionHoleLayers(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfPrecisionLayers("numberOfPrecisionLayers");
+    m_numberOfPrecisionLayers->push_back(numberOfPrecisionLayers(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfSCTDeadSensors("numberOfSCTDeadSensors");
+    m_numberOfSCTDeadSensors->push_back(numberOfSCTDeadSensors(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfSCTHits("numberOfSCTHits");
+    m_numberOfSCTHits->push_back(numberOfSCTHits(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfSCTHoles("numberOfSCTHoles");
+    m_numberOfSCTHoles->push_back(numberOfSCTHoles(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfSCTSharedHits("numberOfSCTSharedHits");
+    m_numberOfSCTSharedHits->push_back(numberOfSCTSharedHits(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfTRTHits("numberOfTRTHits");
+    m_numberOfTRTHits->push_back(numberOfTRTHits(*track) );
+
+    static SG::AuxElement::ConstAccessor<unsigned char> numberOfTRTOutliers("numberOfTRTOutliers");
+    m_numberOfTRTOutliers->push_back(numberOfTRTOutliers(*track) );
   }
 
   m_phi->push_back(track->phi() );
@@ -326,9 +377,15 @@ void TrackContainer::FillTrack( const xAOD::IParticle* particle ){
   
   if(m_infoSwitch.m_vertex){
     if(m_debug) std::cout << "Filling vertex" << std::endl;
-    m_vertexLink->push_back(track->vertexLink() );
-    m_vertexLink_persIndex->push_back(track->vertexLink.m_persIndex() );
-    m_vertexLink_persKey->push_back(track->vertexLink.m_persKey() );
+
+    //static SG::AuxElement::ConstAccessor<int> vertexLink("vertexLink");
+    /*
+      m_vertexLink->push_back(vertexLink(*track) );
+      //m_vertexLink_persIndex->push_back(track->vertexLink.m_persIndex() );
+      //m_vertexLink_persKey->push_back(track->vertexLink.m_persKey() );
+      m_vertexLink_persIndex->push_back( -999 );
+      m_vertexLink_persKey->push_back( -999 );
+    */    
     m_vz->push_back(track->vz() );
     m_z0->push_back(track->z0() );
   }
