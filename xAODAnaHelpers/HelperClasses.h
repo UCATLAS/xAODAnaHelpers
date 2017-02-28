@@ -495,17 +495,18 @@ namespace HelperClasses {
 
   /**
     @rst
+    
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Track Information.
 
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
-	m_kinematic      kinematic      exact
-	m_fitpars        fitpars        exact
-	m_numbers        numbers        exact
-	m_vertex         vertex         exact
+        m_kinematic      kinematic      exact
+        m_fitpars        fitpars        exact
+        m_numbers        numbers        exact
+        m_vertex         vertex         exact
         ================ ============== =======
-
+	
     @endrst
   */
   class TrackInfoSwitch : public InfoSwitch {
