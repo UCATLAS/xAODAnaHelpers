@@ -500,10 +500,10 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
-        m_kinematic      kinematic      exact
-        m_fitpars        fitpars        exact
+	m_kinematic      kinematic      exact
+	m_fitpars        fitpars        exact
 	m_numbers        numbers        exact
-        m_vertex         vertex         exact
+	m_vertex         vertex         exact
         ================ ============== =======
 
     @endrst
