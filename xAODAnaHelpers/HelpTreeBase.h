@@ -26,6 +26,7 @@
 #include "xAODTruth/TruthParticleContainer.h"
 #include "xAODTau/TauJetContainer.h"
 #include "xAODMissingET/MissingETContainer.h"
+#include "xAODTracking/TrackParticleContainer.h"
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/EventInfo.h"
@@ -35,6 +36,7 @@
 #include "xAODAnaHelpers/PhotonContainer.h"
 #include "xAODAnaHelpers/FatJetContainer.h"
 #include "xAODAnaHelpers/TruthContainer.h"
+#include "xAODAnaHelpers/TrackContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODAnaHelpers/TauContainer.h"
 #include "xAODRootAccess/TEvent.h"
@@ -74,6 +76,7 @@ public:
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
   void AddL1Jets      ();
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
+  void AddTrackParts  (const std::string trackName,	 const std::string detailStr = "");
 
   /**
    *  @brief  Declare a new collection of fatjets to be written to the output tree.
@@ -133,6 +136,9 @@ public:
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
 
+  void FillTracks( const std::string trackName, const xAOD::TruthParticleContainer* tracks);
+  void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
+
   /**
    *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
    *          container name and suffix should be declared beforehand using `AddFatJets()`.
@@ -162,6 +168,7 @@ public:
   void ClearJets        (const std::string jetName = "jet");
   void ClearL1Jets      ();
   void ClearTruth       (const std::string truthName);
+  void ClearTracks	(const std::string trackName);
   void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
   void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
   void ClearTaus        (const std::string tauName = "tau" );
@@ -209,6 +216,11 @@ public:
     return;
   };
 
+  virtual void AddTracksUser(const std::string trackName, const std::string detailStr = "")       {
+    if(m_debug) Info("AddTracksUser","Empty function called from HelpTreeBase %s %s",trackName.c_str(), detailStr.c_str());
+    return;
+  };
+
   /**
    *  @brief  Declare a new fat jet collection. Automatically called once per call to `AddFatJets()`;
    *          override this if you want to provide your own additional branches for fatjets.
@@ -242,6 +254,7 @@ public:
   virtual void ClearElectronsUser   (const std::string /*elecName = "el"*/) { return; };
   virtual void ClearPhotonsUser     (const std::string /*photonName = "ph"*/) { return; };
   virtual void ClearTruthUser       (const std::string /*truthName*/) 	    { return; };
+  virtual void ClearTracksUser       (const std::string /*trackName*/)       { return; };
   virtual void ClearJetsUser        (const std::string /*jetName = "jet"*/ ) 	    { return; };
   virtual void ClearFatJetsUser     (const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/)   { return; };
   virtual void ClearTruthFatJetsUser(const std::string /*truthFatJetName = "truth_fatjet"*/)   { return; };
@@ -254,6 +267,7 @@ public:
   virtual void FillPhotonsUser  ( const xAOD::Photon*,   const std::string /*photonName = "ph"*/ )     { return; };
   virtual void FillJetsUser     ( const xAOD::Jet*,      const std::string /*jetName = "jet"*/  )               { return; };
   virtual void FillTruthUser    ( const std::string /*truthName*/, const xAOD::TruthParticle*  )               { return; };
+  virtual void FillTracksUser   ( const std::string /*trackName*/, const xAOD::TrackParticle*  )               { return; };
   /**
    *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
    *          information to your jet collection.
@@ -325,6 +339,11 @@ protected:
   // Truth
   //
   std::map<std::string, xAH::TruthContainer*> m_truth;
+
+  //
+  // Tracks
+  //
+  std::map<std::string, xAH::TrackContainer*> m_tracks;
 
   //
   // fat jets
