@@ -764,7 +764,6 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuonEfficiencyCorrector_TTVASyst_TTVA");
     
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accRecoSF;
-    static std::map< std::string, SG::AuxElement::Accessor< std::vector< std::string > > > accRecoSF_sysNames;
     
     for (auto& reco : m_infoSwitch.m_recoWPs) {
             
