@@ -110,6 +110,7 @@ public:
   // control which branches are filled
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
   HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
+  HelperClasses::MuonInfoSwitch*       m_muonInfoSwitch;
 
   std::string                  m_triggerSelection;
   TrigConf::xAODConfigTool*    m_trigConfTool;
@@ -359,7 +360,11 @@ protected:
   // muons
   //
   std::map<std::string, xAH::MuonContainer*> m_muons;
-
+  std::map<std::string, std::vector<std::string> > m_RecoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_IsoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_TrigEff_SF_sysNames;
+  std::vector<std::string>  m_TTVAEff_SF_sysNames;
+  
   //
   // electrons
   //

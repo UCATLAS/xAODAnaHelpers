@@ -68,7 +68,7 @@ namespace xAH {
       // scale factors w/ sys
       // per object
       std::vector< std::vector< float > > *m_TTVAEff_SF;
-    
+      
       std::map< std::string, std::vector< std::vector< float > > >* m_RecoEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;

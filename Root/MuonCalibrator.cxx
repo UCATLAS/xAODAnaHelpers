@@ -62,7 +62,7 @@ MuonCalibrator :: MuonCalibrator (std::string className) :
   // list of comma-separated years
   m_Years                   = "Data16,Data15"; 
   
-  m_do_sagittaCorr          = false;
+  m_do_sagittaCorr          = true;
   m_sagittaRelease          = "sagittaBiasDataAll_06_02_17";
   m_do_sagittaMCDistortion  = false;
 
@@ -211,18 +211,21 @@ EL::StatusCode MuonCalibrator :: initialize ()
     } else {
       m_muonCalibrationAndSmearingTools[yr] = new CP::MuonCalibrationAndSmearingTool( m_muonCalibrationAndSmearingTool_names[yr]);
       m_muonCalibrationAndSmearingTools[yr]->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-      if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release),"Failed to set property Release"); }
-      if ( !yr.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ),"Failed to set Year property of MuonCalibrationAndSmearingTool"); }
+      
       if ( yr == "Data16") { 
-
-        
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_15_07"),"Failed to set property Release");
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonCalibrationAndSmearingTool"); 
-      } else {
+      } else if (yr == "Data15") {
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_08_07"),"Failed to set property Release");
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
+      } else if ( !yr.empty() ) {
+        RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ),"Failed to set Year property of MuonCalibrationAndSmearingTool"); 
       }
+      
+      if ( !m_release.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release),"Failed to set property Release"); }
 
       RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->initialize(), "Failed to properly initialize the MuonCalibrationAndSmearingTool.");
 

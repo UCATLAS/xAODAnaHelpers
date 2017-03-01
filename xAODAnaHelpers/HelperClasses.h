@@ -260,14 +260,17 @@ namespace HelperClasses {
     bool m_trackhitcont;
     bool m_effSF;
     bool m_energyLoss;
-    //std::map<std::string,bool> m_recoWPsMap;
-    //std::map<std::string,bool> m_isolWPsMap;
-    //std::map<std::string,bool> m_trigWPsMap;
     
     std::vector< std::string > m_recoWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
     
+    bool m_recoEff_sysNames;
+    bool m_isoEff_sysNames;
+    bool m_trigEff_sysNames;
+    bool m_ttvaEff_sysNames;
+
+
     MuonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~MuonInfoSwitch() {}
   protected:

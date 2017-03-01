@@ -52,7 +52,10 @@ namespace xAH {
     std::map< std::string, std::vector< float > > TrigMCEff;
     
     std::vector< float >  TTVAEff_SF;
-    
+
+    std::map< std::string, std::vector< std::string > > RecoEff_SF_sysNames;
+
+
     // track parameters
     float trkd0;
     float trkd0sig;

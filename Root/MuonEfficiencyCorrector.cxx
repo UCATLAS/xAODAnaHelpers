@@ -610,10 +610,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   //
   // These vector<string> are eventually stored in TStore
   //
-  std::vector< std::string >* sysVariationNamesReco  = new std::vector< std::string >;
-  std::vector< std::string >* sysVariationNamesIso   = new std::vector< std::string >;
-  std::vector< std::string >* sysVariationNamesTrig  = new std::vector< std::string >;
-  std::vector< std::string >* sysVariationNamesTTVA  = new std::vector< std::string >;
 
   // 1.
   // Reco efficiency SFs - this is a per-MUON weight
@@ -622,6 +618,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
+  std::vector< std::string >* sysVariationNamesReco  = new std::vector< std::string >;
+  
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_recoEffSF_tool_name) ) {
@@ -657,12 +655,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with reco efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyMCEfficiency for Reco");
-    	 }
-    	 if ( m_muRecoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Reco");
-    	 }
+    	 //if ( m_muRecoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for Reco");
+    	 //}
+    	 //if ( m_muRecoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Reco");
+    	 //}
 
     	 // b)
     	 // obtain reco efficiency SF as a float (to be stored away separately)
@@ -683,6 +681,14 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // Add it to decoration vector
     	 //
     	 sfVecReco( *mu_itr ).push_back( recoEffSF );
+         
+         // reco sys names are saved in a vector. Entries positions are preserved!
+         //
+    	 SG::AuxElement::Decorator< std::vector<std::string> > sfVecReco_sysNames( m_outputSystNamesReco + "_sysNames" );
+    	 if ( !sfVecReco_sysNames.isAvailable( *mu_itr ) ) {
+  	   sfVecReco_sysNames( *mu_itr ) = std::vector<std::string>();
+         }
+    	 sfVecReco_sysNames( *mu_itr ).push_back( syst_it.name().c_str() );
 
     	 if ( m_debug ) {
     	   Info( "executeSF()", "===>>>");
@@ -693,10 +699,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
-    	   Info( "executeSF()", "Reco efficiency:");
-    	   Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "mcEfficiency" ) );
+    	   //Info( "executeSF()", "Reco efficiency:");
+    	   //Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "mcEfficiency" ) );
     	   Info( "executeSF()", "and its SF:");
-    	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
+    	   //Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", recoEffSF );
     	   Info( "executeSF()", "--------------------------------------");
     	 }
@@ -726,6 +732,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
+  std::vector< std::string >* sysVariationNamesIso   = new std::vector< std::string >;
+  
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_isoEffSF_tool_name) ) {
@@ -761,12 +769,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with iso efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyMCEfficiency for Iso");
-    	 }
-    	 if ( m_muIsoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Iso");
-    	 }
+    	 //if ( m_muIsoSF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for Iso");
+    	 //}
+    	 //if ( m_muIsoSF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for Iso");
+    	 //}
 
     	 // b)
     	 // obtain iso efficiency SF as a float (to be stored away separately)
@@ -797,10 +805,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
-           Info( "executeSF()", "Iso efficiency:");
-           Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOmcEfficiency" ) );
+           //Info( "executeSF()", "Iso efficiency:");
+           //Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOmcEfficiency" ) );
     	   Info( "executeSF()", "and its SF:");
-    	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
+    	   //Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", IsoEffSF );
     	   Info( "executeSF()", "--------------------------------------");
     	 }
@@ -834,6 +842,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   //
   // NB: calculation of the event SF is up to the analyzer
 
+  
   // Do it only if a tool with *this* name hasn't already been used
   //
   
@@ -921,13 +930,41 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     
   if ( !isToolAlreadyUsed(m_trigEffSF_tool_names[randYear]) ) {
 
-    for ( const auto& syst_it : m_systListTrig ) {
-      for ( const auto& trig_it : m_SingleMuTriggers ) {
-
+    for ( const auto& trig_it : m_SingleMuTriggers ) {
+      
+      std::vector< std::string >* sysVariationNamesTrig  = new std::vector< std::string >;
+      // this is used to put the list of sys strings in the store.
+      // The original string needs to be updated with the name of 
+      // the trigger for every item in the trigger loop. 
+      //
+      //std::string m_fullname_outputSystNamesTrig;
+      
+      std::string eff_string = m_outputSystNamesTrigMCEff;
+      std::string ineffstr   = "MuonEfficiencyCorrector_TrigMCEff_";
+      std::string outeffstr  = "MuonEfficiencyCorrector_TrigMCEff_" + trig_it + "_";
+      
+      for(std::string::size_type i = 0; (i = eff_string.find(ineffstr, i)) != std::string::npos;) {
+        eff_string.replace(i, ineffstr.length(), outeffstr);
+        i += outeffstr.length();
+      } 
+      
+      std::string sf_string = m_outputSystNamesTrig;
+      std::string insfstr   = "MuonEfficiencyCorrector_TrigSyst_";
+      std::string outsfstr  = "MuonEfficiencyCorrector_TrigSyst_" + trig_it + "_";
+      
+      for(std::string::size_type i = 0; (i = sf_string.find(insfstr, i)) != std::string::npos;) {
+        sf_string.replace(i, insfstr.length(), outsfstr);
+        i += outsfstr.length();
+      } 
+      //if (idx == 0) { m_fullname_outputSystNamesTrig = sf_string; }
+      //std::cout << "This is the new string: " << m_fullname_outputSystNamesTrig << std::endl;
+      
+      for ( const auto& syst_it : m_systListTrig ) {
+        
         // Create the name of the SF weight to be recorded
         //   template:  SYSNAME_MuTrigEff_SF
         //
-        std::string sfName = "MuTrigEff_SF_" + trig_it + "_" + m_WorkingPointRecoTrig + "_" + m_WorkingPointIsoTrig;
+        std::string sfName = "MuTrigEff_SF_" + trig_it + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
         if ( !syst_it.name().empty() ) {
            std::string prepend = syst_it.name() + "_";
            sfName.insert( 0, prepend );
@@ -958,25 +995,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
         
            //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
            //
-           
-           std::string eff_string = m_outputSystNamesTrigMCEff ;
-           std::string ineffstr  = "MuonEfficiencyCorrector_TrigMCEff_";
-           std::string outeffstr = "MuonEfficiencyCorrector_TrigMCEff_" + trig_it + "_";
-           
-           for(std::string::size_type i = 0; (i = eff_string.find(ineffstr, i)) != std::string::npos;) {
-             eff_string.replace(i, ineffstr.length(), outeffstr);
-             i += outeffstr.length();
-           } 
-           
-           std::string sf_string = m_outputSystNamesTrig;
-           std::string insfstr  = "MuonEfficiencyCorrector_TrigSyst_";
-           std::string outsfstr = "MuonEfficiencyCorrector_TrigSyst_" + trig_it + "_";
-           
-           for(std::string::size_type i = 0; (i = sf_string.find(insfstr, i)) != std::string::npos;) {
-             sf_string.replace(i, insfstr.length(), outsfstr);
-             i += outsfstr.length();
-           } 
-           
            SG::AuxElement::Decorator< std::vector<float> > effMC( eff_string );
            if ( !effMC.isAvailable( *mu_itr ) ) {
              effMC( *mu_itr ) = std::vector<float>();
@@ -1048,8 +1066,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            ++idx;
         
         } // close muon loop
-      } // close  trigger loop
-    }  // close loop on trigger efficiency SF systematics
+      }  // close loop on trigger efficiency SF systematics
+    
+      if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrig, sf_string), "Failed to record vector of systematic names for muon trigger efficiency  SF" ); }
+    
+    } // close  trigger loop
 
     // Add list of systematics names to TStore
     //
@@ -1059,7 +1080,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     //
     // Use the counter defined in execute() to check this is done only once per event
     //
-    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names for muon trigger efficiency  SF" ); }
 
   }
 
@@ -1070,6 +1090,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
+  std::vector< std::string >* sysVariationNamesTTVA  = new std::vector< std::string >;
+  
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_TTVAEffSF_tool_name) ) {
@@ -1109,12 +1131,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 // a)
     	 // decorate directly the muon with TTVA efficiency (useful at all?), and the corresponding SF
     	 //
-    	 if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
-    	   Warning( "executeSF()", "Problem in applyMCEfficiency for TTVA");
-    	 }
-    	 if ( m_muTTVASF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {	 
-    	   Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for TTVA");
-    	 }
+    	 //if ( m_muTTVASF_tool->applyMCEfficiency( *mu_itr ) != CP::CorrectionCode::Ok ) {
+    	 //  Warning( "executeSF()", "Problem in applyMCEfficiency for TTVA");
+    	 //}
+    	 //if ( m_muTTVASF_tool->applyEfficiencyScaleFactor( *mu_itr ) != CP::CorrectionCode::Ok ) {	 
+    	 //  Warning( "executeSF()", "Problem in applyEfficiencyScaleFactor for TTVA");
+    	 //}
 
     	 // b)
     	 // obtain TTVA efficiency SF as a float (to be stored away separately)
@@ -1145,10 +1167,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   Info( "executeSF()", " ");
     	   Info( "executeSF()", "Systematic: %s", syst_it.name().c_str() );
     	   Info( "executeSF()", " ");
-           Info( "executeSF()", "TTVA efficiency:");
-           Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "TTVAmcEfficiency" ) );
+           //Info( "executeSF()", "TTVA efficiency:");
+           //Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "TTVAmcEfficiency" ) );
     	   Info( "executeSF()", "and its SF:");
-    	   Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "TTVAEfficiencyScaleFactor" ) );
+    	   //Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "TTVAEfficiencyScaleFactor" ) );
     	   Info( "executeSF()", "\t %f (from getEfficiencyScaleFactor())", TTVAEffSF );
            Info( "executeSF()", "--------------------------------------");
     	 }
