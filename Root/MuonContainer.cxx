@@ -148,6 +148,7 @@ MuonContainer::~MuonContainer()
     delete m_TrigMCEff  ;
     
     delete m_TTVAEff_SF ;
+
   }
       // track parameters
   if ( m_infoSwitch.m_trackparams ) {
@@ -430,7 +431,6 @@ void MuonContainer::setBranches(TTree *tree)
     for (auto& reco : m_infoSwitch.m_recoWPs) {
       std::string recoEffSF = "muon_RecoEff_SF_" + reco;
       tree->Branch( recoEffSF.c_str() , & (*m_RecoEff_SF)[ reco ] );
-
     }
     
     for (auto& isol : m_infoSwitch.m_isolWPs) {
@@ -774,6 +774,7 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
       }else { 
         m_RecoEff_SF->at( reco  ).push_back( junkSF ); 
       }
+    
     }
     
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;

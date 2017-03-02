@@ -143,10 +143,11 @@ namespace HelperClasses{
       if ( token.compare( 0, trig_prfx.length(), trig_prfx ) == 0 ) { m_trigWPs.push_back(token); }
     }  
     
-    //for (const auto& isol : isolWPs) { m_isolWPsMap[isol] = has_exact(isol); }                        
-    //for (const auto& reco : recoWPs) { m_recoWPsMap[reco] = has_exact(reco); }                        
-    //for (const auto& trig : trigWPs) { m_trigWPsMap[trig] = has_exact(trig); }                        
-
+    m_recoEff_sysNames = has_exact("recoEff_sysNames");
+    m_isoEff_sysNames  = has_exact("isoEff_sysNames");
+    m_trigEff_sysNames = has_exact("trigEff_sysNames"); 
+    m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames"); 
+    
   }
 
   void ElectronInfoSwitch::initialize(){
