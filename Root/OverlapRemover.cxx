@@ -580,6 +580,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       //
       if ( m_debug ) { Info("execute()",  "Calling removeOverlaps()"); }
       RETURN_CHECK( "OverlapRemover::execute()", m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
+      if ( m_debug ) { Info("execute()",  "Done Calling removeOverlaps()"); }
 
       std::string ORdecor("passOR");
       if(m_useCutFlow){

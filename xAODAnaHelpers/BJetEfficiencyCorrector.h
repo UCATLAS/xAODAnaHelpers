@@ -29,6 +29,12 @@ public:
   std::string m_outputSystName;
 
   std::string m_corrFileName;
+  
+  /**
+     Call PathResolverFindCalibFile on the input file name
+  */
+  bool        m_usePathResolver;
+  
   std::string m_jetAuthor;
   std::string m_taggerName;
   bool        m_useDevelopmentFile;
