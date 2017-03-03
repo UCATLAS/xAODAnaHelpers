@@ -53,6 +53,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
 
   // configuration of the bjet eff tool
   m_corrFileName           = PathResolverFindCalibFile("xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root");
+  m_usePathResolver        = false;
   m_jetAuthor              = "AntiKt4EMTopoJets";
   m_taggerName             = "MV2c10";
   m_useDevelopmentFile     = true;
@@ -72,6 +73,13 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
   m_decor                   = "BTag";
   m_decorSF                 = ""; // gets set below after configure is called
 
+  
+  //
+  // Call PathResolverFindCalibFile on the input file name
+  //
+  if(m_usePathResolver){
+    m_corrFileName = PathResolverFindCalibFile(m_corrFileName);
+  }
 }
 
 
