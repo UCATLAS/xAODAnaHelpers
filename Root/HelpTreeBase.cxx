@@ -357,7 +357,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
     if ( m_muonInfoSwitch->m_trigEff_sysNames && m_muonInfoSwitch->m_effSF && m_isMC ) {
       for ( auto& trig : m_muonInfoSwitch->m_trigWPs ) {
-        std::vector< std::string >* tmp_trig_sys = new std::vector< std::string >;
+        std::vector< std::string >* tmp_trig_sys(nullptr);
         if ( m_store->retrieve(tmp_trig_sys, "MuonEfficiencyCorrector_TrigSyst_" + trig).isSuccess() ) {
           (m_TrigEff_SF_sysNames)[ trig ] = *tmp_trig_sys;
         }
@@ -365,7 +365,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     }
 
     if ( m_muonInfoSwitch->m_ttvaEff_sysNames && m_muonInfoSwitch->m_effSF && m_isMC ) {
-      std::vector< std::string >* tmp_ttva_sys = new std::vector< std::string >;
+      std::vector< std::string >* tmp_ttva_sys(nullptr);
       if ( m_store->retrieve(tmp_ttva_sys, "MuonEfficiencyCorrector_TTVASyst_TTVA").isSuccess() ) {
         m_TTVAEff_SF_sysNames = *tmp_ttva_sys;
       }
