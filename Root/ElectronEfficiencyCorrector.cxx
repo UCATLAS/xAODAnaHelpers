@@ -242,7 +242,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // initialize the AsgElectronEfficiencyCorrectionTool for isolation efficiency SF
   //
   if ( !m_corrFileNameIso.empty() ) {
-    
+
     m_Iso_WP    = HelperFunctions::parse_wp( "ISO", m_corrFileNameIso );
     m_IsoPID_WP = HelperFunctions::parse_wp( "ID", m_corrFileNameIso );
 
@@ -420,7 +420,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     if ( !m_WorkingPointIsoTrig.empty() ) {
       m_outputSystNamesTrig += ( "_isol" + m_WorkingPointIsoTrig );
     }
-    
+
   }
 
   // 5.
@@ -431,8 +431,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     m_TrigMCEff_tool_name = "ElectronEfficiencyCorrectionTool_effSF_TrigMCEff_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
     if ( !m_WorkingPointIsoTrig.empty() ) {
       m_TrigMCEff_tool_name += ( "_isol" + m_WorkingPointIsoTrig );
-    }    
-    
+    }
+
     RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name), "" );
 
     if ( asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name) ) {
@@ -479,7 +479,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     if ( !m_WorkingPointIsoTrig.empty() ) {
       m_outputSystNamesTrigMCEff += ( "_isol" + m_WorkingPointIsoTrig );
     }
-    
+
   }
 
   // *********************************************************************************
@@ -637,11 +637,20 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   // These vector<string> are eventually stored in TStore
   //
-  std::vector< std::string >* sysVariationNamesPID  = new std::vector< std::string >;
-  std::vector< std::string >* sysVariationNamesReco = new std::vector< std::string >;
-  std::vector< std::string >* sysVariationNamesIso  = new std::vector< std::string >;
-  std::vector< std::string >* sysVariationNamesTrig = new std::vector< std::string >;
-  std::vector< std::string >* sysVariationNamesTrigMCEff = new std::vector< std::string >;
+  std::vector< std::string >* sysVariationNamesPID       = nullptr;
+  std::vector< std::string >* sysVariationNamesReco      = nullptr;
+  std::vector< std::string >* sysVariationNamesIso       = nullptr;
+  std::vector< std::string >* sysVariationNamesTrig      = nullptr;
+  std::vector< std::string >* sysVariationNamesTrigMCEff = nullptr;
+
+  if(countSyst == 0){
+    sysVariationNamesPID       = new std::vector< std::string >;
+    sysVariationNamesReco      = new std::vector< std::string >;
+    sysVariationNamesIso       = new std::vector< std::string >;
+    sysVariationNamesTrig      = new std::vector< std::string >;
+    sysVariationNamesTrigMCEff = new std::vector< std::string >;
+  }
+
 
   // 1.
   // PID efficiency SFs - this is a per-ELECTRON weight
@@ -666,7 +675,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 sfName.insert( 0, prepend );
       }
       if ( m_debug ) Info("executeSF()", "Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
-      sysVariationNamesPID->push_back(sfName);
+      if(countSyst == 0) sysVariationNamesPID->push_back(sfName);
 
       // apply syst
       //
@@ -781,7 +790,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 sfName.insert( 0, prepend );
       }
       if ( m_debug ) Info("executeSF()", "Electron Iso efficiency sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
-      sysVariationNamesIso->push_back(sfName);
+      if(countSyst == 0) sysVariationNamesIso->push_back(sfName);
 
       // apply syst
       //
@@ -896,7 +905,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 sfName.insert( 0, prepend );
       }
       if ( m_debug ) Info("executeSF()", "Electron Reco efficiency sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
-      sysVariationNamesReco->push_back(sfName);
+      if(countSyst == 0) sysVariationNamesReco->push_back(sfName);
 
       // apply syst
       //
@@ -999,7 +1008,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
-  
+
   if ( !m_corrFileNameTrig.empty() && !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
     for ( const auto& syst_it : m_systListTrig ) {
@@ -1010,14 +1019,14 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       std::string sfName  = "ElTrigEff_SF_" + m_WorkingPointIDTrig;
       if ( !m_WorkingPointIsoTrig.empty() ) {
         sfName += ( "_isol" + m_WorkingPointIsoTrig );
-      } 
+      }
 
       if ( !syst_it.name().empty() ) {
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
       if ( m_debug ) Info("executeSF()", "Electron Trig efficiency SF sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
-      sysVariationNamesTrig->push_back(sfName);
+      if(countSyst == 0) sysVariationNamesTrig->push_back(sfName);
 
       // apply syst
       //
@@ -1129,14 +1138,14 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       std::string sfName  = "ElTrigMCEff_" + m_WorkingPointIDTrig;
       if ( !m_WorkingPointIsoTrig.empty() ) {
         sfName += ( "_isol" + m_WorkingPointIsoTrig );
-      }      
+      }
 
       if ( !syst_it.name().empty() ) {
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
       if ( m_debug ) Info("executeSF()", "Electron Trig MC efficiency sys name (to be recorded in xAOD::TStore) is: %s", sfName.c_str());
-      sysVariationNamesTrigMCEff->push_back(sfName);
+      if(countSyst == 0) sysVariationNamesTrigMCEff->push_back(sfName);
 
       // apply syst
       //
