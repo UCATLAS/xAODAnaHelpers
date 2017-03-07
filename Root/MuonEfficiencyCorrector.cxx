@@ -619,11 +619,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   //
 
   std::vector< std::string >* sysVariationNamesReco  = nullptr;
-  if(countSyst == 0) sysVariationNamesReco  = new std::vector< std::string >;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_recoEffSF_tool_name) ) {
+
+    if(countSyst == 0) sysVariationNamesReco  = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListReco ) {
 
@@ -734,11 +735,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   //
 
   std::vector< std::string >* sysVariationNamesIso   = nullptr;
-  if(countSyst == 0) sysVariationNamesIso   = new std::vector< std::string >;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_isoEffSF_tool_name) ) {
+
+    if(countSyst == 0) sysVariationNamesIso   = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListIso ) {
 
@@ -1094,11 +1096,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   //
 
   std::vector< std::string >* sysVariationNamesTTVA  = nullptr;
-  if(countSyst == 0) sysVariationNamesTTVA  = new std::vector< std::string >;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_TTVAEffSF_tool_name) ) {
+
+    if(countSyst == 0) sysVariationNamesTTVA  = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListTTVA ) {
 
