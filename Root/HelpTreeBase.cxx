@@ -61,6 +61,9 @@ HelpTreeBase::~HelpTreeBase() {
     delete m_trigInfoSwitch;
 
     //muon
+    delete m_muonInfoSwitch;
+
+    //muon
     for (auto muon: m_muons)
       delete muon.second;
 
