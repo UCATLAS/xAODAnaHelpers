@@ -643,15 +643,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   std::vector< std::string >* sysVariationNamesTrig      = nullptr;
   std::vector< std::string >* sysVariationNamesTrigMCEff = nullptr;
 
-  if(countSyst == 0){
-    sysVariationNamesPID       = new std::vector< std::string >;
-    sysVariationNamesReco      = new std::vector< std::string >;
-    sysVariationNamesIso       = new std::vector< std::string >;
-    sysVariationNamesTrig      = new std::vector< std::string >;
-    sysVariationNamesTrigMCEff = new std::vector< std::string >;
-  }
-
-
   // 1.
   // PID efficiency SFs - this is a per-ELECTRON weight
   //
@@ -662,6 +653,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
   if ( !m_corrFileNamePID.empty() && !isToolAlreadyUsed(m_pidEffSF_tool_name) ) {
+
+    if(countSyst == 0) sysVariationNamesPID = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListPID ) {
 
@@ -778,6 +771,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameIso.empty() && !isToolAlreadyUsed(m_IsoEffSF_tool_name) ) {
 
+    if(countSyst == 0) sysVariationNamesIso = new std::vector< std::string >;
+
     for ( const auto& syst_it : m_systListIso ) {
 
       // Create the name of the SF weight to be recorded
@@ -892,6 +887,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
   if ( !m_corrFileNameReco.empty() && !isToolAlreadyUsed(m_RecoEffSF_tool_name) ) {
+
+    if(countSyst == 0) sysVariationNamesReco = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListReco ) {
 
@@ -1011,6 +1008,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   if ( !m_corrFileNameTrig.empty() && !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
+    if(countSyst == 0) sysVariationNamesTrig = new std::vector< std::string >;
+
     for ( const auto& syst_it : m_systListTrig ) {
 
       // Create the name of the SF weight to be recorded
@@ -1129,6 +1128,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
   //
   if ( !m_corrFileNameTrigMCEff.empty() && !isToolAlreadyUsed(m_TrigMCEff_tool_name) ) {
+
+    if(countSyst == 0) sysVariationNamesTrigMCEff = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListTrigMCEff ) {
 

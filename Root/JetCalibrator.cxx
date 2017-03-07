@@ -457,8 +457,8 @@ EL::StatusCode JetCalibrator :: execute ()
   //
   // Perform nominal calibration
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
-  ConstDataVector<xAOD::JetContainer>* calibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-  calibJetsCDV->reserve( calibJetsSC.first->size() );
+  // ConstDataVector<xAOD::JetContainer>* calibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+  // calibJetsCDV->reserve( calibJetsSC.first->size() );
 
   std::string outSCContainerName=m_outContainerName+"ShallowCopy";
   std::string outSCAuxContainerName=m_outContainerName+"ShallowCopyAux.";
