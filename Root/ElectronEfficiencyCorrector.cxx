@@ -654,9 +654,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNamePID.empty() && !isToolAlreadyUsed(m_pidEffSF_tool_name) ) {
 
-    if(countSyst == 0) {
-      sysVariationNamesPID       = new std::vector< std::string >;
-    }
+    if(countSyst == 0) sysVariationNamesPID = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListPID ) {
 
@@ -773,9 +771,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameIso.empty() && !isToolAlreadyUsed(m_IsoEffSF_tool_name) ) {
 
-  if(countSyst == 0){
-      sysVariationNamesIso       = new std::vector< std::string >;
-    }
+    if(countSyst == 0) sysVariationNamesIso = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListIso ) {
 
@@ -892,9 +888,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameReco.empty() && !isToolAlreadyUsed(m_RecoEffSF_tool_name) ) {
 
-  if(countSyst == 0){
-      sysVariationNamesReco      = new std::vector< std::string >;
-    }
+    if(countSyst == 0) sysVariationNamesReco = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListReco ) {
 
@@ -1014,9 +1008,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   if ( !m_corrFileNameTrig.empty() && !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
-  if(countSyst == 0){
-      sysVariationNamesTrig      = new std::vector< std::string >;
-    }
+    if(countSyst == 0) sysVariationNamesTrig = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListTrig ) {
 
@@ -1137,9 +1129,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameTrigMCEff.empty() && !isToolAlreadyUsed(m_TrigMCEff_tool_name) ) {
 
-  if(countSyst == 0){
-      sysVariationNamesTrigMCEff = new std::vector< std::string >;
-    }
+    if(countSyst == 0) sysVariationNamesTrigMCEff = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListTrigMCEff ) {
 
