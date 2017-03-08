@@ -117,6 +117,7 @@ JetSelector :: JetSelector (std::string className) :
   m_taggerName              = "MV2c20";
   m_operatingPt             = "FixedCutBEff_70";
   m_jetAuthor               = "AntiKt4EMTopoJets";
+  m_truthJetContainer       = "AntiKt4TruthJets";
   // for the b-tagging tool - these are the b-tagging groups minimums
   // users making tighter cuts can use the selector's parameters to keep
   // things consistent
@@ -430,7 +431,7 @@ EL::StatusCode JetSelector :: execute ()
 
     // decorate inJets with truth info
     const xAOD::JetContainer *truthJets = nullptr;
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(truthJets, "AntiKt4TruthJets", m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, m_verbose) ,"");
     static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
     static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
     for(const auto& jet : *inJets) {
