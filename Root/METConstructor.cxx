@@ -502,7 +502,8 @@ EL::StatusCode METConstructor :: execute ()
    //////  MUONS  /////
    ////////////////////
 
- if( m_inputMuons.Length() > 0 ) {
+ bool done_METMuons(false);
+ if( m_inputMuons.Length() > 0  && m_store->contains<xAOD::MuonContainer>(m_inputMuons.Data()+sysListItrString ) ) {
    std::string m_inputMuons_Syst =  m_inputMuons.Data() +sysListItrString;
    const xAOD::MuonContainer* muonCont(0);
    if ( m_store->contains<xAOD::MuonContainer>(m_inputMuons.Data()+sysListItrString ) ) {
@@ -515,8 +516,10 @@ EL::StatusCode METConstructor :: execute ()
      ConstDataVector<xAOD::MuonContainer> metMuons(SG::VIEW_ELEMENTS);
      for (const auto& mu : *muonCont) if (CutsMETMaker::accept(mu)) metMuons.push_back(mu);
      RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("Muons", xAOD::Type::Muon, newMet, metMuons.asDataVector(), metMap), "Failed rebuilding muon component.");
+     done_METMuons = true;
    } else {
      RETURN_CHECK("METConstructor::execute()", m_metmaker_handle->rebuildMET("Muons", xAOD::Type::Muon, newMet, muonCont, metMap), "Failed rebuilding muon component.");
+     done_METMuons = true;
    }
  }
 
@@ -609,7 +612,7 @@ EL::StatusCode METConstructor :: execute ()
     if( m_inputElectrons.Length() > 0 ) Info("execute()", "RefEle:     old=%8.f  new=%8.f", (*oldMet->find("RefEle"))->met(), (*newMet->find("RefEle"))->met());
     if( m_inputPhotons.Length() > 0 )   Info("execute()", "RefPhoton:  old=%8.f  new=%8.f", (*oldMet->find("RefGamma"))->met(), (*newMet->find("RefGamma"))->met());
     if( m_inputTaus.Length() > 0 )      Info("execute()", "RefTau:     old=%8.f  new=%8.f", (*oldMet->find("RefTau"))->met(), (*newMet->find("RefTau"))->met());
-    if( m_inputMuons.Length() > 0 )     Info("execute()", "RefMuon:    old=%8.f  new=%8.f", (*oldMet->find("Muons"))->met(), (*newMet->find("Muons"))->met());
+    if( m_inputMuons.Length() > 0 && done_METMuons )     Info("execute()", "RefMuon:    old=%8.f  new=%8.f", (*oldMet->find("Muons"))->met(), (*newMet->find("Muons"))->met());
     Info("execute()", "RefJet:       old=%8.f  new=%8.f", (*oldMet->find("RefJet"))->met(), (*newMet->find("RefJet"))->met());
     Info("execute()", "SoftClus:     old=%8.f  new=%8.f", (*oldMet->find("SoftClus"))->met(), (*newMet->find("SoftClus"))->met());
     Info("execute()", "PVSoftTrk:    old=%8.f  new=%8.f", (*oldMet->find("PVSoftTrk"))->met(), (*newMet->find("PVSoftTrk"))->met());
