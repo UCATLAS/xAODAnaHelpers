@@ -7,7 +7,7 @@ using std::vector;
 using std::string;
 
 ElectronContainer::ElectronContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
-  : ParticleContainer(name, detailStr, units, mc, true, false)
+  : ParticleContainer(name, detailStr, units, mc, true)
 {
 
   if ( m_infoSwitch.m_kinematic ) {

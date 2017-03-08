@@ -9,7 +9,7 @@ using std::vector;  using std::endl;  using std::cout;
 
 FatJetContainer::FatJetContainer(const std::string& name, const std::string& detailStr, const std::string& suffix, 
 				 float units, bool mc)
-  : ParticleContainer(name,detailStr,units,mc, false, false, suffix), 
+  : ParticleContainer(name,detailStr,units,mc, false, suffix), 
     m_trackJetPtCut(10e3),
     m_trackJetEtaCut(2.5)
 {

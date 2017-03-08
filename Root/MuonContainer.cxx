@@ -7,7 +7,7 @@ using std::vector;
 using std::string;
 
 MuonContainer::MuonContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
-  : ParticleContainer(name, detailStr, units, mc, true, false)
+  : ParticleContainer(name, detailStr, units, mc, true)
 {
 
   // trigger
