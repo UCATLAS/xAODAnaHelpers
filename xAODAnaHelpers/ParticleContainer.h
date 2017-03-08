@@ -24,7 +24,6 @@ namespace xAH {
 		      float units = 1e3, 
 		      bool mc = false, 
 		      bool useMass=false, 
-		      bool useTheS = true,
 		      const std::string& suffix="")
       : m_name(name), 
 	m_infoSwitch(detailStr), 
@@ -32,7 +31,6 @@ namespace xAH {
 	m_debug(false), 
 	m_units(units), 
 	m_useMass(useMass), 
-	m_useTheS(useTheS),
 	m_suffix(suffix)
       {
 	m_n = 0;
@@ -60,15 +58,21 @@ namespace xAH {
       virtual void setTree(TTree *tree)
       {
 
-	std::string              counterName = "n"+m_name;
-	if (!m_suffix.empty()) { counterName += "_" + m_suffix; }	
-	if (m_useTheS)         { counterName += "s"; }
+	std::string                   counterName = "n"+m_name;
+	if (!m_suffix.empty())        counterName += "_" + m_suffix;
+	if (m_infoSwitch.m_useTheS) { counterName += "s";
+	  std::cerr << "WARNING! The useTheS option is depricated in ParticleContainer." << std::endl;
+	}
 
 	tree->SetBranchStatus  (counterName.c_str() , 1);
 	tree->SetBranchAddress (counterName.c_str() , &m_n);
 
         if(m_infoSwitch.m_kinematic)
           {
+	    // Determine whether mass or energy is saved
+	    std::string mname = branchName("m");
+	    m_useMass=tree->GetBranch(mname.c_str())!=0;
+
 	    connectBranch<float>(tree,"pt" ,&m_pt);
 	    connectBranch<float>(tree,"eta",&m_eta);
 	    connectBranch<float>(tree,"phi",&m_phi);
@@ -82,7 +86,6 @@ namespace xAH {
 
 	std::string              counterName = "n"+m_name;
 	if (!m_suffix.empty()) { counterName += "_" + m_suffix; }	
-	if (m_useTheS)         { counterName += "s"; }
 
 	tree->Branch(counterName.c_str(),    &m_n, (counterName+"/I").c_str());
 
@@ -147,17 +150,22 @@ namespace xAH {
 
 
     protected:
+      std::string branchName(const std::string& varName)
+      {
+	std::string name = m_name + "_" + varName;
+	if (! m_suffix.empty()) { name += "_" + m_suffix; }
+	return name;
+      }
+
       template <typename T_BR> void connectBranch(TTree *tree, const std::string& branch, std::vector<T_BR> **variable)
       {
-	std::string name = m_name + "_" + branch;
-	if (! m_suffix.empty()) { name += "_" + m_suffix;	}
+	std::string name = branchName(branch);
         tree->SetBranchStatus  (name.c_str()  , 1);
         tree->SetBranchAddress (name.c_str()  , variable);
       }
 
       template<typename T> void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr){
-	std::string name = m_name + "_" + varName;
-	if (! m_suffix.empty()) { name += "_" + m_suffix;	}
+	std::string name = branchName(varName);
 	tree->Branch(name.c_str(),        localVectorPtr);
       }
 
@@ -190,10 +198,10 @@ namespace xAH {
 				       m_M  ->at(idx));
 
 	    } else{
-		particle.p4.SetPtEtaPhiE(m_pt ->at(idx),
-					 m_eta->at(idx),
-					 m_phi->at(idx),
-					 m_E  ->at(idx));
+	      particle.p4.SetPtEtaPhiE(m_pt ->at(idx),
+				       m_eta->at(idx),
+				       m_phi->at(idx),
+				       m_E  ->at(idx));
 	    }
 	  }
       }
@@ -213,7 +221,6 @@ namespace xAH {
     
     private:
       bool        m_useMass;
-      bool        m_useTheS;
       std::string m_suffix;
 
       //

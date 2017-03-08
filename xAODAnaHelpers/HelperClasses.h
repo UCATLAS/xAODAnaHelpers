@@ -210,6 +210,7 @@ namespace HelperClasses {
         ============== ============ =======
         m_kinematic    kinematic    exact
         m_numLeading   NLeading     partial
+	m_useTheS      useTheS      exact
         ============== ============ =======
 
         .. note::
@@ -227,6 +228,7 @@ namespace HelperClasses {
   public:
     bool m_kinematic;
     int  m_numLeading;
+    bool m_useTheS;
     IParticleInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); }
     virtual ~IParticleInfoSwitch() {}
   protected:
@@ -484,14 +486,13 @@ namespace HelperClasses {
 
     @endrst
    */
-  class TruthInfoSwitch : public InfoSwitch {
+  class TruthInfoSwitch : public IParticleInfoSwitch {
   public:
-    bool m_kinematic;
     bool m_type;
     bool m_bVtx;
     bool m_parents;
     bool m_children;
-    TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    TruthInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
   };
@@ -508,6 +509,7 @@ namespace HelperClasses {
         m_fitpars        fitpars        exact
         m_numbers        numbers        exact
         m_vertex         vertex         exact
+	m_useTheS        useTheS        exact
         ================ ============== =======
 	
     @endrst
@@ -518,6 +520,7 @@ namespace HelperClasses {
     bool m_fitpars;
     bool m_numbers;
     bool m_vertex;
+    bool m_useTheS;
   TrackInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
