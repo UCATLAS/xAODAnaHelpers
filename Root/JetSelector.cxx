@@ -339,7 +339,10 @@ EL::StatusCode JetSelector :: initialize ()
 
   // initialize the CP::JetJvtEfficiency Tool
   //
-  m_JVT_tool_handle.setTypeAndName("CP::JetJvtEfficiency/JetJvtEfficiency_effSF_"+m_name);
+  m_JVT_tool_name = "JetJvtEfficiency_effSF_" + m_name;
+  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<CP::IJetJvtEfficiency>(m_JVT_tool_name), "" );
+
+  m_JVT_tool_handle.setTypeAndName("CP::JetJvtEfficiency/" + m_JVT_tool_name);
   if(!m_JVT_tool_handle.isUserConfigured()) {
     RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency), "Could not make JetJetEfficiency");
     RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
@@ -424,6 +427,22 @@ EL::StatusCode JetSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
+
+    // decorate inJets with truth info
+    const xAOD::JetContainer *truthJets = nullptr;
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(truthJets, "AntiKt4TruthJets", m_event, m_store, m_verbose) ,"");
+    static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
+    static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
+    for(const auto& jet : *inJets) {
+      bool ishs = false;
+      bool ispu = true;
+      for(const auto& tjet : *truthJets) {
+        if (tjet->p4().DeltaR(jet->p4())<0.3 && tjet->pt()>10e3) ishs = true;
+        if (tjet->p4().DeltaR(jet->p4())<0.6) ispu = false;
+      }
+      isHS(*jet)=ishs;
+      isPU(*jet)=ispu;
+    }
 
     pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName);
 
@@ -555,7 +574,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // Do it only for MC
   //
   if ( m_isMC && m_doJVT ) {
-    
+
     std::vector< std::string >* sysVariationNamesJVT  = new std::vector< std::string >;
 
     // Do it only if a tool with *this* name hasn't already been used
@@ -564,7 +583,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
       for ( const auto& syst_it : m_systListJVT ) {
 
-	// Create the name of the SF weight to be recorded
+	      // Create the name of the SF weight to be recorded
         //   template:  SYSNAME_JVTEff_SF
         //
         std::string sfName = "JVTEff_SF_" + m_WorkingPointJVT;;
@@ -588,48 +607,48 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
         unsigned int idx(0);
         for ( auto jet : *(selectedJets) ) {
 
-           if ( m_debug ) { Info( "executeSelection()", "Applying JVT SF" ); }
+          if ( m_debug ) { Info( "executeSelection()", "Applying JVT SF" ); }
 
-           // obtain JVT SF as a float (to be stored away separately)
-           //
-           //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
-           //
-           static const SG::AuxElement::Decorator< std::vector<float> > sfVecJVT( m_outputSystNamesJVT );
-           if ( !sfVecJVT.isAvailable( *jet ) ) {
-             sfVecJVT( *jet ) = std::vector<float>();
-           }
+          // obtain JVT SF as a float (to be stored away separately)
+          //
+          //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
+          //
+          static const SG::AuxElement::Decorator< std::vector<float> > sfVecJVT( m_outputSystNamesJVT );
+          if ( !sfVecJVT.isAvailable( *jet ) ) {
+            sfVecJVT( *jet ) = std::vector<float>();
+          }
 
-           float jvtSF(1.0);
-	   if ( m_JVT_tool_handle->isInRange(*jet) ) {
-             if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-               Warning( "executeSelection()", "Problem in JVT Tool getEfficiencyScaleFactor");
-               jvtSF = 1.0;
-             }
-	   }
-           //
-           // Add it to decoration vector
-           //
-           sfVecJVT( *jet ).push_back( jvtSF );
+          float jvtSF(1.0);
+	        if ( m_JVT_tool_handle->isInRange(*jet) ) {
+            std::cout << "JVT 1" <<std::endl;
+            if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
+              std::cout << "JVT 2" <<std::endl;
+              Warning( "executeSelection()", "Problem in JVT Tool getEfficiencyScaleFactor");
+              jvtSF = 1.0;
+            }
+	        }
+          //
+          // Add it to decoration vector
+          //
+          sfVecJVT( *jet ).push_back( jvtSF );
 
-           if ( m_debug ) {
-             Info( "executeSelection()", "===>>>");
-             Info( "executeSelection()", " ");
-             Info( "executeSelection()", "Jet %i, pt = %.2f GeV, |eta| = %.2f", idx, (jet->pt() * 1e-3), fabs(jet->eta()) );
-             Info( "executeSelection()", " ");
-             Info( "executeSelection()", "JVT SF decoration: %s", m_outputSystNamesJVT.c_str() );
-             Info( "executeSelection()", " ");
-             Info( "executeSelection()", "Systematic: %s", syst_it.name().c_str() );
-             Info( "executeSelection()", " ");
-             Info( "executeSelection()", "JVT SF:");
-             Info( "executeSelection()", "\t %f (from getEfficiencyScaleFactor())", jvtSF );
-             Info( "executeSelection()", "--------------------------------------");
-           }
+          if ( m_debug ) {
+            Info( "executeSelection()", "===>>>");
+            Info( "executeSelection()", " ");
+            Info( "executeSelection()", "Jet %i, pt = %.2f GeV, |eta| = %.2f", idx, (jet->pt() * 1e-3), fabs(jet->eta()) );
+            Info( "executeSelection()", " ");
+            Info( "executeSelection()", "JVT SF decoration: %s", m_outputSystNamesJVT.c_str() );
+            Info( "executeSelection()", " ");
+            Info( "executeSelection()", "Systematic: %s", syst_it.name().c_str() );
+            Info( "executeSelection()", " ");
+            Info( "executeSelection()", "JVT SF:");
+            Info( "executeSelection()", "\t %f (from getEfficiencyScaleFactor())", jvtSF );
+            Info( "executeSelection()", "--------------------------------------");
+          }
 
-           ++idx;
-	}
-
+          ++idx;
+	      }
       }
-
     }
 
     // Add list of JVT systematics names to TStore
@@ -639,7 +658,6 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
     if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { RETURN_CHECK( "JetSelector::executeSelection()", m_store->record( sysVariationNamesJVT, m_outputSystNamesJVT), "Failed to record vector of systematic names for JVT efficiency SF" ); }
-
   }
 
   // add ConstDataVector to TStore
