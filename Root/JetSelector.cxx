@@ -583,7 +583,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
       for ( const auto& syst_it : m_systListJVT ) {
 
-	      // Create the name of the SF weight to be recorded
+        // Create the name of the SF weight to be recorded
         //   template:  SYSNAME_JVTEff_SF
         //
         std::string sfName = "JVTEff_SF_" + m_WorkingPointJVT;;
@@ -619,14 +619,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           }
 
           float jvtSF(1.0);
-	        if ( m_JVT_tool_handle->isInRange(*jet) ) {
-            std::cout << "JVT 1" <<std::endl;
+          if ( m_JVT_tool_handle->isInRange(*jet) ) {
             if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-              std::cout << "JVT 2" <<std::endl;
               Warning( "executeSelection()", "Problem in JVT Tool getEfficiencyScaleFactor");
               jvtSF = 1.0;
             }
-	        }
+          }
           //
           // Add it to decoration vector
           //
@@ -647,7 +645,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           }
 
           ++idx;
-	      }
+        }
       }
     }
 
