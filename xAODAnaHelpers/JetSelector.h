@@ -38,6 +38,7 @@ public:
   // configuration variables
   std::string m_inContainerName;   // input container name
   std::string m_outContainerName;  // output container name
+  std::string m_truthJetContainer; // truth jet container name (used for JVT SF)
   std::string m_inputAlgo;         // input type - from xAOD or from xAODAnaHelper Algo output
   std::string m_outputAlgo;        // output type - this is how the vector<string> w/ syst names will be saved in TStore
   std::string m_jetScaleType;    // Type of Scale Momementum
