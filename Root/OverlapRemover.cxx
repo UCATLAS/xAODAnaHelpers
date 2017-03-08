@@ -640,22 +640,53 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case ELSYST : // electron syst
     {
-      if ( m_debug ) { Info("execute()",  "Doing electron systematics"); }
+      if ( m_debug ) { Info("execute()",  "Doing  electron systematics"); }
+      bool nomContainerNotFound(false);
+
       // just to check everything is fine
       if ( m_debug ) {
-           Info("execute()","will consider the following ELECTRON systematics:" );
-           for ( auto it : *sysVec ) {  Info("execute()" ,"\t %s ", it.c_str()); }
+         Info("execute()","will consider the following ELECTRON systematics:" );
+         for ( auto it : *sysVec ){ Info("execute()" ,"\t %s ", it.c_str()); }
       }
 
       // these input containers won't change in the electron syst loop ...
-      RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, 0, m_store, m_verbose) , ("Could not find Jets container "+m_inContainerName_Jets+" in xAOD::TStore. Aborting").c_str() );
-      if ( m_useMuons ) 
-        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, 0, m_store, m_verbose) , ("Could not find Muons container "+m_inContainerName_Muons+" in xAOD::TStore. Aborting").c_str() );
-      if ( m_usePhotons ) 
-        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, 0, m_store, m_verbose) , ("Could not find Photons container "+m_inContainerName_Photons+" in xAOD::TStore. Aborting").c_str() );
-      if ( m_useTaus ) 
-        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, 0, m_store, m_verbose) , ("Could not find Taus container "+m_inContainerName_Taus+" in xAOD::TStore. Aborting").c_str() );
+      if( m_useMuons ) {
+        if ( m_store->contains<ConstDataVector<xAOD::MuonContainer> >(m_inContainerName_Muons) ) {
+          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, m_verbose) ,"");
+        } else {
+          nomContainerNotFound = true;
+          if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Muons.c_str());  }
+        }
+      }
 
+      if ( m_store->contains<ConstDataVector<xAOD::JetContainer> >(m_inContainerName_Jets) ) {
+        RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, m_verbose) ,"");
+      } else {
+        nomContainerNotFound = true;
+        if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Jets.c_str()); }
+      }
+
+      if ( m_usePhotons ) {
+        if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
+          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, m_verbose) ,"");
+        } else {
+          nomContainerNotFound = true;
+          if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Photons.c_str()); }
+        }
+      }
+
+      if ( m_useTaus ) {
+        if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
+          RETURN_CHECK("OverlapRemover::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, m_verbose) ,"");
+        } else {
+          nomContainerNotFound = true;
+          if ( m_numEvent == 1 ) { Warning("executeOR()", "Could not find nominal container %s in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...", m_inContainerName_Taus.c_str()); }
+        }
+      }
+
+      if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
+
+      
       for ( auto systName : *sysVec) {
 
         if ( systName.empty() ) continue;
