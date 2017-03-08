@@ -119,6 +119,8 @@ namespace HelperClasses{
 	    break;
 	  }
       }
+
+    m_useTheS   = has_exact("useTheS");
   }
 
   void MuonInfoSwitch::initialize(){
@@ -319,7 +321,6 @@ namespace HelperClasses{
   }
 
   void TruthInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
     m_type          = has_exact("type");
     m_bVtx          = has_exact("bVtx");
     m_parents       = has_exact("parents");
@@ -331,6 +332,7 @@ namespace HelperClasses{
     m_fitpars	    = has_exact("fitpars");
     m_numbers	    = has_exact("numbers");
     m_vertex	    = has_exact("vertex");
+    m_useTheS       = has_exact("useTheS");
   }
 
   void TauInfoSwitch::initialize(){
