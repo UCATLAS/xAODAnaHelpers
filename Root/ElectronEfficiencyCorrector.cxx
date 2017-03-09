@@ -522,13 +522,18 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   if ( m_inputAlgoSystNames.empty() ) {
 
-      RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+    // I might not want to decorate sys altered electrons but for some events the nominal container might not exist 
+    // if electrons are only allowed in systematic instances, hence, we have to check for the existence of the nominal container
+    //
+    if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName )  ) {
+       RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
-      if ( m_debug ) { Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) ); }
+       if ( m_debug ) { Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) ); }
 
-      // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
-      //
-      this->executeSF( inputElectrons, countInputCont );
+       // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
+       //
+       this->executeSF( inputElectrons, countInputCont );
+    }
 
   } else {
   // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo.

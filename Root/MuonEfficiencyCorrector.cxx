@@ -493,14 +493,19 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   unsigned int countInputCont(0);
 
   if ( m_inputAlgoSystNames.empty() ) {
-
-    RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
-
-   if ( m_debug ) { Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) ); }
-
-    // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
+    
+    // I might not want to decorate sys altered muons but for some events the nominal container might not exist 
+    // if muons are only allowed in systematic instances, hence, we have to check for the existence of the nominal container
     //
-    this->executeSF( eventInfo, inputMuons, countInputCont );
+    if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName )  ) {
+       RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+       
+       if ( m_debug ) { Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) ); }
+       
+       // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
+       //
+       this->executeSF( eventInfo, inputMuons, countInputCont );
+    }
 
   } else {
   // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo. This is the case of calibrators: one different SC
