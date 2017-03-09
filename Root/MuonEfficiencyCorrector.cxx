@@ -105,6 +105,8 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   m_outputSystNamesTrigMCEff   = "MuonEfficiencyCorrector_TrigMCEff";
   m_outputSystNamesTTVA        = "MuonEfficiencyCorrector_TTVASyst";
 
+  m_decorateWithNomOnInputSys  = true;
+
 }
 
 
@@ -493,14 +495,19 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   unsigned int countInputCont(0);
 
   if ( m_inputAlgoSystNames.empty() ) {
-
-    RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
-
-   if ( m_debug ) { Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) ); }
-
-    // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
+    
+    // I might not want to decorate sys altered muons but for some events the nominal container might not exist 
+    // if muons are only allowed in systematic instances, hence, we have to check for the existence of the nominal container
     //
-    this->executeSF( eventInfo, inputMuons, countInputCont );
+    if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName )  ) {
+       RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+       
+       if ( m_debug ) { Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) ); }
+       
+       // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
+       //
+       this->executeSF( eventInfo, inputMuons, countInputCont, true );
+    }
 
   } else {
   // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo. This is the case of calibrators: one different SC
@@ -514,6 +521,8 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
     	// loop over systematic sets available
 	//
     	for ( auto systName : *systNames ) {
+           
+           bool isNomMuonSelection = systName.empty();
 
            RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
 
@@ -529,7 +538,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
 	   // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
 	   //
-           this->executeSF( eventInfo, inputMuons, countInputCont );
+           this->executeSF( eventInfo, inputMuons, countInputCont, isNomMuonSelection );
 
 	   // increment counter
 	   //
@@ -597,7 +606,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst  )
+EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst, bool isNomSel )
 {
 
   //
@@ -627,6 +636,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     if(countSyst == 0) sysVariationNamesReco  = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListReco ) {
+      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue; 
 
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_MuRecoEff_SF
@@ -743,6 +753,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     if(countSyst == 0) sysVariationNamesIso   = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListIso ) {
+      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue; 
 
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_MuIsoEff_SF_WP
@@ -965,6 +976,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       //std::cout << "This is the new string: " << m_fullname_outputSystNamesTrig << std::endl;
 
       for ( const auto& syst_it : m_systListTrig ) {
+        if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue; 
 
         // Create the name of the SF weight to be recorded
         //   template:  SYSNAME_MuTrigEff_SF
@@ -1104,6 +1116,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     if(countSyst == 0) sysVariationNamesTTVA  = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListTTVA ) {
+      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue; 
 
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_MuTTVAEff_SF_WP
