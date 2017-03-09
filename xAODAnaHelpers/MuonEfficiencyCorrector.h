@@ -76,6 +76,8 @@ public:
   std::string   m_outputSystNamesTrig;
   std::string   m_outputSystNamesTrigMCEff;
   std::string   m_outputSystNamesTTVA;
+  
+  bool          m_decorateWithNomOnInputSys; // will consider efficiency decorations only for the nominal run
 
 private:
 
@@ -129,7 +131,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst  );
+  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst, bool isNomSel );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

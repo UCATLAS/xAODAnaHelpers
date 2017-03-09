@@ -292,9 +292,9 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
 
   m_muonInfoSwitch = new HelperClasses::MuonInfoSwitch( detailStr );
 
-  //std::string tname = m_tree->GetName();
+  std::string tname = m_tree->GetName();
 
-  //if ( tname == "nominal" ) {
+  if ( tname == "nominal" ) {
 
      if ( m_muonInfoSwitch->m_recoEff_sysNames && m_muonInfoSwitch->m_effSF && m_isMC ) {
        for (auto& reco : m_muonInfoSwitch->m_recoWPs) {
@@ -322,7 +322,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
        m_tree->Branch( ttvaEffSF_sysNames.c_str() , &m_TTVAEff_SF_sysNames );
      }
 
-  //}
+  }
 
   m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units, m_isMC);
 
@@ -336,9 +336,9 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
   this->ClearMuons(muonName);
 
-  //std::string tname = m_tree->GetName();
+  std::string tname = m_tree->GetName();
 
-  //if ( tname == "nominal" ) {
+  if ( tname == "nominal" ) {
 
     if ( m_muonInfoSwitch->m_recoEff_sysNames && m_muonInfoSwitch->m_effSF && m_isMC ) {
       for ( auto& reco : m_muonInfoSwitch->m_recoWPs ) {
@@ -374,7 +374,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       }
     }
 
-  //}
+  }
 
   for( auto muon_itr : *muons ) {
     this->FillMuon(muon_itr, primaryVertex, muonName);
@@ -395,9 +395,9 @@ void HelpTreeBase::FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primary
 
 void HelpTreeBase::ClearMuons(const std::string muonName) {
 
-  //std::string tname = m_tree->GetName();
+  std::string tname = m_tree->GetName();
 
-  //if ( tname == "nominal" ) {
+  if ( tname == "nominal" ) {
 
     if ( m_muonInfoSwitch->m_recoEff_sysNames && m_muonInfoSwitch->m_effSF && m_isMC ) {
       for ( auto& reco : m_muonInfoSwitch->m_recoWPs ) {
@@ -421,7 +421,7 @@ void HelpTreeBase::ClearMuons(const std::string muonName) {
        m_TTVAEff_SF_sysNames.clear();
     }
 
-  //}
+  }
 
   xAH::MuonContainer* thisMuon = m_muons[muonName];
   thisMuon->clear();
