@@ -422,6 +422,9 @@ EL::StatusCode JetSelector :: execute ()
                     // shoudl only count for the nominal
   const xAOD::JetContainer* inJets(nullptr);
 
+  const xAOD::JetContainer *truthJets = nullptr;
+  if ( m_isMC && m_doJVT ) RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, m_verbose) ,"");
+
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if ( m_inputAlgo.empty() ) {
@@ -430,19 +433,19 @@ EL::StatusCode JetSelector :: execute ()
     RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
 
     // decorate inJets with truth info
-    const xAOD::JetContainer *truthJets = nullptr;
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, m_verbose) ,"");
-    static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
-    static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
-    for(const auto& jet : *inJets) {
-      bool ishs = false;
-      bool ispu = true;
-      for(const auto& tjet : *truthJets) {
-        if (tjet->p4().DeltaR(jet->p4())<0.3 && tjet->pt()>10e3) ishs = true;
-        if (tjet->p4().DeltaR(jet->p4())<0.6) ispu = false;
+    if ( m_isMC && m_doJVT ) {
+      static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
+      static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
+      for(const auto& jet : *inJets) {
+        bool ishs = false;
+        bool ispu = true;
+        for(const auto& tjet : *truthJets) {
+          if (tjet->p4().DeltaR(jet->p4())<0.3 && tjet->pt()>10e3) ishs = true;
+          if (tjet->p4().DeltaR(jet->p4())<0.6) ispu = false;
+        }
+        isHS(*jet)=ishs;
+        isPU(*jet)=ispu;
       }
-      isHS(*jet)=ishs;
-      isPU(*jet)=ispu;
     }
 
     pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName);
@@ -459,6 +462,22 @@ EL::StatusCode JetSelector :: execute ()
     for ( auto systName : *systNames ) {
 
       RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+
+      // decorate inJets with truth info
+      if ( m_isMC && m_doJVT ) {
+        static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
+        static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
+        for(const auto& jet : *inJets) {
+          bool ishs = false;
+          bool ispu = true;
+          for(const auto& tjet : *truthJets) {
+            if (tjet->p4().DeltaR(jet->p4())<0.3 && tjet->pt()>10e3) ishs = true;
+            if (tjet->p4().DeltaR(jet->p4())<0.6) ispu = false;
+          }
+          isHS(*jet)=ishs;
+          isPU(*jet)=ispu;
+        }
+      }
 
       passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName );
       if ( count ) { count = false; } // only count for 1 collection
