@@ -524,25 +524,28 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
            
            bool isNomMuonSelection = systName.empty();
 
-           RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
-
-    	   if ( m_debug ){
-	     Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) );
-	     Info( "execute", "Input syst: %s", systName.c_str() );
-	     unsigned int idx(0);
-    	     for ( auto mu : *(inputMuons) ) {
-    	       Info( "execute", "Input muon %i, pt = %.2f GeV ", idx, (mu->pt() * 1e-3) );
-    	       ++idx;
-    	     }
-    	   }
-
-	   // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
-	   //
-           this->executeSF( eventInfo, inputMuons, countInputCont, isNomMuonSelection );
-
-	   // increment counter
-	   //
-	   ++countInputCont;
+           if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName+systName )  ) {
+               RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+               
+    	       if ( m_debug ){
+	         Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) );
+	         Info( "execute", "Input syst: %s", systName.c_str() );
+	         unsigned int idx(0);
+    	         for ( auto mu : *(inputMuons) ) {
+    	           Info( "execute", "Input muon %i, pt = %.2f GeV ", idx, (mu->pt() * 1e-3) );
+    	           ++idx;
+    	         }
+    	       }
+               
+	       // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
+	       //
+               this->executeSF( eventInfo, inputMuons, countInputCont, isNomMuonSelection );
+               
+	       // increment counter
+	       //
+	       ++countInputCont;
+           
+           } // check existence of container
 
     	} // close loop on systematic sets available from upstream algo
 

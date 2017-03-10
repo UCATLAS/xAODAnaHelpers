@@ -519,6 +519,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // For the systematically varied input containers, we won't store again the vector with efficiency systs in TStore ( it will be always the same!)
   //
   unsigned int countInputCont(0);
+  
+  m_store->print();
 
   if ( m_inputAlgoSystNames.empty() ) {
 
@@ -547,26 +549,30 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     	// loop over systematic sets available
 	//
     	for ( auto systName : *systNames ) {
+          
+          if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName )  ) {
+             RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+             
+             if ( m_debug ){
+                 Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) );
+	         Info( "execute", "Input syst: %s", systName.c_str() );
+                 unsigned int idx(0);
+                 for ( auto el : *(inputElectrons) ) {
+                     Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
+                     ++idx;
+                 }
+             }
+             
+             // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
+	     //
+             this->executeSF( inputElectrons, countInputCont );
+             
+             // increment counter
+	     //
+             ++countInputCont;
 
-          RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+         } // check existence of container
 
-          if ( m_debug ){
-              Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) );
-	      Info( "execute", "Input syst: %s", systName.c_str() );
-              unsigned int idx(0);
-              for ( auto el : *(inputElectrons) ) {
-                  Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
-                  ++idx;
-              }
-          }
-
-          // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
-	  //
-          this->executeSF( inputElectrons, countInputCont );
-
-          // increment counter
-	  //
-          ++countInputCont;
 
       } // close loop on systematic sets available from upstream algo
 
