@@ -548,27 +548,31 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 	//
     	for ( auto systName : *systNames ) {
 
-          RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+          if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName )  ) {
 
-          if ( m_debug ){
-              Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) );
-	      Info( "execute", "Input syst: %s", systName.c_str() );
-              unsigned int idx(0);
-              for ( auto el : *(inputElectrons) ) {
-                  Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
-                  ++idx;
-              }
-          }
-
-          // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
-	  //
-          this->executeSF( inputElectrons, countInputCont );
-
-          // increment counter
-	  //
-          ++countInputCont;
-
-      } // close loop on systematic sets available from upstream algo
+             RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+             
+             if ( m_debug ){
+                 Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) );
+	         Info( "execute", "Input syst: %s", systName.c_str() );
+                 unsigned int idx(0);
+                 for ( auto el : *(inputElectrons) ) {
+                     Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
+                     ++idx;
+                 }
+             }
+             
+             // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
+	     //
+             this->executeSF( inputElectrons, countInputCont );
+             
+             // increment counter
+	     //
+             ++countInputCont;
+          
+          } // check existence of container
+      
+        } // close loop on systematic sets available from upstream algo
 
   }
 
