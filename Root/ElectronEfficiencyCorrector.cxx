@@ -567,10 +567,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
              
              if ( m_debug ){
                  Info( "execute", "Number of electrons: %i", static_cast<int>(outputElectrons->size()) );
-                 //Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) );
 	         Info( "execute", "Input syst: %s", systName.c_str() );
                  unsigned int idx(0);
-                 //for ( auto el : *(inputElectrons) ) {
                  for ( auto el : *(outputElectrons) ) {
                      Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
                      ++idx;
@@ -579,7 +577,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
              
              // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
 	     //
-             //this->executeSF( inputElectrons, countInputCont );
              this->executeSF( outputElectrons, countInputCont );
              
              vecOutContainerNames->push_back( systName ); 

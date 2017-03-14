@@ -541,11 +541,9 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
               RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(outputMuons, m_outContainerName+systName, m_event, m_store, m_verbose) ,"");
 
     	      if ( m_debug ){
-	        //Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) );
 	        Info( "execute", "Number of muons: %i", static_cast<int>(outputMuons->size()) );
 	        Info( "execute", "Input syst: %s", systName.c_str() );
 	        unsigned int idx(0);
-    	        //for ( auto mu : *(inputMuons) ) {
     	        for ( auto mu : *(outputMuons) ) {
     	          Info( "execute", "Input muon %i, pt = %.2f GeV ", idx, (mu->pt() * 1e-3) );
     	          ++idx;
@@ -554,7 +552,6 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
               
 	      // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
 	      //
-              //this->executeSF( eventInfo, inputMuons, countInputCont, isNomMuonSelection );
               this->executeSF( eventInfo, outputMuons, countInputCont, isNomMuonSelection );
 	     
               vecOutContainerNames->push_back( systName ); 
