@@ -13,6 +13,7 @@
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODMuon/MuonContainer.h"
+#include "xAODMuon/MuonAuxContainer.h"
 #include "xAODMuon/Muon.h"
 #include "xAODBase/IParticleHelpers.h"
 #include "xAODBase/IParticleContainer.h"
@@ -56,6 +57,7 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   // Input container to be read from TEvent or TStore
   //
   m_inContainerName            = "";
+  m_outContainerName           = "";
 
   m_calibRelease               = "Data15_allPeriods_241115";
 
@@ -91,6 +93,7 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   // Systematics stuff
   //
   m_inputAlgoSystNames         = "";
+  m_outputAlgoSystNames        = "";
   m_systValReco 	       = 0.0;
   m_systValIso 	               = 0.0;
   m_systValTrig 	       = 0.0;
@@ -520,19 +523,28 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
     	// loop over systematic sets available
 	//
-    	for ( auto systName : *systNames ) {
-           
-           bool isNomMuonSelection = systName.empty();
+        std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
 
+        for ( auto systName : *systNames ) {
+           
+           const xAOD::MuonContainer* outputMuons(nullptr);
+           bool isNomMuonSelection = systName.empty();
+           
            if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName+systName )  ) {
 
               RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
               
+              if ( !m_store->contains<xAOD::MuonContainer>( m_outContainerName+systName ) ) {
+                 RETURN_CHECK("MuonEfficiencyCorrector::execute()", (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, m_outContainerName+systName, inputMuons)), "");
+              } 
+              
+              RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(outputMuons, m_outContainerName+systName, m_event, m_store, m_verbose) ,"");
+
     	      if ( m_debug ){
-	        Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) );
+	        Info( "execute", "Number of muons: %i", static_cast<int>(outputMuons->size()) );
 	        Info( "execute", "Input syst: %s", systName.c_str() );
 	        unsigned int idx(0);
-    	        for ( auto mu : *(inputMuons) ) {
+    	        for ( auto mu : *(outputMuons) ) {
     	          Info( "execute", "Input muon %i, pt = %.2f GeV ", idx, (mu->pt() * 1e-3) );
     	          ++idx;
     	        }
@@ -540,15 +552,19 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
               
 	      // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
 	      //
-              this->executeSF( eventInfo, inputMuons, countInputCont, isNomMuonSelection );
-              
-	      // increment counter
+              this->executeSF( eventInfo, outputMuons, countInputCont, isNomMuonSelection );
+	     
+              vecOutContainerNames->push_back( systName ); 
+              // increment counter
 	      //
 	      ++countInputCont;
         
            } // check existence of container
     	} // close loop on systematic sets available from upstream algo
-
+       
+        if ( !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
+          RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names."); 
+        }
    }
 
   // look what we have in TStore
@@ -682,10 +698,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 //
     	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
     	 //
+
     	 SG::AuxElement::Decorator< std::vector<float> > sfVecReco( m_outputSystNamesReco );
     	 if ( !sfVecReco.isAvailable( *mu_itr ) ) {
   	   sfVecReco( *mu_itr ) = std::vector<float>();
-    	 }
+    	 } 
 
     	 float recoEffSF(1.0);
     	 if ( m_muRecoSF_tool->getEfficiencyScaleFactor( *mu_itr, recoEffSF ) != CP::CorrectionCode::Ok ) {
@@ -702,9 +719,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 SG::AuxElement::Decorator< std::vector<std::string> > sfVecReco_sysNames( m_outputSystNamesReco + "_sysNames" );
     	 if ( !sfVecReco_sysNames.isAvailable( *mu_itr ) ) {
   	   sfVecReco_sysNames( *mu_itr ) = std::vector<std::string>();
-         }
+         } 
     	 sfVecReco_sysNames( *mu_itr ).push_back( syst_it.name().c_str() );
-
+         
     	 if ( m_debug ) {
     	   Info( "executeSF()", "===>>>");
     	   Info( "executeSF()", " ");

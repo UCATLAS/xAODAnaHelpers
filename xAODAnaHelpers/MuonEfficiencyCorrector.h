@@ -36,6 +36,7 @@ public:
 
   // configuration variables
   std::string   m_inContainerName;
+  std::string   m_outContainerName;
 
   std::string   m_calibRelease;
 
@@ -62,7 +63,9 @@ public:
   // systematics
   std::string   m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
   			               // upstream algo (e.g., the SC containers with calibration systematics)
-
+  
+  std::string   m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers to be fed to 
+                                       // the downstream algos. We need that as we deepcopy the input containers
   float         m_systValReco;
   float         m_systValIso;
   float         m_systValTrig;
