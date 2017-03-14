@@ -9,6 +9,7 @@
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
+#include "xAODEgamma/ElectronAuxContainer.h"
 #include "xAODEgamma/Electron.h"
 #include "xAODBase/IParticleHelpers.h"
 #include "xAODBase/IParticleContainer.h"
@@ -51,10 +52,12 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
   // input container to be read from TEvent or TStore
   //
   m_inContainerName         = "";
+  m_outContainerName        = "";
 
   // Systematics stuff
   //
   m_inputAlgoSystNames      = "";
+  m_outputAlgoSystNames     = "";
   m_systValPID              = 0.0;
   m_systValIso              = 0.0;
   m_systValReco             = 0.0;
@@ -546,17 +549,29 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
     	// loop over systematic sets available
 	//
-    	for ( auto systName : *systNames ) {
+        std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+    	
+        for ( auto systName : *systNames ) {
 
+          const xAOD::ElectronContainer* outputElectrons(nullptr);
+          
           if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName )  ) {
 
              RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
              
+             if ( !m_store->contains<xAOD::ElectronContainer>( m_outContainerName+systName ) ) {
+               RETURN_CHECK("ElectronEfficiencyCorrector::execute()", (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, m_outContainerName+systName, inputElectrons)), "");
+             }  
+             
+             RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(outputElectrons, m_outContainerName+systName, m_event, m_store, m_verbose) ,"");
+             
              if ( m_debug ){
-                 Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) );
+                 Info( "execute", "Number of electrons: %i", static_cast<int>(outputElectrons->size()) );
+                 //Info( "execute", "Number of electrons: %i", static_cast<int>(inputElectrons->size()) );
 	         Info( "execute", "Input syst: %s", systName.c_str() );
                  unsigned int idx(0);
-                 for ( auto el : *(inputElectrons) ) {
+                 //for ( auto el : *(inputElectrons) ) {
+                 for ( auto el : *(outputElectrons) ) {
                      Info( "execute", "Input electron %i, pt = %.2f GeV ", idx, (el->pt() * 1e-3) );
                      ++idx;
                  }
@@ -564,8 +579,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
              
              // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
 	     //
-             this->executeSF( inputElectrons, countInputCont );
+             //this->executeSF( inputElectrons, countInputCont );
+             this->executeSF( outputElectrons, countInputCont );
              
+             vecOutContainerNames->push_back( systName ); 
              // increment counter
 	     //
              ++countInputCont;
@@ -573,6 +590,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
           } // check existence of container
       
         } // close loop on systematic sets available from upstream algo
+        
+        if ( !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
+          RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names."); 
+        }
 
   }
 
