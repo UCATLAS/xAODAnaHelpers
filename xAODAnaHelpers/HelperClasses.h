@@ -288,6 +288,7 @@ namespace HelperClasses {
         ============== ============ =======
         m_trigger      trigger      exact
         m_isolation    isolation    exact
+        m_quality      quality      exact
         m_PID          PID          exact
         m_trackparams  trackparams  exact
         m_trackhitcont trackhitcont exact
@@ -329,6 +330,7 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_isolation;
+    bool m_quality;
     bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
@@ -406,10 +408,13 @@ namespace HelperClasses {
         m_tracksInJet    tracksInJet    partial
         m_trackJetName   trackJetName   partial
         m_hltVtxComp     hltVtxComp     exact
+        m_onlineBS       onlineBS       exact
+        m_onlineBSTool   onlineBSTool   exact
         m_charge         charge         exact
         m_vsLumiBlock    vsLumiBlock    exact
-        m_lumiB_runN    lumiB_runN    exact
+        m_lumiB_runN     lumiB_runN     exact
         m_byAverageMu    byAverageMu    exact
+        m_byEta          byEta          exact
         m_etaPhiMap      etaPhiMap      exact
         ================ ============== =======
 
@@ -453,10 +458,13 @@ namespace HelperClasses {
     bool m_tracksInJet;
     bool m_trackJets;
     bool m_hltVtxComp;
+    bool m_onlineBS;
+    bool m_onlineBSTool;
     bool m_charge;
     bool m_etaPhiMap;
     bool m_vsLumiBlock;
     bool m_lumiB_runN;
+    bool m_byEta;
     bool m_byAverageMu;
     bool m_area;
     bool m_JVC;

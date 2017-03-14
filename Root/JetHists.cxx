@@ -10,7 +10,8 @@ JetHists :: JetHists (std::string name, std::string detailStr, const std::string
   IParticleHists(name, detailStr, prefix, titlePrefix),
   m_infoSwitch(new HelperClasses::JetInfoSwitch(m_detailStr)),
   m_titlePrefix(titlePrefix),
-  m_tracksInJet(0)
+  m_tracksInJet(0),
+  m_onlineBSTool()
 { }
 
 JetHists :: ~JetHists () {
@@ -355,6 +356,36 @@ StatusCode JetHists::initialize() {
     m_tracksInJet -> initialize( );
   }
 
+  if( m_infoSwitch->m_byEta){
+
+    m_jetPt_eta_0_1   = book(m_name, "jetPt_eta_0_1",   "p_{T} [GeV]",100, 0, 1000);
+    m_jetPt_eta_1_2   = book(m_name, "jetPt_eta_1_2",   "p_{T} [GeV]",100, 0, 1000);
+    m_jetPt_eta_2_2p5 = book(m_name, "jetPt_eta_2_2p5", "p_{T} [GeV]",100, 0, 1000);
+    m_jetPt_eta_1_2p5 = book(m_name, "jetPt_eta_1_2p5", "p_{T} [GeV]",100, 0, 1000);
+
+  }
+      
+  
+  if( m_infoSwitch->m_onlineBS ){
+
+    m_bs_online_vz                  = book(m_name, "bs_online_vz",  "bs_online_vz",   200,   -5,   5);
+    m_bs_online_vz_l                = book(m_name, "bs_online_vz_l","bs_online_vz_l", 200, -100, 100);
+    m_bs_online_vy                  = book(m_name, "bs_online_vy",  "bs_online_vy",   200,   -2,   2);
+    m_bs_online_vx                  = book(m_name, "bs_online_vx",  "bs_online_vx",   200,   -2,   2);
+
+    m_eta_bs_online_vz_0_1       = book(m_name, "eta_bs_online_vz_0_1",   "Jet #eta", 80, -4, 4);
+    m_eta_bs_online_vz_1_1p5     = book(m_name, "eta_bs_online_vz_1_1p5", "Jet #eta", 80, -4, 4);
+    m_eta_bs_online_vz_1p5_2     = book(m_name, "eta_bs_online_vz_1p5_2", "Jet #eta", 80, -4, 4);
+
+  }
+
+  if( m_infoSwitch->m_onlineBS || m_infoSwitch->m_hltVtxComp ){
+ 
+    m_vtxClass                       = book(m_name, "vtxClass",      "vtxClass",        3, -0.5, 2.5);
+
+  }
+  
+    
   if( m_infoSwitch->m_hltVtxComp ){
 
     m_vtx_offline_x0                  = book(m_name, "vtx_offline_x0",  "vtx_offline_x0",   100,  -0.2,  0.2);
@@ -383,12 +414,7 @@ StatusCode JetHists::initialize() {
     m_vtxDiffz0                      = book(m_name, "vtx_diff_z0",   "vtx_diff_z0",   100, -100, 100);
     m_vtxDiffz0_m                    = book(m_name, "vtx_diff_z0_m", "vtx_diff_z0_m", 100,  -20,  20);
     m_vtxDiffz0_s                    = book(m_name, "vtx_diff_z0_s", "vtx_diff_z0_s", 100,  -5,  5);
-    m_vtxClass                       = book(m_name, "vtxClass",      "vtxClass",        3, -0.5, 2.5);
-    
-    m_bs_online_vz                  = book(m_name, "bs_online_vz",  "bs_online_vz",   200,   -5,   5);
-    m_bs_online_vz_l                = book(m_name, "bs_online_vz_l","bs_online_vz_l", 200, -100, 100);
-    m_bs_online_vy                  = book(m_name, "bs_online_vy",  "bs_online_vy",   200,   -2,   2);
-    m_bs_online_vx                  = book(m_name, "bs_online_vx",  "bs_online_vx",   200,   -2,   2);
+
 
     m_vtxDiffz0_vs_vtx_offline_z0     = book(m_name, "vtxDiffz0_vs_vtx_offline_z0",
 					     "vtx_offline_z0",  100, -200, 200,
@@ -1389,16 +1415,51 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     }
   }
 
-  if( m_infoSwitch->m_hltVtxComp ){
+  if(  m_infoSwitch->m_byEta ){
+    if (fabs(jet->eta()) < 1)           m_jetPt_eta_0_1   -> Fill(jet->pt()/1e3, eventWeight);
+    else if ( fabs(jet->eta()) < 2 ){   m_jetPt_eta_1_2   -> Fill(jet->pt()/1e3, eventWeight); m_jetPt_eta_1_2p5 -> Fill(jet->pt()/1e3, eventWeight);}
+    else if ( fabs(jet->eta()) < 2.5 ){ m_jetPt_eta_2_2p5 -> Fill(jet->pt()/1e3, eventWeight); m_jetPt_eta_1_2p5 -> Fill(jet->pt()/1e3, eventWeight);}
+  }
+    
+  if(  m_infoSwitch->m_onlineBS ){
+    
+    float bs_online_vx = jet->auxdata< float >("bs_online_vx");
+    float bs_online_vy = jet->auxdata< float >("bs_online_vy");
+    float bs_online_vz = jet->auxdata< float >("bs_online_vz");
+
+    if( m_infoSwitch->m_onlineBSTool ){
+      // Over-ride with onlineBSToolInfo
+      bs_online_vx = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSx);
+      bs_online_vy = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSy);
+      bs_online_vz = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSz);
+    }
+     
+    m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
+    m_bs_online_vx -> Fill( bs_online_vx , eventWeight);
+    m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
+    m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
+
+    if (fabs(bs_online_vz) < 1)          { m_eta_bs_online_vz_0_1   -> Fill( jet->eta(), eventWeight); }
+    else if ( fabs(bs_online_vz) < 1.5 ) { m_eta_bs_online_vz_1_1p5 -> Fill( jet->eta(), eventWeight); } 
+    else if ( fabs(bs_online_vz) < 2   ) { m_eta_bs_online_vz_1p5_2 -> Fill( jet->eta(), eventWeight); }
+
+       
+
+    if(m_infoSwitch->m_lumiB_runN){
+      uint32_t lumiBlock = eventInfo->lumiBlock();
+      uint32_t runNumber = eventInfo->runNumber();
+      
+      if( fabs(bs_online_vz) < 900){
+	m_lumiB_runN_bs_online_vz -> Fill(lumiBlock, runNumber, eventWeight * bs_online_vz);
+	m_lumiB_runN_bs_den       -> Fill(lumiBlock, runNumber, eventWeight );
+      }
+      
+    }
+  }
+    
+  if( m_infoSwitch->m_hltVtxComp || m_infoSwitch->m_onlineBS ){
     const xAOD::Vertex *online_pvx   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
     const xAOD::Vertex *offline_pvx  = jet->auxdata<const xAOD::Vertex*>("offline_vtx");
-
-    if(online_pvx)  m_vtxOnlineValid ->Fill(1.0, eventWeight);
-    else            m_vtxOnlineValid ->Fill(0.0, eventWeight);
-    
-
-    if(offline_pvx) m_vtxOfflineValid->Fill(1.0, eventWeight);
-    else            m_vtxOfflineValid->Fill(0.0, eventWeight);
 
     // Use of vtxClass is new, hadDummyPV is old but need backward compatibility.
     char vtxClass = jet->auxdata< char >("hadDummyPV");
@@ -1406,113 +1467,104 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     if( vtxClass == '1')  m_vtxClass -> Fill(1.0, eventWeight);
     if( vtxClass == '2')  m_vtxClass -> Fill(2.0, eventWeight);
 
+    if(m_infoSwitch->m_hltVtxComp){
     
-    float bs_online_vx = jet->auxdata< float >("bs_online_vx");
-    m_bs_online_vx -> Fill( bs_online_vx , eventWeight);
-    float bs_online_vy = jet->auxdata< float >("bs_online_vy");
-    m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
-    float bs_online_vz = jet->auxdata< float >("bs_online_vz");
+      if(online_pvx)  m_vtxOnlineValid ->Fill(1.0, eventWeight);
+      else            m_vtxOnlineValid ->Fill(0.0, eventWeight);
 
-    m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
-    m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
+      if(offline_pvx) m_vtxOfflineValid->Fill(1.0, eventWeight);
+      else            m_vtxOfflineValid->Fill(0.0, eventWeight);
+
   
+      //if(hadDummyPV)  m_vtxClass ->Fill(1.0, eventWeight);
+      //else            m_vtxClass ->Fill(0.0, eventWeight);
 
+      if(offline_pvx && online_pvx){
+	float online_x0_raw = online_pvx->x();
+	float online_y0_raw = online_pvx->y();
+	float online_z0_raw = online_pvx->z();
+	if(vtxClass!='0'){
+	  online_x0_raw = 0;
+	  online_y0_raw = 0;
+	  online_z0_raw = 0;
+	}
 
-    
-    //if(hadDummyPV)  m_vtxClass ->Fill(1.0, eventWeight);
-    //else            m_vtxClass ->Fill(0.0, eventWeight);
+	m_vtx_offline_x0    -> Fill(offline_pvx->x(), eventWeight);
+	m_vtx_online_x0     -> Fill(online_pvx->x(), eventWeight);
+	m_vtx_online_x0_raw -> Fill(online_x0_raw, eventWeight);
+	float vtxDiffx0 = online_pvx->x() - offline_pvx->x();
+	m_vtxDiffx0  ->Fill(vtxDiffx0, eventWeight);
+	m_vtxDiffx0_l->Fill(vtxDiffx0, eventWeight);
 
-    if(offline_pvx && online_pvx){
+	m_vtx_offline_y0    -> Fill(offline_pvx->y(), eventWeight);
+	m_vtx_online_y0     -> Fill(online_pvx->y(), eventWeight);
+	m_vtx_online_y0_raw -> Fill(online_y0_raw, eventWeight);
+	float vtxDiffy0 = online_pvx->y() - offline_pvx->y();
+	m_vtxDiffy0  ->Fill(vtxDiffy0, eventWeight);
+	m_vtxDiffy0_l->Fill(vtxDiffy0, eventWeight);
 
-      float online_x0_raw = online_pvx->x();
-      float online_y0_raw = online_pvx->y();
-      float online_z0_raw = online_pvx->z();
-      if(vtxClass!='0'){
-	online_x0_raw = 0;
-	online_y0_raw = 0;
-	online_z0_raw = 0;
-      }
-
-      m_vtx_offline_x0    -> Fill(offline_pvx->x(), eventWeight);
-      m_vtx_online_x0     -> Fill(online_pvx->x(), eventWeight);
-      m_vtx_online_x0_raw -> Fill(online_x0_raw, eventWeight);
-      float vtxDiffx0 = online_pvx->x() - offline_pvx->x();
-      m_vtxDiffx0  ->Fill(vtxDiffx0, eventWeight);
-      m_vtxDiffx0_l->Fill(vtxDiffx0, eventWeight);
-
-      m_vtx_offline_y0    -> Fill(offline_pvx->y(), eventWeight);
-      m_vtx_online_y0     -> Fill(online_pvx->y(), eventWeight);
-      m_vtx_online_y0_raw -> Fill(online_y0_raw, eventWeight);
-      float vtxDiffy0 = online_pvx->y() - offline_pvx->y();
-      m_vtxDiffy0  ->Fill(vtxDiffy0, eventWeight);
-      m_vtxDiffy0_l->Fill(vtxDiffy0, eventWeight);
-
-      m_vtx_offline_z0    -> Fill(offline_pvx->z(), eventWeight);
-      m_vtx_online_z0     -> Fill(online_pvx->z(), eventWeight);
-      m_vtx_online_z0_raw -> Fill(online_z0_raw, eventWeight);
-      float vtxDiffz0     = online_pvx->z() - offline_pvx->z();
-      float vtxDiffz0_raw = online_z0_raw - offline_pvx->z();
-      m_vtxDiffz0  ->Fill(vtxDiffz0, eventWeight);
-      m_vtxDiffz0_m->Fill(vtxDiffz0, eventWeight);
-      m_vtxDiffz0_s->Fill(vtxDiffz0, eventWeight);
+	m_vtx_offline_z0    -> Fill(offline_pvx->z(), eventWeight);
+	m_vtx_online_z0     -> Fill(online_pvx->z(), eventWeight);
+	m_vtx_online_z0_raw -> Fill(online_z0_raw, eventWeight);
+	float vtxDiffz0     = online_pvx->z() - offline_pvx->z();
+	float vtxDiffz0_raw = online_z0_raw - offline_pvx->z();
+	m_vtxDiffz0  ->Fill(vtxDiffz0, eventWeight);
+	m_vtxDiffz0_m->Fill(vtxDiffz0, eventWeight);
+	m_vtxDiffz0_s->Fill(vtxDiffz0, eventWeight);
       
-      m_vtxDiffz0_s_vs_vtx_offline_z0->Fill(offline_pvx->z(), vtxDiffz0, eventWeight);
-      m_vtxDiffz0_vs_vtx_offline_z0  ->Fill(offline_pvx->z(), vtxDiffz0, eventWeight);
-      m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);
-      m_vtxDiffz0_s_vs_vtxDiffy0      ->Fill(vtxDiffy0, vtxDiffz0, eventWeight);
+	m_vtxDiffz0_s_vs_vtx_offline_z0->Fill(offline_pvx->z(), vtxDiffz0, eventWeight);
+	m_vtxDiffz0_vs_vtx_offline_z0  ->Fill(offline_pvx->z(), vtxDiffz0, eventWeight);
+	m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);
+	m_vtxDiffz0_s_vs_vtxDiffy0      ->Fill(vtxDiffy0, vtxDiffz0, eventWeight);
 
-      m_vtxClass_vs_jetPt        ->Fill(jet->pt()/1e3, bool(vtxClass), eventWeight);
+	m_vtxClass_vs_jetPt        ->Fill(jet->pt()/1e3, bool(vtxClass), eventWeight);
 
-      m_vtx_online_y0_vs_vtx_online_z0 -> Fill(online_pvx->z(), online_pvx->y(), eventWeight);
-      m_vtx_online_x0_vs_vtx_online_z0 -> Fill(online_pvx->z(), online_pvx->x(), eventWeight);
+	m_vtx_online_y0_vs_vtx_online_z0 -> Fill(online_pvx->z(), online_pvx->y(), eventWeight);
+	m_vtx_online_x0_vs_vtx_online_z0 -> Fill(online_pvx->z(), online_pvx->x(), eventWeight);
        
 
-      if(m_infoSwitch->m_vsLumiBlock){
-	uint32_t lumiBlock = eventInfo->lumiBlock();
+	if(m_infoSwitch->m_vsLumiBlock){
+	  uint32_t lumiBlock = eventInfo->lumiBlock();
 
-	m_vtxDiffx0_vs_lBlock     ->Fill(lumiBlock, vtxDiffx0          , eventWeight);
-	m_vtxDiffy0_vs_lBlock     ->Fill(lumiBlock, vtxDiffy0          , eventWeight);
-	m_vtxDiffz0_vs_lBlock     ->Fill(lumiBlock, vtxDiffz0          , eventWeight);
-	m_vtxClass_vs_lBlock   ->Fill(lumiBlock, bool(vtxClass),    eventWeight);
+	  m_vtxDiffx0_vs_lBlock     ->Fill(lumiBlock, vtxDiffx0          , eventWeight);
+	  m_vtxDiffy0_vs_lBlock     ->Fill(lumiBlock, vtxDiffy0          , eventWeight);
+	  m_vtxDiffz0_vs_lBlock     ->Fill(lumiBlock, vtxDiffz0          , eventWeight);
+	  m_vtxClass_vs_lBlock   ->Fill(lumiBlock, bool(vtxClass),    eventWeight);
 
-	bool correctVtx1 = (fabs(vtxDiffz0) < 1);
-	bool correctVtx10 = (fabs(vtxDiffz0) < 10);
-	m_vtxEff1_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
-	m_vtxEff10_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
+	  bool correctVtx1 = (fabs(vtxDiffz0) < 1);
+	  bool correctVtx10 = (fabs(vtxDiffz0) < 10);
+	  m_vtxEff1_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
+	  m_vtxEff10_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
 
-	if(!vtxClass){
-	  m_vtxEff1_noDummy_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
-	  m_vtxEff10_noDummy_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
+	  if(!vtxClass){
+	    m_vtxEff1_noDummy_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
+	    m_vtxEff10_noDummy_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
+	  }
+
+	  bool correctVtx1_raw  = (fabs(vtxDiffz0_raw) < 1);
+	  bool correctVtx10_raw = (fabs(vtxDiffz0_raw) < 10);
+	  m_vtxEff1_raw_vs_lBlock   ->Fill(lumiBlock, correctVtx1_raw,    eventWeight);
+	  m_vtxEff10_raw_vs_lBlock  ->Fill(lumiBlock, correctVtx10_raw,    eventWeight);
+
 	}
 
-	bool correctVtx1_raw  = (fabs(vtxDiffz0_raw) < 1);
-	bool correctVtx10_raw = (fabs(vtxDiffz0_raw) < 10);
-	m_vtxEff1_raw_vs_lBlock   ->Fill(lumiBlock, correctVtx1_raw,    eventWeight);
-	m_vtxEff10_raw_vs_lBlock  ->Fill(lumiBlock, correctVtx10_raw,    eventWeight);
+      
+	if(m_infoSwitch->m_lumiB_runN){
+	  uint32_t lumiBlock = eventInfo->lumiBlock();
+	  uint32_t runNumber = eventInfo->runNumber();
+	  m_lumiB_runN              -> Fill(lumiBlock, runNumber, eventWeight);
+	  m_lumiB_runN_vtxClass     -> Fill(lumiBlock, runNumber, eventWeight * vtxClass);
+	  m_lumiB_runN_lumiB        -> Fill(lumiBlock, runNumber, eventWeight * lumiBlock);
 
-      }
- 
-    }
-
-    if(m_infoSwitch->m_lumiB_runN){
-	uint32_t lumiBlock = eventInfo->lumiBlock();
-	uint32_t runNumber = eventInfo->runNumber();
-	m_lumiB_runN              -> Fill(lumiBlock, runNumber, eventWeight);
-	m_lumiB_runN_vtxClass     -> Fill(lumiBlock, runNumber, eventWeight * vtxClass);
-	m_lumiB_runN_lumiB        -> Fill(lumiBlock, runNumber, eventWeight * lumiBlock);
-
-	if(bs_online_vz < 900){
-	  m_lumiB_runN_bs_online_vz -> Fill(lumiBlock, runNumber, eventWeight * bs_online_vz);
-	  m_lumiB_runN_bs_den       -> Fill(lumiBlock, runNumber, eventWeight );
-	}
 
 	//if(offline_pvx && online_pvx){
         //  float vtxDiffz0     = online_pvx->z() - offline_pvx->z();
 	//  m_lumiB_runN_vtxDiffz0  -> Fill(lumiBlock, runNumber, eventWeight * vtxDiffz0);
 	//}
+
+	}
+      }
     }
-
-
   }
 
   if(m_debug) std::cout << "JetHists: leave " <<std::endl;
@@ -1645,252 +1697,273 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     
 //
 //      h_IP3DvsMV2c20->Fill(jet->MV2c20, jet->IP3D);
+      
     }
 
+  if(  m_infoSwitch->m_byEta ){
+    if (fabs(jet->p4.Eta()) < 1)           m_jetPt_eta_0_1   -> Fill(jet->p4.Pt(), eventWeight);
+    else if ( fabs(jet->p4.Eta()) < 2 )   {m_jetPt_eta_1_2   -> Fill(jet->p4.Pt(), eventWeight); m_jetPt_eta_1_2p5 -> Fill(jet->p4.Pt(), eventWeight);}
+    else if ( fabs(jet->p4.Eta()) < 2.5 ) {m_jetPt_eta_2_2p5 -> Fill(jet->p4.Pt(), eventWeight); m_jetPt_eta_1_2p5 -> Fill(jet->p4.Pt(), eventWeight);}
+  }
 
-  if(m_infoSwitch->m_hltVtxComp)
-    {
+  if(  m_infoSwitch->m_onlineBS ){
 
-      /*std::cout << " Cout is working:  " << jet->vtxOnlineValid << std::endl;
-      if(jet->vtxOnlineValid)  {
-	std::cout << "valid online vtx: " << std::endl;
-	m_vtxOnlineValid ->Fill(1.0, eventWeight);
-      }
-      else  {
-	std::cout << "non-valid online vtx: ";
-	m_vtxOnlineValid ->Fill(0.0, eventWeight);
-	}*/
-
-      // vtxHadDummy is an old var. I am moving to a new variable name here.
-      float vtxClass=jet->vtxHadDummy;
-      
-      float online_x0_raw = jet->vtx_online_x0;
-      float online_y0_raw = jet->vtx_online_y0;
-      float online_z0_raw = jet->vtx_online_z0;
-      if(vtxClass){
-	online_x0_raw = 0;
-	online_y0_raw = 0;
-	online_z0_raw = 0;
-      }
-      
-      m_vtxClass               ->Fill(vtxClass          , eventWeight);
-
-      
       float bs_online_vx = jet->bs_online_vx;
-      m_bs_online_vx -> Fill( bs_online_vx , eventWeight);
       float bs_online_vy = jet->bs_online_vy;
-      m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
       float bs_online_vz = jet->bs_online_vz;
 
+      if( m_infoSwitch->m_onlineBSTool ){      
+	// Over-ride with onlineBSToolInfo
+	
+	bs_online_vx = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSx);
+	bs_online_vy = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSy);
+	bs_online_vz = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSz);
+	
+      }
+
+      m_bs_online_vx -> Fill( bs_online_vx , eventWeight);
+      m_bs_online_vy -> Fill( bs_online_vy , eventWeight);
       m_bs_online_vz   -> Fill( bs_online_vz , eventWeight);
       m_bs_online_vz_l -> Fill( bs_online_vz , eventWeight);
       
-      //if( fabs(bs_online_vy) < 0.1 ){
-      //   std::cout << " -> bs_online_vx" << bs_online_vx << "bs_online_vy" << bs_online_vy << "bs_online_vz" << bs_online_vz << std::endl;
-      //}
-      
-      float vtxDiffx0      = jet->vtx_online_x0 - jet->vtx_offline_x0;
-
-      m_vtx_offline_x0             ->Fill(jet->vtx_offline_x0 , eventWeight);
-      m_vtx_online_x0             ->Fill(jet->vtx_online_x0 , eventWeight);
-      m_vtx_online_x0_raw         ->Fill(online_x0_raw      , eventWeight);
-      m_vtxDiffx0                 ->Fill(vtxDiffx0          , eventWeight);
-      m_vtxDiffx0_l               ->Fill(vtxDiffx0          , eventWeight);
-
-      m_vtx_offline_y0             ->Fill(jet->vtx_offline_y0 , eventWeight);
-      m_vtx_online_y0             ->Fill(jet->vtx_online_y0 , eventWeight);
-      m_vtx_online_y0_raw         ->Fill(online_y0_raw      , eventWeight);
-      float vtxDiffy0 = jet->vtx_online_y0 - jet->vtx_offline_y0;
-      m_vtxDiffy0                 ->Fill(vtxDiffy0          , eventWeight);
-      m_vtxDiffy0_l               ->Fill(vtxDiffy0          , eventWeight);
-
-      m_vtx_offline_z0             ->Fill(jet->vtx_offline_z0 , eventWeight);
-      m_vtx_online_z0              ->Fill(jet->vtx_online_z0 , eventWeight);
-      m_vtx_offline_z0_s           ->Fill(jet->vtx_offline_z0 , eventWeight);
-      m_vtx_online_z0_s            ->Fill(jet->vtx_online_z0 , eventWeight);
-      m_vtx_online_z0_raw          ->Fill(online_z0_raw      , eventWeight);
-      float vtxDiffz0     = jet->vtx_online_z0  - jet->vtx_offline_z0;
-      float vtxDiffz0_raw = online_z0_raw       - jet->vtx_offline_z0;
-      m_vtxDiffz0                 ->Fill(vtxDiffz0          , eventWeight);
-      m_vtxDiffz0_m               ->Fill(vtxDiffz0          , eventWeight);
-      m_vtxDiffz0_s               ->Fill(vtxDiffz0          , eventWeight);
-      //m_vtx_offline_z                 ->Fill(jet->vtx_offline_z0          , eventWeight);
-      //m_vtx_online_z                 ->Fill(jet->vtx_online_z0          , eventWeight);
-
-      m_vtxDiffz0_s_vs_vtx_offline_z0->Fill(jet->vtx_offline_z0, vtxDiffz0, eventWeight);
-      m_vtxDiffz0_vs_vtx_offline_z0  ->Fill(jet->vtx_offline_z0, vtxDiffz0, eventWeight);
-      m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);
-      m_vtxDiffz0_s_vs_vtxDiffy0      ->Fill(vtxDiffy0, vtxDiffz0, eventWeight);
-      
-      m_vtxClass_vs_jetPt   ->Fill(jet->p4.Pt(), bool(vtxClass),    eventWeight);
-
-      m_vtx_online_y0_vs_vtx_online_z0 ->Fill(jet->vtx_online_z0, jet->vtx_online_y0, eventWeight);
-      m_vtx_online_x0_vs_vtx_online_z0 ->Fill(jet->vtx_online_z0, jet->vtx_online_x0, eventWeight);
-      
-      if(m_infoSwitch->m_vsLumiBlock && eventInfo){
-	uint32_t lumiBlock = eventInfo->m_lumiBlock;
-
-	m_vtxDiffx0_vs_lBlock     ->Fill(lumiBlock, vtxDiffx0          , eventWeight);
-	m_vtxDiffy0_vs_lBlock     ->Fill(lumiBlock, vtxDiffy0          , eventWeight);
-	m_vtxDiffz0_vs_lBlock     ->Fill(lumiBlock, vtxDiffz0          , eventWeight);
-	m_vtxClass_vs_lBlock   ->Fill(lumiBlock, bool(vtxClass),    eventWeight);
-
-	bool correctVtx1  = (fabs(vtxDiffz0) < 1);
-	bool correctVtx10 = (fabs(vtxDiffz0) < 10);
-	m_vtxEff1_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
-	m_vtxEff10_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
-
-	if(!vtxClass){
-	  m_vtxEff1_noDummy_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
-	  m_vtxEff10_noDummy_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
-	}
-      	
-	bool correctVtx1_raw  = (fabs(vtxDiffz0_raw) < 1);
-	bool correctVtx10_raw = (fabs(vtxDiffz0_raw) < 10);
-	m_vtxEff1_raw_vs_lBlock   ->Fill(lumiBlock, correctVtx1_raw,    eventWeight);
-	m_vtxEff10_raw_vs_lBlock  ->Fill(lumiBlock, correctVtx10_raw,    eventWeight);
-
-      }
+      if (fabs(bs_online_vz) < 1)          { m_eta_bs_online_vz_0_1   -> Fill( jet->p4.Eta(), eventWeight); }
+      else if ( fabs(bs_online_vz) < 1.5 ) { m_eta_bs_online_vz_1_1p5 -> Fill( jet->p4.Eta(), eventWeight); } 
+      else if ( fabs(bs_online_vz) < 2   ) { m_eta_bs_online_vz_1p5_2 -> Fill( jet->p4.Eta(), eventWeight); }
 
       if(m_infoSwitch->m_lumiB_runN){	
 	uint32_t lumiBlock = eventInfo->m_lumiBlock;
 	uint32_t runNumber = eventInfo->m_runNumber;
-	m_lumiB_runN               -> Fill(lumiBlock, runNumber, eventWeight);
-	m_lumiB_runN_vtxClass      -> Fill(lumiBlock, runNumber, eventWeight * vtxClass);
-	m_lumiB_runN_lumiB      -> Fill(lumiBlock, runNumber, eventWeight*lumiBlock);
+	if( fabs(bs_online_vz) < 900 ){
+	    m_lumiB_runN_bs_online_vz  -> Fill(lumiBlock, runNumber, eventWeight * bs_online_vz);
+	    m_lumiB_runN_bs_den        -> Fill(lumiBlock, runNumber, eventWeight );
+	}
 
-	if(bs_online_vz < 900 ){
-	  m_lumiB_runN_bs_online_vz  -> Fill(lumiBlock, runNumber, eventWeight * bs_online_vz);
-	  m_lumiB_runN_bs_den        -> Fill(lumiBlock, runNumber, eventWeight );
+
+      }
+  }
+  
+  if(m_infoSwitch->m_hltVtxComp ||  m_infoSwitch->m_onlineBS )
+    {
+
+      // vtxHadDummy is an old var. I am moving to a new variable name here.
+      float vtxClass=jet->vtxHadDummy;
+      m_vtxClass               ->Fill(vtxClass          , eventWeight);
+
+      if(m_infoSwitch->m_hltVtxComp){
+
+	float online_x0_raw = jet->vtx_online_x0;
+	float online_y0_raw = jet->vtx_online_y0;
+	float online_z0_raw = jet->vtx_online_z0;
+	if(vtxClass){
+	  online_x0_raw = 0;
+	  online_y0_raw = 0;
+	  online_z0_raw = 0;
+	}
+      
+      
+	//if( fabs(bs_online_vy) < 0.1 ){
+	//   std::cout << " -> bs_online_vx" << bs_online_vx << "bs_online_vy" << bs_online_vy << "bs_online_vz" << bs_online_vz << std::endl;
+	//}
+      
+	float vtxDiffx0      = jet->vtx_online_x0 - jet->vtx_offline_x0;
+
+	m_vtx_offline_x0             ->Fill(jet->vtx_offline_x0 , eventWeight);
+	m_vtx_online_x0             ->Fill(jet->vtx_online_x0 , eventWeight);
+	m_vtx_online_x0_raw         ->Fill(online_x0_raw      , eventWeight);
+	m_vtxDiffx0                 ->Fill(vtxDiffx0          , eventWeight);
+	m_vtxDiffx0_l               ->Fill(vtxDiffx0          , eventWeight);
+
+	m_vtx_offline_y0             ->Fill(jet->vtx_offline_y0 , eventWeight);
+	m_vtx_online_y0             ->Fill(jet->vtx_online_y0 , eventWeight);
+	m_vtx_online_y0_raw         ->Fill(online_y0_raw      , eventWeight);
+	float vtxDiffy0 = jet->vtx_online_y0 - jet->vtx_offline_y0;
+	m_vtxDiffy0                 ->Fill(vtxDiffy0          , eventWeight);
+	m_vtxDiffy0_l               ->Fill(vtxDiffy0          , eventWeight);
+
+	m_vtx_offline_z0             ->Fill(jet->vtx_offline_z0 , eventWeight);
+	m_vtx_online_z0              ->Fill(jet->vtx_online_z0 , eventWeight);
+	m_vtx_offline_z0_s           ->Fill(jet->vtx_offline_z0 , eventWeight);
+	m_vtx_online_z0_s            ->Fill(jet->vtx_online_z0 , eventWeight);
+	m_vtx_online_z0_raw          ->Fill(online_z0_raw      , eventWeight);
+	float vtxDiffz0     = jet->vtx_online_z0  - jet->vtx_offline_z0;
+	float vtxDiffz0_raw = online_z0_raw       - jet->vtx_offline_z0;
+	m_vtxDiffz0                 ->Fill(vtxDiffz0          , eventWeight);
+	m_vtxDiffz0_m               ->Fill(vtxDiffz0          , eventWeight);
+	m_vtxDiffz0_s               ->Fill(vtxDiffz0          , eventWeight);
+	//m_vtx_offline_z                 ->Fill(jet->vtx_offline_z0          , eventWeight);
+	//m_vtx_online_z                 ->Fill(jet->vtx_online_z0          , eventWeight);
+
+	m_vtxDiffz0_s_vs_vtx_offline_z0->Fill(jet->vtx_offline_z0, vtxDiffz0, eventWeight);
+	m_vtxDiffz0_vs_vtx_offline_z0  ->Fill(jet->vtx_offline_z0, vtxDiffz0, eventWeight);
+	m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);
+	m_vtxDiffz0_s_vs_vtxDiffy0      ->Fill(vtxDiffy0, vtxDiffz0, eventWeight);
+      
+	m_vtxClass_vs_jetPt   ->Fill(jet->p4.Pt(), bool(vtxClass),    eventWeight);
+
+	m_vtx_online_y0_vs_vtx_online_z0 ->Fill(jet->vtx_online_z0, jet->vtx_online_y0, eventWeight);
+	m_vtx_online_x0_vs_vtx_online_z0 ->Fill(jet->vtx_online_z0, jet->vtx_online_x0, eventWeight);
+      
+	if(m_infoSwitch->m_vsLumiBlock && eventInfo){
+	  uint32_t lumiBlock = eventInfo->m_lumiBlock;
+
+	  m_vtxDiffx0_vs_lBlock     ->Fill(lumiBlock, vtxDiffx0          , eventWeight);
+	  m_vtxDiffy0_vs_lBlock     ->Fill(lumiBlock, vtxDiffy0          , eventWeight);
+	  m_vtxDiffz0_vs_lBlock     ->Fill(lumiBlock, vtxDiffz0          , eventWeight);
+	  m_vtxClass_vs_lBlock   ->Fill(lumiBlock, bool(vtxClass),    eventWeight);
+
+	  bool correctVtx1  = (fabs(vtxDiffz0) < 1);
+	  bool correctVtx10 = (fabs(vtxDiffz0) < 10);
+	  m_vtxEff1_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
+	  m_vtxEff10_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
+
+	  if(!vtxClass){
+	    m_vtxEff1_noDummy_vs_lBlock   ->Fill(lumiBlock, correctVtx1,    eventWeight);
+	    m_vtxEff10_noDummy_vs_lBlock  ->Fill(lumiBlock, correctVtx10,    eventWeight);
+	  }
+      	
+	  bool correctVtx1_raw  = (fabs(vtxDiffz0_raw) < 1);
+	  bool correctVtx10_raw = (fabs(vtxDiffz0_raw) < 10);
+	  m_vtxEff1_raw_vs_lBlock   ->Fill(lumiBlock, correctVtx1_raw,    eventWeight);
+	  m_vtxEff10_raw_vs_lBlock  ->Fill(lumiBlock, correctVtx10_raw,    eventWeight);
+
+	}
+
+	if(m_infoSwitch->m_lumiB_runN){	
+	  uint32_t lumiBlock = eventInfo->m_lumiBlock;
+	  uint32_t runNumber = eventInfo->m_runNumber;
+	  m_lumiB_runN               -> Fill(lumiBlock, runNumber, eventWeight);
+	  m_lumiB_runN_vtxClass      -> Fill(lumiBlock, runNumber, eventWeight * vtxClass);
+	  m_lumiB_runN_lumiB      -> Fill(lumiBlock, runNumber, eventWeight*lumiBlock);
+
 	}
 	
       }
 
     }
+  
+  if(m_infoSwitch->m_jetFitterDetails){
 
-    if(m_infoSwitch->m_jetFitterDetails){
+    m_jf_nVTX           ->Fill(jet->JetFitter_nVTX           ,      eventWeight);
+    m_jf_nSingleTracks  ->Fill(jet->JetFitter_nSingleTracks  ,      eventWeight);
+    m_jf_nTracksAtVtx   ->Fill(jet->JetFitter_nTracksAtVtx   ,      eventWeight);
+    m_jf_mass           ->Fill(jet->JetFitter_mass           /1000, eventWeight);
+    m_jf_energyFraction ->Fill(jet->JetFitter_energyFraction ,      eventWeight);
+    m_jf_significance3d ->Fill(jet->JetFitter_significance3d ,      eventWeight);
+    m_jf_deltaeta       ->Fill(jet->JetFitter_deltaeta       ,      eventWeight);
+    m_jf_deltaeta_l     ->Fill(jet->JetFitter_deltaeta       ,      eventWeight);
+    m_jf_deltaR         ->Fill(hypot(jet->JetFitter_deltaphi         ,jet->JetFitter_deltaeta), eventWeight);
+    m_jf_deltaphi       ->Fill(jet->JetFitter_deltaphi       ,      eventWeight);
+    m_jf_deltaphi_l     ->Fill(jet->JetFitter_deltaphi       ,      eventWeight);
+    m_jf_N2Tpar         ->Fill(jet->JetFitter_N2Tpar         ,      eventWeight);
+  }
 
-      m_jf_nVTX           ->Fill(jet->JetFitter_nVTX           ,      eventWeight);
-      m_jf_nSingleTracks  ->Fill(jet->JetFitter_nSingleTracks  ,      eventWeight);
-      m_jf_nTracksAtVtx   ->Fill(jet->JetFitter_nTracksAtVtx   ,      eventWeight);
-      m_jf_mass           ->Fill(jet->JetFitter_mass           /1000, eventWeight);
-      m_jf_energyFraction ->Fill(jet->JetFitter_energyFraction ,      eventWeight);
-      m_jf_significance3d ->Fill(jet->JetFitter_significance3d ,      eventWeight);
-      m_jf_deltaeta       ->Fill(jet->JetFitter_deltaeta       ,      eventWeight);
-      m_jf_deltaeta_l     ->Fill(jet->JetFitter_deltaeta       ,      eventWeight);
-      m_jf_deltaR         ->Fill(hypot(jet->JetFitter_deltaphi         ,jet->JetFitter_deltaeta), eventWeight);
-      m_jf_deltaphi       ->Fill(jet->JetFitter_deltaphi       ,      eventWeight);
-      m_jf_deltaphi_l     ->Fill(jet->JetFitter_deltaphi       ,      eventWeight);
-      m_jf_N2Tpar         ->Fill(jet->JetFitter_N2Tpar         ,      eventWeight);
-    }
+  if(m_infoSwitch->m_svDetails){
+    //
+    // SV0
+    //
+    m_sv0_NGTinSvx -> Fill( jet->sv0_NGTinSvx, eventWeight);
+    m_sv0_N2Tpair  -> Fill( jet->sv0_N2Tpair , eventWeight);
+    m_sv0_massvx   -> Fill( jet->sv0_massvx  /1000, eventWeight);
+    m_sv0_efracsvx -> Fill( jet->sv0_efracsvx, eventWeight);
+    m_sv0_normdist -> Fill( jet->sv0_normdist, eventWeight);
 
-    if(m_infoSwitch->m_svDetails){
-      //
-      // SV0
-      //
-      m_sv0_NGTinSvx -> Fill( jet->sv0_NGTinSvx, eventWeight);
-      m_sv0_N2Tpair  -> Fill( jet->sv0_N2Tpair , eventWeight);
-      m_sv0_massvx   -> Fill( jet->sv0_massvx  /1000, eventWeight);
-      m_sv0_efracsvx -> Fill( jet->sv0_efracsvx, eventWeight);
-      m_sv0_normdist -> Fill( jet->sv0_normdist, eventWeight);
-
-      //
-      // SV1
-      //
-      m_sv1_NGTinSvx -> Fill( jet->sv1_NGTinSvx, eventWeight);
-      m_sv1_N2Tpair  -> Fill( jet->sv1_N2Tpair , eventWeight);
-      m_sv1_massvx   -> Fill( jet->sv1_massvx  /1000, eventWeight);
-      m_sv1_efracsvx -> Fill( jet->sv1_efracsvx, eventWeight);
-      m_sv1_normdist -> Fill( jet->sv1_normdist, eventWeight);
+    //
+    // SV1
+    //
+    m_sv1_NGTinSvx -> Fill( jet->sv1_NGTinSvx, eventWeight);
+    m_sv1_N2Tpair  -> Fill( jet->sv1_N2Tpair , eventWeight);
+    m_sv1_massvx   -> Fill( jet->sv1_massvx  /1000, eventWeight);
+    m_sv1_efracsvx -> Fill( jet->sv1_efracsvx, eventWeight);
+    m_sv1_normdist -> Fill( jet->sv1_normdist, eventWeight);
 
       
-      m_SV1_pu         ->  Fill(jet->sv1_pu  , eventWeight );
-      m_SV1_pb         ->  Fill(jet->sv1_pb  , eventWeight );
-      m_SV1_pc         ->  Fill(jet->sv1_pc  , eventWeight );
+    m_SV1_pu         ->  Fill(jet->sv1_pu  , eventWeight );
+    m_SV1_pb         ->  Fill(jet->sv1_pb  , eventWeight );
+    m_SV1_pc         ->  Fill(jet->sv1_pc  , eventWeight );
 
-      m_SV1_c          ->  Fill(jet->sv1_c  , eventWeight );
-      m_SV1_cu         ->  Fill(jet->sv1_cu , eventWeight );
+    m_SV1_c          ->  Fill(jet->sv1_c  , eventWeight );
+    m_SV1_cu         ->  Fill(jet->sv1_cu , eventWeight );
 
-      m_SV1_Lxy        -> Fill(jet->sv1_Lxy,         eventWeight);
-      m_SV1_L3d        -> Fill(jet->sv1_L3d,         eventWeight);
-      m_SV1_distmatlay -> Fill(jet->sv1_distmatlay,  eventWeight);
-      m_SV1_dR         -> Fill(jet->sv1_dR,          eventWeight);
+    m_SV1_Lxy        -> Fill(jet->sv1_Lxy,         eventWeight);
+    m_SV1_L3d        -> Fill(jet->sv1_L3d,         eventWeight);
+    m_SV1_distmatlay -> Fill(jet->sv1_distmatlay,  eventWeight);
+    m_SV1_dR         -> Fill(jet->sv1_dR,          eventWeight);
 
-    }
+  }
 
 
-    if(m_infoSwitch->m_ipDetails){
-      //
-      // IP2D
-      //
-      m_nIP2DTracks -> Fill( jet->nIP2DTracks, eventWeight);
-      for(float grade : jet->IP2D_gradeOfTracks)        m_IP2D_gradeOfTracks->Fill(grade, eventWeight);
-      for(float flag  : jet->IP2D_flagFromV0ofTracks)   m_IP2D_flagFromV0ofTracks->Fill(flag, eventWeight);
+  if(m_infoSwitch->m_ipDetails){
+    //
+    // IP2D
+    //
+    m_nIP2DTracks -> Fill( jet->nIP2DTracks, eventWeight);
+    for(float grade : jet->IP2D_gradeOfTracks)        m_IP2D_gradeOfTracks->Fill(grade, eventWeight);
+    for(float flag  : jet->IP2D_flagFromV0ofTracks)   m_IP2D_flagFromV0ofTracks->Fill(flag, eventWeight);
    
-      for(unsigned int i=0; i<jet->IP2D_sigD0wrtPVofTracks.size(); i++){
-	  float d0Sig=jet->IP2D_sigD0wrtPVofTracks[i];
-	  float d0Val=jet->IP2D_valD0wrtPVofTracks[i];
-	  float d0Err=d0Val/d0Sig;
-	  m_IP2D_errD0wrtPVofTracks->Fill  (d0Err, eventWeight);
-	  m_IP2D_sigD0wrtPVofTracks->Fill  (d0Sig, eventWeight);
-	  m_IP2D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
-	  m_IP2D_valD0wrtPVofTracks->Fill  (d0Val, eventWeight);
-      }
+    for(unsigned int i=0; i<jet->IP2D_sigD0wrtPVofTracks.size(); i++){
+      float d0Sig=jet->IP2D_sigD0wrtPVofTracks[i];
+      float d0Val=jet->IP2D_valD0wrtPVofTracks[i];
+      float d0Err=d0Val/d0Sig;
+      m_IP2D_errD0wrtPVofTracks->Fill  (d0Err, eventWeight);
+      m_IP2D_sigD0wrtPVofTracks->Fill  (d0Sig, eventWeight);
+      m_IP2D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+      m_IP2D_valD0wrtPVofTracks->Fill  (d0Val, eventWeight);
+    }
 	
 
-      for(float weightB : jet->IP2D_weightBofTracks)  m_IP2D_weightBofTracks->Fill(weightB, eventWeight);
-      for(float weightC : jet->IP2D_weightCofTracks)  m_IP2D_weightCofTracks->Fill(weightC, eventWeight);
-      for(float weightU : jet->IP2D_weightUofTracks)  m_IP2D_weightUofTracks->Fill(weightU, eventWeight);
+    for(float weightB : jet->IP2D_weightBofTracks)  m_IP2D_weightBofTracks->Fill(weightB, eventWeight);
+    for(float weightC : jet->IP2D_weightCofTracks)  m_IP2D_weightCofTracks->Fill(weightC, eventWeight);
+    for(float weightU : jet->IP2D_weightUofTracks)  m_IP2D_weightUofTracks->Fill(weightU, eventWeight);
 
 
-      m_IP2D_pu         ->  Fill(jet->IP2D_pu  , eventWeight );
-      m_IP2D_pb         ->  Fill(jet->IP2D_pb  , eventWeight );
-      m_IP2D_pc         ->  Fill(jet->IP2D_pc  , eventWeight );
+    m_IP2D_pu         ->  Fill(jet->IP2D_pu  , eventWeight );
+    m_IP2D_pb         ->  Fill(jet->IP2D_pb  , eventWeight );
+    m_IP2D_pc         ->  Fill(jet->IP2D_pc  , eventWeight );
 
-      m_IP2D            ->  Fill( jet->IP2D    , eventWeight );
-      m_IP2D_c          ->  Fill( jet->IP2D_c  , eventWeight );
-      m_IP2D_cu         ->  Fill( jet->IP2D_cu , eventWeight );
+    m_IP2D            ->  Fill( jet->IP2D    , eventWeight );
+    m_IP2D_c          ->  Fill( jet->IP2D_c  , eventWeight );
+    m_IP2D_cu         ->  Fill( jet->IP2D_cu , eventWeight );
 
 
-      //
-      // IP3D
-      //
-      m_nIP3DTracks -> Fill( jet->nIP3DTracks, eventWeight);
-      for(float grade : jet->IP3D_gradeOfTracks     )   m_IP3D_gradeOfTracks->Fill(grade, eventWeight);
-      for(float flag  : jet->IP3D_flagFromV0ofTracks)   m_IP3D_flagFromV0ofTracks->Fill(flag, eventWeight);
+    //
+    // IP3D
+    //
+    m_nIP3DTracks -> Fill( jet->nIP3DTracks, eventWeight);
+    for(float grade : jet->IP3D_gradeOfTracks     )   m_IP3D_gradeOfTracks->Fill(grade, eventWeight);
+    for(float flag  : jet->IP3D_flagFromV0ofTracks)   m_IP3D_flagFromV0ofTracks->Fill(flag, eventWeight);
 
-      for(unsigned int i=0; i<jet->IP3D_sigD0wrtPVofTracks.size(); i++){
-	  float d0Sig=jet->IP3D_sigD0wrtPVofTracks[i];
-	  float d0Val=jet->IP3D_valD0wrtPVofTracks[i];
-	  float d0Err=d0Val/d0Sig;
-	  m_IP3D_errD0wrtPVofTracks->Fill  (d0Err, eventWeight);
-	  m_IP3D_sigD0wrtPVofTracks->Fill  (d0Sig, eventWeight);
-	  m_IP3D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
-	  m_IP3D_valD0wrtPVofTracks->Fill  (d0Val, eventWeight);
-      }
-      
-      for(unsigned int i=0; i<jet->IP3D_sigZ0wrtPVofTracks.size(); i++){
-	  float z0Sig=jet->IP3D_sigZ0wrtPVofTracks[i];
-	  float z0Val=jet->IP3D_valZ0wrtPVofTracks[i];
-	  float z0Err=z0Val/z0Sig;
-	  m_IP3D_errZ0wrtPVofTracks->Fill  (z0Err, eventWeight);
-	  m_IP3D_sigZ0wrtPVofTracks->Fill  (z0Sig, eventWeight);
-	  m_IP3D_sigZ0wrtPVofTracks_l->Fill(z0Sig, eventWeight);
-	  m_IP3D_valZ0wrtPVofTracks->Fill  (z0Val, eventWeight);
-      }
-
-      for(float weightB : jet->IP3D_weightBofTracks)  m_IP3D_weightBofTracks->Fill(weightB, eventWeight);
-      for(float weightC : jet->IP3D_weightCofTracks)  m_IP3D_weightCofTracks->Fill(weightC, eventWeight);
-      for(float weightU : jet->IP3D_weightUofTracks)  m_IP3D_weightUofTracks->Fill(weightU, eventWeight);
-
-      m_IP3D_pu         ->  Fill(jet->IP3D_pu  , eventWeight );
-      m_IP3D_pb         ->  Fill(jet->IP3D_pb  , eventWeight );
-      m_IP3D_pc         ->  Fill(jet->IP3D_pc  , eventWeight );
-
-      m_IP3D_c          ->  Fill( jet->IP3D_c , eventWeight );
-      m_IP3D_cu         ->  Fill( jet->IP3D_cu, eventWeight );
-
+    for(unsigned int i=0; i<jet->IP3D_sigD0wrtPVofTracks.size(); i++){
+      float d0Sig=jet->IP3D_sigD0wrtPVofTracks[i];
+      float d0Val=jet->IP3D_valD0wrtPVofTracks[i];
+      float d0Err=d0Val/d0Sig;
+      m_IP3D_errD0wrtPVofTracks->Fill  (d0Err, eventWeight);
+      m_IP3D_sigD0wrtPVofTracks->Fill  (d0Sig, eventWeight);
+      m_IP3D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+      m_IP3D_valD0wrtPVofTracks->Fill  (d0Val, eventWeight);
     }
+      
+    for(unsigned int i=0; i<jet->IP3D_sigZ0wrtPVofTracks.size(); i++){
+      float z0Sig=jet->IP3D_sigZ0wrtPVofTracks[i];
+      float z0Val=jet->IP3D_valZ0wrtPVofTracks[i];
+      float z0Err=z0Val/z0Sig;
+      m_IP3D_errZ0wrtPVofTracks->Fill  (z0Err, eventWeight);
+      m_IP3D_sigZ0wrtPVofTracks->Fill  (z0Sig, eventWeight);
+      m_IP3D_sigZ0wrtPVofTracks_l->Fill(z0Sig, eventWeight);
+      m_IP3D_valZ0wrtPVofTracks->Fill  (z0Val, eventWeight);
+    }
+
+    for(float weightB : jet->IP3D_weightBofTracks)  m_IP3D_weightBofTracks->Fill(weightB, eventWeight);
+    for(float weightC : jet->IP3D_weightCofTracks)  m_IP3D_weightCofTracks->Fill(weightC, eventWeight);
+    for(float weightU : jet->IP3D_weightUofTracks)  m_IP3D_weightUofTracks->Fill(weightU, eventWeight);
+
+    m_IP3D_pu         ->  Fill(jet->IP3D_pu  , eventWeight );
+    m_IP3D_pb         ->  Fill(jet->IP3D_pb  , eventWeight );
+    m_IP3D_pc         ->  Fill(jet->IP3D_pc  , eventWeight );
+
+    m_IP3D_c          ->  Fill( jet->IP3D_c , eventWeight );
+    m_IP3D_cu         ->  Fill( jet->IP3D_cu, eventWeight );
+
+  }
 
 
 
@@ -1945,6 +2018,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
 
   return StatusCode::SUCCESS;
+
 
 }
 

@@ -155,6 +155,7 @@ namespace HelperClasses{
   void ElectronInfoSwitch::initialize(){
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
+    m_quality       = has_exact("quality");
     m_PID           = has_exact("PID");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
@@ -263,10 +264,15 @@ namespace HelperClasses{
     }
 
 
-    m_hltVtxComp          = has_exact("hltVtxComp");
+    m_hltVtxComp          = has_exact("hltVtxComp");    
+    m_onlineBS            = has_exact("onlineBS");    
+    m_onlineBSTool        = has_exact("onlineBSTool");
+
+    
     m_charge              = has_exact("charge");
     m_etaPhiMap           = has_exact("etaPhiMap");
     m_byAverageMu         = has_exact("byAverageMu");
+    m_byEta               = has_exact("byEta");
     m_vsLumiBlock         = has_exact("vsLumiBlock");
     m_lumiB_runN          = has_exact("lumiB_runN");
 
