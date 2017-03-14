@@ -2,6 +2,8 @@
 #define xAODAnaHelpers_OnlineBeamSpotTool_H
 
 #include "xAODEventInfo/EventInfo.h"
+#include "xAODAnaHelpers/EventInfo.h"
+
 #include <vector>
 #include <map>
 
@@ -44,6 +46,7 @@ namespace xAH {
     ~OnlineBeamSpotTool();
     
     float getOnlineBSInfo(const xAOD::EventInfo* eventInfo, BSData datakey);
+    float getOnlineBSInfo(const xAH::EventInfo* eventInfo, BSData datakey);
     float getOnlineBSInfo(int runNumber, int lumiBlock, bool isMC, BSData datakey);
 
   private:

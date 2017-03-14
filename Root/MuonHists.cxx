@@ -42,32 +42,31 @@ StatusCode MuonHists::initialize() {
     m_isIsolated_UserDefinedFixEfficiency = book(m_name, "isIsolated_UserDefinedFixEfficiency","isIsolated_UserDefinedFixEfficiency", 3, -1.5, 1.5);
     m_isIsolated_UserDefinedCut           = book(m_name, "isIsolated_UserDefinedCut",          "isIsolated_UserDefinedCut", 3, -1.5, 1.5);
 
-    m_ptcone20     = book(m_name, "ptcone20",     "ptcone20",     100, -0.1, 20);
-    m_ptcone30     = book(m_name, "ptcone30",     "ptcone30",     100, -0.1, 20);
-    m_ptcone40     = book(m_name, "ptcone40",     "ptcone40",     100, -0.1, 20);
-    m_ptvarcone20  = book(m_name, "ptvarcone20",  "ptvarcone20",  100, -0.1, 20);
-    m_ptvarcone30  = book(m_name, "ptvarcone30",  "ptvarcone30",  100, -0.1, 20);
-    m_ptvarcone40  = book(m_name, "ptvarcone40",  "ptvarcone40",  100, -0.1, 20);
-    m_topoetcone20 = book(m_name, "topoetcone20", "topoetcone20", 100, -5, 20);
-    m_topoetcone30 = book(m_name, "topoetcone30", "topoetcone30", 100, -5, 20);
-    m_topoetcone40 = book(m_name, "topoetcone40", "topoetcone40", 100, -5, 20);
+    m_ptcone20     = book(m_name, "ptcone20",     "ptcone20",     101, -0.2, 20);
+    m_ptcone30     = book(m_name, "ptcone30",     "ptcone30",     101, -0.2, 20);
+    m_ptcone40     = book(m_name, "ptcone40",     "ptcone40",     101, -0.2, 20);
+    m_ptvarcone20  = book(m_name, "ptvarcone20",  "ptvarcone20",  101, -0.2, 20);
+    m_ptvarcone30  = book(m_name, "ptvarcone30",  "ptvarcone30",  101, -0.2, 20);
+    m_ptvarcone40  = book(m_name, "ptvarcone40",  "ptvarcone40",  101, -0.2, 20);
+    m_topoetcone20 = book(m_name, "topoetcone20", "topoetcone20", 101, -0.2, 20);
+    m_topoetcone30 = book(m_name, "topoetcone30", "topoetcone30", 101, -0.2, 20);
+    m_topoetcone40 = book(m_name, "topoetcone40", "topoetcone40", 101, -0.2, 20);
 
-    m_ptcone20_rel     = book(m_name, "ptcone20_rel",     "ptcone20_rel",     100, 0, 2);
-    m_ptcone30_rel     = book(m_name, "ptcone30_rel",     "ptcone30_rel",     100, 0, 2);
-    m_ptcone40_rel     = book(m_name, "ptcone40_rel",     "ptcone40_rel",     100, 0, 2);
-    m_ptvarcone20_rel  = book(m_name, "ptvarcone20_rel",  "ptvarcone20_rel",  100, 0, 2);
-    m_ptvarcone30_rel  = book(m_name, "ptvarcone30_rel",  "ptvarcone30_rel",  100, 0, 2);
-    m_ptvarcone40_rel  = book(m_name, "ptvarcone40_rel",  "ptvarcone40_rel",  100, 0, 2);
-    m_topoetcone20_rel = book(m_name, "topoetcone20_rel", "topoetcone20_rel", 100, -0.2, 2);
-    m_topoetcone30_rel = book(m_name, "topoetcone30_rel", "topoetcone30_rel", 100, -0.2, 2);
-    m_topoetcone40_rel = book(m_name, "topoetcone40_rel", "topoetcone40_rel", 100, -0.2, 2);
+    m_ptcone20_rel     = book(m_name, "ptcone20_rel",     "ptcone20_rel",     110, -0.2, 2);
+    m_ptcone30_rel     = book(m_name, "ptcone30_rel",     "ptcone30_rel",     110, -0.2, 2);
+    m_ptcone40_rel     = book(m_name, "ptcone40_rel",     "ptcone40_rel",     110, -0.2, 2);
+    m_ptvarcone20_rel  = book(m_name, "ptvarcone20_rel",  "ptvarcone20_rel",  110, -0.2, 2);
+    m_ptvarcone30_rel  = book(m_name, "ptvarcone30_rel",  "ptvarcone30_rel",  110, -0.2, 2);
+    m_ptvarcone40_rel  = book(m_name, "ptvarcone40_rel",  "ptvarcone40_rel",  110, -0.2, 2);
+    m_topoetcone20_rel = book(m_name, "topoetcone20_rel", "topoetcone20_rel", 110, -0.2, 2);
+    m_topoetcone30_rel = book(m_name, "topoetcone30_rel", "topoetcone30_rel", 110, -0.2, 2);
+    m_topoetcone40_rel = book(m_name, "topoetcone40_rel", "topoetcone40_rel", 110, -0.2, 2);
 
 
   }
-
-
+  
   // quality
-  if(m_infoSwitch->m_isolation){
+  if(m_infoSwitch->m_quality){
     m_isVeryLoose = book(m_name, "isVeryLoose", "isVeryLoose", 3, -1.5, 1.5);
     m_isLoose     = book(m_name, "isLoose"    , "isLoose"    , 3, -1.5, 1.5);
     m_isMedium    = book(m_name, "isMedium"   , "isMedium"   , 3, -1.5, 1.5);
@@ -229,7 +228,7 @@ StatusCode MuonHists::execute( const xAH::Particle* particle, float eventWeight,
 
     m_isVeryLoose->Fill( muon->  isVeryLoose,  eventWeight ); 
     m_isLoose    ->Fill( muon->  isLoose    ,  eventWeight ); 
-    m_isMedium   ->Fill( muon->  isMedium   ,  eventWeight ); 
+    m_isMedium   ->Fill( (muon->isMedium + muon->isTight)  ,  eventWeight ); 
     m_isTight    ->Fill( muon->  isTight    ,  eventWeight ); 
 
   }
