@@ -197,6 +197,11 @@ StatusCode JetHists::initialize() {
 
   }
 
+  if(m_infoSwitch->m_JVC){
+    if(m_debug) Info("JetHists::initialize()", "adding JVC plots");
+    m_JVC = book(m_name, "JVC", m_titlePrefix+"JVC", 100, -5, 5);
+  }
+
   if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
     if(m_debug) Info("JetHists::initialize()", "adding btagging plots");
 
@@ -901,6 +906,14 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   }
 
   //
+  // JVC
+  //
+  // if(m_infoSwitch->m_JVC) {
+  //   if(m_debug) std::cout << "JetHists: m_JVC " << std::endl;
+  //   m_JVC->Fill(jet->JVC, eventWeight);
+  // }
+
+  //
   // BTagging
   //
   if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
@@ -1593,6 +1606,10 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 //      m_JvtRpt    ->Fill(jet->JvtRpt     , eventWeight);
     }
 
+  if(m_infoSwitch->m_JVC)
+    {
+      m_JVC->Fill(jet->JVC, eventWeight);
+    }
 
   if(m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT)
     {
