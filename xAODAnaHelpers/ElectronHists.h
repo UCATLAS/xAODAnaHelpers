@@ -46,6 +46,12 @@ class ElectronHists : public IParticleHists
     TH1F* m_isIsolated_UserDefinedFixEfficiency	   ; //!
     TH1F* m_isIsolated_UserDefinedCut		   ; //!
 
+    //quality
+    //TH1F* m_LHVeryLoose   ; //!
+    TH1F* m_LHLoose       ; //!    
+    TH1F* m_LHMedium      ; //!   
+    TH1F* m_LHTight       ; //!     
+
     
     // clean
     TH1F* m_ptcone20;                //!
@@ -57,6 +63,19 @@ class ElectronHists : public IParticleHists
     TH1F* m_topoetcone20;            //!
     TH1F* m_topoetcone30;            //!
     TH1F* m_topoetcone40;            //!
+
+    // rel
+    TH1F* m_ptcone20_rel;            //!
+    TH1F* m_ptcone30_rel;            //!
+    TH1F* m_ptcone40_rel;            //!
+    TH1F* m_ptvarcone20_rel;         //!
+    TH1F* m_ptvarcone30_rel;         //!
+    TH1F* m_ptvarcone40_rel;         //!
+    TH1F* m_topoetcone20_rel;        //!
+    TH1F* m_topoetcone30_rel;        //!
+    TH1F* m_topoetcone40_rel;        //!
+
+    
 
 };
 

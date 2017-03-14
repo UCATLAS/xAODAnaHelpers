@@ -32,18 +32,35 @@ StatusCode ElectronHists::initialize() {
     m_isIsolated_UserDefinedFixEfficiency = book(m_name, "isIsolated_UserDefinedFixEfficiency","isIsolated_UserDefinedFixEfficiency", 3, -1.5, 1.5);
     m_isIsolated_UserDefinedCut           = book(m_name, "isIsolated_UserDefinedCut",          "isIsolated_UserDefinedCut", 3, -1.5, 1.5);
 
-    
-    m_ptcone20    = book(m_name, "ptcone20" ,     "ptcone20",      120, -10, 100);
-    m_ptcone30    = book(m_name, "ptcone30" ,     "ptcone30",      120, -10, 100);
-    m_ptcone40    = book(m_name, "ptcone40" ,     "ptcone40",      120, -10, 100);
-    m_ptvarcone20 = book(m_name, "ptvarcone20" ,  "ptvarcone20",   120, -10, 100);
-    m_ptvarcone30 = book(m_name, "ptvarcone30" ,  "ptvarcone30",   120, -10, 100);
-    m_ptvarcone40 = book(m_name, "ptvarcone40" ,  "ptvarcone40",   120, -10, 100);
-    m_topoetcone20= book(m_name, "topoetcone20" , "topoetcone20",  120, -10, 100);
-    m_topoetcone30= book(m_name, "topoetcone30" , "topoetcone30",  120, -10, 100);
-    m_topoetcone40= book(m_name, "topoetcone40" , "topoetcone40",  120, -10, 100);
-  }
+    m_ptcone20     = book(m_name, "ptcone20",     "ptcone20",     101, -0.2, 20);
+    m_ptcone30     = book(m_name, "ptcone30",     "ptcone30",     101, -0.2, 20);
+    m_ptcone40     = book(m_name, "ptcone40",     "ptcone40",     101, -0.2, 20);
+    m_ptvarcone20  = book(m_name, "ptvarcone20",  "ptvarcone20",  101, -0.2, 20);
+    m_ptvarcone30  = book(m_name, "ptvarcone30",  "ptvarcone30",  101, -0.2, 20);
+    m_ptvarcone40  = book(m_name, "ptvarcone40",  "ptvarcone40",  101, -0.2, 20);
+    m_topoetcone20 = book(m_name, "topoetcone20", "topoetcone20", 101, -0.2, 20);
+    m_topoetcone30 = book(m_name, "topoetcone30", "topoetcone30", 101, -0.2, 20);
+    m_topoetcone40 = book(m_name, "topoetcone40", "topoetcone40", 101, -0.2, 20);
 
+    m_ptcone20_rel     = book(m_name, "ptcone20_rel",     "ptcone20_rel",     110, -0.2, 2);
+    m_ptcone30_rel     = book(m_name, "ptcone30_rel",     "ptcone30_rel",     110, -0.2, 2);
+    m_ptcone40_rel     = book(m_name, "ptcone40_rel",     "ptcone40_rel",     110, -0.2, 2);
+    m_ptvarcone20_rel  = book(m_name, "ptvarcone20_rel",  "ptvarcone20_rel",  110, -0.2, 2);
+    m_ptvarcone30_rel  = book(m_name, "ptvarcone30_rel",  "ptvarcone30_rel",  110, -0.2, 2);
+    m_ptvarcone40_rel  = book(m_name, "ptvarcone40_rel",  "ptvarcone40_rel",  110, -0.2, 2);
+    m_topoetcone20_rel = book(m_name, "topoetcone20_rel", "topoetcone20_rel", 110, -0.2, 2);
+    m_topoetcone30_rel = book(m_name, "topoetcone30_rel", "topoetcone30_rel", 110, -0.2, 2);
+    m_topoetcone40_rel = book(m_name, "topoetcone40_rel", "topoetcone40_rel", 110, -0.2, 2);
+  }
+ 
+  // quality
+  if(m_infoSwitch->m_quality){
+    //m_LHVeryLoose = book(m_name, "LHVeryLoose", "LHVeryLoose", 3, -1.5, 1.5);
+    m_LHLoose     = book(m_name, "LHLoose"    , "LHLoose"    , 3, -1.5, 1.5);
+    m_LHMedium    = book(m_name, "LHMedium"   , "LHMedium"   , 3, -1.5, 1.5);
+    m_LHTight     = book(m_name, "LHTight"    , "LHTight"    , 3, -1.5, 1.5);
+  }
+  
   return StatusCode::SUCCESS;
 }
 
@@ -97,6 +114,18 @@ StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventW
     m_topoetcone20->Fill( electron->isolation( xAOD::Iso::topoetcone20) / 1e3, eventWeight );
     m_topoetcone30->Fill( electron->isolation( xAOD::Iso::topoetcone30) / 1e3, eventWeight );
     m_topoetcone40->Fill( electron->isolation( xAOD::Iso::topoetcone40) / 1e3, eventWeight );
+    
+    float electronPt = electron->pt();
+    m_ptcone20_rel     ->Fill( electron->isolation( xAOD::Iso::ptcone20 )     / electronPt,  eventWeight );
+    m_ptcone30_rel     ->Fill( electron->isolation( xAOD::Iso::ptcone30 )     / electronPt,  eventWeight );
+    m_ptcone40_rel     ->Fill( electron->isolation( xAOD::Iso::ptcone40 )     / electronPt,  eventWeight );
+    m_ptvarcone20_rel  ->Fill( electron->isolation( xAOD::Iso::ptvarcone20 )  / electronPt,  eventWeight );
+    m_ptvarcone30_rel  ->Fill( electron->isolation( xAOD::Iso::ptvarcone30 )  / electronPt,  eventWeight );
+    m_ptvarcone40_rel  ->Fill( electron->isolation( xAOD::Iso::ptvarcone40 )  / electronPt,  eventWeight );
+    m_topoetcone20_rel ->Fill( electron->isolation( xAOD::Iso::topoetcone20 ) / electronPt,  eventWeight );
+    m_topoetcone30_rel ->Fill( electron->isolation( xAOD::Iso::topoetcone30 ) / electronPt,  eventWeight );
+    m_topoetcone40_rel ->Fill( electron->isolation( xAOD::Iso::topoetcone40 ) / electronPt,  eventWeight );
+
   }
 
   return StatusCode::SUCCESS;
@@ -147,6 +176,28 @@ StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWei
     m_topoetcone20->Fill( elec->topoetcone20, eventWeight );
     m_topoetcone30->Fill( elec->topoetcone30, eventWeight );
     m_topoetcone40->Fill( elec->topoetcone40, eventWeight );
+
+
+    float elecPt = elec->p4.Pt();
+    m_ptcone20_rel     ->Fill( elec->ptcone20/elecPt        ,  eventWeight );
+    m_ptcone30_rel     ->Fill( elec->ptcone30/elecPt        ,  eventWeight );
+    m_ptcone40_rel     ->Fill( elec->ptcone40/elecPt        ,  eventWeight );
+    m_ptvarcone20_rel  ->Fill( elec->ptvarcone20 /elecPt    ,  eventWeight );
+    m_ptvarcone30_rel  ->Fill( elec->ptvarcone30 /elecPt    ,  eventWeight );
+    m_ptvarcone40_rel  ->Fill( elec->ptvarcone40 /elecPt    ,  eventWeight );
+    m_topoetcone20_rel ->Fill( elec->topoetcone20/elecPt    ,  eventWeight );
+    m_topoetcone30_rel ->Fill( elec->topoetcone30/elecPt    ,  eventWeight );
+    m_topoetcone40_rel ->Fill( elec->topoetcone40/elecPt    ,  eventWeight );
+  }
+
+  
+  if ( m_infoSwitch->m_quality ) {
+
+    //m_isVeryLoose->Fill( elec->  isVeryLoose,  eventWeight ); 
+    m_LHLoose    ->Fill( elec->  LHLoose    ,  eventWeight ); 
+    m_LHMedium   ->Fill( elec->  LHMedium   ,  eventWeight ); 
+    m_LHTight    ->Fill( elec->  LHTight    ,  eventWeight );  
+
   }
 
   return StatusCode::SUCCESS;

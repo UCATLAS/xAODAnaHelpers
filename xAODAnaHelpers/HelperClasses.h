@@ -282,6 +282,7 @@ namespace HelperClasses {
         ============== ============ =======
         m_trigger      trigger      exact
         m_isolation    isolation    exact
+        m_quality      quality      exact
         m_PID          PID          exact
         m_trackparams  trackparams  exact
         m_trackhitcont trackhitcont exact
@@ -323,6 +324,7 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_isolation;
+    bool m_quality;
     bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
