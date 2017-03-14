@@ -59,6 +59,9 @@ namespace xAH {
       float JvtJvfcorr;
       float JvtRpt;
     
+      //JVC
+      float JVC;
+
       // flavTag
       float SV0;
       float SV1;

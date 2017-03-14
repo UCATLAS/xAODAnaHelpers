@@ -145,6 +145,9 @@ class JetHists : public IParticleHists
     TH1F* m_truthCount_TausFinal; //!
     TH1F* m_truthPt_TausFinal   ; //!
 
+    // JVC
+    TH1F* m_JVC; //!
+
     // Flavor Tag
     TH1F* m_MV1   ; //!
     TH1F* m_MV2c00   ; //!
