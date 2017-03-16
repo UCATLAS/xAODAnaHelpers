@@ -526,9 +526,9 @@ EL::StatusCode METConstructor :: execute ()
      RETURN_CHECK("METConstructor::execute()", m_store->record(newMet, (m_outputContainer+sysListItr->name()).Data() ), "Failed to store MET output container.");
      RETURN_CHECK("METConstructor::execute()", m_store->record(metAuxCont, (m_outputContainer+sysListItr->name() + "Aux.").Data()), "Failed to store MET output container.");
      
-     if (m_debug) std::cout << " FinalClus met, for syst  = "<< sysListItr->name() << " is = " << (*newMet->find("FinalClus"))->met() << std::endl;
-     if (m_debug) std::cout << " FinalTrk met, for syst  = "<< sysListItr->name() << " is = " << (*newMet->find("FinalTrk"))->met() << std::endl;
-     if (m_debug) cout<< "storing met container :  "<< (m_outputContainer+ sysListItr->name()).Data() << endl;
+     if (m_debug) std::cout << " FinalClus met, for syst " << sysListItr->name() << " is = " << (*newMet->find("FinalClus"))->met() << std::endl;
+     if (m_debug) std::cout << " FinalTrk met, for syst " << sysListItr->name() << " is = " << (*newMet->find("FinalTrk"))->met() << std::endl;
+     if (m_debug) cout<< "storing met container :  " << (m_outputContainer+ sysListItr->name()).Data() << endl;
      if (m_debug) cout<< "storing  Aux met container :  "<< (m_outputContainer+ sysListItr->name() + "Aux.").Data() << endl;
      
      
