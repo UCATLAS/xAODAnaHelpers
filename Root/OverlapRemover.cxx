@@ -70,7 +70,7 @@ OverlapRemover :: OverlapRemover (std::string className) :
   m_useCutFlow    = true;
 
   // input container(s) to be read from TEvent or TStore
-  m_outputAlgo                  = "OR_Algo";                   // name of vector<string> of combined syst pushed in TStore. 
+  m_outputAlgoSystNames         = "ORAlgo_Syst";                   // name of vector<string> of combined syst pushed in TStore. 
 
   /* Muons */
   m_inContainerName_Muons       = "";
@@ -367,7 +367,7 @@ EL::StatusCode OverlapRemover :: execute ()
   }
 
   // save list of systs that should be considered down stream
-  RETURN_CHECK( "OverlapRemover::execute()", m_store->record( m_vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+  RETURN_CHECK( "OverlapRemover::execute()", m_store->record( m_vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
   if ( m_verbose ) { m_store->print(); }

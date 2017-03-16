@@ -66,6 +66,12 @@ public:
   
   std::string   m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers to be fed to 
                                        // the downstream algos. We need that as we deepcopy the input containers
+
+
+  std::string   m_sysNamesForParCont;  // this is the name of the vector of names for the systematics to be used for the creation of
+                                       // a parallel container. This will be just a copy of the nominal one with the sys name appended.
+                                       // Use cases: MET-specific systematics. 
+  
   float         m_systValReco;
   float         m_systValIso;
   float         m_systValTrig;
@@ -96,6 +102,8 @@ private:
   std::vector<CP::SystematicSet> m_systListIso;  //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
   std::vector<CP::SystematicSet> m_systListTTVA; //!
+
+  std::vector<std::string> m_sysNames; //!
 
   // tools
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;     //!
