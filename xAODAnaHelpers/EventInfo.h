@@ -48,6 +48,8 @@ namespace xAH {
     int      m_mcChannelNumber;
     float    m_mcEventWeight;
     float    m_weight_pileup;
+    float    m_weight_pileup_up;
+    float    m_weight_pileup_down;
     float    m_correct_mu;
     int      m_rand_run_nr;
     int      m_rand_lumiblock_nr;

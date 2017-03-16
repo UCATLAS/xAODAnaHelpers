@@ -52,7 +52,10 @@ void EventInfo::setTree(TTree *tree)
     connectBranch<float>(tree, "actualInteractionsPerCrossing",    &m_actualMu);
     connectBranch<float>(tree, "averageInteractionsPerCrossing",   &m_averageMu);
     connectBranch<float>(tree, "weight_pileup",                    &m_weight_pileup);       
-
+    if ( m_infoSwitch.m_pileupsys ) {
+      connectBranch<float>(tree, "weight_pileup_up",               &m_weight_pileup_up);
+      connectBranch<float>(tree, "weight_pileup_down",             &m_weight_pileup_down);
+    }
     if(m_mc){
       connectBranch<float>(tree, "correct_mu",                 &m_correct_mu);          
       connectBranch<int  >(tree, "rand_run_nr",                &m_rand_run_nr);         
@@ -134,6 +137,10 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
     tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
     tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
+    if ( m_infoSwitch.m_pileupsys ) {
+      tree->Branch("weight_pileup_up",      &m_weight_pileup_up,  "weight_pileup_up/F");
+      tree->Branch("weight_pileup_down",    &m_weight_pileup_down,"weight_pileup_down/F");
+    }
     if(m_mc){
       tree->Branch("correct_mu"       ,          &m_correct_mu       ,"correct_mu/F"       );          
       tree->Branch("rand_run_nr"      ,          &m_rand_run_nr      ,"rand_run_nr/I"      );         
@@ -189,6 +196,8 @@ void EventInfo::clear()
   m_mcEventWeight = 1.;
   m_prescale_DataWeight = 1.;
   m_weight_pileup = 1.;
+  m_weight_pileup_down = 1.;
+  m_weight_pileup_up = 1.;
   m_timeStamp = -999;
   m_timeStampNSOffset = -999;
   // pileup
@@ -273,6 +282,11 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
       if ( correct_mu.isAvailable( *eventInfo ) )	 { m_correct_mu = correct_mu( *eventInfo ); }		    else { m_correct_mu = -1.0; }
       if ( rand_run_nr.isAvailable( *eventInfo ) )	 { m_rand_run_nr = rand_run_nr( *eventInfo ); } 	    else { m_rand_run_nr = 900000; }
       if ( rand_lumiblock_nr.isAvailable( *eventInfo ) ) { m_rand_lumiblock_nr = rand_lumiblock_nr( *eventInfo ); } else { m_rand_lumiblock_nr = 0; }
+
+      static SG::AuxElement::ConstAccessor< float > weight_pileup_up ("PileupWeight_UP");
+      static SG::AuxElement::ConstAccessor< float > weight_pileup_down ("PileupWeight_DOWN");
+      if ( weight_pileup_up.isAvailable( *eventInfo ) )  { m_weight_pileup_up = weight_pileup_up( *eventInfo );}    else { m_weight_pileup_up = 1.0; }
+      if ( weight_pileup_down.isAvailable( *eventInfo ) ){ m_weight_pileup_down = weight_pileup_down( *eventInfo );}else { m_weight_pileup_down = 1.0; }
 
     }
 
