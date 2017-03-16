@@ -45,7 +45,8 @@ JetCalibrator :: JetCalibrator (std::string className) :
     m_JERTool_handle("JERTool/JERTool_"+className),
     m_JERSmearingTool_handle("JERSmearingTool/JERSmearingTool_"+className),
     m_JVTUpdateTool_handle("JetVertexTaggerTool/JVTUpdateTool_"+className),
-    m_JetCleaningTool_handle("JetCleaningTool/JetCleaningTool_"+className)
+    m_JetCleaningTool_handle("JetCleaningTool/JetCleaningTool_"+className),
+    m_JetTileCorrectionTool_handle("JetTileCorrectionTool/JetTileCorrectionTool_"+className)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -100,6 +101,9 @@ JetCalibrator :: JetCalibrator (std::string className) :
   // Initialize systematics variables
   m_systName                = "";
   m_systVal                 = 1.;
+
+  // apply jet tile correction
+  m_doJetTileCorr           = false;
 }
 
 EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
@@ -239,6 +243,13 @@ EL::StatusCode JetCalibrator :: initialize ()
     RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("IsData",!m_isMC), "Failed to set IsData");
 
     RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.retrieve(), "Failed to retrieve JetCalibrationTool");
+  }
+
+  // initialize jet tile correction tool
+  if(m_doJetTileCorr && !m_isMC){ // Jet Tile Correction should only be applied to data
+    m_JetTileCorrectionTool_handle.setTypeAndName("CP::JetTileCorrectionTool/JetTileCorrectionTool_" + m_name);
+    RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetTileCorrectionTool_handle, CP::JetTileCorrectionTool), "Could not make JetTileCorrectionTool");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JetTileCorrectionTool_handle.retrieve(), "Failed to retrieve JetTileCorrectionTool");
   }
 
   if(m_doCleaning){
@@ -497,6 +508,13 @@ EL::StatusCode JetCalibrator :: execute ()
       Error("execute()", "%s", m_name.c_str());
       return StatusCode::FAILURE;
     }
+
+    if(m_doJetTileCorr && !m_isMC){
+      if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
+        Error("execute()", "JetTileCorrection tool reported a CP::CorrectionCode::Error");
+      }
+    }
+
   }//for jets
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
