@@ -559,7 +559,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //
   SG::AuxElement::Decorator< char > passSelDecor( m_decor );
 
-  for ( auto jet_itr : *inJets ) { // duplicated of basic loop
+  for ( auto jet_itr : *jets_copy ) { // duplicated of basic loop
 
     // if only looking at a subset of jets make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
