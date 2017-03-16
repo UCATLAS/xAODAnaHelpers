@@ -756,6 +756,11 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<float>(tree, "JvtRpt",     &m_JvtRpt);
     }
 
+  if(m_infoSwitch.m_JVC)
+    {
+      connectBranch<double>(tree,"JetVertexCharge_discriminant", &m_JetVertexCharge_discriminant);
+    }
+
   if(m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT)
     {
       connectBranch<float>(tree,"MV2c00",               &m_MV2c00);
@@ -979,6 +984,12 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.JvtRpt    =m_JvtRpt    ->at(idx);
     }
   
+  if( m_infoSwitch.m_JVC ) {
+    if(m_debug) cout << "updating JVC " << endl;
+    if(m_debug) cout << m_JetVertexCharge_discriminant->size() << endl;
+    jet.JVC = m_JetVertexCharge_discriminant->at(idx);
+  }
+
   if(m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT)
     {
       if(m_debug) cout << "updating flavTag " << endl;
@@ -1324,7 +1335,6 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<vector<float> >(tree,"constituent_phi",    m_constituent_pt   );
     setBranch<vector<float> >(tree,"constituent_e",      m_constituent_e     );
   }
-
 
   if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
 

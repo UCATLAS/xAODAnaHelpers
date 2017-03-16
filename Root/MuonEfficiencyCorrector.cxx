@@ -96,7 +96,7 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   m_outputAlgoSystNames        = "";
   
   m_sysNamesForParCont         = "";
-
+      
   m_systValReco 	       = 0.0;
   m_systValIso 	               = 0.0;
   m_systValTrig 	       = 0.0;
@@ -570,7 +570,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
         } // do this thing only if required
 
         // loop over systematic sets available
-	//
+	      //
         std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
 
         for ( auto systName : systNames ) {
