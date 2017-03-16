@@ -246,7 +246,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize jet tile correction tool
-  if(m_doJetTileCorr){
+  if(m_doJetTileCorr && !m_isMC){ // Jet Tile Correction should only be applied to data
     m_JetTileCorrectionTool_handle.setTypeAndName("CP::JetTileCorrectionTool/JetTileCorrectionTool_" + m_name);
     RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetTileCorrectionTool_handle, CP::JetTileCorrectionTool), "Could not make JetTileCorrectionTool");
     RETURN_CHECK("JetCalibrator::initialize()", m_JetTileCorrectionTool_handle.retrieve(), "Failed to retrieve JetTileCorrectionTool");
@@ -509,7 +509,7 @@ EL::StatusCode JetCalibrator :: execute ()
       return StatusCode::FAILURE;
     }
 
-    if(m_doJetTileCorr){
+    if(m_doJetTileCorr && !m_isMC){
       if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
         Error("execute()", "JetTileCorrection tool reported a CP::CorrectionCode::Error");
       }
