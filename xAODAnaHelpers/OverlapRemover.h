@@ -108,7 +108,7 @@ class OverlapRemover : public xAH::Algorithm
   bool m_doEleEleOR;
 
   /** @brief Output systematics list container name */
-  std::string  m_outputAlgo;
+  std::string  m_outputAlgoSystNames;
 
   /** @brief Input container name */
   std::string  m_inContainerName_Electrons;

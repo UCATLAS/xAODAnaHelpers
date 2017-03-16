@@ -94,6 +94,9 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   //
   m_inputAlgoSystNames         = "";
   m_outputAlgoSystNames        = "";
+  
+  m_sysNamesForParCont         = "";
+      
   m_systValReco 	       = 0.0;
   m_systValIso 	               = 0.0;
   m_systValTrig 	       = 0.0;
@@ -196,15 +199,24 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_numObject     = 0;
 
 
-    //asg::AnaToolHandle<CP::IPileupReweightingTool>   m_pileup_tool_handle; //!
-
-//  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "Failed to check whether tool already exists in asg::ToolStore" );
-//  if ( m_isMC && !isToolAlreadyUsed("Pileup") ) {
-//    Error("initialize()","A configured CP::PileupReweightingTool must already exist in the asg::ToolStore! Are you creating one in xAH::BasicEventSelector?" );
-//    return EL::StatusCode::FAILURE;
-//  }
-
   // *******************************************************
+  
+  // several lists of systematics could be configured
+  // this is the case when MET sys should be added 
+  // to the OR ones
+  std::string tmp_sysNames = m_inputAlgoSystNames;
+  
+  while ( tmp_sysNames.size() > 0) {
+    size_t pos = tmp_sysNames.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_sysNames.size();
+      m_sysNames.push_back(tmp_sysNames.substr(0, pos));
+      tmp_sysNames.erase(0, pos);
+    } else {
+      m_sysNames.push_back(tmp_sysNames.substr(0, pos));
+      tmp_sysNames.erase(0, pos+1);
+    }
+  } 
 
   // Create a ToolHandle of the PRW tool which is passed to the MuonEfficiencyScaleFactors class later
   //
@@ -518,20 +530,55 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
 	// get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
 	//
-        std::vector<std::string>* systNames(nullptr);
-        RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+        std::vector<std::string> systNames;
+        
+        // add each vector of systematics names to the full list 
+        //
+        for ( auto sysInput : m_sysNames ) {
+          std::vector<std::string>* it_systNames(nullptr);
+          RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(it_systNames, sysInput, 0, m_store, m_verbose) ,"");
+          systNames.insert( systNames.end(), it_systNames->begin(), it_systNames->end() );
+        }
+        // and now remove eventual duplicates
+        //
+        HelperFunctions::remove_duplicates(systNames);
 
-    	// loop over systematic sets available
-	//
+        // create parallel container of muons for met systematics.
+        // this does not get decorated and contains the same elements
+        // of the nominal container. It will be used by the TreeAlgo
+        // as we don't want sys variations for eff in MET sys trees. 
+        //
+        if ( !m_sysNamesForParCont.empty() )  {
+          std::vector<std::string>* par_systNames(nullptr);
+
+          RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(par_systNames, m_sysNamesForParCont, 0, m_store, m_verbose) ,"");
+          
+          for ( auto sys : *par_systNames ) {
+             if ( !sys.empty() && !m_store->contains<xAOD::MuonContainer>( m_inContainerName+sys ) ) {
+               const xAOD::MuonContainer* tmpMuons(nullptr);
+
+               if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName ) ) {
+                  
+                  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(tmpMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+                  RETURN_CHECK("MuonEfficiencyCorrector::execute()", (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, m_inContainerName+sys, tmpMuons)), "");
+               
+               } // the nominal container is copied therefore it has to exist!
+             
+             } // skip the nominal case or if the container already exists
+          } // consider all "parallel" systematics specified by the user
+        
+        } // do this thing only if required
+
+        // loop over systematic sets available
+	      //
         std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
 
-        for ( auto systName : *systNames ) {
+        for ( auto systName : systNames ) {
            
            const xAOD::MuonContainer* outputMuons(nullptr);
            bool isNomMuonSelection = systName.empty();
            
            if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName+systName )  ) {
-
               RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
               
               if ( !m_store->contains<xAOD::MuonContainer>( m_outContainerName+systName ) ) {
@@ -562,7 +609,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
            } // check existence of container
     	} // close loop on systematic sets available from upstream algo
        
-        if ( !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
+        if ( !m_outputAlgoSystNames.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
           RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names."); 
         }
    }
