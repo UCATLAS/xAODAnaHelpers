@@ -10,6 +10,8 @@
 
 // EDM include(s):
 #include "xAODJet/JetContainer.h"
+#include <xAODJet/JetAuxContainer.h>
+#include <xAODCore/AuxContainerBase.h>
 #include "xAODCore/ShallowCopy.h"
 #include "AthContainers/ConstDataVector.h"
 #include "PATInterfaces/SystematicVariation.h"
@@ -22,6 +24,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include "JetMomentTools/JetForwardJvtTool.h"
 
 // external tools include(s):
 
@@ -100,6 +103,7 @@ JetSelector :: JetSelector (std::string className) :
   m_eta_max_JVF             = 2.4;
   m_JVFCut                  = 0.5;
   m_doJVT                   = false;
+  m_dofJVT                  = false;
 
   m_pt_max_JVT              = 60e3;
   m_eta_max_JVT             = 2.4;
@@ -338,6 +342,10 @@ EL::StatusCode JetSelector :: initialize ()
 
   }
 
+  //init fJVT
+  m_fJVT_tool_handle.setTypeAndName("JetForwardJvtTool/fJvt");
+  RETURN_CHECK("JetSelector::initialize()",m_fJVT_tool_handle.retrieve(),"Failed to retrieve CP::JetForwardJVTtool");
+
   // initialize the CP::JetJvtEfficiency Tool
   //
   m_JVT_tool_name = "JetJvtEfficiency_effSF_" + m_name;
@@ -529,6 +537,16 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
   }
 
+  //have to make a deep copy because the fJVT tool wants to modify the jet containers.                                                                                                                                 
+  RETURN_CHECK("execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_inContainerName+"Copy", inJets)), "");
+  xAOD::JetContainer* jets_copy(nullptr);
+  RETURN_CHECK("execute()", HelperFunctions::retrieve(jets_copy, m_inContainerName+"Copy",m_event,m_store), "Couldn't retrieve jets copy from TStore");
+  //decorate jet container with forward JVT decision
+  //That's how the tool works                                                                                                                                                                                          
+  if(m_dofJVT){
+    m_fJVT_tool_handle->modify(*jets_copy);
+    //fJVT tool modifies each jet with the fJVT decision                                                                                                                                                               
+  }
 
   int nPass(0); int nObj(0);
   bool passEventClean(true);
@@ -828,6 +846,21 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       }
     }
   } // m_doJVF
+
+  if(m_dofJVT){
+    if(!jet->auxdata<char>("passFJVT")=='1'){
+      if(m_debug) {
+	Info("passCuts()","jet pt = %.1f,eta = %.1f,phi = %.1f",jet->pt(),jet->eta(),jet->phi());
+        Info("PassCuts()","Failed forward JVT");
+      }
+      return 0;
+    }
+    else if (m_debug && TMath::Abs(jet->eta()>2.5) ) {
+      Info("passCuts()","jet pt = %.1f,eta = %.1f,phi = %.1f",jet->pt(),jet->eta(),jet->phi());
+      Info("PassCuts()","Passed forward JVT");
+    }
+
+  }//do forward JVT
 
   // JVT pileup cut
   //
