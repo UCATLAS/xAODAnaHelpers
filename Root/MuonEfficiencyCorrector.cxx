@@ -609,7 +609,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
            } // check existence of container
     	} // close loop on systematic sets available from upstream algo
        
-        if ( !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
+        if ( !m_outputAlgoSystNames.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
           RETURN_CHECK( "MuonEfficiencyCorrector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names."); 
         }
    }
