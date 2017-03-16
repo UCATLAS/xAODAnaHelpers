@@ -131,6 +131,7 @@ namespace HelperClasses {
         ================ ============== =======
         m_eventCleaning  eventCleaning  exact
         m_pileup         pileup         exact
+	m_pileupsys      pileupsys      exact
         m_shapeEM        shapeEM        exact
         m_shapeLC        shapeLC        exact
         m_truth          truth          exact
@@ -143,6 +144,7 @@ namespace HelperClasses {
   public:
     bool m_eventCleaning;
     bool m_pileup;
+    bool m_pileupsys;
     bool m_shapeEM;
     bool m_shapeLC;
     bool m_truth;

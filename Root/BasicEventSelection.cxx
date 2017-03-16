@@ -94,6 +94,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
 
   // Pileup Reweighting
   m_doPUreweighting    = false;
+  m_doPUreweightingSys = false;
   m_lumiCalcFileNames  = "";
   m_PRWFileNames       = "";
 
@@ -365,6 +366,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_applyGRLCut = false;
     Info("initialize()", "Truth only! Turn off Pile-up Reweight");
     m_doPUreweighting = false;
+    m_doPUreweightingSys = false;
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -850,6 +852,14 @@ EL::StatusCode BasicEventSelection :: execute ()
                                                  //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                                  //  3.) the random run number ("RandomRunNumber")
                                                  //  4.) the random lumiblock number ("RandomLumiBlockNumber")
+      if ( m_doPUreweightingSys ) {
+       	CP::SystematicSet tmpSet;tmpSet.insert(CP::SystematicVariation("PRW_DATASF",1));
+      	m_pileup_tool_handle->applySystematicVariation( tmpSet ).ignore();
+	eventInfo->auxdecor< float >( "PileupWeight_UP" )= m_pileup_tool_handle->getCombinedWeight( *eventInfo );
+	tmpSet.clear();tmpSet.insert(CP::SystematicVariation("PRW_DATASF",-1));
+	m_pileup_tool_handle->applySystematicVariation( tmpSet ).ignore();
+	eventInfo->auxdecor< float >( "PileupWeight_DOWN")= m_pileup_tool_handle->getCombinedWeight( *eventInfo );
+      }
   }
 
 

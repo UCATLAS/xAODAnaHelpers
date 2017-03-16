@@ -53,6 +53,7 @@ class BasicEventSelection : public xAH::Algorithm
 
     //PU Reweighting
     bool m_doPUreweighting;
+    bool m_doPUreweightingSys;
     std::string m_lumiCalcFileNames;
     std::string m_PRWFileNames;
 
