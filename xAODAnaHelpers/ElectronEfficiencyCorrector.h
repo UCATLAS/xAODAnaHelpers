@@ -39,6 +39,9 @@ public:
   std::string   m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers to be fed to 
                                        // the downstream algos. We need that as we deepcopy the input containers
 
+  /** @brief Force AFII flag in calibration, in case metadata is broken */
+  bool m_setAFII;
+
   float m_systValPID;
   float m_systValIso;
   float m_systValReco;

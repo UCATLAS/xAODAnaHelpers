@@ -54,6 +54,8 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
   m_inContainerName         = "";
   m_outContainerName        = "";
 
+  m_setAFII                 = false;
+
   // Systematics stuff
   //
   m_inputAlgoSystNames      = "";
@@ -170,11 +172,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   int sim_flav(1); // default for FullSim
   if ( m_isMC ) {
     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
-    if ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) {
+    if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
       Info("initialize()", "Setting simulation flavour to AFII");
       sim_flav = 3;
     }
-    else if ( stringMeta.empty() ) {
+    else if ( !m_setAFII && stringMeta.empty() ) {
       Warning("initialize()", "No meta-data string found. Simulation flavour will be set to FullSim. Care if you are running on Fast-Sim MC.");
     }
   }
