@@ -10,8 +10,8 @@ JetHists :: JetHists (std::string name, std::string detailStr, const std::string
   IParticleHists(name, detailStr, prefix, titlePrefix),
   m_infoSwitch(new HelperClasses::JetInfoSwitch(m_detailStr)),
   m_titlePrefix(titlePrefix),
-  m_tracksInJet(0),
-  m_onlineBSTool()
+  m_onlineBSTool(),
+  m_tracksInJet(0)
 { }
 
 JetHists :: ~JetHists () {
@@ -1977,6 +1977,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     m_IP3D_pb         ->  Fill(jet->IP3D_pb  , eventWeight );
     m_IP3D_pc         ->  Fill(jet->IP3D_pc  , eventWeight );
 
+    m_IP3D            ->  Fill( jet->IP3D   , eventWeight );
     m_IP3D_c          ->  Fill( jet->IP3D_c , eventWeight );
     m_IP3D_cu         ->  Fill( jet->IP3D_cu, eventWeight );
 

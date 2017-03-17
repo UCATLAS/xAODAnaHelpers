@@ -2512,8 +2512,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       double ip3_pb = -30;  myBTag->variable<double>("IP3D", "pb", ip3_pb);
       double ip3_pc = -30;  myBTag->variable<double>("IP3D", "pc", ip3_pc);
 
-      m_IP3D->push_back(    myBTag -> IP3D_loglikelihoodratio()  );
-
       m_IP3D_pu         ->push_back(ip3_pu  );
       m_IP3D_pb         ->push_back(ip3_pb  );
       m_IP3D_pc         ->push_back(ip3_pc  );

@@ -203,6 +203,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //
   // Create the new container and its auxiliary store.
   //
+  if(m_debug) cout << "Creating the new container " << endl;
   xAOD::JetContainer*     hltJets    = new xAOD::JetContainer();
   xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
   hltJets->setStore( hltJetsAux ); //< Connect the two
@@ -210,6 +211,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //
   //  For Adding Tracks to the Jet
   //
+  if(m_debug) cout << "Making the decorators " << endl;
   static xAOD::Jet::Decorator<vector<const xAOD::TrackParticle*> > m_track_decoration      ("HLTBJetTracks");
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration        ("HLTBJetTracks_vtx");
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration_bkg    ("HLTBJetTracks_vtx_bkg");
@@ -224,6 +226,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //
   // get primary vertex
   //
+  if(m_debug) cout << "Getting the PV " << endl;
   const xAOD::VertexContainer *offline_vertices(nullptr);
   const xAOD::Vertex *offline_pvx(nullptr);
   if(HelperFunctions::isAvailable(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose)){
