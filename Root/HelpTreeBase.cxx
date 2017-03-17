@@ -55,13 +55,13 @@ HelpTreeBase::~HelpTreeBase() {
 
     //delete all the info switches that have been built earlier on
     //event
-    delete m_eventInfo;
+    if(m_eventInfo) delete m_eventInfo;
 
     //trig
-    delete m_trigInfoSwitch;
+    if(m_trigInfoSwitch) delete m_trigInfoSwitch;
 
     //muon
-    delete m_muonInfoSwitch;
+    if(m_muonInfoSwitch) delete m_muonInfoSwitch;
 
     //muon
     for (auto muon: m_muons)
