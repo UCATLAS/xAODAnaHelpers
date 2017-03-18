@@ -72,6 +72,7 @@ public:
   float m_JVFCut;                 // cut value
   bool m_doJVT;                   // check JVT
   bool m_dofJVT;                  // check forward JVT 
+  bool m_dofJVTVeto;              // Remove jets that fail fJVT. Like JVT, the default is to clean the collection
   float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
   float m_eta_max_JVT;            // detector eta cut
 
