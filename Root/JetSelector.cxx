@@ -104,6 +104,7 @@ JetSelector :: JetSelector (std::string className) :
   m_JVFCut                  = 0.5;
   m_doJVT                   = false;
   m_dofJVT                  = false;
+  m_dofJVTVeto              = true;
 
   m_pt_max_JVT              = 60e3;
   m_eta_max_JVT             = 2.4;
@@ -848,12 +849,12 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   } // m_doJVF
 
   if(m_dofJVT){
-    if(!jet->auxdata<char>("passFJVT")=='1'){
+    if(jet->auxdata<char>("passFJVT")!=1){
       if(m_debug) {
 	Info("passCuts()","jet pt = %.1f,eta = %.1f,phi = %.1f",jet->pt(),jet->eta(),jet->phi());
         Info("PassCuts()","Failed forward JVT");
       }
-      return 0;
+      if(m_dofJVTVeto)return 0;
     }
     else if (m_debug && TMath::Abs(jet->eta()>2.5) ) {
       Info("passCuts()","jet pt = %.1f,eta = %.1f,phi = %.1f",jet->pt(),jet->eta(),jet->phi());
