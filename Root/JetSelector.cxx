@@ -538,12 +538,10 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
   }
 
-  // fJVT will only add decorations on the jets, so it should be fine with shallow copies
-  std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > jets_copy = xAOD::shallowCopyContainer( *inJets );
   //decorate jet container with forward JVT decision
   //That's how the tool works
   if(m_dofJVT){
-    m_fJVT_tool_handle->modify(*jets_copy.first);
+    m_fJVT_tool_handle->modify(*inJets);
     //fJVT tool modifies each jet with the fJVT decision
   }
 
@@ -558,7 +556,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //
   SG::AuxElement::Decorator< char > passSelDecor( m_decor );
 
-  for ( auto jet_itr : *jets_copy.first ) { // duplicated of basic loop
+  for ( auto jet_itr : *inJets ) { // duplicated of basic loop
 
     // if only looking at a subset of jets make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
