@@ -543,7 +543,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //decorate jet container with forward JVT decision
   //That's how the tool works
   if(m_dofJVT){
-    m_fJVT_tool_handle->modify(*jets_copy);
+    m_fJVT_tool_handle->modify(*jets_copy.first);
     //fJVT tool modifies each jet with the fJVT decision
   }
 
@@ -558,7 +558,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //
   SG::AuxElement::Decorator< char > passSelDecor( m_decor );
 
-  for ( auto jet_itr : *jets_copy ) { // duplicated of basic loop
+  for ( auto jet_itr : *jets_copy.first ) { // duplicated of basic loop
 
     // if only looking at a subset of jets make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
