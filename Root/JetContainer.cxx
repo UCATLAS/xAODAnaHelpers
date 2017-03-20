@@ -2559,9 +2559,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       }
 
       if(m_debug) cout << "Filling m_vtx_offline " << endl;
-      m_vtx_offline_x0->push_back( offline_pvx->x() );
-      m_vtx_offline_y0->push_back( offline_pvx->y() );
-      m_vtx_offline_z0->push_back( offline_pvx->z() );
+      if(offline_pvx){
+	m_vtx_offline_x0->push_back( offline_pvx->x() );
+	m_vtx_offline_y0->push_back( offline_pvx->y() );
+	m_vtx_offline_z0->push_back( offline_pvx->z() );
+      }else{
+	m_vtx_offline_x0->push_back( -999 );
+	m_vtx_offline_y0->push_back( -999 );
+	m_vtx_offline_z0->push_back( -999 );
+      }
+
       if(m_debug) cout << "Done Filling m_vtx_offline " << endl;
 
       if(m_debug) cout << "Filling m_vtx_online... " << endl;
