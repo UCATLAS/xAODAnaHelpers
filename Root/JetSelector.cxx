@@ -538,15 +538,13 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
   }
 
-  //have to make a deep copy because the fJVT tool wants to modify the jet containers.                                                                                                                                 
-  RETURN_CHECK("execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_inContainerName+"Copy", inJets)), "");
-  xAOD::JetContainer* jets_copy(nullptr);
-  RETURN_CHECK("execute()", HelperFunctions::retrieve(jets_copy, m_inContainerName+"Copy",m_event,m_store), "Couldn't retrieve jets copy from TStore");
+  // fJVT will only add decorations on the jets, so it should be fine with shallow copies
+  std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > jets_copy = xAOD::shallowCopyContainer( *inJets );
   //decorate jet container with forward JVT decision
-  //That's how the tool works                                                                                                                                                                                          
+  //That's how the tool works
   if(m_dofJVT){
     m_fJVT_tool_handle->modify(*jets_copy);
-    //fJVT tool modifies each jet with the fJVT decision                                                                                                                                                               
+    //fJVT tool modifies each jet with the fJVT decision
   }
 
   int nPass(0); int nObj(0);
@@ -581,7 +579,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Cleaning Selection must come after kinematic and JVT selections
     if ( m_cleanJets && passSel && isCleanAcc.isAvailable( *jet_itr ) ) {
-      if( !isCleanAcc( *jet_itr ) ) { 
+      if( !isCleanAcc( *jet_itr ) ) {
         passSel = false;
         if ( m_decorateSelectedObjects )
           passSelDecor( *jet_itr ) = passSel;
@@ -589,9 +587,9 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
         // If any of the passing jets fail the recommendation is to remove the jet (and MET is wrong)
         // If any of the N leading jets are not clean the event should be removed
         if( m_cleanEvent || nObj <= m_cleanEvtLeadJets ){
-          passEventClean = false; 
+          passEventClean = false;
           if (m_debug) Info("executeSelection()", "Remove event due to bad jet with pt %f", jet_itr->pt() );
-        }// if cleaning the event 
+        }// if cleaning the event
 
       }// if jet is not clean
     }// if jet clean aux missing
