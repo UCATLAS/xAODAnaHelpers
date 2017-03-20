@@ -538,15 +538,11 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
   }
 
-  //have to make a deep copy because the fJVT tool wants to modify the jet containers.                                                                                                                                 
-  RETURN_CHECK("execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_inContainerName+"Copy", inJets)), "");
-  xAOD::JetContainer* jets_copy(nullptr);
-  RETURN_CHECK("execute()", HelperFunctions::retrieve(jets_copy, m_inContainerName+"Copy",m_event,m_store), "Couldn't retrieve jets copy from TStore");
   //decorate jet container with forward JVT decision
-  //That's how the tool works                                                                                                                                                                                          
+  //That's how the tool works
   if(m_dofJVT){
-    m_fJVT_tool_handle->modify(*jets_copy);
-    //fJVT tool modifies each jet with the fJVT decision                                                                                                                                                               
+    m_fJVT_tool_handle->modify(*inJets);
+    //fJVT tool modifies each jet with the fJVT decision
   }
 
   int nPass(0); int nObj(0);
@@ -560,7 +556,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //
   SG::AuxElement::Decorator< char > passSelDecor( m_decor );
 
-  for ( auto jet_itr : *jets_copy ) { // duplicated of basic loop
+  for ( auto jet_itr : *inJets ) { // duplicated of basic loop
 
     // if only looking at a subset of jets make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
@@ -581,7 +577,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Cleaning Selection must come after kinematic and JVT selections
     if ( m_cleanJets && passSel && isCleanAcc.isAvailable( *jet_itr ) ) {
-      if( !isCleanAcc( *jet_itr ) ) { 
+      if( !isCleanAcc( *jet_itr ) ) {
         passSel = false;
         if ( m_decorateSelectedObjects )
           passSelDecor( *jet_itr ) = passSel;
@@ -589,9 +585,9 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
         // If any of the passing jets fail the recommendation is to remove the jet (and MET is wrong)
         // If any of the N leading jets are not clean the event should be removed
         if( m_cleanEvent || nObj <= m_cleanEvtLeadJets ){
-          passEventClean = false; 
+          passEventClean = false;
           if (m_debug) Info("executeSelection()", "Remove event due to bad jet with pt %f", jet_itr->pt() );
-        }// if cleaning the event 
+        }// if cleaning the event
 
       }// if jet is not clean
     }// if jet clean aux missing
