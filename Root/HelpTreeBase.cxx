@@ -443,7 +443,9 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
   m_elecs[elecName] = new xAH::ElectronContainer(elecName, detailStr, m_units, m_isMC);
 
   xAH::ElectronContainer* thisElec = m_elecs[elecName];
-
+  
+  /* commented for now as electron working points need some adjustment
+  
   HelperClasses::ElectronInfoSwitch& eleInfoSwitch = thisElec->m_infoSwitch;
   
   std::string tname = m_tree->GetName();
@@ -475,9 +477,11 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
         m_tree->Branch( pidEffSF_sysNames.c_str() , & (m_ele_PIDEff_SF_sysNames)[ pid ] );
       }
     }
-
+  
   }
 
+  */
+  
   thisElec->setBranches(m_tree);
   this->AddElectronsUser(elecName);
 }
@@ -486,6 +490,9 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
 void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex, const std::string elecName ) {
 
   this->ClearElectrons(elecName);
+  
+  /* commented for now as electron working points need some adjustments
+
   HelperClasses::ElectronInfoSwitch& eleInfoSwitch = m_elecs[elecName]->m_infoSwitch;
   
   std::string tname = m_tree->GetName();
@@ -527,7 +534,9 @@ void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, cons
     }
 
   }
-
+  
+  */
+  
   for ( auto el_itr : *electrons ) {
     this->FillElectron(el_itr, primaryVertex, elecName);
   }
@@ -548,8 +557,11 @@ void HelpTreeBase::FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex
 void HelpTreeBase::ClearElectrons(const std::string elecName) {
 
   xAH::ElectronContainer* thisElec = m_elecs[elecName];
-  HelperClasses::ElectronInfoSwitch& eleInfoSwitch = thisElec->m_infoSwitch;
   
+  /* commented for now as electron working points need some adjustments
+  HelperClasses::ElectronInfoSwitch& eleInfoSwitch = thisElec->m_infoSwitch;
+ 
+
   std::string tname = m_tree->GetName();
 
   if ( tname == "nominal" ) {
@@ -578,6 +590,8 @@ void HelpTreeBase::ClearElectrons(const std::string elecName) {
   
   }
   
+  */
+
   thisElec->clear();
 
   this->ClearElectronsUser(elecName);
