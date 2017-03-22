@@ -171,7 +171,12 @@ namespace HelperClasses{
     std::string trig_keyword2 = "MULTI_L_";
     std::string trig_keyword3 = "SINGLE_E_";
     std::string trig_keyword4 = "TRI_E_";
-    
+
+    m_recoEff_sysNames = has_exact("recoEff_sysNames");
+    m_isoEff_sysNames  = has_exact("isoEff_sysNames");
+    m_trigEff_sysNames = has_exact("trigEff_sysNames"); 
+    m_pidEff_sysNames = has_exact("pidEff_sysNames"); 
+
     std::istringstream ss(m_configStr);
     while ( std::getline(ss, token, ' ') ) {
      if ( token.find(PID_keyword ) != std::string::npos ) { m_PIDWPs.push_back(token); }

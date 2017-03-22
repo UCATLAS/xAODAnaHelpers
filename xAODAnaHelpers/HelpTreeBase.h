@@ -358,15 +358,19 @@ protected:
   // muons
   //
   std::map<std::string, xAH::MuonContainer*> m_muons;
-  std::map<std::string, std::vector<std::string> > m_RecoEff_SF_sysNames;
-  std::map<std::string, std::vector<std::string> > m_IsoEff_SF_sysNames;
-  std::map<std::string, std::vector<std::string> > m_TrigEff_SF_sysNames;
-  std::vector<std::string>  m_TTVAEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_muon_RecoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_muon_IsoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_muon_TrigEff_SF_sysNames;
+  std::vector<std::string>  m_muon_TTVAEff_SF_sysNames;
   
   //
   // electrons
   //
   std::map<std::string, xAH::ElectronContainer*> m_elecs;
+  std::vector<std::string> m_ele_RecoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_ele_IsoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_ele_TrigEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_ele_PIDEff_SF_sysNames;
   
   //
   // photons
