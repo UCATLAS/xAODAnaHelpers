@@ -47,42 +47,48 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
 
   Info("ElectronEfficiencyCorrector()", "Calling constructor");
 
-  m_debug                   = false;
+  m_debug                    = false;
 
   // input container to be read from TEvent or TStore
   //
-  m_inContainerName         = "";
-  m_outContainerName        = "";
+  m_inContainerName          = "";
+  m_outContainerName         = "";
 
-  m_setAFII                 = false;
+  m_setAFII                  = false;
 
   // Systematics stuff
   //
-  m_inputAlgoSystNames      = "";
-  m_outputAlgoSystNames     = "";
-  m_systValPID              = 0.0;
-  m_systValIso              = 0.0;
-  m_systValReco             = 0.0;
-  m_systValTrig             = 0.0;
-  m_systValTrigMCEff        = 0.0;
-  m_systNamePID             = "";
-  m_systNameTrig            = "";
-  m_systNameReco            = "";
-  m_systNameTrigMCEff       = "";
-  m_outputSystNamesPID      = "EleEffCorr_PIDSyst";
-  m_outputSystNamesIso      = "EleEffCorr_IsoSyst";
-  m_outputSystNamesReco     = "EleEffCorr_RecoSyst";
-  m_outputSystNamesTrig     = "EleEffCorr_TrigSyst";
-  m_outputSystNamesTrigMCEff = "EleEffCorr_TrigMCEffSyst";
-  m_correlationModel = "FULL";
+  m_inputAlgoSystNames       = "";
+  m_outputAlgoSystNames      = "";
+ 
+  m_sysNamesForParCont       = "";
 
+  m_systValPID               = 0.0;
+  m_systValIso               = 0.0;
+  m_systValReco              = 0.0;
+  m_systValTrig              = 0.0;
+  m_systValTrigMCEff         = 0.0;
+  m_systNamePID              = "";
+  m_systNameTrig             = "";
+  m_systNameReco             = "";
+  m_systNameTrigMCEff        = "";
+  m_outputSystNamesPID       = "EleEffCorr_PIDSyst";
+  m_outputSystNamesIso       = "EleEffCorr_IsoSyst";
+  m_outputSystNamesReco      = "EleEffCorr_RecoSyst";
+  m_outputSystNamesTrig      = "EleEffCorr_TrigSyst";
+  m_outputSystNamesTrigMCEff = "EleEffCorr_TrigMCEffSyst";
+  m_correlationModel         = "FULL";
+
+  m_decorateWithNomOnInputSys  = true;
+  
   // file(s) containing corrections
   //
-  m_corrFileNamePID         = "";
-  m_corrFileNameIso         = "";
-  m_corrFileNameReco        = "";
-  m_corrFileNameTrig        = "";
-  m_corrFileNameTrigMCEff   = "";
+  m_corrFileNamePID          = "";
+  m_corrFileNameIso          = "";
+  m_corrFileNameReco         = "";
+  m_corrFileNameTrig         = "";
+  m_corrFileNameTrigMCEff    = "";
+
 }
 
 
@@ -167,6 +173,26 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   m_numEvent      = 0;
   m_numObject     = 0;
+
+
+  // *******************************************************
+
+  // several lists of systematics could be configured
+  // this is the case when MET sys should be added 
+  // to the OR ones
+  std::string tmp_sysNames = m_inputAlgoSystNames;
+
+  while ( tmp_sysNames.size() > 0) {
+    size_t pos = tmp_sysNames.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_sysNames.size();
+      m_sysNames.push_back(tmp_sysNames.substr(0, pos));
+      tmp_sysNames.erase(0, pos);
+    } else {
+      m_sysNames.push_back(tmp_sysNames.substr(0, pos));
+      tmp_sysNames.erase(0, pos+1);
+    }
+  }
 
 
   int sim_flav(1); // default for FullSim
@@ -396,7 +422,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     if ( m_debug ) {
 
       // Get a list of affecting systematics
-     //
+      //
       CP::SystematicSet affectSystsTrig = m_asgElEffCorrTool_elSF_Trig->affectingSystematics();
       //
       // Convert into a simple list
@@ -510,6 +536,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   }
 
   if ( m_debug ) { Info("execute()", "Applying Electron Efficiency Correction... "); }
+  
+  
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
@@ -537,28 +565,65 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
        // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
        //
-       this->executeSF( inputElectrons, countInputCont );
+       this->executeSF( inputElectrons, countInputCont, true );
     }
 
   } else {
   // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo.
   // This is the case of calibrators: one different SC for each calibration syst applied
 
-      // get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
-      //
-      std::vector<std::string>* systNames(nullptr);
-      RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+        // get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
+        //
+        std::vector<std::string> systNames;
 
-    	// loop over systematic sets available
-	//
+        // add each vector of systematics names to the full list 
+        //
+        for ( auto sysInput : m_sysNames ) {
+          std::vector<std::string>* it_systNames(nullptr);
+          RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(it_systNames, sysInput, 0, m_store, m_verbose) ,"");
+          systNames.insert( systNames.end(), it_systNames->begin(), it_systNames->end() );
+        }
+        // and now remove eventual duplicates
+        //
+        HelperFunctions::remove_duplicates(systNames);
+
+        // create parallel container of electrons for met systematics.
+        // this does not get decorated and contains the same elements
+        // of the nominal container. It will be used by the TreeAlgo
+        // as we don't want sys variations for eff in MET sys trees. 
+        //
+        if ( !m_sysNamesForParCont.empty() )  {
+          std::vector<std::string>* par_systNames(nullptr);
+
+          RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(par_systNames, m_sysNamesForParCont, 0, m_store, m_verbose) ,"");
+
+          for ( auto sys : *par_systNames ) {
+             if ( !sys.empty() && !m_store->contains<xAOD::ElectronContainer>( m_inContainerName+sys ) ) {
+               const xAOD::ElectronContainer* tmpElectrons(nullptr);
+
+               if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName ) ) {
+
+                  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(tmpElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+                  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, m_inContainerName+sys, tmpElectrons)), "");
+
+               } // the nominal container is copied therefore it has to exist!
+
+             } // skip the nominal case or if the container already exists
+          } // consider all "parallel" systematics specified by the user
+
+        } // do this thing only if required
+
+        // loop over systematic sets available
+        //
         std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-    	
-        for ( auto systName : *systNames ) {
+
+
+        for ( auto systName : systNames ) {
 
           const xAOD::ElectronContainer* outputElectrons(nullptr);
-          
-          if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName )  ) {
+          bool isNomElectronSelection = systName.empty(); 
 
+          if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName )  ) {
              RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
              
              if ( !m_store->contains<xAOD::ElectronContainer>( m_outContainerName+systName ) ) {
@@ -579,7 +644,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
              
              // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
 	     //
-             this->executeSF( outputElectrons, countInputCont );
+             this->executeSF( outputElectrons, countInputCont, isNomElectronSelection);
              
              vecOutContainerNames->push_back( systName ); 
              // increment counter
@@ -587,13 +652,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
              ++countInputCont;
           
           } // check existence of container
-      
         } // close loop on systematic sets available from upstream algo
         
         if ( !m_outputAlgoSystNames.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
           RETURN_CHECK( "ElectronEfficiencyCorrector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names."); 
         }
-
   }
 
   // look what we have in TStore
@@ -654,7 +717,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst )
+EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst,  bool isNomSel )
 {
 
   // In the following, every electron gets decorated with several vector<double>'s (for various SFs),
@@ -686,7 +749,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     if(countSyst == 0) sysVariationNamesPID = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListPID ) {
-
+      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue;
+      
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_ElPIDEff_SF
       //
@@ -803,6 +867,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     if(countSyst == 0) sysVariationNamesIso = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListIso ) {
+      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue; 
 
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_ElIsoEff_SF
@@ -920,6 +985,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     if(countSyst == 0) sysVariationNamesReco = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListReco ) {
+      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue; 
 
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_ElRecoEff_SF
@@ -1040,6 +1106,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     if(countSyst == 0) sysVariationNamesTrig = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListTrig ) {
+      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue; 
 
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_ElTrigEff_SF
@@ -1161,6 +1228,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     if(countSyst == 0) sysVariationNamesTrigMCEff = new std::vector< std::string >;
 
     for ( const auto& syst_it : m_systListTrigMCEff ) {
+      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue; 
 
       // Create the name of the SF weight to be recorded
       //   template:  SYSNAME_ElTrigEff_SF
