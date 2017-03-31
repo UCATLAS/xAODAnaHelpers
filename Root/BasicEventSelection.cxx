@@ -589,7 +589,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ASG_SET_ANA_TOOL_TYPE(m_pileup_tool_handle, CP::PileupReweightingTool);
     m_pileup_tool_handle.setName("Pileup");
 
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("UnrepresentedDataAction", 3), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09), "Failed to set pileup reweighting data scale factor");
