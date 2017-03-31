@@ -23,6 +23,7 @@
 #include "JetSelectorTools/JetCleaningTool.h"
 #include "JetMomentTools/JetVertexTaggerTool.h"
 #include "AsgTools/AnaToolHandle.h"
+#include "JetTileCorrection/JetTileCorrectionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -69,6 +70,9 @@ public:
   // systematics
   bool m_runSysts;
 
+  // jet tile correction
+  bool m_doJetTileCorr;
+
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
@@ -91,6 +95,8 @@ private:
   asg::AnaToolHandle<IJetSelector> m_JetCleaningTool_handle; //!
   std::vector<std::string>  m_decisionNames;    //!
   std::vector< asg::AnaToolHandle<IJetSelector> > m_AllJetCleaningTool_handles;   //!
+
+  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle; //!
 
 
   // variables that don't get filled at submission time should be

@@ -26,6 +26,7 @@
 // external tools include(s):
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
 #include "JetJvtEfficiency/JetJvtEfficiency.h"
+#include "JetMomentTools/JetForwardJvtTool.h"
 #include "AsgTools/AnaToolHandle.h"
 
 class JetSelector : public xAH::Algorithm
@@ -70,6 +71,8 @@ public:
   float m_eta_max_JVF;            // detector eta cut
   float m_JVFCut;                 // cut value
   bool m_doJVT;                   // check JVT
+  bool m_dofJVT;                  // check forward JVT 
+  bool m_dofJVTVeto;              // Remove jets that fail fJVT. Like JVT, the default is to clean the collection
   float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
   float m_eta_max_JVT;            // detector eta cut
 
@@ -170,6 +173,7 @@ private:
 
   std::string m_JVT_tool_name;                                 //!
   asg::AnaToolHandle<CP::IJetJvtEfficiency> m_JVT_tool_handle; //!
+  asg::AnaToolHandle<IJetModifier> m_fJVT_tool_handle;//! 
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

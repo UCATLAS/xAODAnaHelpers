@@ -503,6 +503,14 @@ namespace HelperFunctions {
       tree->SetBranchAddress ((name+"_"+branch).c_str()  , variable);
     }
 
+  // function to remove duplicates from a vector. Thank you, oh internet!
+  // http://stackoverflow.com/questions/9237216/removing-duplicates-in-a-vector-of-strings
+  template <typename T>
+  void remove_duplicates(std::vector<T>& vec)
+  {
+    std::sort(vec.begin(), vec.end());
+    vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
+  }
 
 } // close namespace HelperFunctions
 

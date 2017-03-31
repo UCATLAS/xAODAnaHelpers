@@ -41,10 +41,10 @@ public:
   TString m_inputMuons;
 
 
-  std::string  m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
-  std::string  m_inputAlgoSystMuons;  // name of vector<string> of syst retrieved from TStore
-  std::string  m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
-  std::string m_inputAlgoPhotons; // name of vector<string> of syst retrieved from TStore
+  //std::string  m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
+  //std::string  m_inputAlgoSystMuons;  // name of vector<string> of syst retrieved from TStore
+  //std::string  m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
+  //std::string m_inputAlgoPhotons; // name of vector<string> of syst retrieved from TStore
 
   bool    m_doElectronCuts;
   bool    m_doPhotonCuts;
@@ -89,7 +89,7 @@ public:
    */
   std::string m_phoSystematics;
 
-
+  std::string m_outputAlgoSystNames;
   
 
 private:

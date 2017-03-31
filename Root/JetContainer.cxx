@@ -2512,8 +2512,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       double ip3_pb = -30;  myBTag->variable<double>("IP3D", "pb", ip3_pb);
       double ip3_pc = -30;  myBTag->variable<double>("IP3D", "pc", ip3_pc);
 
-      m_IP3D->push_back(    myBTag -> IP3D_loglikelihoodratio()  );
-
       m_IP3D_pu         ->push_back(ip3_pu  );
       m_IP3D_pb         ->push_back(ip3_pb  );
       m_IP3D_pc         ->push_back(ip3_pc  );
@@ -2561,9 +2559,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       }
 
       if(m_debug) cout << "Filling m_vtx_offline " << endl;
-      m_vtx_offline_x0->push_back( offline_pvx->x() );
-      m_vtx_offline_y0->push_back( offline_pvx->y() );
-      m_vtx_offline_z0->push_back( offline_pvx->z() );
+      if(offline_pvx){
+	m_vtx_offline_x0->push_back( offline_pvx->x() );
+	m_vtx_offline_y0->push_back( offline_pvx->y() );
+	m_vtx_offline_z0->push_back( offline_pvx->z() );
+      }else{
+	m_vtx_offline_x0->push_back( -999 );
+	m_vtx_offline_y0->push_back( -999 );
+	m_vtx_offline_z0->push_back( -999 );
+      }
+
       if(m_debug) cout << "Done Filling m_vtx_offline " << endl;
 
       if(m_debug) cout << "Filling m_vtx_online... " << endl;

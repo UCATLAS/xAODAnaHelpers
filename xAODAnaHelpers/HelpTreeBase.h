@@ -109,8 +109,6 @@ public:
 
   // control which branches are filled
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
-  HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
-  HelperClasses::MuonInfoSwitch*       m_muonInfoSwitch;
 
   std::string                  m_triggerSelection;
   TrigConf::xAODConfigTool*    m_trigConfTool;
