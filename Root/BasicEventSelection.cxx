@@ -589,7 +589,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ASG_SET_ANA_TOOL_TYPE(m_pileup_tool_handle, CP::PileupReweightingTool);
     m_pileup_tool_handle.setName("Pileup");
 
-
+    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("UnrepresentedDataAction", 3), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
     RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09), "Failed to set pileup reweighting data scale factor");
@@ -847,7 +847,8 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Update Pile-Up Reweighting
   //------------------------------------------------------------------------------------------
   if ( m_isMC && m_doPUreweighting ) {
-      m_pileup_tool_handle->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
+    m_pileup_tool_handle->applySystematicVariation(CP::SystematicSet()).ignore();
+    m_pileup_tool_handle->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
                                                  //  1.) the PU weight ("PileupWeight")
                                                  //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                                  //  3.) the random run number ("RandomRunNumber")
