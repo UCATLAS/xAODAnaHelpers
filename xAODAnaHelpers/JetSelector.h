@@ -50,6 +50,14 @@ public:
   bool m_cleanJets;               // require cleanJet decoration to not be set and false
   int m_cleanEvtLeadJets;         // kill event if any of the N leading jets are not clean
   /** @brief Kill event if any passing jets are not clean */
+  /**
+      @rst
+          .. note:: The jets need the `cleanJet` decoration which is set when you enable :cpp:member:`JetCalibrator::m_doCleaning`
+
+      @endrst
+
+   */
+
   bool m_cleanEvent;
   int m_pass_min;                 // minimum number of objects passing cuts
   int m_pass_max;                 // maximum number of objects passing cuts
@@ -71,7 +79,7 @@ public:
   float m_eta_max_JVF;            // detector eta cut
   float m_JVFCut;                 // cut value
   bool m_doJVT;                   // check JVT
-  bool m_dofJVT;                  // check forward JVT 
+  bool m_dofJVT;                  // check forward JVT
   bool m_dofJVTVeto;              // Remove jets that fail fJVT. Like JVT, the default is to clean the collection
   float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
   float m_eta_max_JVT;            // detector eta cut
@@ -105,13 +113,13 @@ public:
 
   /**
      @brief Configuration containting JVT scale factors.
-     
+
      @rst
      The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
 
      See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration for latest recommendation.
      @endrst
-  */ 
+  */
   std::string m_SFFileJVT;
   std::string m_outputSystNamesJVT;
 
@@ -173,7 +181,7 @@ private:
 
   std::string m_JVT_tool_name;                                 //!
   asg::AnaToolHandle<CP::IJetJvtEfficiency> m_JVT_tool_handle; //!
-  asg::AnaToolHandle<IJetModifier> m_fJVT_tool_handle;//! 
+  asg::AnaToolHandle<IJetModifier> m_fJVT_tool_handle;//!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
