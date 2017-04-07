@@ -129,7 +129,9 @@ which will render as
 Doxygen ``rst`` directive
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To tell ``doxygen`` and ``breathe`` that a given block of text should be considered as reStructuredText, we simply need to wrap it::
+To tell ``doxygen`` and ``breathe`` that a given block of text should be considered as reStructuredText, we simply need to wrap it:
+
+.. code-block:: none
 
     @rst
         This is now inside a doxygen directive that tells doxygen not to parse it, so that breathe can parse it for Sphinx.

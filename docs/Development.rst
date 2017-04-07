@@ -18,6 +18,8 @@ Changes should be tested properly ( "it compiles" is not sufficient ). We use th
 New User
 ~~~~~~~~
 
+.. highlight:: none
+
 This is for users who do not have write access to ``UCATLAS/xAODAnaHelpers`` to make branches. Instead, they fork and write their changes to their own repository and submit pull-requests.
 
 -  For *very* new users, you may want to setup SSH key access to your personal repository. To do this, follow the instructions at `Generating SSH keys <https://help.github.com/articles/generating-ssh-keys/>`_. So you go here: https://github.com/UCATLAS/xAODAnaHelpers/ and just click the 'Fork' at top right. This forks a copy into your account (``yourAccount/xAODAnaHelpers``). Next, clone it. Set the upstream::
@@ -155,7 +157,7 @@ In order to skim some new test files, I use athena::
 
 with the following python file executed via ``athena.py skimming.py`` on an ``input.root`` file
 
-.. code:: python
+.. code-block:: python
 
     from AthenaCommon.AppMgr import ServiceMgr as svcMgr
     import AthenaPoolCnvSvc.ReadAthenaPool
@@ -216,6 +218,8 @@ which are useful for testing using::
 
 Decorations
 ~~~~~~~~~~~
+
+.. highlight:: c++
 
 As a follow-up on the discussions in yesterday's meeting, xAOD decorations can be assigned and read more efficiently defining an decorators/accessors, since auxdata requires a string-comparison search for the correct branch on every call, whereas the static accessor finds this once and then no longer has the overhead.
 

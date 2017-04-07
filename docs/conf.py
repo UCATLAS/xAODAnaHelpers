@@ -64,7 +64,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'xAODAnaHelpers'
-copyright = u'2015, ATLAS Collaboration'
+copyright = u'2015-2017, ATLAS Collaboration'
 author = u'ATLAS Collaboration'
 
 try:
@@ -138,6 +138,8 @@ highlight_language = 'c++'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# suppress certain warnings
+suppress_warnings = ['image.nonlocal_uri']
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -172,7 +174,8 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
+html_static_path = []
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied

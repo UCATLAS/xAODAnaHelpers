@@ -55,7 +55,7 @@ public:
   bool m_JERFullSys;
   bool m_JERApplyNominal;
 
-  /// enable to apply jet cleaning
+  /** @brief enable to apply jet cleaning decoration */
   bool m_doCleaning;
   std::string m_jetCleanCutLevel;
   bool m_saveAllCleanDecisions;
