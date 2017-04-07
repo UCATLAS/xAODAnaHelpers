@@ -50,7 +50,7 @@ namespace HelperClasses {
         typename std::multimap <std::string, T>::const_iterator iValue = enumMap.find(value);
         if (iValue == enumMap.end()){
             std::cerr << "Could not find input string in enum!" << std::endl;
-	}
+        }
         return iValue->second;
      }
   };
@@ -76,11 +76,11 @@ namespace HelperClasses {
   class InfoSwitch {
   protected:
     /**
-        The input configuration string from which we split up into tokens.
+        @brief The input configuration string from which we split up into tokens.
      */
     const std::string m_configStr;
     /**
-        The vector of tokens from which we search through for finding matches.
+        @brief The vector of tokens from which we search through for finding matches.
      */
     std::set<std::string> m_configDetails;
   public:
@@ -131,7 +131,7 @@ namespace HelperClasses {
         ================ ============== =======
         m_eventCleaning  eventCleaning  exact
         m_pileup         pileup         exact
-	m_pileupsys      pileupsys      exact
+        m_pileupsys      pileupsys      exact
         m_shapeEM        shapeEM        exact
         m_shapeLC        shapeLC        exact
         m_truth          truth          exact
@@ -212,7 +212,7 @@ namespace HelperClasses {
         ============== ============ =======
         m_kinematic    kinematic    exact
         m_numLeading   NLeading     partial
-	m_useTheS      useTheS      exact
+        m_useTheS      useTheS      exact
         ============== ============ =======
 
         .. note::
@@ -223,6 +223,7 @@ namespace HelperClasses {
                 m_configStr = "... NLeading4 ..."
 
             will define :code:`int m_numLeading = 4`.
+
 
     @endrst
    */
@@ -264,11 +265,11 @@ namespace HelperClasses {
     bool m_trackhitcont;
     bool m_effSF;
     bool m_energyLoss;
-    
+
     std::vector< std::string > m_recoWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
-    
+
     bool m_recoEff_sysNames;
     bool m_isoEff_sysNames;
     bool m_trigEff_sysNames;
@@ -285,46 +286,43 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Electron Information.
 
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_trigger      trigger      exact
-        m_isolation    isolation    exact
-        m_quality      quality      exact
-        m_PID          PID          exact
-        m_trackparams  trackparams  exact
-        m_trackhitcont trackhitcont exact
-        m_effSF        effSF        exact
-
-        m_PIDWPs["LooseAndBLayerLLH"]            LooseAndBLayerLLH           exact
-        m_PIDWPs["MediumLLH"]                    MediumLLH                   exact
-        m_PIDWPs["TightLLH"]                     TightLLH                    exact
-
-        m_isolWPs["isolFixedCutLoose"]          isolFixedCutLoose           exact
-        m_isolWPs["isolFixedCutTight"]          isolFixedCutTight           exact
-        m_isolWPs["isolFixedCutTightTrackOnly"] isolFixedCutTightTrackOnly  exact
-        m_isolWPs["isolGradient"]               isolGradient                exact
-        m_isolWPs["isolGradientLoose"]          isolGradientLoose           exact
-        m_isolWPs["isolLoose"]                  isolLoose                   exact
-        m_isolWPs["isolLooseTrackOnly"]         isolLooseTrackOnly          exact
-        m_isolWPs["isolTight"]                  isolTight                   exact
-        m_isolWPs[""]                           isolNoRequirement           exact
-
-        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH]      DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH   exact
-        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0]               DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0            exact
-        m_trigWPs[DI_E_2015_e17_lhloose_2016_e17_lhloose]                              DI_E_2015_e17_lhloose_2016_e17_lhloose                           exact
-        m_trigWPs[MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0]                      MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0                   exact
-        m_trigWPs[MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0]                      MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0                   exact
-        m_trigWPs[MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0]                      MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0                   exact
-        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI]      MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI        exact
-        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI]      MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI        exact
-        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0]   SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
-        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0]   SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
-        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0_                          TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0                       exact
-        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0]                         TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0                      exact
-        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0]                        TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0                     exact
-        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0]                       TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0                    exact
-        ============== ============ =======
+        =============================================================================================================================================================== =============================================================================================================================================== =======
+        Parameter                                                                                                                                                       Pattern                                                                                                                                         Match
+        =============================================================================================================================================================== =============================================================================================================================================== =======
+        m_trigger                                                                                                                                                       trigger                                                                                                                                         exact
+        m_isolation                                                                                                                                                     isolation                                                                                                                                       exact
+        m_quality                                                                                                                                                       quality                                                                                                                                         exact
+        m_PID                                                                                                                                                           PID                                                                                                                                             exact
+        m_trackparams                                                                                                                                                   trackparams                                                                                                                                     exact
+        m_trackhitcont                                                                                                                                                  trackhitcont                                                                                                                                    exact
+        m_effSF                                                                                                                                                         effSF                                                                                                                                           exact
+        m_PIDWPs["LooseAndBLayerLLH"]                                                                                                                                   LooseAndBLayerLLH                                                                                                                               exact
+        m_PIDWPs["MediumLLH"]                                                                                                                                           MediumLLH                                                                                                                                       exact
+        m_PIDWPs["TightLLH"]                                                                                                                                            TightLLH                                                                                                                                        exact
+        m_isolWPs["isolFixedCutLoose"]                                                                                                                                  isolFixedCutLoose                                                                                                                               exact
+        m_isolWPs["isolFixedCutTight"]                                                                                                                                  isolFixedCutTight                                                                                                                               exact
+        m_isolWPs["isolFixedCutTightTrackOnly"]                                                                                                                         isolFixedCutTightTrackOnly                                                                                                                      exact
+        m_isolWPs["isolGradient"]                                                                                                                                       isolGradient                                                                                                                                    exact
+        m_isolWPs["isolGradientLoose"]                                                                                                                                  isolGradientLoose                                                                                                                               exact
+        m_isolWPs["isolLoose"]                                                                                                                                          isolLoose                                                                                                                                       exact
+        m_isolWPs["isolLooseTrackOnly"]                                                                                                                                 isolLooseTrackOnly                                                                                                                              exact
+        m_isolWPs["isolTight"]                                                                                                                                          isolTight                                                                                                                                       exact
+        m_isolWPs[""]                                                                                                                                                   isolNoRequirement                                                                                                                               exact
+        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH]                                                                                       DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH                                                                                  exact
+        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0]                                                                                                DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0                                                                                           exact
+        m_trigWPs[DI_E_2015_e17_lhloose_2016_e17_lhloose]                                                                                                               DI_E_2015_e17_lhloose_2016_e17_lhloose                                                                                                          exact
+        m_trigWPs[MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0]                                                                                                       MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0                                                                                                  exact
+        m_trigWPs[MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0]                                                                                                       MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0                                                                                                  exact
+        m_trigWPs[MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0]                                                                                                       MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0                                                                                                  exact
+        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI]                                                                                 MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI                                                                            exact
+        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI]                                                                                 MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI                                                                            exact
+        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0]        SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
+        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0]        SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
+        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0]                                                                                                           TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0                                                                                                      exact
+        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0]                                                                                                          TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0                                                                                                     exact
+        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0]                                                                                                         TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0                                                                                                    exact
+        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0]                                                                                                        TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0                                                                                                   exact
+        =============================================================================================================================================================== =============================================================================================================================================== =======
 
     @endrst
    */
@@ -389,7 +387,7 @@ namespace HelperClasses {
         m_clean          clean          exact
         m_energy         energy         exact
         m_scales         scales         exact
-	m_constscaleEta  constscaleEta  exact
+        m_constscaleEta  constscaleEta  exact
         m_resolution     resolution     exact
         m_truth          truth          exact
         m_truthDetails   truth_details  exact
@@ -494,6 +492,7 @@ namespace HelperClasses {
         m_children       children       exact
         ================ ============== =======
 
+
     @endrst
    */
   class TruthInfoSwitch : public IParticleInfoSwitch {
@@ -509,7 +508,6 @@ namespace HelperClasses {
 
   /**
     @rst
-    
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Track Information.
 
         ================ ============== =======
@@ -519,9 +517,10 @@ namespace HelperClasses {
         m_fitpars        fitpars        exact
         m_numbers        numbers        exact
         m_vertex         vertex         exact
-	m_useTheS        useTheS        exact
+        m_useTheS        useTheS        exact
         ================ ============== =======
-	
+
+
     @endrst
   */
   class TrackInfoSwitch : public InfoSwitch {
@@ -546,6 +545,7 @@ namespace HelperClasses {
         m_trackparams    trackparams    exact
         m_trackhitcont   trackhitcont   exact
         ================ ============== =======
+
 
     @endrst
    */
@@ -575,6 +575,7 @@ namespace HelperClasses {
         m_softClus       softClus|all   exact
         m_softTrk        softTrk|all    exact
         ================ ============== =======
+
 
         .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information.
 
