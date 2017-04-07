@@ -46,7 +46,7 @@ namespace HelperFunctions {
   std::string replaceString(std::string subjet, const std::string& search, const std::string& replace);
   std::vector<TString> SplitString(TString& orig, const char separator);
   float dPhi(float phi1, float phi2);
-  bool has_exact(const std::string input, const std::string flag); 
+  bool has_exact(const std::string input, const std::string flag);
 
   /**
     Function which returns the position of the n-th occurence of a character in a string searching backwards.
@@ -60,7 +60,7 @@ namespace HelperFunctions {
     Function which returns the WP for ISO/ID from a config file.
     Returns empty string if no WP is found.
 
-  */  
+  */
   std::string parse_wp( const std::string& type, const std::string& config_name );
 
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
@@ -265,7 +265,7 @@ namespace HelperFunctions {
       Example Usage:
       const xAOD::JetContainer* jets(0);
       // look for "AntiKt10LCTopoJets" in both TEvent and TStore
-      HelperFunctions::isAvailable(jets, "AntiKt10LCTopoJets", m_event, m_store) 
+      HelperFunctions::isAvailable(jets, "AntiKt10LCTopoJets", m_event, m_store)
       // look for "AntiKt10LCTopoJets" in only TStore
       HelperFunctions::isAvailable(jets, "AntiKt10LCTopoJets", 0, m_store)
       // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
@@ -343,7 +343,7 @@ namespace HelperFunctions {
     https://gist.github.com/kratsg/84ae66cb37a9d858d829
   */
   template <>
-  inline const xAOD::EventInfo* getContainer<xAOD::EventInfo>(std::string name, xAOD::TEvent* event, xAOD::TStore*) {
+  inline const xAOD::EventInfo* getContainer(std::string name, xAOD::TEvent* event, xAOD::TStore*) {
     const xAOD::EventInfo* eventInfo = 0;
     if ( !event->retrieve(eventInfo, name).isSuccess() ) {
       Error("getContainer()", "Failed to retrieve %s EventInfo from event. Exiting.", name.c_str());
