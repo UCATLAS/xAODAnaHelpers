@@ -22,9 +22,11 @@ or for a specific tag
 
 .. note::
 
-    `If you have ssh-keys set up <https://help.github.com/articles/generating-ssh-keys/>`_, then you can clone over SSH instead of HTTPS::
+    `If you have ssh-keys set up <https://help.github.com/articles/generating-ssh-keys/>`_, then you can clone over SSH instead of HTTPS:
 
-        git clone git@github.com:UCATLAS/xAODAnaHelpers
+      .. code-block:: none
+
+          git clone git@github.com:UCATLAS/xAODAnaHelpers
 
 At this point, you have the FULL state of the code. You can run
 ``git log`` to view the recent changes (no more ChangeLog!). You can run
