@@ -39,7 +39,9 @@
       The idea behind this algorithm is to consistently thread together the inputs from upstream |xAH| algorithms based on user's configuration, handling also the case where systematics on the input physics objects are taken into account. Here follows a usage example.
 
       Consider the simplified scenario where we care only about **jets** and **electrons**.
-      Assuming the typical |xAH| analysis configuration through :py:class:`~xAH_config`, the analysis workflow could look like the following::
+      Assuming the typical |xAH| analysis configuration through :py:class:`~xAH_config`, the analysis workflow could look like the following:
+
+      .. code-block:: python
 
           c = xAH_config()
           # ...
@@ -49,7 +51,9 @@
           c.setalg("OverlapRemover", OverlapRemoverDict)
           # ...
 
-      where each algorithm has the following I/O systematics configuration (via python dictionaries)::
+      where each algorithm has the following I/O systematics configuration (via python dictionaries):
+
+      .. code-block:: python
 
           JetSelectorDict = {
               # ...
@@ -97,7 +101,7 @@ class OverlapRemover : public xAH::Algorithm
   bool     m_createSelectedContainers;
   /** @brief In the OLR, consider only objects passing a (pre)selection */
   bool     m_useSelected;
-  /** @brief Use b-tagging decision, set previously with the given decoration name, to remove electrons and muons 
+  /** @brief Use b-tagging decision, set previously with the given decoration name, to remove electrons and muons
    * @note This is automatically set by BJetEfficiencyCorrector */
   std::string m_bTagWP;
   /** @brief Create a link between overlapped objects */
