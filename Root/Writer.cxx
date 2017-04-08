@@ -15,20 +15,18 @@
 ClassImp(Writer)
 
 
-
-Writer :: Writer (std::string className) :
-    Algorithm(className)
+Writer::Writer(std::string className) :
+  Algorithm(className)
 {
-  m_outputLabel               = "";
+  m_outputLabel = "";
 
   m_jetContainerNamesStr      = "";
   m_electronContainerNamesStr = "";
   m_muonContainerNamesStr     = "";
-  m_debug                   = false;
-
+  m_debug                     = false;
 }
 
-EL::StatusCode Writer :: setupJob (EL::Job& job)
+EL::StatusCode Writer::setupJob(EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -38,49 +36,48 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
   // let's initialize the algorithm to use the xAODRootAccess package
-  job.useXAOD ();
-  xAOD::Init( "Writer" ).ignore(); // call before opening first file
+  job.useXAOD();
+  xAOD::Init("Writer").ignore(); // call before opening first file
 
-  m_jetContainerNames       = HelperFunctions::SplitString( m_jetContainerNamesStr,      ',' );
-  m_electronContainerNames  = HelperFunctions::SplitString( m_electronContainerNamesStr, ',' );
-  m_muonContainerNames      = HelperFunctions::SplitString( m_muonContainerNamesStr,     ',' );
+  m_jetContainerNames = HelperFunctions::SplitString(m_jetContainerNamesStr,
+                                                     ',');
+  m_electronContainerNames = HelperFunctions::SplitString(
+    m_electronContainerNamesStr,
+    ',');
+  m_muonContainerNames = HelperFunctions::SplitString(m_muonContainerNamesStr,
+                                                      ',');
 
-  if ( m_outputLabel.Length() == 0 ) {
+  if (m_outputLabel.Length() == 0) {
     Error("Writer::setupJob()", "No OutputLabel specified!");
     return EL::StatusCode::FAILURE;
   }
 
   // tell EventLoop about our output xAOD:
   EL::OutputStream out(m_outputLabel.Data());
-  job.outputAdd (out);
+  job.outputAdd(out);
 
   return EL::StatusCode::SUCCESS;
 }
 
-
-
-EL::StatusCode Writer :: histInitialize ()
+EL::StatusCode Writer::histInitialize()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  RETURN_CHECK("xAH::Algorithm::algInitialize()",
+               xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
-
-
-EL::StatusCode Writer :: fileExecute ()
+EL::StatusCode Writer::fileExecute()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
   return EL::StatusCode::SUCCESS;
 }
 
-
-
-EL::StatusCode Writer :: changeInput (bool /*firstFile*/)
+EL::StatusCode Writer::changeInput(bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -88,9 +85,7 @@ EL::StatusCode Writer :: changeInput (bool /*firstFile*/)
   return EL::StatusCode::SUCCESS;
 }
 
-
-
-EL::StatusCode Writer :: initialize ()
+EL::StatusCode Writer::initialize()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -100,27 +95,27 @@ EL::StatusCode Writer :: initialize ()
   // doesn't get called if no events are processed.  So any objects
   // you create here won't be available in the output if you have no
   // input events.
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
-  m_numEvent      = 0;
+  m_event    = wk()->xaodEvent();
+  m_store    = wk()->xaodStore();
+  m_numEvent = 0;
 
   // output xAOD
-  TFile * file = wk()->getOutputFile (m_outputLabel.Data());
-  RETURN_CHECK( "Writer::initialize()", m_event->writeTo(file), "Failed to write event to output file");
+  TFile *file = wk()->getOutputFile(m_outputLabel.Data());
+  RETURN_CHECK("Writer::initialize()", m_event->writeTo(
+                 file), "Failed to write event to output file");
 
-  //FIXME add this as well
-// Set which variables not to write out:
-// event->setAuxItemList( "AntiKt4LCTopoJetsAux.", "-NumTrkPt1000.-NumTrkPt500" );
-// // Set which variable to do write out:
-// event->setAuxItemList( "GoodJetsAux.", "JetGhostArea.TrackCount" );
+  // FIXME add this as well
+  // Set which variables not to write out:
+  // event->setAuxItemList( "AntiKt4LCTopoJetsAux.",
+  // "-NumTrkPt1000.-NumTrkPt500" );
+  // // Set which variable to do write out:
+  // event->setAuxItemList( "GoodJetsAux.", "JetGhostArea.TrackCount" );
 
 
   return EL::StatusCode::SUCCESS;
 }
 
-
-
-EL::StatusCode Writer :: execute ()
+EL::StatusCode Writer::execute()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -128,53 +123,69 @@ EL::StatusCode Writer :: execute ()
   // code will go.
   m_numEvent++;
 
-  // try to find the containers in m_event - if there then copy entire container directly
-  // if not found in m_event, look in m_store - user created - write aux store as well
-  for( auto contName : m_jetContainerNames ) {
+  // try to find the containers in m_event - if there then copy entire container
+  // directly
+  // if not found in m_event, look in m_store - user created - write aux store
+  // as well
+  for (auto contName : m_jetContainerNames) {
+    const xAOD::JetContainer *inJetsConst(nullptr);
 
-    const xAOD::JetContainer* inJetsConst(nullptr);
     // look in event
-    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, m_verbose).isSuccess() ) {
+    if (HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0,
+                                  m_verbose).isSuccess()) {
       // without modifying the contents of it:
-      Info("execute()", " Write a collection %s %lu", contName.Data(), inJetsConst->size() );
-      m_event->copy( contName.Data() );
+      Info("execute()", " Write a collection %s %lu",
+           contName.Data(), inJetsConst->size());
+      m_event->copy(contName.Data());
       Info("execute()", " Wrote a collection %s", contName.Data());
       continue;
     }
 
     // look in store
-    xAOD::JetContainer* inJets(nullptr);
-    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, m_verbose).isSuccess() ){
-//      // FIXME add something like this
-//      jets_shallowCopy.second->setShallowIO( false ); // true = shallow copy, false = deep copy
-//      // if true should have something like this line somewhere:
+    xAOD::JetContainer *inJets(nullptr);
+
+    if (HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store,
+                                  m_verbose).isSuccess()) {
+      //      // FIXME add something like this
+      //      jets_shallowCopy.second->setShallowIO( false ); // true = shallow
+      // copy, false = deep copy
+      //      // if true should have something like this line somewhere:
 
       // Record the objects into the output xAOD:
-      Info("execute()", " Write a collection %s %lu", contName.Data(), inJets->size() );
-      if( ! m_event->record( inJets, contName.Data() ) ) {
-        Error("execute()" ,"%s: Could not record %s", m_name.c_str(), contName.Data());
+      Info("execute()", " Write a collection %s %lu",
+           contName.Data(), inJets->size());
+
+      if (!m_event->record(inJets, contName.Data())) {
+        Error("execute()", "%s: Could not record %s",
+              m_name.c_str(), contName.Data());
         return EL::StatusCode::FAILURE;
       }
       Info("execute()", " Wrote a collection %s", contName.Data());
 
       // get pointer to associated aux container
-      xAOD::JetAuxContainer* inJetsAux = 0;
+      xAOD::JetAuxContainer *inJetsAux = 0;
       Info("execute()", " Wrote a aux store %s", contName.Data());
-      TString auxName( contName + "Aux." );
-      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, m_verbose).isSuccess() ){
-        Error("execute()" ,"%s: Could not get Aux data for %s", m_name.c_str(), contName.Data());
+      TString auxName(contName + "Aux.");
+
+      if (HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store,
+                                    m_verbose).isSuccess()) {
+        Error("execute()", "%s: Could not get Aux data for %s",
+              m_name.c_str(), contName.Data());
         return EL::StatusCode::FAILURE;
       }
       Info("execute()", " Wrote a aux store %s", contName.Data());
 
-      if( ! m_event->record( inJetsAux, auxName.Data() ) ) {
-        Error("execute()", "%s: Could not record aux store for %s", m_name.c_str(), contName.Data());
+      if (!m_event->record(inJetsAux, auxName.Data())) {
+        Error("execute()", "%s: Could not record aux store for %s",
+              m_name.c_str(), contName.Data());
         return EL::StatusCode::FAILURE;
       }
     }
+
     // could not find the container - problems
     else {
-      Error("execute()" ,"%s: Could not find %s", m_name.c_str(), contName.Data());
+      Error("execute()", "%s: Could not find %s", m_name.c_str(),
+            contName.Data());
       return EL::StatusCode::FAILURE;
     }
   }
@@ -186,9 +197,7 @@ EL::StatusCode Writer :: execute ()
   return EL::StatusCode::SUCCESS;
 }
 
-
-
-EL::StatusCode Writer :: postExecute ()
+EL::StatusCode Writer::postExecute()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -196,9 +205,7 @@ EL::StatusCode Writer :: postExecute ()
   return EL::StatusCode::SUCCESS;
 }
 
-
-
-EL::StatusCode Writer :: finalize ()
+EL::StatusCode Writer::finalize()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -211,15 +218,15 @@ EL::StatusCode Writer :: finalize ()
   // gets called on worker nodes that processed input events.
 
   // finalize and close our output xAOD file ( and write MetaData tree )
-  TFile * file = wk()->getOutputFile(m_outputLabel.Data());
-  RETURN_CHECK( "Writer::finalize()", m_event->finishWritingTo( file ), "Failed to finish writing event to output file");
+  TFile *file = wk()->getOutputFile(m_outputLabel.Data());
+
+  RETURN_CHECK("Writer::finalize()", m_event->finishWritingTo(
+                 file), "Failed to finish writing event to output file");
 
   return EL::StatusCode::SUCCESS;
 }
 
-
-
-EL::StatusCode Writer :: histFinalize ()
+EL::StatusCode Writer::histFinalize()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -231,6 +238,7 @@ EL::StatusCode Writer :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(),
+               "");
   return EL::StatusCode::SUCCESS;
 }

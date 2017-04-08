@@ -10,6 +10,17 @@ Development
    HowToDocumentation
    Issues
 
+Clean Up Code
+-------------
+
+Use `uncrustify <https://github.com/uncrustify/uncrustify>`_ to clean up code. We provide a configuration file `uncrustify.cfg <uncrustify.cfg>`_ for you. All you need to do is run
+
+.. code-block:: bash
+
+  uncrustify -c uncrustify.cfg **/**.cxx --no-backup
+
+which will uncrustify all current C++ source code files for you. We will not ``uncrustify`` the header files because the comments are space-sensitive when trying to do automatic documentation generation.
+
 Development Workflow
 --------------------
 
