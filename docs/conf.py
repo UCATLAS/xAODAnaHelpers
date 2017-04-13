@@ -82,7 +82,7 @@ release = release
 
 import yaml
 try:
-    analysis_base_release = yaml.safe_load(file('../.travis.yml'))['env'][0].split('=')[1]
+    analysis_base_release = yaml.safe_load(file('../.jenkins.yml'))['env'][0].split('=')[1]
 except:
     analysis_base_release = 'unknown'
 

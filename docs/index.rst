@@ -23,7 +23,7 @@ Current Version
 Current AnalysisBase release for |xAH| is Base,\ |analysis_base_release|\ .
 
 .. note::
-    If you need to bump up the version of the AnalysisBase being used, please make sure you update the `.travis.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.travis.yml>`_ file first.
+    If you need to bump up the version of the AnalysisBase being used, please make sure you update the `.jenkins.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.jenkins.yml>`_ file first.
 
 Python Code Quality
 -------------------
