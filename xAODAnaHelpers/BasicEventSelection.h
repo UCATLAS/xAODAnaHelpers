@@ -31,66 +31,111 @@ namespace Trig {
   class TrigDecisionTool;
 }
 
+/**
+  @rst
+    This algorithm performs the very basic event selection. This should be the first algo in the algo chain. It can create weighted and unweighted cutflow objects to be picked up downstream by other xAH algos, and your own. The selection applied in data only is:
+
+      - GRL (can be turned off)
+      - LAr Error
+      - Tile Error
+      - Core Flag
+
+    .. note:: For MC only, the pileup reweight can also be applied.
+
+    In both data and simulation (MC), the following cuts are applied
+
+      - the highest sum :math:`p_{T}^2` primary vertex has 2 or more tracks (see :cpp:member:`~BasicEventSelection::m_applyPrimaryVertexCut`)
+      - trigger requirements (see :cpp:member:`~BasicEventSelection::m_applyTriggerCut`)
+
+    For derivations, the metadata can be accessed and added to the cutflow for normalization. The parameters to control the trigger are described in this header file. If one wants to write out some of the trigger information into a tree using :cpp:class:`~HelpTreeBase`, flags must be set here.
+
+  @endrst
+*/
 class BasicEventSelection : public xAH::Algorithm
 {
-  // put your configuration variables here as public variables.
-  // that way they can be set directly from CINT and python.
   public:
-    // variables read in through configuration file
-
+    /// @brief Protection when running on truth xAOD
     bool m_truthLevelOnly;
 
-    // GRL
+  // GRL
+    /// @brief Apply GRL selection
     bool m_applyGRLCut;
+    /// @brief Path to GRL XML file
     std::string m_GRLxml;
+    /// @brief Run numbers to skip in GRL
     std::string m_GRLExcludeList;
 
-    // Clean Powheg huge weight
+  // Clean Powheg huge weight
     bool m_cleanPowheg;
 
-    // Reweight Sherpa 2.2 Samples
+  // Reweight Sherpa 2.2 Samples
     bool  m_reweightSherpa22;
 
-    //PU Reweighting
+  //PU Reweighting
+    /**
+      @rst
+        Reweight pile-up profile :math:`\mu`
+      @endrst
+    */
     bool m_doPUreweighting;
     bool m_doPUreweightingSys;
+    /// @brief Comma separated list of filenames
     std::string m_lumiCalcFileNames;
+    /// @brief Comma separated list of filenames
     std::string m_PRWFileNames;
 
     // Unprescaling data
     bool m_savePrescaleDataWeight;
 
-    // Primary Vertex
+  // Primary Vertex
+    /// @brief Name of vertex container
     std::string m_vertexContainerName;
+    /// @brief Enable to apply a primary vertex cut
     bool m_applyPrimaryVertexCut;
+    /// @brief Minimum number of tracks from **the** primary vertex (Harmonized Cut)
     int m_PVNTrack;
 
-    // Event Cleaning
+  // Event Cleaning
     bool m_applyEventCleaningCut;
     bool m_applyCoreFlagsCut;
 
     // Print Branch List
     bool m_printBranchList;
 
-    // Trigger
+  // Trigger
     /**
-       @brief Decisions of Triggers listed in m_triggerSelection are saved and cut on depending on m_applyTriggerCut
+      @rst
+        RegEx expression to choose triggers to consider to be cut on with :cpp:member:`~BasicEventSelection::m_applyTriggerCut`
+      @endrst
     */
     std::string m_triggerSelection;
 
-    /**
-       @brief Decisions of Triggers listed in m_extraTriggerSelection are saved but not cut on
-    */
+    /// @brief Decisions of triggers which are saved but not cut on
     std::string m_extraTriggerSelection;
 
+    /**
+      @rst
+        Skip events in which the trigger string :cpp:member:`~BasicEventSelection::m_triggerSelection` does not fire
+      @endrst
+    */
     bool m_applyTriggerCut;
+    /**
+      @rst
+        Save string of fired triggers matching :cpp:member:`~BasicEventSelection::m_triggerSelection`
+      @endrst
+    */
     bool m_storeTrigDecisions;
+    /// @brief Save if any L1 trigger fired, e.g. ``"L1_.*"``
     bool m_storePassL1;
+    /// @brief Save if any HLT trigger fired, e.g. ``"HLT_.*"``
     bool m_storePassHLT;
+    /// @brief Save master, L1, and HLT key
     bool m_storeTrigKeys;
 
-    // Metadata
+  // Metadata
+    /// @brief The name of the derivation
     std::string m_derivationName;
+    /// @brief Retrieve and save information on DAOD selection
     bool m_useMetaData;
 
     /* Output Stream Names */
@@ -158,7 +203,7 @@ class BasicEventSelection : public xAH::Algorithm
     TH1D* m_truth_cutflowHist_1; //!
 
     /** TTree for duplicates bookeeping */
-    
+
     TTree*   m_duplicatesTree;  //!
     int      m_duplRunNumber;
     long int m_duplEventNumber;
