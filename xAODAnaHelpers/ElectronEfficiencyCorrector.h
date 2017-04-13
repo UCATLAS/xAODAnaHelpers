@@ -23,21 +23,50 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
+/**
+  @rst
+    This is the algorithm class that applies generic corrections to electrons. At the moment, only data/MC efficiency correction is included (electron trigger SF and others will follow...).
+
+    In a nutshell, this algorithm performs the following actions:
+
+      - retrieves an ``xAOD::ElectronContainer`` from either ``TEvent`` or ``TStore``
+      - adds a scale factor (SF) decoration for each electron in the input container calculated via the ``AsgElectronEfficiencyCorrectionTool`` in `Tools Used <ToolsUsed.html>`__
+      - the nominal SF and all the systematically-varied ones are saved as a ``vector<double>`` decoration for each electron
+
+    .. note:: Bear in mind that this algorithm must be called after :cpp:class:`~ElectronSelector`. In fact, the configuration file(s) being used must have the same working point as the one chosen in the selector.
+
+  @endrst
+*/
 class ElectronEfficiencyCorrector : public xAH::Algorithm
 {
-  // put your configuration variables here as public variables.
-  // that way they can be set directly from CINT and python.
 public:
-  // configuration variables
+  /// @brief The name of the input container for this algorithm to read from ``TEvent`` or ``TStore``
   std::string  m_inContainerName;
+  /**
+      @brief The name of the nominal output container written by the algorithm to ``TStore``
+
+      If the algorithm applies systematic variations, for each shallow copy saved to ``TStore``, the systematic name will be appended to this.
+  */
   std::string  m_outContainerName;
 
-  // systematics
-  std::string   m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
-  			               // upstream algo (e.g., the SC containers with calibration systematics)
-  
-  std::string   m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers to be fed to 
-                                       // the downstream algos. We need that as we deepcopy the input containers
+// systematics
+  /**
+    @brief The name of the vector containing the names of the systematically-varied containers from the upstream algorithm, which will be processed by this algorithm.
+
+    This vector is retrieved from the ``TStore``. If left blank, it means there is no upstream algorithm which applies systematics. This is the case when processing straight from the original ``xAOD`` or ``DxAOD``.
+  */
+  std::string m_inputAlgoSystNames;
+
+  /**
+    @brief The name of the vector containing the names of the systematically-varied containers created by by this algorithm.
+
+    @rst
+      If :cpp:member:`~xAH::Algorithm::m_systName` is empty, the vector will contain only an empty string. When running on systematics, this is the string a downstream algorithm needs to process electrons.
+
+      .. note:: We need this as we deep-copy the input containers.
+    @endrst
+  */
+  std::string   m_outputAlgoSystNames;
 
   /** @brief Force AFII flag in calibration, in case metadata is broken */
   bool m_setAFII;
@@ -75,8 +104,8 @@ private:
   std::string m_IsoPID_WP; //!
 
   std::string m_WorkingPointIDTrig;  //!
-  std::string m_WorkingPointIsoTrig; //! 
-  std::string m_WorkingPointTrigTrig; //! 
+  std::string m_WorkingPointIsoTrig; //!
+  std::string m_WorkingPointTrigTrig; //!
 
   std::vector<CP::SystematicSet> m_systListPID;  //!
   std::vector<CP::SystematicSet> m_systListIso;  //!
