@@ -19,12 +19,10 @@ def log(s, elapsed=None):
     if elapsed:
         print("Elapsed time: {0}".format(elapsed))
     print(line)
-    print("")
 
 def endlog():
     end = time()
     elapsed = end-start
-    print("")
     log("End Program", secondsToStr(elapsed))
 
 def now():
