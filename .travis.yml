@@ -17,7 +17,7 @@ install:
   - rm -rf build-uncrustify
 
 script:
-  - ./uncrustify -c uncrustify.cfg --check **/**.cxx
+  - ./uncrustify -c uncrustify.cfg --check Root/**.cxx
 
 notifications:
   email:
