@@ -1,0 +1,12 @@
+language: cpp
+before_script:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y -qq uncrustify cppcheck
+
+script:
+  - uncrustify -c uncrustify.cfg --check **/**.cxx
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
