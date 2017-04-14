@@ -335,9 +335,16 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
+    
     std::vector< std::string > m_PIDWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
+
+    bool m_recoEff_sysNames;
+    bool m_isoEff_sysNames;
+    bool m_trigEff_sysNames;
+    bool m_pidEff_sysNames;
+
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:

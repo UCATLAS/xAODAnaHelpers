@@ -288,7 +288,9 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
   if ( m_debug )  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
   m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units, m_isMC);
+  
   xAH::MuonContainer* thisMuon = m_muons[muonName];
+  
   HelperClasses::MuonInfoSwitch& muonInfoSwitch = thisMuon->m_infoSwitch;
   
   std::string tname = m_tree->GetName();
@@ -298,27 +300,27 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
      if ( muonInfoSwitch.m_recoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& reco : muonInfoSwitch.m_recoWPs) {
          std::string recoEffSF_sysNames = "muon_RecoEff_SF_" + reco + "_sysNames";
-         m_tree->Branch( recoEffSF_sysNames.c_str() , & (m_RecoEff_SF_sysNames)[ reco ] );
+         m_tree->Branch( recoEffSF_sysNames.c_str() , & (m_muon_RecoEff_SF_sysNames)[ reco ] );
        }
      }
 
      if ( muonInfoSwitch.m_isoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& isol : muonInfoSwitch.m_isolWPs) {
          std::string isolEffSF_sysNames = "muon_IsoEff_SF_" + isol + "_sysNames";
-         m_tree->Branch( isolEffSF_sysNames.c_str() , & (m_IsoEff_SF_sysNames)[ isol ] );
+         m_tree->Branch( isolEffSF_sysNames.c_str() , & (m_muon_IsoEff_SF_sysNames)[ isol ] );
        }
      }
 
      if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& trig : muonInfoSwitch.m_trigWPs) {
          std::string trigEffSF_sysNames = "muon_TrigEff_SF_" + trig + "_sysNames";
-         m_tree->Branch( trigEffSF_sysNames.c_str() , & (m_TrigEff_SF_sysNames)[ trig ] );
+         m_tree->Branch( trigEffSF_sysNames.c_str() , & (m_muon_TrigEff_SF_sysNames)[ trig ] );
        }
      }
 
      if ( muonInfoSwitch.m_ttvaEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        std::string ttvaEffSF_sysNames = "muon_TTVAEff_SF_sysNames";
-       m_tree->Branch( ttvaEffSF_sysNames.c_str() , &m_TTVAEff_SF_sysNames );
+       m_tree->Branch( ttvaEffSF_sysNames.c_str() , &m_muon_TTVAEff_SF_sysNames );
      }
 
   }
@@ -340,7 +342,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
         std::vector< std::string >* tmp_reco_sys(nullptr);
         if ( m_store->retrieve(tmp_reco_sys, "MuonEfficiencyCorrector_RecoSyst_" + reco).isSuccess() ) {
-          (m_RecoEff_SF_sysNames)[ reco ] = *tmp_reco_sys;
+          (m_muon_RecoEff_SF_sysNames)[ reco ] = *tmp_reco_sys;
         }
       }
     }
@@ -349,7 +351,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       for ( auto& isol : muonInfoSwitch.m_isolWPs ) {
         std::vector< std::string >* tmp_iso_sys(nullptr);
         if ( m_store->retrieve(tmp_iso_sys, "MuonEfficiencyCorrector_IsoSyst_" + isol).isSuccess() ) {
-          (m_IsoEff_SF_sysNames)[ isol ] = *tmp_iso_sys;
+          (m_muon_IsoEff_SF_sysNames)[ isol ] = *tmp_iso_sys;
         }
       }
     }
@@ -358,7 +360,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       for ( auto& trig : muonInfoSwitch.m_trigWPs ) {
         std::vector< std::string >* tmp_trig_sys(nullptr);
         if ( m_store->retrieve(tmp_trig_sys, "MuonEfficiencyCorrector_TrigSyst_" + trig).isSuccess() ) {
-          (m_TrigEff_SF_sysNames)[ trig ] = *tmp_trig_sys;
+          (m_muon_TrigEff_SF_sysNames)[ trig ] = *tmp_trig_sys;
         }
       }
     }
@@ -366,7 +368,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     if ( muonInfoSwitch.m_ttvaEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       std::vector< std::string >* tmp_ttva_sys(nullptr);
       if ( m_store->retrieve(tmp_ttva_sys, "MuonEfficiencyCorrector_TTVASyst_TTVA").isSuccess() ) {
-        m_TTVAEff_SF_sysNames = *tmp_ttva_sys;
+        m_muon_TTVAEff_SF_sysNames = *tmp_ttva_sys;
       }
     }
 
@@ -391,32 +393,33 @@ void HelpTreeBase::FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primary
 
 void HelpTreeBase::ClearMuons(const std::string muonName) {
 
-  std::string tname = m_tree->GetName();
   xAH::MuonContainer* thisMuon = m_muons[muonName];
   HelperClasses::MuonInfoSwitch& muonInfoSwitch = thisMuon->m_infoSwitch;
+  
+  std::string tname = m_tree->GetName();
 
   if ( tname == "nominal" ) {
 
     if ( muonInfoSwitch.m_recoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
-          (m_RecoEff_SF_sysNames)[ reco ].clear();
-        }
+        (m_muon_RecoEff_SF_sysNames)[ reco ].clear();
+      }
     }
 
     if ( muonInfoSwitch.m_isoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& isol : muonInfoSwitch.m_isolWPs ) {
-          (m_IsoEff_SF_sysNames)[ isol ].clear();
-        }
+        (m_muon_IsoEff_SF_sysNames)[ isol ].clear();
+      }
     }
 
     if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& trig : muonInfoSwitch.m_trigWPs ) {
-          (m_TrigEff_SF_sysNames)[ trig ].clear();
-        }
+        (m_muon_TrigEff_SF_sysNames)[ trig ].clear();
+      }
     }
 
     if ( muonInfoSwitch.m_ttvaEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
-       m_TTVAEff_SF_sysNames.clear();
+       m_muon_TTVAEff_SF_sysNames.clear();
     }
 
   }
@@ -440,7 +443,45 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
   m_elecs[elecName] = new xAH::ElectronContainer(elecName, detailStr, m_units, m_isMC);
 
   xAH::ElectronContainer* thisElec = m_elecs[elecName];
+  
+  /* commented for now as electron working points need some adjustment
+  
+  HelperClasses::ElectronInfoSwitch& eleInfoSwitch = thisElec->m_infoSwitch;
+  
+  std::string tname = m_tree->GetName();
 
+  if ( tname == "nominal" ) {
+    
+    if ( eleInfoSwitch.m_recoEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      std::string recoEffSF_sysNames = "el_RecoEff_SF_sysNames";
+      m_tree->Branch( recoEffSF_sysNames.c_str() , &m_ele_RecoEff_SF_sysNames );
+    }
+
+    if ( eleInfoSwitch.m_isoEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& isol : eleInfoSwitch.m_isolWPs) {
+        std::string isolEffSF_sysNames = "el_IsoEff_SF_" + isol + "_sysNames";
+        m_tree->Branch( isolEffSF_sysNames.c_str() , & (m_ele_IsoEff_SF_sysNames)[ isol ] );
+      }
+    }
+
+    if ( eleInfoSwitch.m_trigEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& trig : eleInfoSwitch.m_trigWPs) {
+        std::string trigEffSF_sysNames = "el_TrigEff_SF_" + trig + "_sysNames";
+        m_tree->Branch( trigEffSF_sysNames.c_str() , & (m_ele_TrigEff_SF_sysNames)[ trig ] );
+      }
+    }
+    
+    if ( eleInfoSwitch.m_pidEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& pid : eleInfoSwitch.m_PIDWPs) {
+        std::string pidEffSF_sysNames = "el_PIDEff_SF_" + pid + "_sysNames";
+        m_tree->Branch( pidEffSF_sysNames.c_str() , & (m_ele_PIDEff_SF_sysNames)[ pid ] );
+      }
+    }
+  
+  }
+
+  */
+  
   thisElec->setBranches(m_tree);
   this->AddElectronsUser(elecName);
 }
@@ -449,7 +490,53 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
 void HelpTreeBase::FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex, const std::string elecName ) {
 
   this->ClearElectrons(elecName);
+  
+  /* commented for now as electron working points need some adjustments
 
+  HelperClasses::ElectronInfoSwitch& eleInfoSwitch = m_elecs[elecName]->m_infoSwitch;
+  
+  std::string tname = m_tree->GetName();
+
+  if ( tname == "nominal" ) {
+     
+    if ( eleInfoSwitch.m_recoEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      std::vector< std::string >* tmp_reco_sys(nullptr);
+      if ( m_store->retrieve(tmp_reco_sys, "EleEffCorr_RecoSyst").isSuccess() ) {
+        m_ele_RecoEff_SF_sysNames = *tmp_reco_sys;
+      }
+    }
+
+    if ( eleInfoSwitch.m_isoEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& isol : eleInfoSwitch.m_isolWPs) {
+        std::vector< std::string >* tmp_iso_sys(nullptr);
+        if ( m_store->retrieve(tmp_iso_sys, "EleEffCorr_IsoSyst_" + isol).isSuccess() ) {
+          (m_ele_IsoEff_SF_sysNames)[ isol ] = *tmp_iso_sys;
+        }
+      }
+    }
+
+    if ( eleInfoSwitch.m_trigEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& trig : eleInfoSwitch.m_trigWPs) {
+        std::vector< std::string >* tmp_trig_sys(nullptr);
+        if ( m_store->retrieve(tmp_trig_sys, "EleEffCorr_TrigSyst_" + trig).isSuccess() ) {
+          (m_ele_TrigEff_SF_sysNames)[ trig ] = *tmp_trig_sys;
+        }
+      }
+    }
+    
+    if ( eleInfoSwitch.m_pidEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& pid : eleInfoSwitch.m_PIDWPs) {
+        std::vector< std::string >* tmp_pid_sys(nullptr);
+        if ( m_store->retrieve(tmp_pid_sys, "EleEffCorr_PIDSyst_" + pid).isSuccess() ) {
+          (m_ele_PIDEff_SF_sysNames)[ pid ] = *tmp_pid_sys;
+        }
+      }
+    }
+
+  }
+  
+  */
+  
   for ( auto el_itr : *electrons ) {
     this->FillElectron(el_itr, primaryVertex, elecName);
   }
@@ -470,6 +557,41 @@ void HelpTreeBase::FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex
 void HelpTreeBase::ClearElectrons(const std::string elecName) {
 
   xAH::ElectronContainer* thisElec = m_elecs[elecName];
+  
+  /* commented for now as electron working points need some adjustments
+  HelperClasses::ElectronInfoSwitch& eleInfoSwitch = thisElec->m_infoSwitch;
+ 
+
+  std::string tname = m_tree->GetName();
+
+  if ( tname == "nominal" ) {
+     
+    if ( eleInfoSwitch.m_recoEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      m_ele_RecoEff_SF_sysNames.clear() ;
+    }
+
+    if ( eleInfoSwitch.m_isoEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& isol : eleInfoSwitch.m_isolWPs) {
+        (m_ele_IsoEff_SF_sysNames)[ isol ].clear();
+      }
+    }
+
+    if ( eleInfoSwitch.m_trigEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& trig : eleInfoSwitch.m_trigWPs) {
+        (m_ele_TrigEff_SF_sysNames)[ trig ].clear();
+      }
+    }
+    
+    if ( eleInfoSwitch.m_pidEff_sysNames && eleInfoSwitch.m_effSF && m_isMC ) {
+      for (auto& pid : eleInfoSwitch.m_PIDWPs) {
+        (m_ele_PIDEff_SF_sysNames)[ pid ].clear();
+      }
+    }
+  
+  }
+  
+  */
+
   thisElec->clear();
 
   this->ClearElectronsUser(elecName);

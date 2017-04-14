@@ -68,6 +68,10 @@ public:
   */
   std::string   m_outputAlgoSystNames;
 
+  std::string   m_sysNamesForParCont;  // this is the name of the vector of names for the systematics to be used for the creation of
+                                       // a parallel container. This will be just a copy of the nominal one with the sys name appended.
+                                       // Use cases: MET-specific systematics. 
+
   /** @brief Force AFII flag in calibration, in case metadata is broken */
   bool m_setAFII;
 
@@ -93,6 +97,8 @@ public:
   std::string m_corrFileNameTrigMCEff;
   std::string m_correlationModel;
 
+  bool          m_decorateWithNomOnInputSys; // will consider efficiency decorations only for the nominal run
+
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
@@ -112,6 +118,8 @@ private:
   std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
   std::vector<CP::SystematicSet> m_systListTrigMCEff; //!
+
+  std::vector<std::string> m_sysNames; //!
 
   // tools
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID;  //!
@@ -150,7 +158,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst );
+  virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst, bool isNomSel );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

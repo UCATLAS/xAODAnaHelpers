@@ -570,7 +570,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
         } // do this thing only if required
 
         // loop over systematic sets available
-	      //
+	//
         std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
 
         for ( auto systName : systNames ) {
