@@ -3,8 +3,17 @@ before_script:
   - sudo apt-get -qq update
   - sudo apt-get install -y -qq uncrustify cppcheck
 
+# must install 0.64 of uncrustify, a later one
+install:
+  - wget https://github.com/uncrustify/uncrustify/archive/uncrustify-0.64.tar.gz
+  - tar -xzvf uncrustify-0.64.tar.gz
+  - mkdir build
+  - cd build
+  - cmake ../uncrustify-uncrustify-0.64
+  - make
+
 script:
-  - uncrustify -c uncrustify.cfg --check **/**.cxx
+  - ./build/uncrustify -c uncrustify.cfg --check **/**.cxx
 
 notifications:
   email:
