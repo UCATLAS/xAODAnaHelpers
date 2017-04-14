@@ -1,0 +1,25 @@
+language: cpp
+before_script:
+  - sudo apt-get -qq update
+#  - sudo apt-get install -y -qq uncrustify cppcheck
+  - sudo apt-get install -y -qq cppcheck
+
+# must install 0.64 of uncrustify, a later one
+install:
+  - wget https://github.com/uncrustify/uncrustify/archive/uncrustify-0.64.tar.gz
+  - tar -xzvf uncrustify-0.64.tar.gz
+  - mkdir build-uncrustify
+  - cd build-uncrustify
+  - cmake ../uncrustify-uncrustify-0.64
+  - make
+  - mv uncrustify ../uncrustify
+  - cd ../
+  - rm -rf build-uncrustify
+
+script:
+  - ./uncrustify -c uncrustify.cfg --check **/**.cxx
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
