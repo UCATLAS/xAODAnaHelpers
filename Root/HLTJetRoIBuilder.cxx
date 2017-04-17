@@ -229,7 +229,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   if(m_debug) cout << "Getting the PV " << endl;
   const xAOD::VertexContainer *offline_vertices(nullptr);
   const xAOD::Vertex *offline_pvx(nullptr);
-  if(HelperFunctions::isAvailable("PrimaryVertices", m_event, m_store, m_verbose)){
+  if(HelperFunctions::isAvailable<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store, m_verbose)){
     RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
     offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices);
   }
