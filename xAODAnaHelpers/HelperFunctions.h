@@ -441,7 +441,7 @@ namespace HelperFunctions {
 
         const xAOD::JetContainer* selected_jets(nullptr);
         RETURN_CHECK("execute()", m_event->retrieve( selected_jets, "SelectedJets" ));
-        RETURN_CHECK("execute()", HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets));
+        RETURN_CHECK("execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets)));
 
     @endrst
    */
