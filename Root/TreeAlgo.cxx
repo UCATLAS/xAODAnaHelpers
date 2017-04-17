@@ -63,9 +63,6 @@ TreeAlgo :: TreeAlgo (std::string className) :
   m_jetSystsVec                 = "";
   m_photonSystsVec              = "";
   m_fatJetSystsVec              = "";
-  // DC14 switch for little things that need to happen to run
-  // for those samples with the corresponding packages
-  m_DC14                        = false;
 
   //Units, defaulting to GeV
   m_units                       = 1e3;
@@ -107,19 +104,19 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_jetContainerName.empty() && m_jetContainers.size()!=m_jetBranches.size()){
     Error("initialize()", "The number of jet containers must be equal to the number of jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;		    
+    return EL::StatusCode::FAILURE;
   }
   std::istringstream ss_truth_containers(m_truthJetContainerName);
   while ( std::getline(ss_truth_containers, token, ' ') ){
     m_truthJetContainers.push_back(token);
-  }    
+  }
   std::istringstream ss_truth_names(m_truthJetBranchName);
   while ( std::getline(ss_truth_names, token, ' ') ){
     m_truthJetBranches.push_back(token);
   }
   if( !m_truthJetContainerName.empty() && m_truthJetContainers.size()!=m_truthJetBranches.size()){
     Error("initialize()", "The number of truth jet containers must be equal to the number of truth jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;		    
+    return EL::StatusCode::FAILURE;
   }
 
   // allow to store different variables for each jet collection (reco only, default: store the same)
@@ -129,7 +126,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_jetDetails.size()!=1  && m_jetContainers.size()!=m_jetDetails.size()){
     Error("initialize()", "The size of m_jetContainers should be equal to the size of m_jetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;		    
+    return EL::StatusCode::FAILURE;
   }
 
 
@@ -224,7 +221,7 @@ EL::StatusCode TreeAlgo :: execute ()
       return EL::StatusCode::FAILURE;
     }
 
-    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, m_debug, m_DC14 );
+    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, m_debug );
     const auto& helpTree = m_trees[systName];
 
     // tell the tree to go into the file
@@ -240,7 +237,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_trigDetailStr.empty() )              { helpTree->AddTrigger(m_trigDetailStr);                           }
     if (!m_muContainerName.empty() )            { helpTree->AddMuons(m_muDetailStr);                               }
     if (!m_elContainerName.empty() )            { helpTree->AddElectrons(m_elDetailStr);                           }
-    if (!m_jetContainerName.empty() )           {  
+    if (!m_jetContainerName.empty() )           {
       for(unsigned int ll=0; ll<m_jetContainers.size();++ll){
         if(m_jetDetails.size()==1) helpTree->AddJets       (m_jetDetailStr, m_jetBranches.at(ll).c_str());
 	else{ helpTree->AddJets       (m_jetDetails.at(ll), m_jetBranches.at(ll).c_str()); }
@@ -351,7 +348,7 @@ EL::StatusCode TreeAlgo :: execute ()
       }
     }
     if ( !m_fatJetContainerName.empty() ) {
-      std::string token; 
+      std::string token;
       std::istringstream ss(m_fatJetContainerName);
       while ( std::getline(ss, token, ' ') ){
       	const xAOD::JetContainer* inFatJets(nullptr);

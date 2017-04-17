@@ -62,7 +62,6 @@ public:
   std::string m_fatJetSystsVec;
   std::string m_metSystsVec;
 
-  bool m_DC14;
   float m_units;
 
 protected:
