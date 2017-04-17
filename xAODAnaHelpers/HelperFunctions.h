@@ -256,7 +256,6 @@ namespace HelperFunctions {
 
   /*  isAvailable()    return true if an arbitrary object from TStore / TEvent is availible
         - tries to make your life simple by providing a one-stop container check shop for all types
-        @ cont  : pass in a pointer to the object to store the retrieved container in
         @ name  : the name of the object to look up
         @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
         @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
@@ -265,14 +264,14 @@ namespace HelperFunctions {
       Example Usage:
       const xAOD::JetContainer* jets(0);
       // look for "AntiKt10LCTopoJets" in both TEvent and TStore
-      HelperFunctions::isAvailable(jets, "AntiKt10LCTopoJets", m_event, m_store)
+      HelperFunctions::isAvailable("AntiKt10LCTopoJets", m_event, m_store)
       // look for "AntiKt10LCTopoJets" in only TStore
-      HelperFunctions::isAvailable(jets, "AntiKt10LCTopoJets", 0, m_store)
+      HelperFunctions::isAvailable("AntiKt10LCTopoJets", 0, m_store)
       // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-      HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, true)
+      HelperFunctions::retrieve("AntiKt10LCTopoJets", m_event, 0, true)
   */
   template <typename T>
-  bool isAvailable(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug=false){
+  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug=false){
     /* Checking Order:
         - check if store contains 'xAOD::JetContainer' named 'name'
         --- checkstore store
@@ -441,7 +440,7 @@ namespace HelperFunctions {
 
         const xAOD::JetContainer* selected_jets(nullptr);
         RETURN_CHECK("execute()", m_event->retrieve( selected_jets, "SelectedJets" ));
-        RETURN_CHECK("execute()", HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets));
+        RETURN_CHECK("execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets)));
 
     @endrst
    */

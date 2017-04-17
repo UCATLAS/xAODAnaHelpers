@@ -27,7 +27,7 @@ using std::vector;
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, bool DC14, xAOD::TStore* store):
+HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store):
   m_trigInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
@@ -102,8 +102,8 @@ HelpTreeBase::~HelpTreeBase() {
 }
 
 
-HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug, bool DC14):
-  HelpTreeBase(event, tree, file, units, debug, DC14, store)
+HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug):
+  HelpTreeBase(event, tree, file, units, debug, store)
 {
   // use the other constructor for everything
 }
@@ -290,7 +290,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
   m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units, m_isMC);
   xAH::MuonContainer* thisMuon = m_muons[muonName];
   HelperClasses::MuonInfoSwitch& muonInfoSwitch = thisMuon->m_infoSwitch;
-  
+
   std::string tname = m_tree->GetName();
 
   if ( tname == "nominal" ) {

@@ -167,7 +167,7 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 {
   auto triggerChainGroup = m_trigDecTool->getChainGroup(m_trigItem);
-  
+
   std::vector<std::string> triggersUsed = triggerChainGroup->getListOfTriggers();
   std::vector<std::string> triggersAfterVeto;
   for(std::string trig : triggersUsed){
@@ -217,19 +217,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration_bkg    ("HLTBJetTracks_vtx_bkg");
   static xAOD::Jet::Decorator<char >                               m_vtx_hadDummyPV        ("hadDummyPV");
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_offline_vtx_decoration("offline_vtx");
-  
+
   static xAOD::Jet::Decorator<float >                              m_bs_online_vz       ("bs_online_vz");
   static xAOD::Jet::Decorator<float >                              m_bs_online_vy       ("bs_online_vy");
   static xAOD::Jet::Decorator<float >                              m_bs_online_vx       ("bs_online_vx");
 
-  
+
   //
   // get primary vertex
   //
   if(m_debug) cout << "Getting the PV " << endl;
   const xAOD::VertexContainer *offline_vertices(nullptr);
   const xAOD::Vertex *offline_pvx(nullptr);
-  if(HelperFunctions::isAvailable(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose)){
+  if(HelperFunctions::isAvailable<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store, m_verbose)){
     RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
     offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices);
   }
@@ -250,7 +250,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   Trig::FeatureContainer::combination_const_iterator comb   (fc.getCombinations().begin());
   Trig::FeatureContainer::combination_const_iterator combEnd(fc.getCombinations().end());
   if(m_debug) cout << m_name << " New Event --------------- " << endl;
-    
+
   for( ; comb!=combEnd ; ++comb) {
     std::vector< Trig::Feature<xAOD::JetContainer> >            jetCollections  = comb->containerFeature<xAOD::JetContainer>(m_jetName);
     std::vector< Trig::Feature<xAOD::BTaggingContainer> >       bjetCollections = comb->containerFeature<xAOD::BTaggingContainer>("HLTBjetFex");
@@ -323,8 +323,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     //}
 
     if(vtxCollections.size() < jetCollections.size()){
-      cout << "ERROR Problem in container size: " << m_name  
-	   << " jets: "<< jetCollections.size() << " " << m_jetName 
+      cout << "ERROR Problem in container size: " << m_name
+	   << " jets: "<< jetCollections.size() << " " << m_jetName
 	   << " vtx: "<< vtxCollections.size()  << " " << m_vtxName << endl;
       for ( unsigned ifeat=0 ; ifeat<vtxCollections.size() ; ifeat++ ) {
 	cout << "Feture: " << ifeat << endl;
@@ -338,7 +338,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     if(!isValid) continue;
 
     //Loop over jets until a jet with track size > 0 is found
-    
+
     // Declare variables here as same bs for all jets
     float var_bs_online_vx = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSx);
     float var_bs_online_vy = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSy);
@@ -350,7 +350,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	   << " bs_online_vz " << var_bs_online_vz << endl;
     }
 
-    
+
     //cout << " is Valid " << jetCollections.size() << " " << vtxCollections.size() << endl;
     for ( unsigned ifeat=0 ; ifeat<jetCollections.size() ; ifeat++ ) {
       const xAOD::Jet* hlt_jet = getTrigObject<xAOD::Jet, xAOD::JetContainer>(jetCollections.at(ifeat));
@@ -375,7 +375,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
       xAOD::Jet* newHLTBJet = new xAOD::Jet();
       newHLTBJet->makePrivateStore( hlt_jet );
-      
+
       //
       // Add Link to BTagging Info
       //
@@ -388,7 +388,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
 	vector<const xAOD::TrackParticle*> matchedTracks;
 	if(m_debug)cout << "Trk Size" << hlt_tracks->size() << endl;
-      
+
 	for(const xAOD::TrackParticle* thisHLTTrk: *hlt_tracks){
 	  if(m_debug) cout <<  "\tAdding  track "
 			   << thisHLTTrk->pt()   << " "
@@ -417,7 +417,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	m_bs_online_vx (*newHLTBJet) = var_bs_online_vx;
 	m_bs_online_vy (*newHLTBJet) = var_bs_online_vy;
 	m_bs_online_vz (*newHLTBJet) = var_bs_online_vz;
-      
+
 	if(m_debug) cout <<  "Adding tracks to jet " << endl;
 	m_track_decoration(*newHLTBJet)         = matchedTracks;
 
@@ -437,7 +437,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //               0 - IDTrig  Found Vertex
       //               1 - EFHisto Found Vertex
       //               2 - No Vertex found
-      
+
       if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), true)){
 
 	if(m_debug){
@@ -455,12 +455,12 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	  m_vtx_hadDummyPV  (*newHLTBJet)         = '1';
 	  const xAOD::Vertex *backup_pvx = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr());
 	  if(m_debug) cout << "backup_pvx.  " << backup_pvx << endl;
-	  m_vtx_decoration  (*newHLTBJet)         = backup_pvx;	    
-	  m_vtx_decoration_bkg(*newHLTBJet)       = backup_pvx;	    
+	  m_vtx_decoration  (*newHLTBJet)         = backup_pvx;
+	  m_vtx_decoration_bkg(*newHLTBJet)       = backup_pvx;
 	}else{
 	  cout << "No EFHistoPrmVtx....  " << endl;
 	  m_vtx_hadDummyPV  (*newHLTBJet)         = '2';
-	  m_vtx_decoration  (*newHLTBJet)         = 0;	    
+	  m_vtx_decoration  (*newHLTBJet)         = 0;
 	  m_vtx_decoration_bkg(*newHLTBJet)       = 0;
 	}
 
@@ -487,7 +487,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //   cout << "hadDummy and vtxType and m_outContainerName  " << m_vtx_hadDummyPV (*newHLTBJet) << " "
       //	<< m_vtxName << ' '<< m_outContainerName <<endl;
       //}
-      
+
       hltJets->push_back( newHLTBJet );
       if(m_debug) cout << "pushed back " << endl;
 

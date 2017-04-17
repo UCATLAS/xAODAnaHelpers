@@ -100,7 +100,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
 
   // Data weight for unprescaling data
   m_savePrescaleDataWeight  = false;
-  
+
   // Primary Vertex
   m_vertexContainerName = "PrimaryVertices";
   m_applyPrimaryVertexCut = false;
@@ -111,7 +111,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   m_applyEventCleaningCut = false;
   m_applyCoreFlagsCut     = false;
 
-  // Print Branch List 
+  // Print Branch List
   m_printBranchList       = false;
 
   // Trigger
@@ -266,11 +266,11 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeper* allEventsCBK(nullptr);
       const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
-      if ( m_isDerivation ) { 
+      if ( m_isDerivation ) {
 	if(m_derivationName != ""){
-	  Info("fileExecute()","Override auto config to look at DAOD made by Derivation Algorithm: %s", m_derivationName.c_str()); 
+	  Info("fileExecute()","Override auto config to look at DAOD made by Derivation Algorithm: %s", m_derivationName.c_str());
 	}else{
-	  Info("fileExecute()","Will autoconfig to look at DAOD made by Derivation Algorithm."); 
+	  Info("fileExecute()","Will autoconfig to look at DAOD made by Derivation Algorithm.");
 	}
       }
 
@@ -287,10 +287,10 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
 	      if ( cbk->name() == m_derivationName ) {
 		DxAODEventsCBK = cbk;
-	      } 
-	      
+	      }
+
 	    } else if( cbk->name().find("Kernel") != std::string::npos ){
-	      Info("fileExecute()","Auto config found DAOD made by Derivation Algorithm: %s", cbk->name().c_str()); 
+	      Info("fileExecute()","Auto config found DAOD made by Derivation Algorithm: %s", cbk->name().c_str());
 	      DxAODEventsCBK = cbk;
 	    }
 
@@ -394,7 +394,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //////// Initialize Tool for Sherpa 2.2 Reweighting ////////////
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
   m_reweightSherpa22 = false;
-  if( m_isMC && 
+  if( m_isMC &&
       ( (eventInfo->mcChannelNumber() >= 363331 && eventInfo->mcChannelNumber() <= 363483 ) ||
         (eventInfo->mcChannelNumber() >= 363102 && eventInfo->mcChannelNumber() <= 363122 ) ||
         (eventInfo->mcChannelNumber() >= 363361 && eventInfo->mcChannelNumber() <= 363435 ) ) ){
@@ -581,7 +581,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
 
     //RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "Failed to check whether tool already exists in asg::ToolStore" );
-    ////RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.makeNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
+    //m_pileup_tool_handle.setTypeRegisterNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup");
     //RETURN_CHECK("initialize()", ASG_MAKE_ANA_TOOL(m_pileup_tool_handle, CP::PileupReweightingTool), "Could not make the tool");
     //
 
@@ -599,19 +599,19 @@ EL::StatusCode BasicEventSelection :: initialize ()
 //    RETURN_CHECK("BasicEventSelection::retrieve()", asg::ToolStore::put(m_pileup_tool_handle.get()), "Failed to put");
 
   }
-  
-  // pileup reweighing tool is needed to get the data weight for unprescaling  
+
+  // pileup reweighing tool is needed to get the data weight for unprescaling
   if ( m_savePrescaleDataWeight && !m_doPUreweighting) {
-    
+
     Error("initialize()", "m_savePrescaleDataWeight is true but m_doPUreweighting is false !!!");
     return EL::StatusCode::FAILURE;
-  
-  } 
-  
+
+  }
+
   // 3.
   // initialize the Trig::TrigDecisionTool
   //
-  if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() || 
+  if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() ||
       m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
 
     //if it's there, it must be already configured
@@ -675,11 +675,11 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   //-----------------------------------------
   // Print triggers used for first entry only
-  // and fill the trigger expression for 
+  // and fill the trigger expression for
   // unprescaling data
   //-----------------------------------------
-  
-  std::string TriggerExpression = ""; 
+
+  std::string TriggerExpression = "";
 
   if ( !m_triggerSelection.empty() ) {
     if (m_eventCounter == 0 || m_savePrescaleDataWeight) {
@@ -752,21 +752,21 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Declare an 'eventInfo' decorator with prescale weight for unprescaling data
   // https://cds.cern.ch/record/2014726/files/ATL-COM-SOFT-2015-119.pdf (line 130)
   //------------------------------------------------------------------------------------------
-  
+
   static SG::AuxElement::Decorator< float > prsc_DataWeightDecor("prescale_DataWeight");
   static SG::AuxElement::Accessor< float >  prsc_DataWeightAcc("prescale_DataWeight");
 
   float prsc_DataWeight(1.0);
-  
+
   // Check if need to create xAH event weight
   //
   if ( !prsc_DataWeightDecor.isAvailable(*eventInfo) ) {
     if ( !m_isMC && m_savePrescaleDataWeight ) {
-      
+
       // get mu dependent data weight
       prsc_DataWeight = m_pileup_tool_handle->getDataWeight( *eventInfo, TriggerExpression, true );
     }
-    
+
     // Decorate event with the *total* MC event weight
     //
     prsc_DataWeightDecor(*eventInfo) = prsc_DataWeight;
@@ -779,7 +779,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Declare an 'eventInfo' decorator with the Sherpa 2.2 reweight to multijet truth
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
   //------------------------------------------------------------------------------------------
-  
+
   if ( m_reweightSherpa22 ){
     static SG::AuxElement::Decorator< float > weight_Sherpa22Decor("weight_Sherpa22");
     // Check if weight needs to be added
@@ -980,7 +980,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 	isPassedBitsNames.push_back( trigName );
 	isPassedBits     .push_back( m_trigDecTool->isPassedBits(trigName) );
       }
-      
+
       // Save info for extra triggers
       //
       if ( !m_extraTriggerSelection.empty() ) {
@@ -1066,7 +1066,7 @@ EL::StatusCode BasicEventSelection :: finalize ()
   if ( m_trigDecTool )  { m_trigDecTool->finalize(); delete m_trigDecTool;  m_trigDecTool = nullptr; }
   if ( m_trigConfTool ) { delete m_trigConfTool;  m_trigConfTool = nullptr; }
 
-  //after execution loop 
+  //after execution loop
   if(m_printBranchList){
     xAOD::IOStats::instance().stats().printSmartSlimmingBranchList();
   }

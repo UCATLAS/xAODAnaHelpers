@@ -63,8 +63,8 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false, xAOD::TStore* store = nullptr );
-  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, bool DC14 = false );
+  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, xAOD::TStore* store = nullptr );
+  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false );
   virtual ~HelpTreeBase();
 
   void AddEvent       (const std::string detailStr = "");
@@ -362,12 +362,12 @@ protected:
   std::map<std::string, std::vector<std::string> > m_IsoEff_SF_sysNames;
   std::map<std::string, std::vector<std::string> > m_TrigEff_SF_sysNames;
   std::vector<std::string>  m_TTVAEff_SF_sysNames;
-  
+
   //
   // electrons
   //
   std::map<std::string, xAH::ElectronContainer*> m_elecs;
-  
+
   //
   // photons
   //

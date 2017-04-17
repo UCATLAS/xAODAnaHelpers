@@ -324,8 +324,8 @@ EL::StatusCode MuonSelector :: initialize ()
   std::string muonSelectionTool_handle_name = "CP::MuonSelectionTool/" + m_muonSelectionTool_name;
 
   RETURN_CHECK("MuonSelector::initialize()", checkToolStore<CP::MuonSelectionTool>(m_muonSelectionTool_name), "" );
-  //RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.makeNew<CP::MuonSelectionTool>(muonSelectionTool_handle_name), "Failed to create handle to CP::MuonSelectionTool");
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.make(muonSelectionTool_handle_name), "Failed to create handle to CP::MuonSelectionTool");
+  //m_muonSelectionTool_handle.setTypeRegisterNew<CP::MuonSelectionTool>(muonSelectionTool_handle_name);
+  m_muonSelectionTool_handle.setTypeAndName(muonSelectionTool_handle_name);
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ),"Failed to set Failed to set MaxEta property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ),"Failed to set MuQuality property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.initialize(), "Failed to properly initialize CP::MuonSelectionTool");
@@ -340,8 +340,8 @@ EL::StatusCode MuonSelector :: initialize ()
   std::string isolationSelectionTool_handle_name = "CP::IsolationSelectionTool/" + m_isolationSelectionTool_name;
 
   RETURN_CHECK("MuonSelector::initialize()", checkToolStore<CP::IsolationSelectionTool>(m_isolationSelectionTool_name), "" );
-  //RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.makeNew<CP::IsolationSelectionTool>(isolationSelectionTool_handle_name), "Failed to create handle to CP::IsolationSelectionTool");
-  RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.make(isolationSelectionTool_handle_name), "Failed to create handle to CP::IsolationSelectionTool");
+  //m_isolationSelectionTool_handle.setTypeRegisterNew<CP::IsolationSelectionTool>(isolationSelectionTool_handle_name);
+  m_isolationSelectionTool_handle.setTypeAndName(isolationSelectionTool_handle_name);
   // Do this only for the first WP in the list
   //
   if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
@@ -398,8 +398,8 @@ EL::StatusCode MuonSelector :: initialize ()
     std::string trigMuonMatchTool_handle_name = "Trig::MatchingTool/" + m_trigMuonMatchTool_name;
 
     RETURN_CHECK("MuonSelector::initialize()", checkToolStore<Trig::MatchingTool>(m_trigMuonMatchTool_name), "" );
-    //RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.makeNew<Trig::MatchingTool>(trigMuonMatchTool_handle_name), "Failed to create handle to MatchingTool");
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.make(trigMuonMatchTool_handle_name), "Failed to create handle to MatchingTool");
+    //m_trigMuonMatchTool_handle.setTypeRegisterNew<Trig::MatchingTool>(trigMuonMatchTool_handle_name);
+    m_trigMuonMatchTool_handle.setTypeAndName(trigMuonMatchTool_handle_name);
     RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", trigDecHandle ), "Failed to pass TrigDecisionTool to MatchingTool" );
     RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.initialize(), "Failed to properly initialize MatchingTool" );
 
@@ -627,7 +627,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     // Remove events with isBadMuon (poor q/p)
     if( m_removeEventBadMuon && passSel ){
       if( m_muonSelectionTool_handle->isBadMuon( *mu_itr ) ){
-        if( m_debug )  Info("executeSelection()", "Rejecting event with bad muon (pt = %f)", mu_itr->pt() ); 
+        if( m_debug )  Info("executeSelection()", "Rejecting event with bad muon (pt = %f)", mu_itr->pt() );
         return false;
       }
     }
@@ -728,41 +728,41 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
       RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> dimuon_trigmatch_pair;
-      typedef std::multimap< std::string, dimuon_trigmatch_pair >    dimuon_trigmatch_pair_map;      
+      typedef std::multimap< std::string, dimuon_trigmatch_pair >    dimuon_trigmatch_pair_map;
       static SG::AuxElement::Decorator< dimuon_trigmatch_pair_map >  diMuonTrigMatchPairMapDecor( "diMuonTrigMatchPairMap" );
 
       for ( auto const &chain : m_diMuTrigChainsList ) {
 
       	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-      
+
       	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
       	//
       	if ( !diMuonTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
           diMuonTrigMatchPairMapDecor( *eventInfo ) = dimuon_trigmatch_pair_map();
-      	}	
-      
+      	}
+
       	std::vector<const xAOD::IParticle*> myMuons;
-      
+
       	for ( unsigned int imu = 0; imu < selectedMuons->size()-1; ++imu ) {
-      
+
       	  for ( unsigned int jmu = imu+1; jmu < selectedMuons->size(); ++jmu ) {
-      
+
             // test a new pair
             //
       	    myMuons.clear();
       	    myMuons.push_back( selectedMuons->at(imu) );
       	    myMuons.push_back( selectedMuons->at(jmu) );
-      
+
             // check whether the pair is matched
             //
       	    char matched = m_trigMuonMatchTool_handle->match( myMuons, chain, m_minDeltaR );
-      
+
       	    if ( m_debug ) { Info("executeSelection()", "\t\t is the muon pair (%i,%i) trigger matched? %i", imu, jmu, matched); }
-      
+
       	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
             dimuon_trigmatch_pair  chain_decision = std::make_pair(chain_idxs,matched);
             diMuonTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dimuon_trigmatch_pair >(chain,chain_decision) );
-      	    
+
       	  }
       	}
       } //for m_diMuTrigChainsList
