@@ -581,7 +581,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
 
     //RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "Failed to check whether tool already exists in asg::ToolStore" );
-    ////RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setTypeRegisterNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
+    //m_pileup_tool_handle.setTypeRegisterNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup");
     //RETURN_CHECK("initialize()", ASG_MAKE_ANA_TOOL(m_pileup_tool_handle, CP::PileupReweightingTool), "Could not make the tool");
     //
 

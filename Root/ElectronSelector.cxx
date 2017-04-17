@@ -391,7 +391,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   std::string isolationSelectionTool_handle_name = "CP::IsolationSelectionTool/" + m_isolationSelectionTool_name;
 
   RETURN_CHECK("ElectronSelector::initialize()", checkToolStore<CP::IsolationSelectionTool>(m_isolationSelectionTool_name), "" );
-  RETURN_CHECK("ElectronSelector::initialize()", m_isolationSelectionTool_handle.setTypeRegisterNew<CP::IsolationSelectionTool>(isolationSelectionTool_handle_name), "Failed to create handle to CP::IsolationSelectionTool");
+  m_isolationSelectionTool_handle.setTypeRegisterNew<CP::IsolationSelectionTool>(isolationSelectionTool_handle_name);
   // Do this only for the first WP in the list
   //
   if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
@@ -448,7 +448,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     std::string trigElectronMatchTool_handle_name = "Trig::MatchingTool/" + m_trigElMatchTool_name;
 
     RETURN_CHECK("ElectronSelector::initialize()", checkToolStore<Trig::MatchingTool>(m_trigElMatchTool_name), "" );
-    RETURN_CHECK("ElectronSelector::initialize()", m_trigElectronMatchTool_handle.setTypeRegisterNew<Trig::MatchingTool>(trigElectronMatchTool_handle_name), "Failed to create handle to MatchingTool");
+    m_trigElectronMatchTool_handle.setTypeRegisterNew<Trig::MatchingTool>(trigElectronMatchTool_handle_name);
     RETURN_CHECK("ElectronSelector::initialize()", m_trigElectronMatchTool_handle.setProperty( "TrigDecisionTool", trigDecHandle ), "Failed to pass TrigDecisionTool to MatchingTool" );
     RETURN_CHECK("ElectronSelector::initialize()", m_trigElectronMatchTool_handle.initialize(), "Failed to properly initialize MatchingTool" );
 
