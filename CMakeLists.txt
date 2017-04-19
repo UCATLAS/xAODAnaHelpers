@@ -61,16 +61,34 @@ atlas_depends_on_subdirs( PUBLIC
 )
 
 # build a dictionary for the library
-atlas_add_root_dictionary ( xAODAnaHelpers _dictionarySource
-                            ROOT_HEADERS xAODAnaHelpers/*.h Root/LinkDef.h
-                            EXTERNAL_PACKAGES ROOT
-)
+#atlas_add_root_dictionary ( xAODAnaHelpers _dictionarySource
+#                            ROOT_HEADERS xAODAnaHelpers/*.h Root/LinkDef.h
+#                            EXTERNAL_PACKAGES ROOT
+#)
 
 # build a shared library
 atlas_add_library( xAODAnaHelpers
                    xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${_dictionarySource}
                    PUBLIC_HEADERS xAODAnaHelpers
-                   LINK_LIBRARIES EventLoop xAODBase xAODRootAccess xAODEventInfo GoodRunsLists PileupReweighting PATInterfaces PathResolver xAODTau xAODJet xAODMuon xAODEgamma xAODTracking xAODTruth MuonMomentumCorrections MuonEfficiencyCorrections MuonSelectorTools JetCalibTools JetSelectorTools AthContainers ElectronPhotonFourMomentumCorrection ElectronEfficiencyCorrection ElectronPhotonSelectorTools IsolationSelection IsolationCorrections ElectronPhotonShowerShapeFudgeTool PhotonEfficiencyCorrection METUtilities METInterface TauAnalysisTools AsgTools xAODMissingET JetResolution AssociationUtils Asg_FastJet JetEDM JetUncertainties JetCPInterfaces xAODBTaggingEfficiency TrigConfxAOD TrigDecisionTool xAODCutFlow JetMomentTools TriggerMatchingTool xAODMetaDataCnv xAODTriggerCnv xAODMetaData JetJvtEfficiency PMGTools JetSubStructureUtils JetTileCorrection PathResolver )
+                   LINK_LIBRARIES EventLoop xAODBase xAODRootAccess
+                   xAODEventInfo GoodRunsLists PileupReweighting PATInterfaces
+                   PathResolver xAODTau xAODJet xAODMuon xAODEgamma
+                   xAODTracking xAODTruth MuonMomentumCorrections
+                   MuonEfficiencyCorrections MuonSelectorTools JetCalibTools
+                   JetSelectorTools AthContainers
+                   ElectronPhotonFourMomentumCorrection
+                   ElectronEfficiencyCorrection ElectronPhotonSelectorTools
+                   IsolationSelection IsolationCorrections
+                   ElectronPhotonShowerShapeFudgeTool
+                   PhotonEfficiencyCorrection METUtilities METInterface
+                   TauAnalysisTools AsgTools xAODMissingET JetResolution
+                   AssociationUtils Asg_FastJet JetEDM JetUncertainties
+                   JetCPInterfaces xAODBTaggingEfficiency TrigConfxAOD
+                   TrigDecisionTool xAODCutFlow JetMomentTools
+                   TriggerMatchingTool xAODMetaDataCnv xAODTriggerCnv
+                   xAODMetaData JetJvtEfficiency PMGTools JetSubStructureUtils
+                   JetTileCorrection PathResolver
+)
 
 # Install files from the package:
 #atlas_install_headers( xAODAnaHelpers )
