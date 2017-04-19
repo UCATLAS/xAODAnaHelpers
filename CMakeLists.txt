@@ -95,6 +95,5 @@ atlas_add_library( xAODAnaHelpers
 )
 
 # Install files from the package:
-#atlas_install_headers( xAODAnaHelpers )
-#atlas_install_joboptions( scripts/*.py )
-#atlas_install_data( data/* )
+atlas_install_scripts( scripts/*.py )
+atlas_install_data( data/* )
