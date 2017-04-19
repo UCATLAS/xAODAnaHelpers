@@ -147,7 +147,7 @@ parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', h
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Can increase verbosity by adding more ``-vv``. Default: no verbosity')
-if os.environ.get('ROOTCORE_RELEASE_SERIES', 0) >= 25:
+if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) >= 25:
   parser.add_argument('-L', '--library-linking', dest='ext_library', type=str, help='Path to ${install}/lib/libxAODAnaHelpers.so to load symbols into python.', required=True)
 
 # first is the driver common arguments
@@ -315,7 +315,7 @@ if __name__ == "__main__":
 
     # at this point, we should import ROOT and do stuff
     import ROOT
-    if os.environ.get('ROOTCORE_RELEASE_SERIES', 0) >= 25:
+    if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) >= 25:
       xAH_logger.info("loading external library")
       ROOT.gSystem.Load(args.ext_library)
     xAH_logger.info("loading packages")
