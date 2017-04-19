@@ -71,23 +71,23 @@ atlas_add_library( xAODAnaHelpers
                    xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${_dictionarySource}
                    PUBLIC_HEADERS xAODAnaHelpers
                    LINK_LIBRARIES EventLoop xAODBase xAODRootAccess
-                   xAODEventInfo GoodRunsLists PileupReweighting PATInterfaces
+                   xAODEventInfo GoodRunsListsLib PileupReweightingLib PATInterfaces
                    PathResolver xAODTau xAODJet xAODMuon xAODEgamma
-                   xAODTracking xAODTruth MuonMomentumCorrections
-                   MuonEfficiencyCorrections MuonSelectorTools JetCalibTools
-                   JetSelectorTools AthContainers
-                   ElectronPhotonFourMomentumCorrection
-                   ElectronEfficiencyCorrection ElectronPhotonSelectorTools
-                   IsolationSelection IsolationCorrections
-                   ElectronPhotonShowerShapeFudgeTool
-                   PhotonEfficiencyCorrection METUtilities METInterface
-                   TauAnalysisTools AsgTools xAODMissingET JetResolution
-                   AssociationUtils Asg_FastJet JetEDM JetUncertainties
-                   JetCPInterfaces xAODBTaggingEfficiency TrigConfxAOD
-                   TrigDecisionTool xAODCutFlow JetMomentTools
-                   TriggerMatchingTool xAODMetaDataCnv xAODTriggerCnv
-                   xAODMetaData JetJvtEfficiency PMGTools JetSubStructureUtils
-                   JetTileCorrection PathResolver
+                   xAODTracking xAODTruth MuonMomentumCorrectionsLib
+                   MuonEfficiencyCorrectionsLib MuonSelectorToolsLib JetCalibToolsLib
+                   JetSelectorToolsLib AthContainers
+                   ElectronPhotonFourMomentumCorrectionLib
+                   ElectronEfficiencyCorrectionLib ElectronPhotonSelectorToolsLib
+                   IsolationSelectionLib IsolationCorrectionsLib
+                   ElectronPhotonShowerShapeFudgeToolLib
+                   PhotonEfficiencyCorrectionLib METUtilitiesLib METInterface
+                   TauAnalysisToolsLib AsgTools xAODMissingET JetResolutionLib
+                   AssociationUtilsLib JetEDM JetUncertaintiesLib
+                   JetCPInterfaces xAODBTaggingEfficiencyLib TrigConfxAODLib
+                   TrigDecisionToolLib xAODCutFlow JetMomentToolsLib
+                   TriggerMatchingToolLib xAODMetaDataCnv xAODTriggerCnv
+                   xAODMetaData JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils
+                   JetTileCorrectionLib PathResolver
 )
 
 # Install files from the package:
