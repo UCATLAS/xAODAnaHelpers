@@ -60,17 +60,21 @@ atlas_depends_on_subdirs( PUBLIC
                           Trigger/TrigConfiguration/TrigConfxAOD
 )
 
+# Find the needed external(s):
+find_package( ROOT COMPONENTS Core RIO Hist Tree )
+
 # build a dictionary for the library
-#atlas_add_root_dictionary ( xAODAnaHelpers _dictionarySource
-#                            ROOT_HEADERS xAODAnaHelpers/*.h Root/LinkDef.h
-#                            EXTERNAL_PACKAGES ROOT
-#)
+atlas_add_root_dictionary ( xAODAnaHelpers xAODAnaHelpersDictSource
+                            ROOT_HEADERS xAODAnaHelpers/*.h Root/LinkDef.h
+                            EXTERNAL_PACKAGES ROOT
+)
 
 # build a shared library
 atlas_add_library( xAODAnaHelpers
-                   xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${_dictionarySource}
+  xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xAODAnaHelpersDictSource}
                    PUBLIC_HEADERS xAODAnaHelpers
-                   LINK_LIBRARIES EventLoop xAODBase xAODRootAccess
+                   INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
+                   LINK_LIBRARIES ${ROOT_LIBRARIES} EventLoop xAODBase xAODRootAccess
                    xAODEventInfo GoodRunsListsLib PileupReweightingLib PATInterfaces
                    PathResolver xAODTau xAODJet xAODMuon xAODEgamma
                    xAODTracking xAODTruth MuonMomentumCorrectionsLib
