@@ -1,13 +1,18 @@
 env:
-  - ABV_RC=2.4.28 ABV_CM=2.6.1
+  - ABV_RC=2.4.28
+  - ABV_CM=2.6.1
 
 before_install:
   - ls
   - pwd
-
-install:
   - export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
   - source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh --quiet
+  - echo ${ABV_RC}
+  - echo ${ABV_CM}
+
+install:
+  - echo ${ABV_RC}
+  - echo ${ABV_CM}
   - rcSetup Base,${ABV_RC}
   - python xAODAnaHelpers/scripts/checkoutASGtags.py ${ABV_RC}
   - rc clean
