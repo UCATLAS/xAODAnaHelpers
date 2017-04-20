@@ -1,23 +1,26 @@
 env:
-  - ABV_RC=2.4.28
-  - ABV_CM=2.6.1
+  - ABV_RC=2.4.28 ABV_CM=2.6.1
 
-before_install:
+before_script:
   - ls
   - pwd
   - export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
   - source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh --quiet
-  - echo ${ABV_RC}
-  - echo ${ABV_CM}
+  - mkdir build
 
-install:
-  - echo ${ABV_RC}
-  - echo ${ABV_CM}
+script:
+  # rootcore
   - rcSetup Base,${ABV_RC}
   - python xAODAnaHelpers/scripts/checkoutASGtags.py ${ABV_RC}
   - rc clean
   - rc find_packages
-
-script:
   - rc compile
-
+  - rcSetup -u
+  # cmake
+  - asetup AnalysisBase,${ABV_CM},here
+  - cd build
+  - cmake ../
+  - make
+  - cd ../
+  - source build/${BINARY_TYPE}/setup.sh
+  - python -c "import ROOT; print ROOT.xAH"
