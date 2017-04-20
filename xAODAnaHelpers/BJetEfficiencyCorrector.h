@@ -1,5 +1,8 @@
 #ifndef xAODAnaHelpers_BJetEfficiencyCorrector_H
 #define xAODAnaHelpers_BJetEfficiencyCorrector_H
+// EDM includes
+#include "xAODEventInfo/EventInfo.h"
+#include "xAODJet/JetContainer.h"
 
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
@@ -29,12 +32,12 @@ public:
   std::string m_outputSystName;
 
   std::string m_corrFileName;
-  
+
   /**
      Call PathResolverFindCalibFile on the input file name
   */
   bool        m_usePathResolver;
-  
+
   std::string m_jetAuthor;
   std::string m_taggerName;
   bool        m_useDevelopmentFile;

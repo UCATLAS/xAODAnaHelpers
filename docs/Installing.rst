@@ -1,90 +1,90 @@
 Installing
 ==========
 
-.. parsed-literal::
+Getting the Source
+------------------
 
-    setupATLAS
-    rcSetup Base,\ |analysis_base_release|\
+Start in a work directory
 
-    git clone https://github.com/UCATLAS/xAODAnaHelpers
+.. code-block:: bash
 
-or for a specific tag
+  mkdir workdir && cd $_
 
-::
+Then clone the source
 
-    rc checkout_pkg atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ xAODAnaHelpers
+.. code-block:: bash
 
-::
-
-    git clone https://github.com/UCATLAS/xAODAnaHelpers
-    cd xAODAnaHelpers
-    git checkout tags/XX-YY-ZZ
+  git clone https://github.com/UCATLAS/xAODAnaHelpers
 
 .. note::
 
     `If you have ssh-keys set up <https://help.github.com/articles/generating-ssh-keys/>`_, then you can clone over SSH instead of HTTPS:
 
-      .. code-block:: none
+      .. code-block:: bash
 
-          git clone git@github.com:UCATLAS/xAODAnaHelpers
+        git clone git@github.com:UCATLAS/xAODAnaHelpers
 
-At this point, you have the FULL state of the code. You can run
-``git log`` to view the recent changes (no more ChangeLog!). You can run
-``git tag`` to view all current tags.
+At this point, you have the FULL state of the code. You can run ``git log`` to view the recent changes (no more ChangeLog!).
 
-Getting tag XX-YY-ZZ
---------------------
+Checking out a specific tag
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-So now you want to check out a specific tag. We will provide tags on the
-svn as well as on github. If you are using git, then you can switch
-between tags in the same folder in seconds. If you are using svn, you
-need to redownload the full tag.
+You can run ``git tag`` to view all current tags. You can checkout a specific tag (in a detached head state):
 
-With git
-~~~~~~~~
+.. code-block:: bash
 
-::
+  cd xAODAnaHelpers
+  git checkout tags/XX-YY-ZZ
+  cd ../
 
-    git checkout -b XX-YY-ZZ tags/XX-YY-ZZ
+or you can use:
 
-This switches you from master to a branch of the given version.
+.. code-block:: bash
 
-With svn
-~~~~~~~~
+  cd xAODAnaHelpers
+  git checkout -b XX-YY-ZZ tags/XX-YY-ZZ
+  cd ../
 
-::
+which switches you from master to a branch of the given version.
 
-    svn co svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ xAODAnaHelpers
 
-This will download the full tag from svn for you.
+Compiling
+---------
 
-With RootCore
-~~~~~~~~~~~~~
+For all sets of instructions below, make sure you run ``setupATLAS`` first.
 
-::
-    rc checkout_pkg atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ
+RootCore (< 2.5.X)
+~~~~~~~~~~~~~~~~~~
 
-This uses the svn call, but it is a little less verbose :smile:
+.. parsed-literal::
 
-Updating changes
-----------------
+    rcSetup Base,\ |ab_release_rc|\
+    rc find_packages
+    rc compile
 
-If you're on branch ``myBranch`` and you have commits that you want to
-push to the remote ``origin`` - the first thing you should do is always
-update so you're current::
+CMake-based RootCore (> 2.5.X)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    git pull --rebase
+This step requires a little extra work, but compiles significantly faster. You will need a build directory that builds all your checked-out packages which is separate from your source code:
 
-will do it all. If you want more control, use::
+.. code-block:: bash
 
-    git fetch
-    git rebase origin/master
+  mkdir build && cd $_
 
-or::
+.. note:: This is inside the ``workdir``, so you will have ``workdir/xAODAnaHelpers`` and ``workdir/build`` as paths, for example.
 
-    git fetch origin
-    git rebase origin/master myBranch
+Next, inside the ``build`` directory, we'll set up a CMake RC release and then run cmake to generate our makefiles, then compile
 
-.. note::
-    - ``git fetch`` will fetch from ``origin`` (see ``git remote -v`` for what that's defined as) by default, but you can explicitly provide a different remote repository.
-    - ``git rebase origin/master`` will rebase the current branch you are on.  You can specify another branch if you want.
+.. parsed-literal::
+
+  asetup AnalysisBase,\ |ab_release_cm|\
+  cmake ../
+  make
+
+The last thing you need to do is get your environment set up correctly, so you will need to source ``setup.sh``:
+
+.. code-block:: bash
+
+  source build/${BINARY_TAG}/setup.sh
+
+Both ``${CMTCONFIG}`` and  ``${BINARY_TAG}`` seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.

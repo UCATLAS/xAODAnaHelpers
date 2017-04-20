@@ -20,7 +20,7 @@ Current Version
 
 .. Cannot bold just yet: http://stackoverflow.com/questions/33537747/substitution-inside-inline-markup-while-escaping-whitespace
 
-Current AnalysisBase release for |xAH| is Base,\ |analysis_base_release|\ .
+Current AnalysisBase release for |xAH| is Base,\ |ab_release_rc|\ and AnalysisBase,\ |ab_release_cm|\,here.
 
 .. note::
     If you need to bump up the version of the AnalysisBase being used, please make sure you update the `.jenkins.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.jenkins.yml>`_ file first.

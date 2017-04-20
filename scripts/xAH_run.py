@@ -99,8 +99,8 @@ class _HelpAction(argparse.Action):
     parser.exit()
 
 try:
-  __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
-  __short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__))).strip()
+  __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
+  __short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
 except:
   print('git not available, assuming svn')
   __version__ = "private"
@@ -147,6 +147,7 @@ parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', h
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-v', '--verbose', dest='verbose', action='count', default=0, help='Enable verbose output of various levels. Can increase verbosity by adding more ``-vv``. Default: no verbosity')
+parser.add_argument('--cmake-workdir', type=str, default='WorkDir', help='The name of the CMake WorkDir, needed to determine environment variables')
 
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
@@ -313,8 +314,16 @@ if __name__ == "__main__":
 
     # at this point, we should import ROOT and do stuff
     import ROOT
-    xAH_logger.info("loading packages")
-    ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
+    if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) < 25:
+      xAH_logger.info("loading packages")
+      ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
+    else:
+      # env var that tells us if CMAKE was setup
+      cmake_setup = '{0:s}_SET_UP'.format(args.cmake_workdir)
+      # architecture used for CMake
+      arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
+      if not int(os.environ.get(cmake_setup, 0)):
+        raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
     # load the standard algorithm since pyroot delays quickly
     ROOT.EL.Algorithm()
 
