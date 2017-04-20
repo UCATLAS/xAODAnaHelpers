@@ -59,6 +59,11 @@ RootCore (< 2.5.X)
 .. parsed-literal::
 
     rcSetup Base,\ |ab_release_rc|\
+
+and then find all packages and then compile:
+
+.. code-block:: bash
+
     rc find_packages
     rc compile
 
@@ -73,11 +78,16 @@ This step requires a little extra work, but compiles significantly faster. You w
 
 .. note:: This is inside the ``workdir``, so you will have ``workdir/xAODAnaHelpers`` and ``workdir/build`` as paths, for example.
 
-Next, inside the ``build`` directory, we'll set up a CMake RC release and then run cmake to generate our makefiles, then compile
+Next, inside the ``build`` directory, we'll set up a CMake RC release:
 
 .. parsed-literal::
 
   asetup AnalysisBase,\ |ab_release_cm|\
+
+and then run cmake to generate our makefiles, then compile:
+
+.. code-block:: bash
+
   cmake ../
   make
 
