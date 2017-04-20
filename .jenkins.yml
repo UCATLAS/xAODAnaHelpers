@@ -22,5 +22,5 @@ script:
   - cmake ../
   - make
   - cd ../
-  - source build/${BINARY_TYPE}/setup.sh
+  - source build/${CMTCONFIG}/setup.sh
   - python -c "import ROOT; print ROOT.xAH"

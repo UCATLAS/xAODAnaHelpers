@@ -321,7 +321,7 @@ if __name__ == "__main__":
       # env var that tells us if CMAKE was setup
       cmake_setup = '{0:s}_SET_UP'.format(args.cmake_workdir)
       # architecture used for CMake
-      arch = os.environ.get('BINARY_TYPE', os.environ.get('CMTCONFIG', '<arch>'))
+      arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
       if not int(os.environ.get(cmake_setup, 0)):
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
     # load the standard algorithm since pyroot delays quickly
