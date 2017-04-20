@@ -94,6 +94,30 @@ to delete your local copy of the branch after bringing your local copy up to dat
 Helpful Suggestions
 -------------------
 
+Updating changes
+~~~~~~~~~~~~~~~~
+
+If you're on branch ``myBranch`` and you have commits that you want to
+push to the remote ``origin`` - the first thing you should do is always
+update so you're current::
+
+    git pull --rebase
+
+will do it all. If you want more control, use::
+
+    git fetch
+    git rebase origin/master
+
+or::
+
+    git fetch origin
+    git rebase origin/master myBranch
+
+.. note::
+    - ``git fetch`` will fetch from ``origin`` (see ``git remote -v`` for what that's defined as) by default, but you can explicitly provide a different remote repository.
+    - ``git rebase origin/master`` will rebase the current branch you are on.  You can specify another branch if you want.
+
+
 Changing Author Info
 ~~~~~~~~~~~~~~~~~~~~
 

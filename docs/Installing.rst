@@ -1,24 +1,13 @@
-Installing
-==========
+Getting the Source
+==================
 
-.. parsed-literal::
+Start in a work directory::
 
-    setupATLAS
-    rcSetup Base,\ |analysis_base_release|\
+  mkdir workdir && cd $_
 
-    git clone https://github.com/UCATLAS/xAODAnaHelpers
+Then clone the source::
 
-or for a specific tag
-
-::
-
-    rc checkout_pkg atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ xAODAnaHelpers
-
-::
-
-    git clone https://github.com/UCATLAS/xAODAnaHelpers
-    cd xAODAnaHelpers
-    git checkout tags/XX-YY-ZZ
+  git clone https://github.com/UCATLAS/xAODAnaHelpers
 
 .. note::
 
@@ -28,63 +17,57 @@ or for a specific tag
 
           git clone git@github.com:UCATLAS/xAODAnaHelpers
 
-At this point, you have the FULL state of the code. You can run
-``git log`` to view the recent changes (no more ChangeLog!). You can run
-``git tag`` to view all current tags.
+At this point, you have the FULL state of the code. You can run ``git log`` to view the recent changes (no more ChangeLog!).
 
-Getting tag XX-YY-ZZ
---------------------
+Checking out a specific tag
+---------------------------
 
-So now you want to check out a specific tag. We will provide tags on the
-svn as well as on github. If you are using git, then you can switch
-between tags in the same folder in seconds. If you are using svn, you
-need to redownload the full tag.
+You can run ``git tag`` to view all current tags. You can checkout a specific tag (in a detached head state)::
 
-With git
-~~~~~~~~
+  cd xAODAnaHelpers
+  git checkout tags/XX-YY-ZZ
+  cd ../
 
-::
+or you can use::
 
-    git checkout -b XX-YY-ZZ tags/XX-YY-ZZ
+  cd xAODAnaHelpers
+  git checkout -b XX-YY-ZZ tags/XX-YY-ZZ
+  cd ../
 
-This switches you from master to a branch of the given version.
+which switches you from master to a branch of the given version.
 
-With svn
-~~~~~~~~
 
-::
+Compiling
+=========
 
-    svn co svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ xAODAnaHelpers
+For all sets of instructions below, make sure you run ``setupATLAS`` first.
 
-This will download the full tag from svn for you.
+RootCore (< 2.5.X)
+------------------
 
-With RootCore
-~~~~~~~~~~~~~
+.. parsed-literal::
 
-::
-    rc checkout_pkg atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ
+    rcSetup Base,\ |analysis_base_release|\
+    rc find_packages
+    rc compile
 
-This uses the svn call, but it is a little less verbose :smile:
+CMake-based RootCore (> 2.5.X)
+------------------------------
 
-Updating changes
-----------------
+This step requires a little extra work, but compiles significantly faster. You will need a build directory that builds all your checked-out packages which is separate from your source code::
 
-If you're on branch ``myBranch`` and you have commits that you want to
-push to the remote ``origin`` - the first thing you should do is always
-update so you're current::
+  mkdir build && cd $_
 
-    git pull --rebase
+.. note:: This is inside the ``workdir``, so you will have ``workdir/xAODAnaHelpers`` and ``workdir/build`` as paths, for example.
 
-will do it all. If you want more control, use::
+Next, inside the ``build`` directory, we'll set up a CMake RC release and then run cmake to generate our makefiles, then compile::
 
-    git fetch
-    git rebase origin/master
+  asetup AnalysisBase,2.6.1
+  cmake ../
+  make
 
-or::
+The last thing you need to do is get your environment set up correctly, so you will need to source ``setup.sh``::
 
-    git fetch origin
-    git rebase origin/master myBranch
+  source build/${BINARY_TAG}/setup.sh
 
-.. note::
-    - ``git fetch`` will fetch from ``origin`` (see ``git remote -v`` for what that's defined as) by default, but you can explicitly provide a different remote repository.
-    - ``git rebase origin/master`` will rebase the current branch you are on.  You can specify another branch if you want.
+Both ``${CMTCONFIG}`` and  ``${BINARY_TAG}`` seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
