@@ -74,7 +74,7 @@ This step requires a little extra work, but compiles significantly faster. First
 
 .. parsed-literal::
 
-  asetup AnalysisBase,\ |ab_release_cm|\
+  asetup AnalysisBase,\ |ab_release_cm|\,here
 
 This also sets up a ``CMakeLists.txt`` file in this top-level directory that searches for all packages you've checked out inside it. Next, you will need a build directory that builds all your checked-out packages which is separate from your source code:
 
