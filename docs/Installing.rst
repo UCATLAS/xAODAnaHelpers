@@ -96,6 +96,16 @@ The last thing you need to do is get your environment set up correctly, so you w
 
 .. code-block:: bash
 
-  source build/${BINARY_TAG}/setup.sh
+  source build/${CMTCONFIG}/setup.sh
 
 Both ``${CMTCONFIG}`` and  ``${BINARY_TAG}`` seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
+
+.. warning::
+
+  If you run into a RuntimeError about ``RootCore/Packages.h``, this is due to a known bug in ROOT auto-loading the dictionary for this file. To fix it, you just need to run
+
+  .. code-block:: bash
+
+    export ROOT_INCLUDE_PATH=/cvmfs/atlas.cern.ch/repo/sw/ASG/2.6/AnalysisBase/2.6.1/InstallArea/x86_64-slc6-gcc49-opt/RootCore/include:$ROOT_INCLUDE_PATH
+
+  before running the ``xAH_run.py`` commands. This should fix things up.
