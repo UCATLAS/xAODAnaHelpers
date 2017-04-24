@@ -70,7 +70,13 @@ and then find all packages and then compile:
 CMake-based RootCore (> 2.5.X)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This step requires a little extra work, but compiles significantly faster. You will need a build directory that builds all your checked-out packages which is separate from your source code:
+This step requires a little extra work, but compiles significantly faster. First, inside the ``workdir`` directory, we'll set up a CMake RC release:
+
+.. parsed-literal::
+
+  asetup AnalysisBase,\ |ab_release_cm|\
+
+This also sets up a ``CMakeLists.txt`` file in this top-level directory that searches for all packages you've checked out inside it. Next, you will need a build directory that builds all your checked-out packages which is separate from your source code:
 
 .. code-block:: bash
 
@@ -78,20 +84,15 @@ This step requires a little extra work, but compiles significantly faster. You w
 
 .. note:: This is inside the ``workdir``, so you will have ``workdir/xAODAnaHelpers`` and ``workdir/build`` as paths, for example.
 
-Next, inside the ``build`` directory, we'll set up a CMake RC release:
-
-.. parsed-literal::
-
-  asetup AnalysisBase,\ |ab_release_cm|\
-
 and then run cmake to generate our makefiles, then compile:
 
 .. code-block:: bash
 
   cmake ../
   make
+  cd ../
 
-The last thing you need to do is get your environment set up correctly, so you will need to source ``setup.sh``:
+The last thing you need to do is get your environment set up correctly, so you will need to source ``setup.sh`` (from the top-level directory):
 
 .. code-block:: bash
 
