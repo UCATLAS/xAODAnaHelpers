@@ -324,11 +324,11 @@ if __name__ == "__main__":
       arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
       if not int(os.environ.get(cmake_setup, 0)):
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
-    # load the standard algorithm since pyroot delays quickly
-    ROOT.EL.Algorithm()
-
     #Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore();
+
+    # load the standard algorithm since pyroot delays quickly
+    ROOT.EL.Algorithm()
 
     # check that we have appropriate drivers
     if args.driver == 'prun':
