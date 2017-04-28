@@ -82,6 +82,7 @@ JetSelector :: JetSelector (std::string className) :
   // cuts
   m_cleanJets               = true;
   m_cleanEvtLeadJets        = -1; // indepedent of previous switch
+  m_markCleanEvent          = false;
   m_cleanEvent              = false;
   m_pass_max                = -1;
   m_pass_min                = -1;
@@ -594,7 +595,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
         // If any of the passing jets fail the recommendation is to remove the jet (and MET is wrong)
         // If any of the N leading jets are not clean the event should be removed
-        if( m_cleanEvent || nObj <= m_cleanEvtLeadJets ){
+        if( m_markCleanEvent || m_cleanEvent || nObj <= m_cleanEvtLeadJets ){
           passEventClean = false; 
           if (m_debug) Info("executeSelection()", "Remove event due to bad jet with pt %f", jet_itr->pt() );
         }// if cleaning the event 
@@ -713,8 +714,22 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_numObjectPass += nPass;
   }
 
+  // 
+  //  Mark Event as pass/fail cleaning for nominal selection
+  //
+  if ( m_markCleanEvent && count ) {
+    if ( m_debug ) Info("executeSelectio","Marking Clean");
+    // Decorator
+    SG::AuxElement::Decorator< char > isCleanEventDecor( "cleanEvent_"+m_name );
+    const xAOD::EventInfo* eventInfo(nullptr);
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+    
+    isCleanEventDecor(*eventInfo) = passEventClean;
+  }
+
+
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
-  if ( !passEventClean ) { return false; }
+  if ( m_cleanEvent && !passEventClean ) { return false; }
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
     return false;
   }

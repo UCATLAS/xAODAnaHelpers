@@ -59,6 +59,8 @@ public:
    */
 
   bool m_cleanEvent;
+  /** @brief Mark event with decorator if any passing jets are not clean */
+  bool m_markCleanEvent;
   int m_pass_min;                 // minimum number of objects passing cuts
   int m_pass_max;                 // maximum number of objects passing cuts
   float m_pT_max;                 // require pT < pt_max
