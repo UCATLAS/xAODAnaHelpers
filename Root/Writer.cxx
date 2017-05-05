@@ -46,7 +46,7 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   m_muonContainerNames      = HelperFunctions::SplitString( m_muonContainerNamesStr,     ',' );
 
   if ( m_outputLabel.Length() == 0 ) {
-    Error("Writer::setupJob()", "No OutputLabel specified!");
+    ATH_MSG_ERROR( "No OutputLabel specified!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -136,9 +136,9 @@ EL::StatusCode Writer :: execute ()
     // look in event
     if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, m_verbose).isSuccess() ) {
       // without modifying the contents of it:
-      Info("execute()", " Write a collection %s %lu", contName.Data(), inJetsConst->size() );
+      ATH_MSG_INFO( " Write a collection " << contName.Data() << inJetsConst->size() );
       m_event->copy( contName.Data() );
-      Info("execute()", " Wrote a collection %s", contName.Data());
+      ATH_MSG_INFO( " Wrote a collection " << contName.Data());
       continue;
     }
 
@@ -150,31 +150,31 @@ EL::StatusCode Writer :: execute ()
 //      // if true should have something like this line somewhere:
 
       // Record the objects into the output xAOD:
-      Info("execute()", " Write a collection %s %lu", contName.Data(), inJets->size() );
+      ATH_MSG_INFO( " Write a collection " << contName.Data() << inJets->size() );
       if( ! m_event->record( inJets, contName.Data() ) ) {
-        Error("execute()" ,"%s: Could not record %s", m_name.c_str(), contName.Data());
+        ATH_MSG_ERROR(m_name << ": Could not record " << contName.Data());
         return EL::StatusCode::FAILURE;
       }
-      Info("execute()", " Wrote a collection %s", contName.Data());
+      ATH_MSG_INFO( " Wrote a collection " << contName.Data());
 
       // get pointer to associated aux container
       xAOD::JetAuxContainer* inJetsAux = 0;
-      Info("execute()", " Wrote a aux store %s", contName.Data());
+      ATH_MSG_INFO( " Wrote a aux store " << contName.Data());
       TString auxName( contName + "Aux." );
       if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, m_verbose).isSuccess() ){
-        Error("execute()" ,"%s: Could not get Aux data for %s", m_name.c_str(), contName.Data());
+        ATH_MSG_ERROR(m_name << ": Could not get Aux data for " << contName.Data());
         return EL::StatusCode::FAILURE;
       }
-      Info("execute()", " Wrote a aux store %s", contName.Data());
+      ATH_MSG_INFO( " Wrote a aux store " << contName.Data());
 
       if( ! m_event->record( inJetsAux, auxName.Data() ) ) {
-        Error("execute()", "%s: Could not record aux store for %s", m_name.c_str(), contName.Data());
+        ATH_MSG_ERROR( m_name << ": Could not record aux store for " << contName.Data());
         return EL::StatusCode::FAILURE;
       }
     }
     // could not find the container - problems
     else {
-      Error("execute()" ,"%s: Could not find %s", m_name.c_str(), contName.Data());
+      ATH_MSG_ERROR( m_name << ": Could not find " << contName.Data());
       return EL::StatusCode::FAILURE;
     }
   }
