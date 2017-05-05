@@ -154,7 +154,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "FlatBEff_85") { allOK = true; }
 
   if( !allOK ) {
-    Error("initialize()", "Requested operating point is not known to xAH. Arrow v Indian? %s", m_operatingPt.c_str());
+    ATH_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
     return EL::StatusCode::FAILURE;
   }
 
@@ -184,7 +184,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 
   if( m_inContainerName.empty() ) {
-    Error("initialize()", "InputContainer is empty!");
+    ATH_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -441,7 +441,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     if (m_getScaleFactors ) {
 
       if (m_BJetEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
-        Error("initialize()", "Failed to configure BJetEfficiencyCorrections for systematic %s.", syst_it.name().c_str());
+        ATH_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
         return EL::StatusCode::FAILURE;
       }
       if(m_debug) ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name());
@@ -501,7 +501,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
         float eff(0.0);
         if( (fabs(jet_itr->eta()) < 2.5) &&
             m_BJetEffSFTool->getEfficiency( *jet_itr, eff ) != CP::CorrectionCode::Ok){
-          Error( "execute()", "Problem in getRecoEfficiency");
+          ATH_MSG_ERROR( "Problem in getRecoEfficiency");
           //return EL::StatusCode::FAILURE;
         }
         ATH_MSG_INFO( "\t reco efficiency = %g", eff );
