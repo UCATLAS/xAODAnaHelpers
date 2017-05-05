@@ -315,7 +315,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       ATH_MSG_INFO( "Meta data from this file:");
       ATH_MSG_INFO( "Initial  events  = "                << static_cast<unsigned int>(m_MD_initialNevents) );
       ATH_MSG_INFO( "Selected events  = "                << static_cast<unsigned int>(m_MD_finalNevents) );
-      ATH_MSG_INFO( "Initial  sum of weights = "         << mm_MD_initialSumW);
+      ATH_MSG_INFO( "Initial  sum of weights = "         << m_MD_initialSumW);
       ATH_MSG_INFO( "Selected sum of weights = "         << m_MD_finalSumW);
       ATH_MSG_INFO( "Initial  sum of weights squared = " << m_MD_initialSumWSquared);
       ATH_MSG_INFO( "Selected sum of weights squared = " << m_MD_finalSumWSquared);
