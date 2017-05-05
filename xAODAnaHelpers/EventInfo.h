@@ -10,26 +10,26 @@
 
 namespace xAH {
 
-  class EventInfo 
+  class EventInfo
   {
   public:
     EventInfo(const std::string& detailStr="", float units = 1e3, bool mc = false);
     ~EventInfo();
-    
+
     void setTree    (TTree *tree);
     void setBranches(TTree *tree);
     void clear();
     void FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* event = nullptr);
-    template <typename T_BR> 
+    template <typename T_BR>
       void connectBranch(TTree *tree, std::string name, T_BR *variable);
 
   public:
-  
+
     HelperClasses::EventInfoSwitch  m_infoSwitch;
     bool m_mc;
     bool m_debug;
     float m_units;
-      
+
   public:
 
     int      m_runNumber;
