@@ -154,7 +154,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ) {
-    Error("initialize()", "InputContainer is empty!");
+    ATH_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -299,7 +299,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
     // apply syst
     //
     if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-      Error("initialize()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
+      ATH_MSG_ERROR( "Failed to configure EgammaCalibrationAndSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }
 
@@ -345,7 +345,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
     } // close calibration loop
 
     if ( !xAOD::setOriginalObjectLink(*inElectrons, *(calibElectronsSC.first)) ) {
-      Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
+      ATH_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
     // save pointers in ConstDataVector with same order
