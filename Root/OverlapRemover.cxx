@@ -480,7 +480,11 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
       if( isBTag.isAvailable( *obj_itr ) && isBTag(*obj_itr)==true )
         isBTagged = 1;
 
-      ATH_MSG_INFO( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected " << (selectAcc.isAvailable(*obj_itr)?selectAcc(*obj_itr):"N/A") << " passesOR  " << overlapAcc( *obj_itr ) );
+      if(selectAcc.isAvailable(*obj_itr)){
+        ATH_MSG_INFO( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected " << selectAcc(*obj_itr) << " passesOR  " << overlapAcc( *obj_itr ) );
+      } else {
+        ATH_MSG_INFO( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected N/A" << " passesOR  " << overlapAcc( *obj_itr ) );
+      }
       // Check for overlap object link
       if ( objLinkAcc.isAvailable( *obj_itr ) && objLinkAcc( *obj_itr ).isValid() ) {
         const xAOD::IParticle* overlapObj = *objLinkAcc( *obj_itr );
