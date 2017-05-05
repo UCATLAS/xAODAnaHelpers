@@ -34,10 +34,10 @@ EL::StatusCode MetHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode MetHistsAlgo :: histInitialize ()
 {
 
-  Info("histInitialize()", "%s", m_name.c_str() );
+  ATH_MSG_INFO( m_name );
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("histInitialize()", "One or more required configuration values are empty");
+    ATH_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
@@ -54,7 +54,7 @@ EL::StatusCode MetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::Sta
 
 EL::StatusCode MetHistsAlgo :: initialize ()
 {
-  Info("initialize()", "MetHistsAlgo");
+  ATH_MSG_INFO( "MetHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;

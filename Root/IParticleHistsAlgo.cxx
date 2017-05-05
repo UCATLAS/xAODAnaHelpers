@@ -38,7 +38,7 @@ EL::StatusCode IParticleHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode IParticleHistsAlgo :: histInitialize ()
 {
 
-  Info("histInitialize()", "%s", m_name.c_str() );
+  ATH_MSG_INFO( m_name );
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
@@ -60,11 +60,11 @@ EL::StatusCode IParticleHistsAlgo :: changeInput (bool /*firstFile*/) { return E
 
 EL::StatusCode IParticleHistsAlgo :: initialize ()
 {
-  if(m_debug) Info("initialize()", m_name.c_str());
+  if(m_debug) ATH_MSG_INFO( m_name);
 
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("initialize()", "One or more required configuration values are empty");
+    ATH_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
@@ -84,7 +84,7 @@ EL::StatusCode IParticleHistsAlgo :: execute ()
 EL::StatusCode IParticleHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode IParticleHistsAlgo :: finalize () {
-  if(m_debug) Info("finalize()", m_name.c_str());
+  if(m_debug) ATH_MSG_INFO( m_name );
   for( auto plots : m_plots ) {
     if(plots.second){
       plots.second->finalize();

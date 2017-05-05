@@ -58,7 +58,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  Info("BasicEventSelection()", "Calling constructor");
+  ATH_MSG_INFO( "Calling constructor");
 
   // basics
   m_debug = false;
@@ -138,7 +138,7 @@ EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
   //
-  Info("setupJob()", "Calling setupJob");
+  ATH_MSG_INFO( "Calling setupJob");
 
   job.useXAOD();
   // let's initialize the algorithm to use the xAODRootAccess package
@@ -165,7 +165,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize");
+  ATH_MSG_INFO( "Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   // write the metadata hist to this file so algos downstream can pick up the pointer
@@ -183,7 +183,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
     m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
   }
 
-  Info("histInitialize()", "Histograms initialized!");
+  ATH_MSG_INFO( "Histograms initialized!");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -194,7 +194,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute");
+  ATH_MSG_INFO( "Calling fileExecute");
 
   // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
   //
@@ -212,7 +212,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //
   TTree* MetaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
   if ( !MetaData ) {
-    Error("fileExecute()", "MetaData tree not found! Exiting.");
+    ATH_MSG_ERROR( "MetaData tree not found! Exiting.");
     return EL::StatusCode::FAILURE;
   }
   MetaData->LoadTree(0);
@@ -229,7 +229,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       //
       const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
       if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
-	  Error("fileExecute()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
+	  ATH_MSG_ERROR("Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
 	  return EL::StatusCode::FAILURE;
       }
       bool allFromUnknownStream(true);
@@ -244,7 +244,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 		  break;
 	      }
 	  }
-	  if ( !allFromUnknownStream ) { Warning("fileExecute()","Found incomplete CBK from stream: %s. This is not necessarily a sign of file corruption (incomplete CBK appear when 'maxevents' is set in the AOD jo, for instance), but you may still want to check input file for potential corruption...", stream.c_str() ); }
+	  if ( !allFromUnknownStream ) { ATH_MSG_WARNING("Found incomplete CBK from stream: " << stream << ". This is not necessarily a sign of file corruption (incomplete CBK appear when 'maxevents' is set in the AOD jo, for instance), but you may still want to check input file for potential corruption..." ); }
 
       }
 
@@ -252,7 +252,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       //
       const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
       if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ) {
-	  Error("fileExecute()","Failed to retrieve CutBookkeepers from MetaData! Exiting.");
+	  ATH_MSG_ERROR("Failed to retrieve CutBookkeepers from MetaData! Exiting.");
 	  return EL::StatusCode::FAILURE;
       }
 
@@ -268,9 +268,9 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
       if ( m_isDerivation ) {
 	if(m_derivationName != ""){
-	  Info("fileExecute()","Override auto config to look at DAOD made by Derivation Algorithm: %s", m_derivationName.c_str());
+	  ATH_MSG_INFO("Override auto config to look at DAOD made by Derivation Algorithm: " << m_derivationName);
 	}else{
-	  Info("fileExecute()","Will autoconfig to look at DAOD made by Derivation Algorithm.");
+	  ATH_MSG_INFO("Will autoconfig to look at DAOD made by Derivation Algorithm.");
 	}
       }
 
@@ -290,7 +290,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 	      }
 
 	    } else if( cbk->name().find("Kernel") != std::string::npos ){
-	      Info("fileExecute()","Auto config found DAOD made by Derivation Algorithm: %s", cbk->name().c_str());
+	      ATH_MSG_INFO("Auto config found DAOD made by Derivation Algorithm: " << cbk->name());
 	      DxAODEventsCBK = cbk;
 	    }
 
@@ -302,7 +302,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
 
       if ( m_isDerivation && !DxAODEventsCBK ) {
-        Error("fileExecute()", "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
+        ATH_MSG_ERROR( "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
         return EL::StatusCode::FAILURE;
       }
 
@@ -312,13 +312,13 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
       // Write metadata event bookkeepers to histogram
       //
-      Info("fileExecute()", "Meta data from this file:");
-      Info("fileExecute()", "Initial  events  = %u",	     static_cast<unsigned int>(m_MD_initialNevents) );
-      Info("fileExecute()", "Selected events  = %u",	     static_cast<unsigned int>(m_MD_finalNevents) );
-      Info("fileExecute()", "Initial  sum of weights = %f",	 m_MD_initialSumW);
-      Info("fileExecute()", "Selected sum of weights = %f",	 m_MD_finalSumW);
-      Info("fileExecute()", "Initial  sum of weights squared = %f", m_MD_initialSumWSquared);
-      Info("fileExecute()", "Selected sum of weights squared = %f", m_MD_finalSumWSquared);
+      ATH_MSG_INFO( "Meta data from this file:");
+      ATH_MSG_INFO( "Initial  events  = "                << static_cast<unsigned int>(m_MD_initialNevents) );
+      ATH_MSG_INFO( "Selected events  = "                << static_cast<unsigned int>(m_MD_finalNevents) );
+      ATH_MSG_INFO( "Initial  sum of weights = "         << m_MD_initialSumW);
+      ATH_MSG_INFO( "Selected sum of weights = "         << m_MD_finalSumW);
+      ATH_MSG_INFO( "Initial  sum of weights squared = " << m_MD_initialSumWSquared);
+      ATH_MSG_INFO( "Selected sum of weights squared = " << m_MD_finalSumWSquared);
 
       m_histEventCount -> Fill(1, m_MD_initialNevents);
       m_histEventCount -> Fill(2, m_MD_finalNevents);
@@ -354,17 +354,17 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing BasicEventSelection... ");
+  ATH_MSG_INFO( "Initializing BasicEventSelection... ");
 
   // if truth level make sure parameters are set properly
   if( m_truthLevelOnly ) {
-    Info("initialize()", "Truth only! Turn off trigger stuff");
+    ATH_MSG_INFO( "Truth only! Turn off trigger stuff");
     m_triggerSelection      = "";
     m_extraTriggerSelection = "";
     m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
-    Info("initialize()", "Truth only! Turn off GRL");
+    ATH_MSG_INFO( "Truth only! Turn off GRL");
     m_applyGRLCut = false;
-    Info("initialize()", "Truth only! Turn off Pile-up Reweight");
+    ATH_MSG_INFO( "Truth only! Turn off Pile-up Reweight");
     m_doPUreweighting = false;
     m_doPUreweightingSys = false;
   }
@@ -373,14 +373,14 @@ EL::StatusCode BasicEventSelection :: initialize ()
   RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
 
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  if ( m_debug ) { Info("initialize()", "Is MC? %i", static_cast<int>(m_isMC) ); }
+  if ( m_debug ) { ATH_MSG_INFO( "Is MC? " << static_cast<int>(m_isMC) ); }
 
   //Protection in case GRL does not apply to this run
   //
   if ( m_applyGRLCut ) {
     std::string runNumString = std::to_string(eventInfo->runNumber());
     if ( m_GRLExcludeList.find( runNumString ) != std::string::npos ) {
-      Info("initialize()", "RunNumber is in GRLExclusion list, setting applyGRL to false");
+      ATH_MSG_INFO( "RunNumber is in GRLExclusion list, setting applyGRL to false");
       m_applyGRLCut = false;
     }
   }
@@ -388,7 +388,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_cleanPowheg = false;
   if ( eventInfo->runNumber() == 426005 ) { // Powheg+Pythia J5
     m_cleanPowheg = true;
-    Info("initialize()", "This is J5 Powheg - cleaning that nasty huge weight event");
+    ATH_MSG_INFO( "This is J5 Powheg - cleaning that nasty huge weight event");
   }
 
   //////// Initialize Tool for Sherpa 2.2 Reweighting ////////////
@@ -398,7 +398,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       ( (eventInfo->mcChannelNumber() >= 363331 && eventInfo->mcChannelNumber() <= 363483 ) ||
         (eventInfo->mcChannelNumber() >= 363102 && eventInfo->mcChannelNumber() <= 363122 ) ||
         (eventInfo->mcChannelNumber() >= 363361 && eventInfo->mcChannelNumber() <= 363435 ) ) ){
-    Info("initialize()", "This is Sherpa 2.2 dataset and should be reweighted.  An extra weight will be saved to EventInfo called \"weight_Sherpa22\".");
+    ATH_MSG_INFO( "This is Sherpa 2.2 dataset and should be reweighted.  An extra weight will be saved to EventInfo called \"weight_Sherpa22\".");
     m_reweightSherpa22 = true;
 
     //Choose Jet Truth container, WZ has more information and is favored by the tool
@@ -408,7 +408,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     } else if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthJets") ){
       pmg_TruthJetContainer = "AntiKt4TruthJets";
     } else {
-      Warning("initialize()", "No Truth Jet Container found for Sherpa 22 reweighting, weight_Sherpa22 will not be set.");
+      ATH_MSG_WARNING( "No Truth Jet Container found for Sherpa 22 reweighting, weight_Sherpa22 will not be set.");
       m_reweightSherpa22 = false;
     }
 
@@ -427,7 +427,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }//if isMC and a Sherpa 2.2 sample
 
 
-  Info("initialize()", "Setting up histograms");
+  ATH_MSG_INFO( "Setting up histograms");
 
   // write the cutflows to this file so algos downstream can pick up the pointer
   //
@@ -515,7 +515,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // -------------------------------------------------------------------------------------------------
 
-  Info("initialize()", "Setting Up Tools");
+  ATH_MSG_INFO( "Setting Up Tools");
 
   // 1.
   // initialize the GoodRunsListSelectionTool
@@ -571,11 +571,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
         tmp_lumiCalcFileNames.erase(0, pos+1);
       }
     }
-    Info("initialize()", "Adding Pileup files for CP::PileupReweightingTool:");
+    ATH_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
     for( unsigned int i=0; i < PRWFiles.size(); ++i){
       printf( "\t %s \n", PRWFiles.at(i).c_str() );
     }
-    Info("initialize()", "Adding LumiCalc files for CP::PileupReweightingTool:");
+    ATH_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
     for( unsigned int i=0; i < lumiCalcFiles.size(); ++i){
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
@@ -603,7 +603,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // pileup reweighing tool is needed to get the data weight for unprescaling
   if ( m_savePrescaleDataWeight && !m_doPUreweighting) {
 
-    Error("initialize()", "m_savePrescaleDataWeight is true but m_doPUreweighting is false !!!");
+    ATH_MSG_ERROR( "m_savePrescaleDataWeight is true but m_doPUreweighting is false !!!");
     return EL::StatusCode::FAILURE;
 
   }
@@ -633,7 +633,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
       RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
       RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
-      Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
+      ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
 
     }
 
@@ -641,12 +641,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // As a check, let's see the number of events in our file (long long int)
   //
-  Info("initialize()", "Number of events in file = %lli", m_event->getEntries());
+  ATH_MSG_INFO( "Number of events in file = " << m_event->getEntries());
 
   // Initialize counter for number of entries
   m_eventCounter   = 0;
 
-  Info("initialize()", "BasicEventSelection succesfully initialized!");
+  ATH_MSG_INFO( "BasicEventSelection succesfully initialized!");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -660,16 +660,16 @@ EL::StatusCode BasicEventSelection :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if( m_debug ) { Info("execute()", "Basic Event Selection"); }
+  if( m_debug ) { ATH_MSG_INFO( "Basic Event Selection"); }
 
   // Print every 1000 entries, so we know where we are:
   //
   if ( (m_eventCounter % 1000) == 0 ) {
-    Info("execute()", "Entry number = %i", m_eventCounter);
+    ATH_MSG_INFO( "Entry number = " << m_eventCounter);
     if ( m_verbose ) {
-      Info(m_name.c_str(), "Store Content:");
+      ATH_MSG_INFO( "Store Content:");
       m_store->print();
-      Info(m_name.c_str(), "End Content");
+      ATH_MSG_INFO( "End Content");
     }
   }
 
@@ -683,7 +683,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   if ( !m_triggerSelection.empty() ) {
     if (m_eventCounter == 0 || m_savePrescaleDataWeight) {
-      if (m_eventCounter == 0) Info("execute()", "*** Triggers used (in OR) are:\n");
+      if (m_eventCounter == 0) ATH_MSG_INFO( "*** Triggers used (in OR) are:\n");
       auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
       std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
       for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
@@ -695,7 +695,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   if ( m_eventCounter == 0 && !m_extraTriggerSelection.empty() ) {
-    Info("execute()", "*** Extra Trigger Info Saved are :\n");
+    ATH_MSG_INFO( "*** Extra Trigger Info Saved are :\n");
     auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_extraTriggerSelection);
     std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
     for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
@@ -729,13 +729,13 @@ EL::StatusCode BasicEventSelection :: execute ()
       const std::vector< float > weights = eventInfo->mcEventWeights(); // The weight (and systs) of all the MC events used in the simulation
       if ( weights.size() > 0 ) mcEvtWeight = weights[0];
 
-      //for ( auto& it : weights ) { Info("execute()", "event weight: %2f.", it ); }
+      //for ( auto& it : weights ) { ATH_MSG_INFO( "event weight: %2f.", it ); }
 
       // kill the powheg event with a huge weight
       if( m_cleanPowheg ) {
         if( eventInfo->eventNumber() == 1652845 ) {
-          Info("execute()","Dropping huge weight event. Weight should be 352220000");
-          Info("execute()","WEIGHT : %f ", mcEvtWeight);
+          ATH_MSG_INFO("Dropping huge weight event. Weight should be 352220000");
+          ATH_MSG_INFO("WEIGHT : " << mcEvtWeight);
           wk()->skipEvent();
           return EL::StatusCode::SUCCESS; // go to next event
         }
@@ -788,7 +788,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       float weight_Sherpa22 = -999.;
       weight_Sherpa22 = m_reweightSherpa22_tool_handle->getWeight();
       weight_Sherpa22Decor( *eventInfo ) = weight_Sherpa22;
-      if( m_debug)  Info("exectue()","Setting Sherpa 2.2 reweight to %f", weight_Sherpa22);
+      if( m_debug)  ATH_MSG_INFO("Setting Sherpa 2.2 reweight to " << weight_Sherpa22);
 
     } // If not already decorated
   } // if m_reweightSherpa22
@@ -822,7 +822,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
 
-      if ( m_debug ) { Warning("execute()","Found duplicated event! runNumber = %u, eventNumber = %u. Skipping this event", static_cast<uint32_t>(eventInfo->runNumber()),static_cast<uint32_t>(eventInfo->eventNumber()) ); }
+      if ( m_debug ) { ATH_MSG_WARNING("Found duplicated event! runNumber = " << static_cast<uint32_t>(eventInfo->runNumber()) << ", eventNumber = " << static_cast<uint32_t>(eventInfo->eventNumber()) << ". Skipping this event"); }
 
       // Bookkeep info in duplicates TTree
       //
@@ -875,7 +875,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
       for ( auto& it : streams ) {
 	 const std::string stream_name = it.name();
-	 Info("execute()", "event has fired stream: %s", stream_name.c_str() );
+	 ATH_MSG_INFO( "event has fired stream: " << stream_name );
       }
     }
 
@@ -1058,7 +1058,7 @@ EL::StatusCode BasicEventSelection :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Number of processed events \t= %i", m_eventCounter);
+  ATH_MSG_INFO( "Number of processed events \t= " << m_eventCounter);
 
   m_RunNr_VS_EvtNr.clear();
 

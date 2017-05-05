@@ -74,13 +74,13 @@ int xAH::Algorithm::isMC(){
   const xAOD::EventInfo* ei(nullptr);
   // couldn't retrieve it
   if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store).isSuccess()){
-    if(m_debug) Warning("isMC()", "Could not retrieve eventInfo container: %s", m_eventInfoContainerName.c_str());
+    if(m_debug) ATH_MSG_WARNING( "Could not retrieve eventInfo container: " << m_eventInfoContainerName);
     return -1;
   }
 
   static SG::AuxElement::ConstAccessor<uint32_t> eventType("eventTypeBitmask");
   if(!eventType.isAvailable(*ei)){
-    if(m_debug) Warning("isMC()", "eventType is not available.");
+    if(m_debug) ATH_MSG_WARNING( "eventType is not available.");
     return -1;
   }
 

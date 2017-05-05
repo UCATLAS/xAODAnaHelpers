@@ -36,11 +36,11 @@ EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
-  Info("histInitialize()", "%s", m_name.c_str() );
+  ATH_MSG_INFO( m_name );
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("histInitialize()", "One or more required configuration values are empty");
+    ATH_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
@@ -58,7 +58,7 @@ EL::StatusCode TrackHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::S
 
 EL::StatusCode TrackHistsAlgo :: initialize ()
 {
-  Info("initialize()", "TrackHistsAlgo");
+  ATH_MSG_INFO( "TrackHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;

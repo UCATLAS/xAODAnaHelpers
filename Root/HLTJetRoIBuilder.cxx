@@ -57,7 +57,7 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   m_vtxName("EFHistoPrmVtx"),
   m_onlineBSTool()
 {
-  if(m_debug) Info("HLTJetRoIBuilder()", "Calling constructor");
+  if(m_debug) ATH_MSG_INFO( "Calling constructor");
 
   // read debug flag from .config file
   m_debug                   = false;
@@ -67,7 +67,7 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
 
 EL::StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
 {
-  if(m_debug) Info("setupJob()", "Calling setupJob");
+  if(m_debug) ATH_MSG_INFO( "Calling setupJob");
   job.useXAOD ();
   xAOD::Init( "HLTJetRoIBuilder" ).ignore(); // call before opening first file
   return EL::StatusCode::SUCCESS;
@@ -100,7 +100,7 @@ EL::StatusCode HLTJetRoIBuilder :: changeInput (bool /*firstFile*/)
 EL::StatusCode HLTJetRoIBuilder :: initialize ()
 {
 
-  if(m_debug) Info("initialize()", "Initializing HLTJetRoIBuilder Interface... ");
+  if(m_debug) ATH_MSG_INFO( "Initializing HLTJetRoIBuilder Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -147,7 +147,7 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
 
 EL::StatusCode HLTJetRoIBuilder :: execute ()
 {
-  if ( m_debug ) { Info("execute()", "Doing HLT JEt ROI Building... "); }
+  if ( m_debug ) { ATH_MSG_INFO( "Doing HLT JEt ROI Building... "); }
 
   if(m_doHLTBJet){
     return buildHLTBJets();
@@ -542,7 +542,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
 
 EL::StatusCode HLTJetRoIBuilder :: postExecute ()
 {
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
   return EL::StatusCode::SUCCESS;
 }
 
@@ -550,7 +550,7 @@ EL::StatusCode HLTJetRoIBuilder :: postExecute ()
 
 EL::StatusCode HLTJetRoIBuilder :: finalize ()
 {
-  if(m_debug) Info("finalize()", "Deleting tool instances...");
+  if(m_debug) ATH_MSG_INFO( "Deleting tool instances...");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -558,7 +558,7 @@ EL::StatusCode HLTJetRoIBuilder :: finalize ()
 
 EL::StatusCode HLTJetRoIBuilder :: histFinalize ()
 {
-  if(m_debug) Info("histFinalize()", "Calling histFinalize");
+  if(m_debug) ATH_MSG_INFO( "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }

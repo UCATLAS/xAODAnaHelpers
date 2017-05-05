@@ -53,7 +53,7 @@ TauSelector :: TauSelector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("TauSelector()", "Calling constructor");
+  ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
   m_useCutFlow              = true;
@@ -111,7 +111,7 @@ EL::StatusCode TauSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  ATH_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TauSelector" ).ignore(); // call before opening first file
@@ -128,7 +128,7 @@ EL::StatusCode TauSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize");
+  ATH_MSG_INFO( "Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
@@ -140,7 +140,7 @@ EL::StatusCode TauSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute");
+  ATH_MSG_INFO( "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -153,7 +153,7 @@ EL::StatusCode TauSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput");
+  ATH_MSG_INFO( "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -171,7 +171,7 @@ EL::StatusCode TauSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing TauSelector Interface... ");
+  ATH_MSG_INFO( "Initializing TauSelector Interface... ");
 
   // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
@@ -179,10 +179,10 @@ EL::StatusCode TauSelector :: initialize ()
   // This is the case when the selector algorithm is used for
   // preselecting objects, and then again for the final selection
   //
-  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_className).c_str() );
+  ATH_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
   if ( this->numInstances() > 0 ) {
     m_isUsedBefore = true;
-    Info("initialize()", "\t An algorithm of the same type has been already used %i times", this->numInstances() );
+    ATH_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   }
 
   if ( m_useCutFlow ) {
@@ -217,13 +217,13 @@ EL::StatusCode TauSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   if ( m_inContainerName.empty() ){
-    Error("initialize()", "InputContainer is empty!");
+    ATH_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -256,7 +256,7 @@ EL::StatusCode TauSelector :: initialize ()
     RETURN_CHECK("TauSelector::initialize()", m_TOELLHDecorator->initialize(), "Failed to properly initialize TauOverlappingElectronLLHDecorator");
   }
 
-  Info("initialize()", "TauSelector Interface succesfully initialized!" );
+  ATH_MSG_INFO( "TauSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -268,7 +268,7 @@ EL::StatusCode TauSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Tau Selection..." ); }
+  if ( m_debug ) { ATH_MSG_INFO( "Applying Tau Selection..." ); }
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
@@ -278,7 +278,7 @@ EL::StatusCode TauSelector :: execute ()
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
+    ATH_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
@@ -332,14 +332,14 @@ EL::StatusCode TauSelector :: execute ()
     // must be a pointer to be recorded in TStore
     //
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-    if ( m_debug ) { Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) ); }
+    if ( m_debug ) { ATH_MSG_INFO( " input list of syst size: " << static_cast<int>(systNames->size()) ); }
 
     // loop over systematic sets
     //
     bool eventPassThisSyst(false);
     for ( auto systName : *systNames ) {
 
-      if ( m_debug ) { Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() ); }
+      if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  input container name: " << m_inContainerName+systName ); }
 
       RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, m_verbose) ,"");
 
@@ -364,7 +364,7 @@ EL::StatusCode TauSelector :: execute ()
       //
       eventPass = ( eventPass || eventPassThisSyst );
 
-      if ( m_debug ) { Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
+      if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  output container name: " << m_outContainerName+systName ); }
 
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
@@ -379,7 +379,7 @@ EL::StatusCode TauSelector :: execute ()
 
     } // close loop over syst sets
 
-    if ( m_debug ) {  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
+    if ( m_debug ) {  ATH_MSG_INFO( " output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) ); }
 
     // record in TStore the list of systematics names that should be considered down stream
     //
@@ -407,7 +407,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
 
-  if ( m_debug ) { Info("executeSelection()", "Initial Taus: %u ", static_cast<uint32_t>(inTaus->size()) ); }
+  if ( m_debug ) { ATH_MSG_INFO( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) ); }
 
   for ( auto tau_itr : *inTaus ) { // duplicated of basic loop
 
@@ -443,16 +443,16 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
     m_numObjectPass += nPass;
   }
 
-  if ( m_debug ) { Info("executeSelection()", "Initial Taus (count obj): %i - Selected Taus: %i", nObj , nPass ); }
+  if ( m_debug ) { ATH_MSG_INFO( "Initial Taus (count obj): " << nObj << " - Selected Taus: " << nPass ); }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   //
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
-    if ( m_debug ) { Info("executeSelection()", "Reject event: nSelectedTaus (%i) < nPassMin (%i)", nPass, m_pass_min  ); }
+    if ( m_debug ) { ATH_MSG_INFO( "Reject event: nSelectedTaus ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" ); }
     return false;
   }
   if ( m_pass_max > 0 && nPass > m_pass_max ) {
-    if ( m_debug ) { Info("executeSelection()", "Reject event: nSelectedTaus (%i) > nPassMax (%i)", nPass, m_pass_max  ); }
+    if ( m_debug ) { ATH_MSG_INFO( "Reject event: nSelectedTaus ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" ); }
     return false;
   }
 
@@ -473,7 +473,7 @@ EL::StatusCode TauSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -492,13 +492,13 @@ EL::StatusCode TauSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances...");
+  ATH_MSG_INFO( "Deleting tool instances...");
 
   if ( m_TauSelTool )      { m_TauSelTool = nullptr;      delete m_TauSelTool; }
   if ( m_TOELLHDecorator ) { m_TOELLHDecorator = nullptr; delete m_TOELLHDecorator; }
 
   if ( m_useCutFlow ) {
-    Info("histFinalize()", "Filling cutflow");
+    ATH_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
@@ -521,7 +521,7 @@ EL::StatusCode TauSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize");
+  ATH_MSG_INFO( "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
@@ -538,14 +538,14 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   //
 
   if ( tau->pt() <= m_minPtDAOD ) {
-    if ( m_debug ) { Info("PassCuts()", "Tau failed minimal pT requirement for usage with derivations"); }
+    if ( m_debug ) { ATH_MSG_INFO( "Tau failed minimal pT requirement for usage with derivations"); }
     return 0;
   }
 
   if ( m_setTauOverlappingEleLLHDecor ) { m_TOELLHDecorator->decorate( *tau ); }
 
   if ( ! m_TauSelTool->accept( *tau ) ) {
-    if ( m_debug ) { Info("PassCuts()", "Tau failed requirements of TauSelectionTool"); }
+    if ( m_debug ) { ATH_MSG_INFO( "Tau failed requirements of TauSelectionTool"); }
     return 0;
   }
 

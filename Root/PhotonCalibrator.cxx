@@ -74,7 +74,7 @@ PhotonCalibrator :: PhotonCalibrator (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("PhotonCalibrator()", "Calling constructor");
+  ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
 
@@ -124,7 +124,7 @@ EL::StatusCode PhotonCalibrator :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  ATH_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "PhotonCalibrator" ).ignore(); // call before opening first file
@@ -176,15 +176,15 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing PhotonCalibrator Interface... ");
+  ATH_MSG_INFO( "Initializing PhotonCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ) {
-    Error("initialize()", "InputContainer is empty!");
+    ATH_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -217,16 +217,16 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   //
   //const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
   const CP::SystematicSet& recSyst = m_EgammaCalibrationAndSmearingTool->recommendedSystematics();;
-  Info("initialize()"," Initializing Photon Calibrator Systematics :");
+  ATH_MSG_INFO(" Initializing Photon Calibrator Systematics :");
 
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
-  Info("initialize()","Will be using EgammaCalibrationAndSmearingTool systematic:");
+  ATH_MSG_INFO("Will be using EgammaCalibrationAndSmearingTool systematic:");
 
   std::vector< std::string >* SystPhotonsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
     SystPhotonsNames->push_back(syst_it.name());
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
+    ATH_MSG_INFO("\t " << syst_it.name());
   }
     RETURN_CHECK("PhotonCalibrator::initialize()",m_store->record(SystPhotonsNames, "photons_Syst"+m_name ), "Failed to record vector of jet systs names.");
 
@@ -304,7 +304,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   RETURN_CHECK("PhotonHandler::initializeTools()", m_photonFudgeMCTool->initialize(),
 	       "failed in initialization of fudge MC tool");
 
-  Info("initialize()", "PhotonCalibrator Interface succesfully initialized!" );
+  ATH_MSG_INFO( "PhotonCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -317,7 +317,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Photon Calibration ... "); }
+  if ( m_debug ) { ATH_MSG_INFO( "Applying Photon Calibration ... "); }
 
   // get the collection from TEvent or TStore
   //
@@ -336,7 +336,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
   RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, m_verbose) ,
 	       Form("Failed in retrieving %s in %s", m_inContainerName.c_str(), m_name.c_str() ));
 
-  if ( m_debug ) { Info("execute()", "Retrieve has been completed with container name = %s", m_inContainerName.c_str()); }
+  if ( m_debug ) { ATH_MSG_INFO( "Retrieve has been completed with container name = " << m_inContainerName); }
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers
@@ -345,7 +345,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
 
   for ( const auto& syst_it : m_systList ) {
-    if ( m_debug ) { Info("execute()", "Systematic Loop for m_systList=%s", syst_it.name().c_str() ); }
+    if ( m_debug ) { ATH_MSG_INFO( "Systematic Loop for m_systList=" << syst_it.name() ); }
     // discard photon systematics
     //
     //if ( (syst_it.name()).find("PH_", 0) != std::string::npos ) { continue; }
@@ -363,14 +363,14 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
     // apply syst
     //
-    if (m_debug) { Info("execute()", "syst_it.name()=%s", syst_it.name().c_str()); }
+    if (m_debug) { ATH_MSG_INFO( "syst_it.name()=" << syst_it.name()); }
 
     if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-      Error("execute()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
+      ATH_MSG_ERROR( "Failed to configure EgammaCalibrationAndSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }
 
-    if ( m_debug ) { Info("execute()", "Systematics applied"); }
+    if ( m_debug ) { ATH_MSG_INFO( "Systematics applied"); }
     // create shallow copy for calibration - one per syst
     //
     std::pair< xAOD::PhotonContainer*, xAOD::ShallowAuxContainer* > calibPhotonsSC = xAOD::shallowCopyContainer( *inPhotons );
@@ -389,7 +389,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
       // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
       //
       if ( m_debug ) {
-        Info( "execute", "Checking photon %i, raw pt = %.2f GeV ", idx, (phSC_itr->pt() * 1e-3) );
+        ATH_MSG_INFO( "Checking photon " << idx << " raw pt = " << phSC_itr->pt()*1e-3 << " GeV " );
       }
 
       if ( phSC_itr->pt() > 7e3 && !(phSC_itr->caloCluster()) ){
@@ -400,15 +400,15 @@ EL::StatusCode PhotonCalibrator :: execute ()
       //
       if ( (phSC_itr->author() & xAOD::EgammaParameters::AuthorPhoton) || (phSC_itr->author() & xAOD::EgammaParameters::AuthorAmbiguous) ) {
 	if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
-	  Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
+	  ATH_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
 	}
 
 	if ( m_IsolationCorrectionTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
-	  Warning("execute()", "Problem in CP::IsolationCorrection::applyCorrection()");
+	  ATH_MSG_WARNING( "Problem in CP::IsolationCorrection::applyCorrection()");
 	}
       }
 
-      if ( m_debug ) { Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (phSC_itr->pt() * 1e-3)); }
+      if ( m_debug ) { ATH_MSG_INFO( "Calibrated pt with systematic: " << syst_it.name() << " , pt = " << phSC_itr->pt() * 1e-3 << " GeV"); }
 
       EL_RETURN_CHECK ( "PhotonCalibrator::execute()", decorate(phSC_itr));
 
@@ -417,7 +417,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
     } // close calibration loop
 
     if ( !xAOD::setOriginalObjectLink(*inPhotons, *(calibPhotonsSC.first)) ) {
-      Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
+      ATH_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
     // save pointers in ConstDataVector with same order
@@ -456,7 +456,7 @@ EL::StatusCode PhotonCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -475,7 +475,7 @@ EL::StatusCode PhotonCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances...");
+  ATH_MSG_INFO( "Deleting tool instances...");
 
   if ( m_EgammaCalibrationAndSmearingTool ) {
     delete m_EgammaCalibrationAndSmearingTool;
@@ -516,7 +516,7 @@ EL::StatusCode PhotonCalibrator :: finalize ()
     m_photonLooseEffTool = nullptr;
   }
 
-  Info("finalize()", "Finalization done.");
+  ATH_MSG_INFO( "Finalization done.");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -536,7 +536,7 @@ EL::StatusCode PhotonCalibrator :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize");
+  ATH_MSG_INFO( "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
@@ -546,7 +546,7 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
   // (1) apply fudge factors
   if(!m_useAFII && m_isMC){
     if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
-      Error("decorate()", "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
+      ATH_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
       return EL::StatusCode::FAILURE;
     }
   }
@@ -635,7 +635,7 @@ EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xA
     // in order to use EventInfo
     // some tools are initialized after the first events are stored from file
     if (m_toolInitializationAtTheFirstEventDone) {
-      Error("toolInitializationAtTheFirstEvent ()", "please call this function only when m_toolInitializationAtTheFirstEventDone = false");
+      ATH_MSG_ERROR( "please call this function only when m_toolInitializationAtTheFirstEventDone = false");
       return EL::StatusCode::FAILURE;
     }
 
@@ -648,8 +648,7 @@ EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xA
       }
     }
 
-    if (m_debug) { Info("toolInitializationAtTheFirstEvent()", "isSimulation=%s isAFII=%s selected dataType=%d",
-			( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ? "Y" : "N"), (m_useAFII ? "Y" : "N" ), dataType ); }
+    if (m_debug) { ATH_MSG_INFO( "isSimulation=" << ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ? "Y" : "N") << " isAFII=" << (m_useAFII ? "Y" : "N" ) << " selected dataType=" << dataType ); }
 
     // photon efficiency correction tool
     //----------------------------------

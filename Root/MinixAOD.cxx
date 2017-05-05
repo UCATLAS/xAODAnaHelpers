@@ -50,7 +50,7 @@ MinixAOD :: MinixAOD (std::string className) :
     m_fileMetaDataTool(nullptr),
     m_trigMetaDataTool(nullptr)
 {
-  Info("MinixAOD()", "Calling constructor");
+  ATH_MSG_INFO( "Calling constructor");
 
   m_outputFileName = "out_miniXAOD";
   m_createOutputFile = true;
@@ -65,7 +65,7 @@ MinixAOD :: MinixAOD (std::string className) :
 
 EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
 {
-  if(m_debug) Info("setupJob()", "Calling setupJob");
+  if(m_debug) ATH_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MinixAOD" ).ignore(); // call before opening first file
@@ -111,7 +111,7 @@ EL::StatusCode MinixAOD :: changeInput (bool firstFile)
 
 	  // Create our cutbookkeeper
 	  m_outputCBK=new xAOD::CutBookkeeper();
-	  m_outputCBK->setName("MinixAODKernel");    
+	  m_outputCBK->setName("MinixAODKernel");
 	  m_outputCBK->setCycle(inputCBKContainer->maxCycle()+1);
 	}
 
@@ -119,14 +119,14 @@ EL::StatusCode MinixAOD :: changeInput (bool firstFile)
       m_outputCBKContainer->merge(inputCBKContainer);
     }
 
-  return EL::StatusCode::SUCCESS; 
+  return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode MinixAOD :: fileExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode MinixAOD :: initialize ()
 {
-  if(m_debug) Info("initialize()", "Calling initialize");
+  if(m_debug) ATH_MSG_INFO( "Calling initialize");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -143,7 +143,7 @@ EL::StatusCode MinixAOD :: initialize ()
 
 
     RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->initialize(), "Could not initialize FileMetaDataTool");
-    if(m_debug) Info("initialize()", "FileMetaDataTool initialized...");
+    if(m_debug) ATH_MSG_INFO( "FileMetaDataTool initialized...");
   }
 
   if(m_copyTriggerInfo){
@@ -153,7 +153,7 @@ EL::StatusCode MinixAOD :: initialize ()
       RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->setProperty("OutputLevel", MSG::VERBOSE ), "Could not set verbosity on TriggerMenuMetaDataTool");
 
     RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
-    if(m_debug) Info("initialize()", "TriggerMenuMetaDataTool initialized...");
+    if(m_debug) ATH_MSG_INFO( "TriggerMenuMetaDataTool initialized...");
 
     if(m_debug) std::cout << "Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file." << std::endl;
     m_simpleCopyKeys_vec.push_back("xTrigDecision");
@@ -195,14 +195,14 @@ EL::StatusCode MinixAOD :: initialize ()
     m_vectorCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
   }
 
-  if(m_debug) Info("initialize()", "MinixAOD Interface succesfully initialized!" );
+  if(m_debug) ATH_MSG_INFO( "MinixAOD Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode MinixAOD :: execute ()
 {
-  if(m_verbose) Info("execute()", "Dumping objects...");
+  if(m_verbose) ATH_MSG_INFO( "Dumping objects...");
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, m_verbose) ,"");
@@ -329,7 +329,7 @@ EL::StatusCode MinixAOD :: execute ()
 
 
   m_event->fill();
-  if(m_debug) Info("execute()", "Finished dumping objects...");
+  if(m_debug) ATH_MSG_INFO( "Finished dumping objects...");
 
   return EL::StatusCode::SUCCESS;
 

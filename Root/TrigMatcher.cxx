@@ -40,7 +40,7 @@ TrigMatcher :: TrigMatcher (const std::string& className)
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  Info("TrigMatcher()", "Calling constructor");
+  ATH_MSG_INFO( "Calling constructor");
 
   m_debug           = false;
 
@@ -71,7 +71,7 @@ EL::StatusCode TrigMatcher :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  ATH_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TrigMatcher" ).ignore(); // call before opening first file
@@ -81,7 +81,7 @@ EL::StatusCode TrigMatcher :: setupJob (EL::Job& job)
 
 EL::StatusCode TrigMatcher :: initialize ()
 {
-  Info("initialize()", "Initializing TrigMatcher Interface... ");
+  ATH_MSG_INFO( "Initializing TrigMatcher Interface... ");
 
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
@@ -91,7 +91,7 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   // Configuration
   if ( m_inContainerName.empty() ) {
-    Error("initialize()", "InputContainer is empty!");
+    ATH_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -115,7 +115,7 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   // **********************************************************************************************
 
-  Info("initialize()", "TrigMatcher Interface succesfully initialized!" );
+  ATH_MSG_INFO( "TrigMatcher Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -127,7 +127,7 @@ EL::StatusCode TrigMatcher :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying trigger matching... "); }
+  if ( m_debug ) { ATH_MSG_INFO( "Applying trigger matching... "); }
 
   const xAOD::IParticleContainer* inParticles(nullptr);
 
@@ -152,7 +152,7 @@ EL::StatusCode TrigMatcher :: execute ()
     //
     for ( auto systName : *systNames) {
 
-      if ( m_debug ) { Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() ); }
+      if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  input container name:  " << m_inContainerName+systName ); }
 
       RETURN_CHECK("TrigMatcher::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName + systName, m_event, m_store, m_verbose), "");
       ANA_CHECK( executeMatching( inParticles ) );
@@ -169,17 +169,17 @@ EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* 
 
   for( auto particle : *inParticles )
     {
-      if ( m_debug ) { Info("executeMatching()", "Trigger matching an object"); }
+      if ( m_debug ) { ATH_MSG_INFO( "Trigger matching an object"); }
 
       if ( !isTrigMatchedDecor.isAvailable( *particle ) )
 	isTrigMatchedDecor( *particle ) = std::vector<std::string>();
 
       for ( auto const &chain : m_trigChainsList ) {
-	if ( m_debug ) { Info("executeMatching()", "\t checking trigger chain %s", chain.c_str()); }
+	if ( m_debug ) { ATH_MSG_INFO( "\t checking trigger chain " << chain); }
 
 	bool matched = m_trigMatchTool->match( *particle, chain, 0.07 );
-	if ( m_debug ) { Info("executeMatching()", "\t\t result = %d", matched ); }
-	if(matched) isTrigMatchedDecor( *particle ).push_back( chain );	
+	if ( m_debug ) { ATH_MSG_INFO( "\t\t result = " << matched ); }
+	if(matched) isTrigMatchedDecor( *particle ).push_back( chain );
       }
     }
 
@@ -188,7 +188,7 @@ EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* 
 
 EL::StatusCode TrigMatcher :: finalize ()
 {
-  Info("finalize()", "Cleaning up...");
+  ATH_MSG_INFO( "Cleaning up...");
   if(m_trigMatchTool) { delete m_trigMatchTool; m_trigMatchTool=nullptr; }
 
   return EL::StatusCode::SUCCESS;

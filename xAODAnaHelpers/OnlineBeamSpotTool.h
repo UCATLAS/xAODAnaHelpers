@@ -12,9 +12,9 @@ namespace xAH {
   class OnlineBeamSpotTool
   {
 
-  public: 
+  public:
     enum BSData{
-      BSx, 
+      BSx,
       BSy,
       BSz
     };
@@ -44,7 +44,7 @@ namespace xAH {
 
     OnlineBeamSpotTool();
     ~OnlineBeamSpotTool();
-    
+
     float getOnlineBSInfo(const xAOD::EventInfo* eventInfo, BSData datakey);
     float getOnlineBSInfo(const xAH::EventInfo* eventInfo, BSData datakey);
     float getOnlineBSInfo(int runNumber, int lumiBlock, bool isMC, BSData datakey);
@@ -65,7 +65,7 @@ namespace xAH {
     LBData*  m_cachedLBData;
     LBData*  m_mcLBData;
 
-    
+
   };
 
 }//xAH

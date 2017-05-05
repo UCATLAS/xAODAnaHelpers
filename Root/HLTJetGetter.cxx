@@ -38,7 +38,7 @@ HLTJetGetter :: HLTJetGetter (std::string className) :
 Algorithm(className),
 m_trigDecTool(nullptr)
 {
-    Info("HLTJetGetter()", "Calling constructor");
+    ATH_MSG_INFO( "Calling constructor");
 
     // regex list of triggers
     m_triggerList = ".*";
@@ -54,7 +54,7 @@ m_trigDecTool(nullptr)
 
 EL::StatusCode HLTJetGetter :: setupJob (EL::Job& job)
 {
-    Info("setupJob()", "Calling setupJob");
+    ATH_MSG_INFO( "Calling setupJob");
     job.useXAOD ();
     xAOD::Init( "HLTJetGetter" ).ignore(); // call before opening first file
     return EL::StatusCode::SUCCESS;
@@ -86,7 +86,7 @@ EL::StatusCode HLTJetGetter :: initialize ()
 {
 
 
-    Info("initialize()", "Initializing HLTJetGetter Interface... ");
+    ATH_MSG_INFO( "Initializing HLTJetGetter Interface... ");
 
     m_event = wk()->xaodEvent();
     m_store = wk()->xaodStore();
@@ -110,12 +110,12 @@ EL::StatusCode HLTJetGetter :: initialize ()
         RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
         RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
         RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
-        Info("initialize()", "Successfully configured Trig::TrigDecisionTool!");
+        ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
     }
 
     // If there is no InputContainer we must stop
     if ( m_inContainerName.empty() ) {
-        Error("initialize()", "InputContainer is empty!");
+        ATH_MSG_ERROR( "InputContainer is empty!");
         return EL::StatusCode::FAILURE;
     }
 
@@ -125,7 +125,7 @@ EL::StatusCode HLTJetGetter :: initialize ()
 
 EL::StatusCode HLTJetGetter :: execute ()
 {
-    if ( m_debug ) { Info("execute()", "Getting HLT jets... "); }
+    if ( m_debug ) { ATH_MSG_INFO( "Getting HLT jets... "); }
 
     //
     // Create the new container and its auxiliary store.
@@ -159,7 +159,7 @@ EL::StatusCode HLTJetGetter :: execute ()
 
 EL::StatusCode HLTJetGetter :: postExecute ()
 {
-    if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+    if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
     return EL::StatusCode::SUCCESS;
 }
 
@@ -167,7 +167,7 @@ EL::StatusCode HLTJetGetter :: postExecute ()
 
 EL::StatusCode HLTJetGetter :: finalize ()
 {
-    Info("finalize()", "Deleting tool instances...");
+    ATH_MSG_INFO( "Deleting tool instances...");
 
     // this is necessary because in most cases the pointer will be set to null
     // after deletion in BasicEventSelection, but it will not propagate here
@@ -183,7 +183,7 @@ EL::StatusCode HLTJetGetter :: finalize ()
 
 EL::StatusCode HLTJetGetter :: histFinalize ()
 {
-    Info("histFinalize()", "Calling histFinalize");
+    ATH_MSG_INFO( "Calling histFinalize");
     RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
     return EL::StatusCode::SUCCESS;
 }

@@ -14,8 +14,11 @@
 
 // for StatusCode::isSuccess
 #include "AsgTools/StatusCode.h"
-
 #include "AsgTools/ToolStore.h"
+
+// messaging includes
+#include <AsgTools/MsgStream.h>
+#include <AsgTools/MsgStreamMacros.h>
 
 namespace xAH {
 
@@ -222,10 +225,10 @@ namespace xAH {
 
             if ( !asg::ToolStore::contains<T>(tool_name) ) {
               m_toolAlreadyUsed[tool_name] = false;
-              Info("checkToolStore()", "Tool %s is being used for the first time!", tool_name.c_str() );
+              ATH_MSG_INFO("Tool " << tool_name << " is being used for the first time!" );
             } else {
               m_toolAlreadyUsed[tool_name] = true;
-              Info("checkToolStore()", "Tool %s has been already used!", tool_name.c_str() );
+              ATH_MSG_INFO("Tool " << tool_name << " has been already used!" );
             }
 
             return StatusCode::SUCCESS;
