@@ -55,7 +55,7 @@ JetCalibrator :: JetCalibrator (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("JetCalibrator()", "Calling constructor");
+  ATH_MSG_INFO( "Calling constructor");
 
 
   // read debug flag from .config file
@@ -116,7 +116,7 @@ EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  ATH_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "JetCalibrator" ).ignore(); // call before opening first file
@@ -169,7 +169,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing JetCalibrator Interface... ");
+  ATH_MSG_INFO( "Initializing JetCalibrator Interface... ");
   m_runSysts = false; //Ensure this starts false
 
   m_event = wk()->xaodEvent();
@@ -179,11 +179,11 @@ EL::StatusCode JetCalibrator :: initialize ()
   RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   // If there is no InputContainer we must stop
   if ( m_inContainerName.empty() ) {
-    Error("initialize()", "InputContainer is empty!");
+    ATH_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -198,7 +198,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   if ( m_forceInsitu && !m_isMC && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
 
   if( m_isMC && m_calibSequence.find("Insitu") != std::string::npos){
-    Error("initialize()", "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
+    ATH_MSG_ERROR( "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
     return EL::StatusCode::FAILURE;
   }
 
@@ -220,10 +220,10 @@ EL::StatusCode JetCalibrator :: initialize ()
     //
     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
     if ( m_setAFII ) {
-      Info("initialize()", "Setting simulation flavour to AFII");
+      ATH_MSG_INFO( "Setting simulation flavour to AFII");
       m_isFullSim = false;
     }else if ( stringMeta.empty() ) {
-      Warning("initialize()", "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
+      ATH_MSG_WARNING( "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
     } else {
       m_isFullSim = (stringMeta == "AFII") ? false : true;
     }
@@ -298,7 +298,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // Get a list of recommended systematics for this tool
   //
   const CP::SystematicSet recSyst = CP::SystematicSet();
-  Info("initialize()"," Initializing Jet Calibrator Systematics :");
+  ATH_MSG_INFO(" Initializing Jet Calibrator Systematics :");
 
   //
   // Make a list of systematics to be used, based on configuration input
@@ -308,7 +308,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   for(unsigned int i=0; i<m_systList.size(); i++)
     m_systType.insert(m_systType.begin(), 0); // Push systType nominal for this case
 
-  Info("initialize()","Will be using JetCalibrationTool systematic:");
+  ATH_MSG_INFO("Will be using JetCalibrationTool systematic:");
 
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
@@ -321,7 +321,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetUncertaintiesTool_handle, JetUncertaintiesTool), "Could not make JetUncertaintiesTool");
 
       m_JESUncertConfig = gSystem->ExpandPathName( m_JESUncertConfig.c_str() );
-      Info("JetCalibrator::initialize()","Initialize JES UNCERT with %s", m_JESUncertConfig.c_str());
+      ATH_MSG_INFO("Initialize JES UNCERT with " << m_JESUncertConfig);
       RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo), "Failed to set JetDefinition");
       RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("MCType",m_JESUncertMCType), "Failed to set MCType");
       RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("ConfigFile", m_JESUncertConfig), "Failed to set ConfigFile");
@@ -332,13 +332,13 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
 
 
-    Info("initialize()"," Initializing Jet Systematics :");
+    ATH_MSG_INFO(" Initializing Jet Systematics :");
     const CP::SystematicSet recSysts = m_JetUncertaintiesTool_handle->recommendedSystematics();
 
     //If just one systVal, then push it to the vector
     RETURN_CHECK("JetCalibrator::initialize()", this->parseSystValVector(), "Failed to parse vector of systematic sigma values.");
     if( m_systValVector.size() == 0) {
-      if ( m_debug ){ Info("initialize()", "Pushing the following systVal to m_systValVector: %f", m_systVal ); }
+      if ( m_debug ){ ATH_MSG_INFO( "Pushing the following systVal to m_systValVector: " << m_systVal ); }
       m_systValVector.push_back(m_systVal);
     }
 
@@ -349,7 +349,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       for(unsigned int i=0; i < JESSysList.size(); ++i){
         // do not add another nominal syst to the list!!
         // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
-        if (JESSysList.at(i).empty() || JESSysList.at(i) == CP::SystematicSet() ) { Info("initialize()","JESSysList Empty at index %d.",i); continue; }
+        if (JESSysList.at(i).empty() || JESSysList.at(i) == CP::SystematicSet() ) { ATH_MSG_INFO("JESSysList Empty at index " << i); continue; }
         m_systList.push_back(  JESSysList.at(i) );
         m_systType.push_back(1);
       }
@@ -361,13 +361,13 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_runSysts = true;
       // setup uncertainity tool for systematic evaluation
       if ( m_JetUncertaintiesTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
-        Error("JetCalibrator:initialize()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
+        ATH_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
         return EL::StatusCode::FAILURE;
       }
     }
   } // running systematics
   else {
-    Info("initialize()", "No JES Uncertainities considered");
+    ATH_MSG_INFO( "No JES Uncertainities considered");
   }
 
   // initialize and configure the JET Smearing tool
@@ -403,13 +403,13 @@ EL::StatusCode JetCalibrator :: initialize ()
 
 
     const CP::SystematicSet recSysts = m_JERSmearingTool_handle->recommendedSystematics();
-    Info("initialize()", " Initializing JER Systematics :");
+    ATH_MSG_INFO( " Initializing JER Systematics :");
 
     std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1, m_debug ); //Only 1 sys allowed
     for(unsigned int i=0; i < JERSysList.size(); ++i){
       // do not add another nominal syst to the list!!
       // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
-      if (JERSysList.at(i).empty() || JERSysList.at(i) == CP::SystematicSet() ) { Info("initialize()","JERSysList Empty at index %d.",i); continue; }
+      if (JERSysList.at(i).empty() || JERSysList.at(i) == CP::SystematicSet() ) { ATH_MSG_INFO("JERSysList Empty at index " << i); continue; }
       m_systList.push_back(  JERSysList.at(i) );
       m_systType.push_back(2);
     }
@@ -420,7 +420,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   }
   else {
-    Info("initialize()", "No JER Uncertainities considered");
+    ATH_MSG_INFO( "No JER Uncertainities considered");
   }
 
   // initialize and configure the JVT correction tool
@@ -436,11 +436,11 @@ EL::StatusCode JetCalibrator :: initialize ()
   std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!");
+      ATH_MSG_INFO("\t Running w/ nominal configuration only!");
       break;
     }
     SystJetsNames->push_back(syst_it.name());
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
+    ATH_MSG_INFO("\t " << syst_it.name());
   }
 
   RETURN_CHECK("JetCalibrator::initialize()",m_store->record(SystJetsNames, "jets_Syst"+m_name ), "Failed to record vector of jet systs names.");
@@ -457,7 +457,7 @@ EL::StatusCode JetCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Jet Calibration and Cleaning... "); }
+  if ( m_debug ) { ATH_MSG_INFO( "Applying Jet Calibration and Cleaning... "); }
 
   m_numEvent++;
 
@@ -504,14 +504,14 @@ EL::StatusCode JetCalibrator :: execute ()
 
 
     if ( m_JetCalibrationTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-      Error("execute()", "JetCalibration tool reported a CP::CorrectionCode::Error");
-      Error("execute()", "%s", m_name.c_str());
+      ATH_MSG_ERROR( "JetCalibration tool reported a CP::CorrectionCode::Error");
+      ATH_MSG_ERROR( m_name );
       return StatusCode::FAILURE;
     }
 
     if(m_doJetTileCorr && !m_isMC){
       if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
-        Error("execute()", "JetTileCorrection tool reported a CP::CorrectionCode::Error");
+        ATH_MSG_ERROR( "JetTileCorrection tool reported a CP::CorrectionCode::Error");
       }
     }
 
@@ -543,7 +543,7 @@ EL::StatusCode JetCalibrator :: execute ()
         // JES Uncertainty Systematic
         if( m_debug ) { std::cout << "Configure JES for systematic variation : " << syst_it.name() << std::endl; }
         if ( m_JetUncertaintiesTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-          Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
+          ATH_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
           return EL::StatusCode::FAILURE;
         }
 
@@ -556,8 +556,8 @@ EL::StatusCode JetCalibrator :: execute ()
           }
 
           if ( m_JetUncertaintiesTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-            Error("execute()", "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
-            Error("execute()", "%s", m_name.c_str());
+            ATH_MSG_ERROR( "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
+            ATH_MSG_ERROR( m_name );
           }
         }//for jets
       }//JES
@@ -566,20 +566,20 @@ EL::StatusCode JetCalibrator :: execute ()
         if( m_debug ) { std::cout << "Configure JER for systematic variation : " << syst_it.name() << std::endl; }
         if( thisSysType == 2){ //apply this systematic
           if ( m_JERSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-            Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
+            ATH_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
             return EL::StatusCode::FAILURE;
           }
         }else{ //apply nominal, which is always first element of m_systList
           if ( m_JERSmearingTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
-            Error("execute()", "Cannot configure JetUncertaintiesTool for systematic %s", m_systName.c_str());
+            ATH_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
             return EL::StatusCode::FAILURE;
           }
         }
         // JER Uncertainty Systematic
         for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
           if ( m_JERSmearingTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-            Error("execute()", "JERSmearTool tool reported a CP::CorrectionCode::Error");
-            Error("execute()", "%s", m_name.c_str());
+            ATH_MSG_ERROR( "JERSmearTool tool reported a CP::CorrectionCode::Error");
+            ATH_MSG_ERROR( m_name );
           }
         }//for jets
       }//JER
@@ -596,7 +596,7 @@ EL::StatusCode JetCalibrator :: execute ()
         if(m_cleanParent){
           ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
           if(!el_parent.isValid()){
-            Error("jetDecision()", "Could not make jet cleaning decision on the parent! It doesn't exist.");
+            ATH_MSG_ERROR( "Could not make jet cleaning decision on the parent! It doesn't exist.");
           } else {
             jetToClean = *el_parent;
           }
@@ -613,7 +613,7 @@ EL::StatusCode JetCalibrator :: execute ()
     }
 
     if ( !xAOD::setOriginalObjectLink(*inJets, *(uncertCalibJetsSC.first)) ) {
-      Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
+      ATH_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
     // Recalculate JVT using calibrated Jets
@@ -660,7 +660,7 @@ EL::StatusCode JetCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -697,7 +697,7 @@ EL::StatusCode JetCalibrator :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize");
+  ATH_MSG_INFO( "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
