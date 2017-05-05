@@ -35,7 +35,7 @@ EL::StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode ClusterHistsAlgo :: histInitialize ()
 {
 
-  Info("histInitialize()", "%s", m_name.c_str() );
+  ATH_MSG_INFO( m_name );
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
@@ -57,7 +57,7 @@ EL::StatusCode ClusterHistsAlgo :: changeInput (bool /*firstFile*/) { return EL:
 
 EL::StatusCode ClusterHistsAlgo :: initialize ()
 {
-  Info("initialize()", "ClusterHistsAlgo");
+  ATH_MSG_INFO( "ClusterHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
