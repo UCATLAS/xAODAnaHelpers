@@ -772,7 +772,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 if ( m_debug ) {
     	   ATH_MSG_INFO( "===>>>");
     	   ATH_MSG_INFO( " ");
-  	   ATH_MSG_INFO( "Muon " << idx << ", pt = " mu_itr->pt()*1e-3 << " GeV" );
+  	   ATH_MSG_INFO( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV" );
   	   ATH_MSG_INFO( " ");
   	   ATH_MSG_INFO( "Reco eff. SF decoration: " << m_outputSystNamesReco );
   	   ATH_MSG_INFO( " ");
