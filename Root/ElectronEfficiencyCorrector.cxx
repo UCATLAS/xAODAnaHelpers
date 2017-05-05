@@ -156,7 +156,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ) {
-    Error("initialize()", "InputContainer is empty!");
+    ATH_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -189,7 +189,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     m_PID_WP = HelperFunctions::parse_wp( "ID", m_corrFileNamePID );
 
     if ( m_PID_WP.empty() ) {
-      Error("initialize()", "ID working point for electronID SF not found in config file! This should not happen. Exiting." );
+      ATH_MSG_ERROR( "ID working point for electronID SF not found in config file! This should not happen. Exiting." );
       return EL::StatusCode::FAILURE;
     }
 
@@ -252,11 +252,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     m_IsoPID_WP = HelperFunctions::parse_wp( "ID", m_corrFileNameIso );
 
     if ( m_Iso_WP.empty() ) {
-      Error("initialize()","ISO working point for isolation SF not found in config file! This should not happen. Exiting." );
+      ATH_MSG_ERROR("ISO working point for isolation SF not found in config file! This should not happen. Exiting." );
       return EL::StatusCode::FAILURE;
     }
     if ( m_IsoPID_WP.empty() ) {
-      Error("initialize()", "ID working point for isolation SF not found in config file! This should not happen. Exiting." );
+      ATH_MSG_ERROR( "ID working point for isolation SF not found in config file! This should not happen. Exiting." );
       return EL::StatusCode::FAILURE;
     }
 
@@ -368,7 +368,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     m_WorkingPointTrigTrig = HelperFunctions::parse_wp( "TRIG", m_corrFileNameTrigMCEff );
 
     if ( m_WorkingPointIDTrig.empty() ) {
-      Error("initialize()", "ID working point for trigger SF not found in config file! This should not happen. Exiting." );
+      ATH_MSG_ERROR( "ID working point for trigger SF not found in config file! This should not happen. Exiting." );
       return EL::StatusCode::FAILURE;
     }
 
