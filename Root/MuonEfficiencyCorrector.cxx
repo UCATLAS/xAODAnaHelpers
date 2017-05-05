@@ -721,7 +721,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
         ATH_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
-      if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name(); }
+      if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name()); }
 
       // and now apply reco efficiency SF!
       //
