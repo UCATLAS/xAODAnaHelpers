@@ -56,7 +56,7 @@ ElectronCalibrator :: ElectronCalibrator (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("ElectronCalibrator()", "Calling constructor");
+  ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
 
@@ -94,7 +94,7 @@ EL::StatusCode ElectronCalibrator :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  ATH_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "ElectronCalibrator" ).ignore(); // call before opening first file
@@ -146,12 +146,12 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing ElectronCalibrator Interface... ");
+  ATH_MSG_INFO( "Initializing ElectronCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ) {
     Error("initialize()", "InputContainer is empty!");
@@ -201,7 +201,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
     if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ){
 
-      Info("initialize()", "Setting simulation flavour to AFII");
+      ATH_MSG_INFO( "Setting simulation flavour to AFII");
       RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1),"Failed to set property useAFII");
 
     }
@@ -213,22 +213,22 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   //const CP::SystematicSet recSyst = CP::SystematicSet();
   const CP::SystematicSet& recSyst = m_EgammaCalibrationAndSmearingTool->recommendedSystematics();
 
-  Info("initialize()"," Initializing Electron Calibrator Systematics :");
+  ATH_MSG_INFO(" Initializing Electron Calibrator Systematics :");
   //
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
 
-  Info("initialize()","Will be using EgammaCalibrationAndSmearingTool systematic:");
+  ATH_MSG_INFO("Will be using EgammaCalibrationAndSmearingTool systematic:");
   std::vector< std::string >* SystElectronsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
-      Info("initialize()","\t Running w/ nominal configuration only!");
+      ATH_MSG_INFO("\t Running w/ nominal configuration only!");
       break;
     }
     SystElectronsNames->push_back(syst_it.name());
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
+    ATH_MSG_INFO("\t " << syst_it.name());
   }
 
   RETURN_CHECK("ElectronCalibrator::initialize()",m_store->record(SystElectronsNames, "ele_Syst"+m_name ), "Failed to record vector of ele systs names.");
@@ -249,7 +249,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   // ***********************************************************
 
-  Info("initialize()", "ElectronCalibrator Interface succesfully initialized!" );
+  ATH_MSG_INFO( "ElectronCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -262,7 +262,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Electron Calibration ... "); }
+  if ( m_debug ) { ATH_MSG_INFO( "Applying Electron Calibration ... "); }
 
   m_numEvent++;
 
@@ -323,7 +323,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
       if ( m_debug ) {
 	Info( "execute", "Checking electron %i, raw pt = %.2f GeV ", idx, (elSC_itr->pt() * 1e-3) );
 	if ( elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
-	  Warning( "execute", "electron %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (elSC_itr->pt() * 1e-3) );
+	  ATH_MSG_WARNING( "electron " << idx << ", raw pt = " << elSC_itr->pt() * 1e-3 << " GeV, does not have caloCluster()! " );
 	}
       }
 
@@ -331,14 +331,14 @@ EL::StatusCode ElectronCalibrator :: execute ()
       //
       if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
 	if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
-	  Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
+	  ATH_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
 	}
 	if ( elSC_itr->pt() > 7e3 && m_IsolationCorrectionTool->CorrectLeakage( *elSC_itr ) != CP::CorrectionCode::Ok ) {
-	  Warning("execute()", "Problem in CP::IsolationCorrectionTool::CorrectLeakage()");
+	  ATH_MSG_WARNING( "Problem in CP::IsolationCorrectionTool::CorrectLeakage()");
 	}
       }
 
-      if ( m_debug ) { Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (elSC_itr->pt() * 1e-3)); }
+      if ( m_debug ) { ATH_MSG_INFO( "Calibrated pt with systematic: " << syst_it.name() <<" , pt = " << elSC_itr->pt() * 1e-3 << " GeV"); }
 
       ++idx;
 
@@ -384,7 +384,7 @@ EL::StatusCode ElectronCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -403,7 +403,7 @@ EL::StatusCode ElectronCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances...");
+  ATH_MSG_INFO( "Deleting tool instances...");
 
   if ( m_EgammaCalibrationAndSmearingTool ) { m_EgammaCalibrationAndSmearingTool = nullptr; delete m_EgammaCalibrationAndSmearingTool; }
   if ( m_IsolationCorrectionTool )          { m_IsolationCorrectionTool = nullptr; delete m_IsolationCorrectionTool; }
@@ -426,7 +426,7 @@ EL::StatusCode ElectronCalibrator :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize");
+  ATH_MSG_INFO( "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
