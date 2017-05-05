@@ -511,7 +511,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       if ( m_debug ) {
          ATH_MSG_INFO( "===>>>");
          ATH_MSG_INFO( " ");
-	 ATH_MSG_INFO( "Jet " << idx << " pt = " << je_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
+	 ATH_MSG_INFO( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
 	 ATH_MSG_INFO( " ");
 	 ATH_MSG_INFO( "BTag SF decoration: " << m_decorSF );
 	 ATH_MSG_INFO( " ");
