@@ -212,7 +212,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //
   TTree* MetaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
   if ( !MetaData ) {
-    Error("fileExecute()", "MetaData tree not found! Exiting.");
+    ATH_MSG_ERROR( "MetaData tree not found! Exiting.");
     return EL::StatusCode::FAILURE;
   }
   MetaData->LoadTree(0);
@@ -229,7 +229,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       //
       const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
       if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
-	  Error("fileExecute()","Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
+	  ATH_MSG_ERROR("Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
 	  return EL::StatusCode::FAILURE;
       }
       bool allFromUnknownStream(true);
@@ -252,7 +252,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       //
       const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
       if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ) {
-	  Error("fileExecute()","Failed to retrieve CutBookkeepers from MetaData! Exiting.");
+	  ATH_MSG_ERROR("Failed to retrieve CutBookkeepers from MetaData! Exiting.");
 	  return EL::StatusCode::FAILURE;
       }
 
@@ -302,7 +302,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
 
       if ( m_isDerivation && !DxAODEventsCBK ) {
-        Error("fileExecute()", "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
+        ATH_MSG_ERROR( "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
         return EL::StatusCode::FAILURE;
       }
 
@@ -603,7 +603,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // pileup reweighing tool is needed to get the data weight for unprescaling
   if ( m_savePrescaleDataWeight && !m_doPUreweighting) {
 
-    Error("initialize()", "m_savePrescaleDataWeight is true but m_doPUreweighting is false !!!");
+    ATH_MSG_ERROR( "m_savePrescaleDataWeight is true but m_doPUreweighting is false !!!");
     return EL::StatusCode::FAILURE;
 
   }
