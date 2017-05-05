@@ -718,7 +718,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       // apply syst
       //
       if ( m_muRecoSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-    	Error("executeSF()", "Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name().c_str());
+        ATH_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name(); }
@@ -836,7 +836,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       // apply syst
       //
       if ( m_muIsoSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-    	Error("executeSF()", "Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name().c_str());
+    	ATH_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name()); }
@@ -1203,7 +1203,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       //
       //if ( m_muTTVASF_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       if ( m_muTTVASF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-       	Error("executeSF()", "Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name().c_str());
+       	ATH_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name()); }
