@@ -41,12 +41,12 @@ DebugTool :: DebugTool (std::string className) :
     Algorithm(className),
     m_printStore(false)
 {
-  Info("DebugTool()", "Calling constructor");
+  ATH_MSG_INFO( "Calling constructor");
 }
 
 EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 {
-  Info("setupJob()", "Calling setupJob");
+  ATH_MSG_INFO( "Calling setupJob");
   job.useXAOD ();
   xAOD::Init( "DebugTool" ).ignore(); // call before opening first file
   return EL::StatusCode::SUCCESS;
@@ -56,7 +56,7 @@ EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 
 EL::StatusCode DebugTool :: histInitialize ()
 {
-  Info("histInitialize()", "Calling histInitialize");
+  ATH_MSG_INFO( "Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   return EL::StatusCode::SUCCESS;
@@ -66,7 +66,7 @@ EL::StatusCode DebugTool :: histInitialize ()
 
 EL::StatusCode DebugTool :: fileExecute ()
 {
-  Info("fileExecute()", "Calling fileExecute");
+  ATH_MSG_INFO( "Calling fileExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -74,7 +74,7 @@ EL::StatusCode DebugTool :: fileExecute ()
 
 EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 {
-  Info("changeInput()", "Calling changeInput");
+  ATH_MSG_INFO( "Calling changeInput");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -82,12 +82,12 @@ EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 
 EL::StatusCode DebugTool :: initialize ()
 {
-  Info("initialize()", " ");
+  ATH_MSG_INFO( " ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -96,9 +96,9 @@ EL::StatusCode DebugTool :: initialize ()
 
 EL::StatusCode DebugTool :: execute ()
 {
-  if ( m_debug ) { Info("execute()", " "); }
+  if ( m_debug ) { ATH_MSG_INFO( " "); }
 
-  Info("DebugTool", m_name.c_str());
+  ATH_MSG_INFO( m_name);
 
   //
   // look what we have in TStore
@@ -114,7 +114,7 @@ EL::StatusCode DebugTool :: execute ()
 
 EL::StatusCode DebugTool :: postExecute ()
 {
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
   return EL::StatusCode::SUCCESS;
 }
 
@@ -122,7 +122,7 @@ EL::StatusCode DebugTool :: postExecute ()
 
 EL::StatusCode DebugTool :: finalize ()
 {
-  Info("finalize()", "%s", m_name.c_str());
+  ATH_MSG_INFO( m_name );
   return EL::StatusCode::SUCCESS;
 }
 
@@ -130,7 +130,7 @@ EL::StatusCode DebugTool :: finalize ()
 
 EL::StatusCode DebugTool :: histFinalize ()
 {
-  Info("histFinalize()", "Calling histFinalize");
+  ATH_MSG_INFO( "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
