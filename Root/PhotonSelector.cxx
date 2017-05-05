@@ -245,7 +245,7 @@ EL::StatusCode PhotonSelector :: initialize ()
   RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
 
   for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
-    if ( m_debug ) { ATH_MSG_INFO( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool", ); }
+    if ( m_debug ) { ATH_MSG_INFO( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" ); }
     RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->addPhotonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
   }
 
