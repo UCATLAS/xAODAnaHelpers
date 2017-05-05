@@ -702,7 +702,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       // apply syst
       //
       if ( m_asgElEffCorrTool_elSF_PID->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-    	Error("executeSF()", "Failed to configure AsgElectronEfficiencyCorrectionTool_PID for systematic " << syst_it.name());
+    	ATH_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_PID for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_PID->appliedSystematics().name() ); }
