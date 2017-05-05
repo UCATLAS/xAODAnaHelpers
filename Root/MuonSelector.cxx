@@ -556,7 +556,7 @@ EL::StatusCode MuonSelector :: execute ()
       //
       eventPass = ( eventPass || eventPassThisSyst );
 
-      if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  output container name: " m_outContainerName+systName ); }
+      if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  output container name: " << m_outContainerName+systName ); }
 
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
