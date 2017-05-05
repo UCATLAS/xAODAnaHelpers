@@ -1062,7 +1062,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
           ATH_MSG_ERROR( "Failed to configure MuonTriggerScaleFactors for trigger " << trig_it << " systematic " << syst_it.name());
           return EL::StatusCode::FAILURE;
         }
-        if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic " << syst_it << " for trigger " << trig_it); }
+        if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic " << syst_it.name() << " for trigger " << trig_it); }
 
         // and now apply trigger efficiency SF!
         //
