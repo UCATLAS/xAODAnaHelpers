@@ -569,7 +569,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
              if ( m_debug ){
                  ATH_MSG_INFO( "Number of electrons: " << static_cast<int>(outputElectrons->size()) );
-	         ATH_MSG_INFO( "Input syst: " << systName.c_str() );
+	         ATH_MSG_INFO( "Input syst: " << systName );
                  unsigned int idx(0);
                  for ( auto el : *(outputElectrons) ) {
                      ATH_MSG_INFO( "Input electron " << idx << ", pt = " << el->pt() * 1e-3 << " GeV " );
@@ -819,7 +819,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       // apply syst
       //
       if ( m_asgElEffCorrTool_elSF_Iso->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-    	Error("executeSF()", "Failed to configure AsgElectronEfficiencyCorrectionTool_Iso for systematic " << syst_it.name().c_str());
+    	ATH_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Iso for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Iso->appliedSystematics().name() ); }
@@ -936,7 +936,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       // apply syst
       //
       if ( m_asgElEffCorrTool_elSF_Reco->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-    	Error("executeSF()", "Failed to configure AsgElectronEfficiencyCorrectionTool_Reco for systematic " << syst_it.name().c_str());
+    	ATH_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Reco for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Reco->appliedSystematics().name() ); }
@@ -1059,7 +1059,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       // apply syst
       //
       if ( m_asgElEffCorrTool_elSF_Trig->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-    	Error("executeSF()", "Failed to configure AsgElectronEfficiencyCorrectionTool_Trig for systematic " << syst_it.name().c_str());
+    	ATH_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Trig for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Trig->appliedSystematics().name() ); }
@@ -1180,7 +1180,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       // apply syst
       //
       if ( m_asgElEffCorrTool_elSF_TrigMCEff->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-    	Error("executeSF()", "Failed to configure AsgElectronEfficiencyCorrectionTool_TrigMCEff for systematic " << syst_it.name().c_str());
+    	ATH_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_TrigMCEff for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_TrigMCEff->appliedSystematics().name() ); }
