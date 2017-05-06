@@ -374,7 +374,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
       m_muTrigSF_tools[yr] = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_names[yr] );
 
       if ( m_AllowZeroSF ) {
-    	Warning( "MuonEfficiencyCorrector::initialize()", "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
+    	ATH_MSG_WARNING( "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
         RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("AllowZeroSF", m_AllowZeroSF ),"Failed to set AllowZeroSF property of MuonTriggerScaleFactors");
       }
 
