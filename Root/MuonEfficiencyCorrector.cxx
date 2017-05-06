@@ -267,7 +267,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     ATH_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool reco efficiency systematic:");
     for ( const auto& syst_it : m_systListReco ) {
       if ( m_systNameReco.empty() ) {
-    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
     	break;
       }
       ATH_MSG_INFO("\t " << syst_it.name());
@@ -312,7 +312,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     ATH_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool iso efficiency systematic:");
     for ( const auto& syst_it : m_systListIso ) {
       if ( m_systNameIso.empty() ) {
-    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
     	break;
       }
       ATH_MSG_INFO("\t " << syst_it.name());
@@ -374,7 +374,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
       m_muTrigSF_tools[yr] = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_names[yr] );
 
       if ( m_AllowZeroSF ) {
-    	Warning( "MuonEfficiencyCorrector::initialize()", "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
+    	ATH_MSG_WARNING( "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
         RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tools[yr]->setProperty("AllowZeroSF", m_AllowZeroSF ),"Failed to set AllowZeroSF property of MuonTriggerScaleFactors");
       }
 
@@ -418,7 +418,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   ATH_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
   for ( const auto& syst_it : m_systListTrig ) {
     if ( m_systNameTrig.empty() ) {
-  	Info("initialize()","\t Running w/ nominal configuration only!");
+  	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
   	break;
     }
     ATH_MSG_INFO("\t " << syst_it.name());
@@ -462,7 +462,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     ATH_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool TTVA efficiency systematic:");
     for ( const auto& syst_it : m_systListTTVA ) {
       if ( m_systNameTTVA.empty() ) {
-    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
     	break;
       }
       ATH_MSG_INFO("\t " << syst_it.name());
@@ -778,10 +778,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   ATH_MSG_INFO( " ");
     	   ATH_MSG_INFO( "Systematic: " << syst_it.name() );
     	   ATH_MSG_INFO( " ");
-    	   //Info( "executeSF()", "Reco efficiency:");
-    	   //Info( "executeSF()", "\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "mcEfficiency" ) );
+    	   //ATH_MSG_INFO("Reco efficiency:");
+    	   //ATH_MSG_INFO("\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "mcEfficiency" ) );
     	   ATH_MSG_INFO( "and its SF:");
-    	   //Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
+    	   //ATH_MSG_INFO("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
     	   ATH_MSG_INFO( "\t " << recoEffSF << " (from getEfficiencyScaleFactor())" );
     	   ATH_MSG_INFO( "--------------------------------------");
     	 }
@@ -887,10 +887,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   ATH_MSG_INFO( " ");
     	   ATH_MSG_INFO( "Systematic: " << syst_it.name() );
     	   ATH_MSG_INFO( " ");
-           //Info( "executeSF()", "Iso efficiency:");
-           //Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOmcEfficiency" ) );
+           //ATH_MSG_INFO("Iso efficiency:");
+           //ATH_MSG_INFO("\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOmcEfficiency" ) );
     	   ATH_MSG_INFO( "and its SF:");
-    	   //Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
+    	   //ATH_MSG_INFO("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
     	   ATH_MSG_INFO( "\t " << IsoEffSF << " (from getEfficiencyScaleFactor())");
     	   ATH_MSG_INFO( "--------------------------------------");
     	 }
@@ -1254,10 +1254,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   	   ATH_MSG_INFO( " ");
     	   ATH_MSG_INFO( "Systematic: " << syst_it.name());
     	   ATH_MSG_INFO( " ");
-           //Info( "executeSF()", "TTVA efficiency:");
-           //Info( "executeSF()", "\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "TTVAmcEfficiency" ) );
+           //ATH_MSG_INFO("TTVA efficiency:");
+           //ATH_MSG_INFO("\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "TTVAmcEfficiency" ) );
     	   ATH_MSG_INFO( "and its SF:");
-    	   //Info( "executeSF()", "\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "TTVAEfficiencyScaleFactor" ) );
+    	   //ATH_MSG_INFO("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "TTVAEfficiencyScaleFactor" ) );
     	   ATH_MSG_INFO( "\t " << TTVAEffSF << " (from getEfficiencyScaleFactor())" );
            ATH_MSG_INFO( "--------------------------------------");
     	 }

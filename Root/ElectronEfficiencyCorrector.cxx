@@ -231,7 +231,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     ATH_MSG_INFO("Will be using AsgElectronEfficiencyCorrectionTool PID efficiency systematic:");
     for ( const auto& syst_it : m_systListPID ) {
       if ( m_systNamePID.empty() ) {
-    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
     	break;
       }
       ATH_MSG_INFO("\t " << syst_it.name());
@@ -298,7 +298,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     ATH_MSG_INFO("Will be using AsgElectronEfficiencyCorrectionTool Iso efficiency systematic:");
     for ( const auto& syst_it : m_systListIso ) {
       if ( m_systNameIso.empty() ) {
-    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
     	break;
       }
       ATH_MSG_INFO("\t " << syst_it.name());
@@ -351,7 +351,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     ATH_MSG_INFO("Will be using AsgElectronEfficiencyCorrectionTool reco efficiency systematic:");
     for ( const auto& syst_it : m_systListReco ) {
       if ( m_systNameReco.empty() ) {
-    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
     	break;
       }
       ATH_MSG_INFO("\t " << syst_it.name());
@@ -413,7 +413,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     ATH_MSG_INFO("Will be using AsgElectronEfficiencyCorrectionTool Trig efficiency SF systematic:");
     for ( const auto& syst_it : m_systListTrig ) {
       if ( m_systNameTrig.empty() ) {
-    	Info("initialize()","\t Running w/ nominal configuration only!");
+    	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
     	break;
       }
       ATH_MSG_INFO("\t " << syst_it.name());
@@ -472,7 +472,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     ATH_MSG_INFO("Will be using AsgElectronEfficiencyCorrectionTool TrigMCEff efficiency systematic:");
     for ( const auto& syst_it : m_systListTrigMCEff ) {
       if ( m_systNameTrigMCEff.empty() ) {
-  	Info("initialize()","\t Running w/ nominal configuration only!");
+  	ATH_MSG_INFO("\t Running w/ nominal configuration only!");
   	break;
       }
       ATH_MSG_INFO("\t " << syst_it.name());

@@ -321,7 +321,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
       // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
       //
       if ( m_debug ) {
-	Info( "execute", "Checking electron %i, raw pt = %.2f GeV ", idx, (elSC_itr->pt() * 1e-3) );
+	ATH_MSG_INFO("Checking electron "<<idx<<", raw pt = "<<elSC_itr->pt()*1e-3<<" GeV ");
 	if ( elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
 	  ATH_MSG_WARNING( "electron " << idx << ", raw pt = " << elSC_itr->pt() * 1e-3 << " GeV, does not have caloCluster()! " );
 	}

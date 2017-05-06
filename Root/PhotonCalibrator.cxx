@@ -393,7 +393,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
       }
 
       if ( phSC_itr->pt() > 7e3 && !(phSC_itr->caloCluster()) ){
-	Warning( "execute", "photon %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (phSC_itr->pt() * 1e-3) );
+	ATH_MSG_WARNING( "photon "<<idx<<", raw pt = "<<phSC_itr->pt()*1e-3<<" GeV, does not have caloCluster()! " );
       }
 
       // apply calibration (w/ syst)
@@ -558,7 +558,7 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
   photon->auxdecor< bool >( "PhotonID_Tight"    ) = isTight;
   photon->auxdecor< bool >( "PhotonID_Medium"   ) = isMedium;
   photon->auxdecor< bool >( "PhotonID_Loose"    ) = isLoose;
-  if (m_debug) {Info("decorate()", "isTight=%s isMedium=%s isLoose=%s", isTight ? "Y" : "N", isMedium ? "Y" : "N", isLoose ? "Y" : "N" ); }
+  if (m_debug) {ATH_MSG_INFO("isTight="<<(isTight?"Y":"N")<<" isMedium="<<(isMedium?"Y":"N")<<" isLoose="<<(isLoose?"Y":"N") ); }
 
   // (3) set efficiency correction
   if (m_isMC) {
@@ -583,28 +583,28 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
     if(cluster_et > 10000. && fabs(cluster_eta) < 2.37 && !inCrack){
       // SF
       if(m_photonTightEffTool->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       if(m_photonMediumEffTool->getEfficiencyScaleFactor(*photon, photonMediumEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       if(m_photonLooseEffTool->getEfficiencyScaleFactor(*photon, photonLooseEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       // SF error
       if(m_photonTightEffTool->getEfficiencyScaleFactorError(*photon, photonTightEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       if(m_photonMediumEffTool->getEfficiencyScaleFactorError(*photon, photonMediumEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       if(m_photonLooseEffTool->getEfficiencyScaleFactorError(*photon, photonLooseEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
     }
@@ -617,10 +617,9 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
     photon->auxdecor< float >( "PhotonID_Medium_EffSF_Error" ) = photonMediumEffSFError;
     photon->auxdecor< float >( "PhotonID_Loose_EffSF_Error"  ) = photonLooseEffSFError;
 
-    if (m_debug) {Info("decorate()", "Tight=%f (%f) Medium=%f (%f) Loose=%f (%f)",
-		       photonTightEffSF, photonTightEffSFError,
-		       photonMediumEffSF, photonMediumEffSFError,
-		       photonLooseEffSF, photonLooseEffSFError); }
+    if (m_debug) {ATH_MSG_INFO("Tight=" << photonTightEffSF << "(" << photonTightEffSFError << ")"
+                               "Medium=" << photonMediumEffSF << "(" << photonMediumEffSFError << ")"
+                               "Loose=" << photonLooseEffSF << "(" << photonLooseEffSFError << ")"); }
   }
 
   return EL::StatusCode::SUCCESS;
