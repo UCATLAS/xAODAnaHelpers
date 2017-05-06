@@ -393,7 +393,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
       }
 
       if ( phSC_itr->pt() > 7e3 && !(phSC_itr->caloCluster()) ){
-	Warning( "execute", "photon %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (phSC_itr->pt() * 1e-3) );
+	ATH_MSG_WARNING( "photon "<<idx<<", raw pt = "<<phSC_itr->pt()*1e-3<<" GeV, does not have caloCluster()! " );
       }
 
       // apply calibration (w/ syst)
@@ -583,28 +583,28 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
     if(cluster_et > 10000. && fabs(cluster_eta) < 2.37 && !inCrack){
       // SF
       if(m_photonTightEffTool->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       if(m_photonMediumEffTool->getEfficiencyScaleFactor(*photon, photonMediumEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       if(m_photonLooseEffTool->getEfficiencyScaleFactor(*photon, photonLooseEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       // SF error
       if(m_photonTightEffTool->getEfficiencyScaleFactorError(*photon, photonTightEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       if(m_photonMediumEffTool->getEfficiencyScaleFactorError(*photon, photonMediumEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
       if(m_photonLooseEffTool->getEfficiencyScaleFactorError(*photon, photonLooseEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+	ATH_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
 	return EL::StatusCode::FAILURE;
       }
     }
