@@ -558,7 +558,7 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
   photon->auxdecor< bool >( "PhotonID_Tight"    ) = isTight;
   photon->auxdecor< bool >( "PhotonID_Medium"   ) = isMedium;
   photon->auxdecor< bool >( "PhotonID_Loose"    ) = isLoose;
-  if (m_debug) {ATH_MSG_INFO("isTight="<<isTight?"Y":"N"<<" isMedium="<<isMedium?"Y":"N"<<" isLoose="<< isLoose ? "Y" : "N" ); }
+  if (m_debug) {ATH_MSG_INFO("isTight="<<(isTight?"Y":"N")<<" isMedium="<<(isMedium?"Y":"N")<<" isLoose="<<(isLoose?"Y":"N") ); }
 
   // (3) set efficiency correction
   if (m_isMC) {
