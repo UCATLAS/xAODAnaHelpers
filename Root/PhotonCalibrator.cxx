@@ -558,7 +558,7 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
   photon->auxdecor< bool >( "PhotonID_Tight"    ) = isTight;
   photon->auxdecor< bool >( "PhotonID_Medium"   ) = isMedium;
   photon->auxdecor< bool >( "PhotonID_Loose"    ) = isLoose;
-  if (m_debug) {Info("decorate()", "isTight=%s isMedium=%s isLoose=%s", isTight ? "Y" : "N", isMedium ? "Y" : "N", isLoose ? "Y" : "N" ); }
+  if (m_debug) {ATH_MSG_INFO("isTight="<<isTight?"Y":"N"<<" isMedium="<<isMedium?"Y":"N"<<" isLoose="<< isLoose ? "Y" : "N" ); }
 
   // (3) set efficiency correction
   if (m_isMC) {
@@ -617,10 +617,9 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
     photon->auxdecor< float >( "PhotonID_Medium_EffSF_Error" ) = photonMediumEffSFError;
     photon->auxdecor< float >( "PhotonID_Loose_EffSF_Error"  ) = photonLooseEffSFError;
 
-    if (m_debug) {Info("decorate()", "Tight=%f (%f) Medium=%f (%f) Loose=%f (%f)",
-		       photonTightEffSF, photonTightEffSFError,
-		       photonMediumEffSF, photonMediumEffSFError,
-		       photonLooseEffSF, photonLooseEffSFError); }
+    if (m_debug) {ATH_MSG_INFO("Tight=" << photonTightEffSF << "(" << photonTightEffSFError << ")"
+                               "Medium=" << photonMediumEffSF << "(" << photonMediumEffSFError << ")"
+                               "Loose=" << photonLooseEffS << "(" << photonLooseEffSFError << ")"); }
   }
 
   return EL::StatusCode::SUCCESS;

@@ -872,7 +872,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   if(m_dofJVT){
     if(jet->auxdata<char>("passFJVT")!=1){
       if(m_debug) {
-	Info("passCuts()","jet pt = %.1f,eta = %.1f,phi = %.1f",jet->pt(),jet->eta(),jet->phi());
+	ATH_MSG_INFO("jet pt = "<<jet->pt()<<",eta = "<<jet->eta()<<",phi = "<<jet->phi());
         ATH_MSG_INFO("Failed forward JVT");
       }
       if(m_dofJVTVeto)return 0;
