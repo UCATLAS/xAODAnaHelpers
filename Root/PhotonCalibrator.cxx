@@ -619,7 +619,7 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 
     if (m_debug) {ATH_MSG_INFO("Tight=" << photonTightEffSF << "(" << photonTightEffSFError << ")"
                                "Medium=" << photonMediumEffSF << "(" << photonMediumEffSFError << ")"
-                               "Loose=" << photonLooseEffS << "(" << photonLooseEffSFError << ")"); }
+                               "Loose=" << photonLooseEffSF << "(" << photonLooseEffSFError << ")"); }
   }
 
   return EL::StatusCode::SUCCESS;
