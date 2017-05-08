@@ -39,11 +39,7 @@ namespace HelperFunctions {
   /**
     Static object that provides athena-based message logging functionality
   */
-  MsgStream& msg( MSG::Level lvl = MSG::INFO ) {
-    static MsgStream msgStream( "HelperFunctions" );
-    msgStream << lvl;
-    return msgStream;
-  }
+  MsgStream& msg( MSG::Level lvl = MSG::INFO );
 
   // primary vertex
   bool passPrimaryVertexSelection(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
@@ -268,9 +264,6 @@ namespace HelperFunctions {
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return retrieve<T>(cont, name, event, store, msg()); }
 
-  /* isAvailable() overload for no msgStream object passed in */
-  template <typename T>
-  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return isAvailable<T>(name, event, store, msg()); }
   /*  isAvailable()    return true if an arbitrary object from TStore / TEvent is availible
         - tries to make your life simple by providing a one-stop container check shop for all types
         @ name  : the name of the object to look up
@@ -310,8 +303,9 @@ namespace HelperFunctions {
     }
     return false;
   }
-
-
+  /* isAvailable() overload for no msgStream object passed in */
+  template <typename T>
+  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return isAvailable<T>(name, event, store, msg()); }
 
   /* update with better logic
       -- call HelperFunctions::retrieve() instead

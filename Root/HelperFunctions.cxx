@@ -11,6 +11,13 @@
 #include <fastjet/tools/Filter.hh>
 #include <JetEDM/JetConstituentFiller.h>
 
+
+MsgStream& HelperFunctions::msg( MSG::Level lvl ) {
+  static MsgStream msgStream( "HelperFunctions" );
+  msgStream << lvl;
+  return msgStream;
+}
+
 // Get Number of Vertices with at least Ntracks
 bool HelperFunctions::passPrimaryVertexSelection(const xAOD::VertexContainer* vertexContainer, int Ntracks)
 {
@@ -465,61 +472,61 @@ std::string HelperFunctions::parse_wp( const std::string& type, const std::strin
 {
 
   std::string wp("");
-  
+
   std::size_t init;
   std::size_t end;
-  
+
   if ( type.compare("ISO") == 0 ) {
-    
+
     std::size_t found_iso = config_name.find("_isol");
-    
+
     // Return empty string if no isolation in config name
-    
+
     if ( found_iso == std::string::npos ) { return wp; }
-    
-    init = found_iso + 5; 
+
+    init = found_iso + 5;
     end  = config_name.find(".root");
-  
+
   } else if ( type.compare("ID") == 0 ) {
- 
+
     std::size_t found_ID = config_name.find("LLH");
-    
+
     // Return empty string if no LLH in config name
-    
+
     if ( found_ID == std::string::npos ) { return wp; }
-       
+
     init = string_pos( config_name, '.', 2 );
     end  = found_ID;
-    
+
   } else if ( type.compare("TRIG") == 0 ) {
- 
+
     std::size_t found_trigger = config_name.find("trigger");
-    
+
     // Return empty string if no LLH in config name
-    
+
     if ( found_trigger == std::string::npos ) { return wp; }
-       
+
     init = string_pos( config_name, '.', 3 );
     end  = string_pos( config_name, '.', 2 ) - 1;
-    
+
   } else {
-  
+
     Warning("HelperFunctions::parse_wp()","WP type can be either 'ISO' or 'ID'. Please check passed parameters of this function. Returning empty WP.");
     return wp;
-  
+
   }
-  
+
   wp = config_name.substr( init, (end - init) );
-  
+
   if ( type.compare("ID") == 0 ) { wp += "LLH"; }
 
   return wp;
 }
 
-bool HelperFunctions::has_exact(const std::string input, const std::string flag) 
-{ 
+bool HelperFunctions::has_exact(const std::string input, const std::string flag)
+{
   std::set<std::string> inputSet;
-  
+
   // parse and split by space
   std::string token;
   std::istringstream ss(input);
@@ -527,5 +534,5 @@ bool HelperFunctions::has_exact(const std::string input, const std::string flag)
     inputSet.insert(token);
 
 
-  return inputSet.find(flag) != inputSet.end(); 
+  return inputSet.find(flag) != inputSet.end();
 }
