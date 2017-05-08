@@ -146,7 +146,7 @@ parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help=
 parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', help='If enabled, will search using Rucio. Can be combined with `--inputList`.')
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
-parser.add_argument('-l', '--log-level', type=str, default='INFO', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
+parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
 parser.add_argument('--cmake-workdir', type=str, default='WorkDir', help='The name of the CMake WorkDir, needed to determine environment variables')
 
 # first is the driver common arguments
@@ -498,11 +498,11 @@ if __name__ == "__main__":
     printStr = "\tsetting {0: >20}.{1:<30} = {2}"
 
     if load_json:
-      xAH_logger.info("Loading json files")
+      xAH_logger.debug("Loading json files")
 
       # add our algorithm to the job
       algorithm_configurations = parse_json(args.config)
-      xAH_logger.info("loaded the configurations")
+      xAH_logger.debug("loaded the configurations")
 
       # this is where we go over and process all algorithms
       for algorithm_configuration in algorithm_configurations:
@@ -517,7 +517,7 @@ if __name__ == "__main__":
         alg = alg()
 
         for config_name, config_val in algorithm_configuration['configs'].iteritems():
-          xAH_logger.info("\t%s", printStr.format(alg_name, config_name, config_val))
+          xAH_logger.debug("\t%s", printStr.format(alg_name, config_name, config_val))
           algorithmConfiguration_string.append(printStr.format(alg_name, config_name, config_val))
           alg_attr = getattr(alg, config_name, None)
           if alg_attr is None:
@@ -529,7 +529,7 @@ if __name__ == "__main__":
           else:
             setattr(alg, config_name, config_val)
 
-        xAH_logger.info("adding algorithm %s to job", alg_name)
+        xAH_logger.debug("adding algorithm %s to job", alg_name)
         algorithmConfiguration_string.append("\n")
         job.algsAdd(alg)
     else:
@@ -567,7 +567,7 @@ if __name__ == "__main__":
               xAH_logger.info("creating algorithm %s", configLog[0])
               algorithmConfiguration_string.append("{0} algorithm options".format(*configLog))
             elif len(configLog) == 3:
-              xAH_logger.info("\t%s", printStr.format(*configLog))
+              xAH_logger.debug("\t%s", printStr.format(*configLog))
               algorithmConfiguration_string.append(printStr.format(*configLog))
             else:
               raise Exception("Something weird happened with the logging. Tell someone important")
