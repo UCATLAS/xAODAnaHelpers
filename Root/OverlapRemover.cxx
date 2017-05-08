@@ -610,11 +610,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       // if an object has been flagged as 'passOR', it will be stored in the 'selected' container
       //
       if ( m_debug ) { ATH_MSG_INFO(  "Resizing"); }
-      if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-      if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-      RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
-      if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-      if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+      if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+      if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+      RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+      if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+      if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
       if ( m_debug ) {
         if ( m_useElectrons) { ATH_MSG_INFO(  "selectedElectrons : " << selectedElectrons->size()); }
@@ -723,11 +723,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
         // resize containers basd on OR decision
         //
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), "");
-        if ( m_useMuons )  {  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
-        if ( m_usePhotons ){ RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        if ( m_useTaus )   {  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_useMuons )  {  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_usePhotons ){ RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useTaus )   {  RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
         // add ConstDataVector to TStore
         //
@@ -829,11 +829,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
         // resize containers based on OR decision
         //
-        if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), "");
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
-        if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
         // add ConstDataVector to TStore
         //
@@ -938,11 +938,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
         // resize containers basd on OR decision
         //
-        if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
-        if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
         // add ConstDataVector to TStore
         //
@@ -1046,11 +1046,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
         // resize containers based on OR decision
         //
-        if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), "");
-        if ( m_useTaus )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_useTaus )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
         // add ConstDataVector to TStore
         //
@@ -1153,11 +1153,11 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
         // resize containers based on OR decision
         //
-        if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, ORdecor.c_str(), ToolName::SELECTOR), "");
-        if ( m_usePhotons )  { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, ORdecor.c_str(), ToolName::SELECTOR), ""); }
-        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, ORdecor.c_str(), ToolName::SELECTOR), "");
+        if( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        if( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
+        if ( m_usePhotons )  { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
+        RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
 
         // add ConstDataVector to TStore
         //

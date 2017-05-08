@@ -350,7 +350,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
     // save pointers in ConstDataVector with same order
     //
-    RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV), "");
+    RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, msg()), "");
 
     // Sort after copying to CDV.
     if ( m_sort ) {
