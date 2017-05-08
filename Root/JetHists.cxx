@@ -212,7 +212,6 @@ StatusCode JetHists::initialize() {
     m_MV2c20_l        = book(m_name, "MV2c20_l",          m_titlePrefix+"MV2c20" , 500,    -1.1,   1.1);
     m_COMB            = book(m_name, "COMB",              m_titlePrefix+"COMB" ,     100,    -20,   40);
     m_JetFitter       = book(m_name, "JetFitter",         m_titlePrefix+"JetFitter" ,     100,    -10,   10);
-    m_JetFitterCombNN = book(m_name, "JetFitterCombNN",   m_titlePrefix+"JetFitterCombNN" ,     100,    -10,   10);
     //m_MV2           = book(m_name, "MV2",               m_titlePrefix+" jet MV2"          , 100,   -1  ,  1);
     //m_IP3DvsMV2c20  = book(m_name, "IP3DvsMV2c20",      m_titlePrefix+" jet MV2c20"       , 100,   -1  ,  1,
 
@@ -998,7 +997,6 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     if ( SV0_significance3DAcc.isAvailable(*btag_info) ) {
       m_COMB            ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
       m_JetFitter       ->  Fill( btag_info->JetFitter_loglikelihoodratio() , eventWeight );
-      m_JetFitterCombNN ->  Fill( btag_info->JetFitterCombNN_loglikelihoodratio() , eventWeight );
     }
 
     if(m_infoSwitch->m_btag_jettrk){
@@ -1710,7 +1708,6 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
       m_COMB                      ->Fill(jet->SV1IP3D              , eventWeight);
       //m_JetFitter               ->Fill(jet->JetFitter            , eventWeight);
-      //m_JetFitterCombNN         ->Fill(jet->JetFitter            , eventWeight);
     
 //
 //      h_IP3DvsMV2c20->Fill(jet->MV2c20, jet->IP3D);

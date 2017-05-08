@@ -157,7 +157,6 @@ class JetHists : public IParticleHists
     TH1F* m_COMB   ; //!
     TH1F* m_SV0             ; //!
     TH1F* m_JetFitter       ; //!
-    TH1F* m_JetFitterCombNN ; //!
     //TH1F* m_MV2;
     //TH2F* m_IP3DvsMV2c20;
 
