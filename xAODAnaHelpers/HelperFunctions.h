@@ -154,7 +154,7 @@ namespace HelperFunctions {
    * @param [in] tool_name (optional) an enum specifying the tool type which is calling this function (definition in `HelperClasses::ToolName`)
    */
   template< typename T1, typename T2 >
-    StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT ){
+  StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, MsgStream& msg, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT){
 
      if ( tool_name == HelperClasses::ToolName::DEFAULT ) {
 
@@ -164,7 +164,7 @@ namespace HelperFunctions {
      }
 
      if ( flagSelect.empty() ) {
-       Error("HelperFunctions::makeSubsetCont()", "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" );
+       msg << MSG::ERROR << "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" << endmsg;
        return StatusCode::FAILURE;
      }
 
@@ -174,7 +174,7 @@ namespace HelperFunctions {
 
        if ( !myAccessor.isAvailable(*(in_itr)) ) {
      	 std::stringstream ss; ss << in_itr->type();
-         Error("HelperFunctions::makeSubsetCont()", "flag %s is missing for object of type %s ! Will not make a subset of its container", flagSelect.c_str(), (ss.str()).c_str() );
+         msg << MSG::ERROR << "flag " << flagSelect << " is missing for object of type " << ss.str() << " ! Will not make a subset of its container" << endmsg;
      	 return StatusCode::FAILURE;
        }
 
@@ -185,6 +185,8 @@ namespace HelperFunctions {
      return StatusCode::SUCCESS;
 
    }
+  template< typename T1, typename T2 >
+  StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT) { return makeSubsetCont<T1, T2>(intCont, outCont, msg(), flagSelect, tool_name); }
 
   /*    type_name<T>()      The awesome type demangler!
           - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.
@@ -306,62 +308,6 @@ namespace HelperFunctions {
   /* isAvailable() overload for no msgStream object passed in */
   template <typename T>
   bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return isAvailable<T>(name, event, store, msg()); }
-
-  /* update with better logic
-      -- call HelperFunctions::retrieve() instead
-      -- if user wants `const DataVector<T>` and `ConstDataVector<T>` exists but `const DataVector<T>` does not, auto-convert for them
-      -- if user wants `const DataVector<T>` and `DataVector<T>` exists, but `const DataVector<T>` does not, const-cast is trivial
-      -- if user wants `DataVector<T>` and `ConstDataVector<T>` or `const DataVector<T>` exist, raise a warning
-      -- **** handle the special case of EventInfo which does not have a CDV<T> equivalent
-  */
-  template <typename T>
-  const T* getContainer(std::string name, xAOD::TEvent* event, xAOD::TStore* store) {
-    Warning("HelperFunctions::getContainer()", "THIS IS BEING DEPRECATED. PLEASE USE HelperFunctions::retrieve() INSTEAD!!!!");
-    const T* cont = 0;
-    if ( store->contains< ConstDataVector<T> >(name)){
-      ConstDataVector<T>* contCDV = 0;
-      if ( !store->retrieve( contCDV, name ).isSuccess() ){
-        Error("getContainer()  ", "Failed to retrieve %s ConstDataVector from Store. Exiting.", name.c_str() );
-        RCU_THROW_MSG("Failure");
-      }
-      cont = contCDV->asDataVector();
-    }
-    else if ( event->contains<const T>(name)){
-      if ( !event->retrieve( cont , name ).isSuccess() ){
-        Error("getContainer()  ", "Failed to retrieve %s const DataVector from File. Exiting.", name.c_str() );
-        RCU_THROW_MSG("Failure");
-      }
-    }
-    else if ( store->contains<const T>(name)){
-      Warning("getContainer()", "TEvent can't retrieve %s from TStore!", name.c_str());
-      if( !store->retrieve( cont, name ).isSuccess() ){
-        Error("getContainer()", "Failed to retrieve %s const DataVector from Store. Exiting.", name.c_str() );
-        RCU_THROW_MSG("Failure");
-      }
-    }
-    else {
-      Error("getContainer()  ", "Failed to retrieve %s container from File or Store. Exiting.", name.c_str() );
-      store->print();
-      RCU_THROW_MSG("Failure");
-    }
-
-    return cont;
-  }
-
-  // PTS defined here
-  /* EventInfo is special, why? ConstDataVector not used with it...
-    https://gist.github.com/kratsg/84ae66cb37a9d858d829
-  */
-  template <>
-  inline const xAOD::EventInfo* getContainer(std::string name, xAOD::TEvent* event, xAOD::TStore*) {
-    const xAOD::EventInfo* eventInfo = 0;
-    if ( !event->retrieve(eventInfo, name).isSuccess() ) {
-      Error("getContainer()", "Failed to retrieve %s EventInfo from event. Exiting.", name.c_str());
-      RCU_THROW_MSG("Failure");
-    }
-
-    return eventInfo;
-  }
 
   // stolen from here
   // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODEgamma/trunk/xAODEgamma/EgammaTruthxAODHelpers.h#L20
