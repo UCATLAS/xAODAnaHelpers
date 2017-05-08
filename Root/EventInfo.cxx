@@ -16,7 +16,7 @@ EventInfo::EventInfo(const std::string& detailStr, float units, bool mc)
 
 EventInfo::~EventInfo()
 {
-  if(m_debug) cout << " Deleting EventInfo "  << endl;  
+  if(m_debug) cout << " Deleting EventInfo "  << endl;
 }
 
 void EventInfo::setTree(TTree *tree)
@@ -25,41 +25,41 @@ void EventInfo::setTree(TTree *tree)
   connectBranch<int>     (tree, "runNumber",   &m_runNumber);
   connectBranch<Long64_t>(tree, "eventNumber", &m_eventNumber);
   connectBranch<int>     (tree, "lumiBlock",   &m_lumiBlock);
-  connectBranch<uint32_t>(tree, "coreFlags",   &m_coreFlags);           
+  connectBranch<uint32_t>(tree, "coreFlags",   &m_coreFlags);
 
   if(m_mc){
-    connectBranch<int     >(tree, "mcEventNumber",              &m_mcEventNumber);       
-    connectBranch<int     >(tree, "mcChannelNumber",            &m_mcChannelNumber);    
-    connectBranch<float   >(tree, "mcEventWeight",              &m_mcEventWeight);       
+    connectBranch<int     >(tree, "mcEventNumber",              &m_mcEventNumber);
+    connectBranch<int     >(tree, "mcChannelNumber",            &m_mcChannelNumber);
+    connectBranch<float   >(tree, "mcEventWeight",              &m_mcEventWeight);
   } else {
-    connectBranch<int     >(tree, "bcid",                       &m_bcid);                 
-    connectBranch<float   >(tree, "prescale_DataWeight",               &m_prescale_DataWeight);       
+    connectBranch<int     >(tree, "bcid",                       &m_bcid);
+    connectBranch<float   >(tree, "prescale_DataWeight",               &m_prescale_DataWeight);
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
-    connectBranch<uint32_t>(tree, "timeStamp",                  &m_timeStamp);           
-    connectBranch<uint32_t>(tree, "timeStampNSOffset",          &m_timeStampNSOffset);  
-    connectBranch<bool    >(tree, "TileError",                  &m_TileError);           
-    connectBranch<bool    >(tree, "SCTError",                   &m_SCTError);            
-    connectBranch<bool    >(tree, "LArError",                   &m_LArError);            
-    connectBranch<uint32_t>(tree, "TileFlags",                  &m_TileFlags);           
-    connectBranch<uint32_t>(tree, "SCTFlags",                   &m_SCTFlags);            
-    connectBranch<uint32_t>(tree, "LArFlags",                   &m_LArFlags);            
+    connectBranch<uint32_t>(tree, "timeStamp",                  &m_timeStamp);
+    connectBranch<uint32_t>(tree, "timeStampNSOffset",          &m_timeStampNSOffset);
+    connectBranch<bool    >(tree, "TileError",                  &m_TileError);
+    connectBranch<bool    >(tree, "SCTError",                   &m_SCTError);
+    connectBranch<bool    >(tree, "LArError",                   &m_LArError);
+    connectBranch<uint32_t>(tree, "TileFlags",                  &m_TileFlags);
+    connectBranch<uint32_t>(tree, "SCTFlags",                   &m_SCTFlags);
+    connectBranch<uint32_t>(tree, "LArFlags",                   &m_LArFlags);
   }
 
   if ( m_infoSwitch.m_pileup ) {
     connectBranch<int  >(tree, "NPV",                              &m_npv);
     connectBranch<float>(tree, "actualInteractionsPerCrossing",    &m_actualMu);
     connectBranch<float>(tree, "averageInteractionsPerCrossing",   &m_averageMu);
-    connectBranch<float>(tree, "weight_pileup",                    &m_weight_pileup);       
+    connectBranch<float>(tree, "weight_pileup",                    &m_weight_pileup);
     if ( m_infoSwitch.m_pileupsys ) {
       connectBranch<float>(tree, "weight_pileup_up",               &m_weight_pileup_up);
       connectBranch<float>(tree, "weight_pileup_down",             &m_weight_pileup_down);
     }
     if(m_mc){
-      connectBranch<float>(tree, "correct_mu",                 &m_correct_mu);          
-      connectBranch<int  >(tree, "rand_run_nr",                &m_rand_run_nr);         
-      connectBranch<int  >(tree, "rand_lumiblock_nr",          &m_rand_lumiblock_nr);  
+      connectBranch<float>(tree, "correct_mu",                 &m_correct_mu);
+      connectBranch<int  >(tree, "rand_run_nr",                &m_rand_run_nr);
+      connectBranch<int  >(tree, "rand_lumiblock_nr",          &m_rand_lumiblock_nr);
     }
   }
 
@@ -73,20 +73,20 @@ void EventInfo::setTree(TTree *tree)
 
     // truth
   if( m_infoSwitch.m_truth && m_mc ) {
-    connectBranch<int  >(tree, "pdgId1",  &m_pdgId1);      
-    connectBranch<int  >(tree, "pdgId2",  &m_pdgId2);      
-    connectBranch<int  >(tree, "pdfId1",  &m_pdfId1);      
-    connectBranch<int  >(tree, "pdfId2",  &m_pdfId2);      
-    connectBranch<float>(tree, "x1",      &m_x1);  
-    connectBranch<float>(tree, "x2",      &m_x2);  
-    //connectBranch<float>(tree, "scale",   &m_scale);       
-    connectBranch<float>(tree, "q",       &m_q);   
-    //connectBranch<float>(tree, "pdf1",    &m_pdf1);        
-    //connectBranch<float>(tree, "pdf2",    &m_pdf2);        
-    connectBranch<float>(tree, "xf1",     &m_xf1); 
-    connectBranch<float>(tree, "xf2",     &m_xf2);    
+    connectBranch<int  >(tree, "pdgId1",  &m_pdgId1);
+    connectBranch<int  >(tree, "pdgId2",  &m_pdgId2);
+    connectBranch<int  >(tree, "pdfId1",  &m_pdfId1);
+    connectBranch<int  >(tree, "pdfId2",  &m_pdfId2);
+    connectBranch<float>(tree, "x1",      &m_x1);
+    connectBranch<float>(tree, "x2",      &m_x2);
+    //connectBranch<float>(tree, "scale",   &m_scale);
+    connectBranch<float>(tree, "q",       &m_q);
+    //connectBranch<float>(tree, "pdf1",    &m_pdf1);
+    //connectBranch<float>(tree, "pdf2",    &m_pdf2);
+    connectBranch<float>(tree, "xf1",     &m_xf1);
+    connectBranch<float>(tree, "xf2",     &m_xf2);
   }
-  
+
   // CaloCluster
   if ( m_infoSwitch.m_caloClus ) {
     std::vector<float>*  m_caloCluster_pt_addr = &m_caloCluster_pt;
@@ -142,9 +142,9 @@ void EventInfo::setBranches(TTree *tree)
       tree->Branch("weight_pileup_down",    &m_weight_pileup_down,"weight_pileup_down/F");
     }
     if(m_mc){
-      tree->Branch("correct_mu"       ,          &m_correct_mu       ,"correct_mu/F"       );          
-      tree->Branch("rand_run_nr"      ,          &m_rand_run_nr      ,"rand_run_nr/I"      );         
-      tree->Branch("rand_lumiblock_nr",          &m_rand_lumiblock_nr,"rand_lumiblock_nr/I");  
+      tree->Branch("correct_mu"       ,          &m_correct_mu       ,"correct_mu/F"       );
+      tree->Branch("rand_run_nr"      ,          &m_rand_run_nr      ,"rand_run_nr/I"      );
+      tree->Branch("rand_lumiblock_nr",          &m_rand_lumiblock_nr,"rand_lumiblock_nr/I");
     }
   }
 
@@ -180,7 +180,7 @@ void EventInfo::setBranches(TTree *tree)
 
   return;
 }
-    
+
 
 void EventInfo::clear()
 {
@@ -226,7 +226,7 @@ void EventInfo::clear()
 }
 
 void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* event) {
-  
+
   m_runNumber             = eventInfo->runNumber();
   m_eventNumber           = eventInfo->eventNumber();
   m_lumiBlock             = eventInfo->lumiBlock();

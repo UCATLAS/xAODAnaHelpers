@@ -159,7 +159,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // Check if is MC
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
 
   // Create a ToolHandle of the PRW tool which is used for the random generation
@@ -281,7 +281,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   std::string randYear = "Data16";
 
@@ -315,9 +315,9 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   // get the collections from TEvent or TStore
   //
-  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   const xAOD::MuonContainer* inMuons(nullptr);
-  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) ,"");
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers

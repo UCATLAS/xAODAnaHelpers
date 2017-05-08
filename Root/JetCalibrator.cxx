@@ -176,7 +176,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
@@ -463,7 +463,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* inJets(nullptr);
-  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) ,"");
 
   //
   // Perform nominal calibration

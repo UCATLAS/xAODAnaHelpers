@@ -123,7 +123,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("BJetEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
@@ -320,7 +320,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   // retrieve event
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   if ( m_debug ) ATH_MSG_INFO( "\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
 
   //
@@ -335,7 +335,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) ,"");
 
     executeEfficiencyCorrection( inJets, eventInfo, true);
 
@@ -349,7 +349,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // get vector of string giving the names
     //
     std::vector<std::string>* systNames(nullptr);
-    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_verbose) ,"");
+    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) ,"");
 
     //
     // loop over systematics
@@ -358,7 +358,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
       bool doNominal = (systName == "");
 
-      RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) ,"");
 
       executeEfficiencyCorrection( inJets, eventInfo, doNominal );
 

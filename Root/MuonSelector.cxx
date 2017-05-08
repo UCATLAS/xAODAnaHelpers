@@ -433,7 +433,7 @@ EL::StatusCode MuonSelector :: execute ()
   if ( m_debug ) { ATH_MSG_INFO( "Applying Muon Selection..." ); }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   // MC event weight
   //
@@ -490,7 +490,7 @@ EL::StatusCode MuonSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) ,"");
 
     // create output container (if requested)
     //
@@ -518,7 +518,7 @@ EL::StatusCode MuonSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -533,7 +533,7 @@ EL::StatusCode MuonSelector :: execute ()
 
       if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  input container name: " << m_inContainerName+systName ); }
 
-      RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, msg()) ,"");
 
       // create output container (if requested) - one for each systematic
       //
@@ -599,7 +599,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
   if ( m_debug ) { ATH_MSG_INFO( "In  executeSelection..." ); }
   const xAOD::VertexContainer* vertices(nullptr);
-  RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
 
   int nPass(0); int nObj(0);
@@ -725,7 +725,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
       if ( m_debug ) { ATH_MSG_INFO( "Doing di-muon trigger matching..."); }
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> dimuon_trigmatch_pair;
       typedef std::multimap< std::string, dimuon_trigmatch_pair >    dimuon_trigmatch_pair_map;
@@ -929,7 +929,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
 

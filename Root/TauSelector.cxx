@@ -271,7 +271,7 @@ EL::StatusCode TauSelector :: execute ()
   if ( m_debug ) { ATH_MSG_INFO( "Applying Tau Selection..." ); }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   // MC event weight
   //
@@ -298,7 +298,7 @@ EL::StatusCode TauSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, msg()) ,"");
 
     // create output container (if requested)
     //
@@ -326,7 +326,7 @@ EL::StatusCode TauSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -341,7 +341,7 @@ EL::StatusCode TauSelector :: execute ()
 
       if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  input container name: " << m_inContainerName+systName ); }
 
-      RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, msg()) ,"");
 
       // create output container (if requested) - one for each systematic
       //

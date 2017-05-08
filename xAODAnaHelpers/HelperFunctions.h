@@ -31,8 +31,19 @@
 #include "TFile.h"
 #include "TObjArray.h"
 
+// messaging includes
+#include <AsgTools/MsgStream.h>
 
 namespace HelperFunctions {
+
+  /**
+    Static object that provides athena-based message logging functionality
+  */
+  MsgStream& msg( MSG::Level lvl = MSG::INFO ) {
+    static MsgStream msgStream( "HelperFunctions" );
+    msgStream << lvl;
+    return msgStream;
+  }
 
   // primary vertex
   bool passPrimaryVertexSelection(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
@@ -188,7 +199,7 @@ namespace HelperFunctions {
         Example Usage:
         template <typename T>
         void echoType(){
-          Info("retrieve()", "This is type %s", HelperFunctions::type_name<T>().c_str());
+          std::cout << "This is type " << HelperFunctions::type_name<T>() << std::endl;
         }
   */
   template <typename T>
@@ -211,7 +222,7 @@ namespace HelperFunctions {
         @ name  : the name of the object to look up
         @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
         @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
-        @ debug : turn on more verbose output, helpful for debugging
+        @ msg   : the MsgStream object with appropriate level for debugging
 
       Example Usage:
       const xAOD::JetContainer* jets(0);
@@ -220,10 +231,10 @@ namespace HelperFunctions {
       // look for "AntiKt10LCTopoJets" in only TStore
       RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) ,"");
       // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, true) ,"");
+      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, msg()) ,"");
   */
   template <typename T>
-  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug=false){
+  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
     /* Checking Order:
         - check if store contains 'xAOD::JetContainer' named 'name'
         --- attempt to retrieve from store
@@ -235,31 +246,37 @@ namespace HelperFunctions {
         return SUCCESS (should never reach this last line)
     */
 
-    if(debug) Info("HelperFunctions::retrieve()", "\tAttempting to retrieve %s of type %s", name.c_str(), type_name<T>().c_str());
-    if((store == NULL) && (debug))                      Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TEvent");
-    if((event == NULL) && (debug))                      Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TStore");
-    if((event != NULL) && (store != NULL) && (debug))   Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TStore, xAOD::TEvent");
+    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
+    if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
-      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tFound inside xAOD::TStore");
+      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TStore" << endmsg;
       if(!store->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
-      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tRetrieved from xAOD::TStore");
+      msg << MSG::DEBUG << "\t\t\tRetrieved from xAOD::TStore" << endmsg;
     } else if((event != NULL) && (event->contains<T>(name))){
-      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tFound inside xAOD::TEvent");
+      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       if(!event->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
-      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tRetrieved from xAOD::TEvent");
+      msg << MSG::DEBUG << "\t\t\tRetrieved from xAOD::TEvent" << endmsg;
     } else {
-      if(debug) Info("HelperFunctions::retrieve()", "\t\tNot found at all");
+      msg << MSG::DEBUG << "\t\tNot found at all" << endmsg;
       return StatusCode::FAILURE;
     }
     return StatusCode::SUCCESS;
   }
+  /* retrieve() overload for no msgStream object passed in */
+  template <typename T>
+  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return retrieve<T>(cont, name, event, store, msg()); }
 
+  /* isAvailable() overload for no msgStream object passed in */
+  template <typename T>
+  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return isAvailable<T>(name, event, store, msg()); }
   /*  isAvailable()    return true if an arbitrary object from TStore / TEvent is availible
         - tries to make your life simple by providing a one-stop container check shop for all types
         @ name  : the name of the object to look up
         @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
         @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
-        @ debug : turn on more verbose output, helpful for debugging
+        @ msg   : the MsgStream object with appropriate level for debugging
 
       Example Usage:
       const xAOD::JetContainer* jets(0);
@@ -271,22 +288,22 @@ namespace HelperFunctions {
       HelperFunctions::retrieve("AntiKt10LCTopoJets", m_event, 0, true)
   */
   template <typename T>
-  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug=false){
+  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
     /* Checking Order:
         - check if store contains 'xAOD::JetContainer' named 'name'
         --- checkstore store
         - check if event contains 'xAOD::JetContainer' named 'name'
         --- checkstore event
     */
-    if(debug) Info("HelperFunctions::isAvailable()", "\tAttempting to retrieve %s of type %s", name.c_str(), type_name<T>().c_str());
-    if((store == NULL) && (debug))                      Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TEvent");
-    if((event == NULL) && (debug))                      Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TStore");
-    if((event != NULL) && (store != NULL) && (debug))   Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TStore, xAOD::TEvent");
+    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
+    if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
-      if(debug) Info("HelperFunctions::isAvailable()", "\t\t\tFound inside xAOD::TStore");
+      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TStore" << endmsg;;
       return true;
     } else if((event != NULL) && (event->contains<T>(name))){
-      if(debug) Info("HelperFunctions::isAvailable()", "\t\t\tFound inside xAOD::TEvent");
+      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       return true;
     } else {
       return false;

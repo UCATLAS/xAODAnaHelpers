@@ -66,7 +66,7 @@ EL::StatusCode ClusterHistsAlgo :: initialize ()
 EL::StatusCode ClusterHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ClusterHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("ClusterHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
 
   float eventWeight(1);
@@ -75,7 +75,7 @@ EL::StatusCode ClusterHistsAlgo :: execute ()
   }
 
   const xAOD::CaloClusterContainer* ccls(nullptr);
-  RETURN_CHECK("ClusterHistsAlgo::execute()", HelperFunctions::retrieve(ccls, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("ClusterHistsAlgo::execute()", HelperFunctions::retrieve(ccls, m_inContainerName, m_event, m_store, msg()) ,"");
 
   RETURN_CHECK("ClusterHistsAlgo::execute()", m_plots->execute( ccls, eventWeight ), "");
 

@@ -73,7 +73,7 @@ int xAH::Algorithm::isMC(){
 
   const xAOD::EventInfo* ei(nullptr);
   // couldn't retrieve it
-  if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store).isSuccess()){
+  if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()).isSuccess()){
     if(m_debug) ATH_MSG_WARNING( "Could not retrieve eventInfo container: " << m_eventInfoContainerName);
     return -1;
   }

@@ -267,7 +267,7 @@ EL::StatusCode PhotonSelector :: execute ()
   if ( m_debug ) { ATH_MSG_INFO( "Applying Photon Selection... "); }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,
+  RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,
 	       Form("Failed in retrieving %s in %s", m_eventInfoContainerName.c_str(), m_name.c_str() ));
 
   // MC event weight
@@ -293,7 +293,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, m_verbose) , "");
+    RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) , "");
 
     // create output container (if requested)
     ConstDataVector<xAOD::PhotonContainer>* selectedPhotons(nullptr);
@@ -319,7 +319,7 @@ EL::StatusCode PhotonSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+    RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -334,7 +334,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
       if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  input container name: " << m_inContainerName+systName ); }
 
-      RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName + systName, m_event, m_store, m_verbose), "");
+      RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName + systName, m_event, m_store, msg()), "");
 
       // create output container (if requested) - one for each systematic
       //

@@ -63,7 +63,7 @@ EL::StatusCode MetHistsAlgo :: initialize ()
 EL::StatusCode MetHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
 
   float eventWeight(1);
@@ -72,7 +72,7 @@ EL::StatusCode MetHistsAlgo :: execute ()
   }
 
   const xAOD::MissingETContainer* met(nullptr);
-  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(met, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(met, m_inContainerName, m_event, m_store, msg()) ,"");
 
   RETURN_CHECK("MetHistsAlgo::execute()", m_plots->execute( met, eventWeight ), "");
 

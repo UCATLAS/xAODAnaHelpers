@@ -181,7 +181,7 @@ EL::StatusCode TruthSelector :: execute ()
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -204,7 +204,7 @@ EL::StatusCode TruthSelector :: execute ()
   // then get the one collection and be done with it
 
   // this will be the collection processed - no matter what!!
-  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, msg()) ,"");
 
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
 

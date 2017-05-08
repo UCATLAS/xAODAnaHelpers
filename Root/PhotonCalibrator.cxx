@@ -322,7 +322,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,
+  RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,
 	       Form("Failed in retrieving %s in %s", m_inContainerName.c_str(), m_name.c_str() ));
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
@@ -333,7 +333,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
 
   const xAOD::PhotonContainer* inPhotons(nullptr);
-  RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, m_verbose) ,
+  RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) ,
 	       Form("Failed in retrieving %s in %s", m_inContainerName.c_str(), m_name.c_str() ));
 
   if ( m_debug ) { ATH_MSG_INFO( "Retrieve has been completed with container name = " << m_inContainerName); }

@@ -192,7 +192,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   m_numEvent      = 0;
@@ -495,7 +495,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   // initialise containers
   //
@@ -515,7 +515,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
     // if muons are only allowed in systematic instances, hence, we have to check for the existence of the nominal container
     //
     if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName )  ) {
-       RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+       RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, msg()) ,"");
 
        if ( m_debug ) { ATH_MSG_INFO( "Number of muons: " << static_cast<int>(inputMuons->size()) ); }
 
@@ -536,7 +536,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
         //
         for ( auto sysInput : m_sysNames ) {
           std::vector<std::string>* it_systNames(nullptr);
-          RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(it_systNames, sysInput, 0, m_store, m_verbose) ,"");
+          RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(it_systNames, sysInput, 0, m_store, msg()) ,"");
           systNames.insert( systNames.end(), it_systNames->begin(), it_systNames->end() );
         }
         // and now remove eventual duplicates
@@ -551,7 +551,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
         if ( !m_sysNamesForParCont.empty() )  {
           std::vector<std::string>* par_systNames(nullptr);
 
-          RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(par_systNames, m_sysNamesForParCont, 0, m_store, m_verbose) ,"");
+          RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(par_systNames, m_sysNamesForParCont, 0, m_store, msg()) ,"");
 
           for ( auto sys : *par_systNames ) {
              if ( !sys.empty() && !m_store->contains<xAOD::MuonContainer>( m_inContainerName+sys ) ) {
@@ -559,7 +559,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
                if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName ) ) {
 
-                  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(tmpMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+                  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(tmpMuons, m_inContainerName, m_event, m_store, msg()) ,"");
                   RETURN_CHECK("MuonEfficiencyCorrector::execute()", (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, m_inContainerName+sys, tmpMuons)), "");
 
                } // the nominal container is copied therefore it has to exist!
@@ -579,13 +579,13 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
            bool isNomMuonSelection = systName.empty();
 
            if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName+systName )  ) {
-              RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+              RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, msg()) ,"");
 
               if ( !m_store->contains<xAOD::MuonContainer>( m_outContainerName+systName ) ) {
                  RETURN_CHECK("MuonEfficiencyCorrector::execute()", (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, m_outContainerName+systName, inputMuons)), "");
               }
 
-              RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(outputMuons, m_outContainerName+systName, m_event, m_store, m_verbose) ,"");
+              RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(outputMuons, m_outContainerName+systName, m_event, m_store, msg()) ,"");
 
     	      if ( m_debug ){
 	        ATH_MSG_INFO( "Number of muons: " << static_cast<int>(outputMuons->size()) );

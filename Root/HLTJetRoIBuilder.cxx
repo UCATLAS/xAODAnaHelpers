@@ -229,8 +229,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   if(m_debug) cout << "Getting the PV " << endl;
   const xAOD::VertexContainer *offline_vertices(nullptr);
   const xAOD::Vertex *offline_pvx(nullptr);
-  if(HelperFunctions::isAvailable<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store, m_verbose)){
-    RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
+  if(HelperFunctions::isAvailable<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store, msg())){
+    RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
     offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices);
   }
 
@@ -238,7 +238,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   // get event info
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
 
   //

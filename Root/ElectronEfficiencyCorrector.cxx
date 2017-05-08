@@ -162,7 +162,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   m_numEvent      = 0;
@@ -511,7 +511,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   if ( m_debug ) { ATH_MSG_INFO( "Applying Electron Efficiency Correction... "); }
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   // initialise containers
   //
@@ -531,7 +531,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     // if electrons are only allowed in systematic instances, hence, we have to check for the existence of the nominal container
     //
     if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName )  ) {
-       RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+       RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, msg()) ,"");
 
        if ( m_debug ) { ATH_MSG_INFO( "Number of electrons: " << static_cast<int>(inputElectrons->size()) ); }
 
@@ -547,7 +547,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
       // get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
       //
       std::vector<std::string>* systNames(nullptr);
-      RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+      RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
 
     	// loop over systematic sets available
 	//
@@ -559,13 +559,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
           if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName )  ) {
 
-             RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+             RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, msg()) ,"");
 
              if ( !m_store->contains<xAOD::ElectronContainer>( m_outContainerName+systName ) ) {
                RETURN_CHECK("ElectronEfficiencyCorrector::execute()", (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, m_outContainerName+systName, inputElectrons)), "");
              }
 
-             RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(outputElectrons, m_outContainerName+systName, m_event, m_store, m_verbose) ,"");
+             RETURN_CHECK("ElectronEfficiencyCorrector::execute()", HelperFunctions::retrieve(outputElectrons, m_outContainerName+systName, m_event, m_store, msg()) ,"");
 
              if ( m_debug ){
                  ATH_MSG_INFO( "Number of electrons: " << static_cast<int>(outputElectrons->size()) );
