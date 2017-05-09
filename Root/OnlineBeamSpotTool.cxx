@@ -18,17 +18,17 @@ OnlineBeamSpotTool::OnlineBeamSpotTool() :
   m_cachedLBData(nullptr),
   m_mcLBData(nullptr)
 {
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.A.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.B.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.C.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.D.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.E.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.F.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.G.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.H.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.I.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.K.root"));
-  readFile(PathResolverFindDataFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.L.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.A.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.B.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.C.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.D.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.E.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.F.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.G.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.H.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.I.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.K.root"));
+  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.L.root"));
 
   m_mcLBData = new LBData(0,999999,0,0,0);
 }
