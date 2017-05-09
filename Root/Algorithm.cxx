@@ -22,7 +22,8 @@ xAH::Algorithm::Algorithm(std::string className) :
   m_isMC(-1),
   m_event(nullptr),
   m_store(nullptr),
-  m_className(className)
+  m_className(className),
+  m_registered(false)
 {
 }
 
@@ -31,6 +32,7 @@ xAH::Algorithm::~Algorithm()
 }
 
 StatusCode xAH::Algorithm::algInitialize(){
+    // register an instance of the the class
     registerInstance();
     return StatusCode::SUCCESS;
 }
@@ -40,10 +42,11 @@ StatusCode xAH::Algorithm::algFinalize(){
     return StatusCode::SUCCESS;
 }
 
-xAH::Algorithm* xAH::Algorithm::setName(std::string name){
+xAH::Algorithm* xAH::Algorithm::SetName(std::string name){
   m_name = name;
   // call the TNamed
-  this->SetName(name.c_str());
+  //EL::Algorithm::SetName((m_className+"."+name).c_str());
+  EL::Algorithm::SetName(name.c_str());
   return this;
 }
 
@@ -89,7 +92,9 @@ int xAH::Algorithm::isMC(){
 }
 
 void xAH::Algorithm::registerInstance(){
+    if(m_registered) return;
     m_instanceRegistry[m_className]++;
+    m_registered = true;
 }
 
 int xAH::Algorithm::numInstances(){

@@ -82,7 +82,8 @@ namespace xAH {
             @brief Set the name of this particular instance to something unique (used for ROOT's TObject name primarily)
             @param name         The name of the instance
          */
-        Algorithm* setName(std::string name);
+        Algorithm* SetName(std::string name = "UnnamedAlgorithm");
+        using EL::Algorithm::SetName;
 
         /**
             @rst
@@ -240,9 +241,9 @@ namespace xAH {
 
             @endrst
          */
-	inline bool isToolAlreadyUsed( const std::string& tool_name ) {
-	   return ( m_toolAlreadyUsed.find(tool_name)->second );
-	}
+        inline bool isToolAlreadyUsed( const std::string& tool_name ) {
+           return ( m_toolAlreadyUsed.find(tool_name)->second );
+        }
 
       private:
         /**
@@ -251,17 +252,27 @@ namespace xAH {
 
             @endrst
          */
-	static std::map<std::string, int> m_instanceRegistry;
+        static std::map<std::string, int> m_instanceRegistry;
 
         /**
             @rst
                 Map containing info about whether a CP Tool of a given name has been already used or not by this :cpp:class:`xAH::Algorithm`.
 
-		Its content gets set through :cpp:func:`xAH::Algorithm::checkToolStore`, depending on whether the tool it's created from scratch, or retrieved from :cpp:class:`asg::ToolStore`
+                Its content gets set through :cpp:func:`xAH::Algorithm::checkToolStore`, depending on whether the tool it's created from scratch, or retrieved from :cpp:class:`asg::ToolStore`
 
             @endrst
          */
         std::map<std::string, bool> m_toolAlreadyUsed; //!
+
+        /**
+            @rst
+              A boolean to keep track of whether this instance was registered or not.
+
+              Calling :cpp:func:`xAH::Algorithm::registerInstance` multiple times won't inflate the number of instances of a class made because of me.
+
+            @endrst
+        */
+        bool m_registered; //!
 
   };
 
