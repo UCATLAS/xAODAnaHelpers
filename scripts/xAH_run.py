@@ -536,7 +536,7 @@ if __name__ == "__main__":
 
         alg = alg()
         alg.SetName(algName)
-        alg.msg().setLevel(debugLevel)
+        alg.setMsgLevel(debugLevel)
         for config_name, config_val in algorithm_configuration['configs'].iteritems():
           xAH_logger.debug("\t%s", printStr.format(className, config_name, config_val))
           algorithmConfiguration_string.append(printStr.format(className, config_name, config_val))
