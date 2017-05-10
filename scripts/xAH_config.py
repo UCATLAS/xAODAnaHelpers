@@ -49,7 +49,7 @@ class xAH_config(object):
     #
     alg_obj = alg()
     alg_obj.SetName(algName)
-    alg_obj.msg().setLevel(debugLevel)
+    alg_obj.setMsgLevel(debugLevel)
     self._log.append((alg,algName))
     for k,v in options.iteritems():
       if not hasattr(alg_obj, k):

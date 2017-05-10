@@ -33,7 +33,7 @@ StatusCode xAH::Algorithm::algInitialize(){
     // register an instance of the the class
     registerInstance();
     SetName(m_name.c_str());
-    msg().setLevel(m_debugLevel);
+    setMsgLevel(m_debugLevel);
     m_debug = msg().msgLevel(MSG::DEBUG);
     return StatusCode::SUCCESS;
 }
