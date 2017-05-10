@@ -563,7 +563,7 @@ EL::StatusCode METConstructor :: execute ()
       RETURN_CHECK( "METConstructor::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
    }
 
-   if ( m_verbose ) m_store->print();// print TStore content
+   ATH_EXEC_VERBOSE(m_store->print());// print TStore content
 
   return EL::StatusCode::SUCCESS;
 

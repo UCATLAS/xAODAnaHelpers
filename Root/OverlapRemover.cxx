@@ -263,7 +263,7 @@ EL::StatusCode OverlapRemover :: execute ()
   executeOR(inElectrons, inMuons, inJets, inPhotons, inTaus, NOMINAL);
 
   // look what do we have in TStore
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
   // -----------------------------------------------------------------------------------------------
   //
@@ -370,7 +370,7 @@ EL::StatusCode OverlapRemover :: execute ()
   RETURN_CHECK( "OverlapRemover::execute()", m_store->record( m_vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   // look what do we have in TStore
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
   return EL::StatusCode::SUCCESS;
 

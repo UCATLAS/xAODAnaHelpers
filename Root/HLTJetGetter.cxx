@@ -150,7 +150,7 @@ EL::StatusCode HLTJetGetter :: execute ()
         }//end trigJet loop
     }//end feature container loop
 
-    if ( m_verbose ) { m_store->print(); }
+    ATH_EXEC_VERBOSE(m_store->print());
 
     return EL::StatusCode::SUCCESS;
 }

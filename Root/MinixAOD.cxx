@@ -138,8 +138,7 @@ EL::StatusCode MinixAOD :: initialize ()
   if(m_copyFileMetaData){
     m_fileMetaDataTool = new xAODMaker::FileMetaDataTool();
 
-    if(m_verbose)
-      RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->setProperty("OutputLevel", MSG::VERBOSE ), "Could not set verbosity on fileMenuMetaDataTool");
+    RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->setProperty("OutputLevel", msg().level() ), "Could not set verbosity on fileMenuMetaDataTool");
 
 
     RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->initialize(), "Could not initialize FileMetaDataTool");
@@ -149,8 +148,7 @@ EL::StatusCode MinixAOD :: initialize ()
   if(m_copyTriggerInfo){
     m_trigMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();
 
-    if(m_verbose)
-      RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->setProperty("OutputLevel", MSG::VERBOSE ), "Could not set verbosity on TriggerMenuMetaDataTool");
+    RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ), "Could not set verbosity on TriggerMenuMetaDataTool");
 
     RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
     if(m_debug) ATH_MSG_INFO( "TriggerMenuMetaDataTool initialized...");
@@ -202,7 +200,7 @@ EL::StatusCode MinixAOD :: initialize ()
 
 EL::StatusCode MinixAOD :: execute ()
 {
-  if(m_verbose) ATH_MSG_INFO( "Dumping objects...");
+  ATH_MSG_VERBOSE( "Dumping objects...");
 
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, msg()) ,"");
@@ -235,7 +233,7 @@ EL::StatusCode MinixAOD :: execute ()
     auto out_key = keypair.second;
 
     const xAOD::IParticleContainer* cont(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, in_key, nullptr, m_store, msg()), std::string("Could not retrieve container "+in_key+" from TStore. Enable m_verbose to find out why.").c_str());
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, in_key, nullptr, m_store, msg()), std::string("Could not retrieve container "+in_key+" from TStore. Enable verbosity to find out why.").c_str());
 
     if(const xAOD::ElectronContainer* t_cont = dynamic_cast<const xAOD::ElectronContainer*>(cont)){
       RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
@@ -281,7 +279,7 @@ EL::StatusCode MinixAOD :: execute ()
     auto parent = keypair.second;
 
     std::vector<std::string>* vector(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(vector, vectorName, nullptr, m_store, msg()), std::string("Could not retrieve vector "+vectorName+" from TStore. Enable m_verbose to find out why.").c_str());
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(vector, vectorName, nullptr, m_store, msg()), std::string("Could not retrieve vector "+vectorName+" from TStore. Enable verbosity to find out why.").c_str());
 
     // only add the parent if it doesn't exist
     if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
@@ -305,7 +303,7 @@ EL::StatusCode MinixAOD :: execute ()
   // all we need to do is retrieve it and figure out what type it is to record it and we're done
   for(const auto& key: m_copyFromStoreToEventKeys_vec){
     const xAOD::IParticleContainer* cont(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, msg()), std::string("Could not retrieve container "+key+" from TStore. Enable m_verbose to find out why.").c_str());
+    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, msg()), std::string("Could not retrieve container "+key+" from TStore. Enable verbosity to find out why.").c_str());
 
     if(dynamic_cast<const xAOD::ElectronContainer*>(cont)){
       RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::ElectronContainer, xAOD::ElectronAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());

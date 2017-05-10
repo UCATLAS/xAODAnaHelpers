@@ -209,7 +209,7 @@ EL::StatusCode TruthSelector :: execute ()
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
 
   // look what we have in TStore
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
   if ( !pass ) {
     wk()->skipEvent();

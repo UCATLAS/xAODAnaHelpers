@@ -412,7 +412,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   // look what we have in TStore
   //
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
   if ( m_debug ) { ATH_MSG_INFO( "Left "); }
   return EL::StatusCode::SUCCESS;

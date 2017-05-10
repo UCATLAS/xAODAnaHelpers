@@ -373,7 +373,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  if ( m_debug ) { ATH_MSG_INFO( "Is MC? " << static_cast<int>(m_isMC) ); }
+  ATH_MSG_DEBUG( "Is MC? " << static_cast<int>(m_isMC) );
 
   //Protection in case GRL does not apply to this run
   //
@@ -660,17 +660,15 @@ EL::StatusCode BasicEventSelection :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if( m_debug ) { ATH_MSG_INFO( "Basic Event Selection"); }
+  ATH_MSG_DEBUG( "Basic Event Selection");
 
   // Print every 1000 entries, so we know where we are:
   //
   if ( (m_eventCounter % 1000) == 0 ) {
     ATH_MSG_INFO( "Entry number = " << m_eventCounter);
-    if ( m_verbose ) {
-      ATH_MSG_INFO( "Store Content:");
-      m_store->print();
-      ATH_MSG_INFO( "End Content");
-    }
+    ATH_MSG_VERBOSE( "Store Content:");
+    ATH_EXEC_VERBOSE(m_store->print());
+    ATH_MSG_VERBOSE( "End Content");
   }
 
   //-----------------------------------------
@@ -788,7 +786,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       float weight_Sherpa22 = -999.;
       weight_Sherpa22 = m_reweightSherpa22_tool_handle->getWeight();
       weight_Sherpa22Decor( *eventInfo ) = weight_Sherpa22;
-      if( m_debug)  ATH_MSG_INFO("Setting Sherpa 2.2 reweight to " << weight_Sherpa22);
+      ATH_MSG_DEBUG("Setting Sherpa 2.2 reweight to " << weight_Sherpa22);
 
     } // If not already decorated
   } // if m_reweightSherpa22
@@ -822,7 +820,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
 
-      if ( m_debug ) { ATH_MSG_WARNING("Found duplicated event! runNumber = " << static_cast<uint32_t>(eventInfo->runNumber()) << ", eventNumber = " << static_cast<uint32_t>(eventInfo->eventNumber()) << ". Skipping this event"); }
+      ATH_MSG_WARNING("Found duplicated event! runNumber = " << static_cast<uint32_t>(eventInfo->runNumber()) << ", eventNumber = " << static_cast<uint32_t>(eventInfo->eventNumber()) << ". Skipping this event");
 
       // Bookkeep info in duplicates TTree
       //
@@ -868,15 +866,11 @@ EL::StatusCode BasicEventSelection :: execute ()
   //------------------------------------------------------
   if ( !m_isMC ) {
 
-    if ( m_debug ) {
+    // Get the streams that the event was put in
+    const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
 
-      // Get the streams that the event was put in
-      const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
-
-      for ( auto& it : streams ) {
-	 const std::string stream_name = it.name();
-	 ATH_MSG_INFO( "event has fired stream: " << stream_name );
-      }
+    for ( auto& stream : streams ) {
+      ATH_MSG_DEBUG( "event has fired stream: " << stream.name() );
     }
 
     // GRL

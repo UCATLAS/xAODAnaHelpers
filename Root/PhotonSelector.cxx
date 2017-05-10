@@ -381,7 +381,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
   // look what we have in TStore
   //
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
   if( !eventPass ) {
     wk()->skipEvent();

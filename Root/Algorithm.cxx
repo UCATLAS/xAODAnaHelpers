@@ -15,7 +15,6 @@ ClassImp(xAH::Algorithm)
 xAH::Algorithm::Algorithm(std::string className) :
   m_debugLevel(MSG::INFO),
   m_debug(false),
-  m_verbose(false),
   m_systName(""),
   m_systVal(0),
   m_eventInfoContainerName("EventInfo"),
@@ -46,7 +45,6 @@ StatusCode xAH::Algorithm::algFinalize(){
 
 xAH::Algorithm* xAH::Algorithm::setLevel(int level){
   m_debug = level & 1;
-  m_verbose = (level >> 1)&1;
   return this;
 }
 

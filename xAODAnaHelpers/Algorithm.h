@@ -118,9 +118,7 @@ namespace xAH {
         /** debug level */
         MSG::Level m_debugLevel;
         /** Enable debug output */
-        bool m_debug,
-        /** Enable verbose output */
-             m_verbose;
+        bool m_debug;
 
         /** If running systematics, the name of the systematic */
         std::string m_systName;
