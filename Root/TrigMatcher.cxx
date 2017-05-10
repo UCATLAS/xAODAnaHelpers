@@ -42,8 +42,6 @@ TrigMatcher :: TrigMatcher ()
   // initialize().
   //ATH_MSG_INFO( "Calling constructor");
 
-  m_debug           = false;
-
   // input container to be read from TEvent or TStore
   //
   m_inContainerName = "";
@@ -111,7 +109,7 @@ EL::StatusCode TrigMatcher :: initialize ()
   //  everything went fine, let's initialise the tool!
   //
   m_trigMatchTool = new Trig::MatchingTool("TrigMatchTool_"+m_name);
-  if(m_debug) ANA_CHECK( m_trigMatchTool->setProperty( "OutputLevel", MSG::DEBUG) );
+  ANA_CHECK( m_trigMatchTool->setProperty( "OutputLevel", msg().level()) );
 
   // **********************************************************************************************
 
@@ -127,7 +125,7 @@ EL::StatusCode TrigMatcher :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Applying trigger matching... "); }
+  ATH_MSG_DEBUG( "Applying trigger matching... ");
 
   const xAOD::IParticleContainer* inParticles(nullptr);
 
@@ -152,7 +150,7 @@ EL::StatusCode TrigMatcher :: execute ()
     //
     for ( auto systName : *systNames) {
 
-      if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  input container name:  " << m_inContainerName+systName ); }
+      ATH_MSG_DEBUG( " syst name: " << systName << "  input container name:  " << m_inContainerName+systName );
 
       RETURN_CHECK("TrigMatcher::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName + systName, m_event, m_store, msg()), "");
       ANA_CHECK( executeMatching( inParticles ) );
@@ -169,16 +167,16 @@ EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* 
 
   for( auto particle : *inParticles )
     {
-      if ( m_debug ) { ATH_MSG_INFO( "Trigger matching an object"); }
+      ATH_MSG_DEBUG( "Trigger matching an object");
 
       if ( !isTrigMatchedDecor.isAvailable( *particle ) )
 	isTrigMatchedDecor( *particle ) = std::vector<std::string>();
 
       for ( auto const &chain : m_trigChainsList ) {
-	if ( m_debug ) { ATH_MSG_INFO( "\t checking trigger chain " << chain); }
+	ATH_MSG_DEBUG( "\t checking trigger chain " << chain);
 
 	bool matched = m_trigMatchTool->match( *particle, chain, 0.07 );
-	if ( m_debug ) { ATH_MSG_INFO( "\t\t result = " << matched ); }
+	ATH_MSG_DEBUG( "\t\t result = " << matched );
 	if(matched) isTrigMatchedDecor( *particle ).push_back( chain );
       }
     }

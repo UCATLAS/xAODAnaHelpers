@@ -65,7 +65,7 @@ MinixAOD :: MinixAOD () :
 
 EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
 {
-  if(m_debug) ATH_MSG_INFO( "Calling setupJob");
+  ATH_MSG_DEBUG("Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MinixAOD" ).ignore(); // call before opening first file
@@ -126,7 +126,7 @@ EL::StatusCode MinixAOD :: fileExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode MinixAOD :: initialize ()
 {
-  if(m_debug) ATH_MSG_INFO( "Calling initialize");
+  ATH_MSG_DEBUG("Calling initialize");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -142,7 +142,7 @@ EL::StatusCode MinixAOD :: initialize ()
 
 
     RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->initialize(), "Could not initialize FileMetaDataTool");
-    if(m_debug) ATH_MSG_INFO( "FileMetaDataTool initialized...");
+    ATH_MSG_DEBUG("FileMetaDataTool initialized...");
   }
 
   if(m_copyTriggerInfo){
@@ -151,9 +151,9 @@ EL::StatusCode MinixAOD :: initialize ()
     RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ), "Could not set verbosity on TriggerMenuMetaDataTool");
 
     RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
-    if(m_debug) ATH_MSG_INFO( "TriggerMenuMetaDataTool initialized...");
+    ATH_MSG_DEBUG("TriggerMenuMetaDataTool initialized...");
 
-    if(m_debug) std::cout << "Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file." << std::endl;
+    ATH_MSG_DEBUG("Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file.");
     m_simpleCopyKeys_vec.push_back("xTrigDecision");
     m_simpleCopyKeys_vec.push_back("TrigConfKeys");
   }
@@ -193,7 +193,7 @@ EL::StatusCode MinixAOD :: initialize ()
     m_vectorCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
   }
 
-  if(m_debug) ATH_MSG_INFO( "MinixAOD Interface succesfully initialized!" );
+  ATH_MSG_DEBUG("MinixAOD Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -224,7 +224,7 @@ EL::StatusCode MinixAOD :: execute ()
   // simple copy is easiest - it's in the input, copy over, no need for types
   for(const auto& key: m_simpleCopyKeys_vec){
     RETURN_CHECK("MinixAOD::execute()", m_event->copy(key), std::string("Could not copy "+key+" from input file.").c_str());
-    if(m_debug) std::cout << "Copying " << key << " from input file" << std::endl;
+    ATH_MSG_DEBUG("Copying " << key << " from input file");
   }
 
   // we need to make deep copies
@@ -253,7 +253,7 @@ EL::StatusCode MinixAOD :: execute ()
     }
     m_copyFromStoreToEventKeys_vec.push_back(out_key);
 
-    if(m_debug) std::cout << "Deep-Copied " << in_key << " to " << out_key << " to record to output file" << std::endl;
+    ATH_MSG_DEBUG("Deep-Copied " << in_key << " to " << out_key << " to record to output file");
   }
 
   // shallow IO handling (if no parent, assume deep copy)
@@ -264,11 +264,8 @@ EL::StatusCode MinixAOD :: execute ()
     // only add the parent if it doesn't exist
     if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
 
-    if(m_debug){
-      std::cout << "Copying " << key;
-      if(!parent.empty()) std::cout << " as well as it's parent " << parent;
-      std::cout << std::endl;
-    }
+    ATH_MSG_DEBUG("Copying " << key);
+    if(!parent.empty()) ATH_MSG_DEBUG(" as well as it's parent " << parent);
 
     m_copyFromStoreToEventKeys_vec.push_back(key);
   }
@@ -286,10 +283,10 @@ EL::StatusCode MinixAOD :: execute ()
 
     std::cout << "The following containers are being copied over:" << std::endl;
     for(const auto& key: *vector){
-      if(m_debug) std::cout << "\t" << key << std::endl;
+      ATH_MSG_DEBUG("\t" << key);
       m_copyFromStoreToEventKeys_vec.push_back(key);
     }
-    if(m_debug && !parent.empty()) std::cout << "... along with their parent " << parent << std::endl;
+    if(!parent.empty()) ATH_MSG_DEBUG("... along with their parent " << parent);
 
   }
 
@@ -322,12 +319,12 @@ EL::StatusCode MinixAOD :: execute ()
       return EL::StatusCode::FAILURE;
     }
 
-    if(m_debug) std::cout << "Copied " << key << " and it's auxiliary container from TStore to TEvent" << std::endl;
+    ATH_MSG_DEBUG("Copied " << key << " and it's auxiliary container from TStore to TEvent");
   }
 
 
   m_event->fill();
-  if(m_debug) ATH_MSG_INFO( "Finished dumping objects...");
+  ATH_MSG_DEBUG("Finished dumping objects...");
 
   return EL::StatusCode::SUCCESS;
 

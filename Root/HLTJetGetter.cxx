@@ -125,7 +125,7 @@ EL::StatusCode HLTJetGetter :: initialize ()
 
 EL::StatusCode HLTJetGetter :: execute ()
 {
-    if ( m_debug ) { ATH_MSG_INFO( "Getting HLT jets... "); }
+    ATH_MSG_DEBUG( "Getting HLT jets... ");
 
     //
     // Create the new container and its auxiliary store.
@@ -159,7 +159,7 @@ EL::StatusCode HLTJetGetter :: execute ()
 
 EL::StatusCode HLTJetGetter :: postExecute ()
 {
-    if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+    ATH_MSG_DEBUG( "Calling postExecute");
     return EL::StatusCode::SUCCESS;
 }
 

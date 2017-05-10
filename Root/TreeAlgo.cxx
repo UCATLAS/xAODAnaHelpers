@@ -39,8 +39,6 @@ TreeAlgo :: TreeAlgo () :
   m_truthParticlesDetailStr     = "";
   m_trackParticlesDetailStr     = "";
 
-  m_debug                       = false;
-
   m_outHistDir                  = false;
 
   m_muContainerName             = "";
@@ -221,7 +219,7 @@ EL::StatusCode TreeAlgo :: execute ()
       return EL::StatusCode::FAILURE;
     }
 
-    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, m_debug );
+    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, msg().msgLevel(MSG::DEBUG) );
     const auto& helpTree = m_trees[systName];
 
     // tell the tree to go into the file
@@ -273,7 +271,7 @@ EL::StatusCode TreeAlgo :: execute ()
   const xAOD::VertexContainer* vertices(nullptr);
   RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
   // get the primaryVertex
-  const xAOD::Vertex* primaryVertex = HelperFunctions::getPrimaryVertex( vertices );
+  const xAOD::Vertex* primaryVertex = HelperFunctions::getPrimaryVertex( vertices , msg());
 
   for(const auto& systName: event_systNames){
     auto& helpTree = m_trees[systName];
@@ -326,7 +324,7 @@ EL::StatusCode TreeAlgo :: execute ()
         const xAOD::JetContainer* inJets(nullptr);
         if(ll==0) RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ,"");
         else{     RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inJets, m_jetContainers.at(ll), m_event, m_store, msg()) ,""); }
-        helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices), m_jetBranches.at(ll) );
+        helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }
 
     }
@@ -338,13 +336,13 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_trigJetContainerName.empty() ) {
       const xAOD::JetContainer* inTrigJets(nullptr);
       RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTrigJets, m_trigJetContainerName, m_event, m_store, msg()) ,"");
-      helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices), "trigJet" );
+      helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), "trigJet" );
     }
     if ( !m_truthJetContainerName.empty() ) {
      for(unsigned int ll=0;ll<m_truthJetContainers.size();++ll){
         const xAOD::JetContainer* inTruthJets(nullptr);
         RETURN_CHECK("TreeAlgo::execute()", HelperFunctions::retrieve(inTruthJets, m_truthJetContainers.at(ll), m_event, m_store, msg()) ,"");
-        helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices), m_truthJetBranches.at(ll) );
+        helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthJetBranches.at(ll) );
       }
     }
     if ( !m_fatJetContainerName.empty() ) {

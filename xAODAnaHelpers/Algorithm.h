@@ -92,23 +92,6 @@ namespace xAH {
         StatusCode algFinalize();
 
         /**
-            @rst
-                Set the level of verbosity in algorithms.
-
-                ===== ====== ===== =======
-                Value Binary Debug Verbose
-                ===== ====== ===== =======
-                0     00
-                1     01     x
-                2     10           x
-                3     11     x     x
-                ===== ====== ===== =======
-
-            @endrst
-         */
-        Algorithm* setLevel(int level);
-
-        /**
             @brief All algorithms initialized should have a unique name, to differentiate them at the TObject level.
 
             Note, :code:`GetName()` returns a :code:`char*` while this returns a :code:`std::string`.
@@ -117,8 +100,6 @@ namespace xAH {
 
         /** debug level */
         MSG::Level m_debugLevel;
-        /** Enable debug output */
-        bool m_debug;
 
         /** If running systematics, the name of the systematic */
         std::string m_systName;

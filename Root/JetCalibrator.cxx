@@ -58,9 +58,6 @@ JetCalibrator :: JetCalibrator () :
   //ATH_MSG_INFO( "Calling constructor");
 
 
-  // read debug flag from .config file
-  m_debug                   = false;
-
   m_sort                    = true;
   // input container to be read from TEvent or TStore
   m_inContainerName         = "";
@@ -304,7 +301,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
-  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
+  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
   for(unsigned int i=0; i<m_systList.size(); i++)
     m_systType.insert(m_systType.begin(), 0); // Push systType nominal for this case
 
@@ -338,13 +335,13 @@ EL::StatusCode JetCalibrator :: initialize ()
     //If just one systVal, then push it to the vector
     RETURN_CHECK("JetCalibrator::initialize()", this->parseSystValVector(), "Failed to parse vector of systematic sigma values.");
     if( m_systValVector.size() == 0) {
-      if ( m_debug ){ ATH_MSG_INFO( "Pushing the following systVal to m_systValVector: " << m_systVal ); }
+      ATH_MSG_DEBUG("Pushing the following systVal to m_systValVector: " << m_systVal );
       m_systValVector.push_back(m_systVal);
     }
 
     for(unsigned int iSyst=0; iSyst < m_systValVector.size(); ++iSyst){
       m_systVal = m_systValVector.at(iSyst);
-      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal, m_debug );
+      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal, msg() );
 
       for(unsigned int i=0; i < JESSysList.size(); ++i){
         // do not add another nominal syst to the list!!
@@ -405,7 +402,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     const CP::SystematicSet recSysts = m_JERSmearingTool_handle->recommendedSystematics();
     ATH_MSG_INFO( " Initializing JER Systematics :");
 
-    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1, m_debug ); //Only 1 sys allowed
+    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1, msg() ); //Only 1 sys allowed
     for(unsigned int i=0; i < JERSysList.size(); ++i){
       // do not add another nominal syst to the list!!
       // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
@@ -457,7 +454,7 @@ EL::StatusCode JetCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Jet Calibration and Cleaning... "); }
+  ATH_MSG_DEBUG("Applying Jet Calibration and Cleaning... ");
 
   m_numEvent++;
 
@@ -541,7 +538,7 @@ EL::StatusCode JetCalibrator :: execute ()
     if ( m_runSysts ) {
       if ( thisSysType == 1 ){
         // JES Uncertainty Systematic
-        if( m_debug ) { std::cout << "Configure JES for systematic variation : " << syst_it.name() << std::endl; }
+        ATH_MSG_DEBUG("Configure JES for systematic variation : " << syst_it.name());
         if ( m_JetUncertaintiesTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
           ATH_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
           return EL::StatusCode::FAILURE;
@@ -563,7 +560,7 @@ EL::StatusCode JetCalibrator :: execute ()
       }//JES
 
       if ( thisSysType == 2 || m_JERApplyNominal){
-        if( m_debug ) { std::cout << "Configure JER for systematic variation : " << syst_it.name() << std::endl; }
+        ATH_MSG_DEBUG("Configure JER for systematic variation : " << syst_it.name());
         if( thisSysType == 2){ //apply this systematic
           if ( m_JERSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
             ATH_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
@@ -660,7 +657,7 @@ EL::StatusCode JetCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }

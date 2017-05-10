@@ -61,7 +61,6 @@ BasicEventSelection :: BasicEventSelection () :
   //ATH_MSG_INFO( "Calling constructor");
 
   // basics
-  m_debug = false;
   m_truthLevelOnly = false;
 
   // override derivation name

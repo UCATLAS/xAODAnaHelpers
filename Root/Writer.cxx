@@ -24,7 +24,6 @@ Writer :: Writer () :
   m_jetContainerNamesStr      = "";
   m_electronContainerNamesStr = "";
   m_muonContainerNamesStr     = "";
-  m_debug                   = false;
 
 }
 

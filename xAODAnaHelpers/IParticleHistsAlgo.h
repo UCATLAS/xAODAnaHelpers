@@ -132,7 +132,7 @@ public:
     std::string fullname(m_name);
     fullname += name; // add systematic
     HIST_T* particleHists = new HIST_T( fullname, m_detailStr ); // add systematic
-    particleHists->m_debug = m_debug;
+    particleHists->m_debug = msg().msgLevel(MSG::DEBUG);
     RETURN_CHECK((m_name+"::AddHists").c_str(), particleHists->initialize(), "");
     particleHists->record( wk() );
     m_plots[name] = particleHists;

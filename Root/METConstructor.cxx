@@ -66,8 +66,6 @@ METConstructor :: METConstructor () :
     Algorithm("METConstructor")
 {
 
-  m_debug                 = false;
-
   m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
   m_mapName               = "METAssoc_AntiKt4LCTopo";
   m_coreName              = "MET_Core_AntiKt4LCTopo";
@@ -205,14 +203,14 @@ EL::StatusCode METConstructor :: initialize ()
   if(!m_runNominal && !m_systName.empty()) { //  m_systName is set by default to m_systName= "All", do not change it
       // get the syst from met syst tool
       const CP::SystematicSet recSyst = m_metSyst_handle->recommendedSystematics();
-      sysList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
+      sysList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
 
   } else { //run nominal
     sysList.push_back(CP::SystematicSet()); // add empty systematic (Nominal case)
   }
 
   for ( const auto& syst_it : sysList ) {
-    if (m_debug) cout<<"syst_it = "<<syst_it.name()<<endl;
+    ATH_MSG_DEBUG("syst_it = "<<syst_it.name());
     ATH_MSG_INFO("\t " << syst_it.name());
   }
 
@@ -223,7 +221,7 @@ EL::StatusCode METConstructor :: initialize ()
   RETURN_CHECK("METConstructor::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  if ( m_debug ) { ATH_MSG_INFO( "Is MC? " << static_cast<int>(m_isMC) ); }
+  ATH_MSG_DEBUG( "Is MC? " << static_cast<int>(m_isMC) );
 
 
   return EL::StatusCode::SUCCESS;
@@ -237,7 +235,7 @@ EL::StatusCode METConstructor :: execute ()
    // histograms and trees.  This is where most of your actual analysis
    // code will go.
 
-   if(m_debug) ATH_MSG_INFO( "Performing MET reconstruction...");
+   ATH_MSG_DEBUG( "Performing MET reconstruction...");
 
    m_numEvent ++ ;
    //if (m_debug) cout<< "number of processed events now is : "<< m_numEvent <<endl;
@@ -267,7 +265,7 @@ EL::StatusCode METConstructor :: execute ()
 
      for ( auto systName : *sysJetsNames ) {
        if (systName != "" && !(std::find(sysList.begin(), sysList.end(), CP::SystematicSet(systName)) != sysList.end())) sysList.push_back(CP::SystematicSet(systName));
-     if ( m_debug ) cout<< "jet syst added is = "<< systName<< endl;
+       ATH_MSG_DEBUG("jet syst added is = "<< systName);
      }
    }
 
@@ -278,7 +276,7 @@ EL::StatusCode METConstructor :: execute ()
 
      for ( auto systName : *sysElectronsNames ) {
        if (systName != "" && !(std::find(sysList.begin(), sysList.end(), CP::SystematicSet(systName)) != sysList.end())  ) sysList.push_back(CP::SystematicSet(systName));
-     if ( m_debug ) cout<< "ele syst added is = "<< systName<< endl;
+       ATH_MSG_DEBUG("ele syst added is = "<< systName);
      }
    }
 
@@ -289,7 +287,7 @@ EL::StatusCode METConstructor :: execute ()
 
      for ( auto systName : *sysMuonsNames ) {
        if (systName != "" && !(std::find(sysList.begin(), sysList.end(), CP::SystematicSet(systName)) != sysList.end())) sysList.push_back(CP::SystematicSet(systName));
-     if ( m_debug ) cout<< "muon syst added is = "<< systName<< endl;
+       ATH_MSG_DEBUG("muon syst added is = "<< systName);
      }
    }
 
@@ -300,7 +298,7 @@ EL::StatusCode METConstructor :: execute ()
 
      for ( auto systName : *sysPhotonsNames ) {
        if (systName != "" && !(std::find(sysList.begin(), sysList.end(), CP::SystematicSet(systName)) != sysList.end())) sysList.push_back(CP::SystematicSet(systName));
-     if ( m_debug ) cout<< "photon syst added is = "<< systName<< endl;
+       ATH_MSG_DEBUG("photon syst added is = "<< systName);
      }
    }
 
@@ -321,7 +319,7 @@ EL::StatusCode METConstructor :: execute ()
       std::string sysListItrString;// just for convenience, to retrieve the containers
       sysListItrString= (*sysListItr).name();
 
-      if (m_debug) cout<<" loop over systematic = "<<sysListItr->name() <<endl;
+      ATH_MSG_DEBUG(" loop over systematic = "<<sysListItr->name());
 
       vecOutContainerNames->push_back( sysListItr->name() );
 
@@ -343,7 +341,7 @@ EL::StatusCode METConstructor :: execute ()
          const xAOD::ElectronContainer* eleCont(0);
          if ( m_store->contains<xAOD::ElectronContainer>(m_inputElectrons.Data()+sysListItrString ) ) {
            RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(eleCont, m_inputElectrons.Data()+sysListItrString, m_event, m_store, msg()), "Failed retrieving electron cont.");
-           if (m_debug) cout<< "retrieving ele container "<<    m_inputElectrons.Data() +sysListItrString << " to be added to the met "<< endl;
+           ATH_MSG_DEBUG("retrieving ele container "<<    m_inputElectrons.Data() +sysListItrString << " to be added to the met ");
          }else{
            RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(eleCont, m_inputElectrons.Data(), m_event, m_store, msg()), "Failed retrieving electron cont.");
          }
@@ -366,7 +364,7 @@ EL::StatusCode METConstructor :: execute ()
          const xAOD::PhotonContainer* phoCont(0);
          if ( m_store->contains<xAOD::PhotonContainer>(m_inputPhotons.Data()+sysListItrString ) ) {
            RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data()+sysListItrString, m_event, m_store, msg()), "Failed retrieving photon cont.");
-           if (m_debug) cout<< "retrieving ph container "<<    m_inputPhotons.Data() +sysListItrString << " to be added to the met "<< endl;
+           ATH_MSG_DEBUG("retrieving ph container "<<    m_inputPhotons.Data() +sysListItrString << " to be added to the met ");
          } else {
          RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(phoCont, m_inputPhotons.Data(), m_event, m_store, msg()), "Failed retrieving electron cont.");
       }
@@ -408,7 +406,7 @@ EL::StatusCode METConstructor :: execute ()
         if ( m_store->contains<xAOD::TauJetContainer>(m_inputTaus.Data()+sysListItrString ) ) {
 
           RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data()+sysListItrString, m_event, m_store, msg()), "Failed retrieving photon cont.");
-          if (m_debug) cout<< "retrieving tau container "<< m_inputTaus.Data()+sysListItrString << " to be added to the met "<< endl;
+          ATH_MSG_DEBUG("retrieving tau container "<< m_inputTaus.Data()+sysListItrString << " to be added to the met ");
 
         } else {
         RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, msg()), "Failed retrieving electron cont.");
@@ -457,14 +455,14 @@ EL::StatusCode METConstructor :: execute ()
 
      const xAOD::JetContainer* jetCont(0);
      std::string m_inputJets_Syst =  m_inputJets.Data() +sysListItrString;// just for convenience
-     if (m_debug) cout<<" the jet container name is : "<<m_inputJets_Syst<< endl;
+     ATH_MSG_DEBUG(" the jet container name is : "<<m_inputJets_Syst);
 
      if ( m_store->contains<xAOD::JetContainer>(m_inputJets.Data()+sysListItrString ) ) {
-       if (m_debug) cout << "syst is = "<<sysListItrString <<endl;
+       ATH_MSG_DEBUG("syst is = "<<sysListItrString);
        //RETURN_CHECK( "METConstructor::execute()", m_metSyst_handle->evtStore()->retrieve( jetCont,m_inputJets_Syst  ), "");// is this necessary?
        RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont,m_inputJets_Syst, m_event, m_store, msg()), " Failed retrieving jet cont.");
      } else {
-       if (m_debug) cout<<" not found this jet container : "<< m_inputJets.Data()+sysListItrString<< endl;
+       ATH_MSG_DEBUG(" not found this jet container : "<< m_inputJets.Data()+sysListItrString);
        //RETURN_CHECK( "METConstructor::execute()", m_metSyst_handle->evtStore()->retrieve( jetCont, m_inputJets.Data() ), "");// is this necessary?
        RETURN_CHECK("METConstructor::execute()", HelperFunctions::retrieve(jetCont, m_inputJets.Data(), m_event, m_store, msg()), " Failed retrieving jet cont.");
      }
@@ -502,14 +500,14 @@ EL::StatusCode METConstructor :: execute ()
      if( m_isMC && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
        ATH_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
      }
-     if (m_debug) std::cout << "Soft cluster met term met : " << softClusMet->met() << std::endl;
+     ATH_MSG_DEBUG("Soft cluster met term met : " << softClusMet->met());
 
      //get the track soft term, and applyCorrection
      xAOD::MissingET * softTrkMet = (*newMet)["PVSoftTrk"];
      if( m_isMC && m_metSyst_handle->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
        ATH_MSG_ERROR( "Could not apply correction to soft track met !!!! ");
      }
-     if (m_debug) std::cout << "track met soft term : " << softTrkMet->met() << std::endl;
+     ATH_MSG_DEBUG("track met soft term : " << softTrkMet->met());
 
      //only for track jets
      /*xAOD::MissingET * jetMet = (*newMet)["RefJet"];
@@ -526,10 +524,10 @@ EL::StatusCode METConstructor :: execute ()
      RETURN_CHECK("METConstructor::execute()", m_store->record(newMet, (m_outputContainer+sysListItr->name()).Data() ), "Failed to store MET output container.");
      RETURN_CHECK("METConstructor::execute()", m_store->record(metAuxCont, (m_outputContainer+sysListItr->name() + "Aux.").Data()), "Failed to store MET output container.");
 
-     if (m_debug) std::cout << " FinalClus met, for syst " << sysListItr->name() << " is = " << (*newMet->find("FinalClus"))->met() << std::endl;
-     if (m_debug) std::cout << " FinalTrk met, for syst " << sysListItr->name() << " is = " << (*newMet->find("FinalTrk"))->met() << std::endl;
-     if (m_debug) cout<< "storing met container :  " << (m_outputContainer+ sysListItr->name()).Data() << endl;
-     if (m_debug) cout<< "storing  Aux met container :  "<< (m_outputContainer+ sysListItr->name() + "Aux.").Data() << endl;
+     ATH_MSG_DEBUG(" FinalClus met, for syst " << sysListItr->name() << " is = " << (*newMet->find("FinalClus"))->met());
+     ATH_MSG_DEBUG(" FinalTrk met, for syst " << sysListItr->name() << " is = " << (*newMet->find("FinalTrk"))->met());
+     ATH_MSG_DEBUG("storing met container :  " << (m_outputContainer+ sysListItr->name()).Data());
+     ATH_MSG_DEBUG("storing  Aux met container :  "<< (m_outputContainer+ sysListItr->name() + "Aux.").Data());
 
 
      /* something causes a crash down here
@@ -577,7 +575,7 @@ EL::StatusCode METConstructor :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) ATH_MSG_INFO( "Calling postExecute");
+  ATH_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }

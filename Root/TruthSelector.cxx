@@ -49,8 +49,6 @@ TruthSelector :: TruthSelector () :
 {
   //ATH_MSG_INFO( "Calling constructor");
 
-  // read debug flag from .config file
-  m_debug         = false;
   m_useCutFlow    = true;
 
   // input container to be read from TEvent or TStore
@@ -177,7 +175,7 @@ EL::StatusCode TruthSelector :: initialize ()
 
 EL::StatusCode TruthSelector :: execute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Jet Selection... "); }
+  ATH_MSG_DEBUG( "Applying Jet Selection... ");
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -291,7 +289,7 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 
 EL::StatusCode TruthSelector :: postExecute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG( "Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 

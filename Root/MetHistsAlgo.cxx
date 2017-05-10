@@ -18,7 +18,6 @@ MetHistsAlgo :: MetHistsAlgo () :
 {
   m_inContainerName         = "";
   m_detailStr               = "";
-  m_debug                   = false;
 }
 
 EL::StatusCode MetHistsAlgo :: setupJob (EL::Job& job)

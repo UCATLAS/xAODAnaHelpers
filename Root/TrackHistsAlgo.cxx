@@ -19,7 +19,6 @@ TrackHistsAlgo :: TrackHistsAlgo () :
 {
   m_inContainerName         = "";
   m_detailStr               = "";
-  m_debug                   = false;
 
 }
 
@@ -81,7 +80,7 @@ EL::StatusCode TrackHistsAlgo :: execute ()
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
   RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
-  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
+  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   RETURN_CHECK("TrackHistsAlgo::execute()", m_plots->execute( tracks, pvx, eventWeight, eventInfo ), "");
 

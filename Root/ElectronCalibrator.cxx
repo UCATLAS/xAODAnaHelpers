@@ -58,8 +58,6 @@ ElectronCalibrator :: ElectronCalibrator () :
 
   //ATH_MSG_INFO( "Calling constructor");
 
-  m_debug                   = false;
-
   // input container to be read from TEvent or TStore
   //
   m_inContainerName         = "";
@@ -218,7 +216,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
-  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
+  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
 
   ATH_MSG_INFO("Will be using EgammaCalibrationAndSmearingTool systematic:");
   std::vector< std::string >* SystElectronsNames = new std::vector< std::string >;
@@ -262,7 +260,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Electron Calibration ... "); }
+  ATH_MSG_DEBUG("Applying Electron Calibration ... ");
 
   m_numEvent++;
 
@@ -320,11 +318,9 @@ EL::StatusCode ElectronCalibrator :: execute ()
       // set smearing seeding if needed - no need for this after Base,2.1.26
       // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
       //
-      if ( m_debug ) {
-	ATH_MSG_INFO("Checking electron "<<idx<<", raw pt = "<<elSC_itr->pt()*1e-3<<" GeV ");
-	if ( elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
-	  ATH_MSG_WARNING( "electron " << idx << ", raw pt = " << elSC_itr->pt() * 1e-3 << " GeV, does not have caloCluster()! " );
-	}
+      ATH_MSG_DEBUG("Checking electron "<<idx<<", raw pt = "<<elSC_itr->pt()*1e-3<<" GeV ");
+      if ( elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
+        ATH_MSG_DEBUG( "electron " << idx << ", raw pt = " << elSC_itr->pt() * 1e-3 << " GeV, does not have caloCluster()! " );
       }
 
       // apply calibration (w/ syst) and leakage correction to calo based iso vars
@@ -338,7 +334,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 	}
       }
 
-      if ( m_debug ) { ATH_MSG_INFO( "Calibrated pt with systematic: " << syst_it.name() <<" , pt = " << elSC_itr->pt() * 1e-3 << " GeV"); }
+      ATH_MSG_DEBUG( "Calibrated pt with systematic: " << syst_it.name() <<" , pt = " << elSC_itr->pt() * 1e-3 << " GeV");
 
       ++idx;
 
@@ -384,7 +380,7 @@ EL::StatusCode ElectronCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }

@@ -14,7 +14,6 @@ ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm(std::string className) :
   m_debugLevel(MSG::INFO),
-  m_debug(false),
   m_systName(""),
   m_systVal(0),
   m_eventInfoContainerName("EventInfo"),
@@ -43,11 +42,6 @@ StatusCode xAH::Algorithm::algFinalize(){
     return StatusCode::SUCCESS;
 }
 
-xAH::Algorithm* xAH::Algorithm::setLevel(int level){
-  m_debug = level & 1;
-  return this;
-}
-
 StatusCode xAH::Algorithm::parseSystValVector(){
 
     std::stringstream ss(m_systValVectorString);
@@ -69,13 +63,13 @@ int xAH::Algorithm::isMC(){
   const xAOD::EventInfo* ei(nullptr);
   // couldn't retrieve it
   if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()).isSuccess()){
-    if(m_debug) ATH_MSG_WARNING( "Could not retrieve eventInfo container: " << m_eventInfoContainerName);
+    ATH_MSG_DEBUG( "Could not retrieve eventInfo container: " << m_eventInfoContainerName);
     return -1;
   }
 
   static SG::AuxElement::ConstAccessor<uint32_t> eventType("eventTypeBitmask");
   if(!eventType.isAvailable(*ei)){
-    if(m_debug) ATH_MSG_WARNING( "eventType is not available.");
+    ATH_MSG_DEBUG( "eventType is not available.");
     return -1;
   }
 

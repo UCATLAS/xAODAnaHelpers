@@ -52,8 +52,6 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
 
   //ATH_MSG_INFO( "Calling constructor");
 
-  m_debug                      = false;
-
   // Input container to be read from TEvent or TStore
   //
   m_inContainerName            = "";
@@ -253,16 +251,14 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     //
     m_outputSystNamesReco = m_outputSystNamesReco + "_Reco" + m_WorkingPointReco;
 
-    if ( m_debug ) {
-      CP::SystematicSet affectSystsReco = m_muRecoSF_tool->affectingSystematics();
-      for ( const auto& syst_it : affectSystsReco ) { ATH_MSG_INFO("MuonEfficiencyScaleFactors tool can be affected by reco efficiency systematic: " << syst_it.name()); }
-    }
+    CP::SystematicSet affectSystsReco = m_muRecoSF_tool->affectingSystematics();
+    for ( const auto& syst_it : affectSystsReco ) { ATH_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by reco efficiency systematic: " << syst_it.name()); }
     //
     // Make a list of systematics to be used, based on configuration input
     // Use HelperFunctions::getListofSystematics() for this!
     //
     const CP::SystematicSet recSystsReco = m_muRecoSF_tool->recommendedSystematics();
-    m_systListReco = HelperFunctions::getListofSystematics( recSystsReco, m_systNameReco, m_systValReco, m_debug );
+    m_systListReco = HelperFunctions::getListofSystematics( recSystsReco, m_systNameReco, m_systValReco, msg() );
 
     ATH_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool reco efficiency systematic:");
     for ( const auto& syst_it : m_systListReco ) {
@@ -298,16 +294,14 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     //
     m_outputSystNamesIso = m_outputSystNamesIso + "_Iso" + m_WorkingPointIso;
 
-    if ( m_debug ) {
-      CP::SystematicSet affectSystsIso = m_muIsoSF_tool->affectingSystematics();
-      for ( const auto& syst_it : affectSystsIso ) { ATH_MSG_INFO("MuonEfficiencyScaleFactors tool can be affected by iso efficiency systematic: " << syst_it.name()); }
-    }
+    CP::SystematicSet affectSystsIso = m_muIsoSF_tool->affectingSystematics();
+    for ( const auto& syst_it : affectSystsIso ) { ATH_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by iso efficiency systematic: " << syst_it.name()); }
     //
     // Make a list of systematics to be used, based on configuration input
     // Use HelperFunctions::getListofSystematics() for this!
     //
     const CP::SystematicSet recSystsIso = m_muIsoSF_tool->recommendedSystematics();
-    m_systListIso = HelperFunctions::getListofSystematics( recSystsIso, m_systNameIso, m_systValIso, m_debug );
+    m_systListIso = HelperFunctions::getListofSystematics( recSystsIso, m_systNameIso, m_systValIso, msg() );
 
     ATH_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool iso efficiency systematic:");
     for ( const auto& syst_it : m_systListIso ) {
@@ -404,16 +398,14 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_outputSystNamesTrig      = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
   m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
 
-  if ( m_debug ) {
-    CP::SystematicSet affectSystsTrig = m_muTrigSF_tools[m_YearsList[0]]->affectingSystematics();
-    for ( const auto& syst_it : affectSystsTrig ) { ATH_MSG_INFO("MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: " << syst_it.name()); }
-  }
+  CP::SystematicSet affectSystsTrig = m_muTrigSF_tools[m_YearsList[0]]->affectingSystematics();
+  for ( const auto& syst_it : affectSystsTrig ) { ATH_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: " << syst_it.name()); }
   //
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
   const CP::SystematicSet recSystsTrig = m_muTrigSF_tools[m_YearsList[0]]->recommendedSystematics();
-  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, m_debug );
+  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, msg() );
 
   ATH_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
   for ( const auto& syst_it : m_systListTrig ) {
@@ -448,16 +440,14 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     //
     m_outputSystNamesTTVA = m_outputSystNamesTTVA + "_" + m_WorkingPointTTVA;
 
-    if ( m_debug ) {
-      CP::SystematicSet affectSystsTTVA = m_muTTVASF_tool->affectingSystematics();
-      for ( const auto& syst_it : affectSystsTTVA ) { ATH_MSG_INFO("MuonEfficiencyScaleFactors tool can be affected by TTVA efficiency systematic: " << syst_it.name()); }
-    }
+    CP::SystematicSet affectSystsTTVA = m_muTTVASF_tool->affectingSystematics();
+    for ( const auto& syst_it : affectSystsTTVA ) { ATH_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by TTVA efficiency systematic: " << syst_it.name()); }
     //
     // Make a list of systematics to be used, based on configuration input
     // Use HelperFunctions::getListofSystematics() for this!
     //
     const CP::SystematicSet recSystsTTVA = m_muTTVASF_tool->recommendedSystematics();
-    m_systListTTVA = HelperFunctions::getListofSystematics( recSystsTTVA, m_systNameTTVA, m_systValTTVA, m_debug );
+    m_systListTTVA = HelperFunctions::getListofSystematics( recSystsTTVA, m_systNameTTVA, m_systValTTVA, msg() );
 
     ATH_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool TTVA efficiency systematic:");
     for ( const auto& syst_it : m_systListTTVA ) {
@@ -491,7 +481,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
     return EL::StatusCode::SUCCESS;
   }
 
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Muon Efficiency corrections... "); }
+  ATH_MSG_DEBUG( "Applying Muon Efficiency corrections... ");
 
 
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -517,7 +507,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
     if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName )  ) {
        RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, msg()) ,"");
 
-       if ( m_debug ) { ATH_MSG_INFO( "Number of muons: " << static_cast<int>(inputMuons->size()) ); }
+       ATH_MSG_DEBUG( "Number of muons: " << static_cast<int>(inputMuons->size()) );
 
        // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
        //
@@ -587,14 +577,12 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
               RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(outputMuons, m_outContainerName+systName, m_event, m_store, msg()) ,"");
 
-    	      if ( m_debug ){
-	        ATH_MSG_INFO( "Number of muons: " << static_cast<int>(outputMuons->size()) );
-	        ATH_MSG_INFO( "Input syst: " << systName );
-	        unsigned int idx(0);
-    	        for ( auto mu : *(outputMuons) ) {
-    	          ATH_MSG_INFO( "Input muon " << idx << ", pt = " << mu->pt()*1e-3 << " GeV ");
-    	          ++idx;
-    	        }
+              ATH_MSG_DEBUG( "Number of muons: " << static_cast<int>(outputMuons->size()) );
+              ATH_MSG_DEBUG( "Input syst: " << systName );
+              unsigned int idx(0);
+              for ( auto mu : *(outputMuons) ) {
+                ATH_MSG_DEBUG( "Input muon " << idx << ", pt = " << mu->pt()*1e-3 << " GeV ");
+                ++idx;
     	      }
 
 	      // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
@@ -629,7 +617,7 @@ EL::StatusCode MuonEfficiencyCorrector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -712,7 +700,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if ( m_debug ) { ATH_MSG_INFO( "Muon reco efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName); }
+      ATH_MSG_DEBUG( "Muon reco efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
       if(countSyst == 0) sysVariationNamesReco->push_back(sfName);
 
       // apply syst
@@ -721,14 +709,14 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
         ATH_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
-      if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name()); }
+      ATH_MSG_DEBUG( "Successfully applied systematic: " << syst_it.name());
 
       // and now apply reco efficiency SF!
       //
       unsigned int idx(0);
       for ( auto mu_itr : *(inputMuons) ) {
 
-    	 if ( m_debug ) { ATH_MSG_INFO( "Applying reco efficiency SF" ); }
+    	 ATH_MSG_DEBUG( "Applying reco efficiency SF" );
 
     	 // a)
     	 // decorate directly the muon with reco efficiency (useful at all?), and the corresponding SF
@@ -769,22 +757,20 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
          }
     	 sfVecReco_sysNames( *mu_itr ).push_back( syst_it.name().c_str() );
 
-    	 if ( m_debug ) {
-    	   ATH_MSG_INFO( "===>>>");
-    	   ATH_MSG_INFO( " ");
-  	   ATH_MSG_INFO( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV" );
-  	   ATH_MSG_INFO( " ");
-  	   ATH_MSG_INFO( "Reco eff. SF decoration: " << m_outputSystNamesReco );
-  	   ATH_MSG_INFO( " ");
-    	   ATH_MSG_INFO( "Systematic: " << syst_it.name() );
-    	   ATH_MSG_INFO( " ");
-    	   //ATH_MSG_INFO("Reco efficiency:");
-    	   //ATH_MSG_INFO("\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "mcEfficiency" ) );
-    	   ATH_MSG_INFO( "and its SF:");
-    	   //ATH_MSG_INFO("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
-    	   ATH_MSG_INFO( "\t " << recoEffSF << " (from getEfficiencyScaleFactor())" );
-    	   ATH_MSG_INFO( "--------------------------------------");
-    	 }
+         ATH_MSG_DEBUG( "===>>>");
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV" );
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "Reco eff. SF decoration: " << m_outputSystNamesReco );
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "Systematic: " << syst_it.name() );
+         ATH_MSG_DEBUG( " ");
+         //ATH_MSG_DEBUG("Reco efficiency:");
+         //ATH_MSG_DEBUG("\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "mcEfficiency" ) );
+         ATH_MSG_DEBUG( "and its SF:");
+         //ATH_MSG_DEBUG("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
+         ATH_MSG_DEBUG( "\t " << recoEffSF << " (from getEfficiencyScaleFactor())" );
+         ATH_MSG_DEBUG( "--------------------------------------");
 
     	 ++idx;
 
@@ -830,7 +816,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if ( m_debug ) { ATH_MSG_INFO( "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName); }
+      ATH_MSG_DEBUG( "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
       if(countSyst == 0) sysVariationNamesIso->push_back(sfName);
 
       // apply syst
@@ -839,14 +825,14 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	ATH_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
-      if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name()); }
+      ATH_MSG_DEBUG( "Successfully applied systematic: " << syst_it.name());
 
       // and now apply Iso efficiency SF!
       //
       unsigned int idx(0);
       for ( auto mu_itr : *(inputMuons) ) {
 
-    	 if ( m_debug ) { ATH_MSG_INFO( "Applying iso efficiency SF" ); }
+    	 ATH_MSG_DEBUG( "Applying iso efficiency SF" );
 
     	 // a)
     	 // decorate directly the muon with iso efficiency (useful at all?), and the corresponding SF
@@ -878,22 +864,20 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 //
     	 sfVecIso( *mu_itr ).push_back(IsoEffSF);
 
-    	 if ( m_debug ) {
-    	   ATH_MSG_INFO( "===>>>");
-    	   ATH_MSG_INFO( " ");
-  	   ATH_MSG_INFO( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
-  	   ATH_MSG_INFO( " ");
-  	   ATH_MSG_INFO( "Isolation SF decoration: " << m_outputSystNamesIso );
-  	   ATH_MSG_INFO( " ");
-    	   ATH_MSG_INFO( "Systematic: " << syst_it.name() );
-    	   ATH_MSG_INFO( " ");
-           //ATH_MSG_INFO("Iso efficiency:");
-           //ATH_MSG_INFO("\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOmcEfficiency" ) );
-    	   ATH_MSG_INFO( "and its SF:");
-    	   //ATH_MSG_INFO("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
-    	   ATH_MSG_INFO( "\t " << IsoEffSF << " (from getEfficiencyScaleFactor())");
-    	   ATH_MSG_INFO( "--------------------------------------");
-    	 }
+         ATH_MSG_DEBUG( "===>>>");
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "Isolation SF decoration: " << m_outputSystNamesIso );
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "Systematic: " << syst_it.name() );
+         ATH_MSG_DEBUG( " ");
+         //ATH_MSG_DEBUG("Iso efficiency:");
+         //ATH_MSG_DEBUG("\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOmcEfficiency" ) );
+         ATH_MSG_DEBUG( "and its SF:");
+         //ATH_MSG_DEBUG("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
+         ATH_MSG_DEBUG( "\t " << IsoEffSF << " (from getEfficiencyScaleFactor())");
+         ATH_MSG_DEBUG( "--------------------------------------");
 
     	 ++idx;
 
@@ -968,8 +952,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
     } else {
 
-      if ( m_debug ) ATH_MSG_WARNING( "Random runNumber generated outside hardcoded run number ranges");
-      if ( m_debug ) ATH_MSG_WARNING( "Setting the year as randomly chosen in the years list");
+      ATH_MSG_DEBUG( "Random runNumber generated outside hardcoded run number ranges");
+      ATH_MSG_DEBUG( "Setting the year as randomly chosen in the years list");
       std::srand ( unsigned ( std::time(0) ) );
       std::vector<std::string> randomYearsList = m_YearsList;
       std::random_shuffle ( randomYearsList.begin(), randomYearsList.end() );
@@ -979,11 +963,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
     if ( runNumber == 0 && randYear == "2016") {
       runNumber = m_runNumber2016;
-      if ( m_debug ) ATH_MSG_INFO( "runNumber is 0. Setting the tool to randYear 2016");
+      ATH_MSG_DEBUG("runNumber is 0. Setting the tool to randYear 2016");
     }
     if ( runNumber == 0 && randYear == "2015") {
       runNumber = m_runNumber2015;
-      if ( m_debug ) ATH_MSG_INFO( "runNumber is 0. Setting the tool to randYear 2015");
+      ATH_MSG_DEBUG("runNumber is 0. Setting the tool to randYear 2015");
     }
 
 
@@ -1053,7 +1037,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            std::string prepend = syst_it.name() + "_";
            sfName.insert( 0, prepend );
         }
-        if ( m_debug ) { ATH_MSG_INFO( "Trigger efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName); }
+        ATH_MSG_DEBUG( "Trigger efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
         if(countSyst==0) sysVariationNamesTrig->push_back(sfName);
 
         // apply syst
@@ -1062,14 +1046,14 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
           ATH_MSG_ERROR( "Failed to configure MuonTriggerScaleFactors for trigger " << trig_it << " systematic " << syst_it.name());
           return EL::StatusCode::FAILURE;
         }
-        if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic " << syst_it.name() << " for trigger " << trig_it); }
+        ATH_MSG_DEBUG( "Successfully applied systematic " << syst_it.name() << " for trigger " << trig_it);
 
         // and now apply trigger efficiency SF!
         //
         unsigned int idx(0);
         for ( auto mu_itr : *(inputMuons) ) {
 
-           if ( m_debug ) { ATH_MSG_INFO( "Applying trigger efficiency SF and MC efficiency" ); }
+           ATH_MSG_DEBUG( "Applying trigger efficiency SF and MC efficiency" );
 
            // Pass a container with only the muon in question to the tool
            // (use a view container to be light weight)
@@ -1129,23 +1113,21 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            sfVecTrig( *mu_itr ).push_back(triggerEffSF);
 
 
-           if ( m_debug ) {
-             ATH_MSG_INFO( "===>>>");
-             ATH_MSG_INFO( " ");
-             ATH_MSG_INFO( "Random year: " << randYear.c_str() );
-             ATH_MSG_INFO( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
-             ATH_MSG_INFO( " ");
-             ATH_MSG_INFO( "Trigger efficiency SF decoration: " << m_outputSystNamesTrig );
-             ATH_MSG_INFO( "Trigger MC efficiency decoration: " << m_outputSystNamesTrigMCEff );
-             ATH_MSG_INFO( " ");
-             ATH_MSG_INFO( "Systematic: " << syst_it.name() );
-             ATH_MSG_INFO( " ");
-             ATH_MSG_INFO( "Trigger efficiency SF:");
-             ATH_MSG_INFO( "\t " << triggerEffSF << " (from getTriggerScaleFactor())" );
-             ATH_MSG_INFO( "Trigger MC efficiency:");
-             ATH_MSG_INFO( "\t " << triggerDataEff << " (from getTriggerEfficiency())" );
-             ATH_MSG_INFO( "--------------------------------------");
-           }
+           ATH_MSG_DEBUG( "===>>>");
+           ATH_MSG_DEBUG( " ");
+           ATH_MSG_DEBUG( "Random year: " << randYear.c_str() );
+           ATH_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
+           ATH_MSG_DEBUG( " ");
+           ATH_MSG_DEBUG( "Trigger efficiency SF decoration: " << m_outputSystNamesTrig );
+           ATH_MSG_DEBUG( "Trigger MC efficiency decoration: " << m_outputSystNamesTrigMCEff );
+           ATH_MSG_DEBUG( " ");
+           ATH_MSG_DEBUG( "Systematic: " << syst_it.name() );
+           ATH_MSG_DEBUG( " ");
+           ATH_MSG_DEBUG( "Trigger efficiency SF:");
+           ATH_MSG_DEBUG( "\t " << triggerEffSF << " (from getTriggerScaleFactor())" );
+           ATH_MSG_DEBUG( "Trigger MC efficiency:");
+           ATH_MSG_DEBUG( "\t " << triggerDataEff << " (from getTriggerEfficiency())" );
+           ATH_MSG_DEBUG( "--------------------------------------");
 
            ++idx;
 
@@ -1193,7 +1175,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 std::string prepend = syst_it.name() + "_";
     	 sfName.insert( 0, prepend );
       }
-      if ( m_debug ) { ATH_MSG_INFO( "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName); }
+      ATH_MSG_DEBUG( "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
       if(countSyst == 0) sysVariationNamesTTVA->push_back(sfName);
 
       // apply syst
@@ -1206,14 +1188,14 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
        	ATH_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
-      if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name()); }
+      ATH_MSG_DEBUG( "Successfully applied systematic: " << syst_it.name());
 
       // and now apply TTVA efficiency SF!
       //
       unsigned int idx(0);
       for ( auto mu_itr : *(inputMuons) ) {
 
-    	 if ( m_debug ) { ATH_MSG_INFO( "Applying TTVA efficiency SF" ); }
+    	 ATH_MSG_DEBUG( "Applying TTVA efficiency SF" );
 
     	 // a)
     	 // decorate directly the muon with TTVA efficiency (useful at all?), and the corresponding SF
@@ -1245,22 +1227,20 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 //
     	 sfVecTTVA( *mu_itr ).push_back(TTVAEffSF);
 
-    	 if ( m_debug ) {
-    	   ATH_MSG_INFO( "===>>>");
-    	   ATH_MSG_INFO( " ");
-  	   ATH_MSG_INFO( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
-  	   ATH_MSG_INFO( " ");
-  	   ATH_MSG_INFO( "TTVA SF decoration: " << m_outputSystNamesTTVA );
-  	   ATH_MSG_INFO( " ");
-    	   ATH_MSG_INFO( "Systematic: " << syst_it.name());
-    	   ATH_MSG_INFO( " ");
-           //ATH_MSG_INFO("TTVA efficiency:");
-           //ATH_MSG_INFO("\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "TTVAmcEfficiency" ) );
-    	   ATH_MSG_INFO( "and its SF:");
-    	   //ATH_MSG_INFO("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "TTVAEfficiencyScaleFactor" ) );
-    	   ATH_MSG_INFO( "\t " << TTVAEffSF << " (from getEfficiencyScaleFactor())" );
-           ATH_MSG_INFO( "--------------------------------------");
-    	 }
+         ATH_MSG_DEBUG( "===>>>");
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "TTVA SF decoration: " << m_outputSystNamesTTVA );
+         ATH_MSG_DEBUG( " ");
+         ATH_MSG_DEBUG( "Systematic: " << syst_it.name());
+         ATH_MSG_DEBUG( " ");
+         //ATH_MSG_DEBUG("TTVA efficiency:");
+         //ATH_MSG_DEBUG("\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "TTVAmcEfficiency" ) );
+         ATH_MSG_DEBUG( "and its SF:");
+         //ATH_MSG_DEBUG("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "TTVAEfficiencyScaleFactor" ) );
+         ATH_MSG_DEBUG( "\t " << TTVAEffSF << " (from getEfficiencyScaleFactor())" );
+         ATH_MSG_DEBUG( "--------------------------------------");
 
     	 ++idx;
 

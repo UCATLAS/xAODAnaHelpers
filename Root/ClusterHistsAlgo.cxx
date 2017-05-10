@@ -18,7 +18,6 @@ ClusterHistsAlgo :: ClusterHistsAlgo () :
 {
   m_inContainerName         = "";
   m_detailStr               = "";
-  m_debug                   = false;
 
 }
 

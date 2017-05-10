@@ -96,8 +96,6 @@ EL::StatusCode DebugTool :: initialize ()
 
 EL::StatusCode DebugTool :: execute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( " "); }
-
   ATH_MSG_INFO( m_name);
 
   //
@@ -114,7 +112,7 @@ EL::StatusCode DebugTool :: execute ()
 
 EL::StatusCode DebugTool :: postExecute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG("Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 

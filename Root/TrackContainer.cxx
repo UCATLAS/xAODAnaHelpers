@@ -64,7 +64,7 @@ TrackContainer::~TrackContainer()
     delete m_expectNextToInnermostPixelLayerHit;
     delete m_numberDoF;
   }
- 
+
   if(m_infoSwitch.m_numbers){
     delete m_numberOfInnermostPixelLayerHits;
     delete m_numberOfNextToInnermostPixelLayerHits;
@@ -129,12 +129,12 @@ void TrackContainer::setTree(TTree *tree)
     connectBranch<unsigned char>(tree, "numberOfSCTSharedHits", &m_numberOfSCTSharedHits);
     connectBranch<unsigned char>(tree, "numberOfTRTHits", &m_numberOfTRTHits);
     connectBranch<unsigned char>(tree, "numberOfTRTOutliers", &m_numberOfTRTOutliers);
-  }    
-  
+  }
+
   connectBranch<float>(tree, "phi", &m_phi);
   connectBranch<float>(tree, "qOverP", &m_qOverP);
   connectBranch<float>(tree, "theta", &m_theta);
-  
+
   if(m_infoSwitch.m_vertex){
     /*
       connectBranch<Int_t>(tree, "vertexLink", &m_vertexLink);
@@ -177,7 +177,7 @@ void TrackContainer::updateParticle(uint idx, TrackPart& track)
     track.numberOfSCTSharedHits = m_numberOfSCTSharedHits->at(idx);
     track.numberOfTRTHits = m_numberOfTRTHits->at(idx);
     track.numberOfTRTOutliers = m_numberOfTRTOutliers->at(idx);
-  }  
+  }
 
   track.phi = m_phi->at(idx);
   track.qOverP = m_qOverP->at(idx);
@@ -191,7 +191,7 @@ void TrackContainer::updateParticle(uint idx, TrackPart& track)
     */
     track.vz = m_vz->at(idx);
     track.z0 = m_z0->at(idx);
-  }  
+  }
 
   if(m_debug) std::cout << "leaving TrackContainer::updateParticle" << std::endl;
   return;
@@ -301,7 +301,7 @@ void TrackContainer::FillTrack( const xAOD::IParticle* particle ){
 
   const xAOD::TrackParticle* track=dynamic_cast<const xAOD::TrackParticle*>(particle);
   if(m_debug) std::cout << "Got TrackParticle" << std::endl;
-  
+
   if(m_infoSwitch.m_fitpars){
     if(m_debug) std::cout << "Filling fitpars" << std::endl;
 
@@ -311,7 +311,7 @@ void TrackContainer::FillTrack( const xAOD::IParticle* particle ){
     //m_definingParametersCovMatrix ->push_back(track->definingParametersCovMatrix() ); // fix this too
 
     static SG::AuxElement::ConstAccessor<char> expectInnermostPixelLayerHit("expectInnermostPixelLayerHit");
-    //safeFill<char, int, xAOD::TrackParticle>(track, expectInnermostPixelLayerHit, m_expectInnermostPixelLayerHit, -999);    
+    //safeFill<char, int, xAOD::TrackParticle>(track, expectInnermostPixelLayerHit, m_expectInnermostPixelLayerHit, -999);
     m_expectInnermostPixelLayerHit->push_back(expectInnermostPixelLayerHit(*track));
 
     //m_expectNextToInnermostPixelLayerHit->push_back(track->expectNextToInnermostPixelLayerHit() );
@@ -374,7 +374,7 @@ void TrackContainer::FillTrack( const xAOD::IParticle* particle ){
   m_phi->push_back(track->phi() );
   m_qOverP->push_back(track->qOverP() );
   m_theta->push_back(track->theta() );
-  
+
   if(m_infoSwitch.m_vertex){
     if(m_debug) std::cout << "Filling vertex" << std::endl;
 
@@ -385,7 +385,7 @@ void TrackContainer::FillTrack( const xAOD::IParticle* particle ){
       //m_vertexLink_persKey->push_back(track->vertexLink.m_persKey() );
       m_vertexLink_persIndex->push_back( -999 );
       m_vertexLink_persKey->push_back( -999 );
-    */    
+    */
     m_vz->push_back(track->vz() );
     m_z0->push_back(track->z0() );
   }

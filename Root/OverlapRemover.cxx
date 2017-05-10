@@ -65,8 +65,6 @@ OverlapRemover :: OverlapRemover () :
 
   //ATH_MSG_INFO( "Calling constructor");
 
-  // read debug flag from .config file
-  m_debug         = false;
   m_useCutFlow    = true;
 
   // input container(s) to be read from TEvent or TStore
@@ -243,7 +241,7 @@ EL::StatusCode OverlapRemover :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Overlap Removal... "); }
+  ATH_MSG_DEBUG("Applying Overlap Removal... ");
 
   m_numEvent++;
 
@@ -382,7 +380,7 @@ EL::StatusCode OverlapRemover :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -474,23 +472,20 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
         break;
     }
 
-    if ( m_debug ) {
-      SG::AuxElement::Decorator< char > isBTag( m_bTagWP );
-      int isBTagged = 0;
-      if( isBTag.isAvailable( *obj_itr ) && isBTag(*obj_itr)==true )
-        isBTagged = 1;
+    SG::AuxElement::Decorator< char > isBTag( m_bTagWP );
+    int isBTagged = 0;
+    if( isBTag.isAvailable( *obj_itr ) && isBTag(*obj_itr)==true ) isBTagged = 1;
 
-      if(selectAcc.isAvailable(*obj_itr)){
-        ATH_MSG_INFO( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected " << selectAcc(*obj_itr) << " passesOR  " << overlapAcc( *obj_itr ) );
-      } else {
-        ATH_MSG_INFO( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected N/A" << " passesOR  " << overlapAcc( *obj_itr ) );
-      }
-      // Check for overlap object link
-      if ( objLinkAcc.isAvailable( *obj_itr ) && objLinkAcc( *obj_itr ).isValid() ) {
-        const xAOD::IParticle* overlapObj = *objLinkAcc( *obj_itr );
-        std::stringstream ss_or; ss_or << overlapObj->type();
-        ATH_MSG_INFO( " Overlap: type " << ss_or.str() << " pt " << overlapObj->pt()/1e3);
-      }
+    if(selectAcc.isAvailable(*obj_itr)){
+      ATH_MSG_DEBUG( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected " << selectAcc(*obj_itr) << " passesOR  " << overlapAcc( *obj_itr ) );
+    } else {
+      ATH_MSG_DEBUG( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected N/A" << " passesOR  " << overlapAcc( *obj_itr ) );
+    }
+    // Check for overlap object link
+    if ( objLinkAcc.isAvailable( *obj_itr ) && objLinkAcc( *obj_itr ).isValid() ) {
+      const xAOD::IParticle* overlapObj = *objLinkAcc( *obj_itr );
+      std::stringstream ss_or; ss_or << overlapObj->type();
+      ATH_MSG_DEBUG( " Overlap: type " << ss_or.str() << " pt " << overlapObj->pt()/1e3);
     }
 
   }
@@ -520,7 +515,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
     case NOMINAL:  // this is the nominal case
     {
-      if ( m_debug ) { ATH_MSG_INFO(  "Doing nominal case"); }
+      ATH_MSG_DEBUG("Doing nominal case");
       bool nomContainerNotFound(false);
 
       if( m_useElectrons ) {
@@ -568,25 +563,23 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
       if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
 
-      if ( m_debug ) {
-        if ( m_useElectrons ) { ATH_MSG_INFO(  "inElectrons : " << inElectrons->size()); }
-        if ( m_useMuons )     { ATH_MSG_INFO(  "inMuons : " << inMuons->size()); }
-        ATH_MSG_INFO(  "inJets : " << inJets->size() );
-        if ( m_usePhotons )   { ATH_MSG_INFO(  "inPhotons : " << inPhotons->size());  }
-        if ( m_useTaus    )   { ATH_MSG_INFO(  "inTaus : " << inTaus->size());  }
-      }
+      if ( m_useElectrons ) { ATH_MSG_DEBUG(  "inElectrons : " << inElectrons->size()); }
+      if ( m_useMuons )     { ATH_MSG_DEBUG(  "inMuons : " << inMuons->size()); }
+      ATH_MSG_DEBUG(  "inJets : " << inJets->size() );
+      if ( m_usePhotons )   { ATH_MSG_DEBUG(  "inPhotons : " << inPhotons->size());  }
+      if ( m_useTaus    )   { ATH_MSG_DEBUG(  "inTaus : " << inTaus->size());  }
 
       // do the actual OR
       //
-      if ( m_debug ) { ATH_MSG_INFO(  "Calling removeOverlaps()"); }
+      ATH_MSG_DEBUG(  "Calling removeOverlaps()");
       RETURN_CHECK( "OverlapRemover::execute()", m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons), "");
-      if ( m_debug ) { ATH_MSG_INFO(  "Done Calling removeOverlaps()"); }
+      ATH_MSG_DEBUG(  "Done Calling removeOverlaps()");
 
       std::string ORdecor("passOR");
       if(m_useCutFlow){
         // fill cutflow histograms
         //
-        if ( m_debug ) { ATH_MSG_INFO(  "Filling Cut Flow Histograms"); }
+        ATH_MSG_DEBUG(  "Filling Cut Flow Histograms");
         if ( m_useElectrons ) fillObjectCutflow(inElectrons);
         if ( m_useMuons )     fillObjectCutflow(inMuons);
         fillObjectCutflow(inJets);
@@ -597,7 +590,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       // make a copy of input container(s) with selected objects
       //
       if ( m_createSelectedContainers ) {
-        if ( m_debug ) { ATH_MSG_INFO(  "Creating selected Containers"); }
+        ATH_MSG_DEBUG(  "Creating selected Containers");
         if( m_useElectrons ) selectedElectrons  = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
         if( m_useMuons )     selectedMuons      = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
         selectedJets      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
@@ -609,25 +602,23 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       //
       // if an object has been flagged as 'passOR', it will be stored in the 'selected' container
       //
-      if ( m_debug ) { ATH_MSG_INFO(  "Resizing"); }
+      ATH_MSG_DEBUG(  "Resizing");
       if ( m_useElectrons ) { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
       if ( m_useMuons )     { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inMuons, selectedMuons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
       RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inJets, selectedJets, msg(), ORdecor.c_str(), ToolName::SELECTOR), "");
       if ( m_usePhotons )   { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
       if ( m_useTaus )      { RETURN_CHECK( "OverlapRemover::execute()", HelperFunctions::makeSubsetCont(inTaus, selectedTaus, msg(), ORdecor.c_str(), ToolName::SELECTOR), ""); }
 
-      if ( m_debug ) {
-        if ( m_useElectrons) { ATH_MSG_INFO(  "selectedElectrons : " << selectedElectrons->size()); }
-        if ( m_useMuons )    { ATH_MSG_INFO(  "selectedMuons : " << selectedMuons->size()); }
-        ATH_MSG_INFO(  "selectedJets : " << selectedJets->size());
-        if ( m_usePhotons )  { ATH_MSG_INFO(  "selectedPhotons : " << selectedPhotons->size()); }
-        if ( m_useTaus )     { ATH_MSG_INFO(  "selectedTaus : " << selectedTaus->size() ); }
-      }
+      if ( m_useElectrons) { ATH_MSG_DEBUG(  "selectedElectrons : " << selectedElectrons->size()); }
+      if ( m_useMuons )    { ATH_MSG_DEBUG(  "selectedMuons : " << selectedMuons->size()); }
+      ATH_MSG_DEBUG(  "selectedJets : " << selectedJets->size());
+      if ( m_usePhotons )  { ATH_MSG_DEBUG(  "selectedPhotons : " << selectedPhotons->size()); }
+      if ( m_useTaus )     { ATH_MSG_DEBUG(  "selectedTaus : " << selectedTaus->size() ); }
 
       // add ConstDataVector to TStore
       //
       if ( m_createSelectedContainers ) {
-        if ( m_debug ) { ATH_MSG_INFO(  "Recording"); }
+        ATH_MSG_DEBUG(  "Recording");
         if ( m_useElectrons ){ RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedElectrons,   m_outContainerName_Electrons ), "Failed to store const data container"); }
         if ( m_useMuons )    { RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedMuons,  m_outContainerName_Muons ), "Failed to store const data container"); }
         RETURN_CHECK( "OverlapRemover::execute()", m_store->record( selectedJets,  m_outContainerName_Jets ), "Failed to store const data container");
@@ -640,14 +631,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case ELSYST : // electron syst
     {
-      if ( m_debug ) { ATH_MSG_INFO(  "Doing  electron systematics"); }
+      ATH_MSG_DEBUG(  "Doing  electron systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      if ( m_debug ) {
-         ATH_MSG_INFO("will consider the following ELECTRON systematics:" );
-         for ( auto it : *sysVec ){ ATH_MSG_INFO("\t " << it); }
-      }
+      ATH_MSG_DEBUG("will consider the following ELECTRON systematics:" );
+      for ( auto it : *sysVec ){ ATH_MSG_DEBUG("\t " << it); }
 
       // these input containers won't change in the electron syst loop ...
       if( m_useMuons ) {
@@ -747,14 +736,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case MUSYST: // muon syst
     {
-      if ( m_debug ) { ATH_MSG_INFO(  "Doing  muon systematics"); }
+      ATH_MSG_DEBUG(  "Doing  muon systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      if ( m_debug ) {
-         ATH_MSG_INFO("will consider the following MUON systematics:" );
-         for ( auto it : *sysVec ){ ATH_MSG_INFO("\t " << it); }
-      }
+      ATH_MSG_DEBUG("will consider the following MUON systematics:" );
+      for ( auto it : *sysVec ){ ATH_MSG_DEBUG("\t " << it); }
 
       // these input containers won't change in the muon syst loop ...
       if( m_useElectrons ) {
@@ -854,14 +841,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case JETSYST: // jet systematics
     {
-      if ( m_debug ) { ATH_MSG_INFO(  "Doing  jet systematics"); }
+      ATH_MSG_DEBUG(  "Doing  jet systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      if ( m_debug ) {
-        ATH_MSG_INFO("will consider the following JET systematics:" );
-        for ( auto it : *sysVec ) { ATH_MSG_INFO("\t " << it);  }
-      }
+      ATH_MSG_DEBUG("will consider the following JET systematics:" );
+      for ( auto it : *sysVec ) { ATH_MSG_DEBUG("\t " << it);  }
 
       // these input containers won't change in the jet syst loop ...
       if( m_useElectrons ) {
@@ -963,14 +948,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case PHSYST : // photon systematics
     {
-      if ( m_debug ) { ATH_MSG_INFO(  "Doing  photon systematics"); }
+      ATH_MSG_DEBUG(  "Doing  photon systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      if ( m_debug ) {
-        ATH_MSG_INFO("will consider the following PHOTON systematics:" );
-        for ( auto it : *sysVec ) { ATH_MSG_INFO("\t " << it);  }
-      }
+      ATH_MSG_DEBUG("will consider the following PHOTON systematics:" );
+      for ( auto it : *sysVec ) { ATH_MSG_DEBUG("\t " << it);  }
 
       // these input containers won't change in the photon syst loop ...
       if( m_useElectrons ) {
@@ -1071,14 +1054,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case TAUSYST : // tau systematics
     {
-      if ( m_debug ) { ATH_MSG_INFO(  "Doing tau systematics"); }
+      ATH_MSG_DEBUG(  "Doing tau systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      if ( m_debug ) {
-        ATH_MSG_INFO("output vector already contains the following TAU systematics:" );
-        for ( auto it : *sysVec ) { ATH_MSG_INFO("\t " << it);  }
-      }
+      ATH_MSG_DEBUG("output vector already contains the following TAU systematics:" );
+      for ( auto it : *sysVec ) { ATH_MSG_DEBUG("\t " << it);  }
 
       // these input containers won't change in the tau syst loop ...
       if( m_useElectrons ) {

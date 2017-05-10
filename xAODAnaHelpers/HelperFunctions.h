@@ -44,9 +44,11 @@ namespace HelperFunctions {
   // primary vertex
   bool passPrimaryVertexSelection(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
   int countPrimaryVertices(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
-  const xAOD::Vertex* getPrimaryVertex(const xAOD::VertexContainer* vertexContainer, bool quiet=false);
+  const xAOD::Vertex* getPrimaryVertex(const xAOD::VertexContainer* vertexContainer, MsgStream& msg);
+  inline const xAOD::Vertex* getPrimaryVertex(const xAOD::VertexContainer* vertexContainer) { return getPrimaryVertex(vertexContainer, msg()); }
   float getPrimaryVertexZ(const xAOD::Vertex* pvx);
-  int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer);
+  int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer, MsgStream& msg);
+  inline int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer){ return getPrimaryVertexLocation(vertexContainer, msg()); }
   bool applyPrimaryVertexSelection( const xAOD::JetContainer* jets, const xAOD::VertexContainer* vertices );
   float GetBTagMV2c20_Cut( int efficiency );
   std::string GetBTagMV2c20_CutStr( int efficiency );
@@ -68,7 +70,8 @@ namespace HelperFunctions {
     Returns empty string if no WP is found.
 
   */
-  std::string parse_wp( const std::string& type, const std::string& config_name );
+  std::string parse_wp( const std::string& type, const std::string& config_name, MsgStream& msg );
+  inline std::string parse_wp( const std::string& type, const std::string& config_name ) { return parse_wp(type, config_name, msg()); }
 
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |
@@ -139,7 +142,33 @@ namespace HelperFunctions {
   // miscellaneous
   bool sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB);
 
-  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug = false );
+  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet inSysts, std::string systName, float systVal, MsgStream& msg );
+
+  /*    type_name<T>()      The awesome type demangler!
+          - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.
+
+          @ useXAOD [true]  If set to false, will use the standard demangling
+                            tool. Otherwise, use built-in StoreGate tool
+
+        Example Usage:
+        template <typename T>
+        void echoType(){
+          std::cout << "This is type " << HelperFunctions::type_name<T>() << std::endl;
+        }
+  */
+  template <typename T>
+  std::string type_name(bool useXAOD=true) {
+    if(useXAOD) return SG::normalizedTypeinfoName( typeid(T) );
+
+    int status;
+    std::string tname = typeid(T).name();
+    char *demangled_name = abi::__cxa_demangle(tname.c_str(), NULL, NULL, &status);
+    if(status == 0) {
+        tname = demangled_name;
+        std::free(demangled_name);
+    }
+    return tname;
+  }
 
   /**
    * @author Marco Milesi (marco.milesi@cern.ch)
@@ -155,6 +184,9 @@ namespace HelperFunctions {
    */
   template< typename T1, typename T2 >
   StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, MsgStream& msg, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT){
+     std::string tname1 = type_name<T1>();
+     std::string tname2 = type_name<T2>();
+     msg.setName(msg.name()+".makeSubsetCont<"+tname1+","+tname2+">");
 
      if ( tool_name == HelperClasses::ToolName::DEFAULT ) {
 
@@ -188,32 +220,6 @@ namespace HelperFunctions {
   template< typename T1, typename T2 >
   StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT) { return makeSubsetCont<T1, T2>(intCont, outCont, msg(), flagSelect, tool_name); }
 
-  /*    type_name<T>()      The awesome type demangler!
-          - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.
-
-          @ useXAOD [true]  If set to false, will use the standard demangling
-                            tool. Otherwise, use built-in StoreGate tool
-
-        Example Usage:
-        template <typename T>
-        void echoType(){
-          std::cout << "This is type " << HelperFunctions::type_name<T>() << std::endl;
-        }
-  */
-  template <typename T>
-  std::string type_name(bool useXAOD=true) {
-    if(useXAOD) return SG::normalizedTypeinfoName( typeid(T) );
-
-    int status;
-    std::string tname = typeid(T).name();
-    char *demangled_name = abi::__cxa_demangle(tname.c_str(), NULL, NULL, &status);
-    if(status == 0) {
-        tname = demangled_name;
-        std::free(demangled_name);
-    }
-    return tname;
-  }
-
   /*  retrieve()    retrieve an arbitrary object from TStore / TEvent
         - tries to make your life simple by providing a one-stop container retrieval shop for all types
         @ cont  : pass in a pointer to the object to store the retrieved container in
@@ -243,8 +249,10 @@ namespace HelperFunctions {
         - return FAILURE
         return SUCCESS (should never reach this last line)
     */
+    std::string tname = type_name<T>();
+    msg.setName(msg.name()+".retrieve<"+tname+">");
 
-    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
+    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << tname << endmsg;
     if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
     if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
     if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
@@ -290,7 +298,9 @@ namespace HelperFunctions {
         - check if event contains 'xAOD::JetContainer' named 'name'
         --- checkstore event
     */
-    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
+    std::string tname = type_name<T>();
+    msg.setName(msg.name()+".isAvailable<"+tname+">");
+    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << tname << endmsg;
     if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
     if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
     if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;

@@ -11,25 +11,25 @@
 
 namespace xAH {
 
-  class MetContainer 
+  class MetContainer
   {
   public:
     MetContainer(const std::string& detailStr="", float units = 1e3);
     ~MetContainer();
-    
+
     void setTree    (TTree *tree);
     void setBranches(TTree *tree);
     void clear();
     void FillMET( const xAOD::MissingETContainer* met);
-    template <typename T_BR> 
+    template <typename T_BR>
       void connectBranch(TTree *tree, std::string name, T_BR *variable);
 
   public:
-  
+
     HelperClasses::METInfoSwitch  m_infoSwitch;
     bool m_debug;
     float m_units;
-      
+
   public:
 
     // met
