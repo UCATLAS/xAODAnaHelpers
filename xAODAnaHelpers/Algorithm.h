@@ -20,6 +20,19 @@
 #include <AsgTools/MsgStream.h>
 #include <AsgTools/MsgStreamMacros.h>
 
+/// Macro used to execute "protected" code
+#define ATH_EXEC_LVL( lvl, expr )               \
+   do {                                         \
+      if( msg().msgLevel( lvl ) ) {             \
+         expr;                                  \
+      }                                         \
+   } while( 0 )
+
+/// Macro executing verbose expressions
+#define ATH_EXEC_VERBOSE( expr )  ATH_EXEC_LVL( MSG::VERBOSE, expr )
+/// Macro executing debug expressions
+#define ATH_EXEC_DEBUG( expr )    ATH_EXEC_LVL( MSG::DEBUG, expr )
+
 namespace xAH {
 
     /**
