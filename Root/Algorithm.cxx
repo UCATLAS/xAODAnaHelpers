@@ -13,6 +13,7 @@ std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm(std::string className) :
+  m_debugLevel(MSG::INFO),
   m_debug(false),
   m_verbose(false),
   m_systName(""),
@@ -33,7 +34,8 @@ xAH::Algorithm::~Algorithm()
 StatusCode xAH::Algorithm::algInitialize(){
     // register an instance of the the class
     registerInstance();
-    if(!m_name.empty()) SetName(m_name.c_str());
+    SetName(m_name.c_str());
+    msg().setLevel(m_debugLevel);
     return StatusCode::SUCCESS;
 }
 

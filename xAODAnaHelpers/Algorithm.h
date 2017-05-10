@@ -102,6 +102,8 @@ namespace xAH {
         */
         std::string m_name;
 
+        /** debug level */
+        MSG::Level m_debugLevel;
         /** Enable debug output */
         bool m_debug,
         /** Enable verbose output */
