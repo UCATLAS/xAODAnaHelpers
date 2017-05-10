@@ -329,6 +329,8 @@ if __name__ == "__main__":
 
     # load the standard algorithm since pyroot delays quickly
     ROOT.EL.Algorithm()
+    # load this to get ROOT.MSG working: https://its.cern.ch/jira/browse/ATLASG-270
+    ROOT.asg.ToolStore()
 
     # check that we have appropriate drivers
     if args.driver == 'prun':
@@ -519,11 +521,19 @@ if __name__ == "__main__":
         if algName is None:
           raise KeyError("'m_name' is not set for instance of {0:s}".format(className))
         if not isinstance(algName, str):
-          raise ValueError("'m_name' must be a string for instance of {0:s}".format(className))
+          raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
+
+        debugLevel = algorithm_configuration['configs'].get("m_debug", "info")
+        if not isinstance(debugLevel, str):
+          raise TypeError("'m_debug' must be a string for instance of {0:s}".format(className))
+        if not hasattr(ROOT.MSG, debugLevel.upper()):
+          raise ValueError("'m_debug' must be a valid MSG::level: {0:s}".format(debugLevel))
+        debugLevel = getattr(ROOT.MSG, debugLevel.upper())
+        algorithm_configuration['configs']['m_debug'] = debugLevel
 
         alg = alg()
         alg.SetName(algName)
-
+        alg.setLevel(debugLevel)
         for config_name, config_val in algorithm_configuration['configs'].iteritems():
           xAH_logger.debug("\t%s", printStr.format(className, config_name, config_val))
           algorithmConfiguration_string.append(printStr.format(className, config_name, config_val))

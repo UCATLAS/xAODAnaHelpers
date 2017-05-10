@@ -1,4 +1,6 @@
 import ROOT
+# load this for the MSG::level values. See https://its.cern.ch/jira/browse/ATLASG-270
+ROOT.asg.ToolStore()
 
 class xAH_config(object):
   def __init__(self):
@@ -8,16 +10,24 @@ class xAH_config(object):
   def setalg(self, className, options):
     # check first argument
     if not isinstance(className, str):
-      raise ValueError("className must be a string")
+      raise TypeError("className must be a string")
 
     if not isinstance(options, dict):
-      raise ValueError("Must pass in a dictionary of options")
+      raise TypeError("Must pass in a dictionary of options")
 
     algName = options.get("m_name", None)
     if algName is None:
       raise KeyError("'m_name' is not set for instance of {0:s}".format(className))
     if not isinstance(algName, str):
-      raise ValueError("'m_name' must be a string for instance of {0:s}".format(className))
+      raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
+
+    debugLevel = options.get("m_debug", "info")
+    if not isinstance(debugLevel, str):
+      raise TypeError("'m_debug' must be a string for instance of {0:s}".format(className))
+    if not hasattr(ROOT.MSG, debugLevel.upper()):
+      raise ValueError("'m_debug' must be a valid MSG::level: {0:s}".format(debugLevel))
+    debugLevel = getattr(ROOT.MSG, debugLevel.upper())
+    options['m_debug'] = debugLevel
 
     #
     # Construct the given constructor
@@ -32,6 +42,7 @@ class xAH_config(object):
     #
     alg_obj = alg()
     alg_obj.SetName(algName)
+    alg_obj.setLevel(debugLevel)
     self._log.append((alg,algName))
     for k,v in options.iteritems():
       if not hasattr(alg_obj, k):
