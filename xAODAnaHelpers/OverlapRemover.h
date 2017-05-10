@@ -240,16 +240,7 @@ class OverlapRemover : public xAH::Algorithm
 public:
 
   // this is a standard constructor
-  /**
-     @brief Constructor
-     @param className
-     @rst
-         This is the name of the class that inherits from :cpp:class:`~xAH::Algorithm`
-
-     @endrst
-
-  */
-  OverlapRemover (std::string className = "OverlapRemover");
+  OverlapRemover ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

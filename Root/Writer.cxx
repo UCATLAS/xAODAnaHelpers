@@ -16,8 +16,8 @@ ClassImp(Writer)
 
 
 
-Writer :: Writer (std::string className) :
-    Algorithm(className)
+Writer :: Writer () :
+    Algorithm("Writer")
 {
   m_outputLabel               = "";
 

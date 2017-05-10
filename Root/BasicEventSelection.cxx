@@ -30,8 +30,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
 
-BasicEventSelection :: BasicEventSelection (std::string className) :
-    Algorithm(className),
+BasicEventSelection :: BasicEventSelection () :
+    Algorithm("BasicEventSelection"),
     m_grl(nullptr),
     m_pileup_tool_handle("CP::PileupReweightingTool/Pileup"),
     m_trigConfTool(nullptr),
@@ -58,7 +58,7 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   // basics
   m_debug = false;

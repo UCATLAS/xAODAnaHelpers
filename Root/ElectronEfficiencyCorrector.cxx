@@ -30,8 +30,8 @@ using HelperClasses::ToolName;
 ClassImp(ElectronEfficiencyCorrector)
 
 
-ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string className) :
-    Algorithm(className),
+ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
+    Algorithm("ElectronEfficiencyCorrector"),
     m_asgElEffCorrTool_elSF_PID(nullptr),
     m_asgElEffCorrTool_elSF_Iso(nullptr),
     m_asgElEffCorrTool_elSF_Reco(nullptr),
@@ -45,7 +45,7 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (std::string classNam
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
 

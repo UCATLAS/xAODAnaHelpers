@@ -217,7 +217,7 @@ class BasicEventSelection : public xAH::Algorithm
     //
 
     // this is a standard constructor
-    BasicEventSelection (std::string className = "BasicEventSelection");
+    BasicEventSelection ();
 
     // these are the functions inherited from Algorithm
     virtual EL::StatusCode setupJob (EL::Job& job);

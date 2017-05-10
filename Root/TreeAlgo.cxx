@@ -18,8 +18,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TreeAlgo)
 
-TreeAlgo :: TreeAlgo (std::string className) :
-    Algorithm(className),
+TreeAlgo :: TreeAlgo () :
+    Algorithm("TreeAlgo"),
     m_trees({})
 {
   this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream

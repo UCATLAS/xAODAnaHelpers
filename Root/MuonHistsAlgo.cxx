@@ -12,8 +12,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonHistsAlgo)
 
-MuonHistsAlgo :: MuonHistsAlgo (std::string className) :
-IParticleHistsAlgo(className)
+MuonHistsAlgo :: MuonHistsAlgo () :
+IParticleHistsAlgo("MuonHistsAlgo")
 { }
 
 EL::StatusCode MuonHistsAlgo :: setupJob (EL::Job& job)

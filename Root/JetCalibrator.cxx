@@ -37,16 +37,16 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)
 
-JetCalibrator :: JetCalibrator (std::string className) :
-    Algorithm(className),
+JetCalibrator :: JetCalibrator () :
+    Algorithm("JetCalibrator"),
     m_runSysts(false),          // gets set later is syst applies to this tool
-    m_JetCalibrationTool_handle("JetCalibrationTool/JetCalibrationTool_"+className),
-    m_JetUncertaintiesTool_handle("JetUncertaintiesTool/JetUncertaintiesTool_"+className),
-    m_JERTool_handle("JERTool/JERTool_"+className),
-    m_JERSmearingTool_handle("JERSmearingTool/JERSmearingTool_"+className),
-    m_JVTUpdateTool_handle("JetVertexTaggerTool/JVTUpdateTool_"+className),
-    m_JetCleaningTool_handle("JetCleaningTool/JetCleaningTool_"+className),
-    m_JetTileCorrectionTool_handle("JetTileCorrectionTool/JetTileCorrectionTool_"+className)
+    m_JetCalibrationTool_handle("JetCalibrationTool/JetCalibrationTool_"+m_name),
+    m_JetUncertaintiesTool_handle("JetUncertaintiesTool/JetUncertaintiesTool_"+m_name),
+    m_JERTool_handle("JERTool/JERTool_"+m_name),
+    m_JERSmearingTool_handle("JERSmearingTool/JERSmearingTool_"+m_name),
+    m_JVTUpdateTool_handle("JetVertexTaggerTool/JVTUpdateTool_"+m_name),
+    m_JetCleaningTool_handle("JetCleaningTool/JetCleaningTool_"+m_name),
+    m_JetTileCorrectionTool_handle("JetTileCorrectionTool/JetTileCorrectionTool_"+m_name)
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -55,7 +55,7 @@ JetCalibrator :: JetCalibrator (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
 
   // read debug flag from .config file

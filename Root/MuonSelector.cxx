@@ -36,8 +36,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
 
-MuonSelector :: MuonSelector (std::string className) :
-    Algorithm(className),
+MuonSelector :: MuonSelector () :
+    Algorithm("MuonSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_mu_cutflowHist_1(nullptr),
@@ -54,7 +54,7 @@ MuonSelector :: MuonSelector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
   m_useCutFlow              = true;

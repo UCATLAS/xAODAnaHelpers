@@ -35,8 +35,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronSelector)
 
-ElectronSelector :: ElectronSelector (std::string className) :
-    Algorithm(className),
+ElectronSelector :: ElectronSelector () :
+    Algorithm("ElectronSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_el_cutflowHist_1(nullptr),
@@ -54,7 +54,7 @@ ElectronSelector :: ElectronSelector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
   m_useCutFlow              = true;

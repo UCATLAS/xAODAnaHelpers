@@ -37,8 +37,8 @@
 ClassImp(JetSelector)
 
 
-JetSelector :: JetSelector (std::string className) :
-    Algorithm(className),
+JetSelector :: JetSelector () :
+    Algorithm("JetSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_jet_cutflowHist_1(nullptr),
@@ -52,7 +52,7 @@ JetSelector :: JetSelector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  if(m_debug) ATH_MSG_INFO( "Calling constructor");
+  //if(m_debug) ATH_MSG_INFO( "Calling constructor");
 
   // read debug flag from .config file
   m_debug         = false;

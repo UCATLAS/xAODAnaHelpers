@@ -41,8 +41,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MinixAOD)
 
-MinixAOD :: MinixAOD (std::string className) :
-    Algorithm(className),
+MinixAOD :: MinixAOD () :
+    Algorithm("MinixAOD"),
     m_simpleCopyKeys_vec(),
     m_shallowCopyKeys_vec(),
     m_deepCopyKeys_vec(),
@@ -50,7 +50,7 @@ MinixAOD :: MinixAOD (std::string className) :
     m_fileMetaDataTool(nullptr),
     m_trigMetaDataTool(nullptr)
 {
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_outputFileName = "out_miniXAOD";
   m_createOutputFile = true;

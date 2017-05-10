@@ -31,8 +31,8 @@ using HelperClasses::ToolName;
 ClassImp(MuonEfficiencyCorrector)
 
 
-MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
-    Algorithm(className),
+MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
+    Algorithm("MuonEfficiencyCorrector"),
     m_muRecoSF_tool_handle("CP::MuonEfficiencyScaleFactors/MuRecoSFToolName", nullptr),
     m_muIsoSF_tool_handle("CP::MuonEfficiencyScaleFactors/MuIsoSFToolName", nullptr),
     m_muTrigSF_tool_handle("CP::MuonTriggerScaleFactors/MuTrigSFToolName", nullptr),
@@ -54,7 +54,7 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  Info("MuonEfficiencyCorrector()", "Calling constructor");
+  //Info("MuonEfficiencyCorrector()", "Calling constructor");
 
   m_debug                      = false;
 

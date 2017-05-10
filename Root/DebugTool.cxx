@@ -37,11 +37,11 @@
 ClassImp(DebugTool)
 
 
-DebugTool :: DebugTool (std::string className) :
-    Algorithm(className),
+DebugTool :: DebugTool () :
+    Algorithm("DebugTool"),
     m_printStore(false)
 {
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 }
 
 EL::StatusCode DebugTool :: setupJob (EL::Job& job)

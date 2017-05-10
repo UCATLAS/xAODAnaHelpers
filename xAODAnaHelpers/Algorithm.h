@@ -51,7 +51,7 @@ namespace xAH {
                     // ...
                 }
 
-            which this class will automatically register all instances of for you. Each instance can have a different name :cpp:member:`~xAH::Algorithm::m_name` but will have the same :cpp:member:`~xAH::Algorithm::m_className` so we can track how many references have been made. This is useful for selectors to deal with cutflows, but can be useful for other algorithms that need to know how many times they've been instantiated in a single job.
+            which this class will automatically register all instances of for you. Each instance can have a different algorithm name but will have the same :cpp:member:`~xAH::Algorithm::m_className` so we can track how many references have been made. This is useful for selectors to deal with cutflows, but can be useful for other algorithms that need to know how many times they've been instantiated in a single job.
 
         @endrst
 
@@ -79,13 +79,6 @@ namespace xAH {
         StatusCode algFinalize();
 
         /**
-            @brief Set the name of this particular instance to something unique (used for ROOT's TObject name primarily)
-            @param name         The name of the instance
-         */
-        Algorithm* SetName(std::string name = "UnnamedAlgorithm");
-        using EL::Algorithm::SetName;
-
-        /**
             @rst
                 Set the level of verbosity in algorithms.
 
@@ -102,8 +95,11 @@ namespace xAH {
          */
         Algorithm* setLevel(int level);
 
+        /**
+            @brief All algorithms initialized should have a unique name, to differentiate them at the TObject level.
 
-        /** All algorithms initialized should have a unique name, to differentiate them at the TObject level */
+            Note, :code:`GetName()` returns a :code:`char*` while this returns a :code:`std::string`.
+        */
         std::string m_name;
 
         /** Enable debug output */
@@ -150,6 +146,14 @@ namespace xAH {
         int m_isMC;
 
       protected:
+        /**
+            @rst
+                The moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
+
+            @endrst
+         */
+        std::string m_className;
+
         /** The TEvent object */
         xAOD::TEvent* m_event; //!
         /** The TStore object */
@@ -172,14 +176,6 @@ namespace xAH {
             @endrst
          */
         int isMC();
-
-        /**
-            @rst
-                The moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
-
-            @endrst
-         */
-        std::string m_className;
 
         /**
             @rst

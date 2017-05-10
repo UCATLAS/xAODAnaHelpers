@@ -44,8 +44,8 @@ using HelperClasses::ToolName;
 ClassImp(ElectronCalibrator)
 
 
-ElectronCalibrator :: ElectronCalibrator (std::string className) :
-    Algorithm(className),
+ElectronCalibrator :: ElectronCalibrator () :
+    Algorithm("ElectronCalibrator"),
     m_EgammaCalibrationAndSmearingTool(nullptr),
     m_IsolationCorrectionTool(nullptr)
 {
@@ -56,7 +56,7 @@ ElectronCalibrator :: ElectronCalibrator (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
 

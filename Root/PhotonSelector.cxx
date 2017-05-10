@@ -35,8 +35,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(PhotonSelector)
 
-PhotonSelector :: PhotonSelector (std::string className) :
-    Algorithm(className),
+PhotonSelector :: PhotonSelector () :
+    Algorithm("PhotonSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_ph_cutflowHist_1(nullptr),
@@ -48,7 +48,7 @@ PhotonSelector :: PhotonSelector (std::string className) :
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
   m_useCutFlow              = true;

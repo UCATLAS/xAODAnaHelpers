@@ -30,8 +30,8 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
-    Algorithm(className),
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
+    Algorithm("BJetEfficiencyCorrector"),
     m_BJetSelectTool(nullptr),
     m_BJetEffSFTool(nullptr)
 {
@@ -42,7 +42,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   // read flags set from .config file
   m_debug                   = false;

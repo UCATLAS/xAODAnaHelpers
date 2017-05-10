@@ -23,12 +23,12 @@ using std::vector;
 ClassImp(TrackSelector)
 
 
-TrackSelector :: TrackSelector (std::string className) :
-    Algorithm(className),
+TrackSelector :: TrackSelector () :
+    Algorithm("TrackSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr)
 {
-  if(m_debug) ATH_MSG_INFO( "Calling constructor");
+  //if(m_debug) ATH_MSG_INFO( "Calling constructor");
 
   // read debug flag from .config file
   m_debug         = false;

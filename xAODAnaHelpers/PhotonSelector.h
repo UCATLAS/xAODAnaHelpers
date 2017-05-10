@@ -81,7 +81,7 @@ public:
 
   /* this is a standard constructor */
 
-  PhotonSelector (std::string className = "PhotonSelector");
+  PhotonSelector ();
 
   ~PhotonSelector();
 

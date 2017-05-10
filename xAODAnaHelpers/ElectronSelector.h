@@ -262,7 +262,7 @@ public:
 
   /* this is a standard constructor */
 
-  ElectronSelector (std::string className = "ElectronSelector");
+  ElectronSelector ();
 
   ~ElectronSelector();
 

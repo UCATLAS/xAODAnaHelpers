@@ -56,8 +56,8 @@ using HelperClasses::ToolName;
 ClassImp(PhotonCalibrator)
 
 
-PhotonCalibrator :: PhotonCalibrator (std::string className) :
-    Algorithm(className),
+PhotonCalibrator :: PhotonCalibrator () :
+    Algorithm("PhotonCalibrator"),
     m_EgammaCalibrationAndSmearingTool(nullptr),
     m_photonFudgeMCTool(nullptr),
     m_photonTightIsEMSelector(nullptr),
@@ -74,7 +74,7 @@ PhotonCalibrator :: PhotonCalibrator (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
 

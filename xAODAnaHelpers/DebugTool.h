@@ -18,7 +18,7 @@ public:
 public:
 
   // this is a standard constructor
-  DebugTool (std::string className = "DebugTool");
+  DebugTool ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

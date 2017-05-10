@@ -62,8 +62,8 @@ using std::string;
 ClassImp(METConstructor)
 
 
-METConstructor :: METConstructor (std::string className) :
-    Algorithm(className)
+METConstructor :: METConstructor () :
+    Algorithm("METConstructor")
 {
 
   m_debug                 = false;

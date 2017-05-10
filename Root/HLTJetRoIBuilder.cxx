@@ -43,8 +43,8 @@ using std::vector;
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetRoIBuilder)
 
-HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
-  Algorithm(className),
+HLTJetRoIBuilder :: HLTJetRoIBuilder () :
+  Algorithm("HLTJetRoIBuilder"),
   m_trigItem(""),
   m_trigItemVeto(""),
   m_doHLTBJet(true),
@@ -57,7 +57,7 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   m_vtxName("EFHistoPrmVtx"),
   m_onlineBSTool()
 {
-  if(m_debug) ATH_MSG_INFO( "Calling constructor");
+  //if(m_debug) ATH_MSG_INFO( "Calling constructor");
 
   // read debug flag from .config file
   m_debug                   = false;

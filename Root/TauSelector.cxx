@@ -37,8 +37,8 @@
 ClassImp(TauSelector)
 
 
-TauSelector :: TauSelector (std::string className) :
-    Algorithm(className),
+TauSelector :: TauSelector () :
+    Algorithm("TauSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_tau_cutflowHist_1(nullptr),
@@ -53,7 +53,7 @@ TauSelector :: TauSelector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
   m_useCutFlow              = true;

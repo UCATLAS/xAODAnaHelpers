@@ -12,8 +12,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(ClusterHistsAlgo)
 
-ClusterHistsAlgo :: ClusterHistsAlgo (std::string className) :
-    Algorithm(className),
+ClusterHistsAlgo :: ClusterHistsAlgo () :
+    Algorithm("ClusterHistsAlgo"),
     m_plots(nullptr)
 {
   m_inContainerName         = "";

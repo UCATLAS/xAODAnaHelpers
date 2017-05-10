@@ -30,8 +30,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrigMatcher)
 
-TrigMatcher :: TrigMatcher (const std::string& className)
-: Algorithm(className),
+TrigMatcher :: TrigMatcher ()
+: Algorithm("TrigMatcher"),
   m_trigMatchTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -40,7 +40,7 @@ TrigMatcher :: TrigMatcher (const std::string& className)
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug           = false;
 

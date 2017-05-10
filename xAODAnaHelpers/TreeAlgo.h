@@ -70,7 +70,7 @@ protected:
 public:
 
   // this is a standard constructor
-  TreeAlgo (std::string className = "TreeAlgo");                                           //!
+  TreeAlgo ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);           //!

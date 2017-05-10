@@ -44,8 +44,8 @@ using HelperClasses::ToolName;
 ClassImp(OverlapRemover)
 
 
-OverlapRemover :: OverlapRemover (std::string className) :
-    Algorithm(className),
+OverlapRemover :: OverlapRemover () :
+    Algorithm("OverlapRemover"),
     m_useElectrons(false),
     m_useMuons(false),
     m_usePhotons(false),
@@ -63,7 +63,7 @@ OverlapRemover :: OverlapRemover (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   // read debug flag from .config file
   m_debug         = false;

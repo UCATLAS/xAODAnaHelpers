@@ -45,7 +45,7 @@ private:
 public:
 
   // this is a standard constructor
-  HLTJetGetter (std::string className = "HLTJetGetter");
+  HLTJetGetter ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

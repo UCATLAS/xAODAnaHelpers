@@ -41,13 +41,13 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TruthSelector)
 
-TruthSelector :: TruthSelector (std::string className) :
-    Algorithm(className),
+TruthSelector :: TruthSelector () :
+    Algorithm("TruthSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_truth_cutflowHist_1(nullptr)
 {
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   // read debug flag from .config file
   m_debug         = false;

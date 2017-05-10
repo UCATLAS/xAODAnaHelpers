@@ -37,8 +37,8 @@ using HelperClasses::ToolName;
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonCalibrator)
 
-MuonCalibrator :: MuonCalibrator (std::string className) :
-    Algorithm(className)
+MuonCalibrator :: MuonCalibrator () :
+    Algorithm("MuonCalibrator")
     //m_muonCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -48,7 +48,7 @@ MuonCalibrator :: MuonCalibrator (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   m_debug                   = false;
 

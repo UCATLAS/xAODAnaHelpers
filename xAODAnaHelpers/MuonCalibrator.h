@@ -25,7 +25,7 @@ public:
 
   // sort after calibration
   bool    m_sort;
-  
+
   bool         m_do_sagittaCorr;
   std::string  m_sagittaRelease;
   bool         m_do_sagittaMCDistortion;
@@ -65,10 +65,10 @@ private:
 
   // tools
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;                            //!
-  std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;  //!   
+  std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;  //!
   std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                      //!
   std::vector<std::string> m_YearsList;                                                           //!
-  
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -77,7 +77,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  MuonCalibrator (std::string className = "MuonCalibrator");
+  MuonCalibrator ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

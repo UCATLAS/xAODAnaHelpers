@@ -34,11 +34,11 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetGetter)
 
-HLTJetGetter :: HLTJetGetter (std::string className) :
-Algorithm(className),
+HLTJetGetter :: HLTJetGetter () :
+Algorithm("HLTJetGetter"),
 m_trigDecTool(nullptr)
 {
-    ATH_MSG_INFO( "Calling constructor");
+    //ATH_MSG_INFO( "Calling constructor");
 
     // regex list of triggers
     m_triggerList = ".*";
