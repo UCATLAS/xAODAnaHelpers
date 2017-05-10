@@ -21,13 +21,13 @@ class xAH_config(object):
     if not isinstance(algName, str):
       raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
 
-    debugLevel = options.get("m_debug", "info")
+    debugLevel = options.get("m_debugLevel", "info")
     if not isinstance(debugLevel, str):
-      raise TypeError("'m_debug' must be a string for instance of {0:s}".format(className))
+      raise TypeError("'m_debugLevel' must be a string for instance of {0:s}".format(className))
     if not hasattr(ROOT.MSG, debugLevel.upper()):
-      raise ValueError("'m_debug' must be a valid MSG::level: {0:s}".format(debugLevel))
+      raise ValueError("'m_debugLevel' must be a valid MSG::level: {0:s}".format(debugLevel))
     debugLevel = getattr(ROOT.MSG, debugLevel.upper())
-    options['m_debug'] = debugLevel
+    options['m_debugLevel'] = debugLevel
 
     #
     # Construct the given constructor
@@ -42,7 +42,7 @@ class xAH_config(object):
     #
     alg_obj = alg()
     alg_obj.SetName(algName)
-    alg_obj.setLevel(debugLevel)
+    alg_obj.msg().setLevel(debugLevel)
     self._log.append((alg,algName))
     for k,v in options.iteritems():
       if not hasattr(alg_obj, k):
