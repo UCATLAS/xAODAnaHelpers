@@ -46,7 +46,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   // turn things off it this is data...since TStore is not a needed input
   // default isMC to true so more is added to the tree than less
   const xAOD::EventInfo* eventInfo(nullptr);
-  HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, false);
+  HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store);
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
 }
@@ -592,7 +592,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
   xAH::JetContainer* thisJet = m_jets[jetName];
 
   if( thisJet->m_infoSwitch.m_trackPV || thisJet->m_infoSwitch.m_allTrack ) {
-    HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0 );
+    HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0);
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
     if ( pvLocation >= 0 ) pv = vertices->at( pvLocation );
   }
@@ -603,7 +603,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
   //
   if ( m_isMC ) {
     const xAOD::EventInfo* eventInfo(nullptr);
-    HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, false);
+    HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store);
 
     thisJet->FillGlobalBTagSF(eventInfo);
 

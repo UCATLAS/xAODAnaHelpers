@@ -23,15 +23,13 @@ using std::vector;
 ClassImp(TrackSelector)
 
 
-TrackSelector :: TrackSelector (std::string className) :
-    Algorithm(className),
+TrackSelector :: TrackSelector () :
+    Algorithm("TrackSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr)
 {
-  if(m_debug) ATH_MSG_INFO( "Calling constructor");
 
   // read debug flag from .config file
-  m_debug         = false;
   m_useCutFlow    = true;
 
   // input container to be read from TEvent or TStore
@@ -83,7 +81,7 @@ EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  if(m_debug) ATH_MSG_INFO( "Calling setupJob");
+  ATH_MSG_DEBUG("Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TrackSelector" ).ignore(); // call before opening first file
@@ -100,7 +98,7 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  if(m_debug) ATH_MSG_INFO( "Calling histInitialize");
+  ATH_MSG_DEBUG("Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
   return EL::StatusCode::SUCCESS;
 }
@@ -112,7 +110,7 @@ EL::StatusCode TrackSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  if(m_debug) ATH_MSG_INFO( "Calling fileExecute");
+  ATH_MSG_DEBUG("Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -125,7 +123,7 @@ EL::StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  if(m_debug) ATH_MSG_INFO( "Calling changeInput");
+  ATH_MSG_DEBUG("Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -172,14 +170,14 @@ EL::StatusCode TrackSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  if(m_debug) ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ATH_MSG_DEBUG("Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
   m_numObjectPass = 0;
 
-  if(m_debug) ATH_MSG_INFO( "TrackSelector Interface succesfully initialized!" );
+  ATH_MSG_DEBUG("TrackSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -189,7 +187,7 @@ EL::StatusCode TrackSelector :: initialize ()
 EL::StatusCode TrackSelector :: execute ()
 {
 
-  if(m_debug) ATH_MSG_INFO( "Applying Track Selection... " << m_name);
+  ATH_MSG_DEBUG("Applying Track Selection... " << m_name);
 
   if(m_doTracksInJets){
     return executeTracksInJets();
@@ -208,12 +206,12 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
   // get the collection from TEvent or TStore
   const xAOD::TrackParticleContainer* inTracks(nullptr);
-  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(inTracks, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(inTracks, m_inContainerName, m_event, m_store, msg()) ,"");
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
-  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
-  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
+  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
 
   // create output container (if requested) - deep copy
@@ -282,17 +280,17 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
 EL::StatusCode TrackSelector :: executeTracksInJets ()
 {
-  if(m_debug) ATH_MSG_INFO( "Applying TracksInJet Selection... " << m_inJetContainerName);
+  ATH_MSG_DEBUG("Applying TracksInJet Selection... " << m_inJetContainerName);
   m_numEvent++;
 
   // get input jet collection
   const xAOD::JetContainer* inJets(nullptr);
-  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) ,"");
 
   //// get primary vertex
   //const xAOD::VertexContainer *vertices(nullptr);
-  //RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
-  //const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices);
+  //RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  //const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
 
@@ -355,7 +353,7 @@ EL::StatusCode TrackSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if(m_debug) ATH_MSG_INFO( "Calling postExecute");
+  ATH_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -374,7 +372,7 @@ EL::StatusCode TrackSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  if(m_debug) ATH_MSG_INFO( "Deleting tool instances...");
+  ATH_MSG_DEBUG("Deleting tool instances...");
 
   return EL::StatusCode::SUCCESS;
 }

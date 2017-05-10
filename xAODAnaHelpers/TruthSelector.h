@@ -68,7 +68,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  TruthSelector (std::string className = "TruthSelector");
+  TruthSelector ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

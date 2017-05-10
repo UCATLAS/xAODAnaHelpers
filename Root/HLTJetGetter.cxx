@@ -34,11 +34,11 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetGetter)
 
-HLTJetGetter :: HLTJetGetter (std::string className) :
-Algorithm(className),
+HLTJetGetter :: HLTJetGetter () :
+Algorithm("HLTJetGetter"),
 m_trigDecTool(nullptr)
 {
-    ATH_MSG_INFO( "Calling constructor");
+    //ATH_MSG_INFO( "Calling constructor");
 
     // regex list of triggers
     m_triggerList = ".*";
@@ -125,7 +125,7 @@ EL::StatusCode HLTJetGetter :: initialize ()
 
 EL::StatusCode HLTJetGetter :: execute ()
 {
-    if ( m_debug ) { ATH_MSG_INFO( "Getting HLT jets... "); }
+    ATH_MSG_DEBUG( "Getting HLT jets... ");
 
     //
     // Create the new container and its auxiliary store.
@@ -150,7 +150,7 @@ EL::StatusCode HLTJetGetter :: execute ()
         }//end trigJet loop
     }//end feature container loop
 
-    if ( m_verbose ) { m_store->print(); }
+    ATH_EXEC_VERBOSE(m_store->print());
 
     return EL::StatusCode::SUCCESS;
 }
@@ -159,7 +159,7 @@ EL::StatusCode HLTJetGetter :: execute ()
 
 EL::StatusCode HLTJetGetter :: postExecute ()
 {
-    if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+    ATH_MSG_DEBUG( "Calling postExecute");
     return EL::StatusCode::SUCCESS;
 }
 

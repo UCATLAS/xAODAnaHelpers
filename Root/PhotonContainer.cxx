@@ -24,13 +24,13 @@ PhotonContainer::PhotonContainer(const std::string& name, const std::string& det
     m_topoetcone20                = new std::vector<float> ();
     m_topoetcone30                = new std::vector<float> ();
     m_topoetcone40                = new std::vector<float> ();
-  }    
+  }
 
       // PID
   if(m_infoSwitch.m_PID){
     m_n_IsLoose  = 0;
     m_n_IsMedium = 0;
-    m_n_IsTight  = 0;  
+    m_n_IsTight  = 0;
 
     m_IsLoose    = new std::vector<int>   ();
     m_IsMedium   = new std::vector<int>   ();
@@ -51,7 +51,7 @@ PhotonContainer::PhotonContainer(const std::string& name, const std::string& det
       m_eratio     = new std::vector<float> ();
       //std::vector<float> m_w1
   }
-  
+
   if(m_infoSwitch.m_effSF && m_mc){
     m_LooseEffSF =new std::vector<float>();
     m_MediumEffSF=new std::vector<float>();
@@ -82,7 +82,7 @@ PhotonContainer::~PhotonContainer()
     delete m_topoetcone20	   ;
     delete m_topoetcone30	   ;
     delete m_topoetcone40          ;
-  }    
+  }
 
   // PID
   if(m_infoSwitch.m_PID){
@@ -142,7 +142,7 @@ void PhotonContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "topoetcone20",              &m_topoetcone20              );
     connectBranch<float>(tree, "topoetcone30",              &m_topoetcone30              );
     connectBranch<float>(tree, "topoetcone40",              &m_topoetcone40              );
-  }    
+  }
 
   // PID
   if(m_infoSwitch.m_PID){
@@ -159,7 +159,7 @@ void PhotonContainer::setTree(TTree *tree)
     connectBranch<int>(tree,  "IsTight"  , &m_IsTight );
   }
 
-  
+
   if(m_infoSwitch.m_purity){
     connectBranch<float>(tree,"radhad1", &m_radhad1);
     connectBranch<float>(tree,"radhad" , &m_radhad );
@@ -208,7 +208,7 @@ void PhotonContainer::updateParticle(uint idx, Photon& photon)
     photon.topoetcone20 =               m_topoetcone20              ->at(idx);
     photon.topoetcone30 =               m_topoetcone30              ->at(idx);
     photon.topoetcone40 =               m_topoetcone40              ->at(idx);
-  }    
+  }
 
   // PID
   if(m_infoSwitch.m_PID){
@@ -217,7 +217,7 @@ void PhotonContainer::updateParticle(uint idx, Photon& photon)
     photon.IsTight =   m_IsTight ->at(idx);
   }
 
-  
+
   if(m_infoSwitch.m_purity){
     photon.radhad1 = m_radhad1->at(idx);
     photon.radhad =  m_radhad ->at(idx);
@@ -266,7 +266,7 @@ void PhotonContainer::setBranches(TTree *tree)
     setBranch<float>(tree, "topoetcone20",              m_topoetcone20              );
     setBranch<float>(tree, "topoetcone30",              m_topoetcone30              );
     setBranch<float>(tree, "topoetcone40",              m_topoetcone40              );
-  }    
+  }
 
   // PID
   if(m_infoSwitch.m_PID){
@@ -317,7 +317,7 @@ void PhotonContainer::setBranches(TTree *tree)
 
 void PhotonContainer::clear()
 {
-  
+
   ParticleContainer::clear();
 
   if(m_infoSwitch.m_isolation){
@@ -333,7 +333,7 @@ void PhotonContainer::clear()
     m_topoetcone20	  -> clear() ;
     m_topoetcone30	  -> clear() ;
     m_topoetcone40        -> clear();
-  }    
+  }
 
   // PID
   if(m_infoSwitch.m_PID){
@@ -385,7 +385,7 @@ void PhotonContainer::FillPhoton( const xAOD::Photon* photon ){
   return FillPhoton(static_cast<const xAOD::IParticle*>(photon));
 }
 
-void PhotonContainer::FillPhoton( const xAOD::IParticle* particle ) 
+void PhotonContainer::FillPhoton( const xAOD::IParticle* particle )
 {
 
   ParticleContainer::FillParticle(particle);
@@ -394,10 +394,10 @@ void PhotonContainer::FillPhoton( const xAOD::IParticle* particle )
 
 
   if ( m_infoSwitch.m_isolation ) {
-    
+
     static SG::AuxElement::Accessor<char> isIsoCone40CaloOnlyAcc    ("isIsolated_FixedCutTightCaloOnly");
     safeFill<char, int, xAOD::Photon>(photon, isIsoCone40CaloOnlyAcc, m_isIsolated_Cone40CaloOnly, -1);
-    
+
     static SG::AuxElement::Accessor<char> isIsoCone40Acc            ("isIsolated_FixedCutTight");
     safeFill<char, int, xAOD::Photon>(photon, isIsoCone40Acc, m_isIsolated_Cone40, -1);
 
@@ -413,11 +413,11 @@ void PhotonContainer::FillPhoton( const xAOD::IParticle* particle )
     m_topoetcone20 -> push_back( photon->isolation( xAOD::Iso::topoetcone20) / m_units  );
     m_topoetcone30 -> push_back( photon->isolation( xAOD::Iso::topoetcone30) / m_units  );
     m_topoetcone40 -> push_back( photon->isolation( xAOD::Iso::topoetcone40) / m_units  );
-    
+
   }
 
   if ( m_infoSwitch.m_PID ) {
-  
+
     static SG::AuxElement::Accessor<bool> phLooseAcc  ("PhotonID_Loose");
     safeFill<bool, int, xAOD::Photon>(photon, phLooseAcc, m_IsLoose, -1);
 
@@ -441,7 +441,7 @@ void PhotonContainer::FillPhoton( const xAOD::IParticle* particle )
     //static SG::AuxElement::Accessor<float> w1       ("w1"     );
     static SG::AuxElement::Accessor<float> deltae   ("DeltaE" );
     static SG::AuxElement::Accessor<float> eratio   ("Eratio" );
-    
+
     m_radhad1  -> push_back( radhad1(*photon) );
     m_radhad   -> push_back( radhad (*photon) );
     m_e277     -> push_back( e277   (*photon) );

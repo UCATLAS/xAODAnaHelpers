@@ -59,10 +59,10 @@ public:
   bool    m_useTrackJetTerm;
 
   bool m_runNominal;
-  
-  bool m_isMC; //add bool 
 
-  
+  bool m_isMC; //add bool
+
+
   float m_systVal;
   std::string m_systName;
 
@@ -90,7 +90,7 @@ public:
   std::string m_phoSystematics;
 
   std::string m_outputAlgoSystNames;
-  
+
 
 private:
 
@@ -100,7 +100,7 @@ private:
   // tools
   asg::AnaToolHandle<IMETMaker> m_metmaker_handle; //!
 
-  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle; //!   
+  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle; //!
 
   TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 
@@ -117,7 +117,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  METConstructor (std::string className = "METConstructor");
+  METConstructor ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

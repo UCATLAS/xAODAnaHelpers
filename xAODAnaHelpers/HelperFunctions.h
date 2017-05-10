@@ -31,15 +31,24 @@
 #include "TFile.h"
 #include "TObjArray.h"
 
+// messaging includes
+#include <AsgTools/MsgStream.h>
 
 namespace HelperFunctions {
+
+  /**
+    Static object that provides athena-based message logging functionality
+  */
+  MsgStream& msg( MSG::Level lvl = MSG::INFO );
 
   // primary vertex
   bool passPrimaryVertexSelection(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
   int countPrimaryVertices(const xAOD::VertexContainer* vertexContainer, int Ntracks = 2);
-  const xAOD::Vertex* getPrimaryVertex(const xAOD::VertexContainer* vertexContainer, bool quiet=false);
+  const xAOD::Vertex* getPrimaryVertex(const xAOD::VertexContainer* vertexContainer, MsgStream& msg);
+  inline const xAOD::Vertex* getPrimaryVertex(const xAOD::VertexContainer* vertexContainer) { return getPrimaryVertex(vertexContainer, msg()); }
   float getPrimaryVertexZ(const xAOD::Vertex* pvx);
-  int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer);
+  int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer, MsgStream& msg);
+  inline int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer){ return getPrimaryVertexLocation(vertexContainer, msg()); }
   bool applyPrimaryVertexSelection( const xAOD::JetContainer* jets, const xAOD::VertexContainer* vertices );
   float GetBTagMV2c20_Cut( int efficiency );
   std::string GetBTagMV2c20_CutStr( int efficiency );
@@ -61,7 +70,8 @@ namespace HelperFunctions {
     Returns empty string if no WP is found.
 
   */
-  std::string parse_wp( const std::string& type, const std::string& config_name );
+  std::string parse_wp( const std::string& type, const std::string& config_name, MsgStream& msg );
+  inline std::string parse_wp( const std::string& type, const std::string& config_name ) { return parse_wp(type, config_name, msg()); }
 
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |
@@ -132,52 +142,7 @@ namespace HelperFunctions {
   // miscellaneous
   bool sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB);
 
-  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug = false );
-
-  /**
-   * @author Marco Milesi (marco.milesi@cern.ch)
-   * @brief Function to copy a subset of a generic input xAOD container into a generic output xAOD container.
-   *
-   * If the optional parameters aren't specified, the function will just make a full copy of the input
-   * container into the output one.
-   *
-   * @param [in] intCont input container
-   * @param [in,out] outCont output container
-   * @param [in] flagSelect (optional) the name of the decoration for objects passing a certain selection (e.g. "passSel", "overlaps" ...). When explicitly specified, it must not be empty.
-   * @param [in] tool_name (optional) an enum specifying the tool type which is calling this function (definition in `HelperClasses::ToolName`)
-   */
-  template< typename T1, typename T2 >
-    StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT ){
-
-     if ( tool_name == HelperClasses::ToolName::DEFAULT ) {
-
-       for ( auto in_itr : *(intCont) ) { outCont->push_back( in_itr ); }
-       return StatusCode::SUCCESS;
-
-     }
-
-     if ( flagSelect.empty() ) {
-       Error("HelperFunctions::makeSubsetCont()", "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" );
-       return StatusCode::FAILURE;
-     }
-
-     SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
-
-     for ( auto in_itr : *(intCont) ) {
-
-       if ( !myAccessor.isAvailable(*(in_itr)) ) {
-     	 std::stringstream ss; ss << in_itr->type();
-         Error("HelperFunctions::makeSubsetCont()", "flag %s is missing for object of type %s ! Will not make a subset of its container", flagSelect.c_str(), (ss.str()).c_str() );
-     	 return StatusCode::FAILURE;
-       }
-
-     	 if ( myAccessor(*(in_itr)) ) { outCont->push_back( in_itr ); }
-
-     }
-
-     return StatusCode::SUCCESS;
-
-   }
+  std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet inSysts, std::string systName, float systVal, MsgStream& msg );
 
   /*    type_name<T>()      The awesome type demangler!
           - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.
@@ -188,7 +153,7 @@ namespace HelperFunctions {
         Example Usage:
         template <typename T>
         void echoType(){
-          Info("retrieve()", "This is type %s", HelperFunctions::type_name<T>().c_str());
+          std::cout << "This is type " << HelperFunctions::type_name<T>() << std::endl;
         }
   */
   template <typename T>
@@ -205,13 +170,63 @@ namespace HelperFunctions {
     return tname;
   }
 
+  /**
+   * @author Marco Milesi (marco.milesi@cern.ch)
+   * @brief Function to copy a subset of a generic input xAOD container into a generic output xAOD container.
+   *
+   * If the optional parameters aren't specified, the function will just make a full copy of the input
+   * container into the output one.
+   *
+   * @param [in] intCont input container
+   * @param [in,out] outCont output container
+   * @param [in] flagSelect (optional) the name of the decoration for objects passing a certain selection (e.g. "passSel", "overlaps" ...). When explicitly specified, it must not be empty.
+   * @param [in] tool_name (optional) an enum specifying the tool type which is calling this function (definition in `HelperClasses::ToolName`)
+   */
+  template< typename T1, typename T2 >
+  StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, MsgStream& msg, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT){
+     std::string tname1 = type_name<T1>();
+     std::string tname2 = type_name<T2>();
+     msg.setName(msg.name()+".makeSubsetCont<"+tname1+","+tname2+">");
+
+     if ( tool_name == HelperClasses::ToolName::DEFAULT ) {
+
+       for ( auto in_itr : *(intCont) ) { outCont->push_back( in_itr ); }
+       return StatusCode::SUCCESS;
+
+     }
+
+     if ( flagSelect.empty() ) {
+       msg << MSG::ERROR << "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" << endmsg;
+       return StatusCode::FAILURE;
+     }
+
+     SG::AuxElement::ConstAccessor<char> myAccessor(flagSelect);
+
+     for ( auto in_itr : *(intCont) ) {
+
+       if ( !myAccessor.isAvailable(*(in_itr)) ) {
+     	 std::stringstream ss; ss << in_itr->type();
+         msg << MSG::ERROR << "flag " << flagSelect << " is missing for object of type " << ss.str() << " ! Will not make a subset of its container" << endmsg;
+     	 return StatusCode::FAILURE;
+       }
+
+     	 if ( myAccessor(*(in_itr)) ) { outCont->push_back( in_itr ); }
+
+     }
+
+     return StatusCode::SUCCESS;
+
+   }
+  template< typename T1, typename T2 >
+  StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT) { return makeSubsetCont<T1, T2>(intCont, outCont, msg(), flagSelect, tool_name); }
+
   /*  retrieve()    retrieve an arbitrary object from TStore / TEvent
         - tries to make your life simple by providing a one-stop container retrieval shop for all types
         @ cont  : pass in a pointer to the object to store the retrieved container in
         @ name  : the name of the object to look up
         @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
         @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
-        @ debug : turn on more verbose output, helpful for debugging
+        @ msg   : the MsgStream object with appropriate level for debugging
 
       Example Usage:
       const xAOD::JetContainer* jets(0);
@@ -220,10 +235,10 @@ namespace HelperFunctions {
       // look for "AntiKt10LCTopoJets" in only TStore
       RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) ,"");
       // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, true) ,"");
+      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, msg()) ,"");
   */
   template <typename T>
-  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug=false){
+  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
     /* Checking Order:
         - check if store contains 'xAOD::JetContainer' named 'name'
         --- attempt to retrieve from store
@@ -234,32 +249,39 @@ namespace HelperFunctions {
         - return FAILURE
         return SUCCESS (should never reach this last line)
     */
+    std::string tname = type_name<T>();
+    msg.setName(msg.name()+".retrieve<"+tname+">");
 
-    if(debug) Info("HelperFunctions::retrieve()", "\tAttempting to retrieve %s of type %s", name.c_str(), type_name<T>().c_str());
-    if((store == NULL) && (debug))                      Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TEvent");
-    if((event == NULL) && (debug))                      Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TStore");
-    if((event != NULL) && (store != NULL) && (debug))   Info("HelperFunctions::retrieve()", "\t\tLooking inside: xAOD::TStore, xAOD::TEvent");
+    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << tname << endmsg;
+    if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
-      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tFound inside xAOD::TStore");
+      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TStore" << endmsg;
       if(!store->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
-      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tRetrieved from xAOD::TStore");
+      msg << MSG::DEBUG << "\t\t\tRetrieved from xAOD::TStore" << endmsg;
     } else if((event != NULL) && (event->contains<T>(name))){
-      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tFound inside xAOD::TEvent");
+      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       if(!event->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
-      if(debug) Info("HelperFunctions::retrieve()", "\t\t\tRetrieved from xAOD::TEvent");
+      msg << MSG::DEBUG << "\t\t\tRetrieved from xAOD::TEvent" << endmsg;
     } else {
-      if(debug) Info("HelperFunctions::retrieve()", "\t\tNot found at all");
+      msg << MSG::DEBUG << "\t\tNot found at all" << endmsg;
       return StatusCode::FAILURE;
     }
     return StatusCode::SUCCESS;
   }
+  /* retrieve() overload for no msgStream object passed in */
+  template <typename T>
+  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return retrieve<T>(cont, name, event, store, msg()); }
+  template <typename T>
+  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug) { msg() << MSG::WARNING << "retrieve<T>(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882" << endmsg; return retrieve<T>(cont, name, event, store, msg()); }
 
   /*  isAvailable()    return true if an arbitrary object from TStore / TEvent is availible
         - tries to make your life simple by providing a one-stop container check shop for all types
         @ name  : the name of the object to look up
         @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
         @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
-        @ debug : turn on more verbose output, helpful for debugging
+        @ msg   : the MsgStream object with appropriate level for debugging
 
       Example Usage:
       const xAOD::JetContainer* jets(0);
@@ -271,86 +293,33 @@ namespace HelperFunctions {
       HelperFunctions::retrieve("AntiKt10LCTopoJets", m_event, 0, true)
   */
   template <typename T>
-  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug=false){
+  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
     /* Checking Order:
         - check if store contains 'xAOD::JetContainer' named 'name'
         --- checkstore store
         - check if event contains 'xAOD::JetContainer' named 'name'
         --- checkstore event
     */
-    if(debug) Info("HelperFunctions::isAvailable()", "\tAttempting to retrieve %s of type %s", name.c_str(), type_name<T>().c_str());
-    if((store == NULL) && (debug))                      Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TEvent");
-    if((event == NULL) && (debug))                      Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TStore");
-    if((event != NULL) && (store != NULL) && (debug))   Info("HelperFunctions::isAvailable()", "\t\tLooking inside: xAOD::TStore, xAOD::TEvent");
+    std::string tname = type_name<T>();
+    msg.setName(msg.name()+".isAvailable<"+tname+">");
+    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << tname << endmsg;
+    if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
-      if(debug) Info("HelperFunctions::isAvailable()", "\t\t\tFound inside xAOD::TStore");
+      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TStore" << endmsg;;
       return true;
     } else if((event != NULL) && (event->contains<T>(name))){
-      if(debug) Info("HelperFunctions::isAvailable()", "\t\t\tFound inside xAOD::TEvent");
+      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       return true;
     } else {
       return false;
     }
     return false;
   }
-
-
-
-  /* update with better logic
-      -- call HelperFunctions::retrieve() instead
-      -- if user wants `const DataVector<T>` and `ConstDataVector<T>` exists but `const DataVector<T>` does not, auto-convert for them
-      -- if user wants `const DataVector<T>` and `DataVector<T>` exists, but `const DataVector<T>` does not, const-cast is trivial
-      -- if user wants `DataVector<T>` and `ConstDataVector<T>` or `const DataVector<T>` exist, raise a warning
-      -- **** handle the special case of EventInfo which does not have a CDV<T> equivalent
-  */
+  /* isAvailable() overload for no msgStream object passed in */
   template <typename T>
-  const T* getContainer(std::string name, xAOD::TEvent* event, xAOD::TStore* store) {
-    Warning("HelperFunctions::getContainer()", "THIS IS BEING DEPRECATED. PLEASE USE HelperFunctions::retrieve() INSTEAD!!!!");
-    const T* cont = 0;
-    if ( store->contains< ConstDataVector<T> >(name)){
-      ConstDataVector<T>* contCDV = 0;
-      if ( !store->retrieve( contCDV, name ).isSuccess() ){
-        Error("getContainer()  ", "Failed to retrieve %s ConstDataVector from Store. Exiting.", name.c_str() );
-        RCU_THROW_MSG("Failure");
-      }
-      cont = contCDV->asDataVector();
-    }
-    else if ( event->contains<const T>(name)){
-      if ( !event->retrieve( cont , name ).isSuccess() ){
-        Error("getContainer()  ", "Failed to retrieve %s const DataVector from File. Exiting.", name.c_str() );
-        RCU_THROW_MSG("Failure");
-      }
-    }
-    else if ( store->contains<const T>(name)){
-      Warning("getContainer()", "TEvent can't retrieve %s from TStore!", name.c_str());
-      if( !store->retrieve( cont, name ).isSuccess() ){
-        Error("getContainer()", "Failed to retrieve %s const DataVector from Store. Exiting.", name.c_str() );
-        RCU_THROW_MSG("Failure");
-      }
-    }
-    else {
-      Error("getContainer()  ", "Failed to retrieve %s container from File or Store. Exiting.", name.c_str() );
-      store->print();
-      RCU_THROW_MSG("Failure");
-    }
-
-    return cont;
-  }
-
-  // PTS defined here
-  /* EventInfo is special, why? ConstDataVector not used with it...
-    https://gist.github.com/kratsg/84ae66cb37a9d858d829
-  */
-  template <>
-  inline const xAOD::EventInfo* getContainer(std::string name, xAOD::TEvent* event, xAOD::TStore*) {
-    const xAOD::EventInfo* eventInfo = 0;
-    if ( !event->retrieve(eventInfo, name).isSuccess() ) {
-      Error("getContainer()", "Failed to retrieve %s EventInfo from event. Exiting.", name.c_str());
-      RCU_THROW_MSG("Failure");
-    }
-
-    return eventInfo;
-  }
+  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return isAvailable<T>(name, event, store, msg()); }
 
   // stolen from here
   // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODEgamma/trunk/xAODEgamma/EgammaTruthxAODHelpers.h#L20

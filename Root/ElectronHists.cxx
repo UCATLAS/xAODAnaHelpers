@@ -20,7 +20,7 @@ StatusCode ElectronHists::initialize() {
   if( m_infoSwitch->m_isolation ) {
     if(m_debug) Info("ElectronHists::initialize()", "adding isolation plots");
 
-    
+
     m_isIsolated_LooseTrackOnly           = book(m_name, "isIsolated_LooseTrackOnly"       ,   "isIsolated_LooseTrackOnly", 3, -1.5, 1.5);
     m_isIsolated_Loose                    = book(m_name, "isIsolated_Loose"            ,       "isIsolated_Loose", 3, -1.5, 1.5);
     m_isIsolated_Tight                    = book(m_name, "isIsolated_Tight"             ,      "isIsolated_Tight", 3, -1.5, 1.5);
@@ -52,7 +52,7 @@ StatusCode ElectronHists::initialize() {
     m_topoetcone30_rel = book(m_name, "topoetcone30_rel", "topoetcone30_rel", 110, -0.2, 2);
     m_topoetcone40_rel = book(m_name, "topoetcone40_rel", "topoetcone40_rel", 110, -0.2, 2);
   }
- 
+
   // quality
   if(m_infoSwitch->m_quality){
     //m_LHVeryLoose = book(m_name, "LHVeryLoose", "LHVeryLoose", 3, -1.5, 1.5);
@@ -60,7 +60,7 @@ StatusCode ElectronHists::initialize() {
     m_LHMedium    = book(m_name, "LHMedium"   , "LHMedium"   , 3, -1.5, 1.5);
     m_LHTight     = book(m_name, "LHTight"    , "LHTight"    , 3, -1.5, 1.5);
   }
-  
+
   return StatusCode::SUCCESS;
 }
 
@@ -82,7 +82,7 @@ StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventW
 
   // isolation
   if ( m_infoSwitch->m_isolation ) {
-    
+
     static SG::AuxElement::Accessor<char> isIsoLooseTrackOnlyAcc ("isIsolated_LooseTrackOnly");
     static SG::AuxElement::Accessor<char> isIsoLooseAcc ("isIsolated_Loose");
     static SG::AuxElement::Accessor<char> isIsoTightAcc ("isIsolated_Tight");
@@ -114,7 +114,7 @@ StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventW
     m_topoetcone20->Fill( electron->isolation( xAOD::Iso::topoetcone20) / 1e3, eventWeight );
     m_topoetcone30->Fill( electron->isolation( xAOD::Iso::topoetcone30) / 1e3, eventWeight );
     m_topoetcone40->Fill( electron->isolation( xAOD::Iso::topoetcone40) / 1e3, eventWeight );
-    
+
     float electronPt = electron->pt();
     m_ptcone20_rel     ->Fill( electron->isolation( xAOD::Iso::ptcone20 )     / electronPt,  eventWeight );
     m_ptcone30_rel     ->Fill( electron->isolation( xAOD::Iso::ptcone30 )     / electronPt,  eventWeight );
@@ -151,20 +151,20 @@ StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWei
     }
 
   m_isIsolated_LooseTrackOnly           ->Fill( elec->isIsolated_LooseTrackOnly ,  eventWeight );
-  m_isIsolated_Loose                    ->Fill( elec->isIsolated_Loose ,  eventWeight ); 
-  m_isIsolated_Tight                    ->Fill( elec->isIsolated_Tight ,  eventWeight ); 
+  m_isIsolated_Loose                    ->Fill( elec->isIsolated_Loose ,  eventWeight );
+  m_isIsolated_Tight                    ->Fill( elec->isIsolated_Tight ,  eventWeight );
   m_isIsolated_Gradient                 ->Fill( elec->isIsolated_Gradient ,  eventWeight );
   m_isIsolated_GradientLoose            ->Fill( elec->isIsolated_GradientLoose ,  eventWeight );
-  //m_isIsolated_GradientT1               ->Fill( elec->isIsolated_GradientLoose ,  eventWeight ); 
-  //m_isIsolated_GradientT2               ->Fill( elec->isIsoGradientT2Acc ,  eventWeight ); 
-  //m_isIsolated_MU0p06                   ->Fill( elec->isIsoMU0p06Acc ,  eventWeight ); 
-  m_isIsolated_FixedCutLoose            ->Fill( elec->isIsolated_FixedCutLoose ,  eventWeight ); 
-  //m_isIsolated_FixedCutTight            ->Fill( elec->isIsolated_FixedCutTight ,  eventWeight ); 
-  m_isIsolated_FixedCutTightTrackOnly   ->Fill( elec->isIsolated_FixedCutTightTrackOnly ,  eventWeight ); 
-  m_isIsolated_UserDefinedFixEfficiency ->Fill( elec->isIsolated_UserDefinedFixEfficiency ,  eventWeight ); 
-  m_isIsolated_UserDefinedCut           ->Fill( elec->isIsolated_UserDefinedCut ,  eventWeight ); 
+  //m_isIsolated_GradientT1               ->Fill( elec->isIsolated_GradientLoose ,  eventWeight );
+  //m_isIsolated_GradientT2               ->Fill( elec->isIsoGradientT2Acc ,  eventWeight );
+  //m_isIsolated_MU0p06                   ->Fill( elec->isIsoMU0p06Acc ,  eventWeight );
+  m_isIsolated_FixedCutLoose            ->Fill( elec->isIsolated_FixedCutLoose ,  eventWeight );
+  //m_isIsolated_FixedCutTight            ->Fill( elec->isIsolated_FixedCutTight ,  eventWeight );
+  m_isIsolated_FixedCutTightTrackOnly   ->Fill( elec->isIsolated_FixedCutTightTrackOnly ,  eventWeight );
+  m_isIsolated_UserDefinedFixEfficiency ->Fill( elec->isIsolated_UserDefinedFixEfficiency ,  eventWeight );
+  m_isIsolated_UserDefinedCut           ->Fill( elec->isIsolated_UserDefinedCut ,  eventWeight );
 
-  
+
   // isolation
   if ( m_infoSwitch->m_isolation ) {
     m_ptcone20    ->Fill( elec->ptcone20    , eventWeight );
@@ -190,13 +190,13 @@ StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWei
     m_topoetcone40_rel ->Fill( elec->topoetcone40/elecPt    ,  eventWeight );
   }
 
-  
+
   if ( m_infoSwitch->m_quality ) {
 
-    //m_isVeryLoose->Fill( elec->  isVeryLoose,  eventWeight ); 
-    m_LHLoose    ->Fill( elec->  LHLoose    ,  eventWeight ); 
-    m_LHMedium   ->Fill( elec->  LHMedium   ,  eventWeight ); 
-    m_LHTight    ->Fill( elec->  LHTight    ,  eventWeight );  
+    //m_isVeryLoose->Fill( elec->  isVeryLoose,  eventWeight );
+    m_LHLoose    ->Fill( elec->  LHLoose    ,  eventWeight );
+    m_LHMedium   ->Fill( elec->  LHMedium   ,  eventWeight );
+    m_LHTight    ->Fill( elec->  LHTight    ,  eventWeight );
 
   }
 

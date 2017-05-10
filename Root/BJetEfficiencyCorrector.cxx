@@ -30,8 +30,8 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
-    Algorithm(className),
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
+    Algorithm("BJetEfficiencyCorrector"),
     m_BJetSelectTool(nullptr),
     m_BJetEffSFTool(nullptr)
 {
@@ -42,10 +42,9 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
   // read flags set from .config file
-  m_debug                   = false;
   m_inContainerName         = "";
   m_inputAlgo               = "";
   m_systName                = "";      // default: no syst
@@ -123,7 +122,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("BJetEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
@@ -251,16 +250,15 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   //
   // Print out
   //
-  if( !m_systName.empty() && m_debug && m_getScaleFactors ) {
-    std::cout << "-----------------------------------------------------" << std::endl;
+  if( !m_systName.empty() && m_getScaleFactors ) {
+    ATH_MSG_DEBUG("-----------------------------------------------------");
     const std::map<CP::SystematicVariation, std::vector<std::string> > allowed_variations = m_BJetEffSFTool->listSystematics();
-    std::cout << "Allowed systematics variations for tool " << m_BJetEffSFTool->name() << ":" << std::endl;
+    ATH_MSG_DEBUG("Allowed systematics variations for tool " << m_BJetEffSFTool->name() << ":");
     for (auto var : allowed_variations) {
-      std::cout << std::setw(40) << std::left << var.first.name() << ":";
-      for (auto flv : var.second) std::cout << " " << flv;
-      std::cout << std::endl;
+      ATH_MSG_DEBUG(std::setw(40) << std::left << var.first.name() << ":");
+      for (auto flv : var.second) ATH_MSG_DEBUG("\t" << flv);
     }
-    std::cout << "-----------------------------------------------------" << std::endl;
+    ATH_MSG_DEBUG("-----------------------------------------------------");
   }
 
 
@@ -269,9 +267,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     CP::SystematicSet affectSysts = m_BJetEffSFTool->affectingSystematics();
     // Convert into a simple list
     std::vector<CP::SystematicSet> affectSystList = CP::make_systematics_vector(affectSysts);
-    if( !m_systName.empty() && m_debug ) {
+    if( !m_systName.empty() ) {
       for ( const auto& syst_it : affectSystList ){
-        ATH_MSG_INFO(" tool can be affected by systematic: " << syst_it.name());
+        ATH_MSG_DEBUG(" tool can be affected by systematic: " << syst_it.name());
       }
     }
 
@@ -280,10 +278,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     // Convert into a simple list -- nominal is included already here!!
     m_systList = CP::make_systematics_vector(recSysts);
     if( !m_systName.empty() ) {
-      if(m_debug){
-        for ( const auto& syst_it : m_systList ){
-          ATH_MSG_INFO(" available recommended systematic: " << syst_it.name());
-        }
+      for ( const auto& syst_it : m_systList ){
+        ATH_MSG_DEBUG(" available recommended systematic: " << syst_it.name());
       }
     } else { // remove all but the nominal
       std::vector<CP::SystematicSet>::iterator syst_it = m_systList.begin();
@@ -314,14 +310,14 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( "Applying BJet Efficency Corrector... "); }
+  ATH_MSG_DEBUG( "Applying BJet Efficency Corrector... ");
 
   //
   // retrieve event
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
-  if ( m_debug ) ATH_MSG_INFO( "\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
+  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ATH_MSG_DEBUG("\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
 
   //
   //  input jets
@@ -335,7 +331,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) ,"");
 
     executeEfficiencyCorrection( inJets, eventInfo, true);
 
@@ -349,7 +345,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // get vector of string giving the names
     //
     std::vector<std::string>* systNames(nullptr);
-    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_verbose) ,"");
+    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) ,"");
 
     //
     // loop over systematics
@@ -358,7 +354,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
       bool doNominal = (systName == "");
 
-      RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) ,"");
 
       executeEfficiencyCorrection( inJets, eventInfo, doNominal );
 
@@ -366,7 +362,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
   }
 
-  if ( m_debug ) { ATH_MSG_INFO( "Leave Efficency Selection... "); }
+  ATH_MSG_DEBUG( "Leave Efficency Selection... ");
 
   return EL::StatusCode::SUCCESS;
 
@@ -379,7 +375,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 								      const xAOD::EventInfo* eventInfo,
 								      bool doNominal)
 {
-  if(m_debug) ATH_MSG_INFO( "Applying BJet Cuts and Efficiency Correction (when applicable...) ");
+  ATH_MSG_DEBUG("Applying BJet Cuts and Efficiency Correction (when applicable...) ");
 
   //
   // Create Scale Factor aux for all jets
@@ -412,7 +408,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     //
     if ( !doNominal ) {
       if( syst_it.name() != "" ) {
-        if ( m_debug ) ATH_MSG_INFO("Not running B-tag systematics when doing JES systematics");
+        ATH_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
         continue;
       }
     }
@@ -423,7 +419,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     //
     if ( !m_runAllSyst ) {
       if( syst_it.name() != m_systName ) {
-        if ( m_debug ) ATH_MSG_INFO("Not running systematics only apply nominal SF");
+        ATH_MSG_DEBUG("Not running systematics only apply nominal SF");
         continue;
       }
     }
@@ -432,7 +428,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     // Create the name of the weight
     //   template:  SYSNAME
     //
-    if ( m_debug ) ATH_MSG_INFO( "systematic variation name is: " << syst_it.name());
+    ATH_MSG_DEBUG("systematic variation name is: " << syst_it.name());
     sysVariationNames->push_back(syst_it.name());
 
     //
@@ -444,7 +440,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
         ATH_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
         return EL::StatusCode::FAILURE;
       }
-      if(m_debug) ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name());
+      ATH_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
     }
 
     bool tagged(false);
@@ -494,7 +490,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       if(doNominal) SF_GLOBAL *= SF;
 
       /*
-      if( m_getScaleFactors && m_debug){
+      if( m_getScaleFactors){
         //
         // directly obtain reco efficiency
         //
@@ -508,30 +504,26 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       }
       */
 
-      if ( m_debug ) {
-         ATH_MSG_INFO( "===>>>");
-         ATH_MSG_INFO( " ");
-	 ATH_MSG_INFO( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
-	 ATH_MSG_INFO( " ");
-	 ATH_MSG_INFO( "BTag SF decoration: " << m_decorSF );
-	 ATH_MSG_INFO( " ");
-         ATH_MSG_INFO( "Systematic: " << syst_it.name() );
-         ATH_MSG_INFO( " ");
-         ATH_MSG_INFO( "BTag SF:");
-         ATH_MSG_INFO( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
-         ATH_MSG_INFO( "--------------------------------------");
-       }
+       ATH_MSG_DEBUG( "===>>>");
+       ATH_MSG_DEBUG( " ");
+       ATH_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
+       ATH_MSG_DEBUG( " ");
+       ATH_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
+       ATH_MSG_DEBUG( " ");
+       ATH_MSG_DEBUG( "Systematic: " << syst_it.name() );
+       ATH_MSG_DEBUG( " ");
+       ATH_MSG_DEBUG( "BTag SF:");
+       ATH_MSG_DEBUG( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
+       ATH_MSG_DEBUG( "--------------------------------------");
       ++idx;
 
     } // close jet loop
 
     // For *this* systematic, store the global SF weight for the event
-    if ( m_debug ) {
-       ATH_MSG_INFO( "--------------------------------------");
-       ATH_MSG_INFO( "GLOBAL BTag SF for event:");
-       ATH_MSG_INFO( "\t " << SF_GLOBAL );
-       ATH_MSG_INFO( "--------------------------------------");
-    }
+    ATH_MSG_DEBUG( "--------------------------------------");
+    ATH_MSG_DEBUG( "GLOBAL BTag SF for event:");
+    ATH_MSG_DEBUG( "\t " << SF_GLOBAL );
+    ATH_MSG_DEBUG( "--------------------------------------");
 
     //
     //  Add the SF only if doing nominal Jets
@@ -547,10 +539,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   if(doNominal){
     RETURN_CHECK( "BJetEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystName), "Failed to record vector of systematic names.");
 
-    if(m_debug){
-      std::cout << "Size is " << sysVariationNames->size() << std::endl;
-      for(auto sysName : *sysVariationNames) std::cout << sysName << std::endl;
-    }
+    ATH_MSG_DEBUG("Size is " << sysVariationNames->size());
+    for(auto sysName : *sysVariationNames) ATH_MSG_DEBUG(sysName);
   }
 
   return EL::StatusCode::SUCCESS;
@@ -559,7 +549,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
 {
-  if(m_debug) ATH_MSG_INFO( "Calling postExecute");
+  ATH_MSG_DEBUG("Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 

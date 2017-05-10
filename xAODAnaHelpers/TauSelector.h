@@ -41,8 +41,8 @@ public:
   float          m_minPtDAOD;                /* a minimal pT threshold b/c some derivations may apply
                                                 a thinning on tau tracks' features needed by the TauSelectionTool,
 						which would cause a crash at runtime */
-						
-  bool           m_setTauOverlappingEleLLHDecor; 						
+
+  bool           m_setTauOverlappingEleLLHDecor;
 
   std::string    m_passAuxDecorKeys;
   std::string    m_failAuxDecorKeys;
@@ -82,7 +82,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  TauSelector (std::string className = "TauSelector");
+  TauSelector ();
 
   ~TauSelector();
 

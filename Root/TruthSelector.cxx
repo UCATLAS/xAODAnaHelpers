@@ -41,16 +41,14 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TruthSelector)
 
-TruthSelector :: TruthSelector (std::string className) :
-    Algorithm(className),
+TruthSelector :: TruthSelector () :
+    Algorithm("TruthSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_truth_cutflowHist_1(nullptr)
 {
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
-  // read debug flag from .config file
-  m_debug         = false;
   m_useCutFlow    = true;
 
   // input container to be read from TEvent or TStore
@@ -177,11 +175,11 @@ EL::StatusCode TruthSelector :: initialize ()
 
 EL::StatusCode TruthSelector :: execute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Jet Selection... "); }
+  ATH_MSG_DEBUG( "Applying Jet Selection... ");
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -204,12 +202,12 @@ EL::StatusCode TruthSelector :: execute ()
   // then get the one collection and be done with it
 
   // this will be the collection processed - no matter what!!
-  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, msg()) ,"");
 
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
 
   // look what we have in TStore
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
   if ( !pass ) {
     wk()->skipEvent();
@@ -291,7 +289,7 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 
 EL::StatusCode TruthSelector :: postExecute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG( "Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 

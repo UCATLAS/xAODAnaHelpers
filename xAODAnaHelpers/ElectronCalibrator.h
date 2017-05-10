@@ -96,7 +96,7 @@ public:
 
 
   // this is a standard constructor
-  ElectronCalibrator (std::string className = "ElectronCalibrator");
+  ElectronCalibrator ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

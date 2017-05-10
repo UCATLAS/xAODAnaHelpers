@@ -63,15 +63,15 @@ public:
   // systematics
   std::string   m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
   			               // upstream algo (e.g., the SC containers with calibration systematics)
-  
-  std::string   m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers to be fed to 
+
+  std::string   m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers to be fed to
                                        // the downstream algos. We need that as we deepcopy the input containers
 
 
   std::string   m_sysNamesForParCont;  // this is the name of the vector of names for the systematics to be used for the creation of
                                        // a parallel container. This will be just a copy of the nominal one with the sys name appended.
-                                       // Use cases: MET-specific systematics. 
-  
+                                       // Use cases: MET-specific systematics.
+
   float         m_systValReco;
   float         m_systValIso;
   float         m_systValTrig;
@@ -85,7 +85,7 @@ public:
   std::string   m_outputSystNamesTrig;
   std::string   m_outputSystNamesTrigMCEff;
   std::string   m_outputSystNamesTTVA;
-  
+
   bool          m_decorateWithNomOnInputSys; // will consider efficiency decorations only for the nominal run
 
 private:
@@ -111,7 +111,7 @@ private:
   std::string m_recoEffSF_tool_name;                                       //!
   CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool;                          //!
   std::string m_isoEffSF_tool_name;                                        //!
-  std::map<std::string, CP::MuonTriggerScaleFactors*>  m_muTrigSF_tools;   //!   
+  std::map<std::string, CP::MuonTriggerScaleFactors*>  m_muTrigSF_tools;   //!
   std::map<std::string, std::string> m_trigEffSF_tool_names;               //!
   std::vector<std::string> m_YearsList;                                    //!
   CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool;                         //!
@@ -128,7 +128,7 @@ public:
   // TH1 *myHist;  //!
 
   // this is a standard constructor
-  MuonEfficiencyCorrector (std::string className = "MuonEfficiencyCorrector");
+  MuonEfficiencyCorrector ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

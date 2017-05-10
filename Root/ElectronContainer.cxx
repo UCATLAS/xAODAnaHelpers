@@ -53,7 +53,7 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
 
     m_n_LHMedium = 0;
     m_LHMedium = new std::vector<int>   ();
-    
+
     m_n_LHTight = 0;
     m_LHTight = new std::vector<int>   ();
 
@@ -69,17 +69,17 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     m_TrigEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
     m_TrigMCEff  = new std::map< std::string, std::vector< std::vector< float > > >();
     m_IsoEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
-    
+
     m_RecoEff_SF                  = new std::vector< std::vector< float > > ();
     m_PIDEff_SF_LHLooseAndBLayer  = new std::vector< std::vector< float > > ();
     m_PIDEff_SF_LHLoose           = new std::vector< std::vector< float > > ();
     m_PIDEff_SF_LHMedium          = new std::vector< std::vector< float > > ();
     m_PIDEff_SF_LHTight           = new std::vector< std::vector< float > > ();
-    
+
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -117,14 +117,14 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     // default trigger working points if no user input
     if ( !m_infoSwitch.m_trigWPs.size() ) m_infoSwitch.m_trigWPs = {"SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0"};
 
-    for (auto& PID : m_infoSwitch.m_PIDWPs) {
-      for (auto& isol : m_infoSwitch.m_isolWPs) {
-        for (auto& trig : m_infoSwitch.m_trigWPs) {
-          Info("ElectronConainer()", "Used working points: %s_%s_%s", trig.c_str(), PID.c_str(), isol.c_str() );
-        }
-      }
-    }
-  }   
+    //for (auto& PID : m_infoSwitch.m_PIDWPs) {
+    //  for (auto& isol : m_infoSwitch.m_isolWPs) {
+    //    for (auto& trig : m_infoSwitch.m_trigWPs) {
+    //      Info("ElectronConainer()", "Used working points: %s_%s_%s", trig.c_str(), PID.c_str(), isol.c_str() );
+    //    }
+    //  }
+    //}
+  }
 
 
 }
@@ -297,7 +297,7 @@ void ElectronContainer::setTree(TTree *tree)
         }
       }
     }
-    
+
     connectBranch<std::vector<float> >(tree, "RecoEff_SF"  ,                &m_RecoEff_SF  );
     connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHLooseAndBLayer",  &m_PIDEff_SF_LHLooseAndBLayer);
     connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHLoose",           &m_PIDEff_SF_LHLoose);
@@ -334,7 +334,7 @@ void ElectronContainer::setTree(TTree *tree)
 
 void ElectronContainer::updateParticle(uint idx, Electron& elec)
 {
-  ParticleContainer::updateParticle(idx,elec);  
+  ParticleContainer::updateParticle(idx,elec);
 
   if ( m_infoSwitch.m_kinematic ) {
     elec.caloCluster_eta = m_caloCluster_eta -> at(idx);
@@ -346,7 +346,7 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     elec.isTrigMatchedToChain  =     m_isTrigMatchedToChain  ->at(idx);
     elec.listTrigChains        =     m_listTrigChains        ->at(idx);
   }
-    
+
   // isolation
   if ( m_infoSwitch.m_isolation ) {
     elec.isIsolated_LooseTrackOnly                =     m_isIsolated_LooseTrackOnly                  ->at(idx);
@@ -370,18 +370,18 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     elec.topoetcone30                             =     m_topoetcone30                               ->at(idx);
     elec.topoetcone40                             =     m_topoetcone40                               ->at(idx);
   }
-  
+
   // quality
   if ( m_infoSwitch.m_PID ) {
-    elec.LHLoose       = m_LHLoose    ->at(idx);   
-    elec.LHLooseBL     = m_LHLooseBL  ->at(idx);   
-    elec.LHMedium      = m_LHMedium   ->at(idx);   
-    elec.LHTight       = m_LHTight    ->at(idx);   
-    elec.IsEMLoose     = m_IsEMLoose  ->at(idx);   
-    elec.IsEMMedium    = m_IsEMMedium ->at(idx);   
-    elec.IsEMTight     = m_IsEMTight  ->at(idx);   
+    elec.LHLoose       = m_LHLoose    ->at(idx);
+    elec.LHLooseBL     = m_LHLooseBL  ->at(idx);
+    elec.LHMedium      = m_LHMedium   ->at(idx);
+    elec.LHTight       = m_LHTight    ->at(idx);
+    elec.IsEMLoose     = m_IsEMLoose  ->at(idx);
+    elec.IsEMMedium    = m_IsEMMedium ->at(idx);
+    elec.IsEMTight     = m_IsEMTight  ->at(idx);
   }
-  
+
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -506,7 +506,7 @@ void ElectronContainer::setBranches(TTree *tree)
         }
       }
     }
-    
+
     setBranch<vector<float> >(tree, "RecoEff_SF"  ,                m_RecoEff_SF  );
     setBranch<vector<float> >(tree, "PIDEff_SF_LHLooseAndBLayer",  m_PIDEff_SF_LHLooseAndBLayer);
     setBranch<vector<float> >(tree, "PIDEff_SF_LHLoose",           m_PIDEff_SF_LHLoose);
@@ -545,7 +545,7 @@ void ElectronContainer::setBranches(TTree *tree)
 
 void ElectronContainer::clear()
 {
-  
+
   ParticleContainer::clear();
 
   if ( m_infoSwitch.m_kinematic ) {
@@ -591,7 +591,7 @@ void ElectronContainer::clear()
 
     m_n_LHMedium = 0;
     m_LHMedium   -> clear();
-    
+
     m_n_LHTight = 0;
     m_LHTight   -> clear();
 
@@ -607,7 +607,7 @@ void ElectronContainer::clear()
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty())
@@ -624,7 +624,7 @@ void ElectronContainer::clear()
     m_PIDEff_SF_LHLoose           -> clear();
     m_PIDEff_SF_LHMedium          -> clear();
     m_PIDEff_SF_LHTight           -> clear();
-    
+
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -658,7 +658,7 @@ void ElectronContainer::FillElectron( const xAOD::Electron* elec, const xAOD::Ve
   return FillElectron(static_cast<const xAOD::IParticle*>(elec), primaryVertex);
 }
 
-void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAOD::Vertex* primaryVertex ) 
+void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAOD::Vertex* primaryVertex )
 {
 
   ParticleContainer::FillParticle(particle);
@@ -693,7 +693,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     }
 
     m_isTrigMatchedToChain->push_back(matches);
-    
+
     // if at least one match among the chains is found, say this electron is trigger matched
     if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_isTrigMatched->push_back(1); }
     else { m_isTrigMatched->push_back(0); }
@@ -793,7 +793,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
   if ( m_infoSwitch.m_trackparams ) {
     if ( trk ) {
-    
+
       //
       // NB.:
       // All track parameters are calculated at the perigee, i.e., the point of closest approach to the origin of some r.f. (which in RunII is NOT the ATLAS detector r.f!).
@@ -802,15 +802,15 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       // The coordinates of this r.f. wrt. the ATLAS system origin are returned by means of vx(), vy(), vz()
       //
       m_trkd0->push_back( trk->d0() );
-      
+
       static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
       float d0_significance =  ( d0SigAcc.isAvailable( *elec ) ) ? fabs( d0SigAcc( *elec ) ) : -1.0;
       m_trkd0sig->push_back( d0_significance );
       m_trkz0->push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
-      
+
       static SG::AuxElement::Accessor<float> z0sinthetaAcc("z0sintheta");
       float z0sintheta =  ( z0sinthetaAcc.isAvailable( *elec ) ) ? z0sinthetaAcc( *elec ) : -999.0;
-    
+
       m_trkz0sintheta->push_back( z0sintheta );
       m_trkphi0->push_back( trk->phi0() );
       m_trktheta->push_back( trk->theta() );
@@ -818,7 +818,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       m_trkqOverP->push_back( trk->qOverP() );
 
     } else {
-        
+
       m_trkd0->push_back( -999.0 );
       m_trkd0sig->push_back( -1.0 );
       m_trkz0->push_back( -999.0 );
@@ -872,10 +872,10 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
         if(!isol.empty()) {
           std::string IsoSF = "EleEffCorr_IsoSyst_" + PID + "_" + isol;
           accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID+isol , SG::AuxElement::Accessor< std::vector< float > >( IsoSF ) ) );
-          if( (accIsoSF.at( PID+isol )).isAvailable( *elec ) ) { 
-            m_IsoEff_SF->at( PID+isol ).push_back( (accIsoSF.at( PID+isol ))( *elec ) ); 
-          } else { 
-            m_IsoEff_SF->at( PID+isol ).push_back( junkSF ); 
+          if( (accIsoSF.at( PID+isol )).isAvailable( *elec ) ) {
+            m_IsoEff_SF->at( PID+isol ).push_back( (accIsoSF.at( PID+isol ))( *elec ) );
+          } else {
+            m_IsoEff_SF->at( PID+isol ).push_back( junkSF );
           }
         }
 
@@ -883,18 +883,18 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
           std::string TrigSF = "EleEffCorr_TrigSyst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
           accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigSF ) ) );
-          if( (accTrigSF.at( trig+PID+isol )).isAvailable( *elec ) ) { 
-            m_TrigEff_SF->at( trig+PID+isol ).push_back( (accTrigSF.at( trig+PID+isol ))( *elec ) ); 
-          }else { 
-            m_TrigEff_SF->at( trig+PID+isol ).push_back( junkSF ); 
+          if( (accTrigSF.at( trig+PID+isol )).isAvailable( *elec ) ) {
+            m_TrigEff_SF->at( trig+PID+isol ).push_back( (accTrigSF.at( trig+PID+isol ))( *elec ) );
+          }else {
+            m_TrigEff_SF->at( trig+PID+isol ).push_back( junkSF );
           }
 
           std::string TrigEFF = "EleEffCorr_TrigMCEffSyst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
           accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigEFF ) ) );
-          if( (accTrigEFF.at( trig+PID+isol )).isAvailable( *elec ) ) { 
-            m_TrigMCEff->at( trig+PID+isol ).push_back( (accTrigEFF.at( trig+PID+isol ))( *elec ) ); 
-          } else { 
-            m_TrigMCEff->at( trig+PID+isol ).push_back( junkEff ); 
+          if( (accTrigEFF.at( trig+PID+isol )).isAvailable( *elec ) ) {
+            m_TrigMCEff->at( trig+PID+isol ).push_back( (accTrigEFF.at( trig+PID+isol ))( *elec ) );
+          } else {
+            m_TrigMCEff->at( trig+PID+isol ).push_back( junkEff );
           }
 
         }

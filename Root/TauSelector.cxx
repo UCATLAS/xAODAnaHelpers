@@ -37,8 +37,8 @@
 ClassImp(TauSelector)
 
 
-TauSelector :: TauSelector (std::string className) :
-    Algorithm(className),
+TauSelector :: TauSelector () :
+    Algorithm("TauSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_tau_cutflowHist_1(nullptr),
@@ -53,9 +53,8 @@ TauSelector :: TauSelector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_INFO( "Calling constructor");
 
-  m_debug                   = false;
   m_useCutFlow              = true;
 
   // checks if the algorithm has been used already
@@ -268,10 +267,10 @@ EL::StatusCode TauSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Tau Selection..." ); }
+  ATH_MSG_DEBUG( "Applying Tau Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   // MC event weight
   //
@@ -298,7 +297,7 @@ EL::StatusCode TauSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, msg()) ,"");
 
     // create output container (if requested)
     //
@@ -326,22 +325,22 @@ EL::StatusCode TauSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
     //
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-    if ( m_debug ) { ATH_MSG_INFO( " input list of syst size: " << static_cast<int>(systNames->size()) ); }
+    ATH_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
 
     // loop over systematic sets
     //
     bool eventPassThisSyst(false);
     for ( auto systName : *systNames ) {
 
-      if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  input container name: " << m_inContainerName+systName ); }
+      ATH_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, msg()) ,"");
 
       // create output container (if requested) - one for each systematic
       //
@@ -364,7 +363,7 @@ EL::StatusCode TauSelector :: execute ()
       //
       eventPass = ( eventPass || eventPassThisSyst );
 
-      if ( m_debug ) { ATH_MSG_INFO( " syst name: " << systName << "  output container name: " << m_outContainerName+systName ); }
+      ATH_MSG_DEBUG( " syst name: " << systName << "  output container name: " << m_outContainerName+systName );
 
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
@@ -379,7 +378,7 @@ EL::StatusCode TauSelector :: execute ()
 
     } // close loop over syst sets
 
-    if ( m_debug ) {  ATH_MSG_INFO( " output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) ); }
+    ATH_MSG_DEBUG(" output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) );
 
     // record in TStore the list of systematics names that should be considered down stream
     //
@@ -389,7 +388,7 @@ EL::StatusCode TauSelector :: execute ()
 
   // look what we have in TStore
   //
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
   if( !eventPass ) {
     wk()->skipEvent();
@@ -407,7 +406,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
 
-  if ( m_debug ) { ATH_MSG_INFO( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) ); }
+  ATH_MSG_DEBUG( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) );
 
   for ( auto tau_itr : *inTaus ) { // duplicated of basic loop
 
@@ -443,16 +442,16 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
     m_numObjectPass += nPass;
   }
 
-  if ( m_debug ) { ATH_MSG_INFO( "Initial Taus (count obj): " << nObj << " - Selected Taus: " << nPass ); }
+  ATH_MSG_DEBUG( "Initial Taus (count obj): " << nObj << " - Selected Taus: " << nPass );
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   //
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
-    if ( m_debug ) { ATH_MSG_INFO( "Reject event: nSelectedTaus ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" ); }
+    ATH_MSG_DEBUG( "Reject event: nSelectedTaus ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" );
     return false;
   }
   if ( m_pass_max > 0 && nPass > m_pass_max ) {
-    if ( m_debug ) { ATH_MSG_INFO( "Reject event: nSelectedTaus ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" ); }
+    ATH_MSG_DEBUG( "Reject event: nSelectedTaus ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" );
     return false;
   }
 
@@ -473,7 +472,7 @@ EL::StatusCode TauSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -538,14 +537,14 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   //
 
   if ( tau->pt() <= m_minPtDAOD ) {
-    if ( m_debug ) { ATH_MSG_INFO( "Tau failed minimal pT requirement for usage with derivations"); }
+    ATH_MSG_DEBUG( "Tau failed minimal pT requirement for usage with derivations");
     return 0;
   }
 
   if ( m_setTauOverlappingEleLLHDecor ) { m_TOELLHDecorator->decorate( *tau ); }
 
   if ( ! m_TauSelTool->accept( *tau ) ) {
-    if ( m_debug ) { ATH_MSG_INFO( "Tau failed requirements of TauSelectionTool"); }
+    ATH_MSG_DEBUG( "Tau failed requirements of TauSelectionTool");
     return 0;
   }
 

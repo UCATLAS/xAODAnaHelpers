@@ -37,8 +37,8 @@
 ClassImp(JetSelector)
 
 
-JetSelector :: JetSelector (std::string className) :
-    Algorithm(className),
+JetSelector :: JetSelector () :
+    Algorithm("JetSelector"),
     m_cutflowHist(nullptr),
     m_cutflowHistW(nullptr),
     m_jet_cutflowHist_1(nullptr),
@@ -52,10 +52,9 @@ JetSelector :: JetSelector (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  if(m_debug) ATH_MSG_INFO( "Calling constructor");
+  //ATH_MSG_DEBUG( "Calling constructor");
 
   // read debug flag from .config file
-  m_debug         = false;
   m_useCutFlow    = true;
 
   // input container to be read from TEvent or TStore
@@ -152,7 +151,7 @@ EL::StatusCode JetSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  if(m_debug) ATH_MSG_INFO( "Calling setupJob");
+  ATH_MSG_DEBUG( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "JetSelector" ).ignore(); // call before opening first file
@@ -169,7 +168,7 @@ EL::StatusCode JetSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  if(m_debug) ATH_MSG_INFO( "Calling histInitialize");
+  ATH_MSG_DEBUG( "Calling histInitialize");
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
 
   return EL::StatusCode::SUCCESS;
@@ -182,7 +181,7 @@ EL::StatusCode JetSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  if(m_debug) ATH_MSG_INFO( "Calling fileExecute");
+  ATH_MSG_DEBUG( "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -195,7 +194,7 @@ EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  if(m_debug) ATH_MSG_INFO( "Calling changeInput");
+  ATH_MSG_DEBUG( "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -213,13 +212,13 @@ EL::StatusCode JetSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  if ( m_debug ) ATH_MSG_INFO( "Calling initialize");
+  ATH_MSG_DEBUG( "Calling initialize");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetSelector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("JetSelector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   if ( m_useCutFlow ) {
@@ -365,16 +364,14 @@ EL::StatusCode JetSelector :: initialize ()
   //
   m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
 
-  if ( m_debug ) {
-    CP::SystematicSet affectSystsJVT = m_JVT_tool_handle->affectingSystematics();
-    for ( const auto& syst_it : affectSystsJVT ) { ATH_MSG_INFO("JetJvtEfficiency tool can be affected by JVT efficiency systematic: " << syst_it.name()); }
-  }
+  CP::SystematicSet affectSystsJVT = m_JVT_tool_handle->affectingSystematics();
+  for ( const auto& syst_it : affectSystsJVT ) { ATH_MSG_DEBUG("JetJvtEfficiency tool can be affected by JVT efficiency systematic: " << syst_it.name()); }
   //
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
   const CP::SystematicSet recSystsJVT = m_JVT_tool_handle->recommendedSystematics();
-  m_systListJVT = HelperFunctions::getListofSystematics( recSystsJVT, m_systNameJVT, m_systValJVT, m_debug );
+  m_systListJVT = HelperFunctions::getListofSystematics( recSystsJVT, m_systNameJVT, m_systValJVT, msg() );
 
   ATH_MSG_INFO("Will be using JetJvtEfficiency tool JVT efficiency systematic:");
   for ( const auto& syst_it : m_systListJVT ) {
@@ -385,7 +382,7 @@ EL::StatusCode JetSelector :: initialize ()
     ATH_MSG_INFO("\t " << syst_it.name());
   }
 
-  if(m_debug) ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ATH_MSG_DEBUG( "Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -393,7 +390,7 @@ EL::StatusCode JetSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  if(m_debug) ATH_MSG_INFO( "JetSelector Interface succesfully initialized!" );
+  ATH_MSG_DEBUG( "JetSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -407,11 +404,11 @@ EL::StatusCode JetSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Jet Selection... " << m_name); }
+  ATH_MSG_DEBUG( "Applying Jet Selection... " << m_name);
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -433,14 +430,14 @@ EL::StatusCode JetSelector :: execute ()
   const xAOD::JetContainer* inJets(nullptr);
 
   const xAOD::JetContainer *truthJets = nullptr;
-  if ( m_isMC && m_doJVT ) RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, m_verbose) ,"");
+  if ( m_isMC && m_doJVT ) RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) ,"");
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) ,"");
 
     // decorate inJets with truth info
     if ( m_isMC && m_doJVT ) {
@@ -464,14 +461,14 @@ EL::StatusCode JetSelector :: execute ()
 
     // get vector of string giving the names
     std::vector<std::string>* systNames(nullptr);
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_verbose) ,"");
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) ,"");
 
     // loop over systematics
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     bool passOne(false);
     for ( auto systName : *systNames ) {
 
-      RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+      RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) ,"");
 
       // decorate inJets with truth info
       if ( m_isMC && m_doJVT ) {
@@ -506,13 +503,13 @@ EL::StatusCode JetSelector :: execute ()
   }
 
   // look what we have in TStore
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
   if ( !pass ) {
     wk()->skipEvent();
   }
 
-  if ( m_debug ) { ATH_MSG_INFO( "Leave Jet Selection... "); }
+  ATH_MSG_DEBUG( "Leave Jet Selection... ");
 
   return EL::StatusCode::SUCCESS;
 
@@ -524,7 +521,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     std::string outContainerName
     )
 {
-  if ( m_debug ) { ATH_MSG_INFO( "in executeSelection... " << m_name); }
+  ATH_MSG_DEBUG("in executeSelection... " << m_name);
 
   // create output container (if requested)
   ConstDataVector<xAOD::JetContainer>* selectedJets(nullptr);
@@ -535,8 +532,8 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // if doing JVF or JVT get PV location
   if ( m_doJVF ) {
     const xAOD::VertexContainer* vertices(nullptr);
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
-    m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+    m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices, msg() );
   }
 
   //
@@ -597,7 +594,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
         // If any of the N leading jets are not clean the event should be removed
         if( m_markCleanEvent || m_cleanEvent || nObj <= m_cleanEvtLeadJets ){
           passEventClean = false;
-          if (m_debug) ATH_MSG_INFO( "Remove event due to bad jet with pt " << jet_itr->pt() );
+          ATH_MSG_DEBUG("Remove event due to bad jet with pt " << jet_itr->pt() );
         }// if cleaning the event
 
       }// if jet is not clean
@@ -608,7 +605,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
 
     if ( passSel ) {
-      if ( m_debug ) { ATH_MSG_INFO( "passSel"); }
+      ATH_MSG_DEBUG("passSel");
       nPass++;
       if ( m_createSelectedContainer ) {
         selectedJets->push_back( jet_itr );
@@ -637,7 +634,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
            std::string prepend = syst_it.name() + "_";
            sfName.insert( 0, prepend );
         }
-        if ( m_debug ) { ATH_MSG_INFO( "JVT SF sys name (to be recorded in xAOD::TStore) is: " << sfName); }
+        ATH_MSG_DEBUG("JVT SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
         sysVariationNamesJVT->push_back(sfName);
 
         // apply syst
@@ -646,14 +643,14 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           ATH_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
           return EL::StatusCode::FAILURE;
         }
-        if ( m_debug ) { ATH_MSG_INFO( "Successfully applied systematic: " << syst_it.name()); }
+        ATH_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
 
         // and now apply JVT SF!
         //
         unsigned int idx(0);
         for ( auto jet : *(selectedJets) ) {
 
-          if ( m_debug ) { ATH_MSG_INFO( "Applying JVT SF" ); }
+          ATH_MSG_DEBUG("Applying JVT SF" );
 
           // obtain JVT SF as a float (to be stored away separately)
           //
@@ -676,19 +673,17 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           //
           sfVecJVT( *jet ).push_back( jvtSF );
 
-          if ( m_debug ) {
-            ATH_MSG_INFO( "===>>>");
-            ATH_MSG_INFO( " ");
-            ATH_MSG_INFO( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) );
-            ATH_MSG_INFO( " ");
-            ATH_MSG_INFO( "JVT SF decoration: " << m_outputSystNamesJVT );
-            ATH_MSG_INFO( " ");
-            ATH_MSG_INFO( "Systematic: " << syst_it.name() );
-            ATH_MSG_INFO( " ");
-            ATH_MSG_INFO( "JVT SF:");
-            ATH_MSG_INFO( "\t " << jvtSF << " (from getEfficiencyScaleFactor())" );
-            ATH_MSG_INFO( "--------------------------------------");
-          }
+          ATH_MSG_DEBUG( "===>>>");
+          ATH_MSG_DEBUG( " ");
+          ATH_MSG_DEBUG( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) );
+          ATH_MSG_DEBUG( " ");
+          ATH_MSG_DEBUG( "JVT SF decoration: " << m_outputSystNamesJVT );
+          ATH_MSG_DEBUG( " ");
+          ATH_MSG_DEBUG( "Systematic: " << syst_it.name() );
+          ATH_MSG_DEBUG( " ");
+          ATH_MSG_DEBUG( "JVT SF:");
+          ATH_MSG_DEBUG( "\t " << jvtSF << " (from getEfficiencyScaleFactor())" );
+          ATH_MSG_DEBUG( "--------------------------------------");
 
           ++idx;
         }
@@ -718,11 +713,11 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //  Mark Event as pass/fail cleaning for nominal selection
   //
   if ( m_markCleanEvent && count ) {
-    if ( m_debug ) ATH_MSG_INFO("Marking Clean");
+    ATH_MSG_DEBUG("Marking Clean");
     // Decorator
     SG::AuxElement::Decorator< char > isCleanEventDecor( "cleanEvent_"+m_name );
     const xAOD::EventInfo* eventInfo(nullptr);
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
     isCleanEventDecor(*eventInfo) = passEventClean;
   }
@@ -742,7 +737,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_weightNumEventPass += mcEvtWeight;
   }
 
-  if ( m_debug ) { ATH_MSG_INFO( "leave executeSelection... "); }
+  ATH_MSG_DEBUG("leave executeSelection... ");
   return true;
 }
 
@@ -753,7 +748,7 @@ EL::StatusCode JetSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -772,10 +767,10 @@ EL::StatusCode JetSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  if(m_debug) ATH_MSG_INFO( m_name );
+  ATH_MSG_DEBUG( m_name );
 
   if ( m_useCutFlow ) {
-    if(m_debug) ATH_MSG_INFO( "Filling cutflow");
+    ATH_MSG_DEBUG( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
@@ -800,13 +795,13 @@ EL::StatusCode JetSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  if(m_debug) ATH_MSG_INFO( "Calling histFinalize");
+  ATH_MSG_DEBUG( "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
 
 int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
-  if ( m_debug ) { ATH_MSG_INFO( "In pass cuts"); }
+  ATH_MSG_DEBUG("In pass cuts");
 
   // fill cutflow bin 'all' before any cut
   if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_all, 1 );
@@ -857,8 +852,8 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // JVF pileup cut
   if ( m_doJVF ){
-    if ( m_debug ) { ATH_MSG_INFO( "Doing JVF"); }
-    if ( m_debug ) { ATH_MSG_INFO( "Jet Pt " << jet->pt()); }
+    ATH_MSG_DEBUG("Doing JVF");
+    ATH_MSG_DEBUG("Jet Pt " << jet->pt());
     if ( jet->pt() < m_pt_max_JVF ) {
       xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
       if ( fabs(jetScaleP4.eta()) < m_eta_max_JVF ){
@@ -871,15 +866,13 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   if(m_dofJVT){
     if(jet->auxdata<char>("passFJVT")!=1){
-      if(m_debug) {
-	ATH_MSG_INFO("jet pt = "<<jet->pt()<<",eta = "<<jet->eta()<<",phi = "<<jet->phi());
-        ATH_MSG_INFO("Failed forward JVT");
-      }
+      ATH_MSG_DEBUG("jet pt = "<<jet->pt()<<",eta = "<<jet->eta()<<",phi = "<<jet->phi());
+      ATH_MSG_DEBUG("Failed forward JVT");
       if(m_dofJVTVeto)return 0;
     }
-    else if (m_debug && TMath::Abs(jet->eta()>2.5) ) {
-      ATH_MSG_INFO("jet pt = " << jet->pt() << ",eta = "<<jet->eta()<<",phi = "<<jet->phi());
-      ATH_MSG_INFO("Passed forward JVT");
+    else if (TMath::Abs(jet->eta()>2.5) ) {
+      ATH_MSG_DEBUG("jet pt = " << jet->pt() << ",eta = "<<jet->eta()<<",phi = "<<jet->phi());
+      ATH_MSG_DEBUG("Passed forward JVT");
     }
 
   }//do forward JVT
@@ -887,28 +880,25 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   // JVT pileup cut
   //
   if ( m_doJVT ) {
-    if ( m_debug ) { ATH_MSG_INFO( "Checking JVT cut..."); }
-    if ( m_debug ) {
-      if ( m_JVTCut > 0 && jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { ATH_MSG_INFO( " pt/eta = "<<jet->pt()<<"/" << jet->eta() ); }
-    }
+    ATH_MSG_DEBUG("Checking JVT cut...");
+    if ( m_JVTCut > 0 && jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { ATH_MSG_DEBUG( " pt/eta = "<<jet->pt()<<"/" << jet->eta() ); }
 
     // Old usage: check manually whether this jet passes JVT cut
     //
     if ( m_JVTCut > 0 ) {
       if ( jet->pt() < m_pt_max_JVT ) {
-	if ( m_debug ) { ATH_MSG_INFO( "Pass JVT-pT Cut"); }
-	xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
-	if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
-	  if ( m_debug ) ATH_MSG_INFO( " Pass JVT-Eta Cut " );
-
-	  if ( m_debug ) { ATH_MSG_INFO( " JVT = " << jet->getAttribute< float >( "Jvt" ) ); }
+        ATH_MSG_DEBUG("Pass JVT-pT Cut");
+        xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
+        if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
+          ATH_MSG_DEBUG(" Pass JVT-Eta Cut " );
+          ATH_MSG_DEBUG(" JVT = " << jet->getAttribute< float >( "Jvt" ) );
           if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
-	    if ( m_debug ) { ATH_MSG_INFO( " upper JVTCut is " << m_JVTCut << " - cutting this jet!!" ); }
+            ATH_MSG_DEBUG(" upper JVTCut is " << m_JVTCut << " - cutting this jet!!" );
             return 0;
           } else {
-	    if ( m_debug ) { ATH_MSG_INFO( " upper JVTCut is " << m_JVTCut << " - jet passes JVT "); }
-	  }
-	}
+            ATH_MSG_DEBUG(" upper JVTCut is " << m_JVTCut << " - jet passes JVT ");
+          }
+        }
       }
     } else {
       if ( !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
@@ -920,7 +910,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //  BTagging
   //
   if ( m_doBTagCut ) {
-    if ( m_debug ) { ATH_MSG_INFO( "Doing BTagging"); }
+    ATH_MSG_DEBUG("Doing BTagging");
     if ( m_BJetSelectTool->accept( jet ) ) {
       if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );
     } else {
@@ -981,7 +971,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //  Truth Label
   //
   if ( m_truthLabel != -1 ) {
-    if ( m_debug ) { ATH_MSG_INFO( "Doing Truth Label"); }
+    ATH_MSG_DEBUG("Doing Truth Label");
     int this_TruthLabel = 0;
 
     static SG::AuxElement::ConstAccessor<int> HadronConeExclTruthLabelID ("HadronConeExclTruthLabelID");
@@ -1005,7 +995,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   }
 
-  if ( m_debug ) { ATH_MSG_INFO( "Passed Cuts"); }
+  ATH_MSG_DEBUG("Passed Cuts");
   return 1;
 }
 

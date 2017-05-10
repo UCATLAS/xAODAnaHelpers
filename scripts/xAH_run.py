@@ -329,6 +329,8 @@ if __name__ == "__main__":
 
     # load the standard algorithm since pyroot delays quickly
     ROOT.EL.Algorithm()
+    # load this to get ROOT.MSG working: https://its.cern.ch/jira/browse/ATLASG-270
+    ROOT.asg.ToolStore()
 
     # check that we have appropriate drivers
     if args.driver == 'prun':
@@ -506,30 +508,49 @@ if __name__ == "__main__":
 
       # this is where we go over and process all algorithms
       for algorithm_configuration in algorithm_configurations:
-        alg_name = algorithm_configuration['class']
-        xAH_logger.info("creating algorithm %s", alg_name)
-        algorithmConfiguration_string.append("{0} algorithm options".format(alg_name))
+        className = algorithm_configuration['class']
+        xAH_logger.info("creating algorithm %s", className)
+        algorithmConfiguration_string.append("{0} algorithm options".format(className))
 
         # handle namespaces
-        alg = reduce(lambda x,y: getattr(x, y, None), alg_name.split('.'), ROOT)
+        alg = reduce(lambda x,y: getattr(x, y, None), className.split('.'), ROOT)
         if not alg:
-          raise ValueError("Algorithm %s does not exist" % alg_name)
-        alg = alg()
+          raise ValueError("Algorithm %s does not exist" % className)
 
+        algName = algorithm_configuration['configs'].get("m_name", None)
+        if algName is None:
+          raise KeyError("'m_name' is not set for instance of {0:s}".format(className))
+        if not isinstance(algName, str):
+          raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
+
+        if 'm_debug' in algorithm_configuration['configs']:
+          xAH_logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
+
+        debugLevel = algorithm_configuration['configs'].get("m_debugLevel", "info")
+        if not isinstance(debugLevel, str):
+          raise TypeError("'m_debugLevel' must be a string for instance of {0:s}".format(className))
+        if not hasattr(ROOT.MSG, debugLevel.upper()):
+          raise ValueError("'m_debugLevel' must be a valid MSG::level: {0:s}".format(debugLevel))
+        debugLevel = getattr(ROOT.MSG, debugLevel.upper())
+        algorithm_configuration['configs']['m_debugLevel'] = debugLevel
+
+        alg = alg()
+        alg.SetName(algName)
+        alg.msg().setLevel(debugLevel)
         for config_name, config_val in algorithm_configuration['configs'].iteritems():
-          xAH_logger.debug("\t%s", printStr.format(alg_name, config_name, config_val))
-          algorithmConfiguration_string.append(printStr.format(alg_name, config_name, config_val))
+          xAH_logger.debug("\t%s", printStr.format(className, config_name, config_val))
+          algorithmConfiguration_string.append(printStr.format(className, config_name, config_val))
           alg_attr = getattr(alg, config_name, None)
           if alg_attr is None:
-            raise ValueError("Algorithm %s does not have attribute %s" % (alg_name, config_name))
+            raise ValueError("Algorithm %s does not have attribute %s" % (className, config_name))
 
           #handle unicode from json
           if isinstance(config_val, unicode):
-            setattr(alg, config_name, config_val.encode('utf-8'))
-          else:
-            setattr(alg, config_name, config_val)
+            config_val = config_val.encode('utf-8')
 
-        xAH_logger.debug("adding algorithm %s to job", alg_name)
+          setattr(alg, config_name, config_val)
+
+        xAH_logger.debug("adding algorithm %s to job", className)
         algorithmConfiguration_string.append("\n")
         job.algsAdd(alg)
     else:
@@ -563,9 +584,9 @@ if __name__ == "__main__":
           map(job.algsAdd, v._algorithms)
 
           for configLog in v._log:
-            if len(configLog) == 1:  # this is when we have just the algorithm name
-              xAH_logger.info("creating algorithm %s", configLog[0])
-              algorithmConfiguration_string.append("{0} algorithm options".format(*configLog))
+            if len(configLog) == 2:  # this is when we have just the algorithm name
+              xAH_logger.info("creating algorithm %s with name %s", configLog[0], configLog[1])
+              algorithmConfiguration_string.append("{0}: {1} options".format(*configLog))
             elif len(configLog) == 3:
               xAH_logger.debug("\t%s", printStr.format(*configLog))
               algorithmConfiguration_string.append(printStr.format(*configLog))

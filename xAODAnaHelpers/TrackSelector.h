@@ -70,7 +70,7 @@ public:
 
 
   // this is a standard constructor
-  TrackSelector (std::string className = "TrackSelector");
+  TrackSelector ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

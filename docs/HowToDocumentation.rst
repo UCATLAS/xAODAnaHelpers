@@ -153,7 +153,6 @@ which will render as expected if we were writing it inside a standard ``.rst`` f
                     JetHists(std::string name, std::string detailStr);
                     virtual ~JetHists() ;
 
-                    bool m_debug;
                     StatusCode initialize();
                     StatusCode execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc = -1);
                     StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );

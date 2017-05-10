@@ -180,7 +180,7 @@ class HistogramManager {
      */
     TProfile* book(std::string name, std::string title,
 		   std::string xlabel, int xbins, double xlow, double xhigh,
-		   std::string ylabel, double ylow, double yhigh, 
+		   std::string ylabel, double ylow, double yhigh,
 		   std::string option = "");
 
     /**

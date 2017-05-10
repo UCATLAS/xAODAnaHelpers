@@ -69,7 +69,7 @@ public:
     static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
 
     const xAOD::EventInfo* eventInfo(nullptr);
-    RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+    RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
     float eventWeight(1);
     if ( mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
@@ -89,7 +89,7 @@ public:
     // if input comes from xAOD, or just running one collection,
     // then get the one collection and be done with it
     if( m_inputAlgo.empty() ) {
-      RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, m_verbose) ,("Failed to get "+m_inContainerName).c_str());
+      RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) ,("Failed to get "+m_inContainerName).c_str());
 
       // pass the photon collection
       RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[""])->execute( inParticles, eventWeight, eventInfo ), "");
@@ -98,11 +98,11 @@ public:
 
       // get vector of string giving the names
       std::vector<std::string>* systNames(nullptr);
-      RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, m_verbose) ,"");
+      RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) ,"");
 
       // loop over systematics
       for( auto systName : *systNames ) {
-	RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+	RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName+systName, m_event, m_store, msg()) ,"");
 	if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
 	RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight, eventInfo ), "");
       }
@@ -132,7 +132,7 @@ public:
     std::string fullname(m_name);
     fullname += name; // add systematic
     HIST_T* particleHists = new HIST_T( fullname, m_detailStr ); // add systematic
-    particleHists->m_debug = m_debug;
+    particleHists->m_debug = msg().msgLevel(MSG::DEBUG);
     RETURN_CHECK((m_name+"::AddHists").c_str(), particleHists->initialize(), "");
     particleHists->record( wk() );
     m_plots[name] = particleHists;

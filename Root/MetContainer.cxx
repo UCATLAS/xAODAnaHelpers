@@ -12,7 +12,7 @@ MetContainer::MetContainer(const std::string& detailStr, float units)
 
 MetContainer::~MetContainer()
 {
-  if(m_debug) cout << " Deleting MetContainer "  << endl;  
+  if(m_debug) cout << " Deleting MetContainer "  << endl;
 }
 
 void MetContainer::setTree(TTree *tree)
@@ -30,7 +30,7 @@ void MetContainer::setTree(TTree *tree)
   connectBranch<float>(tree, "metFinalTrkPy",        &m_metFinalTrkPy	 );
   connectBranch<float>(tree, "metFinalTrkSumEt",     &m_metFinalTrkSumEt );
   connectBranch<float>(tree, "metFinalTrkPhi",       &m_metFinalTrkPhi   );
-   
+
   if ( m_infoSwitch.m_refEle ) {
     connectBranch<float>(tree, "metEle",             &m_metEle       );
     connectBranch<float>(tree, "metEleSumEt",        &m_metEleSumEt  );
@@ -149,7 +149,7 @@ void MetContainer::setBranches(TTree *tree)
 
   return;
 }
-    
+
 
 void MetContainer::clear()
 {
@@ -191,9 +191,9 @@ void MetContainer::clear()
 }
 
 void MetContainer::FillMET( const xAOD::MissingETContainer* met) {
-  
 
-  if ( m_debug ) { Info("HelpTreeBase::FillMET()", "Filling MET info"); }
+
+  //if ( m_debug ) { Info("HelpTreeBase::FillMET()", "Filling MET info"); }
 
   const xAOD::MissingET* final_clus = *met->find("FinalClus"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based onleares)
   m_metFinalClus      = final_clus->met() / m_units;

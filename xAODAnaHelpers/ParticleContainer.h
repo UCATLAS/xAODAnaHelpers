@@ -19,18 +19,18 @@ namespace xAH {
     class ParticleContainer
     {
     public:
-    ParticleContainer(const std::string& name, 
-		      const std::string& detailStr="", 
-		      float units = 1e3, 
-		      bool mc = false, 
-		      bool useMass=false, 
+    ParticleContainer(const std::string& name,
+		      const std::string& detailStr="",
+		      float units = 1e3,
+		      bool mc = false,
+		      bool useMass=false,
 		      const std::string& suffix="")
-      : m_name(name), 
-	m_infoSwitch(detailStr), 
-	m_mc(mc), 
-	m_debug(false), 
-	m_units(units), 
-	m_useMass(useMass), 
+      : m_name(name),
+	m_infoSwitch(detailStr),
+	m_mc(mc),
+	m_debug(false),
+	m_units(units),
+	m_useMass(useMass),
 	m_suffix(suffix)
       {
 	m_n = 0;
@@ -42,7 +42,7 @@ namespace xAH {
         m_E   =new std::vector<float>();
         m_M   =new std::vector<float>();
       }
-    
+
       virtual ~ParticleContainer()
       {
         // kinematic
@@ -54,7 +54,7 @@ namespace xAH {
 	  delete m_M;
 	}
       }
-    
+
       virtual void setTree(TTree *tree)
       {
 
@@ -85,7 +85,7 @@ namespace xAH {
       {
 
 	std::string              counterName = "n"+m_name;
-	if (!m_suffix.empty()) { counterName += "_" + m_suffix; }	
+	if (!m_suffix.empty()) { counterName += "_" + m_suffix; }
 
 	tree->Branch(counterName.c_str(),    &m_n, (counterName+"/I").c_str());
 
@@ -127,7 +127,7 @@ namespace xAH {
       void updateEntry()
       {
         m_particles.clear();
-    
+
         for(int i=0;i<m_n;i++)
           {
 	    T_PARTICLE particle;
@@ -135,16 +135,16 @@ namespace xAH {
 	    m_particles.push_back(particle);
           }
       }
-    
+
       T_PARTICLE& at_nonConst(uint idx)
 	{ return m_particles[idx]; }
 
       const T_PARTICLE& at(uint idx) const
       { return m_particles[idx]; }
-    
+
       const T_PARTICLE& operator[](uint idx) const
       { return m_particles[idx]; }
-    
+
       uint size() const
       { return m_particles.size(); }
 
@@ -183,10 +183,10 @@ namespace xAH {
 
 	if ( accessor.isAvailable( *xAODObj ) ) {
 	  for(U itemInVec : accessor(*xAODObj))        destination->back().push_back(itemInVec / units);
-	} 
+	}
 	return;
       }
-      
+
       virtual void updateParticle(uint idx, T_PARTICLE& particle)
       {
         if(m_infoSwitch.m_kinematic)
@@ -205,11 +205,11 @@ namespace xAH {
 	    }
 	  }
       }
-    
+
       std::string m_name;
-    
+
       std::vector<T_PARTICLE> m_particles;
-    
+
     public:
       T_INFOSWITCH m_infoSwitch;
       bool m_mc;
@@ -217,15 +217,15 @@ namespace xAH {
       float m_units;
 
       int m_n;
-    
-    
+
+
     private:
       bool        m_useMass;
       std::string m_suffix;
 
       //
       // Vector branches
-    
+
       // kinematic
       std::vector<float> *m_pt;
       std::vector<float> *m_eta;

@@ -37,8 +37,8 @@ using HelperClasses::ToolName;
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonCalibrator)
 
-MuonCalibrator :: MuonCalibrator (std::string className) :
-    Algorithm(className)
+MuonCalibrator :: MuonCalibrator () :
+    Algorithm("MuonCalibrator")
     //m_muonCalibrationAndSmearingTool(nullptr)
 {
   // Here you put any code for the base initialization of variables,
@@ -48,9 +48,7 @@ MuonCalibrator :: MuonCalibrator (std::string className) :
   // initialization code will go into histInitialize() and
   // initialize().
 
-  ATH_MSG_INFO( "Calling constructor");
-
-  m_debug                   = false;
+  //ATH_MSG_INFO( "Calling constructor");
 
   // input container to be read from TEvent or TStore
   //
@@ -159,7 +157,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // Check if is MC
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
 
   // Create a ToolHandle of the PRW tool which is used for the random generation
@@ -244,7 +242,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
-  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
+  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
 
   ATH_MSG_INFO("Will be using MuonCalibrationAndSmearingTool systematic:");
   std::vector< std::string >* SystMuonsNames = new std::vector< std::string >;
@@ -272,7 +270,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Applying Muon Calibration And Smearing ... "); }
+  ATH_MSG_DEBUG( "Applying Muon Calibration And Smearing ... ");
 
   m_numEvent++;
 
@@ -281,7 +279,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_debug) ,"");
+  RETURN_CHECK("MuonCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
   std::string randYear = "Data16";
 
@@ -315,9 +313,9 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   // get the collections from TEvent or TStore
   //
-  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
   const xAOD::MuonContainer* inMuons(nullptr);
-  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MuonCalibrator::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) ,"");
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers
@@ -360,61 +358,61 @@ EL::StatusCode MuonCalibrator :: execute ()
 
       for ( auto muSC_itr : *(calibMuonsSC.first) ) {
 
-	if ( m_debug ) { ATH_MSG_INFO( "  uncailbrated muon " << idx << ", pt = " << muSC_itr->pt()*1e-3 << " GeV"); }
+	ATH_MSG_DEBUG( "  uncailbrated muon " << idx << ", pt = " << muSC_itr->pt()*1e-3 << " GeV");
 	if(muSC_itr-> primaryTrackParticle()){
 	  if ( m_muonCalibrationAndSmearingTools[randYear]->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
 	    ATH_MSG_WARNING( "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
 	  }
 	}
 
-	if ( m_debug ) { ATH_MSG_INFO( "  corrected muon pt = " << muSC_itr->pt()*1e-3 << " GeV"); }
+	ATH_MSG_DEBUG( "  corrected muon pt = " << muSC_itr->pt()*1e-3 << " GeV");
 
 	++idx;
 
       } // close calibration loop
     }
 
-    if ( m_debug ) { ATH_MSG_INFO( "setOriginalObjectLink"); }
+    ATH_MSG_DEBUG( "setOriginalObjectLink");
     if ( !xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first)) ) {
       ATH_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
     // save pointers in ConstDataVector with same order
     //
-    if ( m_debug ) { ATH_MSG_INFO( "makeSubsetCont"); }
-    RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV), "");
-    if ( m_debug ) { ATH_MSG_INFO( "done makeSubsetCont"); }
+    ATH_MSG_DEBUG( "makeSubsetCont");
+    RETURN_CHECK( "MuonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, msg()), "");
+    ATH_MSG_DEBUG( "done makeSubsetCont");
 
     // sort after coping to CDV
     if ( m_sort ) {
-      if ( m_debug ) { ATH_MSG_INFO( "sorting"); }
+      ATH_MSG_DEBUG( "sorting");
       std::sort( calibMuonsCDV->begin(), calibMuonsCDV->end(), HelperFunctions::sort_pt );
     }
 
     // add SC container to TStore
     //
-    if ( m_debug ) { ATH_MSG_INFO( "recording calibMuonsSC"); }
+    ATH_MSG_DEBUG( "recording calibMuonsSC");
     RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.first,  outSCContainerName  ), "Failed to store container.");
     RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsSC.second, outSCAuxContainerName ), "Failed to store aux container.");
 
     //
     // add ConstDataVector to TStore
     //
-    if ( m_debug ) { ATH_MSG_INFO( "record calibMuonsCDV"); }
+    ATH_MSG_DEBUG( "record calibMuonsCDV");
     RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( calibMuonsCDV, outContainerName), "Failed to store const data container.");
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
-  if ( m_debug ) { ATH_MSG_INFO( "record m_outputAlgoSystNames"); }
+  ATH_MSG_DEBUG( "record m_outputAlgoSystNames");
   RETURN_CHECK( "MuonCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
 
   // look what we have in TStore
   //
-  if ( m_verbose ) { m_store->print(); }
+  ATH_EXEC_VERBOSE(m_store->print());
 
-  if ( m_debug ) { ATH_MSG_INFO( "Left "); }
+  ATH_MSG_DEBUG( "Left ");
   return EL::StatusCode::SUCCESS;
 
 }
@@ -425,7 +423,7 @@ EL::StatusCode MuonCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }

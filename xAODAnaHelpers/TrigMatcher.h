@@ -88,7 +88,7 @@ public:
 
   /* this is a standard constructor */
 
-  TrigMatcher (const std::string& className = "TrigMatcher");
+  TrigMatcher ();
 
   ~TrigMatcher();
 

@@ -61,7 +61,6 @@ Next, we should probably add some obvious configurations that work for us. I loo
     [
       { "class": "BasicEventSelection",
         "configs": {
-          "m_debug": false,
           "m_truthLevelOnly": false,
           "m_applyGRLCut": true,
           "m_GRLxml": "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml",
@@ -73,7 +72,6 @@ Next, we should probably add some obvious configurations that work for us. I loo
       {
         "class": "JetPlotsAlgo",
         "configs": {
-          "m_debug": false,
           "m_inContainerName": "AntiKt4LCTopoJets",
           "m_detailStr": "kinematic",
           "m_name": "NoPreSel"
@@ -81,7 +79,7 @@ Next, we should probably add some obvious configurations that work for us. I loo
       }
     ]
 
-and I save this into ``xah_run_example.json``. If you want more variables in your plots, add other possibilities in the detailStr field, separated by a space. 
+and I save this into ``xah_run_example.json``. If you want more variables in your plots, add other possibilities in the detailStr field, separated by a space.
 
 Running the script
 ^^^^^^^^^^^^^^^^^^

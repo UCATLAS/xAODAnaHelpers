@@ -16,15 +16,14 @@ ClassImp(Writer)
 
 
 
-Writer :: Writer (std::string className) :
-    Algorithm(className)
+Writer :: Writer () :
+    Algorithm("Writer")
 {
   m_outputLabel               = "";
 
   m_jetContainerNamesStr      = "";
   m_electronContainerNamesStr = "";
   m_muonContainerNamesStr     = "";
-  m_debug                   = false;
 
 }
 
@@ -134,7 +133,7 @@ EL::StatusCode Writer :: execute ()
 
     const xAOD::JetContainer* inJetsConst(nullptr);
     // look in event
-    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, m_verbose).isSuccess() ) {
+    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, msg()).isSuccess() ) {
       // without modifying the contents of it:
       ATH_MSG_INFO( " Write a collection " << contName.Data() << inJetsConst->size() );
       m_event->copy( contName.Data() );
@@ -144,7 +143,7 @@ EL::StatusCode Writer :: execute ()
 
     // look in store
     xAOD::JetContainer* inJets(nullptr);
-    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, m_verbose).isSuccess() ){
+    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, msg()).isSuccess() ){
 //      // FIXME add something like this
 //      jets_shallowCopy.second->setShallowIO( false ); // true = shallow copy, false = deep copy
 //      // if true should have something like this line somewhere:
@@ -161,7 +160,7 @@ EL::StatusCode Writer :: execute ()
       xAOD::JetAuxContainer* inJetsAux = 0;
       ATH_MSG_INFO( " Wrote a aux store " << contName.Data());
       TString auxName( contName + "Aux." );
-      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, m_verbose).isSuccess() ){
+      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, msg()).isSuccess() ){
         ATH_MSG_ERROR(m_name << ": Could not get Aux data for " << contName.Data());
         return EL::StatusCode::FAILURE;
       }

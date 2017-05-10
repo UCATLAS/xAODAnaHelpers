@@ -12,13 +12,12 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MetHistsAlgo)
 
-MetHistsAlgo :: MetHistsAlgo (std::string className) :
-    Algorithm(className),
+MetHistsAlgo :: MetHistsAlgo () :
+    Algorithm("MetHistsAlgo"),
     m_plots(nullptr)
 {
   m_inContainerName         = "";
   m_detailStr               = "";
-  m_debug                   = false;
 }
 
 EL::StatusCode MetHistsAlgo :: setupJob (EL::Job& job)
@@ -63,7 +62,7 @@ EL::StatusCode MetHistsAlgo :: initialize ()
 EL::StatusCode MetHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
 
   float eventWeight(1);
@@ -72,7 +71,7 @@ EL::StatusCode MetHistsAlgo :: execute ()
   }
 
   const xAOD::MissingETContainer* met(nullptr);
-  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(met, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(met, m_inContainerName, m_event, m_store, msg()) ,"");
 
   RETURN_CHECK("MetHistsAlgo::execute()", m_plots->execute( met, eventWeight ), "");
 

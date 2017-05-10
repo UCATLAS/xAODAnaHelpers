@@ -13,16 +13,15 @@ std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm(std::string className) :
-  m_name(""),
-  m_debug(false),
-  m_verbose(false),
+  m_debugLevel(MSG::INFO),
   m_systName(""),
   m_systVal(0),
   m_eventInfoContainerName("EventInfo"),
   m_isMC(-1),
+  m_className(className),
   m_event(nullptr),
   m_store(nullptr),
-  m_className(className)
+  m_registered(false)
 {
 }
 
@@ -31,26 +30,17 @@ xAH::Algorithm::~Algorithm()
 }
 
 StatusCode xAH::Algorithm::algInitialize(){
+    // register an instance of the the class
     registerInstance();
+    SetName(m_name.c_str());
+    msg().setLevel(m_debugLevel);
+    m_debug = msg().msgLevel(MSG::DEBUG);
     return StatusCode::SUCCESS;
 }
 
 StatusCode xAH::Algorithm::algFinalize(){
     unregisterInstance();
     return StatusCode::SUCCESS;
-}
-
-xAH::Algorithm* xAH::Algorithm::setName(std::string name){
-  m_name = name;
-  // call the TNamed
-  this->SetName(name.c_str());
-  return this;
-}
-
-xAH::Algorithm* xAH::Algorithm::setLevel(int level){
-  m_debug = level & 1;
-  m_verbose = (level >> 1)&1;
-  return this;
 }
 
 StatusCode xAH::Algorithm::parseSystValVector(){
@@ -73,14 +63,14 @@ int xAH::Algorithm::isMC(){
 
   const xAOD::EventInfo* ei(nullptr);
   // couldn't retrieve it
-  if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store).isSuccess()){
-    if(m_debug) ATH_MSG_WARNING( "Could not retrieve eventInfo container: " << m_eventInfoContainerName);
+  if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()).isSuccess()){
+    ATH_MSG_DEBUG( "Could not retrieve eventInfo container: " << m_eventInfoContainerName);
     return -1;
   }
 
   static SG::AuxElement::ConstAccessor<uint32_t> eventType("eventTypeBitmask");
   if(!eventType.isAvailable(*ei)){
-    if(m_debug) ATH_MSG_WARNING( "eventType is not available.");
+    ATH_MSG_DEBUG( "eventType is not available.");
     return -1;
   }
 
@@ -89,12 +79,14 @@ int xAH::Algorithm::isMC(){
 }
 
 void xAH::Algorithm::registerInstance(){
+    if(m_registered) return;
     m_instanceRegistry[m_className]++;
+    m_registered = true;
 }
 
 int xAH::Algorithm::numInstances(){
     if(m_instanceRegistry.find(m_className) == m_instanceRegistry.end()){
-        printf("numInstances: we seem to have recorded zero instances of %s. This should not happen.", m_className.c_str());
+        msg() << MSG::ERROR << "numInstances: we seem to have recorded zero instances of " << m_className << ". This should not happen." << endmsg;
         return 0;
     }
     return m_instanceRegistry.at(m_className);
@@ -102,7 +94,7 @@ int xAH::Algorithm::numInstances(){
 
 void xAH::Algorithm::unregisterInstance(){
     if(m_instanceRegistry.find(m_className) == m_instanceRegistry.end()){
-        printf("unregisterInstance: we seem to have recorded zero instances of %s. This should not happen.", m_className.c_str());
+        msg() << MSG::ERROR << "unregisterInstance: we seem to have recorded zero instances of " << m_className << ". This should not happen." << endmsg;
     }
     m_instanceRegistry[m_className]--;
 }

@@ -38,7 +38,7 @@ class ElectronLHPIDManager
     {
       m_selectedWP = WP;
       m_debug      = debug;
-      
+
       /*  fill the multimap with WPs and corresponding tools */
       std::pair < std::string, AsgElectronLikelihoodTool* > veryloose = std::make_pair( std::string("VeryLoose"), m_asgElectronLikelihoodTool_VeryLoose );
       std::pair < std::string, AsgElectronLikelihoodTool* > loose     = std::make_pair( std::string("Loose"),     m_asgElectronLikelihoodTool_Loose     );
@@ -199,7 +199,7 @@ class ElectronCutBasedPIDManager
 
       HelperClasses::EnumParser<egammaPID::egammaIDQuality> selectedWP_parser;
       unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(m_selectedWP) );
-  
+
       /* By converting the string to the corresponding egammaPID, we can exploit the ordering of the enum itself
       / ( see ElectronPhotonID/ElectronPhotonSelectorTools/trunk/ElectronPhotonSelectorTools/TElectronIsEMSelector.h for definition)
       / to initialise ONLY the tools with WP tighter (or equal) the selected one.
@@ -208,50 +208,50 @@ class ElectronCutBasedPIDManager
       / egammaPID enums :http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Reconstruction/egamma/egammaEvent/egammaEvent/egammaPIDdefs.h
       */
       if ( configTools ) {
-  
+
         for ( auto it : (m_allWPTools) ) {
-  
+
           const std::string WP            = it.first;
           /* instantiate tools (do it for all) */
           std::string tool_name = WP + selector_name;
           it.second =  new AsgElectronIsEMSelector( tool_name.c_str() );
-  
+
           HelperClasses::EnumParser<egammaPID::egammaIDQuality>  itWP_parser;
           unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(WP) );
-  
+
           /* if this WP is looser than user's WP, skip to next */
           if ( itWP_enum < selectedWP_enum ) { continue; }
-  
+
           /* configure and initialise only tools with (WP >= selectedWP) */
-  
+
           it.second->msg().setLevel( MSG::INFO); /* ERROR, VERBOSE, DEBUG, INFO */
-  
+
           RETURN_CHECK( "ParticlePIDManager::setupWPs()", it.second->setProperty("WorkingPoint", WP+"Electron" ), ("Failed to set working point "+WP+"Electron").c_str() );
-  
+
           RETURN_CHECK( "ParticlePIDManager::setupWPs()", it.second->initialize(), "Failed to initialize tool." );
-  
+
           /* copy map element into container of valid tools for later usage */
           m_validWPTools.insert( it );
-  
+
         }
-  
+
       } else {
-  
+
         for ( auto it : (m_allWPAuxDecors) ) {
-  
+
           HelperClasses::EnumParser<egammaPID::egammaIDQuality>  itWP_parser;
           unsigned int itWP_enum = static_cast<unsigned int>( itWP_parser.parseEnum(it) );
-  
+
           /* if this WP is looser than user's WP, skip to next */
           if ( itWP_enum < selectedWP_enum ) { continue; }
-  
+
           /* copy map element into container of valid WPs for later usage */
           m_validWPs.insert( it );
-  
+
         }
-  
+
       }
-  
+
       return StatusCode::SUCCESS;
     };
 

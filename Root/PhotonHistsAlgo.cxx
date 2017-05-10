@@ -12,8 +12,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(PhotonHistsAlgo)
 
-PhotonHistsAlgo :: PhotonHistsAlgo (std::string className) :
-IParticleHistsAlgo(className)
+PhotonHistsAlgo :: PhotonHistsAlgo () :
+IParticleHistsAlgo("PhotonHistsAlgo")
 { }
 
 EL::StatusCode PhotonHistsAlgo :: setupJob (EL::Job& job)

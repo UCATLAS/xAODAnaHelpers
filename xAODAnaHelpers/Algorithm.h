@@ -20,6 +20,19 @@
 #include <AsgTools/MsgStream.h>
 #include <AsgTools/MsgStreamMacros.h>
 
+/// Macro used to execute "protected" code
+#define ATH_EXEC_LVL( lvl, expr )               \
+   do {                                         \
+      if( msg().msgLevel( lvl ) ) {             \
+         expr;                                  \
+      }                                         \
+   } while( 0 )
+
+/// Macro executing verbose expressions
+#define ATH_EXEC_VERBOSE( expr )  ATH_EXEC_LVL( MSG::VERBOSE, expr )
+/// Macro executing debug expressions
+#define ATH_EXEC_DEBUG( expr )    ATH_EXEC_LVL( MSG::DEBUG, expr )
+
 namespace xAH {
 
     /**
@@ -51,7 +64,7 @@ namespace xAH {
                     // ...
                 }
 
-            which this class will automatically register all instances of for you. Each instance can have a different name :cpp:member:`~xAH::Algorithm::m_name` but will have the same :cpp:member:`~xAH::Algorithm::m_className` so we can track how many references have been made. This is useful for selectors to deal with cutflows, but can be useful for other algorithms that need to know how many times they've been instantiated in a single job.
+            which this class will automatically register all instances of for you. Each instance can have a different algorithm name but will have the same :cpp:member:`~xAH::Algorithm::m_className` so we can track how many references have been made. This is useful for selectors to deal with cutflows, but can be useful for other algorithms that need to know how many times they've been instantiated in a single job.
 
         @endrst
 
@@ -79,36 +92,17 @@ namespace xAH {
         StatusCode algFinalize();
 
         /**
-            @brief Set the name of this particular instance to something unique (used for ROOT's TObject name primarily)
-            @param name         The name of the instance
-         */
-        Algorithm* setName(std::string name);
+            @brief All algorithms initialized should have a unique name, to differentiate them at the TObject level.
 
-        /**
-            @rst
-                Set the level of verbosity in algorithms.
-
-                ===== ====== ===== =======
-                Value Binary Debug Verbose
-                ===== ====== ===== =======
-                0     00
-                1     01     x
-                2     10           x
-                3     11     x     x
-                ===== ====== ===== =======
-
-            @endrst
-         */
-        Algorithm* setLevel(int level);
-
-
-        /** All algorithms initialized should have a unique name, to differentiate them at the TObject level */
+            Note, :code:`GetName()` returns a :code:`char*` while this returns a :code:`std::string`.
+        */
         std::string m_name;
 
-        /** Enable debug output */
-        bool m_debug,
-        /** Enable verbose output */
-             m_verbose;
+        /** m_debug is being deprecated */
+        bool m_debug = false;
+
+        /** debug level */
+        MSG::Level m_debugLevel;
 
         /** If running systematics, the name of the systematic */
         std::string m_systName;
@@ -149,6 +143,14 @@ namespace xAH {
         int m_isMC;
 
       protected:
+        /**
+            @rst
+                The moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
+
+            @endrst
+         */
+        std::string m_className;
+
         /** The TEvent object */
         xAOD::TEvent* m_event; //!
         /** The TStore object */
@@ -171,14 +173,6 @@ namespace xAH {
             @endrst
          */
         int isMC();
-
-        /**
-            @rst
-                The moniker by which all instances are tracked in :cpp:member:`xAH::Algorithm::m_instanceRegistry`
-
-            @endrst
-         */
-        std::string m_className;
 
         /**
             @rst
@@ -240,9 +234,9 @@ namespace xAH {
 
             @endrst
          */
-	inline bool isToolAlreadyUsed( const std::string& tool_name ) {
-	   return ( m_toolAlreadyUsed.find(tool_name)->second );
-	}
+        inline bool isToolAlreadyUsed( const std::string& tool_name ) {
+           return ( m_toolAlreadyUsed.find(tool_name)->second );
+        }
 
       private:
         /**
@@ -251,17 +245,27 @@ namespace xAH {
 
             @endrst
          */
-	static std::map<std::string, int> m_instanceRegistry;
+        static std::map<std::string, int> m_instanceRegistry;
 
         /**
             @rst
                 Map containing info about whether a CP Tool of a given name has been already used or not by this :cpp:class:`xAH::Algorithm`.
 
-		Its content gets set through :cpp:func:`xAH::Algorithm::checkToolStore`, depending on whether the tool it's created from scratch, or retrieved from :cpp:class:`asg::ToolStore`
+                Its content gets set through :cpp:func:`xAH::Algorithm::checkToolStore`, depending on whether the tool it's created from scratch, or retrieved from :cpp:class:`asg::ToolStore`
 
             @endrst
          */
         std::map<std::string, bool> m_toolAlreadyUsed; //!
+
+        /**
+            @rst
+              A boolean to keep track of whether this instance was registered or not.
+
+              Calling :cpp:func:`xAH::Algorithm::registerInstance` multiple times won't inflate the number of instances of a class made because of me.
+
+            @endrst
+        */
+        bool m_registered; //!
 
   };
 

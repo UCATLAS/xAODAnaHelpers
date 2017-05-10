@@ -43,8 +43,8 @@ using std::vector;
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetRoIBuilder)
 
-HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
-  Algorithm(className),
+HLTJetRoIBuilder :: HLTJetRoIBuilder () :
+  Algorithm("HLTJetRoIBuilder"),
   m_trigItem(""),
   m_trigItemVeto(""),
   m_doHLTBJet(true),
@@ -57,17 +57,12 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (std::string className) :
   m_vtxName("EFHistoPrmVtx"),
   m_onlineBSTool()
 {
-  if(m_debug) ATH_MSG_INFO( "Calling constructor");
-
-  // read debug flag from .config file
-  m_debug                   = false;
-
 }
 
 
 EL::StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
 {
-  if(m_debug) ATH_MSG_INFO( "Calling setupJob");
+  ATH_MSG_DEBUG( "Calling setupJob");
   job.useXAOD ();
   xAOD::Init( "HLTJetRoIBuilder" ).ignore(); // call before opening first file
   return EL::StatusCode::SUCCESS;
@@ -100,7 +95,7 @@ EL::StatusCode HLTJetRoIBuilder :: changeInput (bool /*firstFile*/)
 EL::StatusCode HLTJetRoIBuilder :: initialize ()
 {
 
-  if(m_debug) ATH_MSG_INFO( "Initializing HLTJetRoIBuilder Interface... ");
+  ATH_MSG_DEBUG( "Initializing HLTJetRoIBuilder Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -147,7 +142,7 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
 
 EL::StatusCode HLTJetRoIBuilder :: execute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( "Doing HLT JEt ROI Building... "); }
+  ATH_MSG_DEBUG( "Doing HLT JEt ROI Building... ");
 
   if(m_doHLTBJet){
     return buildHLTBJets();
@@ -157,7 +152,7 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 
 
 
-  if ( m_debug ) { m_store->print(); }
+  ATH_EXEC_DEBUG(m_store->print());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -189,21 +184,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     firstItem = false;
   }
 
-  if(m_debug){
-    cout << m_name << " " << m_trigItem << " matches" << endl;
-    cout << m_trigItemAfterVeto << endl;
-    auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
-    std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
-    for(std::string trig : triggersUsedAfterVeto){
-      cout << " \t " << trig << endl;
-    }
+  ATH_MSG_DEBUG(m_name << " " << m_trigItem << " matches");
+  ATH_MSG_DEBUG(m_trigItemAfterVeto);
+  auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
+  std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
+  for(std::string trig : triggersUsedAfterVeto){
+    ATH_MSG_DEBUG(" \t " << trig);
   }
 
 
   //
   // Create the new container and its auxiliary store.
   //
-  if(m_debug) cout << "Creating the new container " << endl;
+  ATH_MSG_DEBUG("Creating the new container ");
   xAOD::JetContainer*     hltJets    = new xAOD::JetContainer();
   xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
   hltJets->setStore( hltJetsAux ); //< Connect the two
@@ -211,7 +204,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //
   //  For Adding Tracks to the Jet
   //
-  if(m_debug) cout << "Making the decorators " << endl;
+  ATH_MSG_DEBUG("Making the decorators ");
   static xAOD::Jet::Decorator<vector<const xAOD::TrackParticle*> > m_track_decoration      ("HLTBJetTracks");
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration        ("HLTBJetTracks_vtx");
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration_bkg    ("HLTBJetTracks_vtx_bkg");
@@ -226,19 +219,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //
   // get primary vertex
   //
-  if(m_debug) cout << "Getting the PV " << endl;
+  ATH_MSG_DEBUG("Getting the PV ");
   const xAOD::VertexContainer *offline_vertices(nullptr);
   const xAOD::Vertex *offline_pvx(nullptr);
-  if(HelperFunctions::isAvailable<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store, m_verbose)){
-    RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, m_verbose) ,"");
-    offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices);
+  if(HelperFunctions::isAvailable<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store, msg())){
+    RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+    offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices, msg());
   }
 
   //
   // get event info
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
 
 
   //
@@ -249,7 +242,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItemAfterVeto, TrigDefs::Physics );
   Trig::FeatureContainer::combination_const_iterator comb   (fc.getCombinations().begin());
   Trig::FeatureContainer::combination_const_iterator combEnd(fc.getCombinations().end());
-  if(m_debug) cout << m_name << " New Event --------------- " << endl;
+  ATH_MSG_DEBUG( m_name << " New Event --------------- ");
 
   for( ; comb!=combEnd ; ++comb) {
     std::vector< Trig::Feature<xAOD::JetContainer> >            jetCollections  = comb->containerFeature<xAOD::JetContainer>(m_jetName);
@@ -291,23 +284,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
     bool isValid = true;
 
-    if(m_debug) cout << "ncontainers  " << bjetCollections.size() << endl;
+    ATH_MSG_DEBUG("ncontainers  " << bjetCollections.size());
 
     if(jetCollections.size() != bjetCollections.size()){
       cout << "ERROR Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " bjets: "<< bjetCollections.size() << endl;
       isValid = false;
 
-      if(m_debug){
-	auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
-	std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
-	cout << "Passed Triggers " << endl;
-	for(std::string trig : triggersUsedAfterVeto){
-	  auto trigChain = m_trigDecTool->getChainGroup(trig);
-	  if(trigChain->isPassed())
-	    cout << " \t " << trig << endl;
-	}
+      auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
+      std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
+      ATH_MSG_DEBUG("Passed Triggers ");
+      for(std::string trig : triggersUsedAfterVeto){
+        auto trigChain = m_trigDecTool->getChainGroup(trig);
+        if(trigChain->isPassed()) ATH_MSG_DEBUG(" \t " << trig);
       }
-
 
     }
 
@@ -344,11 +333,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     float var_bs_online_vy = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSy);
     float var_bs_online_vz = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSz);
 
-    if(m_debug){
-      cout << " bs_online_vx " << var_bs_online_vx
-	   << " bs_online_vy " << var_bs_online_vy
-	   << " bs_online_vz " << var_bs_online_vz << endl;
-    }
+    ATH_MSG_DEBUG(" bs_online_vx " << var_bs_online_vx << " bs_online_vy " << var_bs_online_vy << " bs_online_vz " << var_bs_online_vz);
 
 
     //cout << " is Valid " << jetCollections.size() << " " << vtxCollections.size() << endl;
@@ -362,7 +347,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       }
 
       if(!passOverlap) continue;
-      if(m_debug) cout << "New Jet: pt: " << hlt_jet->pt() << " eta: " << hlt_jet->eta() << " phi: " << hlt_jet->phi() << endl;
+      ATH_MSG_DEBUG("New Jet: pt: " << hlt_jet->pt() << " eta: " << hlt_jet->eta() << " phi: " << hlt_jet->phi());
 
       const xAOD::BTagging* hlt_btag = getTrigObject<xAOD::BTagging, xAOD::BTaggingContainer>(bjetCollections.at(ifeat));
       if(!hlt_btag) continue;
@@ -387,13 +372,10 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       if(m_readHLTTracks){
 
 	vector<const xAOD::TrackParticle*> matchedTracks;
-	if(m_debug)cout << "Trk Size" << hlt_tracks->size() << endl;
+	ATH_MSG_DEBUG("Trk Size" << hlt_tracks->size());
 
 	for(const xAOD::TrackParticle* thisHLTTrk: *hlt_tracks){
-	  if(m_debug) cout <<  "\tAdding  track "
-			   << thisHLTTrk->pt()   << " "
-			   << thisHLTTrk->eta()  << " "
-			   << thisHLTTrk->phi()  << endl;
+	  ATH_MSG_DEBUG("\tAdding  track " << thisHLTTrk->pt()   << " " << thisHLTTrk->eta()  << " " << thisHLTTrk->phi());
 	  matchedTracks.push_back(thisHLTTrk);
 	}
 
@@ -402,33 +384,23 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	//
 
 	if(hlt_tracks->size()){
-	  if(m_debug) {
-	    cout << "Found a hlt_tracks   "
-		 << hlt_tracks->at(0)->vx() << " "
-		 << hlt_tracks->at(0)->vy() << " "
-		 << hlt_tracks->at(0)->vz() << endl;
-	    cout << "Compares to variable " << " "
-		 << var_bs_online_vx << " "
-		 << var_bs_online_vy << " "
-		 << var_bs_online_vz << endl;
-	  }
+	    ATH_MSG_DEBUG("Found a hlt_tracks   " << hlt_tracks->at(0)->vx() << " " << hlt_tracks->at(0)->vy() << " " << hlt_tracks->at(0)->vz());
+	    ATH_MSG_DEBUG("Compares to variable " << " " << var_bs_online_vx << " " << var_bs_online_vy << " " << var_bs_online_vz);
 	}
 
 	m_bs_online_vx (*newHLTBJet) = var_bs_online_vx;
 	m_bs_online_vy (*newHLTBJet) = var_bs_online_vy;
 	m_bs_online_vz (*newHLTBJet) = var_bs_online_vz;
 
-	if(m_debug) cout <<  "Adding tracks to jet " << endl;
+	ATH_MSG_DEBUG("Adding tracks to jet ");
 	m_track_decoration(*newHLTBJet)         = matchedTracks;
 
 
       }
 
-      if(m_debug){
-	cout << "Doing it for:        " << m_trigItem << endl;
-	cout << "Check for m_jetName: " << m_jetName << endl;
-	cout << "Check for m_vtxName: " << m_vtxName << endl;
-      }
+	ATH_MSG_DEBUG("Doing it for:        " << m_trigItem);
+	ATH_MSG_DEBUG("Check for m_jetName: " << m_jetName);
+	ATH_MSG_DEBUG("Check for m_vtxName: " << m_vtxName);
 
       //
       // Check for dummy verticies
@@ -438,23 +410,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //               1 - EFHisto Found Vertex
       //               2 - No Vertex found
 
-      if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), true)){
+      if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg())){
 
-	if(m_debug){
-	  cout << "HAVE  No Online Vtx!!! m_vtxName is  " << m_vtxName << endl;
-	  for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ){
-	    cout << vtx_itr->vertexType() <<endl;
-	  }
-	}
+	  ATH_MSG_DEBUG("HAVE  No Online Vtx!!! m_vtxName is  " << m_vtxName);
+	  for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ) ATH_MSG_DEBUG(vtx_itr->vertexType());
 
 	//
 	//  Try the HistoPrmVtx
 	//
 	if(backupVtxCollections.size()){
-	  if(m_debug) cout << "Have EFHistoPrmVtx.  " << endl;
+	  ATH_MSG_DEBUG("Have EFHistoPrmVtx.  ");
 	  m_vtx_hadDummyPV  (*newHLTBJet)         = '1';
-	  const xAOD::Vertex *backup_pvx = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr());
-	  if(m_debug) cout << "backup_pvx.  " << backup_pvx << endl;
+	  const xAOD::Vertex *backup_pvx = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());
+	  ATH_MSG_DEBUG("backup_pvx.  " << backup_pvx);
 	  m_vtx_decoration  (*newHLTBJet)         = backup_pvx;
 	  m_vtx_decoration_bkg(*newHLTBJet)       = backup_pvx;
 	}else{
@@ -468,11 +436,11 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
       }else{
 
-	m_vtx_decoration  (*newHLTBJet)         = HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr());
+	m_vtx_decoration  (*newHLTBJet)         = HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg());
 	m_vtx_hadDummyPV  (*newHLTBJet)         = '0';
 
 	if(backupVtxCollections.size()){
-	  m_vtx_decoration_bkg(*newHLTBJet)     = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr());
+	  m_vtx_decoration_bkg(*newHLTBJet)     = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());
 	}else{
 	  m_vtx_decoration_bkg(*newHLTBJet)     = 0;
 	}
@@ -481,7 +449,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
       m_offline_vtx_decoration (*newHLTBJet)  = offline_pvx;
 
-      if(m_debug) cout << "hadDummy and vtxType" << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName << endl;
+      ATH_MSG_DEBUG("hadDummy and vtxType" << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName);
 
       //if(m_vtx_hadDummyPV (*newHLTBJet) != '0' ){
       //   cout << "hadDummy and vtxType and m_outContainerName  " << m_vtx_hadDummyPV (*newHLTBJet) << " "
@@ -489,7 +457,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //}
 
       hltJets->push_back( newHLTBJet );
-      if(m_debug) cout << "pushed back " << endl;
+      ATH_MSG_DEBUG("pushed back ");
 
     }//feature
 
@@ -507,7 +475,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
 EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
 {
-  if(m_debug) cout << "In buildHLTJets  " <<endl;
+  ATH_MSG_DEBUG("In buildHLTJets  ");
   //
   // Create the new container and its auxiliary store.
   //
@@ -518,7 +486,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
   Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItem);
   auto jetFeatureContainers = fc.containerFeature<xAOD::JetContainer>();
 
-  if(m_debug) cout << "ncontainers  " << jetFeatureContainers.size() << endl;
+  ATH_MSG_DEBUG("ncontainers  " << jetFeatureContainers.size());
 
   //DataModel_detail::const_iterator<JetContainer >::reference {aka const xAOD::Jet_v1*}
 
@@ -534,7 +502,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
 
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
   RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected dijetsAux.");
-  if(m_debug) cout << "Left buildHLTJets  " <<endl;
+  ATH_MSG_DEBUG("Left buildHLTJets  ");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -542,7 +510,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
 
 EL::StatusCode HLTJetRoIBuilder :: postExecute ()
 {
-  if ( m_debug ) { ATH_MSG_INFO( "Calling postExecute"); }
+  ATH_MSG_DEBUG( "Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -550,7 +518,7 @@ EL::StatusCode HLTJetRoIBuilder :: postExecute ()
 
 EL::StatusCode HLTJetRoIBuilder :: finalize ()
 {
-  if(m_debug) ATH_MSG_INFO( "Deleting tool instances...");
+  ATH_MSG_DEBUG( "Deleting tool instances...");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -558,7 +526,7 @@ EL::StatusCode HLTJetRoIBuilder :: finalize ()
 
 EL::StatusCode HLTJetRoIBuilder :: histFinalize ()
 {
-  if(m_debug) ATH_MSG_INFO( "Calling histFinalize");
+  ATH_MSG_DEBUG( "Calling histFinalize");
   RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
   return EL::StatusCode::SUCCESS;
 }
