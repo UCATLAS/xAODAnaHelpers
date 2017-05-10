@@ -2,6 +2,10 @@ import ROOT
 # load this for the MSG::level values. See https://its.cern.ch/jira/browse/ATLASG-270
 ROOT.asg.ToolStore()
 
+import logging
+logger = logging.getLogger("xAH_config")
+logger.setLevel(10) # we use info
+
 class xAH_config(object):
   def __init__(self):
     self._algorithms = []
@@ -20,6 +24,9 @@ class xAH_config(object):
       raise KeyError("'m_name' is not set for instance of {0:s}".format(className))
     if not isinstance(algName, str):
       raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
+
+    if 'm_debug' in options:
+      logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
 
     debugLevel = options.get("m_debugLevel", "info")
     if not isinstance(debugLevel, str):

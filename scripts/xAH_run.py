@@ -523,6 +523,9 @@ if __name__ == "__main__":
         if not isinstance(algName, str):
           raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
 
+        if 'm_debug' in algorithm_configuration['configs']:
+          xAH_logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
+
         debugLevel = algorithm_configuration['configs'].get("m_debugLevel", "info")
         if not isinstance(debugLevel, str):
           raise TypeError("'m_debugLevel' must be a string for instance of {0:s}".format(className))

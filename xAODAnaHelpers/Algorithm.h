@@ -98,6 +98,9 @@ namespace xAH {
         */
         std::string m_name;
 
+        /** m_debug is being deprecated */
+        bool m_debug = false;
+
         /** debug level */
         MSG::Level m_debugLevel;
 
