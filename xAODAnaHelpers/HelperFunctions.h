@@ -273,6 +273,8 @@ namespace HelperFunctions {
   /* retrieve() overload for no msgStream object passed in */
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return retrieve<T>(cont, name, event, store, msg()); }
+  template <typename T>
+  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug) { msg() << MSG::WARNING << "retrieve<T>(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882" << endmsg; return retrieve<T>(cont, name, event, store, msg()); }
 
   /*  isAvailable()    return true if an arbitrary object from TStore / TEvent is availible
         - tries to make your life simple by providing a one-stop container check shop for all types
