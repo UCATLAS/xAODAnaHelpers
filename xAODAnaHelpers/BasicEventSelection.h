@@ -109,6 +109,10 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_checkDuplicatesMC;
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr;
 
+    SG::AuxElement::Accessor<unsigned int> m_randomrunnumber;
+    bool m_require2016;
+    bool m_require2015;
+
   private:
 
     GoodRunsListSelectionTool*   m_grl;        //!

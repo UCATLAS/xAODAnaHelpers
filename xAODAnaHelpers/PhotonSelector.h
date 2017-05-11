@@ -49,7 +49,7 @@ private:
   int m_numEvent;           //!
   int m_numObject;          //!
   int m_numEventPass;       //!
-  int m_weightNumEventPass; //!
+  float m_weightNumEventPass; //!
   int m_numObjectPass;      //!
 
   /* event-level cutflow */

@@ -145,10 +145,10 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
-  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
-  // shallow copies are made with this output container name
-  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
-  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
+//x  m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
+//x  // shallow copies are made with this output container name
+//x  m_outSCContainerName      = m_outContainerName + "ShallowCopy";
+//x  m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
   if ( m_inContainerName.empty() ) {
     Error("initialize()", "InputContainer is empty!");
@@ -215,7 +215,6 @@ EL::StatusCode MuonCalibrator :: initialize ()
       if ( !yr.empty() ) { RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ),"Failed to set Year property of MuonCalibrationAndSmearingTool"); }
       if ( yr == "Data16") { 
 
-        
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ),"Failed to set SagittaCorr property of MuonCalibrationAndSmearingTool"); 
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ),"Failed to set doSagittaMCDistortion property of MuonCalibrationAndSmearingTool"); 
         RETURN_CHECK("MuonCalibrator::initialize()", m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ),"Failed to set SagittaRelease property of MuonCalibrationAndSmearingTool"); 
@@ -288,9 +287,11 @@ EL::StatusCode MuonCalibrator :: execute ()
   if ( !m_isMC && m_forceDataCalib ) {
     runNumber = eventInfo->runNumber();
   } else if ( m_isMC ) {
-    runNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, true ); 
+    SG::AuxElement::Accessor<unsigned int> m_randomrunnumber("RandomRunNumber");
+    runNumber = m_randomrunnumber(*eventInfo); 
+    //runNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, true ); 
   } 
-  
+ 
   if (runNumber >= 266904 && runNumber <= 284484 ) { 
     randYear = "Data15";
     if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
@@ -324,19 +325,23 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   for ( const auto& syst_it : m_systList ) {
 
-    std::string outSCContainerName(m_outSCContainerName);
-    std::string outSCAuxContainerName(m_outSCAuxContainerName);
-    std::string outContainerName(m_outContainerName);
+    //xxstd::string outSCContainerName(m_outSCContainerName);
+    //xxstd::string outSCAuxContainerName(m_outSCAuxContainerName);
+    //xxstd::string outContainerName(m_outContainerName);
+    std::string outSCContainerName = m_outContainerName + syst_it.name() + "ShallowCopy";
+    std::string outSCAuxContainerName = m_outContainerName + syst_it.name() + "ShallowCopyAux.";
+    std::string outContainerName = m_outContainerName + syst_it.name();
 
     // always append the name of the variation, including nominal which is an empty string
     //
-    outSCContainerName    += syst_it.name();
-    outSCAuxContainerName += syst_it.name();
-    outContainerName      += syst_it.name();
+//xx    outSCContainerName    += syst_it.name();
+//xx    outSCAuxContainerName += syst_it.name();
+//xx    outContainerName      += syst_it.name();
     vecOutContainerNames->push_back( syst_it.name() );
 
     // apply syst
     //
+    
     if ( m_muonCalibrationAndSmearingTools[randYear]->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       Error("execute()", "Failed to configure MuonCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
       return EL::StatusCode::FAILURE;

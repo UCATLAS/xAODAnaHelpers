@@ -33,6 +33,9 @@
 #include "TObjArray.h"
 #include "TObjString.h"
 
+// For Bad Muon's Amg::
+#include "EventPrimitives/EventPrimitivesHelpers.h"
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
 
@@ -261,7 +264,13 @@ EL::StatusCode MuonSelector :: initialize ()
   Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
 
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
-  m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
+
+  if( m_muonQualityStr.find("HighPt") != std::string::npos ){
+    m_muonQuality = 4;
+  } else {
+    m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
+  }
+  std::cout << "!!!!!!!!!!!!!!!!!!!!!muon quality str is " << m_muonQuality << std::endl;
 
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
@@ -271,6 +280,7 @@ EL::StatusCode MuonSelector :: initialize ()
   muonQualitySet.insert(1);
   muonQualitySet.insert(2);
   muonQualitySet.insert(3);
+  muonQualitySet.insert(4);
   if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
     Error("initialize()", "Unknown muon quality requested: %i!",m_muonQuality);
     return EL::StatusCode::FAILURE;
@@ -327,6 +337,8 @@ EL::StatusCode MuonSelector :: initialize ()
   //RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.makeNew<CP::MuonSelectionTool>(muonSelectionTool_handle_name), "Failed to create handle to CP::MuonSelectionTool");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.make(muonSelectionTool_handle_name), "Failed to create handle to CP::MuonSelectionTool");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ),"Failed to set Failed to set MaxEta property");
+//  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "TrtCutOff", true ),"Failed to set TrtCutOff to true");
+//!!  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MuQuality", 4 ),"Failed to set MuQuality property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ),"Failed to set MuQuality property");
   RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.initialize(), "Failed to properly initialize CP::MuonSelectionTool");
 
@@ -630,6 +642,18 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
         if( m_debug )  Info("executeSelection()", "Rejecting event with bad muon (pt = %f)", mu_itr->pt() ); 
         return false;
       }
+
+ //     //// Jeff's addition
+//      const xAOD::TrackParticle* tp = mu_itr->primaryTrackParticle();
+// std::cout << "pt " << mu_itr->pt() << " Values are " << tp->definingParametersCovMatrix()(14) << std::endl;
+ //     float Rerr = Amg::error(tp->definingParametersCovMatrix(), 4) / fabs(tp->qOverP());
+////      std::cout << "pt " << mu_itr->pt() << " Values are " << Rerr << ", " << Amg::error(tp->definingParametersCovMatrix(), 4) << ", " << fabs(tp->qOverP()) << std::endl;
+ //     if (Rerr > 0.2 ){
+ //       if( m_debug )  Info("executeSelection()", "Crazy rejecting event with bad muon (pt = %f)", mu_itr->pt() );
+ //       return false;
+ //     }
+ //     ///// End Jeff's addition
+
     }
 
     if ( passSel ) {

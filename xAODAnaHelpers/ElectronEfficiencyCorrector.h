@@ -92,11 +92,13 @@ private:
   // protected from being send from the submission node to the worker
   // node (done by the //!)
 
+
 public:
 
   // Tree *myTree; //!
   // TH1 *myHist;  //!
 
+  bool m_useAFII;
 
   // this is a standard constructor
   ElectronEfficiencyCorrector (std::string className = "ElectronEfficiencyCorrector");
@@ -113,7 +115,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst );
+  virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, bool doNominal );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

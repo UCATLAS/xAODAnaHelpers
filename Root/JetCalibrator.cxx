@@ -294,8 +294,10 @@ EL::StatusCode JetCalibrator :: initialize ()
   // Use HelperFunctions::getListofSystematics() for this!
   //
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
-  for(unsigned int i=0; i<m_systList.size(); i++)
+ 
+  for(unsigned int i=0; i<m_systList.size(); i++){
     m_systType.insert(m_systType.begin(), 0); // Push systType nominal for this case
+  }
 
   Info("initialize()","Will be using JetCalibrationTool systematic:");
 

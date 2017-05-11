@@ -50,7 +50,8 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
     m_jet_cutflowHist_1(nullptr),
     m_trk_cutflowHist_1(nullptr),
     m_truth_cutflowHist_1(nullptr),
-    m_duplicatesTree(nullptr)
+    m_duplicatesTree(nullptr),
+    m_randomrunnumber("RandomRunNumber")
 {
   // Here you put any code for the base initialization of variables,
   // e.g. initialize all pointers to 0.  Note that you should only put
@@ -121,6 +122,9 @@ BasicEventSelection :: BasicEventSelection (std::string className) :
   m_storePassL1 = false;
   m_storePassHLT = false;
   m_storeTrigKeys = false;
+
+  m_require2016 = false;
+  m_require2015 = false;
 
   //CP::CorrectionCode::enableFailure();
   //StatusCode::enableFailure();
@@ -660,6 +664,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // code will go.
 
   if( m_debug ) { Info("execute()", "Basic Event Selection"); }
+//  ++m_eventCounter;
 
   // Print every 1000 entries, so we know where we are:
   //
@@ -671,6 +676,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       Info(m_name.c_str(), "End Content");
     }
   }
+
 
   //-----------------------------------------
   // Print triggers used for first entry only
@@ -707,11 +713,30 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   ++m_eventCounter;
 
+
   //------------------
   // Grab event
   //------------------
   const xAOD::EventInfo* eventInfo(nullptr);
   RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+
+
+//  //std::vector<int> evList = { 1060,2197,4117,5947,7455,8028,8656,11769,13170,15606,20519,22395,24111,24818,26324,28879,29537,29820};
+//std::vector<int> evList = { 47,110,247,357,472,568,666,949,1094,1164,1296,1380,1472,1669,1783,1858,1979,91,232,380,586,700,966,1192,1279,1392,1634,1745,1845,1929};
+//  std::vector<long> evList = {2814788687};
+//
+//  bool passEvList = false;
+//  for( int iEv = 0; iEv < evList.size(); ++iEv){
+//    //if( eventInfo->mcEventNumber() == evList.at(iEv) )
+//    if( eventInfo->eventNumber() == evList.at(iEv) )
+//      passEvList = true;
+//  }
+//  if( !passEvList ){
+//    wk()->skipEvent();
+//    return EL::StatusCode::SUCCESS; // go to next event
+//  }
+//  std::cout << "Chose Event " << eventInfo->eventNumber() << std::endl;
+  //std::cout << "Event " << eventInfo->mcEventNumber() << std::endl;
 
   //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the MC event weight
@@ -840,7 +865,6 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_duplicates, mcEvtWeight);
 
   }
-
   //------------------------------------------------------------------------------------------
   // Update Pile-Up Reweighting
   //------------------------------------------------------------------------------------------
@@ -850,6 +874,24 @@ EL::StatusCode BasicEventSelection :: execute ()
                                                  //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                                  //  3.) the random run number ("RandomRunNumber")
                                                  //  4.) the random lumiblock number ("RandomLumiBlockNumber")
+  }
+
+  //-------------------
+  //Decision on 2015 vs 2016
+
+  //std::cout << eventInfo->eventNumber() << " is " << m_randomrunnumber(*eventInfo) << std::endl;
+  if( m_isMC && m_require2016 && m_randomrunnumber.isAvailable(*eventInfo) && m_randomrunnumber(*eventInfo) < 290000 ){
+    wk()->skipEvent();
+    return EL::StatusCode::SUCCESS;
+  }
+  if( m_isMC && m_require2015 && m_randomrunnumber.isAvailable(*eventInfo) && m_randomrunnumber(*eventInfo) >= 290000 ){
+    wk()->skipEvent();
+    return EL::StatusCode::SUCCESS;
+  }
+
+  if( m_isMC && m_randomrunnumber.isAvailable(*eventInfo) && m_randomrunnumber(*eventInfo) == 0 ){
+    wk()->skipEvent();
+    return EL::StatusCode::SUCCESS;
   }
 
 
