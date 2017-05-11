@@ -43,32 +43,32 @@ class JetCalibrator : public xAH::Algorithm
 {
 public:
   /// @brief The name of the input container for this algorithm to read from ``TEvent`` or ``TStore``
-  std::string m_inContainerName;
+  std::string m_inContainerName = "";
   /**
       @brief The name of the nominal output container written by the algorithm to ``TStore``
 
       If the algorithm applies systematic variations, for each shallow copy saved to ``TStore``, the systematic name will be appended to this.
   */
-  std::string m_outContainerName;
+  std::string m_outContainerName = "";
 
   /// @brief set to ``AntiKt4EMTopo`` for ``AntiKt4EMTopoJets``
-  std::string m_jetAlgo;
+  std::string m_jetAlgo = "";
   /// @brief name of vector holding names of jet systematics given by the JetEtmiss Tools
-  std::string m_outputAlgo;
+  std::string m_outputAlgo = "";
   /// @brief config for JetCalibrationTool for Data
-  std::string m_calibConfigData;
+  std::string m_calibConfigData = "JES_MC15Prerecommendation_April2015.config";
   /// @brief config for JetCalibrationTool for Full Sim MC
-  std::string m_calibConfigFullSim;
+  std::string m_calibConfigFullSim = "JES_MC15Prerecommendation_April2015.config";
   /// @brief config for JetCalibrationTool for AFII MC
-  std::string m_calibConfigAFII;
+  std::string m_calibConfigAFII = "JES_Prerecommendation2015_AFII_Apr2015.config";
   /// @brief config files actually passed to JetCalibrationTool chosen from the above depending on what information stored in the input file
-  std::string m_calibConfig;
+  std::string m_calibConfig = "";
   /// @brief List of calibration steps. "Insitu" added automatically if running on data
-  std::string m_calibSequence;
+  std::string m_calibSequence = "JetArea_Residual_Origin_EtaJES_GSC";
   /// @brief config for JES Uncertainty Tool
-  std::string m_JESUncertConfig;
+  std::string m_JESUncertConfig = "";
   /// @brief JetUncertaintiesTool parameter
-  std::string m_JESUncertMCType;
+  std::string m_JESUncertMCType = "MC15";
   /** @rst
     If you do not want to use SampleHandler to mark samples as AFII, this flag can be used to force run the AFII configurations.
 
@@ -81,43 +81,41 @@ public:
       sample->setMetaString("SimulationFlavour", "AFII");
 
   @endrst */
-  bool m_setAFII;
-  bool m_forceInsitu;
-
-  /// @brief whether the jet collection is trigger or not (soon: different calibrations)
-  bool m_isTrigger;
+  bool m_setAFII = false;
+  /// @brief when running data "_Insitu" is appended to this string
+  bool m_forceInsitu = false;
 
   // @brief Config for JER Uncert Tool. If not empty the tool will run
-  std::string m_JERUncertConfig;
+  std::string m_JERUncertConfig = "";
   /// @brief Set systematic mode as Full (true) or Simple (false)
-  bool m_JERFullSys;
+  bool m_JERFullSys = false;
   /// @brief Apply nominal smearing
-  bool m_JERApplyNominal;
+  bool m_JERApplyNominal = false;
 
   /// @brief enable to apply jet cleaning decoration
-  bool m_doCleaning;
+  bool m_doCleaning = true;
   /// @brief Cut Level
-  std::string m_jetCleanCutLevel;
+  std::string m_jetCleanCutLevel = "LooseBad";
   /// @brief Save all cleaning decisions as decorators
-  bool m_saveAllCleanDecisions;
+  bool m_saveAllCleanDecisions = false;
   /// @brief Do Ugly cleaning ( i.e. TileGap 3 )
-  bool m_jetCleanUgly;
+  bool m_jetCleanUgly = false;
   /// @brief Recalculate JVT using the calibrated jet pT
-  bool m_redoJVT;
+  bool m_redoJVT = false;
   /// @brief Sort the processed container elements by transverse momentum
-  bool    m_sort;
+  bool    m_sort = true;
   /// @brief Apply jet cleaning to parent jet
-  bool    m_cleanParent;
-  bool    m_applyFatJetPreSel;
+  bool    m_cleanParent = false;
+  bool    m_applyFatJetPreSel = false;
 
 // systematics
-  /// @brief set to true if systematics asked for and exist
-  bool m_runSysts;
-
   /// @brief jet tile correction
-  bool m_doJetTileCorr;
+  bool m_doJetTileCorr = false;
 
 private:
+  /// @brief set to true if systematics asked for and exist
+  bool m_runSysts = false; //!
+
   int m_numEvent;         //!
   int m_numObject;        //!
 
