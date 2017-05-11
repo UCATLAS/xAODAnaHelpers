@@ -57,58 +57,8 @@ ClassImp(PhotonCalibrator)
 
 
 PhotonCalibrator :: PhotonCalibrator () :
-    Algorithm("PhotonCalibrator"),
-    m_EgammaCalibrationAndSmearingTool(nullptr),
-    m_photonFudgeMCTool(nullptr),
-    m_photonTightIsEMSelector(nullptr),
-    m_photonMediumIsEMSelector(nullptr),
-    m_photonLooseIsEMSelector(nullptr),
-    m_photonTightEffTool(nullptr),
-    m_photonMediumEffTool(nullptr),
-    m_photonLooseEffTool(nullptr)
+    Algorithm("PhotonCalibrator")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  //ATH_MSG_INFO( "Calling constructor");
-
-  // input container to be read from TEvent or TStore
-  //
-  m_inContainerName         = "";
-  m_outContainerName        = "";
-
-  m_sort                    = true;
-  m_isMC                    = false;
-  m_useAFII                 = false;
-
-  m_conEffCalibPath ="PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.con.v00.root";
-  m_uncEffCalibPath ="PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.unc.v00.root";
-
-  m_conEffAFIICalibPath ="PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.con.v01.root";
-  m_uncEffAFIICalibPath ="PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.unc.v01.root";
-
-  m_tightIDConfigPath  = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMTightSelectorCutDefs.conf";
-  m_mediumIDConfigPath = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMMediumSelectorCutDefs.conf";
-  m_looseIDConfigPath  = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMLooseSelectorCutDefs.conf";
-
-  m_toolInitializationAtTheFirstEventDone = false;
-
-  // Systematics stuff
-  //
-  m_inputAlgoSystNames      = "";
-  m_outputAlgoSystNames     = "PhotonCalibrator_Syst";
-  m_systName		    = "";
-  m_systVal 		    = 0.;
-
-  m_esModel                 = "es2016data_mc15c";
-  m_decorrelationModel      = "";
-
-  m_randomRunNumber         = -1;
-
 }
 
 

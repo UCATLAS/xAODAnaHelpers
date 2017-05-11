@@ -19,12 +19,6 @@ ClassImp(Writer)
 Writer :: Writer () :
     Algorithm("Writer")
 {
-  m_outputLabel               = "";
-
-  m_jetContainerNamesStr      = "";
-  m_electronContainerNamesStr = "";
-  m_muonContainerNamesStr     = "";
-
 }
 
 EL::StatusCode Writer :: setupJob (EL::Job& job)

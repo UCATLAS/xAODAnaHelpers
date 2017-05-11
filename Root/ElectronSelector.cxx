@@ -37,97 +37,9 @@ ClassImp(ElectronSelector)
 
 ElectronSelector :: ElectronSelector () :
     Algorithm("ElectronSelector"),
-    m_cutflowHist(nullptr),
-    m_cutflowHistW(nullptr),
-    m_el_cutflowHist_1(nullptr),
-    m_el_cutflowHist_2(nullptr),
     m_isolationSelectionTool_handle("CP::IsolationSelectionTool/ElectronIsoSelToolName", nullptr),
-    m_el_LH_PIDManager(nullptr),
-    m_el_CutBased_PIDManager(nullptr),
-    m_trigDecTool(nullptr),
     m_trigElectronMatchTool_handle("Trig::MatchingTool/TrigElectronMatchingName", nullptr)
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  //ATH_MSG_INFO( "Calling constructor");
-
-  m_useCutFlow              = true;
-
-  // checks if the algorithm has been used already
-  //
-  m_isUsedBefore            = false;
-
-  // input container to be read from TEvent or TStore
-  //
-  m_inContainerName         = "";
-
-  // Systematics stuff
-  //
-  m_inputAlgoSystNames      = "";
-  m_outputAlgoSystNames     = "ElectronSelector_Syst";
-
-
-  // decorate selected objects that pass the cuts
-  //
-  m_decorateSelectedObjects = true;
-  // additional functionality : create output container of selected objects
-  //                            using the SG::VIEW_ELEMENTS option
-  //                            decorating and output container should not be mutually exclusive
-  m_createSelectedContainer = false;
-  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-  m_outContainerName        = "";
-
-  // if only want to look at a subset of object
-  //
-  m_nToProcess              = -1;
-
-  // configurable cuts
-  //
-  m_pass_max                = -1;
-  m_pass_min                = -1;
-  m_pT_max                  = 1e8;
-  m_pT_min                  = 1e8;
-  m_eta_max                 = 1e8;
-  m_vetoCrack               = true;
-  m_d0_max                  = 1e8;
-  m_d0sig_max           = 1e8;
-  m_z0sintheta_max          = 1e8;
-  m_doAuthorCut             = true;
-  m_doOQCut                 = true;
-
-  m_readIDFlagsFromDerivation = false;
-
-  // likelihood-based PID
-  m_doLHPID                 = true;
-  m_doLHPIDcut              = false;
-  m_LHOperatingPoint        = "Loose";
-
-  // cut-based PID
-  m_doCutBasedPID           = false;
-  m_doCutBasedPIDcut        = false;
-  m_CutBasedOperatingPoint  = "Loose";
-
-  // isolation stuff
-  //
-  m_MinIsoWPCut             = "";
-  m_IsoWPList       = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
-  m_CaloIsoEff              = "0.1*x+90";
-  m_TrackIsoEff             = "98";
-  m_CaloBasedIsoType        = "topoetcone20";
-  m_TrackBasedIsoType       = "ptvarcone20";
-
-  // trigger matching stuff
-  //
-  m_singleElTrigChains      = "";
-  m_diElTrigChains          = "";
-  m_minDeltaR               = 0.07; // Recommended threshold for egamma triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
-  m_doTrigMatch             = true;
-
 }
 
 ElectronSelector::~ElectronSelector() {}

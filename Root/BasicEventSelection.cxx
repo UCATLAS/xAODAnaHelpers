@@ -32,98 +32,9 @@ ClassImp(BasicEventSelection)
 
 BasicEventSelection :: BasicEventSelection () :
     Algorithm("BasicEventSelection"),
-    m_grl(nullptr),
     m_pileup_tool_handle("CP::PileupReweightingTool/Pileup"),
-    m_trigConfTool(nullptr),
-    m_trigDecTool(nullptr),
-    m_reweightSherpa22_tool_handle("PMGTools::PMGSherpa22VJetsWeightTool/ReweightSherpa22"),
-    m_histEventCount(nullptr),
-    m_cutflowHist(nullptr),
-    m_cutflowHistW(nullptr),
-    m_el_cutflowHist_1(nullptr),
-    m_el_cutflowHist_2(nullptr),
-    m_mu_cutflowHist_1(nullptr),
-    m_mu_cutflowHist_2(nullptr),
-    m_ph_cutflowHist_1(nullptr),
-    m_tau_cutflowHist_1(nullptr),
-    m_tau_cutflowHist_2(nullptr),
-    m_jet_cutflowHist_1(nullptr),
-    m_trk_cutflowHist_1(nullptr),
-    m_truth_cutflowHist_1(nullptr),
-    m_duplicatesTree(nullptr)
+    m_reweightSherpa22_tool_handle("PMGTools::PMGSherpa22VJetsWeightTool/ReweightSherpa22")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-  //ATH_MSG_INFO( "Calling constructor");
-
-  // basics
-  m_truthLevelOnly = false;
-
-  // override derivation name
-  m_derivationName = "";
-
-  // Metadata
-  m_useMetaData = true;
-
-  // Output Stream Names
-  m_metaDataStreamName   = "metadata";
-  m_cutFlowStreamName    = "cutflow";
-  m_duplicatesStreamName = "duplicates_tree";
-
-  // Check for duplicated events in Data and MC
-  m_checkDuplicatesData = false;
-  m_checkDuplicatesMC	= false;
-
-  // GRL
-  m_applyGRLCut = false;
-  // list of comma-separated grls
-  m_GRLxml = "$ROOTCOREBIN/data/xAODAnaHelpers/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml";
-  //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysis
-  m_GRLExcludeList = "";
-
-  // Clean Powheg huge weight
-  m_cleanPowheg = false;
-
-  // Weight for Sherpa 2.2 samples
-  m_reweightSherpa22 = false;
-
-  // Pileup Reweighting
-  m_doPUreweighting    = false;
-  m_doPUreweightingSys = false;
-  m_lumiCalcFileNames  = "";
-  m_PRWFileNames       = "";
-
-  // Data weight for unprescaling data
-  m_savePrescaleDataWeight  = false;
-
-  // Primary Vertex
-  m_vertexContainerName = "PrimaryVertices";
-  m_applyPrimaryVertexCut = false;
-  // number of tracks to require to count PVs
-  m_PVNTrack = 2; // harmonized cut
-
-  // Event Cleaning
-  m_applyEventCleaningCut = false;
-  m_applyCoreFlagsCut     = false;
-
-  // Print Branch List
-  m_printBranchList       = false;
-
-  // Trigger
-  m_extraTriggerSelection = "";
-  m_triggerSelection = "";
-  m_applyTriggerCut = false;
-  m_storeTrigDecisions = false;
-  m_storePassL1 = false;
-  m_storePassHLT = false;
-  m_storeTrigKeys = false;
-
-  //CP::CorrectionCode::enableFailure();
-  //StatusCode::enableFailure();
 }
 
 
@@ -523,10 +434,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
   if(m_applyGRLCut){
     m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
     std::vector<std::string> vecStringGRL;
-    m_GRLxml = gSystem->ExpandPathName( m_GRLxml.c_str() );
 
     std::string grl;
-    std::istringstream ss(m_GRLxml);
+    std::istringstream ss(PathResolverFindDataFile(m_GRLxml));
     while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
 
     RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty( "GoodRunsListVec", vecStringGRL), "");
