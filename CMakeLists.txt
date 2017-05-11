@@ -91,7 +91,7 @@ atlas_add_library( xAODAnaHelpers
                    TrigDecisionToolLib xAODCutFlow JetMomentToolsLib
                    TriggerMatchingToolLib xAODMetaDataCnv xAODTriggerCnv
                    xAODMetaData JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils
-                   JetTileCorrectionLib PathResolver
+                   JetTileCorrectionLib
 )
 
 # Install files from the package:

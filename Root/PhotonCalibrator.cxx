@@ -46,7 +46,6 @@
 #include "ElectronPhotonSelectorTools/AsgPhotonIsEMSelector.h"
 #include "ElectronPhotonShowerShapeFudgeTool/ElectronPhotonShowerShapeFudgeTool.h"
 #include "PhotonEfficiencyCorrection/AsgPhotonEfficiencyCorrectionTool.h"
-#include "PathResolver/PathResolver.h"
 
 #include <PATCore/PATCoreEnums.h>
 
