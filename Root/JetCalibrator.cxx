@@ -30,6 +30,7 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include "PathResolver/PathResolver.h"
 
 // ROOT includes:
 #include "TSystem.h"
@@ -321,8 +322,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       ATH_MSG_INFO("Initialize JES UNCERT with " << m_JESUncertConfig);
       RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo), "Failed to set JetDefinition");
       RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("MCType",m_JESUncertMCType), "Failed to set MCType");
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("ConfigFile", m_JESUncertConfig), "Failed to set ConfigFile");
-
+      RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("ConfigFile", PathResolverFindCalibFile(m_JESUncertConfig)), "Failed to set ConfigFile");
       RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.retrieve(), "Failed to retrieve JetUncertaintiesTool");
 
 //      m_JetUncertaintiesTool_handle->msg().setLevel( MSG::ERROR ); // VERBOSE, INFO, DEBUG

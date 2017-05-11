@@ -49,6 +49,12 @@ public:
 
 
   /**
+    @brief Do we read in the HLT vertices?
+   */
+  bool        m_readHLTVtx;
+
+
+  /**
     @brief Name of the output container
    */
   std::string m_outContainerName;

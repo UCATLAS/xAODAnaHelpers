@@ -44,12 +44,13 @@ using std::vector;
 ClassImp(HLTJetRoIBuilder)
 
 HLTJetRoIBuilder :: HLTJetRoIBuilder () :
-  Algorithm("HLTJetRoIBuilder"),
+Algorithm("HLTJetRoIBuilder"),
   m_trigItem(""),
   m_trigItemVeto(""),
   m_doHLTBJet(true),
   m_doHLTJet (false),
   m_readHLTTracks(true),
+  m_readHLTVtx(true),
   m_outContainerName(""),
   m_trigDecTool(nullptr),
   m_jetName("EFJet"),
@@ -250,20 +251,24 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  trkCollections;
     if(m_readHLTTracks) trkCollections = comb->containerFeature<xAOD::TrackParticleContainer>(m_trkName);
     //std::vector< Trig::Feature<xAOD::TrackParticleContainer> >  ftfCollections  = comb->containerFeature<xAOD::TrackParticleContainer>("InDetTrigTrackingxAODCnv_Bjet_FTF");
-    std::vector<Trig::Feature<xAOD::VertexContainer> > vtxCollections;
-    std::vector<Trig::Feature<xAOD::VertexContainer> > backupVtxCollections = comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx");
 
-    if(m_vtxName.size()){
-      vtxCollections = comb->containerFeature<xAOD::VertexContainer>(m_vtxName);
-    }else{
-      vtxCollections = comb->containerFeature<xAOD::VertexContainer>();
+    std::vector<Trig::Feature<xAOD::VertexContainer> > vtxCollections;
+    std::vector<Trig::Feature<xAOD::VertexContainer> > backupVtxCollections;
+    if(m_readHLTTracks){
+      backupVtxCollections = comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx");
+
+      if(m_vtxName.size()){
+	vtxCollections = comb->containerFeature<xAOD::VertexContainer>(m_vtxName);
+      }else{
+	vtxCollections = comb->containerFeature<xAOD::VertexContainer>();
+      }
     }
 
-//    cout << " Test Size " << endl;
-//    cout << " \tSplitJet: " << comb->containerFeature<xAOD::JetContainer>("SplitJet").size() << endl;
-//    cout << " \tGSCJet: "   << comb->containerFeature<xAOD::JetContainer>("GSCJet")  .size() << endl;
-//    cout << " \tEFJet:  "   << comb->containerFeature<xAOD::JetContainer>("EFJet")   .size() << endl;
-//
+    //    cout << " Test Size " << endl;
+    //    cout << " \tSplitJet: " << comb->containerFeature<xAOD::JetContainer>("SplitJet").size() << endl;
+    //    cout << " \tGSCJet: "   << comb->containerFeature<xAOD::JetContainer>("GSCJet")  .size() << endl;
+    //    cout << " \tEFJet:  "   << comb->containerFeature<xAOD::JetContainer>("EFJet")   .size() << endl;
+    //
     // FTK Vertex debugging
     //    cout << " Test Size " << endl;
     //    cout << " \tempty: " << comb->containerFeature<xAOD::VertexContainer>().size() << endl;
@@ -311,17 +316,19 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     //  isValid = false;
     //}
 
-    if(vtxCollections.size() < jetCollections.size()){
-      cout << "ERROR Problem in container size: " << m_name
-	   << " jets: "<< jetCollections.size() << " " << m_jetName
-	   << " vtx: "<< vtxCollections.size()  << " " << m_vtxName << endl;
-      for ( unsigned ifeat=0 ; ifeat<vtxCollections.size() ; ifeat++ ) {
-	cout << "Feture: " << ifeat << endl;
-	for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ){
-	  cout << vtx_itr->vertexType() <<endl;
+    if(m_readHLTVtx){
+      if(vtxCollections.size() < jetCollections.size()){
+	cout << "ERROR Problem in container size: " << m_name
+	     << " jets: "<< jetCollections.size() << " " << m_jetName
+	     << " vtx: "<< vtxCollections.size()  << " " << m_vtxName << endl;
+	for ( unsigned ifeat=0 ; ifeat<vtxCollections.size() ; ifeat++ ) {
+	  cout << "Feture: " << ifeat << endl;
+	  for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ){
+	    cout << vtx_itr->vertexType() <<endl;
+	  }
 	}
+	isValid = false;
       }
-      isValid = false;
     }
 
     if(!isValid) continue;
@@ -384,8 +391,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	//
 
 	if(hlt_tracks->size()){
-	    ATH_MSG_DEBUG("Found a hlt_tracks   " << hlt_tracks->at(0)->vx() << " " << hlt_tracks->at(0)->vy() << " " << hlt_tracks->at(0)->vz());
-	    ATH_MSG_DEBUG("Compares to variable " << " " << var_bs_online_vx << " " << var_bs_online_vy << " " << var_bs_online_vz);
+	  ATH_MSG_DEBUG("Found a hlt_tracks   " << hlt_tracks->at(0)->vx() << " " << hlt_tracks->at(0)->vy() << " " << hlt_tracks->at(0)->vz());
+	  ATH_MSG_DEBUG("Compares to variable " << " " << var_bs_online_vx << " " << var_bs_online_vy << " " << var_bs_online_vz);
 	}
 
 	m_bs_online_vx (*newHLTBJet) = var_bs_online_vx;
@@ -398,9 +405,9 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
       }
 
-	ATH_MSG_DEBUG("Doing it for:        " << m_trigItem);
-	ATH_MSG_DEBUG("Check for m_jetName: " << m_jetName);
-	ATH_MSG_DEBUG("Check for m_vtxName: " << m_vtxName);
+      ATH_MSG_DEBUG("Doing it for:        " << m_trigItem);
+      ATH_MSG_DEBUG("Check for m_jetName: " << m_jetName);
+      ATH_MSG_DEBUG("Check for m_vtxName: " << m_vtxName);
 
       //
       // Check for dummy verticies
@@ -409,52 +416,58 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //               0 - IDTrig  Found Vertex
       //               1 - EFHisto Found Vertex
       //               2 - No Vertex found
-
-      if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg())){
-
+      if(m_readHLTVtx){
+	if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg())){
+   
 	  ATH_MSG_DEBUG("HAVE  No Online Vtx!!! m_vtxName is  " << m_vtxName);
 	  for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ) ATH_MSG_DEBUG(vtx_itr->vertexType());
-
-	//
-	//  Try the HistoPrmVtx
-	//
-	if(backupVtxCollections.size()){
-	  ATH_MSG_DEBUG("Have EFHistoPrmVtx.  ");
-	  m_vtx_hadDummyPV  (*newHLTBJet)         = '1';
-	  const xAOD::Vertex *backup_pvx = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());
-	  ATH_MSG_DEBUG("backup_pvx.  " << backup_pvx);
-	  m_vtx_decoration  (*newHLTBJet)         = backup_pvx;
-	  m_vtx_decoration_bkg(*newHLTBJet)       = backup_pvx;
+   
+	  //
+	  //  Try the HistoPrmVtx
+	  //
+	  if(backupVtxCollections.size()){
+	    ATH_MSG_DEBUG("Have EFHistoPrmVtx.  ");
+	    m_vtx_hadDummyPV  (*newHLTBJet)         = '1';
+	    const xAOD::Vertex *backup_pvx = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());
+	    ATH_MSG_DEBUG("backup_pvx.  " << backup_pvx);
+	    m_vtx_decoration  (*newHLTBJet)         = backup_pvx;
+	    m_vtx_decoration_bkg(*newHLTBJet)       = backup_pvx;
+	  }else{
+	    cout << "No EFHistoPrmVtx....  " << endl;
+	    m_vtx_hadDummyPV  (*newHLTBJet)         = '2';
+	    m_vtx_decoration  (*newHLTBJet)         = 0;
+	    m_vtx_decoration_bkg(*newHLTBJet)       = 0;
+	  }
+   
+	  //cout << "hadDummy and vtxType " << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName << endl;
+   
 	}else{
-	  cout << "No EFHistoPrmVtx....  " << endl;
-	  m_vtx_hadDummyPV  (*newHLTBJet)         = '2';
-	  m_vtx_decoration  (*newHLTBJet)         = 0;
-	  m_vtx_decoration_bkg(*newHLTBJet)       = 0;
+   
+	  m_vtx_decoration  (*newHLTBJet)         = HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg());
+	  m_vtx_hadDummyPV  (*newHLTBJet)         = '0';
+   
+	  if(backupVtxCollections.size()){
+	    m_vtx_decoration_bkg(*newHLTBJet)     = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());
+	  }else{
+	    m_vtx_decoration_bkg(*newHLTBJet)     = 0;
+	  }
+   
 	}
+   
+	m_offline_vtx_decoration (*newHLTBJet)  = offline_pvx;
+   
+	ATH_MSG_DEBUG("hadDummy and vtxType" << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName);
+	//if(m_vtx_hadDummyPV (*newHLTBJet) != '0' ){
+	//   cout << "hadDummy and vtxType and m_outContainerName  " << m_vtx_hadDummyPV (*newHLTBJet) << " "
+	//	<< m_vtxName << ' '<< m_outContainerName <<endl;
+	//}
+      } else{ //m_readHLTVtx
 
-	//cout << "hadDummy and vtxType " << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName << endl;
-
-      }else{
-
-	m_vtx_decoration  (*newHLTBJet)         = HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg());
+	m_vtx_decoration  (*newHLTBJet)         = 0;
 	m_vtx_hadDummyPV  (*newHLTBJet)         = '0';
-
-	if(backupVtxCollections.size()){
-	  m_vtx_decoration_bkg(*newHLTBJet)     = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());
-	}else{
-	  m_vtx_decoration_bkg(*newHLTBJet)     = 0;
-	}
-
+	m_vtx_decoration_bkg(*newHLTBJet)       = 0;
+	m_offline_vtx_decoration (*newHLTBJet)  = 0;
       }
-
-      m_offline_vtx_decoration (*newHLTBJet)  = offline_pvx;
-
-      ATH_MSG_DEBUG("hadDummy and vtxType" << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName);
-
-      //if(m_vtx_hadDummyPV (*newHLTBJet) != '0' ){
-      //   cout << "hadDummy and vtxType and m_outContainerName  " << m_vtx_hadDummyPV (*newHLTBJet) << " "
-      //	<< m_vtxName << ' '<< m_outContainerName <<endl;
-      //}
 
       hltJets->push_back( newHLTBJet );
       ATH_MSG_DEBUG("pushed back ");
