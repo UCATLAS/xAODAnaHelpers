@@ -1332,7 +1332,7 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<vector<float> >(tree,"constituentWeights", m_constituentWeights);
     setBranch<vector<float> >(tree,"constituent_pt",     m_constituent_pt    );
     setBranch<vector<float> >(tree,"constituent_eta",    m_constituent_eta   );
-    setBranch<vector<float> >(tree,"constituent_phi",    m_constituent_pt   );
+    setBranch<vector<float> >(tree,"constituent_phi",    m_constituent_phi   );
     setBranch<vector<float> >(tree,"constituent_e",      m_constituent_e     );
   }
 
