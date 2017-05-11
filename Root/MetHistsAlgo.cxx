@@ -13,11 +13,8 @@
 ClassImp(MetHistsAlgo)
 
 MetHistsAlgo :: MetHistsAlgo () :
-    Algorithm("MetHistsAlgo"),
-    m_plots(nullptr)
+    Algorithm("MetHistsAlgo")
 {
-  m_inContainerName         = "";
-  m_detailStr               = "";
 }
 
 EL::StatusCode MetHistsAlgo :: setupJob (EL::Job& job)

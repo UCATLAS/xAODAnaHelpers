@@ -36,81 +36,8 @@ ClassImp(MuonEfficiencyCorrector)
 
 
 MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
-    Algorithm("MuonEfficiencyCorrector"),
-    m_muRecoSF_tool(nullptr),
-    m_muIsoSF_tool(nullptr),
-    m_muTTVASF_tool(nullptr)
-    // trigger SF map is not
-    // initialized in ctor!
+    Algorithm("MuonEfficiencyCorrector")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  //ATH_MSG_INFO( "Calling constructor");
-
-  // Input container to be read from TEvent or TStore
-  //
-  m_inContainerName            = "";
-  m_outContainerName           = "";
-
-  m_calibRelease               = "Data15_allPeriods_241115";
-
-  // Reco efficiency SF
-  //
-  m_WorkingPointReco           = "Loose";
-
-  // Iso efficiency SF
-  //
-  m_WorkingPointIso            = "LooseTrackOnly";
-
-  // Trigger efficiency SF
-  //
-  m_runNumber2015              = 276329;
-  m_runNumber2016              = 300345;
-  m_useRandomRunNumber         = true;
-  m_AllowZeroSF                = false;
-
-
-  m_WorkingPointRecoTrig       = "Loose";
-  m_WorkingPointIsoTrig        = "LooseTrackOnly";
-  // list of comma-separated years
-  m_Years                      = "2016";
-  m_MCCampaign                 = "";
-
-  // list of trigger legs. For di-mu triggers pass individual legs
-  m_MuTrigLegs                 = "HLT_mu26_imedium";
-
-  // TTVA SF
-  //
-  m_WorkingPointTTVA           = "TTVA";
-
-  // Systematics stuff
-  //
-  m_inputAlgoSystNames         = "";
-  m_outputAlgoSystNames        = "";
-
-  m_sysNamesForParCont         = "";
-
-  m_systValReco 	       = 0.0;
-  m_systValIso 	               = 0.0;
-  m_systValTrig 	       = 0.0;
-  m_systValTTVA 	       = 0.0;
-  m_systNameReco	       = "";
-  m_systNameIso	               = "";
-  m_systNameTrig	       = "";
-  m_systNameTTVA	       = "";
-  m_outputSystNamesReco        = "MuonEfficiencyCorrector_RecoSyst";
-  m_outputSystNamesIso         = "MuonEfficiencyCorrector_IsoSyst";
-  m_outputSystNamesTrig        = "MuonEfficiencyCorrector_TrigSyst";
-  m_outputSystNamesTrigMCEff   = "MuonEfficiencyCorrector_TrigMCEff";
-  m_outputSystNamesTTVA        = "MuonEfficiencyCorrector_TTVASyst";
-
-  m_decorateWithNomOnInputSys  = true;
-
 }
 
 

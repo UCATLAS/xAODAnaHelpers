@@ -19,53 +19,8 @@
 ClassImp(TreeAlgo)
 
 TreeAlgo :: TreeAlgo () :
-    Algorithm("TreeAlgo"),
-    m_trees({})
+    Algorithm("TreeAlgo")
 {
-  this->SetName("TreeAlgo"); // needed if you want to retrieve this algo with wk()->getAlg(ALG_NAME) downstream
-
-  m_evtDetailStr                = "";
-  m_trigDetailStr               = "";
-  m_trigJetDetailStr            = "";
-  m_truthJetDetailStr           = "";
-  m_muDetailStr                 = "";
-  m_elDetailStr                 = "";
-  m_jetDetailStr                = "";
-  m_fatJetDetailStr             = "";
-  m_truthFatJetDetailStr        = "";
-  m_tauDetailStr                = "";
-  m_METDetailStr                = "";
-  m_photonDetailStr             = "";
-  m_truthParticlesDetailStr     = "";
-  m_trackParticlesDetailStr     = "";
-
-  m_outHistDir                  = false;
-
-  m_muContainerName             = "";
-  m_elContainerName             = "";
-  m_jetContainerName            = "";
-  m_jetBranchName               = "jet";
-  m_truthJetContainerName       = "";
-  m_truthJetBranchName          = "truthJet";
-  m_fatJetContainerName         = "";
-  m_truthFatJetContainerName    = "";
-  m_tauContainerName            = "";
-  m_METContainerName            = "";
-  m_photonContainerName         = "";
-  m_truthParticlesContainerName = "";
-  m_trackParticlesContainerName = "";
-  m_l1JetContainerName          = "";
-
-  m_muSystsVec                  = "";
-  m_elSystsVec                  = "";
-  m_jetSystsVec                 = "";
-  m_photonSystsVec              = "";
-  m_fatJetSystsVec              = "";
-
-  //Units, defaulting to GeV
-  m_units                       = 1e3;
-
-
 }
 
 EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)

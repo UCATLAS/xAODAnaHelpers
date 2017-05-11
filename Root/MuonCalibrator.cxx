@@ -39,39 +39,7 @@ ClassImp(MuonCalibrator)
 
 MuonCalibrator :: MuonCalibrator () :
     Algorithm("MuonCalibrator")
-    //m_muonCalibrationAndSmearingTool(nullptr)
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  //ATH_MSG_INFO( "Calling constructor");
-
-  // input container to be read from TEvent or TStore
-  //
-  m_inContainerName         = "";
-  m_outContainerName        = "";
-
-  m_release                 = "";
-
-  // list of comma-separated years
-  m_Years                   = "Data16,Data15";
-
-  m_do_sagittaCorr          = true;
-  m_sagittaRelease          = "sagittaBiasDataAll_06_02_17";
-  m_do_sagittaMCDistortion  = false;
-
-  m_sort                    = true;
-
-  // Systematics stuff
-  m_inputAlgoSystNames      = "";
-  m_outputAlgoSystNames     = "MuonCalibrator_Syst";
-  m_systName		    = "";
-  m_systVal 		    = 0.;
-  m_forceDataCalib          = false;
 }
 
 EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)

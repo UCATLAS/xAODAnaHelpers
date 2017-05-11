@@ -40,7 +40,6 @@ ClassImp(JetCalibrator)
 
 JetCalibrator :: JetCalibrator () :
     Algorithm("JetCalibrator"),
-    m_runSysts(false),          // gets set later is syst applies to this tool
     m_JetCalibrationTool_handle("JetCalibrationTool/JetCalibrationTool_"+m_name),
     m_JetUncertaintiesTool_handle("JetUncertaintiesTool/JetUncertaintiesTool_"+m_name),
     m_JERTool_handle("JERTool/JERTool_"+m_name),
@@ -49,59 +48,6 @@ JetCalibrator :: JetCalibrator () :
     m_JetCleaningTool_handle("JetCleaningTool/JetCleaningTool_"+m_name),
     m_JetTileCorrectionTool_handle("JetTileCorrectionTool/JetTileCorrectionTool_"+m_name)
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  //ATH_MSG_INFO( "Calling constructor");
-
-
-  m_sort                    = true;
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = "";
-  // shallow copies are made with this output container name
-  m_outContainerName        = "";
-
-  // CONFIG parameters for JetCalibrationTool
-  m_jetAlgo                 = "";
-  m_outputAlgo              = "";
-  m_calibSequence           = "JetArea_Residual_Origin_EtaJES_GSC";
-  m_calibConfigFullSim      = "JES_MC15Prerecommendation_April2015.config";
-  m_calibConfigAFII         = "JES_Prerecommendation2015_AFII_Apr2015.config";
-  m_calibConfigData         = "JES_MC15Prerecommendation_April2015.config";
-  m_calibConfig             = "";
-  m_forceInsitu             = true; // when running data "_Insitu" is appended to this string
-
-  // CONFIG parameters for JetUncertaintiesTool
-  m_JESUncertConfig         = "";
-  m_JESUncertMCType         = "MC15";
-  m_setAFII                 = false;
-
-  // CONFIG parameters for JERSmearingTool
-  m_JERUncertConfig         = "";
-  m_JERFullSys              = false;
-  m_JERApplyNominal         = false;
-
-  m_doCleaning              = true;
-  // CONFIG parameters for JetCleaningTool
-  m_jetCleanCutLevel        = "LooseBad";
-  m_saveAllCleanDecisions   = false;
-  m_jetCleanUgly            = false;
-  m_cleanParent             = false;
-  m_applyFatJetPreSel       = false;
-
-  //recalculate JVT using calibrated jets
-  m_redoJVT                 = false;
-
-  // Initialize systematics variables
-  m_systName                = "";
-  m_systVal                 = 1.;
-
-  // apply jet tile correction
-  m_doJetTileCorr           = false;
 }
 
 EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
