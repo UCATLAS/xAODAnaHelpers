@@ -66,21 +66,21 @@ public:
   /* configuration variables */
 
   /** @brief Input container name */
-  std::string    m_inContainerName;
+  std::string    m_inContainerName = "";
   /** @brief Input systematics list container name */
-  std::string    m_systNames;
+  std::string    m_systNames = "";
 
   /** @brief Comma-separated list of trigger chains
       @rst
         A comma-separated string w/ all the HLT trigger chains for which you want to perform the matching. If left empty (as it is by default), no trigger matching will be attempted at all
       @endrst
   */
-  std::string    m_trigChains;
+  std::string    m_trigChains = "";
 
 private:
 
   /* tools */
-  Trig::MatchingTool* m_trigMatchTool; //!
+  Trig::MatchingTool* m_trigMatchTool = nullptr; //!
 
   std::vector<std::string> m_trigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_trigChains */
 

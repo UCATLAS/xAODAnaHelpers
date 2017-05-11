@@ -55,21 +55,21 @@ class BasicEventSelection : public xAH::Algorithm
 {
   public:
     /// @brief Protection when running on truth xAOD
-    bool m_truthLevelOnly;
+    bool m_truthLevelOnly = false;
 
   // GRL
     /// @brief Apply GRL selection
-    bool m_applyGRLCut;
+    bool m_applyGRLCut = false;
     /// @brief Path to GRL XML file
-    std::string m_GRLxml;
+    std::string m_GRLxml = "xAODAnaHelpers/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml";
     /// @brief Run numbers to skip in GRL
-    std::string m_GRLExcludeList;
+    std::string m_GRLExcludeList = "";
 
-  // Clean Powheg huge weight
-    bool m_cleanPowheg;
+    /// @brief Clean Powheg huge weight
+    bool m_cleanPowheg = false;
 
-  // Reweight Sherpa 2.2 Samples
-    bool  m_reweightSherpa22;
+    /// @brief Reweight Sherpa 2.2 Samples
+    bool  m_reweightSherpa22 = false;
 
   //PU Reweighting
     /**
@@ -77,30 +77,30 @@ class BasicEventSelection : public xAH::Algorithm
         Reweight pile-up profile :math:`\mu`
       @endrst
     */
-    bool m_doPUreweighting;
-    bool m_doPUreweightingSys;
+    bool m_doPUreweighting = false;
+    bool m_doPUreweightingSys = false;
     /// @brief Comma separated list of filenames
-    std::string m_lumiCalcFileNames;
+    std::string m_lumiCalcFileNames = "";
     /// @brief Comma separated list of filenames
-    std::string m_PRWFileNames;
+    std::string m_PRWFileNames = "";
 
     // Unprescaling data
-    bool m_savePrescaleDataWeight;
+    bool m_savePrescaleDataWeight = false;
 
   // Primary Vertex
     /// @brief Name of vertex container
-    std::string m_vertexContainerName;
+    std::string m_vertexContainerName = "PrimaryVertices";
     /// @brief Enable to apply a primary vertex cut
-    bool m_applyPrimaryVertexCut;
+    bool m_applyPrimaryVertexCut = false;
     /// @brief Minimum number of tracks from **the** primary vertex (Harmonized Cut)
-    int m_PVNTrack;
+    int m_PVNTrack = 2;
 
-  // Event Cleaning
-    bool m_applyEventCleaningCut;
-    bool m_applyCoreFlagsCut;
+    // Event Cleaning
+    bool m_applyEventCleaningCut = false;
+    bool m_applyCoreFlagsCut = false;
 
     // Print Branch List
-    bool m_printBranchList;
+    bool m_printBranchList = false;
 
   // Trigger
     /**
@@ -108,35 +108,39 @@ class BasicEventSelection : public xAH::Algorithm
         RegEx expression to choose triggers to consider to be cut on with :cpp:member:`~BasicEventSelection::m_applyTriggerCut`
       @endrst
     */
-    std::string m_triggerSelection;
+    std::string m_triggerSelection = "";
 
     /// @brief Decisions of triggers which are saved but not cut on
-    std::string m_extraTriggerSelection;
+    std::string m_extraTriggerSelection = "";
 
     /**
       @rst
         Skip events in which the trigger string :cpp:member:`~BasicEventSelection::m_triggerSelection` does not fire
       @endrst
     */
-    bool m_applyTriggerCut;
+    bool m_applyTriggerCut = false;
+
     /**
       @rst
         Save string of fired triggers matching :cpp:member:`~BasicEventSelection::m_triggerSelection`
       @endrst
     */
-    bool m_storeTrigDecisions;
+    bool m_storeTrigDecisions = false;
+
     /// @brief Save if any L1 trigger fired, e.g. ``"L1_.*"``
-    bool m_storePassL1;
+    bool m_storePassL1 = false;
+
     /// @brief Save if any HLT trigger fired, e.g. ``"HLT_.*"``
-    bool m_storePassHLT;
+    bool m_storePassHLT = false;
+
     /// @brief Save master, L1, and HLT key
-    bool m_storeTrigKeys;
+    bool m_storeTrigKeys = false;
 
   // Metadata
-    /// @brief The name of the derivation
-    std::string m_derivationName;
+    /// @brief The name of the derivation (use this as an override)
+    std::string m_derivationName = "";
     /// @brief Retrieve and save information on DAOD selection
-    bool m_useMetaData;
+    bool m_useMetaData = true;
 
     /* Output Stream Names */
 
@@ -146,21 +150,24 @@ class BasicEventSelection : public xAH::Algorithm
         streams. E.g. can combine all outputs into a single stream
     */
 
-    std::string m_metaDataStreamName;
-    std::string m_cutFlowStreamName;
-    std::string m_duplicatesStreamName;
+    // output stream names
+    std::string m_metaDataStreamName = "metadata";
+    std::string m_cutFlowStreamName = "cutflow";
+    std::string m_duplicatesStreamName = "duplicates_tree";
 
-    /* Check for duplicated events in Data and MC */
-    bool m_checkDuplicatesData;
-    bool m_checkDuplicatesMC;
-    std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr;
+    /** Check for duplicated events in data */
+    bool m_checkDuplicatesData = false;
+    /** Check for duplicated events in MC */
+    bool m_checkDuplicatesMC = false;
 
   private:
 
-    GoodRunsListSelectionTool*   m_grl;        //!
+    std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
+
+    GoodRunsListSelectionTool*   m_grl = nullptr;        //!
     asg::AnaToolHandle<CP::IPileupReweightingTool>   m_pileup_tool_handle; //!
-    TrigConf::xAODConfigTool*    m_trigConfTool;  //!
-    Trig::TrigDecisionTool*      m_trigDecTool;   //!
+    TrigConf::xAODConfigTool*    m_trigConfTool = nullptr;  //!
+    Trig::TrigDecisionTool*      m_trigDecTool = nullptr;   //!
 
     asg::AnaToolHandle<IWeightTool> m_reweightSherpa22_tool_handle; //!
 
@@ -169,7 +176,7 @@ class BasicEventSelection : public xAH::Algorithm
     int m_eventCounter;     //!
 
     // read from MetaData
-    TH1D* m_histEventCount;          //!
+    TH1D* m_histEventCount = nullptr;          //!
     uint64_t m_MD_initialNevents;    //!
     uint64_t m_MD_finalNevents;      //!
     double m_MD_initialSumW;         //!
@@ -178,8 +185,8 @@ class BasicEventSelection : public xAH::Algorithm
     double m_MD_finalSumWSquared;    //!
 
     // cutflow
-    TH1D* m_cutflowHist;      //!
-    TH1D* m_cutflowHistW;     //!
+    TH1D* m_cutflowHist = nullptr;      //!
+    TH1D* m_cutflowHistW = nullptr;     //!
     int m_cutflow_all;        //!
     int m_cutflow_duplicates; //!
     int m_cutflow_grl;        //!
@@ -191,20 +198,20 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_trigger;    //!
 
     // object cutflow
-    TH1D* m_el_cutflowHist_1;    //!
-    TH1D* m_el_cutflowHist_2;    //!
-    TH1D* m_mu_cutflowHist_1;    //!
-    TH1D* m_mu_cutflowHist_2;    //!
-    TH1D* m_ph_cutflowHist_1;    //!
-    TH1D* m_tau_cutflowHist_1;   //!
-    TH1D* m_tau_cutflowHist_2;   //!
-    TH1D* m_jet_cutflowHist_1;   //!
-    TH1D* m_trk_cutflowHist_1;   //!
-    TH1D* m_truth_cutflowHist_1; //!
+    TH1D* m_el_cutflowHist_1 = nullptr;    //!
+    TH1D* m_el_cutflowHist_2 = nullptr;    //!
+    TH1D* m_mu_cutflowHist_1 = nullptr;    //!
+    TH1D* m_mu_cutflowHist_2 = nullptr;    //!
+    TH1D* m_ph_cutflowHist_1 = nullptr;    //!
+    TH1D* m_tau_cutflowHist_1 = nullptr;   //!
+    TH1D* m_tau_cutflowHist_2 = nullptr;   //!
+    TH1D* m_jet_cutflowHist_1 = nullptr;   //!
+    TH1D* m_trk_cutflowHist_1 = nullptr;   //!
+    TH1D* m_truth_cutflowHist_1= nullptr; //!
 
     /** TTree for duplicates bookeeping */
 
-    TTree*   m_duplicatesTree;  //!
+    TTree*   m_duplicatesTree = nullptr;  //!
     int      m_duplRunNumber;
     long int m_duplEventNumber;
 

@@ -89,7 +89,7 @@ class OverlapRemover : public xAH::Algorithm
   // configuration variables
 
   /** @brief Fill the cutflow histogram(s) for object counting */
-  bool m_useCutFlow;
+  bool m_useCutFlow = true;
 
   /** @brief Decorate selected objects (the default decoration string is `passSel`) */
   bool     m_decorateSelectedObjects;
@@ -100,47 +100,47 @@ class OverlapRemover : public xAH::Algorithm
   */
   bool     m_createSelectedContainers;
   /** @brief In the OLR, consider only objects passing a (pre)selection */
-  bool     m_useSelected;
+  bool     m_useSelected = false;
   /** @brief Use b-tagging decision, set previously with the given decoration name, to remove electrons and muons
    * @note This is automatically set by BJetEfficiencyCorrector */
-  std::string m_bTagWP;
+  std::string m_bTagWP = "";
   /** @brief Create a link between overlapped objects */
-  bool m_linkOverlapObjects;
+  bool m_linkOverlapObjects = true;
   /** @brief Use boosted object working point */
-  bool m_useBoostedLeptons;
+  bool m_useBoostedLeptons = false;
   /** @brief Do overlap removal between electrons (HSG2 prescription) */
-  bool m_doEleEleOR;
+  bool m_doEleEleOR = false;
 
   /** @brief Output systematics list container name */
-  std::string  m_outputAlgoSystNames;
+  std::string  m_outputAlgoSystNames = "ORAlgo_Syst";
 
   /** @brief Input container name */
-  std::string  m_inContainerName_Electrons;
+  std::string  m_inContainerName_Electrons = "";
   /** @brief Output container name */
-  std::string  m_outContainerName_Electrons;
+  std::string  m_outContainerName_Electrons = "";
   /**
      @rst
         Name of the :cpp:type:`std::vector<std::string>` of systematics coming from the upstream algorithm
      @endrst
   */
-  std::string  m_inputAlgoElectrons;
+  std::string  m_inputAlgoElectrons = "";
 
   // Muons
-  std::string  m_inContainerName_Muons;
-  std::string  m_outContainerName_Muons;
-  std::string  m_inputAlgoMuons;
+  std::string  m_inContainerName_Muons = "";
+  std::string  m_outContainerName_Muons = "";
+  std::string  m_inputAlgoMuons = "";
   // Jets
-  std::string  m_inContainerName_Jets;
-  std::string  m_outContainerName_Jets;
-  std::string  m_inputAlgoJets;
+  std::string  m_inContainerName_Jets = "";
+  std::string  m_outContainerName_Jets = "";
+  std::string  m_inputAlgoJets = "";
   // Photons
-  std::string  m_inContainerName_Photons;
-  std::string  m_outContainerName_Photons;
-  std::string  m_inputAlgoPhotons;
+  std::string  m_inContainerName_Photons = "";
+  std::string  m_outContainerName_Photons = "";
+  std::string  m_inputAlgoPhotons = "";
   // Taus
-  std::string  m_inContainerName_Taus;
-  std::string  m_outContainerName_Taus;
-  std::string  m_inputAlgoTaus;
+  std::string  m_inContainerName_Taus = "";
+  std::string  m_outContainerName_Taus = "";
+  std::string  m_inputAlgoTaus = "";
 
  protected:
 
@@ -164,7 +164,7 @@ class OverlapRemover : public xAH::Algorithm
        Electrons (unlike jets) are considered "optional" objetcs in the OLR.
      @endrst
   */
-  bool m_useElectrons;
+  bool m_useElectrons = false;
   /**
      @brief Consider muons in the OLR
      @rst
@@ -172,7 +172,7 @@ class OverlapRemover : public xAH::Algorithm
        Muons (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
-  bool m_useMuons;
+  bool m_useMuons = false;
   /**
      @brief Consider photons in the OLR
      @rst
@@ -180,7 +180,7 @@ class OverlapRemover : public xAH::Algorithm
        Photons (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
-  bool m_usePhotons;
+  bool m_usePhotons = false;
   /**
      @brief Consider taus in the OLR
      @rst
@@ -188,7 +188,7 @@ class OverlapRemover : public xAH::Algorithm
        Taus (unlike jets) are considered "optional" objects in the OLR.
      @endrst
   */
-  bool m_useTaus;
+  bool m_useTaus = false;
 
   /** @brief Output auxiliary container name */
   std::string  m_outAuxContainerName_Electrons;
@@ -217,15 +217,15 @@ class OverlapRemover : public xAH::Algorithm
   // object-level cutflow
 
   /**  @brief Pointer to the histogram for the electron cutflow */
-  TH1D* m_el_cutflowHist_1;    //!
+  TH1D* m_el_cutflowHist_1 = nullptr;    //!
   /**  @brief Pointer to the histogram for the muon cutflow */
-  TH1D* m_mu_cutflowHist_1;    //!
+  TH1D* m_mu_cutflowHist_1 = nullptr;    //!
   /**  @brief Pointer to the histogram for the jet cutflow */
-  TH1D* m_jet_cutflowHist_1;   //!
+  TH1D* m_jet_cutflowHist_1 = nullptr;   //!
   /**  @brief Pointer to the histogram for the photon cutflow */
-  TH1D* m_ph_cutflowHist_1;    //!
+  TH1D* m_ph_cutflowHist_1 = nullptr;    //!
   /**  @brief Pointer to the histogram for the tau cutflow */
-  TH1D* m_tau_cutflowHist_1;   //!
+  TH1D* m_tau_cutflowHist_1 = nullptr;   //!
 
   int m_el_cutflow_OR_cut;     //!
   int m_mu_cutflow_OR_cut;     //!

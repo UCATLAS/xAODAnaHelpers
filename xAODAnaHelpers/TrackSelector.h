@@ -16,34 +16,55 @@ class TrackSelector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 public:
 
-  bool m_useCutFlow;            //!
+  bool m_useCutFlow = true;
 
   // configuration variables
-  std::string m_inContainerName;      // input container name
-  std::string m_outContainerName;     // output container name
-  bool  m_decorateSelectedObjects; // decorate selected objects? defaul passSel
-  bool  m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
-  int   m_nToProcess;               // look at n objects
-  int   m_pass_min;                 // minimum number of objects passing cuts
-  int   m_pass_max;                 // maximum number of objects passing cuts
-  float m_pT_max;                 // require pT < pt_max
-  float m_pT_min;                 // require pT > pt_max
-  float m_eta_max;                // require eta < eta_max
-  float m_eta_min;                // require eta > eta_max
-  float m_d0_max;                 // require |d0| < d0_max
-  float m_z0_max;                 // require |z0| < z0_max
-  float m_z0sinT_max;             // require |z0xsin(theat)| < z0sinT_max
-  int   m_nBL_min;                // require nBL > nBL_min
-  int   m_nSi_min;                // require nSi > nSi_min
-  float m_nPixHoles_max;          // require nPixHoles < nPixHoles_max
-  float m_chi2NdofCut_max;        // require chi2/ndof < chi2NdofCut_max
-  float m_chi2Prob_max;           // require TMath::Prob(chi2,ndof) < chi2ProbMax
+  /// @brief input container name
+  std::string m_inContainerName = "";
+  /// @brief output container name
+  std::string m_outContainerName = "";
+  /// @brief input jet container name
+  std::string m_inJetContainerName = "";
+  /// @brief decorate selected objects? defaul passSel
+  bool  m_decorateSelectedObjects = true;
+  /// @brief fill using SG::VIEW_ELEMENTS to be light weight
+  bool  m_createSelectedContainer = false;
+  /// @brief look at n objects
+  int   m_nToProcess = -1;
+  /// @brief minimum number of objects passing cuts
+  int   m_pass_min = -1;
+  /// @brief maximum number of objects passing cuts
+  int   m_pass_max = -1;
+  /// @brief require pT < pt_max
+  float m_pT_max = 1e8;
+  /// @brief require pT > pt_max
+  float m_pT_min = 1e8;
+  /// @brief require eta < eta_max
+  float m_eta_max = 1e8;
+  /// @brief require eta > eta_max
+  float m_eta_min = 1e8;
+  /// @brief require |d0| < d0_max
+  float m_d0_max = 1e8;
+  /// @brief require |z0| < z0_max
+  float m_z0_max = 1e8;
+  /// @brief require |z0xsin(theat)| < z0sinT_max
+  float m_z0sinT_max = 1e8;
+  /// @brief require nBL > nBL_min
+  int   m_nBL_min = 1e8;
+  /// @brief require nSi > nSi_min
+  int   m_nSi_min = 1e8;
+  /// @brief require nPixHoles < nPixHoles_max
+  float m_nPixHoles_max = 1e8;
+  /// @brief require chi2/ndof < chi2NdofCut_max
+  float m_chi2NdofCut_max = 1e8;
+  /// @brief require TMath::Prob(chi2,ndof) < chi2ProbMax
+  float m_chi2Prob_max = 1e8;
 
-  std::string              m_passAuxDecorKeys;
-  std::string              m_failAuxDecorKeys;
+  std::string              m_passAuxDecorKeys = "";
+  std::string              m_failAuxDecorKeys = "";
 
-  bool m_doTracksInJets; // do track selection on track within jets
-  std::string m_inJetContainerName;      // input jet container name
+  /// @brief do track selection on track within jets
+  bool m_doTracksInJets = false;
 
 private:
 
@@ -56,8 +77,8 @@ private:
   int m_numObjectPass;    //!
 
   // cutflow
-  TH1D* m_cutflowHist;          //!
-  TH1D* m_cutflowHistW;         //!
+  TH1D* m_cutflowHist = nullptr;          //!
+  TH1D* m_cutflowHistW = nullptr;         //!
   int   m_cutflow_bin;          //!
 
   // variables that don't get filled at submission time should be

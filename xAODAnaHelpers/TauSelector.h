@@ -23,29 +23,37 @@ class TauSelector : public xAH::Algorithm
 public:
 
   // cutflow
-  bool m_useCutFlow;
+  bool m_useCutFlow = true;
 
   // configuration variables
-  std::string    m_inContainerName;          /* input container name */
-  std::string    m_outContainerName;         /* output container name */
-  std::string    m_outAuxContainerName;      /* output auxiliary container name */
-  std::string    m_inputAlgoSystNames;
-  std::string    m_outputAlgoSystNames;
-  bool       	 m_decorateSelectedObjects;  /* decorate selected objects - default "passSel" */
-  bool       	 m_createSelectedContainer;  /* fill using SG::VIEW_ELEMENTS to be light weight */
-  int            m_nToProcess;               /* look at n objects */
-  int            m_pass_min;  	             /* minimum number of objects passing cuts */
-  int            m_pass_max;  	             /* maximum number of objects passing cuts */
-  std::string    m_ConfigPath;               /* path to config file for the TauSelectionTool */
-  std::string    m_EleOLRFilePath;           /* path to input file for overlap-based electron veto */
-  float          m_minPtDAOD;                /* a minimal pT threshold b/c some derivations may apply
-                                                a thinning on tau tracks' features needed by the TauSelectionTool,
-						which would cause a crash at runtime */
+  /* input container name */
+  std::string    m_inContainerName = "";
+  /* output container name */
+  std::string    m_outContainerName;
+  /* output auxiliary container name */
+  std::string    m_outAuxContainerName;
+  std::string    m_inputAlgoSystNames = "";
+  std::string    m_outputAlgoSystNames = "TauSelector_Syst";
+  /* decorate selected objects - default "passSel" */
+  bool       	 m_decorateSelectedObjects = true;
+  /* fill using SG::VIEW_ELEMENTS to be light weight */
+  bool       	 m_createSelectedContainer = false;
+  /* look at n objects */
+  int            m_nToProcess = -1;
+  /* minimum number of objects passing cuts */
+  int            m_pass_min = -1;
+  /* maximum number of objects passing cuts */
+  int            m_pass_max = -1;
+  /* path to config file for the TauSelectionTool */
+  std::string    m_ConfigPath = "xAODAnaHelpers/TauConf/00-01-19/Selection/recommended_selection_mc15.conf";
+  /* path to input file for overlap-based electron veto */
+  std::string    m_EleOLRFilePath = "";
+  /* a minimal pT threshold b/c some derivations may apply a thinning on tau tracks' features needed by the TauSelectionTool, which would cause a crash at runtime */
+  float          m_minPtDAOD = 15e3;
 
-  bool           m_setTauOverlappingEleLLHDecor;
 
-  std::string    m_passAuxDecorKeys;
-  std::string    m_failAuxDecorKeys;
+
+  bool           m_setTauOverlappingEleLLHDecor = true;
 
 private:
 

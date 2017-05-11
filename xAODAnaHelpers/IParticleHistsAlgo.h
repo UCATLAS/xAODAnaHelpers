@@ -17,10 +17,13 @@ class IParticleHistsAlgo : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  // configuration variables
-  std::string m_inContainerName;
-  std::string m_detailStr;
-  std::string m_inputAlgo;
+
+  /** input container */
+  std::string m_inContainerName = "";
+  /** which plots will be turned on */
+  std::string m_detailStr = "";
+  /** name of algo input container comes from - only if */
+  std::string m_inputAlgo = "";
   /** Histogram name prefix when using IParticleHistsAlgo directly */
   std::string m_histPrefix;
   /** Histogram xaxis title when using IParticleHistsAlgo directly */
