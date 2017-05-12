@@ -22,7 +22,6 @@
 #include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include "PathResolver/PathResolver.h"
 
 using HelperClasses::ToolName;
 
@@ -31,54 +30,8 @@ ClassImp(BJetEfficiencyCorrector)
 
 
 BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
-    Algorithm("BJetEfficiencyCorrector"),
-    m_BJetSelectTool(nullptr),
-    m_BJetEffSFTool(nullptr)
+    Algorithm("BJetEfficiencyCorrector")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  //ATH_MSG_INFO( "Calling constructor");
-
-  // read flags set from .config file
-  m_inContainerName         = "";
-  m_inputAlgo               = "";
-  m_systName                = "";      // default: no syst
-  m_outputSystName          = "BJetEfficiency_Algo";
-
-  // configuration of the bjet eff tool
-  m_corrFileName           = PathResolverFindCalibFile("xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root");
-  m_usePathResolver        = false;
-  m_jetAuthor              = "AntiKt4EMTopoJets";
-  m_taggerName             = "MV2c10";
-  m_useDevelopmentFile     = true;
-  m_coneFlavourLabel       = true;
-  m_systematicsStrategy    = "SFEigen";
-
-  // allowed operating points:
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
-  //For the fixed cut, valid options are: [ "FixedCutBEff_30", "FixedCutBEff_50", "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_80", "FixedCutBEff_85", "FixedCutBEff_90" ]
-  //For the variable cut, valid options are: [ "FlatBEff_30", "FlatBEff_40", "FlatBEff_50", "FlatBEff_60", "FlatBEff_70", "FlatBEff_77", "FlatBEff_85" ]
-
-  // Btag quality
-  m_operatingPt             = "FixedCutBEff_70";
-  m_operatingPtCDI          = "";
-  m_getScaleFactors         = false; // will only get scale factors for calibrated working points
-
-  m_decor                   = "BTag";
-  m_decorSF                 = ""; // gets set below after configure is called
-
-
-  //
-  // Call PathResolverFindCalibFile on the input file name
-  //
-  if(m_usePathResolver){
-    m_corrFileName = PathResolverFindCalibFile(m_corrFileName);
-  }
 }
 
 
@@ -97,6 +50,9 @@ EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
   RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+
+  m_corrFileName = PathResolverFindCalibFile(m_corrFileName);
+
   return EL::StatusCode::SUCCESS;
 }
 

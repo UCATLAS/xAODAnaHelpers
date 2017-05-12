@@ -44,19 +44,7 @@ using std::vector;
 ClassImp(HLTJetRoIBuilder)
 
 HLTJetRoIBuilder :: HLTJetRoIBuilder () :
-Algorithm("HLTJetRoIBuilder"),
-  m_trigItem(""),
-  m_trigItemVeto(""),
-  m_doHLTBJet(true),
-  m_doHLTJet (false),
-  m_readHLTTracks(true),
-  m_readHLTVtx(true),
-  m_outContainerName(""),
-  m_trigDecTool(nullptr),
-  m_jetName("EFJet"),
-  m_trkName("InDetTrigTrackingxAODCnv_Bjet_IDTrig"),
-  m_vtxName("EFHistoPrmVtx"),
-  m_onlineBSTool()
+  Algorithm("HLTJetRoIBuilder")
 {
 }
 
@@ -418,10 +406,10 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //               2 - No Vertex found
       if(m_readHLTVtx){
 	if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg())){
-   
+
 	  ATH_MSG_DEBUG("HAVE  No Online Vtx!!! m_vtxName is  " << m_vtxName);
 	  for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ) ATH_MSG_DEBUG(vtx_itr->vertexType());
-   
+
 	  //
 	  //  Try the HistoPrmVtx
 	  //
@@ -438,24 +426,24 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	    m_vtx_decoration  (*newHLTBJet)         = 0;
 	    m_vtx_decoration_bkg(*newHLTBJet)       = 0;
 	  }
-   
+
 	  //cout << "hadDummy and vtxType " << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName << endl;
-   
+
 	}else{
-   
+
 	  m_vtx_decoration  (*newHLTBJet)         = HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg());
 	  m_vtx_hadDummyPV  (*newHLTBJet)         = '0';
-   
+
 	  if(backupVtxCollections.size()){
 	    m_vtx_decoration_bkg(*newHLTBJet)     = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());
 	  }else{
 	    m_vtx_decoration_bkg(*newHLTBJet)     = 0;
 	  }
-   
+
 	}
-   
+
 	m_offline_vtx_decoration (*newHLTBJet)  = offline_pvx;
-   
+
 	ATH_MSG_DEBUG("hadDummy and vtxType" << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName);
 	//if(m_vtx_hadDummyPV (*newHLTBJet) != '0' ){
 	//   cout << "hadDummy and vtxType and m_outContainerName  " << m_vtx_hadDummyPV (*newHLTBJet) << " "

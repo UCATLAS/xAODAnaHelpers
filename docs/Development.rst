@@ -285,3 +285,97 @@ I've noticed that TString slows us down a little bit, so try to use std::string 
     Info("%s", m_inContainerName.Data());
     Info("%s", m_inContainerName.c_str());
 
+
+Creating a new xAH::Algorithm
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you are planning to write an :cpp:class:`xAH::Algorithm`, there are two requirements you must abide by to fit within the |xAH| ecosystem.
+
+#. Only allow empty constructors, no parameters or arguments passed in.
+#. Constructors must initialize an :cpp:class:`xAH::Algorithm` instance passing in the name of itself::
+
+     ExampleClass :: ExampleClass() : Algorithm("ExampleClass") {}
+
+The first requirement is necessary to make sure streamable code (such as EventLoop) can handle and set up your algorithms correctly when submitting jobs. The second requirement is currently necessary for |xAH| to keep track of the number of instances of a given class that has been created. This is a registry book-keeping operation that allows users to write smarter algorithms, the kind that know how many instances of itself have been created!
+
+Adding and Initializing Tools
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is albeit a litle bit trickier for anyone new to how Athena tools work. First, I'll provide header and source code blocks showing an example for a tool, and then I will explain the concepts.
+
+**Header File**::
+
+  // external tools include(s):
+  #include "AsgTools/AnaToolHandle.h"
+  #include "JetCalibTools/IJetCalibrationTool.h"
+
+  class JetCalibrator : public xAH::Algorithm {
+
+    public:
+      //...
+
+    private:
+      // tools
+      asg::AnaToolHandle<IJetCalibrationTool> m_JetCalibrationTool_handle{"JetCalibrationTool"};//!
+
+  }
+
+**Source File**::
+
+  // tools
+  #include "JetCalibTools/JetCalibrationTool.h"
+
+  //...
+
+  EL::StatusCode JetCalibrator :: initialize () {
+    //...
+
+    // initialize jet calibration tool
+    m_JetCalibrationTool_handle.setName("JetCalibrationTool_" + m_name);
+    if( !m_JetCalibrationTool_handle.isUserConfigured() ){
+      RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo), "Failed to set JetCollection");
+      //... other setProperty() calls and other logic can be in here for tool configuration
+      RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()), "");
+    }
+    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.retrieve(), "Failed to retrieve JetCalibrationTool");
+  }
+
+  EL::StatusCode JetCalibrator :: execute () {
+    //...
+    m_JetCalibrationTool_handle->apply(*jet);
+    //...
+  }
+
+  //...
+
+**Header Discussion**
+
+First, let's talk about the header file. You need to include the header file for the tool handles ``AsgTools/AnaToolHandle.h``. As this is a templated method, you really don't to try and forward-declare this or you're gonna have a bad time. Next, you'll want to include the header file for the tool's interface class, e.g. ``JetCalibTools/IJetCalibrationTool.h``.
+
+.. note::
+
+  To find the correct header file for a tool's interface, look in the header file for the tool itself, e.g. ``JetCalibTools/JetCalibrationTool.h``, and cross-check by looking at the classes the tool inherits from. For example, ``JetTileCorrectionTool`` has the ``IJetTileCorrectionTool`` interface class because in its header file::
+
+    class JetTileCorrectionTool : public virtual IJetTileCorrectionTool,
+                                  public asg::AsgMetadataTool
+
+
+You might wonder why we don't just include the tool's header file in our header file. One choice is that the interface header file is smaller and easier to compile quickly. This is roughly equivalent to forward-declaring our tool, where we only include the header file for our tool in the source and put a ``class ClassName;`` in the header.
+
+Lastly for the header, we make the tool handle a private member of our class. Make sure that this gets constructed with a type only by specifying the tool itself, e.g. ``JetCalibrationTool``.
+
+.. note:: We will prefer the suffix ``_handle`` to refer to the fact that the variable is a tool handle in |xAH|.
+
+**Source Discussion**
+
+Next, looking at the source code... we include the header file for our tool. Although this may not always be needed, it is good practice to help others figure out where the tool is. As of writing this documentation, the interface and the tool may be defined in different packages! Moving on, we will want to put tool initializations in ``initialize()`` as this will only get called on files that have events. Files without events will not create a tool, conserving memory and processing power.
+
+Next, we set a name for the tool. If we want to have a unique tool every time the algorithm is called, we suggest you use ``m_name`` or ``GetName()`` (both are equivalent). Using the name of the algorithm guarantees uniqueness as two algorithms can't have the same name or the code crashes. If you need to retrieve a tool created in another class, you will need to have the same name for the algorithm to pick it up correctly (from the ToolStore). If you don't set a name for the tool, only a type, the default name is the type.
+
+Next, we ask the configuration service if the tool of the given type and name has ever been configured before ``::isUserConfigured()``. If it has, this means this tool was configured already (and most likely created/initialized), and we should definitely not change the configuration of that tool. Also, it won't let us change the configuration of a previously configured tool anyways... If it has not been configured before, then let's go ahead and configure it with ``setProperty()``!
+
+.. note:: For setting properties or managing tools through the tool handle, you access functions through the dot (``.``) operator. For using the tool, you access functions through the arrow (``->``) operator.
+
+One thing you should **always** do is set the output level of the tool ``OutputLevel``. It is usually best to set it to the same output level that the algorithm is configured to ``msg().level()`` and is probably the safest prescription.
+
+Finally, we ``retrieve()`` the tool of the given type and name from the tool store. This will either create a tool with the provided configurations if it was not created before, or simply retrieve the existing tool for continued usage. And that's it, the memory will be managed for you and you do not need to delete it or do anything else but use it in your code!

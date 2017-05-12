@@ -45,71 +45,8 @@ ClassImp(OverlapRemover)
 
 
 OverlapRemover :: OverlapRemover () :
-    Algorithm("OverlapRemover"),
-    m_useElectrons(false),
-    m_useMuons(false),
-    m_usePhotons(false),
-    m_useTaus(false),
-    m_el_cutflowHist_1(nullptr),
-    m_mu_cutflowHist_1(nullptr),
-    m_jet_cutflowHist_1(nullptr),
-    m_ph_cutflowHist_1(nullptr),
-    m_tau_cutflowHist_1(nullptr)
+    Algorithm("OverlapRemover")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  //ATH_MSG_INFO( "Calling constructor");
-
-  m_useCutFlow    = true;
-
-  // input container(s) to be read from TEvent or TStore
-  m_outputAlgoSystNames         = "ORAlgo_Syst";                   // name of vector<string> of combined syst pushed in TStore.
-
-  /* Muons */
-  m_inContainerName_Muons       = "";
-  m_inputAlgoMuons              = "";  // name of vector<string> of syst retrieved from TStore
-
-  /* Electrons */
-  m_inContainerName_Electrons   = "";
-  m_inputAlgoElectrons          = "";  // name of vector<string> of syst retrieved from TStore
-
-  /* Jets */
-  m_inContainerName_Jets        = "";
-  m_inputAlgoJets               = "";  // name of vector<string> of syst retrieved from TStore
-
-  /* Photons */
-  m_inContainerName_Photons     = "";
-  m_inputAlgoPhotons            = "";  // name of vector<string> of syst retrieved from TStore
-
-  /* Taus */
-  m_inContainerName_Taus        = "";
-  m_inputAlgoTaus               = "";  // name of vector<string> of syst retrieved from TStore
-
-  // decorate selected objects that pass the cuts
-  m_decorateSelectedObjects     = true;
-  // additional functionality : create output container of selected objects
-  //                            using the SG::View_Element option
-  //                            decorating and output container should not be mutually exclusive
-  m_createSelectedContainers    = false;
-
-  m_useSelected = false;
-  m_bTagWP      = "";  // Decoration name like "BTag", potentially from BJetEfficiencyCorrector
-  m_linkOverlapObjects = true;
-  m_useBoostedLeptons  = false;
-  m_doEleEleOR = false;
-
-
-  m_outContainerName_Electrons  = "";
-  m_outContainerName_Muons      = "";
-  m_outContainerName_Jets       = "";
-  m_outContainerName_Photons    = "";
-  m_outContainerName_Taus       = "";
-
 }
 
 EL::StatusCode OverlapRemover :: setupJob (EL::Job& job)

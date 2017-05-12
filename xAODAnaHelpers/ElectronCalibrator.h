@@ -34,17 +34,16 @@ class ElectronCalibrator : public xAH::Algorithm
 public:
 // configuration variables
   /// @brief The name of the input container for this algorithm to read from ``TEvent`` or ``TStore``
-  std::string m_inContainerName;
+  std::string m_inContainerName = "";
   /**
       @brief The name of the nominal output container written by the algorithm to ``TStore``
 
       If the algorithm applies systematic variations, for each shallow copy saved to ``TStore``, the systematic name will be appended to this.
   */
-  std::string m_outContainerName;
+  std::string m_outContainerName = "";
 
   /// Sort the processed container elements by transverse momentum
-  bool    m_sort;
-
+  bool    m_sort = true;
 
 // systematics
   /**
@@ -52,7 +51,8 @@ public:
 
     This vector is retrieved from the ``TStore``. If left blank, it means there is no upstream algorithm which applies systematics. This is the case when processing straight from the original ``xAOD`` or ``DxAOD``.
   */
-  std::string m_inputAlgoSystNames;
+  std::string m_inputAlgoSystNames = "";
+
   /**
     @brief The name of the vector containing the names of the systematically-varied containers created by by this algorithm.
 
@@ -60,16 +60,16 @@ public:
       If :cpp:member:`~xAH::Algorithm::m_systName` is empty, the vector will contain only an empty string. When running on systematics, this is the string a downstream algorithm needs to process electrons.
     @endrst
   */
-  std::string m_outputAlgoSystNames;
+  std::string m_outputAlgoSystNames = "ElectronCalibrator_Syst";
 
-  std::string m_esModel;
-  std::string m_decorrelationModel;
+  std::string m_esModel = "";
+  std::string m_decorrelationModel = "";
 
   /** @brief Force AFII flag in calibration, in case metadata is broken */
-  bool m_setAFII;
+  bool m_setAFII = false;
 
   // for calo based isolation vars leakage correction
-  bool        m_useDataDrivenLeakageCorr;
+  bool        m_useDataDrivenLeakageCorr = false;
 
 private:
   int m_numEvent;         //!
@@ -84,8 +84,9 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool; //!
-  CP::IsolationCorrectionTool          *m_IsolationCorrectionTool;          //! // apply leakage correction to calo based isolation variables for electrons
+  CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool = nullptr; //!
+  /// @brief apply leakage correction to calo based isolation variables for electrons
+  CP::IsolationCorrectionTool          *m_IsolationCorrectionTool = nullptr;          //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

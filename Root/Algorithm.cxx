@@ -13,15 +13,7 @@ std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm(std::string className) :
-  m_debugLevel(MSG::INFO),
-  m_systName(""),
-  m_systVal(0),
-  m_eventInfoContainerName("EventInfo"),
-  m_isMC(-1),
-  m_className(className),
-  m_event(nullptr),
-  m_store(nullptr),
-  m_registered(false)
+  m_className(className)
 {
 }
 

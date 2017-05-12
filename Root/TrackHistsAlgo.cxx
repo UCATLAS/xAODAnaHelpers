@@ -14,12 +14,8 @@
 ClassImp(TrackHistsAlgo)
 
 TrackHistsAlgo :: TrackHistsAlgo () :
-    Algorithm("TrackHistsAlgo"),
-    m_plots(nullptr)
+    Algorithm("TrackHistsAlgo")
 {
-  m_inContainerName         = "";
-  m_detailStr               = "";
-
 }
 
 EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)

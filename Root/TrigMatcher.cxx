@@ -31,30 +31,8 @@
 ClassImp(TrigMatcher)
 
 TrigMatcher :: TrigMatcher ()
-: Algorithm("TrigMatcher"),
-  m_trigMatchTool(nullptr)
+: Algorithm("TrigMatcher")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-  //ATH_MSG_INFO( "Calling constructor");
-
-  // input container to be read from TEvent or TStore
-  //
-  m_inContainerName = "";
-
-  // Systematics stuff
-  //
-  m_systNames       = "";
-
-
-  // trigger matching stuff
-  //
-  m_trigChains      = "";
-
 }
 
 TrigMatcher::~TrigMatcher() {}

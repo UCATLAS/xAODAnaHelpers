@@ -35,20 +35,8 @@
 ClassImp(HLTJetGetter)
 
 HLTJetGetter :: HLTJetGetter () :
-Algorithm("HLTJetGetter"),
-m_trigDecTool(nullptr)
+Algorithm("HLTJetGetter")
 {
-    //ATH_MSG_INFO( "Calling constructor");
-
-    // regex list of triggers
-    m_triggerList = ".*";
-    // input container to be read from TEvent or TStore
-    m_inContainerName = "";
-    // shallow copies are made with this output container name
-    m_outContainerName = "";
-    // flag to own TDT and TCT
-    m_ownTDTAndTCT = false;
-
 }
 
 
