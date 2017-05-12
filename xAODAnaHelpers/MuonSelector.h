@@ -20,7 +20,7 @@
 #include "IsolationSelection/IIsolationSelectionTool.h"
 #include "MuonSelectorTools/IMuonSelectionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
-#include "TrigDecisionInterface/ITrigDecisionTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -148,7 +148,7 @@ private:
   CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr};                               //!
   asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle{"CP::MuonSelectionTool"};             //!
   asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle{"Trig::MatchingTool"};                //!
-  asg::AnaToolHandle<Trig::ITrigDecisionTool>      m_trigDecTool_handle{"Trig::TrigDecisionTool"};                  //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle{"Trig::TrigDecisionTool"};                  //!
 
   bool m_doTrigMatch = false; //!
 

@@ -21,7 +21,6 @@
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
 #include "PileupReweighting/PileupReweightingTool.h"
 #include "TrigConfxAOD/xAODConfigTool.h"
-#include "TrigDecisionTool/TrigDecisionTool.h"
 #include "PMGTools/PMGSherpa22VJetsWeightTool.h"
 
 // ROOT include(s):
@@ -530,7 +529,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
       RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ), "");
     }
     RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.retrieve(), "Failed to properly initialize Trig::TrigDecisionTool");
-    m_trigDecTool = dynamic_cast<Trig::TrigDecisionTool*>(m_trigDecTool_handle.get() ); // see header file for why
     ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
 
   }//end trigger configuration

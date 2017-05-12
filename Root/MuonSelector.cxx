@@ -27,7 +27,6 @@
 #include "IsolationSelection/IsolationSelectionTool.h"
 #include "MuonSelectorTools/MuonSelectionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
-#include "TrigDecisionTool/TrigDecisionTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -304,6 +303,7 @@ EL::StatusCode MuonSelector :: initialize ()
   //     do not initialise if there are no input trigger chains, or the TrigDecisionTool hasn't been configured yet
   //
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) && m_trigDecTool_handle.isUserConfigured() ) {
+    RETURN_CHECK("MuonSelector::initialize()", m_trigDecTool_handle.retrieve(), "Failed to properly initialize TrigDecTool" );
 
     //  everything went fine, let's initialise the tool!
     //

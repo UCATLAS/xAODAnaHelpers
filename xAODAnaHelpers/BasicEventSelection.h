@@ -22,13 +22,8 @@
 #include "AsgAnalysisInterfaces/IGoodRunsListSelectionTool.h"
 #include "AsgAnalysisInterfaces/IPileupReweightingTool.h"
 #include "TrigConfInterfaces/ITrigConfigTool.h"
-#include "TrigDecisionInterface/ITrigDecisionTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
 #include "PATInterfaces/IWeightTool.h"
-
-// forward-declare for now as the interface is broken and we need to store a pointer to the tool itself
-namespace Trig {
-  class TrigDecisionTool;
-}
 
 /**
   @rst
@@ -167,8 +162,7 @@ class BasicEventSelection : public xAH::Algorithm
     asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle{"GoodRunsListSelectionTool"};                              //!
     asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"};                      //!
     asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle{"TrigConf::xAODConfigTool"};                      //!
-    asg::AnaToolHandle<Trig::ITrigDecisionTool>    m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
-    Trig::TrigDecisionTool*                        m_trigDecTool{nullptr};                                                 //!
+    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
     asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool"}; //!
 
     bool m_isMC;      //!
