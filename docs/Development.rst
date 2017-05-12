@@ -353,7 +353,6 @@ This is albeit a litle bit trickier for anyone new to how Athena tools work. Fir
 First, let's talk about the header file. You need to include the header file for the tool handles ``AsgTools/AnaToolHandle.h``. As this is a templated method, you really don't to try and forward-declare this or you're gonna have a bad time. Next, you'll want to include the header file for the tool's interface class, e.g. ``JetCalibTools/IJetCalibrationTool.h``.
 
 .. note::
-
   To find the correct header file for a tool's interface, look in the header file for the tool itself, e.g. ``JetCalibTools/JetCalibrationTool.h``, and cross-check by looking at the classes the tool inherits from. For example, ``JetTileCorrectionTool`` has the ``IJetTileCorrectionTool`` interface class because in its header file::
 
     class JetTileCorrectionTool : public virtual IJetTileCorrectionTool,
@@ -379,3 +378,10 @@ Next, we ask the configuration service if the tool of the given type and name ha
 One thing you should **always** do is set the output level of the tool ``OutputLevel``. It is usually best to set it to the same output level that the algorithm is configured to ``msg().level()`` and is probably the safest prescription.
 
 Finally, we ``retrieve()`` the tool of the given type and name from the tool store. This will either create a tool with the provided configurations if it was not created before, or simply retrieve the existing tool for continued usage. And that's it, the memory will be managed for you and you do not need to delete it or do anything else but use it in your code!
+
+.. note::
+  Did you get a Bus error in the code because of the tools? If so, identify which tool causes the Bus error and file an issue so we can inform the tool developers that their tool needs to be fixed. In the meantime, this can be fixed using a macro::
+
+    RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency), "Could not make JetJetEfficiency");
+
+  An example of a reported issue for the above tool is here: https://its.cern.ch/jira/browse/ATLASG-1214.
