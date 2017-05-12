@@ -17,28 +17,26 @@ class MuonCalibrator : public xAH::Algorithm
 public:
 
   // configuration variables
-  std::string m_inContainerName = "";
-  std::string m_outContainerName = "";
+  std::string m_inContainerName;
+  std::string m_outContainerName;
 
-  std::string m_release = "";
-  /// @brief comma-separated list of years
-  std::string m_Years = "Data16,Data15";
+  std::string m_release;
+  std::string m_Years;
 
   // sort after calibration
-  bool    m_sort = true;
+  bool    m_sort;
 
-  bool         m_do_sagittaCorr = true;
-  std::string  m_sagittaRelease = "sagittaBiasDataAll_06_02_17";
-  bool         m_do_sagittaMCDistortion = false;
+  bool         m_do_sagittaCorr;
+  std::string  m_sagittaRelease;
+  bool         m_do_sagittaMCDistortion;
 
   // systematics
-  /// @brief this is the name of the vector of names of the systematically varied containers produced by the upstream algo (e.g., the SC containers with calibration systematics)
-  std::string m_inputAlgoSystNames = "";
-  // this is the name of the vector of names of the systematically varied containers produced by THIS algo (these will be the m_inputAlgoSystNames of the algo downstream)
-  std::string m_outputAlgoSystNames = "MuonCalibrator_Syst";
-
-  float       m_systVal = 0.0;
-  std::string m_systName = "";
+  std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
+  			             // upstream algo (e.g., the SC containers with calibration systematics)
+  std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
+  				     // algo (these will be the m_inputAlgoSystNames of the algo downstream)
+  float       m_systVal;
+  std::string m_systName;
 
   /**
       @rst
@@ -51,7 +49,7 @@ public:
           .. note:: This should *not* modify the momentum of muons in data (according to the tool as of ``MuonMomentumCorrections-01-00-37``).
       @endrst
    */
-  bool    m_forceDataCalib = false;
+  bool    m_forceDataCalib;
 
 private:
   int m_numEvent;         //!

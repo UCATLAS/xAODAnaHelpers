@@ -16,14 +16,14 @@
 #include "PATInterfaces/SystematicVariation.h"
 
 // external tools include(s):
+#include "JetCalibTools/JetCalibrationTool.h"
+#include "JetUncertainties/JetUncertaintiesTool.h"
+#include "JetResolution/JERTool.h"
+#include "JetResolution/JERSmearingTool.h"
+#include "JetSelectorTools/JetCleaningTool.h"
+#include "JetMomentTools/JetVertexTaggerTool.h"
 #include "AsgTools/AnaToolHandle.h"
-#include "JetCalibTools/IJetCalibrationTool.h"
-#include "JetCPInterfaces/ICPJetUncertaintiesTool.h"
-#include "JetResolution/IJERTool.h"
-#include "JetResolution/IJERSmearingTool.h"
-#include "JetInterface/IJetSelector.h"
-#include "JetInterface/IJetUpdateJvt.h"
-#include "JetCPInterfaces/IJetTileCorrectionTool.h"
+#include "JetTileCorrection/JetTileCorrectionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -43,32 +43,32 @@ class JetCalibrator : public xAH::Algorithm
 {
 public:
   /// @brief The name of the input container for this algorithm to read from ``TEvent`` or ``TStore``
-  std::string m_inContainerName = "";
+  std::string m_inContainerName;
   /**
       @brief The name of the nominal output container written by the algorithm to ``TStore``
 
       If the algorithm applies systematic variations, for each shallow copy saved to ``TStore``, the systematic name will be appended to this.
   */
-  std::string m_outContainerName = "";
+  std::string m_outContainerName;
 
   /// @brief set to ``AntiKt4EMTopo`` for ``AntiKt4EMTopoJets``
-  std::string m_jetAlgo = "";
+  std::string m_jetAlgo;
   /// @brief name of vector holding names of jet systematics given by the JetEtmiss Tools
-  std::string m_outputAlgo = "";
+  std::string m_outputAlgo;
   /// @brief config for JetCalibrationTool for Data
-  std::string m_calibConfigData = "JES_MC15Prerecommendation_April2015.config";
+  std::string m_calibConfigData;
   /// @brief config for JetCalibrationTool for Full Sim MC
-  std::string m_calibConfigFullSim = "JES_MC15Prerecommendation_April2015.config";
+  std::string m_calibConfigFullSim;
   /// @brief config for JetCalibrationTool for AFII MC
-  std::string m_calibConfigAFII = "JES_Prerecommendation2015_AFII_Apr2015.config";
+  std::string m_calibConfigAFII;
   /// @brief config files actually passed to JetCalibrationTool chosen from the above depending on what information stored in the input file
-  std::string m_calibConfig = "";
+  std::string m_calibConfig;
   /// @brief List of calibration steps. "Insitu" added automatically if running on data
-  std::string m_calibSequence = "JetArea_Residual_Origin_EtaJES_GSC";
+  std::string m_calibSequence;
   /// @brief config for JES Uncertainty Tool
-  std::string m_JESUncertConfig = "";
+  std::string m_JESUncertConfig;
   /// @brief JetUncertaintiesTool parameter
-  std::string m_JESUncertMCType = "MC15";
+  std::string m_JESUncertMCType;
   /** @rst
     If you do not want to use SampleHandler to mark samples as AFII, this flag can be used to force run the AFII configurations.
 
@@ -81,41 +81,43 @@ public:
       sample->setMetaString("SimulationFlavour", "AFII");
 
   @endrst */
-  bool m_setAFII = false;
-  /// @brief when running data "_Insitu" is appended to this string
-  bool m_forceInsitu = false;
+  bool m_setAFII;
+  bool m_forceInsitu;
+
+  /// @brief whether the jet collection is trigger or not (soon: different calibrations)
+  bool m_isTrigger;
 
   // @brief Config for JER Uncert Tool. If not empty the tool will run
-  std::string m_JERUncertConfig = "";
+  std::string m_JERUncertConfig;
   /// @brief Set systematic mode as Full (true) or Simple (false)
-  bool m_JERFullSys = false;
+  bool m_JERFullSys;
   /// @brief Apply nominal smearing
-  bool m_JERApplyNominal = false;
+  bool m_JERApplyNominal;
 
   /// @brief enable to apply jet cleaning decoration
-  bool m_doCleaning = true;
+  bool m_doCleaning;
   /// @brief Cut Level
-  std::string m_jetCleanCutLevel = "LooseBad";
+  std::string m_jetCleanCutLevel;
   /// @brief Save all cleaning decisions as decorators
-  bool m_saveAllCleanDecisions = false;
+  bool m_saveAllCleanDecisions;
   /// @brief Do Ugly cleaning ( i.e. TileGap 3 )
-  bool m_jetCleanUgly = false;
+  bool m_jetCleanUgly;
   /// @brief Recalculate JVT using the calibrated jet pT
-  bool m_redoJVT = false;
+  bool m_redoJVT;
   /// @brief Sort the processed container elements by transverse momentum
-  bool    m_sort = true;
+  bool    m_sort;
   /// @brief Apply jet cleaning to parent jet
-  bool    m_cleanParent = false;
-  bool    m_applyFatJetPreSel = false;
+  bool    m_cleanParent;
+  bool    m_applyFatJetPreSel;
 
 // systematics
+  /// @brief set to true if systematics asked for and exist
+  bool m_runSysts;
+
   /// @brief jet tile correction
-  bool m_doJetTileCorr = false;
+  bool m_doJetTileCorr;
 
 private:
-  /// @brief set to true if systematics asked for and exist
-  bool m_runSysts = false; //!
-
   int m_numEvent;         //!
   int m_numObject;        //!
 
@@ -126,16 +128,20 @@ private:
   std::vector<int> m_systType; //!
 
   // tools
-  asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle{"JetCalibrationTool"};         //!
-  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle{"JetUncertaintiesTool"};     //!
-  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle{"JERTool"};                               //!
-  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle{"JERSmearingTool"};               //!
-  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle{"JetVertexTaggerTool"};             //!
-  asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle{"JetCleaningTool"};               //!
-  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool"};   //!
+  asg::AnaToolHandle<IJetCalibrationTool> m_JetCalibrationTool_handle; //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool> m_JetUncertaintiesTool_handle; //!
 
-  std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles;                              //!
+  asg::AnaToolHandle<IJERTool> m_JERTool_handle;    //!
+  asg::AnaToolHandle<IJERSmearingTool> m_JERSmearingTool_handle;    //!
+
+  asg::AnaToolHandle<IJetUpdateJvt> m_JVTUpdateTool_handle; //!
+
+  asg::AnaToolHandle<IJetSelector> m_JetCleaningTool_handle; //!
   std::vector<std::string>  m_decisionNames;    //!
+  std::vector< asg::AnaToolHandle<IJetSelector> > m_AllJetCleaningTool_handles;   //!
+
+  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle; //!
+
 
 public:
 

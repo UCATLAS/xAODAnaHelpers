@@ -38,8 +38,64 @@ ClassImp(TauSelector)
 
 
 TauSelector :: TauSelector () :
-    Algorithm("TauSelector")
+    Algorithm("TauSelector"),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_tau_cutflowHist_1(nullptr),
+    m_tau_cutflowHist_2(nullptr),
+    m_TauSelTool(nullptr),
+    m_TOELLHDecorator(nullptr)
 {
+  // Here you put any code for the base initialization of variables,
+  // e.g. initialize all pointers to 0.  Note that you should only put
+  // the most basic initialization here, since this method will be
+  // called on both the submission and the worker node.  Most of your
+  // initialization code will go into histInitialize() and
+  // initialize().
+
+  //ATH_MSG_INFO( "Calling constructor");
+
+  m_useCutFlow              = true;
+
+  // checks if the algorithm has been used already
+  //
+  m_isUsedBefore            = false;
+
+  // input container to be read from TEvent or TStore
+  //
+  m_inContainerName         = "";
+
+  // Systematics stuff
+  //
+  m_inputAlgoSystNames      = "";
+  m_outputAlgoSystNames     = "TauSelector_Syst";
+
+  // decorate selected objects that pass the cuts
+  //
+  m_decorateSelectedObjects = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::VIEW_ELEMENTS option
+  //                            decorrating and output container should not be mutually exclusive
+  m_createSelectedContainer = false;
+  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
+  m_outContainerName        = "";
+
+  // if only want to look at a subset of object
+  //
+  m_nToProcess              = -1;
+
+  // configurable cuts
+  //
+  m_pass_max                = -1;
+  m_pass_min                = -1;
+
+  m_ConfigPath              = "$ROOTCOREBIN/data/xAODAnaHelpers/TauConf/00-01-19/Selection/recommended_selection_mc15.conf";
+  m_EleOLRFilePath          = "";
+
+  m_minPtDAOD               = 15e3;
+
+  m_setTauOverlappingEleLLHDecor = true;
+
 }
 
 TauSelector::~TauSelector() {}
@@ -186,9 +242,9 @@ EL::StatusCode TauSelector :: initialize ()
   m_TauSelTool = new TauAnalysisTools::TauSelectionTool( sel_tool_name );
   m_TauSelTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
 
-  RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("ConfigPath",PathResolverFindDataFile(m_ConfigPath).c_str()), "Failed to set ConfigPath property");
+  RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("ConfigPath",m_ConfigPath.c_str()), "Failed to set ConfigPath property");
   if ( !m_EleOLRFilePath.empty() ) {
-    RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("EleOLRFilePath",PathResolverFindDataFile(m_EleOLRFilePath).c_str()), "Failed to set EleOLRFilePath property");
+    RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("EleOLRFilePath",m_EleOLRFilePath.c_str()), "Failed to set EleOLRFilePath property");
   }
   RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->initialize(), "Failed to properly initialize TauSelectionTool");
 

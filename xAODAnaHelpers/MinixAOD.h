@@ -44,20 +44,20 @@
 class MinixAOD : public xAH::Algorithm
 {
 public:
-  /// @brief name of the output file to use for xAOD dumping
-  std::string m_outputFileName = "out_miniXAOD";
+  /// name of the output file to use for xAOD dumping
+  std::string m_outputFileName;
 
-  /// @brief enable to create the output file for xAOD dumping
-  bool m_createOutputFile = true;
+  /// enable to create the output file for xAOD dumping
+  bool m_createOutputFile;
 
-  /// @brief copy the file metadata over
-  bool m_copyFileMetaData = false;
+  /// copy the file metadata over
+  bool m_copyFileMetaData;
 
-  /// @brief copy the trigger containers and meta data over
-  bool m_copyTriggerInfo = false;
+  /// copy the trigger containers and meta data over
+  bool m_copyTriggerInfo;
 
-  /// @brief copy the cutbookkeeper data over
-  bool m_copyCutBookkeeper = false;
+  /// copy the cutbookkeeper data over
+  bool m_copyCutBookkeeper;
 
   /**
     @brief names of containers to copy from the input file
@@ -69,7 +69,7 @@ public:
 
     @endrst
    */
-  std::string m_simpleCopyKeys = "";
+  std::string m_simpleCopyKeys;
 
   /**
     @brief names of containers in the TStore to copy over
@@ -84,7 +84,7 @@ public:
 
     @endrst
    */
-  std::string m_storeCopyKeys = "";
+  std::string m_storeCopyKeys;
 
   /**
     @brief names of containers that have been shallow-copied
@@ -111,7 +111,7 @@ public:
 
     @endrst
    */
-  std::string m_shallowCopyKeys = "";
+  std::string m_shallowCopyKeys;
 
   /**
     @brief names of containers that have been shallow-copied
@@ -128,7 +128,7 @@ public:
 
     @endrst
    */
-  std::string m_deepCopyKeys = "";
+  std::string m_deepCopyKeys;
 
   /**
     @brief names of vectors that have container names for its contents
@@ -142,7 +142,7 @@ public:
       Always specify your string in a space-delimited format where pairs are split up by ``vector name|parent container name``.
     @endrst
    */
-  std::string m_vectorCopyKeys = "";
+  std::string m_vectorCopyKeys;
 
 private:
   /// A vector of containers that are in TEvent that just need to be written to the output
@@ -158,16 +158,16 @@ private:
   std::vector<std::string> m_copyFromStoreToEventKeys_vec; //!
 
   /// Pointer for the File MetaData Tool
-  xAODMaker::FileMetaDataTool          *m_fileMetaDataTool = nullptr;    //!
+  xAODMaker::FileMetaDataTool          *m_fileMetaDataTool;    //!
   /// Pointer for the TriggerMenu MetaData Tool
-  xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool = nullptr; //!
+  xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool; //!
 
   /// Pointer for our CutBookkeeper
-  xAOD::CutBookkeeperContainer    *m_outputCBKContainer = nullptr;       //!
-  xAOD::CutBookkeeperAuxContainer *m_outputCBKContainer_aux = nullptr;   //!
-  xAOD::CutBookkeeperContainer    *m_outputInCBKContainer = nullptr;     //!
-  xAOD::CutBookkeeperAuxContainer *m_outputInCBKContainer_aux = nullptr; //!
-  xAOD::CutBookkeeper             *m_outputCBK = nullptr;                //!
+  xAOD::CutBookkeeperContainer    *m_outputCBKContainer;       //!
+  xAOD::CutBookkeeperAuxContainer *m_outputCBKContainer_aux;   //!
+  xAOD::CutBookkeeperContainer    *m_outputInCBKContainer;     //!
+  xAOD::CutBookkeeperAuxContainer *m_outputInCBKContainer_aux; //!
+  xAOD::CutBookkeeper             *m_outputCBK;                //!
 
 public:
   // this is a standard constructor

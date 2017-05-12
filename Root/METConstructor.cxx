@@ -65,6 +65,44 @@ ClassImp(METConstructor)
 METConstructor :: METConstructor () :
     Algorithm("METConstructor")
 {
+
+  m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
+  m_mapName               = "METAssoc_AntiKt4LCTopo";
+  m_coreName              = "MET_Core_AntiKt4LCTopo";
+  m_outputContainer       = "NewRefFinal";
+
+  m_inputJets             = "";
+  m_inputElectrons        = "";
+  m_inputPhotons          = "";
+  m_inputTaus             = "";
+  m_inputMuons            = "";
+
+  m_doElectronCuts        = false;
+  m_doPhotonCuts          = false;
+  m_doTauCuts             = false;
+  m_doMuonCuts            = false;
+
+  m_doMuonEloss           = false;
+  m_doIsolMuonEloss       = false;
+  m_doJVTCut              = false;
+
+  m_useCaloJetTerm        = true;
+  m_useTrackJetTerm       = false;
+
+  // used for systematics
+  m_runNominal             = true; // set to false if you want to run met systematics
+  m_systName               = "All";// do not change it, not useful
+  m_systVal                = 1;
+  m_SoftTermSystConfigFile = "TrackSoftTerms.config";
+
+  // add for met syst tool
+  m_jetSystematics         = "";
+  m_eleSystematics         = "";
+  m_muonSystematics        = "";
+  m_phoSystematics         = "";
+
+  m_outputAlgoSystNames    = "";
+
 }
 
 EL::StatusCode METConstructor :: setupJob (EL::Job& job)

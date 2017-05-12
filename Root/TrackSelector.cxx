@@ -24,8 +24,51 @@ ClassImp(TrackSelector)
 
 
 TrackSelector :: TrackSelector () :
-    Algorithm("TrackSelector")
+    Algorithm("TrackSelector"),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr)
 {
+
+  // read debug flag from .config file
+  m_useCutFlow    = true;
+
+  // input container to be read from TEvent or TStore
+  m_inContainerName  = "";
+  m_inJetContainerName  = "";
+
+  // decorate selected objects that pass the cuts
+  m_decorateSelectedObjects = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::VIEW_ELEMENTS option
+  //                            decorating and output container should not be mutually exclusive
+  m_createSelectedContainer = false;
+  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
+  m_outContainerName        = "";
+  // if only want to look at a subset of object
+  m_nToProcess              = -1;
+
+  // cuts
+  m_pass_max                = -1;
+  m_pass_min                = -1;
+  m_pT_max                  = 1e8;
+  m_pT_min                  = 1e8;
+  m_eta_max                 = 1e8;
+  m_eta_min                 = 1e8;
+  m_d0_max                  = 1e8;
+  m_z0_max                  = 1e8;
+  m_z0sinT_max              = 1e8;
+  m_nBL_min                 = 1e8;
+  m_nSi_min                 = 1e8;
+  m_nPixHoles_max           = 1e8;
+  m_chi2NdofCut_max         = 1e8;
+  m_chi2Prob_max            = 1e8;
+
+  m_passAuxDecorKeys        = "";
+
+  m_failAuxDecorKeys        = "";
+
+  m_doTracksInJets          = false;
+
 }
 
 EL::StatusCode TrackSelector :: setupJob (EL::Job& job)

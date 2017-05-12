@@ -31,8 +31,56 @@ ClassImp(ElectronEfficiencyCorrector)
 
 
 ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
-    Algorithm("ElectronEfficiencyCorrector")
+    Algorithm("ElectronEfficiencyCorrector"),
+    m_asgElEffCorrTool_elSF_PID(nullptr),
+    m_asgElEffCorrTool_elSF_Iso(nullptr),
+    m_asgElEffCorrTool_elSF_Reco(nullptr),
+    m_asgElEffCorrTool_elSF_Trig(nullptr),
+    m_asgElEffCorrTool_elSF_TrigMCEff(nullptr)
 {
+  // Here you put any code for the base initialization of variables,
+  // e.g. initialize all pointers to 0.  Note that you should only put
+  // the most basic initialization here, since this method will be
+  // called on both the submission and the worker node.  Most of your
+  // initialization code will go into histInitialize() and
+  // initialize().
+
+  //ATH_MSG_INFO( "Calling constructor");
+
+  // input container to be read from TEvent or TStore
+  //
+  m_inContainerName         = "";
+  m_outContainerName        = "";
+
+  m_setAFII                 = false;
+
+  // Systematics stuff
+  //
+  m_inputAlgoSystNames      = "";
+  m_outputAlgoSystNames     = "";
+  m_systValPID              = 0.0;
+  m_systValIso              = 0.0;
+  m_systValReco             = 0.0;
+  m_systValTrig             = 0.0;
+  m_systValTrigMCEff        = 0.0;
+  m_systNamePID             = "";
+  m_systNameTrig            = "";
+  m_systNameReco            = "";
+  m_systNameTrigMCEff       = "";
+  m_outputSystNamesPID      = "EleEffCorr_PIDSyst";
+  m_outputSystNamesIso      = "EleEffCorr_IsoSyst";
+  m_outputSystNamesReco     = "EleEffCorr_RecoSyst";
+  m_outputSystNamesTrig     = "EleEffCorr_TrigSyst";
+  m_outputSystNamesTrigMCEff = "EleEffCorr_TrigMCEffSyst";
+  m_correlationModel = "FULL";
+
+  // file(s) containing corrections
+  //
+  m_corrFileNamePID         = "";
+  m_corrFileNameIso         = "";
+  m_corrFileNameReco        = "";
+  m_corrFileNameTrig        = "";
+  m_corrFileNameTrigMCEff   = "";
 }
 
 

@@ -30,15 +30,15 @@ class METConstructor : public xAH::Algorithm
 public:
 
   // configuration variables
-  TString m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
-  TString m_mapName = "METAssoc_AntiKt4LCTopo";
-  TString m_coreName = "MET_Core_AntiKt4LCTopo";
-  TString m_outputContainer = "NewRefFinal";
-  TString m_inputJets = "";
-  TString m_inputElectrons = "";
-  TString m_inputPhotons = "";
-  TString m_inputTaus = "";
-  TString m_inputMuons = "";
+  TString m_referenceMETContainer;
+  TString m_mapName;
+  TString m_coreName;
+  TString m_outputContainer;
+  TString m_inputJets;
+  TString m_inputElectrons;
+  TString m_inputPhotons;
+  TString m_inputTaus;
+  TString m_inputMuons;
 
 
   //std::string  m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
@@ -46,53 +46,53 @@ public:
   //std::string  m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
   //std::string m_inputAlgoPhotons; // name of vector<string> of syst retrieved from TStore
 
-  bool    m_doElectronCuts = false;
-  bool    m_doPhotonCuts = false;
-  bool    m_doTauCuts = false;
-  bool    m_doMuonCuts = false;
+  bool    m_doElectronCuts;
+  bool    m_doPhotonCuts;
+  bool    m_doTauCuts;
+  bool    m_doMuonCuts;
 
-  bool    m_doMuonEloss = false;
-  bool    m_doIsolMuonEloss = false;
-  bool    m_doJVTCut = false;
+  bool    m_doMuonEloss;
+  bool    m_doIsolMuonEloss;
+  bool    m_doJVTCut;
 
-  bool    m_useCaloJetTerm = true;
-  bool    m_useTrackJetTerm = false;
+  bool    m_useCaloJetTerm;
+  bool    m_useTrackJetTerm;
 
-  // used for systematics
-  /// @brief set to false if you want to run met systematics
-  bool m_runNominal = true;
-  /// @brief do not change it, not useful
-  std::string m_systName = "All";
-  float m_systVal = 1.0;
+  bool m_runNominal;
 
-  std::string m_SoftTermSystConfigFile = "TrackSoftTerms.config";
+  bool m_isMC; //add bool
+
+
+  float m_systVal;
+  std::string m_systName;
+
+  std::string m_SoftTermSystConfigFile;
 
   /** @rst
         Name of jet systematics vector from  :cpp:class:`~JetCalibrator`.
       @endrst
    */
-  std::string m_jetSystematics = "";
+  std::string m_jetSystematics;
   /** @rst
         Name of electron systematics vector from  :cpp:class:`~ElectronCalibrator`.
       @endrst
    */
-  std::string m_eleSystematics = "";
+  std::string m_eleSystematics;
   /** @rst
         Name of muon systematics vector from  :cpp:class:`~MuonCalibrator`.
       @endrst
    */
-  std::string m_muonSystematics = "";
+  std::string m_muonSystematics;
   /** @rst
         Name of photon systematics vector from :cpp:class:`~PhotonCalibrator`.
       @endrst
    */
-  std::string m_phoSystematics = "";
+  std::string m_phoSystematics;
 
-  std::string m_outputAlgoSystNames = "";
+  std::string m_outputAlgoSystNames;
 
 
 private:
-  bool m_isMC; //!
 
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
