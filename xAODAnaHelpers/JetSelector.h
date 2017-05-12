@@ -24,10 +24,10 @@
 #include "xAODAnaHelpers/Algorithm.h"
 
 // external tools include(s):
-#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
-#include "JetJvtEfficiency/JetJvtEfficiency.h"
-#include "JetMomentTools/JetForwardJvtTool.h"
 #include "AsgTools/AnaToolHandle.h"
+#include "JetJvtEfficiency/IJetJvtEfficiency.h"
+#include "JetInterface/IJetModifier.h"
+#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
 
 class JetSelector : public xAH::Algorithm
 {
@@ -219,11 +219,9 @@ private:
 
   std::vector<CP::SystematicSet> m_systListJVT; //!
 
-  BTaggingSelectionTool   *m_BJetSelectTool = nullptr;    //!
-
-  std::string m_JVT_tool_name;                                 //!
-  asg::AnaToolHandle<CP::IJetJvtEfficiency> m_JVT_tool_handle; //!
-  asg::AnaToolHandle<IJetModifier> m_fJVT_tool_handle;//!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency"};         //!
+  asg::AnaToolHandle<IJetModifier>           m_fJVT_tool_handle{"JetForwardJvtTool"};           //!
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

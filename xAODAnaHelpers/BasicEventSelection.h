@@ -14,19 +14,18 @@
 // ROOT include(s):
 #include "TH1D.h"
 
-// rootcore includes
-#include "GoodRunsLists/GoodRunsListSelectionTool.h"
-#include "PileupReweighting/PileupReweightingTool.h"
-#include "AsgTools/AnaToolHandle.h"
-#include "PMGTools/PMGSherpa22VJetsWeightTool.h"
-
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
-namespace TrigConf {
-  class xAODConfigTool;
-}
+// external tools include(s):
+#include "AsgTools/AnaToolHandle.h"
+#include "AsgAnalysisInterfaces/IGoodRunsListSelectionTool.h"
+#include "AsgAnalysisInterfaces/IPileupReweightingTool.h"
+#include "TrigConfInterfaces/ITrigConfigTool.h"
+#include "TrigDecisionInterface/ITrigDecisionTool.h"
+#include "PATInterfaces/IWeightTool.h"
 
+// forward-declare for now as the interface is broken and we need to store a pointer to the tool itself
 namespace Trig {
   class TrigDecisionTool;
 }
@@ -164,12 +163,13 @@ class BasicEventSelection : public xAH::Algorithm
 
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
 
-    GoodRunsListSelectionTool*   m_grl = nullptr;        //!
-    asg::AnaToolHandle<CP::IPileupReweightingTool>   m_pileup_tool_handle; //!
-    TrigConf::xAODConfigTool*    m_trigConfTool = nullptr;  //!
-    Trig::TrigDecisionTool*      m_trigDecTool = nullptr;   //!
-
-    asg::AnaToolHandle<IWeightTool> m_reweightSherpa22_tool_handle; //!
+    // tools
+    asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle{"GoodRunsListSelectionTool"};                              //!
+    asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"};                      //!
+    asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle{"TrigConf::xAODConfigTool"};                      //!
+    asg::AnaToolHandle<Trig::ITrigDecisionTool>    m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
+    Trig::TrigDecisionTool*                        m_trigDecTool{nullptr};                                                 //!
+    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool"}; //!
 
     bool m_isMC;      //!
 

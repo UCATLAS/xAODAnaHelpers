@@ -16,14 +16,14 @@
 #include "PATInterfaces/SystematicVariation.h"
 
 // external tools include(s):
-#include "JetCalibTools/JetCalibrationTool.h"
-#include "JetUncertainties/JetUncertaintiesTool.h"
-#include "JetResolution/JERTool.h"
-#include "JetResolution/JERSmearingTool.h"
-#include "JetSelectorTools/JetCleaningTool.h"
-#include "JetMomentTools/JetVertexTaggerTool.h"
 #include "AsgTools/AnaToolHandle.h"
-#include "JetTileCorrection/JetTileCorrectionTool.h"
+#include "JetCalibTools/IJetCalibrationTool.h"
+#include "JetCPInterfaces/ICPJetUncertaintiesTool.h"
+#include "JetResolution/IJERTool.h"
+#include "JetResolution/IJERSmearingTool.h"
+#include "JetInterface/IJetSelector.h"
+#include "JetInterface/IJetUpdateJvt.h"
+#include "JetCPInterfaces/IJetTileCorrectionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -126,20 +126,16 @@ private:
   std::vector<int> m_systType; //!
 
   // tools
-  asg::AnaToolHandle<IJetCalibrationTool> m_JetCalibrationTool_handle; //!
-  asg::AnaToolHandle<ICPJetUncertaintiesTool> m_JetUncertaintiesTool_handle; //!
+  asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle{"JetCalibrationTool"};         //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle{"JetUncertaintiesTool"};     //!
+  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle{"JERTool"};                               //!
+  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle{"JERSmearingTool"};               //!
+  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle{"JetVertexTaggerTool"};             //!
+  asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle{"JetCleaningTool"};               //!
+  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool"};   //!
 
-  asg::AnaToolHandle<IJERTool> m_JERTool_handle;    //!
-  asg::AnaToolHandle<IJERSmearingTool> m_JERSmearingTool_handle;    //!
-
-  asg::AnaToolHandle<IJetUpdateJvt> m_JVTUpdateTool_handle; //!
-
-  asg::AnaToolHandle<IJetSelector> m_JetCleaningTool_handle; //!
+  std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles;                              //!
   std::vector<std::string>  m_decisionNames;    //!
-  std::vector< asg::AnaToolHandle<IJetSelector> > m_AllJetCleaningTool_handles;   //!
-
-  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle; //!
-
 
 public:
 

@@ -27,6 +27,9 @@
 #include "JetMomentTools/JetForwardJvtTool.h"
 
 // external tools include(s):
+#include "JetJvtEfficiency/JetJvtEfficiency.h"
+#include "JetMomentTools/JetForwardJvtTool.h"
+#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -38,8 +41,7 @@ ClassImp(JetSelector)
 
 
 JetSelector :: JetSelector () :
-    Algorithm("JetSelector"),
-    m_JVT_tool_handle("CP::JetJvtEfficiency/JVTToolName", nullptr)
+    Algorithm("JetSelector")
 {
 }
 
@@ -214,53 +216,44 @@ EL::StatusCode JetSelector :: initialize ()
     ATH_MSG_INFO(" Decorate Jets with " << m_decor);
   }
 
-  //
-  // initialize the BJetSelectionTool
-  //
-  std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
-  if ( asg::ToolStore::contains<BTaggingSelectionTool>( sel_tool_name ) ) {
-    m_BJetSelectTool = asg::ToolStore::get<BTaggingSelectionTool>( sel_tool_name );
-  } else {
-    m_BJetSelectTool = new BTaggingSelectionTool( sel_tool_name );
-  }
-  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
-
   // if applying cut on nr. bjets, configure it
   //
   if ( m_doBTagCut ) {
 
-    // A few which are not configurable as of yet....
-    // is there a reason to have this configurable here??...I think no (GF to self)
-    //
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName", m_corrFileName),"Failed to set property:FlvTagCutDefinitionsFileName");
+    // initialize the BJetSelectionTool
+    m_BJetSelectTool_handle.setName("BJetSelectionTool_" + m_name);
+    if(!m_BJetSelectTool_handle.isUserConfigured()){
+      // A few which are not configurable as of yet....
+      // is there a reason to have this configurable here??...I think no (GF to self)
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName", m_corrFileName),"Failed to set property:FlvTagCutDefinitionsFileName");
 
-    // configurable parameters
-    //
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("TaggerName",	      m_taggerName),"Failed to set property: TaggerName");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("JetAuthor",	      m_jetAuthor),"Failed to set property: JetAuthor");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
+      // configurable parameters
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("TaggerName",	      m_taggerName),"Failed to set property: TaggerName");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("JetAuthor",	      m_jetAuthor),"Failed to set property: JetAuthor");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.initialize(), "Failed to properly initialize the BJetSelectionTool");
+
+      RETURN_CHECK("JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("OutputLevel",  msg().level()),     "");
+    }
+    RETURN_CHECK("JetSelector::initialize()", m_BJetSelectTool_handle.retrieve(),     "Failed to initialize BTaggingSelectionTool");
 
   }
 
   //init fJVT
-  m_fJVT_tool_handle.setTypeAndName("JetForwardJvtTool/fJvt");
   RETURN_CHECK("JetSelector::initialize()",m_fJVT_tool_handle.retrieve(),"Failed to retrieve CP::JetForwardJVTtool");
 
   // initialize the CP::JetJvtEfficiency Tool
   //
-  m_JVT_tool_name = "JetJvtEfficiency_effSF_" + m_name;
-  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<CP::IJetJvtEfficiency>(m_JVT_tool_name), "" );
-
-  m_JVT_tool_handle.setTypeAndName("CP::JetJvtEfficiency/" + m_JVT_tool_name);
+  m_JVT_tool_handle.setName("JetJvtEfficiency_effSF_" + m_name);
   if(!m_JVT_tool_handle.isUserConfigured()) {
-    RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency), "Could not make JetJetEfficiency");
     RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
     RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ),      "Failed to set SFFile property of JetJvtEfficiency for JVT");
-    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.retrieve(), "Failed to retrieve CP::JetJvtEfficiency");
+    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()),     "");
   }
+  RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.retrieve(), "Failed to retrieve CP::JetJvtEfficiency");
+
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -524,7 +517,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Do it only if a tool with *this* name hasn't already been used
     //
-    if ( !isToolAlreadyUsed(m_JVT_tool_name) ) {
+    if ( m_JVT_tool_handle.isInitialized() ) {
 
       for ( const auto& syst_it : m_systListJVT ) {
 
@@ -677,8 +670,6 @@ EL::StatusCode JetSelector :: finalize ()
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
 
-  if ( m_BJetSelectTool ) { m_BJetSelectTool = nullptr; delete m_BJetSelectTool; }
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -813,7 +804,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //
   if ( m_doBTagCut ) {
     ATH_MSG_DEBUG("Doing BTagging");
-    if ( m_BJetSelectTool->accept( jet ) ) {
+    if ( m_BJetSelectTool_handle->accept( jet ) ) {
       if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );
     } else {
       return 0;
