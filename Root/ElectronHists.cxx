@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
+#include <AsgTools/MessageCheck.hh>
 
 ElectronHists :: ElectronHists (std::string name, std::string detailStr) :
   IParticleHists(name, detailStr, "electron", "electron"),

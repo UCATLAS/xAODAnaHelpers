@@ -2,7 +2,7 @@
 #include <sstream>
 #include <math.h>       /* hypot */
 
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
+#include <AsgTools/MessageCheck.hh>
 
 using std::vector;
 

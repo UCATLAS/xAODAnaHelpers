@@ -23,9 +23,6 @@
 #include <AsgTools/MsgStream.h>
 #include <AsgTools/MsgStreamMacros.h>
 
-// check status codes
-#include <AsgTools/MessageCheck.hh>
-
 /// Macro used to execute "protected" code
 #define ATH_EXEC_LVL( lvl, expr )               \
    do {                                         \

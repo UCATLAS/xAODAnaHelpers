@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
+#include <AsgTools/MessageCheck.hh>
 
 VtxHists :: VtxHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)

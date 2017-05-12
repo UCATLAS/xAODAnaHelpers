@@ -20,7 +20,7 @@
 #include "xAODAnaHelpers/MuonSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 #include "PATCore/TAccept.h"
 #include "TrigConfxAOD/xAODConfigTool.h"
 // tool includes

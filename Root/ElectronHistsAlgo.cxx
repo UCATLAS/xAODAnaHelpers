@@ -7,7 +7,7 @@
 #include <xAODAnaHelpers/ElectronHistsAlgo.h>
 #include <xAODAnaHelpers/ElectronHists.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronHistsAlgo)

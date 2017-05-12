@@ -1,7 +1,7 @@
 #include "xAODAnaHelpers/TracksInJetHists.h"
 #include <math.h>
 #include <xAODTracking/TrackParticle.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 using std::cout;  using std::endl;

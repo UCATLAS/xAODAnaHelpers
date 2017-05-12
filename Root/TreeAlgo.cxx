@@ -13,7 +13,7 @@
 
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(TreeAlgo)

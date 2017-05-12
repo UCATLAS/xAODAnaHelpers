@@ -1,5 +1,5 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 
 #include "xAODBase/IParticleContainer.h"
 

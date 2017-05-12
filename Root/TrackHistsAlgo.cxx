@@ -8,7 +8,7 @@
 
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)

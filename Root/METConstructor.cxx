@@ -33,7 +33,7 @@
 // #include "xAODParticleEvent/ParticleAuxContainer.h"
 
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 #include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 

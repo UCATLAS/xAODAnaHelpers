@@ -12,7 +12,7 @@
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/BasicEventSelection.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 
 #include "PATInterfaces/CorrectionCode.h"
 //#include "AsgTools/StatusCode.h"

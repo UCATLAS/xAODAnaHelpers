@@ -17,7 +17,7 @@
 // EDM include(s):
 #include <xAODEventInfo/EventInfo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.hh>
 
 #include <xAODAnaHelpers/TrigMatcher.h>
 
