@@ -332,12 +332,14 @@ This is albeit a litle bit trickier for anyone new to how Athena tools work. Fir
 
     // initialize jet calibration tool
     m_JetCalibrationTool_handle.setName("JetCalibrationTool_" + m_name);
+    ATH_MSG_DEBUG("Trying to initialize " << m_JetCalibrationToolHandle.typeAndName());
     if( !m_JetCalibrationTool_handle.isUserConfigured() ){
       RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo), "Failed to set JetCollection");
       //... other setProperty() calls and other logic can be in here for tool configuration
       RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()), "");
     }
     RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.retrieve(), "Failed to retrieve JetCalibrationTool");
+    ATH_MSG_DEBUG("Successfully initialized " << m_JetCalibrationToolHandle.typeAndName());
   }
 
   EL::StatusCode JetCalibrator :: execute () {
