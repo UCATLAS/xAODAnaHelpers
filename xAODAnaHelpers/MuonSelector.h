@@ -17,18 +17,16 @@
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
+#include "IsolationSelection/IIsolationSelectionTool.h"
+#include "MuonSelectorTools/IMuonSelectionTool.h"
+#include "TriggerMatchingTool/IMatchingTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
-namespace Trig {
-  class TrigDecisionTool;
-  class IMatchingTool;
-}
-
+// forward-declare for now until IsolationSelectionTool interface is updated
 namespace CP {
-  class IMuonSelectionTool;
-  //class IIsolationSelectionTool;
   class IsolationSelectionTool;
 }
 
@@ -40,53 +38,74 @@ class MuonSelector : public xAH::Algorithm
 public:
 
   // cutflow
-  bool m_useCutFlow;
+  bool m_useCutFlow = true;
 
   // configuration variables
-  std::string    m_inContainerName;          /* input container name */
-  std::string    m_outContainerName;         /* output container name */
-  std::string    m_outAuxContainerName;      /* output auxiliary container name */
-  std::string    m_inputAlgoSystNames;
-  std::string    m_outputAlgoSystNames;
-  bool       	 m_decorateSelectedObjects;  /* decorate selected objects - default "passSel" */
-  bool       	 m_createSelectedContainer;  /* fill using SG::VIEW_ELEMENTS to be light weight */
-  int            m_nToProcess;               /* look at n objects */
-  int            m_pass_min;  	             /* minimum number of objects passing cuts */
-  int            m_pass_max;  	             /* maximum number of objects passing cuts */
-  float          m_pT_max;		     /* require pT < pt_max */
-  float          m_pT_min;		     /* require pT > pt_min */
-  int            m_muonQuality;	             /* require quality */
-  std::string    m_muonQualityStr;           /* require type */
-  //std::string    m_muonType;	             /* require type */
-  float          m_eta_max;		     /* require |eta| < eta_max */
-  float          m_d0_max;                   /* require d0 < m_d0_max */
-  float          m_d0sig_max; 	             /* require d0 significance (at BL) < m_d0sig_max */
-  float	         m_z0sintheta_max;           /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
+  /** input container name */
+  std::string    m_inContainerName = "";
+  /** output container name */
+  std::string    m_outContainerName = "";
+  /** output auxiliary container name */
+  std::string    m_outAuxContainerName;
+  std::string    m_inputAlgoSystNames = "";
+  std::string    m_outputAlgoSystNames = "MuonSelector_Syst";
+  /** decorate selected objects - default "passSel" */
+  bool       	 m_decorateSelectedObjects = true;
+  /** fill using SG::VIEW_ELEMENTS to be light weight */
+  bool       	 m_createSelectedContainer = false;
+  /** look at n objects */
+  int            m_nToProcess = -1;
+  /** minimum number of objects passing cuts */
+  int            m_pass_min = -1;
+  /** maximum number of objects passing cuts */
+  int            m_pass_max = -1;
+  /** require pT < pt_max */
+  float          m_pT_max = 1e8;
+  /** require pT > pt_min */
+  float          m_pT_min = 1e8;
+  /** require quality */
+  std::string    m_muonQualityStr = "Medium";
+  /** require type */
+  //std::string    m_muonType;
+  /** require |eta| < eta_max */
+  float          m_eta_max = 1e8;
+  /** require d0 < m_d0_max */
+  float          m_d0_max = 1e8;
+  /** require d0 significance (at BL) < m_d0sig_max */
+  float          m_d0sig_max = 1e8;
+  /** require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
+  float	         m_z0sintheta_max = 1e8;
 
   /** @brief Remove cosmic muons that fail absolute z0 and d0 selections */
-  bool           m_removeCosmicMuon;
+  bool           m_removeCosmicMuon = false;
   /** @brief Remove events with a bad muon, defined by poor q/p */
-  bool           m_removeEventBadMuon;
+  bool           m_removeEventBadMuon = true;
 
   // isolation
-  std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
-  std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
-  std::string    m_CaloIsoEff;               /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
-  std::string    m_TrackIsoEff;              /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
-  std::string    m_CaloBasedIsoType;         /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
-  std::string    m_TrackBasedIsoType;        /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  /** reject objects which do not pass this isolation cut - default = "" (no cut) */
+  std::string    m_MinIsoWPCut = "";
+  /** decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
+  std::string    m_IsoWPList = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  /** to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  std::string    m_CaloIsoEff = "0.1*x+90";
+  /** to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  std::string    m_TrackIsoEff = "98";
+  /** to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  std::string    m_CaloBasedIsoType = "topoetcone20";
+  /** to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  std::string    m_TrackBasedIsoType = "ptvarcone30";
 
   /* trigger matching */
-  std::string    m_singleMuTrigChains;       /* A comma-separated string w/ alll the HLT single muon trigger chains for which you want to perform the matching.
-  		                                If left empty (as it is by default), no trigger matching will be attempted at all */
-  std::string    m_diMuTrigChains;           /* A comma-separated string w/ alll the HLT dimuon trigger chains for which you want to perform the matching.
-  					     	If left empty (as it is by default), no trigger matching will be attempted at all */
-  double         m_minDeltaR;
-
-  std::string    m_passAuxDecorKeys;
-  std::string    m_failAuxDecorKeys;
+  /** A comma-separated string w/ alll the HLT single muon trigger chains for which you want to perform the matching. If left empty (as it is by default), no trigger matching will be attempted at all */
+  std::string    m_singleMuTrigChains = "";
+  /** A comma-separated string w/ all the HLT dimuon trigger chains for which you want to perform the matching.  If left empty (as it is by default), no trigger matching will be attempted at all */
+  std::string    m_diMuTrigChains = "";
+  /// @brief Recommended threshold for muon triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
+  double         m_minDeltaR = 0.1;
 
 private:
+
+  int            m_muonQuality; //!
 
   int m_numEvent;           //!
   int m_numObject;          //!
@@ -95,15 +114,15 @@ private:
   int m_numObjectPass;      //!
 
   // cutflow
-  TH1D* m_cutflowHist;      //!
-  TH1D* m_cutflowHistW;     //!
+  TH1D* m_cutflowHist = nullptr;      //!
+  TH1D* m_cutflowHistW = nullptr;     //!
   int   m_cutflow_bin;      //!
 
   bool  m_isUsedBefore;     //!
 
   // object cutflow
-  TH1D* m_mu_cutflowHist_1;                 //!
-  TH1D* m_mu_cutflowHist_2;                 //!
+  TH1D* m_mu_cutflowHist_1 = nullptr;                 //!
+  TH1D* m_mu_cutflowHist_2 = nullptr;                 //!
 
   int   m_mu_cutflow_all;		    //!
   int   m_mu_cutflow_eta_and_quaility_cut;  //!
@@ -124,15 +143,14 @@ private:
   std::vector<std::string>            m_diMuTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diMuTrigChains */
 
   // tools
+  asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle{"CP::IsolationSelectionTool"};   //!
+  // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
+  CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr};                               //!
+  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle{"CP::MuonSelectionTool"};             //!
+  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle{"Trig::MatchingTool"};                //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle{"Trig::TrigDecisionTool"};                  //!
 
-  asg::AnaToolHandle<CP::IsolationSelectionTool>  m_isolationSelectionTool_handle;  //!
-  std::string m_isolationSelectionTool_name;                                         //!
-  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle;       //!
-  std::string m_muonSelectionTool_name;                                              //!
-  Trig::TrigDecisionTool*                          m_trigDecTool;                    //!
-  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle;       //!
-  std::string m_trigMuonMatchTool_name;                                              //!
-  bool m_doTrigMatch;
+  bool m_doTrigMatch = false; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

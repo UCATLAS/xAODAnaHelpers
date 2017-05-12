@@ -24,9 +24,11 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include "JetMomentTools/JetForwardJvtTool.h"
 
 // external tools include(s):
+#include "JetJvtEfficiency/JetJvtEfficiency.h"
+#include "JetMomentTools/JetForwardJvtTool.h"
+#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -38,107 +40,8 @@ ClassImp(JetSelector)
 
 
 JetSelector :: JetSelector () :
-    Algorithm("JetSelector"),
-    m_cutflowHist(nullptr),
-    m_cutflowHistW(nullptr),
-    m_jet_cutflowHist_1(nullptr),
-    m_BJetSelectTool(nullptr),
-    m_JVT_tool_handle("CP::JetJvtEfficiency/JVTToolName", nullptr)
+    Algorithm("JetSelector")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  //ATH_MSG_DEBUG( "Calling constructor");
-
-  // read debug flag from .config file
-  m_useCutFlow    = true;
-
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = "";
-  m_jetScaleType            = "";
-
-  // name of algo input container comes from - only if running on syst
-  m_inputAlgo               = "";
-  m_outputAlgo              = "";
-
-  // decorate selected objects that pass the cuts
-  m_decorateSelectedObjects = true;
-  m_decor                   = "passSel";
-
-  // additional functionality : create output container of selected objects
-  //                            using the SG::VIEW_ELEMENTS option
-  //                            decorating and output container should not be mutually exclusive
-  m_createSelectedContainer = false;
-  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-  m_outContainerName        = "";
-  // if only want to look at a subset of object
-  m_nToProcess              = -1;
-
-  // cuts
-  m_cleanJets               = true;
-  m_cleanEvtLeadJets        = -1; // indepedent of previous switch
-  m_markCleanEvent          = false;
-  m_cleanEvent              = false;
-  m_pass_max                = -1;
-  m_pass_min                = -1;
-  m_pT_max                  = 1e8;
-  m_pT_min                  = 1e8;
-  m_eta_max                 = 1e8;
-  m_eta_min                 = 1e8;
-  m_detEta_max              = 1e8;
-  m_detEta_min              = 1e8;
-  m_mass_max                = 1e8;
-  m_mass_min                = 1e8;
-  m_rapidity_max            = 1e8;
-  m_rapidity_min            = 1e8;
-  m_truthLabel 	            = -1;
-  m_useHadronConeExcl       = true;
-
-  m_doJVF                   = false;
-  m_pt_max_JVF              = 50e3;
-  m_eta_max_JVF             = 2.4;
-  m_JVFCut                  = 0.5;
-  m_doJVT                   = false;
-  m_dofJVT                  = false;
-  m_dofJVTVeto              = true;
-
-  m_pt_max_JVT              = 60e3;
-  m_eta_max_JVT             = 2.4;
-  m_JVTCut                  = -1.0;
-  m_WorkingPointJVT         = "Medium";
-  m_SFFileJVT               = "JetJvtEfficiency/Moriond2017/JvtSFFile_EM.root";
-
-  m_systValJVT 	            = 0.0;
-  m_systNameJVT	            = "";
-  m_outputSystNamesJVT      = "JetJvtEfficiency_JVTSyst";
-
-  // Btag quality
-  m_doBTagCut               = false;
-  m_corrFileName            = "$ROOTCOREBIN/data/xAODBTaggingEfficiency/cutprofiles_22072015.root";
-  m_taggerName              = "MV2c20";
-  m_operatingPt             = "FixedCutBEff_70";
-  m_jetAuthor               = "AntiKt4EMTopoJets";
-  m_truthJetContainer       = "AntiKt4TruthJets";
-  // for the b-tagging tool - these are the b-tagging groups minimums
-  // users making tighter cuts can use the selector's parameters to keep
-  // things consistent
-  m_b_eta_max               = 2.5;
-  m_b_pt_min                = 20000;
-
-  // HLT Btag quality
-  m_doHLTBTagCut            = false;
-  m_HLTBTagTaggerName       = "MV2c20";
-  m_HLTBTagCutValue         = -0.4434;
-  m_requireHLTVtx           = false;
-  m_requireNoHLTVtx         = false;
-
-  m_passAuxDecorKeys        = "";
-  m_failAuxDecorKeys        = "";
-
 }
 
 EL::StatusCode JetSelector :: setupJob (EL::Job& job)
@@ -312,53 +215,49 @@ EL::StatusCode JetSelector :: initialize ()
     ATH_MSG_INFO(" Decorate Jets with " << m_decor);
   }
 
-  //
-  // initialize the BJetSelectionTool
-  //
-  std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
-  if ( asg::ToolStore::contains<BTaggingSelectionTool>( sel_tool_name ) ) {
-    m_BJetSelectTool = asg::ToolStore::get<BTaggingSelectionTool>( sel_tool_name );
-  } else {
-    m_BJetSelectTool = new BTaggingSelectionTool( sel_tool_name );
-  }
-  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
-
   // if applying cut on nr. bjets, configure it
   //
   if ( m_doBTagCut ) {
 
-    // A few which are not configurable as of yet....
-    // is there a reason to have this configurable here??...I think no (GF to self)
-    //
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName", m_corrFileName),"Failed to set property:FlvTagCutDefinitionsFileName");
+    // initialize the BJetSelectionTool
+    m_BJetSelectTool_handle.setName("BJetSelectionTool_" + m_name);
+    if(!m_BJetSelectTool_handle.isUserConfigured()){
+      // A few which are not configurable as of yet....
+      // is there a reason to have this configurable here??...I think no (GF to self)
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName", m_corrFileName),"Failed to set property:FlvTagCutDefinitionsFileName");
 
-    // configurable parameters
-    //
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("TaggerName",	      m_taggerName),"Failed to set property: TaggerName");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->setProperty("JetAuthor",	      m_jetAuthor),"Failed to set property: JetAuthor");
-    RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
+      // configurable parameters
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("TaggerName",	      m_taggerName),"Failed to set property: TaggerName");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("JetAuthor",	      m_jetAuthor),"Failed to set property: JetAuthor");
+      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.initialize(), "Failed to properly initialize the BJetSelectionTool");
+
+      RETURN_CHECK("JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("OutputLevel",  msg().level()),     "");
+    }
+    RETURN_CHECK("JetSelector::initialize()", m_BJetSelectTool_handle.retrieve(),     "Failed to initialize BTaggingSelectionTool");
 
   }
 
   //init fJVT
-  m_fJVT_tool_handle.setTypeAndName("JetForwardJvtTool/fJvt");
+  ATH_MSG_DEBUG("Trying to initialize fJVT tool");
+  //RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_fJVT_tool_handle, JetForwardJvtTool), "Could not make JetForwardJvtTool");
   RETURN_CHECK("JetSelector::initialize()",m_fJVT_tool_handle.retrieve(),"Failed to retrieve CP::JetForwardJVTtool");
+  ATH_MSG_DEBUG("Successfully initialized fJVT tool");
 
   // initialize the CP::JetJvtEfficiency Tool
-  //
-  m_JVT_tool_name = "JetJvtEfficiency_effSF_" + m_name;
-  RETURN_CHECK("ElectronEfficiencyCorrector::initialize()", checkToolStore<CP::IJetJvtEfficiency>(m_JVT_tool_name), "" );
-
-  m_JVT_tool_handle.setTypeAndName("CP::JetJvtEfficiency/" + m_JVT_tool_name);
+  ATH_MSG_DEBUG("Trying to initialize JetJvtEff tool");
+  m_JVT_tool_handle.setName("JetJvtEfficiency_effSF_" + m_name);
   if(!m_JVT_tool_handle.isUserConfigured()) {
     RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency), "Could not make JetJetEfficiency");
     RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
     RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ),      "Failed to set SFFile property of JetJvtEfficiency for JVT");
-    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.retrieve(), "Failed to retrieve CP::JetJvtEfficiency");
+    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()),     "");
   }
+  RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.retrieve(), "Failed to retrieve CP::JetJvtEfficiency");
+  ATH_MSG_DEBUG("Successfully initialized JetJvtEff tool");
+
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -622,7 +521,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Do it only if a tool with *this* name hasn't already been used
     //
-    if ( !isToolAlreadyUsed(m_JVT_tool_name) ) {
+    if ( m_JVT_tool_handle.isInitialized() ) {
 
       for ( const auto& syst_it : m_systListJVT ) {
 
@@ -775,8 +674,6 @@ EL::StatusCode JetSelector :: finalize ()
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
 
-  if ( m_BJetSelectTool ) { m_BJetSelectTool = nullptr; delete m_BJetSelectTool; }
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -911,7 +808,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   //
   if ( m_doBTagCut ) {
     ATH_MSG_DEBUG("Doing BTagging");
-    if ( m_BJetSelectTool->accept( jet ) ) {
+    if ( m_BJetSelectTool_handle->accept( jet ) ) {
       if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_btag_cut, 1 );
     } else {
       return 0;
