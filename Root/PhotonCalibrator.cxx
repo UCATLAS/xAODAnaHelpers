@@ -272,7 +272,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
   if ( ! m_toolInitializationAtTheFirstEventDone ) {
-    EL_RETURN_CHECK ("PhotonCalibrator::execute() ", toolInitializationAtTheFirstEvent (eventInfo));
+    ANA_CHECK( toolInitializationAtTheFirstEvent (eventInfo));
   }
 
 
@@ -353,7 +353,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
       ATH_MSG_DEBUG("Calibrated pt with systematic: " << syst_it.name() << " , pt = " << phSC_itr->pt() * 1e-3 << " GeV");
 
-      EL_RETURN_CHECK ( "PhotonCalibrator::execute()", decorate(phSC_itr));
+      ANA_CHECK( decorate(phSC_itr));
 
       ++idx;
 
