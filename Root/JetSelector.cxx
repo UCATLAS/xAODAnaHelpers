@@ -24,7 +24,6 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include "JetMomentTools/JetForwardJvtTool.h"
 
 // external tools include(s):
 #include "JetJvtEfficiency/JetJvtEfficiency.h"
@@ -242,17 +241,22 @@ EL::StatusCode JetSelector :: initialize ()
   }
 
   //init fJVT
+  ATH_MSG_DEBUG("Trying to initialize fJVT tool");
+  //RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_fJVT_tool_handle, JetForwardJvtTool), "Could not make JetForwardJvtTool");
   RETURN_CHECK("JetSelector::initialize()",m_fJVT_tool_handle.retrieve(),"Failed to retrieve CP::JetForwardJVTtool");
+  ATH_MSG_DEBUG("Successfully initialized fJVT tool");
 
   // initialize the CP::JetJvtEfficiency Tool
-  //
+  ATH_MSG_DEBUG("Trying to initialize JetJvtEff tool");
   m_JVT_tool_handle.setName("JetJvtEfficiency_effSF_" + m_name);
   if(!m_JVT_tool_handle.isUserConfigured()) {
+    RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency), "Could not make JetJetEfficiency");
     RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
     RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ),      "Failed to set SFFile property of JetJvtEfficiency for JVT");
     RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()),     "");
   }
   RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.retrieve(), "Failed to retrieve CP::JetJvtEfficiency");
+  ATH_MSG_DEBUG("Successfully initialized JetJvtEff tool");
 
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
