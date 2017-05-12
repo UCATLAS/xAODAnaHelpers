@@ -17,18 +17,16 @@
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
+#include "IsolationSelection/IIsolationSelectionTool.h"
+#include "MuonSelectorTools/IMuonSelectionTool.h"
+#include "TriggerMatchingTool/IMatchingTool.h"
+#include "TrigDecisionInterface/ITrigDecisionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
-namespace Trig {
-  class TrigDecisionTool;
-  class IMatchingTool;
-}
-
+// forward-declare for now until IsolationSelectionTool interface is updated
 namespace CP {
-  class IMuonSelectionTool;
-  //class IIsolationSelectionTool;
   class IsolationSelectionTool;
 }
 
@@ -145,14 +143,13 @@ private:
   std::vector<std::string>            m_diMuTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diMuTrigChains */
 
   // tools
+  asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle{"CP::IsolationSelectionTool"};   //!
+  // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
+  CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr};                               //!
+  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle{"CP::MuonSelectionTool"};             //!
+  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle{"Trig::MatchingTool"};                //!
+  asg::AnaToolHandle<Trig::ITrigDecisionTool>      m_trigDecTool_handle{"Trig::TrigDecisionTool"};                  //!
 
-  asg::AnaToolHandle<CP::IsolationSelectionTool>  m_isolationSelectionTool_handle;  //!
-  std::string m_isolationSelectionTool_name;                                         //!
-  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle;       //!
-  std::string m_muonSelectionTool_name;                                              //!
-  Trig::TrigDecisionTool*                          m_trigDecTool = nullptr;          //!
-  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle;       //!
-  std::string m_trigMuonMatchTool_name;                                              //!
   bool m_doTrigMatch = false; //!
 
   // variables that don't get filled at submission time should be

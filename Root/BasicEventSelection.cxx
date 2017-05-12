@@ -13,10 +13,16 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/BasicEventSelection.h>
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include "TrigConfxAOD/xAODConfigTool.h"
-#include "TrigDecisionTool/TrigDecisionTool.h"
+
 #include "PATInterfaces/CorrectionCode.h"
 //#include "AsgTools/StatusCode.h"
+
+// tools
+#include "GoodRunsLists/GoodRunsListSelectionTool.h"
+#include "PileupReweighting/PileupReweightingTool.h"
+#include "TrigConfxAOD/xAODConfigTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
+#include "PMGTools/PMGSherpa22VJetsWeightTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -31,9 +37,7 @@
 ClassImp(BasicEventSelection)
 
 BasicEventSelection :: BasicEventSelection () :
-    Algorithm("BasicEventSelection"),
-    m_pileup_tool_handle("CP::PileupReweightingTool/Pileup"),
-    m_reweightSherpa22_tool_handle("PMGTools::PMGSherpa22VJetsWeightTool/ReweightSherpa22")
+    Algorithm("BasicEventSelection")
 {
 }
 
@@ -326,13 +330,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
     if( m_reweightSherpa22 ){
 
       if (!m_reweightSherpa22_tool_handle.isUserConfigured()) {
-
-        RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<PMGTools::PMGSherpa22VJetsWeightTool>("ReweightSherpa22"), "Failed to check whether tool already exists in asg::ToolStore" );
-        RETURN_CHECK( "initialize()", ASG_MAKE_ANA_TOOL(m_reweightSherpa22_tool_handle, PMGTools::PMGSherpa22VJetsWeightTool), "Could not make the tool");
         RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ), "Failed to set TruthJetContainer" );
-        RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.retrieve(), "Failed to properly retrieve PMGTools::PMGSherpa22VJetsWeightTool");
-
+        RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.setProperty( "OutputLevel", msg().level() ), "" );
       }
+      RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.retrieve(), "Failed to properly retrieve PMGTools::PMGSherpa22VJetsWeightTool");
+
     }
   }//if isMC and a Sherpa 2.2 sample
 
@@ -432,16 +434,18 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //
 
   if(m_applyGRLCut){
-    m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
-    std::vector<std::string> vecStringGRL;
+    if(!m_grl_handle.isUserConfigured()){
+      std::vector<std::string> vecStringGRL;
 
-    std::string grl;
-    std::istringstream ss(PathResolverFindDataFile(m_GRLxml));
-    while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
+      std::string grl;
+      std::istringstream ss(PathResolverFindDataFile(m_GRLxml));
+      while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
 
-    RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty( "GoodRunsListVec", vecStringGRL), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_grl->setProperty("PassThrough", false), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_grl->initialize(), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_grl_handle.setProperty( "GoodRunsListVec", vecStringGRL), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_grl_handle.setProperty("PassThrough", false), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_grl_handle.setProperty("OutputLevel", msg().level()), "");
+    }
+    RETURN_CHECK("BasicEventSelection::initialize()", m_grl_handle.retrieve(), "");
   }
 
   // 2.
@@ -489,23 +493,15 @@ EL::StatusCode BasicEventSelection :: initialize ()
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
 
-    //RETURN_CHECK("BasicEventSelection::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "Failed to check whether tool already exists in asg::ToolStore" );
-    //m_pileup_tool_handle.setTypeRegisterNew<CP::PileupReweightingTool>("CP::PileupReweightingTool/Pileup");
-    //RETURN_CHECK("initialize()", ASG_MAKE_ANA_TOOL(m_pileup_tool_handle, CP::PileupReweightingTool), "Could not make the tool");
-    //
-
-    //tmp jeff
-    ASG_SET_ANA_TOOL_TYPE(m_pileup_tool_handle, CP::PileupReweightingTool);
-    m_pileup_tool_handle.setName("Pileup");
-
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09), "Failed to set pileup reweighting data scale factor");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0), "Failed to set pileup reweighting data scale factor up");
-    RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.18), "Failed to set pileup reweighting data scale factor down");
-    // RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.initialize(), "Failed to properly initialize CP::PileupReweightingTool");
+    if(!m_pileup_tool_handle.isUserConfigured()){
+      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09), "Failed to set pileup reweighting data scale factor");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0), "Failed to set pileup reweighting data scale factor up");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.18), "Failed to set pileup reweighting data scale factor down");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ), "");
+    }
     RETURN_CHECK("BasicEventSelection::retrieve()", m_pileup_tool_handle.retrieve(), "Failed to properly retrieve CP::PileupReweightingTool");
-//    RETURN_CHECK("BasicEventSelection::retrieve()", asg::ToolStore::put(m_pileup_tool_handle.get()), "Failed to put");
 
   }
 
@@ -523,28 +519,19 @@ EL::StatusCode BasicEventSelection :: initialize ()
   if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() ||
       m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
 
-    //if it's there, it must be already configured
-    if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) && asg::ToolStore::contains<TrigConf::xAODConfigTool>("xAODConfigTool")) {
-
-      m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
-      m_trigConfTool = asg::ToolStore::get<TrigConf::xAODConfigTool>("xAODConfigTool");
-
+    if(!m_trigConfTool_handle.isUserConfigured()){
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool_handle.setProperty("OutputLevel", msg().level()), "");
     }
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool_handle.retrieve(), "Failed to properly initialize TrigConf::xAODConfigTool");
 
-    else {
-
-      m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "Failed to properly initialize TrigConf::xAODConfigTool");
-      ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
-
-      m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
-      ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
-
+    if(!m_trigDecTool_handle.isUserConfigured()){
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
+      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ), "");
     }
+    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.retrieve(), "Failed to properly initialize Trig::TrigDecisionTool");
+    m_trigDecTool = dynamic_cast<Trig::TrigDecisionTool*>(m_trigDecTool_handle.get() ); // see header file for why
+    ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
 
   }//end trigger configuration
 
@@ -784,7 +771,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     // GRL
     if ( m_applyGRLCut ) {
-      if ( !m_grl->passRunLB( *eventInfo ) ) {
+      if ( !m_grl_handle->passRunLB( *eventInfo ) ) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS; // go to next event
       }
@@ -881,7 +868,7 @@ EL::StatusCode BasicEventSelection :: execute ()
           triggerPrescales.push_back( trigChain->getPrescale() );
         }
 	isPassedBitsNames.push_back( trigName );
-	isPassedBits     .push_back( m_trigDecTool->isPassedBits(trigName) );
+	isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
       }
 
       // Save info for extra triggers
@@ -897,7 +884,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 	    triggerPrescales.push_back( trigChain->getPrescale() );
 	  }
 	  isPassedBitsNames.push_back( trigName );
-	  isPassedBits     .push_back( m_trigDecTool->isPassedBits(trigName) );
+	  isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
 	}
       }
 
@@ -917,22 +904,22 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_storePassL1 ) {
       static SG::AuxElement::Decorator< int > passL1("passL1");
-      passL1(*eventInfo)  = ( m_triggerSelection.find("L1_") != std::string::npos )  ? (int)m_trigDecTool->isPassed(m_triggerSelection.c_str()) : -1;
+      passL1(*eventInfo)  = ( m_triggerSelection.find("L1_") != std::string::npos )  ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str()) : -1;
     }
     if ( m_storePassHLT ) {
       static SG::AuxElement::Decorator< int > passHLT("passHLT");
-      passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool->isPassed(m_triggerSelection.c_str()) : -1;
+      passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str()) : -1;
     }
 
   } // if giving a specific list of triggers to look at
 
   if ( m_storeTrigKeys ) {
     static SG::AuxElement::Decorator< int > masterKey("masterKey");
-    masterKey(*eventInfo) = m_trigConfTool->masterKey();
+    masterKey(*eventInfo) = m_trigConfTool_handle->masterKey();
     static SG::AuxElement::Decorator< int > L1PSKey("L1PSKey");
-    L1PSKey(*eventInfo) = m_trigConfTool->lvl1PrescaleKey();
+    L1PSKey(*eventInfo) = m_trigConfTool_handle->lvl1PrescaleKey();
     static SG::AuxElement::Decorator< int > HLTPSKey("HLTPSKey");
-    HLTPSKey(*eventInfo) = m_trigConfTool->hltPrescaleKey();
+    HLTPSKey(*eventInfo) = m_trigConfTool_handle->hltPrescaleKey();
   }
 
   return EL::StatusCode::SUCCESS;
@@ -965,9 +952,7 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   m_RunNr_VS_EvtNr.clear();
 
-  if ( m_grl )          { delete m_grl; m_grl = nullptr; }
-  if ( m_trigDecTool )  { m_trigDecTool->finalize(); delete m_trigDecTool;  m_trigDecTool = nullptr; }
-  if ( m_trigConfTool ) { delete m_trigConfTool;  m_trigConfTool = nullptr; }
+  if ( m_trigDecTool_handle.isInitialized() )  m_trigDecTool->finalize();
 
   //after execution loop
   if(m_printBranchList){

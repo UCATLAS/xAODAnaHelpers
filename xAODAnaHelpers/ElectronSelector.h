@@ -19,15 +19,17 @@
 #include "TH1D.h"
 
 // external tools include(s):
-#include "IsolationSelection/IsolationSelectionTool.h"
 #include "AsgTools/AnaToolHandle.h"
+#include "IsolationSelection/IIsolationSelectionTool.h"
+#include "TrigDecisionInterface/ITrigDecisionTool.h"
+#include "TriggerMatchingTool/IMatchingTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
-namespace Trig {
-  class TrigDecisionTool;
-  class MatchingTool;
+// forward-declare for now until IsolationSelectionTool interface is updated
+namespace CP {
+  class IsolationSelectionTool;
 }
 
 /**
@@ -246,18 +248,18 @@ private:
   /* tools */
 
   /// @brief MC15 ASG tool for isolation
-  asg::AnaToolHandle<CP::IsolationSelectionTool> m_isolationSelectionTool_handle; //!
-  std::string m_isolationSelectionTool_name;                                      //!
+  asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool"}; //!
+  // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
+  CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                               //!
+  asg::AnaToolHandle<Trig::ITrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                //!
+  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle{"Trig::MatchingTool"};          //!
+  bool m_doTrigMatch = true;
 
   /* PID manager(s) */
   /// @brief class to manage LH PID selection/decorations - see ISSUE for explaination
   ElectronLHPIDManager*                    m_el_LH_PIDManager = nullptr;        //!
   /// @brief class to manage cut-based PID selection/decorations - see ISSUE for explaination
   ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager = nullptr;  //!
-  Trig::TrigDecisionTool*                  m_trigDecTool = nullptr;             //!
-  asg::AnaToolHandle<Trig::MatchingTool>   m_trigElectronMatchTool_handle;  //!
-  std::string m_trigElMatchTool_name;                                 //!
-  bool m_doTrigMatch = true;
 
   /* other private members */
 
