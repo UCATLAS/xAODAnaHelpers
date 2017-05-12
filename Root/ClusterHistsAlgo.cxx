@@ -13,8 +13,12 @@
 ClassImp(ClusterHistsAlgo)
 
 ClusterHistsAlgo :: ClusterHistsAlgo () :
-    Algorithm("ClusterHistsAlgo")
+    Algorithm("ClusterHistsAlgo"),
+    m_plots(nullptr)
 {
+  m_inContainerName         = "";
+  m_detailStr               = "";
+
 }
 
 EL::StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)

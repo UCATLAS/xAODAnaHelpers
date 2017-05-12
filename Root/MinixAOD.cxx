@@ -42,8 +42,25 @@
 ClassImp(MinixAOD)
 
 MinixAOD :: MinixAOD () :
-    Algorithm("MinixAOD")
+    Algorithm("MinixAOD"),
+    m_simpleCopyKeys_vec(),
+    m_shallowCopyKeys_vec(),
+    m_deepCopyKeys_vec(),
+    m_copyFromStoreToEventKeys_vec(),
+    m_fileMetaDataTool(nullptr),
+    m_trigMetaDataTool(nullptr)
 {
+  //ATH_MSG_INFO( "Calling constructor");
+
+  m_outputFileName = "out_miniXAOD";
+  m_createOutputFile = true;
+  m_copyFileMetaData = false;
+  m_copyTriggerInfo = false;
+  m_copyCutBookkeeper = false;
+  m_simpleCopyKeys = "";
+  m_storeCopyKeys = "";
+  m_deepCopyKeys = "";
+  m_vectorCopyKeys = "";
 }
 
 EL::StatusCode MinixAOD :: setupJob (EL::Job& job)

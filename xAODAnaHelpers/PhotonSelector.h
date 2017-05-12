@@ -16,49 +16,35 @@ class PhotonSelector : public xAH::Algorithm
 {
 public:
 
-  bool m_useCutFlow = true;
+  bool m_useCutFlow;
 
-  /** configuration variables */
-  /** input container name */
-  std::string    m_inContainerName = "";
-  /** output container name */
-  std::string    m_outContainerName = "";
-  /** output auxiliary container name */
-  std::string    m_inputAlgoSystNames = "";
-  std::string    m_outputAlgoSystNames = "PhotonSelector_Syst";
-  /** decorate selected objects - default "passSel" */
-  bool       	 m_decorateSelectedObjects = true;
-  /** fill using SG::VIEW_ELEMENTS to be light weight */
-  bool       	 m_createSelectedContainer = true;
-  /** look at n objects */
-  int        	 m_nToProcess = -1;
-  /** minimum number of objects passing cuts */
-  int        	 m_pass_min = -1;
-  /** maximum number of objects passing cuts */
-  int        	 m_pass_max = -1;
-  /** require pT < pt_max */
-  float      	 m_pT_max = 1e8;
-  /** require pT > pt_min */
-  float      	 m_pT_min = 1e8;
-  /** require |eta| < eta_max */
-  float      	 m_eta_max = 1e8;
-  /** require |eta| outside crack region */
-  bool	     	 m_vetoCrack = true;
-  bool           m_doAuthorCut = true;
-  bool           m_doOQCut = true;
+  /* configuration variables */
+
+  std::string    m_inContainerName;          /* input container name */
+  std::string    m_outContainerName;         /* output container name */
+  std::string    m_outAuxContainerName;      /* output auxiliary container name */
+  std::string    m_inputAlgoSystNames;
+  std::string    m_outputAlgoSystNames;
+  bool       	 m_decorateSelectedObjects;  /* decorate selected objects - default "passSel" */
+  bool       	 m_createSelectedContainer;  /* fill using SG::VIEW_ELEMENTS to be light weight */
+  int        	 m_nToProcess;  	     /* look at n objects */
+  int        	 m_pass_min;		     /* minimum number of objects passing cuts */
+  int        	 m_pass_max;		     /* maximum number of objects passing cuts */
+  float      	 m_pT_max;		     /* require pT < pt_max */
+  float      	 m_pT_min;		     /* require pT > pt_min */
+  float      	 m_eta_max;		     /* require |eta| < eta_max */
+  bool	     	 m_vetoCrack;		     /* require |eta| outside crack region */
+  bool           m_doAuthorCut;
+  bool           m_doOQCut;
 
   /* photon PID */
-  /** Name of ID variable to cut */
-  std::string    m_photonIdCut = "None";
+  std::string    m_photonIdCut;              /* Name of ID variable to cut */
 
   /* isolation */
-  /** reject objects which do not pass this isolation cut - default = "" (no cut) */
-  std::string    m_MinIsoWPCut = "";
-  /** decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
-  std::string    m_IsoWPList = "FixedCutTightCaloOnly,FixedCutTight,FixedCutLoose";
+  std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
+  std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
 
 private:
-  std::string    m_outAuxContainerName; //!
 
   int m_numEvent;           //!
   int m_numObject;          //!
@@ -68,13 +54,13 @@ private:
 
   /* event-level cutflow */
 
-  TH1D* m_cutflowHist = nullptr;      //!
-  TH1D* m_cutflowHistW = nullptr;     //!
+  TH1D* m_cutflowHist;      //!
+  TH1D* m_cutflowHistW;     //!
   int   m_cutflow_bin;      //!
 
   /* object-level cutflow */
 
-  TH1D* m_ph_cutflowHist_1 = nullptr;            //!
+  TH1D* m_ph_cutflowHist_1;            //!
 
   int   m_ph_cutflow_all;              //!
   int   m_ph_cutflow_author_cut;       //!
@@ -89,7 +75,7 @@ private:
   std::vector<std::string> m_IsoKeys;  //!
 
   /* tools */
-  CP::IsolationSelectionTool* m_IsolationSelectionTool = nullptr; //!
+  CP::IsolationSelectionTool* m_IsolationSelectionTool; //!
 
 public:
 

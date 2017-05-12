@@ -42,8 +42,40 @@
 ClassImp(TruthSelector)
 
 TruthSelector :: TruthSelector () :
-    Algorithm("TruthSelector")
+    Algorithm("TruthSelector"),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_truth_cutflowHist_1(nullptr)
 {
+  //ATH_MSG_INFO( "Calling constructor");
+
+  m_useCutFlow    = true;
+
+  // input container to be read from TEvent or TStore
+  m_inContainerName         = "";
+
+  // decorate selected objects that pass the cuts
+  m_decorateSelectedObjects = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::VIEW_ELEMENTS option
+  //                            decorating and output container should not be mutually exclusive
+  m_createSelectedContainer = false;
+  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
+  m_outContainerName        = "";
+  // if only want to look at a subset of object
+  m_nToProcess              = -1;
+
+  // cuts
+  m_pass_max                = -1;
+  m_pass_min                = -1;
+  m_pT_max                  = 1e8;
+  m_pT_min                  = 1e8;
+  m_eta_max                 = 1e8;
+  m_eta_min                 = 1e8;
+  m_mass_max                = 1e8;
+  m_mass_min                = 1e8;
+  m_rapidity_max            = 1e8;
+  m_rapidity_min            = 1e8;
 }
 
 EL::StatusCode TruthSelector :: setupJob (EL::Job& job)

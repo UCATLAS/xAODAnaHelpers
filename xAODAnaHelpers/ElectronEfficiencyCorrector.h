@@ -41,13 +41,13 @@ class ElectronEfficiencyCorrector : public xAH::Algorithm
 {
 public:
   /// @brief The name of the input container for this algorithm to read from ``TEvent`` or ``TStore``
-  std::string  m_inContainerName = "";
+  std::string  m_inContainerName;
   /**
       @brief The name of the nominal output container written by the algorithm to ``TStore``
 
       If the algorithm applies systematic variations, for each shallow copy saved to ``TStore``, the systematic name will be appended to this.
   */
-  std::string  m_outContainerName = "";
+  std::string  m_outContainerName;
 
 // systematics
   /**
@@ -71,28 +71,27 @@ public:
   /** @brief Force AFII flag in calibration, in case metadata is broken */
   bool m_setAFII;
 
-  float m_systValPID = 0.0;
-  float m_systValIso = 0.0;
-  float m_systValReco = 0.0;
-  float m_systValTrig = 0.0;
-  float m_systValTrigMCEff = 0.0;
-  std::string m_systNamePID = "";
-  std::string m_systNameIso = "";
-  std::string m_systNameReco = "";
-  std::string m_systNameTrig = "";
-  std::string m_systNameTrigMCEff = "";
-  std::string m_outputSystNamesPID = "EleEffCorr_PIDSyst";
-  std::string m_outputSystNamesIso = "EleEffCorr_IsoSyst";
-  std::string m_outputSystNamesReco = "EleEffCorr_RecoSyst";
-  std::string m_outputSystNamesTrig = "EleEffCorr_TrigSyst";
-  std::string m_outputSystNamesTrigMCEff = "EleEffCorr_TrigMCEffSyst";
-  std::string m_correlationModel = "FULL";
-
-  std::string m_corrFileNamePID = "";
-  std::string m_corrFileNameIso = "";
-  std::string m_corrFileNameReco = "";
-  std::string m_corrFileNameTrig = "";
-  std::string m_corrFileNameTrigMCEff = "";
+  float m_systValPID;
+  float m_systValIso;
+  float m_systValReco;
+  float m_systValTrig;
+  float m_systValTrigMCEff;
+  std::string m_systNamePID;
+  std::string m_systNameIso;
+  std::string m_systNameReco;
+  std::string m_systNameTrig;
+  std::string m_systNameTrigMCEff;
+  std::string m_outputSystNamesPID;
+  std::string m_outputSystNamesIso;
+  std::string m_outputSystNamesReco;
+  std::string m_outputSystNamesTrig;
+  std::string m_outputSystNamesTrigMCEff;
+  std::string m_corrFileNamePID;
+  std::string m_corrFileNameIso;
+  std::string m_corrFileNameReco;
+  std::string m_corrFileNameTrig;
+  std::string m_corrFileNameTrigMCEff;
+  std::string m_correlationModel;
 
 private:
   int m_numEvent;         //!
@@ -115,15 +114,15 @@ private:
   std::vector<CP::SystematicSet> m_systListTrigMCEff; //!
 
   // tools
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID;  //!
   std::string m_pidEffSF_tool_name;                                   //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso = nullptr;  //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso;  //!
   std::string m_IsoEffSF_tool_name;                                   //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco = nullptr; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco; //!
   std::string m_RecoEffSF_tool_name;                                  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig = nullptr; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig; //!
   std::string m_TrigEffSF_tool_name;                                  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff; //!
   std::string m_TrigMCEff_tool_name;                                  //!
 
   // variables that don't get filled at submission time should be

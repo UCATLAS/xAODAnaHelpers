@@ -13,7 +13,7 @@ public:
 
   // configuration variables
 
-  bool m_printStore = false;
+  bool m_printStore;                   // check JVF
 
 public:
 

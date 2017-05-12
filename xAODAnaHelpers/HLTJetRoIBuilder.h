@@ -29,23 +29,23 @@ public:
   /**
     @brief name of trigger chain to load
    */
-  std::string m_trigItem = "";
-  std::string m_trigItemVeto = "";
+  std::string m_trigItem;
+  std::string m_trigItemVeto;
 
   /**
     @brief Do we load a full BJet trigger chain?
    */
-  bool        m_doHLTBJet = true;
+  bool        m_doHLTBJet;
 
   /**
     @brief Do we load a jet trigger chain?
    */
-  bool        m_doHLTJet = false;
+  bool        m_doHLTJet;
 
   /**
     @brief Do we read in the HLT tracks?
    */
-  bool        m_readHLTTracks = true;
+  bool        m_readHLTTracks;
 
 
   /**
@@ -57,14 +57,14 @@ public:
   /**
     @brief Name of the output container
    */
-  std::string m_outContainerName = "";
+  std::string m_outContainerName;
 
 private:
 
-  Trig::TrigDecisionTool*      m_trigDecTool = nullptr;   //!
-  std::string                  m_jetName = "EFJet";       //!
-  std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";       //!
-  std::string                  m_vtxName = "EFHistoPrmVtx";       //!
+  Trig::TrigDecisionTool*      m_trigDecTool;   //!
+  std::string                  m_jetName;       //!
+  std::string                  m_trkName;       //!
+  std::string                  m_vtxName;       //!
   xAH::OnlineBeamSpotTool      m_onlineBSTool;  //!
 
   EL::StatusCode buildHLTBJets ();

@@ -36,8 +36,64 @@
 ClassImp(PhotonSelector)
 
 PhotonSelector :: PhotonSelector () :
-    Algorithm("PhotonSelector")
+    Algorithm("PhotonSelector"),
+    m_cutflowHist(nullptr),
+    m_cutflowHistW(nullptr),
+    m_ph_cutflowHist_1(nullptr),
+    m_IsolationSelectionTool(nullptr)
 {
+  // Here you put any code for the base initialization of variables,
+  // e.g. initialize all pointers to 0.  Note that you should only put
+  // the most basic initialization here, since this method will be
+  // called on both the submission and the worker node.  Most of your
+  // initialization code will go into histInitialize() and
+  // initialize().
+  //ATH_MSG_INFO( "Calling constructor");
+
+  m_useCutFlow              = true;
+
+  // input container to be read from TEvent or TStore
+  //
+  m_inContainerName         = "";
+
+  // Systematics stuff
+  //
+  m_inputAlgoSystNames      = "";
+  m_outputAlgoSystNames     = "PhotonSelector_Syst";
+
+
+  // decorate selected objects that pass the cuts
+  //
+  m_decorateSelectedObjects = true;
+  // additional functionality : create output container of selected objects
+  //                            using the SG::VIEW_ELEMENTS option
+  //                            decorating and output container should not be mutually exclusive
+  m_createSelectedContainer = true;
+  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
+  m_outContainerName        = "";
+
+  // if only want to look at a subset of object
+  //
+  m_nToProcess              = -1;
+
+  // configurable cuts
+  //
+  m_pass_max                = -1;
+  m_pass_min                = -1;
+  m_pT_max                  = 1e8;
+  m_pT_min                  = 1e8;
+  m_eta_max                 = 1e8;
+  m_vetoCrack               = true;
+  m_doAuthorCut             = true;
+  m_doOQCut                 = true;
+
+  // PID
+  m_photonIdCut             = "None";
+
+  // isolation stuff
+  //
+  m_MinIsoWPCut             = "";
+  m_IsoWPList		    = "FixedCutTightCaloOnly,FixedCutTight,FixedCutLoose";
 }
 
 PhotonSelector::~PhotonSelector() {}

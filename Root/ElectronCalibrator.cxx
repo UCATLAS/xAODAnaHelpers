@@ -45,8 +45,40 @@ ClassImp(ElectronCalibrator)
 
 
 ElectronCalibrator :: ElectronCalibrator () :
-    Algorithm("ElectronCalibrator")
+    Algorithm("ElectronCalibrator"),
+    m_EgammaCalibrationAndSmearingTool(nullptr),
+    m_IsolationCorrectionTool(nullptr)
 {
+  // Here you put any code for the base initialization of variables,
+  // e.g. initialize all pointers to 0.  Note that you should only put
+  // the most basic initialization here, since this method will be
+  // called on both the submission and the worker node.  Most of your
+  // initialization code will go into histInitialize() and
+  // initialize().
+
+  //ATH_MSG_INFO( "Calling constructor");
+
+  // input container to be read from TEvent or TStore
+  //
+  m_inContainerName         = "";
+  m_outContainerName        = "";
+
+  m_sort                    = true;
+
+  // Systematics stuff
+  //
+  m_inputAlgoSystNames      = "";
+  m_outputAlgoSystNames     = "ElectronCalibrator_Syst";
+  m_systName		    = "";
+  m_systVal 		    = 0.;
+
+  m_esModel                 = "";
+  m_decorrelationModel      = "";
+
+  m_setAFII                 = false;
+
+  m_useDataDrivenLeakageCorr = false;
+
 }
 
 

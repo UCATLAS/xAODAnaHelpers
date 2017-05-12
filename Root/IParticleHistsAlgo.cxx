@@ -17,6 +17,12 @@ ClassImp(IParticleHistsAlgo)
 IParticleHistsAlgo :: IParticleHistsAlgo (std::string className) :
     Algorithm(className)
 {
+  m_inContainerName         = "";
+  // which plots will be turned on
+  m_detailStr               = "";
+  // name of algo input container comes from - only if
+  m_inputAlgo               = "";
+
 }
 
 EL::StatusCode IParticleHistsAlgo :: setupJob (EL::Job& job)

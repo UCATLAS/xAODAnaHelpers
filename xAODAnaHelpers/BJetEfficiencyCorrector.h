@@ -23,47 +23,42 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_inContainerName = "";
-  std::string m_inputAlgo = "";
+  std::string m_inContainerName;
+  std::string m_inputAlgo;
 
   // systematics
-  std::string m_systName = "";
-  std::string m_outputSystName = "BJetEfficiency_Algo";
+  bool m_runAllSyst;
+  std::string m_systName;
+  std::string m_outputSystName;
 
-  std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root";
+  std::string m_corrFileName;
 
-  std::string m_jetAuthor = "AntiKt4EMTopoJets";
-  std::string m_taggerName = "MV2c10";
-  bool        m_useDevelopmentFile = true;
-  bool        m_coneFlavourLabel = true;
-  std::string m_systematicsStrategy = "SFEigen";
+  /**
+     Call PathResolverFindCalibFile on the input file name
+  */
+  bool        m_usePathResolver;
 
-  // allowed operating points:
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
-  //For the fixed cut, valid options are: [ "FixedCutBEff_30", "FixedCutBEff_50", "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_80", "FixedCutBEff_85", "FixedCutBEff_90" ]
-  //For the variable cut, valid options are: [ "FlatBEff_30", "FlatBEff_40", "FlatBEff_50", "FlatBEff_60", "FlatBEff_70", "FlatBEff_77", "FlatBEff_85" ]
+  std::string m_jetAuthor;
+  std::string m_taggerName;
+  bool        m_useDevelopmentFile;
+  bool        m_coneFlavourLabel;
+  std::string m_systematicsStrategy;
 
-  /// @brief Operating point.
-  std::string m_operatingPt = "FixedCutBEff_70";
-  /// @brief Operating point that CDI will understand
-  std::string m_operatingPtCDI = "";
-  /// @brief will only get scale factors for calibrated working points
-  bool m_getScaleFactors = false;
-  /// @brief The decoration key written to passing objects
-  std::string m_decor = "BTag";
+  std::string m_operatingPt;      // Operating point.
+  std::string m_operatingPtCDI;   // the one CDI will understand
+  std::string m_decor;            // The decoration key written to passing objects
+  std::string m_decorSF;          // The decoration key written to passing objects
 
 private:
 
-  /// @brief The decoration key written to passing objects
-  std::string m_decorSF = "";
-
-  bool m_runAllSyst = false; //!
-
-  bool m_isMC = false;        //!
+  bool m_isMC;        //!
 
   // tools
-  BTaggingSelectionTool   *m_BJetSelectTool = nullptr; //!
-  BTaggingEfficiencyTool  *m_BJetEffSFTool = nullptr; //!
+  BTaggingSelectionTool   *m_BJetSelectTool; //!
+  BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
+
+  // configuration variables
+  bool m_getScaleFactors;  //!
 
   std::vector<CP::SystematicSet> m_systList; //!
 

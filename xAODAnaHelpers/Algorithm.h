@@ -16,9 +16,6 @@
 #include "AsgTools/StatusCode.h"
 #include "AsgTools/ToolStore.h"
 
-// for resolving paths of various calibration files
-#include "PathResolver/PathResolver.h"
-
 // messaging includes
 #include <AsgTools/MsgStream.h>
 #include <AsgTools/MsgStreamMacros.h>
@@ -99,38 +96,35 @@ namespace xAH {
 
             Note, :code:`GetName()` returns a :code:`char*` while this returns a :code:`std::string`.
         */
-        std::string m_name = "UnnamedAlgorithm";
+        std::string m_name;
 
         /** m_debug is being deprecated */
         bool m_debug = false;
 
         /** debug level */
-        MSG::Level m_debugLevel = MSG::INFO;
+        MSG::Level m_debugLevel;
 
         /** If running systematics, the name of the systematic */
-        std::string m_systName = "";
+        std::string m_systName;
         /** If running systematics, the value to set the systematic to
             @rst
                 .. note:: This will set the systematic to the value :math:`\pm x`.
             @endrst
          */
-        float m_systVal = 0.0;
-
+        float m_systVal;
         /** If running systematics, you can run multiple points and store them in here.
             A comma separated list of working points should be given to m_systValVectorString,
             and then parsed by calling parseSystValVector.
          */
-        std::string m_systValVectorString = "";
-
+        std::string m_systValVectorString;
         std::vector<float> m_systValVector;
-
         /**
             @brief Parse string of systematic sigma levels in m_systValVectorString into m_systValVector
          */
         StatusCode parseSystValVector();
 
         /** If the xAOD has a different EventInfo container name, set it here */
-        std::string m_eventInfoContainerName = "EventInfo";
+        std::string m_eventInfoContainerName;
 
         /**
             @rst
@@ -146,7 +140,7 @@ namespace xAH {
 
             @endrst
          */
-        int m_isMC = -1;
+        int m_isMC;
 
       protected:
         /**
@@ -155,12 +149,12 @@ namespace xAH {
 
             @endrst
          */
-        std::string m_className = "Algorithm"; //!
+        std::string m_className;
 
         /** The TEvent object */
-        xAOD::TEvent* m_event = nullptr; //!
+        xAOD::TEvent* m_event; //!
         /** The TStore object */
-        xAOD::TStore* m_store = nullptr; //!
+        xAOD::TStore* m_store; //!
 
         // will try to determine if data or if MC
         // returns: -1=unknown (could not determine), 0=data, 1=mc
@@ -188,7 +182,6 @@ namespace xAH {
 
             @endrst
          */
-
         void registerInstance();
         /**
             @rst
@@ -201,7 +194,6 @@ namespace xAH {
             @endrst
          */
         int numInstances();
-
         /**
             @rst
                 Unregister the given instance under the moniker :cpp:member:`xAH::Algorithm::m_className`
@@ -249,16 +241,6 @@ namespace xAH {
       private:
         /**
             @rst
-              A boolean to keep track of whether this instance was registered or not.
-
-              Calling :cpp:func:`xAH::Algorithm::registerInstance` multiple times won't inflate the number of instances of a class made because of me.
-
-            @endrst
-        */
-        bool m_registered = false; //!
-
-        /**
-            @rst
                 Bookkeeps the number of times :cpp:member:`xAH::Algorithm::m_className` has been used in a variable shared among all classes/instances that inherit from me
 
             @endrst
@@ -274,6 +256,17 @@ namespace xAH {
             @endrst
          */
         std::map<std::string, bool> m_toolAlreadyUsed; //!
+
+        /**
+            @rst
+              A boolean to keep track of whether this instance was registered or not.
+
+              Calling :cpp:func:`xAH::Algorithm::registerInstance` multiple times won't inflate the number of instances of a class made because of me.
+
+            @endrst
+        */
+        bool m_registered; //!
+
   };
 
 }
