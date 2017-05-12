@@ -576,7 +576,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( !m_triggerSelection.empty() ) {
     if (m_eventCounter == 0 || m_savePrescaleDataWeight) {
       if (m_eventCounter == 0) ATH_MSG_INFO( "*** Triggers used (in OR) are:\n");
-      auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
+      auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_triggerSelection);
       std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
       for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
         if (m_eventCounter == 0) printf("    %s\n", triggersUsed.at(iTrigger).c_str());
@@ -588,7 +588,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   if ( m_eventCounter == 0 && !m_extraTriggerSelection.empty() ) {
     ATH_MSG_INFO( "*** Extra Trigger Info Saved are :\n");
-    auto printingTriggerChainGroup = m_trigDecTool->getChainGroup(m_extraTriggerSelection);
+    auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
     std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
     for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
       printf("    %s\n", triggersUsed.at(iTrigger).c_str());
@@ -835,7 +835,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   if ( !m_triggerSelection.empty() ) {
 
-    auto triggerChainGroup = m_trigDecTool->getChainGroup(m_triggerSelection);
+    auto triggerChainGroup = m_trigDecTool_handle->getChainGroup(m_triggerSelection);
 
     if ( m_applyTriggerCut ) {
 
@@ -860,7 +860,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       // Save info for the triggers used to skim events
       //
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
-        auto trigChain = m_trigDecTool->getChainGroup( trigName );
+        auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
         if ( trigChain->isPassed() ) {
           passTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
@@ -873,10 +873,10 @@ EL::StatusCode BasicEventSelection :: execute ()
       //
       if ( !m_extraTriggerSelection.empty() ) {
 
-	auto extraTriggerChainGroup = m_trigDecTool->getChainGroup(m_extraTriggerSelection);
+	auto extraTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
 
 	for ( auto &trigName : extraTriggerChainGroup->getListOfTriggers() ) {
-	  auto trigChain = m_trigDecTool->getChainGroup( trigName );
+	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
 	  if ( trigChain->isPassed() ) {
 	    passTriggers.push_back( trigName );
 	    triggerPrescales.push_back( trigChain->getPrescale() );
@@ -950,7 +950,7 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   m_RunNr_VS_EvtNr.clear();
 
-  if ( m_trigDecTool_handle.isInitialized() )  m_trigDecTool->finalize();
+  if ( m_trigDecTool_handle.isInitialized() )  m_trigDecTool_handle->finalize();
 
   //after execution loop
   if(m_printBranchList){
