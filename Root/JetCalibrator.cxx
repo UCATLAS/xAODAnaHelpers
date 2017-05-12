@@ -30,7 +30,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/JetCalibrator.h"
 #include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include "PathResolver/PathResolver.h"
 
 // ROOT includes:
 #include "TSystem.h"
@@ -180,7 +179,9 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   // initialize jet calibration tool
   m_JetCalibrationTool_handle.setName("JetCalibrationTool_" + m_name);
+  ATH_MSG_DEBUG("Trying to initialize " << m_JetCalibrationTool_handle.fullName());
   if( !m_JetCalibrationTool_handle.isUserConfigured() ){
+    RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool), "Could not make JetCalibrationTool");
     RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo), "Failed to set JetCollection");
     RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig), "Failed to set ConfigFile");
     RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence), "Failed to set CalibSequence");
@@ -188,15 +189,17 @@ EL::StatusCode JetCalibrator :: initialize ()
     RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()), "");
   }
   RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.retrieve(), "Failed to retrieve JetCalibrationTool");
-
+  ATH_MSG_DEBUG("Successfully initialized " << m_JetCalibrationTool_handle.fullName());
 
   // initialize jet tile correction tool
   if(m_doJetTileCorr && !m_isMC){ // Jet Tile Correction should only be applied to data
     m_JetTileCorrectionTool_handle.setName("CP::JetTileCorrectionTool/JetTileCorrectionTool_" + m_name);
+    ATH_MSG_DEBUG("Trying to initialize " << m_JetTileCorrectionTool_handle.fullName());
     if(!m_JetTileCorrectionTool_handle.isUserConfigured()){
       RETURN_CHECK("JetCalibrator::initialize()", m_JetTileCorrectionTool_handle.setProperty("OutputLevel", msg().level()), "");
     }
     RETURN_CHECK("JetCalibrator::initialize()", m_JetTileCorrectionTool_handle.retrieve(), "Failed to retrieve JetTileCorrectionTool");
+    ATH_MSG_DEBUG("Successfully initialized " << m_JetTileCorrectionTool_handle.fullName());
   }
 
   if(m_doCleaning){
@@ -204,6 +207,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     //------------------------------------------------
 
     m_JetCleaningTool_handle.setName("JetCleaningTool_" + m_name);
+    ATH_MSG_DEBUG("Trying to initialize " << m_JetCleaningTool_handle.fullName());
     if( !m_JetCleaningTool_handle.isUserConfigured() ){
       RETURN_CHECK( "JetCalibrator::initialize()", m_JetCleaningTool_handle.setProperty( "CutLevel", m_jetCleanCutLevel), "Failed to set CutLevel");
       if (m_jetCleanUgly){
@@ -212,6 +216,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       RETURN_CHECK("JetCalibrator::initialize()", m_JetCleaningTool_handle.setProperty( "OutputLevel", msg().level() ), "");
     }
     RETURN_CHECK("JetCalibrator::initialize()", m_JetCleaningTool_handle.retrieve(), "Failed to retrieve JetCleaningTool");
+    ATH_MSG_DEBUG("Successfully initialized " << m_JetCleaningTool_handle.fullName());
 
     if( m_saveAllCleanDecisions ){
       m_decisionNames.push_back( "LooseBad" );
@@ -358,7 +363,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   m_JVTUpdateTool_handle.setName("JVTUpdateTool_" + m_name);
   if( m_redoJVT && !m_JVTUpdateTool_handle.isUserConfigured() ){
-    RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.setProperty("JVTFileName","JetMomentTools/JVTlikelihood_20140805.root"), "");
+    RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")), "");
     RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.setProperty("OutputLevel", msg().level()), "");
   }
   RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.retrieve(), "Failed to retrieve JVTUpdateTool");
