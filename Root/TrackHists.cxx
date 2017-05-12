@@ -198,7 +198,7 @@ StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const 
   xAOD::TrackParticleContainer::const_iterator trk_itr = trks->begin();
   xAOD::TrackParticleContainer::const_iterator trk_end = trks->end();
   for( ; trk_itr != trk_end; ++trk_itr ) {
-    RETURN_CHECK("TrackHists::execute()", this->execute( (*trk_itr), pvx, eventWeight, eventInfo ), "");
+    ANA_CHECK( this->execute( (*trk_itr), pvx, eventWeight, eventInfo ));
   }
 
   m_trk_n -> Fill( trks->size(), eventWeight );

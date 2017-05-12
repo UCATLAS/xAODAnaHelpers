@@ -31,7 +31,7 @@ EL::StatusCode IParticleHistsAlgo :: histInitialize ()
 {
 
   ATH_MSG_INFO( m_name );
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -40,7 +40,7 @@ EL::StatusCode IParticleHistsAlgo::AddHists( std::string name ) {
   fullname += name; // add systematic
   IParticleHists* particleHists = new IParticleHists( fullname, m_detailStr, m_histPrefix, m_histTitle ); // add systematic
   particleHists->m_debug = msg().msgLevel(MSG::DEBUG);
-  RETURN_CHECK((m_name+"::AddHists").c_str(), particleHists->initialize(), "");
+  ANA_CHECK( particleHists->initialize());
   particleHists->record( wk() );
   m_plots[name] = particleHists;
 
@@ -87,6 +87,6 @@ EL::StatusCode IParticleHistsAlgo :: finalize () {
 }
 
 EL::StatusCode IParticleHistsAlgo :: histFinalize () {
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

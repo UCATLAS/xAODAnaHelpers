@@ -120,7 +120,7 @@ StatusCode VtxHists::initialize() {
 
 StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, float eventWeight ) {
   for(auto vtx_itr :  *vtxs ) {
-    RETURN_CHECK("VtxHists::execute()", this->execute( vtx_itr, eventWeight ), "");
+    ANA_CHECK( this->execute( vtx_itr, eventWeight ));
   }
 
   return StatusCode::SUCCESS;
@@ -128,14 +128,14 @@ StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, float eventWeig
 
 StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, const xAOD::TrackParticleContainer* trks, float eventWeight ) {
   for(auto vtx_itr :  *vtxs ) {
-    RETURN_CHECK("VtxHists::execute()", this->execute( vtx_itr, trks, eventWeight ), "");
+    ANA_CHECK( this->execute( vtx_itr, trks, eventWeight ));
   }
 
   return StatusCode::SUCCESS;
 }
 
 StatusCode VtxHists::execute( const xAOD::Vertex* vtx, const xAOD::TrackParticleContainer* trks, float eventWeight ) {
-  RETURN_CHECK("VtxHists::execute()", this->execute( vtx, eventWeight), "");
+  ANA_CHECK( this->execute( vtx, eventWeight));
 
   if(m_fillIsoTrkDetails){
 

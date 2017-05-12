@@ -92,7 +92,7 @@ StatusCode IParticleHists::initialize() {
 
 StatusCode IParticleHists::execute( const xAOD::IParticleContainer* particles, float eventWeight, const xAOD::EventInfo* eventInfo) {
   for( auto particle_itr : *particles ) {
-    RETURN_CHECK("IParticleHists::execute()", this->execute( particle_itr, eventWeight, eventInfo), "");
+    ANA_CHECK( this->execute( particle_itr, eventWeight, eventInfo));
   }
 
   if( m_infoSwitch->m_numLeading > 0){

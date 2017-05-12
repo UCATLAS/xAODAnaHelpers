@@ -59,7 +59,7 @@ EL::StatusCode TrigMatcher :: initialize ()
 {
   ATH_MSG_INFO( "Initializing TrigMatcher Interface... ");
 
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   // Standard containers
   m_event = wk()->xaodEvent();
@@ -114,7 +114,7 @@ EL::StatusCode TrigMatcher :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("TrigMatcher::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) , "");
+    ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) );
     ANA_CHECK( executeMatching( inParticles ) );
 
   } else { // get the list of systematics to run over
@@ -122,7 +122,7 @@ EL::StatusCode TrigMatcher :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("TrigMatcher::execute()", HelperFunctions::retrieve(systNames, m_systNames, 0, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_systNames, 0, m_store, msg()) );
 
     // loop over systematic sets
     //
@@ -130,7 +130,7 @@ EL::StatusCode TrigMatcher :: execute ()
 
       ATH_MSG_DEBUG( " syst name: " << systName << "  input container name:  " << m_inContainerName+systName );
 
-      RETURN_CHECK("TrigMatcher::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName + systName, m_event, m_store, msg()), "");
+      ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName + systName, m_event, m_store, msg()));
       ANA_CHECK( executeMatching( inParticles ) );
     }
 

@@ -179,7 +179,7 @@ bool HelperFunctions::isFilePrimaryxAOD(TFile* inputFile) {
     TTree* metaData = dynamic_cast<TTree*> (inputFile->Get("MetaData"));
 
     /* check that MetaData tree exists */
-    RETURN_CHECK("HelperFunctions::isFilePrimaryxAOD", isAvailableMetaData(metaData), "" );
+    ANA_CHECK( isAvailableMetaData(metaData));
 
     metaData->LoadTree(0);
     TObjArray* ar = metaData->GetListOfBranches();

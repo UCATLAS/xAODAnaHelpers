@@ -1298,7 +1298,7 @@ void JetContainer::setBranches(TTree *tree)
       m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection", "Loose" );
       m_trkSelTool->initialize();
       // to do this need to have AddJets return a status code
-      //RETURN_CHECK( "HelpTreeBase::JetTrackSelection", m_trkSelTool->initialize(), "");
+      //ANA_CHECK( m_trkSelTool->initialize());
     }
     setBranch<int  >(tree,"GhostTrackCount",  m_GhostTrackCount );
     setBranch<float>(tree,"GhostTrackPt",     m_GhostTrackPt    );

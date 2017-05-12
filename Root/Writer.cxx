@@ -58,7 +58,7 @@ EL::StatusCode Writer :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -99,7 +99,7 @@ EL::StatusCode Writer :: initialize ()
 
   // output xAOD
   TFile * file = wk()->getOutputFile (m_outputLabel.Data());
-  RETURN_CHECK( "Writer::initialize()", m_event->writeTo(file), "Failed to write event to output file");
+  ANA_CHECK( m_event->writeTo(file));
 
   //FIXME add this as well
 // Set which variables not to write out:
@@ -205,7 +205,7 @@ EL::StatusCode Writer :: finalize ()
 
   // finalize and close our output xAOD file ( and write MetaData tree )
   TFile * file = wk()->getOutputFile(m_outputLabel.Data());
-  RETURN_CHECK( "Writer::finalize()", m_event->finishWritingTo( file ), "Failed to finish writing event to output file");
+  ANA_CHECK( m_event->finishWritingTo( file ));
 
   return EL::StatusCode::SUCCESS;
 }
@@ -224,6 +224,6 @@ EL::StatusCode Writer :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

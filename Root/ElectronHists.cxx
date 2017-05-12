@@ -14,7 +14,7 @@ ElectronHists :: ~ElectronHists () {
 }
 
 StatusCode ElectronHists::initialize() {
-  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
+  ANA_CHECK( IParticleHists::initialize());
 
   // isolation
   if( m_infoSwitch->m_isolation ) {
@@ -69,7 +69,7 @@ StatusCode ElectronHists::execute( const xAOD::Electron* electron, float eventWe
 }
 
 StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "ElectronHists: in execute " <<std::endl;
 
@@ -139,7 +139,7 @@ StatusCode ElectronHists::execute( const xAH::Electron* elec, float eventWeight,
 
 
 StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* /*eventInfo*/  ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight));
 
   if(m_debug) std::cout << "ElectronHists: in execute " <<std::endl;
 

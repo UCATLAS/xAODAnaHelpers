@@ -32,7 +32,7 @@ StatusCode ClusterHists::execute( const xAOD::CaloClusterContainer* ccls, float 
   xAOD::CaloClusterContainer::const_iterator ccl_itr = ccls->begin();
   xAOD::CaloClusterContainer::const_iterator ccl_end = ccls->end();
   for( ; ccl_itr != ccl_end; ++ccl_itr ) {
-    RETURN_CHECK("ClusterHists::execute()", this->execute( (*ccl_itr), eventWeight ), "");
+    ANA_CHECK( this->execute( (*ccl_itr), eventWeight ));
   }
 
   m_ccl_n -> Fill( ccls->size(), eventWeight );

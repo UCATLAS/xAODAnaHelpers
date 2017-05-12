@@ -71,7 +71,7 @@ EL::StatusCode MuonSelector :: histInitialize ()
   // connected.
 
   ATH_MSG_INFO( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -243,11 +243,11 @@ EL::StatusCode MuonSelector :: initialize ()
 
   m_muonSelectionTool_handle.setName("MuonSelectionTool_" + m_name);
   if(!m_muonSelectionTool_handle.isUserConfigured()){
-    RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ),"Failed to set Failed to set MaxEta property");
-    RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ),"Failed to set MuQuality property");
-    RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.setProperty("OutputLevel", msg().level() ), "Can't set OutputLevel" );
+    ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ));
+    ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
+    ANA_CHECK( m_muonSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
   }
-  RETURN_CHECK("MuonSelector::initialize()", m_muonSelectionTool_handle.retrieve(), "Failed to properly initialize CP::MuonSelectionTool");
+  ANA_CHECK( m_muonSelectionTool_handle.retrieve());
 
   // *************************************
   //
@@ -260,10 +260,10 @@ EL::StatusCode MuonSelector :: initialize ()
     // Do this only for the first WP in the list
     //
     ATH_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
-    RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
-    RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level() ), "Can't set OutputLevel" );
+    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
+    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
   }
-  RETURN_CHECK("MuonSelector::initialize()", m_isolationSelectionTool_handle.retrieve(), "Failed to properly initialize IsolationSelectionTool." );
+  ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
   m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
 
   // Add the remaining input WPs to the tool
@@ -284,11 +284,11 @@ EL::StatusCode MuonSelector :: initialize ()
        CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
        if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
 
-       RETURN_CHECK( "MuonSelector::initialize()",  m_isolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
+       ANA_CHECK(  m_isolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type));
 
      } else {
 
-        RETURN_CHECK( "MuonSelector::initialize()", m_isolationSelectionTool->addMuonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+        ANA_CHECK( m_isolationSelectionTool->addMuonWP( (*WP_itr).c_str() ));
 
      }
   }
@@ -303,16 +303,16 @@ EL::StatusCode MuonSelector :: initialize ()
   //     do not initialise if there are no input trigger chains, or the TrigDecisionTool hasn't been configured yet
   //
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) && m_trigDecTool_handle.isUserConfigured() ) {
-    RETURN_CHECK("MuonSelector::initialize()", m_trigDecTool_handle.retrieve(), "Failed to properly initialize TrigDecTool" );
+    ANA_CHECK( m_trigDecTool_handle.retrieve());
 
     //  everything went fine, let's initialise the tool!
     //
     m_trigMuonMatchTool_handle.setName("MatchingTool_" + m_name);
     if(!m_trigMuonMatchTool_handle.isUserConfigured()){
-      RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ), "Failed to pass TrigDecisionTool to MatchingTool" );
-      RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ), "Can't set OutputLevel" );
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
     }
-    RETURN_CHECK("MuonSelector::initialize()", m_trigMuonMatchTool_handle.retrieve(), "Failed to properly initialize MatchingTool" );
+    ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
 
   } else {
 
@@ -344,7 +344,7 @@ EL::StatusCode MuonSelector :: execute ()
   ATH_MSG_DEBUG( "Applying Muon Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   //
@@ -401,7 +401,7 @@ EL::StatusCode MuonSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) );
 
     // create output container (if requested)
     //
@@ -416,7 +416,7 @@ EL::StatusCode MuonSelector :: execute ()
       if ( eventPass ) {
         // add ConstDataVector to TStore
 	//
-        RETURN_CHECK( "MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName ), "Failed to store const data container");
+        ANA_CHECK( m_store->record( selectedMuons, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
 	//
@@ -429,7 +429,7 @@ EL::StatusCode MuonSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -444,7 +444,7 @@ EL::StatusCode MuonSelector :: execute ()
 
       ATH_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, msg()) );
 
       // create output container (if requested) - one for each systematic
       //
@@ -473,7 +473,7 @@ EL::StatusCode MuonSelector :: execute ()
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
 	  //
-          RETURN_CHECK( "MuonSelector::execute()", m_store->record( selectedMuons, m_outContainerName+systName ), "Failed to store const data container");
+          ANA_CHECK( m_store->record( selectedMuons, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
           delete selectedMuons; selectedMuons = nullptr;
@@ -486,7 +486,7 @@ EL::StatusCode MuonSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    RETURN_CHECK( "MuonSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+    ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
 
   }
 
@@ -510,7 +510,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
   ATH_MSG_DEBUG( "In  executeSelection..." );
   const xAOD::VertexContainer* vertices(nullptr);
-  RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
@@ -636,7 +636,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
       ATH_MSG_DEBUG( "Doing di-muon trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      RETURN_CHECK("MuonSelector::executeSelection()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> dimuon_trigmatch_pair;
       typedef std::multimap< std::string, dimuon_trigmatch_pair >    dimuon_trigmatch_pair_map;
@@ -737,7 +737,7 @@ EL::StatusCode MuonSelector :: histFinalize ()
   // they processed input events.
 
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -840,7 +840,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
 

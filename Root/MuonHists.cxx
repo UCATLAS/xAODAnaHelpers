@@ -24,7 +24,7 @@ MuonHists :: ~MuonHists () {
 }
 
 StatusCode MuonHists::initialize() {
-  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
+  ANA_CHECK( IParticleHists::initialize());
 
   // Isolation
   if(m_infoSwitch->m_isolation){
@@ -82,7 +82,7 @@ StatusCode MuonHists::execute( const xAOD::Muon* muon, float eventWeight, const 
 }
 
 StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo  ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "MuonHists: in execute " <<std::endl;
 
@@ -172,7 +172,7 @@ StatusCode MuonHists::execute( const xAH::Muon* muon, float eventWeight, const x
 
 
 StatusCode MuonHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* /*eventInfo*/  ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight));
 
   if(m_debug) std::cout << "MuonHists: in execute " <<std::endl;
 

@@ -66,7 +66,7 @@ EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
 
 EL::StatusCode MinixAOD :: histInitialize ()
 {
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -78,7 +78,7 @@ EL::StatusCode MinixAOD :: changeInput (bool firstFile)
     {
       // Retrieve the input container:
       const xAOD::CutBookkeeperContainer* inputCBKContainer(nullptr);
-      RETURN_CHECK("MinixAOD::fileExecute()", wk()->xaodEvent()->retrieveMetaInput(inputCBKContainer, "CutBookkeepers"), "");
+      ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(inputCBKContainer, "CutBookkeepers"));
 
       if(firstFile)
 	{
@@ -116,24 +116,24 @@ EL::StatusCode MinixAOD :: initialize ()
 
   // always do this, obviously
   TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
-  RETURN_CHECK("MinixAOD::initialize()", m_event->writeTo(file_xAOD), "Could not set output to file");
+  ANA_CHECK( m_event->writeTo(file_xAOD));
 
   if(m_copyFileMetaData){
     m_fileMetaDataTool = new xAODMaker::FileMetaDataTool();
 
-    RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->setProperty("OutputLevel", msg().level() ), "Could not set verbosity on fileMenuMetaDataTool");
+    ANA_CHECK( m_fileMetaDataTool->setProperty("OutputLevel", msg().level() ));
 
 
-    RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->initialize(), "Could not initialize FileMetaDataTool");
+    ANA_CHECK( m_fileMetaDataTool->initialize());
     ATH_MSG_DEBUG("FileMetaDataTool initialized...");
   }
 
   if(m_copyTriggerInfo){
     m_trigMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();
 
-    RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ), "Could not set verbosity on TriggerMenuMetaDataTool");
+    ANA_CHECK( m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ));
 
-    RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
+    ANA_CHECK( m_trigMetaDataTool->initialize());
     ATH_MSG_DEBUG("TriggerMenuMetaDataTool initialized...");
 
     ATH_MSG_DEBUG("Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file.");
@@ -186,7 +186,7 @@ EL::StatusCode MinixAOD :: execute ()
   ATH_MSG_VERBOSE( "Dumping objects...");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, msg()) );
 
   //
   // Fill cutbookkeeper
@@ -320,10 +320,10 @@ EL::StatusCode MinixAOD :: finalize () {
   // Save cutbookkeeper
   if(m_copyCutBookkeeper)
     {
-      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputCBKContainer      ,"CutBookkeepers")              , "");
-      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputCBKContainer_aux  ,"CutBookkeepersAux.")          , "");
-      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputInCBKContainer    ,"IncompleteCutBookkeepers")    , "");
-      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux."), "");
+      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputCBKContainer      ,"CutBookkeepers")              );
+      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputCBKContainer_aux  ,"CutBookkeepersAux.")          );
+      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputInCBKContainer    ,"IncompleteCutBookkeepers")    );
+      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux."));
 
       m_outputCBKContainer->push_back(m_outputCBK);
     }
@@ -331,7 +331,7 @@ EL::StatusCode MinixAOD :: finalize () {
   //
   // Close file
   TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
-  RETURN_CHECK("MinixAOD::finalize()", m_event->finishWritingTo(file_xAOD), "Could not finish writing to the output xAOD.");
+  ANA_CHECK( m_event->finishWritingTo(file_xAOD));
 
   if(m_fileMetaDataTool) delete m_fileMetaDataTool;
   if(m_trigMetaDataTool) delete m_trigMetaDataTool;
@@ -340,6 +340,6 @@ EL::StatusCode MinixAOD :: finalize () {
 }
 EL::StatusCode MinixAOD :: histFinalize ()
 {
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

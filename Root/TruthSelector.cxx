@@ -61,7 +61,7 @@ EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
 EL::StatusCode TruthSelector :: histInitialize ()
 {
   ATH_MSG_INFO( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -147,7 +147,7 @@ EL::StatusCode TruthSelector :: execute ()
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -170,7 +170,7 @@ EL::StatusCode TruthSelector :: execute ()
   // then get the one collection and be done with it
 
   // this will be the collection processed - no matter what!!
-  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, msg()) );
 
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
 
@@ -235,7 +235,7 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 
   // add ConstDataVector to TStore
   if ( m_createSelectedContainer ) {
-    RETURN_CHECK("TruthSelector::execute()", m_store->record( selectedTruthParts, outContainerName ), "Failed to store const data container.");
+    ANA_CHECK( m_store->record( selectedTruthParts, outContainerName ));
   }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
@@ -281,7 +281,7 @@ EL::StatusCode TruthSelector :: finalize ()
 EL::StatusCode TruthSelector :: histFinalize ()
 {
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 

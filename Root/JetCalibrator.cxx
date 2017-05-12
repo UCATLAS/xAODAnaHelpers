@@ -77,7 +77,7 @@ EL::StatusCode JetCalibrator :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -121,7 +121,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
@@ -181,14 +181,14 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_JetCalibrationTool_handle.setName("JetCalibrationTool_" + m_name);
   ATH_MSG_DEBUG("Trying to initialize " << m_JetCalibrationTool_handle.fullName());
   if( !m_JetCalibrationTool_handle.isUserConfigured() ){
-    RETURN_CHECK("JetCalibrator::initialize()", ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool), "Could not make JetCalibrationTool");
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo), "Failed to set JetCollection");
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig), "Failed to set ConfigFile");
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence), "Failed to set CalibSequence");
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("IsData",!m_isMC), "Failed to set IsData");
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()), "");
+    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig));
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("IsData",!m_isMC));
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
   }
-  RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.retrieve(), "Failed to retrieve JetCalibrationTool");
+  ANA_CHECK( m_JetCalibrationTool_handle.retrieve());
   ATH_MSG_DEBUG("Successfully initialized " << m_JetCalibrationTool_handle.fullName());
 
   // initialize jet tile correction tool
@@ -196,9 +196,9 @@ EL::StatusCode JetCalibrator :: initialize ()
     m_JetTileCorrectionTool_handle.setName("CP::JetTileCorrectionTool/JetTileCorrectionTool_" + m_name);
     ATH_MSG_DEBUG("Trying to initialize " << m_JetTileCorrectionTool_handle.fullName());
     if(!m_JetTileCorrectionTool_handle.isUserConfigured()){
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetTileCorrectionTool_handle.setProperty("OutputLevel", msg().level()), "");
+      ANA_CHECK( m_JetTileCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
     }
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetTileCorrectionTool_handle.retrieve(), "Failed to retrieve JetTileCorrectionTool");
+    ANA_CHECK( m_JetTileCorrectionTool_handle.retrieve());
     ATH_MSG_DEBUG("Successfully initialized " << m_JetTileCorrectionTool_handle.fullName());
   }
 
@@ -209,13 +209,13 @@ EL::StatusCode JetCalibrator :: initialize ()
     m_JetCleaningTool_handle.setName("JetCleaningTool_" + m_name);
     ATH_MSG_DEBUG("Trying to initialize " << m_JetCleaningTool_handle.fullName());
     if( !m_JetCleaningTool_handle.isUserConfigured() ){
-      RETURN_CHECK( "JetCalibrator::initialize()", m_JetCleaningTool_handle.setProperty( "CutLevel", m_jetCleanCutLevel), "Failed to set CutLevel");
+      ANA_CHECK( m_JetCleaningTool_handle.setProperty( "CutLevel", m_jetCleanCutLevel));
       if (m_jetCleanUgly){
-        RETURN_CHECK( "JetCalibrator::initialize()", m_JetCleaningTool_handle.setProperty( "DoUgly", true), "Failed to set DoUgly");
+        ANA_CHECK( m_JetCleaningTool_handle.setProperty( "DoUgly", true));
       }
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetCleaningTool_handle.setProperty( "OutputLevel", msg().level() ), "");
+      ANA_CHECK( m_JetCleaningTool_handle.setProperty( "OutputLevel", msg().level() ));
     }
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetCleaningTool_handle.retrieve(), "Failed to retrieve JetCleaningTool");
+    ANA_CHECK( m_JetCleaningTool_handle.retrieve());
     ATH_MSG_DEBUG("Successfully initialized " << m_JetCleaningTool_handle.fullName());
 
     if( m_saveAllCleanDecisions ){
@@ -228,14 +228,14 @@ EL::StatusCode JetCalibrator :: initialize ()
         asg::AnaToolHandle<IJetSelector> this_JetCleaningTool_handle{"JetCleaningTool/JetCleaningTool_"+m_decisionNames.at(iD)+"_"+m_name};
         if( !this_JetCleaningTool_handle.isUserConfigured() ){
           if( m_decisionNames.at(iD).find("Ugly") != std::string::npos ){
-            RETURN_CHECK( "JetCalibrator::initialize()", this_JetCleaningTool_handle.setProperty( "CutLevel", m_decisionNames.at(iD).substr(0,m_decisionNames.at(iD).size()-4) ), "");
-            RETURN_CHECK( "JetCalibrator::initialize()", this_JetCleaningTool_handle.setProperty( "DoUgly", true), "");
+            ANA_CHECK( this_JetCleaningTool_handle.setProperty( "CutLevel", m_decisionNames.at(iD).substr(0,m_decisionNames.at(iD).size()-4) ));
+            ANA_CHECK( this_JetCleaningTool_handle.setProperty( "DoUgly", true));
           }else{
-            RETURN_CHECK( "JetCalibrator::initialize()", this_JetCleaningTool_handle.setProperty( "CutLevel", m_decisionNames.at(iD) ), "Failed to set CutLevel");
+            ANA_CHECK( this_JetCleaningTool_handle.setProperty( "CutLevel", m_decisionNames.at(iD) ));
           }
-          RETURN_CHECK( "JetCalibrator::initialize()", this_JetCleaningTool_handle.setProperty( "OutputLevel", msg().level() ), "");
+          ANA_CHECK( this_JetCleaningTool_handle.setProperty( "OutputLevel", msg().level() ));
         }
-        RETURN_CHECK("JetCalibrator::initialize()", this_JetCleaningTool_handle.retrieve(), "Failed to retrieve JetCleaningTool");
+        ANA_CHECK( this_JetCleaningTool_handle.retrieve());
         m_AllJetCleaningTool_handles.push_back( this_JetCleaningTool_handle );
       }// For each cleaning decision
     }//If save all cleaning decisions
@@ -265,19 +265,19 @@ EL::StatusCode JetCalibrator :: initialize ()
     m_JetUncertaintiesTool_handle.setName("JetUncertaintiesTool_" + m_name);
     if( !m_JetUncertaintiesTool_handle.isUserConfigured() ){
       ATH_MSG_INFO("Initialize JES UNCERT with " << m_JESUncertConfig);
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo), "Failed to set JetDefinition");
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("MCType",m_JESUncertMCType), "Failed to set MCType");
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("ConfigFile", PathResolverFindCalibFile(m_JESUncertConfig)), "Failed to set ConfigFile");
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.setProperty("OutputLevel", msg().level()), "");
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo));
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("MCType",m_JESUncertMCType));
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("ConfigFile", PathResolverFindCalibFile(m_JESUncertConfig)));
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("OutputLevel", msg().level()));
     }
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetUncertaintiesTool_handle.retrieve(), "Failed to retrieve JetUncertaintiesTool");
+    ANA_CHECK( m_JetUncertaintiesTool_handle.retrieve());
 
 
     ATH_MSG_INFO(" Initializing Jet Systematics :");
     const CP::SystematicSet recSysts = m_JetUncertaintiesTool_handle->recommendedSystematics();
 
     //If just one systVal, then push it to the vector
-    RETURN_CHECK("JetCalibrator::initialize()", this->parseSystValVector(), "Failed to parse vector of systematic sigma values.");
+    ANA_CHECK( this->parseSystValVector());
     if( m_systValVector.size() == 0) {
       ATH_MSG_DEBUG("Pushing the following systVal to m_systValVector: " << m_systVal );
       m_systValVector.push_back(m_systVal);
@@ -317,26 +317,26 @@ EL::StatusCode JetCalibrator :: initialize ()
     // Instantiate the JER tool
     m_JERTool_handle.setName("JERTool_" + m_name);
     if( !m_JERTool_handle.isUserConfigured() ){
-      RETURN_CHECK("JetCalibrator::initialize()", m_JERTool_handle.setProperty("PlotFileName", m_JERUncertConfig.c_str()), "");
-      RETURN_CHECK("JetCalibrator::initialize()", m_JERTool_handle.setProperty("CollectionName", m_jetAlgo), "");
-      RETURN_CHECK("JetCalibrator::initialize()", m_JERTool_handle.setProperty("OutputLevel", msg().level() ), "");
+      ANA_CHECK( m_JERTool_handle.setProperty("PlotFileName", m_JERUncertConfig.c_str()));
+      ANA_CHECK( m_JERTool_handle.setProperty("CollectionName", m_jetAlgo));
+      ANA_CHECK( m_JERTool_handle.setProperty("OutputLevel", msg().level() ));
     }
-    RETURN_CHECK("JetCalibrator::initialize()", m_JERTool_handle.retrieve(), "Failed to retrieve JERTool");
+    ANA_CHECK( m_JERTool_handle.retrieve());
 
     // Instantiate the JER Smearing tool
     m_JERSmearingTool_handle.setName("JERSmearingTool_" + m_name);
     if( !m_JERSmearingTool_handle.isUserConfigured() ){
-      RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("JERTool", m_JERTool_handle.getHandle()), "Failed to set JERTool");
-      RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("isMC", m_isMC), "Failed to set isMC");
-      RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("ApplyNominalSmearing", m_JERApplyNominal), "Failed to set ApplyNominalSmearing");
+      ANA_CHECK( m_JERSmearingTool_handle.setProperty("JERTool", m_JERTool_handle.getHandle()));
+      ANA_CHECK( m_JERSmearingTool_handle.setProperty("isMC", m_isMC));
+      ANA_CHECK( m_JERSmearingTool_handle.setProperty("ApplyNominalSmearing", m_JERApplyNominal));
       if( m_JERFullSys )
-        RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("SystematicMode", "Full"), "Failed to set SystematicMode");
+        ANA_CHECK( m_JERSmearingTool_handle.setProperty("SystematicMode", "Full"));
       else
-        RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("SystematicMode", "Simple"), "Failed to set SystematicMode");
+        ANA_CHECK( m_JERSmearingTool_handle.setProperty("SystematicMode", "Simple"));
 
-      RETURN_CHECK( "JetCalibrator::initialize()", m_JERSmearingTool_handle.setProperty("OutputLevel", msg().level() ), "Failed to set SystematicMode");
+      ANA_CHECK( m_JERSmearingTool_handle.setProperty("OutputLevel", msg().level() ));
     }
-    RETURN_CHECK("JetCalibrator::initialize()", m_JERSmearingTool_handle.retrieve(), "Failed to retrieve JERSmearingTool");
+    ANA_CHECK( m_JERSmearingTool_handle.retrieve());
 
     const CP::SystematicSet recSysts = m_JERSmearingTool_handle->recommendedSystematics();
     ATH_MSG_INFO( " Initializing JER Systematics :");
@@ -363,10 +363,10 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   m_JVTUpdateTool_handle.setName("JVTUpdateTool_" + m_name);
   if( m_redoJVT && !m_JVTUpdateTool_handle.isUserConfigured() ){
-    RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")), "");
-    RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.setProperty("OutputLevel", msg().level()), "");
+    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")));
+    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("OutputLevel", msg().level()));
   }
-  RETURN_CHECK("JetCalibrator::initialize()", m_JVTUpdateTool_handle.retrieve(), "Failed to retrieve JVTUpdateTool");
+  ANA_CHECK( m_JVTUpdateTool_handle.retrieve());
 
   std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
@@ -378,7 +378,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     ATH_MSG_INFO("\t " << syst_it.name());
   }
 
-  RETURN_CHECK("JetCalibrator::initialize()",m_store->record(SystJetsNames, "jets_Syst"+m_name ), "Failed to record vector of jet systs names.");
+  ANA_CHECK(m_store->record(SystJetsNames, "jets_Syst"+m_name ));
 
 
   return EL::StatusCode::SUCCESS;
@@ -398,7 +398,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* inJets(nullptr);
-  RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
   //
   // Perform nominal calibration
@@ -408,8 +408,8 @@ EL::StatusCode JetCalibrator :: execute ()
 
   std::string outSCContainerName=m_outContainerName+"ShallowCopy";
   std::string outSCAuxContainerName=m_outContainerName+"ShallowCopyAux.";
-  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.first,  outSCContainerName),    "Failed to record shallow copy container.");
-  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( calibJetsSC.second, outSCAuxContainerName), "Failed to record shallow copy aux container.");
+  ANA_CHECK( m_store->record( calibJetsSC.first,  outSCContainerName));
+  ANA_CHECK( m_store->record( calibJetsSC.second, outSCAuxContainerName));
 
   for ( auto jet_itr : *(calibJetsSC.first) ) {
     m_numObject++;
@@ -570,15 +570,15 @@ EL::StatusCode JetCalibrator :: execute ()
 
     // add shallow copy to TStore
     if(thisSysType!=0) { // nominal is always saved outside of loop
-      RETURN_CHECK( "JetCalibrator::execute()", m_store->record( uncertCalibJetsSC.first, outSCContainerName), "Failed to record shallow copy container.");
-      RETURN_CHECK( "JetCalibrator::execute()", m_store->record( uncertCalibJetsSC.second, outSCAuxContainerName), "Failed to record shallow copy aux container.");
+      ANA_CHECK( m_store->record( uncertCalibJetsSC.first, outSCContainerName));
+      ANA_CHECK( m_store->record( uncertCalibJetsSC.second, outSCAuxContainerName));
     }
 
     // add ConstDataVector to TStore
-    RETURN_CHECK( "JetCalibrator::execute()", m_store->record( uncertCalibJetsCDV, outContainerName), "Failed to record const data container.");
+    ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
   }
   // add vector of systematic names to TStore
-  RETURN_CHECK( "JetCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+  ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgo));
 
   // look what do we have in TStore
 
@@ -633,6 +633,6 @@ EL::StatusCode JetCalibrator :: histFinalize ()
   // they processed input events.
 
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

@@ -20,7 +20,7 @@ JetHists :: ~JetHists () {
 
 
 StatusCode JetHists::initialize() {
-  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
+  ANA_CHECK( IParticleHists::initialize());
 
   if(m_debug) Info("JetHists::initialize()", m_name.c_str());
 
@@ -541,7 +541,7 @@ StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, const xAO
 }
 
 StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "JetHists: in execute " <<std::endl;
 
@@ -1422,7 +1422,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
     if(m_debug) std::cout << "Track Size " << matchedTracks.size() << std::endl;
     for(auto& trkPtr: matchedTracks){
-      RETURN_CHECK("JetHists::execute()", m_tracksInJet->execute(trkPtr, jet, pvx, eventWeight, eventInfo), "");
+      ANA_CHECK( m_tracksInJet->execute(trkPtr, jet, pvx, eventWeight, eventInfo));
     }
   }
 
@@ -1587,7 +1587,7 @@ StatusCode JetHists::execute( const xAH::Jet* jet, float eventWeight, const xAH:
 }
 
 StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* eventInfo ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight));
 
   if(m_debug) std::cout << "JetHists: in execute " <<std::endl;
 

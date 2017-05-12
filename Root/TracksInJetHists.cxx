@@ -66,7 +66,7 @@ StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD
   //
   //  Fill track hists
   //
-  RETURN_CHECK("TracksInJetHists::execute()", m_trkPlots   ->execute(trk, pvx, eventWeight, eventInfo), "");
+  ANA_CHECK( m_trkPlots   ->execute(trk, pvx, eventWeight, eventInfo));
 
   // d0
   float sign         = getD0Sign(trk, jet);

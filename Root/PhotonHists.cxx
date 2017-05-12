@@ -14,7 +14,7 @@ PhotonHists :: ~PhotonHists () {
 }
 
 StatusCode PhotonHists::initialize() {
-  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
+  ANA_CHECK( IParticleHists::initialize());
 
   // isolation
   if( m_infoSwitch->m_isolation ) {
@@ -38,7 +38,7 @@ StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight, 
 }
 
 StatusCode PhotonHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "PhotonHists: in execute " <<std::endl;
 

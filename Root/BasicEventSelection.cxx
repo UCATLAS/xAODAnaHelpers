@@ -79,7 +79,7 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   // connected.
 
   ATH_MSG_INFO( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   // write the metadata hist to this file so algos downstream can pick up the pointer
   TFile *fileMD = wk()->getOutputFile (m_metaDataStreamName);
@@ -283,7 +283,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
   ATH_MSG_DEBUG( "Is MC? " << static_cast<int>(m_isMC) );
@@ -329,10 +329,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
     if( m_reweightSherpa22 ){
 
       if (!m_reweightSherpa22_tool_handle.isUserConfigured()) {
-        RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ), "Failed to set TruthJetContainer" );
-        RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.setProperty( "OutputLevel", msg().level() ), "" );
+        ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ));
+        ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "OutputLevel", msg().level() ));
       }
-      RETURN_CHECK( "initialize()", m_reweightSherpa22_tool_handle.retrieve(), "Failed to properly retrieve PMGTools::PMGSherpa22VJetsWeightTool");
+      ANA_CHECK( m_reweightSherpa22_tool_handle.retrieve());
 
     }
   }//if isMC and a Sherpa 2.2 sample
@@ -440,11 +440,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
       std::istringstream ss(PathResolverFindDataFile(m_GRLxml));
       while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
 
-      RETURN_CHECK("BasicEventSelection::initialize()", m_grl_handle.setProperty( "GoodRunsListVec", vecStringGRL), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_grl_handle.setProperty("PassThrough", false), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_grl_handle.setProperty("OutputLevel", msg().level()), "");
+      ANA_CHECK( m_grl_handle.setProperty( "GoodRunsListVec", vecStringGRL));
+      ANA_CHECK( m_grl_handle.setProperty("PassThrough", false));
+      ANA_CHECK( m_grl_handle.setProperty("OutputLevel", msg().level()));
     }
-    RETURN_CHECK("BasicEventSelection::initialize()", m_grl_handle.retrieve(), "");
+    ANA_CHECK( m_grl_handle.retrieve());
   }
 
   // 2.
@@ -493,14 +493,14 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
 
     if(!m_pileup_tool_handle.isUserConfigured()){
-      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09), "Failed to set pileup reweighting data scale factor");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0), "Failed to set pileup reweighting data scale factor up");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.18), "Failed to set pileup reweighting data scale factor down");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ), "");
+      ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
+      ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
+      ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09));
+      ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0));
+      ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.18));
+      ANA_CHECK( m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ));
     }
-    RETURN_CHECK("BasicEventSelection::retrieve()", m_pileup_tool_handle.retrieve(), "Failed to properly retrieve CP::PileupReweightingTool");
+    ANA_CHECK( m_pileup_tool_handle.retrieve());
 
   }
 
@@ -519,16 +519,16 @@ EL::StatusCode BasicEventSelection :: initialize ()
       m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
 
     if(!m_trigConfTool_handle.isUserConfigured()){
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool_handle.setProperty("OutputLevel", msg().level()), "");
+      ANA_CHECK( m_trigConfTool_handle.setProperty("OutputLevel", msg().level()));
     }
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool_handle.retrieve(), "Failed to properly initialize TrigConf::xAODConfigTool");
+    ANA_CHECK( m_trigConfTool_handle.retrieve());
 
     if(!m_trigDecTool_handle.isUserConfigured()){
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
-      RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ), "");
+      ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
+      ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
+      ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
     }
-    RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool_handle.retrieve(), "Failed to properly initialize Trig::TrigDecisionTool");
+    ANA_CHECK( m_trigDecTool_handle.retrieve());
     ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
 
   }//end trigger configuration
@@ -604,7 +604,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Grab event
   //------------------
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the MC event weight
@@ -819,7 +819,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   const xAOD::VertexContainer* vertices(nullptr);
   if ( !m_truthLevelOnly && m_applyPrimaryVertexCut ) {
-    RETURN_CHECK("BasicEventSelection::execute()", HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
 
     if ( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
       wk()->skipEvent();
@@ -974,6 +974,6 @@ EL::StatusCode BasicEventSelection :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
