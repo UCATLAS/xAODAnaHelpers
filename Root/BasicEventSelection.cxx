@@ -492,6 +492,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
 
+    ATH_MSG_DEBUG( "Trying to initialize " << m_pileup_tool_handle.typeAndName() );
     if(!m_pileup_tool_handle.isUserConfigured()){
       ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
       ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
@@ -501,7 +502,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       ANA_CHECK( m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ));
     }
     ANA_CHECK( m_pileup_tool_handle.retrieve());
-
+    ATH_MSG_DEBUG( "Successfully initialized " << m_pileup_tool_handle.typeAndName() );
   }
 
   // pileup reweighing tool is needed to get the data weight for unprescaling
@@ -523,13 +524,14 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
     ANA_CHECK( m_trigConfTool_handle.retrieve());
 
+    ATH_MSG_DEBUG( "Trying to initialize " << m_trigDecTool_handle.typeAndName());
     if(!m_trigDecTool_handle.isUserConfigured()){
       ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
       ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
       ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
+    ATH_MSG_DEBUG( "Successfully initialized " << m_trigDecTool_handle.typeAndName());
 
   }//end trigger configuration
 
