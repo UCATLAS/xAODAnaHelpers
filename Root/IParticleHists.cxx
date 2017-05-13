@@ -1,6 +1,7 @@
 #include <xAODAnaHelpers/IParticleHists.h>
 #include <sstream>
 
+ANA_MSG_SOURCE(msgIParticleHists, "IParticleHists")
 
 using std::vector;
 
@@ -91,6 +92,7 @@ StatusCode IParticleHists::initialize() {
 }
 
 StatusCode IParticleHists::execute( const xAOD::IParticleContainer* particles, float eventWeight, const xAOD::EventInfo* eventInfo) {
+  using namespace msgIParticleHists;
   for( auto particle_itr : *particles ) {
     ANA_CHECK( this->execute( particle_itr, eventWeight, eventInfo));
   }
@@ -138,8 +140,8 @@ StatusCode IParticleHists::execute( const xAOD::IParticle* particle, float event
 
   // kinematic
   if( m_infoSwitch->m_kinematic ) {
-    
-  
+
+
     m_Px->  Fill( particle->p4().Px()/1e3,  eventWeight );
     m_Py->  Fill( particle->p4().Py()/1e3,  eventWeight );
     m_Pz->  Fill( particle->p4().Pz()/1e3,  eventWeight );

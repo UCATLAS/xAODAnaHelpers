@@ -10,6 +10,8 @@
 #include "xAODAnaHelpers/EventInfo.h"
 #include "xAODAnaHelpers/OnlineBeamSpotTool.h"
 
+ANA_MSG_HEADER(msgJetHists)
+
 class JetHists : public IParticleHists
 {
   public:
@@ -37,8 +39,8 @@ class JetHists : public IParticleHists
 
   private:
 
-    std::string m_titlePrefix; 
-    xAH::OnlineBeamSpotTool      m_onlineBSTool;  //!        
+    std::string m_titlePrefix;
+    xAH::OnlineBeamSpotTool      m_onlineBSTool;  //!
 
     // clean
     TH1F* m_jetTime;                //!
@@ -160,8 +162,8 @@ class JetHists : public IParticleHists
     //TH1F* m_MV2;
     //TH2F* m_IP3DvsMV2c20;
 
-    
-    
+
+
     TProfile* m_vtxClass_vs_lBlock; //!
     TProfile* m_vtxEff10_vs_lBlock; //!
     TProfile* m_vtxEff1_vs_lBlock; //!
@@ -284,10 +286,10 @@ class JetHists : public IParticleHists
 
     // By eta
     TH1F* m_jetPt_eta_0_1; //!
-    TH1F* m_jetPt_eta_1_2; //!   
-    TH1F* m_jetPt_eta_2_2p5; //!  
-    TH1F* m_jetPt_eta_1_2p5; //! 
-    
+    TH1F* m_jetPt_eta_1_2; //!
+    TH1F* m_jetPt_eta_2_2p5; //!
+    TH1F* m_jetPt_eta_1_2p5; //!
+
     // bs information
     TH1F* m_bs_online_vx; //!
     TH1F* m_bs_online_vy; //!
@@ -295,8 +297,8 @@ class JetHists : public IParticleHists
     TH1F* m_bs_online_vz_l; //!
 
     TH1F* m_eta_bs_online_vz_0_1  ; //!
-    TH1F* m_eta_bs_online_vz_1_1p5; //! 
-    TH1F* m_eta_bs_online_vz_1p5_2; //! 
+    TH1F* m_eta_bs_online_vz_1_1p5; //!
+    TH1F* m_eta_bs_online_vz_1p5_2; //!
 
     // HLT Vertex Comp
     TH1F*     m_vtx_offline_x0; //!
@@ -337,7 +339,7 @@ class JetHists : public IParticleHists
 
     TProfile*   m_vtx_online_x0_vs_vtx_online_z0; //!
     TProfile*   m_vtx_online_y0_vs_vtx_online_z0; //!
-    
+
     // trackPV
     //TH1F* m_NumTrkPt1000PV;
     //TH1F* m_SumPtTrkPt1000PV;
@@ -361,7 +363,7 @@ class JetHists : public IParticleHists
     TH1F* m_jetPt_avgMu_15_25;
     TH1F* m_jetPt_avgMu_25;
     TH2F* m_avgMu_vs_jetPt;
-    
+
     // Eta-phi map
     TH2F* m_etaPhi;
 

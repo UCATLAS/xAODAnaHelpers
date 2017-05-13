@@ -6,6 +6,8 @@
 #include <xAODTracking/Vertex.h>
 #include <xAODEventInfo/EventInfo.h>
 
+ANA_MSG_HEADER(msgTrackHists)
+
 class TrackHists : public HistogramManager
 {
   public:
@@ -101,17 +103,17 @@ class TrackHists : public HistogramManager
     TH1F*    m_bsY; //!
     TH1F*    m_bsZ; //!
 
-    TH2F* m_trk_Eta_vs_trk_P; //! 
-    TH2F* m_trk_Eta_vs_trk_P_l; //! 
-    TH2F* m_trk_Phi_vs_trk_P; //! 
-    TH2F* m_trk_Phi_vs_trk_P_l; //! 
-    TH2F* m_trk_Eta_vs_trk_Phi; //! 
-    TH2F* m_trk_d0_vs_trk_P; //! 
-    TH2F* m_trk_d0_vs_trk_P_l; //! 
-    TH2F* m_trk_z0_vs_trk_P; //! 
-    TH2F* m_trk_z0_vs_trk_P_l; //! 
-    TH2F* m_trk_z0sinT_vs_trk_P; //! 
-    TH2F* m_trk_z0sinT_vs_trk_P_l; //! 
+    TH2F* m_trk_Eta_vs_trk_P; //!
+    TH2F* m_trk_Eta_vs_trk_P_l; //!
+    TH2F* m_trk_Phi_vs_trk_P; //!
+    TH2F* m_trk_Phi_vs_trk_P_l; //!
+    TH2F* m_trk_Eta_vs_trk_Phi; //!
+    TH2F* m_trk_d0_vs_trk_P; //!
+    TH2F* m_trk_d0_vs_trk_P_l; //!
+    TH2F* m_trk_z0_vs_trk_P; //!
+    TH2F* m_trk_z0_vs_trk_P_l; //!
+    TH2F* m_trk_z0sinT_vs_trk_P; //!
+    TH2F* m_trk_z0sinT_vs_trk_P_l; //!
 };
 
 

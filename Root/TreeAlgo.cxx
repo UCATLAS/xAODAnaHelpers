@@ -277,7 +277,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_jetContainerName.empty() ) {
       for(unsigned int ll=0;ll<m_jetContainers.size();++ll){ // Systs only for first jet container
         const xAOD::JetContainer* inJets(nullptr);
-        if(ll==0) ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
+        if(ll==0){ ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ); }
         else{     ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll), m_event, m_store, msg()) ); }
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }

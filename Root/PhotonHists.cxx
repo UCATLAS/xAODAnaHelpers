@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
+ANA_MSG_SOURCE(msgPhotonHists, "PhotonHists")
 
 PhotonHists :: PhotonHists (std::string name, std::string detailStr) :
   IParticleHists(name, detailStr, "photon", "photon"),
@@ -14,6 +14,7 @@ PhotonHists :: ~PhotonHists () {
 }
 
 StatusCode PhotonHists::initialize() {
+  using namespace msgPhotonHists;
   ANA_CHECK( IParticleHists::initialize());
 
   // isolation
@@ -38,6 +39,7 @@ StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight, 
 }
 
 StatusCode PhotonHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
+  using namespace msgPhotonHists;
   ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "PhotonHists: in execute " <<std::endl;

@@ -6,6 +6,8 @@
 
 #include <AthContainers/DataVector.h>
 
+ANA_MSG_HEADER(msgPhotonHists)
+
 class PhotonHists : public IParticleHists
 {
   public:

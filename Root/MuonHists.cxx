@@ -10,7 +10,7 @@
 #include <xAODAnaHelpers/MuonHists.h>
 #include <sstream>
 
-#include <AsgTools/MessageCheck.h>
+ANA_MSG_SOURCE(msgMuonHists, "MuonHists")
 
 using std::vector;
 
@@ -24,6 +24,7 @@ MuonHists :: ~MuonHists () {
 }
 
 StatusCode MuonHists::initialize() {
+  using namespace msgMuonHists;
   ANA_CHECK( IParticleHists::initialize());
 
   // Isolation
@@ -64,7 +65,7 @@ StatusCode MuonHists::initialize() {
 
 
   }
-  
+
   // quality
   if(m_infoSwitch->m_quality){
     m_isVeryLoose = book(m_name, "isVeryLoose", "isVeryLoose", 3, -1.5, 1.5);
@@ -82,6 +83,7 @@ StatusCode MuonHists::execute( const xAOD::Muon* muon, float eventWeight, const 
 }
 
 StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo  ) {
+  using namespace msgMuonHists;
   ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "MuonHists: in execute " <<std::endl;
@@ -172,6 +174,7 @@ StatusCode MuonHists::execute( const xAH::Muon* muon, float eventWeight, const x
 
 
 StatusCode MuonHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* /*eventInfo*/  ) {
+  using namespace msgMuonHists;
   ANA_CHECK( IParticleHists::execute(particle, eventWeight));
 
   if(m_debug) std::cout << "MuonHists: in execute " <<std::endl;
@@ -187,18 +190,18 @@ StatusCode MuonHists::execute( const xAH::Particle* particle, float eventWeight,
 
 
     m_isIsolated_LooseTrackOnly           ->Fill( muon->isIsolated_LooseTrackOnly ,  eventWeight );
-    m_isIsolated_Loose                    ->Fill( muon->isIsolated_Loose ,  eventWeight ); 
-    m_isIsolated_Tight                    ->Fill( muon->isIsolated_Tight ,  eventWeight ); 
+    m_isIsolated_Loose                    ->Fill( muon->isIsolated_Loose ,  eventWeight );
+    m_isIsolated_Tight                    ->Fill( muon->isIsolated_Tight ,  eventWeight );
     m_isIsolated_Gradient                 ->Fill( muon->isIsolated_Gradient ,  eventWeight );
     m_isIsolated_GradientLoose            ->Fill( muon->isIsolated_GradientLoose ,  eventWeight );
-    //m_isIsolated_GradientT1               ->Fill( muon->isIsolated_GradientLoose ,  eventWeight ); 
-    //m_isIsolated_GradientT2               ->Fill( muon->isIsoGradientT2Acc ,  eventWeight ); 
-    //m_isIsolated_MU0p06                   ->Fill( muon->isIsoMU0p06Acc ,  eventWeight ); 
-    m_isIsolated_FixedCutLoose            ->Fill( muon->isIsolated_FixedCutLoose ,  eventWeight ); 
-    //m_isIsolated_FixedCutTight            ->Fill( muon->isIsolated_FixedCutTight ,  eventWeight ); 
-    m_isIsolated_FixedCutTightTrackOnly   ->Fill( muon->isIsolated_FixedCutTightTrackOnly ,  eventWeight ); 
-    m_isIsolated_UserDefinedFixEfficiency ->Fill( muon->isIsolated_UserDefinedFixEfficiency ,  eventWeight ); 
-    m_isIsolated_UserDefinedCut           ->Fill( muon->isIsolated_UserDefinedCut ,  eventWeight ); 
+    //m_isIsolated_GradientT1               ->Fill( muon->isIsolated_GradientLoose ,  eventWeight );
+    //m_isIsolated_GradientT2               ->Fill( muon->isIsoGradientT2Acc ,  eventWeight );
+    //m_isIsolated_MU0p06                   ->Fill( muon->isIsoMU0p06Acc ,  eventWeight );
+    m_isIsolated_FixedCutLoose            ->Fill( muon->isIsolated_FixedCutLoose ,  eventWeight );
+    //m_isIsolated_FixedCutTight            ->Fill( muon->isIsolated_FixedCutTight ,  eventWeight );
+    m_isIsolated_FixedCutTightTrackOnly   ->Fill( muon->isIsolated_FixedCutTightTrackOnly ,  eventWeight );
+    m_isIsolated_UserDefinedFixEfficiency ->Fill( muon->isIsolated_UserDefinedFixEfficiency ,  eventWeight );
+    m_isIsolated_UserDefinedCut           ->Fill( muon->isIsolated_UserDefinedCut ,  eventWeight );
 
     m_ptcone20     ->Fill( muon->ptcone20      ,  eventWeight );
     m_ptcone30     ->Fill( muon->ptcone30      ,  eventWeight );
@@ -226,10 +229,10 @@ StatusCode MuonHists::execute( const xAH::Particle* particle, float eventWeight,
 
   if ( m_infoSwitch->m_quality ) {
 
-    m_isVeryLoose->Fill( muon->  isVeryLoose,  eventWeight ); 
-    m_isLoose    ->Fill( muon->  isLoose    ,  eventWeight ); 
-    m_isMedium   ->Fill( (muon->isMedium + muon->isTight)  ,  eventWeight ); 
-    m_isTight    ->Fill( muon->  isTight    ,  eventWeight ); 
+    m_isVeryLoose->Fill( muon->  isVeryLoose,  eventWeight );
+    m_isLoose    ->Fill( muon->  isLoose    ,  eventWeight );
+    m_isMedium   ->Fill( (muon->isMedium + muon->isTight)  ,  eventWeight );
+    m_isTight    ->Fill( muon->  isTight    ,  eventWeight );
 
   }
 

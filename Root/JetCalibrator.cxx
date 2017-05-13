@@ -329,10 +329,12 @@ EL::StatusCode JetCalibrator :: initialize ()
       ANA_CHECK( m_JERSmearingTool_handle.setProperty("JERTool", m_JERTool_handle.getHandle()));
       ANA_CHECK( m_JERSmearingTool_handle.setProperty("isMC", m_isMC));
       ANA_CHECK( m_JERSmearingTool_handle.setProperty("ApplyNominalSmearing", m_JERApplyNominal));
-      if( m_JERFullSys )
+      if( m_JERFullSys ){
         ANA_CHECK( m_JERSmearingTool_handle.setProperty("SystematicMode", "Full"));
-      else
+      }
+      else {
         ANA_CHECK( m_JERSmearingTool_handle.setProperty("SystematicMode", "Simple"));
+      }
 
       ANA_CHECK( m_JERSmearingTool_handle.setProperty("OutputLevel", msg().level() ));
     }

@@ -2,7 +2,8 @@
 #include <sstream>
 
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
+
+ANA_MSG_SOURCE(msgElectronHists, "ElectronHists")
 
 ElectronHists :: ElectronHists (std::string name, std::string detailStr) :
   IParticleHists(name, detailStr, "electron", "electron"),
@@ -14,6 +15,7 @@ ElectronHists :: ~ElectronHists () {
 }
 
 StatusCode ElectronHists::initialize() {
+  using namespace msgElectronHists;
   ANA_CHECK( IParticleHists::initialize());
 
   // isolation
@@ -69,6 +71,7 @@ StatusCode ElectronHists::execute( const xAOD::Electron* electron, float eventWe
 }
 
 StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
+  using namespace msgElectronHists;
   ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "ElectronHists: in execute " <<std::endl;
@@ -139,6 +142,7 @@ StatusCode ElectronHists::execute( const xAH::Electron* elec, float eventWeight,
 
 
 StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* /*eventInfo*/  ) {
+  using namespace msgElectronHists;
   ANA_CHECK( IParticleHists::execute(particle, eventWeight));
 
   if(m_debug) std::cout << "ElectronHists: in execute " <<std::endl;

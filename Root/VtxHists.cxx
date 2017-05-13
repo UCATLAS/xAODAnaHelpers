@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#include <AsgTools/MessageCheck.h>
+ANA_MSG_SOURCE(msgVtxHists, "VtxHists")
 
 VtxHists :: VtxHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
@@ -119,6 +119,7 @@ StatusCode VtxHists::initialize() {
 }
 
 StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, float eventWeight ) {
+  using namespace msgVtxHists;
   for(auto vtx_itr :  *vtxs ) {
     ANA_CHECK( this->execute( vtx_itr, eventWeight ));
   }
@@ -127,6 +128,7 @@ StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, float eventWeig
 }
 
 StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, const xAOD::TrackParticleContainer* trks, float eventWeight ) {
+  using namespace msgVtxHists;
   for(auto vtx_itr :  *vtxs ) {
     ANA_CHECK( this->execute( vtx_itr, trks, eventWeight ));
   }
@@ -135,6 +137,7 @@ StatusCode VtxHists::execute( const xAOD::VertexContainer* vtxs, const xAOD::Tra
 }
 
 StatusCode VtxHists::execute( const xAOD::Vertex* vtx, const xAOD::TrackParticleContainer* trks, float eventWeight ) {
+  using namespace msgVtxHists;
   ANA_CHECK( this->execute( vtx, eventWeight));
 
   if(m_fillIsoTrkDetails){

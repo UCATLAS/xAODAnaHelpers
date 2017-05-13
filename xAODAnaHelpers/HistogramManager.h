@@ -17,7 +17,9 @@
 #include <xAODRootAccess/TEvent.h>
 
 // for StatusCode::isSuccess
-#include "AsgTools/StatusCode.h"
+#include <AsgTools/StatusCode.h>
+#include <AsgTools/MessageCheck.h>
+
 /**
     @brief This is used by any class extending to pre-define a set of histograms to book by default.
     @rst

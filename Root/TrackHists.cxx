@@ -2,8 +2,9 @@
 
 #include <math.h>
 
-#include <AsgTools/MessageCheck.h>
 #include "xAODAnaHelpers/HelperFunctions.h"
+
+ANA_MSG_SOURCE(msgTrackHists, "TrackHists")
 
 TrackHists :: TrackHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
@@ -103,7 +104,7 @@ StatusCode TrackHists::initialize() {
   m_fillTPErrors = false;
   if(m_detailStr.find("TPErrors") != std::string::npos ){
     m_fillTPErrors = true;
-    
+
     //m_chi2ndof TProfile(m_name, "chi2ndofvseta",  "chi2ndofvseta;    eta;       chi2",  20,  -0.1, 2.7, 0, 4, "s" );
     //new TProfile(m_name, "chi2ndofvseta",  "chi2ndofvseta;    eta;       chi2",  20,  -0.1, 2.7, 0, 4, "s" );
     //new TProfile(m_name, "nhitsvseta",  "nhitsvseta;    eta;       nhits",  20,  -0.1, 2.7, 0, 15 , "s" );
@@ -161,12 +162,12 @@ StatusCode TrackHists::initialize() {
   m_fillVsLumi = false;
   if(m_detailStr.find("vsLumiBlock") != std::string::npos ){
     m_fillVsLumi = true;
-    
+
     m_lBlock                  = book(m_name, "lBlock",                "LumiBlock",  100, 0, 1000);
     m_trk_z0_vs_lBlock        = book(m_name, "z0_vs_lBlock",          "LumiBlock",  100, 0, 1000, "z0",      -100, 100);
     m_trk_z0_raw_vs_lBlock    = book(m_name, "z0_raw_vs_lBlock",      "LumiBlock",  100, 0, 1000, "z0 raw",  -100, 100);
     m_trk_z0_atlas_vs_lBlock  = book(m_name, "z0_atlas_vs_lBlock",    "LumiBlock",  100, 0, 1000, "z0 atlas", -100, 100);
-								      
+
     m_trk_vz_vs_lBlock        = book(m_name, "vz_vs_lBlock",          "LumiBlock",  100, 0, 1000, "vz",       -100, 100);
     m_pvz_vs_lBlock           = book(m_name, "pvz_vs_lBlock",         "LumiBlock",  100, 0, 1000, "pvz",      -100, 100);
     m_pv_valid_vs_lBlock      = book(m_name, "pv_valid_vs_lBlock",    "LumiBlock",  100, 0, 1000, "valid",    -0.1, 1.1);
@@ -195,6 +196,7 @@ StatusCode TrackHists::initialize() {
 }
 
 StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo ) {
+  using namespace msgTrackHists;
   xAOD::TrackParticleContainer::const_iterator trk_itr = trks->begin();
   xAOD::TrackParticleContainer::const_iterator trk_end = trks->end();
   for( ; trk_itr != trk_end; ++trk_itr ) {
