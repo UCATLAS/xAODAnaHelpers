@@ -5,9 +5,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
-
+#include <AsgTools/MessageCheck.hh>
 #include "AsgTools/StatusCode.h"
 
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
@@ -94,8 +92,8 @@ class ElectronLHPIDManager
           /* configure and initialise only tools with (WP >= selectedWP) */
           it.second->msg().setLevel( MSG::INFO); /* ERROR, VERBOSE, DEBUG, INFO */
 
-          RETURN_CHECK( "ParticlePIDManager::setupWPs()", it.second->setProperty("WorkingPoint", WP+"LHElectron" ), ("Failed to set working point "+WP+"LHElectron").c_str() );
-          RETURN_CHECK( "ParticlePIDManager::setupWPs()", it.second->initialize(), "Failed to initialize tool." );
+          ANA_CHECK( it.second->setProperty("WorkingPoint", WP+"LHElectron" ) );
+          ANA_CHECK( it.second->initialize());
 
           /* copy map element into container of valid WPs for later usage */
           m_validWPTools.insert( it );
@@ -226,9 +224,8 @@ class ElectronCutBasedPIDManager
 
           it.second->msg().setLevel( MSG::INFO); /* ERROR, VERBOSE, DEBUG, INFO */
 
-          RETURN_CHECK( "ParticlePIDManager::setupWPs()", it.second->setProperty("WorkingPoint", WP+"Electron" ), ("Failed to set working point "+WP+"Electron").c_str() );
-
-          RETURN_CHECK( "ParticlePIDManager::setupWPs()", it.second->initialize(), "Failed to initialize tool." );
+          ANA_CHECK( it.second->setProperty("WorkingPoint", WP+"Electron" ) );
+          ANA_CHECK( it.second->initialize());
 
           /* copy map element into container of valid tools for later usage */
           m_validWPTools.insert( it );

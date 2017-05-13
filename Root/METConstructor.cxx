@@ -34,7 +34,6 @@
 
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include <AsgTools/MessageCheck.hh>
-#include <xAODAnaHelpers/tools/ReturnCheckConfig.h>
 
 
 // for METsyst

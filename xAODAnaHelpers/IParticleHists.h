@@ -8,8 +8,7 @@
 #include <xAODAnaHelpers/Jet.h>
 #include <xAODAnaHelpers/EventInfo.h>
 #include <xAODBase/IParticleContainer.h>
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
-
+#include <AsgTools/MessageCheck.hh>
 
 class IParticleHists : public HistogramManager
 {
@@ -81,7 +80,7 @@ template <class T_PARTICLE, class T_INFOSWITCH>
 StatusCode IParticleHists::execute( const xAH::ParticleContainer<T_PARTICLE, T_INFOSWITCH>* particles, float eventWeight, const xAH::EventInfo* eventInfo) {
   unsigned int nPart = particles->size();
   for(unsigned int i = 0;  i<nPart; ++i){
-    RETURN_CHECK("IParticleHists::execute()", this->execute( static_cast<const xAH::Particle*>(&particles->at(i)), eventWeight, eventInfo), "");
+    ANA_CHECK( this->execute( static_cast<const xAH::Particle*>(&particles->at(i)), eventWeight, eventInfo) );
 
   }
 
