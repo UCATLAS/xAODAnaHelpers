@@ -10,7 +10,7 @@
 #include <xAODAnaHelpers/MuonHists.h>
 #include <sstream>
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 using std::vector;
 

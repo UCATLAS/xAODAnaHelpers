@@ -9,7 +9,7 @@
 #include <xAODAnaHelpers/IParticleHists.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 
 class IParticleHistsAlgo : public xAH::Algorithm

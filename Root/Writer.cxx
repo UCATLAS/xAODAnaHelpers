@@ -8,7 +8,7 @@
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 // this is needed to distribute the algorithm to the workers

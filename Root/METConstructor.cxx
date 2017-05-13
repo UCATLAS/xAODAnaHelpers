@@ -33,7 +33,7 @@
 // #include "xAODParticleEvent/ParticleAuxContainer.h"
 
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 
 // for METsyst

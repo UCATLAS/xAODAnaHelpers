@@ -27,7 +27,7 @@
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HLTJetGetter.h"
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 

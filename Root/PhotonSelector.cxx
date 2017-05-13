@@ -17,7 +17,7 @@
 // EDM include(s):
 #include <xAODEventInfo/EventInfo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 #include <xAODAnaHelpers/PhotonSelector.h>
 #include <xAODEgamma/EgammaDefs.h>

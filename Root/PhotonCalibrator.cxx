@@ -38,7 +38,7 @@
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/PhotonCalibrator.h>
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"

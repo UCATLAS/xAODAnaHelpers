@@ -9,7 +9,7 @@
 #include <xAODAnaHelpers/IParticleHistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(IParticleHistsAlgo)

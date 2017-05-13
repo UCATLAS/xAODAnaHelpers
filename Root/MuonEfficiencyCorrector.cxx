@@ -22,7 +22,7 @@
 #include "AthContainers/DataVector.h"
 
 // package include(s):
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/MuonEfficiencyCorrector.h"

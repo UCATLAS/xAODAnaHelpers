@@ -21,7 +21,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 using HelperClasses::ToolName;
 

@@ -9,7 +9,7 @@
 
 // local includes
 #include "AsgTools/StatusCode.h"
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 // jet reclustering and trimming
 #include <fastjet/JetDefinition.hh>

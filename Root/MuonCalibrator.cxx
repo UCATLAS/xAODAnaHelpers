@@ -29,7 +29,7 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/MuonCalibrator.h"
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
 
 using HelperClasses::ToolName;

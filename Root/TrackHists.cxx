@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 TrackHists :: TrackHists (std::string name, std::string detailStr) :

@@ -5,7 +5,7 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/TrackSelector.h"
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 // ROOT include(s):
 #include "TFile.h"

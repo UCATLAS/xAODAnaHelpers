@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 VtxHists :: VtxHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)

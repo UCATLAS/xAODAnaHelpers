@@ -2,7 +2,7 @@
 #include <sstream>
 #include <math.h>       /* hypot */
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 using std::vector;
 

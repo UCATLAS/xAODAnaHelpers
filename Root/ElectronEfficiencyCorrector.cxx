@@ -22,7 +22,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/ElectronEfficiencyCorrector.h"
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 using HelperClasses::ToolName;
 

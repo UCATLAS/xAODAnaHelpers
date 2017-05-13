@@ -7,7 +7,7 @@
 
 #include <xAODAnaHelpers/ClusterHistsAlgo.h>
 
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(ClusterHistsAlgo)

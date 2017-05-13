@@ -25,7 +25,7 @@
 #include "xAODAnaHelpers/TauSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):

@@ -8,7 +8,7 @@
 #include <xAODAnaHelpers/Jet.h>
 #include <xAODAnaHelpers/EventInfo.h>
 #include <xAODBase/IParticleContainer.h>
-#include <AsgTools/MessageCheck.hh>
+#include <AsgTools/MessageCheck.h>
 
 class IParticleHists : public HistogramManager
 {
