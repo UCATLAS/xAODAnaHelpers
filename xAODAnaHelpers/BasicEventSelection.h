@@ -154,6 +154,9 @@ class BasicEventSelection : public xAH::Algorithm
     /** Check for duplicated events in MC */
     bool m_checkDuplicatesMC = false;
 
+    /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
+    std::string m_trigDecTool_name{""};
+
   private:
 
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!

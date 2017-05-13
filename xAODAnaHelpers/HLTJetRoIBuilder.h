@@ -11,103 +11,104 @@
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
+
+// tools
+#include "AsgTools/AnaToolHandle.h"
 #include "xAODAnaHelpers/OnlineBeamSpotTool.h"
-#include "TrigDecisionTool/Feature.h"
-
-namespace Trig {
-  class TrigDecisionTool;
-}
-
+#include "TrigDecisionTool/TrigDecisionTool.h"
 
 class HLTJetRoIBuilder : public xAH::Algorithm
 {
 
-public:
+  public:
 
-  // configuration variables
+    // configuration variables
 
-  /**
-    @brief name of trigger chain to load
-   */
-  std::string m_trigItem = "";
-  std::string m_trigItemVeto = "";
+    /**
+      @brief name of trigger chain to load
+     */
+    std::string m_trigItem = "";
+    std::string m_trigItemVeto = "";
 
-  /**
-    @brief Do we load a full BJet trigger chain?
-   */
-  bool        m_doHLTBJet = true;
+    /**
+      @brief Do we load a full BJet trigger chain?
+     */
+    bool        m_doHLTBJet = true;
 
-  /**
-    @brief Do we load a jet trigger chain?
-   */
-  bool        m_doHLTJet = false;
+    /**
+      @brief Do we load a jet trigger chain?
+     */
+    bool        m_doHLTJet = false;
 
-  /**
-    @brief Do we read in the HLT tracks?
-   */
-  bool        m_readHLTTracks = true;
-
-
-  /**
-    @brief Do we read in the HLT vertices?
-   */
-  bool        m_readHLTVtx;
+    /**
+      @brief Do we read in the HLT tracks?
+     */
+    bool        m_readHLTTracks = true;
 
 
-  /**
-    @brief Name of the output container
-   */
-  std::string m_outContainerName = "";
-
-private:
-
-  Trig::TrigDecisionTool*      m_trigDecTool = nullptr;   //!
-  std::string                  m_jetName = "EFJet";       //!
-  std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";       //!
-  std::string                  m_vtxName = "EFHistoPrmVtx";       //!
-  xAH::OnlineBeamSpotTool      m_onlineBSTool;  //!
-
-  EL::StatusCode buildHLTBJets ();
-  EL::StatusCode buildHLTJets  ();
-
-public:
-
-  // this is a standard constructor
-  HLTJetRoIBuilder ();
-
-  // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+    /**
+      @brief Do we read in the HLT vertices?
+     */
+    bool        m_readHLTVtx;
 
 
-  /// @cond
-  // this is needed to distribute the algorithm to the workers
-  ClassDef(HLTJetRoIBuilder, 1);
-  /// @endcond
+    /**
+      @brief Name of the output container
+     */
+    std::string m_outContainerName = "";
 
-  template<class Object, class Collection>
-    const Object* getTrigObject(Trig::Feature<Collection>& feature){
+    /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
+    std::string m_trigDecTool_name{""};
 
-    const Collection* trigCol = feature.cptr();
-    if ( !trigCol ) {
-      std::cout << "ERROR: No Trig Collection pointer" << std::endl;
-      return 0;
+  private:
+
+    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
+    std::string                  m_jetName = "EFJet";       //!
+    std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";       //!
+    std::string                  m_vtxName = "EFHistoPrmVtx";       //!
+    xAH::OnlineBeamSpotTool      m_onlineBSTool;  //!
+
+    EL::StatusCode buildHLTBJets ();
+    EL::StatusCode buildHLTJets  ();
+
+  public:
+
+    // this is a standard constructor
+    HLTJetRoIBuilder ();
+
+    // these are the functions inherited from Algorithm
+    virtual EL::StatusCode setupJob (EL::Job& job);
+    virtual EL::StatusCode fileExecute ();
+    virtual EL::StatusCode histInitialize ();
+    virtual EL::StatusCode changeInput (bool firstFile);
+    virtual EL::StatusCode initialize ();
+    virtual EL::StatusCode execute ();
+    virtual EL::StatusCode postExecute ();
+    virtual EL::StatusCode finalize ();
+    virtual EL::StatusCode histFinalize ();
+
+
+    /// @cond
+    // this is needed to distribute the algorithm to the workers
+    ClassDef(HLTJetRoIBuilder, 1);
+    /// @endcond
+
+    template<class Object, class Collection>
+      const Object* getTrigObject(Trig::Feature<Collection>& feature){
+
+      const Collection* trigCol = feature.cptr();
+      if ( !trigCol ) {
+        std::cout << "ERROR: No Trig Collection pointer" << std::endl;
+        return 0;
+      }
+
+      if(trigCol->size() != 1){
+        std::cout << "ERROR Trig Collection size " << trigCol->size() << std::endl;
+        return 0;;
+      }
+
+      return trigCol->at(0);
     }
-
-    if(trigCol->size() != 1){
-      std::cout << "ERROR Trig Collection size " << trigCol->size() << std::endl;
-      return 0;;
-    }
-
-    return trigCol->at(0);
-  }
 
 };
 

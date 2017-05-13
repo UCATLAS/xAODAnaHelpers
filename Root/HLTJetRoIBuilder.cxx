@@ -89,10 +89,15 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  //
   // Grab the TrigDecTool from the ToolStore
-  //
-  m_trigDecTool = dynamic_cast<Trig::TrigDecisionTool*>(asg::ToolStore::get("TrigDecisionTool"));
+  if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
+  ATH_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
+  if(!m_trigDecTool_handle.isUserConfigured()){
+    ATH_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+    return EL::StatusCode::FAILURE;
+  }
+  ANA_CHECK( m_trigDecTool_handle.retrieve());
+  ATH_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
 
   if(m_trigItem.find("split") != std::string::npos){
     m_jetName = "SplitJet";
@@ -150,7 +155,7 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 
 EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 {
-  auto triggerChainGroup = m_trigDecTool->getChainGroup(m_trigItem);
+  auto triggerChainGroup = m_trigDecTool_handle->getChainGroup(m_trigItem);
 
   std::vector<std::string> triggersUsed = triggerChainGroup->getListOfTriggers();
   std::vector<std::string> triggersAfterVeto;
@@ -175,7 +180,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
   ATH_MSG_DEBUG(m_name << " " << m_trigItem << " matches");
   ATH_MSG_DEBUG(m_trigItemAfterVeto);
-  auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
+  auto triggerChainGroupAfterVeto = m_trigDecTool_handle->getChainGroup(m_trigItemAfterVeto);
   std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
   for(std::string trig : triggersUsedAfterVeto){
     ATH_MSG_DEBUG(" \t " << trig);
@@ -228,7 +233,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //
   static SG::AuxElement::Decorator< const xAOD::BTagging* > hltBTagDecor( "HLTBTag" );
 
-  Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItemAfterVeto, TrigDefs::Physics );
+  Trig::FeatureContainer fc = m_trigDecTool_handle->features(m_trigItemAfterVeto, TrigDefs::Physics );
   Trig::FeatureContainer::combination_const_iterator comb   (fc.getCombinations().begin());
   Trig::FeatureContainer::combination_const_iterator combEnd(fc.getCombinations().end());
   ATH_MSG_DEBUG( m_name << " New Event --------------- ");
@@ -283,11 +288,11 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       cout << "ERROR Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " bjets: "<< bjetCollections.size() << endl;
       isValid = false;
 
-      auto triggerChainGroupAfterVeto = m_trigDecTool->getChainGroup(m_trigItemAfterVeto);
+      auto triggerChainGroupAfterVeto = m_trigDecTool_handle->getChainGroup(m_trigItemAfterVeto);
       std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
       ATH_MSG_DEBUG("Passed Triggers ");
       for(std::string trig : triggersUsedAfterVeto){
-        auto trigChain = m_trigDecTool->getChainGroup(trig);
+        auto trigChain = m_trigDecTool_handle->getChainGroup(trig);
         if(trigChain->isPassed()) ATH_MSG_DEBUG(" \t " << trig);
       }
 
@@ -484,7 +489,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
   xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();
   hltJets->setStore( hltJetsAux ); //< Connect the two
 
-  Trig::FeatureContainer fc = m_trigDecTool->features(m_trigItem);
+  Trig::FeatureContainer fc = m_trigDecTool_handle->features(m_trigItem);
   auto jetFeatureContainers = fc.containerFeature<xAOD::JetContainer>();
 
   ATH_MSG_DEBUG("ncontainers  " << jetFeatureContainers.size());

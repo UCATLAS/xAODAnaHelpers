@@ -185,6 +185,9 @@ public:
   /// Recommended threshold for egamma triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   double         m_minDeltaR = 0.07;
 
+  /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
+  std::string m_trigDecTool_name{""};
+
 private:
 
   /**
