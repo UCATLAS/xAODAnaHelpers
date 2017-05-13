@@ -210,8 +210,7 @@ EL::StatusCode PhotonSelector :: execute ()
   ATH_MSG_DEBUG( "Applying Photon Selection... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,
-	       Form("Failed in retrieving %s in %s", m_eventInfoContainerName.c_str(), m_name.c_str() ));
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   //

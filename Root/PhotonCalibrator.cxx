@@ -212,15 +212,9 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   //set the configuration file
   // todo : monitor the config files!
-  RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonTightIsEMSelector->setProperty("ConfigFile", m_tightIDConfigPath),
-	       "failed in setting property");
-  RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonMediumIsEMSelector->setProperty("ConfigFile",m_mediumIDConfigPath),
-	       "failed in setting property");
-  RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonLooseIsEMSelector->setProperty("ConfigFile", m_looseIDConfigPath),
-	       "failed in setting property");
+  ANA_CHECK( m_photonTightIsEMSelector->setProperty("ConfigFile", m_tightIDConfigPath));
+  ANA_CHECK( m_photonMediumIsEMSelector->setProperty("ConfigFile",m_mediumIDConfigPath));
+  ANA_CHECK( m_photonLooseIsEMSelector->setProperty("ConfigFile", m_looseIDConfigPath));
 
 
   ANA_CHECK( m_photonTightIsEMSelector->initialize());
@@ -246,8 +240,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   int FFset = 21; // for MC15 samples, which are based on a geometry derived from GEO-21 from 2015+2016 data
   m_photonFudgeMCTool->setProperty("Preselection",FFset);
-  RETURN_CHECK("PhotonHandler::initializeTools()", m_photonFudgeMCTool->initialize(),
-	       "failed in initialization of fudge MC tool");
+  ANA_CHECK( m_photonFudgeMCTool->initialize());
 
   ATH_MSG_INFO( "PhotonCalibrator Interface succesfully initialized!" );
 
@@ -267,8 +260,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,
-	       Form("Failed in retrieving %s in %s", m_inContainerName.c_str(), m_name.c_str() ));
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
 
   if ( ! m_toolInitializationAtTheFirstEventDone ) {
@@ -278,8 +270,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
 
   const xAOD::PhotonContainer* inPhotons(nullptr);
-  RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) ,
-	       Form("Failed in retrieving %s in %s", m_inContainerName.c_str(), m_name.c_str() ));
+  ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) );
 
   ATH_MSG_DEBUG("Retrieve has been completed with container name = " << m_inContainerName);
 
