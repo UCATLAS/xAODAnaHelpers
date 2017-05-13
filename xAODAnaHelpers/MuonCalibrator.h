@@ -66,10 +66,10 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;                            //!
-  std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;  //!
-  std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                      //!
-  std::vector<std::string> m_YearsList;                                                           //!
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"}; //!
+  std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;    //!
+  std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                        //!
+  std::vector<std::string> m_YearsList;                                                             //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
