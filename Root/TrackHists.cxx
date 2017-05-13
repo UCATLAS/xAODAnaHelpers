@@ -288,15 +288,15 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     //uint8_t nTRTHoles = -1;
     //uint8_t nTRTDead  = -1;
 
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("TrackHists::execute()", "BLayer hits not filled");
-    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        Error("TrackHists::execute()", "Pix hits not filled");
-    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) Error("TrackHists::execute()", "Pix Dead not filled");
-    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       Error("TrackHists::execute()", "Pix holes not filled");
-    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          Error("TrackHists::execute()", "SCT hits not filled");
-    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   Error("TrackHists::execute()", "SCT Dead not filled");
-    if(!trk->summaryValue(nTRT,      xAOD::numberOfTRTHits))          Error("TrackHists::execute()", "TRT hits not filled");
-    // if(!trk->summaryValue(nTRTHoles, xAOD::numberOfTRTHoles))         Error("TrackHists::execute()", "TRT holes not filled");
-    // if(!trk->summaryValue(nTRTDead,  xAOD::numberOfTRTDeadStraws))    Error("TrackHists::execute()", "TRT Dead not filled");
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       ATH_MSG_ERROR("BLayer hits not filled");
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        ATH_MSG_ERROR("Pix hits not filled");
+    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) ATH_MSG_ERROR("Pix Dead not filled");
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       ATH_MSG_ERROR("Pix holes not filled");
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          ATH_MSG_ERROR("SCT hits not filled");
+    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   ATH_MSG_ERROR("SCT Dead not filled");
+    if(!trk->summaryValue(nTRT,      xAOD::numberOfTRTHits))          ATH_MSG_ERROR("TRT hits not filled");
+    // if(!trk->summaryValue(nTRTHoles, xAOD::numberOfTRTHoles))         ATH_MSG_ERROR("TRT holes not filled");
+    // if(!trk->summaryValue(nTRTDead,  xAOD::numberOfTRTDeadStraws))    ATH_MSG_ERROR("TRT Dead not filled");
 
     uint8_t nSi     = nPix     + nSCT;
     uint8_t nSiDead = nPixDead + nSCTDead;
