@@ -373,11 +373,20 @@ Next, looking at the source code... we include the header file for our tool. Alt
 
 Next, we set a name for the tool. If we want to have a unique tool every time the algorithm is called, we suggest you use ``m_name`` or ``GetName()`` (both are equivalent). Using the name of the algorithm guarantees uniqueness as two algorithms can't have the same name or the code crashes. If you need to retrieve a tool created in another class, you will need to have the same name for the algorithm to pick it up correctly (from the ToolStore). If you don't set a name for the tool, only a type, the default name is the type.
 
-Next, we ask the configuration service if the tool of the given type and name has ever been configured before ``::isUserConfigured()``. If it has, this means this tool was configured already (and most likely created/initialized), and we should definitely not change the configuration of that tool. Also, it won't let us change the configuration of a previously configured tool anyways... If it has not been configured before, then let's go ahead and configure it with ``setProperty()``!
+Next, we ask the configuration service if the tool of the given type and name has ever been configured before ``::isUserConfigured()``. If it has, this means this tool was configured already (and most likely created/initialized), and we should definitely not change the configuration of that tool.
+
+.. note::
+
+  In RootCore, tools created through AnaToolHandle can be found in the ToolStore via preprending ``ToolSvc.`` to the name of the tool::
+
+    asg::ToolStore::contains<Trig::TrigDecisionTool>("ToolSvc."+ m_trigDecTool_handle.name())
+
+  This is a slight gotcha that will trip up people. Because of this, |xAH| prefers the convention of using :code:`isUserConfigured()` instead as this doesn't need the additional ``ToolSvc.`` prepended to the tool name to look it up!
+
+
+Also, it won't let us change the configuration of a previously configured tool anyways... If it has not been configured before, then let's go ahead and configure it with ``setProperty()``!  One thing you should **always** do is set the output level of the tool ``OutputLevel``. It is usually best to set it to the same output level that the algorithm is configured to ``msg().level()`` and is probably the safest prescription.
 
 .. note:: For setting properties or managing tools through the tool handle, you access functions through the dot (``.``) operator. For using the tool, you access functions through the arrow (``->``) operator.
-
-One thing you should **always** do is set the output level of the tool ``OutputLevel``. It is usually best to set it to the same output level that the algorithm is configured to ``msg().level()`` and is probably the safest prescription.
 
 Finally, we ``retrieve()`` the tool of the given type and name from the tool store. This will either create a tool with the provided configurations if it was not created before, or simply retrieve the existing tool for continued usage. And that's it, the memory will be managed for you and you do not need to delete it or do anything else but use it in your code!
 
@@ -387,3 +396,59 @@ Finally, we ``retrieve()`` the tool of the given type and name from the tool sto
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
 
   An example of a reported issue for the above tool is here: https://its.cern.ch/jira/browse/ATLASG-1214.
+
+Check if a tool exists and reuse it (Trig::TrigDecisionTool)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The TrigDecisionTool is a special case that needs attention. This tool is unique in that the templaed methods require us to use the tool as its own interface. It is also a singleton which means it will complain heavily if it detects more than one instance of itself. How do we deal with this in |xAH|?
+
+**Header File**::
+
+  // external tools include(s):
+  #include "AsgTools/AnaToolHandle.h"
+  #include "TrigDecisionTool/TrigDecisionTool.h"
+
+  class MyAlgorithm : public xAH::Algorithm {
+
+    public:
+      /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
+      std::string m_trigDecTool_name{""};
+
+    private:
+      /** @brief Trigger decision tool.
+
+      If you need to use a TDT that was previously created before this algorithm with a different name, set the name in m_trigDecTool_name.
+      */
+      asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
+  };
+
+
+**Source File**::
+
+  EL::StatusCode MyAlgorithm :: initialize(){
+
+    // Grab the TrigDecTool from the ToolStore
+    if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
+    ATH_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
+    if(!m_trigDecTool_handle.isUserConfigured()){
+      ATH_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Double-check the name of the tool." );
+      return EL::StatusCode::FAILURE;
+    }
+    ANA_CHECK( m_trigDecTool_handle.retrieve());
+    ATH_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
+
+  }
+
+This is an example of how one designs an algorithm that requires the TrigDecisionTool and will crash if it cannot find it. It also prints the name of the tool it is using to make it much easier for a user to debug. By convention in |xAH|, we do not set a name on the TrigDecisionTool, the name will just be defaulting to the type of the tool :code:`Trig::TrigDecisionTool`. All algorithms follow this default. If there is an external algorithm that creates it and you want |xAH| to pick it up instead of creating one, this is done by setting :code:`m_trigDecTool_name` to a non-empty value and you're good to go. For example, :cpp:class:`BasicEventSelection` creates a trigger decision tool if one does not exist::
+
+  if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
+  ATH_MSG_DEBUG( "Trying to initialize " << m_trigDecTool_handle.typeAndName());
+  if(!m_trigDecTool_handle.isUserConfigured()){
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
+  }
+  ANA_CHECK( m_trigDecTool_handle.retrieve());
+  ATH_MSG_DEBUG( "Successfully initialized " << m_trigDecTool_handle.typeAndName());
+
+so that if such a tool already was created before ``BasicEventSelection`` tries to create it, it will retrieve it instead of trying to configure it. If it has not been created/configured before, it will configure and then create the tool. No extra logic needed on the users' part.

@@ -524,6 +524,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
     ANA_CHECK( m_trigConfTool_handle.retrieve());
 
+    if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
     ATH_MSG_DEBUG( "Trying to initialize " << m_trigDecTool_handle.typeAndName());
     if(!m_trigDecTool_handle.isUserConfigured()){
       ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));

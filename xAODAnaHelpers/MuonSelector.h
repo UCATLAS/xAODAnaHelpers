@@ -103,6 +103,9 @@ public:
   /// @brief Recommended threshold for muon triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   double         m_minDeltaR = 0.1;
 
+  /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
+  std::string m_trigDecTool_name{""};
+
 private:
 
   int            m_muonQuality; //!
@@ -148,6 +151,11 @@ private:
   CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr};                               //!
   asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle{"CP::MuonSelectionTool"};             //!
   asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle{"Trig::MatchingTool"};                //!
+  /**
+    @rst
+      The name of this tool (if needs to be changed) can be set with :cpp:member:`MuonSelector::m_trigDecTool_name`.
+    @endrst
+  */
   asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle{"Trig::TrigDecisionTool"};                  //!
 
   bool m_doTrigMatch = false; //!

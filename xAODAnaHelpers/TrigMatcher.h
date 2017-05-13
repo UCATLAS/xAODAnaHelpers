@@ -11,13 +11,7 @@
 #include <xAODAnaHelpers/Algorithm.h>
 
 #include <AsgTools/AnaToolHandle.h>
-
 #include <TriggerMatchingTool/MatchingTool.h>
-
-
-namespace Trig {
-  class TrigDecisionTool;
-}
 
 #include <TH1D.h>
 
