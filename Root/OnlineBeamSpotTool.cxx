@@ -8,7 +8,7 @@
 #include "TTree.h"
 
 using namespace xAH;
-using std::cout;  using std::endl; 
+using std::cout;  using std::endl;
 using std::make_pair;
 
 OnlineBeamSpotTool::OnlineBeamSpotTool() :
@@ -18,17 +18,17 @@ OnlineBeamSpotTool::OnlineBeamSpotTool() :
   m_cachedLBData(nullptr),
   m_mcLBData(nullptr)
 {
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.A.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.B.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.C.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.D.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.E.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.F.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.G.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.H.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.I.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.K.root"));
-  readFile(PathResolverFindCalibFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.L.root"));
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.A.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.B.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.C.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.D.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.E.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.F.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.G.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.H.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.I.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.K.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.L.root");
 
   m_mcLBData = new LBData(0,999999,0,0,0);
 }
@@ -79,10 +79,10 @@ const OnlineBeamSpotTool::LBData* OnlineBeamSpotTool::getLBData(int runNumber, i
 
   //
   // GetRun info
-  // 
+  //
   if(runNumber != m_cachedRunNum)
     setRunInfo(runNumber);
-  
+
   return getLBData(lumiBlock);
 }
 
@@ -115,7 +115,7 @@ float OnlineBeamSpotTool::getOnlineBSInfo(int runNumber, int lumiBlock, bool isM
 
 void OnlineBeamSpotTool::readFile(std::string rootFileName){
 
-  std::string fullRootFileName = gSystem->ExpandPathName( rootFileName.c_str() );
+  std::string fullRootFileName = PathResolverFindCalibFile( rootFileName );
 
   TFile* thisFile = new TFile(fullRootFileName.c_str(),"READ");
   TTree* tree = (TTree*)thisFile->Get("LBInfo");
@@ -149,8 +149,8 @@ void OnlineBeamSpotTool::readFile(std::string rootFileName){
 				   ));
     }
 
-    m_runList.insert( make_pair(RunNumber, thisRunInfo) );  
+    m_runList.insert( make_pair(RunNumber, thisRunInfo) );
   }
-  
+
   thisFile->Close();
 }
