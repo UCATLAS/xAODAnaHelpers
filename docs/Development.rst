@@ -282,8 +282,8 @@ I've noticed that TString slows us down a little bit, so try to use std::string 
     m_event->retrieve(jets, m_inContainerName.Data());
     m_event->retrieve(jets, m_inContainerName);
 
-    Info("%s", m_inContainerName.Data());
-    Info("%s", m_inContainerName.c_str());
+    ATH_MSG_INFO(m_inContainerName.Data());
+    ATH_MSG_INFO(m_inContainerName);
 
 
 Creating a new xAH::Algorithm
