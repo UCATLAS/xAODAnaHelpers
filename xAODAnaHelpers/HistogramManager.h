@@ -20,6 +20,8 @@
 #include <AsgTools/StatusCode.h>
 #include <AsgTools/MessageCheck.h>
 
+class MsgStream;
+
 /**
     @brief This is used by any class extending to pre-define a set of histograms to book by default.
     @rst
@@ -54,6 +56,8 @@ class HistogramManager {
     std::string m_detailStr;
     /** @brief a container holding all generated histograms */
     std::vector< TH1* > m_allHists; //!
+    /** @brief hold the MsgStream object */
+    mutable MsgStream m_msg; //!
 
   public:
     /**
@@ -189,6 +193,15 @@ class HistogramManager {
      * @brief record all histograms from HistogramManager#m_allHists to the worker
      */
     void record(EL::Worker* wk);
+
+    /**
+      * @brief the standard message stream for this algorithm
+      */
+    MsgStream& msg () const;
+    /**
+      * @brief allow ATH_MSG_XXXX macros to be used within algorithms for a given level
+      */
+    MsgStream& msg (int level) const;
 
   private:
     /**

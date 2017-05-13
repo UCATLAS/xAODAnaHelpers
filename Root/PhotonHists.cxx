@@ -47,7 +47,7 @@ StatusCode PhotonHists::execute( const xAOD::IParticle* particle, float eventWei
   const xAOD::Photon* photon=dynamic_cast<const xAOD::Photon*>(particle);
   if(photon==0)
     {
-      ::Error( "PhotonHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Photon" ));
+      ATH_MSG_ERROR( "Cannot convert IParticle to Photon" );
       return StatusCode::FAILURE;
     }
 

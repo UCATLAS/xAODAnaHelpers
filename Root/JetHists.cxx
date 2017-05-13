@@ -551,7 +551,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   if(m_debug) std::cout << "JetHists: got jet " << jet << std::endl;
   if(jet==0)
     {
-      ::Error( "JetHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Jet" ));
+      ATH_MSG_ERROR( "Cannot convert IParticle to Jet" );
       return StatusCode::FAILURE;
     }
 
@@ -1598,7 +1598,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
   if(m_debug) std::cout << "JetHists: got jet " << jet << std::endl;
   if(jet==0)
     {
-      ::Error( "JetHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Jet" ));
+      ATH_MSG_ERROR( "Cannot convert IParticle to Jet" );
       return StatusCode::FAILURE;
     }
 

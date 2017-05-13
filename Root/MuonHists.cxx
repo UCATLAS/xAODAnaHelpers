@@ -91,7 +91,7 @@ StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeigh
   const xAOD::Muon* muon=dynamic_cast<const xAOD::Muon*>(particle);
   if(muon==0)
     {
-      ::Error( "MuonHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Muon" ));
+      ATH_MSG_ERROR( "Cannot convert IParticle to Muon" );
       return StatusCode::FAILURE;
     }
 
@@ -182,7 +182,7 @@ StatusCode MuonHists::execute( const xAH::Particle* particle, float eventWeight,
   const xAH::Muon* muon=dynamic_cast<const xAH::Muon*>(particle);
   if(muon==0)
     {
-      ::Error( "MuonHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Muon" ));
+      ATH_MSG_ERROR( "Cannot convert IParticle to Muon" );
       return StatusCode::FAILURE;
     }
 

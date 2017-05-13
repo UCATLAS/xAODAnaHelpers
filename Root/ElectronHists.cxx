@@ -79,7 +79,7 @@ StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventW
   const xAOD::Electron* electron=dynamic_cast<const xAOD::Electron*>(particle);
   if(electron==0)
     {
-      ::Error( "ElectronHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Electron" ));
+      ATH_MSG_ERROR( "Cannot convert IParticle to Electron" );
       return StatusCode::FAILURE;
     }
 
@@ -150,7 +150,7 @@ StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWei
   const xAH::Electron* elec=dynamic_cast<const xAH::Electron*>(particle);
   if(elec==0)
     {
-      ::Error( "ElctronHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Electron" ));
+      ATH_MSG_ERROR( "Cannot convert IParticle to Electron" );
       return StatusCode::FAILURE;
     }
 
