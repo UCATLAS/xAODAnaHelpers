@@ -9,6 +9,9 @@
 #include <xAODAnaHelpers/EventInfo.h>
 #include <xAODBase/IParticleContainer.h>
 #include <AsgTools/MessageCheck.h>
+#include "xAODAnaHelpers/tools/Message.h"
+
+ANA_MSG_HEADER(msgIParticleHists)
 
 class IParticleHists : public HistogramManager
 {
@@ -78,6 +81,7 @@ class IParticleHists : public HistogramManager
 
 template <class T_PARTICLE, class T_INFOSWITCH>
 StatusCode IParticleHists::execute( const xAH::ParticleContainer<T_PARTICLE, T_INFOSWITCH>* particles, float eventWeight, const xAH::EventInfo* eventInfo) {
+  using namespace msgIParticleHists;
   unsigned int nPart = particles->size();
   for(unsigned int i = 0;  i<nPart; ++i){
     ANA_CHECK( this->execute( static_cast<const xAH::Particle*>(&particles->at(i)), eventWeight, eventInfo) );
