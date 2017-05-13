@@ -32,7 +32,7 @@
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HLTJetRoIBuilder.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
@@ -61,7 +61,7 @@ EL::StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
 
 EL::StatusCode HLTJetRoIBuilder :: histInitialize ()
 {
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -212,7 +212,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   const xAOD::VertexContainer *offline_vertices(nullptr);
   const xAOD::Vertex *offline_pvx(nullptr);
   if(HelperFunctions::isAvailable<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store, msg())){
-    RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, msg()) );
     offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices, msg());
   }
 
@@ -220,7 +220,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   // get event info
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("HLTJetRoIBuilder::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
 
   //
@@ -466,8 +466,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
   }// Combinations
 
-  RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
-  RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected dijetsAux.");
+  ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
+  ANA_CHECK( m_store->record( hltJetsAux, m_outContainerName+"Aux."));
 
   return EL::StatusCode::SUCCESS;
 }
@@ -501,8 +501,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
     }
   }
 
-  RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected dijets");
-  RETURN_CHECK("PlotHLTBJetFex::selected()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected dijetsAux.");
+  ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
+  ANA_CHECK( m_store->record( hltJetsAux, m_outContainerName+"Aux."));
   ATH_MSG_DEBUG("Left buildHLTJets  ");
   return EL::StatusCode::SUCCESS;
 }
@@ -528,6 +528,6 @@ EL::StatusCode HLTJetRoIBuilder :: finalize ()
 EL::StatusCode HLTJetRoIBuilder :: histFinalize ()
 {
   ATH_MSG_DEBUG( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

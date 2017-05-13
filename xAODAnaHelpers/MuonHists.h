@@ -6,6 +6,8 @@
 #include "xAODAnaHelpers/Muon.h"
 #include "xAODAnaHelpers/EventInfo.h"
 
+ANA_MSG_HEADER(msgMuonHists)
+
 class MuonHists : public IParticleHists
 {
   public:

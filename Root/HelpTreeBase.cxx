@@ -15,7 +15,7 @@
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelpTreeBase.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 
 #include "AsgTools/StatusCode.h"

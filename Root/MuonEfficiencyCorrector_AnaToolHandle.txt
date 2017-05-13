@@ -17,7 +17,7 @@
 #include "AthContainers/DataVector.h"
 
 // package include(s):
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/MuonEfficiencyCorrector.h"
@@ -132,7 +132,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -182,13 +182,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) );
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::PileupReweightingTool>("Pileup"), "Failed to check whether tool already exists in asg::ToolStore" );
+  ANA_CHECK( checkToolStore<CP::PileupReweightingTool>("Pileup"));
   if ( m_isMC && !isToolAlreadyUsed("Pileup") ) {
     Error("initialize()","A configured CP::PileupReweightingTool must already exist in the asg::ToolStore! Are you creating one in xAH::BasicEventSelector?" );
     return EL::StatusCode::FAILURE;
@@ -199,8 +199,8 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // TEMP! Commenting this out b/c stupid AnaToolHandle does not work as it shouldm_TTVAEffSF_tool_name:
   // see https://groups.cern.ch/group/hn-atlas-PATHelp/Lists/Archive/Flat.aspx?RootFolder=%2fgroup%2fhn-atlas-PATHelp%2fLists%2fArchive%2fIssues%20retrieving%20AnaToolHandle%20configured%20in%20separate%20class&FolderCTID=0x0120020084D7E80CB0C3394A8D54EF07C309B044
   //
-  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.make("CP::PileupReweightingTool/Pileup"), "Failed to create handle to CP::PileupReweightingTool");
-  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_pileup_tool_handle.initialize(), "Failed to properly initialize CP::PileupReweightingTool");
+  //ANA_CHECK( m_pileup_tool_handle.make("CP::PileupReweightingTool/Pileup"));
+  //ANA_CHECK( m_pileup_tool_handle.initialize());
   //
   // *******************************************************
 
@@ -223,13 +223,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_recoEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Reco_" + m_WorkingPointReco;
   std::string recoEffSF_handle_name = "CP::MuonEfficiencyScaleFactors/" + m_recoEffSF_tool_name;
 
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonEfficiencyScaleFactors>(m_recoEffSF_tool_name), "Failed to check whether tool already exists in asg::ToolStore" );
+  ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_recoEffSF_tool_name));
   m_muRecoSF_tool_handle.setTypeRegisterNew<CP::MuonEfficiencyScaleFactors>(recoEffSF_handle_name);
-  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.make(recoEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for reco efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.setProperty("WorkingPoint", m_WorkingPointReco ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for reco efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.setProperty("PileupReweightingTool", PRWToolHandle ),"Failed to set PileupReweightingTool property of MuonEfficiencyScaleFactors for reco efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ),"Failed to set calibration release property of MuonEfficiencyScaleFactors for reco efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muRecoSF_tool_handle.initialize(), "Failed to properly initialize CP::MuonEfficiencyScaleFactors for reco efficiency SF");
+  //ANA_CHECK( m_muRecoSF_tool_handle.make(recoEffSF_handle_name));
+  ANA_CHECK( m_muRecoSF_tool_handle.setProperty("WorkingPoint", m_WorkingPointReco ));
+  ANA_CHECK( m_muRecoSF_tool_handle.setProperty("PileupReweightingTool", PRWToolHandle ));
+  ANA_CHECK( m_muRecoSF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ));
+  ANA_CHECK( m_muRecoSF_tool_handle.initialize());
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -262,14 +262,14 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_isoEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Iso_" + m_WorkingPointIso;
   std::string isoEffSF_handle_name = "CP::MuonEfficiencyScaleFactors/" + m_isoEffSF_tool_name;
 
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonEfficiencyScaleFactors>(m_isoEffSF_tool_name), "Failed to check whether tool already exists in asg::ToolStore" );
+  ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_isoEffSF_tool_name));
   std::string tool_WP = m_WorkingPointIso + "Iso";
   m_muIsoSF_tool_handle.setTypeRegisterNew<CP::MuonEfficiencyScaleFactors>(isoEffSF_handle_name);
-  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.make(isoEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for iso efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.setProperty("WorkingPoint", tool_WP ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for iso efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.setProperty("PileupReweightingTool", PRWToolHandle ),"Failed to set PileupReweightingTool property of MuonEfficiencyScaleFactors for iso efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ),"Failed to set calibration release property of MuonEfficiencyScaleFactors for iso efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muIsoSF_tool_handle.initialize(), "Failed to properly initialize CP::MuonEfficiencyScaleFactors for iso efficiency SF");
+  //ANA_CHECK( m_muIsoSF_tool_handle.make(isoEffSF_handle_name));
+  ANA_CHECK( m_muIsoSF_tool_handle.setProperty("WorkingPoint", tool_WP ));
+  ANA_CHECK( m_muIsoSF_tool_handle.setProperty("PileupReweightingTool", PRWToolHandle ));
+  ANA_CHECK( m_muIsoSF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ));
+  ANA_CHECK( m_muIsoSF_tool_handle.initialize());
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -303,13 +303,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_trigEffSF_tool_name = "MuonTriggerScaleFactors_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
   std::string trigEffSF_handle_name = "CP::MuonTriggerScaleFactors/" + m_trigEffSF_tool_name;
 
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name), "Failed to check whether tool already exists in asg::ToolStore" );
+  ANA_CHECK( checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name));
   std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
   m_muTrigSF_tool_handle.setTypeRegisterNew<CP::MuonTriggerScaleFactors>(trigEffSF_handle_name);
-  //RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.make(trigEffSF_handle_name), "Failed to create handle to CP::MuonTriggerScaleFactors for trigger efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.setProperty("Isolation", iso_trig_WP ),"Failed to set Isolation property of MuonTriggerScaleFactors");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.setProperty("MuonQuality", m_WorkingPointRecoTrig ),"Failed to set MuonQuality property of MuonTriggerScaleFactors");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTrigSF_tool_handle.initialize(), "Failed to properly initialize CP::MuonTriggerScaleFactors for trigger efficiency SF");
+  //ANA_CHECK( m_muTrigSF_tool_handle.make(trigEffSF_handle_name));
+  ANA_CHECK( m_muTrigSF_tool_handle.setProperty("Isolation", iso_trig_WP ));
+  ANA_CHECK( m_muTrigSF_tool_handle.setProperty("MuonQuality", m_WorkingPointRecoTrig ));
+  ANA_CHECK( m_muTrigSF_tool_handle.initialize());
 
   if ( m_isMC && !m_useRandomRunNumber ) {
     Warning("initialize()","m_useRandomRunNumber is set to false!" );
@@ -353,13 +353,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   std::string TTVAEffSF_handle_name = "CP::MuonEfficiencyScaleFactors/" + m_TTVAEffSF_tool_name;
 
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name), "" );
+  ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name));
   //m_muTTVASF_tool_handle.setTypeRegisterNew<CP::MuonEfficiencyScaleFactors>(TTVAEffSF_handle_name);
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.make(TTVAEffSF_handle_name), "Failed to create handle to CP::MuonEfficiencyScaleFactors for TTVA efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.setProperty("WorkingPoint", m_WorkingPointTTVA ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for TTVA efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.setProperty("PileupReweightingTool", PRWToolHandle ),"Failed to set PileupReweightingTool property of MuonEfficiencyScaleFactors for TTVA efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ),"Failed to set calibration release property of MuonEfficiencyScaleFactors for TTVA efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool_handle.initialize(), "Failed to properly initialize CP::MuonEfficiencyScaleFactors for TTVA efficiency SF");
+  ANA_CHECK( m_muTTVASF_tool_handle.make(TTVAEffSF_handle_name));
+  ANA_CHECK( m_muTTVASF_tool_handle.setProperty("WorkingPoint", m_WorkingPointTTVA ));
+  ANA_CHECK( m_muTTVASF_tool_handle.setProperty("PileupReweightingTool", PRWToolHandle ));
+  ANA_CHECK( m_muTTVASF_tool_handle.setProperty("CalibrationRelease", m_calibRelease ));
+  ANA_CHECK( m_muTTVASF_tool_handle.initialize());
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -385,16 +385,16 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     Info("initialize()","\t %s", (syst_it.name()).c_str());
   }
   */
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", checkToolStore<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name), "" );
+  ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name));
   if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name) ) {
     m_muTTVASF_tool = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>( m_TTVAEffSF_tool_name );
   } else {
     m_muTTVASF_tool = new CP::MuonEfficiencyScaleFactors( m_TTVAEffSF_tool_name );
   }
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool->setProperty("WorkingPoint", m_WorkingPointTTVA ),"Failed to set Working Point property of MuonEfficiencyScaleFactors for TTVA efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool->setProperty("PileupReweightingTool", PRWToolHandle ),"Failed to set PileupReweightingTool property of MuonEfficiencyScaleFactors for TTVA efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool->setProperty("CalibrationRelease", m_calibRelease ),"Failed to set calibration release property of MuonEfficiencyScaleFactors for TTVA efficiency SF");
-  RETURN_CHECK("MuonEfficiencyCorrector::initialize()", m_muTTVASF_tool->initialize(), "Failed to properly initialize CP::MuonEfficiencyScaleFactors for TTVA efficiency SF");
+  ANA_CHECK( m_muTTVASF_tool->setProperty("WorkingPoint", m_WorkingPointTTVA ));
+  ANA_CHECK( m_muTTVASF_tool->setProperty("PileupReweightingTool", PRWToolHandle ));
+  ANA_CHECK( m_muTTVASF_tool->setProperty("CalibrationRelease", m_calibRelease ));
+  ANA_CHECK( m_muTTVASF_tool->initialize());
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   //
@@ -447,7 +447,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) );
 
   // initialise containers
   //
@@ -463,7 +463,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
   if ( m_inputAlgoSystNames.empty() ) {
 
-    RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, m_verbose) );
 
    if ( m_debug ) { Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) ); }
 
@@ -478,13 +478,13 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 	// get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
 	//
         std::vector<std::string>* systNames(nullptr);
-        RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+        ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) );
 
     	// loop over systematic sets available
 	//
     	for ( auto systName : *systNames ) {
 
-           RETURN_CHECK("MuonEfficiencyCorrector::execute()", HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) ,"");
+           ANA_CHECK( HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, m_verbose) );
 
     	   if ( m_debug ){
 	     Info( "execute", "Number of muons: %i", static_cast<int>(inputMuons->size()) );
@@ -562,7 +562,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   // they processed input events.
 
   Info("histFinalize()", "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -684,7 +684,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     //
     // Use the counter defined in execute() to check this is done only once per event
     //
-    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesReco, m_outputSystNamesReco), "Failed to record vector of systematic names for muon reco efficiency SF" ); }
+    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesReco, m_outputSystNamesReco)); }
 
   }
 
@@ -788,7 +788,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     //
     // Use the counter defined in execute() to check this is done only once per event
     //
-    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesIso, m_outputSystNamesIso),   "Failed to record vector of systematic names for muon iso efficiency SF" ); }
+    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesIso, m_outputSystNamesIso)); }
 
   }
 
@@ -929,7 +929,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     //
     // Use the counter defined in execute() to check this is done only once per event
     //
-    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig), "Failed to record vector of systematic names for muon trigger efficiency  SF" ); }
+    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig)); }
 
   }
 
@@ -1046,7 +1046,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     //
     // Use the counter defined in execute() to check this is done only once per event
     //
-    if ( countSyst == 0 ) { RETURN_CHECK( "MuonEfficiencyCorrector::executeSF()", m_store->record( sysVariationNamesTTVA, m_outputSystNamesTTVA), "Failed to record vector of systematic names for muon TTVA efficiency  SF" ); }
+    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesTTVA, m_outputSystNamesTTVA)); }
   }
 
   return EL::StatusCode::SUCCESS;

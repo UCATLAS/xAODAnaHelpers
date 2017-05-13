@@ -9,6 +9,7 @@
 
 // local includes
 #include "AsgTools/StatusCode.h"
+#include <AsgTools/MessageCheck.h>
 
 // jet reclustering and trimming
 #include <fastjet/JetDefinition.hh>
@@ -231,11 +232,11 @@ namespace HelperFunctions {
       Example Usage:
       const xAOD::JetContainer* jets(0);
       // look for "AntiKt10LCTopoJets" in both TEvent and TStore
-      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, m_store) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, m_store) );
       // look for "AntiKt10LCTopoJets" in only TStore
-      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) );
       // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, msg()) );
   */
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
@@ -408,8 +409,8 @@ namespace HelperFunctions {
       This is a very powerful templating function. The point is to remove the triviality of making deep copies by specifying all that is needed. The best way is to demonstrate via example::
 
         const xAOD::JetContainer* selected_jets(nullptr);
-        RETURN_CHECK("execute()", m_event->retrieve( selected_jets, "SelectedJets" ));
-        RETURN_CHECK("execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets)));
+        ANA_CHECK( m_event->retrieve( selected_jets, "SelectedJets" ));
+        ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets)));
 
     @endrst
    */
@@ -447,7 +448,7 @@ namespace HelperFunctions {
     @rst
       If you have a container in the TStore, this function will record it into the output for you without an issue. As an example::
 
-        RETURN_CHECK("execute()", HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, "BaselineJets"));
+        ANA_CHECK( HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, "BaselineJets"));
 
       where we build off the previous example of making a deep copy (see :cpp:func:`HelperFunctions::makeDeepCopy`).
     @endrst

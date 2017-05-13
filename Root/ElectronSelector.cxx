@@ -21,7 +21,7 @@
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 
@@ -73,7 +73,7 @@ EL::StatusCode ElectronSelector :: histInitialize ()
   // connected.
 
   ATH_MSG_INFO( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -258,10 +258,10 @@ EL::StatusCode ElectronSelector :: initialize ()
 
     if ( m_readIDFlagsFromDerivation ) {
       ATH_MSG_INFO( "Reading Electron cut-based ID from DAODs ..." );
-      RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupWPs( false ), "Failed to setup ElectronCutBasedPIDManager in Derivation mode." );
+      ANA_CHECK( m_el_CutBased_PIDManager->setupWPs( false ));
     } else {
       ATH_MSG_INFO( "Reading Electron cut-based ID from CP Tool ..." );
-      RETURN_CHECK( "ElectronSelector::initialize()", m_el_CutBased_PIDManager->setupWPs( true, this->m_name ), "Failed to setup ElectronCutBasedPIDManager in tool mode." );
+      ANA_CHECK( m_el_CutBased_PIDManager->setupWPs( true, this->m_name ));
     }
   }// if m_doCutBasedPID
 
@@ -286,10 +286,10 @@ EL::StatusCode ElectronSelector :: initialize ()
       }
 
       ATH_MSG_INFO( "Reading Electron LH ID from DAODs ..." );
-      RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupWPs( false ), "Failed to setup ElectronLHPIDManager in Derivation mode." );
+      ANA_CHECK( m_el_LH_PIDManager->setupWPs( false ));
     } else {
       ATH_MSG_INFO( "Reading Electron LH ID from CP Tool ..." );
-      RETURN_CHECK( "ElectronSelector::initialize()", m_el_LH_PIDManager->setupWPs( true, this->m_name), "Failed to setup ElectronLHPIDManager in tool mode." );
+      ANA_CHECK( m_el_LH_PIDManager->setupWPs( true, this->m_name));
     }
   }// if m_doLHPID
 
@@ -304,10 +304,10 @@ EL::StatusCode ElectronSelector :: initialize ()
   if(!m_isolationSelectionTool_handle.isUserConfigured()){
     // Do this only for the first WP in the list
     ATH_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
-    RETURN_CHECK("ElectronSelector::initialize()", m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
-    RETURN_CHECK("ElectronSelector::initialize()", m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level()), "" );
+    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()));
+    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level()));
   }
-  RETURN_CHECK("ElectronSelector::initialize()", m_isolationSelectionTool_handle.retrieve(), "Failed to properly initialize IsolationSelectionTool." );
+  ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
   m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
 
   // Add the remaining input WPs to the tool
@@ -328,11 +328,11 @@ EL::StatusCode ElectronSelector :: initialize ()
        CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
        if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
 
-       RETURN_CHECK( "ElectronSelector::initialize()",  m_isolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Electron, myCuts, "", iso_type), "Failed to add user-defined isolation WP" );
+       ANA_CHECK(  m_isolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Electron, myCuts, "", iso_type));
 
      } else {
 
-        RETURN_CHECK( "ElectronSelector::initialize()", m_isolationSelectionTool->addElectronWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+        ANA_CHECK( m_isolationSelectionTool->addElectronWP( (*WP_itr).c_str() ));
 
      }
   }
@@ -350,10 +350,10 @@ EL::StatusCode ElectronSelector :: initialize ()
   if(  !( m_singleElTrigChains.empty() && m_diElTrigChains.empty() ) && m_trigDecTool_handle.isUserConfigured() ) {
     m_trigElectronMatchTool_handle.setName("MatchingTool_" + m_name);
     if(!m_trigElectronMatchTool_handle.isUserConfigured()){
-      RETURN_CHECK("ElectronSelector::initialize()", m_trigElectronMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ), "Failed to pass TrigDecisionTool to MatchingTool" );
-      RETURN_CHECK("ElectronSelector::initialize()", m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ), "" );
+      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
     }
-    RETURN_CHECK("ElectronSelector::initialize()", m_trigElectronMatchTool_handle.retrieve(), "Failed to properly initialize MatchingTool" );
+    ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
 
   } else {
 
@@ -387,7 +387,7 @@ EL::StatusCode ElectronSelector :: execute ()
   ATH_MSG_DEBUG( "Applying Electron Selection... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   //
@@ -444,7 +444,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, msg()) );
 
     // create output container (if requested)
     ConstDataVector<xAOD::ElectronContainer>* selectedElectrons(nullptr);
@@ -457,7 +457,7 @@ EL::StatusCode ElectronSelector :: execute ()
     if ( m_createSelectedContainer) {
       if ( eventPass ) {
         // add ConstDataVector to TStore
-        RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName ), "Failed to store const data container");
+        ANA_CHECK( m_store->record( selectedElectrons, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
         delete selectedElectrons; selectedElectrons = nullptr;
@@ -469,7 +469,7 @@ EL::StatusCode ElectronSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -484,7 +484,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
       ATH_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName + systName, m_event, m_store, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName + systName, m_event, m_store, msg()) );
 
       // create output container (if requested) - one for each systematic
       //
@@ -511,7 +511,7 @@ EL::StatusCode ElectronSelector :: execute ()
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
-          RETURN_CHECK( "ElectronSelector::execute()", m_store->record( selectedElectrons, m_outContainerName+systName ), "Failed to store const data container");
+          ANA_CHECK( m_store->record( selectedElectrons, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
           delete selectedElectrons; selectedElectrons = nullptr;
@@ -524,7 +524,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    RETURN_CHECK( "ElectronSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+    ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
 
   }
 
@@ -546,7 +546,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 {
 
   const xAOD::VertexContainer* vertices(nullptr);
-  RETURN_CHECK("ElectronSelector::executeSelection()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
@@ -661,7 +661,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
       ATH_MSG_DEBUG( "Doing di-electron trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      RETURN_CHECK("ElectronSelector::executeSelection()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char>     dielectron_trigmatch_pair;
       typedef std::multimap< std::string, dielectron_trigmatch_pair >    dielectron_trigmatch_pair_map;
@@ -760,7 +760,7 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   // they processed input events.
 
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -867,7 +867,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
 

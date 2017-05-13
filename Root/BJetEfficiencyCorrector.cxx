@@ -21,7 +21,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 using HelperClasses::ToolName;
 
@@ -49,7 +49,7 @@ EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 
 EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   m_corrFileName = PathResolverFindCalibFile(m_corrFileName);
 
@@ -78,7 +78,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
@@ -164,14 +164,14 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   //
   // A few which are not configurable as of yet....
   // is there a reason to have this configurable here??...I think no (GF to self)
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MaxEta",2.5),"Failed to set property:MaxEta");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("MinPt",20000.),"Failed to set property:MinPt");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()),"Failed to set property:FlvTagCutDefinitionsFileName");
+  ANA_CHECK( m_BJetSelectTool->setProperty("MaxEta",2.5));
+  ANA_CHECK( m_BJetSelectTool->setProperty("MinPt",20000.));
+  ANA_CHECK( m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()));
   // configurable parameters
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("TaggerName",          m_taggerName),"Failed to set property: TaggerName");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property: JetAuthor");
-  RETURN_CHECK( "BJetSelection::initialize()", m_BJetSelectTool->initialize(), "Failed to properly initialize the BJetSelectionTool");
+  ANA_CHECK( m_BJetSelectTool->setProperty("TaggerName",          m_taggerName));
+  ANA_CHECK( m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt));
+  ANA_CHECK( m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor));
+  ANA_CHECK( m_BJetSelectTool->initialize());
   ATH_MSG_INFO( "BTaggingSelectionTool initialized : " << m_BJetSelectTool->name() );
 
   //
@@ -190,14 +190,14 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     }
     m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
 
-    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName),"Failed to set property");
-    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("SystematicsStrategy", m_systematicsStrategy ), "Failed to set property");
-    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPtCDI),"Failed to set property");
-    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor),"Failed to set property");
-    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ScaleFactorFileName", m_corrFileName),"Failed to set property");
-    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("UseDevelopmentFile",  m_useDevelopmentFile), "Failed to set property");
-    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel), "Failed to set property");
-    RETURN_CHECK( "BJetEfficiencyCorrector::initialize()", m_BJetEffSFTool->initialize(), "Failed to properly initialize the BJetEfficiencyCorrectionTool");
+    ANA_CHECK( m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName));
+    ANA_CHECK( m_BJetEffSFTool->setProperty("SystematicsStrategy", m_systematicsStrategy ));
+    ANA_CHECK( m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPtCDI));
+    ANA_CHECK( m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor));
+    ANA_CHECK( m_BJetEffSFTool->setProperty("ScaleFactorFileName", m_corrFileName));
+    ANA_CHECK( m_BJetEffSFTool->setProperty("UseDevelopmentFile",  m_useDevelopmentFile));
+    ANA_CHECK( m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel));
+    ANA_CHECK( m_BJetEffSFTool->initialize());
     ATH_MSG_INFO( "BTaggingEfficiencyTool initialized : " << m_BJetEffSFTool->name() );
   } else {
     ATH_MSG_WARNING( "Input operating point is not calibrated - no SFs will be obtained");
@@ -272,7 +272,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   // retrieve event
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   ATH_MSG_DEBUG("\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
 
   //
@@ -287,7 +287,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
     executeEfficiencyCorrection( inJets, eventInfo, true);
 
@@ -301,7 +301,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // get vector of string giving the names
     //
     std::vector<std::string>* systNames(nullptr);
-    RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
 
     //
     // loop over systematics
@@ -310,7 +310,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
       bool doNominal = (systName == "");
 
-      RETURN_CHECK("BJetEfficiencyCorrector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
 
       executeEfficiencyCorrection( inJets, eventInfo, doNominal );
 
@@ -493,7 +493,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   // add list of sys names to TStore
   //
   if(doNominal){
-    RETURN_CHECK( "BJetEfficiencyCorrector::execute()", m_store->record( sysVariationNames, m_outputSystName), "Failed to record vector of systematic names.");
+    ANA_CHECK( m_store->record( sysVariationNames, m_outputSystName));
 
     ATH_MSG_DEBUG("Size is " << sysVariationNames->size());
     for(auto sysName : *sysVariationNames) ATH_MSG_DEBUG(sysName);
@@ -526,7 +526,7 @@ EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 {
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
 
   return EL::StatusCode::SUCCESS;
 }

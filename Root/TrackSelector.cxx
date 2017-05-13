@@ -5,7 +5,7 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/TrackSelector.h"
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 // ROOT include(s):
 #include "TFile.h"
@@ -56,7 +56,7 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // connected.
 
   ATH_MSG_DEBUG("Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -163,11 +163,11 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
   // get the collection from TEvent or TStore
   const xAOD::TrackParticleContainer* inTracks(nullptr);
-  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(inTracks, m_inContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(inTracks, m_inContainerName, m_event, m_store, msg()) );
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
-  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
 
@@ -222,7 +222,7 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
   // add output container to TStore
   if( m_createSelectedContainer ) {
-    RETURN_CHECK( "TrackSelector::execute()", m_store->record( selectedTracks, m_outContainerName ), "Failed to store container.");
+    ANA_CHECK( m_store->record( selectedTracks, m_outContainerName ));
   }
 
   m_numEventPass++;
@@ -242,11 +242,11 @@ EL::StatusCode TrackSelector :: executeTracksInJets ()
 
   // get input jet collection
   const xAOD::JetContainer* inJets(nullptr);
-  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) );
 
   //// get primary vertex
   //const xAOD::VertexContainer *vertices(nullptr);
-  //RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  //ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
   //const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
@@ -348,7 +348,7 @@ EL::StatusCode TrackSelector :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 

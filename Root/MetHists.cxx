@@ -10,7 +10,7 @@
 #include <xAODAnaHelpers/MetHists.h>
 #include <sstream>
 
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
+#include <AsgTools/MessageCheck.h>
 
 using std::vector;
 

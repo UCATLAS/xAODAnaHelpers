@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
+ANA_MSG_SOURCE(msgPhotonHists, "PhotonHists")
 
 PhotonHists :: PhotonHists (std::string name, std::string detailStr) :
   IParticleHists(name, detailStr, "photon", "photon"),
@@ -14,7 +14,8 @@ PhotonHists :: ~PhotonHists () {
 }
 
 StatusCode PhotonHists::initialize() {
-  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
+  using namespace msgPhotonHists;
+  ANA_CHECK( IParticleHists::initialize());
 
   // isolation
   if( m_infoSwitch->m_isolation ) {
@@ -38,14 +39,15 @@ StatusCode PhotonHists::execute( const xAOD::Photon* photon, float eventWeight, 
 }
 
 StatusCode PhotonHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
+  using namespace msgPhotonHists;
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "PhotonHists: in execute " <<std::endl;
 
   const xAOD::Photon* photon=dynamic_cast<const xAOD::Photon*>(particle);
   if(photon==0)
     {
-      ::Error( "PhotonHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Photon" ));
+      ATH_MSG_ERROR( "Cannot convert IParticle to Photon" );
       return StatusCode::FAILURE;
     }
 

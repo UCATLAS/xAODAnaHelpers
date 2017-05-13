@@ -25,7 +25,7 @@
 #include "xAODAnaHelpers/TauSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):
@@ -72,7 +72,7 @@ EL::StatusCode TauSelector :: histInitialize ()
   // connected.
 
   ATH_MSG_INFO( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -186,17 +186,17 @@ EL::StatusCode TauSelector :: initialize ()
   m_TauSelTool = new TauAnalysisTools::TauSelectionTool( sel_tool_name );
   m_TauSelTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
 
-  RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("ConfigPath",PathResolverFindDataFile(m_ConfigPath).c_str()), "Failed to set ConfigPath property");
+  ANA_CHECK( m_TauSelTool->setProperty("ConfigPath",PathResolverFindDataFile(m_ConfigPath).c_str()));
   if ( !m_EleOLRFilePath.empty() ) {
-    RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->setProperty("EleOLRFilePath",PathResolverFindDataFile(m_EleOLRFilePath).c_str()), "Failed to set EleOLRFilePath property");
+    ANA_CHECK( m_TauSelTool->setProperty("EleOLRFilePath",PathResolverFindDataFile(m_EleOLRFilePath).c_str()));
   }
-  RETURN_CHECK("TauSelector::initialize()", m_TauSelTool->initialize(), "Failed to properly initialize TauSelectionTool");
+  ANA_CHECK( m_TauSelTool->initialize());
 
   if ( m_setTauOverlappingEleLLHDecor ) {
     std::string eleOLR_tool_name = std::string("TauOverlappingElectronLLHDecorator_") + m_name;
     m_TOELLHDecorator = new TauAnalysisTools::TauOverlappingElectronLLHDecorator( eleOLR_tool_name );
     m_TOELLHDecorator->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
-    RETURN_CHECK("TauSelector::initialize()", m_TOELLHDecorator->initialize(), "Failed to properly initialize TauOverlappingElectronLLHDecorator");
+    ANA_CHECK( m_TOELLHDecorator->initialize());
   }
 
   ATH_MSG_INFO( "TauSelector Interface succesfully initialized!" );
@@ -214,7 +214,7 @@ EL::StatusCode TauSelector :: execute ()
   ATH_MSG_DEBUG( "Applying Tau Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   //
@@ -241,7 +241,7 @@ EL::StatusCode TauSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, msg()) );
 
     // create output container (if requested)
     //
@@ -256,7 +256,7 @@ EL::StatusCode TauSelector :: execute ()
       if ( eventPass ) {
         // add ConstDataVector to TStore
 	//
-        RETURN_CHECK( "TauSelector::execute()", m_store->record( selectedTaus, m_outContainerName ), "Failed to store const data container");
+        ANA_CHECK( m_store->record( selectedTaus, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
 	//
@@ -269,7 +269,7 @@ EL::StatusCode TauSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -284,7 +284,7 @@ EL::StatusCode TauSelector :: execute ()
 
       ATH_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      RETURN_CHECK("TauSelector::execute()", HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, msg()) );
 
       // create output container (if requested) - one for each systematic
       //
@@ -313,7 +313,7 @@ EL::StatusCode TauSelector :: execute ()
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
 	  //
-          RETURN_CHECK( "TauSelector::execute()", m_store->record( selectedTaus, m_outContainerName+systName ), "Failed to store const data container");
+          ANA_CHECK( m_store->record( selectedTaus, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
           delete selectedTaus; selectedTaus = nullptr;
@@ -326,7 +326,7 @@ EL::StatusCode TauSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    RETURN_CHECK( "TauSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+    ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
 
   }
 
@@ -465,7 +465,7 @@ EL::StatusCode TauSelector :: histFinalize ()
   // they processed input events.
 
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 

@@ -26,7 +26,7 @@
 #include "xAODAnaHelpers/DebugTool.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 // external tools include(s):
 
@@ -55,7 +55,7 @@ EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 EL::StatusCode DebugTool :: histInitialize ()
 {
   ATH_MSG_INFO( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -127,7 +127,7 @@ EL::StatusCode DebugTool :: finalize ()
 EL::StatusCode DebugTool :: histFinalize ()
 {
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 

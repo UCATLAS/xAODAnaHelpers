@@ -17,7 +17,7 @@
 // EDM include(s):
 #include <xAODEventInfo/EventInfo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 #include <xAODAnaHelpers/PhotonSelector.h>
 #include <xAODEgamma/EgammaDefs.h>
@@ -68,7 +68,7 @@ EL::StatusCode PhotonSelector :: histInitialize ()
   // connected.
 
   ATH_MSG_INFO( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -184,12 +184,12 @@ EL::StatusCode PhotonSelector :: initialize ()
     m_IsolationSelectionTool = new CP::IsolationSelectionTool(isoToolName.c_str());
   }
   ATH_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
-  RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->setProperty("PhotonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
-  RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
+  ANA_CHECK( m_IsolationSelectionTool->setProperty("PhotonWP", (m_IsoKeys.at(0)).c_str()));
+  ANA_CHECK( m_IsolationSelectionTool->initialize());
 
   for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
     ATH_MSG_DEBUG( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" );
-    RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->addPhotonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
+    ANA_CHECK( m_IsolationSelectionTool->addPhotonWP( (*WP_itr).c_str() ));
   }
 
   // **********************************************************************************************
@@ -210,8 +210,7 @@ EL::StatusCode PhotonSelector :: execute ()
   ATH_MSG_DEBUG( "Applying Photon Selection... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,
-	       Form("Failed in retrieving %s in %s", m_eventInfoContainerName.c_str(), m_name.c_str() ));
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   //
@@ -236,7 +235,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) , "");
+    ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) );
 
     // create output container (if requested)
     ConstDataVector<xAOD::PhotonContainer>* selectedPhotons(nullptr);
@@ -250,7 +249,7 @@ EL::StatusCode PhotonSelector :: execute ()
       if ( eventPass ) {
         // add ConstDataVector to TStore
 	//
-        RETURN_CHECK( "PhotonSelector::execute()", m_store->record( selectedPhotons, m_outContainerName ), "Failed to store const data container");
+        ANA_CHECK( m_store->record( selectedPhotons, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
         delete selectedPhotons; selectedPhotons = nullptr;
@@ -262,7 +261,7 @@ EL::StatusCode PhotonSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -277,7 +276,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
       ATH_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName + systName, m_event, m_store, msg()), "");
+      ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName + systName, m_event, m_store, msg()));
 
       // create output container (if requested) - one for each systematic
       //
@@ -306,7 +305,7 @@ EL::StatusCode PhotonSelector :: execute ()
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
 	  //
-          RETURN_CHECK( "PhotonSelector::execute()", m_store->record( selectedPhotons, m_outContainerName+systName ), "Failed to store const data container");
+          ANA_CHECK( m_store->record( selectedPhotons, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
 	  //
@@ -319,7 +318,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    RETURN_CHECK( "PhotonSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+    ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
   }
 
   // look what we have in TStore
@@ -606,7 +605,7 @@ EL::StatusCode PhotonSelector :: histFinalize ()
   // they processed input events.
 
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
 
   return EL::StatusCode::SUCCESS;
 }

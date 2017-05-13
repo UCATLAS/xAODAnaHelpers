@@ -334,11 +334,11 @@ This is albeit a litle bit trickier for anyone new to how Athena tools work. Fir
     m_JetCalibrationTool_handle.setName("JetCalibrationTool_" + m_name);
     ATH_MSG_DEBUG("Trying to initialize " << m_JetCalibrationToolHandle.typeAndName());
     if( !m_JetCalibrationTool_handle.isUserConfigured() ){
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo), "Failed to set JetCollection");
+      ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
       //... other setProperty() calls and other logic can be in here for tool configuration
-      RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()), "");
+      ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
     }
-    RETURN_CHECK("JetCalibrator::initialize()", m_JetCalibrationTool_handle.retrieve(), "Failed to retrieve JetCalibrationTool");
+    ANA_CHECK( m_JetCalibrationTool_handle.retrieve());
     ATH_MSG_DEBUG("Successfully initialized " << m_JetCalibrationToolHandle.typeAndName());
   }
 
@@ -384,6 +384,6 @@ Finally, we ``retrieve()`` the tool of the given type and name from the tool sto
 .. note::
   Did you get a Bus error in the code because of the tools? If so, identify which tool causes the Bus error and file an issue so we can inform the tool developers that their tool needs to be fixed. In the meantime, this can be fixed using a macro::
 
-    RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency), "Could not make JetJetEfficiency");
+    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
 
   An example of a reported issue for the above tool is here: https://its.cern.ch/jira/browse/ATLASG-1214.

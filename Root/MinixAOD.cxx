@@ -36,7 +36,7 @@
 #include "xAODAnaHelpers/MinixAOD.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MinixAOD)
@@ -66,7 +66,7 @@ EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
 
 EL::StatusCode MinixAOD :: histInitialize ()
 {
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -78,7 +78,7 @@ EL::StatusCode MinixAOD :: changeInput (bool firstFile)
     {
       // Retrieve the input container:
       const xAOD::CutBookkeeperContainer* inputCBKContainer(nullptr);
-      RETURN_CHECK("MinixAOD::fileExecute()", wk()->xaodEvent()->retrieveMetaInput(inputCBKContainer, "CutBookkeepers"), "");
+      ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(inputCBKContainer, "CutBookkeepers"));
 
       if(firstFile)
 	{
@@ -116,24 +116,24 @@ EL::StatusCode MinixAOD :: initialize ()
 
   // always do this, obviously
   TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
-  RETURN_CHECK("MinixAOD::initialize()", m_event->writeTo(file_xAOD), "Could not set output to file");
+  ANA_CHECK( m_event->writeTo(file_xAOD));
 
   if(m_copyFileMetaData){
     m_fileMetaDataTool = new xAODMaker::FileMetaDataTool();
 
-    RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->setProperty("OutputLevel", msg().level() ), "Could not set verbosity on fileMenuMetaDataTool");
+    ANA_CHECK( m_fileMetaDataTool->setProperty("OutputLevel", msg().level() ));
 
 
-    RETURN_CHECK("MinixAOD::initialize()", m_fileMetaDataTool->initialize(), "Could not initialize FileMetaDataTool");
+    ANA_CHECK( m_fileMetaDataTool->initialize());
     ATH_MSG_DEBUG("FileMetaDataTool initialized...");
   }
 
   if(m_copyTriggerInfo){
     m_trigMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();
 
-    RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ), "Could not set verbosity on TriggerMenuMetaDataTool");
+    ANA_CHECK( m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ));
 
-    RETURN_CHECK("MinixAOD::initialize()", m_trigMetaDataTool->initialize(), "Could not initialize TriggerMenuMetaDataTool");
+    ANA_CHECK( m_trigMetaDataTool->initialize());
     ATH_MSG_DEBUG("TriggerMenuMetaDataTool initialized...");
 
     ATH_MSG_DEBUG("Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file.");
@@ -186,7 +186,7 @@ EL::StatusCode MinixAOD :: execute ()
   ATH_MSG_VERBOSE( "Dumping objects...");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("BasicEventSelection::initialize()", HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, msg()) );
 
   //
   // Fill cutbookkeeper
@@ -206,7 +206,7 @@ EL::StatusCode MinixAOD :: execute ()
 
   // simple copy is easiest - it's in the input, copy over, no need for types
   for(const auto& key: m_simpleCopyKeys_vec){
-    RETURN_CHECK("MinixAOD::execute()", m_event->copy(key), std::string("Could not copy "+key+" from input file.").c_str());
+    ANA_CHECK( m_event->copy(key));
     ATH_MSG_DEBUG("Copying " << key << " from input file");
   }
 
@@ -216,20 +216,20 @@ EL::StatusCode MinixAOD :: execute ()
     auto out_key = keypair.second;
 
     const xAOD::IParticleContainer* cont(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, in_key, nullptr, m_store, msg()), std::string("Could not retrieve container "+in_key+" from TStore. Enable verbosity to find out why.").c_str());
+    ANA_CHECK( HelperFunctions::retrieve(cont, in_key, nullptr, m_store, msg()));
 
     if(const xAOD::ElectronContainer* t_cont = dynamic_cast<const xAOD::ElectronContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, out_key.c_str(), t_cont)));
     } else if(const xAOD::JetContainer* t_cont = dynamic_cast<const xAOD::JetContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, out_key.c_str(), t_cont)));
     } else if(const xAOD::MissingETContainer* t_cont = dynamic_cast<const xAOD::MissingETContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::MissingETContainer, xAOD::MissingETAuxContainer, xAOD::MissingET>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::MissingETContainer, xAOD::MissingETAuxContainer, xAOD::MissingET>(m_store, out_key.c_str(), t_cont)));
     } else if(const xAOD::MuonContainer* t_cont = dynamic_cast<const xAOD::MuonContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, out_key.c_str(), t_cont)));
     } else if(const xAOD::PhotonContainer* t_cont = dynamic_cast<const xAOD::PhotonContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::PhotonContainer, xAOD::PhotonAuxContainer, xAOD::Photon>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::PhotonContainer, xAOD::PhotonAuxContainer, xAOD::Photon>(m_store, out_key.c_str(), t_cont)));
     } else if(const xAOD::TauJetContainer* t_cont = dynamic_cast<const xAOD::TauJetContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::makeDeepCopy<xAOD::TauJetContainer, xAOD::TauJetAuxContainer, xAOD::TauJet>(m_store, out_key.c_str(), t_cont)), std::string("Could not deep copy "+in_key+" to "+out_key+".").c_str());
+      ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::TauJetContainer, xAOD::TauJetAuxContainer, xAOD::TauJet>(m_store, out_key.c_str(), t_cont)));
     } else {
       std::cout << "Could not identify what container " << in_key << " corresponds to for deep-copying." << std::endl;
       return EL::StatusCode::FAILURE;
@@ -259,7 +259,7 @@ EL::StatusCode MinixAOD :: execute ()
     auto parent = keypair.second;
 
     std::vector<std::string>* vector(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(vector, vectorName, nullptr, m_store, msg()), std::string("Could not retrieve vector "+vectorName+" from TStore. Enable verbosity to find out why.").c_str());
+    ANA_CHECK( HelperFunctions::retrieve(vector, vectorName, nullptr, m_store, msg()));
 
     // only add the parent if it doesn't exist
     if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
@@ -283,20 +283,20 @@ EL::StatusCode MinixAOD :: execute ()
   // all we need to do is retrieve it and figure out what type it is to record it and we're done
   for(const auto& key: m_copyFromStoreToEventKeys_vec){
     const xAOD::IParticleContainer* cont(nullptr);
-    RETURN_CHECK("MinixAOD::execute()", HelperFunctions::retrieve(cont, key, nullptr, m_store, msg()), std::string("Could not retrieve container "+key+" from TStore. Enable verbosity to find out why.").c_str());
+    ANA_CHECK( HelperFunctions::retrieve(cont, key, nullptr, m_store, msg()));
 
     if(dynamic_cast<const xAOD::ElectronContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::ElectronContainer, xAOD::ElectronAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+      ANA_CHECK( (HelperFunctions::recordOutput<xAOD::ElectronContainer, xAOD::ElectronAuxContainer>(m_event, m_store, key)));
     } else if(dynamic_cast<const xAOD::JetContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+      ANA_CHECK( (HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, key)));
     } else if(dynamic_cast<const xAOD::MissingETContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MissingETContainer, xAOD::MissingETAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+      ANA_CHECK( (HelperFunctions::recordOutput<xAOD::MissingETContainer, xAOD::MissingETAuxContainer>(m_event, m_store, key)));
     } else if(dynamic_cast<const xAOD::MuonContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::MuonContainer, xAOD::MuonAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent").c_str());
+      ANA_CHECK( (HelperFunctions::recordOutput<xAOD::MuonContainer, xAOD::MuonAuxContainer>(m_event, m_store, key)));
     } else if(dynamic_cast<const xAOD::PhotonContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::PhotonContainer, xAOD::PhotonAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+      ANA_CHECK( (HelperFunctions::recordOutput<xAOD::PhotonContainer, xAOD::PhotonAuxContainer>(m_event, m_store, key)));
     } else if(dynamic_cast<const xAOD::TauJetContainer*>(cont)){
-      RETURN_CHECK("MinixAOD::execute()", (HelperFunctions::recordOutput<xAOD::TauJetContainer, xAOD::TauJetAuxContainer>(m_event, m_store, key)), std::string("Could not copy "+key+" from TStore to TEvent.").c_str());
+      ANA_CHECK( (HelperFunctions::recordOutput<xAOD::TauJetContainer, xAOD::TauJetAuxContainer>(m_event, m_store, key)));
     } else {
       std::cout << "Could not identify what container " << key << " corresponds to for copying from TStore to TEvent." << std::endl;
       return EL::StatusCode::FAILURE;
@@ -320,10 +320,10 @@ EL::StatusCode MinixAOD :: finalize () {
   // Save cutbookkeeper
   if(m_copyCutBookkeeper)
     {
-      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputCBKContainer      ,"CutBookkeepers")              , "");
-      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputCBKContainer_aux  ,"CutBookkeepersAux.")          , "");
-      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputInCBKContainer    ,"IncompleteCutBookkeepers")    , "");
-      RETURN_CHECK("MinixAOD::finalize()", wk()->xaodEvent()->recordMeta(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux."), "");
+      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputCBKContainer      ,"CutBookkeepers")              );
+      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputCBKContainer_aux  ,"CutBookkeepersAux.")          );
+      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputInCBKContainer    ,"IncompleteCutBookkeepers")    );
+      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux."));
 
       m_outputCBKContainer->push_back(m_outputCBK);
     }
@@ -331,7 +331,7 @@ EL::StatusCode MinixAOD :: finalize () {
   //
   // Close file
   TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
-  RETURN_CHECK("MinixAOD::finalize()", m_event->finishWritingTo(file_xAOD), "Could not finish writing to the output xAOD.");
+  ANA_CHECK( m_event->finishWritingTo(file_xAOD));
 
   if(m_fileMetaDataTool) delete m_fileMetaDataTool;
   if(m_trigMetaDataTool) delete m_trigMetaDataTool;
@@ -340,6 +340,6 @@ EL::StatusCode MinixAOD :: finalize () {
 }
 EL::StatusCode MinixAOD :: histFinalize ()
 {
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

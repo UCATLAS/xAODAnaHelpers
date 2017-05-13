@@ -23,7 +23,7 @@
 #include "xAODAnaHelpers/JetSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 // external tools include(s):
 #include "JetJvtEfficiency/JetJvtEfficiency.h"
@@ -72,7 +72,7 @@ EL::StatusCode JetSelector :: histInitialize ()
   // connected.
 
   ATH_MSG_DEBUG( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -121,7 +121,7 @@ EL::StatusCode JetSelector :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetSelector::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   if ( m_useCutFlow ) {
@@ -224,38 +224,38 @@ EL::StatusCode JetSelector :: initialize ()
     if(!m_BJetSelectTool_handle.isUserConfigured()){
       // A few which are not configurable as of yet....
       // is there a reason to have this configurable here??...I think no (GF to self)
-      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("MaxEta",m_b_eta_max),"Failed to set property:MaxEta");
-      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("MinPt",m_b_pt_min),"Failed to set property:MinPt");
-      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName", m_corrFileName),"Failed to set property:FlvTagCutDefinitionsFileName");
+      ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",m_b_eta_max));
+      ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt",m_b_pt_min));
+      ANA_CHECK( m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName", m_corrFileName));
 
       // configurable parameters
-      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("TaggerName",	      m_taggerName),"Failed to set property: TaggerName");
-      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt),"Failed to set property: OperatingPoint");
-      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("JetAuthor",	      m_jetAuthor),"Failed to set property: JetAuthor");
-      RETURN_CHECK( "JetSelector::initialize()", m_BJetSelectTool_handle.initialize(), "Failed to properly initialize the BJetSelectionTool");
+      ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",	      m_taggerName));
+      ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
+      ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",	      m_jetAuthor));
+      ANA_CHECK( m_BJetSelectTool_handle.initialize());
 
-      RETURN_CHECK("JetSelector::initialize()", m_BJetSelectTool_handle.setProperty("OutputLevel",  msg().level()),     "");
+      ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel",  msg().level()));
     }
-    RETURN_CHECK("JetSelector::initialize()", m_BJetSelectTool_handle.retrieve(),     "Failed to initialize BTaggingSelectionTool");
+    ANA_CHECK( m_BJetSelectTool_handle.retrieve());
 
   }
 
   //init fJVT
   ATH_MSG_DEBUG("Trying to initialize fJVT tool");
-  //RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_fJVT_tool_handle, JetForwardJvtTool), "Could not make JetForwardJvtTool");
-  RETURN_CHECK("JetSelector::initialize()",m_fJVT_tool_handle.retrieve(),"Failed to retrieve CP::JetForwardJVTtool");
+  //ANA_CHECK( ASG_MAKE_ANA_TOOL(m_fJVT_tool_handle, JetForwardJvtTool));
+  ANA_CHECK(m_fJVT_tool_handle.retrieve());
   ATH_MSG_DEBUG("Successfully initialized fJVT tool");
 
   // initialize the CP::JetJvtEfficiency Tool
   ATH_MSG_DEBUG("Trying to initialize JetJvtEff tool");
   m_JVT_tool_handle.setName("JetJvtEfficiency_effSF_" + m_name);
   if(!m_JVT_tool_handle.isUserConfigured()) {
-    RETURN_CHECK("JetSelector::initialize()", ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency), "Could not make JetJetEfficiency");
-    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ),"Failed to set Working Point property of JetJvtEfficiency for JVT");
-    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ),      "Failed to set SFFile property of JetJvtEfficiency for JVT");
-    RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()),     "");
+    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
+    ANA_CHECK( m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ));
+    ANA_CHECK( m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ));
+    ANA_CHECK( m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()));
   }
-  RETURN_CHECK("JetSelector::initialize()", m_JVT_tool_handle.retrieve(), "Failed to retrieve CP::JetJvtEfficiency");
+  ANA_CHECK( m_JVT_tool_handle.retrieve());
   ATH_MSG_DEBUG("Successfully initialized JetJvtEff tool");
 
 
@@ -307,7 +307,7 @@ EL::StatusCode JetSelector :: execute ()
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -329,14 +329,14 @@ EL::StatusCode JetSelector :: execute ()
   const xAOD::JetContainer* inJets(nullptr);
 
   const xAOD::JetContainer *truthJets = nullptr;
-  if ( m_isMC && m_doJVT ) RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) ,"");
+  if ( m_isMC && m_doJVT ) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
     // decorate inJets with truth info
     if ( m_isMC && m_doJVT ) {
@@ -360,14 +360,14 @@ EL::StatusCode JetSelector :: execute ()
 
     // get vector of string giving the names
     std::vector<std::string>* systNames(nullptr);
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
 
     // loop over systematics
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     bool passOne(false);
     for ( auto systName : *systNames ) {
 
-      RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
 
       // decorate inJets with truth info
       if ( m_isMC && m_doJVT ) {
@@ -396,7 +396,7 @@ EL::StatusCode JetSelector :: execute ()
     }
 
     // save list of systs that should be considered down stream
-    RETURN_CHECK( "JetSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgo), "Failed to record vector of output container names.");
+    ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgo));
     //delete vecOutContainerNames;
 
   }
@@ -431,7 +431,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // if doing JVF or JVT get PV location
   if ( m_doJVF ) {
     const xAOD::VertexContainer* vertices(nullptr);
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices, msg() );
   }
 
@@ -444,9 +444,9 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //That's how the tool works
   if(m_dofJVT){
     //have to make a deep copy because the fJVT tool wants to modify the jet containers.
-    RETURN_CHECK("execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_inContainerName+"Copy", inJets)), "");
+    ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_inContainerName+"Copy", inJets)));
     xAOD::JetContainer* jets_copy(nullptr);
-    RETURN_CHECK("execute()", HelperFunctions::retrieve(jets_copy, m_inContainerName+"Copy",m_event,m_store), "Couldn't retrieve jets copy from TStore");
+    ANA_CHECK( HelperFunctions::retrieve(jets_copy, m_inContainerName+"Copy",m_event,m_store));
     m_fJVT_tool_handle->modify(*jets_copy);
     //fJVT tool modifies each jet with the fJVT decision
     jetsForSelection = jets_copy;
@@ -595,12 +595,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // This will be the case when this executeSelection() function gets called for every syst varied input container,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { RETURN_CHECK( "JetSelector::executeSelection()", m_store->record( sysVariationNamesJVT, m_outputSystNamesJVT), "Failed to record vector of systematic names for JVT efficiency SF" ); }
+    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( m_store->record( sysVariationNamesJVT, m_outputSystNamesJVT)); }
   }
 
   // add ConstDataVector to TStore
   if ( m_createSelectedContainer ) {
-    RETURN_CHECK("JetSelector::executeSelection()", m_store->record( selectedJets, outContainerName ), "Failed to store const data container.");
+    ANA_CHECK( m_store->record( selectedJets, outContainerName ));
   }
 
   if ( count ) {
@@ -616,7 +616,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // Decorator
     SG::AuxElement::Decorator< char > isCleanEventDecor( "cleanEvent_"+m_name );
     const xAOD::EventInfo* eventInfo(nullptr);
-    RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
     isCleanEventDecor(*eventInfo) = passEventClean;
   }
@@ -693,7 +693,7 @@ EL::StatusCode JetSelector :: histFinalize ()
   // they processed input events.
 
   ATH_MSG_DEBUG( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 

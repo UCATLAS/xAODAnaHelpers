@@ -1,10 +1,10 @@
 #include "xAODAnaHelpers/TracksInJetHists.h"
 #include <math.h>
 #include <xAODTracking/TrackParticle.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 using std::cout;  using std::endl;
+ANA_MSG_SOURCE(msgTracksInJetHists, "TracksInJetHists")
 
 TracksInJetHists :: TracksInJetHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
@@ -62,11 +62,11 @@ void TracksInJetHists::record(EL::Worker* wk) {
 
 
 StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD::Jet* jet,  const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo ) {
-
+  using namespace msgTracksInJetHists;
   //
   //  Fill track hists
   //
-  RETURN_CHECK("TracksInJetHists::execute()", m_trkPlots   ->execute(trk, pvx, eventWeight, eventInfo), "");
+  ANA_CHECK( m_trkPlots   ->execute(trk, pvx, eventWeight, eventInfo));
 
   // d0
   float sign         = getD0Sign(trk, jet);

@@ -27,7 +27,7 @@
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HLTJetGetter.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
@@ -52,7 +52,7 @@ EL::StatusCode HLTJetGetter :: setupJob (EL::Job& job)
 
 EL::StatusCode HLTJetGetter :: histInitialize ()
 {
-    RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+    ANA_CHECK( xAH::Algorithm::algInitialize());
     return EL::StatusCode::SUCCESS;
 }
 
@@ -90,14 +90,14 @@ EL::StatusCode HLTJetGetter :: initialize ()
         m_ownTDTAndTCT = true;
 
         m_trigConfTool = new TrigConf::xAODConfigTool( "xAODConfigTool" );
-        RETURN_CHECK("BasicEventSelection::initialize()", m_trigConfTool->initialize(), "Failed to properly initialize TrigConf::xAODConfigTool");
+        ANA_CHECK( m_trigConfTool->initialize());
         ToolHandle< TrigConf::ITrigConfigTool > configHandle( m_trigConfTool );
 
         m_trigDecTool = new Trig::TrigDecisionTool( "TrigDecisionTool" );
-        RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "ConfigTool", configHandle ), "");
-        RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ), "");
-        RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR), "");
-        RETURN_CHECK("BasicEventSelection::initialize()", m_trigDecTool->initialize(), "Failed to properly initialize Trig::TrigDecisionTool");
+        ANA_CHECK( m_trigDecTool->setProperty( "ConfigTool", configHandle ));
+        ANA_CHECK( m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ));
+        ANA_CHECK( m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR));
+        ANA_CHECK( m_trigDecTool->initialize());
         ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
     }
 
@@ -127,8 +127,8 @@ EL::StatusCode HLTJetGetter :: execute ()
     auto chainFeatures = chainGroup->features(); //Gets features associated to chain defined above
     auto JetFeatureContainers = chainFeatures.containerFeature<xAOD::JetContainer>(m_inContainerName.c_str());
 
-    RETURN_CHECK("HLTJetGetter::execute()", m_store->record( hltJets,    m_outContainerName),     "Failed to record selected hltJets");
-    RETURN_CHECK("HLTJetGetter::execute()", m_store->record( hltJetsAux, m_outContainerName+"Aux."), "Failed to record selected hltJetsAux.");
+    ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
+    ANA_CHECK( m_store->record( hltJetsAux, m_outContainerName+"Aux."));
 
     for( auto fContainer : JetFeatureContainers ) {
         for( auto trigJet : *fContainer.cptr() ) {
@@ -172,6 +172,6 @@ EL::StatusCode HLTJetGetter :: finalize ()
 EL::StatusCode HLTJetGetter :: histFinalize ()
 {
     ATH_MSG_INFO( "Calling histFinalize");
-    RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+    ANA_CHECK( xAH::Algorithm::algFinalize());
     return EL::StatusCode::SUCCESS;
 }

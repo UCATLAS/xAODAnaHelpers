@@ -36,7 +36,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/ElectronCalibrator.h"
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 using HelperClasses::ToolName;
 
@@ -76,7 +76,7 @@ EL::StatusCode ElectronCalibrator :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -133,7 +133,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // Check if is MC
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronCalibrator::initialize()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
 
   m_numEvent      = 0;
@@ -147,8 +147,8 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool("EgammaCalibrationAndSmearingTool");
   }
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-  RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel),"Failed to set property ESModel");
-  RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel),"Failed to set property decorrelationModel");
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel));
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel));
   //
   // For AFII samples
   //
@@ -168,11 +168,11 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ){
 
       ATH_MSG_INFO( "Setting simulation flavour to AFII");
-      RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1),"Failed to set property useAFII");
+      ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
 
     }
   }
-  RETURN_CHECK( "ElectronCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->initialize());
 
   // Get a list of recommended systematics for this tool
   //
@@ -197,7 +197,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     ATH_MSG_INFO("\t " << syst_it.name());
   }
 
-  RETURN_CHECK("ElectronCalibrator::initialize()",m_store->record(SystElectronsNames, "ele_Syst"+m_name ), "Failed to record vector of ele systs names.");
+  ANA_CHECK(m_store->record(SystElectronsNames, "ele_Syst"+m_name ));
 
   // ***********************************************************
 
@@ -209,9 +209,9 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     m_IsolationCorrectionTool = new CP::IsolationCorrectionTool("IsolationCorrectionTool");
   }
   m_IsolationCorrectionTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO
-  //RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ),"Failed to set property Apply_datadriven");
-  RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->setProperty("IsMC", m_isMC ),"Failed to set property IsMC");
-  RETURN_CHECK( "ElectronCalibrator::initialize()", m_IsolationCorrectionTool->initialize(), "Failed to properly initialize the IsolationCorrectionTool");
+  //ANA_CHECK( m_IsolationCorrectionTool->setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ));
+  ANA_CHECK( m_IsolationCorrectionTool->setProperty("IsMC", m_isMC ));
+  ANA_CHECK( m_IsolationCorrectionTool->initialize());
 
   // ***********************************************************
 
@@ -235,9 +235,9 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   const xAOD::ElectronContainer* inElectrons(nullptr);
-  RETURN_CHECK("ElectronCalibrator::execute()", HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, msg()) );
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers
@@ -314,7 +314,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
     // save pointers in ConstDataVector with same order
     //
-    RETURN_CHECK( "ElectronCalibrator::execute()", HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, msg()), "");
+    ANA_CHECK( HelperFunctions::makeSubsetCont(calibElectronsSC.first, calibElectronsCDV, msg()));
 
     // Sort after copying to CDV.
     if ( m_sort ) {
@@ -323,17 +323,17 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
     // add SC container to TStore
     //
-    RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.first,  outSCContainerName  ), "Failed to store container.");
-    RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsSC.second, outSCAuxContainerName ), "Failed to store aux container.");
+    ANA_CHECK( m_store->record( calibElectronsSC.first,  outSCContainerName  ));
+    ANA_CHECK( m_store->record( calibElectronsSC.second, outSCAuxContainerName ));
     // add ConstDataVector to TStore
     //
-    RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( calibElectronsCDV, outContainerName), "Failed to store const data container.");
+    ANA_CHECK( m_store->record( calibElectronsCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
-  RETURN_CHECK( "ElectronCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+  ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
@@ -391,7 +391,7 @@ EL::StatusCode ElectronCalibrator :: histFinalize ()
   // they processed input events.
 
   ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 

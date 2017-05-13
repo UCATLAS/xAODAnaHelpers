@@ -11,13 +11,14 @@
  *
  ******************************************/
 
-
+#include <AsgTools/MsgStream.h>
 #include "xAODAnaHelpers/HistogramManager.h"
 
 /* constructors and destructors */
 HistogramManager::HistogramManager(std::string name, std::string detailStr):
   m_name(name),
-  m_detailStr(detailStr)
+  m_detailStr(detailStr),
+  m_msg(name)
 {
 
   // if last character of name is a alphanumeric add a / so that
@@ -27,6 +28,7 @@ HistogramManager::HistogramManager(std::string name, std::string detailStr):
     //Info("HistogramManager()", "Adding slash to put hists in TDirectories: %s",m_name.c_str());
   }
 
+  m_msg.setLevel(MSG::INFO);
 }
 
 HistogramManager::~HistogramManager() {}
@@ -67,7 +69,7 @@ TH3F* HistogramManager::book(std::string name, std::string title,
 
 TProfile* HistogramManager::book(std::string name, std::string title,
 				 std::string xlabel, int xbins, double xlow, double xhigh,
-				 std::string ylabel, double ylow, double yhigh, 
+				 std::string ylabel, double ylow, double yhigh,
 				 std::string option)
 {
   TProfile* tmp = new TProfile( (name + title).c_str(), title.c_str(), xbins, xlow, xhigh, ylow, yhigh, option.c_str());
@@ -132,6 +134,13 @@ TH3F* HistogramManager::book(std::string name, std::string title,
   this->Sumw2(tmp);
   this->record(tmp);
   return tmp;
+}
+
+MsgStream& HistogramManager :: msg () const { return m_msg; }
+MsgStream& HistogramManager :: msg (int level) const {
+    MsgStream& result = msg();
+    result << MSG::Level (level);
+    return result;
 }
 
 /* Helper functions */
