@@ -254,6 +254,11 @@ private:
   asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool"}; //!
   // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
   CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                               //!
+  /**
+    @rst
+      The name of this tool (if needs to be changed) can be set with :cpp:member:`ElectronSelector::m_trigDecTool_name`.
+    @endrst
+  */
   asg::AnaToolHandle<Trig::ITrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                //!
   asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle{"Trig::MatchingTool"};          //!
   bool m_doTrigMatch = true;

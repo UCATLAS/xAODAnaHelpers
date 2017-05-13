@@ -151,6 +151,11 @@ private:
   CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr};                               //!
   asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle{"CP::MuonSelectionTool"};             //!
   asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle{"Trig::MatchingTool"};                //!
+  /**
+    @rst
+      The name of this tool (if needs to be changed) can be set with :cpp:member:`MuonSelector::m_trigDecTool_name`.
+    @endrst
+  */
   asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle{"Trig::TrigDecisionTool"};                  //!
 
   bool m_doTrigMatch = false; //!
