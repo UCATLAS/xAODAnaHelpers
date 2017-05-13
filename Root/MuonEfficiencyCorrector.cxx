@@ -145,14 +145,12 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // Create a ToolHandle of the PRW tool which is passed to the MuonEfficiencyScaleFactors class later
   //
-  m_pileup_tool_handle.setTypeAndName("CP::PileupReweightingTool/Pileup");
   if( m_isMC ){
-    if( m_pileup_tool_handle.isUserConfigured() ){
-      ANA_CHECK( m_pileup_tool_handle.retrieve());
-    }else{
-      ATH_MSG_ERROR("A configured CP::PileupReweightingTool must already exist in the asg::ToolStore! Are you creating one in xAH::BasicEventSelector?" );
+    if( !m_pileup_tool_handle.isUserConfigured() ){
+      ATH_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
+    ANA_CHECK( m_pileup_tool_handle.retrieve());
   }
 
 
