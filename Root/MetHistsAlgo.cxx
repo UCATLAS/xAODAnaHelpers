@@ -7,8 +7,6 @@
 
 #include <xAODAnaHelpers/MetHistsAlgo.h>
 
-#include <AsgTools/MessageCheck.h>
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(MetHistsAlgo)
 
@@ -30,10 +28,10 @@ EL::StatusCode MetHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode MetHistsAlgo :: histInitialize ()
 {
 
-  ATH_MSG_INFO( m_name );
+  ANA_MSG_INFO( m_name );
   ANA_CHECK( xAH::Algorithm::algInitialize());
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    ATH_MSG_ERROR( "One or more required configuration values are empty");
+    ANA_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
@@ -50,7 +48,7 @@ EL::StatusCode MetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::Sta
 
 EL::StatusCode MetHistsAlgo :: initialize ()
 {
-  ATH_MSG_INFO( "MetHistsAlgo");
+  ANA_MSG_INFO( "MetHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;

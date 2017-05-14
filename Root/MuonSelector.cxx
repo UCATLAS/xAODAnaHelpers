@@ -20,7 +20,6 @@
 #include "xAODAnaHelpers/MuonSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
 #include "PATCore/TAccept.h"
 #include "TrigConfxAOD/xAODConfigTool.h"
 // tool includes
@@ -53,7 +52,7 @@ EL::StatusCode MuonSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MuonSelector" ).ignore(); // call before opening first file
@@ -70,7 +69,7 @@ EL::StatusCode MuonSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  ATH_MSG_INFO( "Calling histInitialize");
+  ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
@@ -83,7 +82,7 @@ EL::StatusCode MuonSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  ATH_MSG_INFO( "Calling fileExecute");
+  ANA_MSG_INFO( "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -96,7 +95,7 @@ EL::StatusCode MuonSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  ATH_MSG_INFO( "Calling changeInput");
+  ANA_MSG_INFO( "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -114,7 +113,7 @@ EL::StatusCode MuonSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  ATH_MSG_INFO( "Initializing MuonSelector Interface... ");
+  ANA_MSG_INFO( "Initializing MuonSelector Interface... ");
 
   // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
@@ -122,10 +121,10 @@ EL::StatusCode MuonSelector :: initialize ()
   // This is the case when the selector algorithm is used for
   // preselecting objects, and then again for the final selection
   //
-  ATH_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
+  ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
   if ( this->numInstances() > 0 ) {
     m_isUsedBefore = true;
-    ATH_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
+    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   }
 
   if ( m_useCutFlow ) {
@@ -179,7 +178,7 @@ EL::StatusCode MuonSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
   m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
@@ -193,7 +192,7 @@ EL::StatusCode MuonSelector :: initialize ()
   muonQualitySet.insert(2);
   muonQualitySet.insert(3);
   if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
-    ATH_MSG_ERROR( "Unknown muon quality requested: " << m_muonQuality);
+    ANA_MSG_ERROR( "Unknown muon quality requested: " << m_muonQuality);
     return EL::StatusCode::FAILURE;
   }
 
@@ -205,7 +204,7 @@ EL::StatusCode MuonSelector :: initialize ()
   //muonTypeSet.insert("CaloTagged");
   //muonTypeSet.insert("SiliconAssociatedForwardMuon");
   //if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
-  //  ATH_MSG_ERROR( "Unknown muon type requested: %s!",m_muonType.c_str());
+  //  ANA_MSG_ERROR( "Unknown muon type requested: %s!",m_muonType.c_str());
   //  return EL::StatusCode::FAILURE;
   //}
 
@@ -222,7 +221,7 @@ EL::StatusCode MuonSelector :: initialize ()
   }
 
   if ( m_inContainerName.empty() ){
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -259,7 +258,7 @@ EL::StatusCode MuonSelector :: initialize ()
   if(!m_isolationSelectionTool_handle.isUserConfigured()){
     // Do this only for the first WP in the list
     //
-    ATH_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
+    ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
     ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
     ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
   }
@@ -271,7 +270,7 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
 
-     ATH_MSG_DEBUG( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" );
+     ANA_MSG_DEBUG( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" );
 
      if ( (*WP_itr).find("UserDefined") != std::string::npos ) {
 
@@ -305,13 +304,13 @@ EL::StatusCode MuonSelector :: initialize ()
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) ) {
     // Grab the TrigDecTool from the ToolStore
     if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-    ATH_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
     if(!m_trigDecTool_handle.isUserConfigured()){
-      ATH_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ATH_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
 
     //  everything went fine, let's initialise the tool!
     m_trigMuonMatchTool_handle.setName("MatchingTool_" + m_name);
@@ -326,7 +325,7 @@ EL::StatusCode MuonSelector :: initialize ()
     m_doTrigMatch = false;
 
     std::cout << "***********************************************************" << std::endl;
-    ATH_MSG_WARNING( "Will not perform any muon trigger matching at this stage b/c :");
+    ANA_MSG_WARNING( "Will not perform any muon trigger matching at this stage b/c :");
     std::cout << "" << std::endl;
     std::cout << "\t -) could not find the TrigDecisionTool in asg::ToolStore" << std::endl;
     std::cout << "\t AND/OR" << std::endl;
@@ -336,7 +335,7 @@ EL::StatusCode MuonSelector :: initialize ()
     std::cout << "***********************************************************" << std::endl;
   }
 
-  ATH_MSG_INFO( "MuonSelector Interface succesfully initialized!" );
+  ANA_MSG_INFO( "MuonSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -348,7 +347,7 @@ EL::StatusCode MuonSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  ATH_MSG_DEBUG( "Applying Muon Selection..." );
+  ANA_MSG_DEBUG( "Applying Muon Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
@@ -358,7 +357,7 @@ EL::StatusCode MuonSelector :: execute ()
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    ATH_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
+    ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
@@ -385,13 +384,13 @@ EL::StatusCode MuonSelector :: execute ()
    	m_diMuTrigChainsList.push_back(dimu_trig);
     }
 
-    ATH_MSG_INFO( "Input single muon trigger chains that will be considered for matching:\n");
-    for ( auto const &chain : m_singleMuTrigChainsList ) { ATH_MSG_INFO( "\t " << chain); }
-    ATH_MSG_INFO( "\n");
+    ANA_MSG_INFO( "Input single muon trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_singleMuTrigChainsList ) { ANA_MSG_INFO( "\t " << chain); }
+    ANA_MSG_INFO( "\n");
 
-    ATH_MSG_INFO( "Input di-muon trigger chains that will be considered for matching:\n");
-    for ( auto const &chain : m_diMuTrigChainsList ) { ATH_MSG_INFO( "\t " << chain); }
-    ATH_MSG_INFO( "\n");
+    ANA_MSG_INFO( "Input di-muon trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_diMuTrigChainsList ) { ANA_MSG_INFO( "\t " << chain); }
+    ANA_MSG_INFO( "\n");
 
   }
 
@@ -442,14 +441,14 @@ EL::StatusCode MuonSelector :: execute ()
     // must be a pointer to be recorded in TStore
     //
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-    ATH_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
+    ANA_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
 
     // loop over systematic sets
     //
     bool eventPassThisSyst(false);
     for ( auto systName : *systNames ) {
 
-      ATH_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
+      ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
       ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, msg()) );
 
@@ -474,7 +473,7 @@ EL::StatusCode MuonSelector :: execute ()
       //
       eventPass = ( eventPass || eventPassThisSyst );
 
-      ATH_MSG_DEBUG( " syst name: " << systName << "  output container name: " << m_outContainerName+systName );
+      ANA_MSG_DEBUG( " syst name: " << systName << "  output container name: " << m_outContainerName+systName );
 
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
@@ -489,7 +488,7 @@ EL::StatusCode MuonSelector :: execute ()
 
     } // close loop over syst sets
 
-    ATH_MSG_DEBUG(" output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) );
+    ANA_MSG_DEBUG(" output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) );
 
     // record in TStore the list of systematics names that should be considered down stream
     //
@@ -506,7 +505,7 @@ EL::StatusCode MuonSelector :: execute ()
     return EL::StatusCode::SUCCESS;
   }
 
-  ATH_MSG_DEBUG( "Left Muon Selection..." );
+  ANA_MSG_DEBUG( "Left Muon Selection..." );
   return EL::StatusCode::SUCCESS;
 
 }
@@ -515,7 +514,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 					    ConstDataVector<xAOD::MuonContainer>* selectedMuons )
 {
 
-  ATH_MSG_DEBUG( "In  executeSelection..." );
+  ANA_MSG_DEBUG( "In  executeSelection..." );
   const xAOD::VertexContainer* vertices(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
@@ -545,7 +544,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     // Remove events with isBadMuon (poor q/p)
     if( m_removeEventBadMuon && passSel ){
       if( m_muonSelectionTool_handle->isBadMuon( *mu_itr ) ){
-        ATH_MSG_DEBUG("Rejecting event with bad muon (pt = "<<mu_itr->pt()<<")");
+        ANA_MSG_DEBUG("Rejecting event with bad muon (pt = "<<mu_itr->pt()<<")");
         return false;
       }
     }
@@ -565,16 +564,16 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     m_numObjectPass += nPass;
   }
 
-  ATH_MSG_DEBUG( "Initial muons: " << nObj << " - Selected muons: " << nPass );
+  ANA_MSG_DEBUG( "Initial muons: " << nObj << " - Selected muons: " << nPass );
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   //
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
-    ATH_MSG_DEBUG( "Reject event: nSelectedMuons ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" );
+    ANA_MSG_DEBUG( "Reject event: nSelectedMuons ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" );
     return false;
   }
   if ( m_pass_max > 0 && nPass > m_pass_max ) {
-    ATH_MSG_DEBUG( "Reject event: nSelectedMuons ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" );
+    ANA_MSG_DEBUG( "Reject event: nSelectedMuons ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" );
     return false;
   }
 
@@ -600,11 +599,11 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
     if ( nSelectedMuons > 0 ) {
 
-      ATH_MSG_DEBUG( "Doing single muon trigger matching...");
+      ANA_MSG_DEBUG( "Doing single muon trigger matching...");
 
       for ( auto const &chain : m_singleMuTrigChainsList ) {
 
-        ATH_MSG_DEBUG( "\t checking trigger chain " << chain);
+        ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
 
         for ( auto const muon : *selectedMuons ) {
 
@@ -618,7 +617,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
           char matched = ( m_trigMuonMatchTool_handle->match( *muon, chain, m_minDeltaR ) );
 
-          ATH_MSG_DEBUG( "\t\t is muon trigger matched? " << matched);
+          ANA_MSG_DEBUG( "\t\t is muon trigger matched? " << matched);
 
           ( isTrigMatchedMapMuDecor( *muon ) )[chain] = matched;
         }
@@ -640,7 +639,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
     if ( nSelectedMuons > 1 && !m_diMuTrigChains.empty() ) {
 
-      ATH_MSG_DEBUG( "Doing di-muon trigger matching...");
+      ANA_MSG_DEBUG( "Doing di-muon trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
@@ -651,7 +650,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
       for ( auto const &chain : m_diMuTrigChainsList ) {
 
-      	ATH_MSG_DEBUG( "\t checking trigger chain " << chain);
+      	ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
 
       	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
       	//
@@ -675,7 +674,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
             //
       	    char matched = m_trigMuonMatchTool_handle->match( myMuons, chain, m_minDeltaR );
 
-      	    ATH_MSG_DEBUG( "\t\t is the muon pair ("<<imu<<","<<jmu<<") trigger matched? " << matched);
+      	    ANA_MSG_DEBUG( "\t\t is the muon pair ("<<imu<<","<<jmu<<") trigger matched? " << matched);
 
       	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
             dimuon_trigmatch_pair  chain_decision = std::make_pair(chain_idxs,matched);
@@ -687,7 +686,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     } //if nSelectedMuons > 1 && !m_diMuTrigChains.empty()
   } //if m_doTrigMatch && selectedMuons
 
-  ATH_MSG_DEBUG( "Left  executeSelection..." );
+  ANA_MSG_DEBUG( "Left  executeSelection..." );
   return true;
 }
 
@@ -698,7 +697,7 @@ EL::StatusCode MuonSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  ATH_MSG_DEBUG( "Calling postExecute");
+  ANA_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -717,10 +716,10 @@ EL::StatusCode MuonSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ATH_MSG_INFO( "Deleting tool instances...");
+  ANA_MSG_INFO( "Deleting tool instances...");
 
   if ( m_useCutFlow ) {
-    ATH_MSG_INFO( "Filling cutflow");
+    ANA_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
@@ -743,18 +742,18 @@ EL::StatusCode MuonSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  ATH_MSG_INFO( "Calling histFinalize");
+  ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 
 int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
 
-  ATH_MSG_DEBUG( "In  passCuts..." );
+  ANA_MSG_DEBUG( "In  passCuts..." );
   // fill cutflow bin 'all' before any cut
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_all, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_all, 1 ); }
-  ATH_MSG_DEBUG( "In  passCuts2..." );
+  ANA_MSG_DEBUG( "In  passCuts2..." );
   // *********************************************************************************************************************************************************************
   //
   // MuonSelectorTool cut: quality & |eta| acceptance cut
@@ -766,18 +765,18 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   static SG::AuxElement::Decorator< char > isMediumQDecor("isMediumQ");
   static SG::AuxElement::Decorator< char > isTightQDecor("isTightQ");
 
-  ATH_MSG_DEBUG( "Got the decors" );
+  ANA_MSG_DEBUG( "Got the decors" );
   int this_quality = static_cast<int>( m_muonSelectionTool_handle->getQuality( *muon ) );
-  ATH_MSG_DEBUG( "Got quality" );
+  ANA_MSG_DEBUG( "Got quality" );
 
   isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
   isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
   isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
   isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
-  ATH_MSG_DEBUG( "Doing muon quality" );
+  ANA_MSG_DEBUG( "Doing muon quality" );
   // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
   if ( ! m_muonSelectionTool_handle->accept( *muon ) ) {
-    ATH_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
+    ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
     return 0;
   }
 
@@ -788,10 +787,10 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   //
   // pT max cut
   //
-  ATH_MSG_DEBUG( "Doing pt cuts" );
+  ANA_MSG_DEBUG( "Doing pt cuts" );
   if ( m_pT_max != 1e8 ) {
     if (  muon->pt() > m_pT_max ) {
-      ATH_MSG_DEBUG( "Muon failed pT max cut.");
+      ANA_MSG_DEBUG( "Muon failed pT max cut.");
       return 0;
     }
   }
@@ -804,7 +803,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   //
   if ( m_pT_min != 1e8 ) {
     if ( muon->pt() < m_pT_min ) {
-      ATH_MSG_DEBUG( "Muon failed pT min cut.");
+      ANA_MSG_DEBUG( "Muon failed pT min cut.");
       return 0;
     }
   }
@@ -818,7 +817,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   //HelperClasses::EnumParser<xAOD::Muon::MuonType> muTypeParser;
   //if ( !m_muonType.empty() ) {
   //  if ( muon->muonType() != static_cast<int>(muTypeParser.parseEnum(m_muonType))) {
-  //    ATH_MSG_DEBUG( "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str());
+  //    ANA_MSG_DEBUG( "Muon type: %d - required: %s . Failed", muon->muonType(), m_muonType.c_str());
   //    return 0;
   //  }
   //}
@@ -842,7 +841,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   const xAOD::TrackParticle* tp = muon->primaryTrackParticle();
 
   if ( !tp ) {
-    ATH_MSG_DEBUG("Muon has no TrackParticle. Won't be selected.");
+    ANA_MSG_DEBUG("Muon has no TrackParticle. Won't be selected.");
     return 0;
   }
 
@@ -860,7 +859,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // z0*sin(theta) cut
   //
   if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
-      ATH_MSG_DEBUG( "Muon failed z0*sin(theta) cut.");
+      ANA_MSG_DEBUG( "Muon failed z0*sin(theta) cut.");
       return 0;
   }
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_z0sintheta_cut, 1 );
@@ -873,7 +872,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // d0 cut
   //
   if ( !( tp->d0() < m_d0_max ) ) {
-      ATH_MSG_DEBUG( "Muon failed d0 cut.");
+      ANA_MSG_DEBUG( "Muon failed d0 cut.");
       return 0;
   }
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0_cut, 1 );
@@ -882,7 +881,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // d0sig cut
   //
   if ( !( d0_significance < m_d0sig_max ) ) {
-      ATH_MSG_DEBUG( "Muon failed d0 significance cut.");
+      ANA_MSG_DEBUG( "Muon failed d0 significance cut.");
       return 0;
   }
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_d0sig_cut, 1 );
@@ -908,7 +907,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
     std::string decorWP = base_decor + "_" + WP_itr;
 
-    ATH_MSG_DEBUG( "Decorate muon with " << decorWP << " - accept() ? " << accept_list.getCutResult( WP_itr.c_str()) );
+    ANA_MSG_DEBUG( "Decorate muon with " << decorWP << " - accept() ? " << accept_list.getCutResult( WP_itr.c_str()) );
     muon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
 
   }
@@ -916,7 +915,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   // Apply the cut if needed
   //
   if ( !m_MinIsoWPCut.empty() && !accept_list.getCutResult( m_MinIsoWPCut.c_str() ) ) {
-    ATH_MSG_DEBUG( "Muon failed isolation cut " <<  m_MinIsoWPCut );
+    ANA_MSG_DEBUG( "Muon failed isolation cut " <<  m_MinIsoWPCut );
     return 0;
   }
   if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
@@ -929,7 +928,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     double muon_z0_exPV = tp->z0() + tp->vz() - pv_z;
 
     if( fabs(muon_z0_exPV) >= 1.0 || fabs(muon_d0) >= 0.2 ){
-      ATH_MSG_DEBUG("Muon failed cosmic cut" );
+      ANA_MSG_DEBUG("Muon failed cosmic cut" );
       return 0;
     }
     if(m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_cosmic_cut, 1 );
@@ -938,7 +937,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
 
 
-  ATH_MSG_DEBUG( "Leave passCuts... pass" );
+  ANA_MSG_DEBUG( "Leave passCuts... pass" );
   return 1;
 }
 

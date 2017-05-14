@@ -29,7 +29,6 @@
 #include "xAODAnaHelpers/TruthSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
 
 // external tools include(s):
 
@@ -48,7 +47,7 @@ TruthSelector :: TruthSelector () :
 
 EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
 {
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TruthSelector" ).ignore(); // call before opening first file
@@ -60,7 +59,7 @@ EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
 
 EL::StatusCode TruthSelector :: histInitialize ()
 {
-  ATH_MSG_INFO( "Calling histInitialize");
+  ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
@@ -69,7 +68,7 @@ EL::StatusCode TruthSelector :: histInitialize ()
 
 EL::StatusCode TruthSelector :: fileExecute ()
 {
-  ATH_MSG_INFO( "Calling fileExecute");
+  ANA_MSG_INFO( "Calling fileExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -77,7 +76,7 @@ EL::StatusCode TruthSelector :: fileExecute ()
 
 EL::StatusCode TruthSelector :: changeInput (bool /*firstFile*/)
 {
-  ATH_MSG_INFO( "Calling changeInput");
+  ANA_MSG_INFO( "Calling changeInput");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -85,7 +84,7 @@ EL::StatusCode TruthSelector :: changeInput (bool /*firstFile*/)
 
 EL::StatusCode TruthSelector :: initialize ()
 {
-  ATH_MSG_INFO( "Calling initialize");
+  ANA_MSG_INFO( "Calling initialize");
 
   if ( m_useCutFlow ) {
 
@@ -112,21 +111,21 @@ EL::StatusCode TruthSelector :: initialize ()
   }
 
   if ( m_inContainerName.empty() ) {
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
   m_decor   = "passSel";
 
   if ( m_decorateSelectedObjects ) {
-    ATH_MSG_INFO(" Decorate Jets with " << m_decor);
+    ANA_MSG_INFO(" Decorate Jets with " << m_decor);
   }
 
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -134,7 +133,7 @@ EL::StatusCode TruthSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  ATH_MSG_INFO( "TruthSelector Interface succesfully initialized!" );
+  ANA_MSG_INFO( "TruthSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -143,7 +142,7 @@ EL::StatusCode TruthSelector :: initialize ()
 
 EL::StatusCode TruthSelector :: execute ()
 {
-  ATH_MSG_DEBUG( "Applying Jet Selection... ");
+  ANA_MSG_DEBUG( "Applying Jet Selection... ");
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -153,7 +152,7 @@ EL::StatusCode TruthSelector :: execute ()
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    ATH_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
+    ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
@@ -257,7 +256,7 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 
 EL::StatusCode TruthSelector :: postExecute ()
 {
-  ATH_MSG_DEBUG( "Calling postExecute");
+  ANA_MSG_DEBUG( "Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -265,10 +264,10 @@ EL::StatusCode TruthSelector :: postExecute ()
 
 EL::StatusCode TruthSelector :: finalize ()
 {
-  ATH_MSG_INFO( m_name );
+  ANA_MSG_INFO( m_name );
 
   if ( m_useCutFlow ) {
-    ATH_MSG_INFO( "Filling cutflow");
+    ANA_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
@@ -280,7 +279,7 @@ EL::StatusCode TruthSelector :: finalize ()
 
 EL::StatusCode TruthSelector :: histFinalize ()
 {
-  ATH_MSG_INFO( "Calling histFinalize");
+  ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

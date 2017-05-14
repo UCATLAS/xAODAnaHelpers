@@ -22,6 +22,7 @@
 // messaging includes
 #include <AsgTools/MsgStream.h>
 #include <AsgTools/MsgStreamMacros.h>
+#include <AsgTools/MessageCheck.h>
 
 /// Macro used to execute "protected" code
 #define ATH_EXEC_LVL( lvl, expr )               \
@@ -227,10 +228,10 @@ namespace xAH {
 
             if ( !asg::ToolStore::contains<T>(tool_name) ) {
               m_toolAlreadyUsed[tool_name] = false;
-              ATH_MSG_INFO("Tool " << tool_name << " is being used for the first time!" );
+              ANA_MSG_INFO("Tool " << tool_name << " is being used for the first time!" );
             } else {
               m_toolAlreadyUsed[tool_name] = true;
-              ATH_MSG_INFO("Tool " << tool_name << " has been already used!" );
+              ANA_MSG_INFO("Tool " << tool_name << " has been already used!" );
             }
 
             return StatusCode::SUCCESS;

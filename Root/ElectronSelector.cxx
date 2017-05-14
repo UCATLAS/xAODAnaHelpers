@@ -21,7 +21,6 @@
 #include "xAODAnaHelpers/ElectronSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"
 
@@ -55,7 +54,7 @@ EL::StatusCode ElectronSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "ElectronSelector" ).ignore(); // call before opening first file
@@ -72,7 +71,7 @@ EL::StatusCode ElectronSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  ATH_MSG_INFO( "Calling histInitialize");
+  ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
@@ -85,7 +84,7 @@ EL::StatusCode ElectronSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  ATH_MSG_INFO( "Calling fileExecute");
+  ANA_MSG_INFO( "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -98,7 +97,7 @@ EL::StatusCode ElectronSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  ATH_MSG_INFO( "Calling changeInput");
+  ANA_MSG_INFO( "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -116,7 +115,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  ATH_MSG_INFO( "Initializing ElectronSelector Interface... ");
+  ANA_MSG_INFO( "Initializing ElectronSelector Interface... ");
 
   // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
@@ -124,10 +123,10 @@ EL::StatusCode ElectronSelector :: initialize ()
   // This is the case when the selector algorithm is used for
   // preselecting objects, and then again for the final selection
   //
-  ATH_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
+  ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
   if ( this->numInstances() > 0 ) {
     m_isUsedBefore = true;
-    ATH_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
+    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   }
 
   if ( m_useCutFlow ) {
@@ -182,7 +181,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
@@ -195,13 +194,13 @@ EL::StatusCode ElectronSelector :: initialize ()
        m_LHOperatingPoint != "LooseBL"         &&
        m_LHOperatingPoint != "Medium"          &&
        m_LHOperatingPoint != "Tight"     ) {
-    ATH_MSG_ERROR( "Unknown electron likelihood PID requested " << m_LHOperatingPoint);
+    ANA_MSG_ERROR( "Unknown electron likelihood PID requested " << m_LHOperatingPoint);
     return EL::StatusCode::FAILURE;
   }
   if ( m_CutBasedOperatingPoint != "Loose"  &&
        m_CutBasedOperatingPoint != "Medium" &&
        m_CutBasedOperatingPoint != "Tight"  ) {
-    ATH_MSG_ERROR( "Unknown electron cut-based PID requested " << m_CutBasedOperatingPoint);
+    ANA_MSG_ERROR( "Unknown electron cut-based PID requested " << m_CutBasedOperatingPoint);
     return EL::StatusCode::FAILURE;
   }
 
@@ -218,7 +217,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   }
 
   if ( m_inContainerName.empty() ) {
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -250,17 +249,17 @@ EL::StatusCode ElectronSelector :: initialize ()
     m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP, msgLvl(MSG::DEBUG) );
 
     if  ( m_doCutBasedPIDcut ) {
-      ATH_MSG_INFO( "Cutting on Electron Cut-Based PID! \n ********************" );
-      ATH_MSG_INFO( "Selected cut-based WP: " << m_el_CutBased_PIDManager->getSelectedWP() );
+      ANA_MSG_INFO( "Cutting on Electron Cut-Based PID! \n ********************" );
+      ANA_MSG_INFO( "Selected cut-based WP: " << m_el_CutBased_PIDManager->getSelectedWP() );
     } else {
-      ATH_MSG_INFO( "Will decorate each electron with all Electron Cut-Based PID WPs decision (pass/not pass)!" );
+      ANA_MSG_INFO( "Will decorate each electron with all Electron Cut-Based PID WPs decision (pass/not pass)!" );
     }
 
     if ( m_readIDFlagsFromDerivation ) {
-      ATH_MSG_INFO( "Reading Electron cut-based ID from DAODs ..." );
+      ANA_MSG_INFO( "Reading Electron cut-based ID from DAODs ..." );
       ANA_CHECK( m_el_CutBased_PIDManager->setupWPs( false ));
     } else {
-      ATH_MSG_INFO( "Reading Electron cut-based ID from CP Tool ..." );
+      ANA_MSG_INFO( "Reading Electron cut-based ID from CP Tool ..." );
       ANA_CHECK( m_el_CutBased_PIDManager->setupWPs( true, this->m_name ));
     }
   }// if m_doCutBasedPID
@@ -272,10 +271,10 @@ EL::StatusCode ElectronSelector :: initialize ()
 
 
     if  ( m_doLHPIDcut ) {
-         ATH_MSG_INFO( "Cutting on Electron Likelihood PID! \n ********************" );
-         ATH_MSG_INFO( "\t Input WP: " << likelihoodWP << " corresponding to actual LikeEnum::Menu WP: " << m_el_LH_PIDManager->getSelectedWP() );
+         ANA_MSG_INFO( "Cutting on Electron Likelihood PID! \n ********************" );
+         ANA_MSG_INFO( "\t Input WP: " << likelihoodWP << " corresponding to actual LikeEnum::Menu WP: " << m_el_LH_PIDManager->getSelectedWP() );
     } else {
-         ATH_MSG_INFO( "Will decorate each electron with all Electron Likelihood PID WPs decision (pass/not pass)!" );
+         ANA_MSG_INFO( "Will decorate each electron with all Electron Likelihood PID WPs decision (pass/not pass)!" );
     }
 
     if ( m_readIDFlagsFromDerivation ) {
@@ -285,10 +284,10 @@ EL::StatusCode ElectronSelector :: initialize ()
         m_doBLTrackQualityCut = true;
       }
 
-      ATH_MSG_INFO( "Reading Electron LH ID from DAODs ..." );
+      ANA_MSG_INFO( "Reading Electron LH ID from DAODs ..." );
       ANA_CHECK( m_el_LH_PIDManager->setupWPs( false ));
     } else {
-      ATH_MSG_INFO( "Reading Electron LH ID from CP Tool ..." );
+      ANA_MSG_INFO( "Reading Electron LH ID from CP Tool ..." );
       ANA_CHECK( m_el_LH_PIDManager->setupWPs( true, this->m_name));
     }
   }// if m_doLHPID
@@ -303,7 +302,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if(!m_isolationSelectionTool_handle.isUserConfigured()){
     // Do this only for the first WP in the list
-    ATH_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
+    ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
     ANA_CHECK( m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()));
     ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level()));
   }
@@ -315,7 +314,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   //
   for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
 
-     ATH_MSG_DEBUG( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" );
+     ANA_MSG_DEBUG( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" );
 
      if ( (*WP_itr).find("UserDefined") != std::string::npos ) {
 
@@ -349,13 +348,13 @@ EL::StatusCode ElectronSelector :: initialize ()
   if(  !( m_singleElTrigChains.empty() && m_diElTrigChains.empty() ) ) {
     // Grab the TrigDecTool from the ToolStore
     if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-    ATH_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
     if(!m_trigDecTool_handle.isUserConfigured()){
-      ATH_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ATH_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
 
     //  everything went fine, let's initialise the tool!
     m_trigElectronMatchTool_handle.setName("MatchingTool_" + m_name);
@@ -370,7 +369,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     m_doTrigMatch = false;
 
     std::cout << "***********************************************************" << std::endl;
-    ATH_MSG_WARNING( "Will not perform any electron trigger matching at this stage b/c :");
+    ANA_MSG_WARNING( "Will not perform any electron trigger matching at this stage b/c :");
     std::cout << "" << std::endl;
     std::cout << "\t -) could not find the TrigDecisionTool in asg::ToolStore" << std::endl;
     std::cout << "\t AND/OR" << std::endl;
@@ -382,7 +381,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   // **********************************************************************************************
 
-  ATH_MSG_INFO( "ElectronSelector Interface succesfully initialized!" );
+  ANA_MSG_INFO( "ElectronSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -394,7 +393,7 @@ EL::StatusCode ElectronSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  ATH_MSG_DEBUG( "Applying Electron Selection... ");
+  ANA_MSG_DEBUG( "Applying Electron Selection... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
@@ -404,7 +403,7 @@ EL::StatusCode ElectronSelector :: execute ()
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    ATH_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
+    ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
@@ -431,13 +430,13 @@ EL::StatusCode ElectronSelector :: execute ()
       m_diElTrigChainsList.push_back(diel_trig);
     }
 
-    ATH_MSG_INFO( "Input single electron trigger chains that will be considered for matching:\n");
-    for ( auto const &chain : m_singleElTrigChainsList ) { ATH_MSG_INFO( "\t " << chain); }
-    ATH_MSG_INFO( "\n");
+    ANA_MSG_INFO( "Input single electron trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_singleElTrigChainsList ) { ANA_MSG_INFO( "\t " << chain); }
+    ANA_MSG_INFO( "\n");
 
-    ATH_MSG_INFO( "Input di-electron trigger chains that will be considered for matching:\n");
-    for ( auto const &chain : m_diElTrigChainsList ) { ATH_MSG_INFO( "\t " << chain); }
-    ATH_MSG_INFO( "\n");
+    ANA_MSG_INFO( "Input di-electron trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_diElTrigChainsList ) { ANA_MSG_INFO( "\t " << chain); }
+    ANA_MSG_INFO( "\n");
 
   }
 
@@ -485,14 +484,14 @@ EL::StatusCode ElectronSelector :: execute ()
     // must be a pointer to be recorded in TStore
     //
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-    ATH_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
+    ANA_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
 
     // loop over systematic sets
     //
     bool eventPassThisSyst(false);
     for ( auto systName : *systNames ) {
 
-      ATH_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
+      ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
       ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName + systName, m_event, m_store, msg()) );
 
@@ -516,7 +515,7 @@ EL::StatusCode ElectronSelector :: execute ()
       //
       eventPass = ( eventPass || eventPassThisSyst );
 
-      ATH_MSG_DEBUG( " syst name: " << systName << "  output container name: " << m_outContainerName+systName );
+      ANA_MSG_DEBUG( " syst name: " << systName << "  output container name: " << m_outContainerName+systName );
 
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
@@ -530,7 +529,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
     } // close loop over syst sets
 
-    ATH_MSG_DEBUG(" output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) );
+    ANA_MSG_DEBUG(" output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) );
 
     // record in TStore the list of systematics names that should be considered down stream
     //
@@ -596,7 +595,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
     m_numObjectPass += nPass;
   }
 
-  ATH_MSG_DEBUG( "Initial electrons: " << nObj << " - Selected electrons: " << nPass );
+  ANA_MSG_DEBUG( "Initial electrons: " << nObj << " - Selected electrons: " << nPass );
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   //
@@ -629,11 +628,11 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
     if ( nSelectedElectrons > 0 ) {
 
-      ATH_MSG_DEBUG( "Doing single electron trigger matching...");
+      ANA_MSG_DEBUG( "Doing single electron trigger matching...");
 
       for ( auto const &chain : m_singleElTrigChainsList ) {
 
-        ATH_MSG_DEBUG( "\t checking trigger chain " << chain);
+        ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
 
         for ( auto const electron : *selectedElectrons ) {
 
@@ -647,7 +646,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
           char matched = ( m_trigElectronMatchTool_handle->match( *electron, chain, m_minDeltaR ) );
 
-          ATH_MSG_DEBUG( "\t\t is electron trigger matched? " << matched);
+          ANA_MSG_DEBUG( "\t\t is electron trigger matched? " << matched);
 
           ( isTrigMatchedMapElDecor( *electron ) )[chain] = matched;
         }
@@ -668,7 +667,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
     if ( nSelectedElectrons > 1 && !m_diElTrigChains.empty() ) {
 
-      ATH_MSG_DEBUG( "Doing di-electron trigger matching...");
+      ANA_MSG_DEBUG( "Doing di-electron trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
@@ -679,7 +678,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
       for ( auto const &chain : m_diElTrigChainsList ) {
 
-        ATH_MSG_DEBUG( "\t checking trigger chain " << chain);
+        ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
 
         //  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
         if ( !diElectronTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
@@ -700,7 +699,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
             // check whether the pair is matched
             char matched = m_trigElectronMatchTool_handle->match( myElectrons, chain, m_minDeltaR );
 
-            ATH_MSG_DEBUG( "\t\t is the electron pair ("<<iel<<","<<jel<<") trigger matched? " << matched);
+            ANA_MSG_DEBUG( "\t\t is the electron pair ("<<iel<<","<<jel<<") trigger matched? " << matched);
 
             std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(iel,jel);
             dielectron_trigmatch_pair                   chain_decision = std::make_pair(chain_idxs,matched);
@@ -722,7 +721,7 @@ EL::StatusCode ElectronSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  ATH_MSG_DEBUG( "Calling postExecute");
+  ANA_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -741,12 +740,12 @@ EL::StatusCode ElectronSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ATH_MSG_INFO( "Deleting tool instances...");
+  ANA_MSG_INFO( "Deleting tool instances...");
 
   if ( m_el_CutBased_PIDManager ) { delete m_el_CutBased_PIDManager;  m_el_CutBased_PIDManager = nullptr; }
   if ( m_el_LH_PIDManager )       { delete m_el_LH_PIDManager;        m_el_LH_PIDManager = nullptr;   }
   if ( m_useCutFlow ) {
-    ATH_MSG_INFO( "Filling cutflow");
+    ANA_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
@@ -769,7 +768,7 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  ATH_MSG_INFO( "Calling histFinalize");
+  ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
   return EL::StatusCode::SUCCESS;
@@ -794,7 +793,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_doAuthorCut ) {
     if ( !( electron->author(xAOD::EgammaParameters::AuthorElectron) || electron->author(xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
-      ATH_MSG_DEBUG( "Electron failed author kinematic cut." );
+      ANA_MSG_DEBUG( "Electron failed author kinematic cut." );
       return 0;
     }
   }
@@ -807,7 +806,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_doOQCut ) {
     if( !electron->isGoodOQ(xAOD::EgammaParameters::BADCLUSELECTRON) ){
-      ATH_MSG_DEBUG( "Electron failed Object Quality cut BADCLUSELECTRON." );
+      ANA_MSG_DEBUG( "Electron failed Object Quality cut BADCLUSELECTRON." );
       return 0;
     }
   }
@@ -820,7 +819,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_pT_max != 1e8 ) {
     if ( et > m_pT_max ) {
-      ATH_MSG_DEBUG( "Electron failed pT max cut." );
+      ANA_MSG_DEBUG( "Electron failed pT max cut." );
       return 0;
     }
   }
@@ -833,7 +832,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_pT_min != 1e8 ) {
     if ( et < m_pT_min ) {
-      ATH_MSG_DEBUG( "Electron failed pT min cut." );
+      ANA_MSG_DEBUG( "Electron failed pT min cut." );
       return 0;
     }
   }
@@ -849,7 +848,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_eta_max != 1e8 ) {
     if ( fabs(eta) > m_eta_max ) {
-      ATH_MSG_DEBUG( "Electron failed |eta| max cut." );
+      ANA_MSG_DEBUG( "Electron failed |eta| max cut." );
       return 0;
     }
   }
@@ -857,7 +856,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_vetoCrack ) {
     if ( fabs( eta ) > 1.37 && fabs( eta ) < 1.52 ) {
-      ATH_MSG_DEBUG( "Electron failed |eta| crack veto cut." );
+      ANA_MSG_DEBUG( "Electron failed |eta| crack veto cut." );
       return 0;
     }
   }
@@ -872,7 +871,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   const xAOD::TrackParticle* tp  = electron->trackParticle();
   if ( !tp ) {
-    ATH_MSG_DEBUG("Electron has no TrackParticle. Won't be selected.");
+    ANA_MSG_DEBUG("Electron has no TrackParticle. Won't be selected.");
     return 0;
   }
 
@@ -891,7 +890,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_z0sintheta_max != 1e8 ) {
     if ( !( fabs(z0sintheta) < m_z0sintheta_max ) ) {
-      ATH_MSG_DEBUG( "Electron failed z0*sin(theta) cut." );
+      ANA_MSG_DEBUG( "Electron failed z0*sin(theta) cut." );
       return 0;
     }
   }
@@ -906,7 +905,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_d0_max != 1e8 ) {
     if ( !( tp->d0() < m_d0_max ) ) {
-      ATH_MSG_DEBUG( "Electron failed d0 cut.");
+      ANA_MSG_DEBUG( "Electron failed d0 cut.");
       return 0;
     }
   }
@@ -917,7 +916,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   //
   if ( m_d0sig_max != 1e8 ) {
     if ( !( d0_significance < m_d0sig_max ) ) {
-      ATH_MSG_DEBUG( "Electron failed d0 significance cut.");
+      ANA_MSG_DEBUG( "Electron failed d0 significance cut.");
       return 0;
     }
   }
@@ -944,7 +943,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
     tp->summaryValue(nBlayerOutliers, xAOD::numberOfBLayerOutliers);
 
     if ( expectBlayer && (nBlayerHits+nBlayerOutliers) < 1 ) {
-      ATH_MSG_DEBUG( "Electron failed BL track quality cut.");
+      ANA_MSG_DEBUG( "Electron failed BL track quality cut.");
       return 0;
     }
   }
@@ -975,7 +974,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
             passSelID = LHDecision( *electron );
 
         if ( !passSelID ) {
-          ATH_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
+          ANA_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
           return 0;
         }
       }
@@ -990,8 +989,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         if( LHDecisionAll.isAvailable( *electron ) )
             passThisID = LHDecisionAll( *electron );
 
-        ATH_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
-        ATH_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << passThisID );
+        ANA_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
+        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << passThisID );
         electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
 
       }
@@ -1004,15 +1003,15 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       LHToolsMap myLHTools = m_el_LH_PIDManager->getValidWPTools();
 
       if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
-        ATH_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
+        ANA_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
         return 0;
       }
 
       for ( auto it : (myLHTools) ) {
 
         const std::string decorWP =  "LH" + it.first;
-        ATH_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
-        ATH_MSG_DEBUG( "\t does electron pass " << decorWP << " ? " << static_cast<int>( it.second->accept( *electron ) ) );
+        ANA_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
+        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << " ? " << static_cast<int>( it.second->accept( *electron ) ) );
         electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
 
       }
@@ -1039,7 +1038,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
             passSelID = CutDecision( *electron );
 
         if ( !passSelID ) {
-          ATH_MSG_DEBUG( "Electron failed cut-based PID cut w/ operating point " << m_CutBasedOperatingPoint );
+          ANA_MSG_DEBUG( "Electron failed cut-based PID cut w/ operating point " << m_CutBasedOperatingPoint );
           return 0;
         }
 
@@ -1055,8 +1054,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         if( CutDecisionAll.isAvailable( *electron ) )
             passThisID = CutDecisionAll( *electron );
 
-        ATH_MSG_DEBUG( "Decorating electron with decision for cut-based WP : " << decorWP );
-        ATH_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << passThisID );
+        ANA_MSG_DEBUG( "Decorating electron with decision for cut-based WP : " << decorWP );
+        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << passThisID );
         electron->auxdecor<char>(decorWP) = static_cast<char>( passThisID );
 
       }
@@ -1069,7 +1068,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       CutBasedToolsMap myCutBasedTools = m_el_CutBased_PIDManager->getValidWPTools();
 
       if ( m_doCutBasedPIDcut && !( ( myCutBasedTools.find( m_CutBasedOperatingPoint )->second )->accept( *electron ) ) ) {
-        ATH_MSG_DEBUG( "Electron failed cut-based PID cut." );
+        ANA_MSG_DEBUG( "Electron failed cut-based PID cut." );
         return 0;
       }
 
@@ -1077,8 +1076,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
         const std::string decorWP = "IsEM"+it.second->getOperatingPointName( );
 
-        ATH_MSG_DEBUG( "Decorating electron with decision for cut-based WP : " << decorWP );
-        ATH_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << static_cast<int>( it.second->accept( *electron ) ) );
+        ANA_MSG_DEBUG( "Decorating electron with decision for cut-based WP : " << decorWP );
+        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << static_cast<int>( it.second->accept( *electron ) ) );
 
         electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
       }
@@ -1106,7 +1105,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
     std::string decorWP = base_decor + "_" + WP_itr;
 
-    ATH_MSG_DEBUG( "Decorate electron with " << decorWP << " - accept() ?" << accept_list.getCutResult( WP_itr.c_str()) );
+    ANA_MSG_DEBUG( "Decorate electron with " << decorWP << " - accept() ?" << accept_list.getCutResult( WP_itr.c_str()) );
     electron->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
 
   }
@@ -1114,7 +1113,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   // Apply the cut if needed
   //
   if ( !m_MinIsoWPCut.empty() && !accept_list.getCutResult( m_MinIsoWPCut.c_str() ) ) {
-    ATH_MSG_DEBUG( "Electron failed isolation cut " << m_MinIsoWPCut );
+    ANA_MSG_DEBUG( "Electron failed isolation cut " << m_MinIsoWPCut );
     return 0;
   }
   if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_iso_cut, 1 );

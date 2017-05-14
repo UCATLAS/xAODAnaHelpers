@@ -26,7 +26,6 @@
 #include "xAODAnaHelpers/DebugTool.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
 
 // external tools include(s):
 
@@ -44,7 +43,7 @@ DebugTool :: DebugTool () :
 
 EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 {
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
   job.useXAOD ();
   xAOD::Init( "DebugTool" ).ignore(); // call before opening first file
   return EL::StatusCode::SUCCESS;
@@ -54,7 +53,7 @@ EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 
 EL::StatusCode DebugTool :: histInitialize ()
 {
-  ATH_MSG_INFO( "Calling histInitialize");
+  ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
@@ -64,7 +63,7 @@ EL::StatusCode DebugTool :: histInitialize ()
 
 EL::StatusCode DebugTool :: fileExecute ()
 {
-  ATH_MSG_INFO( "Calling fileExecute");
+  ANA_MSG_INFO( "Calling fileExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -72,7 +71,7 @@ EL::StatusCode DebugTool :: fileExecute ()
 
 EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 {
-  ATH_MSG_INFO( "Calling changeInput");
+  ANA_MSG_INFO( "Calling changeInput");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -80,12 +79,12 @@ EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 
 EL::StatusCode DebugTool :: initialize ()
 {
-  ATH_MSG_INFO( " ");
+  ANA_MSG_INFO( " ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -94,7 +93,7 @@ EL::StatusCode DebugTool :: initialize ()
 
 EL::StatusCode DebugTool :: execute ()
 {
-  ATH_MSG_INFO( m_name);
+  ANA_MSG_INFO( m_name);
 
   //
   // look what we have in TStore
@@ -110,7 +109,7 @@ EL::StatusCode DebugTool :: execute ()
 
 EL::StatusCode DebugTool :: postExecute ()
 {
-  ATH_MSG_DEBUG("Calling postExecute");
+  ANA_MSG_DEBUG("Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -118,7 +117,7 @@ EL::StatusCode DebugTool :: postExecute ()
 
 EL::StatusCode DebugTool :: finalize ()
 {
-  ATH_MSG_INFO( m_name );
+  ANA_MSG_INFO( m_name );
   return EL::StatusCode::SUCCESS;
 }
 
@@ -126,7 +125,7 @@ EL::StatusCode DebugTool :: finalize ()
 
 EL::StatusCode DebugTool :: histFinalize ()
 {
-  ATH_MSG_INFO( "Calling histFinalize");
+  ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
