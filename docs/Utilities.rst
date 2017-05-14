@@ -10,3 +10,4 @@ Utilities
    METConstructor
    ParticlePIDManager
    xAHAlgorithm
+   MessagePrinterAlgo
