@@ -26,12 +26,13 @@ EL::StatusCode MessagePrinterAlgo :: setupJob (EL::Job& job)
 EL::StatusCode MessagePrinterAlgo :: histInitialize ()
 {
   ANA_MSG_INFO( "Calling histInitialize");
-  if(numInstances() != 0){
+  ANA_CHECK( xAH::Algorithm::algInitialize());
+  if(numInstances() != 1){
     ANA_MSG_FATAL( "More than one instance of MessagePrinterAlgo was created. Aborting.");
     return EL::StatusCode::FAILURE;
   }
-  ANA_CHECK( xAH::Algorithm::algInitialize());
 
+  // otherwise, we're fine, let's just set up the messaging correctly
   m_messagePrinter.reset(new asg::MessagePrinter(m_sourceWidth));
   m_messagePrinterOverlay.reset(new asg::MessagePrinterOverlay(m_messagePrinter.get()));
 
