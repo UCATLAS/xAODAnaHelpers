@@ -1,3 +1,5 @@
+#if ROOTCORE_RELEASE_SERIES < 25
+// it's in 2.4.31+ and 2.6.3+
 // EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
@@ -51,3 +53,4 @@ EL::StatusCode MessagePrinterAlgo :: histFinalize ()
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
+#endif
