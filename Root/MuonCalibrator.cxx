@@ -375,7 +375,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   // look what we have in TStore
   //
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   ANA_MSG_DEBUG( "Left ");
   return EL::StatusCode::SUCCESS;

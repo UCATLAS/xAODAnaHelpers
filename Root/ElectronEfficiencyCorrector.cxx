@@ -538,7 +538,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   // look what we have in TStore
   //
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   return EL::StatusCode::SUCCESS;
 }

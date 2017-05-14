@@ -563,7 +563,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( (m_eventCounter % 1000) == 0 ) {
     ANA_MSG_INFO( "Entry number = " << m_eventCounter);
     ANA_MSG_VERBOSE( "Store Content:");
-    ATH_EXEC_VERBOSE(m_store->print());
+    if(msgLvl(MSG::VERBOSE)) m_store->print();
     ANA_MSG_VERBOSE( "End Content");
   }
 

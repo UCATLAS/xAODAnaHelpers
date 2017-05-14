@@ -196,7 +196,7 @@ EL::StatusCode OverlapRemover :: execute ()
   executeOR(inElectrons, inMuons, inJets, inPhotons, inTaus, NOMINAL);
 
   // look what do we have in TStore
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   // -----------------------------------------------------------------------------------------------
   //
@@ -303,7 +303,7 @@ EL::StatusCode OverlapRemover :: execute ()
   ANA_CHECK( m_store->record( m_vecOutContainerNames, m_outputAlgoSystNames));
 
   // look what do we have in TStore
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   return EL::StatusCode::SUCCESS;
 

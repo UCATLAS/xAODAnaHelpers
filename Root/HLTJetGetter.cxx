@@ -137,7 +137,7 @@ EL::StatusCode HLTJetGetter :: execute ()
         }//end trigJet loop
     }//end feature container loop
 
-    ATH_EXEC_VERBOSE(m_store->print());
+    if(msgLvl(MSG::VERBOSE)) m_store->print();
 
     return EL::StatusCode::SUCCESS;
 }

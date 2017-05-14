@@ -521,7 +521,7 @@ EL::StatusCode METConstructor :: execute ()
       ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
    }
 
-   ATH_EXEC_VERBOSE(m_store->print());// print TStore content
+   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   return EL::StatusCode::SUCCESS;
 

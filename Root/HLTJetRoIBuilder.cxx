@@ -145,7 +145,7 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 
 
 
-  ATH_EXEC_DEBUG(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   return EL::StatusCode::SUCCESS;
 }
