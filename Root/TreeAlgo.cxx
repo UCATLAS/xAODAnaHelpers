@@ -174,7 +174,7 @@ EL::StatusCode TreeAlgo :: execute ()
       return EL::StatusCode::FAILURE;
     }
 
-    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, msg().msgLevel(MSG::DEBUG) );
+    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG) );
     const auto& helpTree = m_trees[systName];
 
     // tell the tree to go into the file

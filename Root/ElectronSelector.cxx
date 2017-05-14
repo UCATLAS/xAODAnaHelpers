@@ -247,7 +247,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   // if not using cut-based PID, make sure all the decorations will be set ... by choosing the loosest WP!
   if( m_doCutBasedPID ){
     std::string cutbasedWP = ( m_doCutBasedPIDcut ) ? m_CutBasedOperatingPoint : "Loose";
-    m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP, msg().msgLevel(MSG::DEBUG) );
+    m_el_CutBased_PIDManager = new ElectronCutBasedPIDManager( cutbasedWP, msgLvl(MSG::DEBUG) );
 
     if  ( m_doCutBasedPIDcut ) {
       ATH_MSG_INFO( "Cutting on Electron Cut-Based PID! \n ********************" );
@@ -268,7 +268,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   if( m_doLHPID ){
     // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
     std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "Loose";
-    m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, msg().msgLevel(MSG::DEBUG) );
+    m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, msgLvl(MSG::DEBUG) );
 
 
     if  ( m_doLHPIDcut ) {

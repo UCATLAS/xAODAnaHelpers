@@ -26,7 +26,7 @@
 /// Macro used to execute "protected" code
 #define ATH_EXEC_LVL( lvl, expr )               \
    do {                                         \
-      if( msg().msgLevel( lvl ) ) {             \
+      if( msgLvl( lvl ) ) {                     \
          expr;                                  \
       }                                         \
    } while( 0 )

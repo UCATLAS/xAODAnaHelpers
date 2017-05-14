@@ -39,7 +39,7 @@ EL::StatusCode IParticleHistsAlgo::AddHists( std::string name ) {
   std::string fullname(m_name);
   fullname += name; // add systematic
   IParticleHists* particleHists = new IParticleHists( fullname, m_detailStr, m_histPrefix, m_histTitle ); // add systematic
-  particleHists->m_debug = msg().msgLevel(MSG::DEBUG);
+  particleHists->m_debug = msgLvl(MSG::DEBUG);
   ANA_CHECK( particleHists->initialize());
   particleHists->record( wk() );
   m_plots[name] = particleHists;
