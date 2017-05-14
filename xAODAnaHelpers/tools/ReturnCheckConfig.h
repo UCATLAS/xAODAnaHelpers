@@ -12,8 +12,8 @@
              FileStat_t fStats;                                                   \
              int fSuccess = gSystem->GetPathInfo(CONFIG.c_str(), fStats);         \
              if(fSuccess != 0){                                                   \
-                       ANA_MSG_ERROR( "Could not find the
-                                           "configuration file: << CONFIG.c_str());      \
+                       ANA_MSG_ERROR( "Could not find the "                       \
+                                           "configuration file:" << CONFIG.c_str());      \
                        return EL::StatusCode::FAILURE;                                    \
                      } else {                                                             \
                                ANA_MSG_INFO( "Found configuration file: " << CONFIG.c_str());  \
