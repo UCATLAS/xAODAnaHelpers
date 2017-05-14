@@ -363,12 +363,14 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   // initialize and configure the JVT correction tool
 
-  m_JVTUpdateTool_handle.setName("JVTUpdateTool_" + m_name);
-  if( m_redoJVT && !m_JVTUpdateTool_handle.isUserConfigured() ){
+  if( m_redoJVT ){
+    m_JVTUpdateTool_handle.setName("JVTUpdateTool_" + m_name);
+    if(!m_JVTUpdateTool_handle.isUserConfigured() ){
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")));
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("OutputLevel", msg().level()));
+    }
+    ANA_CHECK( m_JVTUpdateTool_handle.retrieve());
   }
-  ANA_CHECK( m_JVTUpdateTool_handle.retrieve());
 
   std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
