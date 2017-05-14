@@ -265,6 +265,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     m_JetUncertaintiesTool_handle.setName("JetUncertaintiesTool_" + m_name);
     if( !m_JetUncertaintiesTool_handle.isUserConfigured() ){
       ATH_MSG_INFO("Initialize JES UNCERT with " << m_JESUncertConfig);
+      ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetUncertaintiesTool_handle, JetUncertaintiesTool));
       ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo));
       ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("MCType",m_JESUncertMCType));
       ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("ConfigFile", PathResolverFindCalibFile(m_JESUncertConfig)));
