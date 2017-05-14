@@ -8,8 +8,6 @@
 
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
-#include <AsgTools/MessageCheck.h>
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
@@ -31,11 +29,11 @@ EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
-  ATH_MSG_INFO( m_name );
+  ANA_MSG_INFO( m_name );
   ANA_CHECK( xAH::Algorithm::algInitialize());
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    ATH_MSG_ERROR( "One or more required configuration values are empty");
+    ANA_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
@@ -53,7 +51,7 @@ EL::StatusCode TrackHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::S
 
 EL::StatusCode TrackHistsAlgo :: initialize ()
 {
-  ATH_MSG_INFO( "TrackHistsAlgo");
+  ANA_MSG_INFO( "TrackHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;

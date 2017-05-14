@@ -36,7 +36,6 @@
 #include "xAODAnaHelpers/MinixAOD.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MinixAOD)
@@ -48,7 +47,7 @@ MinixAOD :: MinixAOD () :
 
 EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
 {
-  ATH_MSG_DEBUG("Calling setupJob");
+  ANA_MSG_DEBUG("Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MinixAOD" ).ignore(); // call before opening first file
@@ -109,7 +108,7 @@ EL::StatusCode MinixAOD :: fileExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode MinixAOD :: initialize ()
 {
-  ATH_MSG_DEBUG("Calling initialize");
+  ANA_MSG_DEBUG("Calling initialize");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -125,7 +124,7 @@ EL::StatusCode MinixAOD :: initialize ()
 
 
     ANA_CHECK( m_fileMetaDataTool->initialize());
-    ATH_MSG_DEBUG("FileMetaDataTool initialized...");
+    ANA_MSG_DEBUG("FileMetaDataTool initialized...");
   }
 
   if(m_copyTriggerInfo){
@@ -134,9 +133,9 @@ EL::StatusCode MinixAOD :: initialize ()
     ANA_CHECK( m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ));
 
     ANA_CHECK( m_trigMetaDataTool->initialize());
-    ATH_MSG_DEBUG("TriggerMenuMetaDataTool initialized...");
+    ANA_MSG_DEBUG("TriggerMenuMetaDataTool initialized...");
 
-    ATH_MSG_DEBUG("Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file.");
+    ANA_MSG_DEBUG("Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file.");
     m_simpleCopyKeys_vec.push_back("xTrigDecision");
     m_simpleCopyKeys_vec.push_back("TrigConfKeys");
   }
@@ -176,14 +175,14 @@ EL::StatusCode MinixAOD :: initialize ()
     m_vectorCopyKeys_vec.push_back(std::pair<std::string, std::string>(token.substr(0, pos), token.substr(pos+1)));
   }
 
-  ATH_MSG_DEBUG("MinixAOD Interface succesfully initialized!" );
+  ANA_MSG_DEBUG("MinixAOD Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode MinixAOD :: execute ()
 {
-  ATH_MSG_VERBOSE( "Dumping objects...");
+  ANA_MSG_VERBOSE( "Dumping objects...");
 
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, msg()) );
@@ -207,7 +206,7 @@ EL::StatusCode MinixAOD :: execute ()
   // simple copy is easiest - it's in the input, copy over, no need for types
   for(const auto& key: m_simpleCopyKeys_vec){
     ANA_CHECK( m_event->copy(key));
-    ATH_MSG_DEBUG("Copying " << key << " from input file");
+    ANA_MSG_DEBUG("Copying " << key << " from input file");
   }
 
   // we need to make deep copies
@@ -236,7 +235,7 @@ EL::StatusCode MinixAOD :: execute ()
     }
     m_copyFromStoreToEventKeys_vec.push_back(out_key);
 
-    ATH_MSG_DEBUG("Deep-Copied " << in_key << " to " << out_key << " to record to output file");
+    ANA_MSG_DEBUG("Deep-Copied " << in_key << " to " << out_key << " to record to output file");
   }
 
   // shallow IO handling (if no parent, assume deep copy)
@@ -247,8 +246,8 @@ EL::StatusCode MinixAOD :: execute ()
     // only add the parent if it doesn't exist
     if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
 
-    ATH_MSG_DEBUG("Copying " << key);
-    if(!parent.empty()) ATH_MSG_DEBUG(" as well as it's parent " << parent);
+    ANA_MSG_DEBUG("Copying " << key);
+    if(!parent.empty()) ANA_MSG_DEBUG(" as well as it's parent " << parent);
 
     m_copyFromStoreToEventKeys_vec.push_back(key);
   }
@@ -266,10 +265,10 @@ EL::StatusCode MinixAOD :: execute ()
 
     std::cout << "The following containers are being copied over:" << std::endl;
     for(const auto& key: *vector){
-      ATH_MSG_DEBUG("\t" << key);
+      ANA_MSG_DEBUG("\t" << key);
       m_copyFromStoreToEventKeys_vec.push_back(key);
     }
-    if(!parent.empty()) ATH_MSG_DEBUG("... along with their parent " << parent);
+    if(!parent.empty()) ANA_MSG_DEBUG("... along with their parent " << parent);
 
   }
 
@@ -302,12 +301,12 @@ EL::StatusCode MinixAOD :: execute ()
       return EL::StatusCode::FAILURE;
     }
 
-    ATH_MSG_DEBUG("Copied " << key << " and it's auxiliary container from TStore to TEvent");
+    ANA_MSG_DEBUG("Copied " << key << " and it's auxiliary container from TStore to TEvent");
   }
 
 
   m_event->fill();
-  ATH_MSG_DEBUG("Finished dumping objects...");
+  ANA_MSG_DEBUG("Finished dumping objects...");
 
   return EL::StatusCode::SUCCESS;
 

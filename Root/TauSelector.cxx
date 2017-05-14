@@ -25,7 +25,6 @@
 #include "xAODAnaHelpers/TauSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
 #include "PATCore/TAccept.h"
 
 // ROOT include(s):
@@ -54,7 +53,7 @@ EL::StatusCode TauSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TauSelector" ).ignore(); // call before opening first file
@@ -71,7 +70,7 @@ EL::StatusCode TauSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  ATH_MSG_INFO( "Calling histInitialize");
+  ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
@@ -83,7 +82,7 @@ EL::StatusCode TauSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  ATH_MSG_INFO( "Calling fileExecute");
+  ANA_MSG_INFO( "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -96,7 +95,7 @@ EL::StatusCode TauSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  ATH_MSG_INFO( "Calling changeInput");
+  ANA_MSG_INFO( "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -114,7 +113,7 @@ EL::StatusCode TauSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  ATH_MSG_INFO( "Initializing TauSelector Interface... ");
+  ANA_MSG_INFO( "Initializing TauSelector Interface... ");
 
   // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
@@ -122,10 +121,10 @@ EL::StatusCode TauSelector :: initialize ()
   // This is the case when the selector algorithm is used for
   // preselecting objects, and then again for the final selection
   //
-  ATH_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
+  ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
   if ( this->numInstances() > 0 ) {
     m_isUsedBefore = true;
-    ATH_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
+    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   }
 
   if ( m_useCutFlow ) {
@@ -160,13 +159,13 @@ EL::StatusCode TauSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   if ( m_inContainerName.empty() ){
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -199,7 +198,7 @@ EL::StatusCode TauSelector :: initialize ()
     ANA_CHECK( m_TOELLHDecorator->initialize());
   }
 
-  ATH_MSG_INFO( "TauSelector Interface succesfully initialized!" );
+  ANA_MSG_INFO( "TauSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -211,7 +210,7 @@ EL::StatusCode TauSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  ATH_MSG_DEBUG( "Applying Tau Selection..." );
+  ANA_MSG_DEBUG( "Applying Tau Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
@@ -221,7 +220,7 @@ EL::StatusCode TauSelector :: execute ()
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    ATH_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
+    ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
@@ -275,14 +274,14 @@ EL::StatusCode TauSelector :: execute ()
     // must be a pointer to be recorded in TStore
     //
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-    ATH_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
+    ANA_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
 
     // loop over systematic sets
     //
     bool eventPassThisSyst(false);
     for ( auto systName : *systNames ) {
 
-      ATH_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
+      ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
       ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, msg()) );
 
@@ -307,7 +306,7 @@ EL::StatusCode TauSelector :: execute ()
       //
       eventPass = ( eventPass || eventPassThisSyst );
 
-      ATH_MSG_DEBUG( " syst name: " << systName << "  output container name: " << m_outContainerName+systName );
+      ANA_MSG_DEBUG( " syst name: " << systName << "  output container name: " << m_outContainerName+systName );
 
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
@@ -322,7 +321,7 @@ EL::StatusCode TauSelector :: execute ()
 
     } // close loop over syst sets
 
-    ATH_MSG_DEBUG(" output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) );
+    ANA_MSG_DEBUG(" output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) );
 
     // record in TStore the list of systematics names that should be considered down stream
     //
@@ -332,7 +331,7 @@ EL::StatusCode TauSelector :: execute ()
 
   // look what we have in TStore
   //
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if( !eventPass ) {
     wk()->skipEvent();
@@ -350,7 +349,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
 
-  ATH_MSG_DEBUG( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) );
+  ANA_MSG_DEBUG( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) );
 
   for ( auto tau_itr : *inTaus ) { // duplicated of basic loop
 
@@ -386,16 +385,16 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
     m_numObjectPass += nPass;
   }
 
-  ATH_MSG_DEBUG( "Initial Taus (count obj): " << nObj << " - Selected Taus: " << nPass );
+  ANA_MSG_DEBUG( "Initial Taus (count obj): " << nObj << " - Selected Taus: " << nPass );
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   //
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
-    ATH_MSG_DEBUG( "Reject event: nSelectedTaus ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" );
+    ANA_MSG_DEBUG( "Reject event: nSelectedTaus ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" );
     return false;
   }
   if ( m_pass_max > 0 && nPass > m_pass_max ) {
-    ATH_MSG_DEBUG( "Reject event: nSelectedTaus ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" );
+    ANA_MSG_DEBUG( "Reject event: nSelectedTaus ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" );
     return false;
   }
 
@@ -416,7 +415,7 @@ EL::StatusCode TauSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  ATH_MSG_DEBUG( "Calling postExecute");
+  ANA_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -435,13 +434,13 @@ EL::StatusCode TauSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ATH_MSG_INFO( "Deleting tool instances...");
+  ANA_MSG_INFO( "Deleting tool instances...");
 
   if ( m_TauSelTool )      { m_TauSelTool = nullptr;      delete m_TauSelTool; }
   if ( m_TOELLHDecorator ) { m_TOELLHDecorator = nullptr; delete m_TOELLHDecorator; }
 
   if ( m_useCutFlow ) {
-    ATH_MSG_INFO( "Filling cutflow");
+    ANA_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
@@ -464,7 +463,7 @@ EL::StatusCode TauSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  ATH_MSG_INFO( "Calling histFinalize");
+  ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
@@ -481,14 +480,14 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   //
 
   if ( tau->pt() <= m_minPtDAOD ) {
-    ATH_MSG_DEBUG( "Tau failed minimal pT requirement for usage with derivations");
+    ANA_MSG_DEBUG( "Tau failed minimal pT requirement for usage with derivations");
     return 0;
   }
 
   if ( m_setTauOverlappingEleLLHDecor ) { m_TOELLHDecorator->decorate( *tau ); }
 
   if ( ! m_TauSelTool->accept( *tau ) ) {
-    ATH_MSG_DEBUG( "Tau failed requirements of TauSelectionTool");
+    ANA_MSG_DEBUG( "Tau failed requirements of TauSelectionTool");
     return 0;
   }
 

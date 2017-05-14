@@ -15,6 +15,7 @@
 // for StatusCode::isSuccess
 #include "AsgTools/StatusCode.h"
 #include "AsgTools/ToolStore.h"
+#include "AsgTools/AnaToolHandle.h"
 
 // for resolving paths of various calibration files
 #include "PathResolver/PathResolver.h"
@@ -22,19 +23,7 @@
 // messaging includes
 #include <AsgTools/MsgStream.h>
 #include <AsgTools/MsgStreamMacros.h>
-
-/// Macro used to execute "protected" code
-#define ATH_EXEC_LVL( lvl, expr )               \
-   do {                                         \
-      if( msg().msgLevel( lvl ) ) {             \
-         expr;                                  \
-      }                                         \
-   } while( 0 )
-
-/// Macro executing verbose expressions
-#define ATH_EXEC_VERBOSE( expr )  ATH_EXEC_LVL( MSG::VERBOSE, expr )
-/// Macro executing debug expressions
-#define ATH_EXEC_DEBUG( expr )    ATH_EXEC_LVL( MSG::DEBUG, expr )
+#include <AsgTools/MessageCheck.h>
 
 namespace xAH {
 
@@ -227,10 +216,10 @@ namespace xAH {
 
             if ( !asg::ToolStore::contains<T>(tool_name) ) {
               m_toolAlreadyUsed[tool_name] = false;
-              ATH_MSG_INFO("Tool " << tool_name << " is being used for the first time!" );
+              ANA_MSG_INFO("Tool " << tool_name << " is being used for the first time!" );
             } else {
               m_toolAlreadyUsed[tool_name] = true;
-              ATH_MSG_INFO("Tool " << tool_name << " has been already used!" );
+              ANA_MSG_INFO("Tool " << tool_name << " has been already used!" );
             }
 
             return StatusCode::SUCCESS;
@@ -244,6 +233,30 @@ namespace xAH {
          */
         inline bool isToolAlreadyUsed( const std::string& tool_name ) {
            return ( m_toolAlreadyUsed.find(tool_name)->second );
+        }
+
+
+        /**
+            @rst
+                Sets the name of the tool and checks if the tool has been configured previously.
+
+                If a tool has been configured previously, an :code:`ATH_MSG_WARNING` will be emitted for the user to use/look for.
+
+            @endrst
+         */
+        template <typename T>
+        void checkConfigured(const asg::AnaToolHandle<T>& handle, std::string name) const {
+          if(name.empty()) name = "xAH::" + m_name + getAddress();
+          handle.setName(name);
+          if (handle.isUserConfigured()) ANA_MSG_WARNING ("note: handle " << handle.typeAndName() << " is user configured");
+        }
+
+        /// @brief Return a :code:`std::string` representation of :code:`this`
+        std::string getAddress() const {
+          const void * address = static_cast<const void*>(this);
+          std::stringstream ss;
+          ss << address;
+          return ss.str();
         }
 
       private:

@@ -29,7 +29,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/MuonCalibrator.h"
-#include <AsgTools/MessageCheck.h>
 #include "PATInterfaces/CorrectionCode.h" // to check the return correction code status of tools
 
 using HelperClasses::ToolName;
@@ -52,7 +51,7 @@ EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "MuonCalibrator" ).ignore(); // call before opening first file
@@ -104,12 +103,12 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  ATH_MSG_INFO( "Initializing MuonCalibrator Interface... ");
+  ANA_MSG_INFO( "Initializing MuonCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
   // shallow copies are made with this output container name
@@ -117,7 +116,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
   if ( m_inContainerName.empty() ) {
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -134,7 +133,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   //
   if( m_isMC ){
     if( !m_pileup_tool_handle.isUserConfigured() ){
-      ATH_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+      ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
     ANA_CHECK( m_pileup_tool_handle.retrieve());
@@ -203,27 +202,27 @@ EL::StatusCode MuonCalibrator :: initialize ()
   //const CP::SystematicSet recSyst = CP::SystematicSet();
   const CP::SystematicSet& recSyst = m_muonCalibrationAndSmearingTools[m_YearsList.at(0)]->recommendedSystematics();
 
-  ATH_MSG_INFO(" Initializing Muon Calibrator Systematics :");
+  ANA_MSG_INFO(" Initializing Muon Calibrator Systematics :");
   //
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
 
-  ATH_MSG_INFO("Will be using MuonCalibrationAndSmearingTool systematic:");
+  ANA_MSG_INFO("Will be using MuonCalibrationAndSmearingTool systematic:");
   std::vector< std::string >* SystMuonsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
-      ATH_MSG_INFO("\t Running w/ nominal configuration only!");
+      ANA_MSG_INFO("\t Running w/ nominal configuration only!");
       break;
     }
     SystMuonsNames->push_back(syst_it.name());
-    ATH_MSG_INFO("\t " << syst_it.name());
+    ANA_MSG_INFO("\t " << syst_it.name());
   }
 
   ANA_CHECK(m_store->record(SystMuonsNames, "muons_Syst"+m_name ));
 
-  ATH_MSG_INFO( "MuonCalibrator Interface succesfully initialized!" );
+  ANA_MSG_INFO( "MuonCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -236,12 +235,12 @@ EL::StatusCode MuonCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  ATH_MSG_DEBUG( "Applying Muon Calibration And Smearing ... ");
+  ANA_MSG_DEBUG( "Applying Muon Calibration And Smearing ... ");
 
   m_numEvent++;
 
   if ( !m_isMC && !m_forceDataCalib ) {
-    if ( m_numEvent == 1 ) { ATH_MSG_INFO( "Sample is Data! Do not apply any Muon Calibration... "); }
+    if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Muon Calibration... "); }
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
@@ -261,7 +260,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   if (runNumber >= 266904 && runNumber <= 284484 ) {
     randYear = "Data15";
     if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
-      ATH_MSG_ERROR( "Random runNumber is 2015 but no corresponding MuonCalibrationAndSmearingTool tool has been initialized. Check ilumicalc config or extend m_Years!");
+      ANA_MSG_ERROR( "Random runNumber is 2015 but no corresponding MuonCalibrationAndSmearingTool tool has been initialized. Check ilumicalc config or extend m_Years!");
       return EL::StatusCode::FAILURE;
     }
 
@@ -269,7 +268,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
     randYear = "Data16";
     if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
-     ATH_MSG_ERROR( "Random runNumber is 2016 but no corresponding MuonCalibrationAndSmearingTool tool has been initialized. Check ilumicalc config or extend m_Years!");
+     ANA_MSG_ERROR( "Random runNumber is 2016 but no corresponding MuonCalibrationAndSmearingTool tool has been initialized. Check ilumicalc config or extend m_Years!");
      return EL::StatusCode::FAILURE;
     }
 
@@ -305,7 +304,7 @@ EL::StatusCode MuonCalibrator :: execute ()
     // apply syst
     //
     if ( m_muonCalibrationAndSmearingTools[randYear]->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-      ATH_MSG_ERROR( "Failed to configure MuonCalibrationAndSmearingTool for systematic " << syst_it.name());
+      ANA_MSG_ERROR( "Failed to configure MuonCalibrationAndSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }
 
@@ -324,61 +323,61 @@ EL::StatusCode MuonCalibrator :: execute ()
 
       for ( auto muSC_itr : *(calibMuonsSC.first) ) {
 
-	ATH_MSG_DEBUG( "  uncailbrated muon " << idx << ", pt = " << muSC_itr->pt()*1e-3 << " GeV");
+	ANA_MSG_DEBUG( "  uncailbrated muon " << idx << ", pt = " << muSC_itr->pt()*1e-3 << " GeV");
 	if(muSC_itr-> primaryTrackParticle()){
 	  if ( m_muonCalibrationAndSmearingTools[randYear]->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
-	    ATH_MSG_WARNING( "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
+	    ANA_MSG_WARNING( "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
 	  }
 	}
 
-	ATH_MSG_DEBUG( "  corrected muon pt = " << muSC_itr->pt()*1e-3 << " GeV");
+	ANA_MSG_DEBUG( "  corrected muon pt = " << muSC_itr->pt()*1e-3 << " GeV");
 
 	++idx;
 
       } // close calibration loop
     }
 
-    ATH_MSG_DEBUG( "setOriginalObjectLink");
+    ANA_MSG_DEBUG( "setOriginalObjectLink");
     if ( !xAOD::setOriginalObjectLink(*inMuons, *(calibMuonsSC.first)) ) {
-      ATH_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
+      ANA_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
     // save pointers in ConstDataVector with same order
     //
-    ATH_MSG_DEBUG( "makeSubsetCont");
+    ANA_MSG_DEBUG( "makeSubsetCont");
     ANA_CHECK( HelperFunctions::makeSubsetCont(calibMuonsSC.first, calibMuonsCDV, msg()));
-    ATH_MSG_DEBUG( "done makeSubsetCont");
+    ANA_MSG_DEBUG( "done makeSubsetCont");
 
     // sort after coping to CDV
     if ( m_sort ) {
-      ATH_MSG_DEBUG( "sorting");
+      ANA_MSG_DEBUG( "sorting");
       std::sort( calibMuonsCDV->begin(), calibMuonsCDV->end(), HelperFunctions::sort_pt );
     }
 
     // add SC container to TStore
     //
-    ATH_MSG_DEBUG( "recording calibMuonsSC");
+    ANA_MSG_DEBUG( "recording calibMuonsSC");
     ANA_CHECK( m_store->record( calibMuonsSC.first,  outSCContainerName  ));
     ANA_CHECK( m_store->record( calibMuonsSC.second, outSCAuxContainerName ));
 
     //
     // add ConstDataVector to TStore
     //
-    ATH_MSG_DEBUG( "record calibMuonsCDV");
+    ANA_MSG_DEBUG( "record calibMuonsCDV");
     ANA_CHECK( m_store->record( calibMuonsCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
-  ATH_MSG_DEBUG( "record m_outputAlgoSystNames");
+  ANA_MSG_DEBUG( "record m_outputAlgoSystNames");
   ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  ATH_MSG_DEBUG( "Left ");
+  ANA_MSG_DEBUG( "Left ");
   return EL::StatusCode::SUCCESS;
 
 }
@@ -389,7 +388,7 @@ EL::StatusCode MuonCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  ATH_MSG_DEBUG( "Calling postExecute");
+  ANA_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -408,7 +407,7 @@ EL::StatusCode MuonCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ATH_MSG_INFO( "Deleting tool instances...");
+  ANA_MSG_INFO( "Deleting tool instances...");
 
   for(auto yr : m_YearsList) {
     if ( m_muonCalibrationAndSmearingTools[yr] ) { m_muonCalibrationAndSmearingTools[yr] = nullptr; delete m_muonCalibrationAndSmearingTools[yr]; }
@@ -432,7 +431,7 @@ EL::StatusCode MuonCalibrator :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  ATH_MSG_INFO( "Calling histFinalize");
+  ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

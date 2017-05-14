@@ -5,8 +5,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/TrackSelector.h"
 
-#include <AsgTools/MessageCheck.h>
-
 // ROOT include(s):
 #include "TFile.h"
 #include "TObjArray.h"
@@ -38,7 +36,7 @@ EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  ATH_MSG_DEBUG("Calling setupJob");
+  ANA_MSG_DEBUG("Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TrackSelector" ).ignore(); // call before opening first file
@@ -55,7 +53,7 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  ATH_MSG_DEBUG("Calling histInitialize");
+  ANA_MSG_DEBUG("Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
@@ -67,7 +65,7 @@ EL::StatusCode TrackSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  ATH_MSG_DEBUG("Calling fileExecute");
+  ANA_MSG_DEBUG("Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -80,7 +78,7 @@ EL::StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  ATH_MSG_DEBUG("Calling changeInput");
+  ANA_MSG_DEBUG("Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -120,21 +118,21 @@ EL::StatusCode TrackSelector :: initialize ()
 
 
   if( m_inContainerName.empty() ) {
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_DEBUG("Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_DEBUG("Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
   m_numObjectPass = 0;
 
-  ATH_MSG_DEBUG("TrackSelector Interface succesfully initialized!" );
+  ANA_MSG_DEBUG("TrackSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -144,7 +142,7 @@ EL::StatusCode TrackSelector :: initialize ()
 EL::StatusCode TrackSelector :: execute ()
 {
 
-  ATH_MSG_DEBUG("Applying Track Selection... " << m_name);
+  ANA_MSG_DEBUG("Applying Track Selection... " << m_name);
 
   if(m_doTracksInJets){
     return executeTracksInJets();
@@ -237,7 +235,7 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
 EL::StatusCode TrackSelector :: executeTracksInJets ()
 {
-  ATH_MSG_DEBUG("Applying TracksInJet Selection... " << m_inJetContainerName);
+  ANA_MSG_DEBUG("Applying TracksInJet Selection... " << m_inJetContainerName);
   m_numEvent++;
 
   // get input jet collection
@@ -310,7 +308,7 @@ EL::StatusCode TrackSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  ATH_MSG_DEBUG("Calling postExecute");
+  ANA_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -329,7 +327,7 @@ EL::StatusCode TrackSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ATH_MSG_DEBUG("Deleting tool instances...");
+  ANA_MSG_DEBUG("Deleting tool instances...");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -399,7 +397,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   uint8_t nBL       = -1;
   if( m_nBL_min != 1e8 ){
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))      ATH_MSG_ERROR( "BLayer hits not filled");
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))      ANA_MSG_ERROR( "BLayer hits not filled");
     if( nBL < m_nBL_min ) {return 0; }
   }
 
@@ -409,8 +407,8 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   uint8_t nSCT      = -1;
   uint8_t nPix      = -1;
   if( m_nSi_min != 1e8 ){
-    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        ATH_MSG_ERROR( "Pix hits not filled");
-    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          ATH_MSG_ERROR( "SCT hits not filled");
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        ANA_MSG_ERROR( "Pix hits not filled");
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          ANA_MSG_ERROR( "SCT hits not filled");
     if( (nSCT+nPix) < m_nSi_min ) {return 0;}
   }
 
@@ -419,7 +417,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   uint8_t nPixHoles = -1;
   if( m_nPixHoles_max != 1e8 ){
-    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       ATH_MSG_ERROR( "Pix holes not filled");
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       ANA_MSG_ERROR( "Pix holes not filled");
     if( nPixHoles > m_nPixHoles_max ) {return 0;}
   }
 

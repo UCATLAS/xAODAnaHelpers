@@ -13,7 +13,6 @@
 
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
-#include <AsgTools/MessageCheck.h>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(TreeAlgo)
@@ -36,7 +35,7 @@ EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
 
 EL::StatusCode TreeAlgo :: initialize ()
 {
-  ATH_MSG_INFO( m_name );
+  ANA_MSG_INFO( m_name );
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
@@ -56,7 +55,7 @@ EL::StatusCode TreeAlgo :: initialize ()
     m_jetBranches.push_back(token);
   }
   if( !m_jetContainerName.empty() && m_jetContainers.size()!=m_jetBranches.size()){
-    ATH_MSG_ERROR( "The number of jet containers must be equal to the number of jet name branches. Exiting");
+    ANA_MSG_ERROR( "The number of jet containers must be equal to the number of jet name branches. Exiting");
     return EL::StatusCode::FAILURE;
   }
   std::istringstream ss_truth_containers(m_truthJetContainerName);
@@ -68,7 +67,7 @@ EL::StatusCode TreeAlgo :: initialize ()
     m_truthJetBranches.push_back(token);
   }
   if( !m_truthJetContainerName.empty() && m_truthJetContainers.size()!=m_truthJetBranches.size()){
-    ATH_MSG_ERROR( "The number of truth jet containers must be equal to the number of truth jet name branches. Exiting");
+    ANA_MSG_ERROR( "The number of truth jet containers must be equal to the number of truth jet name branches. Exiting");
     return EL::StatusCode::FAILURE;
   }
 
@@ -78,7 +77,7 @@ EL::StatusCode TreeAlgo :: initialize ()
     m_jetDetails.push_back(token);
   }
   if( m_jetDetails.size()!=1  && m_jetContainers.size()!=m_jetDetails.size()){
-    ATH_MSG_ERROR( "The size of m_jetContainers should be equal to the size of m_jetDetailStr. Exiting");
+    ANA_MSG_ERROR( "The size of m_jetContainers should be equal to the size of m_jetDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
 
@@ -89,7 +88,7 @@ EL::StatusCode TreeAlgo :: initialize ()
 
 EL::StatusCode TreeAlgo :: histInitialize ()
 {
-  ATH_MSG_INFO( m_name );
+  ANA_MSG_INFO( m_name );
   ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
@@ -167,21 +166,21 @@ EL::StatusCode TreeAlgo :: execute ()
     std::string treeName = systName;
     if(systName.empty()) treeName = "nominal";
 
-    ATH_MSG_INFO( "Making tree " << m_name << "/" << treeName );
+    ANA_MSG_INFO( "Making tree " << m_name << "/" << treeName );
     TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
     if ( !outTree ) {
-      ATH_MSG_ERROR("Failed to instantiate output tree!");
+      ANA_MSG_ERROR("Failed to instantiate output tree!");
       return EL::StatusCode::FAILURE;
     }
 
-    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, msg().msgLevel(MSG::DEBUG) );
+    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG) );
     const auto& helpTree = m_trees[systName];
 
     // tell the tree to go into the file
     outTree->SetDirectory( treeFile->GetDirectory(m_name.c_str()) );
     // choose if want to add tree to same directory as ouput histograms
     if ( m_outHistDir ) {
-      if(m_trees.size() > 1) ATH_MSG_WARNING( "You're running systematics! You may find issues in writing all of the output TTrees to the output histogram file... Set `m_outHistDir = false` if you run into issues!");
+      if(m_trees.size() > 1) ANA_MSG_WARNING( "You're running systematics! You may find issues in writing all of the output TTrees to the output histogram file... Set `m_outHistDir = false` if you run into issues!");
       wk()->addOutput( outTree );
     }
 
@@ -354,7 +353,7 @@ EL::StatusCode TreeAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode TreeAlgo :: finalize () {
 
-  ATH_MSG_INFO( "Deleting tree instances...");
+  ANA_MSG_INFO( "Deleting tree instances...");
 
   for(auto& item: m_trees){
     if(item.second) {delete item.second; item.second = nullptr; }

@@ -7,8 +7,6 @@
 
 #include <xAODAnaHelpers/ClusterHistsAlgo.h>
 
-#include <AsgTools/MessageCheck.h>
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(ClusterHistsAlgo)
 
@@ -30,11 +28,11 @@ EL::StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode ClusterHistsAlgo :: histInitialize ()
 {
 
-  ATH_MSG_INFO( m_name );
+  ANA_MSG_INFO( m_name );
   ANA_CHECK( xAH::Algorithm::algInitialize());
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    ATH_MSG_ERROR( "One or more required configuration values are empty");
+    ANA_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
@@ -52,7 +50,7 @@ EL::StatusCode ClusterHistsAlgo :: changeInput (bool /*firstFile*/) { return EL:
 
 EL::StatusCode ClusterHistsAlgo :: initialize ()
 {
-  ATH_MSG_INFO( "ClusterHistsAlgo");
+  ANA_MSG_INFO( "ClusterHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;

@@ -21,8 +21,6 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 
-#include <AsgTools/MessageCheck.h>
-
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -37,7 +35,7 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
 
 EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 {
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "BJetEfficiencyCorrector" ).ignore(); // call before opening first file
@@ -72,7 +70,7 @@ EL::StatusCode BJetEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 
 EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 {
-  ATH_MSG_INFO( "Initializing BJetEfficiencyCorrector Interface... ");
+  ANA_MSG_INFO( "Initializing BJetEfficiencyCorrector Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -81,7 +79,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_decorSF = m_decor + "_SF";
 
@@ -109,7 +107,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "FlatBEff_85") { allOK = true; }
 
   if( !allOK ) {
-    ATH_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
+    ANA_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
     return EL::StatusCode::FAILURE;
   }
 
@@ -118,8 +116,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_decorSF         += "_" + m_operatingPt;
   m_outputSystName  += "_" + m_operatingPt;
 
-  ATH_MSG_INFO( "Decision Decoration Name     : " << m_decor);
-  ATH_MSG_INFO( "Scale Factor Decoration Name : " << m_decorSF);
+  ANA_MSG_INFO( "Decision Decoration Name     : " << m_decor);
+  ANA_MSG_INFO( "Scale Factor Decoration Name : " << m_decorSF);
 
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
@@ -139,12 +137,12 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 
   if( m_inContainerName.empty() ) {
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
   if ( !m_isMC ) {
-    ATH_MSG_WARNING( "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
+    ANA_MSG_WARNING( "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
     m_getScaleFactors = false;
   }
 
@@ -172,7 +170,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_CHECK( m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt));
   ANA_CHECK( m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor));
   ANA_CHECK( m_BJetSelectTool->initialize());
-  ATH_MSG_INFO( "BTaggingSelectionTool initialized : " << m_BJetSelectTool->name() );
+  ANA_MSG_INFO( "BTaggingSelectionTool initialized : " << m_BJetSelectTool->name() );
 
   //
   //  Configure the BJetEfficiencyCorrectionTool
@@ -198,23 +196,23 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool->setProperty("UseDevelopmentFile",  m_useDevelopmentFile));
     ANA_CHECK( m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel));
     ANA_CHECK( m_BJetEffSFTool->initialize());
-    ATH_MSG_INFO( "BTaggingEfficiencyTool initialized : " << m_BJetEffSFTool->name() );
+    ANA_MSG_INFO( "BTaggingEfficiencyTool initialized : " << m_BJetEffSFTool->name() );
   } else {
-    ATH_MSG_WARNING( "Input operating point is not calibrated - no SFs will be obtained");
+    ANA_MSG_WARNING( "Input operating point is not calibrated - no SFs will be obtained");
   }
 
   //
   // Print out
   //
   if( !m_systName.empty() && m_getScaleFactors ) {
-    ATH_MSG_DEBUG("-----------------------------------------------------");
+    ANA_MSG_DEBUG("-----------------------------------------------------");
     const std::map<CP::SystematicVariation, std::vector<std::string> > allowed_variations = m_BJetEffSFTool->listSystematics();
-    ATH_MSG_DEBUG("Allowed systematics variations for tool " << m_BJetEffSFTool->name() << ":");
+    ANA_MSG_DEBUG("Allowed systematics variations for tool " << m_BJetEffSFTool->name() << ":");
     for (auto var : allowed_variations) {
-      ATH_MSG_DEBUG(std::setw(40) << std::left << var.first.name() << ":");
-      for (auto flv : var.second) ATH_MSG_DEBUG("\t" << flv);
+      ANA_MSG_DEBUG(std::setw(40) << std::left << var.first.name() << ":");
+      for (auto flv : var.second) ANA_MSG_DEBUG("\t" << flv);
     }
-    ATH_MSG_DEBUG("-----------------------------------------------------");
+    ANA_MSG_DEBUG("-----------------------------------------------------");
   }
 
 
@@ -225,7 +223,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     std::vector<CP::SystematicSet> affectSystList = CP::make_systematics_vector(affectSysts);
     if( !m_systName.empty() ) {
       for ( const auto& syst_it : affectSystList ){
-        ATH_MSG_DEBUG(" tool can be affected by systematic: " << syst_it.name());
+        ANA_MSG_DEBUG(" tool can be affected by systematic: " << syst_it.name());
       }
     }
 
@@ -235,7 +233,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     m_systList = CP::make_systematics_vector(recSysts);
     if( !m_systName.empty() ) {
       for ( const auto& syst_it : m_systList ){
-        ATH_MSG_DEBUG(" available recommended systematic: " << syst_it.name());
+        ANA_MSG_DEBUG(" available recommended systematic: " << syst_it.name());
       }
     } else { // remove all but the nominal
       std::vector<CP::SystematicSet>::iterator syst_it = m_systList.begin();
@@ -246,7 +244,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     }
 
     if( m_systName.empty() ){
-      ATH_MSG_INFO(" Running w/ nominal configuration!");
+      ANA_MSG_INFO(" Running w/ nominal configuration!");
     }
 
   } else {
@@ -256,24 +254,24 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
 
   if( m_runAllSyst ){
-    ATH_MSG_INFO(" Running w/ All systematics");
+    ANA_MSG_INFO(" Running w/ All systematics");
   }
 
-  ATH_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
+  ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
-  ATH_MSG_DEBUG( "Applying BJet Efficency Corrector... ");
+  ANA_MSG_DEBUG( "Applying BJet Efficency Corrector... ");
 
   //
   // retrieve event
   //
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  ATH_MSG_DEBUG("\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
+  ANA_MSG_DEBUG("\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
 
   //
   //  input jets
@@ -318,7 +316,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
   }
 
-  ATH_MSG_DEBUG( "Leave Efficency Selection... ");
+  ANA_MSG_DEBUG( "Leave Efficency Selection... ");
 
   return EL::StatusCode::SUCCESS;
 
@@ -331,7 +329,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 								      const xAOD::EventInfo* eventInfo,
 								      bool doNominal)
 {
-  ATH_MSG_DEBUG("Applying BJet Cuts and Efficiency Correction (when applicable...) ");
+  ANA_MSG_DEBUG("Applying BJet Cuts and Efficiency Correction (when applicable...) ");
 
   //
   // Create Scale Factor aux for all jets
@@ -364,7 +362,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     //
     if ( !doNominal ) {
       if( syst_it.name() != "" ) {
-        ATH_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
+        ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
         continue;
       }
     }
@@ -375,7 +373,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     //
     if ( !m_runAllSyst ) {
       if( syst_it.name() != m_systName ) {
-        ATH_MSG_DEBUG("Not running systematics only apply nominal SF");
+        ANA_MSG_DEBUG("Not running systematics only apply nominal SF");
         continue;
       }
     }
@@ -384,7 +382,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     // Create the name of the weight
     //   template:  SYSNAME
     //
-    ATH_MSG_DEBUG("systematic variation name is: " << syst_it.name());
+    ANA_MSG_DEBUG("systematic variation name is: " << syst_it.name());
     sysVariationNames->push_back(syst_it.name());
 
     //
@@ -393,10 +391,10 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     if (m_getScaleFactors ) {
 
       if (m_BJetEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
-        ATH_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
+        ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
         return EL::StatusCode::FAILURE;
       }
-      ATH_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
+      ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
     }
 
     bool tagged(false);
@@ -432,7 +430,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
           BJetEffCode = m_BJetEffSFTool->getInefficiencyScaleFactor( *jet_itr, SF );
         }
         if (BJetEffCode == CP::CorrectionCode::Error){
-          ATH_MSG_WARNING( "Error in getEfficiencyScaleFactor");
+          ANA_MSG_WARNING( "Error in getEfficiencyScaleFactor");
           SF = -2;
           //return EL::StatusCode::FAILURE;
         }
@@ -453,33 +451,33 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
         float eff(0.0);
         if( (fabs(jet_itr->eta()) < 2.5) &&
             m_BJetEffSFTool->getEfficiency( *jet_itr, eff ) != CP::CorrectionCode::Ok){
-          ATH_MSG_ERROR( "Problem in getRecoEfficiency");
+          ANA_MSG_ERROR( "Problem in getRecoEfficiency");
           //return EL::StatusCode::FAILURE;
         }
-        ATH_MSG_INFO( "\t reco efficiency = %g", eff );
+        ANA_MSG_INFO( "\t reco efficiency = %g", eff );
       }
       */
 
-       ATH_MSG_DEBUG( "===>>>");
-       ATH_MSG_DEBUG( " ");
-       ATH_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
-       ATH_MSG_DEBUG( " ");
-       ATH_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
-       ATH_MSG_DEBUG( " ");
-       ATH_MSG_DEBUG( "Systematic: " << syst_it.name() );
-       ATH_MSG_DEBUG( " ");
-       ATH_MSG_DEBUG( "BTag SF:");
-       ATH_MSG_DEBUG( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
-       ATH_MSG_DEBUG( "--------------------------------------");
+       ANA_MSG_DEBUG( "===>>>");
+       ANA_MSG_DEBUG( " ");
+       ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
+       ANA_MSG_DEBUG( " ");
+       ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
+       ANA_MSG_DEBUG( " ");
+       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+       ANA_MSG_DEBUG( " ");
+       ANA_MSG_DEBUG( "BTag SF:");
+       ANA_MSG_DEBUG( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
+       ANA_MSG_DEBUG( "--------------------------------------");
       ++idx;
 
     } // close jet loop
 
     // For *this* systematic, store the global SF weight for the event
-    ATH_MSG_DEBUG( "--------------------------------------");
-    ATH_MSG_DEBUG( "GLOBAL BTag SF for event:");
-    ATH_MSG_DEBUG( "\t " << SF_GLOBAL );
-    ATH_MSG_DEBUG( "--------------------------------------");
+    ANA_MSG_DEBUG( "--------------------------------------");
+    ANA_MSG_DEBUG( "GLOBAL BTag SF for event:");
+    ANA_MSG_DEBUG( "\t " << SF_GLOBAL );
+    ANA_MSG_DEBUG( "--------------------------------------");
 
     //
     //  Add the SF only if doing nominal Jets
@@ -495,8 +493,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   if(doNominal){
     ANA_CHECK( m_store->record( sysVariationNames, m_outputSystName));
 
-    ATH_MSG_DEBUG("Size is " << sysVariationNames->size());
-    for(auto sysName : *sysVariationNames) ATH_MSG_DEBUG(sysName);
+    ANA_MSG_DEBUG("Size is " << sysVariationNames->size());
+    for(auto sysName : *sysVariationNames) ANA_MSG_DEBUG(sysName);
   }
 
   return EL::StatusCode::SUCCESS;
@@ -505,7 +503,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
 {
-  ATH_MSG_DEBUG("Calling postExecute");
+  ANA_MSG_DEBUG("Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -513,7 +511,7 @@ EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
 
 EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 {
-  ATH_MSG_INFO( "Deleting tool instances...");
+  ANA_MSG_INFO( "Deleting tool instances...");
 
   if ( m_BJetSelectTool ) { delete m_BJetSelectTool; m_BJetSelectTool = nullptr;  }
   if ( m_BJetEffSFTool )  { delete m_BJetEffSFTool; m_BJetEffSFTool = nullptr; }
@@ -525,7 +523,7 @@ EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 
 EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 {
-  ATH_MSG_INFO( "Calling histFinalize");
+  ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
   return EL::StatusCode::SUCCESS;

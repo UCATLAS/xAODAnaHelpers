@@ -199,7 +199,7 @@ class HistogramManager {
       */
     MsgStream& msg () const;
     /**
-      * @brief allow ATH_MSG_XXXX macros to be used within algorithms for a given level
+      * @brief allow ANA_MSG_XXXX macros to be used within algorithms for a given level
       */
     MsgStream& msg (int level) const;
 

@@ -282,8 +282,8 @@ I've noticed that TString slows us down a little bit, so try to use std::string 
     m_event->retrieve(jets, m_inContainerName.Data());
     m_event->retrieve(jets, m_inContainerName);
 
-    ATH_MSG_INFO(m_inContainerName.Data());
-    ATH_MSG_INFO(m_inContainerName);
+    ANA_MSG_INFO(m_inContainerName.Data());
+    ANA_MSG_INFO(m_inContainerName);
 
 
 Creating a new xAH::Algorithm
@@ -332,14 +332,14 @@ This is albeit a litle bit trickier for anyone new to how Athena tools work. Fir
 
     // initialize jet calibration tool
     m_JetCalibrationTool_handle.setName("JetCalibrationTool_" + m_name);
-    ATH_MSG_DEBUG("Trying to initialize " << m_JetCalibrationToolHandle.typeAndName());
+    ANA_MSG_DEBUG("Trying to initialize " << m_JetCalibrationToolHandle.typeAndName());
     if( !m_JetCalibrationTool_handle.isUserConfigured() ){
       ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
       //... other setProperty() calls and other logic can be in here for tool configuration
       ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
     }
     ANA_CHECK( m_JetCalibrationTool_handle.retrieve());
-    ATH_MSG_DEBUG("Successfully initialized " << m_JetCalibrationToolHandle.typeAndName());
+    ANA_MSG_DEBUG("Successfully initialized " << m_JetCalibrationToolHandle.typeAndName());
   }
 
   EL::StatusCode JetCalibrator :: execute () {
@@ -429,26 +429,26 @@ The TrigDecisionTool is a special case that needs attention. This tool is unique
 
     // Grab the TrigDecTool from the ToolStore
     if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-    ATH_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
     if(!m_trigDecTool_handle.isUserConfigured()){
-      ATH_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Double-check the name of the tool." );
+      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Double-check the name of the tool." );
       return EL::StatusCode::FAILURE;
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ATH_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
 
   }
 
 This is an example of how one designs an algorithm that requires the TrigDecisionTool and will crash if it cannot find it. It also prints the name of the tool it is using to make it much easier for a user to debug. By convention in |xAH|, we do not set a name on the TrigDecisionTool, the name will just be defaulting to the type of the tool :code:`Trig::TrigDecisionTool`. All algorithms follow this default. If there is an external algorithm that creates it and you want |xAH| to pick it up instead of creating one, this is done by setting :code:`m_trigDecTool_name` to a non-empty value and you're good to go. For example, :cpp:class:`BasicEventSelection` creates a trigger decision tool if one does not exist::
 
   if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-  ATH_MSG_DEBUG( "Trying to initialize " << m_trigDecTool_handle.typeAndName());
+  ANA_MSG_DEBUG( "Trying to initialize " << m_trigDecTool_handle.typeAndName());
   if(!m_trigDecTool_handle.isUserConfigured()){
     ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
   }
   ANA_CHECK( m_trigDecTool_handle.retrieve());
-  ATH_MSG_DEBUG( "Successfully initialized " << m_trigDecTool_handle.typeAndName());
+  ANA_MSG_DEBUG( "Successfully initialized " << m_trigDecTool_handle.typeAndName());
 
 so that if such a tool already was created before ``BasicEventSelection`` tries to create it, it will retrieve it instead of trying to configure it. If it has not been created/configured before, it will configure and then create the tool. No extra logic needed on the users' part.

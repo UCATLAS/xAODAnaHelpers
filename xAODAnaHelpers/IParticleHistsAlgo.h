@@ -9,8 +9,6 @@
 #include <xAODAnaHelpers/IParticleHists.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
-#include <AsgTools/MessageCheck.h>
-
 
 class IParticleHistsAlgo : public xAH::Algorithm
 {
@@ -135,7 +133,7 @@ public:
     std::string fullname(m_name);
     fullname += name; // add systematic
     HIST_T* particleHists = new HIST_T( fullname, m_detailStr ); // add systematic
-    particleHists->m_debug = msg().msgLevel(MSG::DEBUG);
+    particleHists->m_debug = msgLvl(MSG::DEBUG);
     ANA_CHECK( particleHists->initialize());
     particleHists->record( wk() );
     m_plots[name] = particleHists;

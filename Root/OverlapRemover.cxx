@@ -36,8 +36,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 
-#include <AsgTools/MessageCheck.h>
-
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -59,7 +57,7 @@ EL::StatusCode OverlapRemover :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "OverlapRemover" ).ignore(); // call before opening first file
@@ -111,20 +109,20 @@ EL::StatusCode OverlapRemover :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  ATH_MSG_INFO( "Initializing OverlapRemover Interface... ");
+  ANA_MSG_INFO( "Initializing OverlapRemover Interface... ");
 
   if ( setCutFlowHist() == EL::StatusCode::FAILURE ) {
-    ATH_MSG_ERROR( "Failed to setup cutflow histograms. Exiting." );
+    ANA_MSG_ERROR( "Failed to setup cutflow histograms. Exiting." );
     return EL::StatusCode::FAILURE;
   }
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName_Jets.empty() ) {
-    ATH_MSG_ERROR( "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
+    ANA_MSG_ERROR( "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
     return EL::StatusCode::FAILURE;
   }
 
@@ -140,7 +138,7 @@ EL::StatusCode OverlapRemover :: initialize ()
   m_outAuxContainerName_Taus        = m_outContainerName_Taus + "Aux.";      // the period is very important!
 
   if ( setCounters() == EL::StatusCode::FAILURE ) {
-    ATH_MSG_ERROR( "Failed to properly set event/object counters. Exiting." );
+    ANA_MSG_ERROR( "Failed to properly set event/object counters. Exiting." );
     return EL::StatusCode::FAILURE;
   }
 
@@ -165,7 +163,7 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   ANA_CHECK( ORUtils::recommendedTools(orFlags, m_ORToolbox));
   ANA_CHECK( m_ORToolbox.initialize());
-  ATH_MSG_INFO( "OverlapRemover Interface succesfully initialized!" );
+  ANA_MSG_INFO( "OverlapRemover Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -178,7 +176,7 @@ EL::StatusCode OverlapRemover :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  ATH_MSG_DEBUG("Applying Overlap Removal... ");
+  ANA_MSG_DEBUG("Applying Overlap Removal... ");
 
   m_numEvent++;
 
@@ -198,7 +196,7 @@ EL::StatusCode OverlapRemover :: execute ()
   executeOR(inElectrons, inMuons, inJets, inPhotons, inTaus, NOMINAL);
 
   // look what do we have in TStore
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   // -----------------------------------------------------------------------------------------------
   //
@@ -305,7 +303,7 @@ EL::StatusCode OverlapRemover :: execute ()
   ANA_CHECK( m_store->record( m_vecOutContainerNames, m_outputAlgoSystNames));
 
   // look what do we have in TStore
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   return EL::StatusCode::SUCCESS;
 
@@ -317,7 +315,7 @@ EL::StatusCode OverlapRemover :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  ATH_MSG_DEBUG("Calling postExecute");
+  ANA_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -335,7 +333,7 @@ EL::StatusCode OverlapRemover :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ATH_MSG_INFO( "Deleting tool instances...");
+  ANA_MSG_INFO( "Deleting tool instances...");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -355,7 +353,7 @@ EL::StatusCode OverlapRemover :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  ATH_MSG_INFO( "Calling histFinalize");
+  ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
@@ -374,7 +372,7 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
     // Safety check
     //
     if ( !overlapAcc.isAvailable( *obj_itr ) ) {
-      ATH_MSG_ERROR( "Overlap decoration missing for this object");
+      ANA_MSG_ERROR( "Overlap decoration missing for this object");
       return EL::StatusCode::FAILURE;
     }
     switch(obj_itr->type()) {
@@ -404,7 +402,7 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
         type = "tau";
         break;
       default:
-        ATH_MSG_ERROR("Unsupported object");
+        ANA_MSG_ERROR("Unsupported object");
         return EL::StatusCode::FAILURE;
         break;
     }
@@ -414,15 +412,15 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
     if( isBTag.isAvailable( *obj_itr ) && isBTag(*obj_itr)==true ) isBTagged = 1;
 
     if(selectAcc.isAvailable(*obj_itr)){
-      ATH_MSG_DEBUG( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected " << selectAcc(*obj_itr) << " passesOR  " << overlapAcc( *obj_itr ) );
+      ANA_MSG_DEBUG( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected " << selectAcc(*obj_itr) << " passesOR  " << overlapAcc( *obj_itr ) );
     } else {
-      ATH_MSG_DEBUG( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected N/A" << " passesOR  " << overlapAcc( *obj_itr ) );
+      ANA_MSG_DEBUG( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected N/A" << " passesOR  " << overlapAcc( *obj_itr ) );
     }
     // Check for overlap object link
     if ( objLinkAcc.isAvailable( *obj_itr ) && objLinkAcc( *obj_itr ).isValid() ) {
       const xAOD::IParticle* overlapObj = *objLinkAcc( *obj_itr );
       std::stringstream ss_or; ss_or << overlapObj->type();
-      ATH_MSG_DEBUG( " Overlap: type " << ss_or.str() << " pt " << overlapObj->pt()/1e3);
+      ANA_MSG_DEBUG( " Overlap: type " << ss_or.str() << " pt " << overlapObj->pt()/1e3);
     }
 
   }
@@ -452,7 +450,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
     case NOMINAL:  // this is the nominal case
     {
-      ATH_MSG_DEBUG("Doing nominal case");
+      ANA_MSG_DEBUG("Doing nominal case");
       bool nomContainerNotFound(false);
 
       if( m_useElectrons ) {
@@ -460,7 +458,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
         }
       }
 
@@ -469,7 +467,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -477,7 +475,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, msg()) );
       } else {
         nomContainerNotFound = true;
-        if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+        if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
       }
 
       if ( m_usePhotons ) {
@@ -485,7 +483,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -494,29 +492,29 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
       if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
 
-      if ( m_useElectrons ) { ATH_MSG_DEBUG(  "inElectrons : " << inElectrons->size()); }
-      if ( m_useMuons )     { ATH_MSG_DEBUG(  "inMuons : " << inMuons->size()); }
-      ATH_MSG_DEBUG(  "inJets : " << inJets->size() );
-      if ( m_usePhotons )   { ATH_MSG_DEBUG(  "inPhotons : " << inPhotons->size());  }
-      if ( m_useTaus    )   { ATH_MSG_DEBUG(  "inTaus : " << inTaus->size());  }
+      if ( m_useElectrons ) { ANA_MSG_DEBUG(  "inElectrons : " << inElectrons->size()); }
+      if ( m_useMuons )     { ANA_MSG_DEBUG(  "inMuons : " << inMuons->size()); }
+      ANA_MSG_DEBUG(  "inJets : " << inJets->size() );
+      if ( m_usePhotons )   { ANA_MSG_DEBUG(  "inPhotons : " << inPhotons->size());  }
+      if ( m_useTaus    )   { ANA_MSG_DEBUG(  "inTaus : " << inTaus->size());  }
 
       // do the actual OR
       //
-      ATH_MSG_DEBUG(  "Calling removeOverlaps()");
+      ANA_MSG_DEBUG(  "Calling removeOverlaps()");
       ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
-      ATH_MSG_DEBUG(  "Done Calling removeOverlaps()");
+      ANA_MSG_DEBUG(  "Done Calling removeOverlaps()");
 
       std::string ORdecor("passOR");
       if(m_useCutFlow){
         // fill cutflow histograms
         //
-        ATH_MSG_DEBUG(  "Filling Cut Flow Histograms");
+        ANA_MSG_DEBUG(  "Filling Cut Flow Histograms");
         if ( m_useElectrons ) fillObjectCutflow(inElectrons);
         if ( m_useMuons )     fillObjectCutflow(inMuons);
         fillObjectCutflow(inJets);
@@ -527,7 +525,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       // make a copy of input container(s) with selected objects
       //
       if ( m_createSelectedContainers ) {
-        ATH_MSG_DEBUG(  "Creating selected Containers");
+        ANA_MSG_DEBUG(  "Creating selected Containers");
         if( m_useElectrons ) selectedElectrons  = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
         if( m_useMuons )     selectedMuons      = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
         selectedJets      = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
@@ -539,23 +537,23 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       //
       // if an object has been flagged as 'passOR', it will be stored in the 'selected' container
       //
-      ATH_MSG_DEBUG(  "Resizing");
+      ANA_MSG_DEBUG(  "Resizing");
       if ( m_useElectrons ) { ANA_CHECK( HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR)); }
       if ( m_useMuons )     { ANA_CHECK( HelperFunctions::makeSubsetCont(inMuons, selectedMuons, msg(), ORdecor.c_str(), ToolName::SELECTOR)); }
       ANA_CHECK( HelperFunctions::makeSubsetCont(inJets, selectedJets, msg(), ORdecor.c_str(), ToolName::SELECTOR));
       if ( m_usePhotons )   { ANA_CHECK( HelperFunctions::makeSubsetCont(inPhotons, selectedPhotons, msg(), ORdecor.c_str(), ToolName::SELECTOR)); }
       if ( m_useTaus )      { ANA_CHECK( HelperFunctions::makeSubsetCont(inTaus, selectedTaus, msg(), ORdecor.c_str(), ToolName::SELECTOR)); }
 
-      if ( m_useElectrons) { ATH_MSG_DEBUG(  "selectedElectrons : " << selectedElectrons->size()); }
-      if ( m_useMuons )    { ATH_MSG_DEBUG(  "selectedMuons : " << selectedMuons->size()); }
-      ATH_MSG_DEBUG(  "selectedJets : " << selectedJets->size());
-      if ( m_usePhotons )  { ATH_MSG_DEBUG(  "selectedPhotons : " << selectedPhotons->size()); }
-      if ( m_useTaus )     { ATH_MSG_DEBUG(  "selectedTaus : " << selectedTaus->size() ); }
+      if ( m_useElectrons) { ANA_MSG_DEBUG(  "selectedElectrons : " << selectedElectrons->size()); }
+      if ( m_useMuons )    { ANA_MSG_DEBUG(  "selectedMuons : " << selectedMuons->size()); }
+      ANA_MSG_DEBUG(  "selectedJets : " << selectedJets->size());
+      if ( m_usePhotons )  { ANA_MSG_DEBUG(  "selectedPhotons : " << selectedPhotons->size()); }
+      if ( m_useTaus )     { ANA_MSG_DEBUG(  "selectedTaus : " << selectedTaus->size() ); }
 
       // add ConstDataVector to TStore
       //
       if ( m_createSelectedContainers ) {
-        ATH_MSG_DEBUG(  "Recording");
+        ANA_MSG_DEBUG(  "Recording");
         if ( m_useElectrons ){ ANA_CHECK( m_store->record( selectedElectrons,   m_outContainerName_Electrons )); }
         if ( m_useMuons )    { ANA_CHECK( m_store->record( selectedMuons,  m_outContainerName_Muons )); }
         ANA_CHECK( m_store->record( selectedJets,  m_outContainerName_Jets ));
@@ -568,12 +566,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case ELSYST : // electron syst
     {
-      ATH_MSG_DEBUG(  "Doing  electron systematics");
+      ANA_MSG_DEBUG(  "Doing  electron systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      ATH_MSG_DEBUG("will consider the following ELECTRON systematics:" );
-      for ( auto it : *sysVec ){ ATH_MSG_DEBUG("\t " << it); }
+      ANA_MSG_DEBUG("will consider the following ELECTRON systematics:" );
+      for ( auto it : *sysVec ){ ANA_MSG_DEBUG("\t " << it); }
 
       // these input containers won't change in the electron syst loop ...
       if( m_useMuons ) {
@@ -581,7 +579,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
         }
       }
 
@@ -589,7 +587,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, msg()) );
       } else {
         nomContainerNotFound = true;
-        if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+        if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
       }
 
       if ( m_usePhotons ) {
@@ -597,7 +595,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -606,7 +604,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -673,12 +671,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case MUSYST: // muon syst
     {
-      ATH_MSG_DEBUG(  "Doing  muon systematics");
+      ANA_MSG_DEBUG(  "Doing  muon systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      ATH_MSG_DEBUG("will consider the following MUON systematics:" );
-      for ( auto it : *sysVec ){ ATH_MSG_DEBUG("\t " << it); }
+      ANA_MSG_DEBUG("will consider the following MUON systematics:" );
+      for ( auto it : *sysVec ){ ANA_MSG_DEBUG("\t " << it); }
 
       // these input containers won't change in the muon syst loop ...
       if( m_useElectrons ) {
@@ -686,7 +684,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
         }
       }
 
@@ -694,7 +692,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, msg()) );
       } else {
         nomContainerNotFound = true;
-        if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+        if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
       }
 
       if ( m_usePhotons ) {
@@ -702,7 +700,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -711,7 +709,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -778,12 +776,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case JETSYST: // jet systematics
     {
-      ATH_MSG_DEBUG(  "Doing  jet systematics");
+      ANA_MSG_DEBUG(  "Doing  jet systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      ATH_MSG_DEBUG("will consider the following JET systematics:" );
-      for ( auto it : *sysVec ) { ATH_MSG_DEBUG("\t " << it);  }
+      ANA_MSG_DEBUG("will consider the following JET systematics:" );
+      for ( auto it : *sysVec ) { ANA_MSG_DEBUG("\t " << it);  }
 
       // these input containers won't change in the jet syst loop ...
       if( m_useElectrons ) {
@@ -791,7 +789,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
         }
       }
 
@@ -800,7 +798,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -809,7 +807,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -818,7 +816,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -885,12 +883,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case PHSYST : // photon systematics
     {
-      ATH_MSG_DEBUG(  "Doing  photon systematics");
+      ANA_MSG_DEBUG(  "Doing  photon systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      ATH_MSG_DEBUG("will consider the following PHOTON systematics:" );
-      for ( auto it : *sysVec ) { ATH_MSG_DEBUG("\t " << it);  }
+      ANA_MSG_DEBUG("will consider the following PHOTON systematics:" );
+      for ( auto it : *sysVec ) { ANA_MSG_DEBUG("\t " << it);  }
 
       // these input containers won't change in the photon syst loop ...
       if( m_useElectrons ) {
@@ -898,7 +896,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
         }
       }
 
@@ -907,7 +905,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -915,7 +913,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, msg()) );
       } else {
         nomContainerNotFound = true;
-        if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+        if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
       }
 
       if ( m_useTaus ) {
@@ -923,7 +921,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -991,12 +989,12 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     case TAUSYST : // tau systematics
     {
-      ATH_MSG_DEBUG(  "Doing tau systematics");
+      ANA_MSG_DEBUG(  "Doing tau systematics");
       bool nomContainerNotFound(false);
 
       // just to check everything is fine
-      ATH_MSG_DEBUG("output vector already contains the following TAU systematics:" );
-      for ( auto it : *sysVec ) { ATH_MSG_DEBUG("\t " << it);  }
+      ANA_MSG_DEBUG("output vector already contains the following TAU systematics:" );
+      for ( auto it : *sysVec ) { ANA_MSG_DEBUG("\t " << it);  }
 
       // these input containers won't change in the tau syst loop ...
       if( m_useElectrons ) {
@@ -1004,7 +1002,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName_Electrons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Electrons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case...");  }
         }
       }
 
@@ -1013,7 +1011,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName_Muons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Muons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -1021,7 +1019,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, msg()) );
       } else {
         nomContainerNotFound = true;
-        if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+        if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
       }
 
       if ( m_usePhotons ) {
@@ -1029,7 +1027,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;
-          if ( m_numEvent == 1 ) { ATH_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
+          if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Photons << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
 
@@ -1096,7 +1094,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     }
     default :
     {
-      ATH_MSG_ERROR("Unknown systematics type. Aborting");
+      ANA_MSG_ERROR("Unknown systematics type. Aborting");
       return EL::StatusCode::FAILURE;
     }
   } // end of switch

@@ -27,7 +27,6 @@
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HLTJetGetter.h"
-#include <AsgTools/MessageCheck.h>
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
@@ -42,7 +41,7 @@ Algorithm("HLTJetGetter")
 
 EL::StatusCode HLTJetGetter :: setupJob (EL::Job& job)
 {
-    ATH_MSG_INFO( "Calling setupJob");
+    ANA_MSG_INFO( "Calling setupJob");
     job.useXAOD ();
     xAOD::Init( "HLTJetGetter" ).ignore(); // call before opening first file
     return EL::StatusCode::SUCCESS;
@@ -74,7 +73,7 @@ EL::StatusCode HLTJetGetter :: initialize ()
 {
 
 
-    ATH_MSG_INFO( "Initializing HLTJetGetter Interface... ");
+    ANA_MSG_INFO( "Initializing HLTJetGetter Interface... ");
 
     m_event = wk()->xaodEvent();
     m_store = wk()->xaodStore();
@@ -98,12 +97,12 @@ EL::StatusCode HLTJetGetter :: initialize ()
         ANA_CHECK( m_trigDecTool->setProperty( "TrigDecisionKey", "xTrigDecision" ));
         ANA_CHECK( m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR));
         ANA_CHECK( m_trigDecTool->initialize());
-        ATH_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
+        ANA_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
     }
 
     // If there is no InputContainer we must stop
     if ( m_inContainerName.empty() ) {
-        ATH_MSG_ERROR( "InputContainer is empty!");
+        ANA_MSG_ERROR( "InputContainer is empty!");
         return EL::StatusCode::FAILURE;
     }
 
@@ -113,7 +112,7 @@ EL::StatusCode HLTJetGetter :: initialize ()
 
 EL::StatusCode HLTJetGetter :: execute ()
 {
-    ATH_MSG_DEBUG( "Getting HLT jets... ");
+    ANA_MSG_DEBUG( "Getting HLT jets... ");
 
     //
     // Create the new container and its auxiliary store.
@@ -138,7 +137,7 @@ EL::StatusCode HLTJetGetter :: execute ()
         }//end trigJet loop
     }//end feature container loop
 
-    ATH_EXEC_VERBOSE(m_store->print());
+    if(msgLvl(MSG::VERBOSE)) m_store->print();
 
     return EL::StatusCode::SUCCESS;
 }
@@ -147,7 +146,7 @@ EL::StatusCode HLTJetGetter :: execute ()
 
 EL::StatusCode HLTJetGetter :: postExecute ()
 {
-    ATH_MSG_DEBUG( "Calling postExecute");
+    ANA_MSG_DEBUG( "Calling postExecute");
     return EL::StatusCode::SUCCESS;
 }
 
@@ -155,7 +154,7 @@ EL::StatusCode HLTJetGetter :: postExecute ()
 
 EL::StatusCode HLTJetGetter :: finalize ()
 {
-    ATH_MSG_INFO( "Deleting tool instances...");
+    ANA_MSG_INFO( "Deleting tool instances...");
 
     // this is necessary because in most cases the pointer will be set to null
     // after deletion in BasicEventSelection, but it will not propagate here
@@ -171,7 +170,7 @@ EL::StatusCode HLTJetGetter :: finalize ()
 
 EL::StatusCode HLTJetGetter :: histFinalize ()
 {
-    ATH_MSG_INFO( "Calling histFinalize");
+    ANA_MSG_INFO( "Calling histFinalize");
     ANA_CHECK( xAH::Algorithm::algFinalize());
     return EL::StatusCode::SUCCESS;
 }
