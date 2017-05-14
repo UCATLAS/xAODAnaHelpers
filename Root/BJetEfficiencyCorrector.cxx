@@ -21,6 +21,12 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 
+#include <AsgTools/MessageCheck.h>
+
+// tools
+#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
+#include "xAODBTaggingEfficiency/BTaggingEfficiencyTool.h"
+
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -146,57 +152,44 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     m_getScaleFactors = false;
   }
 
-  //
   // initialize the BJetSelectionTool
-  //
-  std::string sel_tool_name = std::string("BJetSelectionTool_") + m_name;
-  if ( asg::ToolStore::contains<BTaggingSelectionTool>( sel_tool_name ) ) {
-    m_BJetSelectTool = asg::ToolStore::get<BTaggingSelectionTool>( sel_tool_name );
-  } else {
-    m_BJetSelectTool = new BTaggingSelectionTool( sel_tool_name );
+  m_BJetSelectTool_handle.setName("BJetSelectionTool_" + m_name);
+  ANA_MSG_DEBUG( "Trying to initialize " << m_BJetSelectTool_handle.typeAndName() );
+  if(!m_BJetSelectTool_handle.isUserConfigured()){
+    //  Configure the BJetSelectionTool
+    // A few which are not configurable as of yet....
+    // is there a reason to have this configurable here??...I think no (GF to self)
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",2.5));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt",20000.));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()));
+    // configurable parameters
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",          m_taggerName));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",           m_jetAuthor));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel", msg().level() ));
   }
-  m_BJetSelectTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
+  ANA_CHECK( m_BJetSelectTool_handle.retrieve());
+  ANA_MSG_DEBUG( "Successfully initialized " << m_BJetSelectTool_handle.typeAndName() );
 
-  //
-  //  Configure the BJetSelectionTool
-  //
-  // A few which are not configurable as of yet....
-  // is there a reason to have this configurable here??...I think no (GF to self)
-  ANA_CHECK( m_BJetSelectTool->setProperty("MaxEta",2.5));
-  ANA_CHECK( m_BJetSelectTool->setProperty("MinPt",20000.));
-  ANA_CHECK( m_BJetSelectTool->setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()));
-  // configurable parameters
-  ANA_CHECK( m_BJetSelectTool->setProperty("TaggerName",          m_taggerName));
-  ANA_CHECK( m_BJetSelectTool->setProperty("OperatingPoint",      m_operatingPt));
-  ANA_CHECK( m_BJetSelectTool->setProperty("JetAuthor",           m_jetAuthor));
-  ANA_CHECK( m_BJetSelectTool->initialize());
-  ANA_MSG_INFO( "BTaggingSelectionTool initialized : " << m_BJetSelectTool->name() );
-
-  //
   //  Configure the BJetEfficiencyCorrectionTool
-  //
   if( m_getScaleFactors ) {
 
-    //
     // initialize the BJetEfficiencyCorrectionTool
-    //
-    std::string sf_tool_name = std::string("BJetEfficiencyCorrectionTool_") + m_name;
-    if ( asg::ToolStore::contains<BTaggingEfficiencyTool>( sf_tool_name ) ) {
-      m_BJetEffSFTool = asg::ToolStore::get<BTaggingEfficiencyTool>( sf_tool_name );
-    } else {
-      m_BJetEffSFTool = new BTaggingEfficiencyTool( sf_tool_name );
+    m_BJetEffSFTool_handle.setName("BJetEfficiencyCorrectionTool_" + m_name);
+    ANA_MSG_DEBUG( "Trying to initialize " << m_BJetEffSFTool_handle.typeAndName() );
+    if(!m_BJetEffSFTool_handle.isUserConfigured()){
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("TaggerName",          m_taggerName));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("SystematicsStrategy", m_systematicsStrategy ));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OperatingPoint",      m_operatingPtCDI));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("JetAuthor",           m_jetAuthor));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ScaleFactorFileName", m_corrFileName));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
     }
-    m_BJetEffSFTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO, ERROR
+    ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
+    ANA_MSG_DEBUG( "Successfully initialized " << m_BJetEffSFTool_handle.typeAndName() );
 
-    ANA_CHECK( m_BJetEffSFTool->setProperty("TaggerName",          m_taggerName));
-    ANA_CHECK( m_BJetEffSFTool->setProperty("SystematicsStrategy", m_systematicsStrategy ));
-    ANA_CHECK( m_BJetEffSFTool->setProperty("OperatingPoint",      m_operatingPtCDI));
-    ANA_CHECK( m_BJetEffSFTool->setProperty("JetAuthor",           m_jetAuthor));
-    ANA_CHECK( m_BJetEffSFTool->setProperty("ScaleFactorFileName", m_corrFileName));
-    ANA_CHECK( m_BJetEffSFTool->setProperty("UseDevelopmentFile",  m_useDevelopmentFile));
-    ANA_CHECK( m_BJetEffSFTool->setProperty("ConeFlavourLabel",    m_coneFlavourLabel));
-    ANA_CHECK( m_BJetEffSFTool->initialize());
-    ANA_MSG_INFO( "BTaggingEfficiencyTool initialized : " << m_BJetEffSFTool->name() );
   } else {
     ANA_MSG_WARNING( "Input operating point is not calibrated - no SFs will be obtained");
   }
@@ -206,8 +199,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   //
   if( !m_systName.empty() && m_getScaleFactors ) {
     ANA_MSG_DEBUG("-----------------------------------------------------");
-    const std::map<CP::SystematicVariation, std::vector<std::string> > allowed_variations = m_BJetEffSFTool->listSystematics();
-    ANA_MSG_DEBUG("Allowed systematics variations for tool " << m_BJetEffSFTool->name() << ":");
+    const std::map<CP::SystematicVariation, std::vector<std::string> > allowed_variations = m_BJetEffSFTool_handle->listSystematics();
+    ANA_MSG_DEBUG("Allowed systematics variations for tool " << m_BJetEffSFTool_handle.typeAndName() << ":");
     for (auto var : allowed_variations) {
       ANA_MSG_DEBUG(std::setw(40) << std::left << var.first.name() << ":");
       for (auto flv : var.second) ANA_MSG_DEBUG("\t" << flv);
@@ -218,7 +211,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   // Get a list of affecting systematics
   if( m_getScaleFactors ) {
-    CP::SystematicSet affectSysts = m_BJetEffSFTool->affectingSystematics();
+    CP::SystematicSet affectSysts = m_BJetEffSFTool_handle->affectingSystematics();
     // Convert into a simple list
     std::vector<CP::SystematicSet> affectSystList = CP::make_systematics_vector(affectSysts);
     if( !m_systName.empty() ) {
@@ -228,7 +221,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     }
 
     // Get a list of recommended systematics
-    CP::SystematicSet recSysts = m_BJetEffSFTool->recommendedSystematics();
+    CP::SystematicSet recSysts = m_BJetEffSFTool_handle->recommendedSystematics();
     // Convert into a simple list -- nominal is included already here!!
     m_systList = CP::make_systematics_vector(recSysts);
     if( !m_systName.empty() ) {
@@ -390,7 +383,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     //
     if (m_getScaleFactors ) {
 
-      if (m_BJetEffSFTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+      if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
         ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
         return EL::StatusCode::FAILURE;
       }
@@ -408,7 +401,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       // Add decorator for decision
       //
       SG::AuxElement::Decorator< char > isBTag( m_decor );
-      if( m_BJetSelectTool->accept( *jet_itr ) ) {
+      if( m_BJetSelectTool_handle->accept( *jet_itr ) ) {
         isBTag( *jet_itr ) = 1;
         tagged = true;
       }
@@ -425,9 +418,9 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
         // if passes cut take the efficiency scale factor
         // if failed cut take the inefficiency scale factor
         if( tagged ) {
-          BJetEffCode = m_BJetEffSFTool->getScaleFactor( *jet_itr, SF );
+          BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
         } else {
-          BJetEffCode = m_BJetEffSFTool->getInefficiencyScaleFactor( *jet_itr, SF );
+          BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
         }
         if (BJetEffCode == CP::CorrectionCode::Error){
           ANA_MSG_WARNING( "Error in getEfficiencyScaleFactor");
@@ -450,7 +443,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
         //
         float eff(0.0);
         if( (fabs(jet_itr->eta()) < 2.5) &&
-            m_BJetEffSFTool->getEfficiency( *jet_itr, eff ) != CP::CorrectionCode::Ok){
+            m_BJetEffSFTool_handle->getEfficiency( *jet_itr, eff ) != CP::CorrectionCode::Ok){
           ANA_MSG_ERROR( "Problem in getRecoEfficiency");
           //return EL::StatusCode::FAILURE;
         }
@@ -511,11 +504,6 @@ EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
 
 EL::StatusCode BJetEfficiencyCorrector :: finalize ()
 {
-  ANA_MSG_INFO( "Deleting tool instances...");
-
-  if ( m_BJetSelectTool ) { delete m_BJetSelectTool; m_BJetSelectTool = nullptr;  }
-  if ( m_BJetEffSFTool )  { delete m_BJetEffSFTool; m_BJetEffSFTool = nullptr; }
-
   return EL::StatusCode::SUCCESS;
 }
 
