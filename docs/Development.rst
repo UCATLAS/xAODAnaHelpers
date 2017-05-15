@@ -331,15 +331,12 @@ This is albeit a litle bit trickier for anyone new to how Athena tools work. Fir
     //...
 
     // initialize jet calibration tool
-    m_JetCalibrationTool_handle.setName("JetCalibrationTool_" + m_name);
-    ANA_MSG_DEBUG("Trying to initialize " << m_JetCalibrationToolHandle.typeAndName());
-    if( !m_JetCalibrationTool_handle.isUserConfigured() ){
-      ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
-      //... other setProperty() calls and other logic can be in here for tool configuration
-      ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
-    }
+    setToolName(m_JetCalibrationTool_handle);
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
+    //... other setProperty() calls and other logic can be in here for tool configuration
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JetCalibrationTool_handle.retrieve());
-    ANA_MSG_DEBUG("Successfully initialized " << m_JetCalibrationToolHandle.typeAndName());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_JetCalibrationTool_handle);
   }
 
   EL::StatusCode JetCalibrator :: execute () {
@@ -371,9 +368,15 @@ Lastly for the header, we make the tool handle a private member of our class. Ma
 
 Next, looking at the source code... we include the header file for our tool. Although this may not always be needed, it is good practice to help others figure out where the tool is. As of writing this documentation, the interface and the tool may be defined in different packages! Moving on, we will want to put tool initializations in ``initialize()`` as this will only get called on files that have events. Files without events will not create a tool, conserving memory and processing power.
 
-Next, we set a name for the tool. If we want to have a unique tool every time the algorithm is called, we suggest you use ``m_name`` or ``GetName()`` (both are equivalent). Using the name of the algorithm guarantees uniqueness as two algorithms can't have the same name or the code crashes. If you need to retrieve a tool created in another class, you will need to have the same name for the algorithm to pick it up correctly (from the ToolStore). If you don't set a name for the tool, only a type, the default name is the type.
+Next, we set a name for the tool and check if it exists with :cpp:member:`xAH::Algorithm::setToolName`. This takes in two arguments; the second argument, which is optional, is the name of the tool. The efault behavior is to create an faux-private tool which we do by assigning a unique name to the tool based on the algorithm's name and address in memory. If you need to use/retrieve a tool created in another class, you will need to have the same name in both places for the ToolHandle to find it.
 
-Next, we ask the configuration service if the tool of the given type and name has ever been configured before ``::isUserConfigured()``. If it has, this means this tool was configured already (and most likely created/initialized), and we should definitely not change the configuration of that tool.
+.. note::
+  If you don't set a name for the tool, only a type, the default name is the type. For example::
+
+      asg::AnaToolHandle<IJetCalibrationTool> test_handle{"JetCalibrationTool"};
+      ANA_MSG_INFO(test_handle.name()); // will output "JetCalibrationTool"
+
+If a tool with the given type and name already exists, :cpp:member:`xAH::Algorithm::setToolName` will also additionally emit an :code:`ANA_MSG_WARNING` about this which can be safely ignored if you are expecting to retrieve an existing tool instead of making a new one.
 
 .. note::
 
@@ -383,15 +386,34 @@ Next, we ask the configuration service if the tool of the given type and name ha
 
   This is a slight gotcha that will trip up people. Because of this, |xAH| prefers the convention of using :code:`isUserConfigured()` instead as this doesn't need the additional ``ToolSvc.`` prepended to the tool name to look it up!
 
-
-Also, it won't let us change the configuration of a previously configured tool anyways... If it has not been configured before, then let's go ahead and configure it with ``setProperty()``!  One thing you should **always** do is set the output level of the tool ``OutputLevel``. It is usually best to set it to the same output level that the algorithm is configured to ``msg().level()`` and is probably the safest prescription.
-
-.. note:: For setting properties or managing tools through the tool handle, you access functions through the dot (``.``) operator. For using the tool, you access functions through the arrow (``->``) operator.
-
-Finally, we ``retrieve()`` the tool of the given type and name from the tool store. This will either create a tool with the provided configurations if it was not created before, or simply retrieve the existing tool for continued usage. And that's it, the memory will be managed for you and you do not need to delete it or do anything else but use it in your code!
+If it has :code:`isUserConfigured()==0` (e.g. "not configured before": a tool with that type and name has not been created), then let's go ahead and configure it with ``setProperty()``!  One thing you should **always** do is set the output level of the tool ``OutputLevel``. It is usually best to set it to the same output level that the algorithm is configured to ``msg().level()`` and is probably the safest prescription.
 
 .. note::
-  Did you get a Bus error in the code because of the tools? If so, identify which tool causes the Bus error and file an issue so we can inform the tool developers that their tool needs to be fixed. In the meantime, this can be fixed using a macro::
+  For setting properties or managing tools through the tool handle, you access functions through the dot (``.``) operator. For using the tool, you access functions through the arrow (``->``) operator.
+
+If a tool handle has been configured previously, but not initialized (such as using a tool handle of the same type and name as a previously created tool handle), then all :code:`setProperty()` calls will be further ignored. I can demonstrate this with a neat code example::
+
+  // set up the players
+  asg::AnaToolHandle<IJetCalibrationTool> alice{"JetCalibrationTool/MyName"};
+  asg::AnaToolHandle<IJetCalibrationTool> bob  {"JetCalibrationTool/MyName"};
+
+  // set configurations on the first handle
+  ANA_CHECK(alice.setProperty("p1", v1)); // will set the underlying tool MyName->p1 = v1
+  ANA_CHECK(alice.setProperty("p2", v2)); // will set the underlying tool MyName->p2 = v2
+  ANA_CHECK(alice.retrieve()); // creates the tool MyName
+
+  ANA_CHECK(bob.setProperty("p1", v9)); // will be ignored as bob.isUserConfigured() == 1 [alice owns the tool]
+  ANA_CHECK(bob.setProperty("p3", v3)); // will be ignored as bob.isUserConfigured() == 1 [alice owns the tool]
+  ANA_CHECK(bob.retrieve()); // retrieves the existing tool MyName
+
+AnaToolHandle will also not let us change the configuration of a previously initialized tool (one which :code:`handle.retrieve()` has been called on). In this case, the tool has been :code:`initialized`. Continuing the code example from before, if you were annoyed that the :code:`setProperty()` calls were ignored, you might try setting it again on ``alice``::
+
+  ANA_CHECK(alice.setProperty("p3", v3)); // will crash as alice.isInitialized() == 1 [alice already created its tool]
+
+Finally, we :code:`retrieve()` (:code:`initialize()`) the tool of the given type and name from the tool store. :code:`retreive()` and :code:`initialize()` are synonyms and will almost always create a new tool. The only two exceptions are if the user configured the tool (:code:`isUserConfigured()==1`) or if another ToolHandle created the tool as a public tool and holds on to it. But that's it, the memory will be managed for you and you do not need to delete it or do anything else but use it in your code!
+
+.. note::
+  Did you get a bus error, segfault, or abort in the code because of the tools? If so, it is most likely due to a typo in the tool's header file. Please identify which tool causes the error and file an issue so we can inform the tool developers that their tool needs to be fixed. In the meantime, this can be fixed using a macro::
 
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
 
@@ -428,27 +450,26 @@ The TrigDecisionTool is a special case that needs attention. This tool is unique
   EL::StatusCode MyAlgorithm :: initialize(){
 
     // Grab the TrigDecTool from the ToolStore
-    if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-    ANA_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
-    if(!m_trigDecTool_handle.isUserConfigured()){
+    if(!setToolName(m_trigDecTool_handle, m_trigDecTool_name)){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Double-check the name of the tool." );
       return EL::StatusCode::FAILURE;
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
   }
 
-This is an example of how one designs an algorithm that requires the TrigDecisionTool and will crash if it cannot find it. It also prints the name of the tool it is using to make it much easier for a user to debug. By convention in |xAH|, we do not set a name on the TrigDecisionTool, the name will just be defaulting to the type of the tool :code:`Trig::TrigDecisionTool`. All algorithms follow this default. If there is an external algorithm that creates it and you want |xAH| to pick it up instead of creating one, this is done by setting :code:`m_trigDecTool_name` to a non-empty value and you're good to go. For example, :cpp:class:`BasicEventSelection` creates a trigger decision tool if one does not exist::
+The above is an example of how one designs an algorithm that requires the TrigDecisionTool and will crash if it cannot find it.
 
-  if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-  ANA_MSG_DEBUG( "Trying to initialize " << m_trigDecTool_handle.typeAndName());
-  if(!m_trigDecTool_handle.isUserConfigured()){
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
-  }
+.. note:: :cpp:member:`xAH::Algorithm::setToolName` returns a boolean for the existence of a given tool.
+
+It also prints the name of the tool it is using to make it much easier for a user to debug. By convention in |xAH|, :cpp:member:`BasicEventSelection::m_trigDecTool_name` will default to :code:`"xAH::TrigDecTool"`. All algorithms follow this default if they need the trigger decision tool. If there is an external algorithm that creates it and you want |xAH| to pick it up instead of creating one, this can be done by setting :code:`m_trigDecTool_name` to a non-empty value and you're good to go. For example, :cpp:class:`BasicEventSelection` will create a trigger decision tool if it does not exist::
+
+  setToolName(m_trigDecTool_handle, m_trigDecTool_name);
+  ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
+  ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
+  ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
   ANA_CHECK( m_trigDecTool_handle.retrieve());
-  ANA_MSG_DEBUG( "Successfully initialized " << m_trigDecTool_handle.typeAndName());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
-so that if such a tool already was created before ``BasicEventSelection`` tries to create it, it will retrieve it instead of trying to configure it. If it has not been created/configured before, it will configure and then create the tool. No extra logic needed on the users' part.
+so that if such a tool already was created before ``BasicEventSelection`` tries to create it, it will retrieve it (and the :code:`setProperty()` calls will be ignored). If it has not been created/configured before, it will configure and then create the tool. No extra logic needed on the users' part.

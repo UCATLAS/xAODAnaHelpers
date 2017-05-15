@@ -240,13 +240,12 @@ EL::StatusCode MuonSelector :: initialize ()
   // Set eta and quality requirements in order to accept the muon - ID tracks required by default
   //
 
-  m_muonSelectionTool_handle.setName("MuonSelectionTool_" + m_name);
-  if(!m_muonSelectionTool_handle.isUserConfigured()){
-    ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ));
-    ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
-    ANA_CHECK( m_muonSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
-  }
+  setToolName(m_muonSelectionTool_handle);
+  ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ));
+  ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
+  ANA_CHECK( m_muonSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
   ANA_CHECK( m_muonSelectionTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_muonSelectionTool_handle);
 
   // *************************************
   //
@@ -254,15 +253,13 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // *************************************
 
-  m_isolationSelectionTool_handle.setName("IsolationSelectionTool_" + m_name);
-  if(!m_isolationSelectionTool_handle.isUserConfigured()){
-    // Do this only for the first WP in the list
-    //
-    ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
-    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
-    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
-  }
+  setToolName(m_isolationSelectionTool_handle);
+  // Do this only for the first WP in the list
+  ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
+  ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
+  ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
   ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_isolationSelectionTool_handle);
   m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
 
   // Add the remaining input WPs to the tool
@@ -303,22 +300,19 @@ EL::StatusCode MuonSelector :: initialize ()
 
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) ) {
     // Grab the TrigDecTool from the ToolStore
-    if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-    ANA_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
-    if(!m_trigDecTool_handle.isUserConfigured()){
+    if(!setToolName(m_trigDecTool_handle, m_trigDecTool_name)){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
     //  everything went fine, let's initialise the tool!
-    m_trigMuonMatchTool_handle.setName("MatchingTool_" + m_name);
-    if(!m_trigMuonMatchTool_handle.isUserConfigured()){
-      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
-      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
-    }
+    setToolName(m_trigMuonMatchTool_handle);
+    ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+    ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
     ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
 
   } else {
 

@@ -219,21 +219,19 @@ EL::StatusCode JetSelector :: initialize ()
   if ( m_doBTagCut ) {
 
     // initialize the BJetSelectionTool
-    m_BJetSelectTool_handle.setName("BJetSelectionTool_" + m_name);
-    if(!m_BJetSelectTool_handle.isUserConfigured()){
-      // A few which are not configurable as of yet....
-      // is there a reason to have this configurable here??...I think no (GF to self)
-      ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",m_b_eta_max));
-      ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt",m_b_pt_min));
-      ANA_CHECK( m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName", m_corrFileName));
-
-      // configurable parameters
-      ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",	      m_taggerName));
-      ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
-      ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",	      m_jetAuthor));
-      ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel",  msg().level()));
-    }
+    setToolName(m_BJetSelectTool_handle);
+    // A few which are not configurable as of yet....
+    // is there a reason to have this configurable here??...I think no (GF to self)
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",m_b_eta_max));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt",m_b_pt_min));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName", m_corrFileName));
+    // configurable parameters
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",	      m_taggerName));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",	      m_jetAuthor));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel",  msg().level()));
     ANA_CHECK( m_BJetSelectTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_BJetSelectTool_handle);
 
   }
 
@@ -244,20 +242,15 @@ EL::StatusCode JetSelector :: initialize ()
   ANA_MSG_DEBUG("Successfully initialized fJVT tool");
 
   // initialize the CP::JetJvtEfficiency Tool
-  ANA_MSG_DEBUG("Trying to initialize JetJvtEff tool");
-  m_JVT_tool_handle.setName("JetJvtEfficiency_effSF_" + m_name);
-  if(!m_JVT_tool_handle.isUserConfigured()) {
-    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
-    ANA_CHECK( m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ));
-    ANA_CHECK( m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ));
-    ANA_CHECK( m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()));
-  }
+  setToolName(m_JVT_tool_handle);
+  ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
+  ANA_CHECK( m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ));
+  ANA_CHECK( m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ));
+  ANA_CHECK( m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()));
   ANA_CHECK( m_JVT_tool_handle.retrieve());
-  ANA_MSG_DEBUG("Successfully initialized JetJvtEff tool");
-
+  ANA_MSG_DEBUG("Retrieved tool: " << m_JVT_tool_handle);
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
-  //
   m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
 
   CP::SystematicSet affectSystsJVT = m_JVT_tool_handle->affectingSystematics();

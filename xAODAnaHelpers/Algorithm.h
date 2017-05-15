@@ -238,17 +238,22 @@ namespace xAH {
 
         /**
             @rst
-                Sets the name of the tool and checks if the tool has been configured previously.
+                Sets the name of the tool and emits :code:`ANA_MSG_WARNING` if the tool of given type/name has been configured previously.
 
-                If a tool has been configured previously, an :code:`ATH_MSG_WARNING` will be emitted for the user to use/look for.
+                The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in :code:`histInitialize()`. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:member:`xAH::Algorithm::getAddress()`) appended to ensure the tool is unique and effectively private.
+
+                The tool will not be guaranteed unique if two tools of the same type are created without a name passed in. But this is, at this point, up to the user and a more complex scenario than what this function tries to simplify on its own.
 
             @endrst
          */
         template <typename T>
-        void checkConfigured(const asg::AnaToolHandle<T>& handle, std::string name) const {
-          if(name.empty()) name = "xAH::" + m_name + getAddress();
+        bool setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
+          if(name.empty()) name = handle.type() + "_" + m_name + "::" + getAddress();
           handle.setName(name);
-          if (handle.isUserConfigured()) ANA_MSG_WARNING ("note: handle " << handle.typeAndName() << " is user configured");
+          ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
+          bool res = handle.isUserConfigured();
+          if (res) ANA_MSG_WARNING("note: handle " << handle.typeAndName() << " is user configured. If this is expected, ignore the message. If it is not expected, look into " << m_className + "::" << m_name << ", check documentation, or ask around.");
+          return res;
         }
 
         /// @brief Return a :code:`std::string` representation of :code:`this`

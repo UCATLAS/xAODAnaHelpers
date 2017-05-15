@@ -185,9 +185,7 @@ namespace HelperFunctions {
    */
   template< typename T1, typename T2 >
   StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, MsgStream& msg, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT){
-     std::string tname1 = type_name<T1>();
-     std::string tname2 = type_name<T2>();
-     msg.setName(msg.name()+".makeSubsetCont<"+tname1+","+tname2+">");
+     std::string funcName{"in makeSubsetCont<"+type_name<T1>()+","+type_name<T2>()+">(): "};
 
      if ( tool_name == HelperClasses::ToolName::DEFAULT ) {
 
@@ -197,7 +195,7 @@ namespace HelperFunctions {
      }
 
      if ( flagSelect.empty() ) {
-       msg << MSG::ERROR << "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" << endmsg;
+       msg << MSG::ERROR << funcName << "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" << endmsg;
        return StatusCode::FAILURE;
      }
 
@@ -207,7 +205,7 @@ namespace HelperFunctions {
 
        if ( !myAccessor.isAvailable(*(in_itr)) ) {
      	 std::stringstream ss; ss << in_itr->type();
-         msg << MSG::ERROR << "flag " << flagSelect << " is missing for object of type " << ss.str() << " ! Will not make a subset of its container" << endmsg;
+         msg << MSG::ERROR << funcName << "flag " << flagSelect << " is missing for object of type " << ss.str() << " ! Will not make a subset of its container" << endmsg;
      	 return StatusCode::FAILURE;
        }
 
@@ -250,23 +248,21 @@ namespace HelperFunctions {
         - return FAILURE
         return SUCCESS (should never reach this last line)
     */
-    std::string tname = type_name<T>();
-    msg.setName(msg.name()+".retrieve<"+tname+">");
-
-    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << tname << endmsg;
-    if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
-    if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
-    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
+    std::string funcName{"in retrieve<"+type_name<T>()+">(" + name + "): "};
+    msg << MSG::DEBUG << funcName << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
+    if(store == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if(event == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
-      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TStore" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TStore" << endmsg;
       if(!store->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
-      msg << MSG::DEBUG << "\t\t\tRetrieved from xAOD::TStore" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tRetrieved from xAOD::TStore" << endmsg;
     } else if((event != NULL) && (event->contains<T>(name))){
-      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TEvent" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       if(!event->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
-      msg << MSG::DEBUG << "\t\t\tRetrieved from xAOD::TEvent" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tRetrieved from xAOD::TEvent" << endmsg;
     } else {
-      msg << MSG::DEBUG << "\t\tNot found at all" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\tNot found at all" << endmsg;
       return StatusCode::FAILURE;
     }
     return StatusCode::SUCCESS;
@@ -301,17 +297,16 @@ namespace HelperFunctions {
         - check if event contains 'xAOD::JetContainer' named 'name'
         --- checkstore event
     */
-    std::string tname = type_name<T>();
-    msg.setName(msg.name()+".isAvailable<"+tname+">");
-    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << tname << endmsg;
-    if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
-    if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
-    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
+    std::string funcName{"in isAvailable<"+type_name<T>()+">(" + name + "): "};
+    msg << MSG::DEBUG << funcName << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
+    if(store == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if(event == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
-      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TStore" << endmsg;;
+      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TStore" << endmsg;;
       return true;
     } else if((event != NULL) && (event->contains<T>(name))){
-      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TEvent" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       return true;
     } else {
       return false;
