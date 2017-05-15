@@ -245,10 +245,13 @@ namespace xAH {
             @endrst
          */
         template <typename T>
-        void setToolName(const asg::AnaToolHandle<T>& handle, std::string name = "") const {
+        bool setToolName(const asg::AnaToolHandle<T>& handle, std::string name = "") const {
           if(name.empty()) name = m_name + "::" + getAddress();
           handle.setName(name);
-          if (handle.isUserConfigured()) ANA_MSG_WARNING("note: handle " << handle.typeAndName() << " is user configured. If this is expected, ignore the message. If it is not expected, look into " << m_className + "::" << m_name << ", check documentation, or ask around.");
+          ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
+          bool res = handle.isUserConfigured();
+          if (res) ANA_MSG_WARNING("note: handle " << handle.typeAndName() << " is user configured. If this is expected, ignore the message. If it is not expected, look into " << m_className + "::" << m_name << ", check documentation, or ask around.");
+          return res;
         }
 
         /// @brief Return a :code:`std::string` representation of :code:`this`
