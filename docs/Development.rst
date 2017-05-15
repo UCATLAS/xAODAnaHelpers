@@ -368,7 +368,7 @@ Lastly for the header, we make the tool handle a private member of our class. Ma
 
 Next, looking at the source code... we include the header file for our tool. Although this may not always be needed, it is good practice to help others figure out where the tool is. As of writing this documentation, the interface and the tool may be defined in different packages! Moving on, we will want to put tool initializations in ``initialize()`` as this will only get called on files that have events. Files without events will not create a tool, conserving memory and processing power.
 
-Next, we set a name for the tool and check if it exists with :cpp:member:`xAH::Algorithm::setToolName`. This takes in two arguments; the second argument, which is optional, is the name of the tool. The efault behavior is to create an faux-private tool which we do by assigning a unique name to the tool based on the algorithm's name and address in memory. If you need to use/retrieve a tool created in another class, you will need to have the same name in both places for the ToolHandle to find it.
+Next, we set a name for the tool and check if it exists with :cpp:func:`xAH::Algorithm::setToolName`. This takes in two arguments; the second argument, which is optional, is the name of the tool. The efault behavior is to create an faux-private tool which we do by assigning a unique name to the tool based on the algorithm's name and address in memory. If you need to use/retrieve a tool created in another class, you will need to have the same name in both places for the ToolHandle to find it.
 
 .. note::
   If you don't set a name for the tool, only a type, the default name is the type. For example::
@@ -376,7 +376,7 @@ Next, we set a name for the tool and check if it exists with :cpp:member:`xAH::A
       asg::AnaToolHandle<IJetCalibrationTool> test_handle{"JetCalibrationTool"};
       ANA_MSG_INFO(test_handle.name()); // will output "JetCalibrationTool"
 
-If a tool with the given type and name already exists, :cpp:member:`xAH::Algorithm::setToolName` will also additionally emit an :code:`ANA_MSG_WARNING` about this which can be safely ignored if you are expecting to retrieve an existing tool instead of making a new one.
+If a tool with the given type and name already exists, :cpp:func:`xAH::Algorithm::setToolName` will also additionally emit an :code:`ANA_MSG_WARNING` about this which can be safely ignored if you are expecting to retrieve an existing tool instead of making a new one.
 
 .. note::
 
@@ -461,7 +461,7 @@ The TrigDecisionTool is a special case that needs attention. This tool is unique
 
 The above is an example of how one designs an algorithm that requires the TrigDecisionTool and will crash if it cannot find it.
 
-.. note:: :cpp:member:`xAH::Algorithm::setToolName` returns a boolean for the existence of a given tool.
+.. note:: :cpp:func:`xAH::Algorithm::setToolName` returns a boolean for the existence of a given tool.
 
 It also prints the name of the tool it is using to make it much easier for a user to debug. By convention in |xAH|, :cpp:member:`BasicEventSelection::m_trigDecTool_name` will default to :code:`"xAH::TrigDecTool"`. All algorithms follow this default if they need the trigger decision tool. If there is an external algorithm that creates it and you want |xAH| to pick it up instead of creating one, this can be done by setting :code:`m_trigDecTool_name` to a non-empty value and you're good to go. For example, :cpp:class:`BasicEventSelection` will create a trigger decision tool if it does not exist::
 
