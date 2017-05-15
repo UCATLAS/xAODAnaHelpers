@@ -242,11 +242,13 @@ namespace xAH {
 
                 The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in :code:`histInitialize()`. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:member:`xAH::Algorithm::getAddress()`) appended to ensure the tool is unique and effectively private.
 
+                The tool will not be guaranteed unique if two tools of the same type are created without a name passed in. But this is, at this point, up to the user and a more complex scenario than what this function tries to simplify on its own.
+
             @endrst
          */
         template <typename T>
-        bool setToolName(const asg::AnaToolHandle<T>& handle, std::string name = "") const {
-          if(name.empty()) name = m_name + "::" + getAddress();
+        bool setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
+          if(name.empty()) name = handle.type() + "_" + m_name + "::" + getAddress();
           handle.setName(name);
           ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
           bool res = handle.isUserConfigured();
