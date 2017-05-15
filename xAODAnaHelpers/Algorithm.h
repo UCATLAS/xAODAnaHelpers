@@ -238,17 +238,17 @@ namespace xAH {
 
         /**
             @rst
-                Sets the name of the tool and checks if the tool has been configured previously.
+                Sets the name of the tool and emits :code:`ANA_MSG_WARNING` if the tool of given type/name has been configured previously.
 
-                If a tool has been configured previously, an :code:`ATH_MSG_WARNING` will be emitted for the user to use/look for.
+                The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in :code:`histInitialize()`. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:member:`xAH::Algorithm::getAddress()`) appended to ensure the tool is unique and effectively private.
 
             @endrst
          */
         template <typename T>
-        void checkConfigured(const asg::AnaToolHandle<T>& handle, std::string name) const {
-          if(name.empty()) name = "xAH::" + m_name + getAddress();
+        void setToolName(const asg::AnaToolHandle<T>& handle, std::string name = "") const {
+          if(name.empty()) name = m_name + "::" + getAddress();
           handle.setName(name);
-          if (handle.isUserConfigured()) ANA_MSG_WARNING ("note: handle " << handle.typeAndName() << " is user configured");
+          if (handle.isUserConfigured()) ANA_MSG_WARNING("note: handle " << handle.typeAndName() << " is user configured. If this is expected, ignore the message. If it is not expected, look into " << m_className + "::" << m_name << ", check documentation, or ask around.");
         }
 
         /// @brief Return a :code:`std::string` representation of :code:`this`
