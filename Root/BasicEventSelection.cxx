@@ -327,11 +327,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
     //Initialize Tool
     if( m_reweightSherpa22 ){
 
-      if (!m_reweightSherpa22_tool_handle.isUserConfigured()) {
-        ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ));
-        ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "OutputLevel", msg().level() ));
-      }
+      setToolName(m_reweightSherpa22_tool_handle);
+      ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ));
+      ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "OutputLevel", msg().level() ));
       ANA_CHECK( m_reweightSherpa22_tool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_reweightSherpa22_tool_handle);
 
     }
   }//if isMC and a Sherpa 2.2 sample
@@ -432,18 +432,18 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //
 
   if(m_applyGRLCut){
-    if(!m_grl_handle.isUserConfigured()){
-      std::vector<std::string> vecStringGRL;
+    std::vector<std::string> vecStringGRL;
 
-      std::string grl;
-      std::istringstream ss(PathResolverFindDataFile(m_GRLxml));
-      while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
+    std::string grl;
+    std::istringstream ss(PathResolverFindDataFile(m_GRLxml));
+    while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
 
-      ANA_CHECK( m_grl_handle.setProperty( "GoodRunsListVec", vecStringGRL));
-      ANA_CHECK( m_grl_handle.setProperty("PassThrough", false));
-      ANA_CHECK( m_grl_handle.setProperty("OutputLevel", msg().level()));
-    }
+    setToolName(m_grl_handle);
+    ANA_CHECK( m_grl_handle.setProperty( "GoodRunsListVec", vecStringGRL));
+    ANA_CHECK( m_grl_handle.setProperty("PassThrough", false));
+    ANA_CHECK( m_grl_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_grl_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_grl_handle);
   }
 
   // 2.
@@ -491,17 +491,15 @@ EL::StatusCode BasicEventSelection :: initialize ()
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
 
-    ANA_MSG_DEBUG( "Trying to initialize " << m_pileup_tool_handle.typeAndName() );
-    if(!m_pileup_tool_handle.isUserConfigured()){
-      ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
-      ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
-      ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09));
-      ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0));
-      ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.18));
-      ANA_CHECK( m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ));
-    }
+    setToolName(m_pileup_tool_handle, "Pileup");
+    ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
+    ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
+    ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09));
+    ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0));
+    ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.18));
+    ANA_CHECK( m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ));
     ANA_CHECK( m_pileup_tool_handle.retrieve());
-    ANA_MSG_DEBUG( "Successfully initialized " << m_pileup_tool_handle.typeAndName() );
+    ANA_MSG_DEBUG("Retrieved tool: " << m_pileup_tool_handle);
   }
 
   // pileup reweighing tool is needed to get the data weight for unprescaling
@@ -518,21 +516,17 @@ EL::StatusCode BasicEventSelection :: initialize ()
   if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() ||
       m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
 
-    if(!m_trigConfTool_handle.isUserConfigured()){
-      ANA_CHECK( m_trigConfTool_handle.setProperty("OutputLevel", msg().level()));
-    }
+    setToolName(m_trigConfTool_handle);
+    ANA_CHECK( m_trigConfTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_trigConfTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigConfTool_handle);
 
-    if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-    ANA_MSG_DEBUG( "Trying to initialize " << m_trigDecTool_handle.typeAndName());
-    if(!m_trigDecTool_handle.isUserConfigured()){
-      ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
-      ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
-      ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
-    }
+    setToolName(m_trigDecTool_handle, m_trigDecTool_name);
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
     ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG( "Successfully initialized " << m_trigDecTool_handle.typeAndName());
-
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
   }//end trigger configuration
 
   // As a check, let's see the number of events in our file (long long int)

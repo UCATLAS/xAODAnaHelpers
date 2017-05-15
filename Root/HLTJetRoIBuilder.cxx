@@ -89,14 +89,12 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
   m_store = wk()->xaodStore();
 
   // Grab the TrigDecTool from the ToolStore
-  if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-  ANA_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
-  if(!m_trigDecTool_handle.isUserConfigured()){
+  if(!setToolName(m_trigDecTool_handle, m_trigDecTool_name)){
     ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
     return EL::StatusCode::FAILURE;
   }
   ANA_CHECK( m_trigDecTool_handle.retrieve());
-  ANA_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
   if(m_trigItem.find("split") != std::string::npos){
     m_jetName = "SplitJet";

@@ -298,15 +298,13 @@ EL::StatusCode ElectronSelector :: initialize ()
   //
   // *************************************
 
-  m_isolationSelectionTool_handle.setName("IsolationSelectionTool_" + m_name);
-
-  if(!m_isolationSelectionTool_handle.isUserConfigured()){
-    // Do this only for the first WP in the list
-    ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
-    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()));
-    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level()));
-  }
+  setToolName(m_isolationSelectionTool_handle);
+  // Do this only for the first WP in the list
+  ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
+  ANA_CHECK( m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()));
+  ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level()));
   ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_isolationSelectionTool_handle);
   m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
 
   // Add the remaining input WPs to the tool
@@ -347,22 +345,19 @@ EL::StatusCode ElectronSelector :: initialize ()
   //     do not initialise if there are no input trigger chains
   if(  !( m_singleElTrigChains.empty() && m_diElTrigChains.empty() ) ) {
     // Grab the TrigDecTool from the ToolStore
-    if(!m_trigDecTool_name.empty()) m_trigDecTool_handle.setName(m_trigDecTool_name);
-    ANA_MSG_DEBUG( "Trying to retrieve " << m_trigDecTool_handle.typeAndName());
-    if(!m_trigDecTool_handle.isUserConfigured()){
+    if(!setToolName(m_trigDecTool_handle, m_trigDecTool_name)){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG( "Successfully retrieved " << m_trigDecTool_handle.typeAndName());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
     //  everything went fine, let's initialise the tool!
-    m_trigElectronMatchTool_handle.setName("MatchingTool_" + m_name);
-    if(!m_trigElectronMatchTool_handle.isUserConfigured()){
-      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
-      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
-    }
+    setToolName(m_trigElectronMatchTool_handle);
+    ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+    ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
     ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigElectronMatchTool_handle);
 
   } else {
 
