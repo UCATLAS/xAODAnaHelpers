@@ -240,7 +240,7 @@ namespace xAH {
             @rst
                 Sets the name of the tool and emits :code:`ANA_MSG_WARNING` if the tool of given type/name has been configured previously.
 
-                The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in :code:`histInitialize()`. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:member:`xAH::Algorithm::getAddress()`) appended to ensure the tool is unique and effectively private.
+                The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in :code:`histInitialize()`. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
 
                 The tool will not be guaranteed unique if two tools of the same type are created without a name passed in. But this is, at this point, up to the user and a more complex scenario than what this function tries to simplify on its own.
 
