@@ -70,7 +70,7 @@ atlas_add_root_dictionary ( xAODAnaHelpers xAODAnaHelpersDictSource
 )
 
 # build a shared library
-atlas_add_library( xAODAnaHelpers
+atlas_add_library( xAODAnaHelpersLib
   xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xAODAnaHelpersDictSource}
                    PUBLIC_HEADERS xAODAnaHelpers
                    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
