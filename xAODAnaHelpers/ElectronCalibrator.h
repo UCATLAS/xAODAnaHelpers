@@ -9,8 +9,8 @@
 #include "PATInterfaces/SystematicCode.h"
 
 // external tools include(s):
-#include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
-#include "IsolationCorrections/IsolationCorrectionTool.h"
+#include <ElectronPhotonFourMomentumCorrection/IEgammaCalibrationAndSmearingTool.h>
+#include <IsolationCorrections/IIsolationCorrectionTool.h>
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -87,9 +87,9 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool = nullptr; //!
+  asg::AnaToolHandle<CP::IEgammaCalibrationAndSmearingTool> m_EgammaCalibrationAndSmearingTool_handle{"CP::EgammaCalibrationAndSmearingTool"}; //!
   /// @brief apply leakage correction to calo based isolation variables for electrons
-  CP::IsolationCorrectionTool          *m_IsolationCorrectionTool = nullptr;          //!
+  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle{"CP::IsolationCorrectionTool"};   //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

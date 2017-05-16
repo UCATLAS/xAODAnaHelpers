@@ -36,6 +36,10 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/ElectronCalibrator.h"
 
+// tools
+#include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
+#include "IsolationCorrections/IsolationCorrectionTool.h"
+
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
@@ -132,21 +136,14 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   // initialize the CP::EgammaCalibrationAndSmearingTool
   //
-  if ( asg::ToolStore::contains<CP::EgammaCalibrationAndSmearingTool>("EgammaCalibrationAndSmearingTool") ) {
-    m_EgammaCalibrationAndSmearingTool = asg::ToolStore::get<CP::EgammaCalibrationAndSmearingTool>("EgammaCalibrationAndSmearingTool");
-  } else {
-    m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool("EgammaCalibrationAndSmearingTool");
-  }
-  m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel));
-  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel));
-  //
+  setToolName(m_EgammaCalibrationAndSmearingTool_handle);
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool_handle.setProperty("ESModel", m_esModel));
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool_handle.setProperty("decorrelationModel", m_decorrelationModel));
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool_handle.setProperty("OutputLevel", msg().level() ));
   // For AFII samples
-  //
   if ( isMC() ) {
 
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
-    //
     // N.B.: With SampleHandler, you can define sample metadata in job steering macro!
     //
     //       They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
@@ -155,20 +152,17 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*)
     //
     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
-
     if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ){
-
       ANA_MSG_INFO( "Setting simulation flavour to AFII");
-      ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
-
+      ANA_CHECK( m_EgammaCalibrationAndSmearingTool_handle.setProperty("useAFII", 1));
     }
   }
-  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->initialize());
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool_handle.retrieve());
 
   // Get a list of recommended systematics for this tool
   //
   //const CP::SystematicSet recSyst = CP::SystematicSet();
-  const CP::SystematicSet& recSyst = m_EgammaCalibrationAndSmearingTool->recommendedSystematics();
+  const CP::SystematicSet& recSyst = m_EgammaCalibrationAndSmearingTool_handle->recommendedSystematics();
 
   ANA_MSG_INFO(" Initializing Electron Calibrator Systematics :");
   //
@@ -194,15 +188,11 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   // initialize the CP::IsolationCorrectionTool
   //
-  if ( asg::ToolStore::contains<CP::IsolationCorrectionTool>("IsolationCorrectionTool") ) {
-    m_IsolationCorrectionTool = asg::ToolStore::get<CP::IsolationCorrectionTool>("IsolationCorrectionTool");
-  } else {
-    m_IsolationCorrectionTool = new CP::IsolationCorrectionTool("IsolationCorrectionTool");
-  }
-  m_IsolationCorrectionTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO
-  //ANA_CHECK( m_IsolationCorrectionTool->setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ));
-  ANA_CHECK( m_IsolationCorrectionTool->setProperty("IsMC", isMC() ));
-  ANA_CHECK( m_IsolationCorrectionTool->initialize());
+  setToolName(m_isolationCorrectionTool_handle);
+  //ANA_CHECK( m_isolationCorrectionTool_handle.setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ));
+  ANA_CHECK( m_isolationCorrectionTool_handle.setProperty("IsMC", m_isMC ));
+  ANA_CHECK( m_isolationCorrectionTool_handle.setProperty("OutputLevel", msg().level() ));
+  ANA_CHECK( m_isolationCorrectionTool_handle.retrieve());
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
@@ -261,7 +251,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_EgammaCalibrationAndSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Failed to configure EgammaCalibrationAndSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }
@@ -281,7 +271,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
     for ( auto elSC_itr : *(calibElectronsSC.first) ) {
 
       // set smearing seeding if needed - no need for this after Base,2.1.26
-      // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
+      // m_EgammaCalibrationAndSmearingTool_handle->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
       //
       ANA_MSG_DEBUG("Checking electron "<<idx<<", raw pt = "<<elSC_itr->pt()*1e-3<<" GeV ");
       if ( elSC_itr->pt() > 7e3 && !(elSC_itr->caloCluster()) ){
@@ -291,10 +281,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
       // apply calibration (w/ syst) and leakage correction to calo based iso vars
       //
       if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
-	if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
+	if ( m_EgammaCalibrationAndSmearingTool_handle->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
 	  ANA_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
 	}
-	if ( elSC_itr->pt() > 7e3 && m_IsolationCorrectionTool->CorrectLeakage( *elSC_itr ) != CP::CorrectionCode::Ok ) {
+	if ( elSC_itr->pt() > 7e3 && m_isolationCorrectionTool_handle->CorrectLeakage( *elSC_itr ) != CP::CorrectionCode::Ok ) {
 	  ANA_MSG_WARNING( "Problem in CP::IsolationCorrectionTool::CorrectLeakage()");
 	}
       }
@@ -362,11 +352,6 @@ EL::StatusCode ElectronCalibrator :: finalize ()
   // submission node after all your histogram outputs have been
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
-
-  ANA_MSG_INFO( "Deleting tool instances...");
-
-  if ( m_EgammaCalibrationAndSmearingTool ) { delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr; }
-  if ( m_IsolationCorrectionTool )          { delete m_IsolationCorrectionTool; m_IsolationCorrectionTool = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }
