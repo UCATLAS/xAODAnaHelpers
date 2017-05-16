@@ -224,6 +224,16 @@ and I just have to change the line in the above python file::
 
 to match the correct geometry. Ask `Giordon Stark <https://github.com/kratsg>`__ for more information if you're stuck.
 
+Running valgrind to find memory leaks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is an example piece of code I run::
+
+  valgrind --suppressions=${ROOTSYS}/etc/valgrind-root.supp \
+           --suppressions=valgrind-python.supp \
+           --tool=memcheck --memcheck:leak-check=full --show-reachable=yes
+           `which python` `which xAH_run.py` --files ... --config config.py --nevents 10000 --inputRucio direct > valgrind.log 2>&1 &
+
 Files with trigger data
 ~~~~~~~~~~~~~~~~~~~~~~~
 
