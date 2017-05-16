@@ -18,7 +18,7 @@
 #include "PATInterfaces/SystematicVariation.h"
 
 // external tools include(s):
-#include "ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h"
+#include <ElectronEfficiencyCorrection/IAsgElectronEfficiencyCorrectionTool.h>
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -102,15 +102,11 @@ private:
   std::vector<CP::SystematicSet> m_systListTrigMCEff; //!
 
   // tools
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  //!
-  std::string m_pidEffSF_tool_name;                                   //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso = nullptr;  //!
-  std::string m_IsoEffSF_tool_name;                                   //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco = nullptr; //!
-  std::string m_RecoEffSF_tool_name;                                  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig = nullptr; //!
-  std::string m_TrigEffSF_tool_name;                                  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; //!
+  asg::AnaToolHandle<IAsgElectronEfficiencyCorrectionTool>  m_asgElEffCorrTool_elSF_PID_handle{"AsgElectronEfficiencyCorrectionTool"};  //!
+  asg::AnaToolHandle<IAsgElectronEfficiencyCorrectionTool>  m_asgElEffCorrTool_elSF_Iso_handle{"AsgElectronEfficiencyCorrectionTool"};  //!
+  asg::AnaToolHandle<IAsgElectronEfficiencyCorrectionTool>  m_asgElEffCorrTool_elSF_Reco_handle{"AsgElectronEfficiencyCorrectionTool"};  //!
+  asg::AnaToolHandle<IAsgElectronEfficiencyCorrectionTool>  m_asgElEffCorrTool_elSF_Trig_handle{"AsgElectronEfficiencyCorrectionTool"};  //!
+  asg::AnaToolHandle<IAsgElectronEfficiencyCorrectionTool>  m_asgElEffCorrTool_elSF_TrigMCEff_handle{"AsgElectronEfficiencyCorrectionTool"};  //!
   std::string m_TrigMCEff_tool_name;                                  //!
 
   // variables that don't get filled at submission time should be
