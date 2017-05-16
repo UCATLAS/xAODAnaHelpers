@@ -16,15 +16,8 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
-
-namespace TrigConf {
-    class xAODConfigTool;
-}
-
-namespace Trig {
-    class TrigDecisionTool;
-}
-
+// tools
+#include "TrigDecisionTool/TrigDecisionTool.h"
 
 class HLTJetGetter : public xAH::Algorithm
 {
@@ -39,12 +32,17 @@ public:
   /// @brief output container name
   std::string m_outContainerName = "";
 
-private:
+  /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
+  std::string m_trigDecTool_name{""};
 
-  Trig::TrigDecisionTool*        m_trigDecTool = nullptr;   //!
-  TrigConf::xAODConfigTool*      m_trigConfTool = nullptr;   //!
-  /// @brief flag to own TDT and TCT
-  bool                           m_ownTDTAndTCT = false;   //!
+  private:
+
+  /**
+    @rst
+      The name of this tool (if needs to be changed) can be set with :cpp:member:`BasicEventSelection::m_trigDecTool_name`.
+    @endrst
+  */
+  asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
 
 public:
 
