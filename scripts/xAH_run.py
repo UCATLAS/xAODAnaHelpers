@@ -541,7 +541,7 @@ if __name__ == "__main__":
           xAH_logger.debug("\t%s", printStr.format(className, config_name, config_val))
           algorithmConfiguration_string.append(printStr.format(className, config_name, config_val))
           alg_attr = getattr(alg, config_name, None)
-          if alg_attr is None:
+          if alg_attr is None and config_name not in ['m_debugLevel']:
             raise ValueError("Algorithm %s does not have attribute %s" % (className, config_name))
 
           #handle unicode from json
