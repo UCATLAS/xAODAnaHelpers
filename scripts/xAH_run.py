@@ -526,6 +526,9 @@ if __name__ == "__main__":
         if 'm_debug' in algorithm_configuration['configs']:
           xAH_logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
 
+        if 'm_verbose' in algorithm_configuration['configs']:
+          xAH_logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
+
         debugLevel = algorithm_configuration['configs'].get("m_debugLevel", "info")
         if not isinstance(debugLevel, str):
           raise TypeError("'m_debugLevel' must be a string for instance of {0:s}".format(className))
@@ -541,7 +544,7 @@ if __name__ == "__main__":
           xAH_logger.debug("\t%s", printStr.format(className, config_name, config_val))
           algorithmConfiguration_string.append(printStr.format(className, config_name, config_val))
           alg_attr = getattr(alg, config_name, None)
-          if alg_attr is None:
+          if alg_attr is None and config_name not in ['m_debugLevel']:
             raise ValueError("Algorithm %s does not have attribute %s" % (className, config_name))
 
           #handle unicode from json

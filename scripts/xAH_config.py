@@ -28,6 +28,9 @@ class xAH_config(object):
     if 'm_debug' in options:
       logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
 
+    if 'm_verbose' in options:
+      logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
+
     debugLevel = options.get("m_debugLevel", "info")
     if not isinstance(debugLevel, str):
       raise TypeError("'m_debugLevel' must be a string for instance of {0:s}".format(className))
@@ -52,7 +55,7 @@ class xAH_config(object):
     alg_obj.setMsgLevel(debugLevel)
     self._log.append((alg,algName))
     for k,v in options.iteritems():
-      if not hasattr(alg_obj, k):
+      if not hasattr(alg_obj, k) and k not in ['m_debugLevel']:
         raise AttributeError(k)
       self._log.append((alg, k, v))
       setattr(alg_obj, k, v)
