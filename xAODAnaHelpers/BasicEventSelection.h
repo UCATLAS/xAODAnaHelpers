@@ -155,7 +155,7 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_checkDuplicatesMC = false;
 
     /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
-    std::string m_trigDecTool_name{""};
+    std::string m_trigDecTool_name{"xAH_TDT"};
 
   private:
 
