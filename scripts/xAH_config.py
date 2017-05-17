@@ -55,7 +55,7 @@ class xAH_config(object):
     alg_obj.setMsgLevel(debugLevel)
     self._log.append((alg,algName))
     for k,v in options.iteritems():
-      if not hasattr(alg_obj, k) and k not in ['m_debugLevel']:
+      if not hasattr(alg_obj, k) and k not in ['m_debugLevel', 'm_name']:
         raise AttributeError(k)
       self._log.append((alg, k, v))
       setattr(alg_obj, k, v)
