@@ -28,7 +28,7 @@ StatusCode xAH::Algorithm::algInitialize(){
     // names will be BasicEventSelection.baseEventSel for example
     msg().setName(m_className + "." + m_name);
     // set the debug level of the tool
-    setMsgLevel(m_debugLevel);
+    setMsgLevel(m_msgLevel);
     // deprecating m_debug, but this is around for backwards compatibility
     m_debug = msgLvl(MSG::DEBUG);
     // deprecating m_verbose, but this is around for backwards compatibility

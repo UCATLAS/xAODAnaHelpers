@@ -31,13 +31,13 @@ class xAH_config(object):
     if 'm_verbose' in options:
       logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
 
-    debugLevel = options.get("m_debugLevel", "info")
+    debugLevel = options.get("m_msgLevel", "info")
     if not isinstance(debugLevel, str):
-      raise TypeError("'m_debugLevel' must be a string for instance of {0:s}".format(className))
+      raise TypeError("'m_msgLevel' must be a string for instance of {0:s}".format(className))
     if not hasattr(ROOT.MSG, debugLevel.upper()):
-      raise ValueError("'m_debugLevel' must be a valid MSG::level: {0:s}".format(debugLevel))
+      raise ValueError("'m_msgLevel' must be a valid MSG::level: {0:s}".format(debugLevel))
     debugLevel = getattr(ROOT.MSG, debugLevel.upper())
-    options['m_debugLevel'] = debugLevel
+    options['m_msgLevel'] = debugLevel
 
     #
     # Construct the given constructor
@@ -55,7 +55,7 @@ class xAH_config(object):
     alg_obj.setMsgLevel(debugLevel)
     self._log.append((alg,algName))
     for k,v in options.iteritems():
-      if not hasattr(alg_obj, k) and k not in ['m_debugLevel', 'm_name']:
+      if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
         raise AttributeError(k)
       self._log.append((alg, k, v))
       setattr(alg_obj, k, v)
