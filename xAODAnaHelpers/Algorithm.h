@@ -96,7 +96,7 @@ namespace xAH {
         bool m_verbose = false;
 
         /** debug level */
-        MSG::Level m_debugLevel = MSG::INFO;
+        MSG::Level m_msgLevel = MSG::INFO;
 
         /** If running systematics, the name of the systematic */
         std::string m_systName = "";
