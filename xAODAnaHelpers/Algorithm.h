@@ -92,6 +92,8 @@ namespace xAH {
 
         /** m_debug is being deprecated */
         bool m_debug = false;
+        /** m_verbose is being deprecated */
+        bool m_verbose = false;
 
         /** debug level */
         MSG::Level m_debugLevel = MSG::INFO;

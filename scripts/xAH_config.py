@@ -28,6 +28,9 @@ class xAH_config(object):
     if 'm_debug' in options:
       logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
 
+    if 'm_verbose' in options:
+      logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
+
     debugLevel = options.get("m_debugLevel", "info")
     if not isinstance(debugLevel, str):
       raise TypeError("'m_debugLevel' must be a string for instance of {0:s}".format(className))

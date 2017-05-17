@@ -31,6 +31,9 @@ StatusCode xAH::Algorithm::algInitialize(){
     setMsgLevel(m_debugLevel);
     // deprecating m_debug, but this is around for backwards compatibility
     m_debug = msgLvl(MSG::DEBUG);
+    // deprecating m_verbose, but this is around for backwards compatibility
+    m_verbose = msgLvl(MSG::VERBOSE);
+
     return StatusCode::SUCCESS;
 }
 
