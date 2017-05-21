@@ -435,7 +435,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     std::vector<std::string> vecStringGRL;
 
     std::string grl;
-    std::istringstream ss(PathResolverFindDataFile(m_GRLxml));
+    std::istringstream ss(PathResolverFindCalibFile(m_GRLxml));
     while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
 
     setToolName(m_grl_handle);
