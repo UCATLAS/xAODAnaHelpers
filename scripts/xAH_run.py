@@ -520,7 +520,7 @@ if __name__ == "__main__":
         algName = algorithm_configuration['configs'].get("m_name", None)
         if algName is None:
           raise KeyError("'m_name' is not set for instance of {0:s}".format(className))
-        if not isinstance(algName, str):
+        if not isinstance(algName, str) and not isinstance(algName, unicode):
           raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
 
         if 'm_debug' in algorithm_configuration['configs']:
