@@ -7,6 +7,8 @@
 #include "xAODAnaHelpers/EventInfo.h"
 #include <AthContainers/DataVector.h>
 
+ANA_MSG_HEADER(msgElectronHists)
+
 class ElectronHists : public IParticleHists
 {
   public:
@@ -48,11 +50,11 @@ class ElectronHists : public IParticleHists
 
     //quality
     //TH1F* m_LHVeryLoose   ; //!
-    TH1F* m_LHLoose       ; //!    
-    TH1F* m_LHMedium      ; //!   
-    TH1F* m_LHTight       ; //!     
+    TH1F* m_LHLoose       ; //!
+    TH1F* m_LHMedium      ; //!
+    TH1F* m_LHTight       ; //!
 
-    
+
     // clean
     TH1F* m_ptcone20;                //!
     TH1F* m_ptcone30;                //!
@@ -75,7 +77,7 @@ class ElectronHists : public IParticleHists
     TH1F* m_topoetcone30_rel;        //!
     TH1F* m_topoetcone40_rel;        //!
 
-    
+
 
 };
 

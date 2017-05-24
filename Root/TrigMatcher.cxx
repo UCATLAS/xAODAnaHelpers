@@ -17,7 +17,6 @@
 // EDM include(s):
 #include <xAODEventInfo/EventInfo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 #include <xAODAnaHelpers/TrigMatcher.h>
 
@@ -31,30 +30,8 @@
 ClassImp(TrigMatcher)
 
 TrigMatcher :: TrigMatcher ()
-: Algorithm("TrigMatcher"),
-  m_trigMatchTool(nullptr)
+: Algorithm("TrigMatcher")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-  //ATH_MSG_INFO( "Calling constructor");
-
-  // input container to be read from TEvent or TStore
-  //
-  m_inContainerName = "";
-
-  // Systematics stuff
-  //
-  m_systNames       = "";
-
-
-  // trigger matching stuff
-  //
-  m_trigChains      = "";
-
 }
 
 TrigMatcher::~TrigMatcher() {}
@@ -69,7 +46,7 @@ EL::StatusCode TrigMatcher :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TrigMatcher" ).ignore(); // call before opening first file
@@ -79,9 +56,9 @@ EL::StatusCode TrigMatcher :: setupJob (EL::Job& job)
 
 EL::StatusCode TrigMatcher :: initialize ()
 {
-  ATH_MSG_INFO( "Initializing TrigMatcher Interface... ");
+  ANA_MSG_INFO( "Initializing TrigMatcher Interface... ");
 
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   // Standard containers
   m_event = wk()->xaodEvent();
@@ -89,7 +66,7 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   // Configuration
   if ( m_inContainerName.empty() ) {
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -113,7 +90,7 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   // **********************************************************************************************
 
-  ATH_MSG_INFO( "TrigMatcher Interface succesfully initialized!" );
+  ANA_MSG_INFO( "TrigMatcher Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -125,7 +102,7 @@ EL::StatusCode TrigMatcher :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  ATH_MSG_DEBUG( "Applying trigger matching... ");
+  ANA_MSG_DEBUG( "Applying trigger matching... ");
 
   const xAOD::IParticleContainer* inParticles(nullptr);
 
@@ -136,7 +113,7 @@ EL::StatusCode TrigMatcher :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("TrigMatcher::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) , "");
+    ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) );
     ANA_CHECK( executeMatching( inParticles ) );
 
   } else { // get the list of systematics to run over
@@ -144,15 +121,15 @@ EL::StatusCode TrigMatcher :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("TrigMatcher::execute()", HelperFunctions::retrieve(systNames, m_systNames, 0, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_systNames, 0, m_store, msg()) );
 
     // loop over systematic sets
     //
     for ( auto systName : *systNames) {
 
-      ATH_MSG_DEBUG( " syst name: " << systName << "  input container name:  " << m_inContainerName+systName );
+      ANA_MSG_DEBUG( " syst name: " << systName << "  input container name:  " << m_inContainerName+systName );
 
-      RETURN_CHECK("TrigMatcher::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName + systName, m_event, m_store, msg()), "");
+      ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName + systName, m_event, m_store, msg()));
       ANA_CHECK( executeMatching( inParticles ) );
     }
 
@@ -167,16 +144,16 @@ EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* 
 
   for( auto particle : *inParticles )
     {
-      ATH_MSG_DEBUG( "Trigger matching an object");
+      ANA_MSG_DEBUG( "Trigger matching an object");
 
       if ( !isTrigMatchedDecor.isAvailable( *particle ) )
 	isTrigMatchedDecor( *particle ) = std::vector<std::string>();
 
       for ( auto const &chain : m_trigChainsList ) {
-	ATH_MSG_DEBUG( "\t checking trigger chain " << chain);
+	ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
 
 	bool matched = m_trigMatchTool->match( *particle, chain, 0.07 );
-	ATH_MSG_DEBUG( "\t\t result = " << matched );
+	ANA_MSG_DEBUG( "\t\t result = " << matched );
 	if(matched) isTrigMatchedDecor( *particle ).push_back( chain );
       }
     }
@@ -186,7 +163,7 @@ EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* 
 
 EL::StatusCode TrigMatcher :: finalize ()
 {
-  ATH_MSG_INFO( "Cleaning up...");
+  ANA_MSG_INFO( "Cleaning up...");
   if(m_trigMatchTool) { delete m_trigMatchTool; m_trigMatchTool=nullptr; }
 
   return EL::StatusCode::SUCCESS;

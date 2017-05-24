@@ -29,7 +29,6 @@
 #include "xAODAnaHelpers/TruthSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // external tools include(s):
 
@@ -42,45 +41,13 @@
 ClassImp(TruthSelector)
 
 TruthSelector :: TruthSelector () :
-    Algorithm("TruthSelector"),
-    m_cutflowHist(nullptr),
-    m_cutflowHistW(nullptr),
-    m_truth_cutflowHist_1(nullptr)
+    Algorithm("TruthSelector")
 {
-  //ATH_MSG_INFO( "Calling constructor");
-
-  m_useCutFlow    = true;
-
-  // input container to be read from TEvent or TStore
-  m_inContainerName         = "";
-
-  // decorate selected objects that pass the cuts
-  m_decorateSelectedObjects = true;
-  // additional functionality : create output container of selected objects
-  //                            using the SG::VIEW_ELEMENTS option
-  //                            decorating and output container should not be mutually exclusive
-  m_createSelectedContainer = false;
-  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-  m_outContainerName        = "";
-  // if only want to look at a subset of object
-  m_nToProcess              = -1;
-
-  // cuts
-  m_pass_max                = -1;
-  m_pass_min                = -1;
-  m_pT_max                  = 1e8;
-  m_pT_min                  = 1e8;
-  m_eta_max                 = 1e8;
-  m_eta_min                 = 1e8;
-  m_mass_max                = 1e8;
-  m_mass_min                = 1e8;
-  m_rapidity_max            = 1e8;
-  m_rapidity_min            = 1e8;
 }
 
 EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
 {
-  ATH_MSG_INFO( "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TruthSelector" ).ignore(); // call before opening first file
@@ -92,8 +59,8 @@ EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
 
 EL::StatusCode TruthSelector :: histInitialize ()
 {
-  ATH_MSG_INFO( "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_MSG_INFO( "Calling histInitialize");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -101,7 +68,7 @@ EL::StatusCode TruthSelector :: histInitialize ()
 
 EL::StatusCode TruthSelector :: fileExecute ()
 {
-  ATH_MSG_INFO( "Calling fileExecute");
+  ANA_MSG_INFO( "Calling fileExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -109,7 +76,7 @@ EL::StatusCode TruthSelector :: fileExecute ()
 
 EL::StatusCode TruthSelector :: changeInput (bool /*firstFile*/)
 {
-  ATH_MSG_INFO( "Calling changeInput");
+  ANA_MSG_INFO( "Calling changeInput");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -117,7 +84,7 @@ EL::StatusCode TruthSelector :: changeInput (bool /*firstFile*/)
 
 EL::StatusCode TruthSelector :: initialize ()
 {
-  ATH_MSG_INFO( "Calling initialize");
+  ANA_MSG_INFO( "Calling initialize");
 
   if ( m_useCutFlow ) {
 
@@ -144,21 +111,21 @@ EL::StatusCode TruthSelector :: initialize ()
   }
 
   if ( m_inContainerName.empty() ) {
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
   m_decor   = "passSel";
 
   if ( m_decorateSelectedObjects ) {
-    ATH_MSG_INFO(" Decorate Jets with " << m_decor);
+    ANA_MSG_INFO(" Decorate Jets with " << m_decor);
   }
 
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -166,7 +133,7 @@ EL::StatusCode TruthSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
-  ATH_MSG_INFO( "TruthSelector Interface succesfully initialized!" );
+  ANA_MSG_INFO( "TruthSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -175,17 +142,17 @@ EL::StatusCode TruthSelector :: initialize ()
 
 EL::StatusCode TruthSelector :: execute ()
 {
-  ATH_MSG_DEBUG( "Applying Jet Selection... ");
+  ANA_MSG_DEBUG( "Applying Jet Selection... ");
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    ATH_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
+    ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
@@ -202,12 +169,12 @@ EL::StatusCode TruthSelector :: execute ()
   // then get the one collection and be done with it
 
   // this will be the collection processed - no matter what!!
-  RETURN_CHECK("TruthSelector::execute()", HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, msg()) );
 
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
 
   // look what we have in TStore
-  ATH_EXEC_VERBOSE(m_store->print());
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if ( !pass ) {
     wk()->skipEvent();
@@ -267,7 +234,7 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 
   // add ConstDataVector to TStore
   if ( m_createSelectedContainer ) {
-    RETURN_CHECK("TruthSelector::execute()", m_store->record( selectedTruthParts, outContainerName ), "Failed to store const data container.");
+    ANA_CHECK( m_store->record( selectedTruthParts, outContainerName ));
   }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
@@ -289,7 +256,7 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 
 EL::StatusCode TruthSelector :: postExecute ()
 {
-  ATH_MSG_DEBUG( "Calling postExecute");
+  ANA_MSG_DEBUG( "Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -297,10 +264,10 @@ EL::StatusCode TruthSelector :: postExecute ()
 
 EL::StatusCode TruthSelector :: finalize ()
 {
-  ATH_MSG_INFO( m_name );
+  ANA_MSG_INFO( m_name );
 
   if ( m_useCutFlow ) {
-    ATH_MSG_INFO( "Filling cutflow");
+    ANA_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
@@ -312,8 +279,8 @@ EL::StatusCode TruthSelector :: finalize ()
 
 EL::StatusCode TruthSelector :: histFinalize ()
 {
-  ATH_MSG_INFO( "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_MSG_INFO( "Calling histFinalize");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 

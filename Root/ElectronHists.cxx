@@ -2,7 +2,8 @@
 #include <sstream>
 
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
+
+ANA_MSG_SOURCE(msgElectronHists, "ElectronHists")
 
 ElectronHists :: ElectronHists (std::string name, std::string detailStr) :
   IParticleHists(name, detailStr, "electron", "electron"),
@@ -14,7 +15,8 @@ ElectronHists :: ~ElectronHists () {
 }
 
 StatusCode ElectronHists::initialize() {
-  RETURN_CHECK("IParticleHists::initialize()", IParticleHists::initialize(), "");
+  using namespace msgElectronHists;
+  ANA_CHECK( IParticleHists::initialize());
 
   // isolation
   if( m_infoSwitch->m_isolation ) {
@@ -69,14 +71,15 @@ StatusCode ElectronHists::execute( const xAOD::Electron* electron, float eventWe
 }
 
 StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventWeight, const xAOD::EventInfo* eventInfo ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight, eventInfo), "");
+  using namespace msgElectronHists;
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight, eventInfo));
 
   if(m_debug) std::cout << "ElectronHists: in execute " <<std::endl;
 
   const xAOD::Electron* electron=dynamic_cast<const xAOD::Electron*>(particle);
   if(electron==0)
     {
-      ::Error( "ElectronHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Electron" ));
+      ANA_MSG_ERROR( "Cannot convert IParticle to Electron" );
       return StatusCode::FAILURE;
     }
 
@@ -139,14 +142,15 @@ StatusCode ElectronHists::execute( const xAH::Electron* elec, float eventWeight,
 
 
 StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWeight, const xAH::EventInfo* /*eventInfo*/  ) {
-  RETURN_CHECK("IParticleHists::execute()", IParticleHists::execute(particle, eventWeight), "");
+  using namespace msgElectronHists;
+  ANA_CHECK( IParticleHists::execute(particle, eventWeight));
 
   if(m_debug) std::cout << "ElectronHists: in execute " <<std::endl;
 
   const xAH::Electron* elec=dynamic_cast<const xAH::Electron*>(particle);
   if(elec==0)
     {
-      ::Error( "ElctronHists::execute()", XAOD_MESSAGE( "Cannot convert IParticle to Electron" ));
+      ANA_MSG_ERROR( "Cannot convert IParticle to Electron" );
       return StatusCode::FAILURE;
     }
 

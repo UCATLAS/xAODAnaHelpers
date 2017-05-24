@@ -2,8 +2,9 @@
 
 #include <math.h>
 
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+
+ANA_MSG_SOURCE(msgTrackHists, "TrackHists")
 
 TrackHists :: TrackHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
@@ -103,7 +104,7 @@ StatusCode TrackHists::initialize() {
   m_fillTPErrors = false;
   if(m_detailStr.find("TPErrors") != std::string::npos ){
     m_fillTPErrors = true;
-    
+
     //m_chi2ndof TProfile(m_name, "chi2ndofvseta",  "chi2ndofvseta;    eta;       chi2",  20,  -0.1, 2.7, 0, 4, "s" );
     //new TProfile(m_name, "chi2ndofvseta",  "chi2ndofvseta;    eta;       chi2",  20,  -0.1, 2.7, 0, 4, "s" );
     //new TProfile(m_name, "nhitsvseta",  "nhitsvseta;    eta;       nhits",  20,  -0.1, 2.7, 0, 15 , "s" );
@@ -161,12 +162,12 @@ StatusCode TrackHists::initialize() {
   m_fillVsLumi = false;
   if(m_detailStr.find("vsLumiBlock") != std::string::npos ){
     m_fillVsLumi = true;
-    
+
     m_lBlock                  = book(m_name, "lBlock",                "LumiBlock",  100, 0, 1000);
     m_trk_z0_vs_lBlock        = book(m_name, "z0_vs_lBlock",          "LumiBlock",  100, 0, 1000, "z0",      -100, 100);
     m_trk_z0_raw_vs_lBlock    = book(m_name, "z0_raw_vs_lBlock",      "LumiBlock",  100, 0, 1000, "z0 raw",  -100, 100);
     m_trk_z0_atlas_vs_lBlock  = book(m_name, "z0_atlas_vs_lBlock",    "LumiBlock",  100, 0, 1000, "z0 atlas", -100, 100);
-								      
+
     m_trk_vz_vs_lBlock        = book(m_name, "vz_vs_lBlock",          "LumiBlock",  100, 0, 1000, "vz",       -100, 100);
     m_pvz_vs_lBlock           = book(m_name, "pvz_vs_lBlock",         "LumiBlock",  100, 0, 1000, "pvz",      -100, 100);
     m_pv_valid_vs_lBlock      = book(m_name, "pv_valid_vs_lBlock",    "LumiBlock",  100, 0, 1000, "valid",    -0.1, 1.1);
@@ -195,10 +196,11 @@ StatusCode TrackHists::initialize() {
 }
 
 StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo ) {
+  using namespace msgTrackHists;
   xAOD::TrackParticleContainer::const_iterator trk_itr = trks->begin();
   xAOD::TrackParticleContainer::const_iterator trk_end = trks->end();
   for( ; trk_itr != trk_end; ++trk_itr ) {
-    RETURN_CHECK("TrackHists::execute()", this->execute( (*trk_itr), pvx, eventWeight, eventInfo ), "");
+    ANA_CHECK( this->execute( (*trk_itr), pvx, eventWeight, eventInfo ));
   }
 
   m_trk_n -> Fill( trks->size(), eventWeight );
@@ -286,15 +288,15 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     //uint8_t nTRTHoles = -1;
     //uint8_t nTRTDead  = -1;
 
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("TrackHists::execute()", "BLayer hits not filled");
-    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        Error("TrackHists::execute()", "Pix hits not filled");
-    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) Error("TrackHists::execute()", "Pix Dead not filled");
-    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       Error("TrackHists::execute()", "Pix holes not filled");
-    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          Error("TrackHists::execute()", "SCT hits not filled");
-    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   Error("TrackHists::execute()", "SCT Dead not filled");
-    if(!trk->summaryValue(nTRT,      xAOD::numberOfTRTHits))          Error("TrackHists::execute()", "TRT hits not filled");
-    // if(!trk->summaryValue(nTRTHoles, xAOD::numberOfTRTHoles))         Error("TrackHists::execute()", "TRT holes not filled");
-    // if(!trk->summaryValue(nTRTDead,  xAOD::numberOfTRTDeadStraws))    Error("TrackHists::execute()", "TRT Dead not filled");
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       ANA_MSG_ERROR("BLayer hits not filled");
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        ANA_MSG_ERROR("Pix hits not filled");
+    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) ANA_MSG_ERROR("Pix Dead not filled");
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       ANA_MSG_ERROR("Pix holes not filled");
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          ANA_MSG_ERROR("SCT hits not filled");
+    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   ANA_MSG_ERROR("SCT Dead not filled");
+    if(!trk->summaryValue(nTRT,      xAOD::numberOfTRTHits))          ANA_MSG_ERROR("TRT hits not filled");
+    // if(!trk->summaryValue(nTRTHoles, xAOD::numberOfTRTHoles))         ANA_MSG_ERROR("TRT holes not filled");
+    // if(!trk->summaryValue(nTRTDead,  xAOD::numberOfTRTDeadStraws))    ANA_MSG_ERROR("TRT Dead not filled");
 
     uint8_t nSi     = nPix     + nSCT;
     uint8_t nSiDead = nPixDead + nSCTDead;

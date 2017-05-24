@@ -15,23 +15,15 @@
 // for StatusCode::isSuccess
 #include "AsgTools/StatusCode.h"
 #include "AsgTools/ToolStore.h"
+#include "AsgTools/AnaToolHandle.h"
+
+// for resolving paths of various calibration files
+#include "PathResolver/PathResolver.h"
 
 // messaging includes
 #include <AsgTools/MsgStream.h>
 #include <AsgTools/MsgStreamMacros.h>
-
-/// Macro used to execute "protected" code
-#define ATH_EXEC_LVL( lvl, expr )               \
-   do {                                         \
-      if( msg().msgLevel( lvl ) ) {             \
-         expr;                                  \
-      }                                         \
-   } while( 0 )
-
-/// Macro executing verbose expressions
-#define ATH_EXEC_VERBOSE( expr )  ATH_EXEC_LVL( MSG::VERBOSE, expr )
-/// Macro executing debug expressions
-#define ATH_EXEC_DEBUG( expr )    ATH_EXEC_LVL( MSG::DEBUG, expr )
+#include <AsgTools/MessageCheck.h>
 
 namespace xAH {
 
@@ -96,35 +88,40 @@ namespace xAH {
 
             Note, :code:`GetName()` returns a :code:`char*` while this returns a :code:`std::string`.
         */
-        std::string m_name;
+        std::string m_name = "UnnamedAlgorithm";
 
         /** m_debug is being deprecated */
         bool m_debug = false;
+        /** m_verbose is being deprecated */
+        bool m_verbose = false;
 
         /** debug level */
-        MSG::Level m_debugLevel;
+        MSG::Level m_msgLevel = MSG::INFO;
 
         /** If running systematics, the name of the systematic */
-        std::string m_systName;
+        std::string m_systName = "";
         /** If running systematics, the value to set the systematic to
             @rst
                 .. note:: This will set the systematic to the value :math:`\pm x`.
             @endrst
          */
-        float m_systVal;
+        float m_systVal = 0.0;
+
         /** If running systematics, you can run multiple points and store them in here.
             A comma separated list of working points should be given to m_systValVectorString,
             and then parsed by calling parseSystValVector.
          */
-        std::string m_systValVectorString;
+        std::string m_systValVectorString = "";
+
         std::vector<float> m_systValVector;
+
         /**
             @brief Parse string of systematic sigma levels in m_systValVectorString into m_systValVector
          */
         StatusCode parseSystValVector();
 
         /** If the xAOD has a different EventInfo container name, set it here */
-        std::string m_eventInfoContainerName;
+        std::string m_eventInfoContainerName = "EventInfo";
 
         /**
             @rst
@@ -140,7 +137,7 @@ namespace xAH {
 
             @endrst
          */
-        int m_isMC;
+        int m_isMC = -1;
 
       protected:
         /**
@@ -149,12 +146,12 @@ namespace xAH {
 
             @endrst
          */
-        std::string m_className;
+        std::string m_className = "Algorithm"; //!
 
         /** The TEvent object */
-        xAOD::TEvent* m_event; //!
+        xAOD::TEvent* m_event = nullptr; //!
         /** The TStore object */
-        xAOD::TStore* m_store; //!
+        xAOD::TStore* m_store = nullptr; //!
 
         // will try to determine if data or if MC
         // returns: -1=unknown (could not determine), 0=data, 1=mc
@@ -182,6 +179,7 @@ namespace xAH {
 
             @endrst
          */
+
         void registerInstance();
         /**
             @rst
@@ -194,6 +192,7 @@ namespace xAH {
             @endrst
          */
         int numInstances();
+
         /**
             @rst
                 Unregister the given instance under the moniker :cpp:member:`xAH::Algorithm::m_className`
@@ -219,10 +218,10 @@ namespace xAH {
 
             if ( !asg::ToolStore::contains<T>(tool_name) ) {
               m_toolAlreadyUsed[tool_name] = false;
-              ATH_MSG_INFO("Tool " << tool_name << " is being used for the first time!" );
+              ANA_MSG_INFO("Tool " << tool_name << " is being used for the first time!" );
             } else {
               m_toolAlreadyUsed[tool_name] = true;
-              ATH_MSG_INFO("Tool " << tool_name << " has been already used!" );
+              ANA_MSG_INFO("Tool " << tool_name << " has been already used!" );
             }
 
             return StatusCode::SUCCESS;
@@ -238,7 +237,46 @@ namespace xAH {
            return ( m_toolAlreadyUsed.find(tool_name)->second );
         }
 
+
+        /**
+            @rst
+                Sets the name of the tool and emits :code:`ANA_MSG_WARNING` if the tool of given type/name has been configured previously.
+
+                The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in :code:`histInitialize()`. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
+
+                The tool will not be guaranteed unique if two tools of the same type are created without a name passed in. But this is, at this point, up to the user and a more complex scenario than what this function tries to simplify on its own.
+
+            @endrst
+         */
+        template <typename T>
+        bool setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
+          if(name.empty()) name = handle.type() + "_" + m_name + "::" + getAddress();
+          handle.setName(name);
+          ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
+          bool res = handle.isUserConfigured();
+          if (res) ANA_MSG_WARNING("note: handle " << handle.typeAndName() << " is user configured. If this is expected, ignore the message. If it is not expected, look into " << m_className + "::" << m_name << ", check documentation, or ask around.");
+          return res;
+        }
+
+        /// @brief Return a :code:`std::string` representation of :code:`this`
+        std::string getAddress() const {
+          const void * address = static_cast<const void*>(this);
+          std::stringstream ss;
+          ss << address;
+          return ss.str();
+        }
+
       private:
+        /**
+            @rst
+              A boolean to keep track of whether this instance was registered or not.
+
+              Calling :cpp:func:`xAH::Algorithm::registerInstance` multiple times won't inflate the number of instances of a class made because of me.
+
+            @endrst
+        */
+        bool m_registered = false; //!
+
         /**
             @rst
                 Bookkeeps the number of times :cpp:member:`xAH::Algorithm::m_className` has been used in a variable shared among all classes/instances that inherit from me
@@ -256,17 +294,6 @@ namespace xAH {
             @endrst
          */
         std::map<std::string, bool> m_toolAlreadyUsed; //!
-
-        /**
-            @rst
-              A boolean to keep track of whether this instance was registered or not.
-
-              Calling :cpp:func:`xAH::Algorithm::registerInstance` multiple times won't inflate the number of instances of a class made because of me.
-
-            @endrst
-        */
-        bool m_registered; //!
-
   };
 
 }

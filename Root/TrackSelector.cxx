@@ -5,8 +5,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/TrackSelector.h"
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
-
 // ROOT include(s):
 #include "TFile.h"
 #include "TObjArray.h"
@@ -24,51 +22,8 @@ ClassImp(TrackSelector)
 
 
 TrackSelector :: TrackSelector () :
-    Algorithm("TrackSelector"),
-    m_cutflowHist(nullptr),
-    m_cutflowHistW(nullptr)
+    Algorithm("TrackSelector")
 {
-
-  // read debug flag from .config file
-  m_useCutFlow    = true;
-
-  // input container to be read from TEvent or TStore
-  m_inContainerName  = "";
-  m_inJetContainerName  = "";
-
-  // decorate selected objects that pass the cuts
-  m_decorateSelectedObjects = true;
-  // additional functionality : create output container of selected objects
-  //                            using the SG::VIEW_ELEMENTS option
-  //                            decorating and output container should not be mutually exclusive
-  m_createSelectedContainer = false;
-  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-  m_outContainerName        = "";
-  // if only want to look at a subset of object
-  m_nToProcess              = -1;
-
-  // cuts
-  m_pass_max                = -1;
-  m_pass_min                = -1;
-  m_pT_max                  = 1e8;
-  m_pT_min                  = 1e8;
-  m_eta_max                 = 1e8;
-  m_eta_min                 = 1e8;
-  m_d0_max                  = 1e8;
-  m_z0_max                  = 1e8;
-  m_z0sinT_max              = 1e8;
-  m_nBL_min                 = 1e8;
-  m_nSi_min                 = 1e8;
-  m_nPixHoles_max           = 1e8;
-  m_chi2NdofCut_max         = 1e8;
-  m_chi2Prob_max            = 1e8;
-
-  m_passAuxDecorKeys        = "";
-
-  m_failAuxDecorKeys        = "";
-
-  m_doTracksInJets          = false;
-
 }
 
 EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
@@ -81,7 +36,7 @@ EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  ATH_MSG_DEBUG("Calling setupJob");
+  ANA_MSG_DEBUG("Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TrackSelector" ).ignore(); // call before opening first file
@@ -98,8 +53,8 @@ EL::StatusCode TrackSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  ATH_MSG_DEBUG("Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_MSG_DEBUG("Calling histInitialize");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -110,7 +65,7 @@ EL::StatusCode TrackSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  ATH_MSG_DEBUG("Calling fileExecute");
+  ANA_MSG_DEBUG("Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -123,7 +78,7 @@ EL::StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  ATH_MSG_DEBUG("Calling changeInput");
+  ANA_MSG_DEBUG("Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -163,21 +118,21 @@ EL::StatusCode TrackSelector :: initialize ()
 
 
   if( m_inContainerName.empty() ) {
-    ATH_MSG_ERROR( "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  ATH_MSG_DEBUG("Number of events in file: " << m_event->getEntries() );
+  ANA_MSG_DEBUG("Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
   m_numEventPass  = 0;
   m_numObjectPass = 0;
 
-  ATH_MSG_DEBUG("TrackSelector Interface succesfully initialized!" );
+  ANA_MSG_DEBUG("TrackSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -187,7 +142,7 @@ EL::StatusCode TrackSelector :: initialize ()
 EL::StatusCode TrackSelector :: execute ()
 {
 
-  ATH_MSG_DEBUG("Applying Track Selection... " << m_name);
+  ANA_MSG_DEBUG("Applying Track Selection... " << m_name);
 
   if(m_doTracksInJets){
     return executeTracksInJets();
@@ -206,11 +161,11 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
   // get the collection from TEvent or TStore
   const xAOD::TrackParticleContainer* inTracks(nullptr);
-  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(inTracks, m_inContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(inTracks, m_inContainerName, m_event, m_store, msg()) );
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
-  RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
 
@@ -265,7 +220,7 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
   // add output container to TStore
   if( m_createSelectedContainer ) {
-    RETURN_CHECK( "TrackSelector::execute()", m_store->record( selectedTracks, m_outContainerName ), "Failed to store container.");
+    ANA_CHECK( m_store->record( selectedTracks, m_outContainerName ));
   }
 
   m_numEventPass++;
@@ -280,16 +235,16 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
 EL::StatusCode TrackSelector :: executeTracksInJets ()
 {
-  ATH_MSG_DEBUG("Applying TracksInJet Selection... " << m_inJetContainerName);
+  ANA_MSG_DEBUG("Applying TracksInJet Selection... " << m_inJetContainerName);
   m_numEvent++;
 
   // get input jet collection
   const xAOD::JetContainer* inJets(nullptr);
-  RETURN_CHECK("JetSelector::execute()", HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) );
 
   //// get primary vertex
   //const xAOD::VertexContainer *vertices(nullptr);
-  //RETURN_CHECK("TrackSelector::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  //ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
   //const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
@@ -353,7 +308,7 @@ EL::StatusCode TrackSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  ATH_MSG_DEBUG("Calling postExecute");
+  ANA_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -372,7 +327,7 @@ EL::StatusCode TrackSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ATH_MSG_DEBUG("Deleting tool instances...");
+  ANA_MSG_DEBUG("Deleting tool instances...");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -391,7 +346,7 @@ EL::StatusCode TrackSelector :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -442,7 +397,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   uint8_t nBL       = -1;
   if( m_nBL_min != 1e8 ){
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))      ATH_MSG_ERROR( "BLayer hits not filled");
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))      ANA_MSG_ERROR( "BLayer hits not filled");
     if( nBL < m_nBL_min ) {return 0; }
   }
 
@@ -452,8 +407,8 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   uint8_t nSCT      = -1;
   uint8_t nPix      = -1;
   if( m_nSi_min != 1e8 ){
-    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        ATH_MSG_ERROR( "Pix hits not filled");
-    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          ATH_MSG_ERROR( "SCT hits not filled");
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        ANA_MSG_ERROR( "Pix hits not filled");
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          ANA_MSG_ERROR( "SCT hits not filled");
     if( (nSCT+nPix) < m_nSi_min ) {return 0;}
   }
 
@@ -462,7 +417,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   //
   uint8_t nPixHoles = -1;
   if( m_nPixHoles_max != 1e8 ){
-    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       ATH_MSG_ERROR( "Pix holes not filled");
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       ANA_MSG_ERROR( "Pix holes not filled");
     if( nPixHoles > m_nPixHoles_max ) {return 0;}
   }
 

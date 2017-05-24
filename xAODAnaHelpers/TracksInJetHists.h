@@ -5,6 +5,8 @@
 #include <xAODJet/Jet.h>
 #include <xAODAnaHelpers/TrackHists.h>
 
+ANA_MSG_HEADER(msgTracksInJetHists)
+
 class TracksInJetHists : public HistogramManager
 {
   public:

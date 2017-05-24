@@ -7,7 +7,6 @@
 #include <xAODAnaHelpers/MuonHistsAlgo.h>
 #include <xAODAnaHelpers/MuonHists.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonHistsAlgo)

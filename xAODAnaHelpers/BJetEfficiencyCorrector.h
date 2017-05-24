@@ -12,8 +12,8 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
-#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
-#include "xAODBTaggingEfficiency/BTaggingEfficiencyTool.h"
+#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
+#include "xAODBTaggingEfficiency/IBTaggingEfficiencyTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -23,42 +23,47 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_inContainerName;
-  std::string m_inputAlgo;
+  std::string m_inContainerName = "";
+  std::string m_inputAlgo = "";
 
   // systematics
-  bool m_runAllSyst;
-  std::string m_systName;
-  std::string m_outputSystName;
+  std::string m_systName = "";
+  std::string m_outputSystName = "BJetEfficiency_Algo";
 
-  std::string m_corrFileName;
+  std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root";
 
-  /**
-     Call PathResolverFindCalibFile on the input file name
-  */
-  bool        m_usePathResolver;
+  std::string m_jetAuthor = "AntiKt4EMTopoJets";
+  std::string m_taggerName = "MV2c10";
+  bool        m_useDevelopmentFile = true;
+  bool        m_coneFlavourLabel = true;
+  std::string m_systematicsStrategy = "SFEigen";
 
-  std::string m_jetAuthor;
-  std::string m_taggerName;
-  bool        m_useDevelopmentFile;
-  bool        m_coneFlavourLabel;
-  std::string m_systematicsStrategy;
+  // allowed operating points:
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
+  //For the fixed cut, valid options are: [ "FixedCutBEff_30", "FixedCutBEff_50", "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_80", "FixedCutBEff_85", "FixedCutBEff_90" ]
+  //For the variable cut, valid options are: [ "FlatBEff_30", "FlatBEff_40", "FlatBEff_50", "FlatBEff_60", "FlatBEff_70", "FlatBEff_77", "FlatBEff_85" ]
 
-  std::string m_operatingPt;      // Operating point.
-  std::string m_operatingPtCDI;   // the one CDI will understand
-  std::string m_decor;            // The decoration key written to passing objects
-  std::string m_decorSF;          // The decoration key written to passing objects
+  /// @brief Operating point.
+  std::string m_operatingPt = "FixedCutBEff_70";
+  /// @brief Operating point that CDI will understand
+  std::string m_operatingPtCDI = "";
+  /// @brief will only get scale factors for calibrated working points
+  bool m_getScaleFactors = false;
+  /// @brief The decoration key written to passing objects
+  std::string m_decor = "BTag";
 
 private:
 
-  bool m_isMC;        //!
+  /// @brief The decoration key written to passing objects
+  std::string m_decorSF = "";
+
+  bool m_runAllSyst = false; //!
+
+  bool m_isMC = false;        //!
 
   // tools
-  BTaggingSelectionTool   *m_BJetSelectTool; //!
-  BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
-
-  // configuration variables
-  bool m_getScaleFactors;  //!
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
+  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool"}; //!
 
   std::vector<CP::SystematicSet> m_systList; //!
 

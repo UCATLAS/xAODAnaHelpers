@@ -9,6 +9,7 @@
 
 // local includes
 #include "AsgTools/StatusCode.h"
+#include <AsgTools/MessageCheck.h>
 
 // jet reclustering and trimming
 #include <fastjet/JetDefinition.hh>
@@ -184,9 +185,7 @@ namespace HelperFunctions {
    */
   template< typename T1, typename T2 >
   StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, MsgStream& msg, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT){
-     std::string tname1 = type_name<T1>();
-     std::string tname2 = type_name<T2>();
-     msg.setName(msg.name()+".makeSubsetCont<"+tname1+","+tname2+">");
+     std::string funcName{"in makeSubsetCont<"+type_name<T1>()+","+type_name<T2>()+">(): "};
 
      if ( tool_name == HelperClasses::ToolName::DEFAULT ) {
 
@@ -196,7 +195,7 @@ namespace HelperFunctions {
      }
 
      if ( flagSelect.empty() ) {
-       msg << MSG::ERROR << "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" << endmsg;
+       msg << MSG::ERROR << funcName << "flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!" << endmsg;
        return StatusCode::FAILURE;
      }
 
@@ -206,7 +205,7 @@ namespace HelperFunctions {
 
        if ( !myAccessor.isAvailable(*(in_itr)) ) {
      	 std::stringstream ss; ss << in_itr->type();
-         msg << MSG::ERROR << "flag " << flagSelect << " is missing for object of type " << ss.str() << " ! Will not make a subset of its container" << endmsg;
+         msg << MSG::ERROR << funcName << "flag " << flagSelect << " is missing for object of type " << ss.str() << " ! Will not make a subset of its container" << endmsg;
      	 return StatusCode::FAILURE;
        }
 
@@ -231,11 +230,11 @@ namespace HelperFunctions {
       Example Usage:
       const xAOD::JetContainer* jets(0);
       // look for "AntiKt10LCTopoJets" in both TEvent and TStore
-      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, m_store) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, m_store) );
       // look for "AntiKt10LCTopoJets" in only TStore
-      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) );
       // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-      RETURN_CHECK("JetCalibrator::execute()", HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, msg()) );
   */
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
@@ -249,23 +248,21 @@ namespace HelperFunctions {
         - return FAILURE
         return SUCCESS (should never reach this last line)
     */
-    std::string tname = type_name<T>();
-    msg.setName(msg.name()+".retrieve<"+tname+">");
-
-    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << tname << endmsg;
-    if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
-    if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
-    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
+    std::string funcName{"in retrieve<"+type_name<T>()+">(" + name + "): "};
+    msg << MSG::DEBUG << funcName << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
+    if(store == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if(event == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
-      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TStore" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TStore" << endmsg;
       if(!store->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
-      msg << MSG::DEBUG << "\t\t\tRetrieved from xAOD::TStore" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tRetrieved from xAOD::TStore" << endmsg;
     } else if((event != NULL) && (event->contains<T>(name))){
-      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TEvent" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       if(!event->retrieve( cont, name ).isSuccess()) return StatusCode::FAILURE;
-      msg << MSG::DEBUG << "\t\t\tRetrieved from xAOD::TEvent" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tRetrieved from xAOD::TEvent" << endmsg;
     } else {
-      msg << MSG::DEBUG << "\t\tNot found at all" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\tNot found at all" << endmsg;
       return StatusCode::FAILURE;
     }
     return StatusCode::SUCCESS;
@@ -300,17 +297,16 @@ namespace HelperFunctions {
         - check if event contains 'xAOD::JetContainer' named 'name'
         --- checkstore event
     */
-    std::string tname = type_name<T>();
-    msg.setName(msg.name()+".isAvailable<"+tname+">");
-    msg << MSG::DEBUG << "\tAttempting to retrieve " << name << " of type " << tname << endmsg;
-    if(store == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TEvent" << endmsg;
-    if(event == NULL)                      msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore" << endmsg;
-    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
+    std::string funcName{"in isAvailable<"+type_name<T>()+">(" + name + "): "};
+    msg << MSG::DEBUG << funcName << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
+    if(store == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if(event == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
-      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TStore" << endmsg;;
+      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TStore" << endmsg;;
       return true;
     } else if((event != NULL) && (event->contains<T>(name))){
-      msg << MSG::DEBUG << "\t\t\tFound inside xAOD::TEvent" << endmsg;
+      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       return true;
     } else {
       return false;
@@ -408,8 +404,8 @@ namespace HelperFunctions {
       This is a very powerful templating function. The point is to remove the triviality of making deep copies by specifying all that is needed. The best way is to demonstrate via example::
 
         const xAOD::JetContainer* selected_jets(nullptr);
-        RETURN_CHECK("execute()", m_event->retrieve( selected_jets, "SelectedJets" ));
-        RETURN_CHECK("execute()", (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets)));
+        ANA_CHECK( m_event->retrieve( selected_jets, "SelectedJets" ));
+        ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, "BaselineJets", selected_jets)));
 
     @endrst
    */
@@ -447,7 +443,7 @@ namespace HelperFunctions {
     @rst
       If you have a container in the TStore, this function will record it into the output for you without an issue. As an example::
 
-        RETURN_CHECK("execute()", HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, "BaselineJets"));
+        ANA_CHECK( HelperFunctions::recordOutput<xAOD::JetContainer, xAOD::JetAuxContainer>(m_event, m_store, "BaselineJets"));
 
       where we build off the previous example of making a deep copy (see :cpp:func:`HelperFunctions::makeDeepCopy`).
     @endrst

@@ -64,14 +64,13 @@ atlas_depends_on_subdirs( PUBLIC
 find_package( ROOT COMPONENTS Core RIO Hist Tree )
 
 # build a dictionary for the library
-atlas_add_root_dictionary ( xAODAnaHelpers xAODAnaHelpersDictSource
+atlas_add_root_dictionary ( xAODAnaHelpersLib xAODAnaHelpersDictSource
                             ROOT_HEADERS xAODAnaHelpers/*.h Root/LinkDef.h
                             EXTERNAL_PACKAGES ROOT
 )
 
 # build a shared library
-atlas_add_library( xAODAnaHelpers
-  xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xAODAnaHelpersDictSource}
+atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xAODAnaHelpersDictSource}
                    PUBLIC_HEADERS xAODAnaHelpers
                    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
                    LINK_LIBRARIES ${ROOT_LIBRARIES} EventLoop xAODBase xAODRootAccess
@@ -91,7 +90,7 @@ atlas_add_library( xAODAnaHelpers
                    TrigDecisionToolLib xAODCutFlow JetMomentToolsLib
                    TriggerMatchingToolLib xAODMetaDataCnv xAODTriggerCnv
                    xAODMetaData JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils
-                   JetTileCorrectionLib PathResolver
+                   JetTileCorrectionLib
 )
 
 # Install files from the package:

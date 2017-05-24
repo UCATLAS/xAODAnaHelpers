@@ -8,18 +8,12 @@
 
 #include <xAODAnaHelpers/TrackHistsAlgo.h>
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
 TrackHistsAlgo :: TrackHistsAlgo () :
-    Algorithm("TrackHistsAlgo"),
-    m_plots(nullptr)
+    Algorithm("TrackHistsAlgo")
 {
-  m_inContainerName         = "";
-  m_detailStr               = "";
-
 }
 
 EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
@@ -35,18 +29,18 @@ EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
-  ATH_MSG_INFO( m_name );
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_MSG_INFO( m_name );
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    ATH_MSG_ERROR( "One or more required configuration values are empty");
+    ANA_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
 
   // declare class and add histograms to output
   m_plots = new TrackHists(m_name, m_detailStr);
-  RETURN_CHECK("TrackHistsAlgo::histInitialize()", m_plots -> initialize(), "");
+  ANA_CHECK( m_plots -> initialize());
   m_plots -> record( wk() );
 
   return EL::StatusCode::SUCCESS;
@@ -57,7 +51,7 @@ EL::StatusCode TrackHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::S
 
 EL::StatusCode TrackHistsAlgo :: initialize ()
 {
-  ATH_MSG_INFO( "TrackHistsAlgo");
+  ANA_MSG_INFO( "TrackHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
@@ -66,7 +60,7 @@ EL::StatusCode TrackHistsAlgo :: initialize ()
 EL::StatusCode TrackHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
 
   float eventWeight(1);
@@ -75,14 +69,14 @@ EL::StatusCode TrackHistsAlgo :: execute ()
   }
 
   const xAOD::TrackParticleContainer* tracks(nullptr);
-  RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(tracks, m_inContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(tracks, m_inContainerName, m_event, m_store, msg()) );
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
-  RETURN_CHECK("TrackHistsAlgo::execute()", HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
-  RETURN_CHECK("TrackHistsAlgo::execute()", m_plots->execute( tracks, pvx, eventWeight, eventInfo ), "");
+  ANA_CHECK( m_plots->execute( tracks, pvx, eventWeight, eventInfo ));
 
   return EL::StatusCode::SUCCESS;
 }
@@ -93,6 +87,6 @@ EL::StatusCode TrackHistsAlgo :: histFinalize ()
 {
   // clean up memory
   if(m_plots) delete m_plots;
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

@@ -9,7 +9,6 @@
 #include <xAODAnaHelpers/IParticleHistsAlgo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(IParticleHistsAlgo)
@@ -17,12 +16,6 @@ ClassImp(IParticleHistsAlgo)
 IParticleHistsAlgo :: IParticleHistsAlgo (std::string className) :
     Algorithm(className)
 {
-  m_inContainerName         = "";
-  // which plots will be turned on
-  m_detailStr               = "";
-  // name of algo input container comes from - only if
-  m_inputAlgo               = "";
-
 }
 
 EL::StatusCode IParticleHistsAlgo :: setupJob (EL::Job& job)
@@ -36,8 +29,8 @@ EL::StatusCode IParticleHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode IParticleHistsAlgo :: histInitialize ()
 {
 
-  ATH_MSG_INFO( m_name );
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_MSG_INFO( m_name );
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -45,8 +38,8 @@ EL::StatusCode IParticleHistsAlgo::AddHists( std::string name ) {
   std::string fullname(m_name);
   fullname += name; // add systematic
   IParticleHists* particleHists = new IParticleHists( fullname, m_detailStr, m_histPrefix, m_histTitle ); // add systematic
-  particleHists->m_debug = msg().msgLevel(MSG::DEBUG);
-  RETURN_CHECK((m_name+"::AddHists").c_str(), particleHists->initialize(), "");
+  particleHists->m_debug = msgLvl(MSG::DEBUG);
+  ANA_CHECK( particleHists->initialize());
   particleHists->record( wk() );
   m_plots[name] = particleHists;
 
@@ -58,11 +51,11 @@ EL::StatusCode IParticleHistsAlgo :: changeInput (bool /*firstFile*/) { return E
 
 EL::StatusCode IParticleHistsAlgo :: initialize ()
 {
-  ATH_MSG_DEBUG( m_name);
+  ANA_MSG_DEBUG( m_name);
 
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    ATH_MSG_ERROR( "One or more required configuration values are empty");
+    ANA_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
@@ -82,7 +75,7 @@ EL::StatusCode IParticleHistsAlgo :: execute ()
 EL::StatusCode IParticleHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
 
 EL::StatusCode IParticleHistsAlgo :: finalize () {
-  ATH_MSG_DEBUG( m_name );
+  ANA_MSG_DEBUG( m_name );
   for( auto plots : m_plots ) {
     if(plots.second){
       plots.second->finalize();
@@ -93,6 +86,6 @@ EL::StatusCode IParticleHistsAlgo :: finalize () {
 }
 
 EL::StatusCode IParticleHistsAlgo :: histFinalize () {
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

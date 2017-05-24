@@ -9,18 +9,19 @@
 #include <xAODAnaHelpers/IParticleHists.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelperClasses.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
-
 
 class IParticleHistsAlgo : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  // configuration variables
-  std::string m_inContainerName;
-  std::string m_detailStr;
-  std::string m_inputAlgo;
+
+  /** input container */
+  std::string m_inContainerName = "";
+  /** which plots will be turned on */
+  std::string m_detailStr = "";
+  /** name of algo input container comes from - only if */
+  std::string m_inputAlgo = "";
   /** Histogram name prefix when using IParticleHistsAlgo directly */
   std::string m_histPrefix;
   /** Histogram xaxis title when using IParticleHistsAlgo directly */
@@ -69,7 +70,7 @@ public:
     static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
 
     const xAOD::EventInfo* eventInfo(nullptr);
-    RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
     float eventWeight(1);
     if ( mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
@@ -89,22 +90,22 @@ public:
     // if input comes from xAOD, or just running one collection,
     // then get the one collection and be done with it
     if( m_inputAlgo.empty() ) {
-      RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) ,("Failed to get "+m_inContainerName).c_str());
+      ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) );
 
       // pass the photon collection
-      RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[""])->execute( inParticles, eventWeight, eventInfo ), "");
+      ANA_CHECK( static_cast<HIST_T*>(m_plots[""])->execute( inParticles, eventWeight, eventInfo ));
     }
     else { // get the list of systematics to run over
 
       // get vector of string giving the names
       std::vector<std::string>* systNames(nullptr);
-      RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) ,"");
+      ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
 
       // loop over systematics
       for( auto systName : *systNames ) {
-	RETURN_CHECK("IParticleHistsAlgo::execute()", HelperFunctions::retrieve(inParticles, m_inContainerName+systName, m_event, m_store, msg()) ,"");
+	ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName+systName, m_event, m_store, msg()) );
 	if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
-	RETURN_CHECK("IParticleHistsAlgo::execute()", static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight, eventInfo ), "");
+	ANA_CHECK( static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight, eventInfo ));
       }
     }
 
@@ -132,8 +133,8 @@ public:
     std::string fullname(m_name);
     fullname += name; // add systematic
     HIST_T* particleHists = new HIST_T( fullname, m_detailStr ); // add systematic
-    particleHists->m_debug = msg().msgLevel(MSG::DEBUG);
-    RETURN_CHECK((m_name+"::AddHists").c_str(), particleHists->initialize(), "");
+    particleHists->m_debug = msgLvl(MSG::DEBUG);
+    ANA_CHECK( particleHists->initialize());
     particleHists->record( wk() );
     m_plots[name] = particleHists;
 

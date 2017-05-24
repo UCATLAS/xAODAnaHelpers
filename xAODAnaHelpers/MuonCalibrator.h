@@ -17,26 +17,28 @@ class MuonCalibrator : public xAH::Algorithm
 public:
 
   // configuration variables
-  std::string m_inContainerName;
-  std::string m_outContainerName;
+  std::string m_inContainerName = "";
+  std::string m_outContainerName = "";
 
-  std::string m_release;
-  std::string m_Years;
+  std::string m_release = "";
+  /// @brief comma-separated list of years
+  std::string m_Years = "Data16,Data15";
 
   // sort after calibration
-  bool    m_sort;
+  bool    m_sort = true;
 
-  bool         m_do_sagittaCorr;
-  std::string  m_sagittaRelease;
-  bool         m_do_sagittaMCDistortion;
+  bool         m_do_sagittaCorr = true;
+  std::string  m_sagittaRelease = "sagittaBiasDataAll_06_02_17";
+  bool         m_do_sagittaMCDistortion = false;
 
   // systematics
-  std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
-  			             // upstream algo (e.g., the SC containers with calibration systematics)
-  std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
-  				     // algo (these will be the m_inputAlgoSystNames of the algo downstream)
-  float       m_systVal;
-  std::string m_systName;
+  /// @brief this is the name of the vector of names of the systematically varied containers produced by the upstream algo (e.g., the SC containers with calibration systematics)
+  std::string m_inputAlgoSystNames = "";
+  // this is the name of the vector of names of the systematically varied containers produced by THIS algo (these will be the m_inputAlgoSystNames of the algo downstream)
+  std::string m_outputAlgoSystNames = "MuonCalibrator_Syst";
+
+  float       m_systVal = 0.0;
+  std::string m_systName = "";
 
   /**
       @rst
@@ -49,7 +51,7 @@ public:
           .. note:: This should *not* modify the momentum of muons in data (according to the tool as of ``MuonMomentumCorrections-01-00-37``).
       @endrst
    */
-  bool    m_forceDataCalib;
+  bool    m_forceDataCalib = false;
 
 private:
   int m_numEvent;         //!
@@ -64,10 +66,10 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;                            //!
-  std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;  //!
-  std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                      //!
-  std::vector<std::string> m_YearsList;                                                           //!
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"}; //!
+  std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;    //!
+  std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                        //!
+  std::vector<std::string> m_YearsList;                                                             //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

@@ -7,6 +7,8 @@
 #include <xAODTracking/Vertex.h>
 #include <xAODTracking/TrackParticle.h>
 
+ANA_MSG_HEADER(msgVtxHists)
+
 class VtxHists : public HistogramManager
 {
   public:

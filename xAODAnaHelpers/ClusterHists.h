@@ -4,6 +4,8 @@
 #include "xAODAnaHelpers/HistogramManager.h"
 #include "xAODCaloEvent/CaloClusterContainer.h"
 
+ANA_MSG_HEADER(msgClusterHists)
+
 class ClusterHists : public HistogramManager
 {
   public:

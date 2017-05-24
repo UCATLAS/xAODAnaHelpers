@@ -7,18 +7,12 @@
 
 #include <xAODAnaHelpers/ClusterHistsAlgo.h>
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(ClusterHistsAlgo)
 
 ClusterHistsAlgo :: ClusterHistsAlgo () :
-    Algorithm("ClusterHistsAlgo"),
-    m_plots(nullptr)
+    Algorithm("ClusterHistsAlgo")
 {
-  m_inContainerName         = "";
-  m_detailStr               = "";
-
 }
 
 EL::StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)
@@ -34,18 +28,18 @@ EL::StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode ClusterHistsAlgo :: histInitialize ()
 {
 
-  ATH_MSG_INFO( m_name );
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_MSG_INFO( m_name );
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    ATH_MSG_ERROR( "One or more required configuration values are empty");
+    ANA_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
 
   // declare class and add histograms to output
   m_plots = new ClusterHists(m_name, m_detailStr);
-  RETURN_CHECK("ClusterHistsAlgo::histInitialize()", m_plots -> initialize(), "");
+  ANA_CHECK( m_plots -> initialize());
   m_plots -> record( wk() );
 
   return EL::StatusCode::SUCCESS;
@@ -56,7 +50,7 @@ EL::StatusCode ClusterHistsAlgo :: changeInput (bool /*firstFile*/) { return EL:
 
 EL::StatusCode ClusterHistsAlgo :: initialize ()
 {
-  ATH_MSG_INFO( "ClusterHistsAlgo");
+  ANA_MSG_INFO( "ClusterHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
@@ -65,7 +59,7 @@ EL::StatusCode ClusterHistsAlgo :: initialize ()
 EL::StatusCode ClusterHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("ClusterHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
 
   float eventWeight(1);
@@ -74,9 +68,9 @@ EL::StatusCode ClusterHistsAlgo :: execute ()
   }
 
   const xAOD::CaloClusterContainer* ccls(nullptr);
-  RETURN_CHECK("ClusterHistsAlgo::execute()", HelperFunctions::retrieve(ccls, m_inContainerName, m_event, m_store, msg()) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(ccls, m_inContainerName, m_event, m_store, msg()) );
 
-  RETURN_CHECK("ClusterHistsAlgo::execute()", m_plots->execute( ccls, eventWeight ), "");
+  ANA_CHECK( m_plots->execute( ccls, eventWeight ));
 
   return EL::StatusCode::SUCCESS;
 }
@@ -87,6 +81,6 @@ EL::StatusCode ClusterHistsAlgo :: histFinalize ()
 {
   // clean up memory
   if(m_plots) delete m_plots;
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
