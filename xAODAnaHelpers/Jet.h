@@ -67,6 +67,7 @@ namespace xAH {
       float SV1;
       float IP3D;
       float SV1IP3D;
+      float COMBx;
       float MV1;
       float MV2c00;
       float MV2c10;

@@ -188,6 +188,7 @@ namespace xAH {
 
       std::vector<float> *m_SV1;
       std::vector<float> *m_SV1IP3D;
+      std::vector<float> *m_COMBx;
       std::vector<float> *m_sv1_pu        ;
       std::vector<float> *m_sv1_pb        ;
       std::vector<float> *m_sv1_pc        ;
