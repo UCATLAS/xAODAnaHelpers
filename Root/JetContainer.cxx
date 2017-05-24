@@ -185,6 +185,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
       m_SV1               = new     std::vector<float>();
       m_SV1IP3D           = new     std::vector<float>();
+      m_COMBx             = new     std::vector<float>();
       m_sv1_pu            = new     std::vector<float>(); 
       m_sv1_pb            = new     std::vector<float>(); 
       m_sv1_pc            = new     std::vector<float>(); 
@@ -520,6 +521,7 @@ JetContainer::~JetContainer()
 
       delete m_SV1;
       delete m_SV1IP3D;
+      delete m_COMBx;
       delete m_sv1_pu        ; 
       delete m_sv1_pb        ; 
       delete m_sv1_pc        ; 
@@ -815,6 +817,7 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
 
       connectBranch<float>(tree, "SV1",               &m_SV1);
       connectBranch<float>(tree, "SV1IP3D",           &m_SV1IP3D);
+      connectBranch<float>(tree, "COMBx",             &m_COMBx);
       connectBranch<float>(tree, "sv1_pu",            &m_sv1_pu        );
       connectBranch<float>(tree, "sv1_pb",            &m_sv1_pb        );
       connectBranch<float>(tree, "sv1_pc",            &m_sv1_pc        );
@@ -1046,6 +1049,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
     jet.SV1            = m_SV1           ->at(idx);
     jet.SV1IP3D        = m_SV1IP3D       ->at(idx);
+    jet.COMBx          = m_COMBx         ->at(idx);
     jet.sv1_pu         = m_sv1_pu        ->at(idx);
     jet.sv1_pb         = m_sv1_pb        ->at(idx);
     jet.sv1_pc         = m_sv1_pc        ->at(idx);
@@ -1373,6 +1377,7 @@ void JetContainer::setBranches(TTree *tree)
 
       setBranch<float>(tree, "SV1",               m_SV1);
       setBranch<float>(tree, "SV1IP3D",           m_SV1IP3D);
+      setBranch<float>(tree, "COMBx",             m_COMBx);
       setBranch<float>(tree, "sv1_pu",            m_sv1_pu        );
       setBranch<float>(tree, "sv1_pb",            m_sv1_pb        );
       setBranch<float>(tree, "sv1_pc",            m_sv1_pc        );
@@ -1706,6 +1711,7 @@ void JetContainer::clear()
       
       m_SV1               ->clear();
       m_SV1IP3D           ->clear();
+      m_COMBx             ->clear();
       m_sv1_pu            ->clear(); 
       m_sv1_pb            ->clear(); 
       m_sv1_pc            ->clear(); 
@@ -2375,6 +2381,10 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
       m_SV1IP3D->push_back( myBTag -> SV1plusIP3D_discriminant() );
 
+      double w=(myBTag->IP3D_pb()/myBTag->IP3D_pu()) * (myBTag->SV1_pb()/myBTag->SV1_pu());
+      double x=50;
+      if(w/(1+w)<1) x=-1.0*TMath::Log10(1-(w/(1+w)));
+      m_COMBx->push_back(x);
 
       /// @brief SV1 : Number of good tracks in vertex
       static SG::AuxElement::ConstAccessor< int   >   sv1_NGTinSvxAcc     ("SV1_NGTinSvx");
@@ -2399,7 +2409,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       double sv1_pu = -30;  myBTag->variable<double>("SV1", "pu", sv1_pu);
       double sv1_pb = -30;  myBTag->variable<double>("SV1", "pb", sv1_pb);
       double sv1_pc = -30;  myBTag->variable<double>("SV1", "pc", sv1_pc);
-
+      
       m_sv1_pu         ->push_back(sv1_pu);
       m_sv1_pb         ->push_back(sv1_pb);
       m_sv1_pc         ->push_back(sv1_pc);
