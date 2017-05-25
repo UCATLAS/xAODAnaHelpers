@@ -67,7 +67,6 @@ public:
   int m_randomRunNumber = -1;
 
 private:
-  bool    m_toolInitializationAtTheFirstEventDone; //!
   bool    m_isMC = false; //!
 
   std::string m_outAuxContainerName;
@@ -77,7 +76,6 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   EL::StatusCode decorate(xAOD::Photon * photon);
-  EL::StatusCode toolInitializationAtTheFirstEvent (const xAOD::EventInfo* eventInfo);
 
   // tools
   CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr; //!
