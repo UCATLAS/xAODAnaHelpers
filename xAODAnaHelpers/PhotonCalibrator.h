@@ -33,6 +33,10 @@ public:
   std::string m_outContainerName = "";
 
   // Calibration information
+  // Tool recommends using map, rather than setting individual calib paths.
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommendations_for_full_2015_an
+  std::string m_photonCalibMap = "PhotonEfficiencyCorrection/2015_2016/rel20.7/Moriond2017_v1/map0.txt";
+
   // recommended files here: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommended_input_files
   std::string m_conEffCalibPath = "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.con.v00.root";
   std::string m_uncEffCalibPath = "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.unc.v00.root";
