@@ -102,6 +102,9 @@ public:
   bool m_jetCleanUgly = false;
   /// @brief Recalculate JVT using the calibrated jet pT
   bool m_redoJVT = false;
+
+  /// @brief Name of Jvt aux decoration.  Was "JvtJvfcorr" in Rel 20.7, is now "JVFCorr" in Rel 21. 
+  std::string m_JvtAuxName = "JVFCorr";
   /// @brief Sort the processed container elements by transverse momentum
   bool    m_sort = true;
   /// @brief Apply jet cleaning to parent jet
