@@ -121,6 +121,8 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   // input events.
 
   ANA_MSG_INFO( "Initializing PhotonCalibrator Interface... ");
+  
+  m_toolInitializationAtTheFirstEventDone = false;
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
