@@ -55,6 +55,7 @@ atlas_depends_on_subdirs( PUBLIC
                           Reconstruction/Jet/JetSubStructureUtils
                           Reconstruction/Jet/JetUncertainties
                           Reconstruction/MET/METUtilities
+                          Tools/PathResolver
                           Trigger/TrigAnalysis/TrigDecisionTool
                           Trigger/TrigAnalysis/TriggerMatchingTool
                           Trigger/TrigConfiguration/TrigConfxAOD
