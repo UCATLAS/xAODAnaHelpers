@@ -5,6 +5,15 @@
 # Declare the package name:
 atlas_subdir( xAODAnaHelpers )
 
+set( release_libs )
+if( AnalysisBase_VERSION GREATER_EQUAL 21 )
+  # 21.X
+  set( release_libs xAODTriggerCnvLib )
+else()
+  # 2.6.X
+  set( release_libs xAODTriggerCnv )
+endif()
+
 # Declare the package's dependencies:
 atlas_depends_on_subdirs( PUBLIC
                           Control/AthContainers
@@ -89,9 +98,9 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    AssociationUtilsLib JetEDM JetUncertaintiesLib
                    JetCPInterfaces xAODBTaggingEfficiencyLib TrigConfxAODLib
                    TrigDecisionToolLib xAODCutFlow JetMomentToolsLib
-                   TriggerMatchingToolLib xAODMetaDataCnv xAODTriggerCnvLib
-                   xAODMetaData JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils
-                   JetTileCorrectionLib
+                   TriggerMatchingToolLib xAODMetaDataCnv xAODMetaData
+                   JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils JetTileCorrectionLib
+                   ${release_libs}
 )
 
 # Install files from the package:
