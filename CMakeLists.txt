@@ -6,7 +6,7 @@
 atlas_subdir( xAODAnaHelpers )
 
 set( release_libs )
-if( AtlasVersion MATCHES "^21" )
+if( $ENV{AtlasVersion} GREATER_EQUAL 21 )
   # 21.X
   set( release_libs xAODTriggerCnvLib )
 else()
