@@ -89,7 +89,7 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    AssociationUtilsLib JetEDM JetUncertaintiesLib
                    JetCPInterfaces xAODBTaggingEfficiencyLib TrigConfxAODLib
                    TrigDecisionToolLib xAODCutFlow JetMomentToolsLib
-                   TriggerMatchingToolLib xAODMetaDataCnv xAODTriggerCnv
+                   TriggerMatchingToolLib xAODMetaDataCnv xAODTriggerCnvLib
                    xAODMetaData JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils
                    JetTileCorrectionLib
 )
