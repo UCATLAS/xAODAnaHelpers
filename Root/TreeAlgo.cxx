@@ -44,7 +44,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   treeFile->mkdir(m_name.c_str());
   treeFile->cd(m_name.c_str());
 
-  // to handle more than one jet collections (reco and truth)
+  // to handle more than one jet collections (reco, trig and truth)
   std::string token;
   std::istringstream ss_reco_containers(m_jetContainerName);
   while ( std::getline(ss_reco_containers, token, ' ') ){
@@ -56,6 +56,18 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_jetContainerName.empty() && m_jetContainers.size()!=m_jetBranches.size()){
     ANA_MSG_ERROR( "The number of jet containers must be equal to the number of jet name branches. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+  std::istringstream ss_trig_containers(m_trigJetContainerName);
+  while ( std::getline(ss_trig_containers, token, ' ') ){
+    m_trigJetContainers.push_back(token);
+  }
+  std::istringstream ss_trig_names(m_trigJetBranchName);
+  while ( std::getline(ss_trig_names, token, ' ') ){
+    m_trigJetBranches.push_back(token);
+  }
+  if( !m_trigJetContainerName.empty() && m_trigJetContainers.size()!=m_trigJetBranches.size()){
+    ANA_MSG_ERROR( "The number of trig jet containers must be equal to the number of trig jet name branches. Exiting");
     return EL::StatusCode::FAILURE;
   }
   std::istringstream ss_truth_containers(m_truthJetContainerName);
@@ -205,7 +217,12 @@ EL::StatusCode TreeAlgo :: execute ()
       }
     }
     if (!m_l1JetContainerName.empty() )         { helpTree->AddL1Jets();                                           }
-    if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
+    // if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
+    if (!m_trigJetContainerName.empty() )      {
+      for(unsigned int ll=0; ll<m_trigJetContainers.size();++ll){
+        helpTree->AddJets       (m_trigJetDetailStr, m_trigJetBranches.at(ll).c_str());
+      }
+    }
     if (!m_truthJetContainerName.empty() )      {
       for(unsigned int ll=0; ll<m_truthJetContainers.size();++ll){
         helpTree->AddJets       (m_truthJetDetailStr, m_truthJetBranches.at(ll).c_str());
@@ -322,11 +339,19 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_trigJetContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainerName, m_event, m_store, msg()) ) continue;
+      bool reject = false;
+      for(unsigned int ll=0;ll<m_trigJetContainers.size();++ll){
+        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainers.at(ll), m_event, m_store, msg()) ) {
+          reject = true;
+          break;
+        }
 
-      const xAOD::JetContainer* inTrigJets(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTrigJets, m_trigJetContainerName, m_event, m_store, msg()) );
-      helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), "trigJet" );
+        const xAOD::JetContainer* inTrigJets(nullptr);
+        ANA_CHECK( HelperFunctions::retrieve(inTrigJets, m_trigJetContainers.at(ll), m_event, m_store, msg()) );
+        helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_trigJetBranches.at(ll) );
+      }
+
+      if ( reject ) continue;
     }
 
     if ( !m_truthJetContainerName.empty() ) {

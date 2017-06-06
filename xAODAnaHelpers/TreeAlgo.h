@@ -40,6 +40,7 @@ public:
   std::string m_truthJetContainerName = "";
   std::string m_truthJetBranchName = "truthJet";
   std::string m_trigJetContainerName = "";
+  std::string m_trigJetBranchName = "trigJet";
   std::string m_fatJetContainerName = "";
   std::string m_truthFatJetContainerName = "";
   std::string m_tauContainerName = "";
@@ -65,9 +66,11 @@ protected:
 
   std::vector<std::string> m_jetContainers; //!
   std::vector<std::string> m_truthJetContainers; //!
+  std::vector<std::string> m_trigJetContainers; //!
 
   std::vector<std::string> m_jetBranches; //!
   std::vector<std::string> m_truthJetBranches; //!
+  std::vector<std::string> m_trigJetBranches; //!
 
   std::map<std::string, HelpTreeBase*> m_trees;            //!
 
