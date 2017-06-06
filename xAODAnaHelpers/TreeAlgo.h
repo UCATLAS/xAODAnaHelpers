@@ -19,10 +19,10 @@ public:
   // holds bools that control which branches are filled
   std::string m_evtDetailStr = "";
   std::string m_trigDetailStr = "";
-  std::string m_trigJetDetailStr = "";
   std::string m_muDetailStr = "";
   std::string m_elDetailStr = "";
   std::string m_jetDetailStr = "";
+  std::string m_trigJetDetailStr = "";
   std::string m_truthJetDetailStr = "";
   std::string m_fatJetDetailStr = "";
   std::string m_truthFatJetDetailStr = "";
@@ -63,6 +63,7 @@ public:
 
 protected:
   std::vector<std::string> m_jetDetails; //!
+  std::vector<std::string> m_trigJetDetails; //!
 
   std::vector<std::string> m_jetContainers; //!
   std::vector<std::string> m_truthJetContainers; //!

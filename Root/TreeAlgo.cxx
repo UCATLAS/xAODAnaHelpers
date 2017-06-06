@@ -83,13 +83,21 @@ EL::StatusCode TreeAlgo :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  // allow to store different variables for each jet collection (reco only, default: store the same)
+  // allow to store different variables for each jet collection (reco and trig only, default: store the same)
   std::istringstream ss(m_jetDetailStr);
   while ( std::getline(ss, token, '|') ){
     m_jetDetails.push_back(token);
   }
   if( m_jetDetails.size()!=1  && m_jetContainers.size()!=m_jetDetails.size()){
     ANA_MSG_ERROR( "The size of m_jetContainers should be equal to the size of m_jetDetailStr. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+  std::istringstream ss_trig_details(m_trigJetDetailStr);
+  while ( std::getline(ss_trig_details, token, '|') ){
+    m_trigJetDetails.push_back(token);
+  }
+  if( m_trigJetDetails.size()!=1  && m_trigJetContainers.size()!=m_trigJetDetails.size()){
+    ANA_MSG_ERROR( "The size of m_trigJetContainers should be equal to the size of m_trigJetDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
 
@@ -220,7 +228,9 @@ EL::StatusCode TreeAlgo :: execute ()
     // if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
     if (!m_trigJetContainerName.empty() )      {
       for(unsigned int ll=0; ll<m_trigJetContainers.size();++ll){
-        helpTree->AddJets       (m_trigJetDetailStr, m_trigJetBranches.at(ll).c_str());
+        // helpTree->AddJets       (m_trigJetDetailStr, m_trigJetBranches.at(ll).c_str());
+        if(m_trigJetDetails.size()==1) helpTree->AddJets       (m_trigJetDetailStr, m_trigJetBranches.at(ll).c_str());
+	else{ helpTree->AddJets       (m_trigJetDetails.at(ll), m_trigJetBranches.at(ll).c_str()); }
       }
     }
     if (!m_truthJetContainerName.empty() )      {
