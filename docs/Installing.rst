@@ -70,25 +70,38 @@ and then find all packages and then compile:
 CMake-based RootCore (> 2.5.X)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This step requires a little extra work, but compiles significantly faster. First, inside the ``workdir`` directory, we'll set up a CMake RC release:
+This step requires a little extra work, but compiles significantly faster. First, inside the ``workdir`` directory, we'll create a build and source directory. The source directory will contain all packages we build in CMake:
 
 .. parsed-literal::
 
+  mkdir src build
+
+Then we'll set up a CMake RC release inside the source:
+
+.. parsed-literal::
+
+  cd src
   asetup AnalysisBase,\ |ab_release_cm|\,here
 
-This also sets up a ``CMakeLists.txt`` file in this top-level directory that searches for all packages you've checked out inside it. Next, you will need a build directory that builds all your checked-out packages which is separate from your source code:
+This also sets up a ``CMakeLists.txt`` file in this top-level directory that searches for all packages you've checked out inside it. At this point, clone/checkout all packages you need such as |xAH|:
 
-.. code-block:: bash
+.. parsed-literal::
 
-  mkdir build && cd $_
+  git clone <url>/UCATLAS/xAODAnaHelpers.git
 
-.. note:: This is inside the ``workdir``, so you will have ``workdir/xAODAnaHelpers`` and ``workdir/build`` as paths, for example.
+Next, you will need to change to your build directory that builds all your checked-out packages which is separate from your source code:
+
+.. parsed-literal::
+
+  cd ../build
+
+.. note:: This is inside the ``workdir``, so you will have ``workdir/src/xAODAnaHelpers`` and ``workdir/build`` as paths, for example.
 
 and then run cmake to generate our makefiles, then compile:
 
 .. code-block:: bash
 
-  cmake ../
+  cmake ../src
   make
   cd ../
 
