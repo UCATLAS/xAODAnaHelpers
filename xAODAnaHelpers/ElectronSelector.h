@@ -21,7 +21,7 @@
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
 #include "IsolationSelection/IIsolationSelectionTool.h"
-#include "TrigDecisionInterface/ITrigDecisionTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
 
 // algorithm wrapper
@@ -259,7 +259,7 @@ private:
       The name of this tool (if needs to be changed) can be set with :cpp:member:`ElectronSelector::m_trigDecTool_name`.
     @endrst
   */
-  asg::AnaToolHandle<Trig::ITrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle{"Trig::TrigDecisionTool"};                //!
   asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle{"Trig::MatchingTool"};          //!
   bool m_doTrigMatch = true;
 
