@@ -435,8 +435,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
     std::vector<std::string> vecStringGRL;
 
     std::string grl;
-    std::istringstream ss(PathResolverFindCalibFile(m_GRLxml));
-    while ( std::getline(ss, grl, ',') ) vecStringGRL.push_back(grl);
+    std::istringstream ss(m_GRLxml);
+    while ( std::getline(ss, grl, ',') ) {
+        std::string file = PathResolverFindCalibFile(grl);
+        ANA_MSG_DEBUG("Found GRL: " << file);
+        vecStringGRL.push_back(file);
+    }
 
     setToolName(m_grl_handle);
     ANA_CHECK( m_grl_handle.setProperty( "GoodRunsListVec", vecStringGRL));
