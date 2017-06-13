@@ -2,10 +2,10 @@ from PathResolver import PathResolver
 import random
 
 import logging
-logger = logging.getLogger("xAH_randomNameGenerator")
+logger = logging.getLogger("xAH_nameGenerator")
 logger.setLevel(10) # we use info
 
-class xAH_randomNameGenerator(object):
+class xAH_nameGenerator(object):
   adjectives = None
   animals = None
   def __init__(self):
