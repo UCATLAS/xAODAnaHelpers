@@ -6,6 +6,9 @@ import logging
 logger = logging.getLogger("xAH_config")
 logger.setLevel(10) # we use info
 
+# for generating names if needed
+from xAH_nameGenerator import xAH_nameGenerator
+
 class xAH_config(object):
   def __init__(self):
     self._algorithms = []
@@ -19,25 +22,29 @@ class xAH_config(object):
     if not isinstance(options, dict):
       raise TypeError("Must pass in a dictionary of options")
 
+    # if m_name not set, randomly generate it
     algName = options.get("m_name", None)
     if algName is None:
-      raise KeyError("'m_name' is not set for instance of {0:s}".format(className))
-    if not isinstance(algName, str):
+      algName = str(xAH_nameGenerator())
+      logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
+    if not isinstance(algName, str) and not isinstance(algName, unicode):
       raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
 
+    # handle deprecation of m_debug, m_verbose
     if 'm_debug' in options:
-      logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
-
+      logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 . Set m_msgLevel='debug'")
     if 'm_verbose' in options:
-      logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
+      logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 . Set m_msgLevel='verbose'.")
 
-    debugLevel = options.get("m_msgLevel", "info")
-    if not isinstance(debugLevel, str):
-      raise TypeError("'m_msgLevel' must be a string for instance of {0:s}".format(className))
-    if not hasattr(ROOT.MSG, debugLevel.upper()):
-      raise ValueError("'m_msgLevel' must be a valid MSG::level: {0:s}".format(debugLevel))
-    debugLevel = getattr(ROOT.MSG, debugLevel.upper())
-    options['m_msgLevel'] = debugLevel
+    # handle msgLevels, can be string or integer
+    msgLevel = options.get("m_msgLevel", "info")
+    if not isinstance(msgLevel, str) and not isinstance(msgLevel, int):
+      raise TypeError("m_msgLevel must be a string or integer for instance of {0:s}".format(className))
+    if isinstance(msgLevel, str):
+      if not hasattr(ROOT.MSG, msgLevel.upper()):
+        raise ValueError("m_msgLevel must be a valid MSG::level: {0:s}".format(msgLevel))
+      msgLevel = getattr(ROOT.MSG, msgLevel.upper())
+    options['m_msgLevel'] = msgLevel
 
     #
     # Construct the given constructor
@@ -52,9 +59,10 @@ class xAH_config(object):
     #
     alg_obj = alg()
     alg_obj.SetName(algName)
-    alg_obj.setMsgLevel(debugLevel)
+    alg_obj.setMsgLevel(msgLevel)
     self._log.append((alg,algName))
     for k,v in options.iteritems():
+      # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
       if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
         raise AttributeError(k)
       self._log.append((alg, k, v))

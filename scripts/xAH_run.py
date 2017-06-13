@@ -502,6 +502,9 @@ if __name__ == "__main__":
     if load_json:
       xAH_logger.debug("Loading json files")
 
+      # for generating names if needed
+      from xAH_nameGenerator import xAH_nameGenerator
+
       # add our algorithm to the job
       algorithm_configurations = parse_json(args.config)
       xAH_logger.debug("loaded the configurations")
@@ -517,34 +520,38 @@ if __name__ == "__main__":
         if not alg:
           raise ValueError("Algorithm %s does not exist" % className)
 
+        # if m_name not set, randomly generate it
         algName = algorithm_configuration['configs'].get("m_name", None)
         if algName is None:
-          raise KeyError("'m_name' is not set for instance of {0:s}".format(className))
+          algName = str(xAH_nameGenerator())
+          xAH_logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
         if not isinstance(algName, str) and not isinstance(algName, unicode):
-          raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
+          raise TypeError("m_name must be a string for instance of {0:s}".format(className))
 
+        # handle deprecation of m_debug, m_verbose
         if 'm_debug' in algorithm_configuration['configs']:
-          xAH_logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
-
+          xAH_logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 . Set m_msgLevel='debug'")
         if 'm_verbose' in algorithm_configuration['configs']:
-          xAH_logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 .")
+          xAH_logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 . Set m_msgLevel='verbose'.")
 
-        debugLevel = algorithm_configuration['configs'].get("m_msgLevel", "info")
-        if not isinstance(debugLevel, str):
-          raise TypeError("'m_msgLevel' must be a string for instance of {0:s}".format(className))
-        if not hasattr(ROOT.MSG, debugLevel.upper()):
-          raise ValueError("'m_msgLevel' must be a valid MSG::level: {0:s}".format(debugLevel))
-        debugLevel = getattr(ROOT.MSG, debugLevel.upper())
-        algorithm_configuration['configs']['m_msgLevel'] = debugLevel
+        # handle msgLevels, can be string or integer
+        msgLevel = algorithm_configuration['configs'].get("m_msgLevel", "info")
+        if not isinstance(msgLevel, str) and not isinstance(msgLevel, int):
+          raise TypeError("m_msgLevel must be a string or integer for instance of {0:s}".format(className))
+        if isinstance(msgLevel, str):
+          if not hasattr(ROOT.MSG, msgLevel.upper()):
+            raise ValueError("m_msgLevel must be a valid MSG::level: {0:s}".format(msgLevel))
+          msgLevel = getattr(ROOT.MSG, msgLevel.upper())
+        algorithm_configuration['configs']['m_msgLevel'] = msgLevel
 
         alg = alg()
         alg.SetName(algName)
-        alg.setMsgLevel(debugLevel)
+        alg.setMsgLevel(msgLevel)
         for config_name, config_val in algorithm_configuration['configs'].iteritems():
           xAH_logger.debug("\t%s", printStr.format(className, config_name, config_val))
           algorithmConfiguration_string.append(printStr.format(className, config_name, config_val))
-          alg_attr = getattr(alg, config_name, None)
-          if alg_attr is None and config_name not in ['m_msgLevel', 'm_name']:
+          # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
+          if not hasattr(alg, config_name) and config_name not in ['m_msgLevel', 'm_name']:
             raise ValueError("Algorithm %s does not have attribute %s" % (className, config_name))
 
           #handle unicode from json
