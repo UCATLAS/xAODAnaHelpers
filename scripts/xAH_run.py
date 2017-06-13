@@ -233,7 +233,7 @@ prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=Fa
 prun.add_argument('--optOfficial',             metavar='', type=int, required=False, default=None)
 prun.add_argument('--optVoms',                 metavar='', type=int, required=False, default=None)
 # the following is not technically supported by Job.h but it is a valid option for prun, emailed pathelp about it
-prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[4]%.%in:name[5]%.%in:name[6]%.%in:name[7]%_xAH')
+prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[2]%.%in:name[3]%.%in:name[6]%.%in:name[7]%_xAH')
 
 # define arguments for condor driver
 condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true', help='the name of the option for supplying extra parameters for condor systems')
