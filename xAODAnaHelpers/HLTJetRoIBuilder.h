@@ -49,7 +49,7 @@ class HLTJetRoIBuilder : public xAH::Algorithm
     /**
       @brief Do we read in the HLT vertices?
      */
-    bool        m_readHLTVtx;
+    bool        m_readHLTVtx = true;
 
 
     /**
