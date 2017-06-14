@@ -12,13 +12,13 @@
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
 #include "PhotonEfficiencyCorrection/IAsgPhotonEfficiencyCorrectionTool.h"
+#include "IsolationCorrections/IIsolationCorrectionTool.h"
 
 class AsgPhotonIsEMSelector;
 class ElectronPhotonShowerShapeFudgeTool;
 
 namespace CP {
   class EgammaCalibrationAndSmearingTool;
-  class IsolationCorrectionTool;
 }
 
 
@@ -81,7 +81,7 @@ private:
 
   // tools
   CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr; //!
-  CP::IsolationCorrectionTool*          m_IsolationCorrectionTool = nullptr; //!
+  asg::AnaToolHandle<IIsolationCorrectionTool> m_isolationCorrectionTool_handle{"CP::IsolationCorrectionTool"}; //!
   ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr; //!

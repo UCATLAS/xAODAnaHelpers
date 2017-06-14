@@ -39,7 +39,6 @@
 #include <xAODAnaHelpers/PhotonCalibrator.h>
 
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
-#include "IsolationCorrections/IsolationCorrectionTool.h"
 #include "ElectronPhotonSelectorTools/AsgPhotonIsEMSelector.h"
 #include "ElectronPhotonShowerShapeFudgeTool/ElectronPhotonShowerShapeFudgeTool.h"
 
@@ -299,15 +298,9 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   }
 
   //IsolationCorrectionTool
-  const std::string IsoCorrToolName = m_name + "_IsolationCorrectiongTool_Photons";
-  if ( asg::ToolStore::contains<CP::IsolationCorrectionTool>(IsoCorrToolName.c_str()) ) {
-    m_IsolationCorrectionTool = asg::ToolStore::get<CP::IsolationCorrectionTool>(IsoCorrToolName.c_str());
-  } else {
-    m_IsolationCorrectionTool = new CP::IsolationCorrectionTool(IsoCorrToolName.c_str());
-  }
-
-  ANA_CHECK( m_IsolationCorrectionTool->initialize());
-  m_IsolationCorrectionTool->msg().setLevel( msg().level() );
+  setToolName(m_isolationCorrectionTool_handle);
+  ANA_CHECK(m_isolationCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
+  ANA_CHECK(m_isolationCorrectionTool_handle.retrieve());
 
   ANA_MSG_INFO( "PhotonCalibrator Interface succesfully initialized!" );
 
@@ -397,7 +390,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
           ANA_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
         }
 
-        if ( m_IsolationCorrectionTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
+        if ( m_isolationCorrectionTool_handle->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
           ANA_MSG_WARNING( "Problem in CP::IsolationCorrection::applyCorrection()");
         }
       }
