@@ -250,7 +250,7 @@ namespace xAH {
          */
         template <typename T>
         bool setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
-          if(name.empty()) name = handle.type() + "_" + m_name + "::" + getAddress();
+          if(name.empty()) name = handle.name() + "_" + m_name + "::" + getAddress();
           handle.setName(name);
           ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
           bool res = handle.isUserConfigured();

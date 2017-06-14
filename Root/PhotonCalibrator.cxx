@@ -39,10 +39,8 @@
 #include <xAODAnaHelpers/PhotonCalibrator.h>
 
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
-#include "IsolationCorrections/IsolationCorrectionTool.h"
 #include "ElectronPhotonSelectorTools/AsgPhotonIsEMSelector.h"
 #include "ElectronPhotonShowerShapeFudgeTool/ElectronPhotonShowerShapeFudgeTool.h"
-#include "PhotonEfficiencyCorrection/AsgPhotonEfficiencyCorrectionTool.h"
 
 #include <PATCore/PATCoreEnums.h>
 
@@ -239,6 +237,71 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   m_photonFudgeMCTool->setProperty("Preselection",FFset);
   ANA_CHECK( m_photonFudgeMCTool->initialize());
 
+
+  ////// Efficiency correction tools //////
+  const xAOD::EventInfo* eventInfo(nullptr);
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+
+  if (isMC()) {
+
+    int dataType = PATCore::ParticleDataType::Data;
+    if (m_useAFII) {
+      dataType = PATCore::ParticleDataType::Fast;
+    } else {
+      dataType = PATCore::ParticleDataType::Full;
+    }
+
+    ANA_MSG_DEBUG("isSimulation=" << ( isMC() ? "Y" : "N") << " isAFII=" << (m_useAFII ? "Y" : "N" ) << " selected dataType=" << dataType );
+
+    // photon efficiency correction tool
+    //----------------------------------
+    //create the tools
+    setToolName(m_photonTightEffTool_handle);
+    setToolName(m_photonMediumEffTool_handle);
+    setToolName(m_photonLooseEffTool_handle);
+
+    std::string conEffCalibPath  = PathResolverFindCalibFile(m_conEffCalibPath );
+    std::string uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffCalibPath );
+    if(m_useAFII){
+      conEffCalibPath  = PathResolverFindCalibFile(m_conEffAFIICalibPath );
+      uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffAFIICalibPath );
+    }
+
+    // if m_photonCalibMap is set, use it instead of correction files
+    if( m_photonCalibMap.size() > 0 ){
+      ANA_CHECK( m_photonTightEffTool_handle .setProperty("MapFilePath", m_photonCalibMap) );
+      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("MapFilePath", m_photonCalibMap) );
+      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("MapFilePath", m_photonCalibMap) );
+    } else {
+      ANA_CHECK( m_photonTightEffTool_handle .setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
+      ANA_CHECK( m_photonTightEffTool_handle .setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
+      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
+      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
+      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
+      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
+    }
+
+    // set data type
+    ANA_CHECK( m_photonTightEffTool_handle. setProperty("ForceDataType", dataType));
+    ANA_CHECK( m_photonMediumEffTool_handle.setProperty("ForceDataType", dataType));
+    ANA_CHECK( m_photonLooseEffTool_handle. setProperty("ForceDataType", dataType));
+
+    // set debug levels
+    ANA_CHECK( m_photonTightEffTool_handle. setProperty("OutputLevel", msg().level()));
+    ANA_CHECK( m_photonMediumEffTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK( m_photonLooseEffTool_handle. setProperty("OutputLevel", msg().level()));
+
+    //initialize
+    ANA_CHECK( m_photonTightEffTool_handle.retrieve());
+    ANA_CHECK( m_photonMediumEffTool_handle.retrieve());
+    ANA_CHECK( m_photonLooseEffTool_handle.retrieve());
+  }
+
+  //IsolationCorrectionTool
+  setToolName(m_isolationCorrectionTool_handle);
+  ANA_CHECK(m_isolationCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
+  ANA_CHECK(m_isolationCorrectionTool_handle.retrieve());
+
   ANA_MSG_INFO( "PhotonCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -258,13 +321,6 @@ EL::StatusCode PhotonCalibrator :: execute ()
   //
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
-
-  if ( ! m_toolInitializationAtTheFirstEventDone ) {
-    ANA_CHECK( toolInitializationAtTheFirstEvent (eventInfo));
-  }
-
-
 
   const xAOD::PhotonContainer* inPhotons(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) );
@@ -324,19 +380,19 @@ EL::StatusCode PhotonCalibrator :: execute ()
       ANA_MSG_DEBUG("Checking photon " << idx << " raw pt = " << phSC_itr->pt()*1e-3 << " GeV " );
 
       if ( phSC_itr->pt() > 7e3 && !(phSC_itr->caloCluster()) ){
-	ANA_MSG_WARNING( "photon "<<idx<<", raw pt = "<<phSC_itr->pt()*1e-3<<" GeV, does not have caloCluster()! " );
+        ANA_MSG_WARNING( "photon "<<idx<<", raw pt = "<<phSC_itr->pt()*1e-3<<" GeV, does not have caloCluster()! " );
       }
 
       // apply calibration (w/ syst)
       //
       if ( (phSC_itr->author() & xAOD::EgammaParameters::AuthorPhoton) || (phSC_itr->author() & xAOD::EgammaParameters::AuthorAmbiguous) ) {
-	if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
-	  ANA_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
-	}
+        if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
+          ANA_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
+        }
 
-	if ( m_IsolationCorrectionTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
-	  ANA_MSG_WARNING( "Problem in CP::IsolationCorrection::applyCorrection()");
-	}
+        if ( m_isolationCorrectionTool_handle->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
+          ANA_MSG_WARNING( "Problem in CP::IsolationCorrection::applyCorrection()");
+        }
       }
 
       ANA_MSG_DEBUG("Calibrated pt with systematic: " << syst_it.name() << " , pt = " << phSC_itr->pt() * 1e-3 << " GeV");
@@ -432,21 +488,6 @@ EL::StatusCode PhotonCalibrator :: finalize ()
     m_photonLooseIsEMSelector = nullptr;
   }
 
-  if (m_photonTightEffTool) {
-    delete m_photonTightEffTool;
-    m_photonTightEffTool = nullptr;
-  }
-
-  if (m_photonMediumEffTool) {
-    delete m_photonMediumEffTool;
-    m_photonMediumEffTool = nullptr;
-  }
-
-  if (m_photonLooseEffTool) {
-    delete m_photonLooseEffTool;
-    m_photonLooseEffTool = nullptr;
-  }
-
   ANA_MSG_INFO( "Finalization done.");
 
   return EL::StatusCode::SUCCESS;
@@ -475,7 +516,7 @@ EL::StatusCode PhotonCalibrator :: histFinalize ()
 EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 {
   // (1) apply fudge factors
-  if(!m_useAFII && m_isMC){
+  if(!m_useAFII && isMC()){
     if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
       ANA_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
       return EL::StatusCode::FAILURE;
@@ -492,14 +533,14 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
   ANA_MSG_DEBUG("isTight="<<(isTight?"Y":"N")<<" isMedium="<<(isMedium?"Y":"N")<<" isLoose="<<(isLoose?"Y":"N") );
 
   // (3) set efficiency correction
-  if (m_isMC) {
+  if (isMC()) {
     const xAOD::CaloCluster* cluster = photon->caloCluster();
     float cluster_eta = 10;
     float cluster_et = 0;
     if (cluster) {
       cluster_eta = cluster->etaBE(2);
       if (cluster_eta != 0.0) {
-	cluster_et = cluster->e() / cosh(cluster_eta);
+        cluster_et = cluster->e() / cosh(cluster_eta);
       }
     }
 
@@ -513,30 +554,30 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
     //sf only available after basic kinematic selection
     if(cluster_et > 10000. && fabs(cluster_eta) < 2.37 && !inCrack){
       // SF
-      if(m_photonTightEffTool->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
-	ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonTightEffTool_handle->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
-      if(m_photonMediumEffTool->getEfficiencyScaleFactor(*photon, photonMediumEffSF) == CP::CorrectionCode::Error){
-	ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonMediumEffTool_handle->getEfficiencyScaleFactor(*photon, photonMediumEffSF) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
-      if(m_photonLooseEffTool->getEfficiencyScaleFactor(*photon, photonLooseEffSF) == CP::CorrectionCode::Error){
-	ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonLooseEffTool_handle->getEfficiencyScaleFactor(*photon, photonLooseEffSF) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
       // SF error
-      if(m_photonTightEffTool->getEfficiencyScaleFactorError(*photon, photonTightEffSFError) == CP::CorrectionCode::Error){
-	ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonTightEffTool_handle->getEfficiencyScaleFactorError(*photon, photonTightEffSFError) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
-      if(m_photonMediumEffTool->getEfficiencyScaleFactorError(*photon, photonMediumEffSFError) == CP::CorrectionCode::Error){
-	ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonMediumEffTool_handle->getEfficiencyScaleFactorError(*photon, photonMediumEffSFError) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
-      if(m_photonLooseEffTool->getEfficiencyScaleFactorError(*photon, photonLooseEffSFError) == CP::CorrectionCode::Error){
-	ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonLooseEffTool_handle->getEfficiencyScaleFactorError(*photon, photonLooseEffSFError) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
     }
 
@@ -556,95 +597,3 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xAOD::EventInfo* eventInfo )
-{
-  // Efficiency correction
-  if (m_isMC) {
-    // in order to use EventInfo
-    // some tools are initialized after the first events are stored from file
-    if (m_toolInitializationAtTheFirstEventDone) {
-      ANA_MSG_ERROR( "please call this function only when m_toolInitializationAtTheFirstEventDone = false");
-      return EL::StatusCode::FAILURE;
-    }
-
-    int dataType = PATCore::ParticleDataType::Data;
-    if (eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION )) {
-      if (m_useAFII) {
-	dataType = PATCore::ParticleDataType::Fast;
-      } else {
-	dataType = PATCore::ParticleDataType::Full;
-      }
-    }
-
-    ANA_MSG_DEBUG("isSimulation=" << ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ? "Y" : "N") << " isAFII=" << (m_useAFII ? "Y" : "N" ) << " selected dataType=" << dataType );
-
-    // photon efficiency correction tool
-    //----------------------------------
-    //create the tools
-    // Tight
-    const std::string TightCorrectorName = m_name + "_PhotonTightEfficiencyCorrectionTool";
-    if ( asg::ToolStore::contains<AsgPhotonEfficiencyCorrectionTool>(TightCorrectorName.c_str()) ) {
-      m_photonTightEffTool = asg::ToolStore::get<AsgPhotonEfficiencyCorrectionTool>(TightCorrectorName.c_str());
-    } else {
-      m_photonTightEffTool = new AsgPhotonEfficiencyCorrectionTool(TightCorrectorName.c_str());
-    }
-    m_photonTightEffTool->msg().setLevel( msg().level() );
-
-    // Medium
-    const std::string MediumCorrectorName = m_name + "_PhotonMediumEfficiencyCorrectionTool";
-    if ( asg::ToolStore::contains<AsgPhotonEfficiencyCorrectionTool>(MediumCorrectorName.c_str()) ) {
-      m_photonMediumEffTool = asg::ToolStore::get<AsgPhotonEfficiencyCorrectionTool>(MediumCorrectorName.c_str());
-    } else {
-      m_photonMediumEffTool = new AsgPhotonEfficiencyCorrectionTool(MediumCorrectorName.c_str());
-    }
-    m_photonMediumEffTool->msg().setLevel( msg().level() );
-
-    // Loose
-    const std::string LooseCorrectorName = m_name + "_PhotonLooseEfficiencyCorrectionTool";
-    if ( asg::ToolStore::contains<AsgPhotonEfficiencyCorrectionTool>(LooseCorrectorName.c_str()) ) {
-      m_photonLooseEffTool = asg::ToolStore::get<AsgPhotonEfficiencyCorrectionTool>(LooseCorrectorName.c_str());
-    } else {
-      m_photonLooseEffTool = new AsgPhotonEfficiencyCorrectionTool(LooseCorrectorName.c_str());
-    }
-    m_photonLooseEffTool->msg().setLevel( msg().level() );
-
-    std::string conEffCalibPath  = PathResolverFindCalibFile(m_conEffCalibPath );
-    std::string uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffCalibPath );
-    if(m_useAFII){
-      conEffCalibPath  = PathResolverFindCalibFile(m_conEffAFIICalibPath );
-      uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffAFIICalibPath );
-    }
-
-    ANA_CHECK( m_photonTightEffTool ->setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
-    ANA_CHECK( m_photonTightEffTool ->setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
-    ANA_CHECK( m_photonMediumEffTool->setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
-    ANA_CHECK( m_photonMediumEffTool->setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
-    ANA_CHECK( m_photonLooseEffTool ->setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
-    ANA_CHECK( m_photonLooseEffTool ->setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
-
-    // set data type
-    ANA_CHECK( m_photonTightEffTool->setProperty("ForceDataType", dataType));
-    ANA_CHECK( m_photonMediumEffTool->setProperty("ForceDataType", dataType));
-    ANA_CHECK( m_photonLooseEffTool->setProperty("ForceDataType", dataType));
-
-    //initialize
-    ANA_CHECK( m_photonTightEffTool->initialize());
-    ANA_CHECK( m_photonMediumEffTool->initialize());
-    ANA_CHECK( m_photonLooseEffTool->initialize());
-  }
-
-  //IsolationCorrectionTool
-  const std::string IsoCorrToolName = m_name + "_IsolationCorrectiongTool_Photons";
-  if ( asg::ToolStore::contains<CP::IsolationCorrectionTool>(IsoCorrToolName.c_str()) ) {
-    m_IsolationCorrectionTool = asg::ToolStore::get<CP::IsolationCorrectionTool>(IsoCorrToolName.c_str());
-  } else {
-    m_IsolationCorrectionTool = new CP::IsolationCorrectionTool(IsoCorrToolName.c_str());
-  }
-
-  ANA_CHECK( m_IsolationCorrectionTool->initialize());
-  m_IsolationCorrectionTool->msg().setLevel( msg().level() );
-
-  m_toolInitializationAtTheFirstEventDone = true;
-
-  return EL::StatusCode::SUCCESS;
-}

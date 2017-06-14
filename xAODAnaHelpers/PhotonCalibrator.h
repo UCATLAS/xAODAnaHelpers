@@ -10,13 +10,15 @@
 #include <xAODEventInfo/EventInfo.h>
 
 // external tools include(s):
+#include "AsgTools/AnaToolHandle.h"
+#include "PhotonEfficiencyCorrection/IAsgPhotonEfficiencyCorrectionTool.h"
+#include "IsolationCorrections/IIsolationCorrectionTool.h"
+
 class AsgPhotonIsEMSelector;
 class ElectronPhotonShowerShapeFudgeTool;
-class AsgPhotonEfficiencyCorrectionTool;
 
 namespace CP {
   class EgammaCalibrationAndSmearingTool;
-  class IsolationCorrectionTool;
 }
 
 
@@ -33,6 +35,10 @@ public:
   std::string m_outContainerName = "";
 
   // Calibration information
+  // Tool recommends using map, rather than setting individual calib paths.
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommendations_for_full_2015_an
+  std::string m_photonCalibMap = "PhotonEfficiencyCorrection/2015_2016/rel20.7/Moriond2017_v1/map0.txt";
+
   // recommended files here: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommended_input_files
   std::string m_conEffCalibPath = "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.con.v00.root";
   std::string m_uncEffCalibPath = "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.unc.v00.root";
@@ -63,7 +69,6 @@ public:
   int m_randomRunNumber = -1;
 
 private:
-  bool    m_toolInitializationAtTheFirstEventDone; //!
   bool    m_isMC = false; //!
 
   std::string m_outAuxContainerName;
@@ -73,22 +78,18 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   EL::StatusCode decorate(xAOD::Photon * photon);
-  EL::StatusCode toolInitializationAtTheFirstEvent (const xAOD::EventInfo* eventInfo);
 
   // tools
   CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr; //!
-  CP::IsolationCorrectionTool*          m_IsolationCorrectionTool = nullptr; //!
+  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle{"CP::IsolationCorrectionTool"}; //!
   ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr; //!
-  AsgPhotonEfficiencyCorrectionTool*    m_photonTightEffTool = nullptr; //!
-  AsgPhotonEfficiencyCorrectionTool*    m_photonMediumEffTool = nullptr; //!
-  AsgPhotonEfficiencyCorrectionTool*    m_photonLooseEffTool = nullptr; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/tight"}; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"}; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/loose"}; //!
 
-  // variables that don't get filled at submission time should be
-  // protected from being send from the submission node to the worker
-  // node (done by the //!)
 public:
   // Tree *myTree; //!
   // TH1 *myHist; //!
