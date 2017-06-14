@@ -244,7 +244,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
     std::vector<Trig::Feature<xAOD::VertexContainer> > vtxCollections;
     std::vector<Trig::Feature<xAOD::VertexContainer> > backupVtxCollections;
-    if(m_readHLTTracks){
+    if(m_readHLTVtx){
       backupVtxCollections = comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx");
 
       if(m_vtxName.size()){
@@ -254,17 +254,18 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       }
     }
 
-    //    cout << " Test Size " << endl;
-    //    cout << " \tSplitJet: " << comb->containerFeature<xAOD::JetContainer>("SplitJet").size() << endl;
-    //    cout << " \tGSCJet: "   << comb->containerFeature<xAOD::JetContainer>("GSCJet")  .size() << endl;
-    //    cout << " \tEFJet:  "   << comb->containerFeature<xAOD::JetContainer>("EFJet")   .size() << endl;
+    //cout << " Test Size " << endl;
+    //cout << " \tSplitJet: " << comb->containerFeature<xAOD::JetContainer>("SplitJet").size() << endl;
+    //cout << " \tGSCJet: "   << comb->containerFeature<xAOD::JetContainer>("GSCJet")  .size() << endl;
+    //cout << " \tEFJet:  "   << comb->containerFeature<xAOD::JetContainer>("EFJet")   .size() << endl;
     //
-    // FTK Vertex debugging
-    //    cout << " Test Size " << endl;
-    //    cout << " \tempty: " << comb->containerFeature<xAOD::VertexContainer>().size() << endl;
-    //    cout << " \tEFHistoPrmVtx: " << comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx").size() <<endl;
-    //    cout << " \txPrimVx: " << comb->containerFeature<xAOD::VertexContainer>("xPrimVx").size() << endl;
-    //    cout << " \tPrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTK").size() << endl;
+    //// FTK Vertex debugging
+    //cout << " Test Size " << vtxCollections.size() << "  '" << m_vtxName << "'" << endl;
+    //cout << " Test Size2 " << vtxCollections.size() << endl;
+    //cout << " \tempty: " << comb->containerFeature<xAOD::VertexContainer>().size() << endl;
+    //cout << " \tEFHistoPrmVtx: " << comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx").size() <<endl;
+    //cout << " \txPrimVx: " << comb->containerFeature<xAOD::VertexContainer>("xPrimVx").size() << endl;
+    //cout << " \tPrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTK").size() << endl;
     //    cout << " \tPrimVertexFTKRaw " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTKRaw").size() << endl;
     //    cout << " \tPrimVertexFTKRefit " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTKRefit").size()<< endl;
     //    cout << " \tHLT_PrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("HLT_PrimVertexFTK").size() << endl;
