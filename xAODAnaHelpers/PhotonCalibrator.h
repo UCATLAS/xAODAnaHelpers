@@ -10,9 +10,11 @@
 #include <xAODEventInfo/EventInfo.h>
 
 // external tools include(s):
+#include "AsgTools/AnaToolHandle.h"
+#include "PhotonEfficiencyCorrection/IAsgPhotonEfficiencyCorrectionTool.h"
+
 class AsgPhotonIsEMSelector;
 class ElectronPhotonShowerShapeFudgeTool;
-class AsgPhotonEfficiencyCorrectionTool;
 
 namespace CP {
   class EgammaCalibrationAndSmearingTool;
@@ -84,13 +86,10 @@ private:
   AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr; //!
-  AsgPhotonEfficiencyCorrectionTool*    m_photonTightEffTool = nullptr; //!
-  AsgPhotonEfficiencyCorrectionTool*    m_photonMediumEffTool = nullptr; //!
-  AsgPhotonEfficiencyCorrectionTool*    m_photonLooseEffTool = nullptr; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/tight"}; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"}; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/loose"}; //!
 
-  // variables that don't get filled at submission time should be
-  // protected from being send from the submission node to the worker
-  // node (done by the //!)
 public:
   // Tree *myTree; //!
   // TH1 *myHist; //!
