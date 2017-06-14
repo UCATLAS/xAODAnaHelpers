@@ -345,8 +345,8 @@ EL::StatusCode JetCalibrator :: initialize ()
   if( m_redoJVT ){
     setToolName(m_JVTUpdateTool_handle);
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")));
-    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVFCorrName", m_JvtAuxName) )
+    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JVTUpdateTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_JVTUpdateTool_handle);
   }
