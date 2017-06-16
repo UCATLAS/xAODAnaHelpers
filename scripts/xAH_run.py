@@ -558,7 +558,11 @@ if __name__ == "__main__":
           if isinstance(config_val, unicode):
             config_val = config_val.encode('utf-8')
 
-          setattr(alg, config_name, config_val)
+          try:
+            setattr(alg, config_name, config_val)
+          except:
+            xAH_logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(config_name, config_val, className, algName))
+            raise
 
         xAH_logger.debug("adding algorithm %s to job", className)
         algorithmConfiguration_string.append("\n")
