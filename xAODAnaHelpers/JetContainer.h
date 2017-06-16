@@ -200,6 +200,7 @@ namespace xAH {
       std::vector<float> *m_sv1_efracsvx  ;
       std::vector<float> *m_sv1_normdist  ;
       std::vector<float> *m_sv1_Lxy       ;
+      std::vector<float> *m_sv1_sig3d       ;
       std::vector<float> *m_sv1_L3d       ;
       std::vector<float> *m_sv1_distmatlay;
       std::vector<float> *m_sv1_dR        ;

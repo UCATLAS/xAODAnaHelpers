@@ -117,6 +117,7 @@ namespace xAH {
       float sv1_efracsvx  ;
       float sv1_normdist  ;
       float sv1_Lxy       ;
+      float sv1_sig3d     ;
       float sv1_L3d       ;
       float sv1_distmatlay;
       float sv1_dR        ;

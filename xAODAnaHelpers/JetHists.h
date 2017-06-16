@@ -225,6 +225,7 @@ class JetHists : public IParticleHists
     TH1F* m_sv1_efracsvx ; //!
     TH1F* m_sv1_normdist ; //!
     TH1F* m_SV1_Lxy        ; //!
+    TH1F* m_SV1_sig3d        ; //!
     TH1F* m_SV1_L3d        ; //!
     TH1F* m_SV1_distmatlay ; //!
     TH1F* m_SV1_dR         ; //!

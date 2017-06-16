@@ -286,6 +286,7 @@ StatusCode JetHists::initialize() {
     m_sv1_efracsvx  = book(m_name, "SV1_efracsvx",   "SV1_efracsvx",   100, -0.1,   1.2);
     m_sv1_normdist  = book(m_name, "SV1_normdist",   "SV1_normdist",   100, -10,    70);
     m_SV1_Lxy       = book(m_name, "SV1_Lxy",        "SV1_Lxy",        100,  -1,    70);
+    m_SV1_sig3d     = book(m_name, "SV1_sig3d",      "SV1_sig3d",      100,   0,   100);
     m_SV1_L3d       = book(m_name, "SV1_L3d",        "SV1_L3d",        100,  -1,    70);
     m_SV1_distmatlay = book(m_name, "SV1_distmatlay","SV1_distmatlay", 100,  -1,    30);
     m_SV1_dR        = book(m_name, "SV1_dR",         "SV1_dR",         100,  -0.1,   2);
@@ -1201,12 +1202,14 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       m_SV1_c          ->  Fill( btag_info->calcLLR(sv1_pb,sv1_pc) , eventWeight );
       m_SV1_cu         ->  Fill( btag_info->calcLLR(sv1_pc,sv1_pu) , eventWeight );
 
-      float sv1_Lxy;        btag_info->variable<float>("SV1", "Lxy"         , sv1_Lxy);
-      float sv1_L3d;        btag_info->variable<float>("SV1", "L3d"         , sv1_L3d);
-      float sv1_distmatlay; btag_info->variable<float>("SV1", "dstToMatLay" , sv1_distmatlay);
-      float sv1_dR;         btag_info->variable<float>("SV1", "deltaR"      , sv1_dR );
+      float sv1_Lxy;        btag_info->variable<float>("SV1", "Lxy"             , sv1_Lxy);
+      float sv1_sig3d;      btag_info->variable<float>("SV1", "significance3d"  , sv1_sig3d);
+      float sv1_L3d;        btag_info->variable<float>("SV1", "L3d"             , sv1_L3d);
+      float sv1_distmatlay; btag_info->variable<float>("SV1", "dstToMatLay"     , sv1_distmatlay);
+      float sv1_dR;         btag_info->variable<float>("SV1", "deltaR"          , sv1_dR );
 
       m_SV1_Lxy        -> Fill(sv1_Lxy,         eventWeight);
+      m_SV1_sig3d      -> Fill(sv1_sig3d,       eventWeight);
       m_SV1_L3d        -> Fill(sv1_L3d,         eventWeight);
       m_SV1_distmatlay -> Fill(sv1_distmatlay,  eventWeight);
       m_SV1_dR         -> Fill(sv1_dR,          eventWeight);
@@ -1902,6 +1905,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     m_SV1_cu         ->  Fill(jet->sv1_cu , eventWeight );
 
     m_SV1_Lxy        -> Fill(jet->sv1_Lxy,         eventWeight);
+    m_SV1_sig3d      -> Fill(jet->sv1_sig3d,       eventWeight);
     m_SV1_L3d        -> Fill(jet->sv1_L3d,         eventWeight);
     m_SV1_distmatlay -> Fill(jet->sv1_distmatlay,  eventWeight);
     m_SV1_dR         -> Fill(jet->sv1_dR,          eventWeight);
@@ -1917,16 +1921,17 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     for(float grade : jet->IP2D_gradeOfTracks)        m_IP2D_gradeOfTracks->Fill(grade, eventWeight);
     for(float flag  : jet->IP2D_flagFromV0ofTracks)   m_IP2D_flagFromV0ofTracks->Fill(flag, eventWeight);
 
-    for(unsigned int i=0; i<jet->IP2D_sigD0wrtPVofTracks.size(); i++){
-      float d0Sig=jet->IP2D_sigD0wrtPVofTracks[i];
-      float d0Val=jet->IP2D_valD0wrtPVofTracks[i];
-      float d0Err=d0Val/d0Sig;
-      m_IP2D_errD0wrtPVofTracks->Fill  (d0Err, eventWeight);
-      m_IP2D_sigD0wrtPVofTracks->Fill  (d0Sig, eventWeight);
-      m_IP2D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
-      m_IP2D_valD0wrtPVofTracks->Fill  (d0Val, eventWeight);
+    if(jet->IP2D_sigD0wrtPVofTracks.size()  == jet->IP2D_valD0wrtPVofTracks.size()){
+      for(unsigned int i=0; i<jet->IP2D_sigD0wrtPVofTracks.size(); i++){
+	float d0Sig=jet->IP2D_sigD0wrtPVofTracks[i];
+	float d0Val=jet->IP2D_valD0wrtPVofTracks[i];
+	float d0Err=d0Val/d0Sig;
+	m_IP2D_errD0wrtPVofTracks->Fill  (d0Err, eventWeight);
+	m_IP2D_sigD0wrtPVofTracks->Fill  (d0Sig, eventWeight);
+	m_IP2D_sigD0wrtPVofTracks_l->Fill(d0Sig, eventWeight);
+	m_IP2D_valD0wrtPVofTracks->Fill  (d0Val, eventWeight);
+      }
     }
-
 
     for(float weightB : jet->IP2D_weightBofTracks)  m_IP2D_weightBofTracks->Fill(weightB, eventWeight);
     for(float weightC : jet->IP2D_weightCofTracks)  m_IP2D_weightCofTracks->Fill(weightC, eventWeight);

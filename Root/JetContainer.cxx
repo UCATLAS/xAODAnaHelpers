@@ -197,6 +197,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_sv1_efracsvx      = new     std::vector<float>(); 
       m_sv1_normdist      = new     std::vector<float>(); 
       m_sv1_Lxy           = new     std::vector<float>(); 
+      m_sv1_sig3d         = new     std::vector<float>(); 
       m_sv1_L3d           = new     std::vector<float>(); 
       m_sv1_distmatlay    = new     std::vector<float>(); 
       m_sv1_dR            = new     std::vector<float>(); 
@@ -533,6 +534,7 @@ JetContainer::~JetContainer()
       delete m_sv1_efracsvx  ; 
       delete m_sv1_normdist  ; 
       delete m_sv1_Lxy       ; 
+      delete m_sv1_sig3d     ; 
       delete m_sv1_L3d       ; 
       delete m_sv1_distmatlay; 
       delete m_sv1_dR        ; 
@@ -829,6 +831,7 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<float>(tree, "sv1_efracsvx",      &m_sv1_efracsvx  );
       connectBranch<float>(tree, "sv1_normdist",      &m_sv1_normdist  );
       connectBranch<float>(tree, "sv1_Lxy",           &m_sv1_Lxy       );
+      connectBranch<float>(tree, "sv1_sig3d",         &m_sv1_sig3d       );
       connectBranch<float>(tree, "sv1_L3d",           &m_sv1_L3d       );
       connectBranch<float>(tree, "sv1_distmatlay",    &m_sv1_distmatlay);
       connectBranch<float>(tree, "sv1_dR",            &m_sv1_dR        );
@@ -1061,6 +1064,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.sv1_efracsvx   = m_sv1_efracsvx  ->at(idx);
     jet.sv1_normdist   = m_sv1_normdist  ->at(idx);
     jet.sv1_Lxy        = m_sv1_Lxy       ->at(idx);
+    jet.sv1_sig3d      = m_sv1_sig3d     ->at(idx);
     jet.sv1_L3d        = m_sv1_L3d       ->at(idx);
     jet.sv1_distmatlay = m_sv1_distmatlay->at(idx);
     jet.sv1_dR         = m_sv1_dR        ->at(idx);
@@ -1389,6 +1393,7 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<float>(tree, "sv1_efracsvx",      m_sv1_efracsvx  );
       setBranch<float>(tree, "sv1_normdist",      m_sv1_normdist  );
       setBranch<float>(tree, "sv1_Lxy",           m_sv1_Lxy       );
+      setBranch<float>(tree, "sv1_sig3d",         m_sv1_sig3d       );
       setBranch<float>(tree, "sv1_L3d",           m_sv1_L3d       );
       setBranch<float>(tree, "sv1_distmatlay",    m_sv1_distmatlay);
       setBranch<float>(tree, "sv1_dR",            m_sv1_dR        );
@@ -1723,6 +1728,7 @@ void JetContainer::clear()
       m_sv1_efracsvx      ->clear(); 
       m_sv1_normdist      ->clear(); 
       m_sv1_Lxy           ->clear(); 
+      m_sv1_sig3d         ->clear(); 
       m_sv1_L3d           ->clear(); 
       m_sv1_distmatlay    ->clear(); 
       m_sv1_dR            ->clear(); 
@@ -2418,11 +2424,13 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_sv1_cu         ->push_back( myBTag->calcLLR(sv1_pc,sv1_pu)  );
 
       float sv1_Lxy;        myBTag->variable<float>("SV1", "Lxy"         , sv1_Lxy);
+      float sv1_sig3d;      myBTag->variable<float>("SV1", "significance3d"         , sv1_sig3d);
       float sv1_L3d;        myBTag->variable<float>("SV1", "L3d"         , sv1_L3d);
       float sv1_distmatlay; myBTag->variable<float>("SV1", "dstToMatLay" , sv1_distmatlay);
       float sv1_dR;         myBTag->variable<float>("SV1", "deltaR"      , sv1_dR );
 
       m_sv1_Lxy        ->push_back(sv1_Lxy        );
+      m_sv1_sig3d      ->push_back(sv1_sig3d        );
       m_sv1_L3d        ->push_back(sv1_L3d        );
       m_sv1_distmatlay ->push_back(sv1_distmatlay );
       m_sv1_dR         ->push_back(sv1_dR         );
