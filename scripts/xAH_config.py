@@ -66,7 +66,12 @@ class xAH_config(object):
       if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
         raise AttributeError(k)
       self._log.append((alg, k, v))
-      setattr(alg_obj, k, v)
+      try:
+        setattr(alg_obj, k, v)
+      except:
+        logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
+        raise
+
     #print
 
     #
