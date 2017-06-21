@@ -391,7 +391,7 @@ if __name__ == "__main__":
               elif args.use_scanXRD:
                 # assume format like root://someserver//path/to/files/*pattern*.root
                 server, path = line.replace('root://', '').split('//')
-                sh_list = ROOT.SH.DiskListXRD(server, path, True)
+                sh_list = ROOT.SH.DiskListXRD(server, os.path.join('/', path), True)
                 ROOT.SH.ScanDir().scan(sh_all, sh_list)
               else:
                 raise Exception("What just happened?")
