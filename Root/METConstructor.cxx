@@ -437,7 +437,7 @@ EL::StatusCode METConstructor :: execute ()
      // By default: rebuild MET using jets without soft cluster terms (just TST, no CST)
      // You can configure to add Cluster Soft Term (only affects the "use Jets" option)
      //         or to rebuild MET using the Tracks in Calorimeter Jets which doesn't make sense to have CST
-     if( !m_useTrackJetTerms ) {
+     if( !m_useTracksInJetTerms ) {
        if( m_useSoftClusterTerms ){
          ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
        } else {
@@ -456,7 +456,7 @@ EL::StatusCode METConstructor :: execute ()
        }
      }
 
-     if(!m_useTrackJetTerms && m_useSoftClusterTerms){
+     if(!m_useTracksInJetTerms && m_useSoftClusterTerms){
        //get the soft cluster term, and applyCorrection
        xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
        //assert( softClusMet != 0); //check we retrieved the clust term
