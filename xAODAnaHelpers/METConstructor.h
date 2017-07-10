@@ -56,14 +56,14 @@ public:
   bool    m_doJVTCut = false;
 
   /// Rebuild MET using tracks in calo jets
-  bool    m_useTracksInJetTerms = false;
+  bool    m_rebuildUsingTracksInJets = false;
   /**
     @rst
-      Include soft cluster terms if rebuilding MET using jet terms (only considered if :cpp:member:`~METConstructor::m_useTracksInJetTerms` is false)
+      Include soft cluster terms if rebuilding MET using jet terms (only considered if :cpp:member:`~METConstructor::m_rebuildUsingTracksInJets` is false)
 
     @endrst
   */
-  bool    m_useSoftClusterTerms = false;
+  bool    m_addSoftClusterTerms = false;
 
   // used for systematics
   /// @brief set to false if you want to run met systematics
