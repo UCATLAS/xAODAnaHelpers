@@ -55,8 +55,15 @@ public:
   bool    m_doIsolMuonEloss = false;
   bool    m_doJVTCut = false;
 
-  bool    m_useCaloJetTerm = true;
-  bool    m_useTrackJetTerm = false;
+  /// Rebuild MET using tracks in calo jets
+  bool    m_rebuildUsingTracksInJets = false;
+  /**
+    @rst
+      Include soft cluster terms if rebuilding MET using jet terms (only considered if :cpp:member:`~METConstructor::m_rebuildUsingTracksInJets` is false)
+
+    @endrst
+  */
+  bool    m_addSoftClusterTerms = false;
 
   // used for systematics
   /// @brief set to false if you want to run met systematics

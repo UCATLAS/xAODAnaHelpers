@@ -434,33 +434,37 @@ EL::StatusCode METConstructor :: execute ()
 
      // NOTE: you have to set m_doJVTCut correctly when running!
 
-     if ( m_useCaloJetTerm ) {
-       ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
-     } else if ( m_useTrackJetTerm ) {
-       ANA_CHECK( m_metmaker_handle->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
+     // By default: rebuild MET using jets without soft cluster terms (just TST, no CST)
+     // You can configure to add Cluster Soft Term (only affects the "use Jets" option)
+     //         or to rebuild MET using the Tracks in Calorimeter Jets which doesn't make sense to have CST
+     if( !m_rebuildUsingTracksInJets ) {
+       if( m_addSoftClusterTerms ){
+         ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
+       } else {
+         ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
+       }
      } else {
-       ANA_MSG_ERROR( "Both m_useCaloJetTerm and m_useTrackJetTerm appear to be set to 'false'. This should not happen. Please check your MET configuration file");
-       return EL::StatusCode::FAILURE;
+       ANA_CHECK( m_metmaker_handle->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
      }
 
      //now tell the m_metSyst_handle that we are using this SystematicSet (of one SystematicVariation for now)
      //after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied
      // assert(   m_metSyst_handle->applySystematicVariation(iSysSet) );
-     //
-
      if (m_isMC) {
        if( m_metSyst_handle->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
          cout<<"Error !!! not able to applySystematicVariation "<< endl;
        }
      }
 
-     //get the soft cluster term, and applyCorrection
-     xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
-     //assert( softClusMet != 0); //check we retrieved the clust term
-     if( m_isMC && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
-       ANA_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
+     if(!m_rebuildUsingTracksInJets && m_addSoftClusterTerms){
+       //get the soft cluster term, and applyCorrection
+       xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
+       //assert( softClusMet != 0); //check we retrieved the clust term
+       if( m_isMC && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
+         ANA_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
+       }
+       ANA_MSG_DEBUG("Soft cluster met term met : " << softClusMet->met());
      }
-     ANA_MSG_DEBUG("Soft cluster met term met : " << softClusMet->met());
 
      //get the track soft term, and applyCorrection
      xAOD::MissingET * softTrkMet = (*newMet)["PVSoftTrk"];
