@@ -24,6 +24,7 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 public:
   std::string m_inContainerName = "";
+  std::string m_outContainerName = "";
   std::string m_inputAlgo = "";
 
   // systematics

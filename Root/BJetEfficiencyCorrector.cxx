@@ -16,6 +16,9 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+//EDM
+#include "xAODJet/JetAuxContainer.h"
+
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
@@ -292,12 +295,20 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // loop over systematics
     //
     for ( auto systName : *systNames ) {
+        
+      const xAOD::JetContainer* outJets(nullptr);
 
       bool doNominal = (systName == "");
 
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
+      
+      if ( !m_store->contains<xAOD::JetContainer>( m_outContainerName+systName ) ) {
+        ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_outContainerName+systName, inJets)));
+      }
 
-      executeEfficiencyCorrection( inJets, eventInfo, doNominal );
+      ANA_CHECK( HelperFunctions::retrieve(outJets, m_outContainerName+systName, m_event, m_store, msg()) );
+
+      executeEfficiencyCorrection( outJets, eventInfo, doNominal );
 
     }
 
@@ -510,4 +521,3 @@ EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 
   return EL::StatusCode::SUCCESS;
 }
-
