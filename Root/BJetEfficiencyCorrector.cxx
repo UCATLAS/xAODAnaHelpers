@@ -16,6 +16,9 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+//EDM
+#include "xAODJet/JetAuxContainer.h"
+
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
@@ -86,6 +89,17 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  
+  // several lists of systematics could be configured
+  // this is the case when MET sys should be added 
+  // to the OR ones
+
+  // parse and split by comma
+  std::string token;
+  std::istringstream ss(m_inputAlgo);
+  while (std::getline(ss, token, ',')) {
+    m_inputAlgoList.push_back(token);
+  }
 
   m_decorSF = m_decor + "_SF";
 
@@ -285,20 +299,71 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     //
     // get vector of string giving the names
     //
-    std::vector<std::string>* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
+    std::vector<std::string> systNames;
+
+    // add each vector of systematics names to the full list
+    //
+    for ( auto sysInput : m_inputAlgoList ) {
+      std::vector<std::string>* it_systNames(nullptr);
+      ANA_CHECK( HelperFunctions::retrieve(it_systNames, sysInput, 0, m_store, msg()) );
+      systNames.insert( systNames.end(), it_systNames->begin(), it_systNames->end() );
+    }
+    // and now remove eventual duplicates
+    //
+    HelperFunctions::remove_duplicates(systNames);
+    
+    // create parallel container of electrons for met systematics.
+    // this does not get decorated and contains the same elements
+    // of the nominal container. It will be used by the TreeAlgo
+    // as we don't want sys variations for eff in MET sys trees.
+    //
+    if ( !m_sysNamesForParCont.empty() )  {
+      std::vector<std::string>* par_systNames(nullptr);
+
+      ANA_CHECK( HelperFunctions::retrieve(par_systNames, m_sysNamesForParCont, 0, m_store, msg()) );
+
+      for ( auto systName : *par_systNames ) {
+         if ( !systName.empty() && !m_store->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
+           const xAOD::JetContainer* tmpJets(nullptr);
+
+           if ( m_store->contains<xAOD::JetContainer>( m_inContainerName ) ) {
+
+              ANA_CHECK( HelperFunctions::retrieve(tmpJets, m_inContainerName, m_event, m_store, msg()) );
+              ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_inContainerName+systName, tmpJets)));
+
+           } // the nominal container is copied therefore it has to exist!
+
+         } // skip the nominal case or if the container already exists
+      } // consider all "parallel" systematics specified by the user
+
+    } // do this thing only if required
+
+    std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
 
     //
     // loop over systematics
     //
-    for ( auto systName : *systNames ) {
+    for ( auto systName : systNames ) {
+        
+      const xAOD::JetContainer* outJets(nullptr);
 
       bool doNominal = (systName == "");
 
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
+      
+      if ( !m_store->contains<xAOD::JetContainer>( m_outContainerName+systName ) ) {
+        ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_outContainerName+systName, inJets)));
+      }
 
-      executeEfficiencyCorrection( inJets, eventInfo, doNominal );
+      ANA_CHECK( HelperFunctions::retrieve(outJets, m_outContainerName+systName, m_event, m_store, msg()) );
 
+      executeEfficiencyCorrection( outJets, eventInfo, doNominal );
+
+      vecOutContainerNames->push_back( systName );
+    }
+    
+    if ( !m_outputAlgo.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgo ) ) { // might have already been stored by another execution of this algo
+      ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgo));
     }
 
   }
@@ -510,4 +575,3 @@ EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 
   return EL::StatusCode::SUCCESS;
 }
-

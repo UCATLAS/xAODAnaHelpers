@@ -24,7 +24,11 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 public:
   std::string m_inContainerName = "";
+  std::string m_outContainerName = "";
   std::string m_inputAlgo = "";
+  std::string m_outputAlgo = "";
+  std::string m_sysNamesForParCont = ""; 
+  // this is the name of the vector of names for the systematics to be used for the creation of a parallel container. This will be just a copy of the nominal one with the sys name appended. Use cases: MET-specific systematics.
 
   // systematics
   std::string m_systName = "";
@@ -56,6 +60,8 @@ private:
 
   /// @brief The decoration key written to passing objects
   std::string m_decorSF = "";
+  
+  std::vector<std::string> m_inputAlgoList; //!
 
   bool m_runAllSyst = false; //!
 
