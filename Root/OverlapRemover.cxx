@@ -407,9 +407,11 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
         break;
     }
 
-    SG::AuxElement::Decorator< char > isBTag( m_bTagWP );
     int isBTagged = 0;
-    if( isBTag.isAvailable( *obj_itr ) && isBTag(*obj_itr)==true ) isBTagged = 1;
+    if ( !m_bTagWP.empty() ) {
+      SG::AuxElement::Decorator< char > isBTag( m_bTagWP );
+      if( isBTag.isAvailable( *obj_itr ) && isBTag(*obj_itr)==true ) isBTagged = 1;
+    }
 
     if(selectAcc.isAvailable(*obj_itr)){
       ANA_MSG_DEBUG( type << " pt " << obj_itr->pt()/1e3 << " eta " << obj_itr->eta() << " phi " << obj_itr->phi() << " btagged " << isBTagged << " selected " << selectAcc(*obj_itr) << " passesOR  " << overlapAcc( *obj_itr ) );
