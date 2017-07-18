@@ -219,35 +219,50 @@ namespace HelperFunctions {
   template< typename T1, typename T2 >
   StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT) { return makeSubsetCont<T1, T2>(intCont, outCont, msg(), flagSelect, tool_name); }
 
-  /*  retrieve()    retrieve an arbitrary object from TStore / TEvent
-        - tries to make your life simple by providing a one-stop container retrieval shop for all types
-        @ cont  : pass in a pointer to the object to store the retrieved container in
-        @ name  : the name of the object to look up
-        @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
-        @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
-        @ msg   : the MsgStream object with appropriate level for debugging
+  /** @brief Retrieve an arbitrary object from TStore / TEvent
+    @param cont  pass in a pointer to the object to store the retrieved container in
+    @param name  the name of the object to look up
+    @param event the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
+    @param store the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
+    @param msg   the MsgStream object with appropriate level for debugging
 
-      Example Usage:
-      const xAOD::JetContainer* jets(0);
-      // look for "AntiKt10LCTopoJets" in both TEvent and TStore
-      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, m_store) );
-      // look for "AntiKt10LCTopoJets" in only TStore
-      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) );
-      // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-      ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, msg()) );
+    @rst
+      This tries to make your life simple by providing a one-stop container retrieval shop for all types.
+
+      Example Usage::
+
+        const xAOD::JetContainer* jets(0);
+        // look for "AntiKt10LCTopoJets" in both TEvent and TStore
+        ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, m_store) );
+        // look for "AntiKt10LCTopoJets" in only TStore
+        ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", 0, m_store) );
+        // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
+        ANA_CHECK( HelperFunctions::retrieve(jets, "AntiKt10LCTopoJets", m_event, 0, msg()) );
+
+      Checking Order:
+
+      - start by checking TStore
+
+        - check if store contains 'xAOD::JetContainer' named 'name'
+
+          - attempt to retrieve from store
+          - return if failure
+
+      - next check TEvent
+
+        - check if event contains 'xAOD::JetContainer' named 'name'
+
+          - attempt to retrieve from event
+          - return if failure
+
+        - return FAILURE
+
+      - return SUCCESS (should never reach this last line)
+
+    @endrst
   */
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
-    /* Checking Order:
-        - check if store contains 'xAOD::JetContainer' named 'name'
-        --- attempt to retrieve from store
-        --- return if failure
-        - check if event contains 'xAOD::JetContainer' named 'name'
-        --- attempt to retrieve from event
-        --- return if failure
-        - return FAILURE
-        return SUCCESS (should never reach this last line)
-    */
     std::string funcName{"in retrieve<"+type_name<T>()+">(" + name + "): "};
     msg << MSG::DEBUG << funcName << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
     if(store == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
@@ -273,21 +288,27 @@ namespace HelperFunctions {
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug) { msg() << MSG::WARNING << "retrieve<T>(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882" << endmsg; return retrieve<T>(cont, name, event, store, msg()); }
 
-  /*  isAvailable()    return true if an arbitrary object from TStore / TEvent is availible
-        - tries to make your life simple by providing a one-stop container check shop for all types
-        @ name  : the name of the object to look up
-        @ event : the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
-        @ store : the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
-        @ msg   : the MsgStream object with appropriate level for debugging
+  /** @brief Return true if an arbitrary object from TStore / TEvent is available
+    @param name  the name of the object to look up
+    @param event the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
+    @param store the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
+    @param msg   the MsgStream object with appropriate level for debugging
 
-      Example Usage:
-      const xAOD::JetContainer* jets(0);
-      // look for "AntiKt10LCTopoJets" in both TEvent and TStore
-      HelperFunctions::isAvailable("AntiKt10LCTopoJets", m_event, m_store)
-      // look for "AntiKt10LCTopoJets" in only TStore
-      HelperFunctions::isAvailable("AntiKt10LCTopoJets", 0, m_store)
-      // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-      HelperFunctions::retrieve("AntiKt10LCTopoJets", m_event, 0, true)
+    @rst
+
+      This tries to make your life simple by providing a one-stop container check shop for all types
+
+      Example Usage::
+
+        const xAOD::JetContainer* jets(0);
+        // look for "AntiKt10LCTopoJets" in both TEvent and TStore
+        HelperFunctions::isAvailable("AntiKt10LCTopoJets", m_event, m_store)
+        // look for "AntiKt10LCTopoJets" in only TStore
+        HelperFunctions::isAvailable("AntiKt10LCTopoJets", 0, m_store)
+        // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
+        HelperFunctions::retrieve("AntiKt10LCTopoJets", m_event, 0, true)
+
+    @endrst
   */
   template <typename T>
   bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
