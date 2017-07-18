@@ -277,6 +277,20 @@ namespace HelperClasses{
     m_vsLumiBlock         = has_exact("vsLumiBlock");
     m_lumiB_runN          = has_exact("lumiB_runN");
 
+    if( has_match( "sfJVT" ) ) {
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("sfJVT") );
+      // erase everything after the interesting string
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
+      // remove sfJVT to just leave the working point
+      input.erase(0,5);
+      m_sfJVTName = input;
+    } // sfJVTName
+
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
       std::string input(m_configStr);

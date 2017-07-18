@@ -394,6 +394,7 @@ namespace HelperClasses {
         m_layer          layer          exact
         m_trackPV        trackPV        exact
         m_trackAll       trackAll       exact
+        m_sfJVTName      sfJVT          partial
         m_allTrack       allTrack       exact
         m_allTrackPVSel  allTrackPVSel  exact
         m_allTrackDetail allTrackDetail exact
@@ -419,6 +420,10 @@ namespace HelperClasses {
         ================ ============== =======
 
         .. note::
+        
+            ``sfJVT`` requires a working point after it, for example::
+            
+                m_configStr = "... sfJVTMedium ..."
 
             ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
 
@@ -470,6 +475,7 @@ namespace HelperClasses {
     bool m_JVC;
     std::string      m_trackName;
     std::string      m_trackJetName;
+    std::string      m_sfJVTName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };

@@ -112,6 +112,8 @@ public:
   float m_JVFCut = 0.5;
   /// @brief check JVT
   bool m_doJVT = false;
+  /// @brief keep JVT-rejected jets and decorate passing status
+  bool m_noJVTVeto = false;
   /// @brief check forward JVT
   bool m_dofJVT = false;
   /// @brief Remove jets that fail fJVT. Like JVT, the default is to clean the collection
@@ -222,6 +224,8 @@ private:
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency"};         //!
   asg::AnaToolHandle<IJetModifier>           m_fJVT_tool_handle{"JetForwardJvtTool"};           //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
+
+  std::string m_outputJVTPassed = "JetJVT_Passed"; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
