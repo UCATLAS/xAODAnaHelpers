@@ -458,6 +458,11 @@ if __name__ == "__main__":
     #sh_all.setMetaString( "nc_excludeSite", "ANALY_RAL_SL6");
     sh_all.setMetaString( "nc_grid_filter", "*");
 
+    # This is a fix for running on the grid with release 21.2.X
+    if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) >= 25:
+      xAH_logger.info("Setting nc_cmtConfig to {0:s}".format(os.getenv("AnalysisBase_PLATFORM")))
+      sh_all.setMetaString("nc_cmtConfig", os.getenv("AnalysisBase_PLATFORM"))
+
     # read susy meta data (should be configurable)
     xAH_logger.info("reading all metadata in $ROOTCOREBIN/data/xAODAnaHelpers/metadata")
     ROOT.SH.readSusyMetaDir(sh_all,"$ROOTCOREBIN/data/xAODAnaHelpers/metadata")
