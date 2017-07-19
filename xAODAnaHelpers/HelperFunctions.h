@@ -302,11 +302,11 @@ namespace HelperFunctions {
 
         const xAOD::JetContainer* jets(0);
         // look for "AntiKt10LCTopoJets" in both TEvent and TStore
-        HelperFunctions::isAvailable("AntiKt10LCTopoJets", m_event, m_store)
+        HelperFunctions::isAvailable<xAOD::JetContainer>("AntiKt10LCTopoJets", m_event, m_store)
         // look for "AntiKt10LCTopoJets" in only TStore
-        HelperFunctions::isAvailable("AntiKt10LCTopoJets", 0, m_store)
+        HelperFunctions::isAvailable<xAOD::JetContainer>("AntiKt10LCTopoJets", 0, m_store)
         // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-        HelperFunctions::retrieve("AntiKt10LCTopoJets", m_event, 0, true)
+        HelperFunctions::isAvailable<xAOD::JetContainer>("AntiKt10LCTopoJets", m_event, 0, MSG::VERBOSE)
 
     @endrst
   */
