@@ -78,6 +78,25 @@ namespace HelperClasses{
     std::string SiliconAssociatedForwardMuon("SiliconAssociatedForwardMuon");   enumMap.insert(std::make_pair(SiliconAssociatedForwardMuon , xAOD::Muon::SiliconAssociatedForwardMuon));
   }
 
+  std::string InfoSwitch::get_working_point(const std::string flag) {
+    for (auto configDetail : m_configDetails) {
+      if (configDetail.compare(0, flag.size(), flag) == 0) {
+        return configDetail.substr(flag.size(), std::string::npos);
+      }
+    }
+    return "";
+  }
+
+  std::vector<std::string>InfoSwitch::get_working_points(const std::string flag) {
+    std::vector<std::string> wps;
+    for (auto configDetail : m_configDetails) {
+      if (configDetail.compare(0, flag.size(), flag) == 0) {
+        wps.push_back(configDetail.substr(flag.size(), std::string::npos));
+      }
+    }
+    return wps;
+  }
+
   /*
             !!!!!!!!!!!!!WARNING!!!!!!!!!!!!!
               If you change the string here,
@@ -277,19 +296,7 @@ namespace HelperClasses{
     m_vsLumiBlock         = has_exact("vsLumiBlock");
     m_lumiB_runN          = has_exact("lumiB_runN");
 
-    if( has_match( "sfJVT" ) ) {
-      std::string input(m_configStr);
-      // erase everything before the interesting string
-      input.erase( 0, input.find("sfJVT") );
-      // erase everything after the interesting string
-      // only if there is something after the string
-      if( input.find(" ") != std::string::npos ) {
-        input.erase( input.find_first_of(" "), input.size() );
-      }
-      // remove sfJVT to just leave the working point
-      input.erase(0,5);
-      m_sfJVTName = input;
-    } // sfJVTName
+    m_sfJVTName           = get_working_point("sfJVT");
 
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {

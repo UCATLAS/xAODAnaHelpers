@@ -120,6 +120,21 @@ namespace HelperClasses {
         @param flag     The string we search for.
      */
     bool has_match(const std::string flag) { return m_configStr.find(flag) != std::string::npos; };
+    /**
+        @rst
+            Search for a single flag in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails` and parse out the working point.
+
+        @endrst
+        @param flag     The string we search for.
+     */
+    std::string get_working_point(const std::string flag);
+    /**
+        @rst
+            Search for multiple flags in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails` and parse out the working points.
+        @endrst
+        @param flag     The string we search for.
+     */
+    std::vector<std::string> get_working_points(const std::string flag);
   };
 
   /**

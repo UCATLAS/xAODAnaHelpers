@@ -2181,11 +2181,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
   }
   
   if ( m_mc ) {
+    static SG::AuxElement::ConstAccessor< char > jvtPass_Loose("JetJVT_Passed_Loose");
+    static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Loose("JetJvtEfficiency_JVTSyst_JVT_Loose");
+    static SG::AuxElement::ConstAccessor< char > jvtPass_Medium("JetJVT_Passed_Medium");
+    static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Medium("JetJvtEfficiency_JVTSyst_JVT_Medium");
+    static SG::AuxElement::ConstAccessor< char > jvtPass_Tight("JetJVT_Passed_Tight");
+    static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Tight("JetJvtEfficiency_JVTSyst_JVT_Tight");  
+
     std::vector<float> junkSF(1,1.0);
 
     if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
-      static SG::AuxElement::ConstAccessor< char > jvtPass_Loose("JetJVT_Passed_Loose");
-      static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Loose("JetJvtEfficiency_JVTSyst_JVT_Loose");
       if ( jvtPass_Loose.isAvailable( *jet ) ) {
         m_JvtPass_Loose->push_back( jvtPass_Loose( *jet ) );
       } else {
@@ -2199,8 +2204,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
-      static SG::AuxElement::ConstAccessor< char > jvtPass_Medium("JetJVT_Passed_Medium");
-      static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Medium("JetJvtEfficiency_JVTSyst_JVT_Medium");
       if ( jvtPass_Medium.isAvailable( *jet ) ) {
         m_JvtPass_Medium->push_back( jvtPass_Medium( *jet ) );
       } else {
@@ -2214,8 +2217,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
-      static SG::AuxElement::ConstAccessor< char > jvtPass_Tight("JetJVT_Passed_Tight");
-      static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Tight("JetJvtEfficiency_JVTSyst_JVT_Tight");
       if ( jvtPass_Tight.isAvailable( *jet ) ) {
         m_JvtPass_Tight->push_back( jvtPass_Tight( *jet ) );
       } else {
