@@ -252,6 +252,8 @@ EL::StatusCode JetSelector :: initialize ()
 
   //  Add the chosen WP to the string labelling the vector<SF> decoration
   m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
+  //  Create a passed label for JVT cut
+  m_outputJVTPassed = m_outputJVTPassed + "_" + m_WorkingPointJVT;
 
   CP::SystematicSet affectSystsJVT = m_JVT_tool_handle->affectingSystematics();
   for ( const auto& syst_it : affectSystsJVT ) { ANA_MSG_DEBUG("JetJvtEfficiency tool can be affected by JVT efficiency systematic: " << syst_it.name()); }
@@ -344,7 +346,7 @@ EL::StatusCode JetSelector :: execute ()
       }
     }
 
-    pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName);
+    pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName, true );
 
   }  else { // get the list of systematics to run over
 
@@ -375,7 +377,7 @@ EL::StatusCode JetSelector :: execute ()
         }
       }
 
-      passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName );
+      passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName, systName.empty() );
       if ( count ) { count = false; } // only count for 1 collection
       // save the string if passing the selection
       if ( passOne ) {
@@ -407,7 +409,8 @@ EL::StatusCode JetSelector :: execute ()
 bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     float mcEvtWeight,
     bool count,
-    std::string outContainerName
+    std::string outContainerName,
+    bool isNominal
     )
 {
   ANA_MSG_DEBUG("in executeSelection... " << m_name);
@@ -515,10 +518,14 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
       for ( const auto& syst_it : m_systListJVT ) {
 
+        // we do not need all SF for non-nominal trees
+        if ( !syst_it.name().empty() && !isNominal )
+            continue;
+
         // Create the name of the SF weight to be recorded
         //   template:  SYSNAME_JVTEff_SF
         //
-        std::string sfName = "JVTEff_SF_" + m_WorkingPointJVT;;
+        std::string sfName = "JVTEff_SF_" + m_WorkingPointJVT;
         if ( !syst_it.name().empty() ) {
            std::string prepend = syst_it.name() + "_";
            sfName.insert( 0, prepend );
@@ -540,6 +547,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
         for ( auto jet : *(selectedJets) ) {
 
           ANA_MSG_DEBUG("Applying JVT SF" );
+          
+          // create passed JVT decorator
+          static const SG::AuxElement::Decorator<char> passedJVT( m_outputJVTPassed );
+          if ( syst_it.name().empty() ) {
+            passedJVT( *jet ) = 1; // passes by default
+          }
 
           // obtain JVT SF as a float (to be stored away separately)
           //
@@ -552,9 +565,23 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
           float jvtSF(1.0);
           if ( m_JVT_tool_handle->isInRange(*jet) ) {
-            if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-              ANA_MSG_WARNING( "Problem in JVT Tool getEfficiencyScaleFactor");
-              jvtSF = 1.0;
+            // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
+            if ( m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) {
+              if ( syst_it.name().empty() ) {
+                passedJVT( *jet ) = 0; // mark as not passed
+              }
+              if ( m_JVT_tool_handle->getInefficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
+                ANA_MSG_WARNING( "Problem in JVT Tool getInefficiencyScaleFactor");
+                jvtSF = 1.0;
+              }
+            } else { // otherwise classic efficiency scale factor
+              if ( syst_it.name().empty() ) {
+                passedJVT( *jet ) = 1;
+              }
+              if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
+                ANA_MSG_WARNING( "Problem in JVT Tool getEfficiencyScaleFactor");
+                jvtSF = 1.0;
+              }
             }
           }
           //
@@ -788,7 +815,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
         }
       }
     } else {
-      if ( !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
+      if ( !m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
     }
   } // m_doJVT
   if ( m_useCutFlow ) m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
@@ -885,5 +912,3 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   ANA_MSG_DEBUG("Passed Cuts");
   return 1;
 }
-
-

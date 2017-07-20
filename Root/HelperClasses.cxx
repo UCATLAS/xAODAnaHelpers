@@ -78,6 +78,25 @@ namespace HelperClasses{
     std::string SiliconAssociatedForwardMuon("SiliconAssociatedForwardMuon");   enumMap.insert(std::make_pair(SiliconAssociatedForwardMuon , xAOD::Muon::SiliconAssociatedForwardMuon));
   }
 
+  std::string InfoSwitch::get_working_point(const std::string flag) {
+    for (auto configDetail : m_configDetails) {
+      if (configDetail.compare(0, flag.size(), flag) == 0) {
+        return configDetail.substr(flag.size(), std::string::npos);
+      }
+    }
+    return "";
+  }
+
+  std::vector<std::string>InfoSwitch::get_working_points(const std::string flag) {
+    std::vector<std::string> wps;
+    for (auto configDetail : m_configDetails) {
+      if (configDetail.compare(0, flag.size(), flag) == 0) {
+        wps.push_back(configDetail.substr(flag.size(), std::string::npos));
+      }
+    }
+    return wps;
+  }
+
   /*
             !!!!!!!!!!!!!WARNING!!!!!!!!!!!!!
               If you change the string here,
@@ -276,6 +295,8 @@ namespace HelperClasses{
     m_byEta               = has_exact("byEta");
     m_vsLumiBlock         = has_exact("vsLumiBlock");
     m_lumiB_runN          = has_exact("lumiB_runN");
+
+    m_sfJVTName           = get_working_point("sfJVT");
 
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
