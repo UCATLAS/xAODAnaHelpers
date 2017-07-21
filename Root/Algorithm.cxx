@@ -24,6 +24,8 @@ xAH::Algorithm::~Algorithm()
 StatusCode xAH::Algorithm::algInitialize(){
     // register an instance of the the class
     registerInstance();
+    // set the name this way as duplicate names are handled automatically
+    m_name = name();
     // names will be BasicEventSelection.baseEventSel for example
     msg().setName(m_className + "." + m_name);
     // deprecating m_debug, but this is around for backwards compatibility
