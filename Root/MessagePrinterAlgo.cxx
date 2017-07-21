@@ -1,5 +1,3 @@
-#if ROOTCORE_RELEASE_SERIES < 25
-// it's in 2.4.31+ and 2.6.3+
 // EL include(s):
 #include <EventLoop/Job.h>
 #include <EventLoop/Worker.h>
@@ -27,7 +25,6 @@ EL::StatusCode MessagePrinterAlgo :: setupJob (EL::Job& job)
 
 EL::StatusCode MessagePrinterAlgo :: histInitialize ()
 {
-  ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
   if(numInstances() != 1){
     ANA_MSG_FATAL( "More than one instance of MessagePrinterAlgo was created. Aborting.");
@@ -53,4 +50,3 @@ EL::StatusCode MessagePrinterAlgo :: histFinalize ()
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
-#endif

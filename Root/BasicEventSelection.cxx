@@ -149,7 +149,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
 	  std::string stream("");
 	  for ( auto cbk : *incompleteCBC ) {
-	      Info ("fileExecute()", "Incomplete cbk name: %s - stream: %s ", (cbk->name()).c_str(), (cbk->inputStream()).c_str());
+	      ANA_MSG_INFO("Incomplete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream());
 	      if ( cbk->inputStream() != "unknownStream" ) {
 		  allFromUnknownStream = false;
 		  stream = cbk->inputStream();
@@ -188,7 +188,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
       int maxCycle(-1);
       for ( const auto& cbk: *completeCBC ) {
-	  Info ("fileExecute()", "Complete cbk name: %s - stream: %s", (cbk->name()).c_str(), (cbk->inputStream()).c_str() );
+	  ANA_MSG_INFO("Complete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream() );
 	  if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
 	      allEventsCBK = cbk;
 	      maxCycle = cbk->cycle();
