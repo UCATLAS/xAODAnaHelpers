@@ -121,4 +121,4 @@ Environment variables like ``${AnalysisBase_PLATFORM}`` seem to contain the corr
 
     export ROOT_INCLUDE_PATH=/cvmfs/atlas.cern.ch/repo/sw/ASG/2.6/AnalysisBase/2.6.1/InstallArea/x86_64-slc6-gcc49-opt/RootCore/include:$ROOT_INCLUDE_PATH
 
-  before running the ``xAH_run.py`` commands. This should fix things up. Don't forget to include the right version if you're using 2.6.X!
+  before running the ``xAH_run.py`` commands. This should fix things up. Don't forget to include the right version if you're using 2.6.X! This should not happen in 21.2 releases.
