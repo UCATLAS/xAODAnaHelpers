@@ -321,7 +321,7 @@ if __name__ == "__main__":
       # env var that tells us if CMAKE was setup
       cmake_setup = '{0:s}_SET_UP'.format(args.cmake_workdir)
       # architecture used for CMake
-      arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
+      arch = os.environ.get('AnalysisBase_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
       if not int(os.environ.get(cmake_setup, 0)):
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
     #Set up the job for xAOD access:
@@ -530,6 +530,7 @@ if __name__ == "__main__":
         if algName is None:
           algName = str(xAH_nameGenerator())
           xAH_logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
+          algorithm_configurations['configs']['m_name'] = algName
         if not isinstance(algName, str) and not isinstance(algName, unicode):
           raise TypeError("m_name must be a string for instance of {0:s}".format(className))
 

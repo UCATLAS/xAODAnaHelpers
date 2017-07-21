@@ -27,6 +27,7 @@ class xAH_config(object):
     if algName is None:
       algName = str(xAH_nameGenerator())
       logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
+      options['m_name'] = algName
     if not isinstance(algName, str) and not isinstance(algName, unicode):
       raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
 
