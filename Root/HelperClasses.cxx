@@ -299,6 +299,7 @@ namespace HelperClasses{
     m_lumiB_runN          = has_exact("lumiB_runN");
 
     m_sfJVTName           = get_working_point("sfJVT");
+    m_sffJVTName          = get_working_point("sffJVT");
 
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
