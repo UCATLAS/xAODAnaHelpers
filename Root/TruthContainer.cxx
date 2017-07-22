@@ -6,41 +6,39 @@
 //#include "xAODTruth/TruthEventContainer.h"
 
 using namespace xAH;
-using std::vector;  using std::endl;  using std::cout;
-
 
 TruthContainer::TruthContainer(const std::string& name, const std::string& detailStr, float units)
   : ParticleContainer(name,detailStr,units,true)
 
 {
-  m_pdgId   = new vector<int>();
-  m_status  = new vector<int>();
-  m_barcode = new vector<int>();
+  m_pdgId   = new std::vector<int>();
+  m_status  = new std::vector<int>();
+  m_barcode = new std::vector<int>();
 
 
   if(m_infoSwitch.m_type){
-    m_is_higgs  = new vector<int>();
-    m_is_bhad   = new vector<int>();
+    m_is_higgs  = new std::vector<int>();
+    m_is_bhad   = new std::vector<int>();
   }
 
   if(m_infoSwitch.m_bVtx){
-    m_Bdecay_x  = new vector<float>();
-    m_Bdecay_y  = new vector<float>();
-    m_Bdecay_z  = new vector<float>();
+    m_Bdecay_x  = new std::vector<float>();
+    m_Bdecay_y  = new std::vector<float>();
+    m_Bdecay_z  = new std::vector<float>();
   }
 
   if(m_infoSwitch.m_parents){
-    m_nParents        = new vector<int>();
-    m_parent_pdgId    = new vector< vector<int> >();
-    m_parent_barcode  = new vector< vector<int> >();
-    m_parent_status   = new vector< vector<int> >();
+    m_nParents        = new std::vector<int>();
+    m_parent_pdgId    = new std::vector< std::vector<int> >();
+    m_parent_barcode  = new std::vector< std::vector<int> >();
+    m_parent_status   = new std::vector< std::vector<int> >();
   }
 
   if(m_infoSwitch.m_children){
-    m_nChildren      = new vector<int>();
-    m_child_pdgId    = new vector< vector<int> >();
-    m_child_barcode  = new vector< vector<int> >();
-    m_child_status   = new vector< vector<int> >();
+    m_nChildren      = new std::vector<int>();
+    m_child_pdgId    = new std::vector< std::vector<int> >();
+    m_child_barcode  = new std::vector< std::vector<int> >();
+    m_child_status   = new std::vector< std::vector<int> >();
   }
 
 
@@ -48,8 +46,8 @@ TruthContainer::TruthContainer(const std::string& name, const std::string& detai
 
 TruthContainer::~TruthContainer()
 {
-  if(m_debug) cout << " Deleting TruthContainer "  << endl;  
-  
+  if(m_debug) std::cout << " Deleting TruthContainer "  << std::endl;
+
   delete m_pdgId;
   delete m_status;
   delete m_barcode;
@@ -105,24 +103,24 @@ void TruthContainer::setTree(TTree *tree)
 
   if(m_infoSwitch.m_parents){
     connectBranch<int>(tree,"nParents",   &m_nParents);
-    connectBranch<vector<int> >(tree,"parent_pdgId",   &m_parent_pdgId);
-    connectBranch<vector<int> >(tree,"parent_barcode", &m_parent_barcode);
-    connectBranch<vector<int> >(tree,"parent_status",  &m_parent_status);
+    connectBranch<std::vector<int> >(tree,"parent_pdgId",   &m_parent_pdgId);
+    connectBranch<std::vector<int> >(tree,"parent_barcode", &m_parent_barcode);
+    connectBranch<std::vector<int> >(tree,"parent_status",  &m_parent_status);
   }
 
   if(m_infoSwitch.m_children){
     connectBranch<int>         (tree,"nChildren",     &m_nChildren);
-    connectBranch<vector<int> >(tree,"child_pdgId",   &m_child_pdgId);
-    connectBranch<vector<int> >(tree,"child_barcode", &m_child_barcode);
-    connectBranch<vector<int> >(tree,"child_status",  &m_child_status);
+    connectBranch<std::vector<int> >(tree,"child_pdgId",   &m_child_pdgId);
+    connectBranch<std::vector<int> >(tree,"child_barcode", &m_child_barcode);
+    connectBranch<std::vector<int> >(tree,"child_status",  &m_child_status);
   }
 
 }
 
 void TruthContainer::updateParticle(uint idx, TruthPart& truth)
 {
-  if(m_debug) cout << "in TruthContainer::updateParticle " << endl;
-  ParticleContainer::updateParticle(idx,truth);  
+  if(m_debug) std::cout << "in TruthContainer::updateParticle " << std::endl;
+  ParticleContainer::updateParticle(idx,truth);
 
   truth.pdgId                    =m_pdgId                    ->at(idx);
   truth.status                   =m_status                   ->at(idx);
@@ -156,7 +154,7 @@ void TruthContainer::updateParticle(uint idx, TruthPart& truth)
   }
 
 
-  if(m_debug) cout << "leave TruthContainer::updateParticle " << endl;
+  if(m_debug) std::cout << "leave TruthContainer::updateParticle " << std::endl;
   return;
 }
 
@@ -184,26 +182,26 @@ void TruthContainer::setBranches(TTree *tree)
 
   if(m_infoSwitch.m_parents){
     setBranch<int>         (tree,"nParents",                      m_nParents              );
-    setBranch<vector<int> >(tree,"parent_pdgId",                  m_parent_pdgId          );
-    setBranch<vector<int> >(tree,"parent_barcode",                m_parent_barcode        );
-    setBranch<vector<int> >(tree,"parent_status",                 m_parent_status         );
+    setBranch<std::vector<int> >(tree,"parent_pdgId",                  m_parent_pdgId          );
+    setBranch<std::vector<int> >(tree,"parent_barcode",                m_parent_barcode        );
+    setBranch<std::vector<int> >(tree,"parent_status",                 m_parent_status         );
   }
 
   if(m_infoSwitch.m_children){
     setBranch<int>         (tree,"nChildren",                    m_nChildren            );
-    setBranch<vector<int> >(tree,"child_pdgId",                  m_child_pdgId          );
-    setBranch<vector<int> >(tree,"child_barcode",                m_child_barcode        );
-    setBranch<vector<int> >(tree,"child_status",                 m_child_status         );
+    setBranch<std::vector<int> >(tree,"child_pdgId",                  m_child_pdgId          );
+    setBranch<std::vector<int> >(tree,"child_barcode",                m_child_barcode        );
+    setBranch<std::vector<int> >(tree,"child_status",                 m_child_status         );
   }
 
 
   return;
 }
-    
+
 
 void TruthContainer::clear()
 {
-  
+
   ParticleContainer::clear();
 
   m_pdgId ->clear();
@@ -281,16 +279,16 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
     int nParents = truth->nParents();
     m_nParents->push_back(nParents);
 
-    m_parent_pdgId  ->push_back(vector<int>());
-    m_parent_barcode->push_back(vector<int>());
-    m_parent_status ->push_back(vector<int>());
+    m_parent_pdgId  ->push_back(std::vector<int>());
+    m_parent_barcode->push_back(std::vector<int>());
+    m_parent_status ->push_back(std::vector<int>());
     for(int iparent = 0; iparent < nParents; ++iparent){
       const xAOD::TruthParticle* parent = truth->parent(iparent);
       if(parent){
 	m_parent_pdgId  ->back().push_back(parent->pdgId());
 	m_parent_barcode->back().push_back(parent->barcode());
 	m_parent_status ->back().push_back(parent->status());
-      }else{			
+      }else{
 	m_parent_pdgId  ->back().push_back(-99);
 	m_parent_barcode->back().push_back(-99);
 	m_parent_status ->back().push_back(-99);
@@ -303,16 +301,16 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
     int nChildren = truth->nChildren();
     m_nChildren->push_back(nChildren);
 
-    m_child_pdgId  ->push_back(vector<int>());
-    m_child_barcode->push_back(vector<int>());
-    m_child_status ->push_back(vector<int>());
+    m_child_pdgId  ->push_back(std::vector<int>());
+    m_child_barcode->push_back(std::vector<int>());
+    m_child_status ->push_back(std::vector<int>());
     for(int ichild = 0; ichild < nChildren; ++ichild){
       const xAOD::TruthParticle* child = truth->child(ichild);
       if(child){
 	m_child_pdgId  ->back().push_back(child->pdgId());
 	m_child_barcode->back().push_back(child->barcode());
 	m_child_status ->back().push_back(child->status());
-      }else{			
+      }else{
 	m_child_pdgId  ->back().push_back(-99);
 	m_child_barcode->back().push_back(-99);
 	m_child_status ->back().push_back(-99);

@@ -230,7 +230,7 @@ EL::StatusCode MinixAOD :: execute ()
     } else if(const xAOD::TauJetContainer* t_cont = dynamic_cast<const xAOD::TauJetContainer*>(cont)){
       ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::TauJetContainer, xAOD::TauJetAuxContainer, xAOD::TauJet>(m_store, out_key.c_str(), t_cont)));
     } else {
-      std::cout << "Could not identify what container " << in_key << " corresponds to for deep-copying." << std::endl;
+      ANA_MSG_ERROR("Could not identify what container " << in_key << " corresponds to for deep-copying.");
       return EL::StatusCode::FAILURE;
     }
     m_copyFromStoreToEventKeys_vec.push_back(out_key);
@@ -263,7 +263,7 @@ EL::StatusCode MinixAOD :: execute ()
     // only add the parent if it doesn't exist
     if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
 
-    std::cout << "The following containers are being copied over:" << std::endl;
+    ANA_MSG_INFO("The following containers are being copied over:");
     for(const auto& key: *vector){
       ANA_MSG_DEBUG("\t" << key);
       m_copyFromStoreToEventKeys_vec.push_back(key);
@@ -297,7 +297,7 @@ EL::StatusCode MinixAOD :: execute ()
     } else if(dynamic_cast<const xAOD::TauJetContainer*>(cont)){
       ANA_CHECK( (HelperFunctions::recordOutput<xAOD::TauJetContainer, xAOD::TauJetAuxContainer>(m_event, m_store, key)));
     } else {
-      std::cout << "Could not identify what container " << key << " corresponds to for copying from TStore to TEvent." << std::endl;
+      ANA_MSG_ERROR("Could not identify what container " << key << " corresponds to for copying from TStore to TEvent.");
       return EL::StatusCode::FAILURE;
     }
 

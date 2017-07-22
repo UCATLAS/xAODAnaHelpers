@@ -103,12 +103,12 @@ class HLTJetRoIBuilder : public xAH::Algorithm
 
       const Collection* trigCol = feature.cptr();
       if ( !trigCol ) {
-        std::cout << "ERROR: No Trig Collection pointer" << std::endl;
+        ANA_MSG_ERROR("ERROR: No Trig Collection pointer");
         return 0;
       }
 
       if(trigCol->size() != 1){
-        std::cout << "ERROR Trig Collection size " << trigCol->size() << std::endl;
+        ANA_MSG_ERROR("ERROR Trig Collection size " << trigCol->size());
         return 0;;
       }
 

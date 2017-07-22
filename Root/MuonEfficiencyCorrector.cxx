@@ -159,9 +159,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   //
   m_recoEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Reco_" + m_WorkingPointReco;
 
-  std::cout << "" << std::endl;
   ANA_MSG_INFO( " Initialising CP::MuonEfficiencyScaleFactors for RECO efficiency SF..." );
-  std::cout << "" << std::endl;
 
   ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_recoEffSF_tool_name));
   if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(m_recoEffSF_tool_name) ) {
@@ -202,9 +200,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   m_isoEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_Iso_" + m_WorkingPointIso;
   std::string iso_WP = m_WorkingPointIso + "Iso";
 
-  std::cout << "" << std::endl;
   ANA_MSG_INFO( " Initialising CP::MuonEfficiencyScaleFactors for ISO efficiency SF..." );
-  std::cout << "" << std::endl;
 
   ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_isoEffSF_tool_name));
   if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(m_isoEffSF_tool_name) ) {
@@ -282,9 +278,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
     std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
 
-    std::cout << "" << std::endl;
     ANA_MSG_INFO( " Initialising CP::MuonTriggerScaleFactors for TRIGGER efficiency SF..." );
-    std::cout << "" << std::endl;
 
     ANA_CHECK( checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_names[yr]));
     if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_names[yr] ) ) {
@@ -348,9 +342,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   m_TTVAEffSF_tool_name = "MuonEfficiencyScaleFactors_effSF_" + m_WorkingPointTTVA;
 
-  std::cout << "" << std::endl;
   ANA_MSG_INFO( " Initialising CP::MuonEfficiencyScaleFactors for TTVA efficiency SF..." );
-  std::cout << "" << std::endl;
 
   ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name));
   if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name) ) {
@@ -949,7 +941,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
         i += outsfstr.length();
       }
       //if (idx == 0) { m_fullname_outputSystNamesTrig = sf_string; }
-      //std::cout << "This is the new string: " << m_fullname_outputSystNamesTrig << std::endl;
+      //ANA_MSG_INFO("This is the new string: " << m_fullname_outputSystNamesTrig);
 
       for ( const auto& syst_it : m_systListTrig ) {
         if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue;

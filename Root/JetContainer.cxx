@@ -4,8 +4,6 @@
 #include "xAODTruth/TruthEventContainer.h"
 
 using namespace xAH;
-using std::vector;  using std::endl;  using std::cout;
-
 
 JetContainer::JetContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
   : ParticleContainer(name,detailStr,units,mc),
@@ -26,7 +24,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_AverageLArQF              =new std::vector<float>();
     m_BchCorrCell               =new std::vector<float>();
     m_N90Constituents           =new std::vector<float>();
-    m_LArBadHVEnergyFrac        =new std::vector<float>();  
+    m_LArBadHVEnergyFrac        =new std::vector<float>();
     m_LArBadHVNCell             =new std::vector<int>();
     m_OotFracClusters5          =new std::vector<float>();
     m_OotFracClusters10         =new std::vector<float>();
@@ -54,18 +52,18 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
   // scales
   if ( m_infoSwitch.m_scales ) {
-    m_emScalePt               = new std::vector<float>(); 
-    m_constScalePt	    = new std::vector<float>(); 
-    m_pileupScalePt		    = new std::vector<float>(); 
-    m_originConstitScalePt    = new std::vector<float>(); 
-    m_etaJESScalePt	    = new std::vector<float>(); 
-    m_gscScalePt		    = new std::vector<float>(); 
-    m_insituScalePt	    = new std::vector<float>(); 
+    m_emScalePt               = new std::vector<float>();
+    m_constScalePt	    = new std::vector<float>();
+    m_pileupScalePt		    = new std::vector<float>();
+    m_originConstitScalePt    = new std::vector<float>();
+    m_etaJESScalePt	    = new std::vector<float>();
+    m_gscScalePt		    = new std::vector<float>();
+    m_insituScalePt	    = new std::vector<float>();
   }
 
   // constscale eta
   if ( m_infoSwitch.m_constscaleEta ) {
-    m_constScaleEta               = new std::vector<float>(); 
+    m_constScaleEta               = new std::vector<float>();
   }
 
   // layer
@@ -103,7 +101,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_JvtEff_SF_Loose  = new std::vector< std::vector<float> > ();
     }
     if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
-      m_JvtPass_Medium   = new std::vector<char>();  
+      m_JvtPass_Medium   = new std::vector<char>();
       m_JvtEff_SF_Medium = new std::vector< std::vector<float> > ();
     }
     if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
@@ -125,21 +123,21 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_GhostTrack_e        = new std::vector< std::vector<float> > ();
     m_GhostTrack_d0       = new std::vector< std::vector<float> > ();
     m_GhostTrack_z0       = new std::vector< std::vector<float> > ();
-    
+
 
     // allTrackDetail
     if(m_infoSwitch.m_allTrackDetail){
-      m_GhostTrack_nPixelHits                               = new std::vector< std::vector<int> >();   
-      m_GhostTrack_nSCTHits                                 = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nTRTHits                                 = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nPixelSharedHits                         = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nPixelSplitHits                          = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nInnermostPixelLayerHits                 = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nInnermostPixelLayerSharedHits           = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nInnermostPixelLayerSplitHits            = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nNextToInnermostPixelLayerHits           = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nNextToInnermostPixelLayerSharedHits     = new std::vector< std::vector<int> >(); 
-      m_GhostTrack_nNextToInnermostPixelLayerSplitHits      = new std::vector< std::vector<int> >(); 
+      m_GhostTrack_nPixelHits                               = new std::vector< std::vector<int> >();
+      m_GhostTrack_nSCTHits                                 = new std::vector< std::vector<int> >();
+      m_GhostTrack_nTRTHits                                 = new std::vector< std::vector<int> >();
+      m_GhostTrack_nPixelSharedHits                         = new std::vector< std::vector<int> >();
+      m_GhostTrack_nPixelSplitHits                          = new std::vector< std::vector<int> >();
+      m_GhostTrack_nInnermostPixelLayerHits                 = new std::vector< std::vector<int> >();
+      m_GhostTrack_nInnermostPixelLayerSharedHits           = new std::vector< std::vector<int> >();
+      m_GhostTrack_nInnermostPixelLayerSplitHits            = new std::vector< std::vector<int> >();
+      m_GhostTrack_nNextToInnermostPixelLayerHits           = new std::vector< std::vector<int> >();
+      m_GhostTrack_nNextToInnermostPixelLayerSharedHits     = new std::vector< std::vector<int> >();
+      m_GhostTrack_nNextToInnermostPixelLayerSplitHits      = new std::vector< std::vector<int> >();
     }
   }
 
@@ -158,7 +156,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
   // flavTag
   if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
-    
+
     //m_MV1                       =new std::vector<float>();
     m_MV2c00                    =new std::vector<float>();
     m_MV2c10                    =new std::vector<float>();
@@ -167,7 +165,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_MV2                       =new std::vector<float>();
     m_HadronConeExclTruthLabelID=new std::vector<int>();
 
-    // Jet Fitter 
+    // Jet Fitter
     if( m_infoSwitch.m_jetFitterDetails){
       m_JetFitter_nVTX             = new std::vector<float>();
       m_JetFitter_nSingleTracks    = new std::vector<float>();
@@ -186,57 +184,57 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_SV0               = new      std::vector<float>();
 
 
-      m_sv0_NGTinSvx      = new     std::vector<float>(); 
-      m_sv0_N2Tpair       = new     std::vector<float>(); 
-      m_sv0_massvx        = new     std::vector<float>(); 
-      m_sv0_efracsvx      = new     std::vector<float>(); 
-      m_sv0_normdist      = new     std::vector<float>(); 
+      m_sv0_NGTinSvx      = new     std::vector<float>();
+      m_sv0_N2Tpair       = new     std::vector<float>();
+      m_sv0_massvx        = new     std::vector<float>();
+      m_sv0_efracsvx      = new     std::vector<float>();
+      m_sv0_normdist      = new     std::vector<float>();
 
       m_SV1               = new     std::vector<float>();
       m_SV1IP3D           = new     std::vector<float>();
       m_COMBx             = new     std::vector<float>();
-      m_sv1_pu            = new     std::vector<float>(); 
-      m_sv1_pb            = new     std::vector<float>(); 
-      m_sv1_pc            = new     std::vector<float>(); 
-      m_sv1_c             = new     std::vector<float>(); 
-      m_sv1_cu            = new     std::vector<float>(); 
-      m_sv1_NGTinSvx      = new     std::vector<float>(); 
-      m_sv1_N2Tpair       = new     std::vector<float>(); 
-      m_sv1_massvx        = new     std::vector<float>(); 
-      m_sv1_efracsvx      = new     std::vector<float>(); 
-      m_sv1_normdist      = new     std::vector<float>(); 
-      m_sv1_Lxy           = new     std::vector<float>(); 
-      m_sv1_sig3d         = new     std::vector<float>(); 
-      m_sv1_L3d           = new     std::vector<float>(); 
-      m_sv1_distmatlay    = new     std::vector<float>(); 
-      m_sv1_dR            = new     std::vector<float>(); 
+      m_sv1_pu            = new     std::vector<float>();
+      m_sv1_pb            = new     std::vector<float>();
+      m_sv1_pc            = new     std::vector<float>();
+      m_sv1_c             = new     std::vector<float>();
+      m_sv1_cu            = new     std::vector<float>();
+      m_sv1_NGTinSvx      = new     std::vector<float>();
+      m_sv1_N2Tpair       = new     std::vector<float>();
+      m_sv1_massvx        = new     std::vector<float>();
+      m_sv1_efracsvx      = new     std::vector<float>();
+      m_sv1_normdist      = new     std::vector<float>();
+      m_sv1_Lxy           = new     std::vector<float>();
+      m_sv1_sig3d         = new     std::vector<float>();
+      m_sv1_L3d           = new     std::vector<float>();
+      m_sv1_distmatlay    = new     std::vector<float>();
+      m_sv1_dR            = new     std::vector<float>();
     }
 
     // IP3D
-    if( m_infoSwitch.m_ipDetails){    
-      m_IP2D_pu        = new std::vector<float>(); 
-      m_IP2D_pb        = new std::vector<float>(); 
-      m_IP2D_pc        = new std::vector<float>(); 
-      m_IP2D           = new std::vector<float>(); 
-      m_IP2D_c         = new std::vector<float>(); 
-      m_IP2D_cu        = new std::vector<float>(); 
-      m_nIP2DTracks    = new std::vector<float>(); 
-      
-      m_IP2D_gradeOfTracks              = new std::vector<std::vector<float> >(); 
-      m_IP2D_flagFromV0ofTracks         = new std::vector<std::vector<float> >(); 
-      m_IP2D_valD0wrtPVofTracks         = new std::vector<std::vector<float> >(); 
-      m_IP2D_sigD0wrtPVofTracks         = new std::vector<std::vector<float> >(); 
-      m_IP2D_weightBofTracks            = new std::vector<std::vector<float> >(); 
-      m_IP2D_weightCofTracks            = new std::vector<std::vector<float> >(); 
-      m_IP2D_weightUofTracks            = new std::vector<std::vector<float> >(); 
+    if( m_infoSwitch.m_ipDetails){
+      m_IP2D_pu        = new std::vector<float>();
+      m_IP2D_pb        = new std::vector<float>();
+      m_IP2D_pc        = new std::vector<float>();
+      m_IP2D           = new std::vector<float>();
+      m_IP2D_c         = new std::vector<float>();
+      m_IP2D_cu        = new std::vector<float>();
+      m_nIP2DTracks    = new std::vector<float>();
+
+      m_IP2D_gradeOfTracks              = new std::vector<std::vector<float> >();
+      m_IP2D_flagFromV0ofTracks         = new std::vector<std::vector<float> >();
+      m_IP2D_valD0wrtPVofTracks         = new std::vector<std::vector<float> >();
+      m_IP2D_sigD0wrtPVofTracks         = new std::vector<std::vector<float> >();
+      m_IP2D_weightBofTracks            = new std::vector<std::vector<float> >();
+      m_IP2D_weightCofTracks            = new std::vector<std::vector<float> >();
+      m_IP2D_weightUofTracks            = new std::vector<std::vector<float> >();
 
       m_IP3D         = new std::vector<float>();
-      m_IP3D_pu      = new std::vector<float>(); 
-      m_IP3D_pb      = new std::vector<float>(); 
-      m_IP3D_pc      = new std::vector<float>(); 
-      m_IP3D_c       = new std::vector<float>(); 
-      m_IP3D_cu      = new std::vector<float>(); 
-      m_nIP3DTracks  = new std::vector<float>(); 
+      m_IP3D_pu      = new std::vector<float>();
+      m_IP3D_pb      = new std::vector<float>();
+      m_IP3D_pc      = new std::vector<float>();
+      m_IP3D_c       = new std::vector<float>();
+      m_IP3D_cu      = new std::vector<float>();
+      m_nIP3DTracks  = new std::vector<float>();
       m_IP3D_gradeOfTracks        = new  std::vector<std::vector<float> >();
       m_IP3D_flagFromV0ofTracks   = new  std::vector<std::vector<float> >();
       m_IP3D_valD0wrtPVofTracks   = new  std::vector<std::vector<float> >();
@@ -256,24 +254,24 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
   //  flavTagHLT
   if( m_infoSwitch.m_flavTagHLT  ) {
-    m_vtxOnlineValid     = new  std::vector<float>(); 
+    m_vtxOnlineValid     = new  std::vector<float>();
     m_vtxHadDummy        = new  std::vector<float>();
 
-    m_bs_online_vx       = new  std::vector<float>(); 
-    m_bs_online_vy       = new  std::vector<float>(); 
-    m_bs_online_vz       = new  std::vector<float>(); 
-    
-    m_vtx_offline_x0     = new  std::vector<float>(); 
-    m_vtx_offline_y0     = new  std::vector<float>(); 
-    m_vtx_offline_z0     = new  std::vector<float>(); 
-                                              
-    m_vtx_online_x0      = new  std::vector<float>(); 
-    m_vtx_online_y0      = new  std::vector<float>(); 
-    m_vtx_online_z0      = new  std::vector<float>(); 
-                                              
-    m_vtx_online_bkg_x0  = new  std::vector<float>(); 
-    m_vtx_online_bkg_y0  = new  std::vector<float>(); 
-    m_vtx_online_bkg_z0  = new  std::vector<float>(); 
+    m_bs_online_vx       = new  std::vector<float>();
+    m_bs_online_vy       = new  std::vector<float>();
+    m_bs_online_vz       = new  std::vector<float>();
+
+    m_vtx_offline_x0     = new  std::vector<float>();
+    m_vtx_offline_y0     = new  std::vector<float>();
+    m_vtx_offline_z0     = new  std::vector<float>();
+
+    m_vtx_online_x0      = new  std::vector<float>();
+    m_vtx_online_y0      = new  std::vector<float>();
+    m_vtx_online_z0      = new  std::vector<float>();
+
+    m_vtx_online_bkg_x0  = new  std::vector<float>();
+    m_vtx_online_bkg_y0  = new  std::vector<float>();
+    m_vtx_online_bkg_z0  = new  std::vector<float>();
   }
 
   if( !m_infoSwitch.m_sfFTagFix.empty() ) {
@@ -339,10 +337,10 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_GhostCHadronsFinalPt          = new       std::vector<float> ();
     m_GhostCHadronsInitialPt        = new       std::vector<float> ();
     m_GhostCQuarksFinalPt           = new       std::vector<float> ();
-    
+
     m_GhostTausFinalCount           = new       std::vector<int>   ();
     m_GhostTausFinalPt              = new       std::vector<float> ();
-    
+
     m_truth_pdgId                   = new       std::vector<int>   ();
     m_truth_partonPt                = new       std::vector<float> ();
     m_truth_partonDR                = new      std::vector<float>  ();
@@ -357,7 +355,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
 JetContainer::~JetContainer()
 {
-  if(m_debug) cout << " Deleting JetContainer "  << endl;  
+  if(m_debug) std::cout << " Deleting JetContainer "  << std::endl;
   if(m_infoSwitch.m_rapidity) {
     delete m_rapidity;
   }
@@ -408,7 +406,7 @@ JetContainer::~JetContainer()
     delete m_insituScalePt	   ;
   }
 
-  // constscale eta 
+  // constscale eta
   if ( m_infoSwitch.m_constscaleEta ) {
     delete m_constScaleEta         ;
   }
@@ -475,17 +473,17 @@ JetContainer::~JetContainer()
 
     // allTrackDetail
     if(m_infoSwitch.m_allTrackDetail){
-      delete m_GhostTrack_nPixelHits                               ;   
-      delete m_GhostTrack_nSCTHits                                 ; 
-      delete m_GhostTrack_nTRTHits                                 ; 
-      delete m_GhostTrack_nPixelSharedHits                         ; 
-      delete m_GhostTrack_nPixelSplitHits                          ; 
-      delete m_GhostTrack_nInnermostPixelLayerHits                 ; 
-      delete m_GhostTrack_nInnermostPixelLayerSharedHits           ; 
-      delete m_GhostTrack_nInnermostPixelLayerSplitHits            ; 
-      delete m_GhostTrack_nNextToInnermostPixelLayerHits           ; 
-      delete m_GhostTrack_nNextToInnermostPixelLayerSharedHits     ; 
-      delete m_GhostTrack_nNextToInnermostPixelLayerSplitHits      ; 
+      delete m_GhostTrack_nPixelHits                               ;
+      delete m_GhostTrack_nSCTHits                                 ;
+      delete m_GhostTrack_nTRTHits                                 ;
+      delete m_GhostTrack_nPixelSharedHits                         ;
+      delete m_GhostTrack_nPixelSplitHits                          ;
+      delete m_GhostTrack_nInnermostPixelLayerHits                 ;
+      delete m_GhostTrack_nInnermostPixelLayerSharedHits           ;
+      delete m_GhostTrack_nInnermostPixelLayerSplitHits            ;
+      delete m_GhostTrack_nNextToInnermostPixelLayerHits           ;
+      delete m_GhostTrack_nNextToInnermostPixelLayerSharedHits     ;
+      delete m_GhostTrack_nNextToInnermostPixelLayerSplitHits      ;
     }
   }
 
@@ -516,7 +514,7 @@ JetContainer::~JetContainer()
 
     delete m_HadronConeExclTruthLabelID;
 
-    // Jet Fitter 
+    // Jet Fitter
     if( m_infoSwitch.m_jetFitterDetails){
       delete m_JetFitter_nVTX          ;
       delete m_JetFitter_nSingleTracks ;
@@ -532,59 +530,59 @@ JetContainer::~JetContainer()
     if( m_infoSwitch.m_svDetails){
 
       delete m_SV0;
-      delete m_sv0_NGTinSvx  ; 
-      delete m_sv0_N2Tpair   ; 
-      delete m_sv0_massvx    ; 
-      delete m_sv0_efracsvx  ; 
-      delete m_sv0_normdist  ; 
+      delete m_sv0_NGTinSvx  ;
+      delete m_sv0_N2Tpair   ;
+      delete m_sv0_massvx    ;
+      delete m_sv0_efracsvx  ;
+      delete m_sv0_normdist  ;
 
       delete m_SV1;
       delete m_SV1IP3D;
       delete m_COMBx;
-      delete m_sv1_pu        ; 
-      delete m_sv1_pb        ; 
-      delete m_sv1_pc        ; 
-      delete m_sv1_c         ; 
-      delete m_sv1_cu        ; 
-      delete m_sv1_NGTinSvx  ; 
-      delete m_sv1_N2Tpair   ; 
-      delete m_sv1_massvx    ; 
-      delete m_sv1_efracsvx  ; 
-      delete m_sv1_normdist  ; 
-      delete m_sv1_Lxy       ; 
-      delete m_sv1_sig3d     ; 
-      delete m_sv1_L3d       ; 
-      delete m_sv1_distmatlay; 
-      delete m_sv1_dR        ; 
+      delete m_sv1_pu        ;
+      delete m_sv1_pb        ;
+      delete m_sv1_pc        ;
+      delete m_sv1_c         ;
+      delete m_sv1_cu        ;
+      delete m_sv1_NGTinSvx  ;
+      delete m_sv1_N2Tpair   ;
+      delete m_sv1_massvx    ;
+      delete m_sv1_efracsvx  ;
+      delete m_sv1_normdist  ;
+      delete m_sv1_Lxy       ;
+      delete m_sv1_sig3d     ;
+      delete m_sv1_L3d       ;
+      delete m_sv1_distmatlay;
+      delete m_sv1_dR        ;
     }
 
     // IP3D
-    if( m_infoSwitch.m_ipDetails){    
+    if( m_infoSwitch.m_ipDetails){
 
-      delete m_IP2D_pu     ; 
-      delete m_IP2D_pb     ; 
-      delete m_IP2D_pc     ; 
-      delete m_IP2D        ; 
-      delete m_IP2D_c      ; 
-      delete m_IP2D_cu     ; 
-      delete m_nIP2DTracks ; 
+      delete m_IP2D_pu     ;
+      delete m_IP2D_pb     ;
+      delete m_IP2D_pc     ;
+      delete m_IP2D        ;
+      delete m_IP2D_c      ;
+      delete m_IP2D_cu     ;
+      delete m_nIP2DTracks ;
 
-      delete m_IP2D_gradeOfTracks     ; 
-      delete m_IP2D_flagFromV0ofTracks; 
-      delete m_IP2D_valD0wrtPVofTracks; 
-      delete m_IP2D_sigD0wrtPVofTracks; 
-      delete m_IP2D_weightBofTracks   ; 
-      delete m_IP2D_weightCofTracks   ; 
-      delete m_IP2D_weightUofTracks   ; 
+      delete m_IP2D_gradeOfTracks     ;
+      delete m_IP2D_flagFromV0ofTracks;
+      delete m_IP2D_valD0wrtPVofTracks;
+      delete m_IP2D_sigD0wrtPVofTracks;
+      delete m_IP2D_weightBofTracks   ;
+      delete m_IP2D_weightCofTracks   ;
+      delete m_IP2D_weightUofTracks   ;
 
       delete m_IP3D;
-      delete m_IP3D_pu     ; 
-      delete m_IP3D_pb     ; 
-      delete m_IP3D_pc     ; 
-      delete m_IP3D_c      ; 
-      delete m_IP3D_cu     ; 
+      delete m_IP3D_pu     ;
+      delete m_IP3D_pb     ;
+      delete m_IP3D_pc     ;
+      delete m_IP3D_c      ;
+      delete m_IP3D_cu     ;
 
-      delete m_nIP3DTracks ; 
+      delete m_nIP3DTracks ;
       delete m_IP3D_gradeOfTracks       ;
       delete m_IP3D_flagFromV0ofTracks  ;
       delete m_IP3D_valD0wrtPVofTracks  ;
@@ -605,23 +603,23 @@ JetContainer::~JetContainer()
 
     //  flavTagHLT
   if( m_infoSwitch.m_flavTagHLT  ) {
-    delete m_vtxOnlineValid     ; 
-    delete m_vtxHadDummy        ; 
-    delete m_bs_online_vx       ; 
-    delete m_bs_online_vy       ; 
-    delete m_bs_online_vz       ; 
+    delete m_vtxOnlineValid     ;
+    delete m_vtxHadDummy        ;
+    delete m_bs_online_vx       ;
+    delete m_bs_online_vy       ;
+    delete m_bs_online_vz       ;
 
-    delete m_vtx_offline_x0     ; 
-    delete m_vtx_offline_y0     ; 
-    delete m_vtx_offline_z0     ; 
+    delete m_vtx_offline_x0     ;
+    delete m_vtx_offline_y0     ;
+    delete m_vtx_offline_z0     ;
 
-    delete m_vtx_online_x0      ; 
-    delete m_vtx_online_y0      ; 
-    delete m_vtx_online_z0      ; 
+    delete m_vtx_online_x0      ;
+    delete m_vtx_online_y0      ;
+    delete m_vtx_online_z0      ;
 
-    delete m_vtx_online_bkg_x0  ; 
-    delete m_vtx_online_bkg_y0  ; 
-    delete m_vtx_online_bkg_z0  ; 
+    delete m_vtx_online_bkg_x0  ;
+    delete m_vtx_online_bkg_y0  ;
+    delete m_vtx_online_bkg_z0  ;
   }
 
   if( !m_infoSwitch.m_sfFTagFix.empty() ) {
@@ -672,7 +670,7 @@ JetContainer::~JetContainer()
     delete m_truth_phi;
     delete m_truth_eta;
   }
-  
+
     // truth detail
   if ( m_infoSwitch.m_truthDetails ) {
     delete m_GhostBHadronsFinalCount   ;
@@ -802,7 +800,7 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<float>(tree,"bs_online_vx",   &m_bs_online_vx);
       connectBranch<float>(tree,"bs_online_vy",   &m_bs_online_vy);
       connectBranch<float>(tree,"bs_online_vz",   &m_bs_online_vz);
-     
+
       connectBranch<float>(tree,"vtx_offline_x0", &m_vtx_offline_x0);
       connectBranch<float>(tree,"vtx_offline_y0", &m_vtx_offline_y0);
       connectBranch<float>(tree,"vtx_offline_z0", &m_vtx_offline_z0);
@@ -856,7 +854,7 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
 
     }
 
-    if( m_infoSwitch.m_ipDetails){    
+    if( m_infoSwitch.m_ipDetails){
 
       connectBranch<float>         (tree,  "IP2D_pu",                   &m_IP2D_pu                   );
       connectBranch<float>         (tree,  "IP2D_pb",                   &m_IP2D_pb                   );
@@ -864,13 +862,13 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<float>         (tree,  "IP2D",                      &m_IP2D                      );
       connectBranch<float>         (tree,  "IP2D_c",                    &m_IP2D_c                    );
       connectBranch<float>         (tree,  "IP2D_cu",                   &m_IP2D_cu                   );
-      connectBranch<vector<float> >(tree,  "IP2D_gradeOfTracks"       , &m_IP2D_gradeOfTracks        );
-      connectBranch<vector<float> >(tree,  "IP2D_flagFromV0ofTracks"  , &m_IP2D_flagFromV0ofTracks   );
-      connectBranch<vector<float> >(tree,  "IP2D_valD0wrtPVofTracks"  , &m_IP2D_valD0wrtPVofTracks   );
-      connectBranch<vector<float> >(tree,  "IP2D_sigD0wrtPVofTracks"  , &m_IP2D_sigD0wrtPVofTracks   );
-      connectBranch<vector<float> >(tree,  "IP2D_weightBofTracks"     , &m_IP2D_weightBofTracks      );
-      connectBranch<vector<float> >(tree,  "IP2D_weightCofTracks"     , &m_IP2D_weightCofTracks      );
-      connectBranch<vector<float> >(tree,  "IP2D_weightUofTracks"     , &m_IP2D_weightUofTracks      );
+      connectBranch<std::vector<float> >(tree,  "IP2D_gradeOfTracks"       , &m_IP2D_gradeOfTracks        );
+      connectBranch<std::vector<float> >(tree,  "IP2D_flagFromV0ofTracks"  , &m_IP2D_flagFromV0ofTracks   );
+      connectBranch<std::vector<float> >(tree,  "IP2D_valD0wrtPVofTracks"  , &m_IP2D_valD0wrtPVofTracks   );
+      connectBranch<std::vector<float> >(tree,  "IP2D_sigD0wrtPVofTracks"  , &m_IP2D_sigD0wrtPVofTracks   );
+      connectBranch<std::vector<float> >(tree,  "IP2D_weightBofTracks"     , &m_IP2D_weightBofTracks      );
+      connectBranch<std::vector<float> >(tree,  "IP2D_weightCofTracks"     , &m_IP2D_weightCofTracks      );
+      connectBranch<std::vector<float> >(tree,  "IP2D_weightUofTracks"     , &m_IP2D_weightUofTracks      );
 
       connectBranch<float>         (tree,  "IP3D",                      &m_IP3D);
       connectBranch<float>         (tree,  "IP3D_pu",                   &m_IP3D_pu                   );
@@ -878,22 +876,22 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<float>         (tree,  "IP3D_pc",                   &m_IP3D_pc                   );
       connectBranch<float>         (tree,  "IP3D_c",                    &m_IP3D_c                    );
       connectBranch<float>         (tree,  "IP3D_cu",                   &m_IP3D_cu                   );
-      connectBranch<vector<float> >(tree,  "IP3D_gradeOfTracks"       , &m_IP3D_gradeOfTracks        );
-      connectBranch<vector<float> >(tree,  "IP3D_flagFromV0ofTracks"  , &m_IP3D_flagFromV0ofTracks   );
-      connectBranch<vector<float> >(tree,  "IP3D_valD0wrtPVofTracks"  , &m_IP3D_valD0wrtPVofTracks   );
-      connectBranch<vector<float> >(tree,  "IP3D_sigD0wrtPVofTracks"  , &m_IP3D_sigD0wrtPVofTracks   );
-      connectBranch<vector<float> >(tree,  "IP3D_valZ0wrtPVofTracks"  , &m_IP3D_valZ0wrtPVofTracks   );
-      connectBranch<vector<float> >(tree,  "IP3D_sigZ0wrtPVofTracks"  , &m_IP3D_sigZ0wrtPVofTracks   );
-      connectBranch<vector<float> >(tree,  "IP3D_weightBofTracks"     , &m_IP3D_weightBofTracks      );
-      connectBranch<vector<float> >(tree,  "IP3D_weightCofTracks"     , &m_IP3D_weightCofTracks      );
-      connectBranch<vector<float> >(tree,  "IP3D_weightUofTracks"     , &m_IP3D_weightUofTracks      );
+      connectBranch<std::vector<float> >(tree,  "IP3D_gradeOfTracks"       , &m_IP3D_gradeOfTracks        );
+      connectBranch<std::vector<float> >(tree,  "IP3D_flagFromV0ofTracks"  , &m_IP3D_flagFromV0ofTracks   );
+      connectBranch<std::vector<float> >(tree,  "IP3D_valD0wrtPVofTracks"  , &m_IP3D_valD0wrtPVofTracks   );
+      connectBranch<std::vector<float> >(tree,  "IP3D_sigD0wrtPVofTracks"  , &m_IP3D_sigD0wrtPVofTracks   );
+      connectBranch<std::vector<float> >(tree,  "IP3D_valZ0wrtPVofTracks"  , &m_IP3D_valZ0wrtPVofTracks   );
+      connectBranch<std::vector<float> >(tree,  "IP3D_sigZ0wrtPVofTracks"  , &m_IP3D_sigZ0wrtPVofTracks   );
+      connectBranch<std::vector<float> >(tree,  "IP3D_weightBofTracks"     , &m_IP3D_weightBofTracks      );
+      connectBranch<std::vector<float> >(tree,  "IP3D_weightCofTracks"     , &m_IP3D_weightCofTracks      );
+      connectBranch<std::vector<float> >(tree,  "IP3D_weightUofTracks"     , &m_IP3D_weightUofTracks      );
 
     }
 
 
-  for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) 
+  for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ )
     {
-      switch( m_infoSwitch.m_sfFTagFix[i] ) 
+      switch( m_infoSwitch.m_sfFTagFix[i] )
         {
         case 30: m_btag_Fix30->setTree(tree, m_name); break;
         case 50: m_btag_Fix50->setTree(tree, m_name); break;
@@ -901,18 +899,18 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
         case 70: m_btag_Fix70->setTree(tree, m_name); break;
         case 77: m_btag_Fix77->setTree(tree, m_name); break;
         case 80: m_btag_Fix80->setTree(tree, m_name); break;
-        case 85: m_btag_Fix85->setTree(tree, m_name); break;         
+        case 85: m_btag_Fix85->setTree(tree, m_name); break;
         case 90: m_btag_Fix90->setTree(tree, m_name); break;
       }
     }
 
-  for(uint i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ ) 
+  for(uint i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ )
     {
-      switch( m_infoSwitch.m_sfFTagFlt[i] ) 
+      switch( m_infoSwitch.m_sfFTagFlt[i] )
         {
         case 30: m_btag_Flt30->setTree(tree, m_name); break;
         case 50: m_btag_Flt50->setTree(tree, m_name); break;
-        case 60: m_btag_Flt60->setTree(tree, m_name); break;              
+        case 60: m_btag_Flt60->setTree(tree, m_name); break;
         case 70: m_btag_Flt70->setTree(tree, m_name); break;
         case 77: m_btag_Flt77->setTree(tree, m_name); break;
         case 85: m_btag_Flt85->setTree(tree, m_name); break;
@@ -945,8 +943,8 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
 
 void JetContainer::updateParticle(uint idx, Jet& jet)
 {
-  if(m_debug) cout << "in JetContainer::updateParticle " << endl;
-  ParticleContainer::updateParticle(idx,jet);  
+  if(m_debug) std::cout << "in JetContainer::updateParticle " << std::endl;
+  ParticleContainer::updateParticle(idx,jet);
 
   if(m_infoSwitch.m_rapidity)
     {
@@ -955,7 +953,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
   if(m_infoSwitch.m_clean)
     {
-      if(m_debug) cout << "updating clean " << endl;
+      if(m_debug) std::cout << "updating clean " << std::endl;
       jet.Timing                    =m_Timing                    ->at(idx);
       jet.LArQuality                =m_LArQuality                ->at(idx);
       jet.HECQuality                =m_HECQuality                ->at(idx);
@@ -979,7 +977,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
   if(m_infoSwitch.m_energy)
     {
-      if(m_debug) cout << "updating energy " << endl;
+      if(m_debug) std::cout << "updating energy " << std::endl;
       jet.HECFrac              =m_HECFrac              ->at(idx);
       jet.EMFrac               =m_EMFrac               ->at(idx);
       jet.CentroidR            =m_CentroidR            ->at(idx);
@@ -989,7 +987,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.GhostMuonSegmentCount=m_GhostMuonSegmentCount->at(idx);
       jet.Width                =m_Width                ->at(idx);
     }
-  
+
   if(m_infoSwitch.m_trackPV)
     {
       jet.NumTrkPt1000PV    =m_NumTrkPt1000PV    ->at(idx);
@@ -1007,16 +1005,16 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.JvtJvfcorr=m_JvtJvfcorr->at(idx);
       jet.JvtRpt    =m_JvtRpt    ->at(idx);
     }
-  
+
   if( m_infoSwitch.m_JVC ) {
-    if(m_debug) cout << "updating JVC " << endl;
-    if(m_debug) cout << m_JetVertexCharge_discriminant->size() << endl;
+    if(m_debug) std::cout << "updating JVC " << std::endl;
+    if(m_debug) std::cout << m_JetVertexCharge_discriminant->size() << std::endl;
     jet.JVC = m_JetVertexCharge_discriminant->at(idx);
   }
 
   if(m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT)
     {
-      if(m_debug) cout << "updating flavTag " << endl;
+      if(m_debug) std::cout << "updating flavTag " << std::endl;
       jet.MV2c00                    =m_MV2c00               ->at(idx);
       jet.MV2c10                    =m_MV2c10               ->at(idx);
       jet.MV2c20                    =m_MV2c20               ->at(idx);
@@ -1024,13 +1022,13 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.MV2                       =m_MV2                  ->at(idx);
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
-      if(m_debug) cout << "leave flavTag " << endl;
+      if(m_debug) std::cout << "leave flavTag " << std::endl;
     }
 
 
   if(m_infoSwitch.m_flavTagHLT)
     {
-      if(m_debug) cout << "updating flavTagHLT " << endl;
+      if(m_debug) std::cout << "updating flavTagHLT " << std::endl;
       jet.bs_online_vx                      =m_bs_online_vx                  ->at(idx);
       jet.bs_online_vy                      =m_bs_online_vy                  ->at(idx);
       jet.bs_online_vz                      =m_bs_online_vz                  ->at(idx);
@@ -1124,9 +1122,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
   }
 
   static const std::vector<float> dummy1 = {1.};
-  for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) 
+  for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ )
     {
-      switch( m_infoSwitch.m_sfFTagFix[i] ) 
+      switch( m_infoSwitch.m_sfFTagFix[i] )
         {
         case 30:
           jet.MV2c20_isFix30       =m_btag_Fix30->m_isTag->at(idx);
@@ -1140,8 +1138,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
           jet.MV2c20_isFix60       =m_btag_Fix60->m_isTag->at(idx);
           jet.MV2c20_sfFix60       =(m_mc)?m_btag_Fix60->m_sf->at(idx):dummy1;
           break;
-        case 70: 
-	  if(m_debug) cout << "updating flavTag70 " << endl;
+        case 70:
+	  if(m_debug) std::cout << "updating flavTag70 " << std::endl;
           jet.MV2c20_isFix70       =m_btag_Fix70->m_isTag->at(idx);
           jet.MV2c20_sfFix70       =(m_mc)?m_btag_Fix70->m_sf->at(idx):dummy1;
           break;
@@ -1164,9 +1162,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
         }
     }
 
-  for(uint i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ ) 
+  for(uint i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ )
     {
-      switch( m_infoSwitch.m_sfFTagFlt[i] ) 
+      switch( m_infoSwitch.m_sfFTagFlt[i] )
         {
         case 30:
           jet.MV2c20_isFlt30       =m_btag_Flt30->m_isTag       ->at(idx);
@@ -1219,7 +1217,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.charge=m_charge->at(idx);
     }
 
-  if(m_debug) cout << "leave JetContainer::updateParticle " << endl;
+  if(m_debug) std::cout << "leave JetContainer::updateParticle " << std::endl;
   return;
 }
 
@@ -1283,17 +1281,17 @@ void JetContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_layer ) {
-    setBranch<vector<float> >(tree,"EnergyPerSampling",     m_EnergyPerSampling   );
+    setBranch<std::vector<float> >(tree,"EnergyPerSampling",     m_EnergyPerSampling   );
   }
 
   if ( m_infoSwitch.m_trackAll ) {
-    setBranch<vector<int  > >(tree,"NumTrkPt1000",      m_NumTrkPt1000   );
-    setBranch<vector<float> >(tree,"SumPtTrkPt1000",    m_SumPtTrkPt1000  );
-    setBranch<vector<float> >(tree,"TrackWidthPt1000",  m_TrackWidthPt1000   );
-    setBranch<vector<int  > >(tree,"NumTrkPt500",       m_NumTrkPt500    );
-    setBranch<vector<float> >(tree,"SumPtTrkPt500",     m_SumPtTrkPt500  );
-    setBranch<vector<float> >(tree,"TrackWidthPt500",   m_TrackWidthPt500    );
-    setBranch<vector<float> >(tree,"JVF",               m_JVF         );
+    setBranch<std::vector<int  > >(tree,"NumTrkPt1000",      m_NumTrkPt1000   );
+    setBranch<std::vector<float> >(tree,"SumPtTrkPt1000",    m_SumPtTrkPt1000  );
+    setBranch<std::vector<float> >(tree,"TrackWidthPt1000",  m_TrackWidthPt1000   );
+    setBranch<std::vector<int  > >(tree,"NumTrkPt500",       m_NumTrkPt500    );
+    setBranch<std::vector<float> >(tree,"SumPtTrkPt500",     m_SumPtTrkPt500  );
+    setBranch<std::vector<float> >(tree,"TrackWidthPt500",   m_TrackWidthPt500    );
+    setBranch<std::vector<float> >(tree,"JVF",               m_JVF         );
   }
 
   if ( m_infoSwitch.m_trackPV ) {
@@ -1312,15 +1310,15 @@ void JetContainer::setBranches(TTree *tree)
   if ( m_mc ) {
     if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
       setBranch<char>(tree,"JvtPass_Loose",        m_JvtPass_Loose );
-      setBranch<vector<float> >(tree,"JvtEff_SF_Loose",     m_JvtEff_SF_Loose );
+      setBranch<std::vector<float> >(tree,"JvtEff_SF_Loose",     m_JvtEff_SF_Loose );
     }
     if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
       setBranch<char>(tree,"JvtPass_Medium",       m_JvtPass_Medium );
-      setBranch<vector<float> >(tree,"JvtEff_SF_Medium",    m_JvtEff_SF_Medium );
+      setBranch<std::vector<float> >(tree,"JvtEff_SF_Medium",    m_JvtEff_SF_Medium );
     }
     if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
       setBranch<char>(tree,"JvtPass_Tight",        m_JvtPass_Tight );
-      setBranch<vector<float> >(tree,"JvtEff_SF_Tight",     m_JvtEff_SF_Tight );
+      setBranch<std::vector<float> >(tree,"JvtEff_SF_Tight",     m_JvtEff_SF_Tight );
     }
   }
 
@@ -1337,25 +1335,25 @@ void JetContainer::setBranches(TTree *tree)
     }
     setBranch<int  >(tree,"GhostTrackCount",  m_GhostTrackCount );
     setBranch<float>(tree,"GhostTrackPt",     m_GhostTrackPt    );
-    setBranch<vector<float> >(tree,"GhostTrack_pt",    m_GhostTrack_pt   );
-    setBranch<vector<float> >(tree,"GhostTrack_qOverP",m_GhostTrack_qOverP);
-    setBranch<vector<float> >(tree,"GhostTrack_eta",   m_GhostTrack_eta  );
-    setBranch<vector<float> >(tree,"GhostTrack_phi",   m_GhostTrack_phi  );
-    setBranch<vector<float> >(tree,"GhostTrack_e",     m_GhostTrack_e    );
-    setBranch<vector<float> >(tree,"GhostTrack_d0",    m_GhostTrack_d0   );
-    setBranch<vector<float> >(tree,"GhostTrack_z0",    m_GhostTrack_z0   );
+    setBranch<std::vector<float> >(tree,"GhostTrack_pt",    m_GhostTrack_pt   );
+    setBranch<std::vector<float> >(tree,"GhostTrack_qOverP",m_GhostTrack_qOverP);
+    setBranch<std::vector<float> >(tree,"GhostTrack_eta",   m_GhostTrack_eta  );
+    setBranch<std::vector<float> >(tree,"GhostTrack_phi",   m_GhostTrack_phi  );
+    setBranch<std::vector<float> >(tree,"GhostTrack_e",     m_GhostTrack_e    );
+    setBranch<std::vector<float> >(tree,"GhostTrack_d0",    m_GhostTrack_d0   );
+    setBranch<std::vector<float> >(tree,"GhostTrack_z0",    m_GhostTrack_z0   );
     if ( m_infoSwitch.m_allTrackDetail ) {
-      setBranch<vector<int> >(tree,"GhostTrack_nPixelHits",                           m_GhostTrack_nPixelHits);
-      setBranch<vector<int> >(tree,"GhostTrack_nSCTHits",                             m_GhostTrack_nSCTHits);
-      setBranch<vector<int> >(tree,"GhostTrack_nTRTHits",                             m_GhostTrack_nTRTHits);
-      setBranch<vector<int> >(tree,"GhostTrack_nPixelSharedHits",                     m_GhostTrack_nPixelSharedHits);
-      setBranch<vector<int> >(tree,"GhostTrack_nPixelSplitHits",                      m_GhostTrack_nPixelSplitHits);
-      setBranch<vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerHits",             m_GhostTrack_nInnermostPixelLayerHits);
-      setBranch<vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerSharedHits",       m_GhostTrack_nInnermostPixelLayerSharedHits);
-      setBranch<vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerSplitHits",        m_GhostTrack_nInnermostPixelLayerSplitHits);
-      setBranch<vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerHits",       m_GhostTrack_nNextToInnermostPixelLayerHits);
-      setBranch<vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerSharedHits", m_GhostTrack_nNextToInnermostPixelLayerSharedHits);
-      setBranch<vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerSplitHits",  m_GhostTrack_nNextToInnermostPixelLayerSplitHits);
+      setBranch<std::vector<int> >(tree,"GhostTrack_nPixelHits",                           m_GhostTrack_nPixelHits);
+      setBranch<std::vector<int> >(tree,"GhostTrack_nSCTHits",                             m_GhostTrack_nSCTHits);
+      setBranch<std::vector<int> >(tree,"GhostTrack_nTRTHits",                             m_GhostTrack_nTRTHits);
+      setBranch<std::vector<int> >(tree,"GhostTrack_nPixelSharedHits",                     m_GhostTrack_nPixelSharedHits);
+      setBranch<std::vector<int> >(tree,"GhostTrack_nPixelSplitHits",                      m_GhostTrack_nPixelSplitHits);
+      setBranch<std::vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerHits",             m_GhostTrack_nInnermostPixelLayerHits);
+      setBranch<std::vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerSharedHits",       m_GhostTrack_nInnermostPixelLayerSharedHits);
+      setBranch<std::vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerSplitHits",        m_GhostTrack_nInnermostPixelLayerSplitHits);
+      setBranch<std::vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerHits",       m_GhostTrack_nNextToInnermostPixelLayerHits);
+      setBranch<std::vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerSharedHits", m_GhostTrack_nNextToInnermostPixelLayerSharedHits);
+      setBranch<std::vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerSplitHits",  m_GhostTrack_nNextToInnermostPixelLayerSplitHits);
     }
   }
 
@@ -1364,11 +1362,11 @@ void JetContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_constituentAll ) {
-    setBranch<vector<float> >(tree,"constituentWeights", m_constituentWeights);
-    setBranch<vector<float> >(tree,"constituent_pt",     m_constituent_pt    );
-    setBranch<vector<float> >(tree,"constituent_eta",    m_constituent_eta   );
-    setBranch<vector<float> >(tree,"constituent_phi",    m_constituent_phi   );
-    setBranch<vector<float> >(tree,"constituent_e",      m_constituent_e     );
+    setBranch<std::vector<float> >(tree,"constituentWeights", m_constituentWeights);
+    setBranch<std::vector<float> >(tree,"constituent_pt",     m_constituent_pt    );
+    setBranch<std::vector<float> >(tree,"constituent_eta",    m_constituent_eta   );
+    setBranch<std::vector<float> >(tree,"constituent_phi",    m_constituent_phi   );
+    setBranch<std::vector<float> >(tree,"constituent_e",      m_constituent_e     );
   }
 
   if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
@@ -1395,7 +1393,7 @@ void JetContainer::setBranches(TTree *tree)
       //setBranch<float>(tree, "JetFitter_pb"            ,   m_JetFitter_pb              );
       //setBranch<float>(tree, "JetFitter_pc"            ,   m_JetFitter_pc              );
       //setBranch<float>(tree, "JetFitter_pu"            ,   m_JetFitter_pu              );
-      
+
     }
 
     if( m_infoSwitch.m_svDetails){
@@ -1426,7 +1424,7 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<float>(tree, "sv1_dR",            m_sv1_dR        );
     }
 
-    if( m_infoSwitch.m_ipDetails){    
+    if( m_infoSwitch.m_ipDetails){
 
       setBranch<float>(tree,  "IP2D_pu",                   m_IP2D_pu                   );
       setBranch<float>(tree,  "IP2D_pb",                   m_IP2D_pb                   );
@@ -1435,13 +1433,13 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<float>(tree,  "IP2D_c",                    m_IP2D_c                    );
       setBranch<float>(tree,  "IP2D_cu",                   m_IP2D_cu                   );
       setBranch<float>(tree,  "nIP2DTracks"              , m_nIP2DTracks               );
-      setBranch<vector<float> >(tree,  "IP2D_gradeOfTracks"       , m_IP2D_gradeOfTracks        );
-      setBranch<vector<float> >(tree,  "IP2D_flagFromV0ofTracks"  , m_IP2D_flagFromV0ofTracks   );
-      setBranch<vector<float> >(tree,  "IP2D_valD0wrtPVofTracks"  , m_IP2D_valD0wrtPVofTracks   );
-      setBranch<vector<float> >(tree,  "IP2D_sigD0wrtPVofTracks"  , m_IP2D_sigD0wrtPVofTracks   );
-      setBranch<vector<float> >(tree,  "IP2D_weightBofTracks"     , m_IP2D_weightBofTracks      );
-      setBranch<vector<float> >(tree,  "IP2D_weightCofTracks"     , m_IP2D_weightCofTracks      );
-      setBranch<vector<float> >(tree,  "IP2D_weightUofTracks"     , m_IP2D_weightUofTracks      );
+      setBranch<std::vector<float> >(tree,  "IP2D_gradeOfTracks"       , m_IP2D_gradeOfTracks        );
+      setBranch<std::vector<float> >(tree,  "IP2D_flagFromV0ofTracks"  , m_IP2D_flagFromV0ofTracks   );
+      setBranch<std::vector<float> >(tree,  "IP2D_valD0wrtPVofTracks"  , m_IP2D_valD0wrtPVofTracks   );
+      setBranch<std::vector<float> >(tree,  "IP2D_sigD0wrtPVofTracks"  , m_IP2D_sigD0wrtPVofTracks   );
+      setBranch<std::vector<float> >(tree,  "IP2D_weightBofTracks"     , m_IP2D_weightBofTracks      );
+      setBranch<std::vector<float> >(tree,  "IP2D_weightCofTracks"     , m_IP2D_weightCofTracks      );
+      setBranch<std::vector<float> >(tree,  "IP2D_weightUofTracks"     , m_IP2D_weightUofTracks      );
 
       setBranch<float>(tree,  "IP3D",                      m_IP3D);
       setBranch<float>(tree,  "IP3D_pu",                   m_IP3D_pu                   );
@@ -1451,15 +1449,15 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<float>(tree,  "IP3D_c",                    m_IP3D_c                    );
       setBranch<float>(tree,  "IP3D_cu",                   m_IP3D_cu                   );
       setBranch<float>(tree,  "nIP3DTracks"              , m_nIP3DTracks               );
-      setBranch<vector<float> >(tree,  "IP3D_gradeOfTracks"       , m_IP3D_gradeOfTracks        );
-      setBranch<vector<float> >(tree,  "IP3D_flagFromV0ofTracks"  , m_IP3D_flagFromV0ofTracks   );
-      setBranch<vector<float> >(tree,  "IP3D_valD0wrtPVofTracks"  , m_IP3D_valD0wrtPVofTracks   );
-      setBranch<vector<float> >(tree,  "IP3D_sigD0wrtPVofTracks"  , m_IP3D_sigD0wrtPVofTracks   );
-      setBranch<vector<float> >(tree,  "IP3D_valZ0wrtPVofTracks"  , m_IP3D_valZ0wrtPVofTracks   );
-      setBranch<vector<float> >(tree,  "IP3D_sigZ0wrtPVofTracks"  , m_IP3D_sigZ0wrtPVofTracks   );
-      setBranch<vector<float> >(tree,  "IP3D_weightBofTracks"     , m_IP3D_weightBofTracks      );
-      setBranch<vector<float> >(tree,  "IP3D_weightCofTracks"     , m_IP3D_weightCofTracks      );
-      setBranch<vector<float> >(tree,  "IP3D_weightUofTracks"     , m_IP3D_weightUofTracks      );
+      setBranch<std::vector<float> >(tree,  "IP3D_gradeOfTracks"       , m_IP3D_gradeOfTracks        );
+      setBranch<std::vector<float> >(tree,  "IP3D_flagFromV0ofTracks"  , m_IP3D_flagFromV0ofTracks   );
+      setBranch<std::vector<float> >(tree,  "IP3D_valD0wrtPVofTracks"  , m_IP3D_valD0wrtPVofTracks   );
+      setBranch<std::vector<float> >(tree,  "IP3D_sigD0wrtPVofTracks"  , m_IP3D_sigD0wrtPVofTracks   );
+      setBranch<std::vector<float> >(tree,  "IP3D_valZ0wrtPVofTracks"  , m_IP3D_valZ0wrtPVofTracks   );
+      setBranch<std::vector<float> >(tree,  "IP3D_sigZ0wrtPVofTracks"  , m_IP3D_sigZ0wrtPVofTracks   );
+      setBranch<std::vector<float> >(tree,  "IP3D_weightBofTracks"     , m_IP3D_weightBofTracks      );
+      setBranch<std::vector<float> >(tree,  "IP3D_weightCofTracks"     , m_IP3D_weightCofTracks      );
+      setBranch<std::vector<float> >(tree,  "IP3D_weightUofTracks"     , m_IP3D_weightUofTracks      );
 
     }
 
@@ -1483,7 +1481,7 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"vtx_online_x0"      ,m_vtx_online_x0     );
     setBranch<float>(tree,"vtx_online_y0"      ,m_vtx_online_y0     );
     setBranch<float>(tree,"vtx_online_z0"      ,m_vtx_online_z0     );
-                                                 
+
     setBranch<float>(tree,"vtx_online_bkg_x0"  ,m_vtx_online_bkg_x0     );
     setBranch<float>(tree,"vtx_online_bkg_y0"  ,m_vtx_online_bkg_y0     );
     setBranch<float>(tree,"vtx_online_bkg_z0"  ,m_vtx_online_bkg_z0     );
@@ -1500,7 +1498,7 @@ void JetContainer::setBranches(TTree *tree)
     if (findBTagSF(m_infoSwitch.m_sfFTagFix, 80)) m_btag_Fix80->setBranch(tree, m_name);
     if (findBTagSF(m_infoSwitch.m_sfFTagFix, 85)) m_btag_Fix85->setBranch(tree, m_name);
     if (findBTagSF(m_infoSwitch.m_sfFTagFix, 90)) m_btag_Fix90->setBranch(tree, m_name);
- 
+
   }
 
 
@@ -1568,14 +1566,14 @@ void JetContainer::setBranches(TTree *tree)
   if ( m_infoSwitch.m_charge ) {
     setBranch<double>(tree,"charge", m_charge);
   }
-  
+
   return;
 }
-    
+
 
 void JetContainer::clear()
 {
-  
+
   ParticleContainer::clear();
 
   // rapidity
@@ -1592,7 +1590,7 @@ void JetContainer::clear()
     m_AverageLArQF              ->clear();
     m_BchCorrCell               ->clear();
     m_N90Constituents           ->clear();
-    m_LArBadHVEnergyFrac        ->clear();  
+    m_LArBadHVEnergyFrac        ->clear();
     m_LArBadHVNCell             ->clear();
     m_OotFracClusters5          ->clear();
     m_OotFracClusters10         ->clear();
@@ -1623,10 +1621,10 @@ void JetContainer::clear()
   if ( m_infoSwitch.m_scales ) {
     m_emScalePt             ->clear();
     m_constScalePt	    ->clear();
-    m_pileupScalePt	    ->clear(); 
+    m_pileupScalePt	    ->clear();
     m_originConstitScalePt  ->clear();
     m_etaJESScalePt	    ->clear();
-    m_gscScalePt	    ->clear(); 
+    m_gscScalePt	    ->clear();
     m_insituScalePt	    ->clear();
   }
 
@@ -1692,17 +1690,17 @@ void JetContainer::clear()
     m_GhostTrack_z0       ->clear();
 
     if ( m_infoSwitch.m_allTrackDetail ) {
-      m_GhostTrack_nPixelHits                               ->clear();   
-      m_GhostTrack_nSCTHits                                 ->clear(); 
-      m_GhostTrack_nTRTHits                                 ->clear(); 
-      m_GhostTrack_nPixelSharedHits                         ->clear(); 
-      m_GhostTrack_nPixelSplitHits                          ->clear(); 
-      m_GhostTrack_nInnermostPixelLayerHits                 ->clear(); 
-      m_GhostTrack_nInnermostPixelLayerSharedHits           ->clear(); 
-      m_GhostTrack_nInnermostPixelLayerSplitHits            ->clear(); 
-      m_GhostTrack_nNextToInnermostPixelLayerHits           ->clear(); 
-      m_GhostTrack_nNextToInnermostPixelLayerSharedHits     ->clear(); 
-      m_GhostTrack_nNextToInnermostPixelLayerSplitHits      ->clear(); 
+      m_GhostTrack_nPixelHits                               ->clear();
+      m_GhostTrack_nSCTHits                                 ->clear();
+      m_GhostTrack_nTRTHits                                 ->clear();
+      m_GhostTrack_nPixelSharedHits                         ->clear();
+      m_GhostTrack_nPixelSplitHits                          ->clear();
+      m_GhostTrack_nInnermostPixelLayerHits                 ->clear();
+      m_GhostTrack_nInnermostPixelLayerSharedHits           ->clear();
+      m_GhostTrack_nInnermostPixelLayerSplitHits            ->clear();
+      m_GhostTrack_nNextToInnermostPixelLayerHits           ->clear();
+      m_GhostTrack_nNextToInnermostPixelLayerSharedHits     ->clear();
+      m_GhostTrack_nNextToInnermostPixelLayerSplitHits      ->clear();
     }
   }
 
@@ -1743,57 +1741,57 @@ void JetContainer::clear()
 
     if( m_infoSwitch.m_svDetails){
       m_SV0               ->clear();
-      m_sv0_NGTinSvx      ->clear(); 
-      m_sv0_N2Tpair       ->clear(); 
-      m_sv0_massvx        ->clear(); 
-      m_sv0_efracsvx      ->clear(); 
-      m_sv0_normdist      ->clear(); 
-      
+      m_sv0_NGTinSvx      ->clear();
+      m_sv0_N2Tpair       ->clear();
+      m_sv0_massvx        ->clear();
+      m_sv0_efracsvx      ->clear();
+      m_sv0_normdist      ->clear();
+
       m_SV1               ->clear();
       m_SV1IP3D           ->clear();
       m_COMBx             ->clear();
-      m_sv1_pu            ->clear(); 
-      m_sv1_pb            ->clear(); 
-      m_sv1_pc            ->clear(); 
-      m_sv1_c             ->clear(); 
-      m_sv1_cu            ->clear(); 
-      m_sv1_NGTinSvx      ->clear(); 
-      m_sv1_N2Tpair       ->clear(); 
-      m_sv1_massvx        ->clear(); 
-      m_sv1_efracsvx      ->clear(); 
-      m_sv1_normdist      ->clear(); 
-      m_sv1_Lxy           ->clear(); 
-      m_sv1_sig3d         ->clear(); 
-      m_sv1_L3d           ->clear(); 
-      m_sv1_distmatlay    ->clear(); 
-      m_sv1_dR            ->clear(); 
+      m_sv1_pu            ->clear();
+      m_sv1_pb            ->clear();
+      m_sv1_pc            ->clear();
+      m_sv1_c             ->clear();
+      m_sv1_cu            ->clear();
+      m_sv1_NGTinSvx      ->clear();
+      m_sv1_N2Tpair       ->clear();
+      m_sv1_massvx        ->clear();
+      m_sv1_efracsvx      ->clear();
+      m_sv1_normdist      ->clear();
+      m_sv1_Lxy           ->clear();
+      m_sv1_sig3d         ->clear();
+      m_sv1_L3d           ->clear();
+      m_sv1_distmatlay    ->clear();
+      m_sv1_dR            ->clear();
     }
 
     if( m_infoSwitch.m_ipDetails){
-      m_IP2D_pu        ->clear(); 
-      m_IP2D_pb        ->clear(); 
-      m_IP2D_pc        ->clear(); 
-      m_IP2D           ->clear(); 
-      m_IP2D_c         ->clear(); 
-      m_IP2D_cu        ->clear(); 
-      m_nIP2DTracks    ->clear(); 
-      
-      m_IP2D_gradeOfTracks              ->clear(); 
-      m_IP2D_flagFromV0ofTracks         ->clear(); 
-      m_IP2D_valD0wrtPVofTracks         ->clear(); 
-      m_IP2D_sigD0wrtPVofTracks         ->clear(); 
-      m_IP2D_weightBofTracks            ->clear(); 
-      m_IP2D_weightCofTracks            ->clear(); 
-      m_IP2D_weightUofTracks            ->clear(); 
+      m_IP2D_pu        ->clear();
+      m_IP2D_pb        ->clear();
+      m_IP2D_pc        ->clear();
+      m_IP2D           ->clear();
+      m_IP2D_c         ->clear();
+      m_IP2D_cu        ->clear();
+      m_nIP2DTracks    ->clear();
+
+      m_IP2D_gradeOfTracks              ->clear();
+      m_IP2D_flagFromV0ofTracks         ->clear();
+      m_IP2D_valD0wrtPVofTracks         ->clear();
+      m_IP2D_sigD0wrtPVofTracks         ->clear();
+      m_IP2D_weightBofTracks            ->clear();
+      m_IP2D_weightCofTracks            ->clear();
+      m_IP2D_weightUofTracks            ->clear();
 
       m_IP3D         ->clear();
-      m_IP3D_pu      ->clear(); 
-      m_IP3D_pb      ->clear(); 
-      m_IP3D_pc      ->clear(); 
-      m_IP3D         ->clear(); 
-      m_IP3D_c       ->clear(); 
-      m_IP3D_cu      ->clear(); 
-      m_nIP3DTracks  ->clear(); 
+      m_IP3D_pu      ->clear();
+      m_IP3D_pb      ->clear();
+      m_IP3D_pc      ->clear();
+      m_IP3D         ->clear();
+      m_IP3D_c       ->clear();
+      m_IP3D_cu      ->clear();
+      m_nIP3DTracks  ->clear();
       m_IP3D_gradeOfTracks        ->clear();
       m_IP3D_flagFromV0ofTracks   ->clear();
       m_IP3D_valD0wrtPVofTracks   ->clear();
@@ -1804,7 +1802,7 @@ void JetContainer::clear()
       m_IP3D_weightCofTracks      ->clear();
       m_IP3D_weightUofTracks      ->clear();
     }
-    
+
     if( m_infoSwitch.m_JVC ){
       m_JetVertexCharge_discriminant->clear();
     }
@@ -1842,10 +1840,10 @@ void JetContainer::clear()
     m_btag_Fix85->clear();
     m_btag_Fix90->clear();
   }
-  
+
 
   if( !m_infoSwitch.m_sfFTagFlt.empty() ) { // just clear them all....
-    
+
     m_btag_Flt30->clear();
     m_btag_Flt50->clear();
     m_btag_Flt60->clear();
@@ -1853,9 +1851,9 @@ void JetContainer::clear()
     m_btag_Flt77->clear();
     m_btag_Flt85->clear();
     m_btag_Flt90->clear();
-  
+
   }
-  
+
 
   if ( m_infoSwitch.m_area ) {
     m_GhostArea          ->clear();
@@ -1900,7 +1898,7 @@ void JetContainer::clear()
 
     m_GhostTausFinalCount           ->clear();
     m_GhostTausFinalPt              ->clear();
-    				    
+
     m_truth_pdgId                   ->clear();
     m_truth_partonPt                ->clear();
     m_truth_partonDR                ->clear();
@@ -1919,7 +1917,7 @@ void JetContainer::FillJet( const xAOD::Jet* jet, const xAOD::Vertex* pv, int pv
 }
 
 void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex* pv, int pvLocation ){
-  if(m_debug) cout << "In JetContainer::FillJet " << endl;
+  if(m_debug) std::cout << "In JetContainer::FillJet " << std::endl;
 
   ParticleContainer::FillParticle(particle);
 
@@ -2088,7 +2086,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     static SG::AuxElement::ConstAccessor< std::vector<float> > sumPt500 ("SumPtTrkPt500");
     static SG::AuxElement::ConstAccessor< std::vector<float> > trkWidth500 ("TrackWidthPt500");
     static SG::AuxElement::ConstAccessor< std::vector<float> > jvf("JVF");
-    
+
     if ( m_infoSwitch.m_trackAll ) {
 
       std::vector<int> junkInt(1,-999);
@@ -2179,14 +2177,14 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     } // trackPV
 
   }
-  
+
   if ( m_mc ) {
     static SG::AuxElement::ConstAccessor< char > jvtPass_Loose("JetJVT_Passed_Loose");
     static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Loose("JetJvtEfficiency_JVTSyst_JVT_Loose");
     static SG::AuxElement::ConstAccessor< char > jvtPass_Medium("JetJVT_Passed_Medium");
     static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Medium("JetJvtEfficiency_JVTSyst_JVT_Medium");
     static SG::AuxElement::ConstAccessor< char > jvtPass_Tight("JetJVT_Passed_Tight");
-    static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Tight("JetJvtEfficiency_JVTSyst_JVT_Tight");  
+    static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Tight("JetJvtEfficiency_JVTSyst_JVT_Tight");
 
     std::vector<float> junkSF(1,1.0);
 
@@ -2366,7 +2364,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
   if ( m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT ) {
     const xAOD::BTagging * myBTag(0);
-    
+
     if(m_infoSwitch.m_flavTag){
       myBTag = jet->btagging();
     }else if(m_infoSwitch.m_flavTagHLT){
@@ -2434,7 +2432,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     if(m_infoSwitch.m_svDetails ) {
-      if(m_debug) cout << "Filling m_svDetails " << endl;
+      if(m_debug) std::cout << "Filling m_svDetails " << std::endl;
 
       /// @brief SV0 : Number of good tracks in vertex
       static SG::AuxElement::ConstAccessor< int   >   sv0_NGTinSvxAcc     ("SV0_NGTinSvx");
@@ -2449,9 +2447,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       safeFill<float, float, xAOD::BTagging>(myBTag, sv0_masssvxAcc, m_sv0_massvx, -999);
 
       /// @brief SV0 : energy fraction
-      static SG::AuxElement::ConstAccessor< float   > sv0_efracsvxAcc     ("SV0_efracsvx");                                    
+      static SG::AuxElement::ConstAccessor< float   > sv0_efracsvxAcc     ("SV0_efracsvx");
       safeFill<float, float, xAOD::BTagging>(myBTag, sv0_efracsvxAcc, m_sv0_efracsvx, -999);
-      
+
       /// @brief SV0 : 3D vertex significance
       static SG::AuxElement::ConstAccessor< float   > sv0_normdistAcc     ("SV0_normdist");
       safeFill<float, float, xAOD::BTagging>(myBTag, sv0_normdistAcc, m_sv0_normdist, -999);
@@ -2490,7 +2488,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       double sv1_pu = -30;  myBTag->variable<double>("SV1", "pu", sv1_pu);
       double sv1_pb = -30;  myBTag->variable<double>("SV1", "pb", sv1_pb);
       double sv1_pc = -30;  myBTag->variable<double>("SV1", "pc", sv1_pc);
-      
+
       m_sv1_pu         ->push_back(sv1_pu);
       m_sv1_pb         ->push_back(sv1_pb);
       m_sv1_pc         ->push_back(sv1_pc);
@@ -2509,43 +2507,43 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_sv1_L3d        ->push_back(sv1_L3d        );
       m_sv1_distmatlay ->push_back(sv1_distmatlay );
       m_sv1_dR         ->push_back(sv1_dR         );
-  
-      
+
+
     }
 
     if(m_infoSwitch.m_ipDetails ) {
-      if(m_debug) cout << "Filling m_ipDetails " << endl;
+      if(m_debug) std::cout << "Filling m_ipDetails " << std::endl;
 
       //
       // IP2D
       //
 
       /// @brief IP2D: track grade
-      static SG::AuxElement::ConstAccessor< vector<int>   >   IP2D_gradeOfTracksAcc     ("IP2D_gradeOfTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<int>   >   IP2D_gradeOfTracksAcc     ("IP2D_gradeOfTracks");
       safeVecFill<int, float, xAOD::BTagging>(myBTag, IP2D_gradeOfTracksAcc, m_IP2D_gradeOfTracks);
 
       /// @brief IP2D : tracks from V0
-      static SG::AuxElement::ConstAccessor< vector<bool>   >  IP2D_flagFromV0ofTracksAcc("IP2D_flagFromV0ofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<bool>   >  IP2D_flagFromV0ofTracksAcc("IP2D_flagFromV0ofTracks");
       safeVecFill<bool, float, xAOD::BTagging>(myBTag, IP2D_flagFromV0ofTracksAcc, m_IP2D_flagFromV0ofTracks);
 
       /// @brief IP2D : d0 value with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_valD0wrtPVofTracksAcc("IP2D_valD0wrtPVofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP2D_valD0wrtPVofTracksAcc("IP2D_valD0wrtPVofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_valD0wrtPVofTracksAcc, m_IP2D_valD0wrtPVofTracks);
 
       /// @brief IP2D : d0 significance with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_sigD0wrtPVofTracksAcc("IP2D_sigD0wrtPVofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP2D_sigD0wrtPVofTracksAcc("IP2D_sigD0wrtPVofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_sigD0wrtPVofTracksAcc, m_IP2D_sigD0wrtPVofTracks);
 
       /// @brief IP2D : track contribution to B likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightBofTracksAcc   ("IP2D_weightBofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP2D_weightBofTracksAcc   ("IP2D_weightBofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_weightBofTracksAcc, m_IP2D_weightBofTracks);
 
       /// @brief IP2D : track contribution to C likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightCofTracksAcc   ("IP2D_weightCofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP2D_weightCofTracksAcc   ("IP2D_weightCofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_weightCofTracksAcc, m_IP2D_weightCofTracks);
 
       /// @brief IP2D : track contribution to U likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP2D_weightUofTracksAcc   ("IP2D_weightUofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP2D_weightUofTracksAcc   ("IP2D_weightUofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP2D_weightUofTracksAcc, m_IP2D_weightUofTracks);
 
       double ip2_pu = -99;  myBTag->variable<double>("IP2D", "pu", ip2_pu);
@@ -2566,39 +2564,39 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       //
 
       /// @brief IP3D: track grade
-      static SG::AuxElement::ConstAccessor< vector<int>   >   IP3D_gradeOfTracksAcc     ("IP3D_gradeOfTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<int>   >   IP3D_gradeOfTracksAcc     ("IP3D_gradeOfTracks");
       safeVecFill<int, float, xAOD::BTagging>(myBTag, IP3D_gradeOfTracksAcc, m_IP3D_gradeOfTracks);
 
       /// @brief IP3D : tracks from V0
-      static SG::AuxElement::ConstAccessor< vector<bool>   >  IP3D_flagFromV0ofTracksAcc("IP3D_flagFromV0ofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<bool>   >  IP3D_flagFromV0ofTracksAcc("IP3D_flagFromV0ofTracks");
       safeVecFill<bool, float, xAOD::BTagging>(myBTag, IP3D_flagFromV0ofTracksAcc, m_IP3D_flagFromV0ofTracks);
 
       /// @brief IP3D : d0 value with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_valD0wrtPVofTracksAcc("IP3D_valD0wrtPVofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP3D_valD0wrtPVofTracksAcc("IP3D_valD0wrtPVofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_valD0wrtPVofTracksAcc, m_IP3D_valD0wrtPVofTracks);
 
       /// @brief IP3D : d0 significance with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_sigD0wrtPVofTracksAcc("IP3D_sigD0wrtPVofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP3D_sigD0wrtPVofTracksAcc("IP3D_sigD0wrtPVofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_sigD0wrtPVofTracksAcc, m_IP3D_sigD0wrtPVofTracks);
 
       /// @brief IP3D : z0 value with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_valZ0wrtPVofTracksAcc("IP3D_valZ0wrtPVofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP3D_valZ0wrtPVofTracksAcc("IP3D_valZ0wrtPVofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_valZ0wrtPVofTracksAcc, m_IP3D_valZ0wrtPVofTracks);
 
       /// @brief IP3D : z0 significance with respect to primary vertex
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_sigZ0wrtPVofTracksAcc("IP3D_sigZ0wrtPVofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP3D_sigZ0wrtPVofTracksAcc("IP3D_sigZ0wrtPVofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_sigZ0wrtPVofTracksAcc, m_IP3D_sigZ0wrtPVofTracks);
 
       /// @brief IP3D : track contribution to B likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightBofTracksAcc   ("IP3D_weightBofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP3D_weightBofTracksAcc   ("IP3D_weightBofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_weightBofTracksAcc, m_IP3D_weightBofTracks);
 
       /// @brief IP3D : track contribution to C likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightCofTracksAcc   ("IP3D_weightCofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP3D_weightCofTracksAcc   ("IP3D_weightCofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_weightCofTracksAcc, m_IP3D_weightCofTracks);
 
       /// @brief IP3D : track contribution to U likelihood
-      static SG::AuxElement::ConstAccessor< vector<float>   > IP3D_weightUofTracksAcc   ("IP3D_weightUofTracks");
+      static SG::AuxElement::ConstAccessor< std::vector<float>   > IP3D_weightUofTracksAcc   ("IP3D_weightUofTracks");
       safeVecFill<float, float, xAOD::BTagging>(myBTag, IP3D_weightUofTracksAcc, m_IP3D_weightUofTracks);
 
       double ip3_pu = -30;  myBTag->variable<double>("IP3D", "pu", ip3_pu);
@@ -2618,14 +2616,14 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
 
     if(m_infoSwitch.m_flavTagHLT ) {
-      if(m_debug) cout << "Filling m_flavTagHLT " << endl;
+      if(m_debug) std::cout << "Filling m_flavTagHLT " << std::endl;
       const xAOD::Vertex *online_pvx       = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
       const xAOD::Vertex *online_pvx_bkg   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx_bkg");
-      const xAOD::Vertex *offline_pvx      = jet->auxdata<const xAOD::Vertex*>("offline_vtx");      
+      const xAOD::Vertex *offline_pvx      = jet->auxdata<const xAOD::Vertex*>("offline_vtx");
 
       if(online_pvx)  m_vtxOnlineValid->push_back(1.0);
       else            m_vtxOnlineValid->push_back(0.0);
-      
+
       char hadDummyPV = jet->auxdata< char >("hadDummyPV");
       if( hadDummyPV == '0')  m_vtxHadDummy->push_back(0.0);
       if( hadDummyPV == '1')  m_vtxHadDummy->push_back(1.0);
@@ -2633,7 +2631,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
       static SG::AuxElement::ConstAccessor< float > acc_bs_online_vs ("bs_online_vz");
       if(acc_bs_online_vs.isAvailable( *jet) ){
-	if(m_debug) cout << "Have bs_online_vz " << endl;
+	if(m_debug) std::cout << "Have bs_online_vz " << std::endl;
 	float bs_online_vz = jet->auxdata< float >("bs_online_vz");
 	//std::cout << "**bs_online_vz " << bs_online_vz << std::endl;
 	m_bs_online_vz->push_back( bs_online_vz );
@@ -2651,7 +2649,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 	m_bs_online_vy->push_back( -999 );
       }
 
-      if(m_debug) cout << "Filling m_vtx_offline " << endl;
+      if(m_debug) std::cout << "Filling m_vtx_offline " << std::endl;
       if(offline_pvx){
 	m_vtx_offline_x0->push_back( offline_pvx->x() );
 	m_vtx_offline_y0->push_back( offline_pvx->y() );
@@ -2662,34 +2660,34 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 	m_vtx_offline_z0->push_back( -999 );
       }
 
-      if(m_debug) cout << "Done Filling m_vtx_offline " << endl;
+      if(m_debug) std::cout << "Done Filling m_vtx_offline " << std::endl;
 
-      if(m_debug) cout << "Filling m_vtx_online... " << endl;
+      if(m_debug) std::cout << "Filling m_vtx_online... " << std::endl;
       if(online_pvx){
-	if(m_debug) cout << " ... online_pvx valid " << endl;
+	if(m_debug) std::cout << " ... online_pvx valid " << std::endl;
         m_vtx_online_x0->push_back( online_pvx->x() );
         m_vtx_online_y0->push_back( online_pvx->y() );
         m_vtx_online_z0->push_back( online_pvx->z() );
-      }else{           
+      }else{
         m_vtx_online_x0->push_back( -999 );
         m_vtx_online_y0->push_back( -999 );
         m_vtx_online_z0->push_back( -999 );
       }
 
-      if(m_debug) cout << "Filling m_vtx_online... " << endl;
+      if(m_debug) std::cout << "Filling m_vtx_online... " << std::endl;
       if(online_pvx_bkg){
-	if(m_debug) cout << " ...online_pvx_bkg valid " << endl;
+	if(m_debug) std::cout << " ...online_pvx_bkg valid " << std::endl;
         m_vtx_online_bkg_x0->push_back( online_pvx_bkg->x() );
         m_vtx_online_bkg_y0->push_back( online_pvx_bkg->y() );
         m_vtx_online_bkg_z0->push_back( online_pvx_bkg->z() );
-      }else{           
+      }else{
         m_vtx_online_bkg_x0->push_back( -999 );
         m_vtx_online_bkg_y0->push_back( -999 );
         m_vtx_online_bkg_z0->push_back( -999 );
       }
 
     }// m_flavTagHLT
-    if(m_debug) cout << "Done m_flavTagHLT " << endl;
+    if(m_debug) std::cout << "Done m_flavTagHLT " << std::endl;
   }
 
 
@@ -2916,7 +2914,7 @@ void JetContainer::FillGlobalBTagSF( const xAOD::EventInfo* eventInfo ){
       case 70 :	 m_btag_Flt70->FillGlobalSF(eventInfo); break;
       case 77 :	 m_btag_Flt77->FillGlobalSF(eventInfo); break;
       case 85 :	 m_btag_Flt85->FillGlobalSF(eventInfo); break;
-      }	 
+      }
     }
   } // sfFTagFlt
 
