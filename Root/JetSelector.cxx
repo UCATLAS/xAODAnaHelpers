@@ -178,7 +178,7 @@ EL::StatusCode JetSelector :: initialize ()
   ss.clear();
   ss.str(m_failAuxDecorKeys);
   while ( std::getline(ss, token, ',') ) {
-    std::cout << token << std::endl;
+    ANA_MSG_INFO(token);
     m_failKeys.push_back(token);
   }
 
@@ -547,7 +547,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
         for ( auto jet : *(selectedJets) ) {
 
           ANA_MSG_DEBUG("Applying JVT SF" );
-          
+
           // create passed JVT decorator
           static const SG::AuxElement::Decorator<char> passedJVT( m_outputJVTPassed );
           if ( syst_it.name().empty() ) {

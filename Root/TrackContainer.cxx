@@ -4,51 +4,50 @@
 #include <xAODTracking/TrackParticle.h>
 
 using namespace xAH;
-using std::vector; using std::endl; using std::cout;
 
 TrackContainer::TrackContainer(const std::string& name, const std::string& detailStr, float units) : ParticleContainer(name,detailStr,units,true)
 
 {
   if(m_infoSwitch.m_fitpars){
-    m_chiSquared = new vector<float >;
-    m_d0 = new vector<float >;
-    m_definingParametersCovMatrix = new vector<std::vector<float> >;
-    m_expectInnermostPixelLayerHit = new vector<unsigned char >;
-    m_expectNextToInnermostPixelLayerHit = new vector<unsigned char >;
-    m_numberDoF = new vector<float >;
+    m_chiSquared = new std::vector<float >;
+    m_d0 = new std::vector<float >;
+    m_definingParametersCovMatrix = new std::vector<std::vector<float> >;
+    m_expectInnermostPixelLayerHit = new std::vector<unsigned char >;
+    m_expectNextToInnermostPixelLayerHit = new std::vector<unsigned char >;
+    m_numberDoF = new std::vector<float >;
   }
 
   if(m_infoSwitch.m_numbers){
-    m_numberOfInnermostPixelLayerHits = new vector<unsigned char >;
-    m_numberOfNextToInnermostPixelLayerHits = new vector<unsigned char >;
-    m_numberOfPhiHoleLayers = new vector<unsigned char >;
-    m_numberOfPhiLayers = new vector<unsigned char >;
-    m_numberOfPixelDeadSensors = new vector<unsigned char >;
-    m_numberOfPixelHits = new vector<unsigned char >;
-    m_numberOfPixelHoles = new vector<unsigned char >;
-    m_numberOfPixelSharedHits = new vector<unsigned char >;
-    m_numberOfPrecisionHoleLayers = new vector<unsigned char >;
-    m_numberOfPrecisionLayers = new vector<unsigned char >;
-    m_numberOfSCTDeadSensors = new vector<unsigned char >;
-    m_numberOfSCTHits = new vector<unsigned char >;
-    m_numberOfSCTHoles = new vector<unsigned char >;
-    m_numberOfSCTSharedHits = new vector<unsigned char >;
-    m_numberOfTRTHits = new vector<unsigned char >;
-    m_numberOfTRTOutliers = new vector<unsigned char >;
+    m_numberOfInnermostPixelLayerHits = new std::vector<unsigned char >;
+    m_numberOfNextToInnermostPixelLayerHits = new std::vector<unsigned char >;
+    m_numberOfPhiHoleLayers = new std::vector<unsigned char >;
+    m_numberOfPhiLayers = new std::vector<unsigned char >;
+    m_numberOfPixelDeadSensors = new std::vector<unsigned char >;
+    m_numberOfPixelHits = new std::vector<unsigned char >;
+    m_numberOfPixelHoles = new std::vector<unsigned char >;
+    m_numberOfPixelSharedHits = new std::vector<unsigned char >;
+    m_numberOfPrecisionHoleLayers = new std::vector<unsigned char >;
+    m_numberOfPrecisionLayers = new std::vector<unsigned char >;
+    m_numberOfSCTDeadSensors = new std::vector<unsigned char >;
+    m_numberOfSCTHits = new std::vector<unsigned char >;
+    m_numberOfSCTHoles = new std::vector<unsigned char >;
+    m_numberOfSCTSharedHits = new std::vector<unsigned char >;
+    m_numberOfTRTHits = new std::vector<unsigned char >;
+    m_numberOfTRTOutliers = new std::vector<unsigned char >;
   }
 
-  m_phi = new vector<float >;
-  m_qOverP = new vector<float >;
-  m_theta = new vector<float >;
+  m_phi = new std::vector<float >;
+  m_qOverP = new std::vector<float >;
+  m_theta = new std::vector<float >;
 
   if(m_infoSwitch.m_vertex){
     /*
-      m_vertexLink = new vector<Int_t >;
-      m_vertexLink_persIndex = new vector<UInt_t >;
-      m_vertexLink_persKey = new vector<UInt_t >;
+      m_vertexLink = new std::vector<Int_t >;
+      m_vertexLink_persIndex = new std::vector<UInt_t >;
+      m_vertexLink_persKey = new std::vector<UInt_t >;
     */
-    m_vz = new vector<float >;
-    m_z0 = new vector<float >;
+    m_vz = new std::vector<float >;
+    m_z0 = new std::vector<float >;
   }
 }
 
@@ -204,7 +203,7 @@ void TrackContainer::setBranches(TTree *tree)
   if(m_infoSwitch.m_fitpars){
   setBranch<float>(tree, "chiSquared", m_chiSquared);
   setBranch<float>(tree, "d0", m_d0);
-  setBranch<vector<float>>(tree, "definingParametersCovMatrix", m_definingParametersCovMatrix);
+  setBranch<std::vector<float>>(tree, "definingParametersCovMatrix", m_definingParametersCovMatrix);
   setBranch<unsigned char>(tree, "expectInnermostPixelLayerHit", m_expectInnermostPixelLayerHit);
   setBranch<unsigned char>(tree, "expectNextToInnermostPixelLayerHit", m_expectNextToInnermostPixelLayerHit);
   setBranch<float>(tree, "numberDoF", m_numberDoF);

@@ -3,7 +3,6 @@
 
 
 using namespace xAH;
-using std::vector;  using std::endl;  using std::cout;
 
 MetContainer::MetContainer(const std::string& detailStr, float units)
   : m_infoSwitch(detailStr), m_debug(false), m_units(units)
@@ -12,7 +11,7 @@ MetContainer::MetContainer(const std::string& detailStr, float units)
 
 MetContainer::~MetContainer()
 {
-  if(m_debug) cout << " Deleting MetContainer "  << endl;
+  if(m_debug) std::cout << " Deleting MetContainer "  << std::endl;
 }
 
 void MetContainer::setTree(TTree *tree)

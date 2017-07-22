@@ -53,9 +53,6 @@ namespace xAOD {
 #endif
 }
 
-using std::cout; using std::cerr; using std::endl;
-using std::string;
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(METConstructor)
 
@@ -198,7 +195,7 @@ EL::StatusCode METConstructor :: execute ()
    ANA_MSG_DEBUG( "Performing MET reconstruction...");
 
    m_numEvent ++ ;
-   //if (m_debug) cout<< "number of processed events now is : "<< m_numEvent <<endl;
+   //ANA_MSG_DEBUG("number of processed events now is : "<< m_numEvent);
 
 
    const xAOD::MissingETContainer* coreMet(0);
@@ -452,7 +449,7 @@ EL::StatusCode METConstructor :: execute ()
      // assert(   m_metSyst_handle->applySystematicVariation(iSysSet) );
      if (m_isMC) {
        if( m_metSyst_handle->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
-         cout<<"Error !!! not able to applySystematicVariation "<< endl;
+         ANA_MSG_ERROR("not able to applySystematicVariation ");
        }
      }
 
@@ -478,7 +475,7 @@ EL::StatusCode METConstructor :: execute ()
        if( (*jetMet)->applyCorrection(iSysSet) != CP::CorrectionCode::Ok) {
        ANA_MSG_ERROR( "Could not apply correction to jet met !!!! ");
        };
-       std::cout << "Jet met term met " << jetMet->met() << std::endl;*/
+       ANA_MSG_DEBUG("Jet met term met " << jetMet->met());*/
 
      // build met:
 

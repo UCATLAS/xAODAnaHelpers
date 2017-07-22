@@ -89,9 +89,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
-  
+
   // several lists of systematics could be configured
-  // this is the case when MET sys should be added 
+  // this is the case when MET sys should be added
   // to the OR ones
 
   // parse and split by comma
@@ -142,14 +142,14 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
   if(m_operatingPtCDI.empty()) m_operatingPtCDI = m_operatingPt;
-  std::cout << "Using Standard OperatingPoint for CDI BTag Efficiency of " << m_operatingPtCDI << std::endl;
+  ANA_MSG_INFO("Using Standard OperatingPoint for CDI BTag Efficiency of " << m_operatingPtCDI);
 
   // Outdated code for translating user friendly Btag WP to cut value
   // Code now accepts the user friendly Btag WP
   /*
   if( m_operatingPtCDI.find("FixedCutBEff") != std::string::npos) {
     m_operatingPtCDI.erase(0,13); // remove FixedCutBEff_
-    std::cout << "Get OperatingPoint for CDI BTag Efficiency using eff = " << m_operatingPtCDI << std::endl;
+    ANA_MSG_INFO("Get OperatingPoint for CDI BTag Efficiency using eff = " << m_operatingPtCDI);
     m_operatingPtCDI = HelperFunctions::GetBTagMV2c20_CutStr( atoi( m_operatingPtCDI.c_str() ) );
   }
   */
@@ -311,7 +311,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // and now remove eventual duplicates
     //
     HelperFunctions::remove_duplicates(systNames);
-    
+
     // create parallel container of electrons for met systematics.
     // this does not get decorated and contains the same elements
     // of the nominal container. It will be used by the TreeAlgo
@@ -344,13 +344,13 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     // loop over systematics
     //
     for ( auto systName : systNames ) {
-        
+
       const xAOD::JetContainer* outJets(nullptr);
 
       bool doNominal = (systName == "");
 
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
-      
+
       if ( !m_store->contains<xAOD::JetContainer>( m_outContainerName+systName ) ) {
         ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_outContainerName+systName, inJets)));
       }
@@ -361,7 +361,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
       vecOutContainerNames->push_back( systName );
     }
-    
+
     if ( !m_outputAlgo.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgo ) ) { // might have already been stored by another execution of this algo
       ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgo));
     }

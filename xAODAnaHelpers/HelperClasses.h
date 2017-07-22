@@ -97,15 +97,6 @@ namespace HelperClasses {
     };
     /**
         @rst
-            .. deprecated:: 00-03-26
-               Use :cpp:func:`~HelperClasses::InfoSwitch::has_match` instead.
-
-        @endrst
-        @param flag     The string we search for.
-     */
-    bool parse(const std::string flag) { std::cout << "InfoSwitch::parse() deprecated soon!" << std::endl; return has_match(flag); };
-    /**
-        @rst
             Search for an exact match in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails`.
 
         @endrst
@@ -435,9 +426,9 @@ namespace HelperClasses {
         ================ ============== =======
 
         .. note::
-        
+
             ``sfJVT`` requires a working point after it, for example::
-            
+
                 m_configStr = "... sfJVTMedium ..."
 
             ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::

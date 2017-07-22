@@ -7,7 +7,6 @@
 
 
 using namespace xAH;
-using std::vector;  using std::endl;  using std::cout;
 
 EventInfo::EventInfo(const std::string& detailStr, float units, bool mc)
   : m_infoSwitch(detailStr), m_mc(mc), m_debug(false), m_units(units)
@@ -16,7 +15,7 @@ EventInfo::EventInfo(const std::string& detailStr, float units, bool mc)
 
 EventInfo::~EventInfo()
 {
-  if(m_debug) cout << " Deleting EventInfo "  << endl;
+  if(m_debug) std::cout << " Deleting EventInfo "  << std::endl;
 }
 
 void EventInfo::setTree(TTree *tree)

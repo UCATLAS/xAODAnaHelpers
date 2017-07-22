@@ -8,8 +8,6 @@
 #include "TTree.h"
 
 using namespace xAH;
-using std::cout;  using std::endl;
-using std::make_pair;
 
 OnlineBeamSpotTool::OnlineBeamSpotTool() :
   m_cachedRunNum(-1),
@@ -36,7 +34,7 @@ OnlineBeamSpotTool::OnlineBeamSpotTool() :
 
 OnlineBeamSpotTool::~OnlineBeamSpotTool()
 {
-  //cout << "In ~OnlineBeamSpotTool" << endl;
+  //std::cout << "In ~OnlineBeamSpotTool" << std::endl;
 }
 
 
@@ -96,12 +94,12 @@ float OnlineBeamSpotTool::getOnlineBSInfo(const xAH::EventInfo* eventInfo, Onlin
 }
 
 float OnlineBeamSpotTool::getOnlineBSInfo(int runNumber, int lumiBlock, bool isMC, OnlineBeamSpotTool::BSData datakey){
-  //cout << "In OnlineBeamSpotTool (" << runNumber << " , " << lumiBlock<< ")" << endl;
+  //std::cout << "In OnlineBeamSpotTool (" << runNumber << " , " << lumiBlock<< ")" << std::endl;
 
   const LBData* thisLBInfo = getLBData(runNumber, lumiBlock, isMC);
 
   if(!thisLBInfo){
-    cout << "OnlineBeamSpotTool::ERROR no LB data for run: " << runNumber << " LB: " << lumiBlock << endl;;
+    std::cout << "OnlineBeamSpotTool::ERROR no LB data for run: " << runNumber << " LB: " << lumiBlock << std::endl;
     return -999;
   }
 
@@ -150,7 +148,7 @@ void OnlineBeamSpotTool::readFile(std::string rootFileName){
 				   ));
     }
 
-    m_runList.insert( make_pair(RunNumber, thisRunInfo) );
+    m_runList.insert( std::make_pair(RunNumber, thisRunInfo) );
   }
 
   thisFile->Close();

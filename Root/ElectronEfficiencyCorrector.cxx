@@ -141,7 +141,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
 
-    std::cout << "\n\n Electron ID wp: " << m_PID_WP << "\n\n" << std::endl;
+    ANA_MSG_INFO("Electron ID wp: " << m_PID_WP);
 
     m_pidEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_PID_" + m_PID_WP;
 
@@ -206,7 +206,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
 
-    std::cout << "\n\n ISOLATION wp: " << m_Iso_WP << "\n ID wp (for isolation): " << m_IsoPID_WP << "\n\n" << std::endl;
+    ANA_MSG_INFO("ISOLATION wp: " << m_Iso_WP << "\n ID wp (for isolation): " << m_IsoPID_WP);
 
     m_IsoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Iso_" + m_IsoPID_WP + "_isol" + m_Iso_WP;
 
@@ -316,7 +316,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
 
-    std::cout << "\n\n Trigger ISOLATION wp: " << m_WorkingPointIsoTrig << "\n Trigger ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
+    ANA_MSG_INFO("Trigger ISOLATION wp: " << m_WorkingPointIsoTrig << "\n Trigger ID wp: " << m_WorkingPointIDTrig);
 
     m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
     if ( !m_WorkingPointIsoTrig.empty() ) {
