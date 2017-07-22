@@ -11,7 +11,7 @@ TrackContainer::TrackContainer(const std::string& name, const std::string& detai
   if(m_infoSwitch.m_fitpars){
     m_chiSquared = new std::vector<float >;
     m_d0 = new std::vector<float >;
-    m_definingParametersCovMatrix = new std::vector<std::std::vector<float> >;
+    m_definingParametersCovMatrix = new std::vector<std::vector<float> >;
     m_expectInnermostPixelLayerHit = new std::vector<unsigned char >;
     m_expectNextToInnermostPixelLayerHit = new std::vector<unsigned char >;
     m_numberDoF = new std::vector<float >;
