@@ -21,7 +21,6 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   }
 
   if ( m_infoSwitch.m_isolation ) {
-
     m_isIsolated_LooseTrackOnly              = new std::vector<int>   ();
     m_isIsolated_Loose                       = new std::vector<int>   ();
     m_isIsolated_Tight                       = new std::vector<int>   ();
@@ -32,6 +31,9 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_isIsolated_FixedCutTightTrackOnly      = new std::vector<int>   ();
     m_isIsolated_UserDefinedFixEfficiency    = new std::vector<int>   ();
     m_isIsolated_UserDefinedCut              = new std::vector<int>   ();
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_etcone20                               = new std::vector<float> ();
     m_ptcone20                               = new std::vector<float> ();
     m_ptcone30                               = new std::vector<float> ();
@@ -152,6 +154,9 @@ ElectronContainer::~ElectronContainer()
     delete m_isIsolated_FixedCutTightTrackOnly      ;
     delete m_isIsolated_UserDefinedFixEfficiency    ;
     delete m_isIsolated_UserDefinedCut              ;
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     delete m_etcone20                               ;
     delete m_ptcone20                               ;
     delete m_ptcone30                               ;
@@ -238,7 +243,9 @@ void ElectronContainer::setTree(TTree *tree)
     connectBranch<int>(tree, "isIsolated_FixedCutTightTrackOnly",      &m_isIsolated_FixedCutTightTrackOnly);
     connectBranch<int>(tree, "isIsolated_UserDefinedFixEfficiency",    &m_isIsolated_UserDefinedFixEfficiency);
     connectBranch<int>(tree, "isIsolated_UserDefinedCut",              &m_isIsolated_UserDefinedCut);
+  }
 
+  if ( m_infoSwitch.m_isolationKinematics ) {
     connectBranch<float>(tree, "etcone20",         &m_etcone20);
     connectBranch<float>(tree, "ptcone20",         &m_ptcone20);
     connectBranch<float>(tree, "ptcone30",         &m_ptcone30);
@@ -359,6 +366,9 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     elec.isIsolated_FixedCutTightTrackOnly        =     m_isIsolated_FixedCutTightTrackOnly          ->at(idx);
     elec.isIsolated_UserDefinedFixEfficiency      =     m_isIsolated_UserDefinedFixEfficiency        ->at(idx);
     elec.isIsolated_UserDefinedCut                =     m_isIsolated_UserDefinedCut                  ->at(idx);
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     elec.etcone20                                 =     m_etcone20                                   ->at(idx);
     elec.ptcone20                                 =     m_ptcone20                                   ->at(idx);
     elec.ptcone30                                 =     m_ptcone30                                   ->at(idx);
@@ -459,7 +469,9 @@ void ElectronContainer::setBranches(TTree *tree)
     setBranch<int>(tree, "isIsolated_FixedCutTightTrackOnly",      m_isIsolated_FixedCutTightTrackOnly);
     setBranch<int>(tree, "isIsolated_UserDefinedFixEfficiency",    m_isIsolated_UserDefinedFixEfficiency);
     setBranch<int>(tree, "isIsolated_UserDefinedCut",              m_isIsolated_UserDefinedCut);
+  }
 
+  if ( m_infoSwitch.m_isolationKinematics ) {
     setBranch<float>(tree, "etcone20",         m_etcone20);
     setBranch<float>(tree, "ptcone20",         m_ptcone20);
     setBranch<float>(tree, "ptcone30",         m_ptcone30);
@@ -559,7 +571,6 @@ void ElectronContainer::clear()
   }
 
   if ( m_infoSwitch.m_isolation ) {
-
     m_isIsolated_LooseTrackOnly              ->clear();
     m_isIsolated_Loose                       ->clear();
     m_isIsolated_Tight                       ->clear();
@@ -570,6 +581,9 @@ void ElectronContainer::clear()
     m_isIsolated_FixedCutTightTrackOnly      ->clear();
     m_isIsolated_UserDefinedFixEfficiency    ->clear();
     m_isIsolated_UserDefinedCut              ->clear();
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_etcone20                               ->clear();
     m_ptcone20                               ->clear();
     m_ptcone30                               ->clear();
@@ -731,7 +745,9 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
     static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
     safeFill<char, int, xAOD::Electron>(elec, isIsoUserDefinedCutAcc, m_isIsolated_UserDefinedCut, -1);
+  }
 
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_etcone20    ->push_back( elec->isolation( xAOD::Iso::etcone20 )    /m_units );
     m_ptcone20    ->push_back( elec->isolation( xAOD::Iso::ptcone20 )    /m_units );
     m_ptcone30    ->push_back( elec->isolation( xAOD::Iso::ptcone30 )    /m_units );

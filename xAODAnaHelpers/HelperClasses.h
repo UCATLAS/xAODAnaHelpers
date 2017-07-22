@@ -248,17 +248,18 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Muon Information.
 
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_trigger      trigger      exact
-        m_isolation    isolation    exact
-        m_quality      quality      exact
-        m_trackparams  trackparams  exact
-        m_trackhitcont trackhitcont exact
-        m_effSF        effSF        exact
-        m_energyLoss   energyLoss   exact
-        ============== ============ =======
+        ====================== ==================== =======
+        Parameter              Pattern              Match
+        ====================== ==================== =======
+        m_trigger              trigger              exact
+        m_isolation            isolation            exact
+        m_isolationKinematics  isolationKinematics  exact
+        m_quality              quality              exact
+        m_trackparams          trackparams          exact
+        m_trackhitcont         trackhitcont         exact
+        m_effSF                effSF                exact
+        m_energyLoss           energyLoss           exact
+        ====================== ==================== =======
 
     @endrst
    */
@@ -266,6 +267,7 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_isolation;
+    bool m_isolationKinematics;
     bool m_quality;
     bool m_trackparams;
     bool m_trackhitcont;
@@ -297,6 +299,7 @@ namespace HelperClasses {
         =============================================================================================================================================================== =============================================================================================================================================== =======
         m_trigger                                                                                                                                                       trigger                                                                                                                                         exact
         m_isolation                                                                                                                                                     isolation                                                                                                                                       exact
+        m_isolationKinematics                                                                                                                                           isolationKinematics                                                                                                                             exact
         m_quality                                                                                                                                                       quality                                                                                                                                         exact
         m_PID                                                                                                                                                           PID                                                                                                                                             exact
         m_trackparams                                                                                                                                                   trackparams                                                                                                                                     exact
@@ -336,6 +339,7 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_isolation;
+    bool m_isolationKinematics;
     bool m_quality;
     bool m_PID;
     bool m_trackparams;

@@ -28,6 +28,9 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     m_isIsolated_FixedCutTightTrackOnly          = new  vector<int>   ();
     m_isIsolated_UserDefinedFixEfficiency        = new  vector<int>   ();
     m_isIsolated_UserDefinedCut                  = new  vector<int>   ();
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_ptcone20                                   = new  vector<float> ();
     m_ptcone30                                   = new  vector<float> ();
     m_ptcone40                                   = new  vector<float> ();
@@ -119,6 +122,9 @@ MuonContainer::~MuonContainer()
     delete m_isIsolated_FixedCutTightTrackOnly          ;
     delete m_isIsolated_UserDefinedFixEfficiency        ;
     delete m_isIsolated_UserDefinedCut                  ;
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     delete m_ptcone20                                   ;
     delete m_ptcone30                                   ;
     delete m_ptcone40                                   ;
@@ -211,6 +217,9 @@ void MuonContainer::setTree(TTree *tree)
     connectBranch<int>(tree,"isIsolated_FixedCutTightTrackOnly", &m_isIsolated_FixedCutTightTrackOnly);
     connectBranch<int>(tree,"isIsolated_UserDefinedFixEfficiency",    &m_isIsolated_UserDefinedFixEfficiency);
     connectBranch<int>(tree,"isIsolated_UserDefinedCut",              &m_isIsolated_UserDefinedCut);
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     connectBranch<float>(tree,"ptcone20",	  &m_ptcone20);
     connectBranch<float>(tree,"ptcone30",	  &m_ptcone30);
     connectBranch<float>(tree,"ptcone40",	  &m_ptcone40);
@@ -313,6 +322,9 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     muon.isIsolated_FixedCutTightTrackOnly        =     m_isIsolated_FixedCutTightTrackOnly          ->at(idx);
     muon.isIsolated_UserDefinedFixEfficiency      =     m_isIsolated_UserDefinedFixEfficiency        ->at(idx);
     muon.isIsolated_UserDefinedCut                =     m_isIsolated_UserDefinedCut                  ->at(idx);
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     muon.ptcone20                                 =     m_ptcone20                                   ->at(idx);
     muon.ptcone30                                 =     m_ptcone30                                   ->at(idx);
     muon.ptcone40                                 =     m_ptcone40                                   ->at(idx);
@@ -415,6 +427,9 @@ void MuonContainer::setBranches(TTree *tree)
     setBranch<int>(tree,"isIsolated_FixedCutTightTrackOnly", m_isIsolated_FixedCutTightTrackOnly);
     setBranch<int>(tree,"isIsolated_UserDefinedFixEfficiency",    m_isIsolated_UserDefinedFixEfficiency);
     setBranch<int>(tree,"isIsolated_UserDefinedCut",              m_isIsolated_UserDefinedCut);
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     setBranch<float>(tree,"ptcone20",	  m_ptcone20);
     setBranch<float>(tree,"ptcone30",	  m_ptcone30);
     setBranch<float>(tree,"ptcone40",	  m_ptcone40);
@@ -517,6 +532,9 @@ void MuonContainer::clear()
     m_isIsolated_FixedCutTightTrackOnly->clear();
     m_isIsolated_UserDefinedFixEfficiency->clear();
     m_isIsolated_UserDefinedCut->clear();
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_ptcone20->clear();
     m_ptcone30->clear();
     m_ptcone40->clear();
@@ -661,7 +679,9 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
 
     static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
     safeFill<char, int, xAOD::Muon>(muon, isIsoUserDefinedCutAcc, m_isIsolated_UserDefinedCut, -1);
+  }
 
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_ptcone20    ->push_back( muon->isolation( xAOD::Iso::ptcone20 )    /m_units );
     m_ptcone30    ->push_back( muon->isolation( xAOD::Iso::ptcone30 )    /m_units );
     m_ptcone40    ->push_back( muon->isolation( xAOD::Iso::ptcone40 )    /m_units );
