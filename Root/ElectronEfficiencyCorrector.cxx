@@ -458,19 +458,27 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   // code will go.
 
   m_numEvent++;
+  
+  // initialise containers
+  //
+  const xAOD::ElectronContainer* inputElectrons(nullptr);
+  
+  const xAOD::EventInfo* eventInfo(nullptr);
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   if ( !m_isMC ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Electron Efficiency correction... "); }
+    if ( !m_outContainerName.empty() && !m_store->contains<xAOD::ElectronContainer>( m_outContainerName ) ) {
+      ANA_CHECK( HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, msg()) );
+      ConstDataVector<xAOD::ElectronContainer>* outputElectrons = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
+      outputElectrons->reserve( inputElectrons->size() );
+      ANA_CHECK( HelperFunctions::makeSubsetCont(inputElectrons, outputElectrons, msg()) );
+      ANA_CHECK( m_store->record( outputElectrons, m_outContainerName));
+    }
     return EL::StatusCode::SUCCESS;
   }
 
   ANA_MSG_DEBUG( "Applying Electron Efficiency Correction... ");
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-
-  // initialise containers
-  //
-  const xAOD::ElectronContainer* inputElectrons(nullptr);
 
   // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
