@@ -95,25 +95,33 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_JvtJvfcorr         = new std::vector<float>();
     m_JvtRpt             = new std::vector<float>();
   }
-  if ( m_mc ) {
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
-      m_JvtPass_Loose    = new std::vector<char>();
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
+    m_JvtPass_Loose    = new std::vector<char>();
+    if ( m_mc ) {
       m_JvtEff_SF_Loose  = new std::vector< std::vector<float> > ();
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
-      m_JvtPass_Medium   = new std::vector<char>();
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
+    m_JvtPass_Medium   = new std::vector<char>();
+    if ( m_mc ) {
       m_JvtEff_SF_Medium = new std::vector< std::vector<float> > ();
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
-      m_JvtPass_Tight    = new std::vector<char>();
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
+    m_JvtPass_Tight    = new std::vector<char>();
+    if ( m_mc ) {
       m_JvtEff_SF_Tight  = new std::vector< std::vector<float> > ();
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
-      m_fJvtPass_Medium   = new std::vector<char>();  
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
+    m_fJvtPass_Medium   = new std::vector<char>();
+    if ( m_mc ) {
       m_fJvtEff_SF_Medium = new std::vector< std::vector<float> > ();
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
-      m_fJvtPass_Tight    = new std::vector<char>();
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
+    m_fJvtPass_Tight    = new std::vector<char>();
+    if ( m_mc ) {
       m_fJvtEff_SF_Tight  = new std::vector< std::vector<float> > ();
     }
   }
@@ -450,25 +458,34 @@ JetContainer::~JetContainer()
     delete m_JvtJvfcorr;
     delete m_JvtRpt;
   }
-  if ( m_mc ) {
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
-      delete m_JvtPass_Loose;
-      delete m_JvtEff_SF_Loose;
-    }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
-      delete m_JvtPass_Medium;
+
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
+    delete m_JvtPass_Loose;
+      if ( m_mc ) {
+          delete m_JvtEff_SF_Loose;
+      }
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
+    delete m_JvtPass_Medium;
+    if ( m_mc ) {
       delete m_JvtEff_SF_Medium;
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
-      delete m_JvtPass_Tight;
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
+    delete m_JvtPass_Tight;
+    if ( m_mc ) {
       delete m_JvtEff_SF_Tight;
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
-      delete m_fJvtPass_Medium;
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
+    delete m_fJvtPass_Medium;
+    if ( m_mc ) {
       delete m_fJvtEff_SF_Medium;
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
-      delete m_fJvtPass_Tight;
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
+    delete m_fJvtPass_Tight;
+    if ( m_mc ) {
       delete m_fJvtEff_SF_Tight;
     }
   }
@@ -1323,25 +1340,34 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"JvtRpt",               m_JvtRpt         );
     //setBranch<float>(tree,"GhostTrackAssociationFraction", m_ghostTrackAssFrac);
   }
-  if ( m_mc ) {
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
-      setBranch<char>(tree,"JvtPass_Loose",        m_JvtPass_Loose );
+
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
+    setBranch<char>(tree,"JvtPass_Loose",        m_JvtPass_Loose );
+    if ( m_mc ) {
       setBranch<std::vector<float> >(tree,"JvtEff_SF_Loose",     m_JvtEff_SF_Loose );
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
-      setBranch<char>(tree,"JvtPass_Medium",       m_JvtPass_Medium );
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
+    setBranch<char>(tree,"JvtPass_Medium",       m_JvtPass_Medium );
+    if ( m_mc ) {
       setBranch<std::vector<float> >(tree,"JvtEff_SF_Medium",    m_JvtEff_SF_Medium );
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
-      setBranch<char>(tree,"JvtPass_Tight",        m_JvtPass_Tight );
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
+    setBranch<char>(tree,"JvtPass_Tight",        m_JvtPass_Tight );
+    if ( m_mc ) {
       setBranch<std::vector<float> >(tree,"JvtEff_SF_Tight",     m_JvtEff_SF_Tight );
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
-      setBranch<char>(tree,"fJvtPass_Medium",       m_fJvtPass_Medium );
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
+    setBranch<char>(tree,"fJvtPass_Medium",       m_fJvtPass_Medium );
+    if ( m_mc ) {
       setBranch<std::vector<float> >(tree,"fJvtEff_SF_Medium",    m_fJvtEff_SF_Medium );
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
-      setBranch<char>(tree,"fJvtPass_Tight",        m_fJvtPass_Tight );
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
+    setBranch<char>(tree,"fJvtPass_Tight",        m_fJvtPass_Tight );
+    if ( m_mc ) {
       setBranch<std::vector<float> >(tree,"fJvtEff_SF_Tight",     m_fJvtEff_SF_Tight );
     }
   }
@@ -1687,25 +1713,33 @@ void JetContainer::clear()
     m_JvtRpt            ->clear();
   }
 
-  if ( m_mc ) {
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
-      m_JvtPass_Loose   ->clear();
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
+    m_JvtPass_Loose   ->clear();
+    if ( m_mc ) {
       m_JvtEff_SF_Loose ->clear();
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
-      m_JvtPass_Medium  ->clear();
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
+    m_JvtPass_Medium    ->clear();
+    if ( m_mc ) {
       m_JvtEff_SF_Medium->clear();
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
-      m_JvtPass_Tight   ->clear();
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
+    m_JvtPass_Tight     ->clear();
+    if ( m_mc ) {
       m_JvtEff_SF_Tight ->clear();
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
-      m_fJvtPass_Medium  ->clear();
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
+    m_fJvtPass_Medium    ->clear();
+    if ( m_mc ) {
       m_fJvtEff_SF_Medium->clear();
     }
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
-      m_fJvtPass_Tight   ->clear();
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
+    m_fJvtPass_Tight     ->clear();
+    if ( m_mc ) {
       m_fJvtEff_SF_Tight ->clear();
     }
   }
@@ -2210,78 +2244,86 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
   }
 
-  if ( m_mc ) {
-    static SG::AuxElement::ConstAccessor< char > jvtPass_Loose("JetJVT_Passed_Loose");
-    static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Loose("JetJvtEfficiency_JVTSyst_JVT_Loose");
-    static SG::AuxElement::ConstAccessor< char > jvtPass_Medium("JetJVT_Passed_Medium");
-    static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Medium("JetJvtEfficiency_JVTSyst_JVT_Medium");
-    static SG::AuxElement::ConstAccessor< char > jvtPass_Tight("JetJVT_Passed_Tight");
-    static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Tight("JetJvtEfficiency_JVTSyst_JVT_Tight");
-    static SG::AuxElement::ConstAccessor< char > fjvtPass_Medium("JetfJVT_Passed_Medium");
-    static SG::AuxElement::ConstAccessor< std::vector< float > > fjvtSF_Medium("JetJvtEfficiency_fJVTSyst_fJVT_Medium");
-    static SG::AuxElement::ConstAccessor< char > fjvtPass_Tight("JetfJVT_Passed_Tight");
-    static SG::AuxElement::ConstAccessor< std::vector< float > > fjvtSF_Tight("JetJvtEfficiency_fJVTSyst_fJVT_Tight");
+  static SG::AuxElement::ConstAccessor< char > jvtPass_Loose("JetJVT_Passed_Loose");
+  static SG::AuxElement::ConstAccessor< char > jvtPass_Medium("JetJVT_Passed_Medium");
+  static SG::AuxElement::ConstAccessor< char > jvtPass_Tight("JetJVT_Passed_Tight");
+  static SG::AuxElement::ConstAccessor< char > fjvtPass_Medium("JetfJVT_Passed_Medium");
+  static SG::AuxElement::ConstAccessor< char > fjvtPass_Tight("JetfJVT_Passed_Tight");
+  static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Loose("JetJvtEfficiency_JVTSyst_JVT_Loose");
+  static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Medium("JetJvtEfficiency_JVTSyst_JVT_Medium");
+  static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Tight("JetJvtEfficiency_JVTSyst_JVT_Tight");
+  static SG::AuxElement::ConstAccessor< std::vector< float > > fjvtSF_Medium("JetJvtEfficiency_fJVTSyst_fJVT_Medium");
+  static SG::AuxElement::ConstAccessor< std::vector< float > > fjvtSF_Tight("JetJvtEfficiency_fJVTSyst_fJVT_Tight");
 
-    std::vector<float> junkSF(1,1.0);
+  std::vector<float> junkSF(1,1.0);
 
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
-      if ( jvtPass_Loose.isAvailable( *jet ) ) {
-        m_JvtPass_Loose->push_back( jvtPass_Loose( *jet ) );
-      } else {
-        m_JvtPass_Loose->push_back( -1 );
-      }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
+    if ( jvtPass_Loose.isAvailable( *jet ) ) {
+      m_JvtPass_Loose->push_back( jvtPass_Loose( *jet ) );
+    } else {
+      m_JvtPass_Loose->push_back( -1 );
+    }
+    if ( m_mc ) {
       if ( jvtSF_Loose.isAvailable( *jet ) ) {
         m_JvtEff_SF_Loose->push_back( jvtSF_Loose( *jet ) );
       } else {
         m_JvtEff_SF_Loose->push_back( junkSF );
       }
     }
+  }
 
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
-      if ( jvtPass_Medium.isAvailable( *jet ) ) {
-        m_JvtPass_Medium->push_back( jvtPass_Medium( *jet ) );
-      } else {
-        m_JvtPass_Medium->push_back( -1 );
-      }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Medium" ) {
+    if ( jvtPass_Medium.isAvailable( *jet ) ) {
+      m_JvtPass_Medium->push_back( jvtPass_Medium( *jet ) );
+    } else {
+      m_JvtPass_Medium->push_back( -1 );
+    }
+    if ( m_mc ) {
       if ( jvtSF_Medium.isAvailable( *jet ) ) {
         m_JvtEff_SF_Medium->push_back( jvtSF_Medium( *jet ) );
       } else {
         m_JvtEff_SF_Medium->push_back( junkSF );
       }
     }
+  }
 
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
-      if ( jvtPass_Tight.isAvailable( *jet ) ) {
-        m_JvtPass_Tight->push_back( jvtPass_Tight( *jet ) );
-      } else {
-        m_JvtPass_Tight->push_back( -1 );
-      }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Tight" ) {
+    if ( jvtPass_Tight.isAvailable( *jet ) ) {
+      m_JvtPass_Tight->push_back( jvtPass_Tight( *jet ) );
+    } else {
+      m_JvtPass_Tight->push_back( -1 );
+    }
+    if ( m_mc ) {
       if ( jvtSF_Tight.isAvailable( *jet ) ) {
         m_JvtEff_SF_Tight->push_back( jvtSF_Tight( *jet ) );
       } else {
         m_JvtEff_SF_Tight->push_back( junkSF );
       }
     }
-    
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
-      if ( fjvtPass_Medium.isAvailable( *jet ) ) {
-        m_fJvtPass_Medium->push_back( fjvtPass_Medium( *jet ) );
-      } else {
-        m_fJvtPass_Medium->push_back( -1 );
-      }
+  }
+
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
+    if ( fjvtPass_Medium.isAvailable( *jet ) ) {
+      m_fJvtPass_Medium->push_back( fjvtPass_Medium( *jet ) );
+    } else {
+      m_fJvtPass_Medium->push_back( -1 );
+    }
+    if ( m_mc ) {
       if ( fjvtSF_Medium.isAvailable( *jet ) ) {
         m_fJvtEff_SF_Medium->push_back( fjvtSF_Medium( *jet ) );
       } else {
         m_fJvtEff_SF_Medium->push_back( junkSF );
       }
     }
+  }
 
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
-      if ( fjvtPass_Tight.isAvailable( *jet ) ) {
-        m_fJvtPass_Tight->push_back( fjvtPass_Tight( *jet ) );
-      } else {
-        m_fJvtPass_Tight->push_back( -1 );
-      }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Tight" ) {
+    if ( fjvtPass_Tight.isAvailable( *jet ) ) {
+      m_fJvtPass_Tight->push_back( fjvtPass_Tight( *jet ) );
+    } else {
+      m_fJvtPass_Tight->push_back( -1 );
+    }
+    if ( m_mc ) {
       if ( fjvtSF_Tight.isAvailable( *jet ) ) {
         m_fJvtEff_SF_Tight->push_back( fjvtSF_Tight( *jet ) );
       } else {

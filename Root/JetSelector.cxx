@@ -648,6 +648,21 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
     if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( m_store->record( sysVariationNamesJVT, m_outputSystNamesJVT)); }
+  } else if ( !m_isMC && m_doJVT ) {
+    // Loop over selected jets and decorate with JVT passed status
+    for ( auto jet : *(selectedJets) ) {
+      // create passed JVT decorator
+      static const SG::AuxElement::Decorator<char> passedJVT( m_outputJVTPassed );
+      passedJVT( *jet ) = 1; // passes by default
+
+      if ( m_JVT_tool_handle->isInRange(*jet) ) {
+        if ( m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) {
+          passedJVT( *jet ) = 0; // mark as not passed
+        } else {
+          passedJVT( *jet ) = 1;
+        }
+      }
+    }
   }
   
   // Loop over selected jets and decorate with fJVT efficiency SF
@@ -751,6 +766,13 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
     if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesfJVT) ) { ANA_CHECK( m_store->record( sysVariationNamesfJVT, m_outputSystNamesfJVT)); }
+  } else if ( !m_isMC && m_dofJVT ) {
+    // Loop over selected jets and decorate with fJVT passed status
+    for ( auto jet : *(selectedJets) ) {
+      // create passed fJVT decorator
+      static const SG::AuxElement::Decorator<char> passedfJVT( m_outputfJVTPassed );
+      passedfJVT( *jet ) = jet->auxdata<char>("passFJVT");
+    }
   }
 
   // add ConstDataVector to TStore
