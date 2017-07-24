@@ -13,58 +13,10 @@
 
 from __future__ import print_function
 #TODO: move into __main__
+import xAODAnaHelpers
 import logging
 
-BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
-#The background is set with 40 plus the number of the color, and the foreground with 30
-#These are the sequences need to get colored ouput
-RESET_SEQ = "\033[0m"
-COLOR_SEQ = "\033[1;%dm"
-BOLD_SEQ = "\033[1m"
-
-def formatter_message(message, use_color = True):
-  if use_color:
-    message = message.replace("$RESET", RESET_SEQ).replace("$BOLD", BOLD_SEQ)
-  else:
-    message = message.replace("$RESET", "").replace("$BOLD", "")
-  return message
-
-COLORS = {
-  'WARNING': YELLOW,
-  'INFO': WHITE,
-  'DEBUG': BLUE,
-  'CRITICAL': YELLOW,
-  'ERROR': RED
-}
-
-class ColoredFormatter(logging.Formatter):
-  def __init__(self, msg, use_color = True):
-    logging.Formatter.__init__(self, msg)
-    self.use_color = use_color
-
-  def format(self, record):
-    levelname = record.levelname
-    if self.use_color and levelname in COLORS:
-      levelname_color = COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
-      record.levelname = levelname_color
-    return logging.Formatter.format(self, record)
-
-# Custom logger class with multiple destinations
-class ColoredLogger(logging.Logger):
-  FORMAT = "[$BOLD%(asctime)s$RESET][%(levelname)-18s]  %(message)s ($BOLD%(filename)s$RESET:%(lineno)d)"
-  #FORMAT = "[$BOLD%(name)-20s$RESET][%(levelname)-18s]  %(message)s ($BOLD%(filename)s$RESET:%(lineno)d)"
-  COLOR_FORMAT = formatter_message(FORMAT, True)
-  def __init__(self, name):
-    logging.Logger.__init__(self, name, logging.DEBUG)
-    color_formatter = ColoredFormatter(self.COLOR_FORMAT)
-    console = logging.StreamHandler()
-    console.setFormatter(color_formatter)
-    self.addHandler(console)
-    return
-
-logging.setLoggerClass(ColoredLogger)
-root_logger = logging.getLogger()
-xAH_logger = logging.getLogger("xAH")
+xAH_logger = logging.getLogger("xAH.run")
 
 import argparse
 import os
@@ -255,7 +207,7 @@ if __name__ == "__main__":
   xAH_logger.setLevel(numeric_log_level)
 
   try:
-    import timing
+    from xAODAnaHelpers import timing
 
     # check environment variables for various options first before trying to do anything else
     if args.driver == 'prun':
@@ -277,7 +229,7 @@ if __name__ == "__main__":
     # they will need it to get it working
     needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['prun', 'condor','lsf'])
     if needXRD:
-      if os.getenv('XRDSYS') is None:
+      if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
 
     use_scanEOS = (args.use_scanEOS)
@@ -508,7 +460,7 @@ if __name__ == "__main__":
       xAH_logger.debug("Loading json files")
 
       # for generating names if needed
-      from xAH_nameGenerator import xAH_nameGenerator
+      from xAODAnaHelpers.utils import NameGenerator
 
       # add our algorithm to the job
       algorithm_configurations = parse_json(args.config)
@@ -528,7 +480,7 @@ if __name__ == "__main__":
         # if m_name not set, randomly generate it
         algName = algorithm_configuration['configs'].get("m_name", None)
         if algName is None:
-          algName = str(xAH_nameGenerator())
+          algName = str(NameGenerator())
           xAH_logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
           algorithm_configurations['configs']['m_name'] = algName
         if not isinstance(algName, str) and not isinstance(algName, unicode):
@@ -585,12 +537,12 @@ if __name__ == "__main__":
       execfile(args.config, configGlobals, configLocals)
 
       #
-      # Find the created xAH_config object and add its _algorithms to the Job
+      # Find the created xAODAnaHelpers.config.Config object and add its _algorithms to the Job
       #
-      from xAH_config import xAH_config
+      from xAODAnaHelpers import Config
       for k,v in configLocals.iteritems():
 
-        if isinstance(v, xAH_config):
+        if isinstance(v, Config):
 
           if hasattr(ROOT.EL, 'NTupleSvc'):
             # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
