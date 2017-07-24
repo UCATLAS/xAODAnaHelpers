@@ -177,7 +177,8 @@ public:
         "Medium"  87.1-97.0%     53.4-60.9%
         "Tight"   79.9-95.6%     45.4-50.3%
         ======== ============== =============
-
+        
+        See :https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/FJVTCalibration for more information.
     @endrst
   */
   std::string m_WorkingPointfJVT = "Medium";
@@ -186,9 +187,9 @@ public:
      @brief Configuration containting fJVT scale factors.
 
      @rst
-     The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
+        The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
 
-     See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/FJVTCalibration for latest recommendation.
+        See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/FJVTCalibration for latest recommendation.
      @endrst
   */
   std::string m_SFFilefJVT = "JetJvtEfficiency/Moriond2016_v2/fJvtSFFile.root";

@@ -237,6 +237,7 @@ EL::StatusCode JetSelector :: initialize ()
 
   //init fJVT
   if (m_dofJVT) {
+    setToolName(m_fJVT_tool_handle);
     ANA_MSG_DEBUG("Trying to initialize fJVT tool");
     //ANA_CHECK( ASG_MAKE_ANA_TOOL(m_fJVT_tool_handle, JetForwardJvtTool));
     ANA_CHECK(m_fJVT_tool_handle.retrieve());
@@ -625,13 +626,9 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           sfVecJVT( *jet ).push_back( jvtSF );
 
           ANA_MSG_DEBUG( "===>>>");
-          ANA_MSG_DEBUG( " ");
           ANA_MSG_DEBUG( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) );
-          ANA_MSG_DEBUG( " ");
           ANA_MSG_DEBUG( "JVT SF decoration: " << m_outputSystNamesJVT );
-          ANA_MSG_DEBUG( " ");
           ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-          ANA_MSG_DEBUG( " ");
           ANA_MSG_DEBUG( "JVT SF:");
           ANA_MSG_DEBUG( "\t " << jvtSF << " (from getEfficiencyScaleFactor())" );
           ANA_MSG_DEBUG( "--------------------------------------");
@@ -743,13 +740,9 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           sfVecfJVT( *jet ).push_back( fjvtSF );
 
           ANA_MSG_DEBUG( "===>>>");
-          ANA_MSG_DEBUG( " ");
           ANA_MSG_DEBUG( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) );
-          ANA_MSG_DEBUG( " ");
           ANA_MSG_DEBUG( "fJVT SF decoration: " << m_outputSystNamesfJVT );
-          ANA_MSG_DEBUG( " ");
           ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-          ANA_MSG_DEBUG( " ");
           ANA_MSG_DEBUG( "fJVT SF:");
           ANA_MSG_DEBUG( "\t " << fjvtSF << " (from getEfficiencyScaleFactor())" );
           ANA_MSG_DEBUG( "--------------------------------------");
