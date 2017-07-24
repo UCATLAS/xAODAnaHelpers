@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-,
 from __future__ import absolute_import
 from __future__ import print_function
-import logging
-logger = logging.getLogger("xAH")
-logger.addHandler(logging.StreamHandler())
+# import local logging
+from . import logging
 
-# Set up ROOT
+# Set up ROOT correctly
 import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gROOT.SetBatch(True)
