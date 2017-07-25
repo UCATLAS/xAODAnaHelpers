@@ -232,9 +232,7 @@ if __name__ == "__main__":
     if needXRD:
       if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
-
     use_scanEOS = (args.use_scanEOS)
-
 
     # at this point, we should import ROOT and do stuff
     import ROOT
@@ -414,29 +412,20 @@ if __name__ == "__main__":
       xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
       job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
 
-
-
-    load_json   = ".json" in args.config
-
-
     # formatted string
     algorithmConfiguration_string = []
-    printStr = "\tsetting {0: >20}.{1:<30} = {2}"
 
     from xAODAnaHelpers import Config
     configurator = None
 
-    if load_json:
+    if ".json" in args.config:
       # parse_json is json.load + stripping comments
       from xAODAnaHelpers.utils import parse_json
-
       xAH_logger.debug("Loading json files")
-
-      configurator = Config()
-
-      # add our algorithm to the job
       algConfigs = parse_json(args.config)
       xAH_logger.debug("loaded the json configurations")
+      # add our algorithm to the job
+      configurator = Config()
       map(lambda x: configurator.setalg(x['class'], x['configs']), algConfigs)
 
     else:
@@ -444,31 +433,34 @@ if __name__ == "__main__":
       #   (configGlobals and configLocals are used to pass vars
       configGlobals, configLocals = {}, {'args': args}
       execfile(args.config, configGlobals, configLocals)
-
       # Find the created xAODAnaHelpers.config.Config object and add its _algorithms to the Job
       for k,v in configLocals.iteritems():
         if isinstance(v, Config):
           configurator = v
           break
 
+
+    # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
+    # is created and added to the job *before* the service
     if hasattr(ROOT.EL, 'NTupleSvc'):
-      # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
-      # is created and added to the job *before* the service
       for alg in v._algorithms:
         if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
           job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
+
     # Add the algorithms to the job
     map(job.algsAdd, v._algorithms)
 
     for configLog in v._log:
-      if len(configLog) == 2:  # this is when we have just the algorithm name
+      # this is when we have just the algorithm name
+      if len(configLog) == 2:
         xAH_logger.info("creating algorithm %s with name %s", configLog[0], configLog[1])
         algorithmConfiguration_string.append("{0}: {1} options".format(*configLog))
       elif len(configLog) == 3:
+        printStr = "\tsetting {0: >20}.{1:<30} = {2}"
         xAH_logger.debug("\t%s", printStr.format(*configLog))
         algorithmConfiguration_string.append(printStr.format(*configLog))
       else:
-        raise Exception("Something weird happened with the logging. Tell someone important")
+        raise Exception("Something weird happened with the logging. Tell someone important.")
 
     # make the driver we want to use:
     xAH_logger.info("creating driver")
