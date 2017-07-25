@@ -13,6 +13,7 @@
 
 from __future__ import print_function
 #TODO: move into __main__
+
 import xAODAnaHelpers
 import logging
 
@@ -207,7 +208,7 @@ if __name__ == "__main__":
   xAH_logger.setLevel(numeric_log_level)
 
   try:
-    from xAODAnaHelpers import timing
+    import xAODAnaHelpers.timing
 
     # check environment variables for various options first before trying to do anything else
     if args.driver == 'prun':
@@ -234,35 +235,6 @@ if __name__ == "__main__":
 
     use_scanEOS = (args.use_scanEOS)
 
-    import json
-    import re
-
-    # Regular expression for comments
-    comment_re = re.compile('(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
-                            re.DOTALL | re.MULTILINE)
-
-    # http://www.lifl.fr/~damien.riquet/parse-a-json-file-with-comments.html
-    def parse_json(filename):
-      """ Parse a JSON file
-          First remove comments and then use the json module package
-          Comments look like :
-              // ...
-          or
-              /*
-              ...
-              */
-      """
-      with open(filename) as f:
-        content = ''.join(f.readlines())
-        ## Looking for comments
-        match = comment_re.search(content)
-        while match:
-          # single line comment
-          content = content[:match.start()] + content[match.end():]
-          match = comment_re.search(content)
-        #print(content)
-        # Return json file
-        return json.loads(content)
 
     # at this point, we should import ROOT and do stuff
     import ROOT
@@ -278,11 +250,6 @@ if __name__ == "__main__":
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
     #Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore();
-
-    # load the standard algorithm since pyroot delays quickly
-    ROOT.EL.Algorithm()
-    # load this to get ROOT.MSG working: https://its.cern.ch/jira/browse/ATLASG-270
-    ROOT.asg.ToolStore()
 
     # check that we have appropriate drivers
     if args.driver == 'prun':
@@ -456,116 +423,52 @@ if __name__ == "__main__":
     algorithmConfiguration_string = []
     printStr = "\tsetting {0: >20}.{1:<30} = {2}"
 
+    from xAODAnaHelpers import Config
+    configurator = None
+
     if load_json:
+      # parse_json is json.load + stripping comments
+      from xAODAnaHelpers.utils import parse_json
+
       xAH_logger.debug("Loading json files")
 
-      # for generating names if needed
-      from xAODAnaHelpers.utils import NameGenerator
+      configurator = Config()
 
       # add our algorithm to the job
-      algorithm_configurations = parse_json(args.config)
-      xAH_logger.debug("loaded the configurations")
+      algConfigs = parse_json(args.config)
+      xAH_logger.debug("loaded the json configurations")
+      map(lambda x: configurator.setalg(x['class'], x['configs']), algConfigs)
 
-      # this is where we go over and process all algorithms
-      for algorithm_configuration in algorithm_configurations:
-        className = algorithm_configuration['class']
-        xAH_logger.info("creating algorithm %s", className)
-        algorithmConfiguration_string.append("{0} algorithm options".format(className))
-
-        # handle namespaces
-        alg = reduce(lambda x,y: getattr(x, y, None), className.split('.'), ROOT)
-        if not alg:
-          raise ValueError("Algorithm %s does not exist" % className)
-
-        # if m_name not set, randomly generate it
-        algName = algorithm_configuration['configs'].get("m_name", None)
-        if algName is None:
-          algName = str(NameGenerator())
-          xAH_logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
-          algorithm_configurations['configs']['m_name'] = algName
-        if not isinstance(algName, str) and not isinstance(algName, unicode):
-          raise TypeError("m_name must be a string for instance of {0:s}".format(className))
-
-        # handle deprecation of m_debug, m_verbose
-        if 'm_debug' in algorithm_configuration['configs']:
-          xAH_logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 . Set m_msgLevel='debug'")
-        if 'm_verbose' in algorithm_configuration['configs']:
-          xAH_logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 . Set m_msgLevel='verbose'.")
-
-        # handle msgLevels, can be string or integer
-        msgLevel = algorithm_configuration['configs'].get("m_msgLevel", "info")
-        if not isinstance(msgLevel, str) and not isinstance(msgLevel, int):
-          raise TypeError("m_msgLevel must be a string or integer for instance of {0:s}".format(className))
-        if isinstance(msgLevel, str):
-          if not hasattr(ROOT.MSG, msgLevel.upper()):
-            raise ValueError("m_msgLevel must be a valid MSG::level: {0:s}".format(msgLevel))
-          msgLevel = getattr(ROOT.MSG, msgLevel.upper())
-        algorithm_configuration['configs']['m_msgLevel'] = msgLevel
-
-        alg = alg()
-        alg.SetName(algName)
-        alg.setMsgLevel(msgLevel)
-        for config_name, config_val in algorithm_configuration['configs'].iteritems():
-          xAH_logger.debug("\t%s", printStr.format(className, config_name, config_val))
-          algorithmConfiguration_string.append(printStr.format(className, config_name, config_val))
-          # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
-          if not hasattr(alg, config_name) and config_name not in ['m_msgLevel', 'm_name']:
-            raise ValueError("Algorithm %s does not have attribute %s" % (className, config_name))
-
-          #handle unicode from json
-          if isinstance(config_val, unicode):
-            config_val = config_val.encode('utf-8')
-
-          try:
-            setattr(alg, config_name, config_val)
-          except:
-            xAH_logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(config_name, config_val, className, algName))
-            raise
-
-        xAH_logger.debug("adding algorithm %s to job", className)
-        algorithmConfiguration_string.append("\n")
-        job.algsAdd(alg)
     else:
-
-
-      #
       #  Executing the python
       #   (configGlobals and configLocals are used to pass vars
-      #
-      configGlobals = {}
-      configLocals  = {'args' : args}
+      configGlobals, configLocals = {}, {'args': args}
       execfile(args.config, configGlobals, configLocals)
 
-      #
       # Find the created xAODAnaHelpers.config.Config object and add its _algorithms to the Job
-      #
-      from xAODAnaHelpers import Config
       for k,v in configLocals.iteritems():
-
         if isinstance(v, Config):
+          configurator = v
+          break
 
-          if hasattr(ROOT.EL, 'NTupleSvc'):
-            # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
-            # is created and added to the job *before* the service
-            #
-            for alg in v._algorithms:
-              if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
-                job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
-          # Add the algorithms to the job
-          #
-          map(job.algsAdd, v._algorithms)
+    if hasattr(ROOT.EL, 'NTupleSvc'):
+      # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
+      # is created and added to the job *before* the service
+      for alg in v._algorithms:
+        if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
+          job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
+    # Add the algorithms to the job
+    map(job.algsAdd, v._algorithms)
 
-          for configLog in v._log:
-            if len(configLog) == 2:  # this is when we have just the algorithm name
-              xAH_logger.info("creating algorithm %s with name %s", configLog[0], configLog[1])
-              algorithmConfiguration_string.append("{0}: {1} options".format(*configLog))
-            elif len(configLog) == 3:
-              xAH_logger.debug("\t%s", printStr.format(*configLog))
-              algorithmConfiguration_string.append(printStr.format(*configLog))
-            else:
-              raise Exception("Something weird happened with the logging. Tell someone important")
-
-
+    for configLog in v._log:
+      if len(configLog) == 2:  # this is when we have just the algorithm name
+        xAH_logger.info("creating algorithm %s with name %s", configLog[0], configLog[1])
+        algorithmConfiguration_string.append("{0}: {1} options".format(*configLog))
+      elif len(configLog) == 3:
+        xAH_logger.debug("\t%s", printStr.format(*configLog))
+        algorithmConfiguration_string.append(printStr.format(*configLog))
+      else:
+        raise Exception("Something weird happened with the logging. Tell someone important")
 
     # make the driver we want to use:
     xAH_logger.info("creating driver")
