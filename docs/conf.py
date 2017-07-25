@@ -22,6 +22,7 @@ import shlex
 #sys.path.insert(0, os.path.abspath('.'))
 # for adding xAH_run.py
 sys.path.insert(0, os.path.abspath('../scripts'))
+sys.path.insert(0, os.path.abspath('.'))
 
 # -- General configuration ------------------------------------------------
 
