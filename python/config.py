@@ -59,14 +59,14 @@ class Config(object):
     alg_obj = alg()
     alg_obj.SetName(algName)
     alg_obj.setMsgLevel(msgLevel)
-    self._log.append((alg,algName))
+    self._log.append((className,algName))
     for k,v in options.iteritems():
       # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
       if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
         raise AttributeError(k)
       #handle unicode from json
       if isinstance(v, unicode): v = v.encode('utf-8')
-      self._log.append((alg, k, v))
+      self._log.append((algName, k, v))
       try:
         setattr(alg_obj, k, v)
       except:
