@@ -3,15 +3,12 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import logging
+logger = logging.getLogger("xAH.config")
 
 import ROOT
-# load this for the MSG::level values. See https://its.cern.ch/jira/browse/ATLASG-270
-ROOT.asg.ToolStore()
+ROOT.PyConfig.IgnoreCommandLineOptions = True
+ROOT.gROOT.SetBatch(True)
 
-logger = logging.getLogger("xAH.config")
-logger.setLevel(10) # we use info
-
-# for generating names if needed
 from .utils import NameGenerator
 
 class Config(object):
@@ -67,14 +64,14 @@ class Config(object):
       # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
       if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
         raise AttributeError(k)
+      #handle unicode from json
+      if isinstance(v, unicode): v = v.encode('utf-8')
       self._log.append((alg, k, v))
       try:
         setattr(alg_obj, k, v)
       except:
         logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
         raise
-
-    #print
 
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
