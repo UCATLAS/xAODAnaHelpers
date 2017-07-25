@@ -1,11 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-,
+from __future__ import absolute_import
 from __future__ import print_function
-import atexit
-from time import time
 import logging
 
-logger = logging.getLogger("timing")
+logger = logging.getLogger("xAH.timing")
 logger.setLevel(10) # we use info
 print = logger.info
+
+import atexit
+from time import time
 
 def secondsToStr(t):
     return "%d:%02d:%02d.%03d" % \
@@ -31,4 +35,3 @@ def now():
 start = time()
 atexit.register(endlog)
 log("Start Program")
-

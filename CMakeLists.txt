@@ -104,5 +104,6 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
 )
 
 # Install files from the package:
+atlas_install_python_modules( python/*.py )
 atlas_install_scripts( scripts/*.py )
 atlas_install_data( data/* )
