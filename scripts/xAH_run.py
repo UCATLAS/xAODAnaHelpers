@@ -443,14 +443,14 @@ if __name__ == "__main__":
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
     # is created and added to the job *before* the service
     if hasattr(ROOT.EL, 'NTupleSvc'):
-      for alg in v._algorithms:
+      for alg in configurator._algorithms:
         if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
           job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
 
     # Add the algorithms to the job
-    map(job.algsAdd, v._algorithms)
+    map(job.algsAdd, configurator._algorithms)
 
-    for configLog in v._log:
+    for configLog in configurator._log:
       # this is when we have just the algorithm name
       if len(configLog) == 2:
         xAH_logger.info("creating algorithm %s with name %s", configLog[0], configLog[1])
