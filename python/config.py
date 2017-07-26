@@ -18,6 +18,7 @@ class Config(object):
 
   def setalg(self, className, options):
     # check first argument
+    if isinstance(className, unicode): className = className.encode('utf-8')
     if not isinstance(className, str):
       raise TypeError("className must be a string")
 
