@@ -42,6 +42,7 @@ class Config(object):
 
     # handle msgLevels, can be string or integer
     msgLevel = options.get("m_msgLevel", "info")
+    if isinstance(msgLevel, unicode): msgLevel = msgLevel.encode('utf-8')
     if not isinstance(msgLevel, str) and not isinstance(msgLevel, int):
       raise TypeError("m_msgLevel must be a string or integer for instance of {0:s}".format(className))
     if isinstance(msgLevel, str):
