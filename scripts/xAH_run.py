@@ -14,11 +14,6 @@
 from __future__ import print_function
 #TODO: move into __main__
 
-import xAODAnaHelpers
-import logging
-
-xAH_logger = logging.getLogger("xAH.run")
-
 import argparse
 import os
 import subprocess
@@ -201,6 +196,10 @@ if __name__ == "__main__":
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
 
+  import xAODAnaHelpers
+  import logging
+  xAH_logger = logging.getLogger("xAH.run")
+
   # set verbosity for python printing
   numeric_log_level = getattr(logging, args.log_level.upper(), None)
   if not isinstance(numeric_log_level, int):
@@ -246,8 +245,15 @@ if __name__ == "__main__":
       arch = os.environ.get('AnalysisBase_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
       if not int(os.environ.get(cmake_setup, 0)):
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
-    #Set up the job for xAOD access:
-    ROOT.xAOD.Init("xAH_run").ignore();
+    # Set up the job for xAOD access:
+    ROOT.xAOD.Init("xAH_run").ignore()
+
+    # load the standard algorithm since pyroot delays quickly
+    logger.info("Loading up your analysis dictionaries now, give us a second.")
+    ROOT.EL.Algorithm()
+    # load this for the MSG::level values. See https://its.cern.ch/jira/browse/ATLASG-270
+    ROOT.asg.ToolStore()
+    logger.info("All dictionaries loaded and good to go. Have a wonderful day :)")
 
     # check that we have appropriate drivers
     if args.driver == 'prun':
