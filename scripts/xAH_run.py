@@ -14,11 +14,6 @@
 from __future__ import print_function
 #TODO: move into __main__
 
-import xAODAnaHelpers
-import logging
-
-xAH_logger = logging.getLogger("xAH.run")
-
 import argparse
 import os
 import subprocess
@@ -200,6 +195,10 @@ if __name__ == "__main__":
 
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
+
+  import xAODAnaHelpers
+  import logging
+  xAH_logger = logging.getLogger("xAH.run")
 
   # set verbosity for python printing
   numeric_log_level = getattr(logging, args.log_level.upper(), None)
