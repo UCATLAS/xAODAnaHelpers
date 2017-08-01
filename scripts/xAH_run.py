@@ -249,11 +249,11 @@ if __name__ == "__main__":
     ROOT.xAOD.Init("xAH_run").ignore()
 
     # load the standard algorithm since pyroot delays quickly
-    logger.info("Loading up your analysis dictionaries now, give us a second.")
+    xAH_logger.info("Loading up your analysis dictionaries now, give us a second.")
     ROOT.EL.Algorithm()
     # load this for the MSG::level values. See https://its.cern.ch/jira/browse/ATLASG-270
     ROOT.asg.ToolStore()
-    logger.info("All dictionaries loaded and good to go. Have a wonderful day :)")
+    xAH_logger.info("All dictionaries loaded and good to go. Have a wonderful day :)")
 
     # check that we have appropriate drivers
     if args.driver == 'prun':
