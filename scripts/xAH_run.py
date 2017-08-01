@@ -246,8 +246,15 @@ if __name__ == "__main__":
       arch = os.environ.get('AnalysisBase_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
       if not int(os.environ.get(cmake_setup, 0)):
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
-    #Set up the job for xAOD access:
-    ROOT.xAOD.Init("xAH_run").ignore();
+    # Set up the job for xAOD access:
+    ROOT.xAOD.Init("xAH_run").ignore()
+
+    # load the standard algorithm since pyroot delays quickly
+    logger.info("Loading up your analysis dictionaries now, give us a second.")
+    ROOT.EL.Algorithm()
+    # load this for the MSG::level values. See https://its.cern.ch/jira/browse/ATLASG-270
+    ROOT.asg.ToolStore()
+    logger.info("All dictionaries loaded and good to go. Have a wonderful day :)")
 
     # check that we have appropriate drivers
     if args.driver == 'prun':
