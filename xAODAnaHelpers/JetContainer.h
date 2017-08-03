@@ -119,17 +119,17 @@ namespace xAH {
     
       // trackAll or trackPV
       std::vector<float> *m_Jvt;
-      std::vector<char> *m_JvtPass_Loose;
+      std::vector<int> *m_JvtPass_Loose;
       std::vector< std::vector<float> > *m_JvtEff_SF_Loose;
-      std::vector<char> *m_JvtPass_Medium;
+      std::vector<int> *m_JvtPass_Medium;
       std::vector< std::vector<float> > *m_JvtEff_SF_Medium;
-      std::vector<char> *m_JvtPass_Tight;
+      std::vector<int> *m_JvtPass_Tight;
       std::vector< std::vector<float> > *m_JvtEff_SF_Tight;
       std::vector<float> *m_JvtJvfcorr;
       std::vector<float> *m_JvtRpt;
-      std::vector<char> *m_fJvtPass_Medium;
+      std::vector<int> *m_fJvtPass_Medium;
       std::vector< std::vector<float> > *m_fJvtEff_SF_Medium;
-      std::vector<char> *m_fJvtPass_Tight;
+      std::vector<int> *m_fJvtPass_Tight;
       std::vector< std::vector<float> > *m_fJvtEff_SF_Tight;
 
       // allTrack
