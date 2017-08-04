@@ -182,7 +182,7 @@ EL::StatusCode TreeAlgo :: execute ()
       return EL::StatusCode::FAILURE;
     }
 
-    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG), m_store );
+    m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG), m_store );
     const auto& helpTree = m_trees[systName];
 
     // tell the tree to go into the file
@@ -434,3 +434,7 @@ EL::StatusCode TreeAlgo :: finalize () {
 }
 
 EL::StatusCode TreeAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+
+HelpTreeBase* TreeAlgo :: createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store) {
+    return new HelpTreeBase( event, tree, file, units, debug, store );
+}
