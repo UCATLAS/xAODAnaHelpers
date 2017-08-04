@@ -70,6 +70,9 @@ public:
   */
   std::string   m_inputSystNamesMuons = "";
 
+  /// @brief Write systematics names to metadata
+  bool          m_writeSystToMetadata = false;
+
   float         m_systValReco = 0.0;
   float         m_systValIso = 0.0;
   float         m_systValTrig = 0.0;

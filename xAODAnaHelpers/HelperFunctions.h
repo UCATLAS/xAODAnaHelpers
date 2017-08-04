@@ -30,6 +30,7 @@
 #include "TTree.h"
 #include "TBranch.h"
 #include "TFile.h"
+#include "TH1D.h"
 #include "TObjArray.h"
 
 // messaging includes
@@ -151,6 +152,8 @@ namespace HelperFunctions {
     @param msg        the MsgStream object with appropriate level for debugging
   */
   std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet inSysts, std::string systNames, float systVal, MsgStream& msg );
+
+  void writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, std::string histName, TFile *file );
 
   /*    type_name<T>()      The awesome type demangler!
           - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.
@@ -507,4 +510,3 @@ namespace HelperFunctions {
 } // close namespace HelperFunctions
 
 # endif
-

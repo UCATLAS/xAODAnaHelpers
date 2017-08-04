@@ -180,6 +180,11 @@ EL::StatusCode METConstructor :: initialize ()
   m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
   ANA_MSG_DEBUG( "Is MC? " << static_cast<int>(m_isMC) );
 
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(sysList, m_name, fileMD);
+  }
 
   return EL::StatusCode::SUCCESS;
 }
