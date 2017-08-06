@@ -153,6 +153,12 @@ lsf = drivers_parser.add_parser('lsf',
                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                 parents=[drivers_common])
 
+slurm = drivers_parser.add_parser('slurm',
+                                   help='Flock your jobs to SLURM',
+                                   usage=baseUsageStr.format('slurm'),
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                   parents=[drivers_common])
+
 # define arguments for prooflite driver
 prooflite.add_argument('--optPerfTree',          metavar='', type=int, required=False, default=None, help='the option to turn on the performance tree in PROOF.  if this is set to 1, it will write out the tree')
 prooflite.add_argument('--optBackgroundProcess', metavar='', type=int, required=False, default=None, help='the option to do processing in a background process in PROOF')
@@ -188,6 +194,15 @@ condor.add_argument('--optCondorConf', metavar='', type=str, required=False, def
 
 # define arguments for lsf driver
 lsf.add_argument('--optResetShell', metavar='', type=bool, required=False, default=False, help='the option to reset the shell on the worker nodes')
+
+# define arguments for slurm driver
+slurm.add_argument('--optSlurmAccount'         , metavar='', type=str, required=False, default='atlas'      , help='the name of the account to use')
+slurm.add_argument('--optSlurmPartition'       , metavar='', type=str, required=False, default='shared-chos', help='the name of the partition to use')
+slurm.add_argument('--optSlurmRunTime'         , metavar='', type=str, required=False, default='24:00:00'   , help='the maximum runtime')
+slurm.add_argument('--optSlurmMemory'          , metavar='', type=str, required=False, default='1800'       , help='the maximum memory usage of the job (MB)')
+slurm.add_argument('--optSlurmConstrain'       , metavar='', type=str, required=False, default=''           , help='the extra constrains on the nodes')
+slurm.add_argument('--optSlurmExtraConfigLines', metavar='', type=str, required=False, default=''           , help='the extra config lines to pass to SLURM')
+slurm.add_argument('--optSlurmWrapperExec'     , metavar='', type=str, required=False, default=''           , help='the wrapper around the run script')
 
 # start the script
 if __name__ == "__main__":
@@ -227,7 +242,7 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working
-    needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['prun', 'condor','lsf'])
+    needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['prun','condor','lsf','slurm'])
     if needXRD:
       if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
@@ -267,6 +282,9 @@ if __name__ == "__main__":
     elif args.driver == 'lsf':
       if getattr(ROOT.EL, 'LSFDriver') is None:
         raise KeyError('Cannot load the LSF driver from EventLoop. Did you not compile it?')
+    elif args.driver == 'slurm':
+      if getattr(ROOT.EL, 'SlurmDriver') is None:
+        raise KeyError('Cannot load the SLURM driver from EventLoop. Did you not compile it?')
 
     # create a new sample handler to describe the data files we use
     xAH_logger.info("creating new sample handler")
@@ -542,8 +560,32 @@ if __name__ == "__main__":
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
         xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
 
+    elif (args.driver == "slurm"):
+      driver = ROOT.EL.SlurmDriver()
+      driver.SetJobName         (os.path.basename(args.submit_dir))
+      driver.SetAccount         (args.optSlurmAccount             )
+      driver.SetPartition       (args.optSlurmPartition           )
+      driver.SetRunTime         (args.optSlurmRunTime             )
+      driver.SetMemory          (args.optSlurmMemory              )
+      driver.SetConstrain       (args.optSlurmConstrain           )
+      for opt, t in map(lambda x: (x.dest, x.type), slurm._actions):
+        if getattr(args, opt) is None: continue  # skip if not set
+        if opt in ['help', 'optBatchWait', 'optSlurmAccount', 'optSlurmPartition', 'optSlurmRunTime', 'optSlurmMemory', 'optSlurmConstrain']: continue  # skip some options
+        if t in [float]:
+          setter = 'setDouble'
+        elif t in [int]:
+          setter = 'setInteger'
+        elif t in [bool]:
+          setter = 'setBool'
+        else:
+          setter = 'setString'
+        jobopt=opt.replace('Slurm','BatchSlurm')
+        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, jobopt), getattr(args, opt))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, jobopt), getattr(args, opt)))
+
+
     xAH_logger.info("\tsubmit job")
-    if args.driver in ["prun","lsf", "condor"] and not args.optBatchWait:
+    if args.driver in ["prun","condor","lsf","slurm"] and not args.optBatchWait:
       driver.submitOnly(job, args.submit_dir)
     else:
       driver.submit(job, args.submit_dir)
