@@ -107,6 +107,7 @@ drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, requ
 drivers_common.add_argument('--optRemoveSubmitDir', metavar='', type=int, required=False, default=None, help='the name of the option for overwriting the submission directory.  if you set this to a non-zero value it will remove any existing submit-directory before tryingto create a new one. You can also use -f/--force as well in xAH_run.py.')
 drivers_common.add_argument('--optBatchSharedFileSystem', type=bool, required=False, default=False, help='enable to signify whether your batch driver is running on a shared filesystem')
 drivers_common.add_argument('--optBatchWait', action='store_true', required=False, help='submit using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
+drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default=None, help='extra code to execute on each batch node before starting EventLoop')
 
 # These are handled by xAH_run.py at the top level instead of down by drivers
 #.add_argument('--optMaxEvents', type=str, required=False, default=None)
@@ -497,7 +498,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.ProofDriver()
       for opt, t in map(lambda x: (x.dest, x.type), prooflite._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optBatchWait']: continue  # skip some options
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -513,7 +514,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.PrunDriver()
       for opt, t in map(lambda x: (x.dest, x.type), prun._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optGridOutputSampleName', 'optBatchWait']: continue  # skip some options
+        if opt in ['help', 'optGridOutputSampleName', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -530,9 +531,10 @@ if __name__ == "__main__":
 
     elif (args.driver == "condor"):
       driver = ROOT.EL.CondorDriver()
+      driver.shellInit = args.optBatchShellInit
       for opt, t in map(lambda x: (x.dest, x.type), condor._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optBatchWait']: continue  # skip some options
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -546,9 +548,10 @@ if __name__ == "__main__":
 
     elif (args.driver == "lsf"):
       driver = ROOT.EL.LSFDriver()
+      driver.shellInit = args.optBatchShellInit
       for opt, t in map(lambda x: (x.dest, x.type), lsf._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optBatchWait']: continue  # skip some options
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -562,6 +565,7 @@ if __name__ == "__main__":
 
     elif (args.driver == "slurm"):
       driver = ROOT.EL.SlurmDriver()
+      driver.shellInit = args.optBatchShellInit
       driver.SetJobName         (os.path.basename(args.submit_dir))
       driver.SetAccount         (args.optSlurmAccount             )
       driver.SetPartition       (args.optSlurmPartition           )
@@ -570,7 +574,7 @@ if __name__ == "__main__":
       driver.SetConstrain       (args.optSlurmConstrain           )
       for opt, t in map(lambda x: (x.dest, x.type), slurm._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optBatchWait', 'optSlurmAccount', 'optSlurmPartition', 'optSlurmRunTime', 'optSlurmMemory', 'optSlurmConstrain']: continue  # skip some options
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit', 'optSlurmAccount', 'optSlurmPartition', 'optSlurmRunTime', 'optSlurmMemory', 'optSlurmConstrain']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
