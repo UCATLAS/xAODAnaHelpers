@@ -165,6 +165,39 @@ public:
   float         m_systValJVT = 0.0;
   std::string   m_systNameJVT = "";
 
+  /**
+    @rst
+        Available working points for fJVT cut from the ``CP::IJetJvtEfficiency`` tool.
+
+        The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
+
+        ======== ============== =============
+        Value    HS Efficiency  PU Fake Rate
+        ======== ============== =============
+        "Medium"  87.1-97.0%     53.4-60.9%
+        "Tight"   79.9-95.6%     45.4-50.3%
+        ======== ============== =============
+        
+        See :https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/FJVTCalibration for more information.
+    @endrst
+  */
+  std::string m_WorkingPointfJVT = "Medium";
+
+  /**
+     @brief Configuration containting fJVT scale factors.
+
+     @rst
+        The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
+
+        See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/FJVTCalibration for latest recommendation.
+     @endrst
+  */
+  std::string m_SFFilefJVT = "JetJvtEfficiency/Moriond2016_v2/fJvtSFFile.root";
+  std::string m_outputSystNamesfJVT = "JetJvtEfficiency_fJVTSyst";
+
+  float         m_systValfJVT = 0.0;
+  std::string   m_systNamefJVT = "";
+
   /// @brief Flag to apply btagging cut, if false just decorate decisions
   bool  m_doBTagCut = false;
   std::string m_corrFileName = "xAODBTaggingEfficiency/cutprofiles_22072015.root";
@@ -220,12 +253,15 @@ private:
   int   m_jet_cutflow_btag_cut;      //!
 
   std::vector<CP::SystematicSet> m_systListJVT; //!
+  std::vector<CP::SystematicSet> m_systListfJVT; //!
 
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency"};         //!
   asg::AnaToolHandle<IJetModifier>           m_fJVT_tool_handle{"JetForwardJvtTool"};           //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency"};    //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 
   std::string m_outputJVTPassed = "JetJVT_Passed"; //!
+  std::string m_outputfJVTPassed = "JetfJVT_Passed"; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -251,7 +287,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName, bool isNominal );
+  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string inContainerName, std::string outContainerName, bool isNominal );
 
   // added functions not from Algorithm
   // why does this need to be virtual?

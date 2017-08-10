@@ -405,6 +405,7 @@ namespace HelperClasses {
         m_trackPV        trackPV        exact
         m_trackAll       trackAll       exact
         m_sfJVTName      sfJVT          partial
+        m_sffJVTName     sffJVT         partial
         m_allTrack       allTrack       exact
         m_allTrackPVSel  allTrackPVSel  exact
         m_allTrackDetail allTrackDetail exact
@@ -486,6 +487,7 @@ namespace HelperClasses {
     std::string      m_trackName;
     std::string      m_trackJetName;
     std::string      m_sfJVTName;
+    std::string      m_sffJVTName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
