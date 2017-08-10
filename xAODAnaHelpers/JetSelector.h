@@ -79,19 +79,19 @@ public:
   int m_pass_max = -1;
   /// @brief require pT < pt_max
   float m_pT_max = 1e8;
-  /// @brief require pT > pt_max
+  /// @brief require pT > pt_min
   float m_pT_min = 1e8;
   /// @brief require eta < eta_max
   float m_eta_max = 1e8;
-  /// @brief require eta > eta_max
+  /// @brief require eta > eta_min
   float m_eta_min = 1e8;
   /// @brief require detEta < detEta_max
   float m_detEta_max = 1e8;
-  /// @brief require detEta > detEta_max
+  /// @brief require detEta > detEta_min
   float m_detEta_min = 1e8;
   /// @brief require mass < mass_max
   float m_mass_max = 1e8;
-  /// @brief require mass > mass_max
+  /// @brief require mass > mass_min
   float m_mass_min = 1e8;
   /// @brief require rapidity < rapidity_max
   float m_rapidity_max = 1e8;
