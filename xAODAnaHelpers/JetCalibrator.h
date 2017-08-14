@@ -83,7 +83,9 @@ public:
   @endrst */
   bool m_setAFII = false;
   /// @brief when running data "_Insitu" is appended to this string
-  bool m_forceInsitu = false;
+  bool m_forceInsitu = true;
+  /// @brief when using DEV mode of JetCalibTools
+  bool m_jetCalibToolsDEV = false;
 
   // @brief Config for JER Uncert Tool. If not empty the tool will run
   std::string m_JERUncertConfig = "";
