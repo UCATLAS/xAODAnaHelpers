@@ -49,6 +49,7 @@ public:
   std::string m_truthParticlesContainerName = "";
   std::string m_trackParticlesContainerName = "";
   std::string m_l1JetContainerName = "";
+  bool m_sortL1Jets = false;
 
   // if these are set, assume systematics are being processed over
   std::string m_muSystsVec = "";
