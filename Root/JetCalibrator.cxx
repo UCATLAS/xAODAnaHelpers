@@ -184,7 +184,9 @@ EL::StatusCode JetCalibrator :: initialize ()
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("IsData",!m_isMC));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
-  ANA_CHECK( m_JetCalibrationTool_handle.setProperty("DEVmode", m_jetCalibToolsDEV));
+  if ( m_jetCalibToolsDEV ) {
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("DEVmode", m_jetCalibToolsDEV));
+  }
   ANA_CHECK( m_JetCalibrationTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_JetCalibrationTool_handle);
 
