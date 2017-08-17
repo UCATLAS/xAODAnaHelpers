@@ -13,15 +13,6 @@ std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm(std::string className) :
-  m_name(""),
-  m_debug(false),
-  m_verbose(false),
-  m_systName(""),
-  m_systVal(0),
-  m_eventInfoContainerName("EventInfo"),
-  m_isMC(-1),
-  m_event(nullptr),
-  m_store(nullptr),
   m_className(className)
 {
 }
@@ -31,26 +22,23 @@ xAH::Algorithm::~Algorithm()
 }
 
 StatusCode xAH::Algorithm::algInitialize(){
+    // register an instance of the the class
     registerInstance();
+    // set the name this way as duplicate names are handled automatically
+    m_name = name();
+    // names will be BasicEventSelection.baseEventSel for example
+    msg().setName(m_className + "." + m_name);
+    // deprecating m_debug, but this is around for backwards compatibility
+    m_debug = msgLvl(MSG::DEBUG);
+    // deprecating m_verbose, but this is around for backwards compatibility
+    m_verbose = msgLvl(MSG::VERBOSE);
+
     return StatusCode::SUCCESS;
 }
 
 StatusCode xAH::Algorithm::algFinalize(){
     unregisterInstance();
     return StatusCode::SUCCESS;
-}
-
-xAH::Algorithm* xAH::Algorithm::setName(std::string name){
-  m_name = name;
-  // call the TNamed
-  this->SetName(name.c_str());
-  return this;
-}
-
-xAH::Algorithm* xAH::Algorithm::setLevel(int level){
-  m_debug = level & 1;
-  m_verbose = (level >> 1)&1;
-  return this;
 }
 
 StatusCode xAH::Algorithm::parseSystValVector(){
@@ -73,14 +61,14 @@ int xAH::Algorithm::isMC(){
 
   const xAOD::EventInfo* ei(nullptr);
   // couldn't retrieve it
-  if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store).isSuccess()){
-    if(m_debug) Warning("isMC()", "Could not retrieve eventInfo container: %s", m_eventInfoContainerName.c_str());
+  if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()).isSuccess()){
+    ANA_MSG_DEBUG( "Could not retrieve eventInfo container: " << m_eventInfoContainerName);
     return -1;
   }
 
   static SG::AuxElement::ConstAccessor<uint32_t> eventType("eventTypeBitmask");
   if(!eventType.isAvailable(*ei)){
-    if(m_debug) Warning("isMC()", "eventType is not available.");
+    ANA_MSG_DEBUG( "eventType is not available.");
     return -1;
   }
 
@@ -89,12 +77,14 @@ int xAH::Algorithm::isMC(){
 }
 
 void xAH::Algorithm::registerInstance(){
+    if(m_registered) return;
     m_instanceRegistry[m_className]++;
+    m_registered = true;
 }
 
 int xAH::Algorithm::numInstances(){
     if(m_instanceRegistry.find(m_className) == m_instanceRegistry.end()){
-        printf("numInstances: we seem to have recorded zero instances of %s. This should not happen.", m_className.c_str());
+        ANA_MSG_ERROR("numInstances: we seem to have recorded zero instances of " << m_className << ". This should not happen.");
         return 0;
     }
     return m_instanceRegistry.at(m_className);
@@ -102,7 +92,7 @@ int xAH::Algorithm::numInstances(){
 
 void xAH::Algorithm::unregisterInstance(){
     if(m_instanceRegistry.find(m_className) == m_instanceRegistry.end()){
-        printf("unregisterInstance: we seem to have recorded zero instances of %s. This should not happen.", m_className.c_str());
+        ANA_MSG_ERROR("unregisterInstance: we seem to have recorded zero instances of " << m_className << ". This should not happen.");
     }
     m_instanceRegistry[m_className]--;
 }

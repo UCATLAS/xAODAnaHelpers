@@ -15,32 +15,61 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
+/**
+  @rst
+    This is the algorithm class used to calibrate electrons.
+
+    In a nutshell, this algorithm performs the following actions:
+
+      - retrieves an ``xAOD::ElectronContainer`` from either ``TEvent`` or ``TStore``
+      - makes a shallow copy container and fills it with energy-and-direction calibrated electrons using the ``EgammaCalibrationAndSmearingTool`` in `Tools Used <ToolsUsed.html>`__
+      - saves the shallow copy container to ``TStore`` from where it can be retrieved by algorithms downstream via name lookup
+
+  @endrst
+*/
 class ElectronCalibrator : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  // configuration variables
-  std::string m_inContainerName;
-  std::string m_outContainerName;
+// configuration variables
+  /// @brief The name of the input container for this algorithm to read from ``TEvent`` or ``TStore``
+  std::string m_inContainerName = "";
+  /**
+      @brief The name of the nominal output container written by the algorithm to ``TStore``
 
-  // sort after calibration
-  bool    m_sort;
+      If the algorithm applies systematic variations, for each shallow copy saved to ``TStore``, the systematic name will be appended to this.
+  */
+  std::string m_outContainerName = "";
 
+  /// Sort the processed container elements by transverse momentum
+  bool    m_sort = true;
 
-  // systematics
-  std::string m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
-  			             // upstream algo (e.g., the SC containers with calibration systematics)
-  std::string m_outputAlgoSystNames; // this is the name of the vector of names of the systematically varied containers produced by THIS
-  				     // algo ( these will be the m_inputAlgoSystNames of the algo downstream
-  float       m_systVal;
-  std::string m_systName;
+// systematics
+  /**
+    @brief The name of the vector containing the names of the systematically-varied containers from the upstream algorithm, which will be processed by this algorithm.
 
-  std::string m_esModel;
-  std::string m_decorrelationModel;
+    This vector is retrieved from the ``TStore``. If left blank, it means there is no upstream algorithm which applies systematics. This is the case when processing straight from the original ``xAOD`` or ``DxAOD``.
+  */
+  std::string m_inputAlgoSystNames = "";
+
+  /**
+    @brief The name of the vector containing the names of the systematically-varied containers created by by this algorithm.
+
+    @rst
+      If :cpp:member:`~xAH::Algorithm::m_systName` is empty, the vector will contain only an empty string. When running on systematics, this is the string a downstream algorithm needs to process electrons.
+    @endrst
+  */
+  std::string m_outputAlgoSystNames = "ElectronCalibrator_Syst";
+
+  std::string m_esModel = "";
+  std::string m_decorrelationModel = "";
+
+  /** @brief Force AFII flag in calibration, in case metadata is broken */
+  bool m_setAFII = false;
 
   // for calo based isolation vars leakage correction
-  bool        m_useDataDrivenLeakageCorr;
+  bool        m_useDataDrivenLeakageCorr = false;
 
 private:
   int m_numEvent;         //!
@@ -55,8 +84,9 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool; //!
-  CP::IsolationCorrectionTool          *m_IsolationCorrectionTool;          //! /* apply leakage correction to calo based isolation variables for electrons */
+  CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool = nullptr; //!
+  /// @brief apply leakage correction to calo based isolation variables for electrons
+  CP::IsolationCorrectionTool          *m_IsolationCorrectionTool = nullptr;          //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -67,7 +97,7 @@ public:
 
 
   // this is a standard constructor
-  ElectronCalibrator (std::string className = "ElectronCalibrator");
+  ElectronCalibrator ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

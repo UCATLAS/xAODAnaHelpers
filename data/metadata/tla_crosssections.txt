@@ -1,0 +1,1 @@
+304784	Pythia8EvtGen_A14NNPDF23LO_jetjet_Powerlaw	8.689700e+08	1.	1.000000e+00	1.

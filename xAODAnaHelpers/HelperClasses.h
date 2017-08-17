@@ -3,6 +3,7 @@
 
 #include <map>
 #include <iostream>
+#include <sstream>
 
 #include "TString.h"
 
@@ -29,16 +30,14 @@ namespace HelperClasses {
       PHOTONSELECTOR,
       JETSELECTOR,
       BJETSELECTOR,
-      OVERLAPREMOVER,
       CALIBRATOR,
       CORRECTOR,
       SELECTOR,
       DEFAULT
   };
 
-  /* template enum parser
-  copied from: http://stackoverflow.com/a/726681
-  */
+  /** template enum parser. Copied from: http://stackoverflow.com/a/726681
+   */
   template <typename T>
   class EnumParser
   {
@@ -51,7 +50,7 @@ namespace HelperClasses {
         typename std::multimap <std::string, T>::const_iterator iValue = enumMap.find(value);
         if (iValue == enumMap.end()){
             std::cerr << "Could not find input string in enum!" << std::endl;
-	}
+        }
         return iValue->second;
      }
   };
@@ -77,11 +76,11 @@ namespace HelperClasses {
   class InfoSwitch {
   protected:
     /**
-        The input configuration string from which we split up into tokens.
+        @brief The input configuration string from which we split up into tokens.
      */
     const std::string m_configStr;
     /**
-        The vector of tokens from which we search through for finding matches.
+        @brief The vector of tokens from which we search through for finding matches.
      */
     std::set<std::string> m_configDetails;
   public:
@@ -98,15 +97,6 @@ namespace HelperClasses {
     };
     /**
         @rst
-            .. deprecated:: 00-03-26
-               Use :cpp:func:`~HelperClasses::InfoSwitch::has_match` instead.
-
-        @endrst
-        @param flag     The string we search for.
-     */
-    bool parse(const std::string flag) { std::cout << "InfoSwitch::parse() deprecated soon!" << std::endl; return has_match(flag); };
-    /**
-        @rst
             Search for an exact match in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails`.
 
         @endrst
@@ -121,6 +111,21 @@ namespace HelperClasses {
         @param flag     The string we search for.
      */
     bool has_match(const std::string flag) { return m_configStr.find(flag) != std::string::npos; };
+    /**
+        @rst
+            Search for a single flag in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails` and parse out the working point.
+
+        @endrst
+        @param flag     The string we search for.
+     */
+    std::string get_working_point(const std::string flag);
+    /**
+        @rst
+            Search for multiple flags in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails` and parse out the working points.
+        @endrst
+        @param flag     The string we search for.
+     */
+    std::vector<std::string> get_working_points(const std::string flag);
   };
 
   /**
@@ -132,17 +137,20 @@ namespace HelperClasses {
         ================ ============== =======
         m_eventCleaning  eventCleaning  exact
         m_pileup         pileup         exact
+        m_pileupsys      pileupsys      exact
         m_shapeEM        shapeEM        exact
         m_shapeLC        shapeLC        exact
         m_truth          truth          exact
         m_caloClus       caloClusters   exact
         ================ ============== =======
+
     @endrst
    */
   class EventInfoSwitch : public InfoSwitch {
   public:
     bool m_eventCleaning;
     bool m_pileup;
+    bool m_pileupsys;
     bool m_shapeEM;
     bool m_shapeLC;
     bool m_truth;
@@ -162,7 +170,9 @@ namespace HelperClasses {
         m_basic        basic        exact
         m_menuKeys     menuKeys     exact
         m_passTriggers passTriggers exact
+        m_passTrigBits passTrigBits exact
         ============== ============ =======
+
     @endrst
    */
   class TriggerInfoSwitch : public InfoSwitch {
@@ -170,6 +180,7 @@ namespace HelperClasses {
     bool m_basic;
     bool m_menuKeys;
     bool m_passTriggers;
+    bool m_passTrigBits;
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
@@ -185,6 +196,7 @@ namespace HelperClasses {
         m_kinematic    kinematic    exact
         m_clean        clean        exact
         ============== ============ =======
+
     @endrst
    */
 
@@ -206,6 +218,7 @@ namespace HelperClasses {
         ============== ============ =======
         m_kinematic    kinematic    exact
         m_numLeading   NLeading     partial
+        m_useTheS      useTheS      exact
         ============== ============ =======
 
         .. note::
@@ -216,12 +229,15 @@ namespace HelperClasses {
                 m_configStr = "... NLeading4 ..."
 
             will define :code:`int m_numLeading = 4`.
+
+
     @endrst
    */
   class IParticleInfoSwitch : public InfoSwitch {
   public:
     bool m_kinematic;
     int  m_numLeading;
+    bool m_useTheS;
     IParticleInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); }
     virtual ~IParticleInfoSwitch() {}
   protected:
@@ -232,28 +248,42 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Muon Information.
 
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_trigger      trigger      exact
-        m_isolation    isolation    exact
-        m_quality      quality      exact
-        m_trackparams  trackparams  exact
-        m_trackhitcont trackhitcont exact
-        m_effSF        effSF        exact
-        m_energyLoss   energyLoss   exact
-        ============== ============ =======
+        ====================== ==================== =======
+        Parameter              Pattern              Match
+        ====================== ==================== =======
+        m_trigger              trigger              exact
+        m_isolation            isolation            exact
+        m_isolationKinematics  isolationKinematics  exact
+        m_quality              quality              exact
+        m_trackparams          trackparams          exact
+        m_trackhitcont         trackhitcont         exact
+        m_effSF                effSF                exact
+        m_energyLoss           energyLoss           exact
+        ====================== ==================== =======
+
     @endrst
    */
   class MuonInfoSwitch : public IParticleInfoSwitch {
   public:
     bool m_trigger;
     bool m_isolation;
+    bool m_isolationKinematics;
     bool m_quality;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
     bool m_energyLoss;
+
+    std::vector< std::string > m_recoWPs;
+    std::vector< std::string > m_isolWPs;
+    std::vector< std::string > m_trigWPs;
+
+    bool m_recoEff_sysNames;
+    bool m_isoEff_sysNames;
+    bool m_trigEff_sysNames;
+    bool m_ttvaEff_sysNames;
+
+
     MuonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~MuonInfoSwitch() {}
   protected:
@@ -264,26 +294,60 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Electron Information.
 
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_trigger      trigger      exact
-        m_isolation    isolation    exact
-        m_PID          PID          exact
-        m_trackparams  trackparams  exact
-        m_trackhitcont trackhitcont exact
-        m_effSF        effSF        exact
-        ============== ============ =======
+        =============================================================================================================================================================== =============================================================================================================================================== =======
+        Parameter                                                                                                                                                       Pattern                                                                                                                                         Match
+        =============================================================================================================================================================== =============================================================================================================================================== =======
+        m_trigger                                                                                                                                                       trigger                                                                                                                                         exact
+        m_isolation                                                                                                                                                     isolation                                                                                                                                       exact
+        m_isolationKinematics                                                                                                                                           isolationKinematics                                                                                                                             exact
+        m_quality                                                                                                                                                       quality                                                                                                                                         exact
+        m_PID                                                                                                                                                           PID                                                                                                                                             exact
+        m_trackparams                                                                                                                                                   trackparams                                                                                                                                     exact
+        m_trackhitcont                                                                                                                                                  trackhitcont                                                                                                                                    exact
+        m_effSF                                                                                                                                                         effSF                                                                                                                                           exact
+        m_PIDWPs["LooseAndBLayerLLH"]                                                                                                                                   LooseAndBLayerLLH                                                                                                                               exact
+        m_PIDWPs["MediumLLH"]                                                                                                                                           MediumLLH                                                                                                                                       exact
+        m_PIDWPs["TightLLH"]                                                                                                                                            TightLLH                                                                                                                                        exact
+        m_isolWPs["isolFixedCutLoose"]                                                                                                                                  isolFixedCutLoose                                                                                                                               exact
+        m_isolWPs["isolFixedCutTight"]                                                                                                                                  isolFixedCutTight                                                                                                                               exact
+        m_isolWPs["isolFixedCutTightTrackOnly"]                                                                                                                         isolFixedCutTightTrackOnly                                                                                                                      exact
+        m_isolWPs["isolGradient"]                                                                                                                                       isolGradient                                                                                                                                    exact
+        m_isolWPs["isolGradientLoose"]                                                                                                                                  isolGradientLoose                                                                                                                               exact
+        m_isolWPs["isolLoose"]                                                                                                                                          isolLoose                                                                                                                                       exact
+        m_isolWPs["isolLooseTrackOnly"]                                                                                                                                 isolLooseTrackOnly                                                                                                                              exact
+        m_isolWPs["isolTight"]                                                                                                                                          isolTight                                                                                                                                       exact
+        m_isolWPs[""]                                                                                                                                                   isolNoRequirement                                                                                                                               exact
+        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH]                                                                                       DI_E_2015_e12_lhloose_L1EM10VH_2016_e15_lhvloose_nod0_L1EM13VH                                                                                  exact
+        m_trigWPs[DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0]                                                                                                DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0                                                                                           exact
+        m_trigWPs[DI_E_2015_e17_lhloose_2016_e17_lhloose]                                                                                                               DI_E_2015_e17_lhloose_2016_e17_lhloose                                                                                                          exact
+        m_trigWPs[MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0]                                                                                                       MULTI_L_2015_e7_lhmedium_2016_e7_lhmedium_nod0                                                                                                  exact
+        m_trigWPs[MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0]                                                                                                       MULTI_L_2015_e12_lhloose_2016_e12_lhloose_nod0                                                                                                  exact
+        m_trigWPs[MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0]                                                                                                       MULTI_L_2015_e17_lhloose_2016_e17_lhloose_nod0                                                                                                  exact
+        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI]                                                                                 MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e24_lhmedium_nod0_L1EM20VHI                                                                            exact
+        m_trigWPs[MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI]                                                                                 MULTI_L_2015_e24_lhmedium_L1EM20VHI_2016_e26_lhmedium_nod0_L1EM22VHI                                                                            exact
+        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0]        SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
+        m_trigWPs[SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0]        SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0   exact
+        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0]                                                                                                           TRI_E_2015_e9_lhloose_2016_e9_lhloose_nod0                                                                                                      exact
+        m_trigWPs[TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0]                                                                                                          TRI_E_2015_e9_lhloose_2016_e9_lhmedium_nod0                                                                                                     exact
+        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0]                                                                                                         TRI_E_2015_e17_lhloose_2016_e17_lhloose_nod0                                                                                                    exact
+        m_trigWPs[TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0]                                                                                                        TRI_E_2015_e17_lhloose_2016_e17_lhmedium_nod0                                                                                                   exact
+        =============================================================================================================================================================== =============================================================================================================================================== =======
+
     @endrst
    */
   class ElectronInfoSwitch : public IParticleInfoSwitch {
   public:
     bool m_trigger;
     bool m_isolation;
+    bool m_isolationKinematics;
+    bool m_quality;
     bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
+    std::vector< std::string > m_PIDWPs;
+    std::vector< std::string > m_isolWPs;
+    std::vector< std::string > m_trigWPs;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:
@@ -299,13 +363,20 @@ namespace HelperClasses {
         ============== ============ =======
         m_isolation    isolation    exact
         m_PID          PID          exact
+        m_purity       purity       exact
+        m_effSF        effSF        exact
+        m_trigger      trigger      exact
         ============== ============ =======
+
     @endrst
    */
   class PhotonInfoSwitch : public IParticleInfoSwitch {
   public:
     bool m_isolation;
     bool m_PID;
+    bool m_purity;
+    bool m_effSF;
+    bool m_trigger;
     PhotonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
     virtual ~PhotonInfoSwitch() {}
   protected:
@@ -320,16 +391,21 @@ namespace HelperClasses {
         Parameter        Pattern        Match
         ================ ============== =======
         m_substructure   substructure   exact
+        m_bosonCount     bosonCount     exact
+        m_VTags          VTags          exact
         m_rapidity       rapidity       exact
         m_clean          clean          exact
         m_energy         energy         exact
         m_scales         scales         exact
+        m_constscaleEta  constscaleEta  exact
         m_resolution     resolution     exact
         m_truth          truth          exact
         m_truthDetails   truth_details  exact
         m_layer          layer          exact
         m_trackPV        trackPV        exact
         m_trackAll       trackAll       exact
+        m_sfJVTName      sfJVT          partial
+        m_sffJVTName     sffJVT         partial
         m_allTrack       allTrack       exact
         m_allTrackPVSel  allTrackPVSel  exact
         m_allTrackDetail allTrackDetail exact
@@ -340,31 +416,44 @@ namespace HelperClasses {
         m_sfFTagFix      sfFTagFix      partial
         m_sfFTagFlt      sfFTagFlt      partial
         m_area           area           exact
+        m_JVC            JVC            exact
         m_tracksInJet    tracksInJet    partial
+        m_trackJetName   trackJetName   partial
         m_hltVtxComp     hltVtxComp     exact
+        m_onlineBS       onlineBS       exact
+        m_onlineBSTool   onlineBSTool   exact
         m_charge         charge         exact
         m_vsLumiBlock    vsLumiBlock    exact
+        m_lumiB_runN     lumiB_runN     exact
+        m_byAverageMu    byAverageMu    exact
+        m_byEta          byEta          exact
+        m_etaPhiMap      etaPhiMap      exact
         ================ ============== =======
 
         .. note::
-            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable.
 
-            For example::
+            ``sfJVT`` requires a working point after it, for example::
+
+                m_configStr = "... sfJVTMedium ..."
+
+            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
 
                 m_configStr = "... sfFTagFix010203 ..."
 
             will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
 
     @endrst
-
    */
   class JetInfoSwitch : public IParticleInfoSwitch {
   public:
     bool m_substructure;
+    bool m_bosonCount;
+    bool m_VTags;
     bool m_rapidity;
     bool m_clean;
     bool m_energy;
     bool m_scales;
+    bool m_constscaleEta;
     bool m_resolution;
     bool m_truth;
     bool m_truthDetails;
@@ -383,11 +472,22 @@ namespace HelperClasses {
     bool m_svDetails;
     bool m_ipDetails;
     bool m_tracksInJet;
+    bool m_trackJets;
     bool m_hltVtxComp;
+    bool m_onlineBS;
+    bool m_onlineBSTool;
     bool m_charge;
+    bool m_etaPhiMap;
     bool m_vsLumiBlock;
+    bool m_lumiB_runN;
+    bool m_byEta;
+    bool m_byAverageMu;
     bool m_area;
+    bool m_JVC;
     std::string      m_trackName;
+    std::string      m_trackJetName;
+    std::string      m_sfJVTName;
+    std::string      m_sffJVTName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
@@ -404,13 +504,51 @@ namespace HelperClasses {
         Parameter        Pattern        Match
         ================ ============== =======
         m_kinematic      kinematic      exact
+        m_type           type           exact
+        m_bVtx           bVtx           exact
+        m_parents        parents        exact
+        m_children       children       exact
         ================ ============== =======
+
+
     @endrst
    */
-  class TruthInfoSwitch : public InfoSwitch {
+  class TruthInfoSwitch : public IParticleInfoSwitch {
+  public:
+    bool m_type;
+    bool m_bVtx;
+    bool m_parents;
+    bool m_children;
+    TruthInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+  protected:
+    void initialize();
+  };
+
+  /**
+    @rst
+        The :cpp:class:`HelperClasses::InfoSwitch` struct for Track Information.
+
+        ================ ============== =======
+        Parameter        Pattern        Match
+        ================ ============== =======
+        m_kinematic      kinematic      exact
+        m_fitpars        fitpars        exact
+        m_numbers        numbers        exact
+        m_vertex         vertex         exact
+        m_useTheS        useTheS        exact
+        ================ ============== =======
+
+
+    @endrst
+  */
+  class TrackInfoSwitch : public InfoSwitch {
   public:
     bool m_kinematic;
-    TruthInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+    bool m_fitpars;
+    bool m_numbers;
+    bool m_vertex;
+    bool m_useTheS;
+  TrackInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
   };
@@ -425,6 +563,8 @@ namespace HelperClasses {
         m_trackparams    trackparams    exact
         m_trackhitcont   trackhitcont   exact
         ================ ============== =======
+
+
     @endrst
    */
   class TauInfoSwitch : public IParticleInfoSwitch {
@@ -453,6 +593,7 @@ namespace HelperClasses {
         m_softClus       softClus|all   exact
         m_softTrk        softTrk|all    exact
         ================ ============== =======
+
 
         .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information.
 

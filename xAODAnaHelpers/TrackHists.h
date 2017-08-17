@@ -6,6 +6,8 @@
 #include <xAODTracking/Vertex.h>
 #include <xAODEventInfo/EventInfo.h>
 
+ANA_MSG_HEADER(msgTrackHists)
+
 class TrackHists : public HistogramManager
 {
   public:
@@ -20,6 +22,7 @@ class TrackHists : public HistogramManager
 
   protected:
     // bools to control which histograms are filled
+    bool m_fill2D; //!
     bool m_fillIPDetails; //!
     bool m_fillHitCounts; //!
     bool m_fillChi2Details; //!
@@ -30,8 +33,11 @@ class TrackHists : public HistogramManager
   private:
     // Histograms
     TH1F* m_trk_n; //!
+    TH1F* m_trk_n_l; //!
     TH1F* m_trk_Pt; //!
     TH1F* m_trk_Pt_l; //!
+    TH1F* m_trk_P; //!
+    TH1F* m_trk_P_l; //!
     TH1F* m_trk_Eta; //!
     TH1F* m_trk_Phi; //!
     TH1F* m_trk_d0; //!
@@ -89,12 +95,25 @@ class TrackHists : public HistogramManager
     TProfile* m_trk_vz_vs_lBlock; //!
     TProfile* m_pvz_vs_lBlock; //!
     TProfile* m_pv_valid_vs_lBlock; //!
+
     TProfile* m_bsX_vs_lBlock; //!
     TProfile* m_bsY_vs_lBlock; //!
     TProfile* m_bsZ_vs_lBlock; //!
     TH1F*    m_bsX; //!
     TH1F*    m_bsY; //!
     TH1F*    m_bsZ; //!
+
+    TH2F* m_trk_Eta_vs_trk_P; //!
+    TH2F* m_trk_Eta_vs_trk_P_l; //!
+    TH2F* m_trk_Phi_vs_trk_P; //!
+    TH2F* m_trk_Phi_vs_trk_P_l; //!
+    TH2F* m_trk_Eta_vs_trk_Phi; //!
+    TH2F* m_trk_d0_vs_trk_P; //!
+    TH2F* m_trk_d0_vs_trk_P_l; //!
+    TH2F* m_trk_z0_vs_trk_P; //!
+    TH2F* m_trk_z0_vs_trk_P_l; //!
+    TH2F* m_trk_z0sinT_vs_trk_P; //!
+    TH2F* m_trk_z0sinT_vs_trk_P_l; //!
 };
 
 

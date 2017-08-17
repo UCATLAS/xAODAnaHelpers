@@ -32,20 +32,24 @@ class HLTJetGetter : public xAH::Algorithm
 public:
 
   /* configuration variables */
-  std::string m_triggerList; // List of triggers whose features will be extracted from TDT
-  std::string m_inContainerName; // input container name, WITHOUT the HLT_xAOD__JetContainer_ prefix
-  std::string m_outContainerName; // output container name
+  /// @brief List of triggers whose features will be extracted from TDT
+  std::string m_triggerList = ".*";
+  /// @brief input container name, WITHOUT the HLT_xAOD__JetContainer_ prefix
+  std::string m_inContainerName = "";
+  /// @brief output container name
+  std::string m_outContainerName = "";
 
 private:
 
-  Trig::TrigDecisionTool*        m_trigDecTool;   //!
-  TrigConf::xAODConfigTool*      m_trigConfTool;   //!
-  bool                           m_ownTDTAndTCT;   //!
+  Trig::TrigDecisionTool*        m_trigDecTool = nullptr;   //!
+  TrigConf::xAODConfigTool*      m_trigConfTool = nullptr;   //!
+  /// @brief flag to own TDT and TCT
+  bool                           m_ownTDTAndTCT = false;   //!
 
 public:
 
   // this is a standard constructor
-  HLTJetGetter (std::string className = "HLTJetGetter");
+  HLTJetGetter ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

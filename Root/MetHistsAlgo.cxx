@@ -7,18 +7,12 @@
 
 #include <xAODAnaHelpers/MetHistsAlgo.h>
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(MetHistsAlgo)
 
-MetHistsAlgo :: MetHistsAlgo (std::string className) :
-    Algorithm(className),
-    m_plots(nullptr)
+MetHistsAlgo :: MetHistsAlgo () :
+    Algorithm("MetHistsAlgo")
 {
-  m_inContainerName         = "";
-  m_detailStr               = "";
-  m_debug                   = false;
 }
 
 EL::StatusCode MetHistsAlgo :: setupJob (EL::Job& job)
@@ -34,16 +28,16 @@ EL::StatusCode MetHistsAlgo :: setupJob (EL::Job& job)
 EL::StatusCode MetHistsAlgo :: histInitialize ()
 {
 
-  Info("histInitialize()", "%s", m_name.c_str() );
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_MSG_INFO( m_name );
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   if( m_inContainerName.empty() || m_detailStr.empty() ){
-    Error("histInitialize()", "One or more required configuration values are empty");
+    ANA_MSG_ERROR( "One or more required configuration values are empty");
     return EL::StatusCode::FAILURE;
   }
 
   // declare class and add histograms to output
   m_plots = new MetHists(m_name, m_detailStr);
-  RETURN_CHECK("MetHistsAlgo::histInitialize()", m_plots -> initialize(), "");
+  ANA_CHECK( m_plots -> initialize());
   m_plots -> record( wk() );
 
   return EL::StatusCode::SUCCESS;
@@ -54,7 +48,7 @@ EL::StatusCode MetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::Sta
 
 EL::StatusCode MetHistsAlgo :: initialize ()
 {
-  Info("initialize()", "MetHistsAlgo");
+  ANA_MSG_INFO( "MetHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
   return EL::StatusCode::SUCCESS;
@@ -63,7 +57,7 @@ EL::StatusCode MetHistsAlgo :: initialize ()
 EL::StatusCode MetHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
 
   float eventWeight(1);
@@ -72,9 +66,9 @@ EL::StatusCode MetHistsAlgo :: execute ()
   }
 
   const xAOD::MissingETContainer* met(nullptr);
-  RETURN_CHECK("MetHistsAlgo::execute()", HelperFunctions::retrieve(met, m_inContainerName, m_event, m_store, m_verbose) ,"");
+  ANA_CHECK( HelperFunctions::retrieve(met, m_inContainerName, m_event, m_store, msg()) );
 
-  RETURN_CHECK("MetHistsAlgo::execute()", m_plots->execute( met, eventWeight ), "");
+  ANA_CHECK( m_plots->execute( met, eventWeight ));
 
   return EL::StatusCode::SUCCESS;
 }
@@ -86,6 +80,6 @@ EL::StatusCode MetHistsAlgo :: histFinalize ()
   // clean up memory
   if(m_plots) delete m_plots;
 
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

@@ -11,13 +11,13 @@ class TrackHistsAlgo : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_inContainerName;
+  std::string m_inContainerName = "";
 
   // configuration variables
-  std::string m_detailStr;
+  std::string m_detailStr = "";
 
 private:
-  TrackHists* m_plots; //!
+  TrackHists* m_plots = nullptr; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -27,7 +27,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  TrackHistsAlgo (std::string className = "TrackHistsAlgo");
+  TrackHistsAlgo ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

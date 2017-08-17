@@ -17,7 +17,6 @@
 // EDM include(s):
 #include <xAODEventInfo/EventInfo.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 #include <xAODAnaHelpers/PhotonSelector.h>
 #include <xAODEgamma/EgammaDefs.h>
@@ -25,7 +24,6 @@
 
 
 #include <IsolationSelection/IsolationSelectionTool.h>
-#include <TrigDecisionTool/TrigDecisionTool.h>
 
 // ROOT include(s):
 #include <TFile.h>
@@ -36,73 +34,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(PhotonSelector)
 
-PhotonSelector :: PhotonSelector (std::string className) :
-    Algorithm(className),
-    m_cutflowHist(nullptr),
-    m_cutflowHistW(nullptr),
-    m_ph_cutflowHist_1(nullptr),
-    m_IsolationSelectionTool(nullptr),
-    m_trigDecTool(nullptr)
-//m_match_Tool(nullptr)
+PhotonSelector :: PhotonSelector () :
+    Algorithm("PhotonSelector")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-  Info("PhotonSelector()", "Calling constructor");
-
-  m_debug                   = false;
-  m_useCutFlow              = true;
-
-  // input container to be read from TEvent or TStore
-  //
-  m_inContainerName         = "";
-
-  // Systematics stuff
-  //
-  m_inputAlgoSystNames      = "";
-  m_outputAlgoSystNames     = "PhotonSelector_Syst";
-
-
-  // decorate selected objects that pass the cuts
-  //
-  m_decorateSelectedObjects = true;
-  // additional functionality : create output container of selected objects
-  //                            using the SG::VIEW_ELEMENTS option
-  //                            decorating and output container should not be mutually exclusive
-  m_createSelectedContainer = true;
-  // if requested, a new container is made using the SG::VIEW_ELEMENTS option
-  m_outContainerName        = "";
-
-  // if only want to look at a subset of object
-  //
-  m_nToProcess              = -1;
-
-  // configurable cuts
-  //
-  m_pass_max                = -1;
-  m_pass_min                = -1;
-  m_pT_max                  = 1e8;
-  m_pT_min                  = 1e8;
-  m_eta_max                 = 1e8;
-  m_vetoCrack               = true;
-  m_doAuthorCut             = true;
-  m_doOQCut                 = true;
-
-  // PID
-  m_photonIdCut             = "None";
-
-  // isolation stuff
-  //
-  m_MinIsoWPCut             = "";
-  m_IsoWPList		    = "FixedCutTightCaloOnly,FixedCutTight,FixedCutLoose";
-
-  // trigger matching stuff
-  //
-  m_PhTrigChains            = "";
-
 }
 
 PhotonSelector::~PhotonSelector() {}
@@ -117,7 +51,7 @@ EL::StatusCode PhotonSelector :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "PhotonSelector" ).ignore(); // call before opening first file
@@ -132,8 +66,8 @@ EL::StatusCode PhotonSelector :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  Info("histInitialize()", "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_MSG_INFO( "Calling histInitialize");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -143,7 +77,7 @@ EL::StatusCode PhotonSelector :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  Info("fileExecute()", "Calling fileExecute");
+  ANA_MSG_INFO( "Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -154,7 +88,7 @@ EL::StatusCode PhotonSelector :: changeInput (bool /*firstFile*/)
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
 
-  Info("changeInput()", "Calling changeInput");
+  ANA_MSG_INFO( "Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -170,7 +104,7 @@ EL::StatusCode PhotonSelector :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing PhotonSelector Interface... ");
+  ANA_MSG_INFO( "Initializing PhotonSelector Interface... ");
 
   // Let's see if the algorithm has been already used before:
   // if yes, will write object cutflow in a different histogram!
@@ -178,7 +112,7 @@ EL::StatusCode PhotonSelector :: initialize ()
   // This is the case when the selector algorithm is used for
   // preselecting objects, and then again for the final selection
   //
-  Info("initialize()", "Algorithm name: '%s' - of type '%s' ", (this->m_name).c_str(), (this->m_className).c_str() );
+  ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
 
   if ( m_useCutFlow ) {
 
@@ -212,7 +146,7 @@ EL::StatusCode PhotonSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
@@ -226,7 +160,7 @@ EL::StatusCode PhotonSelector :: initialize ()
   }
 
   if ( m_inContainerName.empty() ) {
-    Error("initialize()", "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -248,52 +182,18 @@ EL::StatusCode PhotonSelector :: initialize ()
   } else {
     m_IsolationSelectionTool = new CP::IsolationSelectionTool(isoToolName.c_str());
   }
-  if ( m_debug ) { Info("initialize()", "Adding isolation WP %s to IsolationSelectionTool", (m_IsoKeys.at(0)).c_str() ); }
-  RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->setProperty("PhotonWP", (m_IsoKeys.at(0)).c_str()), "Failed to configure base WP" );
-  RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->initialize(), "Failed to properly initialize IsolationSelectionTool." );
+  ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
+  ANA_CHECK( m_IsolationSelectionTool->setProperty("PhotonWP", (m_IsoKeys.at(0)).c_str()));
+  ANA_CHECK( m_IsolationSelectionTool->initialize());
 
   for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
-    if ( m_debug ) { Info("initialize()", "Adding extra isolation WP %s to IsolationSelectionTool", (*WP_itr).c_str() ); }
-    RETURN_CHECK( "PhotonSelector::initialize()", m_IsolationSelectionTool->addPhotonWP( (*WP_itr).c_str() ), "Failed to add isolation WP" );
-  }
-
-  // ***************************************
-  //
-  // Initialise Trig::TrigEgammaMatchingTool
-  //
-  // ***************************************
-  if( !m_PhTrigChains.empty()) {
-    std::string trig;
-    std::istringstream ss(m_PhTrigChains);
-
-    while ( std::getline(ss, trig, ',') ) {
-      m_PhTrigChainsList.push_back(trig);
-    }
-
-    if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
-      m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
-    } else {
-      Error("Initialize()", "the Trigger Decision Tool is not initialized.. [%s]", m_name.c_str());
-      return EL::StatusCode::FAILURE;
-    }
-
-    ToolHandle<Trig::TrigDecisionTool> trigDecHandle( m_trigDecTool );
-
-    //  everything went fine, let's initialise the tool!
-    //
-    const std::string MatchingToolName = m_name+"_TrigEgammaMatchingTool";
-    //    if ( asg::ToolStore::contains<Trig::TrigEgammaMatchingTool>(MatchingToolName.c_str()) ) {
-      //m_match_Tool = asg::ToolStore::get<Trig::TrigEgammaMatchingTool>(MatchingToolName.c_str());
-    //} else {
-      //m_match_Tool = new Trig::TrigEgammaMatchingTool(MatchingToolName.c_str());
-      //RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->setProperty( "TriggerTool", trigDecHandle ), "Failed to configure TrigDecisionTool" );
-      //RETURN_CHECK( "PhotonSelector::initialize()", m_match_Tool->initialize(), "Failed to properly initialize TrigMuonMatching." );
-    //}
+    ANA_MSG_DEBUG( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" );
+    ANA_CHECK( m_IsolationSelectionTool->addPhotonWP( (*WP_itr).c_str() ));
   }
 
   // **********************************************************************************************
 
-  Info("initialize()", "PhotonSelector Interface succesfully initialized!" );
+  ANA_MSG_INFO( "PhotonSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -306,18 +206,17 @@ EL::StatusCode PhotonSelector :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Photon Selection... "); }
+  ANA_MSG_DEBUG( "Applying Photon Selection... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,
-	       Form("Failed in retrieving %s in %s", m_eventInfoContainerName.c_str(), m_name.c_str() ));
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   // MC event weight
   //
   float mcEvtWeight(1.0);
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    Error("execute()  ", "mcEventWeight is not available as decoration! Aborting" );
+    ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
     return EL::StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
@@ -335,7 +234,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, m_verbose) , "");
+    ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) );
 
     // create output container (if requested)
     ConstDataVector<xAOD::PhotonContainer>* selectedPhotons(nullptr);
@@ -349,7 +248,7 @@ EL::StatusCode PhotonSelector :: execute ()
       if ( eventPass ) {
         // add ConstDataVector to TStore
 	//
-        RETURN_CHECK( "PhotonSelector::execute()", m_store->record( selectedPhotons, m_outContainerName ), "Failed to store const data container");
+        ANA_CHECK( m_store->record( selectedPhotons, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
         delete selectedPhotons; selectedPhotons = nullptr;
@@ -361,22 +260,22 @@ EL::StatusCode PhotonSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, m_verbose) ,"");
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
     //
     std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-    if ( m_debug ) { Info("execute()", " input list of syst size: %i ", static_cast<int>(systNames->size()) ); }
+    ANA_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
 
     // loop over systematic sets
     //
     bool eventPassThisSyst(false);
     for ( auto systName : *systNames) {
 
-      if ( m_debug ) { Info("execute()", " syst name: %s  input container name: %s ", systName.c_str(), (m_inContainerName+systName).c_str() ); }
+      ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      RETURN_CHECK("PhotonSelector::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName + systName, m_event, m_store, m_verbose), "");
+      ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName + systName, m_event, m_store, msg()));
 
       // create output container (if requested) - one for each systematic
       //
@@ -399,13 +298,13 @@ EL::StatusCode PhotonSelector :: execute ()
       //
       eventPass = ( eventPass || eventPassThisSyst );
 
-      if ( m_debug ) { Info("execute()", " syst name: %s  output container name: %s ", systName.c_str(), (m_outContainerName+systName).c_str() ); }
+      ANA_MSG_DEBUG( " syst name: " << systName << "  output container name: " << m_outContainerName+systName );
 
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
 	  //
-          RETURN_CHECK( "PhotonSelector::execute()", m_store->record( selectedPhotons, m_outContainerName+systName ), "Failed to store const data container");
+          ANA_CHECK( m_store->record( selectedPhotons, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
 	  //
@@ -414,16 +313,16 @@ EL::StatusCode PhotonSelector :: execute ()
       }
     }
 
-    if ( m_debug ) {  Info("execute()", " output list of syst size: %i ", static_cast<int>(vecOutContainerNames->size()) ); }
+    ANA_MSG_DEBUG(" output list of syst size: " << static_cast<int>(vecOutContainerNames->size()) );
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    RETURN_CHECK( "PhotonSelector::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+    ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
   }
 
   // look what we have in TStore
   //
-  if ( m_verbose ) { m_store->print(); }
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if( !eventPass ) {
     wk()->skipEvent();
@@ -491,74 +390,6 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
     m_weightNumEventPass += mcEvtWeight;
   }
 
-  // Perform trigger matching on the "good" (selected) photons
-  //
-  // NB: this part will be skipped if:
-  //
-  //  1. the user didn't pass any trigger chains to the algo (see initialize(): in that case, the tool is not even initialised!)
-  //  2. there are no selected photons in the event
-  //
-//  if ( m_match_Tool && selectedPhotons ) {
-//
-//    unsigned int nSelectedPhotons = selectedPhotons->size();
-//
-//    if ( nSelectedPhotons > 0 ) {
-//
-//      if ( m_debug ) { Info("executeSelection()", "Now doing photon trigger matching..."); }
-//
-//      for ( auto const &chain : m_PhTrigChainsList ) {
-//
-//	if ( m_debug ) { Info("executeSelection()", "\t checking trigger chain %s", chain.c_str()); }
-//
-//	for ( auto const photon : *selectedPhotons ) {
-//
-//	  SG::AuxElement::Decorator< std::map<std::string,bool> > isTrigMatchedMapPhDecor( "isTrigMatchedMapPh" );
-//	  if ( !isTrigMatchedMapPhDecor.isAvailable( *photon ) ) {
-//	    isTrigMatchedMapPhDecor( *photon ) = std::map<std::string,bool>();
-//	  }
-//
-//	  bool matched = false;
-//
-//	  static const bool DO_TEMPORAL_MATCHING = true;
-//
-//	  if (!DO_TEMPORAL_MATCHING)  { // the current matching tool does not work for the photon
-//	    matched = ( m_match_Tool->matchHLT( photon, chain ) );
-//
-//	    if ( m_debug ) { Info("executeSelection()", "\t\t is photon trigger matched? %s for %s", (matched ? "Y" : "N"), chain.c_str()); }
-//	  } else {
-//
-//	    if(m_event->contains<xAOD::PhotonContainer>("HLT_xAOD__PhotonContainer_egamma_Photons")){ // check if trigger photon info exist
-//	      // get trigger list from config file
-//	      Trig::FeatureContainer fc = m_trigDecTool->features(chain);
-//	      const auto vec = fc.containerFeature<xAOD::PhotonContainer>("egamma_Photons");
-//	      if ( m_debug ) { Info("executeSelection()", "%d trigger objects are found and to be used for the matching", (int) vec.size() ); }
-//	      double deltaR = 0.;
-//	      for(auto feat : vec){
-//		const xAOD::PhotonContainer *cont = feat.cptr();
-//		for(const auto& phTrig : *cont){
-//		  double eta1 = photon->eta();
-//		  double phi1 = photon->phi();
-//		  double eta2 = phTrig->eta();
-//		  double phi2 = phTrig->phi();
-//		  double deta = fabs(eta1 - eta2);
-//		  double dphi = fabs(phi1 - phi2) < TMath::Pi() ? fabs(phi1 - phi2) : 2*TMath::Pi() - fabs(phi1 - phi2);
-//		  deltaR = sqrt(deta*deta + dphi*dphi);
-//		  if(deltaR < 0.07) matched = true;
-//		}
-//		if ( m_debug ) { Info("executeSelection()", "\t\t is photon trigger matched? %s for %s", (matched ? "Y" : "N"), chain.c_str()); }
-//	      } // loop over trigger list
-//	    } else {
-//	      if ( m_debug ) { Info("executeSelection()", "HLT_xAOD__PhotonContainer_egamma_Photons is not available in this datafile"); }
-//	      matched = false;
-//	    }
-//	  }
-//
-//	  ( isTrigMatchedMapPhDecor( *photon ) )[chain] = matched;
-//	}
-//      }
-//    }
-//  }
-
   return true;
 }
 
@@ -579,7 +410,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   // photon ID key name set
   std::string photonIDKeyName = "PhotonID_"+m_photonIdCut;
   if (  (!(photon->isAvailable< bool >( photonIDKeyName ) )) and (m_photonIdCut != "None") ) {
-    Error("passCuts()", Form("Please call PhotonCalibrator before calling PhotonSelector, or check the quality requirement (should be either of Tight/Medium/Loose) [%s %s]",m_name.c_str(), photonIDKeyName.c_str()) );
+    ANA_MSG_ERROR("Please call PhotonCalibrator before calling PhotonSelector, or check the quality requirement (should be either of Tight/Medium/Loose) [" << m_name << " " << photonIDKeyName << "]");
   }
 
   if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_all, 1 );
@@ -590,7 +421,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   //
   if( m_doAuthorCut ) {
     if( ! ( (photon->author() & xAOD::EgammaParameters::AuthorPhoton) || (photon->author() & xAOD::EgammaParameters::AuthorAmbiguous) ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Photon failed author kinematic cut." ); }
+      ANA_MSG_DEBUG( "Photon failed author kinematic cut." );
       return false;
     }
   }
@@ -602,7 +433,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   //
   if ( m_doOQCut ) {
     if ( (oq & 134217728) != 0 && (reta > 0.98 || rphi > 1.0 || (oq & 67108864) != 0) ) {
-      if ( m_debug ) { Info("PassCuts()", "Electron failed Object Quality cut." ); }
+      ANA_MSG_DEBUG( "Electron failed Object Quality cut." );
       return 0;
     }
   }
@@ -615,7 +446,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   if ( m_photonIdCut != "None" ) {
     // it crashes in case the "PhotonID_X" is not stored on purpose
     if ( ! photon->auxdecor< bool >( photonIDKeyName ) ) {
-      if ( m_debug ) { Info("PassCuts()", "Photon failed ID cut." ); }
+      ANA_MSG_DEBUG( "Photon failed ID cut." );
       return false;
     }
   }
@@ -627,7 +458,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   //
   if ( m_pT_max != 1e8 ) {
     if ( et > m_pT_max ) {
-      if ( m_debug ) { Info("PassCuts()", "Photon failed pT max cut." ); }
+      ANA_MSG_DEBUG( "Photon failed pT max cut." );
       return false;
     }
   }
@@ -639,7 +470,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   //
   if ( m_pT_min != 1e8 ) {
     if ( et < m_pT_min ) {
-      if ( m_debug ) { Info("PassCuts()", "Photon failed pT min cut." ); }
+      ANA_MSG_DEBUG( "Photon failed pT min cut." );
       return false;
     }
   }
@@ -654,7 +485,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   //
   if ( m_eta_max != 1e8 ) {
     if ( fabs(eta) > m_eta_max ) {
-      if ( m_debug ) { Info("PassCuts()", "Photon failed |eta| max cut." ); }
+      ANA_MSG_DEBUG( "Photon failed |eta| max cut." );
       return false;
     }
   }
@@ -662,7 +493,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   //
   if ( m_vetoCrack ) {
     if ( fabs( eta ) > 1.37 && fabs( eta ) < 1.52 ) {
-      if ( m_debug ) { Info("PassCuts()", "Photon failed |eta| crack veto cut." ); }
+      ANA_MSG_DEBUG( "Photon failed |eta| crack veto cut." );
       return false;
     }
   }
@@ -685,7 +516,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
 
     std::string decorWP = base_decor + "_" + WP_itr;
 
-    if ( m_debug ) { Info("PassCuts()", "Decorate photon with %s - accept() ? %i", decorWP.c_str(), accept_list.getCutResult( WP_itr.c_str()) ); }
+    ANA_MSG_DEBUG( "Decorate photon with " << decorWP << " - accept() ? " << accept_list.getCutResult( WP_itr.c_str()) );
     photon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
 
   }
@@ -693,7 +524,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   // Apply the cut if needed
   //
   if ( !m_MinIsoWPCut.empty() && !accept_list.getCutResult( m_MinIsoWPCut.c_str() ) ) {
-    if ( m_debug ) { Info("PassCuts()", "Photon failed isolation cut %s ",  m_MinIsoWPCut.c_str() ); }
+    ANA_MSG_DEBUG( "Photon failed isolation cut " << m_MinIsoWPCut );
     return false;
   }
   if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_iso_cut, 1 );
@@ -708,7 +539,7 @@ EL::StatusCode PhotonSelector :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  ANA_MSG_DEBUG( "Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -727,31 +558,33 @@ EL::StatusCode PhotonSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances...");
+  ANA_MSG_INFO( "Deleting tool instances...");
 
   if ( m_useCutFlow ) {
-    Info("finalize()", "Filling cutflow");
+    ANA_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
 
-  if (m_debug) { Info("finalize()", "Cutflow filled"); }
+  ANA_MSG_DEBUG("Cutflow filled");
 
   if (m_IsolationSelectionTool) {
     delete m_IsolationSelectionTool;
     m_IsolationSelectionTool = nullptr;
   }
 
-  if (m_debug) { Info("finalize()", "Isolation Tool deleted"); }
+  ANA_MSG_DEBUG("Isolation Tool deleted");
 
-//  if (m_match_Tool) {
-//    delete m_match_Tool;
-//    m_match_Tool = nullptr;
-//  }
+/*
+  if (m_match_Tool) {
+    delete m_match_Tool;
+    m_match_Tool = nullptr;
+  }
+*/
 
-  if (m_debug) { Info("finalize()", "Matching Tool deleted"); }
+  ANA_MSG_DEBUG("Matching Tool deleted");
 
-  Info("finalize()", "Finalization done.");
+  ANA_MSG_INFO( "Finalization done.");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -770,10 +603,8 @@ EL::StatusCode PhotonSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_MSG_INFO( "Calling histFinalize");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
 
   return EL::StatusCode::SUCCESS;
 }
-
-

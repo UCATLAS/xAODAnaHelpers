@@ -16,58 +16,111 @@
 #include "PATInterfaces/SystematicVariation.h"
 
 // external tools include(s):
-#include "JetCalibTools/JetCalibrationTool.h"
-#include "JetUncertainties/JetUncertaintiesTool.h"
-#include "JetResolution/JERTool.h"
-#include "JetResolution/JERSmearingTool.h"
-#include "JetSelectorTools/JetCleaningTool.h"
-#include "JetMomentTools/JetVertexTaggerTool.h"
+#include "AsgTools/AnaToolHandle.h"
+#include "JetCalibTools/IJetCalibrationTool.h"
+#include "JetCPInterfaces/ICPJetUncertaintiesTool.h"
+#include "JetResolution/IJERTool.h"
+#include "JetResolution/IJERSmearingTool.h"
+#include "JetInterface/IJetSelector.h"
+#include "JetInterface/IJetUpdateJvt.h"
+#include "JetCPInterfaces/IJetTileCorrectionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
+/** @rst
+  A wrapper to a few JetETMiss packages. By setting the configuration parameters detailed in the header documentation, one can:
+
+    - calibrate a given jet collection
+    - apply systematic variations for JES
+    - apply systematic variations for JER
+    - decorate the jet with the decision of the Jet Cleaning tool
+
+  When considering systematics, a new ``xAOD::JetCollection`` is created for each systematic variation. The names are then saved in a vector for downstream algorithms to use.
+
+@endrst */
 class JetCalibrator : public xAH::Algorithm
 {
-  // put your configuration variables here as public variables.
-  // that way they can be set directly from CINT and python.
 public:
-  // configuration variables
-  std::string m_inContainerName;
-  std::string m_outContainerName;
+  /// @brief The name of the input container for this algorithm to read from ``TEvent`` or ``TStore``
+  std::string m_inContainerName = "";
+  /**
+      @brief The name of the nominal output container written by the algorithm to ``TStore``
 
-  std::string m_jetAlgo;
-  std::string m_outputAlgo;
-  std::string m_calibConfigData;
-  std::string m_calibConfigFullSim;
-  std::string m_calibConfigAFII;
-  std::string m_calibConfig;
-  std::string m_calibSequence;
-  std::string m_JESUncertConfig;
-  std::string m_JESUncertMCType;
-  bool m_setAFII;
+      If the algorithm applies systematic variations, for each shallow copy saved to ``TStore``, the systematic name will be appended to this.
+  */
+  std::string m_outContainerName = "";
 
-  bool m_isTrigger; // whether the jet collection is trigger or not (soon: different calibrations)
+  /// @brief set to ``AntiKt4EMTopo`` for ``AntiKt4EMTopoJets``
+  std::string m_jetAlgo = "";
+  /// @brief name of vector holding names of jet systematics given by the JetEtmiss Tools
+  std::string m_outputAlgo = "";
+  /// @brief config for JetCalibrationTool for Data
+  std::string m_calibConfigData = "JES_MC15Prerecommendation_April2015.config";
+  /// @brief config for JetCalibrationTool for Full Sim MC
+  std::string m_calibConfigFullSim = "JES_MC15Prerecommendation_April2015.config";
+  /// @brief config for JetCalibrationTool for AFII MC
+  std::string m_calibConfigAFII = "JES_Prerecommendation2015_AFII_Apr2015.config";
+  /// @brief config files actually passed to JetCalibrationTool chosen from the above depending on what information stored in the input file
+  std::string m_calibConfig = "";
+  /// @brief List of calibration steps. "Insitu" added automatically if running on data
+  std::string m_calibSequence = "JetArea_Residual_Origin_EtaJES_GSC";
+  /// @brief config for JES Uncertainty Tool
+  std::string m_JESUncertConfig = "";
+  /// @brief JetUncertaintiesTool parameter
+  std::string m_JESUncertMCType = "MC15";
+  /** @rst
+    If you do not want to use SampleHandler to mark samples as AFII, this flag can be used to force run the AFII configurations.
 
-  std::string m_JERUncertConfig;
-  bool m_JERFullSys;
-  bool m_JERApplyNominal;
+    With SampleHandler, one can define sample metadata in job steering macro. You can do this with relevant samples doing something like:
 
-  /// enable to apply jet cleaning
-  bool m_doCleaning;
-  std::string m_jetCleanCutLevel;
-  bool m_saveAllCleanDecisions;
-  bool m_jetCleanUgly;
-  bool m_redoJVT;
-  // sort after calibration
-  bool    m_sort;
-  //Apply jet cleaning to parent jet
-  bool    m_cleanParent;
-  bool    m_applyFatJetPreSel;
+    .. code-block:: c++
 
-  // systematics
-  bool m_runSysts;
+      // access a single sample
+      Sample *sample = sh.get ("mc14_13TeV.blahblahblah");
+      sample->setMetaString("SimulationFlavour", "AFII");
+
+  @endrst */
+  bool m_setAFII = false;
+  /// @brief when running data "_Insitu" is appended to this string
+  bool m_forceInsitu = true;
+  /// @brief when using DEV mode of JetCalibTools
+  bool m_jetCalibToolsDEV = false;
+
+  // @brief Config for JER Uncert Tool. If not empty the tool will run
+  std::string m_JERUncertConfig = "";
+  /// @brief Set systematic mode as Full (true) or Simple (false)
+  bool m_JERFullSys = false;
+  /// @brief Apply nominal smearing
+  bool m_JERApplyNominal = false;
+
+  /// @brief enable to apply jet cleaning decoration
+  bool m_doCleaning = true;
+  /// @brief Cut Level
+  std::string m_jetCleanCutLevel = "LooseBad";
+  /// @brief Save all cleaning decisions as decorators
+  bool m_saveAllCleanDecisions = false;
+  /// @brief Do Ugly cleaning ( i.e. TileGap 3 )
+  bool m_jetCleanUgly = false;
+  /// @brief Recalculate JVT using the calibrated jet pT
+  bool m_redoJVT = false;
+
+  /// @brief Name of Jvt aux decoration.  Was "JvtJvfcorr" in Rel 20.7, is now "JVFCorr" in Rel 21. Leave empty to use JetMomentTools default.  This must be left empty for RootCore (r20.7) code! 
+  std::string m_JvtAuxName = "";
+  /// @brief Sort the processed container elements by transverse momentum
+  bool    m_sort = true;
+  /// @brief Apply jet cleaning to parent jet
+  bool    m_cleanParent = false;
+  bool    m_applyFatJetPreSel = false;
+
+// systematics
+  /// @brief jet tile correction
+  bool m_doJetTileCorr = false;
 
 private:
+  /// @brief set to true if systematics asked for and exist
+  bool m_runSysts = false; //!
+
   int m_numEvent;         //!
   int m_numObject;        //!
 
@@ -78,32 +131,21 @@ private:
   std::vector<int> m_systType; //!
 
   // tools
-  JetCalibrationTool       * m_jetCalibration; //!
+  asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle{"JetCalibrationTool"};         //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle{"JetUncertaintiesTool"};     //!
+  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle{"JERTool"};                               //!
+  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle{"JERSmearingTool"};               //!
+  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle{"JetVertexTaggerTool"};             //!
+  asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle{"JetCleaningTool"};               //!
+  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool"};   //!
 
-  JetUncertaintiesTool     * m_JESUncertTool;      //!
-
-  JERTool                  * m_JERTool;        //!
-  JERSmearingTool          * m_JERSmearTool;   //!
-  ToolHandle<IJERTool>       m_JERToolHandle;  //!
-
-  JetVertexTaggerTool      * m_JVTTool;        //!
-  ToolHandle<IJetUpdateJvt>  m_JVTToolHandle;  //!
-
-  JetCleaningTool          * m_jetCleaning;    //!
+  std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles;                              //!
   std::vector<std::string>  m_decisionNames;    //!
-  std::vector< JetCleaningTool* > m_allJetCleaningTools;   //!
 
-
-  // variables that don't get filled at submission time should be
-  // protected from being send from the submission node to the worker
-  // node (done by the //!)
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
-
 
   // this is a standard constructor
-  JetCalibrator (std::string className = "JetCalibrator");
+  JetCalibrator ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

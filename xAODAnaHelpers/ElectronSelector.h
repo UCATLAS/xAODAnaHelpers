@@ -19,106 +19,219 @@
 #include "TH1D.h"
 
 // external tools include(s):
-#include "IsolationSelection/IsolationSelectionTool.h"
 #include "AsgTools/AnaToolHandle.h"
+#include "IsolationSelection/IIsolationSelectionTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
+#include "TriggerMatchingTool/IMatchingTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
-
-namespace Trig {
-  class TrigDecisionTool;
-  //class TrigEgammaMatchingTool;
+// forward-declare for now until IsolationSelectionTool interface is updated
+namespace CP {
+  class IsolationSelectionTool;
 }
 
+/**
+  @rst
+    This is the algorithm class that selects electrons according to user's choice.
+
+    In a nutshell, this algorithm performs the following actions:
+
+      - retrieves an ``xAOD::ElectronContainer`` from either ``TEvent`` or ``TStore``
+      - iterates over the input container, and if electron passes selection, copies it in a ``ConstDataVector(SG::VIEW_ELEMENTS)`` container. Otherwise, the electron is skipped
+      - saves the view container to ``TStore``, from where it can be retrieved by algorithms downstream via a name lookup
+
+  @endrst
+*/
 class ElectronSelector : public xAH::Algorithm
 {
-  /*
-  put your configuration variables here as public variables.
-  that way they can be set directly from CINT and python.
-
-  variables that don't get filled at submission time should be
-  protected from being send from the submission node to the worker
-  node (done by the //!)
-  */
-
 public:
 
-  bool m_useCutFlow;
+  bool m_useCutFlow = true;
 
   /* configuration variables */
 
-  std::string    m_inContainerName;          /* input container name */
-  std::string    m_outContainerName;         /* output container name */
-  std::string    m_outAuxContainerName;      /* output auxiliary container name */
-  std::string    m_inputAlgoSystNames;
-  std::string    m_outputAlgoSystNames;
-  bool       	 m_decorateSelectedObjects;  /* decorate selected objects - default "passSel" */
-  bool       	 m_createSelectedContainer;  /* fill using SG::VIEW_ELEMENTS to be light weight */
-  int        	 m_nToProcess;  	     /* look at n objects */
-  int        	 m_pass_min;		     /* minimum number of objects passing cuts */
-  int        	 m_pass_max;		     /* maximum number of objects passing cuts */
-  float      	 m_pT_max;		     /* require pT < pt_max */
-  float      	 m_pT_min;		     /* require pT > pt_min */
-  float      	 m_eta_max;		     /* require |eta| < eta_max */
-  bool	     	 m_vetoCrack;		     /* require |eta| outside crack region */
-  float      	 m_d0_max;		     /* require d0 < m_d0_max */
-  float      	 m_d0sig_max;		     /* require d0 significance (at BL) < m_d0sig_max */
-  float	     	 m_z0sintheta_max;	     /* require z0*sin(theta) (at BL - corrected with vertex info) < m_z0sintheta_max */
-  bool           m_doAuthorCut;
-  bool           m_doOQCut;
-  bool           m_doBLTrackQualityCut;
+  /// @brief The name of the input container for this algorithm read from ``TEvent`` or ``TStore``
+  std::string    m_inContainerName = "";
+  /// @brief The name of the nominal output container written by the algorithm to ``TStore``
+  std::string    m_outContainerName = "";
 
-  /* electron PID */
+// systematics
+  /**
+    @brief The name of the vector containing the names of the systematically-varied containers from the upstream algorithm, which will be processed by this algorithm.
 
-  bool           m_readIDFlagsFromDerivation;
-  std::string    m_confDirPID;
+    This vector is retrieved from the ``TStore``. If left blank, it means there is no upstream algorithm which applies systematics. This is the case when processing straight from the original ``xAOD`` or ``DxAOD``.
+  */
+  std::string    m_inputAlgoSystNames = "";
+  /**
+    @brief The name of the vector containing the names of the systematically-varied containers created by by this algorithm.
 
-  /* likelihood-based  */
-  bool           m_doLHPIDcut;
-  std::string    m_LHConfigYear;
-  std::string    m_LHOperatingPoint;
+    @rst
+      If :cpp:member:`~xAH::Algorithm::m_systName` is empty, the vector will contain only an empty string. When running on systematics, this is the string a downstream algorithm needs to process electrons.
+    @endrst
+  */
+  std::string    m_outputAlgoSystNames = "ElectronSelector_Syst";
 
-  /* cut-based */
-  bool           m_doCutBasedPIDcut;
-  std::string    m_CutBasedConfigYear;
-  std::string    m_CutBasedOperatingPoint;
+  /// @brief Adds a ``passSel`` decoration for objects that pass selection
+  bool       	 m_decorateSelectedObjects = true;
+  /// @brief Fill using a read-only container (``SG::VIEW_ELEMENTS``) to ``TStore``
+  bool       	 m_createSelectedContainer = false;
+  /// @brief Number of objects to process, set ``n=-1`` to look at all
+  int        	 m_nToProcess = -1;
+  /// @brief Require event to have minimum number of objects passing selection
+  int        	 m_pass_min = -1;
+  /// @brief Require event to have maximum number of objects passing selection
+  int        	 m_pass_max = -1;
+  /// @brief [MeV] Require objects to have maximum transverse momentum threshold
+  float      	 m_pT_max = 1e8;
+  /// @brief [MeV] Require objects to have minimum transverse momentum threshold
+  float      	 m_pT_min = 1e8;
 
-  /* isolation */
+  /**
+    @rst
+      Require objects to have maximum :math:`|\eta|` value
+    @endrst
+  */
+  float      	 m_eta_max = 1e8;
 
-  std::string    m_MinIsoWPCut;              /* reject objects which do not pass this isolation cut - default = "" (no cut) */
-  std::string    m_IsoWPList;                /* decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
-  std::string    m_CaloIsoEff;               /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
-  std::string    m_TrackIsoEff;              /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
-  std::string    m_CaloBasedIsoType;         /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
-  std::string    m_TrackBasedIsoType;        /* to define a custom WP - make sure "UserDefined" is added in the above input list! */
+  /**
+    @rst
+      Require objects to have :math:`|\eta|` outside the crack region using ``caloCluster->eta()``
+    @endrst
+  */
+  bool	     	 m_vetoCrack = true;
 
-  /* trigger matching */
+  /**
+    @rst
+      Require objects to have a maximum :math:`d_{0}` [mm] (transverse impact parameter)
+    @endrst
+  */
+  float      	 m_d0_max = 1e8;
 
-  std::string    m_ElTrigChains;   /* A comma-separated string w/ alll the HLT electron trigger chains for which you want to perform the matching.
-  				      This is passed by the user as input in configuration
-				      If left empty (as it is by default), no trigger matching will be attempted at all */
+  /**
+    @rst
+      Require objects to have a maximum :math:`d_{0}` significance at BL
+    @endrst
+  */
+  float      	 m_d0sig_max = 1e8;
+
+  /**
+    @rst
+      Require objects to have maximum :math:`z_{0}\sin(\theta)` [mm] (longitudinal impact paramter) at BL - corrected with vertex info
+    @endrst
+  */
+  float	     	 m_z0sintheta_max = 1e8;
+
+  /// @brief Perform author kinematic cut
+  bool           m_doAuthorCut = true;
+  /// @brief Perform object quality cut
+  bool           m_doOQCut = true;
+
+  ///// electron PID /////
+
+  /** @brief To read electron PID decision from DAOD, rather than recalculate with tool */
+  bool           m_readIDFlagsFromDerivation = false;
+
+//// likelihood-based  ////
+  /** @brief Instantiate and perform the electron Likelihood PID */
+  bool           m_doLHPID = true;
+  /** @brief Cut on electron Likelihood PID (recommended) */
+  bool           m_doLHPIDcut = false;
+  /** @brief Loosest Likelihood PID operating point to save */
+  std::string    m_LHOperatingPoint = "Loose";
+
+//// cut-based ////
+  /** @brief Instantiate and perform the electron cut-based PID */
+  bool           m_doCutBasedPID = false;
+  /** @brief Cut on electron cut-based PID */
+  bool           m_doCutBasedPIDcut = false;
+  /** @brief Loosest cut-based PID operating point to save */
+  std::string    m_CutBasedOperatingPoint = "Loose";
+
+/* isolation */
+  /** @brief reject objects which do not pass this isolation cut - default = "" (no cut) */
+  std::string    m_MinIsoWPCut = "";
+  /** @brief decorate objects with ``isIsolated_*`` flag for each WP in this input list - default = all current ASG WPs */
+  std::string    m_IsoWPList = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  /** @rst
+     to define a custom WP - make sure ``"UserDefined"`` is added in :cpp:member:`~ElectronSelector::m_IsoWPList`
+  @endrst */
+  std::string    m_CaloIsoEff = "0.1*x+90";
+  /** @rst
+     to define a custom WP - make sure ``"UserDefined"`` is added in :cpp:member:`~ElectronSelector::m_IsoWPList`
+  @endrst */
+  std::string    m_TrackIsoEff = "98";
+  /** @rst
+     to define a custom WP - make sure ``"UserDefined"`` is added in :cpp:member:`~ElectronSelector::m_IsoWPList`
+  @endrst */
+  std::string    m_CaloBasedIsoType = "topoetcone20";
+  /** @rst
+     to define a custom WP - make sure ``"UserDefined"`` is added in :cpp:member:`~ElectronSelector::m_IsoWPList`
+  @endrst */
+  std::string    m_TrackBasedIsoType = "ptvarcone20";
+
+/* trigger matching */
+  /**
+    @brief A comma-separated string w/ alll the HLT single electron trigger chains for which you want to perform the matching.
+          This is passed by the user as input in configuration If left empty (as it is by default), no trigger matching will be attempted at all
+  */
+  std::string    m_singleElTrigChains = "";
+  /**
+    @brief A comma-separated string w/ alll the HLT di-electron trigger chains for which you want to perform the matching.
+           This is passed by the user as input in configuration If left empty (as it is by default), no trigger matching will be attempted at all
+  */
+  std::string    m_diElTrigChains = "";
+  /// Recommended threshold for egamma triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
+  double         m_minDeltaR = 0.07;
+
+  /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
+  std::string m_trigDecTool_name{"xAH_TDT"};
 
 private:
 
+  /**
+    @brief Performs the Likelihood PID B-Layer cut locally.
+    @rst
+      .. note:: Occurs automatically only if :cpp:member:`~ElectronSelector::m_LHOperatingPoint` is ``LooseBL`` and :cpp:member:`~ElectronSelector::m_readIDFlagsFromDerivation` is ``true``
+
+    @endrst
+  */
+  bool           m_doBLTrackQualityCut;
+
+  /// @brief the name of the auxiliary store for the output container
+  std::string    m_outAuxContainerName;
+
+  /// @brief keep track of the total number of events processed
   int m_numEvent;           //!
+  /// @brief keep track of the total number of objects processed
   int m_numObject;          //!
+  /** @rst
+    keep track of the number of passed events, and fill the cutflow (relevant only if using the algo to skim events: see :cpp:member:`~ElectronSelector::m_pass_max` and :cpp:member:`~ElectronSelector::m_pass_min` above)
+  @endrst */
   int m_numEventPass;       //!
+  /** @rst
+    keep track of the number of weighted passed events, and fill the cutflow (relevant only if using the algo to skim events: see :cpp:member:`~ElectronSelector::m_pass_max` and :cpp:member:`~ElectronSelector::m_pass_min` above)
+  @endrst */
   int m_weightNumEventPass; //!
+  /// @brief keep track of the number of selected objects
   int m_numObjectPass;      //!
 
-  /* event-level cutflow */
+/* event-level cutflow */
 
-  TH1D* m_cutflowHist;      //!
-  TH1D* m_cutflowHistW;     //!
+  /// @brief histogram for event cutflow
+  TH1D* m_cutflowHist = nullptr;      //!
+  /// @brief histgram for weighted event cutflow
+  TH1D* m_cutflowHistW = nullptr;     //!
+  /// @brief index of bin corresponding to this step of the full cutflow
   int   m_cutflow_bin;      //!
-
-  bool  m_isUsedBefore;     //!
+  /// @brief checks if the algorithm has been used already
+  bool  m_isUsedBefore = false;     //!
 
   /* object-level cutflow */
 
-  TH1D* m_el_cutflowHist_1;            //!
-  TH1D* m_el_cutflowHist_2;            //!
+  TH1D* m_el_cutflowHist_1 = nullptr;            //!
+  TH1D* m_el_cutflowHist_2 = nullptr;            //!
 
   int   m_el_cutflow_all;              //!
   int   m_el_cutflow_author_cut;       //!
@@ -137,26 +250,41 @@ private:
 
   /* tools */
 
-  asg::AnaToolHandle<CP::IsolationSelectionTool> m_isolationSelectionTool_handle; //!
-  std::string m_isolationSelectionTool_name;                                      //!
+  /// @brief MC15 ASG tool for isolation
+  asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool"}; //!
+  // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
+  CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                               //!
+  /**
+    @rst
+      The name of this tool (if needs to be changed) can be set with :cpp:member:`ElectronSelector::m_trigDecTool_name`.
+    @endrst
+  */
+  asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle{"Trig::TrigDecisionTool"};                //!
+  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle{"Trig::MatchingTool"};          //!
+  bool m_doTrigMatch = true;
 
   /* PID manager(s) */
-  ElectronLHPIDManager*            m_el_LH_PIDManager;       //!
-  ElectronCutBasedPIDManager*      m_el_CutBased_PIDManager; //!
-  Trig::TrigDecisionTool*          m_trigDecTool;            //!
-  //asg::AnaToolHandle<Trig::TrigEgammaMatchingTool>  m_trigElMatchTool_handle; //!
-  //std::string m_trigElMatchTool_name;    //!
-  bool m_doTrigMatch;
+  /// @brief class to manage LH PID selection/decorations - see ISSUE for explaination
+  ElectronLHPIDManager*                    m_el_LH_PIDManager = nullptr;        //!
+  /// @brief class to manage cut-based PID selection/decorations - see ISSUE for explaination
+  ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager = nullptr;  //!
 
   /* other private members */
 
-  std::vector<std::string>            m_ElTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_ElTrigChains */
+  /** @rst
+    contains all the HLT trigger chains tokens extracted from :cpp:member:`~ElectronSelector::m_singleElTrigChains`
+  @endrst */
+  std::vector<std::string>            m_singleElTrigChainsList;  //!
+  /** @rst
+    contains all the HLT trigger chains tokens extracted from :cpp:member:`~ElectronSelector::m_diElTrigChains`
+  @endrst */
+  std::vector<std::string>            m_diElTrigChainsList;      //!
 
 public:
 
   /* this is a standard constructor */
 
-  ElectronSelector (std::string className = "ElectronSelector");
+  ElectronSelector ();
 
   ~ElectronSelector();
 

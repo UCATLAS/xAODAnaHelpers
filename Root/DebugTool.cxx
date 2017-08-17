@@ -26,7 +26,6 @@
 #include "xAODAnaHelpers/DebugTool.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // external tools include(s):
 
@@ -37,16 +36,14 @@
 ClassImp(DebugTool)
 
 
-DebugTool :: DebugTool (std::string className) :
-    Algorithm(className),
-    m_printStore(false)
+DebugTool :: DebugTool () :
+    Algorithm("DebugTool")
 {
-  Info("DebugTool()", "Calling constructor");
 }
 
 EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 {
-  Info("setupJob()", "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
   job.useXAOD ();
   xAOD::Init( "DebugTool" ).ignore(); // call before opening first file
   return EL::StatusCode::SUCCESS;
@@ -56,8 +53,8 @@ EL::StatusCode DebugTool :: setupJob (EL::Job& job)
 
 EL::StatusCode DebugTool :: histInitialize ()
 {
-  Info("histInitialize()", "Calling histInitialize");
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_MSG_INFO( "Calling histInitialize");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
 
   return EL::StatusCode::SUCCESS;
 }
@@ -66,7 +63,7 @@ EL::StatusCode DebugTool :: histInitialize ()
 
 EL::StatusCode DebugTool :: fileExecute ()
 {
-  Info("fileExecute()", "Calling fileExecute");
+  ANA_MSG_INFO( "Calling fileExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -74,7 +71,7 @@ EL::StatusCode DebugTool :: fileExecute ()
 
 EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 {
-  Info("changeInput()", "Calling changeInput");
+  ANA_MSG_INFO( "Calling changeInput");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -82,12 +79,12 @@ EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 
 EL::StatusCode DebugTool :: initialize ()
 {
-  Info("initialize()", " ");
+  ANA_MSG_INFO( " ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -96,9 +93,7 @@ EL::StatusCode DebugTool :: initialize ()
 
 EL::StatusCode DebugTool :: execute ()
 {
-  if ( m_debug ) { Info("execute()", " "); }
-
-  Info("DebugTool", m_name.c_str());
+  ANA_MSG_INFO( m_name);
 
   //
   // look what we have in TStore
@@ -114,7 +109,7 @@ EL::StatusCode DebugTool :: execute ()
 
 EL::StatusCode DebugTool :: postExecute ()
 {
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  ANA_MSG_DEBUG("Calling postExecute");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -122,7 +117,7 @@ EL::StatusCode DebugTool :: postExecute ()
 
 EL::StatusCode DebugTool :: finalize ()
 {
-  Info("finalize()", "%s", m_name.c_str());
+  ANA_MSG_INFO( m_name );
   return EL::StatusCode::SUCCESS;
 }
 
@@ -130,8 +125,8 @@ EL::StatusCode DebugTool :: finalize ()
 
 EL::StatusCode DebugTool :: histFinalize ()
 {
-  Info("histFinalize()", "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_MSG_INFO( "Calling histFinalize");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 

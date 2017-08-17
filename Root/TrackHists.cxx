@@ -2,8 +2,9 @@
 
 #include <math.h>
 
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+
+ANA_MSG_SOURCE(msgTrackHists, "TrackHists")
 
 TrackHists :: TrackHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
@@ -16,9 +17,12 @@ StatusCode TrackHists::initialize() {
 
   // These plots are always made
   m_trk_n         = book(m_name, "trk_n",       "trk multiplicity", 10, -0.5, 9.5 );
+  m_trk_n_l       = book(m_name, "trk_n_l",     "trk multiplicity", 100, -0.5, 99.5 );
 
   m_trk_Pt        = book(m_name, "pt",          "trk p_{T} [GeV]", 100, 0, 10 );
   m_trk_Pt_l      = book(m_name, "pt_l",        "trk p_{T} [GeV]", 100, 0, 100 );
+  m_trk_P         = book(m_name, "p",           "trk |p| [GeV]", 100, 0, 10 );
+  m_trk_P_l       = book(m_name, "p_l",         "trk |p| [GeV]", 100, 0, 100 );
   m_trk_Eta       = book(m_name, "eta",         "trk #eta", 80, -4, 4);
   m_trk_Phi       = book(m_name, "phi",         "trk #phi",120, -TMath::Pi(), TMath::Pi() );
   m_trk_d0        = book(m_name, "d0",          "d0[mm]", 100,-5.0, 5.0 );
@@ -30,6 +34,27 @@ StatusCode TrackHists::initialize() {
 
   m_trk_chi2Prob  = book(m_name, "chi2Prob",    "chi2Prob", 100,   -0.01,     1.0);
   m_trk_charge    = book(m_name, "charge" ,     "charge",   3,  -1.5,  1.5   );
+
+  //
+  //  2D plots
+  //
+  m_fill2D = false;
+  if(m_detailStr.find("2D") != std::string::npos ){
+    m_fill2D = true;
+
+    m_trk_Eta_vs_trk_P            = book(m_name, "trk_Eta_vs_trk_P",                "trk |p| [GeV]", 100, 0, 10, "trk #eta", 80, -4, 4);
+    m_trk_Eta_vs_trk_P_l          = book(m_name, "trk_Eta_vs_trk_P_l",              "trk |p| [GeV]", 100, 0, 100, "trk #eta", 80, -4, 4);
+    m_trk_Phi_vs_trk_P            = book(m_name, "trk_Phi_vs_trk_P",                "trk |p| [GeV]", 100, 0, 10, "trk #phi",120, -TMath::Pi(), TMath::Pi());
+    m_trk_Phi_vs_trk_P_l          = book(m_name, "trk_Phi_vs_trk_P_l",              "trk |p| [GeV]", 100, 0, 100, "trk #phi",120, -TMath::Pi(), TMath::Pi());
+    m_trk_Eta_vs_trk_Phi          = book(m_name, "trk_Eta_vs_trk_Phi",              "trk #phi", 120, -TMath::Pi(), TMath::Pi(), "trk #eta", 80, -4, 4);
+
+    m_trk_d0_vs_trk_P             = book(m_name, "trk_d0_vs_trk_P",                 "trk |p| [GeV]", 100, 0, 10, "d0[mm]", 100,-5.0, 5.0);
+    m_trk_d0_vs_trk_P_l           = book(m_name, "trk_d0_vs_trk_P_l",               "trk |p| [GeV]", 100, 0, 100, "d0[mm]", 100,-5.0, 5.0);
+    m_trk_z0_vs_trk_P             = book(m_name, "trk_z0_vs_trk_P",                 "trk |p| [GeV]", 100, 0, 10, "z0[mm]", 100,-5.0, 5.0);
+    m_trk_z0_vs_trk_P_l           = book(m_name, "trk_z0_vs_trk_P_l",               "trk |p| [GeV]", 100, 0, 100, "z0[mm]", 100,-5.0, 5.0);
+    m_trk_z0sinT_vs_trk_P         = book(m_name, "trk_z0sinT_vs_trk_P",             "trk |p| [GeV]", 100, 0, 10, "z0xsin(#theta)[mm]", 100,-5.0, 5.0);
+    m_trk_z0sinT_vs_trk_P_l       = book(m_name, "trk_z0sinT_vs_trk_P_l",           "trk |p| [GeV]", 100, 0, 100, "z0xsin(#theta)[mm]", 100,-5.0, 5.0);
+  }
 
   //
   //  IP Details
@@ -79,7 +104,7 @@ StatusCode TrackHists::initialize() {
   m_fillTPErrors = false;
   if(m_detailStr.find("TPErrors") != std::string::npos ){
     m_fillTPErrors = true;
-    
+
     //m_chi2ndof TProfile(m_name, "chi2ndofvseta",  "chi2ndofvseta;    eta;       chi2",  20,  -0.1, 2.7, 0, 4, "s" );
     //new TProfile(m_name, "chi2ndofvseta",  "chi2ndofvseta;    eta;       chi2",  20,  -0.1, 2.7, 0, 4, "s" );
     //new TProfile(m_name, "nhitsvseta",  "nhitsvseta;    eta;       nhits",  20,  -0.1, 2.7, 0, 15 , "s" );
@@ -137,12 +162,12 @@ StatusCode TrackHists::initialize() {
   m_fillVsLumi = false;
   if(m_detailStr.find("vsLumiBlock") != std::string::npos ){
     m_fillVsLumi = true;
-    
+
     m_lBlock                  = book(m_name, "lBlock",                "LumiBlock",  100, 0, 1000);
     m_trk_z0_vs_lBlock        = book(m_name, "z0_vs_lBlock",          "LumiBlock",  100, 0, 1000, "z0",      -100, 100);
     m_trk_z0_raw_vs_lBlock    = book(m_name, "z0_raw_vs_lBlock",      "LumiBlock",  100, 0, 1000, "z0 raw",  -100, 100);
     m_trk_z0_atlas_vs_lBlock  = book(m_name, "z0_atlas_vs_lBlock",    "LumiBlock",  100, 0, 1000, "z0 atlas", -100, 100);
-								      
+
     m_trk_vz_vs_lBlock        = book(m_name, "vz_vs_lBlock",          "LumiBlock",  100, 0, 1000, "vz",       -100, 100);
     m_pvz_vs_lBlock           = book(m_name, "pvz_vs_lBlock",         "LumiBlock",  100, 0, 1000, "pvz",      -100, 100);
     m_pv_valid_vs_lBlock      = book(m_name, "pv_valid_vs_lBlock",    "LumiBlock",  100, 0, 1000, "valid",    -0.1, 1.1);
@@ -171,13 +196,15 @@ StatusCode TrackHists::initialize() {
 }
 
 StatusCode TrackHists::execute( const xAOD::TrackParticleContainer* trks, const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo ) {
+  using namespace msgTrackHists;
   xAOD::TrackParticleContainer::const_iterator trk_itr = trks->begin();
   xAOD::TrackParticleContainer::const_iterator trk_end = trks->end();
   for( ; trk_itr != trk_end; ++trk_itr ) {
-    RETURN_CHECK("TrackHists::execute()", this->execute( (*trk_itr), pvx, eventWeight, eventInfo ), "");
+    ANA_CHECK( this->execute( (*trk_itr), pvx, eventWeight, eventInfo ));
   }
 
   m_trk_n -> Fill( trks->size(), eventWeight );
+  m_trk_n_l -> Fill( trks->size(), eventWeight );
 
   return StatusCode::SUCCESS;
 }
@@ -186,6 +213,10 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
 
   //basic
   float        trkPt       = trk->pt()/1e3;
+  float        trkP        = -1;
+  if (fabs(trk->qOverP())>0.) trkP = (1./fabs(trk->qOverP()))/1e3;
+  float        trkEta      = trk->eta();
+  float        trkPhi      = trk->phi();
   float        chi2        = trk->chiSquared();
   float        ndof        = trk->numberDoF();
   float        chi2Prob    = TMath::Prob(chi2,ndof);
@@ -197,8 +228,10 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
 
   m_trk_Pt       -> Fill( trkPt,            eventWeight );
   m_trk_Pt_l     -> Fill( trkPt,            eventWeight );
-  m_trk_Eta      -> Fill( trk->eta(),       eventWeight );
-  m_trk_Phi      -> Fill( trk->phi(),       eventWeight );
+  m_trk_P        -> Fill( trkP,             eventWeight );
+  m_trk_P_l      -> Fill( trkP,             eventWeight );
+  m_trk_Eta      -> Fill( trkEta,           eventWeight );
+  m_trk_Phi      -> Fill( trkPhi,           eventWeight );
   m_trk_d0       -> Fill( d0,               eventWeight );
   m_trk_d0_s     -> Fill( d0,               eventWeight );
   m_trk_z0       -> Fill( z0,               eventWeight );
@@ -207,6 +240,22 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
 
   m_trk_chi2Prob -> Fill( chi2Prob ,        eventWeight );
   m_trk_charge   -> Fill( trk->charge() ,   eventWeight );
+
+  if(m_fill2D){
+
+    m_trk_Eta_vs_trk_P       -> Fill( trkP,   trkEta,   eventWeight );
+    m_trk_Eta_vs_trk_P_l     -> Fill( trkP,   trkEta,   eventWeight );
+    m_trk_Phi_vs_trk_P       -> Fill( trkP,   trkPhi,   eventWeight );
+    m_trk_Phi_vs_trk_P_l     -> Fill( trkP,   trkPhi,   eventWeight );
+    m_trk_Eta_vs_trk_Phi     -> Fill( trkPhi, trkEta,   eventWeight );
+    m_trk_d0_vs_trk_P        -> Fill( trkP,   d0,       eventWeight );
+    m_trk_d0_vs_trk_P_l      -> Fill( trkP,   d0,       eventWeight );
+    m_trk_z0_vs_trk_P        -> Fill( trkP,   z0,       eventWeight );
+    m_trk_z0_vs_trk_P_l      -> Fill( trkP,   z0,       eventWeight );
+    m_trk_z0sinT_vs_trk_P    -> Fill( trkP,   z0*sinT,  eventWeight );
+    m_trk_z0sinT_vs_trk_P_l  -> Fill( trkP,   z0*sinT,  eventWeight );
+
+  }
 
   if(m_fillIPDetails){
     float d0Err = sqrt((trk->definingParametersCovMatrixVec().at(0)));
@@ -239,15 +288,15 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     //uint8_t nTRTHoles = -1;
     //uint8_t nTRTDead  = -1;
 
-    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       Error("TrackHists::execute()", "BLayer hits not filled");
-    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        Error("TrackHists::execute()", "Pix hits not filled");
-    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) Error("TrackHists::execute()", "Pix Dead not filled");
-    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       Error("TrackHists::execute()", "Pix holes not filled");
-    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          Error("TrackHists::execute()", "SCT hits not filled");
-    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   Error("TrackHists::execute()", "SCT Dead not filled");
-    if(!trk->summaryValue(nTRT,      xAOD::numberOfTRTHits))          Error("TrackHists::execute()", "TRT hits not filled");
-    // if(!trk->summaryValue(nTRTHoles, xAOD::numberOfTRTHoles))         Error("TrackHists::execute()", "TRT holes not filled");
-    // if(!trk->summaryValue(nTRTDead,  xAOD::numberOfTRTDeadStraws))    Error("TrackHists::execute()", "TRT Dead not filled");
+    if(!trk->summaryValue(nBL,       xAOD::numberOfBLayerHits))       ANA_MSG_ERROR("BLayer hits not filled");
+    if(!trk->summaryValue(nPix,      xAOD::numberOfPixelHits))        ANA_MSG_ERROR("Pix hits not filled");
+    if(!trk->summaryValue(nPixDead,  xAOD::numberOfPixelDeadSensors)) ANA_MSG_ERROR("Pix Dead not filled");
+    if(!trk->summaryValue(nPixHoles, xAOD::numberOfPixelHoles))       ANA_MSG_ERROR("Pix holes not filled");
+    if(!trk->summaryValue(nSCT,      xAOD::numberOfSCTHits))          ANA_MSG_ERROR("SCT hits not filled");
+    if(!trk->summaryValue(nSCTDead,  xAOD::numberOfSCTDeadSensors))   ANA_MSG_ERROR("SCT Dead not filled");
+    if(!trk->summaryValue(nTRT,      xAOD::numberOfTRTHits))          ANA_MSG_ERROR("TRT hits not filled");
+    // if(!trk->summaryValue(nTRTHoles, xAOD::numberOfTRTHoles))         ANA_MSG_ERROR("TRT holes not filled");
+    // if(!trk->summaryValue(nTRTDead,  xAOD::numberOfTRTDeadStraws))    ANA_MSG_ERROR("TRT Dead not filled");
 
     uint8_t nSi     = nPix     + nSCT;
     uint8_t nSiDead = nPixDead + nSCTDead;
@@ -280,7 +329,7 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
   }
 
   if(m_fillDebugging){
-    m_trk_eta_vl      -> Fill( trk->eta(), eventWeight );
+    m_trk_eta_vl      -> Fill( trkEta,     eventWeight );
     m_trk_z0_vl       -> Fill( z0,         eventWeight );
     m_trk_z0_m        -> Fill( z0,         eventWeight );
     m_trk_z0_raw_m    -> Fill( trk->z0(),  eventWeight );
@@ -288,7 +337,7 @@ StatusCode TrackHists::execute( const xAOD::TrackParticle* trk, const xAOD::Vert
     m_trk_vz          -> Fill( trk->vz(),  eventWeight );
     m_trk_d0_vl       -> Fill( d0,         eventWeight );
     m_trk_pt_ss       -> Fill( trkPt,      eventWeight );
-    m_trk_phiManyBins -> Fill( trk->phi(), eventWeight );
+    m_trk_phiManyBins -> Fill( trkPhi,     eventWeight );
   }
 
   if(m_fillVsLumi && eventInfo){

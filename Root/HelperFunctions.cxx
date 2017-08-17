@@ -1,5 +1,5 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
+#include <AsgTools/MessageCheck.h>
 
 #include "xAODBase/IParticleContainer.h"
 
@@ -10,6 +10,13 @@
 // jet trimming
 #include <fastjet/tools/Filter.hh>
 #include <JetEDM/JetConstituentFiller.h>
+
+
+MsgStream& HelperFunctions::msg( MSG::Level lvl ) {
+  static MsgStream msgStream( "HelperFunctions" );
+  msgStream << lvl;
+  return msgStream;
+}
 
 // Get Number of Vertices with at least Ntracks
 bool HelperFunctions::passPrimaryVertexSelection(const xAOD::VertexContainer* vertexContainer, int Ntracks)
@@ -38,8 +45,9 @@ int HelperFunctions::countPrimaryVertices(const xAOD::VertexContainer* vertexCon
 
 }
 
-int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer)
+int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer, MsgStream& msg)
 {
+  msg.setName(msg.name()+".getPrimaryVertexLocation");
   int location(0);
   for( auto vtx_itr : *vertexContainer )
   {
@@ -48,7 +56,7 @@ int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* verte
     }
     location++;
   }
-  Warning("HelperFunctions::getPrimaryVertexLocation()","No primary vertex location was found! Returning -1");
+  msg << MSG::WARNING << "No primary vertex location was found! Returning -1" << endmsg;
   return -1;
 }
 
@@ -171,7 +179,7 @@ bool HelperFunctions::isFilePrimaryxAOD(TFile* inputFile) {
     TTree* metaData = dynamic_cast<TTree*> (inputFile->Get("MetaData"));
 
     /* check that MetaData tree exists */
-    RETURN_CHECK("HelperFunctions::isFilePrimaryxAOD", isAvailableMetaData(metaData), "" );
+    ANA_CHECK( isAvailableMetaData(metaData));
 
     metaData->LoadTree(0);
     TObjArray* ar = metaData->GetListOfBranches();
@@ -312,8 +320,10 @@ TLorentzVector HelperFunctions::jetTrimming(
 
 }
 
-const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContainer* vertexContainer)
+const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContainer* vertexContainer, MsgStream& msg)
 {
+  msg.setName(msg.name()+".getPrimaryVertex");
+
   // vertex types are listed on L328 of
   // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODTracking/trunk/xAODTracking/TrackingPrimitives.h
   for( auto vtx_itr : *vertexContainer )
@@ -321,7 +331,8 @@ const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContaine
     if(vtx_itr->vertexType() != xAOD::VxType::VertexType::PriVtx) { continue; }
     return vtx_itr;
   }
-  Warning("HelperFunctions::getPrimaryVertex()","No primary vertex was found! Returning nullptr");
+
+  msg << MSG::WARNING << "No primary vertex was found! Returning nullptr" << endmsg;
 
   return 0;
 }
@@ -344,17 +355,18 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
 // CP::make_systematics_vector(recSysts); has some similar functionality but does not
 // prune down to 1 systematic if only request that one.  It does however include the
 // nominal case as a null SystematicSet
-std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systName, float systVal, bool debug ) {
+std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systName, float systVal, MsgStream& msg ) {
+  msg.setName(msg.name()+".getListofSystematics");
 
   std::vector< CP::SystematicSet > outSystList;
 
-  if ( debug ) { Info("HelperFunctions::getListofSystematics()","systName %s", (systName).c_str()); }
+  msg << MSG::DEBUG << "systName " << systName << endmsg;
 
   // loop over input set
   //
   for ( const auto syst : inSysts ) {
 
-    if ( debug ) { Info("HelperFunctions::getListofSystematics()","  %s", (syst.name()).c_str()); }
+    msg << MSG::DEBUG << syst.name() << endmsg;
 
     // 1.
     // A match with input systName is found in the list:
@@ -362,7 +374,7 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
     //
     if ( systName == syst.basename() ) {
 
-      if ( debug ) { Info("HelperFunctions::getListofSystematics()","Found match! Adding systematic %s", syst.name().c_str()); }
+      msg << MSG::DEBUG << "Found match! Adding systematic " << syst.name() << endmsg;
 
       // continuous systematics - can choose at what sigma to evaluate
       //
@@ -371,7 +383,7 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
         outSystList.push_back(CP::SystematicSet());
 
         if ( systVal == 0 ) {
-          Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
+          msg << MSG::ERROR << "Setting continuous systematic to 0 is nominal! Please check!" << endmsg;
           RCU_THROW_MSG("Failure");
         }
 
@@ -391,7 +403,7 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
     //
     else if ( systName.find("All") != std::string::npos ) {
 
-      if ( debug ) { Info("HelperFunctions::getListofSystematics()","Adding systematic %s", syst.name().c_str()); }
+      msg << MSG::DEBUG << "Adding systematic " << syst.name() << endmsg;
 
       // continuous systematics - can choose at what sigma to evaluate
       // add +1 and -1 for when running all
@@ -399,7 +411,7 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
       if ( syst == CP::SystematicVariation (syst.basename(), CP::SystematicVariation::CONTINUOUS) ) {
 
       if ( systVal == 0 ) {
-        Error("HelperFunctions::getListofSystematics()","Setting continuous systematic to 0 is nominal! Please check!");
+        msg << MSG::ERROR << "Setting continuous systematic to 0 is nominal! Please check!" << endmsg;
         RCU_THROW_MSG("Failure");
       }
 
@@ -434,11 +446,97 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
 }
 
 
-
 float HelperFunctions::dPhi(float phi1, float phi2)
 {
   float dPhi = phi1 - phi2;
   if(dPhi > 3.14)  dPhi -= 2*3.14;
   if(dPhi < -3.14) dPhi += 2*3.14;
   return dPhi;
+}
+
+
+std::size_t HelperFunctions::string_pos( const std::string& inputstr, const char& occurence, int n_occurencies )
+{
+
+  std::string read("");
+  std::string cache(inputstr);
+
+  for ( int i(1); i < n_occurencies+1; ++i ) {
+    std::size_t found = cache.rfind(occurence);
+    read += cache.substr(found);
+    cache.erase(found);
+    if ( i == n_occurencies ) { return ( inputstr.size() - read.size() ) + 1; }
+  }
+  return std::string::npos;
+}
+
+
+std::string HelperFunctions::parse_wp( const std::string& type, const std::string& config_name, MsgStream& msg )
+{
+  msg.setName(msg.name()+".parse_wp");
+
+  std::string wp("");
+
+  std::size_t init;
+  std::size_t end;
+
+  if ( type.compare("ISO") == 0 ) {
+
+    std::size_t found_iso = config_name.find("_isol");
+
+    // Return empty string if no isolation in config name
+
+    if ( found_iso == std::string::npos ) { return wp; }
+
+    init = found_iso + 5;
+    end  = config_name.find(".root");
+
+  } else if ( type.compare("ID") == 0 ) {
+
+    std::size_t found_ID = config_name.find("LLH");
+
+    // Return empty string if no LLH in config name
+
+    if ( found_ID == std::string::npos ) { return wp; }
+
+    init = string_pos( config_name, '.', 2 );
+    end  = found_ID;
+
+  } else if ( type.compare("TRIG") == 0 ) {
+
+    std::size_t found_trigger = config_name.find("trigger");
+
+    // Return empty string if no LLH in config name
+
+    if ( found_trigger == std::string::npos ) { return wp; }
+
+    init = string_pos( config_name, '.', 3 );
+    end  = string_pos( config_name, '.', 2 ) - 1;
+
+  } else {
+
+    msg << MSG::WARNING << "WP type can be either 'ISO' or 'ID'. Please check passed parameters of this function. Returning empty WP." << endmsg;
+    return wp;
+
+  }
+
+  wp = config_name.substr( init, (end - init) );
+
+  if ( type.compare("ID") == 0 ) { wp += "LLH"; }
+
+  return wp;
+}
+
+bool HelperFunctions::has_exact(const std::string input, const std::string flag)
+{
+  std::set<std::string> inputSet;
+
+  // parse and split by space
+  std::string token;
+  std::istringstream ss(input);
+  while ( std::getline(ss, token, ' ') )
+    inputSet.insert(token);
+
+
+  return inputSet.find(flag) != inputSet.end();
 }

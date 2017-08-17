@@ -2,6 +2,7 @@
  * @file   JetSelector.h
  *
  * @author Gabriel Facini <gabriel.facini@cern.ch>
+ * @author Jeff Dandoy  <jeff.dandoy@cern.ch>
  * @author Marco Milesi <marco.milesi@cern.ch>
  * @author John Alison <john.alison@cern.ch>
  *
@@ -23,100 +24,202 @@
 #include "xAODAnaHelpers/Algorithm.h"
 
 // external tools include(s):
-#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
-#include "JetJvtEfficiency/JetJvtEfficiency.h"
 #include "AsgTools/AnaToolHandle.h"
+#include "JetJvtEfficiency/IJetJvtEfficiency.h"
+#include "JetInterface/IJetModifier.h"
+#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
 
 class JetSelector : public xAH::Algorithm
 {
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  bool m_useCutFlow;
+  bool m_useCutFlow = true;
 
   // configuration variables
-  std::string m_inContainerName;   // input container name
-  std::string m_outContainerName;  // output container name
-  std::string m_inputAlgo;         // input type - from xAOD or from xAODAnaHelper Algo output
-  std::string m_outputAlgo;        // output type - this is how the vector<string> w/ syst names will be saved in TStore
-  std::string m_jetScaleType;    // Type of Scale Momementum
-  std::string m_decor;            // The decoration key written to passing objects
-  bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
-  bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
-  int m_nToProcess;               // look at n objects
-  bool m_cleanJets;               // require cleanJet decoration to not be set and false
-  int m_cleanEvtLeadJets;         // kill event if any of the N leading jets are not clean
-  int m_pass_min;                 // minimum number of objects passing cuts
-  int m_pass_max;                 // maximum number of objects passing cuts
-  float m_pT_max;                 // require pT < pt_max
-  float m_pT_min;                 // require pT > pt_max
-  float m_eta_max;                // require eta < eta_max
-  float m_eta_min;                // require eta > eta_max
-  float m_detEta_max;             // require detEta < detEta_max
-  float m_detEta_min;             // require detEta > detEta_max
-  float m_mass_max;               // require mass < mass_max
-  float m_mass_min;               // require mass > mass_max
-  float m_rapidity_max;           // require rapidity < rapidity_max
-  float m_rapidity_min;           // require rapidity > rapidity_min
-  int   m_truthLabel;             // require truth level on truth jets
-  bool  m_useHadronConeExcl;      // use HadronConeExclTruthLabelID for truth match (default)
+  /// @brief input container name
+  std::string m_inContainerName = "";
+  /// @brief output container name
+  std::string m_outContainerName = "";
+  /// @brief truth jet container name (used for JVT SF)
+  std::string m_truthJetContainer = "AntiKt4TruthJets";
+  /// @brief input type - from xAOD or from xAODAnaHelper Algo output
+  std::string m_inputAlgo = "";
+  /// @brief output type - this is how the vector<string> w/ syst names will be saved in TStore
+  std::string m_outputAlgo = "";
+  /// @brief Type of Scale Momementum
+  std::string m_jetScaleType = "";
+  /// @brief The decoration key written to passing objects
+  std::string m_decor = "passSel";
+  /// @brief decorate selected objects? defaul passSel
+  bool m_decorateSelectedObjects = true;
+  /// @brief fill using SG::VIEW_ELEMENTS to be light weight
+  bool m_createSelectedContainer = false;
+  /// @brief look at n objects
+  int m_nToProcess = -1;
+  /// @brief require cleanJet decoration to not be set and false
+  bool m_cleanJets = true;
+  /// @brief kill event if any of the N leading jets are not clean
+  int m_cleanEvtLeadJets = -1;
+  /** @brief Kill event if any passing jets are not clean */
+  /**
+      @rst
+          .. note:: The jets need the `cleanJet` decoration which is set when you enable :cpp:member:`JetCalibrator::m_doCleaning`
 
-  bool m_doJVF;                   // check JVF
-  float m_pt_max_JVF;             // max pT (JVF is a pileup cut)
-  float m_eta_max_JVF;            // detector eta cut
-  float m_JVFCut;                 // cut value
-  bool m_doJVT;                   // check JVT
-  float m_pt_max_JVT;             // max pT (JVT is a pileup cut)
-  float m_eta_max_JVT;            // detector eta cut
+      @endrst
 
-    /**
-        @brief Minimum value of JVT for selecting jets.
+   */
 
-        @rst
-            .. warning:: If set to a non-negative value (default is -1.0), it will override any set value for :cpp:member:`JetSelector::m_WorkingPointJVT`
-        @endrst
-    */
-  float m_JVTCut;
+  bool m_cleanEvent = false;
+  /** @brief Mark event with decorator if any passing jets are not clean */
+  bool m_markCleanEvent = false;
+  /// @brief minimum number of objects passing cuts
+  int m_pass_min = -1;
+  /// @brief maximum number of objects passing cuts
+  int m_pass_max = -1;
+  /// @brief require pT < pt_max
+  float m_pT_max = 1e8;
+  /// @brief require pT > pt_min
+  float m_pT_min = 1e8;
+  /// @brief require eta < eta_max
+  float m_eta_max = 1e8;
+  /// @brief require eta > eta_min
+  float m_eta_min = 1e8;
+  /// @brief require detEta < detEta_max
+  float m_detEta_max = 1e8;
+  /// @brief require detEta > detEta_min
+  float m_detEta_min = 1e8;
+  /// @brief require mass < mass_max
+  float m_mass_max = 1e8;
+  /// @brief require mass > mass_min
+  float m_mass_min = 1e8;
+  /// @brief require rapidity < rapidity_max
+  float m_rapidity_max = 1e8;
+  /// @brief require rapidity > rapidity_min
+  float m_rapidity_min = 1e8;
+  /// @brief require truth level on truth jets
+  int   m_truthLabel =  -1;
+  /// @brief use HadronConeExclTruthLabelID for truth match (default)
+  bool  m_useHadronConeExcl = true;
 
-        /**
-        @rst
-            Available working points for JVT cut from the ``CP::IJetJvtEfficiency`` tool.
+  /// @brief check JVF
+  bool m_doJVF = false;
+  /// @brief max pT [GeV] (JVF is a pileup cut)
+  float m_pt_max_JVF = 50e3;
+  /// @brief detector eta cut
+  float m_eta_max_JVF = 2.4;
+  /// @brief cut value
+  float m_JVFCut = 0.5;
+  /// @brief check JVT
+  bool m_doJVT = false;
+  /// @brief keep JVT-rejected jets and decorate passing status
+  bool m_noJVTVeto = false;
+  /// @brief check forward JVT
+  bool m_dofJVT = false;
+  /// @brief Remove jets that fail fJVT. Like JVT, the default is to clean the collection
+  bool m_dofJVTVeto = true;
+  /// @brief max pT [GeV] (JVT is a pileup cut)
+  float m_pt_max_JVT = 60e3;
+  /// @brief detector eta cut
+  float m_eta_max_JVT = 2.4;
 
-            The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
+  /**
+    @brief Minimum value of JVT for selecting jets.
 
-            ======== ================= =============
-            Value    JVT Cut           Efficiency
-            ======== ================= =============
-            "Medium"  (Default) 0.59    92%
-            "Loose"   0.11              97%
-            "Tight"   0.91              85%
-            ======== ================= =============
+    @rst
+        .. warning:: If set to a non-negative value (default is -1.0), it will override any set value for :cpp:member:`JetSelector::m_WorkingPointJVT`
+    @endrst
+  */
+  float m_JVTCut = -1.0;
 
-        @endrst
-        */
-  std::string m_WorkingPointJVT;
-  std::string m_outputSystNamesJVT;
+  /**
+    @rst
+        Available working points for JVT cut from the ``CP::IJetJvtEfficiency`` tool.
 
-  float         m_systValJVT;
-  std::string   m_systNameJVT;
+        The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
 
+        ======== ================= =============
+        Value    JVT Cut           Efficiency
+        ======== ================= =============
+        "Medium"  (Default) 0.59    92%
+        "Loose"   0.11              97%
+        "Tight"   0.91              85%
+        ======== ================= =============
+
+    @endrst
+  */
+  std::string m_WorkingPointJVT = "Medium";
+
+  /**
+     @brief Configuration containting JVT scale factors.
+
+     @rst
+     The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
+
+     See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration for latest recommendation.
+     @endrst
+  */
+  std::string m_SFFileJVT = "JetJvtEfficiency/Moriond2017/JvtSFFile_EM.root";
+  std::string m_outputSystNamesJVT = "JetJvtEfficiency_JVTSyst";
+
+  float         m_systValJVT = 0.0;
+  std::string   m_systNameJVT = "";
+
+  /**
+    @rst
+        Available working points for fJVT cut from the ``CP::IJetJvtEfficiency`` tool.
+
+        The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
+
+        ======== ============== =============
+        Value    HS Efficiency  PU Fake Rate
+        ======== ============== =============
+        "Medium"  87.1-97.0%     53.4-60.9%
+        "Tight"   79.9-95.6%     45.4-50.3%
+        ======== ============== =============
+        
+        See :https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/FJVTCalibration for more information.
+    @endrst
+  */
+  std::string m_WorkingPointfJVT = "Medium";
+
+  /**
+     @brief Configuration containting fJVT scale factors.
+
+     @rst
+        The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
+
+        See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/FJVTCalibration for latest recommendation.
+     @endrst
+  */
+  std::string m_SFFilefJVT = "JetJvtEfficiency/Moriond2016_v2/fJvtSFFile.root";
+  std::string m_outputSystNamesfJVT = "JetJvtEfficiency_fJVTSyst";
+
+  float         m_systValfJVT = 0.0;
+  std::string   m_systNamefJVT = "";
+
+  /// @brief Flag to apply btagging cut, if false just decorate decisions
+  bool  m_doBTagCut = false;
+  std::string m_corrFileName = "xAODBTaggingEfficiency/cutprofiles_22072015.root";
+  std::string m_jetAuthor = "AntiKt4EMTopoJets";
+  std::string m_taggerName = "MV2c20";
+  std::string m_operatingPt = "FixedCutBEff_70";
   // for BTaggingSelectionTool -- doubles are needed or will crash
-  bool  m_doBTagCut;              // Flag to apply btagging cut, if false just decorate decisions
-  std::string m_corrFileName;
-  std::string m_jetAuthor;
-  std::string m_taggerName;
-  std::string m_operatingPt;
-  double m_b_eta_max;
-  double m_b_pt_min;
+  // for the b-tagging tool - these are the b-tagging groups minimums
+  // users making tighter cuts can use the selector's parameters to keep
+  // things consistent
+  double m_b_eta_max = 2.5;
+  double m_b_pt_min = 20e3;
 
-  bool m_doHLTBTagCut;
-  std::string m_HLTBTagTaggerName;
-  float m_HLTBTagCutValue;
-  bool  m_requireHLTVtx;
-  bool  m_requireNoHLTVtx;
+  // HLT Btag quality
+  bool m_doHLTBTagCut = false;
+  std::string m_HLTBTagTaggerName = "MV2c20";
+  float m_HLTBTagCutValue = -0.4434;
+  bool  m_requireHLTVtx = false;
+  bool  m_requireNoHLTVtx = false;
 
-  std::string              m_passAuxDecorKeys;
-  std::string              m_failAuxDecorKeys;
+  std::string              m_passAuxDecorKeys = "";
+  std::string              m_failAuxDecorKeys = "";
 
 private:
   int m_numEvent;         //!
@@ -130,8 +233,8 @@ private:
   bool m_isLCjet;                //!
 
   // cutflow
-  TH1D* m_cutflowHist;          //!
-  TH1D* m_cutflowHistW;         //!
+  TH1D* m_cutflowHist = nullptr;          //!
+  TH1D* m_cutflowHistW = nullptr;         //!
   int   m_cutflow_bin;          //!
 
   std::vector<std::string> m_passKeys;  //!
@@ -139,7 +242,7 @@ private:
 
   /* object-level cutflow */
 
-  TH1D* m_jet_cutflowHist_1;  //!
+  TH1D* m_jet_cutflowHist_1 = nullptr;  //!
 
   int   m_jet_cutflow_all;           //!
   int   m_jet_cutflow_cleaning_cut;  //!
@@ -150,11 +253,15 @@ private:
   int   m_jet_cutflow_btag_cut;      //!
 
   std::vector<CP::SystematicSet> m_systListJVT; //!
+  std::vector<CP::SystematicSet> m_systListfJVT; //!
 
-  BTaggingSelectionTool   *m_BJetSelectTool;    //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency"};         //!
+  asg::AnaToolHandle<IJetModifier>           m_fJVT_tool_handle{"JetForwardJvtTool"};           //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency"};    //!
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 
-  std::string m_JVT_tool_name;                                 //!
-  asg::AnaToolHandle<CP::IJetJvtEfficiency> m_JVT_tool_handle; //!
+  std::string m_outputJVTPassed = "JetJVT_Passed"; //!
+  std::string m_outputfJVTPassed = "JetfJVT_Passed"; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -166,7 +273,7 @@ public:
 
 
   // this is a standard constructor
-  JetSelector (std::string className = "JetSelector");
+  JetSelector ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -180,7 +287,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName );
+  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string inContainerName, std::string outContainerName, bool isNominal );
 
   // added functions not from Algorithm
   // why does this need to be virtual?

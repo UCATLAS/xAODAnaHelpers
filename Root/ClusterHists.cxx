@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include "xAODAnaHelpers/tools/ReturnCheck.h"
+ANA_MSG_SOURCE(msgClusterHists, "ClusterHists")
 
 ClusterHists :: ClusterHists (std::string name, std::string detailStr) :
   HistogramManager(name, detailStr)
@@ -19,7 +19,7 @@ StatusCode ClusterHists::initialize() {
   m_ccl_eta = book(m_name, "eta", "cluster #eta", 80, -4, 4);
   m_ccl_phi = book(m_name, "phi", "cluster #phi", 120, -TMath::Pi(), TMath::Pi());
 
-  // 2D plots 
+  // 2D plots
   m_ccl_eta_vs_phi = book(m_name, "eta_vs_phi", "cluster #phi", 120, -TMath::Pi(), TMath::Pi(), "cluster #eta", 80, -4, 4);
   m_ccl_e_vs_eta   = book(m_name, "e_vs_eta", "cluster #eta", 80, -4, 4, "cluster e [GeV]", 100, -5, 15);
   m_ccl_e_vs_phi   = book(m_name, "e_vs_phi", "cluster #phi", 120, -TMath::Pi(), TMath::Pi(), "cluster e [GeV]", 100, -5, 15);
@@ -29,10 +29,11 @@ StatusCode ClusterHists::initialize() {
 }
 
 StatusCode ClusterHists::execute( const xAOD::CaloClusterContainer* ccls, float eventWeight ) {
+  using namespace msgClusterHists;
   xAOD::CaloClusterContainer::const_iterator ccl_itr = ccls->begin();
   xAOD::CaloClusterContainer::const_iterator ccl_end = ccls->end();
   for( ; ccl_itr != ccl_end; ++ccl_itr ) {
-    RETURN_CHECK("ClusterHists::execute()", this->execute( (*ccl_itr), eventWeight ), "");
+    ANA_CHECK( this->execute( (*ccl_itr), eventWeight ));
   }
 
   m_ccl_n -> Fill( ccls->size(), eventWeight );
@@ -51,11 +52,11 @@ StatusCode ClusterHists::execute( const xAOD::CaloCluster* ccl, float eventWeigh
   m_ccl_eta        -> Fill( cclEta, eventWeight );
   m_ccl_phi        -> Fill( cclPhi, eventWeight );
 
-  // 2D plots 
+  // 2D plots
   m_ccl_eta_vs_phi -> Fill( cclPhi, cclEta,  eventWeight );
   m_ccl_e_vs_eta   -> Fill( cclEta, cclE,    eventWeight );
   m_ccl_e_vs_phi   -> Fill( cclPhi, cclE,    eventWeight );
-  
+
   return StatusCode::SUCCESS;
 
 }

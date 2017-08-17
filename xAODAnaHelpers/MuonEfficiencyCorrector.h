@@ -16,14 +16,16 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
-#include "MuonEfficiencyCorrections/MuonEfficiencyScaleFactors.h"
-#include "MuonEfficiencyCorrections/MuonTriggerScaleFactors.h"
-#include "MuonSelectorTools/MuonSelectionTool.h"
-#include "PileupReweighting/PileupReweightingTool.h"
 #include "AsgTools/AnaToolHandle.h"
+#include "PileupReweighting/PileupReweightingTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
+
+namespace CP {
+  class MuonEfficiencyScaleFactors;
+  class MuonTriggerScaleFactors;
+}
 
 class MuonEfficiencyCorrector : public xAH::Algorithm
 {
@@ -33,44 +35,58 @@ class MuonEfficiencyCorrector : public xAH::Algorithm
 public:
 
   // configuration variables
-  std::string   m_inContainerName;
+  std::string   m_inContainerName = "";
+  std::string   m_outContainerName = "";
 
-  std::string   m_calibRelease;
+  std::string   m_calibRelease = "Data15_allPeriods_241115";
 
   // Reco efficiency SF
-  std::string   m_WorkingPointReco;
+  std::string   m_WorkingPointReco = "Loose";
 
   // Iso efficiency SF
-  std::string   m_WorkingPointIso;
+  std::string   m_WorkingPointIso = "LooseTrackOnly";
 
   // Trigger efficiency SF
-  int           m_runNumber;
-  bool          m_useRandomRunNumber;
-  std::string   m_WorkingPointRecoTrig;
-  std::string   m_WorkingPointIsoTrig;
-  std::string   m_SingleMuTrig;      // this can be either a single muon trigger chain, or an OR of ( 2 single muon chains )
-  std::string   m_DiMuTrig;          // this can be either a dimuon trigger chain, or an OR of ( N single muon trigger chains, dimuon chain )
+  int           m_runNumber2015 = 276329;
+  int           m_runNumber2016 = 300345;
+  bool          m_useRandomRunNumber = true;
+  /// @brief Use with caution!!!
+  bool          m_AllowZeroSF = false;
+  std::string   m_WorkingPointRecoTrig = "Loose";
+  std::string   m_WorkingPointIsoTrig = "LooseTrackOnly";
+  /// @brief comma-separated list of years
+  std::string   m_Years = "2016";
+  std::string   m_MCCampaign = "";
+  /// @brief list of comma-separated single-mu trigger corrections. Individual legs of di-mu menus can be parsed
+  std::string   m_MuTrigLegs = "HLT_mu26_imedium";
 
   // TTVA efficiency SF
-  std::string   m_WorkingPointTTVA;
+  std::string   m_WorkingPointTTVA = "TTVA";
 
   // systematics
-  std::string   m_inputAlgoSystNames;  // this is the name of the vector of names of the systematically varied containers produced by the
-  			               // upstream algo (e.g., the SC containers with calibration systematics)
+  /// @brief this is the name of the vector of names of the systematically varied containers produced by the upstream algo (e.g., the SC containers with calibration systematics)
+  std::string   m_inputAlgoSystNames = "";
+  // this is the name of the vector of names of the systematically varied containers to be fed to the downstream algos. We need that as we deepcopy the input containers
+  std::string   m_outputAlgoSystNames = "";
+  // this is the name of the vector of names for the systematics to be used for the creation of a parallel container. This will be just a copy of the nominal one with the sys name appended. Use cases: MET-specific systematics.
+  std::string   m_sysNamesForParCont = "";
 
-  float         m_systValReco;
-  float         m_systValIso;
-  float         m_systValTrig;
-  float         m_systValTTVA;
-  std::string   m_systNameReco;
-  std::string   m_systNameIso;
-  std::string   m_systNameTrig;
-  std::string   m_systNameTTVA;
-  std::string   m_outputSystNamesReco;
-  std::string   m_outputSystNamesIso;
-  std::string   m_outputSystNamesTrig;
-  std::string   m_outputSystNamesTrigMCEff;
-  std::string   m_outputSystNamesTTVA;
+  float         m_systValReco = 0.0;
+  float         m_systValIso = 0.0;
+  float         m_systValTrig = 0.0;
+  float         m_systValTTVA = 0.0;
+  std::string   m_systNameReco = "";
+  std::string   m_systNameIso = "";
+  std::string   m_systNameTrig = "";
+  std::string   m_systNameTTVA = "";
+  std::string   m_outputSystNamesReco = "MuonEfficiencyCorrector_RecoSyst";
+  std::string   m_outputSystNamesIso = "MuonEfficiencyCorrector_IsoSyst";
+  std::string   m_outputSystNamesTrig = "MuonEfficiencyCorrector_TrigSyst";
+  std::string   m_outputSystNamesTrigMCEff = "MuonEfficiencyCorrector_TrigMCEff";
+  std::string   m_outputSystNamesTTVA = "MuonEfficiencyCorrector_TTVASyst";
+
+  /// @brief will consider efficiency decorations only for the nominal run
+  bool          m_decorateWithNomOnInputSys = true;
 
 private:
 
@@ -87,16 +103,20 @@ private:
   std::vector<CP::SystematicSet> m_systListTrig; //!
   std::vector<CP::SystematicSet> m_systListTTVA; //!
 
+  std::vector<std::string> m_sysNames; //!
+
   // tools
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool_handle; //!
-  std::string m_recoEffSF_tool_name;                                          //!
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muIsoSF_tool_handle;  //!
-  std::string m_isoEffSF_tool_name;                                           //!
-  asg::AnaToolHandle<CP::IMuonTriggerScaleFactors> m_muTrigSF_tool_handle;    //!
-  std::string m_trigEffSF_tool_name;                                          //!
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muTTVASF_tool_handle; //!
-  std::string m_TTVAEffSF_tool_name;                                          //!
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;        //!
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;     //!
+  CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool = nullptr;               //!
+  std::string m_recoEffSF_tool_name;                                       //!
+  CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                //!
+  std::string m_isoEffSF_tool_name;                                        //!
+  std::map<std::string, CP::MuonTriggerScaleFactors*>  m_muTrigSF_tools;   //!
+  std::map<std::string, std::string> m_trigEffSF_tool_names;               //!
+  std::vector<std::string> m_YearsList;                                    //!
+  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool = nullptr;               //!
+  std::string m_TTVAEffSF_tool_name;                                       //!
+  std::vector<std::string> m_SingleMuTriggers;                             //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -108,7 +128,7 @@ public:
   // TH1 *myHist;  //!
 
   // this is a standard constructor
-  MuonEfficiencyCorrector (std::string className = "MuonEfficiencyCorrector");
+  MuonEfficiencyCorrector ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
@@ -122,7 +142,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst  );
+  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst, bool isNomSel );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

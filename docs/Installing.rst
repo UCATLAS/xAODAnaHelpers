@@ -1,87 +1,131 @@
 Installing
 ==========
 
-::
+Getting the Source
+------------------
 
-    setupATLAS
-    rcSetup Base,X.Y.Z
-    git clone https://github.com/UCATLAS/xAODAnaHelpers
+Start in a work directory
 
-or for a specific tag
+.. code-block:: bash
 
-::
+  mkdir workdir && cd $_
 
-    rc checkout_pkg atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ xAODAnaHelpers
+Then clone the source
 
-::
+.. code-block:: bash
 
-    git clone https://github.com/UCATLAS/xAODAnaHelpers
-    cd xAODAnaHelpers
-    git checkout tags/XX-YY-ZZ
+  git clone https://github.com/UCATLAS/xAODAnaHelpers
 
 .. note::
 
-    `If you have ssh-keys set up <https://help.github.com/articles/generating-ssh-keys/>`_, then you can clone over SSH instead of HTTPS::
+    `If you have ssh-keys set up <https://help.github.com/articles/generating-ssh-keys/>`_, then you can clone over SSH instead of HTTPS:
+
+      .. code-block:: bash
 
         git clone git@github.com:UCATLAS/xAODAnaHelpers
 
-At this point, you have the FULL state of the code. You can run
-``git log`` to view the recent changes (no more ChangeLog!). You can run
-``git tag`` to view all current tags.
+At this point, you have the FULL state of the code. You can run ``git log`` to view the recent changes (no more ChangeLog!).
 
-Getting tag XX-YY-ZZ
---------------------
+Checking out a specific tag
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-So now you want to check out a specific tag. We will provide tags on the
-svn as well as on github. If you are using git, then you can switch
-between tags in the same folder in seconds. If you are using svn, you
-need to redownload the full tag.
+You can run ``git tag`` to view all current tags. You can checkout a specific tag (in a detached head state):
 
-With git
-~~~~~~~~
+.. code-block:: bash
 
-::
+  cd xAODAnaHelpers
+  git checkout tags/XX-YY-ZZ
+  cd ../
 
-    git checkout -b XX-YY-ZZ tags/XX-YY-ZZ
+or you can use:
 
-This switches you from master to a branch of the given version.
+.. code-block:: bash
 
-With svn
-~~~~~~~~
+  cd xAODAnaHelpers
+  git checkout -b XX-YY-ZZ tags/XX-YY-ZZ
+  cd ../
 
-::
+which switches you from master to a branch of the given version.
 
-    svn co svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ xAODAnaHelpers
 
-This will download the full tag from svn for you.
+Compiling
+---------
 
-With RootCore
-~~~~~~~~~~~~~
+For all sets of instructions below, make sure you run ``setupATLAS`` first.
 
-::
-    rc checkout_pkg atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ
+RootCore (< 2.5.X)
+~~~~~~~~~~~~~~~~~~
 
-This uses the svn call, but it is a little less verbose :smile:
+.. parsed-literal::
 
-Updating changes
-----------------
+    rcSetup Base,\ |ab_release_rc|\
 
-If you're on branch ``myBranch`` and you have commits that you want to
-push to the remote ``origin`` - the first thing you should do is always
-update so you're current::
+and then find all packages and then compile:
 
-    git pull --rebase
+.. code-block:: bash
 
-will do it all. If you want more control, use::
+    rc find_packages
+    rc compile
 
-    git fetch
-    git rebase origin/master
+.. important::
 
-or::
+    EventLoopGrid-00-00-54 has a bug affecting job submissions on the grid. Please downgrade via::
 
-    git fetch origin
-    git rebase origin/master myBranch
+      atlasoff/PhysicsAnalysis/D3PDTools/EventLoopGrid/tags/EventLoopGrid-00-00-53
 
-.. note::
-    - ``git fetch`` will fetch from ``origin`` (see ``git remote -v`` for what that's defined as) by default, but you can explicitly provide a different remote repository.
-    - ``git rebase origin/master`` will rebase the current branch you are on.  You can specify another branch if you want.
+
+CMake-based RootCore (> 2.5.X)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This step requires a little extra work, but compiles significantly faster. First, inside the ``workdir`` directory, we'll create a build and source directory. The source directory will contain all packages we build in CMake:
+
+.. parsed-literal::
+
+  mkdir src build
+
+Then we'll set up a CMake RC release inside the source:
+
+.. parsed-literal::
+
+  cd src
+  asetup AnalysisBase,\ |ab_release_cm|\,here
+
+This also sets up a ``CMakeLists.txt`` file in this top-level directory that searches for all packages you've checked out inside it. At this point, clone/checkout all packages you need such as |xAH|:
+
+.. parsed-literal::
+
+  git clone <url>/UCATLAS/xAODAnaHelpers.git
+
+Next, you will need to change to your build directory that builds all your checked-out packages which is separate from your source code:
+
+.. parsed-literal::
+
+  cd ../build
+
+.. note:: This is inside the ``workdir``, so you will have ``workdir/src/xAODAnaHelpers`` and ``workdir/build`` as paths, for example.
+
+and then run cmake to generate our makefiles, then compile:
+
+.. code-block:: bash
+
+  cmake ../src
+  make
+  cd ../
+
+The last thing you need to do is get your environment set up correctly, so you will need to source ``setup.sh`` (from the top-level directory):
+
+.. code-block:: bash
+
+  source build/${CMTCONFIG}/setup.sh
+
+Environment variables like ``${AnalysisBase_PLATFORM}`` seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
+
+.. warning::
+
+  If you run into a RuntimeError about ``RootCore/Packages.h``, this is due to a known bug in ROOT auto-loading the dictionary for this file. To fix it, you just need to run
+
+  .. code-block:: bash
+
+    export ROOT_INCLUDE_PATH=/cvmfs/atlas.cern.ch/repo/sw/ASG/2.6/AnalysisBase/2.6.1/InstallArea/x86_64-slc6-gcc49-opt/RootCore/include:$ROOT_INCLUDE_PATH
+
+  before running the ``xAH_run.py`` commands. This should fix things up. Don't forget to include the right version if you're using 2.6.X! This should not happen in 21.2 releases.

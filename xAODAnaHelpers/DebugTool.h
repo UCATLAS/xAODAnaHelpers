@@ -13,12 +13,12 @@ public:
 
   // configuration variables
 
-  bool m_printStore;                   // check JVF
+  bool m_printStore = false;
 
 public:
 
   // this is a standard constructor
-  DebugTool (std::string className = "DebugTool");
+  DebugTool ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

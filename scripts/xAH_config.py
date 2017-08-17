@@ -1,35 +1,15 @@
-import ROOT
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-,
+from __future__ import absolute_import
+from __future__ import print_function
+import logging
+logger = logging.getLogger("xAH.config")
 
-class xAH_config(object):
-  def __init__(self):
-    self._algorithms = []
-    self._log        = []
+from xAODAnaHelpers import Config as xAH_config
 
-  def setalg(self, name, val):
-      #
-      # Construct the given constructor
-      #    (complicated b/c we have to deal nesting of namespaces)
-      #
-      alg = reduce(lambda x,y: getattr(x, y, None), name.split('.'), ROOT)
-      if alg is None:
-        raise AttributeError(name)
+import inspect
 
-      #
-      # Construct an instance of the alg and set its attributes
-      #
-      alg_obj = alg()
-      self._log.append((alg,))
-      for k,v in val.iteritems():
-        if not hasattr(alg_obj, k):
-          raise AttributeError(k)
-        self._log.append((alg, k, v))
-        setattr(alg_obj, k, v)
-      #print
-
-
-      #
-      # Add the constructed algo to the list of algorithms to run
-      #
-      self._algorithms.append(alg_obj)
-
-
+logger.warning("xAH_config is being deprecated. Use 'from xAODAnaHelpers import Config as xAH_config' to maintain backwards compatibility... or 'from xAODAnaHelpers import Config' and rename 'xAH_config' to 'Config'. Possible call stack:")
+for frame, path, lineno, source, lines, _ in inspect.stack()[1:]:
+  if 'importhook' in source or path.endswith('ROOT.py'): continue
+  logger.warning('\t{0:s}({1:d}): {2:s}'.format(path, lineno, lines[0].strip()))

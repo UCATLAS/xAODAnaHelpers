@@ -9,6 +9,8 @@ This tutorial will introduce a new user to analysis of xAOD's on Tier 3 using th
 Setup
 -----
 
+.. highlight:: none
+
 First, connect to the UC Tier 3 server with X-11 window forwarding
 enabled (so that you may use ROOT interactively later)::
 
@@ -53,6 +55,8 @@ Make a directory called run. This is where your script will be located::
 
 Code and Data
 -------------
+
+.. highlight:: c++
 
 .. warning:: setConfig and getConfig are eliminated as ``ROOT::TEnv`` support is now deprecated.
 
@@ -193,6 +197,8 @@ Place the following code in your **``makeSlimmedTree.cxx``**. Skim through it to
 
     }
 
+.. highlight:: none
+
 Update the package dependencies on the line **``PACKAGE_DEP``** in ``cmt/Makefile.RootCore`` to include xAODAnaHelpers::
 
     PACKAGE_DEP = xAODAnaHelpers
@@ -309,6 +315,8 @@ Copy the desired GRL to the data/ folder. The Good Runs List is used to specify 
 
 Plotting
 --------
+
+.. highlight:: c++
 
 Here is a "quick and dirty" plotting macro to be placed in the **``run/``** folder for a plot. An example better integrating AtlasStyle is in the works and should be updated soon::
 
@@ -443,7 +451,9 @@ Maintaining xAODAnaHelpers
 
 -  Should you find any errors with xAODAnaHelpers code -- which should be a very rare occurrence, but programmers are still human -- you can immediately report the issue to the entire xAH team in `GitHub issues <https://github.com/UCATLAS/xAODAnaHelpers/issues>`_. Issues are tracked publicly, so you can stay posted about the resolution of your issue.
 
--  Updating the framework should be as simple as calling ``git pull !https://github.com/xAODAnaHelpers`` from within the ``xAODAnaHelpers`` directory. Then, to make sure all the latest Good Runs Lists (GRLs) and configuration information are updated as well, run ``python xAODAnaHelpers/scripts/checkoutASGtags.py $ABver`` where $ABver is the version of your analysis base release, in this case ``2.3.21``. The following lines of code should accomplish the same result automatically::
+-  Updating the framework should be as simple as calling ``git pull !https://github.com/xAODAnaHelpers`` from within the ``xAODAnaHelpers`` directory. Then, to make sure all the latest Good Runs Lists (GRLs) and configuration information are updated as well, run ``python xAODAnaHelpers/scripts/checkoutASGtags.py $ABver`` where $ABver is the version of your analysis base release, in this case ``2.3.21``. The following lines of code should accomplish the same result automatically:
+
+.. code-block:: none
 
     if [ -d $ROOTCOREBIN/../xAODAnaHelpers ]
         then cd $ROOTCOREBIN/../ python xAODAnaHelpers/scripts/checkoutASGtags.py $(echo $ROOTCOREDIR \| sed 's/\\/cvmfs\\/atlas\\.cern\\.ch\\/repo\\/sw\\/ASG\\/AnalysisBase\\/\\([0-9]\*[.][0-9]\*[.][0-9]\*\\).\*/\\1 /');
@@ -451,8 +461,8 @@ Maintaining xAODAnaHelpers
 
 This framework will automatically scale everything in to the GeV range for you, but the xAOD format lists all energies in MeV.
 
-Monitoring loop with pbook show() retry() kill() bigpanda / loadpackages
+Monitoring loop with pbook show() retry() kill() bigpanda / loadpackages::
 
-EL::Driver::wait()
+  EL::Driver::wait()
 
 Debug True gives a verbose mode.

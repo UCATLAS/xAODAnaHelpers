@@ -9,11 +9,11 @@ class Writer : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  TString m_outputLabel;
+  TString m_outputLabel = "";
 
-  TString m_jetContainerNamesStr;
-  TString m_electronContainerNamesStr;
-  TString m_muonContainerNamesStr;
+  TString m_jetContainerNamesStr = "";
+  TString m_electronContainerNamesStr = "";
+  TString m_muonContainerNamesStr = "";
 
 private:
   int m_numEvent;         //!
@@ -32,7 +32,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  Writer (std::string className = "Writer");
+  Writer ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

@@ -78,6 +78,25 @@ namespace HelperClasses{
     std::string SiliconAssociatedForwardMuon("SiliconAssociatedForwardMuon");   enumMap.insert(std::make_pair(SiliconAssociatedForwardMuon , xAOD::Muon::SiliconAssociatedForwardMuon));
   }
 
+  std::string InfoSwitch::get_working_point(const std::string flag) {
+    for (auto configDetail : m_configDetails) {
+      if (configDetail.compare(0, flag.size(), flag) == 0) {
+        return configDetail.substr(flag.size(), std::string::npos);
+      }
+    }
+    return "";
+  }
+
+  std::vector<std::string>InfoSwitch::get_working_points(const std::string flag) {
+    std::vector<std::string> wps;
+    for (auto configDetail : m_configDetails) {
+      if (configDetail.compare(0, flag.size(), flag) == 0) {
+        wps.push_back(configDetail.substr(flag.size(), std::string::npos));
+      }
+    }
+    return wps;
+  }
+
   /*
             !!!!!!!!!!!!!WARNING!!!!!!!!!!!!!
               If you change the string here,
@@ -88,6 +107,7 @@ namespace HelperClasses{
 
   void EventInfoSwitch::initialize(){
     m_pileup        = has_exact("pileup");
+    m_pileupsys     = has_exact("pileupsys");
     m_eventCleaning = has_exact("eventCleaning");
     m_shapeEM       = has_exact("shapeEM");
     m_shapeLC       = has_exact("shapeLC");
@@ -99,6 +119,7 @@ namespace HelperClasses{
     m_basic             = has_exact("basic");
     m_menuKeys          = has_exact("menuKeys");
     m_passTriggers      = has_exact("passTriggers");
+    m_passTrigBits      = has_exact("passTrigBits");
   }
 
   void JetTriggerInfoSwitch::initialize(){
@@ -118,38 +139,92 @@ namespace HelperClasses{
 	    break;
 	  }
       }
+
+    m_useTheS   = has_exact("useTheS");
   }
 
   void MuonInfoSwitch::initialize(){
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
+    m_isolationKinematics = has_exact("isolationKinematics");
     m_quality       = has_exact("quality");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
     m_energyLoss    = has_exact("energyLoss");
+   
+    // working points combinations for trigger corrections 
+    std::string token;
+    std::string reco_prfx = "Reco";
+    std::string isol_prfx = "Iso";
+    std::string trig_prfx = "HLT";
+    
+    std::istringstream ss(m_configStr);
+    while ( std::getline(ss, token, ' ') ) {
+      if ( token.compare( 0, reco_prfx.length(), reco_prfx ) == 0 ) { m_recoWPs.push_back(token); }
+      if ( token.compare( 0, isol_prfx.length(), isol_prfx ) == 0 ) { m_isolWPs.push_back(token); }
+      if ( token.compare( 0, trig_prfx.length(), trig_prfx ) == 0 ) { m_trigWPs.push_back(token); }
+    }  
+    
+    m_recoEff_sysNames = has_exact("recoEff_sysNames");
+    m_isoEff_sysNames  = has_exact("isoEff_sysNames");
+    m_trigEff_sysNames = has_exact("trigEff_sysNames"); 
+    m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames"); 
+    
   }
 
   void ElectronInfoSwitch::initialize(){
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
+    m_isolationKinematics = has_exact("isolationKinematics");
+    m_quality       = has_exact("quality");
     m_PID           = has_exact("PID");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
+    // working points for scale-factors
+
+    // working points combinations for trigger corrections 
+    std::string token;
+    std::string PID_keyword = "LLH";
+    std::string isol_keyword = "isol";
+    std::string trig_keyword1 = "DI_E_";
+    std::string trig_keyword2 = "MULTI_L_";
+    std::string trig_keyword3 = "SINGLE_E_";
+    std::string trig_keyword4 = "TRI_E_";
+    
+    std::istringstream ss(m_configStr);
+    while ( std::getline(ss, token, ' ') ) {
+     if ( token.find(PID_keyword ) != std::string::npos ) { m_PIDWPs.push_back(token); }
+     if ( token.find("isolNoRequirement") != std::string::npos ) { m_isolWPs.push_back(""); }
+     if ( (token.compare( 0, isol_keyword.length(), isol_keyword ) == 0) && 
+           token!="isolation" && 
+           token!="isolNoRequirement" ) { m_isolWPs.push_back(token); }
+     if ( (token.find(trig_keyword1 ) != std::string::npos) ||
+          (token.find(trig_keyword2 ) != std::string::npos) ||
+          (token.find(trig_keyword3 ) != std::string::npos) ||
+          (token.find(trig_keyword4 ) != std::string::npos)  ) { m_trigWPs.push_back(token); }
+   } 
+
   }
 
   void PhotonInfoSwitch::initialize(){
     m_isolation     = has_exact("isolation");
     m_PID           = has_exact("PID");
+    m_purity        = has_exact("purity");
+    m_effSF         = has_exact("effSF");
+    m_trigger       = has_exact("trigger");
   }
 
   void JetInfoSwitch::initialize(){
     m_substructure  = has_exact("substructure");
+    m_bosonCount    = has_exact("bosonCount");
+    m_VTags         = has_exact("VTags");
     m_rapidity      = has_exact("rapidity");
     m_clean         = has_exact("clean");
     m_energy        = has_exact("energy");
     m_scales        = has_exact("scales");
+    m_constscaleEta = has_exact("constscaleEta");
     m_resolution    = has_exact("resolution");
     m_truth         = has_exact("truth");
     m_truthDetails  = has_exact("truth_details");
@@ -190,9 +265,41 @@ namespace HelperClasses{
       m_trackName         = "";
     }
 
-    m_hltVtxComp          = has_exact("hltVtxComp");
+
+    if(has_match("trackJetName")){
+      m_trackJets       = true;
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("trackJetName_") );
+      // erase everything after the interesting string
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
+      // remove trackJetName_ to just leave the tack name
+      input.erase(0,13);
+
+      m_trackJetName = input;
+    }else{
+      m_trackJets            = false;
+      m_trackJetName         = "";
+    }
+
+
+    m_hltVtxComp          = has_exact("hltVtxComp");    
+    m_onlineBS            = has_exact("onlineBS");    
+    m_onlineBSTool        = has_exact("onlineBSTool");
+
+    
     m_charge              = has_exact("charge");
+    m_etaPhiMap           = has_exact("etaPhiMap");
+    m_byAverageMu         = has_exact("byAverageMu");
+    m_byEta               = has_exact("byEta");
     m_vsLumiBlock         = has_exact("vsLumiBlock");
+    m_lumiB_runN          = has_exact("lumiB_runN");
+
+    m_sfJVTName           = get_working_point("sfJVT");
+    m_sffJVTName          = get_working_point("sffJVT");
 
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
@@ -241,12 +348,23 @@ namespace HelperClasses{
       }
     } // sfFTagFlt
     m_area          = has_exact("area");
+    m_JVC           = has_exact("JVC");
   }
 
   void TruthInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
+    m_type          = has_exact("type");
+    m_bVtx          = has_exact("bVtx");
+    m_parents       = has_exact("parents");
+    m_children      = has_exact("children");
   }
 
+  void TrackInfoSwitch::initialize(){
+    m_kinematic     = has_exact("kinematic");
+    m_fitpars	    = has_exact("fitpars");
+    m_numbers	    = has_exact("numbers");
+    m_vertex	    = has_exact("vertex");
+    m_useTheS       = has_exact("useTheS");
+  }
 
   void TauInfoSwitch::initialize(){
     m_trackparams   = has_exact("trackparams");

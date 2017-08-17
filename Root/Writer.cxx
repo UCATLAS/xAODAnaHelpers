@@ -8,7 +8,6 @@
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 // this is needed to distribute the algorithm to the workers
@@ -16,16 +15,9 @@ ClassImp(Writer)
 
 
 
-Writer :: Writer (std::string className) :
-    Algorithm(className)
+Writer :: Writer () :
+    Algorithm("Writer")
 {
-  m_outputLabel               = "";
-
-  m_jetContainerNamesStr      = "";
-  m_electronContainerNamesStr = "";
-  m_muonContainerNamesStr     = "";
-  m_debug                   = false;
-
 }
 
 EL::StatusCode Writer :: setupJob (EL::Job& job)
@@ -46,7 +38,7 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
   m_muonContainerNames      = HelperFunctions::SplitString( m_muonContainerNamesStr,     ',' );
 
   if ( m_outputLabel.Length() == 0 ) {
-    Error("Writer::setupJob()", "No OutputLabel specified!");
+    ANA_MSG_ERROR( "No OutputLabel specified!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -65,7 +57,7 @@ EL::StatusCode Writer :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -106,7 +98,7 @@ EL::StatusCode Writer :: initialize ()
 
   // output xAOD
   TFile * file = wk()->getOutputFile (m_outputLabel.Data());
-  RETURN_CHECK( "Writer::initialize()", m_event->writeTo(file), "Failed to write event to output file");
+  ANA_CHECK( m_event->writeTo(file));
 
   //FIXME add this as well
 // Set which variables not to write out:
@@ -134,47 +126,47 @@ EL::StatusCode Writer :: execute ()
 
     const xAOD::JetContainer* inJetsConst(nullptr);
     // look in event
-    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, m_verbose).isSuccess() ) {
+    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, msg()).isSuccess() ) {
       // without modifying the contents of it:
-      Info("execute()", " Write a collection %s %lu", contName.Data(), inJetsConst->size() );
+      ANA_MSG_INFO( " Write a collection " << contName.Data() << inJetsConst->size() );
       m_event->copy( contName.Data() );
-      Info("execute()", " Wrote a collection %s", contName.Data());
+      ANA_MSG_INFO( " Wrote a collection " << contName.Data());
       continue;
     }
 
     // look in store
     xAOD::JetContainer* inJets(nullptr);
-    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, m_verbose).isSuccess() ){
+    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, msg()).isSuccess() ){
 //      // FIXME add something like this
 //      jets_shallowCopy.second->setShallowIO( false ); // true = shallow copy, false = deep copy
 //      // if true should have something like this line somewhere:
 
       // Record the objects into the output xAOD:
-      Info("execute()", " Write a collection %s %lu", contName.Data(), inJets->size() );
+      ANA_MSG_INFO( " Write a collection " << contName.Data() << inJets->size() );
       if( ! m_event->record( inJets, contName.Data() ) ) {
-        Error("execute()" ,"%s: Could not record %s", m_name.c_str(), contName.Data());
+        ANA_MSG_ERROR(m_name << ": Could not record " << contName.Data());
         return EL::StatusCode::FAILURE;
       }
-      Info("execute()", " Wrote a collection %s", contName.Data());
+      ANA_MSG_INFO( " Wrote a collection " << contName.Data());
 
       // get pointer to associated aux container
       xAOD::JetAuxContainer* inJetsAux = 0;
-      Info("execute()", " Wrote a aux store %s", contName.Data());
+      ANA_MSG_INFO( " Wrote a aux store " << contName.Data());
       TString auxName( contName + "Aux." );
-      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, m_verbose).isSuccess() ){
-        Error("execute()" ,"%s: Could not get Aux data for %s", m_name.c_str(), contName.Data());
+      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, msg()).isSuccess() ){
+        ANA_MSG_ERROR(m_name << ": Could not get Aux data for " << contName.Data());
         return EL::StatusCode::FAILURE;
       }
-      Info("execute()", " Wrote a aux store %s", contName.Data());
+      ANA_MSG_INFO( " Wrote a aux store " << contName.Data());
 
       if( ! m_event->record( inJetsAux, auxName.Data() ) ) {
-        Error("execute()", "%s: Could not record aux store for %s", m_name.c_str(), contName.Data());
+        ANA_MSG_ERROR( m_name << ": Could not record aux store for " << contName.Data());
         return EL::StatusCode::FAILURE;
       }
     }
     // could not find the container - problems
     else {
-      Error("execute()" ,"%s: Could not find %s", m_name.c_str(), contName.Data());
+      ANA_MSG_ERROR( m_name << ": Could not find " << contName.Data());
       return EL::StatusCode::FAILURE;
     }
   }
@@ -212,7 +204,7 @@ EL::StatusCode Writer :: finalize ()
 
   // finalize and close our output xAOD file ( and write MetaData tree )
   TFile * file = wk()->getOutputFile(m_outputLabel.Data());
-  RETURN_CHECK( "Writer::finalize()", m_event->finishWritingTo( file ), "Failed to finish writing event to output file");
+  ANA_CHECK( m_event->finishWritingTo( file ));
 
   return EL::StatusCode::SUCCESS;
 }
@@ -231,6 +223,6 @@ EL::StatusCode Writer :: histFinalize ()
   // outputs have been merged.  This is different from finalize() in
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }

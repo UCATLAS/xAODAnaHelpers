@@ -9,30 +9,7 @@ TStore will manage the memory for the user.
 Event Selection
 ---------------
 
-BasicEventSelection
-~~~~~~~~~~~~~~~~~~~
-
-This algorithm performs the very basic event selection. This should be
-the first algo in the algo chain. It can create weighted and unweighted
-cutflow objects to be picked up downstream by other xAH algos, and your
-own. The selection applied in **data** only is:
-
-1. GRL ( can be turned off )
-2. LAr Error
-3. Tile Error
-4. Core Flag
-
-For **MC** only, the pileup reweight can be applied.
-
-In **both** data and simulation the following cuts are applied 1. the
-highest sum pT^2 PV has 2 or more tracks 2. trigger requirements
-
-For derivations the MetaData can be accessed and added to the cutflow
-for normalization
-
-The parameters to control the trigger and all cuts in general are
-described in the header documentation:
-https://github.com/UCATLAS/xAODAnaHelpers/wiki/xAH\_BasicEventSelection.h
+(moved to BasicEventSelection.h)
 
 Jet Related
 -----------
@@ -178,6 +155,27 @@ MuonCalibrator
 MuonEfficiencyCorrector
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+Produces a container of muons decorated with efficiencies and scale factors.
+This container is not simply the one in input, but is a deepCopy of that.
+This allows flexibility in decorating muons of systematically altered containers.
+The output container has a configurable name and is only created for MC events.
+When working with systematic uncertainties, a list of systematics is passed
+to this algorithm *m_inputAlgoSystNames*\. This algorithm supports comma
+separated lists as inputs, which will be considered as a unique list. The
+systematic names in this list will be looked for to retrieve the muon containers
+to decorate. Systematic variations on the decorations themselves might be
+unnecessary for all systematic muon containers and might only be considered
+for the nominal container (need of deepCopy). This is the default configuration.
+Otherwise the  option *m_decorateWithNomOnInputSys*\ can be set to false.
+The algorithm features the option *m_sysNamesForParCont*\ which is a list of systematic
+names. For each of them, a copy of the nominal muon container is put in the
+store carrying the name of the systematic. These containers are only decorated
+with the nominal efficiencies and scale factors. The use case of this are MET
+systematics for which one does not want systematic variations on efficiencies,
+but still wants to retrieve a nominal muon container in the tree algo. Retrieving
+the nominal would indeed carry all the unnecessary uncertainties.
+
+
 MuonSelector
 ~~~~~~~~~~~~
 
@@ -192,6 +190,8 @@ ElectronCalibrator
 
 ElectronEfficiencyCorrector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See the MuonEfficiencyCorrector
 
 ElectronSelector
 ~~~~~~~~~~~~~~~~

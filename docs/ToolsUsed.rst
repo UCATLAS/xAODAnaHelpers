@@ -17,15 +17,19 @@ Event Level
 -  `ElectronPhotonSelectorTools <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/ElectronPhotonSelectorTools>`__
 -  `IsolationCorrectionTool <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/IsolationLeakageCorrections>`__
 
+:math:`\mu`
+-----------
+-  `MuonSelectionTool <https://twiki.cern.ch/twiki/bin/view/Atlas/MuonSelectionTool>`__
+
 :math:`j`
 ---------
 
 -  `JetCalibrationTool <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ApplyJetCalibration2014>`__
 -  `JERSmearingTool <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JetResolution2015Prerecom>`__
 -  `JetSelectorTools <https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/JetMissingEtID/JetSelectorTools/trunk/README.rst>`__
--  `JVT <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/JetVertexTaggerTool>`__
--  `JVT (NEW: selection and SF) <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration>`__
--  `BTaggingEfficiencyTool <http://atlas.web.cern.ch/Atlas/GROUPS/DATABASE/GroupData/xAODBTaggingEfficiency/13TeV/>`
+-  `JVT <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration>`__
+-  `BTaggingEfficiencyTool <http://atlas.web.cern.ch/Atlas/GROUPS/DATABASE/GroupData/xAODBTaggingEfficiency/13TeV/>`__
+-  `JetCleaning2016 <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/HowToCleanJets2016>`__
 
 
 :math:`\tau` jets

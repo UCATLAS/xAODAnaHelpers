@@ -19,25 +19,41 @@ class TruthSelector : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  bool m_useCutFlow;
+  bool m_useCutFlow = true;
 
   // configuration variables
-  std::string m_inContainerName;   // input container name
-  std::string m_outContainerName;  // output container name
-  std::string m_decor;            // The decoration key written to passing objects
-  bool m_decorateSelectedObjects; // decorate selected objects? defaul passSel
-  bool m_createSelectedContainer; // fill using SG::VIEW_ELEMENTS to be light weight
-  int m_nToProcess;               // look at n objects
-  int m_pass_min;                 // minimum number of objects passing cuts
-  int m_pass_max;                 // maximum number of objects passing cuts
-  float m_pT_max;                 // require pT < pt_max
-  float m_pT_min;                 // require pT > pt_max
-  float m_eta_max;                // require eta < eta_max
-  float m_eta_min;                // require eta > eta_max
-  float m_mass_max;               // require mass < mass_max
-  float m_mass_min;               // require mass > mass_max
-  float m_rapidity_max;           // require rapidity < rapidity_max
-  float m_rapidity_min;           // require rapidity > rapidity_min
+  /// @brief input container name
+  std::string m_inContainerName = "";
+  /// @brief output container name
+  std::string m_outContainerName = "";
+  /// @brief The decoration key written to passing objects
+  std::string m_decor = "passSel";
+  /// @brief decorate selected objects? defaul passSel
+  bool m_decorateSelectedObjects = true;
+  /// @brief fill using SG::VIEW_ELEMENTS to be light weight
+  bool m_createSelectedContainer = false;
+  /// @brief look at n objects
+  int m_nToProcess = -1;
+  /// @brief minimum number of objects passing cuts
+  int m_pass_min = -1;
+  /// @brief maximum number of objects passing cuts
+  int m_pass_max = -1;
+  /// @brief require pT < pt_max
+  float m_pT_max = 1e8;
+  /// @brief require pT > pt_max
+  float m_pT_min = 1e8;
+  /// @brief require eta < eta_max
+  float m_eta_max = 1e8;
+  /// @brief require eta > eta_max
+  float m_eta_min = 1e8;
+  /// @brief require mass < mass_max
+  float m_mass_max = 1e8;
+  /// @brief require mass > mass_max
+  float m_mass_min = 1e8;
+  /// @brief require rapidity < rapidity_max
+  float m_rapidity_max = 1e8;
+  /// @brief require rapidity > rapidity_min
+  float m_rapidity_min = 1e8;
 
 private:
   int m_numEvent;         //!
@@ -47,13 +63,13 @@ private:
   int m_numObjectPass;    //!
 
   // cutflow
-  TH1D* m_cutflowHist;          //!
-  TH1D* m_cutflowHistW;         //!
+  TH1D* m_cutflowHist = nullptr;          //!
+  TH1D* m_cutflowHistW = nullptr;         //!
   int   m_cutflow_bin;          //!
 
   /* object-level cutflow */
 
-  TH1D* m_truth_cutflowHist_1;  //!
+  TH1D* m_truth_cutflowHist_1 = nullptr;  //!
 
   int   m_truth_cutflow_all;           //!
   int   m_truth_cutflow_ptmax_cut;     //!
@@ -68,7 +84,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  TruthSelector (std::string className = "TruthSelector");
+  TruthSelector ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

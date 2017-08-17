@@ -1,5 +1,5 @@
 ClusterHistsAlgo
-==============
+================
 
 .. doxygenclass:: ClusterHistsAlgo
    :members:

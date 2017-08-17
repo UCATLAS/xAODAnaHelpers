@@ -16,22 +16,34 @@
 #ifndef xAODAnaHelpers_HelpTreeBase_H
 #define xAODAnaHelpers_HelpTreeBase_H
 
-#include "xAODEventShape/EventShape.h"
 
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODEgamma/PhotonContainer.h"
 #include "xAODMuon/MuonContainer.h"
 #include "xAODJet/JetContainer.h"
+#include "xAODTrigger/JetRoIContainer.h"
 #include "xAODTruth/TruthParticleContainer.h"
 #include "xAODTau/TauJetContainer.h"
 #include "xAODMissingET/MissingETContainer.h"
+#include "xAODTracking/TrackParticleContainer.h"
 
 #include "xAODAnaHelpers/HelperClasses.h"
+#include "xAODAnaHelpers/EventInfo.h"
+#include "xAODAnaHelpers/MetContainer.h"
+#include "xAODAnaHelpers/JetContainer.h"
+#include "xAODAnaHelpers/ElectronContainer.h"
+#include "xAODAnaHelpers/PhotonContainer.h"
+#include "xAODAnaHelpers/FatJetContainer.h"
+#include "xAODAnaHelpers/TruthContainer.h"
+#include "xAODAnaHelpers/TrackContainer.h"
+#include "xAODAnaHelpers/MuonContainer.h"
+#include "xAODAnaHelpers/TauContainer.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
-#include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
+
+#include <map>
 
 // root includes
 #include "TTree.h"
@@ -45,43 +57,58 @@ namespace Trig {
   class TrigDecisionTool;
 }
 
+typedef SG::AuxElement::Accessor< std::vector< float > > floatAccessor ;
+
 class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, bool DC14 = false, xAOD::TStore* store = nullptr );
-  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, bool DC14 = false );
+  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, xAOD::TStore* store = nullptr );
+  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false );
   virtual ~HelpTreeBase();
 
   void AddEvent       (const std::string detailStr = "");
   void AddTrigger     (const std::string detailStr = "");
   void AddJetTrigger  (const std::string detailStr = "");
-  void AddMuons       (const std::string detailStr = "");
-  void AddElectrons   (const std::string detailStr = "");
-  void AddPhotons     (const std::string detailStr = "");
+  void AddMuons       (const std::string detailStr = "", const std::string muonName = "muon");
+  void AddElectrons   (const std::string detailStr = "", const std::string elecName = "el");
+  void AddPhotons     (const std::string detailStr = "", const std::string photonName = "ph");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
+  void AddL1Jets      ();
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
-  void AddFatJets     (const std::string detailStr = "");
-  void AddTaus        (const std::string detailStr = "");
+  void AddTrackParts  (const std::string trackName,	 const std::string detailStr = "");
+
+  /**
+   *  @brief  Declare a new collection of fatjets to be written to the output tree.
+   *  @param  detailStr   A (space-separated) list of detail options. These keywords specify
+   *                      exactly which information about each jet is written out. Current
+   *                      influential options are: `kinematic` `substructure` `constituent`
+   *                      `constituentAll`
+   *  @param  fatjetName  The (prefix) name of the container. Default: `fatjet`.
+   *  @param  suffix      If non-empty, append the given suffix to all branch names.
+   **/
+  void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "fatjet", const std::string suffix = "");
+  void AddTruthFatJets(const std::string detailStr = "", const std::string truthFatJetName = "truth_fatjet");
+
+  void AddTaus        (const std::string detailStr = "",  const std::string tauName = "tau");
   void AddMET         (const std::string detailStr = "");
+
+  /**
+   *  @brief  Helper function to lookup each fatjet container name/suffix combo in the internal map
+   *          of vectors for vectors. You probably don't need this but it might be useful if you're
+   *          implementing `[Add/Fill/Clear]FatJetsUser()`.
+   *  @param  fatjetName  The (prefix) name of the container.
+   *  @param  suffix      The container branch suffix.
+   *
+   *  @return a string that uniquely identifies the collection name/suffix in the lookup map.
+   **/
+  static std::string FatJetCollectionName(const std::string fatjetName = "fatjet", const std::string suffix = "");
 
   xAOD::TEvent* m_event;
   xAOD::TStore* m_store;
 
   // control which branches are filled
-  HelperClasses::EventInfoSwitch*      m_eventInfoSwitch;
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
-  HelperClasses::JetTriggerInfoSwitch* m_jetTrigInfoSwitch;
-  HelperClasses::MuonInfoSwitch*       m_muInfoSwitch;
-  HelperClasses::ElectronInfoSwitch*   m_elInfoSwitch;
-  HelperClasses::PhotonInfoSwitch*     m_phInfoSwitch;
-  std::map<std::string, HelperClasses::JetInfoSwitch*> m_thisJetInfoSwitch;
-  HelperClasses::TruthInfoSwitch*      m_truthInfoSwitch;
-  HelperClasses::JetInfoSwitch*        m_fatJetInfoSwitch;
-  HelperClasses::TauInfoSwitch*        m_tauInfoSwitch;
-  HelperClasses::METInfoSwitch*        m_metInfoSwitch;
-
-  InDet::InDetTrackSelectionTool * m_trkSelTool;
 
   std::string                  m_triggerSelection;
   TrigConf::xAODConfigTool*    m_trigConfTool;
@@ -91,29 +118,59 @@ public:
 
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();
-  void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex );
-  void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex );
-  void FillPhotons( const xAOD::PhotonContainer* photons );
+
+  void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex, const std::string muonName = "muon" );
+  void FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primaryVertex, const std::string muonName = "muon" );
+
+  void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex, const std::string elecName = "el" );
+  void FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex* primaryVertex, const std::string elecName = "el" );
+
+  void FillPhotons( const xAOD::PhotonContainer* photons, const std::string photonName = "ph" );
+  void FillPhoton ( const xAOD::Photon*          photon,  const std::string photonName = "ph" );
 
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
+  void FillL1Jets( const xAOD::JetRoIContainer* jets );
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
-  void FillFatJets( const xAOD::JetContainer* fatJets );
-  void FillTaus( const xAOD::TauJetContainer* taus );
+  void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
+
+  void FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* tracks);
+  void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
+
+  /**
+   *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
+   *          container name and suffix should be declared beforehand using `AddFatJets()`.
+   *          This clears the current branch state for the collection so it only makes sense to
+   *          call once per call to `Fill()`.
+   *  @param  fatJets     A container of jets to be written out.
+   *  @param  fatjetName  The name of the output collection to write to.
+   *  @param  suffix      The suffix of the output collection to write to.
+   */
+  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string fatjetName = "fatjet", const std::string suffix = "");
+  void FillFatJet ( const xAOD::Jet* fatjet_itr,        const std::string fatjetName = "fatjet", const std::string suffix = "");
+
+  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     const std::string truthFatJetName="truth_fatjet" );
+  void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, const std::string truthFatJetName="truth_fatjet" );
+
+  void FillTaus( const xAOD::TauJetContainer* taus, const std::string tauName = "tau" );
+  void FillTau ( const xAOD::TauJet* tau,           const std::string tauName = "tau" );
   void FillMET( const xAOD::MissingETContainer* met );
 
   void Fill();
   void ClearEvent();
   void ClearTrigger();
   void ClearJetTrigger();
-  void ClearMuons();
-  void ClearElectrons();
-  void ClearPhotons();
-  void ClearJets(const std::string jetName = "jet");
-  void ClearTruth(const std::string truthName);
-  void ClearFatJets();
-  void ClearTaus();
+  void ClearMuons       (const std::string jetName = "muon");
+  void ClearElectrons   (const std::string elecName = "el");
+  void ClearPhotons     (const std::string photonName = "ph");
+  void ClearJets        (const std::string jetName = "jet");
+  void ClearL1Jets      ();
+  void ClearTruth       (const std::string truthName);
+  void ClearTracks	(const std::string trackName);
+  void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
+  void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
+  void ClearTaus        (const std::string tauName = "tau" );
   void ClearMET();
 
   bool writeTo( TFile *file );
@@ -122,74 +179,119 @@ public:
     if(m_debug) Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+
   virtual void AddTriggerUser(const std::string detailStr = "")      {
     if(m_debug) Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+
   virtual void AddJetTriggerUser(const std::string detailStr = "")      {
     if(m_debug) Info("AddJetTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+
   virtual void AddMuonsUser(const std::string detailStr = "")      {
     if(m_debug) Info("AddMuonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+
   virtual void AddElectronsUser(const std::string detailStr = "")  {
     if(m_debug) Info("AddElectronsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+
   virtual void AddPhotonsUser(const std::string detailStr = "")  {
     if(m_debug) Info("AddPhotonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+
   virtual void AddJetsUser(const std::string detailStr = "", const std::string jetName = "jet")       {
     if(m_debug) Info("AddJetsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(), jetName.c_str());
     return;
   };
+
   virtual void AddTruthUser(const std::string truthName, const std::string detailStr = "")       {
     if(m_debug) Info("AddTruthUser","Empty function called from HelpTreeBase %s %s",truthName.c_str(), detailStr.c_str());
     return;
   };
-  virtual void AddFatJetsUser(const std::string detailStr = "")       {
-    if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+
+  virtual void AddTracksUser(const std::string trackName, const std::string detailStr = "")       {
+    if(m_debug) Info("AddTracksUser","Empty function called from HelpTreeBase %s %s",trackName.c_str(), detailStr.c_str());
     return;
   };
+
+  /**
+   *  @brief  Declare a new fat jet collection. Automatically called once per call to `AddFatJets()`;
+   *          override this if you want to provide your own additional branches for fatjets.
+   *  @param  detailStr   The space-separated list of detail requested by the called.
+   *  @param  fatjetName  The (prefix) name of the output collection.
+   *  @param  suffix      A suffix to be appeneded to the end of the output branch name(s).
+   */
+  virtual void AddFatJetsUser(const std::string detailStr = "", const std::string fatjetName = "", const std::string suffix = "")       {
+    if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase %s for %s with suffix %s", detailStr.c_str(), fatjetName.c_str(), suffix.c_str());
+    return;
+  };
+
+  virtual void AddTruthFatJetsUser(const std::string detailStr = "", const std::string truthFatJetName = "truth_fatjet")       {
+    if(m_debug) Info("AddTruthFatJetsUser","Empty function called from HelpTreeBase %s for %s", detailStr.c_str(), truthFatJetName.c_str());
+    return;
+  };
+
   virtual void AddTausUser(const std::string detailStr = "")       {
     if(m_debug) Info("AddTausUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
+
   virtual void AddMETUser(const std::string detailStr = "")       {
     if(m_debug) Info("AddMETUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
     return;
   };
 
-  virtual void ClearEventUser()     { return; };
-  virtual void ClearTriggerUser()   { return; };
-  virtual void ClearMuonsUser()     { return; };
-  virtual void ClearElectronsUser() { return; };
-  virtual void ClearPhotonsUser() { return; };
-  virtual void ClearTruthUser(const std::string& /*truthName*/) 	    { return; };
-  virtual void ClearJetsUser (const std::string /*jetName = "jet"*/ ) 	    { return; };
-  virtual void ClearFatJetsUser()   { return; };
-  virtual void ClearTausUser() 	    { return; };
-  virtual void ClearMETUser()       { return; };
+  virtual void ClearEventUser       ()     { return; };
+  virtual void ClearTriggerUser     ()   { return; };
+  virtual void ClearMuonsUser       (const std::string /*muonName = muon"*/)     { return; };
+  virtual void ClearElectronsUser   (const std::string /*elecName = "el"*/) { return; };
+  virtual void ClearPhotonsUser     (const std::string /*photonName = "ph"*/) { return; };
+  virtual void ClearTruthUser       (const std::string /*truthName*/) 	    { return; };
+  virtual void ClearTracksUser       (const std::string /*trackName*/)       { return; };
+  virtual void ClearJetsUser        (const std::string /*jetName = "jet"*/ ) 	    { return; };
+  virtual void ClearFatJetsUser     (const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/)   { return; };
+  virtual void ClearTruthFatJetsUser(const std::string /*truthFatJetName = "truth_fatjet"*/)   { return; };
+  virtual void ClearTausUser        (const std::string /*tauName = "tau"*/) 	    { return; };
+  virtual void ClearMETUser         ()       { return; };
 
-  virtual void FillEventUser( const xAOD::EventInfo*  )        { return; };
-  virtual void FillMuonsUser( const xAOD::Muon*  )             { return; };
-  virtual void FillElectronsUser( const xAOD::Electron*  )     { return; };
-  virtual void FillPhotonsUser( const xAOD::Photon*  )     { return; };
-  virtual void FillJetsUser( const xAOD::Jet*, const std::string /*jetName = "jet"*/  )               { return; };
-  virtual void FillTruthUser( const std::string& /*truthName*/, const xAOD::TruthParticle*  )               { return; };
-  virtual void FillFatJetsUser( const xAOD::Jet*  )            { return; };
-  virtual void FillTausUser( const xAOD::TauJet*  )            { return; };
+  virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
+  virtual void FillMuonsUser    ( const xAOD::Muon*,     const std::string /*muonName = "muon"*/  )             { return; };
+  virtual void FillElectronsUser( const xAOD::Electron*, const std::string /*elecName = "el"*/ )     { return; };
+  virtual void FillPhotonsUser  ( const xAOD::Photon*,   const std::string /*photonName = "ph"*/ )     { return; };
+  virtual void FillJetsUser     ( const xAOD::Jet*,      const std::string /*jetName = "jet"*/  )               { return; };
+  virtual void FillTruthUser    ( const std::string /*truthName*/, const xAOD::TruthParticle*  )               { return; };
+  virtual void FillTracksUser   ( const std::string /*trackName*/, const xAOD::TrackParticle*  )               { return; };
+  /**
+   *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
+   *          information to your jet collection.
+   *  @param  jet         a pointer to the current xAOD::Jet object that should be written to the
+   *                      output branch(s).
+   *  @param  fatjetName  the (prefix) name of the output collection
+   *  @param  suffix      the suffix to append to output branches.
+   */
+  virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/) { return; };
+  virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, const std::string /*fatjetName = "truth_fatjet"*/   )            { return; };
+  virtual void FillTausUser( const xAOD::TauJet*,           const std::string /*tauName = "tau"*/  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
   virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
   virtual void FillJetTriggerUser()                            { return; };
 
  protected:
 
-  template<typename T, typename U>
-    void safeFill(const xAOD::Jet* jet, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units = 1);
+  template<typename T, typename U, typename V>
+    void safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units = 1);
+
+  template<typename T, typename U, typename V>
+    void safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >& destination, int m_units = 1);
+
+  template<typename T>
+    void setBranch(std::string prefix, std::string varName, std::vector<T>* localVectorPtr);
 
 protected:
 
@@ -198,56 +300,10 @@ protected:
   int m_units; //For MeV to GeV conversion in output
 
   bool m_debug;
-  bool m_DC14;
   bool m_isMC;
 
   // event
-  int m_runNumber;
-  long int m_eventNumber;
-  int m_lumiBlock;
-  uint32_t m_coreFlags;
-  uint32_t m_timeStamp;
-  uint32_t m_timeStampNSOffset;
-  bool m_TileError;
-  bool m_LArError;
-  bool m_SCTError;
-  uint32_t m_TileFlags;
-  uint32_t m_LArFlags;
-  uint32_t m_SCTFlags;
-  int m_mcEventNumber;
-  int m_mcChannelNumber;
-  float m_mcEventWeight;
-  float m_weight_pileup;
-  float m_correct_mu;
-  int   m_rand_run_nr;
-  int   m_rand_lumiblock_nr;
-  int m_bcid;
-  // event pileup
-  int m_npv;
-  float m_actualMu;
-  float m_averageMu;
-  // event shapeEM
-  double m_rhoEM;
-  double m_rhoLC;
-  // truth
-  int m_pdgId1;
-  int m_pdgId2;
-  int m_pdfId1;
-  int m_pdfId2;
-  float m_x1;
-  float m_x2;
-  //float m_scale;
-  float m_q;
-  //float m_pdf1;
-  //float m_pdf2;
-  float m_xf1;
-  float m_xf2;
-
-  // CaloCluster
-  std::vector<float> m_caloCluster_pt;
-  std::vector<float> m_caloCluster_eta;
-  std::vector<float> m_caloCluster_phi;
-  std::vector<float> m_caloCluster_e;
+  xAH::EventInfo*      m_eventInfo;
 
   // trigger
   int m_passL1;
@@ -259,589 +315,99 @@ protected:
   						   / This list is created when configuring ElectronSelector.cxx, where the electron trigger matching is actually performed
 						   */
 
+  // jet trigger
   std::vector<std::string> m_passTriggers;
   std::vector<float> m_triggerPrescales;
-
-  // jet trigger
+  std::vector<std::string>  m_isPassBitsNames;
+  std::vector<unsigned int> m_isPassBits;
 
   //
-  // jet Info
+  //  Jets
   //
-  struct jetInfo{
+  std::map<std::string, xAH::JetContainer*> m_jets;
 
-    int N;
-    std::vector<float> m_jet_pt;
-    std::vector<float> m_jet_eta;
-    std::vector<float> m_jet_phi;
-    std::vector<float> m_jet_E;
-
-    // rapidity
-    std::vector<float> m_jet_rapidity;
-
-    // clean
-    std::vector<float> m_jet_time;
-    std::vector<float> m_jet_LArQuality;
-    std::vector<float> m_jet_hecq;
-    std::vector<float> m_jet_negE;
-    std::vector<float> m_jet_avLArQF;
-    std::vector<float> m_jet_bchCorrCell;
-    std::vector<float> m_jet_N90Const;
-    std::vector<float> m_jet_LArBadHVEFrac;
-    std::vector<int>   m_jet_LArBadHVNCell;
-    std::vector<float> m_jet_OotFracClus5;
-    std::vector<float> m_jet_OotFracClus10;
-    std::vector<float> m_jet_LeadingClusterPt;
-    std::vector<float> m_jet_LeadingClusterSecondLambda;
-    std::vector<float> m_jet_LeadingClusterCenterLambda;
-    std::vector<float> m_jet_LeadingClusterSecondR;
-    std::vector<int>   m_jet_clean_passLooseBad;
-    std::vector<int>   m_jet_clean_passLooseBadUgly;
-    std::vector<int>   m_jet_clean_passTightBad;
-    std::vector<int>   m_jet_clean_passTightBadUgly;
-
-    // energy
-    std::vector<float> m_jet_HECf;
-    std::vector<float> m_jet_EMf;
-    std::vector<float> m_jet_centroidR;
-    std::vector<float> m_jet_fracSampMax;
-    std::vector<float> m_jet_fracSampMaxIdx;
-    std::vector<float> m_jet_lowEtFrac;
-    std::vector<float> m_jet_muonSegCount;
-    std::vector<float> m_jet_width;
-
-    // scales
-    std::vector<float> m_jet_emPt;
-    std::vector<float> m_jet_constPt;
-    std::vector<float> m_jet_pileupPt;
-    std::vector<float> m_jet_originConstitPt;
-    std::vector<float> m_jet_etaJESPt;
-    std::vector<float> m_jet_gscPt;
-    std::vector<float> m_jet_insituPt;
-
-    // layer
-    std::vector< std::vector<float> > m_jet_ePerSamp;
-
-    // tracksAll
-    std::vector< std::vector<int> >   m_jet_NTrkPt1000;
-    std::vector< std::vector<float> > m_jet_SumPtPt1000;
-    std::vector< std::vector<float> > m_jet_TrkWPt1000;
-    std::vector< std::vector<int> >   m_jet_NTrkPt500;
-    std::vector< std::vector<float> > m_jet_SumPtPt500;
-    std::vector< std::vector<float> > m_jet_TrkWPt500;
-    std::vector< std::vector<float> > m_jet_jvf;
-    std::vector< std::vector<float> > m_jet_jvfloose;
-
-    // tracksPV
-    std::vector<int>   m_jet_NTrkPt1000PV;
-    std::vector<float> m_jet_SumPtPt1000PV;
-    std::vector<float> m_jet_TrkWPt1000PV;
-    std::vector<int>   m_jet_NTrkPt500PV;
-    std::vector<float> m_jet_SumPtPt500PV;
-    std::vector<float> m_jet_TrkWPt500PV;
-    std::vector<float> m_jet_jvfPV;
-
-    // tracksAll or tracksPV
-    std::vector<float> m_jet_Jvt;    
-    std::vector< std::vector<float> > m_jet_JvtSF_loose;
-    std::vector< std::vector<float> > m_jet_JvtSF_medium;
-    std::vector< std::vector<float> > m_jet_JvtSF_tight;
-    std::vector<float> m_jet_JvtJvfcorr;
-    std::vector<float> m_jet_JvtRpt;
-    //std::vector<float> m_jet_ghostTrackAssFrac;
-
-    // allTrack
-    std::vector<int>                  m_jet_GhostTrackCount;
-    std::vector<float>                m_jet_GhostTrackPt;
-    std::vector< std::vector<float> > m_jet_GhostTrack_pt;
-    std::vector< std::vector<float> > m_jet_GhostTrack_qOverP;
-    std::vector< std::vector<float> > m_jet_GhostTrack_eta;
-    std::vector< std::vector<float> > m_jet_GhostTrack_phi;
-    std::vector< std::vector<float> > m_jet_GhostTrack_e;
-    std::vector< std::vector<float> > m_jet_GhostTrack_d0;
-    std::vector< std::vector<float> > m_jet_GhostTrack_z0;
-
-    // allTrackDetail
-    std::vector< std::vector<int> > m_jet_GhostTrack_nPixHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nSCTHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nTRTHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nPixSharedHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nPixSplitHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixSharedHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nIMLPixSplitHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixSharedHits;
-    std::vector< std::vector<int> > m_jet_GhostTrack_nNIMLPixSplitHits;
-
-    // constituent
-    std::vector< int >                m_jet_numConstituents;
-    std::vector< std::vector<float> > m_jet_constitWeights;
-    std::vector< std::vector<float> > m_jet_constit_pt;
-    std::vector< std::vector<float> > m_jet_constit_eta;
-    std::vector< std::vector<float> > m_jet_constit_phi;
-    std::vector< std::vector<float> > m_jet_constit_e;
-
-    // flavor tag
-    std::vector<float> m_jet_sv0;
-    std::vector<float> m_jet_sv1;
-    std::vector<float> m_jet_ip3d;
-    std::vector<float> m_jet_sv1ip3d;
-    std::vector<float> m_jet_mv2c00;
-    std::vector<float> m_jet_mv2c10;
-    std::vector<float> m_jet_mv2c20;
-    std::vector<int>   m_jet_hadConeExclTruthLabel;
-
-    int m_njet_Fix30;
-    std::vector<int>                  m_jet_isFix30;
-    std::vector<float>                m_weight_jet_sfFix30;
-    std::vector< std::vector<float> > m_jet_sfFix30;
-
-    int m_njet_Fix50;
-    std::vector<int> m_jet_isFix50;
-    std::vector<float>  m_weight_jet_sfFix50;
-    std::vector< std::vector<float> > m_jet_sfFix50;
-
-    int m_njet_Fix60;
-    std::vector<int> m_jet_isFix60;
-    std::vector<float>  m_weight_jet_sfFix60;
-    std::vector< std::vector<float> > m_jet_sfFix60;
-
-    int m_njet_Fix70;
-    std::vector<int> m_jet_isFix70;
-    std::vector<float>  m_weight_jet_sfFix70;
-    std::vector< std::vector<float> > m_jet_sfFix70;
-
-    int m_njet_Fix77;
-    std::vector<int> m_jet_isFix77;
-    std::vector<float>  m_weight_jet_sfFix77;
-    std::vector< std::vector<float> > m_jet_sfFix77;
-
-    int m_njet_Fix80;
-    std::vector<int> m_jet_isFix80;
-    std::vector<float>  m_weight_jet_sfFix80;
-    std::vector< std::vector<float> > m_jet_sfFix80;
-
-    int m_njet_Fix85;
-    std::vector<int> m_jet_isFix85;
-    std::vector<float>  m_weight_jet_sfFix85;
-    std::vector< std::vector<float> > m_jet_sfFix85;
-
-    int m_njet_Fix90;
-    std::vector<int> m_jet_isFix90;
-    std::vector<float>  m_weight_jet_sfFix90;
-    std::vector< std::vector<float> > m_jet_sfFix90;
-
-    int m_njet_Flt30;
-    std::vector<int> m_jet_isFlt30;
-    std::vector<float>  m_weight_jet_sfFlt30;
-    std::vector< std::vector<float> > m_jet_sfFlt30;
-
-    int m_njet_Flt40;
-    std::vector<int> m_jet_isFlt40;
-    std::vector<float>  m_weight_jet_sfFlt40;
-    std::vector< std::vector<float> > m_jet_sfFlt40;
-
-    int m_njet_Flt50;
-    std::vector<int> m_jet_isFlt50;
-    std::vector<float>  m_weight_jet_sfFlt50;
-    std::vector< std::vector<float> > m_jet_sfFlt50;
-
-    int m_njet_Flt60;
-    std::vector<int> m_jet_isFlt60;
-    std::vector<float>  m_weight_jet_sfFlt60;
-    std::vector< std::vector<float> > m_jet_sfFlt60;
-
-    int m_njet_Flt70;
-    std::vector<int> m_jet_isFlt70;
-    std::vector<float>  m_weight_jet_sfFlt70;
-    std::vector< std::vector<float> > m_jet_sfFlt70;
-
-    int m_njet_Flt77;
-    std::vector<int> m_jet_isFlt77;
-    std::vector<float>  m_weight_jet_sfFlt77;
-    std::vector< std::vector<float> > m_jet_sfFlt77;
-
-    int m_njet_Flt80;
-    std::vector<int> m_jet_isFlt80;
-    std::vector<float>  m_weight_jet_sfFlt80;
-    std::vector< std::vector<float> > m_jet_sfFlt80;
-
-    int m_njet_Flt85;
-    std::vector<int> m_jet_isFlt85;
-    std::vector<float>  m_weight_jet_sfFlt85;
-    std::vector< std::vector<float> > m_jet_sfFlt85;
-
-    int m_njet_Flt90;
-    std::vector<int> m_jet_isFlt90;
-    std::vector<float>  m_weight_jet_sfFlt90;
-    std::vector< std::vector<float> > m_jet_sfFlt90;
-
-    // area
-    std::vector<float> m_jet_ghostArea;
-    std::vector<float> m_jet_activeArea;
-    std::vector<float> m_jet_voronoiArea;
-    std::vector<float> m_jet_activeArea_pt;
-    std::vector<float> m_jet_activeArea_eta;
-    std::vector<float> m_jet_activeArea_phi;
-    std::vector<float> m_jet_activeArea_m;
-
-    // truth
-    std::vector<int>   m_jet_truthConeLabelID;
-    std::vector<int>   m_jet_truthCount;
-    std::vector<float> m_jet_truthPt;
-    std::vector<float> m_jet_truthDr_B;
-    std::vector<float> m_jet_truthDr_C;
-    std::vector<float> m_jet_truthDr_T;
-    std::vector<int>   m_jet_partonTruthID;
-    std::vector<float> m_jet_ghostTruthAssFrac;
-    std::vector<float> m_jet_truth_pt;
-    std::vector<float> m_jet_truth_eta;
-    std::vector<float> m_jet_truth_phi;
-    std::vector<float> m_jet_truth_E;
-    std::vector<int> m_jet_truth_pdgId;
-    std::vector<float> m_jet_truth_partonPt;
-    std::vector<float> m_jet_truth_partonDR;
-
-    // truth detail
-    std::vector<int>   m_jet_truthCount_BhadFinal;
-    std::vector<int>   m_jet_truthCount_BhadInit;
-    std::vector<int>   m_jet_truthCount_BQFinal;
-    std::vector<float> m_jet_truthPt_BhadFinal;
-    std::vector<float> m_jet_truthPt_BhadInit;
-    std::vector<float> m_jet_truthPt_BQFinal;
-    std::vector<int>   m_jet_truthCount_ChadFinal;
-    std::vector<int>   m_jet_truthCount_ChadInit;
-    std::vector<int>   m_jet_truthCount_CQFinal;
-    std::vector<float> m_jet_truthPt_ChadFinal;
-    std::vector<float> m_jet_truthPt_ChadInit;
-    std::vector<float> m_jet_truthPt_CQFinal;
-    std::vector<int>   m_jet_truthCount_TausFinal;
-    std::vector<float> m_jet_truthPt_TausFinal;
-
-    // charge
-    std::vector<float> m_jet_charge;
-
-    jetInfo(){ }
-
-  };
-  std::map<std::string, jetInfo*> m_jets;
+  //
+  // L1 Jets
+  //
+  int m_nL1Jet;
+  std::vector<float> m_l1Jet_et8x8;
+  std::vector<float> m_l1Jet_eta;
+  std::vector<float> m_l1Jet_phi;
 
   //
   // Truth
   //
-  struct truthInfo{
+  std::map<std::string, xAH::TruthContainer*> m_truth;
 
-    int  N;
-    std::vector<float> pt;
-    std::vector<float> eta;
-    std::vector<float> phi;
-    std::vector<float> E;
+  //
+  // Tracks
+  //
+  std::map<std::string, xAH::TrackContainer*> m_tracks;
 
-    truthInfo(){ }
-
-  };
-  std::map<std::string, truthInfo*> m_truth;
-
+  //
   // fat jets
-  int m_nfatjet;
+  //
+  std::map<std::string, xAH::FatJetContainer*> m_fatjets;
 
-  // kinematics
-  std::vector<float> m_fatjet_pt;
-  std::vector<float> m_fatjet_eta;
-  std::vector<float> m_fatjet_phi;
-  std::vector<float> m_fatjet_m;
-  std::vector<float> m_fatjet_E;
+  //
+  // truth fat jets
+  //
+  std::map<std::string, xAH::FatJetContainer*> m_truth_fatjets;
 
-  // substructure
-  std::vector<float> m_fatjet_Split12;
-  std::vector<float> m_fatjet_Split23;
-  std::vector<float> m_fatjet_Split34;
-  std::vector<float> m_fatjet_tau1_wta;
-  std::vector<float> m_fatjet_tau2_wta;
-  std::vector<float> m_fatjet_tau3_wta;
-  std::vector<float> m_fatjet_tau21_wta;
-  std::vector<float> m_fatjet_tau32_wta;
-  std::vector<float> m_fatjet_ECF1;
-  std::vector<float> m_fatjet_ECF2;
-  std::vector<float> m_fatjet_ECF3;
-  std::vector<float> m_fatjet_C2;
-  std::vector<float> m_fatjet_D2;
-  std::vector<float> m_fatjet_NTrimSubjets;
-
+  //
   // muons
-  int m_nmuon;
-
-  // kinematics
-  std::vector<float> m_muon_pt;
-  std::vector<float> m_muon_eta;
-  std::vector<float> m_muon_phi;
-  std::vector<float> m_muon_m;
-
-  // trigger
-  std::vector<int> m_muon_isTrigMatched;
-  std::vector<std::vector<int> > m_muon_isTrigMatchedToChain;
-  std::vector<std::string> m_muon_listTrigChains;
-
-  // isolation
-  std::vector<int>   m_muon_isIsolated_LooseTrackOnly;
-  std::vector<int>   m_muon_isIsolated_Loose;
-  std::vector<int>   m_muon_isIsolated_Tight;
-  std::vector<int>   m_muon_isIsolated_Gradient;
-  std::vector<int>   m_muon_isIsolated_GradientLoose;
-  std::vector<int>   m_muon_isIsolated_FixedCutLoose;
-  std::vector<int>   m_muon_isIsolated_FixedCutTightTrackOnly;
-  std::vector<int>   m_muon_isIsolated_UserDefinedFixEfficiency;
-  std::vector<int>   m_muon_isIsolated_UserDefinedCut;
-  std::vector<float> m_muon_ptcone20;
-  std::vector<float> m_muon_ptcone30;
-  std::vector<float> m_muon_ptcone40;
-  std::vector<float> m_muon_ptvarcone20;
-  std::vector<float> m_muon_ptvarcone30;
-  std::vector<float> m_muon_ptvarcone40;
-  std::vector<float> m_muon_topoetcone20;
-  std::vector<float> m_muon_topoetcone30;
-  std::vector<float> m_muon_topoetcone40;
-
-  // quality
-  std::vector<int>   m_muon_isVeryLoose;
-  std::vector<int>   m_muon_isLoose;
-  std::vector<int>   m_muon_isMedium;
-  std::vector<int>   m_muon_isTight;
-
-  // scale factors w/ sys
-  // per object
-  std::vector< std::vector< float > > m_muon_RecoEff_SF_Loose;
-  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_Loose;
-  std::vector< std::vector< float > > m_muon_TrigEff_SF_Loose_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_TrigMCEff_Loose_Loose;
-  std::vector< std::vector< float > > m_muon_TrigMCEff_Loose_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_LooseTrackOnly;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Loose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Tight;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_Gradient;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_GradientLoose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutLoose;
-  std::vector< std::vector< float > > m_muon_IsoEff_SF_FixedCutTightTrackOnly;
-  std::vector< std::vector< float > > m_muon_TTVAEff_SF;
-
-  // track parameters
-  std::vector<float> m_muon_trkd0;
-  std::vector<float> m_muon_trkd0sig;
-  std::vector<float> m_muon_trkz0;
-  std::vector<float> m_muon_trkz0sintheta;
-  std::vector<float> m_muon_trkphi0;
-  std::vector<float> m_muon_trktheta;
-  std::vector<float> m_muon_trkcharge;
-  std::vector<float> m_muon_trkqOverP;
-
-  // track hit content
-  std::vector<int> m_muon_trknSiHits;
-  std::vector<int> m_muon_trknPixHits;
-  std::vector<int> m_muon_trknPixHoles;
-  std::vector<int> m_muon_trknSCTHits;
-  std::vector<int> m_muon_trknSCTHoles;
-  std::vector<int> m_muon_trknTRTHits;
-  std::vector<int> m_muon_trknTRTHoles;
-  std::vector<int> m_muon_trknBLayerHits;
-  std::vector<int> m_muon_trknInnermostPixLayHits; // not available in DC14
-  std::vector<float> m_muon_trkPixdEdX;            // not available in DC14
-
-  std::vector<float>         m_muon_EnergyLoss;
-  std::vector<float>         m_muon_EnergyLossSigma;
-  std::vector<unsigned char> m_muon_energyLossType;
-  std::vector<float>         m_muon_MeasEnergyLoss;
-  std::vector<float>         m_muon_MeasEnergyLossSigma;
-  std::vector<float>         m_muon_ParamEnergyLoss;
-  std::vector<float>         m_muon_ParamEnergyLossSigmaMinus;
-  std::vector<float>         m_muon_ParamEnergyLossSigmaPlus;
+  //
+  std::map<std::string, xAH::MuonContainer*> m_muons;
+  std::map<std::string, std::vector<std::string> > m_RecoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_IsoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_TrigEff_SF_sysNames;
+  std::vector<std::string>  m_TTVAEff_SF_sysNames;
 
   //
   // electrons
-  int m_nel;
-
-  // kinematics
-  std::vector<float> m_el_pt;
-  std::vector<float> m_el_phi;
-  std::vector<float> m_el_eta;
-  std::vector<float> m_el_m;
-  std::vector<float> m_el_caloCluster_eta;
-
-  // trigger
-  std::vector<int> m_el_isTrigMatched;
-  std::vector<std::vector<int> > m_el_isTrigMatchedToChain;
-  std::vector<std::string>       m_el_listTrigChains;
-
-  // isolation
-  std::vector<int>   m_el_isIsolated_LooseTrackOnly;
-  std::vector<int>   m_el_isIsolated_Loose;
-  std::vector<int>   m_el_isIsolated_Tight;
-  std::vector<int>   m_el_isIsolated_Gradient;
-  std::vector<int>   m_el_isIsolated_GradientLoose;
-  std::vector<int>   m_el_isIsolated_FixedCutLoose;
-  std::vector<int>   m_el_isIsolated_FixedCutTight;
-  std::vector<int>   m_el_isIsolated_FixedCutTightTrackOnly;
-  std::vector<int>   m_el_isIsolated_UserDefinedFixEfficiency;
-  std::vector<int>   m_el_isIsolated_UserDefinedCut;
-  std::vector<float> m_el_etcone20;
-  std::vector<float> m_el_ptcone20;
-  std::vector<float> m_el_ptcone30;
-  std::vector<float> m_el_ptcone40;
-  std::vector<float> m_el_ptvarcone20;
-  std::vector<float> m_el_ptvarcone30;
-  std::vector<float> m_el_ptvarcone40;
-  std::vector<float> m_el_topoetcone20;
-  std::vector<float> m_el_topoetcone30;
-  std::vector<float> m_el_topoetcone40;
-
-  // PID
-  int m_nel_LHLoose;
-  std::vector<int>   m_el_LHLoose;
-  int m_nel_LHMedium;
-  std::vector<int>   m_el_LHMedium;
-  int m_nel_LHTight;
-  std::vector<int>   m_el_LHTight;
-  int m_nel_IsEMLoose;
-  std::vector<int>   m_el_IsEMLoose;
-  int m_nel_IsEMMedium;
-  std::vector<int>   m_el_IsEMMedium;
-  int m_nel_IsEMTight;
-  std::vector<int>   m_el_IsEMTight;
-
-  // scale factors w/ sys
-  // per object
-  std::vector< std::vector< float > > m_el_RecoEff_SF;
-  std::vector< std::vector< float > > m_el_TrigEff_SF_LHLooseAndBLayer;
-  std::vector< std::vector< float > > m_el_TrigEff_SF_LHTight;
-  std::vector< std::vector< float > > m_el_TrigMCEff_LHLooseAndBLayer;
-  std::vector< std::vector< float > > m_el_TrigMCEff_LHTight;
-  std::vector< std::vector< float > > m_el_IsoEff_SF_Loose;
-  std::vector< std::vector< float > > m_el_IsoEff_SF_FixedCutTight;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHLooseAndBLayer;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHLoose;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHMedium;
-  std::vector< std::vector< float > > m_el_PIDEff_SF_LHTight;
-
-  // track parameters
-  std::vector<float> m_el_trkd0;
-  std::vector<float> m_el_trkd0sig;
-  std::vector<float> m_el_trkz0;
-  std::vector<float> m_el_trkz0sintheta;
-  std::vector<float> m_el_trkphi0;
-  std::vector<float> m_el_trktheta;
-  std::vector<float> m_el_trkcharge;
-  std::vector<float> m_el_trkqOverP;
-
-  // track hit content
-  std::vector<int> m_el_trknSiHits;
-  std::vector<int> m_el_trknPixHits;
-  std::vector<int> m_el_trknPixHoles;
-  std::vector<int> m_el_trknSCTHits;
-  std::vector<int> m_el_trknSCTHoles;
-  std::vector<int> m_el_trknTRTHits;
-  std::vector<int> m_el_trknTRTHoles;
-  std::vector<int> m_el_trknBLayerHits;
-  std::vector<int> m_el_trknInnermostPixLayHits; // not available in DC14
-  std::vector<float> m_el_trkPixdEdX;            // not available in DC14
+  //
+  std::map<std::string, xAH::ElectronContainer*> m_elecs;
 
   //
   // photons
-  int m_nph;
-
-  // kinematics
-  std::vector<float> m_ph_pt;
-  std::vector<float> m_ph_phi;
-  std::vector<float> m_ph_eta;
-  std::vector<float> m_ph_m;
-  std::vector<float> m_ph_E;
-
-  // isolation
-  std::vector<int>   m_ph_isIsolated_Cone40CaloOnly;
-  std::vector<int>   m_ph_isIsolated_Cone40;
-  std::vector<int>   m_ph_isIsolated_Cone20;
-  //std::vector<float> m_ph_etcone20;
-  std::vector<float> m_ph_ptcone20;
-  std::vector<float> m_ph_ptcone30;
-  std::vector<float> m_ph_ptcone40;
-  std::vector<float> m_ph_ptvarcone20;
-  std::vector<float> m_ph_ptvarcone30;
-  std::vector<float> m_ph_ptvarcone40;
-  std::vector<float> m_ph_topoetcone20;
-  std::vector<float> m_ph_topoetcone30;
-  std::vector<float> m_ph_topoetcone40;
-
-  // PID
-  int m_nph_IsLoose;
-  std::vector<int>   m_ph_IsLoose;
-  int m_nph_IsMedium;
-  std::vector<int>   m_ph_IsMedium;
-  int m_nph_IsTight;
-  std::vector<int>   m_ph_IsTight;
+  //
+  std::map<std::string, xAH::PhotonContainer*> m_photons;
 
   //
   // taus
-  int m_ntau;
-
-  // kinematics
-  std::vector<float> m_tau_pt;
-  std::vector<float> m_tau_eta;
-  std::vector<float> m_tau_phi;
-  std::vector<float> m_tau_m;
-  std::vector<int>   m_tau_ntrk;
-  std::vector<float> m_tau_charge;
+  //
+  std::map<std::string, xAH::TauContainer*> m_taus;
 
   // met
-  float m_metFinalClus;
-  float m_metFinalClusPx;
-  float m_metFinalClusPy;
-  float m_metFinalClusPhi;
-  float m_metFinalClusSumEt;
-
-  float m_metFinalTrk;
-  float m_metFinalTrkPx;
-  float m_metFinalTrkPy;
-  float m_metFinalTrkPhi;
-  float m_metFinalTrkSumEt;
-
-  float m_metEle;       float m_metEleSumEt;      float m_metElePhi;
-  float m_metGamma;     float m_metGammaSumEt;    float m_metGammaPhi;
-  float m_metTau;       float m_metTauSumEt;      float m_metTauPhi;
-  float m_metMuons;     float m_metMuonsSumEt;    float m_metMuonsPhi;
-  float m_metJet;       float m_metJetSumEt;      float m_metJetPhi;
-  float m_metJetTrk;    float m_metJetTrkSumEt;   float m_metJetTrkPhi;
-  float m_metSoftClus;  float m_metSoftClusSumEt; float m_metSoftClusPhi;
-  float m_metSoftTrk;   float m_metSoftTrkSumEt;  float m_metSoftTrkPhi;
-
- public:
-
-  void Fill_Fix30( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix50( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix60( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix70( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix77( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix80( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix85( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Fix90( const xAOD::Jet* jet, jetInfo* thisJet );
-
-  void Fill_Flt30( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt40( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt50( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt60( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt70( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt77( const xAOD::Jet* jet, jetInfo* thisJet );
-  void Fill_Flt85( const xAOD::Jet* jet, jetInfo* thisJet );
-
+  xAH::MetContainer*      m_met;
 
 };
 
 
-template<typename T, typename U>
-void HelpTreeBase::safeFill(const xAOD::Jet* jet, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units){
-  if ( accessor.isAvailable( *jet ) ) {
-    destination.push_back( accessor( *jet ) / m_units );
+template<typename T, typename U, typename V>
+void HelpTreeBase::safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units){
+  if ( accessor.isAvailable( *xAODObj ) ) {
+    destination.push_back( accessor( *xAODObj ) / m_units );
   } else {
     destination.push_back( defaultValue );
   }
   return;
+}
+
+template<typename T, typename U, typename V>
+void HelpTreeBase::safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >& destination, int m_units){
+  destination.push_back( std::vector<U>() );
+
+  if ( accessor.isAvailable( *xAODObj ) ) {
+    for(U itemInVec : accessor(*xAODObj))        destination.back().push_back(itemInVec / m_units);
+  }
+  return;
+}
+
+
+template<typename T>
+void HelpTreeBase::setBranch(std::string prefix, std::string varName, std::vector<T>* localVectorPtr){
+  m_tree->Branch((prefix+"_"+varName).c_str(),        localVectorPtr);
 }
 
 

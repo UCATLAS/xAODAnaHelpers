@@ -17,7 +17,11 @@
 #include <xAODRootAccess/TEvent.h>
 
 // for StatusCode::isSuccess
-#include "AsgTools/StatusCode.h"
+#include <AsgTools/StatusCode.h>
+#include <AsgTools/MessageCheck.h>
+
+class MsgStream;
+
 /**
     @brief This is used by any class extending to pre-define a set of histograms to book by default.
     @rst
@@ -52,6 +56,8 @@ class HistogramManager {
     std::string m_detailStr;
     /** @brief a container holding all generated histograms */
     std::vector< TH1* > m_allHists; //!
+    /** @brief hold the MsgStream object */
+    mutable MsgStream m_msg; //!
 
   public:
     /**
@@ -180,13 +186,22 @@ class HistogramManager {
      */
     TProfile* book(std::string name, std::string title,
 		   std::string xlabel, int xbins, double xlow, double xhigh,
-		   std::string ylabel, double ylow, double yhigh, 
+		   std::string ylabel, double ylow, double yhigh,
 		   std::string option = "");
 
     /**
      * @brief record all histograms from HistogramManager#m_allHists to the worker
      */
     void record(EL::Worker* wk);
+
+    /**
+      * @brief the standard message stream for this algorithm
+      */
+    MsgStream& msg () const;
+    /**
+      * @brief allow ANA_MSG_XXXX macros to be used within algorithms for a given level
+      */
+    MsgStream& msg (int level) const;
 
   private:
     /**

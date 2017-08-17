@@ -7,13 +7,12 @@
 #include <xAODAnaHelpers/ElectronHistsAlgo.h>
 #include <xAODAnaHelpers/ElectronHists.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronHistsAlgo)
 
-ElectronHistsAlgo :: ElectronHistsAlgo (std::string className) :
-IParticleHistsAlgo(className)
+ElectronHistsAlgo :: ElectronHistsAlgo () :
+IParticleHistsAlgo("ElectronHistsAlgo")
 { }
 
 EL::StatusCode ElectronHistsAlgo :: setupJob (EL::Job& job)

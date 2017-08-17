@@ -61,27 +61,26 @@ Next, we should probably add some obvious configurations that work for us. I loo
     [
       { "class": "BasicEventSelection",
         "configs": {
-          "m_debug": false,
           "m_truthLevelOnly": false,
           "m_applyGRLCut": true,
           "m_GRLxml": "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml",
           "m_doPUreweighting": false,
           "m_vertexContainerName": "PrimaryVertices",
-          "m_PVNTrack": 2
+          "m_PVNTrack": 2,
+          "m_name": "myBaseEventSel"
         }
       },
       {
-        "class": "JetPlotsAlgo",
+        "class": "JetHistsAlgo",
         "configs": {
-          "m_debug": false,
-          "m_inContainerName": "AntiKt4LCTopoJets",
+          "m_inContainerName": "AntiKt4EMTopoJets",
           "m_detailStr": "kinematic",
           "m_name": "NoPreSel"
         }
       }
     ]
 
-and I save this into ``xah_run_example.json``. If you want more variables in your plots, add other possibilities in the detailStr field, separated by a space. 
+and I save this into ``xah_run_example.json``. If you want more variables in your plots, add other possibilities in the detailStr field, separated by a space.
 
 Running the script
 ^^^^^^^^^^^^^^^^^^

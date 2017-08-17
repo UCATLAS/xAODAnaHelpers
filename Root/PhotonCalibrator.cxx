@@ -38,15 +38,9 @@
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/PhotonCalibrator.h>
 
-#include <xAODAnaHelpers/tools/ReturnCheck.h>
-
-
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
-#include "IsolationCorrections/IsolationCorrectionTool.h"
 #include "ElectronPhotonSelectorTools/AsgPhotonIsEMSelector.h"
 #include "ElectronPhotonShowerShapeFudgeTool/ElectronPhotonShowerShapeFudgeTool.h"
-#include "PhotonEfficiencyCorrection/AsgPhotonEfficiencyCorrectionTool.h"
-#include "PathResolver/PathResolver.h"
 
 #include <PATCore/PATCoreEnums.h>
 
@@ -56,48 +50,9 @@ using HelperClasses::ToolName;
 ClassImp(PhotonCalibrator)
 
 
-PhotonCalibrator :: PhotonCalibrator (std::string className) :
-    Algorithm(className),
-    m_EgammaCalibrationAndSmearingTool(nullptr),
-    m_photonFudgeMCTool(nullptr),
-    m_photonTightIsEMSelector(nullptr),
-    m_photonMediumIsEMSelector(nullptr),
-    m_photonLooseIsEMSelector(nullptr),
-    m_photonTightEffTool(nullptr),
-    m_photonMediumEffTool(nullptr),
-    m_photonLooseEffTool(nullptr)
+PhotonCalibrator :: PhotonCalibrator () :
+    Algorithm("PhotonCalibrator")
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-
-  Info("PhotonCalibrator()", "Calling constructor");
-
-  m_debug                   = false;
-
-  // input container to be read from TEvent or TStore
-  //
-  m_inContainerName         = "";
-  m_outContainerName        = "";
-
-  m_sort                    = true;
-  m_isMC                    = false;
-
-  m_toolInitializationAtTheFirstEventDone = false;
-
-  // Systematics stuff
-  //
-  m_inputAlgoSystNames      = "";
-  m_outputAlgoSystNames     = "PhotonCalibrator_Syst";
-  m_systName		    = "";
-  m_systVal 		    = 0.;
-
-  m_esModel                 = "";
-  m_decorrelationModel      = "";
-
 }
 
 
@@ -111,7 +66,7 @@ EL::StatusCode PhotonCalibrator :: setupJob (EL::Job& job)
   // activated/deactivated when you add/remove the algorithm from your
   // job, which may or may not be of value to you.
 
-  Info("setupJob()", "Calling setupJob");
+  ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "PhotonCalibrator" ).ignore(); // call before opening first file
@@ -127,7 +82,7 @@ EL::StatusCode PhotonCalibrator :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
-  RETURN_CHECK("xAH::Algorithm::algInitialize()", xAH::Algorithm::algInitialize(), "");
+  ANA_CHECK( xAH::Algorithm::algInitialize());
   return EL::StatusCode::SUCCESS;
 }
 
@@ -163,15 +118,15 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  Info("initialize()", "Initializing PhotonCalibrator Interface... ");
+  ANA_MSG_INFO( "Initializing PhotonCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  Info("initialize()", "Number of events in file: %lld ", m_event->getEntries() );
+  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ) {
-    Error("initialize()", "InputContainer is empty!");
+    ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
@@ -179,11 +134,6 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   // shallow copies are made with this output container name
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
-
-  MSG::Level msgLevel = (m_debug) ? MSG::VERBOSE : MSG::INFO;
-
-  m_numEvent      = 0;
-  m_numObject     = 0;
 
   // initialize the CP::EgammaCalibrationAndSmearingTool
   //
@@ -194,26 +144,31 @@ EL::StatusCode PhotonCalibrator :: initialize ()
     m_EgammaCalibrationAndSmearingTool = new CP::EgammaCalibrationAndSmearingTool(CalibToolName.c_str());
   }
 
-  RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel),"Failed to set property ESModel");
-  RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel),"Failed to set property decorrelationModel");
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel));
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel));
+  if(m_randomRunNumber>0) ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("randomRunNumber", m_randomRunNumber));
   if (m_useAFII) {
-    RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", true), "Failed to set property useAFII");
+    ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
   }
-  RETURN_CHECK( "PhotonCalibrator::initialize()", m_EgammaCalibrationAndSmearingTool->initialize(), "Failed to properly initialize the EgammaCalibrationAndSmearingTool");
-  m_EgammaCalibrationAndSmearingTool->msg().setLevel( msgLevel );
+  ANA_CHECK( m_EgammaCalibrationAndSmearingTool->initialize());
+  m_EgammaCalibrationAndSmearingTool->msg().setLevel( msg().level() );
 
   // Get a list of recommended systematics for this tool
   //
   //const CP::SystematicRegistry& systReg = CP::SystematicRegistry::getInstance();
   const CP::SystematicSet& recSyst = m_EgammaCalibrationAndSmearingTool->recommendedSystematics();;
-  Info("initialize()"," Initializing Photon Calibrator Systematics :");
+  ANA_MSG_INFO(" Initializing Photon Calibrator Systematics :");
 
-  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, m_debug );
+  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
 
-  Info("initialize()","Will be using EgammaCalibrationAndSmearingTool systematic:");
+  ANA_MSG_INFO("Will be using EgammaCalibrationAndSmearingTool systematic:");
+
+  std::vector< std::string >* SystPhotonsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
-    Info("initialize()","\t %s", (syst_it.name()).c_str());
+    SystPhotonsNames->push_back(syst_it.name());
+    ANA_MSG_INFO("\t " << syst_it.name());
   }
+    ANA_CHECK(m_store->record(SystPhotonsNames, "photons_Syst"+m_name ));
 
   //isEM selector tools
   //------------------
@@ -225,7 +180,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   } else {
     m_photonTightIsEMSelector = new AsgPhotonIsEMSelector ( TightSelectorName.c_str() );
   }
-  m_photonTightIsEMSelector->msg().setLevel( msgLevel );
+  m_photonTightIsEMSelector->msg().setLevel( msg().level() );
 
   // Medium
   const std::string MediumSelectorName = m_name + "_PhotonMediumIsEMSelector";
@@ -234,7 +189,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   } else {
     m_photonMediumIsEMSelector = new AsgPhotonIsEMSelector ( MediumSelectorName.c_str() );
   }
-  m_photonMediumIsEMSelector->msg().setLevel( msgLevel );
+  m_photonMediumIsEMSelector->msg().setLevel( msg().level() );
 
   // Loose
   const std::string LooseSelectorName = m_name + "_PhotonLooseIsEMSelector";
@@ -243,29 +198,23 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   } else {
     m_photonLooseIsEMSelector = new AsgPhotonIsEMSelector ( LooseSelectorName.c_str() );
   }
-  m_photonLooseIsEMSelector->msg().setLevel( msgLevel );
+  m_photonLooseIsEMSelector->msg().setLevel( msg().level() );
 
   //set the type of selection
-  RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightIsEMSelector->setProperty("isEMMask", egammaPID::PhotonTight), "failed in initialization");
-  RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumIsEMSelector->setProperty("isEMMask", egammaPID::PhotonMedium), "failed in initialization");
-  RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseIsEMSelector->setProperty("isEMMask", egammaPID::PhotonLoose), "failed in initialization");
+  ANA_CHECK( m_photonTightIsEMSelector->setProperty("isEMMask", egammaPID::PhotonTight));
+  ANA_CHECK( m_photonMediumIsEMSelector->setProperty("isEMMask", egammaPID::PhotonMedium));
+  ANA_CHECK( m_photonLooseIsEMSelector->setProperty("isEMMask", egammaPID::PhotonLoose));
 
   //set the configuration file
   // todo : monitor the config files!
-  RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonTightIsEMSelector->setProperty("ConfigFile","ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMTightSelectorCutDefs.conf"),
-	       "failed in setting property");
-  RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonMediumIsEMSelector->setProperty("ConfigFile","ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMMediumSelectorCutDefs.conf"),
-	       "failed in setting property");
-  RETURN_CHECK("PhotonHandler::initializeTools()",
-	       m_photonLooseIsEMSelector->setProperty("ConfigFile","ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMLooseSelectorCutDefs.conf"),
-	       "failed in setting property");
+  ANA_CHECK( m_photonTightIsEMSelector->setProperty("ConfigFile", m_tightIDConfigPath));
+  ANA_CHECK( m_photonMediumIsEMSelector->setProperty("ConfigFile",m_mediumIDConfigPath));
+  ANA_CHECK( m_photonLooseIsEMSelector->setProperty("ConfigFile", m_looseIDConfigPath));
 
 
-  RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightIsEMSelector->initialize(), "failed in initialization for Tight");
-  RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumIsEMSelector->initialize(), "failed in initialization for Medium");
-  RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseIsEMSelector->initialize(), "failed in initialization for Loose");
+  ANA_CHECK( m_photonTightIsEMSelector->initialize());
+  ANA_CHECK( m_photonMediumIsEMSelector->initialize());
+  ANA_CHECK( m_photonLooseIsEMSelector->initialize());
 
   // ***********************************************************
 
@@ -282,11 +231,78 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   } else {
     m_photonFudgeMCTool = new ElectronPhotonShowerShapeFudgeTool(FudgeMCToolName.c_str());
   }
-  m_photonFudgeMCTool->msg().setLevel( msgLevel );
-  RETURN_CHECK("PhotonHandler::initializeTools()", m_photonFudgeMCTool->initialize(),
-	       "failed in initialization of fudge MC tool");
+  m_photonFudgeMCTool->msg().setLevel( msg().level() );
 
-  Info("initialize()", "PhotonCalibrator Interface succesfully initialized!" );
+  int FFset = 21; // for MC15 samples, which are based on a geometry derived from GEO-21 from 2015+2016 data
+  m_photonFudgeMCTool->setProperty("Preselection",FFset);
+  ANA_CHECK( m_photonFudgeMCTool->initialize());
+
+
+  ////// Efficiency correction tools //////
+  const xAOD::EventInfo* eventInfo(nullptr);
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+
+  if (isMC()) {
+
+    int dataType = PATCore::ParticleDataType::Data;
+    if (m_useAFII) {
+      dataType = PATCore::ParticleDataType::Fast;
+    } else {
+      dataType = PATCore::ParticleDataType::Full;
+    }
+
+    ANA_MSG_DEBUG("isSimulation=" << ( isMC() ? "Y" : "N") << " isAFII=" << (m_useAFII ? "Y" : "N" ) << " selected dataType=" << dataType );
+
+    // photon efficiency correction tool
+    //----------------------------------
+    //create the tools
+    setToolName(m_photonTightEffTool_handle);
+    setToolName(m_photonMediumEffTool_handle);
+    setToolName(m_photonLooseEffTool_handle);
+
+    std::string conEffCalibPath  = PathResolverFindCalibFile(m_conEffCalibPath );
+    std::string uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffCalibPath );
+    if(m_useAFII){
+      conEffCalibPath  = PathResolverFindCalibFile(m_conEffAFIICalibPath );
+      uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffAFIICalibPath );
+    }
+
+    // if m_photonCalibMap is set, use it instead of correction files
+    if( m_photonCalibMap.size() > 0 ){
+      ANA_CHECK( m_photonTightEffTool_handle .setProperty("MapFilePath", m_photonCalibMap) );
+      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("MapFilePath", m_photonCalibMap) );
+      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("MapFilePath", m_photonCalibMap) );
+    } else {
+      ANA_CHECK( m_photonTightEffTool_handle .setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
+      ANA_CHECK( m_photonTightEffTool_handle .setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
+      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
+      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
+      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
+      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
+    }
+
+    // set data type
+    ANA_CHECK( m_photonTightEffTool_handle. setProperty("ForceDataType", dataType));
+    ANA_CHECK( m_photonMediumEffTool_handle.setProperty("ForceDataType", dataType));
+    ANA_CHECK( m_photonLooseEffTool_handle. setProperty("ForceDataType", dataType));
+
+    // set debug levels
+    ANA_CHECK( m_photonTightEffTool_handle. setProperty("OutputLevel", msg().level()));
+    ANA_CHECK( m_photonMediumEffTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK( m_photonLooseEffTool_handle. setProperty("OutputLevel", msg().level()));
+
+    //initialize
+    ANA_CHECK( m_photonTightEffTool_handle.retrieve());
+    ANA_CHECK( m_photonMediumEffTool_handle.retrieve());
+    ANA_CHECK( m_photonLooseEffTool_handle.retrieve());
+  }
+
+  //IsolationCorrectionTool
+  setToolName(m_isolationCorrectionTool_handle);
+  ANA_CHECK(m_isolationCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
+  ANA_CHECK(m_isolationCorrectionTool_handle.retrieve());
+
+  ANA_MSG_INFO( "PhotonCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -299,28 +315,17 @@ EL::StatusCode PhotonCalibrator :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  if ( m_debug ) { Info("execute()", "Applying Photon Calibration ... "); }
-
-  m_numEvent++;
+  ANA_MSG_DEBUG("Applying Photon Calibration ... ");
 
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, m_verbose) ,
-	       Form("Failed in retrieving %s in %s", m_inContainerName.c_str(), m_name.c_str() ));
-  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) ? true : false;
-
-  if ( ! m_toolInitializationAtTheFirstEventDone ) {
-    EL_RETURN_CHECK ("PhotonCalibrator::execute() ", toolInitializationAtTheFirstEvent (eventInfo));
-  }
-
-
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   const xAOD::PhotonContainer* inPhotons(nullptr);
-  RETURN_CHECK("PhotonCalibrator::execute()", HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, m_verbose) ,
-	       Form("Failed in retrieving %s in %s", m_inContainerName.c_str(), m_name.c_str() ));
+  ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) );
 
-  if ( m_debug ) { Info("execute()", "Retrieve has been completed with container name = %s", m_inContainerName.c_str()); }
+  ANA_MSG_DEBUG("Retrieve has been completed with container name = " << m_inContainerName);
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers
@@ -329,7 +334,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
 
   for ( const auto& syst_it : m_systList ) {
-    if ( m_debug ) { Info("execute()", "Systematic Loop for m_systList=%s", syst_it.name().c_str() ); }
+    ANA_MSG_DEBUG("Systematic Loop for m_systList=" << syst_it.name() );
     // discard photon systematics
     //
     //if ( (syst_it.name()).find("PH_", 0) != std::string::npos ) { continue; }
@@ -347,14 +352,14 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
     // apply syst
     //
-    if (m_debug) { Info("execute()", "syst_it.name()=%s", syst_it.name().c_str()); }
+    ANA_MSG_DEBUG("syst_it.name()=" << syst_it.name());
 
     if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-      Error("execute()", "Failed to configure EgammaCalibrationAndSmearingTool for systematic %s", syst_it.name().c_str());
+      ANA_MSG_ERROR( "Failed to configure EgammaCalibrationAndSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }
 
-    if ( m_debug ) { Info("execute()", "Systematics applied"); }
+    ANA_MSG_DEBUG("Systematics applied");
     // create shallow copy for calibration - one per syst
     //
     std::pair< xAOD::PhotonContainer*, xAOD::ShallowAuxContainer* > calibPhotonsSC = xAOD::shallowCopyContainer( *inPhotons );
@@ -372,42 +377,39 @@ EL::StatusCode PhotonCalibrator :: execute ()
       // set smearing seeding if needed - no need for this after Base,2.1.26
       // m_EgammaCalibrationAndSmearingTool->setRandomSeed(eventInfo->eventNumber() + 100 * idx);
       //
-      if ( m_debug ) {
-        Info( "execute", "Checking photon %i, raw pt = %.2f GeV ", idx, (phSC_itr->pt() * 1e-3) );
-      }
+      ANA_MSG_DEBUG("Checking photon " << idx << " raw pt = " << phSC_itr->pt()*1e-3 << " GeV " );
 
       if ( phSC_itr->pt() > 7e3 && !(phSC_itr->caloCluster()) ){
-	Warning( "execute", "photon %i, raw pt = %.2f GeV, does not have caloCluster()! ", idx, (phSC_itr->pt() * 1e-3) );
+        ANA_MSG_WARNING( "photon "<<idx<<", raw pt = "<<phSC_itr->pt()*1e-3<<" GeV, does not have caloCluster()! " );
       }
 
       // apply calibration (w/ syst)
       //
       if ( (phSC_itr->author() & xAOD::EgammaParameters::AuthorPhoton) || (phSC_itr->author() & xAOD::EgammaParameters::AuthorAmbiguous) ) {
-	if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
-	  Warning("execute()", "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
-	}
+        if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
+          ANA_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
+        }
 
-	//if ( m_IsolationCorrectionTool->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) { /// indeed wrong
-	if ( m_IsolationCorrectionTool->CorrectLeakage( *phSC_itr ) != CP::CorrectionCode::Ok ) {
-	  Warning("execute()", "Problem in CP::IsolationCorrection::applyCorrection()");
-	}
+        if ( m_isolationCorrectionTool_handle->applyCorrection( *phSC_itr ) != CP::CorrectionCode::Ok ) {
+          ANA_MSG_WARNING( "Problem in CP::IsolationCorrection::applyCorrection()");
+        }
       }
 
-      if ( m_debug ) { Info("execute()", "Calibrated pt with systematic: %s , pt = %.2f GeV", (syst_it).name().c_str(), (phSC_itr->pt() * 1e-3)); }
+      ANA_MSG_DEBUG("Calibrated pt with systematic: " << syst_it.name() << " , pt = " << phSC_itr->pt() * 1e-3 << " GeV");
 
-      EL_RETURN_CHECK ( "PhotonCalibrator::execute()", decorate(phSC_itr));
+      ANA_CHECK( decorate(phSC_itr));
 
       ++idx;
 
     } // close calibration loop
 
     if ( !xAOD::setOriginalObjectLink(*inPhotons, *(calibPhotonsSC.first)) ) {
-      Error("execute()  ", "Failed to set original object links -- MET rebuilding cannot proceed.");
+      ANA_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
     }
 
     // save pointers in ConstDataVector with same order
     //
-    RETURN_CHECK( "PhotonCalibrator::execute()", HelperFunctions::makeSubsetCont(calibPhotonsSC.first, calibPhotonsCDV), "");
+    ANA_CHECK( HelperFunctions::makeSubsetCont(calibPhotonsSC.first, calibPhotonsCDV, msg()));
 
     // Sort after copying to CDV.
     if ( m_sort ) {
@@ -416,21 +418,21 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
     // add SC container to TStore
     //
-    RETURN_CHECK( "PhotonCalibrator::execute()", m_store->record( calibPhotonsSC.first,  outSCContainerName  ), "Failed to store container.");
-    RETURN_CHECK( "PhotonCalibrator::execute()", m_store->record( calibPhotonsSC.second, outSCAuxContainerName ), "Failed to store aux container.");
+    ANA_CHECK( m_store->record( calibPhotonsSC.first,  outSCContainerName  ));
+    ANA_CHECK( m_store->record( calibPhotonsSC.second, outSCAuxContainerName ));
     // add ConstDataVector to TStore
     //
-    RETURN_CHECK( "PhotonCalibrator::execute()", m_store->record( calibPhotonsCDV, outContainerName), "Failed to store const data container.");
+    ANA_CHECK( m_store->record( calibPhotonsCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
-  RETURN_CHECK( "PhotonCalibrator::execute()", m_store->record( vecOutContainerNames, m_outputAlgoSystNames), "Failed to record vector of output container names.");
+  ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
-  if ( m_verbose ) { m_store->print(); }
+  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   return EL::StatusCode::SUCCESS;
 }
@@ -441,7 +443,7 @@ EL::StatusCode PhotonCalibrator :: postExecute ()
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  if ( m_debug ) { Info("postExecute()", "Calling postExecute"); }
+  ANA_MSG_DEBUG("Calling postExecute");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -460,7 +462,7 @@ EL::StatusCode PhotonCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  Info("finalize()", "Deleting tool instances...");
+  ANA_MSG_INFO( "Deleting tool instances...");
 
   if ( m_EgammaCalibrationAndSmearingTool ) {
     delete m_EgammaCalibrationAndSmearingTool;
@@ -486,22 +488,7 @@ EL::StatusCode PhotonCalibrator :: finalize ()
     m_photonLooseIsEMSelector = nullptr;
   }
 
-  if (m_photonTightEffTool) {
-    delete m_photonTightEffTool;
-    m_photonTightEffTool = nullptr;
-  }
-
-  if (m_photonMediumEffTool) {
-    delete m_photonMediumEffTool;
-    m_photonMediumEffTool = nullptr;
-  }
-
-  if (m_photonLooseEffTool) {
-    delete m_photonLooseEffTool;
-    m_photonLooseEffTool = nullptr;
-  }
-
-  Info("finalize()", "Finalization done.");
+  ANA_MSG_INFO( "Finalization done.");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -521,17 +508,17 @@ EL::StatusCode PhotonCalibrator :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
 
-  Info("histFinalize()", "Calling histFinalize");
-  RETURN_CHECK("xAH::Algorithm::algFinalize()", xAH::Algorithm::algFinalize(), "");
+  ANA_MSG_INFO( "Calling histFinalize");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 {
   // (1) apply fudge factors
-  if((!m_useAFII) && m_isMC){
+  if(!m_useAFII && isMC()){
     if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
-      Error("decorate()", "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
+      ANA_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
       return EL::StatusCode::FAILURE;
     }
   }
@@ -543,17 +530,17 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
   photon->auxdecor< bool >( "PhotonID_Tight"    ) = isTight;
   photon->auxdecor< bool >( "PhotonID_Medium"   ) = isMedium;
   photon->auxdecor< bool >( "PhotonID_Loose"    ) = isLoose;
-  if (m_debug) {Info("decorate()", "isTight=%s isMedium=%s isLoose=%s", isTight ? "Y" : "N", isMedium ? "Y" : "N", isLoose ? "Y" : "N" ); }
+  ANA_MSG_DEBUG("isTight="<<(isTight?"Y":"N")<<" isMedium="<<(isMedium?"Y":"N")<<" isLoose="<<(isLoose?"Y":"N") );
 
   // (3) set efficiency correction
-  if (m_isMC) {
+  if (isMC()) {
     const xAOD::CaloCluster* cluster = photon->caloCluster();
     float cluster_eta = 10;
     float cluster_et = 0;
     if (cluster) {
       cluster_eta = cluster->etaBE(2);
       if (cluster_eta != 0.0) {
-	cluster_et = cluster->e() / cosh(cluster_eta);
+        cluster_et = cluster->e() / cosh(cluster_eta);
       }
     }
 
@@ -565,32 +552,32 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 
     // configuration files not yet available for 13 TeV :(
     //sf only available after basic kinematic selection
-    if(cluster_et > 20000. && fabs(cluster_eta) < 2.37 && !inCrack){
+    if(cluster_et > 10000. && fabs(cluster_eta) < 2.37 && !inCrack){
       // SF
-      if(m_photonTightEffTool->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonTightEffTool_handle->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
-      if(m_photonMediumEffTool->getEfficiencyScaleFactor(*photon, photonMediumEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonMediumEffTool_handle->getEfficiencyScaleFactor(*photon, photonMediumEffSF) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
-      if(m_photonLooseEffTool->getEfficiencyScaleFactor(*photon, photonLooseEffSF) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonLooseEffTool_handle->getEfficiencyScaleFactor(*photon, photonLooseEffSF) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
       // SF error
-      if(m_photonTightEffTool->getEfficiencyScaleFactorError(*photon, photonTightEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonTightEffTool_handle->getEfficiencyScaleFactorError(*photon, photonTightEffSFError) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
-      if(m_photonMediumEffTool->getEfficiencyScaleFactorError(*photon, photonMediumEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonMediumEffTool_handle->getEfficiencyScaleFactorError(*photon, photonMediumEffSFError) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
-      if(m_photonLooseEffTool->getEfficiencyScaleFactorError(*photon, photonLooseEffSFError) == CP::CorrectionCode::Error){
-	Error("PhotonHandler::decorate()", "getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+      if(m_photonLooseEffTool_handle->getEfficiencyScaleFactorError(*photon, photonLooseEffSFError) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
     }
 
@@ -602,115 +589,11 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
     photon->auxdecor< float >( "PhotonID_Medium_EffSF_Error" ) = photonMediumEffSFError;
     photon->auxdecor< float >( "PhotonID_Loose_EffSF_Error"  ) = photonLooseEffSFError;
 
-    if (m_debug) {Info("decorate()", "Tight=%f (%f) Medium=%f (%f) Loose=%f (%f)",
-		       photonTightEffSF, photonTightEffSFError,
-		       photonMediumEffSF, photonMediumEffSFError,
-		       photonLooseEffSF, photonLooseEffSFError); }
+    ANA_MSG_DEBUG("Tight=" << photonTightEffSF << "(" << photonTightEffSFError << ")"
+                  "Medium=" << photonMediumEffSF << "(" << photonMediumEffSFError << ")"
+                  "Loose=" << photonLooseEffSF << "(" << photonLooseEffSFError << ")");
   }
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode  PhotonCalibrator :: toolInitializationAtTheFirstEvent ( const xAOD::EventInfo* eventInfo )
-{
-  MSG::Level msgLevel = (m_debug) ? MSG::VERBOSE : MSG::INFO;
-
-  // Efficiency correction
-  if (m_isMC) {
-    // in order to use EventInfo
-    // some tools are initialized after the first events are stored from file
-    if (m_toolInitializationAtTheFirstEventDone) {
-      Error("toolInitializationAtTheFirstEvent ()", "please call this function only when m_toolInitializationAtTheFirstEventDone = false");
-      return EL::StatusCode::FAILURE;
-    }
-
-    int dataType = PATCore::ParticleDataType::Data;
-    if (eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION )) {
-      if (m_useAFII) {
-	dataType = PATCore::ParticleDataType::Fast;
-      } else {
-	dataType = PATCore::ParticleDataType::Full;
-      }
-    }
-
-    if (m_debug) { Info("toolInitializationAtTheFirstEvent()", "isSimulation=%s isAFII=%s selected dataType=%d",
-			( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ? "Y" : "N"), (m_useAFII ? "Y" : "N" ), dataType ); }
-
-    // photon efficiency correction tool
-    //----------------------------------
-    //create the tools
-    // Tight
-    const std::string TightCorrectorName = m_name + "_PhotonTightEfficiencyCorrectionTool";
-    if ( asg::ToolStore::contains<AsgPhotonEfficiencyCorrectionTool>(TightCorrectorName.c_str()) ) {
-      m_photonTightEffTool = asg::ToolStore::get<AsgPhotonEfficiencyCorrectionTool>(TightCorrectorName.c_str());
-    } else {
-      m_photonTightEffTool = new AsgPhotonEfficiencyCorrectionTool(TightCorrectorName.c_str());
-    }
-    m_photonTightEffTool->msg().setLevel( msgLevel );
-
-    // Medium
-    const std::string MediumCorrectorName = m_name + "_PhotonMediumEfficiencyCorrectionTool";
-    if ( asg::ToolStore::contains<AsgPhotonEfficiencyCorrectionTool>(MediumCorrectorName.c_str()) ) {
-      m_photonMediumEffTool = asg::ToolStore::get<AsgPhotonEfficiencyCorrectionTool>(MediumCorrectorName.c_str());
-    } else {
-      m_photonMediumEffTool = new AsgPhotonEfficiencyCorrectionTool(MediumCorrectorName.c_str());
-    }
-    m_photonMediumEffTool->msg().setLevel( msgLevel );
-
-    // Loose
-    const std::string LooseCorrectorName = m_name + "_PhotonLooseEfficiencyCorrectionTool";
-    if ( asg::ToolStore::contains<AsgPhotonEfficiencyCorrectionTool>(LooseCorrectorName.c_str()) ) {
-      m_photonLooseEffTool = asg::ToolStore::get<AsgPhotonEfficiencyCorrectionTool>(LooseCorrectorName.c_str());
-    } else {
-      m_photonLooseEffTool = new AsgPhotonEfficiencyCorrectionTool(LooseCorrectorName.c_str());
-    }
-    m_photonLooseEffTool->msg().setLevel( msgLevel );
-
-    // todo : Set input files ** not yet available for 13 TeV ** Date : 13 May
-    // recommended files here: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommended_input_files
-    std::string file_unc = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.unc.v01.root");
-    std::string file_con = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.con.v01.root");
-    if(m_useAFII){
-      file_unc = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.unc.v01.root");
-      file_con = PathResolverFindCalibFile("PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.con.v01.root");
-    }
-
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool->setProperty("CorrectionFileNameConv",file_con), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool->setProperty("CorrectionFileNameUnconv",file_unc), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->setProperty("CorrectionFileNameConv",file_con), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->setProperty("CorrectionFileNameUnconv",file_unc), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool->setProperty("CorrectionFileNameConv",file_con), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool->setProperty("CorrectionFileNameUnconv",file_unc), "failed in setting property");
-
-    // set data type
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool->setProperty("ForceDataType", dataType), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->setProperty("ForceDataType", dataType), "failed in setting property");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool->setProperty("ForceDataType", dataType), "failed in setting property");
-
-    //initialize
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonTightEffTool->initialize(), "failed in initialization");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonMediumEffTool->initialize(), "failed in initialization");
-    RETURN_CHECK("PhotonHandler::initializeTools()", m_photonLooseEffTool->initialize(), "failed in initialization");
-
-  }
-
-  //IsolationCorrectionTool
-  const std::string IsoCorrToolName = m_name + "_IsolationCorrectiongTool_Photons";
-  if ( asg::ToolStore::contains<CP::IsolationCorrectionTool>(IsoCorrToolName.c_str()) ) {
-    m_IsolationCorrectionTool = asg::ToolStore::get<CP::IsolationCorrectionTool>(IsoCorrToolName.c_str());
-  } else {
-    m_IsolationCorrectionTool = new CP::IsolationCorrectionTool(IsoCorrToolName.c_str());
-  }
-
-  if (m_isMC) {
-    RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->setProperty("IsMC", true), "Failed in IsolationCorrectionTool setProperty");
-  } else {
-    RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->setProperty("IsMC", false), "Failed in IsolationCorrectionTool setProperty");
-  }
-  RETURN_CHECK( "PhotonCalibrator::initializeTool()", m_IsolationCorrectionTool->initialize(), "Failed in IsolationCorrectionTool initialization");
-  m_IsolationCorrectionTool->msg().setLevel( msgLevel );
-
-  m_toolInitializationAtTheFirstEventDone = true;
-
-  return EL::StatusCode::SUCCESS;
-}

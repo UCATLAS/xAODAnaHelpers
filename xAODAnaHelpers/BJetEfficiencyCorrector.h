@@ -1,5 +1,8 @@
 #ifndef xAODAnaHelpers_BJetEfficiencyCorrector_H
 #define xAODAnaHelpers_BJetEfficiencyCorrector_H
+// EDM includes
+#include "xAODEventInfo/EventInfo.h"
+#include "xAODJet/JetContainer.h"
 
 // CP interface includes
 #include "PATInterfaces/SystematicRegistry.h"
@@ -9,8 +12,8 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
-#include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
-#include "xAODBTaggingEfficiency/BTaggingEfficiencyTool.h"
+#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
+#include "xAODBTaggingEfficiency/IBTaggingEfficiencyTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -20,35 +23,53 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  std::string m_inContainerName;
-  std::string m_inputAlgo;
+  std::string m_inContainerName = "";
+  std::string m_outContainerName = "";
+  std::string m_inputAlgo = "";
+  std::string m_outputAlgo = "";
+  std::string m_sysNamesForParCont = ""; 
+  // this is the name of the vector of names for the systematics to be used for the creation of a parallel container. This will be just a copy of the nominal one with the sys name appended. Use cases: MET-specific systematics.
 
   // systematics
-  bool m_runAllSyst;
-  std::string m_systName;
-  std::string m_outputSystName;
+  std::string m_systName = "";
+  std::string m_outputSystName = "BJetEfficiency_Algo";
 
-  std::string m_corrFileName;
-  std::string m_jetAuthor;
-  std::string m_taggerName;
-  bool        m_useDevelopmentFile;
-  bool        m_coneFlavourLabel;
+  std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root";
 
-  std::string m_operatingPt;      // Operating point.
-  std::string m_operatingPtCDI;   // the one CDI will understand
-  std::string m_decor;            // The decoration key written to passing objects
-  std::string m_decorSF;          // The decoration key written to passing objects
+  std::string m_jetAuthor = "AntiKt4EMTopoJets";
+  std::string m_taggerName = "MV2c10";
+  bool        m_useDevelopmentFile = true;
+  bool        m_coneFlavourLabel = true;
+  std::string m_systematicsStrategy = "SFEigen";
+
+  // allowed operating points:
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
+  //For the fixed cut, valid options are: [ "FixedCutBEff_30", "FixedCutBEff_50", "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_80", "FixedCutBEff_85", "FixedCutBEff_90" ]
+  //For the variable cut, valid options are: [ "FlatBEff_30", "FlatBEff_40", "FlatBEff_50", "FlatBEff_60", "FlatBEff_70", "FlatBEff_77", "FlatBEff_85" ]
+
+  /// @brief Operating point.
+  std::string m_operatingPt = "FixedCutBEff_70";
+  /// @brief Operating point that CDI will understand
+  std::string m_operatingPtCDI = "";
+  /// @brief will only get scale factors for calibrated working points
+  bool m_getScaleFactors = false;
+  /// @brief The decoration key written to passing objects
+  std::string m_decor = "BTag";
 
 private:
 
-  bool m_isMC;        //!
+  /// @brief The decoration key written to passing objects
+  std::string m_decorSF = "";
+  
+  std::vector<std::string> m_inputAlgoList; //!
+
+  bool m_runAllSyst = false; //!
+
+  bool m_isMC = false;        //!
 
   // tools
-  BTaggingSelectionTool   *m_BJetSelectTool; //!
-  BTaggingEfficiencyTool  *m_BJetEffSFTool; //!
-
-  // configuration variables
-  bool m_getScaleFactors;  //!
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
+  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool"}; //!
 
   std::vector<CP::SystematicSet> m_systList; //!
 
@@ -58,7 +79,7 @@ private:
 public:
 
   // this is a standard constructor
-  BJetEfficiencyCorrector (std::string className = "BJetEfficiencyCorrector");
+  BJetEfficiencyCorrector ();
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);
