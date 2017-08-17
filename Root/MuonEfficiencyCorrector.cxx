@@ -392,21 +392,27 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   // code will go.
 
   m_numEvent++;
+  
+  // initialise containers
+  //
+  const xAOD::MuonContainer* inputMuons(nullptr);
+  
+  const xAOD::EventInfo* eventInfo(nullptr);
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
   if ( !m_isMC ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Muon Efficiency correction... "); }
+    if ( !m_outContainerName.empty() && !m_store->contains<xAOD::MuonContainer>( m_outContainerName ) ) {
+      ANA_CHECK( HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, msg()) );
+      ConstDataVector<xAOD::MuonContainer>* outputMuons = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
+      outputMuons->reserve( inputMuons->size() );
+      ANA_CHECK( HelperFunctions::makeSubsetCont(inputMuons, outputMuons, msg()) );
+      ANA_CHECK( m_store->record( outputMuons, m_outContainerName));
+    }
     return EL::StatusCode::SUCCESS;
   }
 
   ANA_MSG_DEBUG( "Applying Muon Efficiency corrections... ");
-
-
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-
-  // initialise containers
-  //
-  const xAOD::MuonContainer* inputMuons(nullptr);
 
   // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
