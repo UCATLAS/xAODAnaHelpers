@@ -189,7 +189,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   if( m_LHOperatingPoint == "LooseAndBLayer" )
     m_LHOperatingPoint = "LooseBL";
 
-  if ( // m_LHOperatingPoint != "VeryLoose"       &&
+  if ( m_LHOperatingPoint != "VeryLoose"       &&
        m_LHOperatingPoint != "Loose"           &&
        m_LHOperatingPoint != "LooseBL"         &&
        m_LHOperatingPoint != "Medium"          &&

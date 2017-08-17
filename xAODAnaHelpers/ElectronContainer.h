@@ -65,6 +65,8 @@ namespace xAH {
       std::vector<float>* m_topoetcone40;
 
       // PID
+      int m_n_LHVeryLoose;
+      std::vector<int>*   m_LHVeryLoose;
       int m_n_LHLoose;
       std::vector<int>*   m_LHLoose;
       int m_n_LHLooseBL;

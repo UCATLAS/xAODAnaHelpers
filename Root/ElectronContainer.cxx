@@ -47,6 +47,9 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   }
 
   if ( m_infoSwitch.m_PID ) {
+    m_n_LHVeryLoose = 0;
+    m_LHVeryLoose = new std::vector<int>   ();
+
     m_n_LHLoose = 0;
     m_LHLoose = new std::vector<int>   ();
 
@@ -170,6 +173,7 @@ ElectronContainer::~ElectronContainer()
   }
 
   if ( m_infoSwitch.m_PID ) {
+    delete m_LHVeryLoose;
     delete m_LHLoose    ;
     delete m_LHLooseBL  ;
     delete m_LHMedium   ;
@@ -259,6 +263,10 @@ void ElectronContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_PID ) {
+    tree->SetBranchStatus (("n"+m_name+"_LHVeryLoose").c_str(),     1);
+    tree->SetBranchAddress(("n"+m_name+"_LHVeryLoose").c_str(),     &m_n_LHVeryLoose);
+    connectBranch<int>(tree, "LHVeryLoose",         &m_LHVeryLoose);
+
     tree->SetBranchStatus (("n"+m_name+"_LHLoose").c_str(),     1);
     tree->SetBranchAddress(("n"+m_name+"_LHLoose").c_str(),     &m_n_LHLoose);
     connectBranch<int>(tree, "LHLoose",         &m_LHLoose);
@@ -383,6 +391,7 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
 
   // quality
   if ( m_infoSwitch.m_PID ) {
+    elec.LHVeryLoose   = m_LHVeryLoose->at(idx);
     elec.LHLoose       = m_LHLoose    ->at(idx);
     elec.LHLooseBL     = m_LHLooseBL  ->at(idx);
     elec.LHMedium      = m_LHMedium   ->at(idx);
@@ -485,6 +494,9 @@ void ElectronContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_PID ) {
+    tree->Branch(("n"+m_name+"_LHVeryLoose").c_str(),      &m_n_LHVeryLoose);
+    setBranch<int>(tree, "LHVeryLoose",         m_LHVeryLoose);
+
     tree->Branch(("n"+m_name+"_LHLoose").c_str(),      &m_n_LHLoose);
     setBranch<int>(tree, "LHLoose",         m_LHLoose);
 
@@ -597,6 +609,9 @@ void ElectronContainer::clear()
   }
 
   if ( m_infoSwitch.m_PID ) {
+    m_n_LHVeryLoose = 0;
+    m_LHVeryLoose   -> clear();
+
     m_n_LHLoose = 0;
     m_LHLoose   -> clear();
 
@@ -761,6 +776,12 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
   }
 
   if ( m_infoSwitch.m_PID ) {
+
+    static SG::AuxElement::Accessor<char> LHVeryLooseAcc ("LHVeryLoose");
+    if ( LHVeryLooseAcc.isAvailable( *elec ) ) {
+      m_LHVeryLoose->push_back( LHVeryLooseAcc( *elec ) );
+      if ( LHVeryLooseAcc( *elec ) == 1 ) { ++m_n_LHVeryLoose; }
+    }  else {  m_LHVeryLoose->push_back( -1 ); }
 
     static SG::AuxElement::Accessor<char> LHLooseAcc ("LHLoose");
     if ( LHLooseAcc.isAvailable( *elec ) ) {
