@@ -73,7 +73,6 @@ and then find all packages and then compile:
 
       atlasoff/PhysicsAnalysis/D3PDTools/EventLoopGrid/tags/EventLoopGrid-00-00-53
 
-
 CMake-based RootCore (> 2.5.X)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

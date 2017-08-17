@@ -9,6 +9,17 @@ xAODAnaHelpers
 .. image:: http://build.ci-connect.net:8080/buildStatus/icon?job=RootCore/xAH
    :target: http://build.ci-connect.net:8080/job/RootCore/xAH
 
+.. raw:: html
+
+  <br />
+
+|rootcore_badge|_
+|cmake_badge|_
+
+
+.. _rootcore_badge: Installing.html#rootcore-2-5-x
+.. _cmake_badge: Installing.html#cmake-based-rootcore-2-5-x
+
 The xAOD analysis framework, born out of ProofAna...or not.
 
 Welcome to the xAODAnaHelpers wiki! This is an xAOD Analysis Framework built for Run II of ATLAS.
