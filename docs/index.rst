@@ -3,8 +3,8 @@
 xAODAnaHelpers
 ==============
 
-.. image:: https://zenodo.org/badge/doi/10.5281/zenodo.35355.svg
-   :target: https://doi.org/10.5281/zenodo.35355
+.. image:: https://zenodo.org/badge/35496971.svg
+   :target: https://zenodo.org/badge/latestdoi/35496971
 
 .. image:: http://build.ci-connect.net:8080/buildStatus/icon?job=RootCore/xAH
    :target: http://build.ci-connect.net:8080/job/RootCore/xAH
