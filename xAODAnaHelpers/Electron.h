@@ -41,6 +41,7 @@ namespace xAH {
     float topoetcone40;
 
     // PID
+    int   LHVeryLoose;
     int   LHLoose;
     int   LHLooseBL;
     int   LHMedium;
