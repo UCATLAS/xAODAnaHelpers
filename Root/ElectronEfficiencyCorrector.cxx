@@ -459,20 +459,18 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   // if m_inputSystNamesElectrons = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  std::vector<std::string>* systNames(nullptr);
-  if ( m_inputSystNamesElectrons.empty() ) {
-    *systNames = std::vector<std::string>{""};
-  } else {
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputSystNamesElectrons, 0, m_store, msg()) );
-  }
+  std::vector<std::string>* systNames_ptr(nullptr);
+  if ( !m_inputSystNamesElectrons.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputSystNamesElectrons, 0, m_store, msg()) );
+
+  std::vector<std::string> systNames{""};
+  if(systNames_ptr) systNames = *systNames_ptr;
 
   // Declare a write status set to true
   // For the systematically varied input containers, we won't store again the vector with efficiency systs in TStore ( it will be always the same!)
-  //
   bool writeSystNames(true);
 
   // loop over systematic sets available
-  for ( auto systName : *systNames ) {
+  for ( auto systName : systNames ) {
 
     const xAOD::ElectronContainer* inputElectrons(nullptr);
 
@@ -593,7 +591,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     for ( const auto& syst_it : m_systListPID ) {
 
-      if ( !syst_it.name().empty() && !nominal ) continue; 
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
       ANA_MSG_DEBUG("Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: " << sfName);
       if ( writeSystNames ) sysVariationNamesPID->push_back(syst_it.name());
@@ -696,7 +694,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     for ( const auto& syst_it : m_systListIso ) {
 
-      if ( !syst_it.name().empty() && !nominal ) continue; 
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
       ANA_MSG_DEBUG("Electron Iso efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
       if ( writeSystNames ) sysVariationNamesIso->push_back(syst_it.name());
@@ -799,7 +797,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     for ( const auto& syst_it : m_systListReco ) {
 
-      if ( !syst_it.name().empty() && !nominal ) continue; 
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
       ANA_MSG_DEBUG("Electron Reco efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
       if ( writeSystNames ) sysVariationNamesReco->push_back(syst_it.name());
@@ -908,7 +906,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     for ( const auto& syst_it : m_systListTrig ) {
 
-      if ( !syst_it.name().empty() && !nominal ) continue; 
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
       ANA_MSG_DEBUG("Electron Trig efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
       if ( writeSystNames ) sysVariationNamesTrig->push_back(syst_it.name());
@@ -1015,7 +1013,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     for ( const auto& syst_it : m_systListTrigMCEff ) {
 
-      if ( !syst_it.name().empty() && !nominal ) continue; 
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
       ANA_MSG_DEBUG("Electron Trig MC efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
       if ( writeSystNames ) sysVariationNamesTrigMCEff->push_back(syst_it.name());
