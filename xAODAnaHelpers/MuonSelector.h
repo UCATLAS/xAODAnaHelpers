@@ -158,7 +158,8 @@ private:
   */
   asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle{"Trig::TrigDecisionTool"};                  //!
 
-  bool m_doTrigMatch = false; //!
+  /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing 
+  bool m_doTrigMatch = true; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
