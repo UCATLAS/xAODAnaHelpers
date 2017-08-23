@@ -36,7 +36,6 @@ public:
 
   // configuration variables
   std::string   m_inContainerName = "";
-  std::string   m_outContainerName = "";
 
   std::string   m_calibRelease = "Data15_allPeriods_241115";
 
@@ -64,12 +63,8 @@ public:
   std::string   m_WorkingPointTTVA = "TTVA";
 
   // systematics
-  /// @brief this is the name of the vector of names of the systematically varied containers produced by the upstream algo (e.g., the SC containers with calibration systematics)
-  std::string   m_inputAlgoSystNames = "";
-  // this is the name of the vector of names of the systematically varied containers to be fed to the downstream algos. We need that as we deepcopy the input containers
-  std::string   m_outputAlgoSystNames = "";
-  // this is the name of the vector of names for the systematics to be used for the creation of a parallel container. This will be just a copy of the nominal one with the sys name appended. Use cases: MET-specific systematics.
-  std::string   m_sysNamesForParCont = "";
+  /// @brief this is the name of the vector of names of the systematically varied muons-related containers produced by the upstream algo (e.g., the SC containers with calibration systematics)
+  std::string   m_inputSystNamesMuons = "";
 
   float         m_systValReco = 0.0;
   float         m_systValIso = 0.0;
@@ -82,11 +77,7 @@ public:
   std::string   m_outputSystNamesReco = "MuonEfficiencyCorrector_RecoSyst";
   std::string   m_outputSystNamesIso = "MuonEfficiencyCorrector_IsoSyst";
   std::string   m_outputSystNamesTrig = "MuonEfficiencyCorrector_TrigSyst";
-  std::string   m_outputSystNamesTrigMCEff = "MuonEfficiencyCorrector_TrigMCEff";
   std::string   m_outputSystNamesTTVA = "MuonEfficiencyCorrector_TTVASyst";
-
-  /// @brief will consider efficiency decorations only for the nominal run
-  bool          m_decorateWithNomOnInputSys = true;
 
 private:
 
@@ -102,8 +93,8 @@ private:
   std::vector<CP::SystematicSet> m_systListIso;  //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
   std::vector<CP::SystematicSet> m_systListTTVA; //!
-
-  std::vector<std::string> m_sysNames; //!
+  
+  std::string m_outputSystNamesTrigBase; //!
 
   // tools
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;     //!
@@ -142,7 +133,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst, bool isNomSel );
+  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
