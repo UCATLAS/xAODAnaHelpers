@@ -311,7 +311,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     m_WorkingPointIsoTrig = HelperFunctions::parse_wp( "ISO", m_corrFileNameTrig, msg() );
     m_WorkingPointIDTrig  = HelperFunctions::parse_wp( "ID", m_corrFileNameTrig, msg() );
-    m_WorkingPointTrigTrig = HelperFunctions::parse_wp( "TRIG", m_corrFileNameTrigMCEff, msg() );
+    m_WorkingPointTrigTrig = HelperFunctions::parse_wp( "TRIG", m_corrFileNameTrig, msg() );
 
     if ( m_WorkingPointIDTrig.empty() ) {
       ANA_MSG_ERROR( "ID working point for trigger SF not found in config file! This should not happen. Exiting." );
