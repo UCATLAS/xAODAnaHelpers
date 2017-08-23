@@ -595,7 +595,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
       if ( !syst_it.name().empty() && !nominal ) continue; 
 
-      ANA_MSG_DEBUG("Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: " << sfName);
+      ANA_MSG_DEBUG("Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
       if ( writeSystNames ) sysVariationNamesPID->push_back(syst_it.name());
 
       // apply syst
