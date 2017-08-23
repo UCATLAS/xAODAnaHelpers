@@ -53,11 +53,8 @@ namespace xAH {
     // scale factors w/ sys
     // per object
     std::vector< float > RecoEff_SF;
-    std::vector< float > PIDEff_SF_LHLooseAndBLayer;
-    std::vector< float > PIDEff_SF_LHLoose;
-    std::vector< float > PIDEff_SF_LHMedium;
-    std::vector< float > PIDEff_SF_LHTight;
-    
+
+    std::map< std::string, std::vector< float > > PIDEff_SF;
     std::map< std::string, std::vector< float > > IsoEff_SF;
     std::map< std::string, std::vector< float > > TrigEff_SF;
     std::map< std::string, std::vector< float > > TrigMCEff;

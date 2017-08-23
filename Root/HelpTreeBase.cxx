@@ -437,7 +437,7 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
 
   if(m_debug)  Info("AddElectrons()", "Adding electron variables: %s", detailStr.c_str());
 
-  m_elecs[elecName] = new xAH::ElectronContainer(elecName, detailStr, m_units, m_isMC);
+  m_elecs[elecName] = new xAH::ElectronContainer(elecName, detailStr, m_units, m_isMC, strcmp(m_tree->GetName(), "nominal") == 0);
 
   xAH::ElectronContainer* thisElec = m_elecs[elecName];
 
@@ -942,4 +942,3 @@ bool HelpTreeBase::writeTo( TFile* file ) {
   if ( status == 0 ) { return false; }
   return true;
 }
-

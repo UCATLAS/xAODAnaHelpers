@@ -19,7 +19,7 @@ namespace xAH {
   class ElectronContainer : public ParticleContainer<Electron,HelperClasses::ElectronInfoSwitch>
     {
     public:
-      ElectronContainer(const std::string& name = "el", const std::string& detailStr="", float units = 1e3, bool mc = false);
+      ElectronContainer(const std::string& name = "el", const std::string& detailStr="", float units = 1e3, bool mc = false, bool storeSystSFs = true);
       virtual ~ElectronContainer();
     
       virtual void setTree(TTree *tree);
@@ -85,11 +85,8 @@ namespace xAH {
       // scale factors w/ sys
       // per object
       std::vector< std::vector< float > >* m_RecoEff_SF;
-      std::vector< std::vector< float > >* m_PIDEff_SF_LHLooseAndBLayer;
-      std::vector< std::vector< float > >* m_PIDEff_SF_LHLoose;
-      std::vector< std::vector< float > >* m_PIDEff_SF_LHMedium;
-      std::vector< std::vector< float > >* m_PIDEff_SF_LHTight;
-    
+
+      std::map< std::string, std::vector< std::vector< float > > >* m_PIDEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;

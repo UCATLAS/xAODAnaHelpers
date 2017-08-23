@@ -42,34 +42,14 @@ class ElectronEfficiencyCorrector : public xAH::Algorithm
 public:
   /// @brief The name of the input container for this algorithm to read from ``TEvent`` or ``TStore``
   std::string  m_inContainerName = "";
-  /**
-      @brief The name of the nominal output container written by the algorithm to ``TStore``
-
-      If the algorithm applies systematic variations, for each shallow copy saved to ``TStore``, the systematic name will be appended to this.
-  */
-  std::string  m_outContainerName = "";
 
 // systematics
   /**
-    @brief The name of the vector containing the names of the systematically-varied containers from the upstream algorithm, which will be processed by this algorithm.
+    @brief The name of the vector containing the names of the systematically-varied electrons-related containers from the upstream algorithm, which will be processed by this algorithm.
 
     This vector is retrieved from the ``TStore``. If left blank, it means there is no upstream algorithm which applies systematics. This is the case when processing straight from the original ``xAOD`` or ``DxAOD``.
   */
-  std::string m_inputAlgoSystNames;
-
-  /**
-    @brief The name of the vector containing the names of the systematically-varied containers created by by this algorithm.
-
-    @rst
-      If :cpp:member:`~xAH::Algorithm::m_systName` is empty, the vector will contain only an empty string. When running on systematics, this is the string a downstream algorithm needs to process electrons.
-
-      .. note:: We need this as we deep-copy the input containers.
-    @endrst
-  */
-  std::string   m_outputAlgoSystNames;
-
-  std::string   m_sysNamesForParCont; 
-  // this is the name of the vector of names for the systematics to be used for the creation of a parallel container. This will be just a copy of the nominal one with the sys name appended. Use cases: MET-specific systematics.
+  std::string m_inputSystNamesElectrons;
 
   /** @brief Force AFII flag in calibration, in case metadata is broken */
   bool m_setAFII;
@@ -97,9 +77,6 @@ public:
   std::string m_corrFileNameTrig = "";
   std::string m_corrFileNameTrigMCEff = "";
 
-  /// @brief will consider efficiency decorations only for the nominal run
-  bool          m_decorateWithNomOnInputSys = true;
-
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
@@ -119,8 +96,6 @@ private:
   std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
   std::vector<CP::SystematicSet> m_systListTrigMCEff; //!
-
-  std::vector<std::string> m_sysNames; //!
 
   // tools
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  //!
@@ -159,7 +134,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst, bool isNomSel );
+  virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
