@@ -25,7 +25,7 @@ matrix:
     - language: cpp
       before_script:
 	- sudo apt-get -qq update
-      #  - sudo apt-get install -y -qq uncrustify cppcheck
+        #  - sudo apt-get install -y -qq uncrustify cppcheck
 	- sudo apt-get install -y -qq cppcheck
       # must install 0.64 of uncrustify, a later one
       install:
