@@ -1,23 +1,50 @@
-language: cpp
-before_script:
-  - sudo apt-get -qq update
-#  - sudo apt-get install -y -qq uncrustify cppcheck
-  - sudo apt-get install -y -qq cppcheck
+matrix:
+  include:
+    - language: python
+      python: 2.7
+      sudo: false
+      addons:
+        apt:
+          packages:
+            - doxygen
+            - doxygen-doc
+            - doxygen-gui
+            - doxygen-latex
+            - graphviz
+      install: pip install -r docs/requirements.txt
+      script:
+        - cd docs
+        - doxygen
+        - make html
+        - cd ..
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        local_dir: docs/_build/html
 
-# must install 0.64 of uncrustify, a later one
-install:
-  - wget https://github.com/uncrustify/uncrustify/archive/uncrustify-0.64.tar.gz
-  - tar -xzvf uncrustify-0.64.tar.gz
-  - mkdir build-uncrustify
-  - cd build-uncrustify
-  - cmake ../uncrustify-uncrustify-0.64
-  - make
-  - mv uncrustify ../uncrustify
-  - cd ../
-  - rm -rf build-uncrustify
+    - language: cpp
+      sudo: required
+      before_script:
+        - sudo apt-get -qq update
+        #  - sudo apt-get install -y -qq uncrustify cppcheck
+        - sudo apt-get install -y -qq cppcheck
+      # must install 0.64 of uncrustify, a later one
+      install:
+        - wget https://github.com/uncrustify/uncrustify/archive/uncrustify-0.64.tar.gz
+        - tar -xzvf uncrustify-0.64.tar.gz
+        - mkdir build-uncrustify
+        - cd build-uncrustify
+        - cmake ../uncrustify-uncrustify-0.64
+        - make
+        - mv uncrustify ../uncrustify
+        - cd ../
+        - rm -rf build-uncrustify
+      script:
+        - ./uncrustify -c uncrustify.cfg --check **/**.cxx
 
-script:
-  - ./uncrustify -c uncrustify.cfg --check **/**.cxx
+allow_failures:
+  - language: cpp
 
 notifications:
   email:
