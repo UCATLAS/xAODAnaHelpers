@@ -43,6 +43,9 @@ matrix:
       script:
         - ./uncrustify -c uncrustify.cfg --check **/**.cxx
 
+allow_failures:
+  - language: cpp
+
 notifications:
   email:
     on_success: never
