@@ -1,5 +1,6 @@
 // c++ include(s):
 #include <iostream>
+#include <memory>
 
 // EL include(s):
 #include <EventLoop/Job.h>
@@ -567,11 +568,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   // These vector<string> are eventually stored in TStore
   //
-  std::vector< std::string >* sysVariationNamesPID       = nullptr;
-  std::vector< std::string >* sysVariationNamesReco      = nullptr;
-  std::vector< std::string >* sysVariationNamesIso       = nullptr;
-  std::vector< std::string >* sysVariationNamesTrig      = nullptr;
-  std::vector< std::string >* sysVariationNamesTrigMCEff = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesPID       = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesReco      = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesIso       = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig      = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesTrigMCEff = nullptr;
 
   // 1.
   // PID efficiency SFs - this is a per-ELECTRON weight
@@ -584,7 +585,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNamePID.empty() && !isToolAlreadyUsed(m_pidEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesPID = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesPID = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElPIDEff_SF_syst_" + m_PID_WP;
@@ -593,7 +594,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
       if ( !syst_it.name().empty() && !nominal ) continue;
 
-      ANA_MSG_DEBUG("Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: " << sfName);
+      ANA_MSG_DEBUG("Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
       if ( writeSystNames ) sysVariationNamesPID->push_back(syst_it.name());
 
       // apply syst
@@ -671,7 +672,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesPID ) ) {
-      ANA_CHECK( m_store->record( sysVariationNamesPID, m_outputSystNamesPID ));
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesPID), m_outputSystNamesPID ));
     }
 
   }
@@ -687,7 +688,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameIso.empty() && !isToolAlreadyUsed(m_IsoEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesIso = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesIso = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElIsoEff_SF_syst_" + m_IsoPID_WP + "_isol" + m_Iso_WP;
@@ -774,7 +775,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
-      ANA_CHECK( m_store->record( sysVariationNamesIso, m_outputSystNamesIso ));
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
     }
 
   }
@@ -790,7 +791,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameReco.empty() && !isToolAlreadyUsed(m_RecoEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesReco = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesReco = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElRecoEff_SF_syst";
@@ -877,7 +878,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
-      ANA_CHECK( m_store->record( sysVariationNamesReco, m_outputSystNamesReco ));
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
     }
 
   }
@@ -896,7 +897,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   if ( !m_corrFileNameTrig.empty() && !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesTrig = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesTrig = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElTrigEff_SF_syst_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
@@ -987,7 +988,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTrig ) ) {
-      ANA_CHECK( m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig ));
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), m_outputSystNamesTrig ));
     }
 
   }
@@ -1003,7 +1004,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameTrigMCEff.empty() && !isToolAlreadyUsed(m_TrigMCEff_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesTrigMCEff = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesTrigMCEff = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElTrigMCEff_syst_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
@@ -1094,7 +1095,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTrigMCEff ) ) {
-      ANA_CHECK( m_store->record( sysVariationNamesTrigMCEff, m_outputSystNamesTrigMCEff ));
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesTrigMCEff), m_outputSystNamesTrigMCEff ));
     }
 
   }

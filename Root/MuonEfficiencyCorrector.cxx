@@ -125,23 +125,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // *******************************************************
 
-  // several lists of systematics could be configured
-  // this is the case when MET sys should be added
-  // to the OR ones
-  std::string tmp_sysNames = m_inputAlgoSystNames;
-
-  while ( tmp_sysNames.size() > 0) {
-    size_t pos = tmp_sysNames.find_first_of(',');
-    if ( pos == std::string::npos ) {
-      pos = tmp_sysNames.size();
-      m_sysNames.push_back(tmp_sysNames.substr(0, pos));
-      tmp_sysNames.erase(0, pos);
-    } else {
-      m_sysNames.push_back(tmp_sysNames.substr(0, pos));
-      tmp_sysNames.erase(0, pos+1);
-    }
-  }
-
   // Create a ToolHandle of the PRW tool which is passed to the MuonEfficiencyScaleFactors class later
   //
   if( m_isMC ){
@@ -312,10 +295,10 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     m_SingleMuTriggers.push_back(token);
   }
 
-  //  Add the chosen WP to the string labelling the vector<SF>/vector<eff> decoration
-  //
-  m_outputSystNamesTrig      = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-  m_outputSystNamesTrigMCEff = m_outputSystNamesTrigMCEff + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+  // Remember base output syst. names container
+  m_outputSystNamesTrigBase = m_outputSystNamesTrig;
+  // Add the chosen WP to the string labelling the output syst. names container
+  m_outputSystNamesTrig = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
 
   CP::SystematicSet affectSystsTrig = m_muTrigSF_tools[m_YearsList[0]]->affectingSystematics();
   for ( const auto& syst_it : affectSystsTrig ) { ANA_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: " << syst_it.name()); }
@@ -404,120 +387,44 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
-  // initialise containers
-  //
-  const xAOD::MuonContainer* inputMuons(nullptr);
-
-  // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
+  // if m_inputSystNamesMuons = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
+  std::vector<std::string>* systNames_ptr(nullptr);
+  if ( !m_inputSystNamesMuons.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputSystNamesMuons, 0, m_store, msg()) );
 
-  // Declare a counter, initialised to 0
+  std::vector<std::string> systNames{""};
+  if (systNames_ptr) systNames = *systNames_ptr;
+
+  // Declare a write status set to true
   // For the systematically varied input containers, we won't store again the vector with efficiency systs in TStore ( it will be always the same!)
   //
-  unsigned int countInputCont(0);
+  bool writeSystNames(true);
 
-  if ( m_inputAlgoSystNames.empty() ) {
+  // loop over systematic sets available
+  for ( auto systName : systNames ) {
+    const xAOD::MuonContainer* inputMuons(nullptr);
 
-    // I might not want to decorate sys altered muons but for some events the nominal container might not exist
-    // if muons are only allowed in systematic instances, hence, we have to check for the existence of the nominal container
-    //
-    if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName )  ) {
-       ANA_CHECK( HelperFunctions::retrieve(inputMuons, m_inContainerName, m_event, m_store, msg()) );
+    // some systematics might have rejected the event
+    if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName+systName ) ) {
+      // retrieve input muons
+      ANA_CHECK( HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, msg()) );
 
-       ANA_MSG_DEBUG( "Number of muons: " << static_cast<int>(inputMuons->size()) );
+      ANA_MSG_DEBUG( "Number of muons: " << static_cast<int>(inputMuons->size()) );
+      ANA_MSG_DEBUG( "Input syst: " << systName );
+      unsigned int idx(0);
+      for ( auto mu : *(inputMuons) ) {
+        ANA_MSG_DEBUG( "Input muon " << idx << ", pt = " << mu->pt() * 1e-3 << " GeV" );
+        ++idx;
+      }
 
-       // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
-       //
-       this->executeSF( eventInfo, inputMuons, countInputCont, true );
-    }
+      // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
+      this->executeSF( eventInfo, inputMuons, systName.empty(), writeSystNames );
 
-  } else {
-  // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo. This is the case of calibrators: one different SC
-  // for each calibration syst applied
+      writeSystNames = false;
 
-	// get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
-	//
-        std::vector<std::string> systNames;
+    } // check existence of container
 
-        // add each vector of systematics names to the full list
-        //
-        for ( auto sysInput : m_sysNames ) {
-          std::vector<std::string>* it_systNames(nullptr);
-          ANA_CHECK( HelperFunctions::retrieve(it_systNames, sysInput, 0, m_store, msg()) );
-          systNames.insert( systNames.end(), it_systNames->begin(), it_systNames->end() );
-        }
-        // and now remove eventual duplicates
-        //
-        HelperFunctions::remove_duplicates(systNames);
-
-        // create parallel container of muons for met systematics.
-        // this does not get decorated and contains the same elements
-        // of the nominal container. It will be used by the TreeAlgo
-        // as we don't want sys variations for eff in MET sys trees.
-        //
-        if ( !m_sysNamesForParCont.empty() )  {
-          std::vector<std::string>* par_systNames(nullptr);
-
-          ANA_CHECK( HelperFunctions::retrieve(par_systNames, m_sysNamesForParCont, 0, m_store, msg()) );
-
-          for ( auto sys : *par_systNames ) {
-             if ( !sys.empty() && !m_store->contains<xAOD::MuonContainer>( m_inContainerName+sys ) ) {
-               const xAOD::MuonContainer* tmpMuons(nullptr);
-
-               if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName ) ) {
-
-                  ANA_CHECK( HelperFunctions::retrieve(tmpMuons, m_inContainerName, m_event, m_store, msg()) );
-                  ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, m_inContainerName+sys, tmpMuons)));
-
-               } // the nominal container is copied therefore it has to exist!
-
-             } // skip the nominal case or if the container already exists
-          } // consider all "parallel" systematics specified by the user
-
-        } // do this thing only if required
-
-        // loop over systematic sets available
-	      //
-        std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-
-        for ( auto systName : systNames ) {
-
-           const xAOD::MuonContainer* outputMuons(nullptr);
-           bool isNomMuonSelection = systName.empty();
-
-           if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName+systName )  ) {
-              ANA_CHECK( HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, msg()) );
-
-              if ( !m_store->contains<xAOD::MuonContainer>( m_outContainerName+systName ) ) {
-                 ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::MuonContainer, xAOD::MuonAuxContainer, xAOD::Muon>(m_store, m_outContainerName+systName, inputMuons)));
-              }
-
-              ANA_CHECK( HelperFunctions::retrieve(outputMuons, m_outContainerName+systName, m_event, m_store, msg()) );
-
-              ANA_MSG_DEBUG( "Number of muons: " << static_cast<int>(outputMuons->size()) );
-              ANA_MSG_DEBUG( "Input syst: " << systName );
-              unsigned int idx(0);
-              for ( auto mu : *(outputMuons) ) {
-                ANA_MSG_DEBUG( "Input muon " << idx << ", pt = " << mu->pt()*1e-3 << " GeV ");
-                ++idx;
-    	      }
-
-	      // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
-	      //
-              this->executeSF( eventInfo, outputMuons, countInputCont, isNomMuonSelection );
-
-              vecOutContainerNames->push_back( systName );
-              // increment counter
-	      //
-	      ++countInputCont;
-
-           } // check existence of container
-    	} // close loop on systematic sets available from upstream algo
-
-        if ( !m_outputAlgoSystNames.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
-          ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
-        }
-   }
+  } // close loop on systematic sets available from upstream algo
 
   // look what we have in TStore
   //
@@ -577,7 +484,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, unsigned int countSyst, bool isNomSel )
+EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
 {
 
   //
@@ -598,27 +505,22 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
-  std::vector< std::string >* sysVariationNamesReco  = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesReco = nullptr;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_recoEffSF_tool_name) ) {
 
-    if(countSyst == 0) sysVariationNamesReco  = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesReco = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     for ( const auto& syst_it : m_systListReco ) {
-      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue;
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
       // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_MuRecoEff_SF
-      //
-      std::string sfName = "MuRecoEff_SF_" + m_WorkingPointReco;;
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      ANA_MSG_DEBUG( "Muon reco efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
-      if(countSyst == 0) sysVariationNamesReco->push_back(sfName);
+      std::string sfName = "MuRecoEff_SF_syst_Reco" + m_WorkingPointReco;
+
+      ANA_MSG_DEBUG( "Muon reco efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name() );
+      if( writeSystNames ) sysVariationNamesReco->push_back(syst_it.name());
 
       // apply syst
       //
@@ -651,7 +553,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
     	 //
 
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecReco( m_outputSystNamesReco );
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecReco( sfName );
     	 if ( !sfVecReco.isAvailable( *mu_itr ) ) {
   	   sfVecReco( *mu_itr ) = std::vector<float>();
     	 }
@@ -675,17 +577,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 sfVecReco_sysNames( *mu_itr ).push_back( syst_it.name().c_str() );
 
          ANA_MSG_DEBUG( "===>>>");
-         ANA_MSG_DEBUG( " ");
          ANA_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV" );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Reco eff. SF decoration: " << m_outputSystNamesReco );
-         ANA_MSG_DEBUG( " ");
+         ANA_MSG_DEBUG( "Reco eff. SF decoration: " << sfName );
          ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-         ANA_MSG_DEBUG( " ");
-         //ANA_MSG_DEBUG("Reco efficiency:");
-         //ANA_MSG_DEBUG("\t %f (from applyMCEfficiency())", mu_itr->auxdataConst< float >( "mcEfficiency" ) );
-         ANA_MSG_DEBUG( "and its SF:");
-         //ANA_MSG_DEBUG("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "EfficiencyScaleFactor" ) );
+         ANA_MSG_DEBUG( "Reco eff. SF:");
          ANA_MSG_DEBUG( "\t " << recoEffSF << " (from getEfficiencyScaleFactor())" );
          ANA_MSG_DEBUG( "--------------------------------------");
 
@@ -696,14 +591,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     }  // close loop on reco efficiency SF systematics
 
     // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
-    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesReco, m_outputSystNamesReco)); }
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
+    }
 
   }
 
@@ -714,27 +605,22 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
-  std::vector< std::string >* sysVariationNamesIso   = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesIso = nullptr;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_isoEffSF_tool_name) ) {
 
-    if(countSyst == 0) sysVariationNamesIso   = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesIso = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     for ( const auto& syst_it : m_systListIso ) {
-      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue;
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
       // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_MuIsoEff_SF_WP
-      //
-      std::string sfName = "MuIsoEff_SF_" + m_WorkingPointIso;
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      ANA_MSG_DEBUG( "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
-      if(countSyst == 0) sysVariationNamesIso->push_back(sfName);
+      std::string sfName = "MuIsoEff_SF_syst_Iso" + m_WorkingPointIso;
+
+      ANA_MSG_DEBUG( "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name() );
+      if ( writeSystNames ) sysVariationNamesIso->push_back(syst_it.name());
 
       // apply syst
       //
@@ -766,7 +652,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 //
     	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
     	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecIso( m_outputSystNamesIso );
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecIso( sfName );
     	 if ( !sfVecIso.isAvailable( *mu_itr ) ) {
   	   sfVecIso( *mu_itr ) = std::vector<float>();
     	 }
@@ -782,17 +668,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 sfVecIso( *mu_itr ).push_back(IsoEffSF);
 
          ANA_MSG_DEBUG( "===>>>");
-         ANA_MSG_DEBUG( " ");
          ANA_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Isolation SF decoration: " << m_outputSystNamesIso );
-         ANA_MSG_DEBUG( " ");
+         ANA_MSG_DEBUG( "Isolation SF decoration: " << sfName );
          ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-         ANA_MSG_DEBUG( " ");
-         //ANA_MSG_DEBUG("Iso efficiency:");
-         //ANA_MSG_DEBUG("\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "ISOmcEfficiency" ) );
-         ANA_MSG_DEBUG( "and its SF:");
-         //ANA_MSG_DEBUG("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "ISOEfficiencyScaleFactor" ) );
+         ANA_MSG_DEBUG( "Isolation SF:");
          ANA_MSG_DEBUG( "\t " << IsoEffSF << " (from getEfficiencyScaleFactor())");
          ANA_MSG_DEBUG( "--------------------------------------");
 
@@ -803,14 +682,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     }  // close loop on isolation efficiency SF systematics
 
     // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
-    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesIso, m_outputSystNamesIso)); }
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
+    }
 
   }
 
@@ -915,47 +790,32 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
     for ( const auto& trig_it : m_SingleMuTriggers ) {
 
-      std::vector< std::string >* sysVariationNamesTrig  = nullptr;
-      if(countSyst == 0) sysVariationNamesTrig  = new std::vector< std::string >;
+      std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig = nullptr;
+      if ( writeSystNames ) sysVariationNamesTrig = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
       // this is used to put the list of sys strings in the store.
       // The original string needs to be updated with the name of
       // the trigger for every item in the trigger loop.
       //
       //std::string m_fullname_outputSystNamesTrig;
 
-      std::string eff_string = m_outputSystNamesTrigMCEff;
-      std::string ineffstr   = "MuonEfficiencyCorrector_TrigMCEff_";
-      std::string outeffstr  = "MuonEfficiencyCorrector_TrigMCEff_" + trig_it + "_";
-
-      for(std::string::size_type i = 0; (i = eff_string.find(ineffstr, i)) != std::string::npos;) {
-        eff_string.replace(i, ineffstr.length(), outeffstr);
-        i += outeffstr.length();
-      }
-
       std::string sf_string = m_outputSystNamesTrig;
-      std::string insfstr   = "MuonEfficiencyCorrector_TrigSyst_";
-      std::string outsfstr  = "MuonEfficiencyCorrector_TrigSyst_" + trig_it + "_";
+      std::string insfstr   = m_outputSystNamesTrigBase + "_";
+      std::string outsfstr  = m_outputSystNamesTrigBase + "_" + trig_it + "_";
 
       for(std::string::size_type i = 0; (i = sf_string.find(insfstr, i)) != std::string::npos;) {
         sf_string.replace(i, insfstr.length(), outsfstr);
         i += outsfstr.length();
       }
-      //if (idx == 0) { m_fullname_outputSystNamesTrig = sf_string; }
-      //ANA_MSG_INFO("This is the new string: " << m_fullname_outputSystNamesTrig);
 
       for ( const auto& syst_it : m_systListTrig ) {
-        if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue;
+        if ( !syst_it.name().empty() && !nominal ) continue;
 
         // Create the name of the SF weight to be recorded
-        //   template:  SYSNAME_MuTrigEff_SF
-        //
-        std::string sfName = "MuTrigEff_SF_" + trig_it + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-        if ( !syst_it.name().empty() ) {
-           std::string prepend = syst_it.name() + "_";
-           sfName.insert( 0, prepend );
-        }
-        ANA_MSG_DEBUG( "Trigger efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
-        if(countSyst==0) sysVariationNamesTrig->push_back(sfName);
+        std::string sfName = "MuTrigEff_SF_syst_" + trig_it + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+        std::string effName = "MuTrigMCEff_syst_" + trig_it + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+
+        ANA_MSG_DEBUG( "Trigger efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name() );
+        if ( writeSystNames ) sysVariationNamesTrig->push_back(syst_it.name());
 
         // apply syst
         //
@@ -980,12 +840,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
            //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
            //
-           SG::AuxElement::Decorator< std::vector<float> > effMC( eff_string );
+           SG::AuxElement::Decorator< std::vector<float> > effMC( effName );
            if ( !effMC.isAvailable( *mu_itr ) ) {
              effMC( *mu_itr ) = std::vector<float>();
            }
 
-           SG::AuxElement::Decorator< std::vector<float> > sfVecTrig( sf_string );
+           SG::AuxElement::Decorator< std::vector<float> > sfVecTrig( sfName );
            if ( !sfVecTrig.isAvailable( *mu_itr ) ) {
              sfVecTrig( *mu_itr ) = std::vector<float>();
            }
@@ -1031,15 +891,11 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
 
            ANA_MSG_DEBUG( "===>>>");
-           ANA_MSG_DEBUG( " ");
            ANA_MSG_DEBUG( "Random year: " << randYear.c_str() );
            ANA_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
-           ANA_MSG_DEBUG( " ");
-           ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << m_outputSystNamesTrig );
-           ANA_MSG_DEBUG( "Trigger MC efficiency decoration: " << m_outputSystNamesTrigMCEff );
-           ANA_MSG_DEBUG( " ");
+           ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << sfName );
+           ANA_MSG_DEBUG( "Trigger MC efficiency decoration: " << effName );
            ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-           ANA_MSG_DEBUG( " ");
            ANA_MSG_DEBUG( "Trigger efficiency SF:");
            ANA_MSG_DEBUG( "\t " << triggerEffSF << " (from getTriggerScaleFactor())" );
            ANA_MSG_DEBUG( "Trigger MC efficiency:");
@@ -1051,18 +907,12 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
         } // close muon loop
       }  // close loop on trigger efficiency SF systematics
 
-      if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesTrig, sf_string)); }
-
+      // Add list of systematics names to TStore
+      // We only do this once per event if the list does not exist yet
+      if ( writeSystNames && !m_store->contains<std::vector<std::string>>( sf_string ) ) {
+        ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), sf_string ));
+      }
     } // close  trigger loop
-
-    // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
 
   }
 
@@ -1073,27 +923,22 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
-  std::vector< std::string >* sysVariationNamesTTVA  = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesTTVA = nullptr;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_TTVAEffSF_tool_name) ) {
 
-    if(countSyst == 0) sysVariationNamesTTVA  = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesTTVA = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     for ( const auto& syst_it : m_systListTTVA ) {
-      if ( m_decorateWithNomOnInputSys && !syst_it.name().empty() && !isNomSel ) continue;
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
       // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_MuTTVAEff_SF_WP
-      //
-      std::string sfName = "MuTTVAEff_SF_" + m_WorkingPointTTVA;
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      ANA_MSG_DEBUG( "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
-      if(countSyst == 0) sysVariationNamesTTVA->push_back(sfName);
+      std::string sfName = "MuTTVAEff_SF_syst_" + m_WorkingPointTTVA;
+
+      ANA_MSG_DEBUG( "Muon iso efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name() );
+      if ( writeSystNames ) sysVariationNamesTTVA->push_back(syst_it.name());
 
       // apply syst
       //
@@ -1129,7 +974,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 //
     	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* muon)
     	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecTTVA( m_outputSystNamesTTVA );
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecTTVA( sfName );
     	 if ( !sfVecTTVA.isAvailable( *mu_itr ) ) {
   	   sfVecTTVA( *mu_itr ) = std::vector<float>();
     	 }
@@ -1145,17 +990,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     	 sfVecTTVA( *mu_itr ).push_back(TTVAEffSF);
 
          ANA_MSG_DEBUG( "===>>>");
-         ANA_MSG_DEBUG( " ");
          ANA_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "TTVA SF decoration: " << m_outputSystNamesTTVA );
-         ANA_MSG_DEBUG( " ");
+         ANA_MSG_DEBUG( "TTVA SF decoration: " << sfName );
          ANA_MSG_DEBUG( "Systematic: " << syst_it.name());
-         ANA_MSG_DEBUG( " ");
-         //ANA_MSG_DEBUG("TTVA efficiency:");
-         //ANA_MSG_DEBUG("\t %f (from applyIsoEfficiency())", mu_itr->auxdataConst< float >( "TTVAmcEfficiency" ) );
-         ANA_MSG_DEBUG( "and its SF:");
-         //ANA_MSG_DEBUG("\t %f (from applyEfficiencyScaleFactor())", mu_itr->auxdataConst< float >( "TTVAEfficiencyScaleFactor" ) );
+         ANA_MSG_DEBUG( "TTVA SF:");
          ANA_MSG_DEBUG( "\t " << TTVAEffSF << " (from getEfficiencyScaleFactor())" );
          ANA_MSG_DEBUG( "--------------------------------------");
 
@@ -1166,14 +1004,10 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     }  // close loop on TTVA efficiency SF systematics
 
     // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
-    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesTTVA, m_outputSystNamesTTVA)); }
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTTVA ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesTTVA), m_outputSystNamesTTVA ));
+    }
   }
 
   return EL::StatusCode::SUCCESS;

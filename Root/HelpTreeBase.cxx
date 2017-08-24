@@ -287,7 +287,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
 
   if ( m_debug )  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
-  m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units, m_isMC);
+  m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units, m_isMC, strcmp(m_tree->GetName(), "nominal") == 0);
   xAH::MuonContainer* thisMuon = m_muons[muonName];
   HelperClasses::MuonInfoSwitch& muonInfoSwitch = thisMuon->m_infoSwitch;
 
