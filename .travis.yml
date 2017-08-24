@@ -2,6 +2,7 @@ matrix:
   include:
     - language: python
       python: 2.7
+      sudo: false
       addons:
         apt:
           packages:
@@ -23,6 +24,7 @@ matrix:
         local_dir: docs/_build/html
 
     - language: cpp
+      sudo: required
       before_script:
         - sudo apt-get -qq update
         #  - sudo apt-get install -y -qq uncrustify cppcheck
@@ -45,4 +47,3 @@ notifications:
   email:
     on_success: never
     on_failure: always
-sudo: false
