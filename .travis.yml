@@ -12,6 +12,10 @@ addons:
   apt:
     packages:
       - doxygen
+      - doxygen-doc
+      - doxygen-gui
+      - doxygen-latex
+      - graphviz
 
 install: pip install -r docs/requirements.txt
 script:
