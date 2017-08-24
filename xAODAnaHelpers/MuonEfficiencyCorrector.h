@@ -63,7 +63,11 @@ public:
   std::string   m_WorkingPointTTVA = "TTVA";
 
   // systematics
-  /// @brief this is the name of the vector of names of the systematically varied muons-related containers produced by the upstream algo (e.g., the SC containers with calibration systematics)
+  /**
+    @brief The name of the vector containing the names of the systematically-varied muons-related containers from the upstream algorithm, which will be processed by this algorithm.
+
+    Only muon calibration systematics or any other that create shallow copies of electron containers should be passed to this tool. It is advised to run this algorithm before running algorithms combining multiple calibration systematics (e.g. overlap removal).
+  */
   std::string   m_inputSystNamesMuons = "";
 
   float         m_systValReco = 0.0;
