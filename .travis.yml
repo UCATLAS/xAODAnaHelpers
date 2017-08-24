@@ -1,25 +1,18 @@
-language: cpp
-before_script:
-  - sudo apt-get -qq update
-#  - sudo apt-get install -y -qq uncrustify cppcheck
-  - sudo apt-get install -y -qq cppcheck
+# doctr requires python >=3.5
+language: python
+python:
+  - 3.6
 
-# must install 0.64 of uncrustify, a later one
-install:
-  - wget https://github.com/uncrustify/uncrustify/archive/uncrustify-0.64.tar.gz
-  - tar -xzvf uncrustify-0.64.tar.gz
-  - mkdir build-uncrustify
-  - cd build-uncrustify
-  - cmake ../uncrustify-uncrustify-0.64
-  - make
-  - mv uncrustify ../uncrustify
-  - cd ../
-  - rm -rf build-uncrustify
+# This gives doctr the key we've generated
+sudo: false
+env:
+  global:
+    - secure: "r2wC4lEfE5FvGNz7eQvfSUOHMvYUP/YfsIsz3Zhdik8Z1Yp7PyIGIqDKGQzLEjtFe8UbCIyq9ouK1lEE4bHPgGz4eK1I9sJPv/CfQ7DOasqEOvF3338Mau4gr9P3sNm0YWonP4hjRMkftdae3iced2RnD6Ynkzk5ND64RnbVcD578+5y+4iTz6gr0IXeOysEO4ug3yoISwg8MsIry+NDwFv5t/qlXUJlR4B9agIR0NqPAOJifbhQU6orEtrl5IEt/Y+DcOeHEsHku7CWNrl1FHKPGf9eJ5IU6haUm09+oBllFS9dvr6JL4/Nbb6cnGEypUoYmx2sOuTj2hNfso3No6lp8frI6lFEGGVeJEckFJX0BkmD7HBMwnZbXri0kHTqL0y0i0s/VbR8pwLM1cYBMF/JjhTuLDaKOU1d4uWaL/g9gpRvzGxvRl5Qoe+qsdg3CT+ky/qYbc9CPKjil0g7/7NRNouRKDo+iE/KHQcFbJLGcdZ2r1gbZ420+3sZed5yuklKeBwIe9uZn5VldAeULm5vbrAoK+UZ0ajt4fpt1ULS04dqADBH3ErO0/Nn35B6Mc/eTRfUfJZWpm/bSmxVgD86ipNuJkYD+d7l+bn8aWazmCh41wZmdxDy3E/n1oOj8ZrjnWDy57AC+S600p726yLROyHeBETcPVOqgTmAGR4="
 
 script:
-  - ./uncrustify -c uncrustify.cfg --check **/**.cxx
-
-notifications:
-  email:
-    on_success: never
-    on_failure: always
+  - set -e
+  - pip install doctr
+  - cd docs
+  - doxygen
+  - make html
+  - doctr deploy
