@@ -9,6 +9,7 @@ env:
   global:
     - secure: "r2wC4lEfE5FvGNz7eQvfSUOHMvYUP/YfsIsz3Zhdik8Z1Yp7PyIGIqDKGQzLEjtFe8UbCIyq9ouK1lEE4bHPgGz4eK1I9sJPv/CfQ7DOasqEOvF3338Mau4gr9P3sNm0YWonP4hjRMkftdae3iced2RnD6Ynkzk5ND64RnbVcD578+5y+4iTz6gr0IXeOysEO4ug3yoISwg8MsIry+NDwFv5t/qlXUJlR4B9agIR0NqPAOJifbhQU6orEtrl5IEt/Y+DcOeHEsHku7CWNrl1FHKPGf9eJ5IU6haUm09+oBllFS9dvr6JL4/Nbb6cnGEypUoYmx2sOuTj2hNfso3No6lp8frI6lFEGGVeJEckFJX0BkmD7HBMwnZbXri0kHTqL0y0i0s/VbR8pwLM1cYBMF/JjhTuLDaKOU1d4uWaL/g9gpRvzGxvRl5Qoe+qsdg3CT+ky/qYbc9CPKjil0g7/7NRNouRKDo+iE/KHQcFbJLGcdZ2r1gbZ420+3sZed5yuklKeBwIe9uZn5VldAeULm5vbrAoK+UZ0ajt4fpt1ULS04dqADBH3ErO0/Nn35B6Mc/eTRfUfJZWpm/bSmxVgD86ipNuJkYD+d7l+bn8aWazmCh41wZmdxDy3E/n1oOj8ZrjnWDy57AC+S600p726yLROyHeBETcPVOqgTmAGR4="
 
+install: pip install -r docs/requirements.txt
 script:
   - set -e
   - pip install doctr
