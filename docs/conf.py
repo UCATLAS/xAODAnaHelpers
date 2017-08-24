@@ -68,7 +68,7 @@ copyright = u'2015-2017, ATLAS Collaboration'
 author = u'ATLAS Collaboration'
 
 try:
-    release = subprocess.check_output(["git", "describe", "--match", "[0-9]*", "--always"], cwd=CURRDIR).strip()
+    release = subprocess.check_output(["git", "describe", "--match", "[0-9]*", "--always"], cwd=CURRDIR).strip().decode()
 except:
     release = '0.0.0'
 # The version info for the project you're documenting, acts as replacement for

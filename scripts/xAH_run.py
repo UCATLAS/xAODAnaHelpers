@@ -607,7 +607,7 @@ if __name__ == "__main__":
       for algConfig_str in algorithmConfiguration_string:
         f.write('{0}\n'.format(algConfig_str))
 
-  except Exception, e:
+  except Exception as e:
     # we crashed
     xAH_logger.exception("{0}\nAn exception was caught!".format("-"*20))
     sys.exit(1)
