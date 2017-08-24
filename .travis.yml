@@ -28,4 +28,4 @@ script:
   - doctr deploy . --built-docs docs/_build/html
 
 doctr:
-    key-path: deploy_key.enc
+    key-path: github_deploy_key.enc
