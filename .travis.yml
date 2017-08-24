@@ -18,6 +18,13 @@ script:
   - doxygen
   - make html
   - cd ..
+  - git checkout --orphan gh-pages
+  - git rm -rf .
+  - rm -rf scripts
+  - mv docs/_build/html/* .
+  - rm -rf docs
+  - git add .
+  - git commit -m "built docs"
 
 deploy:
   provider: pages
