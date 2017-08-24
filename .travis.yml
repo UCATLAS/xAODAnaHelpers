@@ -16,6 +16,7 @@ matrix:
         - cd docs
         - doxygen
         - make html
+        - touch docs/_build/html/.nojekyll
         - cd ..
       deploy:
         provider: pages
