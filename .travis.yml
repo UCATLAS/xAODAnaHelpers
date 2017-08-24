@@ -24,4 +24,4 @@ script:
   - cd docs
   - doxygen
   - make html
-  - doctr deploy
+  - doctr deploy _build/html
