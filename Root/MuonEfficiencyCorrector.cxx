@@ -506,13 +506,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
-  std::vector< std::string >* sysVariationNamesReco  = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesReco = nullptr;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_recoEffSF_tool_name) ) {
 
-    if( writeSystNames ) sysVariationNamesReco  = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesReco = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     for ( const auto& syst_it : m_systListReco ) {
       if ( !syst_it.name().empty() && !nominal ) continue;
@@ -594,7 +594,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
-      ANA_CHECK( m_store->record( sysVariationNamesReco, m_outputSystNamesReco ));
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
     }
 
   }
@@ -606,13 +606,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
-  std::vector< std::string >* sysVariationNamesIso   = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesIso = nullptr;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_isoEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesIso  = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesIso = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     for ( const auto& syst_it : m_systListIso ) {
       if ( !syst_it.name().empty() && !nominal ) continue;
@@ -685,7 +685,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
-      ANA_CHECK( m_store->record( sysVariationNamesIso, m_outputSystNamesIso ));
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
     }
 
   }
@@ -791,8 +791,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
     for ( const auto& trig_it : m_SingleMuTriggers ) {
 
-      std::vector< std::string >* sysVariationNamesTrig  = nullptr;
-      if ( writeSystNames ) sysVariationNamesTrig  = new std::vector< std::string >;
+      std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig = nullptr;
+      if ( writeSystNames ) sysVariationNamesTrig = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
       // this is used to put the list of sys strings in the store.
       // The original string needs to be updated with the name of
       // the trigger for every item in the trigger loop.
@@ -911,7 +911,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       // Add list of systematics names to TStore
       // We only do this once per event if the list does not exist yet
       if ( writeSystNames && !m_store->contains<std::vector<std::string>>( sf_string ) ) {
-        ANA_CHECK( m_store->record( sysVariationNamesTrig, sf_string ));
+        ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), sf_string ));
       }
     } // close  trigger loop
 
@@ -924,13 +924,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Every systematic will correspond to a different SF!
   //
 
-  std::vector< std::string >* sysVariationNamesTTVA  = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesTTVA = nullptr;
 
   // Do it only if a tool with *this* name hasn't already been used
   //
   if ( !isToolAlreadyUsed(m_TTVAEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesTTVA  = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesTTVA = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
 
     for ( const auto& syst_it : m_systListTTVA ) {
       if ( !syst_it.name().empty() && !nominal ) continue;
@@ -1007,7 +1007,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTTVA ) ) {
-      ANA_CHECK( m_store->record( sysVariationNamesTTVA, m_outputSystNamesTTVA ));
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesTTVA), m_outputSystNamesTTVA ));
     }
   }
 
