@@ -16,8 +16,8 @@ matrix:
         - cd docs
         - doxygen
         - make html
-        - touch docs/_build/html/.nojekyll
         - cd ..
+        - touch docs/_build/html/.nojekyll
       deploy:
         provider: pages
         skip_cleanup: true
