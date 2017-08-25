@@ -1,4 +1,3 @@
-
 /******************************************
  *
  * This class builds HLT jets and thier associated objects
