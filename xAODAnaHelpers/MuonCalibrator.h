@@ -36,6 +36,8 @@ public:
   std::string m_inputAlgoSystNames = "";
   // this is the name of the vector of names of the systematically varied containers produced by THIS algo (these will be the m_inputAlgoSystNames of the algo downstream)
   std::string m_outputAlgoSystNames = "MuonCalibrator_Syst";
+  /// @brief Write systematics names to metadata
+  bool        m_writeSystToMetadata = false;
 
   float       m_systVal = 0.0;
   std::string m_systName = "";

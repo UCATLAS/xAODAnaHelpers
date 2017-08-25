@@ -51,6 +51,9 @@ public:
   */
   std::string m_inputSystNamesElectrons;
 
+  /// @brief Write systematics names to metadata
+  bool m_writeSystToMetadata = false;
+
   /** @brief Force AFII flag in calibration, in case metadata is broken */
   bool m_setAFII;
 

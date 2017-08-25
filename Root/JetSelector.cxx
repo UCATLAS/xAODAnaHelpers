@@ -308,6 +308,13 @@ EL::StatusCode JetSelector :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(m_systListJVT, m_outputSystNamesJVT, fileMD);
+    HelperFunctions::writeSystematicsListHist(m_systListfJVT, m_outputSystNamesfJVT, fileMD);
+  }
+
   ANA_MSG_DEBUG( "Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
