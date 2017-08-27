@@ -160,6 +160,12 @@ slurm = drivers_parser.add_parser('slurm',
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                    parents=[drivers_common])
 
+local = drivers_parser.add_parser('local',
+                                  help='Run using the LocalDriver',
+                                  usage=baseUsageStr.format('local'),
+                                  formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                  parents=[drivers_common])
+
 # define arguments for prooflite driver
 prooflite.add_argument('--optPerfTree',          metavar='', type=int, required=False, default=None, help='the option to turn on the performance tree in PROOF.  if this is set to 1, it will write out the tree')
 prooflite.add_argument('--optBackgroundProcess', metavar='', type=int, required=False, default=None, help='the option to do processing in a background process in PROOF')
@@ -286,6 +292,9 @@ if __name__ == "__main__":
     elif args.driver == 'slurm':
       if getattr(ROOT.EL, 'SlurmDriver') is None:
         raise KeyError('Cannot load the SLURM driver from EventLoop. Did you not compile it?')
+    elif args.driver == 'local':
+      if getattr(ROOT.EL, 'LocalDriver') is None:
+        raise KeyError('Cannot load the Local driver from EventLoop. Did you not compile it?')
 
     # create a new sample handler to describe the data files we use
     xAH_logger.info("creating new sample handler")
@@ -587,6 +596,21 @@ if __name__ == "__main__":
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, jobopt), getattr(args, opt))
         xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, jobopt), getattr(args, opt)))
 
+    elif (args.driver == "local"):
+      driver = ROOT.EL.LocalDriver()
+      for opt, t in map(lambda x: (x.dest, x.type), local._actions):
+        if getattr(args, opt) is None: continue  # skip if not set
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
+        if t in [float]:
+          setter = 'setDouble'
+        elif t in [int]:
+          setter = 'setInteger'
+        elif t in [bool]:
+          setter = 'setBool'
+        else:
+          setter = 'setString'
+        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, jobopt), getattr(args, opt))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, jobopt), getattr(args, opt)))
 
     xAH_logger.info("\tsubmit job")
     if args.driver in ["prun","condor","lsf","slurm"] and not args.optBatchWait:
