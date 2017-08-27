@@ -613,7 +613,7 @@ if __name__ == "__main__":
         xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, jobopt), getattr(args, opt)))
 
     xAH_logger.info("\tsubmit job")
-    if args.driver in ["prun","condor","lsf","slurm"] and not args.optBatchWait:
+    if args.driver in ["prun","condor","lsf","slurm","local"] and not args.optBatchWait:
       driver.submitOnly(job, args.submit_dir)
     else:
       driver.submit(job, args.submit_dir)
