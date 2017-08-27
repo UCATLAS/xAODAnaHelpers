@@ -609,8 +609,8 @@ if __name__ == "__main__":
           setter = 'setBool'
         else:
           setter = 'setString'
-        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, jobopt), getattr(args, opt))
-        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, jobopt), getattr(args, opt)))
+        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
 
     xAH_logger.info("\tsubmit job")
     if args.driver in ["prun","condor","lsf","slurm","local"] and not args.optBatchWait:
