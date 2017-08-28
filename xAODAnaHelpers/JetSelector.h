@@ -258,7 +258,6 @@ private:
   std::vector<CP::SystematicSet> m_systListfJVT; //!
 
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency"};         //!
-  asg::AnaToolHandle<IJetModifier>           m_fJVT_tool_handle{"JetForwardJvtTool"};           //!
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency"};    //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 

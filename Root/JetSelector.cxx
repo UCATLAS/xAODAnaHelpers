@@ -237,15 +237,10 @@ EL::StatusCode JetSelector :: initialize ()
 
   //init fJVT
   if (m_dofJVT) {
-    setToolName(m_fJVT_tool_handle);
-    ANA_MSG_DEBUG("Trying to initialize fJVT tool");
-    //ANA_CHECK( ASG_MAKE_ANA_TOOL(m_fJVT_tool_handle, JetForwardJvtTool));
-    ANA_CHECK(m_fJVT_tool_handle.retrieve());
-    ANA_MSG_DEBUG("Successfully initialized fJVT tool");
-
     // initialize the CP::JetJvtEfficiency Tool for fJVT
     setToolName(m_fJVT_eff_tool_handle, "fJVT_eff_tool");
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_fJVT_eff_tool_handle, CP::JetJvtEfficiency));
+    ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("WorkingPoint", m_WorkingPointfJVT ));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("SFFile",       m_SFFilefJVT ));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("ScaleFactorDecorationName", "fJVTSF"));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("OutputLevel",  msg().level()));
@@ -471,23 +466,6 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices, msg() );
   }
 
-  //
-  //  Do this B/c fJVT need to modify the input container
-  //
-  const xAOD::JetContainer* jetsForSelection = inJets;
-
-  //decorate jet container with forward JVT decision
-  //That's how the tool works
-  if(m_dofJVT){
-    //have to make a deep copy because the fJVT tool wants to modify the jet containers.
-    ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, inContainerName+"Copy", inJets)));
-    xAOD::JetContainer* jets_copy(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(jets_copy, inContainerName+"Copy",m_event,m_store));
-    m_fJVT_tool_handle->modify(*jets_copy);
-    //fJVT tool modifies each jet with the fJVT decision
-    jetsForSelection = jets_copy;
-  }
-
   int nPass(0); int nObj(0);
   bool passEventClean(true);
 
@@ -499,7 +477,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //
   SG::AuxElement::Decorator< char > passSelDecor( m_decor );
 
-  for ( auto jet_itr : *jetsForSelection ) { // duplicated of basic loop
+  for ( auto jet_itr : *inJets ) { // duplicated of basic loop
 
     // if only looking at a subset of jets make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
