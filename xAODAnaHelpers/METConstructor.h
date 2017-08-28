@@ -54,6 +54,7 @@ public:
   bool    m_doMuonEloss = false;
   bool    m_doIsolMuonEloss = false;
   bool    m_doJVTCut = false;
+  bool    m_dofJVTCut = false;
 
   /// Rebuild MET using tracks in calo jets
   bool    m_rebuildUsingTracksInJets = false;

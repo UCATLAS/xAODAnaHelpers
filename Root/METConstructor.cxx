@@ -139,6 +139,9 @@ EL::StatusCode METConstructor :: initialize ()
   //////////// IMETMaker ////////////////
   ASG_SET_ANA_TOOL_TYPE(m_metmaker_handle, met::METMaker);
   m_metmaker_handle.setName("METMaker");
+  if ( m_dofJVTCut ) {
+    ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", "passFJVT"));
+  }
   m_metmaker_handle.retrieve();
 
   ///////////// IMETSystematicsTool ///////////////////
