@@ -586,6 +586,8 @@ namespace HelperClasses {
         ==================== ====================== =======
         Parameter            Pattern                Match
         ==================== ====================== =======
+        m_metClus            metClus                exact
+        m_metTrk             metTrk                 exact
         m_sigClus            sigClus|all            exact
         m_sigTrk             sigTrk|all             exact
         m_sigResolutionClus  sigResolutionClus|all  exact
@@ -601,12 +603,14 @@ namespace HelperClasses {
         ==================== ====================== =======
 
 
-        .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information.
+        .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information. You can force only calocluster- or track-based MET using :cpp:member:`~HelperClasses::METInfoSwitch::m_metClus` or :cpp:member:`~HelperClasses::METInfoSwitch::m_metTrk`.
 
     @endrst
    */
   class METInfoSwitch : public InfoSwitch {
   public:
+    bool m_metClus;
+    bool m_metTrk;
     bool m_sigClus;
     bool m_sigTrk;
     bool m_sigResolutionClus;

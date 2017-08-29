@@ -374,6 +374,8 @@ namespace HelperClasses{
   }
 
   void METInfoSwitch::initialize(){
+    m_metClus   = has_exact("metClus");
+    m_metTrk    = has_exact("metTrk");
     m_sigClus   = has_exact("sigClus")  || has_exact("all");
     m_sigTrk    = has_exact("sigTrk")   || has_exact("all");
     m_sigResolutionClus = has_exact("sigResolutionClus") || has_exact("all");

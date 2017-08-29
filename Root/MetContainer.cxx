@@ -17,11 +17,13 @@ MetContainer::~MetContainer()
 void MetContainer::setTree(TTree *tree)
 {
 
-  connectBranch<float>(tree, "metFinalClus",         &m_metFinalClus     );
-  connectBranch<float>(tree, "metFinalClusPx",       &m_metFinalClusPx	 );
-  connectBranch<float>(tree, "metFinalClusPy",       &m_metFinalClusPy	 );
-  connectBranch<float>(tree, "metFinalClusSumEt",    &m_metFinalClusSumEt);
-  connectBranch<float>(tree, "metFinalClusPhi",      &m_metFinalClusPhi  );
+  if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
+    connectBranch<float>(tree, "metFinalClus",         &m_metFinalClus     );
+    connectBranch<float>(tree, "metFinalClusPx",       &m_metFinalClusPx   );
+    connectBranch<float>(tree, "metFinalClusPy",       &m_metFinalClusPy   );
+    connectBranch<float>(tree, "metFinalClusSumEt",    &m_metFinalClusSumEt);
+    connectBranch<float>(tree, "metFinalClusPhi",      &m_metFinalClusPhi  );
+  }
 
   if ( m_infoSwitch.m_sigClus ) {
     connectBranch<float>(tree, "metFinalClusOverSqrtSumEt",  &m_metFinalClusOverSqrtSumEt );
@@ -36,11 +38,13 @@ void MetContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "metFinalClusVarT", &m_metFinalClusVarT);
   }
 
-  connectBranch<float>(tree, "metFinalTrk",          &m_metFinalTrk      );
-  connectBranch<float>(tree, "metFinalTrkPx",        &m_metFinalTrkPx	 );
-  connectBranch<float>(tree, "metFinalTrkPy",        &m_metFinalTrkPy	 );
-  connectBranch<float>(tree, "metFinalTrkSumEt",     &m_metFinalTrkSumEt );
-  connectBranch<float>(tree, "metFinalTrkPhi",       &m_metFinalTrkPhi   );
+  if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
+    connectBranch<float>(tree, "metFinalTrk",          &m_metFinalTrk     );
+    connectBranch<float>(tree, "metFinalTrkPx",        &m_metFinalTrkPx   );
+    connectBranch<float>(tree, "metFinalTrkPy",        &m_metFinalTrkPy   );
+    connectBranch<float>(tree, "metFinalTrkSumEt",     &m_metFinalTrkSumEt);
+    connectBranch<float>(tree, "metFinalTrkPhi",       &m_metFinalTrkPhi  );
+  }
 
   if ( m_infoSwitch.m_sigTrk ) {
     connectBranch<float>(tree, "metFinalTrkOverSqrtSumEt",  &m_metFinalTrkOverSqrtSumEt );
@@ -109,12 +113,13 @@ void MetContainer::setTree(TTree *tree)
 void MetContainer::setBranches(TTree *tree)
 {
 
-
-  tree->Branch("metFinalClus",         &m_metFinalClus,      "metFinalClus/F");
-  tree->Branch("metFinalClusPx",       &m_metFinalClusPx,    "metFinalClusPx/F");
-  tree->Branch("metFinalClusPy",       &m_metFinalClusPy,    "metFinalClusPy/F");
-  tree->Branch("metFinalClusSumEt",    &m_metFinalClusSumEt, "metFinalClusSumEt/F");
-  tree->Branch("metFinalClusPhi",      &m_metFinalClusPhi,   "metFinalClusPhi/F");
+  if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
+    tree->Branch("metFinalClus",         &m_metFinalClus,      "metFinalClus/F"     );
+    tree->Branch("metFinalClusPx",       &m_metFinalClusPx,    "metFinalClusPx/F"   );
+    tree->Branch("metFinalClusPy",       &m_metFinalClusPy,    "metFinalClusPy/F"   );
+    tree->Branch("metFinalClusSumEt",    &m_metFinalClusSumEt, "metFinalClusSumEt/F");
+    tree->Branch("metFinalClusPhi",      &m_metFinalClusPhi,   "metFinalClusPhi/F"  );
+  }
 
   if ( m_infoSwitch.m_sigClus ) {
     tree->Branch("metFinalClusOverSqrtSumEt",  &m_metFinalClusOverSqrtSumEt,  "metFinalClusOverSqrtSumEt/F" );
@@ -129,11 +134,13 @@ void MetContainer::setBranches(TTree *tree)
     tree->Branch("metFinalClusVarT", &m_metFinalClusVarT, "metFinalClusVarT/F");
   }
 
-  tree->Branch("metFinalTrk",          &m_metFinalTrk,       "metFinalTrk/F");
-  tree->Branch("metFinalTrkPx",        &m_metFinalTrkPx,     "metFinalTrkPx/F");
-  tree->Branch("metFinalTrkPy",        &m_metFinalTrkPy,     "metFinalTrkPy/F");
-  tree->Branch("metFinalTrkSumEt",     &m_metFinalTrkSumEt,  "metFinalTrkSumEt/F");
-  tree->Branch("metFinalTrkPhi",       &m_metFinalTrkPhi,    "metFinalTrkPhi/F");
+  if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
+    tree->Branch("metFinalTrk",          &m_metFinalTrk,       "metFinalTrk/F"     );
+    tree->Branch("metFinalTrkPx",        &m_metFinalTrkPx,     "metFinalTrkPx/F"   );
+    tree->Branch("metFinalTrkPy",        &m_metFinalTrkPy,     "metFinalTrkPy/F"   );
+    tree->Branch("metFinalTrkSumEt",     &m_metFinalTrkSumEt,  "metFinalTrkSumEt/F");
+    tree->Branch("metFinalTrkPhi",       &m_metFinalTrkPhi,    "metFinalTrkPhi/F"  );
+  }
 
   if ( m_infoSwitch.m_sigTrk ) {
     tree->Branch("metFinalTrkOverSqrtSumEt",  &m_metFinalTrkOverSqrtSumEt,  "metFinalTrkOverSqrtSumEt/F" );
@@ -203,17 +210,21 @@ void MetContainer::setBranches(TTree *tree)
 
 void MetContainer::clear()
 {
-  m_metFinalClus      = -999;
-  m_metFinalClusPx    = -999;
-  m_metFinalClusPy    = -999;
-  m_metFinalClusSumEt = -999;
-  m_metFinalClusPhi   = -999;
+  if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
+    m_metFinalClus      = -999;
+    m_metFinalClusPx    = -999;
+    m_metFinalClusPy    = -999;
+    m_metFinalClusSumEt = -999;
+    m_metFinalClusPhi   = -999;
+  }
 
-  m_metFinalTrk	      = -999;
-  m_metFinalTrkPx     = -999;
-  m_metFinalTrkPy     = -999;
-  m_metFinalTrkSumEt  = -999;
-  m_metFinalTrkPhi    = -999;
+  if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
+    m_metFinalTrk	      = -999;
+    m_metFinalTrkPx     = -999;
+    m_metFinalTrkPy     = -999;
+    m_metFinalTrkSumEt  = -999;
+    m_metFinalTrkPhi    = -999;
+  }
 
   if ( m_infoSwitch.m_sigClus ) {
     m_metFinalClusOverSqrtSumEt  = -999;
@@ -268,44 +279,48 @@ void MetContainer::FillMET( const xAOD::MissingETContainer* met) {
 
   //if ( m_debug ) { Info("HelpTreeBase::FillMET()", "Filling MET info"); }
 
-  const xAOD::MissingET* final_clus = *met->find("FinalClus"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based onleares)
-  m_metFinalClus      = final_clus->met() / m_units;
-  m_metFinalClusPx    = final_clus->mpx() / m_units;
-  m_metFinalClusPy    = final_clus->mpy() / m_units;
-  m_metFinalClusSumEt = final_clus->sumet() / m_units;
-  m_metFinalClusPhi   = final_clus->phi();
-
-  const xAOD::MissingET* final_trk = *met->find("FinalTrk"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
-  m_metFinalTrk	      = final_trk->met() / m_units;
-  m_metFinalTrkPx     = final_trk->mpx() / m_units;
-  m_metFinalTrkPy     = final_trk->mpy() / m_units;
-  m_metFinalTrkSumEt  = final_trk->sumet() / m_units;
-  m_metFinalTrkPhi    = final_trk->phi();
-
-  if ( m_infoSwitch.m_sigClus ) {
-    m_metFinalClusOverSqrtSumEt  = final_clus->auxdecor<double>("METOverSqrtSumET");
-    m_metFinalClusOverSqrtHt     = final_clus->auxdecor<double>("METOverSqrtHT");
-    m_metFinalClusSignificance   = final_clus->auxdecor<double>("Significance");
-    m_metFinalClusSigDirectional = final_clus->auxdecor<double>("SigDirectional");
+  if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
+    const xAOD::MissingET* final_clus = *met->find("FinalClus"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based onleares)
+    m_metFinalClus      = final_clus->met() / m_units;
+    m_metFinalClusPx    = final_clus->mpx() / m_units;
+    m_metFinalClusPy    = final_clus->mpy() / m_units;
+    m_metFinalClusSumEt = final_clus->sumet() / m_units;
+    m_metFinalClusPhi   = final_clus->phi();
+    
+    if ( m_infoSwitch.m_sigClus ) {
+      m_metFinalClusOverSqrtSumEt  = final_clus->auxdecor<double>("METOverSqrtSumET");
+      m_metFinalClusOverSqrtHt     = final_clus->auxdecor<double>("METOverSqrtHT");
+      m_metFinalClusSignificance   = final_clus->auxdecor<double>("Significance");
+      m_metFinalClusSigDirectional = final_clus->auxdecor<double>("SigDirectional");
+    }
+    
+    if ( m_infoSwitch.m_sigResolutionClus ) {
+      m_metFinalClusRho  = final_clus->auxdecor<double>("Rho");
+      m_metFinalClusVarL = final_clus->auxdecor<double>("VarL");
+      m_metFinalClusVarT = final_clus->auxdecor<double>("VarT");
+    }
   }
 
-  if ( m_infoSwitch.m_sigTrk ) {
-    m_metFinalTrkOverSqrtSumEt  = final_trk->auxdecor<double>("METOverSqrtSumET");
-    m_metFinalTrkOverSqrtHt     = final_trk->auxdecor<double>("METOverSqrtHT");
-    m_metFinalTrkSignificance   = final_trk->auxdecor<double>("Significance");
-    m_metFinalTrkSigDirectional = final_trk->auxdecor<double>("SigDirectional");
-  }
+  if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
+    const xAOD::MissingET* final_trk = *met->find("FinalTrk"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
+    m_metFinalTrk       = final_trk->met() / m_units;
+    m_metFinalTrkPx     = final_trk->mpx() / m_units;
+    m_metFinalTrkPy     = final_trk->mpy() / m_units;
+    m_metFinalTrkSumEt  = final_trk->sumet() / m_units;
+    m_metFinalTrkPhi    = final_trk->phi();
 
-  if ( m_infoSwitch.m_sigResolutionClus ) {
-    m_metFinalClusRho  = final_clus->auxdecor<double>("Rho");
-    m_metFinalClusVarL = final_clus->auxdecor<double>("VarL");
-    m_metFinalClusVarT = final_clus->auxdecor<double>("VarT");
-  }
+    if ( m_infoSwitch.m_sigTrk ) {
+      m_metFinalTrkOverSqrtSumEt  = final_trk->auxdecor<double>("METOverSqrtSumET");
+      m_metFinalTrkOverSqrtHt     = final_trk->auxdecor<double>("METOverSqrtHT");
+      m_metFinalTrkSignificance   = final_trk->auxdecor<double>("Significance");
+      m_metFinalTrkSigDirectional = final_trk->auxdecor<double>("SigDirectional");
+    }
 
-  if ( m_infoSwitch.m_sigResolutionTrk ) {
-    m_metFinalTrkRho  = final_trk->auxdecor<double>("Rho");
-    m_metFinalTrkVarL = final_trk->auxdecor<double>("VarL");
-    m_metFinalTrkVarT = final_trk->auxdecor<double>("VarT");
+    if ( m_infoSwitch.m_sigResolutionTrk ) {
+      m_metFinalTrkRho  = final_trk->auxdecor<double>("Rho");
+      m_metFinalTrkVarL = final_trk->auxdecor<double>("VarL");
+      m_metFinalTrkVarT = final_trk->auxdecor<double>("VarT");
+    }
   }
 
   if ( m_infoSwitch.m_refEle ) {
