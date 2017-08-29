@@ -357,6 +357,17 @@ EL::StatusCode JetCalibrator :: initialize ()
     ANA_MSG_DEBUG("Retrieved tool: " << m_JVTUpdateTool_handle);
   }
 
+  if ( m_calculatefJVT ) {
+    setToolName(m_fJVTTool_handle);
+    ANA_CHECK(m_fJVTTool_handle.setProperty("CentralMaxPt", m_fJVTCentralMaxPt));
+    if ( m_fJVTWorkingPoint == "Tight" ) {
+      ANA_CHECK(m_fJVTTool_handle.setProperty("UseTightOP", true));
+    }
+    ANA_CHECK(m_fJVTTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK(m_fJVTTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_fJVTTool_handle);
+  }
+
   std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
@@ -550,6 +561,11 @@ EL::StatusCode JetCalibrator :: execute ()
       for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
         jet_itr->auxdata< float >("Jvt") = m_JVTUpdateTool_handle->updateJvt(*jet_itr);
       }
+    }
+
+    // Calculate fJVT using calibrated Jets
+    if ( m_calculatefJVT ) {
+      m_fJVTTool_handle->modify(*(uncertCalibJetsSC.first));
     }
 
     // save pointers in ConstDataVector with same order

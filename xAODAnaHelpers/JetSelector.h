@@ -258,7 +258,6 @@ private:
   std::vector<CP::SystematicSet> m_systListfJVT; //!
 
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency"};         //!
-  asg::AnaToolHandle<IJetModifier>           m_fJVT_tool_handle{"JetForwardJvtTool"};           //!
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency"};    //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 
@@ -289,7 +288,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string inContainerName, std::string outContainerName, bool isNominal );
+  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName, bool isNominal );
 
   // added functions not from Algorithm
   // why does this need to be virtual?
