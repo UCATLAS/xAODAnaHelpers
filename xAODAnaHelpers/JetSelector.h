@@ -47,6 +47,8 @@ public:
   std::string m_inputAlgo = "";
   /// @brief output type - this is how the vector<string> w/ syst names will be saved in TStore
   std::string m_outputAlgo = "";
+  /// @brief Write systematics names to metadata
+  bool        m_writeSystToMetadata = false;
   /// @brief Type of Scale Momementum
   std::string m_jetScaleType = "";
   /// @brief The decoration key written to passing objects

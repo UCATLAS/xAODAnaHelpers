@@ -62,6 +62,11 @@ public:
   */
   std::string m_outputAlgoSystNames = "ElectronCalibrator_Syst";
 
+  /**
+    @brief Write systematics names to metadata
+  */
+  bool        m_writeSystToMetadata = false;
+
   std::string m_esModel = "";
   std::string m_decorrelationModel = "";
 

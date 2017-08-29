@@ -257,6 +257,12 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if( m_runAllSyst ){
     ANA_MSG_INFO(" Running w/ All systematics");
   }
+  
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(m_systList, m_outputSystName, fileMD);
+  }
 
   ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
 

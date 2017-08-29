@@ -6,8 +6,8 @@ using namespace xAH;
 using std::vector;
 using std::string;
 
-MuonContainer::MuonContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
-  : ParticleContainer(name, detailStr, units, mc, true)
+MuonContainer::MuonContainer(const std::string& name, const std::string& detailStr, float units, bool mc, bool storeSystSFs)
+  : ParticleContainer(name, detailStr, units, mc, true, storeSystSFs)
 {
 
   // trigger
@@ -780,60 +780,35 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
 
     std::vector<float> junkSF(1,1.0);
     std::vector<float> junkEff(1,0.0);
-    
-    static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuonEfficiencyCorrector_TTVASyst_TTVA");
-    
+
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accRecoSF;
-    
     for (auto& reco : m_infoSwitch.m_recoWPs) {
-            
-      std::string recoEffSF = "MuonEfficiencyCorrector_RecoSyst_" + reco;
+      std::string recoEffSF = "MuRecoEff_SF_syst_" + reco;
       accRecoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( reco , SG::AuxElement::Accessor< std::vector< float > >( recoEffSF ) ) );
-      if( (accRecoSF.at( reco  )).isAvailable( *muon ) ) { 
-        m_RecoEff_SF->at( reco ).push_back( (accRecoSF.at( reco ))( *muon ) ); 
-      }else { 
-        m_RecoEff_SF->at( reco  ).push_back( junkSF ); 
-      }
-    
+      safeSFVecFill<float, xAOD::Muon>( muon, accRecoSF.at( reco ), &m_RecoEff_SF->at( reco ), junkSF );
     }
-    
+
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
-    
     for (auto& isol : m_infoSwitch.m_isolWPs) {
-            
-      std::string isolEffSF = "MuonEfficiencyCorrector_IsoSyst_" + isol;
+      std::string isolEffSF = "MuIsoEff_SF_syst_" + isol;
       accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( isol , SG::AuxElement::Accessor< std::vector< float > >( isolEffSF ) ) );
-      if( (accIsoSF.at( isol  )).isAvailable( *muon ) ) { 
-        m_IsoEff_SF->at( isol ).push_back( (accIsoSF.at( isol ))( *muon ) ); 
-      }else { 
-        m_IsoEff_SF->at( isol  ).push_back( junkSF ); 
-      }
+      safeSFVecFill<float, xAOD::Muon>( muon, accIsoSF.at( isol ), &m_IsoEff_SF->at( isol ), junkSF );
     }
-    
+
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
-    
     for (auto& trig : m_infoSwitch.m_trigWPs) {
-            
-      std::string trigEffSF = "MuonEfficiencyCorrector_TrigSyst_" + trig;
+      std::string trigEffSF = "MuTrigEff_SF_syst_" + trig;
       accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigEffSF ) ) );
-      if( (accTrigSF.at( trig  )).isAvailable( *muon ) ) { 
-        m_TrigEff_SF->at( trig ).push_back( (accTrigSF.at( trig ))( *muon ) ); 
-      }else { 
-        m_TrigEff_SF->at( trig  ).push_back( junkSF ); 
-      }
-      
-      std::string trigMCEff = "MuonEfficiencyCorrector_TrigMCEff_" + trig;
+      safeSFVecFill<float, xAOD::Muon>( muon, accTrigSF.at( trig ), &m_TrigEff_SF->at( trig ), junkSF );
+
+      std::string trigMCEff = "MuTrigMCEff_syst_" + trig;
       accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigMCEff ) ) );
-      if( (accTrigEFF.at( trig  )).isAvailable( *muon ) ) { 
-        m_TrigMCEff->at( trig  ).push_back( (accTrigEFF.at( trig  ))( *muon ) ); 
-      } else { 
-        m_TrigMCEff->at( trig  ).push_back( junkEff ); 
-      }
+      safeSFVecFill<float, xAOD::Muon>( muon, accTrigEFF.at( trig ), &m_TrigMCEff->at( trig ), junkEff );
     }
 
-
-    if( accTTVASF.isAvailable( *muon ) )         { m_TTVAEff_SF->push_back( accTTVASF( *muon ) ); } else { m_TTVAEff_SF->push_back( junkSF ); }
+    static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuTTVAEff_SF_syst_TTVA");
+    safeSFVecFill<float, xAOD::Muon>( muon, accTTVASF, m_TTVAEff_SF, junkSF );
 
   }
 

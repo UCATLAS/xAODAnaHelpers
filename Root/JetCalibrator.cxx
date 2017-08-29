@@ -369,6 +369,11 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   ANA_CHECK(m_store->record(SystJetsNames, "jets_Syst"+m_name ));
 
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
+  }
 
   return EL::StatusCode::SUCCESS;
 }

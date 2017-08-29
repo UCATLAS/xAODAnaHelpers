@@ -55,6 +55,8 @@ public:
   std::string m_jetAlgo = "";
   /// @brief name of vector holding names of jet systematics given by the JetEtmiss Tools
   std::string m_outputAlgo = "";
+  /// @brief Write systematics names to metadata
+  bool        m_writeSystToMetadata = false;
   /// @brief config for JetCalibrationTool for Data
   std::string m_calibConfigData = "JES_MC15Prerecommendation_April2015.config";
   /// @brief config for JetCalibrationTool for Full Sim MC

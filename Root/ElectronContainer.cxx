@@ -6,8 +6,8 @@ using namespace xAH;
 using std::vector;
 using std::string;
 
-ElectronContainer::ElectronContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
-  : ParticleContainer(name, detailStr, units, mc, true)
+ElectronContainer::ElectronContainer(const std::string& name, const std::string& detailStr, float units, bool mc, bool storeSystSFs)
+  : ParticleContainer(name, detailStr, units, mc, true, storeSystSFs)
 {
 
   if ( m_infoSwitch.m_kinematic ) {
@@ -77,13 +77,10 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
 
     m_TrigEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
     m_TrigMCEff  = new std::map< std::string, std::vector< std::vector< float > > >();
+    m_PIDEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
     m_IsoEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
 
-    m_RecoEff_SF                  = new std::vector< std::vector< float > > ();
-    m_PIDEff_SF_LHLooseAndBLayer  = new std::vector< std::vector< float > > ();
-    m_PIDEff_SF_LHLoose           = new std::vector< std::vector< float > > ();
-    m_PIDEff_SF_LHMedium          = new std::vector< std::vector< float > > ();
-    m_PIDEff_SF_LHTight           = new std::vector< std::vector< float > > ();
+    m_RecoEff_SF = new std::vector< std::vector< float > > ();
 
   }
 
@@ -186,12 +183,9 @@ ElectronContainer::~ElectronContainer()
   if ( m_infoSwitch.m_effSF && m_mc ) {
     delete m_TrigEff_SF ;
     delete m_TrigMCEff  ;
+    delete m_PIDEff_SF  ;
     delete m_IsoEff_SF  ;
-    delete m_RecoEff_SF                 ;
-    delete m_PIDEff_SF_LHLooseAndBLayer ;
-    delete m_PIDEff_SF_LHLoose          ;
-    delete m_PIDEff_SF_LHMedium         ;
-    delete m_PIDEff_SF_LHTight          ;
+    delete m_RecoEff_SF ;
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -298,6 +292,9 @@ void ElectronContainer::setTree(TTree *tree)
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      tree->SetBranchStatus ( (m_name+"_PIDEff_SF_" + PID).c_str() , 1);
+      tree->SetBranchAddress( (m_name+"_PIDEff_SF_" + PID).c_str() , & (*m_PIDEff_SF)[ PID ] );
+
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty()) {
           tree->SetBranchStatus ( (m_name+"_IsoEff_SF_" + PID + "_" + isol).c_str() , 1);
@@ -314,10 +311,6 @@ void ElectronContainer::setTree(TTree *tree)
     }
 
     connectBranch<std::vector<float> >(tree, "RecoEff_SF"  ,                &m_RecoEff_SF  );
-    connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHLooseAndBLayer",  &m_PIDEff_SF_LHLooseAndBLayer);
-    connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHLoose",           &m_PIDEff_SF_LHLoose);
-    connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHMedium",          &m_PIDEff_SF_LHMedium);
-    connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHTight",           &m_PIDEff_SF_LHTight);
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -406,6 +399,7 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      elec.PIDEff_SF[ PID ] = (*m_PIDEff_SF) [ PID ].at(idx);
       for (auto& iso : m_infoSwitch.m_isolWPs) {
         if(!iso.empty())
           elec.IsoEff_SF[ PID+iso ] =  (*m_IsoEff_SF) [ PID+iso ].at(idx);
@@ -417,10 +411,6 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     }
 
     elec.RecoEff_SF                               = m_RecoEff_SF                              ->at(idx);
-    elec.PIDEff_SF_LHLooseAndBLayer               = m_PIDEff_SF_LHLooseAndBLayer              ->at(idx);
-    elec.PIDEff_SF_LHLoose                        = m_PIDEff_SF_LHLoose                       ->at(idx);
-    elec.PIDEff_SF_LHMedium                       = m_PIDEff_SF_LHMedium                      ->at(idx);
-    elec.PIDEff_SF_LHTight                        = m_PIDEff_SF_LHTight                       ->at(idx);
 
   }
 
@@ -521,6 +511,7 @@ void ElectronContainer::setBranches(TTree *tree)
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      tree->Branch( (m_name+"_PIDEff_SF_"  + PID).c_str() , & (*m_PIDEff_SF)[ PID ] );
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty())
           tree->Branch( (m_name+"_IsoEff_SF_"  + PID + isol).c_str() , & (*m_IsoEff_SF)[ PID+isol ] );
@@ -532,10 +523,6 @@ void ElectronContainer::setBranches(TTree *tree)
     }
 
     setBranch<vector<float> >(tree, "RecoEff_SF"  ,                m_RecoEff_SF  );
-    setBranch<vector<float> >(tree, "PIDEff_SF_LHLooseAndBLayer",  m_PIDEff_SF_LHLooseAndBLayer);
-    setBranch<vector<float> >(tree, "PIDEff_SF_LHLoose",           m_PIDEff_SF_LHLoose);
-    setBranch<vector<float> >(tree, "PIDEff_SF_LHMedium",          m_PIDEff_SF_LHMedium);
-    setBranch<vector<float> >(tree, "PIDEff_SF_LHTight",           m_PIDEff_SF_LHTight);
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -638,6 +625,7 @@ void ElectronContainer::clear()
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      (*m_PIDEff_SF)[ PID ].clear();
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty())
           (*m_IsoEff_SF)[ PID+isol ].clear();
@@ -648,11 +636,7 @@ void ElectronContainer::clear()
       }
     }
 
-    m_RecoEff_SF                  -> clear();
-    m_PIDEff_SF_LHLooseAndBLayer  -> clear();
-    m_PIDEff_SF_LHLoose           -> clear();
-    m_PIDEff_SF_LHMedium          -> clear();
-    m_PIDEff_SF_LHTight           -> clear();
+    m_RecoEff_SF->clear();
 
   }
 
@@ -898,59 +882,41 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     std::vector<float> junkSF(1,1.0);
     std::vector<float> junkEff(1,0.0);
 
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accPIDSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      std::string PIDSF = "ElPIDEff_SF_syst_" + PID;
+      accPIDSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID , SG::AuxElement::Accessor< std::vector< float > >( PIDSF ) ) );
+      safeSFVecFill<float, xAOD::Electron>( elec, accPIDSF.at( PID ), &m_PIDEff_SF->at( PID ), junkSF );
 
       for (auto& isol : m_infoSwitch.m_isolWPs) {
 
         if(!isol.empty()) {
-          std::string IsoSF = "EleEffCorr_IsoSyst_" + PID + "_" + isol;
+          std::string IsoSF = "ElIsoEff_SF_syst_" + PID + "_" + isol;
           accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID+isol , SG::AuxElement::Accessor< std::vector< float > >( IsoSF ) ) );
-          if( (accIsoSF.at( PID+isol )).isAvailable( *elec ) ) {
-            m_IsoEff_SF->at( PID+isol ).push_back( (accIsoSF.at( PID+isol ))( *elec ) );
-          } else {
-            m_IsoEff_SF->at( PID+isol ).push_back( junkSF );
-          }
+          safeSFVecFill<float, xAOD::Electron>( elec, accIsoSF.at( PID+isol ), &m_IsoEff_SF->at( PID+isol ), junkSF );
         }
 
         for (auto& trig : m_infoSwitch.m_trigWPs) {
 
-          std::string TrigSF = "EleEffCorr_TrigSyst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
+          std::string TrigSF = "ElTrigEff_SF_syst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
           accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigSF ) ) );
-          if( (accTrigSF.at( trig+PID+isol )).isAvailable( *elec ) ) {
-            m_TrigEff_SF->at( trig+PID+isol ).push_back( (accTrigSF.at( trig+PID+isol ))( *elec ) );
-          }else {
-            m_TrigEff_SF->at( trig+PID+isol ).push_back( junkSF );
-          }
+          safeSFVecFill<float, xAOD::Electron>( elec, accTrigSF.at( trig+PID+isol ), &m_TrigEff_SF->at( trig+PID+isol ), junkSF );
 
-          std::string TrigEFF = "EleEffCorr_TrigMCEffSyst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
+          std::string TrigEFF = "ElTrigMCEff_syst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
           accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigEFF ) ) );
-          if( (accTrigEFF.at( trig+PID+isol )).isAvailable( *elec ) ) {
-            m_TrigMCEff->at( trig+PID+isol ).push_back( (accTrigEFF.at( trig+PID+isol ))( *elec ) );
-          } else {
-            m_TrigMCEff->at( trig+PID+isol ).push_back( junkEff );
-          }
+          safeSFVecFill<float, xAOD::Electron>( elec, accTrigEFF.at( trig+PID+isol ), &m_TrigMCEff->at( trig+PID+isol ), junkSF );
 
         }
 
       }
     }
 
-   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("EleEffCorr_RecoSyst");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("EleEffCorr_PIDSyst_LooseAndBLayerLLH");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("EleEffCorr_PIDSyst_LooseLLh");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("EleEffCorr_PIDSyst_MediumLLH");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("EleEffCorr_PIDSyst_TightLLH");
-
-   if( accRecoSF.isAvailable( *elec ) )                     { m_RecoEff_SF->push_back( accRecoSF( *elec ) ); } else { m_RecoEff_SF->push_back( junkSF ); }
-   if( accPIDSF_LHLooseAndBLayer.isAvailable( *elec ) )     { m_PIDEff_SF_LHLooseAndBLayer->push_back( accPIDSF_LHLooseAndBLayer( *elec ) ); } else { m_PIDEff_SF_LHLooseAndBLayer->push_back( junkSF ); }
-   if( accPIDSF_LHLoose.isAvailable( *elec ) )              { m_PIDEff_SF_LHLoose->push_back( accPIDSF_LHLoose( *elec ) ); } else { m_PIDEff_SF_LHLoose->push_back( junkSF ); }
-   if( accPIDSF_LHMedium.isAvailable( *elec ) )             { m_PIDEff_SF_LHMedium->push_back( accPIDSF_LHMedium( *elec ) ); } else { m_PIDEff_SF_LHMedium->push_back( junkSF ); }
-   if( accPIDSF_LHTight.isAvailable( *elec ) )              { m_PIDEff_SF_LHTight->push_back( accPIDSF_LHTight( *elec ) ); } else { m_PIDEff_SF_LHTight->push_back( junkSF ); }
-
+   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElRecoEff_SF_syst");
+   safeSFVecFill<float, xAOD::Electron>( elec, accRecoSF, m_RecoEff_SF, junkSF );
  }
 
   return;

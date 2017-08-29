@@ -404,6 +404,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
 
   float reta = photon->showerShapeValue(xAOD::EgammaParameters::Reta);
   float rphi = photon->showerShapeValue(xAOD::EgammaParameters::Rphi);
+  float f1   = photon->showerShapeValue(xAOD::EgammaParameters::f1);
 
   uint32_t oq= photon->auxdata<uint32_t>("OQ");
 
@@ -432,7 +433,12 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   // Object Quality cut
   //
   if ( m_doOQCut ) {
+#ifndef USE_CMAKE
     if ( (oq & 134217728) != 0 && (reta > 0.98 || rphi > 1.0 || (oq & 67108864) != 0) ) {
+#else
+    if ( (oq & 1073741824)!=0 || 
+	 ( (oq&134217728)!=0 && (reta >0.98 || f1 > 0.4 || (oq & 67108864) != 0) ) ) {
+#endif
       ANA_MSG_DEBUG( "Electron failed Object Quality cut." );
       return 0;
     }
