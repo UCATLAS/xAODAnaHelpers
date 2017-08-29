@@ -113,6 +113,16 @@ namespace xAH {
       std::vector<int>*   m_trknInnermostPixLayHits; // not available in DC14
       std::vector<float>* m_trkPixdEdX;            // not available in DC14
 
+      // prompt lepton
+      std::vector<float>* m_PromptLeptonIso_DRlj;
+      std::vector<float>* m_PromptLeptonIso_LepJetPtFrac;
+      std::vector<float>* m_PromptLeptonIso_TagWeight;
+      std::vector<int>*   m_PromptLeptonIso_TrackJetNTrack;
+      std::vector<float>* m_PromptLeptonIso_ip2;
+      std::vector<float>* m_PromptLeptonIso_ip3;
+      std::vector<int>*   m_PromptLeptonIso_sv1_jf_ntrkv;
+      std::vector<float>* m_PromptLeptonNoIso_TagWeight;
+      std::vector<float>* m_PromptLepton_TagWeight;
     
     };
 }
