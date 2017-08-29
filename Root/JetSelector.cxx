@@ -383,7 +383,7 @@ EL::StatusCode JetSelector :: execute ()
       }
     }
 
-    pass = executeSelection( inJets, mcEvtWeight, count, m_inContainerName, m_outContainerName, true );
+    pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName, true );
 
   }  else { // get the list of systematics to run over
 
@@ -414,7 +414,7 @@ EL::StatusCode JetSelector :: execute ()
         }
       }
 
-      passOne = executeSelection( inJets, mcEvtWeight, count, m_inContainerName+systName, m_outContainerName+systName, systName.empty() );
+      passOne = executeSelection( inJets, mcEvtWeight, count, m_outContainerName+systName, systName.empty() );
       if ( count ) { count = false; } // only count for 1 collection
       // save the string if passing the selection
       if ( passOne ) {
@@ -446,7 +446,6 @@ EL::StatusCode JetSelector :: execute ()
 bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     float mcEvtWeight,
     bool count,
-    std::string inContainerName,
     std::string outContainerName,
     bool isNominal
     )
