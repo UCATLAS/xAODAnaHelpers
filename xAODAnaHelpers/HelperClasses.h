@@ -583,18 +583,22 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Missing :math:`\text{E}_{\text{T}}` Information.
 
-        ================ ============== =======
-        Parameter        Pattern        Match
-        ================ ============== =======
-        m_refEle         refEle|all     exact
-        m_refGamma       refGamma|all   exact
-        m_refTau         refTau|all     exact
-        m_refMuons       refMuons|all   exact
-        m_refJet         refJet|all     exact
-        m_refJetTrk      refJetTrk      exact
-        m_softClus       softClus|all   exact
-        m_softTrk        softTrk|all    exact
-        ================ ============== =======
+        ==================== ====================== =======
+        Parameter            Pattern                Match
+        ==================== ====================== =======
+        m_sigClus            sigClus|all            exact
+        m_sigTrk             sigTrk|all             exact
+        m_sigResolutionClus  sigResolutionClus|all  exact
+        m_sigResolutionTrk   sigResolutionTrk|all   exact
+        m_refEle             refEle|all             exact
+        m_refGamma           refGamma|all           exact
+        m_refTau             refTau|all             exact
+        m_refMuons           refMuons|all           exact
+        m_refJet             refJet|all             exact
+        m_refJetTrk          refJetTrk              exact
+        m_softClus           softClus|all           exact
+        m_softTrk            softTrk|all            exact
+        ==================== ====================== =======
 
 
         .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information.
@@ -603,6 +607,10 @@ namespace HelperClasses {
    */
   class METInfoSwitch : public InfoSwitch {
   public:
+    bool m_sigClus;
+    bool m_sigTrk;
+    bool m_sigResolutionClus;
+    bool m_sigResolutionTrk;
     bool m_refEle;
     bool m_refGamma;
     bool m_refTau;

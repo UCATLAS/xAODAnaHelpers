@@ -38,12 +38,28 @@ namespace xAH {
     float m_metFinalClusPy;
     float m_metFinalClusPhi;
     float m_metFinalClusSumEt;
+    
+    float m_metFinalClusOverSqrtSumEt;
+    float m_metFinalClusOverSqrtHt;
+    float m_metFinalClusSignificance;
+    float m_metFinalClusSigDirectional;
+    float m_metFinalClusRho;
+    float m_metFinalClusVarL;
+    float m_metFinalClusVarT;
 
     float m_metFinalTrk;
     float m_metFinalTrkPx;
     float m_metFinalTrkPy;
     float m_metFinalTrkPhi;
     float m_metFinalTrkSumEt;
+    
+    float m_metFinalTrkOverSqrtSumEt;
+    float m_metFinalTrkOverSqrtHt;
+    float m_metFinalTrkSignificance;
+    float m_metFinalTrkSigDirectional;
+    float m_metFinalTrkRho;
+    float m_metFinalTrkVarL;
+    float m_metFinalTrkVarT;
 
     float m_metEle;       float m_metEleSumEt;      float m_metElePhi;
     float m_metGamma;     float m_metGammaSumEt;    float m_metGammaPhi;
