@@ -403,8 +403,11 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   float eta   = ( photon->caloCluster() ) ? photon->caloCluster()->etaBE(2) : -999.0;
 
   float reta = photon->showerShapeValue(xAOD::EgammaParameters::Reta);
+#ifndef USE_CMAKE
   float rphi = photon->showerShapeValue(xAOD::EgammaParameters::Rphi);
+#else
   float f1   = photon->showerShapeValue(xAOD::EgammaParameters::f1);
+#endif
 
   uint32_t oq= photon->auxdata<uint32_t>("OQ");
 
