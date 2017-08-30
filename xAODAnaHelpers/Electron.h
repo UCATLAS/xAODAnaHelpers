@@ -83,6 +83,16 @@ namespace xAH {
     int  trknInnermostPixLayHits; // not available in DC14
     float trkPixdEdX;            // not available in DC14
 
+    // prompt lepton
+    float PromptLeptonIso_DRlj;
+    float PromptLeptonIso_LepJetPtFrac;
+    float PromptLeptonIso_TagWeight;
+    int   PromptLeptonIso_TrackJetNTrack;
+    float PromptLeptonIso_ip2;
+    float PromptLeptonIso_ip3;
+    int   PromptLeptonIso_sv1_jf_ntrkv;
+    float PromptLeptonNoIso_TagWeight;
+    float PromptLepton_TagWeight;
 
   };
 

@@ -273,6 +273,7 @@ namespace HelperClasses {
     bool m_trackhitcont;
     bool m_effSF;
     bool m_energyLoss;
+    bool m_promptlepton;
 
     std::vector< std::string > m_recoWPs;
     std::vector< std::string > m_isolWPs;
@@ -345,6 +346,7 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
+    bool m_promptlepton;
     std::vector< std::string > m_PIDWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;

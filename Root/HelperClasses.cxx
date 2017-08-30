@@ -152,6 +152,7 @@ namespace HelperClasses{
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
     m_energyLoss    = has_exact("energyLoss");
+    m_promptlepton  = has_exact("promptlepton");
    
     // working points combinations for trigger corrections 
     std::string token;
@@ -182,6 +183,7 @@ namespace HelperClasses{
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
+    m_promptlepton  = has_exact("promptlepton");
     // working points for scale-factors
 
     // working points combinations for trigger corrections 
