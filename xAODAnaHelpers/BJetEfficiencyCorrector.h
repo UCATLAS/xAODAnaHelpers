@@ -33,6 +33,7 @@ public:
   // systematics
   std::string m_systName = "";
   std::string m_outputSystName = "BJetEfficiency_Algo";
+  bool        m_writeSystToMetadata = false;
 
   std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root";
 

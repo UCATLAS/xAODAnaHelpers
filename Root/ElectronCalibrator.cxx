@@ -211,6 +211,12 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   ANA_CHECK( m_IsolationCorrectionTool->setProperty("IsMC", m_isMC ));
   ANA_CHECK( m_IsolationCorrectionTool->initialize());
 
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
+  }
+
   // ***********************************************************
 
   ANA_MSG_INFO( "ElectronCalibrator Interface succesfully initialized!" );
@@ -391,4 +397,3 @@ EL::StatusCode ElectronCalibrator :: histFinalize ()
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return EL::StatusCode::SUCCESS;
 }
-

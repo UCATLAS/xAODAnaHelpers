@@ -54,6 +54,7 @@ public:
   bool    m_doMuonEloss = false;
   bool    m_doIsolMuonEloss = false;
   bool    m_doJVTCut = false;
+  bool    m_dofJVTCut = false;
 
   /// Rebuild MET using tracks in calo jets
   bool    m_rebuildUsingTracksInJets = false;
@@ -71,6 +72,9 @@ public:
   /// @brief do not change it, not useful
   std::string m_systName = "All";
   float m_systVal = 1.0;
+  
+  /// @brief Write systematics names to metadata
+  bool        m_writeSystToMetadata = false;
 
   std::string m_SoftTermSystConfigFile = "TrackSoftTerms.config";
 

@@ -55,6 +55,8 @@ public:
   std::string m_jetAlgo = "";
   /// @brief name of vector holding names of jet systematics given by the JetEtmiss Tools
   std::string m_outputAlgo = "";
+  /// @brief Write systematics names to metadata
+  bool        m_writeSystToMetadata = false;
   /// @brief config for JetCalibrationTool for Data
   std::string m_calibConfigData = "JES_MC15Prerecommendation_April2015.config";
   /// @brief config for JetCalibrationTool for Full Sim MC
@@ -105,6 +107,13 @@ public:
   /// @brief Recalculate JVT using the calibrated jet pT
   bool m_redoJVT = false;
 
+  /// @brief Calculate fJVT using the calibrated jet pT
+  bool m_calculatefJVT = false;
+  /// @brief Maximum pT of central jets used to compute fJVT decision
+  double m_fJVTCentralMaxPt = -1;
+  /// @brief fJVT working point
+  std::string m_fJVTWorkingPoint = "Medium";
+
   /// @brief Name of Jvt aux decoration.  Was "JvtJvfcorr" in Rel 20.7, is now "JVFCorr" in Rel 21. Leave empty to use JetMomentTools default.  This must be left empty for RootCore (r20.7) code! 
   std::string m_JvtAuxName = "";
   /// @brief Sort the processed container elements by transverse momentum
@@ -136,6 +145,7 @@ private:
   asg::AnaToolHandle<IJERTool>                   m_JERTool_handle{"JERTool"};                               //!
   asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle{"JERSmearingTool"};               //!
   asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle{"JetVertexTaggerTool"};             //!
+  asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle{"JetForwardJvtTool"};                    //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle{"JetCleaningTool"};               //!
   asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool"};   //!
 
