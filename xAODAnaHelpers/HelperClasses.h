@@ -228,7 +228,7 @@ namespace HelperClasses {
 
                 m_configStr = "... NLeading4 ..."
 
-            will define :code:`int m_numLeading = 4`.
+            will define ``int m_numLeading = 4``.
 
 
     @endrst
@@ -442,7 +442,7 @@ namespace HelperClasses {
 
                 m_configStr = "... sfFTagFix010203 ..."
 
-            will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
+            will define ``std::vector<int> m_sfFTagFix = {1,2,3}``.
 
     @endrst
    */
