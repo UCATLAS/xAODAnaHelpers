@@ -27,7 +27,12 @@ OnlineBeamSpotTool::OnlineBeamSpotTool() :
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.I.root");
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.K.root");
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.L.root");
-  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.A.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.B.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.C.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.D.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.E.root");
+  //readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.root");
 
   m_mcLBData = new LBData(0,999999,0,0,0);
 }
