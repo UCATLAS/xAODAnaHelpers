@@ -36,3 +36,6 @@ The following list are packages / analyses searches that depend on xAH. We thank
 -  `Standard Model inclusive jet cross section <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/InclusiveJetCrossSection>`__
 -  `Voronoi Area Pileup Subtraction <https://github.com/AvivCukierman/Voronoi_xAOD>`__
 -  `Trigger-Level Analysis <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/TriggerLevelAnalysis>`__
+-  `Jet trigger group performance studies <https://gitlab.cern.ch/atlas-trig-jet-performance>`__
+
+
