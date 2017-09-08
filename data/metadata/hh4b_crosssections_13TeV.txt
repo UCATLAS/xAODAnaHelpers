@@ -120,16 +120,10 @@ id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
 ################################################################################################################
 #  hadronic Z Not covered in the susy file
 304825   Pythia8EvtGen_A14NNPDF23LO_ZHad_160_280   87.002  1.   1.0  1.
-304628   Pythia8EvtGen_A14NNPDF23LO_ZHad_280_500   10.455  1.   1.0  1.
-304629   Pythia8EvtGen_A14NNPDF23LO_ZHad_500_700   0.67488  1.   1.0  1.
-304630   Pythia8EvtGen_A14NNPDF23LO_ZHad_700_1000   0.12507  1.   1.0  1.
-304631   Pythia8EvtGen_A14NNPDF23LO_ZHad_1000_1400   0.015797  1.   1.0  1.
-304632   Pythia8EvtGen_A14NNPDF23LO_ZHad_1400   0.001705  1.   1.0  1.
 
 ################################################################################################################
 #  ttbar Not covered in the susy file
 
-410007  PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad   696.21  1.   0.45618  1.
 410037	PowhegPythiaEvtGen_P2012_ttbar_hdamp170_nonallhad	745.4900	1.	0.5436400	1.
 410038	PowhegPythiaEvtGen_P2012_ttbar_hdamp171p5_nonallhad	715.3700	1.	0.5436800	1.
 410039	PowhegPythiaEvtGen_P2012_ttbar_hdamp173p5_nonallhad	677.4300	1.	0.5437200	1.
