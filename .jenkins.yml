@@ -1,5 +1,5 @@
 env:
-  - ABV_RC=2.4.37 ABV_CM=21.2.3
+  - ABV_RC=2.4.37 ABV_CM=21.2.4
 
 before_script:
   - ls
