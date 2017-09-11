@@ -257,7 +257,7 @@ if __name__ == "__main__":
 
     # at this point, we should import ROOT and do stuff
     import ROOT
-    if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) < 25:
+    if xAODAnaHelpers.utils.is_release20():
       xAH_logger.info("loading packages")
       ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
     else:
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     elif args.driver == 'condor':
       if getattr(ROOT.EL, 'CondorDriver') is None:
         raise KeyError('Cannot load the Condor driver from EventLoop. Did you not compile it?')
-      if not os.path.isfile(os.path.expandvars('$ROOTCOREBIN/../RootCore.par')):
+      if not os.path.isfile(os.path.expandvars('$ROOTCOREBIN/../RootCore.par')) and xAODAnaHelpers.utils.is_release20():
         raise IOError('I cannot find RootCore.par. Make sure you run `rc make_par` before running xAH_run.py.')
     elif args.driver == 'lsf':
       if getattr(ROOT.EL, 'LSFDriver') is None:

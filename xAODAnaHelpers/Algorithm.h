@@ -283,7 +283,7 @@ namespace xAH {
 
             @endrst
          */
-        static std::map<std::string, int> m_instanceRegistry;
+        static std::map<std::string, int> m_instanceRegistry; //!
 
         /**
             @rst
