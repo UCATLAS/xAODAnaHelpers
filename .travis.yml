@@ -2,7 +2,7 @@
 services: docker
 language: ruby
 script:
-  - docker run --rm -w /workarea -v $PWD:/workarea/src/xAODAnaHelpers atlas/analysisbase:${ABV_CM} /workarea/src/xAODAnaHelpers/ci/run.sh
+  - docker run -u root --rm -w /workarea -v $PWD:/workarea/src/xAODAnaHelpers atlas/analysisbase:${ABV_CM} /workarea/src/xAODAnaHelpers/ci/run.sh
 env:
   - ABV_CM=21.2.3
   - ABV_CM=21.2.4
