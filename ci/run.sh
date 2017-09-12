@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ev
 source /home/atlas/analysis_release_setup.sh
 mkdir -p /workarea/build
 cd /workarea/build
