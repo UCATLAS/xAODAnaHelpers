@@ -9,5 +9,5 @@ cmake ../src
 make
 cd ../
 printenv
-source build/${CMTCONFIG}/setup.sh
+source build/${AnalysisBase_PLATFORM}/setup.sh
 python -c "import ROOT; print ROOT.xAH"
