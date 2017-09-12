@@ -1,6 +1,9 @@
+#!/bin/bash
 source /home/atlas/analysis_release_setup.sh
 mkdir -p /workarea/build
 cd /workarea/build
+# make a symbolic link for a top-level CMakeLists.txt file
+ln -s /workarea/src/ci/CMakeLists.txt /workarea/src/CMakeLists.txt
 cmake ../src
 make
 cd ../
