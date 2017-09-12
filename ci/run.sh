@@ -6,7 +6,7 @@ ln -s /workarea/src/xAODAnaHelpers/ci/top_CMakeLists.txt /workarea/src/CMakeList
 # make the build directory and start doing stuff
 mkdir -p /workarea/build
 cd /workarea/build
-cmake ../src
+TMPDIR=/workarea/tmp cmake ../src
 make -j2
 cd ../
 printenv
