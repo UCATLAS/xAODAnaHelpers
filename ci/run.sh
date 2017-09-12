@@ -7,8 +7,10 @@ ln -s /workarea/src/xAODAnaHelpers/ci/top_CMakeLists.txt /workarea/src/CMakeList
 mkdir -p /workarea/build
 cd /workarea/build
 cmake ../src
-make
+make -j2
 cd ../
 printenv
+set +ev
 source build/${AnalysisBase_PLATFORM}/setup.sh
+set -ev
 python -c "import ROOT; print ROOT.xAH"
