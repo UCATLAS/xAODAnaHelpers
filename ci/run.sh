@@ -1,10 +1,10 @@
 #!/bin/bash
-set -ev
 source /home/atlas/release_setup.sh
-mkdir -p /workarea/build
-cd /workarea/build
+set -ev
 # make a symbolic link for a top-level CMakeLists.txt file
-ln -s /workarea/src/xAODAnaHelpers/ci/CMakeLists.txt /workarea/src/CMakeLists.txt
+ln -s /home/atlas/workarea/src/xAODAnaHelpers/ci/CMakeLists.txt /home/atlas/workarea/src/CMakeLists.txt
+mkdir -p /home/atlas/workarea/build
+cd /home/atlas/workarea/build
 cmake ../src
 make
 cd ../
