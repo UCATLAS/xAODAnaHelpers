@@ -1,3 +1,14 @@
+# our main test script
+services: docker
+language: ruby
+script:
+  - docker run --rm -w /workarea/build -v $PWD:/workarea/src atlas/analysisbase:${ABV_CM} ./ci/run.sh
+env:
+  - ABV_CM=21.2.3
+  - ABV_CM=21.2.4
+
+# below are specific matrix includes for building documentation
+#    and running cppcheck (not actually used)
 matrix:
   include:
     - language: python

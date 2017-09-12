@@ -1,5 +1,5 @@
 env:
-  - ABV_RC=2.4.37 ABV_CM=21.2.4
+  - ABV_RC=2.4.37 #ABV_CM=21.2.4
 
 before_script:
   - ls
@@ -17,10 +17,10 @@ script:
   - rc compile
   - rcSetup -u
   # cmake
-  - asetup AnalysisBase,${ABV_CM},here
-  - cd build
-  - cmake ../
-  - make
-  - cd ../
-  - source build/${CMTCONFIG}/setup.sh
-  - python -c "import ROOT; print ROOT.xAH"
+  # - asetup AnalysisBase,${ABV_CM},here
+  # - cd build
+  # - cmake ../
+  # - make
+  # - cd ../
+  # - source build/${CMTCONFIG}/setup.sh
+  # - python -c "import ROOT; print ROOT.xAH"
