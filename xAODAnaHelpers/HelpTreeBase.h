@@ -301,6 +301,7 @@ protected:
 
   bool m_debug;
   bool m_isMC;
+  bool m_nominalTree;
 
   // event
   xAH::EventInfo*      m_eventInfo;
@@ -412,4 +413,3 @@ void HelpTreeBase::setBranch(std::string prefix, std::string varName, std::vecto
 
 
 #endif
-

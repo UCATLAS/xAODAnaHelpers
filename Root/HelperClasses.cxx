@@ -113,6 +113,7 @@ namespace HelperClasses{
     m_shapeLC       = has_exact("shapeLC");
     m_truth         = has_exact("truth");
     m_caloClus      = has_exact("caloClusters");
+    m_weightsSys    = has_exact("weightsSys");
   }
 
   void TriggerInfoSwitch::initialize(){
