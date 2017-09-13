@@ -4,12 +4,17 @@ language: ruby
 script:
   - docker run -u root --rm -w /workarea -v $PWD/tmp:/tmp -v $PWD:/workarea/src/xAODAnaHelpers atlas/analysisbase:${ABV_CM} /workarea/src/xAODAnaHelpers/ci/run.sh
 env:
-  - ABV_CM=21.2.3
-  - ABV_CM=21.2.4
+  - ABV_CM=21.2.3 ALLOWFAIL=true
+  - ABV_CM=21.2.4 ALLOWFAIL=false
 
 # below are specific matrix includes for building documentation
 #    and running cppcheck (not actually used)
 matrix:
+  fast_finish: true
+  allow_failures:
+    - env: ABV_CM=21.2.3 ALLOWFAIL=true
+    - env: ABV_CM=21.2.4 ALLOWFAIL=true
+
   include:
     - language: python
       python: 2.7

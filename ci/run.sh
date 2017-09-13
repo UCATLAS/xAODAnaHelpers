@@ -7,7 +7,7 @@ ln -s /workarea/src/xAODAnaHelpers/ci/top_CMakeLists.txt /workarea/src/CMakeList
 mkdir -p /workarea/build
 cd /workarea/build
 cmake ../src
-make -j2
+time make
 cd ../
 printenv
 set +ev
