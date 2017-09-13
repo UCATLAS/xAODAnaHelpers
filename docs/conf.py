@@ -83,9 +83,12 @@ release = release
 import yaml
 try:
     jenkins = yaml.safe_load(file('../.jenkins.yml'))
-    jenkins['env'] = [dict([i.split('=') for i in env.split()]) for env in jenkins['env']]
-    ab_release_rc = jenkins['env'][0].get('ABV_RC', 'unknown')
-    ab_release_cm = jenkins['env'][0].get('ABV_CM', 'unknown')
+    travis  = yaml.safe_load(file('../.travis.yml'))
+    jenkins_env = dict([i.split('=') for i in jenkins['env'].split()])
+    travis_env = [dict([i.split('=') for i in env.split()]) for env in travis['env'] if 'ALLOWFAIL=false' in env]
+    travis_env.sort(key=lambda s: map(int, s['ABV_CM'].split('.')), reverse=True)
+    ab_release_rc = jenkins_env.get('ABV_RC', 'unknown')
+    ab_release_cm = travis_env[0].get('ABV_CM', 'unknown')
 except:
     ab_release_rc = 'unknown'
     ab_release_cm = 'unknown'
