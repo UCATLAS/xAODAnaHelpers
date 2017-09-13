@@ -8,8 +8,8 @@
 
 using namespace xAH;
 
-EventInfo::EventInfo(const std::string& detailStr, float units, bool mc)
-  : m_infoSwitch(detailStr), m_mc(mc), m_debug(false), m_units(units)
+EventInfo::EventInfo(const std::string& detailStr, float units, bool mc, bool storeSyst)
+  : m_infoSwitch(detailStr), m_mc(mc), m_debug(false), m_storeSyst(storeSyst), m_units(units)
 {
 }
 
@@ -30,6 +30,9 @@ void EventInfo::setTree(TTree *tree)
     connectBranch<int     >(tree, "mcEventNumber",              &m_mcEventNumber);
     connectBranch<int     >(tree, "mcChannelNumber",            &m_mcChannelNumber);
     connectBranch<float   >(tree, "mcEventWeight",              &m_mcEventWeight);
+    if ( m_infoSwitch.m_weightsSys ) {
+      connectBranch< std::vector<float> >(tree, "mcEventWeights", &m_mcEventWeights);
+    }
   } else {
     connectBranch<int     >(tree, "bcid",                       &m_bcid);
     connectBranch<float   >(tree, "prescale_DataWeight",               &m_prescale_DataWeight);
@@ -115,6 +118,9 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
     tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
     tree->Branch("mcEventWeight",      &m_mcEventWeight,  "mcEventWeight/F");
+    if ( m_infoSwitch.m_weightsSys ) {
+      tree->Branch("mcEventWeights",   &m_mcEventWeights);
+    }
   } else {
     tree->Branch("bcid",               &m_bcid,           "bcid/I");
     tree->Branch("prescale_DataWeight",       &m_prescale_DataWeight,  "prescale_DataWeight/F");
@@ -213,6 +219,11 @@ void EventInfo::clear()
 
   //m_scale = m_q = m_pdf1 = m_pdf2 = -999;
 
+  // mcEventWeights
+  if ( m_infoSwitch.m_weightsSys ) {
+    m_mcEventWeights.clear();
+  }
+
   // CaloCluster
   if( m_infoSwitch.m_caloClus){
     m_caloCluster_pt.clear();
@@ -234,6 +245,13 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
     m_mcEventNumber         = eventInfo->mcEventNumber();
     m_mcChannelNumber       = eventInfo->mcChannelNumber();
     m_mcEventWeight         = eventInfo->mcEventWeight();
+    if ( m_infoSwitch.m_weightsSys ) {
+      if ( m_storeSyst ) {
+        m_mcEventWeights      = eventInfo->mcEventWeights();
+      } else {
+        m_mcEventWeights      = std::vector<float>{m_mcEventWeight};
+      }
+    }
   } else {
     m_bcid                  = eventInfo->bcid();
   }
@@ -355,7 +373,3 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
 
   return;
 }
-
-
-
-
