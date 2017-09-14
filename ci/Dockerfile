@@ -1,6 +1,5 @@
 # provide xAH on top of the AnalysisBase image
-ARG ABV_CM
-
+#ARG ABV_CM
 FROM atlas/analysisbase:$ABV_CM
 
 # Copy the project's sources into the image
