@@ -1,0 +1,29 @@
+                          __  __
+                          \ \/ /
+                           >  <
+           _    _  _____  /_/\_\______ _                _____
+          | |  | |/ ____|   /\|__   __| |        /\    / ____|
+          | |  | | |       /  \  | |  | |       /  \  | (___
+          | |  | | |      / /\ \ | |  | |      / /\ \  \___ \
+          | |__| | |____ / ____ \| |  | |____ / ____ \ ____) |
+           \____/ \_____/_/    \_\_|  |______/_/    \_\_____/
+                         | |  | |
+                         | |__| |
+                         |  __  |
+                         | |  | |
+                         |_|  |_|
+
+This is a self-contained ATLAS AnalysisBase image with xAODAnaHelpers. Your
+.bashrc should already execute the necessary scripts to set up the analysis
+base release as well as xAODAnaHelpers. View our online documentation here:
+
+      https://ucatlas.github.io/xAODAnaHelpers/
+
+To set up xAODAnaHelpers + the analysis release of the image, please execute:
+
+      source /home/atlas/xAODAnaHelpers_setup.sh
+
+To set up *only* the analysis release of the image, please execute:
+
+      source /home/atlas/release_setup.sh
+

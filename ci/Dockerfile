@@ -27,7 +27,10 @@ ENV TMPDIR=/tmp
 
 # Switch back to the ATLAS account
 USER atlas
-# Set up the environment setup script:
+# Set up the environment setup script and add to bash_profile
 COPY ci/xAODAnaHelpers_setup.sh /home/atlas/xAODAnaHelpers_setup.sh
+RUN echo 'source $HOME/xAODAnaHelpers_setup.sh' >> /home/atlas/.bash_profile
+# Use our MOTD (Message-of-the-Day)
+COPY ci/motd /etc/motd
 # Start the image with BASH by default
 CMD /bin/bash
