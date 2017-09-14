@@ -12,7 +12,7 @@ RUN cd /workarea/build && cpack
 # Install the created RPM
 RUN rpm -i /workarea/build/*_*.rpm
 # Clean up
-RUN rm -rf /workarea/source /workarea/build
+RUN rm -rf /workarea
 
 # Switch back to the ATLAS account
 USER atlas
