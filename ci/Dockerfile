@@ -2,6 +2,9 @@
 #ARG ABV_CM
 FROM atlas/analysisbase:$ABV_CM
 
+# change TMPDIR because analysisbase image problems writing to /tmp
+ENV TMPDIR=/workarea/tmp/
+
 # Switch to ROOT user for now
 USER root
 # Copy the project's sources into the image
@@ -17,6 +20,9 @@ RUN cd /workarea/build && cpack
 RUN rpm -i /workarea/build/*_*.rpm
 # Clean up
 RUN rm -rf /workarea
+
+# set TMPDIR back
+ENV TMPDIR=/tmp
 
 # Switch back to the ATLAS account
 USER atlas
