@@ -11,6 +11,8 @@ COPY ci/.rpmmacros /root/.rpmmacros
 # Build the project inside a build/ directory
 RUN /workarea/src/xAODAnaHelpers/ci/compile.sh
 
+# create an RPM
+RUN cd /workarea/build && cpack
 # Install the created RPM
 RUN rpm -i /workarea/build/*_*.rpm
 # Clean up
