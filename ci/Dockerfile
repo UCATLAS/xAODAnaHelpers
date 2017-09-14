@@ -7,6 +7,8 @@ COPY . /workarea/src/xAODAnaHelpers
 # Build the project inside a build/ directory
 USER root
 RUN /workarea/src/xAODAnaHelpers/ci/compile.sh
+# this is needed to get rpmbuild temp dir in different place
+RUN echo "%_tmppath:/workarea/rpmbuild" > $HOME/.rpmmacros
 RUN cd /workarea/build && cpack
 
 # Install the created RPM
