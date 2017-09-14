@@ -4,7 +4,7 @@ FROM atlas/analysisbase:$ABV_CM
 
 # change TMPDIR because analysisbase image problems writing to /tmp
 ENV TMPDIR=/workarea/tmp/
-RUN mkdir -p $TMPDIR
+WORKDIR $TMPDIR
 
 # Switch to ROOT user for now
 USER root
