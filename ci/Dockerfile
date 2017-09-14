@@ -6,7 +6,7 @@ FROM atlas/analysisbase:$ABV_CM
 COPY . /workarea/src/xAODAnaHelpers
 # Build the project inside a build/ directory
 USER root
-RUN ./workarea/src/xAODAnaHelpers/ci/compile.sh
+RUN /workarea/src/xAODAnaHelpers/ci/compile.sh
 RUN cd /workarea/build && cpack
 
 # Install the created RPM
