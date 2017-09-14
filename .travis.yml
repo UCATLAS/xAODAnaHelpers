@@ -7,7 +7,7 @@ env:
 script:
   - envsubst '\$ABV_CM' < ci/Dockerfile > Dockerfile
   - docker build --build-arg ABV_CM=${ABV_CM} -t ucatlas/xah .
-  - docker run -it ucatlas/xah /bin/bash -c './xAODAnaHelpers_setup.sh; xAH_run.py -h'
+  - docker run -it ucatlas/xah /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
   - docker run -it ucatlas/xah /bin/bash -c 'xAH_run.py -h'
   - docker run -it ucatlas/xah /bin/bash -c 'python -c "import ROOT; print ROOT.xAH"'
 # only test 'push' builds to master
