@@ -11,6 +11,6 @@ mkdir -p /workarea/build
 cd /workarea/build
 time cmake ../src
 time make
-time sudo cpack
+#time cpack
 cd ../
 printenv

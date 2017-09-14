@@ -7,7 +7,7 @@ COPY . /workarea/src/xAODAnaHelpers
 # Build the project inside a build/ directory
 USER root
 RUN /workarea/src/xAODAnaHelpers/ci/compile.sh
-#RUN cd /workarea/build && cpack
+RUN cd /workarea/build && cpack
 
 # Install the created RPM
 RUN rpm -i /workarea/build/*_*.rpm
