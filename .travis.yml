@@ -5,7 +5,8 @@ env:
   - ABV_CM=21.2.3 ALLOWFAIL=true
   - ABV_CM=21.2.4 ALLOWFAIL=false
 script:
-  - docker run -u root --rm -w /workarea -v $PWD/tmp:/tmp -v $PWD:/workarea/src/xAODAnaHelpers atlas/analysisbase:${ABV_CM} /workarea/src/xAODAnaHelpers/ci/run.sh
+  - docker build --build-arg ABV_CM=${ABV_CM} -t ucatlas/xAODAnaHelpers ci/Dockerfile
+  - docker run -it ucatlas/xAODAnaHelpers /bin/bash -c './setup.sh; xAH_run.py -h'
 # only test 'push' builds to master
 branches:
   only:

@@ -1,7 +1,9 @@
+#!/bin/bash
+
 # Environment configuration file setting up the installed xAODAnaHelpers project.
 
 # Set up the base environment using the base image's setup script:
-source ~/analysis_release_setup.sh
+source /home/atlas/release_setup.sh
 
 # Set up the xAODAnaHelpers installation:
 source /usr/xAODAnaHelpers/*/InstallArea/*/setup.sh
