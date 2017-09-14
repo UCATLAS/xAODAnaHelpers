@@ -5,7 +5,7 @@ env:
   - ABV_CM=21.2.3 ALLOWFAIL=true
   - ABV_CM=21.2.4 ALLOWFAIL=false
 script:
-  - docker build --build-arg ABV_CM=${ABV_CM} -t ucatlas/xah ci/Dockerfile
+  - docker build --build-arg ABV_CM=${ABV_CM} -t ucatlas/xah -f ci/Dockerfile .
   - docker run -it ucatlas/xah /bin/bash -c './setup.sh; xAH_run.py -h'
 # only test 'push' builds to master
 branches:
