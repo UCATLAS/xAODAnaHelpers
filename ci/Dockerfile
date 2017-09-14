@@ -7,7 +7,7 @@ USER root
 # Copy the project's sources into the image
 COPY . /workarea/src/xAODAnaHelpers
 # this is needed to get rpmbuild temp dir in different place
-COPY ci/.rpmmacros $HOME/.rpmmacros
+COPY ci/.rpmmacros /root/.rpmmacros
 # Build the project inside a build/ directory
 RUN /workarea/src/xAODAnaHelpers/ci/compile.sh
 RUN cd /workarea/build && cpack
