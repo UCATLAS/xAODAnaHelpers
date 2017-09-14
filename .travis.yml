@@ -1,13 +1,20 @@
 # our main test script
+sudo: required
 services: docker
 language: ruby
 env:
   - ABV_CM=21.2.3 ALLOWFAIL=true
   - ABV_CM=21.2.4 ALLOWFAIL=false
+before_install:
+  - echo 'DOCKER_OPTS="sock -s overlay2"' | sudo tee /etc/default/docker > /dev/null
+  - sudo service docker restart
+  - sleep 5
 script:
   - envsubst '\$ABV_CM' < ci/Dockerfile > Dockerfile
   - docker build --build-arg ABV_CM=${ABV_CM} -t ucatlas/xah .
   - docker run -it ucatlas/xah /bin/bash -c './setup.sh; xAH_run.py -h'
+after_success:
+  - ./ci/deploy.sh
 # only test 'push' builds to master
 branches:
   only:
