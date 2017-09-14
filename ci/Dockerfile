@@ -2,13 +2,14 @@
 #ARG ABV_CM
 FROM atlas/analysisbase:$ABV_CM
 
+# Switch to ROOT user for now
+USER root
 # Copy the project's sources into the image
 COPY . /workarea/src/xAODAnaHelpers
-# Build the project inside a build/ directory
-USER root
-RUN /workarea/src/xAODAnaHelpers/ci/compile.sh
 # this is needed to get rpmbuild temp dir in different place
-RUN echo "%_tmppath:/workarea/rpmbuild" > $HOME/.rpmmacros
+COPY ci/.rpmmacros $HOME/.rpmmacros
+# Build the project inside a build/ directory
+RUN /workarea/src/xAODAnaHelpers/ci/compile.sh
 RUN cd /workarea/build && cpack
 
 # Install the created RPM
