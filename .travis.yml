@@ -17,7 +17,7 @@ script:
   - docker build --build-arg ABV_CM=${ABV_CM}
                  --build-arg TRAVIS_COMMIT=${TRAVIS_COMMIT}
                  --build-arg TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
-                 -t ucatlas/xah:$(date +%Y%M%d)-${ABV_CM}-${TRAVIS_COMMIT::6} .
+                 -t ucatlas/xah .
   - docker run --rm ucatlas/xah
   - docker run --rm ucatlas/xah /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
 # only deploy on 'push' builds to master (excluding PRs that target master)
@@ -26,6 +26,7 @@ deploy:
   skip_cleanup: true
   script:
   - docker login -u $DOCKERLOGIN -p $DOCKERPW
+  - docker tag ucatlas/xah ucatlas/xah:$(date +%Y%M%d)-${ABV_CM}-${TRAVIS_COMMIT::6}
   - docker push ucatlas/xah:$(date +%Y%M%d)-${ABV_CM}-${TRAVIS_COMMIT::6}
   on:
     branch: master
