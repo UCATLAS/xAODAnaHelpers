@@ -85,7 +85,7 @@ try:
     jenkins = yaml.safe_load(file('../.jenkins.yml'))
     travis  = yaml.safe_load(file('../.travis.yml'))
     jenkins_env = dict([i.split('=') for i in jenkins['env'].split()])
-    travis_env = [dict([i.split('=') for i in env.split()]) for env in travis['env'] if 'ALLOWFAIL=false' in env]
+    travis_env = [dict([i.split('=') for i in env.split()]) for env in travis['env']['matrix'] if 'ALLOWFAIL=false' in env]
     travis_env.sort(key=lambda s: map(int, s['ABV_CM'].split('.')), reverse=True)
     ab_release_rc = jenkins_env.get('ABV_RC', 'unknown')
     ab_release_cm = travis_env[0].get('ABV_CM', 'unknown')
