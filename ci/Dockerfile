@@ -5,6 +5,7 @@ FROM atlas/analysisbase:$ABV_CM
 # change TMPDIR because analysisbase image problems writing to /tmp
 ENV TMPDIR=/workarea/tmp/
 WORKDIR $TMPDIR
+WORKDIR /home/atlas
 
 # Switch to ROOT user for now
 USER root
@@ -29,8 +30,14 @@ ENV TMPDIR=/tmp
 USER atlas
 # Set up the environment setup script and add to bashrc
 COPY ci/xAODAnaHelpers_setup.sh /home/atlas/xAODAnaHelpers_setup.sh
+RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' >> $HOME/.bashrc
 RUN echo 'source $HOME/xAODAnaHelpers_setup.sh' >> /home/atlas/.bashrc
 # Use our MOTD (Message-of-the-Day)
 COPY ci/motd /etc/motd
 # Start the image with BASH by default
-CMD /bin/bash
+CMD source ~/.bashrc && /bin/bash
+
+### TO DO ENTRYPOINT
+#RUN echo -e '#!/bin/bash\nsource ~/.bashrc\nxAH_run.py "$@"' > $HOME/entrypoint.sh
+#RUN chmod +x $HOME/entrypoint.sh
+#ENTRYPOINT ["/home/atlas/entrypoint.sh"]
