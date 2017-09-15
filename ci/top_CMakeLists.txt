@@ -10,7 +10,7 @@ find_package( AnalysisBase 21.2 REQUIRED )
 atlas_ctest_setup()
 
 # Set up the project:
-atlas_project( xAODAnaHelpers 1.0.0
+atlas_project( xAODAnaHelpers ${TRAVIS_COMMIT::6}
    USE AnalysisBase ${AnalysisBase_VERSION} )
 
 # Generate an environment setup script:

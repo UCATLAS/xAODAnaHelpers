@@ -4,6 +4,7 @@ FROM atlas/analysisbase:$ABV_CM
 
 # change TMPDIR because analysisbase image problems writing to /tmp
 ENV TMPDIR=/workarea/tmp/
+ENV TRAVIS_COMMIT=${TRAVIS_COMMIT}
 WORKDIR $TMPDIR
 WORKDIR /home/atlas
 
