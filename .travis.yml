@@ -20,7 +20,7 @@ script:
                  -t ucatlas/xah .
   - docker run --rm ucatlas/xah
   - docker run --rm ucatlas/xah /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
-# only deploy on 'push' builds to master (excluding PRs that target master)
+# travis does not deploy on PRs, but we don't want to deploy images that could potentially break ;)
 deploy:
   provider: script
   skip_cleanup: true
@@ -30,7 +30,7 @@ deploy:
   - docker push ucatlas/xah:$(date +%Y%M%d)-${ABV_CM}-${TRAVIS_COMMIT::6}
   on:
     branch: master
-    condition: "$TRAVIS_PULL_REQUEST = false && $ALLOWFAIL = false"
+    condition: "$ALLOWFAIL = false"
 
 # below are specific matrix includes for building documentation
 #    and running cppcheck (not actually used)
