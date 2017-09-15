@@ -5,11 +5,10 @@ env:
   - ABV_CM=21.2.3 ALLOWFAIL=true
   - ABV_CM=21.2.4 ALLOWFAIL=false
 script:
-  - envsubst '\$ABV_CM \$TRAVIS_COMMIT' < ci/Dockerfile > Dockerfile
+  - envsubst '\$ABV_CM \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
   - docker build --build-arg ABV_CM=${ABV_CM} --build-arg TRAVIS_COMMIT=${TRAVIS_COMMIT} -t ucatlas/xah .
-  - docker run -it ucatlas/xah /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
-  - docker run -it ucatlas/xah /bin/bash -c 'xAH_run.py -h'
-  - docker run -it ucatlas/xah /bin/bash -c 'python -c "import ROOT; print ROOT.xAH"'
+  - docker run --rm ucatlas/xah
+  - docker run --rm ucatlas/xah /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
 # only test 'push' builds to master
 branches:
   only:
