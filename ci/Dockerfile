@@ -9,33 +9,37 @@ ENV TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
 WORKDIR $TMPDIR
 WORKDIR /home/atlas
 
-# Switch to ROOT user for now
-USER root
+### COPY COMMANDS HERE ###
+
 # Copy the project's sources into the image
 COPY . /workarea/src/xAODAnaHelpers
 # this is needed to get rpmbuild temp dir in different place
 COPY ci/.rpmmacros /root/.rpmmacros
-# Build the project inside a build/ directory
-RUN /workarea/src/xAODAnaHelpers/ci/compile.sh
+# Use our MOTD (Message-of-the-Day)
+COPY ci/motd /etc/motd
+# Copy the environemnt setup script for xAH
+COPY ci/xAODAnaHelpers_setup.sh /home/atlas/xAODAnaHelpers_setup.sh
 
-# create an RPM
-RUN cd /workarea/build && cpack
-# Install the created RPM
-RUN rpm -i /workarea/build/*_*.rpm
-# Clean up
-RUN rm -rf /workarea
+### RUN COMMANDS HERE (AS ROOT) ###
+# Switch to ROOT user for now
+USER root
+# 1. Build the project inside a build/ directory
+# 2. Create an RPM
+# 3. Install the RPM
+# 4. Clean up
+# 5. Call the MOTD
+# 6. Call the environment setup script in .bashrc
+RUN /workarea/src/xAODAnaHelpers/ci/compile.sh \
+    && cd /workarea/build && cpack \
+    && rpm -i /workarea/build/*_*.rpm \
+    && rm -rf /workarea \
+    && echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' >> /home/atlas/.bashrc \
+    && echo 'source $HOME/xAODAnaHelpers_setup.sh' >> /home/atlas/.bashrc
 
 # set TMPDIR back
 ENV TMPDIR=/tmp
-
 # Switch back to the ATLAS account
 USER atlas
-# Use our MOTD (Message-of-the-Day)
-COPY ci/motd /etc/motd
-RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' >> $HOME/.bashrc
-# Set up the environment setup script and add to bashrc
-COPY ci/xAODAnaHelpers_setup.sh /home/atlas/xAODAnaHelpers_setup.sh
-RUN echo 'source $HOME/xAODAnaHelpers_setup.sh' >> /home/atlas/.bashrc
 # Start the image with BASH by default
 CMD /bin/bash
 
