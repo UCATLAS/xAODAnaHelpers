@@ -17,9 +17,9 @@ script:
   - docker build --build-arg ABV_CM=${ABV_CM}
                  --build-arg TRAVIS_COMMIT=${TRAVIS_COMMIT}
                  --build-arg TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
-                 -t ucatlas/xah .
-  - docker run --rm ucatlas/xah
-  - docker run --rm ucatlas/xah /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
+                 -t ucatlas/xah:${ABV_CM}-latest .
+  - docker run --rm ucatlas/xah:${ABV_CM}-latest
+  - docker run --rm ucatlas/xah:${ABV_CM}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
 # travis does not deploy on PRs, but we don't want to deploy images that could potentially break ;)
 deploy:
   provider: script
