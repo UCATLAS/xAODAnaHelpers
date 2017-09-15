@@ -46,13 +46,14 @@ class _HelpAction(argparse.Action):
         print("That is not a valid subsection. Chose from {{{0:s}}}".format(','.join(available_groups)))
     parser.exit()
 
-try:
-  __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
-  __short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
-except:
-  print('git not available, assuming svn')
-  __version__ = "private"
-  __short_hash__ = "0"
+# this is a useful env variable set on our docker images
+__version__ = os.getenv('xAODAnaHelpers_VERSION')
+# if None, we're probably not using Docker, see if it's just a git clone
+if __version__ is None:
+  try:
+    __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
+  except:
+    __version__ = "private"
 
 baseUsageStr = """xAH_run.py --files ... file [file ...]
                   --config path/to/file.json
@@ -95,7 +96,6 @@ parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', h
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
-parser.add_argument('--cmake-workdir', type=str, default='WorkDir', help='The name of the CMake WorkDir, needed to determine environment variables')
 
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
@@ -262,7 +262,7 @@ if __name__ == "__main__":
       ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
     else:
       # env var that tells us if CMAKE was setup
-      cmake_setup = '{0:s}_SET_UP'.format(args.cmake_workdir)
+      cmake_setup = 'AnalysisBase_SET_UP'
       # architecture used for CMake
       arch = os.environ.get('AnalysisBase_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
       if not int(os.environ.get(cmake_setup, 0)):
@@ -623,7 +623,8 @@ if __name__ == "__main__":
     with open(os.path.join(args.submit_dir, 'xAH_run.log'), 'w+') as f:
       f.write(' '.join(['[{0}]'.format(__version__), os.path.basename(sys.argv[0])] + sys.argv[1:]))
       f.write('\n')
-      f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__short_hash__))
+      if __version__ != "private":
+        f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__version__))
       f.write('Start: {0}\nStop:  {1}\nDelta: {2}\n\n'.format(SCRIPT_START_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME - SCRIPT_START_TIME))
       f.write('job runner options\n')
       for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'use_scanRucio', 'use_scanEOS', 'use_scanXRD', 'log_level', 'driver']:
