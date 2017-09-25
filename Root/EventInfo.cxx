@@ -25,6 +25,7 @@ void EventInfo::setTree(TTree *tree)
   connectBranch<Long64_t>(tree, "eventNumber", &m_eventNumber);
   connectBranch<int>     (tree, "lumiBlock",   &m_lumiBlock);
   connectBranch<uint32_t>(tree, "coreFlags",   &m_coreFlags);
+  connectBranch<int     >(tree, "bcid",                       &m_bcid);
 
   if(m_mc){
     connectBranch<int     >(tree, "mcEventNumber",              &m_mcEventNumber);
@@ -34,8 +35,8 @@ void EventInfo::setTree(TTree *tree)
       connectBranch< std::vector<float> >(tree, "mcEventWeights", &m_mcEventWeights);
     }
   } else {
-    connectBranch<int     >(tree, "bcid",                       &m_bcid);
-    connectBranch<float   >(tree, "prescale_DataWeight",               &m_prescale_DataWeight);
+    connectBranch<float   >(tree, "prescale_DataWeight",         &m_prescale_DataWeight);
+    connectBranch<int     >(tree, "DistEmptyBCID",               &m_DistEmptyBCID);
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -54,12 +55,12 @@ void EventInfo::setTree(TTree *tree)
     connectBranch<float>(tree, "actualInteractionsPerCrossing",    &m_actualMu);
     connectBranch<float>(tree, "averageInteractionsPerCrossing",   &m_averageMu);
     connectBranch<float>(tree, "weight_pileup",                    &m_weight_pileup);
+    connectBranch<float>(tree, "correct_mu",                 &m_correct_mu);
     if ( m_infoSwitch.m_pileupsys ) {
       connectBranch<float>(tree, "weight_pileup_up",               &m_weight_pileup_up);
       connectBranch<float>(tree, "weight_pileup_down",             &m_weight_pileup_down);
     }
     if(m_mc){
-      connectBranch<float>(tree, "correct_mu",                 &m_correct_mu);
       connectBranch<int  >(tree, "rand_run_nr",                &m_rand_run_nr);
       connectBranch<int  >(tree, "rand_lumiblock_nr",          &m_rand_lumiblock_nr);
     }
@@ -114,6 +115,8 @@ void EventInfo::setBranches(TTree *tree)
   tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/LI");
   tree->Branch("lumiBlock",          &m_lumiBlock,      "lumiBlock/I");
   tree->Branch("coreFlags",          &m_coreFlags,      "coreFlags/i");
+  tree->Branch("bcid",               &m_bcid,           "bcid/I");
+
   if( m_mc ) {
     tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
     tree->Branch("mcChannelNumber",    &m_mcChannelNumber,"mcChannelNumber/I");
@@ -122,8 +125,8 @@ void EventInfo::setBranches(TTree *tree)
       tree->Branch("mcEventWeights",   &m_mcEventWeights);
     }
   } else {
-    tree->Branch("bcid",               &m_bcid,           "bcid/I");
     tree->Branch("prescale_DataWeight",       &m_prescale_DataWeight,  "prescale_DataWeight/F");
+    tree->Branch("DistEmptyBCID",             &m_DistEmptyBCID,        "DistEmptyBCID/I");
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -142,12 +145,12 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
     tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
     tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
+    tree->Branch("correct_mu"       ,          &m_correct_mu       ,"correct_mu/F"       );
     if ( m_infoSwitch.m_pileupsys ) {
       tree->Branch("weight_pileup_up",      &m_weight_pileup_up,  "weight_pileup_up/F");
       tree->Branch("weight_pileup_down",    &m_weight_pileup_down,"weight_pileup_down/F");
     }
     if(m_mc){
-      tree->Branch("correct_mu"       ,          &m_correct_mu       ,"correct_mu/F"       );
       tree->Branch("rand_run_nr"      ,          &m_rand_run_nr      ,"rand_run_nr/I"      );
       tree->Branch("rand_lumiblock_nr",          &m_rand_lumiblock_nr,"rand_lumiblock_nr/I");
     }
@@ -200,6 +203,7 @@ void EventInfo::clear()
   m_SCTFlags = 0;
   m_mcEventWeight = 1.;
   m_prescale_DataWeight = 1.;
+  m_DistEmptyBCID = 1.;
   m_weight_pileup = 1.;
   m_weight_pileup_down = 1.;
   m_weight_pileup_up = 1.;
@@ -241,6 +245,8 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
   m_eventNumber           = eventInfo->eventNumber();
   m_lumiBlock             = eventInfo->lumiBlock();
   m_coreFlags             = eventInfo->eventFlags(xAOD::EventInfo::Core);
+  m_bcid                  = eventInfo->bcid();
+
   if ( m_mc ) {
     m_mcEventNumber         = eventInfo->mcEventNumber();
     m_mcChannelNumber       = eventInfo->mcChannelNumber();
@@ -252,8 +258,15 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
         m_mcEventWeights      = std::vector<float>{m_mcEventWeight};
       }
     }
-  } else {
-    m_bcid                  = eventInfo->bcid();
+  }
+  if ( !m_mc ) {
+
+    static SG::AuxElement::ConstAccessor< float > prsc_DataWeight ("prescale_DataWeight");
+    if ( prsc_DataWeight.isAvailable( *eventInfo ) )	 { m_prescale_DataWeight = prsc_DataWeight( *eventInfo ); }	    else { m_prescale_DataWeight = 1.0; }
+  
+    static SG::AuxElement::ConstAccessor< int > DistEmptyBCID ("DistEmptyBCID");
+    if ( DistEmptyBCID.isAvailable( *eventInfo ) )   { m_DistEmptyBCID = DistEmptyBCID( *eventInfo ); }     else { m_DistEmptyBCID = -999; }
+
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -287,16 +300,17 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
 
     m_actualMu  = eventInfo->actualInteractionsPerCrossing();
     m_averageMu = eventInfo->averageInteractionsPerCrossing();
+    
+    static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
+    if ( correct_mu.isAvailable( *eventInfo ) )	 { m_correct_mu = correct_mu( *eventInfo ); }		    else { m_correct_mu = -1.0; }
 
     if ( m_mc ) {
 
       static SG::AuxElement::ConstAccessor< float > weight_pileup ("PileupWeight");
-      static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
       static SG::AuxElement::ConstAccessor< unsigned int > rand_run_nr("RandomRunNumber");
       static SG::AuxElement::ConstAccessor< unsigned int > rand_lumiblock_nr("RandomLumiBlockNumber");
 
       if ( weight_pileup.isAvailable( *eventInfo ) )	 { m_weight_pileup = weight_pileup( *eventInfo ); }	    else { m_weight_pileup = 1.0; }
-      if ( correct_mu.isAvailable( *eventInfo ) )	 { m_correct_mu = correct_mu( *eventInfo ); }		    else { m_correct_mu = -1.0; }
       if ( rand_run_nr.isAvailable( *eventInfo ) )	 { m_rand_run_nr = rand_run_nr( *eventInfo ); } 	    else { m_rand_run_nr = 900000; }
       if ( rand_lumiblock_nr.isAvailable( *eventInfo ) ) { m_rand_lumiblock_nr = rand_lumiblock_nr( *eventInfo ); } else { m_rand_lumiblock_nr = 0; }
 
@@ -307,19 +321,12 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
 
     }
 
-    if ( !m_mc ) {
-
-      static SG::AuxElement::ConstAccessor< float > prsc_DataWeight ("prescale_DataWeight");
-
-      if ( prsc_DataWeight.isAvailable( *eventInfo ) )	 { m_prescale_DataWeight = prsc_DataWeight( *eventInfo ); }	    else { m_prescale_DataWeight = 1.0; }
-
-    }
 
   }
 
   if ( m_infoSwitch.m_shapeLC && event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", event, 0 );
+    HelperFunctions::retrieve( evtShape, "Kt4LCTopoOriginEventShape", event, 0 );
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoLC ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoLC = -999;
@@ -328,7 +335,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
 
   if ( m_infoSwitch.m_shapeEM && event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", event, 0 );
+    HelperFunctions::retrieve( evtShape, "Kt4EMTopoOriginEventShape", event, 0 );
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEM = -999;
