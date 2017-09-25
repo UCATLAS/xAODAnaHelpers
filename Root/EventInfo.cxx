@@ -326,7 +326,11 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
 
   if ( m_infoSwitch.m_shapeLC && event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4LCTopoOriginEventShape", event, 0 );
+    #ifndef USE_CMAKE
+      HelperFunctions::retrieve( evtShape, "Kt4LCTopoEventShape", event, 0 );
+    #else
+      HelperFunctions::retrieve( evtShape, "Kt4LCTopoOriginEventShape", event, 0 );
+    #endif
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoLC ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoLC = -999;
@@ -335,7 +339,11 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
 
   if ( m_infoSwitch.m_shapeEM && event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMTopoOriginEventShape", event, 0 );
+    #ifndef USE_CMAKE
+      HelperFunctions::retrieve( evtShape, "Kt4EMTopoEventShape", event, 0 );
+    #else
+      HelperFunctions::retrieve( evtShape, "Kt4EMTopoOriginEventShape", event, 0 );
+    #endif
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEM = -999;
