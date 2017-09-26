@@ -108,3 +108,40 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
 atlas_install_python_modules( python/*.py )
 atlas_install_scripts( scripts/*.py )
 atlas_install_data( data/* )
+
+
+### Install python packages
+find_package( PythonInterp 2.7 REQUIRED )
+
+# Tell the user what's happening:
+message( STATUS "Building python modules for xAODAnaHelpers as part of this project" )
+
+# Build/install argcomplete:
+set( _source
+    "https://pypi.python.org/packages/3b/db/c524f0d72842b44b179cc50d4257f1e72f447fef0919556e8b28a9b0f80f/argcomplete-1.9.2.tar.gz" )
+set( _md5 "13243e0b88102f13f7537f5aa70a48c0" )
+set( _buildDir
+   ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/argcompleteBuild  )
+set( _sitePkgsDir ${_buildDir}/lib/python2.7/site-packages )
+ExternalProject_Add( argcomplete
+   PREFIX ${CMAKE_BINARY_DIR}
+   INSTALL_DIR ${CMAKE_BINARY_DIR}/${ATLAS_PLATFORM}
+   URL ${_source}
+   URL_MD5 ${_md5}
+   BUILD_IN_SOURCE 1
+   CONFIGURE_COMMAND ${CMAKE_COMMAND} -E make_directory ${_sitePkgsDir}
+   BUILD_COMMAND ${CMAKE_BINARY_DIR}/atlas_build_run.sh
+   ${PYTHON_EXECUTABLE} <SOURCE_DIR>/setup.py build
+   INSTALL_COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${_sitePkgsDir}
+   ${CMAKE_BINARY_DIR}/atlas_build_run.sh
+   ${PYTHON_EXECUTABLE} <SOURCE_DIR>/setup.py install --prefix=${_buildDir}
+   COMMAND ${CMAKE_COMMAND} -E copy_directory ${_buildDir}/bin <INSTALL_DIR>/bin
+   COMMAND ${CMAKE_COMMAND} -E copy_directory ${_sitePkgsDir}/argcomplete-1.9.2-py2.7.egg/argcomplete <INSTALL_DIR>/python/argcomplete
+   COMMAND echo <SOURCE_DIR>
+   COMMAND echo <INSTALL_DIR>
+   COMMAND echo ${_buildDir}
+   COMMAND echo ${_sitePkgsDir}
+   )
+add_dependencies( Package_xAODAnaHelpers argcomplete )
+install( DIRECTORY ${_buildDir}/
+   DESTINATION . USE_SOURCE_PERMISSIONS OPTIONAL )

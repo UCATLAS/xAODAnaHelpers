@@ -15,14 +15,13 @@ from __future__ import print_function
 #TODO: move into __main__
 
 import argparse
+try: import argcomplete
+except: pass
 import os
 import subprocess
 import sys
 import datetime
 import time
-
-# think about using argcomplete
-# https://argcomplete.readthedocs.org/en/latest/#activating-global-completion%20argcomplete
 
 # if we want multiple custom formatters, use inheriting
 class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
@@ -215,6 +214,8 @@ slurm.add_argument('--optSlurmWrapperExec'     , metavar='', type=str, required=
 if __name__ == "__main__":
   SCRIPT_START_TIME = datetime.datetime.now()
 
+  try: argcomplete.autocomplete(parser)
+  except: pass
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
 
