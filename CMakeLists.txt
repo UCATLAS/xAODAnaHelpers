@@ -108,3 +108,22 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
 atlas_install_python_modules( python/*.py )
 atlas_install_scripts( scripts/*.py )
 atlas_install_data( data/* )
+
+
+### Install python packages
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+include(SetupPythonPackage)
+
+# Install argcomplete:
+setup_python_package( argcomplete
+   "https://pypi.python.org/packages/3b/db/c524f0d72842b44b179cc50d4257f1e72f447fef0919556e8b28a9b0f80f/argcomplete-1.9.2.tar.gz"
+   "13243e0b88102f13f7537f5aa70a48c0"
+   PATCH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch-setup.cfg setup.cfg
+)
+
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/xAH_env_copied
+                   COMMAND cat ${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.sh >> ${CMAKE_BINARY_DIR}/${ATLAS_PLATFORM}/setup.sh
+                   COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_BINARY_DIR}/xAH_env_copied
+)
+add_custom_target(Setup_xAH_Environment ALL DEPENDS ${CMAKE_BINARY_DIR}/xAH_env_copied)
+execute_process(COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_BINARY_DIR}/xAH_env_copied)

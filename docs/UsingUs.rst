@@ -114,6 +114,11 @@ to see all the help information.
 API Reference
 -------------
 
+.. note:: If you are using a CMake-based release, or you have ``argcomplete`` in your python environment, you can enable automatic completion of the options. For example, running something like this::
+
+    eval "$(register-python-argcomplete xAH_run.py)"
+
+
 .. argparse::
    :ref: xAH_run.parser
    :prog: xAH_run.py
