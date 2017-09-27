@@ -120,3 +120,10 @@ setup_python_package( argcomplete
    "13243e0b88102f13f7537f5aa70a48c0"
    PATCH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch-setup.cfg setup.cfg
 )
+
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/xAH_env_copied
+                   COMMAND cat ${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.sh >> ${CMAKE_BINARY_DIR}/${ATLAS_PLATFORM}/setup.sh
+                   COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_BINARY_DIR}/xAH_env_copied
+)
+add_custom_target(Setup_xAH_Environment ALL DEPENDS ${CMAKE_BINARY_DIR}/xAH_env_copied)
+execute_process(COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_BINARY_DIR}/xAH_env_copied)
