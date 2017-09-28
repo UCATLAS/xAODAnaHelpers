@@ -125,6 +125,13 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "FlatBEff_70") { allOK = true; }
   if (m_operatingPt == "FlatBEff_77") { allOK = true; }
   if (m_operatingPt == "FlatBEff_85") { allOK = true; }
+#ifdef USE_CMAKE
+  // also calibrated working points (for R21)
+  if (m_operatingPt == "HybBEff_60") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_70") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_77") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_85") { allOK = true; m_getScaleFactors =  true; }
+#endif
 
   if( !allOK ) {
     ANA_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
@@ -143,16 +150,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // if using the fixed efficiency points
   if(m_operatingPtCDI.empty()) m_operatingPtCDI = m_operatingPt;
   ANA_MSG_INFO("Using Standard OperatingPoint for CDI BTag Efficiency of " << m_operatingPtCDI);
-
-  // Outdated code for translating user friendly Btag WP to cut value
-  // Code now accepts the user friendly Btag WP
-  /*
-  if( m_operatingPtCDI.find("FixedCutBEff") != std::string::npos) {
-    m_operatingPtCDI.erase(0,13); // remove FixedCutBEff_
-    ANA_MSG_INFO("Get OperatingPoint for CDI BTag Efficiency using eff = " << m_operatingPtCDI);
-    m_operatingPtCDI = HelperFunctions::GetBTagMV2c20_CutStr( atoi( m_operatingPtCDI.c_str() ) );
-  }
-  */
 
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 

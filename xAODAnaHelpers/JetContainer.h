@@ -270,14 +270,14 @@ namespace xAH {
       struct btagOpPoint {
         std::string m_name;
         bool m_mc;
-        std::string m_acessorName;
+        std::string m_accessorName;
         std::string m_tagger;
         int m_njets;
         std::vector<int>*                  m_isTag;
         std::vector<float>                 m_weight_sf;
         std::vector< std::vector<float> >* m_sf;
 
-        btagOpPoint(std::string name, bool mc, std::string acessorName, std::string tagger="mv2c10"): m_name(name), m_mc(mc), m_acessorName(acessorName), m_tagger(tagger) {
+        btagOpPoint(std::string name, bool mc, std::string accessorName, std::string tagger="mv2c10"): m_name(name), m_mc(mc), m_accessorName(accessorName), m_tagger(tagger) {
           m_isTag = new std::vector<int>();
           m_sf    = new std::vector< std::vector<float> >();
         }
@@ -317,8 +317,8 @@ namespace xAH {
         }
 
         void Fill( const xAOD::Jet* jet ) {
-      
-          SG::AuxElement::ConstAccessor< char > isTag("BTag_"+m_acessorName);
+
+          SG::AuxElement::ConstAccessor< char > isTag("BTag_"+m_accessorName);
           if( isTag.isAvailable( *jet ) ) {
             if ( isTag( *jet ) == 1 ) ++m_njets;
             m_isTag->push_back( isTag( *jet ) );
@@ -327,7 +327,7 @@ namespace xAH {
           }
           
           if(!m_mc) { return; }
-          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_acessorName);
+          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_accessorName);
           if ( sf.isAvailable( *jet ) ) {
             m_sf->push_back( sf( *jet ) );
           } else {
@@ -339,7 +339,7 @@ namespace xAH {
         } // Fill
       
         void FillGlobalSF( const xAOD::EventInfo* eventInfo ) {
-          SG::AuxElement::ConstAccessor< std::vector<float> > sf_GLOBAL("BTag_SF_"+m_acessorName+"_GLOBAL");
+          SG::AuxElement::ConstAccessor< std::vector<float> > sf_GLOBAL("BTag_SF_"+m_accessorName+"_GLOBAL");
           if ( sf_GLOBAL.isAvailable( *eventInfo ) ) { 
             m_weight_sf = sf_GLOBAL( *eventInfo ); 
           } else { 
@@ -366,7 +366,11 @@ namespace xAH {
       btagOpPoint* m_btag_Flt70;
       btagOpPoint* m_btag_Flt77;
       btagOpPoint* m_btag_Flt85;
-      btagOpPoint* m_btag_Flt90;
+
+      btagOpPoint* m_btag_Hyb60;
+      btagOpPoint* m_btag_Hyb70;
+      btagOpPoint* m_btag_Hyb77;
+      btagOpPoint* m_btag_Hyb85;
 
       // JVC
       std::vector<double> *m_JetVertexCharge_discriminant;
