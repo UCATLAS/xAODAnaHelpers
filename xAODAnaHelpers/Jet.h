@@ -199,6 +199,18 @@ namespace xAH {
     
       int MV2c20_isFlt85;
       std::vector<float> MV2c20_sfFlt85;
+
+      int MV2c20_isHyb60;
+      std::vector<float> MV2c20_sfHyb60;
+    
+      int MV2c20_isHyb70;
+      std::vector<float> MV2c20_sfHyb70;
+    
+      int MV2c20_isHyb77;
+      std::vector<float> MV2c20_sfHyb77;
+    
+      int MV2c20_isHyb85;
+      std::vector<float> MV2c20_sfHyb85;
     
       // truth
       int   ConeTruthLabelID;

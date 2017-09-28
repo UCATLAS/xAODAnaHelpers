@@ -419,6 +419,7 @@ namespace HelperClasses {
         m_flavTagHLT     flavorTagHLT   exact
         m_sfFTagFix      sfFTagFix      partial
         m_sfFTagFlt      sfFTagFlt      partial
+        m_sfFTagHyb      sfFTagHyb      partial
         m_area           area           exact
         m_JVC            JVC            exact
         m_tracksInJet    tracksInJet    partial
@@ -440,7 +441,7 @@ namespace HelperClasses {
 
                 m_configStr = "... sfJVTMedium ..."
 
-            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
+            ``sfFTagFix``, ``sfFTagFlt`` and ``sfFTagHyb`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
 
                 m_configStr = "... sfFTagFix010203 ..."
 
@@ -494,6 +495,7 @@ namespace HelperClasses {
     std::string      m_sffJVTName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
+    std::vector<int> m_sfFTagHyb;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~JetInfoSwitch() {}
   protected:

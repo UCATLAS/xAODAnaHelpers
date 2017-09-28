@@ -308,7 +308,13 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_btag_Flt70   = new  btagOpPoint("Flt70",m_mc,"FlatBEff_70");
     m_btag_Flt77   = new  btagOpPoint("Flt77",m_mc,"FlatBEff_77");
     m_btag_Flt85   = new  btagOpPoint("Flt85",m_mc,"FlatBEff_85");
-    m_btag_Flt90   = new  btagOpPoint("Flt90",m_mc,"FlatBEff_90");
+  }
+
+  if( !m_infoSwitch.m_sfFTagHyb.empty() ) {
+    m_btag_Hyb60   = new  btagOpPoint("Hyb60",m_mc,"HybBEff_60");
+    m_btag_Hyb70   = new  btagOpPoint("Hyb70",m_mc,"HybBEff_70");
+    m_btag_Hyb77   = new  btagOpPoint("Hyb77",m_mc,"HybBEff_77");
+    m_btag_Hyb85   = new  btagOpPoint("Hyb85",m_mc,"HybBEff_85");
   }
 
   // area
@@ -674,7 +680,13 @@ JetContainer::~JetContainer()
     delete m_btag_Flt70;
     delete m_btag_Flt77;
     delete m_btag_Flt85;
-    delete m_btag_Flt90;
+  }
+
+  if( !m_infoSwitch.m_sfFTagHyb.empty() ) {
+    delete m_btag_Hyb60;
+    delete m_btag_Hyb70;
+    delete m_btag_Hyb77;
+    delete m_btag_Hyb85;
   }
 
   // area
@@ -950,6 +962,17 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
         }
     }
 
+  for(uint i=0; i<m_infoSwitch.m_sfFTagHyb.size(); i++ )
+    {
+      switch( m_infoSwitch.m_sfFTagHyb[i] )
+        {
+        case 60: m_btag_Hyb60->setTree(tree, m_name); break;
+        case 70: m_btag_Hyb70->setTree(tree, m_name); break;
+        case 77: m_btag_Hyb77->setTree(tree, m_name); break;
+        case 85: m_btag_Hyb85->setTree(tree, m_name); break;
+        }
+    }
+
 
   // truth
   if(m_infoSwitch.m_truth)
@@ -1222,6 +1245,29 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
         case 85:
           jet.MV2c20_isFlt85       =m_btag_Flt85->m_isTag       ->at(idx);
           jet.MV2c20_sfFlt85       =(m_mc)?m_btag_Flt85->m_sf->at(idx):dummy1;
+          break;
+        }
+    }
+
+  for(uint i=0; i<m_infoSwitch.m_sfFTagHyb.size(); i++ )
+    {
+      switch( m_infoSwitch.m_sfFTagHyb[i] )
+        {
+        case 60:
+          jet.MV2c20_isHyb60       =m_btag_Hyb60->m_isTag       ->at(idx);
+          jet.MV2c20_sfHyb60       =(m_mc)?m_btag_Hyb60->m_sf->at(idx):dummy1;
+          break;
+        case 70:
+          jet.MV2c20_isHyb70       =m_btag_Hyb70->m_isTag       ->at(idx);
+          jet.MV2c20_sfHyb70       =(m_mc)?m_btag_Hyb70->m_sf->at(idx):dummy1;
+          break;
+        case 77:
+          jet.MV2c20_isHyb77       =m_btag_Hyb77->m_isTag       ->at(idx);
+          jet.MV2c20_sfHyb77       =(m_mc)?m_btag_Hyb77->m_sf->at(idx):dummy1;
+          break;
+        case 85:
+          jet.MV2c20_isHyb85       =m_btag_Hyb85->m_isTag       ->at(idx);
+          jet.MV2c20_sfHyb85       =(m_mc)?m_btag_Hyb85->m_sf->at(idx):dummy1;
           break;
         }
     }
@@ -1560,9 +1606,17 @@ void JetContainer::setBranches(TTree *tree)
     if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 70)) m_btag_Flt70->setBranch(tree, m_name);
     if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 77)) m_btag_Flt77->setBranch(tree, m_name);
     if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 85)) m_btag_Flt85->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 90)) m_btag_Flt90->setBranch(tree, m_name);
 
   }// if sfFTagFlt
+
+  if( !m_infoSwitch.m_sfFTagHyb.empty() ) {
+
+    if (findBTagSF(m_infoSwitch.m_sfFTagHyb, 60)) m_btag_Hyb60->setBranch(tree, m_name);
+    if (findBTagSF(m_infoSwitch.m_sfFTagHyb, 70)) m_btag_Hyb70->setBranch(tree, m_name);
+    if (findBTagSF(m_infoSwitch.m_sfFTagHyb, 77)) m_btag_Hyb77->setBranch(tree, m_name);
+    if (findBTagSF(m_infoSwitch.m_sfFTagHyb, 85)) m_btag_Hyb85->setBranch(tree, m_name);
+
+  }// if sfFTagHyb
 
 
   if( m_infoSwitch.m_area ) {
@@ -1916,7 +1970,15 @@ void JetContainer::clear()
     m_btag_Flt70->clear();
     m_btag_Flt77->clear();
     m_btag_Flt85->clear();
-    m_btag_Flt90->clear();
+
+  }
+
+  if( !m_infoSwitch.m_sfFTagHyb.empty() ) { // just clear them all....
+
+    m_btag_Hyb60->clear();
+    m_btag_Hyb70->clear();
+    m_btag_Hyb77->clear();
+    m_btag_Hyb85->clear();
 
   }
 
@@ -2795,15 +2857,26 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
   if( !m_infoSwitch.m_sfFTagFlt.empty() ) {
     for( unsigned int i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ ) {
       switch( m_infoSwitch.m_sfFTagFlt.at(i) ) {
-      case 30 : m_btag_Flt30->Fill( jet );  break;
-      case 50 : m_btag_Flt50->Fill( jet );	break;
-      case 60 : m_btag_Flt60->Fill( jet );	break;
-      case 70 : m_btag_Flt70->Fill( jet );	break;
-      case 77 : m_btag_Flt77->Fill( jet );	break;
-      case 85 : m_btag_Flt85->Fill( jet );  break;
+      case 30 : m_btag_Flt30->Fill( jet ); break;
+      case 50 : m_btag_Flt50->Fill( jet ); break;
+      case 60 : m_btag_Flt60->Fill( jet ); break;
+      case 70 : m_btag_Flt70->Fill( jet ); break;
+      case 77 : m_btag_Flt77->Fill( jet ); break;
+      case 85 : m_btag_Flt85->Fill( jet ); break;
       }
     }
   } // sfFTagFlt
+
+  if( !m_infoSwitch.m_sfFTagHyb.empty() ) {
+    for( unsigned int i=0; i<m_infoSwitch.m_sfFTagHyb.size(); i++ ) {
+      switch( m_infoSwitch.m_sfFTagHyb.at(i) ) {
+      case 60 : m_btag_Hyb60->Fill( jet ); break;
+      case 70 : m_btag_Hyb70->Fill( jet ); break;
+      case 77 : m_btag_Hyb77->Fill( jet ); break;
+      case 85 : m_btag_Hyb85->Fill( jet ); break;
+      }
+    }
+  } // sfFTagHyb
 
 
   if ( m_infoSwitch.m_area ) {
@@ -3001,6 +3074,17 @@ void JetContainer::FillGlobalBTagSF( const xAOD::EventInfo* eventInfo ){
       }
     }
   } // sfFTagFlt
+
+  if( !m_infoSwitch.m_sfFTagHyb.empty() ) {
+    for( unsigned int i=0; i<m_infoSwitch.m_sfFTagHyb.size(); i++ ) {
+      switch( m_infoSwitch.m_sfFTagHyb.at(i) ) {
+      case 60 :	 m_btag_Hyb60->FillGlobalSF(eventInfo); break;
+      case 70 :	 m_btag_Hyb70->FillGlobalSF(eventInfo); break;
+      case 77 :	 m_btag_Hyb77->FillGlobalSF(eventInfo); break;
+      case 85 :	 m_btag_Hyb85->FillGlobalSF(eventInfo); break;
+      }
+    }
+  } // sfFTagHyb
 
   return;
 }
