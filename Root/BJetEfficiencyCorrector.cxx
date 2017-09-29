@@ -287,13 +287,10 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   // then get the one collection and be done with it
   //
   if ( m_inputAlgo.empty() ) {
-    // Check the existence of input container
-    if ( m_store->contains<xAOD::JetContainer>( m_inContainerName ) ) {
-      // this will be the collection processed - no matter what!!
-      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
+    // this will be the collection processed - no matter what!!
+    ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
-      executeEfficiencyCorrection( inJets, eventInfo, true);
-    }
+    executeEfficiencyCorrection( inJets, eventInfo, true);
   }
   //
   // get the list of systematics to run over
@@ -316,7 +313,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     //
     HelperFunctions::remove_duplicates(systNames);
 
-    // create parallel container of electrons for met systematics.
+    // create parallel container of jets for met systematics.
     // this does not get decorated and contains the same elements
     // of the nominal container. It will be used by the TreeAlgo
     // as we don't want sys variations for eff in MET sys trees.
@@ -349,24 +346,15 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     //
     for ( auto systName : systNames ) {
 
-      const xAOD::JetContainer* outJets(nullptr);
-
       bool doNominal = (systName == "");
 
       // Check the existence of the container
-      if ( m_store->contains<xAOD::JetContainer>( m_inContainerName+systName )  ) {
-        ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
 
-        if ( !m_store->contains<xAOD::JetContainer>( m_outContainerName+systName ) ) {
-          ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_outContainerName+systName, inJets)));
-        }
+      executeEfficiencyCorrection( inJets, eventInfo, doNominal );
 
-        ANA_CHECK( HelperFunctions::retrieve(outJets, m_outContainerName+systName, m_event, m_store, msg()) );
+      vecOutContainerNames->push_back( systName );
 
-        executeEfficiencyCorrection( outJets, eventInfo, doNominal );
-
-        vecOutContainerNames->push_back( systName );
-      }
     }
 
     if ( !m_outputAlgo.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgo ) ) { // might have already been stored by another execution of this algo
@@ -517,17 +505,17 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       }
       */
 
-       ANA_MSG_DEBUG( "===>>>");
-       ANA_MSG_DEBUG( " ");
-       ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
-       ANA_MSG_DEBUG( " ");
-       ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
-       ANA_MSG_DEBUG( " ");
-       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-       ANA_MSG_DEBUG( " ");
-       ANA_MSG_DEBUG( "BTag SF:");
-       ANA_MSG_DEBUG( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
-       ANA_MSG_DEBUG( "--------------------------------------");
+      ANA_MSG_DEBUG( "===>>>");
+      ANA_MSG_DEBUG( " ");
+      ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
+      ANA_MSG_DEBUG( " ");
+      ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
+      ANA_MSG_DEBUG( " ");
+      ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+      ANA_MSG_DEBUG( " ");
+      ANA_MSG_DEBUG( "BTag SF:");
+      ANA_MSG_DEBUG( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
+      ANA_MSG_DEBUG( "--------------------------------------");
       ++idx;
 
     } // close jet loop

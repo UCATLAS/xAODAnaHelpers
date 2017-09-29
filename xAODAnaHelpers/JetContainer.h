@@ -339,7 +339,7 @@ namespace xAH {
         } // Fill
       
         void FillGlobalSF( const xAOD::EventInfo* eventInfo ) {
-          SG::AuxElement::ConstAccessor< std::vector<float> > sf_GLOBAL("BTag_SF_"+m_accessorName+"_GLOBAL");
+	  SG::AuxElement::ConstAccessor< std::vector<float> > sf_GLOBAL("BTag_SF_"+m_accessorName+"_GLOBAL");
           if ( sf_GLOBAL.isAvailable( *eventInfo ) ) { 
             m_weight_sf = sf_GLOBAL( *eventInfo ); 
           } else { 
