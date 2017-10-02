@@ -416,8 +416,9 @@ if __name__ == "__main__":
       sh_all.setMetaString("nc_cmtConfig", os.getenv("AnalysisBase_PLATFORM"))
 
     # read susy meta data (should be configurable)
-    xAH_logger.info("reading all metadata in $ROOTCOREBIN/data/xAODAnaHelpers/metadata")
-    ROOT.SH.readSusyMetaDir(sh_all,"$ROOTCOREBIN/data/xAODAnaHelpers/metadata")
+    path_metadata=ROOT.PathResolverFindCalibDirectory("xAODAnaHelpers/metadata")
+    xAH_logger.info("reading all metadata in {0}".format(path_metadata))
+    ROOT.SH.readSusyMetaDir(sh_all,path_metadata)
 
     # this is the basic description of our job
     xAH_logger.info("creating new job")
