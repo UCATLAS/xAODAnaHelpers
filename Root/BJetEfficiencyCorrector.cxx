@@ -277,88 +277,28 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   ANA_MSG_DEBUG("\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
 
-  //
-  //  input jets
-  //
-  const xAOD::JetContainer* inJets(nullptr);
-
-  //
-  // if input comes from xAOD, or just running one collection,
+  // if m_inputAlgo == "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  //
-  if ( m_inputAlgo.empty() ) {
-    // this will be the collection processed - no matter what!!
-    ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
+  std::vector<std::string>* systNames_ptr(nullptr);
+  if ( !m_inputAlgo.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputAlgo, 0, m_store, msg()) );
 
-    executeEfficiencyCorrection( inJets, eventInfo, true);
-  }
-  //
-  // get the list of systematics to run over
-  //
-  else {
+  std::vector<std::string> systNames{""};
+  if (systNames_ptr) systNames = *systNames_ptr;
 
-    //
-    // get vector of string giving the names
-    //
-    std::vector<std::string> systNames;
+  // loop over systematic sets available
+  for ( auto systName : systNames ) {
 
-    // add each vector of systematics names to the full list
-    //
-    for ( auto sysInput : m_inputAlgoList ) {
-      std::vector<std::string>* it_systNames(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(it_systNames, sysInput, 0, m_store, msg()) );
-      systNames.insert( systNames.end(), it_systNames->begin(), it_systNames->end() );
-    }
-    // and now remove eventual duplicates
-    //
-    HelperFunctions::remove_duplicates(systNames);
+    bool doNominal = (systName == "");
 
-    // create parallel container of jets for met systematics.
-    // this does not get decorated and contains the same elements
-    // of the nominal container. It will be used by the TreeAlgo
-    // as we don't want sys variations for eff in MET sys trees.
-    //
-    if ( !m_sysNamesForParCont.empty() )  {
-      std::vector<std::string>* par_systNames(nullptr);
+    // input jets
+    const xAOD::JetContainer* inJets(nullptr);
 
-      ANA_CHECK( HelperFunctions::retrieve(par_systNames, m_sysNamesForParCont, 0, m_store, msg()) );
-
-      for ( auto systName : *par_systNames ) {
-         if ( !systName.empty() && !m_store->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
-           const xAOD::JetContainer* tmpJets(nullptr);
-
-           if ( m_store->contains<xAOD::JetContainer>( m_inContainerName ) ) {
-
-              ANA_CHECK( HelperFunctions::retrieve(tmpJets, m_inContainerName, m_event, m_store, msg()) );
-              ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(m_store, m_inContainerName+systName, tmpJets)));
-
-           } // the nominal container is copied therefore it has to exist!
-
-         } // skip the nominal case or if the container already exists
-      } // consider all "parallel" systematics specified by the user
-
-    } // do this thing only if required
-
-    std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
-
-    //
-    // loop over systematics
-    //
-    for ( auto systName : systNames ) {
-
-      bool doNominal = (systName == "");
-
+    // some systematics might have rejected the event
+    if ( m_store->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
       // Check the existence of the container
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
 
       executeEfficiencyCorrection( inJets, eventInfo, doNominal );
-
-      vecOutContainerNames->push_back( systName );
-
-    }
-
-    if ( !m_outputAlgo.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgo ) ) { // might have already been stored by another execution of this algo
-      ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgo));
     }
 
   }
