@@ -167,7 +167,11 @@ EL::StatusCode METConstructor :: initialize ()
   setToolName( m_metSignificance_handle );
   ASG_SET_ANA_TOOL_TYPE( m_metSignificance_handle, met::METSignificance );
   ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
-  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", static_cast<int>(m_significanceSoftTermReso)) ); // property is int for some reason
+#ifdef USE_CMAKE
+  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
+#else
+  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", static_cast<int>(m_significanceSoftTermReso)) );
+#endif
   ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !m_isMC) );
   // For AFII samples
   if ( m_isMC ) {
