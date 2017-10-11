@@ -95,6 +95,7 @@ parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', h
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
+parser.add_argument('--stats', action='store_true', dest='variable_stats', default=False, help='If enabled, will variable usage statistics.')
 
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
@@ -436,6 +437,11 @@ if __name__ == "__main__":
     # should be configurable
     job.options().setDouble(ROOT.EL.Job.optCacheSize, 50*1024*1024)
     job.options().setDouble(ROOT.EL.Job.optCacheLearnEntries, 50)
+
+    if args.variable_stats:
+      xAH_logger.info("\tprinting variable statistics")
+      job.options().setDouble(ROOT.EL.Job.optXAODPerfStats, 1)
+      job.options().setDouble(ROOT.EL.Job.optPrintPerFileStats, 1)
 
     # access mode branch
     if args.access_mode == 'branch':
