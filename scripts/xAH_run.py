@@ -107,7 +107,7 @@ drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, requ
 drivers_common.add_argument('--optRemoveSubmitDir', metavar='', type=int, required=False, default=None, help='the name of the option for overwriting the submission directory.  if you set this to a non-zero value it will remove any existing submit-directory before tryingto create a new one. You can also use -f/--force as well in xAH_run.py.')
 drivers_common.add_argument('--optBatchSharedFileSystem', type=bool, required=False, default=False, help='enable to signify whether your batch driver is running on a shared filesystem')
 drivers_common.add_argument('--optBatchWait', action='store_true', required=False, help='submit using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
-drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default=None, help='extra code to execute on each batch node before starting EventLoop')
+drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default='', help='extra code to execute on each batch node before starting EventLoop')
 
 # These are handled by xAH_run.py at the top level instead of down by drivers
 #.add_argument('--optMaxEvents', type=str, required=False, default=None)
