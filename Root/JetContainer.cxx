@@ -1111,255 +1111,210 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     {
       for(auto btag : m_btags)
 	{
-	  if(btag->m_accessorName=="DL1rnn_FixedCutBEff_60")
+	  switch(btag->m_op)
 	    {
+	    case btagOpPoint::BTaggerOP::DL1rnn_FixedCutBEff_60:
 	      jet.is_DL1rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_DL1rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1rnn_FixedCutBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1rnn_FixedCutBEff_70:
 	      jet.is_DL1rnn_FixedCutBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_DL1rnn_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1rnn_FixedCutBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1rnn_FixedCutBEff_77:
 	      jet.is_DL1rnn_FixedCutBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_DL1rnn_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1rnn_FixedCutBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1rnn_FixedCutBEff_85:
 	      jet.is_DL1rnn_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_DL1rnn_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1rnn_HybBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1rnn_HybBEff_60:
 	      jet.is_DL1rnn_HybBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_DL1rnn_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1rnn_HybBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1rnn_HybBEff_70:
 	      jet.is_DL1rnn_HybBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_DL1rnn_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1rnn_HybBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1rnn_HybBEff_77:
 	      jet.is_DL1rnn_HybBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_DL1rnn_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1rnn_HybBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1rnn_HybBEff_85:
 	      jet.is_DL1rnn_HybBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_DL1rnn_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1mu_FixedCutBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1mu_FixedCutBEff_60:
 	      jet.is_DL1mu_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_DL1mu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1mu_FixedCutBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1mu_FixedCutBEff_70:
 	      jet.is_DL1mu_FixedCutBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_DL1mu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1mu_FixedCutBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1mu_FixedCutBEff_77:
 	      jet.is_DL1mu_FixedCutBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_DL1mu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1mu_FixedCutBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1mu_FixedCutBEff_85:
 	      jet.is_DL1mu_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_DL1mu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1mu_HybBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1mu_HybBEff_60:
 	      jet.is_DL1mu_HybBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_DL1mu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1mu_HybBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1mu_HybBEff_70:
 	      jet.is_DL1mu_HybBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_DL1mu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1mu_HybBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1mu_HybBEff_77:
 	      jet.is_DL1mu_HybBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_DL1mu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1mu_HybBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1mu_HybBEff_85:
 	      jet.is_DL1mu_HybBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_DL1mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1_FixedCutBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1_FixedCutBEff_60:
 	      jet.is_DL1_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_DL1_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1_FixedCutBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1_FixedCutBEff_70:
 	      jet.is_DL1_FixedCutBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_DL1_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1_FixedCutBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1_FixedCutBEff_77:
 	      jet.is_DL1_FixedCutBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_DL1_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1_FixedCutBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1_FixedCutBEff_85:
 	      jet.is_DL1_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_DL1_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1_HybBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1_HybBEff_60:
 	      jet.is_DL1_HybBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_DL1_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1_HybBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1_HybBEff_70:
 	      jet.is_DL1_HybBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_DL1_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1_HybBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1_HybBEff_77:
 	      jet.is_DL1_HybBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_DL1_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="DL1_HybBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::DL1_HybBEff_85:
 	      jet.is_DL1_HybBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_DL1_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10rnn_FixedCutBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10rnn_FixedCutBEff_60:
 	      jet.is_MV2c10rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10rnn_FixedCutBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10rnn_FixedCutBEff_70:
 	      jet.is_MV2c10rnn_FixedCutBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10rnn_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10rnn_FixedCutBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10rnn_FixedCutBEff_77:
 	      jet.is_MV2c10rnn_FixedCutBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10rnn_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10rnn_FixedCutBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10rnn_FixedCutBEff_85:
 	      jet.is_MV2c10rnn_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10rnn_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10rnn_HybBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10rnn_HybBEff_60:
 	      jet.is_MV2c10rnn_HybBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10rnn_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10rnn_HybBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10rnn_HybBEff_70:
 	      jet.is_MV2c10rnn_HybBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10rnn_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10rnn_HybBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10rnn_HybBEff_77:
 	      jet.is_MV2c10rnn_HybBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10rnn_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10rnn_HybBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10rnn_HybBEff_85:
 	      jet.is_MV2c10rnn_HybBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10rnn_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10mu_FixedCutBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10mu_FixedCutBEff_60:
 	      jet.is_MV2c10mu_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10mu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10mu_FixedCutBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10mu_FixedCutBEff_70:
 	      jet.is_MV2c10mu_FixedCutBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10mu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10mu_FixedCutBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10mu_FixedCutBEff_77:
 	      jet.is_MV2c10mu_FixedCutBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10mu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10mu_FixedCutBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10mu_FixedCutBEff_85:
 	      jet.is_MV2c10mu_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10mu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10mu_HybBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10mu_HybBEff_60:
 	      jet.is_MV2c10mu_HybBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10mu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10mu_HybBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10mu_HybBEff_70:
 	      jet.is_MV2c10mu_HybBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10mu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10mu_HybBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10mu_HybBEff_77:
 	      jet.is_MV2c10mu_HybBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10mu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10mu_HybBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10mu_HybBEff_85:
 	      jet.is_MV2c10mu_HybBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_FixedCutBEff_30")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_FixedCutBEff_30:
 	      jet.is_MV2c10_FixedCutBEff_30=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_FixedCutBEff_30=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_FixedCutBEff_50")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_FixedCutBEff_50:
 	      jet.is_MV2c10_FixedCutBEff_50=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_FixedCutBEff_50=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_FixedCutBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_FixedCutBEff_60:
 	      jet.is_MV2c10_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_FixedCutBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_FixedCutBEff_70:
 	      jet.is_MV2c10_FixedCutBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_FixedCutBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_FixedCutBEff_77:
 	      jet.is_MV2c10_FixedCutBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_FixedCutBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_FixedCutBEff_85:
 	      jet.is_MV2c10_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_HybBEff_60")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_HybBEff_60:
 	      jet.is_MV2c10_HybBEff_60=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_HybBEff_70")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_HybBEff_70:
 	      jet.is_MV2c10_HybBEff_70=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_HybBEff_77")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_HybBEff_77:
 	      jet.is_MV2c10_HybBEff_77=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	    }
-	  else if(btag->m_accessorName=="MV2c10_HybBEff_85")
-	    {
+	      break;
+	    case btagOpPoint::BTaggerOP::MV2c10_HybBEff_85:
 	      jet.is_MV2c10_HybBEff_85=       btag->m_isTag->at(idx);
 	      jet.SF_MV2c10_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	      break;
+	    default:
+	      break;
 	    }
 	}
     }
