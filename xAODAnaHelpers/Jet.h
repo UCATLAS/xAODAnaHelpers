@@ -10,7 +10,23 @@ namespace xAH {
   class Jet : public Particle
     {
     public:
-      
+      enum BTaggerOP {
+	None,
+	DL1rnn_FixedCutBEff_60, DL1rnn_FixedCutBEff_70,DL1rnn_FixedCutBEff_77,DL1rnn_FixedCutBEff_85,
+	DL1rnn_HybBEff_60,DL1rnn_HybBEff_70,DL1rnn_HybBEff_77,DL1rnn_HybBEff_85,
+	DL1mu_FixedCutBEff_60,DL1mu_FixedCutBEff_70,DL1mu_FixedCutBEff_77,DL1mu_FixedCutBEff_85,
+	DL1mu_HybBEff_60,DL1mu_HybBEff_70,DL1mu_HybBEff_77,DL1mu_HybBEff_85,
+	DL1_FixedCutBEff_60,DL1_FixedCutBEff_70,DL1_FixedCutBEff_77,DL1_FixedCutBEff_85,
+	DL1_HybBEff_60,DL1_HybBEff_70,DL1_HybBEff_77,DL1_HybBEff_85,
+	MV2c10rnn_FixedCutBEff_60,MV2c10rnn_FixedCutBEff_70,MV2c10rnn_FixedCutBEff_77,MV2c10rnn_FixedCutBEff_85,
+	MV2c10rnn_HybBEff_60,MV2c10rnn_HybBEff_70,MV2c10rnn_HybBEff_77,MV2c10rnn_HybBEff_85,
+	MV2c10mu_FixedCutBEff_60,MV2c10mu_FixedCutBEff_70,MV2c10mu_FixedCutBEff_77,MV2c10mu_FixedCutBEff_85,
+	MV2c10mu_HybBEff_60,MV2c10mu_HybBEff_70,MV2c10mu_HybBEff_77,MV2c10mu_HybBEff_85,
+	MV2c10_FixedCutBEff_30,MV2c10_FixedCutBEff_50,
+	MV2c10_FixedCutBEff_60,MV2c10_FixedCutBEff_70,MV2c10_FixedCutBEff_77,MV2c10_FixedCutBEff_85,
+	MV2c10_HybBEff_60,MV2c10_HybBEff_70,MV2c10_HybBEff_77,MV2c10_HybBEff_85
+      };
+
       Jet();
       float rapidity;
 
@@ -285,6 +301,8 @@ namespace xAH {
       const Jet * matchedJet;
 
     public:
+      int is_btag(BTaggerOP op) const;
+      const std::vector<float>& SF_btag(BTaggerOP op) const;
 
       void muonInJetCorrection(const xAH::MuonContainer* muons);
 
