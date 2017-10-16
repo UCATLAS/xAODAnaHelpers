@@ -139,9 +139,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
 
   // make unique name
-  m_decor           += "_" + m_operatingPt;
-  m_decorSF         += "_" + m_operatingPt;
-  m_outputSystName  += "_" + m_operatingPt;
+  m_decor           += "_" + m_taggerName + "_" + m_operatingPt;
+  m_decorSF         += "_" + m_taggerName + "_" + m_operatingPt;
+  m_outputSystName  += "_" + m_taggerName + "_" + m_operatingPt;
 
   ANA_MSG_INFO( "Decision Decoration Name     : " << m_decor);
   ANA_MSG_INFO( "Scale Factor Decoration Name : " << m_decorSF);
