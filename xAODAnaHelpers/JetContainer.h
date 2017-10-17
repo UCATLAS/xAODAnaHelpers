@@ -32,7 +32,6 @@ namespace xAH {
       virtual void clear();
       virtual void FillJet( const xAOD::Jet* jet,            const xAOD::Vertex* pv, int pvLocation );
       virtual void FillJet( const xAOD::IParticle* particle, const xAOD::Vertex* pv, int pvLocation );
-      virtual void FillGlobalBTagSF( const xAOD::EventInfo* eventInfo );
 
       virtual void updateParticle(uint idx, Jet& jet);
 
@@ -274,13 +273,11 @@ namespace xAH {
 	// branches
         int m_njets;
         std::vector<int>*                  m_isTag;
-        std::vector<float>*                m_weight_sf;
         std::vector< std::vector<float> >* m_sf;
 
         btagOpPoint(bool mc, const std::string& accessorName)
 	  : m_mc(mc), m_accessorName(accessorName),m_old(true) {
           m_isTag = new std::vector<int>();
-          m_weight_sf = new std::vector<float>();
           m_sf    = new std::vector< std::vector<float> >();
 
 	  if(m_accessorName=="Fix30")
@@ -322,7 +319,6 @@ namespace xAH {
         btagOpPoint(bool mc, const std::string& tagger, const std::string& wp)
 	  : m_mc(mc), m_accessorName(tagger+"_"+wp),m_old(false) {
           m_isTag     = new std::vector<int>();
-          m_weight_sf = new std::vector<float>();
           m_sf        = new std::vector< std::vector<float> >();
 
 	  if(m_accessorName=="DL1rnn_FixedCutBEff_60")
@@ -429,7 +425,6 @@ namespace xAH {
 
         ~btagOpPoint() {
           delete m_isTag;
-	  delete m_weight_sf;
           delete m_sf;
         }
 
@@ -442,7 +437,6 @@ namespace xAH {
 	      HelperFunctions::connectBranch<int>                  (jetName, tree,"is"+m_accessorName, &m_isTag);
 	      if(m_mc) {
 		HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF"+m_accessorName, &m_sf);
-		tree->SetBranchAddress(("weight_"+jetName+"_SF_"+m_accessorName).c_str(), &m_weight_sf);
 	      }
 	    }
 	  else
@@ -450,7 +444,6 @@ namespace xAH {
 	      HelperFunctions::connectBranch<int>                  (jetName, tree,"is_"+m_accessorName, &m_isTag);
 	      if(m_mc) {
 		HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF_"+m_accessorName, &m_sf);
-		tree->SetBranchAddress(("weight_"+jetName+"_SF_"+m_accessorName).c_str(), &m_weight_sf);
 	      }
 	    }
         }
@@ -463,7 +456,6 @@ namespace xAH {
 
           if ( m_mc ) {
             tree->Branch((jetName+"_SF_"+m_accessorName).c_str(),           &m_sf);
-            tree->Branch(("weight_"+jetName+"_SF_"+m_accessorName).c_str(), &m_weight_sf);
           }
         }
 
@@ -472,7 +464,6 @@ namespace xAH {
 	  if(m_old) return; // DEPRICATED
           m_njets = 0;
           m_isTag->clear();
-          m_weight_sf->clear();
           m_sf->clear();
         }
 
@@ -495,20 +486,6 @@ namespace xAH {
             m_sf->push_back(junk);
           }
         } // Fill
-
-        void FillGlobalSF( const xAOD::EventInfo* eventInfo ) {
-	  if(m_old) return; // DEPRICATED
-	  SG::AuxElement::ConstAccessor< std::vector<float> > sf_GLOBAL("BTag_SF_"+m_accessorName+"_GLOBAL");
-	  m_weight_sf->clear();
-          if ( sf_GLOBAL.isAvailable( *eventInfo ) ) { 
-	    for(auto weight : sf_GLOBAL( *eventInfo ))
-	      m_weight_sf->push_back(weight);
-          } else { 
-            m_weight_sf->push_back(-999.0); 
-          }
-
-          return;
-        }
       };
 
       std::vector<btagOpPoint*> m_btags;

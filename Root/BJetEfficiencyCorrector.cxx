@@ -326,23 +326,12 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     sfVec(*jet_itr) = std::vector<float>();
   }
 
-  //
-  // Define also an *event* weight, which is the product of all the BTag eff. SFs for each object in the event
-  //
-  std::string SF_NAME_GLOBAL = m_decorSF + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<float> > sfVec_GLOBAL ( SF_NAME_GLOBAL );
-
   std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
 
   //
   // loop over available systematics
   //
   for(const auto& syst_it : m_systList){
-
-    //
-    // Initialise product of SFs for *this* systematic
-    //
-    float SF_GLOBAL(1.0);
 
     //
     //  If not nominal jets, dont calculate systematics
@@ -428,8 +417,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       // Add it to vector
       sfVec(*jet_itr).push_back(SF);
 
-      if(doNominal) SF_GLOBAL *= SF;
-
       /*
       if( m_getScaleFactors){
         //
@@ -459,18 +446,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       ++idx;
 
     } // close jet loop
-
-    // For *this* systematic, store the global SF weight for the event
-    ANA_MSG_DEBUG( "--------------------------------------");
-    ANA_MSG_DEBUG( "GLOBAL BTag SF for event:");
-    ANA_MSG_DEBUG( "\t " << SF_GLOBAL );
-    ANA_MSG_DEBUG( "--------------------------------------");
-
-    //
-    //  Add the SF only if doing nominal Jets
-    //
-    if(doNominal) sfVec_GLOBAL( *eventInfo ).push_back( SF_GLOBAL );
-
 
   } // close loop on systematics
 

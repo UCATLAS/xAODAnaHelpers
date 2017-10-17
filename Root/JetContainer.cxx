@@ -3043,14 +3043,3 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
   return;
 }
-
-
-void JetContainer::FillGlobalBTagSF( const xAOD::EventInfo* eventInfo ){
-
-  if( !m_infoSwitch.m_jetBTag.empty() ) {
-    for(auto btag : m_btags)
-	btag->FillGlobalSF(eventInfo);
-  } // jetBTag
-
-  return;
-}
