@@ -269,6 +269,7 @@ namespace xAH {
         bool m_mc;
         std::string m_accessorName;
 	Jet::BTaggerOP m_op;
+	bool m_old;
 
 	// branches
         int m_njets;
@@ -276,8 +277,50 @@ namespace xAH {
         std::vector<float>*                m_weight_sf;
         std::vector< std::vector<float> >* m_sf;
 
-        btagOpPoint(bool mc, std::string tagger, std::string wp)
-	  : m_mc(mc), m_accessorName(tagger+"_"+wp) {
+        btagOpPoint(bool mc, const std::string& accessorName)
+	  : m_mc(mc), m_accessorName(accessorName),m_old(true) {
+          m_isTag = new std::vector<int>();
+          m_weight_sf = new std::vector<float>();
+          m_sf    = new std::vector< std::vector<float> >();
+
+	  if(m_accessorName=="Fix30")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_30;
+	  else if(m_accessorName=="Fix50")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_50;
+	  else if(m_accessorName=="Fix60")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_60;
+	  else if(m_accessorName=="Fix70")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_70;
+	  else if(m_accessorName=="Fix77")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_77;
+	  else if(m_accessorName=="Fix85")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_85;
+	  else if(m_accessorName=="Fix90")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_90;
+	  else if(m_accessorName=="Flt30")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_30;
+	  else if(m_accessorName=="Flt50")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_50;
+	  else if(m_accessorName=="Flt60")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_60;
+	  else if(m_accessorName=="Flt70")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_70;
+	  else if(m_accessorName=="Flt77")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_77;
+	  else if(m_accessorName=="Flt85")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_85;
+	  else if(m_accessorName=="Hyb60")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_60;
+	  else if(m_accessorName=="Hyb70")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_70;
+	  else if(m_accessorName=="Hyb77")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_77;
+	  else if(m_accessorName=="Hyb85")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_85;
+        }
+
+        btagOpPoint(bool mc, const std::string& tagger, const std::string& wp)
+	  : m_mc(mc), m_accessorName(tagger+"_"+wp),m_old(false) {
           m_isTag     = new std::vector<int>();
           m_weight_sf = new std::vector<float>();
           m_sf        = new std::vector< std::vector<float> >();
@@ -394,15 +437,27 @@ namespace xAH {
           tree->SetBranchStatus  (("n"+jetName+"s_"+m_accessorName).c_str(), 1);
           tree->SetBranchAddress (("n"+jetName+"s_"+m_accessorName).c_str(), &m_njets);
 
-          HelperFunctions::connectBranch<int>                  (jetName, tree,"is_"+m_accessorName, &m_isTag);
-          if(m_mc) {
-	    HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF_"+m_accessorName, &m_sf);
-	    tree->SetBranchAddress(("weight_"+jetName+"_SF_"+m_accessorName).c_str(), &m_weight_sf);
-	  }
+	  if(m_old)
+	    {
+	      HelperFunctions::connectBranch<int>                  (jetName, tree,"is"+m_accessorName, &m_isTag);
+	      if(m_mc) {
+		HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF"+m_accessorName, &m_sf);
+		tree->SetBranchAddress(("weight_"+jetName+"_SF_"+m_accessorName).c_str(), &m_weight_sf);
+	      }
+	    }
+	  else
+	    {
+	      HelperFunctions::connectBranch<int>                  (jetName, tree,"is_"+m_accessorName, &m_isTag);
+	      if(m_mc) {
+		HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF_"+m_accessorName, &m_sf);
+		tree->SetBranchAddress(("weight_"+jetName+"_SF_"+m_accessorName).c_str(), &m_weight_sf);
+	      }
+	    }
         }
 
 
         void setBranch(TTree *tree, std::string jetName) {
+	  if(m_old) return; // DEPRICATED
           tree->Branch(("n"+jetName+"s_"+m_accessorName).c_str(), &m_njets, ("n"+jetName+"s_"+m_accessorName+"/I").c_str());
           tree->Branch((jetName+"_is_"+m_accessorName).c_str(),   &m_isTag);
 
@@ -414,6 +469,7 @@ namespace xAH {
 
 
         void clear() {
+	  if(m_old) return; // DEPRICATED
           m_njets = 0;
           m_isTag->clear();
           m_weight_sf->clear();
@@ -421,7 +477,7 @@ namespace xAH {
         }
 
         void Fill( const xAOD::Jet* jet ) {
-
+	  if(m_old) return; // DEPRICATED
           SG::AuxElement::ConstAccessor< char > isTag("BTag_"+m_accessorName);
           if( isTag.isAvailable( *jet ) ) {
             if ( isTag( *jet ) == 1 ) ++m_njets;
@@ -441,6 +497,7 @@ namespace xAH {
         } // Fill
 
         void FillGlobalSF( const xAOD::EventInfo* eventInfo ) {
+	  if(m_old) return; // DEPRICATED
 	  SG::AuxElement::ConstAccessor< std::vector<float> > sf_GLOBAL("BTag_SF_"+m_accessorName+"_GLOBAL");
 	  m_weight_sf->clear();
           if ( sf_GLOBAL.isAvailable( *eventInfo ) ) { 
@@ -452,9 +509,8 @@ namespace xAH {
 
           return;
         }
-  
-      };  //struct btagOpPoint
-      
+      };
+
       std::vector<btagOpPoint*> m_btags;
 
       // JVC
