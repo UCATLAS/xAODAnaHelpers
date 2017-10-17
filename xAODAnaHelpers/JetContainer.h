@@ -271,7 +271,6 @@ namespace xAH {
 	bool m_old;
 
 	// branches
-        int m_njets;
         std::vector<int>*                  m_isTag;
         std::vector< std::vector<float> >* m_sf;
 
@@ -429,9 +428,6 @@ namespace xAH {
         }
 
         void setTree(TTree *tree, std::string jetName) {
-          tree->SetBranchStatus  (("n"+jetName+"s_"+m_accessorName).c_str(), 1);
-          tree->SetBranchAddress (("n"+jetName+"s_"+m_accessorName).c_str(), &m_njets);
-
 	  if(m_old)
 	    {
 	      HelperFunctions::connectBranch<int>                  (jetName, tree,"is"+m_accessorName, &m_isTag);
@@ -451,7 +447,6 @@ namespace xAH {
 
         void setBranch(TTree *tree, std::string jetName) {
 	  if(m_old) return; // DEPRICATED
-          tree->Branch(("n"+jetName+"s_"+m_accessorName).c_str(), &m_njets, ("n"+jetName+"s_"+m_accessorName+"/I").c_str());
           tree->Branch((jetName+"_is_"+m_accessorName).c_str(),   &m_isTag);
 
           if ( m_mc ) {
@@ -462,7 +457,6 @@ namespace xAH {
 
         void clear() {
 	  if(m_old) return; // DEPRICATED
-          m_njets = 0;
           m_isTag->clear();
           m_sf->clear();
         }
@@ -470,21 +464,18 @@ namespace xAH {
         void Fill( const xAOD::Jet* jet ) {
 	  if(m_old) return; // DEPRICATED
           SG::AuxElement::ConstAccessor< char > isTag("BTag_"+m_accessorName);
-          if( isTag.isAvailable( *jet ) ) {
-            if ( isTag( *jet ) == 1 ) ++m_njets;
+          if( isTag.isAvailable( *jet ) )
             m_isTag->push_back( isTag( *jet ) );
-          } else { 
+          else
             m_isTag->push_back( -1 ); 
-          }
 
           if(!m_mc) { return; }
           SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_"+m_accessorName+"_SF");
-          if ( sf.isAvailable( *jet ) ) {
+	  static const std::vector<float> junk(1,-999);
+          if ( sf.isAvailable( *jet ) )
             m_sf->push_back( sf( *jet ) );
-          } else {
-            std::vector<float> junk(1,-999);
+          else
             m_sf->push_back(junk);
-          }
         } // Fill
       };
 
