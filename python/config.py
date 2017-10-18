@@ -14,6 +14,7 @@ from .utils import NameGenerator
 class Config(object):
   def __init__(self):
     self._algorithms = []
+    self._samples    = {}
     self._log        = []
 
   def setalg(self, className, options):
@@ -77,3 +78,10 @@ class Config(object):
 
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
+
+
+  def samplemetadata(self, dsid, **kwargs):
+    try:
+      self._samples[dsid].update(kwargs)
+    except KeyError:
+      self._samples[dsid] = {}
