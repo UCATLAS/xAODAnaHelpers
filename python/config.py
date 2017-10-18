@@ -18,6 +18,13 @@ class Config(object):
     self._log        = []
 
   def setalg(self, className, options):
+    logger.warning("Config::setalg is being renamed to Config::algorithm.")
+    import inspect
+    frame, path, lineno, source, lines, _ = inspect.stack()[1]
+    logger.warning("\tPossible call stack: {0:s}({1:d}): {2:s}".format(path, lineno, lines[0].strip()))
+    return self.algorithm(className, options)
+
+  def algorithm(self, className, options):
     # check first argument
     if isinstance(className, unicode): className = className.encode('utf-8')
     if not isinstance(className, str):
@@ -79,9 +86,10 @@ class Config(object):
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
 
-
-  def samplemetadata(self, dsid, **kwargs):
+  # set based on patterns
+  def sample(self, pattern, **kwargs):
+    pattern = str(pattern)
     try:
-      self._samples[dsid].update(kwargs)
+      self._samples[pattern].update(kwargs)
     except KeyError:
-      self._samples[dsid] = {}
+      self._samples[pattern] = kwargs
