@@ -95,6 +95,7 @@ parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', h
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
+parser.add_argument('--stats', action='store_true', dest='variable_stats', default=False, help='If enabled, will variable usage statistics.')
 
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
@@ -106,7 +107,7 @@ drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, requ
 drivers_common.add_argument('--optRemoveSubmitDir', metavar='', type=int, required=False, default=None, help='the name of the option for overwriting the submission directory.  if you set this to a non-zero value it will remove any existing submit-directory before tryingto create a new one. You can also use -f/--force as well in xAH_run.py.')
 drivers_common.add_argument('--optBatchSharedFileSystem', type=bool, required=False, default=False, help='enable to signify whether your batch driver is running on a shared filesystem')
 drivers_common.add_argument('--optBatchWait', action='store_true', required=False, help='submit using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
-drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default=None, help='extra code to execute on each batch node before starting EventLoop')
+drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default='', help='extra code to execute on each batch node before starting EventLoop')
 
 # These are handled by xAH_run.py at the top level instead of down by drivers
 #.add_argument('--optMaxEvents', type=str, required=False, default=None)
@@ -416,8 +417,9 @@ if __name__ == "__main__":
       sh_all.setMetaString("nc_cmtConfig", os.getenv("AnalysisBase_PLATFORM"))
 
     # read susy meta data (should be configurable)
-    xAH_logger.info("reading all metadata in $ROOTCOREBIN/data/xAODAnaHelpers/metadata")
-    ROOT.SH.readSusyMetaDir(sh_all,"$ROOTCOREBIN/data/xAODAnaHelpers/metadata")
+    path_metadata=ROOT.PathResolverFindCalibDirectory("xAODAnaHelpers/metadata")
+    xAH_logger.info("reading all metadata in {0}".format(path_metadata))
+    ROOT.SH.readSusyMetaDir(sh_all,path_metadata)
 
     # this is the basic description of our job
     xAH_logger.info("creating new job")
@@ -435,6 +437,11 @@ if __name__ == "__main__":
     # should be configurable
     job.options().setDouble(ROOT.EL.Job.optCacheSize, 50*1024*1024)
     job.options().setDouble(ROOT.EL.Job.optCacheLearnEntries, 50)
+
+    if args.variable_stats:
+      xAH_logger.info("\tprinting variable statistics")
+      job.options().setDouble(ROOT.EL.Job.optXAODPerfStats, 1)
+      job.options().setDouble(ROOT.EL.Job.optPrintPerFileStats, 1)
 
     # access mode branch
     if args.access_mode == 'branch':

@@ -74,7 +74,7 @@ public:
   /// @brief Introduce "resolution" for jets with low JVT, if the analysis is sensitive to pileup jets
   bool m_significanceTreatPUJets = true;
   /// @brief Set soft term resolution
-  float m_significanceSoftTermReso = 10.0;
+  double m_significanceSoftTermReso = 10.0;
 
   // used for systematics
   /// @brief set to false if you want to run met systematics

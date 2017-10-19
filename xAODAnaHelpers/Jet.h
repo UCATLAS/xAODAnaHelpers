@@ -10,7 +10,24 @@ namespace xAH {
   class Jet : public Particle
     {
     public:
-      
+      enum BTaggerOP {
+	None,
+	DL1rnn_FixedCutBEff_60, DL1rnn_FixedCutBEff_70,DL1rnn_FixedCutBEff_77,DL1rnn_FixedCutBEff_85,
+	DL1rnn_HybBEff_60,DL1rnn_HybBEff_70,DL1rnn_HybBEff_77,DL1rnn_HybBEff_85,
+	DL1mu_FixedCutBEff_60,DL1mu_FixedCutBEff_70,DL1mu_FixedCutBEff_77,DL1mu_FixedCutBEff_85,
+	DL1mu_HybBEff_60,DL1mu_HybBEff_70,DL1mu_HybBEff_77,DL1mu_HybBEff_85,
+	DL1_FixedCutBEff_60,DL1_FixedCutBEff_70,DL1_FixedCutBEff_77,DL1_FixedCutBEff_85,
+	DL1_HybBEff_60,DL1_HybBEff_70,DL1_HybBEff_77,DL1_HybBEff_85,
+	MV2c10rnn_FixedCutBEff_60,MV2c10rnn_FixedCutBEff_70,MV2c10rnn_FixedCutBEff_77,MV2c10rnn_FixedCutBEff_85,
+	MV2c10rnn_HybBEff_60,MV2c10rnn_HybBEff_70,MV2c10rnn_HybBEff_77,MV2c10rnn_HybBEff_85,
+	MV2c10mu_FixedCutBEff_60,MV2c10mu_FixedCutBEff_70,MV2c10mu_FixedCutBEff_77,MV2c10mu_FixedCutBEff_85,
+	MV2c10mu_HybBEff_60,MV2c10mu_HybBEff_70,MV2c10mu_HybBEff_77,MV2c10mu_HybBEff_85,
+	MV2c10_FixedCutBEff_30,MV2c10_FixedCutBEff_50,MV2c10_FixedCutBEff_90, // R20.7
+	MV2c10_FixedCutBEff_60,MV2c10_FixedCutBEff_70,MV2c10_FixedCutBEff_77,MV2c10_FixedCutBEff_85,
+	MV2c10_FlatBEff_30,MV2c10_FlatBEff_50,MV2c10_FlatBEff_60,MV2c10_FlatBEff_70,MV2c10_FlatBEff_77,MV2c10_FlatBEff_85, // R20.7
+	MV2c10_HybBEff_60,MV2c10_HybBEff_70,MV2c10_HybBEff_77,MV2c10_HybBEff_85
+      };
+
       Jet();
       float rapidity;
 
@@ -155,51 +172,134 @@ namespace xAH {
       std::vector<float> IP3D_weightCofTracks    ;
       std::vector<float> IP3D_weightUofTracks    ;
 
-      int MV2c20_isFix30;
-      std::vector<float> MV2c20_sfFix30;
-    
-      int MV2c20_isFix50;
-      std::vector<float> MV2c20_sfFix50;
-    
-      int MV2c20_isFix60;
-      std::vector<float> MV2c20_sfFix60;
-    
-      int MV2c20_isFix70;
-      std::vector<float> MV2c20_sfFix70;
-    
-      int MV2c20_isFix77;
-      std::vector<float> MV2c20_sfFix77;
-    
-      int MV2c20_isFix80;
-      std::vector<float> MV2c20_sfFix80;
-    
-      int MV2c20_isFix85;
-      std::vector<float> MV2c20_sfFix85;
-    
-      int MV2c20_isFix90;
-      std::vector<float> MV2c20_sfFix90;
-    
-      int MV2c20_isFlt30;
-      std::vector<float> MV2c20_sfFlt30;
-    
-      int MV2c20_isFlt40;
-      std::vector<float> MV2c20_sfFlt40;
-    
-      int MV2c20_isFlt50;
-      std::vector<float> MV2c20_sfFlt50;
-    
-      int MV2c20_isFlt60;
-      std::vector<float> MV2c20_sfFlt60;
-    
-      int MV2c20_isFlt70;
-      std::vector<float> MV2c20_sfFlt70;
-    
-      int MV2c20_isFlt77;
-      std::vector<float> MV2c20_sfFlt77;
-    
-      int MV2c20_isFlt85;
-      std::vector<float> MV2c20_sfFlt85;
-    
+      // jetBTag
+      int is_DL1rnn_FixedCutBEff_60;
+      std::vector<float> SF_DL1rnn_FixedCutBEff_60;
+      int is_DL1rnn_FixedCutBEff_70;
+      std::vector<float> SF_DL1rnn_FixedCutBEff_70;
+      int is_DL1rnn_FixedCutBEff_77;
+      std::vector<float> SF_DL1rnn_FixedCutBEff_77;
+      int is_DL1rnn_FixedCutBEff_85;
+      std::vector<float> SF_DL1rnn_FixedCutBEff_85;
+
+      int is_DL1rnn_HybBEff_60;
+      std::vector<float> SF_DL1rnn_HybBEff_60;
+      int is_DL1rnn_HybBEff_70;
+      std::vector<float> SF_DL1rnn_HybBEff_70;
+      int is_DL1rnn_HybBEff_77;
+      std::vector<float> SF_DL1rnn_HybBEff_77;
+      int is_DL1rnn_HybBEff_85;
+      std::vector<float> SF_DL1rnn_HybBEff_85;
+
+      int is_DL1mu_FixedCutBEff_60;
+      std::vector<float> SF_DL1mu_FixedCutBEff_60;
+      int is_DL1mu_FixedCutBEff_70;
+      std::vector<float> SF_DL1mu_FixedCutBEff_70;
+      int is_DL1mu_FixedCutBEff_77;
+      std::vector<float> SF_DL1mu_FixedCutBEff_77;
+      int is_DL1mu_FixedCutBEff_85;
+      std::vector<float> SF_DL1mu_FixedCutBEff_85;
+
+      int is_DL1mu_HybBEff_60;
+      std::vector<float> SF_DL1mu_HybBEff_60;
+      int is_DL1mu_HybBEff_70;
+      std::vector<float> SF_DL1mu_HybBEff_70;
+      int is_DL1mu_HybBEff_77;
+      std::vector<float> SF_DL1mu_HybBEff_77;
+      int is_DL1mu_HybBEff_85;
+      std::vector<float> SF_DL1mu_HybBEff_85;
+
+      int is_DL1_FixedCutBEff_60;
+      std::vector<float> SF_DL1_FixedCutBEff_60;
+      int is_DL1_FixedCutBEff_70;
+      std::vector<float> SF_DL1_FixedCutBEff_70;
+      int is_DL1_FixedCutBEff_77;
+      std::vector<float> SF_DL1_FixedCutBEff_77;
+      int is_DL1_FixedCutBEff_85;
+      std::vector<float> SF_DL1_FixedCutBEff_85;
+
+      int is_DL1_HybBEff_60;
+      std::vector<float> SF_DL1_HybBEff_60;
+      int is_DL1_HybBEff_70;
+      std::vector<float> SF_DL1_HybBEff_70;
+      int is_DL1_HybBEff_77;
+      std::vector<float> SF_DL1_HybBEff_77;
+      int is_DL1_HybBEff_85;
+      std::vector<float> SF_DL1_HybBEff_85;
+
+      int is_MV2c10rnn_FixedCutBEff_60;
+      std::vector<float> SF_MV2c10rnn_FixedCutBEff_60;
+      int is_MV2c10rnn_FixedCutBEff_70;
+      std::vector<float> SF_MV2c10rnn_FixedCutBEff_70;
+      int is_MV2c10rnn_FixedCutBEff_77;
+      std::vector<float> SF_MV2c10rnn_FixedCutBEff_77;
+      int is_MV2c10rnn_FixedCutBEff_85;
+      std::vector<float> SF_MV2c10rnn_FixedCutBEff_85;
+
+      int is_MV2c10rnn_HybBEff_60;
+      std::vector<float> SF_MV2c10rnn_HybBEff_60;
+      int is_MV2c10rnn_HybBEff_70;
+      std::vector<float> SF_MV2c10rnn_HybBEff_70;
+      int is_MV2c10rnn_HybBEff_77;
+      std::vector<float> SF_MV2c10rnn_HybBEff_77;
+      int is_MV2c10rnn_HybBEff_85;
+      std::vector<float> SF_MV2c10rnn_HybBEff_85;
+
+      int is_MV2c10mu_FixedCutBEff_60;
+      std::vector<float> SF_MV2c10mu_FixedCutBEff_60;
+      int is_MV2c10mu_FixedCutBEff_70;
+      std::vector<float> SF_MV2c10mu_FixedCutBEff_70;
+      int is_MV2c10mu_FixedCutBEff_77;
+      std::vector<float> SF_MV2c10mu_FixedCutBEff_77;
+      int is_MV2c10mu_FixedCutBEff_85;
+      std::vector<float> SF_MV2c10mu_FixedCutBEff_85;
+
+      int is_MV2c10mu_HybBEff_60;
+      std::vector<float> SF_MV2c10mu_HybBEff_60;
+      int is_MV2c10mu_HybBEff_70;
+      std::vector<float> SF_MV2c10mu_HybBEff_70;
+      int is_MV2c10mu_HybBEff_77;
+      std::vector<float> SF_MV2c10mu_HybBEff_77;
+      int is_MV2c10mu_HybBEff_85;
+      std::vector<float> SF_MV2c10mu_HybBEff_85;
+
+      int is_MV2c10_FixedCutBEff_30;
+      std::vector<float> SF_MV2c10_FixedCutBEff_30;
+      int is_MV2c10_FixedCutBEff_50;
+      std::vector<float> SF_MV2c10_FixedCutBEff_50;
+      int is_MV2c10_FixedCutBEff_60;
+      std::vector<float> SF_MV2c10_FixedCutBEff_60;
+      int is_MV2c10_FixedCutBEff_70;
+      std::vector<float> SF_MV2c10_FixedCutBEff_70;
+      int is_MV2c10_FixedCutBEff_77;
+      std::vector<float> SF_MV2c10_FixedCutBEff_77;
+      int is_MV2c10_FixedCutBEff_85;
+      std::vector<float> SF_MV2c10_FixedCutBEff_85;
+      int is_MV2c10_FixedCutBEff_90;
+      std::vector<float> SF_MV2c10_FixedCutBEff_90;
+
+      int is_MV2c10_FlatBEff_30;
+      std::vector<float> SF_MV2c10_FlatBEff_30;
+      int is_MV2c10_FlatBEff_50;
+      std::vector<float> SF_MV2c10_FlatBEff_50;
+      int is_MV2c10_FlatBEff_60;
+      std::vector<float> SF_MV2c10_FlatBEff_60;
+      int is_MV2c10_FlatBEff_70;
+      std::vector<float> SF_MV2c10_FlatBEff_70;
+      int is_MV2c10_FlatBEff_77;
+      std::vector<float> SF_MV2c10_FlatBEff_77;
+      int is_MV2c10_FlatBEff_85;
+      std::vector<float> SF_MV2c10_FlatBEff_85;
+
+      int is_MV2c10_HybBEff_60;
+      std::vector<float> SF_MV2c10_HybBEff_60;
+      int is_MV2c10_HybBEff_70;
+      std::vector<float> SF_MV2c10_HybBEff_70;
+      int is_MV2c10_HybBEff_77;
+      std::vector<float> SF_MV2c10_HybBEff_77;
+      int is_MV2c10_HybBEff_85;
+      std::vector<float> SF_MV2c10_HybBEff_85;
+
       // truth
       int   ConeTruthLabelID;
       int   TruthCount;
@@ -217,6 +317,8 @@ namespace xAH {
       const Jet * matchedJet;
 
     public:
+      int is_btag(BTaggerOP op) const;
+      const std::vector<float>& SF_btag(BTaggerOP op) const;
 
       void muonInJetCorrection(const xAH::MuonContainer* muons);
 

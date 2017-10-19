@@ -126,6 +126,18 @@ public:
   /// @brief jet tile correction
   bool m_doJetTileCorr = false;
 
+  /** If running systematics, the name of the systematic */
+  std::string m_systNameJES = "";
+  /** If running systematics, the value to set the systematic to
+      @rst
+          .. note:: This will set the systematic to the value :math:`\pm x`.
+      @endrst
+   */
+  float m_systValJES = 0.0;
+
+  /** If running systematics, the name of the systematic */
+  std::string m_systNameJER = "";
+
 private:
   /// @brief set to true if systematics asked for and exist
   bool m_runSysts = false; //!

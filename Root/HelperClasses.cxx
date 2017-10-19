@@ -350,6 +350,73 @@ namespace HelperClasses{
         count++;
       }
     } // sfFTagFlt
+    m_sfFTagHyb.clear();
+    if( has_match( "sfFTagHyb" ) ) {
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("sfFTagHyb") );
+      // erase everything after the interesting string
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
+      // remove fTagSFHyb to just leave the numbers
+      input.erase(0,9);
+      // two by two take the characters and push back an int into this vector
+      std::vector<int> values;
+      int size( input.size()/2 );
+      int count(0);
+      while( count < size ) {
+        std::string number = input.substr(0,2);
+        m_sfFTagHyb.push_back( atoi( number.c_str() ) );
+        input.erase(0,2);
+        count++;
+      }
+    } // sfFTagHyb
+
+    m_jetBTag.clear();
+    std::string tmpConfigStr(m_configStr);
+    while( tmpConfigStr.find("jetBTag") != std::string::npos ) { // jetBTag
+      // erase everything before the interesting string
+      tmpConfigStr.erase( 0, tmpConfigStr.find("jetBTag") );
+      // extract interesting string
+      std::size_t pos  =tmpConfigStr.find(" ");
+      std::string input=tmpConfigStr.substr(0,pos);
+      // remove interesting string from configStr being processed
+      tmpConfigStr.erase(0,pos);
+      // extracted the tagger and numbers
+      std::stringstream ss(input);
+      std::string s;
+      uint idx=0;
+      std::string tagger;
+      std::string type;
+      std::vector<uint> wps;
+      while(std::getline(ss, s, '_')) {
+	switch(idx)
+	  {
+	  case 0: // jetBTag
+	    break;
+	  case 1: // tagger
+	    tagger=s;
+	    break;
+	  case 2: // efficiency type
+	    type=s;
+	    break;
+	  case 3: // list of efficiency working points
+	    uint size( s.size()/2 );
+	    for(uint i=0;i<size;i++) {
+	      std::string number = s.substr(0,2);
+	      wps.push_back( atoi( number.c_str() ) );
+	      s.erase(0,2);
+	    }
+	  }
+	idx++;
+      }
+      if(m_jetBTag.find(tagger)==m_jetBTag.end()) m_jetBTag[tagger]=std::vector<std::pair<std::string,uint>>();
+      for(auto wp : wps)
+	m_jetBTag[tagger].push_back(std::make_pair(type,wp));
+    } // jetBTag
+
     m_area          = has_exact("area");
     m_JVC           = has_exact("JVC");
   }

@@ -74,14 +74,15 @@ class Config(object):
       # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
       if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
         raise AttributeError(k)
-      #handle unicode from json
-      if isinstance(v, unicode): v = v.encode('utf-8')
-      self._log.append((algName, k, v))
-      try:
-        setattr(alg_obj, k, v)
-      except:
-        logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
-        raise
+      elif hasattr(alg_obj, k):
+        #handle unicode from json
+        if isinstance(v, unicode): v = v.encode('utf-8')
+        self._log.append((algName, k, v))
+        try:
+          setattr(alg_obj, k, v)
+        except:
+          logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
+          raise
 
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)

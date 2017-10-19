@@ -598,18 +598,6 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
     if ( pvLocation >= 0 ) pv = vertices->at( pvLocation );
   }
 
-
-
-  // Global event BTag SF weight (--> the product of each object's weight)
-  //
-  if ( m_isMC ) {
-    const xAOD::EventInfo* eventInfo(nullptr);
-    HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store);
-
-    thisJet->FillGlobalBTagSF(eventInfo);
-
-  }
-
   for( auto jet_itr : *jets ) {
     this->FillJet(jet_itr, pv, pvLocation, jetName);
   }

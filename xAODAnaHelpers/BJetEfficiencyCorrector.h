@@ -24,11 +24,12 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 public:
   std::string m_inContainerName = "";
-  std::string m_outContainerName = "";
+  /**
+    @brief The name of the vector containing the names of the systematically-varied jet-related containers from the upstream algorithm, which will be processed by this algorithm.
+
+    Only jet calibration systematics or any other that create shallow copies of jet containers should be passed to this tool. It is advised to run this algorithm before running algorithms combining multiple calibration systematics (e.g. overlap removal).
+  */
   std::string m_inputAlgo = "";
-  std::string m_outputAlgo = "";
-  std::string m_sysNamesForParCont = ""; 
-  // this is the name of the vector of names for the systematics to be used for the creation of a parallel container. This will be just a copy of the nominal one with the sys name appended. Use cases: MET-specific systematics.
 
   // systematics
   std::string m_systName = "";

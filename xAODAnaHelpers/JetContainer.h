@@ -32,7 +32,6 @@ namespace xAH {
       virtual void clear();
       virtual void FillJet( const xAOD::Jet* jet,            const xAOD::Vertex* pv, int pvLocation );
       virtual void FillJet( const xAOD::IParticle* particle, const xAOD::Vertex* pv, int pvLocation );
-      virtual void FillGlobalBTagSF( const xAOD::EventInfo* eventInfo );
 
       virtual void updateParticle(uint idx, Jet& jet);
 
@@ -40,8 +39,6 @@ namespace xAH {
 //  void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr);
     
     private:
-
-      bool findBTagSF(const std::vector<int>& sfList, int workingPt);
       
       InDet::InDetTrackSelectionTool * m_trkSelTool;
 
@@ -268,105 +265,221 @@ namespace xAH {
       std::vector<float> *m_vtx_online_bkg_z0;
 
       struct btagOpPoint {
-        std::string m_name;
         bool m_mc;
-        std::string m_acessorName;
-        std::string m_tagger;
-        int m_njets;
+        std::string m_accessorName;
+	Jet::BTaggerOP m_op;
+	bool m_old;
+
+	// branches
         std::vector<int>*                  m_isTag;
-        std::vector<float>                 m_weight_sf;
         std::vector< std::vector<float> >* m_sf;
 
-        btagOpPoint(std::string name, bool mc, std::string acessorName, std::string tagger="mv2c10"): m_name(name), m_mc(mc), m_acessorName(acessorName), m_tagger(tagger) {
+        btagOpPoint(bool mc, const std::string& accessorName)
+	  : m_mc(mc), m_accessorName(accessorName),m_old(true) {
           m_isTag = new std::vector<int>();
           m_sf    = new std::vector< std::vector<float> >();
+
+	  if(m_accessorName=="Fix30")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_30;
+	  else if(m_accessorName=="Fix50")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_50;
+	  else if(m_accessorName=="Fix60")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_60;
+	  else if(m_accessorName=="Fix70")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_70;
+	  else if(m_accessorName=="Fix77")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_77;
+	  else if(m_accessorName=="Fix85")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_85;
+	  else if(m_accessorName=="Fix90")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_90;
+	  else if(m_accessorName=="Flt30")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_30;
+	  else if(m_accessorName=="Flt50")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_50;
+	  else if(m_accessorName=="Flt60")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_60;
+	  else if(m_accessorName=="Flt70")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_70;
+	  else if(m_accessorName=="Flt77")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_77;
+	  else if(m_accessorName=="Flt85")
+	    m_op=Jet::BTaggerOP::MV2c10_FlatBEff_85;
+	  else if(m_accessorName=="Hyb60")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_60;
+	  else if(m_accessorName=="Hyb70")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_70;
+	  else if(m_accessorName=="Hyb77")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_77;
+	  else if(m_accessorName=="Hyb85")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_85;
         }
 
-        ~btagOpPoint(){
+        btagOpPoint(bool mc, const std::string& tagger, const std::string& wp)
+	  : m_mc(mc), m_accessorName(tagger+"_"+wp),m_old(false) {
+          m_isTag     = new std::vector<int>();
+          m_sf        = new std::vector< std::vector<float> >();
+
+	  if(m_accessorName=="DL1rnn_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::DL1rnn_FixedCutBEff_60;
+	  else if(m_accessorName=="DL1rnn_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::DL1rnn_FixedCutBEff_70;
+	  else if(m_accessorName=="DL1rnn_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::DL1rnn_FixedCutBEff_77;
+	  else if(m_accessorName=="DL1rnn_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::DL1rnn_FixedCutBEff_85;
+	  else if(m_accessorName=="DL1rnn_HybBEff_60")
+	    m_op=Jet::BTaggerOP::DL1rnn_HybBEff_60;
+	  else if(m_accessorName=="DL1rnn_HybBEff_70")
+	    m_op=Jet::BTaggerOP::DL1rnn_HybBEff_70;
+	  else if(m_accessorName=="DL1rnn_HybBEff_77")
+	    m_op=Jet::BTaggerOP::DL1rnn_HybBEff_77;
+	  else if(m_accessorName=="DL1rnn_HybBEff_85")
+	    m_op=Jet::BTaggerOP::DL1rnn_HybBEff_85;
+	  else if(m_accessorName=="DL1mu_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::DL1mu_FixedCutBEff_60;
+	  else if(m_accessorName=="DL1mu_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::DL1mu_FixedCutBEff_70;
+	  else if(m_accessorName=="DL1mu_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::DL1mu_FixedCutBEff_77;
+	  else if(m_accessorName=="DL1mu_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::DL1mu_FixedCutBEff_85;
+	  else if(m_accessorName=="DL1mu_HybBEff_60")
+	    m_op=Jet::BTaggerOP::DL1mu_HybBEff_60;
+	  else if(m_accessorName=="DL1mu_HybBEff_70")
+	    m_op=Jet::BTaggerOP::DL1mu_HybBEff_70;
+	  else if(m_accessorName=="DL1mu_HybBEff_77")
+	    m_op=Jet::BTaggerOP::DL1mu_HybBEff_77;
+	  else if(m_accessorName=="DL1mu_HybBEff_85")
+	    m_op=Jet::BTaggerOP::DL1mu_HybBEff_85;
+	  else if(m_accessorName=="DL1_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_60;
+	  else if(m_accessorName=="DL1_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_70;
+	  else if(m_accessorName=="DL1_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_77;
+	  else if(m_accessorName=="DL1_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_85;
+	  else if(m_accessorName=="DL1_HybBEff_60")
+	    m_op=Jet::BTaggerOP::DL1_HybBEff_60;
+	  else if(m_accessorName=="DL1_HybBEff_70")
+	    m_op=Jet::BTaggerOP::DL1_HybBEff_70;
+	  else if(m_accessorName=="DL1_HybBEff_77")
+	    m_op=Jet::BTaggerOP::DL1_HybBEff_77;
+	  else if(m_accessorName=="DL1_HybBEff_85")
+	    m_op=Jet::BTaggerOP::DL1_HybBEff_85;
+	  else if(m_accessorName=="MV2c10rnn_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_60;
+	  else if(m_accessorName=="MV2c10rnn_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_70;
+	  else if(m_accessorName=="MV2c10rnn_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_77;
+	  else if(m_accessorName=="MV2c10rnn_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_85;
+	  else if(m_accessorName=="MV2c10rnn_HybBEff_60")
+	    m_op=Jet::BTaggerOP::MV2c10rnn_HybBEff_60;
+	  else if(m_accessorName=="MV2c10rnn_HybBEff_70")
+	    m_op=Jet::BTaggerOP::MV2c10rnn_HybBEff_70;
+	  else if(m_accessorName=="MV2c10rnn_HybBEff_77")
+	    m_op=Jet::BTaggerOP::MV2c10rnn_HybBEff_77;
+	  else if(m_accessorName=="MV2c10rnn_HybBEff_85")
+	    m_op=Jet::BTaggerOP::MV2c10rnn_HybBEff_85;
+	  else if(m_accessorName=="MV2c10mu_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::MV2c10mu_FixedCutBEff_60;
+	  else if(m_accessorName=="MV2c10mu_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::MV2c10mu_FixedCutBEff_70;
+	  else if(m_accessorName=="MV2c10mu_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::MV2c10mu_FixedCutBEff_77;
+	  else if(m_accessorName=="MV2c10mu_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::MV2c10mu_FixedCutBEff_85;
+	  else if(m_accessorName=="MV2c10mu_HybBEff_60")
+	    m_op=Jet::BTaggerOP::MV2c10mu_HybBEff_60;
+	  else if(m_accessorName=="MV2c10mu_HybBEff_70")
+	    m_op=Jet::BTaggerOP::MV2c10mu_HybBEff_70;
+	  else if(m_accessorName=="MV2c10mu_HybBEff_77")
+	    m_op=Jet::BTaggerOP::MV2c10mu_HybBEff_77;
+	  else if(m_accessorName=="MV2c10mu_HybBEff_85")
+	    m_op=Jet::BTaggerOP::MV2c10mu_HybBEff_85;
+	  else if(m_accessorName=="MV2c10_FixedCutBEff_30")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_30;
+	  else if(m_accessorName=="MV2c10_FixedCutBEff_50")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_50;
+	  else if(m_accessorName=="MV2c10_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_60;
+	  else if(m_accessorName=="MV2c10_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_70;
+	  else if(m_accessorName=="MV2c10_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_77;
+	  else if(m_accessorName=="MV2c10_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_85;
+	  else if(m_accessorName=="MV2c10_HybBEff_60")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_60;
+	  else if(m_accessorName=="MV2c10_HybBEff_70")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_70;
+	  else if(m_accessorName=="MV2c10_HybBEff_77")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_77;
+	  else if(m_accessorName=="MV2c10_HybBEff_85")
+	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_85;
+        }
+
+        ~btagOpPoint() {
           delete m_isTag;
           delete m_sf;
         }
 
-        void setTree(TTree *tree, std::string jetName){
-          //tree->SetBranchStatus  (("n"+jetName+"s_"+m_tagger+"_"+m_name).c_str(), 1);
-          //tree->SetBranchAddress (("n"+jetName+"s_"+m_tagger+"_"+m_name).c_str(), &m_njets);
-          tree->SetBranchStatus  (("n"+jetName+"s_"+m_name).c_str(), 1);
-          tree->SetBranchAddress (("n"+jetName+"s_"+m_name).c_str(), &m_njets);
-
-          HelperFunctions::connectBranch<int>     (jetName, tree,"is"+m_name,      &m_isTag);
-          if(m_mc) HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF"+m_name,       &m_sf);
+        void setTree(TTree *tree, std::string jetName) {
+	  if(m_old)
+	    {
+	      HelperFunctions::connectBranch<int>                  (jetName, tree,"is"+m_accessorName, &m_isTag);
+	      if(m_mc) {
+		HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF"+m_accessorName, &m_sf);
+	      }
+	    }
+	  else
+	    {
+	      HelperFunctions::connectBranch<int>                  (jetName, tree,"is_"+m_accessorName, &m_isTag);
+	      if(m_mc) {
+		HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF_"+m_accessorName, &m_sf);
+	      }
+	    }
         }
 
 
-        void setBranch(TTree *tree, std::string jetName){
-          tree->Branch(("n"+jetName+"s_"+m_name).c_str(), &m_njets, ("n"+jetName+"s_"+m_name+"/I").c_str());
-          tree->Branch((jetName+"_is"+m_name).c_str(),        &m_isTag);
+        void setBranch(TTree *tree, std::string jetName) {
+	  if(m_old) return; // DEPRICATED
+          tree->Branch((jetName+"_is_"+m_accessorName).c_str(),   &m_isTag);
 
           if ( m_mc ) {
-            tree->Branch((jetName+"_SF"+m_name).c_str(),        &m_sf);
-            tree->Branch(("weight_"+jetName+"SF"+m_name).c_str(), &m_weight_sf);
+            tree->Branch((jetName+"_SF_"+m_accessorName).c_str(),           &m_sf);
           }
         }
 
 
-        void clear(){
-          m_njets = 0;
+        void clear() {
+	  if(m_old) return; // DEPRICATED
           m_isTag->clear();
-          m_weight_sf.clear();
           m_sf->clear();
         }
 
         void Fill( const xAOD::Jet* jet ) {
-      
-          SG::AuxElement::ConstAccessor< char > isTag("BTag_"+m_acessorName);
-          if( isTag.isAvailable( *jet ) ) {
-            if ( isTag( *jet ) == 1 ) ++m_njets;
+	  if(m_old) return; // DEPRICATED
+          SG::AuxElement::ConstAccessor< char > isTag("BTag_"+m_accessorName);
+          if( isTag.isAvailable( *jet ) )
             m_isTag->push_back( isTag( *jet ) );
-          } else { 
+          else
             m_isTag->push_back( -1 ); 
-          }
-          
-          if(!m_mc) { return; }
-          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_acessorName);
-          if ( sf.isAvailable( *jet ) ) {
-            m_sf->push_back( sf( *jet ) );
-          } else {
-            std::vector<float> junk(1,-999);
-            m_sf->push_back(junk);
-          }
-      
-          return;
-        } // Fill
-      
-        void FillGlobalSF( const xAOD::EventInfo* eventInfo ) {
-          SG::AuxElement::ConstAccessor< std::vector<float> > sf_GLOBAL("BTag_SF_"+m_acessorName+"_GLOBAL");
-          if ( sf_GLOBAL.isAvailable( *eventInfo ) ) { 
-            m_weight_sf = sf_GLOBAL( *eventInfo ); 
-          } else { 
-            m_weight_sf.push_back(-999.0); 
-          }
-      
-          return;
-        }
-  
-      };  //struct btagOpPoint
-      
-      btagOpPoint* m_btag_Fix30;
-      btagOpPoint* m_btag_Fix50;
-      btagOpPoint* m_btag_Fix60;
-      btagOpPoint* m_btag_Fix70;
-      btagOpPoint* m_btag_Fix77;
-      btagOpPoint* m_btag_Fix80;
-      btagOpPoint* m_btag_Fix85;
-      btagOpPoint* m_btag_Fix90;
 
-      btagOpPoint* m_btag_Flt30;
-      btagOpPoint* m_btag_Flt50;
-      btagOpPoint* m_btag_Flt60;
-      btagOpPoint* m_btag_Flt70;
-      btagOpPoint* m_btag_Flt77;
-      btagOpPoint* m_btag_Flt85;
-      btagOpPoint* m_btag_Flt90;
+          if(!m_mc) { return; }
+          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_"+m_accessorName+"_SF");
+	  static const std::vector<float> junk(1,-999);
+          if ( sf.isAvailable( *jet ) )
+            m_sf->push_back( sf( *jet ) );
+          else
+            m_sf->push_back(junk);
+        } // Fill
+      };
+
+      std::vector<btagOpPoint*> m_btags;
 
       // JVC
       std::vector<double> *m_JetVertexCharge_discriminant;

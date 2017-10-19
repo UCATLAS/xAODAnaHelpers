@@ -222,10 +222,11 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // several years can be configured
   //
 
+#ifndef USE_CMAKE
   //std::vector<std::string> m_YearsList;
   std::string tmp_years = m_Years;
 
-  // Parse all comma seperated years
+  // Parse all comma separated years
   //
   while ( tmp_years.size() > 0) {
     size_t pos = tmp_years.find_first_of(',');
@@ -247,7 +248,9 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
   }
-
+#else
+  m_YearsList.push_back("all");
+#endif
 
   // Initialize vector of names
   //
@@ -274,11 +277,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
         ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("AllowZeroSF", m_AllowZeroSF ));
       }
 
-      ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("Isolation", iso_trig_WP ));
       ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("MuonQuality", m_WorkingPointRecoTrig ));
+#ifndef USE_CMAKE
+      ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("Isolation", iso_trig_WP ));
       if ( !yr.empty() ) {
         ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("Year", yr ));
       }
+#endif
       if ( !m_MCCampaign.empty() ) {
       ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("MC", m_MCCampaign ));
 
@@ -713,6 +718,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Do it only if a tool with *this* name hasn't already been used
   //
 
+#ifndef USE_CMAKE
   std::string randYear = "2016";
 
   if ( m_isMC && m_useRandomRunNumber ) {
@@ -794,6 +800,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     }
     randYear = m_YearsList[0];
   }
+#else
+  std::string randYear = "all";
+#endif
 
   if ( !isToolAlreadyUsed(m_trigEffSF_tool_names[randYear]) ) {
 
@@ -900,7 +909,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
 
            ANA_MSG_DEBUG( "===>>>");
+#ifndef USE_CMAKE
            ANA_MSG_DEBUG( "Random year: " << randYear.c_str() );
+#endif
            ANA_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
            ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << sfName );
            ANA_MSG_DEBUG( "Trigger MC efficiency decoration: " << effName );
