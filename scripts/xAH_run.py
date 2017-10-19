@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# PYTHON_ARGCOMPLETE_OK
 # @file:    xAH_run.py
 # @purpose: run the analysis
 # @author:  Giordon Stark <gstark@cern.ch>
@@ -481,6 +481,27 @@ if __name__ == "__main__":
           configurator = v
           break
 
+    # setting sample metadata
+    for pattern, metadata in configurator._samples.iteritems():
+      found_matching_sample = False
+      xAH_logger.debug("Looking for sample(s) that matches pattern {0}".format(pattern))
+      for sample in sh_all:
+        if pattern in sample.name():
+          found_matching_sample = True
+          xAH_logger.info("Setting sample metadata for {0:s}".format(sample.name()))
+          for k,t,v in ((k, type(v), v) for k,v in metadata.iteritems()):
+            if t in [float]:
+              setter = 'setDouble'
+            elif t in [int]:
+              setter = 'setInteger'
+            elif t in [bool]:
+              setter = 'setBool'
+            else:
+              setter = 'setString'
+            getattr(sample.meta(), setter)(k, v)
+            xAH_logger.info("\t - sample.meta().{0:s}({1:s}, {2})".format(setter, k, v))
+        if not found_matching_sample:
+          xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
 
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
     # is created and added to the job *before* the service

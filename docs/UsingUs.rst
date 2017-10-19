@@ -15,18 +15,12 @@ An analysis job is defined by a few key things:
 
 and a few other minor features such as submission directory or how many events to run. Primarily, these three things listed above are all you need to get started. ``xAH_run.py`` manages all of these for you.
 
-A configuration file, written in `json <http://www.json.org/>`_ or python, is used to specify what algorithms to run, and in what order. You pass in a list of files you want to run over to the script itself, as well as where to run the code. It will take care of the rest for you.
+A configuration file, written in `json <http://www.json.org/>`_ or `python <https://www.python.org/>`_, is used to specify what algorithms to run, and in what order. You pass in a list of files you want to run over to the script itself, as well as where to run the code. It will take care of the rest for you.
 
 Getting Started
 ---------------
 
-To get started, we assume you are little bit familiar with xAODAnaHelpers and RootCore in general. Recall that when you compile a bunch of packages, you generate a namespace under ``ROOT`` that all your algorithms are loaded into via
-
-.. code:: python
-
-    ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
-
-so that one could create an algorithm by something like ``ROOT.AlgorithmName()`` and then start configuring it. In fact, this is how one normally does it within python. Namespaces are automatically linked up by something like ``ROOT.Namespace.AlgorithmName()`` in case you wrapped the entire algorithm in a namespace.
+To get started, we assume you are little bit familiar with xAODAnaHelpers and AnalysisBase in general. Recall that when you compile a bunch of packages, you generate a namespace under ``ROOT`` that all your algorithms are loaded into so that one could create an algorithm by something like ``ROOT.AlgorithmName()`` and then start configuring it. In fact, this is how one normally does it within python. Namespaces are automatically linked up by something like ``ROOT.Namespace.AlgorithmName()`` in case you wrapped the entire algorithm in a namespace.
 
 A simple plotting example
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +46,15 @@ We will run 2 algorithms. First is :class:`BasicEventSelection` to filter/clean 
       }
     ]
 
-This gets us started. We make a list of algorithms that we want to run, this list is considered *sorted*. Each list contains a dictionary object, one which defines the ``class`` to run and another which defines a dictionary of configurations to pass into that algorithm.
+This gets us started. We make a list of algorithms that we want to run, this list is considered *sorted*. Each list contains a dictionary object, one which defines the ``class`` to run and another which defines a dictionary of configurations to pass into that algorithm. An equivalent script in python looks like
+
+.. code:: python
+
+    from xAODAnaHelpers import Config
+    c = Config()
+
+    c.setalg("BasicEventSelection", {})
+    c.setalg("JetHistsAlgo", {})
 
 Next, we should probably add some obvious configurations that work for us. I look up the header files of each and decide to flesh it out as below:
 
@@ -80,7 +82,25 @@ Next, we should probably add some obvious configurations that work for us. I loo
       }
     ]
 
-and I save this into ``xah_run_example.json``. If you want more variables in your plots, add other possibilities in the detailStr field, separated by a space.
+and I save this into ``xah_run_example.json``. If you want more variables in your plots, add other possibilities in the detailStr field, separated by a space. Equivalently in python
+
+.. code:: python
+
+    from xAODAnaHelpers import Config
+    c = Config()
+
+    c.setalg("BasicEventSelection", {"m_truthLevelOnly": false,
+                                     "m_applyGRLCut": true,
+                                     "m_GRLxml": "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml",
+                                     "m_doPUreweighting": false,
+                                     "m_vertexContainerName": "PrimaryVertices",
+                                     "m_PVNTrack": 2,
+                                     "m_name": "myBaseEventSel"})
+    c.setalg("JetHistsAlgo", {"m_inContainerName": "AntiKt4EMTopoJets",
+                              "m_detailStr": "kinematic",
+                              "m_name": "NoPreSel"})
+
+The similarity is on purpose, to make it incredibly easy to switch back and forth between the two formats.
 
 Running the script
 ^^^^^^^^^^^^^^^^^^
@@ -91,7 +111,40 @@ I pretty much have everything I need to work with. So, I run the following comma
 
     xAH_run.py --files file1.root file2.root --config xah_run_example.json direct
 
-which will run over two ROOT files locally (``direct``), using the configuration we made. We're all done! That was easy :beers: .
+which will run over two ROOT files locally (``direct``), using the configuration we made. Running with the python form of the configuration is just as easy
+
+.. code:: bash
+
+    xAH_run.py --files file1.root file2.root --config xah_run_example.py direct
+
+We're all done! That was easy :beers: .
+
+Configuring Samples
+-------------------
+
+Sample configuration can be done with a python script like so
+
+.. code:: python
+
+    from xAODAnaHelpers import Config
+    c = Config()
+
+    c.sample(410000, foo='bar', hello='world')
+    c.sample("p9495", foo='bar', hello='world', b=1, c=2.0, d=True)
+
+where the pattern specified in ``Config::sample`` will be searched for inside the name of the dataset (not the name of the file!). Specifically, we just do something like ``if pattern in sample.name()`` in order to flag that sample. Given this, you can make this pattern generic enough to apply a configuration to a specific p-tag, or to a specific dataset ID (DSID) as well. The above will produce the following output when running
+
+.. code:: bash
+
+    [WARNING]  No matching sample found for pattern 410000
+    [INFO   ]  Setting sample metadata for example.sample.p9495.root
+    [INFO   ]       - sample.meta().setDouble(c, 2.0)
+    [INFO   ]       - sample.meta().setString(foo, bar)
+    [INFO   ]       - sample.meta().setInteger(b, 1)
+    [INFO   ]       - sample.meta().setString(hello, world)
+    [INFO   ]       - sample.meta().setBool(d, True)
+
+which should make it easy for you to understand what options are being set and for which sample.
 
 Configuration Details
 ---------------------
