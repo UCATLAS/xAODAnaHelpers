@@ -4,12 +4,10 @@
 #include "xAODTruth/TruthEventContainer.h"
 
 using namespace xAH;
-using std::vector;  using std::endl;  using std::cout;
-
 
 FatJetContainer::FatJetContainer(const std::string& name, const std::string& detailStr, const std::string& suffix,
 				 float units, bool mc)
-  : ParticleContainer(name,detailStr,units,mc, false, suffix),
+  : ParticleContainer(name,detailStr,units,mc, false, true, suffix),
     m_trackJetPtCut(10e3),
     m_trackJetEtaCut(2.5)
 {
@@ -103,7 +101,7 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
 
 FatJetContainer::~FatJetContainer()
 {
-  if(m_debug) cout << " Deleting FatJetContainer "  << endl;
+  if(m_debug) std::cout << " Deleting FatJetContainer "  << std::endl;
 
   if ( m_infoSwitch.m_scales ) {
       delete m_JetConstitScaleMomentum_eta ;
@@ -241,11 +239,11 @@ void FatJetContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_constituentAll) {
-    connectBranch< vector<float> >(tree, "constituentWeights",  &m_constituentWeights);
-    connectBranch< vector<float> >(tree, "constituent_pt",      &m_constituent_pt);
-    connectBranch< vector<float> >(tree, "constituent_eta",     &m_constituent_eta);
-    connectBranch< vector<float> >(tree, "constituent_phi",     &m_constituent_phi);
-    connectBranch< vector<float> >(tree, "constituent_e",       &m_constituent_e);
+    connectBranch< std::vector<float> >(tree, "constituentWeights",  &m_constituentWeights);
+    connectBranch< std::vector<float> >(tree, "constituent_pt",      &m_constituent_pt);
+    connectBranch< std::vector<float> >(tree, "constituent_eta",     &m_constituent_eta);
+    connectBranch< std::vector<float> >(tree, "constituent_phi",     &m_constituent_phi);
+    connectBranch< std::vector<float> >(tree, "constituent_e",       &m_constituent_e);
   }
 
   if ( m_infoSwitch.m_bosonCount) {
@@ -266,13 +264,13 @@ void FatJetContainer::setTree(TTree *tree)
 
   if( m_infoSwitch.m_trackJets ){
     m_trkJets->JetContainer::setTree(tree, "MV2c10");
-    connectBranch< vector<unsigned int> >(tree, "trkJetsIdx",   &m_trkJetsIdx);
+    connectBranch< std::vector<unsigned int> >(tree, "trkJetsIdx",   &m_trkJetsIdx);
   }
 }
 
 void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
 {
-  if(m_debug) cout << "in FatJetContainer::updateParticle " << endl;
+  if(m_debug) std::cout << "in FatJetContainer::updateParticle " << std::endl;
   ParticleContainer::updateParticle(idx,fatjet);
 
   if ( m_infoSwitch.m_scales ) {
@@ -355,7 +353,7 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
 
   }
 
-  if(m_debug) cout << "leave FatJetContainer::updateParticle " << endl;
+  if(m_debug) std::cout << "leave FatJetContainer::updateParticle " << std::endl;
   return;
 }
 
@@ -412,11 +410,11 @@ void FatJetContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_constituentAll) {
-    setBranch< vector<float> >(tree, "constituentWeights",  m_constituentWeights);
-    setBranch< vector<float> >(tree, "constituent_pt",      m_constituent_pt);
-    setBranch< vector<float> >(tree, "constituent_eta",     m_constituent_eta);
-    setBranch< vector<float> >(tree, "constituent_phi",     m_constituent_phi);
-    setBranch< vector<float> >(tree, "constituent_e",       m_constituent_e);
+    setBranch< std::vector<float> >(tree, "constituentWeights",  m_constituentWeights);
+    setBranch< std::vector<float> >(tree, "constituent_pt",      m_constituent_pt);
+    setBranch< std::vector<float> >(tree, "constituent_eta",     m_constituent_eta);
+    setBranch< std::vector<float> >(tree, "constituent_phi",     m_constituent_phi);
+    setBranch< std::vector<float> >(tree, "constituent_e",       m_constituent_e);
   }
 
   if(m_infoSwitch.m_bosonCount){
@@ -436,7 +434,7 @@ void FatJetContainer::setBranches(TTree *tree)
 
   if( m_infoSwitch.m_trackJets ){
     m_trkJets->setBranches(tree);
-    setBranch< vector<unsigned int> >(tree, "trkJetsIdx",       m_trkJetsIdx);
+    setBranch< std::vector<unsigned int> >(tree, "trkJetsIdx",       m_trkJetsIdx);
   }
 
   return;
@@ -751,7 +749,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       //Warning("execute()", "Unable to fetch \"%s\" link from leading calo-jet", m_infoSwitch.m_trackJetName.data());
     }
 
-    m_trkJetsIdx->push_back(vector<unsigned int>());
+    m_trkJetsIdx->push_back(std::vector<unsigned int>());
     for(auto TrackJet : assotrkjets){
       if(!SelectTrackJet(TrackJet)) continue;
       m_trkJetsIdx->back().push_back(m_trkJets->m_n);

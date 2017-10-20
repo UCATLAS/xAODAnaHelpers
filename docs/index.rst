@@ -3,11 +3,22 @@
 xAODAnaHelpers
 ==============
 
-.. image:: https://zenodo.org/badge/doi/10.5281/zenodo.35355.svg
-   :target: https://doi.org/10.5281/zenodo.35355
+.. image:: https://zenodo.org/badge/35496971.svg
+   :target: https://zenodo.org/badge/latestdoi/35496971
 
 .. image:: http://build.ci-connect.net:8080/buildStatus/icon?job=RootCore/xAH
    :target: http://build.ci-connect.net:8080/job/RootCore/xAH
+
+.. raw:: html
+
+  <br />
+
+|rootcore_badge|_
+|cmake_badge|_
+
+
+.. _rootcore_badge: Installing.html#rootcore-2-5-x
+.. _cmake_badge: Installing.html#cmake-based-rootcore-2-5-x
 
 The xAOD analysis framework, born out of ProofAna...or not.
 

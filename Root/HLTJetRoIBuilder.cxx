@@ -1,4 +1,3 @@
-
 /******************************************
  *
  * This class builds HLT jets and thier associated objects
@@ -35,9 +34,6 @@
 
 #include "TrigConfxAOD/xAODConfigTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
-
-using std::cout;  using std::endl;
-using std::vector;
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetRoIBuilder)
@@ -120,12 +116,12 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
     m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";
   }
 
-  cout << "HLTJetRoIBuilder::Configured " << m_name << " with " << endl;
-  cout << "m_trigItem: " << m_trigItem << endl;
-  cout << "m_trigItemVeto: " << m_trigItemVeto << endl;
-  cout << "m_trkName: " << m_trkName << endl;
-  cout << "m_vtxName: " << m_vtxName << endl;
-  cout << "m_jetName: " << m_jetName << endl;
+  ANA_MSG_INFO("HLTJetRoIBuilder::Configured " << m_name << " with ");
+  ANA_MSG_INFO("\tm_trigItem: " << m_trigItem);
+  ANA_MSG_INFO("\tm_trigItemVeto: " << m_trigItemVeto);
+  ANA_MSG_INFO("\tm_trkName: " << m_trkName);
+  ANA_MSG_INFO("\tm_vtxName: " << m_vtxName);
+  ANA_MSG_INFO("\tm_jetName: " << m_jetName);
 
   return EL::StatusCode::SUCCESS;
 }
@@ -196,7 +192,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   //  For Adding Tracks to the Jet
   //
   ANA_MSG_DEBUG("Making the decorators ");
-  static xAOD::Jet::Decorator<vector<const xAOD::TrackParticle*> > m_track_decoration      ("HLTBJetTracks");
+  static xAOD::Jet::Decorator<std::vector<const xAOD::TrackParticle*> > m_track_decoration      ("HLTBJetTracks");
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration        ("HLTBJetTracks_vtx");
   static xAOD::Jet::Decorator<const xAOD::Vertex*>                 m_vtx_decoration_bkg    ("HLTBJetTracks_vtx_bkg");
   static xAOD::Jet::Decorator<char >                               m_vtx_hadDummyPV        ("hadDummyPV");
@@ -254,27 +250,28 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       }
     }
 
-    //cout << " Test Size " << endl;
-    //cout << " \tSplitJet: " << comb->containerFeature<xAOD::JetContainer>("SplitJet").size() << endl;
-    //cout << " \tGSCJet: "   << comb->containerFeature<xAOD::JetContainer>("GSCJet")  .size() << endl;
-    //cout << " \tEFJet:  "   << comb->containerFeature<xAOD::JetContainer>("EFJet")   .size() << endl;
+    //ANA_MSG_INFO(" Test Size ");
+    //ANA_MSG_INFO(" \tSplitJet: " << comb->containerFeature<xAOD::JetContainer>("SplitJet").size());
+    //ANA_MSG_INFO(" \tGSCJet: "   << comb->containerFeature<xAOD::JetContainer>("GSCJet")  .size());
+    //ANA_MSG_INFO(" \tEFJet:  "   << comb->containerFeature<xAOD::JetContainer>("EFJet")   .size());
     //
     //// FTK Vertex debugging
-    //cout << " Test Size " << vtxCollections.size() << "  '" << m_vtxName << "'" << endl;
-    //cout << " Test Size2 " << vtxCollections.size() << endl;
-    //cout << " \tempty: " << comb->containerFeature<xAOD::VertexContainer>().size() << endl;
-    //cout << " \tEFHistoPrmVtx: " << comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx").size() <<endl;
-    //cout << " \txPrimVx: " << comb->containerFeature<xAOD::VertexContainer>("xPrimVx").size() << endl;
-    //cout << " \tPrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTK").size() << endl;
-    //    cout << " \tPrimVertexFTKRaw " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTKRaw").size() << endl;
-    //    cout << " \tPrimVertexFTKRefit " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTKRefit").size()<< endl;
-    //    cout << " \tHLT_PrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("HLT_PrimVertexFTK").size() << endl;
+    //ANA_MSG_INFO(" Test Size " << vtxCollections.size() << "  '" << m_vtxName << "'");
+    //ANA_MSG_INFO(" Test Size2 " << vtxCollections.size());
+    //ANA_MSG_INFO(" \tempty: " << comb->containerFeature<xAOD::VertexContainer>().size());
+    //ANA_MSG_INFO(" \tEFHistoPrmVtx: " << comb->containerFeature<xAOD::VertexContainer>("EFHistoPrmVtx").size();
+    //ANA_MSG_INFO(" \txPrimVx: " << comb->containerFeature<xAOD::VertexContainer>("xPrimVx").size());
+    //ANA_MSG_INFO(" \tPrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTK").size());
+    //ANA_MSG_INFO(" \tPrimVertexFTKRaw " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTKRaw").size());
+    //ANA_MSG_INFO(" \tPrimVertexFTKRefit " << comb->containerFeature<xAOD::VertexContainer>("PrimVertexFTKRefit").size();
+    //ANA_MSG_INFO(" \tHLT_PrimVertexFTK " << comb->containerFeature<xAOD::VertexContainer>("HLT_PrimVertexFTK").size());
+
     //
     //    std::vector<Trig::Feature<xAOD::VertexContainer> > EvtxCollections = comb->containerFeature<xAOD::VertexContainer>();
     //    for ( unsigned ifeat=0 ; ifeat<EvtxCollections.size() ; ifeat++ ) {
-    //      cout << EvtxCollections.at(ifeat).label() << endl;
+    //      ANA_MSG_INFO(EvtxCollections.at(ifeat).label());
     //      for( auto vtx_itr : *(EvtxCollections.at(ifeat).cptr()) ){
-    //	cout << vtx_itr->vertexType() << " " << endl;
+    //	      ANA_MSG_INFO(vtx_itr->vertexType() << " ");
     //      }
     //    }
 
@@ -283,7 +280,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     ANA_MSG_DEBUG("ncontainers  " << bjetCollections.size());
 
     if(jetCollections.size() != bjetCollections.size()){
-      cout << "ERROR Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " bjets: "<< bjetCollections.size() << endl;
+      ANA_MSG_ERROR("Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " bjets: "<< bjetCollections.size());
       isValid = false;
 
       auto triggerChainGroupAfterVeto = m_trigDecTool_handle->getChainGroup(m_trigItemAfterVeto);
@@ -297,25 +294,25 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     }
 
     if(m_readHLTTracks && jetCollections.size() != trkCollections.size()){
-      cout << "ERROR Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " trks: "<< trkCollections.size() << endl;
-      cout << " Jet Collection " << m_jetName << " Trk Collection:  " << m_trkName << endl;
+      ANA_MSG_ERROR("Problem in container size: " << m_name << " jets: "<< jetCollections.size() << " trks: "<< trkCollections.size());
+      ANA_MSG_ERROR(" Jet Collection " << m_jetName << " Trk Collection:  " << m_trkName);
       isValid = false;
     }
 
     //if(jetCollections.size() != ftfCollections.size()){
-    //  cout << "ERROR Problem in container size: " << m_name  << " jets: "<< jetCollections.size() << " ftfs: "<< ftfCollections.size() << endl;
+    //  ANA_MSG_ERROR("Problem in container size: " << m_name  << " jets: "<< jetCollections.size() << " ftfs: "<< ftfCollections.size());
     //  isValid = false;
     //}
 
     if(m_readHLTVtx){
       if(vtxCollections.size() < jetCollections.size()){
-	cout << "ERROR Problem in container size: " << m_name
-	     << " jets: "<< jetCollections.size() << " " << m_jetName
-	     << " vtx: "<< vtxCollections.size()  << " " << m_vtxName << endl;
+	ANA_MSG_ERROR("Problem in container size: " << m_name
+                       << " jets: "<< jetCollections.size() << " " << m_jetName
+                       << " vtx: "<< vtxCollections.size()  << " " << m_vtxName);
 	for ( unsigned ifeat=0 ; ifeat<vtxCollections.size() ; ifeat++ ) {
-	  cout << "Feture: " << ifeat << endl;
+	  ANA_MSG_INFO("Feture: " << ifeat);
 	  for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ){
-	    cout << vtx_itr->vertexType() <<endl;
+	    ANA_MSG_INFO(vtx_itr->vertexType());
 	  }
 	}
 	isValid = false;
@@ -334,7 +331,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
     ANA_MSG_DEBUG(" bs_online_vx " << var_bs_online_vx << " bs_online_vy " << var_bs_online_vy << " bs_online_vz " << var_bs_online_vz);
 
 
-    //cout << " is Valid " << jetCollections.size() << " " << vtxCollections.size() << endl;
+    //ANA_MSG_INFO(" is Valid " << jetCollections.size() << " " << vtxCollections.size());
     for ( unsigned ifeat=0 ; ifeat<jetCollections.size() ; ifeat++ ) {
       const xAOD::Jet* hlt_jet = getTrigObject<xAOD::Jet, xAOD::JetContainer>(jetCollections.at(ifeat));
       if(!hlt_jet) continue;
@@ -369,7 +366,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       //
       if(m_readHLTTracks){
 
-	vector<const xAOD::TrackParticle*> matchedTracks;
+        std::vector<const xAOD::TrackParticle*> matchedTracks;
 	ANA_MSG_DEBUG("Trk Size" << hlt_tracks->size());
 
 	for(const xAOD::TrackParticle* thisHLTTrk: *hlt_tracks){
@@ -424,13 +421,13 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 	    m_vtx_decoration  (*newHLTBJet)         = backup_pvx;
 	    m_vtx_decoration_bkg(*newHLTBJet)       = backup_pvx;
 	  }else{
-	    cout << "No EFHistoPrmVtx....  " << endl;
+	    ANA_MSG_INFO("No EFHistoPrmVtx....  ");
 	    m_vtx_hadDummyPV  (*newHLTBJet)         = '2';
 	    m_vtx_decoration  (*newHLTBJet)         = 0;
 	    m_vtx_decoration_bkg(*newHLTBJet)       = 0;
 	  }
 
-	  //cout << "hadDummy and vtxType " << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName << endl;
+	  //ANA_MSG_INFO("hadDummy and vtxType " << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName);
 
 	}else{
 
@@ -449,8 +446,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
 	ANA_MSG_DEBUG("hadDummy and vtxType" << m_vtx_hadDummyPV (*newHLTBJet) << " " << m_vtxName);
 	//if(m_vtx_hadDummyPV (*newHLTBJet) != '0' ){
-	//   cout << "hadDummy and vtxType and m_outContainerName  " << m_vtx_hadDummyPV (*newHLTBJet) << " "
-	//	<< m_vtxName << ' '<< m_outContainerName <<endl;
+	//   ANA_MSG_INFO("hadDummy and vtxType and m_outContainerName  " << m_vtx_hadDummyPV (*newHLTBJet) << " "
+	//	<< m_vtxName << ' '<< m_outContainerName);
 	//}
       } else{ //m_readHLTVtx
 

@@ -149,7 +149,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
 	  std::string stream("");
 	  for ( auto cbk : *incompleteCBC ) {
-	      Info ("fileExecute()", "Incomplete cbk name: %s - stream: %s ", (cbk->name()).c_str(), (cbk->inputStream()).c_str());
+	      ANA_MSG_INFO("Incomplete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream());
 	      if ( cbk->inputStream() != "unknownStream" ) {
 		  allFromUnknownStream = false;
 		  stream = cbk->inputStream();
@@ -188,7 +188,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
       int maxCycle(-1);
       for ( const auto& cbk: *completeCBC ) {
-	  Info ("fileExecute()", "Complete cbk name: %s - stream: %s", (cbk->name()).c_str(), (cbk->inputStream()).c_str() );
+	  ANA_MSG_INFO("Complete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream() );
 	  if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
 	      allEventsCBK = cbk;
 	      maxCycle = cbk->cycle();
@@ -737,14 +737,16 @@ EL::StatusCode BasicEventSelection :: execute ()
   //------------------------------------------------------------------------------------------
   // Update Pile-Up Reweighting
   //------------------------------------------------------------------------------------------
-  if ( m_isMC && m_doPUreweighting ) {
+  if ( m_doPUreweighting ) {
     m_pileup_tool_handle->applySystematicVariation(CP::SystematicSet()).ignore();
     m_pileup_tool_handle->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
                                                  //  1.) the PU weight ("PileupWeight")
                                                  //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                                  //  3.) the random run number ("RandomRunNumber")
                                                  //  4.) the random lumiblock number ("RandomLumiBlockNumber")
-      if ( m_doPUreweightingSys ) {
+    static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
+
+      if ( m_isMC && m_doPUreweightingSys ) {
        	CP::SystematicSet tmpSet;tmpSet.insert(CP::SystematicVariation("PRW_DATASF",1));
       	m_pileup_tool_handle->applySystematicVariation( tmpSet ).ignore();
 	eventInfo->auxdecor< float >( "PileupWeight_UP" )= m_pileup_tool_handle->getCombinedWeight( *eventInfo );
@@ -919,6 +921,20 @@ EL::StatusCode BasicEventSelection :: execute ()
     static SG::AuxElement::Decorator< int > HLTPSKey("HLTPSKey");
     HLTPSKey(*eventInfo) = m_trigConfTool_handle->hltPrescaleKey();
   }
+
+  // Calculate distance to previous empty BCID and save as decoration
+  if( !m_isMC ){
+    for (int i = eventInfo->bcid() - 1; i >= 0; i--){
+      //get the bunch group pattern for bunch crossing i
+      uint16_t bgPattern = m_trigConfTool_handle->bunchGroupSet()->bgPattern()[i];
+      bool isLast = (bgPattern >> 3) & 0x1;
+      if (isLast){
+        static SG::AuxElement::Decorator< int > DistEmptyBCID("DistEmptyBCID");
+        DistEmptyBCID(*eventInfo) = eventInfo->bcid()-i;
+        break;
+      }
+    }//for each bcid
+  }//if data
 
   return EL::StatusCode::SUCCESS;
 }

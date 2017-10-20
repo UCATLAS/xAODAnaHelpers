@@ -97,15 +97,6 @@ namespace HelperClasses {
     };
     /**
         @rst
-            .. deprecated:: 00-03-26
-               Use :cpp:func:`~HelperClasses::InfoSwitch::has_match` instead.
-
-        @endrst
-        @param flag     The string we search for.
-     */
-    bool parse(const std::string flag) { std::cout << "InfoSwitch::parse() deprecated soon!" << std::endl; return has_match(flag); };
-    /**
-        @rst
             Search for an exact match in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails`.
 
         @endrst
@@ -120,6 +111,21 @@ namespace HelperClasses {
         @param flag     The string we search for.
      */
     bool has_match(const std::string flag) { return m_configStr.find(flag) != std::string::npos; };
+    /**
+        @rst
+            Search for a single flag in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails` and parse out the working point.
+
+        @endrst
+        @param flag     The string we search for.
+     */
+    std::string get_working_point(const std::string flag);
+    /**
+        @rst
+            Search for multiple flags in :cpp:member:`~HelperClasses::InfoSwitch::m_configDetails` and parse out the working points.
+        @endrst
+        @param flag     The string we search for.
+     */
+    std::vector<std::string> get_working_points(const std::string flag);
   };
 
   /**
@@ -136,6 +142,7 @@ namespace HelperClasses {
         m_shapeLC        shapeLC        exact
         m_truth          truth          exact
         m_caloClus       caloClusters   exact
+        m_weightsSys     weightsSys     exact
         ================ ============== =======
 
     @endrst
@@ -149,6 +156,7 @@ namespace HelperClasses {
     bool m_shapeLC;
     bool m_truth;
     bool m_caloClus;
+    bool m_weightsSys;
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
@@ -222,7 +230,7 @@ namespace HelperClasses {
 
                 m_configStr = "... NLeading4 ..."
 
-            will define :code:`int m_numLeading = 4`.
+            will define ``int m_numLeading = 4``.
 
 
     @endrst
@@ -242,17 +250,18 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Muon Information.
 
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_trigger      trigger      exact
-        m_isolation    isolation    exact
-        m_quality      quality      exact
-        m_trackparams  trackparams  exact
-        m_trackhitcont trackhitcont exact
-        m_effSF        effSF        exact
-        m_energyLoss   energyLoss   exact
-        ============== ============ =======
+        ====================== ==================== =======
+        Parameter              Pattern              Match
+        ====================== ==================== =======
+        m_trigger              trigger              exact
+        m_isolation            isolation            exact
+        m_isolationKinematics  isolationKinematics  exact
+        m_quality              quality              exact
+        m_trackparams          trackparams          exact
+        m_trackhitcont         trackhitcont         exact
+        m_effSF                effSF                exact
+        m_energyLoss           energyLoss           exact
+        ====================== ==================== =======
 
     @endrst
    */
@@ -260,11 +269,13 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_isolation;
+    bool m_isolationKinematics;
     bool m_quality;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
     bool m_energyLoss;
+    bool m_promptlepton;
 
     std::vector< std::string > m_recoWPs;
     std::vector< std::string > m_isolWPs;
@@ -291,6 +302,7 @@ namespace HelperClasses {
         =============================================================================================================================================================== =============================================================================================================================================== =======
         m_trigger                                                                                                                                                       trigger                                                                                                                                         exact
         m_isolation                                                                                                                                                     isolation                                                                                                                                       exact
+        m_isolationKinematics                                                                                                                                           isolationKinematics                                                                                                                             exact
         m_quality                                                                                                                                                       quality                                                                                                                                         exact
         m_PID                                                                                                                                                           PID                                                                                                                                             exact
         m_trackparams                                                                                                                                                   trackparams                                                                                                                                     exact
@@ -330,11 +342,13 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_isolation;
+    bool m_isolationKinematics;
     bool m_quality;
     bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
+    bool m_promptlepton;
     std::vector< std::string > m_PIDWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
@@ -394,6 +408,8 @@ namespace HelperClasses {
         m_layer          layer          exact
         m_trackPV        trackPV        exact
         m_trackAll       trackAll       exact
+        m_sfJVTName      sfJVT          partial
+        m_sffJVTName     sffJVT         partial
         m_allTrack       allTrack       exact
         m_allTrackPVSel  allTrackPVSel  exact
         m_allTrackDetail allTrackDetail exact
@@ -403,6 +419,8 @@ namespace HelperClasses {
         m_flavTagHLT     flavorTagHLT   exact
         m_sfFTagFix      sfFTagFix      partial
         m_sfFTagFlt      sfFTagFlt      partial
+        m_sfFTagHyb      sfFTagHyb      partial
+        m_jetBTag        jetBTag        partial
         m_area           area           exact
         m_JVC            JVC            exact
         m_tracksInJet    tracksInJet    partial
@@ -420,11 +438,21 @@ namespace HelperClasses {
 
         .. note::
 
-            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
+            ``sfJVT`` requires a working point after it, for example::
+
+                m_configStr = "... sfJVTMedium ..."
+
+            ``sfFTagFix``, ``sfFTagFlt`` and ``sfFTagHyb`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
 
                 m_configStr = "... sfFTagFix010203 ..."
 
-            will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
+            will define ``std::vector<int> m_sfFTagFix = {1,2,3}``. THIS OPTION IS DEPRICATED!
+
+            ``jetBTag`` expects the format ``jetBTag_tagger_type_AABB..MM..YY.ZZ``. This will create a vector of working points (AA, BB, CC, ..., ZZ) associated with that tagger. Several entries can be given. For example::
+
+                m_configStr = "... jetBTag_MV2c10_HybBEff_60707785 ..."
+
+            will define ``std::map<std::vector<std::pair<std::string,uint>>> m_jetBTag["MV2c10"] = {std::make_pair("HybBEff",60), std::make_pair("HybBEff",70) ,std::make_pair("HybBEff",77), std::make_pair("HybBEff",85)}``.
 
     @endrst
    */
@@ -470,8 +498,12 @@ namespace HelperClasses {
     bool m_JVC;
     std::string      m_trackName;
     std::string      m_trackJetName;
+    std::string      m_sfJVTName;
+    std::string      m_sffJVTName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
+    std::vector<int> m_sfFTagHyb;
+    std::map<std::string,std::vector<std::pair<std::string,uint>>> m_jetBTag;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~JetInfoSwitch() {}
   protected:
@@ -563,26 +595,38 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Missing :math:`\text{E}_{\text{T}}` Information.
 
-        ================ ============== =======
-        Parameter        Pattern        Match
-        ================ ============== =======
-        m_refEle         refEle|all     exact
-        m_refGamma       refGamma|all   exact
-        m_refTau         refTau|all     exact
-        m_refMuons       refMuons|all   exact
-        m_refJet         refJet|all     exact
-        m_refJetTrk      refJetTrk      exact
-        m_softClus       softClus|all   exact
-        m_softTrk        softTrk|all    exact
-        ================ ============== =======
+        ==================== ====================== =======
+        Parameter            Pattern                Match
+        ==================== ====================== =======
+        m_metClus            metClus                exact
+        m_metTrk             metTrk                 exact
+        m_sigClus            sigClus|all            exact
+        m_sigTrk             sigTrk|all             exact
+        m_sigResolutionClus  sigResolutionClus|all  exact
+        m_sigResolutionTrk   sigResolutionTrk|all   exact
+        m_refEle             refEle|all             exact
+        m_refGamma           refGamma|all           exact
+        m_refTau             refTau|all             exact
+        m_refMuons           refMuons|all           exact
+        m_refJet             refJet|all             exact
+        m_refJetTrk          refJetTrk              exact
+        m_softClus           softClus|all           exact
+        m_softTrk            softTrk|all            exact
+        ==================== ====================== =======
 
 
-        .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information.
+        .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information. You can force only calocluster- or track-based MET using :cpp:member:`~HelperClasses::METInfoSwitch::m_metClus` or :cpp:member:`~HelperClasses::METInfoSwitch::m_metTrk`.
 
     @endrst
    */
   class METInfoSwitch : public InfoSwitch {
   public:
+    bool m_metClus;
+    bool m_metTrk;
+    bool m_sigClus;
+    bool m_sigTrk;
+    bool m_sigResolutionClus;
+    bool m_sigResolutionTrk;
     bool m_refEle;
     bool m_refGamma;
     bool m_refTau;

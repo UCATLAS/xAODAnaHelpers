@@ -222,6 +222,12 @@ EL::StatusCode MuonCalibrator :: initialize ()
   }
 
   ANA_CHECK(m_store->record(SystMuonsNames, "muons_Syst"+m_name ));
+  
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
+  }
 
   ANA_MSG_INFO( "MuonCalibrator Interface succesfully initialized!" );
 

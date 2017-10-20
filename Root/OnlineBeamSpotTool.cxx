@@ -8,8 +8,6 @@
 #include "TTree.h"
 
 using namespace xAH;
-using std::cout;  using std::endl;
-using std::make_pair;
 
 OnlineBeamSpotTool::OnlineBeamSpotTool() :
   m_cachedRunNum(-1),
@@ -29,14 +27,18 @@ OnlineBeamSpotTool::OnlineBeamSpotTool() :
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.I.root");
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.K.root");
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.L.root");
-  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.A.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.B.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.C.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.D.root");
+  readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.E.root");
 
   m_mcLBData = new LBData(0,999999,0,0,0);
 }
 
 OnlineBeamSpotTool::~OnlineBeamSpotTool()
 {
-  //cout << "In ~OnlineBeamSpotTool" << endl;
+  //std::cout << "In ~OnlineBeamSpotTool" << std::endl;
 }
 
 
@@ -96,12 +98,12 @@ float OnlineBeamSpotTool::getOnlineBSInfo(const xAH::EventInfo* eventInfo, Onlin
 }
 
 float OnlineBeamSpotTool::getOnlineBSInfo(int runNumber, int lumiBlock, bool isMC, OnlineBeamSpotTool::BSData datakey){
-  //cout << "In OnlineBeamSpotTool (" << runNumber << " , " << lumiBlock<< ")" << endl;
+  //std::cout << "In OnlineBeamSpotTool (" << runNumber << " , " << lumiBlock<< ")" << std::endl;
 
   const LBData* thisLBInfo = getLBData(runNumber, lumiBlock, isMC);
 
   if(!thisLBInfo){
-    cout << "OnlineBeamSpotTool::ERROR no LB data for run: " << runNumber << " LB: " << lumiBlock << endl;;
+    std::cout << "OnlineBeamSpotTool::ERROR no LB data for run: " << runNumber << " LB: " << lumiBlock << std::endl;
     return -999;
   }
 
@@ -150,7 +152,7 @@ void OnlineBeamSpotTool::readFile(std::string rootFileName){
 				   ));
     }
 
-    m_runList.insert( make_pair(RunNumber, thisRunInfo) );
+    m_runList.insert( std::make_pair(RunNumber, thisRunInfo) );
   }
 
   thisFile->Close();

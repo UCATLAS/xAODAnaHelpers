@@ -1,5 +1,3 @@
-#if ROOTCORE_RELEASE_SERIES < 25
-// it's in 2.4.31+ and 2.6.3+
 #ifndef xAODAnaHelpers_MessagePrinterAlgo_H
 #define xAODAnaHelpers_MessagePrinterAlgo_H
 
@@ -51,5 +49,4 @@ class MessagePrinterAlgo : public xAH::Algorithm
     /// @endcond
 };
 
-#endif
 #endif

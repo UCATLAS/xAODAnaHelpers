@@ -78,6 +78,25 @@ namespace HelperClasses{
     std::string SiliconAssociatedForwardMuon("SiliconAssociatedForwardMuon");   enumMap.insert(std::make_pair(SiliconAssociatedForwardMuon , xAOD::Muon::SiliconAssociatedForwardMuon));
   }
 
+  std::string InfoSwitch::get_working_point(const std::string flag) {
+    for (auto configDetail : m_configDetails) {
+      if (configDetail.compare(0, flag.size(), flag) == 0) {
+        return configDetail.substr(flag.size(), std::string::npos);
+      }
+    }
+    return "";
+  }
+
+  std::vector<std::string>InfoSwitch::get_working_points(const std::string flag) {
+    std::vector<std::string> wps;
+    for (auto configDetail : m_configDetails) {
+      if (configDetail.compare(0, flag.size(), flag) == 0) {
+        wps.push_back(configDetail.substr(flag.size(), std::string::npos));
+      }
+    }
+    return wps;
+  }
+
   /*
             !!!!!!!!!!!!!WARNING!!!!!!!!!!!!!
               If you change the string here,
@@ -94,6 +113,7 @@ namespace HelperClasses{
     m_shapeLC       = has_exact("shapeLC");
     m_truth         = has_exact("truth");
     m_caloClus      = has_exact("caloClusters");
+    m_weightsSys    = has_exact("weightsSys");
   }
 
   void TriggerInfoSwitch::initialize(){
@@ -127,11 +147,13 @@ namespace HelperClasses{
   void MuonInfoSwitch::initialize(){
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
+    m_isolationKinematics = has_exact("isolationKinematics");
     m_quality       = has_exact("quality");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
     m_energyLoss    = has_exact("energyLoss");
+    m_promptlepton  = has_exact("promptlepton");
    
     // working points combinations for trigger corrections 
     std::string token;
@@ -156,11 +178,13 @@ namespace HelperClasses{
   void ElectronInfoSwitch::initialize(){
     m_trigger       = has_exact("trigger");
     m_isolation     = has_exact("isolation");
+    m_isolationKinematics = has_exact("isolationKinematics");
     m_quality       = has_exact("quality");
     m_PID           = has_exact("PID");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
+    m_promptlepton  = has_exact("promptlepton");
     // working points for scale-factors
 
     // working points combinations for trigger corrections 
@@ -277,6 +301,9 @@ namespace HelperClasses{
     m_vsLumiBlock         = has_exact("vsLumiBlock");
     m_lumiB_runN          = has_exact("lumiB_runN");
 
+    m_sfJVTName           = get_working_point("sfJVT");
+    m_sffJVTName          = get_working_point("sffJVT");
+
     m_sfFTagFix.clear();
     if( has_match( "sfFTagFix" ) ) {
       std::string input(m_configStr);
@@ -323,6 +350,73 @@ namespace HelperClasses{
         count++;
       }
     } // sfFTagFlt
+    m_sfFTagHyb.clear();
+    if( has_match( "sfFTagHyb" ) ) {
+      std::string input(m_configStr);
+      // erase everything before the interesting string
+      input.erase( 0, input.find("sfFTagHyb") );
+      // erase everything after the interesting string
+      // only if there is something after the string
+      if( input.find(" ") != std::string::npos ) {
+        input.erase( input.find_first_of(" "), input.size() );
+      }
+      // remove fTagSFHyb to just leave the numbers
+      input.erase(0,9);
+      // two by two take the characters and push back an int into this vector
+      std::vector<int> values;
+      int size( input.size()/2 );
+      int count(0);
+      while( count < size ) {
+        std::string number = input.substr(0,2);
+        m_sfFTagHyb.push_back( atoi( number.c_str() ) );
+        input.erase(0,2);
+        count++;
+      }
+    } // sfFTagHyb
+
+    m_jetBTag.clear();
+    std::string tmpConfigStr(m_configStr);
+    while( tmpConfigStr.find("jetBTag") != std::string::npos ) { // jetBTag
+      // erase everything before the interesting string
+      tmpConfigStr.erase( 0, tmpConfigStr.find("jetBTag") );
+      // extract interesting string
+      std::size_t pos  =tmpConfigStr.find(" ");
+      std::string input=tmpConfigStr.substr(0,pos);
+      // remove interesting string from configStr being processed
+      tmpConfigStr.erase(0,pos);
+      // extracted the tagger and numbers
+      std::stringstream ss(input);
+      std::string s;
+      uint idx=0;
+      std::string tagger;
+      std::string type;
+      std::vector<uint> wps;
+      while(std::getline(ss, s, '_')) {
+	switch(idx)
+	  {
+	  case 0: // jetBTag
+	    break;
+	  case 1: // tagger
+	    tagger=s;
+	    break;
+	  case 2: // efficiency type
+	    type=s;
+	    break;
+	  case 3: // list of efficiency working points
+	    uint size( s.size()/2 );
+	    for(uint i=0;i<size;i++) {
+	      std::string number = s.substr(0,2);
+	      wps.push_back( atoi( number.c_str() ) );
+	      s.erase(0,2);
+	    }
+	  }
+	idx++;
+      }
+      if(m_jetBTag.find(tagger)==m_jetBTag.end()) m_jetBTag[tagger]=std::vector<std::pair<std::string,uint>>();
+      for(auto wp : wps)
+	m_jetBTag[tagger].push_back(std::make_pair(type,wp));
+    } // jetBTag
+
     m_area          = has_exact("area");
     m_JVC           = has_exact("JVC");
   }
@@ -348,6 +442,12 @@ namespace HelperClasses{
   }
 
   void METInfoSwitch::initialize(){
+    m_metClus   = has_exact("metClus");
+    m_metTrk    = has_exact("metTrk");
+    m_sigClus   = has_exact("sigClus")  || has_exact("all");
+    m_sigTrk    = has_exact("sigTrk")   || has_exact("all");
+    m_sigResolutionClus = has_exact("sigResolutionClus") || has_exact("all");
+    m_sigResolutionTrk  = has_exact("sigResolutionTrk")  || has_exact("all");
     m_refEle    = has_exact("refEle")   || has_exact("all");
     m_refGamma  = has_exact("refGamma") || has_exact("all");
     m_refTau    = has_exact("refTau")   || has_exact("all");

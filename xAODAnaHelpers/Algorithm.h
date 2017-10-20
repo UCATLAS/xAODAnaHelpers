@@ -74,19 +74,19 @@ namespace xAH {
         /// @endcond
 
         /**
-            @brief Run any initializations commmon to all xAH Algorithms (such as registerInstance). Call this inside :code:`histInitialize` for best results.
+            @brief Run any initializations commmon to all xAH Algorithms (such as registerInstance). Call this inside ``histInitialize`` for best results.
          */
         StatusCode algInitialize();
 
         /**
-            @brief Run any finalizations common to all xAH Algorithms (such as unregisterInstance). Call this inside :code:`histFinalize` for best results.
+            @brief Run any finalizations common to all xAH Algorithms (such as unregisterInstance). Call this inside ``histFinalize`` for best results.
          */
         StatusCode algFinalize();
 
         /**
             @brief All algorithms initialized should have a unique name, to differentiate them at the TObject level.
 
-            Note, :code:`GetName()` returns a :code:`char*` while this returns a :code:`std::string`.
+            Note, ``GetName()`` returns a ``char*`` while this returns a ``std::string``.
         */
         std::string m_name = "UnnamedAlgorithm";
 
@@ -240,9 +240,9 @@ namespace xAH {
 
         /**
             @rst
-                Sets the name of the tool and emits :code:`ANA_MSG_WARNING` if the tool of given type/name has been configured previously.
+                Sets the name of the tool and emits ``ANA_MSG_WARNING`` if the tool of given type/name has been configured previously.
 
-                The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in :code:`histInitialize()`. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
+                The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in ``histInitialize()``. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
 
                 The tool will not be guaranteed unique if two tools of the same type are created without a name passed in. But this is, at this point, up to the user and a more complex scenario than what this function tries to simplify on its own.
 
@@ -258,7 +258,7 @@ namespace xAH {
           return res;
         }
 
-        /// @brief Return a :code:`std::string` representation of :code:`this`
+        /// @brief Return a ``std::string`` representation of ``this``
         std::string getAddress() const {
           const void * address = static_cast<const void*>(this);
           std::stringstream ss;
@@ -283,7 +283,7 @@ namespace xAH {
 
             @endrst
          */
-        static std::map<std::string, int> m_instanceRegistry;
+        static std::map<std::string, int> m_instanceRegistry; //!
 
         /**
             @rst

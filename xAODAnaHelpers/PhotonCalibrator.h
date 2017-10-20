@@ -11,7 +11,11 @@
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
+#ifndef USE_CMAKE
 #include "PhotonEfficiencyCorrection/IAsgPhotonEfficiencyCorrectionTool.h"
+#else
+#include "EgammaAnalysisInterfaces/IAsgPhotonEfficiencyCorrectionTool.h"
+#endif
 #include "IsolationCorrections/IIsolationCorrectionTool.h"
 
 class AsgPhotonIsEMSelector;

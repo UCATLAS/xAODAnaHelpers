@@ -189,7 +189,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   if( m_LHOperatingPoint == "LooseAndBLayer" )
     m_LHOperatingPoint = "LooseBL";
 
-  if ( // m_LHOperatingPoint != "VeryLoose"       &&
+  if ( m_LHOperatingPoint != "VeryLoose"       &&
        m_LHOperatingPoint != "Loose"           &&
        m_LHOperatingPoint != "LooseBL"         &&
        m_LHOperatingPoint != "Medium"          &&
@@ -363,15 +363,13 @@ EL::StatusCode ElectronSelector :: initialize ()
 
     m_doTrigMatch = false;
 
-    std::cout << "***********************************************************" << std::endl;
+    ANA_MSG_WARNING("***********************************************************");
     ANA_MSG_WARNING( "Will not perform any electron trigger matching at this stage b/c :");
-    std::cout << "" << std::endl;
-    std::cout << "\t -) could not find the TrigDecisionTool in asg::ToolStore" << std::endl;
-    std::cout << "\t AND/OR" << std::endl;
-    std::cout << "\t -) all input HLT trigger chain lists are empty" << std::endl;
-    std::cout << "" << std::endl;
-    std::cout << "However, if you really didn't want to do the matching now, it's all good!" << std::endl;
-    std::cout << "***********************************************************" << std::endl;
+    ANA_MSG_WARNING("\t -) could not find the TrigDecisionTool in asg::ToolStore");
+    ANA_MSG_WARNING("\t AND/OR");
+    ANA_MSG_WARNING("\t -) all input HLT trigger chain lists are empty");
+    ANA_MSG_WARNING("However, if you really didn't want to do the matching now, it's all good!");
+    ANA_MSG_WARNING("***********************************************************");
   }
 
   // **********************************************************************************************

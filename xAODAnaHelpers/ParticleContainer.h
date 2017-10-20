@@ -24,12 +24,14 @@ namespace xAH {
 		      float units = 1e3,
 		      bool mc = false,
 		      bool useMass=false,
+          bool storeSystSFs = true,
 		      const std::string& suffix="")
       : m_name(name),
 	m_infoSwitch(detailStr),
 	m_mc(mc),
 	m_debug(false),
 	m_units(units),
+  m_storeSystSFs(storeSystSFs),
 	m_useMass(useMass),
 	m_suffix(suffix)
       {
@@ -187,6 +189,18 @@ namespace xAH {
 	return;
       }
 
+      template<typename T, typename V> void safeSFVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<T> >* destination, const std::vector<T> &defaultValue) {
+        if ( accessor.isAvailable( *xAODObj ) ) {
+          if ( m_storeSystSFs ) {
+            destination->push_back( accessor(*xAODObj) );
+          } else {
+            destination->push_back( std::vector< float > ({accessor(*xAODObj)[0]}) );
+          }
+        } else {
+          destination->push_back( defaultValue );
+        }
+      }
+
       virtual void updateParticle(uint idx, T_PARTICLE& particle)
       {
         if(m_infoSwitch.m_kinematic)
@@ -215,6 +229,7 @@ namespace xAH {
       bool m_mc;
       bool m_debug;
       float m_units;
+      bool m_storeSystSFs;
 
       int m_n;
 

@@ -9,6 +9,7 @@
 // top of file, outside of algorithm declaration
 // #include "METUtilities/METRebuilder.h"
 #include "METUtilities/METMaker.h"
+#include "METUtilities/METSignificance.h"
 #include "METUtilities/CutsMETMaker.h"
 #include "TauAnalysisTools/TauSelectionTool.h"
 
@@ -52,9 +53,6 @@ namespace xAOD {
   class Jet;
 #endif
 }
-
-using std::cout; using std::cerr; using std::endl;
-using std::string;
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(METConstructor)
@@ -139,9 +137,19 @@ EL::StatusCode METConstructor :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
+  // define m_isMC
+  const xAOD::EventInfo* eventInfo(nullptr);
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+
+  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
+  ANA_MSG_DEBUG( "Is MC? " << m_isMC );
+
   //////////// IMETMaker ////////////////
   ASG_SET_ANA_TOOL_TYPE(m_metmaker_handle, met::METMaker);
   m_metmaker_handle.setName("METMaker");
+  if ( m_dofJVTCut ) {
+    ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", "passFJVT"));
+  }
   m_metmaker_handle.retrieve();
 
   ///////////// IMETSystematicsTool ///////////////////
@@ -154,6 +162,28 @@ EL::StatusCode METConstructor :: initialize ()
     ANA_MSG_ERROR( "Failed to properly initialize tau selection tool. Exiting." );
     return EL::StatusCode::FAILURE;
   }
+
+  //////////// IMETSignificance ////////////////
+  setToolName( m_metSignificance_handle );
+  ASG_SET_ANA_TOOL_TYPE( m_metSignificance_handle, met::METSignificance );
+  ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
+#ifdef USE_CMAKE
+  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
+#else
+  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", static_cast<int>(m_significanceSoftTermReso)) );
+#endif
+  ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !m_isMC) );
+  // For AFII samples
+  if ( m_isMC ) {
+    // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
+    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
+    if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
+      ANA_MSG_INFO( "Setting simulation flavour to AFII");
+      ANA_CHECK( m_metSignificance_handle.setProperty("IsAFII", true));
+    }
+  }
+  ANA_CHECK( m_metSignificance_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_metSignificance_handle);
 
   ANA_MSG_INFO( "METConstructor Interface " << m_name << " succesfully initialized!");
 
@@ -176,13 +206,11 @@ EL::StatusCode METConstructor :: initialize ()
 
   m_numEvent = 0; //just as a check
 
-  // define m_isMC
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  ANA_MSG_DEBUG( "Is MC? " << static_cast<int>(m_isMC) );
-
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(sysList, m_name, fileMD);
+  }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -198,7 +226,7 @@ EL::StatusCode METConstructor :: execute ()
    ANA_MSG_DEBUG( "Performing MET reconstruction...");
 
    m_numEvent ++ ;
-   //if (m_debug) cout<< "number of processed events now is : "<< m_numEvent <<endl;
+   //ANA_MSG_DEBUG("number of processed events now is : "<< m_numEvent);
 
 
    const xAOD::MissingETContainer* coreMet(0);
@@ -434,33 +462,37 @@ EL::StatusCode METConstructor :: execute ()
 
      // NOTE: you have to set m_doJVTCut correctly when running!
 
-     if ( m_useCaloJetTerm ) {
-       ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
-     } else if ( m_useTrackJetTerm ) {
-       ANA_CHECK( m_metmaker_handle->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
+     // By default: rebuild MET using jets without soft cluster terms (just TST, no CST)
+     // You can configure to add Cluster Soft Term (only affects the "use Jets" option)
+     //         or to rebuild MET using the Tracks in Calorimeter Jets which doesn't make sense to have CST
+     if( !m_rebuildUsingTracksInJets ) {
+       if( m_addSoftClusterTerms ){
+         ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
+       } else {
+         ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
+       }
      } else {
-       ANA_MSG_ERROR( "Both m_useCaloJetTerm and m_useTrackJetTerm appear to be set to 'false'. This should not happen. Please check your MET configuration file");
-       return EL::StatusCode::FAILURE;
+       ANA_CHECK( m_metmaker_handle->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet, jetCont, coreMet, metMap, m_doJVTCut));
      }
 
      //now tell the m_metSyst_handle that we are using this SystematicSet (of one SystematicVariation for now)
      //after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied
      // assert(   m_metSyst_handle->applySystematicVariation(iSysSet) );
-     //
-
      if (m_isMC) {
        if( m_metSyst_handle->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
-         cout<<"Error !!! not able to applySystematicVariation "<< endl;
+         ANA_MSG_ERROR("not able to applySystematicVariation ");
        }
      }
 
-     //get the soft cluster term, and applyCorrection
-     xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
-     //assert( softClusMet != 0); //check we retrieved the clust term
-     if( m_isMC && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
-       ANA_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
+     if(!m_rebuildUsingTracksInJets && m_addSoftClusterTerms){
+       //get the soft cluster term, and applyCorrection
+       xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
+       //assert( softClusMet != 0); //check we retrieved the clust term
+       if( m_isMC && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
+         ANA_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
+       }
+       ANA_MSG_DEBUG("Soft cluster met term met : " << softClusMet->met());
      }
-     ANA_MSG_DEBUG("Soft cluster met term met : " << softClusMet->met());
 
      //get the track soft term, and applyCorrection
      xAOD::MissingET * softTrkMet = (*newMet)["PVSoftTrk"];
@@ -474,12 +506,40 @@ EL::StatusCode METConstructor :: execute ()
        if( (*jetMet)->applyCorrection(iSysSet) != CP::CorrectionCode::Ok) {
        ANA_MSG_ERROR( "Could not apply correction to jet met !!!! ");
        };
-       std::cout << "Jet met term met " << jetMet->met() << std::endl;*/
+       ANA_MSG_DEBUG("Jet met term met " << jetMet->met());*/
 
      // build met:
 
      ANA_CHECK( m_metmaker_handle->buildMETSum("FinalClus", newMet, MissingETBase::Source::LCTopo));
      ANA_CHECK( m_metmaker_handle->buildMETSum("FinalTrk",  newMet, MissingETBase::Source::Track));
+
+     // Calculate MET significance if enabled
+     if ( m_calculateSignificance ) {
+       std::vector<std::string> totalMETNames = {"FinalTrk", "FinalClus"};
+
+       for ( const std::string &name : totalMETNames ) {
+         // Calculate MET significance
+         if ( !m_rebuildUsingTracksInJets ) {
+           ANA_CHECK( m_metSignificance_handle->varianceMET(newMet, "RefJet", "PVSoftTrk", name) );
+         } else {
+           ANA_CHECK( m_metSignificance_handle->varianceMET(newMet, "RefJetTrk", "PVSoftTrk", name) );
+         }
+
+         // Decorate MET object with results
+         const xAOD::MissingET *met = *(newMet->find(name));
+         if ( !met ) {
+           ANA_MSG_WARNING( "Cannot find MET object with name: " << name );
+         }
+
+         met->auxdecor<double>("METOverSqrtSumET") = m_metSignificance_handle->GetMETOverSqrtSumET();
+         met->auxdecor<double>("METOverSqrtHT") = m_metSignificance_handle->GetMETOverSqrtHT();
+         met->auxdecor<double>("Significance") = m_metSignificance_handle->GetSignificance();
+         met->auxdecor<double>("SigDirectional") = m_metSignificance_handle->GetSigDirectional();
+         met->auxdecor<double>("Rho") = m_metSignificance_handle->GetRho();
+         met->auxdecor<double>("VarL") = m_metSignificance_handle->GetVarL();
+         met->auxdecor<double>("VarT") = m_metSignificance_handle->GetVarT();
+       }
+     }
 
      ANA_CHECK( m_store->record(newMet, (m_outputContainer+sysListItr->name()).Data() ));
      ANA_CHECK( m_store->record(metAuxCont, (m_outputContainer+sysListItr->name() + "Aux.").Data()));

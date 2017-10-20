@@ -44,6 +44,9 @@
 
 #include <PATCore/PATCoreEnums.h>
 
+// apparently needed for egammaPIDs but was included in HelperClasses too?
+#include "ElectronPhotonSelectorTools/egammaPIDdefs.h"
+
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers

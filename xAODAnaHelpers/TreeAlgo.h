@@ -86,6 +86,9 @@ public:
   virtual EL::StatusCode postExecute ();                    //!
   virtual EL::StatusCode finalize ();                       //!
   virtual EL::StatusCode histFinalize ();                   //!
+  
+  // Help tree creator function
+  virtual HelpTreeBase* createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store); //!
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

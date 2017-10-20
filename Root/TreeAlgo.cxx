@@ -108,6 +108,7 @@ EL::StatusCode TreeAlgo :: execute ()
   std::vector<std::string> jetSystNames;
   std::vector<std::string> photonSystNames;
   std::vector<std::string> fatJetSystNames;
+  std::vector<std::string> metSystNames;
 
   // this is a temporary pointer that gets switched around to check each of the systematics
   std::vector<std::string>* systNames(nullptr);
@@ -117,43 +118,51 @@ EL::StatusCode TreeAlgo :: execute ()
   if(!m_muSystsVec.empty()){
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_muSystsVec, 0, m_store, msg()) );
     for(const auto& systName: *systNames){
+      muSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
       event_systNames.push_back(systName);
-      muSystNames.push_back(systName);
     }
   }
 
   if(!m_elSystsVec.empty()){
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_elSystsVec, 0, m_store, msg()) );
     for(const auto& systName: *systNames){
+      elSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
       event_systNames.push_back(systName);
-      elSystNames.push_back(systName);
     }
   }
 
   if(!m_jetSystsVec.empty()){
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_jetSystsVec, 0, m_store, msg()) );
     for(const auto& systName: *systNames){
+      jetSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
       event_systNames.push_back(systName);
-      jetSystNames.push_back(systName);
     }
   }
   if(!m_fatJetSystsVec.empty()){
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_fatJetSystsVec, 0, m_store, msg()) );
     for(const auto& systName: *systNames){
+      fatJetSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
       event_systNames.push_back(systName);
-      fatJetSystNames.push_back(systName);
     }
   }
   if(!m_photonSystsVec.empty()){
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_photonSystsVec, 0, m_store, msg()) );
     for(const auto& systName: *systNames){
+      photonSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
       event_systNames.push_back(systName);
-      photonSystNames.push_back(systName);
+    }
+  }
+  if(!m_metSystsVec.empty()){
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_metSystsVec, 0, m_store, msg()) );
+    for(const auto& systName: *systNames){
+      metSystNames.push_back(systName);
+      if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
+      event_systNames.push_back(systName);
     }
   }
 
@@ -173,7 +182,7 @@ EL::StatusCode TreeAlgo :: execute ()
       return EL::StatusCode::FAILURE;
     }
 
-    m_trees[systName] = new HelpTreeBase( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG) );
+    m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG), m_store );
     const auto& helpTree = m_trees[systName];
 
     // tell the tree to go into the file
@@ -236,6 +245,7 @@ EL::StatusCode TreeAlgo :: execute ()
     std::string jetSuffix("");
     std::string photonSuffix("");
     std::string fatJetSuffix("");
+    std::string metSuffix("");
     /*
        if we find the systematic in the corresponding vector, we will use that container's systematic version instead of nominal version
         NB: since none of these contain the "" (nominal) case because of how I filter it, we handle the merging.. why?
@@ -248,6 +258,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if (std::find(jetSystNames.begin(), jetSystNames.end(), systName) != jetSystNames.end()) jetSuffix = systName;
     if (std::find(photonSystNames.begin(), photonSystNames.end(), systName) != photonSystNames.end()) photonSuffix = systName;
     if (std::find(fatJetSystNames.begin(), fatJetSystNames.end(), systName) != fatJetSystNames.end()) fatJetSuffix = systName;
+    if (std::find(metSystNames.begin(), metSystNames.end(), systName) != metSystNames.end()) metSuffix = systName;
 
     helpTree->FillEvent( eventInfo, m_event );
 
@@ -263,86 +274,145 @@ EL::StatusCode TreeAlgo :: execute ()
 
     // for the containers the were supplied, fill the appropriate vectors
     if ( !m_muContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::MuonContainer>(m_muContainerName + muSuffix) ) continue;
+
       const xAOD::MuonContainer* inMuon(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inMuon, m_muContainerName+muSuffix, m_event, m_store, msg()) );
       helpTree->FillMuons( inMuon, primaryVertex );
     }
 
     if ( !m_elContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::ElectronContainer>(m_elContainerName + elSuffix) ) continue;
+
       const xAOD::ElectronContainer* inElec(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inElec, m_elContainerName+elSuffix, m_event, m_store, msg()) );
       helpTree->FillElectrons( inElec, primaryVertex );
     }
+
     if ( !m_jetContainerName.empty() ) {
-      for(unsigned int ll=0;ll<m_jetContainers.size();++ll){ // Systs only for first jet container
+      bool reject = false;
+      for ( unsigned int ll = 0; ll < m_jetContainers.size(); ++ll ) { // Systs only for first jet container
         const xAOD::JetContainer* inJets(nullptr);
-        if(ll==0){ ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ); }
-        else{     ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll), m_event, m_store, msg()) ); }
+        if ( ll==0 ) {
+          if ( !m_store->contains<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix) ) {
+            reject = true;
+            break;
+          }
+          ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
+        } else {
+          if ( !m_store->contains<xAOD::JetContainer>(m_jetContainers.at(ll)) ) {
+            reject = true;
+            break;
+          }
+          ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll), m_event, m_store, msg()) );
+        }
+
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }
-
+      
+      if ( reject ) continue;
     }
+
     if ( !m_l1JetContainerName.empty() ){
+      if ( !m_store->contains<xAOD::JetRoIContainer>(m_l1JetContainerName) ) continue;
+
       const xAOD::JetRoIContainer* inL1Jets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainerName, m_event, m_store, msg()) );
       helpTree->FillL1Jets( inL1Jets);
     }
+
     if ( !m_trigJetContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::JetContainer>(m_trigJetContainerName) ) continue;
+
       const xAOD::JetContainer* inTrigJets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTrigJets, m_trigJetContainerName, m_event, m_store, msg()) );
       helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), "trigJet" );
     }
+
     if ( !m_truthJetContainerName.empty() ) {
-     for(unsigned int ll=0;ll<m_truthJetContainers.size();++ll){
+      bool reject = false;
+      for ( unsigned int ll = 0; ll < m_truthJetContainers.size(); ++ll) {
+        if ( !m_store->contains<xAOD::JetContainer>(m_truthJetContainers.at(ll)) ) {
+          reject = true;
+          break;
+        }
+
         const xAOD::JetContainer* inTruthJets(nullptr);
         ANA_CHECK( HelperFunctions::retrieve(inTruthJets, m_truthJetContainers.at(ll), m_event, m_store, msg()) );
         helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthJetBranches.at(ll) );
       }
+      
+      if ( reject ) continue;
     }
+
     if ( !m_fatJetContainerName.empty() ) {
+      bool reject = false;
       std::string token;
       std::istringstream ss(m_fatJetContainerName);
       while ( std::getline(ss, token, ' ') ){
+        if ( !m_store->contains<xAOD::JetContainer>(token+fatJetSuffix) ) {
+          reject = true;
+          break;
+        }
+
       	const xAOD::JetContainer* inFatJets(nullptr);
 	ANA_CHECK( HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, msg()) );
       	helpTree->FillFatJets( inFatJets, token );
       }
+      
+      if ( reject ) continue;
     }
+
     if ( !m_truthFatJetContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::JetContainer>(m_truthFatJetContainerName) ) continue;
+
       const xAOD::JetContainer* inTruthFatJets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName, m_event, m_store, msg()) );
       helpTree->FillTruthFatJets( inTruthFatJets );
     }
+
     if ( !m_tauContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::TauJetContainer>(m_tauContainerName) ) continue;
+
       const xAOD::TauJetContainer* inTaus(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, msg()) );
       helpTree->FillTaus( inTaus );
     }
+
     if ( !m_METContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::MissingETContainer>(m_METContainerName + metSuffix) ) continue;
+
       const xAOD::MissingETContainer* inMETCont(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METContainerName, m_event, m_store, msg()) );
       helpTree->FillMET( inMETCont );
     }
+
     if ( !m_photonContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::PhotonContainer>(m_photonContainerName + photonSuffix) ) continue;
+
       const xAOD::PhotonContainer* inPhotons(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_photonContainerName+photonSuffix, m_event, m_store, msg()) );
       helpTree->FillPhotons( inPhotons );
     }
+
     if ( !m_truthParticlesContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::TruthParticleContainer>(m_truthParticlesContainerName) ) continue;
+
       const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTruthParticles, m_truthParticlesContainerName, m_event, m_store, msg()));
       helpTree->FillTruth("xAH_truth", inTruthParticles);
     }
+
     if ( !m_trackParticlesContainerName.empty() ) {
+      if ( !m_store->contains<xAOD::TrackParticleContainer>(m_trackParticlesContainerName) ) continue;
+
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTrackParticles, m_trackParticlesContainerName, m_event, m_store, msg()));
       helpTree->FillTracks(m_trackParticlesContainerName, inTrackParticles);
     }
 
-
     // fill the tree
     helpTree->Fill();
-
   }
 
   return EL::StatusCode::SUCCESS;
@@ -364,3 +434,7 @@ EL::StatusCode TreeAlgo :: finalize () {
 }
 
 EL::StatusCode TreeAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+
+HelpTreeBase* TreeAlgo :: createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store) {
+    return new HelpTreeBase( event, tree, file, units, debug, store );
+}

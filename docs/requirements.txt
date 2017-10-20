@@ -12,4 +12,3 @@ six==1.10.0
 snowballstemmer==1.2.0
 sphinx-argparse==0.1.15
 sphinx-rtd-theme==0.1.9
-wsgiref==0.1.2

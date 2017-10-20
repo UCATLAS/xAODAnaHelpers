@@ -24,11 +24,17 @@ class BJetEfficiencyCorrector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 public:
   std::string m_inContainerName = "";
+  /**
+    @brief The name of the vector containing the names of the systematically-varied jet-related containers from the upstream algorithm, which will be processed by this algorithm.
+
+    Only jet calibration systematics or any other that create shallow copies of jet containers should be passed to this tool. It is advised to run this algorithm before running algorithms combining multiple calibration systematics (e.g. overlap removal).
+  */
   std::string m_inputAlgo = "";
 
   // systematics
   std::string m_systName = "";
   std::string m_outputSystName = "BJetEfficiency_Algo";
+  bool        m_writeSystToMetadata = false;
 
   std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root";
 
@@ -56,6 +62,8 @@ private:
 
   /// @brief The decoration key written to passing objects
   std::string m_decorSF = "";
+  
+  std::vector<std::string> m_inputAlgoList; //!
 
   bool m_runAllSyst = false; //!
 

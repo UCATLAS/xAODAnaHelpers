@@ -6,8 +6,8 @@ using namespace xAH;
 using std::vector;
 using std::string;
 
-ElectronContainer::ElectronContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
-  : ParticleContainer(name, detailStr, units, mc, true)
+ElectronContainer::ElectronContainer(const std::string& name, const std::string& detailStr, float units, bool mc, bool storeSystSFs)
+  : ParticleContainer(name, detailStr, units, mc, true, storeSystSFs)
 {
 
   if ( m_infoSwitch.m_kinematic ) {
@@ -21,7 +21,6 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   }
 
   if ( m_infoSwitch.m_isolation ) {
-
     m_isIsolated_LooseTrackOnly              = new std::vector<int>   ();
     m_isIsolated_Loose                       = new std::vector<int>   ();
     m_isIsolated_Tight                       = new std::vector<int>   ();
@@ -32,6 +31,9 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_isIsolated_FixedCutTightTrackOnly      = new std::vector<int>   ();
     m_isIsolated_UserDefinedFixEfficiency    = new std::vector<int>   ();
     m_isIsolated_UserDefinedCut              = new std::vector<int>   ();
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_etcone20                               = new std::vector<float> ();
     m_ptcone20                               = new std::vector<float> ();
     m_ptcone30                               = new std::vector<float> ();
@@ -45,6 +47,9 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   }
 
   if ( m_infoSwitch.m_PID ) {
+    m_n_LHVeryLoose = 0;
+    m_LHVeryLoose = new std::vector<int>   ();
+
     m_n_LHLoose = 0;
     m_LHLoose = new std::vector<int>   ();
 
@@ -72,13 +77,10 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
 
     m_TrigEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
     m_TrigMCEff  = new std::map< std::string, std::vector< std::vector< float > > >();
+    m_PIDEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
     m_IsoEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
 
-    m_RecoEff_SF                  = new std::vector< std::vector< float > > ();
-    m_PIDEff_SF_LHLooseAndBLayer  = new std::vector< std::vector< float > > ();
-    m_PIDEff_SF_LHLoose           = new std::vector< std::vector< float > > ();
-    m_PIDEff_SF_LHMedium          = new std::vector< std::vector< float > > ();
-    m_PIDEff_SF_LHTight           = new std::vector< std::vector< float > > ();
+    m_RecoEff_SF = new std::vector< std::vector< float > > ();
 
   }
 
@@ -104,6 +106,18 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_trknBLayerHits             = new std::vector<int>   ();
     m_trknInnermostPixLayHits    = new std::vector<int>   ();
     m_trkPixdEdX                 = new std::vector<float> ();
+  }
+
+  if ( m_infoSwitch.m_promptlepton ) {
+    m_PromptLeptonIso_DRlj                = new std::vector<float> ();
+    m_PromptLeptonIso_LepJetPtFrac        = new std::vector<float> ();
+    m_PromptLeptonIso_TagWeight           = new std::vector<float> ();
+    m_PromptLeptonIso_TrackJetNTrack      = new std::vector<int>   ();
+    m_PromptLeptonIso_ip2                 = new std::vector<float> ();
+    m_PromptLeptonIso_ip3                 = new std::vector<float> ();
+    m_PromptLeptonIso_sv1_jf_ntrkv        = new std::vector<int>   ();
+    m_PromptLeptonNoIso_TagWeight         = new std::vector<float> ();
+    m_PromptLepton_TagWeight              = new std::vector<float> ();
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -152,6 +166,9 @@ ElectronContainer::~ElectronContainer()
     delete m_isIsolated_FixedCutTightTrackOnly      ;
     delete m_isIsolated_UserDefinedFixEfficiency    ;
     delete m_isIsolated_UserDefinedCut              ;
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     delete m_etcone20                               ;
     delete m_ptcone20                               ;
     delete m_ptcone30                               ;
@@ -165,6 +182,7 @@ ElectronContainer::~ElectronContainer()
   }
 
   if ( m_infoSwitch.m_PID ) {
+    delete m_LHVeryLoose;
     delete m_LHLoose    ;
     delete m_LHLooseBL  ;
     delete m_LHMedium   ;
@@ -177,12 +195,9 @@ ElectronContainer::~ElectronContainer()
   if ( m_infoSwitch.m_effSF && m_mc ) {
     delete m_TrigEff_SF ;
     delete m_TrigMCEff  ;
+    delete m_PIDEff_SF  ;
     delete m_IsoEff_SF  ;
-    delete m_RecoEff_SF                 ;
-    delete m_PIDEff_SF_LHLooseAndBLayer ;
-    delete m_PIDEff_SF_LHLoose          ;
-    delete m_PIDEff_SF_LHMedium         ;
-    delete m_PIDEff_SF_LHTight          ;
+    delete m_RecoEff_SF ;
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -207,6 +222,18 @@ ElectronContainer::~ElectronContainer()
     delete m_trknBLayerHits          ;
     delete m_trknInnermostPixLayHits ;
     delete m_trkPixdEdX              ;
+  }
+
+  if ( m_infoSwitch.m_promptlepton ) {
+    delete m_PromptLeptonIso_DRlj            ;
+    delete m_PromptLeptonIso_LepJetPtFrac    ;
+    delete m_PromptLeptonIso_TagWeight       ;
+    delete m_PromptLeptonIso_TrackJetNTrack  ;
+    delete m_PromptLeptonIso_ip2             ;
+    delete m_PromptLeptonIso_ip3             ;
+    delete m_PromptLeptonIso_sv1_jf_ntrkv    ;
+    delete m_PromptLeptonNoIso_TagWeight     ;
+    delete m_PromptLepton_TagWeight          ;
   }
 
 }
@@ -238,7 +265,9 @@ void ElectronContainer::setTree(TTree *tree)
     connectBranch<int>(tree, "isIsolated_FixedCutTightTrackOnly",      &m_isIsolated_FixedCutTightTrackOnly);
     connectBranch<int>(tree, "isIsolated_UserDefinedFixEfficiency",    &m_isIsolated_UserDefinedFixEfficiency);
     connectBranch<int>(tree, "isIsolated_UserDefinedCut",              &m_isIsolated_UserDefinedCut);
+  }
 
+  if ( m_infoSwitch.m_isolationKinematics ) {
     connectBranch<float>(tree, "etcone20",         &m_etcone20);
     connectBranch<float>(tree, "ptcone20",         &m_ptcone20);
     connectBranch<float>(tree, "ptcone30",         &m_ptcone30);
@@ -252,6 +281,10 @@ void ElectronContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_PID ) {
+    tree->SetBranchStatus (("n"+m_name+"_LHVeryLoose").c_str(),     1);
+    tree->SetBranchAddress(("n"+m_name+"_LHVeryLoose").c_str(),     &m_n_LHVeryLoose);
+    connectBranch<int>(tree, "LHVeryLoose",         &m_LHVeryLoose);
+
     tree->SetBranchStatus (("n"+m_name+"_LHLoose").c_str(),     1);
     tree->SetBranchAddress(("n"+m_name+"_LHLoose").c_str(),     &m_n_LHLoose);
     connectBranch<int>(tree, "LHLoose",         &m_LHLoose);
@@ -283,6 +316,9 @@ void ElectronContainer::setTree(TTree *tree)
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      tree->SetBranchStatus ( (m_name+"_PIDEff_SF_" + PID).c_str() , 1);
+      tree->SetBranchAddress( (m_name+"_PIDEff_SF_" + PID).c_str() , & (*m_PIDEff_SF)[ PID ] );
+
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty()) {
           tree->SetBranchStatus ( (m_name+"_IsoEff_SF_" + PID + "_" + isol).c_str() , 1);
@@ -299,10 +335,6 @@ void ElectronContainer::setTree(TTree *tree)
     }
 
     connectBranch<std::vector<float> >(tree, "RecoEff_SF"  ,                &m_RecoEff_SF  );
-    connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHLooseAndBLayer",  &m_PIDEff_SF_LHLooseAndBLayer);
-    connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHLoose",           &m_PIDEff_SF_LHLoose);
-    connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHMedium",          &m_PIDEff_SF_LHMedium);
-    connectBranch<std::vector<float> >(tree, "PIDEff_SF_LHTight",           &m_PIDEff_SF_LHTight);
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -329,6 +361,17 @@ void ElectronContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "trkPixdEdX",    &m_trkPixdEdX);
   }
 
+  if ( m_infoSwitch.m_promptlepton ) {
+    connectBranch<float>(tree, "PromptLeptonIso_DRlj",           &m_PromptLeptonIso_DRlj);
+    connectBranch<float>(tree, "PromptLeptonIso_LepJetPtFrac",   &m_PromptLeptonIso_LepJetPtFrac);
+    connectBranch<float>(tree, "PromptLeptonIso_TagWeight",      &m_PromptLeptonIso_TagWeight);
+    connectBranch<int>  (tree, "PromptLeptonIso_TrackJetNTrack", &m_PromptLeptonIso_TrackJetNTrack);
+    connectBranch<float>(tree, "PromptLeptonIso_ip2",            &m_PromptLeptonIso_ip2);
+    connectBranch<float>(tree, "PromptLeptonIso_ip3",            &m_PromptLeptonIso_ip3);
+    connectBranch<int>  (tree, "PromptLeptonIso_sv1_jf_ntrkv",   &m_PromptLeptonIso_sv1_jf_ntrkv);
+    connectBranch<float>(tree, "PromptLeptonNoIso_TagWeight",    &m_PromptLeptonNoIso_TagWeight);
+    connectBranch<float>(tree, "PromptLepton_TagWeight",         &m_PromptLepton_TagWeight);
+  }
 
 }
 
@@ -359,6 +402,9 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     elec.isIsolated_FixedCutTightTrackOnly        =     m_isIsolated_FixedCutTightTrackOnly          ->at(idx);
     elec.isIsolated_UserDefinedFixEfficiency      =     m_isIsolated_UserDefinedFixEfficiency        ->at(idx);
     elec.isIsolated_UserDefinedCut                =     m_isIsolated_UserDefinedCut                  ->at(idx);
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     elec.etcone20                                 =     m_etcone20                                   ->at(idx);
     elec.ptcone20                                 =     m_ptcone20                                   ->at(idx);
     elec.ptcone30                                 =     m_ptcone30                                   ->at(idx);
@@ -373,6 +419,7 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
 
   // quality
   if ( m_infoSwitch.m_PID ) {
+    elec.LHVeryLoose   = m_LHVeryLoose->at(idx);
     elec.LHLoose       = m_LHLoose    ->at(idx);
     elec.LHLooseBL     = m_LHLooseBL  ->at(idx);
     elec.LHMedium      = m_LHMedium   ->at(idx);
@@ -387,6 +434,7 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      elec.PIDEff_SF[ PID ] = (*m_PIDEff_SF) [ PID ].at(idx);
       for (auto& iso : m_infoSwitch.m_isolWPs) {
         if(!iso.empty())
           elec.IsoEff_SF[ PID+iso ] =  (*m_IsoEff_SF) [ PID+iso ].at(idx);
@@ -398,10 +446,6 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     }
 
     elec.RecoEff_SF                               = m_RecoEff_SF                              ->at(idx);
-    elec.PIDEff_SF_LHLooseAndBLayer               = m_PIDEff_SF_LHLooseAndBLayer              ->at(idx);
-    elec.PIDEff_SF_LHLoose                        = m_PIDEff_SF_LHLoose                       ->at(idx);
-    elec.PIDEff_SF_LHMedium                       = m_PIDEff_SF_LHMedium                      ->at(idx);
-    elec.PIDEff_SF_LHTight                        = m_PIDEff_SF_LHTight                       ->at(idx);
 
   }
 
@@ -429,6 +473,19 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     elec.trknBLayerHits             = m_trknBLayerHits            ->at(idx);
     elec.trknInnermostPixLayHits    = m_trknInnermostPixLayHits   ->at(idx);         // not available in DC14
     elec.trkPixdEdX                 = m_trkPixdEdX                ->at(idx);         // not available in DC14
+  }
+
+  // prompt lepton
+  if ( m_infoSwitch.m_promptlepton ) {
+    elec.PromptLeptonIso_DRlj            = m_PromptLeptonIso_DRlj            ->at(idx);
+    elec.PromptLeptonIso_LepJetPtFrac    = m_PromptLeptonIso_LepJetPtFrac    ->at(idx);
+    elec.PromptLeptonIso_TagWeight       = m_PromptLeptonIso_TagWeight       ->at(idx);
+    elec.PromptLeptonIso_TrackJetNTrack  = m_PromptLeptonIso_TrackJetNTrack  ->at(idx);
+    elec.PromptLeptonIso_ip2             = m_PromptLeptonIso_ip2             ->at(idx);
+    elec.PromptLeptonIso_ip3             = m_PromptLeptonIso_ip3             ->at(idx);
+    elec.PromptLeptonIso_sv1_jf_ntrkv    = m_PromptLeptonIso_sv1_jf_ntrkv    ->at(idx);
+    elec.PromptLeptonNoIso_TagWeight     = m_PromptLeptonNoIso_TagWeight     ->at(idx);
+    elec.PromptLepton_TagWeight          = m_PromptLepton_TagWeight          ->at(idx);
   }
 
 }
@@ -459,7 +516,9 @@ void ElectronContainer::setBranches(TTree *tree)
     setBranch<int>(tree, "isIsolated_FixedCutTightTrackOnly",      m_isIsolated_FixedCutTightTrackOnly);
     setBranch<int>(tree, "isIsolated_UserDefinedFixEfficiency",    m_isIsolated_UserDefinedFixEfficiency);
     setBranch<int>(tree, "isIsolated_UserDefinedCut",              m_isIsolated_UserDefinedCut);
+  }
 
+  if ( m_infoSwitch.m_isolationKinematics ) {
     setBranch<float>(tree, "etcone20",         m_etcone20);
     setBranch<float>(tree, "ptcone20",         m_ptcone20);
     setBranch<float>(tree, "ptcone30",         m_ptcone30);
@@ -473,6 +532,9 @@ void ElectronContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_PID ) {
+    tree->Branch(("n"+m_name+"_LHVeryLoose").c_str(),      &m_n_LHVeryLoose);
+    setBranch<int>(tree, "LHVeryLoose",         m_LHVeryLoose);
+
     tree->Branch(("n"+m_name+"_LHLoose").c_str(),      &m_n_LHLoose);
     setBranch<int>(tree, "LHLoose",         m_LHLoose);
 
@@ -497,6 +559,7 @@ void ElectronContainer::setBranches(TTree *tree)
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      tree->Branch( (m_name+"_PIDEff_SF_"  + PID).c_str() , & (*m_PIDEff_SF)[ PID ] );
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty())
           tree->Branch( (m_name+"_IsoEff_SF_"  + PID + isol).c_str() , & (*m_IsoEff_SF)[ PID+isol ] );
@@ -508,10 +571,6 @@ void ElectronContainer::setBranches(TTree *tree)
     }
 
     setBranch<vector<float> >(tree, "RecoEff_SF"  ,                m_RecoEff_SF  );
-    setBranch<vector<float> >(tree, "PIDEff_SF_LHLooseAndBLayer",  m_PIDEff_SF_LHLooseAndBLayer);
-    setBranch<vector<float> >(tree, "PIDEff_SF_LHLoose",           m_PIDEff_SF_LHLoose);
-    setBranch<vector<float> >(tree, "PIDEff_SF_LHMedium",          m_PIDEff_SF_LHMedium);
-    setBranch<vector<float> >(tree, "PIDEff_SF_LHTight",           m_PIDEff_SF_LHTight);
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -538,6 +597,18 @@ void ElectronContainer::setBranches(TTree *tree)
     setBranch<float>(tree, "trkPixdEdX",    m_trkPixdEdX);
   }
 
+  if ( m_infoSwitch.m_promptlepton ) {
+    setBranch<float>(tree, "PromptLeptonIso_DRlj",            m_PromptLeptonIso_DRlj);
+    setBranch<float>(tree, "PromptLeptonIso_LepJetPtFrac",    m_PromptLeptonIso_LepJetPtFrac);
+    setBranch<float>(tree, "PromptLeptonIso_TagWeight",       m_PromptLeptonIso_TagWeight);
+    setBranch<int>  (tree, "PromptLeptonIso_TrackJetNTrack",  m_PromptLeptonIso_TrackJetNTrack);
+    setBranch<float>(tree, "PromptLeptonIso_ip2",             m_PromptLeptonIso_ip2);
+    setBranch<float>(tree, "PromptLeptonIso_ip3",             m_PromptLeptonIso_ip3);
+    setBranch<int>  (tree, "PromptLeptonIso_sv1_jf_ntrkv",    m_PromptLeptonIso_sv1_jf_ntrkv);
+    setBranch<float>(tree, "PromptLeptonNoIso_TagWeight",     m_PromptLeptonNoIso_TagWeight);
+    setBranch<float>(tree, "PromptLepton_TagWeight",          m_PromptLepton_TagWeight);
+  }
+
   return;
 }
 
@@ -559,7 +630,6 @@ void ElectronContainer::clear()
   }
 
   if ( m_infoSwitch.m_isolation ) {
-
     m_isIsolated_LooseTrackOnly              ->clear();
     m_isIsolated_Loose                       ->clear();
     m_isIsolated_Tight                       ->clear();
@@ -570,6 +640,9 @@ void ElectronContainer::clear()
     m_isIsolated_FixedCutTightTrackOnly      ->clear();
     m_isIsolated_UserDefinedFixEfficiency    ->clear();
     m_isIsolated_UserDefinedCut              ->clear();
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_etcone20                               ->clear();
     m_ptcone20                               ->clear();
     m_ptcone30                               ->clear();
@@ -583,6 +656,9 @@ void ElectronContainer::clear()
   }
 
   if ( m_infoSwitch.m_PID ) {
+    m_n_LHVeryLoose = 0;
+    m_LHVeryLoose   -> clear();
+
     m_n_LHLoose = 0;
     m_LHLoose   -> clear();
 
@@ -609,6 +685,7 @@ void ElectronContainer::clear()
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      (*m_PIDEff_SF)[ PID ].clear();
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty())
           (*m_IsoEff_SF)[ PID+isol ].clear();
@@ -619,11 +696,7 @@ void ElectronContainer::clear()
       }
     }
 
-    m_RecoEff_SF                  -> clear();
-    m_PIDEff_SF_LHLooseAndBLayer  -> clear();
-    m_PIDEff_SF_LHLoose           -> clear();
-    m_PIDEff_SF_LHMedium          -> clear();
-    m_PIDEff_SF_LHTight           -> clear();
+    m_RecoEff_SF->clear();
 
   }
 
@@ -649,6 +722,18 @@ void ElectronContainer::clear()
     m_trknBLayerHits             -> clear();
     m_trknInnermostPixLayHits    -> clear();
     m_trkPixdEdX                 -> clear();
+  }
+
+  if ( m_infoSwitch.m_promptlepton ) {
+    m_PromptLeptonIso_DRlj             -> clear();
+    m_PromptLeptonIso_LepJetPtFrac     -> clear();
+    m_PromptLeptonIso_TagWeight        -> clear();
+    m_PromptLeptonIso_TrackJetNTrack   -> clear();
+    m_PromptLeptonIso_ip2              -> clear();
+    m_PromptLeptonIso_ip3              -> clear();
+    m_PromptLeptonIso_sv1_jf_ntrkv     -> clear();
+    m_PromptLeptonNoIso_TagWeight      -> clear();
+    m_PromptLepton_TagWeight           -> clear();
   }
 
 }
@@ -731,7 +816,9 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
     static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
     safeFill<char, int, xAOD::Electron>(elec, isIsoUserDefinedCutAcc, m_isIsolated_UserDefinedCut, -1);
+  }
 
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_etcone20    ->push_back( elec->isolation( xAOD::Iso::etcone20 )    /m_units );
     m_ptcone20    ->push_back( elec->isolation( xAOD::Iso::ptcone20 )    /m_units );
     m_ptcone30    ->push_back( elec->isolation( xAOD::Iso::ptcone30 )    /m_units );
@@ -745,6 +832,12 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
   }
 
   if ( m_infoSwitch.m_PID ) {
+
+    static SG::AuxElement::Accessor<char> LHVeryLooseAcc ("LHVeryLoose");
+    if ( LHVeryLooseAcc.isAvailable( *elec ) ) {
+      m_LHVeryLoose->push_back( LHVeryLooseAcc( *elec ) );
+      if ( LHVeryLooseAcc( *elec ) == 1 ) { ++m_n_LHVeryLoose; }
+    }  else {  m_LHVeryLoose->push_back( -1 ); }
 
     static SG::AuxElement::Accessor<char> LHLooseAcc ("LHLoose");
     if ( LHLooseAcc.isAvailable( *elec ) ) {
@@ -856,64 +949,68 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     m_trkPixdEdX->push_back( pixdEdX );
   }
 
+  if ( m_infoSwitch.m_promptlepton ) {
+    SG::AuxElement::ConstAccessor<float> acc_Iso_DRlj           ("PromptLeptonIso_DRlj");
+    SG::AuxElement::ConstAccessor<float> acc_Iso_LepJetPtFrac   ("PromptLeptonIso_LepJetPtFrac");
+    SG::AuxElement::ConstAccessor<float> acc_Iso_TagWeight      ("PromptLeptonIso_TagWeight");
+    SG::AuxElement::ConstAccessor<short> acc_Iso_TrackJetNTrack ("PromptLeptonIso_TrackJetNTrack");
+    SG::AuxElement::ConstAccessor<float> acc_Iso_ip2            ("PromptLeptonIso_ip2");
+    SG::AuxElement::ConstAccessor<float> acc_Iso_ip3            ("PromptLeptonIso_ip3");
+    SG::AuxElement::ConstAccessor<short> acc_Iso_sv1_jf_ntrkv   ("PromptLeptonIso_sv1_jf_ntrkv");
+    SG::AuxElement::ConstAccessor<float> acc_NoIso_TagWeight    ("PromptLeptonNoIso_TagWeight");
+    SG::AuxElement::ConstAccessor<float> acc_TagWeight          ("PromptLepton_TagWeight");
+
+    m_PromptLeptonIso_DRlj           ->push_back( acc_Iso_DRlj           .isAvailable(*elec) ? acc_Iso_DRlj(*elec)           : -100);
+    m_PromptLeptonIso_LepJetPtFrac   ->push_back( acc_Iso_LepJetPtFrac   .isAvailable(*elec) ? acc_Iso_LepJetPtFrac(*elec)   : -100);
+    m_PromptLeptonIso_TagWeight      ->push_back( acc_Iso_TagWeight      .isAvailable(*elec) ? acc_Iso_TagWeight(*elec)      : -100);
+    m_PromptLeptonIso_TrackJetNTrack ->push_back( acc_Iso_TrackJetNTrack .isAvailable(*elec) ? acc_Iso_TrackJetNTrack(*elec) : -100);
+    m_PromptLeptonIso_ip2            ->push_back( acc_Iso_ip2            .isAvailable(*elec) ? acc_Iso_ip2(*elec)            : -100);
+    m_PromptLeptonIso_ip3            ->push_back( acc_Iso_ip3            .isAvailable(*elec) ? acc_Iso_ip3(*elec)            : -100);
+    m_PromptLeptonIso_sv1_jf_ntrkv   ->push_back( acc_Iso_sv1_jf_ntrkv   .isAvailable(*elec) ? acc_Iso_sv1_jf_ntrkv(*elec)   : -100);
+    m_PromptLeptonNoIso_TagWeight    ->push_back( acc_NoIso_TagWeight    .isAvailable(*elec) ? acc_NoIso_TagWeight(*elec)    : -100);
+    m_PromptLepton_TagWeight         ->push_back( acc_TagWeight          .isAvailable(*elec) ? acc_TagWeight(*elec)          : -100);
+  }
+
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
     std::vector<float> junkSF(1,1.0);
     std::vector<float> junkEff(1,0.0);
 
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accPIDSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
+      std::string PIDSF = "ElPIDEff_SF_syst_" + PID;
+      accPIDSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID , SG::AuxElement::Accessor< std::vector< float > >( PIDSF ) ) );
+      safeSFVecFill<float, xAOD::Electron>( elec, accPIDSF.at( PID ), &m_PIDEff_SF->at( PID ), junkSF );
 
       for (auto& isol : m_infoSwitch.m_isolWPs) {
 
         if(!isol.empty()) {
-          std::string IsoSF = "EleEffCorr_IsoSyst_" + PID + "_" + isol;
+          std::string IsoSF = "ElIsoEff_SF_syst_" + PID + "_" + isol;
           accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID+isol , SG::AuxElement::Accessor< std::vector< float > >( IsoSF ) ) );
-          if( (accIsoSF.at( PID+isol )).isAvailable( *elec ) ) {
-            m_IsoEff_SF->at( PID+isol ).push_back( (accIsoSF.at( PID+isol ))( *elec ) );
-          } else {
-            m_IsoEff_SF->at( PID+isol ).push_back( junkSF );
-          }
+          safeSFVecFill<float, xAOD::Electron>( elec, accIsoSF.at( PID+isol ), &m_IsoEff_SF->at( PID+isol ), junkSF );
         }
 
         for (auto& trig : m_infoSwitch.m_trigWPs) {
 
-          std::string TrigSF = "EleEffCorr_TrigSyst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
+          std::string TrigSF = "ElTrigEff_SF_syst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
           accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigSF ) ) );
-          if( (accTrigSF.at( trig+PID+isol )).isAvailable( *elec ) ) {
-            m_TrigEff_SF->at( trig+PID+isol ).push_back( (accTrigSF.at( trig+PID+isol ))( *elec ) );
-          }else {
-            m_TrigEff_SF->at( trig+PID+isol ).push_back( junkSF );
-          }
+          safeSFVecFill<float, xAOD::Electron>( elec, accTrigSF.at( trig+PID+isol ), &m_TrigEff_SF->at( trig+PID+isol ), junkSF );
 
-          std::string TrigEFF = "EleEffCorr_TrigMCEffSyst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
+          std::string TrigEFF = "ElTrigMCEff_syst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
           accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigEFF ) ) );
-          if( (accTrigEFF.at( trig+PID+isol )).isAvailable( *elec ) ) {
-            m_TrigMCEff->at( trig+PID+isol ).push_back( (accTrigEFF.at( trig+PID+isol ))( *elec ) );
-          } else {
-            m_TrigMCEff->at( trig+PID+isol ).push_back( junkEff );
-          }
+          safeSFVecFill<float, xAOD::Electron>( elec, accTrigEFF.at( trig+PID+isol ), &m_TrigMCEff->at( trig+PID+isol ), junkSF );
 
         }
 
       }
     }
 
-   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("EleEffCorr_RecoSyst");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLooseAndBLayer("EleEffCorr_PIDSyst_LooseAndBLayerLLH");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHLoose("EleEffCorr_PIDSyst_LooseLLh");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHMedium("EleEffCorr_PIDSyst_MediumLLH");
-   static SG::AuxElement::Accessor< std::vector< float > > accPIDSF_LHTight("EleEffCorr_PIDSyst_TightLLH");
-
-   if( accRecoSF.isAvailable( *elec ) )                     { m_RecoEff_SF->push_back( accRecoSF( *elec ) ); } else { m_RecoEff_SF->push_back( junkSF ); }
-   if( accPIDSF_LHLooseAndBLayer.isAvailable( *elec ) )     { m_PIDEff_SF_LHLooseAndBLayer->push_back( accPIDSF_LHLooseAndBLayer( *elec ) ); } else { m_PIDEff_SF_LHLooseAndBLayer->push_back( junkSF ); }
-   if( accPIDSF_LHLoose.isAvailable( *elec ) )              { m_PIDEff_SF_LHLoose->push_back( accPIDSF_LHLoose( *elec ) ); } else { m_PIDEff_SF_LHLoose->push_back( junkSF ); }
-   if( accPIDSF_LHMedium.isAvailable( *elec ) )             { m_PIDEff_SF_LHMedium->push_back( accPIDSF_LHMedium( *elec ) ); } else { m_PIDEff_SF_LHMedium->push_back( junkSF ); }
-   if( accPIDSF_LHTight.isAvailable( *elec ) )              { m_PIDEff_SF_LHTight->push_back( accPIDSF_LHTight( *elec ) ); } else { m_PIDEff_SF_LHTight->push_back( junkSF ); }
-
+   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElRecoEff_SF_syst");
+   safeSFVecFill<float, xAOD::Electron>( elec, accRecoSF, m_RecoEff_SF, junkSF );
  }
 
   return;

@@ -41,6 +41,7 @@ namespace xAH {
     float topoetcone40;
 
     // PID
+    int   LHVeryLoose;
     int   LHLoose;
     int   LHLooseBL;
     int   LHMedium;
@@ -52,11 +53,8 @@ namespace xAH {
     // scale factors w/ sys
     // per object
     std::vector< float > RecoEff_SF;
-    std::vector< float > PIDEff_SF_LHLooseAndBLayer;
-    std::vector< float > PIDEff_SF_LHLoose;
-    std::vector< float > PIDEff_SF_LHMedium;
-    std::vector< float > PIDEff_SF_LHTight;
-    
+
+    std::map< std::string, std::vector< float > > PIDEff_SF;
     std::map< std::string, std::vector< float > > IsoEff_SF;
     std::map< std::string, std::vector< float > > TrigEff_SF;
     std::map< std::string, std::vector< float > > TrigMCEff;
@@ -85,6 +83,16 @@ namespace xAH {
     int  trknInnermostPixLayHits; // not available in DC14
     float trkPixdEdX;            // not available in DC14
 
+    // prompt lepton
+    float PromptLeptonIso_DRlj;
+    float PromptLeptonIso_LepJetPtFrac;
+    float PromptLeptonIso_TagWeight;
+    int   PromptLeptonIso_TrackJetNTrack;
+    float PromptLeptonIso_ip2;
+    float PromptLeptonIso_ip3;
+    int   PromptLeptonIso_sv1_jf_ntrkv;
+    float PromptLeptonNoIso_TagWeight;
+    float PromptLepton_TagWeight;
 
   };
 

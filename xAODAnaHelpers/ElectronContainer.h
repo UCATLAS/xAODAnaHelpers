@@ -19,7 +19,7 @@ namespace xAH {
   class ElectronContainer : public ParticleContainer<Electron,HelperClasses::ElectronInfoSwitch>
     {
     public:
-      ElectronContainer(const std::string& name = "el", const std::string& detailStr="", float units = 1e3, bool mc = false);
+      ElectronContainer(const std::string& name = "el", const std::string& detailStr="", float units = 1e3, bool mc = false, bool storeSystSFs = true);
       virtual ~ElectronContainer();
     
       virtual void setTree(TTree *tree);
@@ -65,6 +65,8 @@ namespace xAH {
       std::vector<float>* m_topoetcone40;
 
       // PID
+      int m_n_LHVeryLoose;
+      std::vector<int>*   m_LHVeryLoose;
       int m_n_LHLoose;
       std::vector<int>*   m_LHLoose;
       int m_n_LHLooseBL;
@@ -83,11 +85,8 @@ namespace xAH {
       // scale factors w/ sys
       // per object
       std::vector< std::vector< float > >* m_RecoEff_SF;
-      std::vector< std::vector< float > >* m_PIDEff_SF_LHLooseAndBLayer;
-      std::vector< std::vector< float > >* m_PIDEff_SF_LHLoose;
-      std::vector< std::vector< float > >* m_PIDEff_SF_LHMedium;
-      std::vector< std::vector< float > >* m_PIDEff_SF_LHTight;
-    
+
+      std::map< std::string, std::vector< std::vector< float > > >* m_PIDEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
@@ -114,6 +113,16 @@ namespace xAH {
       std::vector<int>*   m_trknInnermostPixLayHits; // not available in DC14
       std::vector<float>* m_trkPixdEdX;            // not available in DC14
 
+      // prompt lepton
+      std::vector<float>* m_PromptLeptonIso_DRlj;
+      std::vector<float>* m_PromptLeptonIso_LepJetPtFrac;
+      std::vector<float>* m_PromptLeptonIso_TagWeight;
+      std::vector<int>*   m_PromptLeptonIso_TrackJetNTrack;
+      std::vector<float>* m_PromptLeptonIso_ip2;
+      std::vector<float>* m_PromptLeptonIso_ip3;
+      std::vector<int>*   m_PromptLeptonIso_sv1_jf_ntrkv;
+      std::vector<float>* m_PromptLeptonNoIso_TagWeight;
+      std::vector<float>* m_PromptLepton_TagWeight;
     
     };
 }

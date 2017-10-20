@@ -19,7 +19,7 @@ namespace xAH {
   class MuonContainer : public ParticleContainer<Muon,HelperClasses::MuonInfoSwitch>
     {
     public:
-      MuonContainer(const std::string& name = "muon", const std::string& detailStr="", float units = 1e3, bool mc = false);
+      MuonContainer(const std::string& name = "muon", const std::string& detailStr="", float units = 1e3, bool mc = false, bool storeSystSFs = true);
       virtual ~MuonContainer();
     
       virtual void setTree(TTree *tree);
@@ -104,7 +104,18 @@ namespace xAH {
       std::vector<float>         *m_ParamEnergyLoss;
       std::vector<float>         *m_ParamEnergyLossSigmaMinus;
       std::vector<float>         *m_ParamEnergyLossSigmaPlus;
-    
+
+      // prompt lepton
+      std::vector<float>* m_PromptLeptonIso_DRlj;
+      std::vector<float>* m_PromptLeptonIso_LepJetPtFrac;
+      std::vector<float>* m_PromptLeptonIso_TagWeight;
+      std::vector<int>*   m_PromptLeptonIso_TrackJetNTrack;
+      std::vector<float>* m_PromptLeptonIso_ip2;
+      std::vector<float>* m_PromptLeptonIso_ip3;
+      std::vector<int>*   m_PromptLeptonIso_sv1_jf_ntrkv;
+      std::vector<float>* m_PromptLeptonNoIso_TagWeight;
+      std::vector<float>* m_PromptLepton_TagWeight;    
+
     };
 }
 #endif // xAODAnaHelpers_MuonContainer_H

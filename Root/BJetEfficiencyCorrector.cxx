@@ -16,6 +16,9 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+//EDM
+#include "xAODJet/JetAuxContainer.h"
+
 // package include(s):
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/HelperClasses.h"
@@ -87,6 +90,17 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
+  // several lists of systematics could be configured
+  // this is the case when MET sys should be added
+  // to the OR ones
+
+  // parse and split by comma
+  std::string token;
+  std::istringstream ss(m_inputAlgo);
+  while (std::getline(ss, token, ',')) {
+    m_inputAlgoList.push_back(token);
+  }
+
   m_decorSF = m_decor + "_SF";
 
   bool allOK(false);
@@ -111,6 +125,13 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "FlatBEff_70") { allOK = true; }
   if (m_operatingPt == "FlatBEff_77") { allOK = true; }
   if (m_operatingPt == "FlatBEff_85") { allOK = true; }
+#ifdef USE_CMAKE
+  // also calibrated working points (for R21)
+  if (m_operatingPt == "HybBEff_60") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_70") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_77") { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_85") { allOK = true; m_getScaleFactors =  true; }
+#endif
 
   if( !allOK ) {
     ANA_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
@@ -118,9 +139,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
 
   // make unique name
-  m_decor           += "_" + m_operatingPt;
-  m_decorSF         += "_" + m_operatingPt;
-  m_outputSystName  += "_" + m_operatingPt;
+  m_decor           += "_" + m_taggerName + "_" + m_operatingPt;
+  m_decorSF         += "_" + m_taggerName + "_" + m_operatingPt;
+  m_outputSystName  += "_" + m_taggerName + "_" + m_operatingPt;
 
   ANA_MSG_INFO( "Decision Decoration Name     : " << m_decor);
   ANA_MSG_INFO( "Scale Factor Decoration Name : " << m_decorSF);
@@ -128,17 +149,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
   if(m_operatingPtCDI.empty()) m_operatingPtCDI = m_operatingPt;
-  std::cout << "Using Standard OperatingPoint for CDI BTag Efficiency of " << m_operatingPtCDI << std::endl;
-
-  // Outdated code for translating user friendly Btag WP to cut value
-  // Code now accepts the user friendly Btag WP
-  /*
-  if( m_operatingPtCDI.find("FixedCutBEff") != std::string::npos) {
-    m_operatingPtCDI.erase(0,13); // remove FixedCutBEff_
-    std::cout << "Get OperatingPoint for CDI BTag Efficiency using eff = " << m_operatingPtCDI << std::endl;
-    m_operatingPtCDI = HelperFunctions::GetBTagMV2c20_CutStr( atoi( m_operatingPtCDI.c_str() ) );
-  }
-  */
+  ANA_MSG_INFO("Using Standard OperatingPoint for CDI BTag Efficiency of " << m_operatingPtCDI);
 
   m_runAllSyst = (m_systName.find("All") != std::string::npos);
 
@@ -243,6 +254,12 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if( m_runAllSyst ){
     ANA_MSG_INFO(" Running w/ All systematics");
   }
+  
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(m_systList, m_outputSystName, fileMD);
+  }
 
   ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
 
@@ -260,45 +277,28 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   ANA_MSG_DEBUG("\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
 
-  //
-  //  input jets
-  //
-  const xAOD::JetContainer* inJets(nullptr);
-
-  //
-  // if input comes from xAOD, or just running one collection,
+  // if m_inputAlgo == "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
-  //
-  if ( m_inputAlgo.empty() ) {
+  std::vector<std::string>* systNames_ptr(nullptr);
+  if ( !m_inputAlgo.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputAlgo, 0, m_store, msg()) );
 
-    // this will be the collection processed - no matter what!!
-    ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
+  std::vector<std::string> systNames{""};
+  if (systNames_ptr) systNames = *systNames_ptr;
 
-    executeEfficiencyCorrection( inJets, eventInfo, true);
+  // loop over systematic sets available
+  for ( auto systName : systNames ) {
 
-  }
-  //
-  // get the list of systematics to run over
-  //
-  else {
+    bool doNominal = (systName == "");
 
-    //
-    // get vector of string giving the names
-    //
-    std::vector<std::string>* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
+    // input jets
+    const xAOD::JetContainer* inJets(nullptr);
 
-    //
-    // loop over systematics
-    //
-    for ( auto systName : *systNames ) {
-
-      bool doNominal = (systName == "");
-
+    // some systematics might have rejected the event
+    if ( m_store->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
+      // Check the existence of the container
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
 
       executeEfficiencyCorrection( inJets, eventInfo, doNominal );
-
     }
 
   }
@@ -326,23 +326,12 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     sfVec(*jet_itr) = std::vector<float>();
   }
 
-  //
-  // Define also an *event* weight, which is the product of all the BTag eff. SFs for each object in the event
-  //
-  std::string SF_NAME_GLOBAL = m_decorSF + "_GLOBAL";
-  SG::AuxElement::Decorator< std::vector<float> > sfVec_GLOBAL ( SF_NAME_GLOBAL );
-
   std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
 
   //
   // loop over available systematics
   //
   for(const auto& syst_it : m_systList){
-
-    //
-    // Initialise product of SFs for *this* systematic
-    //
-    float SF_GLOBAL(1.0);
 
     //
     //  If not nominal jets, dont calculate systematics
@@ -428,8 +417,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       // Add it to vector
       sfVec(*jet_itr).push_back(SF);
 
-      if(doNominal) SF_GLOBAL *= SF;
-
       /*
       if( m_getScaleFactors){
         //
@@ -445,32 +432,20 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       }
       */
 
-       ANA_MSG_DEBUG( "===>>>");
-       ANA_MSG_DEBUG( " ");
-       ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
-       ANA_MSG_DEBUG( " ");
-       ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
-       ANA_MSG_DEBUG( " ");
-       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-       ANA_MSG_DEBUG( " ");
-       ANA_MSG_DEBUG( "BTag SF:");
-       ANA_MSG_DEBUG( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
-       ANA_MSG_DEBUG( "--------------------------------------");
+      ANA_MSG_DEBUG( "===>>>");
+      ANA_MSG_DEBUG( " ");
+      ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
+      ANA_MSG_DEBUG( " ");
+      ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
+      ANA_MSG_DEBUG( " ");
+      ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+      ANA_MSG_DEBUG( " ");
+      ANA_MSG_DEBUG( "BTag SF:");
+      ANA_MSG_DEBUG( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
+      ANA_MSG_DEBUG( "--------------------------------------");
       ++idx;
 
     } // close jet loop
-
-    // For *this* systematic, store the global SF weight for the event
-    ANA_MSG_DEBUG( "--------------------------------------");
-    ANA_MSG_DEBUG( "GLOBAL BTag SF for event:");
-    ANA_MSG_DEBUG( "\t " << SF_GLOBAL );
-    ANA_MSG_DEBUG( "--------------------------------------");
-
-    //
-    //  Add the SF only if doing nominal Jets
-    //
-    if(doNominal) sfVec_GLOBAL( *eventInfo ).push_back( SF_GLOBAL );
-
 
   } // close loop on systematics
 
@@ -510,4 +485,3 @@ EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 
   return EL::StatusCode::SUCCESS;
 }
-

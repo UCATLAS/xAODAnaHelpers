@@ -3,7 +3,6 @@
 #include <xAODTracking/TrackParticle.h>
 #include "xAODAnaHelpers/HelperFunctions.h"
 
-using std::cout;  using std::endl;
 ANA_MSG_SOURCE(msgTracksInJetHists, "TracksInJetHists")
 
 TracksInJetHists :: TracksInJetHists (std::string name, std::string detailStr) :

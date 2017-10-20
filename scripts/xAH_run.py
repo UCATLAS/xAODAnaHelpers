@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# PYTHON_ARGCOMPLETE_OK
 # @file:    xAH_run.py
 # @purpose: run the analysis
 # @author:  Giordon Stark <gstark@cern.ch>
@@ -13,68 +13,15 @@
 
 from __future__ import print_function
 #TODO: move into __main__
-import logging
-
-BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
-#The background is set with 40 plus the number of the color, and the foreground with 30
-#These are the sequences need to get colored ouput
-RESET_SEQ = "\033[0m"
-COLOR_SEQ = "\033[1;%dm"
-BOLD_SEQ = "\033[1m"
-
-def formatter_message(message, use_color = True):
-  if use_color:
-    message = message.replace("$RESET", RESET_SEQ).replace("$BOLD", BOLD_SEQ)
-  else:
-    message = message.replace("$RESET", "").replace("$BOLD", "")
-  return message
-
-COLORS = {
-  'WARNING': YELLOW,
-  'INFO': WHITE,
-  'DEBUG': BLUE,
-  'CRITICAL': YELLOW,
-  'ERROR': RED
-}
-
-class ColoredFormatter(logging.Formatter):
-  def __init__(self, msg, use_color = True):
-    logging.Formatter.__init__(self, msg)
-    self.use_color = use_color
-
-  def format(self, record):
-    levelname = record.levelname
-    if self.use_color and levelname in COLORS:
-      levelname_color = COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
-      record.levelname = levelname_color
-    return logging.Formatter.format(self, record)
-
-# Custom logger class with multiple destinations
-class ColoredLogger(logging.Logger):
-  FORMAT = "[$BOLD%(asctime)s$RESET][%(levelname)-18s]  %(message)s ($BOLD%(filename)s$RESET:%(lineno)d)"
-  #FORMAT = "[$BOLD%(name)-20s$RESET][%(levelname)-18s]  %(message)s ($BOLD%(filename)s$RESET:%(lineno)d)"
-  COLOR_FORMAT = formatter_message(FORMAT, True)
-  def __init__(self, name):
-    logging.Logger.__init__(self, name, logging.DEBUG)
-    color_formatter = ColoredFormatter(self.COLOR_FORMAT)
-    console = logging.StreamHandler()
-    console.setFormatter(color_formatter)
-    self.addHandler(console)
-    return
-
-logging.setLoggerClass(ColoredLogger)
-root_logger = logging.getLogger()
-xAH_logger = logging.getLogger("xAH")
 
 import argparse
+try: import argcomplete
+except: pass
 import os
 import subprocess
 import sys
 import datetime
 import time
-
-# think about using argcomplete
-# https://argcomplete.readthedocs.org/en/latest/#activating-global-completion%20argcomplete
 
 # if we want multiple custom formatters, use inheriting
 class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
@@ -98,13 +45,14 @@ class _HelpAction(argparse.Action):
         print("That is not a valid subsection. Chose from {{{0:s}}}".format(','.join(available_groups)))
     parser.exit()
 
-try:
-  __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
-  __short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
-except:
-  print('git not available, assuming svn')
-  __version__ = "private"
-  __short_hash__ = "0"
+# this is a useful env variable set on our docker images
+__version__ = os.getenv('xAODAnaHelpers_VERSION')
+# if None, we're probably not using Docker, see if it's just a git clone
+if __version__ is None:
+  try:
+    __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
+  except:
+    __version__ = "private"
 
 baseUsageStr = """xAH_run.py --files ... file [file ...]
                   --config path/to/file.json
@@ -147,7 +95,7 @@ parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', h
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
-parser.add_argument('--cmake-workdir', type=str, default='WorkDir', help='The name of the CMake WorkDir, needed to determine environment variables')
+parser.add_argument('--stats', action='store_true', dest='variable_stats', default=False, help='If enabled, will variable usage statistics.')
 
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
@@ -159,6 +107,7 @@ drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, requ
 drivers_common.add_argument('--optRemoveSubmitDir', metavar='', type=int, required=False, default=None, help='the name of the option for overwriting the submission directory.  if you set this to a non-zero value it will remove any existing submit-directory before tryingto create a new one. You can also use -f/--force as well in xAH_run.py.')
 drivers_common.add_argument('--optBatchSharedFileSystem', type=bool, required=False, default=False, help='enable to signify whether your batch driver is running on a shared filesystem')
 drivers_common.add_argument('--optBatchWait', action='store_true', required=False, help='submit using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
+drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default='', help='extra code to execute on each batch node before starting EventLoop')
 
 # These are handled by xAH_run.py at the top level instead of down by drivers
 #.add_argument('--optMaxEvents', type=str, required=False, default=None)
@@ -205,6 +154,18 @@ lsf = drivers_parser.add_parser('lsf',
                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                 parents=[drivers_common])
 
+slurm = drivers_parser.add_parser('slurm',
+                                   help='Flock your jobs to SLURM',
+                                   usage=baseUsageStr.format('slurm'),
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                   parents=[drivers_common])
+
+local = drivers_parser.add_parser('local',
+                                  help='Run using the LocalDriver',
+                                  usage=baseUsageStr.format('local'),
+                                  formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
+                                  parents=[drivers_common])
+
 # define arguments for prooflite driver
 prooflite.add_argument('--optPerfTree',          metavar='', type=int, required=False, default=None, help='the option to turn on the performance tree in PROOF.  if this is set to 1, it will write out the tree')
 prooflite.add_argument('--optBackgroundProcess', metavar='', type=int, required=False, default=None, help='the option to do processing in a background process in PROOF')
@@ -241,12 +202,27 @@ condor.add_argument('--optCondorConf', metavar='', type=str, required=False, def
 # define arguments for lsf driver
 lsf.add_argument('--optResetShell', metavar='', type=bool, required=False, default=False, help='the option to reset the shell on the worker nodes')
 
+# define arguments for slurm driver
+slurm.add_argument('--optSlurmAccount'         , metavar='', type=str, required=False, default='atlas'      , help='the name of the account to use')
+slurm.add_argument('--optSlurmPartition'       , metavar='', type=str, required=False, default='shared-chos', help='the name of the partition to use')
+slurm.add_argument('--optSlurmRunTime'         , metavar='', type=str, required=False, default='24:00:00'   , help='the maximum runtime')
+slurm.add_argument('--optSlurmMemory'          , metavar='', type=str, required=False, default='1800'       , help='the maximum memory usage of the job (MB)')
+slurm.add_argument('--optSlurmConstrain'       , metavar='', type=str, required=False, default=''           , help='the extra constrains on the nodes')
+slurm.add_argument('--optSlurmExtraConfigLines', metavar='', type=str, required=False, default=''           , help='the extra config lines to pass to SLURM')
+slurm.add_argument('--optSlurmWrapperExec'     , metavar='', type=str, required=False, default=''           , help='the wrapper around the run script')
+
 # start the script
 if __name__ == "__main__":
   SCRIPT_START_TIME = datetime.datetime.now()
 
+  try: argcomplete.autocomplete(parser)
+  except: pass
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
+
+  import xAODAnaHelpers
+  import logging
+  xAH_logger = logging.getLogger("xAH.run")
 
   # set verbosity for python printing
   numeric_log_level = getattr(logging, args.log_level.upper(), None)
@@ -255,7 +231,7 @@ if __name__ == "__main__":
   xAH_logger.setLevel(numeric_log_level)
 
   try:
-    import timing
+    import xAODAnaHelpers.timing
 
     # check environment variables for various options first before trying to do anything else
     if args.driver == 'prun':
@@ -275,62 +251,33 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working
-    needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['prun', 'condor','lsf'])
+    needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['prun','condor','lsf','slurm'])
     if needXRD:
-      if os.getenv('XRDSYS') is None:
+      if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
-
     use_scanEOS = (args.use_scanEOS)
-
-    import json
-    import re
-
-    # Regular expression for comments
-    comment_re = re.compile('(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
-                            re.DOTALL | re.MULTILINE)
-
-    # http://www.lifl.fr/~damien.riquet/parse-a-json-file-with-comments.html
-    def parse_json(filename):
-      """ Parse a JSON file
-          First remove comments and then use the json module package
-          Comments look like :
-              // ...
-          or
-              /*
-              ...
-              */
-      """
-      with open(filename) as f:
-        content = ''.join(f.readlines())
-        ## Looking for comments
-        match = comment_re.search(content)
-        while match:
-          # single line comment
-          content = content[:match.start()] + content[match.end():]
-          match = comment_re.search(content)
-        #print(content)
-        # Return json file
-        return json.loads(content)
 
     # at this point, we should import ROOT and do stuff
     import ROOT
-    if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) < 25:
+    if xAODAnaHelpers.utils.is_release20():
       xAH_logger.info("loading packages")
       ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
     else:
       # env var that tells us if CMAKE was setup
-      cmake_setup = '{0:s}_SET_UP'.format(args.cmake_workdir)
+      cmake_setup = 'AnalysisBase_SET_UP'
       # architecture used for CMake
-      arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
+      arch = os.environ.get('AnalysisBase_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
       if not int(os.environ.get(cmake_setup, 0)):
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
-    #Set up the job for xAOD access:
-    ROOT.xAOD.Init("xAH_run").ignore();
+    # Set up the job for xAOD access:
+    ROOT.xAOD.Init("xAH_run").ignore()
 
     # load the standard algorithm since pyroot delays quickly
+    xAH_logger.info("Loading up your analysis dictionaries now, give us a second.")
     ROOT.EL.Algorithm()
-    # load this to get ROOT.MSG working: https://its.cern.ch/jira/browse/ATLASG-270
+    # load this for the MSG::level values. See https://its.cern.ch/jira/browse/ATLASG-270
     ROOT.asg.ToolStore()
+    xAH_logger.info("All dictionaries loaded and good to go. Have a wonderful day :)")
 
     # check that we have appropriate drivers
     if args.driver == 'prun':
@@ -339,11 +286,17 @@ if __name__ == "__main__":
     elif args.driver == 'condor':
       if getattr(ROOT.EL, 'CondorDriver') is None:
         raise KeyError('Cannot load the Condor driver from EventLoop. Did you not compile it?')
-      if not os.path.isfile(os.path.expandvars('$ROOTCOREBIN/../RootCore.par')):
+      if not os.path.isfile(os.path.expandvars('$ROOTCOREBIN/../RootCore.par')) and xAODAnaHelpers.utils.is_release20():
         raise IOError('I cannot find RootCore.par. Make sure you run `rc make_par` before running xAH_run.py.')
     elif args.driver == 'lsf':
       if getattr(ROOT.EL, 'LSFDriver') is None:
         raise KeyError('Cannot load the LSF driver from EventLoop. Did you not compile it?')
+    elif args.driver == 'slurm':
+      if getattr(ROOT.EL, 'SlurmDriver') is None:
+        raise KeyError('Cannot load the SLURM driver from EventLoop. Did you not compile it?')
+    elif args.driver == 'local':
+      if getattr(ROOT.EL, 'LocalDriver') is None:
+        raise KeyError('Cannot load the Local driver from EventLoop. Did you not compile it?')
 
     # create a new sample handler to describe the data files we use
     xAH_logger.info("creating new sample handler")
@@ -391,7 +344,7 @@ if __name__ == "__main__":
               elif args.use_scanXRD:
                 # assume format like root://someserver//path/to/files/*pattern*.root
                 server, path = line.replace('root://', '').split('//')
-                sh_list = ROOT.SH.DiskListXRD(server, path, True)
+                sh_list = ROOT.SH.DiskListXRD(server, os.path.join('/', path), True)
                 ROOT.SH.ScanDir().scan(sh_all, sh_list)
               else:
                 raise Exception("What just happened?")
@@ -458,9 +411,15 @@ if __name__ == "__main__":
     #sh_all.setMetaString( "nc_excludeSite", "ANALY_RAL_SL6");
     sh_all.setMetaString( "nc_grid_filter", "*");
 
+    # This is a fix for running on the grid with release 21.2.X
+    if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) >= 25:
+      xAH_logger.info("Setting nc_cmtConfig to {0:s}".format(os.getenv("AnalysisBase_PLATFORM")))
+      sh_all.setMetaString("nc_cmtConfig", os.getenv("AnalysisBase_PLATFORM"))
+
     # read susy meta data (should be configurable)
-    xAH_logger.info("reading all metadata in $ROOTCOREBIN/data/xAODAnaHelpers/metadata")
-    ROOT.SH.readSusyMetaDir(sh_all,"$ROOTCOREBIN/data/xAODAnaHelpers/metadata")
+    path_metadata=ROOT.PathResolverFindCalibDirectory("xAODAnaHelpers/metadata")
+    xAH_logger.info("reading all metadata in {0}".format(path_metadata))
+    ROOT.SH.readSusyMetaDir(sh_all,path_metadata)
 
     # this is the basic description of our job
     xAH_logger.info("creating new job")
@@ -479,6 +438,11 @@ if __name__ == "__main__":
     job.options().setDouble(ROOT.EL.Job.optCacheSize, 50*1024*1024)
     job.options().setDouble(ROOT.EL.Job.optCacheLearnEntries, 50)
 
+    if args.variable_stats:
+      xAH_logger.info("\tprinting variable statistics")
+      job.options().setDouble(ROOT.EL.Job.optXAODPerfStats, 1)
+      job.options().setDouble(ROOT.EL.Job.optPrintPerFileStats, 1)
+
     # access mode branch
     if args.access_mode == 'branch':
       xAH_logger.info("\tusing branch access mode: ROOT.EL.Job.optXaodAccessMode_branch")
@@ -490,120 +454,76 @@ if __name__ == "__main__":
       xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
       job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
 
-
-
-    load_json   = ".json" in args.config
-
-
     # formatted string
     algorithmConfiguration_string = []
-    printStr = "\tsetting {0: >20}.{1:<30} = {2}"
 
-    if load_json:
+    from xAODAnaHelpers import Config
+    configurator = None
+
+    if ".json" in args.config:
+      # parse_json is json.load + stripping comments
+      from xAODAnaHelpers.utils import parse_json
       xAH_logger.debug("Loading json files")
-
-      # for generating names if needed
-      from xAH_nameGenerator import xAH_nameGenerator
-
+      algConfigs = parse_json(args.config)
+      xAH_logger.debug("loaded the json configurations")
       # add our algorithm to the job
-      algorithm_configurations = parse_json(args.config)
-      xAH_logger.debug("loaded the configurations")
+      configurator = Config()
+      map(lambda x: configurator.setalg(x['class'], x['configs']), algConfigs)
 
-      # this is where we go over and process all algorithms
-      for algorithm_configuration in algorithm_configurations:
-        className = algorithm_configuration['class']
-        xAH_logger.info("creating algorithm %s", className)
-        algorithmConfiguration_string.append("{0} algorithm options".format(className))
-
-        # handle namespaces
-        alg = reduce(lambda x,y: getattr(x, y, None), className.split('.'), ROOT)
-        if not alg:
-          raise ValueError("Algorithm %s does not exist" % className)
-
-        # if m_name not set, randomly generate it
-        algName = algorithm_configuration['configs'].get("m_name", None)
-        if algName is None:
-          algName = str(xAH_nameGenerator())
-          xAH_logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
-        if not isinstance(algName, str) and not isinstance(algName, unicode):
-          raise TypeError("m_name must be a string for instance of {0:s}".format(className))
-
-        # handle deprecation of m_debug, m_verbose
-        if 'm_debug' in algorithm_configuration['configs']:
-          xAH_logger.warning("m_debug is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 . Set m_msgLevel='debug'")
-        if 'm_verbose' in algorithm_configuration['configs']:
-          xAH_logger.warning("m_verbose is being deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882 . Set m_msgLevel='verbose'.")
-
-        # handle msgLevels, can be string or integer
-        msgLevel = algorithm_configuration['configs'].get("m_msgLevel", "info")
-        if not isinstance(msgLevel, str) and not isinstance(msgLevel, int):
-          raise TypeError("m_msgLevel must be a string or integer for instance of {0:s}".format(className))
-        if isinstance(msgLevel, str):
-          if not hasattr(ROOT.MSG, msgLevel.upper()):
-            raise ValueError("m_msgLevel must be a valid MSG::level: {0:s}".format(msgLevel))
-          msgLevel = getattr(ROOT.MSG, msgLevel.upper())
-        algorithm_configuration['configs']['m_msgLevel'] = msgLevel
-
-        alg = alg()
-        alg.SetName(algName)
-        alg.setMsgLevel(msgLevel)
-        for config_name, config_val in algorithm_configuration['configs'].iteritems():
-          xAH_logger.debug("\t%s", printStr.format(className, config_name, config_val))
-          algorithmConfiguration_string.append(printStr.format(className, config_name, config_val))
-          # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
-          if not hasattr(alg, config_name) and config_name not in ['m_msgLevel', 'm_name']:
-            raise ValueError("Algorithm %s does not have attribute %s" % (className, config_name))
-
-          #handle unicode from json
-          if isinstance(config_val, unicode):
-            config_val = config_val.encode('utf-8')
-
-          setattr(alg, config_name, config_val)
-
-        xAH_logger.debug("adding algorithm %s to job", className)
-        algorithmConfiguration_string.append("\n")
-        job.algsAdd(alg)
     else:
-
-
-      #
       #  Executing the python
       #   (configGlobals and configLocals are used to pass vars
-      #
-      configGlobals = {}
-      configLocals  = {'args' : args}
+      configGlobals, configLocals = {}, {'args': args}
       execfile(args.config, configGlobals, configLocals)
-
-      #
-      # Find the created xAH_config object and add its _algorithms to the Job
-      #
-      from xAH_config import xAH_config
+      # Find the created xAODAnaHelpers.config.Config object and add its _algorithms to the Job
       for k,v in configLocals.iteritems():
+        if isinstance(v, Config):
+          configurator = v
+          break
 
-        if isinstance(v, xAH_config):
-
-          if hasattr(ROOT.EL, 'NTupleSvc'):
-            # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
-            # is created and added to the job *before* the service
-            #
-            for alg in v._algorithms:
-              if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
-                job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
-          # Add the algorithms to the job
-          #
-          map(job.algsAdd, v._algorithms)
-
-          for configLog in v._log:
-            if len(configLog) == 2:  # this is when we have just the algorithm name
-              xAH_logger.info("creating algorithm %s with name %s", configLog[0], configLog[1])
-              algorithmConfiguration_string.append("{0}: {1} options".format(*configLog))
-            elif len(configLog) == 3:
-              xAH_logger.debug("\t%s", printStr.format(*configLog))
-              algorithmConfiguration_string.append(printStr.format(*configLog))
+    # setting sample metadata
+    for pattern, metadata in configurator._samples.iteritems():
+      found_matching_sample = False
+      xAH_logger.debug("Looking for sample(s) that matches pattern {0}".format(pattern))
+      for sample in sh_all:
+        if pattern in sample.name():
+          found_matching_sample = True
+          xAH_logger.info("Setting sample metadata for {0:s}".format(sample.name()))
+          for k,t,v in ((k, type(v), v) for k,v in metadata.iteritems()):
+            if t in [float]:
+              setter = 'setDouble'
+            elif t in [int]:
+              setter = 'setInteger'
+            elif t in [bool]:
+              setter = 'setBool'
             else:
-              raise Exception("Something weird happened with the logging. Tell someone important")
+              setter = 'setString'
+            getattr(sample.meta(), setter)(k, v)
+            xAH_logger.info("\t - sample.meta().{0:s}({1:s}, {2})".format(setter, k, v))
+        if not found_matching_sample:
+          xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
 
+    # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
+    # is created and added to the job *before* the service
+    if hasattr(ROOT.EL, 'NTupleSvc'):
+      for alg in configurator._algorithms:
+        if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
+          job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
 
+    # Add the algorithms to the job
+    map(job.algsAdd, configurator._algorithms)
+
+    for configLog in configurator._log:
+      # this is when we have just the algorithm name
+      if len(configLog) == 2:
+        xAH_logger.info("creating algorithm %s with name %s", configLog[0], configLog[1])
+        algorithmConfiguration_string.append("{0}: {1} options".format(*configLog))
+      elif len(configLog) == 3:
+        printStr = "\tsetting {0: >20}.{1:<30} = {2}"
+        xAH_logger.debug("\t%s", printStr.format(*configLog))
+        algorithmConfiguration_string.append(printStr.format(*configLog))
+      else:
+        raise Exception("Something weird happened with the logging. Tell someone important.")
 
     # make the driver we want to use:
     xAH_logger.info("creating driver")
@@ -616,7 +536,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.ProofDriver()
       for opt, t in map(lambda x: (x.dest, x.type), prooflite._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optBatchWait']: continue  # skip some options
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -632,7 +552,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.PrunDriver()
       for opt, t in map(lambda x: (x.dest, x.type), prun._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optGridOutputSampleName', 'optBatchWait']: continue  # skip some options
+        if opt in ['help', 'optGridOutputSampleName', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -649,9 +569,10 @@ if __name__ == "__main__":
 
     elif (args.driver == "condor"):
       driver = ROOT.EL.CondorDriver()
+      driver.shellInit = args.optBatchShellInit
       for opt, t in map(lambda x: (x.dest, x.type), condor._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optBatchWait']: continue  # skip some options
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -665,9 +586,50 @@ if __name__ == "__main__":
 
     elif (args.driver == "lsf"):
       driver = ROOT.EL.LSFDriver()
+      driver.shellInit = args.optBatchShellInit
       for opt, t in map(lambda x: (x.dest, x.type), lsf._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optBatchWait']: continue  # skip some options
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
+        if t in [float]:
+          setter = 'setDouble'
+        elif t in [int]:
+          setter = 'setInteger'
+        elif t in [bool]:
+          setter = 'setBool'
+        else:
+          setter = 'setString'
+        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
+
+    elif (args.driver == "slurm"):
+      driver = ROOT.EL.SlurmDriver()
+      driver.shellInit = args.optBatchShellInit
+      driver.SetJobName         (os.path.basename(args.submit_dir))
+      driver.SetAccount         (args.optSlurmAccount             )
+      driver.SetPartition       (args.optSlurmPartition           )
+      driver.SetRunTime         (args.optSlurmRunTime             )
+      driver.SetMemory          (args.optSlurmMemory              )
+      driver.SetConstrain       (args.optSlurmConstrain           )
+      for opt, t in map(lambda x: (x.dest, x.type), slurm._actions):
+        if getattr(args, opt) is None: continue  # skip if not set
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit', 'optSlurmAccount', 'optSlurmPartition', 'optSlurmRunTime', 'optSlurmMemory', 'optSlurmConstrain']: continue  # skip some options
+        if t in [float]:
+          setter = 'setDouble'
+        elif t in [int]:
+          setter = 'setInteger'
+        elif t in [bool]:
+          setter = 'setBool'
+        else:
+          setter = 'setString'
+        jobopt=opt.replace('Slurm','BatchSlurm')
+        getattr(driver.options(), setter)(getattr(ROOT.EL.Job, jobopt), getattr(args, opt))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, jobopt), getattr(args, opt)))
+
+    elif (args.driver == "local"):
+      driver = ROOT.EL.LocalDriver()
+      for opt, t in map(lambda x: (x.dest, x.type), local._actions):
+        if getattr(args, opt) is None: continue  # skip if not set
+        if opt in ['help', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
@@ -680,7 +642,7 @@ if __name__ == "__main__":
         xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
 
     xAH_logger.info("\tsubmit job")
-    if args.driver in ["prun","lsf", "condor"] and not args.optBatchWait:
+    if args.driver in ["prun","condor","lsf","slurm","local"] and not args.optBatchWait:
       driver.submitOnly(job, args.submit_dir)
     else:
       driver.submit(job, args.submit_dir)
@@ -690,7 +652,8 @@ if __name__ == "__main__":
     with open(os.path.join(args.submit_dir, 'xAH_run.log'), 'w+') as f:
       f.write(' '.join(['[{0}]'.format(__version__), os.path.basename(sys.argv[0])] + sys.argv[1:]))
       f.write('\n')
-      f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__short_hash__))
+      if __version__ != "private":
+        f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__version__))
       f.write('Start: {0}\nStop:  {1}\nDelta: {2}\n\n'.format(SCRIPT_START_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME - SCRIPT_START_TIME))
       f.write('job runner options\n')
       for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'use_scanRucio', 'use_scanEOS', 'use_scanXRD', 'log_level', 'driver']:
@@ -698,7 +661,7 @@ if __name__ == "__main__":
       for algConfig_str in algorithmConfiguration_string:
         f.write('{0}\n'.format(algConfig_str))
 
-  except Exception, e:
+  except Exception as e:
     # we crashed
     xAH_logger.exception("{0}\nAn exception was caught!".format("-"*20))
     sys.exit(1)

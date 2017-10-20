@@ -184,6 +184,9 @@ EL::StatusCode JetCalibrator :: initialize ()
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("IsData",!m_isMC));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
+  if ( m_jetCalibToolsDEV ) {
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("DEVmode", m_jetCalibToolsDEV));
+  }
   ANA_CHECK( m_JetCalibrationTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_JetCalibrationTool_handle);
 
@@ -235,11 +238,22 @@ EL::StatusCode JetCalibrator :: initialize ()
   const CP::SystematicSet recSyst = CP::SystematicSet();
   ANA_MSG_INFO(" Initializing Jet Calibrator Systematics :");
 
+  // Backwards compatibility
+  if ( !m_systName.empty() ) {
+    if ( m_systNameJES.empty() ) {
+        m_systNameJES = m_systName;
+        m_systValJES = m_systVal;
+    }
+    if ( m_systNameJER.empty() ) {
+        m_systNameJER = m_systName;
+    }
+  }
+
   //
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
-  m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
+  m_systList = HelperFunctions::getListofSystematics( recSyst, "", 0, msg() ); // Generate nominal
   for(unsigned int i=0; i<m_systList.size(); i++)
     m_systType.insert(m_systType.begin(), 0); // Push systType nominal for this case
 
@@ -248,7 +262,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
-  if ( !m_JESUncertConfig.empty() && !m_systName.empty()  && m_systName != "None" ) {
+  if ( !m_JESUncertConfig.empty() && !m_systNameJES.empty()  && m_systNameJES != "None" ) {
 
     setToolName(m_JetUncertaintiesTool_handle);
     ANA_MSG_INFO("Initialize JES UNCERT with " << m_JESUncertConfig);
@@ -266,13 +280,13 @@ EL::StatusCode JetCalibrator :: initialize ()
     //If just one systVal, then push it to the vector
     ANA_CHECK( this->parseSystValVector());
     if( m_systValVector.size() == 0) {
-      ANA_MSG_DEBUG("Pushing the following systVal to m_systValVector: " << m_systVal );
-      m_systValVector.push_back(m_systVal);
+      ANA_MSG_DEBUG("Pushing the following systVal to m_systValVector: " << m_systValJES );
+      m_systValVector.push_back(m_systValJES);
     }
 
     for(unsigned int iSyst=0; iSyst < m_systValVector.size(); ++iSyst){
       m_systVal = m_systValVector.at(iSyst);
-      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal, msg() );
+      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systNameJES, m_systValJES, msg() );
 
       for(unsigned int i=0; i < JESSysList.size(); ++i){
         // do not add another nominal syst to the list!!
@@ -289,7 +303,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_runSysts = true;
       // setup uncertainity tool for systematic evaluation
       if ( m_JetUncertaintiesTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
-        ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
+        ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systNameJES);
         return EL::StatusCode::FAILURE;
       }
     }
@@ -322,7 +336,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     const CP::SystematicSet recSysts = m_JERSmearingTool_handle->recommendedSystematics();
     ANA_MSG_INFO( " Initializing JER Systematics :");
 
-    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systName, 1, msg() ); //Only 1 sys allowed
+    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systNameJER, 1, msg() ); //Only 1 sys allowed
     for(unsigned int i=0; i < JERSysList.size(); ++i){
       // do not add another nominal syst to the list!!
       // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
@@ -345,15 +359,29 @@ EL::StatusCode JetCalibrator :: initialize ()
   if( m_redoJVT ){
     setToolName(m_JVTUpdateTool_handle);
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")));
-    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVFCorrName", m_JvtAuxName) )
+
+    if( ! m_JvtAuxName.empty() ){
+      ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVFCorrName", m_JvtAuxName) )
+    }
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JVTUpdateTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_JVTUpdateTool_handle);
   }
 
+  if ( m_calculatefJVT ) {
+    setToolName(m_fJVTTool_handle);
+    ANA_CHECK(m_fJVTTool_handle.setProperty("CentralMaxPt", m_fJVTCentralMaxPt));
+    if ( m_fJVTWorkingPoint == "Tight" ) {
+      ANA_CHECK(m_fJVTTool_handle.setProperty("UseTightOP", true));
+    }
+    ANA_CHECK(m_fJVTTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK(m_fJVTTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_fJVTTool_handle);
+  }
+
   std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
-    if ( m_systName.empty() ) {
+    if ( m_systName.empty() && m_systNameJES.empty() && m_systNameJER.empty() ) {
       ANA_MSG_INFO("\t Running w/ nominal configuration only!");
       break;
     }
@@ -363,6 +391,11 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   ANA_CHECK(m_store->record(SystJetsNames, "jets_Syst"+m_name ));
 
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
+  }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -461,7 +494,7 @@ EL::StatusCode JetCalibrator :: execute ()
         // JES Uncertainty Systematic
         ANA_MSG_DEBUG("Configure JES for systematic variation : " << syst_it.name());
         if ( m_JetUncertaintiesTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-          ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
+          ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systNameJES);
           return EL::StatusCode::FAILURE;
         }
 
@@ -484,12 +517,12 @@ EL::StatusCode JetCalibrator :: execute ()
         ANA_MSG_DEBUG("Configure JER for systematic variation : " << syst_it.name());
         if( thisSysType == 2){ //apply this systematic
           if ( m_JERSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-            ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
+            ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systNameJER);
             return EL::StatusCode::FAILURE;
           }
         }else{ //apply nominal, which is always first element of m_systList
           if ( m_JERSmearingTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
-            ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
+            ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systNameJER);
             return EL::StatusCode::FAILURE;
           }
         }
@@ -539,6 +572,11 @@ EL::StatusCode JetCalibrator :: execute ()
       for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
         jet_itr->auxdata< float >("Jvt") = m_JVTUpdateTool_handle->updateJvt(*jet_itr);
       }
+    }
+
+    // Calculate fJVT using calibrated Jets
+    if ( m_calculatefJVT ) {
+      m_fJVTTool_handle->modify(*(uncertCalibJetsSC.first));
     }
 
     // save pointers in ConstDataVector with same order

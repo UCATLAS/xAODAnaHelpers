@@ -355,12 +355,23 @@ bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
 // CP::make_systematics_vector(recSysts); has some similar functionality but does not
 // prune down to 1 systematic if only request that one.  It does however include the
 // nominal case as a null SystematicSet
-std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systName, float systVal, MsgStream& msg ) {
+std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systNames, float systVal, MsgStream& msg ) {
   msg.setName(msg.name()+".getListofSystematics");
 
   std::vector< CP::SystematicSet > outSystList;
 
-  msg << MSG::DEBUG << "systName " << systName << endmsg;
+  // parse and split by comma
+  std::vector<std::string> systNamesList;
+  std::string token;
+  std::istringstream ss(systNames);
+  while (std::getline(ss, token, ',')) {
+    systNamesList.push_back(token);
+  }
+
+  msg << MSG::DEBUG << "systNames: " << endmsg;
+  for ( const std::string &name : systNamesList ) {
+    msg << MSG::DEBUG << "\t" << name << endmsg;
+  }
 
   // loop over input set
   //
@@ -369,10 +380,22 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
     msg << MSG::DEBUG << syst.name() << endmsg;
 
     // 1.
-    // A match with input systName is found in the list:
-    // add that systematic only to the output list
+    // input systName does not contain "All":
+    // match with input systName(s) from the list:
+    // add these systematics only to the output list
     //
-    if ( systName == syst.basename() ) {
+    if ( systNames.find("All") == std::string::npos ) {
+      // do systNames vector matching
+      bool valid = false;
+      for ( const auto s : systNamesList ) {
+        if ( s == syst.basename() ) {
+          valid = true;
+          break;
+        }
+      }
+
+      // continue if not matched
+      if ( !valid ) continue;
 
       msg << MSG::DEBUG << "Found match! Adding systematic " << syst.name() << endmsg;
 
@@ -401,7 +424,7 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
     // input systName contains "All":
     // add all systematics to the output list
     //
-    else if ( systName.find("All") != std::string::npos ) {
+    else if ( systNames.find("All") != std::string::npos ) {
 
       msg << MSG::DEBUG << "Adding systematic " << syst.name() << endmsg;
 
@@ -435,7 +458,7 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
   // Add an empty CP::SystematicVariation at the top of output list to account for the nominal case
   // when running on all systematics or on nominal only
   //
-  if ( systName.find("Nominal") != std::string::npos || systName.find("All") != std::string::npos || systName.empty() ) {
+  if ( systNames.find("Nominal") != std::string::npos || systNames.find("All") != std::string::npos || systNames.empty() ) {
     outSystList.insert( outSystList.begin(), CP::SystematicSet() );
     const CP::SystematicVariation nullVar = CP::SystematicVariation("");
     outSystList.back().insert(nullVar);
@@ -445,6 +468,29 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
 
 }
 
+void HelperFunctions::writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, std::string histName, TFile *file )
+{
+  std::string folderName = "systematics";
+  std::string name = folderName + "/" + histName;
+  if (!systs.size() || histName.empty() || file->Get(name.c_str())) {
+    return;
+  }
+
+  if (!file->Get(folderName.c_str())) {
+    file->mkdir(folderName.c_str());  
+  }
+  file->cd(folderName.c_str());
+
+  TH1D hist(histName.c_str(), histName.c_str(), systs.size(), 0.5, systs.size() + 0.5);
+  for (size_t i = 0; i < systs.size(); i++) {
+    if (systs[i].name().empty()) {
+      hist.GetXaxis()->SetBinLabel(i + 1, "nominal");
+    } else {
+      hist.GetXaxis()->SetBinLabel(i + 1, systs[i].name().c_str());
+    }
+  }
+  hist.Write();
+}
 
 float HelperFunctions::dPhi(float phi1, float phi2)
 {

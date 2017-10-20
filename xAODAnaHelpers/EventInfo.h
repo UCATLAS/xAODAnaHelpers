@@ -13,7 +13,7 @@ namespace xAH {
   class EventInfo
   {
   public:
-    EventInfo(const std::string& detailStr="", float units = 1e3, bool mc = false);
+    EventInfo(const std::string& detailStr="", float units = 1e3, bool mc = false, bool storeSyst = true);
     ~EventInfo();
 
     void setTree    (TTree *tree);
@@ -28,6 +28,7 @@ namespace xAH {
     HelperClasses::EventInfoSwitch  m_infoSwitch;
     bool m_mc;
     bool m_debug;
+    bool m_storeSyst;
     float m_units;
 
   public:
@@ -47,6 +48,7 @@ namespace xAH {
     int      m_mcEventNumber;
     int      m_mcChannelNumber;
     float    m_mcEventWeight;
+    std::vector<float> m_mcEventWeights;
     float    m_weight_pileup;
     float    m_weight_pileup_up;
     float    m_weight_pileup_down;
@@ -55,6 +57,7 @@ namespace xAH {
     int      m_rand_lumiblock_nr;
     int      m_bcid;
     float    m_prescale_DataWeight;
+    int      m_DistEmptyBCID;
 
     // event pileup
     int      m_npv;

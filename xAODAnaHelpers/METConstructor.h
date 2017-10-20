@@ -9,7 +9,7 @@
 #include "xAODRootAccess/TStore.h"
 #include "AsgTools/AnaToolHandle.h"
 
-
+#include "METInterface/IMETSignificance.h"
 #include "PATInterfaces/SystematicRegistry.h"
 //look at https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT
 
@@ -54,9 +54,27 @@ public:
   bool    m_doMuonEloss = false;
   bool    m_doIsolMuonEloss = false;
   bool    m_doJVTCut = false;
+  bool    m_dofJVTCut = false;
 
-  bool    m_useCaloJetTerm = true;
-  bool    m_useTrackJetTerm = false;
+  /// Rebuild MET using tracks in calo jets
+  bool    m_rebuildUsingTracksInJets = false;
+  /**
+    @rst
+      Include soft cluster terms if rebuilding MET using jet terms (only considered if :cpp:member:`~METConstructor::m_rebuildUsingTracksInJets` is false)
+
+    @endrst
+  */
+  bool    m_addSoftClusterTerms = false;
+  
+  // MET significance
+  /// @brief Force AFII flag in calculation, in case metadata is broken
+  bool m_setAFII = false;
+  /// @brief Enable MET significance calculation
+  bool m_calculateSignificance = false;
+  /// @brief Introduce "resolution" for jets with low JVT, if the analysis is sensitive to pileup jets
+  bool m_significanceTreatPUJets = true;
+  /// @brief Set soft term resolution
+  double m_significanceSoftTermReso = 10.0;
 
   // used for systematics
   /// @brief set to false if you want to run met systematics
@@ -64,6 +82,9 @@ public:
   /// @brief do not change it, not useful
   std::string m_systName = "All";
   float m_systVal = 1.0;
+  
+  /// @brief Write systematics names to metadata
+  bool        m_writeSystToMetadata = false;
 
   std::string m_SoftTermSystConfigFile = "TrackSoftTerms.config";
 
@@ -99,8 +120,8 @@ private:
 
   // tools
   asg::AnaToolHandle<IMETMaker> m_metmaker_handle; //!
-
   asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle; //!
+  asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle; //!
 
   TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 

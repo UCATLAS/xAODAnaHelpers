@@ -47,6 +47,8 @@ public:
   std::string m_inputAlgo = "";
   /// @brief output type - this is how the vector<string> w/ syst names will be saved in TStore
   std::string m_outputAlgo = "";
+  /// @brief Write systematics names to metadata
+  bool        m_writeSystToMetadata = false;
   /// @brief Type of Scale Momementum
   std::string m_jetScaleType = "";
   /// @brief The decoration key written to passing objects
@@ -79,19 +81,19 @@ public:
   int m_pass_max = -1;
   /// @brief require pT < pt_max
   float m_pT_max = 1e8;
-  /// @brief require pT > pt_max
+  /// @brief require pT > pt_min
   float m_pT_min = 1e8;
   /// @brief require eta < eta_max
   float m_eta_max = 1e8;
-  /// @brief require eta > eta_max
+  /// @brief require eta > eta_min
   float m_eta_min = 1e8;
   /// @brief require detEta < detEta_max
   float m_detEta_max = 1e8;
-  /// @brief require detEta > detEta_max
+  /// @brief require detEta > detEta_min
   float m_detEta_min = 1e8;
   /// @brief require mass < mass_max
   float m_mass_max = 1e8;
-  /// @brief require mass > mass_max
+  /// @brief require mass > mass_min
   float m_mass_min = 1e8;
   /// @brief require rapidity < rapidity_max
   float m_rapidity_max = 1e8;
@@ -112,6 +114,8 @@ public:
   float m_JVFCut = 0.5;
   /// @brief check JVT
   bool m_doJVT = false;
+  /// @brief keep JVT-rejected jets and decorate passing status
+  bool m_noJVTVeto = false;
   /// @brief check forward JVT
   bool m_dofJVT = false;
   /// @brief Remove jets that fail fJVT. Like JVT, the default is to clean the collection
@@ -162,6 +166,39 @@ public:
 
   float         m_systValJVT = 0.0;
   std::string   m_systNameJVT = "";
+
+  /**
+    @rst
+        Available working points for fJVT cut from the ``CP::IJetJvtEfficiency`` tool.
+
+        The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
+
+        ======== ============== =============
+        Value    HS Efficiency  PU Fake Rate
+        ======== ============== =============
+        "Medium"  87.1-97.0%     53.4-60.9%
+        "Tight"   79.9-95.6%     45.4-50.3%
+        ======== ============== =============
+        
+        See :https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/FJVTCalibration for more information.
+    @endrst
+  */
+  std::string m_WorkingPointfJVT = "Medium";
+
+  /**
+     @brief Configuration containting fJVT scale factors.
+
+     @rst
+        The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
+
+        See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/FJVTCalibration for latest recommendation.
+     @endrst
+  */
+  std::string m_SFFilefJVT = "JetJvtEfficiency/Moriond2016_v2/fJvtSFFile.root";
+  std::string m_outputSystNamesfJVT = "JetJvtEfficiency_fJVTSyst";
+
+  float         m_systValfJVT = 0.0;
+  std::string   m_systNamefJVT = "";
 
   /// @brief Flag to apply btagging cut, if false just decorate decisions
   bool  m_doBTagCut = false;
@@ -218,10 +255,14 @@ private:
   int   m_jet_cutflow_btag_cut;      //!
 
   std::vector<CP::SystematicSet> m_systListJVT; //!
+  std::vector<CP::SystematicSet> m_systListfJVT; //!
 
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency"};         //!
-  asg::AnaToolHandle<IJetModifier>           m_fJVT_tool_handle{"JetForwardJvtTool"};           //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency"};    //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
+
+  std::string m_outputJVTPassed = "JetJVT_Passed"; //!
+  std::string m_outputfJVTPassed = "JetfJVT_Passed"; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -247,7 +288,7 @@ public:
   virtual EL::StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName );
+  virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName, bool isNominal );
 
   // added functions not from Algorithm
   // why does this need to be virtual?

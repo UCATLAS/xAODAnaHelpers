@@ -67,6 +67,12 @@ and then find all packages and then compile:
     rc find_packages
     rc compile
 
+.. important::
+
+    EventLoopGrid-00-00-54 has a bug affecting job submissions on the grid. Please downgrade via::
+
+      atlasoff/PhysicsAnalysis/D3PDTools/EventLoopGrid/tags/EventLoopGrid-00-00-53
+
 CMake-based RootCore (> 2.5.X)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -111,7 +117,7 @@ The last thing you need to do is get your environment set up correctly, so you w
 
   source build/${CMTCONFIG}/setup.sh
 
-Both ``${CMTCONFIG}`` and  ``${BINARY_TAG}`` seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
+Environment variables like ``${AnalysisBase_PLATFORM}`` seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
 
 .. warning::
 
@@ -121,4 +127,4 @@ Both ``${CMTCONFIG}`` and  ``${BINARY_TAG}`` seem to contain the correct variabl
 
     export ROOT_INCLUDE_PATH=/cvmfs/atlas.cern.ch/repo/sw/ASG/2.6/AnalysisBase/2.6.1/InstallArea/x86_64-slc6-gcc49-opt/RootCore/include:$ROOT_INCLUDE_PATH
 
-  before running the ``xAH_run.py`` commands. This should fix things up.
+  before running the ``xAH_run.py`` commands. This should fix things up. Don't forget to include the right version if you're using 2.6.X! This should not happen in 21.2 releases.

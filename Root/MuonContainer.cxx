@@ -6,8 +6,8 @@ using namespace xAH;
 using std::vector;
 using std::string;
 
-MuonContainer::MuonContainer(const std::string& name, const std::string& detailStr, float units, bool mc)
-  : ParticleContainer(name, detailStr, units, mc, true)
+MuonContainer::MuonContainer(const std::string& name, const std::string& detailStr, float units, bool mc, bool storeSystSFs)
+  : ParticleContainer(name, detailStr, units, mc, true, storeSystSFs)
 {
 
   // trigger
@@ -28,6 +28,9 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     m_isIsolated_FixedCutTightTrackOnly          = new  vector<int>   ();
     m_isIsolated_UserDefinedFixEfficiency        = new  vector<int>   ();
     m_isIsolated_UserDefinedCut                  = new  vector<int>   ();
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_ptcone20                                   = new  vector<float> ();
     m_ptcone30                                   = new  vector<float> ();
     m_ptcone40                                   = new  vector<float> ();
@@ -96,6 +99,18 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     m_ParamEnergyLossSigmaPlus     = new vector<float>         ();
   }
 
+  if ( m_infoSwitch.m_promptlepton ) {
+    m_PromptLeptonIso_DRlj                = new std::vector<float> ();
+    m_PromptLeptonIso_LepJetPtFrac        = new std::vector<float> ();
+    m_PromptLeptonIso_TagWeight           = new std::vector<float> ();
+    m_PromptLeptonIso_TrackJetNTrack      = new std::vector<int>   ();
+    m_PromptLeptonIso_ip2                 = new std::vector<float> ();
+    m_PromptLeptonIso_ip3                 = new std::vector<float> ();
+    m_PromptLeptonIso_sv1_jf_ntrkv        = new std::vector<int>   ();
+    m_PromptLeptonNoIso_TagWeight         = new std::vector<float> ();
+    m_PromptLepton_TagWeight              = new std::vector<float> ();
+  }
+
 }
 
 MuonContainer::~MuonContainer()
@@ -119,6 +134,9 @@ MuonContainer::~MuonContainer()
     delete m_isIsolated_FixedCutTightTrackOnly          ;
     delete m_isIsolated_UserDefinedFixEfficiency        ;
     delete m_isIsolated_UserDefinedCut                  ;
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     delete m_ptcone20                                   ;
     delete m_ptcone30                                   ;
     delete m_ptcone40                                   ;
@@ -187,6 +205,18 @@ MuonContainer::~MuonContainer()
     delete m_ParamEnergyLossSigmaPlus     ;
   }
 
+  if ( m_infoSwitch.m_promptlepton ) {
+    delete m_PromptLeptonIso_DRlj            ;
+    delete m_PromptLeptonIso_LepJetPtFrac    ;
+    delete m_PromptLeptonIso_TagWeight       ;
+    delete m_PromptLeptonIso_TrackJetNTrack  ;
+    delete m_PromptLeptonIso_ip2             ;
+    delete m_PromptLeptonIso_ip3             ;
+    delete m_PromptLeptonIso_sv1_jf_ntrkv    ;
+    delete m_PromptLeptonNoIso_TagWeight     ;
+    delete m_PromptLepton_TagWeight          ;
+  }
+
 }
 
 void MuonContainer::setTree(TTree *tree)
@@ -211,6 +241,9 @@ void MuonContainer::setTree(TTree *tree)
     connectBranch<int>(tree,"isIsolated_FixedCutTightTrackOnly", &m_isIsolated_FixedCutTightTrackOnly);
     connectBranch<int>(tree,"isIsolated_UserDefinedFixEfficiency",    &m_isIsolated_UserDefinedFixEfficiency);
     connectBranch<int>(tree,"isIsolated_UserDefinedCut",              &m_isIsolated_UserDefinedCut);
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     connectBranch<float>(tree,"ptcone20",	  &m_ptcone20);
     connectBranch<float>(tree,"ptcone30",	  &m_ptcone30);
     connectBranch<float>(tree,"ptcone40",	  &m_ptcone40);
@@ -288,6 +321,17 @@ void MuonContainer::setTree(TTree *tree)
     connectBranch<float>(tree,"ParamEnergyLossSigmaPlus"  ,  &m_ParamEnergyLossSigmaPlus );
   }
 
+  if ( m_infoSwitch.m_promptlepton ) {
+    connectBranch<float>(tree, "PromptLeptonIso_DRlj",           &m_PromptLeptonIso_DRlj);
+    connectBranch<float>(tree, "PromptLeptonIso_LepJetPtFrac",   &m_PromptLeptonIso_LepJetPtFrac);
+    connectBranch<float>(tree, "PromptLeptonIso_TagWeight",      &m_PromptLeptonIso_TagWeight);
+    connectBranch<int>  (tree, "PromptLeptonIso_TrackJetNTrack", &m_PromptLeptonIso_TrackJetNTrack);
+    connectBranch<float>(tree, "PromptLeptonIso_ip2",            &m_PromptLeptonIso_ip2);
+    connectBranch<float>(tree, "PromptLeptonIso_ip3",            &m_PromptLeptonIso_ip3);
+    connectBranch<int>  (tree, "PromptLeptonIso_sv1_jf_ntrkv",   &m_PromptLeptonIso_sv1_jf_ntrkv);
+    connectBranch<float>(tree, "PromptLeptonNoIso_TagWeight",    &m_PromptLeptonNoIso_TagWeight);
+    connectBranch<float>(tree, "PromptLepton_TagWeight",         &m_PromptLepton_TagWeight);
+  }
 
 }
 
@@ -313,6 +357,9 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     muon.isIsolated_FixedCutTightTrackOnly        =     m_isIsolated_FixedCutTightTrackOnly          ->at(idx);
     muon.isIsolated_UserDefinedFixEfficiency      =     m_isIsolated_UserDefinedFixEfficiency        ->at(idx);
     muon.isIsolated_UserDefinedCut                =     m_isIsolated_UserDefinedCut                  ->at(idx);
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     muon.ptcone20                                 =     m_ptcone20                                   ->at(idx);
     muon.ptcone30                                 =     m_ptcone30                                   ->at(idx);
     muon.ptcone40                                 =     m_ptcone40                                   ->at(idx);
@@ -388,6 +435,19 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     muon.ParamEnergyLossSigmaPlus      = m_ParamEnergyLossSigmaPlus     ->at(idx);
   }
 
+  // prompt lepton
+  if ( m_infoSwitch.m_promptlepton ) {
+    muon.PromptLeptonIso_DRlj            = m_PromptLeptonIso_DRlj            ->at(idx);
+    muon.PromptLeptonIso_LepJetPtFrac    = m_PromptLeptonIso_LepJetPtFrac    ->at(idx);
+    muon.PromptLeptonIso_TagWeight       = m_PromptLeptonIso_TagWeight       ->at(idx);
+    muon.PromptLeptonIso_TrackJetNTrack  = m_PromptLeptonIso_TrackJetNTrack  ->at(idx);
+    muon.PromptLeptonIso_ip2             = m_PromptLeptonIso_ip2             ->at(idx);
+    muon.PromptLeptonIso_ip3             = m_PromptLeptonIso_ip3             ->at(idx);
+    muon.PromptLeptonIso_sv1_jf_ntrkv    = m_PromptLeptonIso_sv1_jf_ntrkv    ->at(idx);
+    muon.PromptLeptonNoIso_TagWeight     = m_PromptLeptonNoIso_TagWeight     ->at(idx);
+    muon.PromptLepton_TagWeight          = m_PromptLepton_TagWeight          ->at(idx);
+  }
+
 }
 
 
@@ -415,6 +475,9 @@ void MuonContainer::setBranches(TTree *tree)
     setBranch<int>(tree,"isIsolated_FixedCutTightTrackOnly", m_isIsolated_FixedCutTightTrackOnly);
     setBranch<int>(tree,"isIsolated_UserDefinedFixEfficiency",    m_isIsolated_UserDefinedFixEfficiency);
     setBranch<int>(tree,"isIsolated_UserDefinedCut",              m_isIsolated_UserDefinedCut);
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     setBranch<float>(tree,"ptcone20",	  m_ptcone20);
     setBranch<float>(tree,"ptcone30",	  m_ptcone30);
     setBranch<float>(tree,"ptcone40",	  m_ptcone40);
@@ -491,6 +554,18 @@ void MuonContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"ParamEnergyLossSigmaPlus"  ,  m_ParamEnergyLossSigmaPlus );
   }
   
+  if ( m_infoSwitch.m_promptlepton ) {
+    setBranch<float>(tree, "PromptLeptonIso_DRlj",            m_PromptLeptonIso_DRlj);
+    setBranch<float>(tree, "PromptLeptonIso_LepJetPtFrac",    m_PromptLeptonIso_LepJetPtFrac);
+    setBranch<float>(tree, "PromptLeptonIso_TagWeight",       m_PromptLeptonIso_TagWeight);
+    setBranch<int>  (tree, "PromptLeptonIso_TrackJetNTrack",  m_PromptLeptonIso_TrackJetNTrack);
+    setBranch<float>(tree, "PromptLeptonIso_ip2",             m_PromptLeptonIso_ip2);
+    setBranch<float>(tree, "PromptLeptonIso_ip3",             m_PromptLeptonIso_ip3);
+    setBranch<int>  (tree, "PromptLeptonIso_sv1_jf_ntrkv",    m_PromptLeptonIso_sv1_jf_ntrkv);
+    setBranch<float>(tree, "PromptLeptonNoIso_TagWeight",     m_PromptLeptonNoIso_TagWeight);
+    setBranch<float>(tree, "PromptLepton_TagWeight",          m_PromptLepton_TagWeight);
+  }
+
   return;
 }
 
@@ -517,6 +592,9 @@ void MuonContainer::clear()
     m_isIsolated_FixedCutTightTrackOnly->clear();
     m_isIsolated_UserDefinedFixEfficiency->clear();
     m_isIsolated_UserDefinedCut->clear();
+  }
+
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_ptcone20->clear();
     m_ptcone30->clear();
     m_ptcone40->clear();
@@ -557,6 +635,18 @@ void MuonContainer::clear()
     m_trknBLayerHits->clear();
     m_trknInnermostPixLayHits->clear();
     m_trkPixdEdX->clear();
+  }
+
+  if ( m_infoSwitch.m_promptlepton ) {
+    m_PromptLeptonIso_DRlj             -> clear();
+    m_PromptLeptonIso_LepJetPtFrac     -> clear();
+    m_PromptLeptonIso_TagWeight        -> clear();
+    m_PromptLeptonIso_TrackJetNTrack   -> clear();
+    m_PromptLeptonIso_ip2              -> clear();
+    m_PromptLeptonIso_ip3              -> clear();
+    m_PromptLeptonIso_sv1_jf_ntrkv     -> clear();
+    m_PromptLeptonNoIso_TagWeight      -> clear();
+    m_PromptLepton_TagWeight           -> clear();
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -661,7 +751,9 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
 
     static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
     safeFill<char, int, xAOD::Muon>(muon, isIsoUserDefinedCutAcc, m_isIsolated_UserDefinedCut, -1);
+  }
 
+  if ( m_infoSwitch.m_isolationKinematics ) {
     m_ptcone20    ->push_back( muon->isolation( xAOD::Iso::ptcone20 )    /m_units );
     m_ptcone30    ->push_back( muon->isolation( xAOD::Iso::ptcone30 )    /m_units );
     m_ptcone40    ->push_back( muon->isolation( xAOD::Iso::ptcone40 )    /m_units );
@@ -756,64 +848,61 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     m_trkPixdEdX               ->  push_back( pixdEdX );
   }
 
+  if ( m_infoSwitch.m_promptlepton ) {
+    SG::AuxElement::ConstAccessor<float> acc_Iso_DRlj           ("PromptLeptonIso_DRlj");
+    SG::AuxElement::ConstAccessor<float> acc_Iso_LepJetPtFrac   ("PromptLeptonIso_LepJetPtFrac");
+    SG::AuxElement::ConstAccessor<float> acc_Iso_TagWeight      ("PromptLeptonIso_TagWeight");
+    SG::AuxElement::ConstAccessor<short> acc_Iso_TrackJetNTrack ("PromptLeptonIso_TrackJetNTrack");
+    SG::AuxElement::ConstAccessor<float> acc_Iso_ip2            ("PromptLeptonIso_ip2");
+    SG::AuxElement::ConstAccessor<float> acc_Iso_ip3            ("PromptLeptonIso_ip3");
+    SG::AuxElement::ConstAccessor<short> acc_Iso_sv1_jf_ntrkv   ("PromptLeptonIso_sv1_jf_ntrkv");
+    SG::AuxElement::ConstAccessor<float> acc_NoIso_TagWeight    ("PromptLeptonNoIso_TagWeight");
+    SG::AuxElement::ConstAccessor<float> acc_TagWeight          ("PromptLepton_TagWeight");
+
+    m_PromptLeptonIso_DRlj           ->push_back( acc_Iso_DRlj           .isAvailable(*muon) ? acc_Iso_DRlj(*muon)           : -100);
+    m_PromptLeptonIso_LepJetPtFrac   ->push_back( acc_Iso_LepJetPtFrac   .isAvailable(*muon) ? acc_Iso_LepJetPtFrac(*muon)   : -100);
+    m_PromptLeptonIso_TagWeight      ->push_back( acc_Iso_TagWeight      .isAvailable(*muon) ? acc_Iso_TagWeight(*muon)      : -100);
+    m_PromptLeptonIso_TrackJetNTrack ->push_back( acc_Iso_TrackJetNTrack .isAvailable(*muon) ? acc_Iso_TrackJetNTrack(*muon) : -100);
+    m_PromptLeptonIso_ip2            ->push_back( acc_Iso_ip2            .isAvailable(*muon) ? acc_Iso_ip2(*muon)            : -100);
+    m_PromptLeptonIso_ip3            ->push_back( acc_Iso_ip3            .isAvailable(*muon) ? acc_Iso_ip3(*muon)            : -100);
+    m_PromptLeptonIso_sv1_jf_ntrkv   ->push_back( acc_Iso_sv1_jf_ntrkv   .isAvailable(*muon) ? acc_Iso_sv1_jf_ntrkv(*muon)   : -100);
+    m_PromptLeptonNoIso_TagWeight    ->push_back( acc_NoIso_TagWeight    .isAvailable(*muon) ? acc_NoIso_TagWeight(*muon)    : -100);
+    m_PromptLepton_TagWeight         ->push_back( acc_TagWeight          .isAvailable(*muon) ? acc_TagWeight(*muon)          : -100);
+  }
+
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
     std::vector<float> junkSF(1,1.0);
     std::vector<float> junkEff(1,0.0);
-    
-    static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuonEfficiencyCorrector_TTVASyst_TTVA");
-    
+
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accRecoSF;
-    
     for (auto& reco : m_infoSwitch.m_recoWPs) {
-            
-      std::string recoEffSF = "MuonEfficiencyCorrector_RecoSyst_" + reco;
+      std::string recoEffSF = "MuRecoEff_SF_syst_" + reco;
       accRecoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( reco , SG::AuxElement::Accessor< std::vector< float > >( recoEffSF ) ) );
-      if( (accRecoSF.at( reco  )).isAvailable( *muon ) ) { 
-        m_RecoEff_SF->at( reco ).push_back( (accRecoSF.at( reco ))( *muon ) ); 
-      }else { 
-        m_RecoEff_SF->at( reco  ).push_back( junkSF ); 
-      }
-    
+      safeSFVecFill<float, xAOD::Muon>( muon, accRecoSF.at( reco ), &m_RecoEff_SF->at( reco ), junkSF );
     }
-    
+
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
-    
     for (auto& isol : m_infoSwitch.m_isolWPs) {
-            
-      std::string isolEffSF = "MuonEfficiencyCorrector_IsoSyst_" + isol;
+      std::string isolEffSF = "MuIsoEff_SF_syst_" + isol;
       accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( isol , SG::AuxElement::Accessor< std::vector< float > >( isolEffSF ) ) );
-      if( (accIsoSF.at( isol  )).isAvailable( *muon ) ) { 
-        m_IsoEff_SF->at( isol ).push_back( (accIsoSF.at( isol ))( *muon ) ); 
-      }else { 
-        m_IsoEff_SF->at( isol  ).push_back( junkSF ); 
-      }
+      safeSFVecFill<float, xAOD::Muon>( muon, accIsoSF.at( isol ), &m_IsoEff_SF->at( isol ), junkSF );
     }
-    
+
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
-    
     for (auto& trig : m_infoSwitch.m_trigWPs) {
-            
-      std::string trigEffSF = "MuonEfficiencyCorrector_TrigSyst_" + trig;
+      std::string trigEffSF = "MuTrigEff_SF_syst_" + trig;
       accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigEffSF ) ) );
-      if( (accTrigSF.at( trig  )).isAvailable( *muon ) ) { 
-        m_TrigEff_SF->at( trig ).push_back( (accTrigSF.at( trig ))( *muon ) ); 
-      }else { 
-        m_TrigEff_SF->at( trig  ).push_back( junkSF ); 
-      }
-      
-      std::string trigMCEff = "MuonEfficiencyCorrector_TrigMCEff_" + trig;
+      safeSFVecFill<float, xAOD::Muon>( muon, accTrigSF.at( trig ), &m_TrigEff_SF->at( trig ), junkSF );
+
+      std::string trigMCEff = "MuTrigMCEff_syst_" + trig;
       accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigMCEff ) ) );
-      if( (accTrigEFF.at( trig  )).isAvailable( *muon ) ) { 
-        m_TrigMCEff->at( trig  ).push_back( (accTrigEFF.at( trig  ))( *muon ) ); 
-      } else { 
-        m_TrigMCEff->at( trig  ).push_back( junkEff ); 
-      }
+      safeSFVecFill<float, xAOD::Muon>( muon, accTrigEFF.at( trig ), &m_TrigMCEff->at( trig ), junkEff );
     }
 
-
-    if( accTTVASF.isAvailable( *muon ) )         { m_TTVAEff_SF->push_back( accTTVASF( *muon ) ); } else { m_TTVAEff_SF->push_back( junkSF ); }
+    static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuTTVAEff_SF_syst_TTVA");
+    safeSFVecFill<float, xAOD::Muon>( muon, accTTVASF, m_TTVAEff_SF, junkSF );
 
   }
 

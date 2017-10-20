@@ -1,5 +1,6 @@
 // c++ include(s):
 #include <iostream>
+#include <memory>
 
 // EL include(s):
 #include <EventLoop/Job.h>
@@ -117,6 +118,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   m_numObject     = 0;
 
 
+  // *******************************************************
+
   int sim_flav(1); // default for FullSim
   if ( m_isMC ) {
     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
@@ -141,7 +144,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
 
-    std::cout << "\n\n Electron ID wp: " << m_PID_WP << "\n\n" << std::endl;
+    ANA_MSG_INFO("Electron ID wp: " << m_PID_WP);
 
     m_pidEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_PID_" + m_PID_WP;
 
@@ -206,7 +209,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
 
-    std::cout << "\n\n ISOLATION wp: " << m_Iso_WP << "\n ID wp (for isolation): " << m_IsoPID_WP << "\n\n" << std::endl;
+    ANA_MSG_INFO("ISOLATION wp: " << m_Iso_WP << "\n ID wp (for isolation): " << m_IsoPID_WP);
 
     m_IsoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Iso_" + m_IsoPID_WP + "_isol" + m_Iso_WP;
 
@@ -309,14 +312,14 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
     m_WorkingPointIsoTrig = HelperFunctions::parse_wp( "ISO", m_corrFileNameTrig, msg() );
     m_WorkingPointIDTrig  = HelperFunctions::parse_wp( "ID", m_corrFileNameTrig, msg() );
-    m_WorkingPointTrigTrig = HelperFunctions::parse_wp( "TRIG", m_corrFileNameTrigMCEff, msg() );
+    m_WorkingPointTrigTrig = HelperFunctions::parse_wp( "TRIG", m_corrFileNameTrig, msg() );
 
     if ( m_WorkingPointIDTrig.empty() ) {
       ANA_MSG_ERROR( "ID working point for trigger SF not found in config file! This should not happen. Exiting." );
       return EL::StatusCode::FAILURE;
     }
 
-    std::cout << "\n\n Trigger ISOLATION wp: " << m_WorkingPointIsoTrig << "\n Trigger ID wp: " << m_WorkingPointIDTrig << "\n\n" << std::endl;
+    ANA_MSG_INFO("Trigger ISOLATION wp: " << m_WorkingPointIsoTrig << "\n Trigger ID wp: " << m_WorkingPointIDTrig);
 
     m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
     if ( !m_WorkingPointIsoTrig.empty() ) {
@@ -429,6 +432,16 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   }
 
+  // Write output sys names
+  if ( m_writeSystToMetadata ) {
+    TFile *fileMD = wk()->getOutputFile ("metadata");
+    HelperFunctions::writeSystematicsListHist(m_systListPID, m_outputSystNamesPID, fileMD);
+    HelperFunctions::writeSystematicsListHist(m_systListIso, m_outputSystNamesIso, fileMD);
+    HelperFunctions::writeSystematicsListHist(m_systListReco, m_outputSystNamesReco, fileMD);
+    HelperFunctions::writeSystematicsListHist(m_systListTrig, m_outputSystNamesTrig, fileMD);
+    HelperFunctions::writeSystematicsListHist(m_systListTrigMCEff, m_outputSystNamesTrigMCEff, fileMD);
+  }
+
   // *********************************************************************************
 
   ANA_MSG_INFO( "ElectronEfficiencyCorrector Interface succesfully initialized!" );
@@ -455,86 +468,45 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
-  // initialise containers
-  //
-  const xAOD::ElectronContainer* inputElectrons(nullptr);
-
-  // if m_inputAlgoSystNames = "" --> input comes from xAOD, or just running one collection,
+  // if m_inputSystNamesElectrons = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
+  std::vector<std::string>* systNames_ptr(nullptr);
+  if ( !m_inputSystNamesElectrons.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputSystNamesElectrons, 0, m_store, msg()) );
 
-  // Declare a counter, initialised to 0
+  std::vector<std::string> systNames{""};
+  if(systNames_ptr) systNames = *systNames_ptr;
+
+  // Declare a write status set to true
   // For the systematically varied input containers, we won't store again the vector with efficiency systs in TStore ( it will be always the same!)
-  //
-  unsigned int countInputCont(0);
+  bool writeSystNames(true);
 
-  if ( m_inputAlgoSystNames.empty() ) {
+  // loop over systematic sets available
+  for ( auto systName : systNames ) {
 
-    // I might not want to decorate sys altered electrons but for some events the nominal container might not exist
-    // if electrons are only allowed in systematic instances, hence, we have to check for the existence of the nominal container
-    //
-    if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName )  ) {
-       ANA_CHECK( HelperFunctions::retrieve(inputElectrons, m_inContainerName, m_event, m_store, msg()) );
+    const xAOD::ElectronContainer* inputElectrons(nullptr);
 
-       ANA_MSG_DEBUG( "Number of electrons: " << static_cast<int>(inputElectrons->size()) );
+    // some systematics might have rejected the event
+    if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName ) ) {
 
-       // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
-       //
-       this->executeSF( inputElectrons, countInputCont );
-    }
+      // retrieve input electrons
+      ANA_CHECK( HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, msg()) );
 
-  } else {
-  // if m_inputAlgo = NOT EMPTY --> you are retrieving syst varied containers from an upstream algo.
-  // This is the case of calibrators: one different SC for each calibration syst applied
+      ANA_MSG_DEBUG( "Number of electrons: " << static_cast<int>(inputElectrons->size()) );
+      ANA_MSG_DEBUG( "Input syst: " << systName );
+      unsigned int idx(0);
+      for ( auto el : *(inputElectrons) ) {
+        ANA_MSG_DEBUG( "Input electron " << idx << ", pt = " << el->pt() * 1e-3 << " GeV " );
+        ++idx;
+      }
 
-      // get vector of string giving the syst names of the upstream algo m_inputAlgo (rememeber: 1st element is a blank string: nominal case!)
-      //
-      std::vector<std::string>* systNames(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
+      // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
+      this->executeSF( inputElectrons, systName.empty(), writeSystNames );
 
-    	// loop over systematic sets available
-	//
-        std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+      writeSystNames = false;
 
-        for ( auto systName : *systNames ) {
+    } // check existence of container
 
-          const xAOD::ElectronContainer* outputElectrons(nullptr);
-
-          if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName )  ) {
-
-             ANA_CHECK( HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, msg()) );
-
-             if ( !m_store->contains<xAOD::ElectronContainer>( m_outContainerName+systName ) ) {
-               ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, m_outContainerName+systName, inputElectrons)));
-             }
-
-             ANA_CHECK( HelperFunctions::retrieve(outputElectrons, m_outContainerName+systName, m_event, m_store, msg()) );
-
-             ANA_MSG_DEBUG( "Number of electrons: " << static_cast<int>(outputElectrons->size()) );
-             ANA_MSG_DEBUG( "Input syst: " << systName );
-             unsigned int idx(0);
-             for ( auto el : *(outputElectrons) ) {
-               ANA_MSG_DEBUG( "Input electron " << idx << ", pt = " << el->pt() * 1e-3 << " GeV " );
-               ++idx;
-             }
-
-             // decorate electrons w/ SF - there will be a decoration w/ different name for each syst!
-	     //
-             this->executeSF( outputElectrons, countInputCont );
-
-             vecOutContainerNames->push_back( systName );
-             // increment counter
-	     //
-             ++countInputCont;
-
-          } // check existence of container
-
-        } // close loop on systematic sets available from upstream algo
-
-        if ( !m_outputAlgoSystNames.empty() && !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) { // might have already been stored by another execution of this algo
-          ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
-        }
-
-  }
+  } // close loop on systematic sets available from upstream algo
 
   // look what we have in TStore
   //
@@ -594,7 +566,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, unsigned int countSyst )
+EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames )
 {
 
   // In the following, every electron gets decorated with several vector<double>'s (for various SFs),
@@ -606,11 +578,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   // These vector<string> are eventually stored in TStore
   //
-  std::vector< std::string >* sysVariationNamesPID       = nullptr;
-  std::vector< std::string >* sysVariationNamesReco      = nullptr;
-  std::vector< std::string >* sysVariationNamesIso       = nullptr;
-  std::vector< std::string >* sysVariationNamesTrig      = nullptr;
-  std::vector< std::string >* sysVariationNamesTrigMCEff = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesPID       = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesReco      = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesIso       = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig      = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesTrigMCEff = nullptr;
 
   // 1.
   // PID efficiency SFs - this is a per-ELECTRON weight
@@ -623,21 +595,17 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNamePID.empty() && !isToolAlreadyUsed(m_pidEffSF_tool_name) ) {
 
-    if(countSyst == 0) sysVariationNamesPID = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesPID = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+
+    // Create the names of the SF weights to be recorded
+    std::string sfName = "ElPIDEff_SF_syst_" + m_PID_WP;
 
     for ( const auto& syst_it : m_systListPID ) {
 
-      // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_ElPIDEff_SF
-      //
-      std::string sfName  = "ElPIDEff_SF_" + m_PID_WP;
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      ANA_MSG_DEBUG("Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: " << sfName);
-      if(countSyst == 0) sysVariationNamesPID->push_back(sfName);
+      ANA_MSG_DEBUG("Electron PID efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
+      if ( writeSystNames ) sysVariationNamesPID->push_back(syst_it.name());
 
       // apply syst
       //
@@ -661,7 +629,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
     	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecPID ( m_outputSystNamesPID  );
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecPID ( sfName  );
     	 if ( !sfVecPID.isAvailable( *el_itr )  ) {
     	   sfVecPID ( *el_itr ) = std::vector<float>();
     	 }
@@ -697,17 +665,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 sfVecPID( *el_itr ).push_back( pidEffSF );
 
-         ANA_MSG_DEBUG( "===>>>");
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt()*1e-3 << " GeV ");
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "PID SF decoration: " << m_outputSystNamesPID );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "PID efficiency SF:");
-         ANA_MSG_DEBUG( "\t " << pidEffSF << " (from getEfficiencyScaleFactor())" );
-         ANA_MSG_DEBUG( "--------------------------------------");
+       ANA_MSG_DEBUG( "===>>>");
+       ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt()*1e-3 << " GeV ");
+       ANA_MSG_DEBUG( "PID SF decoration: " << sfName );
+       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+       ANA_MSG_DEBUG( "PID efficiency SF:");
+       ANA_MSG_DEBUG( "\t " << pidEffSF << " (from getEfficiencyScaleFactor())" );
+       ANA_MSG_DEBUG( "--------------------------------------");
 
     	 ++idx;
 
@@ -716,14 +680,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     }  // close loop on PID efficiency systematics
 
     // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
-    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesPID,  m_outputSystNamesPID )); }
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesPID ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesPID), m_outputSystNamesPID ));
+    }
 
   }
 
@@ -738,21 +698,17 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameIso.empty() && !isToolAlreadyUsed(m_IsoEffSF_tool_name) ) {
 
-    if(countSyst == 0) sysVariationNamesIso = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesIso = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+
+    // Create the names of the SF weights to be recorded
+    std::string sfName = "ElIsoEff_SF_syst_" + m_IsoPID_WP + "_isol" + m_Iso_WP;
 
     for ( const auto& syst_it : m_systListIso ) {
 
-      // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_ElIsoEff_SF
-      //
-      std::string sfName  = "ElIsoEff_SF_" + m_IsoPID_WP + "_isol" + m_Iso_WP;
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      ANA_MSG_DEBUG("Electron Iso efficiency sys name (to be recorded in xAOD::TStore) is: " << sfName);
-      if(countSyst == 0) sysVariationNamesIso->push_back(sfName);
+      ANA_MSG_DEBUG("Electron Iso efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
+      if ( writeSystNames ) sysVariationNamesIso->push_back(syst_it.name());
 
       // apply syst
       //
@@ -776,7 +732,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
     	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecIso ( m_outputSystNamesIso  );
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecIso ( sfName  );
     	 if ( !sfVecIso.isAvailable( *el_itr )  ) {
     	   sfVecIso ( *el_itr ) = std::vector<float>();
     	 }
@@ -810,19 +766,15 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // Add it to decoration vector
     	 //
-    	 sfVecIso( *el_itr ).push_back( IsoEffSF );
+       sfVecIso( *el_itr ).push_back( IsoEffSF );
 
-         ANA_MSG_DEBUG( "===>>>");
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Iso SF decoration: " << m_outputSystNamesIso );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Iso efficiency SF:");
-         ANA_MSG_DEBUG( "\t " << IsoEffSF << " (from getEfficiencyScaleFactor())" );
-         ANA_MSG_DEBUG( "--------------------------------------");
+       ANA_MSG_DEBUG( "===>>>");
+       ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
+       ANA_MSG_DEBUG( "Iso SF decoration: " << sfName );
+       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+       ANA_MSG_DEBUG( "Iso efficiency SF:");
+       ANA_MSG_DEBUG( "\t " << IsoEffSF << " (from getEfficiencyScaleFactor())" );
+       ANA_MSG_DEBUG( "--------------------------------------");
 
     	 ++idx;
 
@@ -831,14 +783,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     }  // close loop on Iso efficiency systematics
 
     // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
-    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesIso,  m_outputSystNamesIso)); }
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
+    }
 
   }
 
@@ -853,21 +801,17 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameReco.empty() && !isToolAlreadyUsed(m_RecoEffSF_tool_name) ) {
 
-    if(countSyst == 0) sysVariationNamesReco = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesReco = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+
+    // Create the names of the SF weights to be recorded
+    std::string sfName = "ElRecoEff_SF_syst";
 
     for ( const auto& syst_it : m_systListReco ) {
 
-      // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_ElRecoEff_SF
-      //
-      std::string sfName  = "ElRecoEff_SF";
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      ANA_MSG_DEBUG("Electron Reco efficiency sys name (to be recorded in xAOD::TStore) is: " << sfName);
-      if(countSyst == 0) sysVariationNamesReco->push_back(sfName);
+      ANA_MSG_DEBUG("Electron Reco efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
+      if ( writeSystNames ) sysVariationNamesReco->push_back(syst_it.name());
 
       // apply syst
       //
@@ -891,7 +835,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
     	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecReco ( m_outputSystNamesReco  );
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecReco ( sfName  );
     	 if ( !sfVecReco.isAvailable( *el_itr )  ) {
     	   sfVecReco ( *el_itr ) = std::vector<float>();
     	 }
@@ -925,19 +869,15 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // Add it to decoration vector
     	 //
-    	 sfVecReco( *el_itr ).push_back( recoEffSF );
+       sfVecReco( *el_itr ).push_back( recoEffSF );
 
-         ANA_MSG_DEBUG( "===>>>");
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Reco SF decoration: " << m_outputSystNamesReco );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Reco efficiency SF:");
-         ANA_MSG_DEBUG( "\t " << recoEffSF << " (from getEfficiencyScaleFactor())" );
-         ANA_MSG_DEBUG( "--------------------------------------");
+       ANA_MSG_DEBUG( "===>>>");
+       ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
+       ANA_MSG_DEBUG( "Reco SF decoration: " << sfName );
+       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+       ANA_MSG_DEBUG( "Reco efficiency SF:");
+       ANA_MSG_DEBUG( "\t " << recoEffSF << " (from getEfficiencyScaleFactor())" );
+       ANA_MSG_DEBUG( "--------------------------------------");
 
     	 ++idx;
 
@@ -946,14 +886,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     }  // close loop on Reco efficiency systematics
 
     // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
-    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesReco, m_outputSystNamesReco)); }
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
+    }
 
   }
 
@@ -971,24 +907,20 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   if ( !m_corrFileNameTrig.empty() && !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
-    if(countSyst == 0) sysVariationNamesTrig = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesTrig = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+
+    // Create the names of the SF weights to be recorded
+    std::string sfName = "ElTrigEff_SF_syst_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
+    if ( !m_WorkingPointIsoTrig.empty() ) {
+      sfName += ( "_isol" + m_WorkingPointIsoTrig );
+    }
 
     for ( const auto& syst_it : m_systListTrig ) {
 
-      // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_ElTrigEff_SF
-      //
-      std::string sfName  = "ElTrigEff_SF_" + m_WorkingPointIDTrig;
-      if ( !m_WorkingPointIsoTrig.empty() ) {
-        sfName += ( "_isol" + m_WorkingPointIsoTrig );
-      }
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      ANA_MSG_DEBUG("Electron Trig efficiency SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
-      if(countSyst == 0) sysVariationNamesTrig->push_back(sfName);
+      ANA_MSG_DEBUG("Electron Trig efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
+      if ( writeSystNames ) sysVariationNamesTrig->push_back(syst_it.name());
 
       // apply syst
       //
@@ -1012,7 +944,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
     	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecTrig ( m_outputSystNamesTrig  );
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecTrig ( sfName  );
     	 if ( !sfVecTrig.isAvailable( *el_itr )  ) {
     	   sfVecTrig ( *el_itr ) = std::vector<float>();
     	 }
@@ -1047,19 +979,15 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // Add it to decoration vector
     	 //
-    	 sfVecTrig( *el_itr ).push_back( trigEffSF );
+       sfVecTrig( *el_itr ).push_back( trigEffSF );
 
-         ANA_MSG_DEBUG( "===>>>");
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << m_outputSystNamesTrig );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Trigger efficiency SF:");
-         ANA_MSG_DEBUG( "\t " << trigEffSF << "(from getEfficiencyScaleFactor())" );
-         ANA_MSG_DEBUG( "--------------------------------------");
+       ANA_MSG_DEBUG( "===>>>");
+       ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
+       ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << sfName );
+       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+       ANA_MSG_DEBUG( "Trigger efficiency SF:");
+       ANA_MSG_DEBUG( "\t " << trigEffSF << "(from getEfficiencyScaleFactor())" );
+       ANA_MSG_DEBUG( "--------------------------------------");
 
     	 ++idx;
 
@@ -1068,14 +996,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     }  // close loop on Trig efficiency SF systematics
 
     // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
-    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesTrig, m_outputSystNamesTrig)); }
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTrig ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), m_outputSystNamesTrig ));
+    }
 
   }
 
@@ -1090,24 +1014,20 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_corrFileNameTrigMCEff.empty() && !isToolAlreadyUsed(m_TrigMCEff_tool_name) ) {
 
-    if(countSyst == 0) sysVariationNamesTrigMCEff = new std::vector< std::string >;
+    if ( writeSystNames ) sysVariationNamesTrigMCEff = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+
+    // Create the names of the SF weights to be recorded
+    std::string sfName = "ElTrigMCEff_syst_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
+    if ( !m_WorkingPointIsoTrig.empty() ) {
+      sfName += ( "_isol" + m_WorkingPointIsoTrig );
+    }
 
     for ( const auto& syst_it : m_systListTrigMCEff ) {
 
-      // Create the name of the SF weight to be recorded
-      //   template:  SYSNAME_ElTrigEff_SF
-      //
-      std::string sfName  = "ElTrigMCEff_" + m_WorkingPointIDTrig;
-      if ( !m_WorkingPointIsoTrig.empty() ) {
-        sfName += ( "_isol" + m_WorkingPointIsoTrig );
-      }
+      if ( !syst_it.name().empty() && !nominal ) continue;
 
-      if ( !syst_it.name().empty() ) {
-    	 std::string prepend = syst_it.name() + "_";
-    	 sfName.insert( 0, prepend );
-      }
-      ANA_MSG_DEBUG("Electron Trig MC efficiency sys name (to be recorded in xAOD::TStore) is: " << sfName);
-      if(countSyst == 0) sysVariationNamesTrigMCEff->push_back(sfName);
+      ANA_MSG_DEBUG("Electron Trig MC efficiency sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
+      if ( writeSystNames ) sysVariationNamesTrigMCEff->push_back(syst_it.name());
 
       // apply syst
       //
@@ -1131,7 +1051,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 //  If efficiency decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
     	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecTrigMCEff ( m_outputSystNamesTrigMCEff  );
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecTrigMCEff ( sfName );
     	 if ( !sfVecTrigMCEff.isAvailable( *el_itr )  ) {
     	   sfVecTrigMCEff ( *el_itr ) = std::vector<float>();
     	 }
@@ -1166,19 +1086,15 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // Add it to decoration vector
     	 //
-    	 sfVecTrigMCEff( *el_itr ).push_back( trigMCEff );
+       sfVecTrigMCEff( *el_itr ).push_back( trigMCEff );
 
-         ANA_MSG_DEBUG( "===>>>");
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Trigger efficiency decoration: " << m_outputSystNamesTrigMCEff );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-         ANA_MSG_DEBUG( " ");
-         ANA_MSG_DEBUG( "Trigger MC efficiency:");
-         ANA_MSG_DEBUG( "\t " << trigMCEff << " (from getEfficiencyScaleFactor())" );
-         ANA_MSG_DEBUG( "--------------------------------------");
+       ANA_MSG_DEBUG( "===>>>");
+       ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
+       ANA_MSG_DEBUG( "Trigger efficiency decoration: " << sfName );
+       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+       ANA_MSG_DEBUG( "Trigger MC efficiency:");
+       ANA_MSG_DEBUG( "\t " << trigMCEff << " (from getEfficiencyScaleFactor())" );
+       ANA_MSG_DEBUG( "--------------------------------------");
 
     	 ++idx;
 
@@ -1187,14 +1103,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     }  // close loop on Trig efficiency SF systematics
 
     // Add list of systematics names to TStore
-    //
-    // NB: we need to make sure that this is not pushed more than once in TStore!
-    // This will be the case when this executeSF() function gets called for every syst varied input container,
-    // e.g. the different SC containers w/ calibration systematics upstream.
-    //
-    // Use the counter defined in execute() to check this is done only once per event
-    //
-    if ( countSyst == 0 ) { ANA_CHECK( m_store->record( sysVariationNamesTrigMCEff, m_outputSystNamesTrigMCEff)); }
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTrigMCEff ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesTrigMCEff), m_outputSystNamesTrigMCEff ));
+    }
 
   }
 
