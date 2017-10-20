@@ -421,6 +421,9 @@ StatusCode JetHists::initialize() {
     m_vtxDiffz0_m                    = book(m_name, "vtx_diff_z0_m", "vtx_diff_z0_m", 100,  -20,  20);
     m_vtxDiffz0_s                    = book(m_name, "vtx_diff_z0_s", "vtx_diff_z0_s", 100,  -5,  5);
 
+    m_vtxBkgDiffz0                   = book(m_name, "vtx_bkg_diff_z0",   "vtx_bkg_diff_z0",   100, -100, 100);
+    m_vtxBkgDiffz0_m                 = book(m_name, "vtx_bkg_diff_z0_m", "vtx_bkg_diff_z0_m", 100,  -20,  20);
+    m_vtxBkgDiffz0_s                 = book(m_name, "vtx_bkg_diff_z0_s", "vtx_bkg_diff_z0_s", 100,  -5,  5);
 
     m_vtxDiffz0_vs_vtx_offline_z0     = book(m_name, "vtxDiffz0_vs_vtx_offline_z0",
 					     "vtx_offline_z0",  100, -200, 200,
@@ -1473,9 +1476,11 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     }
   }
 
+
   if( m_infoSwitch->m_hltVtxComp || m_infoSwitch->m_onlineBS ){
-    const xAOD::Vertex *online_pvx   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
-    const xAOD::Vertex *offline_pvx  = jet->auxdata<const xAOD::Vertex*>("offline_vtx");
+    const xAOD::Vertex *online_pvx     = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
+    const xAOD::Vertex *online_pvx_bkg = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx_bkg");
+    const xAOD::Vertex *offline_pvx    = jet->auxdata<const xAOD::Vertex*>("offline_vtx");
 
     // Use of vtxClass is new, hadDummyPV is old but need backward compatibility.
     char vtxClass = jet->auxdata< char >("hadDummyPV");
@@ -1494,8 +1499,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
       //if(hadDummyPV)  m_vtxClass ->Fill(1.0, eventWeight);
       //else            m_vtxClass ->Fill(0.0, eventWeight);
-
-      if(offline_pvx && online_pvx){
+      
+      if(offline_pvx && online_pvx && online_pvx_bkg){
 	float online_x0_raw = online_pvx->x();
 	float online_y0_raw = online_pvx->y();
 	float online_z0_raw = online_pvx->z();
@@ -1527,6 +1532,11 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	m_vtxDiffz0  ->Fill(vtxDiffz0, eventWeight);
 	m_vtxDiffz0_m->Fill(vtxDiffz0, eventWeight);
 	m_vtxDiffz0_s->Fill(vtxDiffz0, eventWeight);
+
+	float vtxBkgDiffz0     = online_pvx_bkg->z() - offline_pvx->z();
+	m_vtxBkgDiffz0  ->Fill(vtxBkgDiffz0, eventWeight);
+	m_vtxBkgDiffz0_m->Fill(vtxBkgDiffz0, eventWeight);
+	m_vtxBkgDiffz0_s->Fill(vtxBkgDiffz0, eventWeight);
 
 	m_vtxDiffz0_s_vs_vtx_offline_z0->Fill(offline_pvx->z(), vtxDiffz0, eventWeight);
 	m_vtxDiffz0_vs_vtx_offline_z0  ->Fill(offline_pvx->z(), vtxDiffz0, eventWeight);

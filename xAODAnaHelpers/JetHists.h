@@ -320,6 +320,10 @@ class JetHists : public IParticleHists
     TH1F* m_vtxDiffz0_m; //!
     TH1F* m_vtxDiffz0_s; //!
 
+    TH1F* m_vtxBkgDiffz0; //!
+    TH1F* m_vtxBkgDiffz0_m; //!
+    TH1F* m_vtxBkgDiffz0_s; //!
+
     TH1F* m_vtxDiffx0; //!
     TH1F* m_vtxDiffx0_l; //!
 

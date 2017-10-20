@@ -1064,7 +1064,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.sv1_efracsvx   = m_sv1_efracsvx  ->at(idx);
     jet.sv1_normdist   = m_sv1_normdist  ->at(idx);
     jet.sv1_Lxy        = m_sv1_Lxy       ->at(idx);
-    jet.sv1_sig3d      = m_sv1_sig3d     ->at(idx);
+    if(m_sv1_sig3d->size())
+      jet.sv1_sig3d      = m_sv1_sig3d     ->at(idx);
     jet.sv1_L3d        = m_sv1_L3d       ->at(idx);
     jet.sv1_distmatlay = m_sv1_distmatlay->at(idx);
     jet.sv1_dR         = m_sv1_dR        ->at(idx);
