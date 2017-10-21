@@ -209,21 +209,21 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_SV1               = new     std::vector<float>();
       m_SV1IP3D           = new     std::vector<float>();
       m_COMBx             = new     std::vector<float>();
-      m_sv1_pu            = new     std::vector<float>();
-      m_sv1_pb            = new     std::vector<float>();
-      m_sv1_pc            = new     std::vector<float>();
-      m_sv1_c             = new     std::vector<float>();
-      m_sv1_cu            = new     std::vector<float>();
-      m_sv1_NGTinSvx      = new     std::vector<float>();
-      m_sv1_N2Tpair       = new     std::vector<float>();
-      m_sv1_massvx        = new     std::vector<float>();
-      m_sv1_efracsvx      = new     std::vector<float>();
-      m_sv1_normdist      = new     std::vector<float>();
-      m_sv1_Lxy           = new     std::vector<float>();
-      m_sv1_sig3d         = new     std::vector<float>();
-      m_sv1_L3d           = new     std::vector<float>();
-      m_sv1_distmatlay    = new     std::vector<float>();
-      m_sv1_dR            = new     std::vector<float>();
+      m_sv1_pu            = new     std::vector<float>(); 
+      m_sv1_pb            = new     std::vector<float>(); 
+      m_sv1_pc            = new     std::vector<float>(); 
+      m_sv1_c             = new     std::vector<float>(); 
+      m_sv1_cu            = new     std::vector<float>(); 
+      m_sv1_NGTinSvx      = new     std::vector<float>(); 
+      m_sv1_N2Tpair       = new     std::vector<float>(); 
+      m_sv1_massvx        = new     std::vector<float>(); 
+      m_sv1_efracsvx      = new     std::vector<float>(); 
+      m_sv1_normdist      = new     std::vector<float>(); 
+      m_sv1_Lxy           = new     std::vector<float>(); 
+      m_sv1_sig3d         = new     std::vector<float>(); 
+      m_sv1_L3d           = new     std::vector<float>(); 
+      m_sv1_distmatlay    = new     std::vector<float>(); 
+      m_sv1_dR            = new     std::vector<float>(); 
     }
 
     // IP3D
@@ -594,7 +594,6 @@ JetContainer::~JetContainer()
       delete m_SV1;
       delete m_SV1IP3D;
       delete m_COMBx;
-      delete m_sv1_pu        ;
       delete m_sv1_pb        ;
       delete m_sv1_pc        ;
       delete m_sv1_c         ;
@@ -1089,7 +1088,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.sv1_efracsvx   = m_sv1_efracsvx  ->at(idx);
     jet.sv1_normdist   = m_sv1_normdist  ->at(idx);
     jet.sv1_Lxy        = m_sv1_Lxy       ->at(idx);
-    jet.sv1_sig3d      = m_sv1_sig3d     ->at(idx);
+    if(m_sv1_sig3d->size())
+      jet.sv1_sig3d      = m_sv1_sig3d     ->at(idx);
     jet.sv1_L3d        = m_sv1_L3d       ->at(idx);
     jet.sv1_distmatlay = m_sv1_distmatlay->at(idx);
     jet.sv1_dR         = m_sv1_dR        ->at(idx);
