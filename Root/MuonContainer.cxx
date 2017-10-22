@@ -794,7 +794,7 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
       m_trkd0->push_back( trk->d0() );
 
       static SG::AuxElement::Accessor<float> d0SigAcc ("d0sig");
-      float d0_significance =  ( d0SigAcc.isAvailable( *muon ) ) ? fabs( d0SigAcc( *muon ) ) : -1.0;
+      float d0_significance =  ( d0SigAcc.isAvailable( *muon ) ) ? d0SigAcc( *muon ) : -1.0;
       m_trkd0sig->push_back( d0_significance );
 
       m_trkz0->push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
@@ -809,7 +809,7 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     
     } else {
       m_trkd0          -> push_back( -999.0 );
-      m_trkd0sig       -> push_back( -1.0 );
+      m_trkd0sig       -> push_back( -999.0 );
       m_trkz0          -> push_back( -999.0 );
       m_trkz0sintheta  -> push_back( -999.0 );
       m_trkphi0        -> push_back( -999.0 );
