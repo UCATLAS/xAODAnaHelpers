@@ -9,7 +9,7 @@
 #include "xAODRootAccess/TStore.h"
 #include "AsgTools/AnaToolHandle.h"
 
-
+#include "METInterface/IMETSignificance.h"
 #include "PATInterfaces/SystematicRegistry.h"
 //look at https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT
 
@@ -65,6 +65,16 @@ public:
     @endrst
   */
   bool    m_addSoftClusterTerms = false;
+  
+  // MET significance
+  /// @brief Force AFII flag in calculation, in case metadata is broken
+  bool m_setAFII = false;
+  /// @brief Enable MET significance calculation
+  bool m_calculateSignificance = false;
+  /// @brief Introduce "resolution" for jets with low JVT, if the analysis is sensitive to pileup jets
+  bool m_significanceTreatPUJets = true;
+  /// @brief Set soft term resolution
+  double m_significanceSoftTermReso = 10.0;
 
   // used for systematics
   /// @brief set to false if you want to run met systematics
@@ -110,8 +120,8 @@ private:
 
   // tools
   asg::AnaToolHandle<IMETMaker> m_metmaker_handle; //!
-
   asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle; //!
+  asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle; //!
 
   TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 

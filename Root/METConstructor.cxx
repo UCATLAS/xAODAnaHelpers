@@ -9,6 +9,7 @@
 // top of file, outside of algorithm declaration
 // #include "METUtilities/METRebuilder.h"
 #include "METUtilities/METMaker.h"
+#include "METUtilities/METSignificance.h"
 #include "METUtilities/CutsMETMaker.h"
 #include "TauAnalysisTools/TauSelectionTool.h"
 
@@ -136,6 +137,13 @@ EL::StatusCode METConstructor :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
+  // define m_isMC
+  const xAOD::EventInfo* eventInfo(nullptr);
+  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+
+  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
+  ANA_MSG_DEBUG( "Is MC? " << m_isMC );
+
   //////////// IMETMaker ////////////////
   ASG_SET_ANA_TOOL_TYPE(m_metmaker_handle, met::METMaker);
   m_metmaker_handle.setName("METMaker");
@@ -154,6 +162,28 @@ EL::StatusCode METConstructor :: initialize ()
     ANA_MSG_ERROR( "Failed to properly initialize tau selection tool. Exiting." );
     return EL::StatusCode::FAILURE;
   }
+
+  //////////// IMETSignificance ////////////////
+  setToolName( m_metSignificance_handle );
+  ASG_SET_ANA_TOOL_TYPE( m_metSignificance_handle, met::METSignificance );
+  ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
+#ifdef USE_CMAKE
+  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
+#else
+  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", static_cast<int>(m_significanceSoftTermReso)) );
+#endif
+  ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !m_isMC) );
+  // For AFII samples
+  if ( m_isMC ) {
+    // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
+    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
+    if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
+      ANA_MSG_INFO( "Setting simulation flavour to AFII");
+      ANA_CHECK( m_metSignificance_handle.setProperty("IsAFII", true));
+    }
+  }
+  ANA_CHECK( m_metSignificance_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_metSignificance_handle);
 
   ANA_MSG_INFO( "METConstructor Interface " << m_name << " succesfully initialized!");
 
@@ -175,13 +205,6 @@ EL::StatusCode METConstructor :: initialize ()
   }
 
   m_numEvent = 0; //just as a check
-
-  // define m_isMC
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  ANA_MSG_DEBUG( "Is MC? " << static_cast<int>(m_isMC) );
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
@@ -489,6 +512,34 @@ EL::StatusCode METConstructor :: execute ()
 
      ANA_CHECK( m_metmaker_handle->buildMETSum("FinalClus", newMet, MissingETBase::Source::LCTopo));
      ANA_CHECK( m_metmaker_handle->buildMETSum("FinalTrk",  newMet, MissingETBase::Source::Track));
+
+     // Calculate MET significance if enabled
+     if ( m_calculateSignificance ) {
+       std::vector<std::string> totalMETNames = {"FinalTrk", "FinalClus"};
+
+       for ( const std::string &name : totalMETNames ) {
+         // Calculate MET significance
+         if ( !m_rebuildUsingTracksInJets ) {
+           ANA_CHECK( m_metSignificance_handle->varianceMET(newMet, "RefJet", "PVSoftTrk", name) );
+         } else {
+           ANA_CHECK( m_metSignificance_handle->varianceMET(newMet, "RefJetTrk", "PVSoftTrk", name) );
+         }
+
+         // Decorate MET object with results
+         const xAOD::MissingET *met = *(newMet->find(name));
+         if ( !met ) {
+           ANA_MSG_WARNING( "Cannot find MET object with name: " << name );
+         }
+
+         met->auxdecor<double>("METOverSqrtSumET") = m_metSignificance_handle->GetMETOverSqrtSumET();
+         met->auxdecor<double>("METOverSqrtHT") = m_metSignificance_handle->GetMETOverSqrtHT();
+         met->auxdecor<double>("Significance") = m_metSignificance_handle->GetSignificance();
+         met->auxdecor<double>("SigDirectional") = m_metSignificance_handle->GetSigDirectional();
+         met->auxdecor<double>("Rho") = m_metSignificance_handle->GetRho();
+         met->auxdecor<double>("VarL") = m_metSignificance_handle->GetVarL();
+         met->auxdecor<double>("VarT") = m_metSignificance_handle->GetVarT();
+       }
+     }
 
      ANA_CHECK( m_store->record(newMet, (m_outputContainer+sysListItr->name()).Data() ));
      ANA_CHECK( m_store->record(metAuxCont, (m_outputContainer+sysListItr->name() + "Aux.").Data()));

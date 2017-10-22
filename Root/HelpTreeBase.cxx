@@ -39,6 +39,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_debug = debug;
   m_tree = tree;
   m_tree->SetDirectory( file );
+  m_nominalTree = strcmp(m_tree->GetName(), "nominal") == 0;
   m_event = event;
   m_store = store;
   Info("HelpTreeBase()", "HelpTreeBase setup");
@@ -123,7 +124,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
   if(m_debug)  Info("AddEvent()", "Adding event variables: %s", detailStr.c_str());
 
-  m_eventInfo       = new xAH::EventInfo(detailStr, m_units, m_isMC);
+  m_eventInfo       = new xAH::EventInfo(detailStr, m_units, m_isMC, m_nominalTree);
   m_eventInfo -> setBranches(m_tree);
   this->AddEventUser();
 }
@@ -287,7 +288,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
 
   if ( m_debug )  Info("AddMuons()", "Adding muon variables: %s", detailStr.c_str());
 
-  m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units, m_isMC, strcmp(m_tree->GetName(), "nominal") == 0);
+  m_muons[muonName] = new xAH::MuonContainer(muonName, detailStr, m_units, m_isMC, m_nominalTree);
   xAH::MuonContainer* thisMuon = m_muons[muonName];
   HelperClasses::MuonInfoSwitch& muonInfoSwitch = thisMuon->m_infoSwitch;
 
@@ -437,7 +438,7 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
 
   if(m_debug)  Info("AddElectrons()", "Adding electron variables: %s", detailStr.c_str());
 
-  m_elecs[elecName] = new xAH::ElectronContainer(elecName, detailStr, m_units, m_isMC, strcmp(m_tree->GetName(), "nominal") == 0);
+  m_elecs[elecName] = new xAH::ElectronContainer(elecName, detailStr, m_units, m_isMC, m_nominalTree);
 
   xAH::ElectronContainer* thisElec = m_elecs[elecName];
 
@@ -595,18 +596,6 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
     HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0);
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
     if ( pvLocation >= 0 ) pv = vertices->at( pvLocation );
-  }
-
-
-
-  // Global event BTag SF weight (--> the product of each object's weight)
-  //
-  if ( m_isMC ) {
-    const xAOD::EventInfo* eventInfo(nullptr);
-    HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store);
-
-    thisJet->FillGlobalBTagSF(eventInfo);
-
   }
 
   for( auto jet_itr : *jets ) {

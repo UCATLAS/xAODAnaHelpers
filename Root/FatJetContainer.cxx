@@ -92,7 +92,11 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     std::string trkJetName = name;
     if( !suffix.empty() ){ trkJetName += "_"+suffix; }
     trkJetName += "_"+m_infoSwitch.m_trackJetName;
-    m_trkJets = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent sfFTagFix77", m_units, m_mc);
+#ifdef USE_CMAKE
+    m_trkJets = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_DL1rnn_HybBEff_60707785 jetBTag_DL1mu_HybBEff_60707785 jetBTag_DL1_HybBEff_60707785 jetBTag_MV2c10rnn_HybBEff_60707785 jetBTag_MV2c10mu_HybBEff_60707785 jetBTag_MV2c10_HybBEff_60707785", m_units, m_mc);
+#else
+    m_trkJets = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_MV2c10_FixedCutBEff_60707785", m_units, m_mc);
+#endif
 
     m_trkJetsIdx  = new std::vector<std::vector<unsigned int> > ();
   }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# PYTHON_ARGCOMPLETE_OK
 # @file:    xAH_run.py
 # @purpose: run the analysis
 # @author:  Giordon Stark <gstark@cern.ch>
@@ -15,14 +15,13 @@ from __future__ import print_function
 #TODO: move into __main__
 
 import argparse
+try: import argcomplete
+except: pass
 import os
 import subprocess
 import sys
 import datetime
 import time
-
-# think about using argcomplete
-# https://argcomplete.readthedocs.org/en/latest/#activating-global-completion%20argcomplete
 
 # if we want multiple custom formatters, use inheriting
 class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
@@ -46,13 +45,14 @@ class _HelpAction(argparse.Action):
         print("That is not a valid subsection. Chose from {{{0:s}}}".format(','.join(available_groups)))
     parser.exit()
 
-try:
-  __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
-  __short_hash__ = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
-except:
-  print('git not available, assuming svn')
-  __version__ = "private"
-  __short_hash__ = "0"
+# this is a useful env variable set on our docker images
+__version__ = os.getenv('xAODAnaHelpers_VERSION')
+# if None, we're probably not using Docker, see if it's just a git clone
+if __version__ is None:
+  try:
+    __version__ = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
+  except:
+    __version__ = "private"
 
 baseUsageStr = """xAH_run.py --files ... file [file ...]
                   --config path/to/file.json
@@ -95,7 +95,7 @@ parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', h
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
-parser.add_argument('--cmake-workdir', type=str, default='WorkDir', help='The name of the CMake WorkDir, needed to determine environment variables')
+parser.add_argument('--stats', action='store_true', dest='variable_stats', default=False, help='If enabled, will variable usage statistics.')
 
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
@@ -107,7 +107,7 @@ drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, requ
 drivers_common.add_argument('--optRemoveSubmitDir', metavar='', type=int, required=False, default=None, help='the name of the option for overwriting the submission directory.  if you set this to a non-zero value it will remove any existing submit-directory before tryingto create a new one. You can also use -f/--force as well in xAH_run.py.')
 drivers_common.add_argument('--optBatchSharedFileSystem', type=bool, required=False, default=False, help='enable to signify whether your batch driver is running on a shared filesystem')
 drivers_common.add_argument('--optBatchWait', action='store_true', required=False, help='submit using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
-drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default=None, help='extra code to execute on each batch node before starting EventLoop')
+drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default='', help='extra code to execute on each batch node before starting EventLoop')
 
 # These are handled by xAH_run.py at the top level instead of down by drivers
 #.add_argument('--optMaxEvents', type=str, required=False, default=None)
@@ -215,6 +215,8 @@ slurm.add_argument('--optSlurmWrapperExec'     , metavar='', type=str, required=
 if __name__ == "__main__":
   SCRIPT_START_TIME = datetime.datetime.now()
 
+  try: argcomplete.autocomplete(parser)
+  except: pass
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
 
@@ -257,12 +259,12 @@ if __name__ == "__main__":
 
     # at this point, we should import ROOT and do stuff
     import ROOT
-    if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) < 25:
+    if xAODAnaHelpers.utils.is_release20():
       xAH_logger.info("loading packages")
       ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
     else:
       # env var that tells us if CMAKE was setup
-      cmake_setup = '{0:s}_SET_UP'.format(args.cmake_workdir)
+      cmake_setup = 'AnalysisBase_SET_UP'
       # architecture used for CMake
       arch = os.environ.get('AnalysisBase_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
       if not int(os.environ.get(cmake_setup, 0)):
@@ -284,7 +286,7 @@ if __name__ == "__main__":
     elif args.driver == 'condor':
       if getattr(ROOT.EL, 'CondorDriver') is None:
         raise KeyError('Cannot load the Condor driver from EventLoop. Did you not compile it?')
-      if not os.path.isfile(os.path.expandvars('$ROOTCOREBIN/../RootCore.par')):
+      if not os.path.isfile(os.path.expandvars('$ROOTCOREBIN/../RootCore.par')) and xAODAnaHelpers.utils.is_release20():
         raise IOError('I cannot find RootCore.par. Make sure you run `rc make_par` before running xAH_run.py.')
     elif args.driver == 'lsf':
       if getattr(ROOT.EL, 'LSFDriver') is None:
@@ -415,8 +417,9 @@ if __name__ == "__main__":
       sh_all.setMetaString("nc_cmtConfig", os.getenv("AnalysisBase_PLATFORM"))
 
     # read susy meta data (should be configurable)
-    xAH_logger.info("reading all metadata in $ROOTCOREBIN/data/xAODAnaHelpers/metadata")
-    ROOT.SH.readSusyMetaDir(sh_all,"$ROOTCOREBIN/data/xAODAnaHelpers/metadata")
+    path_metadata=ROOT.PathResolverFindCalibDirectory("xAODAnaHelpers/metadata")
+    xAH_logger.info("reading all metadata in {0}".format(path_metadata))
+    ROOT.SH.readSusyMetaDir(sh_all,path_metadata)
 
     # this is the basic description of our job
     xAH_logger.info("creating new job")
@@ -434,6 +437,11 @@ if __name__ == "__main__":
     # should be configurable
     job.options().setDouble(ROOT.EL.Job.optCacheSize, 50*1024*1024)
     job.options().setDouble(ROOT.EL.Job.optCacheLearnEntries, 50)
+
+    if args.variable_stats:
+      xAH_logger.info("\tprinting variable statistics")
+      job.options().setDouble(ROOT.EL.Job.optXAODPerfStats, 1)
+      job.options().setDouble(ROOT.EL.Job.optPrintPerFileStats, 1)
 
     # access mode branch
     if args.access_mode == 'branch':
@@ -473,6 +481,27 @@ if __name__ == "__main__":
           configurator = v
           break
 
+    # setting sample metadata
+    for pattern, metadata in configurator._samples.iteritems():
+      found_matching_sample = False
+      xAH_logger.debug("Looking for sample(s) that matches pattern {0}".format(pattern))
+      for sample in sh_all:
+        if pattern in sample.name():
+          found_matching_sample = True
+          xAH_logger.info("Setting sample metadata for {0:s}".format(sample.name()))
+          for k,t,v in ((k, type(v), v) for k,v in metadata.iteritems()):
+            if t in [float]:
+              setter = 'setDouble'
+            elif t in [int]:
+              setter = 'setInteger'
+            elif t in [bool]:
+              setter = 'setBool'
+            else:
+              setter = 'setString'
+            getattr(sample.meta(), setter)(k, v)
+            xAH_logger.info("\t - sample.meta().{0:s}({1:s}, {2})".format(setter, k, v))
+        if not found_matching_sample:
+          xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
 
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
     # is created and added to the job *before* the service
@@ -623,7 +652,8 @@ if __name__ == "__main__":
     with open(os.path.join(args.submit_dir, 'xAH_run.log'), 'w+') as f:
       f.write(' '.join(['[{0}]'.format(__version__), os.path.basename(sys.argv[0])] + sys.argv[1:]))
       f.write('\n')
-      f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__short_hash__))
+      if __version__ != "private":
+        f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__version__))
       f.write('Start: {0}\nStop:  {1}\nDelta: {2}\n\n'.format(SCRIPT_START_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME - SCRIPT_START_TIME))
       f.write('job runner options\n')
       for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'use_scanRucio', 'use_scanEOS', 'use_scanXRD', 'log_level', 'driver']:

@@ -27,14 +27,14 @@
 
     For the above use-cases, we might produce outputs like so:
 
-      * write the input container to the output. This uses :code:`TEvent::copy()`.
-      * write the deep-copied containers to the output. This calls :code:`TStore::retrieve()` and then :code:`TEvent::record()`.
+      * write the input container to the output. This uses ``TEvent::copy()``.
+      * write the deep-copied containers to the output. This calls ``TStore::retrieve()`` and then ``TEvent::record()``.
       * two options when we have shallow-copies:
 
-        #. :code:`shallowIO=false`: write to the output as a deep-copy like in the previous option
-        #. :code:`shallowIO=true`: write to the output as a shallow-copy, but make sure the original container is also written to the output
+        #. ``shallowIO=false``: write to the output as a deep-copy like in the previous option
+        #. ``shallowIO=true``: write to the output as a shallow-copy, but make sure the original container is also written to the output
 
-      * make a deep-copy of the ConstDataVector and then move from :code:`TStore` to :code:`TEvent`. The problem is that we point to local memory that will not persist when making the CDV.
+      * make a deep-copy of the ConstDataVector and then move from ``TStore`` to ``TEvent``. The problem is that we point to local memory that will not persist when making the CDV.
 
     The trickiest case is with shallow copies because those could be our systematics -- and you might want to copy the original container, and only copy over systematics via true shallow copies to conserve memory and space.
 
@@ -93,7 +93,7 @@ public:
 
       .. note:: This option is appropriate for shallow-copied containers.
 
-      This option is a little different because shallow-copied containers have parent containers. However, there are two options depending on the :code:`setShallowIO` option
+      This option is a little different because shallow-copied containers have parent containers. However, there are two options depending on the ``setShallowIO`` option
 
         True
           If this is set to true, you will want to specify the parent container so that we copy it over as well (it is assumed that the parent container is in TStore or TEvent)::
@@ -105,7 +105,7 @@ public:
 
             "m_shallowCopyKeys": "SCAntiKt4EMTopoJets| SCMuons|"
 
-      .. warning:: Please note that the :code:`shallowIO` option is what determines how the memory is managed. If you run into issues with shallow-copied containers here, make sure you know whether this option was enabled or not before asking for help.
+      .. warning:: Please note that the ``shallowIO`` option is what determines how the memory is managed. If you run into issues with shallow-copied containers here, make sure you know whether this option was enabled or not before asking for help.
 
       Always specify your string in a space-delimited format where pairs are split up by ``shallow container name|parent container name``.
 
@@ -118,7 +118,7 @@ public:
 
     @rst
 
-      .. note:: This option is appropriate for view-only containers such as :code:`ConstDataVector`.
+      .. note:: This option is appropriate for view-only containers such as ``ConstDataVector``.
 
       Here, we will do the deep-copying for you, so that the containers can be correctly recorded into the output. Due to the way view-only containers work, we can't figure out whether the memory points to a specific parent container we can copy, or to a non-persistable, local (stack) memory. The best option is to just deep-copy and allocate new memory instead::
 

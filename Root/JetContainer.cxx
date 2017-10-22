@@ -209,21 +209,21 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_SV1               = new     std::vector<float>();
       m_SV1IP3D           = new     std::vector<float>();
       m_COMBx             = new     std::vector<float>();
-      m_sv1_pu            = new     std::vector<float>();
-      m_sv1_pb            = new     std::vector<float>();
-      m_sv1_pc            = new     std::vector<float>();
-      m_sv1_c             = new     std::vector<float>();
-      m_sv1_cu            = new     std::vector<float>();
-      m_sv1_NGTinSvx      = new     std::vector<float>();
-      m_sv1_N2Tpair       = new     std::vector<float>();
-      m_sv1_massvx        = new     std::vector<float>();
-      m_sv1_efracsvx      = new     std::vector<float>();
-      m_sv1_normdist      = new     std::vector<float>();
-      m_sv1_Lxy           = new     std::vector<float>();
-      m_sv1_sig3d         = new     std::vector<float>();
-      m_sv1_L3d           = new     std::vector<float>();
-      m_sv1_distmatlay    = new     std::vector<float>();
-      m_sv1_dR            = new     std::vector<float>();
+      m_sv1_pu            = new     std::vector<float>(); 
+      m_sv1_pb            = new     std::vector<float>(); 
+      m_sv1_pc            = new     std::vector<float>(); 
+      m_sv1_c             = new     std::vector<float>(); 
+      m_sv1_cu            = new     std::vector<float>(); 
+      m_sv1_NGTinSvx      = new     std::vector<float>(); 
+      m_sv1_N2Tpair       = new     std::vector<float>(); 
+      m_sv1_massvx        = new     std::vector<float>(); 
+      m_sv1_efracsvx      = new     std::vector<float>(); 
+      m_sv1_normdist      = new     std::vector<float>(); 
+      m_sv1_Lxy           = new     std::vector<float>(); 
+      m_sv1_sig3d         = new     std::vector<float>(); 
+      m_sv1_L3d           = new     std::vector<float>(); 
+      m_sv1_distmatlay    = new     std::vector<float>(); 
+      m_sv1_dR            = new     std::vector<float>(); 
     }
 
     // IP3D
@@ -291,24 +291,46 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   }
 
   if( !m_infoSwitch.m_sfFTagFix.empty() ) {
-    m_btag_Fix30   = new  btagOpPoint("Fix30",m_mc, "FixedCutBEff_30");
-    m_btag_Fix50   = new  btagOpPoint("Fix50",m_mc, "FixedCutBEff_50");
-    m_btag_Fix60   = new  btagOpPoint("Fix60",m_mc, "FixedCutBEff_60");
-    m_btag_Fix70   = new  btagOpPoint("Fix70",m_mc, "FixedCutBEff_70");
-    m_btag_Fix77   = new  btagOpPoint("Fix77",m_mc, "FixedCutBEff_77");
-    m_btag_Fix80   = new  btagOpPoint("Fix80",m_mc, "FixedCutBEff_80");
-    m_btag_Fix85   = new  btagOpPoint("Fix85",m_mc, "FixedCutBEff_85");
-    m_btag_Fix90   = new  btagOpPoint("Fix90",m_mc, "FixedCutBEff_90");
+    std::stringstream ss_wpName;
+    for(auto wp : m_infoSwitch.m_sfFTagFix)
+      {
+	ss_wpName.str("");
+	ss_wpName << "Fix" << std::setfill('0') << std::setw(2) << wp;
+	m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
+      }
   }
 
   if( !m_infoSwitch.m_sfFTagFlt.empty() ) {
-    m_btag_Flt30   = new  btagOpPoint("Flt30",m_mc,"FlatBEff_30");
-    m_btag_Flt50   = new  btagOpPoint("Flt50",m_mc,"FlatBEff_50");
-    m_btag_Flt60   = new  btagOpPoint("Flt60",m_mc,"FlatBEff_60");
-    m_btag_Flt70   = new  btagOpPoint("Flt70",m_mc,"FlatBEff_70");
-    m_btag_Flt77   = new  btagOpPoint("Flt77",m_mc,"FlatBEff_77");
-    m_btag_Flt85   = new  btagOpPoint("Flt85",m_mc,"FlatBEff_85");
-    m_btag_Flt90   = new  btagOpPoint("Flt90",m_mc,"FlatBEff_90");
+    std::stringstream ss_wpName;
+    for(auto wp : m_infoSwitch.m_sfFTagFlt)
+      {
+	ss_wpName.str("");
+	ss_wpName << "Flt" << std::setfill('0') << std::setw(2) << wp;
+	m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
+      }
+  }
+
+  if( !m_infoSwitch.m_sfFTagHyb.empty() ) {
+    std::stringstream ss_wpName;
+    for(auto wp : m_infoSwitch.m_sfFTagHyb)
+      {
+	ss_wpName.str("");
+	ss_wpName << "Hyb" << std::setfill('0') << std::setw(2) << wp;
+	m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
+      }
+  }
+
+  if( !m_infoSwitch.m_jetBTag.empty() ) {
+    std::stringstream ss_wpName;
+    for(const auto& btaginfo : m_infoSwitch.m_jetBTag)
+      {
+	for(auto wp : btaginfo.second)
+	  {
+	    ss_wpName.str("");
+	    ss_wpName << wp.first << "_" << std::setfill('0') << std::setw(2) << wp.second;
+	    m_btags.push_back(new btagOpPoint(m_mc, btaginfo.first, ss_wpName.str()));
+	  }
+      }
   }
 
   // area
@@ -572,7 +594,6 @@ JetContainer::~JetContainer()
       delete m_SV1;
       delete m_SV1IP3D;
       delete m_COMBx;
-      delete m_sv1_pu        ;
       delete m_sv1_pb        ;
       delete m_sv1_pc        ;
       delete m_sv1_c         ;
@@ -655,27 +676,8 @@ JetContainer::~JetContainer()
     delete m_vtx_online_bkg_z0  ;
   }
 
-  if( !m_infoSwitch.m_sfFTagFix.empty() ) {
-    delete m_btag_Fix30;
-    delete m_btag_Fix50;
-    delete m_btag_Fix60;
-    delete m_btag_Fix70;
-    delete m_btag_Fix77;
-    delete m_btag_Fix80;
-    delete m_btag_Fix85;
-    delete m_btag_Fix90;
-  }
-
-
-  if( !m_infoSwitch.m_sfFTagFlt.empty() ) {
-    delete m_btag_Flt30;
-    delete m_btag_Flt50;
-    delete m_btag_Flt60;
-    delete m_btag_Flt70;
-    delete m_btag_Flt77;
-    delete m_btag_Flt85;
-    delete m_btag_Flt90;
-  }
+  for(auto btag : m_btags)
+    delete btag;
 
   // area
   if( m_infoSwitch.m_area ) {
@@ -921,35 +923,8 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
 
     }
 
-
-  for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ )
-    {
-      switch( m_infoSwitch.m_sfFTagFix[i] )
-        {
-        case 30: m_btag_Fix30->setTree(tree, m_name); break;
-        case 50: m_btag_Fix50->setTree(tree, m_name); break;
-        case 60: m_btag_Fix60->setTree(tree, m_name); break;
-        case 70: m_btag_Fix70->setTree(tree, m_name); break;
-        case 77: m_btag_Fix77->setTree(tree, m_name); break;
-        case 80: m_btag_Fix80->setTree(tree, m_name); break;
-        case 85: m_btag_Fix85->setTree(tree, m_name); break;
-        case 90: m_btag_Fix90->setTree(tree, m_name); break;
-      }
-    }
-
-  for(uint i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ )
-    {
-      switch( m_infoSwitch.m_sfFTagFlt[i] )
-        {
-        case 30: m_btag_Flt30->setTree(tree, m_name); break;
-        case 50: m_btag_Flt50->setTree(tree, m_name); break;
-        case 60: m_btag_Flt60->setTree(tree, m_name); break;
-        case 70: m_btag_Flt70->setTree(tree, m_name); break;
-        case 77: m_btag_Flt77->setTree(tree, m_name); break;
-        case 85: m_btag_Flt85->setTree(tree, m_name); break;
-        }
-    }
-
+    for(auto btag : m_btags)
+      btag->setTree(tree, m_name);
 
   // truth
   if(m_infoSwitch.m_truth)
@@ -1113,7 +1088,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.sv1_efracsvx   = m_sv1_efracsvx  ->at(idx);
     jet.sv1_normdist   = m_sv1_normdist  ->at(idx);
     jet.sv1_Lxy        = m_sv1_Lxy       ->at(idx);
-    jet.sv1_sig3d      = m_sv1_sig3d     ->at(idx);
+    if(m_sv1_sig3d->size())
+      jet.sv1_sig3d      = m_sv1_sig3d     ->at(idx);
     jet.sv1_L3d        = m_sv1_L3d       ->at(idx);
     jet.sv1_distmatlay = m_sv1_distmatlay->at(idx);
     jet.sv1_dR         = m_sv1_dR        ->at(idx);
@@ -1155,77 +1131,242 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
   }
 
   static const std::vector<float> dummy1 = {1.};
-  for(uint i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ )
+  for(auto btag : m_btags)
     {
-      switch( m_infoSwitch.m_sfFTagFix[i] )
-        {
-        case 30:
-          jet.MV2c20_isFix30       =m_btag_Fix30->m_isTag->at(idx);
-          jet.MV2c20_sfFix30       =(m_mc)?m_btag_Fix30->m_sf->at(idx):dummy1;
-          break;
-        case 50:
-          jet.MV2c20_isFix50       =m_btag_Fix50->m_isTag->at(idx);
-          jet.MV2c20_sfFix50       =(m_mc)?m_btag_Fix50->m_sf->at(idx):dummy1;
-          break;
-        case 60:
-          jet.MV2c20_isFix60       =m_btag_Fix60->m_isTag->at(idx);
-          jet.MV2c20_sfFix60       =(m_mc)?m_btag_Fix60->m_sf->at(idx):dummy1;
-          break;
-        case 70:
-	  if(m_debug) std::cout << "updating flavTag70 " << std::endl;
-          jet.MV2c20_isFix70       =m_btag_Fix70->m_isTag->at(idx);
-          jet.MV2c20_sfFix70       =(m_mc)?m_btag_Fix70->m_sf->at(idx):dummy1;
-          break;
-        case 77:
-          jet.MV2c20_isFix77       =m_btag_Fix77->m_isTag->at(idx);
-          jet.MV2c20_sfFix77       =(m_mc)?m_btag_Fix77->m_sf->at(idx):dummy1;
-          break;
-        case 80:
-          jet.MV2c20_isFix80       =m_btag_Fix80->m_isTag->at(idx);
-          jet.MV2c20_sfFix80       =(m_mc)?m_btag_Fix80->m_sf->at(idx):dummy1;
-          break;
-        case 85:
-          jet.MV2c20_isFix85       =m_btag_Fix85->m_isTag ->at(idx);
-          jet.MV2c20_sfFix85       =(m_mc)?m_btag_Fix85->m_sf->at(idx):dummy1;
-          break;
-        case 90:
-          jet.MV2c20_isFix90       =m_btag_Fix90->m_isTag       ->at(idx);
-          jet.MV2c20_sfFix90       =(m_mc)?m_btag_Fix90->m_sf->at(idx):dummy1;
-          break;
-        }
+      switch(btag->m_op)
+	{
+	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_60:
+	  jet.is_DL1rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_70:
+	  jet.is_DL1rnn_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_77:
+	  jet.is_DL1rnn_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_85:
+	  jet.is_DL1rnn_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_HybBEff_60:
+	  jet.is_DL1rnn_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_HybBEff_70:
+	  jet.is_DL1rnn_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_HybBEff_77:
+	  jet.is_DL1rnn_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_HybBEff_85:
+	  jet.is_DL1rnn_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_FixedCutBEff_60:
+	  jet.is_DL1mu_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_FixedCutBEff_70:
+	  jet.is_DL1mu_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_FixedCutBEff_77:
+	  jet.is_DL1mu_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_FixedCutBEff_85:
+	  jet.is_DL1mu_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_HybBEff_60:
+	  jet.is_DL1mu_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_HybBEff_70:
+	  jet.is_DL1mu_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_HybBEff_77:
+	  jet.is_DL1mu_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_HybBEff_85:
+	  jet.is_DL1mu_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_FixedCutBEff_60:
+	  jet.is_DL1_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_FixedCutBEff_70:
+	  jet.is_DL1_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_FixedCutBEff_77:
+	  jet.is_DL1_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_FixedCutBEff_85:
+	  jet.is_DL1_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_HybBEff_60:
+	  jet.is_DL1_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_HybBEff_70:
+	  jet.is_DL1_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_HybBEff_77:
+	  jet.is_DL1_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_HybBEff_85:
+	  jet.is_DL1_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_60:
+	  jet.is_MV2c10rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_70:
+	  jet.is_MV2c10rnn_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_77:
+	  jet.is_MV2c10rnn_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_85:
+	  jet.is_MV2c10rnn_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_HybBEff_60:
+	  jet.is_MV2c10rnn_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_HybBEff_70:
+	  jet.is_MV2c10rnn_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_HybBEff_77:
+	  jet.is_MV2c10rnn_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_HybBEff_85:
+	  jet.is_MV2c10rnn_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_60:
+	  jet.is_MV2c10mu_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_70:
+	  jet.is_MV2c10mu_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_77:
+	  jet.is_MV2c10mu_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_85:
+	  jet.is_MV2c10mu_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_HybBEff_60:
+	  jet.is_MV2c10mu_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_HybBEff_70:
+	  jet.is_MV2c10mu_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_HybBEff_77:
+	  jet.is_MV2c10mu_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_HybBEff_85:
+	  jet.is_MV2c10mu_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_30:
+	  jet.is_MV2c10_FixedCutBEff_30=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_30=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_50:
+	  jet.is_MV2c10_FixedCutBEff_50=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_50=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_60:
+	  jet.is_MV2c10_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_70:
+	  jet.is_MV2c10_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_77:
+	  jet.is_MV2c10_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_85:
+	  jet.is_MV2c10_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_90:
+	  jet.is_MV2c10_FixedCutBEff_90=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_90=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_30:
+	  jet.is_MV2c10_FlatBEff_30=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_30=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_50:
+	  jet.is_MV2c10_FlatBEff_50=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_50=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_60:
+	  jet.is_MV2c10_FlatBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_70:
+	  jet.is_MV2c10_FlatBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_77:
+	  jet.is_MV2c10_FlatBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_85:
+	  jet.is_MV2c10_FlatBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_HybBEff_60:
+	  jet.is_MV2c10_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_HybBEff_70:
+	  jet.is_MV2c10_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_HybBEff_77:
+	  jet.is_MV2c10_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_HybBEff_85:
+	  jet.is_MV2c10_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	default:
+	  break;
+	}
     }
-
-  for(uint i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ )
-    {
-      switch( m_infoSwitch.m_sfFTagFlt[i] )
-        {
-        case 30:
-          jet.MV2c20_isFlt30       =m_btag_Flt30->m_isTag       ->at(idx);
-          jet.MV2c20_sfFlt30       =(m_mc)?m_btag_Flt30->m_sf->at(idx):dummy1;
-          break;
-        case 50:
-          jet.MV2c20_isFlt50       =m_btag_Flt50->m_isTag       ->at(idx);
-          jet.MV2c20_sfFlt50       =(m_mc)?m_btag_Flt50->m_sf->at(idx):dummy1;
-          break;
-        case 60:
-          jet.MV2c20_isFlt60       =m_btag_Flt60->m_isTag       ->at(idx);
-          jet.MV2c20_sfFlt60       =(m_mc)?m_btag_Flt60->m_sf->at(idx):dummy1;
-          break;
-        case 70:
-          jet.MV2c20_isFlt70       =m_btag_Flt70->m_isTag       ->at(idx);
-          jet.MV2c20_sfFlt70       =(m_mc)?m_btag_Flt70->m_sf->at(idx):dummy1;
-          break;
-        case 77:
-          jet.MV2c20_isFlt77       =m_btag_Flt77->m_isTag       ->at(idx);
-          jet.MV2c20_sfFlt77       =(m_mc)?m_btag_Flt77->m_sf->at(idx):dummy1;
-          break;
-        case 85:
-          jet.MV2c20_isFlt85       =m_btag_Flt85->m_isTag       ->at(idx);
-          jet.MV2c20_sfFlt85       =(m_mc)?m_btag_Flt85->m_sf->at(idx):dummy1;
-          break;
-        }
-    }
-
 
   // truth
   if(m_infoSwitch.m_truth)
@@ -1538,32 +1679,10 @@ void JetContainer::setBranches(TTree *tree)
 
   }
 
-  if( !m_infoSwitch.m_sfFTagFix.empty() ) {
-
-    if (findBTagSF(m_infoSwitch.m_sfFTagFix, 30)) m_btag_Fix30->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFix, 50)) m_btag_Fix50->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFix, 60)) m_btag_Fix60->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFix, 70)) m_btag_Fix70->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFix, 77)) m_btag_Fix77->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFix, 80)) m_btag_Fix80->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFix, 85)) m_btag_Fix85->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFix, 90)) m_btag_Fix90->setBranch(tree, m_name);
-
+  if( !m_infoSwitch.m_jetBTag.empty() ) {
+    for(auto btag : m_btags)
+      btag->setBranch(tree, m_name);
   }
-
-
-  if( !m_infoSwitch.m_sfFTagFlt.empty() ) {
-
-    if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 30)) m_btag_Flt30->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 50)) m_btag_Flt50->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 60)) m_btag_Flt60->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 70)) m_btag_Flt70->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 77)) m_btag_Flt77->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 85)) m_btag_Flt85->setBranch(tree, m_name);
-    if (findBTagSF(m_infoSwitch.m_sfFTagFlt, 90)) m_btag_Flt90->setBranch(tree, m_name);
-
-  }// if sfFTagFlt
-
 
   if( m_infoSwitch.m_area ) {
     setBranch<float>(tree,"GhostArea",     m_GhostArea);
@@ -1896,30 +2015,10 @@ void JetContainer::clear()
   }
 
 
-  if( !m_infoSwitch.m_sfFTagFix.empty() ) { // just clear them all....
-    m_btag_Fix30->clear();
-    m_btag_Fix50->clear();
-    m_btag_Fix60->clear();
-    m_btag_Fix70->clear();
-    m_btag_Fix77->clear();
-    m_btag_Fix80->clear();
-    m_btag_Fix85->clear();
-    m_btag_Fix90->clear();
+  if( !m_infoSwitch.m_jetBTag.empty() ) { // just clear them all....
+    for(auto btag : m_btags)
+      btag->clear();
   }
-
-
-  if( !m_infoSwitch.m_sfFTagFlt.empty() ) { // just clear them all....
-
-    m_btag_Flt30->clear();
-    m_btag_Flt50->clear();
-    m_btag_Flt60->clear();
-    m_btag_Flt70->clear();
-    m_btag_Flt77->clear();
-    m_btag_Flt85->clear();
-    m_btag_Flt90->clear();
-
-  }
-
 
   if ( m_infoSwitch.m_area ) {
     m_GhostArea          ->clear();
@@ -2775,36 +2874,10 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
   }
 
 
-  if( !m_infoSwitch.m_sfFTagFix.empty() ) {
-    for( unsigned int i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) {
-      switch( m_infoSwitch.m_sfFTagFix.at(i) ) {
-      case 30 : m_btag_Fix30->Fill( jet ); break;
-      case 50 : m_btag_Fix50->Fill( jet ); break;
-      case 60 : m_btag_Fix60->Fill( jet ); break;
-      case 70 : m_btag_Fix70->Fill( jet ); break;
-      case 77 : m_btag_Fix77->Fill( jet ); break;
-      case 80 : m_btag_Fix80->Fill( jet ); break;
-      case 85 : m_btag_Fix85->Fill( jet ); break;
-      case 90 : m_btag_Fix90->Fill( jet ); break;
-      }
-    }
-  } // sfFTagFix
-
-
-
-  if( !m_infoSwitch.m_sfFTagFlt.empty() ) {
-    for( unsigned int i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ ) {
-      switch( m_infoSwitch.m_sfFTagFlt.at(i) ) {
-      case 30 : m_btag_Flt30->Fill( jet );  break;
-      case 50 : m_btag_Flt50->Fill( jet );	break;
-      case 60 : m_btag_Flt60->Fill( jet );	break;
-      case 70 : m_btag_Flt70->Fill( jet );	break;
-      case 77 : m_btag_Flt77->Fill( jet );	break;
-      case 85 : m_btag_Flt85->Fill( jet );  break;
-      }
-    }
-  } // sfFTagFlt
-
+  if( !m_infoSwitch.m_jetBTag.empty() ) {
+    for(auto btag : m_btags)
+      btag->Fill( jet );
+  } // jetBTag
 
   if ( m_infoSwitch.m_area ) {
 
@@ -2970,42 +3043,3 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
   return;
 }
-
-
-void JetContainer::FillGlobalBTagSF( const xAOD::EventInfo* eventInfo ){
-
-  if( !m_infoSwitch.m_sfFTagFix.empty() ) {
-    for( unsigned int i=0; i<m_infoSwitch.m_sfFTagFix.size(); i++ ) {
-      switch( m_infoSwitch.m_sfFTagFix.at(i) ) {
-      case 30 :  m_btag_Fix30->FillGlobalSF(eventInfo); break;
-      case 50 :  m_btag_Fix50->FillGlobalSF(eventInfo); break;
-      case 60 :  m_btag_Fix60->FillGlobalSF(eventInfo); break;
-      case 70 :  m_btag_Fix70->FillGlobalSF(eventInfo); break;
-      case 77 :  m_btag_Fix77->FillGlobalSF(eventInfo); break;
-      case 80 :  m_btag_Fix80->FillGlobalSF(eventInfo); break;
-      case 85 :  m_btag_Fix85->FillGlobalSF(eventInfo); break;
-      case 90 :  m_btag_Fix90->FillGlobalSF(eventInfo); break;
-      }
-    }
-  } // sfFTagFix
-
-  if( !m_infoSwitch.m_sfFTagFlt.empty() ) {
-    for( unsigned int i=0; i<m_infoSwitch.m_sfFTagFlt.size(); i++ ) {
-      switch( m_infoSwitch.m_sfFTagFlt.at(i) ) {
-      case 30 :  m_btag_Flt30->FillGlobalSF(eventInfo); break;
-      case 50 :	 m_btag_Flt50->FillGlobalSF(eventInfo); break;
-      case 60 :	 m_btag_Flt60->FillGlobalSF(eventInfo); break;
-      case 70 :	 m_btag_Flt70->FillGlobalSF(eventInfo); break;
-      case 77 :	 m_btag_Flt77->FillGlobalSF(eventInfo); break;
-      case 85 :	 m_btag_Flt85->FillGlobalSF(eventInfo); break;
-      }
-    }
-  } // sfFTagFlt
-
-  return;
-}
-
-
-bool JetContainer::findBTagSF(const std::vector<int>& sfList, int workingPt){
-  return (std::find(sfList.begin(), sfList.end(),workingPt ) != sfList.end());
- }

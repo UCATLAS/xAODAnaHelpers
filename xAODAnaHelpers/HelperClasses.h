@@ -142,6 +142,7 @@ namespace HelperClasses {
         m_shapeLC        shapeLC        exact
         m_truth          truth          exact
         m_caloClus       caloClusters   exact
+        m_weightsSys     weightsSys     exact
         ================ ============== =======
 
     @endrst
@@ -155,6 +156,7 @@ namespace HelperClasses {
     bool m_shapeLC;
     bool m_truth;
     bool m_caloClus;
+    bool m_weightsSys;
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
@@ -228,7 +230,7 @@ namespace HelperClasses {
 
                 m_configStr = "... NLeading4 ..."
 
-            will define :code:`int m_numLeading = 4`.
+            will define ``int m_numLeading = 4``.
 
 
     @endrst
@@ -417,6 +419,8 @@ namespace HelperClasses {
         m_flavTagHLT     flavorTagHLT   exact
         m_sfFTagFix      sfFTagFix      partial
         m_sfFTagFlt      sfFTagFlt      partial
+        m_sfFTagHyb      sfFTagHyb      partial
+        m_jetBTag        jetBTag        partial
         m_area           area           exact
         m_JVC            JVC            exact
         m_tracksInJet    tracksInJet    partial
@@ -438,11 +442,17 @@ namespace HelperClasses {
 
                 m_configStr = "... sfJVTMedium ..."
 
-            ``sfFTagFix`` and ``sfFTagFlt`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
+            ``sfFTagFix``, ``sfFTagFlt`` and ``sfFTagHyb`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
 
                 m_configStr = "... sfFTagFix010203 ..."
 
-            will define :code:`std::vector<int> m_sfFTagFix = {1,2,3}`.
+            will define ``std::vector<int> m_sfFTagFix = {1,2,3}``. THIS OPTION IS DEPRICATED!
+
+            ``jetBTag`` expects the format ``jetBTag_tagger_type_AABB..MM..YY.ZZ``. This will create a vector of working points (AA, BB, CC, ..., ZZ) associated with that tagger. Several entries can be given. For example::
+
+                m_configStr = "... jetBTag_MV2c10_HybBEff_60707785 ..."
+
+            will define ``std::map<std::vector<std::pair<std::string,uint>>> m_jetBTag["MV2c10"] = {std::make_pair("HybBEff",60), std::make_pair("HybBEff",70) ,std::make_pair("HybBEff",77), std::make_pair("HybBEff",85)}``.
 
     @endrst
    */
@@ -492,6 +502,8 @@ namespace HelperClasses {
     std::string      m_sffJVTName;
     std::vector<int> m_sfFTagFix;
     std::vector<int> m_sfFTagFlt;
+    std::vector<int> m_sfFTagHyb;
+    std::map<std::string,std::vector<std::pair<std::string,uint>>> m_jetBTag;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~JetInfoSwitch() {}
   protected:
@@ -583,26 +595,38 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Missing :math:`\text{E}_{\text{T}}` Information.
 
-        ================ ============== =======
-        Parameter        Pattern        Match
-        ================ ============== =======
-        m_refEle         refEle|all     exact
-        m_refGamma       refGamma|all   exact
-        m_refTau         refTau|all     exact
-        m_refMuons       refMuons|all   exact
-        m_refJet         refJet|all     exact
-        m_refJetTrk      refJetTrk      exact
-        m_softClus       softClus|all   exact
-        m_softTrk        softTrk|all    exact
-        ================ ============== =======
+        ==================== ====================== =======
+        Parameter            Pattern                Match
+        ==================== ====================== =======
+        m_metClus            metClus                exact
+        m_metTrk             metTrk                 exact
+        m_sigClus            sigClus|all            exact
+        m_sigTrk             sigTrk|all             exact
+        m_sigResolutionClus  sigResolutionClus|all  exact
+        m_sigResolutionTrk   sigResolutionTrk|all   exact
+        m_refEle             refEle|all             exact
+        m_refGamma           refGamma|all           exact
+        m_refTau             refTau|all             exact
+        m_refMuons           refMuons|all           exact
+        m_refJet             refJet|all             exact
+        m_refJetTrk          refJetTrk              exact
+        m_softClus           softClus|all           exact
+        m_softTrk            softTrk|all            exact
+        ==================== ====================== =======
 
 
-        .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information.
+        .. note:: For all except :cpp:member:`~HelperClasses::METInfoSwitch::m_refJetTrk`, you can pass in the string ``"all"`` to enable all information. You can force only calocluster- or track-based MET using :cpp:member:`~HelperClasses::METInfoSwitch::m_metClus` or :cpp:member:`~HelperClasses::METInfoSwitch::m_metTrk`.
 
     @endrst
    */
   class METInfoSwitch : public InfoSwitch {
   public:
+    bool m_metClus;
+    bool m_metTrk;
+    bool m_sigClus;
+    bool m_sigTrk;
+    bool m_sigResolutionClus;
+    bool m_sigResolutionTrk;
     bool m_refEle;
     bool m_refGamma;
     bool m_refTau;
