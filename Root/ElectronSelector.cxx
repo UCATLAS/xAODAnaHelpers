@@ -871,7 +871,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
-  double d0_significance = fabs( xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() ) );
+  double d0_significance = xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() );
 
   // Take distance between z0 and zPV ( after referring the PV z coordinate to the beamspot position, given by vz() ), multiplied by sin(theta)
   // see https://twiki.cern.ch/twiki/bin/view/AtlasProtected/InDetTrackingDC14 for further reference
@@ -908,7 +908,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   // d0sig cut
   //
   if ( m_d0sig_max != 1e8 ) {
-    if ( !( d0_significance < m_d0sig_max ) ) {
+    if ( !( fabs(d0_significance) < m_d0sig_max ) ) {
       ANA_MSG_DEBUG( "Electron failed d0 significance cut.");
       return 0;
     }
