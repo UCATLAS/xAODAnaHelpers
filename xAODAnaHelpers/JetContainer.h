@@ -467,10 +467,10 @@ namespace xAH {
           if( isTag.isAvailable( *jet ) )
             m_isTag->push_back( isTag( *jet ) );
           else
-            m_isTag->push_back( -1 ); 
+            m_isTag->push_back( -1 );
 
           if(!m_mc) { return; }
-          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_"+m_accessorName+"_SF");
+          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_accessorName);
 	  static const std::vector<float> junk(1,-999);
           if ( sf.isAvailable( *jet ) )
             m_sf->push_back( sf( *jet ) );
