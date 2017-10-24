@@ -922,7 +922,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   // Calculate distance to previous empty BCID and save as decoration
-  if( !isMC() ){
+  if( !isMC() && m_trigConfTool_handle.isUserConfigured() ){
     for (int i = eventInfo->bcid() - 1; i >= 0; i--){
       //get the bunch group pattern for bunch crossing i
       uint16_t bgPattern = m_trigConfTool_handle->bunchGroupSet()->bgPattern()[i];
