@@ -84,10 +84,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
-
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   // several lists of systematics could be configured
@@ -158,7 +154,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  if ( !m_isMC ) {
+  if ( !isMC() ) {
     ANA_MSG_WARNING( "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
     m_getScaleFactors = false;
   }
@@ -254,7 +250,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if( m_runAllSyst ){
     ANA_MSG_INFO(" Running w/ All systematics");
   }
-  
+
   // Write output sys names
   if ( m_writeSystToMetadata ) {
     TFile *fileMD = wk()->getOutputFile ("metadata");

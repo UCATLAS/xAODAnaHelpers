@@ -114,11 +114,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
-
   m_numEvent      = 0;
   m_numObject     = 0;
 
@@ -127,7 +122,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // Create a ToolHandle of the PRW tool which is passed to the MuonEfficiencyScaleFactors class later
   //
-  if( m_isMC ){
+  if( isMC() ){
     if(!setToolName(m_pileup_tool_handle, "Pileup")){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
@@ -241,7 +236,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   }
 
   // If no random run number is used the list should contain only one element
-  if ( m_isMC && !m_useRandomRunNumber ) {
+  if ( isMC() && !m_useRandomRunNumber ) {
     ANA_MSG_WARNING("m_useRandomRunNumber is set to false! This is not recommended!!!" );
     if ( m_YearsList.size() > 1 ) {
       ANA_MSG_ERROR("In this case the list of years should contain only one element");
@@ -390,7 +385,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
   m_numEvent++;
 
-  if ( !m_isMC ) {
+  if ( !isMC() ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Muon Efficiency correction... "); }
     return EL::StatusCode::SUCCESS;
   }
@@ -721,7 +716,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 #ifndef USE_CMAKE
   std::string randYear = "2016";
 
-  if ( m_isMC && m_useRandomRunNumber ) {
+  if ( isMC() && m_useRandomRunNumber ) {
 
     // Unless specifically switched off by the user,
     // use the per-event random runNumber weighted by integrated luminosity got from CP::PileupReweightingTool::getRandomRunNumber()
@@ -785,7 +780,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
   }
 
-  if ( m_isMC && !m_useRandomRunNumber ) {
+  if ( isMC() && !m_useRandomRunNumber ) {
 
     int rn = 0;
     if ( m_YearsList[0] == "2015" ) { rn = m_runNumber2015; }
@@ -873,7 +868,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            std::string full_scan_chain = "HLT_mu8noL1";
 
            double triggerMCEff(0.0); // tool wants a double
-           if ( m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerMCEff, trig_it, !m_isMC ) != CP::CorrectionCode::Ok ) {
+           if ( m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerMCEff, trig_it, !isMC() ) != CP::CorrectionCode::Ok ) {
              ANA_MSG_WARNING( "Problem in getTriggerEfficiency - single muon trigger(s)");
              triggerMCEff = 0.0;
            }
@@ -885,7 +880,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            //
            double triggerDataEff(0.0); // tool wants a double
            if ( trig_it == full_scan_chain ) {
-             if ( m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerDataEff, trig_it, m_isMC ) != CP::CorrectionCode::Ok ) {
+             if ( m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerDataEff, trig_it, isMC() ) != CP::CorrectionCode::Ok ) {
                ANA_MSG_WARNING( "Problem in getTriggerEfficiency - single muon trigger(s)");
                triggerDataEff = 0.0;
              }

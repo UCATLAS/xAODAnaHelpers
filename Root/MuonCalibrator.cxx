@@ -121,17 +121,11 @@ EL::StatusCode MuonCalibrator :: initialize ()
   }
 
 
-  // Check if is MC
-  //
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-
   // Create a ToolHandle of the PRW tool which is used for the random generation
   // of run numbers. Depending on the outcome a specific initialization of the tool
   // will be used.
   //
-  if( m_isMC ){
+  if( isMC() ){
     if(!setToolName(m_pileup_tool_handle, "Pileup")){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
@@ -222,7 +216,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   }
 
   ANA_CHECK(m_store->record(SystMuonsNames, "muons_Syst"+m_name ));
-  
+
   // Write output sys names
   if ( m_writeSystToMetadata ) {
     TFile *fileMD = wk()->getOutputFile ("metadata");
@@ -246,7 +240,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   m_numEvent++;
 
-  if ( !m_isMC && !m_forceDataCalib ) {
+  if ( !isMC() && !m_forceDataCalib ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Muon Calibration... "); }
   }
 
@@ -258,9 +252,9 @@ EL::StatusCode MuonCalibrator :: execute ()
   // a default 2016 run
   int runNumber = 296939;
 
-  if ( !m_isMC && m_forceDataCalib ) {
+  if ( !isMC() && m_forceDataCalib ) {
     runNumber = eventInfo->runNumber();
-  } else if ( m_isMC ) {
+  } else if ( isMC() ) {
     runNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, true );
   }
 
@@ -326,7 +320,7 @@ EL::StatusCode MuonCalibrator :: execute ()
     // now calibrate!
     //
     unsigned int idx(0);
-    if ( m_isMC || m_forceDataCalib ) {
+    if ( isMC() || m_forceDataCalib ) {
 
       for ( auto muSC_itr : *(calibMuonsSC.first) ) {
 

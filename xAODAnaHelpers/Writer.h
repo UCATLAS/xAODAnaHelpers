@@ -18,8 +18,6 @@ public:
 private:
   int m_numEvent;         //!
 
-  bool m_isMC;
-
   std::vector<TString> m_jetContainerNames;
   std::vector<TString> m_electronContainerNames;
   std::vector<TString> m_muonContainerNames;

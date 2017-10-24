@@ -110,10 +110,6 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   }
 
 
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
-
   m_numEvent      = 0;
   m_numObject     = 0;
 
@@ -121,7 +117,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // *******************************************************
 
   int sim_flav(1); // default for FullSim
-  if ( m_isMC ) {
+  if ( isMC() ) {
     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
     if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
       ANA_MSG_INFO( "Setting simulation flavour to AFII");
@@ -459,7 +455,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   m_numEvent++;
 
-  if ( !m_isMC ) {
+  if ( !isMC() ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Electron Efficiency correction... "); }
     return EL::StatusCode::SUCCESS;
   }
