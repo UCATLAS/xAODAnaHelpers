@@ -242,9 +242,6 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
 
   ////// Efficiency correction tools //////
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-
   if (isMC()) {
 
     int dataType = PATCore::ParticleDataType::Data;

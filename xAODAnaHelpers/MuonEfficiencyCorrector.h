@@ -91,8 +91,6 @@ private:
   xAOD::TEvent *m_event;  //!
   xAOD::TStore *m_store;  //!
 
-  bool m_isMC;            //!
-
   int m_numEvent;         //!
   int m_numObject;        //!
 
@@ -100,7 +98,7 @@ private:
   std::vector<CP::SystematicSet> m_systListIso;  //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
   std::vector<CP::SystematicSet> m_systListTTVA; //!
-  
+
   std::string m_outputSystNamesTrigBase; //!
 
   // tools

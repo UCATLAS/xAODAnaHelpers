@@ -173,8 +173,6 @@ class BasicEventSelection : public xAH::Algorithm
     asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
     asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool"}; //!
 
-    bool m_isMC;      //!
-
     int m_eventCounter;     //!
 
     // read from MetaData

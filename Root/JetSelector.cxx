@@ -119,10 +119,6 @@ EL::StatusCode JetSelector :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
-
   if ( m_useCutFlow ) {
 
    // retrieve the file in which the cutflow hists are stored
@@ -358,7 +354,7 @@ EL::StatusCode JetSelector :: execute ()
   const xAOD::JetContainer* inJets(nullptr);
 
   const xAOD::JetContainer *truthJets = nullptr;
-  if ( m_isMC && m_doJVT ) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
+  if ( isMC() && m_doJVT ) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
@@ -368,7 +364,7 @@ EL::StatusCode JetSelector :: execute ()
     ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
     // decorate inJets with truth info
-    if ( m_isMC && m_doJVT ) {
+    if ( isMC() && m_doJVT ) {
       static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
       static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
       for(const auto& jet : *inJets) {
@@ -399,7 +395,7 @@ EL::StatusCode JetSelector :: execute ()
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
 
       // decorate inJets with truth info
-      if ( m_isMC && m_doJVT ) {
+      if ( isMC() && m_doJVT ) {
         static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
         static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
         for(const auto& jet : *inJets) {
@@ -528,7 +524,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // Loop over selected jets and decorate with JVT efficiency SF
   // Do it only for MC
   //
-  if ( m_isMC && m_doJVT ) {
+  if ( isMC() && m_doJVT ) {
 
     std::vector< std::string >* sysVariationNamesJVT  = new std::vector< std::string >;
 
@@ -629,7 +625,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
     if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( m_store->record( sysVariationNamesJVT, m_outputSystNamesJVT)); }
-  } else if ( !m_isMC && m_doJVT ) {
+  } else if ( !isMC() && m_doJVT ) {
     // Loop over selected jets and decorate with JVT passed status
     for ( auto jet : *(selectedJets) ) {
       // create passed JVT decorator
@@ -645,11 +641,11 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       }
     }
   }
-  
+
   // Loop over selected jets and decorate with fJVT efficiency SF
   // Do it only for MC
   //
-  if ( m_isMC && m_dofJVT ) {
+  if ( isMC() && m_dofJVT ) {
 
     std::vector< std::string >* sysVariationNamesfJVT  = new std::vector< std::string >;
 
@@ -688,7 +684,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
         for ( auto jet : *(selectedJets) ) {
 
           ANA_MSG_DEBUG("Applying fJVT SF" );
-          
+
           static const SG::AuxElement::Decorator<char> passedfJVT( m_outputfJVTPassed );
           if ( syst_it.name().empty() ) {
             passedfJVT( *jet ) = jet->auxdata<char>("passFJVT");
@@ -743,7 +739,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
     if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesfJVT) ) { ANA_CHECK( m_store->record( sysVariationNamesfJVT, m_outputSystNamesfJVT)); }
-  } else if ( !m_isMC && m_dofJVT ) {
+  } else if ( !isMC() && m_dofJVT ) {
     // Loop over selected jets and decorate with fJVT passed status
     for ( auto jet : *(selectedJets) ) {
       // create passed fJVT decorator

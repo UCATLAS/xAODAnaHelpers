@@ -16,7 +16,6 @@
 #include <EventLoop/Worker.h>
 
 // EDM include(s):
-#include "xAODEventInfo/EventInfo.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/Jet.h"
 #include "xAODBase/IParticleHelpers.h"
@@ -119,10 +118,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
-
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   // If there is no InputContainer we must stop
@@ -139,14 +134,14 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numObject     = 0;
 
   // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
-  if ( m_forceInsitu && !m_isMC && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
+  if ( m_forceInsitu && !isMC() && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
 
-  if( m_isMC && m_calibSequence.find("Insitu") != std::string::npos){
+  if( isMC() && m_calibSequence.find("Insitu") != std::string::npos){
     ANA_MSG_ERROR( "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
     return EL::StatusCode::FAILURE;
   }
 
-  if ( !m_isMC ) {
+  if ( !isMC() ) {
     m_calibConfig = m_calibConfigData;
   }else{
     m_calibConfig = m_calibConfigFullSim;
@@ -182,7 +177,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
-  ANA_CHECK( m_JetCalibrationTool_handle.setProperty("IsData",!m_isMC));
+  ANA_CHECK( m_JetCalibrationTool_handle.setProperty("IsData",!isMC()));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
   if ( m_jetCalibToolsDEV ) {
     ANA_CHECK( m_JetCalibrationTool_handle.setProperty("DEVmode", m_jetCalibToolsDEV));
@@ -191,7 +186,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   ANA_MSG_DEBUG("Retrieved tool: " << m_JetCalibrationTool_handle);
 
   // initialize jet tile correction tool
-  if(m_doJetTileCorr && !m_isMC){ // Jet Tile Correction should only be applied to data
+  if(m_doJetTileCorr && !isMC()){ // Jet Tile Correction should only be applied to data
     setToolName(m_JetTileCorrectionTool_handle);
     ANA_CHECK( m_JetTileCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JetTileCorrectionTool_handle.retrieve());
@@ -326,7 +321,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     // Instantiate the JER Smearing tool
     setToolName(m_JERSmearingTool_handle);
     ANA_CHECK( m_JERSmearingTool_handle.setProperty("JERTool", m_JERTool_handle.getHandle()));
-    ANA_CHECK( m_JERSmearingTool_handle.setProperty("isMC", m_isMC));
+    ANA_CHECK( m_JERSmearingTool_handle.setProperty("isMC", isMC()));
     ANA_CHECK( m_JERSmearingTool_handle.setProperty("ApplyNominalSmearing", m_JERApplyNominal));
     ANA_CHECK( m_JERSmearingTool_handle.setProperty("SystematicMode", (m_JERFullSys)?"Full":"Simple"));
     ANA_CHECK( m_JERSmearingTool_handle.setProperty("OutputLevel", msg().level() ));
@@ -431,7 +426,7 @@ EL::StatusCode JetCalibrator :: execute ()
     m_numObject++;
 
     //Set isBjet for JES Systematics
-    if(m_isMC && m_runSysts){
+    if(isMC() && m_runSysts){
 
       int this_TruthLabel = 0;
 
@@ -460,7 +455,7 @@ EL::StatusCode JetCalibrator :: execute ()
       return StatusCode::FAILURE;
     }
 
-    if(m_doJetTileCorr && !m_isMC){
+    if(m_doJetTileCorr && !isMC()){
       if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
         ANA_MSG_ERROR( "JetTileCorrection tool reported a CP::CorrectionCode::Error");
       }
