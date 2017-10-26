@@ -296,7 +296,7 @@ namespace HelperFunctions {
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return retrieve<T>(cont, name, event, store, msg()); }
   template <typename T>
-  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug) { msg() << MSG::WARNING << "retrieve<T>(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882" << endmsg; return retrieve<T>(cont, name, event, store, msg()); }
+  StatusCode __attribute__((deprecated("retrieve<T>(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882"))) retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug) { return retrieve<T>(cont, name, event, store, msg()); }
 
   /** @brief Return true if an arbitrary object from TStore / TEvent is available
     @param name  the name of the object to look up
