@@ -154,22 +154,22 @@ namespace xAH {
         xAOD::TStore* m_store = nullptr; //!
 
         // will try to determine if data or if MC
-        // returns: -1=unknown (could not determine), 0=data, 1=mc
+        // returns: 0=data, 1=mc
         /**
             @rst
-                Try to determine if we are running over data or MC.
+                Try to determine if we are running over data or MC. Throws an exception if
+		it cannot determine the type.
 
                 ============ =======
                 Return Value Meaning
                 ============ =======
-                -1           Unknown
                 0            Data
                 1            MC
                 ============ =======
 
             @endrst
          */
-        int isMC();
+        bool isMC();
 
         /**
             @rst
