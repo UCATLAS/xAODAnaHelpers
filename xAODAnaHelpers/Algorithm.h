@@ -160,7 +160,7 @@ namespace xAH {
                 Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isMC` can be used
 		to fix the return value. Otherwise the `EventInfo` object is queried.
 		
-		An exception is thrown if th type cannot be determined.
+		An exception is thrown if the type cannot be determined.
 
                 ============ =======
                 Return Value Meaning
