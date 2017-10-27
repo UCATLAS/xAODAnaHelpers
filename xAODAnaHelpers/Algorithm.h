@@ -154,22 +154,24 @@ namespace xAH {
         xAOD::TStore* m_store = nullptr; //!
 
         // will try to determine if data or if MC
-        // returns: -1=unknown (could not determine), 0=data, 1=mc
+        // returns: 0=data, 1=mc
         /**
             @rst
-                Try to determine if we are running over data or MC.
+                Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isMC` can be used
+		to fix the return value. Otherwise the `EventInfo` object is queried.
+		
+		An exception is thrown if the type cannot be determined.
 
                 ============ =======
                 Return Value Meaning
                 ============ =======
-                -1           Unknown
                 0            Data
                 1            MC
                 ============ =======
 
             @endrst
          */
-        int isMC();
+        bool isMC();
 
         /**
             @rst
