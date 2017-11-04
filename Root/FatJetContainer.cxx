@@ -74,6 +74,7 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_nZBosons  = new std::vector< int > ();
   }
 
+#ifndef USE_CMAKE
   if ( m_infoSwitch.m_VTags ) {
     m_WbosonTaggerMedium = new JetSubStructureUtils::BosonTag("medium", "smooth", "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Wtagging_MC15_Prerecommendations_20150809.dat", false, false);
     m_ZbosonTaggerMedium = new JetSubStructureUtils::BosonTag("medium", "smooth", "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Ztagging_MC15_Prerecommendations_20150809.dat", false, false);
@@ -87,6 +88,7 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_Wtag_tight  = new std::vector< int > ();
     m_Ztag_tight  = new std::vector< int > ();
   }
+#endif
 
   if( m_infoSwitch.m_trackJets ){
     std::string trkJetName = name;
@@ -168,6 +170,7 @@ FatJetContainer::~FatJetContainer()
     delete m_nZBosons;
   }
 
+#ifndef USE_CMAKE
   if ( m_infoSwitch.m_VTags ) {
     delete m_WbosonTaggerMedium;
     delete m_ZbosonTaggerMedium;
@@ -181,6 +184,7 @@ FatJetContainer::~FatJetContainer()
     delete m_Wtag_tight;
     delete m_Ztag_tight;
   }
+#endif
 
 
   if( m_infoSwitch.m_trackJets ){
@@ -258,6 +262,7 @@ void FatJetContainer::setTree(TTree *tree)
   }
 
 
+#ifndef USE_CMAKE
   if ( m_infoSwitch.m_VTags) {
     connectBranch< int >(tree, "Wtag_medium",  &m_Wtag_medium);
     connectBranch< int >(tree, "Ztag_medium",  &m_Ztag_medium);
@@ -265,6 +270,7 @@ void FatJetContainer::setTree(TTree *tree)
     connectBranch< int >(tree, "Wtag_tight",   &m_Wtag_tight);
     connectBranch< int >(tree, "Ztag_tight",   &m_Ztag_tight);
   }
+#endif
 
   if( m_infoSwitch.m_trackJets ){
     m_trkJets->JetContainer::setTree(tree, "MV2c10");
@@ -337,6 +343,7 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
     fatjet.nZBosons = m_nZBosons->at(idx);
   }
 
+#ifndef USE_CMAKE
   if(m_infoSwitch.m_VTags){
     fatjet.Wtag_medium = m_Wtag_medium->at(idx);
     fatjet.Ztag_medium = m_Ztag_medium->at(idx);
@@ -344,6 +351,7 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
     fatjet.Wtag_tight = m_Wtag_tight->at(idx);
     fatjet.Ztag_tight = m_Ztag_tight->at(idx);
   }
+#endif
 
 
   if( m_infoSwitch.m_trackJets ){
@@ -428,6 +436,7 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch< int >(tree, "nZBosons",       m_nZBosons);
   }
 
+#ifndef USE_CMAKE
   if(m_infoSwitch.m_VTags){
     setBranch< int >(tree, "Wtag_medium",       m_Wtag_medium);
     setBranch< int >(tree, "Ztag_medium",       m_Ztag_medium);
@@ -435,6 +444,7 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch< int >(tree, "Wtag_tight",       m_Wtag_tight);
     setBranch< int >(tree, "Ztag_tight",       m_Ztag_tight);
   }
+#endif
 
   if( m_infoSwitch.m_trackJets ){
     m_trkJets->setBranches(tree);
@@ -510,6 +520,7 @@ void FatJetContainer::clear()
     m_nZBosons->clear();
   }
 
+#ifndef USE_CMAKE
   if(m_infoSwitch.m_VTags){
     m_Wtag_medium->clear();
     m_Ztag_medium->clear();
@@ -517,6 +528,7 @@ void FatJetContainer::clear()
     m_Wtag_tight->clear();
     m_Ztag_tight->clear();
   }
+#endif
 
   if( m_infoSwitch.m_trackJets ){
     m_trkJets->clear();
@@ -706,6 +718,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
     }
   }
 
+#ifndef USE_CMAKE
   if(m_infoSwitch.m_VTags){
     int Wtag_pass_medium = m_WbosonTaggerMedium->result(*fatjet);
     int Ztag_pass_medium = m_ZbosonTaggerMedium->result(*fatjet);
@@ -717,6 +730,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
     m_Wtag_tight->push_back(Wtag_pass_tight);
     m_Ztag_tight->push_back(Ztag_pass_tight);
   }
+#endif
 
 
   //

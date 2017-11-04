@@ -14,6 +14,7 @@ env:
     - ABV_CM=21.2.4 ALLOWFAIL=false
     - ABV_CM=21.2.5 ALLOWFAIL=false
     - ABV_CM=21.2.6 ALLOWFAIL=false
+    - ABV_CM=21.2.7 ALLOWFAIL=false
 script:
   - envsubst '\$ABV_CM \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
   - docker build --build-arg ABV_CM=${ABV_CM}
