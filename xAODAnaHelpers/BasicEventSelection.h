@@ -77,6 +77,8 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_lumiCalcFileNames = "";
     /// @brief Comma separated list of filenames
     std::string m_PRWFileNames = "";
+    /// @brief Use Period Configuration or auto
+    std::string m_periodConfig = "auto";
 
     // Unprescaling data
     bool m_savePrescaleDataWeight = false;
