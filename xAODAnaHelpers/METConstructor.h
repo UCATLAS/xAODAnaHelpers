@@ -113,9 +113,6 @@ public:
 
 
 private:
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-
   // tools
   asg::AnaToolHandle<IMETMaker> m_metmaker_handle; //!
   asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle; //!
