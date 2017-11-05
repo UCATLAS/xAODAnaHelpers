@@ -70,8 +70,9 @@ bool xAH::Algorithm::isMC(){
     RCU_THROW_MSG( "eventType is not available for isMC() check.");
   }
 
-  // reached here, return 0 or 1 since we have all we need
-  return (static_cast<uint32_t>(eventType(*ei)) & xAOD::EventInfo::IS_SIMULATION);
+  // reached here, return True or False since we have all we need
+  m_isMC = (static_cast<uint32_t>(eventType(*ei)) & xAOD::EventInfo::IS_SIMULATION);
+  return m_isMC;
 }
 
 void xAH::Algorithm::registerInstance(){

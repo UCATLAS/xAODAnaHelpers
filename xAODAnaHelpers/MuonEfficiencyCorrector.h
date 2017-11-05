@@ -87,10 +87,6 @@ public:
   std::string   m_outputSystNamesTTVA = "MuonEfficiencyCorrector_TTVASyst";
 
 private:
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-
   int m_numEvent;         //!
   int m_numObject;        //!
 

@@ -274,9 +274,13 @@ namespace HelperFunctions {
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
     std::string funcName{"in retrieve<"+type_name<T>()+">(" + name + "): "};
+    if((event == NULL) && (store == NULL)){
+      msg << MSG::ERROR << funcName << "Both TEvent and TStore objects are null. Cannot retrieve anything." << endmsg;
+      return StatusCode::FAILURE;
+    }
     msg << MSG::DEBUG << funcName << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
-    if(store == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
-    if(event == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store == NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if((event == NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
     if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
       msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TStore" << endmsg;
