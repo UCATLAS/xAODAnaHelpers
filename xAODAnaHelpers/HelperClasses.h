@@ -430,6 +430,7 @@ namespace HelperClasses {
         m_onlineBSTool   onlineBSTool   exact
         m_charge         charge         exact
         m_vsLumiBlock    vsLumiBlock    exact
+        m_vsActMu        vsActMu        exact
         m_lumiB_runN     lumiB_runN     exact
         m_byAverageMu    byAverageMu    exact
         m_byEta          byEta          exact
@@ -493,6 +494,7 @@ namespace HelperClasses {
     bool m_charge;
     bool m_etaPhiMap;
     bool m_vsLumiBlock;
+    bool m_vsActMu;
     bool m_lumiB_runN;
     bool m_byEta;
     bool m_byAverageMu;
