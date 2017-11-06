@@ -202,7 +202,7 @@ namespace HelperClasses{
         m_PIDWPs.push_back(token.substr(4));
       } else if(isol_substr != std::string::npos){
         if(token.substr(5) == "NONE" || token == isol_keyword) m_isolWPs.push_back("");
-        else if(token != "isolation") m_isolWPs.push_back(token.substr(5));
+        else m_isolWPs.push_back(token.substr(5));
       } else if(trig_substr != std::string::npos){
         m_trigWPs.push_back(token.substr(5));
       }
