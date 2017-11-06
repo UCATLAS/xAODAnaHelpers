@@ -1823,6 +1823,13 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 	//m_vtx_offline_z                 ->Fill(jet->vtx_offline_z0          , eventWeight);
 	//m_vtx_online_z                 ->Fill(jet->vtx_online_z0          , eventWeight);
 
+
+	float vtxBkgDiffz0     = jet->vtx_online_bkg_z0  - jet->vtx_offline_z0;
+	m_vtxBkgDiffz0                 ->Fill(vtxBkgDiffz0          , eventWeight);
+	m_vtxBkgDiffz0_m               ->Fill(vtxBkgDiffz0          , eventWeight);
+	m_vtxBkgDiffz0_s               ->Fill(vtxBkgDiffz0          , eventWeight);
+
+
 	m_vtxDiffz0_s_vs_vtx_offline_z0->Fill(jet->vtx_offline_z0, vtxDiffz0, eventWeight);
 	m_vtxDiffz0_vs_vtx_offline_z0  ->Fill(jet->vtx_offline_z0, vtxDiffz0, eventWeight);
 	m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);

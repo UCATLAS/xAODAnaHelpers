@@ -107,6 +107,10 @@ namespace xAH {
       float vtx_online_x0;
       float vtx_online_y0;
       float vtx_online_z0;
+
+      float vtx_online_bkg_x0;
+      float vtx_online_bkg_y0;
+      float vtx_online_bkg_z0;
     
       float JetFitter_nVTX           ;
       float JetFitter_nSingleTracks  ;
