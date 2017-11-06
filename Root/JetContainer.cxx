@@ -843,6 +843,10 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<float>(tree,"vtx_online_x0",  &m_vtx_online_x0);
       connectBranch<float>(tree,"vtx_online_y0",  &m_vtx_online_y0);
       connectBranch<float>(tree,"vtx_online_z0",  &m_vtx_online_z0);
+
+      connectBranch<float>(tree,"vtx_online_bkg_x0",  &m_vtx_online_bkg_x0);
+      connectBranch<float>(tree,"vtx_online_bkg_y0",  &m_vtx_online_bkg_y0);
+      connectBranch<float>(tree,"vtx_online_bkg_z0",  &m_vtx_online_bkg_z0);
     }
 
   if(m_infoSwitch.m_jetFitterDetails)
@@ -1048,6 +1052,10 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.vtx_online_x0                     =m_vtx_online_x0                  ->at(idx);
       jet.vtx_online_y0                     =m_vtx_online_y0                  ->at(idx);
       jet.vtx_online_z0                     =m_vtx_online_z0                  ->at(idx);
+
+      jet.vtx_online_bkg_x0                     =m_vtx_online_bkg_x0                  ->at(idx);
+      jet.vtx_online_bkg_y0                     =m_vtx_online_bkg_y0                  ->at(idx);
+      jet.vtx_online_bkg_z0                     =m_vtx_online_bkg_z0                  ->at(idx);
 
     }
 
