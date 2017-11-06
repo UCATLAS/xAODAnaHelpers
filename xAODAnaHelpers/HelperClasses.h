@@ -310,7 +310,7 @@ namespace HelperClasses {
         m_effSF               effSF               exact
         m_PIDWPs[XYZ]         PID_XYZ             pattern
         m_isolWPs[""]         ISOL                exact
-        m_isolWPs[""]         ISOLNONE            exact
+        m_isolWPs[""]         ISOL_NONE           exact
         m_isolWPs[XYZ]        ISOL_XYZ            pattern
         m_trigWPs[XYZ]        TRIG_XYZ            pattern
         ===================== =================== =======
