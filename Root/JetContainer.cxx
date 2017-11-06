@@ -2686,7 +2686,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       float sv1_dR;         myBTag->variable<float>("SV1", "deltaR"      , sv1_dR );
 
       m_sv1_Lxy        ->push_back(sv1_Lxy        );
-      m_sv1_sig3d      ->push_back(sv1_sig3d        );
+      m_sv1_sig3d      ->push_back(sv1_sig3d      );
       m_sv1_L3d        ->push_back(sv1_L3d        );
       m_sv1_distmatlay ->push_back(sv1_distmatlay );
       m_sv1_dR         ->push_back(sv1_dR         );
