@@ -40,7 +40,6 @@ namespace xAH {
 
       float       m_trackJetPtCut;
       float       m_trackJetEtaCut;
-      std::string m_trackJetName;
 
     protected:
 
@@ -127,8 +126,8 @@ namespace xAH {
 #endif
 
       // Assocated Track Jets
-      std::vector< std::vector<unsigned int> >* m_trkJetsIdx;
-      xAH::JetContainer*  m_trkJets;
+      std::unordered_map<std::string, xAH::JetContainer*> m_trkJets;
+      std::unordered_map<std::string, std::vector<std::vector<unsigned int>>* > m_trkJetsIdx;
 
     };
 }

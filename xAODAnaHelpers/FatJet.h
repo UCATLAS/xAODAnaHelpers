@@ -71,7 +71,7 @@ namespace xAH {
       int Wtag_tight;
       int Ztag_tight;
 
-      std::vector<xAH::Jet> trkJets;
+      std::unordered_map<std::string, std::vector<xAH::Jet>> trkJets;
       
     };
 

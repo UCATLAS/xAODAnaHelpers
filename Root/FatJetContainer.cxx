@@ -90,18 +90,19 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
   }
 #endif
 
-  if( m_infoSwitch.m_trackJets ){
-    std::string trkJetName = name;
-    if( !suffix.empty() ){ trkJetName += "_"+suffix; }
-    trkJetName += "_"+m_infoSwitch.m_trackJetName;
+  for(const auto& trackJetName : m_infoSwitch.m_trackJetNames)
+    {
+      std::string trkJetName = name;
+      if( !suffix.empty() ){ trkJetName += "_"+suffix; }
+      trkJetName += "_"+trackJetName;
 #ifdef USE_CMAKE
-    m_trkJets = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_DL1rnn_HybBEff_60707785 jetBTag_DL1mu_HybBEff_60707785 jetBTag_DL1_HybBEff_60707785 jetBTag_MV2c10rnn_HybBEff_60707785 jetBTag_MV2c10mu_HybBEff_60707785 jetBTag_MV2c10_HybBEff_60707785", m_units, m_mc);
+      m_trkJets[trackJetName] = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_DL1rnn_HybBEff_60707785 jetBTag_DL1mu_HybBEff_60707785 jetBTag_DL1_HybBEff_60707785 jetBTag_MV2c10rnn_HybBEff_60707785 jetBTag_MV2c10mu_HybBEff_60707785 jetBTag_MV2c10_HybBEff_60707785", m_units, m_mc);
 #else
-    m_trkJets = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_MV2c10_FixedCutBEff_60707785", m_units, m_mc);
+      m_trkJets[trackJetName] = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_MV2c10_FixedCutBEff_60707785", m_units, m_mc);
 #endif
 
-    m_trkJetsIdx  = new std::vector<std::vector<unsigned int> > ();
-  }
+      m_trkJetsIdx[trackJetName] = new std::vector<std::vector<unsigned int> > ();
+    }
 
 }
 
@@ -186,10 +187,14 @@ FatJetContainer::~FatJetContainer()
   }
 #endif
 
-
-  if( m_infoSwitch.m_trackJets ){
-    delete m_trkJets;
-    delete m_trkJetsIdx;
+  if( !m_infoSwitch.m_trackJetNames.empty() ){
+    for(const auto& kv : m_trkJets)
+      {
+	delete m_trkJets   [kv.first];
+	delete m_trkJetsIdx[kv.first];
+      }
+    m_trkJets   .clear();
+    m_trkJetsIdx.clear();
   }
 
 }
@@ -272,10 +277,11 @@ void FatJetContainer::setTree(TTree *tree)
   }
 #endif
 
-  if( m_infoSwitch.m_trackJets ){
-    m_trkJets->JetContainer::setTree(tree, "MV2c10");
-    connectBranch< std::vector<unsigned int> >(tree, "trkJetsIdx",   &m_trkJetsIdx);
-  }
+  for(const auto& kv : m_trkJets)
+    {
+      m_trkJets[kv.first]->JetContainer::setTree(tree, "MV2c10");
+      connectBranch< std::vector<unsigned int> >(tree, "trkJetsIdx_"+kv.first, &m_trkJetsIdx[kv.first]);
+    }
 }
 
 void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
@@ -354,16 +360,17 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
 #endif
 
 
-  if( m_infoSwitch.m_trackJets ){
-    fatjet.trkJets.clear();
-
-    for(unsigned int iTrkJet : m_trkJetsIdx->at(idx)){
-      Jet thisTrkJet;
-      m_trkJets->updateParticle(iTrkJet,  thisTrkJet);
-      fatjet.trkJets.push_back(thisTrkJet);
+  for(const auto& kv : m_trkJets)
+    {
+      fatjet.trkJets[kv.first].clear();
+      std::vector<std::vector<unsigned int>> *trkJetsIdx=m_trkJetsIdx[kv.first];
+      for(unsigned int iTrkJet : trkJetsIdx->at(idx))
+	{
+	  Jet thisTrkJet;
+	  kv.second->updateParticle(iTrkJet, thisTrkJet);
+	  fatjet.trkJets[kv.first].push_back(thisTrkJet);
+	}
     }
-
-  }
 
   if(m_debug) std::cout << "leave FatJetContainer::updateParticle " << std::endl;
   return;
@@ -446,10 +453,11 @@ void FatJetContainer::setBranches(TTree *tree)
   }
 #endif
 
-  if( m_infoSwitch.m_trackJets ){
-    m_trkJets->setBranches(tree);
-    setBranch< std::vector<unsigned int> >(tree, "trkJetsIdx",       m_trkJetsIdx);
-  }
+  for(const auto& kv : m_trkJets)
+    {
+      kv.second->setBranches(tree);
+      setBranch< std::vector<unsigned int> >(tree, "trkJetsIdx_"+kv.first, m_trkJetsIdx[kv.first]);
+    }
 
   return;
 }
@@ -463,13 +471,13 @@ void FatJetContainer::clear()
   if ( m_infoSwitch.m_scales ) {
     m_JetConstitScaleMomentum_eta   ->clear();
     m_JetConstitScaleMomentum_phi   ->clear();
-    m_JetConstitScaleMomentum_m   ->clear();
+    m_JetConstitScaleMomentum_m     ->clear();
     m_JetConstitScaleMomentum_pt    ->clear();
 
-    m_JetEMScaleMomentum_eta    ->clear();
-    m_JetEMScaleMomentum_phi    ->clear();
-    m_JetEMScaleMomentum_m    ->clear();
-    m_JetEMScaleMomentum_pt   ->clear();
+    m_JetEMScaleMomentum_eta        ->clear();
+    m_JetEMScaleMomentum_phi        ->clear();
+    m_JetEMScaleMomentum_m          ->clear();
+    m_JetEMScaleMomentum_pt         ->clear();
   }
 
   if ( m_infoSwitch.m_area ) {
@@ -530,10 +538,11 @@ void FatJetContainer::clear()
   }
 #endif
 
-  if( m_infoSwitch.m_trackJets ){
-    m_trkJets->clear();
-    m_trkJetsIdx->clear();
-  }
+  for(const auto& kv : m_trkJets)
+    {
+      m_trkJets   [kv.first]->clear();
+      m_trkJetsIdx[kv.first]->clear();
+    }
 
   return;
 }
@@ -736,9 +745,9 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
   //
   // Associated track jets
   //
-  //if(
-  if( m_infoSwitch.m_trackJets ){
+  if( !m_infoSwitch.m_trackJetNames.empty() ){
 
+    // Find the fat jet parent
     const xAOD::Jet* fatjet_parent = 0;
 
     try{
@@ -759,20 +768,25 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       fatjet_parent = fatjet;
     }
 
+    // Associate the different track jet collections
     std::vector<const xAOD::Jet*> assotrkjets;
-    try{
-      assotrkjets = fatjet_parent->getAssociatedObjects<xAOD::Jet>(m_infoSwitch.m_trackJetName);
-    }
-    catch (...){
-      //Warning("execute()", "Unable to fetch \"%s\" link from leading calo-jet", m_infoSwitch.m_trackJetName.data());
-    }
+    for(const auto& trackJetName : m_infoSwitch.m_trackJetNames)
+      {
+	try{
+	  assotrkjets = fatjet_parent->getAssociatedObjects<xAOD::Jet>(trackJetName);
+	}
+	catch (...){
+	  //Warning("execute()", "Unable to fetch \"%s\" link from leading calo-jet", trackJetName.data());
+	}
 
-    m_trkJetsIdx->push_back(std::vector<unsigned int>());
-    for(auto TrackJet : assotrkjets){
-      if(!SelectTrackJet(TrackJet)) continue;
-      m_trkJetsIdx->back().push_back(m_trkJets->m_n);
-      m_trkJets->FillJet(TrackJet, 0 , 0);
-    }
+	std::vector<unsigned int> trkJetsIdx;
+	for(auto TrackJet : assotrkjets){
+	  if(!SelectTrackJet(TrackJet)) continue;
+	  trkJetsIdx.push_back(m_trkJets[trackJetName]->m_n);
+	  m_trkJets[trackJetName]->FillJet(TrackJet, 0 , 0);
+	}
+	m_trkJetsIdx[trackJetName]->push_back(trkJetsIdx);
+      }
   }
 
   return;

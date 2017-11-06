@@ -220,6 +220,8 @@ namespace HelperClasses{
   }
 
   void JetInfoSwitch::initialize(){
+    std::string tmpConfigStr; // temporary config string used to extract multiple values
+
     m_substructure  = has_exact("substructure");
     m_bosonCount    = has_exact("bosonCount");
     m_VTags         = has_exact("VTags");
@@ -269,23 +271,19 @@ namespace HelperClasses{
     }
 
 
+    m_trackJetNames.clear();
     if(has_match("trackJetName")){
-      m_trackJets       = true;
       std::string input(m_configStr);
       // erase everything before the interesting string
-      input.erase( 0, input.find("trackJetName_") );
-      // erase everything after the interesting string
-      // only if there is something after the string
-      if( input.find(" ") != std::string::npos ) {
-        input.erase( input.find_first_of(" "), input.size() );
-      }
-      // remove trackJetName_ to just leave the tack name
-      input.erase(0,13);
+      input.erase( 0, input.find("trackJetName") );
+      input.erase( input.find(" "), std::string::npos );
+      input.erase( 0, 13 );
+      std::cout << "INPUT " << input << std::endl;
 
-      m_trackJetName = input;
-    }else{
-      m_trackJets            = false;
-      m_trackJetName         = "";
+      std::stringstream ss(input);
+      std::string s;
+      while(std::getline(ss, s, '_'))
+	m_trackJetNames.push_back(s);
     }
 
 
@@ -375,7 +373,7 @@ namespace HelperClasses{
     } // sfFTagHyb
 
     m_jetBTag.clear();
-    std::string tmpConfigStr(m_configStr);
+    tmpConfigStr=std::string(m_configStr);
     while( tmpConfigStr.find("jetBTag") != std::string::npos ) { // jetBTag
       // erase everything before the interesting string
       tmpConfigStr.erase( 0, tmpConfigStr.find("jetBTag") );

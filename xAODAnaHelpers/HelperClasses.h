@@ -484,7 +484,6 @@ namespace HelperClasses {
     bool m_svDetails;
     bool m_ipDetails;
     bool m_tracksInJet;
-    bool m_trackJets;
     bool m_hltVtxComp;
     bool m_onlineBS;
     bool m_onlineBSTool;
@@ -496,13 +495,13 @@ namespace HelperClasses {
     bool m_byAverageMu;
     bool m_area;
     bool m_JVC;
-    std::string      m_trackName;
-    std::string      m_trackJetName;
-    std::string      m_sfJVTName;
-    std::string      m_sffJVTName;
-    std::vector<int> m_sfFTagFix;
-    std::vector<int> m_sfFTagFlt;
-    std::vector<int> m_sfFTagHyb;
+    std::string              m_trackName;
+    std::vector<std::string> m_trackJetNames;
+    std::string              m_sfJVTName;
+    std::string              m_sffJVTName;
+    std::vector<int>         m_sfFTagFix;
+    std::vector<int>         m_sfFTagFlt;
+    std::vector<int>         m_sfFTagHyb;
     std::map<std::string,std::vector<std::pair<std::string,uint>>> m_jetBTag;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~JetInfoSwitch() {}
