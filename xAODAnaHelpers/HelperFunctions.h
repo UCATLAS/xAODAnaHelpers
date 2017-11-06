@@ -65,7 +65,7 @@ namespace HelperFunctions {
 
     Source: http://stackoverflow.com/questions/18972258/index-of-nth-occurrence-of-the-string
   */
-  std::size_t string_pos( const std::string& inputstr, const char& occurence, int n_occurencies );
+  std::size_t string_pos( const std::string& haystack, const std::string& needle, unsigned int N );
 
   /**
     Function which returns the WP for ISO/ID from a config file.
