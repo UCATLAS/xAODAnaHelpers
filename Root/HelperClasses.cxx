@@ -278,7 +278,6 @@ namespace HelperClasses{
       input.erase( 0, input.find("trackJetName") );
       input.erase( input.find(" "), std::string::npos );
       input.erase( 0, 13 );
-      std::cout << "INPUT " << input << std::endl;
 
       std::stringstream ss(input);
       std::string s;
