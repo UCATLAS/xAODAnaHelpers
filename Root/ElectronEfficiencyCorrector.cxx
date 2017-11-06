@@ -205,7 +205,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
 
-    ANA_MSG_INFO("ISOLATION wp: " << m_Iso_WP << "\n ID wp (for isolation): " << m_IsoPID_WP);
+    ANA_MSG_INFO("Working Points");
+    ANA_MSG_INFO("\tISOLATION wp: " << m_Iso_WP);
+    ANA_MSG_INFO("\tID wp (for isolation): " << m_IsoPID_WP);
 
     m_IsoEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Iso_" + m_IsoPID_WP + "_isol" + m_Iso_WP;
 
@@ -315,7 +317,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       return EL::StatusCode::FAILURE;
     }
 
-    ANA_MSG_INFO("Trigger ISOLATION wp: " << m_WorkingPointIsoTrig << "\n Trigger ID wp: " << m_WorkingPointIDTrig);
+    ANA_MSG_INFO("Working Points");
+    ANA_MSG_INFO("\tTrigger ISOLATION wp: " << m_WorkingPointIsoTrig);
+    ANA_MSG_INFO("\tTrigger ID wp: " << m_WorkingPointIDTrig);
+    ANA_MSG_INFO("\tTrigger TRIG wp: " << m_WorkingPointTrigTrig);
 
     m_TrigEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_Trig_" + m_WorkingPointTrigTrig + "_" + m_WorkingPointIDTrig;
     if ( !m_WorkingPointIsoTrig.empty() ) {
@@ -333,6 +338,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("CorrectionFileNameList",inputFilesTrig));
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",sim_flav));
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("CorrelationModel",m_correlationModel));
+      ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("OutputLevel",msg().level()));
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->initialize());
     }
 
