@@ -756,6 +756,22 @@ EL::StatusCode BasicEventSelection :: execute ()
       }
   }
 
+  if ( m_actualMuMin > 0 ) {
+      // apply minimum pile-up cut
+      if ( eventInfo->actualInteractionsPerCrossing() < m_actualMuMin ) { // veto event
+          wk()->skipEvent();
+          return EL::StatusCode::SUCCESS;
+      }
+  }
+
+  if ( m_actualMuMax > 0 ) {
+      // apply maximum pile-up cut
+      if ( eventInfo->actualInteractionsPerCrossing() > m_actualMuMax ) { // veto event
+          wk()->skipEvent();
+          return EL::StatusCode::SUCCESS;
+      }
+  }
+
 
   //------------------------------------------------------
   // If data, check if event passes GRL and event cleaning
