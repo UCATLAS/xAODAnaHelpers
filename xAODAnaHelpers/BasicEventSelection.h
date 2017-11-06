@@ -80,9 +80,9 @@ class BasicEventSelection : public xAH::Algorithm
     /// @brief Use Period Configuration or auto
     std::string m_periodConfig = "auto";
 
-    /// @brief The minimum pile-up allowed
+    /// @brief The minimum threshold for <tt>EventInfo::actualInteractionsPerCrossing()</tt>
     int m_actualMuMin = -1; // Default to off
-    /// @brief The maximum pile-up allowed
+    /// @brief The maximum threshold for <tt>EventInfo::actualInteractionsPerCrossing()</tt>
     int m_actualMuMax = -1; // Default to off
 
     // Unprescaling data
