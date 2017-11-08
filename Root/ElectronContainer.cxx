@@ -996,11 +996,11 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
         for (auto& trig : m_infoSwitch.m_trigWPs) {
 
-          std::string TrigSF = "ElTrigEff_SF_syst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
+          std::string TrigSF = "ElTrigEff_SF_syst_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "");
           accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigSF ) ) );
           safeSFVecFill<float, xAOD::Electron>( elec, accTrigSF.at( trig+PID+isol ), &m_TrigEff_SF->at( trig+PID+isol ), junkSF );
 
-          std::string TrigEFF = "ElTrigMCEff_syst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
+          std::string TrigEFF = "ElTrigMCEff_syst_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "");
           accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigEFF ) ) );
           safeSFVecFill<float, xAOD::Electron>( elec, accTrigEFF.at( trig+PID+isol ), &m_TrigMCEff->at( trig+PID+isol ), junkSF );
 
