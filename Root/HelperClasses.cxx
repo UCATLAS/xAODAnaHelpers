@@ -134,7 +134,7 @@ namespace HelperClasses{
     m_numLeading    = 0;
     for(auto configDetail : m_configDetails)
       {
-	if( configDetail.compare(0,8,"NLeading")==0) 
+	if( configDetail.compare(0,8,"NLeading")==0)
 	  {
 	    m_numLeading = std::atoi( configDetail.substr(8, std::string::npos).c_str() );
 	    break;
@@ -154,25 +154,25 @@ namespace HelperClasses{
     m_effSF         = has_exact("effSF");
     m_energyLoss    = has_exact("energyLoss");
     m_promptlepton  = has_exact("promptlepton");
-   
-    // working points combinations for trigger corrections 
+
+    // working points combinations for trigger corrections
     std::string token;
     std::string reco_prfx = "Reco";
     std::string isol_prfx = "Iso";
     std::string trig_prfx = "HLT";
-    
+
     std::istringstream ss(m_configStr);
     while ( std::getline(ss, token, ' ') ) {
       if ( token.compare( 0, reco_prfx.length(), reco_prfx ) == 0 ) { m_recoWPs.push_back(token); }
       if ( token.compare( 0, isol_prfx.length(), isol_prfx ) == 0 ) { m_isolWPs.push_back(token); }
       if ( token.compare( 0, trig_prfx.length(), trig_prfx ) == 0 ) { m_trigWPs.push_back(token); }
-    }  
-    
+    }
+
     m_recoEff_sysNames = has_exact("recoEff_sysNames");
     m_isoEff_sysNames  = has_exact("isoEff_sysNames");
-    m_trigEff_sysNames = has_exact("trigEff_sysNames"); 
-    m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames"); 
-    
+    m_trigEff_sysNames = has_exact("trigEff_sysNames");
+    m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames");
+
   }
 
   void ElectronInfoSwitch::initialize(){
@@ -187,28 +187,26 @@ namespace HelperClasses{
     m_promptlepton  = has_exact("promptlepton");
     // working points for scale-factors
 
-    // working points combinations for trigger corrections 
+    // working points combinations for trigger corrections
     std::string token;
-    std::string PID_keyword = "LLH";
-    std::string isol_keyword = "isol";
-    std::string trig_keyword1 = "DI_E_";
-    std::string trig_keyword2 = "MULTI_L_";
-    std::string trig_keyword3 = "SINGLE_E_";
-    std::string trig_keyword4 = "TRI_E_";
-    
+    std::string pid_keyword = "PID_";
+    std::string isol_keyword = "ISOL_";
+    std::string trig_keyword = "TRIG_";
+
     std::istringstream ss(m_configStr);
     while ( std::getline(ss, token, ' ') ) {
-     if ( token.find(PID_keyword ) != std::string::npos ) { m_PIDWPs.push_back(token); }
-     if ( token.find("isolNoRequirement") != std::string::npos ) { m_isolWPs.push_back(""); }
-     if ( (token.compare( 0, isol_keyword.length(), isol_keyword ) == 0) && 
-           token!="isolation" && 
-           token!="isolNoRequirement" ) { m_isolWPs.push_back(token); }
-     if ( (token.find(trig_keyword1 ) != std::string::npos) ||
-          (token.find(trig_keyword2 ) != std::string::npos) ||
-          (token.find(trig_keyword3 ) != std::string::npos) ||
-          (token.find(trig_keyword4 ) != std::string::npos)  ) { m_trigWPs.push_back(token); }
-   } 
-
+      auto pid_substr = token.find(pid_keyword);
+      auto isol_substr = token.find(isol_keyword);
+      auto trig_substr = token.find(trig_keyword);
+      if( pid_substr != std::string::npos ){
+        m_PIDWPs.push_back(token.substr(4));
+      } else if(isol_substr != std::string::npos){
+        if(token.substr(5) == "NONE" || token == isol_keyword) m_isolWPs.push_back("");
+        else m_isolWPs.push_back(token.substr(5));
+      } else if(trig_substr != std::string::npos){
+        m_trigWPs.push_back(token.substr(5));
+      }
+    }
   }
 
   void PhotonInfoSwitch::initialize(){
@@ -286,11 +284,11 @@ namespace HelperClasses{
     }
 
 
-    m_hltVtxComp          = has_exact("hltVtxComp");    
-    m_onlineBS            = has_exact("onlineBS");    
+    m_hltVtxComp          = has_exact("hltVtxComp");
+    m_onlineBS            = has_exact("onlineBS");
     m_onlineBSTool        = has_exact("onlineBSTool");
 
-    
+
     m_charge              = has_exact("charge");
     m_etaPhiMap           = has_exact("etaPhiMap");
     m_byAverageMu         = has_exact("byAverageMu");

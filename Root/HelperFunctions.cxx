@@ -477,7 +477,7 @@ void HelperFunctions::writeSystematicsListHist( const std::vector< CP::Systemati
   }
 
   if (!file->Get(folderName.c_str())) {
-    file->mkdir(folderName.c_str());  
+    file->mkdir(folderName.c_str());
   }
   file->cd(folderName.c_str());
 
@@ -501,74 +501,72 @@ float HelperFunctions::dPhi(float phi1, float phi2)
 }
 
 
-std::size_t HelperFunctions::string_pos( const std::string& inputstr, const char& occurence, int n_occurencies )
+std::size_t HelperFunctions::string_pos( const std::string& haystack, const std::string& needle, unsigned int N )
 {
-
-  std::string read("");
-  std::string cache(inputstr);
-
-  for ( int i(1); i < n_occurencies+1; ++i ) {
-    std::size_t found = cache.rfind(occurence);
-    read += cache.substr(found);
-    cache.erase(found);
-    if ( i == n_occurencies ) { return ( inputstr.size() - read.size() ) + 1; }
+  if( N == 0 ) return std::string::npos;
+  std::size_t pos, from = 0;
+  for(unsigned i=0; i<N; i++){
+    pos = haystack.find(needle, from);
+    if( pos == std::string::npos ) break;
+    from = pos + 1;
   }
-  return std::string::npos;
+  return pos;
 }
 
 
 std::string HelperFunctions::parse_wp( const std::string& type, const std::string& config_name, MsgStream& msg )
 {
-  msg.setName(msg.name()+".parse_wp");
-
+  std::string funcName{"in parse_wp(): "};
   std::string wp("");
+  // let's split the path up into pieces we understand
+  std::size_t last_path = config_name.find_last_of("/\\");
+  std::string basename = config_name.substr(last_path + 1);
+  std::string dirpath = config_name.substr(0, last_path);
+  std::string dirname = dirpath.substr(dirpath.find_last_of("/\\") + 1);
+  // the path we search on
+  std::string path = dirname + "/" + basename;
+
+  std::size_t found_substr;
+  // for string_pos
+  std::string needle = ".";
+
+  msg << MSG::INFO << funcName << type << " " << path << endmsg;
 
   std::size_t init;
   std::size_t end;
 
   if ( type.compare("ISO") == 0 ) {
+    found_substr = path.find("_isol");
+    if ( found_substr == std::string::npos ) { return wp; }
 
-    std::size_t found_iso = config_name.find("_isol");
-
-    // Return empty string if no isolation in config name
-
-    if ( found_iso == std::string::npos ) { return wp; }
-
-    init = found_iso + 5;
-    end  = config_name.find(".root");
+    init = found_substr + 5;
+    end  = path.find(".root");
 
   } else if ( type.compare("ID") == 0 ) {
+    found_substr = path.find("LLH");
+    if ( found_substr == std::string::npos ) { return wp; }
 
-    std::size_t found_ID = config_name.find("LLH");
-
-    // Return empty string if no LLH in config name
-
-    if ( found_ID == std::string::npos ) { return wp; }
-
-    init = string_pos( config_name, '.', 2 );
-    end  = found_ID;
+    init = string_pos( path, needle, 2 ) + 1;
+    end  = found_substr + 3;
 
   } else if ( type.compare("TRIG") == 0 ) {
+    found_substr = path.find("trigger");
+    if ( found_substr == std::string::npos ) { return wp; }
 
-    std::size_t found_trigger = config_name.find("trigger");
-
-    // Return empty string if no LLH in config name
-
-    if ( found_trigger == std::string::npos ) { return wp; }
-
-    init = string_pos( config_name, '.', 3 );
-    end  = string_pos( config_name, '.', 2 ) - 1;
+    init = string_pos( path, needle, 1 ) + 1;
+    end  = string_pos( path, needle, 2 );
 
   } else {
-
-    msg << MSG::WARNING << "WP type can be either 'ISO' or 'ID'. Please check passed parameters of this function. Returning empty WP." << endmsg;
+    msg << MSG::WARNING << funcName << "WP type can be either 'ISO' or 'ID'. Please check passed parameters of this function. Returning empty WP." << endmsg;
     return wp;
-
   }
 
-  wp = config_name.substr( init, (end - init) );
+  if(end == std::string::npos)
+    wp = path.substr( init );
+  else
+    wp = path.substr( init, (end - init) );
 
-  if ( type.compare("ID") == 0 ) { wp += "LLH"; }
+  msg << MSG::INFO << funcName << type << " (init, end)=(" << init << "," << end << ") " << wp << endmsg;
 
   return wp;
 }
