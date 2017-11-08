@@ -296,6 +296,7 @@ namespace HelperClasses{
     m_byAverageMu         = has_exact("byAverageMu");
     m_byEta               = has_exact("byEta");
     m_vsLumiBlock         = has_exact("vsLumiBlock");
+    m_vsActualMu          = has_exact("vsActualMu");
     m_lumiB_runN          = has_exact("lumiB_runN");
 
     m_sfJVTName           = get_working_point("sfJVT");

@@ -216,15 +216,23 @@ StatusCode JetHists::initialize() {
     //m_MV2           = book(m_name, "MV2",               m_titlePrefix+" jet MV2"          , 100,   -1  ,  1);
     //m_IP3DvsMV2c20  = book(m_name, "IP3DvsMV2c20",      m_titlePrefix+" jet MV2c20"       , 100,   -1  ,  1,
 
+    if(m_infoSwitch->m_vsActualMu){
+      m_frac_MV240_vs_actMu  = book(m_name, "frac_MV2c2040_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2040", 0, 1);
+      m_frac_MV250_vs_actMu  = book(m_name, "frac_MV2c2050_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2050", 0, 1);
+      m_frac_MV260_vs_actMu  = book(m_name, "frac_MV2c2060_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2060", 0, 1);
+      m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c2070_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2070", 0, 1);
+      m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c2077_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2077", 0, 1);
+      m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c2085_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2085", 0, 1);
+
+    }
 
     if(m_infoSwitch->m_vsLumiBlock){
-
-      m_frac_MV2c2040_vs_lBlock  = book(m_name, "frac_MV2c2040_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2040", 0, 1);
-      m_frac_MV2c2050_vs_lBlock  = book(m_name, "frac_MV2c2050_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2050", 0, 1);
-      m_frac_MV2c2060_vs_lBlock  = book(m_name, "frac_MV2c2060_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2060", 0, 1);
-      m_frac_MV2c2070_vs_lBlock  = book(m_name, "frac_MV2c2070_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2070", 0, 1);
-      m_frac_MV2c2077_vs_lBlock  = book(m_name, "frac_MV2c2077_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2077", 0, 1);
-      m_frac_MV2c2085_vs_lBlock  = book(m_name, "frac_MV2c2085_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2085", 0, 1);
+      m_frac_MV240_vs_lBlock  = book(m_name, "frac_MV2c2040_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2040", 0, 1);
+      m_frac_MV250_vs_lBlock  = book(m_name, "frac_MV2c2050_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2050", 0, 1);
+      m_frac_MV260_vs_lBlock  = book(m_name, "frac_MV2c2060_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2060", 0, 1);
+      m_frac_MV270_vs_lBlock  = book(m_name, "frac_MV2c2070_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2070", 0, 1);
+      m_frac_MV277_vs_lBlock  = book(m_name, "frac_MV2c2077_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2077", 0, 1);
+      m_frac_MV285_vs_lBlock  = book(m_name, "frac_MV2c2085_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2085", 0, 1);
     }
   }
 
@@ -967,9 +975,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     m_MV2c20   ->  Fill( MV2c20, eventWeight );
     m_MV2c20_l ->  Fill( MV2c20, eventWeight );
 
-    if(m_infoSwitch->m_vsLumiBlock){
+    if(m_infoSwitch->m_vsLumiBlock || m_infoSwitch->m_vsActualMu){
 
-      uint32_t lumiBlock = eventInfo->lumiBlock();
 
       bool passMV2c1040 = (MV2c10 > 0.975);
       bool passMV2c1050 = (MV2c10 > 0.95);
@@ -989,13 +996,29 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
       }
 
-      m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c1040,  eventWeight);
-      m_frac_MV2c2050_vs_lBlock  -> Fill(lumiBlock, passMV2c1050,  eventWeight);
-      m_frac_MV2c2060_vs_lBlock  -> Fill(lumiBlock, passMV2c1060,  eventWeight);
-      m_frac_MV2c2070_vs_lBlock  -> Fill(lumiBlock, passMV2c1070,  eventWeight);
-      m_frac_MV2c2077_vs_lBlock  -> Fill(lumiBlock, passMV2c1077,  eventWeight);
-      m_frac_MV2c2085_vs_lBlock  -> Fill(lumiBlock, passMV2c1085,  eventWeight);
 
+      if(m_infoSwitch->m_vsLumiBlock){
+	uint32_t lumiBlock = eventInfo->lumiBlock();
+
+	m_frac_MV240_vs_lBlock  -> Fill(lumiBlock, passMV2c1040,  eventWeight);
+	m_frac_MV250_vs_lBlock  -> Fill(lumiBlock, passMV2c1050,  eventWeight);
+	m_frac_MV260_vs_lBlock  -> Fill(lumiBlock, passMV2c1060,  eventWeight);
+	m_frac_MV270_vs_lBlock  -> Fill(lumiBlock, passMV2c1070,  eventWeight);
+	m_frac_MV277_vs_lBlock  -> Fill(lumiBlock, passMV2c1077,  eventWeight);
+	m_frac_MV285_vs_lBlock  -> Fill(lumiBlock, passMV2c1085,  eventWeight);
+      }
+
+
+      if(m_infoSwitch->m_vsActualMu){
+	float actualMu = eventInfo->actualInteractionsPerCrossing();
+
+	m_frac_MV240_vs_actMu  -> Fill(actualMu, passMV2c1040,  eventWeight);
+	m_frac_MV250_vs_actMu  -> Fill(actualMu, passMV2c1050,  eventWeight);
+	m_frac_MV260_vs_actMu  -> Fill(actualMu, passMV2c1060,  eventWeight);
+	m_frac_MV270_vs_actMu  -> Fill(actualMu, passMV2c1070,  eventWeight);
+	m_frac_MV277_vs_actMu  -> Fill(actualMu, passMV2c1077,  eventWeight);
+	m_frac_MV285_vs_actMu  -> Fill(actualMu, passMV2c1085,  eventWeight);
+      }
 
     }
 
@@ -1691,9 +1714,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_MV2c20_l                  ->Fill(jet->MV2c20                , eventWeight);
       //      h_MV2                       ->Fill(jet->MV2                  , eventWeight);
 
-      if(m_infoSwitch->m_vsLumiBlock && eventInfo){
-
-	uint32_t lumiBlock = eventInfo->m_lumiBlock;
+      if((m_infoSwitch->m_vsLumiBlock || m_infoSwitch->m_vsActualMu) && eventInfo){
 
 	bool passMV2c1040 = (MV2c10 > 0.975);
 	bool passMV2c1050 = (MV2c10 > 0.95);
@@ -1713,15 +1734,30 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 	  
 	}
 
-	m_frac_MV2c2040_vs_lBlock  -> Fill(lumiBlock, passMV2c1040,  eventWeight);
-	m_frac_MV2c2050_vs_lBlock  -> Fill(lumiBlock, passMV2c1050,  eventWeight);
-	m_frac_MV2c2060_vs_lBlock  -> Fill(lumiBlock, passMV2c1060,  eventWeight);
-	m_frac_MV2c2070_vs_lBlock  -> Fill(lumiBlock, passMV2c1070,  eventWeight);
-	m_frac_MV2c2077_vs_lBlock  -> Fill(lumiBlock, passMV2c1077,  eventWeight);
-	m_frac_MV2c2085_vs_lBlock  -> Fill(lumiBlock, passMV2c1085,  eventWeight);
+	if(m_infoSwitch->m_vsLumiBlock){
+	  uint32_t lumiBlock = eventInfo->m_lumiBlock;
+	  
+	  m_frac_MV240_vs_lBlock  -> Fill(lumiBlock, passMV2c1040,  eventWeight);
+	  m_frac_MV250_vs_lBlock  -> Fill(lumiBlock, passMV2c1050,  eventWeight);
+	  m_frac_MV260_vs_lBlock  -> Fill(lumiBlock, passMV2c1060,  eventWeight);
+	  m_frac_MV270_vs_lBlock  -> Fill(lumiBlock, passMV2c1070,  eventWeight);
+	  m_frac_MV277_vs_lBlock  -> Fill(lumiBlock, passMV2c1077,  eventWeight);
+	  m_frac_MV285_vs_lBlock  -> Fill(lumiBlock, passMV2c1085,  eventWeight);
+	}
 
+	if(m_infoSwitch->m_vsActualMu){
+	  float actualMu = eventInfo->m_actualMu;
+
+	  m_frac_MV240_vs_actMu  -> Fill(actualMu, passMV2c1040,  eventWeight);
+	  m_frac_MV250_vs_actMu  -> Fill(actualMu, passMV2c1050,  eventWeight);
+	  m_frac_MV260_vs_actMu  -> Fill(actualMu, passMV2c1060,  eventWeight);
+	  m_frac_MV270_vs_actMu  -> Fill(actualMu, passMV2c1070,  eventWeight);
+	  m_frac_MV277_vs_actMu  -> Fill(actualMu, passMV2c1077,  eventWeight);
+	  m_frac_MV285_vs_actMu  -> Fill(actualMu, passMV2c1085,  eventWeight);
+	}
 
       }
+
 
       m_COMB                      ->Fill(jet->SV1IP3D              , eventWeight);
       //m_JetFitter               ->Fill(jet->JetFitter            , eventWeight);
