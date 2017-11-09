@@ -12,7 +12,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 {
   // rapidity
   if(m_infoSwitch.m_rapidity) {
-    m_rapidity                    =new std::vector<float>();
+    m_rapidity                  =new std::vector<float>();
   }
 
   // clean
@@ -170,15 +170,14 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_constituent_e          = new  std::vector< std::vector<float> > ();
   }
 
-  // flavTag
-  if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
+  // flavorTag
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
 
     //m_MV1                       =new std::vector<float>();
     m_MV2c00                    =new std::vector<float>();
     m_MV2c10                    =new std::vector<float>();
     m_MV2c20                    =new std::vector<float>();
     m_MV2c100                   =new std::vector<float>();
-    m_MV2                       =new std::vector<float>();
     m_HadronConeExclTruthLabelID=new std::vector<int>();
 
     // Jet Fitter
@@ -268,8 +267,8 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
   }
 
-  //  flavTagHLT
-  if( m_infoSwitch.m_flavTagHLT  ) {
+  //  flavorTagHLT
+  if( m_infoSwitch.m_flavorTagHLT  ) {
     m_vtxOnlineValid     = new  std::vector<float>();
     m_vtxHadDummy        = new  std::vector<float>();
 
@@ -556,12 +555,11 @@ JetContainer::~JetContainer()
   }
 
 
-  // flavTag
-  if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
-    // flavTag
+  // flavorTag
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
+    // flavorTag
 
     //delete m_MV1;
-    delete m_MV2;
     delete m_MV2c00;
     delete m_MV2c10;
     delete m_MV2c20;
@@ -655,8 +653,8 @@ JetContainer::~JetContainer()
 
   }
 
-    //  flavTagHLT
-  if( m_infoSwitch.m_flavTagHLT  ) {
+    //  flavorTagHLT
+  if( m_infoSwitch.m_flavorTagHLT  ) {
     delete m_vtxOnlineValid     ;
     delete m_vtxHadDummy        ;
     delete m_bs_online_vx       ;
@@ -740,11 +738,6 @@ JetContainer::~JetContainer()
 
 void JetContainer::setTree(TTree *tree)
 {
-  JetContainer::setTree(tree, "");
-}
-
-void JetContainer::setTree(TTree *tree, const std::string& tagger)
-{
   //
   // Connect branches
   ParticleContainer::setTree(tree);
@@ -816,20 +809,16 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<double>(tree,"JetVertexCharge_discriminant", &m_JetVertexCharge_discriminant);
     }
 
-  if(m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT)
+  if(m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT)
     {
       connectBranch<float>(tree,"MV2c00",               &m_MV2c00);
       connectBranch<float>(tree,"MV2c10",               &m_MV2c10);
       connectBranch<float>(tree,"MV2c20",               &m_MV2c20);
       connectBranch<float>(tree,"MV2c100",              &m_MV2c100);
       connectBranch<int>  (tree,"HadronConeExclTruthLabelID",&m_HadronConeExclTruthLabelID);
-
-      if(tagger == "MV2c20")  m_MV2 = m_MV2c20;
-      if(tagger == "MV2c10")  m_MV2 = m_MV2c10;
-
     }
 
-  if(m_infoSwitch.m_flavTagHLT)
+  if(m_infoSwitch.m_flavorTagHLT)
     {
       connectBranch<float>(tree,"vtxHadDummy",    &m_vtxHadDummy);
       connectBranch<float>(tree,"bs_online_vx",   &m_bs_online_vx);
@@ -1024,23 +1013,22 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.JVC = m_JetVertexCharge_discriminant->at(idx);
   }
 
-  if(m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT)
+  if(m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT)
     {
-      if(m_debug) std::cout << "updating flavTag " << std::endl;
+      if(m_debug) std::cout << "updating flavorTag " << std::endl;
       jet.MV2c00                    =m_MV2c00               ->at(idx);
       jet.MV2c10                    =m_MV2c10               ->at(idx);
       jet.MV2c20                    =m_MV2c20               ->at(idx);
       jet.MV2c100                   =m_MV2c100              ->at(idx);
-      jet.MV2                       =m_MV2                  ->at(idx);
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
-      if(m_debug) std::cout << "leave flavTag " << std::endl;
+      if(m_debug) std::cout << "leave flavorTag " << std::endl;
     }
 
 
-  if(m_infoSwitch.m_flavTagHLT)
+  if(m_infoSwitch.m_flavorTagHLT)
     {
-      if(m_debug) std::cout << "updating flavTagHLT " << std::endl;
+      if(m_debug) std::cout << "updating flavorTagHLT " << std::endl;
       jet.bs_online_vx                      =m_bs_online_vx                  ->at(idx);
       jet.bs_online_vy                      =m_bs_online_vy                  ->at(idx);
       jet.bs_online_vz                      =m_bs_online_vz                  ->at(idx);
@@ -1568,15 +1556,14 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<std::vector<float> >(tree,"constituent_e",      m_constituent_e     );
   }
 
-  if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
 
-    setBranch<float>(tree,"MV2c00",        m_MV2c00);
-    setBranch<float>(tree,"MV2c10",        m_MV2c10);
-    setBranch<float>(tree,"MV2c20",    m_MV2c20);
-    setBranch<float>(tree,"MV2c100",    m_MV2c100);
+    setBranch<float>(tree,"MV2c00",   m_MV2c00);
+    setBranch<float>(tree,"MV2c10",   m_MV2c10);
+    setBranch<float>(tree,"MV2c20",   m_MV2c20);
+    setBranch<float>(tree,"MV2c100",  m_MV2c100);
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
-
 
     if( m_infoSwitch.m_jetFitterDetails){
 
@@ -1665,7 +1652,7 @@ void JetContainer::setBranches(TTree *tree)
     }
   }
 
-  if( m_infoSwitch.m_flavTagHLT  ) {
+  if( m_infoSwitch.m_flavorTagHLT  ) {
 
     setBranch<float>(tree,"vtxOnlineValid",m_vtxOnlineValid);
     setBranch<float>(tree,"vtxHadDummy"   ,m_vtxHadDummy   );
@@ -1910,13 +1897,12 @@ void JetContainer::clear()
   }
 
   // flavor tag
-  if ( m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT  ) {
+  if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT  ) {
 
     m_MV2c00                    ->clear();
     m_MV2c10                    ->clear();
     m_MV2c20                    ->clear();
     m_MV2c100                   ->clear();
-    m_MV2                       ->clear();
     m_HadronConeExclTruthLabelID->clear();
 
 
@@ -2001,7 +1987,7 @@ void JetContainer::clear()
     }
   }
 
-  if ( m_infoSwitch.m_flavTagHLT  ) {
+  if ( m_infoSwitch.m_flavorTagHLT  ) {
     m_vtxOnlineValid->clear();
     m_vtxHadDummy->clear();
     m_bs_online_vx->clear();
@@ -2553,12 +2539,12 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_constituent_e->  push_back( e   );
   }
 
-  if ( m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT ) {
+  if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT ) {
     const xAOD::BTagging * myBTag(0);
 
-    if(m_infoSwitch.m_flavTag){
+    if(m_infoSwitch.m_flavorTag){
       myBTag = jet->btagging();
-    }else if(m_infoSwitch.m_flavTagHLT){
+    }else if(m_infoSwitch.m_flavorTagHLT){
       myBTag = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
 
@@ -2806,8 +2792,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
 
 
-    if(m_infoSwitch.m_flavTagHLT ) {
-      if(m_debug) std::cout << "Filling m_flavTagHLT " << std::endl;
+    if(m_infoSwitch.m_flavorTagHLT ) {
+      if(m_debug) std::cout << "Filling m_flavorTagHLT " << std::endl;
       const xAOD::Vertex *online_pvx       = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
       const xAOD::Vertex *online_pvx_bkg   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx_bkg");
       const xAOD::Vertex *offline_pvx      = jet->auxdata<const xAOD::Vertex*>("offline_vtx");
@@ -2877,8 +2863,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         m_vtx_online_bkg_z0->push_back( -999 );
       }
 
-    }// m_flavTagHLT
-    if(m_debug) std::cout << "Done m_flavTagHLT " << std::endl;
+    }// m_flavorTagHLT
+    if(m_debug) std::cout << "Done m_flavorTagHLT " << std::endl;
   }
 
 

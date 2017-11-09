@@ -394,8 +394,8 @@ namespace HelperClasses {
         m_allTrackDetail allTrackDetail exact
         m_constituent    constituent    exact
         m_constituentAll constituentAll exact
-        m_flavTag        flavorTag      exact
-        m_flavTagHLT     flavorTagHLT   exact
+        m_flavorTag      flavorTag      exact
+        m_flavorTagHLT   flavorTagHLT   exact
         m_sfFTagFix      sfFTagFix      partial
         m_sfFTagFlt      sfFTagFlt      partial
         m_sfFTagHyb      sfFTagHyb      partial
@@ -460,8 +460,8 @@ namespace HelperClasses {
     bool m_allTrackPVSel;
     bool m_constituent;
     bool m_constituentAll;
-    bool m_flavTag;
-    bool m_flavTagHLT;
+    bool m_flavorTag;
+    bool m_flavorTagHLT;
     bool m_btag_jettrk;
     bool m_jetFitterDetails;
     bool m_svDetails;

@@ -27,7 +27,6 @@ namespace xAH {
       virtual ~JetContainer();
     
       virtual void setTree    (TTree *tree);
-      virtual void setTree    (TTree *tree, const std::string& tagger/*="MV2c10"*/);
       virtual void setBranches(TTree *tree);
       virtual void clear();
       virtual void FillJet( const xAOD::Jet* jet,            const xAOD::Vertex* pv, int pvLocation );
@@ -167,7 +166,6 @@ namespace xAH {
       std::vector<float> *m_MV2c10;
       std::vector<float> *m_MV2c20;
       std::vector<float> *m_MV2c100;
-      std::vector<float> *m_MV2;
       std::vector<int>   *m_HadronConeExclTruthLabelID;
     
       // Jet Fitter 
