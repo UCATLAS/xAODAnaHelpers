@@ -378,9 +378,12 @@ namespace HelperClasses {
         m_VTags          VTags          exact
         m_rapidity       rapidity       exact
         m_clean          clean          exact
+        m_cleanLight     cleanLight     exact
         m_energy         energy         exact
+        m_energyLight    energyLight    exact
         m_scales         scales         exact
         m_constscaleEta  constscaleEta  exact
+        m_detectorEta    detectorEta    exact
         m_resolution     resolution     exact
         m_truth          truth          exact
         m_truthDetails   truth_details  exact
@@ -446,9 +449,12 @@ namespace HelperClasses {
     bool m_VTags;
     bool m_rapidity;
     bool m_clean;
+    bool m_cleanLight;
     bool m_energy;
+    bool m_energyLight;
     bool m_scales;
     bool m_constscaleEta;
+    bool m_detectorEta;
     bool m_resolution;
     bool m_truth;
     bool m_truthDetails;

@@ -225,9 +225,12 @@ namespace HelperClasses{
     m_VTags         = has_exact("VTags");
     m_rapidity      = has_exact("rapidity");
     m_clean         = has_exact("clean");
+    m_cleanLight    = has_exact("cleanLight");
     m_energy        = has_exact("energy");
+    m_energyLight   = has_exact("energyLight");
     m_scales        = has_exact("scales");
     m_constscaleEta = has_exact("constscaleEta");
+    m_detectorEta   = has_exact("detectorEta");
     m_resolution    = has_exact("resolution");
     m_truth         = has_exact("truth");
     m_truthDetails  = has_exact("truth_details");
