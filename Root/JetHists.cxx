@@ -204,7 +204,7 @@ StatusCode JetHists::initialize() {
     m_JVC = book(m_name, "JVC", m_titlePrefix+"JVC", 100, -5, 5);
   }
 
-  if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
+  if( m_infoSwitch->m_flavorTag || m_infoSwitch->m_flavorTagHLT ) {
     if(m_debug) Info("JetHists::initialize()", "adding btagging plots");
 
     m_MV2c00          = book(m_name, "MV2c00",            m_titlePrefix+"MV2c00" ,   100,    -1.1,   1.1);
@@ -955,12 +955,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   //
   // BTagging
   //
-  if( m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT ) {
-    if(m_debug) std::cout << "JetHists: m_flavTag " <<std::endl;
+  if( m_infoSwitch->m_flavorTag || m_infoSwitch->m_flavorTagHLT ) {
+    if(m_debug) std::cout << "JetHists: m_flavorTag " <<std::endl;
     const xAOD::BTagging *btag_info(0);
-    if(m_infoSwitch->m_flavTag){
+    if(m_infoSwitch->m_flavorTag){
       btag_info = jet->btagging();
-    }else if(m_infoSwitch->m_flavTagHLT){
+    }else if(m_infoSwitch->m_flavorTagHLT){
       btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
 
@@ -986,7 +986,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       bool passMV2c1085 = (MV2c10 > 0.11);
 
 
-      if(m_infoSwitch->m_flavTagHLT){
+      if(m_infoSwitch->m_flavorTagHLT){
 	passMV2c1040 = (MV2c10 >  0.978);
 	passMV2c1050 = (MV2c10 >  0.948);
 	passMV2c1060 = (MV2c10 >  0.847);
@@ -1700,7 +1700,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_JVC->Fill(jet->JVC, eventWeight);
     }
 
-  if(m_infoSwitch->m_flavTag || m_infoSwitch->m_flavTagHLT)
+  if(m_infoSwitch->m_flavorTag || m_infoSwitch->m_flavorTagHLT)
     {
 //      h_SV0                       ->Fill(jet->SV0                  , eventWeight);
 //      h_SV1                       ->Fill(jet->SV1                  , eventWeight);
@@ -1724,14 +1724,13 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 	bool passMV2c1085 = (MV2c10 > 0.11);
 
 
-	if(m_infoSwitch->m_flavTagHLT){
+	if(m_infoSwitch->m_flavorTagHLT){
 	  passMV2c1040 = (MV2c10 >  0.978);
 	  passMV2c1050 = (MV2c10 >  0.948);
 	  passMV2c1060 = (MV2c10 >  0.847);
 	  passMV2c1070 = (MV2c10 >  0.580);
 	  passMV2c1077 = (MV2c10 >  0.162);
 	  passMV2c1085 = (MV2c10 > -0.494);
-	  
 	}
 
 	if(m_infoSwitch->m_vsLumiBlock){

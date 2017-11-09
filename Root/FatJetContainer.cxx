@@ -279,7 +279,7 @@ void FatJetContainer::setTree(TTree *tree)
 
   for(const auto& kv : m_trkJets)
     {
-      m_trkJets[kv.first]->JetContainer::setTree(tree, "MV2c10");
+      m_trkJets[kv.first]->JetContainer::setTree(tree);
       if(tree->GetBranch(branchName("trkJetsIdx").c_str()))
 	connectBranch< std::vector<unsigned int> >(tree, "trkJetsIdx", &m_trkJetsIdx[kv.first]);
       else
