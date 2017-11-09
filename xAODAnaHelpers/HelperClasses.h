@@ -381,6 +381,7 @@ namespace HelperClasses {
         m_energy         energy         exact
         m_scales         scales         exact
         m_constscaleEta  constscaleEta  exact
+        m_detectorEta    detectorEta    exact
         m_resolution     resolution     exact
         m_truth          truth          exact
         m_truthDetails   truth_details  exact
@@ -449,6 +450,7 @@ namespace HelperClasses {
     bool m_energy;
     bool m_scales;
     bool m_constscaleEta;
+    bool m_detectorEta;
     bool m_resolution;
     bool m_truth;
     bool m_truthDetails;

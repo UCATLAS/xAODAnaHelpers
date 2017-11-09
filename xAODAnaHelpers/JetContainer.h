@@ -90,7 +90,9 @@ namespace xAH {
 
       // constScale Eta
       std::vector<float> *m_constScaleEta;
-      
+
+      // detector Eta
+      std::vector<float> *m_detectorEta;
 
       // layer
       std::vector< std::vector<float> > *m_EnergyPerSampling;
