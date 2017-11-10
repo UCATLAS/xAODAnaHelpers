@@ -27,7 +27,7 @@ namespace xAH {
     class FatJetContainer : public ParticleContainer<FatJet,HelperClasses::JetInfoSwitch>
     {
     public:
-      FatJetContainer(const std::string& name = "fatjet", const std::string& detailStr="", const std::string& suffix="",
+      FatJetContainer(const std::string& name = "fatjet", const std::string& detailStr="", const std::string& subjetDetailStr="kinematic", const std::string& suffix="",
 		      float units = 1e3, bool mc = false);
       virtual ~FatJetContainer();
 

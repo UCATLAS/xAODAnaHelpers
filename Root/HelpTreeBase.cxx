@@ -750,12 +750,13 @@ std::string HelpTreeBase::FatJetCollectionName(const std::string fatjetName,
 }
 
 void HelpTreeBase::AddFatJets(const std::string detailStr, const std::string fatjetName,
+			      const std::string subjetDetailStr,
 			      const std::string suffix) {
 
   if(m_debug) Info("AddFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
 
   const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
-  m_fatjets[collectionName] = new xAH::FatJetContainer(fatjetName, detailStr, suffix, m_units, m_isMC);
+  m_fatjets[collectionName] = new xAH::FatJetContainer(fatjetName, detailStr, subjetDetailStr, suffix, m_units, m_isMC);
 
   xAH::FatJetContainer* thisFatJet = m_fatjets[collectionName];
   thisFatJet->setBranches(m_tree);
@@ -767,7 +768,7 @@ void HelpTreeBase::AddTruthFatJets(const std::string detailStr, const std::strin
 
   if(m_debug) Info("AddTruthFatJets()", "Adding fat jet variables: %s", detailStr.c_str());
 
-  m_truth_fatjets[truthFatJetName] = new xAH::FatJetContainer(truthFatJetName, detailStr, "", m_units, m_isMC);
+  m_truth_fatjets[truthFatJetName] = new xAH::FatJetContainer(truthFatJetName, detailStr, "", "", m_units, m_isMC);
 
   xAH::FatJetContainer* thisTruthFatJet = m_truth_fatjets[truthFatJetName];
   thisTruthFatJet->setBranches(m_tree);

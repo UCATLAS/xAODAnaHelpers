@@ -85,9 +85,9 @@ public:
    *                      influential options are: `kinematic` `substructure` `constituent`
    *                      `constituentAll`
    *  @param  fatjetName  The (prefix) name of the container. Default: `fatjet`.
-   *  @param  suffix      If non-empty, append the given suffix to all branch names.
+   *  @param  subjetDetailStr List of detail options to pass to the subjet container. See :cpp:member:`HelpTreeBase::AddJets` for list of supported values.
    **/
-  void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "fatjet", const std::string suffix = "");
+  void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "fatjet", const std::string subjetDetailStr="", const std::string suffix="");
   void AddTruthFatJets(const std::string detailStr = "", const std::string truthFatJetName = "truth_fatjet");
 
   void AddTaus        (const std::string detailStr = "",  const std::string tauName = "tau");

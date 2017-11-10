@@ -5,7 +5,7 @@
 
 using namespace xAH;
 
-FatJetContainer::FatJetContainer(const std::string& name, const std::string& detailStr, const std::string& suffix,
+FatJetContainer::FatJetContainer(const std::string& name, const std::string& detailStr, const std::string& subjetDetailStr, const std::string& suffix,
 				 float units, bool mc)
   : ParticleContainer(name,detailStr,units,mc, false, true, suffix),
     m_trackJetPtCut(10e3),
@@ -95,11 +95,8 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
       std::string trkJetName = name;
       if( !suffix.empty() ){ trkJetName += "_"+suffix; }
       trkJetName += "_"+trackJetName;
-#ifdef USE_CMAKE
-      m_trkJets[trackJetName] = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_DL1rnn_HybBEff_60707785 jetBTag_DL1mu_HybBEff_60707785 jetBTag_DL1_HybBEff_60707785 jetBTag_MV2c10rnn_HybBEff_60707785 jetBTag_MV2c10mu_HybBEff_60707785 jetBTag_MV2c10_HybBEff_60707785", m_units, m_mc);
-#else
-      m_trkJets[trackJetName] = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_MV2c10_FixedCutBEff_60707785", m_units, m_mc);
-#endif
+      std::cout << "RUNNING WITH UNITS " << m_units << std::endl;
+      m_trkJets[trackJetName] = new xAH::JetContainer(trkJetName, subjetDetailStr, m_units, m_mc);
 
       m_trkJetsIdx[trackJetName] = new std::vector<std::vector<unsigned int> > ();
     }
