@@ -95,7 +95,6 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
       std::string trkJetName = name;
       if( !suffix.empty() ){ trkJetName += "_"+suffix; }
       trkJetName += "_"+trackJetName;
-      std::cout << "RUNNING WITH UNITS " << m_units << std::endl;
       m_trkJets[trackJetName] = new xAH::JetContainer(trkJetName, subjetDetailStr, m_units, m_mc);
 
       m_trkJetsIdx[trackJetName] = new std::vector<std::vector<unsigned int> > ();
