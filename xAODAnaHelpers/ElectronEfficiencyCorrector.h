@@ -80,6 +80,9 @@ public:
   std::string m_corrFileNameTrig = "";
   std::string m_corrFileNameTrigMCEff = "";
 
+  /// @brief Threshold for calculating scale factors
+  float m_threshold = 15e3;
+
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
