@@ -645,7 +645,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // skip electron if outside acceptance for SF calculation
     	 //
-    	 if ( el_itr->pt() < 15e3 ) {
+    	 if ( el_itr->pt() < m_ptThreshold ) {
     	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
     	   isBadElectron = true;
     	 }
@@ -748,7 +748,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // skip electron if outside acceptance for SF calculation
     	 //
-    	 if ( el_itr->pt() < 15e3 ) {
+    	 if ( el_itr->pt() < m_ptThreshold ) {
     	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
     	   isBadElectron = true;
     	 }
@@ -851,7 +851,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // skip electron if outside acceptance for SF calculation
     	 //
-    	 if ( el_itr->pt() < 15e3 ) {
+    	 if ( el_itr->pt() < m_ptThreshold ) {
     	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
   	   isBadElectron = true;
     	 }
@@ -960,7 +960,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // skip electron if outside acceptance for SF calculation
     	 //
-    	 if ( el_itr->pt() < 15e3 ) {
+    	 if ( el_itr->pt() < m_ptThreshold ) {
     	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
   	   isBadElectron = true;
     	 }
@@ -1067,7 +1067,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	 //
     	 // skip electron if outside acceptance for SF calculation
     	 //
-    	 if ( el_itr->pt() < 15e3 ) {
+    	 if ( el_itr->pt() < m_ptThreshold ) {
     	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
   	   isBadElectron = true;
     	 }

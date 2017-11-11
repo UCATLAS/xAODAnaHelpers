@@ -80,6 +80,9 @@ public:
   std::string m_corrFileNameTrig = "";
   std::string m_corrFileNameTrigMCEff = "";
 
+  /// @brief Defines the acceptance region for calculating scale factors
+  float m_ptThreshold = 15e3;
+
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
