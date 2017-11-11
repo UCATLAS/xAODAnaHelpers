@@ -448,7 +448,7 @@ EL::StatusCode MuonCalibrator :: finalize ()
   ANA_MSG_INFO( "Deleting tool instances...");
 
   for(auto yr : m_YearsList) {
-    if ( m_muonCalibrationAndSmearingTools[yr] ) { m_muonCalibrationAndSmearingTools[yr] = nullptr; delete m_muonCalibrationAndSmearingTools[yr]; }
+    if ( m_muonCalibrationAndSmearingTools[yr] ) { delete m_muonCalibrationAndSmearingTools[yr]; m_muonCalibrationAndSmearingTools[yr] = nullptr; }
   }
 
   return EL::StatusCode::SUCCESS;

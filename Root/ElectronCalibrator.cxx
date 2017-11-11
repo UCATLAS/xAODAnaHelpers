@@ -365,8 +365,8 @@ EL::StatusCode ElectronCalibrator :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  if ( m_EgammaCalibrationAndSmearingTool ) { m_EgammaCalibrationAndSmearingTool = nullptr; delete m_EgammaCalibrationAndSmearingTool; }
-  if ( m_IsolationCorrectionTool )          { m_IsolationCorrectionTool = nullptr; delete m_IsolationCorrectionTool; }
+  if ( m_EgammaCalibrationAndSmearingTool ) { delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr; }
+  if ( m_IsolationCorrectionTool )          { delete m_IsolationCorrectionTool; m_IsolationCorrectionTool = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }
