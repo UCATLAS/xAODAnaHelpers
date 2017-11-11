@@ -27,8 +27,6 @@
 #include "xAODMissingET/MissingETComposition.h"
 #include "xAODMissingET/MissingETAssociationMap.h"
 
-#include <xAODEventInfo/EventInfo.h>
-
 // #include "xAODParticleEvent/Particle.h"
 // #include "xAODParticleEvent/ParticleContainer.h"
 // #include "xAODParticleEvent/ParticleAuxContainer.h"
@@ -137,12 +135,7 @@ EL::StatusCode METConstructor :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  // define m_isMC
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  ANA_MSG_DEBUG( "Is MC? " << m_isMC );
+  ANA_MSG_DEBUG( "Is MC? " << isMC() );
 
   //////////// IMETMaker ////////////////
   ASG_SET_ANA_TOOL_TYPE(m_metmaker_handle, met::METMaker);
@@ -172,9 +165,9 @@ EL::StatusCode METConstructor :: initialize ()
 #else
   ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", static_cast<int>(m_significanceSoftTermReso)) );
 #endif
-  ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !m_isMC) );
+  ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !isMC()) );
   // For AFII samples
-  if ( m_isMC ) {
+  if ( isMC() ) {
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
     const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
     if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
@@ -478,7 +471,7 @@ EL::StatusCode METConstructor :: execute ()
      //now tell the m_metSyst_handle that we are using this SystematicSet (of one SystematicVariation for now)
      //after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied
      // assert(   m_metSyst_handle->applySystematicVariation(iSysSet) );
-     if (m_isMC) {
+     if (isMC()) {
        if( m_metSyst_handle->applySystematicVariation(iSysSet) != CP::SystematicCode::Ok) {
          ANA_MSG_ERROR("not able to applySystematicVariation ");
        }
@@ -488,7 +481,7 @@ EL::StatusCode METConstructor :: execute ()
        //get the soft cluster term, and applyCorrection
        xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
        //assert( softClusMet != 0); //check we retrieved the clust term
-       if( m_isMC && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
+       if( isMC() && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
          ANA_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
        }
        ANA_MSG_DEBUG("Soft cluster met term met : " << softClusMet->met());
@@ -496,7 +489,7 @@ EL::StatusCode METConstructor :: execute ()
 
      //get the track soft term, and applyCorrection
      xAOD::MissingET * softTrkMet = (*newMet)["PVSoftTrk"];
-     if( m_isMC && m_metSyst_handle->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
+     if( isMC() && m_metSyst_handle->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
        ANA_MSG_ERROR( "Could not apply correction to soft track met !!!! ");
      }
      ANA_MSG_DEBUG("track met soft term : " << softTrkMet->met());

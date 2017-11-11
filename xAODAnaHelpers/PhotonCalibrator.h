@@ -73,8 +73,6 @@ public:
   int m_randomRunNumber = -1;
 
 private:
-  bool    m_isMC = false; //!
-
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;

@@ -90,7 +90,6 @@ namespace xAH {
       float MV2c10;
       float MV2c20;
       float MV2c100;
-      float MV2;
       int  HadronConeExclTruthLabelID;
 
       float vtxOnlineValid;
@@ -107,6 +106,10 @@ namespace xAH {
       float vtx_online_x0;
       float vtx_online_y0;
       float vtx_online_z0;
+
+      float vtx_online_bkg_x0;
+      float vtx_online_bkg_y0;
+      float vtx_online_bkg_z0;
     
       float JetFitter_nVTX           ;
       float JetFitter_nSingleTracks  ;

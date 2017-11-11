@@ -77,6 +77,13 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_lumiCalcFileNames = "";
     /// @brief Comma separated list of filenames
     std::string m_PRWFileNames = "";
+    /// @brief Use Period Configuration or auto
+    std::string m_periodConfig = "auto";
+
+    /// @brief The minimum threshold for <tt>EventInfo::actualInteractionsPerCrossing()</tt>
+    int m_actualMuMin = -1; // Default to off
+    /// @brief The maximum threshold for <tt>EventInfo::actualInteractionsPerCrossing()</tt>
+    int m_actualMuMax = -1; // Default to off
 
     // Unprescaling data
     bool m_savePrescaleDataWeight = false;
@@ -172,8 +179,6 @@ class BasicEventSelection : public xAH::Algorithm
     */
     asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
     asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool"}; //!
-
-    bool m_isMC;      //!
 
     int m_eventCounter;     //!
 

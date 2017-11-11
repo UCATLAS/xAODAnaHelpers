@@ -274,7 +274,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
     // for the containers the were supplied, fill the appropriate vectors
     if ( !m_muContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::MuonContainer>(m_muContainerName + muSuffix) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::MuonContainer>(m_muContainerName + muSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::MuonContainer* inMuon(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inMuon, m_muContainerName+muSuffix, m_event, m_store, msg()) );
@@ -282,7 +282,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_elContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::ElectronContainer>(m_elContainerName + elSuffix) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::ElectronContainer>(m_elContainerName + elSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::ElectronContainer* inElec(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inElec, m_elContainerName+elSuffix, m_event, m_store, msg()) );
@@ -294,13 +294,13 @@ EL::StatusCode TreeAlgo :: execute ()
       for ( unsigned int ll = 0; ll < m_jetContainers.size(); ++ll ) { // Systs only for first jet container
         const xAOD::JetContainer* inJets(nullptr);
         if ( ll==0 ) {
-          if ( !m_store->contains<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix) ) {
+          if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
             reject = true;
             break;
           }
           ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
         } else {
-          if ( !m_store->contains<xAOD::JetContainer>(m_jetContainers.at(ll)) ) {
+          if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll), m_event, m_store, msg()) ) {
             reject = true;
             break;
           }
@@ -314,7 +314,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_l1JetContainerName.empty() ){
-      if ( !m_store->contains<xAOD::JetRoIContainer>(m_l1JetContainerName) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::JetRoIContainer>(m_l1JetContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::JetRoIContainer* inL1Jets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainerName, m_event, m_store, msg()) );
@@ -322,7 +322,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_trigJetContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::JetContainer>(m_trigJetContainerName) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::JetContainer* inTrigJets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTrigJets, m_trigJetContainerName, m_event, m_store, msg()) );
@@ -332,7 +332,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_truthJetContainerName.empty() ) {
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_truthJetContainers.size(); ++ll) {
-        if ( !m_store->contains<xAOD::JetContainer>(m_truthJetContainers.at(ll)) ) {
+        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthJetContainers.at(ll), m_event, m_store, msg()) ) {
           reject = true;
           break;
         }
@@ -350,7 +350,7 @@ EL::StatusCode TreeAlgo :: execute ()
       std::string token;
       std::istringstream ss(m_fatJetContainerName);
       while ( std::getline(ss, token, ' ') ){
-        if ( !m_store->contains<xAOD::JetContainer>(token+fatJetSuffix) ) {
+        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(token+fatJetSuffix, m_event, m_store, msg()) ) {
           reject = true;
           break;
         }
@@ -364,7 +364,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_truthFatJetContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::JetContainer>(m_truthFatJetContainerName) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthFatJetContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::JetContainer* inTruthFatJets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName, m_event, m_store, msg()) );
@@ -372,7 +372,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_tauContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::TauJetContainer>(m_tauContainerName) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::TauJetContainer>(m_tauContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::TauJetContainer* inTaus(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, msg()) );
@@ -380,7 +380,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_METContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::MissingETContainer>(m_METContainerName + metSuffix) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METContainerName + metSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::MissingETContainer* inMETCont(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METContainerName, m_event, m_store, msg()) );
@@ -388,7 +388,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_photonContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::PhotonContainer>(m_photonContainerName + photonSuffix) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::PhotonContainer>(m_photonContainerName + photonSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::PhotonContainer* inPhotons(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_photonContainerName+photonSuffix, m_event, m_store, msg()) );
@@ -396,7 +396,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_truthParticlesContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::TruthParticleContainer>(m_truthParticlesContainerName) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::TruthParticleContainer>(m_truthParticlesContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTruthParticles, m_truthParticlesContainerName, m_event, m_store, msg()));
@@ -404,7 +404,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_trackParticlesContainerName.empty() ) {
-      if ( !m_store->contains<xAOD::TrackParticleContainer>(m_trackParticlesContainerName) ) continue;
+      if ( !HelperFunctions::isAvailable<xAOD::TrackParticleContainer>(m_trackParticlesContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTrackParticles, m_trackParticlesContainerName, m_event, m_store, msg()));

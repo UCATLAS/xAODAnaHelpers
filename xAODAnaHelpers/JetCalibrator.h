@@ -114,7 +114,7 @@ public:
   /// @brief fJVT working point
   std::string m_fJVTWorkingPoint = "Medium";
 
-  /// @brief Name of Jvt aux decoration.  Was "JvtJvfcorr" in Rel 20.7, is now "JVFCorr" in Rel 21. Leave empty to use JetMomentTools default.  This must be left empty for RootCore (r20.7) code! 
+  /// @brief Name of Jvt aux decoration.  Was "JvtJvfcorr" in Rel 20.7, is now "JVFCorr" in Rel 21. Leave empty to use JetMomentTools default.  This must be left empty for RootCore (r20.7) code!
   std::string m_JvtAuxName = "";
   /// @brief Sort the processed container elements by transverse momentum
   bool    m_sort = true;
@@ -145,7 +145,6 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  bool m_isMC;            //!
   bool m_isFullSim;       //!
 
   std::vector<CP::SystematicSet> m_systList; //!

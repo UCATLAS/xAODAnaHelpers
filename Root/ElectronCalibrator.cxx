@@ -127,13 +127,6 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_outSCContainerName      = m_outContainerName + "ShallowCopy";
   m_outSCAuxContainerName   = m_outSCContainerName + "Aux."; // the period is very important!
 
-
-  // Check if is MC
-  //
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-
   m_numEvent      = 0;
   m_numObject     = 0;
 
@@ -150,7 +143,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   //
   // For AFII samples
   //
-  if ( m_isMC ) {
+  if ( isMC() ) {
 
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
     //
@@ -208,7 +201,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   }
   m_IsolationCorrectionTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO
   //ANA_CHECK( m_IsolationCorrectionTool->setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ));
-  ANA_CHECK( m_IsolationCorrectionTool->setProperty("IsMC", m_isMC ));
+  ANA_CHECK( m_IsolationCorrectionTool->setProperty("IsMC", isMC() ));
   ANA_CHECK( m_IsolationCorrectionTool->initialize());
 
   // Write output sys names
@@ -372,8 +365,8 @@ EL::StatusCode ElectronCalibrator :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  if ( m_EgammaCalibrationAndSmearingTool ) { m_EgammaCalibrationAndSmearingTool = nullptr; delete m_EgammaCalibrationAndSmearingTool; }
-  if ( m_IsolationCorrectionTool )          { m_IsolationCorrectionTool = nullptr; delete m_IsolationCorrectionTool; }
+  if ( m_EgammaCalibrationAndSmearingTool ) { delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr; }
+  if ( m_IsolationCorrectionTool )          { delete m_IsolationCorrectionTool; m_IsolationCorrectionTool = nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }

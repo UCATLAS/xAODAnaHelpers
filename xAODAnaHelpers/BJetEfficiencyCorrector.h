@@ -62,12 +62,10 @@ private:
 
   /// @brief The decoration key written to passing objects
   std::string m_decorSF = "";
-  
+
   std::vector<std::string> m_inputAlgoList; //!
 
   bool m_runAllSyst = false; //!
-
-  bool m_isMC = false;        //!
 
   // tools
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!

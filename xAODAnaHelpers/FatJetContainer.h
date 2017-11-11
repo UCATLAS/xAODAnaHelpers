@@ -11,7 +11,9 @@
 
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
+#ifndef USE_CMAKE
 #include "JetSubStructureUtils/BosonTag.h"
+#endif
 
 #include <xAODAnaHelpers/FatJet.h>
 #include <xAODAnaHelpers/ParticleContainer.h>
@@ -28,7 +30,7 @@ namespace xAH {
       FatJetContainer(const std::string& name = "fatjet", const std::string& detailStr="", const std::string& suffix="",
 		      float units = 1e3, bool mc = false);
       virtual ~FatJetContainer();
-    
+
       virtual void setTree    (TTree *tree);
       virtual void setBranches(TTree *tree);
       virtual void clear();
@@ -38,18 +40,19 @@ namespace xAH {
 
       float       m_trackJetPtCut;
       float       m_trackJetEtaCut;
-      std::string m_trackJetName;
 
     protected:
 
       virtual void updateParticle(uint idx, FatJet& jet);
 
     private:
-      
+
+#ifndef USE_CMAKE
       JetSubStructureUtils::BosonTag*      m_WbosonTaggerMedium;
       JetSubStructureUtils::BosonTag*      m_ZbosonTaggerMedium;
       JetSubStructureUtils::BosonTag*      m_WbosonTaggerTight ;
       JetSubStructureUtils::BosonTag*      m_ZbosonTaggerTight ;
+#endif
 
       bool SelectTrackJet(const xAOD::Jet* TrackJet);
 
@@ -110,21 +113,22 @@ namespace xAH {
 
       // bosonCount
       std::vector< int > *m_nTQuarks;
-      std::vector< int > *m_nHBosons;      
-      std::vector< int > *m_nWBosons;            
-      std::vector< int > *m_nZBosons;      
+      std::vector< int > *m_nHBosons;
+      std::vector< int > *m_nWBosons;
+      std::vector< int > *m_nZBosons;
 
+#ifndef USE_CMAKE
       // VTag
       std::vector< int > *m_Wtag_medium;
       std::vector< int > *m_Ztag_medium;
-
       std::vector< int > *m_Wtag_tight;
       std::vector< int > *m_Ztag_tight;
+#endif
 
-      // Assocated Track Jets 
-      std::vector< std::vector<unsigned int> >* m_trkJetsIdx;
-      xAH::JetContainer*  m_trkJets;
-      
+      // Assocated Track Jets
+      std::unordered_map<std::string, xAH::JetContainer*> m_trkJets;
+      std::unordered_map<std::string, std::vector<std::vector<unsigned int>>* > m_trkJetsIdx;
+
     };
 }
 

@@ -74,6 +74,7 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_nZBosons  = new std::vector< int > ();
   }
 
+#ifndef USE_CMAKE
   if ( m_infoSwitch.m_VTags ) {
     m_WbosonTaggerMedium = new JetSubStructureUtils::BosonTag("medium", "smooth", "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Wtagging_MC15_Prerecommendations_20150809.dat", false, false);
     m_ZbosonTaggerMedium = new JetSubStructureUtils::BosonTag("medium", "smooth", "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Ztagging_MC15_Prerecommendations_20150809.dat", false, false);
@@ -87,19 +88,21 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_Wtag_tight  = new std::vector< int > ();
     m_Ztag_tight  = new std::vector< int > ();
   }
-
-  if( m_infoSwitch.m_trackJets ){
-    std::string trkJetName = name;
-    if( !suffix.empty() ){ trkJetName += "_"+suffix; }
-    trkJetName += "_"+m_infoSwitch.m_trackJetName;
-#ifdef USE_CMAKE
-    m_trkJets = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_DL1rnn_HybBEff_60707785 jetBTag_DL1mu_HybBEff_60707785 jetBTag_DL1_HybBEff_60707785 jetBTag_MV2c10rnn_HybBEff_60707785 jetBTag_MV2c10mu_HybBEff_60707785 jetBTag_MV2c10_HybBEff_60707785", m_units, m_mc);
-#else
-    m_trkJets = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_MV2c10_FixedCutBEff_60707785", m_units, m_mc);
 #endif
 
-    m_trkJetsIdx  = new std::vector<std::vector<unsigned int> > ();
-  }
+  for(const auto& trackJetName : m_infoSwitch.m_trackJetNames)
+    {
+      std::string trkJetName = name;
+      if( !suffix.empty() ){ trkJetName += "_"+suffix; }
+      trkJetName += "_"+trackJetName;
+#ifdef USE_CMAKE
+      m_trkJets[trackJetName] = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_DL1rnn_HybBEff_60707785 jetBTag_DL1mu_HybBEff_60707785 jetBTag_DL1_HybBEff_60707785 jetBTag_MV2c10rnn_HybBEff_60707785 jetBTag_MV2c10mu_HybBEff_60707785 jetBTag_MV2c10_HybBEff_60707785", m_units, m_mc);
+#else
+      m_trkJets[trackJetName] = new xAH::JetContainer(trkJetName, "kinematic flavorTag constituent jetBTag_MV2c10_FixedCutBEff_60707785", m_units, m_mc);
+#endif
+
+      m_trkJetsIdx[trackJetName] = new std::vector<std::vector<unsigned int> > ();
+    }
 
 }
 
@@ -168,6 +171,7 @@ FatJetContainer::~FatJetContainer()
     delete m_nZBosons;
   }
 
+#ifndef USE_CMAKE
   if ( m_infoSwitch.m_VTags ) {
     delete m_WbosonTaggerMedium;
     delete m_ZbosonTaggerMedium;
@@ -181,11 +185,16 @@ FatJetContainer::~FatJetContainer()
     delete m_Wtag_tight;
     delete m_Ztag_tight;
   }
+#endif
 
-
-  if( m_infoSwitch.m_trackJets ){
-    delete m_trkJets;
-    delete m_trkJetsIdx;
+  if( !m_infoSwitch.m_trackJetNames.empty() ){
+    for(const auto& kv : m_trkJets)
+      {
+	delete m_trkJets   [kv.first];
+	delete m_trkJetsIdx[kv.first];
+      }
+    m_trkJets   .clear();
+    m_trkJetsIdx.clear();
   }
 
 }
@@ -258,6 +267,7 @@ void FatJetContainer::setTree(TTree *tree)
   }
 
 
+#ifndef USE_CMAKE
   if ( m_infoSwitch.m_VTags) {
     connectBranch< int >(tree, "Wtag_medium",  &m_Wtag_medium);
     connectBranch< int >(tree, "Ztag_medium",  &m_Ztag_medium);
@@ -265,11 +275,16 @@ void FatJetContainer::setTree(TTree *tree)
     connectBranch< int >(tree, "Wtag_tight",   &m_Wtag_tight);
     connectBranch< int >(tree, "Ztag_tight",   &m_Ztag_tight);
   }
+#endif
 
-  if( m_infoSwitch.m_trackJets ){
-    m_trkJets->JetContainer::setTree(tree, "MV2c10");
-    connectBranch< std::vector<unsigned int> >(tree, "trkJetsIdx",   &m_trkJetsIdx);
-  }
+  for(const auto& kv : m_trkJets)
+    {
+      m_trkJets[kv.first]->JetContainer::setTree(tree);
+      if(tree->GetBranch(branchName("trkJetsIdx").c_str()))
+	connectBranch< std::vector<unsigned int> >(tree, "trkJetsIdx", &m_trkJetsIdx[kv.first]);
+      else
+	connectBranch< std::vector<unsigned int> >(tree, "trkJetsIdx_"+kv.first, &m_trkJetsIdx[kv.first]);
+    }
 }
 
 void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
@@ -337,6 +352,7 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
     fatjet.nZBosons = m_nZBosons->at(idx);
   }
 
+#ifndef USE_CMAKE
   if(m_infoSwitch.m_VTags){
     fatjet.Wtag_medium = m_Wtag_medium->at(idx);
     fatjet.Ztag_medium = m_Ztag_medium->at(idx);
@@ -344,18 +360,20 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
     fatjet.Wtag_tight = m_Wtag_tight->at(idx);
     fatjet.Ztag_tight = m_Ztag_tight->at(idx);
   }
+#endif
 
 
-  if( m_infoSwitch.m_trackJets ){
-    fatjet.trkJets.clear();
-
-    for(unsigned int iTrkJet : m_trkJetsIdx->at(idx)){
-      Jet thisTrkJet;
-      m_trkJets->updateParticle(iTrkJet,  thisTrkJet);
-      fatjet.trkJets.push_back(thisTrkJet);
+  for(const auto& kv : m_trkJets)
+    {
+      fatjet.trkJets[kv.first].clear();
+      std::vector<std::vector<unsigned int>> *trkJetsIdx=m_trkJetsIdx[kv.first];
+      for(unsigned int iTrkJet : trkJetsIdx->at(idx))
+	{
+	  Jet thisTrkJet;
+	  kv.second->updateParticle(iTrkJet, thisTrkJet);
+	  fatjet.trkJets[kv.first].push_back(thisTrkJet);
+	}
     }
-
-  }
 
   if(m_debug) std::cout << "leave FatJetContainer::updateParticle " << std::endl;
   return;
@@ -428,6 +446,7 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch< int >(tree, "nZBosons",       m_nZBosons);
   }
 
+#ifndef USE_CMAKE
   if(m_infoSwitch.m_VTags){
     setBranch< int >(tree, "Wtag_medium",       m_Wtag_medium);
     setBranch< int >(tree, "Ztag_medium",       m_Ztag_medium);
@@ -435,11 +454,13 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch< int >(tree, "Wtag_tight",       m_Wtag_tight);
     setBranch< int >(tree, "Ztag_tight",       m_Ztag_tight);
   }
+#endif
 
-  if( m_infoSwitch.m_trackJets ){
-    m_trkJets->setBranches(tree);
-    setBranch< std::vector<unsigned int> >(tree, "trkJetsIdx",       m_trkJetsIdx);
-  }
+  for(const auto& kv : m_trkJets)
+    {
+      kv.second->setBranches(tree);
+      setBranch< std::vector<unsigned int> >(tree, "trkJetsIdx_"+kv.first, m_trkJetsIdx[kv.first]);
+    }
 
   return;
 }
@@ -453,13 +474,13 @@ void FatJetContainer::clear()
   if ( m_infoSwitch.m_scales ) {
     m_JetConstitScaleMomentum_eta   ->clear();
     m_JetConstitScaleMomentum_phi   ->clear();
-    m_JetConstitScaleMomentum_m   ->clear();
+    m_JetConstitScaleMomentum_m     ->clear();
     m_JetConstitScaleMomentum_pt    ->clear();
 
-    m_JetEMScaleMomentum_eta    ->clear();
-    m_JetEMScaleMomentum_phi    ->clear();
-    m_JetEMScaleMomentum_m    ->clear();
-    m_JetEMScaleMomentum_pt   ->clear();
+    m_JetEMScaleMomentum_eta        ->clear();
+    m_JetEMScaleMomentum_phi        ->clear();
+    m_JetEMScaleMomentum_m          ->clear();
+    m_JetEMScaleMomentum_pt         ->clear();
   }
 
   if ( m_infoSwitch.m_area ) {
@@ -510,6 +531,7 @@ void FatJetContainer::clear()
     m_nZBosons->clear();
   }
 
+#ifndef USE_CMAKE
   if(m_infoSwitch.m_VTags){
     m_Wtag_medium->clear();
     m_Ztag_medium->clear();
@@ -517,11 +539,13 @@ void FatJetContainer::clear()
     m_Wtag_tight->clear();
     m_Ztag_tight->clear();
   }
+#endif
 
-  if( m_infoSwitch.m_trackJets ){
-    m_trkJets->clear();
-    m_trkJetsIdx->clear();
-  }
+  for(const auto& kv : m_trkJets)
+    {
+      m_trkJets   [kv.first]->clear();
+      m_trkJetsIdx[kv.first]->clear();
+    }
 
   return;
 }
@@ -706,6 +730,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
     }
   }
 
+#ifndef USE_CMAKE
   if(m_infoSwitch.m_VTags){
     int Wtag_pass_medium = m_WbosonTaggerMedium->result(*fatjet);
     int Ztag_pass_medium = m_ZbosonTaggerMedium->result(*fatjet);
@@ -717,14 +742,15 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
     m_Wtag_tight->push_back(Wtag_pass_tight);
     m_Ztag_tight->push_back(Ztag_pass_tight);
   }
+#endif
 
 
   //
   // Associated track jets
   //
-  //if(
-  if( m_infoSwitch.m_trackJets ){
+  if( !m_infoSwitch.m_trackJetNames.empty() ){
 
+    // Find the fat jet parent
     const xAOD::Jet* fatjet_parent = 0;
 
     try{
@@ -745,20 +771,25 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       fatjet_parent = fatjet;
     }
 
+    // Associate the different track jet collections
     std::vector<const xAOD::Jet*> assotrkjets;
-    try{
-      assotrkjets = fatjet_parent->getAssociatedObjects<xAOD::Jet>(m_infoSwitch.m_trackJetName);
-    }
-    catch (...){
-      //Warning("execute()", "Unable to fetch \"%s\" link from leading calo-jet", m_infoSwitch.m_trackJetName.data());
-    }
+    for(const auto& trackJetName : m_infoSwitch.m_trackJetNames)
+      {
+	try{
+	  assotrkjets = fatjet_parent->getAssociatedObjects<xAOD::Jet>(trackJetName);
+	}
+	catch (...){
+	  //Warning("execute()", "Unable to fetch \"%s\" link from leading calo-jet", trackJetName.data());
+	}
 
-    m_trkJetsIdx->push_back(std::vector<unsigned int>());
-    for(auto TrackJet : assotrkjets){
-      if(!SelectTrackJet(TrackJet)) continue;
-      m_trkJetsIdx->back().push_back(m_trkJets->m_n);
-      m_trkJets->FillJet(TrackJet, 0 , 0);
-    }
+	std::vector<unsigned int> trkJetsIdx;
+	for(auto TrackJet : assotrkjets){
+	  if(!SelectTrackJet(TrackJet)) continue;
+	  trkJetsIdx.push_back(m_trkJets[trackJetName]->m_n);
+	  m_trkJets[trackJetName]->FillJet(TrackJet, 0 , 0);
+	}
+	m_trkJetsIdx[trackJetName]->push_back(trkJetsIdx);
+      }
   }
 
   return;

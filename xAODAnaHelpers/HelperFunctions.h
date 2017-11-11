@@ -65,7 +65,7 @@ namespace HelperFunctions {
 
     Source: http://stackoverflow.com/questions/18972258/index-of-nth-occurrence-of-the-string
   */
-  std::size_t string_pos( const std::string& inputstr, const char& occurence, int n_occurencies );
+  std::size_t string_pos( const std::string& haystack, const std::string& needle, unsigned int N );
 
   /**
     Function which returns the WP for ISO/ID from a config file.
@@ -274,9 +274,13 @@ namespace HelperFunctions {
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
     std::string funcName{"in retrieve<"+type_name<T>()+">(" + name + "): "};
+    if((event == NULL) && (store == NULL)){
+      msg << MSG::ERROR << funcName << "Both TEvent and TStore objects are null. Cannot retrieve anything." << endmsg;
+      return StatusCode::FAILURE;
+    }
     msg << MSG::DEBUG << funcName << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
-    if(store == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
-    if(event == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
+    if((event != NULL) && (store == NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
+    if((event == NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
     if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
     if((store != NULL) && (store->contains<T>(name))){
       msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TStore" << endmsg;
@@ -296,7 +300,7 @@ namespace HelperFunctions {
   template <typename T>
   StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return retrieve<T>(cont, name, event, store, msg()); }
   template <typename T>
-  StatusCode retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug) { msg() << MSG::WARNING << "retrieve<T>(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882" << endmsg; return retrieve<T>(cont, name, event, store, msg()); }
+  StatusCode __attribute__((deprecated("retrieve<T>(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882"))) retrieve(T*& cont, std::string name, xAOD::TEvent* event, xAOD::TStore* store, bool debug) { return retrieve<T>(cont, name, event, store, msg()); }
 
   /** @brief Return true if an arbitrary object from TStore / TEvent is available
     @param name  the name of the object to look up

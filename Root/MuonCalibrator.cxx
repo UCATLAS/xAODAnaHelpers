@@ -121,17 +121,11 @@ EL::StatusCode MuonCalibrator :: initialize ()
   }
 
 
-  // Check if is MC
-  //
-  const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-
   // Create a ToolHandle of the PRW tool which is used for the random generation
   // of run numbers. Depending on the outcome a specific initialization of the tool
   // will be used.
   //
-  if( m_isMC ){
+  if( isMC() ){
     if(!setToolName(m_pileup_tool_handle, "Pileup")){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
@@ -176,20 +170,47 @@ EL::StatusCode MuonCalibrator :: initialize ()
       m_muonCalibrationAndSmearingTools[yr] = new CP::MuonCalibrationAndSmearingTool( m_muonCalibrationAndSmearingTool_names[yr]);
       m_muonCalibrationAndSmearingTools[yr]->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
 
-      if ( yr == "Data16") {
+#ifdef USE_CMAKE
+      if ( yr == "Data17" ) {
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", "Data16" ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_15_07" ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", true ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_25_07_17" )); 
+      } else if ( yr == "Data16" || yr == "Data15" ) {
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", "Data16" ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_15_07"));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", true ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_25_07_17" )); 
+      } else if ( !yr.empty() ) {
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ));
+      }
+#else
+      if ( yr == "Data16") {
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", "Data16" ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_15_07" ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", true ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", true ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_06_02_17" )); 
       } else if (yr == "Data15") {
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_08_07"));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", "Data15" ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_08_07" ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_06_02_17" )); 
       } else if ( !yr.empty() ) {
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ));
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ));
       }
-
-      if ( !m_release.empty() ) { ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release)); }
+#endif // USE_CMAKE
 
       ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->initialize());
 
@@ -222,7 +243,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   }
 
   ANA_CHECK(m_store->record(SystMuonsNames, "muons_Syst"+m_name ));
-  
+
   // Write output sys names
   if ( m_writeSystToMetadata ) {
     TFile *fileMD = wk()->getOutputFile ("metadata");
@@ -246,7 +267,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
   m_numEvent++;
 
-  if ( !m_isMC && !m_forceDataCalib ) {
+  if ( !isMC() && !m_forceDataCalib ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Muon Calibration... "); }
   }
 
@@ -258,20 +279,21 @@ EL::StatusCode MuonCalibrator :: execute ()
   // a default 2016 run
   int runNumber = 296939;
 
-  if ( !m_isMC && m_forceDataCalib ) {
+  if ( !isMC() && m_forceDataCalib ) {
     runNumber = eventInfo->runNumber();
-  } else if ( m_isMC ) {
+  } else if ( isMC() ) {
     runNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, true );
   }
 
-  if (runNumber >= 266904 && runNumber <= 284484 ) {
+  if ( 266904 <= runNumber && runNumber <= 284484 ) {
+
     randYear = "Data15";
     if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
       ANA_MSG_ERROR( "Random runNumber is 2015 but no corresponding MuonCalibrationAndSmearingTool tool has been initialized. Check ilumicalc config or extend m_Years!");
       return EL::StatusCode::FAILURE;
     }
 
-  } else if (runNumber >= 296939 ) {
+  } else if ( 296939 <= runNumber && runNumber <= 311481 ) {
 
     randYear = "Data16";
     if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
@@ -279,7 +301,16 @@ EL::StatusCode MuonCalibrator :: execute ()
      return EL::StatusCode::FAILURE;
     }
 
+  } else if ( 324320 <= runNumber ) {
+
+    randYear = "Data17";
+    if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
+     ANA_MSG_ERROR( "Random runNumber is 2017 but no corresponding MuonCalibrationAndSmearingTool tool has been initialized. Check ilumicalc config or extend m_Years!");
+     return EL::StatusCode::FAILURE;
+    }
+
   }
+
 
 
 
@@ -326,7 +357,7 @@ EL::StatusCode MuonCalibrator :: execute ()
     // now calibrate!
     //
     unsigned int idx(0);
-    if ( m_isMC || m_forceDataCalib ) {
+    if ( isMC() || m_forceDataCalib ) {
 
       for ( auto muSC_itr : *(calibMuonsSC.first) ) {
 
@@ -417,7 +448,7 @@ EL::StatusCode MuonCalibrator :: finalize ()
   ANA_MSG_INFO( "Deleting tool instances...");
 
   for(auto yr : m_YearsList) {
-    if ( m_muonCalibrationAndSmearingTools[yr] ) { m_muonCalibrationAndSmearingTools[yr] = nullptr; delete m_muonCalibrationAndSmearingTools[yr]; }
+    if ( m_muonCalibrationAndSmearingTools[yr] ) { delete m_muonCalibrationAndSmearingTools[yr]; m_muonCalibrationAndSmearingTools[yr] = nullptr; }
   }
 
   return EL::StatusCode::SUCCESS;

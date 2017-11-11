@@ -284,8 +284,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
-  m_isMC = eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION );
-  ANA_MSG_DEBUG( "Is MC? " << static_cast<int>(m_isMC) );
+  ANA_MSG_DEBUG( "Is MC? " << isMC() );
 
   //Protection in case GRL does not apply to this run
   //
@@ -306,7 +305,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   //////// Initialize Tool for Sherpa 2.2 Reweighting ////////////
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
   m_reweightSherpa22 = false;
-  if( m_isMC &&
+  if( isMC() &&
       ( (eventInfo->mcChannelNumber() >= 363331 && eventInfo->mcChannelNumber() <= 363483 ) ||
         (eventInfo->mcChannelNumber() >= 363102 && eventInfo->mcChannelNumber() <= 363122 ) ||
         (eventInfo->mcChannelNumber() >= 363361 && eventInfo->mcChannelNumber() <= 363435 ) ) ){
@@ -386,12 +385,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
 
-  if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
+  if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
     m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
     m_cutflowHistW->GetXaxis()->FindBin("Duplicates");
   }
 
-  if ( !m_isMC ) {
+  if ( !isMC() ) {
     if ( m_applyGRLCut ) {
       m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
       m_cutflowHistW->GetXaxis()->FindBin("GRL");
@@ -501,6 +500,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09));
     ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0));
     ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorDOWN", 1.0/1.18));
+    ANA_CHECK( m_pileup_tool_handle.setProperty("UsePeriodConfig", m_periodConfig) );
     ANA_CHECK( m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ));
     ANA_CHECK( m_pileup_tool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_pileup_tool_handle);
@@ -617,7 +617,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Check if need to create xAH event weight
   //
   if ( !mcEvtWeightDecor.isAvailable(*eventInfo) ) {
-    if ( m_isMC ) {
+    if ( isMC() ) {
       const std::vector< float > weights = eventInfo->mcEventWeights(); // The weight (and systs) of all the MC events used in the simulation
       if ( weights.size() > 0 ) mcEvtWeight = weights[0];
 
@@ -653,7 +653,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Check if need to create xAH event weight
   //
   if ( !prsc_DataWeightDecor.isAvailable(*eventInfo) ) {
-    if ( !m_isMC && m_savePrescaleDataWeight ) {
+    if ( !isMC() && m_savePrescaleDataWeight ) {
 
       // get mu dependent data weight
       prsc_DataWeight = m_pileup_tool_handle->getDataWeight( *eventInfo, TriggerExpression, true );
@@ -708,7 +708,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // This is done by checking against the std::set of <runNumber,eventNumber> filled for all previous events
   //--------------------------------------------------------------------------------------------------------
 
-  if ( ( !m_isMC && m_checkDuplicatesData ) || ( m_isMC && m_checkDuplicatesMC ) ) {
+  if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
 
     std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
 
@@ -746,7 +746,7 @@ EL::StatusCode BasicEventSelection :: execute ()
                                                  //  4.) the random lumiblock number ("RandomLumiBlockNumber")
     static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
 
-      if ( m_isMC && m_doPUreweightingSys ) {
+      if ( isMC() && m_doPUreweightingSys ) {
        	CP::SystematicSet tmpSet;tmpSet.insert(CP::SystematicVariation("PRW_DATASF",1));
       	m_pileup_tool_handle->applySystematicVariation( tmpSet ).ignore();
 	eventInfo->auxdecor< float >( "PileupWeight_UP" )= m_pileup_tool_handle->getCombinedWeight( *eventInfo );
@@ -756,11 +756,27 @@ EL::StatusCode BasicEventSelection :: execute ()
       }
   }
 
+  if ( m_actualMuMin > 0 ) {
+      // apply minimum pile-up cut
+      if ( eventInfo->actualInteractionsPerCrossing() < m_actualMuMin ) { // veto event
+          wk()->skipEvent();
+          return EL::StatusCode::SUCCESS;
+      }
+  }
+
+  if ( m_actualMuMax > 0 ) {
+      // apply maximum pile-up cut
+      if ( eventInfo->actualInteractionsPerCrossing() > m_actualMuMax ) { // veto event
+          wk()->skipEvent();
+          return EL::StatusCode::SUCCESS;
+      }
+  }
+
 
   //------------------------------------------------------
   // If data, check if event passes GRL and event cleaning
   //------------------------------------------------------
-  if ( !m_isMC ) {
+  if ( !isMC() ) {
 
     // Get the streams that the event was put in
     const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
@@ -923,7 +939,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   // Calculate distance to previous empty BCID and save as decoration
-  if( !m_isMC ){
+  if( !isMC() && m_trigConfTool_handle.isUserConfigured() ){
     for (int i = eventInfo->bcid() - 1; i >= 0; i--){
       //get the bunch group pattern for bunch crossing i
       uint16_t bgPattern = m_trigConfTool_handle->bunchGroupSet()->bgPattern()[i];

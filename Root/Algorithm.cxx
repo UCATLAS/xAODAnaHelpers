@@ -55,25 +55,24 @@ StatusCode xAH::Algorithm::parseSystValVector(){
     return StatusCode::SUCCESS;
 }
 
-int xAH::Algorithm::isMC(){
+bool xAH::Algorithm::isMC(){
   // first override if need to
   if(m_isMC == 0 || m_isMC == 1) return m_isMC;
 
   const xAOD::EventInfo* ei(nullptr);
   // couldn't retrieve it
   if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()).isSuccess()){
-    ANA_MSG_DEBUG( "Could not retrieve eventInfo container: " << m_eventInfoContainerName);
-    return -1;
+    RCU_THROW_MSG( "Could not retrieve eventInfo container (" + m_eventInfoContainerName+") for isMC() check.");
   }
 
   static SG::AuxElement::ConstAccessor<uint32_t> eventType("eventTypeBitmask");
   if(!eventType.isAvailable(*ei)){
-    ANA_MSG_DEBUG( "eventType is not available.");
-    return -1;
+    RCU_THROW_MSG( "eventType is not available for isMC() check.");
   }
 
-  // reached here, return 0 or 1 since we have all we need
-  return (static_cast<uint32_t>(eventType(*ei)) & xAOD::EventInfo::IS_SIMULATION);
+  // reached here, return True or False since we have all we need
+  m_isMC = (static_cast<uint32_t>(eventType(*ei)) & xAOD::EventInfo::IS_SIMULATION);
+  return m_isMC;
 }
 
 void xAH::Algorithm::registerInstance(){

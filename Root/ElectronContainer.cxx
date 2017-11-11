@@ -126,7 +126,7 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     if ( !m_infoSwitch.m_PIDWPs.size() ) m_infoSwitch.m_PIDWPs = {"LooseAndBLayerLLH","MediumLLH","TightLLH"};
 
     // default isolation working points if no user input
-    if ( !m_infoSwitch.m_isolWPs.size() ) m_infoSwitch.m_isolWPs = {"","isolGradient","isolLoose","isolTight"};
+    if ( !m_infoSwitch.m_isolWPs.size() ) m_infoSwitch.m_isolWPs = {"","Gradient","Loose","Tight"};
 
     // default trigger working points if no user input
     if ( !m_infoSwitch.m_trigWPs.size() ) m_infoSwitch.m_trigWPs = {"SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0"};
@@ -321,15 +321,15 @@ void ElectronContainer::setTree(TTree *tree)
 
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty()) {
-          tree->SetBranchStatus ( (m_name+"_IsoEff_SF_" + PID + "_" + isol).c_str() , 1);
-          tree->SetBranchAddress( (m_name+"_IsoEff_SF_" + PID + "_" + isol).c_str() , & (*m_IsoEff_SF)[ PID+isol ] );
+          tree->SetBranchStatus ( (m_name+"_IsoEff_SF_" + PID + "_isol" + isol).c_str() , 1);
+          tree->SetBranchAddress( (m_name+"_IsoEff_SF_" + PID + "_isol" + isol).c_str() , & (*m_IsoEff_SF)[ PID+isol ] );
         }
         for (auto& trig : m_infoSwitch.m_trigWPs) {
-          tree->SetBranchStatus ( (m_name+"_TrigEff_SF_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "")).c_str() , 1 );
-          tree->SetBranchAddress( (m_name+"_TrigEff_SF_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "")).c_str() , & (*m_TrigEff_SF)[ trig+PID+isol ] );
+          tree->SetBranchStatus ( (m_name+"_TrigEff_SF_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , 1 );
+          tree->SetBranchAddress( (m_name+"_TrigEff_SF_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigEff_SF)[ trig+PID+isol ] );
 
-          tree->SetBranchStatus ( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_" + isol : "")).c_str() , 1 );
-          tree->SetBranchAddress( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_" + isol : "")).c_str() , & (*m_TrigMCEff) [ trig+PID+isol ] );
+          tree->SetBranchStatus ( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , 1 );
+          tree->SetBranchAddress( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigMCEff) [ trig+PID+isol ] );
         }
       }
     }
@@ -562,10 +562,10 @@ void ElectronContainer::setBranches(TTree *tree)
       tree->Branch( (m_name+"_PIDEff_SF_"  + PID).c_str() , & (*m_PIDEff_SF)[ PID ] );
       for (auto& isol : m_infoSwitch.m_isolWPs) {
         if(!isol.empty())
-          tree->Branch( (m_name+"_IsoEff_SF_"  + PID + isol).c_str() , & (*m_IsoEff_SF)[ PID+isol ] );
+          tree->Branch( (m_name+"_IsoEff_SF_"  + PID + "_isol" + isol).c_str() , & (*m_IsoEff_SF)[ PID+isol ] );
         for (auto& trig : m_infoSwitch.m_trigWPs) {
-          tree->Branch( (m_name+"_TrigEff_SF_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "")).c_str() , & (*m_TrigEff_SF)[ trig+PID+isol ] );
-          tree->Branch( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_" + isol : "")).c_str() , & (*m_TrigMCEff) [ trig+PID+isol ] );
+          tree->Branch( (m_name+"_TrigEff_SF_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigEff_SF)[ trig+PID+isol ] );
+          tree->Branch( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigMCEff) [ trig+PID+isol ] );
         }
       }
     }
@@ -989,18 +989,18 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       for (auto& isol : m_infoSwitch.m_isolWPs) {
 
         if(!isol.empty()) {
-          std::string IsoSF = "ElIsoEff_SF_syst_" + PID + "_" + isol;
+          std::string IsoSF = "ElIsoEff_SF_syst_" + PID + "_isol" + isol;
           accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID+isol , SG::AuxElement::Accessor< std::vector< float > >( IsoSF ) ) );
           safeSFVecFill<float, xAOD::Electron>( elec, accIsoSF.at( PID+isol ), &m_IsoEff_SF->at( PID+isol ), junkSF );
         }
 
         for (auto& trig : m_infoSwitch.m_trigWPs) {
 
-          std::string TrigSF = "ElTrigEff_SF_syst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
+          std::string TrigSF = "ElTrigEff_SF_syst_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "");
           accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigSF ) ) );
           safeSFVecFill<float, xAOD::Electron>( elec, accTrigSF.at( trig+PID+isol ), &m_TrigEff_SF->at( trig+PID+isol ), junkSF );
 
-          std::string TrigEFF = "ElTrigMCEff_syst_" + trig + "_" + PID + (!isol.empty() ? "_" + isol : "");
+          std::string TrigEFF = "ElTrigMCEff_syst_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "");
           accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+PID+isol , SG::AuxElement::Accessor< std::vector< float > >( TrigEFF ) ) );
           safeSFVecFill<float, xAOD::Electron>( elec, accTrigEFF.at( trig+PID+isol ), &m_TrigMCEff->at( trig+PID+isol ), junkSF );
 

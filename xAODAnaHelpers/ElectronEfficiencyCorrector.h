@@ -84,8 +84,6 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  bool m_isMC;            //!
-
   std::string m_PID_WP;    //!
   std::string m_Iso_WP;    //!
   std::string m_IsoPID_WP; //!

@@ -12,40 +12,44 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 {
   // rapidity
   if(m_infoSwitch.m_rapidity) {
-    m_rapidity                    =new std::vector<float>();
+    m_rapidity                  =new std::vector<float>();
   }
 
   // clean
-  if(m_infoSwitch.m_clean) {
-    m_Timing                    =new std::vector<float>();
-    m_LArQuality                =new std::vector<float>();
-    m_HECQuality                =new std::vector<float>();
-    m_NegativeE                 =new std::vector<float>();
-    m_AverageLArQF              =new std::vector<float>();
-    m_BchCorrCell               =new std::vector<float>();
-    m_N90Constituents           =new std::vector<float>();
-    m_LArBadHVEnergyFrac        =new std::vector<float>();
-    m_LArBadHVNCell             =new std::vector<int>();
-    m_OotFracClusters5          =new std::vector<float>();
-    m_OotFracClusters10         =new std::vector<float>();
-    m_LeadingClusterPt          =new std::vector<float>();
-    m_LeadingClusterSecondLambda=new std::vector<float>();
-    m_LeadingClusterCenterLambda=new std::vector<float>();
-    m_LeadingClusterSecondR     =new std::vector<float>();
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+    if(m_infoSwitch.m_clean){
+      m_Timing                    =new std::vector<float>();
+      m_LArQuality                =new std::vector<float>();
+      m_HECQuality                =new std::vector<float>();
+      m_NegativeE                 =new std::vector<float>();
+      m_AverageLArQF              =new std::vector<float>();
+      m_BchCorrCell               =new std::vector<float>();
+      m_N90Constituents           =new std::vector<float>();
+      m_LArBadHVEnergyFrac        =new std::vector<float>();
+      m_LArBadHVNCell             =new std::vector<int>();
+      m_OotFracClusters5          =new std::vector<float>();
+      m_OotFracClusters10         =new std::vector<float>();
+      m_LeadingClusterPt          =new std::vector<float>();
+      m_LeadingClusterSecondLambda=new std::vector<float>();
+      m_LeadingClusterCenterLambda=new std::vector<float>();
+      m_LeadingClusterSecondR     =new std::vector<float>();
+      m_clean_passLooseBadUgly    =new std::vector<int>();
+      m_clean_passTightBadUgly    =new std::vector<int>();
+    }
     m_clean_passLooseBad        =new std::vector<int>();
-    m_clean_passLooseBadUgly    =new std::vector<int>();
     m_clean_passTightBad        =new std::vector<int>();
-    m_clean_passTightBadUgly    =new std::vector<int>();
   }
 
   // energy
-  if ( m_infoSwitch.m_energy ) {
-    m_HECFrac               = new std::vector<float>();
+  if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
+    if ( m_infoSwitch.m_energy )  {
+      m_HECFrac               = new std::vector<float>();
+      m_CentroidR             = new std::vector<float>();
+      m_LowEtConstituentsFrac = new std::vector<float>();
+    }
     m_EMFrac                = new std::vector<float>();
-    m_CentroidR             = new std::vector<float>();
     m_FracSamplingMax       = new std::vector<float>();
     m_FracSamplingMaxIndex  = new std::vector<float>();
-    m_LowEtConstituentsFrac = new std::vector<float>();
     m_GhostMuonSegmentCount = new std::vector<float>();
     m_Width                 = new std::vector<float>();
   }
@@ -64,6 +68,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   // constscale eta
   if ( m_infoSwitch.m_constscaleEta ) {
     m_constScaleEta               = new std::vector<float>();
+  }
+
+  // detector eta
+  if ( m_infoSwitch.m_detectorEta ) {
+    m_detectorEta               = new std::vector<float>();
   }
 
   // layer
@@ -170,15 +179,14 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_constituent_e          = new  std::vector< std::vector<float> > ();
   }
 
-  // flavTag
-  if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
+  // flavorTag
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
 
     //m_MV1                       =new std::vector<float>();
     m_MV2c00                    =new std::vector<float>();
     m_MV2c10                    =new std::vector<float>();
     m_MV2c20                    =new std::vector<float>();
     m_MV2c100                   =new std::vector<float>();
-    m_MV2                       =new std::vector<float>();
     m_HadronConeExclTruthLabelID=new std::vector<int>();
 
     // Jet Fitter
@@ -268,8 +276,8 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
   }
 
-  //  flavTagHLT
-  if( m_infoSwitch.m_flavTagHLT  ) {
+  //  flavorTagHLT
+  if( m_infoSwitch.m_flavorTagHLT  ) {
     m_vtxOnlineValid     = new  std::vector<float>();
     m_vtxHadDummy        = new  std::vector<float>();
 
@@ -399,36 +407,40 @@ JetContainer::~JetContainer()
   }
 
   // clean
-  if(m_infoSwitch.m_clean) {
-    delete m_Timing;
-    delete m_LArQuality;
-    delete m_HECQuality;
-    delete m_NegativeE;
-    delete m_AverageLArQF;
-    delete m_BchCorrCell;
-    delete m_N90Constituents;
-    delete m_LArBadHVEnergyFrac;
-    delete m_LArBadHVNCell;
-    delete m_OotFracClusters5;
-    delete m_OotFracClusters10;
-    delete m_LeadingClusterPt;
-    delete m_LeadingClusterSecondLambda;
-    delete m_LeadingClusterCenterLambda;
-    delete m_LeadingClusterSecondR;
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+    if(m_infoSwitch.m_clean){
+      delete m_Timing;
+      delete m_LArQuality;
+      delete m_HECQuality;
+      delete m_NegativeE;
+      delete m_AverageLArQF;
+      delete m_BchCorrCell;
+      delete m_N90Constituents;
+      delete m_LArBadHVEnergyFrac;
+      delete m_LArBadHVNCell;
+      delete m_OotFracClusters5;
+      delete m_OotFracClusters10;
+      delete m_LeadingClusterPt;
+      delete m_LeadingClusterSecondLambda;
+      delete m_LeadingClusterCenterLambda;
+      delete m_LeadingClusterSecondR;
+      delete m_clean_passLooseBadUgly;
+      delete m_clean_passTightBadUgly;
+    }
     delete m_clean_passLooseBad;
-    delete m_clean_passLooseBadUgly;
     delete m_clean_passTightBad;
-    delete m_clean_passTightBadUgly;
   }
 
   // energy
-  if ( m_infoSwitch.m_energy ) {
-    delete m_HECFrac;
+  if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
+    if ( m_infoSwitch.m_energy ){
+      delete m_HECFrac;
+      delete m_CentroidR;
+      delete m_LowEtConstituentsFrac;
+    }
     delete m_EMFrac;
-    delete m_CentroidR;
     delete m_FracSamplingMax;
     delete m_FracSamplingMaxIndex;
-    delete m_LowEtConstituentsFrac;
     delete m_GhostMuonSegmentCount;
     delete m_Width;
   }
@@ -449,6 +461,10 @@ JetContainer::~JetContainer()
     delete m_constScaleEta         ;
   }
 
+  // detector eta
+  if ( m_infoSwitch.m_detectorEta ) {
+    delete m_detectorEta;
+  }
 
   // layer
   if ( m_infoSwitch.m_layer ) {
@@ -556,12 +572,11 @@ JetContainer::~JetContainer()
   }
 
 
-  // flavTag
-  if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
-    // flavTag
+  // flavorTag
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
+    // flavorTag
 
     //delete m_MV1;
-    delete m_MV2;
     delete m_MV2c00;
     delete m_MV2c10;
     delete m_MV2c20;
@@ -655,8 +670,8 @@ JetContainer::~JetContainer()
 
   }
 
-    //  flavTagHLT
-  if( m_infoSwitch.m_flavTagHLT  ) {
+    //  flavorTagHLT
+  if( m_infoSwitch.m_flavorTagHLT  ) {
     delete m_vtxOnlineValid     ;
     delete m_vtxHadDummy        ;
     delete m_bs_online_vx       ;
@@ -740,11 +755,6 @@ JetContainer::~JetContainer()
 
 void JetContainer::setTree(TTree *tree)
 {
-  JetContainer::setTree(tree, "");
-}
-
-void JetContainer::setTree(TTree *tree, const std::string& tagger)
-{
   //
   // Connect branches
   ParticleContainer::setTree(tree);
@@ -754,41 +764,42 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<float>(tree,"rapidity",                      &m_rapidity);
     }
 
-  if(m_infoSwitch.m_clean)
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
     {
-      connectBranch<float>(tree,"Timing",                      &m_Timing);
-      connectBranch<float>(tree,"LArQuality",                  &m_LArQuality);
-
-
-      connectBranch<int>  (tree, "LArBadHVNCell",              &m_LArBadHVNCell);
-
-      connectBranch<float>(tree, "LArQuality",                 &m_LArQuality);
-      connectBranch<float>(tree, "HECQuality",                 &m_HECQuality);
-      connectBranch<float>(tree, "NegativeE",                  &m_NegativeE);
-      connectBranch<float>(tree, "AverageLArQF",               &m_AverageLArQF);
-      connectBranch<float>(tree, "BchCorrCell",                &m_BchCorrCell);
-      connectBranch<float>(tree, "N90Constituents",            &m_N90Constituents);
-      connectBranch<float>(tree, "LArBadHVEnergyFrac",         &m_LArBadHVEnergyFrac);
-      connectBranch<float>(tree, "OotFracClusters5",           &m_OotFracClusters5);
-      connectBranch<float>(tree, "OotFracClusters10",          &m_OotFracClusters10);
-      connectBranch<float>(tree, "LeadingClusterPt",           &m_LeadingClusterPt);
-      connectBranch<float>(tree, "LeadingClusterSecondLambda", &m_LeadingClusterSecondLambda);
-      connectBranch<float>(tree, "LeadingClusterCenterLambda", &m_LeadingClusterCenterLambda);
-      connectBranch<float>(tree, "LeadingClusterSecondR",      &m_LeadingClusterSecondR);
+      if(m_infoSwitch.m_clean){
+        connectBranch<float>(tree, "Timing",                     &m_Timing);
+        connectBranch<float>(tree, "LArQuality",                 &m_LArQuality);
+        connectBranch<int>  (tree, "LArBadHVNCell",              &m_LArBadHVNCell);
+        connectBranch<float>(tree, "LArQuality",                 &m_LArQuality);
+        connectBranch<float>(tree, "HECQuality",                 &m_HECQuality);
+        connectBranch<float>(tree, "NegativeE",                  &m_NegativeE);
+        connectBranch<float>(tree, "AverageLArQF",               &m_AverageLArQF);
+        connectBranch<float>(tree, "BchCorrCell",                &m_BchCorrCell);
+        connectBranch<float>(tree, "N90Constituents",            &m_N90Constituents);
+        connectBranch<float>(tree, "LArBadHVEnergyFrac",         &m_LArBadHVEnergyFrac);
+        connectBranch<float>(tree, "OotFracClusters5",           &m_OotFracClusters5);
+        connectBranch<float>(tree, "OotFracClusters10",          &m_OotFracClusters10);
+        connectBranch<float>(tree, "LeadingClusterPt",           &m_LeadingClusterPt);
+        connectBranch<float>(tree, "LeadingClusterSecondLambda", &m_LeadingClusterSecondLambda);
+        connectBranch<float>(tree, "LeadingClusterCenterLambda", &m_LeadingClusterCenterLambda);
+        connectBranch<float>(tree, "LeadingClusterSecondR",      &m_LeadingClusterSecondR);
+        connectBranch<int>  (tree, "clean_passLooseBadUgly",     &m_clean_passLooseBadUgly);
+        connectBranch<int>  (tree, "clean_passTightBadUgly",     &m_clean_passTightBadUgly);
+      }
       connectBranch<int>  (tree, "clean_passLooseBad",         &m_clean_passLooseBad);
-      connectBranch<int>  (tree, "clean_passLooseBadUgly",     &m_clean_passLooseBadUgly);
       connectBranch<int>  (tree, "clean_passTightBad",         &m_clean_passTightBad);
-      connectBranch<int>  (tree, "clean_passTightBadUgly",     &m_clean_passTightBadUgly);
     }
 
-  if(m_infoSwitch.m_energy)
+  if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight )
     {
-      connectBranch<float>(tree, "HECFrac",               &m_HECFrac);
+      if ( m_infoSwitch.m_energy ){
+        connectBranch<float>(tree, "HECFrac",               &m_HECFrac);
+        connectBranch<float>(tree, "CentroidR",             &m_CentroidR);
+        connectBranch<float>(tree, "LowEtConstituentsFrac", &m_LowEtConstituentsFrac);
+      }
       connectBranch<float>(tree, "EMFrac",                &m_EMFrac);
-      connectBranch<float>(tree, "CentroidR",             &m_CentroidR);
       connectBranch<float>(tree, "FracSamplingMax",       &m_FracSamplingMax);
       connectBranch<float>(tree, "FracSamplingMaxIndex",  &m_FracSamplingMaxIndex);
-      connectBranch<float>(tree, "LowEtConstituentsFrac", &m_LowEtConstituentsFrac);
       connectBranch<float>(tree, "GhostMuonSegmentCount", &m_GhostMuonSegmentCount);
       connectBranch<float>(tree, "Width",                 &m_Width);
     }
@@ -816,20 +827,16 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<double>(tree,"JetVertexCharge_discriminant", &m_JetVertexCharge_discriminant);
     }
 
-  if(m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT)
+  if(m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT)
     {
       connectBranch<float>(tree,"MV2c00",               &m_MV2c00);
       connectBranch<float>(tree,"MV2c10",               &m_MV2c10);
       connectBranch<float>(tree,"MV2c20",               &m_MV2c20);
       connectBranch<float>(tree,"MV2c100",              &m_MV2c100);
       connectBranch<int>  (tree,"HadronConeExclTruthLabelID",&m_HadronConeExclTruthLabelID);
-
-      if(tagger == "MV2c20")  m_MV2 = m_MV2c20;
-      if(tagger == "MV2c10")  m_MV2 = m_MV2c10;
-
     }
 
-  if(m_infoSwitch.m_flavTagHLT)
+  if(m_infoSwitch.m_flavorTagHLT)
     {
       connectBranch<float>(tree,"vtxHadDummy",    &m_vtxHadDummy);
       connectBranch<float>(tree,"bs_online_vx",   &m_bs_online_vx);
@@ -843,6 +850,10 @@ void JetContainer::setTree(TTree *tree, const std::string& tagger)
       connectBranch<float>(tree,"vtx_online_x0",  &m_vtx_online_x0);
       connectBranch<float>(tree,"vtx_online_y0",  &m_vtx_online_y0);
       connectBranch<float>(tree,"vtx_online_z0",  &m_vtx_online_z0);
+
+      connectBranch<float>(tree,"vtx_online_bkg_x0",  &m_vtx_online_bkg_x0);
+      connectBranch<float>(tree,"vtx_online_bkg_y0",  &m_vtx_online_bkg_y0);
+      connectBranch<float>(tree,"vtx_online_bkg_z0",  &m_vtx_online_bkg_z0);
     }
 
   if(m_infoSwitch.m_jetFitterDetails)
@@ -959,39 +970,43 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.rapidity                    =m_rapidity                    ->at(idx);
     }
 
-  if(m_infoSwitch.m_clean)
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
     {
       if(m_debug) std::cout << "updating clean " << std::endl;
-      jet.Timing                    =m_Timing                    ->at(idx);
-      jet.LArQuality                =m_LArQuality                ->at(idx);
-      jet.HECQuality                =m_HECQuality                ->at(idx);
-      jet.NegativeE                 =m_NegativeE                 ->at(idx);
-      jet.AverageLArQF              =m_AverageLArQF              ->at(idx);
-      jet.BchCorrCell               =m_BchCorrCell               ->at(idx);
-      jet.N90Constituents           =m_N90Constituents           ->at(idx);
-      jet.LArBadHVEFrac             =m_LArBadHVEnergyFrac       ->at(idx);
-      jet.LArBadHVNCell             =m_LArBadHVNCell             ->at(idx);
-      jet.OotFracClusters5          =m_OotFracClusters5          ->at(idx);
-      jet.OotFracClusters10         =m_OotFracClusters10         ->at(idx);
-      jet.LeadingClusterPt          =m_LeadingClusterPt          ->at(idx);
-      jet.LeadingClusterSecondLambda=m_LeadingClusterSecondLambda->at(idx);
-      jet.LeadingClusterCenterLambda=m_LeadingClusterCenterLambda->at(idx);
-      jet.LeadingClusterSecondR     =m_LeadingClusterSecondR     ->at(idx);
+      if(m_infoSwitch.m_clean){
+        jet.Timing                    =m_Timing                    ->at(idx);
+        jet.LArQuality                =m_LArQuality                ->at(idx);
+        jet.HECQuality                =m_HECQuality                ->at(idx);
+        jet.NegativeE                 =m_NegativeE                 ->at(idx);
+        jet.AverageLArQF              =m_AverageLArQF              ->at(idx);
+        jet.BchCorrCell               =m_BchCorrCell               ->at(idx);
+        jet.N90Constituents           =m_N90Constituents           ->at(idx);
+        jet.LArBadHVEFrac             =m_LArBadHVEnergyFrac       ->at(idx);
+        jet.LArBadHVNCell             =m_LArBadHVNCell             ->at(idx);
+        jet.OotFracClusters5          =m_OotFracClusters5          ->at(idx);
+        jet.OotFracClusters10         =m_OotFracClusters10         ->at(idx);
+        jet.LeadingClusterPt          =m_LeadingClusterPt          ->at(idx);
+        jet.LeadingClusterSecondLambda=m_LeadingClusterSecondLambda->at(idx);
+        jet.LeadingClusterCenterLambda=m_LeadingClusterCenterLambda->at(idx);
+        jet.LeadingClusterSecondR     =m_LeadingClusterSecondR     ->at(idx);
+        jet.clean_passLooseBadUgly    =m_clean_passLooseBadUgly    ->at(idx);
+        jet.clean_passTightBadUgly    =m_clean_passTightBadUgly    ->at(idx);
+      }
       jet.clean_passLooseBad        =m_clean_passLooseBad        ->at(idx);
-      jet.clean_passLooseBadUgly    =m_clean_passLooseBadUgly    ->at(idx);
       jet.clean_passTightBad        =m_clean_passTightBad        ->at(idx);
-      jet.clean_passTightBadUgly    =m_clean_passTightBadUgly    ->at(idx);
     }
 
-  if(m_infoSwitch.m_energy)
+  if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight)
     {
       if(m_debug) std::cout << "updating energy " << std::endl;
-      jet.HECFrac              =m_HECFrac              ->at(idx);
+      if ( m_infoSwitch.m_energy ){
+        jet.HECFrac              =m_HECFrac              ->at(idx);
+        jet.CentroidR            =m_CentroidR            ->at(idx);
+        jet.LowEtConstituentsFrac=m_LowEtConstituentsFrac->at(idx);
+      }
       jet.EMFrac               =m_EMFrac               ->at(idx);
-      jet.CentroidR            =m_CentroidR            ->at(idx);
       jet.FracSamplingMax      =m_FracSamplingMax      ->at(idx);
       jet.FracSamplingMaxIndex =m_FracSamplingMaxIndex ->at(idx);
-      jet.LowEtConstituentsFrac=m_LowEtConstituentsFrac->at(idx);
       jet.GhostMuonSegmentCount=m_GhostMuonSegmentCount->at(idx);
       jet.Width                =m_Width                ->at(idx);
     }
@@ -1020,23 +1035,22 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.JVC = m_JetVertexCharge_discriminant->at(idx);
   }
 
-  if(m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT)
+  if(m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT)
     {
-      if(m_debug) std::cout << "updating flavTag " << std::endl;
+      if(m_debug) std::cout << "updating flavorTag " << std::endl;
       jet.MV2c00                    =m_MV2c00               ->at(idx);
       jet.MV2c10                    =m_MV2c10               ->at(idx);
       jet.MV2c20                    =m_MV2c20               ->at(idx);
       jet.MV2c100                   =m_MV2c100              ->at(idx);
-      jet.MV2                       =m_MV2                  ->at(idx);
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
-      if(m_debug) std::cout << "leave flavTag " << std::endl;
+      if(m_debug) std::cout << "leave flavorTag " << std::endl;
     }
 
 
-  if(m_infoSwitch.m_flavTagHLT)
+  if(m_infoSwitch.m_flavorTagHLT)
     {
-      if(m_debug) std::cout << "updating flavTagHLT " << std::endl;
+      if(m_debug) std::cout << "updating flavorTagHLT " << std::endl;
       jet.bs_online_vx                      =m_bs_online_vx                  ->at(idx);
       jet.bs_online_vy                      =m_bs_online_vy                  ->at(idx);
       jet.bs_online_vz                      =m_bs_online_vz                  ->at(idx);
@@ -1048,6 +1062,10 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.vtx_online_x0                     =m_vtx_online_x0                  ->at(idx);
       jet.vtx_online_y0                     =m_vtx_online_y0                  ->at(idx);
       jet.vtx_online_z0                     =m_vtx_online_z0                  ->at(idx);
+
+      jet.vtx_online_bkg_x0                     =m_vtx_online_bkg_x0                  ->at(idx);
+      jet.vtx_online_bkg_y0                     =m_vtx_online_bkg_y0                  ->at(idx);
+      jet.vtx_online_bkg_z0                     =m_vtx_online_bkg_z0                  ->at(idx);
 
     }
 
@@ -1406,36 +1424,40 @@ void JetContainer::setBranches(TTree *tree)
   }
 
 
-  if( m_infoSwitch.m_clean ) {
-    setBranch<float>(tree,"Timing",                        m_Timing               );
-    setBranch<float>(tree,"LArQuality",                    m_LArQuality         );
-    setBranch<float>(tree,"HECQuality",                    m_HECQuality               );
-    setBranch<float>(tree,"NegativeE",                     m_NegativeE               );
-    setBranch<float>(tree,"AverageLArQF",                  m_AverageLArQF            );
-    setBranch<float>(tree,"BchCorrCell",                   m_BchCorrCell        );
-    setBranch<float>(tree,"N90Constituents",               m_N90Constituents           );
-    setBranch<float>(tree,"LArBadHVEnergyFrac",            m_LArBadHVEnergyFrac   );
-    setBranch<int>  (tree,"LArBadHVNCell",                 m_LArBadHVNCell  	  );
-    setBranch<float>(tree,"OotFracClusters5",              m_OotFracClusters5  	    );
-    setBranch<float>(tree,"OotFracClusters10",             m_OotFracClusters10  	  );
-    setBranch<float>(tree,"LeadingClusterPt",              m_LeadingClusterPt  	            );
-    setBranch<float>(tree,"LeadingClusterSecondLambda",    m_LeadingClusterSecondLambda  	  );
-    setBranch<float>(tree,"LeadingClusterCenterLambda",    m_LeadingClusterCenterLambda  	  );
-    setBranch<float>(tree,"LeadingClusterSecondR",         m_LeadingClusterSecondR  	      );
+  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
+    if(m_infoSwitch.m_clean){
+      setBranch<float>(tree,"Timing",                        m_Timing               );
+      setBranch<float>(tree,"LArQuality",                    m_LArQuality         );
+      setBranch<float>(tree,"HECQuality",                    m_HECQuality               );
+      setBranch<float>(tree,"NegativeE",                     m_NegativeE               );
+      setBranch<float>(tree,"AverageLArQF",                  m_AverageLArQF            );
+      setBranch<float>(tree,"BchCorrCell",                   m_BchCorrCell        );
+      setBranch<float>(tree,"N90Constituents",               m_N90Constituents           );
+      setBranch<float>(tree,"LArBadHVEnergyFrac",            m_LArBadHVEnergyFrac   );
+      setBranch<int>  (tree,"LArBadHVNCell",                 m_LArBadHVNCell  	  );
+      setBranch<float>(tree,"OotFracClusters5",              m_OotFracClusters5  	    );
+      setBranch<float>(tree,"OotFracClusters10",             m_OotFracClusters10  	  );
+      setBranch<float>(tree,"LeadingClusterPt",              m_LeadingClusterPt  	            );
+      setBranch<float>(tree,"LeadingClusterSecondLambda",    m_LeadingClusterSecondLambda  	  );
+      setBranch<float>(tree,"LeadingClusterCenterLambda",    m_LeadingClusterCenterLambda  	  );
+      setBranch<float>(tree,"LeadingClusterSecondR",         m_LeadingClusterSecondR  	      );
+      setBranch<int>  (tree,"clean_passLooseBadUgly",        m_clean_passLooseBadUgly         );
+      setBranch<int>  (tree,"clean_passTightBadUgly",        m_clean_passTightBadUgly         );
+    }
     setBranch<int>  (tree,"clean_passLooseBad",            m_clean_passLooseBad             );
-    setBranch<int>  (tree,"clean_passLooseBadUgly",        m_clean_passLooseBadUgly         );
     setBranch<int>  (tree,"clean_passTightBad",            m_clean_passTightBad             );
-    setBranch<int>  (tree,"clean_passTightBadUgly",        m_clean_passTightBadUgly         );
   }
 
 
-  if ( m_infoSwitch.m_energy ) {
-    setBranch<float>(tree,"HECFrac",                   m_HECFrac            );
+  if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
+    if ( m_infoSwitch.m_energy ){
+      setBranch<float>(tree,"HECFrac",                   m_HECFrac            );
+      setBranch<float>(tree,"CentroidR",                 m_CentroidR      );
+      setBranch<float>(tree,"LowEtConstituentsFrac",     m_LowEtConstituentsFrac      );
+    }
     setBranch<float>(tree,"EMFrac",                    m_EMFrac     );
-    setBranch<float>(tree,"CentroidR",                 m_CentroidR      );
     setBranch<float>(tree,"FracSamplingMax",           m_FracSamplingMax    );
     setBranch<float>(tree,"FracSamplingMaxIndex",      m_FracSamplingMaxIndex );
-    setBranch<float>(tree,"LowEtConstituentsFrac",     m_LowEtConstituentsFrac      );
     setBranch<float>(tree,"GhostMuonSegmentCount",     m_GhostMuonSegmentCount   );
     setBranch<float>(tree,"Width",                     m_Width          );
   }
@@ -1452,6 +1474,10 @@ void JetContainer::setBranches(TTree *tree)
 
   if ( m_infoSwitch.m_constscaleEta ) {
     setBranch<float>(tree,"constScaleEta",              m_constScaleEta            );
+  }
+
+  if ( m_infoSwitch.m_detectorEta ) {
+    setBranch<float>(tree,"detectorEta",              m_detectorEta            );
   }
 
   if ( m_infoSwitch.m_layer ) {
@@ -1560,15 +1586,14 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<std::vector<float> >(tree,"constituent_e",      m_constituent_e     );
   }
 
-  if( m_infoSwitch.m_flavTag  || m_infoSwitch.m_flavTagHLT  ) {
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
 
-    setBranch<float>(tree,"MV2c00",        m_MV2c00);
-    setBranch<float>(tree,"MV2c10",        m_MV2c10);
-    setBranch<float>(tree,"MV2c20",    m_MV2c20);
-    setBranch<float>(tree,"MV2c100",    m_MV2c100);
+    setBranch<float>(tree,"MV2c00",   m_MV2c00);
+    setBranch<float>(tree,"MV2c10",   m_MV2c10);
+    setBranch<float>(tree,"MV2c20",   m_MV2c20);
+    setBranch<float>(tree,"MV2c100",  m_MV2c100);
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
-
 
     if( m_infoSwitch.m_jetFitterDetails){
 
@@ -1657,7 +1682,7 @@ void JetContainer::setBranches(TTree *tree)
     }
   }
 
-  if( m_infoSwitch.m_flavTagHLT  ) {
+  if( m_infoSwitch.m_flavorTagHLT  ) {
 
     setBranch<float>(tree,"vtxOnlineValid",m_vtxOnlineValid);
     setBranch<float>(tree,"vtxHadDummy"   ,m_vtxHadDummy   );
@@ -1751,37 +1776,41 @@ void JetContainer::clear()
   }
 
   // clean
-  if( m_infoSwitch.m_clean ) {
-    m_Timing                    ->clear();
-    m_LArQuality                ->clear();
-    m_HECQuality                ->clear();
-    m_NegativeE                 ->clear();
-    m_AverageLArQF              ->clear();
-    m_BchCorrCell               ->clear();
-    m_N90Constituents           ->clear();
-    m_LArBadHVEnergyFrac        ->clear();
-    m_LArBadHVNCell             ->clear();
-    m_OotFracClusters5          ->clear();
-    m_OotFracClusters10         ->clear();
-    m_LeadingClusterPt          ->clear();
-    m_LeadingClusterSecondLambda->clear();
-    m_LeadingClusterCenterLambda->clear();
-    m_LeadingClusterSecondR     ->clear();
+  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
+    if(m_infoSwitch.m_clean){
+      m_Timing                    ->clear();
+      m_LArQuality                ->clear();
+      m_HECQuality                ->clear();
+      m_NegativeE                 ->clear();
+      m_AverageLArQF              ->clear();
+      m_BchCorrCell               ->clear();
+      m_N90Constituents           ->clear();
+      m_LArBadHVEnergyFrac        ->clear();
+      m_LArBadHVNCell             ->clear();
+      m_OotFracClusters5          ->clear();
+      m_OotFracClusters10         ->clear();
+      m_LeadingClusterPt          ->clear();
+      m_LeadingClusterSecondLambda->clear();
+      m_LeadingClusterCenterLambda->clear();
+      m_LeadingClusterSecondR     ->clear();
+      m_clean_passTightBadUgly    ->clear();
+      m_clean_passLooseBadUgly    ->clear();
+    }
     m_clean_passLooseBad        ->clear();
-    m_clean_passLooseBadUgly    ->clear();
     m_clean_passTightBad        ->clear();
-    m_clean_passTightBadUgly    ->clear();
   }
 
 
   // energy
-  if ( m_infoSwitch.m_energy ) {
-    m_HECFrac               ->clear();
+  if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
+    if ( m_infoSwitch.m_energy ){
+      m_HECFrac               ->clear();
+      m_CentroidR             ->clear();
+      m_LowEtConstituentsFrac ->clear();
+    }
     m_EMFrac                ->clear();
-    m_CentroidR             ->clear();
     m_FracSamplingMax       ->clear();
     m_FracSamplingMaxIndex  ->clear();
-    m_LowEtConstituentsFrac ->clear();
     m_GhostMuonSegmentCount ->clear();
     m_Width                 ->clear();
   }
@@ -1800,6 +1829,11 @@ void JetContainer::clear()
   // eta at constScale
   if ( m_infoSwitch.m_constscaleEta ) {
     m_constScaleEta	    ->clear();
+  }
+
+  // detector eta
+  if ( m_infoSwitch.m_detectorEta ) {
+    m_detectorEta           ->clear();
   }
 
   // layer
@@ -1902,13 +1936,12 @@ void JetContainer::clear()
   }
 
   // flavor tag
-  if ( m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT  ) {
+  if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT  ) {
 
     m_MV2c00                    ->clear();
     m_MV2c10                    ->clear();
     m_MV2c20                    ->clear();
     m_MV2c100                   ->clear();
-    m_MV2                       ->clear();
     m_HadronConeExclTruthLabelID->clear();
 
 
@@ -1993,7 +2026,7 @@ void JetContainer::clear()
     }
   }
 
-  if ( m_infoSwitch.m_flavTagHLT  ) {
+  if ( m_infoSwitch.m_flavorTagHLT  ) {
     m_vtxOnlineValid->clear();
     m_vtxHadDummy->clear();
     m_bs_online_vx->clear();
@@ -2092,85 +2125,95 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_rapidity->push_back( jet->rapidity() );
   }
 
-  if (m_infoSwitch.m_clean) {
-    static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
-    safeFill<float, float, xAOD::Jet>(jet, jetTime, m_Timing, -999);
+  if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
 
-    static SG::AuxElement::ConstAccessor<float> LArQuality ("LArQuality");
-    safeFill<float, float, xAOD::Jet>(jet, LArQuality, m_LArQuality, -999);
+    if(m_infoSwitch.m_clean){
 
-    static SG::AuxElement::ConstAccessor<float> hecq ("HECQuality");
-    safeFill<float, float, xAOD::Jet>(jet, hecq, m_HECQuality, -999);
+      static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
+      safeFill<float, float, xAOD::Jet>(jet, jetTime, m_Timing, -999);
 
-    static SG::AuxElement::ConstAccessor<float> negE ("NegativeE");
-    safeFill<float, float, xAOD::Jet>(jet, negE, m_NegativeE, -999, m_units);
+      static SG::AuxElement::ConstAccessor<float> LArQuality ("LArQuality");
+      safeFill<float, float, xAOD::Jet>(jet, LArQuality, m_LArQuality, -999);
 
-    static SG::AuxElement::ConstAccessor<float> avLArQF ("AverageLArQF");
-    safeFill<float, float, xAOD::Jet>(jet, avLArQF, m_AverageLArQF, -999);
+      static SG::AuxElement::ConstAccessor<float> hecq ("HECQuality");
+      safeFill<float, float, xAOD::Jet>(jet, hecq, m_HECQuality, -999);
 
-    static SG::AuxElement::ConstAccessor<float> bchCorrCell ("BchCorrCell");
-    safeFill<float, float, xAOD::Jet>(jet, bchCorrCell, m_BchCorrCell, -999);
+      static SG::AuxElement::ConstAccessor<float> negE ("NegativeE");
+      safeFill<float, float, xAOD::Jet>(jet, negE, m_NegativeE, -999, m_units);
 
-    static SG::AuxElement::ConstAccessor<float> N90Const ("N90Constituents");
-    safeFill<float, float, xAOD::Jet>(jet, N90Const, m_N90Constituents, -999);
+      static SG::AuxElement::ConstAccessor<float> avLArQF ("AverageLArQF");
+      safeFill<float, float, xAOD::Jet>(jet, avLArQF, m_AverageLArQF, -999);
 
-    static SG::AuxElement::ConstAccessor<float> LArBadHVEFrac ("LArBadHVEnergyFrac");
-    safeFill<float, float, xAOD::Jet>(jet, LArBadHVEFrac, m_LArBadHVEnergyFrac, -999);
+      static SG::AuxElement::ConstAccessor<float> bchCorrCell ("BchCorrCell");
+      safeFill<float, float, xAOD::Jet>(jet, bchCorrCell, m_BchCorrCell, -999);
 
-    static SG::AuxElement::ConstAccessor<int> LArBadHVNCell ("LArBadHVNCell");
-    safeFill<int, int, xAOD::Jet>(jet, LArBadHVNCell, m_LArBadHVNCell, -999);
+      static SG::AuxElement::ConstAccessor<float> N90Const ("N90Constituents");
+      safeFill<float, float, xAOD::Jet>(jet, N90Const, m_N90Constituents, -999);
 
-    static SG::AuxElement::ConstAccessor<float> OotFracClus5 ("OotFracClusters5");
-    safeFill<float, float, xAOD::Jet>(jet, OotFracClus5, m_OotFracClusters5, -999);
+      static SG::AuxElement::ConstAccessor<float> LArBadHVEFrac ("LArBadHVEnergyFrac");
+      safeFill<float, float, xAOD::Jet>(jet, LArBadHVEFrac, m_LArBadHVEnergyFrac, -999);
 
-    static SG::AuxElement::ConstAccessor<float> OotFracClus10 ("OotFracClusters10");
-    safeFill<float, float, xAOD::Jet>(jet, OotFracClus10, m_OotFracClusters10, -999);
+      static SG::AuxElement::ConstAccessor<int> LArBadHVNCell ("LArBadHVNCell");
+      safeFill<int, int, xAOD::Jet>(jet, LArBadHVNCell, m_LArBadHVNCell, -999);
 
-    static SG::AuxElement::ConstAccessor<float> leadClusPt ("LeadingClusterPt");
-    safeFill<float, float, xAOD::Jet>(jet, leadClusPt, m_LeadingClusterPt, -999);
+      static SG::AuxElement::ConstAccessor<float> OotFracClus5 ("OotFracClusters5");
+      safeFill<float, float, xAOD::Jet>(jet, OotFracClus5, m_OotFracClusters5, -999);
 
-    static SG::AuxElement::ConstAccessor<float> leadClusSecondLambda ("LeadingClusterSecondLambda");
-    safeFill<float, float, xAOD::Jet>(jet, leadClusSecondLambda, m_LeadingClusterSecondLambda, -999);
+      static SG::AuxElement::ConstAccessor<float> OotFracClus10 ("OotFracClusters10");
+      safeFill<float, float, xAOD::Jet>(jet, OotFracClus10, m_OotFracClusters10, -999);
 
-    static SG::AuxElement::ConstAccessor<float> leadClusCenterLambda ("LeadingClusterCenterLambda");
-    safeFill<float, float, xAOD::Jet>(jet, leadClusCenterLambda, m_LeadingClusterCenterLambda, -999);
+      static SG::AuxElement::ConstAccessor<float> leadClusPt ("LeadingClusterPt");
+      safeFill<float, float, xAOD::Jet>(jet, leadClusPt, m_LeadingClusterPt, -999);
 
-    static SG::AuxElement::ConstAccessor<float> leadClusSecondR ("LeadingClusterSecondR");
-    safeFill<float, float, xAOD::Jet>(jet, leadClusSecondR, m_LeadingClusterSecondR, -999);
+      static SG::AuxElement::ConstAccessor<float> leadClusSecondLambda ("LeadingClusterSecondLambda");
+      safeFill<float, float, xAOD::Jet>(jet, leadClusSecondLambda, m_LeadingClusterSecondLambda, -999);
+
+      static SG::AuxElement::ConstAccessor<float> leadClusCenterLambda ("LeadingClusterCenterLambda");
+      safeFill<float, float, xAOD::Jet>(jet, leadClusCenterLambda, m_LeadingClusterCenterLambda, -999);
+
+      static SG::AuxElement::ConstAccessor<float> leadClusSecondR ("LeadingClusterSecondR");
+      safeFill<float, float, xAOD::Jet>(jet, leadClusSecondR, m_LeadingClusterSecondR, -999);
+
+      static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
+      safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
+
+      static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
+      safeFill<char, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
+
+    }
 
     static SG::AuxElement::ConstAccessor<char> clean_passLooseBad ("clean_passLooseBad");
     safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
 
-    static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
-    safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
-
     static SG::AuxElement::ConstAccessor<char> clean_passTightBad ("clean_passTightBad");
     safeFill<char, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
-
-    static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
-    safeFill<char, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
 
   } // clean
 
 
-  if ( m_infoSwitch.m_energy ) {
-    static SG::AuxElement::ConstAccessor<float> HECf ("HECFrac");
-    safeFill<float, float, xAOD::Jet>(jet, HECf, m_HECFrac, -999);
+  if ( m_infoSwitch.m_energy | m_infoSwitch.m_energyLight ) {
+
+    if ( m_infoSwitch.m_energy ){
+
+      static SG::AuxElement::ConstAccessor<float> HECf ("HECFrac");
+      safeFill<float, float, xAOD::Jet>(jet, HECf, m_HECFrac, -999);
+
+      static SG::AuxElement::ConstAccessor<float> centroidR ("CentroidR");
+      safeFill<float, float, xAOD::Jet>(jet, centroidR, m_CentroidR, -999);
+
+      static SG::AuxElement::ConstAccessor<float> lowEtFrac ("LowEtConstituentsFrac");
+      safeFill<float, float, xAOD::Jet>(jet, lowEtFrac, m_LowEtConstituentsFrac, -999);
+
+    }
 
     static SG::AuxElement::ConstAccessor<float> EMf ("EMFrac");
     safeFill<float, float, xAOD::Jet>(jet, EMf, m_EMFrac, -999);
-
-    static SG::AuxElement::ConstAccessor<float> centroidR ("CentroidR");
-    safeFill<float, float, xAOD::Jet>(jet, centroidR, m_CentroidR, -999);
 
     static SG::AuxElement::ConstAccessor<float> fracSampMax ("FracSamplingMax");
     safeFill<float, float, xAOD::Jet>(jet, fracSampMax, m_FracSamplingMax, -999);
 
     static SG::AuxElement::ConstAccessor<int> fracSampMaxIdx ("FracSamplingMaxIndex");
     safeFill<int, float, xAOD::Jet>(jet, fracSampMaxIdx, m_FracSamplingMaxIndex, -999);
-
-    static SG::AuxElement::ConstAccessor<float> lowEtFrac ("LowEtConstituentsFrac");
-    safeFill<float, float, xAOD::Jet>(jet, lowEtFrac, m_LowEtConstituentsFrac, -999);
 
     static SG::AuxElement::ConstAccessor<int> muonSegCount ("GhostMuonSegmentCount");
     safeFill<int, float, xAOD::Jet>(jet, muonSegCount, m_GhostMuonSegmentCount, -999);
@@ -2221,6 +2264,11 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetConstitScaleMomentum", fourVec );
     if( status ) { m_constScaleEta->push_back( fourVec.Eta() ); }
     else { m_constScaleEta->push_back( -999 ); }
+  }
+
+  if ( m_infoSwitch.m_detectorEta ) {
+    static SG::AuxElement::ConstAccessor<float> DetEta ("DetectorEta");
+    safeFill<float, float, xAOD::Jet>(jet, DetEta, m_detectorEta, -999);
   }
 
   if ( m_infoSwitch.m_layer ) {
@@ -2545,12 +2593,12 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_constituent_e->  push_back( e   );
   }
 
-  if ( m_infoSwitch.m_flavTag || m_infoSwitch.m_flavTagHLT ) {
+  if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT ) {
     const xAOD::BTagging * myBTag(0);
 
-    if(m_infoSwitch.m_flavTag){
+    if(m_infoSwitch.m_flavorTag){
       myBTag = jet->btagging();
-    }else if(m_infoSwitch.m_flavTagHLT){
+    }else if(m_infoSwitch.m_flavorTagHLT){
       myBTag = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
 
@@ -2686,7 +2734,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       float sv1_dR;         myBTag->variable<float>("SV1", "deltaR"      , sv1_dR );
 
       m_sv1_Lxy        ->push_back(sv1_Lxy        );
-      m_sv1_sig3d      ->push_back(sv1_sig3d        );
+      m_sv1_sig3d      ->push_back(sv1_sig3d      );
       m_sv1_L3d        ->push_back(sv1_L3d        );
       m_sv1_distmatlay ->push_back(sv1_distmatlay );
       m_sv1_dR         ->push_back(sv1_dR         );
@@ -2798,8 +2846,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
 
 
-    if(m_infoSwitch.m_flavTagHLT ) {
-      if(m_debug) std::cout << "Filling m_flavTagHLT " << std::endl;
+    if(m_infoSwitch.m_flavorTagHLT ) {
+      if(m_debug) std::cout << "Filling m_flavorTagHLT " << std::endl;
       const xAOD::Vertex *online_pvx       = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx");
       const xAOD::Vertex *online_pvx_bkg   = jet->auxdata<const xAOD::Vertex*>("HLTBJetTracks_vtx_bkg");
       const xAOD::Vertex *offline_pvx      = jet->auxdata<const xAOD::Vertex*>("offline_vtx");
@@ -2869,8 +2917,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         m_vtx_online_bkg_z0->push_back( -999 );
       }
 
-    }// m_flavTagHLT
-    if(m_debug) std::cout << "Done m_flavTagHLT " << std::endl;
+    }// m_flavorTagHLT
+    if(m_debug) std::cout << "Done m_flavorTagHLT " << std::endl;
   }
 
 

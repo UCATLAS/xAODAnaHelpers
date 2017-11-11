@@ -27,7 +27,6 @@ namespace xAH {
       virtual ~JetContainer();
     
       virtual void setTree    (TTree *tree);
-      virtual void setTree    (TTree *tree, const std::string& tagger/*="MV2c10"*/);
       virtual void setBranches(TTree *tree);
       virtual void clear();
       virtual void FillJet( const xAOD::Jet* jet,            const xAOD::Vertex* pv, int pvLocation );
@@ -90,7 +89,9 @@ namespace xAH {
 
       // constScale Eta
       std::vector<float> *m_constScaleEta;
-      
+
+      // detector Eta
+      std::vector<float> *m_detectorEta;
 
       // layer
       std::vector< std::vector<float> > *m_EnergyPerSampling;
@@ -167,7 +168,6 @@ namespace xAH {
       std::vector<float> *m_MV2c10;
       std::vector<float> *m_MV2c20;
       std::vector<float> *m_MV2c100;
-      std::vector<float> *m_MV2;
       std::vector<int>   *m_HadronConeExclTruthLabelID;
     
       // Jet Fitter 
@@ -467,10 +467,10 @@ namespace xAH {
           if( isTag.isAvailable( *jet ) )
             m_isTag->push_back( isTag( *jet ) );
           else
-            m_isTag->push_back( -1 ); 
+            m_isTag->push_back( -1 );
 
           if(!m_mc) { return; }
-          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_"+m_accessorName+"_SF");
+          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_accessorName);
 	  static const std::vector<float> junk(1,-999);
           if ( sf.isAvailable( *jet ) )
             m_sf->push_back( sf( *jet ) );

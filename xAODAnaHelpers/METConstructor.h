@@ -65,7 +65,7 @@ public:
     @endrst
   */
   bool    m_addSoftClusterTerms = false;
-  
+
   // MET significance
   /// @brief Force AFII flag in calculation, in case metadata is broken
   bool m_setAFII = false;
@@ -82,7 +82,7 @@ public:
   /// @brief do not change it, not useful
   std::string m_systName = "All";
   float m_systVal = 1.0;
-  
+
   /// @brief Write systematics names to metadata
   bool        m_writeSystToMetadata = false;
 
@@ -113,11 +113,6 @@ public:
 
 
 private:
-  bool m_isMC; //!
-
-  xAOD::TEvent *m_event;  //!
-  xAOD::TStore *m_store;  //!
-
   // tools
   asg::AnaToolHandle<IMETMaker> m_metmaker_handle; //!
   asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle; //!
