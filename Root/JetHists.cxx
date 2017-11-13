@@ -217,22 +217,22 @@ StatusCode JetHists::initialize() {
     //m_IP3DvsMV2c20  = book(m_name, "IP3DvsMV2c20",      m_titlePrefix+" jet MV2c20"       , 100,   -1  ,  1,
 
     if(m_infoSwitch->m_vsActualMu){
-      m_frac_MV240_vs_actMu  = book(m_name, "frac_MV2c2040_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2040", 0, 1);
-      m_frac_MV250_vs_actMu  = book(m_name, "frac_MV2c2050_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2050", 0, 1);
-      m_frac_MV260_vs_actMu  = book(m_name, "frac_MV2c2060_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2060", 0, 1);
-      m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c2070_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2070", 0, 1);
-      m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c2077_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2077", 0, 1);
-      m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c2085_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c2085", 0, 1);
+      m_frac_MV240_vs_actMu  = book(m_name, "frac_MV2c1040_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1040", 0, 1);
+      m_frac_MV250_vs_actMu  = book(m_name, "frac_MV2c1050_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1050", 0, 1);
+      m_frac_MV260_vs_actMu  = book(m_name, "frac_MV2c1060_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1060", 0, 1);
+      m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c1070_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1070", 0, 1);
+      m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c1077_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1077", 0, 1);
+      m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c1085_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1085", 0, 1);
 
     }
 
     if(m_infoSwitch->m_vsLumiBlock){
-      m_frac_MV240_vs_lBlock  = book(m_name, "frac_MV2c2040_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2040", 0, 1);
-      m_frac_MV250_vs_lBlock  = book(m_name, "frac_MV2c2050_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2050", 0, 1);
-      m_frac_MV260_vs_lBlock  = book(m_name, "frac_MV2c2060_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2060", 0, 1);
-      m_frac_MV270_vs_lBlock  = book(m_name, "frac_MV2c2070_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2070", 0, 1);
-      m_frac_MV277_vs_lBlock  = book(m_name, "frac_MV2c2077_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2077", 0, 1);
-      m_frac_MV285_vs_lBlock  = book(m_name, "frac_MV2c2085_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c2085", 0, 1);
+      m_frac_MV240_vs_lBlock  = book(m_name, "frac_MV2c1040_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1040", 0, 1);
+      m_frac_MV250_vs_lBlock  = book(m_name, "frac_MV2c1050_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1050", 0, 1);
+      m_frac_MV260_vs_lBlock  = book(m_name, "frac_MV2c1060_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1060", 0, 1);
+      m_frac_MV270_vs_lBlock  = book(m_name, "frac_MV2c1070_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1070", 0, 1);
+      m_frac_MV277_vs_lBlock  = book(m_name, "frac_MV2c1077_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1077", 0, 1);
+      m_frac_MV285_vs_lBlock  = book(m_name, "frac_MV2c1085_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1085", 0, 1);
     }
   }
 
@@ -1522,7 +1522,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
       //if(hadDummyPV)  m_vtxClass ->Fill(1.0, eventWeight);
       //else            m_vtxClass ->Fill(0.0, eventWeight);
-      
+
       if(offline_pvx && online_pvx && online_pvx_bkg){
 	float online_x0_raw = online_pvx->x();
 	float online_y0_raw = online_pvx->y();
@@ -1735,7 +1735,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
 	if(m_infoSwitch->m_vsLumiBlock){
 	  uint32_t lumiBlock = eventInfo->m_lumiBlock;
-	  
+
 	  m_frac_MV240_vs_lBlock  -> Fill(lumiBlock, passMV2c1040,  eventWeight);
 	  m_frac_MV250_vs_lBlock  -> Fill(lumiBlock, passMV2c1050,  eventWeight);
 	  m_frac_MV260_vs_lBlock  -> Fill(lumiBlock, passMV2c1060,  eventWeight);
