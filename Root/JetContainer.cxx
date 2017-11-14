@@ -92,17 +92,19 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   }
 
   // trackPV
-  if ( m_infoSwitch.m_trackPV ) {
-    m_NumTrkPt1000PV       =new std::vector<float>();
-    m_SumPtTrkPt1000PV     =new std::vector<float>();
-    m_TrackWidthPt1000PV   =new std::vector<float>();
-    m_NumTrkPt500PV        =new std::vector<float>();
-    m_SumPtTrkPt500PV      =new std::vector<float>();
-    m_TrackWidthPt500PV    =new std::vector<float>();
-    m_JVFPV                =new std::vector<float>();
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt ) {
+    if (m_infoSwitch.m_trackPV){
+      m_NumTrkPt1000PV       =new std::vector<float>();
+      m_SumPtTrkPt1000PV     =new std::vector<float>();
+      m_TrackWidthPt1000PV   =new std::vector<float>();
+      m_NumTrkPt500PV        =new std::vector<float>();
+      m_SumPtTrkPt500PV      =new std::vector<float>();
+      m_TrackWidthPt500PV    =new std::vector<float>();
+      m_JVFPV                =new std::vector<float>();
+      m_JvtJvfcorr         = new std::vector<float>();
+      m_JvtRpt             = new std::vector<float>();
+    }
     m_Jvt                = new std::vector<float>();
-    m_JvtJvfcorr         = new std::vector<float>();
-    m_JvtRpt             = new std::vector<float>();
   }
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
     m_JvtPass_Loose    = new std::vector<int>();
@@ -484,17 +486,19 @@ JetContainer::~JetContainer()
 
 
   // trackPV
-  if ( m_infoSwitch.m_trackPV ) {
-    delete m_NumTrkPt1000PV;
-    delete m_SumPtTrkPt1000PV;
-    delete m_TrackWidthPt1000PV;
-    delete m_NumTrkPt500PV;
-    delete m_SumPtTrkPt500PV;
-    delete m_TrackWidthPt500PV;
-    delete m_JVFPV;
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt ) {
+    if ( m_infoSwitch.m_trackPV ){
+      delete m_NumTrkPt1000PV;
+      delete m_SumPtTrkPt1000PV;
+      delete m_TrackWidthPt1000PV;
+      delete m_NumTrkPt500PV;
+      delete m_SumPtTrkPt500PV;
+      delete m_TrackWidthPt500PV;
+      delete m_JVFPV;
+      delete m_JvtJvfcorr;
+      delete m_JvtRpt;
+    }
     delete m_Jvt;
-    delete m_JvtJvfcorr;
-    delete m_JvtRpt;
   }
 
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
@@ -815,11 +819,13 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree, "JVFPV",              &m_JVFPV);
     }
 
-  if(m_infoSwitch.m_trackAll || m_infoSwitch.m_trackPV)
+  if(m_infoSwitch.m_trackAll || m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt)
     {
+      if(m_infoSwitch.m_trackAll || m_infoSwitch.m_trackPV){
+        connectBranch<float>(tree, "JvtJvfcorr", &m_JvtJvfcorr);
+        connectBranch<float>(tree, "JvtRpt",     &m_JvtRpt);
+      }
       connectBranch<float>(tree, "Jvt",        &m_Jvt);
-      connectBranch<float>(tree, "JvtJvfcorr", &m_JvtJvfcorr);
-      connectBranch<float>(tree, "JvtRpt",     &m_JvtRpt);
     }
 
   if(m_infoSwitch.m_JVC)
@@ -1022,11 +1028,13 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.JVFPV             =m_JVFPV             ->at(idx);
     }
 
-  if(m_infoSwitch.m_trackPV || m_infoSwitch.m_trackAll)
+  if(m_infoSwitch.m_trackPV || m_infoSwitch.m_trackAll || m_infoSwitch.m_jvt)
     {
+      if(m_infoSwitch.m_trackPV || m_infoSwitch.m_trackAll){
+        jet.JvtJvfcorr=m_JvtJvfcorr->at(idx);
+        jet.JvtRpt    =m_JvtRpt    ->at(idx);
+      }
       jet.Jvt       =m_Jvt       ->at(idx);
-      jet.JvtJvfcorr=m_JvtJvfcorr->at(idx);
-      jet.JvtRpt    =m_JvtRpt    ->at(idx);
     }
 
   if( m_infoSwitch.m_JVC ) {
@@ -1494,17 +1502,19 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<std::vector<float> >(tree,"JVF",               m_JVF         );
   }
 
-  if ( m_infoSwitch.m_trackPV ) {
-    setBranch<float>(tree,"NumTrkPt1000PV",       m_NumTrkPt1000PV   );
-    setBranch<float>(tree,"SumPtTrkPt1000PV",     m_SumPtTrkPt1000PV  );
-    setBranch<float>(tree,"TrackWidthPt1000PV",   m_TrackWidthPt1000PV   );
-    setBranch<float>(tree,"NumTrkPt500PV",        m_NumTrkPt500PV    );
-    setBranch<float>(tree,"SumPtTrkPt500PV",      m_SumPtTrkPt500PV   );
-    setBranch<float>(tree,"TrackWidthPt500PV",    m_TrackWidthPt500PV    );
-    setBranch<float>(tree,"JVFPV",                m_JVFPV             );
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt ) {
+    if ( m_infoSwitch.m_trackPV ) {
+      setBranch<float>(tree,"NumTrkPt1000PV",       m_NumTrkPt1000PV   );
+      setBranch<float>(tree,"SumPtTrkPt1000PV",     m_SumPtTrkPt1000PV  );
+      setBranch<float>(tree,"TrackWidthPt1000PV",   m_TrackWidthPt1000PV   );
+      setBranch<float>(tree,"NumTrkPt500PV",        m_NumTrkPt500PV    );
+      setBranch<float>(tree,"SumPtTrkPt500PV",      m_SumPtTrkPt500PV   );
+      setBranch<float>(tree,"TrackWidthPt500PV",    m_TrackWidthPt500PV    );
+      setBranch<float>(tree,"JVFPV",                m_JVFPV             );
+      setBranch<float>(tree,"JvtJvfcorr",           m_JvtJvfcorr     );
+      setBranch<float>(tree,"JvtRpt",               m_JvtRpt         );
+    }
     setBranch<float>(tree,"Jvt",                  m_Jvt                 );
-    setBranch<float>(tree,"JvtJvfcorr",           m_JvtJvfcorr     );
-    setBranch<float>(tree,"JvtRpt",               m_JvtRpt         );
     //setBranch<float>(tree,"GhostTrackAssociationFraction", m_ghostTrackAssFrac);
   }
 
@@ -1853,17 +1863,19 @@ void JetContainer::clear()
   }
 
   // trackPV
-  if ( m_infoSwitch.m_trackPV ) {
-    m_NumTrkPt1000PV    ->clear();
-    m_SumPtTrkPt1000PV  ->clear();
-    m_TrackWidthPt1000PV->clear();
-    m_NumTrkPt500PV     ->clear();
-    m_SumPtTrkPt500PV   ->clear();
-    m_TrackWidthPt500PV ->clear();
-    m_JVFPV             ->clear();
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt ) {
+    if ( m_infoSwitch.m_trackPV ) {
+      m_NumTrkPt1000PV    ->clear();
+      m_SumPtTrkPt1000PV  ->clear();
+      m_TrackWidthPt1000PV->clear();
+      m_NumTrkPt500PV     ->clear();
+      m_SumPtTrkPt500PV   ->clear();
+      m_TrackWidthPt500PV ->clear();
+      m_JVFPV             ->clear();
+      m_JvtJvfcorr        ->clear();
+      m_JvtRpt            ->clear();
+    }
     m_Jvt               ->clear();
-    m_JvtJvfcorr        ->clear();
-    m_JvtRpt            ->clear();
   }
 
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
@@ -2312,9 +2324,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       if ( sumPt1000.isAvailable( *jet ) ) {
         m_SumPtTrkPt1000->push_back( sumPt1000( *jet ) );
         std::transform((m_SumPtTrkPt1000->back()).begin(),
-                       (m_SumPtTrkPt1000->back()).end(),
-                       (m_SumPtTrkPt1000->back()).begin(),
-                       std::bind2nd(std::divides<float>(), m_units));
+                     (m_SumPtTrkPt1000->back()).end(),
+                     (m_SumPtTrkPt1000->back()).begin(),
+                     std::bind2nd(std::divides<float>(), m_units));
       } else { m_SumPtTrkPt1000->push_back( junkFlt ); }
 
       if ( trkWidth1000.isAvailable( *jet ) ) {
@@ -2328,9 +2340,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       if ( sumPt500.isAvailable( *jet ) ) {
         m_SumPtTrkPt500->push_back( sumPt500( *jet ) );
         std::transform((m_SumPtTrkPt500->back()).begin(),
-                       (m_SumPtTrkPt500->back()).end(),
-                       (m_SumPtTrkPt500->back()).begin(),
-                       std::bind2nd(std::divides<float>(), m_units));
+                     (m_SumPtTrkPt500->back()).end(),
+                     (m_SumPtTrkPt500->back()).begin(),
+                     std::bind2nd(std::divides<float>(), m_units));
       } else { m_SumPtTrkPt500->push_back( junkFlt ); }
 
       if ( trkWidth500.isAvailable( *jet ) ) {
@@ -2389,6 +2401,11 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
     } // trackPV
 
+  }
+
+  if ( m_infoSwitch.m_jvt ) {
+      static SG::AuxElement::ConstAccessor< float > jvt2 ("Jvt");
+      safeFill<float, float, xAOD::Jet>(jet, jvt2, m_Jvt, -999);
   }
 
   static SG::AuxElement::ConstAccessor< char > jvtPass_Loose("JetJVT_Passed_Loose");
