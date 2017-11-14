@@ -1,2 +1,4 @@
 id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
 345342     PowhegPy8EG_NNLOPS_nnlo_30_ggH125_bb                16.275374999999997         1.0	1.0	1
+345338	   PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_bb	       2.1483725		  0.9752806055860088	1.0	1
+309450	   PowhegPy8EG_NNLOPS_nnlo_30_ggH125_bb_kt200	       0.27386			  1.0			1.0	1
