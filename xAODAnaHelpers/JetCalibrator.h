@@ -67,6 +67,8 @@ public:
   std::string m_calibConfig = "";
   /// @brief List of calibration steps. "Insitu" added automatically if running on data
   std::string m_calibSequence = "JetArea_Residual_Origin_EtaJES_GSC";
+  /// @brief CalibArea tag on CVMFS (for pointing at an area outside of the current release)
+  std::string m_calibArea = "00-04-81"; // current as of 19/11/17
   /// @brief config for JES Uncertainty Tool
   std::string m_JESUncertConfig = "";
   /// @brief JetUncertaintiesTool parameter
