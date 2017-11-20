@@ -177,7 +177,9 @@ EL::StatusCode JetCalibrator :: initialize ()
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
+#ifdef USE_CMAKE
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibArea",m_calibArea));
+#endif
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("IsData",!isMC()));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
   if ( m_jetCalibToolsDEV ) {
