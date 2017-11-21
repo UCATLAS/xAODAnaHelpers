@@ -13,7 +13,7 @@ if( ${AnalysisBase_VERSION} VERSION_GREATER 21.0 )
   set( release_depends PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces )
 else()
   # 2.6.X
-  set( release_libs xAODTriggerCnv xAODBTaggingEfficiencyLib MuonSelectorToolsLib )
+  set( release_libs xAODTriggerCnv )
   set( release_depends PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency PhysicsAnalysis/MuonID/MuonSelectorTools )
 endif()
 
@@ -90,7 +90,7 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    xAODEventInfo GoodRunsListsLib PileupReweightingLib PATInterfaces
                    PathResolver xAODTau xAODJet xAODMuon xAODEgamma
                    xAODTracking xAODTruth MuonMomentumCorrectionsLib
-                   MuonEfficiencyCorrectionsLib JetCalibToolsLib
+                   MuonEfficiencyCorrectionsLib MuonSelectorToolsLib JetCalibToolsLib
                    JetSelectorToolsLib AthContainers
                    ElectronPhotonFourMomentumCorrectionLib
                    ElectronEfficiencyCorrectionLib ElectronPhotonSelectorToolsLib
@@ -99,7 +99,7 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    PhotonEfficiencyCorrectionLib METUtilitiesLib METInterface
                    TauAnalysisToolsLib AsgTools xAODMissingET JetResolutionLib
                    AssociationUtilsLib JetEDM JetUncertaintiesLib
-                   JetCPInterfaces TrigConfxAODLib
+                   JetCPInterfaces xAODBTaggingEfficiencyLib TrigConfxAODLib
                    TrigDecisionToolLib xAODCutFlow JetMomentToolsLib
                    TriggerMatchingToolLib xAODMetaDataCnv xAODMetaData
                    JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils JetTileCorrectionLib
