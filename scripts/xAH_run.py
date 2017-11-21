@@ -373,7 +373,11 @@ if __name__ == "__main__":
           # assume format like root://someserver//path/to/files/*pattern*.root
           server, path = fname.replace('root://', '').split('//')
           sh_list = ROOT.SH.DiskListXRD(server, os.path.join(path, ''), True)
-          ROOT.SH.ScanDir().scan(sh_all, sh_list)
+          tag=args.inputTag
+          if ( tag == "" ):
+            tag="*"
+          print("Running on XRD directory "+fname+" with tag "+tag)
+          ROOT.SH.ScanDir().filePattern(tag).scan(sh_all,sh_list)
         else:
           # need to parse and split it up
           fname_base = os.path.basename(fname)
