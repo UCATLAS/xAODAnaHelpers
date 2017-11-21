@@ -12,8 +12,8 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
-#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
-#include "xAODBTaggingEfficiency/IBTaggingEfficiencyTool.h"
+#include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
+#include "FTagAnalysisInterfaces/IBTaggingEfficiencyTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"

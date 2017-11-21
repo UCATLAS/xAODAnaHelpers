@@ -50,11 +50,11 @@ atlas_depends_on_subdirs( PUBLIC
                           PhysicsAnalysis/ElectronPhotonID/IsolationCorrections
                           PhysicsAnalysis/ElectronPhotonID/ElectronPhotonShowerShapeFudgeTool
                           PhysicsAnalysis/ElectronPhotonID/PhotonEfficiencyCorrection
+                          PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces
+                          PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces
                           PhysicsAnalysis/JetMissingEtID/JetSelectorTools
-                          PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency
                           PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonMomentumCorrections
                           PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections
-                          PhysicsAnalysis/MuonID/MuonSelectorTools
                           PhysicsAnalysis/TauID/TauAnalysisTools
                           Reconstruction/Jet/JetAnalysisTools/JetTileCorrection
                           Reconstruction/Jet/JetCalibTools

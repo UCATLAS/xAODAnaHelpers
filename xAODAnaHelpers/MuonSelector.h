@@ -18,7 +18,7 @@
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
 #include "IsolationSelection/IIsolationSelectionTool.h"
-#include "MuonSelectorTools/IMuonSelectionTool.h"
+#include "MuonAnalysisInterfaces/IMuonSelectionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 

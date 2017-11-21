@@ -27,7 +27,7 @@
 #include "AsgTools/AnaToolHandle.h"
 #include "JetJvtEfficiency/IJetJvtEfficiency.h"
 #include "JetInterface/IJetModifier.h"
-#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
+#include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
 
 class JetSelector : public xAH::Algorithm
 {
