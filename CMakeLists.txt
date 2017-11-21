@@ -5,13 +5,16 @@
 # Declare the package name:
 atlas_subdir( xAODAnaHelpers )
 
-set( release_libs xAODTriggerCnvLib )
+set( release_libs xAODTriggerCnvLib FTagAnalysisInterfacesLib MuonAnalysisInterfacesLib )
+set( release_depends PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces )
 if( ${AnalysisBase_VERSION} VERSION_GREATER 21.0 )
   # 21.X
-  set( release_libs xAODTriggerCnvLib )
+  set( release_libs xAODTriggerCnvLib FTagAnalysisInterfacesLib MuonAnalysisInterfacesLib )
+  set( release_depends PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces )
 else()
   # 2.6.X
-  set( release_libs xAODTriggerCnv )
+  set( release_libs xAODTriggerCnv xAODBTaggingEfficiencyLib MuonSelectorToolsLib )
+  set( release_depends PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency PhysicsAnalysis/MuonID/MuonSelectorTools )
 endif()
 
 # Declare the package's dependencies:
@@ -50,8 +53,6 @@ atlas_depends_on_subdirs( PUBLIC
                           PhysicsAnalysis/ElectronPhotonID/IsolationCorrections
                           PhysicsAnalysis/ElectronPhotonID/ElectronPhotonShowerShapeFudgeTool
                           PhysicsAnalysis/ElectronPhotonID/PhotonEfficiencyCorrection
-                          PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces
-                          PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces
                           PhysicsAnalysis/JetMissingEtID/JetSelectorTools
                           PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonMomentumCorrections
                           PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections
@@ -69,6 +70,7 @@ atlas_depends_on_subdirs( PUBLIC
                           Trigger/TrigAnalysis/TrigDecisionTool
                           Trigger/TrigAnalysis/TriggerMatchingTool
                           Trigger/TrigConfiguration/TrigConfxAOD
+                          ${release_depends}
 )
 
 # Find the needed external(s):
@@ -88,7 +90,7 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    xAODEventInfo GoodRunsListsLib PileupReweightingLib PATInterfaces
                    PathResolver xAODTau xAODJet xAODMuon xAODEgamma
                    xAODTracking xAODTruth MuonMomentumCorrectionsLib
-                   MuonEfficiencyCorrectionsLib MuonSelectorToolsLib JetCalibToolsLib
+                   MuonEfficiencyCorrectionsLib JetCalibToolsLib
                    JetSelectorToolsLib AthContainers
                    ElectronPhotonFourMomentumCorrectionLib
                    ElectronEfficiencyCorrectionLib ElectronPhotonSelectorToolsLib
@@ -97,7 +99,7 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    PhotonEfficiencyCorrectionLib METUtilitiesLib METInterface
                    TauAnalysisToolsLib AsgTools xAODMissingET JetResolutionLib
                    AssociationUtilsLib JetEDM JetUncertaintiesLib
-                   JetCPInterfaces xAODBTaggingEfficiencyLib TrigConfxAODLib
+                   JetCPInterfaces TrigConfxAODLib
                    TrigDecisionToolLib xAODCutFlow JetMomentToolsLib
                    TriggerMatchingToolLib xAODMetaDataCnv xAODMetaData
                    JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils JetTileCorrectionLib
