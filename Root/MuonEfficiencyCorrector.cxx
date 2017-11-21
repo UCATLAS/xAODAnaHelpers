@@ -493,7 +493,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
+EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventInfo*/, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
 {
 
   //
