@@ -15,7 +15,7 @@
 #ifdef USE_CMAKE
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
 #include "FTagAnalysisInterfaces/IBTaggingEfficiencyTool.h"
-#else // RC back-compat
+#else // RootCore back-compat
 #include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
 #include "xAODBTaggingEfficiency/IBTaggingEfficiencyTool.h"
 #endif
