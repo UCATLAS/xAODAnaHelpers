@@ -362,14 +362,10 @@ if __name__ == "__main__":
                 if len(parts)!=2: continue
                 config[parts[0].strip()]=parts[1].strip()
 
-          xsec   =float(config.get('xsec'   ,1))
-          filteff=float(config.get('filteff',1))
-          nEvents=float(config.get('nEvents',1))
-
           ROOT.SH.readFileList(sh_all, sname, fname)
-          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.crossSection    ,xsec)
-          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.filterEfficiency,filteff)
-          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.numEvents       ,nEvents)
+          if 'xsec'    in config: sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.crossSection    ,float(config['xsec'   ]))
+          if 'filteff' in config: sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.filterEfficiency,float(config['filteff']))
+          if 'nEvents' in config: sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.numEvents       ,float(config['nEvents']))
       else:
 
         if args.use_scanDQ2:
