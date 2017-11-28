@@ -29,7 +29,7 @@
 #include "JetInterface/IJetModifier.h"
 #ifdef USE_CMAKE
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
-#else // RootCore back-compat
+#else
 #include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
 #endif
 

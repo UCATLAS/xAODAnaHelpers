@@ -5,16 +5,13 @@
 # Declare the package name:
 atlas_subdir( xAODAnaHelpers )
 
-set( release_libs xAODTriggerCnvLib FTagAnalysisInterfacesLib MuonAnalysisInterfacesLib )
-set( release_depends PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces )
+set( release_libs xAODTriggerCnvLib )
 if( ${AnalysisBase_VERSION} VERSION_GREATER 21.0 )
   # 21.X
-  set( release_libs xAODTriggerCnvLib FTagAnalysisInterfacesLib MuonAnalysisInterfacesLib )
-  set( release_depends PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces )
+  set( release_libs xAODTriggerCnvLib )
 else()
   # 2.6.X
   set( release_libs xAODTriggerCnv )
-  set( release_depends PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency PhysicsAnalysis/MuonID/MuonSelectorTools )
 endif()
 
 # Declare the package's dependencies:
@@ -54,6 +51,8 @@ atlas_depends_on_subdirs( PUBLIC
                           PhysicsAnalysis/ElectronPhotonID/ElectronPhotonShowerShapeFudgeTool
                           PhysicsAnalysis/ElectronPhotonID/PhotonEfficiencyCorrection
                           PhysicsAnalysis/JetMissingEtID/JetSelectorTools
+                          PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces
+                          PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces
                           PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonMomentumCorrections
                           PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections
                           PhysicsAnalysis/TauID/TauAnalysisTools
@@ -96,6 +95,7 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    ElectronEfficiencyCorrectionLib ElectronPhotonSelectorToolsLib
                    IsolationSelectionLib IsolationCorrectionsLib
                    ElectronPhotonShowerShapeFudgeToolLib
+                   FTagAnalysisInterfacesLib MuonAnalysisInterfacesLib
                    PhotonEfficiencyCorrectionLib METUtilitiesLib METInterface
                    TauAnalysisToolsLib AsgTools xAODMissingET JetResolutionLib
                    AssociationUtilsLib JetEDM JetUncertaintiesLib

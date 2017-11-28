@@ -20,7 +20,7 @@
 #include "IsolationSelection/IIsolationSelectionTool.h"
 #ifdef USE_CMAKE
 #include "MuonAnalysisInterfaces/IMuonSelectionTool.h"
-#else // RootCore back-compat
+#else
 #include "MuonSelectorTools/IMuonSelectionTool.h"
 #endif
 #include "TriggerMatchingTool/IMatchingTool.h"
