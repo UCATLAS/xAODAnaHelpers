@@ -191,6 +191,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize jet tile correction tool
   if(m_doJetTileCorr && !isMC()){ // Jet Tile Correction should only be applied to data
     setToolName(m_JetTileCorrectionTool_handle);
+    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetTileCorrectionTool_handle, CP::JetTileCorrectionTool));
     ANA_CHECK( m_JetTileCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JetTileCorrectionTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_JetTileCorrectionTool_handle);
