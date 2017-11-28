@@ -250,11 +250,12 @@ if __name__ == "__main__":
       if os.path.exists(args.submit_dir):
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
-    # they will need it to get it working
-    needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['prun','condor','lsf','slurm'])
+    # they will need it to get it working for rel 20
+    needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['condor','lsf','slurm'])
     if needXRD:
       if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
+
     use_scanEOS = (args.use_scanEOS)
 
     # at this point, we should import ROOT and do stuff
@@ -362,14 +363,10 @@ if __name__ == "__main__":
                 if len(parts)!=2: continue
                 config[parts[0].strip()]=parts[1].strip()
 
-          xsec   =float(config.get('xsec'   ,1))
-          filteff=float(config.get('filteff',1))
-          nEvents=float(config.get('nEvents',1))
-
           ROOT.SH.readFileList(sh_all, sname, fname)
-          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.crossSection    ,xsec)
-          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.filterEfficiency,filteff)
-          sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.numEvents       ,nEvents)
+          if 'xsec'    in config: sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.crossSection    ,float(config['xsec'   ]))
+          if 'filteff' in config: sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.filterEfficiency,float(config['filteff']))
+          if 'nEvents' in config: sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.numEvents       ,float(config['nEvents']))
       else:
 
         if args.use_scanDQ2:
