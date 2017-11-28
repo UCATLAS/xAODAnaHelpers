@@ -493,7 +493,11 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
+#ifdef USE_CMAKE
+EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventInfo*/, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
+#else
 EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
+#endif
 {
 
   //

@@ -309,7 +309,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
 
 EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
-								      const xAOD::EventInfo* eventInfo,
+								      const xAOD::EventInfo* /*eventInfo*/,
 								      bool doNominal)
 {
   ANA_MSG_DEBUG("Applying BJet Cuts and Efficiency Correction (when applicable...) ");

@@ -18,7 +18,11 @@
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
 #include "IsolationSelection/IIsolationSelectionTool.h"
+#ifdef USE_CMAKE
+#include "MuonAnalysisInterfaces/IMuonSelectionTool.h"
+#else
 #include "MuonSelectorTools/IMuonSelectionTool.h"
+#endif
 #include "TriggerMatchingTool/IMatchingTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
