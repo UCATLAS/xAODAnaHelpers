@@ -187,8 +187,17 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     //m_MV1                       =new std::vector<float>();
     m_MV2c00                    =new std::vector<float>();
     m_MV2c10                    =new std::vector<float>();
+#ifdef USE_CMAKE
+    m_MV2c10mu                  =new std::vector<float>();
+    m_MV2c10rnn                 =new std::vector<float>();
+#endif // USE_CMAKE
     m_MV2c20                    =new std::vector<float>();
     m_MV2c100                   =new std::vector<float>();
+#ifdef USE_CMAKE
+    m_DL1                       =new std::vector<float>();
+    m_DL1mu                     =new std::vector<float>();
+    m_DL1rnn                    =new std::vector<float>();
+#endif // USE_CMAKE
     m_HadronConeExclTruthLabelID=new std::vector<int>();
 
     // Jet Fitter
@@ -583,8 +592,17 @@ JetContainer::~JetContainer()
     //delete m_MV1;
     delete m_MV2c00;
     delete m_MV2c10;
+#ifdef USE_CMAKE
+    delete m_MV2c10mu;
+    delete m_MV2c10rnn;
+#endif // USE_CMAKE
     delete m_MV2c20;
     delete m_MV2c100;
+#ifdef USE_CMAKE
+    delete m_DL1;
+    delete m_DL1mu;
+    delete m_DL1rnn;
+#endif // USE_CMAKE
 
     delete m_HadronConeExclTruthLabelID;
 
@@ -837,8 +855,17 @@ void JetContainer::setTree(TTree *tree)
     {
       connectBranch<float>(tree,"MV2c00",               &m_MV2c00);
       connectBranch<float>(tree,"MV2c10",               &m_MV2c10);
+#ifdef USE_CMAKE
+      connectBranch<float>(tree,"MV2c10mu",             &m_MV2c10mu);
+      connectBranch<float>(tree,"MV2c10rnn",            &m_MV2c10rnn);
+#endif // USE_CMAKE
       connectBranch<float>(tree,"MV2c20",               &m_MV2c20);
       connectBranch<float>(tree,"MV2c100",              &m_MV2c100);
+#ifdef USE_CMAKE
+      connectBranch<float>(tree,"DL1",                  &m_DL1);
+      connectBranch<float>(tree,"DL1mu",                &m_DL1mu);
+      connectBranch<float>(tree,"DL1rnn",               &m_DL1rnn);
+#endif // USE_CMAKE
       connectBranch<int>  (tree,"HadronConeExclTruthLabelID",&m_HadronConeExclTruthLabelID);
     }
 
@@ -1048,8 +1075,17 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       if(m_debug) std::cout << "updating flavorTag " << std::endl;
       jet.MV2c00                    =m_MV2c00               ->at(idx);
       jet.MV2c10                    =m_MV2c10               ->at(idx);
+#ifdef USE_CMAKE
+      jet.MV2c10mu                  =m_MV2c10mu             ->at(idx);
+      jet.MV2c10rnn                 =m_MV2c10rnn            ->at(idx);
+#endif // USE_CMAKE
       jet.MV2c20                    =m_MV2c20               ->at(idx);
       jet.MV2c100                   =m_MV2c100              ->at(idx);
+#ifdef USE_CMAKE
+      jet.DL1                       =m_DL1                  ->at(idx);
+      jet.DL1mu                     =m_DL1mu                ->at(idx);
+      jet.DL1rnn                    =m_DL1rnn               ->at(idx);
+#endif // USE_CMAKE
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
       if(m_debug) std::cout << "leave flavorTag " << std::endl;
@@ -1600,8 +1636,17 @@ void JetContainer::setBranches(TTree *tree)
 
     setBranch<float>(tree,"MV2c00",   m_MV2c00);
     setBranch<float>(tree,"MV2c10",   m_MV2c10);
+#ifdef USE_CMAKE
+    setBranch<float>(tree,"MV2c10mu", m_MV2c10mu);
+    setBranch<float>(tree,"MV2c10rnn",m_MV2c10rnn);
+#endif // USE_CMAKE
     setBranch<float>(tree,"MV2c20",   m_MV2c20);
     setBranch<float>(tree,"MV2c100",  m_MV2c100);
+#ifdef USE_CMAKE
+    setBranch<float>(tree,"DL1",      m_DL1);
+    setBranch<float>(tree,"DL1mu",    m_DL1mu);
+    setBranch<float>(tree,"DL1rnn",   m_DL1rnn);
+#endif // USE_CMAKE
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
 
@@ -1952,8 +1997,17 @@ void JetContainer::clear()
 
     m_MV2c00                    ->clear();
     m_MV2c10                    ->clear();
+#ifdef USE_CMAKE
+    m_MV2c10mu                  ->clear();
+    m_MV2c10rnn                 ->clear();
+#endif // USE_CMAKE
     m_MV2c20                    ->clear();
     m_MV2c100                   ->clear();
+#ifdef USE_CMAKE
+    m_DL1                       ->clear();
+    m_DL1mu                     ->clear();
+    m_DL1rnn                    ->clear();
+#endif // USE_CMAKE
     m_HadronConeExclTruthLabelID->clear();
 
 
@@ -2625,15 +2679,44 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
-    double val(-999);
-    myBTag->variable<double>("MV2c00", "discriminant", val);
-    m_MV2c00->push_back( val );
-    myBTag->variable<double>("MV2c10", "discriminant", val);
-    m_MV2c10->push_back( val );
-    myBTag->variable<double>("MV2c20", "discriminant", val);
-    m_MV2c20->push_back( val );
-    myBTag->variable<double>("MV2c100", "discriminant", val);
-    m_MV2c100->push_back( val );
+    double val;
+
+    val=-999;
+    myBTag->variable<double>("MV2c00"   , "discriminant", val);
+    m_MV2c00   ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("MV2c10"   , "discriminant", val);
+    m_MV2c10   ->push_back( val );
+#ifdef USE_CMAKE
+    val=-999;
+    myBTag->variable<double>("MV2c10mu" , "discriminant", val);
+    m_MV2c10mu ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("MV2c10rnn", "discriminant", val);
+    m_MV2c10rnn->push_back( val );
+#endif // USE_CMAKE
+    val=-999;
+    myBTag->variable<double>("MV2c20"   , "discriminant", val);
+    m_MV2c20   ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("MV2c100"  , "discriminant", val);
+    m_MV2c100  ->push_back( val );
+#ifdef USE_CMAKE
+    val=-999;
+    myBTag->variable<double>("DL1"      , "discriminant", val);
+    m_DL1      ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("DL1mu"    , "discriminant", val);
+    m_DL1mu    ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("DL1rnn"   , "discriminant", val);
+    m_DL1rnn   ->push_back( val );
+#endif // USE_CMAKE
 
     // flavor groups truth definition
     static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
