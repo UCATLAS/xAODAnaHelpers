@@ -101,8 +101,8 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_SumPtTrkPt500PV      =new std::vector<float>();
       m_TrackWidthPt500PV    =new std::vector<float>();
       m_JVFPV                =new std::vector<float>();
-      m_JvtJvfcorr         = new std::vector<float>();
-      m_JvtRpt             = new std::vector<float>();
+      m_JvtJvfcorr           = new std::vector<float>();
+      m_JvtRpt               = new std::vector<float>();
     }
     m_Jvt                = new std::vector<float>();
   }
@@ -1103,24 +1103,24 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.MV2c00                    =m_MV2c00               ->at(idx);
       jet.MV2c10                    =m_MV2c10               ->at(idx);
 #ifdef USE_CMAKE
-      jet.MV2c10mu                  =m_MV2c10mu             ->at(idx);
-      jet.MV2c10rnn                 =m_MV2c10rnn            ->at(idx);
+      if(m_MV2c10mu)  jet.MV2c10mu  =m_MV2c10mu             ->at(idx);
+      if(m_MV2c10rnn) jet.MV2c10rnn =m_MV2c10rnn            ->at(idx);
 #endif // USE_CMAKE
       jet.MV2c20                    =m_MV2c20               ->at(idx);
       jet.MV2c100                   =m_MV2c100              ->at(idx);
 #ifdef USE_CMAKE
-      jet.DL1                       =m_DL1                  ->at(idx);
-      jet.DL1_pu                    =m_DL1_pu               ->at(idx);
-      jet.DL1_pc                    =m_DL1_pc               ->at(idx);
-      jet.DL1_pb                    =m_DL1_pb               ->at(idx);
-      jet.DL1mu                     =m_DL1mu                ->at(idx);
-      jet.DL1mu_pu                  =m_DL1mu_pu             ->at(idx);
-      jet.DL1mu_pc                  =m_DL1mu_pc             ->at(idx);
-      jet.DL1mu_pb                  =m_DL1mu_pb             ->at(idx);
-      jet.DL1rnn                    =m_DL1rnn               ->at(idx);
-      jet.DL1rnn_pu                 =m_DL1rnn_pu            ->at(idx);
-      jet.DL1rnn_pc                 =m_DL1rnn_pc            ->at(idx);
-      jet.DL1rnn_pb                 =m_DL1rnn_pb            ->at(idx);
+      if(m_DL1)       jet.DL1       =m_DL1                  ->at(idx);
+      if(m_DL1_pu)    jet.DL1_pu    =m_DL1_pu               ->at(idx);
+      if(m_DL1_pc)    jet.DL1_pc    =m_DL1_pc               ->at(idx);
+      if(m_DL1_pb)    jet.DL1_pb    =m_DL1_pb               ->at(idx);
+      if(m_DL1mu)     jet.DL1mu     =m_DL1mu                ->at(idx);
+      if(m_DL1mu_pu)  jet.DL1mu_pu  =m_DL1mu_pu             ->at(idx);
+      if(m_DL1mu_pc)  jet.DL1mu_pc  =m_DL1mu_pc             ->at(idx);
+      if(m_DL1mu_pb)  jet.DL1mu_pb  =m_DL1mu_pb             ->at(idx);
+      if(m_DL1rnn)    jet.DL1rnn    =m_DL1rnn               ->at(idx);
+      if(m_DL1rnn_pu) jet.DL1rnn_pu =m_DL1rnn_pu            ->at(idx);
+      if(m_DL1rnn_pc) jet.DL1rnn_pc =m_DL1rnn_pc            ->at(idx);
+      if(m_DL1rnn_pb) jet.DL1rnn_pb =m_DL1rnn_pb            ->at(idx);
 #endif // USE_CMAKE
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);

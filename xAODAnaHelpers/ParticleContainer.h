@@ -162,8 +162,13 @@ namespace xAH {
       template <typename T_BR> void connectBranch(TTree *tree, const std::string& branch, std::vector<T_BR> **variable)
       {
 	std::string name = branchName(branch);
-        tree->SetBranchStatus  (name.c_str()  , 1);
-        tree->SetBranchAddress (name.c_str()  , variable);
+	if(*variable) { delete (*variable); (*variable)=0; }
+	if(tree->GetBranch(name.c_str()))
+	  {
+	    (*variable)=new std::vector<T_BR>();
+	    tree->SetBranchStatus  (name.c_str()  , 1);
+	    tree->SetBranchAddress (name.c_str()  , variable);
+	  }
       }
 
       template<typename T> void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr){
