@@ -166,8 +166,28 @@ namespace xAH {
       // flavTag
       std::vector<float> *m_MV2c00;
       std::vector<float> *m_MV2c10;
+#ifdef USE_CMAKE
+      std::vector<float> *m_MV2c10mu;
+      std::vector<float> *m_MV2c10rnn;
+#endif // USE_CMAKE
       std::vector<float> *m_MV2c20;
       std::vector<float> *m_MV2c100;
+#ifdef USE_CMAKE
+      std::vector<float> *m_DL1;
+      std::vector<float> *m_DL1_pu;
+      std::vector<float> *m_DL1_pc;
+      std::vector<float> *m_DL1_pb;
+
+      std::vector<float> *m_DL1mu;
+      std::vector<float> *m_DL1mu_pu;
+      std::vector<float> *m_DL1mu_pc;
+      std::vector<float> *m_DL1mu_pb;
+
+      std::vector<float> *m_DL1rnn;
+      std::vector<float> *m_DL1rnn_pu;
+      std::vector<float> *m_DL1rnn_pc;
+      std::vector<float> *m_DL1rnn_pb;
+#endif // USE_CMAKE
       std::vector<int>   *m_HadronConeExclTruthLabelID;
     
       // Jet Fitter 

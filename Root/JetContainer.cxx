@@ -101,8 +101,8 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_SumPtTrkPt500PV      =new std::vector<float>();
       m_TrackWidthPt500PV    =new std::vector<float>();
       m_JVFPV                =new std::vector<float>();
-      m_JvtJvfcorr         = new std::vector<float>();
-      m_JvtRpt             = new std::vector<float>();
+      m_JvtJvfcorr           = new std::vector<float>();
+      m_JvtRpt               = new std::vector<float>();
     }
     m_Jvt                = new std::vector<float>();
   }
@@ -187,8 +187,26 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     //m_MV1                       =new std::vector<float>();
     m_MV2c00                    =new std::vector<float>();
     m_MV2c10                    =new std::vector<float>();
+#ifdef USE_CMAKE
+    m_MV2c10mu                  =new std::vector<float>();
+    m_MV2c10rnn                 =new std::vector<float>();
+#endif // USE_CMAKE
     m_MV2c20                    =new std::vector<float>();
     m_MV2c100                   =new std::vector<float>();
+#ifdef USE_CMAKE
+    m_DL1                       =new std::vector<float>();
+    m_DL1_pu                    =new std::vector<float>();
+    m_DL1_pc                    =new std::vector<float>();
+    m_DL1_pb                    =new std::vector<float>();
+    m_DL1mu                     =new std::vector<float>();
+    m_DL1mu_pu                  =new std::vector<float>();
+    m_DL1mu_pc                  =new std::vector<float>();
+    m_DL1mu_pb                  =new std::vector<float>();
+    m_DL1rnn                    =new std::vector<float>();
+    m_DL1rnn_pu                 =new std::vector<float>();
+    m_DL1rnn_pc                 =new std::vector<float>();
+    m_DL1rnn_pb                 =new std::vector<float>();
+#endif // USE_CMAKE
     m_HadronConeExclTruthLabelID=new std::vector<int>();
 
     // Jet Fitter
@@ -583,8 +601,26 @@ JetContainer::~JetContainer()
     //delete m_MV1;
     delete m_MV2c00;
     delete m_MV2c10;
+#ifdef USE_CMAKE
+    delete m_MV2c10mu;
+    delete m_MV2c10rnn;
+#endif // USE_CMAKE
     delete m_MV2c20;
     delete m_MV2c100;
+#ifdef USE_CMAKE
+    delete m_DL1;
+    delete m_DL1_pu;
+    delete m_DL1_pc;
+    delete m_DL1_pb;
+    delete m_DL1mu;
+    delete m_DL1mu_pu;
+    delete m_DL1mu_pc;
+    delete m_DL1mu_pb;
+    delete m_DL1rnn;
+    delete m_DL1rnn_pu;
+    delete m_DL1rnn_pc;
+    delete m_DL1rnn_pb;
+#endif // USE_CMAKE
 
     delete m_HadronConeExclTruthLabelID;
 
@@ -837,8 +873,26 @@ void JetContainer::setTree(TTree *tree)
     {
       connectBranch<float>(tree,"MV2c00",               &m_MV2c00);
       connectBranch<float>(tree,"MV2c10",               &m_MV2c10);
+#ifdef USE_CMAKE
+      connectBranch<float>(tree,"MV2c10mu",             &m_MV2c10mu);
+      connectBranch<float>(tree,"MV2c10rnn",            &m_MV2c10rnn);
+#endif // USE_CMAKE
       connectBranch<float>(tree,"MV2c20",               &m_MV2c20);
       connectBranch<float>(tree,"MV2c100",              &m_MV2c100);
+#ifdef USE_CMAKE
+      connectBranch<float>(tree,"DL1",                  &m_DL1      );
+      connectBranch<float>(tree,"DL1_pu",               &m_DL1_pu   );
+      connectBranch<float>(tree,"DL1_pc",               &m_DL1_pc   );
+      connectBranch<float>(tree,"DL1_pb",               &m_DL1_pb   );
+      connectBranch<float>(tree,"DL1mu",                &m_DL1mu    );
+      connectBranch<float>(tree,"DL1mu_pu",             &m_DL1mu_pu );
+      connectBranch<float>(tree,"DL1mu_pc",             &m_DL1mu_pc );
+      connectBranch<float>(tree,"DL1mu_pb",             &m_DL1mu_pb );
+      connectBranch<float>(tree,"DL1rnn",               &m_DL1rnn   );
+      connectBranch<float>(tree,"DL1rnn_pu",            &m_DL1rnn_pu);
+      connectBranch<float>(tree,"DL1rnn_pc",            &m_DL1rnn_pc);
+      connectBranch<float>(tree,"DL1rnn_pb",            &m_DL1rnn_pb);
+#endif // USE_CMAKE
       connectBranch<int>  (tree,"HadronConeExclTruthLabelID",&m_HadronConeExclTruthLabelID);
     }
 
@@ -1048,8 +1102,26 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       if(m_debug) std::cout << "updating flavorTag " << std::endl;
       jet.MV2c00                    =m_MV2c00               ->at(idx);
       jet.MV2c10                    =m_MV2c10               ->at(idx);
+#ifdef USE_CMAKE
+      if(m_MV2c10mu)  jet.MV2c10mu  =m_MV2c10mu             ->at(idx);
+      if(m_MV2c10rnn) jet.MV2c10rnn =m_MV2c10rnn            ->at(idx);
+#endif // USE_CMAKE
       jet.MV2c20                    =m_MV2c20               ->at(idx);
       jet.MV2c100                   =m_MV2c100              ->at(idx);
+#ifdef USE_CMAKE
+      if(m_DL1)       jet.DL1       =m_DL1                  ->at(idx);
+      if(m_DL1_pu)    jet.DL1_pu    =m_DL1_pu               ->at(idx);
+      if(m_DL1_pc)    jet.DL1_pc    =m_DL1_pc               ->at(idx);
+      if(m_DL1_pb)    jet.DL1_pb    =m_DL1_pb               ->at(idx);
+      if(m_DL1mu)     jet.DL1mu     =m_DL1mu                ->at(idx);
+      if(m_DL1mu_pu)  jet.DL1mu_pu  =m_DL1mu_pu             ->at(idx);
+      if(m_DL1mu_pc)  jet.DL1mu_pc  =m_DL1mu_pc             ->at(idx);
+      if(m_DL1mu_pb)  jet.DL1mu_pb  =m_DL1mu_pb             ->at(idx);
+      if(m_DL1rnn)    jet.DL1rnn    =m_DL1rnn               ->at(idx);
+      if(m_DL1rnn_pu) jet.DL1rnn_pu =m_DL1rnn_pu            ->at(idx);
+      if(m_DL1rnn_pc) jet.DL1rnn_pc =m_DL1rnn_pc            ->at(idx);
+      if(m_DL1rnn_pb) jet.DL1rnn_pb =m_DL1rnn_pb            ->at(idx);
+#endif // USE_CMAKE
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
       if(m_debug) std::cout << "leave flavorTag " << std::endl;
@@ -1600,8 +1672,26 @@ void JetContainer::setBranches(TTree *tree)
 
     setBranch<float>(tree,"MV2c00",   m_MV2c00);
     setBranch<float>(tree,"MV2c10",   m_MV2c10);
+#ifdef USE_CMAKE
+    setBranch<float>(tree,"MV2c10mu", m_MV2c10mu);
+    setBranch<float>(tree,"MV2c10rnn",m_MV2c10rnn);
+#endif // USE_CMAKE
     setBranch<float>(tree,"MV2c20",   m_MV2c20);
     setBranch<float>(tree,"MV2c100",  m_MV2c100);
+#ifdef USE_CMAKE
+    setBranch<float>(tree,"DL1",       m_DL1);
+    setBranch<float>(tree,"DL1_pu",    m_DL1_pu);
+    setBranch<float>(tree,"DL1_pc",    m_DL1_pc);
+    setBranch<float>(tree,"DL1_pb",    m_DL1_pb);
+    setBranch<float>(tree,"DL1mu",     m_DL1mu);
+    setBranch<float>(tree,"DL1mu_pu",  m_DL1mu_pu);
+    setBranch<float>(tree,"DL1mu_pc",  m_DL1mu_pc);
+    setBranch<float>(tree,"DL1mu_pb",  m_DL1mu_pb);
+    setBranch<float>(tree,"DL1rnn",    m_DL1rnn);
+    setBranch<float>(tree,"DL1rnn_pu", m_DL1rnn_pu);
+    setBranch<float>(tree,"DL1rnn_pc", m_DL1rnn_pc);
+    setBranch<float>(tree,"DL1rnn_pb", m_DL1rnn_pb);
+#endif // USE_CMAKE
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
 
@@ -1952,8 +2042,26 @@ void JetContainer::clear()
 
     m_MV2c00                    ->clear();
     m_MV2c10                    ->clear();
+#ifdef USE_CMAKE
+    m_MV2c10mu                  ->clear();
+    m_MV2c10rnn                 ->clear();
+#endif // USE_CMAKE
     m_MV2c20                    ->clear();
     m_MV2c100                   ->clear();
+#ifdef USE_CMAKE
+    m_DL1                       ->clear();
+    m_DL1_pu                    ->clear();
+    m_DL1_pc                    ->clear();
+    m_DL1_pb                    ->clear();
+    m_DL1mu                     ->clear();
+    m_DL1mu_pu                  ->clear();
+    m_DL1mu_pc                  ->clear();
+    m_DL1mu_pb                  ->clear();
+    m_DL1rnn                    ->clear();
+    m_DL1rnn_pu                 ->clear();
+    m_DL1rnn_pc                 ->clear();
+    m_DL1rnn_pb                 ->clear();
+#endif // USE_CMAKE
     m_HadronConeExclTruthLabelID->clear();
 
 
@@ -2624,16 +2732,68 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       safeFill<double, double, xAOD::BTagging>(myBTag, JetVertexCharge_discriminant, m_JetVertexCharge_discriminant, -999);
     }
 
-    //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
-    double val(-999);
-    myBTag->variable<double>("MV2c00", "discriminant", val);
-    m_MV2c00->push_back( val );
-    myBTag->variable<double>("MV2c10", "discriminant", val);
-    m_MV2c10->push_back( val );
-    myBTag->variable<double>("MV2c20", "discriminant", val);
-    m_MV2c20->push_back( val );
-    myBTag->variable<double>("MV2c100", "discriminant", val);
-    m_MV2c100->push_back( val );
+    // MV2c taggers
+    double val;
+
+    val=-999;
+    myBTag->variable<double>("MV2c00"   , "discriminant", val);
+    m_MV2c00   ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("MV2c10"   , "discriminant", val);
+    m_MV2c10   ->push_back( val );
+#ifdef USE_CMAKE
+    val=-999;
+    myBTag->variable<double>("MV2c10mu" , "discriminant", val);
+    m_MV2c10mu ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("MV2c10rnn", "discriminant", val);
+    m_MV2c10rnn->push_back( val );
+#endif // USE_CMAKE
+    val=-999;
+    myBTag->variable<double>("MV2c20"   , "discriminant", val);
+    m_MV2c20   ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("MV2c100"  , "discriminant", val);
+    m_MV2c100  ->push_back( val );
+
+#ifdef USE_CMAKE
+    // DL1 taggers
+    double pu, pb, pc, score;
+
+    pu=0; pb=0; pc=0;
+    myBTag->variable<double>("DL1" , "pu", pu);
+    myBTag->variable<double>("DL1" , "pc", pc);
+    myBTag->variable<double>("DL1" , "pb", pb);
+    score=log( pb / (0.08*pc+0.92*pu) );
+    m_DL1_pu->push_back(pu);
+    m_DL1_pc->push_back(pc);
+    m_DL1_pb->push_back(pb);
+    m_DL1->push_back( score );
+
+    pu=0; pb=0; pc=0;
+    myBTag->variable<double>("DL1mu" , "pu", pu);
+    myBTag->variable<double>("DL1mu" , "pc", pc);
+    myBTag->variable<double>("DL1mu" , "pb", pb);
+    score=log( pb / (0.08*pc+0.92*pu) );
+    m_DL1mu_pu->push_back(pu);
+    m_DL1mu_pc->push_back(pc);
+    m_DL1mu_pb->push_back(pb);
+    m_DL1mu->push_back( score );
+
+    pu=0; pb=0; pc=0;
+    myBTag->variable<double>("DL1rnn" , "pu", pu);
+    myBTag->variable<double>("DL1rnn" , "pc", pc);
+    myBTag->variable<double>("DL1rnn" , "pb", pb);
+    score=log( pb / (0.03*pc+0.97*pu) );
+    m_DL1rnn_pu->push_back(pu);
+    m_DL1rnn_pc->push_back(pc);
+    m_DL1rnn_pb->push_back(pb);
+    m_DL1rnn->push_back( score );
+
+#endif // USE_CMAKE
 
     // flavor groups truth definition
     static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
