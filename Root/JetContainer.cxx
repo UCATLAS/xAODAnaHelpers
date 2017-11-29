@@ -195,8 +195,17 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_MV2c100                   =new std::vector<float>();
 #ifdef USE_CMAKE
     m_DL1                       =new std::vector<float>();
+    m_DL1_pu                    =new std::vector<float>();
+    m_DL1_pc                    =new std::vector<float>();
+    m_DL1_pb                    =new std::vector<float>();
     m_DL1mu                     =new std::vector<float>();
+    m_DL1mu_pu                  =new std::vector<float>();
+    m_DL1mu_pc                  =new std::vector<float>();
+    m_DL1mu_pb                  =new std::vector<float>();
     m_DL1rnn                    =new std::vector<float>();
+    m_DL1rnn_pu                 =new std::vector<float>();
+    m_DL1rnn_pc                 =new std::vector<float>();
+    m_DL1rnn_pb                 =new std::vector<float>();
 #endif // USE_CMAKE
     m_HadronConeExclTruthLabelID=new std::vector<int>();
 
@@ -600,8 +609,17 @@ JetContainer::~JetContainer()
     delete m_MV2c100;
 #ifdef USE_CMAKE
     delete m_DL1;
+    delete m_DL1_pu;
+    delete m_DL1_pc;
+    delete m_DL1_pb;
     delete m_DL1mu;
+    delete m_DL1mu_pu;
+    delete m_DL1mu_pc;
+    delete m_DL1mu_pb;
     delete m_DL1rnn;
+    delete m_DL1rnn_pu;
+    delete m_DL1rnn_pc;
+    delete m_DL1rnn_pb;
 #endif // USE_CMAKE
 
     delete m_HadronConeExclTruthLabelID;
@@ -862,9 +880,18 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"MV2c20",               &m_MV2c20);
       connectBranch<float>(tree,"MV2c100",              &m_MV2c100);
 #ifdef USE_CMAKE
-      connectBranch<float>(tree,"DL1",                  &m_DL1);
-      connectBranch<float>(tree,"DL1mu",                &m_DL1mu);
-      connectBranch<float>(tree,"DL1rnn",               &m_DL1rnn);
+      connectBranch<float>(tree,"DL1",                  &m_DL1      );
+      connectBranch<float>(tree,"DL1_pu",               &m_DL1_pu   );
+      connectBranch<float>(tree,"DL1_pc",               &m_DL1_pc   );
+      connectBranch<float>(tree,"DL1_pb",               &m_DL1_pb   );
+      connectBranch<float>(tree,"DL1mu",                &m_DL1mu    );
+      connectBranch<float>(tree,"DL1mu_pu",             &m_DL1mu_pu );
+      connectBranch<float>(tree,"DL1mu_pc",             &m_DL1mu_pc );
+      connectBranch<float>(tree,"DL1mu_pb",             &m_DL1mu_pb );
+      connectBranch<float>(tree,"DL1rnn",               &m_DL1rnn   );
+      connectBranch<float>(tree,"DL1rnn_pu",            &m_DL1rnn_pu);
+      connectBranch<float>(tree,"DL1rnn_pc",            &m_DL1rnn_pc);
+      connectBranch<float>(tree,"DL1rnn_pb",            &m_DL1rnn_pb);
 #endif // USE_CMAKE
       connectBranch<int>  (tree,"HadronConeExclTruthLabelID",&m_HadronConeExclTruthLabelID);
     }
@@ -1083,8 +1110,17 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.MV2c100                   =m_MV2c100              ->at(idx);
 #ifdef USE_CMAKE
       jet.DL1                       =m_DL1                  ->at(idx);
+      jet.DL1_pu                    =m_DL1_pu               ->at(idx);
+      jet.DL1_pc                    =m_DL1_pc               ->at(idx);
+      jet.DL1_pb                    =m_DL1_pb               ->at(idx);
       jet.DL1mu                     =m_DL1mu                ->at(idx);
+      jet.DL1mu_pu                  =m_DL1mu_pu             ->at(idx);
+      jet.DL1mu_pc                  =m_DL1mu_pc             ->at(idx);
+      jet.DL1mu_pb                  =m_DL1mu_pb             ->at(idx);
       jet.DL1rnn                    =m_DL1rnn               ->at(idx);
+      jet.DL1rnn_pu                 =m_DL1rnn_pu            ->at(idx);
+      jet.DL1rnn_pc                 =m_DL1rnn_pc            ->at(idx);
+      jet.DL1rnn_pb                 =m_DL1rnn_pb            ->at(idx);
 #endif // USE_CMAKE
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
@@ -1643,9 +1679,18 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"MV2c20",   m_MV2c20);
     setBranch<float>(tree,"MV2c100",  m_MV2c100);
 #ifdef USE_CMAKE
-    setBranch<float>(tree,"DL1",      m_DL1);
-    setBranch<float>(tree,"DL1mu",    m_DL1mu);
-    setBranch<float>(tree,"DL1rnn",   m_DL1rnn);
+    setBranch<float>(tree,"DL1",       m_DL1);
+    setBranch<float>(tree,"DL1_pu",    m_DL1_pu);
+    setBranch<float>(tree,"DL1_pc",    m_DL1_pc);
+    setBranch<float>(tree,"DL1_pb",    m_DL1_pb);
+    setBranch<float>(tree,"DL1mu",     m_DL1mu);
+    setBranch<float>(tree,"DL1mu_pu",  m_DL1mu_pu);
+    setBranch<float>(tree,"DL1mu_pc",  m_DL1mu_pc);
+    setBranch<float>(tree,"DL1mu_pb",  m_DL1mu_pb);
+    setBranch<float>(tree,"DL1rnn",    m_DL1rnn);
+    setBranch<float>(tree,"DL1rnn_pu", m_DL1rnn_pu);
+    setBranch<float>(tree,"DL1rnn_pc", m_DL1rnn_pc);
+    setBranch<float>(tree,"DL1rnn_pb", m_DL1rnn_pb);
 #endif // USE_CMAKE
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
@@ -2005,8 +2050,17 @@ void JetContainer::clear()
     m_MV2c100                   ->clear();
 #ifdef USE_CMAKE
     m_DL1                       ->clear();
+    m_DL1_pu                    ->clear();
+    m_DL1_pc                    ->clear();
+    m_DL1_pb                    ->clear();
     m_DL1mu                     ->clear();
+    m_DL1mu_pu                  ->clear();
+    m_DL1mu_pc                  ->clear();
+    m_DL1mu_pb                  ->clear();
     m_DL1rnn                    ->clear();
+    m_DL1rnn_pu                 ->clear();
+    m_DL1rnn_pc                 ->clear();
+    m_DL1rnn_pb                 ->clear();
 #endif // USE_CMAKE
     m_HadronConeExclTruthLabelID->clear();
 
@@ -2678,7 +2732,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       safeFill<double, double, xAOD::BTagging>(myBTag, JetVertexCharge_discriminant, m_JetVertexCharge_discriminant, -999);
     }
 
-    //MV2c00 MV2c20 MV2c10 MV2c100 MV2m
+    // MV2c taggers
     double val;
 
     val=-999;
@@ -2704,18 +2758,41 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     val=-999;
     myBTag->variable<double>("MV2c100"  , "discriminant", val);
     m_MV2c100  ->push_back( val );
+
 #ifdef USE_CMAKE
-    val=-999;
-    myBTag->variable<double>("DL1"      , "discriminant", val);
-    m_DL1      ->push_back( val );
+    // DL1 taggers
+    double pu, pb, pc, score;
 
-    val=-999;
-    myBTag->variable<double>("DL1mu"    , "discriminant", val);
-    m_DL1mu    ->push_back( val );
+    pu=0; pb=0; pc=0;
+    myBTag->variable<double>("DL1" , "pu", pu);
+    myBTag->variable<double>("DL1" , "pc", pc);
+    myBTag->variable<double>("DL1" , "pb", pb);
+    score=log( pb / (0.08*pc+0.92*pu) );
+    m_DL1_pu->push_back(pu);
+    m_DL1_pc->push_back(pc);
+    m_DL1_pb->push_back(pb);
+    m_DL1->push_back( score );
 
-    val=-999;
-    myBTag->variable<double>("DL1rnn"   , "discriminant", val);
-    m_DL1rnn   ->push_back( val );
+    pu=0; pb=0; pc=0;
+    myBTag->variable<double>("DL1mu" , "pu", pu);
+    myBTag->variable<double>("DL1mu" , "pc", pc);
+    myBTag->variable<double>("DL1mu" , "pb", pb);
+    score=log( pb / (0.08*pc+0.92*pu) );
+    m_DL1mu_pu->push_back(pu);
+    m_DL1mu_pc->push_back(pc);
+    m_DL1mu_pb->push_back(pb);
+    m_DL1mu->push_back( score );
+
+    pu=0; pb=0; pc=0;
+    myBTag->variable<double>("DL1rnn" , "pu", pu);
+    myBTag->variable<double>("DL1rnn" , "pc", pc);
+    myBTag->variable<double>("DL1rnn" , "pb", pb);
+    score=log( pb / (0.03*pc+0.97*pu) );
+    m_DL1rnn_pu->push_back(pu);
+    m_DL1rnn_pc->push_back(pc);
+    m_DL1rnn_pb->push_back(pb);
+    m_DL1rnn->push_back( score );
+
 #endif // USE_CMAKE
 
     // flavor groups truth definition

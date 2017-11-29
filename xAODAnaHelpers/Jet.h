@@ -93,8 +93,17 @@ namespace xAH {
       float MV2c20;
       float MV2c100;
       float DL1;
+      float DL1_pu;
+      float DL1_pc;
+      float DL1_pb;
       float DL1mu;
+      float DL1mu_pu;
+      float DL1mu_pc;
+      float DL1mu_pb;
       float DL1rnn;
+      float DL1rnn_pu;
+      float DL1rnn_pc;
+      float DL1rnn_pb;
       int  HadronConeExclTruthLabelID;
 
       float vtxOnlineValid;
