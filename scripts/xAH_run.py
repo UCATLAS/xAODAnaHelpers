@@ -251,7 +251,7 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working for rel 20
-    needXRD = ( args.use_scanDQ2|args.use_scanRucio ) & args.driver!='prun'
+    needXRD = ( args.use_scanDQ2|args.use_scanRucio ) & (args.driver!='prun')
     if needXRD:
       if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
