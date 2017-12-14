@@ -24,7 +24,7 @@ StatusCode IParticleHists::initialize() {
   m_Pt          = book(m_name, m_prefix+"Pt",       m_title+" p_{T} [GeV]", 100, 0, 1000.);
   m_Pt_m        = book(m_name, m_prefix+"Pt_m",     m_title+" p_{T} [GeV]", 100, 0,  500.);
   m_Pt_s        = book(m_name, m_prefix+"Pt_s",     m_title+" p_{T} [GeV]", 200, 0,  200.);
-  m_Eta         = book(m_name, m_prefix+"Eta",      m_title+" #eta",         80, -4, 4);
+  m_Eta         = book(m_name, m_prefix+"Eta",      m_title+" #eta",         98, -4.9, 4.9);
   m_Phi         = book(m_name, m_prefix+"Phi",      m_title+" Phi",         120, -TMath::Pi(), TMath::Pi() );
   m_M           = book(m_name, m_prefix+"Mass",     m_title+" Mass [GeV]",  120, 0, 400);
   m_E           = book(m_name, m_prefix+"Energy",   m_title+" Energy [GeV]",120, 0, 4000.);
