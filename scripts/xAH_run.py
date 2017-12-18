@@ -269,10 +269,11 @@ if __name__ == "__main__":
       ASG_framework_list = ['Base', 'Top']
       ASG_framework_type = xAODAnaHelpers.utils.findFrameworkTypeFromList(ASG_framework_list)
       if( ASG_framework_type == None ):
-        raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
+        arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
+        raise OSError("It doesn't seem like the CMake environment is setup correctly. (Hint: source 'build/{0:s}/setup.sh)".format(arch))
 
       # architecture used for CMake
-      arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
+      arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM')
 
     # Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore()
