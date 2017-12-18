@@ -258,18 +258,22 @@ if __name__ == "__main__":
 
     use_scanEOS = (args.use_scanEOS)
 
+
     # at this point, we should import ROOT and do stuff
     import ROOT
     if xAODAnaHelpers.utils.is_release20():
       xAH_logger.info("loading packages")
       ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
     else:
-      # env var that tells us if CMAKE was setup
-      cmake_setup = 'AnalysisBase_SET_UP'
-      # architecture used for CMake
-      arch = os.environ.get('AnalysisBase_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
-      if not int(os.environ.get(cmake_setup, 0)):
+      ## Determine which ASG framework using env var for CMAKE setup
+      ASG_framework_list = ['Base', 'Top']
+      try:
+        ASG_framework_type = next( ASGtype for ASGtype in ASG_framework_list if int( os.environ.get('Analysis'+ASGtype+'_SET_UP', 0) ) )
+      except:
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
+      # architecture used for CMake
+      arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
+
     # Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore()
 
@@ -410,8 +414,8 @@ if __name__ == "__main__":
 
     # This is a fix for running on the grid with release 21.2.X
     if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) >= 25:
-      xAH_logger.info("Setting nc_cmtConfig to {0:s}".format(os.getenv("AnalysisBase_PLATFORM")))
-      sh_all.setMetaString("nc_cmtConfig", os.getenv("AnalysisBase_PLATFORM"))
+      xAH_logger.info("Setting nc_cmtConfig to {0:s}".format(os.getenv('Analysis'+ASG_framework_type+'_PLATFORM')))
+      sh_all.setMetaString("nc_cmtConfig", os.getenv('Analysis'+ASG_framework_type+'_PLATFORM'))
 
     # read susy meta data (should be configurable)
     path_metadata=ROOT.PathResolverFindCalibDirectory("xAODAnaHelpers/metadata")

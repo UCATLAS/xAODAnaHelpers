@@ -6,12 +6,19 @@
 atlas_subdir( xAODAnaHelpers )
 
 set( release_libs xAODTriggerCnvLib )
-if( ${AnalysisBase_VERSION} VERSION_GREATER 21.0 )
+
+if( AnalysisBase_VERSION AND AnalysisBase_VERSION VERSION_GREATER 21.0 )
   # 21.X
   set( release_libs xAODTriggerCnvLib )
+  MESSAGE("YES")
+elseif( AnalysisTop_VERSION AND AnalysisTop_VERSION VERSION_GREATER 21.0 )
+  # AnalysisTop 21.X
+  set( release_libs xAODTriggerCnvLib )
+  MESSAGE("YESTop")
 else()
   # 2.6.X
   set( release_libs xAODTriggerCnv )
+  MESSAGE("NO!!!")
 endif()
 
 # Declare the package's dependencies:
