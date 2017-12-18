@@ -267,10 +267,10 @@ if __name__ == "__main__":
     else:
       ## Determine which ASG framework using env var for CMAKE setup
       ASG_framework_list = ['Base', 'Top']
-      try:
-        ASG_framework_type = next( ASGtype for ASGtype in ASG_framework_list if int( os.environ.get('Analysis'+ASGtype+'_SET_UP', 0) ) )
-      except:
+      ASG_framework_type = xAODAnaHelpers.utils.findFrameworkTypeFromList(ASG_framework_list)
+      if( ASG_framework_type == None ):
         raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
+
       # architecture used for CMake
       arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
 
