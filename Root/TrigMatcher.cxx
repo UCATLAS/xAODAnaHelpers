@@ -85,8 +85,9 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   //  everything went fine, let's initialise the tool!
   //
-  m_trigMatchTool = new Trig::MatchingTool("TrigMatchTool_"+m_name);
-  ANA_CHECK( m_trigMatchTool->setProperty( "OutputLevel", msg().level()) );
+  setToolName(m_trigMatchTool_handle);
+  ANA_CHECK( ASG_MAKE_ANA_TOOL(m_trigMatchTool_handle, Trig::MatchingTool) );
+  ANA_CHECK( m_trigMatchTool_handle.retrieve() );
 
   // **********************************************************************************************
 
@@ -152,19 +153,11 @@ EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* 
       for ( auto const &chain : m_trigChainsList ) {
 	ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
 
-	bool matched = m_trigMatchTool->match( *particle, chain, 0.07 );
+	bool matched = m_trigMatchTool_handle->match( *particle, chain, 0.07 );
 	ANA_MSG_DEBUG( "\t\t result = " << matched );
 	if(matched) isTrigMatchedDecor( *particle ).push_back( chain );
       }
     }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode TrigMatcher :: finalize ()
-{
-  ANA_MSG_INFO( "Cleaning up...");
-  if(m_trigMatchTool) { delete m_trigMatchTool; m_trigMatchTool=nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }

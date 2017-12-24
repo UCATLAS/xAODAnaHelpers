@@ -74,7 +74,7 @@ public:
 private:
 
   /* tools */
-  Trig::MatchingTool* m_trigMatchTool = nullptr; //!
+  asg::AnaToolHandle<Trig::IMatchingTool> m_trigMatchTool_handle{"Trig::MatchingTool"}; //!
 
   std::vector<std::string> m_trigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_trigChains */
 
@@ -91,7 +91,6 @@ public:
   virtual EL::StatusCode setupJob (EL::Job& job);
   virtual EL::StatusCode initialize ();
   virtual EL::StatusCode execute ();
-  virtual EL::StatusCode finalize ();
 
   /* these are the functions not inherited from Algorithm */
   EL::StatusCode executeMatching( const xAOD::IParticleContainer* inParticles );
