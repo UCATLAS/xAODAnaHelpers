@@ -35,8 +35,12 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
 
-MuonSelector :: MuonSelector () :
-    Algorithm("MuonSelector")
+MuonSelector :: MuonSelector ()
+: Algorithm("MuonSelector"),
+  m_isolationSelectionTool_handle("CP::IsolationSelectionTool/IsolationSelectionTool", this),
+  m_muonSelectionTool_handle("CP::MuonSelectionTool/MuonSelectionTool",this),
+  m_trigMuonMatchTool_handle("Trig::MatchingTool/MatchingTool",this),
+  m_trigDecTool_handle("Trig::TrigDecisionTool/TrigDecisionTool")
 {
 }
 
@@ -240,7 +244,6 @@ EL::StatusCode MuonSelector :: initialize ()
   // Set eta and quality requirements in order to accept the muon - ID tracks required by default
   //
 
-  setToolName(m_muonSelectionTool_handle);
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
@@ -253,7 +256,6 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // *************************************
 
-  setToolName(m_isolationSelectionTool_handle);
   // Do this only for the first WP in the list
   ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
   ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
@@ -294,13 +296,9 @@ EL::StatusCode MuonSelector :: initialize ()
   // Initialise Trig::MatchingTool
   //
   // **************************************
-
-  // NB: check if TrigDecisionTool was initialized from BasicEventSelection or another algorithm
-  //     do not initialise if there are no input trigger chains, or the TrigDecisionTool hasn't been configured yet
-
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) ) {
     // Grab the TrigDecTool from the ToolStore
-    if(!setToolName(m_trigDecTool_handle, m_trigDecTool_name)){
+    if(!m_trigDecTool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
@@ -308,7 +306,6 @@ EL::StatusCode MuonSelector :: initialize ()
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
     //  everything went fine, let's initialise the tool!
-    setToolName(m_trigMuonMatchTool_handle);
     ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
     ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
     ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());

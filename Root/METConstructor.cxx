@@ -157,7 +157,6 @@ EL::StatusCode METConstructor :: initialize ()
   }
 
   //////////// IMETSignificance ////////////////
-  setToolName( m_metSignificance_handle );
   ASG_SET_ANA_TOOL_TYPE( m_metSignificance_handle, met::METSignificance );
   ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
 #ifdef USE_CMAKE

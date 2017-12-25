@@ -83,14 +83,14 @@ private:
 
   // tools
   CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr; //!
-  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle{"CP::IsolationCorrectionTool"}; //!
+  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle; //!
   ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/tight"}; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"}; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/loose"}; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle; //!
 
 public:
   // Tree *myTree; //!

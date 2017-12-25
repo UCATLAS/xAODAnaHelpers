@@ -74,7 +74,7 @@ public:
 private:
 
   /* tools */
-  asg::AnaToolHandle<Trig::IMatchingTool> m_trigMatchTool_handle{"Trig::MatchingTool"}; //!
+  asg::AnaToolHandle<Trig::IMatchingTool> m_trigMatchTool_handle; //!
 
   std::vector<std::string> m_trigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_trigChains */
 

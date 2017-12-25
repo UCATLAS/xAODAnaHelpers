@@ -30,7 +30,8 @@
 ClassImp(TrigMatcher)
 
 TrigMatcher :: TrigMatcher ()
-: Algorithm("TrigMatcher")
+: Algorithm("TrigMatcher"),
+  m_trigMatchTool_handle{"Trig::MatchingTool/MatchingTool", this}
 {
 }
 
@@ -85,7 +86,6 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   //  everything went fine, let's initialise the tool!
   //
-  setToolName(m_trigMatchTool_handle);
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_trigMatchTool_handle, Trig::MatchingTool) );
   ANA_CHECK( m_trigMatchTool_handle.retrieve() );
 

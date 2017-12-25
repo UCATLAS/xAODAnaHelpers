@@ -38,8 +38,9 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetRoIBuilder)
 
-HLTJetRoIBuilder :: HLTJetRoIBuilder () :
-  Algorithm("HLTJetRoIBuilder")
+HLTJetRoIBuilder :: HLTJetRoIBuilder ()
+: Algorithm("HLTJetRoIBuilder"),
+  m_trigDecTool_handle("Trig::TrigDecisionTool/TrigDecisionTool")
 {
 }
 
@@ -85,7 +86,7 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
   m_store = wk()->xaodStore();
 
   // Grab the TrigDecTool from the ToolStore
-  if(!setToolName(m_trigDecTool_handle, m_trigDecTool_name)){
+  if(!m_trigDecTool_handle.isUserConfigured()){
     ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
     return EL::StatusCode::FAILURE;
   }

@@ -36,8 +36,10 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
-    Algorithm("BJetEfficiencyCorrector")
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector ()
+: Algorithm("BJetEfficiencyCorrector"),
+  m_BJetSelectTool_handle("BTaggingSelectionTool",this),
+  m_BJetEffSFTool_handle("BTaggingEfficiencyTool",this)
 {
 }
 
@@ -160,8 +162,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
 
   // initialize the BJetSelectionTool
-  setToolName(m_BJetSelectTool_handle);
-  //  Configure the BJetSelectionTool
   // A few which are not configurable as of yet....
   // is there a reason to have this configurable here??...I think no (GF to self)
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",2.5));
@@ -179,7 +179,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if( m_getScaleFactors ) {
 
     // initialize the BJetEfficiencyCorrectionTool
-    setToolName(m_BJetEffSFTool_handle);
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("TaggerName",          m_taggerName));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("SystematicsStrategy", m_systematicsStrategy ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OperatingPoint",      m_operatingPtCDI));

@@ -7,8 +7,9 @@
 #include "xAODAnaHelpers/Algorithm.h"
 
 // external tools include(s):
-#include "AsgTools/AnaToolHandle.h"
-#include "PileupReweighting/PileupReweightingTool.h"
+#include <AsgTools/AnaToolHandle.h>
+
+#include <AsgAnalysisInterfaces/IPileupReweightingTool.h>
 
 class MuonCalibrator : public xAH::Algorithm
 {
@@ -66,7 +67,7 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"}; //!
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;                              //!
   std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;    //!
   std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                        //!
   std::vector<std::string> m_YearsList;                                                             //!

@@ -36,8 +36,9 @@ using HelperClasses::ToolName;
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonCalibrator)
 
-MuonCalibrator :: MuonCalibrator () :
-    Algorithm("MuonCalibrator")
+MuonCalibrator :: MuonCalibrator ()
+: Algorithm("MuonCalibrator"),
+  m_pileup_tool_handle("CP::PileupReweightingTool/Pileup")
 {
 }
 
@@ -126,7 +127,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // will be used.
   //
   if( isMC() ){
-    if(!setToolName(m_pileup_tool_handle, "Pileup")){
+    if(!m_pileup_tool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
