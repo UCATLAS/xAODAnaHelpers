@@ -185,9 +185,6 @@ public:
   /// Recommended threshold for egamma triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   double         m_minDeltaR = 0.07;
 
-  /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
-  std::string m_trigDecTool_name{"xAH_TDT"};
-
 private:
 
   /**
@@ -251,16 +248,11 @@ private:
   /* tools */
 
   /// @brief MC15 ASG tool for isolation
-  asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool"}; //!
+  asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this}; //!
   // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
-  CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                               //!
-  /**
-    @rst
-      The name of this tool (if needs to be changed) can be set with :cpp:member:`ElectronSelector::m_trigDecTool_name`.
-    @endrst
-  */
-  asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle{"Trig::TrigDecisionTool"};                //!
-  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle{"Trig::MatchingTool"};          //!
+  CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                                                          //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                }; //!
+  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle {"Trig::MatchingTool/MatchingTool"                  , this}; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing 
   bool m_doTrigMatch = true;

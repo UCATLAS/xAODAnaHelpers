@@ -34,9 +34,8 @@ using HelperClasses::ToolName;
 ClassImp(MuonEfficiencyCorrector)
 
 
-MuonEfficiencyCorrector :: MuonEfficiencyCorrector ()
-: Algorithm("MuonEfficiencyCorrector"),
-  m_pileup_tool_handle("CP::PileupReweightingTool/Pileup")
+MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
+    Algorithm("MuonEfficiencyCorrector")
 {
 }
 

@@ -44,16 +44,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)
 
-JetCalibrator :: JetCalibrator ()
-: Algorithm("JetCalibrator"),
-  m_JetCalibrationTool_handle("JetCalibrationTool",this),
-  m_JetUncertaintiesTool_handle("JetUncertaintiesTool",this),
-  m_JERTool_handle("JERTool",this),
-  m_JERSmearingTool_handle("JERSmearingTool",this),
-  m_JVTUpdateTool_handle("JetVertexTaggerTool",this),
-  m_fJVTTool_handle("JetForwardJvtTool",this),
-  m_JetCleaningTool_handle("JetCleaningTool",this),
-  m_JetTileCorrectionTool_handle("JetTileCorrectionTool",this)
+JetCalibrator :: JetCalibrator () :
+    Algorithm("JetCalibrator")
 {
 }
 

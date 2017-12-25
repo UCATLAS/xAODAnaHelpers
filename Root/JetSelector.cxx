@@ -38,11 +38,8 @@
 ClassImp(JetSelector)
 
 
-JetSelector :: JetSelector ()
-: Algorithm("JetSelector"),
-  m_JVT_tool_handle("CP::JetJvtEfficiency/JVT_eff_tool"),
-  m_fJVT_eff_tool_handle("CP::JetJvtEfficiency/fJVT_eff_tool"),
-  m_BJetSelectTool_handle("BTaggingSelectionTool",this)
+JetSelector :: JetSelector () :
+    Algorithm("JetSelector")
 {
 }
 

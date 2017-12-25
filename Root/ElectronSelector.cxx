@@ -37,12 +37,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronSelector)
 
-ElectronSelector :: ElectronSelector ()
-: Algorithm("ElectronSelector"),
-  m_isolationSelectionTool_handle("CP::IsolationSelectionTool/IsolationSelectionTool",this),
-  m_trigDecTool_handle("Trig::TrigDecisionTool/TrigDecisionTool"),
-  m_trigElectronMatchTool_handle("Trig::MatchingTool/MatchingTool",this)
-
+ElectronSelector :: ElectronSelector () :
+    Algorithm("ElectronSelector")
 {
 }
 

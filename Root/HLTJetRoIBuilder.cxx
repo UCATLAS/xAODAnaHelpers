@@ -38,9 +38,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetRoIBuilder)
 
-HLTJetRoIBuilder :: HLTJetRoIBuilder ()
-: Algorithm("HLTJetRoIBuilder"),
-  m_trigDecTool_handle("Trig::TrigDecisionTool/TrigDecisionTool")
+HLTJetRoIBuilder :: HLTJetRoIBuilder () :
+  Algorithm("HLTJetRoIBuilder")
 {
 }
 

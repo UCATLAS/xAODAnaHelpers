@@ -36,10 +36,8 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector ()
-: Algorithm("BJetEfficiencyCorrector"),
-  m_BJetSelectTool_handle("BTaggingSelectionTool",this),
-  m_BJetEffSFTool_handle("BTaggingEfficiencyTool",this)
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
+    Algorithm("BJetEfficiencyCorrector")
 {
 }
 

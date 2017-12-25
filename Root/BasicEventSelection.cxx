@@ -34,13 +34,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
 
-BasicEventSelection :: BasicEventSelection ()
-: Algorithm("BasicEventSelection"),
-  m_grl_handle("GoodRunsListSelectionTool/grl", this),
-  m_pileup_tool_handle("CP::PileupReweightingTool/Pileup"),
-  m_trigConfTool_handle("TrigConf::xAODConfigTool/xAODConfigTool", this),
-  m_trigDecTool_handle("Trig::TrigDecisionTool/TrigDecisionTool"),
-  m_reweightSherpa22_tool_handle("PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool",this)
+BasicEventSelection :: BasicEventSelection () :
+    Algorithm("BasicEventSelection")
 {
 }
 

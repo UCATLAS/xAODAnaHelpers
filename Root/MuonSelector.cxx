@@ -35,12 +35,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
 
-MuonSelector :: MuonSelector ()
-: Algorithm("MuonSelector"),
-  m_isolationSelectionTool_handle("CP::IsolationSelectionTool/IsolationSelectionTool", this),
-  m_muonSelectionTool_handle("CP::MuonSelectionTool/MuonSelectionTool",this),
-  m_trigMuonMatchTool_handle("Trig::MatchingTool/MatchingTool",this),
-  m_trigDecTool_handle("Trig::TrigDecisionTool/TrigDecisionTool")
+MuonSelector :: MuonSelector () :
+    Algorithm("MuonSelector")
 {
 }
 

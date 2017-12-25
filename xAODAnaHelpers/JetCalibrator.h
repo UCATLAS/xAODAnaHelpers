@@ -155,16 +155,16 @@ private:
   std::vector<int> m_systType; //!
 
   // tools
-  asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle;      //!
-  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle;    //!
-  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle;                 //!
-  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle;         //!
-  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle;           //!
-  asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle;                //!
-  asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle;         //!
-  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle;   //!
+  asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
+  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle              {"JERTool"              , this}; //!
+  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle      {"JERSmearingTool"      , this}; //!
+  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle        {"JetVertexTaggerTool"  , this}; //!
+  asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
+  asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
+  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
 
-  std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles;     //!
+  std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; //!
   std::vector<std::string>  m_decisionNames;    //!
 
 public:

@@ -36,9 +36,8 @@ using HelperClasses::ToolName;
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonCalibrator)
 
-MuonCalibrator :: MuonCalibrator ()
-: Algorithm("MuonCalibrator"),
-  m_pileup_tool_handle("CP::PileupReweightingTool/Pileup")
+MuonCalibrator :: MuonCalibrator () :
+    Algorithm("MuonCalibrator")
 {
 }
 

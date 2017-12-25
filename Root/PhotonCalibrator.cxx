@@ -53,12 +53,8 @@ using HelperClasses::ToolName;
 ClassImp(PhotonCalibrator)
 
 
-PhotonCalibrator :: PhotonCalibrator ()
-: Algorithm("PhotonCalibrator"),
-  m_isolationCorrectionTool_handle("CP::IsolationCorrectionTool/IsolationCorrectionTool",this),
-  m_photonTightEffTool_handle("AsgPhotonEfficiencyCorrectionTool/tight",this),
-  m_photonMediumEffTool_handle("AsgPhotonEfficiencyCorrectionTool/medium",this),
-  m_photonLooseEffTool_handle("AsgPhotonEfficiencyCorrectionTool/loose",this)
+PhotonCalibrator :: PhotonCalibrator () :
+    Algorithm("PhotonCalibrator")
 {
 }
 

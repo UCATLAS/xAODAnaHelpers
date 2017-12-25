@@ -30,9 +30,7 @@
 ClassImp(TrigMatcher)
 
 TrigMatcher :: TrigMatcher ()
-: Algorithm("TrigMatcher"),
-  m_trigDecTool_handle("Trig::TrigDecisionTool/TrigDecisionTool"),
-  m_trigMatchTool_handle("Trig::MatchingTool/MatchingTool", this)
+: Algorithm("TrigMatcher")
 {
 }
 
