@@ -36,7 +36,7 @@ matrix:
   fast_finish: true
   allow_failures:
     - env: ABV_CM=21.2.7 ALLOWFAIL=true
-  
+
   include:
     - language: python
       python: 2.7
@@ -67,24 +67,13 @@ matrix:
 
     - language: cpp
       sudo: required
+      services:
+        - docker
       env: JOB="uncrustify check"
       before_script:
-        - sudo apt-get -qq update
-        #  - sudo apt-get install -y -qq uncrustify cppcheck
-        - sudo apt-get install -y -qq cppcheck
-      # must install 0.64 of uncrustify, a later one
-      install:
-        - wget https://github.com/uncrustify/uncrustify/archive/uncrustify-0.64.tar.gz
-        - tar -xzvf uncrustify-0.64.tar.gz
-        - mkdir build-uncrustify
-        - cd build-uncrustify
-        - cmake ../uncrustify-uncrustify-0.64
-        - make
-        - mv uncrustify ../uncrustify
-        - cd ../
-        - rm -rf build-uncrustify
+        - docker pull unibeautify/uncrustify
       script:
-        - ./uncrustify -c ci/uncrustify.cfg --check **/**.cxx || exit 0
+        - docker run -it -v "$(pwd)":/workdir -w /workdir unibeautify/uncrustify -c ci/uncrustify.cfg --check **/**.cxx || exit 0
 
 notifications:
   email:
