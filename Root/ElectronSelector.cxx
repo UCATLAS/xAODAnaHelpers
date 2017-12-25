@@ -995,7 +995,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
       LHToolsMap myLHTools = m_el_LH_PIDManager->getValidWPTools();
 
-      if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
+      if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( electron ) ) ) {
         ANA_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
         return 0;
       }
@@ -1004,8 +1004,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
         const std::string decorWP =  "LH" + it.first;
         ANA_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
-        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << " ? " << static_cast<int>( it.second->accept( *electron ) ) );
-        electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
+        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << " ? " << static_cast<int>( it.second->accept( electron ) ) );
+        electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( electron ) );
 
       }
 
