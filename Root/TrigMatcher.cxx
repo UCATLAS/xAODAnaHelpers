@@ -31,7 +31,8 @@ ClassImp(TrigMatcher)
 
 TrigMatcher :: TrigMatcher ()
 : Algorithm("TrigMatcher"),
-  m_trigMatchTool_handle{"Trig::MatchingTool/MatchingTool", this}
+  m_trigDecTool_handle("Trig::TrigDecisionTool/TrigDecisionTool"),
+  m_trigMatchTool_handle("Trig::MatchingTool/MatchingTool", this)
 {
 }
 
@@ -71,6 +72,14 @@ EL::StatusCode TrigMatcher :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  // Grab the TrigDecTool from the ToolStore
+  if(!m_trigDecTool_handle.isUserConfigured()){
+    ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+    return EL::StatusCode::FAILURE;
+  }
+  ANA_CHECK( m_trigDecTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+
   // ***************************************
   //
   // Initialise Trig::TrigMatchingTool
@@ -86,7 +95,7 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   //  everything went fine, let's initialise the tool!
   //
-  ANA_CHECK( ASG_MAKE_ANA_TOOL(m_trigMatchTool_handle, Trig::MatchingTool) );
+  ANA_CHECK( m_trigMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
   ANA_CHECK( m_trigMatchTool_handle.retrieve() );
 
   // **********************************************************************************************

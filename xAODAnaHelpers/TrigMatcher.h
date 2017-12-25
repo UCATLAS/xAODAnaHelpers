@@ -11,7 +11,8 @@
 #include <xAODAnaHelpers/Algorithm.h>
 
 #include <AsgTools/AnaToolHandle.h>
-#include <TriggerMatchingTool/MatchingTool.h>
+#include <TrigDecisionTool/TrigDecisionTool.h>
+#include <TriggerMatchingTool/IMatchingTool.h>
 
 #include <TH1D.h>
 
@@ -74,7 +75,8 @@ public:
 private:
 
   /* tools */
-  asg::AnaToolHandle<Trig::IMatchingTool> m_trigMatchTool_handle; //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle;   //!
+  asg::AnaToolHandle<Trig::IMatchingTool>    m_trigMatchTool_handle; //!
 
   std::vector<std::string> m_trigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_trigChains */
 
