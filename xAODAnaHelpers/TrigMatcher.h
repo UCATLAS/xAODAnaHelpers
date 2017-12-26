@@ -75,13 +75,8 @@ public:
 private:
 
   /* tools */
-#ifdef USE_CMAKE
-  asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle  {"Trig::TrigDecisionTool/TrigDecisionTool"      }; //!
-  asg::AnaToolHandle<Trig::IMatchingTool>    m_trigMatchTool_handle{"Trig::MatchingTool/MatchingTool"        , this}; //!
-#else
-  asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle  {"Trig::TrigDecisionTool"}; //!
-  asg::AnaToolHandle<Trig::IMatchingTool> m_trigMatchTool_handle{"Trig::MatchingTool"}; //!
-#endif
+  asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle  {"Trig::TrigDecisionTool/TrigDecisionTool"             }; //!
+  asg::AnaToolHandle<Trig::IMatchingTool>    m_trigMatchTool_handle{"Trig::MatchingTool/MatchingTool"        , PRIVATETOOL}; //!
 
   std::vector<std::string> m_trigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_trigChains */
 

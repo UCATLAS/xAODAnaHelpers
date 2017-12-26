@@ -83,24 +83,16 @@ private:
 
   // tools
   CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr; //!
-#ifdef USE_CMAKE
-  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle  {"CP::IsolationCorrectionTool/IsolationCorrectionTool", this}; //!
-#else
-  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle{"CP::IsolationCorrectionTool"}; //!
-#endif
+  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle  {"CP::IsolationCorrectionTool/IsolationCorrectionTool", PRIVATETOOL}; //!
+
   ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr; //!
-#ifdef USE_CMAKE
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/tight"            , this}; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"           , this}; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/loose"            , this}; //!
-#else
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/tight"}; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"}; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/loose"}; //!
-#endif
+
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/tight"            , PRIVATETOOL}; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"           , PRIVATETOOL}; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/loose"            , PRIVATETOOL}; //!
 
 public:
   // Tree *myTree; //!

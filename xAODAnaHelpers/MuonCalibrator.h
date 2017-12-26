@@ -66,11 +66,7 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-#ifdef USE_CMAKE
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
-#else
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"}; //!
-#endif
   std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;           //!
   std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                               //!
   std::vector<std::string> m_YearsList;                                                                    //!

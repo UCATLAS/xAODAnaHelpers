@@ -166,19 +166,11 @@ class BasicEventSelection : public xAH::Algorithm
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
 
     // tools
-#ifdef USE_CMAKE
-    asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this}; //!
-    asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle          {"CP::PileupReweightingTool/Pileup"                                     }; //!
-    asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle         {"TrigConf::xAODConfigTool/xAODConfigTool"                        , this}; //!
-    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle          {"Trig::TrigDecisionTool/TrigDecisionTool"                              }; //!
-    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool", this}; //!
-#else
-    asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle{"GoodRunsListSelectionTool"};                              //!
-    asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"};                      //!
-    asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle{"TrigConf::xAODConfigTool"};                      //!
-    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
-    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool"}; //!
-#endif
+    asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , PRIVATETOOL}; //!
+    asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle          {"CP::PileupReweightingTool/Pileup"                                            }; //!
+    asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle         {"TrigConf::xAODConfigTool/xAODConfigTool"                        , PRIVATETOOL}; //!
+    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle          {"Trig::TrigDecisionTool/TrigDecisionTool"                                     }; //!
+    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool", PRIVATETOOL}; //!
 
     int m_eventCounter;     //!
 

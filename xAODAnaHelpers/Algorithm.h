@@ -25,6 +25,15 @@
 #include <AsgTools/MsgStreamMacros.h>
 #include <AsgTools/MessageCheck.h>
 
+//
+// Tools in R20.7 break if an algorithm parent is provided. Use the PRIVATETOOL define
+// to specify an algorithm parent when running in 21.2, but not in 20.7.
+#ifdef USE_CMAKE
+#define PRIVATETOOL this
+#else
+#define PRIVATETOOL 0
+#endif
+
 namespace xAH {
 
     /**
