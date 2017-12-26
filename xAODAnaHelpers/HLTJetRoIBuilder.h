@@ -59,7 +59,11 @@ class HLTJetRoIBuilder : public xAH::Algorithm
 
   private:
 
+#ifdef USE_CMAKE
     asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; //!
+#else
+    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
+#endif
     std::string                  m_jetName = "EFJet";       //!
     std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";       //!
     std::string                  m_vtxName = "EFHistoPrmVtx";       //!

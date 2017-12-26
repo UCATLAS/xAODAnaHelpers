@@ -239,6 +239,34 @@ namespace xAH {
            return ( m_toolAlreadyUsed.find(tool_name)->second );
         }
 
+
+        /**
+            @rst
+	        Note: This function does nothing in release 21.1! The native private tool mechanism is used instead.
+
+                Sets the name of a tool. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
+
+                The tool will not be guaranteed unique if two tools of the same type are created without a name passed in. But this is, at this point, up to the user and a more complex scenario than what this function tries to simplify on its own.
+
+            @endrst
+         */
+        template <typename T>
+        void setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
+#ifndef USE_CMAKE
+          if(name.empty()) name = handle.name() + "_" + m_name + "::" + getAddress();
+          handle.setName(name);
+          ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
+#endif
+        }
+
+        /// @brief Return a ``std::string`` representation of ``this``
+        std::string getAddress() const {
+          const void * address = static_cast<const void*>(this);
+          std::stringstream ss;
+          ss << address;
+          return ss.str();
+        }
+
       private:
         /**
             @rst

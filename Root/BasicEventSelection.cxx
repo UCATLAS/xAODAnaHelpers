@@ -325,6 +325,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
     //Initialize Tool
     if( m_reweightSherpa22 ){
+
+      setToolName(m_reweightSherpa22_tool_handle);
       ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ));
       ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "OutputLevel", msg().level() ));
       ANA_CHECK( m_reweightSherpa22_tool_handle.retrieve());
@@ -439,6 +441,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
         vecStringGRL.push_back(file);
     }
 
+    setToolName(m_grl_handle);
     ANA_CHECK( m_grl_handle.setProperty("GoodRunsListVec", vecStringGRL));
     ANA_CHECK( m_grl_handle.setProperty("PassThrough", false));
     ANA_CHECK( m_grl_handle.setProperty("OutputLevel", msg().level()));
@@ -491,6 +494,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
 
+    setToolName(m_pileup_tool_handle, "Pileup");
     ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
     ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
     ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09));
@@ -516,10 +520,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
   if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() ||
       m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
 
+    setToolName(m_trigConfTool_handle);
     ANA_CHECK( m_trigConfTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_trigConfTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigConfTool_handle);
 
+    setToolName(m_trigDecTool_handle, "TrigDecisionTool");
     ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));

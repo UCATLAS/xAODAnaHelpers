@@ -256,6 +256,9 @@ EL::StatusCode PhotonCalibrator :: initialize ()
     // photon efficiency correction tool
     //----------------------------------
     //create the tools
+    setToolName(m_photonTightEffTool_handle);
+    setToolName(m_photonMediumEffTool_handle);
+    setToolName(m_photonLooseEffTool_handle);
 
     std::string conEffCalibPath  = PathResolverFindCalibFile(m_conEffCalibPath );
     std::string uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffCalibPath );
@@ -295,6 +298,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   }
 
   //IsolationCorrectionTool
+  setToolName(m_isolationCorrectionTool_handle);
   ANA_CHECK(m_isolationCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
   ANA_CHECK(m_isolationCorrectionTool_handle.retrieve());
 

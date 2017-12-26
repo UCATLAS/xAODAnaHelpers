@@ -155,6 +155,7 @@ private:
   std::vector<int> m_systType; //!
 
   // tools
+#ifdef USE_CMAKE
   asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; //!
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
   asg::AnaToolHandle<IJERTool>                   m_JERTool_handle              {"JERTool"              , this}; //!
@@ -163,6 +164,16 @@ private:
   asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
   asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
+#else
+  asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle{"JetCalibrationTool"};         //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle{"JetUncertaintiesTool"};     //!
+  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle{"JERTool"};                               //!
+  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle{"JERSmearingTool"};               //!
+  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle{"JetVertexTaggerTool"};             //!
+  asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle{"JetForwardJvtTool"};                    //!
+  asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle{"JetCleaningTool"};               //!
+  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool"};   //!
+#endif
 
   std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; //!
   std::vector<std::string>  m_decisionNames;    //!

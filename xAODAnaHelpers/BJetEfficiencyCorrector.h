@@ -73,8 +73,13 @@ private:
   bool m_runAllSyst = false; //!
 
   // tools
+#ifdef USE_CMAKE
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool" , this}; //!
   asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool", this}; //!
+#else
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
+  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool"}; //!
+#endif
 
   std::vector<CP::SystematicSet> m_systList; //!
 
