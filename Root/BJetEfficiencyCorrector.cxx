@@ -232,7 +232,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
       std::vector<CP::SystematicSet>::iterator syst_it = m_systList.begin();
       while( syst_it != m_systList.end() ) {
         if( syst_it->name().empty() ) { syst_it++; }
-        syst_it = m_systList.erase(syst_it);
+        else { syst_it = m_systList.erase(syst_it); }
       }
     }
 

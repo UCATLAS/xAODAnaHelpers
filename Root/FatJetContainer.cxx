@@ -773,6 +773,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       {
 	try{
 	  assotrkjets = fatjet_parent->getAssociatedObjects<xAOD::Jet>(trackJetName);
+	  std::sort( assotrkjets.begin(), assotrkjets.end(), HelperFunctions::sort_pt );
 	}
 	catch (...){
 	  //Warning("execute()", "Unable to fetch \"%s\" link from leading calo-jet", trackJetName.data());
