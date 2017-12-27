@@ -442,7 +442,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
 
     setToolName(m_grl_handle);
-    ANA_CHECK( m_grl_handle.setProperty( "GoodRunsListVec", vecStringGRL));
+    ANA_CHECK( m_grl_handle.setProperty("GoodRunsListVec", vecStringGRL));
     ANA_CHECK( m_grl_handle.setProperty("PassThrough", false));
     ANA_CHECK( m_grl_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_grl_handle.retrieve());
@@ -525,7 +525,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_CHECK( m_trigConfTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigConfTool_handle);
 
-    setToolName(m_trigDecTool_handle, m_trigDecTool_name);
+    setToolName(m_trigDecTool_handle, "TrigDecisionTool");
     ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));

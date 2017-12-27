@@ -9,7 +9,7 @@
 #include <EventLoop/Worker.h>
 
 // EDM include(s):
-#include "xAODJet/JetContainer.h"
+#include <xAODJet/JetContainer.h>
 #include <xAODJet/JetAuxContainer.h>
 #include <xAODCore/AuxContainerBase.h>
 #include "xAODCore/ShallowCopy.h"

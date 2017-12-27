@@ -294,13 +294,10 @@ EL::StatusCode MuonSelector :: initialize ()
   // Initialise Trig::MatchingTool
   //
   // **************************************
-
-  // NB: check if TrigDecisionTool was initialized from BasicEventSelection or another algorithm
-  //     do not initialise if there are no input trigger chains, or the TrigDecisionTool hasn't been configured yet
-
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) ) {
     // Grab the TrigDecTool from the ToolStore
-    if(!setToolName(m_trigDecTool_handle, m_trigDecTool_name)){
+    setToolName(m_trigDecTool_handle, "TrigDecisionTool");
+    if(!m_trigDecTool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }

@@ -25,6 +25,15 @@
 #include <AsgTools/MsgStreamMacros.h>
 #include <AsgTools/MessageCheck.h>
 
+//
+// Tools in R20.7 break if an algorithm parent is provided. Use the PRIVATETOOL define
+// to specify an algorithm parent when running in 21.2, but not in 20.7.
+#ifdef USE_CMAKE
+#define PRIVATETOOL this
+#else
+#define PRIVATETOOL 0
+#endif
+
 namespace xAH {
 
     /**
@@ -242,22 +251,21 @@ namespace xAH {
 
         /**
             @rst
-                Sets the name of the tool and emits ``ANA_MSG_WARNING`` if the tool of given type/name has been configured previously.
+	        Note: This function does nothing in release 21.1! The native private tool mechanism is used instead.
 
-                The reason this exists is to unify setting the tool name correctly. |xAH| is choosing the convention that you always set the type of the tool in the header, but not the name. The name, if it needs to be configurable, will be set during algorithm execution, such as in ``histInitialize()``. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
+                Sets the name of a tool. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
 
                 The tool will not be guaranteed unique if two tools of the same type are created without a name passed in. But this is, at this point, up to the user and a more complex scenario than what this function tries to simplify on its own.
 
             @endrst
          */
         template <typename T>
-        bool setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
+        void setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
+#ifndef USE_CMAKE
           if(name.empty()) name = handle.name() + "_" + m_name + "::" + getAddress();
           handle.setName(name);
           ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
-          bool res = handle.isUserConfigured();
-          if (res) ANA_MSG_WARNING("note: handle " << handle.typeAndName() << " is user configured. If this is expected, ignore the message. If it is not expected, look into " << m_className + "::" << m_name << ", check documentation, or ask around.");
-          return res;
+#endif
         }
 
         /// @brief Return a ``std::string`` representation of ``this``

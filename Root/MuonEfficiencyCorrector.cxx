@@ -123,7 +123,8 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // Create a ToolHandle of the PRW tool which is passed to the MuonEfficiencyScaleFactors class later
   //
   if( isMC() ){
-    if(!setToolName(m_pileup_tool_handle, "Pileup")){
+    setToolName(m_pileup_tool_handle, "Pileup");
+    if(!m_pileup_tool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }

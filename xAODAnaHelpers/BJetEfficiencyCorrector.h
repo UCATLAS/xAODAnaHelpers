@@ -73,8 +73,8 @@ private:
   bool m_runAllSyst = false; //!
 
   // tools
-  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
-  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool"}; //!
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool" , PRIVATETOOL}; //!
+  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool", PRIVATETOOL}; //!
 
   std::vector<CP::SystematicSet> m_systList; //!
 

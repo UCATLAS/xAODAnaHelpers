@@ -57,17 +57,10 @@ class HLTJetRoIBuilder : public xAH::Algorithm
      */
     std::string m_outContainerName = "";
 
-    /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
-    std::string m_trigDecTool_name{"xAH_TDT"};
-
   private:
 
-    /**
-      @rst
-        The name of this tool (if needs to be changed) can be set with :cpp:member:`HLTJetRoIBuilder::m_trigDecTool_name`.
-      @endrst
-    */
-    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
+    asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; //!
+
     std::string                  m_jetName = "EFJet";       //!
     std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";       //!
     std::string                  m_vtxName = "EFHistoPrmVtx";       //!
