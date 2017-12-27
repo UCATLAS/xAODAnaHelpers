@@ -263,7 +263,7 @@ namespace xAH {
 #ifdef USE_CMAKE
 	void setToolName(__attribute__((unused)) asg::AnaToolHandle<T>& handle, __attribute__((unused)) const std::string& name = "") const {
 #else
-        void setToolName(asg::AnaToolHandle<T>& handle, const std::string& name = "") const {
+        void setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
           if(name.empty()) name = handle.name() + "_" + m_name + "::" + getAddress();
           handle.setName(name);
           ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
