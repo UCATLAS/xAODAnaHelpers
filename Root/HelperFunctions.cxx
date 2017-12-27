@@ -344,8 +344,7 @@ float HelperFunctions::getPrimaryVertexZ(const xAOD::Vertex* pvx)
   return pvx_z;
 }
 
-
-bool HelperFunctions::sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB){
+bool HelperFunctions::sort_pt(const xAOD::IParticle* partA, const xAOD::IParticle* partB){
   return partA->pt() > partB->pt();
 }
 
