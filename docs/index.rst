@@ -6,8 +6,8 @@ xAODAnaHelpers
 .. image:: https://zenodo.org/badge/35496971.svg
    :target: https://zenodo.org/badge/latestdoi/35496971
 
-.. image:: http://build.ci-connect.net:8080/buildStatus/icon?job=RootCore/xAH
-   :target: http://build.ci-connect.net:8080/job/RootCore/xAH
+.. image:: https://travis-ci.org/UCATLAS/xAODAnaHelpers.svg?branch=master
+    :target: https://travis-ci.org/UCATLAS/xAODAnaHelpers
 
 .. raw:: html
 
