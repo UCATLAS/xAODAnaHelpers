@@ -93,6 +93,7 @@ parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarde
 parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='[DEPRECATION] Use inputRucio instead.')
 parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', help='If enabled, will search using Rucio. Can be combined with `--inputList`.')
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
+parser.add_argument('--inputSH', action='store_true', dest='use_SH', default=False, help='If enabled, will assume the input file is a directory of ROOT files of saved SH instances to use. Call SH::SampleHandler::load() on it.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
 parser.add_argument('--stats', action='store_true', dest='variable_stats', default=False, help='If enabled, will variable usage statistics.')
@@ -100,7 +101,7 @@ parser.add_argument('--stats', action='store_true', dest='variable_stats', defau
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
 drivers_common.add_argument('--optSubmitFlags', metavar='', type=str, required=False, default=None, help='the name of the option for supplying extra submit parameters to batch systems')
-drivers_common.add_argument('--optEventsPerWorker', metavar='', type=float, required=False, default=None, help='the name of the option for selecting the number of events per batch job.  (only BatchDriver and derived drivers). warning: this option will be ignored unless you have called SH::scanNEvents first.')  # TODO: add a check so we can run SH::scanNEvents to spread workload more evenly
+drivers_common.add_argument('--optEventsPerWorker', metavar='', type=float, required=False, default=None, help='the name of the option for selecting the number of events per batch job.  (only BatchDriver and derived drivers). warning: this option will be ignored unless you have called SH::scanNEvents first.')
 drivers_common.add_argument('--optFilesPerWorker', metavar='', type=float, required=False, default=None, help='the name of the option for selecting the number of files per batch job.  (only BatchDriver and derived drivers).')
 drivers_common.add_argument('--optDisableMetrics', metavar='', type=int, required=False, default=None, help='the option to turn off collection of performance data')
 drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, required=False, default=None, help='the option to turn on printing of i/o statistics at the end of each file. warning: this is not supported for all drivers.')
@@ -309,7 +310,9 @@ if __name__ == "__main__":
     sh_all = ROOT.SH.SampleHandler()
 
     # this portion is just to output for verbosity
-    if args.use_inputFileList:
+    if args.use_SH:
+      xAH_logger.info("\t\tReading in file(s) using SH::SampleHandler::load(dir)")
+    elif args.use_inputFileList:
       xAH_logger.info("\t\tReading in file(s) containing list of files")
       if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
@@ -332,7 +335,9 @@ if __name__ == "__main__":
         xAH_logger.info("\t\tAdding samples using scanDir")
 
     for fname in args.input_filename:
-      if args.use_inputFileList:
+      if args.use_SH:
+        sh_all.load(fname)
+      elif args.use_inputFileList:
         if (args.use_scanDQ2 or use_scanEOS or args.use_scanXRD or args.use_scanRucio):
           with open(fname, 'r') as f:
             for line in f:
@@ -407,6 +412,10 @@ if __name__ == "__main__":
     if len(sh_all) == 0:
       xAH_logger.info("No datasets found. Exiting.")
       sys.exit(0)
+
+    if args.optEventsPerWorker is not None:
+      xAH_logger.info("Splitting up events onto each worker. optEventsPerWorker was set!")
+      ROOT.SH.scanNEvents(sh_all)
 
     # set the name of the tree in our files (should be configurable)
     sh_all.setMetaString( "nc_tree", args.treeName)
