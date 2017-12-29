@@ -13,12 +13,9 @@ xAODAnaHelpers
 
   <br />
 
-|rootcore_badge|_
 |cmake_badge|_
 
-
-.. _rootcore_badge: Installing.html#rootcore-2-5-x
-.. _cmake_badge: Installing.html#cmake-based-rootcore-2-5-x
+.. _cmake_badge: Installing.html#cmake
 
 The xAOD analysis framework, born out of ProofAna...or not.
 

@@ -380,7 +380,7 @@ If a tool with the given type and name already exists, :cpp:func:`xAH::Algorithm
 
 .. note::
 
-  In RootCore, tools created through AnaToolHandle can be found in the ToolStore via preprending ``ToolSvc.`` to the name of the tool::
+  In ASG Software, tools created through AnaToolHandle can be found in the ToolStore via preprending ``ToolSvc.`` to the name of the tool::
 
     asg::ToolStore::contains<Trig::TrigDecisionTool>("ToolSvc."+ m_trigDecTool_handle.name())
 

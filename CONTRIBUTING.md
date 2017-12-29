@@ -37,7 +37,7 @@ When submitting a pull request, we need as much information as possible about th
 
 If you have a question about how to use xAODAnaHelpers, please send an email to the e-group `atlas-sw-xAODAnaHelpersFW`.
 
-If you have a question about using RootCore, please send an email to the e-group `atlas-sw-analysis-forum@cern.ch`.
+If you have a question about using Analysis Software in ATLAS, please send an email to the e-group `atlas-sw-analysis-forum@cern.ch`.
 
 # Thanks for reading
 

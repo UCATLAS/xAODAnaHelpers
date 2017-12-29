@@ -100,7 +100,6 @@ rst_epilog = '''
 .. |ab_release_cm| replace:: {1:s}
 .. |all_ab_releases_cm| replace:: {2:s}
 .. |xAH| replace:: xAODAnaHelpers
-.. |rootcore_badge| image:: https://img.shields.io/badge/AnalysisBase,RootCore-{0:s}-green.svg
 .. |cmake_badge| image:: https://img.shields.io/badge/AnalysisBase,CMake-{1:s}-green.svg
 '''.format(ab_release_rc, ab_release_cm, ('**{0:s}**, '.format(ab_release_cm) + ', '.join(item.get('ABV_CM') for item in travis_env[1:])))
 

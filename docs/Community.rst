@@ -7,7 +7,7 @@ Tutorials
 .. toctree::
    :titlesonly:
 
-   Brian Tuan's Tutorial <Tutorial_BrianTuan>
+   (outdated) Brian Tuan's Tutorial <Tutorial_BrianTuan>
 
 Email List
 ----------
