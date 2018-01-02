@@ -171,19 +171,18 @@ EL::StatusCode MuonCalibrator :: initialize ()
       m_muonCalibrationAndSmearingTools[yr] = new CP::MuonCalibrationAndSmearingTool( m_muonCalibrationAndSmearingTool_names[yr]);
       m_muonCalibrationAndSmearingTools[yr]->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
 
-#ifdef USE_CMAKE
       if ( yr == "Data17" ) {
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", "Data16" ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_15_07" ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", true ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_25_07_17" )); 
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_25_07_17" ));
       } else if ( yr == "Data16" || yr == "Data15" ) {
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", "Data16" ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_15_07"));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", true ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_25_07_17" )); 
+        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_25_07_17" ));
       } else if ( !yr.empty() ) {
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release ));
@@ -191,27 +190,6 @@ EL::StatusCode MuonCalibrator :: initialize ()
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ));
         ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ));
       }
-#else
-      if ( yr == "Data16") {
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", "Data16" ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_15_07" ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", true ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", true ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_06_02_17" )); 
-      } else if (yr == "Data15") {
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", "Data15" ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", "Recs2016_08_07" ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", false ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", false ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", "sagittaBiasDataAll_06_02_17" )); 
-      } else if ( !yr.empty() ) {
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Year", yr ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("Release", m_release ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaCorr", m_do_sagittaCorr ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("doSagittaMCDistortion", m_do_sagittaMCDistortion ));
-        ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->setProperty("SagittaRelease", m_sagittaRelease ));
-      }
-#endif // USE_CMAKE
 
       ANA_CHECK( m_muonCalibrationAndSmearingTools[yr]->initialize());
 

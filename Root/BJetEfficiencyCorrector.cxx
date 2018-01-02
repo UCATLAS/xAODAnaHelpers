@@ -121,13 +121,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "FlatBEff_70") { allOK = true; }
   if (m_operatingPt == "FlatBEff_77") { allOK = true; }
   if (m_operatingPt == "FlatBEff_85") { allOK = true; }
-#ifdef USE_CMAKE
-  // also calibrated working points (for R21)
-  if (m_operatingPt == "HybBEff_60") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_70") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_77") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_85") { allOK = true; m_getScaleFactors =  true; }
-#endif
+  if (m_operatingPt == "HybBEff_60")  { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_70")  { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_77")  { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_85")  { allOK = true; m_getScaleFactors =  true; }
 
   if( !allOK ) {
     ANA_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);

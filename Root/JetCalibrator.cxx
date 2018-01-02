@@ -177,9 +177,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
-#ifdef USE_CMAKE
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibArea",m_calibArea));
-#endif
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("IsData",!isMC()));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
   if ( m_jetCalibToolsDEV ) {
@@ -215,12 +213,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_decisionNames.push_back( "TightBadUgly" );
 
       for(unsigned int iD=0; iD < m_decisionNames.size() ; ++iD){
-#ifdef USE_CMAKE
-	asg::AnaToolHandle<IJetSelector> this_JetCleaningTool_handle("JetCleaningTool/JetCleaningTool_"+m_decisionNames.at(iD), this);
-#else
-	asg::AnaToolHandle<IJetSelector> this_JetCleaningTool_handle{"JetCleaningTool"};
-        setToolName(this_JetCleaningTool_handle, "JetCleaningTool_"+m_decisionNames.at(iD)+"_"+m_name);
-#endif
+        asg::AnaToolHandle<IJetSelector> this_JetCleaningTool_handle("JetCleaningTool/JetCleaningTool_"+m_decisionNames.at(iD), this);
         if( m_decisionNames.at(iD).find("Ugly") != std::string::npos ){
           ANA_CHECK( this_JetCleaningTool_handle.setProperty( "CutLevel", m_decisionNames.at(iD).substr(0,m_decisionNames.at(iD).size()-4) ));
           ANA_CHECK( this_JetCleaningTool_handle.setProperty( "DoUgly", true));

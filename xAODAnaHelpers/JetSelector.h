@@ -27,11 +27,7 @@
 #include "AsgTools/AnaToolHandle.h"
 #include "JetJvtEfficiency/IJetJvtEfficiency.h"
 #include "JetInterface/IJetModifier.h"
-#ifdef USE_CMAKE
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
-#else
-#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
-#endif
 
 class JetSelector : public xAH::Algorithm
 {
@@ -183,7 +179,7 @@ public:
         "Medium"  87.1-97.0%     53.4-60.9%
         "Tight"   79.9-95.6%     45.4-50.3%
         ======== ============== =============
-        
+
         See :https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/FJVTCalibration for more information.
     @endrst
   */

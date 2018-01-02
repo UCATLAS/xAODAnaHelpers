@@ -248,11 +248,11 @@ private:
   /* tools */
 
   /// @brief MC15 ASG tool for isolation
-  asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", PRIVATETOOL}; //!
+  asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this}; //!
   // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
   CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                                                                 //!
   asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; //!
-  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle {"Trig::MatchingTool/MatchingTool"                  , PRIVATETOOL}; //!
+  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle {"Trig::MatchingTool/MatchingTool"                  , this}; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing 
   bool m_doTrigMatch = true;
