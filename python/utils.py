@@ -27,11 +27,8 @@ class NameGenerator(object):
     return self.__repr__()
 
 
-def is_release20():
-  return int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) < 25
-
 def is_release21():
-  return not is_release20()
+  return True
 
 ## Find ASG analysis type (e.g. Base, Top) from a given list.  Return first option, or else None
 def findFrameworkTypeFromList(ASG_framework_list):

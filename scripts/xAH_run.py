@@ -262,19 +262,15 @@ if __name__ == "__main__":
 
     # at this point, we should import ROOT and do stuff
     import ROOT
-    if xAODAnaHelpers.utils.is_release20():
-      xAH_logger.info("loading packages")
-      ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
-    else:
-      ## Determine which ASG framework using env var for CMAKE setup
-      ASG_framework_list = ['Base', 'Top']
-      ASG_framework_type = xAODAnaHelpers.utils.findFrameworkTypeFromList(ASG_framework_list)
-      if( ASG_framework_type == None ):
-        arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
-        raise OSError("It doesn't seem like the CMake environment is setup correctly. (Hint: source 'build/{0:s}/setup.sh)".format(arch))
+    ## Determine which ASG framework using env var for CMAKE setup
+    ASG_framework_list = ['Base', 'Top']
+    ASG_framework_type = xAODAnaHelpers.utils.findFrameworkTypeFromList(ASG_framework_list)
+    if( ASG_framework_type == None ):
+      arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
+      raise OSError("It doesn't seem like the CMake environment is setup correctly. (Hint: source 'build/{0:s}/setup.sh)".format(arch))
 
-      # architecture used for CMake
-      arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM')
+    # architecture used for CMake
+    arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM')
 
     # Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore()
@@ -293,8 +289,6 @@ if __name__ == "__main__":
     elif args.driver == 'condor':
       if getattr(ROOT.EL, 'CondorDriver') is None:
         raise KeyError('Cannot load the Condor driver from EventLoop. Did you not compile it?')
-      if not os.path.isfile(os.path.expandvars('$ROOTCOREBIN/../RootCore.par')) and xAODAnaHelpers.utils.is_release20():
-        raise IOError('I cannot find RootCore.par. Make sure you run `rc make_par` before running xAH_run.py.')
     elif args.driver == 'lsf':
       if getattr(ROOT.EL, 'LSFDriver') is None:
         raise KeyError('Cannot load the LSF driver from EventLoop. Did you not compile it?')
