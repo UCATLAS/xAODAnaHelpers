@@ -159,7 +159,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // initialize the BJetSelectionTool
   // A few which are not configurable as of yet....
   // is there a reason to have this configurable here??...I think no (GF to self)
-  setToolName(m_BJetSelectTool_handle);
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",2.5));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt",20000.));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()));
@@ -175,7 +174,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if( m_getScaleFactors ) {
 
     // initialize the BJetEfficiencyCorrectionTool
-    setToolName(m_BJetEffSFTool_handle);
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("TaggerName",          m_taggerName));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("SystematicsStrategy", m_systematicsStrategy ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OperatingPoint",      m_operatingPtCDI));

@@ -126,7 +126,6 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // will be used.
   //
   if( isMC() ){
-    setToolName(m_pileup_tool_handle, "Pileup");
     if(!m_pileup_tool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;

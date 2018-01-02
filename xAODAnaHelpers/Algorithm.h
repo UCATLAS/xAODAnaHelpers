@@ -242,7 +242,7 @@ namespace xAH {
 
         /**
             @rst
-	        Note: This function does nothing in release 21.1! The native private tool mechanism is used instead.
+	              .. warning: This function does nothing in release 21! The native private tool mechanism is used instead.
 
                 Sets the name of a tool. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
 

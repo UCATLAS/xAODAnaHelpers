@@ -172,7 +172,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   // initialize jet calibration tool
-  setToolName(m_JetCalibrationTool_handle);
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig));
@@ -188,7 +187,6 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   // initialize jet tile correction tool
   if(m_doJetTileCorr && !isMC()){ // Jet Tile Correction should only be applied to data
-    setToolName(m_JetTileCorrectionTool_handle);
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetTileCorrectionTool_handle, CP::JetTileCorrectionTool));
     ANA_CHECK( m_JetTileCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JetTileCorrectionTool_handle.retrieve());
@@ -199,7 +197,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     // initialize and configure the jet cleaning tool
     //------------------------------------------------
 
-    setToolName(m_JetCleaningTool_handle);
     ANA_CHECK( m_JetCleaningTool_handle.setProperty( "CutLevel", m_jetCleanCutLevel));
     ANA_CHECK( m_JetCleaningTool_handle.setProperty( "DoUgly", m_jetCleanUgly));
     ANA_CHECK( m_JetCleaningTool_handle.setProperty( "OutputLevel", msg().level() ));
@@ -260,7 +257,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   //------------------------------------------------
   if ( !m_JESUncertConfig.empty() && !m_systNameJES.empty()  && m_systNameJES != "None" ) {
 
-    setToolName(m_JetUncertaintiesTool_handle);
     ANA_MSG_INFO("Initialize JES UNCERT with " << m_JESUncertConfig);
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetUncertaintiesTool_handle, JetUncertaintiesTool));
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo));
@@ -312,7 +308,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   if ( !m_JERUncertConfig.empty() ) {
 
     // Instantiate the JER tool
-    setToolName(m_JERTool_handle);
     ANA_CHECK( m_JERTool_handle.setProperty("PlotFileName", m_JERUncertConfig.c_str()));
     ANA_CHECK( m_JERTool_handle.setProperty("CollectionName", m_jetAlgo));
     ANA_CHECK( m_JERTool_handle.setProperty("OutputLevel", msg().level() ));
@@ -320,7 +315,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     ANA_MSG_DEBUG("Retrieved tool: " << m_JERTool_handle);
 
     // Instantiate the JER Smearing tool
-    setToolName(m_JERSmearingTool_handle);
     ANA_CHECK( m_JERSmearingTool_handle.setProperty("JERTool", m_JERTool_handle.getHandle()));
     ANA_CHECK( m_JERSmearingTool_handle.setProperty("isMC", isMC()));
     ANA_CHECK( m_JERSmearingTool_handle.setProperty("ApplyNominalSmearing", m_JERApplyNominal));
@@ -353,7 +347,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the JVT correction tool
 
   if( m_redoJVT ){
-    setToolName(m_JVTUpdateTool_handle);
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")));
 
     if( ! m_JvtAuxName.empty() ){
@@ -365,7 +358,6 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   if ( m_calculatefJVT ) {
-    setToolName(m_fJVTTool_handle);
     ANA_CHECK(m_fJVTTool_handle.setProperty("CentralMaxPt", m_fJVTCentralMaxPt));
     if ( m_fJVTWorkingPoint == "Tight" ) {
       ANA_CHECK(m_fJVTTool_handle.setProperty("UseTightOP", true));

@@ -240,7 +240,6 @@ EL::StatusCode MuonSelector :: initialize ()
   // Set eta and quality requirements in order to accept the muon - ID tracks required by default
   //
 
-  setToolName(m_muonSelectionTool_handle);
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
@@ -253,7 +252,6 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // *************************************
 
-  setToolName(m_isolationSelectionTool_handle);
   // Do this only for the first WP in the list
   ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
   ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
@@ -296,7 +294,6 @@ EL::StatusCode MuonSelector :: initialize ()
   // **************************************
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) ) {
     // Grab the TrigDecTool from the ToolStore
-    setToolName(m_trigDecTool_handle, "TrigDecisionTool");
     if(!m_trigDecTool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
@@ -305,7 +302,6 @@ EL::StatusCode MuonSelector :: initialize ()
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
     //  everything went fine, let's initialise the tool!
-    setToolName(m_trigMuonMatchTool_handle);
     ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
     ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
     ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
