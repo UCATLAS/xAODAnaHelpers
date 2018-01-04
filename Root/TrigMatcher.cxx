@@ -71,7 +71,6 @@ EL::StatusCode TrigMatcher :: initialize ()
   }
 
   // Grab the TrigDecTool from the ToolStore
-  setToolName(m_trigDecTool_handle, "TrigDecisionTool");
   if(!m_trigDecTool_handle.isUserConfigured()){
     ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
     return EL::StatusCode::FAILURE;
@@ -94,7 +93,6 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   //  everything went fine, let's initialise the tool!
   //
-  setToolName(m_trigMatchTool_handle);
   ANA_CHECK( m_trigMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
   ANA_CHECK( m_trigMatchTool_handle.retrieve() );
 

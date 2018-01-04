@@ -67,10 +67,8 @@ public:
   std::string m_calibConfig = "";
   /// @brief List of calibration steps. "Insitu" added automatically if running on data
   std::string m_calibSequence = "JetArea_Residual_Origin_EtaJES_GSC";
-#ifdef USE_CMAKE
   /// @brief CalibArea tag on CVMFS (for pointing at an area outside of the current release)
   std::string m_calibArea = "00-04-81"; // current as of 19/11/17
-#endif
   /// @brief config for JES Uncertainty Tool
   std::string m_JESUncertConfig = "";
   /// @brief JetUncertaintiesTool parameter
@@ -118,7 +116,7 @@ public:
   /// @brief fJVT working point
   std::string m_fJVTWorkingPoint = "Medium";
 
-  /// @brief Name of Jvt aux decoration.  Was "JvtJvfcorr" in Rel 20.7, is now "JVFCorr" in Rel 21. Leave empty to use JetMomentTools default.  This must be left empty for RootCore (r20.7) code!
+  /// @brief Name of Jvt aux decoration.  Was "JvtJvfcorr" in Rel 20.7, is now "JVFCorr" in Rel 21. Leave empty to use JetMomentTools default.
   std::string m_JvtAuxName = "";
   /// @brief Sort the processed container elements by transverse momentum
   bool    m_sort = true;
@@ -155,14 +153,14 @@ private:
   std::vector<int> m_systType; //!
 
   // tools
-  asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , PRIVATETOOL}; //!
-  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , PRIVATETOOL}; //!
-  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle              {"JERTool"              , PRIVATETOOL}; //!
-  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle      {"JERSmearingTool"      , PRIVATETOOL}; //!
-  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle        {"JetVertexTaggerTool"  , PRIVATETOOL}; //!
-  asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , PRIVATETOOL}; //!
-  asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , PRIVATETOOL}; //!
-  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", PRIVATETOOL}; //!
+  asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
+  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle              {"JERTool"              , this}; //!
+  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle      {"JERSmearingTool"      , this}; //!
+  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle        {"JetVertexTaggerTool"  , this}; //!
+  asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
+  asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
+  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
 
   std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; //!
   std::vector<std::string>  m_decisionNames;    //!

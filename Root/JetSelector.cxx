@@ -215,7 +215,6 @@ EL::StatusCode JetSelector :: initialize ()
   if ( m_doBTagCut ) {
 
     // initialize the BJetSelectionTool
-    setToolName(m_BJetSelectTool_handle);
     // A few which are not configurable as of yet....
     // is there a reason to have this configurable here??...I think no (GF to self)
     ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",m_b_eta_max));
@@ -234,7 +233,6 @@ EL::StatusCode JetSelector :: initialize ()
   //init fJVT
   if (m_dofJVT) {
     // initialize the CP::JetJvtEfficiency Tool for fJVT
-    setToolName(m_fJVT_eff_tool_handle, "fJVT_eff_tool");
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_fJVT_eff_tool_handle, CP::JetJvtEfficiency));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("WorkingPoint", m_WorkingPointfJVT ));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("SFFile",       m_SFFilefJVT ));
@@ -268,7 +266,6 @@ EL::StatusCode JetSelector :: initialize ()
   }
 
   // initialize the CP::JetJvtEfficiency Tool for JVT
-  setToolName(m_JVT_tool_handle, "JVT_eff_tool");
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
   ANA_CHECK( m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ));
   ANA_CHECK( m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ));

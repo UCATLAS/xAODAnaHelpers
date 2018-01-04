@@ -157,14 +157,9 @@ EL::StatusCode METConstructor :: initialize ()
   }
 
   //////////// IMETSignificance ////////////////
-  setToolName( m_metSignificance_handle );
   ASG_SET_ANA_TOOL_TYPE( m_metSignificance_handle, met::METSignificance );
   ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
-#ifdef USE_CMAKE
   ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
-#else
-  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", static_cast<int>(m_significanceSoftTermReso)) );
-#endif
   ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !isMC()) );
   // For AFII samples
   if ( isMC() ) {

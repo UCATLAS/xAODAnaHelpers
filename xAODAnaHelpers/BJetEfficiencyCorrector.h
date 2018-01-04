@@ -12,13 +12,8 @@
 #include "PATInterfaces/ISystematicsTool.h"
 
 // external tools include(s):
-#ifdef USE_CMAKE
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
 #include "FTagAnalysisInterfaces/IBTaggingEfficiencyTool.h"
-#else
-#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
-#include "xAODBTaggingEfficiency/IBTaggingEfficiencyTool.h"
-#endif
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -73,8 +68,8 @@ private:
   bool m_runAllSyst = false; //!
 
   // tools
-  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool" , PRIVATETOOL}; //!
-  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool", PRIVATETOOL}; //!
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool" , this}; //!
+  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool", this}; //!
 
   std::vector<CP::SystematicSet> m_systList; //!
 

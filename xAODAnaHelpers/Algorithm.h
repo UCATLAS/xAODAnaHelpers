@@ -25,15 +25,6 @@
 #include <AsgTools/MsgStreamMacros.h>
 #include <AsgTools/MessageCheck.h>
 
-//
-// Tools in R20.7 break if an algorithm parent is provided. Use the PRIVATETOOL define
-// to specify an algorithm parent when running in 21.2, but not in 20.7.
-#ifdef USE_CMAKE
-#define PRIVATETOOL this
-#else
-#define PRIVATETOOL 0
-#endif
-
 namespace xAH {
 
     /**
@@ -168,7 +159,7 @@ namespace xAH {
             @rst
                 Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isMC` can be used
 		to fix the return value. Otherwise the `EventInfo` object is queried.
-		
+
 		An exception is thrown if the type cannot be determined.
 
                 ============ =======
@@ -251,7 +242,7 @@ namespace xAH {
 
         /**
             @rst
-	        Note: This function does nothing in release 21.1! The native private tool mechanism is used instead.
+	              .. warning: This function does nothing in release 21! The native private tool mechanism is used instead.
 
                 Sets the name of a tool. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (:cpp:func:`xAH::Algorithm::getAddress`) appended to ensure the tool is unique and effectively private.
 
@@ -260,15 +251,7 @@ namespace xAH {
             @endrst
          */
         template <typename T>
-#ifdef USE_CMAKE
-	void setToolName(__attribute__((unused)) asg::AnaToolHandle<T>& handle, __attribute__((unused)) const std::string& name = "") const {
-#else
-        void setToolName(asg::AnaToolHandle<T>& handle, std::string name = "") const {
-          if(name.empty()) name = handle.name() + "_" + m_name + "::" + getAddress();
-          handle.setName(name);
-          ANA_MSG_DEBUG("Trying to set-up tool: " << handle.typeAndName());
-#endif
-        }
+	void setToolName(__attribute__((unused)) asg::AnaToolHandle<T>& handle, __attribute__((unused)) const std::string& name = "") const { }
 
         /// @brief Return a ``std::string`` representation of ``this``
         std::string getAddress() const {

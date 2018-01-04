@@ -74,22 +74,6 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_nZBosons  = new std::vector< int > ();
   }
 
-#ifndef USE_CMAKE
-  if ( m_infoSwitch.m_VTags ) {
-    m_WbosonTaggerMedium = new JetSubStructureUtils::BosonTag("medium", "smooth", "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Wtagging_MC15_Prerecommendations_20150809.dat", false, false);
-    m_ZbosonTaggerMedium = new JetSubStructureUtils::BosonTag("medium", "smooth", "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Ztagging_MC15_Prerecommendations_20150809.dat", false, false);
-
-    m_WbosonTaggerTight = new JetSubStructureUtils::BosonTag("tight", "smooth", "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Wtagging_MC15_Prerecommendations_20150809.dat", false, false);
-    m_ZbosonTaggerTight = new JetSubStructureUtils::BosonTag("tight", "smooth", "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Ztagging_MC15_Prerecommendations_20150809.dat", false, false);
-
-    m_Wtag_medium  = new std::vector< int > ();
-    m_Ztag_medium  = new std::vector< int > ();
-
-    m_Wtag_tight  = new std::vector< int > ();
-    m_Ztag_tight  = new std::vector< int > ();
-  }
-#endif
-
   for(const auto& trackJetName : m_infoSwitch.m_trackJetNames)
     {
       std::string trkJetName = name;
@@ -166,22 +150,6 @@ FatJetContainer::~FatJetContainer()
     delete m_nWBosons;
     delete m_nZBosons;
   }
-
-#ifndef USE_CMAKE
-  if ( m_infoSwitch.m_VTags ) {
-    delete m_WbosonTaggerMedium;
-    delete m_ZbosonTaggerMedium;
-
-    delete m_WbosonTaggerTight;
-    delete m_ZbosonTaggerTight;
-
-    delete m_Wtag_medium;
-    delete m_Ztag_medium;
-
-    delete m_Wtag_tight;
-    delete m_Ztag_tight;
-  }
-#endif
 
   if( !m_infoSwitch.m_trackJetNames.empty() ){
     for(const auto& kv : m_trkJets)
@@ -263,16 +231,6 @@ void FatJetContainer::setTree(TTree *tree)
   }
 
 
-#ifndef USE_CMAKE
-  if ( m_infoSwitch.m_VTags) {
-    connectBranch< int >(tree, "Wtag_medium",  &m_Wtag_medium);
-    connectBranch< int >(tree, "Ztag_medium",  &m_Ztag_medium);
-
-    connectBranch< int >(tree, "Wtag_tight",   &m_Wtag_tight);
-    connectBranch< int >(tree, "Ztag_tight",   &m_Ztag_tight);
-  }
-#endif
-
   for(const auto& kv : m_trkJets)
     {
       m_trkJets[kv.first]->JetContainer::setTree(tree);
@@ -347,17 +305,6 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
     fatjet.nWBosons = m_nWBosons->at(idx);
     fatjet.nZBosons = m_nZBosons->at(idx);
   }
-
-#ifndef USE_CMAKE
-  if(m_infoSwitch.m_VTags){
-    fatjet.Wtag_medium = m_Wtag_medium->at(idx);
-    fatjet.Ztag_medium = m_Ztag_medium->at(idx);
-
-    fatjet.Wtag_tight = m_Wtag_tight->at(idx);
-    fatjet.Ztag_tight = m_Ztag_tight->at(idx);
-  }
-#endif
-
 
   for(const auto& kv : m_trkJets)
     {
@@ -442,16 +389,6 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch< int >(tree, "nZBosons",       m_nZBosons);
   }
 
-#ifndef USE_CMAKE
-  if(m_infoSwitch.m_VTags){
-    setBranch< int >(tree, "Wtag_medium",       m_Wtag_medium);
-    setBranch< int >(tree, "Ztag_medium",       m_Ztag_medium);
-
-    setBranch< int >(tree, "Wtag_tight",       m_Wtag_tight);
-    setBranch< int >(tree, "Ztag_tight",       m_Ztag_tight);
-  }
-#endif
-
   for(const auto& kv : m_trkJets)
     {
       kv.second->setBranches(tree);
@@ -526,16 +463,6 @@ void FatJetContainer::clear()
     m_nWBosons->clear();
     m_nZBosons->clear();
   }
-
-#ifndef USE_CMAKE
-  if(m_infoSwitch.m_VTags){
-    m_Wtag_medium->clear();
-    m_Ztag_medium->clear();
-
-    m_Wtag_tight->clear();
-    m_Ztag_tight->clear();
-  }
-#endif
 
   for(const auto& kv : m_trkJets)
     {
@@ -725,21 +652,6 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       safeFill<int, int, xAOD::Jet>(fatJetParentJet, truthfatjet_HBosons, m_nHBosons, -999);
     }
   }
-
-#ifndef USE_CMAKE
-  if(m_infoSwitch.m_VTags){
-    int Wtag_pass_medium = m_WbosonTaggerMedium->result(*fatjet);
-    int Ztag_pass_medium = m_ZbosonTaggerMedium->result(*fatjet);
-    m_Wtag_medium->push_back(Wtag_pass_medium);
-    m_Ztag_medium->push_back(Ztag_pass_medium);
-
-    int Wtag_pass_tight = m_WbosonTaggerTight->result(*fatjet);
-    int Ztag_pass_tight = m_ZbosonTaggerTight->result(*fatjet);
-    m_Wtag_tight->push_back(Wtag_pass_tight);
-    m_Ztag_tight->push_back(Ztag_pass_tight);
-  }
-#endif
-
 
   //
   // Associated track jets

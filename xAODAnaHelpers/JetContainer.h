@@ -25,7 +25,7 @@ namespace xAH {
     public:
       JetContainer(const std::string& name = "jet", const std::string& detailStr="", float units = 1e3, bool mc = false);
       virtual ~JetContainer();
-    
+
       virtual void setTree    (TTree *tree);
       virtual void setBranches(TTree *tree);
       virtual void clear();
@@ -36,14 +36,14 @@ namespace xAH {
 
 //template<typename T>
 //  void setBranch(TTree* tree, std::string varName, std::vector<T>* localVectorPtr);
-    
+
     private:
-      
+
       InDet::InDetTrackSelectionTool * m_trkSelTool;
 
       //
       // Vector branches
-    
+
       // rapidity
       std::vector<float> *m_rapidity;
 
@@ -67,7 +67,7 @@ namespace xAH {
       std::vector<int>   *m_clean_passLooseBadUgly;
       std::vector<int>   *m_clean_passTightBad;
       std::vector<int>   *m_clean_passTightBadUgly;
-    
+
       // energy
       std::vector<float> *m_HECFrac;
       std::vector<float> *m_EMFrac;
@@ -77,7 +77,7 @@ namespace xAH {
       std::vector<float> *m_LowEtConstituentsFrac;
       std::vector<float> *m_GhostMuonSegmentCount;
       std::vector<float> *m_Width;
-    
+
       // sclaes
       std::vector<float> *m_emScalePt;
       std::vector<float> *m_constScalePt;
@@ -104,7 +104,7 @@ namespace xAH {
       std::vector< std::vector<float> > *m_SumPtTrkPt500;
       std::vector< std::vector<float> > *m_TrackWidthPt500;
       std::vector< std::vector<float> > *m_JVF;
-      
+
       // trackPV
       std::vector<float> *m_NumTrkPt1000PV;
       std::vector<float> *m_SumPtTrkPt1000PV;
@@ -114,7 +114,7 @@ namespace xAH {
       std::vector<float> *m_TrackWidthPt500PV;
       std::vector<float> *m_JVFPV;
 
-    
+
       // trackAll or trackPV
       std::vector<float> *m_Jvt;
       std::vector<int> *m_JvtPass_Loose;
@@ -166,13 +166,10 @@ namespace xAH {
       // flavTag
       std::vector<float> *m_MV2c00;
       std::vector<float> *m_MV2c10;
-#ifdef USE_CMAKE
       std::vector<float> *m_MV2c10mu;
       std::vector<float> *m_MV2c10rnn;
-#endif // USE_CMAKE
       std::vector<float> *m_MV2c20;
       std::vector<float> *m_MV2c100;
-#ifdef USE_CMAKE
       std::vector<float> *m_DL1;
       std::vector<float> *m_DL1_pu;
       std::vector<float> *m_DL1_pc;
@@ -187,10 +184,9 @@ namespace xAH {
       std::vector<float> *m_DL1rnn_pu;
       std::vector<float> *m_DL1rnn_pc;
       std::vector<float> *m_DL1rnn_pb;
-#endif // USE_CMAKE
       std::vector<int>   *m_HadronConeExclTruthLabelID;
-    
-      // Jet Fitter 
+
+      // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
       std::vector<float>  *m_JetFitter_nSingleTracks  ;
       std::vector<float>  *m_JetFitter_nTracksAtVtx   ;
@@ -237,7 +233,7 @@ namespace xAH {
       std::vector<float> *m_IP2D_c                    ;
       std::vector<float> *m_IP2D_cu                   ;
       std::vector<float> *m_nIP2DTracks               ;
-      
+
       std::vector<std::vector<float> > *m_IP2D_gradeOfTracks        ;
       std::vector<std::vector<float> > *m_IP2D_flagFromV0ofTracks   ;
       std::vector<std::vector<float> > *m_IP2D_valD0wrtPVofTracks   ;
@@ -266,20 +262,20 @@ namespace xAH {
       std::vector<float> *m_vtxOnlineValid;
       std::vector<float> *m_vtxHadDummy;
 
-      
+
       std::vector<float> *m_bs_online_vx;
       std::vector<float> *m_bs_online_vy;
       std::vector<float> *m_bs_online_vz;
-      
-       
+
+
       std::vector<float> *m_vtx_offline_x0;
       std::vector<float> *m_vtx_offline_y0;
       std::vector<float> *m_vtx_offline_z0;
-       
+
       std::vector<float> *m_vtx_online_x0;
       std::vector<float> *m_vtx_online_y0;
       std::vector<float> *m_vtx_online_z0;
-       
+
       std::vector<float> *m_vtx_online_bkg_x0;
       std::vector<float> *m_vtx_online_bkg_y0;
       std::vector<float> *m_vtx_online_bkg_z0;
@@ -534,21 +530,21 @@ namespace xAH {
       std::vector<float> *m_GhostBHadronsFinalPt;
       std::vector<float> *m_GhostBHadronsInitialPt;
       std::vector<float> *m_GhostBQuarksFinalPt;
-       
+
       std::vector<int>   *m_GhostCHadronsFinalCount;
       std::vector<int>   *m_GhostCHadronsInitialCount;
       std::vector<int>   *m_GhostCQuarksFinalCount;
       std::vector<float> *m_GhostCHadronsFinalPt;
       std::vector<float> *m_GhostCHadronsInitialPt;
       std::vector<float> *m_GhostCQuarksFinalPt;
-       
+
       std::vector<int>   *m_GhostTausFinalCount;
       std::vector<float> *m_GhostTausFinalPt;
-       
+
       std::vector<int>   *m_truth_pdgId;
       std::vector<float> *m_truth_partonPt;
       std::vector<float> *m_truth_partonDR;
-    
+
       // charge
       std::vector<double> *m_charge;
     };
