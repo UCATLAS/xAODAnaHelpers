@@ -11,7 +11,7 @@ atlas_ctest_setup()
 
 # Set up the project:
 atlas_project( xAODAnaHelpers $ENV{TRAVIS_COMMIT}
-   USE $RELEASE_TYPE ${$RELEASE_TYPE_VERSION} )
+   USE $RELEASE_TYPE ${${RELEASE_TYPE}_VERSION} )
 
 # Generate an environment setup script:
 lcg_generate_env( SH_FILE ${CMAKE_BINARY_DIR}/${ATLAS_PLATFORM}/env_setup.sh )
