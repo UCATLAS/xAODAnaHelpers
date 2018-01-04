@@ -13,9 +13,10 @@ xAODAnaHelpers
 
   <br />
 
-|cmake_badge|_
 
-.. _cmake_badge: Installing.html#cmake
+|release_badges|_
+
+.. _release_badges: Installing.html#cmake
 
 The xAOD analysis framework, born out of ProofAna...or not.
 
@@ -28,12 +29,10 @@ Latest Version
 
 .. Cannot bold just yet: http://stackoverflow.com/questions/33537747/substitution-inside-inline-markup-while-escaping-whitespace
 
-Latest AnalysisBase release for |xAH| is AnalysisBase,\ |ab_release_cm|.
-
 .. note::
-    If you need to bump up the version of the AnalysisBase being used, please make sure you update the `.travis.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.travis.yml>`_ file first.
+    If you need to add a new release to be supported, please make sure you update the `.travis.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.travis.yml>`_ file first.
 
-We support the following AnalysisBase, CMake-based releases: |all_ab_releases_cm|
+We support the following releases: |all_releases|
 
 Python Code Quality
 -------------------
