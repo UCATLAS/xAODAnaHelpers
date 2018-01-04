@@ -13,7 +13,7 @@
                          | |  | |
                          |_|  |_|
 
-This is a self-contained ATLAS AnalysisBase image with xAODAnaHelpers. Your
+This is a self-contained ATLAS ASG release image with xAODAnaHelpers. Your
 .bashrc should already execute the necessary scripts to set up the analysis
 base release as well as xAODAnaHelpers. View our online documentation here:
 
