@@ -62,12 +62,12 @@ This step requires a little extra work, but compiles significantly faster. First
 
   mkdir src build
 
-Then we'll set up a CMake RC release inside the source:
+Then we'll set up a release inside the source:
 
 .. parsed-literal::
 
   cd src
-  asetup AnalysisBase,\ |ab_release_cm|\,here
+  asetup (RELEASE),here
 
 This also sets up a ``CMakeLists.txt`` file in this top-level directory that searches for all packages you've checked out inside it. At this point, clone/checkout all packages you need such as |xAH|:
 
@@ -97,4 +97,4 @@ The last thing you need to do is get your environment set up correctly, so you w
 
   source build/*/setup.sh
 
-Environment variables like ``${AnalysisBase_PLATFORM}`` seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
+Environment variables like ``${AnalysisBase_PLATFORM}`` (or ``${AnalysisTop_PLATFORM}``) seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
