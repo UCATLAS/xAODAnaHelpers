@@ -280,7 +280,7 @@ EL::StatusCode OverlapRemover :: execute ()
     executeOR(inElectrons, inMuons, inJets, inPhotons, inTaus,  PHSYST, systNames_photon);
 
   }
-
+  std::cout << "LINE 283" << std::endl;
   // **************** //
   //       Taus       //
   // **************** //
@@ -489,6 +489,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
+  std::cout << "LINE 492" << std::endl;
       if ( m_useTaus ) {
         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
           ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, msg()) );
@@ -497,6 +498,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Taus << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
         }
       }
+  std::cout << "LINE 501" << std::endl;
 
       if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
 
@@ -506,12 +508,16 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       if ( m_usePhotons )   { ANA_MSG_DEBUG(  "inPhotons : " << inPhotons->size());  }
       if ( m_useTaus    )   { ANA_MSG_DEBUG(  "inTaus : " << inTaus->size());  }
 
+  std::cout << "LINE 511" << std::endl;
       // do the actual OR
       //
       ANA_MSG_DEBUG(  "Calling removeOverlaps()");
-      ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
+  std::cout << "LINE 515" << std::endl;
+      ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons)); // This line raises an exception
+  std::cout << "LINE 517" << std::endl;
       ANA_MSG_DEBUG(  "Done Calling removeOverlaps()");
 
+  std::cout << "LINE 518" << std::endl;
       std::string ORdecor("passOR");
       if(m_useCutFlow){
         // fill cutflow histograms
@@ -522,8 +528,10 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         fillObjectCutflow(inJets);
         if ( m_usePhotons )   fillObjectCutflow(inPhotons);
         if ( m_useTaus )      fillObjectCutflow(inTaus);
+  std::cout << "LINE 529" << std::endl;
       }
 
+  std::cout << "LINE 530" << std::endl;
       // make a copy of input container(s) with selected objects
       //
       if ( m_createSelectedContainers ) {
@@ -535,6 +543,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         if ( m_useTaus )     selectedTaus = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
       }
 
+  std::cout << "LINE 540" << std::endl;
       // resize containers basd on OR decision:
       //
       // if an object has been flagged as 'passOR', it will be stored in the 'selected' container
@@ -706,6 +715,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
+  std::cout << "LINE 710" << std::endl;
       if ( m_useTaus ) {
         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
           ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, msg()) );
@@ -751,6 +761,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_useTaus )      selectedTaus  = new ConstDataVector<xAOD::TauJetContainer>(SG::VIEW_ELEMENTS);
         }
 
+  std::cout << "LINE 755" << std::endl;
         // resize containers based on OR decision
         //
         if ( m_useElectrons ) { ANA_CHECK( HelperFunctions::makeSubsetCont(inElectrons, selectedElectrons, msg(), ORdecor.c_str(), ToolName::SELECTOR)); }
@@ -771,6 +782,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           if ( m_useTaus )      { ANA_CHECK( m_store->record( selectedTaus, m_outContainerName_Taus + systName )); }
         }
 
+  std::cout << "LINE 777" << std::endl;
         m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Muons)
 
@@ -813,6 +825,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
+  std::cout << "LINE 819" << std::endl;
       if ( m_useTaus ) {
         if ( m_store->contains<ConstDataVector<xAOD::TauJetContainer> >(m_inContainerName_Taus) ) {
           ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName_Taus, m_event, m_store, msg()) );
@@ -989,6 +1002,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
       break;
     }
+  std::cout << "LINE 997" << std::endl;
     case TAUSYST : // tau systematics
     {
       ANA_MSG_DEBUG(  "Doing tau systematics");
@@ -1024,6 +1038,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         if ( m_numEvent == 1 ) { ANA_MSG_WARNING( "Could not find nominal container " << m_inContainerName_Jets << " in xAOD::TStore. Overlap Removal will not be done for the 'all-nominal' case..."); }
       }
 
+  std::cout << "LINE 1033" << std::endl;
       if ( m_usePhotons ) {
         if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
           ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, msg()) );
@@ -1046,6 +1061,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
         // do the actual OR
         //
+  std::cout << "LINE 1056" << std::endl;
         ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
 
         const std::string ORdecor("passOR");
@@ -1061,6 +1077,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
 
         // make a copy of input container(s) with selected objects
         //
+  std::cout << "LINE 1072" << std::endl;
         if ( m_createSelectedContainers ) {
           if( m_useElectrons ) selectedElectrons   = new ConstDataVector<xAOD::ElectronContainer>(SG::VIEW_ELEMENTS);
           if( m_useMuons )     selectedMuons       = new ConstDataVector<xAOD::MuonContainer>(SG::VIEW_ELEMENTS);
@@ -1089,6 +1106,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
           ANA_CHECK( m_store->record( selectedTaus, m_outContainerName_Taus + systName ));
         }
 
+  std::cout << "LINE 1101" << std::endl;
         m_vecOutContainerNames->push_back(systName);
       } // close loop on systematic sets available from upstream algo (Taus)
 
