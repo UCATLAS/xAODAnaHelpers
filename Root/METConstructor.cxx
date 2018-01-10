@@ -8,10 +8,7 @@
 
 // top of file, outside of algorithm declaration
 // #include "METUtilities/METRebuilder.h"
-#include "METUtilities/METMaker.h"
-#include "METUtilities/METSignificance.h"
 #include "METUtilities/CutsMETMaker.h"
-#include "TauAnalysisTools/TauSelectionTool.h"
 
 #include "xAODEgamma/PhotonContainer.h"
 #include "xAODEgamma/ElectronContainer.h"
@@ -37,7 +34,6 @@
 // for METsyst
 #include <xAODAnaHelpers/HelperClasses.h>
 #include "PATInterfaces/SystematicVariation.h"
-#include "METUtilities/METSystematicsTool.h"
 #include "assert.h"
 
 #include "TEnv.h"
@@ -148,11 +144,8 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG("Retrieved tool: " << m_metSyst_handle);
   ANA_CHECK(m_metSyst_handle.retrieve());
 
-  m_tauSelTool = new TauAnalysisTools::TauSelectionTool( "TauSelectionTool" );
-  if (m_tauSelTool->initialize().isFailure()) {
-    ANA_MSG_ERROR( "Failed to properly initialize tau selection tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  ANA_CHECK(m_tauSelTool.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool);
 
   //////////// IMETSignificance ////////////////
   ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );

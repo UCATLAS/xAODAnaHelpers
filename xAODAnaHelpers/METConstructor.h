@@ -9,19 +9,17 @@
 #include "xAODRootAccess/TStore.h"
 #include "AsgTools/AnaToolHandle.h"
 
+#include "METInterface/IMETMaker.h"
+#include "METInterface/IMETSystematicsTool.h"
 #include "METInterface/IMETSignificance.h"
+
+#include "TauAnalysisTools/ITauSelectionTool.h"
+
 #include "PATInterfaces/SystematicRegistry.h"
 //look at https://twiki.cern.ch/twiki/bin/view/AtlasComputing/SoftwareTutorialxAODAnalysisInROOT
 
 
 using std::string;
-
-
-class IMETMaker;
-class IMETSystematicsTool;
-
-namespace TauAnalysisTools { class TauSelectionTool; }
-
 
 class METConstructor : public xAH::Algorithm
 {
@@ -118,7 +116,7 @@ private:
   asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle{"met::METSystematicsTool", this}; //!
   asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle{"met::METSignificance", this}; //!
 
-  TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool{"TauAnalysisTools::TauSelectionTool", this}; //!
 
   TString coreMetKey;
   std::vector<CP::SystematicSet> sysList; //!
