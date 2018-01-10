@@ -137,12 +137,12 @@ EL::StatusCode METConstructor :: initialize ()
   if ( m_dofJVTCut ) {
     ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", "passFJVT"));
   }
-  ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
   ANA_CHECK(m_metmaker_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
 
   ///////////// IMETSystematicsTool ///////////////////
-  ANA_MSG_DEBUG("Retrieved tool: " << m_metSyst_handle);
   ANA_CHECK(m_metSyst_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_metSyst_handle);
 
   ANA_CHECK(m_tauSelTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
