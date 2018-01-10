@@ -144,8 +144,8 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG("Retrieved tool: " << m_metSyst_handle);
   ANA_CHECK(m_metSyst_handle.retrieve());
 
-  ANA_CHECK(m_tauSelTool.retrieve());
-  ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool);
+  ANA_CHECK(m_tauSelTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
 
   //////////// IMETSignificance ////////////////
   ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
@@ -384,7 +384,7 @@ EL::StatusCode METConstructor :: execute ()
 
            if (tau->pt() < 20e3) continue;
            if (fabs(tau->eta()) > 2.37) continue;
-           if (!m_tauSelTool->accept(tau)) continue;
+           if (!m_tauSelTool_handle->accept(tau)) continue;
 
            metTaus.push_back(tau);
          }

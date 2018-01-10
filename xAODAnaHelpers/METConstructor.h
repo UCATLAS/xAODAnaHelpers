@@ -116,7 +116,7 @@ private:
   asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle{"met::METSystematicsTool", this}; //!
   asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle{"met::METSignificance", this}; //!
 
-  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool{"TauAnalysisTools::TauSelectionTool", this}; //!
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool", this}; //!
 
   TString coreMetKey;
   std::vector<CP::SystematicSet> sysList; //!
