@@ -98,7 +98,7 @@ private:
   std::string m_outputSystNamesTrigBase; //!
 
   // tools
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;     //!
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
   CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool = nullptr;               //!
   std::string m_recoEffSF_tool_name;                                       //!
   CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                //!
