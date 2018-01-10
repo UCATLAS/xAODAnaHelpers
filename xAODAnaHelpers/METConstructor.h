@@ -112,11 +112,11 @@ public:
 
 private:
   // tools
-  asg::AnaToolHandle<IMETMaker> m_metmaker_handle{"met::METMaker", this}; //!
-  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle{"met::METSystematicsTool", this}; //!
-  asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle{"met::METSignificance", this}; //!
+  asg::AnaToolHandle<IMETMaker> m_metmaker_handle{"met::METMaker/METMaker", this}; //!
+  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle{"met::METSystematicsTool/METSystematicsTool", this}; //!
+  asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle{"met::METSignificance/METSignificance", this}; //!
 
-  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool", this}; //!
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool", this}; //!
 
   TString coreMetKey;
   std::vector<CP::SystematicSet> sysList; //!
