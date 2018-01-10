@@ -176,7 +176,7 @@ prun.add_argument('--optGridDestSE',           metavar='', type=str, required=Fa
 prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridNGBPerJob',        metavar='', type=str, required=False, default='2')
+prun.add_argument('--optGridNGBPerJob',        metavar='', type=str, required=False, default=2)
 prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridNFiles',           metavar='', type=float, required=False, default=None)
