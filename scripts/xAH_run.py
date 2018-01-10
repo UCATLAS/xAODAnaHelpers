@@ -176,7 +176,7 @@ prun.add_argument('--optGridDestSE',           metavar='', type=str, required=Fa
 prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridNGBPerJob',        metavar='', type=str, required=False, default=2)
+prun.add_argument('--optGridNGBPerJob',        metavar='', type=int, required=False, default=2)
 prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridNFiles',           metavar='', type=float, required=False, default=None)
@@ -252,7 +252,7 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working for rel 20
-    needXRD = ( args.use_scanDQ2|args.use_scanRucio ) & (args.driver!='prun')
+    needXRD = (args.use_scanDQ2)|(args.use_scanRucio)|(args.driver in ['condor','lsf','slurm'])
     if needXRD:
       if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
