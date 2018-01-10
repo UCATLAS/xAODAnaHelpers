@@ -114,9 +114,9 @@ public:
 
 private:
   // tools
-  asg::AnaToolHandle<IMETMaker> m_metmaker_handle; //!
-  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle; //!
-  asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle; //!
+  asg::AnaToolHandle<IMETMaker> m_metmaker_handle{"met::METMaker", this}; //!
+  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle{"met::METSystematicsTool", this}; //!
+  asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle{"met::METSignificance", this}; //!
 
   TauAnalysisTools::TauSelectionTool* m_tauSelTool; //!
 

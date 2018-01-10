@@ -138,17 +138,15 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG( "Is MC? " << isMC() );
 
   //////////// IMETMaker ////////////////
-  ASG_SET_ANA_TOOL_TYPE(m_metmaker_handle, met::METMaker);
-  m_metmaker_handle.setName("METMaker");
   if ( m_dofJVTCut ) {
     ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", "passFJVT"));
   }
-  m_metmaker_handle.retrieve();
+  ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
+  ANA_CHECK(m_metmaker_handle.retrieve());
 
   ///////////// IMETSystematicsTool ///////////////////
-  ASG_SET_ANA_TOOL_TYPE(m_metSyst_handle, met::METSystematicsTool);
-  m_metSyst_handle.setName("METSyst");
-  m_metSyst_handle.retrieve();
+  ANA_MSG_DEBUG("Retrieved tool: " << m_metSyst_handle);
+  ANA_CHECK(m_metSyst_handle.retrieve());
 
   m_tauSelTool = new TauAnalysisTools::TauSelectionTool( "TauSelectionTool" );
   if (m_tauSelTool->initialize().isFailure()) {
@@ -157,7 +155,6 @@ EL::StatusCode METConstructor :: initialize ()
   }
 
   //////////// IMETSignificance ////////////////
-  ASG_SET_ANA_TOOL_TYPE( m_metSignificance_handle, met::METSignificance );
   ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
   ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
   ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !isMC()) );
