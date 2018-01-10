@@ -8,10 +8,7 @@
 
 // top of file, outside of algorithm declaration
 // #include "METUtilities/METRebuilder.h"
-#include "METUtilities/METMaker.h"
-#include "METUtilities/METSignificance.h"
 #include "METUtilities/CutsMETMaker.h"
-#include "TauAnalysisTools/TauSelectionTool.h"
 
 #include "xAODEgamma/PhotonContainer.h"
 #include "xAODEgamma/ElectronContainer.h"
@@ -37,7 +34,6 @@
 // for METsyst
 #include <xAODAnaHelpers/HelperClasses.h>
 #include "PATInterfaces/SystematicVariation.h"
-#include "METUtilities/METSystematicsTool.h"
 #include "assert.h"
 
 #include "TEnv.h"
@@ -138,26 +134,20 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG( "Is MC? " << isMC() );
 
   //////////// IMETMaker ////////////////
-  ASG_SET_ANA_TOOL_TYPE(m_metmaker_handle, met::METMaker);
-  m_metmaker_handle.setName("METMaker");
   if ( m_dofJVTCut ) {
     ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", "passFJVT"));
   }
-  m_metmaker_handle.retrieve();
+  ANA_CHECK(m_metmaker_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
 
   ///////////// IMETSystematicsTool ///////////////////
-  ASG_SET_ANA_TOOL_TYPE(m_metSyst_handle, met::METSystematicsTool);
-  m_metSyst_handle.setName("METSyst");
-  m_metSyst_handle.retrieve();
+  ANA_CHECK(m_metSyst_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_metSyst_handle);
 
-  m_tauSelTool = new TauAnalysisTools::TauSelectionTool( "TauSelectionTool" );
-  if (m_tauSelTool->initialize().isFailure()) {
-    ANA_MSG_ERROR( "Failed to properly initialize tau selection tool. Exiting." );
-    return EL::StatusCode::FAILURE;
-  }
+  ANA_CHECK(m_tauSelTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
 
   //////////// IMETSignificance ////////////////
-  ASG_SET_ANA_TOOL_TYPE( m_metSignificance_handle, met::METSignificance );
   ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
   ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
   ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !isMC()) );
@@ -394,7 +384,7 @@ EL::StatusCode METConstructor :: execute ()
 
            if (tau->pt() < 20e3) continue;
            if (fabs(tau->eta()) > 2.37) continue;
-           if (!m_tauSelTool->accept(tau)) continue;
+           if (!m_tauSelTool_handle->accept(tau)) continue;
 
            metTaus.push_back(tau);
          }
