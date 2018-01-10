@@ -120,6 +120,8 @@ EL::StatusCode OverlapRemover :: initialize ()
   m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  
+  std::cout << "LINE 124 "<< std::endl;
 
   if ( m_inContainerName_Jets.empty() ) {
     ANA_MSG_ERROR( "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
@@ -131,23 +133,31 @@ EL::StatusCode OverlapRemover :: initialize ()
   if ( !m_inContainerName_Taus.empty() )      { m_useTaus      = true; }
   if ( !m_inContainerName_Photons.empty() )   { m_usePhotons   = true; }
 
+  std::cout << "LINE 136 "<< std::endl;
+  
   m_outAuxContainerName_Electrons   = m_outContainerName_Electrons + "Aux."; // the period is very important!
   m_outAuxContainerName_Muons       = m_outContainerName_Muons + "Aux.";     // the period is very important!
   m_outAuxContainerName_Jets        = m_outContainerName_Jets + "Aux.";      // the period is very important!
   m_outAuxContainerName_Photons     = m_outContainerName_Photons + "Aux.";   // the period is very important!
   m_outAuxContainerName_Taus        = m_outContainerName_Taus + "Aux.";      // the period is very important!
 
+  std::cout << "LINE 144 "<< std::endl;
+  
   if ( setCounters() == EL::StatusCode::FAILURE ) {
     ANA_MSG_ERROR( "Failed to properly set event/object counters. Exiting." );
     return EL::StatusCode::FAILURE;
   }
 
+  std::cout << "LINE 150 "<< std::endl;
+  
   // initialize ASG overlap removal tool
   const std::string selected_label = ( m_useSelected ) ? "passSel" : "";  // set with decoration flag you use for selected objects if want to consider only selected objects in OR, otherwise it will perform OR on all objects
 
   //Set Flags for recommended overlap procedures
   ORUtils::ORFlags orFlags("OverlapRemovalTool", selected_label, "passOR");
 
+  std::cout << "LINE 158 "<< std::endl;
+  
   orFlags.outputPassValue     = true;
   orFlags.linkOverlapObjects  = m_linkOverlapObjects;
   orFlags.bJetLabel           = m_bTagWP;
@@ -161,10 +171,16 @@ EL::StatusCode OverlapRemover :: initialize ()
   orFlags.doPhotons   = m_usePhotons;
   orFlags.doFatJets   = false;
 
+  std::cout << "LINE 174 "<< std::endl;
+  
   ANA_CHECK( ORUtils::recommendedTools(orFlags, m_ORToolbox));
+  std::cout << "LINE 177 "<< std::endl;
   ANA_CHECK( m_ORToolbox.initialize());
+  std::cout << "LINE 179 "<< std::endl;
   ANA_MSG_INFO( "OverlapRemover Interface succesfully initialized!" );
 
+  std::cout << "LINE 180 "<< std::endl;
+  
   return EL::StatusCode::SUCCESS;
 }
 
