@@ -148,6 +148,7 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 
 EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 {
+  ANA_MSG_DEBUG(" "  );
   auto triggerChainGroup = m_trigDecTool_handle->getChainGroup(m_trigItem);
 
   std::vector<std::string> triggersUsed = triggerChainGroup->getListOfTriggers();
@@ -177,6 +178,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   std::vector<std::string> triggersUsedAfterVeto = triggerChainGroupAfterVeto->getListOfTriggers();
   for(std::string trig : triggersUsedAfterVeto){
     ANA_MSG_DEBUG(" \t " << trig);
+    if(m_trigDecTool_handle->isPassed(trig))
+      ANA_MSG_DEBUG(" \t " << trig << " Passed "  );
   }
 
 
@@ -230,7 +233,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   Trig::FeatureContainer::combination_const_iterator comb   (fc.getCombinations().begin());
   Trig::FeatureContainer::combination_const_iterator combEnd(fc.getCombinations().end());
   ANA_MSG_DEBUG( m_name << " New Event --------------- ");
-
+  ANA_MSG_DEBUG( " Event Pass? " << m_trigDecTool_handle->isPassed(m_trigItemAfterVeto) );
+  ANA_MSG_DEBUG( " comb size " << fc.getCombinations().size());
   for( ; comb!=combEnd ; ++comb) {
     std::vector< Trig::Feature<xAOD::JetContainer> >            jetCollections  = comb->containerFeature<xAOD::JetContainer>(m_jetName);
     std::vector< Trig::Feature<xAOD::BTaggingContainer> >       bjetCollections = comb->containerFeature<xAOD::BTaggingContainer>("HLTBjetFex");
@@ -338,10 +342,30 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
       bool passOverlap = true;
       for( const xAOD::Jet* previousJet : *hltJets){
-	if(previousJet->p4().DeltaR(hlt_jet->p4()) < 0.4) passOverlap = false;
+	if(previousJet->p4().DeltaR(hlt_jet->p4()) < 0.1){
+	  const xAOD::BTagging *p_btag_info = previousJet->auxdata< const xAOD::BTagging* >("HLTBTag");
+	  double p_mv2c10 = -99; 
+	  p_btag_info->MVx_discriminant("MV2c10", p_mv2c10);
+
+	  double this_mv2c10 = -99;
+	  const xAOD::BTagging* hlt_btag = getTrigObject<xAOD::BTagging, xAOD::BTaggingContainer>(bjetCollections.at(ifeat));
+	  if(hlt_btag){
+	    hlt_btag->MVx_discriminant("MV2c10", this_mv2c10);
+	  }
+
+	  if(fabs(p_mv2c10 - this_mv2c10) > 0.01){
+	    std::cout << "ERROR:: Previous mv2c10 " << p_mv2c10 << " this mv2c10 "  << this_mv2c10 << std::endl;
+	    std::cout << "Previous Jet: pt: " << previousJet->pt() << " eta: " << previousJet->eta() << " phi: " << previousJet->phi() << std::endl;;
+	    std::cout << "This Jet: pt: " << hlt_jet->pt() << " eta: " << hlt_jet->eta() << " phi: " << hlt_jet->phi() << std::endl;;
+	  }
+	  passOverlap = false;
+	}
       }
 
-      if(!passOverlap) continue;
+      if(!passOverlap){
+	ANA_MSG_DEBUG(" Jet Failed overlap " );
+	continue;
+      }
       ANA_MSG_DEBUG("New Jet: pt: " << hlt_jet->pt() << " eta: " << hlt_jet->eta() << " phi: " << hlt_jet->phi());
 
       const xAOD::BTagging* hlt_btag = getTrigObject<xAOD::BTagging, xAOD::BTaggingContainer>(bjetCollections.at(ifeat));

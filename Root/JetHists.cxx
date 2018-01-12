@@ -209,8 +209,8 @@ StatusCode JetHists::initialize() {
 
     m_MV2c00          = book(m_name, "MV2c00",            m_titlePrefix+"MV2c00" ,   100,    -1.1,   1.1);
     m_MV2c10          = book(m_name, "MV2c10",            m_titlePrefix+"MV2c10" ,   100,    -1.1,   1.1);
+    m_MV2c10_l        = book(m_name, "MV2c10_l",          m_titlePrefix+"MV2c10" ,   500,    -1.1,   1.1);
     m_MV2c20          = book(m_name, "MV2c20",            m_titlePrefix+"MV2c20" ,   100,    -1.1,   1.1);
-    m_MV2c20_l        = book(m_name, "MV2c20_l",          m_titlePrefix+"MV2c20" , 500,    -1.1,   1.1);
     m_COMB            = book(m_name, "COMB",              m_titlePrefix+"COMB" ,     100,    -20,   40);
     m_JetFitter       = book(m_name, "JetFitter",         m_titlePrefix+"JetFitter" ,     100,    -10,   10);
     //m_MV2           = book(m_name, "MV2",               m_titlePrefix+" jet MV2"          , 100,   -1  ,  1);
@@ -972,8 +972,8 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     btag_info->MVx_discriminant("MV2c20", MV2c20);
     m_MV2c00   ->  Fill( MV2c00, eventWeight );
     m_MV2c10   ->  Fill( MV2c10, eventWeight );
+    m_MV2c10_l ->  Fill( MV2c10, eventWeight );
     m_MV2c20   ->  Fill( MV2c20, eventWeight );
-    m_MV2c20_l ->  Fill( MV2c20, eventWeight );
 
     if(m_infoSwitch->m_vsLumiBlock || m_infoSwitch->m_vsActualMu){
 
@@ -1507,9 +1507,13 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
     // Use of vtxClass is new, hadDummyPV is old but need backward compatibility.
     char vtxClass = jet->auxdata< char >("hadDummyPV");
-    if( vtxClass == '0')  m_vtxClass -> Fill(0.0, eventWeight);
-    if( vtxClass == '1')  m_vtxClass -> Fill(1.0, eventWeight);
-    if( vtxClass == '2')  m_vtxClass -> Fill(2.0, eventWeight);
+    int vtxClassInt = int(vtxClass);
+
+    if( vtxClass == '0')  vtxClassInt = 0;
+    if( vtxClass == '1')  vtxClassInt = 1;
+    if( vtxClass == '2')  vtxClassInt = 2;
+
+    m_vtxClass -> Fill(vtxClassInt, eventWeight);
 
     if(m_infoSwitch->m_hltVtxComp){
 
@@ -1566,7 +1570,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);
 	m_vtxDiffz0_s_vs_vtxDiffy0      ->Fill(vtxDiffy0, vtxDiffz0, eventWeight);
 
-	m_vtxClass_vs_jetPt        ->Fill(jet->pt()/1e3, bool(vtxClass), eventWeight);
+	m_vtxClass_vs_jetPt        ->Fill(jet->pt()/1e3, vtxClassInt, eventWeight);
 
 	m_vtx_online_y0_vs_vtx_online_z0 -> Fill(online_pvx->z(), online_pvx->y(), eventWeight);
 	m_vtx_online_x0_vs_vtx_online_z0 -> Fill(online_pvx->z(), online_pvx->x(), eventWeight);
@@ -1578,7 +1582,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	  m_vtxDiffx0_vs_lBlock     ->Fill(lumiBlock, vtxDiffx0          , eventWeight);
 	  m_vtxDiffy0_vs_lBlock     ->Fill(lumiBlock, vtxDiffy0          , eventWeight);
 	  m_vtxDiffz0_vs_lBlock     ->Fill(lumiBlock, vtxDiffz0          , eventWeight);
-	  m_vtxClass_vs_lBlock   ->Fill(lumiBlock, bool(vtxClass),    eventWeight);
+	  m_vtxClass_vs_lBlock   ->Fill(lumiBlock, vtxClassInt,    eventWeight);
 
 	  bool correctVtx1 = (fabs(vtxDiffz0) < 1);
 	  bool correctVtx10 = (fabs(vtxDiffz0) < 10);
@@ -1602,7 +1606,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 	  uint32_t lumiBlock = eventInfo->lumiBlock();
 	  uint32_t runNumber = eventInfo->runNumber();
 	  m_lumiB_runN              -> Fill(lumiBlock, runNumber, eventWeight);
-	  m_lumiB_runN_vtxClass     -> Fill(lumiBlock, runNumber, eventWeight * vtxClass);
+	  m_lumiB_runN_vtxClass     -> Fill(lumiBlock, runNumber, eventWeight * vtxClassInt);
 	  m_lumiB_runN_lumiB        -> Fill(lumiBlock, runNumber, eventWeight * lumiBlock);
 
 
@@ -1710,8 +1714,9 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
       m_MV2c00                    ->Fill(jet->MV2c00               , eventWeight);
       m_MV2c10                    ->Fill(jet->MV2c10               , eventWeight);
+      m_MV2c10_l                  ->Fill(jet->MV2c10               , eventWeight);
       m_MV2c20                    ->Fill(jet->MV2c20               , eventWeight);
-      m_MV2c20_l                  ->Fill(jet->MV2c20                , eventWeight);
+
       //      h_MV2                       ->Fill(jet->MV2                  , eventWeight);
 
       if((m_infoSwitch->m_vsLumiBlock || m_infoSwitch->m_vsActualMu) && eventInfo){
@@ -1813,6 +1818,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
       // vtxHadDummy is an old var. I am moving to a new variable name here.
       float vtxClass=jet->vtxHadDummy;
+
       m_vtxClass               ->Fill(vtxClass          , eventWeight);
 
       if(m_infoSwitch->m_hltVtxComp){
@@ -1871,7 +1877,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 	m_vtxDiffz0_s_vs_vtxDiffx0      ->Fill(vtxDiffx0, vtxDiffz0, eventWeight);
 	m_vtxDiffz0_s_vs_vtxDiffy0      ->Fill(vtxDiffy0, vtxDiffz0, eventWeight);
 
-	m_vtxClass_vs_jetPt   ->Fill(jet->p4.Pt(), bool(vtxClass),    eventWeight);
+	m_vtxClass_vs_jetPt   ->Fill(jet->p4.Pt(), vtxClass,    eventWeight);
 
 	m_vtx_online_y0_vs_vtx_online_z0 ->Fill(jet->vtx_online_z0, jet->vtx_online_y0, eventWeight);
 	m_vtx_online_x0_vs_vtx_online_z0 ->Fill(jet->vtx_online_z0, jet->vtx_online_x0, eventWeight);
@@ -1882,7 +1888,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 	  m_vtxDiffx0_vs_lBlock     ->Fill(lumiBlock, vtxDiffx0          , eventWeight);
 	  m_vtxDiffy0_vs_lBlock     ->Fill(lumiBlock, vtxDiffy0          , eventWeight);
 	  m_vtxDiffz0_vs_lBlock     ->Fill(lumiBlock, vtxDiffz0          , eventWeight);
-	  m_vtxClass_vs_lBlock   ->Fill(lumiBlock, bool(vtxClass),    eventWeight);
+	  m_vtxClass_vs_lBlock   ->Fill(lumiBlock, vtxClass,    eventWeight);
 
 	  bool correctVtx1  = (fabs(vtxDiffz0) < 1);
 	  bool correctVtx10 = (fabs(vtxDiffz0) < 10);
