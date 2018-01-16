@@ -574,6 +574,9 @@ namespace HelperClasses {
    */
   class TauInfoSwitch : public IParticleInfoSwitch {
   public:
+    bool m_trigger;
+    bool m_quality;
+    bool m_PID;
     bool m_trackparams;
     bool m_trackhitcont;
     TauInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };

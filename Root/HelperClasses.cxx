@@ -437,6 +437,9 @@ namespace HelperClasses{
   }
 
   void TauInfoSwitch::initialize(){
+    m_trigger       = has_exact("trigger");
+    m_quality       = has_exact("quality");
+    m_PID           = has_exact("PID");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
   }
