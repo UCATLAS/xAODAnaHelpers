@@ -2,8 +2,8 @@
  *
  * Interface to TauAnalysisTools::TauSelectionTool
  *
- * M. Milesi (marco.milesi@cern.ch)
  * F. Scutti (federico.scutti@cern.ch)
+ * M. Milesi (marco.milesi@cern.ch)
  *
  ************************************************/
 
@@ -680,10 +680,10 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   //
 
   // JetBDTID decoration
-  static SG::AuxElement::Decorator< int > isJetBDTVeryLoose("isJetBDTVeryLoose");
-  static SG::AuxElement::Decorator< int > isJetBDTLoose("isJetBDTLoose");
-  static SG::AuxElement::Decorator< int > isJetBDTMedium("isJetBDTMedium");
-  static SG::AuxElement::Decorator< int > isJetBDTTight("isJetBDTTight");
+  static SG::AuxElement::Decorator< char > isJetBDTVeryLoose("isJetBDTVeryLoose");
+  static SG::AuxElement::Decorator< char > isJetBDTLoose("isJetBDTLoose");
+  static SG::AuxElement::Decorator< char > isJetBDTMedium("isJetBDTMedium");
+  static SG::AuxElement::Decorator< char > isJetBDTTight("isJetBDTTight");
 
   ANA_MSG_DEBUG( "Got the decors" );
 
@@ -691,6 +691,11 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   isJetBDTLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigLoose));
   isJetBDTMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigMedium));
   isJetBDTTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigTight));
+  
+  std::cout << "isJetBDTVeryLoose( *tau ) " << isJetBDTVeryLoose( *tau ) << std::endl; 
+  std::cout << "isJetBDTLoose( *tau )     " << isJetBDTLoose( *tau )     << std::endl;
+  std::cout << "isJetBDTMedium( *tau )    " << isJetBDTMedium( *tau )    << std::endl;
+  std::cout << "isJetBDTTight( *tau )     " << isJetBDTTight( *tau )     << std::endl;
 
   ANA_MSG_DEBUG( "Got decoration values" );
 

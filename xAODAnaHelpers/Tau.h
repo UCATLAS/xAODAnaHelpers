@@ -10,9 +10,18 @@ namespace xAH {
   {
   public:
 
+    // trigger
+    int               isTrigMatched;
+    std::vector<int>  isTrigMatchedToChain;
+    std::string       listTrigChains;
+    
     int               ntrk;
     float             charge;
 
+    int               isJetBDTVeryLoose;
+    int               isJetBDTLoose;
+    int               isJetBDTMedium;
+    int               isJetBDTTight;
   };
 
 }//xAH
