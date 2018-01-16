@@ -234,7 +234,6 @@ EL::StatusCode TauCalibrator :: execute ()
       for ( auto tauSC_itr : *(calibTausSC.first) ) {
 
 	ANA_MSG_DEBUG( "  uncailbrated tau " << idx << ", pt = " << tauSC_itr->pt()*1e-3 << " GeV");
-        std::cout << "THIS IS THE BDT" << tauSC_itr->isTau(xAOD::TauJetParameters::JetBDTSigMedium) << std::endl;
 	if(xAOD::TauHelpers::getTruthParticle(tauSC_itr)){
 	  if ( m_tauSmearingTool->applyCorrection(*tauSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
 	    ANA_MSG_WARNING( "TauSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
