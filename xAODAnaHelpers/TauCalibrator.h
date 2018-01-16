@@ -31,9 +31,6 @@ public:
   /// @brief Write systematics names to metadata
   bool        m_writeSystToMetadata = false;
 
-  float       m_systVal = 0.0;
-  std::string m_systName = "";
-
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
