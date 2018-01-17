@@ -256,6 +256,17 @@ EL::StatusCode METConstructor :: execute ()
        ANA_MSG_DEBUG("muon syst added is = "<< systName);
      }
    }
+   
+   //add the syst for taus
+   if(!m_runNominal && !m_tauSystematics.empty()){
+     std::vector<std::string>* sysTausNames(nullptr);
+     ANA_CHECK( HelperFunctions::retrieve(sysTausNames, m_tauSystematics, 0, m_store, msg()));
+
+     for ( auto systName : *sysTausNames ) {
+       if (systName != "" && !(std::find(sysList.begin(), sysList.end(), CP::SystematicSet(systName)) != sysList.end())) sysList.push_back(CP::SystematicSet(systName));
+       ANA_MSG_DEBUG("tau syst added is = "<< systName);
+     }
+   }
 
    //add the syst for photons
    if(!m_runNominal && !m_phoSystematics.empty()){
@@ -365,32 +376,26 @@ EL::StatusCode METConstructor :: execute ()
      /////////  TAUS  /////
      //////////////////////
 
-     ///// NOTE: for taus we are not applying systematics! since "m_inputTaus.Data()+sysListItrString" is not in Tstore!
-
      if( m_inputTaus.Length() > 0  && m_store->contains<xAOD::TauJetContainer>(m_inputTaus.Data()+sysListItrString ) ) {
-        const xAOD::TauJetContainer* tauCont(0);
+       const xAOD::TauJetContainer* tauCont(0);
         if ( m_store->contains<xAOD::TauJetContainer>(m_inputTaus.Data()+sysListItrString ) ) {
           ANA_CHECK( HelperFunctions::retrieve(tauCont, m_inputTaus.Data()+sysListItrString, m_event, m_store, msg()));
           ANA_MSG_DEBUG("retrieving tau container "<< m_inputTaus.Data()+sysListItrString << " to be added to the met ");
-
         } else {
-        ANA_CHECK( HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, msg()));
-      }
-
-       if (m_doTauCuts) {
+          ANA_CHECK( HelperFunctions::retrieve(tauCont, m_inputTaus.Data(), m_event, m_store, msg()));
+        }
+        if (m_doTauCuts) {
          ConstDataVector<xAOD::TauJetContainer> metTaus(SG::VIEW_ELEMENTS);
          for (const auto& tau : *tauCont) {
-
            if (tau->pt() < 20e3) continue;
            if (fabs(tau->eta()) > 2.37) continue;
            if (!m_tauSelTool_handle->accept(tau)) continue;
-
            metTaus.push_back(tau);
          }
          ANA_CHECK( m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet, metTaus.asDataVector(), metMap));
-       } else {
-         ANA_CHECK( m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet, tauCont, metMap));
-       }
+         } else {
+           ANA_CHECK( m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet, tauCont, metMap));
+         }
      }
 
      ////////////////////
