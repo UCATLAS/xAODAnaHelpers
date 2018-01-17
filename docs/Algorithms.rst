@@ -199,6 +199,16 @@ ElectronSelector
 ElectronHists and ElectronHistsAlgo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+Tau Related
+-----------
+
+TauCalibrator
+~~~~~~~~~~~~~
+
+TauSelector
+~~~~~~~~~~~
+
 HelperFunctions
 ---------------
 
