@@ -33,10 +33,19 @@ namespace xAH {
       virtual void updateParticle(uint idx, Tau& tau);
     
     private:
+      
+      // trigger
+      std::vector<int>               *m_isTrigMatched;
+      std::vector<std::vector<int> > *m_isTrigMatchedToChain;
+      std::vector<std::string>       *m_listTrigChains;
 
       std::vector<int>   *m_ntrk;
       std::vector<float> *m_charge;
 
+      std::vector<int>   *m_isJetBDTVeryLoose;
+      std::vector<int>   *m_isJetBDTLoose;
+      std::vector<int>   *m_isJetBDTMedium;
+      std::vector<int>   *m_isJetBDTTight;
     
     };
 }

@@ -565,6 +565,8 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
+        m_trigger        trigger        exact
+        m_JetID          JetID          exact
         m_trackparams    trackparams    exact
         m_trackhitcont   trackhitcont   exact
         ================ ============== =======
@@ -574,6 +576,8 @@ namespace HelperClasses {
    */
   class TauInfoSwitch : public IParticleInfoSwitch {
   public:
+    bool m_trigger;
+    bool m_JetID;
     bool m_trackparams;
     bool m_trackhitcont;
     TauInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };

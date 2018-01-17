@@ -370,7 +370,6 @@ EL::StatusCode METConstructor :: execute ()
      if( m_inputTaus.Length() > 0  && m_store->contains<xAOD::TauJetContainer>(m_inputTaus.Data()+sysListItrString ) ) {
         const xAOD::TauJetContainer* tauCont(0);
         if ( m_store->contains<xAOD::TauJetContainer>(m_inputTaus.Data()+sysListItrString ) ) {
-
           ANA_CHECK( HelperFunctions::retrieve(tauCont, m_inputTaus.Data()+sysListItrString, m_event, m_store, msg()));
           ANA_MSG_DEBUG("retrieving tau container "<< m_inputTaus.Data()+sysListItrString << " to be added to the met ");
 

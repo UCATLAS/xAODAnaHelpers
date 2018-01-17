@@ -7,5 +7,6 @@ Calibrating Objects
    ElectronCalibrator
    JetCalibrator
    MuonCalibrator
+   TauCalibrator
    PhotonCalibrator
 
