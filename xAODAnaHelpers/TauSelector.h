@@ -102,9 +102,6 @@ private:
   int   m_tau_cutflow_selected;             //!
 
   // tools
-  //TauAnalysisTools::TauSelectionTool  *m_TauSelTool ; //!
-  //TauAnalysisTools::TauOverlappingElectronLLHDecorator *m_TOELLHDecorator; //!
-  
   std::vector<std::string>            m_singleTauTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_singleTauTrigChains */
   std::vector<std::string>            m_diTauTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diTauTrigChains */
   asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool",     this}; //!

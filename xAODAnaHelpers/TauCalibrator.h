@@ -6,9 +6,7 @@
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
-#include "PileupReweighting/PileupReweightingTool.h"
-#include "TauAnalysisTools/TauSmearingTool.h"
-
+#include "TauAnalysisTools/ITauSmearingTool.h"
 
 class TauCalibrator : public xAH::Algorithm
 {
@@ -42,8 +40,7 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  //asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"}; //!
-  TauAnalysisTools::TauSmearingTool  *m_tauSmearingTool = nullptr;   //!
+  asg::AnaToolHandle<TauAnalysisTools::ITauSmearingTool> m_tauSmearingTool_handle{"TauAnalysisTools::TauSmearingTool/TauSmearingTool",     this}; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

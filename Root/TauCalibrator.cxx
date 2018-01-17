@@ -121,23 +121,18 @@ EL::StatusCode TauCalibrator :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-
+  // ************************************************
+  //
   // initialize the TauAnalysisTools::TauSmearingTool
   //
-  if ( asg::ToolStore::contains<TauAnalysisTools::TauSmearingTool>("TauSmearingTool") ) {
-    m_tauSmearingTool = asg::ToolStore::get<TauAnalysisTools::TauSmearingTool>("TauSmearingTool");
-  } else {
-    m_tauSmearingTool = new TauAnalysisTools::TauSmearingTool("TauSmearingTool");
-  }
-  m_tauSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-  
-  ANA_CHECK( m_tauSmearingTool->initialize());
+  // ************************************************
 
+  ANA_CHECK(m_tauSmearingTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_tauSmearingTool_handle);
 
   // Get a list of recommended systematics for this tool
   //
-  //const CP::SystematicSet recSyst = CP::SystematicSet();
-  const CP::SystematicSet& recSyst = m_tauSmearingTool->recommendedSystematics();
+  const CP::SystematicSet& recSyst = m_tauSmearingTool_handle->recommendedSystematics();
 
   ANA_MSG_INFO(" Initializing Tau Calibrator Systematics :");
   //
@@ -213,7 +208,7 @@ EL::StatusCode TauCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_tauSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_tauSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Failed to configure TauSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }
@@ -235,7 +230,7 @@ EL::StatusCode TauCalibrator :: execute ()
 
 	ANA_MSG_DEBUG( "  uncailbrated tau " << idx << ", pt = " << tauSC_itr->pt()*1e-3 << " GeV");
 	if(xAOD::TauHelpers::getTruthParticle(tauSC_itr)){
-	  if ( m_tauSmearingTool->applyCorrection(*tauSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
+	  if ( m_tauSmearingTool_handle->applyCorrection(*tauSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
 	    ANA_MSG_WARNING( "TauSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original tau values are taken.
 	  }
 	}
@@ -316,8 +311,6 @@ EL::StatusCode TauCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ANA_MSG_INFO( "Deleting tool instances...");
-  if(m_tauSmearingTool) { delete m_tauSmearingTool; m_tauSmearingTool = nullptr; }
   return EL::StatusCode::SUCCESS;
 }
 

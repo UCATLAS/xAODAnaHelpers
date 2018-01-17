@@ -616,8 +616,6 @@ EL::StatusCode TauSelector :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  ANA_MSG_INFO( "Deleting tool instances...");
-
   if ( m_useCutFlow ) {
     ANA_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
