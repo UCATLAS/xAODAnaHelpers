@@ -186,11 +186,6 @@ EL::StatusCode TauSelector :: initialize ()
   //
   // ********************************
 
-  //std::string sel_tool_name = std::string("TauSelectionTool_") + m_name;
-  //m_TauSelTool = new TauAnalysisTools::TauSelectionTool( sel_tool_name );
-  //m_TauSelTool->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
-
-
   ANA_CHECK( m_tauSelTool_handle.setProperty("ConfigPath",PathResolverFindDataFile(m_ConfigPath).c_str()));
   if (!m_JetIDWP.empty()) {
     
@@ -214,21 +209,8 @@ EL::StatusCode TauSelector :: initialize ()
     }
   }
 
-  //if ( !m_EleOLRFilePath.empty() ) {
-  //  ANA_CHECK( m_tauSelTool_handle.setProperty("EleOLRFilePath",PathResolverFindDataFile(m_EleOLRFilePath).c_str()));
-  //}
-  //ANA_CHECK( m_TauSelTool->initialize());
-  
   ANA_CHECK(m_tauSelTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
-  /*
-  if ( m_setTauOverlappingEleLLHDecor ) {
-    std::string eleOLR_tool_name = std::string("TauOverlappingElectronLLHDecorator_") + m_name;
-    m_TOELLHDecorator = new TauAnalysisTools::TauOverlappingElectronLLHDecorator( eleOLR_tool_name );
-    m_TOELLHDecorator->msg().setLevel( MSG::INFO ); // VERBOSE, INFO, DEBUG
-    ANA_CHECK( m_TOELLHDecorator->initialize());
-  }
-  */
 
   // **************************************
   //
@@ -636,9 +618,6 @@ EL::StatusCode TauSelector :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  //if ( m_TauSelTool )      { m_TauSelTool = nullptr;      delete m_TauSelTool; }
-  //if ( m_TOELLHDecorator ) { m_TOELLHDecorator = nullptr; delete m_TOELLHDecorator; }
-
   if ( m_useCutFlow ) {
     ANA_MSG_INFO( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
@@ -704,8 +683,6 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
     ANA_MSG_DEBUG( "Tau failed minimal pT requirement for usage with derivations");
     return 0;
   }
-
-  //if ( m_setTauOverlappingEleLLHDecor ) { m_TOELLHDecorator->decorate( *tau ); }
 
   if ( ! m_tauSelTool_handle->accept( *tau ) ) {
     ANA_MSG_DEBUG( "Tau failed requirements of TauSelectionTool");

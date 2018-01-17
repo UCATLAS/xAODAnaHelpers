@@ -51,8 +51,6 @@ public:
   int            m_pass_max = -1;
   /* path to config file for the TauSelectionTool */
   std::string    m_ConfigPath = "xAODAnaHelpers/TauConf/00-01-19/Selection/recommended_selection_mc15.conf";
-  /* path to input file for overlap-based electron veto */
-  //std::string    m_EleOLRFilePath = "";
   /* a minimal pT threshold b/c some derivations may apply a thinning on tau tracks' features needed by the TauSelectionTool, which would cause a crash at runtime */
   float          m_minPtDAOD = 15e3;
   std::string    m_JetIDWP = "";
@@ -79,10 +77,8 @@ public:
 
   //@brief Recommended threshold for muon triggers: 
   //see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
-  double         m_minDeltaR = 0.1;
+  double         m_minDeltaR = 0.1; // This DeltaR will probably need an update
   
-  //bool           m_setTauOverlappingEleLLHDecor = true;
-
 private:
 
   int m_numEvent;           //!
