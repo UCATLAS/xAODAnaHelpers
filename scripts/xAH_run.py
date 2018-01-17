@@ -74,7 +74,7 @@ parser._positionals.title = "required"
 parser._optionals.title = "optional"
 
 # positional argument, require the first argument to be the input filename
-parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='file', type=str, nargs='+', required=True, help='input file(s) to read. This gives all the input files for the script to use. Depending on the other options specified, these could be DQ2 sample names, local paths, or text files containing a list of filenames/paths.')
+parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='file', type=str, nargs='+', required=True, help='input file(s) to read. This gives all the input files for the script to use. Depending on the other options specified, these could be rucio sample names, local paths, or text files containing a list of filenames/paths.')
 parser_requiredNamed.add_argument('--config', metavar='', type=str, required=True, help='configuration for the algorithms. This tells the script which algorithms to load, configure, run, and in which order. Without it, it becomes a headless chicken.')
 parser.add_argument('--submitDir', dest='submit_dir', metavar='<directory>', type=str, required=False, help='Output directory to store the output.', default='submitDir')
 parser.add_argument('--nevents', dest='num_events', metavar='<n>', type=int, help='Number of events to process for all datasets. (0 = no limit)', default=0)
@@ -90,7 +90,6 @@ parser.add_argument('--extraOptions', dest="extra_options", metavar="[param=val]
 
 parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of paths/filenames.')
 parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
-parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='[DEPRECATION] Use inputRucio instead.')
 parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', help='If enabled, will search using Rucio. Can be combined with `--inputList`.')
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
 parser.add_argument('--inputSH', action='store_true', dest='use_SH', default=False, help='If enabled, will assume the input file is a directory of ROOT files of saved SH instances to use. Call SH::SampleHandler::load() on it.')
@@ -252,7 +251,7 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working for rel 20
-    needXRD = ( args.use_scanDQ2|args.use_scanRucio ) & (args.driver!='prun')
+    needXRD = ( args.use_scanRucio ) & (args.driver!='prun')
     if needXRD:
       if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
@@ -308,19 +307,13 @@ if __name__ == "__main__":
       xAH_logger.info("\t\tReading in file(s) using SH::SampleHandler::load(dir)")
     elif args.use_inputFileList:
       xAH_logger.info("\t\tReading in file(s) containing list of files")
-      if args.use_scanDQ2:
-        xAH_logger.info("\t\tAdding samples using scanDQ2")
-        xAH_logger.warning("\033[5m\t\tUse inputRucio instead\033[0m")
-      elif args.use_scanRucio:
+      if args.use_scanRucio:
         xAH_logger.info("\t\tAdding samples using scanRucio")
       elif use_scanEOS:
         xAH_logger.info("\t\tAdding samples using scanEOS")
       else:
         xAH_logger.info("\t\tAdding using readFileList")
     else:
-      if args.use_scanDQ2:
-        xAH_logger.info("\t\tAdding samples using scanDQ2")
-        xAH_logger.warning("\033[5m\t\tUse inputRucio instead\033[0m")
       if args.use_scanRucio:
         xAH_logger.info("\t\tAdding samples using scanRucio")
       elif use_scanEOS:
@@ -332,15 +325,13 @@ if __name__ == "__main__":
       if args.use_SH:
         sh_all.load(fname)
       elif args.use_inputFileList:
-        if (args.use_scanDQ2 or use_scanEOS or args.use_scanXRD or args.use_scanRucio):
+        if (use_scanEOS or args.use_scanXRD or args.use_scanRucio):
           with open(fname, 'r') as f:
             for line in f:
               if line.startswith('#') : continue
               if not line.strip()     : continue
               line = line.strip()
-              if args.use_scanDQ2:
-                ROOT.SH.scanDQ2(sh_all, line)
-              elif args.use_scanRucio:
+              if args.use_scanRucio:
                 ROOT.SH.scanRucio(sh_all, line)
               elif use_scanEOS:
                 base = os.path.basename(line)
@@ -373,9 +364,7 @@ if __name__ == "__main__":
           if 'nEvents' in config: sh_all.get(sname).meta().setDouble(ROOT.SH.MetaFields.numEvents       ,float(config['nEvents']))
       else:
 
-        if args.use_scanDQ2:
-          ROOT.SH.scanDQ2(sh_all, fname)
-        elif args.use_scanRucio:
+        if args.use_scanRucio:
           ROOT.SH.scanRucio(sh_all, fname)
         elif use_scanEOS:
           tag=args.inputTag
@@ -398,7 +387,7 @@ if __name__ == "__main__":
 
     # print out the samples we found
     xAH_logger.info("\t%d different dataset(s) found", len(sh_all))
-        #if not args.use_scanDQ2:
+        #if not args.use_scanRucio:
         #for dataset in sh_all:
         #xAH_logger.info("\t\t%d files in %s", dataset.numFiles(), dataset.name())
     sh_all.printContent()
@@ -661,7 +650,7 @@ if __name__ == "__main__":
         f.write('Code:  https://github.com/UCATLAS/xAODAnaHelpers/tree/{0}\n'.format(__version__))
       f.write('Start: {0}\nStop:  {1}\nDelta: {2}\n\n'.format(SCRIPT_START_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME.strftime("%b %d %Y %H:%M:%S"), SCRIPT_END_TIME - SCRIPT_START_TIME))
       f.write('job runner options\n')
-      for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanDQ2', 'use_scanRucio', 'use_scanEOS', 'use_scanXRD', 'log_level', 'driver']:
+      for opt in ['input_filename', 'submit_dir', 'num_events', 'skip_events', 'force_overwrite', 'use_inputFileList', 'use_scanRucio', 'use_scanEOS', 'use_scanXRD', 'log_level', 'driver']:
         f.write('\t{0: <51} = {1}\n'.format(opt, getattr(args, opt)))
       for algConfig_str in algorithmConfiguration_string:
         f.write('{0}\n'.format(algConfig_str))
