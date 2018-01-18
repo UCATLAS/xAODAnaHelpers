@@ -121,13 +121,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "FlatBEff_70") { allOK = true; }
   if (m_operatingPt == "FlatBEff_77") { allOK = true; }
   if (m_operatingPt == "FlatBEff_85") { allOK = true; }
-#ifdef USE_CMAKE
-  // also calibrated working points (for R21)
-  if (m_operatingPt == "HybBEff_60") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_70") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_77") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_85") { allOK = true; m_getScaleFactors =  true; }
-#endif
+  if (m_operatingPt == "HybBEff_60")  { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_70")  { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_77")  { allOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_85")  { allOK = true; m_getScaleFactors =  true; }
 
   if( !allOK ) {
     ANA_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
@@ -160,8 +157,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
 
   // initialize the BJetSelectionTool
-  setToolName(m_BJetSelectTool_handle);
-  //  Configure the BJetSelectionTool
   // A few which are not configurable as of yet....
   // is there a reason to have this configurable here??...I think no (GF to self)
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",2.5));
@@ -179,7 +174,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if( m_getScaleFactors ) {
 
     // initialize the BJetEfficiencyCorrectionTool
-    setToolName(m_BJetEffSFTool_handle);
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("TaggerName",          m_taggerName));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("SystematicsStrategy", m_systematicsStrategy ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OperatingPoint",      m_operatingPtCDI));
@@ -233,7 +227,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
       std::vector<CP::SystematicSet>::iterator syst_it = m_systList.begin();
       while( syst_it != m_systList.end() ) {
         if( syst_it->name().empty() ) { syst_it++; }
-        syst_it = m_systList.erase(syst_it);
+        else { syst_it = m_systList.erase(syst_it); }
       }
     }
 

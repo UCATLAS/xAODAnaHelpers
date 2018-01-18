@@ -27,11 +27,7 @@
 #include "AsgTools/AnaToolHandle.h"
 #include "JetJvtEfficiency/IJetJvtEfficiency.h"
 #include "JetInterface/IJetModifier.h"
-#ifdef USE_CMAKE
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
-#else
-#include "xAODBTaggingEfficiency/IBTaggingSelectionTool.h"
-#endif
 
 class JetSelector : public xAH::Algorithm
 {
@@ -183,7 +179,7 @@ public:
         "Medium"  87.1-97.0%     53.4-60.9%
         "Tight"   79.9-95.6%     45.4-50.3%
         ======== ============== =============
-        
+
         See :https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/FJVTCalibration for more information.
     @endrst
   */
@@ -261,8 +257,8 @@ private:
   std::vector<CP::SystematicSet> m_systListJVT; //!
   std::vector<CP::SystematicSet> m_systListfJVT; //!
 
-  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency"};         //!
-  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency"};    //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency/JVT"}; //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency/fJVT"}; //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 
   std::string m_outputJVTPassed = "JetJVT_Passed"; //!

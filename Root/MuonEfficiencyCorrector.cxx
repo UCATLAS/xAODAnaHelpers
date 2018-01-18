@@ -123,7 +123,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // Create a ToolHandle of the PRW tool which is passed to the MuonEfficiencyScaleFactors class later
   //
   if( isMC() ){
-    if(!setToolName(m_pileup_tool_handle, "Pileup")){
+    if(!m_pileup_tool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
@@ -217,35 +217,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // several years can be configured
   //
 
-#ifndef USE_CMAKE
-  //std::vector<std::string> m_YearsList;
-  std::string tmp_years = m_Years;
-
-  // Parse all comma separated years
-  //
-  while ( tmp_years.size() > 0) {
-    size_t pos = tmp_years.find_first_of(',');
-    if ( pos == std::string::npos ) {
-      pos = tmp_years.size();
-      m_YearsList.push_back(tmp_years.substr(0, pos));
-      tmp_years.erase(0, pos);
-    } else {
-      m_YearsList.push_back(tmp_years.substr(0, pos));
-      tmp_years.erase(0, pos+1);
-    }
-  }
-
-  // If no random run number is used the list should contain only one element
-  if ( isMC() && !m_useRandomRunNumber ) {
-    ANA_MSG_WARNING("m_useRandomRunNumber is set to false! This is not recommended!!!" );
-    if ( m_YearsList.size() > 1 ) {
-      ANA_MSG_ERROR("In this case the list of years should contain only one element");
-      return EL::StatusCode::FAILURE;
-    }
-  }
-#else
   m_YearsList.push_back("all");
-#endif
 
   // Initialize vector of names
   //
@@ -273,12 +245,6 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
       }
 
       ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("MuonQuality", m_WorkingPointRecoTrig ));
-#ifndef USE_CMAKE
-      ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("Isolation", iso_trig_WP ));
-      if ( !yr.empty() ) {
-        ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("Year", yr ));
-      }
-#endif
       if ( !m_MCCampaign.empty() ) {
       ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("MC", m_MCCampaign ));
 
@@ -493,11 +459,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-#ifdef USE_CMAKE
 EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventInfo*/, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
-#else
-EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
-#endif
 {
 
   //
@@ -717,91 +679,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   // Do it only if a tool with *this* name hasn't already been used
   //
 
-#ifndef USE_CMAKE
-  std::string randYear = "2016";
-
-  if ( isMC() && m_useRandomRunNumber ) {
-
-    // Unless specifically switched off by the user,
-    // use the per-event random runNumber weighted by integrated luminosity got from CP::PileupReweightingTool::getRandomRunNumber()
-    // Source:
-    // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Generating_PRW_config_files
-    // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MCPAnalysisGuidelinesMC15#Muon_trigger_efficiency_scale_fa
-    //
-    // Use mu-dependent randomization (recommended)
-    //
-    //
-    // TEMP! Commenting this out b/c stupid AnaToolHandle does not work as it should...
-    //
-    //int randRunNumber = m_pileup_tool->getRandomRunNumber( *eventInfo, true );
-
-    int randRunNumber = m_pileup_tool_handle->getRandomRunNumber( *eventInfo, true );
-    //int randRunNumber = asg::ToolStore::get<CP::PileupReweightingTool>("Pileup")->getRandomRunNumber( *eventInfo, true );
-    int runNumber = randRunNumber;
-
-
-    if (runNumber >= 266904 && runNumber <= 284484 ) {
-
-      randYear = "2015";
-      if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
-        ANA_MSG_ERROR( "Random runNumber is 2015 but no corresponding MuonTriggerEfficiency tool has been initialized. Check ilumicalc config or extend m_Years!");
-        return EL::StatusCode::FAILURE;
-      }
-
-    } else if (runNumber >= 296939 ) {
-
-      randYear = "2016";
-      if( ! (std::find(m_YearsList.begin(), m_YearsList.end(), randYear) != m_YearsList.end()) ) {
-       ANA_MSG_ERROR( "Random runNumber is 2016 but no corresponding MuonTriggerEfficiency tool has been initialized. Check ilumicalc config or extend m_Years!");
-       return EL::StatusCode::FAILURE;
-      }
-
-    } else {
-
-      ANA_MSG_DEBUG( "Random runNumber generated outside hardcoded run number ranges");
-      ANA_MSG_DEBUG( "Setting the year as randomly chosen in the years list");
-      std::srand ( unsigned ( std::time(0) ) );
-      std::vector<std::string> randomYearsList = m_YearsList;
-      std::random_shuffle ( randomYearsList.begin(), randomYearsList.end() );
-      randYear = randomYearsList[0];
-
-    }
-
-    if ( runNumber == 0 && randYear == "2016") {
-      runNumber = m_runNumber2016;
-      ANA_MSG_DEBUG("runNumber is 0. Setting the tool to randYear 2016");
-    }
-    if ( runNumber == 0 && randYear == "2015") {
-      runNumber = m_runNumber2015;
-      ANA_MSG_DEBUG("runNumber is 0. Setting the tool to randYear 2015");
-    }
-
-
-    if( m_muTrigSF_tools[randYear]->setRunNumber( runNumber ) == CP::CorrectionCode::Error ) {
-      ANA_MSG_ERROR( "Failed to set RunNumber for MuonTriggerScaleFactors tool");
-      return EL::StatusCode::FAILURE;
-    }
-
-  }
-
-  if ( isMC() && !m_useRandomRunNumber ) {
-
-    int rn = 0;
-    if ( m_YearsList[0] == "2015" ) { rn = m_runNumber2015; }
-    else if ( m_YearsList[0] == "2016" ) { rn = m_runNumber2016; }
-    else {
-      ANA_MSG_ERROR( "Unrecognized first element in list of years");
-      return EL::StatusCode::FAILURE;
-    }
-    if ( m_muTrigSF_tools[m_YearsList[0]]->setRunNumber( rn ) == CP::CorrectionCode::Error ) {
-      ANA_MSG_ERROR("Cannot set RunNumber for MuonTriggerScaleFactors tool");
-      return EL::StatusCode::FAILURE;
-    }
-    randYear = m_YearsList[0];
-  }
-#else
   std::string randYear = "all";
-#endif
 
   if ( !isToolAlreadyUsed(m_trigEffSF_tool_names[randYear]) ) {
 
@@ -908,9 +786,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
 
            ANA_MSG_DEBUG( "===>>>");
-#ifndef USE_CMAKE
-           ANA_MSG_DEBUG( "Random year: " << randYear.c_str() );
-#endif
            ANA_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
            ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << sfName );
            ANA_MSG_DEBUG( "Trigger MC efficiency decoration: " << effName );

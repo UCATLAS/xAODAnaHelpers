@@ -3,7 +3,7 @@
 xAH FAQ
 =======
 
-This is a list of Frequently Asked Questions about |xAH| and RootCore. Feel free to suggest new entries!
+This is a list of Frequently Asked Questions about |xAH| and analysis software. Feel free to suggest new entries!
 
 How do I...
 -----------

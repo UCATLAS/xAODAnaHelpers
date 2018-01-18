@@ -27,12 +27,17 @@ class NameGenerator(object):
     return self.__repr__()
 
 
-def is_release20():
-  return int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) < 25
-
 def is_release21():
-  return not is_release20()
+  return True
 
+## Find ASG analysis type (e.g. Base, Top) from a given list.  Return first option, or else None
+def findFrameworkTypeFromList(ASG_framework_list):
+  ASG_framework_types = [ ASGtype for ASGtype in ASG_framework_list if int( os.environ.get('Analysis'+ASGtype+'_SET_UP', 0) ) ]
+
+  if len(ASG_framework_types) == 0:
+    return None
+  else:
+    return ASG_framework_types[0]
 
 class ColoredFormatter(logging.Formatter):
   RESET_SEQ = "\033[0m"

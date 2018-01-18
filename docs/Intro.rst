@@ -57,7 +57,7 @@ Here we list some useful packages that don't depend on xAH, but can be used alon
 xAODDumper
 ~~~~~~~~~~
 
-This RootCore package (developed by `Giordon Stark, UChicago <http://giordonstark.com/>`_) contains a useful python script to dump the full content of a generic xAOD file (full breakdown of available containers and attributes, basic plots, size and memory usage). See the dedicated `webpage <http://kratsg.github.io/xAODDumper/>`_ for more info.
+This python package (developed by `Giordon Stark, UChicago <http://giordonstark.com/>`_) contains a useful python script to dump the full content of a generic xAOD file (full breakdown of available containers and attributes, basic plots, size and memory usage). See the dedicated `webpage <http://kratsg.github.io/xAODDumper/>`_ for more info.
 
 goodruns
 ~~~~~~~~

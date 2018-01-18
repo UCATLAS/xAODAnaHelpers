@@ -161,24 +161,16 @@ class BasicEventSelection : public xAH::Algorithm
     /** Check for duplicated events in MC */
     bool m_checkDuplicatesMC = false;
 
-    /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
-    std::string m_trigDecTool_name{"xAH_TDT"};
-
   private:
 
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
 
     // tools
-    asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle{"GoodRunsListSelectionTool"};                              //!
-    asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool"};                      //!
-    asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle{"TrigConf::xAODConfigTool"};                      //!
-    /**
-      @rst
-        The name of this tool (if needs to be changed) can be set with :cpp:member:`BasicEventSelection::m_trigDecTool_name`.
-      @endrst
-    */
-    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle{"Trig::TrigDecisionTool"};                         //!
-    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool"}; //!
+    asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this}; //!
+    asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle          {"CP::PileupReweightingTool/Pileup"                                            }; //!
+    asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle         {"TrigConf::xAODConfigTool/xAODConfigTool"                        , this}; //!
+    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle          {"Trig::TrigDecisionTool/TrigDecisionTool"                                     }; //!
+    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool", this}; //!
 
     int m_eventCounter;     //!
 

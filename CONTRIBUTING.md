@@ -5,18 +5,8 @@ xAODAnaHelpers is a volunteer effort. We encourage you to pitch in. If you're a 
 [Please file an issue.](https://github.com/UCATLAS/xAODAnaHelpers/issues/new) When submitting a bug report, we need as much information as possible to duplicate the issue.
 
 At a minimum, it would be helpful to know...
-* the AnalysisBase release you are using
-
-  ```
-  rc get_release
-  ```
-
+* the AnalysisBase/AnalysisTop release you are using
 * the packages you are using
-
-  ```
-  rc version | sed '/^atlasoff/d'
-  ```
-
 * where you ran your script. Often, this might be UChicago's tier3 or lxplus - location may be important!
 * how your ran your script
   * if you are using our `xAH_run.py` macro, upload the json or python config file to [gist](https://gist.github.com) and give us the link, as well as the entire command used to run it
@@ -37,7 +27,7 @@ When submitting a pull request, we need as much information as possible about th
 
 If you have a question about how to use xAODAnaHelpers, please send an email to the e-group `atlas-sw-xAODAnaHelpersFW`.
 
-If you have a question about using RootCore, please send an email to the e-group `atlas-sw-analysis-forum@cern.ch`.
+If you have a question about using Analysis Software in ATLAS, please send an email to the e-group `atlas-sw-analysis-forum@cern.ch`.
 
 # Thanks for reading
 

@@ -18,11 +18,7 @@
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
 #include "IsolationSelection/IIsolationSelectionTool.h"
-#ifdef USE_CMAKE
 #include "MuonAnalysisInterfaces/IMuonSelectionTool.h"
-#else
-#include "MuonSelectorTools/IMuonSelectionTool.h"
-#endif
 #include "TriggerMatchingTool/IMatchingTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
@@ -107,9 +103,6 @@ public:
   /// @brief Recommended threshold for muon triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   double         m_minDeltaR = 0.1;
 
-  /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
-  std::string m_trigDecTool_name{"xAH_TDT"};
-
 private:
 
   int            m_muonQuality; //!
@@ -150,19 +143,14 @@ private:
   std::vector<std::string>            m_diMuTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diMuTrigChains */
 
   // tools
-  asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle{"CP::IsolationSelectionTool"};   //!
+  asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this}; //!
   // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
-  CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr};                               //!
-  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle{"CP::MuonSelectionTool"};             //!
-  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle{"Trig::MatchingTool"};                //!
-  /**
-    @rst
-      The name of this tool (if needs to be changed) can be set with :cpp:member:`MuonSelector::m_trigDecTool_name`.
-    @endrst
-  */
-  asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle{"Trig::TrigDecisionTool"};                  //!
+  CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr}; //!
+  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle     {"CP::MuonSelectionTool/MuonSelectionTool"          , this}; //!
+  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle     {"Trig::MatchingTool/MatchingTool"                  , this}; //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; //!
 
-  /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing 
+  /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true; //!
 
   // variables that don't get filled at submission time should be

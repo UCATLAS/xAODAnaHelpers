@@ -1,6 +1,6 @@
-# provide xAH on top of the AnalysisBase image
-#ARG ABV_CM
-FROM atlas/analysisbase:$ABV_CM
+# provide xAH on top of the AnalysisBase/AnalysisTop image
+#ARG RELEASE
+FROM atlas/$DOCKER_IMG
 
 # change TMPDIR because analysisbase image problems writing to /tmp
 ENV TMPDIR=/workarea/tmp/

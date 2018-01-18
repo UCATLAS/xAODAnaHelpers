@@ -120,6 +120,7 @@ EL::StatusCode OverlapRemover :: initialize ()
   m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
+  
 
   if ( m_inContainerName_Jets.empty() ) {
     ANA_MSG_ERROR( "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
@@ -130,18 +131,19 @@ EL::StatusCode OverlapRemover :: initialize ()
   if ( !m_inContainerName_Muons.empty() )     { m_useMuons     = true; }
   if ( !m_inContainerName_Taus.empty() )      { m_useTaus      = true; }
   if ( !m_inContainerName_Photons.empty() )   { m_usePhotons   = true; }
-
+  
   m_outAuxContainerName_Electrons   = m_outContainerName_Electrons + "Aux."; // the period is very important!
   m_outAuxContainerName_Muons       = m_outContainerName_Muons + "Aux.";     // the period is very important!
   m_outAuxContainerName_Jets        = m_outContainerName_Jets + "Aux.";      // the period is very important!
   m_outAuxContainerName_Photons     = m_outContainerName_Photons + "Aux.";   // the period is very important!
   m_outAuxContainerName_Taus        = m_outContainerName_Taus + "Aux.";      // the period is very important!
 
+  
   if ( setCounters() == EL::StatusCode::FAILURE ) {
     ANA_MSG_ERROR( "Failed to properly set event/object counters. Exiting." );
     return EL::StatusCode::FAILURE;
   }
-
+  
   // initialize ASG overlap removal tool
   const std::string selected_label = ( m_useSelected ) ? "passSel" : "";  // set with decoration flag you use for selected objects if want to consider only selected objects in OR, otherwise it will perform OR on all objects
 
@@ -164,7 +166,7 @@ EL::StatusCode OverlapRemover :: initialize ()
   ANA_CHECK( ORUtils::recommendedTools(orFlags, m_ORToolbox));
   ANA_CHECK( m_ORToolbox.initialize());
   ANA_MSG_INFO( "OverlapRemover Interface succesfully initialized!" );
-
+  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -280,7 +282,6 @@ EL::StatusCode OverlapRemover :: execute ()
     executeOR(inElectrons, inMuons, inJets, inPhotons, inTaus,  PHSYST, systNames_photon);
 
   }
-
   // **************** //
   //       Taus       //
   // **************** //
@@ -509,7 +510,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       // do the actual OR
       //
       ANA_MSG_DEBUG(  "Calling removeOverlaps()");
-      ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
+      ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons)); // This line raises an exception
       ANA_MSG_DEBUG(  "Done Calling removeOverlaps()");
 
       std::string ORdecor("passOR");

@@ -142,7 +142,7 @@ namespace HelperFunctions {
 
 
   // miscellaneous
-  bool sort_pt(xAOD::IParticle* partA, xAOD::IParticle* partB);
+  bool sort_pt(const xAOD::IParticle* partA, const xAOD::IParticle* partB);
 
   /**
     @brief Get a list of systematics

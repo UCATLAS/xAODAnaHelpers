@@ -298,7 +298,6 @@ EL::StatusCode ElectronSelector :: initialize ()
   //
   // *************************************
 
-  setToolName(m_isolationSelectionTool_handle);
   // Do this only for the first WP in the list
   ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
   ANA_CHECK( m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()));
@@ -345,7 +344,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   //     do not initialise if there are no input trigger chains
   if(  !( m_singleElTrigChains.empty() && m_diElTrigChains.empty() ) ) {
     // Grab the TrigDecTool from the ToolStore
-    if(!setToolName(m_trigDecTool_handle, m_trigDecTool_name)){
+    if(!m_trigDecTool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
       return EL::StatusCode::FAILURE;
     }
@@ -353,7 +352,6 @@ EL::StatusCode ElectronSelector :: initialize ()
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
     //  everything went fine, let's initialise the tool!
-    setToolName(m_trigElectronMatchTool_handle);
     ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
     ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
     ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
@@ -995,7 +993,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       typedef std::multimap< std::string, AsgElectronLikelihoodTool* > LHToolsMap;
       LHToolsMap myLHTools = m_el_LH_PIDManager->getValidWPTools();
 
-      if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( *electron ) ) ) {
+      if ( m_doLHPIDcut && !( ( myLHTools.find( m_LHOperatingPoint )->second )->accept( electron ) ) ) {
         ANA_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
         return 0;
       }
@@ -1004,8 +1002,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
         const std::string decorWP =  "LH" + it.first;
         ANA_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
-        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << " ? " << static_cast<int>( it.second->accept( *electron ) ) );
-        electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
+        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << " ? " << static_cast<int>( it.second->accept( electron ) ) );
+        electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( electron ) );
 
       }
 

@@ -70,6 +70,14 @@ EL::StatusCode TrigMatcher :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  // Grab the TrigDecTool from the ToolStore
+  if(!m_trigDecTool_handle.isUserConfigured()){
+    ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+    return EL::StatusCode::FAILURE;
+  }
+  ANA_CHECK( m_trigDecTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+
   // ***************************************
   //
   // Initialise Trig::TrigMatchingTool
@@ -85,8 +93,8 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   //  everything went fine, let's initialise the tool!
   //
-  m_trigMatchTool = new Trig::MatchingTool("TrigMatchTool_"+m_name);
-  ANA_CHECK( m_trigMatchTool->setProperty( "OutputLevel", msg().level()) );
+  ANA_CHECK( m_trigMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+  ANA_CHECK( m_trigMatchTool_handle.retrieve() );
 
   // **********************************************************************************************
 
@@ -152,19 +160,11 @@ EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* 
       for ( auto const &chain : m_trigChainsList ) {
 	ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
 
-	bool matched = m_trigMatchTool->match( *particle, chain, 0.07 );
+	bool matched = m_trigMatchTool_handle->match( *particle, chain, 0.07 );
 	ANA_MSG_DEBUG( "\t\t result = " << matched );
 	if(matched) isTrigMatchedDecor( *particle ).push_back( chain );
       }
     }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode TrigMatcher :: finalize ()
-{
-  ANA_MSG_INFO( "Cleaning up...");
-  if(m_trigMatchTool) { delete m_trigMatchTool; m_trigMatchTool=nullptr; }
 
   return EL::StatusCode::SUCCESS;
 }

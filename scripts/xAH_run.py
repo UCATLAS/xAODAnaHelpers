@@ -93,6 +93,7 @@ parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarde
 parser.add_argument('--inputDQ2', dest='use_scanDQ2', action='store_true', help='[DEPRECATION] Use inputRucio instead.')
 parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', help='If enabled, will search using Rucio. Can be combined with `--inputList`.')
 parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
+parser.add_argument('--inputSH', action='store_true', dest='use_SH', default=False, help='If enabled, will assume the input file is a directory of ROOT files of saved SH instances to use. Call SH::SampleHandler::load() on it.')
 parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
 parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
 parser.add_argument('--stats', action='store_true', dest='variable_stats', default=False, help='If enabled, will variable usage statistics.')
@@ -100,7 +101,7 @@ parser.add_argument('--stats', action='store_true', dest='variable_stats', defau
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
 drivers_common.add_argument('--optSubmitFlags', metavar='', type=str, required=False, default=None, help='the name of the option for supplying extra submit parameters to batch systems')
-drivers_common.add_argument('--optEventsPerWorker', metavar='', type=float, required=False, default=None, help='the name of the option for selecting the number of events per batch job.  (only BatchDriver and derived drivers). warning: this option will be ignored unless you have called SH::scanNEvents first.')  # TODO: add a check so we can run SH::scanNEvents to spread workload more evenly
+drivers_common.add_argument('--optEventsPerWorker', metavar='', type=float, required=False, default=None, help='the name of the option for selecting the number of events per batch job.  (only BatchDriver and derived drivers). warning: this option will be ignored unless you have called SH::scanNEvents first.')
 drivers_common.add_argument('--optFilesPerWorker', metavar='', type=float, required=False, default=None, help='the name of the option for selecting the number of files per batch job.  (only BatchDriver and derived drivers).')
 drivers_common.add_argument('--optDisableMetrics', metavar='', type=int, required=False, default=None, help='the option to turn off collection of performance data')
 drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, required=False, default=None, help='the option to turn on printing of i/o statistics at the end of each file. warning: this is not supported for all drivers.')
@@ -175,7 +176,7 @@ prun.add_argument('--optGridDestSE',           metavar='', type=str, required=Fa
 prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridNGBPerJob',        metavar='', type=str, required=False, default=2)
+prun.add_argument('--optGridNGBPerJob',        metavar='', type=str, required=False, default='2')
 prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridNFiles',           metavar='', type=float, required=False, default=None)
@@ -258,18 +259,19 @@ if __name__ == "__main__":
 
     use_scanEOS = (args.use_scanEOS)
 
+
     # at this point, we should import ROOT and do stuff
     import ROOT
-    if xAODAnaHelpers.utils.is_release20():
-      xAH_logger.info("loading packages")
-      ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
-    else:
-      # env var that tells us if CMAKE was setup
-      cmake_setup = 'AnalysisBase_SET_UP'
-      # architecture used for CMake
-      arch = os.environ.get('AnalysisBase_PLATFORM', os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>')))
-      if not int(os.environ.get(cmake_setup, 0)):
-        raise OSError("It doesn't seem like '{0:s}' exists. Did you set up your CMake environment correctly? (Hint: source 'build/{1:s}/setup.sh)".format(cmake_setup, arch))
+    ## Determine which ASG framework using env var for CMAKE setup
+    ASG_framework_list = ['Base', 'Top']
+    ASG_framework_type = xAODAnaHelpers.utils.findFrameworkTypeFromList(ASG_framework_list)
+    if( ASG_framework_type == None ):
+      arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
+      raise OSError("It doesn't seem like the CMake environment is setup correctly. (Hint: source 'build/{0:s}/setup.sh)".format(arch))
+
+    # architecture used for CMake
+    arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM')
+
     # Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore()
 
@@ -287,8 +289,6 @@ if __name__ == "__main__":
     elif args.driver == 'condor':
       if getattr(ROOT.EL, 'CondorDriver') is None:
         raise KeyError('Cannot load the Condor driver from EventLoop. Did you not compile it?')
-      if not os.path.isfile(os.path.expandvars('$ROOTCOREBIN/../RootCore.par')) and xAODAnaHelpers.utils.is_release20():
-        raise IOError('I cannot find RootCore.par. Make sure you run `rc make_par` before running xAH_run.py.')
     elif args.driver == 'lsf':
       if getattr(ROOT.EL, 'LSFDriver') is None:
         raise KeyError('Cannot load the LSF driver from EventLoop. Did you not compile it?')
@@ -304,7 +304,9 @@ if __name__ == "__main__":
     sh_all = ROOT.SH.SampleHandler()
 
     # this portion is just to output for verbosity
-    if args.use_inputFileList:
+    if args.use_SH:
+      xAH_logger.info("\t\tReading in file(s) using SH::SampleHandler::load(dir)")
+    elif args.use_inputFileList:
       xAH_logger.info("\t\tReading in file(s) containing list of files")
       if args.use_scanDQ2:
         xAH_logger.info("\t\tAdding samples using scanDQ2")
@@ -327,7 +329,9 @@ if __name__ == "__main__":
         xAH_logger.info("\t\tAdding samples using scanDir")
 
     for fname in args.input_filename:
-      if args.use_inputFileList:
+      if args.use_SH:
+        sh_all.load(fname)
+      elif args.use_inputFileList:
         if (args.use_scanDQ2 or use_scanEOS or args.use_scanXRD or args.use_scanRucio):
           with open(fname, 'r') as f:
             for line in f:
@@ -403,6 +407,10 @@ if __name__ == "__main__":
       xAH_logger.info("No datasets found. Exiting.")
       sys.exit(0)
 
+    if args.optEventsPerWorker is not None:
+      xAH_logger.info("Splitting up events onto each worker. optEventsPerWorker was set!")
+      ROOT.SH.scanNEvents(sh_all)
+
     # set the name of the tree in our files (should be configurable)
     sh_all.setMetaString( "nc_tree", args.treeName)
     #sh_all.setMetaString( "nc_excludeSite", "ANALY_RAL_SL6");
@@ -410,8 +418,8 @@ if __name__ == "__main__":
 
     # This is a fix for running on the grid with release 21.2.X
     if int(os.environ.get('ROOTCORE_RELEASE_SERIES', 0)) >= 25:
-      xAH_logger.info("Setting nc_cmtConfig to {0:s}".format(os.getenv("AnalysisBase_PLATFORM")))
-      sh_all.setMetaString("nc_cmtConfig", os.getenv("AnalysisBase_PLATFORM"))
+      xAH_logger.info("Setting nc_cmtConfig to {0:s}".format(os.getenv('Analysis'+ASG_framework_type+'_PLATFORM')))
+      sh_all.setMetaString("nc_cmtConfig", os.getenv('Analysis'+ASG_framework_type+'_PLATFORM'))
 
     # read susy meta data (should be configurable)
     path_metadata=ROOT.PathResolverFindCalibDirectory("xAODAnaHelpers/metadata")
