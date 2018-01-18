@@ -257,6 +257,17 @@ EL::StatusCode METConstructor :: execute ()
      }
    }
 
+   //add the syst for tau
+   if(!m_runNominal && !m_tauSystematics.empty()){
+     std::vector<std::string>* sysTausNames(nullptr);
+     ANA_CHECK( HelperFunctions::retrieve(sysTausNames, m_tauSystematics, 0, m_store, msg()));
+
+     for ( auto systName : *sysTausNames ) {
+       if (systName != "" && !(std::find(sysList.begin(), sysList.end(), CP::SystematicSet(systName)) != sysList.end())) sysList.push_back(CP::SystematicSet(systName));
+       ANA_MSG_DEBUG("tau syst added is = "<< systName);
+     }
+   }
+
    //add the syst for photons
    if(!m_runNominal && !m_phoSystematics.empty()){
      std::vector<std::string>* sysPhotonsNames(nullptr);
@@ -364,8 +375,6 @@ EL::StatusCode METConstructor :: execute ()
      //////////////////////
      /////////  TAUS  /////
      //////////////////////
-
-     ///// NOTE: for taus we are not applying systematics! since "m_inputTaus.Data()+sysListItrString" is not in Tstore!
 
      if( m_inputTaus.Length() > 0  && m_store->contains<xAOD::TauJetContainer>(m_inputTaus.Data()+sysListItrString ) ) {
         const xAOD::TauJetContainer* tauCont(0);

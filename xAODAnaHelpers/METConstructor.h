@@ -102,6 +102,11 @@ public:
    */
   std::string m_muonSystematics = "";
   /** @rst
+        Name of tau systematics vector from  :cpp:class:`~TauCalibrator`.
+      @endrst
+   */
+  std::string m_tauSystematics = "";
+  /** @rst
         Name of photon systematics vector from :cpp:class:`~PhotonCalibrator`.
       @endrst
    */
