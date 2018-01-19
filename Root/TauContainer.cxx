@@ -236,7 +236,7 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
     safeFill<char, int, xAOD::TauJet>(tau, isJetBDTTightAcc, m_isJetBDTTight, -1);
     
     static SG::AuxElement::Accessor<char> JetBDTScoreAcc ("JetBDTScore");
-    safeFill<char, float, xAOD::TauJet>(tau, JetBDTScoreAcc, m_JetBDTScore, -1);
+    safeFill<char, float, xAOD::TauJet>(tau, JetBDTScoreAcc, m_JetBDTScore, -999.);
 
   }
   
