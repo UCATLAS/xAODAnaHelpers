@@ -18,6 +18,8 @@ public:
   std::string m_inContainerName = "";
   std::string m_outContainerName = "";
 
+  std::string m_RecommendationTag = "";
+  
   bool m_applyMVATES = false;
   bool m_applyCombinedTES = false;
   bool m_setAFII = false;
