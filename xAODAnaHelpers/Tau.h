@@ -22,6 +22,8 @@ namespace xAH {
     int               isJetBDTLoose;
     int               isJetBDTMedium;
     int               isJetBDTTight;
+    
+    float             JetBDTScore;
   };
 
 }//xAH
