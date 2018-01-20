@@ -127,6 +127,10 @@ EL::StatusCode TauCalibrator :: initialize ()
   //
   // ************************************************
 
+  if (!m_RecommendationTag.empty()) ANA_CHECK(m_tauSmearingTool_handle.setProperty("RecommendationTag",m_RecommendationTag));
+  ANA_CHECK(m_tauSmearingTool_handle.setProperty("ApplyMVATES",m_applyMVATES));
+  ANA_CHECK(m_tauSmearingTool_handle.setProperty("ApplyCombinedTES",m_applyCombinedTES));
+
   ANA_CHECK(m_tauSmearingTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSmearingTool_handle);
 

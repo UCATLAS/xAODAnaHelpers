@@ -27,6 +27,8 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
     m_isJetBDTLoose     = new  std::vector<int>   ();
     m_isJetBDTMedium    = new  std::vector<int>   ();
     m_isJetBDTTight     = new  std::vector<int>   ();
+    
+    m_JetBDTScore     = new  std::vector<float>   ();
   }
 
 }
@@ -51,6 +53,8 @@ TauContainer::~TauContainer()
     delete m_isJetBDTLoose;
     delete m_isJetBDTMedium;
     delete m_isJetBDTTight;
+    
+    delete m_JetBDTScore;
   }
 
 }
@@ -77,6 +81,8 @@ void TauContainer::setTree(TTree *tree)
     connectBranch<int>    (tree, "isJetBDTLoose",       &m_isJetBDTLoose);
     connectBranch<int>    (tree, "isJetBDTMedium",      &m_isJetBDTMedium);
     connectBranch<int>    (tree, "isJetBDTTight",       &m_isJetBDTTight);
+    
+    connectBranch<float>  (tree, "JetBDTScore",       &m_JetBDTScore);
   }
 }
 
@@ -102,6 +108,7 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
     tau.isJetBDTLoose     =   m_isJetBDTLoose     ->at(idx);
     tau.isJetBDTMedium    =   m_isJetBDTMedium    ->at(idx);
     tau.isJetBDTTight     =   m_isJetBDTTight     ->at(idx);
+    tau.JetBDTScore    =   m_JetBDTScore    ->at(idx);
   }
 
 }
@@ -128,10 +135,11 @@ void TauContainer::setBranches(TTree *tree)
   }
   
   if ( m_infoSwitch.m_JetID ){
-    setBranch<int>  (tree,"isJetBDTVeryLoose", m_isJetBDTVeryLoose);
-    setBranch<int>  (tree,"isJetBDTLoose", m_isJetBDTLoose);
-    setBranch<int>  (tree,"isJetBDTMedium", m_isJetBDTMedium);
-    setBranch<int>  (tree,"isJetBDTTight", m_isJetBDTTight);
+    setBranch<int>   (tree,"isJetBDTVeryLoose", m_isJetBDTVeryLoose);
+    setBranch<int>   (tree,"isJetBDTLoose", m_isJetBDTLoose);
+    setBranch<int>   (tree,"isJetBDTMedium", m_isJetBDTMedium);
+    setBranch<int>   (tree,"isJetBDTTight", m_isJetBDTTight);
+    setBranch<float> (tree,"JetBDTScore", m_JetBDTScore);
 
   }
   
@@ -161,6 +169,7 @@ void TauContainer::clear()
     m_isJetBDTLoose->clear();
     m_isJetBDTMedium->clear();
     m_isJetBDTTight->clear();
+    m_JetBDTScore->clear();
   }
 
 }
@@ -225,6 +234,9 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
 
     static SG::AuxElement::Accessor<char> isJetBDTTightAcc ("isJetBDTTight");
     safeFill<char, int, xAOD::TauJet>(tau, isJetBDTTightAcc, m_isJetBDTTight, -1);
+    
+    static SG::AuxElement::Accessor<char> JetBDTScoreAcc ("JetBDTScore");
+    safeFill<char, float, xAOD::TauJet>(tau, JetBDTScoreAcc, m_JetBDTScore, -999.);
 
   }
   

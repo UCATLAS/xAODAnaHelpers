@@ -47,6 +47,8 @@ namespace xAH {
       std::vector<int>   *m_isJetBDTMedium;
       std::vector<int>   *m_isJetBDTTight;
     
+      std::vector<float>   *m_JetBDTScore;
+
     };
 }
 #endif // xAODAnaHelpers_TauContainer_H
