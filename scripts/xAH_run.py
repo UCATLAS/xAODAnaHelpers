@@ -195,6 +195,7 @@ prun.add_argument('--optOfficial',             metavar='', type=int, required=Fa
 prun.add_argument('--optVoms',                 metavar='', type=int, required=False, default=None)
 # the following is not technically supported by Job.h but it is a valid option for prun, emailed pathelp about it
 prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[2]%.%in:name[3]%.%in:name[6]%.%in:name[7]%_xAH')
+prun.add_argument('--singleTask',              action='store_true',  required= False, default=False, help='Submit all input datasets under a single task.')
 
 # define arguments for condor driver
 condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true', help='the name of the option for supplying extra parameters for condor systems')
@@ -325,25 +326,33 @@ if __name__ == "__main__":
       if args.use_SH:
         sh_all.load(fname)
       elif args.use_inputFileList:
-        if (use_scanEOS or args.use_scanXRD or args.use_scanRucio):
-          with open(fname, 'r') as f:
-            for line in f:
-              if line.startswith('#') : continue
-              if not line.strip()     : continue
-              line = line.strip()
-              if args.use_scanRucio:
-                ROOT.SH.scanRucio(sh_all, line)
-              elif use_scanEOS:
-                base = os.path.basename(line)
-                eosDataSet = os.path.dirname(line)
-                ROOT.SH.ScanDir().sampleDepth(0).samplePattern(eosDataSet).scanEOS(sh_all,base)
-              elif args.use_scanXRD:
-                # assume format like root://someserver//path/to/files/*pattern*.root
-                server, path = line.replace('root://', '').split('//')
-                sh_list = ROOT.SH.DiskListXRD(server, os.path.join('/', path), True)
-                ROOT.SH.ScanDir().scan(sh_all, sh_list)
-              else:
-                raise Exception("What just happened?")
+        # Read the filelist
+        filelist=[]
+        with open(fname, 'r') as f:
+          for line in f:
+            if line.startswith('#') : continue
+            if not line.strip()     : continue
+            line = line.strip()
+            filelist.append(line)
+        # Iterate over the filelist and add each item to the SampleHandler
+        if use_scanEOS or args.use_scanXRD or (args.use_scanRucio and not args.singleTask):
+          for line in filelist:
+            if args.use_scanRucio:
+              ROOT.SH.scanRucio(sh_all, line)
+            elif use_scanEOS:
+              base = os.path.basename(line)
+              eosDataSet = os.path.dirname(line)
+              ROOT.SH.ScanDir().sampleDepth(0).samplePattern(eosDataSet).scanEOS(sh_all,base)
+            elif args.use_scanXRD:
+              # assume format like root://someserver//path/to/files/*pattern*.root
+              server, path = line.replace('root://', '').split('//')
+              sh_list = ROOT.SH.DiskListXRD(server, os.path.join('/', path), True)
+              ROOT.SH.ScanDir().scan(sh_all, sh_list)
+            else:
+              raise Exception("What just happened?")
+        elif args.use_scanRucio and args.singleTask:
+          ROOT.xAH.addRucio(sh_all,os.path.basename(fname),
+                            ','.join(filelist))
         else:
           # Sample name
           sname='.'.join(os.path.basename(fname).split('.')[:-1]) # input filelist name without extension
@@ -546,7 +555,7 @@ if __name__ == "__main__":
       driver = ROOT.EL.PrunDriver()
       for opt, t in map(lambda x: (x.dest, x.type), prun._actions):
         if getattr(args, opt) is None: continue  # skip if not set
-        if opt in ['help', 'optGridOutputSampleName', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
+        if opt in ['help', 'optGridOutputSampleName', 'singleTask', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
         if t in [float]:
           setter = 'setDouble'
         elif t in [int]:
