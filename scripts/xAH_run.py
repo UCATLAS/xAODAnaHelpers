@@ -259,6 +259,10 @@ if __name__ == "__main__":
 
     use_scanEOS = (args.use_scanEOS)
 
+    # singleTask is only supported with rucio and input filelists
+    if args.singleTask and (not args.use_inputFileList and not args.use_scanRucio):
+      xAH_logger.warning("--singleTask requires both --inputList and --inputRucio to have an effect")
+
 
     # at this point, we should import ROOT and do stuff
     import ROOT
