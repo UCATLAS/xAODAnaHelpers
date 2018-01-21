@@ -214,45 +214,27 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // 3.
   // Initialise the CP::MuonTriggerScaleFactors tool
-  // several years can be configured
   //
 
-  m_YearsList.push_back("all");
+  m_trigEffSF_tool_name = "MuonTriggerScaleFactors_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
 
-  // Initialize vector of names
-  //
-  for(auto yr : m_YearsList) {
-    m_trigEffSF_tool_names[yr] = "MuonTriggerScaleFactors_" + yr + "_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-  }
+  std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
 
-  // Loop over all years and initialize corresponding tools
-  //
-  for(auto yr : m_YearsList) {
+  ANA_MSG_INFO( " Initialising CP::MuonTriggerScaleFactors for TRIGGER efficiency SF..." );
 
-    std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
+  ANA_CHECK( checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name));
+  if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_name ) ) {
+    m_muTrigSF_tool = asg::ToolStore::get<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_name );
+  } else {
+    m_muTrigSF_tool = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_name );
 
-    ANA_MSG_INFO( " Initialising CP::MuonTriggerScaleFactors for TRIGGER efficiency SF..." );
-
-    ANA_CHECK( checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_names[yr]));
-    if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_names[yr] ) ) {
-      m_muTrigSF_tools[yr] = asg::ToolStore::get<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_names[yr] );
-    } else {
-      m_muTrigSF_tools[yr] = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_names[yr] );
-
-      if ( m_AllowZeroSF ) {
-    	ANA_MSG_WARNING( "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
-        ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("AllowZeroSF", m_AllowZeroSF ));
-      }
-
-      ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("MuonQuality", m_WorkingPointRecoTrig ));
-      if ( !m_MCCampaign.empty() ) {
-      ANA_CHECK( m_muTrigSF_tools[yr]->setProperty("MC", m_MCCampaign ));
-
-      }
-      ANA_CHECK( m_muTrigSF_tools[yr]->initialize());
-
+    if ( m_AllowZeroSF ) {
+      ANA_MSG_WARNING( "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
+      ANA_CHECK( m_muTrigSF_tool->setProperty("AllowZeroSF", m_AllowZeroSF ));
     }
 
+    ANA_CHECK( m_muTrigSF_tool->setProperty("MuonQuality", m_WorkingPointRecoTrig ));
+    ANA_CHECK( m_muTrigSF_tool->initialize());
   }
 
   std::string token;
@@ -266,13 +248,13 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // Add the chosen WP to the string labelling the output syst. names container
   m_outputSystNamesTrig = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
 
-  CP::SystematicSet affectSystsTrig = m_muTrigSF_tools[m_YearsList[0]]->affectingSystematics();
+  CP::SystematicSet affectSystsTrig = m_muTrigSF_tool->affectingSystematics();
   for ( const auto& syst_it : affectSystsTrig ) { ANA_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: " << syst_it.name()); }
   //
   // Make a list of systematics to be used, based on configuration input
   // Use HelperFunctions::getListofSystematics() for this!
   //
-  const CP::SystematicSet recSystsTrig = m_muTrigSF_tools[m_YearsList[0]]->recommendedSystematics();
+  const CP::SystematicSet recSystsTrig = m_muTrigSF_tool->recommendedSystematics();
   m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, msg() );
 
   ANA_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
@@ -678,10 +660,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*e
 
   // Do it only if a tool with *this* name hasn't already been used
   //
-
-  std::string randYear = "all";
-
-  if ( !isToolAlreadyUsed(m_trigEffSF_tool_names[randYear]) ) {
+  if ( !isToolAlreadyUsed(m_trigEffSF_tool_name) ) {
 
     for ( const auto& trig_it : m_SingleMuTriggers ) {
 
@@ -714,7 +693,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*e
 
         // apply syst
         //
-        if ( m_muTrigSF_tools[randYear]->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+        if ( m_muTrigSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
           ANA_MSG_ERROR( "Failed to configure MuonTriggerScaleFactors for trigger " << trig_it << " systematic " << syst_it.name());
           return EL::StatusCode::FAILURE;
         }
@@ -750,7 +729,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*e
            std::string full_scan_chain = "HLT_mu8noL1";
 
            double triggerMCEff(0.0); // tool wants a double
-           if ( m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerMCEff, trig_it, !isMC() ) != CP::CorrectionCode::Ok ) {
+           if ( m_muTrigSF_tool->getTriggerEfficiency( *mu_itr, triggerMCEff, trig_it, !isMC() ) != CP::CorrectionCode::Ok ) {
              ANA_MSG_WARNING( "Problem in getTriggerEfficiency - single muon trigger(s)");
              triggerMCEff = 0.0;
            }
@@ -762,7 +741,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*e
            //
            double triggerDataEff(0.0); // tool wants a double
            if ( trig_it == full_scan_chain ) {
-             if ( m_muTrigSF_tools[randYear]->getTriggerEfficiency( *mu_itr, triggerDataEff, trig_it, isMC() ) != CP::CorrectionCode::Ok ) {
+             if ( m_muTrigSF_tool->getTriggerEfficiency( *mu_itr, triggerDataEff, trig_it, isMC() ) != CP::CorrectionCode::Ok ) {
                ANA_MSG_WARNING( "Problem in getTriggerEfficiency - single muon trigger(s)");
                triggerDataEff = 0.0;
              }
@@ -770,7 +749,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*e
 
            double triggerEffSF(1.0); // tool wants a double
            if ( trig_it != full_scan_chain ) {
-             if ( m_muTrigSF_tools[randYear]->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, trig_it ) != CP::CorrectionCode::Ok ) {
+             if ( m_muTrigSF_tool->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, trig_it ) != CP::CorrectionCode::Ok ) {
                ANA_MSG_WARNING( "Problem in getTriggerScaleFactor - single muon trigger(s)");
                triggerEffSF = 1.0;
              }

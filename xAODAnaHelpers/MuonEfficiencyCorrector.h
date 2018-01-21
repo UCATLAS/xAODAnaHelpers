@@ -45,17 +45,10 @@ public:
   // Iso efficiency SF
   std::string   m_WorkingPointIso = "LooseTrackOnly";
 
-  // Trigger efficiency SF
-  int           m_runNumber2015 = 276329;
-  int           m_runNumber2016 = 300345;
-  bool          m_useRandomRunNumber = true;
   /// @brief Use with caution!!!
   bool          m_AllowZeroSF = false;
   std::string   m_WorkingPointRecoTrig = "Loose";
   std::string   m_WorkingPointIsoTrig = "LooseTrackOnly";
-  /// @brief comma-separated list of years
-  std::string   m_Years = "2016";
-  std::string   m_MCCampaign = "";
   /// @brief list of comma-separated single-mu trigger corrections. Individual legs of di-mu menus can be parsed
   std::string   m_MuTrigLegs = "HLT_mu26_imedium";
 
@@ -103,9 +96,8 @@ private:
   std::string m_recoEffSF_tool_name;                                       //!
   CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                //!
   std::string m_isoEffSF_tool_name;                                        //!
-  std::map<std::string, CP::MuonTriggerScaleFactors*>  m_muTrigSF_tools;   //!
-  std::map<std::string, std::string> m_trigEffSF_tool_names;               //!
-  std::vector<std::string> m_YearsList;                                    //!
+  CP::MuonTriggerScaleFactors* m_muTrigSF_tool = nullptr;                  //!
+  std::string m_trigEffSF_tool_name;                                       //!
   CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool = nullptr;               //!
   std::string m_TTVAEffSF_tool_name;                                       //!
   std::vector<std::string> m_SingleMuTriggers;                             //!
