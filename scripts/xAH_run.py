@@ -252,7 +252,7 @@ if __name__ == "__main__":
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
 
     # they will need it to get it working for rel 20
-    needXRD = ( args.use_scanRucio ) & (args.driver!='prun')
+    needXRD = ( args.use_scanRucio ) and (args.driver!='prun')
     if needXRD:
       if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
         raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
@@ -260,7 +260,8 @@ if __name__ == "__main__":
     use_scanEOS = (args.use_scanEOS)
 
     # singleTask is only supported with rucio and input filelists
-    if args.singleTask and (not args.use_inputFileList and not args.use_scanRucio):
+    singleTask = (args.driver=='prun') and (args.singleTask)
+    if singleTask and (not args.use_inputFileList and not args.use_scanRucio):
       xAH_logger.warning("--singleTask requires both --inputList and --inputRucio to have an effect")
 
 
@@ -339,7 +340,7 @@ if __name__ == "__main__":
             line = line.strip()
             filelist.append(line)
         # Iterate over the filelist and add each item to the SampleHandler
-        if use_scanEOS or args.use_scanXRD or (args.use_scanRucio and not args.singleTask):
+        if use_scanEOS or args.use_scanXRD or (args.use_scanRucio and not singleTask):
           for line in filelist:
             if args.use_scanRucio:
               ROOT.SH.scanRucio(sh_all, line)
@@ -354,7 +355,7 @@ if __name__ == "__main__":
               ROOT.SH.ScanDir().scan(sh_all, sh_list)
             else:
               raise Exception("What just happened?")
-        elif args.use_scanRucio and args.singleTask:
+        elif args.use_scanRucio and singleTask:
           ROOT.xAH.addRucio(sh_all,os.path.basename(fname),
                             ','.join(filelist))
         else:
