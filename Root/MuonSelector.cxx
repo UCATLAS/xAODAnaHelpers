@@ -754,10 +754,10 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   int this_quality = static_cast<int>( m_muonSelectionTool_handle->getQuality( *muon ) );
   ANA_MSG_DEBUG( "Got quality" );
 
-  isVeryLooseQDecor( *muon ) = ( this_quality == static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
-  isLooseQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
-  isMediumQDecor( *muon )    = ( this_quality == static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
-  isTightQDecor( *muon )     = ( this_quality == static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
+  isVeryLooseQDecor( *muon ) = ( this_quality <= static_cast<int>(xAOD::Muon::VeryLoose) ) ? 1 : 0;
+  isLooseQDecor( *muon )     = ( this_quality <= static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
+  isMediumQDecor( *muon )    = ( this_quality <= static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
+  isTightQDecor( *muon )     = ( this_quality <= static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
   ANA_MSG_DEBUG( "Doing muon quality" );
   // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
   if ( ! m_muonSelectionTool_handle->accept( *muon ) ) {
@@ -925,4 +925,3 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   ANA_MSG_DEBUG( "Leave passCuts... pass" );
   return 1;
 }
-
