@@ -309,6 +309,7 @@ namespace HelperClasses {
         m_trackhitcont        trackhitcont        exact
         m_effSF               effSF               exact
         m_PIDWPs[XYZ]         PID_XYZ             pattern
+        m_PIDSFWPs[XYZ]       PIDSF_XYZ           pattern
         m_isolWPs[""]         ISOL_               exact
         m_isolWPs[""]         ISOL_NONE           exact
         m_isolWPs[XYZ]        ISOL_XYZ            pattern
@@ -329,6 +330,7 @@ namespace HelperClasses {
     bool m_effSF;
     bool m_promptlepton;
     std::vector< std::string > m_PIDWPs;
+    std::vector< std::string > m_PIDSFWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
