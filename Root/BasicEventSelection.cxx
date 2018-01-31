@@ -30,6 +30,8 @@
 #include "xAODCore/tools/IOStats.h"
 #include "xAODCore/tools/ReadStats.h"
 
+#include "xAODMetaData/FileMetaData.h"
+
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
@@ -113,13 +115,6 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  //---------------------------
-  // Meta data - CutBookkepers
-  //---------------------------
-  //
-  // Metadata for intial N (weighted) events are used to correctly normalise MC
-  // if running on a MC DAOD which had some skimming applied at the derivation stage
-
   // get the MetaData tree once a new file is opened, with
   //
   TTree* MetaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
@@ -128,6 +123,13 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     return EL::StatusCode::FAILURE;
   }
   MetaData->LoadTree(0);
+
+  //---------------------------
+  // Meta data - CutBookkepers
+  //---------------------------
+  //
+  // Metadata for intial N (weighted) events are used to correctly normalise MC
+  // if running on a MC DAOD which had some skimming applied at the derivation stage
 
   //check if file is from a DxAOD
   bool m_isDerivation = !MetaData->GetBranch("StreamAOD");
@@ -240,6 +242,33 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_histEventCount -> Fill(6, m_MD_finalSumWSquared);
 
   }
+
+  //---------------------------
+  // Meta data - MC Campgain
+  //---------------------------
+  //
+  // Metadata for the MC campaign to be used by PRW autoconfiguration.
+  if(isMC() && m_autoconfigPRW)
+    {
+      std::string amiTag = "";
+      m_mcCampaignMD = "";
+      const xAOD::FileMetaData* fmd = 0;
+      if (m_event->retrieveMetaInput(fmd, "FileMetaData"))
+	{
+	  fmd->value(xAOD::FileMetaData::amiTag, amiTag);
+	  if( amiTag.find("r9364")!=std::string::npos ) m_mcCampaignMD = "mc16a";
+	  else if( amiTag.find("r9781")!=std::string::npos ) m_mcCampaignMD = "mc16c";
+	  else if( amiTag.find("r10201")!=std::string::npos ) m_mcCampaignMD = "mc16d";
+	  else {
+	    ANA_MSG_ERROR( "unrecognized xAOD::FileMetaData::amiTag, \'" << amiTag << "'. Please check your input sample and make sure it's mc16a, c or d. If it is, contact someone." );
+	    return StatusCode::FAILURE;
+	  }
+	}
+      else
+	{
+	  ANA_MSG_WARNING( "access to FileMetaData failed for MC campaign determination" );
+	}
+    }
 
   return EL::StatusCode::SUCCESS;
 
@@ -492,7 +521,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
     }
 
-    ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
+    if(m_autoconfigPRW)
+      {	ANA_CHECK( autoconfigurePileupRWTool() ); }
+    else
+      { ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles)); }
     ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
     ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactor", 1.0/1.09));
     ANA_CHECK( m_pileup_tool_handle.setProperty("DataScaleFactorUP", 1.0));
@@ -949,6 +981,115 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   return EL::StatusCode::SUCCESS;
 }
+
+// "Borrowed" from SUSYTools
+StatusCode BasicEventSelection::autoconfigurePileupRWTool()
+{
+  // doing here some black magic to autoconfigure the pileup reweighting tool 
+  std::string prwConfigFile = "";
+  if ( isMC() && m_autoconfigPRW )
+    {
+      // Extract campaign from user configuration
+      std::string tmp_mcCampaign = m_mcCampaign;
+      std::vector<std::string> mcCampaignList;
+      while ( tmp_mcCampaign.size() > 0) 
+	{
+	  size_t pos = tmp_mcCampaign.find_first_of(',');
+	  if ( pos == std::string::npos ) 
+	    {
+	      pos = tmp_mcCampaign.size();
+	      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+	      tmp_mcCampaign.erase(0, pos);
+	    }
+	  else
+	    {
+	      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+	      tmp_mcCampaign.erase(0, pos+1);
+	    }
+	}
+
+      // Automatically determine campgain
+      prwConfigFile = PathResolverFindCalibDirectory("dev/SUSYTools/PRW_AUTOCONGIF/files/");
+
+      float dsid = -999;
+      const xAOD::EventInfo* eventInfo(nullptr);
+      ANA_CHECK( evtStore()->retrieve( eventInfo, m_eventInfoContainerName ) );
+      dsid = eventInfo->mcChannelNumber();
+
+      // Sanity checks
+      bool mc16X_GoodFromProperty = !mcCampaignList.empty();
+      bool mc16X_GoodFromMetadata = false;
+      for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d");
+      if( m_mcCampaignMD == "mc16a" || m_mcCampaignMD == "mc16c" || m_mcCampaignMD == "mc16d") mc16X_GoodFromMetadata = true;
+
+      if( !mc16X_GoodFromMetadata && !mc16X_GoodFromProperty )
+	{
+	  // ::
+	  std::string MetadataAndPropertyBAD("");
+	  MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
+	  MetadataAndPropertyBAD += "'mc16a', 'mc16c' or 'mc16d' and restart your job. If you set it to any other string, you will still incur in this error.";
+	  ANA_MSG_ERROR( MetadataAndPropertyBAD );
+	  return StatusCode::FAILURE;
+	  // ::
+	}
+
+      if ( mc16X_GoodFromProperty && mc16X_GoodFromMetadata)
+	{
+	  bool MDinP=false;
+	  for(const auto& mcCampaignP : mcCampaignList) MDinP |= (m_mcCampaignMD==mcCampaignP);
+	  if( !MDinP )
+	    {
+	      // ::
+	      std::string MetadataAndPropertyConflict("");
+	      MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + m_mcCampaignMD;
+	      MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
+	      MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
+	      ANA_MSG_WARNING( MetadataAndPropertyConflict );
+	      // ::
+	    } 
+	  else
+	    {
+	      // ::
+	      std::string NoMetadataButPropertyOK(""); 
+	      NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
+	      NoMetadataButPropertyOK += m_mcCampaign;
+	      NoMetadataButPropertyOK += "'. Autocongiguring PRW accordingly.";
+	      ANA_MSG_WARNING( NoMetadataButPropertyOK );
+	      // ::
+	    }
+	}
+
+      // ::
+      // Retrieve the input file
+      if(!mc16X_GoodFromProperty)
+	{
+	  mcCampaignList.clear();
+	  mcCampaignList.push_back(m_mcCampaignMD);
+	}
+      ANA_MSG_INFO( "Setting MC campgains for CP::PileupReweightingTool:");
+      for(const auto& mcCampaign : mcCampaignList)
+	printf( "\t %s \n", mcCampaign.c_str() );
+
+      std::vector<std::string> prwConfigFiles;
+      int DSID_INT = (int) dsid; 
+      for(const auto& mcCampaign : mcCampaignList)
+	{
+	  prwConfigFile += "pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root";
+	  TFile testF(prwConfigFile.data(),"read");
+	  if(testF.IsZombie())
+	    ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
+	  else
+	    {
+	      ANA_MSG_INFO( "autoconfigurePileupRWTool(): add " << prwConfigFile << " to PRW tool" );
+	      prwConfigFiles.push_back( prwConfigFile );
+	    }
+	}
+      ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
+    }
+  // Return gracefully
+  return StatusCode::SUCCESS;
+}
+
 
 EL::StatusCode BasicEventSelection :: postExecute ()
 {
