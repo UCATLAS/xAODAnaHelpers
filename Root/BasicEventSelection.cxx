@@ -983,6 +983,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 }
 
 // "Borrowed" from SUSYTools
+// https://gitlab.cern.ch/atlas/athena/blob/3be30397de7c6cfdc15de38f532fdb4b9f338297/PhysicsAnalysis/SUSYPhys/SUSYTools/Root/SUSYObjDef_xAOD.cxx#L700
 StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 {
   // doing here some black magic to autoconfigure the pileup reweighting tool 
