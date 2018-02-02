@@ -661,6 +661,11 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
       	    ANA_MSG_DEBUG( "\t\t is the muon pair ("<<imu<<","<<jmu<<") trigger matched? " << matched);
 
+            // set basic matching information
+            ( isTrigMatchedMapMuDecor( *myMuons[0] ) )[chain] = matched;
+            ( isTrigMatchedMapMuDecor( *myMuons[1] ) )[chain] = matched;
+
+            // set pair decision information
       	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
             dimuon_trigmatch_pair  chain_decision = std::make_pair(chain_idxs,matched);
             diMuonTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dimuon_trigmatch_pair >(chain,chain_decision) );
@@ -925,4 +930,3 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   ANA_MSG_DEBUG( "Leave passCuts... pass" );
   return 1;
 }
-
