@@ -221,6 +221,7 @@ namespace HelperClasses {
         m_kinematic    kinematic    exact
         m_numLeading   NLeading     partial
         m_useTheS      useTheS      exact
+        m_noCounter    noCounter    exact
         ============== ============ =======
 
         .. note::
@@ -240,6 +241,7 @@ namespace HelperClasses {
     bool m_kinematic;
     int  m_numLeading;
     bool m_useTheS;
+    bool m_noCounter;
     IParticleInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); }
     virtual ~IParticleInfoSwitch() {}
   protected:
@@ -541,6 +543,7 @@ namespace HelperClasses {
         m_numbers        numbers        exact
         m_vertex         vertex         exact
         m_useTheS        useTheS        exact
+        m_noCounter      noCounter      exact
         ================ ============== =======
 
 
@@ -553,6 +556,7 @@ namespace HelperClasses {
     bool m_numbers;
     bool m_vertex;
     bool m_useTheS;
+    bool m_noCounter;
   TrackInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
