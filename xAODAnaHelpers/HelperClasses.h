@@ -261,6 +261,11 @@ namespace HelperClasses {
         m_trackhitcont         trackhitcont         exact
         m_effSF                effSF                exact
         m_energyLoss           energyLoss           exact
+        m_recoWPs[XYZ]         RECO_XYZ             pattern
+        m_isolWPs[""]          ISOL_                exact
+        m_isolWPs[""]          ISOL_NONE            exact
+        m_isolWPs[XYZ]         ISOL_XYZ             pattern
+        m_trigWPs[XYZ]         TRIG_XYZ             pattern
         ====================== ==================== =======
 
     @endrst

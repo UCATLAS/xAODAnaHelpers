@@ -157,15 +157,23 @@ namespace HelperClasses{
 
     // working points combinations for trigger corrections
     std::string token;
-    std::string reco_prfx = "Reco";
-    std::string isol_prfx = "Iso";
-    std::string trig_prfx = "HLT";
+    std::string reco_keyword = "RECO_";
+    std::string isol_keyword = "ISOL_";
+    std::string trig_keyword = "TRIG_";
 
     std::istringstream ss(m_configStr);
     while ( std::getline(ss, token, ' ') ) {
-      if ( token.compare( 0, reco_prfx.length(), reco_prfx ) == 0 ) { m_recoWPs.push_back(token); }
-      if ( token.compare( 0, isol_prfx.length(), isol_prfx ) == 0 ) { m_isolWPs.push_back(token); }
-      if ( token.compare( 0, trig_prfx.length(), trig_prfx ) == 0 ) { m_trigWPs.push_back(token); }
+      auto reco_substr = token.find(reco_keyword);
+      auto isol_substr = token.find(isol_keyword);
+      auto trig_substr = token.find(trig_keyword);
+      if( reco_substr != std::string::npos ){
+        m_recoWPs.push_back(token.substr(5));
+      } else if(isol_substr != std::string::npos){
+        if(token.substr(5) == "NONE" || token == isol_keyword) m_isolWPs.push_back("");
+        else m_isolWPs.push_back(token.substr(5));
+      } else if(trig_substr != std::string::npos){
+        m_trigWPs.push_back(token.substr(5));
+      }
     }
 
     m_recoEff_sysNames = has_exact("recoEff_sysNames");
