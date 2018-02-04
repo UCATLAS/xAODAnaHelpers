@@ -692,6 +692,11 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
             ANA_MSG_DEBUG( "\t\t is the electron pair ("<<iel<<","<<jel<<") trigger matched? " << matched);
 
+            // set basic matching information
+            ( isTrigMatchedMapElDecor( *myElectrons[0] ) )[chain] = matched;
+            ( isTrigMatchedMapElDecor( *myElectrons[1] ) )[chain] = matched;
+
+            // set pair decision information
             std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(iel,jel);
             dielectron_trigmatch_pair                   chain_decision = std::make_pair(chain_idxs,matched);
             diElectronTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dielectron_trigmatch_pair >(chain,chain_decision) );
@@ -1112,5 +1117,3 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   return 1;
 }
-
-
