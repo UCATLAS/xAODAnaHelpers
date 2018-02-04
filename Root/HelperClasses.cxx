@@ -180,6 +180,9 @@ namespace HelperClasses{
     m_isolation     = has_exact("isolation");
     m_isolationKinematics = has_exact("isolationKinematics");
     m_quality       = has_exact("quality");
+    if (m_quality) {
+        std::cerr << "WARNING! The 'quality' option is deprecated in ElectronInfoSwitch. Use 'PID' instead." << std::endl;
+    }
     m_PID           = has_exact("PID");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
@@ -190,16 +193,20 @@ namespace HelperClasses{
     // working points combinations for trigger corrections
     std::string token;
     std::string pid_keyword = "PID_";
+    std::string pidsf_keyword = "PIDSF_";
     std::string isol_keyword = "ISOL_";
     std::string trig_keyword = "TRIG_";
 
     std::istringstream ss(m_configStr);
     while ( std::getline(ss, token, ' ') ) {
       auto pid_substr = token.find(pid_keyword);
+      auto pidsf_substr = token.find(pidsf_keyword);
       auto isol_substr = token.find(isol_keyword);
       auto trig_substr = token.find(trig_keyword);
       if( pid_substr != std::string::npos ){
         m_PIDWPs.push_back(token.substr(4));
+      } else if( pidsf_substr != std::string::npos ){
+        m_PIDSFWPs.push_back(token.substr(6));
       } else if(isol_substr != std::string::npos){
         if(token.substr(5) == "NONE" || token == isol_keyword) m_isolWPs.push_back("");
         else m_isolWPs.push_back(token.substr(5));

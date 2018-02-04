@@ -303,17 +303,31 @@ namespace HelperClasses {
         m_trigger             trigger             exact
         m_isolation           isolation           exact
         m_isolationKinematics isolationKinematics exact
-        m_quality             quality             exact
         m_PID                 PID                 exact
         m_trackparams         trackparams         exact
         m_trackhitcont        trackhitcont        exact
         m_effSF               effSF               exact
         m_PIDWPs[XYZ]         PID_XYZ             pattern
+        m_PIDSFWPs[XYZ]       PIDSF_XYZ           pattern
         m_isolWPs[""]         ISOL_               exact
         m_isolWPs[""]         ISOL_NONE           exact
         m_isolWPs[XYZ]        ISOL_XYZ            pattern
         m_trigWPs[XYZ]        TRIG_XYZ            pattern
         ===================== =================== =======
+
+        .. note::
+
+            ``PID``, ``isolation`` and ``effSF`` switches do not enable any additional output by themselves. They require additional working point pattern using ``PID_XYZ`` for PID working points, ``PIDSF_XYZ`` for PID scale factors, ``ISOL_XYZ`` for isolation working points and scale factors, and ``TRIG_XYZ`` for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
+
+                m_configStr = "... PID_LHMedium PIDSF_MediumLLH ..."
+
+            will define the ``LHMedium`` PID working point and the accompanying scale factors. Note that not all PID working points have scale factors available.
+            
+            Isolation supports ``NONE`` or empty option which will enable scale factors without additional isolation requirements, for example::
+
+                m_configStr = "... ISOL_NONE ISOL_Loose ..."
+
+            will define the ``Loose`` isolation working point status branch, and scale factors without isolation requirements and using the ``Loose`` WP.
 
     @endrst
    */
@@ -329,6 +343,7 @@ namespace HelperClasses {
     bool m_effSF;
     bool m_promptlepton;
     std::vector< std::string > m_PIDWPs;
+    std::vector< std::string > m_PIDSFWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
