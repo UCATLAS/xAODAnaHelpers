@@ -261,8 +261,27 @@ namespace HelperClasses {
         m_trackhitcont         trackhitcont         exact
         m_effSF                effSF                exact
         m_energyLoss           energyLoss           exact
+        m_recoWPs[XYZ]         RECO_XYZ             pattern
+        m_isolWPs[""]          ISOL_                exact
+        m_isolWPs[""]          ISOL_NONE            exact
+        m_isolWPs[XYZ]         ISOL_XYZ             pattern
+        m_trigWPs[XYZ]         TRIG_XYZ             pattern
         ====================== ==================== =======
 
+        .. note::
+ 
+             ``quality``, ``isolation`` and ``effSF`` switches do not enable any additional output by themselves. They require additional working point pattern using ``RECO_XYZ`` for quality working points and scale factors, ``ISOL_XYZ`` for isolation working points and scale factors, and ``TRIG_XYZ`` for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
+ 
+                 m_configStr = "... RECO_Medium ..."
+ 
+             will define the ``Medium`` quality working point and the accompanying scale factors.
+             
+             Isolation supports ``NONE`` or empty option which will enable scale factors without additional isolation requirements, for example::
+ 
+                 m_configStr = "... ISOL_NONE ISOL_Loose ..."
+ 
+             will define the ``Loose`` isolation working point status branch, and scale factors without isolation requirements and using the ``Loose`` WP.
+ 
     @endrst
    */
   class MuonInfoSwitch : public IParticleInfoSwitch {
