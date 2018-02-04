@@ -40,15 +40,7 @@ namespace xAH {
       std::vector<std::string>       *m_listTrigChains;
     
       // isolation
-      std::vector<int>   *m_isIsolated_LooseTrackOnly;
-      std::vector<int>   *m_isIsolated_Loose;
-      std::vector<int>   *m_isIsolated_Tight;
-      std::vector<int>   *m_isIsolated_Gradient;
-      std::vector<int>   *m_isIsolated_GradientLoose;
-      std::vector<int>   *m_isIsolated_FixedCutLoose;
-      std::vector<int>   *m_isIsolated_FixedCutTightTrackOnly;
-      std::vector<int>   *m_isIsolated_UserDefinedFixEfficiency;
-      std::vector<int>   *m_isIsolated_UserDefinedCut;
+      std::map< std::string, std::vector< int > >* m_isIsolated;
       std::vector<float> *m_ptcone20;
       std::vector<float> *m_ptcone30;
       std::vector<float> *m_ptcone40;
@@ -58,13 +50,10 @@ namespace xAH {
       std::vector<float> *m_topoetcone20;
       std::vector<float> *m_topoetcone30;
       std::vector<float> *m_topoetcone40;
-    
+
       // quality
-      std::vector<int>   *m_isVeryLoose;
-      std::vector<int>   *m_isLoose;
-      std::vector<int>   *m_isMedium;
-      std::vector<int>   *m_isTight;
-    
+      std::map< std::string, std::vector< int > >* m_quality;
+
       // scale factors w/ sys
       // per object
       std::vector< std::vector< float > > *m_TTVAEff_SF;

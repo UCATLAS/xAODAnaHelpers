@@ -216,9 +216,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // Initialise the CP::MuonTriggerScaleFactors tool
   //
 
-  m_trigEffSF_tool_name = "MuonTriggerScaleFactors_effSF_Trig_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-
-  std::string iso_trig_WP = "Iso" + m_WorkingPointIsoTrig;
+  m_trigEffSF_tool_name = "MuonTriggerScaleFactors_effSF_Trig_Reco" + m_WorkingPointReco;
 
   ANA_MSG_INFO( " Initialising CP::MuonTriggerScaleFactors for TRIGGER efficiency SF..." );
 
@@ -233,7 +231,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
       ANA_CHECK( m_muTrigSF_tool->setProperty("AllowZeroSF", m_AllowZeroSF ));
     }
 
-    ANA_CHECK( m_muTrigSF_tool->setProperty("MuonQuality", m_WorkingPointRecoTrig ));
+    ANA_CHECK( m_muTrigSF_tool->setProperty("MuonQuality", m_WorkingPointReco ));
     ANA_CHECK( m_muTrigSF_tool->initialize());
   }
 
@@ -246,7 +244,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   // Remember base output syst. names container
   m_outputSystNamesTrigBase = m_outputSystNamesTrig;
   // Add the chosen WP to the string labelling the output syst. names container
-  m_outputSystNamesTrig = m_outputSystNamesTrig + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+  m_outputSystNamesTrig = m_outputSystNamesTrig + "_Reco" + m_WorkingPointReco;
 
   CP::SystematicSet affectSystsTrig = m_muTrigSF_tool->affectingSystematics();
   for ( const auto& syst_it : affectSystsTrig ) { ANA_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: " << syst_it.name()); }
@@ -685,8 +683,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*e
         if ( !syst_it.name().empty() && !nominal ) continue;
 
         // Create the name of the SF weight to be recorded
-        std::string sfName = "MuTrigEff_SF_syst_" + trig_it + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
-        std::string effName = "MuTrigMCEff_syst_" + trig_it + "_Reco" + m_WorkingPointRecoTrig + "_Iso" + m_WorkingPointIsoTrig;
+        std::string sfName = "MuTrigEff_SF_syst_" + trig_it + "_Reco" + m_WorkingPointReco;
+        std::string effName = "MuTrigMCEff_syst_" + trig_it + "_Reco" + m_WorkingPointReco;
 
         ANA_MSG_DEBUG( "Trigger efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name() );
         if ( writeSystNames ) sysVariationNamesTrig->push_back(syst_it.name());
