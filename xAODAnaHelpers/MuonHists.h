@@ -33,19 +33,7 @@ class MuonHists : public IParticleHists
   private:
 
     // Isolation
-    TH1F* m_isIsolated_LooseTrackOnly              ; //!
-    TH1F* m_isIsolated_Loose			   ; //!
-    TH1F* m_isIsolated_Tight			   ; //!
-    TH1F* m_isIsolated_Gradient			   ; //!
-    TH1F* m_isIsolated_GradientLoose		   ; //!
-    TH1F* m_isIsolated_GradientT1		   ; //!
-    TH1F* m_isIsolated_GradientT2		   ; //!
-    TH1F* m_isIsolated_MU0p06			   ; //!
-    TH1F* m_isIsolated_FixedCutLoose		   ; //!
-    TH1F* m_isIsolated_FixedCutTight		   ; //!
-    TH1F* m_isIsolated_FixedCutTightTrackOnly	   ; //!
-    TH1F* m_isIsolated_UserDefinedFixEfficiency	   ; //!
-    TH1F* m_isIsolated_UserDefinedCut		   ; //!
+    std::map<std::string, TH1F *> m_isIsolated; //!
 
     TH1F* m_ptcone20				   ; //!
     TH1F* m_ptcone30				   ; //!
@@ -69,10 +57,7 @@ class MuonHists : public IParticleHists
 
 
     // quality
-    TH1F* m_isVeryLoose				   ; //!
-    TH1F* m_isLoose				   ; //!
-    TH1F* m_isMedium				   ; //!
-    TH1F* m_isTight                                ; //!
+    std::map<std::string, TH1F *> m_quality; //!
 
 };
 

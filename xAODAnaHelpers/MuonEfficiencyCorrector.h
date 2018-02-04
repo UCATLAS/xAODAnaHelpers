@@ -47,8 +47,7 @@ public:
 
   /// @brief Use with caution!!!
   bool          m_AllowZeroSF = false;
-  std::string   m_WorkingPointRecoTrig = "Loose";
-  std::string   m_WorkingPointIsoTrig = "LooseTrackOnly";
+
   /// @brief list of comma-separated single-mu trigger corrections. Individual legs of di-mu menus can be parsed
   std::string   m_MuTrigLegs = "HLT_mu26_imedium";
 
