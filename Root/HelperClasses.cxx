@@ -180,6 +180,9 @@ namespace HelperClasses{
     m_isolation     = has_exact("isolation");
     m_isolationKinematics = has_exact("isolationKinematics");
     m_quality       = has_exact("quality");
+    if (m_quality) {
+        std::cerr << "WARNING! The 'quality' option is deprecated in ElectronInfoSwitch. Use 'PID' instead." << std::endl;
+    }
     m_PID           = has_exact("PID");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");

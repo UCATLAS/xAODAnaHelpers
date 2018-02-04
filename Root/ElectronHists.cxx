@@ -173,7 +173,7 @@ StatusCode ElectronHists::execute( const xAH::Particle* particle, float eventWei
   }
 
 
-  if ( m_infoSwitch->m_quality ) {
+  if ( m_infoSwitch->m_PID || m_infoSwitch->m_quality ) {
     for (auto& PID : m_infoSwitch->m_PIDWPs) {
       if (PID.empty()) continue;
 
