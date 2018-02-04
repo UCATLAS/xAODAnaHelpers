@@ -19,15 +19,7 @@ namespace xAH {
     std::string       listTrigChains;
     
       // isolation
-    int   isIsolated_LooseTrackOnly;
-    int   isIsolated_Loose;
-    int   isIsolated_Tight;
-    int   isIsolated_Gradient;
-    int   isIsolated_GradientLoose;
-    int   isIsolated_FixedCutLoose;
-    int   isIsolated_FixedCutTightTrackOnly;
-    int   isIsolated_UserDefinedFixEfficiency;
-    int   isIsolated_UserDefinedCut;
+    std::map< std::string, int > isIsolated;
     float ptcone20;
     float ptcone30;
     float ptcone40;
@@ -39,11 +31,8 @@ namespace xAH {
     float topoetcone40;
     
     // quality
-    int   isVeryLoose;
-    int   isLoose;
-    int   isMedium;
-    int   isTight;
-    
+    std::map< std::string, int > quality;
+
     // scale factors w/ sys
     // per object
     std::map< std::string, std::vector< float > > RecoEff_SF;

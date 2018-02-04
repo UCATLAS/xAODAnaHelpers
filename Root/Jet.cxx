@@ -339,7 +339,7 @@ void Jet::muonInJetCorrection(const xAH::MuonContainer* muons){
     const TLorentzVector& muonVec = thisMuon->p4;
     
     if(muonVec.Pt()  < 4)                       continue;
-    if(!thisMuon->isMedium && !thisMuon->isTight) continue;
+    if(!(thisMuon->quality.find("Medium") != thisMuon->quality.end() && thisMuon->quality.at("Medium"))) continue;
     
     float thisDr = jetVec.DeltaR(muonVec);
     if(thisDr < minDr){
@@ -366,5 +366,3 @@ void Jet::muonInJetCorrection(const xAH::MuonContainer* muons){
   
   return;
 }
-
-
