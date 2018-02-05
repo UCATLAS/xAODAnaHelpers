@@ -123,10 +123,10 @@ namespace HelperClasses{
     m_passTrigBits      = has_exact("passTrigBits");
   }
 
-  void JetTriggerInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
-    m_clean         = has_exact("clean");
-  }
+  //void JetTriggerInfoSwitch::initialize(){
+  //  m_kinematic     = has_exact("kinematic");
+  //  m_clean         = has_exact("clean");
+  //}
 
   void IParticleInfoSwitch::initialize(){
     m_kinematic     = has_exact("kinematic");
@@ -235,6 +235,8 @@ namespace HelperClasses{
   void JetInfoSwitch::initialize(){
     std::string tmpConfigStr; // temporary config string used to extract multiple values
 
+    m_kinematic     = has_exact("kinematic");
+    m_trigger       = has_exact("trigger");
     m_substructure  = has_exact("substructure");
     m_bosonCount    = has_exact("bosonCount");
     m_VTags         = has_exact("VTags");

@@ -28,6 +28,7 @@
 #include "JetJvtEfficiency/JetJvtEfficiency.h"
 #include "JetMomentTools/JetForwardJvtTool.h"
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
+#include "TriggerMatchingTool/MatchingTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -311,6 +312,40 @@ EL::StatusCode JetSelector :: initialize ()
   m_weightNumEventPass  = 0;
   m_numObjectPass = 0;
 
+
+  // **************************************
+  //
+  // Initialise Trig::MatchingTool
+  //
+  // **************************************
+  if( !( m_singleJetTrigChains.empty() && m_diJetTrigChains.empty() ) ) {
+    // Grab the TrigDecTool from the ToolStore
+    if(!m_trigDecTool_handle.isUserConfigured()){
+      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+      return EL::StatusCode::FAILURE;
+    }
+    ANA_CHECK( m_trigDecTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+
+    //  everything went fine, let's initialise the tool!
+    ANA_CHECK( m_trigJetMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+    ANA_CHECK( m_trigJetMatchTool_handle.setProperty("OutputLevel", msg().level() ));
+    ANA_CHECK( m_trigJetMatchTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigJetMatchTool_handle);
+
+  } else {
+
+    m_doTrigMatch = false;
+
+    ANA_MSG_WARNING("***********************************************************");
+    ANA_MSG_WARNING( "Will not perform any jet trigger matching at this stage b/c :");
+    ANA_MSG_WARNING("\t -) could not find the TrigDecisionTool in asg::ToolStore");
+    ANA_MSG_WARNING("\t AND/OR");
+    ANA_MSG_WARNING("\t -) all input HLT trigger chain lists are empty");
+    ANA_MSG_WARNING("However, if you really didn't want to do the matching now, it's all good!");
+    ANA_MSG_WARNING("***********************************************************");
+  }
+
   ANA_MSG_DEBUG( "JetSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -343,6 +378,36 @@ EL::StatusCode JetSelector :: execute ()
   }
 
   m_numEvent++;
+
+  // QUESTION: why this must be done in execute(), and does not work in initialize()?
+  //
+  if ( m_numEvent == 1 && m_trigDecTool_handle.isInitialized() ) {
+
+    // parse input jet trigger chain list, split by comma and fill vector
+    //
+    std::string singlejet_trig;
+    std::istringstream ss_singlejet_trig(m_singleJetTrigChains);
+
+    while ( std::getline(ss_singlejet_trig, singlejet_trig, ',') ) {
+   	m_singleJetTrigChainsList.push_back(singlejet_trig);
+    }
+
+    std::string dijet_trig;
+    std::istringstream ss_dijet_trig(m_diJetTrigChains);
+
+    while ( std::getline(ss_dijet_trig, dijet_trig, ',') ) {
+   	m_diJetTrigChainsList.push_back(dijet_trig);
+    }
+
+    ANA_MSG_INFO( "Input single jet trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_singleJetTrigChainsList ) { ANA_MSG_INFO( "\t " << chain); }
+    ANA_MSG_INFO( "\n");
+
+    ANA_MSG_INFO( "Input di-jet trigger chains that will be considered for matching:\n");
+    for ( auto const &chain : m_diJetTrigChainsList ) { ANA_MSG_INFO( "\t " << chain); }
+    ANA_MSG_INFO( "\n");
+
+  }
 
   // did any collection pass the cuts?
   bool pass(false);
@@ -782,6 +847,115 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     m_numEventPass++;
     m_weightNumEventPass += mcEvtWeight;
   }
+
+  // Perform trigger matching on the "good" (selected) jets
+  //
+  // NB: this part will be skipped if:
+  //
+  //  1. the user didn't pass any trigger chains to the algo (see initialize(): in that case, the tool is not even initialised!)
+  //  2. there are no selected jets in the event
+  //
+  if ( m_doTrigMatch && selectedJets ) {
+
+    unsigned int nSelectedJets = selectedJets->size();
+
+    static SG::AuxElement::Decorator< std::map<std::string,char> > isTrigMatchedMapJetDecor( "isTrigMatchedMapJet" );
+
+    if ( nSelectedJets > 0 ) {
+
+      ANA_MSG_DEBUG( "Doing single jet trigger matching...");
+
+      for ( auto const &chain : m_singleJetTrigChainsList ) {
+
+        ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
+
+        for ( auto const jet : *selectedJets ) {
+
+          //  For each jet, decorate w/ a map<string,char> with the 'isMatched' info associated
+          //  to each trigger chain in the input list.
+          //  If decoration map doesn't exist for this jet yet, create it (will be done only for the 1st iteration on the chain names)
+          //
+          if ( !isTrigMatchedMapJetDecor.isAvailable( *jet ) ) {
+            isTrigMatchedMapJetDecor( *jet ) = std::map<std::string,char>();
+          }
+
+          // check whether the pair is matched (NOTE: no DR is needed for jets)
+          //
+          char matched = ( m_trigJetMatchTool_handle->match( *jet, chain ) );
+
+          ANA_MSG_DEBUG( "\t\t is jet trigger matched? " << matched);
+
+          ( isTrigMatchedMapJetDecor( *jet ) )[chain] = matched;
+        }
+      }
+
+    }
+
+    // If checking dijet trigger, form jet pairs and test matching for each one.
+    // Save a:
+    //
+    // multimap< chain, pair< pair<idx_i, idx_j>, ismatched > >
+    //
+    // as *event* decoration to store which
+    // pairs are matched (to a given chain) and which aren't.
+    // A multimap is used b/c a given key (i.e., a chain) can be associated to more than one pair. This is the case for e.g., trijet events.
+    //
+    // By retrieving this map later on, user can decide what to do with the event
+    // (Generally one could just loop over the map and save a flag if there's at least one pair that matches a given chain)
+
+    if ( nSelectedJets > 1 && !m_diJetTrigChains.empty() ) {
+
+      ANA_MSG_DEBUG( "Doing di-jet trigger matching...");
+
+      const xAOD::EventInfo* eventInfo(nullptr);
+      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+
+      typedef std::pair< std::pair<unsigned int,unsigned int>, char> dijet_trigmatch_pair;
+      typedef std::multimap< std::string, dijet_trigmatch_pair >    dijet_trigmatch_pair_map;
+      static SG::AuxElement::Decorator< dijet_trigmatch_pair_map >  diJetTrigMatchPairMapDecor( "diJetTrigMatchPairMap" );
+
+      for ( auto const &chain : m_diJetTrigChainsList ) {
+
+      	ANA_MSG_DEBUG( "\t checking trigger chain " << chain);
+
+      	//  If decoration map doesn't exist for this event yet, create it (will be done only for the 1st iteration on the chain names)
+      	//
+      	if ( !diJetTrigMatchPairMapDecor.isAvailable( *eventInfo ) ) {
+          diJetTrigMatchPairMapDecor( *eventInfo ) = dijet_trigmatch_pair_map();
+      	}
+
+      	std::vector<const xAOD::IParticle*> myJets;
+
+      	for ( unsigned int imu = 0; imu < selectedJets->size()-1; ++imu ) {
+
+      	  for ( unsigned int jmu = imu+1; jmu < selectedJets->size(); ++jmu ) {
+
+            // test a new pair
+            //
+      	    myJets.clear();
+      	    myJets.push_back( selectedJets->at(imu) );
+      	    myJets.push_back( selectedJets->at(jmu) );
+
+            // check whether the pair is matched (NOTE: no DR is needed for jets)
+            //
+      	    char matched = m_trigJetMatchTool_handle->match( myJets, chain );
+
+      	    ANA_MSG_DEBUG( "\t\t is the jet pair ("<<imu<<","<<jmu<<") trigger matched? " << matched);
+
+            // set basic matching information
+            ( isTrigMatchedMapJetDecor( *myJets[0] ) )[chain] = matched;
+            ( isTrigMatchedMapJetDecor( *myJets[1] ) )[chain] = matched;
+
+            // set pair decision information
+      	    std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(imu,jmu);
+            dijet_trigmatch_pair  chain_decision = std::make_pair(chain_idxs,matched);
+            diJetTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dijet_trigmatch_pair >(chain,chain_decision) );
+
+      	  }
+      	}
+      } //for m_diJetTrigChainsList
+    } //if nSelectedJets > 1 && !m_diJetTrigChains.empty()
+  } //if m_doTrigMatch && selectedJets
 
   ANA_MSG_DEBUG("leave executeSelection... ");
   return true;

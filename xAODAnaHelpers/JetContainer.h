@@ -47,6 +47,11 @@ namespace xAH {
       // rapidity
       std::vector<float> *m_rapidity;
 
+      // trigger
+      std::vector<int>               *m_isTrigMatched;
+      std::vector<std::vector<int> > *m_isTrigMatchedToChain;
+      std::vector<std::string>       *m_listTrigChains;
+      
       // clean
       std::vector<float> *m_Timing;
       std::vector<float> *m_LArQuality;

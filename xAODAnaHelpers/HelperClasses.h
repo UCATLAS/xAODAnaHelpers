@@ -202,14 +202,14 @@ namespace HelperClasses {
     @endrst
    */
 
-  class JetTriggerInfoSwitch : public InfoSwitch {
-  public:
-    bool m_kinematic;
-    bool m_clean;
-    JetTriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
-  protected:
-    void initialize();
-  };
+  //class JetTriggerInfoSwitch : public InfoSwitch {
+  //public:
+  //  bool m_kinematic;
+  //  bool m_clean;
+  //  JetTriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+  //protected:
+  //  void initialize();
+  //};
 
   /**
     @rst
@@ -407,6 +407,8 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
+        m_kinematic      kinematic      exact
+        m_trigger        trigger        exact
         m_substructure   substructure   exact
         m_bosonCount     bosonCount     exact
         m_VTags          VTags          exact
@@ -479,6 +481,8 @@ namespace HelperClasses {
    */
   class JetInfoSwitch : public IParticleInfoSwitch {
   public:
+    bool m_kinematic;
+    bool m_trigger;
     bool m_substructure;
     bool m_bosonCount;
     bool m_VTags;

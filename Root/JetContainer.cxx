@@ -15,6 +15,13 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_rapidity                  =new std::vector<float>();
   }
 
+  // trigger
+  if ( m_infoSwitch.m_trigger ) {
+    m_isTrigMatched          = new     std::vector<int>               ();
+    m_isTrigMatchedToChain   = new     std::vector<std::vector<int> > ();
+    m_listTrigChains         = new     std::vector<std::string>       ();
+  }
+  
   // clean
   if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
     if(m_infoSwitch.m_clean){
@@ -422,6 +429,13 @@ JetContainer::~JetContainer()
     delete m_rapidity;
   }
 
+  // trigger
+  if ( m_infoSwitch.m_trigger ) {
+    delete m_isTrigMatched         ;
+    delete m_isTrigMatchedToChain  ;
+    delete m_listTrigChains        ;
+  }
+
   // clean
   if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
     if(m_infoSwitch.m_clean){
@@ -796,6 +810,12 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"rapidity",                      &m_rapidity);
     }
 
+  if ( m_infoSwitch.m_trigger ){
+    connectBranch<int>              (tree, "isTrigMatched",        &m_isTrigMatched);
+    connectBranch<std::vector<int> >(tree, "isTrigMatchedToChain", &m_isTrigMatchedToChain );
+    connectBranch<std::string>      (tree, "listTrigChains",       &m_listTrigChains );
+  }
+
   if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
     {
       if(m_infoSwitch.m_clean){
@@ -1017,6 +1037,13 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     {
       jet.rapidity                    =m_rapidity                    ->at(idx);
     }
+
+  // trigger
+  if ( m_infoSwitch.m_trigger ) {
+    jet.isTrigMatched         =     m_isTrigMatched         ->at(idx);
+    jet.isTrigMatchedToChain  =     m_isTrigMatchedToChain  ->at(idx);
+    jet.listTrigChains        =     m_listTrigChains        ->at(idx);
+  }
 
   if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
     {
@@ -1487,6 +1514,14 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"rapidity",                      m_rapidity              );
   }
 
+  if ( m_infoSwitch.m_trigger ){
+    // this is true if there's a match for at least one trigger chain
+    setBranch<int>(tree,"isTrigMatched", m_isTrigMatched);
+    // a vector of trigger match decision for each jet trigger chain
+    setBranch<std::vector<int> >(tree,"isTrigMatchedToChain", m_isTrigMatchedToChain );
+    // a vector of strings for each jet trigger chain - 1:1 correspondence w/ vector above
+    setBranch<std::string>(tree, "listTrigChains", m_listTrigChains );
+  }
 
   if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
     if(m_infoSwitch.m_clean){
@@ -1854,7 +1889,14 @@ void JetContainer::clear()
   if( m_infoSwitch.m_rapidity ) {
     m_rapidity->clear();
   }
-
+  
+  // trigger
+  if ( m_infoSwitch.m_trigger ) {
+    m_isTrigMatched->clear();
+    m_isTrigMatchedToChain->clear();
+    m_listTrigChains->clear();
+  }
+  
   // clean
   if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
     if(m_infoSwitch.m_clean){
@@ -2219,6 +2261,34 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
   if( m_infoSwitch.m_rapidity ){
     m_rapidity->push_back( jet->rapidity() );
+  }
+
+  if ( m_infoSwitch.m_trigger ) {
+
+    // retrieve map<string,char> w/ <chain,isMatched>
+    //
+    static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapJetAcc("isTrigMatchedMapJet");
+
+    std::vector<int> matches;
+
+    if ( isTrigMatchedMapJetAcc.isAvailable( *jet ) ) {
+      // loop over map and fill branches
+      //
+      for ( auto const &it : (isTrigMatchedMapJetAcc( *jet )) ) {
+	matches.push_back( static_cast<int>(it.second) );
+	m_listTrigChains->push_back( it.first );
+      }
+    } else {
+      matches.push_back( -1 );
+      m_listTrigChains->push_back("NONE");
+    }
+
+    m_isTrigMatchedToChain->push_back(matches);
+    
+    // if at least one match among the chains is found, say this jet is trigger matched
+    if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_isTrigMatched->push_back(1); }
+    else { m_isTrigMatched->push_back(0); }
+    
   }
 
   if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
