@@ -230,7 +230,6 @@ namespace HelperClasses{
   void JetInfoSwitch::initialize(){
     std::string tmpConfigStr; // temporary config string used to extract multiple values
 
-    m_kinematic     = has_exact("kinematic");
     m_trigger       = has_exact("trigger");
     m_substructure  = has_exact("substructure");
     m_bosonCount    = has_exact("bosonCount");
