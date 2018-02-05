@@ -190,29 +190,6 @@ namespace HelperClasses {
 
   /**
     @rst
-        The :cpp:class:`HelperClasses::InfoSwitch` struct for Jet Trigger Information.
-
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_kinematic    kinematic    exact
-        m_clean        clean        exact
-        ============== ============ =======
-
-    @endrst
-   */
-
-  //class JetTriggerInfoSwitch : public InfoSwitch {
-  //public:
-  //  bool m_kinematic;
-  //  bool m_clean;
-  //  JetTriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
-  //protected:
-  //  void initialize();
-  //};
-
-  /**
-    @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for IParticle Information.
 
         ============== ============ =======
