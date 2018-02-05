@@ -64,7 +64,7 @@ class Config(object):
 
     # Construct the given constructor
     #    (complicated b/c we have to deal nesting of namespaces)
-    alg = reduce(lambda x,y: getattr(x, y, None), className.split('.'), ROOT)
+    alg = reduce(lambda x,y: getattr(x, y, None), className.split('::'), ROOT)
     if alg is None:
       raise AttributeError(className)
 
@@ -93,12 +93,12 @@ class Config(object):
       alg_obj = AnaAlgorithmConfig(className)
       alg_obj.setName(algName)
       self._log.append((className, algName))
-      alg_obj.setProperty("OutputLevel", msgLevel)
+      setattr(alg_obj, "OutputLevel", msgLevel)
       for k,v in options.iteritems():
         if isinstance(v, unicode): v = v.encode('utf-8')
         self._log.append((algName, k, v))
         try:
-          alg_obj.setProperty(k, v)
+          setattr(alg_obj, k, v)
         except:
           logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
           raise
