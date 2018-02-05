@@ -123,11 +123,6 @@ namespace HelperClasses{
     m_passTrigBits      = has_exact("passTrigBits");
   }
 
-  //void JetTriggerInfoSwitch::initialize(){
-  //  m_kinematic     = has_exact("kinematic");
-  //  m_clean         = has_exact("clean");
-  //}
-
   void IParticleInfoSwitch::initialize(){
     m_kinematic     = has_exact("kinematic");
 
