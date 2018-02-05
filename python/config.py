@@ -93,8 +93,10 @@ class Config(object):
       alg_obj = AnaAlgorithmConfig(className)
       alg_obj.setName(algName)
       self._log.append((className, algName))
-      setattr(alg_obj, "OutputLevel", msgLevel)
+      # TODO
+      #setattr(alg_obj, "OutputLevel", msgLevel)
       for k,v in options.iteritems():
+        if k in ['m_msgLevel', 'm_name']: continue
         if isinstance(v, unicode): v = v.encode('utf-8')
         self._log.append((algName, k, v))
         try:
