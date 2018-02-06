@@ -907,25 +907,25 @@ EL::StatusCode BasicEventSelection :: execute ()
           passTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
         }
-	isPassedBitsNames.push_back( trigName );
-	isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
+        isPassedBitsNames.push_back( trigName );
+        isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
       }
 
       // Save info for extra triggers
       //
       if ( !m_extraTriggerSelection.empty() ) {
 
-	auto extraTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
+	      auto extraTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
 
-	for ( auto &trigName : extraTriggerChainGroup->getListOfTriggers() ) {
-	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-	  if ( trigChain->isPassed() ) {
-	    passTriggers.push_back( trigName );
-	    triggerPrescales.push_back( trigChain->getPrescale() );
-	  }
-	  isPassedBitsNames.push_back( trigName );
-	  isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
-	}
+	      for ( auto &trigName : extraTriggerChainGroup->getListOfTriggers() ) {
+	        auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
+	        if ( trigChain->isPassed() ) {
+	          passTriggers.push_back( trigName );
+	          triggerPrescales.push_back( trigChain->getPrescale() );
+	        }
+	        isPassedBitsNames.push_back( trigName );
+	        isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
+	      }
       }
 
       static SG::AuxElement::Decorator< std::vector< std::string > >  passTrigs("passTriggers");
@@ -963,14 +963,11 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   // Calculate distance to previous empty BCID and previous unpaired BCID, and save as decorations
-  std::cout << "A: " << isMC() << " and " << m_trigConfTool_handle.isUserConfigured() << std::endl;
-  if( !isMC() && m_trigConfTool_handle.isUserConfigured() ){
-    std::cout << "B" << std::endl;
+  if( m_calcBCIDInfo && !isMC() && m_trigConfTool_handle.isInitialized() ){
     //Distance to previous empty BCID
     for (int i = eventInfo->bcid() - 1; i >= 0; i--){
       //get the bunch group pattern for bunch crossing i
       uint16_t bgPattern = m_trigConfTool_handle->bunchGroupSet()->bgPattern()[i];
-      std::cout << "Looking at bg pattern " << bgPattern << std::endl;
       bool isEmpty = (bgPattern >> 3) & 0x1;
       if (isEmpty){
         static SG::AuxElement::Decorator< int > DistEmptyBCID("DistEmptyBCID");
@@ -999,7 +996,7 @@ EL::StatusCode BasicEventSelection :: execute ()
         DistNextUnpairedBCID(*eventInfo) = i-eventInfo->bcid();
         break;
       }
-    }//  for each bcid 
+    }//  for each bcid
 
   }//if data
 
@@ -1010,17 +1007,17 @@ EL::StatusCode BasicEventSelection :: execute ()
 // https://gitlab.cern.ch/atlas/athena/blob/3be30397de7c6cfdc15de38f532fdb4b9f338297/PhysicsAnalysis/SUSYPhys/SUSYTools/Root/SUSYObjDef_xAOD.cxx#L700
 StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 {
-  // doing here some black magic to autoconfigure the pileup reweighting tool 
+  // doing here some black magic to autoconfigure the pileup reweighting tool
   std::string prwConfigFile = "";
   if ( isMC() && m_autoconfigPRW )
     {
       // Extract campaign from user configuration
       std::string tmp_mcCampaign = m_mcCampaign;
       std::vector<std::string> mcCampaignList;
-      while ( tmp_mcCampaign.size() > 0) 
+      while ( tmp_mcCampaign.size() > 0)
 	{
 	  size_t pos = tmp_mcCampaign.find_first_of(',');
-	  if ( pos == std::string::npos ) 
+	  if ( pos == std::string::npos )
 	    {
 	      pos = tmp_mcCampaign.size();
 	      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
@@ -1071,11 +1068,11 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	      MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
 	      ANA_MSG_WARNING( MetadataAndPropertyConflict );
 	      // ::
-	    } 
+	    }
 	  else
 	    {
 	      // ::
-	      std::string NoMetadataButPropertyOK(""); 
+	      std::string NoMetadataButPropertyOK("");
 	      NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
 	      NoMetadataButPropertyOK += m_mcCampaign;
 	      NoMetadataButPropertyOK += "'. Autocongiguring PRW accordingly.";
@@ -1096,7 +1093,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	printf( "\t %s \n", mcCampaign.c_str() );
 
       std::vector<std::string> prwConfigFiles;
-      int DSID_INT = (int) dsid; 
+      int DSID_INT = (int) dsid;
       for(const auto& mcCampaign : mcCampaignList)
 	{
 	  prwConfigFile += "pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root";
